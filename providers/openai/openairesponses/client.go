@@ -348,13 +348,13 @@ func (r *Response) Init(msgs genai.Messages, opts genai.Options, model string) e
 					r.Input = append(r.Input, newMsg)
 				}
 			}
-		} else if len(msgs[i].Reply) > 1 {
+		} else if len(msgs[i].Replies) > 1 {
 			// Goddam OpenAI. Handle messages with multiple tool calls by creating multiple messages.
 			var txt []genai.Reply
-			for j := range msgs[i].Reply {
-				if !msgs[i].Reply[j].ToolCall.IsZero() {
+			for j := range msgs[i].Replies {
+				if !msgs[i].Replies[j].ToolCall.IsZero() {
 					msgCopy := msgs[i]
-					msgCopy.Reply = []genai.Reply{msgs[i].Reply[j]}
+					msgCopy.Replies = []genai.Reply{msgs[i].Replies[j]}
 					var newMsg Message
 					if err := newMsg.From(&msgCopy); err != nil {
 						errs = append(errs, fmt.Errorf("message %d, tool call %d: %w", i, j, err))
@@ -362,13 +362,13 @@ func (r *Response) Init(msgs genai.Messages, opts genai.Options, model string) e
 						r.Input = append(r.Input, newMsg)
 					}
 				} else {
-					txt = append(txt, msgs[i].Reply[j])
+					txt = append(txt, msgs[i].Replies[j])
 				}
 			}
 			if len(txt) != 0 {
 				// Create a copy of the message with only the non-tool call messages.
 				msgCopy := msgs[i]
-				msgCopy.Reply = txt
+				msgCopy.Replies = txt
 				var newMsg Message
 				if err := newMsg.From(&msgCopy); err != nil {
 					errs = append(errs, fmt.Errorf("message %d: %w", i, err))
@@ -425,7 +425,7 @@ func (r *Response) ToResult() (genai.Result, error) {
 		} else {
 			res.FinishReason = genai.FinishReason(r.IncompleteDetails.Reason)
 		}
-	} else if slices.ContainsFunc(res.Reply, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
+	} else if slices.ContainsFunc(res.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
 		res.FinishReason = genai.FinishedToolCalls
 	} else {
 		res.FinishReason = genai.FinishedStop
@@ -605,32 +605,32 @@ func (m *Message) From(in *genai.Message) error {
 		m.Output = in.ToolCallResults[0].Result
 		return nil
 	}
-	if len(in.Request) != 0 {
+	if len(in.Requests) != 0 {
 		m.Type = MessageMessage
 		m.Role = "user"
-		m.Content = make([]Content, len(in.Request))
-		for j := range in.Request {
-			if err := m.Content[j].FromRequest(&in.Request[j]); err != nil {
+		m.Content = make([]Content, len(in.Requests))
+		for j := range in.Requests {
+			if err := m.Content[j].FromRequest(&in.Requests[j]); err != nil {
 				return fmt.Errorf("request %d: %w", j, err)
 			}
 		}
 		return nil
 	}
-	if len(in.Reply) != 0 {
+	if len(in.Replies) != 0 {
 		// Handle multiple tool calls by creating multiple messages
 		// The caller (Init method) should handle this by creating separate messages
-		if !in.Reply[0].ToolCall.IsZero() {
+		if !in.Replies[0].ToolCall.IsZero() {
 			m.Type = MessageFunctionCall
-			m.CallID = in.Reply[0].ToolCall.ID
-			m.Name = in.Reply[0].ToolCall.Name
-			m.Arguments = in.Reply[0].ToolCall.Arguments
+			m.CallID = in.Replies[0].ToolCall.ID
+			m.Name = in.Replies[0].ToolCall.Name
+			m.Arguments = in.Replies[0].ToolCall.Arguments
 			return nil
 		}
 		m.Type = MessageMessage
 		m.Role = "assistant"
-		for j := range in.Reply {
+		for j := range in.Replies {
 			m.Content = append(m.Content, Content{})
-			if err := m.Content[len(m.Content)-1].FromReply(&in.Reply[j]); err != nil {
+			if err := m.Content[len(m.Content)-1].FromReply(&in.Replies[j]); err != nil {
 				return fmt.Errorf("reply %d: %w", j, err)
 			}
 		}
@@ -647,8 +647,8 @@ func (m *Message) To(out *genai.Message) error {
 	switch m.Type {
 	case MessageMessage:
 		for i := range m.Content {
-			out.Reply = append(out.Reply, genai.Reply{})
-			if err := m.Content[i].To(&out.Reply[len(out.Reply)-1]); err != nil {
+			out.Replies = append(out.Replies, genai.Reply{})
+			if err := m.Content[i].To(&out.Replies[len(out.Replies)-1]); err != nil {
 				return fmt.Errorf("reply %d: %w", i, err)
 			}
 		}
@@ -657,10 +657,10 @@ func (m *Message) To(out *genai.Message) error {
 			if m.Summary[i].Type != "summary_text" {
 				return fmt.Errorf("unsupported summary type %q", m.Summary[i].Type)
 			}
-			out.Reply = append(out.Reply, genai.Reply{Thinking: m.Summary[i].Text})
+			out.Replies = append(out.Replies, genai.Reply{Thinking: m.Summary[i].Text})
 		}
 	case MessageFunctionCall:
-		out.Reply = append(out.Reply, genai.Reply{ToolCall: genai.ToolCall{ID: m.CallID, Name: m.Name, Arguments: m.Arguments}})
+		out.Replies = append(out.Replies, genai.Reply{ToolCall: genai.ToolCall{ID: m.CallID, Name: m.Name, Arguments: m.Arguments}})
 	case MessageFileSearchCall, MessageComputerCall, MessageWebSearchCall, MessageImageGenerationCall, MessageCodeInterpreterCall, MessageLocalShellCall, MessageMcpListTools, MessageMcpApprovalRequest, MessageMcpCall, MessageComputerCallOutput, MessageFunctionCallOutput, MessageLocalShellCallOutput, MessageMcpApprovalResponse, MessageItemReference:
 		fallthrough
 	default:
@@ -1418,8 +1418,8 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 			return res, err
 		}
 	}
-	for i := range msg.Request {
-		if msg.Request[i].Text == "" {
+	for i := range msg.Requests {
+		if msg.Requests[i].Text == "" {
 			return res, errors.New("only text can be passed as input")
 		}
 	}
@@ -1476,16 +1476,16 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 	if err := c.DoRequest(ctx, "POST", url, &req, &resp); err != nil {
 		return res, err
 	}
-	res.Reply = make([]genai.Reply, len(resp.Data))
+	res.Replies = make([]genai.Reply, len(resp.Data))
 	for i := range resp.Data {
 		n := "content.jpg"
 		if len(resp.Data) > 1 {
 			n = fmt.Sprintf("content%d.jpg", i+1)
 		}
 		if url := resp.Data[i].URL; url != "" {
-			res.Reply[i].Doc = genai.Doc{Filename: n, URL: url}
+			res.Replies[i].Doc = genai.Doc{Filename: n, URL: url}
 		} else if d := resp.Data[i].B64JSON; len(d) != 0 {
-			res.Reply[i].Doc = genai.Doc{Filename: n, Src: &bb.BytesBuffer{D: resp.Data[i].B64JSON}}
+			res.Replies[i].Doc = genai.Doc{Filename: n, Src: &bb.BytesBuffer{D: resp.Data[i].B64JSON}}
 		} else {
 			return res, errors.New("internal error")
 		}

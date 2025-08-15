@@ -65,7 +65,7 @@ type injectOption struct {
 }
 
 func (i *injectOption) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	if !strings.Contains(msgs[len(msgs)-1].Request[len(msgs[0].Request)-1].Text, "Quackiland") {
+	if !strings.Contains(msgs[len(msgs)-1].Requests[len(msgs[0].Requests)-1].Text, "Quackiland") {
 		n := i.opts
 		if opts != nil {
 			n.OptionsText = *opts.(*genai.OptionsText)
@@ -76,7 +76,7 @@ func (i *injectOption) GenSync(ctx context.Context, msgs genai.Messages, opts ge
 }
 
 func (i *injectOption) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
-	if !strings.Contains(msgs[len(msgs)-1].Request[len(msgs[0].Request)-1].Text, "Quackiland") {
+	if !strings.Contains(msgs[len(msgs)-1].Requests[len(msgs[0].Requests)-1].Text, "Quackiland") {
 		n := i.opts
 		if opts != nil {
 			n.OptionsText = *opts.(*genai.OptionsText)

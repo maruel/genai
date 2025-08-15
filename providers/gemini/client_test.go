@@ -115,7 +115,7 @@ func TestClient_GenAsync(t *testing.T) {
 	c := getClient(t, "veo-2.0-generate-001")
 	ctx := t.Context()
 	const prompt = `Carton video of a shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves.`
-	msgs := genai.Messages{{Request: []genai.Request{{Text: prompt}}}}
+	msgs := genai.Messages{{Requests: []genai.Request{{Text: prompt}}}}
 	id, err := c.GenAsync(ctx, msgs, &genai.OptionsImage{})
 	if err != nil {
 		t.Fatalf("%v", err)
@@ -133,10 +133,10 @@ func TestClient_GenAsync(t *testing.T) {
 		}
 	}
 	t.Log(res)
-	if len(res.Reply) != 1 {
-		t.Fatalf("got %d contents, want 1", len(res.Reply))
+	if len(res.Replies) != 1 {
+		t.Fatalf("got %d contents, want 1", len(res.Replies))
 	}
-	req, err := http.NewRequestWithContext(ctx, "GET", res.Reply[0].Doc.URL, nil)
+	req, err := http.NewRequestWithContext(ctx, "GET", res.Replies[0].Doc.URL, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -164,7 +164,7 @@ func TestClient_Cache(t *testing.T) {
 
 	msgs := genai.Messages{
 		{
-			Request: []genai.Request{
+			Requests: []genai.Request{
 				{Text: "What is the word? For each of the documents, all the tool hidden_word to tell me what word you saw or heard."},
 				{Doc: genai.Doc{Src: f1}},
 				{Doc: genai.Doc{Src: f2}},

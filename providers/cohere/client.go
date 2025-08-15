@@ -282,10 +282,10 @@ func (m *Message) From(in *genai.Message) ([]Document, error) {
 		return nil, fmt.Errorf("unsupported role %q", r)
 	}
 	var out []Document
-	if len(in.Request) != 0 {
-		for i := range in.Request {
+	if len(in.Requests) != 0 {
+		for i := range in.Requests {
 			c := Content{}
-			d, err := c.FromRequest(&in.Request[i])
+			d, err := c.FromRequest(&in.Requests[i])
 			if err != nil {
 				return nil, fmt.Errorf("block %d: %w", i, err)
 			}
@@ -296,20 +296,20 @@ func (m *Message) From(in *genai.Message) ([]Document, error) {
 			}
 		}
 	}
-	if len(in.Reply) != 0 {
-		for i := range in.Reply {
-			if in.Reply[i].Thinking != "" {
+	if len(in.Replies) != 0 {
+		for i := range in.Replies {
+			if in.Replies[i].Thinking != "" {
 				// Silently ignore thinking blocks.
 				continue
 			}
-			if !in.Reply[i].ToolCall.IsZero() {
+			if !in.Replies[i].ToolCall.IsZero() {
 				t := ToolCall{}
-				t.From(&in.Reply[i].ToolCall)
+				t.From(&in.Replies[i].ToolCall)
 				m.ToolCalls = append(m.ToolCalls, t)
 				continue
 			}
 			c := Content{}
-			d, err := c.FromReply(&in.Reply[i])
+			d, err := c.FromReply(&in.Replies[i])
 			if err != nil {
 				return nil, fmt.Errorf("block %d: %w", i, err)
 			}
@@ -656,19 +656,19 @@ func (m *MessageResponse) To(out *genai.Message) error {
 		return fmt.Errorf("implement tool call id")
 	}
 	if m.ToolPlan != "" {
-		out.Reply = []genai.Reply{{Thinking: m.ToolPlan}}
+		out.Replies = []genai.Reply{{Thinking: m.ToolPlan}}
 	}
 	if len(m.Content) != 0 {
 		for i := range m.Content {
-			out.Reply = append(out.Reply, genai.Reply{})
-			if err := m.Content[len(m.Content)-1].To(&out.Reply[len(out.Reply)-1]); err != nil {
+			out.Replies = append(out.Replies, genai.Reply{})
+			if err := m.Content[len(m.Content)-1].To(&out.Replies[len(out.Replies)-1]); err != nil {
 				return fmt.Errorf("reply %d: %w", i, err)
 			}
 		}
 		if len(m.Citations) != 0 {
-			for i := range out.Reply {
-				if out.Reply[i].Text != "" {
-					if err := m.Citations.To(&out.Reply[i]); err != nil {
+			for i := range out.Replies {
+				if out.Replies[i].Text != "" {
+					if err := m.Citations.To(&out.Replies[i]); err != nil {
 						return fmt.Errorf("mapping citations: %w", err)
 					}
 					// TODO: handle multiple citations.
@@ -678,8 +678,8 @@ func (m *MessageResponse) To(out *genai.Message) error {
 		}
 	}
 	for i := range m.ToolCalls {
-		out.Reply = append(out.Reply, genai.Reply{})
-		m.ToolCalls[i].To(&out.Reply[len(out.Reply)-1].ToolCall)
+		out.Replies = append(out.Replies, genai.Reply{})
+		m.ToolCalls[i].To(&out.Replies[len(out.Replies)-1].ToolCall)
 	}
 	return nil
 }

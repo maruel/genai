@@ -76,7 +76,7 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *genai.Functionality
 		flaky = true
 	}
 
-	if err != nil || !slices.ContainsFunc(resp.Reply, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
+	if err != nil || !slices.ContainsFunc(resp.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
 		internal.Logger(ctx).DebugContext(ctx, "SquareRoot", "err", err)
 		// Tools are not supported, no need to do the rest.
 		f.Tools = genai.False
@@ -103,7 +103,7 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *genai.Functionality
 		internal.Logger(ctx).DebugContext(ctx, "SquareRoot-2", "err", err)
 		return err
 	}
-	if err != nil || slices.ContainsFunc(resp.Reply, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
+	if err != nil || slices.ContainsFunc(resp.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
 		internal.Logger(ctx).DebugContext(ctx, "SquareRoot-2", "err", err)
 		f.Tools = genai.Flaky
 		f.BiasedTool = genai.False
@@ -174,7 +174,7 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *genai.Functionality
 			f.Tools = genai.Flaky
 			continue // Skip to next test case
 		}
-		if !slices.ContainsFunc(resp.Reply, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
+		if !slices.ContainsFunc(resp.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
 			// No tool call, even though ToolCallRequired was set.
 			// This also indicates flaky tool support.
 			f.Tools = genai.Flaky
@@ -189,17 +189,17 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *genai.Functionality
 			f.BrokenFinishReason = true
 		}
 		toolCalls := 0
-		for _, r := range resp.Reply {
+		for _, r := range resp.Replies {
 			if !r.ToolCall.IsZero() {
 				toolCalls++
 			}
 		}
 		if toolCalls == 1 {
-			for j := range resp.Reply {
-				if resp.Reply[j].ToolCall.IsZero() {
+			for j := range resp.Replies {
+				if resp.Replies[j].ToolCall.IsZero() {
 					continue
 				}
-				res, err := resp.Reply[j].ToolCall.Call(ctx, opts.Tools)
+				res, err := resp.Replies[j].ToolCall.Call(ctx, opts.Tools)
 				if err != nil {
 					// Error during tool execution. This only happens if the json schema is not followed. For example
 					// I've seen on Huggingface using "country1" and "country2", aka being indecisive with a single
@@ -212,11 +212,11 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *genai.Functionality
 		} else if toolCalls == 2 {
 			indecisiveOccurred = true
 			var countries []string
-			for j := range resp.Reply {
-				if resp.Reply[j].ToolCall.IsZero() {
+			for j := range resp.Replies {
+				if resp.Replies[j].ToolCall.IsZero() {
 					continue
 				}
-				res, err := resp.Reply[j].ToolCall.Call(ctx, opts.Tools)
+				res, err := resp.Replies[j].ToolCall.Call(ctx, opts.Tools)
 				if err != nil {
 					f.Tools = genai.Flaky
 					continue

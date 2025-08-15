@@ -231,18 +231,19 @@ func (m Messages) Validate() error {
 //
 // It is effectively a union, with the exception of the User field that can be set with In.
 type Message struct {
-	// Request is the message from the user.
+	// Requests is the content from the user.
 	//
-	// It is more frequently multiple items when using multi-modal content.
-	Request []Request `json:"request,omitzero"`
+	// It is normally a single message. It is more frequently multiple items when using multi-modal content.
+	Requests []Request `json:"request,omitzero"`
 	// User must only be used when sent by the user. Only some provider (e.g. OpenAI, Groq, DeepSeek) support it.
 	User string `json:"user,omitzero"`
 
-	// Reply is the message from the LLM.
+	// Replies is the message from the LLM.
 	//
-	// Some models can emit multiple content blocks, either multi modal or multiple text blocks: a code block
-	// and a different block with an explanantion.
-	Reply []Reply `json:"reply,omitzero"`
+	// It is generally a single reply with text or a tool call. Some models can emit multiple content blocks,
+	// either multi modal or multiple text blocks: a code block and a different block with an explanantion. Some
+	// models can emit multiple tool calls at once.
+	Replies []Reply `json:"reply,omitzero"`
 
 	// ToolCallResult is the result for a tool call that the LLM requested to make.
 	//
@@ -255,23 +256,23 @@ type Message struct {
 // NewTextMessage is a shorthand function to create a Message with a single
 // text block.
 func NewTextMessage(text string) Message {
-	return Message{Request: []Request{{Text: text}}}
+	return Message{Requests: []Request{{Text: text}}}
 }
 
 func (m *Message) IsZero() bool {
-	return m.User == "" && len(m.Request) == 0 && len(m.Reply) == 0 && len(m.ToolCallResults) == 0
+	return m.User == "" && len(m.Requests) == 0 && len(m.Replies) == 0 && len(m.ToolCallResults) == 0
 }
 
 // Validate ensures the message is valid.
 func (m *Message) Validate() error {
 	errs := m.validateShallow()
-	for i := range m.Request {
-		if err := m.Request[i].Validate(); err != nil {
+	for i := range m.Requests {
+		if err := m.Requests[i].Validate(); err != nil {
 			errs = append(errs, fmt.Errorf("request %d: %w", i, err))
 		}
 	}
-	for i := range m.Reply {
-		if err := m.Reply[i].Validate(); err != nil {
+	for i := range m.Replies {
+		if err := m.Replies[i].Validate(); err != nil {
 			errs = append(errs, fmt.Errorf("reply %d: %w", i, err))
 		}
 	}
@@ -299,8 +300,8 @@ func (m *Message) validateShallow() []error {
 
 // Role returns one of "user", "assistant" or "computer".
 func (m *Message) Role() string {
-	hasRequest := len(m.Request) != 0
-	hasReply := len(m.Reply) != 0
+	hasRequest := len(m.Requests) != 0
+	hasReply := len(m.Replies) != 0
 	hasToolResult := len(m.ToolCallResults) != 0
 	if hasRequest && !hasReply && !hasToolResult {
 		return "user"
@@ -321,13 +322,13 @@ func (m *Message) AsText() string {
 	var data [32]string
 	out := data[:0]
 	// Only one of the two slices will be non-empty.
-	for i := range m.Request {
-		if s := m.Request[i].Text; s != "" {
+	for i := range m.Requests {
+		if s := m.Requests[i].Text; s != "" {
 			out = append(out, s)
 		}
 	}
-	for i := range m.Reply {
-		if s := m.Reply[i].Text; s != "" {
+	for i := range m.Replies {
+		if s := m.Replies[i].Text; s != "" {
 			out = append(out, s)
 		}
 	}
@@ -359,17 +360,17 @@ func (m *Message) Decode(x any) error {
 // Returns a Message to be added back to the list of messages, only if msg.IsZero() is true.
 func (m *Message) DoToolCalls(ctx context.Context, tools []ToolDef) (Message, error) {
 	var out Message
-	for i := range m.Reply {
-		if m.Reply[i].ToolCall.IsZero() {
+	for i := range m.Replies {
+		if m.Replies[i].ToolCall.IsZero() {
 			continue
 		}
-		res, err := m.Reply[i].ToolCall.Call(ctx, tools)
+		res, err := m.Replies[i].ToolCall.Call(ctx, tools)
 		if err != nil {
 			return out, err
 		}
 		out.ToolCallResults = append(out.ToolCallResults, ToolCallResult{
-			ID:     m.Reply[i].ToolCall.ID,
-			Name:   m.Reply[i].ToolCall.Name,
+			ID:     m.Replies[i].ToolCall.ID,
+			Name:   m.Replies[i].ToolCall.Name,
 			Result: res,
 		})
 	}
@@ -699,8 +700,8 @@ func (m *ReplyFragment) GoString() string {
 func (m *Message) Accumulate(mf ReplyFragment) error {
 	// Generally the first message fragment.
 	if mf.ThinkingFragment != "" {
-		if len(m.Reply) != 0 {
-			if lastBlock := &m.Reply[len(m.Reply)-1]; lastBlock.Thinking != "" {
+		if len(m.Replies) != 0 {
+			if lastBlock := &m.Replies[len(m.Replies)-1]; lastBlock.Thinking != "" {
 				lastBlock.Thinking += mf.ThinkingFragment
 				if len(mf.Opaque) != 0 {
 					if lastBlock.Opaque == nil {
@@ -711,13 +712,13 @@ func (m *Message) Accumulate(mf ReplyFragment) error {
 				return nil
 			}
 		}
-		m.Reply = append(m.Reply, Reply{Thinking: mf.ThinkingFragment, Opaque: mf.Opaque})
+		m.Replies = append(m.Replies, Reply{Thinking: mf.ThinkingFragment, Opaque: mf.Opaque})
 		return nil
 	}
 	if len(mf.Opaque) != 0 {
-		if len(m.Reply) != 0 {
+		if len(m.Replies) != 0 {
 			// Only add Opaque to Thinking block.
-			if lastBlock := &m.Reply[len(m.Reply)-1]; lastBlock.Thinking != "" {
+			if lastBlock := &m.Replies[len(m.Replies)-1]; lastBlock.Thinking != "" {
 				if lastBlock.Opaque == nil {
 					lastBlock.Opaque = map[string]any{}
 				}
@@ -726,29 +727,29 @@ func (m *Message) Accumulate(mf ReplyFragment) error {
 			}
 		}
 		// Unlikely.
-		m.Reply = append(m.Reply, Reply{Opaque: mf.Opaque})
+		m.Replies = append(m.Replies, Reply{Opaque: mf.Opaque})
 		return nil
 	}
 
 	// Content.
 	if mf.TextFragment != "" {
-		if len(m.Reply) != 0 {
-			if lastBlock := &m.Reply[len(m.Reply)-1]; lastBlock.Text != "" {
+		if len(m.Replies) != 0 {
+			if lastBlock := &m.Replies[len(m.Replies)-1]; lastBlock.Text != "" {
 				lastBlock.Text += mf.TextFragment
 				return nil
 			}
 		}
-		m.Reply = append(m.Reply, Reply{Text: mf.TextFragment})
+		m.Replies = append(m.Replies, Reply{Text: mf.TextFragment})
 		return nil
 	}
 
 	if mf.URL != "" {
-		m.Reply = append(m.Reply, Reply{Doc: Doc{Filename: mf.Filename, URL: mf.URL}})
+		m.Replies = append(m.Replies, Reply{Doc: Doc{Filename: mf.Filename, URL: mf.URL}})
 		return nil
 	}
 	if mf.DocumentFragment != nil {
-		if len(m.Reply) != 0 {
-			if lastBlock := &m.Reply[len(m.Reply)-1]; lastBlock.Doc.Filename != "" || lastBlock.Doc.Src != nil {
+		if len(m.Replies) != 0 {
+			if lastBlock := &m.Replies[len(m.Replies)-1]; lastBlock.Doc.Filename != "" || lastBlock.Doc.Src != nil {
 				if lastBlock.Doc.Src == nil {
 					lastBlock.Doc.Src = &bb.BytesBuffer{}
 				}
@@ -760,22 +761,22 @@ func (m *Message) Accumulate(mf ReplyFragment) error {
 				return nil
 			}
 		}
-		m.Reply = append(m.Reply, Reply{Doc: Doc{Filename: mf.Filename, Src: &bb.BytesBuffer{D: mf.DocumentFragment}}})
+		m.Replies = append(m.Replies, Reply{Doc: Doc{Filename: mf.Filename, Src: &bb.BytesBuffer{D: mf.DocumentFragment}}})
 		return nil
 	}
 	if mf.Filename != "" {
-		m.Reply = append(m.Reply, Reply{Doc: Doc{Filename: mf.Filename}})
+		m.Replies = append(m.Replies, Reply{Doc: Doc{Filename: mf.Filename}})
 		return nil
 	}
 
 	if mf.ToolCall.Name != "" {
-		m.Reply = append(m.Reply, Reply{ToolCall: mf.ToolCall})
+		m.Replies = append(m.Replies, Reply{ToolCall: mf.ToolCall})
 		return nil
 	}
 
 	if !mf.Citation.IsZero() {
 		// For now always add a new block.
-		m.Reply = append(m.Reply, Reply{Citations: []Citation{mf.Citation}})
+		m.Replies = append(m.Replies, Reply{Citations: []Citation{mf.Citation}})
 		return nil
 	}
 

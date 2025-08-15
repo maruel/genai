@@ -372,7 +372,7 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*ge
 	// Force triggering citations for a document provided.
 	msgs = genai.Messages{
 		genai.Message{
-			Request: []genai.Request{
+			Requests: []genai.Request{
 				{
 					Doc: genai.Doc{
 						Src:      strings.NewReader("The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."),
@@ -450,7 +450,7 @@ func exerciseGenInputDocument(ctx context.Context, cs *callState, f *genai.Funct
 		if err != nil {
 			return nil, fmt.Errorf("failed to open input file: %w", err)
 		}
-		msgs := genai.Messages{genai.Message{Request: []genai.Request{
+		msgs := genai.Messages{genai.Message{Requests: []genai.Request{
 			{Text: "What is the word? Reply with only the word."},
 			{Doc: genai.Doc{Src: bytes.NewReader(data), Filename: "document." + format.ext}},
 		}}}
@@ -468,7 +468,7 @@ func exerciseGenInputDocument(ctx context.Context, cs *callState, f *genai.Funct
 		} else {
 			internal.Logger(ctx).DebugContext(ctx, name, "err", err)
 		}
-		msgs[0].Request[1] = genai.Request{Doc: genai.Doc{URL: rootURL + "document." + format.ext}}
+		msgs[0].Requests[1] = genai.Request{Doc: genai.Doc{URL: rootURL + "document." + format.ext}}
 		name = prefix + format.ext + "-URL"
 		if err = exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
 			if m == nil {
@@ -501,7 +501,7 @@ func exerciseGenInputImage(ctx context.Context, cs *callState, f *genai.Function
 		if err != nil {
 			return nil, fmt.Errorf("failed to open input file: %w", err)
 		}
-		msgs := genai.Messages{genai.Message{Request: []genai.Request{
+		msgs := genai.Messages{genai.Message{Requests: []genai.Request{
 			{Text: "What fruit is it? Reply with only one word."},
 			{Doc: genai.Doc{Src: bytes.NewReader(data), Filename: "image." + format.ext}},
 		}}}
@@ -519,7 +519,7 @@ func exerciseGenInputImage(ctx context.Context, cs *callState, f *genai.Function
 		} else {
 			internal.Logger(ctx).DebugContext(ctx, name, "err", err)
 		}
-		msgs[0].Request[1] = genai.Request{Doc: genai.Doc{URL: rootURL + "image." + format.ext}}
+		msgs[0].Requests[1] = genai.Request{Doc: genai.Doc{URL: rootURL + "image." + format.ext}}
 		name = prefix + format.ext + "-URL"
 		if err = exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
 			if m == nil {
@@ -552,7 +552,7 @@ func exerciseGenInputAudio(ctx context.Context, cs *callState, f *genai.Function
 		if err != nil {
 			return nil, fmt.Errorf("failed to open input file: %w", err)
 		}
-		msgs := genai.Messages{genai.Message{Request: []genai.Request{
+		msgs := genai.Messages{genai.Message{Requests: []genai.Request{
 			{Text: "What is the word said? Reply with only the word."},
 			{Doc: genai.Doc{Src: bytes.NewReader(data), Filename: "audio." + format.ext}},
 		}}}
@@ -570,7 +570,7 @@ func exerciseGenInputAudio(ctx context.Context, cs *callState, f *genai.Function
 		} else {
 			internal.Logger(ctx).DebugContext(ctx, name, "err", err)
 		}
-		msgs[0].Request[1] = genai.Request{Doc: genai.Doc{URL: rootURL + "audio." + format.ext}}
+		msgs[0].Requests[1] = genai.Request{Doc: genai.Doc{URL: rootURL + "audio." + format.ext}}
 		name = prefix + format.ext + "-URL"
 		if err = exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
 			if m == nil {
@@ -600,7 +600,7 @@ func exerciseGenInputVideo(ctx context.Context, cs *callState, f *genai.Function
 		if err != nil {
 			return nil, fmt.Errorf("failed to open input file: %w", err)
 		}
-		msgs := genai.Messages{genai.Message{Request: []genai.Request{
+		msgs := genai.Messages{genai.Message{Requests: []genai.Request{
 			{Text: "What is the word said? Reply with only the word."},
 			{Doc: genai.Doc{Src: bytes.NewReader(data), Filename: "video." + format.ext}},
 		}}}
@@ -618,7 +618,7 @@ func exerciseGenInputVideo(ctx context.Context, cs *callState, f *genai.Function
 		} else {
 			internal.Logger(ctx).DebugContext(ctx, name, "err", err)
 		}
-		msgs[0].Request[1] = genai.Request{Doc: genai.Doc{URL: rootURL + "video." + format.ext}}
+		msgs[0].Requests[1] = genai.Request{Doc: genai.Doc{URL: rootURL + "video." + format.ext}}
 		name = prefix + format.ext + "-URL"
 		if err = exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
 			if m == nil {
@@ -705,7 +705,7 @@ func (cs *callState) callGen(ctx context.Context, name string, msgs genai.Messag
 	} else {
 		resp, err = c.GenSync(ctx, msgs, opts)
 	}
-	for _, c := range resp.Reply {
+	for _, c := range resp.Replies {
 		if len(c.Citations) != 0 {
 			cs.hasCitations = true
 		}
@@ -788,10 +788,10 @@ func exerciseGenDocImage(ctx context.Context, pf ProviderFactory, name string, o
 		}
 	}
 	if err == nil {
-		if len(resp.Reply) == 0 {
+		if len(resp.Replies) == 0 {
 			return fmt.Errorf("%s: no content", name)
 		}
-		c := resp.Reply[0]
+		c := resp.Replies[0]
 		fn := c.Doc.GetFilename()
 		if fn == "" {
 			return fmt.Errorf("%s: no content filename", name)
@@ -868,10 +868,10 @@ func exerciseGenDocAudio(ctx context.Context, pf ProviderFactory, name string, o
 		}
 	}
 	if err == nil {
-		if len(resp.Reply) == 0 {
+		if len(resp.Replies) == 0 {
 			return fmt.Errorf("%s: no content", name)
 		}
-		c := resp.Reply[0]
+		c := resp.Replies[0]
 		fn := c.Doc.GetFilename()
 		if fn == "" {
 			return fmt.Errorf("%s: no content filename", name)

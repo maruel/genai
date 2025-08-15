@@ -41,7 +41,7 @@ func ExampleProviderGen_genSync_vision() {
 	}
 	msgs := genai.Messages{
 		{
-			Request: []genai.Request{
+			Requests: []genai.Request{
 				{Text: "Is it a banana? Reply with only the word yes or no."},
 				{Doc: genai.Doc{Filename: "banana.jpg", Src: bytes.NewReader(bananaJpg)}},
 			},
@@ -123,7 +123,7 @@ func ExampleProviderGen_genSync_pdf() {
 	defer f.Close()
 	msgs := genai.Messages{
 		{
-			Request: []genai.Request{
+			Requests: []genai.Request{
 				{Text: "What is the word? Reply with only the word."},
 				{Doc: genai.Doc{Src: f}},
 			},
@@ -153,7 +153,7 @@ func ExampleProviderGen_genSync_audio() {
 	defer f.Close()
 	msgs := genai.Messages{
 		{
-			Request: []genai.Request{
+			Requests: []genai.Request{
 				{Text: "What is the word said? Reply with only the word."},
 				{Doc: genai.Doc{Src: f}},
 			},
@@ -184,7 +184,7 @@ func ExampleProviderGen_genSync_video() {
 	// TogetherAI seems to require separate messages for text and images.
 	msgs := genai.Messages{
 		genai.NewTextMessage("What is the word? Reply with exactly and only one word."),
-		{Request: []genai.Request{{Doc: genai.Doc{Src: f}}}},
+		{Requests: []genai.Request{{Doc: genai.Doc{Src: f}}}},
 	}
 	resp, err := c.GenSync(context.Background(), msgs, nil)
 	if err != nil {

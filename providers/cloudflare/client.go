@@ -183,10 +183,10 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 					c.Messages = append(c.Messages, newMsg)
 				}
 			}
-		} else if len(msgs[i].Request) > 1 {
-			for j := range msgs[i].Request {
+		} else if len(msgs[i].Requests) > 1 {
+			for j := range msgs[i].Requests {
 				msgCopy := msgs[i]
-				msgCopy.Request = []genai.Request{msgs[i].Request[j]}
+				msgCopy.Requests = []genai.Request{msgs[i].Requests[j]}
 				var newMsg Message
 				if err := newMsg.From(&msgCopy); err != nil {
 					errs = append(errs, fmt.Errorf("message %d, request %d: %w", i, j, err))
@@ -225,7 +225,7 @@ type Message struct {
 // From must be called with at most one Request, one Reply or one ToolCallResults.
 func (m *Message) From(in *genai.Message) error {
 	// We do not expect cloudflare to send multiple replies.
-	if len(in.Request) > 1 || len(in.Reply) > 1 || len(in.ToolCallResults) > 1 {
+	if len(in.Requests) > 1 || len(in.Replies) > 1 || len(in.ToolCallResults) > 1 {
 		return errors.New("internal error")
 	}
 	switch r := in.Role(); r {
@@ -236,50 +236,50 @@ func (m *Message) From(in *genai.Message) error {
 	default:
 		return fmt.Errorf("unsupported role %q", r)
 	}
-	if len(in.Request) == 1 {
+	if len(in.Requests) == 1 {
 		// Process only the first Request in this method.
 		// The Init method handles multiple Request by creating multiple messages.
-		if in.Request[0].Text != "" {
-			m.Content = in.Request[0].Text
-		} else if !in.Request[0].Doc.IsZero() {
+		if in.Requests[0].Text != "" {
+			m.Content = in.Requests[0].Text
+		} else if !in.Requests[0].Doc.IsZero() {
 			// Check if this is a text/plain document
-			mimeType, data, err := in.Request[0].Doc.Read(10 * 1024 * 1024)
+			mimeType, data, err := in.Requests[0].Doc.Read(10 * 1024 * 1024)
 			if err != nil {
 				return fmt.Errorf("failed to read document: %w", err)
 			}
 			if !strings.HasPrefix(mimeType, "text/plain") {
 				return fmt.Errorf("cloudflare only supports text/plain documents, got %s", mimeType)
 			}
-			if in.Request[0].Doc.URL != "" {
+			if in.Requests[0].Doc.URL != "" {
 				return errors.New("text/plain documents must be provided inline, not as a URL")
 			}
 			m.Content = string(data)
 		} else {
-			return fmt.Errorf("unsupported content type %#v", in.Request[0])
+			return fmt.Errorf("unsupported content type %#v", in.Requests[0])
 		}
 		return nil
 	}
-	if len(in.Reply) != 0 {
-		if in.Reply[0].Text != "" {
-			m.Content = in.Reply[0].Text
-		} else if !in.Reply[0].Doc.IsZero() {
+	if len(in.Replies) != 0 {
+		if in.Replies[0].Text != "" {
+			m.Content = in.Replies[0].Text
+		} else if !in.Replies[0].Doc.IsZero() {
 			// Check if this is a text/plain document
-			mimeType, data, err := in.Reply[0].Doc.Read(10 * 1024 * 1024)
+			mimeType, data, err := in.Replies[0].Doc.Read(10 * 1024 * 1024)
 			if err != nil {
 				return fmt.Errorf("failed to read document: %w", err)
 			}
 			if !strings.HasPrefix(mimeType, "text/plain") {
 				return fmt.Errorf("cloudflare only supports text/plain documents, got %s", mimeType)
 			}
-			if in.Reply[0].Doc.URL != "" {
+			if in.Replies[0].Doc.URL != "" {
 				return errors.New("text/plain documents must be provided inline, not as a URL")
 			}
 			m.Content = string(data)
-		} else if !in.Reply[0].ToolCall.IsZero() {
-			m.ToolCallID = in.Reply[0].ToolCall.ID
-			m.Content = in.Reply[0].ToolCall.Arguments
+		} else if !in.Replies[0].ToolCall.IsZero() {
+			m.ToolCallID = in.Replies[0].ToolCall.ID
+			m.Content = in.Replies[0].ToolCall.Arguments
 		} else {
-			return fmt.Errorf("unsupported content type %#v", in.Reply[0])
+			return fmt.Errorf("unsupported content type %#v", in.Replies[0])
 		}
 		return nil
 	}
@@ -416,9 +416,9 @@ type MessageResponse struct {
 
 func (msg *MessageResponse) To(out *genai.Message) error {
 	if len(msg.ToolCalls) != 0 {
-		out.Reply = make([]genai.Reply, len(msg.ToolCalls))
+		out.Replies = make([]genai.Reply, len(msg.ToolCalls))
 		for i, tc := range msg.ToolCalls {
-			if err := tc.To(&out.Reply[i].ToolCall); err != nil {
+			if err := tc.To(&out.Replies[i].ToolCall); err != nil {
 				return err
 			}
 		}
@@ -430,7 +430,7 @@ func (msg *MessageResponse) To(out *genai.Message) error {
 		if strings.HasPrefix(v, "<tool_call>") {
 			return fmt.Errorf("hacked up XML tool calls are not supported")
 		} else {
-			out.Reply = []genai.Reply{{Text: v}}
+			out.Replies = []genai.Reply{{Text: v}}
 		}
 	default:
 		// Marshal back into JSON.
@@ -438,7 +438,7 @@ func (msg *MessageResponse) To(out *genai.Message) error {
 		if err != nil {
 			return fmt.Errorf("failed to JSON marshal type %T: %v: %w", v, v, err)
 		}
-		out.Reply = []genai.Reply{{Text: string(b)}}
+		out.Replies = []genai.Reply{{Text: string(b)}}
 	}
 	return nil
 }

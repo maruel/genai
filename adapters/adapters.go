@@ -48,7 +48,7 @@ func GenSyncWithToolCallLoop(ctx context.Context, p genai.ProviderGen, msgs gena
 		}
 		out = append(out, result.Message)
 		workMsgs = append(workMsgs, result.Message)
-		if !slices.ContainsFunc(result.Reply, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
+		if !slices.ContainsFunc(result.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
 			return out, usage, nil
 		}
 		tr, err := result.DoToolCalls(ctx, tools)
@@ -122,7 +122,7 @@ func GenStreamWithToolCallLoop(ctx context.Context, p genai.ProviderGen, msgs ge
 		}
 		out = append(out, reply)
 		workMsgs = append(workMsgs, reply)
-		if !slices.ContainsFunc(result.Reply, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
+		if !slices.ContainsFunc(result.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
 			return out, usage, nil
 		}
 		tr, err := reply.DoToolCalls(ctx, tools)
@@ -272,19 +272,19 @@ type ProviderGenAppend struct {
 }
 
 func (c *ProviderGenAppend) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	if len(msgs[len(msgs)-1].Request) != 0 {
+	if len(msgs[len(msgs)-1].Requests) != 0 {
 		msgs = slices.Clone(msgs)
-		msgs[len(msgs)-1].Request = slices.Clone(msgs[len(msgs)-1].Request)
-		msgs[len(msgs)-1].Request = append(msgs[len(msgs)-1].Request, c.Append)
+		msgs[len(msgs)-1].Requests = slices.Clone(msgs[len(msgs)-1].Requests)
+		msgs[len(msgs)-1].Requests = append(msgs[len(msgs)-1].Requests, c.Append)
 	}
 	return c.ProviderGen.GenSync(ctx, msgs, opts)
 }
 
 func (c *ProviderGenAppend) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
-	if len(msgs[len(msgs)-1].Request) != 0 {
+	if len(msgs[len(msgs)-1].Requests) != 0 {
 		msgs = slices.Clone(msgs)
-		msgs[len(msgs)-1].Request = slices.Clone(msgs[len(msgs)-1].Request)
-		msgs[len(msgs)-1].Request = append(msgs[len(msgs)-1].Request, c.Append)
+		msgs[len(msgs)-1].Requests = slices.Clone(msgs[len(msgs)-1].Requests)
+		msgs[len(msgs)-1].Requests = append(msgs[len(msgs)-1].Requests, c.Append)
 	}
 	return c.ProviderGen.GenStream(ctx, msgs, replies, opts)
 }

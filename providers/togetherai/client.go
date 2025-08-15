@@ -438,27 +438,27 @@ func (m *Message) From(in *genai.Message) error {
 	default:
 		return fmt.Errorf("unsupported role %q", r)
 	}
-	if len(in.Request) != 0 {
-		m.Content = make([]Content, 0, len(in.Request))
-		for i := range in.Request {
+	if len(in.Requests) != 0 {
+		m.Content = make([]Content, 0, len(in.Requests))
+		for i := range in.Requests {
 			m.Content = append(m.Content, Content{})
-			if err := m.Content[len(m.Content)-1].FromRequest(&in.Request[i]); err != nil {
+			if err := m.Content[len(m.Content)-1].FromRequest(&in.Requests[i]); err != nil {
 				return fmt.Errorf("request #%d: %w", i, err)
 			}
 		}
 	}
-	if len(in.Reply) != 0 {
-		for i := range in.Reply {
-			if in.Reply[i].Thinking != "" {
+	if len(in.Replies) != 0 {
+		for i := range in.Replies {
+			if in.Replies[i].Thinking != "" {
 				continue
 			}
-			if !in.Reply[i].ToolCall.IsZero() {
+			if !in.Replies[i].ToolCall.IsZero() {
 				m.ToolCalls = append(m.ToolCalls, ToolCall{})
-				m.ToolCalls[len(m.ToolCalls)-1].From(&in.Reply[i].ToolCall)
+				m.ToolCalls[len(m.ToolCalls)-1].From(&in.Replies[i].ToolCall)
 				continue
 			}
 			m.Content = append(m.Content, Content{})
-			if err := m.Content[len(m.Content)-1].FromReply(&in.Reply[i]); err != nil {
+			if err := m.Content[len(m.Content)-1].FromReply(&in.Replies[i]); err != nil {
 				return fmt.Errorf("reply #%d: %w", i, err)
 			}
 		}
@@ -474,16 +474,16 @@ func (m *Message) From(in *genai.Message) error {
 
 func (m *Message) To(out *genai.Message) error {
 	if len(m.Content) != 0 {
-		out.Reply = make([]genai.Reply, len(m.Content))
+		out.Replies = make([]genai.Reply, len(m.Content))
 		for i := range m.Content {
-			if err := m.Content[i].To(&out.Reply[i]); err != nil {
+			if err := m.Content[i].To(&out.Replies[i]); err != nil {
 				return fmt.Errorf("block %d: %w", i, err)
 			}
 		}
 	}
 	for i := range m.ToolCalls {
-		out.Reply = append(out.Reply, genai.Reply{})
-		m.ToolCalls[i].To(&out.Reply[len(out.Reply)-1].ToolCall)
+		out.Replies = append(out.Replies, genai.Reply{})
+		m.ToolCalls[i].To(&out.Replies[len(out.Replies)-1].ToolCall)
 	}
 	return nil
 }
@@ -1113,8 +1113,8 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 				return res, err
 			}
 		}
-		for i := range msg.Request {
-			if msg.Request[i].Text == "" {
+		for i := range msg.Requests {
+			if msg.Requests[i].Text == "" {
 				return res, errors.New("only text can be passed as input")
 			}
 		}
@@ -1138,16 +1138,16 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 		if err := c.DoRequest(ctx, "POST", "https://api.together.xyz/v1/images/generations", &req, &resp); err != nil {
 			return res, err
 		}
-		res.Reply = make([]genai.Reply, len(resp.Data))
+		res.Replies = make([]genai.Reply, len(resp.Data))
 		for i := range resp.Data {
 			n := "content.jpg"
 			if len(resp.Data) > 1 {
 				n = fmt.Sprintf("content%d.jpg", i+1)
 			}
 			if url := resp.Data[i].URL; url != "" {
-				res.Reply[i].Doc = genai.Doc{Filename: n, URL: url}
+				res.Replies[i].Doc = genai.Doc{Filename: n, URL: url}
 			} else if d := resp.Data[i].B64JSON; len(d) != 0 {
-				res.Reply[i].Doc = genai.Doc{Filename: n, Src: &bb.BytesBuffer{D: resp.Data[i].B64JSON}}
+				res.Replies[i].Doc = genai.Doc{Filename: n, Src: &bb.BytesBuffer{D: resp.Data[i].B64JSON}}
 			} else {
 				return res, errors.New("internal error")
 			}

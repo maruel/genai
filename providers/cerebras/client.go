@@ -247,12 +247,12 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 					c.Messages = append(c.Messages, newMsg)
 				}
 			}
-		} else if len(msgs[i].Request) > 1 {
+		} else if len(msgs[i].Requests) > 1 {
 			// Handle messages with multiple Request by creating multiple messages
-			for j := range msgs[i].Request {
+			for j := range msgs[i].Requests {
 				// Create a copy of the message with only one request
 				msgCopy := msgs[i]
-				msgCopy.Request = []genai.Request{msgs[i].Request[j]}
+				msgCopy.Requests = []genai.Request{msgs[i].Requests[j]}
 				var newMsg Message
 				if err := newMsg.From(&msgCopy); err != nil {
 					errs = append(errs, fmt.Errorf("message %d, request %d: %w", i, j, err))
@@ -294,7 +294,7 @@ type Message struct {
 
 // From must be called with at most one Request or ToolCallResults.
 func (m *Message) From(in *genai.Message) error {
-	if len(in.Request) > 1 || len(in.ToolCallResults) > 1 {
+	if len(in.Requests) > 1 || len(in.ToolCallResults) > 1 {
 		return errors.New("internal error")
 	}
 	switch r := in.Role(); r {
@@ -305,22 +305,22 @@ func (m *Message) From(in *genai.Message) error {
 	default:
 		return fmt.Errorf("unsupported role %q", r)
 	}
-	if len(in.Request) > 0 {
-		m.Content = make([]Content, len(in.Request))
-		for i := range in.Request {
-			if err := m.Content[i].FromRequest(&in.Request[i]); err != nil {
+	if len(in.Requests) > 0 {
+		m.Content = make([]Content, len(in.Requests))
+		for i := range in.Requests {
+			if err := m.Content[i].FromRequest(&in.Requests[i]); err != nil {
 				return fmt.Errorf("request %d: %w", i, err)
 			}
 		}
 	}
-	for i := range in.Reply {
-		if !in.Reply[i].ToolCall.IsZero() {
+	for i := range in.Replies {
+		if !in.Replies[i].ToolCall.IsZero() {
 			t := ToolCall{}
-			t.From(&in.Reply[i].ToolCall)
+			t.From(&in.Replies[i].ToolCall)
 			m.ToolCalls = append(m.ToolCalls, t)
 			continue
 		}
-		if err := m.Content[i].FromReply(&in.Reply[i]); err != nil {
+		if err := m.Content[i].FromReply(&in.Replies[i]); err != nil {
 			return fmt.Errorf("reply %d: %w", i, err)
 		}
 	}
@@ -335,18 +335,18 @@ func (m *Message) From(in *genai.Message) error {
 }
 
 func (m *Message) To(out *genai.Message) error {
-	out.Reply = make([]genai.Reply, 0, len(m.Content)+len(m.ToolCalls))
+	out.Replies = make([]genai.Reply, 0, len(m.Content)+len(m.ToolCalls))
 	for _, content := range m.Content {
 		switch content.Type {
 		case ContentText:
-			out.Reply = append(out.Reply, genai.Reply{Text: content.Text})
+			out.Replies = append(out.Replies, genai.Reply{Text: content.Text})
 		default:
 			return fmt.Errorf("unsupported content type %q", content.Type)
 		}
 	}
 	for i := range m.ToolCalls {
-		out.Reply = append(out.Reply, genai.Reply{})
-		m.ToolCalls[i].To(&out.Reply[len(out.Reply)-1].ToolCall)
+		out.Replies = append(out.Replies, genai.Reply{})
+		m.ToolCalls[i].To(&out.Replies[len(out.Replies)-1].ToolCall)
 	}
 	return nil
 }
@@ -530,7 +530,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	}
 	out.FinishReason = c.Choices[0].FinishReason.ToFinishReason()
 	err := c.Choices[0].Message.To(&out.Message)
-	if out.FinishReason == genai.FinishedStop && slices.ContainsFunc(out.Reply, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
+	if out.FinishReason == genai.FinishedStop && slices.ContainsFunc(out.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
 		// Lie for the benefit of everyone.
 		out.FinishReason = genai.FinishedToolCalls
 	}

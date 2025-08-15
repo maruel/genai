@@ -50,7 +50,7 @@ func Example() {
 		log.Printf("Did I finally start filling the usage fields?")
 	}
 	// Normalize some of the variance. Obviously many models will still fail this test.
-	txt := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Request[0].Text)), ".!")
+	txt := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.Requests[0].Text)), ".!")
 	fmt.Printf("Response: %s\n", txt)
 	// Disabled because it's slow in CI, especially on Windows.
 	// // Output: Response: hello

@@ -640,19 +640,19 @@ func (c *Content) From(in *genai.Message) error {
 	default:
 		return fmt.Errorf("unsupported role %q", r)
 	}
-	c.Parts = make([]Part, len(in.Request)+len(in.Reply)+len(in.ToolCallResults))
-	for i := range in.Request {
-		if err := c.Parts[i].FromRequest(&in.Request[i]); err != nil {
+	c.Parts = make([]Part, len(in.Requests)+len(in.Replies)+len(in.ToolCallResults))
+	for i := range in.Requests {
+		if err := c.Parts[i].FromRequest(&in.Requests[i]); err != nil {
 			return fmt.Errorf("request %d: %w", i, err)
 		}
 	}
-	offset := len(in.Request)
-	for i := range in.Reply {
-		if err := c.Parts[i].FromReply(&in.Reply[i]); err != nil {
+	offset := len(in.Requests)
+	for i := range in.Replies {
+		if err := c.Parts[i].FromReply(&in.Replies[i]); err != nil {
 			return fmt.Errorf("reply %d: %w", i, err)
 		}
 	}
-	offset += len(in.Reply)
+	offset += len(in.Replies)
 	for i := range in.ToolCallResults {
 		c.Parts[offset+i].FunctionResponse.From(&in.ToolCallResults[i])
 	}
@@ -662,13 +662,13 @@ func (c *Content) From(in *genai.Message) error {
 func (c *Content) To(out *genai.Message) error {
 	for _, part := range c.Parts {
 		if part.Thought {
-			out.Reply = append(out.Reply, genai.Reply{Thinking: part.Text})
+			out.Replies = append(out.Replies, genai.Reply{Thinking: part.Text})
 			continue
 		}
 		// There's no signal as to what it is, we have to test its content.
 		// We need to split out content from tools.
 		if part.Text != "" {
-			out.Reply = append(out.Reply, genai.Reply{Text: part.Text})
+			out.Replies = append(out.Replies, genai.Reply{Text: part.Text})
 			continue
 		}
 		if part.InlineData.MimeType != "" {
@@ -679,7 +679,7 @@ func (c *Content) To(out *genai.Message) error {
 			if len(exts) == 0 {
 				return fmt.Errorf("mime type %q has no extension", part.InlineData.MimeType)
 			}
-			out.Reply = append(out.Reply, genai.Reply{
+			out.Replies = append(out.Replies, genai.Reply{
 				Doc: genai.Doc{Filename: "content" + exts[0], Src: &bb.BytesBuffer{D: part.InlineData.Data}},
 			})
 			continue
@@ -692,7 +692,7 @@ func (c *Content) To(out *genai.Message) error {
 			if len(exts) == 0 {
 				return fmt.Errorf("mime type %q has no extension", part.InlineData.MimeType)
 			}
-			out.Reply = append(out.Reply, genai.Reply{Doc: genai.Doc{Filename: "content" + exts[0], URL: part.FileData.FileURI}})
+			out.Replies = append(out.Replies, genai.Reply{Doc: genai.Doc{Filename: "content" + exts[0], URL: part.FileData.FileURI}})
 			continue
 		}
 		if part.FunctionCall.Name != "" {
@@ -703,7 +703,7 @@ func (c *Content) To(out *genai.Message) error {
 			if err := part.FunctionCall.To(&r.ToolCall); err != nil {
 				return err
 			}
-			out.Reply = append(out.Reply, r)
+			out.Replies = append(out.Replies, r)
 			continue
 		}
 		if reflect.ValueOf(part).IsZero() {
@@ -988,7 +988,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	// Gemini is the only one returning uppercase so convert down for compatibility.
 	out.FinishReason = c.Candidates[0].FinishReason.ToFinishReason()
 	err := c.Candidates[0].Content.To(&out.Message)
-	if out.FinishReason == genai.FinishedStop && slices.ContainsFunc(out.Reply, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
+	if out.FinishReason == genai.FinishedStop && slices.ContainsFunc(out.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
 		// Lie for the benefit of everyone.
 		out.FinishReason = genai.FinishedToolCalls
 	}
@@ -1658,8 +1658,8 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 			return res, err
 		}
 	}
-	for i := range msg.Request {
-		if msg.Request[i].Text == "" {
+	for i := range msg.Requests {
+		if msg.Requests[i].Text == "" {
 			return res, errors.New("only text can be passed as input")
 		}
 	}
@@ -1719,7 +1719,7 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 		if nbImages > 1 {
 			n = fmt.Sprintf("content%d.jpg", i+1)
 		}
-		res.Reply = append(res.Reply, genai.Reply{Doc: genai.Doc{Filename: n, Src: &bb.BytesBuffer{D: resp.Predictions[i].BytesBase64Encoded}}})
+		res.Replies = append(res.Replies, genai.Reply{Doc: genai.Doc{Filename: n, Src: &bb.BytesBuffer{D: resp.Predictions[i].BytesBase64Encoded}}})
 	}
 	if uce != nil {
 		return res, uce
@@ -1759,8 +1759,8 @@ func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.O
 			return "", err
 		}
 	}
-	for i := range msg.Request {
-		if msg.Request[i].Text == "" {
+	for i := range msg.Requests {
+		if msg.Requests[i].Text == "" {
 			return "", errors.New("only text can be passed as input")
 		}
 	}
@@ -1827,7 +1827,7 @@ func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, er
 	res.FinishReason = genai.FinishedStop
 	for _, p := range op.Response.GenerateVideoResponse.GeneratedSamples {
 		// This requires the Google API key to fetch!
-		res.Reply = []genai.Reply{{Doc: genai.Doc{Filename: "content.mp4", URL: p.Video.URI}}}
+		res.Replies = []genai.Reply{{Doc: genai.Doc{Filename: "content.mp4", URL: p.Video.URI}}}
 	}
 	return res, nil
 }

@@ -179,12 +179,12 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 					c.Messages = append(c.Messages, newMsg)
 				}
 			}
-		} else if len(msgs[i].Request) > 1 {
+		} else if len(msgs[i].Requests) > 1 {
 			// Handle messages with multiple Request by creating multiple messages
-			for j := range msgs[i].Request {
+			for j := range msgs[i].Requests {
 				// Create a copy of the message with only one request
 				msgCopy := msgs[i]
-				msgCopy.Request = []genai.Request{msgs[i].Request[j]}
+				msgCopy.Requests = []genai.Request{msgs[i].Requests[j]}
 				var newMsg Message
 				if err := newMsg.From(&msgCopy); err != nil {
 					errs = append(errs, fmt.Errorf("message %d, request %d: %w", i, j, err))
@@ -225,7 +225,7 @@ type Message struct {
 
 // From must be called with at most one Request or one ToolCallResults.
 func (m *Message) From(in *genai.Message) error {
-	if len(in.Request) > 1 || len(in.ToolCallResults) > 1 {
+	if len(in.Requests) > 1 || len(in.ToolCallResults) > 1 {
 		return errors.New("internal error")
 	}
 	switch r := in.Role(); r {
@@ -237,14 +237,14 @@ func (m *Message) From(in *genai.Message) error {
 		return fmt.Errorf("unsupported role %q", r)
 	}
 	m.Name = in.User
-	if len(in.Request) == 1 {
-		if in.Request[0].Text != "" {
-			m.Content += in.Request[0].Text
-		} else if !in.Request[0].Doc.IsZero() {
-			if in.Request[0].Doc.URL != "" {
+	if len(in.Requests) == 1 {
+		if in.Requests[0].Text != "" {
+			m.Content += in.Requests[0].Text
+		} else if !in.Requests[0].Doc.IsZero() {
+			if in.Requests[0].Doc.URL != "" {
 				return errors.New("deepseek doesn't support document content blocks with URLs")
 			}
-			mimeType, data, err := in.Request[0].Doc.Read(10 * 1024 * 1024)
+			mimeType, data, err := in.Requests[0].Doc.Read(10 * 1024 * 1024)
 			if err != nil {
 				return fmt.Errorf("failed to read document: %w", err)
 			}
@@ -257,26 +257,26 @@ func (m *Message) From(in *genai.Message) error {
 		}
 		return nil
 	}
-	for i := range in.Reply {
-		if in.Reply[i].Text != "" {
-			m.Content += in.Reply[i].Text
-		} else if !in.Reply[i].Doc.IsZero() {
-			mimeType, data, err := in.Reply[i].Doc.Read(10 * 1024 * 1024)
+	for i := range in.Replies {
+		if in.Replies[i].Text != "" {
+			m.Content += in.Replies[i].Text
+		} else if !in.Replies[i].Doc.IsZero() {
+			mimeType, data, err := in.Replies[i].Doc.Read(10 * 1024 * 1024)
 			if err != nil {
 				return fmt.Errorf("failed to read document: %w", err)
 			}
-			if in.Reply[i].Doc.URL != "" {
+			if in.Replies[i].Doc.URL != "" {
 				return errors.New("deepseek doesn't support document content blocks with URLs")
 			}
 			if !strings.HasPrefix(mimeType, "text/plain") {
 				return fmt.Errorf("deepseek only supports text/plain documents, got %s", mimeType)
 			}
 			m.Content += string(data)
-		} else if in.Reply[i].Thinking != "" {
+		} else if in.Replies[i].Thinking != "" {
 			// Thinking content should not be returned to the model.
-		} else if !in.Reply[i].ToolCall.IsZero() {
+		} else if !in.Replies[i].ToolCall.IsZero() {
 			m.ToolCalls = append(m.ToolCalls, ToolCall{})
-			m.ToolCalls[len(m.ToolCalls)-1].From(&in.Reply[i].ToolCall)
+			m.ToolCalls[len(m.ToolCalls)-1].From(&in.Replies[i].ToolCall)
 		} else {
 			return errors.New("unknown Reply type")
 		}
@@ -293,14 +293,14 @@ func (m *Message) From(in *genai.Message) error {
 func (m *Message) To(out *genai.Message) error {
 	// Both ReasoningContent and Content can be set on the same reply.
 	if m.ReasoningContent != "" {
-		out.Reply = append(out.Reply, genai.Reply{Thinking: m.ReasoningContent})
+		out.Replies = append(out.Replies, genai.Reply{Thinking: m.ReasoningContent})
 	}
 	if m.Content != "" {
-		out.Reply = append(out.Reply, genai.Reply{Text: m.Content})
+		out.Replies = append(out.Replies, genai.Reply{Text: m.Content})
 	}
 	for i := range m.ToolCalls {
-		out.Reply = append(out.Reply, genai.Reply{})
-		m.ToolCalls[i].To(&out.Reply[len(out.Reply)-1].ToolCall)
+		out.Replies = append(out.Replies, genai.Reply{})
+		m.ToolCalls[i].To(&out.Replies[len(out.Replies)-1].ToolCall)
 	}
 	return nil
 }

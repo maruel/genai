@@ -535,7 +535,7 @@ type CompletionResponse struct {
 
 func (c *CompletionResponse) ToResult() (genai.Result, error) {
 	out := genai.Result{
-		Message: genai.Message{Reply: []genai.Reply{{Text: c.Content}}},
+		Message: genai.Message{Replies: []genai.Reply{{Text: c.Content}}},
 		Usage: genai.Usage{
 			InputTokens:       c.TokensPredicted,
 			InputCachedTokens: c.TokensCached,
@@ -676,27 +676,27 @@ func (m *Message) From(in *genai.Message) error {
 	default:
 		return fmt.Errorf("unsupported role %q", r)
 	}
-	if len(in.Request) != 0 {
-		for i := range in.Request {
+	if len(in.Requests) != 0 {
+		for i := range in.Requests {
 			c := Content{}
-			if skip, err := c.FromRequest(&in.Request[i]); err != nil {
+			if skip, err := c.FromRequest(&in.Requests[i]); err != nil {
 				return fmt.Errorf("request %d: %w", i, err)
 			} else if !skip {
 				m.Content = append(m.Content, c)
 			}
 		}
 	}
-	if len(in.Reply) != 0 {
-		for i := range in.Reply {
-			if !in.Reply[i].ToolCall.IsZero() {
+	if len(in.Replies) != 0 {
+		for i := range in.Replies {
+			if !in.Replies[i].ToolCall.IsZero() {
 				m.ToolCalls = append(m.ToolCalls, ToolCall{})
-				if err := m.ToolCalls[len(m.ToolCalls)-1].From(&in.Reply[i].ToolCall); err != nil {
+				if err := m.ToolCalls[len(m.ToolCalls)-1].From(&in.Replies[i].ToolCall); err != nil {
 					return err
 				}
 				continue
 			}
 			c := Content{}
-			if skip, err := c.FromReply(&in.Reply[i]); err != nil {
+			if skip, err := c.FromReply(&in.Replies[i]); err != nil {
 				return fmt.Errorf("reply %d: %w", i, err)
 			} else if !skip {
 				m.Content = append(m.Content, c)
@@ -714,14 +714,14 @@ func (m *Message) From(in *genai.Message) error {
 
 func (m *Message) To(out *genai.Message) error {
 	for i := range m.Content {
-		out.Reply = make([]genai.Reply, len(m.Content))
-		if err := m.Content[i].To(&out.Reply[i]); err != nil {
+		out.Replies = make([]genai.Reply, len(m.Content))
+		if err := m.Content[i].To(&out.Replies[i]); err != nil {
 			return fmt.Errorf("reply %d: %w", i, err)
 		}
 	}
 	for i := range m.ToolCalls {
-		out.Reply = append(out.Reply, genai.Reply{})
-		m.ToolCalls[i].To(&out.Reply[len(out.Reply)-1].ToolCall)
+		out.Replies = append(out.Replies, genai.Reply{})
+		m.ToolCalls[i].To(&out.Replies[len(out.Replies)-1].ToolCall)
 	}
 	return nil
 }
@@ -1174,7 +1174,7 @@ func (c *Client) Completions(ctx context.Context, msgs genai.Messages, opts gena
 		}
 	}
 	for i, msg := range msgs {
-		for j, content := range msg.Reply {
+		for j, content := range msg.Replies {
 			if len(content.Opaque) != 0 {
 				return genai.Result{}, fmt.Errorf("message #%d content #%d: field Opaque not supported", i, j)
 			}
@@ -1214,7 +1214,7 @@ func (c *Client) CompletionsStream(ctx context.Context, msgs genai.Messages, chu
 	}
 
 	for i, msg := range msgs {
-		for j, content := range msg.Reply {
+		for j, content := range msg.Replies {
 			if len(content.Opaque) != 0 {
 				return result, fmt.Errorf("message #%d content #%d: Opaque field not supported", i, j)
 			}
@@ -1392,16 +1392,16 @@ func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, opts gen
 			in.Prompt += c.encoding.ToolsAvailableTokenStart + m.Text + c.encoding.ToolsAvailableTokenEnd
 		*/
 		case "system":
-			for _, b := range m.Request {
+			for _, b := range m.Requests {
 				in.Prompt += c.encoding.SystemTokenStart + b.Text + c.encoding.SystemTokenEnd
 			}
 		case "user":
-			for _, b := range m.Request {
+			for _, b := range m.Requests {
 				in.Prompt += c.encoding.UserTokenStart + b.Text + c.encoding.UserTokenEnd
 			}
 			// in.Prompt += c.encoding.ToolCallResultTokenStart + m.Text + c.encoding.ToolCallResultTokenEnd
 		case "assistant":
-			for _, b := range m.Request {
+			for _, b := range m.Requests {
 				in.Prompt += c.encoding.AssistantTokenStart + b.Text + c.encoding.AssistantTokenEnd
 			}
 			// in.Prompt += c.encoding.ToolCallTokenStart + m.Text + c.encoding.ToolCallTokenEnd

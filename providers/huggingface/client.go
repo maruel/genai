@@ -248,23 +248,23 @@ func (m *Message) From(in *genai.Message) error {
 	default:
 		return fmt.Errorf("unsupported role %q", r)
 	}
-	if len(in.Request) != 0 {
-		m.Content = make([]Content, len(in.Request))
-		for i := range in.Request {
-			if err := m.Content[i].FromRequest(&in.Request[i]); err != nil {
+	if len(in.Requests) != 0 {
+		m.Content = make([]Content, len(in.Requests))
+		for i := range in.Requests {
+			if err := m.Content[i].FromRequest(&in.Requests[i]); err != nil {
 				return fmt.Errorf("request %d: %w", i, err)
 			}
 		}
 	}
-	if len(in.Reply) != 0 {
-		m.Content = make([]Content, len(in.Reply))
-		for i := range in.Reply {
-			if !in.Reply[i].ToolCall.IsZero() {
+	if len(in.Replies) != 0 {
+		m.Content = make([]Content, len(in.Replies))
+		for i := range in.Replies {
+			if !in.Replies[i].ToolCall.IsZero() {
 				m.ToolCalls = append(m.ToolCalls, ToolCall{})
-				m.ToolCalls[len(m.ToolCalls)-1].From(&in.Reply[i].ToolCall)
+				m.ToolCalls[len(m.ToolCalls)-1].From(&in.Replies[i].ToolCall)
 				continue
 			}
-			if err := m.Content[i].FromReply(&in.Reply[i]); err != nil {
+			if err := m.Content[i].FromReply(&in.Replies[i]); err != nil {
 				return fmt.Errorf("reply %d: %w", i, err)
 			}
 		}
@@ -542,11 +542,11 @@ type MessageResponse struct {
 
 func (m *MessageResponse) To(out *genai.Message) error {
 	if m.Content != "" {
-		out.Reply = []genai.Reply{{Text: m.Content}}
+		out.Replies = []genai.Reply{{Text: m.Content}}
 	}
 	for i := range m.ToolCalls {
-		out.Reply = []genai.Reply{{}}
-		m.ToolCalls[i].To(&out.Reply[len(out.Reply)-1].ToolCall)
+		out.Replies = []genai.Reply{{}}
+		m.ToolCalls[i].To(&out.Replies[len(out.Replies)-1].ToolCall)
 	}
 	return nil
 }
@@ -567,7 +567,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	}
 	out.FinishReason = c.Choices[0].FinishReason.ToFinishReason()
 	err := c.Choices[0].Message.To(&out.Message)
-	if out.FinishReason == genai.FinishedStop && slices.ContainsFunc(out.Reply, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
+	if out.FinishReason == genai.FinishedStop && slices.ContainsFunc(out.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
 		// Lie for the benefit of everyone.
 		out.FinishReason = genai.FinishedToolCalls
 	}

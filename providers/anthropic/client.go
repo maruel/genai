@@ -395,19 +395,19 @@ func (m *Message) From(in *genai.Message) error {
 	default:
 		return fmt.Errorf("unsupported role %q", r)
 	}
-	m.Content = make([]Content, len(in.Request)+len(in.Reply)+len(in.ToolCallResults))
-	for i := range in.Request {
-		if err := m.Content[i].FromRequest(&in.Request[i]); err != nil {
+	m.Content = make([]Content, len(in.Requests)+len(in.Replies)+len(in.ToolCallResults))
+	for i := range in.Requests {
+		if err := m.Content[i].FromRequest(&in.Requests[i]); err != nil {
 			return fmt.Errorf("request %d: %w", i, err)
 		}
 	}
-	offset := len(in.Request)
-	for i := range in.Reply {
-		if err := m.Content[i+offset].FromReply(&in.Reply[i]); err != nil {
+	offset := len(in.Requests)
+	for i := range in.Replies {
+		if err := m.Content[i+offset].FromReply(&in.Replies[i]); err != nil {
 			return fmt.Errorf("reply %d: %w", i, err)
 		}
 	}
-	offset += len(in.Reply)
+	offset += len(in.Replies)
 	for i := range in.ToolCallResults {
 		if err := m.Content[offset+i].FromToolCallResult(&in.ToolCallResults[i]); err != nil {
 			return fmt.Errorf("tool call results %d: %w", offset+i, err)
@@ -429,7 +429,7 @@ func (m *Message) To(out *genai.Message) error {
 			if skip, err := m.Content[i].To(&c); err != nil {
 				return fmt.Errorf("reply %d: %w", i, err)
 			} else if !skip {
-				out.Reply = append(out.Reply, c)
+				out.Replies = append(out.Replies, c)
 			}
 		case ContentImage, ContentDocument, ContentToolResult:
 			fallthrough
@@ -1207,7 +1207,7 @@ func (b *BatchQueryResponse) To(out *genai.Message) error {
 			if skip, err := b.Result.Message.Content[i].To(&c); err != nil {
 				return fmt.Errorf("block %d: %w", i, err)
 			} else if !skip {
-				out.Reply = append(out.Reply, c)
+				out.Replies = append(out.Replies, c)
 			}
 		case ContentImage, ContentDocument, ContentToolResult:
 			fallthrough

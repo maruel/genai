@@ -47,7 +47,7 @@ func TestClient_GenSync_simple(t *testing.T) {
 				t.Fatal(err)
 			}
 			t.Logf("Raw response: %#v", resp)
-			if len(resp.Reply) == 0 {
+			if len(resp.Replies) == 0 {
 				t.Fatal("missing response")
 			}
 			internaltest.ValidateWordResponse(t, resp, "hello")
@@ -92,7 +92,7 @@ func TestClient_GenStream_simple(t *testing.T) {
 				t.Fatal(err)
 			}
 			t.Logf("Raw response: %#v", resp)
-			if len(resp.Reply) == 0 {
+			if len(resp.Replies) == 0 {
 				t.Fatal("missing response")
 			}
 			internaltest.ValidateWordResponse(t, resp, "hello")

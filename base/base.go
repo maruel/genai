@@ -297,11 +297,11 @@ func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRe
 	// Check for non-empty Opaque field unless explicitly allowed
 	if !c.AllowOpaqueFields {
 		for i, msg := range msgs {
-			for j := range msg.Reply {
-				if len(msg.Reply[j].Opaque) != 0 {
+			for j := range msg.Replies {
+				if len(msg.Replies[j].Opaque) != 0 {
 					return result, fmt.Errorf("message #%d content #%d: field Opaque not supported", i, j)
 				}
-				if len(msg.Reply[j].ToolCall.Opaque) != 0 {
+				if len(msg.Replies[j].ToolCall.Opaque) != 0 {
 					return result, fmt.Errorf("message #%d tool call #%d: field Opaque not supported", i, j)
 				}
 			}
@@ -355,11 +355,11 @@ func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRe
 	// Check for non-empty Opaque field unless explicitly allowed
 	if !c.AllowOpaqueFields {
 		for i, msg := range msgs {
-			for j := range msg.Reply {
-				if len(msg.Reply[j].Opaque) != 0 {
+			for j := range msg.Replies {
+				if len(msg.Replies[j].Opaque) != 0 {
 					return result, fmt.Errorf("message #%d content #%d: field Opaque not supported", i, j)
 				}
-				if len(msg.Reply[j].ToolCall.Opaque) != 0 {
+				if len(msg.Replies[j].ToolCall.Opaque) != 0 {
 					return result, fmt.Errorf("message #%d tool call #%d: field Opaque not supported", i, j)
 				}
 			}
@@ -391,8 +391,8 @@ func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRe
 		result.Limits = c.ProcessHeaders(lastResp)
 	}
 	if c.LieToolCalls && result.FinishReason == genai.FinishedStop {
-		for i := range result.Reply {
-			if !result.Reply[i].ToolCall.IsZero() {
+		for i := range result.Replies {
+			if !result.Replies[i].ToolCall.IsZero() {
 				// Lie for the benefit of everyone.
 				result.FinishReason = genai.FinishedToolCalls
 				break
@@ -499,19 +499,19 @@ func ListModels[PErrorResponse ErrAPI, R ListModelsResponse](ctx context.Context
 func SimulateStream(ctx context.Context, c genai.ProviderGen, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
 	res, err := c.GenSync(ctx, msgs, opts)
 	if err == nil {
-		for i := range res.Reply {
-			if !res.Reply[i].Doc.IsZero() {
-				return res, fmt.Errorf("expected Reply with Doc, got %#v", res.Reply[i])
+		for i := range res.Replies {
+			if !res.Replies[i].Doc.IsZero() {
+				return res, fmt.Errorf("expected Reply with Doc, got %#v", res.Replies[i])
 			}
-			if url := res.Reply[i].Doc.URL; url != "" {
+			if url := res.Replies[i].Doc.URL; url != "" {
 				chunks <- genai.ReplyFragment{
-					Filename: res.Reply[i].Doc.Filename,
-					URL:      res.Reply[i].Doc.URL,
+					Filename: res.Replies[i].Doc.Filename,
+					URL:      res.Replies[i].Doc.URL,
 				}
 			} else {
 				chunks <- genai.ReplyFragment{
-					Filename:         res.Reply[i].Doc.Filename,
-					DocumentFragment: res.Reply[i].Doc.Src.(*bb.BytesBuffer).D,
+					Filename:         res.Replies[i].Doc.Filename,
+					DocumentFragment: res.Replies[i].Doc.Src.(*bb.BytesBuffer).D,
 				}
 			}
 		}

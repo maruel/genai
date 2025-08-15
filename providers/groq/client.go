@@ -397,28 +397,28 @@ func (m *Message) From(in *genai.Message) error {
 		return fmt.Errorf("unsupported role %q", r)
 	}
 	m.Name = in.User
-	if len(in.Request) != 0 {
-		m.Content = make(Contents, len(in.Request))
-		for i := range in.Request {
-			if err := m.Content[i].FromRequest(&in.Request[i]); err != nil {
+	if len(in.Requests) != 0 {
+		m.Content = make(Contents, len(in.Requests))
+		for i := range in.Requests {
+			if err := m.Content[i].FromRequest(&in.Requests[i]); err != nil {
 				return fmt.Errorf("request %d: %w", i, err)
 			}
 		}
 	}
-	if len(in.Reply) != 0 {
-		m.Content = make(Contents, 0, len(in.Reply))
-		for i := range in.Reply {
-			if in.Reply[i].Thinking != "" {
+	if len(in.Replies) != 0 {
+		m.Content = make(Contents, 0, len(in.Replies))
+		for i := range in.Replies {
+			if in.Replies[i].Thinking != "" {
 				// DeepSeek and Qwen recommend against passing reasoning back.
 				continue
 			}
-			if !in.Reply[i].ToolCall.IsZero() {
+			if !in.Replies[i].ToolCall.IsZero() {
 				m.ToolCalls = append(m.ToolCalls, ToolCall{})
-				m.ToolCalls[len(m.ToolCalls)-1].From(&in.Reply[i].ToolCall)
+				m.ToolCalls[len(m.ToolCalls)-1].From(&in.Replies[i].ToolCall)
 				continue
 			}
 			m.Content = append(m.Content, Content{})
-			if err := m.Content[len(m.Content)-1].FromReply(&in.Reply[i]); err != nil {
+			if err := m.Content[len(m.Content)-1].FromReply(&in.Replies[i]); err != nil {
 				return fmt.Errorf("reply %d: %w", i, err)
 			}
 		}
@@ -669,14 +669,14 @@ type MessageResponse struct {
 
 func (m *MessageResponse) To(out *genai.Message) error {
 	if m.Reasoning != "" {
-		out.Reply = append(out.Reply, genai.Reply{Thinking: m.Reasoning})
+		out.Replies = append(out.Replies, genai.Reply{Thinking: m.Reasoning})
 	}
 	if m.Content != "" {
-		out.Reply = append(out.Reply, genai.Reply{Text: m.Content})
+		out.Replies = append(out.Replies, genai.Reply{Text: m.Content})
 	}
 	for i := range m.ToolCalls {
-		out.Reply = append(out.Reply, genai.Reply{})
-		m.ToolCalls[i].To(&out.Reply[len(out.Reply)-1].ToolCall)
+		out.Replies = append(out.Replies, genai.Reply{})
+		m.ToolCalls[i].To(&out.Replies[len(out.Replies)-1].ToolCall)
 	}
 	return nil
 }

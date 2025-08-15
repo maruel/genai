@@ -311,13 +311,13 @@ func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.O
 		return "", errors.New("must pass exactly one Message")
 	}
 	msg := msgs[0]
-	for i := range msg.Request {
-		if msg.Request[i].Text != "" {
+	for i := range msg.Requests {
+		if msg.Requests[i].Text != "" {
 			continue
 		}
 		// Check if this is a text/plain document that we can handle
-		if !msg.Request[i].Doc.IsZero() {
-			mimeType, data, err := msg.Request[i].Doc.Read(10 * 1024 * 1024)
+		if !msg.Requests[i].Doc.IsZero() {
+			mimeType, data, err := msg.Requests[i].Doc.Read(10 * 1024 * 1024)
 			if err != nil {
 				return "", fmt.Errorf("failed to read document: %w", err)
 			}
@@ -325,12 +325,12 @@ func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.O
 			if !strings.HasPrefix(mimeType, "text/plain") {
 				return "", errors.New("only text and text/plain documents can be passed as input")
 			}
-			if msg.Request[i].Doc.URL != "" {
+			if msg.Requests[i].Doc.URL != "" {
 				return "", errors.New("text/plain documents must be provided inline, not as a URL")
 			}
 			// Convert document content to text content
-			msg.Request[i].Text = string(data)
-			msg.Request[i].Doc = genai.Doc{}
+			msg.Requests[i].Text = string(data)
+			msg.Requests[i].Doc = genai.Doc{}
 			continue
 		}
 		return "", errors.New("unknown Request type")
@@ -378,7 +378,7 @@ func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, er
 	if imgres.Status != "Ready" {
 		return res, fmt.Errorf("unexpected status: %#v", imgres)
 	}
-	res.Reply = []genai.Reply{{Doc: genai.Doc{Filename: "content.jpg", URL: imgres.Result.Sample}}}
+	res.Replies = []genai.Reply{{Doc: genai.Doc{Filename: "content.jpg", URL: imgres.Result.Sample}}}
 	return res, res.Validate()
 }
 

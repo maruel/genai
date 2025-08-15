@@ -85,8 +85,8 @@ func (c *ProviderGenThinking) GenStream(ctx context.Context, msgs genai.Messages
 	}
 	// Use the accumulated contents from our processed message, which has correctly
 	// transformed TextFragments to ThinkingFragments according to the state machine
-	if len(accumulated.Reply) > 0 {
-		result.Reply = accumulated.Reply
+	if len(accumulated.Replies) > 0 {
+		result.Replies = accumulated.Replies
 	}
 	if err != nil {
 		return result, err
@@ -167,13 +167,13 @@ func (c *ProviderGenThinking) processPacket(state tagProcessingState, replies ch
 // processThinkingMessage is the non-streaming version of message fragment processing. It's a bit faster since
 // it can slice things directly.
 func (c *ProviderGenThinking) processThinkingMessage(m *genai.Message) error {
-	if len(m.Reply) == 0 {
+	if len(m.Replies) == 0 {
 		// It can be a function call.
 		return nil
 	}
 
 	// Check if one of the contents is already a Thinking block
-	for _, c := range m.Reply {
+	for _, c := range m.Replies {
 		if c.Thinking != "" {
 			return fmt.Errorf("got unexpected thinking content: %q; do not use ProviderGenThinking with an explicit thinking CoT model", c.Thinking)
 		}
@@ -194,24 +194,24 @@ func (c *ProviderGenThinking) processThinkingMessage(m *genai.Message) error {
 		return fmt.Errorf("unexpected prefix before thinking tag: %q", prefix)
 	}
 	// Zap the text.
-	for i := range m.Reply {
-		m.Reply[i].Text = ""
+	for i := range m.Replies {
+		m.Replies[i].Text = ""
 	}
 	// Remove whitespace after the starting tag.
 	textAfterStartTag := strings.TrimLeftFunc(text[tStart+len(c.ThinkingTokenStart):], unicode.IsSpace)
 	if tEnd := strings.Index(textAfterStartTag, c.ThinkingTokenEnd); tEnd != -1 {
 		thinkingContent := textAfterStartTag[:tEnd]
 		remainingText := strings.TrimLeftFunc(textAfterStartTag[tEnd+len(c.ThinkingTokenEnd):], unicode.IsSpace)
-		m.Reply[0].Thinking = thinkingContent
-		if len(m.Reply) == 1 {
-			m.Reply = append(m.Reply, genai.Reply{})
+		m.Replies[0].Thinking = thinkingContent
+		if len(m.Replies) == 1 {
+			m.Replies = append(m.Replies, genai.Reply{})
 		}
-		m.Reply[len(m.Reply)-1].Text = remainingText
+		m.Replies[len(m.Replies)-1].Text = remainingText
 	} else {
 		// This happens when MaxTokens is used or another reason which cut the stream off before the end tag is seen.
 		// Consider everything thinking.
 		// We do not return an error so the user can process the data.
-		m.Reply[0].Thinking = textAfterStartTag
+		m.Replies[0].Thinking = textAfterStartTag
 	}
 	return nil
 }

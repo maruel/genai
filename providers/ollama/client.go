@@ -225,14 +225,14 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 					c.Messages = append(c.Messages, newMsg)
 				}
 			}
-		} else if len(msgs[i].Request) > 1 {
+		} else if len(msgs[i].Requests) > 1 {
 			// Handle messages with multiple messages by creating multiple messages
 			// TODO: For multi-modal requests we could put them together. It's only a problem for text-only
 			// messages.
-			for j := range msgs[i].Request {
+			for j := range msgs[i].Requests {
 				// Create a copy of the message with only one request
 				msgCopy := msgs[i]
-				msgCopy.Request = []genai.Request{msgs[i].Request[j]}
+				msgCopy.Requests = []genai.Request{msgs[i].Requests[j]}
 				var newMsg Message
 				if err := newMsg.From(&msgCopy); err != nil {
 					errs = append(errs, fmt.Errorf("message %d, request %d: %w", i, j, err))
@@ -269,7 +269,7 @@ type Message struct {
 
 // From must be called with at most one Request or one ToolCallResults.
 func (m *Message) From(in *genai.Message) error {
-	if len(in.Request) > 1 || len(in.ToolCallResults) > 1 {
+	if len(in.Requests) > 1 || len(in.ToolCallResults) > 1 {
 		return errors.New("internal error")
 	}
 	switch r := in.Role(); r {
@@ -282,22 +282,22 @@ func (m *Message) From(in *genai.Message) error {
 	}
 	// Ollama only supports one text content per message but multiple images. We need to validate first. We may
 	// implement that later.
-	if len(in.Request) == 1 {
-		if in.Request[0].Text != "" {
-			m.Content = in.Request[0].Text
-		} else if !in.Request[0].Doc.IsZero() {
-			mimeType, data, err := in.Request[0].Doc.Read(10 * 1024 * 1024)
+	if len(in.Requests) == 1 {
+		if in.Requests[0].Text != "" {
+			m.Content = in.Requests[0].Text
+		} else if !in.Requests[0].Doc.IsZero() {
+			mimeType, data, err := in.Requests[0].Doc.Read(10 * 1024 * 1024)
 			if err != nil {
 				return err
 			}
 			switch {
 			case strings.HasPrefix(mimeType, "image/"):
-				if in.Request[0].Doc.URL != "" {
+				if in.Requests[0].Doc.URL != "" {
 					return errors.New("url are not supported for images")
 				}
 				m.Images = append(m.Images, data)
 			case strings.HasPrefix(mimeType, "text/plain"):
-				if in.Request[0].Doc.URL != "" {
+				if in.Requests[0].Doc.URL != "" {
 					return errors.New("text/plain documents must be provided inline, not as a URL")
 				}
 				// Append text/plain document content to the message content
@@ -313,22 +313,22 @@ func (m *Message) From(in *genai.Message) error {
 			return errors.New("unknown Request type")
 		}
 	}
-	for i := range in.Reply {
-		if in.Reply[i].Text != "" {
-			m.Content = in.Reply[i].Text
-		} else if !in.Reply[i].Doc.IsZero() {
-			mimeType, data, err := in.Reply[i].Doc.Read(10 * 1024 * 1024)
+	for i := range in.Replies {
+		if in.Replies[i].Text != "" {
+			m.Content = in.Replies[i].Text
+		} else if !in.Replies[i].Doc.IsZero() {
+			mimeType, data, err := in.Replies[i].Doc.Read(10 * 1024 * 1024)
 			if err != nil {
 				return err
 			}
 			switch {
 			case strings.HasPrefix(mimeType, "image/"):
-				if in.Reply[i].Doc.URL != "" {
+				if in.Replies[i].Doc.URL != "" {
 					return errors.New("url are not supported for images")
 				}
 				m.Images = append(m.Images, data)
 			case strings.HasPrefix(mimeType, "text/plain"):
-				if in.Reply[i].Doc.URL != "" {
+				if in.Replies[i].Doc.URL != "" {
 					return errors.New("text/plain documents must be provided inline, not as a URL")
 				}
 				// Append text/plain document content to the message content
@@ -340,9 +340,9 @@ func (m *Message) From(in *genai.Message) error {
 			default:
 				return fmt.Errorf("ollama unsupported content type %q", mimeType)
 			}
-		} else if !in.Reply[i].ToolCall.IsZero() {
+		} else if !in.Replies[i].ToolCall.IsZero() {
 			m.ToolCalls = append(m.ToolCalls, ToolCall{})
-			if err := m.ToolCalls[len(m.ToolCalls)-1].From(&in.Reply[i].ToolCall); err != nil {
+			if err := m.ToolCalls[len(m.ToolCalls)-1].From(&in.Replies[i].ToolCall); err != nil {
 				return fmt.Errorf("tool call %d: %w", i, err)
 			}
 		} else {
@@ -360,16 +360,16 @@ func (m *Message) From(in *genai.Message) error {
 
 func (m *Message) To(out *genai.Message) error {
 	if m.Content != "" {
-		out.Reply = []genai.Reply{{Text: m.Content}}
+		out.Replies = []genai.Reply{{Text: m.Content}}
 	}
 	for i := range m.Images {
-		out.Reply = append(out.Reply, genai.Reply{
+		out.Replies = append(out.Replies, genai.Reply{
 			Doc: genai.Doc{Filename: "image.jpg", Src: &bb.BytesBuffer{D: m.Images[i]}},
 		})
 	}
 	for i := range m.ToolCalls {
-		out.Reply = append(out.Reply, genai.Reply{})
-		if err := m.ToolCalls[i].To(&out.Reply[len(out.Reply)-1].ToolCall); err != nil {
+		out.Replies = append(out.Replies, genai.Reply{})
+		if err := m.ToolCalls[i].To(&out.Replies[len(out.Replies)-1].ToolCall); err != nil {
 			return fmt.Errorf("tool call %d: %w", i, err)
 		}
 	}
@@ -440,7 +440,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 		},
 	}
 	err := c.Message.To(&out.Message)
-	if out.FinishReason == genai.FinishedStop && slices.ContainsFunc(out.Reply, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
+	if out.FinishReason == genai.FinishedStop && slices.ContainsFunc(out.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
 		// Lie for the benefit of everyone.
 		out.FinishReason = genai.FinishedToolCalls
 	}
@@ -639,7 +639,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Op
 		}
 	}
 	for i, msg := range msgs {
-		for j, content := range msg.Reply {
+		for j, content := range msg.Replies {
 			if len(content.Opaque) != 0 {
 				return result, fmt.Errorf("message #%d content #%d: field Opaque not supported", i, j)
 			}
@@ -699,7 +699,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan
 		}
 	}
 	for i, msg := range msgs {
-		for j, content := range msg.Reply {
+		for j, content := range msg.Replies {
 			if len(content.Opaque) != 0 {
 				return result, fmt.Errorf("message #%d content #%d: field Opaque not supported", i, j)
 			}
@@ -725,7 +725,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan
 	if err2 := eg.Wait(); err2 != nil {
 		err = err2
 	}
-	if result.FinishReason == genai.FinishedStop && slices.ContainsFunc(result.Reply, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
+	if result.FinishReason == genai.FinishedStop && slices.ContainsFunc(result.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
 		// Lie for the benefit of everyone.
 		result.FinishReason = genai.FinishedToolCalls
 	}

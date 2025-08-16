@@ -15,7 +15,6 @@ import (
 	"strings"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/providers"
 	"github.com/maruel/genai/scoreboard"
 )
@@ -232,7 +231,7 @@ func printSummaryTable(all map[string]func(opts *genai.OptionsProvider, wrapper 
 	var rows []tableSummaryRow
 	seen := map[string]struct{}{}
 	for name, f := range all {
-		opts := &genai.OptionsProvider{Model: base.NoModel}
+		opts := &genai.OptionsProvider{Model: genai.ModelNone}
 		if name == "openaicompatible" {
 			// Make sure the remote it set for this one.
 			opts.Remote = "http://localhost:0"

@@ -353,7 +353,9 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 	if opts.AccountID != "" {
 		return nil, errors.New("unexpected option AccountID")
 	}
-	chatURL := opts.Remote
+	if opts.Remote == "" {
+		return nil, errors.New("option Remote is required")
+	}
 	model := opts.Model
 	if model == base.NoModel {
 		model = ""
@@ -367,7 +369,7 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 	return &Client{
 		ProviderGen: base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
-			GenSyncURL:           chatURL,
+			GenSyncURL:           opts.Remote,
 			ModelOptional:        true,
 			ProcessStreamPackets: processStreamPackets,
 			Provider: base.Provider[*ErrorResponse]{

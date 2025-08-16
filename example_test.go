@@ -323,9 +323,9 @@ func Example_genSyncWithToolCallLoop_with_custom_HTTP_Header() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	msgs := genai.Messages{genai.NewTextMessage("What season are we in?")}
+	msgs := genai.Messages{genai.NewTextMessage("What season is Montréal currently in?")}
 	opts := genai.OptionsText{
-		Tools: []genai.ToolDef{GetTodayClockTime},
+		Tools: []genai.ToolDef{locationClockTime},
 		// Force the LLM to do a tool call first.
 		ToolCallRequest: genai.ToolCallRequired,
 	}
@@ -336,12 +336,17 @@ func Example_genSyncWithToolCallLoop_with_custom_HTTP_Header() {
 	fmt.Printf("%s\n", newMsgs[len(newMsgs)-1].AsText())
 }
 
-var GetTodayClockTime = genai.ToolDef{
+var locationClockTime = genai.ToolDef{
 	Name:        "get_today_date_current_clock_time",
 	Description: "Get the current clock time and today's date.",
-	Callback: func(ctx context.Context, e *empty) (string, error) {
+	Callback: func(ctx context.Context, e *location) (string, error) {
+		if e.Location != "Montréal" {
+			return "ask again with Montréal", nil
+		}
 		return time.Now().Format("Monday 2006-01-02 15:04:05"), nil
 	},
 }
 
-type empty struct{}
+type location struct {
+	Location string `json:"location" json_description:"Location to ask the current time in"`
+}

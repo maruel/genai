@@ -17,6 +17,7 @@ import (
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/providers"
+	"github.com/maruel/genai/scoreboard"
 )
 
 type tableSummaryRow struct {
@@ -26,7 +27,7 @@ type tableSummaryRow struct {
 	tableDataRow
 }
 
-func (t *tableSummaryRow) initFromScoreboard(p genai.ProviderScoreboard) {
+func (t *tableSummaryRow) initFromScoreboard(p scoreboard.ProviderScore) {
 	sb := p.Scoreboard()
 	t.Provider = p.Name()
 	if sb.DashboardURL != "" {
@@ -74,7 +75,7 @@ type tableDataRow struct {
 	ReportRateLimits string `title:"Limits"`
 }
 
-func (t *tableDataRow) initFromScenario(s *genai.Scenario) {
+func (t *tableDataRow) initFromScenario(s *scoreboard.Scenario) {
 	for m := range s.In {
 		if s.Thinking {
 			t.Thinking = "✅"
@@ -118,7 +119,7 @@ func (t *tableDataRow) initFromScenario(s *genai.Scenario) {
 				if t.Chat == "" {
 					t.Chat = "✅"
 				}
-				if s.GenSync.BrokenTokenUsage != genai.False && !strings.Contains(t.Chat, "💸") {
+				if s.GenSync.BrokenTokenUsage != scoreboard.False && !strings.Contains(t.Chat, "💸") {
 					t.Chat += "💸"
 				}
 				if s.GenSync.BrokenFinishReason && !strings.Contains(t.Chat, "🚩") {
@@ -131,21 +132,21 @@ func (t *tableDataRow) initFromScenario(s *genai.Scenario) {
 			}
 		}
 		// TODO: Keep the best out of all the options. This is "✅"
-		if s.GenSync.Tools == genai.True && (s.GenStream != nil && s.GenStream.Tools == genai.True) {
+		if s.GenSync.Tools == scoreboard.True && (s.GenStream != nil && s.GenStream.Tools == scoreboard.True) {
 			if t.Tools == "" {
 				t.Tools = "✅"
 			} else if strings.Contains(t.Tools, "💨") {
 				t.Tools = strings.Replace(t.Tools, "💨", "✅", 1)
 			}
-		} else if s.GenSync.Tools == genai.Flaky && (s.GenStream != nil && s.GenStream.Tools == genai.Flaky) {
+		} else if s.GenSync.Tools == scoreboard.Flaky && (s.GenStream != nil && s.GenStream.Tools == scoreboard.Flaky) {
 			if t.Tools == "" {
 				t.Tools = "💨"
 			}
 		}
-		if s.GenSync.BiasedTool != genai.False && !strings.Contains(t.Tools, "🧐") {
+		if s.GenSync.BiasedTool != scoreboard.False && !strings.Contains(t.Tools, "🧐") {
 			t.Tools += "🧐"
 		}
-		if s.GenSync.IndecisiveTool == genai.True && !strings.Contains(t.Tools, "💥") {
+		if s.GenSync.IndecisiveTool == scoreboard.True && !strings.Contains(t.Tools, "💥") {
 			t.Tools += "💥"
 		}
 		t.Tools = sortString(t.Tools)
@@ -168,7 +169,7 @@ func (t *tableDataRow) initFromScenario(s *genai.Scenario) {
 				if t.Streaming == "" {
 					t.Streaming = "✅"
 				}
-				if s.GenStream.BrokenTokenUsage != genai.False && !strings.Contains(t.Streaming, "💸") {
+				if s.GenStream.BrokenTokenUsage != scoreboard.False && !strings.Contains(t.Streaming, "💸") {
 					t.Streaming += "💸"
 				}
 				if s.GenStream.BrokenFinishReason && !strings.Contains(t.Streaming, "🚩") {
@@ -188,7 +189,7 @@ func (t *tableDataRow) initFromScenario(s *genai.Scenario) {
 		if s.GenDoc.ReportRateLimits {
 			t.ReportRateLimits = "✅"
 		}
-		if s.GenDoc.BrokenTokenUsage != genai.False || s.GenDoc.BrokenFinishReason {
+		if s.GenDoc.BrokenTokenUsage != scoreboard.False || s.GenDoc.BrokenFinishReason {
 			// TODO.
 		}
 	}
@@ -242,7 +243,7 @@ func printSummaryTable(all map[string]func(opts *genai.OptionsProvider, wrapper 
 			continue
 		}
 		seen[p.Name()] = struct{}{}
-		ps, ok := p.(genai.ProviderScoreboard)
+		ps, ok := p.(scoreboard.ProviderScore)
 		if !ok {
 			fmt.Fprintf(os.Stderr, "ignoring provider %s: doesn't support scoreboard\n", name)
 			continue
@@ -260,7 +261,7 @@ func printSummaryTable(all map[string]func(opts *genai.OptionsProvider, wrapper 
 
 func printProviderTable(p genai.Provider) error {
 	var rows []tableModelRow
-	ps, ok := p.(genai.ProviderScoreboard)
+	ps, ok := p.(scoreboard.ProviderScore)
 	if !ok {
 		return fmt.Errorf("provider %s: doesn't support scoreboardn", p.Name())
 	}

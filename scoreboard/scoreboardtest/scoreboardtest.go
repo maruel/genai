@@ -54,7 +54,7 @@ func AssertScoreboard(t *testing.T, gc GetClient, models []Model, rec *internal.
 			break
 		}
 	}
-	sb := og.(genai.ProviderScoreboard).Scoreboard()
+	sb := og.(scoreboard.ProviderScore).Scoreboard()
 	// Check for duplicates. Disambiguates between thinking and non-thinking.
 	sbModels := map[Model]struct{}{}
 	for _, sc := range sb.Scenarios {
@@ -76,7 +76,7 @@ func AssertScoreboard(t *testing.T, gc GetClient, models []Model, rec *internal.
 			seen[m] = struct{}{}
 
 			// Find the reference.
-			var want genai.Scenario
+			var want scoreboard.Scenario
 			for _, sc := range sb.Scenarios {
 				if slices.Contains(sc.Models, m.Model) && m.Thinking == sc.Thinking {
 					want = sc
@@ -138,9 +138,9 @@ type getClientOneModel func(t testing.TB, scenarioName string) (genai.Provider, 
 
 // runOneModel runs the scoreboard on one model.
 //
-// It must implement genai.ProviderScoreboard. If it is wrapped, the wrappers must implement
+// It must implement scoreboard.ProviderScoreboard. If it is wrapped, the wrappers must implement
 // genai.ProviderUnwrap.
-func runOneModel(t testing.TB, gc getClientOneModel, want genai.Scenario) genai.Usage {
+func runOneModel(t testing.TB, gc getClientOneModel, want scoreboard.Scenario) genai.Usage {
 	// Calculate the scenario.
 	providerFactory := func(name string) (genai.Provider, http.RoundTripper) {
 		if name == "" {
@@ -176,9 +176,9 @@ func runOneModel(t testing.TB, gc getClientOneModel, want genai.Scenario) genai.
 
 //
 
-var opt = cmp.Comparer(func(x, y genai.TriState) bool {
+var opt = cmp.Comparer(func(x, y scoreboard.TriState) bool {
 	// TODO: Make this more solid. This requires a better assessment of what "Flaky" is.
-	if x == genai.Flaky || y == genai.Flaky {
+	if x == scoreboard.Flaky || y == scoreboard.Flaky {
 		return true
 	}
 	return x == y

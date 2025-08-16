@@ -34,6 +34,7 @@ import (
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/sse"
+	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 	"golang.org/x/sync/errgroup"
@@ -45,16 +46,16 @@ import (
 //
 //   - The multi-modal file is referred to with "#" character. I was initially using ";" but it caused
 //     "go get" to fail and frankly it was annoying to use when copy-pasting paths in bash.
-var Scoreboard = genai.Scoreboard{
+var Scoreboard = scoreboard.Score{
 	Country:      "Local",
 	DashboardURL: "https://github.com/ggml-org/llama.cpp",
-	Scenarios: []genai.Scenario{
+	Scenarios: []scoreboard.Scenario{
 		// https://huggingface.co/ggml-org/gemma-3-4b-it-GGUF/tree/main
 		{
 			// Models: []string{"ggml-org/gemma-3-4b-it-GGUF/gemma-3-4b-it-Q8_0.gguf#mmproj-model-f16.gguf"},
 			Models: []string{"ggml-org/gemma-3-4b-it-GGUF/gemma-3-4b-it-Q4_K_M.gguf#mmproj-model-f16.gguf"},
 			// TODO: It supports genai.ModalityImage
-			In: map[genai.Modality]genai.ModalCapability{
+			In: map[genai.Modality]scoreboard.ModalCapability{
 				genai.ModalityText: {Inline: true},
 				genai.ModalityImage: {
 					Inline:           true,
@@ -62,18 +63,18 @@ var Scoreboard = genai.Scoreboard{
 					SupportedFormats: []string{"image/gif", "image/jpeg", "image/png"},
 				},
 			},
-			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &genai.FunctionalityText{
-				Tools:       genai.True,
-				BiasedTool:  genai.True,
+			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &scoreboard.FunctionalityText{
+				Tools:       scoreboard.True,
+				BiasedTool:  scoreboard.True,
 				Seed:        true,
 				TopLogprobs: true,
 				JSON:        true,
 				JSONSchema:  true,
 			},
-			GenStream: &genai.FunctionalityText{
-				Tools:       genai.True,
-				BiasedTool:  genai.True,
+			GenStream: &scoreboard.FunctionalityText{
+				Tools:       scoreboard.True,
+				BiasedTool:  scoreboard.True,
 				Seed:        true,
 				TopLogprobs: true,
 				JSON:        true,
@@ -1139,7 +1140,7 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 	}, nil
 }
 
-func (c *Client) Scoreboard() genai.Scoreboard {
+func (c *Client) Scoreboard() scoreboard.Score {
 	return Scoreboard
 }
 
@@ -1502,5 +1503,5 @@ func processCompletionsStreamPackets(ch <-chan CompletionStreamChunkResponse, ch
 var (
 	_ genai.Provider           = &Client{}
 	_ genai.ProviderGen        = &Client{}
-	_ genai.ProviderScoreboard = &Client{}
+	_ scoreboard.ProviderScore = &Client{}
 )

@@ -22,6 +22,7 @@ import (
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
+	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 )
@@ -35,24 +36,24 @@ import (
 //   - The API and acceptable values are highly model-dependent, so it is easy to make an invalid request.
 //
 // See https://docs.bfl.ml/quick_start/generating_images
-var Scoreboard = genai.Scoreboard{
+var Scoreboard = scoreboard.Score{
 	Country:      "DE",
 	DashboardURL: "https://dashboard.bfl.ai/",
-	Scenarios: []genai.Scenario{
+	Scenarios: []scoreboard.Scenario{
 		{
 			Models: []string{
 				"flux-dev", // https://docs.bfl.ai/api-reference/tasks/generate-an-image-with-flux1-[dev]
 			},
-			In: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out: map[genai.Modality]genai.ModalCapability{
+			In: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out: map[genai.Modality]scoreboard.ModalCapability{
 				genai.ModalityImage: {
 					URL:              true,
 					SupportedFormats: []string{"image/jpeg"},
 				},
 			},
-			GenDoc: &genai.FunctionalityDoc{
+			GenDoc: &scoreboard.FunctionalityDoc{
 				ReportRateLimits:   true,
-				BrokenTokenUsage:   genai.True,
+				BrokenTokenUsage:   scoreboard.True,
 				BrokenFinishReason: true,
 				Seed:               true,
 			},
@@ -246,7 +247,7 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 	}, err
 }
 
-func (c *Client) Scoreboard() genai.Scoreboard {
+func (c *Client) Scoreboard() scoreboard.Score {
 	return Scoreboard
 }
 
@@ -396,5 +397,5 @@ var (
 	_ genai.Provider           = &Client{}
 	_ genai.ProviderGenAsync   = &Client{}
 	_ genai.ProviderGenDoc     = &Client{}
-	_ genai.ProviderScoreboard = &Client{}
+	_ scoreboard.ProviderScore = &Client{}
 )

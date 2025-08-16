@@ -91,18 +91,6 @@ const (
 // modalities in multi-modals scenarios.
 type Modalities []Modality
 
-// ModalCapability describes how a modality is supported by a provider.
-type ModalCapability struct {
-	// Inline means content can be embedded directly (e.g., base64 encoded)
-	Inline bool
-	// URL means content can be referenced by URL
-	URL bool
-	// MaxSize specifies the maximum size in bytes.
-	MaxSize int64
-	// SupportedFormats lists supported MIME types for this modality
-	SupportedFormats []string
-}
-
 func (m Modalities) String() string {
 	switch len(m) {
 	case 0:

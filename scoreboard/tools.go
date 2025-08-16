@@ -17,7 +17,7 @@ import (
 	"github.com/maruel/genai/internal"
 )
 
-func exerciseGenTools(ctx context.Context, cs *callState, f *genai.FunctionalityText, prefix string) error {
+func exerciseGenTools(ctx context.Context, cs *callState, f *FunctionalityText, prefix string) error {
 	msgs := genai.Messages{genai.NewTextMessage("Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.")}
 	type got struct {
 		Number json.Number `json:"number" jsonschema:"type=number"`
@@ -79,9 +79,9 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *genai.Functionality
 	if err != nil || !slices.ContainsFunc(resp.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
 		internal.Logger(ctx).DebugContext(ctx, "SquareRoot", "err", err)
 		// Tools are not supported, no need to do the rest.
-		f.Tools = genai.False
-		f.BiasedTool = genai.False
-		f.IndecisiveTool = genai.False
+		f.Tools = False
+		f.BiasedTool = False
+		f.IndecisiveTool = False
 		return nil
 	}
 
@@ -89,7 +89,7 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *genai.Functionality
 	tr, err := resp.DoToolCalls(ctx, optsTools.Tools)
 	if err != nil {
 		internal.Logger(ctx).DebugContext(ctx, "SquareRoot-1 (do calls)", "err", err)
-		f.Tools = genai.False
+		f.Tools = False
 		return nil
 	}
 	if tr.IsZero() {
@@ -105,20 +105,20 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *genai.Functionality
 	}
 	if err != nil || slices.ContainsFunc(resp.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
 		internal.Logger(ctx).DebugContext(ctx, "SquareRoot-2", "err", err)
-		f.Tools = genai.Flaky
-		f.BiasedTool = genai.False
-		f.IndecisiveTool = genai.False
+		f.Tools = Flaky
+		f.BiasedTool = False
+		f.IndecisiveTool = False
 		return nil
 	}
 
 	if flaky {
-		f.Tools = genai.Flaky
+		f.Tools = Flaky
 	} else {
-		f.Tools = genai.True
+		f.Tools = True
 	}
 	if resp.InputTokens == 0 || resp.OutputTokens == 0 {
 		internal.Logger(ctx).DebugContext(ctx, "SquareRoot", "issue", "token usage")
-		f.BrokenTokenUsage = genai.True
+		f.BrokenTokenUsage = True
 	}
 	// The finish reason for tool calls is genai.FinishedToolCalls
 	if expectedFR := genai.FinishedStop; resp.FinishReason != expectedFR {
@@ -171,18 +171,18 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *genai.Functionality
 		if err != nil {
 			// If there's an error, it means the tool call failed.
 			// This might indicate flaky tool support.
-			f.Tools = genai.Flaky
+			f.Tools = Flaky
 			continue // Skip to next test case
 		}
 		if !slices.ContainsFunc(resp.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
 			// No tool call, even though ToolCallRequired was set.
 			// This also indicates flaky tool support.
-			f.Tools = genai.Flaky
+			f.Tools = Flaky
 			continue
 		}
 		if resp.InputTokens == 0 || resp.OutputTokens == 0 {
 			internal.Logger(ctx).DebugContext(ctx, check, "issue", "token usage")
-			f.BrokenTokenUsage = genai.True
+			f.BrokenTokenUsage = True
 		}
 		if expectedFR := genai.FinishedToolCalls; resp.FinishReason != expectedFR {
 			internal.Logger(ctx).DebugContext(ctx, check, "issue", "finish reason", "expected", expectedFR, "got", resp.FinishReason)
@@ -204,7 +204,7 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *genai.Functionality
 					// Error during tool execution. This only happens if the json schema is not followed. For example
 					// I've seen on Huggingface using "country1" and "country2", aka being indecisive with a single
 					// function call.
-					f.Tools = genai.Flaky
+					f.Tools = Flaky
 					continue
 				}
 				biasedResults[i] = res == line.countrySelected
@@ -218,7 +218,7 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *genai.Functionality
 				}
 				res, err := resp.Replies[j].ToolCall.Call(ctx, opts.Tools)
 				if err != nil {
-					f.Tools = genai.Flaky
+					f.Tools = Flaky
 					continue
 				}
 				countries = append(countries, res)
@@ -227,29 +227,29 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *genai.Functionality
 			slices.Sort(countries)
 			if !slices.Equal(countries, []string{"Canada", "USA"}) {
 				// This is an unexpected result for indecisive.
-				f.Tools = genai.Flaky // Mark overall tools as flaky if indecisive result is not as expected
+				f.Tools = Flaky // Mark overall tools as flaky if indecisive result is not as expected
 			}
 		} else {
 			// More than 2 tool calls, unexpected.
-			f.Tools = genai.Flaky
+			f.Tools = Flaky
 			continue
 		}
 	}
 
 	if indecisiveOccurred {
-		f.IndecisiveTool = genai.True
+		f.IndecisiveTool = True
 	} else {
-		f.IndecisiveTool = genai.False
+		f.IndecisiveTool = False
 	}
 
 	if biasedResults[0] == biasedResults[1] {
 		if biasedResults[0] {
-			f.BiasedTool = genai.True
+			f.BiasedTool = True
 		} else {
-			f.BiasedTool = genai.False
+			f.BiasedTool = False
 		}
 	} else {
-		f.BiasedTool = genai.Flaky
+		f.BiasedTool = Flaky
 	}
 	return nil
 }

@@ -13,12 +13,13 @@ import (
 	"unicode"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/scoreboard"
 	"golang.org/x/sync/errgroup"
 )
 
 // WrapThinking wraps a ProviderGen and processes its output to extract thinking blocks ONLY if needed.
 func WrapThinking(c genai.ProviderGen) genai.ProviderGen {
-	if s, ok := c.(genai.ProviderScoreboard); ok {
+	if s, ok := c.(scoreboard.ProviderScore); ok {
 		id := c.ModelID()
 		for _, sc := range s.Scoreboard().Scenarios {
 			if slices.Contains(sc.Models, id) && sc.ThinkingTokenStart != "" {

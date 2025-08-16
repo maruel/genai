@@ -15,6 +15,7 @@ import (
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/providers"
+	"github.com/maruel/genai/scoreboard"
 )
 
 func printList() error {
@@ -33,7 +34,7 @@ func printList() error {
 			fmt.Fprintf(os.Stderr, "ignoring provider %s: %v\n", name, err)
 			continue
 		}
-		ps, ok := c.(genai.ProviderScoreboard)
+		ps, ok := c.(scoreboard.ProviderScore)
 		if !ok {
 			fmt.Fprintf(os.Stderr, "ignoring provider %s: doesn't support scoreboard\n", name)
 			continue
@@ -86,7 +87,7 @@ func printList() error {
 }
 
 // modalityMapToString converts a modality capability map to a readable string
-func modalityMapToString(m map[genai.Modality]genai.ModalCapability) string {
+func modalityMapToString(m map[genai.Modality]scoreboard.ModalCapability) string {
 	if len(m) == 0 {
 		return ""
 	}
@@ -99,11 +100,11 @@ func modalityMapToString(m map[genai.Modality]genai.ModalCapability) string {
 }
 
 // isTextOnly checks if a modality map contains only text
-func isTextOnly(m map[genai.Modality]genai.ModalCapability) bool {
+func isTextOnly(m map[genai.Modality]scoreboard.ModalCapability) bool {
 	return len(m) == 1 && m[genai.ModalityText].Inline
 }
 
-func functionalityText(f *genai.FunctionalityText) string {
+func functionalityText(f *scoreboard.FunctionalityText) string {
 	var items []string
 	if f.JSON {
 		items = append(items, "✅json")
@@ -113,21 +114,21 @@ func functionalityText(f *genai.FunctionalityText) string {
 	}
 	flakyTool := false
 	switch f.Tools {
-	case genai.True:
+	case scoreboard.True:
 		items = append(items, "✅tools")
-	case genai.Flaky:
+	case scoreboard.Flaky:
 		items = append(items, "✅tools")
 		flakyTool = true
-	case genai.False:
+	case scoreboard.False:
 	}
 
 	if flakyTool {
 		items = append(items, "💔flaky tool")
-	} else if f.BiasedTool == genai.True && f.IndecisiveTool == genai.False {
+	} else if f.BiasedTool == scoreboard.True && f.IndecisiveTool == scoreboard.False {
 		// Flaky is okay.
 		items = append(items, "💔biased tool")
 	}
-	if f.BrokenTokenUsage != genai.False {
+	if f.BrokenTokenUsage != scoreboard.False {
 		items = append(items, "💔usage")
 	}
 	if f.BrokenFinishReason {
@@ -139,9 +140,9 @@ func functionalityText(f *genai.FunctionalityText) string {
 	return strings.Join(items, " ")
 }
 
-func functionalityDoc(f *genai.FunctionalityDoc) string {
+func functionalityDoc(f *scoreboard.FunctionalityDoc) string {
 	var items []string
-	if f.BrokenTokenUsage != genai.False {
+	if f.BrokenTokenUsage != scoreboard.False {
 		items = append(items, "💔usage")
 	}
 	if f.BrokenFinishReason {
@@ -151,7 +152,7 @@ func functionalityDoc(f *genai.FunctionalityDoc) string {
 }
 
 // getDeliveryConstraints analyzes modality capabilities to determine delivery constraints
-func getDeliveryConstraints(capabilities map[genai.Modality]genai.ModalCapability) string {
+func getDeliveryConstraints(capabilities map[genai.Modality]scoreboard.ModalCapability) string {
 	if len(capabilities) == 0 || isTextOnly(capabilities) {
 		return ""
 	}

@@ -24,6 +24,7 @@ import (
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
+	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 )
@@ -35,10 +36,10 @@ import (
 //   - Thinking models like qwen/qwen3-32b fails with tool calling when streaming. Currently disabled even not
 //     streaming in the client code.
 //   - No models has consistent tool calling.
-var Scoreboard = genai.Scoreboard{
+var Scoreboard = scoreboard.Score{
 	Country:      "US",
 	DashboardURL: "https://console.groq.com/dashboard/usage",
-	Scenarios: []genai.Scenario{
+	Scenarios: []scoreboard.Scenario{
 		{
 			Models: []string{
 				// llama-3.1-8b-instant will be both indecisive and biased given its size and quantization. 70b is a
@@ -46,21 +47,21 @@ var Scoreboard = genai.Scoreboard{
 				"llama-3.1-8b-instant",
 				"llama-3.3-70b-versatile",
 			},
-			In:  map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &genai.FunctionalityText{
+			In:  map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &scoreboard.FunctionalityText{
 				ReportRateLimits: true,
-				Tools:            genai.Flaky,
-				BiasedTool:       genai.Flaky,
-				IndecisiveTool:   genai.Flaky,
+				Tools:            scoreboard.Flaky,
+				BiasedTool:       scoreboard.Flaky,
+				IndecisiveTool:   scoreboard.Flaky,
 				JSON:             true,
 				Seed:             true,
 			},
-			GenStream: &genai.FunctionalityText{
+			GenStream: &scoreboard.FunctionalityText{
 				ReportRateLimits: true,
-				Tools:            genai.Flaky,
-				BiasedTool:       genai.Flaky,
-				IndecisiveTool:   genai.Flaky,
+				Tools:            scoreboard.Flaky,
+				BiasedTool:       scoreboard.Flaky,
+				IndecisiveTool:   scoreboard.Flaky,
 				JSON:             true,
 				Seed:             true,
 			},
@@ -70,21 +71,21 @@ var Scoreboard = genai.Scoreboard{
 			Thinking:           true,
 			ThinkingTokenStart: "<think>",
 			ThinkingTokenEnd:   "\n</think>\n",
-			In:                 map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:                map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &genai.FunctionalityText{
+			In:                 map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out:                map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &scoreboard.FunctionalityText{
 				ReportRateLimits: true,
-				Tools:            genai.Flaky,
-				BiasedTool:       genai.True,
-				IndecisiveTool:   genai.Flaky,
+				Tools:            scoreboard.Flaky,
+				BiasedTool:       scoreboard.True,
+				IndecisiveTool:   scoreboard.Flaky,
 				JSON:             true, // Only when using ReasoningFormat: ReasoningFormatParsed
 				Seed:             true,
 			},
-			GenStream: &genai.FunctionalityText{
+			GenStream: &scoreboard.FunctionalityText{
 				ReportRateLimits: true,
-				Tools:            genai.Flaky,
-				BiasedTool:       genai.True,
-				IndecisiveTool:   genai.Flaky,
+				Tools:            scoreboard.Flaky,
+				BiasedTool:       scoreboard.True,
+				IndecisiveTool:   scoreboard.Flaky,
 				JSON:             true, // Only when using ReasoningFormat: ReasoningFormatParsed
 				Seed:             true,
 			},
@@ -94,7 +95,7 @@ var Scoreboard = genai.Scoreboard{
 				"meta-llama/llama-4-scout-17b-16e-instruct",
 				"meta-llama/llama-4-maverick-17b-128e-instruct",
 			},
-			In: map[genai.Modality]genai.ModalCapability{
+			In: map[genai.Modality]scoreboard.ModalCapability{
 				genai.ModalityImage: {
 					Inline:           true,
 					URL:              true,
@@ -102,20 +103,20 @@ var Scoreboard = genai.Scoreboard{
 				},
 				genai.ModalityText: {Inline: true},
 			},
-			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &genai.FunctionalityText{
+			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &scoreboard.FunctionalityText{
 				ReportRateLimits: true,
-				Tools:            genai.Flaky,
-				BiasedTool:       genai.Flaky, // Sometimes tool calling fails.
-				IndecisiveTool:   genai.Flaky, // Sometimes tool calling fails.
+				Tools:            scoreboard.Flaky,
+				BiasedTool:       scoreboard.Flaky, // Sometimes tool calling fails.
+				IndecisiveTool:   scoreboard.Flaky, // Sometimes tool calling fails.
 				JSON:             true,
 				Seed:             true,
 			},
-			GenStream: &genai.FunctionalityText{
+			GenStream: &scoreboard.FunctionalityText{
 				ReportRateLimits: true,
-				Tools:            genai.Flaky,
-				BiasedTool:       genai.Flaky, // Sometimes tool calling fails.
-				IndecisiveTool:   genai.Flaky, // Sometimes tool calling fails.
+				Tools:            scoreboard.Flaky,
+				BiasedTool:       scoreboard.Flaky, // Sometimes tool calling fails.
+				IndecisiveTool:   scoreboard.Flaky, // Sometimes tool calling fails.
 				JSON:             true,
 				Seed:             true,
 			},
@@ -125,40 +126,40 @@ var Scoreboard = genai.Scoreboard{
 			Thinking:           true,
 			ThinkingTokenStart: "<think>",
 			ThinkingTokenEnd:   "\n</think>\n",
-			In:                 map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:                map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &genai.FunctionalityText{
+			In:                 map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out:                map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &scoreboard.FunctionalityText{
 				ReportRateLimits: true,
-				Tools:            genai.Flaky,
-				IndecisiveTool:   genai.Flaky,
-				BiasedTool:       genai.Flaky,
+				Tools:            scoreboard.Flaky,
+				IndecisiveTool:   scoreboard.Flaky,
+				BiasedTool:       scoreboard.Flaky,
 				JSON:             true, // Only when using ReasoningFormat: ReasoningFormatParsed
 				Seed:             true,
 			},
-			GenStream: &genai.FunctionalityText{
+			GenStream: &scoreboard.FunctionalityText{
 				ReportRateLimits: true,
-				Tools:            genai.Flaky,
-				IndecisiveTool:   genai.Flaky,
-				BiasedTool:       genai.Flaky,
+				Tools:            scoreboard.Flaky,
+				IndecisiveTool:   scoreboard.Flaky,
+				BiasedTool:       scoreboard.Flaky,
 				JSON:             true, // Only when using ReasoningFormat: ReasoningFormatParsed
 				Seed:             true,
 			},
 		},
 		{
 			Models: []string{"moonshotai/kimi-k2-instruct"},
-			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &genai.FunctionalityText{
+			In:     map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out:    map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &scoreboard.FunctionalityText{
 				ReportRateLimits: true,
-				Tools:            genai.Flaky,
-				BiasedTool:       genai.Flaky, // Mostly true but tool calling itself is flaky.
+				Tools:            scoreboard.Flaky,
+				BiasedTool:       scoreboard.Flaky, // Mostly true but tool calling itself is flaky.
 				JSON:             true,
 				Seed:             true,
 			},
-			GenStream: &genai.FunctionalityText{
+			GenStream: &scoreboard.FunctionalityText{
 				ReportRateLimits: true,
-				Tools:            genai.Flaky,
-				BiasedTool:       genai.Flaky, // Mostly true but tool calling itself is flaky.
+				Tools:            scoreboard.Flaky,
+				BiasedTool:       scoreboard.Flaky, // Mostly true but tool calling itself is flaky.
 				JSON:             true,
 				Seed:             true,
 			},
@@ -879,7 +880,7 @@ func (c *Client) selectBestModel(ctx context.Context, preference string) (string
 	return selectedModel, nil
 }
 
-func (c *Client) Scoreboard() genai.Scoreboard {
+func (c *Client) Scoreboard() scoreboard.Score {
 	return Scoreboard
 }
 
@@ -964,5 +965,5 @@ var (
 	_ genai.Provider           = &Client{}
 	_ genai.ProviderGen        = &Client{}
 	_ genai.ProviderModel      = &Client{}
-	_ genai.ProviderScoreboard = &Client{}
+	_ scoreboard.ProviderScore = &Client{}
 )

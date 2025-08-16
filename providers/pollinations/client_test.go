@@ -19,6 +19,7 @@ import (
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/pollinations"
+	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/genai/scoreboard/scoreboardtest"
 	"github.com/maruel/httpjson"
 )
@@ -96,7 +97,7 @@ func (h *hideHTTP500) GenDoc(ctx context.Context, msg genai.Message, opts genai.
 type parent interface {
 	genai.ProviderGenDoc
 	genai.ProviderModel
-	genai.ProviderScoreboard
+	scoreboard.ProviderScore
 }
 
 type imageModelClient struct {

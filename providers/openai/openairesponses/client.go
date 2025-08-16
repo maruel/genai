@@ -28,6 +28,7 @@ import (
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/bb"
+	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 )
@@ -40,13 +41,13 @@ import (
 //   - Tool calling works very well but is biased; the model is lazy and when it's unsure, it will use the
 //     tool's first argument.
 //   - Rate limit is based on how much you spend per month: https://platform.openai.com/docs/guides/rate-limits
-var Scoreboard = genai.Scoreboard{
+var Scoreboard = scoreboard.Score{
 	Country:      "US",
 	DashboardURL: "https://platform.openai.com/usage",
-	Scenarios: []genai.Scenario{
+	Scenarios: []scoreboard.Scenario{
 		{
 			Models: []string{"gpt-4.1"},
-			In: map[genai.Modality]genai.ModalCapability{
+			In: map[genai.Modality]scoreboard.ModalCapability{
 				genai.ModalityImage: {
 					Inline:           true,
 					URL:              true,
@@ -55,21 +56,21 @@ var Scoreboard = genai.Scoreboard{
 				genai.ModalityDocument: {Inline: true, SupportedFormats: []string{"application/pdf"}},
 				genai.ModalityText:     {Inline: true},
 			},
-			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &genai.FunctionalityText{
+			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &scoreboard.FunctionalityText{
 				ReportRateLimits: true,
 				NoStopSequence:   true,
-				BrokenTokenUsage: genai.Flaky, // When using MaxTokens.
-				Tools:            genai.True,
-				BiasedTool:       genai.True,
+				BrokenTokenUsage: scoreboard.Flaky, // When using MaxTokens.
+				Tools:            scoreboard.True,
+				BiasedTool:       scoreboard.True,
 				JSON:             true,
 				JSONSchema:       true,
 			},
-			GenStream: &genai.FunctionalityText{
+			GenStream: &scoreboard.FunctionalityText{
 				NoStopSequence:   true,
-				BrokenTokenUsage: genai.Flaky, // When using MaxTokens.
-				Tools:            genai.True,
-				BiasedTool:       genai.True,
+				BrokenTokenUsage: scoreboard.Flaky, // When using MaxTokens.
+				Tools:            scoreboard.True,
+				BiasedTool:       scoreboard.True,
 				JSON:             true,
 				JSONSchema:       true,
 			},
@@ -83,7 +84,7 @@ var Scoreboard = genai.Scoreboard{
 		{
 			Models:   []string{"o4-mini"},
 			Thinking: true,
-			In: map[genai.Modality]genai.ModalCapability{
+			In: map[genai.Modality]scoreboard.ModalCapability{
 				genai.ModalityImage: {
 					Inline:           true,
 					URL:              true,
@@ -91,39 +92,39 @@ var Scoreboard = genai.Scoreboard{
 				},
 				genai.ModalityText: {Inline: true},
 			},
-			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &genai.FunctionalityText{
+			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &scoreboard.FunctionalityText{
 				ReportRateLimits: true,
 				NoStopSequence:   true,
 				NoMaxTokens:      true,
-				BrokenTokenUsage: genai.Flaky, // When using MaxTokens.
-				Tools:            genai.True,
-				BiasedTool:       genai.True,
+				BrokenTokenUsage: scoreboard.Flaky, // When using MaxTokens.
+				Tools:            scoreboard.True,
+				BiasedTool:       scoreboard.True,
 				JSON:             true,
 				JSONSchema:       true,
 			},
-			GenStream: &genai.FunctionalityText{
+			GenStream: &scoreboard.FunctionalityText{
 				NoStopSequence:   true,
-				BrokenTokenUsage: genai.Flaky, // When using MaxTokens.
-				Tools:            genai.True,
-				BiasedTool:       genai.True,
+				BrokenTokenUsage: scoreboard.Flaky, // When using MaxTokens.
+				Tools:            scoreboard.True,
+				BiasedTool:       scoreboard.True,
 				JSON:             true,
 				JSONSchema:       true,
 			},
 		},
 		{
 			Models: []string{"gpt-image-1"},
-			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out: map[genai.Modality]genai.ModalCapability{
+			In:     map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out: map[genai.Modality]scoreboard.ModalCapability{
 				// TODO: Expose other supported image formats.
 				genai.ModalityImage: {
 					Inline:           true,
 					SupportedFormats: []string{"image/jpeg"},
 				},
 			},
-			GenDoc: &genai.FunctionalityDoc{
+			GenDoc: &scoreboard.FunctionalityDoc{
 				Seed:               true,
-				BrokenTokenUsage:   genai.True,
+				BrokenTokenUsage:   scoreboard.True,
 				BrokenFinishReason: true,
 			},
 		},
@@ -1382,8 +1383,8 @@ func (c *Client) selectBestModel(ctx context.Context, preference string) (string
 	return selectedModel, nil
 }
 
-// Scoreboard implements genai.ProviderScoreboard.
-func (c *Client) Scoreboard() genai.Scoreboard {
+// Scoreboard implements scoreboard.ProviderScoreboard.
+func (c *Client) Scoreboard() scoreboard.Score {
 	return Scoreboard
 }
 
@@ -1672,5 +1673,5 @@ var (
 	_ genai.Provider           = &Client{}
 	_ genai.ProviderGen        = &Client{}
 	_ genai.ProviderModel      = &Client{}
-	_ genai.ProviderScoreboard = &Client{}
+	_ scoreboard.ProviderScore = &Client{}
 )

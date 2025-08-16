@@ -28,6 +28,7 @@ import (
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
+	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 )
@@ -40,13 +41,13 @@ import (
 //   - Tool calling works very well but is biased; the model is lazy and when it's unsure, it will use the
 //     tool's first argument.
 //   - Rate limit is based on how much you spend per month: https://docs.anthropic.com/en/api/rate-limits#requirements-to-advance-tier
-var Scoreboard = genai.Scoreboard{
+var Scoreboard = scoreboard.Score{
 	Country:      "US",
 	DashboardURL: "https://console.anthropic.com/settings/billing",
-	Scenarios: []genai.Scenario{
+	Scenarios: []scoreboard.Scenario{
 		{
 			Models: []string{"claude-3-5-haiku-20241022"},
-			In: map[genai.Modality]genai.ModalCapability{
+			In: map[genai.Modality]scoreboard.ModalCapability{
 				genai.ModalityText: {Inline: true},
 				genai.ModalityImage: {
 					Inline:           true,
@@ -60,23 +61,23 @@ var Scoreboard = genai.Scoreboard{
 					SupportedFormats: []string{"application/pdf"},
 				},
 			},
-			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &genai.FunctionalityText{
+			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &scoreboard.FunctionalityText{
 				ReportRateLimits: true,
-				Tools:            genai.True,
-				BiasedTool:       genai.True,
+				Tools:            scoreboard.True,
+				BiasedTool:       scoreboard.True,
 				Citations:        true,
 			},
-			GenStream: &genai.FunctionalityText{
+			GenStream: &scoreboard.FunctionalityText{
 				ReportRateLimits: true,
-				Tools:            genai.True,
-				BiasedTool:       genai.True,
+				Tools:            scoreboard.True,
+				BiasedTool:       scoreboard.True,
 				Citations:        true,
 			},
 		},
 		{
 			Models: []string{"claude-sonnet-4-20250514"},
-			In: map[genai.Modality]genai.ModalCapability{
+			In: map[genai.Modality]scoreboard.ModalCapability{
 				genai.ModalityText: {Inline: true},
 				genai.ModalityImage: {
 					Inline:           true,
@@ -90,24 +91,24 @@ var Scoreboard = genai.Scoreboard{
 					SupportedFormats: []string{"application/pdf"},
 				},
 			},
-			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &genai.FunctionalityText{
+			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &scoreboard.FunctionalityText{
 				ReportRateLimits: true,
-				Tools:            genai.True,
-				BiasedTool:       genai.True,
+				Tools:            scoreboard.True,
+				BiasedTool:       scoreboard.True,
 				Citations:        true,
 			},
-			GenStream: &genai.FunctionalityText{
+			GenStream: &scoreboard.FunctionalityText{
 				ReportRateLimits: true,
-				Tools:            genai.True,
-				BiasedTool:       genai.True,
+				Tools:            scoreboard.True,
+				BiasedTool:       scoreboard.True,
 				Citations:        true,
 			},
 		},
 		{
 			Models:   []string{"claude-sonnet-4-20250514"},
 			Thinking: true,
-			In: map[genai.Modality]genai.ModalCapability{
+			In: map[genai.Modality]scoreboard.ModalCapability{
 				genai.ModalityText: {Inline: true},
 				genai.ModalityImage: {
 					Inline:           true,
@@ -121,16 +122,16 @@ var Scoreboard = genai.Scoreboard{
 					SupportedFormats: []string{"application/pdf"},
 				},
 			},
-			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &genai.FunctionalityText{
+			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &scoreboard.FunctionalityText{
 				ReportRateLimits: true,
-				Tools:            genai.True,
+				Tools:            scoreboard.True,
 				NoMaxTokens:      true,
 				Citations:        true,
 			},
-			GenStream: &genai.FunctionalityText{
+			GenStream: &scoreboard.FunctionalityText{
 				ReportRateLimits: true,
-				Tools:            genai.True,
+				Tools:            scoreboard.True,
 				NoMaxTokens:      true,
 				Citations:        true,
 			},
@@ -1477,7 +1478,7 @@ func (c *Client) CancelRaw(ctx context.Context, id genai.Job) (BatchResponse, er
 	return resp, err
 }
 
-func (c *Client) Scoreboard() genai.Scoreboard {
+func (c *Client) Scoreboard() scoreboard.Score {
 	return Scoreboard
 }
 
@@ -1611,5 +1612,5 @@ var (
 	_ genai.Provider           = &Client{}
 	_ genai.ProviderGen        = &Client{}
 	_ genai.ProviderModel      = &Client{}
-	_ genai.ProviderScoreboard = &Client{}
+	_ scoreboard.ProviderScore = &Client{}
 )

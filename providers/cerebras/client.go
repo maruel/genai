@@ -25,6 +25,7 @@ import (
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
+	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 )
@@ -40,30 +41,30 @@ import (
 //   - Most models are quantized to unspecified level: https://discord.com/channels/1085960591052644463/1085960592050896937/1372105565655928864
 //   - qwen-3-32b is not quantized: https://discord.com/channels/1085960591052644463/1085960592050896937/1374399258890997830
 //   - Free tier has limited context: https://inference-docs.cerebras.ai/support/pricing
-var Scoreboard = genai.Scoreboard{
+var Scoreboard = scoreboard.Score{
 	Country:      "US",
 	DashboardURL: "https://cloud.cerebras.ai",
-	Scenarios: []genai.Scenario{
+	Scenarios: []scoreboard.Scenario{
 		{
 			// "llama-3.1-8b" works too but the ListModels() API returns the malformed string.
 			Models: []string{"llama3.1-8b", "llama-3.3-70b"},
-			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &genai.FunctionalityText{
+			In:     map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out:    map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &scoreboard.FunctionalityText{
 				ReportRateLimits: true,
-				Tools:            genai.Flaky,
-				BiasedTool:       genai.Flaky,
-				IndecisiveTool:   genai.Flaky,
+				Tools:            scoreboard.Flaky,
+				BiasedTool:       scoreboard.Flaky,
+				IndecisiveTool:   scoreboard.Flaky,
 				JSON:             true,
 				JSONSchema:       true,
 				Seed:             true,
 				TopLogprobs:      true,
 			},
-			GenStream: &genai.FunctionalityText{
+			GenStream: &scoreboard.FunctionalityText{
 				ReportRateLimits: true,
-				Tools:            genai.Flaky,
-				BiasedTool:       genai.Flaky,
-				IndecisiveTool:   genai.Flaky,
+				Tools:            scoreboard.Flaky,
+				BiasedTool:       scoreboard.Flaky,
+				IndecisiveTool:   scoreboard.Flaky,
 				JSON:             true,
 				JSONSchema:       true,
 				Seed:             true,
@@ -75,18 +76,18 @@ var Scoreboard = genai.Scoreboard{
 			Thinking:           true,
 			ThinkingTokenStart: "<think>",
 			ThinkingTokenEnd:   "\n</think>\n",
-			In:                 map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:                map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &genai.FunctionalityText{
+			In:                 map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out:                map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &scoreboard.FunctionalityText{
 				ReportRateLimits: true,
-				Tools:            genai.Flaky,
-				BiasedTool:       genai.True,
+				Tools:            scoreboard.Flaky,
+				BiasedTool:       scoreboard.True,
 				JSON:             true,
 				JSONSchema:       true,
 				Seed:             true,
 				TopLogprobs:      true,
 			},
-			GenStream: &genai.FunctionalityText{
+			GenStream: &scoreboard.FunctionalityText{
 				ReportRateLimits: true,
 				Seed:             true,
 				TopLogprobs:      true,
@@ -96,21 +97,21 @@ var Scoreboard = genai.Scoreboard{
 			// Llama-4 scout supports genai.ModalityImage but Cerebras doesn't support this yet.
 			// This may change in the future.
 			Models: []string{"llama-4-scout-17b-16e-instruct"},
-			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &genai.FunctionalityText{
+			In:     map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out:    map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &scoreboard.FunctionalityText{
 				ReportRateLimits: true,
-				Tools:            genai.Flaky,
-				BiasedTool:       genai.True,
+				Tools:            scoreboard.Flaky,
+				BiasedTool:       scoreboard.True,
 				JSON:             true,
 				JSONSchema:       true,
 				Seed:             true,
 				TopLogprobs:      true,
 			},
-			GenStream: &genai.FunctionalityText{
+			GenStream: &scoreboard.FunctionalityText{
 				ReportRateLimits: true,
-				Tools:            genai.Flaky,
-				BiasedTool:       genai.True,
+				Tools:            scoreboard.Flaky,
+				BiasedTool:       scoreboard.True,
 				JSON:             true,
 				JSONSchema:       true,
 				Seed:             true,
@@ -815,7 +816,7 @@ func (c *Client) selectBestModel(ctx context.Context, preference string) (string
 	return selectedModel, nil
 }
 
-func (c *Client) Scoreboard() genai.Scoreboard {
+func (c *Client) Scoreboard() scoreboard.Score {
 	return Scoreboard
 }
 
@@ -914,5 +915,5 @@ var (
 	_ genai.Provider           = &Client{}
 	_ genai.ProviderGen        = &Client{}
 	_ genai.ProviderModel      = &Client{}
-	_ genai.ProviderScoreboard = &Client{}
+	_ scoreboard.ProviderScore = &Client{}
 )

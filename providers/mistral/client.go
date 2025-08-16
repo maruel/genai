@@ -25,6 +25,7 @@ import (
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
+	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 )
@@ -37,31 +38,31 @@ import (
 //   - Tool calling is excellent and unbiased for non "mini" models.
 //   - PDF doesn't support inline document while images do.
 //   - Rate limit depends on your tier: https://docs.mistral.ai/deployment/laplateforme/tier/
-var Scoreboard = genai.Scoreboard{
+var Scoreboard = scoreboard.Score{
 	Country:      "FR",
 	DashboardURL: "https://console.mistral.ai/usage",
-	Scenarios: []genai.Scenario{
+	Scenarios: []scoreboard.Scenario{
 		{
 			Models: []string{"ministral-3b-latest"},
-			In: map[genai.Modality]genai.ModalCapability{
+			In: map[genai.Modality]scoreboard.ModalCapability{
 				genai.ModalityText: {Inline: true},
 				genai.ModalityDocument: {
 					URL:              true,
 					SupportedFormats: []string{"application/pdf"},
 				},
 			},
-			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &genai.FunctionalityText{
+			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &scoreboard.FunctionalityText{
 				ReportRateLimits: true,
-				Tools:            genai.True,
-				BiasedTool:       genai.True,
+				Tools:            scoreboard.True,
+				BiasedTool:       scoreboard.True,
 				JSON:             true,
 				JSONSchema:       true,
 				Seed:             true,
 			},
-			GenStream: &genai.FunctionalityText{
-				Tools:      genai.True,
-				BiasedTool: genai.True,
+			GenStream: &scoreboard.FunctionalityText{
+				Tools:      scoreboard.True,
+				BiasedTool: scoreboard.True,
 				JSON:       true,
 				JSONSchema: true,
 				Seed:       true,
@@ -69,7 +70,7 @@ var Scoreboard = genai.Scoreboard{
 		},
 		{
 			Models: []string{"mistral-small-latest"},
-			In: map[genai.Modality]genai.ModalCapability{
+			In: map[genai.Modality]scoreboard.ModalCapability{
 				genai.ModalityImage: {
 					Inline:           true,
 					URL:              true,
@@ -81,18 +82,18 @@ var Scoreboard = genai.Scoreboard{
 				},
 				genai.ModalityText: {Inline: true},
 			},
-			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &genai.FunctionalityText{
+			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &scoreboard.FunctionalityText{
 				ReportRateLimits: true,
-				Tools:            genai.True,
-				BiasedTool:       genai.True,
+				Tools:            scoreboard.True,
+				BiasedTool:       scoreboard.True,
 				JSON:             true,
 				JSONSchema:       true,
 				Seed:             true,
 			},
-			GenStream: &genai.FunctionalityText{
-				Tools:      genai.True,
-				BiasedTool: genai.True,
+			GenStream: &scoreboard.FunctionalityText{
+				Tools:      scoreboard.True,
+				BiasedTool: scoreboard.True,
 				JSON:       true,
 				JSONSchema: true,
 				Seed:       true,
@@ -100,7 +101,7 @@ var Scoreboard = genai.Scoreboard{
 		},
 		{
 			Models: []string{"pixtral-12b-latest"},
-			In: map[genai.Modality]genai.ModalCapability{
+			In: map[genai.Modality]scoreboard.ModalCapability{
 				genai.ModalityImage: {
 					Inline:           true,
 					URL:              true,
@@ -112,18 +113,18 @@ var Scoreboard = genai.Scoreboard{
 				},
 				genai.ModalityText: {Inline: true},
 			},
-			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &genai.FunctionalityText{
+			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &scoreboard.FunctionalityText{
 				ReportRateLimits: true,
-				Tools:            genai.True,
-				BiasedTool:       genai.True,
+				Tools:            scoreboard.True,
+				BiasedTool:       scoreboard.True,
 				JSON:             true,
 				JSONSchema:       true,
 				Seed:             true,
 			},
-			GenStream: &genai.FunctionalityText{
-				Tools:      genai.True,
-				BiasedTool: genai.True,
+			GenStream: &scoreboard.FunctionalityText{
+				Tools:      scoreboard.True,
+				BiasedTool: scoreboard.True,
 				JSON:       true,
 				JSONSchema: true,
 				Seed:       true,
@@ -131,7 +132,7 @@ var Scoreboard = genai.Scoreboard{
 		},
 		{
 			Models: []string{"voxtral-small-latest"},
-			In: map[genai.Modality]genai.ModalCapability{
+			In: map[genai.Modality]scoreboard.ModalCapability{
 				genai.ModalityAudio: {
 					Inline:           true,
 					SupportedFormats: []string{"audio/flac", "audio/mp3", "audio/ogg", "audio/wav"},
@@ -142,18 +143,18 @@ var Scoreboard = genai.Scoreboard{
 				},
 				genai.ModalityText: {Inline: true},
 			},
-			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &genai.FunctionalityText{
+			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &scoreboard.FunctionalityText{
 				ReportRateLimits: true,
-				Tools:            genai.True,
-				BiasedTool:       genai.True,
+				Tools:            scoreboard.True,
+				BiasedTool:       scoreboard.True,
 				JSON:             true,
 				JSONSchema:       true,
 				Seed:             true,
 			},
-			GenStream: &genai.FunctionalityText{
-				Tools:      genai.True,
-				BiasedTool: genai.True,
+			GenStream: &scoreboard.FunctionalityText{
+				Tools:      scoreboard.True,
+				BiasedTool: scoreboard.True,
 				JSON:       true,
 				JSONSchema: true,
 				Seed:       true,
@@ -1020,7 +1021,7 @@ func (c *Client) selectBestModel(ctx context.Context, preference string) (string
 	return selectedModel, nil
 }
 
-func (c *Client) Scoreboard() genai.Scoreboard {
+func (c *Client) Scoreboard() scoreboard.Score {
 	return Scoreboard
 }
 
@@ -1119,5 +1120,5 @@ var (
 	_ genai.Provider           = &Client{}
 	_ genai.ProviderGen        = &Client{}
 	_ genai.ProviderModel      = &Client{}
-	_ genai.ProviderScoreboard = &Client{}
+	_ scoreboard.ProviderScore = &Client{}
 )

@@ -30,6 +30,7 @@ import (
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/bb"
+	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 )
@@ -41,28 +42,28 @@ import (
 //   - This is a completely free provider so you get what you pay for. I would recommend against using this
 //     provider with any private data.
 //   - Pollinations is a router to other backends, so it inherits the drawback of each sub-provider.
-var Scoreboard = genai.Scoreboard{
+var Scoreboard = scoreboard.Score{
 	Country:      "DE",
 	DashboardURL: "https://auth.pollinations.ai/",
-	Scenarios: []genai.Scenario{
+	Scenarios: []scoreboard.Scenario{
 		{
 			Models: []string{"llamascout"},
-			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &genai.FunctionalityText{
+			In:     map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out:    map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &scoreboard.FunctionalityText{
 				NoMaxTokens:    true,
 				NoStopSequence: true,
-				Tools:          genai.Flaky,
-				IndecisiveTool: genai.Flaky,
+				Tools:          scoreboard.Flaky,
+				IndecisiveTool: scoreboard.Flaky,
 				JSON:           true,
 				Seed:           true,
 			},
 			// JSON generated is often bad.
-			GenStream: &genai.FunctionalityText{
+			GenStream: &scoreboard.FunctionalityText{
 				NoMaxTokens:    true,
 				NoStopSequence: true,
-				Tools:          genai.Flaky,
-				IndecisiveTool: genai.Flaky,
+				Tools:          scoreboard.Flaky,
+				IndecisiveTool: scoreboard.Flaky,
 				Seed:           true,
 			},
 		},
@@ -70,9 +71,9 @@ var Scoreboard = genai.Scoreboard{
 			Models:   []string{"deepseek-reasoning"},
 			Thinking: true,
 			/*
-				In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-				Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-				GenSync: &genai.FunctionalityText{
+				In:     map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+				Out:    map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+				GenSync: &scoreboard.FunctionalityText{
 					NoMaxTokens:    true,
 					NoStopSequence: true,
 					Seed:           true,
@@ -82,22 +83,22 @@ var Scoreboard = genai.Scoreboard{
 		},
 		{
 			Models: []string{"flux"},
-			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out: map[genai.Modality]genai.ModalCapability{
+			In:     map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out: map[genai.Modality]scoreboard.ModalCapability{
 				genai.ModalityImage: {
 					Inline:           true,
 					SupportedFormats: []string{"image/jpeg"},
 				},
 			},
-			GenDoc: &genai.FunctionalityDoc{
+			GenDoc: &scoreboard.FunctionalityDoc{
 				Seed:               true,
-				BrokenTokenUsage:   genai.True,
+				BrokenTokenUsage:   scoreboard.True,
 				BrokenFinishReason: true,
 			},
 		},
 		{
 			Models: []string{"openai"},
-			In: map[genai.Modality]genai.ModalCapability{
+			In: map[genai.Modality]scoreboard.ModalCapability{
 				genai.ModalityImage: {
 					Inline:           true,
 					URL:              true,
@@ -105,21 +106,21 @@ var Scoreboard = genai.Scoreboard{
 				},
 				genai.ModalityText: {Inline: true},
 			},
-			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &genai.FunctionalityText{
+			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &scoreboard.FunctionalityText{
 				NoMaxTokens:    true,
 				NoStopSequence: true,
-				Tools:          genai.True,
-				BiasedTool:     genai.True,
+				Tools:          scoreboard.True,
+				BiasedTool:     scoreboard.True,
 				JSON:           true,
 				Seed:           true,
 			},
-			GenStream: &genai.FunctionalityText{
-				BrokenTokenUsage: genai.True,
+			GenStream: &scoreboard.FunctionalityText{
+				BrokenTokenUsage: scoreboard.True,
 				NoMaxTokens:      true,
 				NoStopSequence:   true,
-				Tools:            genai.True,
-				BiasedTool:       genai.True,
+				Tools:            scoreboard.True,
+				BiasedTool:       scoreboard.True,
 				JSON:             true,
 				Seed:             true,
 			},
@@ -128,21 +129,21 @@ var Scoreboard = genai.Scoreboard{
 		{
 			Models: []string{"openai-audio"},
 			/* TODO: Requires audio and Scoreboard fails to test this use case.
-			In: map[genai.Modality]genai.ModalCapability{
+			In: map[genai.Modality]scoreboard.ModalCapability{
 				genai.ModalityAudio: {
 					Inline:           true,
 					SupportedFormats: []string{"audio/mpeg", "audio/wav", "audio/mp4", "audio/x-m4a", "audio/webm"},
 				},
 				genai.ModalityText: {Inline: true},
 			},
-			Out: map[genai.Modality]genai.ModalCapability{
+			Out: map[genai.Modality]scoreboard.ModalCapability{
 				genai.ModalityAudio: {
 					Inline:           true,
 					SupportedFormats: []string{"audio/mpeg", "audio/wav", "audio/mp4", "audio/x-m4a", "audio/webm"},
 				},
 				genai.ModalityText: {Inline: true},
 			},
-			GenSync: &genai.FunctionalityText{
+			GenSync: &scoreboard.FunctionalityText{
 				NoMaxTokens: true,
 				JSON:        true,
 				Seed:        true,
@@ -1057,7 +1058,7 @@ func (c *Client) selectBestModel(ctx context.Context, preference string) (string
 	return selectedModel, nil
 }
 
-func (c *Client) Scoreboard() genai.Scoreboard {
+func (c *Client) Scoreboard() scoreboard.Score {
 	return Scoreboard
 }
 
@@ -1363,5 +1364,5 @@ var (
 	_ genai.ProviderGen        = &Client{}
 	_ genai.ProviderGenDoc     = &Client{}
 	_ genai.ProviderModel      = &Client{}
-	_ genai.ProviderScoreboard = &Client{}
+	_ scoreboard.ProviderScore = &Client{}
 )

@@ -18,18 +18,19 @@ import (
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
+	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 )
 
 // Scoreboard for generic OpenAI compatible API.
-var Scoreboard = genai.Scoreboard{
-	Scenarios: []genai.Scenario{
+var Scoreboard = scoreboard.Score{
+	Scenarios: []scoreboard.Scenario{
 		{
-			In:        map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:       map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync:   &genai.FunctionalityText{},
-			GenStream: &genai.FunctionalityText{},
+			In:        map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out:       map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync:   &scoreboard.FunctionalityText{},
+			GenStream: &scoreboard.FunctionalityText{},
 		},
 	},
 }
@@ -381,7 +382,7 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 	}, nil
 }
 
-func (c *Client) Scoreboard() genai.Scoreboard {
+func (c *Client) Scoreboard() scoreboard.Score {
 	return Scoreboard
 }
 

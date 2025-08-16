@@ -27,6 +27,7 @@ import (
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/bb"
+	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 	"golang.org/x/sync/errgroup"
@@ -40,26 +41,26 @@ import (
 //     support enabled. See https://github.com/ollama/ollama/issues/9680.
 //   - Figure out tools as streaming support recently got added to llama.cpp.
 //   - Ollama supports more than what the client supports.
-var Scoreboard = genai.Scoreboard{
+var Scoreboard = scoreboard.Score{
 	Country:      "Local",
 	DashboardURL: "https://ollama.com/",
-	Scenarios: []genai.Scenario{
+	Scenarios: []scoreboard.Scenario{
 		{
 			Models: []string{"gemma3:4b"},
-			In: map[genai.Modality]genai.ModalCapability{
+			In: map[genai.Modality]scoreboard.ModalCapability{
 				genai.ModalityImage: {
 					Inline:           true,
 					SupportedFormats: []string{"image/jpeg", "image/png", "image/webp"},
 				},
 				genai.ModalityText: {Inline: true},
 			},
-			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &genai.FunctionalityText{
+			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &scoreboard.FunctionalityText{
 				JSON:       true,
 				JSONSchema: true,
 				Seed:       true,
 			},
-			GenStream: &genai.FunctionalityText{
+			GenStream: &scoreboard.FunctionalityText{
 				JSON:       true,
 				JSONSchema: true,
 				Seed:       true,
@@ -70,18 +71,18 @@ var Scoreboard = genai.Scoreboard{
 			Thinking:           true,
 			ThinkingTokenStart: "<think>",
 			ThinkingTokenEnd:   "\n</think>\n",
-			In: map[genai.Modality]genai.ModalCapability{
+			In: map[genai.Modality]scoreboard.ModalCapability{
 				genai.ModalityText: {Inline: true},
 			},
-			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &genai.FunctionalityText{
-				Tools:      genai.True,
+			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &scoreboard.FunctionalityText{
+				Tools:      scoreboard.True,
 				JSON:       true,
 				JSONSchema: true,
 				Seed:       true,
 			},
-			GenStream: &genai.FunctionalityText{
-				Tools:      genai.True,
+			GenStream: &scoreboard.FunctionalityText{
+				Tools:      scoreboard.True,
 				JSON:       true,
 				JSONSchema: true,
 				Seed:       true,
@@ -621,7 +622,7 @@ func (c *Client) Name() string {
 	return "ollama"
 }
 
-func (c *Client) Scoreboard() genai.Scoreboard {
+func (c *Client) Scoreboard() scoreboard.Score {
 	return Scoreboard
 }
 
@@ -887,5 +888,5 @@ var (
 	_ genai.Provider           = &Client{}
 	_ genai.ProviderGen        = &Client{}
 	_ genai.ProviderModel      = &Client{}
-	_ genai.ProviderScoreboard = &Client{}
+	_ scoreboard.ProviderScore = &Client{}
 )

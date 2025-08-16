@@ -27,6 +27,7 @@ import (
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
+	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 )
@@ -40,27 +41,27 @@ import (
 //     tool's first argument.
 //   - The API has good citations support but it's not well implemented yet.
 //   - Free tier rate limit is lower: https://docs.cohere.com/v2/docs/rate-limits
-var Scoreboard = genai.Scoreboard{
+var Scoreboard = scoreboard.Score{
 	Country:      "CA",
 	DashboardURL: "https://dashboard.cohere.com/billing",
-	Scenarios: []genai.Scenario{
+	Scenarios: []scoreboard.Scenario{
 		{
 			Models:   []string{"command-r7b-12-2024"},
 			Thinking: true, // Only related to tool planning.
-			In:       map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:      map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &genai.FunctionalityText{
-				Tools:          genai.True,
-				IndecisiveTool: genai.True,
+			In:       map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out:      map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &scoreboard.FunctionalityText{
+				Tools:          scoreboard.True,
+				IndecisiveTool: scoreboard.True,
 				JSON:           true,
 				JSONSchema:     true,
 				Citations:      true,
 				Seed:           true,
 				TopLogprobs:    true,
 			},
-			GenStream: &genai.FunctionalityText{
-				Tools:          genai.True,
-				IndecisiveTool: genai.True,
+			GenStream: &scoreboard.FunctionalityText{
+				Tools:          scoreboard.True,
+				IndecisiveTool: scoreboard.True,
 				JSON:           true,
 				JSONSchema:     true,
 				Citations:      true,
@@ -72,7 +73,7 @@ var Scoreboard = genai.Scoreboard{
 		{
 			Models:   []string{"c4ai-aya-vision-8b"},
 			Thinking: true, // Only related to tool planning.
-			In: map[genai.Modality]genai.ModalCapability{
+			In: map[genai.Modality]scoreboard.ModalCapability{
 				genai.ModalityText: {Inline: true},
 				genai.ModalityImage: {
 					Inline:           true,
@@ -80,15 +81,15 @@ var Scoreboard = genai.Scoreboard{
 					SupportedFormats: []string{"image/gif", "image/jpeg", "image/png", "image/webp"},
 				},
 			},
-			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &genai.FunctionalityText{
-				Tools:       genai.True,
+			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &scoreboard.FunctionalityText{
+				Tools:       scoreboard.True,
 				Citations:   true,
 				Seed:        true,
 				TopLogprobs: true,
 			},
-			GenStream: &genai.FunctionalityText{
-				Tools:       genai.True,
+			GenStream: &scoreboard.FunctionalityText{
+				Tools:       scoreboard.True,
 				Citations:   true,
 				Seed:        true,
 				TopLogprobs: true,
@@ -995,7 +996,7 @@ func (c *Client) selectBestModel(ctx context.Context, preference string) (string
 	return selectedModel, nil
 }
 
-func (c *Client) Scoreboard() genai.Scoreboard {
+func (c *Client) Scoreboard() scoreboard.Score {
 	return Scoreboard
 }
 
@@ -1092,5 +1093,5 @@ var (
 	_ genai.Provider           = &Client{}
 	_ genai.ProviderGen        = &Client{}
 	_ genai.ProviderModel      = &Client{}
-	_ genai.ProviderScoreboard = &Client{}
+	_ scoreboard.ProviderScore = &Client{}
 )

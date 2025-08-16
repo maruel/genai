@@ -29,6 +29,7 @@ import (
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
+	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 )
@@ -45,49 +46,49 @@ import (
 //
 // Given the fact that FinishReason, StopSequence and Usage are broken, I can't recommend this provider beside
 // toys.
-var Scoreboard = genai.Scoreboard{
+var Scoreboard = scoreboard.Score{
 	Country:      "US",
 	DashboardURL: "https://dash.cloudflare.com",
-	Scenarios: []genai.Scenario{
+	Scenarios: []scoreboard.Scenario{
 		{
 			// Llama-4 scout supports genai.ModalityImage but I'm not sure if cloudflare supports this modality.
 			// This may change in the future.
 			Models: []string{"@cf/meta/llama-4-scout-17b-16e-instruct"},
-			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &genai.FunctionalityText{
+			In:     map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out:    map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &scoreboard.FunctionalityText{
 				BrokenFinishReason: true,
 				NoStopSequence:     true,
-				Tools:              genai.Flaky,
-				IndecisiveTool:     genai.Flaky,
+				Tools:              scoreboard.Flaky,
+				IndecisiveTool:     scoreboard.Flaky,
 				JSON:               true,
 				JSONSchema:         true,
 				Seed:               true,
 			},
-			GenStream: &genai.FunctionalityText{
+			GenStream: &scoreboard.FunctionalityText{
 				JSONSchema:         true,
 				BrokenFinishReason: true,
 				NoStopSequence:     true,
-				Tools:              genai.Flaky,
+				Tools:              scoreboard.Flaky,
 				Seed:               true,
 			},
 		},
 		{
 			Models: []string{"@cf/meta/llama-3.2-3b-instruct"},
-			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &genai.FunctionalityText{
+			In:     map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out:    map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &scoreboard.FunctionalityText{
 				BrokenFinishReason: true,
 				NoStopSequence:     true,
-				Tools:              genai.Flaky,
-				IndecisiveTool:     genai.Flaky,
+				Tools:              scoreboard.Flaky,
+				IndecisiveTool:     scoreboard.Flaky,
 				JSON:               true,
 				Seed:               true,
 			},
-			GenStream: &genai.FunctionalityText{
+			GenStream: &scoreboard.FunctionalityText{
 				BrokenFinishReason: true,
 				NoStopSequence:     true,
-				Tools:              genai.Flaky,
+				Tools:              scoreboard.Flaky,
 				JSON:               true,
 				Seed:               true,
 			},
@@ -793,7 +794,7 @@ func (c *Client) selectBestModel(ctx context.Context, preference string) (string
 	return selectedModel, nil
 }
 
-func (c *Client) Scoreboard() genai.Scoreboard {
+func (c *Client) Scoreboard() scoreboard.Score {
 	return Scoreboard
 }
 
@@ -847,5 +848,5 @@ var (
 	_ genai.Provider           = &Client{}
 	_ genai.ProviderGen        = &Client{}
 	_ genai.ProviderModel      = &Client{}
-	_ genai.ProviderScoreboard = &Client{}
+	_ scoreboard.ProviderScore = &Client{}
 )

@@ -33,6 +33,7 @@ import (
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/bb"
+	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 )
@@ -46,13 +47,13 @@ import (
 //   - Tool calling works very well but is biased; the model is lazy and when it's unsure, it will use the
 //     tool's first argument.
 //   - Rate limit is based on how much you spend per month: https://platform.openai.com/docs/guides/rate-limits
-var Scoreboard = genai.Scoreboard{
+var Scoreboard = scoreboard.Score{
 	Country:      "US",
 	DashboardURL: "https://platform.openai.com/usage",
-	Scenarios: []genai.Scenario{
+	Scenarios: []scoreboard.Scenario{
 		{
 			Models: []string{"gpt-4.1"},
-			In: map[genai.Modality]genai.ModalCapability{
+			In: map[genai.Modality]scoreboard.ModalCapability{
 				genai.ModalityImage: {
 					Inline:           true,
 					URL:              true,
@@ -61,20 +62,20 @@ var Scoreboard = genai.Scoreboard{
 				genai.ModalityDocument: {Inline: true, SupportedFormats: []string{"application/pdf"}},
 				genai.ModalityText:     {Inline: true},
 			},
-			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &genai.FunctionalityText{
+			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &scoreboard.FunctionalityText{
 				ReportRateLimits: true,
-				Tools:            genai.True,
-				IndecisiveTool:   genai.True,
+				Tools:            scoreboard.True,
+				IndecisiveTool:   scoreboard.True,
 				JSON:             true,
 				JSONSchema:       true,
 				Seed:             true,
 				TopLogprobs:      true,
 			},
-			GenStream: &genai.FunctionalityText{
+			GenStream: &scoreboard.FunctionalityText{
 				ReportRateLimits: true,
-				Tools:            genai.True,
-				IndecisiveTool:   genai.True,
+				Tools:            scoreboard.True,
+				IndecisiveTool:   scoreboard.True,
 				JSON:             true,
 				JSONSchema:       true,
 				Seed:             true,
@@ -83,24 +84,24 @@ var Scoreboard = genai.Scoreboard{
 		},
 		{
 			Models: []string{"gpt-4o-audio-preview"},
-			In: map[genai.Modality]genai.ModalCapability{
+			In: map[genai.Modality]scoreboard.ModalCapability{
 				genai.ModalityAudio: {
 					Inline:           true,
 					SupportedFormats: []string{"audio/mp3", "audio/wav"},
 				},
 			},
-			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &genai.FunctionalityText{
+			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &scoreboard.FunctionalityText{
 				ReportRateLimits: true,
 			},
-			GenStream: &genai.FunctionalityText{
+			GenStream: &scoreboard.FunctionalityText{
 				ReportRateLimits: true,
 			},
 		},
 		{
 			Models:   []string{"o4-mini"},
 			Thinking: true,
-			In: map[genai.Modality]genai.ModalCapability{
+			In: map[genai.Modality]scoreboard.ModalCapability{
 				genai.ModalityImage: {
 					Inline:           true,
 					URL:              true,
@@ -109,23 +110,23 @@ var Scoreboard = genai.Scoreboard{
 				genai.ModalityDocument: {Inline: true, SupportedFormats: []string{"application/pdf"}},
 				genai.ModalityText:     {Inline: true},
 			},
-			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &genai.FunctionalityText{
+			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &scoreboard.FunctionalityText{
 				ReportRateLimits: true,
 				NoStopSequence:   true,
 				NoMaxTokens:      true,
-				Tools:            genai.True,
-				BiasedTool:       genai.Flaky,
+				Tools:            scoreboard.True,
+				BiasedTool:       scoreboard.Flaky,
 				JSON:             true,
 				JSONSchema:       true,
 				Seed:             true,
 			},
-			GenStream: &genai.FunctionalityText{
+			GenStream: &scoreboard.FunctionalityText{
 				ReportRateLimits: true,
 				NoStopSequence:   true,
 				NoMaxTokens:      true,
-				Tools:            genai.True,
-				BiasedTool:       genai.Flaky,
+				Tools:            scoreboard.True,
+				BiasedTool:       scoreboard.Flaky,
 				JSON:             true,
 				JSONSchema:       true,
 				Seed:             true,
@@ -133,16 +134,16 @@ var Scoreboard = genai.Scoreboard{
 		},
 		{
 			Models: []string{"gpt-image-1"},
-			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out: map[genai.Modality]genai.ModalCapability{
+			In:     map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out: map[genai.Modality]scoreboard.ModalCapability{
 				// TODO: Expose other supported image formats.
 				genai.ModalityImage: {
 					Inline:           true,
 					SupportedFormats: []string{"image/jpeg"},
 				},
 			},
-			GenDoc: &genai.FunctionalityDoc{
-				BrokenTokenUsage:   genai.True,
+			GenDoc: &scoreboard.FunctionalityDoc{
+				BrokenTokenUsage:   scoreboard.True,
 				BrokenFinishReason: true,
 				Seed:               true,
 			},
@@ -1322,7 +1323,7 @@ func (c *Client) selectBestModel(ctx context.Context, preference string) (string
 	return selectedModel, nil
 }
 
-func (c *Client) Scoreboard() genai.Scoreboard {
+func (c *Client) Scoreboard() scoreboard.Score {
 	return Scoreboard
 }
 
@@ -1747,5 +1748,5 @@ var (
 	_ genai.ProviderGen        = &Client{}
 	_ genai.ProviderGenDoc     = &Client{}
 	_ genai.ProviderModel      = &Client{}
-	_ genai.ProviderScoreboard = &Client{}
+	_ scoreboard.ProviderScore = &Client{}
 )

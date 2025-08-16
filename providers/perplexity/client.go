@@ -22,6 +22,7 @@ import (
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
+	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 )
@@ -32,16 +33,16 @@ import (
 //
 //   - Websearch, which is automatic for all models, is very expensive. Disable it manually when testing.
 //   - No tool calling support.
-var Scoreboard = genai.Scoreboard{
+var Scoreboard = scoreboard.Score{
 	Country:      "US",
 	DashboardURL: "https://www.perplexity.ai/settings/api",
-	Scenarios: []genai.Scenario{
+	Scenarios: []scoreboard.Scenario{
 		{
 			Models:             []string{"sonar-reasoning", "sonar-reasoning-pro"},
 			Thinking:           true,
 			ThinkingTokenStart: "<think>",
 			ThinkingTokenEnd:   "</think>",
-			In: map[genai.Modality]genai.ModalCapability{
+			In: map[genai.Modality]scoreboard.ModalCapability{
 				genai.ModalityText: {Inline: true},
 				genai.ModalityImage: {
 					Inline:           true,
@@ -49,13 +50,13 @@ var Scoreboard = genai.Scoreboard{
 					SupportedFormats: []string{"image/gif", "image/jpeg", "image/png", "image/webp"},
 				},
 			},
-			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &genai.FunctionalityText{
+			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &scoreboard.FunctionalityText{
 				JSONSchema:     true,
 				Citations:      true,
 				NoStopSequence: true,
 			},
-			GenStream: &genai.FunctionalityText{
+			GenStream: &scoreboard.FunctionalityText{
 				JSONSchema:     true,
 				Citations:      true,
 				NoStopSequence: true,
@@ -63,7 +64,7 @@ var Scoreboard = genai.Scoreboard{
 		},
 		{
 			Models: []string{"sonar", "sonar-pro"},
-			In: map[genai.Modality]genai.ModalCapability{
+			In: map[genai.Modality]scoreboard.ModalCapability{
 				genai.ModalityText: {Inline: true},
 				genai.ModalityImage: {
 					Inline:           true,
@@ -71,13 +72,13 @@ var Scoreboard = genai.Scoreboard{
 					SupportedFormats: []string{"image/gif", "image/jpeg", "image/png", "image/webp"},
 				},
 			},
-			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &genai.FunctionalityText{
+			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &scoreboard.FunctionalityText{
 				JSONSchema:     true,
 				Citations:      true,
 				NoStopSequence: true,
 			},
-			GenStream: &genai.FunctionalityText{
+			GenStream: &scoreboard.FunctionalityText{
 				JSONSchema:     true,
 				Citations:      true,
 				NoStopSequence: true,
@@ -567,7 +568,7 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 	}, err
 }
 
-func (c *Client) Scoreboard() genai.Scoreboard {
+func (c *Client) Scoreboard() scoreboard.Score {
 	return Scoreboard
 }
 
@@ -639,5 +640,5 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 var (
 	_ genai.Provider           = &Client{}
 	_ genai.ProviderGen        = &Client{}
-	_ genai.ProviderScoreboard = &Client{}
+	_ scoreboard.ProviderScore = &Client{}
 )

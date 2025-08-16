@@ -16,6 +16,7 @@ import (
 	"net/http"
 	"path/filepath"
 	"slices"
+	"strconv"
 	"strings"
 	"sync"
 
@@ -26,6 +27,188 @@ import (
 	"golang.org/x/sync/errgroup"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/cassette"
 )
+
+//
+
+// ProviderScore describes the known state of the provider.
+type ProviderScore interface {
+	genai.Provider
+	// Scoreboard returns what the provider supports.
+	//
+	// Some models have more features than others, e.g. some models may be text-only while others have vision or
+	// audio support.
+	//
+	// The client code may be the limiting factor for some models, and not the provider itself.
+	//
+	// The values returned here are gone through a smoke test to make sure they are valid.
+	Scoreboard() Score
+}
+
+// FunctionalityText defines which functionalites are supported in a scenario for models that support text
+// output modality.
+//
+// The first group is for multi-modal models, either with non-text inputs (e.g. vision, STT) or outputs
+// (combined text and image generation).
+//
+// The second group are supported functional features for agency.
+//
+// The third group is to identify bugged providers. A provider is considered to be bugged if any of the field
+// is false.
+type FunctionalityText struct {
+	// Tools means that tool call is supported. This is a requirement for MCP. Some provider support tool
+	// calling but the model is very flaky at actually requesting the calls. This is more frequent on highly
+	// quantized models, small models or MoE models.
+	Tools TriState
+	// JSON means that the model supports enforcing that the response is valid JSON but not necessarily with a
+	// schema.
+	JSON bool
+	// JSONSchema means that the model supports enforcing that the response is a specific JSON schema.
+	JSONSchema bool
+	// Citations is set when the provider and model combination supports citations in the response.
+	Citations bool
+	// Seed is set when the provider and model combination supports seed for reproducibility.
+	Seed bool
+	// TopLogprobs is set when the provider and model combination supports top_logprobs.
+	TopLogprobs bool
+
+	// ReportRateLimits means that the provider reports rate limits in its Usage.
+	ReportRateLimits bool
+	// BrokenTokenUsage means that the usage is not correctly reported.
+	BrokenTokenUsage TriState
+	// BrokenFinishReason means that the finish reason (FinishStop, FinishLength, etc) is not correctly reported.
+	BrokenFinishReason bool
+	// NoMaxTokens means that the provider doesn't support limiting text output. Only relevant on text output.
+	NoMaxTokens bool
+	// NoStopSequence means that the provider doesn't support stop words. Only relevant on text output.
+	NoStopSequence bool
+	// BiasedTool is true when we ask the LLM to use a tool in an ambiguous biased question, it will always
+	// reply with the first readily available answer.
+	//
+	// This means that when using enum, it is important to understand that the LLM will put heavy weight on the
+	// first option.
+	//
+	// This is affected by two factors: model size and quantization. Quantization affects this dramatically.
+	BiasedTool TriState
+	// IndecisiveTool is True when we ask the LLM to use a tool in an ambiguous biased question, it'll call both
+	// options. It is Flaky when both can happen.
+	//
+	// This is actually fine, it means that the LLM will be less opinionated in some cases. The test into which
+	// a LLM is indecisive is likely model-specific too.
+	IndecisiveTool TriState
+
+	_ struct{}
+}
+
+// TriState helps describing support when a feature "kinda work", which is frequent with LLM's inherent
+// non-determinism.
+type TriState int8
+
+const (
+	False TriState = 0
+	True  TriState = 1
+	Flaky TriState = -1
+)
+
+const triStateName = "flakyfalsetrue"
+
+var triStateIndex = [...]uint8{0, 5, 10, 14}
+
+func (i TriState) String() string {
+	i -= -1
+	if i < 0 || i >= TriState(len(triStateIndex)-1) {
+		return "TriState(" + strconv.FormatInt(int64(i+-1), 10) + ")"
+	}
+	return triStateName[triStateIndex[i]:triStateIndex[i+1]]
+}
+
+func (i TriState) GoString() string {
+	return i.String()
+}
+
+// FunctionalityDoc defines which functionalites are supported in a scenario for non-text output modality.
+type FunctionalityDoc struct {
+	// Seed is set when the provider and model combination supports seed for reproducibility.
+	Seed bool
+
+	// ReportRateLimits means that the provider reports rate limits in its Usage.
+	ReportRateLimits bool
+	// BrokenTokenUsage means that the usage is not correctly reported.
+	BrokenTokenUsage TriState
+	// BrokenFinishReason means that the finish reason (FinishStop, FinishLength, etc) is not correctly reported.
+	BrokenFinishReason bool
+
+	_ struct{}
+}
+
+// Scenario defines one way to use the provider.
+type Scenario struct {
+	In  map[genai.Modality]ModalCapability
+	Out map[genai.Modality]ModalCapability
+	// Models is a *non exhaustive* list of models that support this scenario. It can't be exhaustive since
+	// providers continuouly release new models. It is still valuable to use the first value
+	Models []string
+
+	// Thinking means that the model does either explicit chain-of-thought or hidden thinking. For some
+	// providers, this is controlled via a OptionsText. For some models (like Qwen3), a token "/no_think" or
+	// "/think" is used to control. ThinkingTokenStart and ThinkingTokenEnd must only be set on explicit inline
+	// thinking models. They often use <think> and </think>.
+	Thinking           bool
+	ThinkingTokenStart string
+	ThinkingTokenEnd   string
+
+	// GenSync declares features supported when using ProviderGen.GenSync
+	GenSync *FunctionalityText
+	// GenStream declares features supported when using ProviderGen.GenStream
+	GenStream *FunctionalityText
+	// GenDoc declares features supported when using a ProviderGenDoc
+	GenDoc *FunctionalityDoc
+
+	_ struct{}
+}
+
+// ModalCapability describes how a modality is supported by a provider.
+type ModalCapability struct {
+	// Inline means content can be embedded directly (e.g., base64 encoded)
+	Inline bool
+	// URL means content can be referenced by URL
+	URL bool
+	// MaxSize specifies the maximum size in bytes.
+	MaxSize int64
+	// SupportedFormats lists supported MIME types for this modality
+	SupportedFormats []string
+}
+
+// Thinking specifies if a model Scenario supports thinking.
+type Thinking int8
+
+const (
+	// NoThinking means that no thinking is supported.
+	NoThinking Thinking = 0
+	// ThinkingInline means that the thinking tokens are inline and must be explicitly parsed from Content.Text
+	// with adapters.ProviderGenThinking.
+	ThinkingInline Thinking = 1
+	// ThinkingAutomatic means that the thinking tokens are properly generated and handled by the provider and
+	// are returned as Content.Thinking.
+	ThinkingAutomatic Thinking = -1
+)
+
+// Score is a snapshot of the capabilities of the provider. These are smoke tested to confirm the
+// accuracy.
+type Score struct {
+	// Scenarios is the list of all known supported and tested scenarios.
+	//
+	// A single provider can provide various distinct use cases, like text-to-text, multi-modal-to-text,
+	// text-to-audio, audio-to-text, etc.
+	Scenarios []Scenario
+
+	// Country where the provider is based, e.g. "US", "CN", "EU". Two exceptions: "Local" for local and "N/A"
+	// for pure routers.
+	Country string
+	// DashboardURL is the URL to the provider's dashboard, if available.
+	DashboardURL string
+
+	_ struct{}
+}
 
 //go:embed testdata/*
 var testdataFiles embed.FS
@@ -38,18 +221,18 @@ type ProviderFactory func(name string) (genai.Provider, http.RoundTripper)
 // CreateScenario calculates the supported Scenario for the given provider and its current model.
 //
 // ProviderFactory must be concurrent safe.
-func CreateScenario(ctx context.Context, pf ProviderFactory) (genai.Scenario, genai.Usage, error) {
+func CreateScenario(ctx context.Context, pf ProviderFactory) (Scenario, genai.Usage, error) {
 	usage := genai.Usage{}
 	c, _ := pf("")
 	m := c.ModelID()
 	if m == "" {
-		return genai.Scenario{}, usage, errors.New("provider must have a model")
+		return Scenario{}, usage, errors.New("provider must have a model")
 	}
 	mu := sync.Mutex{}
-	result := genai.Scenario{
+	result := Scenario{
 		Models: []string{m},
-		In:     map[genai.Modality]genai.ModalCapability{},
-		Out:    map[genai.Modality]genai.ModalCapability{},
+		In:     map[genai.Modality]ModalCapability{},
+		Out:    map[genai.Modality]ModalCapability{},
 	}
 
 	// Make it easy to skip parts of the tests.
@@ -67,8 +250,8 @@ func CreateScenario(ctx context.Context, pf ProviderFactory) (genai.Scenario, ge
 				mu.Lock()
 				usage.Add(cs.usage)
 				if f != nil {
-					result.In[genai.ModalityText] = genai.ModalCapability{Inline: true}
-					result.Out[genai.ModalityText] = genai.ModalCapability{Inline: true}
+					result.In[genai.ModalityText] = ModalCapability{Inline: true}
+					result.Out[genai.ModalityText] = ModalCapability{Inline: true}
 					if cs.isThinking {
 						result.Thinking = true
 					}
@@ -93,7 +276,7 @@ func CreateScenario(ctx context.Context, pf ProviderFactory) (genai.Scenario, ge
 					if result.GenSync == nil {
 						result.GenSync = f
 					} else {
-						if f.BrokenTokenUsage != genai.False {
+						if f.BrokenTokenUsage != False {
 							result.GenSync.BrokenTokenUsage = f.BrokenTokenUsage
 						}
 						if f.BrokenFinishReason {
@@ -122,8 +305,8 @@ func CreateScenario(ctx context.Context, pf ProviderFactory) (genai.Scenario, ge
 				mu.Lock()
 				usage.Add(cs.usage)
 				if f != nil {
-					result.In[genai.ModalityText] = genai.ModalCapability{Inline: true}
-					result.Out[genai.ModalityText] = genai.ModalCapability{Inline: true}
+					result.In[genai.ModalityText] = ModalCapability{Inline: true}
+					result.Out[genai.ModalityText] = ModalCapability{Inline: true}
 					if cs.isThinking {
 						result.Thinking = true
 					}
@@ -148,7 +331,7 @@ func CreateScenario(ctx context.Context, pf ProviderFactory) (genai.Scenario, ge
 					if result.GenStream == nil {
 						result.GenStream = f
 					} else {
-						if f.BrokenTokenUsage != genai.False {
+						if f.BrokenTokenUsage != False {
 							result.GenStream.BrokenTokenUsage = f.BrokenTokenUsage
 						}
 						if f.BrokenFinishReason {
@@ -196,7 +379,7 @@ func CreateScenario(ctx context.Context, pf ProviderFactory) (genai.Scenario, ge
 
 // genai.ProviderGen
 
-func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*genai.FunctionalityText, error) {
+func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*FunctionalityText, error) {
 	// Make sure simple text generation works, otherwise there's no point.
 	msgs := genai.Messages{genai.NewTextMessage("Say hello. Use only one word.")}
 	resp, err := cs.callGen(ctx, prefix+"Text", msgs, &genai.OptionsText{})
@@ -207,10 +390,10 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*ge
 		}
 		return nil, err
 	}
-	f := &genai.FunctionalityText{}
+	f := &FunctionalityText{}
 	if resp.InputTokens == 0 || resp.OutputTokens == 0 {
 		internal.Logger(ctx).DebugContext(ctx, "Text", "issue", "token usage")
-		f.BrokenTokenUsage = genai.True
+		f.BrokenTokenUsage = True
 	}
 	if expectedFR := genai.FinishedStop; resp.FinishReason != expectedFR {
 		internal.Logger(ctx).DebugContext(ctx, "Text", "issue", "finish reason", "expected", expectedFR, "got", resp.FinishReason)
@@ -281,7 +464,7 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*ge
 	if err == nil {
 		if !f.NoMaxTokens && (resp.InputTokens == 0 || resp.OutputTokens == 0) {
 			internal.Logger(ctx).DebugContext(ctx, "MaxTokens", "issue", "token usage")
-			f.BrokenTokenUsage = genai.True
+			f.BrokenTokenUsage = True
 		}
 		expectedFR := genai.FinishedLength
 		if f.NoMaxTokens {
@@ -304,7 +487,7 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*ge
 	f.NoStopSequence = err != nil || strings.Count(resp.AsText(), " ")+1 > 30 || strings.Contains(resp.AsText(), " is ")
 	if !f.NoStopSequence && (resp.InputTokens == 0 || resp.OutputTokens == 0) {
 		internal.Logger(ctx).DebugContext(ctx, "Stop", "issue", "token usage")
-		f.BrokenTokenUsage = genai.True
+		f.BrokenTokenUsage = True
 	}
 	if err == nil {
 		// Don't fail if unsupported.
@@ -331,7 +514,7 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*ge
 		if f.JSON {
 			if resp.InputTokens == 0 || resp.OutputTokens == 0 {
 				internal.Logger(ctx).DebugContext(ctx, "JSON", "issue", "token usage")
-				f.BrokenTokenUsage = genai.True
+				f.BrokenTokenUsage = True
 			}
 			if expectedFR := genai.FinishedStop; f.JSON && resp.FinishReason != expectedFR {
 				internal.Logger(ctx).DebugContext(ctx, "JSON", "issue", "finish reason", "expected", expectedFR, "got", resp.FinishReason)
@@ -355,7 +538,7 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*ge
 		if f.JSONSchema {
 			if resp.InputTokens == 0 || resp.OutputTokens == 0 {
 				internal.Logger(ctx).DebugContext(ctx, "JSONSchema", "issue", "token usage")
-				f.BrokenTokenUsage = genai.True
+				f.BrokenTokenUsage = True
 			}
 			if expectedFR := genai.FinishedStop; f.JSONSchema && resp.FinishReason != expectedFR {
 				internal.Logger(ctx).DebugContext(ctx, "JSONSchema", "issue", "finish reason", "expected", expectedFR, "got", resp.FinishReason)
@@ -396,7 +579,7 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*ge
 	if err == nil {
 		if resp.InputTokens == 0 || resp.OutputTokens == 0 {
 			internal.Logger(ctx).DebugContext(ctx, "Citations", "issue", "token usage")
-			f.BrokenTokenUsage = genai.True
+			f.BrokenTokenUsage = True
 		}
 		if expectedFR := genai.FinishedStop; f.Citations && resp.FinishReason != expectedFR {
 			internal.Logger(ctx).DebugContext(ctx, "Citations", "issue", "finish reason", "expected", expectedFR, "got", resp.FinishReason)
@@ -406,14 +589,14 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*ge
 	return f, nil
 }
 
-func exerciseGenTextMultiModal(ctx context.Context, cs *callState, prefix string) (map[genai.Modality]genai.ModalCapability, map[genai.Modality]genai.ModalCapability, *genai.FunctionalityText, error) {
-	in := map[genai.Modality]genai.ModalCapability{}
-	out := map[genai.Modality]genai.ModalCapability{}
-	f := &genai.FunctionalityText{}
+func exerciseGenTextMultiModal(ctx context.Context, cs *callState, prefix string) (map[genai.Modality]ModalCapability, map[genai.Modality]ModalCapability, *FunctionalityText, error) {
+	in := map[genai.Modality]ModalCapability{}
+	out := map[genai.Modality]ModalCapability{}
+	f := &FunctionalityText{}
 	m, err := exerciseGenInputDocument(ctx, cs, f, prefix+"Document-")
 	if m != nil {
 		in[genai.ModalityDocument] = *m
-		out[genai.ModalityText] = genai.ModalCapability{Inline: true}
+		out[genai.ModalityText] = ModalCapability{Inline: true}
 	}
 	if err != nil {
 		return in, out, f, err
@@ -421,7 +604,7 @@ func exerciseGenTextMultiModal(ctx context.Context, cs *callState, prefix string
 	m, err = exerciseGenInputImage(ctx, cs, f, prefix+"Image-")
 	if m != nil {
 		in[genai.ModalityImage] = *m
-		out[genai.ModalityText] = genai.ModalCapability{Inline: true}
+		out[genai.ModalityText] = ModalCapability{Inline: true}
 	}
 	if err != nil {
 		return in, out, f, err
@@ -429,7 +612,7 @@ func exerciseGenTextMultiModal(ctx context.Context, cs *callState, prefix string
 	m, err = exerciseGenInputAudio(ctx, cs, f, prefix+"Audio-")
 	if m != nil {
 		in[genai.ModalityAudio] = *m
-		out[genai.ModalityText] = genai.ModalCapability{Inline: true}
+		out[genai.ModalityText] = ModalCapability{Inline: true}
 	}
 	if err != nil {
 		return in, out, f, err
@@ -437,13 +620,13 @@ func exerciseGenTextMultiModal(ctx context.Context, cs *callState, prefix string
 	m, err = exerciseGenInputVideo(ctx, cs, f, prefix+"Video-")
 	if m != nil {
 		in[genai.ModalityVideo] = *m
-		out[genai.ModalityText] = genai.ModalCapability{Inline: true}
+		out[genai.ModalityText] = ModalCapability{Inline: true}
 	}
 	return in, out, f, err
 }
 
-func exerciseGenInputDocument(ctx context.Context, cs *callState, f *genai.FunctionalityText, prefix string) (*genai.ModalCapability, error) {
-	var m *genai.ModalCapability
+func exerciseGenInputDocument(ctx context.Context, cs *callState, f *FunctionalityText, prefix string) (*ModalCapability, error) {
+	var m *ModalCapability
 	want := "orange"
 	for _, format := range []extMime{{"pdf", "application/pdf"}} {
 		data, err := testdataFiles.ReadFile("testdata/document." + format.ext)
@@ -457,7 +640,7 @@ func exerciseGenInputDocument(ctx context.Context, cs *callState, f *genai.Funct
 		name := prefix + format.ext + "-Inline"
 		if err = exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
 			if m == nil {
-				m = &genai.ModalCapability{}
+				m = &ModalCapability{}
 			}
 			m.Inline = true
 			if !slices.Contains(m.SupportedFormats, format.mime) {
@@ -472,7 +655,7 @@ func exerciseGenInputDocument(ctx context.Context, cs *callState, f *genai.Funct
 		name = prefix + format.ext + "-URL"
 		if err = exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
 			if m == nil {
-				m = &genai.ModalCapability{}
+				m = &ModalCapability{}
 			}
 			m.URL = true
 			if !slices.Contains(m.SupportedFormats, format.mime) {
@@ -487,8 +670,8 @@ func exerciseGenInputDocument(ctx context.Context, cs *callState, f *genai.Funct
 	return m, nil
 }
 
-func exerciseGenInputImage(ctx context.Context, cs *callState, f *genai.FunctionalityText, prefix string) (*genai.ModalCapability, error) {
-	var m *genai.ModalCapability
+func exerciseGenInputImage(ctx context.Context, cs *callState, f *FunctionalityText, prefix string) (*ModalCapability, error) {
+	var m *ModalCapability
 	want := "banana"
 	for _, format := range []extMime{
 		{"gif", "image/gif"},
@@ -508,7 +691,7 @@ func exerciseGenInputImage(ctx context.Context, cs *callState, f *genai.Function
 		name := prefix + format.ext + "-Inline"
 		if err = exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
 			if m == nil {
-				m = &genai.ModalCapability{}
+				m = &ModalCapability{}
 			}
 			m.Inline = true
 			if !slices.Contains(m.SupportedFormats, format.mime) {
@@ -523,7 +706,7 @@ func exerciseGenInputImage(ctx context.Context, cs *callState, f *genai.Function
 		name = prefix + format.ext + "-URL"
 		if err = exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
 			if m == nil {
-				m = &genai.ModalCapability{}
+				m = &ModalCapability{}
 			}
 			m.URL = true
 			if !slices.Contains(m.SupportedFormats, format.mime) {
@@ -538,8 +721,8 @@ func exerciseGenInputImage(ctx context.Context, cs *callState, f *genai.Function
 	return m, nil
 }
 
-func exerciseGenInputAudio(ctx context.Context, cs *callState, f *genai.FunctionalityText, prefix string) (*genai.ModalCapability, error) {
-	var m *genai.ModalCapability
+func exerciseGenInputAudio(ctx context.Context, cs *callState, f *FunctionalityText, prefix string) (*ModalCapability, error) {
+	var m *ModalCapability
 	want := "orange"
 	for _, format := range []extMime{
 		{"aac", "audio/aac"},
@@ -559,7 +742,7 @@ func exerciseGenInputAudio(ctx context.Context, cs *callState, f *genai.Function
 		name := prefix + format.ext + "-Inline"
 		if err = exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
 			if m == nil {
-				m = &genai.ModalCapability{}
+				m = &ModalCapability{}
 			}
 			m.Inline = true
 			if !slices.Contains(m.SupportedFormats, format.mime) {
@@ -574,7 +757,7 @@ func exerciseGenInputAudio(ctx context.Context, cs *callState, f *genai.Function
 		name = prefix + format.ext + "-URL"
 		if err = exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
 			if m == nil {
-				m = &genai.ModalCapability{}
+				m = &ModalCapability{}
 			}
 			m.URL = true
 			if !slices.Contains(m.SupportedFormats, format.mime) {
@@ -589,8 +772,8 @@ func exerciseGenInputAudio(ctx context.Context, cs *callState, f *genai.Function
 	return m, nil
 }
 
-func exerciseGenInputVideo(ctx context.Context, cs *callState, f *genai.FunctionalityText, prefix string) (*genai.ModalCapability, error) {
-	var m *genai.ModalCapability
+func exerciseGenInputVideo(ctx context.Context, cs *callState, f *FunctionalityText, prefix string) (*ModalCapability, error) {
+	var m *ModalCapability
 	want := "orange"
 	for _, format := range []extMime{
 		{"mp4", "video/mp4"},
@@ -607,7 +790,7 @@ func exerciseGenInputVideo(ctx context.Context, cs *callState, f *genai.Function
 		name := prefix + format.ext + "-Inline"
 		if err = exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
 			if m == nil {
-				m = &genai.ModalCapability{}
+				m = &ModalCapability{}
 			}
 			m.Inline = true
 			if !slices.Contains(m.SupportedFormats, format.mime) {
@@ -622,7 +805,7 @@ func exerciseGenInputVideo(ctx context.Context, cs *callState, f *genai.Function
 		name = prefix + format.ext + "-URL"
 		if err = exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
 			if m == nil {
-				m = &genai.ModalCapability{}
+				m = &ModalCapability{}
 			}
 			m.URL = true
 			if !slices.Contains(m.SupportedFormats, format.mime) {
@@ -642,7 +825,7 @@ type extMime struct {
 	mime string
 }
 
-func exerciseModal(ctx context.Context, cs *callState, f *genai.FunctionalityText, name string, msgs genai.Messages, want string) error {
+func exerciseModal(ctx context.Context, cs *callState, f *FunctionalityText, name string, msgs genai.Messages, want string) error {
 	resp, err := cs.callGen(ctx, name, msgs, &genai.OptionsText{})
 	if err == nil {
 		got := strings.ToLower(strings.TrimRight(strings.TrimSpace(resp.AsText()), "."))
@@ -651,7 +834,7 @@ func exerciseModal(ctx context.Context, cs *callState, f *genai.FunctionalityTex
 		}
 		if resp.InputTokens == 0 || resp.OutputTokens == 0 {
 			internal.Logger(ctx).DebugContext(ctx, name, "issue", "token usage")
-			f.BrokenTokenUsage = genai.True
+			f.BrokenTokenUsage = True
 		}
 		if expectedFR := genai.FinishedStop; resp.FinishReason != expectedFR {
 			internal.Logger(ctx).DebugContext(ctx, name, "issue", "finish reason", "expected", expectedFR, "got", resp.FinishReason)
@@ -726,12 +909,12 @@ func (cs *callState) callGen(ctx context.Context, name string, msgs genai.Messag
 // genai.ProviderGenDoc
 
 // exerciseGenDoc exercises the ProviderGenDoc interface if available.
-func exerciseGenDoc(ctx context.Context, pf ProviderFactory) (genai.Scenario, genai.Usage, error) {
+func exerciseGenDoc(ctx context.Context, pf ProviderFactory) (Scenario, genai.Usage, error) {
 	prefix := "GenDoc-"
-	out := genai.Scenario{
-		In:     map[genai.Modality]genai.ModalCapability{},
-		Out:    map[genai.Modality]genai.ModalCapability{},
-		GenDoc: &genai.FunctionalityDoc{},
+	out := Scenario{
+		In:     map[genai.Modality]ModalCapability{},
+		Out:    map[genai.Modality]ModalCapability{},
+		GenDoc: &FunctionalityDoc{},
 	}
 	usage := genai.Usage{}
 	if err := exerciseGenDocImage(ctx, pf, prefix+"Image", &out, &usage); err != nil {
@@ -749,7 +932,7 @@ func exerciseGenDoc(ctx context.Context, pf ProviderFactory) (genai.Scenario, ge
 	return out, usage, nil
 }
 
-func exerciseGenDocImage(ctx context.Context, pf ProviderFactory, name string, out *genai.Scenario, usage *genai.Usage) error {
+func exerciseGenDocImage(ctx context.Context, pf ProviderFactory, name string, out *Scenario, usage *genai.Usage) error {
 	cc, rt := pf(name)
 	c := cc.(genai.ProviderGenDoc)
 	promptImage := `A doodle animation on a white background of Cartoonish shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves.`
@@ -796,7 +979,7 @@ func exerciseGenDocImage(ctx context.Context, pf ProviderFactory, name string, o
 		if fn == "" {
 			return fmt.Errorf("%s: no content filename", name)
 		}
-		out.In[genai.ModalityText] = genai.ModalCapability{Inline: true}
+		out.In[genai.ModalityText] = ModalCapability{Inline: true}
 		v := out.Out[genai.ModalityImage]
 		if c.Doc.URL != "" {
 			v.URL = true
@@ -827,7 +1010,7 @@ func exerciseGenDocImage(ctx context.Context, pf ProviderFactory, name string, o
 		out.Out[genai.ModalityImage] = v
 		if resp.InputTokens == 0 || resp.OutputTokens == 0 {
 			internal.Logger(ctx).DebugContext(ctx, name, "issue", "token usage")
-			out.GenDoc.BrokenTokenUsage = genai.True
+			out.GenDoc.BrokenTokenUsage = True
 		}
 		if expectedFR := genai.FinishedStop; resp.FinishReason != expectedFR {
 			internal.Logger(ctx).DebugContext(ctx, name, "issue", "finish reason", "expected", expectedFR, "got", resp.FinishReason)
@@ -840,7 +1023,7 @@ func exerciseGenDocImage(ctx context.Context, pf ProviderFactory, name string, o
 	return nil
 }
 
-func exerciseGenDocAudio(ctx context.Context, pf ProviderFactory, name string, out *genai.Scenario, usage *genai.Usage) error {
+func exerciseGenDocAudio(ctx context.Context, pf ProviderFactory, name string, out *Scenario, usage *genai.Usage) error {
 	cc, rt := pf(name)
 	c := cc.(genai.ProviderGenDoc)
 	msg := genai.NewTextMessage("Say hi. Just say this word, nothing else.")
@@ -876,8 +1059,8 @@ func exerciseGenDocAudio(ctx context.Context, pf ProviderFactory, name string, o
 		if fn == "" {
 			return fmt.Errorf("%s: no content filename", name)
 		}
-		out.In[genai.ModalityText] = genai.ModalCapability{Inline: true}
-		out.Out[genai.ModalityAudio] = genai.ModalCapability{Inline: true}
+		out.In[genai.ModalityText] = ModalCapability{Inline: true}
+		out.Out[genai.ModalityAudio] = ModalCapability{Inline: true}
 		v := out.Out[genai.ModalityAudio]
 		if c.Doc.URL != "" {
 			v.URL = true
@@ -908,7 +1091,7 @@ func exerciseGenDocAudio(ctx context.Context, pf ProviderFactory, name string, o
 		out.Out[genai.ModalityAudio] = v
 		if resp.InputTokens == 0 || resp.OutputTokens == 0 {
 			internal.Logger(ctx).DebugContext(ctx, name, "issue", "token usage")
-			out.GenDoc.BrokenTokenUsage = genai.True
+			out.GenDoc.BrokenTokenUsage = True
 		}
 		if expectedFR := genai.FinishedStop; resp.FinishReason != expectedFR {
 			internal.Logger(ctx).DebugContext(ctx, name, "issue", "finish reason", "expected", expectedFR, "got", resp.FinishReason)
@@ -921,7 +1104,7 @@ func exerciseGenDocAudio(ctx context.Context, pf ProviderFactory, name string, o
 	return nil
 }
 
-func exerciseGenDocVideo(ctx context.Context, pf ProviderFactory, name string, out *genai.Scenario, usage *genai.Usage) error {
+func exerciseGenDocVideo(ctx context.Context, pf ProviderFactory, name string, out *Scenario, usage *genai.Usage) error {
 	// Will be implemented soon.
 	return nil
 }
@@ -950,7 +1133,7 @@ func isBadError(ctx context.Context, err error) bool {
 	return false
 }
 
-func mergeModalities(m1, m2 map[genai.Modality]genai.ModalCapability) map[genai.Modality]genai.ModalCapability {
+func mergeModalities(m1, m2 map[genai.Modality]ModalCapability) map[genai.Modality]ModalCapability {
 	out := maps.Clone(m1)
 	for k, v2 := range m2 {
 		if v1, ok := out[k]; ok {

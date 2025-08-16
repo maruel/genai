@@ -19,6 +19,7 @@ import (
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
+	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 )
@@ -32,23 +33,23 @@ import (
 //     tool's first argument.
 //   - Tool calling is not supported with deepseek-reasoner.
 //   - DeepSeek doesn't do rate limiting: https://api-docs.deepseek.com/quick_start/rate_limit
-var Scoreboard = genai.Scoreboard{
+var Scoreboard = scoreboard.Score{
 	Country:      "CN",
 	DashboardURL: "https://platform.deepseek.com",
-	Scenarios: []genai.Scenario{
+	Scenarios: []scoreboard.Scenario{
 		{
 			Models: []string{"deepseek-chat"},
-			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &genai.FunctionalityText{
-				Tools:          genai.True,
-				IndecisiveTool: genai.True,
+			In:     map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out:    map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &scoreboard.FunctionalityText{
+				Tools:          scoreboard.True,
+				IndecisiveTool: scoreboard.True,
 				JSON:           true,
 				TopLogprobs:    true,
 			},
-			GenStream: &genai.FunctionalityText{
-				Tools:          genai.True,
-				IndecisiveTool: genai.True,
+			GenStream: &scoreboard.FunctionalityText{
+				Tools:          scoreboard.True,
+				IndecisiveTool: scoreboard.True,
 				JSON:           true,
 				TopLogprobs:    true,
 			},
@@ -56,14 +57,14 @@ var Scoreboard = genai.Scoreboard{
 		{
 			Models:   []string{"deepseek-reasoner"},
 			Thinking: true,
-			In:       map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:      map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &genai.FunctionalityText{
-				Tools: genai.Flaky,
+			In:       map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out:      map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &scoreboard.FunctionalityText{
+				Tools: scoreboard.Flaky,
 				JSON:  true,
 			},
-			GenStream: &genai.FunctionalityText{
-				Tools: genai.Flaky,
+			GenStream: &scoreboard.FunctionalityText{
+				Tools: scoreboard.Flaky,
 				JSON:  true,
 			},
 		},
@@ -609,7 +610,7 @@ func (c *Client) selectBestModel(ctx context.Context, preference string) (string
 	return selectedModel, nil
 }
 
-func (c *Client) Scoreboard() genai.Scoreboard {
+func (c *Client) Scoreboard() scoreboard.Score {
 	return Scoreboard
 }
 
@@ -694,5 +695,5 @@ var (
 	_ genai.Provider           = &Client{}
 	_ genai.ProviderGen        = &Client{}
 	_ genai.ProviderModel      = &Client{}
-	_ genai.ProviderScoreboard = &Client{}
+	_ scoreboard.ProviderScore = &Client{}
 )

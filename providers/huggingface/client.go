@@ -29,6 +29,7 @@ import (
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
+	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 )
@@ -49,23 +50,23 @@ import (
 //   - It supports way more options than the client currently implements.
 //   - Tool calling works very well but is biased; the model is lazy and when it's unsure, it will use the
 //     tool's first argument.
-var Scoreboard = genai.Scoreboard{
+var Scoreboard = scoreboard.Score{
 	Country:      "US",
 	DashboardURL: "https://huggingface.co/settings/billing",
 	// TODO: Huggingface obviously supports more modalities.
-	Scenarios: []genai.Scenario{
+	Scenarios: []scoreboard.Scenario{
 		{
 			Models: []string{"meta-llama/Llama-3.3-70B-Instruct"},
-			In:     map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:    map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &genai.FunctionalityText{
-				Tools:       genai.Flaky,
+			In:     map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out:    map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &scoreboard.FunctionalityText{
+				Tools:       scoreboard.Flaky,
 				JSON:        true,
 				Seed:        true,
 				TopLogprobs: true,
 			},
-			GenStream: &genai.FunctionalityText{
-				Tools:       genai.Flaky,
+			GenStream: &scoreboard.FunctionalityText{
+				Tools:       scoreboard.Flaky,
 				JSON:        true,
 				Seed:        true,
 				TopLogprobs: true,
@@ -76,19 +77,19 @@ var Scoreboard = genai.Scoreboard{
 			Thinking:           true,
 			ThinkingTokenStart: "<think>",
 			ThinkingTokenEnd:   "</think>",
-			In:                 map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:                map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &genai.FunctionalityText{
+			In:                 map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out:                map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &scoreboard.FunctionalityText{
 				ReportRateLimits: true,
-				Tools:            genai.Flaky, // Uses a quantized version.
+				Tools:            scoreboard.Flaky, // Uses a quantized version.
 				JSON:             true,
 				JSONSchema:       false, // Doesn't follow instructions.
 				Seed:             true,
 				TopLogprobs:      true,
 			},
-			GenStream: &genai.FunctionalityText{
+			GenStream: &scoreboard.FunctionalityText{
 				ReportRateLimits: true,
-				Tools:            genai.Flaky, // Uses a quantized version.
+				Tools:            scoreboard.Flaky, // Uses a quantized version.
 				JSON:             true,
 				JSONSchema:       true, // Doesn't follow instructions.
 				Seed:             true,
@@ -844,7 +845,7 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 	return c, err
 }
 
-func (c *Client) Scoreboard() genai.Scoreboard {
+func (c *Client) Scoreboard() scoreboard.Score {
 	return Scoreboard
 }
 
@@ -968,5 +969,5 @@ var (
 	_ genai.Provider           = &Client{}
 	_ genai.ProviderGen        = &Client{}
 	_ genai.ProviderModel      = &Client{}
-	_ genai.ProviderScoreboard = &Client{}
+	_ scoreboard.ProviderScore = &Client{}
 )

@@ -31,6 +31,7 @@ import (
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/bb"
+	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 )
@@ -54,13 +55,13 @@ import (
 // https://ai.google.dev/gemini-api/docs/video-understanding?hl=en#supported-formats
 // https://ai.google.dev/gemini-api/docs/audio?hl=en#supported-formats
 // https://ai.google.dev/gemini-api/docs/document-processing?hl=en&lang=rest#technical-details
-var Scoreboard = genai.Scoreboard{
+var Scoreboard = scoreboard.Score{
 	Country:      "US",
 	DashboardURL: "http://aistudio.google.com",
-	Scenarios: []genai.Scenario{
+	Scenarios: []scoreboard.Scenario{
 		{
 			Models: []string{"gemini-2.5-flash-lite"},
-			In: map[genai.Modality]genai.ModalCapability{
+			In: map[genai.Modality]scoreboard.ModalCapability{
 				genai.ModalityText: {Inline: true},
 				genai.ModalityImage: {
 					Inline:           true,
@@ -71,18 +72,18 @@ var Scoreboard = genai.Scoreboard{
 					SupportedFormats: []string{"application/pdf"},
 				},
 			},
-			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &genai.FunctionalityText{
-				Tools:          genai.True,
-				IndecisiveTool: genai.Flaky,
+			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &scoreboard.FunctionalityText{
+				Tools:          scoreboard.True,
+				IndecisiveTool: scoreboard.Flaky,
 				JSON:           true,
 				JSONSchema:     true,
 				Seed:           true,
 				TopLogprobs:    true,
 			},
-			GenStream: &genai.FunctionalityText{
-				Tools:          genai.True,
-				IndecisiveTool: genai.Flaky,
+			GenStream: &scoreboard.FunctionalityText{
+				Tools:          scoreboard.True,
+				IndecisiveTool: scoreboard.Flaky,
 				JSON:           true,
 				JSONSchema:     true,
 				Seed:           true,
@@ -91,7 +92,7 @@ var Scoreboard = genai.Scoreboard{
 		{
 			Models:   []string{"gemini-2.5-flash-lite"},
 			Thinking: true,
-			In: map[genai.Modality]genai.ModalCapability{
+			In: map[genai.Modality]scoreboard.ModalCapability{
 				genai.ModalityText: {Inline: true},
 				genai.ModalityImage: {
 					Inline:           true,
@@ -102,18 +103,18 @@ var Scoreboard = genai.Scoreboard{
 					SupportedFormats: []string{"application/pdf"},
 				},
 			},
-			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &genai.FunctionalityText{
-				Tools:          genai.True,
-				IndecisiveTool: genai.Flaky,
+			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &scoreboard.FunctionalityText{
+				Tools:          scoreboard.True,
+				IndecisiveTool: scoreboard.Flaky,
 				JSON:           true,
 				JSONSchema:     true,
 				Seed:           true,
 				TopLogprobs:    true,
 			},
-			GenStream: &genai.FunctionalityText{
-				Tools:          genai.True,
-				IndecisiveTool: genai.Flaky,
+			GenStream: &scoreboard.FunctionalityText{
+				Tools:          scoreboard.True,
+				IndecisiveTool: scoreboard.Flaky,
 				JSON:           true,
 				JSONSchema:     true,
 				Seed:           true,
@@ -122,7 +123,7 @@ var Scoreboard = genai.Scoreboard{
 		{
 			Models: []string{"gemini-2.5-flash"},
 			// It supports URL but only when uploaded to its own storage.
-			In: map[genai.Modality]genai.ModalCapability{
+			In: map[genai.Modality]scoreboard.ModalCapability{
 				genai.ModalityAudio: {
 					Inline:           true,
 					SupportedFormats: []string{"audio/aac", "audio/ogg", "audio/wav"},
@@ -137,19 +138,19 @@ var Scoreboard = genai.Scoreboard{
 				},
 				genai.ModalityText: {Inline: true},
 			},
-			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &genai.FunctionalityText{
-				Tools:          genai.True,
-				BiasedTool:     genai.Flaky,
-				IndecisiveTool: genai.Flaky,
+			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &scoreboard.FunctionalityText{
+				Tools:          scoreboard.True,
+				BiasedTool:     scoreboard.Flaky,
+				IndecisiveTool: scoreboard.Flaky,
 				JSON:           true,
 				JSONSchema:     true,
 				Seed:           true,
 				TopLogprobs:    true,
 			},
-			GenStream: &genai.FunctionalityText{
-				Tools:      genai.True,
-				BiasedTool: genai.Flaky,
+			GenStream: &scoreboard.FunctionalityText{
+				Tools:      scoreboard.True,
+				BiasedTool: scoreboard.Flaky,
 				JSON:       true,
 				JSONSchema: true,
 				Seed:       true,
@@ -159,7 +160,7 @@ var Scoreboard = genai.Scoreboard{
 			Models:   []string{"gemini-2.5-flash"},
 			Thinking: true,
 			// It supports URL but only when uploaded to its own storage.
-			In: map[genai.Modality]genai.ModalCapability{
+			In: map[genai.Modality]scoreboard.ModalCapability{
 				genai.ModalityAudio: {
 					Inline:           true,
 					SupportedFormats: []string{"audio/aac", "audio/flac", "audio/mp3", "audio/ogg", "audio/wav"},
@@ -174,19 +175,19 @@ var Scoreboard = genai.Scoreboard{
 				},
 				genai.ModalityText: {Inline: true},
 			},
-			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &genai.FunctionalityText{
-				Tools:          genai.True,
-				BiasedTool:     genai.Flaky,
-				IndecisiveTool: genai.Flaky,
+			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &scoreboard.FunctionalityText{
+				Tools:          scoreboard.True,
+				BiasedTool:     scoreboard.Flaky,
+				IndecisiveTool: scoreboard.Flaky,
 				JSON:           true,
 				JSONSchema:     true,
 				Seed:           true,
 				TopLogprobs:    true,
 			},
-			GenStream: &genai.FunctionalityText{
-				Tools:      genai.True,
-				BiasedTool: genai.Flaky,
+			GenStream: &scoreboard.FunctionalityText{
+				Tools:      scoreboard.True,
+				BiasedTool: scoreboard.Flaky,
 				JSON:       true,
 				JSONSchema: true,
 				Seed:       true,
@@ -196,7 +197,7 @@ var Scoreboard = genai.Scoreboard{
 			Models:   []string{"gemini-2.5-pro"},
 			Thinking: true,
 			// It supports URL but only when uploaded to its own storage.
-			In: map[genai.Modality]genai.ModalCapability{
+			In: map[genai.Modality]scoreboard.ModalCapability{
 				genai.ModalityAudio: {
 					Inline:           true,
 					SupportedFormats: []string{"audio/aac", "audio/flac", "audio/wav"},
@@ -211,18 +212,18 @@ var Scoreboard = genai.Scoreboard{
 				},
 				genai.ModalityText: {Inline: true},
 			},
-			Out: map[genai.Modality]genai.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &genai.FunctionalityText{
-				Tools:          genai.True,
-				IndecisiveTool: genai.Flaky,
+			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			GenSync: &scoreboard.FunctionalityText{
+				Tools:          scoreboard.True,
+				IndecisiveTool: scoreboard.Flaky,
 				JSON:           true,
 				JSONSchema:     true,
 				Seed:           true,
 				TopLogprobs:    true,
 			},
-			GenStream: &genai.FunctionalityText{
-				Tools:          genai.True,
-				IndecisiveTool: genai.Flaky,
+			GenStream: &scoreboard.FunctionalityText{
+				Tools:          scoreboard.True,
+				IndecisiveTool: scoreboard.Flaky,
 				JSON:           true,
 				JSONSchema:     true,
 				Seed:           true,
@@ -230,18 +231,18 @@ var Scoreboard = genai.Scoreboard{
 		},
 		{
 			Models: []string{"imagen-4.0-generate-preview-06-06"},
-			In: map[genai.Modality]genai.ModalCapability{
+			In: map[genai.Modality]scoreboard.ModalCapability{
 				genai.ModalityText: {Inline: true},
 			},
-			Out: map[genai.Modality]genai.ModalCapability{
+			Out: map[genai.Modality]scoreboard.ModalCapability{
 				genai.ModalityImage: {
 					Inline:           true,
 					SupportedFormats: []string{"image/jpeg"},
 				},
 			},
-			GenDoc: &genai.FunctionalityDoc{
+			GenDoc: &scoreboard.FunctionalityDoc{
 				Seed:               true,
-				BrokenTokenUsage:   genai.True,
+				BrokenTokenUsage:   scoreboard.True,
 				BrokenFinishReason: true,
 			},
 		},
@@ -1507,7 +1508,7 @@ func (c *Client) selectBestModel(ctx context.Context, preference string) (string
 	return selectedModel, nil
 }
 
-func (c *Client) Scoreboard() genai.Scoreboard {
+func (c *Client) Scoreboard() scoreboard.Score {
 	return Scoreboard
 }
 
@@ -1945,5 +1946,5 @@ var (
 	_ genai.ProviderGen        = &Client{}
 	_ genai.ProviderModel      = &Client{}
 	_ genai.ProviderCache      = &Client{}
-	_ genai.ProviderScoreboard = &Client{}
+	_ scoreboard.ProviderScore = &Client{}
 )

@@ -6,6 +6,7 @@
 package internal
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
@@ -127,6 +128,7 @@ func (r *Records) Record(name string, h http.RoundTripper, opts ...recorder.Opti
 		recorder.WithSkipRequestLatency(true),
 		recorder.WithRealTransport(h),
 		recorder.WithMatcher(matchIgnorePort),
+		recorder.WithFS(&skipEmptyFS{FS: cassette.NewDiskFS()}),
 	}
 	r.Signal(name)
 	// Don't forget to call Stop()!
@@ -184,6 +186,18 @@ func DecodeJSON(d *json.Decoder, out any, r io.ReadSeeker) (bool, error) {
 }
 
 //
+
+type skipEmptyFS struct {
+	cassette.FS
+}
+
+func (c *skipEmptyFS) WriteFile(name string, data []byte) error {
+	if bytes.Contains(data, []byte("interactions: []")) {
+		// Do not save files without an interaction.
+		return nil
+	}
+	return c.FS.WriteFile(name, data)
+}
 
 type contextKey struct{}
 

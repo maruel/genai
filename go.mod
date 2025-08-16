@@ -9,7 +9,7 @@ require (
 	github.com/maruel/huggingface v0.1.0
 	github.com/maruel/roundtrippers v0.4.2
 	golang.org/x/sync v0.16.0
-	gopkg.in/dnaeon/go-vcr.v4 v4.0.4
+	gopkg.in/dnaeon/go-vcr.v4 v4.0.5
 )
 
 require (
@@ -17,6 +17,7 @@ require (
 	github.com/bahlo/generic-list-go v0.2.0 // indirect
 	github.com/buger/jsonparser v1.1.1 // indirect
 	github.com/edsrzf/mmap-go v1.2.0 // indirect
+	github.com/goccy/go-yaml v1.18.0 // indirect
 	github.com/klauspost/compress v1.18.0 // indirect
 	github.com/mailru/easyjson v0.9.0 // indirect
 	github.com/maruel/safetensors v1.2.0 // indirect

@@ -238,7 +238,9 @@ func printSummaryTable(all map[string]func(opts *genai.OptionsProvider, wrapper 
 			opts.Remote = "http://localhost:0"
 		}
 		p, err := f(opts, nil)
-		if err != nil {
+		// The function can return an error and still return a client when no API key was found. It's okay here
+		// because we won't use the service provider.
+		if p == nil {
 			fmt.Fprintf(os.Stderr, "ignoring provider %s: %v\n", name, err)
 			continue
 		}

@@ -428,7 +428,7 @@ func TestValidateReflectedToJSON(t *testing.T) {
 	t.Run("valid", func(t *testing.T) {
 		tests := []struct {
 			name string
-			in   ReflectedToJSON
+			in   any
 		}{
 			{
 				name: "valid struct",
@@ -450,7 +450,7 @@ func TestValidateReflectedToJSON(t *testing.T) {
 	t.Run("error", func(t *testing.T) {
 		tests := []struct {
 			name   string
-			in     ReflectedToJSON
+			in     any
 			errMsg string
 		}{
 			{

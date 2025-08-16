@@ -1028,6 +1028,7 @@ type ProviderModel interface {
 type Model interface {
 	GetID() string
 	String() string
+	// Context returns the number of tokens the model can process as input.
 	Context() int64
 }
 

@@ -148,9 +148,20 @@ type OptionsText struct {
 	// ReplyAsJSON enforces the output to be valid JSON, any JSON. It is
 	// important to tell the model to reply in JSON in the prompt itself.
 	ReplyAsJSON bool
-	// DecodeAs enforces a reply with a specific JSON structure. It is important
-	// to tell the model to reply in JSON in the prompt itself.
-	DecodeAs ReflectedToJSON
+	// DecodeAs enforces a reply with a specific JSON structure. It must be a pointer to a struct that can be
+	// decoded by encoding/json and can have jsonschema tags.
+	//
+	// It is important to request the model to "reply in JSON" in the prompt itself.
+	//
+	// It is recommended to use jsonschema_description tags to describe each
+	// field or argument.
+	//
+	// Use jsonschema:"enum=..." to enforce a specific value within a set.
+	//
+	// Use omitempty to make the field optional.
+	//
+	// See https://github.com/invopop/jsonschema#example for more examples.
+	DecodeAs any
 	// Tools is the list of tools that the LLM can request to call.
 	Tools []ToolDef
 	// ToolCallRequest tells the LLM a tool call must be done.
@@ -200,19 +211,6 @@ func (o *OptionsText) Validate() error {
 	}
 	return nil
 }
-
-// ReflectedToJSON must be a pointer to a struct that can be decoded by
-// encoding/json and can have jsonschema tags.
-//
-// It is recommended to use jsonschema_description tags to describe each
-// field or argument.
-//
-// Use jsonschema:"enum=..." to enforce a specific value within a set.
-//
-// Use omitempty to make the field optional.
-//
-// See https://github.com/invopop/jsonschema#example for more examples.
-type ReflectedToJSON any
 
 // Tools
 
@@ -360,7 +358,7 @@ func (o *OptionsVideo) Modalities() Modalities {
 
 // Private
 
-func validateReflectedToJSON(r ReflectedToJSON) error {
+func validateReflectedToJSON(r any) error {
 	tp := reflect.TypeOf(r)
 	if tp.Kind() == reflect.Ptr {
 		tp = tp.Elem()

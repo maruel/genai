@@ -13,7 +13,6 @@ import (
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/adapters"
-	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/perplexity"
@@ -88,7 +87,7 @@ func (i *injectOption) GenStream(ctx context.Context, msgs genai.Messages, repli
 
 func TestClient_Scoreboard(t *testing.T) {
 	// Perplexity doesn't support listing models. See https://docs.perplexity.ai/api-reference
-	sb := getClient(t, base.NoModel).Scoreboard()
+	sb := getClient(t, genai.ModelNone).Scoreboard()
 	var models []scoreboardtest.Model
 	for _, sc := range sb.Scenarios {
 		for _, model := range sc.Models {
@@ -103,9 +102,9 @@ func TestClient_Preferred(t *testing.T) {
 		name string
 		want string
 	}{
-		{base.PreferredCheap, "sonar"},
-		{base.PreferredGood, "sonar-pro"},
-		{base.PreferredSOTA, "sonar-reasoning-pro"},
+		{genai.ModelCheap, "sonar"},
+		{genai.ModelGood, "sonar-pro"},
+		{genai.ModelSOTA, "sonar-reasoning-pro"},
 	}
 	for _, line := range data {
 		t.Run(line.name, func(t *testing.T) {

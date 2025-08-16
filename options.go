@@ -62,6 +62,23 @@ type OptionsProvider struct {
 	_ struct{}
 }
 
+// Model markers to pass to OptionsProvider.Model.
+const (
+	// ModelNone explicitly tells the provider to not automatically select a model. The use case is when the
+	// only intended call is ListModel(), thus there's no point into selecting a model automatically.
+	ModelNone = "NONE"
+
+	// ModelCheap requests the provider to automatically select the cheapest model it can find.
+	ModelCheap = "CHEAP"
+
+	// ModelGood requests the provider to automatically select a good every day model.
+	ModelGood = "GOOD"
+
+	// ModelSOTA requests the provider to automatically select the best state-of-the-art model
+	// is can find.
+	ModelSOTA = "SOTA"
+)
+
 // Options is options that can be provided to a ProviderGen interface.
 type Options interface {
 	Validatable

@@ -357,9 +357,9 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 		return nil, errors.New("option Remote is required")
 	}
 	model := opts.Model
-	if model == base.NoModel {
+	if model == genai.ModelNone {
 		model = ""
-	} else if model == base.PreferredCheap || model == base.PreferredGood || model == base.PreferredSOTA {
+	} else if model == genai.ModelCheap || model == genai.ModelGood || model == genai.ModelSOTA {
 		return nil, errors.New("default models are not supported")
 	}
 	t := base.DefaultTransport

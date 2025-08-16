@@ -14,7 +14,6 @@ import (
 	"testing"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/togetherai"
@@ -112,7 +111,7 @@ func (h *hideHTTP500) GenDoc(ctx context.Context, msg genai.Message, opts genai.
 }
 
 func TestClient_Scoreboard(t *testing.T) {
-	genaiModels, err := getClient(t, base.NoModel).ListModels(t.Context())
+	genaiModels, err := getClient(t, genai.ModelNone).ListModels(t.Context())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -128,9 +127,9 @@ func TestClient_Preferred(t *testing.T) {
 		name string
 		want string
 	}{
-		{base.PreferredCheap, "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free"},
-		{base.PreferredGood, "Qwen/Qwen2.5-7B-Instruct-Turbo"},
-		{base.PreferredSOTA, "Qwen/Qwen3-235B-A22B-Thinking-2507"},
+		{genai.ModelCheap, "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free"},
+		{genai.ModelGood, "Qwen/Qwen2.5-7B-Instruct-Turbo"},
+		{genai.ModelSOTA, "Qwen/Qwen3-235B-A22B-Thinking-2507"},
 	}
 	for _, line := range data {
 		t.Run(line.name, func(t *testing.T) {

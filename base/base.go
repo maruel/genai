@@ -3,6 +3,8 @@
 // that can be found in the LICENSE file.
 
 // Package base is awesome sauce to reduce code duplication across most providers.
+//
+// It is not meant to be used by end users.
 package base
 
 import (
@@ -41,22 +43,6 @@ var DefaultTransport http.RoundTripper = &roundtrippers.Retry{
 		Exp:         1.5,
 	},
 }
-
-const (
-	// NoModel explicitly tells the providers' New() function to not automatically select a model. The use case
-	// is when the only intended call is ListModel(), thus there's no point into selecting a model automatically.
-	NoModel = "NO_MODEL"
-
-	// PreferredCheap is a marker for providers' New() function to tell it to use the cheapest model it can find.
-	PreferredCheap = "PREFERRED_CHEAP"
-
-	// PreferredGood is a marker for providers' New() function to tell it to use a good every day model.
-	PreferredGood = "PREFERRED_GOOD"
-
-	// PreferredSOTA is a marker for providers' New() function to tell it to use the best state-of-the-art model
-	// is can find.
-	PreferredSOTA = "PREFERRED_SOTA"
-)
 
 // ErrAPIKeyRequired is returned by the providers New() function when no key was found.
 type ErrAPIKeyRequired struct {

@@ -11,7 +11,6 @@ import (
 	"testing"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/deepseek"
@@ -31,7 +30,7 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 }
 
 func TestClient_Scoreboard(t *testing.T) {
-	genaiModels, err := getClient(t, base.NoModel).ListModels(t.Context())
+	genaiModels, err := getClient(t, genai.ModelNone).ListModels(t.Context())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -48,9 +47,9 @@ func TestClient_Preferred(t *testing.T) {
 		name string
 		want string
 	}{
-		{base.PreferredCheap, "deepseek-chat"},
-		{base.PreferredGood, "deepseek-reasoner"},
-		{base.PreferredSOTA, "deepseek-reasoner"},
+		{genai.ModelCheap, "deepseek-chat"},
+		{genai.ModelGood, "deepseek-reasoner"},
+		{genai.ModelSOTA, "deepseek-reasoner"},
 	}
 	for _, line := range data {
 		t.Run(line.name, func(t *testing.T) {

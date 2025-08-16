@@ -14,7 +14,6 @@ import (
 	"testing"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/mistral"
@@ -76,7 +75,7 @@ func (h *hideHTTP500) GenStream(ctx context.Context, msgs genai.Messages, chunks
 }
 
 func TestClient_Scoreboard(t *testing.T) {
-	genaiModels, err := getClient(t, base.NoModel).ListModels(t.Context())
+	genaiModels, err := getClient(t, genai.ModelNone).ListModels(t.Context())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -92,9 +91,9 @@ func TestClient_Preferred(t *testing.T) {
 		name string
 		want string
 	}{
-		{base.PreferredCheap, "mistral-tiny-latest"},
-		{base.PreferredGood, "mistral-medium-latest"},
-		{base.PreferredSOTA, "mistral-large-latest"},
+		{genai.ModelCheap, "mistral-tiny-latest"},
+		{genai.ModelGood, "mistral-medium-latest"},
+		{genai.ModelSOTA, "mistral-large-latest"},
 	}
 	for _, line := range data {
 		t.Run(line.name, func(t *testing.T) {

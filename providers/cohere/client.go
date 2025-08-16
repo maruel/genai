@@ -911,7 +911,7 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 	}
 	model := opts.Model
 	if model == "" {
-		model = base.PreferredGood
+		model = genai.ModelGood
 	}
 	t := base.DefaultTransport
 	if wrapper != nil {
@@ -938,9 +938,9 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 		},
 	}
 	switch model {
-	case base.NoModel:
+	case genai.ModelNone:
 		c.Model = ""
-	case base.PreferredCheap, base.PreferredGood, base.PreferredSOTA:
+	case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA:
 		if err == nil {
 			if c.Model, err = c.selectBestModel(context.Background(), model); err != nil {
 				return nil, err
@@ -959,8 +959,8 @@ func (c *Client) selectBestModel(ctx context.Context, preference string) (string
 
 	// https://cohere.com/pricing
 	// https://docs.cohere.com/v2/docs/models
-	cheap := preference == base.PreferredCheap
-	good := preference == base.PreferredGood
+	cheap := preference == genai.ModelCheap
+	good := preference == genai.ModelGood
 	selectedModel := ""
 	var context int64
 	for _, mdl := range mdls {

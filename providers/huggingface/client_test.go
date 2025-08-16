@@ -12,7 +12,6 @@ import (
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/adapters"
-	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/huggingface"
@@ -40,7 +39,7 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 
 func TestClient_Scoreboard(t *testing.T) {
 	// We do not want to test thousands of models, so get the ones already in the scoreboard.
-	sb := getClient(t, base.NoModel).Scoreboard()
+	sb := getClient(t, genai.ModelNone).Scoreboard()
 	var models []scoreboardtest.Model
 	for _, sc := range sb.Scenarios {
 		for _, model := range sc.Models {
@@ -55,9 +54,9 @@ func TestClient_Preferred(t *testing.T) {
 		name string
 		want string
 	}{
-		{base.PreferredCheap, "meta-llama/Llama-3.2-1B-Instruct"},
-		{base.PreferredGood, "Qwen/Qwen3-235B-A22B"},
-		{base.PreferredSOTA, "deepseek-ai/DeepSeek-R1-0528"},
+		{genai.ModelCheap, "meta-llama/Llama-3.2-3B-Instruct"},
+		{genai.ModelGood, "Qwen/Qwen3-Coder-480B-A35B-Instruct"},
+		{genai.ModelSOTA, "deepseek-ai/DeepSeek-R1"},
 	}
 	for _, line := range data {
 		t.Run(line.name, func(t *testing.T) {

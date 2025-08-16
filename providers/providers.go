@@ -10,7 +10,6 @@ import (
 	"net/http"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/providers/anthropic"
 	"github.com/maruel/genai/providers/bfl"
 	"github.com/maruel/genai/providers/cerebras"
@@ -173,7 +172,7 @@ var All = map[string]func(opts *genai.OptionsProvider, wrapper func(http.RoundTr
 func Available() map[string]func(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
 	avail := map[string]func(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error){}
 	for name, f := range All {
-		if c, err := f(&genai.OptionsProvider{Model: base.NoModel}, nil); err == nil {
+		if c, err := f(&genai.OptionsProvider{Model: genai.ModelNone}, nil); err == nil {
 			if p, ok := c.(genai.ProviderPing); ok {
 				if err = p.Ping(context.Background()); err != nil {
 					continue

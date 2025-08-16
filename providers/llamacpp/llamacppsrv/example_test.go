@@ -13,7 +13,6 @@ import (
 	"strings"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/providers/llamacpp"
 	"github.com/maruel/genai/providers/llamacpp/llamacppsrv"
 	"github.com/maruel/huggingface"
@@ -27,7 +26,7 @@ func Example() {
 		return
 	}
 	defer srv.Close()
-	c, err := llamacpp.New(&genai.OptionsProvider{Remote: srv.URL(), Model: base.NoModel}, nil)
+	c, err := llamacpp.New(&genai.OptionsProvider{Remote: srv.URL(), Model: genai.ModelNone}, nil)
 	if err != nil {
 		log.Print(err)
 		return

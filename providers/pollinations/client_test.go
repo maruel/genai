@@ -15,7 +15,6 @@ import (
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/adapters"
-	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/pollinations"
@@ -130,9 +129,9 @@ func TestClient_Preferred(t *testing.T) {
 		name string
 		want string
 	}{
-		{base.PreferredCheap, "llamascout"},
-		{base.PreferredGood, "openai-large"},
-		{base.PreferredSOTA, "deepseek-reasoning"},
+		{genai.ModelCheap, "llamascout"},
+		{genai.ModelGood, "openai-large"},
+		{genai.ModelSOTA, "deepseek-reasoning"},
 	}
 	for _, line := range data {
 		t.Run(line.name, func(t *testing.T) {
@@ -181,7 +180,7 @@ func warmupCache(t testing.TB) []genai.Model {
 	doOnce.Do(func() {
 		var r internal.Recorder
 		var err2 error
-		c, err := pollinations.New(&genai.OptionsProvider{APIKey: "genai-unittests", Model: base.NoModel}, func(h http.RoundTripper) http.RoundTripper {
+		c, err := pollinations.New(&genai.OptionsProvider{APIKey: "genai-unittests", Model: genai.ModelNone}, func(h http.RoundTripper) http.RoundTripper {
 			r, err2 = testRecorder.Records.Record("WarmupCache", h)
 			return r
 		})

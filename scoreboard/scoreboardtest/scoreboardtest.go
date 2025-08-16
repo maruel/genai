@@ -13,7 +13,6 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/scoreboard"
@@ -45,7 +44,7 @@ func AssertScoreboard(t *testing.T, gc GetClient, models []Model, rec *internal.
 	usage := genai.Usage{}
 
 	// Find the reference.
-	cc := gc(t, Model{Model: base.NoModel}, nil)
+	cc := gc(t, Model{Model: genai.ModelNone}, nil)
 	og := cc
 	for {
 		if u, ok := og.(genai.ProviderUnwrap); ok {

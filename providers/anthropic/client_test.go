@@ -14,7 +14,6 @@ import (
 	"time"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/anthropic"
@@ -60,7 +59,7 @@ func (i *injectOption) GenStream(ctx context.Context, msgs genai.Messages, repli
 }
 
 func TestClient_Scoreboard(t *testing.T) {
-	genaiModels, err := getClient(t, base.NoModel).ListModels(t.Context())
+	genaiModels, err := getClient(t, genai.ModelNone).ListModels(t.Context())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -118,9 +117,9 @@ func TestClient_Preferred(t *testing.T) {
 		name string
 		want string
 	}{
-		{base.PreferredCheap, "claude-3-5-haiku-20241022"},
-		{base.PreferredGood, "claude-sonnet-4-20250514"},
-		{base.PreferredSOTA, "claude-opus-4-20250514"},
+		{genai.ModelCheap, "claude-3-5-haiku-20241022"},
+		{genai.ModelGood, "claude-sonnet-4-20250514"},
+		{genai.ModelSOTA, "claude-opus-4-1-20250805"},
 	}
 	for _, line := range data {
 		t.Run(line.name, func(t *testing.T) {

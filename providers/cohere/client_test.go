@@ -10,7 +10,6 @@ import (
 	"testing"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/cohere"
@@ -30,7 +29,7 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 }
 
 func TestClient_Scoreboard(t *testing.T) {
-	genaiModels, err := getClient(t, base.NoModel).ListModels(t.Context())
+	genaiModels, err := getClient(t, genai.ModelNone).ListModels(t.Context())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -52,9 +51,9 @@ func TestClient_Preferred(t *testing.T) {
 		name string
 		want string
 	}{
-		{base.PreferredCheap, "command-light"},
-		{base.PreferredGood, "command-r7b-12-2024"},
-		{base.PreferredSOTA, "command-a-03-2025"},
+		{genai.ModelCheap, "command-light"},
+		{genai.ModelGood, "command-r7b-12-2024"},
+		{genai.ModelSOTA, "command-a-03-2025"},
 	}
 	for _, line := range data {
 		t.Run(line.name, func(t *testing.T) {

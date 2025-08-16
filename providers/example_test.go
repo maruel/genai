@@ -16,13 +16,12 @@ import (
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/adapters"
-	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/providers"
 )
 
 func Example_all_ProvidersModel() {
 	for _, name := range GetProvidersModel() {
-		c, err := providers.All[name](&genai.OptionsProvider{Model: base.NoModel}, nil)
+		c, err := providers.All[name](&genai.OptionsProvider{Model: genai.ModelNone}, nil)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -51,7 +50,7 @@ func Example_all_ProvidersModel() {
 func GetProvidersModel() []string {
 	var names []string
 	for name, f := range providers.All {
-		c, _ := f(&genai.OptionsProvider{Model: base.NoModel}, nil)
+		c, _ := f(&genai.OptionsProvider{Model: genai.ModelNone}, nil)
 		if c == nil {
 			continue
 		}
@@ -65,7 +64,7 @@ func GetProvidersModel() []string {
 
 func Example_all_ProviderGen() {
 	for name, f := range providers.All {
-		c, err := f(&genai.OptionsProvider{Model: base.PreferredCheap}, nil)
+		c, err := f(&genai.OptionsProvider{Model: genai.ModelCheap}, nil)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -113,7 +112,7 @@ func Example_all_Full() {
 		s = "set environment variables, e.g. `OPENAI_API_KEY`"
 	}
 	provider := flag.String("provider", "", "provider to use, "+s)
-	model := flag.String("model", "", "model to use; PREFERRED_CHEAP, PREFERRED_GOOD (default) or PREFERRED_SOTA for automatic model selection")
+	model := flag.String("model", "", "model to use; "+genai.ModelCheap+", "+genai.ModelGood+" (default) or "+genai.ModelSOTA+" for automatic model selection")
 	remote := flag.String("remote", "", "url to use, e.g. when using ollama or llama-server on another host")
 	flag.Parse()
 
@@ -159,7 +158,7 @@ func LoadDefaultProviderGen() (genai.ProviderGen, error) {
 	avail := providers.Available()
 	if len(avail) == 1 {
 		for name, f := range avail {
-			c, err := f(&genai.OptionsProvider{Model: base.NoModel}, nil)
+			c, err := f(&genai.OptionsProvider{Model: genai.ModelNone}, nil)
 			if err != nil {
 				return nil, err
 			}
@@ -224,7 +223,7 @@ func Example_all_GetProvidersGenAsync() {
 func GetProvidersGenAsync() []string {
 	var names []string
 	for name, f := range providers.All {
-		c, _ := f(&genai.OptionsProvider{Model: base.NoModel}, nil)
+		c, _ := f(&genai.OptionsProvider{Model: genai.ModelNone}, nil)
 		if c == nil {
 			continue
 		}

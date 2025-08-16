@@ -198,7 +198,7 @@ func main() {
 		s = "set environment variables, e.g. `OPENAI_API_KEY`"
 	}
 	provider := flag.String("provider", "", "provider to use, "+s)
-	model := flag.String("model", "", "model to use; PREFERRED_CHEAP, PREFERRED_GOOD (default) or PREFERRED_SOTA for automatic model selection")
+	model := flag.String("model", "", "model to use; "+genai.ModelCheap+", "+genai.ModelGood+" (default) or "+genai.ModelSOTA+" for automatic model selection")
 	remote := flag.String("remote", "", "url to use, e.g. when using ollama or llama-server on another host")
 	flag.Parse()
 

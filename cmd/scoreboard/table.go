@@ -221,7 +221,7 @@ func printTable(provider string) error {
 	if f == nil {
 		return fmt.Errorf("provider %s: not found", provider)
 	}
-	c, err := f(&genai.OptionsProvider{Model: base.NoModel}, nil)
+	c, err := f(&genai.OptionsProvider{Model: genai.ModelNone}, nil)
 	if c == nil {
 		return fmt.Errorf("provider %s: %w", provider, err)
 	}

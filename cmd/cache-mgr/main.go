@@ -18,7 +18,6 @@ import (
 	"syscall"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/providers"
 	"golang.org/x/sync/errgroup"
@@ -42,7 +41,7 @@ func mainImpl() error {
 
 	names := make([]string, 0, len(providers.All))
 	for name := range providers.All {
-		if c, _ := providers.All[name](&genai.OptionsProvider{Model: base.NoModel}, nil); c != nil {
+		if c, _ := providers.All[name](&genai.OptionsProvider{Model: genai.ModelNone}, nil); c != nil {
 			if _, ok := c.(genai.ProviderCache); ok {
 				names = append(names, name)
 			}
@@ -61,7 +60,7 @@ func mainImpl() error {
 	if !slices.Contains(names, *provider) {
 		return fmt.Errorf("unknown backend %q", *provider)
 	}
-	c, err := providers.All[*provider](&genai.OptionsProvider{Model: base.NoModel}, nil)
+	c, err := providers.All[*provider](&genai.OptionsProvider{Model: genai.ModelNone}, nil)
 	if err != nil {
 		return err
 	}

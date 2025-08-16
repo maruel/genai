@@ -1099,7 +1099,7 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 	}
 	model := opts.Model
 	switch model {
-	case "", base.NoModel, base.PreferredCheap, base.PreferredGood, base.PreferredSOTA:
+	case "", genai.ModelNone, genai.ModelCheap, genai.ModelGood, genai.ModelSOTA:
 		model = ""
 	default:
 	}

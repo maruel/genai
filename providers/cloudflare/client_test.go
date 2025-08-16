@@ -10,7 +10,6 @@ import (
 	"testing"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/cloudflare"
@@ -40,7 +39,7 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 
 func TestClient_Scoreboard(t *testing.T) {
 	// Cloudflare hosts a ton of useless models, so just get the ones already in the scoreboard.
-	sb := getClient(t, base.NoModel).Scoreboard()
+	sb := getClient(t, genai.ModelNone).Scoreboard()
 	var models []scoreboardtest.Model
 	for _, sc := range sb.Scenarios {
 		for _, model := range sc.Models {
@@ -55,9 +54,9 @@ func TestClient_Preferred(t *testing.T) {
 		name string
 		want string
 	}{
-		{base.PreferredCheap, "@cf/meta/llama-3.2-1b-instruct"},
-		{base.PreferredGood, "@cf/meta/llama-3.3-70b-instruct-fp8-fast"},
-		{base.PreferredSOTA, "@cf/deepseek-ai/deepseek-r1-distill-qwen-32b"},
+		{genai.ModelCheap, "@cf/meta/llama-3.2-1b-instruct"},
+		{genai.ModelGood, "@cf/meta/llama-3.3-70b-instruct-fp8-fast"},
+		{genai.ModelSOTA, "@cf/deepseek-ai/deepseek-r1-distill-qwen-32b"},
 	}
 	for _, line := range data {
 		t.Run(line.name, func(t *testing.T) {

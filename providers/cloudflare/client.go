@@ -701,7 +701,7 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 	}
 	model := opts.Model
 	if model == "" {
-		model = base.PreferredGood
+		model = genai.ModelGood
 	}
 	t := base.DefaultTransport
 	if wrapper != nil {
@@ -733,10 +733,10 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 		accountID: accountID,
 	}
 	switch model {
-	case base.NoModel:
+	case genai.ModelNone:
 		c.Model = ""
 		c.GenSyncURL = ""
-	case base.PreferredCheap, base.PreferredGood, base.PreferredSOTA:
+	case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA:
 		if err == nil {
 			if c.Model, err = c.selectBestModel(context.Background(), model); err != nil {
 				return nil, err
@@ -753,8 +753,8 @@ func (c *Client) selectBestModel(ctx context.Context, preference string) (string
 	if err != nil {
 		return "", err
 	}
-	cheap := preference == base.PreferredCheap
-	good := preference == base.PreferredGood
+	cheap := preference == genai.ModelCheap
+	good := preference == genai.ModelGood
 	selectedModel := ""
 	price := 100000.
 	if !cheap {

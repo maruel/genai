@@ -210,13 +210,13 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 	// When no model is specified, use the dev model since costs increase quite fast.
 	model := opts.Model
 	switch model {
-	case base.NoModel:
+	case genai.ModelNone:
 		model = ""
-	case base.PreferredCheap, "":
+	case genai.ModelCheap, "":
 		model = "flux-dev"
-	case base.PreferredGood:
+	case genai.ModelGood:
 		model = "flux-pro-1.1"
-	case base.PreferredSOTA:
+	case genai.ModelSOTA:
 		model = "flux-pro-1.1-ultra"
 	default:
 	}

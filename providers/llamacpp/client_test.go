@@ -17,7 +17,6 @@ import (
 	"testing"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/llamacpp"
@@ -35,7 +34,7 @@ func TestClient(t *testing.T) {
 	s := lazyServer{t: t, apiKey: apiKey}
 
 	t.Run("ListModels", func(t *testing.T) {
-		c, err := llamacpp.New(&genai.OptionsProvider{APIKey: apiKey, Remote: s.lazyStart(t), Model: base.NoModel}, func(h http.RoundTripper) http.RoundTripper {
+		c, err := llamacpp.New(&genai.OptionsProvider{APIKey: apiKey, Remote: s.lazyStart(t), Model: genai.ModelNone}, func(h http.RoundTripper) http.RoundTripper {
 			return testRecorder.Record(t, h)
 		})
 		if err != nil {
@@ -52,7 +51,7 @@ func TestClient(t *testing.T) {
 
 	t.Run("Scoreboard", func(t *testing.T) {
 		serverURL := s.lazyStart(t)
-		c, err := llamacpp.New(&genai.OptionsProvider{APIKey: apiKey, Remote: serverURL, Model: base.NoModel}, func(h http.RoundTripper) http.RoundTripper {
+		c, err := llamacpp.New(&genai.OptionsProvider{APIKey: apiKey, Remote: serverURL, Model: genai.ModelNone}, func(h http.RoundTripper) http.RoundTripper {
 			return testRecorder.Record(t, h)
 		})
 		if err != nil {
@@ -76,7 +75,7 @@ func TestClient(t *testing.T) {
 	// Run this at the end so there would be non-zero values.
 	t.Run("Metrics", func(t *testing.T) {
 		serverURL := s.lazyStart(t)
-		c, err := llamacpp.New(&genai.OptionsProvider{APIKey: apiKey, Remote: serverURL, Model: base.NoModel}, func(h http.RoundTripper) http.RoundTripper {
+		c, err := llamacpp.New(&genai.OptionsProvider{APIKey: apiKey, Remote: serverURL, Model: genai.ModelNone}, func(h http.RoundTripper) http.RoundTripper {
 			return testRecorder.Record(t, h)
 		})
 		if err != nil {
@@ -129,9 +128,9 @@ func TestClient_Preferred(t *testing.T) {
 		name string
 		want string
 	}{
-		{base.PreferredCheap, ""},
-		{base.PreferredGood, ""},
-		{base.PreferredSOTA, ""},
+		{genai.ModelCheap, ""},
+		{genai.ModelGood, ""},
+		{genai.ModelSOTA, ""},
 	}
 	for _, line := range data {
 		t.Run(line.name, func(t *testing.T) {

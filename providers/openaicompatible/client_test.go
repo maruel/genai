@@ -10,7 +10,6 @@ import (
 	"testing"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/openaicompatible"
 	"github.com/maruel/roundtrippers"
@@ -20,7 +19,7 @@ import (
 // Testing is very different here as we test various providers to see if they work with this generic provider.
 
 func TestClient_Preferred(t *testing.T) {
-	for _, line := range []string{base.PreferredCheap, base.PreferredGood, base.PreferredSOTA} {
+	for _, line := range []string{genai.ModelCheap, genai.ModelGood, genai.ModelSOTA} {
 		t.Run(line, func(t *testing.T) {
 			_, err := openaicompatible.New(&genai.OptionsProvider{Remote: "http://localhost", Model: line}, nil)
 			if err == nil {

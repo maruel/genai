@@ -591,13 +591,13 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 	// it will be pulled upon first use.
 	model := opts.Model
 	switch model {
-	case base.NoModel:
+	case genai.ModelNone:
 		model = ""
-	case base.PreferredCheap:
+	case genai.ModelCheap:
 		model = "gemma3:1b"
-	case base.PreferredGood, "":
+	case genai.ModelGood, "":
 		model = "qwen3:30b"
-	case base.PreferredSOTA:
+	case genai.ModelSOTA:
 		model = "qwen3:32b"
 	default:
 	}

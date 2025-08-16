@@ -13,7 +13,6 @@ import (
 	"testing"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/openai/openairesponses"
@@ -46,7 +45,7 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 }
 
 func TestClient_Scoreboard(t *testing.T) {
-	genaiModels, err := getClient(t, base.NoModel).ListModels(t.Context())
+	genaiModels, err := getClient(t, genai.ModelNone).ListModels(t.Context())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -145,9 +144,9 @@ func TestClient_Preferred(t *testing.T) {
 		name string
 		want string
 	}{
-		{base.PreferredCheap, "gpt-4.1-nano"},
-		{base.PreferredGood, "gpt-4.1-mini"},
-		{base.PreferredSOTA, "o3-pro"},
+		{genai.ModelCheap, "gpt-4.1-nano"},
+		{genai.ModelGood, "gpt-5-mini"},
+		{genai.ModelSOTA, "o3-pro"},
 	}
 	for _, line := range data {
 		t.Run(line.name, func(t *testing.T) {

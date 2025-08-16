@@ -532,13 +532,13 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 	// Perplexity doesn't have a list model API.
 	model := opts.Model
 	switch model {
-	case base.NoModel:
+	case genai.ModelNone:
 		model = ""
-	case base.PreferredCheap, "":
+	case genai.ModelCheap, "":
 		model = "sonar"
-	case base.PreferredGood:
+	case genai.ModelGood:
 		model = "sonar-pro"
-	case base.PreferredSOTA:
+	case genai.ModelSOTA:
 		model = "sonar-reasoning-pro"
 	default:
 	}

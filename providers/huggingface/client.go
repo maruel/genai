@@ -756,7 +756,7 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 	}
 	model := opts.Model
 	if model == "" {
-		model = base.PreferredGood
+		model = genai.ModelGood
 	}
 	t := base.DefaultTransport
 	if wrapper != nil {
@@ -783,66 +783,77 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 			},
 		},
 	}
-	if model == base.NoModel {
+	if model == genai.ModelNone {
 		c.Model = ""
-	} else if err == nil && (model == base.PreferredCheap || model == base.PreferredGood || model == base.PreferredSOTA) {
-		// Warning: listing models from Huggingface takes a while.
-		mdls, err2 := c.ListModels(context.Background())
-		if err2 != nil {
-			return nil, err2
-		}
-		cheap := model == base.PreferredCheap
-		good := model == base.PreferredGood
-		c.Model = ""
-		trending := 0.
-		weights := 0
-		re := regexp.MustCompile(`(\d+)B`)
-		for _, mdl := range mdls {
-			m := mdl.(*Model)
-			if m.TrendingScore < 2 {
-				continue
+	} else if err == nil && (model == genai.ModelCheap || model == genai.ModelGood || model == genai.ModelSOTA) {
+		if err == nil {
+			if c.Model, err = c.selectBestModel(context.Background(), model); err != nil {
+				return nil, err
 			}
-			if cheap {
-				// HF doesn't report the number of weights in the model. Try to guess it.
-				matches := re.FindAllStringSubmatch(m.ID, 1)
-				if len(matches) != 1 {
-					continue
-				}
-				w, err2 := strconv.Atoi(matches[0][1])
-				if err2 != nil {
-					continue
-				}
-				if strings.HasPrefix(m.ID, "meta-llama/Llama") && strings.HasSuffix(m.ID, "-Instruct") && (weights == 0 || w < weights) {
-					weights = w
-					c.Model = m.ID
-				}
-			} else if good {
-				// HF doesn't report the number of weights in the model. Try to guess it.
-				matches := re.FindAllStringSubmatch(m.ID, 1)
-				if len(matches) != 1 {
-					continue
-				}
-				w, err2 := strconv.Atoi(matches[0][1])
-				if err2 != nil {
-					continue
-				}
-				if strings.HasPrefix(m.ID, "Qwen/Qwen") && (weights == 0 || w > weights) {
-					weights = w
-					c.Model = m.ID
-				}
-			} else {
-				if strings.HasPrefix(m.ID, "deepseek-ai/") && !strings.Contains(m.ID, "Qwen") && !strings.Contains(m.ID, "Prover") && !strings.Contains(m.ID, "Distill") && (trending == 0 || trending < m.TrendingScore) {
-					// Make it a popularity contest.
-					trending = m.TrendingScore
-					c.Model = m.ID
-				}
-			}
-		}
-		if c.Model == "" {
-			return nil, errors.New("failed to find a model automatically")
 		}
 	}
 	return c, err
+}
+
+// selectBestModel selects the most recent model based on the preference (cheap, good, or SOTA).
+func (c *Client) selectBestModel(ctx context.Context, preference string) (string, error) {
+	// Warning: listing models from Huggingface takes a while.
+	mdls, err := c.ListModels(ctx)
+	if err != nil {
+		return "", err
+	}
+	cheap := preference == genai.ModelCheap
+	good := preference == genai.ModelGood
+	selectedModel := ""
+	trending := 0.
+	weights := 0
+	re := regexp.MustCompile(`(\d+)B`)
+	for _, mdl := range mdls {
+		m := mdl.(*Model)
+		if m.TrendingScore < 2 {
+			continue
+		}
+		// TODO: This algorithm would gain to be improved.
+		if cheap {
+			// HF doesn't report the number of weights in the model. Try to guess it.
+			matches := re.FindAllStringSubmatch(m.ID, 1)
+			if len(matches) != 1 {
+				continue
+			}
+			w, err2 := strconv.Atoi(matches[0][1])
+			if err2 != nil {
+				continue
+			}
+			if strings.HasPrefix(m.ID, "meta-llama/Llama") && strings.HasSuffix(m.ID, "-Instruct") && (weights == 0 || w < weights) {
+				weights = w
+				selectedModel = m.ID
+			}
+		} else if good {
+			// HF doesn't report the number of weights in the model. Try to guess it.
+			matches := re.FindAllStringSubmatch(m.ID, 1)
+			if len(matches) != 1 {
+				continue
+			}
+			w, err2 := strconv.Atoi(matches[0][1])
+			if err2 != nil {
+				continue
+			}
+			if strings.HasPrefix(m.ID, "Qwen/Qwen") && (weights == 0 || w > weights) {
+				weights = w
+				selectedModel = m.ID
+			}
+		} else {
+			if strings.HasPrefix(m.ID, "deepseek-ai/") && !strings.Contains(m.ID, "Qwen") && !strings.Contains(m.ID, "Prover") && !strings.Contains(m.ID, "Distill") && (trending == 0 || trending < m.TrendingScore) {
+				// Make it a popularity contest.
+				trending = m.TrendingScore
+				selectedModel = m.ID
+			}
+		}
+	}
+	if selectedModel == "" {
+		return "", errors.New("failed to find a model automatically")
+	}
+	return selectedModel, nil
 }
 
 func (c *Client) Scoreboard() scoreboard.Score {

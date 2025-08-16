@@ -13,7 +13,6 @@ import (
 	"time"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/scoreboard/scoreboardtest"
@@ -36,7 +35,7 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 
 func TestClient_Scoreboard(t *testing.T) {
 	// bfl does not have a public API to list models.
-	sb := getClient(t, base.NoModel).Scoreboard()
+	sb := getClient(t, genai.ModelNone).Scoreboard()
 	var models []scoreboardtest.Model
 	for _, sc := range sb.Scenarios {
 		if sc.GenDoc != nil {
@@ -68,9 +67,9 @@ func TestClient_Preferred(t *testing.T) {
 		name string
 		want string
 	}{
-		{base.PreferredCheap, "flux-dev"},
-		{base.PreferredGood, "flux-pro-1.1"},
-		{base.PreferredSOTA, "flux-pro-1.1-ultra"},
+		{genai.ModelCheap, "flux-dev"},
+		{genai.ModelGood, "flux-pro-1.1"},
+		{genai.ModelSOTA, "flux-pro-1.1-ultra"},
 	}
 	for _, line := range data {
 		t.Run(line.name, func(t *testing.T) {

@@ -14,7 +14,6 @@ import (
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/adapters"
-	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/ollama"
@@ -131,9 +130,9 @@ func TestClient_Preferred(t *testing.T) {
 		name string
 		want string
 	}{
-		{base.PreferredCheap, "gemma3:1b"},
-		{base.PreferredGood, "qwen3:30b"},
-		{base.PreferredSOTA, "qwen3:32b"},
+		{genai.ModelCheap, "gemma3:1b"},
+		{genai.ModelGood, "qwen3:30b"},
+		{genai.ModelSOTA, "qwen3:32b"},
 	}
 	for _, line := range data {
 		t.Run(line.name, func(t *testing.T) {

@@ -795,6 +795,7 @@ type TextModel struct {
 	InputModalities  []string `json:"input_modalities"`
 	MaxInputChars    int64    `json:"maxInputChars"`
 	Name             string   `json:"name"`
+	OriginalName     string   `json:"original_name"`
 	OutputModalities []string `json:"output_modalities"`
 	Pricing          struct {
 		PromptTokens     float64 `json:"prompt_tokens"`
@@ -971,7 +972,7 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 	}
 	model := opts.Model
 	if model == "" {
-		model = base.PreferredGood
+		model = genai.ModelGood
 	}
 	t := base.DefaultTransport
 	if r, ok := t.(*roundtrippers.Retry); ok {
@@ -1011,9 +1012,9 @@ func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.Round
 		},
 	}
 	switch model {
-	case base.NoModel:
+	case genai.ModelNone:
 		c.Model = ""
-	case base.PreferredCheap, base.PreferredGood, base.PreferredSOTA:
+	case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA:
 		var err error
 		if c.Model, err = c.selectBestModel(context.Background(), model); err != nil {
 			return nil, err
@@ -1029,8 +1030,8 @@ func (c *Client) selectBestModel(ctx context.Context, preference string) (string
 	if err != nil {
 		return "", err
 	}
-	cheap := preference == base.PreferredCheap
-	good := preference == base.PreferredGood
+	cheap := preference == genai.ModelCheap
+	good := preference == genai.ModelGood
 	selectedModel := ""
 	for _, mdl := range mdls {
 		m := mdl.(*TextModel)

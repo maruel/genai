@@ -91,15 +91,14 @@ Implementation is in flux. :)
 ## Design
 
 - **Safe and strict API implementation**. All you love from a statically typed
-  language. The library's smoke tests immediately fails on unknown RPC fields. Error code paths are properly
+  language. The library's smoke tests immediately fail on unknown RPC fields. Error code paths are properly
   implemented.
 - **Stateless**: no global state, clients are safe to use concurrently lock-less.
-- **Professional grade**: smokte tested on live services with recorded traces located in `testdata/` directories.
+- **Professional grade**: smoke tested on live services with recorded traces located in `testdata/` directories.
 - **Optimized for speed**: minimize memory allocations, compress data at the
   transport layer when possible. Groq, Mistral and OpenAI use brotli for HTTP compression instead of gzip,
   and POST's body to Google are gzip compressed.
 - **Lean**: Few dependencies. No unnecessary abstraction layer.
-- Easy to add new providers.
 
 
 ## I'm poor 💸

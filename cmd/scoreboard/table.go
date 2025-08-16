@@ -232,10 +232,13 @@ func printSummaryTable(all map[string]func(opts *genai.OptionsProvider, wrapper 
 	var rows []tableSummaryRow
 	seen := map[string]struct{}{}
 	for name, f := range all {
-		p, err := f(&genai.OptionsProvider{Model: base.NoModel}, nil)
-		// The function can return an error and still return a client when no API key was found. It's okay here
-		// because we won't use the service provider.
-		if p == nil {
+		opts := &genai.OptionsProvider{Model: base.NoModel}
+		if name == "openaicompatible" {
+			// Make sure the remote it set for this one.
+			opts.Remote = "http://localhost:0"
+		}
+		p, err := f(opts, nil)
+		if err != nil {
 			fmt.Fprintf(os.Stderr, "ignoring provider %s: %v\n", name, err)
 			continue
 		}

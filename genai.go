@@ -2,9 +2,10 @@
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
-// Package genai is the high performance native Go client for LLMs.
+// Package genai is the opiniated high performance professional-grade AI package for Go.
 //
-// It provides a generic interface to interact with various LLM providers.
+// It provides a generic interface to interact with various LLM providers, while allowing full access to each
+// provider's full capabilities.
 //
 // Check out the examples for a quick start.
 package genai

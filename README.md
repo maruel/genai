@@ -1,6 +1,45 @@
 # genai
 
-The _high performance_ low level native Go client for LLMs.
+The opinionated high performance professional-grade AI package for Go.
+
+genai is _different_. Curious why it was created? See the release announcement at
+[maruel.ca/post/genai-v0.1.0](https://maruel.ca/post/genai-v0.1.0).
+
+
+## Features
+
+- **Full functionality**: Full access to each backend-specific functionality.
+  Access the raw API if needed with full message schema as Go structs.
+- **Tool calling via reflection**: Tell the LLM to call a tool directly, described a Go
+  struct. No need to manually fiddle with JSON.
+- **Native JSON struct serialization**: Pass a struct to tell the LLM what to
+  generate, decode the reply into your struct. No need to manually fiddle with
+  JSON. Supports required fields, enums, descriptions, etc.
+- **Streaming**: Streams completion reply as the output is being generated, including thinking and tool
+  calling.
+- **Multi-modal**: Process images, PDFs and videos (!) as input or output.
+- **Unit testing friendly**: record and play back API calls at HTTP level to save 💰 and keep tests fast and
+  reproducible, via the exposed HTTP transport. See [example](https://pkg.go.dev/github.com/maruel/genai#example-Provider-HTTP_record).
+- **Rate limits and usage**: Parse the provider-specific HTTP headers and JSON response to get the tokens usage
+  and remaining quota.
+- Provide access to HTTP headers to enable [beta features](https://pkg.go.dev/github.com/maruel/genai#example-package-GenSyncWithToolCallLoop_with_custom_HTTP_Header).
+
+[![Go Reference](https://pkg.go.dev/badge/github.com/maruel/genai/.svg)](https://pkg.go.dev/github.com/maruel/genai/)
+[![codecov](https://codecov.io/gh/maruel/genai/graph/badge.svg?token=VLBH363B6N)](https://codecov.io/gh/maruel/genai)
+
+
+## Design
+
+- **Safe and strict API implementation**. All you love from a statically typed
+  language. The library's smoke tests immediately fail on unknown RPC fields. Error code paths are properly
+  implemented.
+- **Stateless**: no global state, clients are safe to use concurrently lock-less.
+- **Professional grade**: smoke tested on live services with recorded traces located in `testdata/` directories.
+- **Optimized for speed**: minimize memory allocations, compress data at the
+  transport layer when possible. Groq, Mistral and OpenAI use brotli for HTTP compression instead of gzip,
+  and POST's body to Google are gzip compressed.
+- **Lean**: Few dependencies. No unnecessary abstraction layer.
+
 
 ## Scoreboard
 
@@ -62,43 +101,6 @@ The _high performance_ low level native Go client for LLMs.
 - Limits: returns the rate limits, including the remaining quota.
 
 </details>
-
-
-## Features
-
-- **Full functionality**: Full access to each backend-specific functionality.
-  Access the raw API if needed with full message schema as Go structs.
-- **Tool calling via reflection**: Tell the LLM to call a tool directly, described a Go
-  struct. No need to manually fiddle with JSON.
-- **Native JSON struct serialization**: Pass a struct to tell the LLM what to
-  generate, decode the reply into your struct. No need to manually fiddle with
-  JSON. Supports required fields, enums, descriptions, etc.
-- **Streaming**: Streams completion reply as the output is being generated, including thinking and tool
-  calling.
-- **Multi-modal**: Process images, PDFs and videos (!) as input or output.
-- **Unit testing friendly**: record and play back API calls at HTTP level to save 💰 and keep tests fast and
-  reproducible, via the exposed HTTP transport. See [example](https://pkg.go.dev/github.com/maruel/genai#example-Provider-HTTP_record).
-- **Rate limits and usage**: Parse the provider-specific HTTP headers and JSON response to get the tokens usage
-  and remaining quota.
-- Provide access to HTTP headers to enable [beta features](https://pkg.go.dev/github.com/maruel/genai#example-package-GenSyncWithToolCallLoop_with_custom_HTTP_Header).
-
-Implementation is in flux. :)
-
-[![Go Reference](https://pkg.go.dev/badge/github.com/maruel/genai/.svg)](https://pkg.go.dev/github.com/maruel/genai/)
-[![codecov](https://codecov.io/gh/maruel/genai/graph/badge.svg?token=VLBH363B6N)](https://codecov.io/gh/maruel/genai)
-
-
-## Design
-
-- **Safe and strict API implementation**. All you love from a statically typed
-  language. The library's smoke tests immediately fail on unknown RPC fields. Error code paths are properly
-  implemented.
-- **Stateless**: no global state, clients are safe to use concurrently lock-less.
-- **Professional grade**: smoke tested on live services with recorded traces located in `testdata/` directories.
-- **Optimized for speed**: minimize memory allocations, compress data at the
-  transport layer when possible. Groq, Mistral and OpenAI use brotli for HTTP compression instead of gzip,
-  and POST's body to Google are gzip compressed.
-- **Lean**: Few dependencies. No unnecessary abstraction layer.
 
 
 ## I'm poor 💸

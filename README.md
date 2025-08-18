@@ -33,7 +33,7 @@ genai is _different_. Curious why it was created? See the release announcement a
 - **Safe and strict API implementation**. All you love from a statically typed
   language. The library's smoke tests immediately fail on unknown RPC fields. Error code paths are properly
   implemented.
-- **Stateless**: no global state, clients are safe to use concurrently lock-less.
+- **Stateless**: no global state, it is safe to use clients concurrently.
 - **Professional grade**: smoke tested on live services with recorded traces located in `testdata/` directories.
 - **Optimized for speed**: minimize memory allocations, compress data at the
   transport layer when possible. Groq, Mistral and OpenAI use brotli for HTTP compression instead of gzip,

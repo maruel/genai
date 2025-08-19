@@ -105,10 +105,16 @@ type ChatRequest struct {
 // Init initializes the provider specific completion request with the generic completion request.
 func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string) error {
 	c.Model = model
+	if err := msgs.Validate(); err != nil {
+		return err
+	}
 	var errs []error
 	var unsupported []string
 	sp := ""
 	if opts != nil {
+		if err := opts.Validate(); err != nil {
+			return err
+		}
 		// https://api-docs.deepseek.com/guides/reasoning_model Soon "reasoning_effort"
 		switch v := opts.(type) {
 		case *genai.OptionsText:

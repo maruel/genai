@@ -319,6 +319,9 @@ func (r *Response) Init(msgs genai.Messages, opts genai.Options, model string) e
 	r.Model = model
 	r.Reasoning.Summary = "auto"
 	if opts != nil {
+		if err := opts.Validate(); err != nil {
+			return err
+		}
 		switch v := opts.(type) {
 		case *OptionsText:
 			r.Reasoning.Effort = v.ReasoningEffort
@@ -1061,6 +1064,63 @@ type ImageRequest struct {
 	User              string     `json:"user,omitzero"`               // End-user to help monitor and detect abuse
 }
 
+func (i *ImageRequest) Init(msg genai.Message, opts genai.Options, model string) error {
+	if err := msg.Validate(); err != nil {
+		return err
+	}
+	for i := range msg.Requests {
+		if msg.Requests[i].Text == "" {
+			return errors.New("only text can be passed as input")
+		}
+	}
+	i.Prompt = msg.String()
+	i.Model = model
+
+	// This is unfortunate.
+	switch model {
+	case "gpt-image-1":
+		i.Moderation = "low"
+		// req.Background = "transparent"
+		// req.OutputFormat = "webp"
+		// req.OutputCompression = 90
+		// req.Quality = "high"
+		// req.Size = "1536x1024"
+	case "dall-e-3":
+		// req.Size = "1792x1024"
+		i.ResponseFormat = "b64_json"
+	case "dall-e-2":
+		// We assume dall-e-2 is only used for smoke testing, so use the smallest image.
+		i.Size = "256x256"
+		// Maximum prompt length is 1000 characters.
+		// Since we assume this is only for testing, silently cut it off.
+		if len(i.Prompt) > 1000 {
+			i.Prompt = i.Prompt[:1000]
+		}
+		i.ResponseFormat = "b64_json"
+	default:
+		// Silently pass.
+	}
+	if opts != nil {
+		if err := opts.Validate(); err != nil {
+			return err
+		}
+		switch v := opts.(type) {
+		case *OptionsImage:
+			if v.Height != 0 && v.Width != 0 {
+				i.Size = fmt.Sprintf("%dx%d", v.Width, v.Height)
+			}
+			i.Background = v.Background
+		case *genai.OptionsImage:
+			if v.Height != 0 && v.Width != 0 {
+				i.Size = fmt.Sprintf("%dx%d", v.Width, v.Height)
+			}
+		default:
+			return fmt.Errorf("unsupported options type %T", opts)
+		}
+	}
+	return nil
+}
+
 // Background is only supported on gpt-image-1.
 type Background string
 
@@ -1411,61 +1471,9 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 	if err := c.Validate(); err != nil {
 		return res, err
 	}
-	if err := msg.Validate(); err != nil {
+	req := ImageRequest{}
+	if err := req.Init(msg, opts, c.Model); err != nil {
 		return res, err
-	}
-	if opts != nil {
-		if err := opts.Validate(); err != nil {
-			return res, err
-		}
-	}
-	for i := range msg.Requests {
-		if msg.Requests[i].Text == "" {
-			return res, errors.New("only text can be passed as input")
-		}
-	}
-	req := ImageRequest{
-		Prompt: msg.String(),
-		Model:  c.Model,
-	}
-	// This is unfortunate.
-	switch c.Model {
-	case "gpt-image-1":
-		req.Moderation = "low"
-		// req.Background = "transparent"
-		// req.OutputFormat = "webp"
-		// req.OutputCompression = 90
-		// req.Quality = "high"
-		// req.Size = "1536x1024"
-	case "dall-e-3":
-		// req.Size = "1792x1024"
-		req.ResponseFormat = "b64_json"
-	case "dall-e-2":
-		// We assume dall-e-2 is only used for smoke testing, so use the smallest image.
-		req.Size = "256x256"
-		// Maximum prompt length is 1000 characters.
-		// Since we assume this is only for testing, silently cut it off.
-		if len(req.Prompt) > 1000 {
-			req.Prompt = req.Prompt[:1000]
-		}
-		req.ResponseFormat = "b64_json"
-	default:
-		// Silently pass.
-	}
-	if opts != nil {
-		switch v := opts.(type) {
-		case *OptionsImage:
-			if v.Height != 0 && v.Width != 0 {
-				req.Size = fmt.Sprintf("%dx%d", v.Width, v.Height)
-			}
-			req.Background = v.Background
-		case *genai.OptionsImage:
-			if v.Height != 0 && v.Width != 0 {
-				req.Size = fmt.Sprintf("%dx%d", v.Width, v.Height)
-			}
-		default:
-			return res, fmt.Errorf("unsupported options type %T", opts)
-		}
 	}
 	url := "https://api.openai.com/v1/images/generations"
 

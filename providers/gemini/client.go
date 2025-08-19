@@ -483,6 +483,10 @@ type ChatRequest struct {
 
 // Init initializes the provider specific completion request with the generic completion request.
 func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string) error {
+	// Validate messages
+	if err := msgs.Validate(); err != nil {
+		return err
+	}
 	var errs []error
 	var unsupported []string
 
@@ -1127,6 +1131,48 @@ type ImageRequest struct {
 	Parameters ImageParameters `json:"parameters"`
 }
 
+func (i *ImageRequest) Init(msg genai.Message, opts genai.Options, model string) error {
+	if !isImage(opts) {
+		return errors.New("can only generate images")
+	}
+	if err := msg.Validate(); err != nil {
+		return err
+	}
+	for i := range msg.Requests {
+		if msg.Requests[i].Text == "" {
+			return errors.New("only text can be passed as input")
+		}
+	}
+	i.Instances = []ImageInstance{{Prompt: msg.String()}}
+	i.Parameters.SampleCount = 1
+	i.Parameters.PersonGeneration = "allow_adult"
+	// Seems like it's not supported?
+	// i.Parameters.EnhancePrompt = true
+	var uce error
+	if opts != nil {
+		if err := opts.Validate(); err != nil {
+			return err
+		}
+		switch v := opts.(type) {
+		case *Options:
+			if v.OptionsImage.Seed != 0 {
+				// To confirm.
+				uce = &genai.UnsupportedContinuableError{Unsupported: []string{"Seed"}}
+			}
+			// TODO: Width and Height
+		case *genai.OptionsImage:
+			if v.Seed != 0 {
+				// To confirm.
+				uce = &genai.UnsupportedContinuableError{Unsupported: []string{"Seed"}}
+			}
+			// TODO: Width and Height
+		default:
+			return fmt.Errorf("unsupported options type %T", opts)
+		}
+	}
+	return uce
+}
+
 type ImageInstance struct {
 	Prompt string `json:"prompt"`
 	Image  string `json:"image,omitzero"` // TODO: Confirm.
@@ -1236,6 +1282,37 @@ type CachedContent struct {
 	CreateTime    string               `json:"createTime,omitzero"`
 	UpdateTime    string               `json:"updateTime,omitzero"`
 	UsageMetadata CachingUsageMetadata `json:"usageMetadata,omitzero"`
+}
+
+func (c *CachedContent) Init(msgs genai.Messages, opts genai.Options, model, name, displayName string, ttl time.Duration) error {
+	if err := msgs.Validate(); err != nil {
+		return err
+	}
+	if opts != nil {
+		if err := opts.Validate(); err != nil {
+			return err
+		}
+	}
+	if o, ok := opts.(*genai.OptionsText); ok && o.SystemPrompt != "" {
+		c.SystemInstruction.Parts = []Part{{Text: o.SystemPrompt}}
+	}
+	// For large files, use https://ai.google.dev/gemini-api/docs/caching?hl=en&lang=rest#pdfs_1
+	c.Contents = make([]Content, len(msgs))
+	for i := range msgs {
+		if err := c.Contents[i].From(&msgs[i]); err != nil {
+			return fmt.Errorf("message %d: %w", i, err)
+		}
+	}
+	c.Model = "models/" + model
+	c.DisplayName = displayName
+	if name != "" {
+		c.Name = "cachedContents/" + name
+	}
+	if ttl > 0 {
+		c.TTL = Duration(ttl)
+	}
+	// TODO: ToolConfig
+	return nil
 }
 
 func (c *CachedContent) GetID() string {
@@ -1533,35 +1610,10 @@ func (c *Client) CacheAddRequest(ctx context.Context, msgs genai.Messages, opts 
 	if err := c.Validate(); err != nil {
 		return "", err
 	}
-	if err := msgs.Validate(); err != nil {
+	in := CachedContent{}
+	if err := in.Init(msgs, opts, c.Model, name, displayName, ttl); err != nil {
 		return "", err
 	}
-	if opts != nil {
-		if err := opts.Validate(); err != nil {
-			return "", err
-		}
-	}
-	in := CachedContent{
-		Model:       "models/" + c.Model,
-		DisplayName: displayName,
-	}
-	if name != "" {
-		in.Name = "cachedContents/" + name
-	}
-	if ttl > 0 {
-		in.TTL = Duration(ttl)
-	}
-	if o, ok := opts.(*genai.OptionsText); ok && o.SystemPrompt != "" {
-		in.SystemInstruction.Parts = []Part{{Text: o.SystemPrompt}}
-	}
-	// For large files, use https://ai.google.dev/gemini-api/docs/caching?hl=en&lang=rest#pdfs_1
-	in.Contents = make([]Content, len(msgs))
-	for i := range msgs {
-		if err := in.Contents[i].From(&msgs[i]); err != nil {
-			return "", fmt.Errorf("message %d: %w", i, err)
-		}
-	}
-	// TODO: ToolConfig
 	out := CachedContent{}
 	url := "https://generativelanguage.googleapis.com/v1beta/cachedContents"
 	if err := c.DoRequest(ctx, "POST", url, &in, &out); err != nil {
@@ -1644,58 +1696,24 @@ func (c *Client) CacheDelete(ctx context.Context, name string) error {
 
 // GenDoc is only supported for models that have "predict" reported in their Model.SupportedGenerationMethods.
 func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
-	if !c.isImage(opts) {
-		return genai.Result{}, errors.New("can only generate images")
-	}
 	res := genai.Result{}
 	if err := c.Validate(); err != nil {
 		return res, err
 	}
-	if err := msg.Validate(); err != nil {
-		return res, err
-	}
-	if opts != nil {
-		if err := opts.Validate(); err != nil {
-			return res, err
-		}
-	}
-	for i := range msg.Requests {
-		if msg.Requests[i].Text == "" {
-			return res, errors.New("only text can be passed as input")
-		}
-	}
 	req := ImageRequest{
-		Instances: []ImageInstance{{Prompt: msg.String()}},
+		// These two fails when running a batch so don't set by default.
 		Parameters: ImageParameters{
-			SampleCount:             1,
-			PersonGeneration:        "allow_adult",
 			IncludeSafetyAttributes: true,
 			IncludeRAIReason:        true,
-			OutputOptions: ImageOutput{
-				MimeType:           "image/jpeg",
-				CompressionQuality: 0,
-			},
-			// Seems like it's not supported?
-			// EnhancePrompt: true,
+			OutputOptions:           ImageOutput{MimeType: "image/jpeg"},
 		},
 	}
-	var uce *genai.UnsupportedContinuableError
-	if opts != nil {
-		switch v := opts.(type) {
-		case *Options:
-			if v.OptionsImage.Seed != 0 {
-				// To confirm.
-				uce = &genai.UnsupportedContinuableError{Unsupported: []string{"Seed"}}
-			}
-			// TODO: Width and Height
-		case *genai.OptionsImage:
-			if v.Seed != 0 {
-				// To confirm.
-				uce = &genai.UnsupportedContinuableError{Unsupported: []string{"Seed"}}
-			}
-			// TODO: Width and Height
-		default:
-			return res, fmt.Errorf("unsupported options type %T", opts)
+	var continuableErr error
+	if err := req.Init(msg, opts, c.Model); err != nil {
+		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
+			continuableErr = uce
+		} else {
+			return res, err
 		}
 	}
 	resp, err := c.GenDocRaw(ctx, req)
@@ -1722,10 +1740,10 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 		}
 		res.Replies = append(res.Replies, genai.Reply{Doc: genai.Doc{Filename: n, Src: &bb.BytesBuffer{D: resp.Predictions[i].BytesBase64Encoded}}})
 	}
-	if uce != nil {
-		return res, uce
+	if err = res.Validate(); err != nil {
+		return res, err
 	}
-	return res, res.Validate()
+	return res, continuableErr
 }
 
 func (c *Client) GenDocRaw(ctx context.Context, req ImageRequest) (ImageResponse, error) {
@@ -1742,57 +1760,19 @@ func (c *Client) GenDocRaw(ctx context.Context, req ImageRequest) (ImageResponse
 // The resulting file is available for 48 hours. It requires the API key in the HTTP header to be fetched, so
 // use the client's HTTP client.
 func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Job, error) {
-	if !c.isImage(opts) {
-		return "", errors.New("can only generate images")
-	}
 	if err := c.Validate(); err != nil {
 		return "", err
 	}
 	if len(msgs) != 1 {
 		return "", errors.New("only one message can be passed as input")
 	}
-	msg := msgs[0]
-	if err := msg.Validate(); err != nil {
-		return "", err
-	}
-	if opts != nil {
-		if err := opts.Validate(); err != nil {
+	req := ImageRequest{}
+	var continuableErr error
+	if err := req.Init(msgs[0], opts, c.Model); err != nil {
+		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
+			continuableErr = uce
+		} else {
 			return "", err
-		}
-	}
-	for i := range msg.Requests {
-		if msg.Requests[i].Text == "" {
-			return "", errors.New("only text can be passed as input")
-		}
-	}
-	req := ImageRequest{
-		Instances: []ImageInstance{{Prompt: msg.String()}},
-		Parameters: ImageParameters{
-			SampleCount:      1,
-			PersonGeneration: "allow_adult",
-			// Seems like it's not supported?
-			// IncludeSafetyAttributes: true,
-			// IncludeRAIReason:        true,
-			// EnhancePrompt: true,
-		},
-	}
-	var uce *genai.UnsupportedContinuableError
-	if opts != nil {
-		switch v := opts.(type) {
-		case *Options:
-			if v.OptionsImage.Seed != 0 {
-				// To confirm.
-				uce = &genai.UnsupportedContinuableError{Unsupported: []string{"Seed"}}
-			}
-			// TODO: Width and Height
-		case *genai.OptionsImage:
-			if v.Seed != 0 {
-				// To confirm.
-				uce = &genai.UnsupportedContinuableError{Unsupported: []string{"Seed"}}
-			}
-			// TODO: Width and Height
-		default:
-			return "", fmt.Errorf("unsupported options type %T", opts)
 		}
 	}
 	resp, err := c.GenAsyncRaw(ctx, req)
@@ -1800,10 +1780,7 @@ func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.O
 	if err != nil {
 		return genai.Job(resp.Name), err
 	}
-	if uce != nil {
-		return genai.Job(resp.Name), uce
-	}
-	return genai.Job(resp.Name), nil
+	return genai.Job(resp.Name), continuableErr
 }
 
 func (c *Client) GenAsyncRaw(ctx context.Context, req ImageRequest) (Operation, error) {
@@ -1844,7 +1821,7 @@ func (c *Client) PokeResultRaw(ctx context.Context, id genai.Job) (Operation, er
 	return res, err
 }
 
-func (c *Client) isImage(opts genai.Options) bool {
+func isImage(opts genai.Options) bool {
 	return opts != nil && slices.Contains(opts.Modalities(), genai.ModalityImage)
 }
 
@@ -1945,6 +1922,5 @@ var (
 	_ genai.ProviderCache      = &Client{}
 	_ genai.ProviderGen        = &Client{}
 	_ genai.ProviderModel      = &Client{}
-	_ genai.ProviderCache      = &Client{}
 	_ scoreboard.ProviderScore = &Client{}
 )

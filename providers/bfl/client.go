@@ -126,6 +126,62 @@ type ImageRequest struct {
 	InputImage []byte `json:"input_image,omitzero"`
 }
 
+func (i *ImageRequest) Init(msgs genai.Messages, opts genai.Options) error {
+	if err := msgs.Validate(); err != nil {
+		return err
+	}
+	if len(msgs) != 1 {
+		return errors.New("must pass exactly one Message")
+	}
+	msg := msgs[0]
+	msg.Requests = slices.Clone(msg.Requests)
+	for i := range msg.Requests {
+		if msg.Requests[i].Text != "" {
+			continue
+		}
+		// Check if this is a text/plain document that we can handle
+		if !msg.Requests[i].Doc.IsZero() {
+			mimeType, data, err := msg.Requests[i].Doc.Read(10 * 1024 * 1024)
+			if err != nil {
+				return fmt.Errorf("failed to read document: %w", err)
+			}
+			// TODO: kontext support images as imnput
+			if !strings.HasPrefix(mimeType, "text/plain") {
+				return errors.New("only text and text/plain documents can be passed as input")
+			}
+			if msg.Requests[i].Doc.URL != "" {
+				return errors.New("text/plain documents must be provided inline, not as a URL")
+			}
+			// Convert document content to text content
+			msg.Requests[i].Text = string(data)
+			msg.Requests[i].Doc = genai.Doc{}
+			continue
+		}
+		return errors.New("unknown Request type")
+	}
+	if opts != nil {
+		if err := opts.Validate(); err != nil {
+			return err
+		}
+		if supported := opts.Modalities(); !slices.Contains(supported, genai.ModalityImage) {
+			return fmt.Errorf("modality image not supported, supported: %s", supported)
+		}
+		switch v := opts.(type) {
+		case *genai.OptionsImage:
+			i.Height = int64(v.Height)
+			i.Width = int64(v.Width)
+			i.Seed = v.Seed
+		case *genai.OptionsText:
+			i.Seed = v.Seed
+		default:
+			return fmt.Errorf("unsupported options type %T", opts)
+		}
+	}
+
+	i.Prompt = msg.String()
+	return nil
+}
+
 // ImageRequestResponse is the same for all requests since everything is asynchronous.
 //
 // It's in https://docs.bfl.ml/api-reference/tasks/generate-an-image-with-flux-11-[pro] and the likes.
@@ -297,59 +353,9 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 }
 
 func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Job, error) {
-	if err := msgs.Validate(); err != nil {
+	req := ImageRequest{}
+	if err := req.Init(msgs, opts); err != nil {
 		return "", err
-	}
-	if opts != nil {
-		if err := opts.Validate(); err != nil {
-			return "", err
-		}
-		if supported := opts.Modalities(); !slices.Contains(supported, genai.ModalityImage) {
-			return "", fmt.Errorf("modality image not supported, supported: %s", supported)
-		}
-	}
-	if len(msgs) != 1 {
-		return "", errors.New("must pass exactly one Message")
-	}
-	msg := msgs[0]
-	for i := range msg.Requests {
-		if msg.Requests[i].Text != "" {
-			continue
-		}
-		// Check if this is a text/plain document that we can handle
-		if !msg.Requests[i].Doc.IsZero() {
-			mimeType, data, err := msg.Requests[i].Doc.Read(10 * 1024 * 1024)
-			if err != nil {
-				return "", fmt.Errorf("failed to read document: %w", err)
-			}
-			// TODO: kontext support images as imnput
-			if !strings.HasPrefix(mimeType, "text/plain") {
-				return "", errors.New("only text and text/plain documents can be passed as input")
-			}
-			if msg.Requests[i].Doc.URL != "" {
-				return "", errors.New("text/plain documents must be provided inline, not as a URL")
-			}
-			// Convert document content to text content
-			msg.Requests[i].Text = string(data)
-			msg.Requests[i].Doc = genai.Doc{}
-			continue
-		}
-		return "", errors.New("unknown Request type")
-	}
-	req := ImageRequest{
-		Prompt: msg.String(),
-	}
-	if opts != nil {
-		switch v := opts.(type) {
-		case *genai.OptionsImage:
-			req.Height = int64(v.Height)
-			req.Width = int64(v.Width)
-			req.Seed = v.Seed
-		case *genai.OptionsText:
-			req.Seed = v.Seed
-		default:
-			return "", fmt.Errorf("unsupported options type %T", opts)
-		}
 	}
 	reqresp, err := c.GenAsyncRaw(ctx, req)
 	return genai.Job(reqresp.ID), err

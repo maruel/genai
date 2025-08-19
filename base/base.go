@@ -268,13 +268,7 @@ type ProviderGen[PErrorResponse ErrAPI, PGenRequest InitializableRequest, PGenRe
 
 func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
 	result := genai.Result{}
-	if err := msgs.Validate(); err != nil {
-		return result, err
-	}
 	if opts != nil {
-		if err := opts.Validate(); err != nil {
-			return result, err
-		}
 		// TODO: Specify as a field.
 		if supported := opts.Modalities(); !slices.Contains(supported, genai.ModalityText) {
 			return result, fmt.Errorf("modality %s not supported", supported)
@@ -326,13 +320,7 @@ func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRe
 
 func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
 	result := genai.Result{}
-	if err := msgs.Validate(); err != nil {
-		return result, err
-	}
 	if opts != nil {
-		if err := opts.Validate(); err != nil {
-			return result, err
-		}
 		// TODO: Specify as a field.
 		if supported := opts.Modalities(); !slices.Contains(supported, genai.ModalityText) {
 			return result, fmt.Errorf("modality %s not supported", supported)

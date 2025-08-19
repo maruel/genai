@@ -164,10 +164,26 @@ type ChatRequestOptions struct {
 // Init initializes the provider specific completion request with the generic completion request.
 func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string) error {
 	c.Model = model
+	if err := msgs.Validate(); err != nil {
+		return err
+	}
+	for i, msg := range msgs {
+		for j, content := range msg.Replies {
+			if len(content.Opaque) != 0 {
+				return fmt.Errorf("message #%d content #%d: field Opaque not supported", i, j)
+			}
+		}
+	}
 	var errs []error
 	var unsupported []string
 	sp := ""
 	if opts != nil {
+		if err := opts.Validate(); err != nil {
+			return err
+		}
+		if supported := opts.Modalities(); !slices.Contains(supported, genai.ModalityText) {
+			return fmt.Errorf("modality text not supported, supported: %s", supported)
+		}
 		switch v := opts.(type) {
 		case *genai.OptionsText:
 			c.Options.NumPredict = v.MaxTokens
@@ -628,26 +644,7 @@ func (c *Client) Scoreboard() scoreboard.Score {
 
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
 	result := genai.Result{}
-	if err := msgs.Validate(); err != nil {
-		return result, err
-	}
-	if opts != nil {
-		if err := opts.Validate(); err != nil {
-			return result, err
-		}
-		if supported := opts.Modalities(); !slices.Contains(supported, genai.ModalityText) {
-			return result, fmt.Errorf("modality text not supported, supported: %s", supported)
-		}
-	}
-	for i, msg := range msgs {
-		for j, content := range msg.Replies {
-			if len(content.Opaque) != 0 {
-				return result, fmt.Errorf("message #%d content #%d: field Opaque not supported", i, j)
-			}
-		}
-	}
-
-	var in ChatRequest
+	in := ChatRequest{}
 	var continuableErr error
 	if err := in.Init(msgs, opts, c.model); err != nil {
 		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
@@ -662,6 +659,9 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Op
 	}
 	result, err := out.ToResult()
 	if err != nil {
+		return result, err
+	}
+	if err = result.Validate(); err != nil {
 		return result, err
 	}
 	return result, continuableErr
@@ -688,25 +688,6 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
 	result := genai.Result{}
-	if err := msgs.Validate(); err != nil {
-		return result, err
-	}
-	if opts != nil {
-		if err := opts.Validate(); err != nil {
-			return result, err
-		}
-		if supported := opts.Modalities(); !slices.Contains(supported, genai.ModalityText) {
-			return result, fmt.Errorf("modality text not supported, supported: %s", supported)
-		}
-	}
-	for i, msg := range msgs {
-		for j, content := range msg.Replies {
-			if len(content.Opaque) != 0 {
-				return result, fmt.Errorf("message #%d content #%d: field Opaque not supported", i, j)
-			}
-		}
-	}
-
 	in := ChatRequest{}
 	var continuableErr error
 	if err := in.Init(msgs, opts, c.model); err != nil {

@@ -155,6 +155,9 @@ type ChatRequest struct {
 // Init initializes the provider specific completion request with the generic completion request.
 func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string) error {
 	c.Model = model
+	if err := msgs.Validate(); err != nil {
+		return err
+	}
 	// Didn't seem to increase token usage, unclear if it increases costs.
 	c.ReturnImages = true
 	// This likely increase token usage.
@@ -163,6 +166,9 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 	var unsupported []string
 	sp := ""
 	if opts != nil {
+		if err := opts.Validate(); err != nil {
+			return err
+		}
 		switch v := opts.(type) {
 		case *genai.OptionsText:
 			unsupported, errs = c.initOptions(v)

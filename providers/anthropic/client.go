@@ -200,6 +200,9 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 
 func (c *ChatRequest) initImpl(msgs genai.Messages, opts genai.Options, model string, cache bool) error {
 	c.Model = model
+	if err := msgs.Validate(); err != nil {
+		return err
+	}
 	var errs []error
 	var unsupported []string
 	msgToCache := 0
@@ -208,6 +211,9 @@ func (c *ChatRequest) initImpl(msgs genai.Messages, opts genai.Options, model st
 	// Anthropic requires a value! And their models listing API doesn't provide the model's acceptable values! This is quite annoying.
 	c.MaxTokens = modelsMaxTokens(model)
 	if opts != nil {
+		if err := opts.Validate(); err != nil {
+			return err
+		}
 		switch v := opts.(type) {
 		case *OptionsText:
 			unsupported, errs = c.initOptions(&v.OptionsText)
@@ -1395,14 +1401,6 @@ func (c *Client) selectBestModel(ctx context.Context, preference string) (string
 func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Job, error) {
 	if err := c.Validate(); err != nil {
 		return "", err
-	}
-	if err := msgs.Validate(); err != nil {
-		return "", err
-	}
-	if opts != nil {
-		if err := opts.Validate(); err != nil {
-			return "", err
-		}
 	}
 	// https://docs.anthropic.com/en/docs/build-with-claude/batch-processing
 	// https://docs.anthropic.com/en/api/creating-message-batches

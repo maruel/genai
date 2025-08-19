@@ -221,6 +221,9 @@ type ChatRequest struct {
 func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string) error {
 	c.Model = model
 	c.Private = true // Not sure why we'd want to broadcast?
+	if err := msgs.Validate(); err != nil {
+		return err
+	}
 	var errs []error
 	var unsupported []string
 	sp := ""

@@ -326,10 +326,17 @@ type ChatRequest struct {
 // Init initializes the provider specific completion request with the generic completion request.
 func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string) error {
 	c.Model = model
+	// Validate messages
+	if err := msgs.Validate(); err != nil {
+		return err
+	}
 	var errs []error
 	var unsupported []string
 	sp := ""
 	if opts != nil {
+		if err := opts.Validate(); err != nil {
+			return err
+		}
 		switch v := opts.(type) {
 		case *genai.OptionsText:
 			c.MaxTokens = v.MaxTokens
@@ -905,6 +912,35 @@ type ImageRequest struct {
 	Image          []byte `json:"image_base64,omitzero"`
 }
 
+func (i *ImageRequest) Init(msg genai.Message, opts genai.Options, model string) error {
+	if err := msg.Validate(); err != nil {
+		return err
+	}
+	for i := range msg.Requests {
+		if msg.Requests[i].Text == "" {
+			return errors.New("only text can be passed as input")
+		}
+	}
+	i.Prompt = msg.String()
+	i.Model = model
+	if opts != nil {
+		if err := opts.Validate(); err != nil {
+			return err
+		}
+		switch v := opts.(type) {
+		case *genai.OptionsImage:
+			i.Height = int64(v.Height)
+			i.Width = int64(v.Width)
+			i.Seed = v.Seed
+		case *genai.OptionsText:
+			i.Seed = v.Seed
+		default:
+			return fmt.Errorf("unsupported options type %T", opts)
+		}
+	}
+	return nil
+}
+
 // ImageResponse doesn't have a formal documentation.
 //
 // https://github.com/togethercomputer/together-python/blob/main/src/together/types/images.py is the
@@ -1106,34 +1142,9 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 		if err := c.Validate(); err != nil {
 			return genai.Result{}, err
 		}
-		if err := msg.Validate(); err != nil {
+		req := ImageRequest{}
+		if err := req.Init(msg, opts, c.Model); err != nil {
 			return res, err
-		}
-		if opts != nil {
-			if err := opts.Validate(); err != nil {
-				return res, err
-			}
-		}
-		for i := range msg.Requests {
-			if msg.Requests[i].Text == "" {
-				return res, errors.New("only text can be passed as input")
-			}
-		}
-		req := ImageRequest{
-			Prompt: msg.String(),
-			Model:  c.Model,
-		}
-		if opts != nil {
-			switch v := opts.(type) {
-			case *genai.OptionsImage:
-				req.Height = int64(v.Height)
-				req.Width = int64(v.Width)
-				req.Seed = v.Seed
-			case *genai.OptionsText:
-				req.Seed = v.Seed
-			default:
-				return res, fmt.Errorf("unsupported options type %T", opts)
-			}
 		}
 		resp := ImageResponse{}
 		if err := c.DoRequest(ctx, "POST", "https://api.together.xyz/v1/images/generations", &req, &resp); err != nil {

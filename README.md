@@ -33,9 +33,12 @@ genai is _different_. Curious why it was created? See the release announcement a
 - **Safe and strict API implementation**. All you love from a statically typed
   language. The library's smoke tests immediately fail on unknown RPC fields. Error code paths are properly
   implemented.
-- **Stateless**: no global state, it is safe to use clients concurrently.
-- **Professional grade**: smoke tested on live services with recorded traces located in `testdata/` directories.
-- **Optimized for speed**: minimize memory allocations, compress data at the
+- **Stateless**. No global state, it is safe to use clients concurrently.
+- **Professional grade**. smoke tested on live services with recorded traces located in `testdata/`
+  directories, e.g.
+  [providers/anthropic/testdata/TestClient_Scoreboard/](https://github.com/maruel/genai/tree/main/providers/anthropic/testdata/TestClient_Scoreboard/).
+- **Trust, But verify**. It generates a [scoreboard](#scoreboard) based on actual behavior from each provider.
+- **Optimized for speed**. Minimize memory allocations, compress data at the
   transport layer when possible. Groq, Mistral and OpenAI use brotli for HTTP compression instead of gzip,
   and POST's body to Google are gzip compressed.
 - **Lean**: Few dependencies. No unnecessary abstraction layer.

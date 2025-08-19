@@ -61,6 +61,9 @@ type ProviderGen interface {
 }
 
 // Result is the result of a completion.
+//
+// It is a Message along with Usage metadata about the operation. It optionally include Logprobs if requested
+// and the provider support it.
 type Result struct {
 	Message
 	Usage    Usage

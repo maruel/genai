@@ -425,21 +425,9 @@ func (t *Time) AsTime() time.Time {
 	return time.Unix(int64(*t), 0).UTC()
 }
 
-// ListModelsResponse is an interface for responses that contain model data.
-type ListModelsResponse interface {
-	// ToModels converts the provider-specific models to a slice of genai.Model
-	ToModels() []genai.Model
-}
 
-// ListModels is a generic function that implements the common pattern for listing models across providers.
-// It makes an HTTP GET request to the specified URL and converts the response to a slice of genai.Model.
-func ListModels[PErrorResponse ErrAPI, R ListModelsResponse](ctx context.Context, c *Provider[PErrorResponse], url string) ([]genai.Model, error) {
-	var resp R
-	if err := c.DoRequest(ctx, "GET", url, nil, &resp); err != nil {
-		return nil, err
-	}
-	return resp.ToModels(), nil
-}
+
+
 
 // SimulateStream simulates GenStream for APIs that do not support streaming.
 func SimulateStream(ctx context.Context, c genai.ProviderGen, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {

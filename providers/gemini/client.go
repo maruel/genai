@@ -1829,7 +1829,11 @@ func isImage(opts genai.Options) bool {
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://ai.google.dev/api/models?hl=en#method:-models.list
-	return base.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.Provider, "https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000")
+	var resp ModelsResponse
+	if err := c.DoRequest(ctx, "GET", "https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000", nil, &resp); err != nil {
+		return nil, err
+	}
+	return resp.ToModels(), nil
 }
 
 // TODO: To implement ProviderGenAsync, we need to use the Vertex API, not the API key based Gemini one.

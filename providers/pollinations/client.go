@@ -1200,11 +1200,19 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 }
 
 func (c *Client) ListImageGenModels(ctx context.Context) ([]genai.Model, error) {
-	return base.ListModels[*ErrorResponse, *ImageModelsResponse](ctx, &c.Provider, "https://image.pollinations.ai/models")
+	var resp ImageModelsResponse
+	if err := c.DoRequest(ctx, "GET", "https://image.pollinations.ai/models", nil, &resp); err != nil {
+		return nil, err
+	}
+	return resp.ToModels(), nil
 }
 
 func (c *Client) ListTextModels(ctx context.Context) ([]genai.Model, error) {
-	return base.ListModels[*ErrorResponse, *TextModelsResponse](ctx, &c.Provider, "https://text.pollinations.ai/models")
+	var resp TextModelsResponse
+	if err := c.DoRequest(ctx, "GET", "https://text.pollinations.ai/models", nil, &resp); err != nil {
+		return nil, err
+	}
+	return resp.ToModels(), nil
 }
 
 func (c *Client) isAudio(opts genai.Options) bool {

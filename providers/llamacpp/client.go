@@ -1162,7 +1162,11 @@ func (c *Client) ModelID() string {
 }
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
-	return base.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.Provider, c.modelsURL)
+	var resp ModelsResponse
+	if err := c.DoRequest(ctx, "GET", c.modelsURL, nil, &resp); err != nil {
+		return nil, err
+	}
+	return resp.ToModels(), nil
 }
 
 func (c *Client) Completions(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {

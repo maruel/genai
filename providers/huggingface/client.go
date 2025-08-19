@@ -877,7 +877,11 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://huggingface.co/docs/hub/api
 	// There's 20k models warm as of March 2025. There's no way to sort by
 	// trending. Sorting by download is not useful. There's no pagination.
-	return base.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.Provider, "https://huggingface.co/api/models?inference=warm")
+	var resp ModelsResponse
+	if err := c.DoRequest(ctx, "GET", "https://huggingface.co/api/models?inference=warm", nil, &resp); err != nil {
+		return nil, err
+	}
+	return resp.ToModels(), nil
 }
 
 func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ReplyFragment, result *genai.Result) error {

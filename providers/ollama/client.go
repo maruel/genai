@@ -744,7 +744,11 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest, out chan<- C
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://github.com/ollama/ollama/blob/main/docs/api.md#list-local-models
-	return base.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.Provider, c.baseURL+"/api/tags")
+	var resp ModelsResponse
+	if err := c.DoRequest(ctx, "GET", c.baseURL+"/api/tags", nil, &resp); err != nil {
+		return nil, err
+	}
+	return resp.ToModels(), nil
 }
 
 func (c *Client) ModelID() string {

@@ -630,7 +630,11 @@ func (c *Client) Scoreboard() scoreboard.Score {
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://api-docs.deepseek.com/api/list-models
-	return base.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.Provider, "https://api.deepseek.com/models")
+	var resp ModelsResponse
+	if err := c.DoRequest(ctx, "GET", "https://api.deepseek.com/models", nil, &resp); err != nil {
+		return nil, err
+	}
+	return resp.ToModels(), nil
 }
 
 // TODO: Caching: https://api-docs.deepseek.com/guides/kv_cache

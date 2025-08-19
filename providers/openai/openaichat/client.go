@@ -1455,7 +1455,11 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://platform.openai.com/docs/api-reference/models/list
-	return base.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.Provider, "https://api.openai.com/v1/models")
+	var resp ModelsResponse
+	if err := c.DoRequest(ctx, "GET", "https://api.openai.com/v1/models", nil, &resp); err != nil {
+		return nil, err
+	}
+	return resp.ToModels(), nil
 }
 
 func (c *Client) isImage(opts genai.Options) bool {

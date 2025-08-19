@@ -833,7 +833,11 @@ func (c *Client) Scoreboard() scoreboard.Score {
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://inference-docs.cerebras.ai/api-reference/models
-	return base.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.Provider, "https://api.cerebras.ai/v1/models")
+	var resp ModelsResponse
+	if err := c.DoRequest(ctx, "GET", "https://api.cerebras.ai/v1/models", nil, &resp); err != nil {
+		return nil, err
+	}
+	return resp.ToModels(), nil
 }
 
 func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ReplyFragment, result *genai.Result) error {

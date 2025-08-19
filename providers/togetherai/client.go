@@ -1179,7 +1179,11 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://docs.together.ai/reference/models-1
-	return base.ListModels[*ErrorResponse, *ModelsResponse](ctx, &c.Provider, "https://api.together.xyz/v1/models")
+	var resp ModelsResponse
+	if err := c.DoRequest(ctx, "GET", "https://api.together.xyz/v1/models", nil, &resp); err != nil {
+		return nil, err
+	}
+	return resp.ToModels(), nil
 }
 
 func (c *Client) isAudio(opts genai.Options) bool {

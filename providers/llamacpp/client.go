@@ -1151,7 +1151,7 @@ func (c *Client) Scoreboard() scoreboard.Score {
 	return Scoreboard
 }
 
-// ModelID implement genai.Provider.
+// ModelID implements genai.Provider.
 func (c *Client) ModelID() string {
 	if c.Model != "" {
 		return c.Model

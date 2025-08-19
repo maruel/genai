@@ -239,7 +239,7 @@ type ResultConverter interface {
 // ProviderGen implements genai.ProviderGen.
 //
 // It includes common functionality for clients that provide chat capabilities.
-// It embeds Provider and adds the missing ModelID() method and implement genai.Validatable.
+// It embeds Provider and adds the missing ModelID() method and implements genai.Validatable.
 //
 // It only accepts text modality.
 type ProviderGen[PErrorResponse ErrAPI, PGenRequest InitializableRequest, PGenResponse ResultConverter, GenStreamChunkResponse Obj] struct {

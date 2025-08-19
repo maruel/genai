@@ -755,7 +755,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	return resp.ToModels(), nil
 }
 
-// ModelID implement genai.Provider.
+// ModelID implements genai.Provider.
 func (c *Client) ModelID() string {
 	return c.model
 }

@@ -308,7 +308,7 @@ func (c *Client) Scoreboard() scoreboard.Score {
 	return Scoreboard
 }
 
-// ModelID implement genai.Provider.
+// ModelID implements genai.Provider.
 func (c *Client) ModelID() string {
 	return c.Model
 }

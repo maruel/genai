@@ -1333,8 +1333,7 @@ func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.Round
 			ProcessStreamPackets: processStreamPackets,
 			ProcessHeaders:       processHeaders,
 			Provider: base.Provider[*ErrorResponse]{
-				ProviderName: "anthropic",
-				APIKeyURL:    apiKeyURL,
+				APIKeyURL: apiKeyURL,
 				ClientJSON: httpjson.Client{
 					Lenient: internal.BeLenient,
 					Client: &http.Client{
@@ -1400,6 +1399,16 @@ func (c *Client) selectBestModel(ctx context.Context, preference string) (string
 	return selectedModel, nil
 }
 
+// Name implements genai.Provider.
+func (c *Client) Name() string {
+	return "anthropic"
+}
+
+// ModelID implements genai.Provider.
+func (c *Client) ModelID() string {
+	return c.Model
+}
+
 // GenAsync implements genai.ProviderGenAsync.
 //
 // It requests the providers' batch API and returns the job ID. It can take up to 24 hours to complete.
@@ -1420,6 +1429,7 @@ func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.O
 	return genai.Job(resp.ID), err
 }
 
+// GenAsyncRaw provides access to the raw API structure.
 func (c *Client) GenAsyncRaw(ctx context.Context, b BatchRequest) (BatchResponse, error) {
 	resp := BatchResponse{}
 	u := "https://api.anthropic.com/v1/messages/batches"
@@ -1452,6 +1462,7 @@ func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, er
 	return res, err
 }
 
+// PokeResultRaw provides access to the raw API structure.
 func (c *Client) PokeResultRaw(ctx context.Context, id genai.Job) (BatchQueryResponse, error) {
 	resp := BatchQueryResponse{}
 	// Warning: The documentation at https://docs.anthropic.com/en/api/retrieving-message-batch-results states

@@ -288,8 +288,7 @@ func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.Round
 		Model:  model,
 		remote: remote,
 		Provider: base.Provider[*ErrorResponse]{
-			ProviderName: "bfl",
-			APIKeyURL:    apiKeyURL,
+			APIKeyURL: apiKeyURL,
 			ClientJSON: httpjson.Client{
 				Lenient: internal.BeLenient,
 				Client: &http.Client{
@@ -306,6 +305,11 @@ func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.Round
 // Scoreboard implements scoreboard.ProviderScore.
 func (c *Client) Scoreboard() scoreboard.Score {
 	return Scoreboard
+}
+
+// Name implements genai.Provider.
+func (c *Client) Name() string {
+	return "bfl"
 }
 
 // ModelID implements genai.Provider.

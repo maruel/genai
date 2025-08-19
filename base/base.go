@@ -70,16 +70,11 @@ type Provider[PErrorResponse ErrAPI] struct {
 	// ClientJSON is exported for testing replay purposes.
 	ClientJSON httpjson.Client
 	// APIKeyURL is the URL to present to the user upon authentication error.
-	APIKeyURL    string
-	ProviderName string
+	APIKeyURL string
 
 	mu            sync.Mutex
 	errorResponse reflect.Type
 	lastResp      http.Header
-}
-
-func (c *Provider[PErrorResponse]) Name() string {
-	return c.ProviderName
 }
 
 // LastResponseHeaders returns the HTTP headers of the last response.
@@ -389,10 +384,6 @@ func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRe
 	c.mu.Unlock()
 	er := reflect.New(c.errorResponse).Interface().(PErrorResponse)
 	return sse.Process(resp.Body, out, er, c.ClientJSON.Lenient)
-}
-
-func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) ModelID() string {
-	return c.Model
 }
 
 func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) Validate() error {

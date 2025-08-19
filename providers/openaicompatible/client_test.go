@@ -21,7 +21,7 @@ import (
 func TestClient_Preferred(t *testing.T) {
 	for _, line := range []string{genai.ModelCheap, genai.ModelGood, genai.ModelSOTA} {
 		t.Run(line, func(t *testing.T) {
-			_, err := openaicompatible.New(&genai.OptionsProvider{Remote: "http://localhost", Model: line}, nil)
+			_, err := openaicompatible.New(&genai.ProviderOptions{Remote: "http://localhost", Model: line}, nil)
 			if err == nil {
 				t.Fatal("expected error")
 			}
@@ -213,7 +213,7 @@ func getClient(t *testing.T, provider string) genai.ProviderGen {
 			Transport: testRecorder.Record(t, h),
 		}
 	}
-	c, err := openaicompatible.New(&genai.OptionsProvider{Remote: p.chatURL, Model: p.model}, wrapper)
+	c, err := openaicompatible.New(&genai.ProviderOptions{Remote: p.chatURL, Model: p.model}, wrapper)
 	if err != nil {
 		t.Fatal(err)
 	}

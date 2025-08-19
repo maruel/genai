@@ -57,7 +57,7 @@ func ExampleNew_hTTP_record() {
 	if os.Getenv("POLLINATIONS_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	c, err := pollinations.New(&genai.OptionsProvider{APIKey: apiKey, Model: genai.ModelNone}, wrapper)
+	c, err := pollinations.New(&genai.ProviderOptions{APIKey: apiKey, Model: genai.ModelNone}, wrapper)
 	if err != nil {
 		log.Fatal(err)
 	}

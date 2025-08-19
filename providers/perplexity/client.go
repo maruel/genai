@@ -514,7 +514,7 @@ type Client struct {
 //
 // wrapper optionally wraps the HTTP transport. Useful for HTTP recording and playback, or to tweak HTTP
 // retries, or to throttle outgoing requests.
-func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
+func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
 	if opts.AccountID != "" {
 		return nil, errors.New("unexpected option AccountID")
 	}

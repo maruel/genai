@@ -1392,7 +1392,7 @@ type Client struct {
 //
 // As of May 2025, price on Pro model increases when more than 200k input tokens are used.
 // Cached input tokens are 25% of the price of new tokens.
-func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
+func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
 	if opts.AccountID != "" {
 		return nil, errors.New("unexpected option AccountID")
 	}

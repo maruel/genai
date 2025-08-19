@@ -128,7 +128,7 @@ func New(ctx context.Context, exe string, logOutput io.Writer, hostPort string, 
 	}()
 
 	// Wait for the server to be ready.
-	c, err := ollama.New(&genai.OptionsProvider{Remote: u, Model: genai.ModelNone}, nil)
+	c, err := ollama.New(&genai.ProviderOptions{Remote: u, Model: genai.ModelNone}, nil)
 	if err != nil {
 		_ = cmd.Cancel()
 		<-done

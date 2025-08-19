@@ -26,7 +26,7 @@ func Example() {
 		return
 	}
 	defer srv.Close()
-	c, err := llamacpp.New(&genai.OptionsProvider{Remote: srv.URL(), Model: genai.ModelNone}, nil)
+	c, err := llamacpp.New(&genai.ProviderOptions{Remote: srv.URL(), Model: genai.ModelNone}, nil)
 	if err != nil {
 		log.Print(err)
 		return

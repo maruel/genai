@@ -220,18 +220,18 @@ func printTable(provider string) error {
 	if f == nil {
 		return fmt.Errorf("provider %s: not found", provider)
 	}
-	c, err := f(&genai.OptionsProvider{Model: genai.ModelNone}, nil)
+	c, err := f(&genai.ProviderOptions{Model: genai.ModelNone}, nil)
 	if c == nil {
 		return fmt.Errorf("provider %s: %w", provider, err)
 	}
 	return printProviderTable(c)
 }
 
-func printSummaryTable(all map[string]func(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error)) error {
+func printSummaryTable(all map[string]func(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error)) error {
 	var rows []tableSummaryRow
 	seen := map[string]struct{}{}
 	for name, f := range all {
-		opts := &genai.OptionsProvider{Model: genai.ModelNone}
+		opts := &genai.ProviderOptions{Model: genai.ModelNone}
 		if name == "openaicompatible" {
 			// Make sure the remote it set for this one.
 			opts.Remote = "http://localhost:0"

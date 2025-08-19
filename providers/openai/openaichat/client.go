@@ -1226,7 +1226,7 @@ type Client struct {
 //
 // OpenAI supports many types of documents, listed at
 // https://platform.openai.com/docs/assistants/tools/file-search#supported-files
-func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
+func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
 	if opts.AccountID != "" {
 		return nil, errors.New("unexpected option AccountID")
 	}

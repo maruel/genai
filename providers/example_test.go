@@ -21,7 +21,7 @@ import (
 
 func Example_all_ProvidersModel() {
 	for _, name := range GetProvidersModel() {
-		c, err := providers.All[name](&genai.OptionsProvider{Model: genai.ModelNone}, nil)
+		c, err := providers.All[name](&genai.ProviderOptions{Model: genai.ModelNone}, nil)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -50,7 +50,7 @@ func Example_all_ProvidersModel() {
 func GetProvidersModel() []string {
 	var names []string
 	for name, f := range providers.All {
-		c, _ := f(&genai.OptionsProvider{Model: genai.ModelNone}, nil)
+		c, _ := f(&genai.ProviderOptions{Model: genai.ModelNone}, nil)
 		if c == nil {
 			continue
 		}
@@ -64,7 +64,7 @@ func GetProvidersModel() []string {
 
 func Example_all_ProviderGen() {
 	for name, f := range providers.All {
-		c, err := f(&genai.OptionsProvider{Model: genai.ModelCheap}, nil)
+		c, err := f(&genai.ProviderOptions{Model: genai.ModelCheap}, nil)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -120,7 +120,7 @@ func Example_all_Full() {
 	if query == "" {
 		log.Fatal("provide a query")
 	}
-	p, err := LoadProvider(*provider, &genai.OptionsProvider{Model: *model, Remote: *remote})
+	p, err := LoadProvider(*provider, &genai.ProviderOptions{Model: *model, Remote: *remote})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -132,7 +132,7 @@ func Example_all_Full() {
 }
 
 // LoadProvider loads a provider.
-func LoadProvider(provider string, opts *genai.OptionsProvider) (genai.ProviderGen, error) {
+func LoadProvider(provider string, opts *genai.ProviderOptions) (genai.ProviderGen, error) {
 	if provider == "" {
 		return nil, fmt.Errorf("no provider specified")
 	}
@@ -158,7 +158,7 @@ func LoadDefaultProviderGen() (genai.ProviderGen, error) {
 	avail := providers.Available()
 	if len(avail) == 1 {
 		for name, f := range avail {
-			c, err := f(&genai.OptionsProvider{Model: genai.ModelNone}, nil)
+			c, err := f(&genai.ProviderOptions{Model: genai.ModelNone}, nil)
 			if err != nil {
 				return nil, err
 			}
@@ -223,7 +223,7 @@ func Example_all_GetProvidersGenAsync() {
 func GetProvidersGenAsync() []string {
 	var names []string
 	for name, f := range providers.All {
-		c, _ := f(&genai.OptionsProvider{Model: genai.ModelNone}, nil)
+		c, _ := f(&genai.ProviderOptions{Model: genai.ModelNone}, nil)
 		if c == nil {
 			continue
 		}

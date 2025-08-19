@@ -57,7 +57,7 @@ func ExampleNew_hTTP_record() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	c, err := huggingface.New(&genai.OptionsProvider{APIKey: apiKey, Model: genai.ModelNone}, wrapper)
+	c, err := huggingface.New(&genai.ProviderOptions{APIKey: apiKey, Model: genai.ModelNone}, wrapper)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -57,7 +57,7 @@ func ExampleNew_hTTP_record() {
 	if os.Getenv("OPENAI_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	c, err := openaichat.New(&genai.OptionsProvider{APIKey: apiKey, Model: genai.ModelNone}, wrapper)
+	c, err := openaichat.New(&genai.ProviderOptions{APIKey: apiKey, Model: genai.ModelNone}, wrapper)
 	if err != nil {
 		log.Fatal(err)
 	}

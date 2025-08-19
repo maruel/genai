@@ -23,7 +23,7 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 	if os.Getenv("BFL_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	c, err := New(&genai.OptionsProvider{APIKey: apiKey, Model: model.Model}, fn)
+	c, err := New(&genai.ProviderOptions{APIKey: apiKey, Model: model.Model}, fn)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -113,7 +113,7 @@ func getClientInner(t *testing.T, apiKey, m string) (*Client, error) {
 	if apiKey == "" && os.Getenv("BFL_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	return New(&genai.OptionsProvider{APIKey: apiKey, Model: m}, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
+	return New(&genai.ProviderOptions{APIKey: apiKey, Model: m}, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
 }
 
 var testRecorder *internaltest.Records

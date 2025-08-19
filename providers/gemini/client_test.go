@@ -28,7 +28,7 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 	if os.Getenv("GEMINI_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	c, err := gemini.New(&genai.OptionsProvider{APIKey: apiKey, Model: model.Model}, fn)
+	c, err := gemini.New(&genai.ProviderOptions{APIKey: apiKey, Model: model.Model}, fn)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -340,7 +340,7 @@ func getClientInner(t *testing.T, apiKey, m string) (*gemini.Client, error) {
 	wrapper := func(h http.RoundTripper) http.RoundTripper {
 		return testRecorder.Record(t, h, recorder.WithHook(trimRecordingInternal, recorder.AfterCaptureHook), recorder.WithMatcher(internal.DefaultMatcher))
 	}
-	return gemini.New(&genai.OptionsProvider{APIKey: apiKey, Model: m}, wrapper)
+	return gemini.New(&genai.ProviderOptions{APIKey: apiKey, Model: m}, wrapper)
 }
 
 func trimRecordingInternal(i *cassette.Interaction) error {

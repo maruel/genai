@@ -790,7 +790,7 @@ type Client struct {
 //
 // Tool use requires the use of a model that supports it.
 // https://console.groq.com/docs/tool-use
-func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
+func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
 	if opts.AccountID != "" {
 		return nil, errors.New("unexpected option AccountID")
 	}

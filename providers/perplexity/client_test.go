@@ -25,7 +25,7 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 	if os.Getenv("PERPLEXITY_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	c, err := perplexity.New(&genai.OptionsProvider{APIKey: apiKey, Model: model.Model}, func(h http.RoundTripper) http.RoundTripper {
+	c, err := perplexity.New(&genai.ProviderOptions{APIKey: apiKey, Model: model.Model}, func(h http.RoundTripper) http.RoundTripper {
 		// Perplexity is quick to ban users. It first start with 429 and then Cloudflare blocks it with a
 		// javascript challenge. It's extra dumb because it is an API endpoint.
 		// https://docs.perplexity.ai/guides/usage-tiers
@@ -151,7 +151,7 @@ func getClientInner(t *testing.T, apiKey, m string) (*perplexity.Client, error) 
 	if apiKey == "" && os.Getenv("PERPLEXITY_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	return perplexity.New(&genai.OptionsProvider{APIKey: apiKey, Model: m}, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
+	return perplexity.New(&genai.ProviderOptions{APIKey: apiKey, Model: m}, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
 }
 
 var testRecorder *internaltest.Records

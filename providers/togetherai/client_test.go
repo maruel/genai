@@ -26,7 +26,7 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 	if os.Getenv("TOGETHER_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	c, err := togetherai.New(&genai.OptionsProvider{APIKey: apiKey, Model: model.Model}, fn)
+	c, err := togetherai.New(&genai.ProviderOptions{APIKey: apiKey, Model: model.Model}, fn)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -187,7 +187,7 @@ func getClientInner(t *testing.T, apiKey, m string) (*togetherai.Client, error) 
 	if apiKey == "" && os.Getenv("TOGETHER_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	return togetherai.New(&genai.OptionsProvider{APIKey: apiKey, Model: m}, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
+	return togetherai.New(&genai.ProviderOptions{APIKey: apiKey, Model: m}, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
 }
 
 var testRecorder *internaltest.Records

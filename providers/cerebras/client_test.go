@@ -23,7 +23,7 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 	if os.Getenv("CEREBRAS_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	c, err2 := cerebras.New(&genai.OptionsProvider{APIKey: apiKey, Model: model.Model}, fn)
+	c, err2 := cerebras.New(&genai.ProviderOptions{APIKey: apiKey, Model: model.Model}, fn)
 	if err2 != nil {
 		t.Fatal(err2)
 	}
@@ -114,7 +114,7 @@ func getClientInner(t *testing.T, apiKey, m string) (*cerebras.Client, error) {
 	if apiKey == "" && os.Getenv("CEREBRAS_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	return cerebras.New(&genai.OptionsProvider{APIKey: apiKey, Model: m}, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
+	return cerebras.New(&genai.ProviderOptions{APIKey: apiKey, Model: m}, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
 }
 
 var testRecorder *internaltest.Records

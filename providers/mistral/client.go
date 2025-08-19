@@ -928,7 +928,7 @@ type Client struct {
 //
 // Tool use requires a model which has the tool capability. See
 // https://docs.mistral.ai/capabilities/function_calling/
-func New(opts *genai.OptionsProvider, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
+func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
 	if opts.AccountID != "" {
 		return nil, errors.New("unexpected option AccountID")
 	}

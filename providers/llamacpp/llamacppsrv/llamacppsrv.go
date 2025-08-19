@@ -143,7 +143,7 @@ func New(ctx context.Context, exe, modelPath string, logOutput io.Writer, hostPo
 	}()
 
 	// Wait for the server to be ready.
-	c, err := llamacpp.New(&genai.OptionsProvider{Remote: u, Model: genai.ModelNone}, nil)
+	c, err := llamacpp.New(&genai.ProviderOptions{Remote: u, Model: genai.ModelNone}, nil)
 	if err != nil {
 		_ = cmd.Cancel()
 		<-done

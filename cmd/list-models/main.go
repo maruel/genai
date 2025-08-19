@@ -81,7 +81,7 @@ func printStructDense(v any, indent string) string {
 func getProvidersModel() []string {
 	var names []string
 	for name, f := range providers.All {
-		if c, _ := f(&genai.OptionsProvider{Model: genai.ModelNone}, nil); c != nil {
+		if c, _ := f(&genai.ProviderOptions{Model: genai.ModelNone}, nil); c != nil {
 			if _, ok := c.(genai.ProviderModel); ok {
 				names = append(names, name)
 			}
@@ -112,7 +112,7 @@ func mainImpl() error {
 	if !slices.Contains(names, *provider) {
 		return fmt.Errorf("unknown backend %q", *provider)
 	}
-	c, err := providers.All[*provider](&genai.OptionsProvider{Model: genai.ModelNone}, nil)
+	c, err := providers.All[*provider](&genai.ProviderOptions{Model: genai.ModelNone}, nil)
 	if err != nil {
 		return err
 	}

@@ -19,7 +19,7 @@ import (
 )
 
 func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
-	c, err := huggingface.New(&genai.OptionsProvider{APIKey: getAPIKeyTest(t), Model: model.Model}, fn)
+	c, err := huggingface.New(&genai.ProviderOptions{APIKey: getAPIKeyTest(t), Model: model.Model}, fn)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -103,7 +103,7 @@ func getClientInner(t *testing.T, apiKey, m string) (*huggingface.Client, error)
 	if apiKey == "" {
 		apiKey = getAPIKeyTest(t)
 	}
-	return huggingface.New(&genai.OptionsProvider{APIKey: apiKey, Model: m}, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
+	return huggingface.New(&genai.ProviderOptions{APIKey: apiKey, Model: m}, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
 }
 
 func getAPIKeyTest(t testing.TB) string {

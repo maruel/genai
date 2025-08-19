@@ -211,7 +211,7 @@ func main() {
 	if query == "" {
 		log.Fatal("provide a query")
 	}
-	p, err := LoadProvider(*provider, &genai.OptionsProvider{Model: *model, Remote: *remote})
+	p, err := LoadProvider(*provider, &genai.ProviderOptions{Model: *model, Remote: *remote})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -223,7 +223,7 @@ func main() {
 }
 
 // LoadProvider loads a provider.
-func LoadProvider(provider string, opts *genai.OptionsProvider) (genai.ProviderGen, error) {
+func LoadProvider(provider string, opts *genai.ProviderOptions) (genai.ProviderGen, error) {
 	if provider == "" {
 		return nil, fmt.Errorf("no provider specified")
 	}
@@ -264,7 +264,7 @@ import (
 )
 
 func main() {
-	c, err := cerebras.New(&genai.OptionsProvider{Model: "qwen-3-235b-a22b-thinking-2507"}, nil)
+	c, err := cerebras.New(&genai.ProviderOptions{Model: "qwen-3-235b-a22b-thinking-2507"}, nil)
 	if err != nil {
 		log.Fatal(err)
 	}

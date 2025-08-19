@@ -1062,6 +1062,7 @@ func (c *Client) selectBestModel(ctx context.Context, preference string) (string
 	return selectedModel, nil
 }
 
+// Scoreboard implements scoreboard.ProviderScore.
 func (c *Client) Scoreboard() scoreboard.Score {
 	return Scoreboard
 }
@@ -1089,7 +1090,9 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan
 	return c.ProviderGen.GenStream(ctx, msgs, chunks, opts)
 }
 
-// GenDoc uses the text-to-image API to generate an image.
+// GenDoc implements genai.ProviderGenDoc.
+//
+// Use it to generate images.
 //
 // Default rate limit is 0.2 QPS / IP.
 func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
@@ -1186,6 +1189,7 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 	return res, res.Validate()
 }
 
+// ListModels implements genai.ProviderModel.
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#list-available-image-models-
 	var out []genai.Model

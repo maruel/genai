@@ -303,10 +303,12 @@ func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.Round
 	}, err
 }
 
+// Scoreboard implements scoreboard.ProviderScore.
 func (c *Client) Scoreboard() scoreboard.Score {
 	return Scoreboard
 }
 
+// ModelID implement genai.Provider.
 func (c *Client) ModelID() string {
 	return c.Model
 }
@@ -330,7 +332,9 @@ func processHeaders(h http.Header) []genai.RateLimit {
 	return limits
 }
 
-// GenDoc synchronously generates a document.
+// GenDoc implements genai.ProviderGenDoc.
+//
+// It synchronously generates a document.
 //
 // Generation can be rather slow, several seconds or minutes.
 func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
@@ -352,6 +356,9 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 	}
 }
 
+// GenAsync implements genai.ProviderGenAsync.
+//
+// It requests the providers' asynchronous API and returns the job ID.
 func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Job, error) {
 	req := ImageRequest{}
 	if err := req.Init(msgs, opts); err != nil {
@@ -370,7 +377,9 @@ func (c *Client) GenAsyncRaw(ctx context.Context, req ImageRequest) (ImageReques
 	return reqresp, err
 }
 
-// PokeResult retrieves the result for a job ID.
+// PokeResult implements genai.ProviderGenAsync.
+//
+// It retrieves the result for a job ID.
 func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, error) {
 	res := genai.Result{}
 	imgres, err := c.PokeResultRaw(ctx, id)

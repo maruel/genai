@@ -1696,6 +1696,10 @@ func (c *Client) CacheDelete(ctx context.Context, name string) error {
 	return c.DoRequest(ctx, "DELETE", url, nil, &out)
 }
 
+// GenDoc implements genai.ProviderGenDoc.
+//
+// Use it to generate images.
+//
 // GenDoc is only supported for models that have "predict" reported in their Model.SupportedGenerationMethods.
 func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
 	res := genai.Result{}
@@ -1756,6 +1760,10 @@ func (c *Client) GenDocRaw(ctx context.Context, req ImageRequest) (ImageResponse
 	return resp, err
 }
 
+// GenAsync implements genai.ProviderGenAsync.
+//
+// It requests the providers' asynchronous API and returns the job ID.
+//
 // GenAsync is only supported for models that have "predictLongRunning" reported in their
 // Model.SupportedGenerationMethods.
 //
@@ -1793,7 +1801,9 @@ func (c *Client) GenAsyncRaw(ctx context.Context, req ImageRequest) (Operation, 
 	return resp, err
 }
 
-// PokeResult retrieves the result for a job ID.
+// PokeResult implements genai.ProviderGenAsync.
+//
+// It retrieves the result for a job ID.
 func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, error) {
 	res := genai.Result{}
 	op, err := c.PokeResultRaw(ctx, id)
@@ -1827,6 +1837,7 @@ func isImage(opts genai.Options) bool {
 	return opts != nil && slices.Contains(opts.Modalities(), genai.ModalityImage)
 }
 
+// ListModels implements genai.ProviderModel.
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://ai.google.dev/api/models?hl=en#method:-models.list
 	var resp ModelsResponse

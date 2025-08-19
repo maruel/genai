@@ -393,6 +393,7 @@ func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.Round
 	}, nil
 }
 
+// Scoreboard implements scoreboard.ProviderScore.
 func (c *Client) Scoreboard() scoreboard.Score {
 	return Scoreboard
 }

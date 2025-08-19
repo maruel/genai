@@ -1400,6 +1400,9 @@ func (c *Client) selectBestModel(ctx context.Context, preference string) (string
 	return selectedModel, nil
 }
 
+// GenAsync implements genai.ProviderGenAsync.
+//
+// It requests the providers' batch API and returns the job ID. It can take up to 24 hours to complete.
 func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Job, error) {
 	if err := c.Validate(); err != nil {
 		return "", err
@@ -1424,6 +1427,9 @@ func (c *Client) GenAsyncRaw(ctx context.Context, b BatchRequest) (BatchResponse
 	return resp, err
 }
 
+// PokeResult implements genai.ProviderGenAsync.
+//
+// It retrieves the result for a job ID.
 func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, error) {
 	res := genai.Result{}
 	resp, err := c.PokeResultRaw(ctx, id)
@@ -1478,10 +1484,12 @@ func (c *Client) CancelRaw(ctx context.Context, id genai.Job) (BatchResponse, er
 	return resp, err
 }
 
+// Scoreboard implements scoreboard.ProviderScore.
 func (c *Client) Scoreboard() scoreboard.Score {
 	return Scoreboard
 }
 
+// ListModels implements genai.ProviderModel.
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://docs.anthropic.com/en/api/models-list
 	var resp ModelsResponse

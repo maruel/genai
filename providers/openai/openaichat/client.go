@@ -1395,10 +1395,12 @@ func (c *Client) selectBestModel(ctx context.Context, preference string) (string
 	return selectedModel, nil
 }
 
+// Scoreboard implements scoreboard.ProviderScore.
 func (c *Client) Scoreboard() scoreboard.Score {
 	return Scoreboard
 }
 
+// GenSync implements genai.ProviderGen.
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
 	if c.isImage(opts) {
 		if len(msgs) != 1 {
@@ -1409,6 +1411,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Op
 	return c.ProviderGen.GenSync(ctx, msgs, opts)
 }
 
+// GenStream implements genai.ProviderGen.
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
 	if c.isImage(opts) {
 		return base.SimulateStream(ctx, c, msgs, chunks, opts)
@@ -1416,6 +1419,9 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan
 	return c.ProviderGen.GenStream(ctx, msgs, chunks, opts)
 }
 
+// GenDoc implements genai.ProviderGenDoc.
+//
+// It synchronously generates a document.
 func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
 	// https://platform.openai.com/docs/api-reference/images/create
 	res := genai.Result{}
@@ -1453,6 +1459,7 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 	return res, res.Validate()
 }
 
+// ListModels implements genai.ProviderModel.
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://platform.openai.com/docs/api-reference/models/list
 	var resp ModelsResponse
@@ -1472,6 +1479,9 @@ func (c *Client) isImage(opts genai.Options) bool {
 	}
 }
 
+// GenAsync implements genai.ProviderGenAsync.
+//
+// It requests the providers' batch API and returns the job ID. It can take up to 24 hours to complete.
 func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Job, error) {
 	fileID, err := c.CacheAddRequest(ctx, msgs, opts, "TODO", "batch.json", 24*time.Hour)
 	if err != nil {
@@ -1495,6 +1505,9 @@ func (c *Client) GenAsyncRaw(ctx context.Context, b BatchRequest) (Batch, error)
 	return resp, err
 }
 
+// PokeResult implements genai.ProviderGenAsync.
+//
+// It retrieves the result for a job ID.
 func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, error) {
 	res := genai.Result{}
 	resp, err := c.PokeResultRaw(ctx, id)

@@ -1118,6 +1118,7 @@ func (c *Client) selectBestModel(ctx context.Context, preference string) (string
 	return selectedModel, nil
 }
 
+// Scoreboard implements scoreboard.ProviderScore.
 func (c *Client) Scoreboard() scoreboard.Score {
 	return Scoreboard
 }
@@ -1139,6 +1140,9 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan
 	return c.ProviderGen.GenStream(ctx, msgs, chunks, opts)
 }
 
+// GenDoc implements genai.ProviderGenDoc.
+//
+// Use it to generate images.
 func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
 	if c.isAudio(opts) {
 		// https://docs.together.ai/reference/audio-speech
@@ -1177,6 +1181,7 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 	return genai.Result{}, errors.New("can only generate audio and images")
 }
 
+// ListModels implements genai.ProviderModel.
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://docs.together.ai/reference/models-1
 	var resp ModelsResponse

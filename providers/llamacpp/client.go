@@ -1146,10 +1146,12 @@ func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.Round
 	}, nil
 }
 
+// Scoreboard implements scoreboard.ProviderScore.
 func (c *Client) Scoreboard() scoreboard.Score {
 	return Scoreboard
 }
 
+// ModelID implement genai.Provider.
 func (c *Client) ModelID() string {
 	if c.Model != "" {
 		return c.Model
@@ -1161,6 +1163,7 @@ func (c *Client) ModelID() string {
 	return ""
 }
 
+// ListModels implements genai.ProviderModel.
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	var resp ModelsResponse
 	if err := c.DoRequest(ctx, "GET", c.modelsURL, nil, &resp); err != nil {

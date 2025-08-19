@@ -382,7 +382,6 @@ func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.Round
 			ModelOptional:        true,
 			ProcessStreamPackets: processStreamPackets,
 			Provider: base.Provider[*ErrorResponse]{
-				ProviderName: "openaicompatible",
 				ClientJSON: httpjson.Client{
 					// It is always lenient by definition.
 					Lenient: true,
@@ -391,6 +390,20 @@ func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.Round
 			},
 		},
 	}, nil
+}
+
+// Name implements genai.Provider.
+//
+// It returns the name of the provider.
+func (c *Client) Name() string {
+	return "openaicompatible"
+}
+
+// ModelID implements genai.Provider.
+//
+// It returns the selected model ID.
+func (c *Client) ModelID() string {
+	return c.Model
 }
 
 // Scoreboard implements scoreboard.ProviderScore.

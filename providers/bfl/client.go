@@ -302,19 +302,23 @@ func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.Round
 	}, err
 }
 
-// Scoreboard implements scoreboard.ProviderScore.
-func (c *Client) Scoreboard() scoreboard.Score {
-	return Scoreboard
-}
-
 // Name implements genai.Provider.
+//
+// It returns the name of the provider.
 func (c *Client) Name() string {
 	return "bfl"
 }
 
 // ModelID implements genai.Provider.
+//
+// It returns the selected model ID.
 func (c *Client) ModelID() string {
 	return c.Model
+}
+
+// Scoreboard implements scoreboard.ProviderScore.
+func (c *Client) Scoreboard() scoreboard.Score {
+	return Scoreboard
 }
 
 func processHeaders(h http.Header) []genai.RateLimit {

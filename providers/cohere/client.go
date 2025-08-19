@@ -938,8 +938,7 @@ func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.Round
 			GenSyncURL:           "https://api.cohere.com/v2/chat",
 			ProcessStreamPackets: processStreamPackets,
 			Provider: base.Provider[*ErrorResponse]{
-				ProviderName: "cohere",
-				APIKeyURL:    apiKeyURL,
+				APIKeyURL: apiKeyURL,
 				ClientJSON: httpjson.Client{
 					Lenient: internal.BeLenient,
 					Client: &http.Client{
@@ -1009,6 +1008,20 @@ func (c *Client) selectBestModel(ctx context.Context, preference string) (string
 		return "", errors.New("failed to find a model automatically")
 	}
 	return selectedModel, nil
+}
+
+// Name implements genai.Provider.
+//
+// It returns the name of the provider.
+func (c *Client) Name() string {
+	return "cohere"
+}
+
+// ModelID implements genai.Provider.
+//
+// It returns the selected model ID.
+func (c *Client) ModelID() string {
+	return c.Model
 }
 
 // Scoreboard implements scoreboard.ProviderScore.

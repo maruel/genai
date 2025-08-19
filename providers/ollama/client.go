@@ -630,8 +630,18 @@ func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.Round
 	}, nil
 }
 
+// Name implements genai.Provider.
+//
+// It returns the name of the provider.
 func (c *Client) Name() string {
 	return "ollama"
+}
+
+// ModelID implements genai.Provider.
+//
+// It returns the selected model ID.
+func (c *Client) ModelID() string {
+	return c.model
 }
 
 // Scoreboard implements scoreboard.ProviderScore.
@@ -753,11 +763,6 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 		return nil, err
 	}
 	return resp.ToModels(), nil
-}
-
-// ModelID implements genai.Provider.
-func (c *Client) ModelID() string {
-	return c.model
 }
 
 // PullModel is the equivalent of "ollama pull".

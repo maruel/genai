@@ -1508,8 +1508,7 @@ func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.Round
 			ProcessStreamPackets: processStreamPackets,
 			LieToolCalls:         true,
 			Provider: base.Provider[*ErrorResponse]{
-				ProviderName: "gemini",
-				APIKeyURL:    apiKeyURL,
+				APIKeyURL: apiKeyURL,
 				ClientJSON: httpjson.Client{
 					Lenient: internal.BeLenient,
 					Client: &http.Client{
@@ -1587,6 +1586,21 @@ func (c *Client) selectBestModel(ctx context.Context, preference string) (string
 	return selectedModel, nil
 }
 
+// Name implements genai.Provider.
+//
+// It returns the name of the provider.
+func (c *Client) Name() string {
+	return "gemini"
+}
+
+// ModelID implements genai.Provider.
+//
+// It returns the selected model ID.
+func (c *Client) ModelID() string {
+	return c.Model
+}
+
+// Scoreboard implements scoreboard.ProviderScore.
 func (c *Client) Scoreboard() scoreboard.Score {
 	return Scoreboard
 }

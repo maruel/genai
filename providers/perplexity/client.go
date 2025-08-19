@@ -561,8 +561,7 @@ func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.Round
 			GenSyncURL:           "https://api.perplexity.ai/chat/completions",
 			ProcessStreamPackets: processStreamPackets,
 			Provider: base.Provider[*ErrorResponse]{
-				ProviderName: "perplexity",
-				APIKeyURL:    apiKeyURL,
+				APIKeyURL: apiKeyURL,
 				ClientJSON: httpjson.Client{
 					Lenient: internal.BeLenient,
 					Client: &http.Client{
@@ -575,6 +574,20 @@ func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.Round
 			},
 		},
 	}, err
+}
+
+// Name implements genai.Provider.
+//
+// It returns the name of the provider.
+func (c *Client) Name() string {
+	return "perplexity"
+}
+
+// ModelID implements genai.Provider.
+//
+// It returns the selected model ID.
+func (c *Client) ModelID() string {
+	return c.Model
 }
 
 // Scoreboard implements scoreboard.ProviderScore.

@@ -782,8 +782,7 @@ func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.Round
 			ProcessStreamPackets: processStreamPackets,
 			ProcessHeaders:       processHeaders,
 			Provider: base.Provider[*ErrorResponse]{
-				ProviderName: "huggingface",
-				APIKeyURL:    apiKeyURL,
+				APIKeyURL: apiKeyURL,
 				ClientJSON: httpjson.Client{
 					Lenient: internal.BeLenient,
 					Client: &http.Client{
@@ -796,9 +795,10 @@ func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.Round
 			},
 		},
 	}
-	if model == genai.ModelNone {
+	switch model {
+	case genai.ModelNone:
 		c.Model = ""
-	} else if err == nil && (model == genai.ModelCheap || model == genai.ModelGood || model == genai.ModelSOTA) {
+	case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA:
 		if err == nil {
 			if c.Model, err = c.selectBestModel(context.Background(), model); err != nil {
 				return nil, err
@@ -867,6 +867,20 @@ func (c *Client) selectBestModel(ctx context.Context, preference string) (string
 		return "", errors.New("failed to find a model automatically")
 	}
 	return selectedModel, nil
+}
+
+// Name implements genai.Provider.
+//
+// It returns the name of the provider.
+func (c *Client) Name() string {
+	return "huggingface"
+}
+
+// ModelID implements genai.Provider.
+//
+// It returns the selected model ID.
+func (c *Client) ModelID() string {
+	return c.Model
 }
 
 // Scoreboard implements scoreboard.ProviderScore.

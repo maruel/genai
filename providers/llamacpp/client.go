@@ -1130,7 +1130,6 @@ func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.Round
 			ModelOptional:        true,
 			Model:                model,
 			Provider: base.Provider[*ErrorResponse]{
-				ProviderName: "llamacpp",
 				ClientJSON: httpjson.Client{
 					Lenient: internal.BeLenient,
 					Client: &http.Client{
@@ -1146,12 +1145,16 @@ func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.Round
 	}, nil
 }
 
-// Scoreboard implements scoreboard.ProviderScore.
-func (c *Client) Scoreboard() scoreboard.Score {
-	return Scoreboard
+// Name implements genai.Provider.
+//
+// It returns the name of the provider.
+func (c *Client) Name() string {
+	return "llamacpp"
 }
 
 // ModelID implements genai.Provider.
+//
+// It returns the selected model ID.
 func (c *Client) ModelID() string {
 	if c.Model != "" {
 		return c.Model
@@ -1161,6 +1164,11 @@ func (c *Client) ModelID() string {
 		return m[0].GetID()
 	}
 	return ""
+}
+
+// Scoreboard implements scoreboard.ProviderScore.
+func (c *Client) Scoreboard() scoreboard.Score {
+	return Scoreboard
 }
 
 // ListModels implements genai.ProviderModel.

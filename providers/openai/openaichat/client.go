@@ -1328,7 +1328,6 @@ func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.Round
 			ProcessStreamPackets: processStreamPackets,
 			ProcessHeaders:       processHeaders,
 			Provider: base.Provider[*ErrorResponse]{
-				ProviderName: "openai",
 				// OpenAI error message prints the api key URL already.
 				APIKeyURL: "",
 				ClientJSON: httpjson.Client{
@@ -1393,6 +1392,20 @@ func (c *Client) selectBestModel(ctx context.Context, preference string) (string
 		return "", errors.New("failed to find a model automatically")
 	}
 	return selectedModel, nil
+}
+
+// Name implements genai.Provider.
+//
+// It returns the name of the provider.
+func (c *Client) Name() string {
+	return "openaichat"
+}
+
+// ModelID implements genai.Provider.
+//
+// It returns the selected model ID.
+func (c *Client) ModelID() string {
+	return c.Model
 }
 
 // Scoreboard implements scoreboard.ProviderScore.

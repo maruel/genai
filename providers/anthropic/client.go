@@ -1399,16 +1399,6 @@ func (c *Client) selectBestModel(ctx context.Context, preference string) (string
 	return selectedModel, nil
 }
 
-// Name implements genai.Provider.
-func (c *Client) Name() string {
-	return "anthropic"
-}
-
-// ModelID implements genai.Provider.
-func (c *Client) ModelID() string {
-	return c.Model
-}
-
 // GenAsync implements genai.ProviderGenAsync.
 //
 // It requests the providers' batch API and returns the job ID. It can take up to 24 hours to complete.
@@ -1493,6 +1483,20 @@ func (c *Client) CancelRaw(ctx context.Context, id genai.Job) (BatchResponse, er
 	resp := BatchResponse{}
 	err := c.DoRequest(ctx, "POST", u, &struct{}{}, &resp)
 	return resp, err
+}
+
+// Name implements genai.Provider.
+//
+// It returns the name of the provider.
+func (c *Client) Name() string {
+	return "anthropic"
+}
+
+// ModelID implements genai.Provider.
+//
+// It returns the selected model ID.
+func (c *Client) ModelID() string {
+	return c.Model
 }
 
 // Scoreboard implements scoreboard.ProviderScore.

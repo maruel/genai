@@ -425,10 +425,6 @@ func (t *Time) AsTime() time.Time {
 	return time.Unix(int64(*t), 0).UTC()
 }
 
-
-
-
-
 // SimulateStream simulates GenStream for APIs that do not support streaming.
 func SimulateStream(ctx context.Context, c genai.ProviderGen, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
 	res, err := c.GenSync(ctx, msgs, opts)

@@ -537,12 +537,14 @@ func (m *Message) From(in *genai.Message) error {
 			}
 			if !in.Replies[i].ToolCall.IsZero() {
 				m.ToolCalls = append(m.ToolCalls, ToolCall{})
-				m.ToolCalls[len(m.ToolCalls)-1].From(&in.Replies[i].ToolCall)
+				if err := m.ToolCalls[len(m.ToolCalls)-1].From(&in.Replies[i].ToolCall); err != nil {
+					return fmt.Errorf("reply #%d: %w", i, err)
+				}
 				continue
 			}
 			c := Content{}
 			if err := c.FromReply(&in.Replies[i]); err != nil {
-				return fmt.Errorf("reply %d: %w", i, err)
+				return fmt.Errorf("reply #%d: %w", i, err)
 			}
 			m.Content = append(m.Content, c)
 		}
@@ -561,7 +563,7 @@ func (m *Message) To(out *genai.Message) error {
 		out.Replies = make([]genai.Reply, len(m.Content))
 		for i := range m.Content {
 			if err := m.Content[i].To(&out.Replies[i]); err != nil {
-				return fmt.Errorf("block %d: %w", i, err)
+				return fmt.Errorf("reply #%d: %w", i, err)
 			}
 		}
 	}
@@ -695,6 +697,9 @@ func (c *Content) FromRequest(in *genai.Request) error {
 }
 
 func (c *Content) FromReply(in *genai.Reply) error {
+	if len(in.Opaque) != 0 {
+		return errors.New("field Reply.Opaque not supported")
+	}
 	if in.Text != "" {
 		c.Type = ContentText
 		c.Text = in.Text
@@ -798,11 +803,15 @@ type ToolCall struct {
 	} `json:"function,omitzero"`
 }
 
-func (t *ToolCall) From(in *genai.ToolCall) {
+func (t *ToolCall) From(in *genai.ToolCall) error {
+	if len(in.Opaque) != 0 {
+		return errors.New("field ToolCall.Opaque not supported")
+	}
 	t.Type = "function"
 	t.ID = in.ID
 	t.Function.Name = in.Name
 	t.Function.Arguments = in.Arguments
+	return nil
 }
 
 func (t *ToolCall) To(out *genai.ToolCall) {

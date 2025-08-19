@@ -301,7 +301,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 				msgCopy.ToolCallResults = []genai.ToolCallResult{msgs[i].ToolCallResults[j]}
 				var newMsg Message
 				if err := newMsg.From(&msgCopy); err != nil {
-					errs = append(errs, fmt.Errorf("message %d, tool result %d: %w", i, j, err))
+					errs = append(errs, fmt.Errorf("message #%d: tool call results #%d: %w", i, j, err))
 				} else {
 					c.Messages = append(c.Messages, newMsg)
 				}
@@ -309,7 +309,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 		} else {
 			var newMsg Message
 			if err := newMsg.From(&msgs[i]); err != nil {
-				errs = append(errs, fmt.Errorf("message %d: %w", i, err))
+				errs = append(errs, fmt.Errorf("message #%d: %w", i, err))
 			} else {
 				c.Messages = append(c.Messages, newMsg)
 			}
@@ -408,7 +408,7 @@ func (m *Message) From(in *genai.Message) error {
 		m.Content = make(Contents, len(in.Requests))
 		for i := range in.Requests {
 			if err := m.Content[i].FromRequest(&in.Requests[i]); err != nil {
-				return fmt.Errorf("request %d: %w", i, err)
+				return fmt.Errorf("request #%d: %w", i, err)
 			}
 		}
 	}
@@ -421,12 +421,14 @@ func (m *Message) From(in *genai.Message) error {
 			}
 			if !in.Replies[i].ToolCall.IsZero() {
 				m.ToolCalls = append(m.ToolCalls, ToolCall{})
-				m.ToolCalls[len(m.ToolCalls)-1].From(&in.Replies[i].ToolCall)
+				if err := m.ToolCalls[len(m.ToolCalls)-1].From(&in.Replies[i].ToolCall); err != nil {
+					return fmt.Errorf("reply #%d: %w", i, err)
+				}
 				continue
 			}
 			m.Content = append(m.Content, Content{})
 			if err := m.Content[len(m.Content)-1].FromReply(&in.Replies[i]); err != nil {
-				return fmt.Errorf("reply %d: %w", i, err)
+				return fmt.Errorf("reply #%d: %w", i, err)
 			}
 		}
 	}
@@ -508,6 +510,9 @@ func (c *Content) FromRequest(in *genai.Request) error {
 }
 
 func (c *Content) FromReply(in *genai.Reply) error {
+	if len(in.Opaque) != 0 {
+		return errors.New("field Reply.Opaque not supported")
+	}
 	// DeepSeek and Qwen recommend against passing reasoning back to the model.
 	if in.Text != "" {
 		c.Type = ContentText
@@ -567,11 +572,15 @@ type ToolCall struct {
 	} `json:"function,omitzero"`
 }
 
-func (t *ToolCall) From(in *genai.ToolCall) {
+func (t *ToolCall) From(in *genai.ToolCall) error {
+	if len(in.Opaque) != 0 {
+		return errors.New("field ToolCall.Opaque not supported")
+	}
 	t.Type = "function"
 	t.ID = in.ID
 	t.Function.Name = in.Name
 	t.Function.Arguments = in.Arguments
+	return nil
 }
 
 func (t *ToolCall) To(out *genai.ToolCall) {

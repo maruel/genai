@@ -167,13 +167,6 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 	if err := msgs.Validate(); err != nil {
 		return err
 	}
-	for i, msg := range msgs {
-		for j, content := range msg.Replies {
-			if len(content.Opaque) != 0 {
-				return fmt.Errorf("message #%d content #%d: field Opaque not supported", i, j)
-			}
-		}
-	}
 	var errs []error
 	var unsupported []string
 	sp := ""
@@ -237,7 +230,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 				msgCopy.ToolCallResults = []genai.ToolCallResult{msgs[i].ToolCallResults[j]}
 				var newMsg Message
 				if err := newMsg.From(&msgCopy); err != nil {
-					errs = append(errs, fmt.Errorf("message %d, tool result %d: %w", i, j, err))
+					errs = append(errs, fmt.Errorf("message #%d: tool call results #%d: %w", i, j, err))
 				} else {
 					c.Messages = append(c.Messages, newMsg)
 				}
@@ -252,7 +245,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 				msgCopy.Requests = []genai.Request{msgs[i].Requests[j]}
 				var newMsg Message
 				if err := newMsg.From(&msgCopy); err != nil {
-					errs = append(errs, fmt.Errorf("message %d, request %d: %w", i, j, err))
+					errs = append(errs, fmt.Errorf("message #%d: request #%d: %w", i, j, err))
 				} else {
 					c.Messages = append(c.Messages, newMsg)
 				}
@@ -260,7 +253,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 		} else {
 			var newMsg Message
 			if err := newMsg.From(&msgs[i]); err != nil {
-				errs = append(errs, fmt.Errorf("message %d: %w", i, err))
+				errs = append(errs, fmt.Errorf("message #%d: %w", i, err))
 			} else {
 				c.Messages = append(c.Messages, newMsg)
 			}
@@ -331,6 +324,9 @@ func (m *Message) From(in *genai.Message) error {
 		}
 	}
 	for i := range in.Replies {
+		if len(in.Replies[i].Opaque) != 0 {
+			return fmt.Errorf("reply #%d: field Reply.Opaque not supported", i)
+		}
 		if in.Replies[i].Text != "" {
 			m.Content = in.Replies[i].Text
 		} else if !in.Replies[i].Doc.IsZero() {
@@ -341,12 +337,12 @@ func (m *Message) From(in *genai.Message) error {
 			switch {
 			case strings.HasPrefix(mimeType, "image/"):
 				if in.Replies[i].Doc.URL != "" {
-					return errors.New("url are not supported for images")
+					return fmt.Errorf("reply #%d: url are not supported for images", i)
 				}
 				m.Images = append(m.Images, data)
 			case strings.HasPrefix(mimeType, "text/plain"):
 				if in.Replies[i].Doc.URL != "" {
-					return errors.New("text/plain documents must be provided inline, not as a URL")
+					return fmt.Errorf("reply #%d: text/plain documents must be provided inline, not as a URL", i)
 				}
 				// Append text/plain document content to the message content
 				if m.Content != "" {
@@ -355,15 +351,15 @@ func (m *Message) From(in *genai.Message) error {
 					m.Content = string(data)
 				}
 			default:
-				return fmt.Errorf("ollama unsupported content type %q", mimeType)
+				return fmt.Errorf("reply #%d: ollama unsupported content type %q", i, mimeType)
 			}
 		} else if !in.Replies[i].ToolCall.IsZero() {
 			m.ToolCalls = append(m.ToolCalls, ToolCall{})
 			if err := m.ToolCalls[len(m.ToolCalls)-1].From(&in.Replies[i].ToolCall); err != nil {
-				return fmt.Errorf("tool call %d: %w", i, err)
+				return fmt.Errorf("reply #%d: %w", i, err)
 			}
 		} else {
-			return errors.New("unknown Reply type")
+			return fmt.Errorf("reply #%d: unknown Reply type", i)
 		}
 	}
 	if len(in.ToolCallResults) != 0 {
@@ -405,7 +401,7 @@ type ToolCall struct {
 
 func (t *ToolCall) From(in *genai.ToolCall) error {
 	if len(in.Opaque) != 0 {
-		return errors.New("field Opaque not supported")
+		return errors.New("field ToolCall.Opaque not supported")
 	}
 	t.Function.Name = in.Name
 	return json.Unmarshal([]byte(in.Arguments), &t.Function.Arguments)

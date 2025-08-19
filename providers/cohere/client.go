@@ -294,7 +294,7 @@ func (m *Message) From(in *genai.Message) ([]Document, error) {
 			c := Content{}
 			d, err := c.FromRequest(&in.Requests[i])
 			if err != nil {
-				return nil, fmt.Errorf("block %d: %w", i, err)
+				return nil, fmt.Errorf("request #%d: %w", i, err)
 			}
 			if d != nil {
 				out = append(out, *d)
@@ -305,20 +305,25 @@ func (m *Message) From(in *genai.Message) ([]Document, error) {
 	}
 	if len(in.Replies) != 0 {
 		for i := range in.Replies {
+			if len(in.Replies[i].Opaque) != 0 {
+				return nil, fmt.Errorf("reply #%d: field Reply.Opaque not supported", i)
+			}
 			if in.Replies[i].Thinking != "" {
 				// Silently ignore thinking blocks.
 				continue
 			}
 			if !in.Replies[i].ToolCall.IsZero() {
 				t := ToolCall{}
-				t.From(&in.Replies[i].ToolCall)
+				if err := t.From(&in.Replies[i].ToolCall); err != nil {
+					return nil, fmt.Errorf("reply #%d: %w", i, err)
+				}
 				m.ToolCalls = append(m.ToolCalls, t)
 				continue
 			}
 			c := Content{}
 			d, err := c.FromReply(&in.Replies[i])
 			if err != nil {
-				return nil, fmt.Errorf("block %d: %w", i, err)
+				return nil, fmt.Errorf("reply #%d: %w", i, err)
 			}
 			if d != nil {
 				out = append(out, *d)
@@ -735,11 +740,15 @@ func (t *ToolCall) IsZero() bool {
 	return t.ID == "" && t.Type == "" && t.Function.Name == "" && t.Function.Arguments == ""
 }
 
-func (t *ToolCall) From(in *genai.ToolCall) {
+func (t *ToolCall) From(in *genai.ToolCall) error {
+	if len(in.Opaque) != 0 {
+		return errors.New("field ToolCall.Opaque not supported")
+	}
 	t.Type = "function"
 	t.ID = in.ID
 	t.Function.Name = in.Name
 	t.Function.Arguments = in.Arguments
+	return nil
 }
 
 func (t *ToolCall) To(out *genai.ToolCall) {

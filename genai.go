@@ -262,13 +262,13 @@ func (m Messages) Validate() error {
 	var errs []error
 	for i := range m {
 		if err := m[i].Validate(); err != nil {
-			errs = append(errs, fmt.Errorf("message %d: %w", i, err))
+			errs = append(errs, fmt.Errorf("message #%d: %w", i, err))
 		}
 		if i > 0 {
 			r := m[i].Role()
 			lastR := m[i-1].Role()
 			if r == lastR {
-				errs = append(errs, fmt.Errorf("message %d: role must alternate; got twice %q", i, r))
+				errs = append(errs, fmt.Errorf("message #%d: role must alternate; got twice %q", i, r))
 			}
 		}
 	}
@@ -316,17 +316,17 @@ func (m *Message) Validate() error {
 	errs := m.validateShallow()
 	for i := range m.Requests {
 		if err := m.Requests[i].Validate(); err != nil {
-			errs = append(errs, fmt.Errorf("request %d: %w", i, err))
+			errs = append(errs, fmt.Errorf("request #%d: %w", i, err))
 		}
 	}
 	for i := range m.Replies {
 		if err := m.Replies[i].Validate(); err != nil {
-			errs = append(errs, fmt.Errorf("reply %d: %w", i, err))
+			errs = append(errs, fmt.Errorf("reply #%d: %w", i, err))
 		}
 	}
 	for i := range m.ToolCallResults {
 		if err := m.ToolCallResults[i].Validate(); err != nil {
-			errs = append(errs, fmt.Errorf("tool result %d: %w", i, err))
+			errs = append(errs, fmt.Errorf("tool result #%d: %w", i, err))
 		}
 	}
 	return errors.Join(errs...)
@@ -576,6 +576,9 @@ func (r *Reply) Validate() error {
 	} else if !r.ToolCall.IsZero() {
 		if err := r.ToolCall.Validate(); err != nil {
 			return err
+		}
+		if len(r.Opaque) != 0 {
+			return errors.New("field Opaque can't be used along ToolCall")
 		}
 	} else {
 		return errors.New("an empty Reply is invalid")

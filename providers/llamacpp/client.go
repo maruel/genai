@@ -822,10 +822,10 @@ func (c *Content) FromRequest(in *genai.Request) (bool, error) {
 
 func (c *Content) FromReply(in *genai.Reply) (bool, error) {
 	if len(in.Citations) != 0 {
-		return false, errors.New("citations are not supported")
+		return false, errors.New("field Reply.Citations not supported")
 	}
 	if len(in.Opaque) != 0 {
-		return false, errors.New("opaque data is not supported")
+		return false, errors.New("field Reply.Opaque not supported")
 	}
 	if in.Thinking != "" {
 		return true, nil
@@ -903,7 +903,7 @@ type ToolCall struct {
 
 func (t *ToolCall) From(in *genai.ToolCall) error {
 	if len(in.Opaque) != 0 {
-		return errors.New("unsupported opaque in tool call")
+		return errors.New("field ToolCall.Opaque not supported")
 	}
 	t.Type = "function"
 	t.ID = in.ID
@@ -1183,7 +1183,7 @@ func (c *Client) Completions(ctx context.Context, msgs genai.Messages, opts gena
 	for i, msg := range msgs {
 		for j, content := range msg.Replies {
 			if len(content.Opaque) != 0 {
-				return genai.Result{}, fmt.Errorf("message #%d content #%d: field Opaque not supported", i, j)
+				return genai.Result{}, fmt.Errorf("message #%d: reply #%d: field Reply.Opaque not supported", i, j)
 			}
 		}
 	}

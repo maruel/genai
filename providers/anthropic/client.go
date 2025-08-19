@@ -242,13 +242,13 @@ func (c *ChatRequest) initImpl(msgs genai.Messages, opts genai.Options, model st
 	for i := range msgs {
 		c.Messages = append(c.Messages, Message{})
 		if err := c.Messages[len(c.Messages)-1].From(&msgs[i]); err != nil {
-			errs = append(errs, fmt.Errorf("message %d: %w", i, err))
+			errs = append(errs, fmt.Errorf("message #%d: %w", i, err))
 		}
 		if i == msgToCache-1 {
 			c.Messages[i].CacheControl.Type = "ephemeral"
 		}
 		if err := c.Messages[len(c.Messages)-1].Validate(); err != nil {
-			errs = append(errs, fmt.Errorf("message %d: %w", i, err))
+			errs = append(errs, fmt.Errorf("message #%d: %w", i, err))
 		}
 	}
 	// If we have unsupported features but no other errors, return a continuable error
@@ -405,19 +405,19 @@ func (m *Message) From(in *genai.Message) error {
 	m.Content = make([]Content, len(in.Requests)+len(in.Replies)+len(in.ToolCallResults))
 	for i := range in.Requests {
 		if err := m.Content[i].FromRequest(&in.Requests[i]); err != nil {
-			return fmt.Errorf("request %d: %w", i, err)
+			return fmt.Errorf("request #%d: %w", i, err)
 		}
 	}
 	offset := len(in.Requests)
 	for i := range in.Replies {
 		if err := m.Content[i+offset].FromReply(&in.Replies[i]); err != nil {
-			return fmt.Errorf("reply %d: %w", i, err)
+			return fmt.Errorf("reply #%d: %w", i, err)
 		}
 	}
 	offset += len(in.Replies)
 	for i := range in.ToolCallResults {
 		if err := m.Content[offset+i].FromToolCallResult(&in.ToolCallResults[i]); err != nil {
-			return fmt.Errorf("tool call results %d: %w", offset+i, err)
+			return fmt.Errorf("tool call results #%d: %w", offset+i, err)
 		}
 	}
 	return nil
@@ -434,7 +434,7 @@ func (m *Message) To(out *genai.Message) error {
 		case ContentText, ContentThinking, ContentRedactedThinking, ContentToolUse:
 			c := genai.Reply{}
 			if skip, err := m.Content[i].To(&c); err != nil {
-				return fmt.Errorf("reply %d: %w", i, err)
+				return fmt.Errorf("reply #%d: %w", i, err)
 			} else if !skip {
 				out.Replies = append(out.Replies, c)
 			}
@@ -644,6 +644,9 @@ func (c *Content) FromReply(in *genai.Reply) error {
 		return fmt.Errorf("unexpected Opaque %v", in.Opaque)
 	}
 	if !in.ToolCall.IsZero() {
+		if len(in.ToolCall.Opaque) != 0 {
+			return errors.New("field ToolCall.Opaque not supported")
+		}
 		c.Type = ContentToolUse
 		c.ID = in.ToolCall.ID
 		c.Name = in.ToolCall.Name
@@ -1327,7 +1330,6 @@ func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.Round
 		ProviderGen: base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
 			GenSyncURL:           "https://api.anthropic.com/v1/messages",
-			AllowOpaqueFields:    true,
 			ProcessStreamPackets: processStreamPackets,
 			ProcessHeaders:       processHeaders,
 			Provider: base.Provider[*ErrorResponse]{

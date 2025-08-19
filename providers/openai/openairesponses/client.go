@@ -347,7 +347,7 @@ func (r *Response) Init(msgs genai.Messages, opts genai.Options, model string) e
 				msgCopy.ToolCallResults = []genai.ToolCallResult{msgs[i].ToolCallResults[j]}
 				var newMsg Message
 				if err := newMsg.From(&msgCopy); err != nil {
-					errs = append(errs, fmt.Errorf("message %d, tool result %d: %w", i, j, err))
+					errs = append(errs, fmt.Errorf("message #%d: tool call results #%d: %w", i, j, err))
 				} else {
 					r.Input = append(r.Input, newMsg)
 				}
@@ -361,7 +361,7 @@ func (r *Response) Init(msgs genai.Messages, opts genai.Options, model string) e
 					msgCopy.Replies = []genai.Reply{msgs[i].Replies[j]}
 					var newMsg Message
 					if err := newMsg.From(&msgCopy); err != nil {
-						errs = append(errs, fmt.Errorf("message %d, tool call %d: %w", i, j, err))
+						errs = append(errs, fmt.Errorf("message #%d: tool call #%d: %w", i, j, err))
 					} else {
 						r.Input = append(r.Input, newMsg)
 					}
@@ -375,7 +375,7 @@ func (r *Response) Init(msgs genai.Messages, opts genai.Options, model string) e
 				msgCopy.Replies = txt
 				var newMsg Message
 				if err := newMsg.From(&msgCopy); err != nil {
-					errs = append(errs, fmt.Errorf("message %d: %w", i, err))
+					errs = append(errs, fmt.Errorf("message #%d: %w", i, err))
 				} else {
 					r.Input = append(r.Input, newMsg)
 				}
@@ -384,7 +384,7 @@ func (r *Response) Init(msgs genai.Messages, opts genai.Options, model string) e
 			// It's a Request, send it as-is.
 			var newMsg Message
 			if err := newMsg.From(&msgs[i]); err != nil {
-				errs = append(errs, fmt.Errorf("message %d: %w", i, err))
+				errs = append(errs, fmt.Errorf("message #%d: %w", i, err))
 			} else {
 				r.Input = append(r.Input, newMsg)
 			}
@@ -615,7 +615,7 @@ func (m *Message) From(in *genai.Message) error {
 		m.Content = make([]Content, len(in.Requests))
 		for j := range in.Requests {
 			if err := m.Content[j].FromRequest(&in.Requests[j]); err != nil {
-				return fmt.Errorf("request %d: %w", j, err)
+				return fmt.Errorf("request #%d: %w", j, err)
 			}
 		}
 		return nil
@@ -624,6 +624,9 @@ func (m *Message) From(in *genai.Message) error {
 		// Handle multiple tool calls by creating multiple messages
 		// The caller (Init method) should handle this by creating separate messages
 		if !in.Replies[0].ToolCall.IsZero() {
+			if len(in.Replies[0].ToolCall.Opaque) != 0 {
+				return errors.New("field ToolCall.Opaque not supported")
+			}
 			m.Type = MessageFunctionCall
 			m.CallID = in.Replies[0].ToolCall.ID
 			m.Name = in.Replies[0].ToolCall.Name
@@ -635,7 +638,7 @@ func (m *Message) From(in *genai.Message) error {
 		for j := range in.Replies {
 			m.Content = append(m.Content, Content{})
 			if err := m.Content[len(m.Content)-1].FromReply(&in.Replies[j]); err != nil {
-				return fmt.Errorf("reply %d: %w", j, err)
+				return fmt.Errorf("reply #%d: %w", j, err)
 			}
 		}
 		return nil
@@ -779,6 +782,9 @@ func (c *Content) FromRequest(in *genai.Request) error {
 }
 
 func (c *Content) FromReply(in *genai.Reply) error {
+	if len(in.Opaque) != 0 {
+		return errors.New("field Reply.Opaque not supported")
+	}
 	if in.Text != "" {
 		c.Type = ContentInputText
 		c.Text = in.Text

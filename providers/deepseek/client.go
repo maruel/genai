@@ -181,7 +181,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 				msgCopy.ToolCallResults = []genai.ToolCallResult{msgs[i].ToolCallResults[j]}
 				var newMsg Message
 				if err := newMsg.From(&msgCopy); err != nil {
-					errs = append(errs, fmt.Errorf("message %d, tool result %d: %w", i, j, err))
+					errs = append(errs, fmt.Errorf("message #%d, tool call results #%d: %w", i, j, err))
 				} else {
 					c.Messages = append(c.Messages, newMsg)
 				}
@@ -194,7 +194,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 				msgCopy.Requests = []genai.Request{msgs[i].Requests[j]}
 				var newMsg Message
 				if err := newMsg.From(&msgCopy); err != nil {
-					errs = append(errs, fmt.Errorf("message %d, request %d: %w", i, j, err))
+					errs = append(errs, fmt.Errorf("message #%d, request #%d: %w", i, j, err))
 				} else {
 					c.Messages = append(c.Messages, newMsg)
 				}
@@ -202,7 +202,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 		} else {
 			var newMsg Message
 			if err := newMsg.From(&msgs[i]); err != nil {
-				errs = append(errs, fmt.Errorf("message %d: %w", i, err))
+				errs = append(errs, fmt.Errorf("message #%d: %w", i, err))
 			} else {
 				c.Messages = append(c.Messages, newMsg)
 			}
@@ -265,25 +265,30 @@ func (m *Message) From(in *genai.Message) error {
 		return nil
 	}
 	for i := range in.Replies {
+		if len(in.Replies[i].Opaque) != 0 {
+			return fmt.Errorf("reply #%d: field Reply.Opaque not supported", i)
+		}
 		if in.Replies[i].Text != "" {
 			m.Content += in.Replies[i].Text
 		} else if !in.Replies[i].Doc.IsZero() {
 			mimeType, data, err := in.Replies[i].Doc.Read(10 * 1024 * 1024)
 			if err != nil {
-				return fmt.Errorf("failed to read document: %w", err)
+				return fmt.Errorf("reply #%d: failed to read document: %w", i, err)
 			}
 			if in.Replies[i].Doc.URL != "" {
-				return errors.New("deepseek doesn't support document content blocks with URLs")
+				return fmt.Errorf("reply #%d: deepseek doesn't support document content blocks with URLs", i)
 			}
 			if !strings.HasPrefix(mimeType, "text/plain") {
-				return fmt.Errorf("deepseek only supports text/plain documents, got %s", mimeType)
+				return fmt.Errorf("reply #%d: deepseek only supports text/plain documents, got %s", 0, mimeType)
 			}
 			m.Content += string(data)
 		} else if in.Replies[i].Thinking != "" {
 			// Thinking content should not be returned to the model.
 		} else if !in.Replies[i].ToolCall.IsZero() {
 			m.ToolCalls = append(m.ToolCalls, ToolCall{})
-			m.ToolCalls[len(m.ToolCalls)-1].From(&in.Replies[i].ToolCall)
+			if err := m.ToolCalls[len(m.ToolCalls)-1].From(&in.Replies[i].ToolCall); err != nil {
+				return fmt.Errorf("reply #%d: %w", i, err)
+			}
 		} else {
 			return errors.New("unknown Reply type")
 		}
@@ -322,12 +327,15 @@ type ToolCall struct {
 	} `json:"function,omitzero"`
 }
 
-func (t *ToolCall) From(in *genai.ToolCall) {
+func (t *ToolCall) From(in *genai.ToolCall) error {
+	if len(in.Opaque) != 0 {
+		return errors.New("field ToolCall.Opaque not supported")
+	}
 	t.Type = "function"
-	t.Index = 0 // Unsure
 	t.ID = in.ID
 	t.Function.Name = in.Name
 	t.Function.Arguments = in.Arguments
+	return nil
 }
 
 func (t *ToolCall) To(out *genai.ToolCall) {

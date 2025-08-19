@@ -100,7 +100,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 	}
 	for i := range msgs {
 		if err := c.Messages[i+offset].From(&msgs[i]); err != nil {
-			errs = append(errs, fmt.Errorf("message %d: %w", i, err))
+			errs = append(errs, fmt.Errorf("message #%d: %w", i, err))
 		}
 	}
 	// If we have unsupported features but no other errors, return a continuable error
@@ -188,20 +188,23 @@ func (m *Message) From(in *genai.Message) error {
 				// Check if this is a text/plain document
 				mimeType, data, err := in.Requests[i].Doc.Read(10 * 1024 * 1024)
 				if err != nil {
-					return fmt.Errorf("failed to read document: %w", err)
+					return fmt.Errorf("request #%d: failed to read document: %w", i, err)
 				}
 				if !strings.HasPrefix(mimeType, "text/plain") {
-					return fmt.Errorf("openaicompatible only supports text/plain documents, got %s", mimeType)
+					return fmt.Errorf("request #%d: openaicompatible only supports text/plain documents, got %s", i, mimeType)
 				}
 				if in.Requests[i].Doc.URL != "" {
-					return errors.New("text/plain documents must be provided inline, not as a URL")
+					return fmt.Errorf("request #%d: text/plain documents must be provided inline, not as a URL", i)
 				}
 				m.Content = append(m.Content, Content{Type: ContentText, Text: string(data)})
 			} else {
-				return errors.New("unknown Request type")
+				return fmt.Errorf("request #%d: unknown Request type", 0)
 			}
 		}
 		for i := range in.Replies {
+			if len(in.Replies[i].Opaque) != 0 {
+				return fmt.Errorf("reply #%d: field Reply.Opaque not supported", i)
+			}
 			if in.Replies[i].Text != "" {
 				m.Content = append(m.Content, Content{Type: ContentText, Text: in.Replies[i].Text})
 			} else if in.Replies[i].Thinking != "" {
@@ -210,17 +213,17 @@ func (m *Message) From(in *genai.Message) error {
 				// Check if this is a text/plain document
 				mimeType, data, err := in.Replies[i].Doc.Read(10 * 1024 * 1024)
 				if err != nil {
-					return fmt.Errorf("failed to read document: %w", err)
+					return fmt.Errorf("reply #%d: failed to read document: %w", i, err)
 				}
 				if !strings.HasPrefix(mimeType, "text/plain") {
-					return fmt.Errorf("openaicompatible only supports text/plain documents, got %s", mimeType)
+					return fmt.Errorf("reply #%d: openaicompatible only supports text/plain documents, got %s", i, mimeType)
 				}
 				if in.Replies[i].Doc.URL != "" {
-					return errors.New("text/plain documents must be provided inline, not as a URL")
+					return fmt.Errorf("reply #%d: text/plain documents must be provided inline, not as a URL", i)
 				}
 				m.Content = append(m.Content, Content{Type: ContentText, Text: string(data)})
 			} else {
-				return errors.New("unknown Reply type")
+				return fmt.Errorf("reply #%d: unknown Reply type", i)
 			}
 		}
 	}

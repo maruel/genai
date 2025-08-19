@@ -98,7 +98,7 @@ func TestMessages(t *testing.T) {
 						{Requests: []Request{{Text: "Hi", Doc: Doc{Filename: "hi.txt"}}}},
 						{Requests: []Request{{}}},
 					},
-					errMsg: "message 0: request 0: field Doc can't be used along Text\nmessage 1: request 0: an empty Request is invalid\nmessage 1: role must alternate; got twice \"user\"",
+					errMsg: "message #0: request #0: field Doc can't be used along Text\nmessage #1: request #0: an empty Request is invalid\nmessage #1: role must alternate; got twice \"user\"",
 				},
 			}
 			for _, tt := range tests {
@@ -196,7 +196,7 @@ func TestMessage(t *testing.T) {
 							},
 						},
 					},
-					errMsg: "reply 0: field ToolCall can't be used along Doc",
+					errMsg: "reply #0: field ToolCall can't be used along Doc",
 				},
 			}
 			for _, tt := range tests {

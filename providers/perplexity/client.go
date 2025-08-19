@@ -193,7 +193,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 	}
 	for i := range msgs {
 		if err := c.Messages[i+offset].From(&msgs[i]); err != nil {
-			errs = append(errs, fmt.Errorf("message %d: %w", i, err))
+			errs = append(errs, fmt.Errorf("message #%d: %w", i, err))
 		}
 	}
 	// If we have unsupported features but no other errors, return a continuable error
@@ -260,12 +260,12 @@ func (m *Message) From(in *genai.Message) error {
 			// Check if this is a text/plain document
 			mimeType, data, err := in.Requests[i].Doc.Read(10 * 1024 * 1024)
 			if err != nil {
-				return fmt.Errorf("failed to read document: %w", err)
+				return fmt.Errorf("request #%d: failed to read document: %w", i, err)
 			}
 			switch {
 			case strings.HasPrefix(mimeType, "text/plain"):
 				if in.Requests[i].Doc.URL != "" {
-					return errors.New("text/plain documents must be provided inline, not as a URL")
+					return fmt.Errorf("request #%d: text/plain documents must be provided inline, not as a URL", i)
 				}
 				m.Content = append(m.Content, Content{Type: "text", Text: string(data)})
 			case strings.HasPrefix(mimeType, "image/"):
@@ -277,25 +277,28 @@ func (m *Message) From(in *genai.Message) error {
 				}
 				m.Content = append(m.Content, c)
 			default:
-				return fmt.Errorf("perplexity only supports text/plain documents, got %s", mimeType)
+				return fmt.Errorf("request #%d: perplexity only supports text/plain documents, got %s", i, mimeType)
 			}
 		} else {
-			return errors.New("unknown Request type")
+			return fmt.Errorf("request #%d: unknown Request type", i)
 		}
 	}
 	for i := range in.Replies {
+		if len(in.Replies[i].Opaque) != 0 {
+			return fmt.Errorf("reply #%d: field Reply.Opaque not supported", i)
+		}
 		if in.Replies[i].Text != "" {
 			m.Content = append(m.Content, Content{Type: "text", Text: in.Replies[i].Text})
 		} else if !in.Requests[i].Doc.IsZero() {
 			// Check if this is a text/plain document
 			mimeType, data, err := in.Replies[i].Doc.Read(10 * 1024 * 1024)
 			if err != nil {
-				return fmt.Errorf("failed to read document: %w", err)
+				return fmt.Errorf("reply #%d: failed to read document: %w", i, err)
 			}
 			switch {
 			case strings.HasPrefix(mimeType, "text/plain"):
 				if in.Replies[i].Doc.URL != "" {
-					return errors.New("text/plain documents must be provided inline, not as a URL")
+					return fmt.Errorf("reply #%d: text/plain documents must be provided inline, not as a URL", i)
 				}
 				m.Content = append(m.Content, Content{Type: "text", Text: string(data)})
 			case strings.HasPrefix(mimeType, "image/"):
@@ -307,10 +310,10 @@ func (m *Message) From(in *genai.Message) error {
 				}
 				m.Content = append(m.Content, c)
 			default:
-				return fmt.Errorf("perplexity only supports text/plain documents, got %s", mimeType)
+				return fmt.Errorf("reply #%d: perplexity only supports text/plain documents, got %s", i, mimeType)
 			}
 		} else {
-			return errors.New("unknown Reply type")
+			return fmt.Errorf("reply #%d: unknown Reply type", i)
 		}
 	}
 	return nil

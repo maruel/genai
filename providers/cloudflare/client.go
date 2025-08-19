@@ -267,6 +267,9 @@ func (m *Message) From(in *genai.Message) error {
 		return nil
 	}
 	if len(in.Replies) != 0 {
+		if len(in.Replies[0].Opaque) != 0 {
+			return errors.New("field Reply.Opaque not supported")
+		}
 		if in.Replies[0].Text != "" {
 			m.Content = in.Replies[0].Text
 		} else if !in.Replies[0].Doc.IsZero() {
@@ -283,6 +286,9 @@ func (m *Message) From(in *genai.Message) error {
 			}
 			m.Content = string(data)
 		} else if !in.Replies[0].ToolCall.IsZero() {
+			if len(in.Replies[0].ToolCall.Opaque) != 0 {
+				return errors.New("field ToolCall.Opaque not supported")
+			}
 			m.ToolCallID = in.Replies[0].ToolCall.ID
 			m.Content = in.Replies[0].ToolCall.Arguments
 		} else {

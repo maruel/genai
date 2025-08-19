@@ -252,8 +252,6 @@ type ProviderGen[PErrorResponse ErrAPI, PGenRequest InitializableRequest, PGenRe
 	GenStreamURL string
 	// ModelOptional is true if a model name is not required to use the provider.
 	ModelOptional bool
-	// AllowOpaqueFields is true if the client allows the Opaque field in messages.
-	AllowOpaqueFields bool
 	// ProcessStreamPackets is the function that processes stream packets used by GenStream.
 	ProcessStreamPackets func(ch <-chan GenStreamChunkResponse, chunks chan<- genai.ReplyFragment, result *genai.Result) error
 	// ProcessHeaders is the function that processes HTTP headers to extract rate limit information.
@@ -272,19 +270,6 @@ func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRe
 		// TODO: Specify as a field.
 		if supported := opts.Modalities(); !slices.Contains(supported, genai.ModalityText) {
 			return result, fmt.Errorf("modality %s not supported", supported)
-		}
-	}
-	// Check for non-empty Opaque field unless explicitly allowed
-	if !c.AllowOpaqueFields {
-		for i, msg := range msgs {
-			for j := range msg.Replies {
-				if len(msg.Replies[j].Opaque) != 0 {
-					return result, fmt.Errorf("message #%d content #%d: field Opaque not supported", i, j)
-				}
-				if len(msg.Replies[j].ToolCall.Opaque) != 0 {
-					return result, fmt.Errorf("message #%d tool call #%d: field Opaque not supported", i, j)
-				}
-			}
 		}
 	}
 
@@ -324,19 +309,6 @@ func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRe
 		// TODO: Specify as a field.
 		if supported := opts.Modalities(); !slices.Contains(supported, genai.ModalityText) {
 			return result, fmt.Errorf("modality %s not supported", supported)
-		}
-	}
-	// Check for non-empty Opaque field unless explicitly allowed
-	if !c.AllowOpaqueFields {
-		for i, msg := range msgs {
-			for j := range msg.Replies {
-				if len(msg.Replies[j].Opaque) != 0 {
-					return result, fmt.Errorf("message #%d content #%d: field Opaque not supported", i, j)
-				}
-				if len(msg.Replies[j].ToolCall.Opaque) != 0 {
-					return result, fmt.Errorf("message #%d tool call #%d: field Opaque not supported", i, j)
-				}
-			}
 		}
 	}
 

@@ -551,7 +551,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 	c.Contents = make([]Content, len(msgs))
 	for i := range msgs {
 		if err := c.Contents[i].From(&msgs[i]); err != nil {
-			errs = append(errs, fmt.Errorf("message %d: %w", i, err))
+			errs = append(errs, fmt.Errorf("message #%d: %w", i, err))
 		}
 	}
 	// If we have unsupported features but no other errors, return a continuable error
@@ -648,13 +648,13 @@ func (c *Content) From(in *genai.Message) error {
 	c.Parts = make([]Part, len(in.Requests)+len(in.Replies)+len(in.ToolCallResults))
 	for i := range in.Requests {
 		if err := c.Parts[i].FromRequest(&in.Requests[i]); err != nil {
-			return fmt.Errorf("request %d: %w", i, err)
+			return fmt.Errorf("request #%d: %w", i, err)
 		}
 	}
 	offset := len(in.Requests)
 	for i := range in.Replies {
 		if err := c.Parts[i].FromReply(&in.Replies[i]); err != nil {
-			return fmt.Errorf("reply %d: %w", i, err)
+			return fmt.Errorf("reply #%d: %w", i, err)
 		}
 	}
 	offset += len(in.Replies)
@@ -781,6 +781,9 @@ func (p *Part) FromRequest(in *genai.Request) error {
 }
 
 func (p *Part) FromReply(in *genai.Reply) error {
+	if len(in.Opaque) != 0 {
+		return errors.New("field Reply.Opaque not supported")
+	}
 	if in.Thinking != "" {
 		p.Thought = true
 		p.Text = in.Thinking
@@ -1300,7 +1303,7 @@ func (c *CachedContent) Init(msgs genai.Messages, opts genai.Options, model, nam
 	c.Contents = make([]Content, len(msgs))
 	for i := range msgs {
 		if err := c.Contents[i].From(&msgs[i]); err != nil {
-			return fmt.Errorf("message %d: %w", i, err)
+			return fmt.Errorf("message #%d: %w", i, err)
 		}
 	}
 	c.Model = "models/" + model
@@ -1504,7 +1507,6 @@ func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.Round
 			GenStreamURL:         "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(model) + ":streamGenerateContent?alt=sse",
 			ProcessStreamPackets: processStreamPackets,
 			LieToolCalls:         true,
-			AllowOpaqueFields:    true,
 			Provider: base.Provider[*ErrorResponse]{
 				ProviderName: "gemini",
 				APIKeyURL:    apiKeyURL,

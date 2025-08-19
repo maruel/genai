@@ -97,7 +97,7 @@ func MatchIgnorePort(r *http.Request, i cassette.Request) bool {
 
 // ValidateWordResponse validates that the response contains exactly one of the expected words.
 func ValidateWordResponse(t testing.TB, resp genai.Result, want ...string) {
-	got := resp.AsText()
+	got := resp.String()
 	cleaned := strings.TrimRight(strings.TrimSpace(strings.ToLower(got)), ".!")
 	if !slices.Contains(want, cleaned) {
 		t.Helper()

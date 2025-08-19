@@ -289,7 +289,7 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 		case <-ctx.Done():
 			return genai.Result{}, ctx.Err()
 		case <-time.After(waitForPoll):
-			if res, err := c.PokeResult(ctx, id); res.FinishReason != genai.Pending {
+			if res, err := c.PokeResult(ctx, id); res.Usage.FinishReason != genai.Pending {
 				return res, err
 			}
 		}
@@ -337,7 +337,7 @@ func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.O
 		return "", errors.New("unknown Request type")
 	}
 	req := ImageRequest{
-		Prompt: msg.AsText(),
+		Prompt: msg.String(),
 	}
 	if opts != nil {
 		switch v := opts.(type) {
@@ -371,9 +371,9 @@ func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, er
 	if err != nil {
 		return res, err
 	}
-	res.Limits = processHeaders(c.LastResponseHeaders())
+	res.Usage.Limits = processHeaders(c.LastResponseHeaders())
 	if imgres.Status == "Pending" {
-		res.FinishReason = genai.Pending
+		res.Usage.FinishReason = genai.Pending
 		return res, nil
 	}
 	if imgres.Status != "Ready" {

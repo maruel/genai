@@ -198,22 +198,22 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*Fu
 		return nil, err
 	}
 	f := &FunctionalityText{}
-	if resp.InputTokens == 0 || resp.OutputTokens == 0 {
+	if resp.Usage.InputTokens == 0 || resp.Usage.OutputTokens == 0 {
 		internal.Logger(ctx).DebugContext(ctx, "Text", "issue", "token usage")
 		f.BrokenTokenUsage = True
 	}
-	if expectedFR := genai.FinishedStop; resp.FinishReason != expectedFR {
-		internal.Logger(ctx).DebugContext(ctx, "Text", "issue", "finish reason", "expected", expectedFR, "got", resp.FinishReason)
+	if expectedFR := genai.FinishedStop; resp.Usage.FinishReason != expectedFR {
+		internal.Logger(ctx).DebugContext(ctx, "Text", "issue", "finish reason", "expected", expectedFR, "got", resp.Usage.FinishReason)
 		f.BrokenFinishReason = true
 	}
-	if strings.Contains(resp.AsText(), "<think") {
+	if strings.Contains(resp.String(), "<think") {
 		return nil, fmt.Errorf("response contains <think: use adapters.ProviderGenThinking")
 	}
 	if len(resp.Logprobs) != 0 {
 		return nil, fmt.Errorf("received Logprobs when not supported")
 	}
-	f.ReportRateLimits = len(resp.Limits) != 0
-	for _, l := range resp.Limits {
+	f.ReportRateLimits = len(resp.Usage.Limits) != 0
+	for _, l := range resp.Usage.Limits {
 		if err = l.Validate(); err != nil {
 			return nil, err
 		}
@@ -267,9 +267,9 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*Fu
 	if isBadError(ctx, err) {
 		return f, err
 	}
-	f.NoMaxTokens = err != nil || strings.Count(resp.AsText(), " ")+1 > 20
+	f.NoMaxTokens = err != nil || strings.Count(resp.String(), " ")+1 > 20
 	if err == nil {
-		if !f.NoMaxTokens && (resp.InputTokens == 0 || resp.OutputTokens == 0) {
+		if !f.NoMaxTokens && (resp.Usage.InputTokens == 0 || resp.Usage.OutputTokens == 0) {
 			internal.Logger(ctx).DebugContext(ctx, "MaxTokens", "issue", "token usage")
 			f.BrokenTokenUsage = True
 		}
@@ -277,8 +277,8 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*Fu
 		if f.NoMaxTokens {
 			expectedFR = genai.FinishedStop
 		}
-		if resp.FinishReason != expectedFR {
-			internal.Logger(ctx).DebugContext(ctx, "MaxTokens", "issue", "finish reason", "expected", expectedFR, "got", resp.FinishReason)
+		if resp.Usage.FinishReason != expectedFR {
+			internal.Logger(ctx).DebugContext(ctx, "MaxTokens", "issue", "finish reason", "expected", expectedFR, "got", resp.Usage.FinishReason)
 			f.BrokenFinishReason = true
 		}
 	}
@@ -291,8 +291,8 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*Fu
 	}
 	// Some model (in particular Gemma3 4B in Q4_K_M) will not start with "Canada is". They will still stop but
 	// only after a while.
-	f.NoStopSequence = err != nil || strings.Count(resp.AsText(), " ")+1 > 30 || strings.Contains(resp.AsText(), " is ")
-	if !f.NoStopSequence && (resp.InputTokens == 0 || resp.OutputTokens == 0) {
+	f.NoStopSequence = err != nil || strings.Count(resp.String(), " ")+1 > 30 || strings.Contains(resp.String(), " is ")
+	if !f.NoStopSequence && (resp.Usage.InputTokens == 0 || resp.Usage.OutputTokens == 0) {
 		internal.Logger(ctx).DebugContext(ctx, "Stop", "issue", "token usage")
 		f.BrokenTokenUsage = True
 	}
@@ -302,8 +302,8 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*Fu
 		if f.NoStopSequence {
 			expectedFR = genai.FinishedStop
 		}
-		if resp.FinishReason != expectedFR {
-			internal.Logger(ctx).DebugContext(ctx, "Stop", "issue", "finish reason", "expected", expectedFR, "got", resp.FinishReason)
+		if resp.Usage.FinishReason != expectedFR {
+			internal.Logger(ctx).DebugContext(ctx, "Stop", "issue", "finish reason", "expected", expectedFR, "got", resp.Usage.FinishReason)
 			f.BrokenFinishReason = true
 		}
 	}
@@ -319,12 +319,12 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*Fu
 		// We could check for "is_fruit". In practice the fact that it's JSON is good enough to have the flag set.
 		f.JSON = resp.Decode(&data) == nil
 		if f.JSON {
-			if resp.InputTokens == 0 || resp.OutputTokens == 0 {
+			if resp.Usage.InputTokens == 0 || resp.Usage.OutputTokens == 0 {
 				internal.Logger(ctx).DebugContext(ctx, "JSON", "issue", "token usage")
 				f.BrokenTokenUsage = True
 			}
-			if expectedFR := genai.FinishedStop; f.JSON && resp.FinishReason != expectedFR {
-				internal.Logger(ctx).DebugContext(ctx, "JSON", "issue", "finish reason", "expected", expectedFR, "got", resp.FinishReason)
+			if expectedFR := genai.FinishedStop; f.JSON && resp.Usage.FinishReason != expectedFR {
+				internal.Logger(ctx).DebugContext(ctx, "JSON", "issue", "finish reason", "expected", expectedFR, "got", resp.Usage.FinishReason)
 				f.BrokenFinishReason = true
 			}
 		}
@@ -343,12 +343,12 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*Fu
 		data := schema{}
 		f.JSONSchema = resp.Decode(&data) == nil && data.IsFruit
 		if f.JSONSchema {
-			if resp.InputTokens == 0 || resp.OutputTokens == 0 {
+			if resp.Usage.InputTokens == 0 || resp.Usage.OutputTokens == 0 {
 				internal.Logger(ctx).DebugContext(ctx, "JSONSchema", "issue", "token usage")
 				f.BrokenTokenUsage = True
 			}
-			if expectedFR := genai.FinishedStop; f.JSONSchema && resp.FinishReason != expectedFR {
-				internal.Logger(ctx).DebugContext(ctx, "JSONSchema", "issue", "finish reason", "expected", expectedFR, "got", resp.FinishReason)
+			if expectedFR := genai.FinishedStop; f.JSONSchema && resp.Usage.FinishReason != expectedFR {
+				internal.Logger(ctx).DebugContext(ctx, "JSONSchema", "issue", "finish reason", "expected", expectedFR, "got", resp.Usage.FinishReason)
 				f.BrokenFinishReason = true
 			}
 		}
@@ -384,12 +384,12 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*Fu
 		}
 	}
 	if err == nil {
-		if resp.InputTokens == 0 || resp.OutputTokens == 0 {
+		if resp.Usage.InputTokens == 0 || resp.Usage.OutputTokens == 0 {
 			internal.Logger(ctx).DebugContext(ctx, "Citations", "issue", "token usage")
 			f.BrokenTokenUsage = True
 		}
-		if expectedFR := genai.FinishedStop; f.Citations && resp.FinishReason != expectedFR {
-			internal.Logger(ctx).DebugContext(ctx, "Citations", "issue", "finish reason", "expected", expectedFR, "got", resp.FinishReason)
+		if expectedFR := genai.FinishedStop; f.Citations && resp.Usage.FinishReason != expectedFR {
+			internal.Logger(ctx).DebugContext(ctx, "Citations", "issue", "finish reason", "expected", expectedFR, "got", resp.Usage.FinishReason)
 			f.BrokenFinishReason = true
 		}
 	}
@@ -635,20 +635,20 @@ type extMime struct {
 func exerciseModal(ctx context.Context, cs *callState, f *FunctionalityText, name string, msgs genai.Messages, want string) error {
 	resp, err := cs.callGen(ctx, name, msgs, &genai.OptionsText{})
 	if err == nil {
-		got := strings.ToLower(strings.TrimRight(strings.TrimSpace(resp.AsText()), "."))
+		got := strings.ToLower(strings.TrimRight(strings.TrimSpace(resp.String()), "."))
 		if want != "" && got != want {
 			return fmt.Errorf("got %q, want %q", got, want)
 		}
-		if resp.InputTokens == 0 || resp.OutputTokens == 0 {
+		if resp.Usage.InputTokens == 0 || resp.Usage.OutputTokens == 0 {
 			internal.Logger(ctx).DebugContext(ctx, name, "issue", "token usage")
 			f.BrokenTokenUsage = True
 		}
-		if expectedFR := genai.FinishedStop; resp.FinishReason != expectedFR {
-			internal.Logger(ctx).DebugContext(ctx, name, "issue", "finish reason", "expected", expectedFR, "got", resp.FinishReason)
+		if expectedFR := genai.FinishedStop; resp.Usage.FinishReason != expectedFR {
+			internal.Logger(ctx).DebugContext(ctx, name, "issue", "finish reason", "expected", expectedFR, "got", resp.Usage.FinishReason)
 			f.BrokenFinishReason = true
 		}
-		f.ReportRateLimits = len(resp.Limits) != 0
-		for _, l := range resp.Limits {
+		f.ReportRateLimits = len(resp.Usage.Limits) != 0
+		for _, l := range resp.Usage.Limits {
 			if err = l.Validate(); err != nil {
 				return err
 			}
@@ -707,9 +707,9 @@ func (cs *callState) callGen(ctx context.Context, name string, msgs genai.Messag
 		internal.Logger(ctx).DebugContext(ctx, name, "err", err)
 		return resp, err
 	}
-	cs.usage.InputTokens += resp.InputTokens
-	cs.usage.InputCachedTokens += resp.InputCachedTokens
-	cs.usage.OutputTokens += resp.OutputTokens
+	cs.usage.InputTokens += resp.Usage.InputTokens
+	cs.usage.InputCachedTokens += resp.Usage.InputCachedTokens
+	cs.usage.OutputTokens += resp.Usage.OutputTokens
 	return resp, err
 }
 
@@ -755,9 +755,9 @@ func exerciseGenDocImage(ctx context.Context, pf ProviderFactory, name string, o
 **Output:** Actual image file for a smooth, colorful doodle-style image on a white background.`
 	msg := genai.NewTextMessage(contentsImage)
 	resp, err := c.GenDoc(ctx, msg, &genai.OptionsImage{Seed: 42})
-	usage.InputTokens += resp.InputTokens
-	usage.InputCachedTokens += resp.InputCachedTokens
-	usage.OutputTokens += resp.OutputTokens
+	usage.InputTokens += resp.Usage.InputTokens
+	usage.InputCachedTokens += resp.Usage.InputCachedTokens
+	usage.OutputTokens += resp.Usage.OutputTokens
 	out.GenDoc.Seed = true
 	var uerr *genai.UnsupportedContinuableError
 	if errors.As(err, &uerr) {
@@ -769,9 +769,9 @@ func exerciseGenDocImage(ctx context.Context, pf ProviderFactory, name string, o
 			err = nil
 		}
 	}
-	if len(resp.Limits) != 0 {
+	if len(resp.Usage.Limits) != 0 {
 		out.GenDoc.ReportRateLimits = true
-		for _, l := range resp.Limits {
+		for _, l := range resp.Usage.Limits {
 			if err2 := l.Validate(); err2 != nil {
 				return err2
 			}
@@ -815,12 +815,12 @@ func exerciseGenDocImage(ctx context.Context, pf ProviderFactory, name string, o
 		}
 		v.SupportedFormats = append(v.SupportedFormats, base.MimeByExt(filepath.Ext(fn)))
 		out.Out[genai.ModalityImage] = v
-		if resp.InputTokens == 0 || resp.OutputTokens == 0 {
+		if resp.Usage.InputTokens == 0 || resp.Usage.OutputTokens == 0 {
 			internal.Logger(ctx).DebugContext(ctx, name, "issue", "token usage")
 			out.GenDoc.BrokenTokenUsage = True
 		}
-		if expectedFR := genai.FinishedStop; resp.FinishReason != expectedFR {
-			internal.Logger(ctx).DebugContext(ctx, name, "issue", "finish reason", "expected", expectedFR, "got", resp.FinishReason)
+		if expectedFR := genai.FinishedStop; resp.Usage.FinishReason != expectedFR {
+			internal.Logger(ctx).DebugContext(ctx, name, "issue", "finish reason", "expected", expectedFR, "got", resp.Usage.FinishReason)
 			out.GenDoc.BrokenFinishReason = true
 		}
 	}
@@ -835,9 +835,9 @@ func exerciseGenDocAudio(ctx context.Context, pf ProviderFactory, name string, o
 	c := cc.(genai.ProviderGenDoc)
 	msg := genai.NewTextMessage("Say hi. Just say this word, nothing else.")
 	resp, err := c.GenDoc(ctx, msg, &genai.OptionsAudio{Seed: 42})
-	usage.InputTokens += resp.InputTokens
-	usage.InputCachedTokens += resp.InputCachedTokens
-	usage.OutputTokens += resp.OutputTokens
+	usage.InputTokens += resp.Usage.InputTokens
+	usage.InputCachedTokens += resp.Usage.InputCachedTokens
+	usage.OutputTokens += resp.Usage.OutputTokens
 	out.GenDoc.Seed = true
 	var uerr *genai.UnsupportedContinuableError
 	if errors.As(err, &uerr) {
@@ -849,9 +849,9 @@ func exerciseGenDocAudio(ctx context.Context, pf ProviderFactory, name string, o
 			err = nil
 		}
 	}
-	if len(resp.Limits) != 0 {
+	if len(resp.Usage.Limits) != 0 {
 		out.GenDoc.ReportRateLimits = true
-		for _, l := range resp.Limits {
+		for _, l := range resp.Usage.Limits {
 			if err2 := l.Validate(); err2 != nil {
 				return err2
 			}
@@ -896,12 +896,12 @@ func exerciseGenDocAudio(ctx context.Context, pf ProviderFactory, name string, o
 		}
 		v.SupportedFormats = append(v.SupportedFormats, base.MimeByExt(filepath.Ext(fn)))
 		out.Out[genai.ModalityAudio] = v
-		if resp.InputTokens == 0 || resp.OutputTokens == 0 {
+		if resp.Usage.InputTokens == 0 || resp.Usage.OutputTokens == 0 {
 			internal.Logger(ctx).DebugContext(ctx, name, "issue", "token usage")
 			out.GenDoc.BrokenTokenUsage = True
 		}
-		if expectedFR := genai.FinishedStop; resp.FinishReason != expectedFR {
-			internal.Logger(ctx).DebugContext(ctx, name, "issue", "finish reason", "expected", expectedFR, "got", resp.FinishReason)
+		if expectedFR := genai.FinishedStop; resp.Usage.FinishReason != expectedFR {
+			internal.Logger(ctx).DebugContext(ctx, name, "issue", "finish reason", "expected", expectedFR, "got", resp.Usage.FinishReason)
 			out.GenDoc.BrokenFinishReason = true
 		}
 	}

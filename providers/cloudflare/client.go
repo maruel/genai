@@ -827,9 +827,9 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 	}()
 	for pkt := range ch {
 		if pkt.Usage.TotalTokens != 0 {
-			result.InputTokens = pkt.Usage.PromptTokens
-			result.OutputTokens = pkt.Usage.CompletionTokens
-			result.TotalTokens = pkt.Usage.TotalTokens
+			result.Usage.InputTokens = pkt.Usage.PromptTokens
+			result.Usage.OutputTokens = pkt.Usage.CompletionTokens
+			result.Usage.TotalTokens = pkt.Usage.TotalTokens
 			// Cloudflare doesn't provide FinishReason.
 		}
 		// TODO: Tools.

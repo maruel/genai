@@ -38,7 +38,7 @@ func ExampleGenSyncWithToolCallLoop() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("%s\n", newMsgs[len(newMsgs)-1].AsText())
+	fmt.Printf("%s\n", newMsgs[len(newMsgs)-1].String())
 }
 
 func ExampleGenStreamWithToolCallLoop() {

@@ -1428,18 +1428,18 @@ func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, er
 	res := genai.Result{}
 	resp, err := c.PokeResultRaw(ctx, id)
 	if err != nil && resp.Result.Type == "not_found_error" {
-		res.FinishReason = genai.Pending
+		res.Usage.FinishReason = genai.Pending
 		return res, nil
 	}
 	if resp.Result.Type == "errored" {
 		return res, fmt.Errorf("error %s: %s", resp.Result.Error.Error.Type, resp.Result.Error.Error.Message)
 	}
 	err = resp.To(&res.Message)
-	res.InputTokens = resp.Result.Message.Usage.InputTokens
-	res.InputCachedTokens = resp.Result.Message.Usage.CacheReadInputTokens
-	res.OutputTokens = resp.Result.Message.Usage.OutputTokens
-	res.TotalTokens = res.InputTokens + res.InputCachedTokens + res.OutputTokens
-	res.FinishReason = resp.Result.Message.StopReason.ToFinishReason()
+	res.Usage.InputTokens = resp.Result.Message.Usage.InputTokens
+	res.Usage.InputCachedTokens = resp.Result.Message.Usage.CacheReadInputTokens
+	res.Usage.OutputTokens = resp.Result.Message.Usage.OutputTokens
+	res.Usage.TotalTokens = res.Usage.InputTokens + res.Usage.InputCachedTokens + res.Usage.OutputTokens
+	res.Usage.FinishReason = resp.Result.Message.StopReason.ToFinishReason()
 	if err == nil {
 		err = res.Validate()
 	}
@@ -1505,11 +1505,11 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			default:
 				return fmt.Errorf("unexpected role %q", pkt.Message.Role)
 			}
-			result.InputTokens = pkt.Message.Usage.InputTokens
-			result.InputCachedTokens = pkt.Message.Usage.CacheReadInputTokens
+			result.Usage.InputTokens = pkt.Message.Usage.InputTokens
+			result.Usage.InputCachedTokens = pkt.Message.Usage.CacheReadInputTokens
 			// There's some tokens listed there. Still save it in case it breaks midway.
-			result.OutputTokens = pkt.Message.Usage.OutputTokens
-			result.TotalTokens = result.InputTokens + result.InputCachedTokens + result.OutputTokens
+			result.Usage.OutputTokens = pkt.Message.Usage.OutputTokens
+			result.Usage.TotalTokens = result.Usage.InputTokens + result.Usage.InputCachedTokens + result.Usage.OutputTokens
 			continue
 		case ChunkContentBlockStart:
 			switch pkt.ContentBlock.Type {
@@ -1554,8 +1554,8 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			}
 		case ChunkMessageDelta:
 			// Includes finish reason and output tokens usage (but not input tokens!)
-			result.FinishReason = pkt.Delta.StopReason.ToFinishReason()
-			result.OutputTokens = pkt.Usage.OutputTokens
+			result.Usage.FinishReason = pkt.Delta.StopReason.ToFinishReason()
+			result.Usage.OutputTokens = pkt.Usage.OutputTokens
 		case ChunkMessageStop:
 			// Doesn't contain anything.
 			continue

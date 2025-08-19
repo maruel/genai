@@ -50,7 +50,7 @@ func Example() {
 	}
 	log.Printf("Raw response: %#v", resp)
 	// Normalize some of the variance. Obviously many models will still fail this test.
-	txt := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.AsText())), ".!")
+	txt := strings.TrimRight(strings.TrimSpace(strings.ToLower(resp.String())), ".!")
 	fmt.Printf("Response: %s\n", txt)
 	// Disabled because it's slow in CI, especially on Windows.
 	// // Output: Response: hello

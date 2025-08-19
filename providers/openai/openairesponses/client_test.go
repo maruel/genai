@@ -131,7 +131,7 @@ func TestClient_Batch(t *testing.T) {
 		if res.FinishReason != genai.FinishedStop {
 			t.Errorf("finish reason: %s", res.FinishReason)
 		}
-		if s := res.AsText(); len(s) < 15 {
+		if s := res.String(); len(s) < 15 {
 			t.Errorf("not enough text: %q", s)
 		}
 		break

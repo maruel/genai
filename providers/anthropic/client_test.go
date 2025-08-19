@@ -92,20 +92,20 @@ func TestClient_Batch(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		if res.FinishReason == genai.Pending {
+		if res.Usage.FinishReason == genai.Pending {
 			if isRecording {
 				t.Logf("Waiting...")
 				time.Sleep(time.Second)
 			}
 			continue
 		}
-		if res.InputTokens == 0 || res.OutputTokens == 0 {
+		if res.Usage.InputTokens == 0 || res.Usage.OutputTokens == 0 {
 			t.Error("expected usage")
 		}
-		if res.FinishReason != genai.FinishedStop {
-			t.Errorf("finish reason: %s", res.FinishReason)
+		if res.Usage.FinishReason != genai.FinishedStop {
+			t.Errorf("finish reason: %s", res.Usage.FinishReason)
 		}
-		if s := res.AsText(); len(s) < 15 {
+		if s := res.String(); len(s) < 15 {
 			t.Errorf("not enough text: %q", s)
 		}
 		break

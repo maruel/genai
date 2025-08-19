@@ -264,7 +264,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 		},
 	}
 	if len(c.Choices) == 1 {
-		out.FinishReason = c.Choices[0].FinishReason.ToFinishReason()
+		out.Usage.FinishReason = c.Choices[0].FinishReason.ToFinishReason()
 		if err := c.Choices[0].Message.To(&out.Message); err != nil {
 			return out, err
 		}
@@ -1425,11 +1425,11 @@ func processChatStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- g
 			continue
 		}
 		if pkt.Choices[0].FinishReason != "" {
-			result.InputTokens = pkt.Usage.PromptTokens
-			// result.InputCachedTokens = pkt.Usage.TokensCached
-			result.OutputTokens = pkt.Usage.CompletionTokens
-			result.TotalTokens = pkt.Usage.TotalTokens
-			result.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
+			result.Usage.InputTokens = pkt.Usage.PromptTokens
+			// result.Usage.InputCachedTokens = pkt.Usage.TokensCached
+			result.Usage.OutputTokens = pkt.Usage.CompletionTokens
+			result.Usage.TotalTokens = pkt.Usage.TotalTokens
+			result.Usage.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
 		}
 		switch role := pkt.Choices[0].Delta.Role; role {
 		case "assistant", "":
@@ -1483,11 +1483,11 @@ func processChatStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- g
 func processCompletionsStreamPackets(ch <-chan CompletionStreamChunkResponse, chunks chan<- genai.ReplyFragment, result *genai.Result) error {
 	for msg := range ch {
 		if msg.Timings.PredictedN != 0 {
-			result.InputTokens = msg.Timings.PromptN
-			result.OutputTokens = msg.Timings.PredictedN
+			result.Usage.InputTokens = msg.Timings.PromptN
+			result.Usage.OutputTokens = msg.Timings.PredictedN
 		}
 		if msg.StopType != "" {
-			result.FinishReason = msg.StopType.ToFinishReason()
+			result.Usage.FinishReason = msg.StopType.ToFinishReason()
 		}
 		f := genai.ReplyFragment{TextFragment: msg.Content}
 		if !f.IsZero() {

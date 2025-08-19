@@ -566,11 +566,11 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	if len(c.Choices) != 1 {
 		return out, fmt.Errorf("server returned an unexpected number of choices, expected 1, got %d", len(c.Choices))
 	}
-	out.FinishReason = c.Choices[0].FinishReason.ToFinishReason()
+	out.Usage.FinishReason = c.Choices[0].FinishReason.ToFinishReason()
 	err := c.Choices[0].Message.To(&out.Message)
-	if out.FinishReason == genai.FinishedStop && slices.ContainsFunc(out.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
+	if out.Usage.FinishReason == genai.FinishedStop && slices.ContainsFunc(out.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
 		// Lie for the benefit of everyone.
-		out.FinishReason = genai.FinishedToolCalls
+		out.Usage.FinishReason = genai.FinishedToolCalls
 	}
 	out.Logprobs = c.Choices[0].Logprobs.To()
 	return out, err
@@ -876,17 +876,17 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 	pendingCall := ToolCall{}
 	for pkt := range ch {
 		if pkt.Usage.PromptTokens != 0 {
-			result.InputTokens = pkt.Usage.PromptTokens
-			result.InputCachedTokens = pkt.Usage.PromptTokensDetails.CachedTokens
-			result.ReasoningTokens = pkt.Usage.CompletionTokensDetails.ReasoningTokens
-			result.OutputTokens = pkt.Usage.CompletionTokens
-			result.TotalTokens = pkt.Usage.TotalTokens
+			result.Usage.InputTokens = pkt.Usage.PromptTokens
+			result.Usage.InputCachedTokens = pkt.Usage.PromptTokensDetails.CachedTokens
+			result.Usage.ReasoningTokens = pkt.Usage.CompletionTokensDetails.ReasoningTokens
+			result.Usage.OutputTokens = pkt.Usage.CompletionTokens
+			result.Usage.TotalTokens = pkt.Usage.TotalTokens
 		}
 		if len(pkt.Choices) != 1 {
 			continue
 		}
 		if pkt.Choices[0].FinishReason != "" {
-			result.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
+			result.Usage.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
 		}
 		result.Logprobs = append(result.Logprobs, pkt.Choices[0].Logprobs.To()...)
 		switch role := pkt.Choices[0].Delta.Role; role {

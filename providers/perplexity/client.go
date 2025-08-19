@@ -401,7 +401,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	if len(c.Choices) != 1 {
 		return out, errors.New("expected 1 choice")
 	}
-	out.FinishReason = c.Choices[0].FinishReason.ToFinishReason()
+	out.Usage.FinishReason = c.Choices[0].FinishReason.ToFinishReason()
 	err := c.Choices[0].Message.To(&out.Message)
 	if len(c.SearchResults) > 0 && len(out.Replies) > 0 {
 		ct := genai.Citation{Type: "web", Sources: make([]genai.CitationSource, len(c.SearchResults))}
@@ -583,11 +583,11 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			continue
 		}
 		if pkt.Usage.PromptTokens != 0 {
-			result.InputTokens = pkt.Usage.PromptTokens
-			result.OutputTokens = pkt.Usage.CompletionTokens
+			result.Usage.InputTokens = pkt.Usage.PromptTokens
+			result.Usage.OutputTokens = pkt.Usage.CompletionTokens
 		}
 		if pkt.Choices[0].FinishReason != "" {
-			result.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
+			result.Usage.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
 		}
 		switch role := pkt.Choices[0].Delta.Role; role {
 		case "", "assistant":

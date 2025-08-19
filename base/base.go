@@ -319,7 +319,7 @@ func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRe
 
 	lastResp := c.LastResponseHeaders()
 	if c.ProcessHeaders != nil && lastResp != nil {
-		result.Limits = c.ProcessHeaders(lastResp)
+		result.Usage.Limits = c.ProcessHeaders(lastResp)
 	}
 	return result, continuableErr
 }
@@ -374,13 +374,13 @@ func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRe
 	}
 	lastResp := c.LastResponseHeaders()
 	if c.ProcessHeaders != nil && lastResp != nil {
-		result.Limits = c.ProcessHeaders(lastResp)
+		result.Usage.Limits = c.ProcessHeaders(lastResp)
 	}
-	if c.LieToolCalls && result.FinishReason == genai.FinishedStop {
+	if c.LieToolCalls && result.Usage.FinishReason == genai.FinishedStop {
 		for i := range result.Replies {
 			if !result.Replies[i].ToolCall.IsZero() {
 				// Lie for the benefit of everyone.
-				result.FinishReason = genai.FinishedToolCalls
+				result.Usage.FinishReason = genai.FinishedToolCalls
 				break
 			}
 		}

@@ -846,7 +846,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	if len(c.Choices) != 1 {
 		return out, fmt.Errorf("server returned an unexpected number of choices, expected 1, got %d", len(c.Choices))
 	}
-	out.FinishReason = c.Choices[0].FinishReason.ToFinishReason()
+	out.Usage.FinishReason = c.Choices[0].FinishReason.ToFinishReason()
 	err := c.Choices[0].Message.To(&out.Message)
 	out.Logprobs = c.Choices[0].Logprobs.To()
 	return out, err
@@ -1364,7 +1364,7 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 		}
 	}
 	req := ImageRequest{
-		Prompt: msg.AsText(),
+		Prompt: msg.String(),
 		Model:  c.Model,
 	}
 	// This is unfortunate.
@@ -1482,7 +1482,7 @@ func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, er
 		err = errors.Join(errs...)
 	}
 	if resp.Status == "validating" || resp.Status == "in_progress" || resp.Status == "finalizing" {
-		res.FinishReason = genai.Pending
+		res.Usage.FinishReason = genai.Pending
 	}
 	if resp.OutputFileID != "" {
 		f, err2 := c.FileGet(ctx, resp.OutputFileID)
@@ -1650,16 +1650,16 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 	pendingCall := ToolCall{}
 	for pkt := range ch {
 		if pkt.Usage.PromptTokens != 0 {
-			result.InputTokens = pkt.Usage.PromptTokens
-			result.InputCachedTokens = pkt.Usage.PromptTokensDetails.CachedTokens
-			result.ReasoningTokens = pkt.Usage.CompletionTokensDetails.ReasoningTokens
-			result.OutputTokens = pkt.Usage.CompletionTokens
+			result.Usage.InputTokens = pkt.Usage.PromptTokens
+			result.Usage.InputCachedTokens = pkt.Usage.PromptTokensDetails.CachedTokens
+			result.Usage.ReasoningTokens = pkt.Usage.CompletionTokensDetails.ReasoningTokens
+			result.Usage.OutputTokens = pkt.Usage.CompletionTokens
 		}
 		if len(pkt.Choices) != 1 {
 			continue
 		}
 		if fr := pkt.Choices[0].FinishReason; fr != "" {
-			result.FinishReason = fr.ToFinishReason()
+			result.Usage.FinishReason = fr.ToFinishReason()
 		}
 		switch role := pkt.Choices[0].Delta.Role; role {
 		case "", "assistant":

@@ -422,14 +422,14 @@ func (r *Response) ToResult() (genai.Result, error) {
 	}
 	if r.IncompleteDetails.Reason != "" {
 		if r.IncompleteDetails.Reason == "max_output_tokens" {
-			res.FinishReason = genai.FinishedLength
+			res.Usage.FinishReason = genai.FinishedLength
 		} else {
-			res.FinishReason = genai.FinishReason(r.IncompleteDetails.Reason)
+			res.Usage.FinishReason = genai.FinishReason(r.IncompleteDetails.Reason)
 		}
 	} else if slices.ContainsFunc(res.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
-		res.FinishReason = genai.FinishedToolCalls
+		res.Usage.FinishReason = genai.FinishedToolCalls
 	} else {
-		res.FinishReason = genai.FinishedStop
+		res.Usage.FinishReason = genai.FinishedStop
 	}
 	return res, nil
 }
@@ -1425,7 +1425,7 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 		}
 	}
 	req := ImageRequest{
-		Prompt: msg.AsText(),
+		Prompt: msg.String(),
 		Model:  c.Model,
 	}
 	// This is unfortunate.
@@ -1527,27 +1527,27 @@ func processStreamPackets(ch <-chan ResponseStreamChunkResponse, chunks chan<- g
 		switch pkt.Type {
 		case ResponseCreated, ResponseInProgress:
 		case ResponseCompleted:
-			result.InputTokens = pkt.Response.Usage.InputTokens
-			result.InputCachedTokens = pkt.Response.Usage.InputTokensDetails.CachedTokens
-			result.ReasoningTokens = pkt.Response.Usage.OutputTokensDetails.ReasoningTokens
-			result.OutputTokens = pkt.Response.Usage.OutputTokens
+			result.Usage.InputTokens = pkt.Response.Usage.InputTokens
+			result.Usage.InputCachedTokens = pkt.Response.Usage.InputTokensDetails.CachedTokens
+			result.Usage.ReasoningTokens = pkt.Response.Usage.OutputTokensDetails.ReasoningTokens
+			result.Usage.OutputTokens = pkt.Response.Usage.OutputTokens
 			if len(pkt.Response.Output) == 0 {
 				// TODO: Likely failed.
 				return fmt.Errorf("no output: %#v", pkt)
 			}
 			// TODO: OpenAI supports "multiple messages" as output.
-			result.FinishReason = genai.FinishedStop
+			result.Usage.FinishReason = genai.FinishedStop
 			for i := range pkt.Response.Output {
 				msg := pkt.Response.Output[i]
 				switch msg.Status {
 				case "":
 				case "completed":
 					if msg.Type == MessageFunctionCall {
-						result.FinishReason = genai.FinishedToolCalls
+						result.Usage.FinishReason = genai.FinishedToolCalls
 					}
 				case "in_progress":
 				case "incomplete":
-					result.FinishReason = genai.FinishedLength
+					result.Usage.FinishReason = genai.FinishedLength
 				case "failed":
 					return fmt.Errorf("failed: %#v", pkt)
 				default:
@@ -1557,11 +1557,11 @@ func processStreamPackets(ch <-chan ResponseStreamChunkResponse, chunks chan<- g
 		case ResponseFailed:
 			return fmt.Errorf("response failed: %s", pkt.Response.Error.Message)
 		case ResponseIncomplete:
-			result.InputTokens = pkt.Response.Usage.InputTokens
-			result.InputCachedTokens = pkt.Response.Usage.InputTokensDetails.CachedTokens
-			result.ReasoningTokens = pkt.Response.Usage.OutputTokensDetails.ReasoningTokens
-			result.OutputTokens = pkt.Response.Usage.OutputTokens
-			result.FinishReason = genai.FinishedLength // Likely reason for incomplete
+			result.Usage.InputTokens = pkt.Response.Usage.InputTokens
+			result.Usage.InputCachedTokens = pkt.Response.Usage.InputTokensDetails.CachedTokens
+			result.Usage.ReasoningTokens = pkt.Response.Usage.OutputTokensDetails.ReasoningTokens
+			result.Usage.OutputTokens = pkt.Response.Usage.OutputTokens
+			result.Usage.FinishReason = genai.FinishedLength // Likely reason for incomplete
 		case ResponseOutputTextDelta:
 			f.TextFragment = pkt.Delta
 		case ResponseOutputTextDone:

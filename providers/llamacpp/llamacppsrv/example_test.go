@@ -45,7 +45,7 @@ func Example() {
 		return
 	}
 	log.Printf("Raw response: %#v", resp)
-	if resp.InputTokens != 0 || resp.OutputTokens != 0 {
+	if resp.Usage.InputTokens != 0 || resp.Usage.OutputTokens != 0 {
 		log.Printf("Did I finally start filling the usage fields?")
 	}
 	// Normalize some of the variance. Obviously many models will still fail this test.

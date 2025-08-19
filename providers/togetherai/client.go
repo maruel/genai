@@ -708,7 +708,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	if len(c.Choices) != 1 {
 		return out, fmt.Errorf("server returned an unexpected number of choices, expected 1, got %d", len(c.Choices))
 	}
-	out.FinishReason = c.Choices[0].FinishReason.ToFinishReason()
+	out.Usage.FinishReason = c.Choices[0].FinishReason.ToFinishReason()
 	out.Logprobs = c.Choices[0].Logprobs.To()
 	err := c.Choices[0].Message.To(&out.Message)
 	if err == nil && len(c.Warnings) != 0 {
@@ -1120,7 +1120,7 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 			}
 		}
 		req := ImageRequest{
-			Prompt: msg.AsText(),
+			Prompt: msg.String(),
 			Model:  c.Model,
 		}
 		if opts != nil {
@@ -1191,10 +1191,10 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 	var warnings []string
 	for pkt := range ch {
 		if pkt.Usage.TotalTokens != 0 {
-			result.InputTokens = pkt.Usage.PromptTokens
-			result.InputCachedTokens = pkt.Usage.CachedTokens
-			result.OutputTokens = pkt.Usage.CompletionTokens
-			result.TotalTokens = pkt.Usage.TotalTokens
+			result.Usage.InputTokens = pkt.Usage.PromptTokens
+			result.Usage.InputCachedTokens = pkt.Usage.CachedTokens
+			result.Usage.OutputTokens = pkt.Usage.CompletionTokens
+			result.Usage.TotalTokens = pkt.Usage.TotalTokens
 		}
 		for _, w := range pkt.Warnings {
 			warnings = append(warnings, w.Message)
@@ -1203,7 +1203,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			continue
 		}
 		if pkt.Choices[0].FinishReason != "" {
-			result.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
+			result.Usage.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
 		}
 		switch role := pkt.Choices[0].Delta.Role; role {
 		case "assistant", "":

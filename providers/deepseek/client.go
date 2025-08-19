@@ -366,7 +366,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	if len(c.Choices) != 1 {
 		return out, fmt.Errorf("expected 1 choice, got %#v", c.Choices)
 	}
-	out.FinishReason = c.Choices[0].FinishReason.ToFinishReason()
+	out.Usage.FinishReason = c.Choices[0].FinishReason.ToFinishReason()
 	err := c.Choices[0].Message.To(&out.Message)
 	out.Logprobs = c.Choices[0].Logprobs.To()
 	return out, err
@@ -633,11 +633,11 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			continue
 		}
 		if pkt.Usage.CompletionTokens != 0 {
-			result.InputTokens = pkt.Usage.PromptTokens
-			result.InputCachedTokens = pkt.Usage.PromptCacheHitTokens
-			result.ReasoningTokens = pkt.Usage.ChatTokensDetails.ReasoningTokens
-			result.OutputTokens = pkt.Usage.CompletionTokens
-			result.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
+			result.Usage.InputTokens = pkt.Usage.PromptTokens
+			result.Usage.InputCachedTokens = pkt.Usage.PromptCacheHitTokens
+			result.Usage.ReasoningTokens = pkt.Usage.ChatTokensDetails.ReasoningTokens
+			result.Usage.OutputTokens = pkt.Usage.CompletionTokens
+			result.Usage.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
 		}
 		if len(pkt.Choices[0].Delta.ToolCalls) > 1 {
 			return fmt.Errorf("implement multiple tool calls: %#v", pkt)

@@ -121,7 +121,7 @@ func TestClient_GenAsync(t *testing.T) {
 	}
 	t.Log(id)
 	res := genai.Result{Usage: genai.Usage{FinishReason: genai.Pending}}
-	for res.FinishReason == genai.Pending {
+	for res.Usage.FinishReason == genai.Pending {
 		select {
 		case <-ctx.Done():
 			t.Fatal(ctx.Err())

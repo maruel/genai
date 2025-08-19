@@ -50,7 +50,7 @@ func ExampleProviderGen_genSync_vision() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("Banana: %v\n", resp.AsText())
+	fmt.Printf("Banana: %v\n", resp.String())
 	// This would Output: Banana: yes
 }
 
@@ -132,7 +132,7 @@ func ExampleProviderGen_genSync_pdf() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("Hidden word in PDF: %v\n", strings.ToLower(resp.AsText()))
+	fmt.Printf("Hidden word in PDF: %v\n", strings.ToLower(resp.String()))
 	// This would Output: Hidden word in PDF: orange
 }
 
@@ -162,7 +162,7 @@ func ExampleProviderGen_genSync_audio() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("Heard: %v\n", strings.TrimRight(strings.ToLower(resp.AsText()), "."))
+	fmt.Printf("Heard: %v\n", strings.TrimRight(strings.ToLower(resp.String()), "."))
 	// This would Output: Heard: orange
 }
 
@@ -189,7 +189,7 @@ func ExampleProviderGen_genSync_video() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("Saw: %v\n", strings.ToLower(resp.AsText()))
+	fmt.Printf("Saw: %v\n", strings.ToLower(resp.String()))
 	// This would Output: Saw: banana
 }
 
@@ -333,7 +333,7 @@ func Example_genSyncWithToolCallLoop_with_custom_HTTP_Header() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("%s\n", newMsgs[len(newMsgs)-1].AsText())
+	fmt.Printf("%s\n", newMsgs[len(newMsgs)-1].String())
 }
 
 var locationClockTime = genai.ToolDef{

@@ -39,10 +39,10 @@ func GenSyncWithToolCallLoop(ctx context.Context, p genai.ProviderGen, msgs gena
 	tools := chatOpts.Tools
 	for {
 		result, err := p.GenSync(ctx, workMsgs, opts)
-		usage.InputTokens += result.InputTokens
-		usage.InputCachedTokens += result.InputCachedTokens
-		usage.OutputTokens += result.OutputTokens
-		usage.FinishReason = result.FinishReason
+		usage.InputTokens += result.Usage.InputTokens
+		usage.InputCachedTokens += result.Usage.InputCachedTokens
+		usage.OutputTokens += result.Usage.OutputTokens
+		usage.FinishReason = result.Usage.FinishReason
 		if err != nil {
 			return out, usage, err
 		}
@@ -108,10 +108,10 @@ func GenStreamWithToolCallLoop(ctx context.Context, p genai.ProviderGen, msgs ge
 		})
 		result, err := p.GenStream(ctx, workMsgs, internalReplies, opts)
 		close(internalReplies)
-		usage.InputTokens += result.InputTokens
-		usage.InputCachedTokens += result.InputCachedTokens
-		usage.OutputTokens += result.OutputTokens
-		usage.FinishReason = result.FinishReason
+		usage.InputTokens += result.Usage.InputTokens
+		usage.InputCachedTokens += result.Usage.InputCachedTokens
+		usage.OutputTokens += result.Usage.OutputTokens
+		usage.FinishReason = result.Usage.FinishReason
 		// Note: We already have the complete message in result.Message, but we accumulate separately
 		// to preserve backward compatibility with existing behavior and tests
 		if err3 := eg.Wait(); err == nil {
@@ -229,9 +229,9 @@ type ProviderGenUsage struct {
 func (c *ProviderGenUsage) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
 	result, err := c.ProviderGen.GenSync(ctx, msgs, opts)
 	c.mu.Lock()
-	c.accumUsage.InputTokens += result.InputTokens
-	c.accumUsage.InputCachedTokens += result.InputCachedTokens
-	c.accumUsage.OutputTokens += result.OutputTokens
+	c.accumUsage.InputTokens += result.Usage.InputTokens
+	c.accumUsage.InputCachedTokens += result.Usage.InputCachedTokens
+	c.accumUsage.OutputTokens += result.Usage.OutputTokens
 	c.mu.Unlock()
 	return result, err
 }
@@ -241,9 +241,9 @@ func (c *ProviderGenUsage) GenStream(ctx context.Context, msgs genai.Messages, r
 	// Call the wrapped provider and accumulate usage statistics
 	result, err := c.ProviderGen.GenStream(ctx, msgs, replies, opts)
 	c.mu.Lock()
-	c.accumUsage.InputTokens += result.InputTokens
-	c.accumUsage.InputCachedTokens += result.InputCachedTokens
-	c.accumUsage.OutputTokens += result.OutputTokens
+	c.accumUsage.InputTokens += result.Usage.InputTokens
+	c.accumUsage.InputCachedTokens += result.Usage.InputCachedTokens
+	c.accumUsage.OutputTokens += result.Usage.OutputTokens
 	c.mu.Unlock()
 	return result, err
 }

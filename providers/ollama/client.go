@@ -441,9 +441,9 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 		},
 	}
 	err := c.Message.To(&out.Message)
-	if out.FinishReason == genai.FinishedStop && slices.ContainsFunc(out.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
+	if out.Usage.FinishReason == genai.FinishedStop && slices.ContainsFunc(out.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
 		// Lie for the benefit of everyone.
-		out.FinishReason = genai.FinishedToolCalls
+		out.Usage.FinishReason = genai.FinishedToolCalls
 	}
 	return out, err
 }
@@ -726,9 +726,9 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan
 	if err2 := eg.Wait(); err2 != nil {
 		err = err2
 	}
-	if result.FinishReason == genai.FinishedStop && slices.ContainsFunc(result.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
+	if result.Usage.FinishReason == genai.FinishedStop && slices.ContainsFunc(result.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
 		// Lie for the benefit of everyone.
-		result.FinishReason = genai.FinishedToolCalls
+		result.Usage.FinishReason = genai.FinishedToolCalls
 	}
 	if err != nil {
 		return result, err
@@ -854,9 +854,9 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 	}()
 	for pkt := range ch {
 		if pkt.EvalCount != 0 {
-			result.InputTokens = pkt.PromptEvalCount
-			result.OutputTokens = pkt.EvalCount
-			result.FinishReason = pkt.DoneReason.ToFinishReason()
+			result.Usage.InputTokens = pkt.PromptEvalCount
+			result.Usage.OutputTokens = pkt.EvalCount
+			result.Usage.FinishReason = pkt.DoneReason.ToFinishReason()
 		}
 		switch role := pkt.Message.Role; role {
 		case "", "assistant":

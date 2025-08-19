@@ -156,7 +156,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(result.AsText())
+	fmt.Println(result.String())
 }
 ```
 
@@ -216,7 +216,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to use provider %q: %s", *provider, err)
 	}
-	fmt.Printf("%s\n", resp.AsText())
+	fmt.Printf("%s\n", resp.String())
 }
 
 // LoadProvider loads a provider.
@@ -314,7 +314,7 @@ func main() {
 	}
 
 	// Print the result.
-	fmt.Println(resp.AsText())
+	fmt.Println(resp.String())
 }
 ```
 

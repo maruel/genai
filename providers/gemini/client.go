@@ -987,11 +987,11 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 		return out, fmt.Errorf("unexpected number of candidates; expected 1, got %d", len(c.Candidates))
 	}
 	// Gemini is the only one returning uppercase so convert down for compatibility.
-	out.FinishReason = c.Candidates[0].FinishReason.ToFinishReason()
+	out.Usage.FinishReason = c.Candidates[0].FinishReason.ToFinishReason()
 	err := c.Candidates[0].Content.To(&out.Message)
-	if out.FinishReason == genai.FinishedStop && slices.ContainsFunc(out.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
+	if out.Usage.FinishReason == genai.FinishedStop && slices.ContainsFunc(out.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
 		// Lie for the benefit of everyone.
-		out.FinishReason = genai.FinishedToolCalls
+		out.Usage.FinishReason = genai.FinishedToolCalls
 	}
 	// It'd be nice to have citation support, but it's only filled with
 	// https://ai.google.dev/api/semantic-retrieval/question-answering and the likes and as of June 2025, it
@@ -1665,7 +1665,7 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 		}
 	}
 	req := ImageRequest{
-		Instances: []ImageInstance{{Prompt: msg.AsText()}},
+		Instances: []ImageInstance{{Prompt: msg.String()}},
 		Parameters: ImageParameters{
 			SampleCount:             1,
 			PersonGeneration:        "allow_adult",
@@ -1766,7 +1766,7 @@ func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.O
 		}
 	}
 	req := ImageRequest{
-		Instances: []ImageInstance{{Prompt: msg.AsText()}},
+		Instances: []ImageInstance{{Prompt: msg.String()}},
 		Parameters: ImageParameters{
 			SampleCount:      1,
 			PersonGeneration: "allow_adult",
@@ -1822,10 +1822,10 @@ func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, er
 		return res, err
 	}
 	if !op.Done {
-		res.FinishReason = genai.Pending
+		res.Usage.FinishReason = genai.Pending
 		return res, nil
 	}
-	res.FinishReason = genai.FinishedStop
+	res.Usage.FinishReason = genai.FinishedStop
 	for _, p := range op.Response.GenerateVideoResponse.GeneratedSamples {
 		// This requires the Google API key to fetch!
 		res.Replies = []genai.Reply{{Doc: genai.Doc{Filename: "content.mp4", URL: p.Video.URI}}}
@@ -1871,13 +1871,13 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		}
 		if pkt.UsageMetadata.TotalTokenCount != 0 {
 			// Not 100% sure.
-			result.InputTokens = pkt.UsageMetadata.PromptTokenCount
-			result.ReasoningTokens = pkt.UsageMetadata.ThoughtsTokenCount
-			result.OutputTokens = pkt.UsageMetadata.CandidatesTokenCount + pkt.UsageMetadata.ToolUsePromptTokenCount + pkt.UsageMetadata.ThoughtsTokenCount
-			result.TotalTokens = pkt.UsageMetadata.TotalTokenCount
+			result.Usage.InputTokens = pkt.UsageMetadata.PromptTokenCount
+			result.Usage.ReasoningTokens = pkt.UsageMetadata.ThoughtsTokenCount
+			result.Usage.OutputTokens = pkt.UsageMetadata.CandidatesTokenCount + pkt.UsageMetadata.ToolUsePromptTokenCount + pkt.UsageMetadata.ThoughtsTokenCount
+			result.Usage.TotalTokens = pkt.UsageMetadata.TotalTokenCount
 		}
 		if pkt.Candidates[0].FinishReason != "" {
-			result.FinishReason = pkt.Candidates[0].FinishReason.ToFinishReason()
+			result.Usage.FinishReason = pkt.Candidates[0].FinishReason.ToFinishReason()
 		}
 		switch role := pkt.Candidates[0].Content.Role; role {
 		case "model", "":

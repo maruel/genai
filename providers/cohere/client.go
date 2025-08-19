@@ -1033,9 +1033,9 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			continue
 		case ChunkMessageEnd:
 			// Contain usage and finish reason.
-			result.InputTokens = pkt.Delta.Usage.Tokens.InputTokens
-			result.OutputTokens = pkt.Delta.Usage.Tokens.OutputTokens
-			result.FinishReason = pkt.Delta.FinishReason.ToFinishReason()
+			result.Usage.InputTokens = pkt.Delta.Usage.Tokens.InputTokens
+			result.Usage.OutputTokens = pkt.Delta.Usage.Tokens.OutputTokens
+			result.Usage.FinishReason = pkt.Delta.FinishReason.ToFinishReason()
 		case ChunkContentStart:
 			if len(pkt.Delta.Message.Content) != 1 {
 				return fmt.Errorf("expected content %#v", pkt)

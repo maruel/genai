@@ -63,7 +63,7 @@ type ProviderGen interface {
 // Result is the result of a completion.
 type Result struct {
 	Message
-	Usage
+	Usage    Usage
 	Logprobs []Logprobs
 }
 
@@ -315,10 +315,10 @@ func (m *Message) Role() string {
 	return "invalid"
 }
 
-// AsText is a short hand to get the request or reply content as text.
+// String is a short hand to get the request or reply content as text.
 //
 // It ignores Thinking or multi-modal content.
-func (m *Message) AsText() string {
+func (m *Message) String() string {
 	var data [32]string
 	out := data[:0]
 	// Only one of the two slices will be non-empty.
@@ -342,7 +342,7 @@ func (m *Message) AsText() string {
 // Note: this doesn't verify the type is the same as specified in
 // OptionsText.DecodeAs.
 func (m *Message) Decode(x any) error {
-	s := m.AsText()
+	s := m.String()
 	if s == "" {
 		return fmt.Errorf("only text messages can be decoded as JSON, can't decode %#v", m)
 	}

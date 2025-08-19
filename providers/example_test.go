@@ -128,7 +128,7 @@ func Example_all_Full() {
 	if err != nil {
 		log.Fatalf("failed to use provider %q: %s", *provider, err)
 	}
-	fmt.Printf("%s\n", resp.AsText())
+	fmt.Printf("%s\n", resp.String())
 }
 
 // LoadProvider loads a provider.
@@ -195,7 +195,7 @@ func Example_available() {
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 	}
-	fmt.Printf("%s\n", resp.AsText())
+	fmt.Printf("%s\n", resp.String())
 }
 
 func Example_all_GetProvidersGenAsync() {

@@ -180,7 +180,7 @@ func (c *ProviderGenThinking) processThinkingMessage(m *genai.Message) error {
 		}
 	}
 
-	text := m.AsText()
+	text := m.String()
 	if text == "" {
 		// Maybe an image.
 		return nil

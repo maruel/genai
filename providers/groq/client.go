@@ -619,7 +619,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	if len(c.Choices) != 1 {
 		return out, fmt.Errorf("server returned an unexpected number of choices, expected 1, got %d", len(c.Choices))
 	}
-	out.FinishReason = c.Choices[0].FinishReason.ToFinishReason()
+	out.Usage.FinishReason = c.Choices[0].FinishReason.ToFinishReason()
 	err := c.Choices[0].Message.To(&out.Message)
 	return out, err
 }
@@ -900,10 +900,10 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			continue
 		}
 		if pkt.Xgroq.Usage.TotalTokens != 0 {
-			result.InputTokens = pkt.Xgroq.Usage.PromptTokens
-			result.OutputTokens = pkt.Xgroq.Usage.CompletionTokens
-			result.TotalTokens = pkt.Xgroq.Usage.TotalTokens
-			result.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
+			result.Usage.InputTokens = pkt.Xgroq.Usage.PromptTokens
+			result.Usage.OutputTokens = pkt.Xgroq.Usage.CompletionTokens
+			result.Usage.TotalTokens = pkt.Xgroq.Usage.TotalTokens
+			result.Usage.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
 		}
 		switch role := pkt.Choices[0].Delta.Role; role {
 		case "assistant", "":

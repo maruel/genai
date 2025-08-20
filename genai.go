@@ -63,15 +63,13 @@ const (
 	// ModelNone explicitly tells the provider to not automatically select a model. The use case is when the
 	// only intended call is ListModel(), thus there's no point into selecting a model automatically.
 	ModelNone = "NONE"
-
 	// ModelCheap requests the provider to automatically select the cheapest model it can find.
 	ModelCheap = "CHEAP"
-
-	// ModelGood requests the provider to automatically select a good every day model.
+	// ModelGood requests the provider to automatically select a good every day model that has a good
+	// performance/cost trade-off.
 	ModelGood = "GOOD"
-
 	// ModelSOTA requests the provider to automatically select the best state-of-the-art model
-	// is can find.
+	// it can find.
 	ModelSOTA = "SOTA"
 )
 

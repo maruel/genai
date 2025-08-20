@@ -21,8 +21,9 @@ import (
 )
 
 func Example_all_ListModel() {
+	ctx := context.Background()
 	for name, f := range providers.All {
-		c, err := f(&genai.ProviderOptions{Model: genai.ModelNone}, nil)
+		c, err := f(ctx, &genai.ProviderOptions{Model: genai.ModelNone}, nil)
 		if err != nil {
 			continue
 		}
@@ -41,8 +42,9 @@ func Example_all_ListModel() {
 }
 
 func Example_all_Provider() {
+	ctx := context.Background()
 	for name, f := range providers.All {
-		c, err := f(&genai.ProviderOptions{Model: genai.ModelCheap}, nil)
+		c, err := f(ctx, &genai.ProviderOptions{Model: genai.ModelCheap}, nil)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -71,7 +73,8 @@ func Example_all_Full() {
 	// This example includes:
 	// - Processing <think> tokens for explicit Chain-of-Thoughts models (e.g. Qwen3).
 	var names []string
-	for name := range providers.Available() {
+	ctx := context.Background()
+	for name := range providers.Available(ctx) {
 		names = append(names, name)
 	}
 	sort.Strings(names)
@@ -88,11 +91,11 @@ func Example_all_Full() {
 	if query == "" {
 		log.Fatal("provide a query")
 	}
-	p, err := LoadProvider(*provider, &genai.ProviderOptions{Model: *model, Remote: *remote})
+	p, err := LoadProvider(ctx, *provider, &genai.ProviderOptions{Model: *model, Remote: *remote})
 	if err != nil {
 		log.Fatal(err)
 	}
-	resp, err := p.GenSync(context.Background(), genai.Messages{genai.NewTextMessage(query)}, nil)
+	resp, err := p.GenSync(ctx, genai.Messages{genai.NewTextMessage(query)}, nil)
 	if err != nil {
 		log.Fatalf("failed to use provider %q: %s", *provider, err)
 	}
@@ -100,7 +103,7 @@ func Example_all_Full() {
 }
 
 // LoadProvider loads a provider.
-func LoadProvider(provider string, opts *genai.ProviderOptions) (genai.Provider, error) {
+func LoadProvider(ctx context.Context, provider string, opts *genai.ProviderOptions) (genai.Provider, error) {
 	if provider == "" {
 		return nil, fmt.Errorf("no provider specified")
 	}
@@ -108,7 +111,7 @@ func LoadProvider(provider string, opts *genai.ProviderOptions) (genai.Provider,
 	if f == nil {
 		return nil, fmt.Errorf("unknown provider %q", provider)
 	}
-	c, err := f(opts, nil)
+	c, err := f(ctx, opts, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to provider %q: %w", provider, err)
 	}
@@ -117,11 +120,11 @@ func LoadProvider(provider string, opts *genai.ProviderOptions) (genai.Provider,
 }
 
 // LoadDefaultProvider loads a provider if there's exactly one available.
-func LoadDefaultProvider() (genai.Provider, error) {
-	avail := providers.Available()
+func LoadDefaultProvider(ctx context.Context) (genai.Provider, error) {
+	avail := providers.Available(ctx)
 	if len(avail) == 1 {
 		for _, f := range avail {
-			return f(&genai.ProviderOptions{Model: genai.ModelNone}, nil)
+			return f(ctx, &genai.ProviderOptions{Model: genai.ModelNone}, nil)
 		}
 	}
 	if len(avail) == 0 {
@@ -138,7 +141,8 @@ func LoadDefaultProvider() (genai.Provider, error) {
 func Example_available() {
 	// Automatically select the provider available if there's only one. Asserts that the provider implements
 	// Provider.
-	c, err := LoadDefaultProvider()
+	ctx := context.Background()
+	c, err := LoadDefaultProvider(ctx)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 	}
@@ -146,7 +150,7 @@ func Example_available() {
 	// supported, no error will be returned.
 	c = &adapters.ProviderIgnoreUnsupported{Provider: c}
 	msgs := genai.Messages{genai.NewTextMessage("Provide a life tip that sounds good but is actually a bad idea.")}
-	resp, err := c.GenSync(context.Background(), msgs, &genai.OptionsText{Seed: 42})
+	resp, err := c.GenSync(ctx, msgs, &genai.OptionsText{Seed: 42})
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 	}
@@ -154,7 +158,7 @@ func Example_available() {
 }
 
 func Example_all_GetProvidersGenAsync() {
-	for _, name := range GetProvidersGenAsync() {
+	for _, name := range GetProvidersGenAsync(context.Background()) {
 		fmt.Printf("%s\n", name)
 	}
 	// Output:
@@ -175,10 +179,10 @@ func Example_all_GetProvidersGenAsync() {
 //     API key available at the moment.
 //   - `err` if you want to determine if the functionality is available in the current context, i.e.
 //     environment variables FOO_API_KEY are set.
-func GetProvidersGenAsync() []string {
+func GetProvidersGenAsync(ctx context.Context) []string {
 	var names []string
 	for name, f := range providers.All {
-		c, _ := f(&genai.ProviderOptions{Model: genai.ModelNone}, nil)
+		c, _ := f(ctx, &genai.ProviderOptions{Model: genai.ModelNone}, nil)
 		if c == nil {
 			continue
 		}

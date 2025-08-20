@@ -1016,7 +1016,7 @@ type Client struct {
 //
 // We must select a model that supports video.
 // https://docs.together.ai/docs/serverless-models#vision-models
-func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
+func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
 	if opts.AccountID != "" {
 		return nil, errors.New("unexpected option AccountID")
 	}
@@ -1064,7 +1064,7 @@ func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.Round
 		c.impl.Model = ""
 	case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA:
 		if err == nil {
-			if c.impl.Model, err = c.selectBestModel(context.Background(), model); err != nil {
+			if c.impl.Model, err = c.selectBestModel(ctx, model); err != nil {
 				return nil, err
 			}
 		}

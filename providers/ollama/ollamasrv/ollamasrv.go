@@ -128,7 +128,7 @@ func New(ctx context.Context, exe string, logOutput io.Writer, hostPort string, 
 	}()
 
 	// Wait for the server to be ready.
-	c, err := ollama.New(&genai.ProviderOptions{Remote: u, Model: genai.ModelNone}, nil)
+	c, err := ollama.New(ctx, &genai.ProviderOptions{Remote: u, Model: genai.ModelNone}, nil)
 	if err != nil {
 		_ = cmd.Cancel()
 		<-done
@@ -181,7 +181,7 @@ func DownloadRelease(ctx context.Context, cache string, version string) (string,
 	}
 	var err error
 	if version == "" {
-		if version, err = getLatestRelease(); err != nil {
+		if version, err = getLatestRelease(ctx); err != nil {
 			return "", fmt.Errorf("failed figuring out latest ollama release version: %w", err)
 		}
 	}
@@ -358,8 +358,8 @@ func downloadFile(ctx context.Context, url, dst string) error {
 	return err
 }
 
-func getLatestRelease() (string, error) {
-	req, err := http.NewRequestWithContext(context.Background(), "GET", "https://api.github.com/repos/ollama/ollama/releases/latest", nil)
+func getLatestRelease(ctx context.Context) (string, error) {
+	req, err := http.NewRequestWithContext(ctx, "GET", "https://api.github.com/repos/ollama/ollama/releases/latest", nil)
 	if err != nil {
 		return "", err
 	}

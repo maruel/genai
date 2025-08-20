@@ -78,9 +78,9 @@ func printStructDense(v any, indent string) string {
 	return strings.Join(fields, "\n")
 }
 
-func getProvidersModel() []string {
+func getProvidersModel(ctx context.Context) []string {
 	var names []string
-	for name := range providers.Available() {
+	for name := range providers.Available(ctx) {
 		names = append(names, name)
 	}
 	sort.Strings(names)
@@ -91,7 +91,7 @@ func mainImpl() error {
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 	defer stop()
 
-	names := getProvidersModel()
+	names := getProvidersModel(ctx)
 	provider := flag.String("provider", "", "backend to use: "+strings.Join(names, ", "))
 	all := flag.Bool("all", false, "include all details")
 	strict := flag.Bool("strict", false, "assert no unknown fields in the APIs are found")
@@ -108,7 +108,7 @@ func mainImpl() error {
 	if !slices.Contains(names, *provider) {
 		return fmt.Errorf("unknown backend %q", *provider)
 	}
-	c, err := providers.All[*provider](&genai.ProviderOptions{Model: genai.ModelNone}, nil)
+	c, err := providers.All[*provider](ctx, &genai.ProviderOptions{Model: genai.ModelNone}, nil)
 	if err != nil {
 		return err
 	}

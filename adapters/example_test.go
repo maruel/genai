@@ -22,7 +22,8 @@ func ExampleGenSyncWithToolCallLoop() {
 
 	// Using a free small model for testing.
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
-	c, err := gemini.New(&genai.ProviderOptions{Model: "gemini-2.5-flash"}, nil)
+	ctx := context.Background()
+	c, err := gemini.New(ctx, &genai.ProviderOptions{Model: "gemini-2.5-flash"}, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -34,7 +35,7 @@ func ExampleGenSyncWithToolCallLoop() {
 		// Force the LLM to do a tool call first.
 		ToolCallRequest: genai.ToolCallRequired,
 	}
-	newMsgs, _, err := adapters.GenSyncWithToolCallLoop(context.Background(), c, msgs, &opts)
+	newMsgs, _, err := adapters.GenSyncWithToolCallLoop(ctx, c, msgs, &opts)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -47,7 +48,8 @@ func ExampleGenStreamWithToolCallLoop() {
 
 	// Using a free small model for testing.
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
-	c, err := gemini.New(&genai.ProviderOptions{Model: "gemini-2.5-flash"}, nil)
+	ctx := context.Background()
+	c, err := gemini.New(ctx, &genai.ProviderOptions{Model: "gemini-2.5-flash"}, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -60,7 +62,7 @@ func ExampleGenStreamWithToolCallLoop() {
 		ToolCallRequest: genai.ToolCallRequired,
 	}
 	chunks := make(chan genai.ReplyFragment)
-	ctx, cancel := context.WithCancel(context.Background())
+	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 	go func() {
 		for {

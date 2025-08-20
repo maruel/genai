@@ -30,7 +30,8 @@ func ExampleProvider_genSync_vision() {
 
 	// Using a free small model for testing.
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
-	c, err := gemini.New(&genai.ProviderOptions{Model: "gemini-2.5-flash-lite"}, nil)
+	ctx := context.Background()
+	c, err := gemini.New(ctx, &genai.ProviderOptions{Model: "gemini-2.5-flash-lite"}, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -46,7 +47,7 @@ func ExampleProvider_genSync_vision() {
 			},
 		},
 	}
-	resp, err := c.GenSync(context.Background(), msgs, nil)
+	resp, err := c.GenSync(ctx, msgs, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -59,7 +60,8 @@ func ExampleClient_GenSync_jSON() {
 
 	// Using a free small model for testing.
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
-	c, err := gemini.New(&genai.ProviderOptions{Model: "gemini-2.5-flash-lite"}, nil)
+	ctx := context.Background()
+	c, err := gemini.New(ctx, &genai.ProviderOptions{Model: "gemini-2.5-flash-lite"}, nil)
 	if err == nil {
 		log.Fatal(err)
 	}
@@ -67,7 +69,7 @@ func ExampleClient_GenSync_jSON() {
 		genai.NewTextMessage("Is a circle round? Reply as JSON with the form {\"round\": false} or {\"round\": true}."),
 	}
 	opts := genai.OptionsText{ReplyAsJSON: true}
-	resp, err := c.GenSync(context.Background(), msgs, &opts)
+	resp, err := c.GenSync(ctx, msgs, &opts)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -84,7 +86,8 @@ func ExampleClient_GenSync_jSON_schema() {
 
 	// Using a free small model for testing.
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
-	c, err := gemini.New(&genai.ProviderOptions{Model: "gemini-2.5-flash-lite"}, nil)
+	ctx := context.Background()
+	c, err := gemini.New(ctx, &genai.ProviderOptions{Model: "gemini-2.5-flash-lite"}, nil)
 	if err == nil {
 		log.Fatal(err)
 	}
@@ -95,7 +98,7 @@ func ExampleClient_GenSync_jSON_schema() {
 		Round bool `json:"round"`
 	}
 	opts := genai.OptionsText{DecodeAs: got}
-	resp, err := c.GenSync(context.Background(), msgs, &opts)
+	resp, err := c.GenSync(ctx, msgs, &opts)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -111,7 +114,8 @@ func ExampleProvider_genSync_pdf() {
 
 	// Using a free small model for testing.
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
-	c, err := gemini.New(&genai.ProviderOptions{Model: "gemini-2.5-flash-lite"}, nil)
+	ctx := context.Background()
+	c, err := gemini.New(ctx, &genai.ProviderOptions{Model: "gemini-2.5-flash-lite"}, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -128,7 +132,7 @@ func ExampleProvider_genSync_pdf() {
 			},
 		},
 	}
-	resp, err := c.GenSync(context.Background(), msgs, nil)
+	resp, err := c.GenSync(ctx, msgs, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -141,7 +145,8 @@ func ExampleProvider_genSync_audio() {
 
 	// Using a free small model for testing.
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
-	c, err := gemini.New(&genai.ProviderOptions{Model: "gemini-2.5-flash-lite"}, nil)
+	ctx := context.Background()
+	c, err := gemini.New(ctx, &genai.ProviderOptions{Model: "gemini-2.5-flash-lite"}, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -158,7 +163,7 @@ func ExampleProvider_genSync_audio() {
 			},
 		},
 	}
-	resp, err := c.GenSync(context.Background(), msgs, nil)
+	resp, err := c.GenSync(ctx, msgs, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -171,7 +176,8 @@ func ExampleProvider_genSync_video() {
 
 	// Using a free small model for testing.
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
-	c, err := gemini.New(&genai.ProviderOptions{Model: "gemini-2.5-flash"}, nil)
+	ctx := context.Background()
+	c, err := gemini.New(ctx, &genai.ProviderOptions{Model: "gemini-2.5-flash"}, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -185,7 +191,7 @@ func ExampleProvider_genSync_video() {
 		genai.NewTextMessage("What is the word? Reply with exactly and only one word."),
 		{Requests: []genai.Request{{Doc: genai.Doc{Src: f}}}},
 	}
-	resp, err := c.GenSync(context.Background(), msgs, nil)
+	resp, err := c.GenSync(ctx, msgs, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -198,13 +204,13 @@ func ExampleProvider_GenStream() {
 
 	// Using a free small model for testing.
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
-	c, err := gemini.New(&genai.ProviderOptions{Model: "gemini-2.5-flash-lite"}, nil)
+	ctx := context.Background()
+	c, err := gemini.New(ctx, &genai.ProviderOptions{Model: "gemini-2.5-flash-lite"}, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
 	// Does not return an error if Seed or MaxTokens are unsupported.
 	p := &adapters.ProviderIgnoreUnsupported{Provider: c}
-	ctx := context.Background()
 	msgs := genai.Messages{
 		genai.NewTextMessage("Say hello. Use only one word."),
 	}
@@ -282,11 +288,12 @@ func ExampleProvider_hTTP_record() {
 	if os.Getenv("GROQ_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	c, err := groq.New(&genai.ProviderOptions{APIKey: apiKey, Model: genai.ModelNone}, wrapper)
+	ctx := context.Background()
+	c, err := groq.New(ctx, &genai.ProviderOptions{APIKey: apiKey, Model: genai.ModelNone}, wrapper)
 	if err != nil {
 		log.Fatal(err)
 	}
-	models, err := c.ListModels(context.Background())
+	models, err := c.ListModels(ctx)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -319,7 +326,8 @@ func Example_genSyncWithToolCallLoop_with_custom_HTTP_Header() {
 			Header:    http.Header{"anthropic-beta": []string{"interleaved-thinking-2025-05-14"}},
 		}
 	}
-	c, err := anthropic.New(&genai.ProviderOptions{Model: "claude-sonnet-4-20250514"}, wrapper)
+	ctx := context.Background()
+	c, err := anthropic.New(ctx, &genai.ProviderOptions{Model: "claude-sonnet-4-20250514"}, wrapper)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -329,7 +337,7 @@ func Example_genSyncWithToolCallLoop_with_custom_HTTP_Header() {
 		// Force the LLM to do a tool call first.
 		ToolCallRequest: genai.ToolCallRequired,
 	}
-	newMsgs, _, err := adapters.GenSyncWithToolCallLoop(context.Background(), c, msgs, &opts)
+	newMsgs, _, err := adapters.GenSyncWithToolCallLoop(ctx, c, msgs, &opts)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -22,7 +22,7 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 	if os.Getenv("DEEPSEEK_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	c, err := deepseek.New(&genai.ProviderOptions{APIKey: apiKey, Model: model.Model}, fn)
+	c, err := deepseek.New(t.Context(), &genai.ProviderOptions{APIKey: apiKey, Model: model.Model}, fn)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -96,7 +96,7 @@ func getClientInner(t *testing.T, apiKey, m string) (*deepseek.Client, error) {
 	if apiKey == "" && os.Getenv("DEEPSEEK_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	return deepseek.New(&genai.ProviderOptions{APIKey: apiKey, Model: m}, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
+	return deepseek.New(t.Context(), &genai.ProviderOptions{APIKey: apiKey, Model: m}, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
 }
 
 var testRecorder *internaltest.Records

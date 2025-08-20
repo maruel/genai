@@ -26,7 +26,7 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 	if os.Getenv("GROQ_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	cl, err := groq.New(&genai.ProviderOptions{APIKey: apiKey, Model: model.Model}, fn)
+	cl, err := groq.New(t.Context(), &genai.ProviderOptions{APIKey: apiKey, Model: model.Model}, fn)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -147,7 +147,7 @@ func getClientInner(t *testing.T, apiKey, m string) (*groq.Client, error) {
 	if apiKey == "" && os.Getenv("GROQ_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	return groq.New(&genai.ProviderOptions{APIKey: apiKey, Model: m}, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
+	return groq.New(t.Context(), &genai.ProviderOptions{APIKey: apiKey, Model: m}, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
 }
 
 var testRecorder *internaltest.Records

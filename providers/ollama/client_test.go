@@ -36,7 +36,7 @@ func TestClient(t *testing.T) {
 		}
 		scoreboardtest.AssertScoreboard(t, func(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 			serverURL := s.lazyStart(t)
-			c, err := ollama.New(&genai.ProviderOptions{Remote: serverURL, Model: model.Model}, fn)
+			c, err := ollama.New(t.Context(), &genai.ProviderOptions{Remote: serverURL, Model: model.Model}, fn)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -121,7 +121,7 @@ func (l *lazyServer) lazyStart(t testing.TB) string {
 
 func (l *lazyServer) getClient(t testing.TB, model string) (genai.Provider, error) {
 	serverURL, wrapper := l.lazyStartWithRecord(t)
-	return ollama.New(&genai.ProviderOptions{Remote: serverURL, Model: model}, wrapper)
+	return ollama.New(t.Context(), &genai.ProviderOptions{Remote: serverURL, Model: model}, wrapper)
 }
 
 // This test doesn't require the server to start.
@@ -136,7 +136,7 @@ func TestClient_Preferred(t *testing.T) {
 	}
 	for _, line := range data {
 		t.Run(line.name, func(t *testing.T) {
-			c, err := ollama.New(&genai.ProviderOptions{Model: line.name}, nil)
+			c, err := ollama.New(t.Context(), &genai.ProviderOptions{Model: line.name}, nil)
 			if err != nil {
 				t.Fatal(err)
 			}

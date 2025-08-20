@@ -8,11 +8,12 @@ import "testing"
 
 func TestPrintList(t *testing.T) {
 	t.Parallel()
-	printList()
+	printList(t.Context())
 }
 
 func TestPrintTable(t *testing.T) {
 	t.Parallel()
-	printTable("")
-	printTable("openaicompatible")
+	ctx := t.Context()
+	printTable(ctx, "")
+	printTable(ctx, "openaicompatible")
 }

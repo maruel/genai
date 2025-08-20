@@ -14,6 +14,7 @@ import (
 )
 
 func mainImpl() error {
+	ctx := context.Background()
 	table := flag.Bool("table", false, "output a markdown table")
 	provider := flag.String("provider", "", "output a table only for one provider")
 	flag.Parse()
@@ -21,13 +22,13 @@ func mainImpl() error {
 		return errors.New("unexpected arguments")
 	}
 	if *table {
-		return printTable(*provider)
+		return printTable(ctx, *provider)
 	}
 	if *provider != "" {
 		// TODO: Add it to list too.
 		return errors.New("-provider requires -table")
 	}
-	return printList()
+	return printList(ctx)
 }
 
 func main() {

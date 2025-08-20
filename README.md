@@ -148,14 +148,15 @@ import (
 )
 
 func main() {
-	c, err := anthropic.New(nil, nil)
+	ctx := context.Background()
+	c, err := anthropic.New(ctx, &genai.ProviderOptions{}, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
 	msgs := genai.Messages{
 		genai.NewTextMessage("Give me a life advice that sounds good but is a bad idea in practice."),
 	}
-	result, err := c.GenSync(context.Background(), msgs, nil)
+	result, err := c.GenSync(ctx, msgs, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -211,11 +212,12 @@ func main() {
 	if query == "" {
 		log.Fatal("provide a query")
 	}
+    ctx := context.Background()
 	p, err := LoadProvider(*provider, &genai.ProviderOptions{Model: *model, Remote: *remote})
 	if err != nil {
 		log.Fatal(err)
 	}
-	resp, err := p.GenSync(context.Background(), genai.Messages{genai.NewTextMessage(query)}, nil)
+	resp, err := p.GenSync(ctx, genai.Messages{genai.NewTextMessage(query)}, nil)
 	if err != nil {
 		log.Fatalf("failed to use provider %q: %s", *provider, err)
 	}
@@ -223,7 +225,7 @@ func main() {
 }
 
 // LoadProvider loads a provider.
-func LoadProvider(provider string, opts *genai.ProviderOptions) (genai.Provider, error) {
+func LoadProvider(ctx context.Context, provider string, opts *genai.ProviderOptions) (genai.Provider, error) {
 	if provider == "" {
 		return nil, fmt.Errorf("no provider specified")
 	}
@@ -231,7 +233,7 @@ func LoadProvider(provider string, opts *genai.ProviderOptions) (genai.Provider,
 	if f == nil {
 		return nil, fmt.Errorf("unknown provider %q", provider)
 	}
-	c, err := f(opts, nil)
+	c, err := f(ctx, opts, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to provider %q: %w", provider, err)
 	}
@@ -259,7 +261,8 @@ import (
 )
 
 func main() {
-	c, err := cerebras.New(&genai.ProviderOptions{Model: "qwen-3-235b-a22b-thinking-2507"}, nil)
+    ctx := context.Background()
+	c, err := cerebras.New(ctx, &genai.ProviderOptions{Model: "qwen-3-235b-a22b-thinking-2507"}, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -284,7 +287,7 @@ func main() {
 		// Force the LLM to do a tool call.
 		ToolCallRequest: genai.ToolCallRequired,
 	}
-	resp, err := p.GenSync(context.Background(), msgs, &opts)
+	resp, err := p.GenSync(ctx, msgs, &opts)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -293,7 +296,7 @@ func main() {
 	msgs = append(msgs, resp.Message)
 
 	// Process the tool call from the assistant.
-	msg, err := resp.DoToolCalls(context.Background(), opts.Tools)
+	msg, err := resp.DoToolCalls(ctx, opts.Tools)
 	if err != nil {
 		log.Fatalf("Error calling tool: %v", err)
 	}
@@ -306,7 +309,7 @@ func main() {
 
 	// Follow up so the LLM can interpret the tool call response. Tell the LLM to not do a tool call this time.
 	opts.ToolCallRequest = genai.ToolCallNone
-	resp, err = p.GenSync(context.Background(), msgs, &opts)
+	resp, err = p.GenSync(ctx, msgs, &opts)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -336,7 +339,8 @@ import (
 )
 
 func main() {
-	c, err := openai.New(nil, nil)
+	ctx := context.Background()
+	c, err := openai.New(ctx, &genai.ProviderOptions{}, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -347,7 +351,7 @@ func main() {
 		Round bool `json:"round"`
 	}
 	opts := genai.OptionsText{DecodeAs: &circle}
-	resp, err := c.GenSync(context.Background(), msgs, &opts)
+	resp, err := c.GenSync(ctx, msgs, &opts)
 	if err != nil {
 		log.Fatal(err)
 	}

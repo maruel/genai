@@ -62,11 +62,12 @@ func ExampleNew_hTTP_record() {
 	if os.Getenv("CLOUDFLARE_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	c, err := cloudflare.New(&genai.ProviderOptions{APIKey: apiKey, AccountID: accountID, Model: genai.ModelNone}, wrapper)
+	ctx := context.Background()
+	c, err := cloudflare.New(ctx, &genai.ProviderOptions{APIKey: apiKey, AccountID: accountID, Model: genai.ModelNone}, wrapper)
 	if err != nil {
 		log.Fatal(err)
 	}
-	models, err := c.ListModels(context.Background())
+	models, err := c.ListModels(ctx)
 	if err != nil {
 		log.Fatal(err)
 	}

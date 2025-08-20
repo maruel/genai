@@ -57,11 +57,12 @@ func ExampleNew_hTTP_record() {
 	if os.Getenv("CEREBRAS_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	c, err := cerebras.New(&genai.ProviderOptions{APIKey: apiKey, Model: genai.ModelNone}, wrapper)
+	ctx := context.Background()
+	c, err := cerebras.New(ctx, &genai.ProviderOptions{APIKey: apiKey, Model: genai.ModelNone}, wrapper)
 	if err != nil {
 		log.Fatal(err)
 	}
-	models, err := c.ListModels(context.Background())
+	models, err := c.ListModels(ctx)
 	if err != nil {
 		log.Fatal(err)
 	}

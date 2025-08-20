@@ -26,7 +26,7 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 	if os.Getenv("OPENAI_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	c, err := openaichat.New(&genai.ProviderOptions{APIKey: apiKey, Model: model.Model}, fn)
+	c, err := openaichat.New(t.Context(), &genai.ProviderOptions{APIKey: apiKey, Model: model.Model}, fn)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -224,7 +224,7 @@ func getClientInner(t *testing.T, apiKey, m string) (*openaichat.Client, error) 
 	if apiKey == "" && os.Getenv("OPENAI_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	return openaichat.New(&genai.ProviderOptions{APIKey: apiKey, Model: m}, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
+	return openaichat.New(t.Context(), &genai.ProviderOptions{APIKey: apiKey, Model: m}, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
 }
 
 var testRecorder *internaltest.Records

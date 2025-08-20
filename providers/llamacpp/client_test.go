@@ -34,13 +34,14 @@ func TestClient(t *testing.T) {
 	s := lazyServer{t: t, apiKey: apiKey}
 
 	t.Run("ListModels", func(t *testing.T) {
-		c, err := llamacpp.New(&genai.ProviderOptions{APIKey: apiKey, Remote: s.lazyStart(t), Model: genai.ModelNone}, func(h http.RoundTripper) http.RoundTripper {
+		ctx := t.Context()
+		c, err := llamacpp.New(ctx, &genai.ProviderOptions{APIKey: apiKey, Remote: s.lazyStart(t), Model: genai.ModelNone}, func(h http.RoundTripper) http.RoundTripper {
 			return testRecorder.Record(t, h)
 		})
 		if err != nil {
 			t.Fatal(err)
 		}
-		genaiModels, err := c.ListModels(t.Context())
+		genaiModels, err := c.ListModels(ctx)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -51,7 +52,8 @@ func TestClient(t *testing.T) {
 
 	t.Run("Scoreboard", func(t *testing.T) {
 		serverURL := s.lazyStart(t)
-		c, err := llamacpp.New(&genai.ProviderOptions{APIKey: apiKey, Remote: serverURL, Model: genai.ModelNone}, func(h http.RoundTripper) http.RoundTripper {
+		ctx := t.Context()
+		c, err := llamacpp.New(ctx, &genai.ProviderOptions{APIKey: apiKey, Remote: serverURL, Model: genai.ModelNone}, func(h http.RoundTripper) http.RoundTripper {
 			return testRecorder.Record(t, h)
 		})
 		if err != nil {
@@ -64,7 +66,7 @@ func TestClient(t *testing.T) {
 			}
 		}
 		scoreboardtest.AssertScoreboard(t, func(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
-			c2, err2 := llamacpp.New(&genai.ProviderOptions{APIKey: apiKey, Remote: serverURL, Model: model.Model}, fn)
+			c2, err2 := llamacpp.New(ctx, &genai.ProviderOptions{APIKey: apiKey, Remote: serverURL, Model: model.Model}, fn)
 			if err2 != nil {
 				t.Fatal(err2)
 			}
@@ -75,14 +77,15 @@ func TestClient(t *testing.T) {
 	// Run this at the end so there would be non-zero values.
 	t.Run("Metrics", func(t *testing.T) {
 		serverURL := s.lazyStart(t)
-		c, err := llamacpp.New(&genai.ProviderOptions{APIKey: apiKey, Remote: serverURL, Model: genai.ModelNone}, func(h http.RoundTripper) http.RoundTripper {
+		ctx := t.Context()
+		c, err := llamacpp.New(ctx, &genai.ProviderOptions{APIKey: apiKey, Remote: serverURL, Model: genai.ModelNone}, func(h http.RoundTripper) http.RoundTripper {
 			return testRecorder.Record(t, h)
 		})
 		if err != nil {
 			t.Fatal(err)
 		}
 		m := llamacpp.Metrics{}
-		if err := c.GetMetrics(t.Context(), &m); err != nil {
+		if err := c.GetMetrics(ctx, &m); err != nil {
 			t.Fatal(err)
 		}
 		t.Logf("Metrics: %+v", m)
@@ -134,7 +137,7 @@ func TestClient_Preferred(t *testing.T) {
 	}
 	for _, line := range data {
 		t.Run(line.name, func(t *testing.T) {
-			c, err := llamacpp.New(&genai.ProviderOptions{Model: line.name}, nil)
+			c, err := llamacpp.New(t.Context(), &genai.ProviderOptions{Model: line.name}, nil)
 			if err != nil {
 				t.Fatal(err)
 			}

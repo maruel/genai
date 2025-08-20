@@ -954,7 +954,7 @@ type Client struct {
 //
 // wrapper optionally wraps the HTTP transport. Useful for HTTP recording and playback, or to tweak HTTP
 // retries, or to throttle outgoing requests.
-func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
+func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
 	if opts.AccountID != "" {
 		return nil, errors.New("unexpected option AccountID")
 	}
@@ -1018,7 +1018,7 @@ func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.Round
 		c.impl.Model = ""
 	case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA:
 		var err error
-		if c.impl.Model, err = c.selectBestModel(context.Background(), model); err != nil {
+		if c.impl.Model, err = c.selectBestModel(ctx, model); err != nil {
 			return nil, err
 		}
 	}
@@ -1088,7 +1088,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Op
 		}
 		return c.GenDoc(ctx, msgs[0], opts)
 	}
-	if err := Cache.ValidateModality(c, genai.ModalityText); err != nil {
+	if err := Cache.ValidateModality(ctx, c, genai.ModalityText); err != nil {
 		return genai.Result{}, err
 	}
 	return c.impl.GenSync(ctx, msgs, opts)
@@ -1104,7 +1104,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan
 	if c.isAudio(opts) || c.isImage(opts) {
 		return base.SimulateStream(ctx, c, msgs, chunks, opts)
 	}
-	if err := Cache.ValidateModality(c, genai.ModalityText); err != nil {
+	if err := Cache.ValidateModality(ctx, c, genai.ModalityText); err != nil {
 		return genai.Result{}, err
 	}
 	return c.impl.GenStream(ctx, msgs, chunks, opts)
@@ -1144,7 +1144,7 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 			return res, errors.New("only text can be passed as input")
 		}
 	}
-	if err := Cache.ValidateModality(c, genai.ModalityImage); err != nil {
+	if err := Cache.ValidateModality(ctx, c, genai.ModalityImage); err != nil {
 		return genai.Result{}, err
 	}
 	qp := url.Values{}
@@ -1348,8 +1348,8 @@ type ModelCache struct {
 }
 
 // ValidateModality returns nil if the modality is supported by the model.
-func (m *ModelCache) ValidateModality(c genai.Provider, mod genai.Modality) error {
-	if _, err := m.Warmup(c); err != nil {
+func (m *ModelCache) ValidateModality(ctx context.Context, c genai.Provider, mod genai.Modality) error {
+	if _, err := m.Warmup(ctx, c); err != nil {
 		return err
 	}
 	isText := false
@@ -1381,11 +1381,11 @@ func (m *ModelCache) ValidateModality(c genai.Provider, mod genai.Modality) erro
 	return fmt.Errorf("modality %s not supported", mod)
 }
 
-func (m *ModelCache) Warmup(c genai.Provider) ([]genai.Model, error) {
+func (m *ModelCache) Warmup(ctx context.Context, c genai.Provider) ([]genai.Model, error) {
 	var err error
 	m.mu.Lock()
 	if m.models == nil {
-		m.models, err = c.ListModels(context.Background())
+		m.models, err = c.ListModels(ctx)
 	}
 	m.mu.Unlock()
 	return m.models, err

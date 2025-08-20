@@ -5,6 +5,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"maps"
@@ -211,23 +212,23 @@ var modalityMap = map[genai.Modality]string{
 	genai.ModalityDocument: "📄", // "📚",
 }
 
-func printTable(provider string) error {
+func printTable(ctx context.Context, provider string) error {
 	all := maps.Clone(providers.All)
 	if provider == "" {
-		return printSummaryTable(all)
+		return printSummaryTable(ctx, all)
 	}
 	f := all[provider]
 	if f == nil {
 		return fmt.Errorf("provider %s: not found", provider)
 	}
-	c, err := f(&genai.ProviderOptions{Model: genai.ModelNone}, nil)
+	c, err := f(ctx, &genai.ProviderOptions{Model: genai.ModelNone}, nil)
 	if c == nil {
 		return fmt.Errorf("provider %s: %w", provider, err)
 	}
 	return printProviderTable(c)
 }
 
-func printSummaryTable(all map[string]func(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error)) error {
+func printSummaryTable(ctx context.Context, all map[string]func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error)) error {
 	var rows []tableSummaryRow
 	seen := map[string]struct{}{}
 	for name, f := range all {
@@ -236,7 +237,7 @@ func printSummaryTable(all map[string]func(opts *genai.ProviderOptions, wrapper 
 			// Make sure the remote it set for this one.
 			opts.Remote = "http://localhost:0"
 		}
-		p, err := f(opts, nil)
+		p, err := f(ctx, opts, nil)
 		// The function can return an error and still return a client when no API key was found. It's okay here
 		// because we won't use the service provider.
 		if p == nil {

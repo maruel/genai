@@ -61,6 +61,19 @@ type ProviderOptions struct {
 	// Keep in mind that as providers cycle through new models, it's possible a specific model ID is not
 	// available anymore or that the default model changes.
 	Model string `json:"model,omitzero" yaml:"model,omitzero"`
+	// Modalities is the list of output modalities requested to support.
+	//
+	// Most provider support text output only. Most models support output of only one modality, either text,
+	// image, audio or video. But a few models do support both text and images.
+	//
+	// When unspecified, it defaults to all modalities supported by the provider and the selected model.
+	//
+	// Even when Model is set to a specific model ID, a ListModels call may be made to discover its supported
+	// output modalities for providers that support multiple output modalities.
+	//
+	// Modalities can be set when Model is set to ModelNone to test if a provider support this modality without
+	// causing a ListModels call.
+	Modalities Modalities `json:"modalities,omitzero" yaml:"modalities,omitzero"`
 
 	_ struct{}
 }
@@ -86,6 +99,10 @@ type Provider interface {
 	Name() string
 	// ModelID returns the model currently used by the provider. It can be an empty string.
 	ModelID() string
+	// Modalities returns the output modalities, i.e. what kind of output the model will generate (text, audio, image,
+	// video, etc). It varies per provider and models. The vast majority of providers and models support only
+	// output modality like text-only, image-only, etc.
+	Modalities() Modalities
 	// ListModels returns the list of models the provider supports. Not all providers support it, some will
 	// return an ErrorNotSupported. For local providers like llamacpp and ollama, they may return only the
 	// model currently loaded.

@@ -17,6 +17,7 @@ import (
 	"net/http"
 	"os"
 	"reflect"
+	"slices"
 	"strings"
 
 	"github.com/invopop/jsonschema"
@@ -540,26 +541,16 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 			err = &base.ErrAPIKeyRequired{EnvVar: "PERPLEXITY_API_KEY", URL: apiKeyURL}
 		}
 	}
-	// Perplexity doesn't have a list model API.
-	model := opts.Model
-	switch model {
-	case genai.ModelNone:
-		model = ""
-	case genai.ModelCheap:
-		model = "sonar"
-	case genai.ModelGood, "":
-		model = "sonar-pro"
-	case genai.ModelSOTA:
-		model = "sonar-reasoning-pro"
-	default:
+	mod := genai.Modalities{genai.ModalityText}
+	if len(opts.Modalities) != 0 && !slices.Equal(opts.Modalities, mod) {
+		return nil, fmt.Errorf("unexpected option Modalities %s, only text is supported", mod)
 	}
 	t := base.DefaultTransport
 	if wrapper != nil {
 		t = wrapper(t)
 	}
-	return &Client{
+	c := &Client{
 		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
-			Model:                model,
 			GenSyncURL:           "https://api.perplexity.ai/chat/completions",
 			ProcessStreamPackets: processStreamPackets,
 			ProviderBase: base.ProviderBase[*ErrorResponse]{
@@ -575,7 +566,34 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 				},
 			},
 		},
-	}, err
+	}
+	if err == nil {
+		switch opts.Model {
+		case genai.ModelNone:
+		case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA, "":
+			c.impl.Model = c.selectBestTextModel(opts.Model)
+			c.impl.Modalities = mod
+		default:
+			c.impl.Model = opts.Model
+			c.impl.Modalities = mod
+		}
+	}
+	return c, err
+}
+
+// selectBestTextModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
+func (c *Client) selectBestTextModel(preference string) string {
+	// Perplexity doesn't have a list model API.
+	switch preference {
+	case genai.ModelCheap:
+		return "sonar"
+	case genai.ModelGood, "":
+		return "sonar-pro"
+	case genai.ModelSOTA:
+		return "sonar-reasoning-pro"
+	default:
+		return ""
+	}
 }
 
 // Name implements genai.Provider.
@@ -590,6 +608,14 @@ func (c *Client) Name() string {
 // It returns the selected model ID.
 func (c *Client) ModelID() string {
 	return c.impl.Model
+}
+
+// Modalities implements genai.Provider.
+//
+// It returns the output modalities, i.e. what kind of output the model will generate (text, audio, image,
+// video, etc).
+func (c *Client) Modalities() genai.Modalities {
+	return c.impl.Modalities
 }
 
 // Scoreboard implements scoreboard.ProviderScore.

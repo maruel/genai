@@ -14,6 +14,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"strings"
 
 	"github.com/maruel/genai"
@@ -373,6 +374,10 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 	if opts.Remote == "" {
 		return nil, errors.New("option Remote is required")
 	}
+	mod := genai.Modalities{genai.ModalityText}
+	if len(opts.Modalities) != 0 && !slices.Equal(opts.Modalities, mod) {
+		return nil, fmt.Errorf("unexpected option Modalities %s, only text is supported", mod)
+	}
 	model := opts.Model
 	switch model {
 	case "", genai.ModelNone, genai.ModelCheap, genai.ModelGood, genai.ModelSOTA:
@@ -389,6 +394,7 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 			ModelOptional:        true,
 			ProcessStreamPackets: processStreamPackets,
 			ProviderBase: base.ProviderBase[*ErrorResponse]{
+				Modalities: mod,
 				ClientJSON: httpjson.Client{
 					// It is always lenient by definition.
 					Lenient: true,
@@ -411,6 +417,14 @@ func (c *Client) Name() string {
 // It returns the selected model ID.
 func (c *Client) ModelID() string {
 	return c.impl.Model
+}
+
+// Modalities implements genai.Provider.
+//
+// It returns the output modalities, i.e. what kind of output the model will generate (text, audio, image,
+// video, etc).
+func (c *Client) Modalities() genai.Modalities {
+	return c.impl.Modalities
 }
 
 // Scoreboard implements scoreboard.ProviderScore.

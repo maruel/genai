@@ -263,18 +263,9 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 			err = &base.ErrAPIKeyRequired{EnvVar: "BFL_API_KEY", URL: apiKeyURL}
 		}
 	}
-	// If Black Forest Labs ever implement model listing, start using it!
-	model := opts.Model
-	switch model {
-	case genai.ModelNone:
-		model = ""
-	case genai.ModelCheap:
-		model = "flux-dev"
-	case genai.ModelGood, "":
-		model = "flux-pro-1.1"
-	case genai.ModelSOTA:
-		model = "flux-pro-1.1-ultra"
-	default:
+	mod := genai.Modalities{genai.ModalityImage}
+	if len(opts.Modalities) != 0 && !slices.Equal(opts.Modalities, mod) {
+		return nil, fmt.Errorf("unexpected option Modalities %s, only image is supported", mod)
 	}
 	t := base.DefaultTransport
 	if wrapper != nil {
@@ -284,8 +275,7 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 	if remote == "" {
 		remote = "https://api.bfl.ai"
 	}
-	return &Client{
-		model:  model,
+	c := &Client{
 		remote: remote,
 		impl: base.ProviderBase[*ErrorResponse]{
 			APIKeyURL: apiKeyURL,
@@ -299,7 +289,34 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 				},
 			},
 		},
-	}, err
+	}
+	if err == nil {
+		switch opts.Model {
+		case genai.ModelNone:
+		case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA, "":
+			c.model = c.selectBestImageModel(opts.Model)
+			c.impl.Modalities = mod
+		default:
+			c.model = opts.Model
+			c.impl.Modalities = mod
+		}
+	}
+	return c, err
+}
+
+// selectBestImageModel selects the model based on the preference (cheap, good, or SOTA).
+func (c *Client) selectBestImageModel(preference string) string {
+	// If Black Forest Labs ever implement model listing, start using it!
+	switch preference {
+	case genai.ModelCheap:
+		return "flux-dev"
+	case genai.ModelGood, "":
+		return "flux-pro-1.1"
+	case genai.ModelSOTA:
+		return "flux-pro-1.1-ultra"
+	default:
+		return ""
+	}
 }
 
 // Name implements genai.Provider.
@@ -314,6 +331,14 @@ func (c *Client) Name() string {
 // It returns the selected model ID.
 func (c *Client) ModelID() string {
 	return c.model
+}
+
+// Modalities implements genai.Provider.
+//
+// It returns the output modalities, i.e. what kind of output the model will generate (text, audio, image,
+// video, etc).
+func (c *Client) Modalities() genai.Modalities {
+	return c.impl.Modalities
 }
 
 // Scoreboard implements scoreboard.ProviderScore.

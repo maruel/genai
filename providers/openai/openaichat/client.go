@@ -1313,6 +1313,18 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 			err = &base.ErrAPIKeyRequired{EnvVar: "OPENAI_API_KEY", URL: apiKeyURL}
 		}
 	}
+	switch len(opts.Modalities) {
+	case 0:
+		// Auto-detect below.
+	case 1:
+		switch opts.Modalities[0] {
+		case genai.ModalityAudio, genai.ModalityImage, genai.ModalityText, genai.ModalityVideo:
+		default:
+			return nil, fmt.Errorf("unexpected option Modalities %s, only audio, image or text are supported", opts.Modalities)
+		}
+	default:
+		return nil, fmt.Errorf("unexpected option Modalities %s, only audio, image or text are supported", opts.Modalities)
+	}
 	t := base.DefaultTransport
 	if wrapper != nil {
 		t = wrapper(t)
@@ -1337,23 +1349,49 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 			},
 		},
 	}
-	switch opts.Model {
-	case genai.ModelNone:
-		c.impl.Model = ""
-	case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA, "":
-		if err == nil {
-			if c.impl.Model, err = c.selectBestModel(ctx, opts.Model); err != nil {
-				return nil, err
+	if err == nil {
+		switch opts.Model {
+		case genai.ModelNone:
+		case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA, "":
+			var mod genai.Modality
+			switch len(opts.Modalities) {
+			case 0:
+				mod = genai.ModalityText
+			case 1:
+				mod = opts.Modalities[0]
+			default:
+				// TODO: Maybe it's possible, need to double check.
+				return nil, fmt.Errorf("can't use model %s with option Modalities %s", opts.Model, opts.Modalities)
+			}
+			switch mod {
+			case genai.ModalityText:
+				if c.impl.Model, err = c.selectBestTextModel(ctx, opts.Model); err != nil {
+					return nil, err
+				}
+				c.impl.Modalities = genai.Modalities{mod}
+			default:
+				// TODO: Soon, because it's cool.
+				return nil, fmt.Errorf("automatic model selection is not implemented yet for modality %s (send PR to add support)", opts.Modalities)
+			}
+		default:
+			c.impl.Model = opts.Model
+			switch len(opts.Modalities) {
+			case 0:
+				// TODO: Automatic modality detection.
+				c.impl.Modalities = genai.Modalities{genai.ModalityText}
+			case 1:
+				c.impl.Modalities = opts.Modalities
+			default:
+				// TODO: Maybe it's possible, need to double check.
+				return nil, fmt.Errorf("can't use model %s with option Modalities %s", opts.Model, opts.Modalities)
 			}
 		}
-	default:
-		c.impl.Model = opts.Model
 	}
 	return c, err
 }
 
-// selectBestModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
-func (c *Client) selectBestModel(ctx context.Context, preference string) (string, error) {
+// selectBestTextModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
+func (c *Client) selectBestTextModel(ctx context.Context, preference string) (string, error) {
 	mdls, err := c.ListModels(ctx)
 	if err != nil {
 		return "", fmt.Errorf("failed to automatically select the model: %w", err)
@@ -1402,6 +1440,14 @@ func (c *Client) Name() string {
 // It returns the selected model ID.
 func (c *Client) ModelID() string {
 	return c.impl.Model
+}
+
+// Modalities implements genai.Provider.
+//
+// It returns the output modalities, i.e. what kind of output the model will generate (text, audio, image,
+// video, etc).
+func (c *Client) Modalities() genai.Modalities {
+	return c.impl.Modalities
 }
 
 // Scoreboard implements scoreboard.ProviderScore.

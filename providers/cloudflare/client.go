@@ -710,6 +710,12 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 			err = &base.ErrAPIKeyRequired{EnvVar: "CLOUDFLARE_API_KEY", URL: apiKeyURL}
 		}
 	}
+	mod := genai.Modalities{genai.ModalityText}
+	if len(opts.Modalities) != 0 && !slices.Equal(opts.Modalities, mod) {
+		// TODO: Cloudflare supports non-text modalities but it is not currently implemented.
+		// https://developers.cloudflare.com/workers-ai/models/?tasks=Text-to-Image
+		return nil, fmt.Errorf("unexpected option Modalities %s, only text is implemented (send PR to add support)", mod)
+	}
 	t := base.DefaultTransport
 	if wrapper != nil {
 		t = wrapper(t)
@@ -717,7 +723,6 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 	// Investigate websockets?
 	// https://blog.cloudflare.com/workers-ai-streaming/ and
 	// https://developers.cloudflare.com/workers/examples/websockets/
-	// Important: the model must not be path escaped!
 	c := &Client{
 		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			ProcessStreamPackets: processStreamPackets,
@@ -736,26 +741,27 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 		},
 		accountID: accountID,
 	}
-	switch opts.Model {
-	case genai.ModelNone:
-		c.impl.Model = ""
-		c.impl.GenSyncURL = ""
-	case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA, "":
-		if err == nil {
-			if c.impl.Model, err = c.selectBestModel(ctx, opts.Model); err != nil {
+	if err == nil {
+		switch opts.Model {
+		case genai.ModelNone:
+		case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA, "":
+			if c.impl.Model, err = c.selectBestTextModel(ctx, opts.Model); err != nil {
 				return nil, err
 			}
+			// Important: the model must not be path escaped!
 			c.impl.GenSyncURL = "https://api.cloudflare.com/client/v4/accounts/" + url.PathEscape(accountID) + "/ai/run/" + c.impl.Model
+			c.impl.Modalities = mod
+		default:
+			c.impl.Model = opts.Model
+			c.impl.GenSyncURL = "https://api.cloudflare.com/client/v4/accounts/" + url.PathEscape(accountID) + "/ai/run/" + c.impl.Model
+			c.impl.Modalities = mod
 		}
-	default:
-		c.impl.Model = opts.Model
-		c.impl.GenSyncURL = "https://api.cloudflare.com/client/v4/accounts/" + url.PathEscape(accountID) + "/ai/run/" + c.impl.Model
 	}
 	return c, err
 }
 
-// selectBestModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
-func (c *Client) selectBestModel(ctx context.Context, preference string) (string, error) {
+// selectBestTextModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
+func (c *Client) selectBestTextModel(ctx context.Context, preference string) (string, error) {
 	mdls, err := c.ListModels(ctx)
 	if err != nil {
 		return "", fmt.Errorf("failed to automatically select the model: %w", err)
@@ -813,6 +819,14 @@ func (c *Client) Name() string {
 // It returns the selected model ID.
 func (c *Client) ModelID() string {
 	return c.impl.Model
+}
+
+// Modalities implements genai.Provider.
+//
+// It returns the output modalities, i.e. what kind of output the model will generate (text, audio, image,
+// video, etc).
+func (c *Client) Modalities() genai.Modalities {
+	return c.impl.Modalities
 }
 
 // Scoreboard implements scoreboard.ProviderScore.

@@ -601,6 +601,10 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 	if baseURL == "" {
 		baseURL = "http://localhost:11434"
 	}
+	mod := genai.Modalities{genai.ModalityText}
+	if len(opts.Modalities) != 0 && !slices.Equal(opts.Modalities, mod) {
+		return nil, fmt.Errorf("unexpected option Modalities %s, only text is supported", mod)
+	}
 	t := base.DefaultTransport
 	if wrapper != nil {
 		t = wrapper(t)
@@ -617,17 +621,18 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 	}
 	switch opts.Model {
 	case genai.ModelNone:
-		c.model = ""
 	case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA, "":
-		c.model = c.selectBestModel(ctx, opts.Model)
+		c.model = c.selectBestTextModel(ctx, opts.Model)
+		c.impl.Modalities = mod
 	default:
 		c.model = opts.Model
+		c.impl.Modalities = mod
 	}
 	return c, nil
 }
 
-// selectBestModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
-func (c *Client) selectBestModel(ctx context.Context, preference string) string {
+// selectBestTextModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
+func (c *Client) selectBestTextModel(ctx context.Context, preference string) string {
 	// There's no way to list what's the current best models and no way to list the models in the library:
 	// https://github.com/ollama/ollama/issues/8241
 
@@ -662,6 +667,14 @@ func (c *Client) Name() string {
 // It returns the selected model ID.
 func (c *Client) ModelID() string {
 	return c.model
+}
+
+// Modalities implements genai.Provider.
+//
+// It returns the output modalities, i.e. what kind of output the model will generate (text, audio, image,
+// video, etc).
+func (c *Client) Modalities() genai.Modalities {
+	return c.impl.Modalities
 }
 
 // Scoreboard implements scoreboard.ProviderScore.

@@ -318,29 +318,29 @@ func TestClient_Provider_errors(t *testing.T) {
 		},
 	}
 	f := func(t *testing.T, apiKey, model string) (genai.Provider, error) {
-		return getClientInner(t, apiKey, model)
+		return getClientInner(t, &genai.ProviderOptions{APIKey: apiKey, Model: model, Modalities: genai.Modalities{genai.ModalityText}})
 	}
 	internaltest.TestClient_Provider_errors(t, f, data)
 }
 
 func getClient(t *testing.T, m string) *gemini.Client {
 	t.Parallel()
-	c, err := getClientInner(t, "", m)
+	c, err := getClientInner(t, &genai.ProviderOptions{Model: m})
 	if err != nil {
 		t.Fatal(err)
 	}
 	return c
 }
 
-func getClientInner(t *testing.T, apiKey, m string) (*gemini.Client, error) {
-	if apiKey == "" && os.Getenv("GEMINI_API_KEY") == "" {
-		apiKey = "<insert_api_key_here>"
+func getClientInner(t *testing.T, opts *genai.ProviderOptions) (*gemini.Client, error) {
+	o := *opts
+	if o.APIKey == "" && os.Getenv("GEMINI_API_KEY") == "" {
+		o.APIKey = "<insert_api_key_here>"
 	}
-
 	wrapper := func(h http.RoundTripper) http.RoundTripper {
 		return testRecorder.Record(t, h, recorder.WithHook(trimRecordingInternal, recorder.AfterCaptureHook), recorder.WithMatcher(internal.DefaultMatcher))
 	}
-	return gemini.New(t.Context(), &genai.ProviderOptions{APIKey: apiKey, Model: m}, wrapper)
+	return gemini.New(t.Context(), &o, wrapper)
 }
 
 func trimRecordingInternal(i *cassette.Interaction) error {

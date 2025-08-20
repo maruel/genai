@@ -152,22 +152,22 @@ func TestClient_Provider_errors(t *testing.T) {
 		},
 	}
 	f := func(t *testing.T, apiKey, model string) (genai.Provider, error) {
-		return getClientInner(t, model)
+		return getClientInner(t, &genai.ProviderOptions{APIKey: "genai-unittests", Model: model, Modalities: genai.Modalities{genai.ModalityText}})
 	}
 	internaltest.TestClient_Provider_errors(t, f, data)
 }
 
 func getClient(t *testing.T, m string) *pollinations.Client {
 	t.Parallel()
-	c, err := getClientInner(t, m)
+	c, err := getClientInner(t, &genai.ProviderOptions{APIKey: "genai-unittests", Model: m})
 	if err != nil {
 		t.Fatal(err)
 	}
 	return c
 }
 
-func getClientInner(t *testing.T, m string) (*pollinations.Client, error) {
-	c, err := pollinations.New(t.Context(), &genai.ProviderOptions{APIKey: "genai-unittests", Model: m}, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
+func getClientInner(t *testing.T, opts *genai.ProviderOptions) (*pollinations.Client, error) {
+	c, err := pollinations.New(t.Context(), opts, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
 	if err != nil {
 		return nil, err
 	}

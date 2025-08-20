@@ -1109,6 +1109,10 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 	if baseURL == "" {
 		baseURL = "http://localhost:8080"
 	}
+	mod := genai.Modalities{genai.ModalityText}
+	if len(opts.Modalities) != 0 && !slices.Equal(opts.Modalities, mod) {
+		return nil, fmt.Errorf("unexpected option Modalities %s, only text is supported", mod)
+	}
 	t := base.DefaultTransport
 	if apiKey != "" {
 		t = &roundtrippers.Header{
@@ -1125,6 +1129,7 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 			ProcessStreamPackets: processChatStreamPackets,
 			ModelOptional:        true,
 			ProviderBase: base.ProviderBase[*ErrorResponse]{
+				Modalities: mod,
 				ClientJSON: httpjson.Client{
 					Lenient: internal.BeLenient,
 					Client: &http.Client{
@@ -1141,17 +1146,19 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 	var err error
 	switch opts.Model {
 	case genai.ModelNone:
-		c.impl.Model = ""
 	case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA, "":
-		c.impl.Model, err = c.selectBestModel(ctx)
+		if c.impl.Model, err = c.selectBestTextModel(ctx); err == nil {
+			c.impl.Modalities = mod
+		}
 	default:
 		c.impl.Model = opts.Model
+		c.impl.Modalities = mod
 	}
 	return c, err
 }
 
-// selectBestModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
-func (c *Client) selectBestModel(ctx context.Context) (string, error) {
+// selectBestTextModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
+func (c *Client) selectBestTextModel(ctx context.Context) (string, error) {
 	// Figure out the model loaded if any.
 	m, err := c.ListModels(ctx)
 	if err != nil {
@@ -1175,6 +1182,14 @@ func (c *Client) Name() string {
 // It returns the selected model ID or what was discovered from the server.
 func (c *Client) ModelID() string {
 	return c.impl.Model
+}
+
+// Modalities implements genai.Provider.
+//
+// It returns the output modalities, i.e. what kind of output the model will generate (text, audio, image,
+// video, etc).
+func (c *Client) Modalities() genai.Modalities {
+	return c.impl.Modalities
 }
 
 // Scoreboard implements scoreboard.ProviderScore.

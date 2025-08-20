@@ -328,12 +328,16 @@ func (m *mockProviderGenSync) Name() string {
 	return "mock"
 }
 
-func (m *mockProviderGenSync) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	return m.response, m.err
-}
-
 func (m *mockProviderGenSync) ModelID() string {
 	return "llm-sota"
+}
+
+func (m *mockProviderGenSync) Modalities() genai.Modalities {
+	return nil
+}
+
+func (m *mockProviderGenSync) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
+	return m.response, m.err
 }
 
 type streamResponse struct {
@@ -350,6 +354,14 @@ type mockProviderGenStream struct {
 
 func (m *mockProviderGenStream) Name() string {
 	return "mock"
+}
+
+func (m *mockProviderGenStream) ModelID() string {
+	return "llm-sota"
+}
+
+func (m *mockProviderGenStream) Modalities() genai.Modalities {
+	return nil
 }
 
 func (m *mockProviderGenStream) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
@@ -373,8 +385,4 @@ func (m *mockProviderGenStream) GenStream(ctx context.Context, msgs genai.Messag
 		}
 	}
 	return result, nil
-}
-
-func (m *mockProviderGenStream) ModelID() string {
-	return "llm-sota"
 }

@@ -973,6 +973,24 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 			h = http.Header{"Authorization": {"Bearer " + apiKey}}
 		}
 	}
+	// Default to text generation.
+	preferText := true
+	switch len(opts.Modalities) {
+	case 0:
+		// Auto-detect below.
+	case 1:
+		switch opts.Modalities[0] {
+		case genai.ModalityAudio:
+			return nil, fmt.Errorf("unexpected option Modalities %s, only image or text is implemented (send PR to add support)", opts.Modalities)
+		case genai.ModalityImage:
+			preferText = false
+		case genai.ModalityText:
+		default:
+			return nil, fmt.Errorf("unexpected option Modalities %s, only image or text are supported", opts.Modalities)
+		}
+	default:
+		return nil, fmt.Errorf("unexpected option Modalities %s, only image or text are supported", opts.Modalities)
+	}
 	t := base.DefaultTransport
 	if r, ok := t.(*roundtrippers.Retry); ok {
 		// Make a copy so we can edit it.
@@ -1008,22 +1026,37 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 			},
 		},
 	}
+	var err error
 	switch opts.Model {
 	case genai.ModelNone:
-		c.impl.Model = ""
 	case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA, "":
-		var err error
-		if c.impl.Model, err = c.selectBestModel(ctx, opts.Model); err != nil {
-			return nil, err
+		if preferText {
+			if c.impl.Model, err = c.selectBestTextModel(ctx, opts.Model); err != nil {
+				return nil, err
+			}
+			c.impl.Modalities = genai.Modalities{genai.ModalityText}
+		} else {
+			if c.impl.Model, err = c.selectBestImageModel(ctx, opts.Model); err != nil {
+				return nil, err
+			}
+			c.impl.Modalities = genai.Modalities{genai.ModalityImage}
 		}
 	default:
 		c.impl.Model = opts.Model
+		if len(opts.Modalities) != 0 {
+			c.impl.Modalities = opts.Modalities
+		} else {
+			var mod genai.Modality
+			if mod, err = Cache.ModelModality(ctx, c, opts.Model); err == nil {
+				c.impl.Modalities = genai.Modalities{mod}
+			}
+		}
 	}
-	return c, nil
+	return c, err
 }
 
-// selectBestModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
-func (c *Client) selectBestModel(ctx context.Context, preference string) (string, error) {
+// selectBestTextModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
+func (c *Client) selectBestTextModel(ctx context.Context, preference string) (string, error) {
 	// We only list text models here, not images generation ones.
 	mdls, err := c.ListTextModels(ctx)
 	if err != nil {
@@ -1058,6 +1091,16 @@ func (c *Client) selectBestModel(ctx context.Context, preference string) (string
 	return selectedModel, nil
 }
 
+// selectBestImageModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
+func (c *Client) selectBestImageModel(ctx context.Context, preference string) (string, error) {
+	mdls, err := c.ListImageGenModels(ctx)
+	if err != nil {
+		return "", fmt.Errorf("failed to automatically detect the model modality: %w", err)
+	}
+	// TODO: Figure out how to select a best model. There's literally no information to make an informed choice.
+	return mdls[0].GetID(), nil
+}
+
 // Name implements genai.Provider.
 //
 // It returns the name of the provider.
@@ -1070,6 +1113,14 @@ func (c *Client) Name() string {
 // It returns the selected model ID.
 func (c *Client) ModelID() string {
 	return c.impl.Model
+}
+
+// Modalities implements genai.Provider.
+//
+// It returns the output modalities, i.e. what kind of output the model will generate (text, audio, image,
+// video, etc).
+func (c *Client) Modalities() genai.Modalities {
+	return c.impl.Modalities
 }
 
 // Scoreboard implements scoreboard.ProviderScore.
@@ -1344,38 +1395,33 @@ type ModelCache struct {
 	models []genai.Model
 }
 
-// ValidateModality returns nil if the modality is supported by the model.
-func (m *ModelCache) ValidateModality(ctx context.Context, c genai.Provider, mod genai.Modality) error {
+// ModelModality returns the modality of model if found.
+func (m *ModelCache) ModelModality(ctx context.Context, c genai.Provider, model string) (genai.Modality, error) {
 	if _, err := m.Warmup(ctx, c); err != nil {
-		return err
+		return "", err
 	}
-	isText := false
-	isImage := false
-	found := false
-	model := c.ModelID()
-	for i := range m.models {
-		if m.models[i].GetID() == model {
-			found = true
-			_, isText = m.models[i].(*TextModel)
-			_, isImage = m.models[i].(ImageModel)
+	for _, mdl := range m.models {
+		if mdl.GetID() == model {
+			if _, ok := mdl.(*TextModel); ok {
+				return genai.ModalityText, nil
+			}
+			if _, ok := mdl.(ImageModel); ok {
+				return genai.ModalityImage, nil
+			}
 			break
 		}
 	}
-	if !found {
-		return fmt.Errorf("model %q not supported by pollinations", model)
+	return "", fmt.Errorf("model %q not supported by pollinations", model)
+}
+
+// ValidateModality returns nil if the modality is supported by the model.
+func (m *ModelCache) ValidateModality(ctx context.Context, c genai.Provider, mod genai.Modality) error {
+	if got, err := m.ModelModality(ctx, c, c.ModelID()); err != nil {
+		return err
+	} else if got != mod {
+		return fmt.Errorf("modality %s not supported", mod)
 	}
-	switch mod {
-	case genai.ModalityText:
-		if isText {
-			return nil
-		}
-	case genai.ModalityImage:
-		if isImage {
-			return nil
-		}
-	case genai.ModalityVideo, genai.ModalityDocument, genai.ModalityAudio:
-	}
-	return fmt.Errorf("modality %s not supported", mod)
+	return nil
 }
 
 func (m *ModelCache) Warmup(ctx context.Context, c genai.Provider) ([]genai.Model, error) {

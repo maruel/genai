@@ -91,6 +91,8 @@ type ProviderBase[PErrorResponse ErrAPI] struct {
 	ClientJSON httpjson.Client
 	// APIKeyURL is the URL to present to the user upon authentication error.
 	APIKeyURL string
+	// Modalities is the output modalities supported by the provider.
+	Modalities genai.Modalities
 
 	mu            sync.Mutex
 	errorResponse reflect.Type

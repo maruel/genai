@@ -132,15 +132,14 @@ type TopLogprob struct {
 
 // Usage from the LLM provider.
 type Usage struct {
+	// Token usage for the current request.
 	InputTokens       int64
 	InputCachedTokens int64
 	ReasoningTokens   int64
 	OutputTokens      int64
 	TotalTokens       int64
-
 	// FinishReason indicates why the model stopped generating tokens.
 	FinishReason FinishReason
-
 	// Limits contains a list of rate limit details from the provider.
 	Limits []RateLimit
 }
@@ -155,7 +154,7 @@ func (u *Usage) String() string {
 	return s.String()
 }
 
-// Add adds the usage from another result.
+// Add accumulates the usage from another result.
 func (u *Usage) Add(r Usage) {
 	u.InputTokens += r.InputTokens
 	u.InputCachedTokens += r.InputCachedTokens
@@ -442,6 +441,96 @@ func (m *Message) GoString() string {
 	return string(b)
 }
 
+// Accumulate adds a ReplyFragment to the message being streamed.
+//
+// It is used by GenStream. There's generally no need to call it by end users.
+func (m *Message) Accumulate(mf ReplyFragment) error {
+	// Generally the first message fragment.
+	if mf.ThinkingFragment != "" {
+		if len(m.Replies) != 0 {
+			if lastBlock := &m.Replies[len(m.Replies)-1]; lastBlock.Thinking != "" {
+				lastBlock.Thinking += mf.ThinkingFragment
+				if len(mf.Opaque) != 0 {
+					if lastBlock.Opaque == nil {
+						lastBlock.Opaque = map[string]any{}
+					}
+					maps.Copy(lastBlock.Opaque, mf.Opaque)
+				}
+				return nil
+			}
+		}
+		m.Replies = append(m.Replies, Reply{Thinking: mf.ThinkingFragment, Opaque: mf.Opaque})
+		return nil
+	}
+	if len(mf.Opaque) != 0 {
+		if len(m.Replies) != 0 {
+			// Only add Opaque to Thinking block.
+			if lastBlock := &m.Replies[len(m.Replies)-1]; lastBlock.Thinking != "" {
+				if lastBlock.Opaque == nil {
+					lastBlock.Opaque = map[string]any{}
+				}
+				maps.Copy(lastBlock.Opaque, mf.Opaque)
+				return nil
+			}
+		}
+		// Unlikely.
+		m.Replies = append(m.Replies, Reply{Opaque: mf.Opaque})
+		return nil
+	}
+
+	// Content.
+	if mf.TextFragment != "" {
+		if len(m.Replies) != 0 {
+			if lastBlock := &m.Replies[len(m.Replies)-1]; lastBlock.Text != "" {
+				lastBlock.Text += mf.TextFragment
+				return nil
+			}
+		}
+		m.Replies = append(m.Replies, Reply{Text: mf.TextFragment})
+		return nil
+	}
+
+	if mf.URL != "" {
+		m.Replies = append(m.Replies, Reply{Doc: Doc{Filename: mf.Filename, URL: mf.URL}})
+		return nil
+	}
+	if mf.DocumentFragment != nil {
+		if len(m.Replies) != 0 {
+			if lastBlock := &m.Replies[len(m.Replies)-1]; lastBlock.Doc.Filename != "" || lastBlock.Doc.Src != nil {
+				if lastBlock.Doc.Src == nil {
+					lastBlock.Doc.Src = &bb.BytesBuffer{}
+				}
+				if lastBlock.Doc.Filename == "" {
+					// Unlikely.
+					lastBlock.Doc.Filename = mf.Filename
+				}
+				_, _ = lastBlock.Doc.Src.(*bb.BytesBuffer).Write(mf.DocumentFragment)
+				return nil
+			}
+		}
+		m.Replies = append(m.Replies, Reply{Doc: Doc{Filename: mf.Filename, Src: &bb.BytesBuffer{D: mf.DocumentFragment}}})
+		return nil
+	}
+	if mf.Filename != "" {
+		m.Replies = append(m.Replies, Reply{Doc: Doc{Filename: mf.Filename}})
+		return nil
+	}
+
+	if mf.ToolCall.Name != "" {
+		m.Replies = append(m.Replies, Reply{ToolCall: mf.ToolCall})
+		return nil
+	}
+
+	if !mf.Citation.IsZero() {
+		// For now always add a new block.
+		m.Replies = append(m.Replies, Reply{Citations: []Citation{mf.Citation}})
+		return nil
+	}
+
+	// Nothing to accumulate. It should be an error but there are bugs where the system hangs.
+	return nil
+}
+
 // Request is a block of content in the message meant to be visible in a
 // chat setting.
 //
@@ -718,6 +807,8 @@ func (d *Doc) Read(maxSize int64) (string, []byte, error) {
 
 // ReplyFragment is a fragment of a content the LLM is sending back as part
 // of the GenStream().
+//
+// Use Message.Accumulate to accumulate the fragments into a Message.
 type ReplyFragment struct {
 	TextFragment string `json:"text,omitzero"`
 
@@ -743,94 +834,6 @@ func (m *ReplyFragment) IsZero() bool {
 func (m *ReplyFragment) GoString() string {
 	b, _ := json.Marshal(m)
 	return string(b)
-}
-
-// Accumulate adds a ReplyFragment to the message being streamed.
-func (m *Message) Accumulate(mf ReplyFragment) error {
-	// Generally the first message fragment.
-	if mf.ThinkingFragment != "" {
-		if len(m.Replies) != 0 {
-			if lastBlock := &m.Replies[len(m.Replies)-1]; lastBlock.Thinking != "" {
-				lastBlock.Thinking += mf.ThinkingFragment
-				if len(mf.Opaque) != 0 {
-					if lastBlock.Opaque == nil {
-						lastBlock.Opaque = map[string]any{}
-					}
-					maps.Copy(lastBlock.Opaque, mf.Opaque)
-				}
-				return nil
-			}
-		}
-		m.Replies = append(m.Replies, Reply{Thinking: mf.ThinkingFragment, Opaque: mf.Opaque})
-		return nil
-	}
-	if len(mf.Opaque) != 0 {
-		if len(m.Replies) != 0 {
-			// Only add Opaque to Thinking block.
-			if lastBlock := &m.Replies[len(m.Replies)-1]; lastBlock.Thinking != "" {
-				if lastBlock.Opaque == nil {
-					lastBlock.Opaque = map[string]any{}
-				}
-				maps.Copy(lastBlock.Opaque, mf.Opaque)
-				return nil
-			}
-		}
-		// Unlikely.
-		m.Replies = append(m.Replies, Reply{Opaque: mf.Opaque})
-		return nil
-	}
-
-	// Content.
-	if mf.TextFragment != "" {
-		if len(m.Replies) != 0 {
-			if lastBlock := &m.Replies[len(m.Replies)-1]; lastBlock.Text != "" {
-				lastBlock.Text += mf.TextFragment
-				return nil
-			}
-		}
-		m.Replies = append(m.Replies, Reply{Text: mf.TextFragment})
-		return nil
-	}
-
-	if mf.URL != "" {
-		m.Replies = append(m.Replies, Reply{Doc: Doc{Filename: mf.Filename, URL: mf.URL}})
-		return nil
-	}
-	if mf.DocumentFragment != nil {
-		if len(m.Replies) != 0 {
-			if lastBlock := &m.Replies[len(m.Replies)-1]; lastBlock.Doc.Filename != "" || lastBlock.Doc.Src != nil {
-				if lastBlock.Doc.Src == nil {
-					lastBlock.Doc.Src = &bb.BytesBuffer{}
-				}
-				if lastBlock.Doc.Filename == "" {
-					// Unlikely.
-					lastBlock.Doc.Filename = mf.Filename
-				}
-				_, _ = lastBlock.Doc.Src.(*bb.BytesBuffer).Write(mf.DocumentFragment)
-				return nil
-			}
-		}
-		m.Replies = append(m.Replies, Reply{Doc: Doc{Filename: mf.Filename, Src: &bb.BytesBuffer{D: mf.DocumentFragment}}})
-		return nil
-	}
-	if mf.Filename != "" {
-		m.Replies = append(m.Replies, Reply{Doc: Doc{Filename: mf.Filename}})
-		return nil
-	}
-
-	if mf.ToolCall.Name != "" {
-		m.Replies = append(m.Replies, Reply{ToolCall: mf.ToolCall})
-		return nil
-	}
-
-	if !mf.Citation.IsZero() {
-		// For now always add a new block.
-		m.Replies = append(m.Replies, Reply{Citations: []Citation{mf.Citation}})
-		return nil
-	}
-
-	// Nothing to accumulate. It should be an error but there are bugs where the system hangs.
-	return nil
 }
 
 // ToolCall is a tool call that the LLM requested to make.
@@ -947,22 +950,17 @@ func (t *ToolCallResult) UnmarshalJSON(b []byte) error {
 type Citation struct {
 	// Text is the exact text that is being cited.
 	Text string `json:"text,omitzero"`
-
 	// StartIndex is the starting character position of the citation in the content (0-based).
 	// For providers that support character-level citations.
 	StartIndex int64 `json:"start_index,omitzero"`
-
 	// EndIndex is the ending character position of the citation in the content (0-based, exclusive).
 	// For providers that support character-level citations.
 	EndIndex int64 `json:"end_index,omitzero"`
-
 	// Sources contains information about the source documents or tools that support this citation.
 	Sources []CitationSource `json:"sources,omitzero"`
-
 	// Location provides additional location information (page numbers, block indices, etc.)
 	// that varies by provider and source type.
 	Location map[string]any `json:"location,omitzero"`
-
 	// Type indicates the citation type (e.g., "text", "document", "tool", "web").
 	// This is provider-specific and may be empty for unified citations.
 	Type string `json:"type,omitzero"`
@@ -998,16 +996,12 @@ func (c *Citation) IsZero() bool {
 type CitationSource struct {
 	// ID is a unique identifier for the source (e.g., document ID, tool call ID).
 	ID string `json:"id,omitzero"`
-
 	// Type indicates the source type (e.g., "document", "tool", "web").
 	Type string `json:"type,omitzero"`
-
 	// Title is the human-readable title of the source.
 	Title string `json:"title,omitzero"`
-
 	// URL is the web URL for the source, if applicable.
 	URL string `json:"url,omitzero"`
-
 	// Metadata contains additional source-specific information.
 	// For document sources: document index, page numbers, etc.
 	// For tool sources: tool output, function name, etc.
@@ -1075,6 +1069,8 @@ type ProviderModel interface {
 }
 
 // Model represents a served model by the provider.
+//
+// Use ProviderModel.ListModels() to get a list of models.
 type Model interface {
 	GetID() string
 	String() string

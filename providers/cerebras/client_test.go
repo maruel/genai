@@ -28,8 +28,8 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 		t.Fatal(err2)
 	}
 	if model.Thinking {
-		return &adapters.ProviderGenThinking{
-			ProviderGen:        &adapters.ProviderGenAppend{ProviderGen: c, Append: genai.Request{Text: "\n\n/think"}},
+		return &adapters.ProviderThinking{
+			Provider:           &adapters.ProviderAppend{Provider: c, Append: genai.Request{Text: "\n\n/think"}},
 			ThinkingTokenStart: "<think>",
 			ThinkingTokenEnd:   "\n</think>\n",
 		}

@@ -30,12 +30,12 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 	if err != nil {
 		t.Fatal(err)
 	}
-	var c genai.ProviderGen = cl
+	var c genai.Provider = cl
 	if strings.HasPrefix(model.Model, "qwen/") && model.Thinking {
-		c = &adapters.ProviderGenAppend{ProviderGen: c, Append: genai.Request{Text: "\n\n/think"}}
+		c = &adapters.ProviderAppend{Provider: c, Append: genai.Request{Text: "\n\n/think"}}
 	}
 	if model.Thinking {
-		return &handleGroqReasoning{ProviderGen: c}
+		return &handleGroqReasoning{Provider: c}
 	}
 	return c
 }
@@ -64,17 +64,17 @@ func TestClient_Scoreboard(t *testing.T) {
 }
 
 type handleGroqReasoning struct {
-	genai.ProviderGen
+	genai.Provider
 }
 
 func (h *handleGroqReasoning) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
 	if opts != nil {
 		if o := opts.(*genai.OptionsText); len(o.Tools) != 0 || o.DecodeAs != nil || o.ReplyAsJSON {
 			opts = &groq.OptionsText{ReasoningFormat: groq.ReasoningFormatParsed, OptionsText: *o}
-			return h.ProviderGen.GenSync(ctx, msgs, opts)
+			return h.Provider.GenSync(ctx, msgs, opts)
 		}
 	}
-	c := adapters.ProviderGenThinking{ProviderGen: h.ProviderGen, ThinkingTokenStart: "<think>", ThinkingTokenEnd: "\n</think>\n"}
+	c := adapters.ProviderThinking{Provider: h.Provider, ThinkingTokenStart: "<think>", ThinkingTokenEnd: "\n</think>\n"}
 	return c.GenSync(ctx, msgs, opts)
 }
 
@@ -82,15 +82,15 @@ func (h *handleGroqReasoning) GenStream(ctx context.Context, msgs genai.Messages
 	if opts != nil {
 		if o := opts.(*genai.OptionsText); len(o.Tools) != 0 || o.DecodeAs != nil || o.ReplyAsJSON {
 			opts = &groq.OptionsText{ReasoningFormat: groq.ReasoningFormatParsed, OptionsText: *o}
-			return h.ProviderGen.GenStream(ctx, msgs, replies, opts)
+			return h.Provider.GenStream(ctx, msgs, replies, opts)
 		}
 	}
-	c := adapters.ProviderGenThinking{ProviderGen: h.ProviderGen, ThinkingTokenStart: "<think>", ThinkingTokenEnd: "\n</think>\n"}
+	c := adapters.ProviderThinking{Provider: h.Provider, ThinkingTokenStart: "<think>", ThinkingTokenEnd: "\n</think>\n"}
 	return c.GenStream(ctx, msgs, replies, opts)
 }
 
 func (h *handleGroqReasoning) Unwrap() genai.Provider {
-	return h.ProviderGen
+	return h.Provider
 }
 
 func TestClient_Preferred(t *testing.T) {

@@ -1446,11 +1446,11 @@ type ErrorResponseError struct {
 	} `json:"details"`
 }
 
-// Client implements genai.ProviderGen.
+// Client implements genai.Provider.
 type Client struct {
 	// Impl is accessible so its ClientJSON.Client can be accessed when fetching video results from Veo 3 with
 	// the right HTTP authentication headers.
-	Impl base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
+	Impl base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
 // New creates a new client to talk to Google's Gemini platform API.
@@ -1503,13 +1503,13 @@ func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.Round
 	}
 	// Eventually, use OAuth https://ai.google.dev/gemini-api/docs/oauth#curl
 	c := &Client{
-		Impl: base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+		Impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
 			GenSyncURL:           "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(model) + ":generateContent",
 			GenStreamURL:         "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(model) + ":streamGenerateContent?alt=sse",
 			ProcessStreamPackets: processStreamPackets,
 			LieToolCalls:         true,
-			Provider: base.Provider[*ErrorResponse]{
+			ProviderBase: base.ProviderBase[*ErrorResponse]{
 				APIKeyURL: apiKeyURL,
 				ClientJSON: httpjson.Client{
 					Lenient: internal.BeLenient,
@@ -1607,7 +1607,7 @@ func (c *Client) Scoreboard() scoreboard.Score {
 	return Scoreboard
 }
 
-// GenSync implements genai.ProviderGen.
+// GenSync implements genai.Provider.
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
 	return c.Impl.GenSync(ctx, msgs, opts)
 }
@@ -1617,7 +1617,7 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 	return c.Impl.GenSyncRaw(ctx, in, out)
 }
 
-// GenStream implements genai.ProviderGen.
+// GenStream implements genai.Provider.
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
 	return c.Impl.GenStream(ctx, msgs, chunks, opts)
 }
@@ -1973,6 +1973,5 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 var (
 	_ genai.Provider           = &Client{}
 	_ genai.ProviderCache      = &Client{}
-	_ genai.ProviderGen        = &Client{}
 	_ scoreboard.ProviderScore = &Client{}
 )

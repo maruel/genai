@@ -674,9 +674,9 @@ func (er *ErrorResponse) IsAPIError() bool {
 	return true
 }
 
-// Client implements genai.ProviderGen.
+// Client implements genai.Provider.
 type Client struct {
-	impl      base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
+	impl      base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 	accountID string
 }
 
@@ -723,11 +723,11 @@ func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.Round
 	// https://developers.cloudflare.com/workers/examples/websockets/
 	// Important: the model must not be path escaped!
 	c := &Client{
-		impl: base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
 			GenSyncURL:           "https://api.cloudflare.com/client/v4/accounts/" + url.PathEscape(accountID) + "/ai/run/" + model,
 			ProcessStreamPackets: processStreamPackets,
-			Provider: base.Provider[*ErrorResponse]{
+			ProviderBase: base.ProviderBase[*ErrorResponse]{
 				APIKeyURL: apiKeyURL,
 				ClientJSON: httpjson.Client{
 					Lenient: internal.BeLenient,
@@ -823,7 +823,7 @@ func (c *Client) Scoreboard() scoreboard.Score {
 	return Scoreboard
 }
 
-// GenSync implements genai.ProviderGen.
+// GenSync implements genai.Provider.
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
 	return c.impl.GenSync(ctx, msgs, opts)
 }
@@ -833,7 +833,7 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 	return c.impl.GenSyncRaw(ctx, in, out)
 }
 
-// GenStream implements genai.ProviderGen.
+// GenStream implements genai.Provider.
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
 	return c.impl.GenStream(ctx, msgs, chunks, opts)
 }
@@ -892,6 +892,5 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 
 var (
 	_ genai.Provider           = &Client{}
-	_ genai.ProviderGen        = &Client{}
 	_ scoreboard.ProviderScore = &Client{}
 )

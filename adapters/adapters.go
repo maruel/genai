@@ -20,14 +20,14 @@ import (
 // GenSyncWithToolCallLoop runs a conversation with the LLM, handling tool calls in a loop until there are no
 // more tool calls.
 //
-// It calls the provided ProviderGen.GenSync() method, processes any tool calls using Message.DoToolCalls(),
+// It calls the provided Provider.GenSync() method, processes any tool calls using Message.DoToolCalls(),
 // and continues the conversation in a loop until the LLM's response has no more tool calls.
 //
 // Warning: If opts.ToolCallRequest == ToolCallRequired, it will be mutated to ToolCallAny after the first
 // tool call.
 //
 // It returns the messages to accumulate to the thread. The last message is the LLM's response.
-func GenSyncWithToolCallLoop(ctx context.Context, p genai.ProviderGen, msgs genai.Messages, opts genai.Options) (genai.Messages, genai.Usage, error) {
+func GenSyncWithToolCallLoop(ctx context.Context, p genai.Provider, msgs genai.Messages, opts genai.Options) (genai.Messages, genai.Usage, error) {
 	usage := genai.Usage{}
 	var out genai.Messages
 	workMsgs := make(genai.Messages, len(msgs))
@@ -79,7 +79,7 @@ func GenSyncWithToolCallLoop(ctx context.Context, p genai.ProviderGen, msgs gena
 // tool call.
 //
 // No need to process the tool calls or accumulate the ReplyFragment.
-func GenStreamWithToolCallLoop(ctx context.Context, p genai.ProviderGen, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts genai.Options) (genai.Messages, genai.Usage, error) {
+func GenStreamWithToolCallLoop(ctx context.Context, p genai.Provider, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts genai.Options) (genai.Messages, genai.Usage, error) {
 	usage := genai.Usage{}
 	var out genai.Messages
 	workMsgs := make(genai.Messages, len(msgs))
@@ -142,13 +142,13 @@ func GenStreamWithToolCallLoop(ctx context.Context, p genai.ProviderGen, msgs ge
 
 //
 
-// ProviderGenIgnoreUnsupported wraps a ProviderGen to ignore UnsupportedContinuableError.
-type ProviderGenIgnoreUnsupported struct {
-	genai.ProviderGen
+// ProviderIgnoreUnsupported wraps a Provider to ignore UnsupportedContinuableError.
+type ProviderIgnoreUnsupported struct {
+	genai.Provider
 }
 
-func (c *ProviderGenIgnoreUnsupported) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	res, err := c.ProviderGen.GenSync(ctx, msgs, opts)
+func (c *ProviderIgnoreUnsupported) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
+	res, err := c.Provider.GenSync(ctx, msgs, opts)
 	var uce *genai.UnsupportedContinuableError
 	if errors.As(err, &uce) {
 		err = nil
@@ -156,8 +156,8 @@ func (c *ProviderGenIgnoreUnsupported) GenSync(ctx context.Context, msgs genai.M
 	return res, err
 }
 
-func (c *ProviderGenIgnoreUnsupported) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
-	res, err := c.ProviderGen.GenStream(ctx, msgs, chunks, opts)
+func (c *ProviderIgnoreUnsupported) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
+	res, err := c.Provider.GenStream(ctx, msgs, chunks, opts)
 	var uce *genai.UnsupportedContinuableError
 	if errors.As(err, &uce) {
 		err = nil
@@ -165,8 +165,8 @@ func (c *ProviderGenIgnoreUnsupported) GenStream(ctx context.Context, msgs genai
 	return res, err
 }
 
-func (c *ProviderGenIgnoreUnsupported) Unwrap() genai.Provider {
-	return c.ProviderGen
+func (c *ProviderIgnoreUnsupported) Unwrap() genai.Provider {
+	return c.Provider
 }
 
 //
@@ -191,7 +191,7 @@ func (c *ProviderGenDocIgnoreUnsupported) Unwrap() genai.Provider {
 
 //
 
-// ProviderGenDocToGen converts a ProviderGenDoc, e.g. a provider only generating audio, images, or videos into a ProviderGen.
+// ProviderGenDocToGen converts a ProviderGenDoc, e.g. a provider only generating audio, images, or videos into a Provider.
 type ProviderGenDocToGen struct {
 	genai.ProviderGenDoc
 }
@@ -216,18 +216,18 @@ func (c *ProviderGenDocToGen) Unwrap() genai.Provider {
 
 //
 
-// ProviderGenUsage wraps a ProviderGen and accumulates Usage values
+// ProviderUsage wraps a Provider and accumulates Usage values
 // across multiple requests to track total token consumption.
-type ProviderGenUsage struct {
-	genai.ProviderGen
+type ProviderUsage struct {
+	genai.Provider
 
 	mu         sync.Mutex
 	accumUsage genai.Usage
 }
 
-// GenSync implements the ProviderGen interface and accumulates usage statistics.
-func (c *ProviderGenUsage) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	result, err := c.ProviderGen.GenSync(ctx, msgs, opts)
+// GenSync implements the Provider interface and accumulates usage statistics.
+func (c *ProviderUsage) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
+	result, err := c.Provider.GenSync(ctx, msgs, opts)
 	c.mu.Lock()
 	c.accumUsage.InputTokens += result.Usage.InputTokens
 	c.accumUsage.InputCachedTokens += result.Usage.InputCachedTokens
@@ -236,10 +236,10 @@ func (c *ProviderGenUsage) GenSync(ctx context.Context, msgs genai.Messages, opt
 	return result, err
 }
 
-// GenStream implements the ProviderGen interface and accumulates usage statistics.
-func (c *ProviderGenUsage) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
+// GenStream implements the Provider interface and accumulates usage statistics.
+func (c *ProviderUsage) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
 	// Call the wrapped provider and accumulate usage statistics
-	result, err := c.ProviderGen.GenStream(ctx, msgs, replies, opts)
+	result, err := c.Provider.GenStream(ctx, msgs, replies, opts)
 	c.mu.Lock()
 	c.accumUsage.InputTokens += result.Usage.InputTokens
 	c.accumUsage.InputCachedTokens += result.Usage.InputCachedTokens
@@ -249,46 +249,46 @@ func (c *ProviderGenUsage) GenStream(ctx context.Context, msgs genai.Messages, r
 }
 
 // GetAccumulatedUsage returns the current accumulated usage values.
-func (c *ProviderGenUsage) GetAccumulatedUsage() genai.Usage {
+func (c *ProviderUsage) GetAccumulatedUsage() genai.Usage {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	return c.accumUsage
 }
 
-func (c *ProviderGenUsage) Unwrap() genai.Provider {
-	return c.ProviderGen
+func (c *ProviderUsage) Unwrap() genai.Provider {
+	return c.Provider
 }
 
 //
 
-// ProviderGenAppend wraps a ProviderGen and appends a Request before processing when the messages end with a
+// ProviderAppend wraps a Provider and appends a Request before processing when the messages end with a
 // user message.
 //
 // Useful to inject a "/think" for Qwen3 models.
-type ProviderGenAppend struct {
-	genai.ProviderGen
+type ProviderAppend struct {
+	genai.Provider
 
 	Append genai.Request
 }
 
-func (c *ProviderGenAppend) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
+func (c *ProviderAppend) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
 	if len(msgs[len(msgs)-1].Requests) != 0 {
 		msgs = slices.Clone(msgs)
 		msgs[len(msgs)-1].Requests = slices.Clone(msgs[len(msgs)-1].Requests)
 		msgs[len(msgs)-1].Requests = append(msgs[len(msgs)-1].Requests, c.Append)
 	}
-	return c.ProviderGen.GenSync(ctx, msgs, opts)
+	return c.Provider.GenSync(ctx, msgs, opts)
 }
 
-func (c *ProviderGenAppend) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
+func (c *ProviderAppend) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
 	if len(msgs[len(msgs)-1].Requests) != 0 {
 		msgs = slices.Clone(msgs)
 		msgs[len(msgs)-1].Requests = slices.Clone(msgs[len(msgs)-1].Requests)
 		msgs[len(msgs)-1].Requests = append(msgs[len(msgs)-1].Requests, c.Append)
 	}
-	return c.ProviderGen.GenStream(ctx, msgs, replies, opts)
+	return c.Provider.GenStream(ctx, msgs, replies, opts)
 }
 
-func (c *ProviderGenAppend) Unwrap() genai.Provider {
-	return c.ProviderGen
+func (c *ProviderAppend) Unwrap() genai.Provider {
+	return c.Provider
 }

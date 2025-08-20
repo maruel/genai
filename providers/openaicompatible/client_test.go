@@ -200,7 +200,7 @@ var providers = map[string]provider{
 	},
 }
 
-func getClient(t *testing.T, provider string) genai.ProviderGen {
+func getClient(t *testing.T, provider string) genai.Provider {
 	t.Parallel()
 	p := providers[provider]
 	apiKey := os.Getenv(p.envAPIKey)

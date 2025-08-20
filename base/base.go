@@ -83,10 +83,10 @@ func (*NotImplemented) ListModels(context.Context) ([]genai.Model, error) {
 	return nil, ErrNotSupported
 }
 
-// Provider implements genai.Provider (except for ModelID()).
+// ProviderBase implements genai.ProviderBase (except for ModelID()).
 //
 // It contains the shared HTTP client functionality used across all API clients.
-type Provider[PErrorResponse ErrAPI] struct {
+type ProviderBase[PErrorResponse ErrAPI] struct {
 	// ClientJSON is exported for testing replay purposes.
 	ClientJSON httpjson.Client
 	// APIKeyURL is the URL to present to the user upon authentication error.
@@ -98,7 +98,7 @@ type Provider[PErrorResponse ErrAPI] struct {
 }
 
 // LastResponseHeaders returns the HTTP headers of the last response.
-func (c *Provider[PErrorResponse]) LastResponseHeaders() http.Header {
+func (c *ProviderBase[PErrorResponse]) LastResponseHeaders() http.Header {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	return c.lastResp
@@ -108,7 +108,7 @@ func (c *Provider[PErrorResponse]) LastResponseHeaders() http.Header {
 //
 // It takes care of sending the request, decoding the response, and handling errors.
 // All API clients should use this method for their HTTP communication needs.
-func (c *Provider[PErrorResponse]) DoRequest(ctx context.Context, method, url string, in, out any) error {
+func (c *ProviderBase[PErrorResponse]) DoRequest(ctx context.Context, method, url string, in, out any) error {
 	c.lateInit()
 	resp, err := c.ClientJSON.Request(ctx, method, url, nil, in)
 	if err != nil {
@@ -117,7 +117,7 @@ func (c *Provider[PErrorResponse]) DoRequest(ctx context.Context, method, url st
 	return c.DecodeResponse(resp, url, out)
 }
 
-func (c *Provider[PErrorResponse]) DecodeResponse(resp *http.Response, url string, out any) error {
+func (c *ProviderBase[PErrorResponse]) DecodeResponse(resp *http.Response, url string, out any) error {
 	c.mu.Lock()
 	c.lastResp = resp.Header
 	c.mu.Unlock()
@@ -179,7 +179,7 @@ func (c *Provider[PErrorResponse]) DecodeResponse(resp *http.Response, url strin
 //
 // It handles JSON decoding of error responses and provides appropriate error messages
 // with context such as API key URLs for unauthorized errors.
-func (c *Provider[PErrorResponse]) DecodeError(url string, resp *http.Response) error {
+func (c *ProviderBase[PErrorResponse]) DecodeError(url string, resp *http.Response) error {
 	c.mu.Lock()
 	c.lastResp = resp.Header
 	c.mu.Unlock()
@@ -221,7 +221,7 @@ func (c *Provider[PErrorResponse]) DecodeError(url string, resp *http.Response) 
 	return errors.Join(errs...)
 }
 
-func (c *Provider[PErrorResponse]) lateInit() {
+func (c *ProviderBase[PErrorResponse]) lateInit() {
 	// TODO: Figure out how to not use reflection.
 	c.mu.Lock()
 	if c.errorResponse == nil {
@@ -251,14 +251,14 @@ type ResultConverter interface {
 
 //
 
-// ProviderGen implements genai.ProviderGen.
+// Provider implements genai.Provider.
 //
 // It includes common functionality for clients that provide chat capabilities.
 // It embeds Provider and adds the missing ModelID() method and implements genai.Validatable.
 //
 // It only accepts text modality.
-type ProviderGen[PErrorResponse ErrAPI, PGenRequest InitializableRequest, PGenResponse ResultConverter, GenStreamChunkResponse Obj] struct {
-	Provider[PErrorResponse]
+type Provider[PErrorResponse ErrAPI, PGenRequest InitializableRequest, PGenResponse ResultConverter, GenStreamChunkResponse Obj] struct {
+	ProviderBase[PErrorResponse]
 	// Model is the default model used for chat requests
 	Model string
 	// GenSyncURL is the endpoint URL for chat API requests
@@ -279,7 +279,7 @@ type ProviderGen[PErrorResponse ErrAPI, PGenRequest InitializableRequest, PGenRe
 	chatResponse reflect.Type
 }
 
-func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
+func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
 	result := genai.Result{}
 	if opts != nil {
 		// TODO: Specify as a field.
@@ -318,7 +318,7 @@ func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRe
 	return result, continuableErr
 }
 
-func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
+func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
 	result := genai.Result{}
 	if opts != nil {
 		// TODO: Specify as a field.
@@ -372,7 +372,7 @@ func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRe
 
 // GenSyncRaw is the generic raw implementation for the generation API endpoint.
 // It sets Stream to false and sends a request to the chat URL.
-func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenSyncRaw(ctx context.Context, in PGenRequest, out PGenResponse) error {
+func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenSyncRaw(ctx context.Context, in PGenRequest, out PGenResponse) error {
 	if err := c.Validate(); err != nil {
 		return err
 	}
@@ -382,7 +382,7 @@ func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRe
 
 // GenStreamRaw is the generic raw implementation for streaming Gen API endpoints.
 // It sets Stream to true, enables stream options if available, and handles the SSE response.
-func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenStreamRaw(ctx context.Context, in PGenRequest, out chan<- GenStreamChunkResponse) error {
+func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenStreamRaw(ctx context.Context, in PGenRequest, out chan<- GenStreamChunkResponse) error {
 	if err := c.Validate(); err != nil {
 		return err
 	}
@@ -406,16 +406,16 @@ func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRe
 	return sse.Process(resp.Body, out, er, c.ClientJSON.Lenient)
 }
 
-func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) Validate() error {
+func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) Validate() error {
 	if !c.ModelOptional && c.Model == "" {
 		return errors.New("a model is required")
 	}
 	return nil
 }
 
-func (c *ProviderGen[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) lateInit() {
+func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) lateInit() {
 	// TODO: Figure out how to not use reflection.
-	c.Provider.lateInit()
+	c.ProviderBase.lateInit()
 	c.mu.Lock()
 	if c.chatRequest == nil {
 		var in PGenRequest
@@ -437,7 +437,7 @@ func (t *Time) AsTime() time.Time {
 }
 
 // SimulateStream simulates GenStream for APIs that do not support streaming.
-func SimulateStream(ctx context.Context, c genai.ProviderGen, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
+func SimulateStream(ctx context.Context, c genai.Provider, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
 	res, err := c.GenSync(ctx, msgs, opts)
 	if err == nil {
 		for i := range res.Replies {

@@ -34,7 +34,7 @@ type Validatable interface {
 	Validate() error
 }
 
-// Options is options that can be provided to a ProviderGen interface.
+// Options is options that can be provided to a Provider interface.
 type Options interface {
 	Validatable
 	// Modalities returns the list of modalities supported by these options.
@@ -86,7 +86,7 @@ func (m Modalities) String() string {
 	}
 }
 
-// OptionsText is a list of frequent options supported by most ProviderGen with text output modality.
+// OptionsText is a list of frequent options supported by most Provider with text output modality.
 // Each provider is free to support more options through a specialized struct.
 //
 // The first group are options supported by (nearly) all providers.

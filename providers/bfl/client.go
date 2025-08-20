@@ -230,10 +230,10 @@ func (er *ErrorResponse) IsAPIError() bool {
 	return true
 }
 
-// Client implements genai.ProviderGen.
+// Client implements genai.Provider.
 type Client struct {
 	base.NotImplemented
-	impl   base.Provider[*ErrorResponse]
+	impl   base.ProviderBase[*ErrorResponse]
 	model  string
 	remote string
 }
@@ -288,7 +288,7 @@ func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.Round
 	return &Client{
 		model:  model,
 		remote: remote,
-		impl: base.Provider[*ErrorResponse]{
+		impl: base.ProviderBase[*ErrorResponse]{
 			APIKeyURL: apiKeyURL,
 			ClientJSON: httpjson.Client{
 				Lenient: internal.BeLenient,

@@ -44,8 +44,8 @@ func TestClient(t *testing.T) {
 				if !model.Thinking {
 					t.Fatal("expected thinking")
 				}
-				return &adapters.ProviderGenThinking{
-					ProviderGen:        &adapters.ProviderGenAppend{ProviderGen: c, Append: genai.Request{Text: "\n\n/think"}},
+				return &adapters.ProviderThinking{
+					Provider:           &adapters.ProviderAppend{Provider: c, Append: genai.Request{Text: "\n\n/think"}},
 					ThinkingTokenStart: "<think>",
 					ThinkingTokenEnd:   "\n</think>\n",
 				}
@@ -119,7 +119,7 @@ func (l *lazyServer) lazyStart(t testing.TB) string {
 	return l.url
 }
 
-func (l *lazyServer) getClient(t testing.TB, model string) (genai.ProviderGen, error) {
+func (l *lazyServer) getClient(t testing.TB, model string) (genai.Provider, error) {
 	serverURL, wrapper := l.lazyStartWithRecord(t)
 	return ollama.New(&genai.ProviderOptions{Remote: serverURL, Model: model}, wrapper)
 }

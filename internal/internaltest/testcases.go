@@ -42,60 +42,59 @@ func TestClient_Provider_errors(t *testing.T, getClient func(t *testing.T, apiKe
 				t.Fatal(err)
 			}
 
-			if _, ok := tester.(genai.ProviderGen); ok {
-				msgs := genai.Messages{genai.NewTextMessage("Tell a short joke.")}
-				if line.ErrGenSync != "" {
-					t.Run("GenSync", func(t *testing.T) {
-						c, err := getClient(t, line.APIKey, line.Model)
-						if err != nil {
-							if err.Error() == line.ErrGenSync {
-								return
-							}
-							t.Fatal(err)
-						}
-						_, err = c.(genai.ProviderGen).GenSync(t.Context(), msgs, &genai.OptionsText{})
-						if err == nil {
-							t.Fatal("expected error")
-						} else if _, ok := err.(*genai.UnsupportedContinuableError); ok {
-							t.Fatal("should not be continuable")
-						} else if got := err.Error(); got != line.ErrGenSync {
-							t.Fatalf("Unexpected error.\nwant: %q\ngot : %q", line.ErrGenSync, got)
-						}
-					})
+			msgs := genai.Messages{genai.NewTextMessage("Tell a short joke.")}
+			t.Run("GenSync", func(t *testing.T) {
+				c, err := getClient(t, line.APIKey, line.Model)
+				if err != nil {
+					if err.Error() == line.ErrGenSync {
+						return
+					}
+					t.Fatal(err)
 				}
-				if line.ErrGenStream != "" {
-					t.Run("GenStream", func(t *testing.T) {
-						c, err := getClient(t, line.APIKey, line.Model)
-						if err != nil {
-							if err.Error() == line.ErrGenStream {
-								return
-							}
-							t.Fatal(err)
-						}
-						ch := make(chan genai.ReplyFragment, 1)
-						_, err = c.(genai.ProviderGen).GenStream(t.Context(), msgs, ch, &genai.OptionsText{})
-						if err == nil {
-							t.Fatal("expected error")
-						} else if _, ok := err.(*genai.UnsupportedContinuableError); ok {
-							t.Fatal("should not be continuable")
-						} else if got := err.Error(); got != line.ErrGenStream {
-							t.Fatalf("Unexpected error.\nwant: %q\ngot : %q", line.ErrGenStream, got)
-						}
-						select {
-						case pkt := <-ch:
-							t.Fatal(pkt)
-						default:
-						}
-					})
+				_, err = c.GenSync(t.Context(), msgs, &genai.OptionsText{})
+				if line.ErrGenSync == "" {
+					if err != base.ErrNotSupported {
+						t.Fatal("expected unsupported")
+					}
+				} else {
+					if err == nil {
+						t.Fatal("expected error")
+					} else if _, ok := err.(*genai.UnsupportedContinuableError); ok {
+						t.Fatal("should not be continuable")
+					} else if got := err.Error(); got != line.ErrGenSync {
+						t.Fatalf("Unexpected error.\nwant: %q\ngot : %q", line.ErrGenSync, got)
+					}
 				}
-			} else if tester != nil {
-				if line.ErrGenSync != "" {
-					t.Fatal("ErrGenSync is set but client does not support ProviderGen")
+			})
+			t.Run("GenStream", func(t *testing.T) {
+				c, err := getClient(t, line.APIKey, line.Model)
+				if err != nil {
+					if err.Error() == line.ErrGenStream {
+						return
+					}
+					t.Fatal(err)
 				}
-				if line.ErrGenStream != "" {
-					t.Fatal("ErrGenStream is set but client does not support ProviderGen")
+				ch := make(chan genai.ReplyFragment, 1)
+				_, err = c.GenStream(t.Context(), msgs, ch, &genai.OptionsText{})
+				if line.ErrGenStream == "" {
+					if err != base.ErrNotSupported {
+						t.Fatal("expected unsupported")
+					}
+				} else {
+					if err == nil {
+						t.Fatal("expected error")
+					} else if _, ok := err.(*genai.UnsupportedContinuableError); ok {
+						t.Fatal("should not be continuable")
+					} else if got := err.Error(); got != line.ErrGenStream {
+						t.Fatalf("Unexpected error.\nwant: %q\ngot : %q", line.ErrGenStream, got)
+					}
+					select {
+					case pkt := <-ch:
+						t.Fatal(pkt)
+					default:
+					}
 				}
-			}
+			})
 			if _, ok := tester.(genai.ProviderGenDoc); ok {
 				msg := genai.NewTextMessage("Generate a short joke.")
 				if line.ErrGenDoc != "" {

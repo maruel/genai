@@ -17,28 +17,28 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-// WrapThinking wraps a ProviderGen and processes its output to extract thinking blocks ONLY if needed.
-func WrapThinking(c genai.ProviderGen) genai.ProviderGen {
+// WrapThinking wraps a Provider and processes its output to extract thinking blocks ONLY if needed.
+func WrapThinking(c genai.Provider) genai.Provider {
 	if s, ok := c.(scoreboard.ProviderScore); ok {
 		id := c.ModelID()
 		for _, sc := range s.Scoreboard().Scenarios {
 			if slices.Contains(sc.Models, id) && sc.ThinkingTokenStart != "" {
-				return &ProviderGenThinking{ProviderGen: c, ThinkingTokenStart: sc.ThinkingTokenStart, ThinkingTokenEnd: sc.ThinkingTokenEnd}
+				return &ProviderThinking{Provider: c, ThinkingTokenStart: sc.ThinkingTokenStart, ThinkingTokenEnd: sc.ThinkingTokenEnd}
 			}
 		}
 	}
 	return c
 }
 
-// ProviderGenThinking wraps a ProviderGen and processes its output to extract thinking blocks.
+// ProviderThinking wraps a Provider and processes its output to extract thinking blocks.
 //
 // It looks for content within tags ThinkingTokenStart and ThinkingTokenEnd and places it in Thinking Content
 // blocks instead of Text.
 //
 // It requires the starting thinking tag. Otherwise, the content is assumed to be text. This is necessary for
 // JSON formatted responses.
-type ProviderGenThinking struct {
-	genai.ProviderGen
+type ProviderThinking struct {
+	genai.Provider
 
 	// ThinkingTokenStart is the start thinking token. It is often "<think>\n".
 	ThinkingTokenStart string
@@ -48,20 +48,20 @@ type ProviderGenThinking struct {
 	_ struct{}
 }
 
-// GenSync implements the ProviderGen interface by delegating to the wrapped provider
+// GenSync implements the Provider interface by delegating to the wrapped provider
 // and processing the result to extract thinking blocks.
-func (c *ProviderGenThinking) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	result, err := c.ProviderGen.GenSync(ctx, msgs, opts)
+func (c *ProviderThinking) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
+	result, err := c.Provider.GenSync(ctx, msgs, opts)
 	if err2 := c.processThinkingMessage(&result.Message); err == nil {
 		err = err2
 	}
 	return result, err
 }
 
-// GenStream implements the ProviderGen interface for streaming by delegating to the wrapped provider
+// GenStream implements the Provider interface for streaming by delegating to the wrapped provider
 // and processing each fragment to extract thinking blocks.
 // If no thinking tags are present, the first part of the message is assumed to be thinking.
-func (c *ProviderGenThinking) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
+func (c *ProviderThinking) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
 	internalReplies := make(chan genai.ReplyFragment)
 	accumulated := genai.Message{}
 	eg, ctx := errgroup.WithContext(ctx)
@@ -79,7 +79,7 @@ func (c *ProviderGenThinking) GenStream(ctx context.Context, msgs genai.Messages
 		}
 		return nil
 	})
-	result, err := c.ProviderGen.GenStream(ctx, msgs, internalReplies, opts)
+	result, err := c.Provider.GenStream(ctx, msgs, internalReplies, opts)
 	close(internalReplies)
 	if err3 := eg.Wait(); err == nil {
 		err = err3
@@ -96,9 +96,9 @@ func (c *ProviderGenThinking) GenStream(ctx context.Context, msgs genai.Messages
 }
 
 // processPacket is the streaming version of message fragment processing.
-func (c *ProviderGenThinking) processPacket(state tagProcessingState, replies chan<- genai.ReplyFragment, accumulated *genai.Message, f genai.ReplyFragment) (tagProcessingState, error) {
+func (c *ProviderThinking) processPacket(state tagProcessingState, replies chan<- genai.ReplyFragment, accumulated *genai.Message, f genai.ReplyFragment) (tagProcessingState, error) {
 	if f.ThinkingFragment != "" {
-		return state, fmt.Errorf("got unexpected thinking fragment: %q; do not use ProviderGenThinking with an explicit thinking CoT model", f.ThinkingFragment)
+		return state, fmt.Errorf("got unexpected thinking fragment: %q; do not use ProviderThinking with an explicit thinking CoT model", f.ThinkingFragment)
 	}
 	// Mutate the fragment then send it.
 	switch state {
@@ -158,7 +158,7 @@ func (c *ProviderGenThinking) processPacket(state tagProcessingState, replies ch
 		}
 	case textSeen:
 	default:
-		return state, errors.New("internal error in ProviderGenThinking.GenStream()")
+		return state, errors.New("internal error in ProviderThinking.GenStream()")
 	}
 	replies <- f
 	err := accumulated.Accumulate(f)
@@ -167,7 +167,7 @@ func (c *ProviderGenThinking) processPacket(state tagProcessingState, replies ch
 
 // processThinkingMessage is the non-streaming version of message fragment processing. It's a bit faster since
 // it can slice things directly.
-func (c *ProviderGenThinking) processThinkingMessage(m *genai.Message) error {
+func (c *ProviderThinking) processThinkingMessage(m *genai.Message) error {
 	if len(m.Replies) == 0 {
 		// It can be a function call.
 		return nil
@@ -176,7 +176,7 @@ func (c *ProviderGenThinking) processThinkingMessage(m *genai.Message) error {
 	// Check if one of the contents is already a Thinking block
 	for _, c := range m.Replies {
 		if c.Thinking != "" {
-			return fmt.Errorf("got unexpected thinking content: %q; do not use ProviderGenThinking with an explicit thinking CoT model", c.Thinking)
+			return fmt.Errorf("got unexpected thinking content: %q; do not use ProviderThinking with an explicit thinking CoT model", c.Thinking)
 		}
 	}
 
@@ -217,8 +217,8 @@ func (c *ProviderGenThinking) processThinkingMessage(m *genai.Message) error {
 	return nil
 }
 
-func (c *ProviderGenThinking) Unwrap() genai.Provider {
-	return c.ProviderGen
+func (c *ProviderThinking) Unwrap() genai.Provider {
+	return c.Provider
 }
 
 type tagProcessingState int

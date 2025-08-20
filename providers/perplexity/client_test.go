@@ -44,7 +44,7 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 		t.Fatal(err)
 	}
 	// Save on costs when running the smoke test.
-	var p genai.ProviderGen = &injectOption{
+	var p genai.Provider = &injectOption{
 		Client: c,
 		opts: perplexity.OptionsText{
 			DisableSearch:           true,
@@ -52,7 +52,7 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 		},
 	}
 	if model.Thinking {
-		p = &adapters.ProviderGenThinking{ProviderGen: p, ThinkingTokenStart: "<think>", ThinkingTokenEnd: "</think>"}
+		p = &adapters.ProviderThinking{Provider: p, ThinkingTokenStart: "<think>", ThinkingTokenEnd: "</think>"}
 	}
 	return p
 }

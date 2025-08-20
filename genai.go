@@ -83,19 +83,6 @@ type Provider interface {
 	// return an ErrorNotSupported. For local providers like llamacpp and ollama, they may return only the
 	// model currently loaded.
 	ListModels(ctx context.Context) ([]Model, error)
-}
-
-// ProviderUnwrap is exposed when the Provider is actually a wrapper around another one, like
-// ProviderGenThinking or ProviderGenUsage. This is useful when looking for other interfaces.
-type ProviderUnwrap interface {
-	Unwrap() Provider
-}
-
-// Generation
-
-// ProviderGen is the generic interface to interact with a LLM backend.
-type ProviderGen interface {
-	Provider
 	// GenSync runs generation synchronously.
 	//
 	// opts can be nil, in this case OptionsText is assumed. It can also be other modalities like *OptionsImage,
@@ -106,6 +93,14 @@ type ProviderGen interface {
 	// No need to accumulate the replies into the result, the Result contains the accumulated message.
 	GenStream(ctx context.Context, msgs Messages, replies chan<- ReplyFragment, opts Options) (Result, error)
 }
+
+// ProviderUnwrap is exposed when the Provider is actually a wrapper around another one, like
+// ProviderThinking or ProviderUsage. This is useful when looking for other interfaces.
+type ProviderUnwrap interface {
+	Unwrap() Provider
+}
+
+// Generation
 
 // Result is the result of a completion.
 //
@@ -627,7 +622,7 @@ func (r *Reply) Validate() error {
 		//
 		// We should not accept Text along with ToolCall. It is tricky to evaluate since explicit Chain-of-Thought
 		// models like Qwen 3 Thinking or Deepseek R1 return their thinking as text until it is parsed by
-		// adapters.ProviderGenThinking.
+		// adapters.ProviderThinking.
 		//
 		// It is possible to use a hack to allow it by assuming all explicit CoT models return thinking as text
 		// starting with "<".

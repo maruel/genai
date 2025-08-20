@@ -17,7 +17,7 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-func TestProviderGenThinking_GenSync(t *testing.T) {
+func TestProviderThinking_GenSync(t *testing.T) {
 	tests := []struct {
 		name string
 		in   string
@@ -66,7 +66,7 @@ func TestProviderGenThinking_GenSync(t *testing.T) {
 			mp := &mockProviderGenSync{
 				response: genai.Result{Message: genai.Message{Replies: []genai.Reply{{Text: tc.in}}}},
 			}
-			tp := &adapters.ProviderGenThinking{ProviderGen: mp, ThinkingTokenStart: "<thinking>", ThinkingTokenEnd: "</thinking>"}
+			tp := &adapters.ProviderThinking{Provider: mp, ThinkingTokenStart: "<thinking>", ThinkingTokenEnd: "</thinking>"}
 			got, err := tp.GenSync(t.Context(), genai.Messages{}, tc.opts)
 			if err != nil {
 				t.Fatalf("unexpected error: %v", err)
@@ -78,7 +78,7 @@ func TestProviderGenThinking_GenSync(t *testing.T) {
 	}
 }
 
-func TestProviderGenThinking_GenSync_errors(t *testing.T) {
+func TestProviderThinking_GenSync_errors(t *testing.T) {
 	tests := []struct {
 		name string
 		in   []genai.Reply
@@ -103,7 +103,7 @@ func TestProviderGenThinking_GenSync_errors(t *testing.T) {
 		{
 			name: "Message with existing thinking content",
 			in:   []genai.Reply{{Thinking: "Existing thinking"}, {Text: "Some text"}},
-			want: `got unexpected thinking content: "Existing thinking"; do not use ProviderGenThinking with an explicit thinking CoT model`,
+			want: `got unexpected thinking content: "Existing thinking"; do not use ProviderThinking with an explicit thinking CoT model`,
 		},
 	}
 
@@ -113,7 +113,7 @@ func TestProviderGenThinking_GenSync_errors(t *testing.T) {
 				response: genai.Result{Message: genai.Message{Replies: tc.in}},
 				err:      tc.err,
 			}
-			tp := &adapters.ProviderGenThinking{ProviderGen: mp, ThinkingTokenStart: "<thinking>", ThinkingTokenEnd: "</thinking>"}
+			tp := &adapters.ProviderThinking{Provider: mp, ThinkingTokenStart: "<thinking>", ThinkingTokenEnd: "</thinking>"}
 			_, err := tp.GenSync(t.Context(), genai.Messages{}, nil)
 			if err == nil {
 				t.Fatal("expected error but got none")
@@ -125,7 +125,7 @@ func TestProviderGenThinking_GenSync_errors(t *testing.T) {
 	}
 }
 
-func TestProviderGenThinking_GenStream(t *testing.T) {
+func TestProviderThinking_GenStream(t *testing.T) {
 	tests := []struct {
 		name string
 		in   []string
@@ -227,7 +227,7 @@ func TestProviderGenThinking_GenStream(t *testing.T) {
 			for _, i := range tc.in {
 				mp.streamResponses[0].fragments = append(mp.streamResponses[0].fragments, genai.ReplyFragment{TextFragment: i})
 			}
-			tp := &adapters.ProviderGenThinking{ProviderGen: mp, ThinkingTokenStart: "<thinking>", ThinkingTokenEnd: "</thinking>"}
+			tp := &adapters.ProviderThinking{Provider: mp, ThinkingTokenStart: "<thinking>", ThinkingTokenEnd: "</thinking>"}
 			ch := make(chan genai.ReplyFragment, 100)
 			eg, ctx := errgroup.WithContext(t.Context())
 			accumulated := genai.Message{}
@@ -256,7 +256,7 @@ func TestProviderGenThinking_GenStream(t *testing.T) {
 	}
 }
 
-func TestProviderGenThinking_GenStream_errors(t *testing.T) {
+func TestProviderThinking_GenStream_errors(t *testing.T) {
 	tests := []struct {
 		name      string
 		in        []string
@@ -281,7 +281,7 @@ func TestProviderGenThinking_GenStream_errors(t *testing.T) {
 			fragments: []genai.ReplyFragment{
 				{ThinkingFragment: "This is an unexpected thinking fragment"},
 			},
-			want: `got unexpected thinking fragment: "This is an unexpected thinking fragment"; do not use ProviderGenThinking with an explicit thinking CoT model`,
+			want: `got unexpected thinking fragment: "This is an unexpected thinking fragment"; do not use ProviderThinking with an explicit thinking CoT model`,
 		},
 	}
 
@@ -295,7 +295,7 @@ func TestProviderGenThinking_GenStream_errors(t *testing.T) {
 					mp.streamResponses[0].fragments = append(mp.streamResponses[0].fragments, genai.ReplyFragment{TextFragment: i})
 				}
 			}
-			tp := &adapters.ProviderGenThinking{ProviderGen: mp, ThinkingTokenStart: "<thinking>", ThinkingTokenEnd: "</thinking>"}
+			tp := &adapters.ProviderThinking{Provider: mp, ThinkingTokenStart: "<thinking>", ThinkingTokenEnd: "</thinking>"}
 			ch := make(chan genai.ReplyFragment, 100)
 			eg := errgroup.Group{}
 			eg.Go(func() error {

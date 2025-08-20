@@ -1333,7 +1333,7 @@ func (e *ErrorResponse) IsAPIError() bool {
 
 // Client is a client for the OpenAI Responses API.
 type Client struct {
-	impl base.ProviderGen[*ErrorResponse, *Response, *Response, ResponseStreamChunkResponse]
+	impl base.Provider[*ErrorResponse, *Response, *Response, ResponseStreamChunkResponse]
 }
 
 // New creates a new client to talk to the OpenAI Responses API.
@@ -1376,13 +1376,13 @@ func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.Round
 		t = wrapper(t)
 	}
 	c := &Client{
-		impl: base.ProviderGen[*ErrorResponse, *Response, *Response, ResponseStreamChunkResponse]{
+		impl: base.Provider[*ErrorResponse, *Response, *Response, ResponseStreamChunkResponse]{
 			Model:                model,
 			GenSyncURL:           "https://api.openai.com/v1/responses",
 			GenStreamURL:         "https://api.openai.com/v1/responses",
 			ProcessStreamPackets: processStreamPackets,
 			ProcessHeaders:       processHeaders,
-			Provider: base.Provider[*ErrorResponse]{
+			ProviderBase: base.ProviderBase[*ErrorResponse]{
 				APIKeyURL: "", // OpenAI error message prints the api key URL already.
 				ClientJSON: httpjson.Client{
 					Lenient: internal.BeLenient,
@@ -1467,7 +1467,7 @@ func (c *Client) Scoreboard() scoreboard.Score {
 	return Scoreboard
 }
 
-// GenSync implements genai.ProviderGen.
+// GenSync implements genai.Provider.
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
 	if c.isImage(opts) {
 		if len(msgs) != 1 {
@@ -1483,7 +1483,7 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *Response, out *Response) er
 	return c.impl.GenSyncRaw(ctx, in, out)
 }
 
-// GenStream implements genai.ProviderGen.
+// GenStream implements genai.Provider.
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
 	if c.isImage(opts) {
 		return base.SimulateStream(ctx, c, msgs, chunks, opts)
@@ -1718,6 +1718,5 @@ func processHeaders(h http.Header) []genai.RateLimit {
 
 var (
 	_ genai.Provider           = &Client{}
-	_ genai.ProviderGen        = &Client{}
 	_ scoreboard.ProviderScore = &Client{}
 )

@@ -25,7 +25,7 @@ import (
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
 
-func ExampleProviderGen_genSync_vision() {
+func ExampleProvider_genSync_vision() {
 	// Supported by Anthropic, Gemini, Groq, Mistral, Ollama, OpenAI, TogetherAI.
 
 	// Using a free small model for testing.
@@ -106,7 +106,7 @@ func ExampleClient_GenSync_jSON_schema() {
 	// This would Output: Round: true
 }
 
-func ExampleProviderGen_genSync_pdf() {
+func ExampleProvider_genSync_pdf() {
 	// Supported by Anthropic, Gemini, Mistral, OpenAI.
 
 	// Using a free small model for testing.
@@ -136,7 +136,7 @@ func ExampleProviderGen_genSync_pdf() {
 	// This would Output: Hidden word in PDF: orange
 }
 
-func ExampleProviderGen_genSync_audio() {
+func ExampleProvider_genSync_audio() {
 	// Supported by Gemini, OpenAI.
 
 	// Using a free small model for testing.
@@ -166,7 +166,7 @@ func ExampleProviderGen_genSync_audio() {
 	// This would Output: Heard: orange
 }
 
-func ExampleProviderGen_genSync_video() {
+func ExampleProvider_genSync_video() {
 	// Supported by Gemini, TogetherAI.
 
 	// Using a free small model for testing.
@@ -193,7 +193,7 @@ func ExampleProviderGen_genSync_video() {
 	// This would Output: Saw: banana
 }
 
-func ExampleProviderGen_GenStream() {
+func ExampleProvider_GenStream() {
 	// Supported by all providers.
 
 	// Using a free small model for testing.
@@ -203,7 +203,7 @@ func ExampleProviderGen_GenStream() {
 		log.Fatal(err)
 	}
 	// Does not return an error if Seed or MaxTokens are unsupported.
-	p := &adapters.ProviderGenIgnoreUnsupported{ProviderGen: c}
+	p := &adapters.ProviderIgnoreUnsupported{Provider: c}
 	ctx := context.Background()
 	msgs := genai.Messages{
 		genai.NewTextMessage("Say hello. Use only one word."),

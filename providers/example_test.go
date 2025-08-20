@@ -40,20 +40,11 @@ func Example_all_ListModel() {
 	}
 }
 
-func Example_all_ProviderGen() {
+func Example_all_Provider() {
 	for name, f := range providers.All {
 		c, err := f(&genai.ProviderOptions{Model: genai.ModelCheap}, nil)
 		if err != nil {
 			log.Fatal(err)
-		}
-		p, ok := c.(genai.ProviderGen)
-		if !ok {
-			if pd, ok := c.(genai.ProviderGenDoc); ok {
-				// Use an adapter to make the document generator behave in a generic way.
-				p = &adapters.ProviderGenDocToGen{ProviderGenDoc: pd}
-			} else {
-				continue
-			}
 		}
 		msgs := genai.Messages{
 			genai.NewTextMessage("Tell a story in 10 words."),
@@ -63,7 +54,7 @@ func Example_all_ProviderGen() {
 			TopK:      50, // Not all providers support this
 			MaxTokens: 512,
 		}
-		response, err := p.GenSync(context.Background(), msgs, opts)
+		response, err := c.GenSync(context.Background(), msgs, opts)
 		if err != nil {
 			if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 				fmt.Printf("- %s (ignored args: %s): %v\n", name, strings.Join(uce.Unsupported, ","), response)
@@ -78,7 +69,6 @@ func Example_all_ProviderGen() {
 
 func Example_all_Full() {
 	// This example includes:
-	// - Making sure the provider implements genai.ProviderGen.
 	// - Processing <think> tokens for explicit Chain-of-Thoughts models (e.g. Qwen3).
 	var names []string
 	for name := range providers.Available() {
@@ -110,7 +100,7 @@ func Example_all_Full() {
 }
 
 // LoadProvider loads a provider.
-func LoadProvider(provider string, opts *genai.ProviderOptions) (genai.ProviderGen, error) {
+func LoadProvider(provider string, opts *genai.ProviderOptions) (genai.Provider, error) {
 	if provider == "" {
 		return nil, fmt.Errorf("no provider specified")
 	}
@@ -122,29 +112,16 @@ func LoadProvider(provider string, opts *genai.ProviderOptions) (genai.ProviderG
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to provider %q: %w", provider, err)
 	}
-	p, ok := c.(genai.ProviderGen)
-	if !ok {
-		return nil, fmt.Errorf("provider %q doesn't implement genai.ProviderGen", provider)
-	}
 	// Wrap the provider with an adapter to process "<think>" tokens automatically ONLY if needed.
-	p = adapters.WrapThinking(p)
-	return p, nil
+	return adapters.WrapThinking(c), nil
 }
 
-// LoadDefaultProviderGen loads a provider if there's exactly one available.
-func LoadDefaultProviderGen() (genai.ProviderGen, error) {
+// LoadDefaultProvider loads a provider if there's exactly one available.
+func LoadDefaultProvider() (genai.Provider, error) {
 	avail := providers.Available()
 	if len(avail) == 1 {
-		for name, f := range avail {
-			c, err := f(&genai.ProviderOptions{Model: genai.ModelNone}, nil)
-			if err != nil {
-				return nil, err
-			}
-			p, ok := c.(genai.ProviderGen)
-			if !ok {
-				return nil, fmt.Errorf("provider %q doesn't implement genai.ProviderGen", name)
-			}
-			return p, nil
+		for _, f := range avail {
+			return f(&genai.ProviderOptions{Model: genai.ModelNone}, nil)
 		}
 	}
 	if len(avail) == 0 {
@@ -160,14 +137,14 @@ func LoadDefaultProviderGen() (genai.ProviderGen, error) {
 
 func Example_available() {
 	// Automatically select the provider available if there's only one. Asserts that the provider implements
-	// ProviderGen.
-	c, err := LoadDefaultProviderGen()
+	// Provider.
+	c, err := LoadDefaultProvider()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 	}
 	// Wrap the provider with an adapter to ignore errors caused by unsupported features. Even if Seed is not
 	// supported, no error will be returned.
-	c = &adapters.ProviderGenIgnoreUnsupported{ProviderGen: c}
+	c = &adapters.ProviderIgnoreUnsupported{Provider: c}
 	msgs := genai.Messages{genai.NewTextMessage("Provide a life tip that sounds good but is actually a bad idea.")}
 	resp, err := c.GenSync(context.Background(), msgs, &genai.OptionsText{Seed: 42})
 	if err != nil {

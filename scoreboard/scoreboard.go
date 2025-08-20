@@ -141,9 +141,9 @@ type Scenario struct {
 	ThinkingTokenStart string
 	ThinkingTokenEnd   string
 
-	// GenSync declares features supported when using ProviderGen.GenSync
+	// GenSync declares features supported when using Provider.GenSync
 	GenSync *FunctionalityText
-	// GenStream declares features supported when using ProviderGen.GenStream
+	// GenStream declares features supported when using Provider.GenStream
 	GenStream *FunctionalityText
 	// GenDoc declares features supported when using a ProviderGenDoc
 	GenDoc *FunctionalityDoc
@@ -170,7 +170,7 @@ const (
 	// NoThinking means that no thinking is supported.
 	NoThinking Thinking = 0
 	// ThinkingInline means that the thinking tokens are inline and must be explicitly parsed from Content.Text
-	// with adapters.ProviderGenThinking.
+	// with adapters.ProviderThinking.
 	ThinkingInline Thinking = 1
 	// ThinkingAutomatic means that the thinking tokens are properly generated and handled by the provider and
 	// are returned as Content.Thinking.

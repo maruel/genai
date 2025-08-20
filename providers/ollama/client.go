@@ -567,9 +567,9 @@ func (er *ErrorResponse) IsAPIError() bool {
 // We cannot use ClientChat because GenSync and GenStream try to pull on first failure, and GenStream receives
 // line separated JSON instead of SSE.
 
-// Client implements genai.ProviderGen.
+// Client implements genai.Provider.
 type Client struct {
-	impl    base.Provider[*ErrorResponse]
+	impl    base.ProviderBase[*ErrorResponse]
 	model   string
 	baseURL string
 	chatURL string
@@ -617,7 +617,7 @@ func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.Round
 		t = wrapper(t)
 	}
 	return &Client{
-		impl: base.Provider[*ErrorResponse]{
+		impl: base.ProviderBase[*ErrorResponse]{
 			ClientJSON: httpjson.Client{
 				Lenient: internal.BeLenient,
 				Client:  &http.Client{Transport: &roundtrippers.RequestID{Transport: t}},
@@ -648,7 +648,7 @@ func (c *Client) Scoreboard() scoreboard.Score {
 	return Scoreboard
 }
 
-// GenSync implements genai.ProviderGen.
+// GenSync implements genai.Provider.
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
 	result := genai.Result{}
 	in := ChatRequest{}
@@ -694,7 +694,7 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 	return err
 }
 
-// GenStream implements genai.ProviderGen.
+// GenStream implements genai.Provider.
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
 	result := genai.Result{}
 	in := ChatRequest{}
@@ -878,6 +878,5 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 
 var (
 	_ genai.Provider           = &Client{}
-	_ genai.ProviderGen        = &Client{}
 	_ scoreboard.ProviderScore = &Client{}
 )

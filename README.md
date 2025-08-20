@@ -223,7 +223,7 @@ func main() {
 }
 
 // LoadProvider loads a provider.
-func LoadProvider(provider string, opts *genai.ProviderOptions) (genai.ProviderGen, error) {
+func LoadProvider(provider string, opts *genai.ProviderOptions) (genai.Provider, error) {
 	if provider == "" {
 		return nil, fmt.Errorf("no provider specified")
 	}
@@ -235,13 +235,8 @@ func LoadProvider(provider string, opts *genai.ProviderOptions) (genai.ProviderG
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to provider %q: %w", provider, err)
 	}
-	p, ok := c.(genai.ProviderGen)
-	if !ok {
-		return nil, fmt.Errorf("provider %q doesn't implement genai.ProviderGen", provider)
-	}
 	// Wrap the provider with an adapter to process "<think>" tokens automatically ONLY if needed.
-	p = adapters.WrapThinking(p)
-	return p, nil
+	return adapters.WrapThinking(c), nil
 }
 ```
 

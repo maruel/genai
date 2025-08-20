@@ -995,9 +995,9 @@ func (er *ErrorResponse) IsAPIError() bool {
 	return true
 }
 
-// Client implements genai.ProviderGen.
+// Client implements genai.Provider.
 type Client struct {
-	impl base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
+	impl base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
 // New creates a new client to talk to the Together.AI platform API.
@@ -1040,12 +1040,12 @@ func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.Round
 		t = wrapper(t)
 	}
 	c := &Client{
-		impl: base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
 			GenSyncURL:           "https://api.together.xyz/v1/chat/completions",
 			ProcessStreamPackets: processStreamPackets,
 			ProcessHeaders:       processHeaders,
-			Provider: base.Provider[*ErrorResponse]{
+			ProviderBase: base.ProviderBase[*ErrorResponse]{
 				APIKeyURL: apiKeyURL,
 				ClientJSON: httpjson.Client{
 					Lenient: internal.BeLenient,
@@ -1136,7 +1136,7 @@ func (c *Client) Scoreboard() scoreboard.Score {
 	return Scoreboard
 }
 
-// GenSync implements genai.ProviderGen.
+// GenSync implements genai.Provider.
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
 	if c.isAudio(opts) || c.isImage(opts) {
 		if len(msgs) != 1 {
@@ -1152,7 +1152,7 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 	return c.impl.GenSyncRaw(ctx, in, out)
 }
 
-// GenStream implements genai.ProviderGen.
+// GenStream implements genai.Provider.
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
 	if c.isAudio(opts) || c.isImage(opts) {
 		return base.SimulateStream(ctx, c, msgs, chunks, opts)
@@ -1369,7 +1369,6 @@ func processHeaders(h http.Header) []genai.RateLimit {
 
 var (
 	_ genai.Provider           = &Client{}
-	_ genai.ProviderGen        = &Client{}
 	_ genai.ProviderGenDoc     = &Client{}
 	_ scoreboard.ProviderScore = &Client{}
 )

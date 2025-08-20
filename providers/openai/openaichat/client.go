@@ -1398,7 +1398,7 @@ func (c *Client) selectBestModel(ctx context.Context, preference string) (string
 //
 // It returns the name of the provider.
 func (c *Client) Name() string {
-	return "openaichat"
+	return "openai"
 }
 
 // ModelID implements genai.Provider.

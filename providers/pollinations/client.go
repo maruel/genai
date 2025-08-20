@@ -1140,17 +1140,17 @@ func (c *Client) Scoreboard() scoreboard.Score {
 }
 
 // GenSync implements genai.Provider.
-func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
+func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
 	if c.isAudio() || c.isImage() {
 		if len(msgs) != 1 {
 			return genai.Result{}, errors.New("must pass exactly one Message")
 		}
-		return c.GenDoc(ctx, msgs[0], opts)
+		return c.GenDoc(ctx, msgs[0], opts...)
 	}
 	if err := Cache.ValidateModality(ctx, c, genai.ModalityText); err != nil {
 		return genai.Result{}, err
 	}
-	return c.impl.GenSync(ctx, msgs, opts)
+	return c.impl.GenSync(ctx, msgs, opts...)
 }
 
 // GenSyncRaw provides access to the raw API.
@@ -1159,14 +1159,14 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 }
 
 // GenStream implements genai.Provider.
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
 	if c.isAudio() || c.isImage() {
-		return base.SimulateStream(ctx, c, msgs, chunks, opts)
+		return base.SimulateStream(ctx, c, msgs, chunks, opts...)
 	}
 	if err := Cache.ValidateModality(ctx, c, genai.ModalityText); err != nil {
 		return genai.Result{}, err
 	}
-	return c.impl.GenStream(ctx, msgs, chunks, opts)
+	return c.impl.GenStream(ctx, msgs, chunks, opts...)
 }
 
 // GenStreamRaw provides access to the raw API.
@@ -1179,7 +1179,7 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest, out chan<- C
 // Use it to generate images.
 //
 // Default rate limit is 0.2 QPS / IP.
-func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
+func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts ...genai.Options) (genai.Result, error) {
 	// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#1-text-to-image-get-%EF%B8%8F
 	// TODO:
 	// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#4-text-to-speech-get-%EF%B8%8F%EF%B8%8F
@@ -1189,14 +1189,6 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 	}
 	if err := msg.Validate(); err != nil {
 		return res, err
-	}
-	if opts != nil {
-		if err := opts.Validate(); err != nil {
-			return res, err
-		}
-		if mod := opts.Modalities(); !slices.Contains(mod, genai.ModalityImage) {
-			return genai.Result{}, fmt.Errorf("modality %s not supported, supported: %s", mod, c.impl.OutputModalities)
-		}
 	}
 	for i := range msg.Requests {
 		if msg.Requests[i].Text == "" {
@@ -1208,26 +1200,31 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 	}
 	qp := url.Values{}
 	qp.Add("model", c.impl.Model)
-	switch v := opts.(type) {
-	case *genai.OptionsImage:
-		if v.Seed != 0 {
-			// Defaults to 42 otherwise.
-			qp.Add("seed", strconv.FormatInt(v.Seed, 10))
+	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
+			return res, err
 		}
-		if v.Width != 0 {
-			qp.Add("width", strconv.Itoa(v.Width))
+		switch v := opt.(type) {
+		case *genai.OptionsImage:
+			if v.Seed != 0 {
+				// Defaults to 42 otherwise.
+				qp.Add("seed", strconv.FormatInt(v.Seed, 10))
+			}
+			if v.Width != 0 {
+				qp.Add("width", strconv.Itoa(v.Width))
+			}
+			if v.Height != 0 {
+				qp.Add("height", strconv.Itoa(v.Height))
+			}
+		case *genai.OptionsText:
+			// TODO: Deny most flags.
+			if v.Seed != 0 {
+				// Defaults to 42 otherwise.
+				qp.Add("seed", strconv.FormatInt(v.Seed, 10))
+			}
+		default:
+			return genai.Result{}, fmt.Errorf("unsupported options type %T", opts)
 		}
-		if v.Height != 0 {
-			qp.Add("height", strconv.Itoa(v.Height))
-		}
-	case *genai.OptionsText:
-		// TODO: Deny most flags.
-		if v.Seed != 0 {
-			// Defaults to 42 otherwise.
-			qp.Add("seed", strconv.FormatInt(v.Seed, 10))
-		}
-	default:
-		return genai.Result{}, fmt.Errorf("unsupported options type %T", opts)
 	}
 
 	qp.Add("nologo", "true")

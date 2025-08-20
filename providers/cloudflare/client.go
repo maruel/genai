@@ -835,8 +835,8 @@ func (c *Client) Scoreboard() scoreboard.Score {
 }
 
 // GenSync implements genai.Provider.
-func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	return c.impl.GenSync(ctx, msgs, opts)
+func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
+	return c.impl.GenSync(ctx, msgs, opts...)
 }
 
 // GenSyncRaw provides access to the raw API.
@@ -845,8 +845,8 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 }
 
 // GenStream implements genai.Provider.
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
-	return c.impl.GenStream(ctx, msgs, chunks, opts)
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
+	return c.impl.GenStream(ctx, msgs, chunks, opts...)
 }
 
 // GenStreamRaw provides access to the raw API.

@@ -113,11 +113,11 @@ type Provider interface {
 	//
 	// opts can be nil, in this case OptionsText is assumed. It can also be other modalities like *OptionsImage,
 	// *OptionsText or a provider-specialized option struct.
-	GenSync(ctx context.Context, msgs Messages, opts Options) (Result, error)
+	GenSync(ctx context.Context, msgs Messages, opts ...Options) (Result, error)
 	// GenStream runs generation synchronously, streaming the results to channel replies.
 	//
 	// No need to accumulate the replies into the result, the Result contains the accumulated message.
-	GenStream(ctx context.Context, msgs Messages, replies chan<- ReplyFragment, opts Options) (Result, error)
+	GenStream(ctx context.Context, msgs Messages, replies chan<- ReplyFragment, opts ...Options) (Result, error)
 }
 
 // ProviderUnwrap is exposed when the Provider is actually a wrapper around another one, like
@@ -1053,7 +1053,7 @@ func (cs *CitationSource) IsZero() bool {
 // ProviderGenAsync is the interface to interact with a batch generator.
 type ProviderGenAsync interface {
 	// GenAsync requests a generation and returns a pending job that can be polled.
-	GenAsync(ctx context.Context, msgs Messages, opts Options) (Job, error)
+	GenAsync(ctx context.Context, msgs Messages, opts ...Options) (Job, error)
 	// PokeResult requests the state of the job.
 	//
 	// When the job is still pending, Result.Usage.FinishReason is Pending.
@@ -1074,7 +1074,7 @@ type CacheEntry interface {
 
 // ProviderCache provides a high level way to manage files cached on the provider.
 type ProviderCache interface {
-	CacheAddRequest(ctx context.Context, msgs Messages, opts Options, name, displayName string, ttl time.Duration) (string, error)
+	CacheAddRequest(ctx context.Context, msgs Messages, name, displayName string, ttl time.Duration, opts ...Options) (string, error)
 	CacheList(ctx context.Context) ([]CacheEntry, error)
 	CacheDelete(ctx context.Context, name string) error
 }

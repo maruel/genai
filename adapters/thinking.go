@@ -50,8 +50,8 @@ type ProviderThinking struct {
 
 // GenSync implements the Provider interface by delegating to the wrapped provider
 // and processing the result to extract thinking blocks.
-func (c *ProviderThinking) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	result, err := c.Provider.GenSync(ctx, msgs, opts)
+func (c *ProviderThinking) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
+	result, err := c.Provider.GenSync(ctx, msgs, opts...)
 	if err2 := c.processThinkingMessage(&result.Message); err == nil {
 		err = err2
 	}
@@ -61,7 +61,7 @@ func (c *ProviderThinking) GenSync(ctx context.Context, msgs genai.Messages, opt
 // GenStream implements the Provider interface for streaming by delegating to the wrapped provider
 // and processing each fragment to extract thinking blocks.
 // If no thinking tags are present, the first part of the message is assumed to be thinking.
-func (c *ProviderThinking) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
+func (c *ProviderThinking) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
 	internalReplies := make(chan genai.ReplyFragment)
 	accumulated := genai.Message{}
 	eg, ctx := errgroup.WithContext(ctx)
@@ -79,7 +79,7 @@ func (c *ProviderThinking) GenStream(ctx context.Context, msgs genai.Messages, r
 		}
 		return nil
 	})
-	result, err := c.Provider.GenStream(ctx, msgs, internalReplies, opts)
+	result, err := c.Provider.GenStream(ctx, msgs, internalReplies, opts...)
 	close(internalReplies)
 	if err3 := eg.Wait(); err == nil {
 		err = err3

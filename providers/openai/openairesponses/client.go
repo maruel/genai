@@ -217,18 +217,6 @@ var Scoreboard = scoreboard.Score{
 	},
 }
 
-// OptionsText includes OpenAI specific options.
-type OptionsText struct {
-	genai.OptionsText
-
-	// ReasoningEffort is the amount of effort (number of tokens) the LLM can use to think about the answer.
-	//
-	// When unspecified, defaults to medium.
-	ReasoningEffort ReasoningEffort
-	// ServiceTier specify the priority.
-	ServiceTier ServiceTier
-}
-
 // Response represents a request to the OpenAI Responses API.
 //
 // https://platform.openai.com/docs/api-reference/responses/object
@@ -293,7 +281,6 @@ func (r *Response) Init(msgs genai.Messages, model string, opts ...genai.Options
 		case *OptionsText:
 			r.Reasoning.Effort = v.ReasoningEffort
 			r.ServiceTier = v.ServiceTier
-			unsupported, errs = r.initOptions(&v.OptionsText, model)
 		case *genai.OptionsText:
 			unsupported, errs = r.initOptions(v, model)
 		default:

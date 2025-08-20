@@ -63,22 +63,12 @@ type injectOption struct {
 	opts openaichat.OptionsText
 }
 
-func (i *injectOption) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	n := i.opts
-	if opts != nil {
-		n.OptionsText = *opts.(*genai.OptionsText)
-	}
-	opts = &n
-	return i.Client.GenSync(ctx, msgs, opts)
+func (i *injectOption) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
+	return i.Client.GenSync(ctx, msgs, append(opts, &i.opts)...)
 }
 
-func (i *injectOption) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
-	n := i.opts
-	if opts != nil {
-		n.OptionsText = *opts.(*genai.OptionsText)
-	}
-	opts = &n
-	return i.Client.GenStream(ctx, msgs, replies, opts)
+func (i *injectOption) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
+	return i.Client.GenStream(ctx, msgs, replies, append(opts, &i.opts)...)
 }
 
 func (i *injectOption) Unwrap() genai.Provider {
@@ -91,16 +81,16 @@ type injectThinking struct {
 	injectOption
 }
 
-func (i *injectThinking) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	res, err := i.injectOption.GenSync(ctx, msgs, opts)
+func (i *injectThinking) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
+	res, err := i.injectOption.GenSync(ctx, msgs, opts...)
 	if res.Usage.ReasoningTokens > 0 {
 		res.Replies = append(res.Replies, genai.Reply{Thinking: "\n"})
 	}
 	return res, err
 }
 
-func (i *injectThinking) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
-	res, err := i.injectOption.GenStream(ctx, msgs, replies, opts)
+func (i *injectThinking) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
+	res, err := i.injectOption.GenStream(ctx, msgs, replies, opts...)
 	return res, err
 }
 
@@ -111,7 +101,7 @@ func TestClient_Batch(t *testing.T) {
 	// Using an extremely old cheap model that nobody uses helps a lot on reducing the latency, I got it to work
 	// within a few minutes.
 	msgs := genai.Messages{genai.NewTextMessage("Tell a joke in 10 words")}
-	job, err := c.GenAsync(ctx, msgs, nil)
+	job, err := c.GenAsync(ctx, msgs)
 	if err != nil {
 		t.Fatal(err)
 	}

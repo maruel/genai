@@ -16,7 +16,6 @@ import (
 	"io"
 	"net/http"
 	"reflect"
-	"slices"
 	"strings"
 	"sync"
 	"time"
@@ -71,11 +70,11 @@ type ErrAPI interface {
 // NotImplemented implements most genai.Provider methods all returning ErrNotSupported.
 type NotImplemented struct{}
 
-func (*NotImplemented) GenSync(context.Context, genai.Messages, genai.Options) (genai.Result, error) {
+func (*NotImplemented) GenSync(context.Context, genai.Messages, ...genai.Options) (genai.Result, error) {
 	return genai.Result{}, ErrNotSupported
 }
 
-func (*NotImplemented) GenStream(context.Context, genai.Messages, chan<- genai.ReplyFragment, genai.Options) (genai.Result, error) {
+func (*NotImplemented) GenStream(context.Context, genai.Messages, chan<- genai.ReplyFragment, ...genai.Options) (genai.Result, error) {
 	return genai.Result{}, ErrNotSupported
 }
 
@@ -321,23 +320,12 @@ type Provider[PErrorResponse ErrAPI, PGenRequest InitializableRequest, PGenRespo
 	chatResponse reflect.Type
 }
 
-func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
+func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
 	result := genai.Result{}
-	if opts != nil {
-		// TODO: Specify as a field.
-		if supported := opts.Modalities(); !slices.Contains(supported, genai.ModalityText) {
-			return result, fmt.Errorf("modality %s not supported", supported)
-		}
-	}
-
 	c.lateInit()
 	in := reflect.New(c.chatRequest).Interface().(PGenRequest)
 	var continuableErr error
-	var o []genai.Options
-	if opts != nil {
-		o = append(o, opts)
-	}
-	if err := in.Init(msgs, c.Model, o...); err != nil {
+	if err := in.Init(msgs, c.Model, opts...); err != nil {
 		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 			continuableErr = uce
 		} else {
@@ -364,23 +352,13 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 	return result, continuableErr
 }
 
-func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
+func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
 	result := genai.Result{}
-	if opts != nil {
-		// TODO: Specify as a field.
-		if supported := opts.Modalities(); !slices.Contains(supported, genai.ModalityText) {
-			return result, fmt.Errorf("modality %s not supported", supported)
-		}
-	}
 
 	c.lateInit()
 	in := reflect.New(c.chatRequest).Interface().(PGenRequest)
 	var continuableErr error
-	var o []genai.Options
-	if opts != nil {
-		o = append(o, opts)
-	}
-	if err := in.Init(msgs, c.Model, o...); err != nil {
+	if err := in.Init(msgs, c.Model, opts...); err != nil {
 		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 			continuableErr = uce
 		} else {
@@ -480,8 +458,8 @@ func (t *Time) AsTime() time.Time {
 }
 
 // SimulateStream simulates GenStream for APIs that do not support streaming.
-func SimulateStream(ctx context.Context, c genai.Provider, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
-	res, err := c.GenSync(ctx, msgs, opts)
+func SimulateStream(ctx context.Context, c genai.Provider, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
+	res, err := c.GenSync(ctx, msgs, opts...)
 	if err == nil {
 		for i := range res.Replies {
 			if !res.Replies[i].Doc.IsZero() {

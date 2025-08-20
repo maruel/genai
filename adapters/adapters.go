@@ -26,18 +26,24 @@ import (
 // tool call.
 //
 // It returns the messages to accumulate to the thread. The last message is the LLM's response.
-func GenSyncWithToolCallLoop(ctx context.Context, p genai.Provider, msgs genai.Messages, opts genai.Options) (genai.Messages, genai.Usage, error) {
+func GenSyncWithToolCallLoop(ctx context.Context, p genai.Provider, msgs genai.Messages, opts ...genai.Options) (genai.Messages, genai.Usage, error) {
 	usage := genai.Usage{}
 	var out genai.Messages
 	workMsgs := make(genai.Messages, len(msgs))
 	copy(workMsgs, msgs)
-	chatOpts, ok := opts.(*genai.OptionsText)
-	if !ok || len(chatOpts.Tools) == 0 {
+	var chatOpts *genai.OptionsText
+	for _, opt := range opts {
+		ok := false
+		if chatOpts, ok = opt.(*genai.OptionsText); ok {
+			break
+		}
+	}
+	if chatOpts == nil {
 		return out, usage, errors.New("no tools found")
 	}
 	tools := chatOpts.Tools
 	for {
-		result, err := p.GenSync(ctx, workMsgs, opts)
+		result, err := p.GenSync(ctx, workMsgs, opts...)
 		usage.InputTokens += result.Usage.InputTokens
 		usage.InputCachedTokens += result.Usage.InputCachedTokens
 		usage.OutputTokens += result.Usage.OutputTokens
@@ -78,13 +84,19 @@ func GenSyncWithToolCallLoop(ctx context.Context, p genai.Provider, msgs genai.M
 // tool call.
 //
 // No need to process the tool calls or accumulate the ReplyFragment.
-func GenStreamWithToolCallLoop(ctx context.Context, p genai.Provider, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts genai.Options) (genai.Messages, genai.Usage, error) {
+func GenStreamWithToolCallLoop(ctx context.Context, p genai.Provider, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Messages, genai.Usage, error) {
 	usage := genai.Usage{}
 	var out genai.Messages
 	workMsgs := make(genai.Messages, len(msgs))
 	copy(workMsgs, msgs)
-	chatOpts, ok := opts.(*genai.OptionsText)
-	if !ok || len(chatOpts.Tools) == 0 {
+	var chatOpts *genai.OptionsText
+	for _, opt := range opts {
+		ok := false
+		if chatOpts, ok = opt.(*genai.OptionsText); ok {
+			break
+		}
+	}
+	if chatOpts == nil {
 		return out, usage, errors.New("no tools found")
 	}
 	tools := chatOpts.Tools
@@ -105,7 +117,7 @@ func GenStreamWithToolCallLoop(ctx context.Context, p genai.Provider, msgs genai
 			}
 			return nil
 		})
-		result, err := p.GenStream(ctx, workMsgs, internalReplies, opts)
+		result, err := p.GenStream(ctx, workMsgs, internalReplies, opts...)
 		close(internalReplies)
 		usage.InputTokens += result.Usage.InputTokens
 		usage.InputCachedTokens += result.Usage.InputCachedTokens
@@ -146,8 +158,8 @@ type ProviderIgnoreUnsupported struct {
 	genai.Provider
 }
 
-func (c *ProviderIgnoreUnsupported) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	res, err := c.Provider.GenSync(ctx, msgs, opts)
+func (c *ProviderIgnoreUnsupported) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
+	res, err := c.Provider.GenSync(ctx, msgs, opts...)
 	var uce *genai.UnsupportedContinuableError
 	if errors.As(err, &uce) {
 		err = nil
@@ -155,8 +167,8 @@ func (c *ProviderIgnoreUnsupported) GenSync(ctx context.Context, msgs genai.Mess
 	return res, err
 }
 
-func (c *ProviderIgnoreUnsupported) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
-	res, err := c.Provider.GenStream(ctx, msgs, chunks, opts)
+func (c *ProviderIgnoreUnsupported) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
+	res, err := c.Provider.GenStream(ctx, msgs, chunks, opts...)
 	var uce *genai.UnsupportedContinuableError
 	if errors.As(err, &uce) {
 		err = nil
@@ -180,8 +192,8 @@ type ProviderUsage struct {
 }
 
 // GenSync implements the Provider interface and accumulates usage statistics.
-func (c *ProviderUsage) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	result, err := c.Provider.GenSync(ctx, msgs, opts)
+func (c *ProviderUsage) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
+	result, err := c.Provider.GenSync(ctx, msgs, opts...)
 	c.mu.Lock()
 	c.accumUsage.InputTokens += result.Usage.InputTokens
 	c.accumUsage.InputCachedTokens += result.Usage.InputCachedTokens
@@ -191,9 +203,9 @@ func (c *ProviderUsage) GenSync(ctx context.Context, msgs genai.Messages, opts g
 }
 
 // GenStream implements the Provider interface and accumulates usage statistics.
-func (c *ProviderUsage) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
+func (c *ProviderUsage) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
 	// Call the wrapped provider and accumulate usage statistics
-	result, err := c.Provider.GenStream(ctx, msgs, replies, opts)
+	result, err := c.Provider.GenStream(ctx, msgs, replies, opts...)
 	c.mu.Lock()
 	c.accumUsage.InputTokens += result.Usage.InputTokens
 	c.accumUsage.InputCachedTokens += result.Usage.InputCachedTokens
@@ -225,22 +237,22 @@ type ProviderAppend struct {
 	Append genai.Request
 }
 
-func (c *ProviderAppend) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
+func (c *ProviderAppend) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
 	if len(msgs[len(msgs)-1].Requests) != 0 {
 		msgs = slices.Clone(msgs)
 		msgs[len(msgs)-1].Requests = slices.Clone(msgs[len(msgs)-1].Requests)
 		msgs[len(msgs)-1].Requests = append(msgs[len(msgs)-1].Requests, c.Append)
 	}
-	return c.Provider.GenSync(ctx, msgs, opts)
+	return c.Provider.GenSync(ctx, msgs, opts...)
 }
 
-func (c *ProviderAppend) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
+func (c *ProviderAppend) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
 	if len(msgs[len(msgs)-1].Requests) != 0 {
 		msgs = slices.Clone(msgs)
 		msgs[len(msgs)-1].Requests = slices.Clone(msgs[len(msgs)-1].Requests)
 		msgs[len(msgs)-1].Requests = append(msgs[len(msgs)-1].Requests, c.Append)
 	}
-	return c.Provider.GenStream(ctx, msgs, replies, opts)
+	return c.Provider.GenStream(ctx, msgs, replies, opts...)
 }
 
 func (c *ProviderAppend) Unwrap() genai.Provider {

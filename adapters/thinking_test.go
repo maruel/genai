@@ -114,7 +114,7 @@ func TestProviderThinking_GenSync_errors(t *testing.T) {
 				err:      tc.err,
 			}
 			tp := &adapters.ProviderThinking{Provider: mp, ThinkingTokenStart: "<thinking>", ThinkingTokenEnd: "</thinking>"}
-			_, err := tp.GenSync(t.Context(), genai.Messages{}, nil)
+			_, err := tp.GenSync(t.Context(), genai.Messages{})
 			if err == nil {
 				t.Fatal("expected error but got none")
 			}
@@ -336,7 +336,7 @@ func (m *mockProviderGenSync) OutputModalities() genai.Modalities {
 	return nil
 }
 
-func (m *mockProviderGenSync) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
+func (m *mockProviderGenSync) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
 	return m.response, m.err
 }
 
@@ -364,7 +364,7 @@ func (m *mockProviderGenStream) OutputModalities() genai.Modalities {
 	return nil
 }
 
-func (m *mockProviderGenStream) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
+func (m *mockProviderGenStream) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
 	if m.err != nil {
 		return genai.Result{}, m.err
 	}

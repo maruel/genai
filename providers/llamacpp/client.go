@@ -1205,8 +1205,8 @@ func (c *Client) Scoreboard() scoreboard.Score {
 }
 
 // GenSync implements genai.Provider.
-func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	return c.impl.GenSync(ctx, msgs, opts)
+func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
+	return c.impl.GenSync(ctx, msgs, opts...)
 }
 
 // GenSyncRaw provides access to the raw API.
@@ -1215,8 +1215,8 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 }
 
 // GenStream implements genai.Provider.
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
-	return c.impl.GenStream(ctx, msgs, chunks, opts)
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
+	return c.impl.GenStream(ctx, msgs, chunks, opts...)
 }
 
 // GenStreamRaw provides access to the raw API.
@@ -1233,20 +1233,12 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	return resp.ToModels(), nil
 }
 
-func (c *Client) Completions(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
+func (c *Client) Completions(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
 	// https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md#post-completion-given-a-prompt-it-returns-the-predicted-completion
 	// Doc mentions Cache:true causes non-determinism even if a non-zero seed is
 	// specified. Disable if it becomes a problem.
 	if err := msgs.Validate(); err != nil {
 		return genai.Result{}, err
-	}
-	if opts != nil {
-		if err := opts.Validate(); err != nil {
-			return genai.Result{}, err
-		}
-		if mod := opts.Modalities(); !slices.Contains(mod, genai.ModalityText) {
-			return genai.Result{}, fmt.Errorf("modality %s not supported, supported: %s", mod, c.impl.OutputModalities)
-		}
 	}
 	for i, msg := range msgs {
 		for j, content := range msg.Replies {
@@ -1256,14 +1248,10 @@ func (c *Client) Completions(ctx context.Context, msgs genai.Messages, opts gena
 		}
 	}
 	rpcin := CompletionRequest{CachePrompt: true}
-	var o []genai.Options
-	if opts != nil {
-		o = append(o, opts)
-	}
-	if err := rpcin.Init(msgs, "", o...); err != nil {
+	if err := rpcin.Init(msgs, "", opts...); err != nil {
 		return genai.Result{}, err
 	}
-	if err := c.initPrompt(ctx, &rpcin, opts, msgs); err != nil {
+	if err := c.initPrompt(ctx, &rpcin, msgs, opts...); err != nil {
 		return genai.Result{}, err
 	}
 	rpcout := CompletionResponse{}
@@ -1278,20 +1266,11 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 	return c.impl.DoRequest(ctx, "POST", c.completionsURL, in, out)
 }
 
-func (c *Client) CompletionsStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
+func (c *Client) CompletionsStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
 	result := genai.Result{}
 	if err := msgs.Validate(); err != nil {
 		return result, err
 	}
-	if opts != nil {
-		if err := opts.Validate(); err != nil {
-			return result, err
-		}
-		if mod := opts.Modalities(); !slices.Contains(mod, genai.ModalityText) {
-			return genai.Result{}, fmt.Errorf("modality %s not supported, supported: %s", mod, c.impl.OutputModalities)
-		}
-	}
-
 	for i, msg := range msgs {
 		for j, content := range msg.Replies {
 			if len(content.Opaque) != 0 {
@@ -1302,11 +1281,7 @@ func (c *Client) CompletionsStream(ctx context.Context, msgs genai.Messages, chu
 
 	in := CompletionRequest{}
 	var continuableErr error
-	var o []genai.Options
-	if opts != nil {
-		o = append(o, opts)
-	}
-	if err := in.Init(msgs, "", o...); err != nil {
+	if err := in.Init(msgs, "", opts...); err != nil {
 		// If it's an UnsupportedContinuableError, we can continue
 		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 			// Store the error to return later if no other error occurs
@@ -1316,7 +1291,7 @@ func (c *Client) CompletionsStream(ctx context.Context, msgs genai.Messages, chu
 			return result, err
 		}
 	}
-	if err := c.initPrompt(ctx, &in, opts, msgs); err != nil {
+	if err := c.initPrompt(ctx, &in, msgs, opts...); err != nil {
 		return result, err
 	}
 	ch := make(chan CompletionStreamChunkResponse)
@@ -1440,12 +1415,12 @@ func (c *Client) GetMetrics(ctx context.Context, m *Metrics) error {
 	return nil
 }
 
-func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, opts genai.Options, msgs genai.Messages) error {
+func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, msgs genai.Messages, opts ...genai.Options) error {
 	if c.encoding == nil {
 		// Use the server to convert the OpenAI style format into a templated form.
 		in2 := applyTemplateRequest{}
 		var continuableErr error
-		if err := in2.Init(msgs, opts); err != nil {
+		if err := in2.Init(msgs, opts...); err != nil {
 			// If it's an UnsupportedContinuableError, we can continue
 			if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 				// Store the error to return later if no other error occurs

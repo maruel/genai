@@ -156,7 +156,7 @@ func main() {
 	msgs := genai.Messages{
 		genai.NewTextMessage("Give me a life advice that sounds good but is a bad idea in practice."),
 	}
-	result, err := c.GenSync(ctx, msgs, nil)
+	result, err := c.GenSync(ctx, msgs)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -217,7 +217,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	resp, err := p.GenSync(ctx, genai.Messages{genai.NewTextMessage(query)}, nil)
+	resp, err := p.GenSync(ctx, genai.Messages{genai.NewTextMessage(query)})
 	if err != nil {
 		log.Fatalf("failed to use provider %q: %s", *provider, err)
 	}

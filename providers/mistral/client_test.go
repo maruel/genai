@@ -48,8 +48,8 @@ func (h *hideHTTP500) Unwrap() genai.Provider {
 	return h.Client
 }
 
-func (h *hideHTTP500) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	resp, err := h.Client.GenSync(ctx, msgs, opts)
+func (h *hideHTTP500) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
+	resp, err := h.Client.GenSync(ctx, msgs, opts...)
 	if err != nil {
 		var herr *httpjson.Error
 		if errors.As(err, &herr) && herr.StatusCode == 500 {
@@ -61,8 +61,8 @@ func (h *hideHTTP500) GenSync(ctx context.Context, msgs genai.Messages, opts gen
 	return resp, err
 }
 
-func (h *hideHTTP500) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
-	resp, err := h.Client.GenStream(ctx, msgs, chunks, opts)
+func (h *hideHTTP500) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
+	resp, err := h.Client.GenStream(ctx, msgs, chunks, opts...)
 	if err != nil {
 		var herr *httpjson.Error
 		if errors.As(err, &herr) && herr.StatusCode == 500 {

@@ -684,15 +684,11 @@ func (c *Client) Scoreboard() scoreboard.Score {
 }
 
 // GenSync implements genai.Provider.
-func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
+func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
 	result := genai.Result{}
 	in := ChatRequest{}
 	var continuableErr error
-	var o []genai.Options
-	if opts != nil {
-		o = append(o, opts)
-	}
-	if err := in.Init(msgs, c.impl.Model, o...); err != nil {
+	if err := in.Init(msgs, c.impl.Model, opts...); err != nil {
 		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 			continuableErr = uce
 		} else {
@@ -734,15 +730,11 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 }
 
 // GenStream implements genai.Provider.
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
 	result := genai.Result{}
 	in := ChatRequest{}
 	var continuableErr error
-	var o []genai.Options
-	if opts != nil {
-		o = append(o, opts)
-	}
-	if err := in.Init(msgs, c.impl.Model, o...); err != nil {
+	if err := in.Init(msgs, c.impl.Model, opts...); err != nil {
 		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 			continuableErr = uce
 		} else {

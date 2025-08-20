@@ -67,26 +67,26 @@ type handleGroqReasoning struct {
 	genai.Provider
 }
 
-func (h *handleGroqReasoning) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	if opts != nil {
-		if o := opts.(*genai.OptionsText); len(o.Tools) != 0 || o.DecodeAs != nil || o.ReplyAsJSON {
-			opts = &groq.OptionsText{ReasoningFormat: groq.ReasoningFormatParsed, OptionsText: *o}
-			return h.Provider.GenSync(ctx, msgs, opts)
+func (h *handleGroqReasoning) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
+	for _, opt := range opts {
+		if o, ok := opt.(*genai.OptionsText); ok && len(o.Tools) != 0 || o.DecodeAs != nil || o.ReplyAsJSON {
+			opts = append(opts, &groq.Options{ReasoningFormat: groq.ReasoningFormatParsed})
+			return h.Provider.GenSync(ctx, msgs, opts...)
 		}
 	}
 	c := adapters.ProviderThinking{Provider: h.Provider, ThinkingTokenStart: "<think>", ThinkingTokenEnd: "\n</think>\n"}
-	return c.GenSync(ctx, msgs, opts)
+	return c.GenSync(ctx, msgs, opts...)
 }
 
-func (h *handleGroqReasoning) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
-	if opts != nil {
-		if o := opts.(*genai.OptionsText); len(o.Tools) != 0 || o.DecodeAs != nil || o.ReplyAsJSON {
-			opts = &groq.OptionsText{ReasoningFormat: groq.ReasoningFormatParsed, OptionsText: *o}
-			return h.Provider.GenStream(ctx, msgs, replies, opts)
+func (h *handleGroqReasoning) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
+	for _, opt := range opts {
+		if o, ok := opt.(*genai.OptionsText); ok && len(o.Tools) != 0 || o.DecodeAs != nil || o.ReplyAsJSON {
+			opts = append(opts, &groq.Options{ReasoningFormat: groq.ReasoningFormatParsed})
+			return h.Provider.GenStream(ctx, msgs, replies, opts...)
 		}
 	}
 	c := adapters.ProviderThinking{Provider: h.Provider, ThinkingTokenStart: "<think>", ThinkingTokenEnd: "\n</think>\n"}
-	return c.GenStream(ctx, msgs, replies, opts)
+	return c.GenStream(ctx, msgs, replies, opts...)
 }
 
 func (h *handleGroqReasoning) Unwrap() genai.Provider {

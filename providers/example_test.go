@@ -95,7 +95,7 @@ func Example_all_Full() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	resp, err := p.GenSync(ctx, genai.Messages{genai.NewTextMessage(query)}, nil)
+	resp, err := p.GenSync(ctx, genai.Messages{genai.NewTextMessage(query)})
 	if err != nil {
 		log.Fatalf("failed to use provider %q: %s", *provider, err)
 	}

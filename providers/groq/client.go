@@ -193,15 +193,25 @@ var Scoreboard = scoreboard.Score{
 	},
 }
 
-// OptionsText is the Groq-specific options.
-type OptionsText struct {
-	genai.OptionsText
+// TODO: Split in two.
 
+// Options is the Groq-specific options.
+type Options struct {
 	// ReasoningFormat requests Groq to process the stream on our behalf. It must only be used on thinking
 	// models. It is required for thinking models to enable JSON structured output or tool calling.
 	ReasoningFormat ReasoningFormat
 	// ServiceTier specify the priority.
 	ServiceTier ServiceTier
+}
+
+func (o *Options) Validate() error {
+	// TODO: validate ReasoningFormat and ServiceTier.
+	return nil
+}
+
+func (o *Options) Modalities() genai.Modalities {
+	// TODO: Remove.
+	return nil
 }
 
 // ServiceTier is the quality of service to determine the request's priority.
@@ -276,9 +286,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 			return err
 		}
 		switch v := opt.(type) {
-		case *OptionsText:
-			unsupported, errs = c.initOptions(&v.OptionsText, model)
-			sp = v.SystemPrompt
+		case *Options:
 			c.ServiceTier = v.ServiceTier
 			c.ReasoningFormat = v.ReasoningFormat
 		case *genai.OptionsText:
@@ -924,8 +932,8 @@ func (c *Client) Scoreboard() scoreboard.Score {
 }
 
 // GenSync implements genai.Provider.
-func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	return c.impl.GenSync(ctx, msgs, opts)
+func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
+	return c.impl.GenSync(ctx, msgs, opts...)
 }
 
 // GenSyncRaw provides access to the raw API.
@@ -934,8 +942,8 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 }
 
 // GenStream implements genai.Provider.
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
-	return c.impl.GenStream(ctx, msgs, chunks, opts)
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
+	return c.impl.GenStream(ctx, msgs, chunks, opts...)
 }
 
 // GenStreamRaw provides access to the raw API.

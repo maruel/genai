@@ -19,7 +19,6 @@ import (
 	"net/http"
 	"os"
 	"reflect"
-	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -1243,14 +1242,14 @@ func (c *Client) Scoreboard() scoreboard.Score {
 }
 
 // GenSync implements genai.Provider.
-func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
+func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
 	if c.impl.OutputModalities[0] == genai.ModalityText {
-		return c.impl.GenSync(ctx, msgs, opts)
+		return c.impl.GenSync(ctx, msgs, opts...)
 	}
 	if len(msgs) != 1 {
 		return genai.Result{}, errors.New("must pass exactly one Message")
 	}
-	return c.GenDoc(ctx, msgs[0], opts)
+	return c.GenDoc(ctx, msgs[0], opts...)
 }
 
 // GenSyncRaw provides access to the raw API.
@@ -1259,11 +1258,11 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 }
 
 // GenStream implements genai.Provider.
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
 	if c.impl.OutputModalities[0] == genai.ModalityText {
-		return c.impl.GenStream(ctx, msgs, chunks, opts)
+		return c.impl.GenStream(ctx, msgs, chunks, opts...)
 	}
-	return base.SimulateStream(ctx, c, msgs, chunks, opts)
+	return base.SimulateStream(ctx, c, msgs, chunks, opts...)
 }
 
 // GenStreamRaw provides access to the raw API.
@@ -1274,23 +1273,19 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest, out chan<- C
 // GenDoc is a simplified version of GenSync.
 //
 // Use it to generate images.
-func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
-	if c.isAudio(opts) {
+func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts ...genai.Options) (genai.Result, error) {
+	if c.isAudio() {
 		// https://docs.together.ai/reference/audio-speech
 		return genai.Result{}, errors.New("audio not implemented yet")
 	}
-	if c.isImage(opts) {
+	if c.isImage() {
 		// https://docs.together.ai/reference/post-images-generations
 		res := genai.Result{}
 		if err := c.impl.Validate(); err != nil {
 			return genai.Result{}, err
 		}
 		req := ImageRequest{}
-		var o []genai.Options
-		if opts != nil {
-			o = append(o, opts)
-		}
-		if err := req.Init(msg, c.impl.Model, o...); err != nil {
+		if err := req.Init(msg, c.impl.Model, opts...); err != nil {
 			return res, err
 		}
 		resp := ImageResponse{}
@@ -1326,22 +1321,16 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	return resp.ToModels(), nil
 }
 
-func (c *Client) isAudio(opts genai.Options) bool {
+func (c *Client) isAudio() bool {
 	// TODO: Use Scoreboard list. The problem is that it's recursive while recreating the scoreboard, and that
 	// the server HTTP 500 on onsupported models.
-	if strings.HasPrefix(c.impl.Model, "cartesia/") {
-		return true
-	}
-	return opts != nil && slices.Contains(opts.Modalities(), genai.ModalityAudio)
+	return strings.HasPrefix(c.impl.Model, "cartesia/")
 }
 
-func (c *Client) isImage(opts genai.Options) bool {
+func (c *Client) isImage() bool {
 	// TODO: Use Scoreboard list. The problem is that it's recursive while recreating the scoreboard, and that
 	// the server HTTP 500 on onsupported models.
-	if strings.HasPrefix(c.impl.Model, "black-forest-labs/") {
-		return true
-	}
-	return opts != nil && slices.Contains(opts.Modalities(), genai.ModalityImage)
+	return strings.HasPrefix(c.impl.Model, "black-forest-labs/")
 }
 
 func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ReplyFragment, result *genai.Result) error {

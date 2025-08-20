@@ -51,15 +51,17 @@ type imageModelClient struct {
 	*Client
 }
 
-func (i *imageModelClient) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	if v, ok := opts.(*genai.OptionsImage); ok {
-		// Ask for a smaller size.
-		n := *v
-		n.Width = 256
-		n.Height = 256
-		opts = &n
+func (i *imageModelClient) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
+	for i := range opts {
+		if v, ok := opts[i].(*genai.OptionsImage); ok {
+			// Ask for a smaller size.
+			n := *v
+			n.Width = 256
+			n.Height = 256
+			opts[i] = &n
+		}
 	}
-	return i.Client.GenSync(ctx, msgs, opts)
+	return i.Client.GenSync(ctx, msgs, opts...)
 }
 
 func TestClient_Preferred(t *testing.T) {

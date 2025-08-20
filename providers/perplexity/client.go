@@ -96,14 +96,21 @@ var Scoreboard = scoreboard.Score{
 	},
 }
 
-// OptionsText includes Perplexity specific options.
-type OptionsText struct {
-	genai.OptionsText
-
+// Options defines Perplexity specific options.
+type Options struct {
 	// DisableSearch disables websearch, which is automatic for all models.
 	DisableSearch bool
 	// DisableRelatedQuestions disabled related questions, to save on tokens and latency.
 	DisableRelatedQuestions bool
+}
+
+func (o *Options) Validate() error {
+	return nil
+}
+
+func (o *Options) Modalities() genai.Modalities {
+	// TODO: Remove.
+	return nil
 }
 
 // ChatRequest is documented at https://docs.perplexity.ai/api-reference/chat-completions-post
@@ -174,9 +181,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 		case *genai.OptionsText:
 			unsupported, errs = c.initOptions(v)
 			sp = v.SystemPrompt
-		case *OptionsText:
-			unsupported, errs = c.initOptions(&v.OptionsText)
-			sp = v.SystemPrompt
+		case *Options:
 			c.DisableSearch = v.DisableSearch
 			c.ReturnRelatedQuestions = !v.DisableRelatedQuestions
 		default:
@@ -624,8 +629,8 @@ func (c *Client) Scoreboard() scoreboard.Score {
 }
 
 // GenSync implements genai.Provider.
-func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	return c.impl.GenSync(ctx, msgs, opts)
+func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
+	return c.impl.GenSync(ctx, msgs, opts...)
 }
 
 // GenSyncRaw provides access to the raw API.
@@ -634,8 +639,8 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 }
 
 // GenStream implements genai.Provide.
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
-	return c.impl.GenStream(ctx, msgs, chunks, opts)
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
+	return c.impl.GenStream(ctx, msgs, chunks, opts...)
 }
 
 // GenStreamRaw provides access to the raw API.

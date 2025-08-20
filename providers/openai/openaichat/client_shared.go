@@ -22,12 +22,38 @@ import (
 	"github.com/maruel/genai/scoreboard"
 )
 
-// OptionsImage includes OpenAI specific options.
-type OptionsImage struct {
-	genai.OptionsImage
+// OptionsText defines OpenAI specific options.
+type OptionsText struct {
+	// ReasoningEffort is the amount of effort (number of tokens) the LLM can use to think about the answer.
+	//
+	// When unspecified, defaults to medium.
+	ReasoningEffort ReasoningEffort
+	// ServiceTier specify the priority.
+	ServiceTier ServiceTier
+}
 
+func (o *OptionsText) Validate() error {
+	return nil
+}
+
+func (o *OptionsText) Modalities() genai.Modalities {
+	// TODO: Remove.
+	return nil
+}
+
+// OptionsImage defines OpenAI specific options.
+type OptionsImage struct {
 	// Background is only supported on gpt-image-1.
 	Background Background
+}
+
+func (o *OptionsImage) Validate() error {
+	return nil
+}
+
+func (o *OptionsImage) Modalities() genai.Modalities {
+	// TODO: Remove.
+	return nil
 }
 
 // ServiceTier is the quality of service to determine the request's priority.
@@ -123,9 +149,6 @@ func (i *ImageRequest) Init(msg genai.Message, model string, opts ...genai.Optio
 		}
 		switch v := opt.(type) {
 		case *OptionsImage:
-			if v.Height != 0 && v.Width != 0 {
-				i.Size = fmt.Sprintf("%dx%d", v.Width, v.Height)
-			}
 			i.Background = v.Background
 		case *genai.OptionsImage:
 			if v.Height != 0 && v.Width != 0 {
@@ -371,37 +394,33 @@ func (c *Client) Scoreboard() scoreboard.Score {
 }
 
 // GenSync implements genai.Provider.
-func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
+func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
 	if c.isAudio() || c.isImage() || c.isVideo() {
 		if len(msgs) != 1 {
 			return genai.Result{}, errors.New("must pass exactly one Message")
 		}
-		return c.GenDoc(ctx, msgs[0], opts)
+		return c.GenDoc(ctx, msgs[0], opts...)
 	}
-	return c.impl.GenSync(ctx, msgs, opts)
+	return c.impl.GenSync(ctx, msgs, opts...)
 }
 
 // GenStream implements genai.Provider.
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
 	if c.isAudio() || c.isImage() || c.isVideo() {
-		return base.SimulateStream(ctx, c, msgs, chunks, opts)
+		return base.SimulateStream(ctx, c, msgs, chunks, opts...)
 	}
-	return c.impl.GenStream(ctx, msgs, chunks, opts)
+	return c.impl.GenStream(ctx, msgs, chunks, opts...)
 }
 
 // GenDoc is a simplified version of GenSync.
-func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
+func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts ...genai.Options) (genai.Result, error) {
 	// https://platform.openai.com/docs/api-reference/images/create
 	res := genai.Result{}
 	if err := c.impl.Validate(); err != nil {
 		return res, err
 	}
 	req := ImageRequest{}
-	var o []genai.Options
-	if opts != nil {
-		o = append(o, opts)
-	}
-	if err := req.Init(msg, c.impl.Model, o...); err != nil {
+	if err := req.Init(msg, c.impl.Model, opts...); err != nil {
 		return res, err
 	}
 	url := "https://api.openai.com/v1/images/generations"

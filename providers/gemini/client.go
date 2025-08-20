@@ -313,16 +313,11 @@ var Scoreboard = scoreboard.Score{
 	},
 }
 
-// Options includes Gemini specific options.
+// Options defines Gemini specific options.
 type Options struct {
-	genai.OptionsAudio
-	genai.OptionsImage
-	genai.OptionsText
-
 	// ThinkingBudget is the maximum number of tokens the LLM can use to think about the answer. When 0,
 	// thinking is disabled. It generally must be above 1024 and below MaxTokens and 24576.
 	ThinkingBudget int64
-
 	// ResponseModalities defines what the LLM can return, text, images or audio. Default to text.
 	//
 	// https://ai.google.dev/gemini-api/docs/image-generation
@@ -330,10 +325,11 @@ type Options struct {
 }
 
 func (o *Options) Validate() error {
-	return errors.Join([]error{o.OptionsAudio.Validate(), o.OptionsImage.Validate(), o.OptionsText.Validate()}...)
+	return nil
 }
 
 func (o *Options) Modalities() genai.Modalities {
+	// TODO: Remove.
 	return o.ResponseModalities
 }
 
@@ -536,8 +532,6 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 					}
 				}
 			}
-			// TODO: Handle audio, image and video.
-			unsupported, errs = c.initOptions(&v.OptionsText, model)
 		case *genai.OptionsText:
 			unsupported, errs = c.initOptions(v, model)
 		case *genai.OptionsAudio:
@@ -1161,11 +1155,6 @@ func (i *ImageRequest) Init(msg genai.Message, model string, opts ...genai.Optio
 		}
 		switch v := opt.(type) {
 		case *Options:
-			if v.OptionsImage.Seed != 0 {
-				// Get a 400 error: i.Parameters.Seed = v.OptionsImage.Seed
-				uce = &genai.UnsupportedContinuableError{Unsupported: []string{"Seed"}}
-			}
-			// TODO: Width and Height
 		case *genai.OptionsImage:
 			if v.Seed != 0 {
 				// Get a 400 error: i.Parameters.Seed = v.Seed
@@ -1739,14 +1728,14 @@ func (c *Client) Scoreboard() scoreboard.Score {
 }
 
 // GenSync implements genai.Provider.
-func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
+func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
 	if c.isAudio() || c.isImage() || c.isVideo() {
 		if len(msgs) != 1 {
 			return genai.Result{}, errors.New("must pass exactly one Message")
 		}
-		return c.GenDoc(ctx, msgs[0], opts)
+		return c.GenDoc(ctx, msgs[0], opts...)
 	}
-	return c.Impl.GenSync(ctx, msgs, opts)
+	return c.Impl.GenSync(ctx, msgs, opts...)
 }
 
 // GenSyncRaw provides access to the raw API.
@@ -1755,11 +1744,11 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 }
 
 // GenStream implements genai.Provider.
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
 	if c.isAudio() || c.isImage() || c.isVideo() {
-		return base.SimulateStream(ctx, c, msgs, chunks, opts)
+		return base.SimulateStream(ctx, c, msgs, chunks, opts...)
 	}
-	return c.Impl.GenStream(ctx, msgs, chunks, opts)
+	return c.Impl.GenStream(ctx, msgs, chunks, opts...)
 }
 
 // GenStreamRaw provides access to the raw API.
@@ -1781,7 +1770,7 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest, out chan<- C
 //
 // At certain volumes, using cached tokens is lower cost than passing in the same corpus of tokens repeatedly.
 // The cost for caching depends on the input token size and how long you want the tokens to persist.
-func (c *Client) CacheAddRequest(ctx context.Context, msgs genai.Messages, opts genai.Options, name, displayName string, ttl time.Duration) (string, error) {
+func (c *Client) CacheAddRequest(ctx context.Context, msgs genai.Messages, name, displayName string, ttl time.Duration, opts ...genai.Options) (string, error) {
 	// See https://ai.google.dev/gemini-api/docs/caching?hl=en&lang=rest#considerations
 	// Useful when reusing the same large data multiple times to reduce token usage.
 	// This requires a pinned model, with trailing -001.
@@ -1789,11 +1778,7 @@ func (c *Client) CacheAddRequest(ctx context.Context, msgs genai.Messages, opts 
 		return "", err
 	}
 	in := CachedContent{}
-	var o []genai.Options
-	if opts != nil {
-		o = append(o, opts)
-	}
-	if err := in.Init(msgs, c.Impl.Model, name, displayName, ttl, o...); err != nil {
+	if err := in.Init(msgs, c.Impl.Model, name, displayName, ttl, opts...); err != nil {
 		return "", err
 	}
 	out := CachedContent{}
@@ -1881,7 +1866,7 @@ func (c *Client) CacheDelete(ctx context.Context, name string) error {
 // Use it to generate images.
 //
 // GenDoc is only supported for models that have "predict" reported in their Model.SupportedGenerationMethods.
-func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
+func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts ...genai.Options) (genai.Result, error) {
 	res := genai.Result{}
 	if err := c.Impl.Validate(); err != nil {
 		return res, err
@@ -1895,11 +1880,7 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 		},
 	}
 	var continuableErr error
-	var o []genai.Options
-	if opts != nil {
-		o = append(o, opts)
-	}
-	if err := req.Init(msg, c.Impl.Model, o...); err != nil {
+	if err := req.Init(msg, c.Impl.Model, opts...); err != nil {
 		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 			continuableErr = uce
 		} else {
@@ -1953,7 +1934,7 @@ func (c *Client) GenDocRaw(ctx context.Context, req ImageRequest) (ImageResponse
 //
 // The resulting file is available for 48 hours. It requires the API key in the HTTP header to be fetched, so
 // use the client's HTTP client.
-func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Job, error) {
+func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Job, error) {
 	if err := c.Impl.Validate(); err != nil {
 		return "", err
 	}
@@ -1962,11 +1943,7 @@ func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.O
 	}
 	req := ImageRequest{}
 	var continuableErr error
-	var o []genai.Options
-	if opts != nil {
-		o = append(o, opts)
-	}
-	if err := req.Init(msgs[0], c.Impl.Model, o...); err != nil {
+	if err := req.Init(msgs[0], c.Impl.Model, opts...); err != nil {
 		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 			continuableErr = uce
 		} else {

@@ -237,18 +237,6 @@ var Scoreboard = scoreboard.Score{
 	},
 }
 
-// OptionsText includes OpenAI specific options.
-type OptionsText struct {
-	genai.OptionsText
-
-	// ReasoningEffort is the amount of effort (number of tokens) the LLM can use to think about the answer.
-	//
-	// When unspecified, defaults to medium.
-	ReasoningEffort ReasoningEffort
-	// ServiceTier specify the priority.
-	ServiceTier ServiceTier
-}
-
 // ChatRequest is documented at https://platform.openai.com/docs/api-reference/chat/create
 type ChatRequest struct {
 	Model            string             `json:"model"`
@@ -328,8 +316,6 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 		case *OptionsText:
 			c.ReasoningEffort = v.ReasoningEffort
 			c.ServiceTier = v.ServiceTier
-			unsupported = c.initOptions(&v.OptionsText, model)
-			sp = v.SystemPrompt
 		case *genai.OptionsText:
 			c.ServiceTier = ServiceTierAuto
 			unsupported = c.initOptions(v, model)
@@ -1182,8 +1168,8 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest, out chan<- C
 // GenAsync implements genai.ProviderGenAsync.
 //
 // It requests the providers' batch API and returns the job ID. It can take up to 24 hours to complete.
-func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Job, error) {
-	fileID, err := c.CacheAddRequest(ctx, msgs, opts, "TODO", "batch.json", 24*time.Hour)
+func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Job, error) {
+	fileID, err := c.CacheAddRequest(ctx, msgs, "TODO", "batch.json", 24*time.Hour, opts...)
 	if err != nil {
 		return "", err
 	}
@@ -1272,17 +1258,13 @@ func (c *Client) CancelRaw(ctx context.Context, id genai.Job) (Batch, error) {
 	return resp, err
 }
 
-func (c *Client) CacheAddRequest(ctx context.Context, msgs genai.Messages, opts genai.Options, name, displayName string, ttl time.Duration) (string, error) {
+func (c *Client) CacheAddRequest(ctx context.Context, msgs genai.Messages, name, displayName string, ttl time.Duration, opts ...genai.Options) (string, error) {
 	if err := c.impl.Validate(); err != nil {
 		return "", err
 	}
 	// Upload the messages and options as a file.
 	b := BatchRequestInput{CustomID: name, Method: "POST", URL: "/v1/chat/completions"}
-	var o []genai.Options
-	if opts != nil {
-		o = append(o, opts)
-	}
-	if err := b.Body.Init(msgs, c.impl.Model, o...); err != nil {
+	if err := b.Body.Init(msgs, c.impl.Model, opts...); err != nil {
 		return "", err
 	}
 	raw, err := json.Marshal(b)

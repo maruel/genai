@@ -73,30 +73,12 @@ type injectOption struct {
 	opts gemini.Options
 }
 
-func (i *injectOption) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	n := i.opts
-	if opts != nil {
-		if v, ok := opts.(*genai.OptionsText); ok {
-			n.OptionsText = *v
-		} else if v, ok := opts.(*genai.OptionsImage); ok {
-			n.OptionsImage = *v
-		}
-	}
-	opts = &n
-	return i.Client.GenSync(ctx, msgs, opts)
+func (i *injectOption) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
+	return i.Client.GenSync(ctx, msgs, append(opts, &i.opts)...)
 }
 
-func (i *injectOption) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
-	n := i.opts
-	if opts != nil {
-		if v, ok := opts.(*genai.OptionsText); ok {
-			n.OptionsText = *v
-		} else if v, ok := opts.(*genai.OptionsImage); ok {
-			n.OptionsImage = *v
-		}
-	}
-	opts = &n
-	return i.Client.GenStream(ctx, msgs, replies, opts)
+func (i *injectOption) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
+	return i.Client.GenStream(ctx, msgs, replies, append(opts, &i.opts)...)
 }
 
 func TestClient_Preferred(t *testing.T) {
@@ -261,7 +243,7 @@ Ultimately, the human endeavor is a quest for understanding, not just of the ext
 			},
 		},
 	}
-	name, err := c.CacheAddRequest(ctx, msgs, &opts, "", "Show time", 10*time.Minute)
+	name, err := c.CacheAddRequest(ctx, msgs, "", "Show time", 10*time.Minute, &opts)
 	if err != nil {
 		t.Fatal(err)
 	}

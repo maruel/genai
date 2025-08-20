@@ -365,8 +365,8 @@ func processHeaders(h http.Header) []genai.RateLimit {
 }
 
 // GenSync implements genai.Provider.
-func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	id, err := c.GenAsync(ctx, msgs, opts)
+func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
+	id, err := c.GenAsync(ctx, msgs, opts...)
 	if err != nil {
 		return genai.Result{}, err
 	}
@@ -385,8 +385,8 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Op
 }
 
 // GenStream implements genai.Provider.
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
-	return base.SimulateStream(ctx, c, msgs, chunks, opts)
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
+	return base.SimulateStream(ctx, c, msgs, chunks, opts...)
 }
 
 // GenDoc is a simplified version of GenSync.
@@ -394,8 +394,8 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan
 // It synchronously generates a document.
 //
 // Generation can be rather slow, several seconds or minutes.
-func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
-	id, err := c.GenAsync(ctx, genai.Messages{msg}, opts)
+func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts ...genai.Options) (genai.Result, error) {
+	id, err := c.GenAsync(ctx, genai.Messages{msg}, opts...)
 	if err != nil {
 		return genai.Result{}, err
 	}
@@ -416,13 +416,9 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 // GenAsync implements genai.ProviderGenAsync.
 //
 // It requests the providers' asynchronous API and returns the job ID.
-func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Job, error) {
+func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Job, error) {
 	req := ImageRequest{}
-	var o []genai.Options
-	if opts != nil {
-		o = append(o, opts)
-	}
-	if err := req.Init(msgs, c.impl.Model, o...); err != nil {
+	if err := req.Init(msgs, c.impl.Model, opts...); err != nil {
 		return "", err
 	}
 	reqresp, err := c.GenAsyncRaw(ctx, req)

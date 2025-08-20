@@ -157,10 +157,8 @@ var Scoreboard = scoreboard.Score{
 	},
 }
 
-// OptionsText includes Anthropic specific options.
+// OptionsText defines Anthropic specific options.
 type OptionsText struct {
-	genai.OptionsText
-
 	// ThinkingBudget is the maximum number of tokens the LLM can use to think about the answer. When 0,
 	// thinking is disabled. It generally must be above 1024 and below MaxTokens.
 	ThinkingBudget int64
@@ -170,6 +168,15 @@ type OptionsText struct {
 	//
 	// https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching
 	MessagesToCache int
+}
+
+func (o *OptionsText) Validate() error {
+	return nil
+}
+
+func (o *OptionsText) Modalities() genai.Modalities {
+	// TODO: Remove.
+	return nil
 }
 
 // ChatRequest is documented at https://docs.anthropic.com/en/api/messages
@@ -217,7 +224,6 @@ func (c *ChatRequest) initImpl(msgs genai.Messages, model string, cache bool, op
 		}
 		switch v := opt.(type) {
 		case *OptionsText:
-			unsupported, errs = c.initOptions(&v.OptionsText)
 			if cache {
 				msgToCache = v.MessagesToCache
 			} else if v.MessagesToCache != 0 {
@@ -1406,7 +1412,7 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 // GenAsync implements genai.ProviderGenAsync.
 //
 // It requests the providers' batch API and returns the job ID. It can take up to 24 hours to complete.
-func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Job, error) {
+func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Job, error) {
 	if err := c.impl.Validate(); err != nil {
 		return "", err
 	}
@@ -1416,11 +1422,7 @@ func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.O
 	// of doing that, as it increases the risks of partial failure. So for now do not expose the functionality
 	// of creating multiple requests at once unless we realize there's a specific use case.
 	b := BatchRequest{Requests: []BatchRequestItem{{}}}
-	var o []genai.Options
-	if opts != nil {
-		o = append(o, opts)
-	}
-	if err := b.Requests[0].Init(msgs, c.impl.Model, o...); err != nil {
+	if err := b.Requests[0].Init(msgs, c.impl.Model, opts...); err != nil {
 		return "", err
 	}
 	resp, err := c.GenAsyncRaw(ctx, b)
@@ -1521,8 +1523,8 @@ func (c *Client) Scoreboard() scoreboard.Score {
 }
 
 // GenSync implements genai.Provider.
-func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	return c.impl.GenSync(ctx, msgs, opts)
+func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
+	return c.impl.GenSync(ctx, msgs, opts...)
 }
 
 // GenSyncRaw provides access to the raw API.
@@ -1531,8 +1533,8 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 }
 
 // GenStream implements genai.Provider.
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
-	return c.impl.GenStream(ctx, msgs, chunks, opts)
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
+	return c.impl.GenStream(ctx, msgs, chunks, opts...)
 }
 
 // GenStreamRaw provides access to the raw API.

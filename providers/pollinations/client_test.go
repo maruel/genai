@@ -42,15 +42,17 @@ func (h *hideHTTP500) Unwrap() genai.Provider {
 	return h.Client
 }
 
-func (h *hideHTTP500) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	if v, ok := opts.(*genai.OptionsImage); ok {
-		// Ask for a smaller size.
-		n := *v
-		n.Width = 256
-		n.Height = 256
-		opts = &n
+func (h *hideHTTP500) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
+	for i := range opts {
+		if v, ok := opts[i].(*genai.OptionsImage); ok {
+			// Ask for a smaller size.
+			n := *v
+			n.Width = 256
+			n.Height = 256
+			opts[i] = &n
+		}
 	}
-	resp, err := h.Client.GenSync(ctx, msgs, opts)
+	resp, err := h.Client.GenSync(ctx, msgs, opts...)
 	if err != nil {
 		var herr *httpjson.Error
 		if errors.As(err, &herr) && herr.StatusCode == 500 {
@@ -62,8 +64,8 @@ func (h *hideHTTP500) GenSync(ctx context.Context, msgs genai.Messages, opts gen
 	return resp, err
 }
 
-func (h *hideHTTP500) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
-	resp, err := h.Client.GenStream(ctx, msgs, chunks, opts)
+func (h *hideHTTP500) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
+	resp, err := h.Client.GenStream(ctx, msgs, chunks, opts...)
 	if err != nil {
 		var herr *httpjson.Error
 		if errors.As(err, &herr) && herr.StatusCode == 500 {

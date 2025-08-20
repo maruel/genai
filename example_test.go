@@ -47,7 +47,7 @@ func ExampleProvider_genSync_vision() {
 			},
 		},
 	}
-	resp, err := c.GenSync(ctx, msgs, nil)
+	resp, err := c.GenSync(ctx, msgs)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -132,7 +132,7 @@ func ExampleProvider_genSync_pdf() {
 			},
 		},
 	}
-	resp, err := c.GenSync(ctx, msgs, nil)
+	resp, err := c.GenSync(ctx, msgs)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -163,7 +163,7 @@ func ExampleProvider_genSync_audio() {
 			},
 		},
 	}
-	resp, err := c.GenSync(ctx, msgs, nil)
+	resp, err := c.GenSync(ctx, msgs)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -191,7 +191,7 @@ func ExampleProvider_genSync_video() {
 		genai.NewTextMessage("What is the word? Reply with exactly and only one word."),
 		{Requests: []genai.Request{{Doc: genai.Doc{Src: f}}}},
 	}
-	resp, err := c.GenSync(ctx, msgs, nil)
+	resp, err := c.GenSync(ctx, msgs)
 	if err != nil {
 		log.Fatal(err)
 	}

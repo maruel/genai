@@ -1478,12 +1478,22 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Op
 	return c.ProviderGen.GenSync(ctx, msgs, opts)
 }
 
+// GenSyncRaw provides access to the raw API.
+func (c *Client) GenSyncRaw(ctx context.Context, in *Response, out *Response) error {
+	return c.ProviderGen.GenSyncRaw(ctx, in, out)
+}
+
 // GenStream implements genai.ProviderGen.
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
 	if c.isImage(opts) {
 		return base.SimulateStream(ctx, c, msgs, chunks, opts)
 	}
 	return c.ProviderGen.GenStream(ctx, msgs, chunks, opts)
+}
+
+// GenStreamRaw provides access to the raw API.
+func (c *Client) GenStreamRaw(ctx context.Context, in *Response, out chan<- ResponseStreamChunkResponse) error {
+	return c.ProviderGen.GenStreamRaw(ctx, in, out)
 }
 
 // GenDoc implements genai.ProviderGenDoc.

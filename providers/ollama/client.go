@@ -675,6 +675,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Op
 	return result, continuableErr
 }
 
+// GenSyncRaw provides access to the raw API.
 func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatResponse) error {
 	if err := c.Validate(); err != nil {
 		return err
@@ -726,6 +727,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan
 	return result, continuableErr
 }
 
+// GenStreamRaw provides access to the raw API.
 func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest, out chan<- ChatStreamChunkResponse) error {
 	if err := c.Validate(); err != nil {
 		return err

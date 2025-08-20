@@ -9,6 +9,7 @@ package perplexity
 
 import (
 	"bytes"
+	"context"
 	"encoding/base64"
 	"encoding/json"
 	"errors"
@@ -593,6 +594,16 @@ func (c *Client) ModelID() string {
 // Scoreboard implements scoreboard.ProviderScore.
 func (c *Client) Scoreboard() scoreboard.Score {
 	return Scoreboard
+}
+
+// GenSync implements genai.ProviderGen.
+func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
+	return c.ProviderGen.GenSync(ctx, msgs, opts)
+}
+
+// GenStream implements genai.ProviderGen.
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
+	return c.ProviderGen.GenStream(ctx, msgs, chunks, opts)
 }
 
 func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ReplyFragment, result *genai.Result) error {

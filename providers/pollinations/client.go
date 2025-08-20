@@ -1080,6 +1080,7 @@ func (c *Client) Scoreboard() scoreboard.Score {
 	return Scoreboard
 }
 
+// GenSync implements genai.ProviderGen.
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
 	if c.isAudio(opts) || c.isImage(opts) {
 		if len(msgs) != 1 {
@@ -1093,6 +1094,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Op
 	return c.ProviderGen.GenSync(ctx, msgs, opts)
 }
 
+// GenStream implements genai.ProviderGen.
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
 	if c.isAudio(opts) || c.isImage(opts) {
 		return base.SimulateStream(ctx, c, msgs, chunks, opts)

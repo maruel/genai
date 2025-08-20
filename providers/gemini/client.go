@@ -1605,6 +1605,16 @@ func (c *Client) Scoreboard() scoreboard.Score {
 	return Scoreboard
 }
 
+// GenSync implements genai.ProviderGen.
+func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
+	return c.ProviderGen.GenSync(ctx, msgs, opts)
+}
+
+// GenStream implements genai.ProviderGen.
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
+	return c.ProviderGen.GenStream(ctx, msgs, chunks, opts)
+}
+
 // CacheAddRequest caches the content for later use.
 //
 // Includes tools and systemprompt.

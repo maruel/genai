@@ -345,7 +345,7 @@ func (er *ErrorResponse) IsAPIError() bool {
 
 // Client implements genai.ProviderGen.
 type Client struct {
-	base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
+	impl base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
 // New creates a new client to talk to an "OpenAI-compatible" platform API.
@@ -377,7 +377,7 @@ func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.Round
 		t = wrapper(t)
 	}
 	return &Client{
-		ProviderGen: base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+		impl: base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
 			GenSyncURL:           opts.Remote,
 			ModelOptional:        true,
@@ -404,7 +404,7 @@ func (c *Client) Name() string {
 //
 // It returns the selected model ID.
 func (c *Client) ModelID() string {
-	return c.Model
+	return c.impl.Model
 }
 
 // Scoreboard implements scoreboard.ProviderScore.
@@ -414,22 +414,22 @@ func (c *Client) Scoreboard() scoreboard.Score {
 
 // GenSync implements genai.ProviderGen.
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	return c.ProviderGen.GenSync(ctx, msgs, opts)
+	return c.impl.GenSync(ctx, msgs, opts)
 }
 
 // GenSyncRaw provides access to the raw API.
 func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatResponse) error {
-	return c.ProviderGen.GenSyncRaw(ctx, in, out)
+	return c.impl.GenSyncRaw(ctx, in, out)
 }
 
 // GenStream implements genai.ProviderGen.
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
-	return c.ProviderGen.GenStream(ctx, msgs, chunks, opts)
+	return c.impl.GenStream(ctx, msgs, chunks, opts)
 }
 
 // GenStreamRaw provides access to the raw API.
 func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest, out chan<- ChatStreamChunkResponse) error {
-	return c.ProviderGen.GenStreamRaw(ctx, in, out)
+	return c.impl.GenStreamRaw(ctx, in, out)
 }
 
 func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ReplyFragment, result *genai.Result) error {

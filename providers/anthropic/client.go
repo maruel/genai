@@ -1288,7 +1288,7 @@ func (er *ErrorResponse) IsAPIError() bool {
 
 // Client implements genai.ProviderGen and genai.ProviderModel.
 type Client struct {
-	base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
+	impl base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
 // New creates a new client to talk to the Anthropic platform API.
@@ -1327,7 +1327,7 @@ func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.Round
 	}
 	// Anthropic allows Opaque fields for thinking signatures
 	c := &Client{
-		ProviderGen: base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+		impl: base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
 			GenSyncURL:           "https://api.anthropic.com/v1/messages",
 			ProcessStreamPackets: processStreamPackets,
@@ -1348,10 +1348,10 @@ func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.Round
 	}
 	switch model {
 	case genai.ModelNone:
-		c.Model = ""
+		c.impl.Model = ""
 	case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA:
 		if err == nil {
-			if c.Model, err = c.selectBestModel(context.Background(), model); err != nil {
+			if c.impl.Model, err = c.selectBestModel(context.Background(), model); err != nil {
 				return nil, err
 			}
 		}
@@ -1403,7 +1403,7 @@ func (c *Client) selectBestModel(ctx context.Context, preference string) (string
 //
 // It requests the providers' batch API and returns the job ID. It can take up to 24 hours to complete.
 func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Job, error) {
-	if err := c.Validate(); err != nil {
+	if err := c.impl.Validate(); err != nil {
 		return "", err
 	}
 	// https://docs.anthropic.com/en/docs/build-with-claude/batch-processing
@@ -1412,7 +1412,7 @@ func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.O
 	// of doing that, as it increases the risks of partial failure. So for now do not expose the functionality
 	// of creating multiple requests at once unless we realize there's a specific use case.
 	b := BatchRequest{Requests: []BatchRequestItem{{}}}
-	if err := b.Requests[0].Init(msgs, opts, c.Model); err != nil {
+	if err := b.Requests[0].Init(msgs, opts, c.impl.Model); err != nil {
 		return "", err
 	}
 	resp, err := c.GenAsyncRaw(ctx, b)
@@ -1423,7 +1423,7 @@ func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.O
 func (c *Client) GenAsyncRaw(ctx context.Context, b BatchRequest) (BatchResponse, error) {
 	resp := BatchResponse{}
 	u := "https://api.anthropic.com/v1/messages/batches"
-	err := c.DoRequest(ctx, "POST", u, &b, &resp)
+	err := c.impl.DoRequest(ctx, "POST", u, &b, &resp)
 	return resp, err
 }
 
@@ -1458,7 +1458,7 @@ func (c *Client) PokeResultRaw(ctx context.Context, id genai.Job) (BatchQueryRes
 	// Warning: The documentation at https://docs.anthropic.com/en/api/retrieving-message-batch-results states
 	// that the URL may change in the future.
 	u := "https://api.anthropic.com/v1/messages/batches/" + url.PathEscape(string(id)) + "/results"
-	err := c.DoRequest(ctx, "GET", u, nil, &resp)
+	err := c.impl.DoRequest(ctx, "GET", u, nil, &resp)
 	if err != nil {
 		var herr *httpjson.Error
 		if errors.As(err, &herr) && herr.StatusCode == 404 {
@@ -1481,7 +1481,7 @@ func (c *Client) Cancel(ctx context.Context, id genai.Job) error {
 func (c *Client) CancelRaw(ctx context.Context, id genai.Job) (BatchResponse, error) {
 	u := "https://api.anthropic.com/v1/messages/batches/" + url.PathEscape(string(id)) + "/cancel"
 	resp := BatchResponse{}
-	err := c.DoRequest(ctx, "POST", u, &struct{}{}, &resp)
+	err := c.impl.DoRequest(ctx, "POST", u, &struct{}{}, &resp)
 	return resp, err
 }
 
@@ -1496,7 +1496,7 @@ func (c *Client) Name() string {
 //
 // It returns the selected model ID.
 func (c *Client) ModelID() string {
-	return c.Model
+	return c.impl.Model
 }
 
 // Scoreboard implements scoreboard.ProviderScore.
@@ -1506,29 +1506,29 @@ func (c *Client) Scoreboard() scoreboard.Score {
 
 // GenSync implements genai.ProviderGen.
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	return c.ProviderGen.GenSync(ctx, msgs, opts)
+	return c.impl.GenSync(ctx, msgs, opts)
 }
 
 // GenSyncRaw provides access to the raw API.
 func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatResponse) error {
-	return c.ProviderGen.GenSyncRaw(ctx, in, out)
+	return c.impl.GenSyncRaw(ctx, in, out)
 }
 
 // GenStream implements genai.ProviderGen.
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
-	return c.ProviderGen.GenStream(ctx, msgs, chunks, opts)
+	return c.impl.GenStream(ctx, msgs, chunks, opts)
 }
 
 // GenStreamRaw provides access to the raw API.
 func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest, out chan<- ChatStreamChunkResponse) error {
-	return c.ProviderGen.GenStreamRaw(ctx, in, out)
+	return c.impl.GenStreamRaw(ctx, in, out)
 }
 
 // ListModels implements genai.ProviderModel.
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://docs.anthropic.com/en/api/models-list
 	var resp ModelsResponse
-	if err := c.DoRequest(ctx, "GET", "https://api.anthropic.com/v1/models?limit=1000", nil, &resp); err != nil {
+	if err := c.impl.DoRequest(ctx, "GET", "https://api.anthropic.com/v1/models?limit=1000", nil, &resp); err != nil {
 		return nil, err
 	}
 	return resp.ToModels(), nil

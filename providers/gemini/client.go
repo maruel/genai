@@ -1448,7 +1448,9 @@ type ErrorResponseError struct {
 
 // Client implements genai.ProviderGen and genai.ProviderModel.
 type Client struct {
-	base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
+	// Impl is accessible so its ClientJSON.Client can be accessed when fetching video results from Veo 3 with
+	// the right HTTP authentication headers.
+	Impl base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
 // New creates a new client to talk to Google's Gemini platform API.
@@ -1501,7 +1503,7 @@ func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.Round
 	}
 	// Eventually, use OAuth https://ai.google.dev/gemini-api/docs/oauth#curl
 	c := &Client{
-		ProviderGen: base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+		Impl: base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
 			GenSyncURL:           "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(model) + ":generateContent",
 			GenStreamURL:         "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(model) + ":streamGenerateContent?alt=sse",
@@ -1523,19 +1525,19 @@ func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.Round
 	}
 	switch model {
 	case genai.ModelNone:
-		c.Model = ""
-		c.GenSyncURL = ""
-		c.GenStreamURL = ""
+		c.Impl.Model = ""
+		c.Impl.GenSyncURL = ""
+		c.Impl.GenStreamURL = ""
 	case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA:
 		if err == nil {
-			if c.Model, err = c.selectBestModel(context.Background(), model); err != nil {
+			if c.Impl.Model, err = c.selectBestModel(context.Background(), model); err != nil {
 				return nil, err
 			}
 			// Update URLs with the selected model
-			if c.Model != "" {
-				modelName := "models/" + c.Model
-				c.GenSyncURL = "https://generativelanguage.googleapis.com/v1beta/" + modelName + ":generateContent"
-				c.GenStreamURL = "https://generativelanguage.googleapis.com/v1beta/" + modelName + ":streamGenerateContent?alt=sse"
+			if c.Impl.Model != "" {
+				modelName := "models/" + c.Impl.Model
+				c.Impl.GenSyncURL = "https://generativelanguage.googleapis.com/v1beta/" + modelName + ":generateContent"
+				c.Impl.GenStreamURL = "https://generativelanguage.googleapis.com/v1beta/" + modelName + ":streamGenerateContent?alt=sse"
 			}
 		}
 	}
@@ -1597,7 +1599,7 @@ func (c *Client) Name() string {
 //
 // It returns the selected model ID.
 func (c *Client) ModelID() string {
-	return c.Model
+	return c.Impl.Model
 }
 
 // Scoreboard implements scoreboard.ProviderScore.
@@ -1607,22 +1609,22 @@ func (c *Client) Scoreboard() scoreboard.Score {
 
 // GenSync implements genai.ProviderGen.
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	return c.ProviderGen.GenSync(ctx, msgs, opts)
+	return c.Impl.GenSync(ctx, msgs, opts)
 }
 
 // GenSyncRaw provides access to the raw API.
 func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatResponse) error {
-	return c.ProviderGen.GenSyncRaw(ctx, in, out)
+	return c.Impl.GenSyncRaw(ctx, in, out)
 }
 
 // GenStream implements genai.ProviderGen.
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
-	return c.ProviderGen.GenStream(ctx, msgs, chunks, opts)
+	return c.Impl.GenStream(ctx, msgs, chunks, opts)
 }
 
 // GenStreamRaw provides access to the raw API.
 func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest, out chan<- ChatStreamChunkResponse) error {
-	return c.ProviderGen.GenStreamRaw(ctx, in, out)
+	return c.Impl.GenStreamRaw(ctx, in, out)
 }
 
 // CacheAddRequest caches the content for later use.
@@ -1643,16 +1645,16 @@ func (c *Client) CacheAddRequest(ctx context.Context, msgs genai.Messages, opts 
 	// See https://ai.google.dev/gemini-api/docs/caching?hl=en&lang=rest#considerations
 	// Useful when reusing the same large data multiple times to reduce token usage.
 	// This requires a pinned model, with trailing -001.
-	if err := c.Validate(); err != nil {
+	if err := c.Impl.Validate(); err != nil {
 		return "", err
 	}
 	in := CachedContent{}
-	if err := in.Init(msgs, opts, c.Model, name, displayName, ttl); err != nil {
+	if err := in.Init(msgs, opts, c.Impl.Model, name, displayName, ttl); err != nil {
 		return "", err
 	}
 	out := CachedContent{}
 	url := "https://generativelanguage.googleapis.com/v1beta/cachedContents"
-	if err := c.DoRequest(ctx, "POST", url, &in, &out); err != nil {
+	if err := c.Impl.DoRequest(ctx, "POST", url, &in, &out); err != nil {
 		return "", err
 	}
 	name = strings.TrimPrefix(out.Name, "cachedContents/")
@@ -1664,9 +1666,9 @@ func (c *Client) CacheExtend(ctx context.Context, name string, ttl time.Duration
 	// https://ai.google.dev/api/caching#method:-cachedcontents.patch
 	url := "https://generativelanguage.googleapis.com/v1beta/cachedContents/" + url.PathEscape(name)
 	// Model is required.
-	in := CachedContent{Model: "models/" + c.Model, Expiration: Expiration{TTL: Duration(ttl)}}
+	in := CachedContent{Model: "models/" + c.Impl.Model, Expiration: Expiration{TTL: Duration(ttl)}}
 	out := CachedContent{}
-	return c.DoRequest(ctx, "PATCH", url, &in, &out)
+	return c.Impl.DoRequest(ctx, "PATCH", url, &in, &out)
 }
 
 func (c *Client) CacheList(ctx context.Context) ([]genai.CacheEntry, error) {
@@ -1700,7 +1702,7 @@ func (c *Client) CacheListRaw(ctx context.Context) ([]CachedContent, error) {
 			data.CachedContents = data.CachedContents[:0]
 		}
 		data.NextPageToken = ""
-		if err := c.DoRequest(ctx, "GET", url, nil, &data); err != nil {
+		if err := c.Impl.DoRequest(ctx, "GET", url, nil, &data); err != nil {
 			return nil, err
 		}
 		for i := range data.CachedContents {
@@ -1718,7 +1720,7 @@ func (c *Client) CacheGetRaw(ctx context.Context, name string) (CachedContent, e
 	// https://ai.google.dev/api/caching#method:-cachedcontents.get
 	url := "https://generativelanguage.googleapis.com/v1beta/cachedContents/" + url.PathEscape(name)
 	out := CachedContent{}
-	err := c.DoRequest(ctx, "GET", url, nil, &out)
+	err := c.Impl.DoRequest(ctx, "GET", url, nil, &out)
 	return out, err
 }
 
@@ -1727,7 +1729,7 @@ func (c *Client) CacheDelete(ctx context.Context, name string) error {
 	// https://ai.google.dev/api/caching#method:-cachedcontents.delete
 	url := "https://generativelanguage.googleapis.com/v1beta/cachedContents/" + url.PathEscape(name)
 	var out struct{}
-	return c.DoRequest(ctx, "DELETE", url, nil, &out)
+	return c.Impl.DoRequest(ctx, "DELETE", url, nil, &out)
 }
 
 // GenDoc implements genai.ProviderGenDoc.
@@ -1737,7 +1739,7 @@ func (c *Client) CacheDelete(ctx context.Context, name string) error {
 // GenDoc is only supported for models that have "predict" reported in their Model.SupportedGenerationMethods.
 func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
 	res := genai.Result{}
-	if err := c.Validate(); err != nil {
+	if err := c.Impl.Validate(); err != nil {
 		return res, err
 	}
 	req := ImageRequest{
@@ -1749,7 +1751,7 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 		},
 	}
 	var continuableErr error
-	if err := req.Init(msg, opts, c.Model); err != nil {
+	if err := req.Init(msg, opts, c.Impl.Model); err != nil {
 		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 			continuableErr = uce
 		} else {
@@ -1789,8 +1791,8 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 func (c *Client) GenDocRaw(ctx context.Context, req ImageRequest) (ImageResponse, error) {
 	resp := ImageResponse{}
 	// https://ai.google.dev/api/models?hl=en#method:-models.predict
-	u := "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(c.Model) + ":predict"
-	err := c.DoRequest(ctx, "POST", u, &req, &resp)
+	u := "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(c.Impl.Model) + ":predict"
+	err := c.Impl.DoRequest(ctx, "POST", u, &req, &resp)
 	return resp, err
 }
 
@@ -1804,7 +1806,7 @@ func (c *Client) GenDocRaw(ctx context.Context, req ImageRequest) (ImageResponse
 // The resulting file is available for 48 hours. It requires the API key in the HTTP header to be fetched, so
 // use the client's HTTP client.
 func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Job, error) {
-	if err := c.Validate(); err != nil {
+	if err := c.Impl.Validate(); err != nil {
 		return "", err
 	}
 	if len(msgs) != 1 {
@@ -1812,7 +1814,7 @@ func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.O
 	}
 	req := ImageRequest{}
 	var continuableErr error
-	if err := req.Init(msgs[0], opts, c.Model); err != nil {
+	if err := req.Init(msgs[0], opts, c.Impl.Model); err != nil {
 		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 			continuableErr = uce
 		} else {
@@ -1830,8 +1832,8 @@ func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.O
 func (c *Client) GenAsyncRaw(ctx context.Context, req ImageRequest) (Operation, error) {
 	// https://ai.google.dev/api/models?hl=en#method:-models.predictlongrunning
 	resp := Operation{}
-	u := "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(c.Model) + ":predictLongRunning"
-	err := c.DoRequest(ctx, "POST", u, &req, &resp)
+	u := "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(c.Impl.Model) + ":predictLongRunning"
+	err := c.Impl.DoRequest(ctx, "POST", u, &req, &resp)
 	return resp, err
 }
 
@@ -1860,7 +1862,7 @@ func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, er
 func (c *Client) PokeResultRaw(ctx context.Context, id genai.Job) (Operation, error) {
 	res := Operation{}
 	u := "https://generativelanguage.googleapis.com/v1beta/" + string(id)
-	err := c.DoRequest(ctx, "GET", u, nil, &res)
+	err := c.Impl.DoRequest(ctx, "GET", u, nil, &res)
 	if err != nil {
 		return res, fmt.Errorf("failed to get job %q: %w", id, err)
 	}
@@ -1875,7 +1877,7 @@ func isImage(opts genai.Options) bool {
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://ai.google.dev/api/models?hl=en#method:-models.list
 	var resp ModelsResponse
-	if err := c.DoRequest(ctx, "GET", "https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000", nil, &resp); err != nil {
+	if err := c.Impl.DoRequest(ctx, "GET", "https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000", nil, &resp); err != nil {
 		return nil, err
 	}
 	return resp.ToModels(), nil

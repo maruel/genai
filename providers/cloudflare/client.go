@@ -676,8 +676,7 @@ func (er *ErrorResponse) IsAPIError() bool {
 
 // Client implements genai.ProviderGen and genai.ProviderModel.
 type Client struct {
-	base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
-
+	impl      base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 	accountID string
 }
 
@@ -724,7 +723,7 @@ func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.Round
 	// https://developers.cloudflare.com/workers/examples/websockets/
 	// Important: the model must not be path escaped!
 	c := &Client{
-		ProviderGen: base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+		impl: base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
 			GenSyncURL:           "https://api.cloudflare.com/client/v4/accounts/" + url.PathEscape(accountID) + "/ai/run/" + model,
 			ProcessStreamPackets: processStreamPackets,
@@ -745,14 +744,14 @@ func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.Round
 	}
 	switch model {
 	case genai.ModelNone:
-		c.Model = ""
-		c.GenSyncURL = ""
+		c.impl.Model = ""
+		c.impl.GenSyncURL = ""
 	case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA:
 		if err == nil {
-			if c.Model, err = c.selectBestModel(context.Background(), model); err != nil {
+			if c.impl.Model, err = c.selectBestModel(context.Background(), model); err != nil {
 				return nil, err
 			}
-			c.GenSyncURL = "https://api.cloudflare.com/client/v4/accounts/" + url.PathEscape(accountID) + "/ai/run/" + c.Model
+			c.impl.GenSyncURL = "https://api.cloudflare.com/client/v4/accounts/" + url.PathEscape(accountID) + "/ai/run/" + c.impl.Model
 		}
 	}
 	return c, err
@@ -816,7 +815,7 @@ func (c *Client) Name() string {
 //
 // It returns the selected model ID.
 func (c *Client) ModelID() string {
-	return c.Model
+	return c.impl.Model
 }
 
 // Scoreboard implements scoreboard.ProviderScore.
@@ -826,22 +825,22 @@ func (c *Client) Scoreboard() scoreboard.Score {
 
 // GenSync implements genai.ProviderGen.
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	return c.ProviderGen.GenSync(ctx, msgs, opts)
+	return c.impl.GenSync(ctx, msgs, opts)
 }
 
 // GenSyncRaw provides access to the raw API.
 func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatResponse) error {
-	return c.ProviderGen.GenSyncRaw(ctx, in, out)
+	return c.impl.GenSyncRaw(ctx, in, out)
 }
 
 // GenStream implements genai.ProviderGen.
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
-	return c.ProviderGen.GenStream(ctx, msgs, chunks, opts)
+	return c.impl.GenStream(ctx, msgs, chunks, opts)
 }
 
 // GenStreamRaw provides access to the raw API.
 func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest, out chan<- ChatStreamChunkResponse) error {
-	return c.ProviderGen.GenStreamRaw(ctx, in, out)
+	return c.impl.GenStreamRaw(ctx, in, out)
 }
 
 // ListModels implements genai.ProviderModel.
@@ -852,7 +851,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 		out := ModelsResponse{}
 		// Cloudflare's pagination is surprisingly brittle.
 		url := fmt.Sprintf("https://api.cloudflare.com/client/v4/accounts/%s/ai/models/search?page=%d&per_page=100&hide_experimental=false", url.PathEscape(c.accountID), page)
-		err := c.DoRequest(ctx, "GET", url, nil, &out)
+		err := c.impl.DoRequest(ctx, "GET", url, nil, &out)
 		if err != nil {
 			return nil, err
 		}

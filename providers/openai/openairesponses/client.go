@@ -1333,7 +1333,7 @@ func (e *ErrorResponse) IsAPIError() bool {
 
 // Client is a client for the OpenAI Responses API.
 type Client struct {
-	base.ProviderGen[*ErrorResponse, *Response, *Response, ResponseStreamChunkResponse]
+	impl base.ProviderGen[*ErrorResponse, *Response, *Response, ResponseStreamChunkResponse]
 }
 
 // New creates a new client to talk to the OpenAI Responses API.
@@ -1376,7 +1376,7 @@ func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.Round
 		t = wrapper(t)
 	}
 	c := &Client{
-		ProviderGen: base.ProviderGen[*ErrorResponse, *Response, *Response, ResponseStreamChunkResponse]{
+		impl: base.ProviderGen[*ErrorResponse, *Response, *Response, ResponseStreamChunkResponse]{
 			Model:                model,
 			GenSyncURL:           "https://api.openai.com/v1/responses",
 			GenStreamURL:         "https://api.openai.com/v1/responses",
@@ -1398,10 +1398,10 @@ func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.Round
 	}
 	switch model {
 	case genai.ModelNone:
-		c.Model = ""
+		c.impl.Model = ""
 	case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA:
 		if err == nil {
-			if c.Model, err = c.selectBestModel(context.Background(), model); err != nil {
+			if c.impl.Model, err = c.selectBestModel(context.Background(), model); err != nil {
 				return nil, err
 			}
 		}
@@ -1459,7 +1459,7 @@ func (c *Client) Name() string {
 //
 // It returns the selected model ID.
 func (c *Client) ModelID() string {
-	return c.Model
+	return c.impl.Model
 }
 
 // Scoreboard implements scoreboard.ProviderScore.
@@ -1475,12 +1475,12 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Op
 		}
 		return c.GenDoc(ctx, msgs[0], opts)
 	}
-	return c.ProviderGen.GenSync(ctx, msgs, opts)
+	return c.impl.GenSync(ctx, msgs, opts)
 }
 
 // GenSyncRaw provides access to the raw API.
 func (c *Client) GenSyncRaw(ctx context.Context, in *Response, out *Response) error {
-	return c.ProviderGen.GenSyncRaw(ctx, in, out)
+	return c.impl.GenSyncRaw(ctx, in, out)
 }
 
 // GenStream implements genai.ProviderGen.
@@ -1488,12 +1488,12 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan
 	if c.isImage(opts) {
 		return base.SimulateStream(ctx, c, msgs, chunks, opts)
 	}
-	return c.ProviderGen.GenStream(ctx, msgs, chunks, opts)
+	return c.impl.GenStream(ctx, msgs, chunks, opts)
 }
 
 // GenStreamRaw provides access to the raw API.
 func (c *Client) GenStreamRaw(ctx context.Context, in *Response, out chan<- ResponseStreamChunkResponse) error {
-	return c.ProviderGen.GenStreamRaw(ctx, in, out)
+	return c.impl.GenStreamRaw(ctx, in, out)
 }
 
 // GenDoc implements genai.ProviderGenDoc.
@@ -1502,11 +1502,11 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *Response, out chan<- Resp
 func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
 	// https://platform.openai.com/docs/api-reference/images/create
 	res := genai.Result{}
-	if err := c.Validate(); err != nil {
+	if err := c.impl.Validate(); err != nil {
 		return res, err
 	}
 	req := ImageRequest{}
-	if err := req.Init(msg, opts, c.Model); err != nil {
+	if err := req.Init(msg, opts, c.impl.Model); err != nil {
 		return res, err
 	}
 	url := "https://api.openai.com/v1/images/generations"
@@ -1516,7 +1516,7 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 	// url = "https://api.openai.com/v1/images/edits"
 
 	resp := ImageResponse{}
-	if err := c.DoRequest(ctx, "POST", url, &req, &resp); err != nil {
+	if err := c.impl.DoRequest(ctx, "POST", url, &req, &resp); err != nil {
 		return res, err
 	}
 	res.Replies = make([]genai.Reply, len(resp.Data))
@@ -1540,14 +1540,14 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://platform.openai.com/docs/api-reference/models/list
 	var resp ModelsResponse
-	if err := c.DoRequest(ctx, "GET", "https://api.openai.com/v1/models", nil, &resp); err != nil {
+	if err := c.impl.DoRequest(ctx, "GET", "https://api.openai.com/v1/models", nil, &resp); err != nil {
 		return nil, err
 	}
 	return resp.ToModels(), nil
 }
 
 func (c *Client) isImage(opts genai.Options) bool {
-	switch c.Model {
+	switch c.impl.Model {
 	// TODO: Use Scoreboard list.
 	case "dall-e-2", "dall-e-3", "gpt-image-1":
 		return true

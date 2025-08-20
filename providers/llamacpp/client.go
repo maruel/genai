@@ -1080,8 +1080,7 @@ func (er *ErrorResponse) IsAPIError() bool {
 
 // Client implements genai.ProviderGen.
 type Client struct {
-	base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
-
+	impl           base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 	baseURL        string
 	completionsURL string
 	modelsURL      string
@@ -1124,7 +1123,7 @@ func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.Round
 		t = wrapper(t)
 	}
 	return &Client{
-		ProviderGen: base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+		impl: base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			GenSyncURL:           baseURL + "/chat/completions",
 			ProcessStreamPackets: processChatStreamPackets,
 			ModelOptional:        true,
@@ -1156,8 +1155,8 @@ func (c *Client) Name() string {
 //
 // It returns the selected model ID.
 func (c *Client) ModelID() string {
-	if c.Model != "" {
-		return c.Model
+	if c.impl.Model != "" {
+		return c.impl.Model
 	}
 	m, _ := c.ListModels(context.Background())
 	if len(m) > 0 {
@@ -1173,28 +1172,28 @@ func (c *Client) Scoreboard() scoreboard.Score {
 
 // GenSync implements genai.ProviderGen.
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	return c.ProviderGen.GenSync(ctx, msgs, opts)
+	return c.impl.GenSync(ctx, msgs, opts)
 }
 
 // GenSyncRaw provides access to the raw API.
 func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatResponse) error {
-	return c.ProviderGen.GenSyncRaw(ctx, in, out)
+	return c.impl.GenSyncRaw(ctx, in, out)
 }
 
 // GenStream implements genai.ProviderGen.
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
-	return c.ProviderGen.GenStream(ctx, msgs, chunks, opts)
+	return c.impl.GenStream(ctx, msgs, chunks, opts)
 }
 
 // GenStreamRaw provides access to the raw API.
 func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest, out chan<- ChatStreamChunkResponse) error {
-	return c.ProviderGen.GenStreamRaw(ctx, in, out)
+	return c.impl.GenStreamRaw(ctx, in, out)
 }
 
 // ListModels implements genai.ProviderModel.
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	var resp ModelsResponse
-	if err := c.DoRequest(ctx, "GET", c.modelsURL, nil, &resp); err != nil {
+	if err := c.impl.DoRequest(ctx, "GET", c.modelsURL, nil, &resp); err != nil {
 		return nil, err
 	}
 	return resp.ToModels(), nil
@@ -1238,7 +1237,7 @@ func (c *Client) Completions(ctx context.Context, msgs genai.Messages, opts gena
 
 func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {
 	in.Stream = false
-	return c.DoRequest(ctx, "POST", c.completionsURL, in, out)
+	return c.impl.DoRequest(ctx, "POST", c.completionsURL, in, out)
 }
 
 func (c *Client) CompletionsStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
@@ -1297,15 +1296,15 @@ func (c *Client) CompletionsStream(ctx context.Context, msgs genai.Messages, chu
 
 func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest, out chan<- CompletionStreamChunkResponse) error {
 	in.Stream = true
-	resp, err := c.ClientJSON.Request(ctx, "POST", c.completionsURL, nil, in)
+	resp, err := c.impl.ClientJSON.Request(ctx, "POST", c.completionsURL, nil, in)
 	if err != nil {
 		return fmt.Errorf("failed to get llama server response: %w", err)
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
-		return c.DecodeError(c.completionsURL, resp)
+		return c.impl.DecodeError(c.completionsURL, resp)
 	}
-	return sse.Process(resp.Body, out, nil, c.ClientJSON.Lenient)
+	return sse.Process(resp.Body, out, nil, c.impl.ClientJSON.Lenient)
 }
 
 func (c *Client) GetHealth(ctx context.Context) (string, error) {
@@ -1315,7 +1314,7 @@ func (c *Client) GetHealth(ctx context.Context) (string, error) {
 
 func (c *Client) GetHealthRaw(ctx context.Context) (HealthResponse, error) {
 	msg := HealthResponse{}
-	if err := c.DoRequest(ctx, "GET", c.baseURL+"/health", nil, &msg); err != nil {
+	if err := c.impl.DoRequest(ctx, "GET", c.baseURL+"/health", nil, &msg); err != nil {
 		return msg, fmt.Errorf("failed to get health response: %w", err)
 	}
 	return msg, nil
@@ -1336,7 +1335,7 @@ func (c *Client) GetMetrics(ctx context.Context, m *Metrics) error {
 		return fmt.Errorf("failed to create HTTP request: %w", err)
 	}
 	// This is not a JSON response.
-	resp, err := c.ClientJSON.Client.Do(req)
+	resp, err := c.impl.ClientJSON.Client.Do(req)
 	if err != nil {
 		return fmt.Errorf("failed to get metrics response: %w", err)
 	}
@@ -1415,7 +1414,7 @@ func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, opts gen
 			}
 		}
 		out := applyTemplateResponse{}
-		if err := c.DoRequest(ctx, "POST", c.baseURL+"/apply-template", &in2, &out); err != nil {
+		if err := c.impl.DoRequest(ctx, "POST", c.baseURL+"/apply-template", &in2, &out); err != nil {
 			return err
 		}
 		in.Prompt = out.Prompt

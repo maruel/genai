@@ -940,7 +940,7 @@ type UnionError struct {
 
 // Client implements genai.ProviderModel.
 type Client struct {
-	base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
+	impl base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
 // New creates a new client to talk to the Pollinations platform API.
@@ -995,7 +995,7 @@ func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.Round
 		t = wrapper(t)
 	}
 	c := &Client{
-		ProviderGen: base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+		impl: base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
 			GenSyncURL:           "https://text.pollinations.ai/openai",
 			ProcessStreamPackets: processStreamPackets,
@@ -1015,10 +1015,10 @@ func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.Round
 	}
 	switch model {
 	case genai.ModelNone:
-		c.Model = ""
+		c.impl.Model = ""
 	case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA:
 		var err error
-		if c.Model, err = c.selectBestModel(context.Background(), model); err != nil {
+		if c.impl.Model, err = c.selectBestModel(context.Background(), model); err != nil {
 			return nil, err
 		}
 	}
@@ -1072,7 +1072,7 @@ func (c *Client) Name() string {
 //
 // It returns the selected model ID.
 func (c *Client) ModelID() string {
-	return c.Model
+	return c.impl.Model
 }
 
 // Scoreboard implements scoreboard.ProviderScore.
@@ -1091,12 +1091,12 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Op
 	if err := Cache.ValidateModality(c, genai.ModalityText); err != nil {
 		return genai.Result{}, err
 	}
-	return c.ProviderGen.GenSync(ctx, msgs, opts)
+	return c.impl.GenSync(ctx, msgs, opts)
 }
 
 // GenSyncRaw provides access to the raw API.
 func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatResponse) error {
-	return c.ProviderGen.GenSyncRaw(ctx, in, out)
+	return c.impl.GenSyncRaw(ctx, in, out)
 }
 
 // GenStream implements genai.ProviderGen.
@@ -1107,12 +1107,12 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan
 	if err := Cache.ValidateModality(c, genai.ModalityText); err != nil {
 		return genai.Result{}, err
 	}
-	return c.ProviderGen.GenStream(ctx, msgs, chunks, opts)
+	return c.impl.GenStream(ctx, msgs, chunks, opts)
 }
 
 // GenStreamRaw provides access to the raw API.
 func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest, out chan<- ChatStreamChunkResponse) error {
-	return c.ProviderGen.GenStreamRaw(ctx, in, out)
+	return c.impl.GenStreamRaw(ctx, in, out)
 }
 
 // GenDoc implements genai.ProviderGenDoc.
@@ -1125,7 +1125,7 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 	// TODO:
 	// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#4-text-to-speech-get-%EF%B8%8F%EF%B8%8F
 	res := genai.Result{}
-	if err := c.Validate(); err != nil {
+	if err := c.impl.Validate(); err != nil {
 		return res, err
 	}
 	if err := msg.Validate(); err != nil {
@@ -1148,7 +1148,7 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 		return genai.Result{}, err
 	}
 	qp := url.Values{}
-	qp.Add("model", c.Model)
+	qp.Add("model", c.impl.Model)
 	switch v := opts.(type) {
 	case *genai.OptionsImage:
 		if v.Seed != 0 {
@@ -1192,13 +1192,13 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 	if err != nil {
 		return res, err
 	}
-	resp, err := c.ClientJSON.Client.Do(req)
+	resp, err := c.impl.ClientJSON.Client.Do(req)
 	if err != nil {
 		return res, err
 	}
 	if resp.StatusCode != 200 {
 		_ = resp.Body.Close()
-		return res, c.DecodeError(url, resp)
+		return res, c.impl.DecodeError(url, resp)
 	}
 	b, err := io.ReadAll(resp.Body)
 	_ = resp.Body.Close()
@@ -1230,7 +1230,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 
 func (c *Client) ListImageGenModels(ctx context.Context) ([]genai.Model, error) {
 	var resp ImageModelsResponse
-	if err := c.DoRequest(ctx, "GET", "https://image.pollinations.ai/models", nil, &resp); err != nil {
+	if err := c.impl.DoRequest(ctx, "GET", "https://image.pollinations.ai/models", nil, &resp); err != nil {
 		return nil, err
 	}
 	return resp.ToModels(), nil
@@ -1238,7 +1238,7 @@ func (c *Client) ListImageGenModels(ctx context.Context) ([]genai.Model, error) 
 
 func (c *Client) ListTextModels(ctx context.Context) ([]genai.Model, error) {
 	var resp TextModelsResponse
-	if err := c.DoRequest(ctx, "GET", "https://text.pollinations.ai/models", nil, &resp); err != nil {
+	if err := c.impl.DoRequest(ctx, "GET", "https://text.pollinations.ai/models", nil, &resp); err != nil {
 		return nil, err
 	}
 	return resp.ToModels(), nil
@@ -1250,7 +1250,7 @@ func (c *Client) isAudio(opts genai.Options) bool {
 
 func (c *Client) isImage(opts genai.Options) bool {
 	// TODO: Use Scoreboard list.
-	switch c.Model {
+	switch c.impl.Model {
 	case "flux", "gptimage", "turbo":
 		return true
 	default:

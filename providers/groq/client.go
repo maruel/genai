@@ -788,7 +788,7 @@ func (er *ErrorResponse) IsAPIError() bool {
 
 // Client implements genai.ProviderGen and genai.ProviderModel.
 type Client struct {
-	base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
+	impl base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
 // New creates a new client to talk to the Groq platform API.
@@ -829,7 +829,7 @@ func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.Round
 		t = wrapper(t)
 	}
 	c := &Client{
-		ProviderGen: base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+		impl: base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
 			GenSyncURL:           "https://api.groq.com/openai/v1/chat/completions",
 			ProcessStreamPackets: processStreamPackets,
@@ -850,10 +850,10 @@ func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.Round
 	}
 	switch model {
 	case genai.ModelNone:
-		c.Model = ""
+		c.impl.Model = ""
 	case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA:
 		if err == nil {
-			if c.Model, err = c.selectBestModel(context.Background(), model); err != nil {
+			if c.impl.Model, err = c.selectBestModel(context.Background(), model); err != nil {
 				return nil, err
 			}
 		}
@@ -905,7 +905,7 @@ func (c *Client) Name() string {
 //
 // It returns the selected model ID.
 func (c *Client) ModelID() string {
-	return c.Model
+	return c.impl.Model
 }
 
 // Scoreboard implements scoreboard.ProviderScore.
@@ -915,29 +915,29 @@ func (c *Client) Scoreboard() scoreboard.Score {
 
 // GenSync implements genai.ProviderGen.
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	return c.ProviderGen.GenSync(ctx, msgs, opts)
+	return c.impl.GenSync(ctx, msgs, opts)
 }
 
 // GenSyncRaw provides access to the raw API.
 func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatResponse) error {
-	return c.ProviderGen.GenSyncRaw(ctx, in, out)
+	return c.impl.GenSyncRaw(ctx, in, out)
 }
 
 // GenStream implements genai.ProviderGen.
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
-	return c.ProviderGen.GenStream(ctx, msgs, chunks, opts)
+	return c.impl.GenStream(ctx, msgs, chunks, opts)
 }
 
 // GenStreamRaw provides access to the raw API.
 func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest, out chan<- ChatStreamChunkResponse) error {
-	return c.ProviderGen.GenStreamRaw(ctx, in, out)
+	return c.impl.GenStreamRaw(ctx, in, out)
 }
 
 // ListModels implements genai.ProviderModel.
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://console.groq.com/docs/api-reference#models-list
 	var resp ModelsResponse
-	if err := c.DoRequest(ctx, "GET", "https://api.groq.com/openai/v1/models", nil, &resp); err != nil {
+	if err := c.impl.DoRequest(ctx, "GET", "https://api.groq.com/openai/v1/models", nil, &resp); err != nil {
 		return nil, err
 	}
 	return resp.ToModels(), nil

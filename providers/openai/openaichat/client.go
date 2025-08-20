@@ -1273,7 +1273,7 @@ type ErrorResponseError struct {
 
 // Client implements genai.ProviderGen and genai.ProviderModel.
 type Client struct {
-	base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
+	impl base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
 // In May 2025, OpenAI started pushing for Response API. They say it's the only way to keep reasoning items.
@@ -1322,7 +1322,7 @@ func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.Round
 		t = wrapper(t)
 	}
 	c := &Client{
-		ProviderGen: base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
+		impl: base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			Model:                model,
 			GenSyncURL:           "https://api.openai.com/v1/chat/completions",
 			ProcessStreamPackets: processStreamPackets,
@@ -1344,10 +1344,10 @@ func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.Round
 	}
 	switch model {
 	case genai.ModelNone:
-		c.Model = ""
+		c.impl.Model = ""
 	case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA:
 		if err == nil {
-			if c.Model, err = c.selectBestModel(context.Background(), model); err != nil {
+			if c.impl.Model, err = c.selectBestModel(context.Background(), model); err != nil {
 				return nil, err
 			}
 		}
@@ -1405,7 +1405,7 @@ func (c *Client) Name() string {
 //
 // It returns the selected model ID.
 func (c *Client) ModelID() string {
-	return c.Model
+	return c.impl.Model
 }
 
 // Scoreboard implements scoreboard.ProviderScore.
@@ -1421,12 +1421,12 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Op
 		}
 		return c.GenDoc(ctx, msgs[0], opts)
 	}
-	return c.ProviderGen.GenSync(ctx, msgs, opts)
+	return c.impl.GenSync(ctx, msgs, opts)
 }
 
 // GenSyncRaw provides access to the raw API.
 func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatResponse) error {
-	return c.ProviderGen.GenSyncRaw(ctx, in, out)
+	return c.impl.GenSyncRaw(ctx, in, out)
 }
 
 // GenStream implements genai.ProviderGen.
@@ -1434,12 +1434,12 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan
 	if c.isImage(opts) {
 		return base.SimulateStream(ctx, c, msgs, chunks, opts)
 	}
-	return c.ProviderGen.GenStream(ctx, msgs, chunks, opts)
+	return c.impl.GenStream(ctx, msgs, chunks, opts)
 }
 
 // GenStreamRaw provides access to the raw API.
 func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest, out chan<- ChatStreamChunkResponse) error {
-	return c.ProviderGen.GenStreamRaw(ctx, in, out)
+	return c.impl.GenStreamRaw(ctx, in, out)
 }
 
 // GenDoc implements genai.ProviderGenDoc.
@@ -1448,11 +1448,11 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest, out chan<- C
 func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
 	// https://platform.openai.com/docs/api-reference/images/create
 	res := genai.Result{}
-	if err := c.Validate(); err != nil {
+	if err := c.impl.Validate(); err != nil {
 		return res, err
 	}
 	req := ImageRequest{}
-	if err := req.Init(msg, opts, c.Model); err != nil {
+	if err := req.Init(msg, opts, c.impl.Model); err != nil {
 		return res, err
 	}
 	url := "https://api.openai.com/v1/images/generations"
@@ -1462,7 +1462,7 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 	// url = "https://api.openai.com/v1/images/edits"
 
 	resp := ImageResponse{}
-	if err := c.DoRequest(ctx, "POST", url, &req, &resp); err != nil {
+	if err := c.impl.DoRequest(ctx, "POST", url, &req, &resp); err != nil {
 		return res, err
 	}
 	res.Replies = make([]genai.Reply, len(resp.Data))
@@ -1486,14 +1486,14 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://platform.openai.com/docs/api-reference/models/list
 	var resp ModelsResponse
-	if err := c.DoRequest(ctx, "GET", "https://api.openai.com/v1/models", nil, &resp); err != nil {
+	if err := c.impl.DoRequest(ctx, "GET", "https://api.openai.com/v1/models", nil, &resp); err != nil {
 		return nil, err
 	}
 	return resp.ToModels(), nil
 }
 
 func (c *Client) isImage(opts genai.Options) bool {
-	switch c.Model {
+	switch c.impl.Model {
 	// TODO: Use Scoreboard list.
 	case "dall-e-2", "dall-e-3", "gpt-image-1":
 		return true
@@ -1524,7 +1524,7 @@ func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.O
 
 func (c *Client) GenAsyncRaw(ctx context.Context, b BatchRequest) (Batch, error) {
 	resp := Batch{}
-	err := c.DoRequest(ctx, "POST", "https://api.openai.com/v1/batches", &b, &resp)
+	err := c.impl.DoRequest(ctx, "POST", "https://api.openai.com/v1/batches", &b, &resp)
 	return resp, err
 }
 
@@ -1554,7 +1554,7 @@ func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, er
 			out := BatchRequestOutput{}
 			d := json.NewDecoder(f)
 			d.UseNumber()
-			if !c.ClientJSON.Lenient {
+			if !c.impl.ClientJSON.Lenient {
 				d.DisallowUnknownFields()
 			}
 			if err = d.Decode(&out); err != nil {
@@ -1576,7 +1576,7 @@ func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, er
 func (c *Client) PokeResultRaw(ctx context.Context, id genai.Job) (Batch, error) {
 	out := Batch{}
 	u := "https://api.openai.com/v1/batches/" + url.PathEscape(string(id))
-	err := c.DoRequest(ctx, "GET", u, nil, &out)
+	err := c.impl.DoRequest(ctx, "GET", u, nil, &out)
 	return out, err
 }
 
@@ -1590,18 +1590,18 @@ func (c *Client) Cancel(ctx context.Context, id genai.Job) error {
 func (c *Client) CancelRaw(ctx context.Context, id genai.Job) (Batch, error) {
 	u := "https://api.openai.com/v1/batches/" + url.PathEscape(string(id)) + "/cancel"
 	resp := Batch{}
-	err := c.DoRequest(ctx, "POST", u, nil, &resp)
+	err := c.impl.DoRequest(ctx, "POST", u, nil, &resp)
 	// TODO: Delete the file too.
 	return resp, err
 }
 
 func (c *Client) CacheAddRequest(ctx context.Context, msgs genai.Messages, opts genai.Options, name, displayName string, ttl time.Duration) (string, error) {
-	if err := c.Validate(); err != nil {
+	if err := c.impl.Validate(); err != nil {
 		return "", err
 	}
 	// Upload the messages and options as a file.
 	b := BatchRequestInput{CustomID: name, Method: "POST", URL: "/v1/chat/completions"}
-	if err := b.Body.Init(msgs, opts, c.Model); err != nil {
+	if err := b.Body.Init(msgs, opts, c.impl.Model); err != nil {
 		return "", err
 	}
 	raw, err := json.Marshal(b)
@@ -1653,12 +1653,12 @@ func (c *Client) FileAdd(ctx context.Context, filename string, r io.ReadSeeker) 
 		return "", err
 	}
 	req.Header.Set("Content-Type", w.FormDataContentType())
-	resp, err := c.ClientJSON.Client.Do(req)
+	resp, err := c.impl.ClientJSON.Client.Do(req)
 	if err != nil {
 		return "", err
 	}
 	f := File{}
-	err = c.DecodeResponse(resp, u, &f)
+	err = c.impl.DecodeResponse(resp, u, &f)
 	return f.ID, err
 }
 
@@ -1669,12 +1669,12 @@ func (c *Client) FileGet(ctx context.Context, id string) (io.ReadCloser, error) 
 	if err != nil {
 		return nil, err
 	}
-	resp, err := c.ClientJSON.Client.Do(req)
+	resp, err := c.impl.ClientJSON.Client.Do(req)
 	if err != nil {
 		return nil, err
 	}
 	if resp.StatusCode != 200 {
-		return nil, c.DecodeError(u, resp)
+		return nil, c.impl.DecodeError(u, resp)
 	}
 	return resp.Body, nil
 }
@@ -1683,13 +1683,13 @@ func (c *Client) FileDel(ctx context.Context, id string) error {
 	// https://platform.openai.com/docs/api-reference/files/delete
 	url := "https://api.openai.com/v1/files/" + url.PathEscape(string(id))
 	out := FileDeleteResponse{}
-	return c.DoRequest(ctx, "DELETE", url, nil, &out)
+	return c.impl.DoRequest(ctx, "DELETE", url, nil, &out)
 }
 
 func (c *Client) FilesListRaw(ctx context.Context) ([]File, error) {
 	// TODO: Pagination. It defaults at 10000 items per page.
 	resp := FileListResponse{}
-	err := c.DoRequest(ctx, "GET", "https://api.openai.com/v1/files", nil, &resp)
+	err := c.impl.DoRequest(ctx, "GET", "https://api.openai.com/v1/files", nil, &resp)
 	return resp.Data, err
 }
 

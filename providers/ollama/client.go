@@ -569,8 +569,7 @@ func (er *ErrorResponse) IsAPIError() bool {
 
 // Client implements genai.ProviderGen.
 type Client struct {
-	base.Provider[*ErrorResponse]
-
+	impl    base.Provider[*ErrorResponse]
 	model   string
 	baseURL string
 	chatURL string
@@ -618,7 +617,7 @@ func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.Round
 		t = wrapper(t)
 	}
 	return &Client{
-		Provider: base.Provider[*ErrorResponse]{
+		impl: base.Provider[*ErrorResponse]{
 			ClientJSON: httpjson.Client{
 				Lenient: internal.BeLenient,
 				Client:  &http.Client{Transport: &roundtrippers.RequestID{Transport: t}},
@@ -681,7 +680,7 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 		return err
 	}
 	in.Stream = false
-	err := c.DoRequest(ctx, "POST", c.chatURL, in, out)
+	err := c.impl.DoRequest(ctx, "POST", c.chatURL, in, out)
 	if err != nil {
 		// TODO: Cheezy.
 		if strings.Contains(err.Error(), "not found, try pulling it first") {
@@ -689,7 +688,7 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 				return err
 			}
 			// Retry.
-			err = c.DoRequest(ctx, "POST", c.chatURL, in, out)
+			err = c.impl.DoRequest(ctx, "POST", c.chatURL, in, out)
 		}
 	}
 	return err
@@ -734,11 +733,11 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest, out chan<- C
 	}
 	in.Stream = true
 	// Try first, if it immediately errors out requesting to pull, pull then try again.
-	resp, err := c.ClientJSON.Request(ctx, "POST", c.chatURL, nil, in)
+	resp, err := c.impl.ClientJSON.Request(ctx, "POST", c.chatURL, nil, in)
 	if err != nil {
 		return fmt.Errorf("failed to get server response: %w", err)
 	}
-	err = processJSONStream(resp.Body, out, c.ClientJSON.Lenient)
+	err = processJSONStream(resp.Body, out, c.impl.ClientJSON.Lenient)
 	_ = resp.Body.Close()
 	if err == nil || !strings.Contains(err.Error(), "not found, try pulling it first") {
 		return err
@@ -747,21 +746,21 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest, out chan<- C
 	if err = c.PullModel(ctx, c.model); err != nil {
 		return err
 	}
-	if resp, err = c.ClientJSON.Request(ctx, "POST", c.chatURL, nil, in); err != nil {
+	if resp, err = c.impl.ClientJSON.Request(ctx, "POST", c.chatURL, nil, in); err != nil {
 		return fmt.Errorf("failed to get server response: %w", err)
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
-		return c.DecodeError(c.chatURL, resp)
+		return c.impl.DecodeError(c.chatURL, resp)
 	}
-	return processJSONStream(resp.Body, out, c.ClientJSON.Lenient)
+	return processJSONStream(resp.Body, out, c.impl.ClientJSON.Lenient)
 }
 
 // ListModels implements genai.ProviderModel.
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://github.com/ollama/ollama/blob/main/docs/api.md#list-local-models
 	var resp ModelsResponse
-	if err := c.DoRequest(ctx, "GET", c.baseURL+"/api/tags", nil, &resp); err != nil {
+	if err := c.impl.DoRequest(ctx, "GET", c.baseURL+"/api/tags", nil, &resp); err != nil {
 		return nil, err
 	}
 	return resp.ToModels(), nil
@@ -774,7 +773,7 @@ func (c *Client) PullModel(ctx context.Context, model string) error {
 	in := pullModelRequest{Model: model}
 	// TODO: Stream updates instead of hanging for several minutes.
 	out := pullModelResponse{}
-	if err := c.DoRequest(ctx, "POST", c.baseURL+"/api/pull", &in, &out); err != nil {
+	if err := c.impl.DoRequest(ctx, "POST", c.baseURL+"/api/pull", &in, &out); err != nil {
 		return fmt.Errorf("pull failed: %w", err)
 	} else if out.Status != "success" {
 		return fmt.Errorf("pull failed: %s", out.Status)
@@ -784,7 +783,7 @@ func (c *Client) PullModel(ctx context.Context, model string) error {
 
 func (c *Client) Version(ctx context.Context) (string, error) {
 	v := Version{}
-	if err := c.DoRequest(ctx, "GET", c.baseURL+"/api/version", nil, &v); err != nil {
+	if err := c.impl.DoRequest(ctx, "GET", c.baseURL+"/api/version", nil, &v); err != nil {
 		return v.Version, fmt.Errorf("failed to get version: %w", err)
 	}
 	return v.Version, nil

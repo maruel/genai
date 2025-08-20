@@ -232,8 +232,8 @@ func (er *ErrorResponse) IsAPIError() bool {
 
 // Client implements genai.ProviderGen and genai.ProviderModel.
 type Client struct {
-	base.Provider[*ErrorResponse]
-	Model  string
+	impl   base.Provider[*ErrorResponse]
+	model  string
 	remote string
 }
 
@@ -285,9 +285,9 @@ func New(opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.Round
 		remote = "https://api.bfl.ai"
 	}
 	return &Client{
-		Model:  model,
+		model:  model,
 		remote: remote,
-		Provider: base.Provider[*ErrorResponse]{
+		impl: base.Provider[*ErrorResponse]{
 			APIKeyURL: apiKeyURL,
 			ClientJSON: httpjson.Client{
 				Lenient: internal.BeLenient,
@@ -313,7 +313,7 @@ func (c *Client) Name() string {
 //
 // It returns the selected model ID.
 func (c *Client) ModelID() string {
-	return c.Model
+	return c.model
 }
 
 // Scoreboard implements scoreboard.ProviderScore.
@@ -381,7 +381,7 @@ func (c *Client) GenAsyncRaw(ctx context.Context, req ImageRequest) (ImageReques
 	// https://docs.bfl.ai/integration_guidelines#polling-url-usage
 	// TODO: Switch to use PollingURL
 	reqresp := ImageRequestResponse{}
-	err := c.DoRequest(ctx, "POST", c.remote+"/v1/"+c.Model, &req, &reqresp)
+	err := c.impl.DoRequest(ctx, "POST", c.remote+"/v1/"+c.model, &req, &reqresp)
 	return reqresp, err
 }
 
@@ -394,7 +394,7 @@ func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, er
 	if err != nil {
 		return res, err
 	}
-	res.Usage.Limits = processHeaders(c.LastResponseHeaders())
+	res.Usage.Limits = processHeaders(c.impl.LastResponseHeaders())
 	if imgres.Status == "Pending" {
 		res.Usage.FinishReason = genai.Pending
 		return res, nil
@@ -410,7 +410,7 @@ func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, er
 func (c *Client) PokeResultRaw(ctx context.Context, id genai.Job) (ImageResult, error) {
 	res := ImageResult{}
 	u := "https://api.us1.bfl.ai/v1/get_result?id=" + url.QueryEscape(string(id))
-	err := c.DoRequest(ctx, "GET", u, nil, &res)
+	err := c.impl.DoRequest(ctx, "GET", u, nil, &res)
 	return res, err
 }
 

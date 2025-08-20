@@ -79,6 +79,10 @@ type Provider interface {
 	Name() string
 	// ModelID returns the model currently used by the provider. It can be an empty string.
 	ModelID() string
+	// ListModels returns the list of models the provider supports. Not all providers support it, some will
+	// return an ErrorNotSupported. For local providers like llamacpp and ollama, they may return only the
+	// model currently loaded.
+	ListModels(ctx context.Context) ([]Model, error)
 }
 
 // ProviderUnwrap is exposed when the Provider is actually a wrapper around another one, like
@@ -1062,15 +1066,9 @@ type ProviderCache interface {
 
 // Models
 
-// ProviderModel represents a provider that can list models.
-type ProviderModel interface {
-	Provider
-	ListModels(ctx context.Context) ([]Model, error)
-}
-
 // Model represents a served model by the provider.
 //
-// Use ProviderModel.ListModels() to get a list of models.
+// Use Provider.ListModels() to get a list of models.
 type Model interface {
 	GetID() string
 	String() string

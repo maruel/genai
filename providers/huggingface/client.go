@@ -716,7 +716,7 @@ func (ee *ErrorError) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-// Client implements genai.ProviderGen and genai.ProviderModel.
+// Client implements genai.ProviderGen.
 type Client struct {
 	impl base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
@@ -908,7 +908,7 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest, out chan<- C
 	return c.impl.GenStreamRaw(ctx, in, out)
 }
 
-// ListModels implements genai.ProviderModel.
+// ListModels implements genai.Provider.
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://huggingface.co/docs/hub/api
 	// There's 20k models warm as of March 2025. There's no way to sort by
@@ -1032,6 +1032,5 @@ func processHeaders(h http.Header) []genai.RateLimit {
 var (
 	_ genai.Provider           = &Client{}
 	_ genai.ProviderGen        = &Client{}
-	_ genai.ProviderModel      = &Client{}
 	_ scoreboard.ProviderScore = &Client{}
 )

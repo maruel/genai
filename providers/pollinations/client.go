@@ -938,7 +938,7 @@ type UnionError struct {
 	Name string `json:"name"`
 }
 
-// Client implements genai.ProviderModel.
+// Client implements genai.ProviderGen.
 type Client struct {
 	impl base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
@@ -1214,7 +1214,7 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 	return res, res.Validate()
 }
 
-// ListModels implements genai.ProviderModel.
+// ListModels implements genai.Provider.
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#list-available-image-models-
 	var out []genai.Model
@@ -1348,7 +1348,7 @@ type ModelCache struct {
 }
 
 // ValidateModality returns nil if the modality is supported by the model.
-func (m *ModelCache) ValidateModality(c genai.ProviderModel, mod genai.Modality) error {
+func (m *ModelCache) ValidateModality(c genai.Provider, mod genai.Modality) error {
 	if _, err := m.Warmup(c); err != nil {
 		return err
 	}
@@ -1381,7 +1381,7 @@ func (m *ModelCache) ValidateModality(c genai.ProviderModel, mod genai.Modality)
 	return fmt.Errorf("modality %s not supported", mod)
 }
 
-func (m *ModelCache) Warmup(c genai.ProviderModel) ([]genai.Model, error) {
+func (m *ModelCache) Warmup(c genai.Provider) ([]genai.Model, error) {
 	var err error
 	m.mu.Lock()
 	if m.models == nil {
@@ -1404,6 +1404,5 @@ var (
 	_ genai.Provider           = &Client{}
 	_ genai.ProviderGen        = &Client{}
 	_ genai.ProviderGenDoc     = &Client{}
-	_ genai.ProviderModel      = &Client{}
 	_ scoreboard.ProviderScore = &Client{}
 )

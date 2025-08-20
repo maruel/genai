@@ -1271,7 +1271,7 @@ type ErrorResponseError struct {
 
 //
 
-// Client implements genai.ProviderGen and genai.ProviderModel.
+// Client implements genai.ProviderGen.
 type Client struct {
 	impl base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
@@ -1482,7 +1482,7 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 	return res, res.Validate()
 }
 
-// ListModels implements genai.ProviderModel.
+// ListModels implements genai.Provider.
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://platform.openai.com/docs/api-reference/models/list
 	var resp ModelsResponse
@@ -1799,6 +1799,5 @@ var (
 	_ genai.ProviderCache      = &Client{}
 	_ genai.ProviderGen        = &Client{}
 	_ genai.ProviderGenDoc     = &Client{}
-	_ genai.ProviderModel      = &Client{}
 	_ scoreboard.ProviderScore = &Client{}
 )

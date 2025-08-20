@@ -35,7 +35,7 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 		c = &adapters.ProviderGenAppend{ProviderGen: c, Append: genai.Request{Text: "\n\n/think"}}
 	}
 	if model.Thinking {
-		return &handleGroqReasoning{Client: c}
+		return &handleGroqReasoning{ProviderGen: c}
 	}
 	return c
 }
@@ -64,25 +64,17 @@ func TestClient_Scoreboard(t *testing.T) {
 }
 
 type handleGroqReasoning struct {
-	Client genai.ProviderGen
-}
-
-func (h *handleGroqReasoning) Name() string {
-	return h.Client.Name()
-}
-
-func (h *handleGroqReasoning) ModelID() string {
-	return h.Client.ModelID()
+	genai.ProviderGen
 }
 
 func (h *handleGroqReasoning) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
 	if opts != nil {
 		if o := opts.(*genai.OptionsText); len(o.Tools) != 0 || o.DecodeAs != nil || o.ReplyAsJSON {
 			opts = &groq.OptionsText{ReasoningFormat: groq.ReasoningFormatParsed, OptionsText: *o}
-			return h.Client.GenSync(ctx, msgs, opts)
+			return h.ProviderGen.GenSync(ctx, msgs, opts)
 		}
 	}
-	c := adapters.ProviderGenThinking{ProviderGen: h.Client, ThinkingTokenStart: "<think>", ThinkingTokenEnd: "\n</think>\n"}
+	c := adapters.ProviderGenThinking{ProviderGen: h.ProviderGen, ThinkingTokenStart: "<think>", ThinkingTokenEnd: "\n</think>\n"}
 	return c.GenSync(ctx, msgs, opts)
 }
 
@@ -90,15 +82,15 @@ func (h *handleGroqReasoning) GenStream(ctx context.Context, msgs genai.Messages
 	if opts != nil {
 		if o := opts.(*genai.OptionsText); len(o.Tools) != 0 || o.DecodeAs != nil || o.ReplyAsJSON {
 			opts = &groq.OptionsText{ReasoningFormat: groq.ReasoningFormatParsed, OptionsText: *o}
-			return h.Client.GenStream(ctx, msgs, replies, opts)
+			return h.ProviderGen.GenStream(ctx, msgs, replies, opts)
 		}
 	}
-	c := adapters.ProviderGenThinking{ProviderGen: h.Client, ThinkingTokenStart: "<think>", ThinkingTokenEnd: "\n</think>\n"}
+	c := adapters.ProviderGenThinking{ProviderGen: h.ProviderGen, ThinkingTokenStart: "<think>", ThinkingTokenEnd: "\n</think>\n"}
 	return c.GenStream(ctx, msgs, replies, opts)
 }
 
 func (h *handleGroqReasoning) Unwrap() genai.Provider {
-	return h.Client
+	return h.ProviderGen
 }
 
 func TestClient_Preferred(t *testing.T) {

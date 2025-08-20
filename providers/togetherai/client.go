@@ -995,7 +995,7 @@ func (er *ErrorResponse) IsAPIError() bool {
 	return true
 }
 
-// Client implements genai.ProviderGen and genai.ProviderModel.
+// Client implements genai.ProviderGen.
 type Client struct {
 	impl base.ProviderGen[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
@@ -1206,7 +1206,7 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 	return genai.Result{}, errors.New("can only generate audio and images")
 }
 
-// ListModels implements genai.ProviderModel.
+// ListModels implements genai.Provider.
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://docs.together.ai/reference/models-1
 	var resp ModelsResponse
@@ -1371,6 +1371,5 @@ var (
 	_ genai.Provider           = &Client{}
 	_ genai.ProviderGen        = &Client{}
 	_ genai.ProviderGenDoc     = &Client{}
-	_ genai.ProviderModel      = &Client{}
 	_ scoreboard.ProviderScore = &Client{}
 )

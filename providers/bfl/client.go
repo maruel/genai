@@ -230,8 +230,9 @@ func (er *ErrorResponse) IsAPIError() bool {
 	return true
 }
 
-// Client implements genai.ProviderGen and genai.ProviderModel.
+// Client implements genai.ProviderGen.
 type Client struct {
+	base.NotImplemented
 	impl   base.Provider[*ErrorResponse]
 	model  string
 	remote string

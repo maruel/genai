@@ -756,7 +756,7 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest, out chan<- C
 	return processJSONStream(resp.Body, out, c.impl.ClientJSON.Lenient)
 }
 
-// ListModels implements genai.ProviderModel.
+// ListModels implements genai.Provider.
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://github.com/ollama/ollama/blob/main/docs/api.md#list-local-models
 	var resp ModelsResponse
@@ -879,6 +879,5 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 var (
 	_ genai.Provider           = &Client{}
 	_ genai.ProviderGen        = &Client{}
-	_ genai.ProviderModel      = &Client{}
 	_ scoreboard.ProviderScore = &Client{}
 )

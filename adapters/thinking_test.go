@@ -13,6 +13,7 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/adapters"
+	"github.com/maruel/genai/base"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -318,6 +319,7 @@ func TestProviderGenThinking_GenStream_errors(t *testing.T) {
 // Mock types for testing
 
 type mockProviderGenSync struct {
+	base.NotImplemented
 	response genai.Result
 	err      error
 }
@@ -330,10 +332,6 @@ func (m *mockProviderGenSync) GenSync(ctx context.Context, msgs genai.Messages, 
 	return m.response, m.err
 }
 
-func (m *mockProviderGenSync) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
-	return genai.Result{}, errors.New("unexpected")
-}
-
 func (m *mockProviderGenSync) ModelID() string {
 	return "llm-sota"
 }
@@ -344,6 +342,7 @@ type streamResponse struct {
 }
 
 type mockProviderGenStream struct {
+	base.NotImplemented
 	streamResponses []streamResponse
 	callIndex       int
 	err             error
@@ -351,10 +350,6 @@ type mockProviderGenStream struct {
 
 func (m *mockProviderGenStream) Name() string {
 	return "mock"
-}
-
-func (m *mockProviderGenStream) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	return genai.Result{}, errors.New("unexpected")
 }
 
 func (m *mockProviderGenStream) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {

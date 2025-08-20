@@ -16,17 +16,20 @@ import (
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/adapters"
+	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/providers"
 )
 
-func Example_all_ProvidersModel() {
-	for _, name := range GetProvidersModel() {
-		c, err := providers.All[name](&genai.ProviderOptions{Model: genai.ModelNone}, nil)
+func Example_all_ListModel() {
+	for name, f := range providers.All {
+		c, err := f(&genai.ProviderOptions{Model: genai.ModelNone}, nil)
 		if err != nil {
-			log.Fatal(err)
+			continue
 		}
-		// c is guaranteed to implement ProviderModel.
-		models, err := c.(genai.ProviderModel).ListModels(context.Background())
+		models, err := c.ListModels(context.Background())
+		if err == base.ErrNotSupported {
+			continue
+		}
 		fmt.Printf("%s:\n", name)
 		if err != nil {
 			fmt.Printf("  Failed to get models: %v\n", err)
@@ -35,31 +38,6 @@ func Example_all_ProvidersModel() {
 			fmt.Printf("- %s\n", model)
 		}
 	}
-}
-
-// GetProvidersModel returns all the providers that support listing models.
-//
-// It's really just a simple loop that iterates over each item in All and checks if it implements
-// genai.ProviderModel.
-//
-// Test:
-//   - `c` if you want to determine if the functionality is potentially available, even if there's no known
-//     API key available at the moment.
-//   - `err` if you want to determine if the functionality is available in the current context, i.e.
-//     environment variables FOO_API_KEY are set.
-func GetProvidersModel() []string {
-	var names []string
-	for name, f := range providers.All {
-		c, _ := f(&genai.ProviderOptions{Model: genai.ModelNone}, nil)
-		if c == nil {
-			continue
-		}
-		if _, ok := c.(genai.ProviderModel); ok {
-			names = append(names, name)
-		}
-	}
-	sort.Strings(names)
-	return names
 }
 
 func Example_all_ProviderGen() {

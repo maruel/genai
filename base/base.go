@@ -44,6 +44,11 @@ var DefaultTransport http.RoundTripper = &roundtrippers.Retry{
 	},
 }
 
+// ErrNotSupported is returned when a method is not implemented because the provider doesn't support it.
+//
+// For example Perplexity doesn't have an API to lists its supported models (this may change in the future).
+var ErrNotSupported = errors.New("not supported")
+
 // ErrAPIKeyRequired is returned by the providers New() function when no key was found.
 type ErrAPIKeyRequired struct {
 	EnvVar string
@@ -61,6 +66,21 @@ func (e *ErrAPIKeyRequired) Error() string {
 type ErrAPI interface {
 	error
 	IsAPIError() bool
+}
+
+// NotImplemented implements most genai.Provider methods all returning ErrNotSupported.
+type NotImplemented struct{}
+
+func (*NotImplemented) GenSync(context.Context, genai.Messages, genai.Options) (genai.Result, error) {
+	return genai.Result{}, ErrNotSupported
+}
+
+func (*NotImplemented) GenStream(context.Context, genai.Messages, chan<- genai.ReplyFragment, genai.Options) (genai.Result, error) {
+	return genai.Result{}, ErrNotSupported
+}
+
+func (*NotImplemented) ListModels(context.Context) ([]genai.Model, error) {
+	return nil, ErrNotSupported
 }
 
 // Provider implements genai.Provider (except for ModelID()).

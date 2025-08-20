@@ -80,12 +80,8 @@ func printStructDense(v any, indent string) string {
 
 func getProvidersModel() []string {
 	var names []string
-	for name, f := range providers.All {
-		if c, _ := f(&genai.ProviderOptions{Model: genai.ModelNone}, nil); c != nil {
-			if _, ok := c.(genai.ProviderModel); ok {
-				names = append(names, name)
-			}
-		}
+	for name := range providers.Available() {
+		names = append(names, name)
 	}
 	sort.Strings(names)
 	return names
@@ -116,7 +112,7 @@ func mainImpl() error {
 	if err != nil {
 		return err
 	}
-	models, err := c.(genai.ProviderModel).ListModels(ctx)
+	models, err := c.ListModels(ctx)
 	if err != nil {
 		return err
 	}

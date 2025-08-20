@@ -1190,7 +1190,7 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest, out chan<- C
 	return c.impl.GenStreamRaw(ctx, in, out)
 }
 
-// ListModels implements genai.ProviderModel.
+// ListModels implements genai.Provider.
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	var resp ModelsResponse
 	if err := c.impl.DoRequest(ctx, "GET", c.modelsURL, nil, &resp); err != nil {

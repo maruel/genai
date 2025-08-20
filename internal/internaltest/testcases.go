@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/base"
 )
 
 type ProviderError struct {
@@ -121,30 +122,24 @@ func TestClient_Provider_errors(t *testing.T, getClient func(t *testing.T, apiKe
 					t.Fatal("ErrGenDoc is set but client does not support ProviderGenDoc")
 				}
 			}
-			if _, ok := tester.(genai.ProviderModel); ok {
-				if line.ErrListModel != "" {
-					t.Run("ListModels", func(t *testing.T) {
-						c, err := getClient(t, line.APIKey, genai.ModelNone)
-						if err != nil {
-							if err.Error() == line.ErrListModel {
-								return
-							}
-							t.Fatal(err)
+			if line.ErrListModel != "" {
+				t.Run("ListModels", func(t *testing.T) {
+					c, err := getClient(t, line.APIKey, genai.ModelNone)
+					if err != nil {
+						if err.Error() == line.ErrListModel {
+							return
 						}
-						_, err = c.(genai.ProviderModel).ListModels(t.Context())
-						if err == nil {
-							if line.ErrListModel != "" {
-								t.Fatal("expected error")
-							}
-						} else if got := err.Error(); got != line.ErrListModel {
-							t.Fatalf("Unexpected error.\nwant: %q\ngot : %q", line.ErrListModel, got)
+						t.Fatal(err)
+					}
+					_, err = c.ListModels(t.Context())
+					if err == base.ErrNotSupported {
+						if line.ErrListModel != "" {
+							t.Fatal("expected error")
 						}
-					})
-				}
-			} else if tester != nil {
-				if line.ErrListModel != "" {
-					t.Fatal("ErrListModel is set but client does not support ProviderModel")
-				}
+					} else if got := err.Error(); got != line.ErrListModel {
+						t.Fatalf("Unexpected error.\nwant: %q\ngot : %q", line.ErrListModel, got)
+					}
+				})
 			}
 		})
 	}

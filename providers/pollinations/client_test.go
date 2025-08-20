@@ -95,7 +95,6 @@ func (h *hideHTTP500) GenDoc(ctx context.Context, msg genai.Message, opts genai.
 
 type parent interface {
 	genai.ProviderGenDoc
-	genai.ProviderModel
 	scoreboard.ProviderScore
 }
 

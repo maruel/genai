@@ -1446,7 +1446,7 @@ type ErrorResponseError struct {
 	} `json:"details"`
 }
 
-// Client implements genai.ProviderGen and genai.ProviderModel.
+// Client implements genai.ProviderGen.
 type Client struct {
 	// Impl is accessible so its ClientJSON.Client can be accessed when fetching video results from Veo 3 with
 	// the right HTTP authentication headers.
@@ -1873,7 +1873,7 @@ func isImage(opts genai.Options) bool {
 	return opts != nil && slices.Contains(opts.Modalities(), genai.ModalityImage)
 }
 
-// ListModels implements genai.ProviderModel.
+// ListModels implements genai.Provider.
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://ai.google.dev/api/models?hl=en#method:-models.list
 	var resp ModelsResponse
@@ -1974,6 +1974,5 @@ var (
 	_ genai.Provider           = &Client{}
 	_ genai.ProviderCache      = &Client{}
 	_ genai.ProviderGen        = &Client{}
-	_ genai.ProviderModel      = &Client{}
 	_ scoreboard.ProviderScore = &Client{}
 )

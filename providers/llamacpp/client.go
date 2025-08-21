@@ -1127,9 +1127,8 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			GenSyncURL:           baseURL + "/chat/completions",
 			ProcessStreamPackets: processChatStreamPackets,
-			ModelOptional:        true,
 			ProviderBase: base.ProviderBase[*ErrorResponse]{
-				Modalities: mod,
+				ModelOptional: true,
 				ClientJSON: httpjson.Client{
 					Lenient: internal.BeLenient,
 					Client: &http.Client{

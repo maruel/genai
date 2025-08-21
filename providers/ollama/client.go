@@ -570,7 +570,6 @@ func (er *ErrorResponse) IsAPIError() bool {
 // Client implements genai.Provider.
 type Client struct {
 	impl    base.ProviderBase[*ErrorResponse]
-	model   string
 	baseURL string
 	chatURL string
 }
@@ -622,10 +621,10 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 	switch opts.Model {
 	case genai.ModelNone:
 	case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA, "":
-		c.model = c.selectBestTextModel(ctx, opts.Model)
+		c.impl.Model = c.selectBestTextModel(ctx, opts.Model)
 		c.impl.Modalities = mod
 	default:
-		c.model = opts.Model
+		c.impl.Model = opts.Model
 		c.impl.Modalities = mod
 	}
 	return c, nil
@@ -666,7 +665,7 @@ func (c *Client) Name() string {
 //
 // It returns the selected model ID.
 func (c *Client) ModelID() string {
-	return c.model
+	return c.impl.Model
 }
 
 // Modalities implements genai.Provider.
@@ -687,7 +686,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Op
 	result := genai.Result{}
 	in := ChatRequest{}
 	var continuableErr error
-	if err := in.Init(msgs, opts, c.model); err != nil {
+	if err := in.Init(msgs, opts, c.impl.Model); err != nil {
 		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 			continuableErr = uce
 		} else {
@@ -718,7 +717,7 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 	if err != nil {
 		// TODO: Cheezy.
 		if strings.Contains(err.Error(), "not found, try pulling it first") {
-			if err = c.PullModel(ctx, c.model); err != nil {
+			if err = c.PullModel(ctx, c.impl.Model); err != nil {
 				return err
 			}
 			// Retry.
@@ -733,7 +732,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan
 	result := genai.Result{}
 	in := ChatRequest{}
 	var continuableErr error
-	if err := in.Init(msgs, opts, c.model); err != nil {
+	if err := in.Init(msgs, opts, c.impl.Model); err != nil {
 		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 			continuableErr = uce
 		} else {
@@ -777,7 +776,7 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest, out chan<- C
 		return err
 	}
 	// Model was not present. Try to pull then rerun again.
-	if err = c.PullModel(ctx, c.model); err != nil {
+	if err = c.PullModel(ctx, c.impl.Model); err != nil {
 		return err
 	}
 	if resp, err = c.impl.ClientJSON.Request(ctx, "POST", c.chatURL, nil, in); err != nil {
@@ -829,7 +828,7 @@ func (c *Client) Ping(ctx context.Context) error {
 }
 
 func (c *Client) Validate() error {
-	if c.model == "" {
+	if c.impl.Model == "" {
 		return errors.New("a model is required")
 	}
 	return nil

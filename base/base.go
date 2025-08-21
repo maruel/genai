@@ -83,7 +83,7 @@ func (*NotImplemented) ListModels(context.Context) ([]genai.Model, error) {
 	return nil, ErrNotSupported
 }
 
-// ProviderBase implements genai.ProviderBase (except for ModelID()).
+// ProviderBase implements the basse functionality to help implementing a base.Provider.
 //
 // It contains the shared HTTP client functionality used across all API clients.
 type ProviderBase[PErrorResponse ErrAPI] struct {
@@ -91,12 +91,23 @@ type ProviderBase[PErrorResponse ErrAPI] struct {
 	ClientJSON httpjson.Client
 	// APIKeyURL is the URL to present to the user upon authentication error.
 	APIKeyURL string
+	// Model is the default model used for chat requests
+	Model string
 	// Modalities is the output modalities supported by the provider.
 	Modalities genai.Modalities
+	// ModelOptional is true if a model name is not required to use the provider.
+	ModelOptional bool
 
 	mu            sync.Mutex
 	errorResponse reflect.Type
 	lastResp      http.Header
+}
+
+func (c *ProviderBase[PErrorResponse]) Validate() error {
+	if !c.ModelOptional && c.Model == "" {
+		return errors.New("a model is required")
+	}
+	return nil
 }
 
 // LastResponseHeaders returns the HTTP headers of the last response.
@@ -256,19 +267,14 @@ type ResultConverter interface {
 // Provider implements genai.Provider.
 //
 // It includes common functionality for clients that provide chat capabilities.
-// It embeds Provider and adds the missing ModelID() method and implements genai.Validatable.
 //
 // It only accepts text modality.
 type Provider[PErrorResponse ErrAPI, PGenRequest InitializableRequest, PGenResponse ResultConverter, GenStreamChunkResponse Obj] struct {
 	ProviderBase[PErrorResponse]
-	// Model is the default model used for chat requests
-	Model string
 	// GenSyncURL is the endpoint URL for chat API requests
 	GenSyncURL string
 	// GenStreamURL is the endpoint URL for chat stream API requests. It defaults to GenURL if unset.
 	GenStreamURL string
-	// ModelOptional is true if a model name is not required to use the provider.
-	ModelOptional bool
 	// ProcessStreamPackets is the function that processes stream packets used by GenStream.
 	ProcessStreamPackets func(ch <-chan GenStreamChunkResponse, chunks chan<- genai.ReplyFragment, result *genai.Result) error
 	// ProcessHeaders is the function that processes HTTP headers to extract rate limit information.
@@ -406,13 +412,6 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 	c.mu.Unlock()
 	er := reflect.New(c.errorResponse).Interface().(PErrorResponse)
 	return sse.Process(resp.Body, out, er, c.ClientJSON.Lenient)
-}
-
-func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) Validate() error {
-	if !c.ModelOptional && c.Model == "" {
-		return errors.New("a model is required")
-	}
-	return nil
 }
 
 func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) lateInit() {

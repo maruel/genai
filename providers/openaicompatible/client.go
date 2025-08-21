@@ -389,12 +389,12 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 	}
 	return &Client{
 		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
-			Model:                model,
 			GenSyncURL:           opts.Remote,
-			ModelOptional:        true,
 			ProcessStreamPackets: processStreamPackets,
 			ProviderBase: base.ProviderBase[*ErrorResponse]{
-				Modalities: mod,
+				Model:         model,
+				ModelOptional: true,
+				Modalities:    mod,
 				ClientJSON: httpjson.Client{
 					// It is always lenient by definition.
 					Lenient: true,

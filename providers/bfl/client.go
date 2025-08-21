@@ -234,7 +234,6 @@ func (er *ErrorResponse) IsAPIError() bool {
 type Client struct {
 	base.NotImplemented
 	impl   base.ProviderBase[*ErrorResponse]
-	model  string
 	remote string
 }
 
@@ -294,10 +293,10 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 		switch opts.Model {
 		case genai.ModelNone:
 		case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA, "":
-			c.model = c.selectBestImageModel(opts.Model)
+			c.impl.Model = c.selectBestImageModel(opts.Model)
 			c.impl.Modalities = mod
 		default:
-			c.model = opts.Model
+			c.impl.Model = opts.Model
 			c.impl.Modalities = mod
 		}
 	}
@@ -330,7 +329,7 @@ func (c *Client) Name() string {
 //
 // It returns the selected model ID.
 func (c *Client) ModelID() string {
-	return c.model
+	return c.impl.Model
 }
 
 // Modalities implements genai.Provider.
@@ -406,7 +405,7 @@ func (c *Client) GenAsyncRaw(ctx context.Context, req ImageRequest) (ImageReques
 	// https://docs.bfl.ai/integration_guidelines#polling-url-usage
 	// TODO: Switch to use PollingURL
 	reqresp := ImageRequestResponse{}
-	err := c.impl.DoRequest(ctx, "POST", c.remote+"/v1/"+c.model, &req, &reqresp)
+	err := c.impl.DoRequest(ctx, "POST", c.remote+"/v1/"+c.impl.Model, &req, &reqresp)
 	return reqresp, err
 }
 

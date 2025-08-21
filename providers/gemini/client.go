@@ -1489,10 +1489,6 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 			err = &base.ErrAPIKeyRequired{EnvVar: "GEMINI_API_KEY", URL: apiKeyURL}
 		}
 	}
-	model := opts.Model
-	if model == "" {
-		model = genai.ModelGood
-	}
 	// Google supports HTTP POST gzip compression!
 	var t http.RoundTripper = &roundtrippers.PostCompressed{
 		Transport: base.DefaultTransport,
@@ -1504,9 +1500,6 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 	// Eventually, use OAuth https://ai.google.dev/gemini-api/docs/oauth#curl
 	c := &Client{
 		Impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
-			Model:                model,
-			GenSyncURL:           "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(model) + ":generateContent",
-			GenStreamURL:         "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(model) + ":streamGenerateContent?alt=sse",
 			ProcessStreamPackets: processStreamPackets,
 			LieToolCalls:         true,
 			ProviderBase: base.ProviderBase[*ErrorResponse]{
@@ -1523,14 +1516,11 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 			},
 		},
 	}
-	switch model {
+	switch opts.Model {
 	case genai.ModelNone:
-		c.Impl.Model = ""
-		c.Impl.GenSyncURL = ""
-		c.Impl.GenStreamURL = ""
-	case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA:
+	case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA, "":
 		if err == nil {
-			if c.Impl.Model, err = c.selectBestModel(ctx, model); err != nil {
+			if c.Impl.Model, err = c.selectBestModel(ctx, opts.Model); err != nil {
 				return nil, err
 			}
 			// Update URLs with the selected model
@@ -1540,6 +1530,10 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 				c.Impl.GenStreamURL = "https://generativelanguage.googleapis.com/v1beta/" + modelName + ":streamGenerateContent?alt=sse"
 			}
 		}
+	default:
+		c.Impl.Model = opts.Model
+		c.Impl.GenSyncURL = "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(opts.Model) + ":generateContent"
+		c.Impl.GenStreamURL = "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(opts.Model) + ":streamGenerateContent?alt=sse"
 	}
 	return c, err
 }
@@ -1548,11 +1542,10 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 func (c *Client) selectBestModel(ctx context.Context, preference string) (string, error) {
 	mdls, err := c.ListModels(ctx)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("failed to automatically select the model: %w", err)
 	}
-
 	cheap := preference == genai.ModelCheap
-	good := preference == genai.ModelGood
+	good := preference == genai.ModelGood || preference == ""
 	selectedModel := ""
 	var tokens int64
 	for _, mdl := range mdls {

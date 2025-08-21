@@ -545,9 +545,9 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 	switch model {
 	case genai.ModelNone:
 		model = ""
-	case genai.ModelCheap, "":
+	case genai.ModelCheap:
 		model = "sonar"
-	case genai.ModelGood:
+	case genai.ModelGood, "":
 		model = "sonar-pro"
 	case genai.ModelSOTA:
 		model = "sonar-reasoning-pro"

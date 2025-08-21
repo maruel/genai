@@ -355,6 +355,12 @@ type Client struct {
 //
 // Option Remote must be set.
 //
+// Automatic model selection via ModelCheap, ModelGood, ModelSOTA is not supported and it will specify no
+// model in this case.
+//
+// Exceptionally it will interpret Model set to "" as no model to specify since there is no automatic model
+// selection.
+//
 // wrapper optionally wraps the HTTP transport. Useful for HTTP recording and playback, or to tweak HTTP
 // retries, or to throttle outgoing requests.
 func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
@@ -368,10 +374,9 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 		return nil, errors.New("option Remote is required")
 	}
 	model := opts.Model
-	if model == genai.ModelNone {
+	switch model {
+	case "", genai.ModelNone, genai.ModelCheap, genai.ModelGood, genai.ModelSOTA:
 		model = ""
-	} else if model == genai.ModelCheap || model == genai.ModelGood || model == genai.ModelSOTA {
-		return nil, errors.New("default models are not supported")
 	}
 	t := base.DefaultTransport
 	if wrapper != nil {

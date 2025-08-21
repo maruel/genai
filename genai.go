@@ -45,14 +45,21 @@ type ProviderOptions struct {
 	//
 	// It is mostly used by locally hosted services (llamacpp, ollama) or for generic client (openaicompatible).
 	Remote string `json:"remote,omitzero" yaml:"remote,omitzero"`
-	// Model specify the model ID to use.
+	// Model either specifies an exact the model ID to use, request the provider to select a model on your
+	// behalf or explicitly ask for no model.
 	//
-	// Pass model base.PreferredCheap to use a good cheap model, base.PreferredGood for a good model or
-	// base.PreferredSOTA to use its SOTA model. Keep in mind that as providers cycle through new models, it's
-	// possible the model is not available anymore or that the default model changes.
+	// To use automatic model selection, pass ModelCheap to use a cheap model, ModelGood for a good
+	// everyday model or ModelSOTA to use its state of the art (SOTA) model. In this case, the provider
+	// internally call ListModels() to discover models and select the right one based on its heuristics.
+	// Provider that do not support ListModels, e.g. bfl or perplexity, will use an hardcoded list.
 	//
-	// When unspecified, the provider may try to select the same model, likely as if base.PreferredGood had been
-	// specified but it's not guaranteed. To disable this behavior, use base.NoModel.
+	// When unspecified, i.e. with "", it defaults to automatic model selection with ModelGood.
+	//
+	// There are two ways to disable automatic model discovery and selection: specify a model ID or use
+	// ModelNone.
+	//
+	// Keep in mind that as providers cycle through new models, it's possible a specific model ID is not
+	// available anymore or that the default model changes.
 	Model string `json:"model,omitzero" yaml:"model,omitzero"`
 
 	_ struct{}

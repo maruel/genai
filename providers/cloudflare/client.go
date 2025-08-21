@@ -710,10 +710,6 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 			err = &base.ErrAPIKeyRequired{EnvVar: "CLOUDFLARE_API_KEY", URL: apiKeyURL}
 		}
 	}
-	model := opts.Model
-	if model == "" {
-		model = genai.ModelGood
-	}
 	t := base.DefaultTransport
 	if wrapper != nil {
 		t = wrapper(t)
@@ -724,8 +720,6 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 	// Important: the model must not be path escaped!
 	c := &Client{
 		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
-			Model:                model,
-			GenSyncURL:           "https://api.cloudflare.com/client/v4/accounts/" + url.PathEscape(accountID) + "/ai/run/" + model,
 			ProcessStreamPackets: processStreamPackets,
 			ProviderBase: base.ProviderBase[*ErrorResponse]{
 				APIKeyURL: apiKeyURL,
@@ -742,17 +736,20 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 		},
 		accountID: accountID,
 	}
-	switch model {
+	switch opts.Model {
 	case genai.ModelNone:
 		c.impl.Model = ""
 		c.impl.GenSyncURL = ""
-	case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA:
+	case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA, "":
 		if err == nil {
-			if c.impl.Model, err = c.selectBestModel(ctx, model); err != nil {
+			if c.impl.Model, err = c.selectBestModel(ctx, opts.Model); err != nil {
 				return nil, err
 			}
 			c.impl.GenSyncURL = "https://api.cloudflare.com/client/v4/accounts/" + url.PathEscape(accountID) + "/ai/run/" + c.impl.Model
 		}
+	default:
+		c.impl.Model = opts.Model
+		c.impl.GenSyncURL = "https://api.cloudflare.com/client/v4/accounts/" + url.PathEscape(accountID) + "/ai/run/" + c.impl.Model
 	}
 	return c, err
 }
@@ -761,10 +758,10 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 func (c *Client) selectBestModel(ctx context.Context, preference string) (string, error) {
 	mdls, err := c.ListModels(ctx)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("failed to automatically select the model: %w", err)
 	}
 	cheap := preference == genai.ModelCheap
-	good := preference == genai.ModelGood
+	good := preference == genai.ModelGood || preference == ""
 	selectedModel := ""
 	price := 100000.
 	if !cheap {

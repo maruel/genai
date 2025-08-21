@@ -1091,6 +1091,9 @@ type Client struct {
 //
 // Options Remote defaults to "http://localhost:8080".
 //
+// Automatic model selection via ModelCheap, ModelGood, ModelSOTA is not supported. It will ask llama-server
+// to determine which model is already loaded.
+//
 // wrapper optionally wraps the HTTP transport. Useful for HTTP recording and playback, or to tweak HTTP
 // retries, or to throttle outgoing requests.
 func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
@@ -1101,12 +1104,6 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 	}
 	if opts.AccountID != "" {
 		return nil, errors.New("unexpected option AccountID")
-	}
-	model := opts.Model
-	switch model {
-	case "", genai.ModelNone, genai.ModelCheap, genai.ModelGood, genai.ModelSOTA:
-		model = ""
-	default:
 	}
 	baseURL := opts.Remote
 	if baseURL == "" {
@@ -1122,12 +1119,11 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 	if wrapper != nil {
 		t = wrapper(t)
 	}
-	return &Client{
+	c := &Client{
 		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			GenSyncURL:           baseURL + "/chat/completions",
 			ProcessStreamPackets: processChatStreamPackets,
 			ModelOptional:        true,
-			Model:                model,
 			ProviderBase: base.ProviderBase[*ErrorResponse]{
 				ClientJSON: httpjson.Client{
 					Lenient: internal.BeLenient,
@@ -1141,7 +1137,30 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 		completionsURL: baseURL + "/completions",
 		modelsURL:      baseURL + "/v1/models",
 		encoding:       encoding,
-	}, nil
+	}
+	var err error
+	switch opts.Model {
+	case genai.ModelNone:
+		c.impl.Model = ""
+	case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA, "":
+		c.impl.Model, err = c.selectBestModel(ctx)
+	default:
+		c.impl.Model = opts.Model
+	}
+	return c, err
+}
+
+// selectBestModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
+func (c *Client) selectBestModel(ctx context.Context) (string, error) {
+	// Figure out the model loaded if any.
+	m, err := c.ListModels(ctx)
+	if err != nil {
+		return "", fmt.Errorf("failed to automatically select the model: %w", err)
+	}
+	if len(m) > 0 {
+		return m[0].GetID(), nil
+	}
+	return "", nil
 }
 
 // Name implements genai.Provider.
@@ -1153,16 +1172,9 @@ func (c *Client) Name() string {
 
 // ModelID implements genai.Provider.
 //
-// It returns the selected model ID.
+// It returns the selected model ID or what was discovered from the server.
 func (c *Client) ModelID() string {
-	if c.impl.Model != "" {
-		return c.impl.Model
-	}
-	m, _ := c.ListModels(context.Background())
-	if len(m) > 0 {
-		return m[0].GetID()
-	}
-	return ""
+	return c.impl.Model
 }
 
 // Scoreboard implements scoreboard.ProviderScore.

@@ -22,11 +22,8 @@ func TestClient_Preferred(t *testing.T) {
 	for _, line := range []string{genai.ModelCheap, genai.ModelGood, genai.ModelSOTA} {
 		t.Run(line, func(t *testing.T) {
 			_, err := openaicompatible.New(t.Context(), &genai.ProviderOptions{Remote: "http://localhost", Model: line}, nil)
-			if err == nil {
-				t.Fatal("expected error")
-			}
-			if s := err.Error(); s != "default models are not supported" {
-				t.Fatalf("unexpected error %q", s)
+			if err != nil {
+				t.Fatalf("unexpected error %q", err)
 			}
 		})
 	}

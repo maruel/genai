@@ -577,11 +577,16 @@ type Client struct {
 
 // New creates a new client to talk to the Ollama API.
 //
+// Options Remote defaults to "http://localhost:11434".
+//
+// Ollama doesn't have any mean of authentication so options APIKey is not supported.
+//
 // To use multiple models, create multiple clients.
 // Use one of the model from https://ollama.com/library
 //
-// baseURL defaults to "http://localhost:11434". Ollama doesn't have any mean of authentication so there's no
-// API key.
+// Automatic model selection via ModelCheap, ModelGood, ModelSOTA is using hardcoded models. Before using an
+// hardcoded model ID, it will ask ollama to determine if a model is already loaded and it will use that
+// instead.
 //
 // wrapper optionally wraps the HTTP transport. Useful for HTTP recording and playback, or to tweak HTTP
 // retries, or to throttle outgoing requests.
@@ -596,27 +601,11 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 	if baseURL == "" {
 		baseURL = "http://localhost:11434"
 	}
-	// There's no way to list what's the current best models and no way to list the models in the library:
-	// https://github.com/ollama/ollama/issues/8241
-	// Hard code some popular models, it's more useful than failing hard. The model is not immediately pulled,
-	// it will be pulled upon first use.
-	model := opts.Model
-	switch model {
-	case genai.ModelNone:
-		model = ""
-	case genai.ModelCheap:
-		model = "gemma3:1b"
-	case genai.ModelGood, "":
-		model = "qwen3:30b"
-	case genai.ModelSOTA:
-		model = "qwen3:32b"
-	default:
-	}
 	t := base.DefaultTransport
 	if wrapper != nil {
 		t = wrapper(t)
 	}
-	return &Client{
+	c := &Client{
 		impl: base.ProviderBase[*ErrorResponse]{
 			ClientJSON: httpjson.Client{
 				Lenient: internal.BeLenient,
@@ -625,8 +614,40 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 		},
 		baseURL: baseURL,
 		chatURL: baseURL + "/api/chat",
-		model:   model,
-	}, nil
+	}
+	switch opts.Model {
+	case genai.ModelNone:
+		c.model = ""
+	case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA, "":
+		c.model = c.selectBestModel(ctx, opts.Model)
+	default:
+		c.model = opts.Model
+	}
+	return c, nil
+}
+
+// selectBestModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
+func (c *Client) selectBestModel(ctx context.Context, preference string) string {
+	// There's no way to list what's the current best models and no way to list the models in the library:
+	// https://github.com/ollama/ollama/issues/8241
+
+	// Figure out the model loaded if any. Ignore the error.
+	m, _ := c.ListModels(ctx)
+	if len(m) > 0 {
+		return m[0].GetID()
+	}
+	// Hard code some popular models, it's more useful than failing hard. The model is not immediately pulled,
+	// it will be pulled upon first use.
+	switch preference {
+	case genai.ModelCheap:
+		return "gemma3:1b"
+	default:
+		fallthrough
+	case genai.ModelGood, "":
+		return "qwen3:30b"
+	case genai.ModelSOTA:
+		return "qwen3:32b"
+	}
 }
 
 // Name implements genai.Provider.

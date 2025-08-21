@@ -264,14 +264,13 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 		}
 	}
 	// If Black Forest Labs ever implement model listing, start using it!
-	// When no model is specified, use the dev model since costs increase quite fast.
 	model := opts.Model
 	switch model {
 	case genai.ModelNone:
 		model = ""
-	case genai.ModelCheap, "":
+	case genai.ModelCheap:
 		model = "flux-dev"
-	case genai.ModelGood:
+	case genai.ModelGood, "":
 		model = "flux-pro-1.1"
 	case genai.ModelSOTA:
 		model = "flux-pro-1.1-ultra"

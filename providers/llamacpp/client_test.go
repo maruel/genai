@@ -33,6 +33,32 @@ func TestClient(t *testing.T) {
 	apiKey := base64.RawURLEncoding.EncodeToString(b[:])
 	s := lazyServer{t: t, apiKey: apiKey}
 
+	t.Run("Preferred", func(t *testing.T) {
+		data := []struct {
+			name string
+			want string
+		}{
+			// Value comes from scoreboard.
+			{genai.ModelCheap, "gemma-3-4b-it-Q4_K_M.gguf"},
+			{genai.ModelGood, "gemma-3-4b-it-Q4_K_M.gguf"},
+			{genai.ModelSOTA, "gemma-3-4b-it-Q4_K_M.gguf"},
+		}
+		for _, line := range data {
+			t.Run(line.name, func(t *testing.T) {
+				ctx := t.Context()
+				c, err := llamacpp.New(ctx, &genai.ProviderOptions{APIKey: apiKey, Remote: s.lazyStart(t), Model: line.name}, func(h http.RoundTripper) http.RoundTripper {
+					return testRecorder.Record(t, h)
+				})
+				if err != nil {
+					t.Fatal(err)
+				}
+				if got := c.ModelID(); got != line.want {
+					t.Fatalf("got model %q, want %q", got, line.want)
+				}
+			})
+		}
+	})
+
 	t.Run("ListModels", func(t *testing.T) {
 		ctx := t.Context()
 		c, err := llamacpp.New(ctx, &genai.ProviderOptions{APIKey: apiKey, Remote: s.lazyStart(t), Model: genai.ModelNone}, func(h http.RoundTripper) http.RoundTripper {
@@ -123,29 +149,6 @@ func (l *lazyServer) lazyStart(t testing.TB) string {
 		})
 	}
 	return l.url
-}
-
-// This test doesn't require the server to start.
-func TestClient_Preferred(t *testing.T) {
-	data := []struct {
-		name string
-		want string
-	}{
-		{genai.ModelCheap, ""},
-		{genai.ModelGood, ""},
-		{genai.ModelSOTA, ""},
-	}
-	for _, line := range data {
-		t.Run(line.name, func(t *testing.T) {
-			c, err := llamacpp.New(t.Context(), &genai.ProviderOptions{Model: line.name}, nil)
-			if err != nil {
-				t.Fatal(err)
-			}
-			if got := c.ModelID(); got != line.want {
-				t.Fatalf("got model %q, want %q", got, line.want)
-			}
-		})
-	}
 }
 
 func startServerTest(t testing.TB, author, repo, modelfile, multimodal, apiKey string) *llamacppsrv.Server {

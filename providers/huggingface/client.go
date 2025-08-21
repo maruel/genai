@@ -767,17 +767,12 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 			}
 		}
 	}
-	model := opts.Model
-	if model == "" {
-		model = genai.ModelGood
-	}
 	t := base.DefaultTransport
 	if wrapper != nil {
 		t = wrapper(t)
 	}
 	c := &Client{
 		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
-			Model:                model,
 			GenSyncURL:           "https://router.huggingface.co/v1/chat/completions",
 			ProcessStreamPackets: processStreamPackets,
 			ProcessHeaders:       processHeaders,
@@ -795,15 +790,17 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 			},
 		},
 	}
-	switch model {
+	switch opts.Model {
 	case genai.ModelNone:
 		c.impl.Model = ""
-	case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA:
+	case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA, "":
 		if err == nil {
-			if c.impl.Model, err = c.selectBestModel(ctx, model); err != nil {
+			if c.impl.Model, err = c.selectBestModel(ctx, opts.Model); err != nil {
 				return nil, err
 			}
 		}
+	default:
+		c.impl.Model = opts.Model
 	}
 	return c, err
 }
@@ -813,10 +810,10 @@ func (c *Client) selectBestModel(ctx context.Context, preference string) (string
 	// Warning: listing models from Huggingface takes a while.
 	mdls, err := c.ListModels(ctx)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("failed to automatically select the model: %w", err)
 	}
 	cheap := preference == genai.ModelCheap
-	good := preference == genai.ModelGood
+	good := preference == genai.ModelGood || preference == ""
 	selectedModel := ""
 	trending := 0.
 	weights := 0

@@ -1367,17 +1367,12 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 			err = &base.ErrAPIKeyRequired{EnvVar: "OPENAI_API_KEY", URL: apiKeyURL}
 		}
 	}
-	model := opts.Model
-	if model == "" {
-		model = genai.ModelGood
-	}
 	t := base.DefaultTransport
 	if wrapper != nil {
 		t = wrapper(t)
 	}
 	c := &Client{
 		impl: base.Provider[*ErrorResponse, *Response, *Response, ResponseStreamChunkResponse]{
-			Model:                model,
 			GenSyncURL:           "https://api.openai.com/v1/responses",
 			GenStreamURL:         "https://api.openai.com/v1/responses",
 			ProcessStreamPackets: processStreamPackets,
@@ -1396,15 +1391,17 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 			},
 		},
 	}
-	switch model {
+	switch opts.Model {
 	case genai.ModelNone:
 		c.impl.Model = ""
-	case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA:
+	case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA, "":
 		if err == nil {
-			if c.impl.Model, err = c.selectBestModel(ctx, model); err != nil {
+			if c.impl.Model, err = c.selectBestModel(ctx, opts.Model); err != nil {
 				return nil, err
 			}
 		}
+	default:
+		c.impl.Model = opts.Model
 	}
 	return c, err
 }
@@ -1413,11 +1410,10 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 func (c *Client) selectBestModel(ctx context.Context, preference string) (string, error) {
 	mdls, err := c.ListModels(ctx)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("failed to automatically select the model: %w", err)
 	}
-
 	cheap := preference == genai.ModelCheap
-	good := preference == genai.ModelGood
+	good := preference == genai.ModelGood || preference == ""
 	selectedModel := ""
 	var created base.Time
 	for _, mdl := range mdls {

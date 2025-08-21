@@ -985,6 +985,8 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 		case genai.ModalityImage:
 			preferText = false
 		case genai.ModalityText:
+		case genai.ModalityDocument, genai.ModalityVideo:
+			fallthrough
 		default:
 			return nil, fmt.Errorf("unexpected option Modalities %s, only image or text are supported", opts.Modalities)
 		}

@@ -1495,6 +1495,8 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 	case 1:
 		switch opts.Modalities[0] {
 		case genai.ModalityAudio, genai.ModalityImage, genai.ModalityText, genai.ModalityVideo:
+		case genai.ModalityDocument:
+			fallthrough
 		default:
 			return nil, fmt.Errorf("unexpected option Modalities %s, only audio, image, text, or video are supported", opts.Modalities)
 		}
@@ -1559,6 +1561,8 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 				c.Impl.GenStreamURL = "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(opts.Model) + ":streamGenerateContent?alt=sse"
 				c.Impl.Modalities = genai.Modalities{mod}
 			case genai.ModalityAudio:
+				fallthrough
+			case genai.ModalityDocument:
 				fallthrough
 			case genai.ModalityImage:
 				fallthrough

@@ -1319,6 +1319,8 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 	case 1:
 		switch opts.Modalities[0] {
 		case genai.ModalityAudio, genai.ModalityImage, genai.ModalityText, genai.ModalityVideo:
+		case genai.ModalityDocument:
+			fallthrough
 		default:
 			return nil, fmt.Errorf("unexpected option Modalities %s, only audio, image or text are supported", opts.Modalities)
 		}
@@ -1369,6 +1371,8 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 					return nil, err
 				}
 				c.impl.Modalities = genai.Modalities{mod}
+			case genai.ModalityAudio, genai.ModalityDocument, genai.ModalityImage, genai.ModalityVideo:
+				fallthrough
 			default:
 				// TODO: Soon, because it's cool.
 				return nil, fmt.Errorf("automatic model selection is not implemented yet for modality %s (send PR to add support)", opts.Modalities)

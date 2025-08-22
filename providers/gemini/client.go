@@ -1556,15 +1556,17 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 				if c.Impl.Model, err = c.selectBestTextModel(ctx, opts.Model); err != nil {
 					return nil, err
 				}
-				// TODO: Use ListModels to determine the right predicate.
 				c.Impl.GenSyncURL = "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(opts.Model) + ":generateContent"
 				c.Impl.GenStreamURL = "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(opts.Model) + ":streamGenerateContent?alt=sse"
+				c.Impl.Modalities = genai.Modalities{mod}
+			case genai.ModalityImage:
+				if c.Impl.Model, err = c.selectBestImageModel(ctx, opts.Model); err != nil {
+					return nil, err
+				}
 				c.Impl.Modalities = genai.Modalities{mod}
 			case genai.ModalityAudio:
 				fallthrough
 			case genai.ModalityDocument:
-				fallthrough
-			case genai.ModalityImage:
 				fallthrough
 			case genai.ModalityVideo:
 				fallthrough
@@ -1600,12 +1602,11 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 	var tokens int64
 	for _, mdl := range mdls {
 		m := mdl.(*Model)
-		if strings.Contains(m.Name, "tts") {
+		if !slices.Contains(m.SupportedGenerationMethods, "generateContent") || strings.Contains(m.Name, "tts") || (tokens != 0 && tokens > m.OutputTokenLimit) {
 			continue
 		}
 		// TODO: Do numerical comparison? For now, we select the the unpinned model, without the "-NNN" suffix.
-		name := strings.TrimPrefix(m.Name, "models/")
-		if (tokens == 0 || tokens <= m.OutputTokenLimit) && (selectedModel == "" || name > selectedModel) {
+		if name := strings.TrimPrefix(m.Name, "models/"); selectedModel == "" || name > selectedModel {
 			if cheap {
 				if strings.HasPrefix(name, "gemini") && strings.HasSuffix(name, "flash-lite") {
 					tokens = m.OutputTokenLimit
@@ -1620,6 +1621,45 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 			} else {
 				if strings.HasPrefix(name, "gemini") && strings.HasSuffix(name, "pro") {
 					tokens = m.OutputTokenLimit
+					selectedModel = name
+				}
+			}
+		}
+	}
+	if selectedModel == "" {
+		return "", errors.New("failed to find a model automatically")
+	}
+	return selectedModel, nil
+}
+
+// selectBestImageModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
+func (c *Client) selectBestImageModel(ctx context.Context, preference string) (string, error) {
+	mdls, err := c.ListModels(ctx)
+	if err != nil {
+		return "", fmt.Errorf("failed to automatically select the model: %w", err)
+	}
+	cheap := preference == genai.ModelCheap
+	good := preference == genai.ModelGood || preference == ""
+	selectedModel := ""
+	for _, mdl := range mdls {
+		m := mdl.(*Model)
+		if !slices.Contains(m.SupportedGenerationMethods, "predict") || strings.Contains(m.Name, "tts") {
+			continue
+		}
+		// TODO: Do numerical comparison? There are version numbers and tokens limits we can test against.
+		if name := strings.TrimPrefix(m.Name, "models/"); selectedModel == "" || name > selectedModel {
+			isFast := strings.Contains(name, "fast")
+			isUltra := strings.Contains(name, "ultra")
+			if cheap {
+				if isFast {
+					selectedModel = name
+				}
+			} else if good {
+				if !isFast && !isUltra {
+					selectedModel = name
+				}
+			} else {
+				if isUltra {
 					selectedModel = name
 				}
 			}

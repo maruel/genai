@@ -7,6 +7,7 @@ package gemini_test
 import (
 	"context"
 	_ "embed"
+	"fmt"
 	"log/slog"
 	"net/http"
 	"os"
@@ -91,16 +92,25 @@ func (i *injectOption) GenStream(ctx context.Context, msgs genai.Messages, repli
 
 func TestClient_Preferred(t *testing.T) {
 	data := []struct {
-		name string
-		want string
+		modality genai.Modality
+		name     string
+		want     string
 	}{
-		{genai.ModelCheap, "gemini-2.5-flash-lite"},
-		{genai.ModelGood, "gemini-2.5-flash"},
-		{genai.ModelSOTA, "gemini-2.5-pro"},
+		{genai.ModalityText, genai.ModelCheap, "gemini-2.5-flash-lite"},
+		{genai.ModalityText, genai.ModelGood, "gemini-2.5-flash"},
+		{genai.ModalityText, genai.ModelSOTA, "gemini-2.5-pro"},
+		{genai.ModalityImage, genai.ModelCheap, "imagen-4.0-fast-generate-001"},
+		{genai.ModalityImage, genai.ModelGood, "imagen-4.0-generate-preview-06-06"},
+		{genai.ModalityImage, genai.ModelSOTA, "imagen-4.0-ultra-generate-preview-06-06"},
 	}
 	for _, line := range data {
-		t.Run(line.name, func(t *testing.T) {
-			if got := getClient(t, line.name).ModelID(); got != line.want {
+		t.Run(fmt.Sprintf("%s-%s", line.modality, line.name), func(t *testing.T) {
+			opts := genai.ProviderOptions{Model: line.name, Modalities: genai.Modalities{line.modality}}
+			c, err := getClientInner(t, &opts)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got := c.ModelID(); got != line.want {
 				t.Fatalf("got model %q, want %q", got, line.want)
 			}
 		})

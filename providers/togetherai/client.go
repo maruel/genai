@@ -1092,9 +1092,9 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 				// Temporarily disabled to ease with the transition away from GenDoc / ProviderGenDoc.
 				// I must not forget to enable this back once I removed GenDoc!
 				if false {
-					mdls, err := c.ListModels(ctx)
-					if err != nil {
-						return nil, fmt.Errorf("failed to detect the output modality for the model %s: %w", opts.Model, err)
+					mdls, err2 := c.ListModels(ctx)
+					if err2 != nil {
+						return nil, fmt.Errorf("failed to detect the output modality for the model %s: %w", opts.Model, err2)
 					}
 					for _, mdl := range mdls {
 						if m := mdl.(*Model); m.ID == opts.Model {

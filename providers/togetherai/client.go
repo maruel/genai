@@ -1031,10 +1031,21 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 			err = &base.ErrAPIKeyRequired{EnvVar: "TOGETHER_API_KEY", URL: apiKeyURL}
 		}
 	}
-	mod := genai.Modalities{genai.ModalityText}
-	if len(opts.Modalities) != 0 && !slices.Equal(opts.Modalities, mod) {
-		// https://docs.together.ai/reference/post-images-generations
-		return nil, fmt.Errorf("unexpected option Modalities %s, only text is implemented (send PR to add support)", mod)
+	switch len(opts.Modalities) {
+	case 0:
+	case 1:
+		switch opts.Modalities[0] {
+		case genai.ModalityImage, genai.ModalityText:
+		case genai.ModalityAudio:
+			// TODO: Add support for audio.
+			return nil, fmt.Errorf("unexpected option Modalities %s, only image or text are implemented (send PR to add support)", opts.Modalities)
+		case genai.ModalityDocument, genai.ModalityVideo:
+			fallthrough
+		default:
+			return nil, fmt.Errorf("unexpected option Modalities %s, only image or text are implemented", opts.Modalities)
+		}
+	default:
+		return nil, fmt.Errorf("unexpected option Modalities %s, only image or text are implemented (send PR to add support)", opts.Modalities)
 	}
 	t := base.DefaultTransport
 	if wrapper != nil {
@@ -1063,13 +1074,51 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 		switch opts.Model {
 		case genai.ModelNone:
 		case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA, "":
-			if c.impl.Model, err = c.selectBestTextModel(ctx, opts.Model); err != nil {
-				return nil, err
+			if len(opts.Modalities) == 0 || opts.Modalities[0] == genai.ModalityText {
+				if c.impl.Model, err = c.selectBestTextModel(ctx, opts.Model); err != nil {
+					return nil, err
+				}
+				c.impl.Modalities = genai.Modalities{genai.ModalityText}
+			} else {
+				if c.impl.Model, err = c.selectBestImageModel(ctx, opts.Model); err != nil {
+					return nil, err
+				}
+				c.impl.Modalities = genai.Modalities{genai.ModalityImage}
 			}
-			c.impl.Modalities = mod
 		default:
 			c.impl.Model = opts.Model
-			c.impl.Modalities = mod
+			if len(opts.Modalities) == 0 {
+				// TODO: Detect if it is an image model.
+				// Temporarily disabled to ease with the transition away from GenDoc / ProviderGenDoc.
+				// I must not forget to enable this back once I removed GenDoc!
+				if false {
+					mdls, err := c.ListModels(ctx)
+					if err != nil {
+						return nil, fmt.Errorf("failed to detect the output modality for the model %s: %w", opts.Model, err)
+					}
+					for _, mdl := range mdls {
+						if m := mdl.(*Model); m.ID == opts.Model {
+							switch m.Type {
+							case "chat":
+								c.impl.Modalities = genai.Modalities{genai.ModalityText}
+							case "image":
+								c.impl.Modalities = genai.Modalities{genai.ModalityImage}
+							default:
+								return nil, fmt.Errorf("failed to detect the output modality for the model %s: found type %s", opts.Model, m.Type)
+							}
+							break
+						}
+					}
+				} else {
+					if strings.HasPrefix(opts.Model, "black-forest-labs/") {
+						c.impl.Modalities = genai.Modalities{genai.ModalityImage}
+					} else {
+						c.impl.Modalities = genai.Modalities{genai.ModalityText}
+					}
+				}
+			} else {
+				c.impl.Modalities = opts.Modalities
+			}
 		}
 	}
 	return c, err
@@ -1119,6 +1168,41 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 	return selectedModel, nil
 }
 
+// selectBestImageModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
+func (c *Client) selectBestImageModel(ctx context.Context, preference string) (string, error) {
+	mdls, err := c.ListModels(ctx)
+	if err != nil {
+		return "", fmt.Errorf("failed to automatically select the model: %w", err)
+	}
+	cheap := preference == genai.ModelCheap
+	good := preference == genai.ModelGood || preference == ""
+	selectedModel := ""
+	// As of August 2025, price, created date are not set. This greatly limits the automatic model selection.
+	for _, mdl := range mdls {
+		m := mdl.(*Model)
+		if m.Type != "image" {
+			continue
+		}
+		if cheap {
+			if strings.HasSuffix(m.ID, "-schnell") && (selectedModel == "" || m.ID > selectedModel) {
+				selectedModel = m.ID
+			}
+		} else if good {
+			if strings.HasSuffix(m.ID, "-dev") && (selectedModel == "" || m.ID > selectedModel) {
+				selectedModel = m.ID
+			}
+		} else {
+			if strings.HasSuffix(m.ID, "-pro") && !strings.Contains(m.ID, "kontext") && (selectedModel == "" || m.ID > selectedModel) {
+				selectedModel = m.ID
+			}
+		}
+	}
+	if selectedModel == "" {
+		return "", errors.New("failed to find a model automatically")
+	}
+	return selectedModel, nil
+}
+
 // Name implements genai.Provider.
 //
 // It returns the name of the provider.
@@ -1148,13 +1232,13 @@ func (c *Client) Scoreboard() scoreboard.Score {
 
 // GenSync implements genai.Provider.
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	if c.isAudio(opts) || c.isImage(opts) {
-		if len(msgs) != 1 {
-			return genai.Result{}, errors.New("must pass exactly one Message")
-		}
-		return c.GenDoc(ctx, msgs[0], opts)
+	if c.impl.Modalities[0] == genai.ModalityText {
+		return c.impl.GenSync(ctx, msgs, opts)
 	}
-	return c.impl.GenSync(ctx, msgs, opts)
+	if len(msgs) != 1 {
+		return genai.Result{}, errors.New("must pass exactly one Message")
+	}
+	return c.GenDoc(ctx, msgs[0], opts)
 }
 
 // GenSyncRaw provides access to the raw API.
@@ -1164,10 +1248,10 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 
 // GenStream implements genai.Provider.
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
-	if c.isAudio(opts) || c.isImage(opts) {
-		return base.SimulateStream(ctx, c, msgs, chunks, opts)
+	if c.impl.Modalities[0] == genai.ModalityText {
+		return c.impl.GenStream(ctx, msgs, chunks, opts)
 	}
-	return c.impl.GenStream(ctx, msgs, chunks, opts)
+	return base.SimulateStream(ctx, c, msgs, chunks, opts)
 }
 
 // GenStreamRaw provides access to the raw API.

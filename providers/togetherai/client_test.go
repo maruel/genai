@@ -8,6 +8,7 @@ import (
 	"context"
 	_ "embed"
 	"errors"
+	"fmt"
 	"net/http"
 	"os"
 	"strings"
@@ -124,16 +125,25 @@ func TestClient_Scoreboard(t *testing.T) {
 
 func TestClient_Preferred(t *testing.T) {
 	data := []struct {
-		name string
-		want string
+		modality genai.Modality
+		name     string
+		want     string
 	}{
-		{genai.ModelCheap, "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free"},
-		{genai.ModelGood, "Qwen/Qwen2.5-7B-Instruct-Turbo"},
-		{genai.ModelSOTA, "Qwen/Qwen3-235B-A22B-Thinking-2507"},
+		{genai.ModalityText, genai.ModelCheap, "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free"},
+		{genai.ModalityText, genai.ModelGood, "Qwen/Qwen2.5-7B-Instruct-Turbo"},
+		{genai.ModalityText, genai.ModelSOTA, "Qwen/Qwen3-235B-A22B-Thinking-2507"},
+		{genai.ModalityImage, genai.ModelCheap, "black-forest-labs/FLUX.1-schnell"},
+		{genai.ModalityImage, genai.ModelGood, "black-forest-labs/FLUX.1-krea-dev"},
+		{genai.ModalityImage, genai.ModelSOTA, "black-forest-labs/FLUX.1.1-pro"},
 	}
 	for _, line := range data {
-		t.Run(line.name, func(t *testing.T) {
-			if got := getClient(t, line.name).ModelID(); got != line.want {
+		t.Run(fmt.Sprintf("%s-%s", line.modality, line.name), func(t *testing.T) {
+			opts := genai.ProviderOptions{Model: line.name, Modalities: genai.Modalities{line.modality}}
+			c, err := getClientInner(t, &opts)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got := c.ModelID(); got != line.want {
 				t.Fatalf("got model %q, want %q", got, line.want)
 			}
 		})
@@ -151,15 +161,16 @@ func TestClient_Provider_errors(t *testing.T) {
 			ErrGenDoc:    "can only generate audio and images",
 			ErrListModel: "http 401\nUnauthorized\nget a new API key at https://api.together.xyz/settings/api-keys",
 		},
-		{
-			Name:         "bad apiKey image",
-			APIKey:       "bad apiKey",
-			Model:        "black-forest-labs/FLUX.1-schnell",
-			ErrGenSync:   "http 401\ninvalid_api_key (invalid_request_error): Invalid API key provided. You can find your API key at https://api.together.xyz/settings/api-keys.",
-			ErrGenStream: "http 401\ninvalid_api_key (invalid_request_error): Invalid API key provided. You can find your API key at https://api.together.xyz/settings/api-keys.",
-			ErrGenDoc:    "http 401\ninvalid_api_key (invalid_request_error): Invalid API key provided. You can find your API key at https://api.together.xyz/settings/api-keys.",
-			ErrListModel: "http 401\nUnauthorized\nget a new API key at https://api.together.xyz/settings/api-keys",
-		},
+		// TODO: Add back once GenDoc is removed.
+		// {
+		// 	Name:         "bad apiKey image",
+		// 	APIKey:       "bad apiKey",
+		// 	Model:        "black-forest-labs/FLUX.1-schnell",
+		// 	ErrGenSync:   "http 401\ninvalid_api_key (invalid_request_error): Invalid API key provided. You can find your API key at https://api.together.xyz/settings/api-keys.",
+		// 	ErrGenStream: "http 401\ninvalid_api_key (invalid_request_error): Invalid API key provided. You can find your API key at https://api.together.xyz/settings/api-keys.",
+		// 	ErrGenDoc:    "http 401\ninvalid_api_key (invalid_request_error): Invalid API key provided. You can find your API key at https://api.together.xyz/settings/api-keys.",
+		// 	ErrListModel: "http 401\nUnauthorized\nget a new API key at https://api.together.xyz/settings/api-keys",
+		// },
 		{
 			Name:         "bad model",
 			Model:        "bad model",
@@ -169,25 +180,26 @@ func TestClient_Provider_errors(t *testing.T) {
 		},
 	}
 	f := func(t *testing.T, apiKey, model string) (genai.Provider, error) {
-		return getClientInner(t, apiKey, model)
+		return getClientInner(t, &genai.ProviderOptions{APIKey: apiKey, Model: model, Modalities: genai.Modalities{genai.ModalityText}})
 	}
 	internaltest.TestClient_Provider_errors(t, f, data)
 }
 
 func getClient(t *testing.T, m string) *togetherai.Client {
 	t.Parallel()
-	c, err := getClientInner(t, "", m)
+	c, err := getClientInner(t, &genai.ProviderOptions{Model: m})
 	if err != nil {
 		t.Fatal(err)
 	}
 	return c
 }
 
-func getClientInner(t *testing.T, apiKey, m string) (*togetherai.Client, error) {
-	if apiKey == "" && os.Getenv("TOGETHER_API_KEY") == "" {
-		apiKey = "<insert_api_key_here>"
+func getClientInner(t *testing.T, opts *genai.ProviderOptions) (*togetherai.Client, error) {
+	o := *opts
+	if o.APIKey == "" && os.Getenv("TOGETHER_API_KEY") == "" {
+		o.APIKey = "<insert_api_key_here>"
 	}
-	return togetherai.New(t.Context(), &genai.ProviderOptions{APIKey: apiKey, Model: m}, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
+	return togetherai.New(t.Context(), &o, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
 }
 
 var testRecorder *internaltest.Records

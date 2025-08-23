@@ -291,6 +291,40 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 	return selectedModel, nil
 }
 
+// selectBestImageModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
+func (c *Client) selectBestImageModel(ctx context.Context, preference string) (string, error) {
+	mdls, err := c.ListModels(ctx)
+	if err != nil {
+		return "", fmt.Errorf("failed to automatically select the model: %w", err)
+	}
+	cheap := preference == genai.ModelCheap
+	selectedModel := ""
+	for _, mdl := range mdls {
+		m := mdl.(*Model)
+		// OpenAI doesn't report much for each model. :(
+		isCheap := strings.HasPrefix(m.ID, "dall")
+		isSOTA := strings.Contains(m.ID, "image")
+		if !isCheap && !isSOTA {
+			continue
+		}
+		if cheap {
+			if isCheap {
+				if selectedModel == "" || m.ID > selectedModel {
+					selectedModel = m.ID
+				}
+			}
+		} else if !cheap {
+			if isSOTA {
+				selectedModel = m.ID
+			}
+		}
+	}
+	if selectedModel == "" {
+		return "", errors.New("failed to find a model automatically")
+	}
+	return selectedModel, nil
+}
+
 // ModelID implements genai.Provider.
 //
 // It returns the selected model ID.

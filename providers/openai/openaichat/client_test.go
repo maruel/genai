@@ -8,6 +8,7 @@ import (
 	"context"
 	_ "embed"
 	"errors"
+	"fmt"
 	"net/http"
 	"os"
 	"strings"
@@ -170,18 +171,29 @@ func TestClient_Batch(t *testing.T) {
 
 func TestClient_Preferred(t *testing.T) {
 	data := []struct {
-		name string
-		want string
+		modality genai.Modality
+		name     string
+		want     string
 	}{
-		{genai.ModelCheap, "gpt-4.1-nano"},
-		{genai.ModelGood, "gpt-5-mini"},
-		{genai.ModelSOTA, "o3-pro"},
+		{genai.ModalityText, genai.ModelCheap, "gpt-4.1-nano"},
+		{genai.ModalityText, genai.ModelGood, "gpt-5-mini"},
+		{genai.ModalityText, genai.ModelSOTA, "o3-pro"},
+		{genai.ModalityImage, genai.ModelCheap, "dall-e-3"},
+		{genai.ModalityImage, genai.ModelGood, "gpt-image-1"},
+		{genai.ModalityImage, genai.ModelSOTA, "gpt-image-1"},
 	}
 	for _, line := range data {
 		t.Run(line.name, func(t *testing.T) {
-			if got := getClient(t, line.name).ModelID(); got != line.want {
-				t.Fatalf("got model %q, want %q", got, line.want)
-			}
+			t.Run(fmt.Sprintf("%s-%s", line.modality, line.name), func(t *testing.T) {
+				opts := genai.ProviderOptions{Model: line.name, OutputModalities: genai.Modalities{line.modality}}
+				c, err := getClientInner(t, &opts)
+				if err != nil {
+					t.Fatal(err)
+				}
+				if got := c.ModelID(); got != line.want {
+					t.Fatalf("got model %q, want %q", got, line.want)
+				}
+			})
 		})
 	}
 }
@@ -206,25 +218,26 @@ func TestClient_Provider_errors(t *testing.T) {
 		},
 	}
 	f := func(t *testing.T, apiKey, model string) (genai.Provider, error) {
-		return getClientInner(t, apiKey, model)
+		return getClientInner(t, &genai.ProviderOptions{APIKey: apiKey, Model: model})
 	}
 	internaltest.TestClient_Provider_errors(t, f, data)
 }
 
 func getClient(t *testing.T, m string) *openaichat.Client {
 	t.Parallel()
-	c, err := getClientInner(t, "", m)
+	c, err := getClientInner(t, &genai.ProviderOptions{Model: m})
 	if err != nil {
 		t.Fatal(err)
 	}
 	return c
 }
 
-func getClientInner(t *testing.T, apiKey, m string) (*openaichat.Client, error) {
-	if apiKey == "" && os.Getenv("OPENAI_API_KEY") == "" {
-		apiKey = "<insert_api_key_here>"
+func getClientInner(t *testing.T, opts *genai.ProviderOptions) (*openaichat.Client, error) {
+	o := *opts
+	if o.APIKey == "" && os.Getenv("OPENAI_API_KEY") == "" {
+		o.APIKey = "<insert_api_key_here>"
 	}
-	return openaichat.New(t.Context(), &genai.ProviderOptions{APIKey: apiKey, Model: m}, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
+	return openaichat.New(t.Context(), &o, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
 }
 
 var testRecorder *internaltest.Records

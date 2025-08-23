@@ -1588,9 +1588,9 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 					// We probably want to fetch SupportedGenerationMethods from the model anyway to make sure the right
 					// API is used. We can keep a predefined table for known model, I'd be surprised the generation
 					// methods would change per model.
-					mdls, err := c.ListModels(ctx)
-					if err != nil {
-						return c, fmt.Errorf("failed to automatically detect the model modality: %w", err)
+					mdls, err2 := c.ListModels(ctx)
+					if err2 != nil {
+						return c, fmt.Errorf("failed to automatically detect the model modality: %w", err2)
 					}
 					for _, mdl := range mdls {
 						if m := mdl.(*Model); m.GetID() == opts.Model {

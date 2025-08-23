@@ -6,7 +6,6 @@ package openairesponses_test
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"net/http"
 	"os"
@@ -38,9 +37,6 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 				ReasoningEffort: openairesponses.ReasoningEffortLow,
 			},
 		}
-	}
-	if model.Model == "gpt-image-1" {
-		return &imageClient{Client: c}
 	}
 	return c
 }
@@ -79,25 +75,6 @@ func (i *injectOption) GenStream(ctx context.Context, msgs genai.Messages, repli
 	}
 	opts = &n
 	return i.Client.GenStream(ctx, msgs, replies, opts)
-}
-
-// imageClient only exposes GenDoc to save on costs.
-type imageClient struct {
-	*openairesponses.Client
-}
-
-func (i *imageClient) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	return genai.Result{}, errors.New("disabled to save on costs")
-}
-
-func (i *imageClient) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
-	return genai.Result{}, errors.New("disabled to save on costs")
-}
-
-func (i *imageClient) GenDoc(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
-	// TODO: Specify quality "low"
-	// TODO: Test "jpeg" and "webp".
-	return i.Client.GenDoc(ctx, msg, opts)
 }
 
 /*

@@ -7,7 +7,6 @@ package openaichat_test
 import (
 	"context"
 	_ "embed"
-	"errors"
 	"fmt"
 	"net/http"
 	"os"
@@ -42,9 +41,6 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 				},
 			},
 		}
-	}
-	if model.Model == "gpt-image-1" {
-		return &imageClient{Client: c}
 	}
 	return c
 }
@@ -106,29 +102,6 @@ func (i *injectThinking) GenSync(ctx context.Context, msgs genai.Messages, opts 
 func (i *injectThinking) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
 	res, err := i.injectOption.GenStream(ctx, msgs, replies, opts)
 	return res, err
-}
-
-// imageClient only exposes GenDoc to save on costs.
-type imageClient struct {
-	*openaichat.Client
-}
-
-func (i *imageClient) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	return genai.Result{}, errors.New("disabled to save on costs")
-}
-
-func (i *imageClient) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
-	return genai.Result{}, errors.New("disabled to save on costs")
-}
-
-func (i *imageClient) GenDoc(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
-	// TODO: Specify quality "low"
-	// TODO: Test "jpeg" and "webp".
-	return i.Client.GenDoc(ctx, msg, opts)
-}
-
-func (i *imageClient) Unwrap() genai.Provider {
-	return i.Client
 }
 
 // This is a tricky test since batch operations can take up to 24h to complete.

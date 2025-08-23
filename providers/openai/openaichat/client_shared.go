@@ -11,6 +11,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -265,9 +266,8 @@ func (c *Client) detectModelModalities(ctx context.Context, model string) (genai
 	// author's feature request.
 	if strings.HasPrefix(model, "dall") || strings.Contains(model, "image") {
 		return genai.Modalities{genai.ModalityImage}, nil
-	} else if strings.Contains(model, "audio") {
-		// Unsure about that.
-		return genai.Modalities{genai.ModalityAudio, genai.ModalityText}, nil
+		// TODO } else if strings.Contains(model, "audio") {
+		//	return genai.Modalities{genai.ModalityAudio, genai.ModalityText}, nil
 	}
 	return genai.Modalities{genai.ModalityText}, nil
 }
@@ -372,7 +372,7 @@ func (c *Client) Scoreboard() scoreboard.Score {
 
 // GenSync implements genai.Provider.
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	if c.isImage(opts) {
+	if c.isAudio() || c.isImage() || c.isVideo() {
 		if len(msgs) != 1 {
 			return genai.Result{}, errors.New("must pass exactly one Message")
 		}
@@ -383,7 +383,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Op
 
 // GenStream implements genai.Provider.
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
-	if c.isImage(opts) {
+	if c.isAudio() || c.isImage() || c.isVideo() {
 		return base.SimulateStream(ctx, c, msgs, chunks, opts)
 	}
 	return c.impl.GenStream(ctx, msgs, chunks, opts)
@@ -435,6 +435,18 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 		return nil, err
 	}
 	return resp.ToModels(), nil
+}
+
+func (c *Client) isAudio() bool {
+	return slices.Contains(c.impl.OutputModalities, genai.ModalityAudio)
+}
+
+func (c *Client) isImage() bool {
+	return slices.Contains(c.impl.OutputModalities, genai.ModalityImage)
+}
+
+func (c *Client) isVideo() bool {
+	return slices.Contains(c.impl.OutputModalities, genai.ModalityVideo)
 }
 
 func processHeaders(h http.Header) []genai.RateLimit {

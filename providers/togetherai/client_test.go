@@ -46,14 +46,6 @@ type smallImageGen struct {
 }
 
 func (o *smallImageGen) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	return genai.Result{}, errors.New("disabled to save on performance")
-}
-
-func (o *smallImageGen) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
-	return genai.Result{}, errors.New("disabled to save on performance")
-}
-
-func (o *smallImageGen) GenDoc(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
 	if v, ok := opts.(*genai.OptionsImage); ok {
 		// Ask for a smaller size.
 		n := *v
@@ -61,7 +53,7 @@ func (o *smallImageGen) GenDoc(ctx context.Context, msg genai.Message, opts gena
 		n.Height = 256
 		opts = &n
 	}
-	return o.hideHTTP500.GenDoc(ctx, msg, opts)
+	return o.hideHTTP500.GenSync(ctx, msgs, opts)
 }
 
 type hideHTTP500 struct {
@@ -87,19 +79,6 @@ func (h *hideHTTP500) GenSync(ctx context.Context, msgs genai.Messages, opts gen
 
 func (h *hideHTTP500) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
 	resp, err := h.Client.GenStream(ctx, msgs, chunks, opts)
-	if err != nil {
-		var herr *httpjson.Error
-		if errors.As(err, &herr) && herr.StatusCode == 500 {
-			// Hide the failure; together.ai throws HTTP 500 on unsupported file formats.
-			return resp, errors.New("together.ai is having a bad day")
-		}
-		return resp, err
-	}
-	return resp, err
-}
-
-func (h *hideHTTP500) GenDoc(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
-	resp, err := h.Client.GenDoc(ctx, msg, opts)
 	if err != nil {
 		var herr *httpjson.Error
 		if errors.As(err, &herr) && herr.StatusCode == 500 {

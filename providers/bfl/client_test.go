@@ -51,7 +51,7 @@ type imageModelClient struct {
 	*Client
 }
 
-func (i *imageModelClient) GenDoc(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
+func (i *imageModelClient) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
 	if v, ok := opts.(*genai.OptionsImage); ok {
 		// Ask for a smaller size.
 		n := *v
@@ -59,7 +59,7 @@ func (i *imageModelClient) GenDoc(ctx context.Context, msg genai.Message, opts g
 		n.Height = 256
 		opts = &n
 	}
-	return i.Client.GenDoc(ctx, msg, opts)
+	return i.Client.GenSync(ctx, msgs, opts)
 }
 
 func TestClient_Preferred(t *testing.T) {

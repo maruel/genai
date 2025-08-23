@@ -45,12 +45,12 @@ func CreateScenario(ctx context.Context, pf ProviderFactory) (Scenario, genai.Us
 	}
 
 	// Make it easy to skip parts of the tests.
-	doSync := true
+	doSyncText := slices.Contains(mods, genai.ModalityText)
 	doStream := mods[0] == genai.ModalityText
-	doDoc := mods[0] != genai.ModalityText
+	doSyncNonText := !slices.Equal(mods, genai.Modalities{genai.ModalityText})
 
 	eg := errgroup.Group{}
-	if doSync {
+	if doSyncText {
 		eg.Go(func() error {
 			cs := callState{pf: pf, isStream: false}
 			ctx2 := internal.WithLogger(ctx, internal.Logger(ctx).With("fn", "GenSync"))
@@ -160,23 +160,22 @@ func CreateScenario(ctx context.Context, pf ProviderFactory) (Scenario, genai.Us
 		})
 	}
 
-	if _, ok := c.(genai.ProviderGenDoc); ok {
-		if doDoc {
-			eg.Go(func() error {
-				ctx2 := internal.WithLogger(ctx, internal.Logger(ctx).With("fn", "GenDoc"))
-				outDoc, usageDoc, err := exerciseGenDoc(ctx2, pf)
-				mu.Lock()
-				usage.Add(usageDoc)
-				result.In = mergeModalities(result.In, outDoc.In)
-				result.Out = mergeModalities(result.Out, outDoc.Out)
-				result.GenDoc = outDoc.GenDoc
-				mu.Unlock()
-				if err != nil {
-					return fmt.Errorf("failed with GenDoc: %w", err)
-				}
-				return nil
-			})
-		}
+	if doSyncNonText {
+		eg.Go(func() error {
+			// TODO: Rename when GenDoc is removed.
+			ctx2 := internal.WithLogger(ctx, internal.Logger(ctx).With("fn", "GenDoc"))
+			outDoc, usageDoc, err := exerciseGenNonText(ctx2, pf)
+			mu.Lock()
+			usage.Add(usageDoc)
+			result.In = mergeModalities(result.In, outDoc.In)
+			result.Out = mergeModalities(result.Out, outDoc.Out)
+			result.GenDoc = outDoc.GenDoc
+			mu.Unlock()
+			if err != nil {
+				return fmt.Errorf("failed with GenDoc: %w", err)
+			}
+			return nil
+		})
 	}
 
 	err := eg.Wait()
@@ -711,10 +710,10 @@ func (cs *callState) callGen(ctx context.Context, name string, msgs genai.Messag
 	return resp, err
 }
 
-// genai.ProviderGenDoc
+// Non text modalities
 
-// exerciseGenDoc exercises the ProviderGenDoc interface if available.
-func exerciseGenDoc(ctx context.Context, pf ProviderFactory) (Scenario, genai.Usage, error) {
+// exerciseGenNonText exercises the non-text functionality of genai.Provider.
+func exerciseGenNonText(ctx context.Context, pf ProviderFactory) (Scenario, genai.Usage, error) {
 	prefix := "GenDoc-"
 	out := Scenario{
 		In:     map[genai.Modality]ModalCapability{},
@@ -722,13 +721,13 @@ func exerciseGenDoc(ctx context.Context, pf ProviderFactory) (Scenario, genai.Us
 		GenDoc: &FunctionalityDoc{},
 	}
 	usage := genai.Usage{}
-	if err := exerciseGenDocImage(ctx, pf, prefix+"Image", &out, &usage); err != nil {
+	if err := exerciseGenImage(ctx, pf, prefix+"Image", &out, &usage); err != nil {
 		return out, usage, err
 	}
-	if err := exerciseGenDocAudio(ctx, pf, prefix+"Audio", &out, &usage); err != nil {
+	if err := exerciseGenAudio(ctx, pf, prefix+"Audio", &out, &usage); err != nil {
 		return out, usage, err
 	}
-	if err := exerciseGenDocVideo(ctx, pf, prefix+"Video", &out, &usage); err != nil {
+	if err := exerciseGenVideo(ctx, pf, prefix+"Video", &out, &usage); err != nil {
 		return out, usage, err
 	}
 	if len(out.In) == 0 || len(out.Out) == 0 {
@@ -737,9 +736,11 @@ func exerciseGenDoc(ctx context.Context, pf ProviderFactory) (Scenario, genai.Us
 	return out, usage, nil
 }
 
-func exerciseGenDocImage(ctx context.Context, pf ProviderFactory, name string, out *Scenario, usage *genai.Usage) error {
-	cc, rt := pf(name)
-	c := cc.(genai.ProviderGenDoc)
+func exerciseGenImage(ctx context.Context, pf ProviderFactory, name string, out *Scenario, usage *genai.Usage) error {
+	c, rt := pf(name)
+	if !slices.Contains(c.OutputModalities(), genai.ModalityImage) {
+		return nil
+	}
 	promptImage := `A doodle animation on a white background of Cartoonish shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves.`
 	contentsImage := `Generate one square, white-background doodle with smooth, vibrantly colored image depicting ` + promptImage + `.
 
@@ -751,8 +752,8 @@ func exerciseGenDocImage(ctx context.Context, pf ProviderFactory, name string, o
 **Format:** Square image (1:1 aspect ratio).
 **Cropping:** Absolutely no black bars/letterboxing; colorful doodle fully visible against white.
 **Output:** Actual image file for a smooth, colorful doodle-style image on a white background.`
-	msg := genai.NewTextMessage(contentsImage)
-	resp, err := c.GenDoc(ctx, msg, &genai.OptionsImage{Seed: 42})
+	msgs := genai.Messages{genai.NewTextMessage(contentsImage)}
+	resp, err := c.GenSync(ctx, msgs, &genai.OptionsImage{Seed: 42})
 	usage.InputTokens += resp.Usage.InputTokens
 	usage.InputCachedTokens += resp.Usage.InputCachedTokens
 	usage.OutputTokens += resp.Usage.OutputTokens
@@ -821,18 +822,22 @@ func exerciseGenDocImage(ctx context.Context, pf ProviderFactory, name string, o
 			internal.Logger(ctx).DebugContext(ctx, name, "issue", "finish reason", "expected", expectedFR, "got", resp.Usage.FinishReason)
 			out.GenDoc.BrokenFinishReason = true
 		}
-	}
-	if isBadError(ctx, err) {
-		return err
+	} else {
+		if isBadError(ctx, err) {
+			return err
+		}
+		internal.Logger(ctx).DebugContext(ctx, name, "err", err)
 	}
 	return nil
 }
 
-func exerciseGenDocAudio(ctx context.Context, pf ProviderFactory, name string, out *Scenario, usage *genai.Usage) error {
-	cc, rt := pf(name)
-	c := cc.(genai.ProviderGenDoc)
-	msg := genai.NewTextMessage("Say hi. Just say this word, nothing else.")
-	resp, err := c.GenDoc(ctx, msg, &genai.OptionsAudio{Seed: 42})
+func exerciseGenAudio(ctx context.Context, pf ProviderFactory, name string, out *Scenario, usage *genai.Usage) error {
+	c, rt := pf(name)
+	if !slices.Contains(c.OutputModalities(), genai.ModalityAudio) {
+		return nil
+	}
+	msgs := genai.Messages{genai.NewTextMessage("Say hi. Just say this word, nothing else.")}
+	resp, err := c.GenSync(ctx, msgs, &genai.OptionsAudio{Seed: 42})
 	usage.InputTokens += resp.Usage.InputTokens
 	usage.InputCachedTokens += resp.Usage.InputCachedTokens
 	usage.OutputTokens += resp.Usage.OutputTokens
@@ -902,14 +907,16 @@ func exerciseGenDocAudio(ctx context.Context, pf ProviderFactory, name string, o
 			internal.Logger(ctx).DebugContext(ctx, name, "issue", "finish reason", "expected", expectedFR, "got", resp.Usage.FinishReason)
 			out.GenDoc.BrokenFinishReason = true
 		}
-	}
-	if isBadError(ctx, err) {
-		return err
+	} else {
+		if isBadError(ctx, err) {
+			return err
+		}
+		internal.Logger(ctx).DebugContext(ctx, name, "err", err)
 	}
 	return nil
 }
 
-func exerciseGenDocVideo(ctx context.Context, pf ProviderFactory, name string, out *Scenario, usage *genai.Usage) error {
+func exerciseGenVideo(ctx context.Context, pf ProviderFactory, name string, out *Scenario, usage *genai.Usage) error {
 	// Will be implemented soon.
 	return nil
 }

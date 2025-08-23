@@ -11,6 +11,7 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
+	"slices"
 	"strings"
 	"testing"
 	"time"
@@ -33,11 +34,11 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 	if err != nil {
 		t.Fatal(err)
 	}
-	if strings.Contains(model.Model, "image-generation") {
-		// TODO: Doesn't exist anymore.
+	if slices.Contains(c.Impl.OutputModalities, genai.ModalityImage) {
 		return &injectOption{
 			Client: c,
-			opts:   gemini.Options{ResponseModalities: genai.Modalities{genai.ModalityText, genai.ModalityImage}},
+			// TODO: Remove.
+			opts: gemini.Options{ResponseModalities: genai.Modalities{genai.ModalityText, genai.ModalityImage}},
 		}
 	}
 	if model.Thinking {
@@ -75,7 +76,11 @@ type injectOption struct {
 func (i *injectOption) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
 	n := i.opts
 	if opts != nil {
-		n.OptionsText = *opts.(*genai.OptionsText)
+		if v, ok := opts.(*genai.OptionsText); ok {
+			n.OptionsText = *v
+		} else if v, ok := opts.(*genai.OptionsImage); ok {
+			n.OptionsImage = *v
+		}
 	}
 	opts = &n
 	return i.Client.GenSync(ctx, msgs, opts)
@@ -84,7 +89,11 @@ func (i *injectOption) GenSync(ctx context.Context, msgs genai.Messages, opts ge
 func (i *injectOption) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
 	n := i.opts
 	if opts != nil {
-		n.OptionsText = *opts.(*genai.OptionsText)
+		if v, ok := opts.(*genai.OptionsText); ok {
+			n.OptionsText = *v
+		} else if v, ok := opts.(*genai.OptionsImage); ok {
+			n.OptionsImage = *v
+		}
 	}
 	opts = &n
 	return i.Client.GenStream(ctx, msgs, replies, opts)

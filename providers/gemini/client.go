@@ -230,7 +230,7 @@ var Scoreboard = scoreboard.Score{
 			},
 		},
 		{
-			Models: []string{"imagen-4.0-generate-preview-06-06"},
+			Models: []string{"imagen-4.0-fast-generate-001"},
 			In: map[genai.Modality]scoreboard.ModalCapability{
 				genai.ModalityText: {Inline: true},
 			},
@@ -241,7 +241,6 @@ var Scoreboard = scoreboard.Score{
 				},
 			},
 			GenDoc: &scoreboard.FunctionalityDoc{
-				Seed:               true,
 				BrokenTokenUsage:   scoreboard.True,
 				BrokenFinishReason: true,
 			},
@@ -267,11 +266,13 @@ var Scoreboard = scoreboard.Score{
 				"gemini-2.0-flash",
 				"gemini-2.0-flash-001",
 				"gemini-2.0-flash-exp",
+				"gemini-2.0-flash-exp-image-generation",
 				"gemini-2.0-flash-lite",
 				"gemini-2.0-flash-lite-001",
 				"gemini-2.0-flash-lite-preview",
 				"gemini-2.0-flash-lite-preview-02-05",
 				"gemini-2.0-flash-live-001",
+				"gemini-2.0-flash-preview-image-generation",
 				"gemini-2.0-flash-thinking-exp",
 				"gemini-2.0-flash-thinking-exp-01-21",
 				"gemini-2.0-flash-thinking-exp-1219",
@@ -299,12 +300,15 @@ var Scoreboard = scoreboard.Score{
 				"gemma-3n-e2b-it",
 				"gemma-3n-e4b-it",
 				"imagen-3.0-generate-002",
+				"imagen-4.0-generate-001",
+				"imagen-4.0-generate-preview-06-06",
+				"imagen-4.0-ultra-generate-001",
 				"imagen-4.0-ultra-generate-preview-06-06",
 				"learnlm-2.0-flash-experimental",
 				"text-embedding-004",
 				"veo-2.0-generate-001",
-				"veo-3.0-generate-preview",
 				"veo-3.0-fast-generate-preview",
+				"veo-3.0-generate-preview",
 			},
 		},
 	},
@@ -1159,13 +1163,13 @@ func (i *ImageRequest) Init(msg genai.Message, opts genai.Options, model string)
 		switch v := opts.(type) {
 		case *Options:
 			if v.OptionsImage.Seed != 0 {
-				// To confirm.
+				// Get a 400 error: i.Parameters.Seed = v.OptionsImage.Seed
 				uce = &genai.UnsupportedContinuableError{Unsupported: []string{"Seed"}}
 			}
 			// TODO: Width and Height
 		case *genai.OptionsImage:
 			if v.Seed != 0 {
-				// To confirm.
+				// Get a 400 error: i.Parameters.Seed = v.Seed
 				uce = &genai.UnsupportedContinuableError{Unsupported: []string{"Seed"}}
 			}
 			// TODO: Width and Height
@@ -1739,6 +1743,12 @@ func (c *Client) Scoreboard() scoreboard.Score {
 
 // GenSync implements genai.Provider.
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
+	if c.isAudio() || c.isImage() || c.isVideo() {
+		if len(msgs) != 1 {
+			return genai.Result{}, errors.New("must pass exactly one Message")
+		}
+		return c.GenDoc(ctx, msgs[0], opts)
+	}
 	return c.Impl.GenSync(ctx, msgs, opts)
 }
 
@@ -1749,6 +1759,9 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 
 // GenStream implements genai.Provider.
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
+	if c.isAudio() || c.isImage() || c.isVideo() {
+		return base.SimulateStream(ctx, c, msgs, chunks, opts)
+	}
 	return c.Impl.GenStream(ctx, msgs, chunks, opts)
 }
 
@@ -1999,10 +2012,6 @@ func (c *Client) PokeResultRaw(ctx context.Context, id genai.Job) (Operation, er
 	return res, err
 }
 
-func isImage(opts genai.Options) bool {
-	return opts != nil && slices.Contains(opts.Modalities(), genai.ModalityImage)
-}
-
 // ListModels implements genai.Provider.
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	// https://ai.google.dev/api/models?hl=en#method:-models.list
@@ -2011,6 +2020,22 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 		return nil, err
 	}
 	return resp.ToModels(), nil
+}
+
+func (c *Client) isAudio() bool {
+	return slices.Contains(c.Impl.OutputModalities, genai.ModalityAudio)
+}
+
+func (c *Client) isImage() bool {
+	return slices.Contains(c.Impl.OutputModalities, genai.ModalityImage)
+}
+
+func (c *Client) isVideo() bool {
+	return slices.Contains(c.Impl.OutputModalities, genai.ModalityVideo)
+}
+
+func isImage(opts genai.Options) bool {
+	return opts != nil && slices.Contains(opts.Modalities(), genai.ModalityImage)
 }
 
 // TODO: To implement ProviderGenAsync, we need to use the Vertex API, not the API key based Gemini one.

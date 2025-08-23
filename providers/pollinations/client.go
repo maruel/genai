@@ -1144,7 +1144,7 @@ func (c *Client) Scoreboard() scoreboard.Score {
 
 // GenSync implements genai.Provider.
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	if c.isAudio(opts) || c.isImage(opts) {
+	if c.isAudio() || c.isImage() {
 		if len(msgs) != 1 {
 			return genai.Result{}, errors.New("must pass exactly one Message")
 		}
@@ -1163,7 +1163,7 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 
 // GenStream implements genai.Provider.
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
-	if c.isAudio(opts) || c.isImage(opts) {
+	if c.isAudio() || c.isImage() {
 		return base.SimulateStream(ctx, c, msgs, chunks, opts)
 	}
 	if err := Cache.ValidateModality(ctx, c, genai.ModalityText); err != nil {
@@ -1306,18 +1306,12 @@ func (c *Client) ListTextModels(ctx context.Context) ([]genai.Model, error) {
 	return resp.ToModels(), nil
 }
 
-func (c *Client) isAudio(opts genai.Options) bool {
-	return opts != nil && slices.Contains(opts.Modalities(), genai.ModalityAudio)
+func (c *Client) isAudio() bool {
+	return slices.Contains(c.impl.OutputModalities, genai.ModalityAudio)
 }
 
-func (c *Client) isImage(opts genai.Options) bool {
-	// TODO: Use Scoreboard list.
-	switch c.impl.Model {
-	case "flux", "gptimage", "turbo":
-		return true
-	default:
-		return opts != nil && slices.Contains(opts.Modalities(), genai.ModalityImage)
-	}
+func (c *Client) isImage() bool {
+	return slices.Contains(c.impl.OutputModalities, genai.ModalityImage)
 }
 
 func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ReplyFragment, result *genai.Result) error {

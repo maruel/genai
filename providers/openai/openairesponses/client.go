@@ -1236,16 +1236,6 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *Response, out chan<- Resp
 	return c.impl.GenStreamRaw(ctx, in, out)
 }
 
-func (c *Client) isImage(opts genai.Options) bool {
-	switch c.impl.Model {
-	// TODO: Use Scoreboard list.
-	case "dall-e-2", "dall-e-3", "gpt-image-1":
-		return true
-	default:
-		return opts != nil && slices.Contains(opts.Modalities(), genai.ModalityImage)
-	}
-}
-
 // processStreamPackets processes stream packets for the OpenAI Responses API.
 // This is a placeholder - will be implemented when GenStream is added.
 func processStreamPackets(ch <-chan ResponseStreamChunkResponse, chunks chan<- genai.ReplyFragment, result *genai.Result) error {

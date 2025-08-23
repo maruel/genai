@@ -23,7 +23,6 @@ import (
 	"net/url"
 	"os"
 	"reflect"
-	"slices"
 	"strings"
 	"time"
 
@@ -90,6 +89,9 @@ var Scoreboard = scoreboard.Score{
 			},
 			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &scoreboard.FunctionalityText{
+				ReportRateLimits: true,
+			},
+			GenStream: &scoreboard.FunctionalityText{
 				ReportRateLimits: true,
 			},
 		},
@@ -1178,16 +1180,6 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 // GenStreamRaw provides access to the raw API.
 func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest, out chan<- ChatStreamChunkResponse) error {
 	return c.impl.GenStreamRaw(ctx, in, out)
-}
-
-func (c *Client) isImage(opts genai.Options) bool {
-	switch c.impl.Model {
-	// TODO: Use Scoreboard list.
-	case "dall-e-2", "dall-e-3", "gpt-image-1":
-		return true
-	default:
-		return opts != nil && slices.Contains(opts.Modalities(), genai.ModalityImage)
-	}
 }
 
 // GenAsync implements genai.ProviderGenAsync.

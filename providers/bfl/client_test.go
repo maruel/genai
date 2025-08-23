@@ -83,15 +83,19 @@ func TestClient_Preferred(t *testing.T) {
 func TestClient_Provider_errors(t *testing.T) {
 	data := []internaltest.ProviderError{
 		{
-			Name:      "bad apiKey",
-			APIKey:    "bad apiKey",
-			Model:     "flux-dev",
-			ErrGenDoc: "http 403\nNot authenticated - Invalid Authentication",
+			Name:         "bad apiKey",
+			APIKey:       "bad apiKey",
+			Model:        "flux-dev",
+			ErrGenSync:   "http 403\nNot authenticated - Invalid Authentication",
+			ErrGenStream: "http 403\nNot authenticated - Invalid Authentication",
+			ErrGenDoc:    "http 403\nNot authenticated - Invalid Authentication",
 		},
 		{
-			Name:      "bad model",
-			Model:     "bad model",
-			ErrGenDoc: "http 404\nNot Found",
+			Name:         "bad model",
+			Model:        "bad model",
+			ErrGenSync:   "http 404\nNot Found",
+			ErrGenStream: "http 404\nNot Found",
+			ErrGenDoc:    "http 404\nNot Found",
 		},
 	}
 	f := func(t *testing.T, apiKey, model string) (genai.Provider, error) {

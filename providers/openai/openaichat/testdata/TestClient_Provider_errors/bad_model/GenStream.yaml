@@ -1,55 +1,48 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 183
-        host: api.openai.com
-        body: |
-            {"model":"bad model","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Tell a short joke."}]}],"service_tier":"auto","stream_options":{"include_usage":true}}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.openai.com/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: 149
-        body: |
-            {
-                "error": {
-                    "message": "invalid model ID",
-                    "type": "invalid_request_error",
-                    "param": null,
-                    "code": null
-                }
-            }
-        headers:
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 964f5f3f2d54a2d5-YUL
-            Content-Length:
-                - "149"
-            Content-Type:
-                - application/json; charset=utf-8
-            Server:
-                - cloudflare
-            Strict-Transport-Security:
-                - max-age=31536000; includeSubDomains; preload
-            Vary:
-                - Origin
-            X-Content-Type-Options:
-                - nosniff
-            X-Request-Id:
-                - 91494e67-9927-437b-b591-51219ba1ac8b
-        status: 400 Bad Request
-        code: 400
-        duration: 212ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 161
+    host: api.openai.com
+    body: "{\"model\":\"bad model\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Tell a short joke.\"}]}],\"stream_options\":{\"include_usage\":true}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.openai.com/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 149
+    body: "{\n    \"error\": {\n        \"message\": \"invalid model ID\",\n        \"type\": \"invalid_request_error\",\n        \"param\": null,\n        \"code\": null\n    }\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 973cbfcb9810a2f9-YUL
+      Content-Length:
+      - "149"
+      Content-Type:
+      - application/json; charset=utf-8
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Vary:
+      - Origin
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "111"
+      X-Request-Id:
+      - req_10c1640b83a144ed8f86ca153f73730a
+    status: 400 Bad Request
+    code: 400
+    duration: 411ms

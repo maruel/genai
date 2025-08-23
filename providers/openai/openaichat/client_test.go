@@ -214,11 +214,11 @@ func TestClient_Provider_errors(t *testing.T) {
 			Model:        "bad model",
 			ErrGenSync:   "http 400\ninvalid_request_error: invalid model ID",
 			ErrGenStream: "http 400\ninvalid_request_error: invalid model ID",
-			ErrGenDoc:    "http 400\ninvalid_request_error/invalid_value for \"model\": Invalid value: 'bad model'. Supported values are: 'gpt-image-1', 'gpt-image-0721-mini-alpha', 'dall-e-2', and 'dall-e-3'.",
+			ErrGenDoc:    "http 400\ninvalid_request_error/invalid_value for \"model\": Invalid value: 'bad model'. Supported values are: 'gpt-image-1', 'gpt-image-1-io', 'gpt-image-0721-mini-alpha', 'dall-e-2', and 'dall-e-3'.",
 		},
 	}
 	f := func(t *testing.T, apiKey, model string) (genai.Provider, error) {
-		return getClientInner(t, &genai.ProviderOptions{APIKey: apiKey, Model: model})
+		return getClientInner(t, &genai.ProviderOptions{APIKey: apiKey, Model: model, OutputModalities: genai.Modalities{genai.ModalityText}})
 	}
 	internaltest.TestClient_Provider_errors(t, f, data)
 }

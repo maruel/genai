@@ -1,55 +1,48 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 147
-        host: api.openai.com
-        body: |
-            {"model":"gpt-4.1-nano","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Tell a short joke."}]}],"service_tier":"auto"}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.openai.com/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: 260
-        body: |
-            {
-                "error": {
-                    "message": "Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
-                    "type": "invalid_request_error",
-                    "param": null,
-                    "code": "invalid_api_key"
-                }
-            }
-        headers:
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 964f5ef4aa5da2ed-YUL
-            Content-Length:
-                - "260"
-            Content-Type:
-                - application/json; charset=utf-8
-            Server:
-                - cloudflare
-            Strict-Transport-Security:
-                - max-age=31536000; includeSubDomains; preload
-            Vary:
-                - Origin
-            X-Content-Type-Options:
-                - nosniff
-            X-Request-Id:
-                - req_e2bda73c47bc55d284b6c6db2561418f
-        status: 401 Unauthorized
-        code: 401
-        duration: 150ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 125
+    host: api.openai.com
+    body: "{\"model\":\"gpt-4.1-nano\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Tell a short joke.\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.openai.com/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 260
+    body: "{\n    \"error\": {\n        \"message\": \"Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.\",\n        \"type\": \"invalid_request_error\",\n        \"param\": null,\n        \"code\": \"invalid_api_key\"\n    }\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 973cbfc55957a2f9-YUL
+      Content-Length:
+      - "260"
+      Content-Type:
+      - application/json; charset=utf-8
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Vary:
+      - Origin
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "17"
+      X-Request-Id:
+      - req_c34fc3239c6c421185f1776217770c25
+    status: 401 Unauthorized
+    code: 401
+    duration: 179ms

@@ -163,8 +163,8 @@ func (i *ImageRequest) Init(msgs genai.Messages, opts genai.Options) error {
 		if err := opts.Validate(); err != nil {
 			return err
 		}
-		if supported := opts.Modalities(); !slices.Contains(supported, genai.ModalityImage) {
-			return fmt.Errorf("modality image not supported, supported: %s", supported)
+		if mod := opts.Modalities(); !slices.Contains(mod, genai.ModalityImage) {
+			return fmt.Errorf("modality %s not supported, supported: %s", mod, genai.ModalityImage)
 		}
 		switch v := opts.(type) {
 		case *genai.OptionsImage:
@@ -365,6 +365,31 @@ func processHeaders(h http.Header) []genai.RateLimit {
 		})
 	}
 	return limits
+}
+
+// GenSync implements genai.Provider.
+func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
+	id, err := c.GenAsync(ctx, msgs, opts)
+	if err != nil {
+		return genai.Result{}, err
+	}
+	// They recommend in their documentation to poll every 0.5s.
+	// TODO: Expose a webhook with a custom OptionsImage.
+	for {
+		select {
+		case <-ctx.Done():
+			return genai.Result{}, ctx.Err()
+		case <-time.After(waitForPoll):
+			if res, err := c.PokeResult(ctx, id); res.Usage.FinishReason != genai.Pending {
+				return res, err
+			}
+		}
+	}
+}
+
+// GenStream implements genai.Provider.
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
+	return base.SimulateStream(ctx, c, msgs, chunks, opts)
 }
 
 // GenDoc implements genai.ProviderGenDoc.

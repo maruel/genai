@@ -1,57 +1,49 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        host: api.openai.com
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.openai.com/v1/models
-        method: GET
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: 239
-        body: |-
-            {
-              "error": {
-                "message": "Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
-                "type": "invalid_request_error",
-                "param": null,
-                "code": "invalid_api_key"
-              }
-            }
-        headers:
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 964f5ef72db0a2ed-YUL
-            Content-Length:
-                - "239"
-            Content-Type:
-                - application/json
-            Openai-Processing-Ms:
-                - "2"
-            Openai-Version:
-                - "2020-10-01"
-            Server:
-                - cloudflare
-            Strict-Transport-Security:
-                - max-age=31536000; includeSubDomains; preload
-            Www-Authenticate:
-                - Bearer realm="OpenAI API"
-            X-Content-Type-Options:
-                - nosniff
-            X-Request-Id:
-                - zvKlFLBmt5nhjOCe
-        status: 401 Unauthorized
-        code: 401
-        duration: 242ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 0
+    host: api.openai.com
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.openai.com/v1/models
+    method: GET
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 239
+    body: "{\n  \"error\": {\n    \"message\": \"Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": \"invalid_api_key\"\n  }\n}"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 973cbfc7bbf0a2f9-YUL
+      Content-Length:
+      - "239"
+      Content-Type:
+      - application/json
+      Openai-Processing-Ms:
+      - "3"
+      Openai-Version:
+      - "2020-10-01"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Www-Authenticate:
+      - Bearer realm="OpenAI API"
+      X-Content-Type-Options:
+      - nosniff
+      X-Request-Id:
+      - GBTVVFEPAXcKL5Gm
+    status: 401 Unauthorized
+    code: 401
+    duration: 109ms

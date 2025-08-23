@@ -1239,8 +1239,8 @@ func (c *Client) Completions(ctx context.Context, msgs genai.Messages, opts gena
 		if err := opts.Validate(); err != nil {
 			return genai.Result{}, err
 		}
-		if supported := opts.Modalities(); !slices.Contains(supported, genai.ModalityText) {
-			return genai.Result{}, fmt.Errorf("modality text not supported, supported: %s", supported)
+		if mod := opts.Modalities(); !slices.Contains(mod, genai.ModalityText) {
+			return genai.Result{}, fmt.Errorf("modality %s not supported, supported: %s", mod, c.impl.OutputModalities)
 		}
 	}
 	for i, msg := range msgs {
@@ -1278,8 +1278,8 @@ func (c *Client) CompletionsStream(ctx context.Context, msgs genai.Messages, chu
 		if err := opts.Validate(); err != nil {
 			return result, err
 		}
-		if supported := opts.Modalities(); !slices.Contains(supported, genai.ModalityText) {
-			return genai.Result{}, fmt.Errorf("modality text not supported, supported: %s", supported)
+		if mod := opts.Modalities(); !slices.Contains(mod, genai.ModalityText) {
+			return genai.Result{}, fmt.Errorf("modality %s not supported, supported: %s", mod, c.impl.OutputModalities)
 		}
 	}
 

@@ -1197,8 +1197,8 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 		if err := opts.Validate(); err != nil {
 			return res, err
 		}
-		if supported := opts.Modalities(); !slices.Contains(supported, genai.ModalityImage) {
-			return res, fmt.Errorf("modality image not supported, supported: %s", supported)
+		if mod := opts.Modalities(); !slices.Contains(mod, genai.ModalityImage) {
+			return genai.Result{}, fmt.Errorf("modality %s not supported, supported: %s", mod, c.impl.OutputModalities)
 		}
 	}
 	for i := range msg.Requests {

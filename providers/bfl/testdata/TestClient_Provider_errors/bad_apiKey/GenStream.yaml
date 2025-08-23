@@ -1,0 +1,36 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 53
+    host: api.bfl.ai
+    body: "{\"prompt\":\"Tell a short joke.\",\"safety_tolerance\":0}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.bfl.ai/v1/flux-dev
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 55
+    body: "{\"detail\":\"Not authenticated - Invalid Authentication\"}"
+    headers:
+      Content-Length:
+      - "55"
+      Content-Type:
+      - application/json
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Azure-Ref:
+      - 20250823T183644Z-1655ff9c686wfwtphC1YMQ4c7n000000081000000000eru8
+      X-Cache:
+      - CONFIG_NOCACHE
+    status: 403 Forbidden
+    code: 403
+    duration: 467ms

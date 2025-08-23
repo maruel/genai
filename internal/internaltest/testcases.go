@@ -51,7 +51,7 @@ func TestClient_Provider_errors(t *testing.T, getClient func(t *testing.T, apiKe
 					}
 					t.Fatal(err)
 				}
-				_, err = c.GenSync(t.Context(), msgs, &genai.OptionsText{})
+				_, err = c.GenSync(t.Context(), msgs, nil)
 				if line.ErrGenSync == "" {
 					if err != base.ErrNotSupported {
 						t.Fatal("expected unsupported")
@@ -75,7 +75,7 @@ func TestClient_Provider_errors(t *testing.T, getClient func(t *testing.T, apiKe
 					t.Fatal(err)
 				}
 				ch := make(chan genai.ReplyFragment, 1)
-				_, err = c.GenStream(t.Context(), msgs, ch, &genai.OptionsText{})
+				_, err = c.GenStream(t.Context(), msgs, ch, nil)
 				if line.ErrGenStream == "" {
 					if err != base.ErrNotSupported {
 						t.Fatal("expected unsupported")

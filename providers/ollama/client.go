@@ -174,8 +174,8 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 		if err := opts.Validate(); err != nil {
 			return err
 		}
-		if supported := opts.Modalities(); !slices.Contains(supported, genai.ModalityText) {
-			return fmt.Errorf("modality text not supported, supported: %s", supported)
+		if mod := opts.Modalities(); !slices.Contains(mod, genai.ModalityText) {
+			return fmt.Errorf("modality %s not supported, supported: %s", mod, genai.ModalityText)
 		}
 		switch v := opts.(type) {
 		case *genai.OptionsText:

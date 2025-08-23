@@ -1577,12 +1577,42 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 		default:
 			c.Impl.Model = opts.Model
 			if len(opts.OutputModalities) == 0 {
-				// TODO: Detect modality ASAP to be able to remove GenDoc. It's tricky because modalities are not directly returned by
-				// ListModels.
-				c.Impl.OutputModalities = genai.Modalities{genai.ModalityText}
+				// It's tricky because modalities are not directly returned by ListModels.
+				if strings.HasPrefix(opts.Model, "gem") {
+					c.Impl.OutputModalities = genai.Modalities{genai.ModalityText}
+				} else if strings.HasPrefix(opts.Model, "ima") {
+					c.Impl.OutputModalities = genai.Modalities{genai.ModalityImage}
+				} else if strings.HasPrefix(opts.Model, "veo") {
+					c.Impl.OutputModalities = genai.Modalities{genai.ModalityVideo}
+				} else {
+					// We probably want to fetch SupportedGenerationMethods from the model anyway to make sure the right
+					// API is used. We can keep a predefined table for known model, I'd be surprised the generation
+					// methods would change per model.
+					mdls, err := c.ListModels(ctx)
+					if err != nil {
+						return c, fmt.Errorf("failed to automatically detect the model modality: %w", err)
+					}
+					for _, mdl := range mdls {
+						if m := mdl.(*Model); m.GetID() == opts.Model {
+							if slices.Contains(m.SupportedGenerationMethods, "generateContent") {
+								c.Impl.OutputModalities = genai.Modalities{genai.ModalityText}
+							} else if slices.Contains(m.SupportedGenerationMethods, "predict") {
+								c.Impl.OutputModalities = genai.Modalities{genai.ModalityImage}
+							} else if slices.Contains(m.SupportedGenerationMethods, "predictLongRunning") {
+								c.Impl.OutputModalities = genai.Modalities{genai.ModalityVideo}
+							} else {
+								return c, fmt.Errorf("failed to automatically detect the model modality with methods: %s", m.SupportedGenerationMethods)
+							}
+							break
+						}
+					}
+				}
+				if len(c.Impl.OutputModalities) == 0 {
+					return c, fmt.Errorf("failed to automatically detect the model modality: model %s not found", c.Impl.Model)
+				}
+			} else {
+				c.Impl.OutputModalities = opts.OutputModalities
 			}
-			c.Impl.OutputModalities = opts.OutputModalities
-			// TODO: Use ListModels to determine the right predicate.
 			c.Impl.GenSyncURL = "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(opts.Model) + ":generateContent"
 			c.Impl.GenStreamURL = "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(opts.Model) + ":streamGenerateContent?alt=sse"
 		}

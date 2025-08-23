@@ -35,6 +35,8 @@ func CreateScenario(ctx context.Context, pf ProviderFactory) (Scenario, genai.Us
 	if m == "" {
 		return Scenario{}, usage, errors.New("provider must have a model")
 	}
+	mods := c.OutputModalities()
+
 	mu := sync.Mutex{}
 	result := Scenario{
 		Models: []string{m},
@@ -44,8 +46,8 @@ func CreateScenario(ctx context.Context, pf ProviderFactory) (Scenario, genai.Us
 
 	// Make it easy to skip parts of the tests.
 	doSync := true
-	doStream := true
-	doDoc := true
+	doStream := mods[0] == genai.ModalityText
+	doDoc := mods[0] != genai.ModalityText
 
 	eg := errgroup.Group{}
 	if doSync {
@@ -57,7 +59,6 @@ func CreateScenario(ctx context.Context, pf ProviderFactory) (Scenario, genai.Us
 			usage.Add(cs.usage)
 			if f != nil {
 				result.In[genai.ModalityText] = ModalCapability{Inline: true}
-				result.Out[genai.ModalityText] = ModalCapability{Inline: true}
 				if cs.isThinking {
 					result.Thinking = true
 				}

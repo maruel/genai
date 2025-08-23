@@ -92,9 +92,6 @@ var Scoreboard = scoreboard.Score{
 			GenSync: &scoreboard.FunctionalityText{
 				ReportRateLimits: true,
 			},
-			GenStream: &scoreboard.FunctionalityText{
-				ReportRateLimits: true,
-			},
 		},
 		{
 			Models:   []string{"o4-mini"},

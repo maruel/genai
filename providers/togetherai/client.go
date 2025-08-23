@@ -1088,34 +1088,7 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 		default:
 			c.impl.Model = opts.Model
 			if len(opts.OutputModalities) == 0 {
-				// TODO: Detect if it is an image model.
-				// Temporarily disabled to ease with the transition away from GenDoc / ProviderGenDoc.
-				// I must not forget to enable this back once I removed GenDoc!
-				if false {
-					mdls, err2 := c.ListModels(ctx)
-					if err2 != nil {
-						return nil, fmt.Errorf("failed to detect the output modality for the model %s: %w", opts.Model, err2)
-					}
-					for _, mdl := range mdls {
-						if m := mdl.(*Model); m.ID == opts.Model {
-							switch m.Type {
-							case "chat":
-								c.impl.OutputModalities = genai.Modalities{genai.ModalityText}
-							case "image":
-								c.impl.OutputModalities = genai.Modalities{genai.ModalityImage}
-							default:
-								return nil, fmt.Errorf("failed to detect the output modality for the model %s: found type %s", opts.Model, m.Type)
-							}
-							break
-						}
-					}
-				} else {
-					if strings.HasPrefix(opts.Model, "black-forest-labs/") {
-						c.impl.OutputModalities = genai.Modalities{genai.ModalityImage}
-					} else {
-						c.impl.OutputModalities = genai.Modalities{genai.ModalityText}
-					}
-				}
+				c.impl.OutputModalities, err = c.detectModelModalities(ctx, opts.Model)
 			} else {
 				c.impl.OutputModalities = opts.OutputModalities
 			}
@@ -1124,7 +1097,44 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 	return c, err
 }
 
+// detectModelModalities tries its best to figure out the modality of a model
+//
+// We may want to make this function overridable in the future by the client since this is going to break one
+// day or another.
+func (c *Client) detectModelModalities(ctx context.Context, model string) (genai.Modalities, error) {
+	// TODO: Detect if it is an image model.
+	// Temporarily disabled to ease with the transition away from GenDoc / ProviderGenDoc.
+	// I must not forget to enable this back once I removed GenDoc!
+	if false {
+		mdls, err2 := c.ListModels(ctx)
+		if err2 != nil {
+			return nil, fmt.Errorf("failed to detect the output modality for the model %s: %w", model, err2)
+		}
+		for _, mdl := range mdls {
+			if m := mdl.(*Model); m.ID == model {
+				switch m.Type {
+				case "chat":
+					return genai.Modalities{genai.ModalityText}, nil
+				case "image":
+					return genai.Modalities{genai.ModalityImage}, nil
+				default:
+					return nil, fmt.Errorf("failed to detect the output modality for the model %s: found type %s", model, m.Type)
+				}
+			}
+		}
+		return nil, fmt.Errorf("failed to automatically detect the model modality: model %s not found", model)
+	}
+	if strings.HasPrefix(model, "black-forest-labs/") {
+		return genai.Modalities{genai.ModalityImage}, nil
+	} else {
+		return genai.Modalities{genai.ModalityText}, nil
+	}
+}
+
 // selectBestTextModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
+//
+// We may want to make this function overridable in the future by the client since this is going to break one
+// day or another.
 func (c *Client) selectBestTextModel(ctx context.Context, preference string) (string, error) {
 	mdls, err := c.ListModels(ctx)
 	if err != nil {
@@ -1169,6 +1179,9 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 }
 
 // selectBestImageModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
+//
+// We may want to make this function overridable in the future by the client since this is going to break one
+// day or another.
 func (c *Client) selectBestImageModel(ctx context.Context, preference string) (string, error) {
 	mdls, err := c.ListModels(ctx)
 	if err != nil {

@@ -304,6 +304,9 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 }
 
 // selectBestImageModel selects the model based on the preference (cheap, good, or SOTA).
+//
+// We may want to make this function overridable in the future by the client since this is going to break one
+// day or another.
 func (c *Client) selectBestImageModel(preference string) string {
 	// If Black Forest Labs ever implement model listing, start using it!
 	switch preference {

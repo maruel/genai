@@ -1207,14 +1207,7 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 			c.impl.Model = opts.Model
 			switch len(opts.OutputModalities) {
 			case 0:
-				// Damn you OpenAI! This is super fragile.
-				if strings.HasPrefix(c.impl.Model, "dall") || strings.Contains(c.impl.Model, "image") {
-					c.impl.OutputModalities = genai.Modalities{genai.ModalityImage}
-				} else if strings.Contains(c.impl.Model, "audio") {
-					c.impl.OutputModalities = genai.Modalities{genai.ModalityAudio, genai.ModalityText}
-				} else {
-					c.impl.OutputModalities = genai.Modalities{genai.ModalityText}
-				}
+				c.impl.OutputModalities, err = c.detectModelModalities(ctx, opts.Model)
 			case 1:
 				c.impl.OutputModalities = opts.OutputModalities
 			default:

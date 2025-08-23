@@ -631,6 +631,9 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 }
 
 // selectBestTextModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
+//
+// We may want to make this function overridable in the future by the client since this is going to break one
+// day or another.
 func (c *Client) selectBestTextModel(ctx context.Context, preference string) string {
 	// There's no way to list what's the current best models and no way to list the models in the library:
 	// https://github.com/ollama/ollama/issues/8241

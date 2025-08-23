@@ -1577,39 +1577,7 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 		default:
 			c.Impl.Model = opts.Model
 			if len(opts.OutputModalities) == 0 {
-				// It's tricky because modalities are not directly returned by ListModels.
-				if strings.HasPrefix(opts.Model, "gem") {
-					c.Impl.OutputModalities = genai.Modalities{genai.ModalityText}
-				} else if strings.HasPrefix(opts.Model, "ima") {
-					c.Impl.OutputModalities = genai.Modalities{genai.ModalityImage}
-				} else if strings.HasPrefix(opts.Model, "veo") {
-					c.Impl.OutputModalities = genai.Modalities{genai.ModalityVideo}
-				} else {
-					// We probably want to fetch SupportedGenerationMethods from the model anyway to make sure the right
-					// API is used. We can keep a predefined table for known model, I'd be surprised the generation
-					// methods would change per model.
-					mdls, err2 := c.ListModels(ctx)
-					if err2 != nil {
-						return c, fmt.Errorf("failed to automatically detect the model modality: %w", err2)
-					}
-					for _, mdl := range mdls {
-						if m := mdl.(*Model); m.GetID() == opts.Model {
-							if slices.Contains(m.SupportedGenerationMethods, "generateContent") {
-								c.Impl.OutputModalities = genai.Modalities{genai.ModalityText}
-							} else if slices.Contains(m.SupportedGenerationMethods, "predict") {
-								c.Impl.OutputModalities = genai.Modalities{genai.ModalityImage}
-							} else if slices.Contains(m.SupportedGenerationMethods, "predictLongRunning") {
-								c.Impl.OutputModalities = genai.Modalities{genai.ModalityVideo}
-							} else {
-								return c, fmt.Errorf("failed to automatically detect the model modality with methods: %s", m.SupportedGenerationMethods)
-							}
-							break
-						}
-					}
-				}
-				if len(c.Impl.OutputModalities) == 0 {
-					return c, fmt.Errorf("failed to automatically detect the model modality: model %s not found", c.Impl.Model)
-				}
+				c.Impl.OutputModalities, err = c.detectModelModalities(ctx, opts.Model)
 			} else {
 				c.Impl.OutputModalities = opts.OutputModalities
 			}
@@ -1620,7 +1588,45 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 	return c, err
 }
 
+// detectModelModalities tries its best to figure out the modality of a model
+//
+// We may want to make this function overridable in the future by the client since this is going to break one
+// day or another.
+func (c *Client) detectModelModalities(ctx context.Context, model string) (genai.Modalities, error) {
+	// It's tricky because modalities are not directly returned by ListModels.
+	if strings.HasPrefix(model, "gem") {
+		return genai.Modalities{genai.ModalityText}, nil
+	} else if strings.HasPrefix(model, "ima") {
+		return genai.Modalities{genai.ModalityImage}, nil
+	} else if strings.HasPrefix(model, "veo") {
+		return genai.Modalities{genai.ModalityVideo}, nil
+	}
+	// We probably want to fetch SupportedGenerationMethods from the model anyway to make sure the right
+	// API is used. We can keep a predefined table for known model, I'd be surprised the generation
+	// methods would change per model.
+	mdls, err := c.ListModels(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to automatically detect the model modality: %w", err)
+	}
+	for _, mdl := range mdls {
+		if m := mdl.(*Model); m.GetID() == model {
+			if slices.Contains(m.SupportedGenerationMethods, "generateContent") {
+				return genai.Modalities{genai.ModalityText}, nil
+			} else if slices.Contains(m.SupportedGenerationMethods, "predict") {
+				return genai.Modalities{genai.ModalityImage}, nil
+			} else if slices.Contains(m.SupportedGenerationMethods, "predictLongRunning") {
+				return genai.Modalities{genai.ModalityVideo}, nil
+			}
+			return nil, fmt.Errorf("failed to automatically detect the model modality with methods: %s", m.SupportedGenerationMethods)
+		}
+	}
+	return nil, fmt.Errorf("failed to automatically detect the model modality: model %s not found", model)
+}
+
 // selectBestTextModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
+//
+// We may want to make this function overridable in the future by the client since this is going to break one
+// day or another.
 func (c *Client) selectBestTextModel(ctx context.Context, preference string) (string, error) {
 	mdls, err := c.ListModels(ctx)
 	if err != nil {
@@ -1663,6 +1669,9 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 }
 
 // selectBestImageModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
+//
+// We may want to make this function overridable in the future by the client since this is going to break one
+// day or another.
 func (c *Client) selectBestImageModel(ctx context.Context, preference string) (string, error) {
 	mdls, err := c.ListModels(ctx)
 	if err != nil {

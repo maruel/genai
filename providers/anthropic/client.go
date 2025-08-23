@@ -1363,6 +1363,9 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 }
 
 // selectBestTextModel selects the most recent model based on the preference (cheap, good, or SOTA).
+//
+// We may want to make this function overridable in the future by the client since this is going to break one
+// day or another.
 func (c *Client) selectBestTextModel(ctx context.Context, preference string) (string, error) {
 	mdls, err := c.ListModels(ctx)
 	if err != nil {

@@ -253,7 +253,29 @@ type FileListResponse struct {
 
 //
 
+// detectModelModalities tries its best to figure out the modality of a model
+//
+// We may want to make this function overridable in the future by the client since this is going to break one
+// day or another.
+func (c *Client) detectModelModalities(ctx context.Context, model string) (genai.Modalities, error) {
+	// Damn you OpenAI! This is super fragile.
+	// TODO: Fill out the scoreboard from https://platform.openai.com/docs/models then use that. This is sad
+	// because ListModels is useless. See
+	// https://discord.com/channels/974519864045756446/1070006915414900886/threads/1408629226864775265 for the
+	// author's feature request.
+	if strings.HasPrefix(model, "dall") || strings.Contains(model, "image") {
+		return genai.Modalities{genai.ModalityImage}, nil
+	} else if strings.Contains(model, "audio") {
+		// Unsure about that.
+		return genai.Modalities{genai.ModalityAudio, genai.ModalityText}, nil
+	}
+	return genai.Modalities{genai.ModalityText}, nil
+}
+
 // selectBestTextModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
+//
+// We may want to make this function overridable in the future by the client since this is going to break one
+// day or another.
 func (c *Client) selectBestTextModel(ctx context.Context, preference string) (string, error) {
 	mdls, err := c.ListModels(ctx)
 	if err != nil {
@@ -292,6 +314,9 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 }
 
 // selectBestImageModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
+//
+// We may want to make this function overridable in the future by the client since this is going to break one
+// day or another.
 func (c *Client) selectBestImageModel(ctx context.Context, preference string) (string, error) {
 	mdls, err := c.ListModels(ctx)
 	if err != nil {

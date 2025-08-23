@@ -1045,19 +1045,28 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 		}
 	default:
 		c.impl.Model = opts.Model
-		if len(opts.OutputModalities) != 0 {
-			c.impl.OutputModalities = opts.OutputModalities
+		if len(opts.OutputModalities) == 0 {
+			c.impl.OutputModalities, err = c.detectModelModalities(ctx, opts.Model)
 		} else {
-			var mod genai.Modality
-			if mod, err = Cache.ModelModality(ctx, c, opts.Model); err == nil {
-				c.impl.OutputModalities = genai.Modalities{mod}
-			}
+			c.impl.OutputModalities = opts.OutputModalities
 		}
 	}
 	return c, err
 }
 
+// detectModelModalities tries its best to figure out the modality of a model
+//
+// We may want to make this function overridable in the future by the client since this is going to break one
+// day or another.
+func (c *Client) detectModelModalities(ctx context.Context, model string) (genai.Modalities, error) {
+	mod, err := Cache.ModelModality(ctx, c, model)
+	return genai.Modalities{mod}, err
+}
+
 // selectBestTextModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
+//
+// We may want to make this function overridable in the future by the client since this is going to break one
+// day or another.
 func (c *Client) selectBestTextModel(ctx context.Context, preference string) (string, error) {
 	// We only list text models here, not images generation ones.
 	mdls, err := c.ListTextModels(ctx)
@@ -1094,6 +1103,9 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 }
 
 // selectBestImageModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
+//
+// We may want to make this function overridable in the future by the client since this is going to break one
+// day or another.
 func (c *Client) selectBestImageModel(ctx context.Context, preference string) (string, error) {
 	mdls, err := c.ListImageGenModels(ctx)
 	if err != nil {

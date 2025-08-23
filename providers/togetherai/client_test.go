@@ -138,7 +138,7 @@ func TestClient_Preferred(t *testing.T) {
 	}
 	for _, line := range data {
 		t.Run(fmt.Sprintf("%s-%s", line.modality, line.name), func(t *testing.T) {
-			opts := genai.ProviderOptions{Model: line.name, Modalities: genai.Modalities{line.modality}}
+			opts := genai.ProviderOptions{Model: line.name, OutputModalities: genai.Modalities{line.modality}}
 			c, err := getClientInner(t, &opts)
 			if err != nil {
 				t.Fatal(err)
@@ -180,7 +180,7 @@ func TestClient_Provider_errors(t *testing.T) {
 		},
 	}
 	f := func(t *testing.T, apiKey, model string) (genai.Provider, error) {
-		return getClientInner(t, &genai.ProviderOptions{APIKey: apiKey, Model: model, Modalities: genai.Modalities{genai.ModalityText}})
+		return getClientInner(t, &genai.ProviderOptions{APIKey: apiKey, Model: model, OutputModalities: genai.Modalities{genai.ModalityText}})
 	}
 	internaltest.TestClient_Provider_errors(t, f, data)
 }

@@ -263,7 +263,7 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 		}
 	}
 	mod := genai.Modalities{genai.ModalityImage}
-	if len(opts.Modalities) != 0 && !slices.Equal(opts.Modalities, mod) {
+	if len(opts.OutputModalities) != 0 && !slices.Equal(opts.OutputModalities, mod) {
 		return nil, fmt.Errorf("unexpected option Modalities %s, only image is supported", mod)
 	}
 	t := base.DefaultTransport
@@ -294,10 +294,10 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 		case genai.ModelNone:
 		case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA, "":
 			c.impl.Model = c.selectBestImageModel(opts.Model)
-			c.impl.Modalities = mod
+			c.impl.OutputModalities = mod
 		default:
 			c.impl.Model = opts.Model
-			c.impl.Modalities = mod
+			c.impl.OutputModalities = mod
 		}
 	}
 	return c, err
@@ -332,12 +332,12 @@ func (c *Client) ModelID() string {
 	return c.impl.Model
 }
 
-// Modalities implements genai.Provider.
+// OutputModalities implements genai.Provider.
 //
 // It returns the output modalities, i.e. what kind of output the model will generate (text, audio, image,
 // video, etc).
-func (c *Client) Modalities() genai.Modalities {
-	return c.impl.Modalities
+func (c *Client) OutputModalities() genai.Modalities {
+	return c.impl.OutputModalities
 }
 
 // Scoreboard implements scoreboard.ProviderScore.

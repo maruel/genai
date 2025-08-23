@@ -1489,26 +1489,26 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 			err = &base.ErrAPIKeyRequired{EnvVar: "GEMINI_API_KEY", URL: apiKeyURL}
 		}
 	}
-	switch len(opts.Modalities) {
+	switch len(opts.OutputModalities) {
 	case 0:
 		// Auto-detect below.
 	case 1:
-		switch opts.Modalities[0] {
+		switch opts.OutputModalities[0] {
 		case genai.ModalityAudio, genai.ModalityImage, genai.ModalityText, genai.ModalityVideo:
 		case genai.ModalityDocument:
 			fallthrough
 		default:
-			return nil, fmt.Errorf("unexpected option Modalities %s, only audio, image, text, or video are supported", opts.Modalities)
+			return nil, fmt.Errorf("unexpected option Modalities %s, only audio, image, text, or video are supported", opts.OutputModalities)
 		}
 	case 2:
 		// The only combination supported is image + text.
-		mods := slices.Clone(opts.Modalities)
+		mods := slices.Clone(opts.OutputModalities)
 		slices.Sort(mods)
 		if !slices.Equal(mods, []genai.Modality{genai.ModalityImage, genai.ModalityText}) {
 			return nil, fmt.Errorf("unexpected option Modalities %s, only image+text are supported when grouped together", mods)
 		}
 	default:
-		return nil, fmt.Errorf("unexpected option Modalities %s, only audio, image, text, video, or image+text are supported", opts.Modalities)
+		return nil, fmt.Errorf("unexpected option Modalities %s, only audio, image, text, video, or image+text are supported", opts.OutputModalities)
 	}
 	// Google supports HTTP POST gzip compression!
 	var t http.RoundTripper = &roundtrippers.PostCompressed{
@@ -1542,14 +1542,14 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 		case genai.ModelNone:
 		case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA, "":
 			var mod genai.Modality
-			switch len(opts.Modalities) {
+			switch len(opts.OutputModalities) {
 			case 0:
 				mod = genai.ModalityText
 			case 1:
-				mod = opts.Modalities[0]
+				mod = opts.OutputModalities[0]
 			default:
 				// TODO: Maybe it's possible, need to double check.
-				return nil, fmt.Errorf("can't use model %s with option Modalities %s", opts.Model, opts.Modalities)
+				return nil, fmt.Errorf("can't use model %s with option Modalities %s", opts.Model, opts.OutputModalities)
 			}
 			switch mod {
 			case genai.ModalityText:
@@ -1558,12 +1558,12 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 				}
 				c.Impl.GenSyncURL = "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(opts.Model) + ":generateContent"
 				c.Impl.GenStreamURL = "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(opts.Model) + ":streamGenerateContent?alt=sse"
-				c.Impl.Modalities = genai.Modalities{mod}
+				c.Impl.OutputModalities = genai.Modalities{mod}
 			case genai.ModalityImage:
 				if c.Impl.Model, err = c.selectBestImageModel(ctx, opts.Model); err != nil {
 					return nil, err
 				}
-				c.Impl.Modalities = genai.Modalities{mod}
+				c.Impl.OutputModalities = genai.Modalities{mod}
 			case genai.ModalityAudio:
 				fallthrough
 			case genai.ModalityDocument:
@@ -1572,16 +1572,16 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 				fallthrough
 			default:
 				// TODO: Soon, because it's cool.
-				return nil, fmt.Errorf("automatic model selection is not implemented yet for modality %s (send PR to add support)", opts.Modalities)
+				return nil, fmt.Errorf("automatic model selection is not implemented yet for modality %s (send PR to add support)", opts.OutputModalities)
 			}
 		default:
 			c.Impl.Model = opts.Model
-			if len(opts.Modalities) == 0 {
+			if len(opts.OutputModalities) == 0 {
 				// TODO: Detect modality ASAP to be able to remove GenDoc. It's tricky because modalities are not directly returned by
 				// ListModels.
-				c.Impl.Modalities = genai.Modalities{genai.ModalityText}
+				c.Impl.OutputModalities = genai.Modalities{genai.ModalityText}
 			}
-			c.Impl.Modalities = opts.Modalities
+			c.Impl.OutputModalities = opts.OutputModalities
 			// TODO: Use ListModels to determine the right predicate.
 			c.Impl.GenSyncURL = "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(opts.Model) + ":generateContent"
 			c.Impl.GenStreamURL = "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(opts.Model) + ":streamGenerateContent?alt=sse"
@@ -1685,12 +1685,12 @@ func (c *Client) ModelID() string {
 	return c.Impl.Model
 }
 
-// Modalities implements genai.Provider.
+// OutputModalities implements genai.Provider.
 //
 // It returns the output modalities, i.e. what kind of output the model will generate (text, audio, image,
 // video, etc).
-func (c *Client) Modalities() genai.Modalities {
-	return c.Impl.Modalities
+func (c *Client) OutputModalities() genai.Modalities {
+	return c.Impl.OutputModalities
 }
 
 // Scoreboard implements scoreboard.ProviderScore.

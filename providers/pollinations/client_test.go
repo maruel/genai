@@ -152,7 +152,7 @@ func TestClient_Provider_errors(t *testing.T) {
 		},
 	}
 	f := func(t *testing.T, apiKey, model string) (genai.Provider, error) {
-		return getClientInner(t, &genai.ProviderOptions{APIKey: "genai-unittests", Model: model, Modalities: genai.Modalities{genai.ModalityText}})
+		return getClientInner(t, &genai.ProviderOptions{APIKey: "genai-unittests", Model: model, OutputModalities: genai.Modalities{genai.ModalityText}})
 	}
 	internaltest.TestClient_Provider_errors(t, f, data)
 }

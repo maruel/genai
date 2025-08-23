@@ -1081,19 +1081,19 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 			err = &base.ErrAPIKeyRequired{EnvVar: "OPENAI_API_KEY", URL: apiKeyURL}
 		}
 	}
-	switch len(opts.Modalities) {
+	switch len(opts.OutputModalities) {
 	case 0:
 		// Auto-detect below.
 	case 1:
-		switch opts.Modalities[0] {
+		switch opts.OutputModalities[0] {
 		case genai.ModalityAudio, genai.ModalityImage, genai.ModalityText, genai.ModalityVideo:
 		case genai.ModalityDocument:
 			fallthrough
 		default:
-			return nil, fmt.Errorf("unexpected option Modalities %s, only audio, image or text are supported", opts.Modalities)
+			return nil, fmt.Errorf("unexpected option Modalities %s, only audio, image or text are supported", opts.OutputModalities)
 		}
 	default:
-		return nil, fmt.Errorf("unexpected option Modalities %s, only audio, image or text are supported", opts.Modalities)
+		return nil, fmt.Errorf("unexpected option Modalities %s, only audio, image or text are supported", opts.OutputModalities)
 	}
 	t := base.DefaultTransport
 	if wrapper != nil {
@@ -1124,38 +1124,38 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 		case genai.ModelNone:
 		case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA, "":
 			var mod genai.Modality
-			switch len(opts.Modalities) {
+			switch len(opts.OutputModalities) {
 			case 0:
 				mod = genai.ModalityText
 			case 1:
-				mod = opts.Modalities[0]
+				mod = opts.OutputModalities[0]
 			default:
 				// TODO: Maybe it's possible, need to double check.
-				return nil, fmt.Errorf("can't use model %s with option Modalities %s", opts.Model, opts.Modalities)
+				return nil, fmt.Errorf("can't use model %s with option Modalities %s", opts.Model, opts.OutputModalities)
 			}
 			switch mod {
 			case genai.ModalityText:
 				if c.impl.Model, err = c.selectBestTextModel(ctx, opts.Model); err != nil {
 					return nil, err
 				}
-				c.impl.Modalities = genai.Modalities{mod}
+				c.impl.OutputModalities = genai.Modalities{mod}
 			case genai.ModalityAudio, genai.ModalityDocument, genai.ModalityImage, genai.ModalityVideo:
 				fallthrough
 			default:
 				// TODO: Soon, because it's cool.
-				return nil, fmt.Errorf("automatic model selection is not implemented yet for modality %s (send PR to add support)", opts.Modalities)
+				return nil, fmt.Errorf("automatic model selection is not implemented yet for modality %s (send PR to add support)", opts.OutputModalities)
 			}
 		default:
 			c.impl.Model = opts.Model
-			switch len(opts.Modalities) {
+			switch len(opts.OutputModalities) {
 			case 0:
 				// TODO: Automatic modality detection.
-				c.impl.Modalities = genai.Modalities{genai.ModalityText}
+				c.impl.OutputModalities = genai.Modalities{genai.ModalityText}
 			case 1:
-				c.impl.Modalities = opts.Modalities
+				c.impl.OutputModalities = opts.OutputModalities
 			default:
 				// TODO: Maybe it's possible, need to double check.
-				return nil, fmt.Errorf("can't use model %s with option Modalities %s", opts.Model, opts.Modalities)
+				return nil, fmt.Errorf("can't use model %s with option Modalities %s", opts.Model, opts.OutputModalities)
 			}
 		}
 	}

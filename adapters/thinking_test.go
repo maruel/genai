@@ -332,7 +332,7 @@ func (m *mockProviderGenSync) ModelID() string {
 	return "llm-sota"
 }
 
-func (m *mockProviderGenSync) Modalities() genai.Modalities {
+func (m *mockProviderGenSync) OutputModalities() genai.Modalities {
 	return nil
 }
 
@@ -360,7 +360,7 @@ func (m *mockProviderGenStream) ModelID() string {
 	return "llm-sota"
 }
 
-func (m *mockProviderGenStream) Modalities() genai.Modalities {
+func (m *mockProviderGenStream) OutputModalities() genai.Modalities {
 	return nil
 }
 

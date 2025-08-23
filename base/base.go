@@ -93,8 +93,8 @@ type ProviderBase[PErrorResponse ErrAPI] struct {
 	APIKeyURL string
 	// Model is the default model used for chat requests
 	Model string
-	// Modalities is the output modalities supported by the provider.
-	Modalities genai.Modalities
+	// OutputModalities is the output modalities supported by the provider.
+	OutputModalities genai.Modalities
 	// ModelOptional is true if a model name is not required to use the provider.
 	ModelOptional bool
 

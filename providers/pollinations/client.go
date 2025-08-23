@@ -975,23 +975,23 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 	}
 	// Default to text generation.
 	preferText := true
-	switch len(opts.Modalities) {
+	switch len(opts.OutputModalities) {
 	case 0:
 		// Auto-detect below.
 	case 1:
-		switch opts.Modalities[0] {
+		switch opts.OutputModalities[0] {
 		case genai.ModalityAudio:
-			return nil, fmt.Errorf("unexpected option Modalities %s, only image or text is implemented (send PR to add support)", opts.Modalities)
+			return nil, fmt.Errorf("unexpected option Modalities %s, only image or text is implemented (send PR to add support)", opts.OutputModalities)
 		case genai.ModalityImage:
 			preferText = false
 		case genai.ModalityText:
 		case genai.ModalityDocument, genai.ModalityVideo:
 			fallthrough
 		default:
-			return nil, fmt.Errorf("unexpected option Modalities %s, only image or text are supported", opts.Modalities)
+			return nil, fmt.Errorf("unexpected option Modalities %s, only image or text are supported", opts.OutputModalities)
 		}
 	default:
-		return nil, fmt.Errorf("unexpected option Modalities %s, only image or text are supported", opts.Modalities)
+		return nil, fmt.Errorf("unexpected option Modalities %s, only image or text are supported", opts.OutputModalities)
 	}
 	t := base.DefaultTransport
 	if r, ok := t.(*roundtrippers.Retry); ok {
@@ -1036,21 +1036,21 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 			if c.impl.Model, err = c.selectBestTextModel(ctx, opts.Model); err != nil {
 				return nil, err
 			}
-			c.impl.Modalities = genai.Modalities{genai.ModalityText}
+			c.impl.OutputModalities = genai.Modalities{genai.ModalityText}
 		} else {
 			if c.impl.Model, err = c.selectBestImageModel(ctx, opts.Model); err != nil {
 				return nil, err
 			}
-			c.impl.Modalities = genai.Modalities{genai.ModalityImage}
+			c.impl.OutputModalities = genai.Modalities{genai.ModalityImage}
 		}
 	default:
 		c.impl.Model = opts.Model
-		if len(opts.Modalities) != 0 {
-			c.impl.Modalities = opts.Modalities
+		if len(opts.OutputModalities) != 0 {
+			c.impl.OutputModalities = opts.OutputModalities
 		} else {
 			var mod genai.Modality
 			if mod, err = Cache.ModelModality(ctx, c, opts.Model); err == nil {
-				c.impl.Modalities = genai.Modalities{mod}
+				c.impl.OutputModalities = genai.Modalities{mod}
 			}
 		}
 	}
@@ -1117,12 +1117,12 @@ func (c *Client) ModelID() string {
 	return c.impl.Model
 }
 
-// Modalities implements genai.Provider.
+// OutputModalities implements genai.Provider.
 //
 // It returns the output modalities, i.e. what kind of output the model will generate (text, audio, image,
 // video, etc).
-func (c *Client) Modalities() genai.Modalities {
-	return c.impl.Modalities
+func (c *Client) OutputModalities() genai.Modalities {
+	return c.impl.OutputModalities
 }
 
 // Scoreboard implements scoreboard.ProviderScore.

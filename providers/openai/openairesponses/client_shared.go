@@ -298,12 +298,12 @@ func (c *Client) ModelID() string {
 	return c.impl.Model
 }
 
-// Modalities implements genai.Provider.
+// OutputModalities implements genai.Provider.
 //
 // It returns the output modalities, i.e. what kind of output the model will generate (text, audio, image,
 // video, etc).
-func (c *Client) Modalities() genai.Modalities {
-	return c.impl.Modalities
+func (c *Client) OutputModalities() genai.Modalities {
+	return c.impl.OutputModalities
 }
 
 // Scoreboard implements scoreboard.ProviderScore.

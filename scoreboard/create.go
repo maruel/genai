@@ -187,7 +187,7 @@ func CreateScenario(ctx context.Context, pf ProviderFactory) (Scenario, genai.Us
 func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*FunctionalityText, error) {
 	// Make sure simple text generation works, otherwise there's no point.
 	msgs := genai.Messages{genai.NewTextMessage("Say hello. Use only one word.")}
-	resp, err := cs.callGen(ctx, prefix+"Text", msgs, &genai.OptionsText{})
+	resp, err := cs.callGen(ctx, prefix+"Text", msgs)
 	if err != nil {
 		// It happens when the model is audio gen only.
 		if !isBadError(ctx, err) {
@@ -371,7 +371,7 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*Fu
 			},
 		},
 	}
-	resp, err = cs.callGen(ctx, prefix+"Citations", msgs, &genai.OptionsText{})
+	resp, err = cs.callGen(ctx, prefix+"Citations", msgs)
 	if isBadError(ctx, err) {
 		return f, err
 	}
@@ -631,7 +631,7 @@ type extMime struct {
 }
 
 func exerciseModal(ctx context.Context, cs *callState, f *FunctionalityText, name string, msgs genai.Messages, want string) error {
-	resp, err := cs.callGen(ctx, name, msgs, &genai.OptionsText{})
+	resp, err := cs.callGen(ctx, name, msgs)
 	if err == nil {
 		got := strings.ToLower(strings.TrimRight(strings.TrimSpace(resp.String()), "."))
 		if want != "" && got != want {
@@ -665,7 +665,7 @@ type callState struct {
 	hasCitations bool
 }
 
-func (cs *callState) callGen(ctx context.Context, name string, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
+func (cs *callState) callGen(ctx context.Context, name string, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
 	// internal.Logger(ctx).DebugContext(ctx, name, "msgs", msgs)
 	c, _ := cs.pf(name)
 	var err error
@@ -686,11 +686,11 @@ func (cs *callState) callGen(ctx context.Context, name string, msgs genai.Messag
 				}
 			}
 		}()
-		resp, err = c.GenStream(ctx, msgs, chunks, opts)
+		resp, err = c.GenStream(ctx, msgs, chunks, opts...)
 		close(chunks)
 		<-done
 	} else {
-		resp, err = c.GenSync(ctx, msgs, opts)
+		resp, err = c.GenSync(ctx, msgs, opts...)
 	}
 	for _, c := range resp.Replies {
 		if len(c.Citations) != 0 {

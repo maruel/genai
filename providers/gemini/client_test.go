@@ -35,18 +35,24 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 		t.Fatal(err)
 	}
 	if slices.Contains(c.Impl.OutputModalities, genai.ModalityImage) {
-		return &injectOption{
-			Client: c,
+		return &internaltest.InjectOptions{
+			Provider: c,
 			// TODO: Remove.
-			opts: gemini.Options{ResponseModalities: genai.Modalities{genai.ModalityText, genai.ModalityImage}},
+			Opts: []genai.Options{&gemini.Options{ResponseModalities: genai.Modalities{genai.ModalityText, genai.ModalityImage}}},
 		}
 	}
 	if model.Thinking {
 		// https://ai.google.dev/gemini-api/docs/thinking?hl=en
-		return &injectOption{Client: c, opts: gemini.Options{ThinkingBudget: 512, ResponseModalities: genai.Modalities{genai.ModalityText}}}
+		return &internaltest.InjectOptions{
+			Provider: c,
+			Opts:     []genai.Options{&gemini.Options{ThinkingBudget: 512, ResponseModalities: genai.Modalities{genai.ModalityText}}},
+		}
 	}
 	// Forcibly disable thinking.
-	return &injectOption{Client: c, opts: gemini.Options{ThinkingBudget: 0, ResponseModalities: genai.Modalities{genai.ModalityText}}}
+	return &internaltest.InjectOptions{
+		Provider: c,
+		Opts:     []genai.Options{&gemini.Options{ThinkingBudget: 0, ResponseModalities: genai.Modalities{genai.ModalityText}}},
+	}
 }
 
 func TestClient_Scoreboard(t *testing.T) {
@@ -66,19 +72,6 @@ func TestClient_Scoreboard(t *testing.T) {
 		}
 	}
 	scoreboardtest.AssertScoreboard(t, getClientRT, models, testRecorder.Records)
-}
-
-type injectOption struct {
-	*gemini.Client
-	opts gemini.Options
-}
-
-func (i *injectOption) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
-	return i.Client.GenSync(ctx, msgs, append(opts, &i.opts)...)
-}
-
-func (i *injectOption) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
-	return i.Client.GenStream(ctx, msgs, replies, append(opts, &i.opts)...)
 }
 
 func TestClient_Preferred(t *testing.T) {

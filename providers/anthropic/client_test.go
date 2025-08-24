@@ -5,7 +5,6 @@
 package anthropic_test
 
 import (
-	"context"
 	_ "embed"
 	"net/http"
 	"os"
@@ -30,22 +29,15 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 		t.Fatal(err)
 	}
 	if model.Thinking {
-		return &injectOption{Client: c, opts: anthropic.OptionsText{ThinkingBudget: 1024}}
+		return &internaltest.InjectOptions{
+			Provider: c,
+			Opts:     []genai.Options{&anthropic.OptionsText{ThinkingBudget: 1024}},
+		}
 	}
-	return &injectOption{Client: c, opts: anthropic.OptionsText{ThinkingBudget: 0}}
-}
-
-type injectOption struct {
-	*anthropic.Client
-	opts anthropic.OptionsText
-}
-
-func (i *injectOption) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
-	return i.Client.GenSync(ctx, msgs, append(opts, &i.opts)...)
-}
-
-func (i *injectOption) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
-	return i.Client.GenStream(ctx, msgs, replies, append(opts, &i.opts)...)
+	return &internaltest.InjectOptions{
+		Provider: c,
+		Opts:     []genai.Options{&anthropic.OptionsText{ThinkingBudget: 0}},
+	}
 }
 
 func TestClient_Scoreboard(t *testing.T) {

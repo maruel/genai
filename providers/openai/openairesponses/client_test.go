@@ -5,7 +5,6 @@
 package openairesponses_test
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 	"os"
@@ -31,9 +30,9 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 		t.Fatal(err)
 	}
 	if model.Thinking {
-		return &injectOptions{
-			Client: c,
-			opts: []genai.Options{
+		return &internaltest.InjectOptions{
+			Provider: c,
+			Opts: []genai.Options{
 				&openairesponses.OptionsText{
 					// This will lead to spurious HTTP 500 but it is 25% of the cost.
 					ServiceTier:     openairesponses.ServiceTierFlex,
@@ -45,9 +44,9 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 	if slices.Equal(c.OutputModalities(), []genai.Modality{genai.ModalityText}) {
 		// See https://platform.openai.com/docs/guides/flex-processing
 		if id := c.ModelID(); id == "o3" || id == "o4-mini" || strings.HasPrefix(id, "gpt-5") {
-			return &injectOptions{
-				Client: c,
-				opts: []genai.Options{
+			return &internaltest.InjectOptions{
+				Provider: c,
+				Opts: []genai.Options{
 					&openaichat.OptionsText{
 						// This will lead to spurious HTTP 500 but it is 25% of the cost.
 						ServiceTier: openaichat.ServiceTierFlex,
@@ -70,19 +69,6 @@ func TestClient_Scoreboard(t *testing.T) {
 		models = append(models, scoreboardtest.Model{Model: id, Thinking: strings.HasPrefix(id, "o") && !strings.Contains(id, "moderation")})
 	}
 	scoreboardtest.AssertScoreboard(t, getClientRT, models, testRecorder.Records)
-}
-
-type injectOptions struct {
-	*openairesponses.Client
-	opts []genai.Options
-}
-
-func (i *injectOptions) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
-	return i.Client.GenSync(ctx, msgs, append(opts, i.opts...)...)
-}
-
-func (i *injectOptions) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
-	return i.Client.GenStream(ctx, msgs, replies, append(opts, i.opts...)...)
 }
 
 /*

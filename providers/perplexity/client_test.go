@@ -44,12 +44,9 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 		t.Fatal(err)
 	}
 	// Save on costs when running the smoke test.
-	var p genai.Provider = &injectOption{
-		Client: c,
-		opts: perplexity.Options{
-			DisableSearch:           true,
-			DisableRelatedQuestions: true,
-		},
+	var p genai.Provider = &injectOptions{
+		Provider: c,
+		Opts:     []genai.Options{&perplexity.Options{DisableSearch: true, DisableRelatedQuestions: true}},
 	}
 	if model.Thinking {
 		p = &adapters.ProviderThinking{Provider: p, ThinkingTokenStart: "<think>", ThinkingTokenEnd: "</think>"}
@@ -57,24 +54,28 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 	return p
 }
 
-// injectOption generally inject the option unless "Quackiland" is in the last message.
-type injectOption struct {
-	*perplexity.Client
-	opts perplexity.Options
+// injectOptions generally inject the option unless "Quackiland" is in the last message.
+type injectOptions struct {
+	genai.Provider
+	Opts []genai.Options
 }
 
-func (i *injectOption) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
-	if !strings.Contains(msgs[len(msgs)-1].Requests[len(msgs[0].Requests)-1].Text, "Quackiland") {
-		opts = append(opts, &i.opts)
-	}
-	return i.Client.GenSync(ctx, msgs, opts...)
+func (i *injectOptions) Unwrap() genai.Provider {
+	return i.Provider
 }
 
-func (i *injectOption) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
+func (i *injectOptions) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
 	if !strings.Contains(msgs[len(msgs)-1].Requests[len(msgs[0].Requests)-1].Text, "Quackiland") {
-		opts = append(opts, &i.opts)
+		opts = append(opts, i.Opts...)
 	}
-	return i.Client.GenStream(ctx, msgs, replies, opts...)
+	return i.Provider.GenSync(ctx, msgs, opts...)
+}
+
+func (i *injectOptions) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
+	if !strings.Contains(msgs[len(msgs)-1].Requests[len(msgs[0].Requests)-1].Text, "Quackiland") {
+		opts = append(opts, i.Opts...)
+	}
+	return i.Provider.GenStream(ctx, msgs, replies, opts...)
 }
 
 func TestClient_Scoreboard(t *testing.T) {

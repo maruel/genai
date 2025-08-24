@@ -7,6 +7,7 @@ package internaltest
 
 import (
 	"context"
+	"errors"
 	"flag"
 	"fmt"
 	"log/slog"
@@ -20,6 +21,7 @@ import (
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
+	"github.com/maruel/httpjson"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/cassette"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
@@ -159,6 +161,55 @@ func LogFile(tb testing.TB, cache, name string) *os.File {
 		}
 	})
 	return l
+}
+
+// InjectOptions injects options into the provider GenSync and GenStream calls.
+type InjectOptions struct {
+	genai.Provider
+	Opts []genai.Options
+}
+
+func (i *InjectOptions) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
+	return i.Provider.GenSync(ctx, msgs, append(opts, i.Opts...)...)
+}
+
+func (i *InjectOptions) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
+	return i.Provider.GenStream(ctx, msgs, replies, append(opts, i.Opts...)...)
+}
+
+func (i *InjectOptions) Unwrap() genai.Provider {
+	return i.Provider
+}
+
+// HideHTTP500 is hides HTTP 500 errors from the reply.
+type HideHTTP500 struct {
+	genai.Provider
+}
+
+func (h *HideHTTP500) Unwrap() genai.Provider {
+	return h.Provider
+}
+
+func (h *HideHTTP500) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
+	resp, err := h.Provider.GenSync(ctx, msgs, opts...)
+	if err != nil {
+		var herr *httpjson.Error
+		if errors.As(err, &herr) && herr.StatusCode == 500 {
+			return resp, errors.New("hiding a HTTP 500 error")
+		}
+	}
+	return resp, err
+}
+
+func (h *HideHTTP500) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
+	resp, err := h.Provider.GenStream(ctx, msgs, chunks, opts...)
+	if err != nil {
+		var herr *httpjson.Error
+		if errors.As(err, &herr) && herr.StatusCode == 500 {
+			return resp, errors.New("hiding a HTTP 500 error")
+		}
+	}
+	return resp, err
 }
 
 //

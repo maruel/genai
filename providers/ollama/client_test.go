@@ -51,7 +51,6 @@ func TestClient(t *testing.T) {
 				}
 			}
 			return c
-			// return &hideHTTP500{c}
 		}, models, testRecorder.Records)
 	})
 

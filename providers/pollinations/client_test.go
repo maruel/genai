@@ -7,7 +7,6 @@ package pollinations_test
 import (
 	"context"
 	_ "embed"
-	"errors"
 	"net/http"
 	"os"
 	"sync"
@@ -19,7 +18,6 @@ import (
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/pollinations"
 	"github.com/maruel/genai/scoreboard/scoreboardtest"
-	"github.com/maruel/httpjson"
 )
 
 func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
@@ -27,22 +25,23 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 	if err != nil {
 		t.Fatal(err)
 	}
-	c2 := &hideHTTP500{Client: c}
+	c2 := &smallImage{Provider: &internaltest.HideHTTP500{Provider: c}}
 	if model.Thinking {
 		return &adapters.ProviderThinking{Provider: c2, ThinkingTokenStart: "<think>", ThinkingTokenEnd: "\n</think>\n"}
 	}
 	return c2
 }
 
-type hideHTTP500 struct {
-	*pollinations.Client
+// smallImage speeds up image generation.
+type smallImage struct {
+	genai.Provider
 }
 
-func (h *hideHTTP500) Unwrap() genai.Provider {
-	return h.Client
+func (h *smallImage) Unwrap() genai.Provider {
+	return h.Provider
 }
 
-func (h *hideHTTP500) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
+func (h *smallImage) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
 	for i := range opts {
 		if v, ok := opts[i].(*genai.OptionsImage); ok {
 			// Ask for a smaller size.
@@ -52,29 +51,7 @@ func (h *hideHTTP500) GenSync(ctx context.Context, msgs genai.Messages, opts ...
 			opts[i] = &n
 		}
 	}
-	resp, err := h.Client.GenSync(ctx, msgs, opts...)
-	if err != nil {
-		var herr *httpjson.Error
-		if errors.As(err, &herr) && herr.StatusCode == 500 {
-			// Hide the failure; pollinations.ai throws HTTP 500 on unsupported file formats.
-			return resp, errors.New("pollinations.ai is having a bad day")
-		}
-		return resp, err
-	}
-	return resp, err
-}
-
-func (h *hideHTTP500) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
-	resp, err := h.Client.GenStream(ctx, msgs, chunks, opts...)
-	if err != nil {
-		var herr *httpjson.Error
-		if errors.As(err, &herr) && herr.StatusCode == 500 {
-			// Hide the failure; pollinations.ai throws HTTP 500 on unsupported file formats.
-			return resp, errors.New("pollinations.ai is having a bad day")
-		}
-		return resp, err
-	}
-	return resp, err
+	return h.Provider.GenSync(ctx, msgs, opts...)
 }
 
 func TestClient_Scoreboard(t *testing.T) {

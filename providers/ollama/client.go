@@ -173,9 +173,6 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 		if err := opt.Validate(); err != nil {
 			return err
 		}
-		if mod := opt.Modalities(); !slices.Contains(mod, genai.ModalityText) {
-			return fmt.Errorf("modality %s not supported, supported: %s", mod, genai.ModalityText)
-		}
 		switch v := opt.(type) {
 		case *genai.OptionsText:
 			c.Options.NumPredict = v.MaxTokens

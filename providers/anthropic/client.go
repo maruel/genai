@@ -174,11 +174,6 @@ func (o *OptionsText) Validate() error {
 	return nil
 }
 
-func (o *OptionsText) Modalities() genai.Modalities {
-	// TODO: Remove.
-	return nil
-}
-
 // ChatRequest is documented at https://docs.anthropic.com/en/api/messages
 type ChatRequest struct {
 	Model      string      `json:"model,omitzero"`

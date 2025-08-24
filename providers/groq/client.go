@@ -209,11 +209,6 @@ func (o *Options) Validate() error {
 	return nil
 }
 
-func (o *Options) Modalities() genai.Modalities {
-	// TODO: Remove.
-	return nil
-}
-
 // ServiceTier is the quality of service to determine the request's priority.
 // https://console.groq.com/docs/flex-processing
 type ServiceTier string

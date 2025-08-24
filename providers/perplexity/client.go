@@ -108,11 +108,6 @@ func (o *Options) Validate() error {
 	return nil
 }
 
-func (o *Options) Modalities() genai.Modalities {
-	// TODO: Remove.
-	return nil
-}
-
 // ChatRequest is documented at https://docs.perplexity.ai/api-reference/chat-completions-post
 type ChatRequest struct {
 	Model                   string    `json:"model"`

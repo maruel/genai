@@ -353,12 +353,6 @@ func TestOptionsAudio(t *testing.T) {
 			t.Errorf("Validate() got unexpected error: %v", err)
 		}
 	})
-	t.Run("Modalities", func(t *testing.T) {
-		o := &OptionsAudio{}
-		if got := o.Modalities(); len(got) != 1 || got[0] != ModalityAudio {
-			t.Errorf("Modalities() = %v, want [audio]", got)
-		}
-	})
 }
 
 func TestOptionsImage(t *testing.T) {
@@ -400,12 +394,6 @@ func TestOptionsImage(t *testing.T) {
 			}
 		})
 	})
-	t.Run("Modalities", func(t *testing.T) {
-		o := &OptionsImage{}
-		if got := o.Modalities(); len(got) != 1 || got[0] != ModalityImage {
-			t.Errorf("Modalities() = %v, want [image]", got)
-		}
-	})
 }
 
 func TestOptionsVideo(t *testing.T) {
@@ -413,12 +401,6 @@ func TestOptionsVideo(t *testing.T) {
 		o := &OptionsVideo{}
 		if err := o.Validate(); err != nil {
 			t.Errorf("Validate() got unexpected error: %v", err)
-		}
-	})
-	t.Run("Modalities", func(t *testing.T) {
-		o := &OptionsVideo{}
-		if got := o.Modalities(); len(got) != 1 || got[0] != ModalityVideo {
-			t.Errorf("Modalities() = %v, want [video]", got)
 		}
 	})
 }

@@ -162,15 +162,10 @@ func (i *ImageRequest) Init(msgs genai.Messages, model string, opts ...genai.Opt
 		if err := opt.Validate(); err != nil {
 			return err
 		}
-		if mod := opt.Modalities(); !slices.Contains(mod, genai.ModalityImage) {
-			return fmt.Errorf("modality %s not supported, supported: %s", mod, genai.ModalityImage)
-		}
 		switch v := opt.(type) {
 		case *genai.OptionsImage:
 			i.Height = int64(v.Height)
 			i.Width = int64(v.Width)
-			i.Seed = v.Seed
-		case *genai.OptionsText:
 			i.Seed = v.Seed
 		default:
 			return fmt.Errorf("unsupported options type %T", opts)

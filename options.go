@@ -37,10 +37,6 @@ type Validatable interface {
 // Options is options that can be provided to a Provider interface.
 type Options interface {
 	Validatable
-	// Modalities returns the list of modalities supported by these options.
-	// For single-modality options, it returns a slice with one element.
-	// For multi-modality options, it returns a slice with multiple elements.
-	Modalities() Modalities
 }
 
 // Modality is one of the supported modalities.
@@ -284,10 +280,6 @@ func (o *OptionsAudio) Validate() error {
 	return nil
 }
 
-func (o *OptionsAudio) Modalities() Modalities {
-	return Modalities{ModalityAudio}
-}
-
 // OptionsImage is a list of frequent options supported by most ProviderDoc.
 // Each provider is free to support more options through a specialized struct.
 type OptionsImage struct {
@@ -314,18 +306,10 @@ func (o *OptionsImage) Validate() error {
 	return nil
 }
 
-func (o *OptionsImage) Modalities() Modalities {
-	return Modalities{ModalityImage}
-}
-
 type OptionsVideo struct{}
 
 func (o *OptionsVideo) Validate() error {
 	return nil
-}
-
-func (o *OptionsVideo) Modalities() Modalities {
-	return Modalities{ModalityVideo}
 }
 
 // Private

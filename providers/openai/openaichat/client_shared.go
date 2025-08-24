@@ -36,11 +36,6 @@ func (o *OptionsText) Validate() error {
 	return nil
 }
 
-func (o *OptionsText) Modalities() genai.Modalities {
-	// TODO: Remove.
-	return nil
-}
-
 // OptionsImage defines OpenAI specific options.
 type OptionsImage struct {
 	// Background is only supported on gpt-image-1.
@@ -48,11 +43,6 @@ type OptionsImage struct {
 }
 
 func (o *OptionsImage) Validate() error {
-	return nil
-}
-
-func (o *OptionsImage) Modalities() genai.Modalities {
-	// TODO: Remove.
 	return nil
 }
 

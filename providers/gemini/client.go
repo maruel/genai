@@ -328,11 +328,6 @@ func (o *Options) Validate() error {
 	return nil
 }
 
-func (o *Options) Modalities() genai.Modalities {
-	// TODO: Remove.
-	return o.ResponseModalities
-}
-
 // Blob is documented at https://ai.google.dev/api/caching?hl=en#Blob
 type Blob struct {
 	MimeType string `json:"mimeType,omitzero"`
@@ -1147,9 +1142,6 @@ func (i *ImageRequest) Init(msg genai.Message, model string, opts ...genai.Optio
 	// i.Parameters.EnhancePrompt = true
 	var uce error
 	for _, opt := range opts {
-		if !isImage(opt) {
-			return errors.New("can only generate images")
-		}
 		if err := opt.Validate(); err != nil {
 			return err
 		}
@@ -2018,10 +2010,6 @@ func (c *Client) isImage() bool {
 
 func (c *Client) isVideo() bool {
 	return slices.Contains(c.Impl.OutputModalities, genai.ModalityVideo)
-}
-
-func isImage(opts genai.Options) bool {
-	return opts != nil && slices.Contains(opts.Modalities(), genai.ModalityImage)
 }
 
 // TODO: To implement ProviderGenAsync, we need to use the Vertex API, not the API key based Gemini one.

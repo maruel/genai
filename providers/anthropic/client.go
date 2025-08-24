@@ -195,11 +195,11 @@ type ChatRequest struct {
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
-func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string) error {
-	return c.initImpl(msgs, opts, model, true)
+func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Options) error {
+	return c.initImpl(msgs, model, true, opts...)
 }
 
-func (c *ChatRequest) initImpl(msgs genai.Messages, opts genai.Options, model string, cache bool) error {
+func (c *ChatRequest) initImpl(msgs genai.Messages, model string, cache bool, opts ...genai.Options) error {
 	c.Model = model
 	if err := msgs.Validate(); err != nil {
 		return err
@@ -211,11 +211,11 @@ func (c *ChatRequest) initImpl(msgs genai.Messages, opts genai.Options, model st
 	c.Thinking.Type = "disabled"
 	// Anthropic requires a value! And their models listing API doesn't provide the model's acceptable values! This is quite annoying.
 	c.MaxTokens = modelsMaxTokens(model)
-	if opts != nil {
-		if err := opts.Validate(); err != nil {
+	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
 			return err
 		}
-		switch v := opts.(type) {
+		switch v := opt.(type) {
 		case *OptionsText:
 			unsupported, errs = c.initOptions(&v.OptionsText)
 			if cache {
@@ -1148,13 +1148,13 @@ type BatchRequestItem struct {
 	Params   ChatRequest `json:"params"`
 }
 
-func (b *BatchRequestItem) Init(msgs genai.Messages, opts genai.Options, model string) error {
+func (b *BatchRequestItem) Init(msgs genai.Messages, model string, opts ...genai.Options) error {
 	// TODO: We need to make this unique, the field is required. The problem is that this breaks HTTP recording.
 	// var bytes [12]byte
 	// _, _ = rand.Read(bytes[:])
 	// b.CustomID = base64.RawURLEncoding.EncodeToString(bytes[:])
 	b.CustomID = "TODO"
-	return b.Params.initImpl(msgs, opts, model, false)
+	return b.Params.initImpl(msgs, model, false, opts...)
 }
 
 // BatchResponse is documented at https://docs.anthropic.com/en/api/creating-message-batches
@@ -1416,7 +1416,11 @@ func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.O
 	// of doing that, as it increases the risks of partial failure. So for now do not expose the functionality
 	// of creating multiple requests at once unless we realize there's a specific use case.
 	b := BatchRequest{Requests: []BatchRequestItem{{}}}
-	if err := b.Requests[0].Init(msgs, opts, c.impl.Model); err != nil {
+	var o []genai.Options
+	if opts != nil {
+		o = append(o, opts)
+	}
+	if err := b.Requests[0].Init(msgs, c.impl.Model, o...); err != nil {
 		return "", err
 	}
 	resp, err := c.GenAsyncRaw(ctx, b)

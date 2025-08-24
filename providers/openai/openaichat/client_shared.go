@@ -81,7 +81,7 @@ type ImageRequest struct {
 	User              string     `json:"user,omitzero"`               // End-user to help monitor and detect abuse
 }
 
-func (i *ImageRequest) Init(msg genai.Message, opts genai.Options, model string) error {
+func (i *ImageRequest) Init(msg genai.Message, model string, opts ...genai.Options) error {
 	if err := msg.Validate(); err != nil {
 		return err
 	}
@@ -117,11 +117,11 @@ func (i *ImageRequest) Init(msg genai.Message, opts genai.Options, model string)
 	default:
 		// Silently pass.
 	}
-	if opts != nil {
-		if err := opts.Validate(); err != nil {
+	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
 			return err
 		}
-		switch v := opts.(type) {
+		switch v := opt.(type) {
 		case *OptionsImage:
 			if v.Height != 0 && v.Width != 0 {
 				i.Size = fmt.Sprintf("%dx%d", v.Width, v.Height)
@@ -397,7 +397,11 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 		return res, err
 	}
 	req := ImageRequest{}
-	if err := req.Init(msg, opts, c.impl.Model); err != nil {
+	var o []genai.Options
+	if opts != nil {
+		o = append(o, opts)
+	}
+	if err := req.Init(msg, c.impl.Model, o...); err != nil {
 		return res, err
 	}
 	url := "https://api.openai.com/v1/images/generations"

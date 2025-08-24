@@ -161,7 +161,7 @@ type ChatRequestOptions struct {
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
-func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string) error {
+func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Options) error {
 	c.Model = model
 	if err := msgs.Validate(); err != nil {
 		return err
@@ -169,14 +169,14 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 	var errs []error
 	var unsupported []string
 	sp := ""
-	if opts != nil {
-		if err := opts.Validate(); err != nil {
+	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
 			return err
 		}
-		if mod := opts.Modalities(); !slices.Contains(mod, genai.ModalityText) {
+		if mod := opt.Modalities(); !slices.Contains(mod, genai.ModalityText) {
 			return fmt.Errorf("modality %s not supported, supported: %s", mod, genai.ModalityText)
 		}
-		switch v := opts.(type) {
+		switch v := opt.(type) {
 		case *genai.OptionsText:
 			c.Options.NumPredict = v.MaxTokens
 			c.Options.Temperature = v.Temperature
@@ -688,7 +688,11 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Op
 	result := genai.Result{}
 	in := ChatRequest{}
 	var continuableErr error
-	if err := in.Init(msgs, opts, c.impl.Model); err != nil {
+	var o []genai.Options
+	if opts != nil {
+		o = append(o, opts)
+	}
+	if err := in.Init(msgs, c.impl.Model, o...); err != nil {
 		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 			continuableErr = uce
 		} else {
@@ -734,7 +738,11 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan
 	result := genai.Result{}
 	in := ChatRequest{}
 	var continuableErr error
-	if err := in.Init(msgs, opts, c.impl.Model); err != nil {
+	var o []genai.Options
+	if opts != nil {
+		o = append(o, opts)
+	}
+	if err := in.Init(msgs, c.impl.Model, o...); err != nil {
 		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 			continuableErr = uce
 		} else {

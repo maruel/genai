@@ -103,7 +103,7 @@ type ChatRequest struct {
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
-func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string) error {
+func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Options) error {
 	c.Model = model
 	if err := msgs.Validate(); err != nil {
 		return err
@@ -111,12 +111,12 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 	var errs []error
 	var unsupported []string
 	sp := ""
-	if opts != nil {
-		if err := opts.Validate(); err != nil {
+	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
 			return err
 		}
 		// https://api-docs.deepseek.com/guides/reasoning_model Soon "reasoning_effort"
-		switch v := opts.(type) {
+		switch v := opt.(type) {
 		case *genai.OptionsText:
 			c.MaxToks = v.MaxTokens
 			c.Temperature = v.Temperature

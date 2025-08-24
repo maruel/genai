@@ -125,7 +125,7 @@ type ImageRequest struct {
 	InputImage []byte `json:"input_image,omitzero"`
 }
 
-func (i *ImageRequest) Init(msgs genai.Messages, opts genai.Options) error {
+func (i *ImageRequest) Init(msgs genai.Messages, model string, opts ...genai.Options) error {
 	if err := msgs.Validate(); err != nil {
 		return err
 	}
@@ -158,14 +158,14 @@ func (i *ImageRequest) Init(msgs genai.Messages, opts genai.Options) error {
 		}
 		return errors.New("unknown Request type")
 	}
-	if opts != nil {
-		if err := opts.Validate(); err != nil {
+	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
 			return err
 		}
-		if mod := opts.Modalities(); !slices.Contains(mod, genai.ModalityImage) {
+		if mod := opt.Modalities(); !slices.Contains(mod, genai.ModalityImage) {
 			return fmt.Errorf("modality %s not supported, supported: %s", mod, genai.ModalityImage)
 		}
-		switch v := opts.(type) {
+		switch v := opt.(type) {
 		case *genai.OptionsImage:
 			i.Height = int64(v.Height)
 			i.Width = int64(v.Width)
@@ -418,7 +418,11 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 // It requests the providers' asynchronous API and returns the job ID.
 func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Job, error) {
 	req := ImageRequest{}
-	if err := req.Init(msgs, opts); err != nil {
+	var o []genai.Options
+	if opts != nil {
+		o = append(o, opts)
+	}
+	if err := req.Init(msgs, c.impl.Model, o...); err != nil {
 		return "", err
 	}
 	reqresp, err := c.GenAsyncRaw(ctx, req)

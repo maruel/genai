@@ -485,7 +485,7 @@ type ChatRequest struct {
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
-func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string) error {
+func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Options) error {
 	// Validate messages
 	if err := msgs.Validate(); err != nil {
 		return err
@@ -509,8 +509,8 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 	// Default to text generation.
 	c.GenerationConfig.ResponseModalities = []Modality{ModalityText}
 
-	if opts != nil {
-		switch v := opts.(type) {
+	for _, opt := range opts {
+		switch v := opt.(type) {
 		case *Options:
 			if v.ThinkingBudget > 0 {
 				// https://ai.google.dev/gemini-api/docs/thinking
@@ -1137,10 +1137,7 @@ type ImageRequest struct {
 	Parameters ImageParameters `json:"parameters"`
 }
 
-func (i *ImageRequest) Init(msg genai.Message, opts genai.Options, model string) error {
-	if !isImage(opts) {
-		return errors.New("can only generate images")
-	}
+func (i *ImageRequest) Init(msg genai.Message, model string, opts ...genai.Options) error {
 	if err := msg.Validate(); err != nil {
 		return err
 	}
@@ -1155,11 +1152,14 @@ func (i *ImageRequest) Init(msg genai.Message, opts genai.Options, model string)
 	// Seems like it's not supported?
 	// i.Parameters.EnhancePrompt = true
 	var uce error
-	if opts != nil {
-		if err := opts.Validate(); err != nil {
+	for _, opt := range opts {
+		if !isImage(opt) {
+			return errors.New("can only generate images")
+		}
+		if err := opt.Validate(); err != nil {
 			return err
 		}
-		switch v := opts.(type) {
+		switch v := opt.(type) {
 		case *Options:
 			if v.OptionsImage.Seed != 0 {
 				// Get a 400 error: i.Parameters.Seed = v.OptionsImage.Seed
@@ -1290,17 +1290,17 @@ type CachedContent struct {
 	UsageMetadata CachingUsageMetadata `json:"usageMetadata,omitzero"`
 }
 
-func (c *CachedContent) Init(msgs genai.Messages, opts genai.Options, model, name, displayName string, ttl time.Duration) error {
+func (c *CachedContent) Init(msgs genai.Messages, model, name, displayName string, ttl time.Duration, opts ...genai.Options) error {
 	if err := msgs.Validate(); err != nil {
 		return err
 	}
-	if opts != nil {
-		if err := opts.Validate(); err != nil {
+	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
 			return err
 		}
-	}
-	if o, ok := opts.(*genai.OptionsText); ok && o.SystemPrompt != "" {
-		c.SystemInstruction.Parts = []Part{{Text: o.SystemPrompt}}
+		if o, ok := opt.(*genai.OptionsText); ok && o.SystemPrompt != "" {
+			c.SystemInstruction.Parts = []Part{{Text: o.SystemPrompt}}
+		}
 	}
 	// For large files, use https://ai.google.dev/gemini-api/docs/caching?hl=en&lang=rest#pdfs_1
 	c.Contents = make([]Content, len(msgs))
@@ -1789,7 +1789,11 @@ func (c *Client) CacheAddRequest(ctx context.Context, msgs genai.Messages, opts 
 		return "", err
 	}
 	in := CachedContent{}
-	if err := in.Init(msgs, opts, c.Impl.Model, name, displayName, ttl); err != nil {
+	var o []genai.Options
+	if opts != nil {
+		o = append(o, opts)
+	}
+	if err := in.Init(msgs, c.Impl.Model, name, displayName, ttl, o...); err != nil {
 		return "", err
 	}
 	out := CachedContent{}
@@ -1891,7 +1895,11 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 		},
 	}
 	var continuableErr error
-	if err := req.Init(msg, opts, c.Impl.Model); err != nil {
+	var o []genai.Options
+	if opts != nil {
+		o = append(o, opts)
+	}
+	if err := req.Init(msg, c.Impl.Model, o...); err != nil {
 		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 			continuableErr = uce
 		} else {
@@ -1954,7 +1962,11 @@ func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts genai.O
 	}
 	req := ImageRequest{}
 	var continuableErr error
-	if err := req.Init(msgs[0], opts, c.Impl.Model); err != nil {
+	var o []genai.Options
+	if opts != nil {
+		o = append(o, opts)
+	}
+	if err := req.Init(msgs[0], c.Impl.Model, o...); err != nil {
 		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 			continuableErr = uce
 		} else {

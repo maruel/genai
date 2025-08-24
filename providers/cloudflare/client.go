@@ -120,18 +120,18 @@ type ChatRequest struct {
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
-func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string) error {
+func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Options) error {
 	if err := msgs.Validate(); err != nil {
 		return err
 	}
 	var errs []error
 	var unsupported []string
 	sp := ""
-	if opts != nil {
-		if err := opts.Validate(); err != nil {
+	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
 			return err
 		}
-		switch v := opts.(type) {
+		switch v := opt.(type) {
 		case *genai.OptionsText:
 			c.MaxTokens = v.MaxTokens
 			c.Temperature = v.Temperature

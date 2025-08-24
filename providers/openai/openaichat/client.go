@@ -312,7 +312,7 @@ type ChatRequest struct {
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
-func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string) error {
+func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Options) error {
 	c.Model = model
 	var errs []error
 	var unsupported []string
@@ -320,11 +320,11 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 		return err
 	}
 	sp := ""
-	if opts != nil {
-		if err := opts.Validate(); err != nil {
+	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
 			return err
 		}
-		switch v := opts.(type) {
+		switch v := opt.(type) {
 		case *OptionsText:
 			c.ReasoningEffort = v.ReasoningEffort
 			c.ServiceTier = v.ServiceTier
@@ -1278,7 +1278,11 @@ func (c *Client) CacheAddRequest(ctx context.Context, msgs genai.Messages, opts 
 	}
 	// Upload the messages and options as a file.
 	b := BatchRequestInput{CustomID: name, Method: "POST", URL: "/v1/chat/completions"}
-	if err := b.Body.Init(msgs, opts, c.impl.Model); err != nil {
+	var o []genai.Options
+	if opts != nil {
+		o = append(o, opts)
+	}
+	if err := b.Body.Init(msgs, c.impl.Model, o...); err != nil {
 		return "", err
 	}
 	raw, err := json.Marshal(b)

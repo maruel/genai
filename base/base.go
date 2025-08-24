@@ -286,7 +286,7 @@ type Obj interface{ any }
 // InitializableRequest is an interface for request types that can be initialized.
 type InitializableRequest interface {
 	// Init initializes the request with messages, options, and model.
-	Init(msgs genai.Messages, opts genai.Options, model string) error
+	Init(msgs genai.Messages, model string, opts ...genai.Options) error
 	// SetStream set the stream mode.
 	SetStream(bool)
 }
@@ -333,7 +333,11 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 	c.lateInit()
 	in := reflect.New(c.chatRequest).Interface().(PGenRequest)
 	var continuableErr error
-	if err := in.Init(msgs, opts, c.Model); err != nil {
+	var o []genai.Options
+	if opts != nil {
+		o = append(o, opts)
+	}
+	if err := in.Init(msgs, c.Model, o...); err != nil {
 		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 			continuableErr = uce
 		} else {
@@ -372,7 +376,11 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 	c.lateInit()
 	in := reflect.New(c.chatRequest).Interface().(PGenRequest)
 	var continuableErr error
-	if err := in.Init(msgs, opts, c.Model); err != nil {
+	var o []genai.Options
+	if opts != nil {
+		o = append(o, opts)
+	}
+	if err := in.Init(msgs, c.Model, o...); err != nil {
 		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 			continuableErr = uce
 		} else {

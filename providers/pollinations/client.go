@@ -217,7 +217,7 @@ type ChatRequest struct {
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
-func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string) error {
+func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Options) error {
 	c.Model = model
 	c.Private = true // Not sure why we'd want to broadcast?
 	if err := msgs.Validate(); err != nil {
@@ -226,8 +226,8 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 	var errs []error
 	var unsupported []string
 	sp := ""
-	if opts != nil {
-		switch v := opts.(type) {
+	for _, opt := range opts {
+		switch v := opt.(type) {
 		case *genai.OptionsText:
 			unsupported, errs = c.initOptions(v, model)
 			sp = v.SystemPrompt

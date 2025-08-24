@@ -155,7 +155,7 @@ type ChatRequest struct {
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
-func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string) error {
+func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Options) error {
 	if err := msgs.Validate(); err != nil {
 		return err
 	}
@@ -163,11 +163,11 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 	var unsupported []string
 	sp := ""
 	c.CachePrompt = true
-	if opts != nil {
-		if err := opts.Validate(); err != nil {
+	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
 			return err
 		}
-		switch v := opts.(type) {
+		switch v := opt.(type) {
 		case *genai.OptionsText:
 			c.NPredict = v.MaxTokens
 			c.Seed = v.Seed
@@ -434,12 +434,15 @@ type Lora struct {
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
-func (c *CompletionRequest) Init(msgs genai.Messages, opts genai.Options, model string) error {
+func (c *CompletionRequest) Init(msgs genai.Messages, model string, opts ...genai.Options) error {
 	var errs []error
 	var unsupported []string
 	c.CachePrompt = true
-	if opts != nil {
-		switch v := opts.(type) {
+	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
+			return err
+		}
+		switch v := opt.(type) {
 		case *genai.OptionsText:
 			c.NPredict = v.MaxTokens
 			c.Seed = v.Seed
@@ -613,10 +616,15 @@ type applyTemplateRequest struct {
 	Messages []Message `json:"messages"`
 }
 
-func (a *applyTemplateRequest) Init(opts genai.Options, msgs genai.Messages) error {
+func (a *applyTemplateRequest) Init(msgs genai.Messages, opts ...genai.Options) error {
 	sp := ""
-	if v, ok := opts.(*genai.OptionsText); ok {
-		sp = v.SystemPrompt
+	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
+			return err
+		}
+		if v, ok := opt.(*genai.OptionsText); ok {
+			sp = v.SystemPrompt
+		}
 	}
 	var errs []error
 	var unsupported []string
@@ -1248,7 +1256,11 @@ func (c *Client) Completions(ctx context.Context, msgs genai.Messages, opts gena
 		}
 	}
 	rpcin := CompletionRequest{CachePrompt: true}
-	if err := rpcin.Init(msgs, opts, ""); err != nil {
+	var o []genai.Options
+	if opts != nil {
+		o = append(o, opts)
+	}
+	if err := rpcin.Init(msgs, "", o...); err != nil {
 		return genai.Result{}, err
 	}
 	if err := c.initPrompt(ctx, &rpcin, opts, msgs); err != nil {
@@ -1290,7 +1302,11 @@ func (c *Client) CompletionsStream(ctx context.Context, msgs genai.Messages, chu
 
 	in := CompletionRequest{}
 	var continuableErr error
-	if err := in.Init(msgs, opts, ""); err != nil {
+	var o []genai.Options
+	if opts != nil {
+		o = append(o, opts)
+	}
+	if err := in.Init(msgs, "", o...); err != nil {
 		// If it's an UnsupportedContinuableError, we can continue
 		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 			// Store the error to return later if no other error occurs
@@ -1429,7 +1445,7 @@ func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, opts gen
 		// Use the server to convert the OpenAI style format into a templated form.
 		in2 := applyTemplateRequest{}
 		var continuableErr error
-		if err := in2.Init(opts, msgs); err != nil {
+		if err := in2.Init(msgs, opts); err != nil {
 			// If it's an UnsupportedContinuableError, we can continue
 			if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 				// Store the error to return later if no other error occurs

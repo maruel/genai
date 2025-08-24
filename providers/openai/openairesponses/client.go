@@ -280,16 +280,16 @@ type Response struct {
 }
 
 // Init implements base.InitializableRequest.
-func (r *Response) Init(msgs genai.Messages, opts genai.Options, model string) error {
+func (r *Response) Init(msgs genai.Messages, model string, opts ...genai.Options) error {
 	var unsupported []string
 	var errs []error
 	r.Model = model
 	r.Reasoning.Summary = "auto"
-	if opts != nil {
-		if err := opts.Validate(); err != nil {
+	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
 			return err
 		}
-		switch v := opts.(type) {
+		switch v := opt.(type) {
 		case *OptionsText:
 			r.Reasoning.Effort = v.ReasoningEffort
 			r.ServiceTier = v.ServiceTier

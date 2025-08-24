@@ -325,7 +325,7 @@ type ChatRequest struct {
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
-func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string) error {
+func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Options) error {
 	c.Model = model
 	// Validate messages
 	if err := msgs.Validate(); err != nil {
@@ -334,11 +334,11 @@ func (c *ChatRequest) Init(msgs genai.Messages, opts genai.Options, model string
 	var errs []error
 	var unsupported []string
 	sp := ""
-	if opts != nil {
-		if err := opts.Validate(); err != nil {
+	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
 			return err
 		}
-		switch v := opts.(type) {
+		switch v := opt.(type) {
 		case *genai.OptionsText:
 			c.MaxTokens = v.MaxTokens
 			c.Temperature = v.Temperature
@@ -921,7 +921,7 @@ type ImageRequest struct {
 	Image          []byte `json:"image_base64,omitzero"`
 }
 
-func (i *ImageRequest) Init(msg genai.Message, opts genai.Options, model string) error {
+func (i *ImageRequest) Init(msg genai.Message, model string, opts ...genai.Options) error {
 	if err := msg.Validate(); err != nil {
 		return err
 	}
@@ -932,11 +932,11 @@ func (i *ImageRequest) Init(msg genai.Message, opts genai.Options, model string)
 	}
 	i.Prompt = msg.String()
 	i.Model = model
-	if opts != nil {
-		if err := opts.Validate(); err != nil {
+	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
 			return err
 		}
-		switch v := opts.(type) {
+		switch v := opt.(type) {
 		case *genai.OptionsImage:
 			i.Height = int64(v.Height)
 			i.Width = int64(v.Width)
@@ -1286,7 +1286,11 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 			return genai.Result{}, err
 		}
 		req := ImageRequest{}
-		if err := req.Init(msg, opts, c.impl.Model); err != nil {
+		var o []genai.Options
+		if opts != nil {
+			o = append(o, opts)
+		}
+		if err := req.Init(msg, c.impl.Model, o...); err != nil {
 			return res, err
 		}
 		resp := ImageResponse{}

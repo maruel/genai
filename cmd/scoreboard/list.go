@@ -10,7 +10,6 @@ import (
 	"maps"
 	"os"
 	"slices"
-	"sort"
 	"strings"
 
 	"github.com/maruel/genai"
@@ -20,12 +19,7 @@ import (
 
 func printList(ctx context.Context) error {
 	all := maps.Clone(providers.All)
-	names := make([]string, 0, len(all))
-	for name := range all {
-		names = append(names, name)
-	}
-	sort.Strings(names)
-	for _, name := range names {
+	for _, name := range slices.Sorted(maps.Keys(all)) {
 		fmt.Printf("- %s\n", name)
 		c, err := all[name](ctx, &genai.ProviderOptions{Model: genai.ModelNone}, nil)
 		// The function can return an error and still return a client when no API key was found. It's okay here

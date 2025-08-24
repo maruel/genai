@@ -10,7 +10,9 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"maps"
 	"os"
+	"slices"
 	"sort"
 	"strings"
 
@@ -130,12 +132,7 @@ func LoadDefaultProvider(ctx context.Context) (genai.Provider, error) {
 	if len(avail) == 0 {
 		return nil, errors.New("no provider available; please set environment variables or specify a provider and API keys or remote URL")
 	}
-	names := make([]string, 0, len(avail))
-	for name := range avail {
-		names = append(names, name)
-	}
-	sort.Strings(names)
-	return nil, fmt.Errorf("multiple providers available, select one of: %s", strings.Join(names, ", "))
+	return nil, fmt.Errorf("multiple providers available, select one of: %s", strings.Join(slices.Sorted(maps.Keys(avail)), ", "))
 }
 
 func Example_available() {

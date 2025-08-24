@@ -10,6 +10,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"maps"
 	"os"
 	"os/signal"
 	"reflect"
@@ -78,20 +79,11 @@ func printStructDense(v any, indent string) string {
 	return strings.Join(fields, "\n")
 }
 
-func getProvidersModel(ctx context.Context) []string {
-	var names []string
-	for name := range providers.Available(ctx) {
-		names = append(names, name)
-	}
-	sort.Strings(names)
-	return names
-}
-
 func mainImpl() error {
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 	defer stop()
 
-	names := getProvidersModel(ctx)
+	names := slices.Sorted(maps.Keys(providers.Available(ctx)))
 	provider := flag.String("provider", "", "backend to use: "+strings.Join(names, ", "))
 	all := flag.Bool("all", false, "include all details")
 	strict := flag.Bool("strict", false, "assert no unknown fields in the APIs are found")

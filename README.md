@@ -185,7 +185,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"sort"
+	"slices"
 	"strings"
 
 	"github.com/maruel/genai"
@@ -194,12 +194,8 @@ import (
 )
 
 func main() {
-	var names []string
-	for name := range providers.Available() {
-		names = append(names, name)
-	}
-	sort.Strings(names)
-	s := strings.Join(names, ", ")
+	ctx := context.Background()
+	s := strings.Join(slices.Sorted(maps.Keys(providers.Available(ctx))), ", ")
 	if s == "" {
 		s = "set environment variables, e.g. `OPENAI_API_KEY`"
 	}
@@ -212,7 +208,6 @@ func main() {
 	if query == "" {
 		log.Fatal("provide a query")
 	}
-    ctx := context.Background()
 	p, err := LoadProvider(*provider, &genai.ProviderOptions{Model: *model, Remote: *remote})
 	if err != nil {
 		log.Fatal(err)

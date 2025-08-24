@@ -14,6 +14,7 @@ import (
 	"io"
 	"io/fs"
 	"log/slog"
+	"maps"
 	"mime"
 	"net/http"
 	"net/url"
@@ -21,7 +22,7 @@ import (
 	"path/filepath"
 	"reflect"
 	"regexp"
-	"sort"
+	"slices"
 	"strings"
 	"sync"
 	"time"
@@ -77,12 +78,7 @@ func (r *Records) Close() error {
 		delete(r.preexisting, f)
 	}
 	if len(r.preexisting) != 0 {
-		names := make([]string, 0, len(r.preexisting))
-		for f := range r.preexisting {
-			names = append(names, f)
-		}
-		sort.Strings(names)
-		return &orphanedError{root: r.root, name: names}
+		return &orphanedError{root: r.root, name: slices.Sorted(maps.Keys(r.preexisting))}
 	}
 	return nil
 }

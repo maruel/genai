@@ -28,7 +28,6 @@ import (
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/bb"
 	"github.com/maruel/genai/scoreboard"
-	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 	"golang.org/x/sync/errgroup"
 )
@@ -610,9 +609,9 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 	}
 	c := &Client{
 		impl: base.ProviderBase[*ErrorResponse]{
-			ClientJSON: httpjson.Client{
-				Lenient: internal.BeLenient,
-				Client:  &http.Client{Transport: &roundtrippers.RequestID{Transport: t}},
+			Lenient: internal.BeLenient,
+			Client: http.Client{
+				Transport: &roundtrippers.RequestID{Transport: t},
 			},
 		},
 		baseURL: baseURL,
@@ -769,11 +768,11 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest, out chan<- C
 	}
 	in.Stream = true
 	// Try first, if it immediately errors out requesting to pull, pull then try again.
-	resp, err := c.impl.ClientJSON.Request(ctx, "POST", c.chatURL, nil, in)
+	resp, err := c.impl.JSONRequest(ctx, "POST", c.chatURL, in)
 	if err != nil {
 		return fmt.Errorf("failed to get server response: %w", err)
 	}
-	err = processJSONStream(resp.Body, out, c.impl.ClientJSON.Lenient)
+	err = processJSONStream(resp.Body, out, c.impl.Lenient)
 	_ = resp.Body.Close()
 	if err == nil || !strings.Contains(err.Error(), "not found, try pulling it first") {
 		return err
@@ -782,14 +781,14 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest, out chan<- C
 	if err = c.PullModel(ctx, c.impl.Model); err != nil {
 		return err
 	}
-	if resp, err = c.impl.ClientJSON.Request(ctx, "POST", c.chatURL, nil, in); err != nil {
+	if resp, err = c.impl.JSONRequest(ctx, "POST", c.chatURL, in); err != nil {
 		return fmt.Errorf("failed to get server response: %w", err)
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
 		return c.impl.DecodeError(c.chatURL, resp)
 	}
-	return processJSONStream(resp.Body, out, c.impl.ClientJSON.Lenient)
+	return processJSONStream(resp.Body, out, c.impl.Lenient)
 }
 
 // ListModels implements genai.Provider.

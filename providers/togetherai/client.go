@@ -30,7 +30,6 @@ import (
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/bb"
 	"github.com/maruel/genai/scoreboard"
-	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 )
 
@@ -1060,13 +1059,11 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 			ProcessHeaders:       processHeaders,
 			ProviderBase: base.ProviderBase[*ErrorResponse]{
 				APIKeyURL: apiKeyURL,
-				ClientJSON: httpjson.Client{
-					Lenient: internal.BeLenient,
-					Client: &http.Client{
-						Transport: &roundtrippers.Header{
-							Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
-							Transport: &roundtrippers.RequestID{Transport: t},
-						},
+				Lenient:   internal.BeLenient,
+				Client: http.Client{
+					Transport: &roundtrippers.Header{
+						Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
+						Transport: &roundtrippers.RequestID{Transport: t},
 					},
 				},
 			},

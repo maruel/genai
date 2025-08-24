@@ -35,7 +35,6 @@ import (
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/sse"
 	"github.com/maruel/genai/scoreboard"
-	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 	"golang.org/x/sync/errgroup"
 )
@@ -1129,11 +1128,9 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 			ProcessStreamPackets: processChatStreamPackets,
 			ProviderBase: base.ProviderBase[*ErrorResponse]{
 				ModelOptional: true,
-				ClientJSON: httpjson.Client{
-					Lenient: internal.BeLenient,
-					Client: &http.Client{
-						Transport: &roundtrippers.RequestID{Transport: t},
-					},
+				Lenient:       internal.BeLenient,
+				Client: http.Client{
+					Transport: &roundtrippers.RequestID{Transport: t},
 				},
 			},
 		},
@@ -1325,7 +1322,7 @@ func (c *Client) CompletionsStream(ctx context.Context, msgs genai.Messages, chu
 
 func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest, out chan<- CompletionStreamChunkResponse) error {
 	in.Stream = true
-	resp, err := c.impl.ClientJSON.Request(ctx, "POST", c.completionsURL, nil, in)
+	resp, err := c.impl.JSONRequest(ctx, "POST", c.completionsURL, in)
 	if err != nil {
 		return fmt.Errorf("failed to get llama server response: %w", err)
 	}
@@ -1333,7 +1330,7 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 	if resp.StatusCode != 200 {
 		return c.impl.DecodeError(c.completionsURL, resp)
 	}
-	return sse.Process(resp.Body, out, nil, c.impl.ClientJSON.Lenient)
+	return sse.Process(resp.Body, out, nil, c.impl.Lenient)
 }
 
 func (c *Client) GetHealth(ctx context.Context) (string, error) {
@@ -1364,7 +1361,7 @@ func (c *Client) GetMetrics(ctx context.Context, m *Metrics) error {
 		return fmt.Errorf("failed to create HTTP request: %w", err)
 	}
 	// This is not a JSON response.
-	resp, err := c.impl.ClientJSON.Client.Do(req)
+	resp, err := c.impl.Client.Do(req)
 	if err != nil {
 		return fmt.Errorf("failed to get metrics response: %w", err)
 	}

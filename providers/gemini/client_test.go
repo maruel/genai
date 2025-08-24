@@ -158,7 +158,7 @@ func TestClient_GenAsync(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	resp, err := c.Impl.ClientJSON.Client.Do(req)
+	resp, err := c.Impl.Client.Do(req)
 	if err != nil {
 		t.Fatal(err)
 	}

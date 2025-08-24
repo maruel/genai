@@ -87,8 +87,16 @@ func (*NotImplemented) ListModels(context.Context) ([]genai.Model, error) {
 //
 // It contains the shared HTTP client functionality used across all API clients.
 type ProviderBase[PErrorResponse ErrAPI] struct {
-	// ClientJSON is exported for testing replay purposes.
-	ClientJSON httpjson.Client
+	// Client is exported for testing replay purposes.
+	Client http.Client
+	// Lenient allows unknown fields in the response.
+	//
+	// This inhibits from calling DisallowUnknownFields() on the JSON decoder, which will generally return a
+	// *UnknownFieldError.
+	//
+	// Use this in production so that your client doesn't break when the server
+	// add new fields.
+	Lenient bool
 	// APIKeyURL is the URL to present to the user upon authentication error.
 	APIKeyURL string
 	// Model is the default model used for chat requests
@@ -101,6 +109,32 @@ type ProviderBase[PErrorResponse ErrAPI] struct {
 	mu            sync.Mutex
 	errorResponse reflect.Type
 	lastResp      http.Header
+}
+
+// JSONRequest simplifies doing an HTTP PATCH/DELETE/PUT in JSON.
+//
+// In is optional.
+//
+// It initiates the requests and returns the response back for further processing.
+// Buffers post data in memory.
+func (c *ProviderBase[PErrorResponse]) JSONRequest(ctx context.Context, method, url string, in any) (*http.Response, error) {
+	var b io.Reader
+	if in != nil {
+		buf := &bytes.Buffer{}
+		e := json.NewEncoder(buf)
+		// OMG this took me a while to figure this out. This affects LLM token encoding.
+		e.SetEscapeHTML(false)
+		if err := e.Encode(in); err != nil {
+			return nil, fmt.Errorf("internal error: %w", err)
+		}
+		b = buf
+	}
+	req, err := http.NewRequestWithContext(ctx, method, url, b)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("Content-Type", "application/json; charset=utf-8")
+	return c.Client.Do(req)
 }
 
 func (c *ProviderBase[PErrorResponse]) Validate() error {
@@ -123,7 +157,7 @@ func (c *ProviderBase[PErrorResponse]) LastResponseHeaders() http.Header {
 // All API clients should use this method for their HTTP communication needs.
 func (c *ProviderBase[PErrorResponse]) DoRequest(ctx context.Context, method, url string, in, out any) error {
 	c.lateInit()
-	resp, err := c.ClientJSON.Request(ctx, method, url, nil, in)
+	resp, err := c.JSONRequest(ctx, method, url, in)
 	if err != nil {
 		return err
 	}
@@ -148,7 +182,7 @@ func (c *ProviderBase[PErrorResponse]) DecodeResponse(resp *http.Response, url s
 	r := bytes.NewReader(b)
 	var r2 io.ReadSeeker
 	d := json.NewDecoder(r)
-	if !c.ClientJSON.Lenient {
+	if !c.Lenient {
 		d.DisallowUnknownFields()
 		r2 = r
 	}
@@ -165,7 +199,7 @@ func (c *ProviderBase[PErrorResponse]) DecodeResponse(resp *http.Response, url s
 		return err
 	}
 	d = json.NewDecoder(r)
-	if !c.ClientJSON.Lenient {
+	if !c.Lenient {
 		d.DisallowUnknownFields()
 		r2 = r
 	}
@@ -209,7 +243,7 @@ func (c *ProviderBase[PErrorResponse]) DecodeError(url string, resp *http.Respon
 	r := bytes.NewReader(b)
 	d := json.NewDecoder(r)
 	var r2 io.ReadSeeker
-	if !c.ClientJSON.Lenient {
+	if !c.Lenient {
 		d.DisallowUnknownFields()
 		r2 = r
 	}
@@ -399,7 +433,7 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 	if url == "" {
 		url = c.GenSyncURL
 	}
-	resp, err := c.ClientJSON.Request(ctx, "POST", url, nil, in)
+	resp, err := c.JSONRequest(ctx, "POST", url, in)
 	if err != nil {
 		return fmt.Errorf("failed to get server response: %w", err)
 	}
@@ -411,7 +445,7 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 	c.lastResp = resp.Header
 	c.mu.Unlock()
 	er := reflect.New(c.errorResponse).Interface().(PErrorResponse)
-	return sse.Process(resp.Body, out, er, c.ClientJSON.Lenient)
+	return sse.Process(resp.Body, out, er, c.Lenient)
 }
 
 func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) lateInit() {

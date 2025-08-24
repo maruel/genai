@@ -1335,13 +1335,11 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 			ProcessHeaders:       processHeaders,
 			ProviderBase: base.ProviderBase[*ErrorResponse]{
 				APIKeyURL: apiKeyURL,
-				ClientJSON: httpjson.Client{
-					Lenient: internal.BeLenient,
-					Client: &http.Client{
-						Transport: &roundtrippers.Header{
-							Header:    http.Header{"x-api-key": {apiKey}, "anthropic-version": {"2023-06-01"}},
-							Transport: &roundtrippers.RequestID{Transport: t},
-						},
+				Lenient:   internal.BeLenient,
+				Client: http.Client{
+					Transport: &roundtrippers.Header{
+						Header:    http.Header{"x-api-key": {apiKey}, "anthropic-version": {"2023-06-01"}},
+						Transport: &roundtrippers.RequestID{Transport: t},
 					},
 				},
 			},

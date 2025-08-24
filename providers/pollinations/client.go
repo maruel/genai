@@ -31,7 +31,6 @@ import (
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/bb"
 	"github.com/maruel/genai/scoreboard"
-	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 )
 
@@ -1016,13 +1015,11 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 			ProcessStreamPackets: processStreamPackets,
 			LieToolCalls:         true,
 			ProviderBase: base.ProviderBase[*ErrorResponse]{
-				ClientJSON: httpjson.Client{
-					Lenient: internal.BeLenient,
-					Client: &http.Client{
-						Transport: &roundtrippers.Header{
-							Header:    h,
-							Transport: &roundtrippers.RequestID{Transport: t},
-						},
+				Lenient: internal.BeLenient,
+				Client: http.Client{
+					Transport: &roundtrippers.Header{
+						Header:    h,
+						Transport: &roundtrippers.RequestID{Transport: t},
 					},
 				},
 			},
@@ -1254,7 +1251,7 @@ func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Optio
 	if err != nil {
 		return res, err
 	}
-	resp, err := c.impl.ClientJSON.Client.Do(req)
+	resp, err := c.impl.Client.Do(req)
 	if err != nil {
 		return res, err
 	}

@@ -32,7 +32,6 @@ import (
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/bb"
 	"github.com/maruel/genai/scoreboard"
-	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 )
 
@@ -1452,7 +1451,7 @@ type ErrorResponseError struct {
 
 // Client implements genai.Provider.
 type Client struct {
-	// Impl is accessible so its ClientJSON.Client can be accessed when fetching video results from Veo 3 with
+	// Impl is accessible so its Client field can be accessed when fetching video results from Veo 3 with
 	// the right HTTP authentication headers.
 	Impl base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
@@ -1529,13 +1528,11 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 			LieToolCalls:         true,
 			ProviderBase: base.ProviderBase[*ErrorResponse]{
 				APIKeyURL: apiKeyURL,
-				ClientJSON: httpjson.Client{
-					Lenient: internal.BeLenient,
-					Client: &http.Client{
-						Transport: &roundtrippers.Header{
-							Header:    http.Header{"x-goog-api-key": {apiKey}},
-							Transport: &roundtrippers.RequestID{Transport: t},
-						},
+				Lenient:   internal.BeLenient,
+				Client: http.Client{
+					Transport: &roundtrippers.Header{
+						Header:    http.Header{"x-goog-api-key": {apiKey}},
+						Transport: &roundtrippers.RequestID{Transport: t},
 					},
 				},
 			},

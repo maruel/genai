@@ -31,7 +31,6 @@ import (
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/scoreboard"
-	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
 )
 
@@ -1106,13 +1105,11 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 			ProviderBase: base.ProviderBase[*ErrorResponse]{
 				// OpenAI error message prints the api key URL already.
 				APIKeyURL: "",
-				ClientJSON: httpjson.Client{
-					Lenient: internal.BeLenient,
-					Client: &http.Client{
-						Transport: &roundtrippers.Header{
-							Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
-							Transport: &roundtrippers.RequestID{Transport: t},
-						},
+				Lenient:   internal.BeLenient,
+				Client: http.Client{
+					Transport: &roundtrippers.Header{
+						Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
+						Transport: &roundtrippers.RequestID{Transport: t},
 					},
 				},
 			},
@@ -1234,7 +1231,7 @@ func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, er
 			out := BatchRequestOutput{}
 			d := json.NewDecoder(f)
 			d.UseNumber()
-			if !c.impl.ClientJSON.Lenient {
+			if !c.impl.Lenient {
 				d.DisallowUnknownFields()
 			}
 			if err = d.Decode(&out); err != nil {
@@ -1333,7 +1330,7 @@ func (c *Client) FileAdd(ctx context.Context, filename string, r io.ReadSeeker) 
 		return "", err
 	}
 	req.Header.Set("Content-Type", w.FormDataContentType())
-	resp, err := c.impl.ClientJSON.Client.Do(req)
+	resp, err := c.impl.Client.Do(req)
 	if err != nil {
 		return "", err
 	}
@@ -1349,7 +1346,7 @@ func (c *Client) FileGet(ctx context.Context, id string) (io.ReadCloser, error) 
 	if err != nil {
 		return nil, err
 	}
-	resp, err := c.impl.ClientJSON.Client.Do(req)
+	resp, err := c.impl.Client.Do(req)
 	if err != nil {
 		return nil, err
 	}

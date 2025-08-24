@@ -187,6 +187,7 @@ var Scoreboard = scoreboard.Score{
 				"mistral-large-pixtral-2411",
 				"mistral-medium",
 				"mistral-medium-2505",
+				"mistral-medium-2508",
 				"mistral-medium-latest",
 				"mistral-ocr-2503",
 				"mistral-ocr-2505",
@@ -744,7 +745,7 @@ type Model struct {
 	Deprecation                 string   `json:"deprecation"`
 	DeprecationReplacementModel struct{} `json:"deprecation_replacement_model"`
 	DefaultModelTemperature     float64  `json:"default_model_temperature"`
-	Type                        string   `json:"type"`
+	Type                        string   `json:"type"` // "base"
 }
 
 func (m *Model) GetID() string {
@@ -792,9 +793,17 @@ type ModelsResponse struct {
 
 // ToModels converts Mistral models to genai.Model interfaces
 func (r *ModelsResponse) ToModels() []genai.Model {
-	models := make([]genai.Model, len(r.Data))
+	// As of 2025-08, Mistral returns duplicate models voxtral-mini-latest and voxtral-mini-2507. Filter them
+	// out so the client is not confused.
+	seen := make(map[string]struct{}, len(r.Data))
+	models := make([]genai.Model, 0, len(r.Data))
 	for i := range r.Data {
-		models[i] = &r.Data[i]
+		id := r.Data[i].ID
+		if _, ok := seen[id]; ok {
+			continue
+		}
+		seen[id] = struct{}{}
+		models = append(models, &r.Data[i])
 	}
 	return models
 }

@@ -50,7 +50,6 @@ func TestClient_Scoreboard(t *testing.T) {
 		thinking := false
 		for _, sc := range scenarios {
 			if slices.Contains(sc.Models, id) {
-				t.Logf("%s: %t", id, sc.Thinking)
 				thinking = sc.Thinking
 				break
 			}

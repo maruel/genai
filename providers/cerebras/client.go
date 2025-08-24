@@ -120,7 +120,6 @@ var Scoreboard = scoreboard.Score{
 		},
 		{
 			Models: []string{
-				"deepseek-r1-distill-llama-70b",
 				"gpt-oss-120b",
 				"llama-4-maverick-17b-128e-instruct",
 				"qwen-3-235b-a22b-instruct-2507",

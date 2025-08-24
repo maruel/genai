@@ -103,6 +103,7 @@ var Scoreboard = scoreboard.Score{
 				"c4ai-aya-vision-32b",
 				"command",
 				"command-a-03-2025",
+				"command-a-reasoning-08-2025",
 				"command-a-vision-07-2025",
 				"command-light",
 				"command-light-nightly",

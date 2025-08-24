@@ -107,22 +107,26 @@ func TestClient_Preferred(t *testing.T) {
 func TestClient_Provider_errors(t *testing.T) {
 	data := []internaltest.ProviderError{
 		{
-			Name:         "bad apiKey",
-			APIKey:       "bad apiKey",
-			Model:        "ministral-3b-latest",
+			Name: "bad apiKey",
+			Opts: genai.ProviderOptions{
+				APIKey: "bad apiKey",
+				Model:  "ministral-3b-latest",
+			},
 			ErrGenSync:   "http 401\nUnauthorized\nget a new API key at https://console.mistral.ai/api-keys",
 			ErrGenStream: "http 401\nUnauthorized\nget a new API key at https://console.mistral.ai/api-keys",
 			ErrListModel: "http 401\nUnauthorized\nget a new API key at https://console.mistral.ai/api-keys",
 		},
 		{
-			Name:         "bad model",
-			Model:        "bad model",
+			Name: "bad model",
+			Opts: genai.ProviderOptions{
+				Model: "bad model",
+			},
 			ErrGenSync:   "http 400\ninvalid_model: Invalid model: bad model",
 			ErrGenStream: "http 400\ninvalid_model: Invalid model: bad model",
 		},
 	}
-	f := func(t *testing.T, apiKey, model string) (genai.Provider, error) {
-		return getClientInner(t, apiKey, model)
+	f := func(t *testing.T, opts genai.ProviderOptions) (genai.Provider, error) {
+		return getClientInner(t, opts.APIKey, opts.Model)
 	}
 	internaltest.TestClient_Provider_errors(t, f, data)
 }

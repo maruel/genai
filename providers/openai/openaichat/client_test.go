@@ -174,24 +174,28 @@ func TestClient_Preferred(t *testing.T) {
 func TestClient_Provider_errors(t *testing.T) {
 	data := []internaltest.ProviderError{
 		{
-			Name:         "bad apiKey",
-			APIKey:       "bad apiKey",
-			Model:        "gpt-4.1-nano",
+			Name: "bad apiKey",
+			Opts: genai.ProviderOptions{
+				APIKey: "bad apiKey",
+				Model:  "gpt-4.1-nano",
+			},
 			ErrGenSync:   "http 401\ninvalid_request_error/invalid_api_key: Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
 			ErrGenStream: "http 401\ninvalid_request_error/invalid_api_key: Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
 			ErrGenDoc:    "http 401\ninvalid_request_error/invalid_api_key: Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
 			ErrListModel: "http 401\ninvalid_request_error/invalid_api_key: Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
 		},
 		{
-			Name:         "bad model",
-			Model:        "bad model",
+			Name: "bad model",
+			Opts: genai.ProviderOptions{
+				Model: "bad model",
+			},
 			ErrGenSync:   "http 400\ninvalid_request_error: invalid model ID",
 			ErrGenStream: "http 400\ninvalid_request_error: invalid model ID",
 			ErrGenDoc:    "http 400\ninvalid_request_error/invalid_value for \"model\": Invalid value: 'bad model'. Supported values are: 'gpt-image-1', 'gpt-image-1-io', 'gpt-image-0721-mini-alpha', 'dall-e-2', and 'dall-e-3'.",
 		},
 	}
-	f := func(t *testing.T, apiKey, model string) (genai.Provider, error) {
-		return getClientInner(t, &genai.ProviderOptions{APIKey: apiKey, Model: model, OutputModalities: genai.Modalities{genai.ModalityText}})
+	f := func(t *testing.T, opts genai.ProviderOptions) (genai.Provider, error) {
+		return getClientInner(t, &genai.ProviderOptions{APIKey: opts.APIKey, Model: opts.Model, OutputModalities: genai.Modalities{genai.ModalityText}})
 	}
 	internaltest.TestClient_Provider_errors(t, f, data)
 }

@@ -70,22 +70,26 @@ func TestClient_Preferred(t *testing.T) {
 func TestClient_Provider_errors(t *testing.T) {
 	data := []internaltest.ProviderError{
 		{
-			Name:         "bad apiKey",
-			APIKey:       "bad apiKey",
-			Model:        "@hf/nousresearch/hermes-2-pro-mistral-7b",
+			Name: "bad apiKey",
+			Opts: genai.ProviderOptions{
+				APIKey: "bad apiKey",
+				Model:  "@hf/nousresearch/hermes-2-pro-mistral-7b",
+			},
 			ErrGenSync:   "http 401\nAuthentication error\nget a new API key at https://dash.cloudflare.com/profile/api-tokens",
 			ErrGenStream: "http 401\nAuthentication error\nget a new API key at https://dash.cloudflare.com/profile/api-tokens",
 			ErrListModel: "http 400\nUnable to authenticate request",
 		},
 		{
-			Name:         "bad model",
-			Model:        "bad model",
+			Name: "bad model",
+			Opts: genai.ProviderOptions{
+				Model: "bad model",
+			},
 			ErrGenSync:   "http 400\nNo route for that URI",
 			ErrGenStream: "http 400\nNo route for that URI",
 		},
 	}
-	f := func(t *testing.T, apiKey, model string) (genai.Provider, error) {
-		return getClientInner(t, apiKey, model)
+	f := func(t *testing.T, opts genai.ProviderOptions) (genai.Provider, error) {
+		return getClientInner(t, opts.APIKey, opts.Model)
 	}
 	internaltest.TestClient_Provider_errors(t, f, data)
 }

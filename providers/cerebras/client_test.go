@@ -80,22 +80,26 @@ func TestClient_Preferred(t *testing.T) {
 func TestClient_Provider_errors(t *testing.T) {
 	data := []internaltest.ProviderError{
 		{
-			Name:         "bad apiKey",
-			APIKey:       "bad apiKey",
-			Model:        "llama-3.1-8b",
+			Name: "bad apiKey",
+			Opts: genai.ProviderOptions{
+				APIKey: "bad apiKey",
+				Model:  "llama-3.1-8b",
+			},
 			ErrGenSync:   "http 401\ninvalid_request_error/api_key/wrong_api_key: Wrong API Key\nget a new API key at https://cloud.cerebras.ai/platform/",
 			ErrGenStream: "http 401\ninvalid_request_error/api_key/wrong_api_key: Wrong API Key\nget a new API key at https://cloud.cerebras.ai/platform/",
 			ErrListModel: "http 401\ninvalid_request_error/api_key/wrong_api_key: Wrong API Key\nget a new API key at https://cloud.cerebras.ai/platform/",
 		},
 		{
-			Name:         "bad model",
-			Model:        "bad model",
+			Name: "bad model",
+			Opts: genai.ProviderOptions{
+				Model: "bad model",
+			},
 			ErrGenSync:   "http 404\nnot_found_error/model/model_not_found: Model bad model does not exist or you do not have access to it.",
 			ErrGenStream: "http 404\nnot_found_error/model/model_not_found: Model bad model does not exist or you do not have access to it.",
 		},
 	}
-	f := func(t *testing.T, apiKey, model string) (genai.Provider, error) {
-		return getClientInner(t, apiKey, model)
+	f := func(t *testing.T, opts genai.ProviderOptions) (genai.Provider, error) {
+		return getClientInner(t, opts.APIKey, opts.Model)
 	}
 	internaltest.TestClient_Provider_errors(t, f, data)
 }

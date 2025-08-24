@@ -149,24 +149,28 @@ func TestClient_Preferred(t *testing.T) {
 func TestClient_Provider_errors(t *testing.T) {
 	data := []internaltest.ProviderError{
 		{
-			Name:         "bad apiKey",
-			APIKey:       "bad apiKey",
-			Model:        "gpt-4.1-nano",
+			Name: "bad apiKey",
+			Opts: genai.ProviderOptions{
+				APIKey: "bad apiKey",
+				Model:  "gpt-4.1-nano",
+			},
 			ErrGenSync:   "http 401\nIncorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys. (type: invalid_request_error, code: invalid_api_key)",
 			ErrGenStream: "http 401\nIncorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys. (type: invalid_request_error, code: invalid_api_key)",
 			ErrGenDoc:    "http 401\nIncorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys. (type: invalid_request_error, code: invalid_api_key)",
 			ErrListModel: "http 401\nIncorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys. (type: invalid_request_error, code: invalid_api_key)",
 		},
 		{
-			Name:         "bad model",
-			Model:        "bad model",
+			Name: "bad model",
+			Opts: genai.ProviderOptions{
+				Model: "bad model",
+			},
 			ErrGenSync:   "http 400\nThe requested model 'bad model' does not exist. (type: invalid_request_error, code: model_not_found)",
 			ErrGenStream: "http 400\nThe requested model 'bad model' does not exist. (type: invalid_request_error, code: model_not_found)",
 			ErrGenDoc:    "http 400\nInvalid value: 'bad model'. Supported values are: 'gpt-image-1', 'gpt-image-0721-mini-alpha', 'dall-e-2', and 'dall-e-3'. (type: invalid_request_error, code: invalid_value)",
 		},
 	}
-	f := func(t *testing.T, apiKey, model string) (genai.Provider, error) {
-		return getClientInner(t, &genai.ProviderOptions{APIKey: apiKey, Model: model})
+	f := func(t *testing.T, opts genai.ProviderOptions) (genai.Provider, error) {
+		return getClientInner(t, &genai.ProviderOptions{APIKey: opts.APIKey, Model: opts.Model})
 	}
 	internaltest.TestClient_Provider_errors(t, f, data)
 }

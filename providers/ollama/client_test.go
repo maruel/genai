@@ -58,14 +58,16 @@ func TestClient(t *testing.T) {
 	t.Run("Provider_errors", func(t *testing.T) {
 		data := []internaltest.ProviderError{
 			{
-				Name:         "bad model",
-				Model:        "bad_model",
+				Name: "bad model",
+				Opts: genai.ProviderOptions{
+					Model: "bad_model",
+				},
 				ErrGenSync:   "pull failed: http 500\npull model manifest: file does not exist",
 				ErrGenStream: "pull failed: http 500\npull model manifest: file does not exist",
 			},
 		}
-		f := func(t *testing.T, apiKey, model string) (genai.Provider, error) {
-			return s.getClient(t, model)
+		f := func(t *testing.T, opts genai.ProviderOptions) (genai.Provider, error) {
+			return s.getClient(t, opts.Model)
 		}
 		internaltest.TestClient_Provider_errors(t, f, data)
 	})

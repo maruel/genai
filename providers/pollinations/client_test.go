@@ -106,15 +106,17 @@ func TestClient_Preferred(t *testing.T) {
 func TestClient_Provider_errors(t *testing.T) {
 	data := []internaltest.ProviderError{
 		{
-			Name:         "bad model",
-			Model:        "bad model",
+			Name: "bad model",
+			Opts: genai.ProviderOptions{
+				Model: "bad model",
+			},
 			ErrGenSync:   "model \"bad model\" not supported by pollinations",
 			ErrGenStream: "model \"bad model\" not supported by pollinations",
 			ErrGenDoc:    "model \"bad model\" not supported by pollinations",
 		},
 	}
-	f := func(t *testing.T, apiKey, model string) (genai.Provider, error) {
-		return getClientInner(t, &genai.ProviderOptions{APIKey: "genai-unittests", Model: model, OutputModalities: genai.Modalities{genai.ModalityText}})
+	f := func(t *testing.T, opts genai.ProviderOptions) (genai.Provider, error) {
+		return getClientInner(t, &genai.ProviderOptions{APIKey: "genai-unittests", Model: opts.Model, OutputModalities: genai.Modalities{genai.ModalityText}})
 	}
 	internaltest.TestClient_Provider_errors(t, f, data)
 }

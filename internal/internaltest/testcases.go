@@ -13,18 +13,17 @@ import (
 
 type ProviderError struct {
 	Name         string
-	APIKey       string
-	Model        string
+	Opts         genai.ProviderOptions
 	ErrGenSync   string
 	ErrGenStream string
 	ErrGenDoc    string
 	ErrListModel string
 }
 
-func TestClient_Provider_errors(t *testing.T, getClient func(t *testing.T, apiKey, model string) (genai.Provider, error), lines []ProviderError) {
+func TestClient_Provider_errors(t *testing.T, getClient func(t *testing.T, opts genai.ProviderOptions) (genai.Provider, error), lines []ProviderError) {
 	for _, line := range lines {
 		t.Run(line.Name, func(t *testing.T) {
-			tester, err := getClient(t, line.APIKey, line.Model)
+			tester, err := getClient(t, line.Opts)
 			if line.ErrGenSync != "" || line.ErrGenStream != "" || line.ErrGenDoc != "" || line.ErrListModel != "" {
 				if err != nil {
 					// It failed but it was not expected.
@@ -44,7 +43,7 @@ func TestClient_Provider_errors(t *testing.T, getClient func(t *testing.T, apiKe
 
 			msgs := genai.Messages{genai.NewTextMessage("Tell a short joke.")}
 			t.Run("GenSync", func(t *testing.T) {
-				c, err := getClient(t, line.APIKey, line.Model)
+				c, err := getClient(t, line.Opts)
 				if err != nil {
 					if err.Error() == line.ErrGenSync {
 						return
@@ -67,7 +66,7 @@ func TestClient_Provider_errors(t *testing.T, getClient func(t *testing.T, apiKe
 				}
 			})
 			t.Run("GenStream", func(t *testing.T) {
-				c, err := getClient(t, line.APIKey, line.Model)
+				c, err := getClient(t, line.Opts)
 				if err != nil {
 					if err.Error() == line.ErrGenStream {
 						return
@@ -99,7 +98,7 @@ func TestClient_Provider_errors(t *testing.T, getClient func(t *testing.T, apiKe
 				msg := genai.NewTextMessage("Generate a short joke.")
 				if line.ErrGenDoc != "" {
 					t.Run("GenDoc", func(t *testing.T) {
-						c, err := getClient(t, line.APIKey, line.Model)
+						c, err := getClient(t, line.Opts)
 						if err != nil {
 							if err.Error() == line.ErrGenDoc {
 								return
@@ -123,7 +122,7 @@ func TestClient_Provider_errors(t *testing.T, getClient func(t *testing.T, apiKe
 			}
 			if line.ErrListModel != "" {
 				t.Run("ListModels", func(t *testing.T) {
-					c, err := getClient(t, line.APIKey, genai.ModelNone)
+					c, err := getClient(t, line.Opts)
 					if err != nil {
 						if err.Error() == line.ErrListModel {
 							return

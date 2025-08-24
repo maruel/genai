@@ -1250,7 +1250,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 	if len(msgs) != 1 {
 		return genai.Result{}, errors.New("must pass exactly one Message")
 	}
-	return c.GenDoc(ctx, msgs[0], opts...)
+	return c.genImage(ctx, msgs[0], opts...)
 }
 
 // GenSyncRaw provides access to the raw API.
@@ -1271,10 +1271,8 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest, out chan<- C
 	return c.impl.GenStreamRaw(ctx, in, out)
 }
 
-// GenDoc is a simplified version of GenSync.
-//
-// Use it to generate images.
-func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts ...genai.Options) (genai.Result, error) {
+// genImage generates images.
+func (c *Client) genImage(ctx context.Context, msg genai.Message, opts ...genai.Options) (genai.Result, error) {
 	if c.isAudio() {
 		// https://docs.together.ai/reference/audio-speech
 		return genai.Result{}, errors.New("audio not implemented yet")

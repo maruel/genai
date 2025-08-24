@@ -1146,7 +1146,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 		if len(msgs) != 1 {
 			return genai.Result{}, errors.New("must pass exactly one Message")
 		}
-		return c.GenDoc(ctx, msgs[0], opts...)
+		return c.genImage(ctx, msgs[0], opts...)
 	}
 	if err := Cache.ValidateModality(ctx, c, genai.ModalityText); err != nil {
 		return genai.Result{}, err
@@ -1177,12 +1177,12 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest, out chan<- C
 	return c.impl.GenStreamRaw(ctx, in, out)
 }
 
-// GenDoc is a simplified version of GenSync.
+// genImage is a simplified version of GenSync only for images.
 //
 // Use it to generate images.
 //
 // Default rate limit is 0.2 QPS / IP.
-func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts ...genai.Options) (genai.Result, error) {
+func (c *Client) genImage(ctx context.Context, msg genai.Message, opts ...genai.Options) (genai.Result, error) {
 	// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#1-text-to-image-get-%EF%B8%8F
 	// TODO:
 	// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#4-text-to-speech-get-%EF%B8%8F%EF%B8%8F

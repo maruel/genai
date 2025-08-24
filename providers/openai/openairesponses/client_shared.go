@@ -390,7 +390,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 		if len(msgs) != 1 {
 			return genai.Result{}, errors.New("must pass exactly one Message")
 		}
-		return c.GenDoc(ctx, msgs[0], opts...)
+		return c.genDoc(ctx, msgs[0], opts...)
 	}
 	return c.impl.GenSync(ctx, msgs, opts...)
 }
@@ -403,8 +403,8 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 	return c.impl.GenStream(ctx, msgs, opts...)
 }
 
-// GenDoc is a simplified version of GenSync.
-func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts ...genai.Options) (genai.Result, error) {
+// genDoc is a simplified version of GenSync.
+func (c *Client) genDoc(ctx context.Context, msg genai.Message, opts ...genai.Options) (genai.Result, error) {
 	// https://platform.openai.com/docs/api-reference/images/create
 	res := genai.Result{}
 	if err := c.impl.Validate(); err != nil {

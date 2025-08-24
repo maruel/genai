@@ -1726,7 +1726,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 		if len(msgs) != 1 {
 			return genai.Result{}, errors.New("must pass exactly one Message")
 		}
-		return c.GenDoc(ctx, msgs[0], opts...)
+		return c.genDoc(ctx, msgs[0], opts...)
 	}
 	return c.Impl.GenSync(ctx, msgs, opts...)
 }
@@ -1854,12 +1854,12 @@ func (c *Client) CacheDelete(ctx context.Context, name string) error {
 	return c.Impl.DoRequest(ctx, "DELETE", url, nil, &out)
 }
 
-// GenDoc is a simplified version of GenSync.
+// genDoc is a simplified version of GenSync.
 //
 // Use it to generate images.
 //
-// GenDoc is only supported for models that have "predict" reported in their Model.SupportedGenerationMethods.
-func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts ...genai.Options) (genai.Result, error) {
+// genDoc is only supported for models that have "predict" reported in their Model.SupportedGenerationMethods.
+func (c *Client) genDoc(ctx context.Context, msg genai.Message, opts ...genai.Options) (genai.Result, error) {
 	res := genai.Result{}
 	if err := c.Impl.Validate(); err != nil {
 		return res, err

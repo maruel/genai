@@ -385,30 +385,6 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 	return base.SimulateStream(ctx, c, msgs, opts...)
 }
 
-// GenDoc is a simplified version of GenSync.
-//
-// It synchronously generates a document.
-//
-// Generation can be rather slow, several seconds or minutes.
-func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts ...genai.Options) (genai.Result, error) {
-	id, err := c.GenAsync(ctx, genai.Messages{msg}, opts...)
-	if err != nil {
-		return genai.Result{}, err
-	}
-	// They recommend in their documentation to poll every 0.5s.
-	// TODO: Expose a webhook with a custom OptionsImage.
-	for {
-		select {
-		case <-ctx.Done():
-			return genai.Result{}, ctx.Err()
-		case <-time.After(waitForPoll):
-			if res, err := c.PokeResult(ctx, id); res.Usage.FinishReason != genai.Pending {
-				return res, err
-			}
-		}
-	}
-}
-
 // GenAsync implements genai.ProviderGenAsync.
 //
 // It requests the providers' asynchronous API and returns the job ID.

@@ -192,13 +192,6 @@ func TestOptionsText(t *testing.T) {
 			}
 		})
 	})
-
-	t.Run("Modalities", func(t *testing.T) {
-		o := &OptionsText{}
-		if got := o.Modalities(); len(got) != 1 || got[0] != ModalityText {
-			t.Errorf("Modalities() = %v, want [text]", got)
-		}
-	})
 }
 
 func TestToolDef(t *testing.T) {

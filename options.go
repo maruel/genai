@@ -138,10 +138,6 @@ type OptionsText struct {
 	_ struct{}
 }
 
-func (o *OptionsText) Modalities() Modalities {
-	return Modalities{ModalityText}
-}
-
 // Validate ensures the completion options are valid.
 func (o *OptionsText) Validate() error {
 	if o.Seed < 0 {
@@ -274,9 +270,14 @@ type OptionsAudio struct {
 	// Seed for the random number generator. Default is 0 which means
 	// non-deterministic.
 	Seed int64
+
+	_ struct{}
 }
 
 func (o *OptionsAudio) Validate() error {
+	if o.Seed < 0 {
+		return errors.New("field Seed: must be non-negative")
+	}
 	return nil
 }
 
@@ -306,7 +307,9 @@ func (o *OptionsImage) Validate() error {
 	return nil
 }
 
-type OptionsVideo struct{}
+type OptionsVideo struct {
+	_ struct{}
+}
 
 func (o *OptionsVideo) Validate() error {
 	return nil

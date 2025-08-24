@@ -21,17 +21,18 @@ import (
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
+	"github.com/maruel/genai/internal/myrecorder"
 	"github.com/maruel/httpjson"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/cassette"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
 
 type Records struct {
-	Records *internal.Records
+	Records *myrecorder.Records
 }
 
 func NewRecords() *Records {
-	rr, err := internal.NewRecords("testdata")
+	rr, err := myrecorder.NewRecords("testdata")
 	if err != nil {
 		panic(err)
 	}
@@ -63,7 +64,7 @@ func (r *Records) Close() int {
 //
 // It ignores the port number in the URL both for recording and playback so it
 // works with local services like ollama and llama-server.
-func (r *Records) Record(t testing.TB, h http.RoundTripper, opts ...recorder.Option) internal.Recorder {
+func (r *Records) Record(t testing.TB, h http.RoundTripper, opts ...recorder.Option) myrecorder.Recorder {
 	rr, err := r.Records.Record(t.Name(), h, opts...)
 	if err != nil {
 		t.Fatal(err)
@@ -94,7 +95,7 @@ func MatchIgnorePort(r *http.Request, i cassette.Request) bool {
 	r = r.Clone(r.Context())
 	r.URL.Host = strings.Split(r.URL.Host, ":")[0]
 	r.Host = strings.Split(r.Host, ":")[0]
-	return internal.DefaultMatcher(r, i)
+	return myrecorder.DefaultMatcher(r, i)
 }
 
 // ValidateWordResponse validates that the response contains exactly one of the expected words.

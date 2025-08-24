@@ -12,6 +12,7 @@ import (
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
+	"github.com/maruel/genai/internal/myrecorder"
 	"github.com/maruel/genai/providers/cloudflare"
 	"github.com/maruel/genai/scoreboard/scoreboardtest"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/cassette"
@@ -128,7 +129,7 @@ func matchCassetteInternal(r *http.Request, i cassette.Request) bool {
 	r = r.Clone(r.Context())
 	// When matching, ignore the account ID from the URL path.
 	r.URL.Path = reAccount.ReplaceAllString(r.URL.Path, "/accounts/ACCOUNT_ID/")
-	return internal.DefaultMatcher(r, i)
+	return myrecorder.DefaultMatcher(r, i)
 }
 
 var testRecorder *internaltest.Records

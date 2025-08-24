@@ -16,6 +16,7 @@ import (
 	"github.com/maruel/genai/adapters"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
+	"github.com/maruel/genai/internal/myrecorder"
 	"github.com/maruel/genai/providers/pollinations"
 	"github.com/maruel/genai/scoreboard/scoreboardtest"
 )
@@ -128,7 +129,7 @@ func getClientInner(t *testing.T, opts *genai.ProviderOptions) (*pollinations.Cl
 
 func warmupCache(t testing.TB) []genai.Model {
 	doOnce.Do(func() {
-		var r internal.Recorder
+		var r myrecorder.Recorder
 		var err2 error
 		ctx := t.Context()
 		c, err := pollinations.New(ctx, &genai.ProviderOptions{APIKey: "genai-unittests", Model: genai.ModelNone}, func(h http.RoundTripper) http.RoundTripper {

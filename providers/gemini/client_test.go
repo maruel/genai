@@ -19,6 +19,7 @@ import (
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
+	"github.com/maruel/genai/internal/myrecorder"
 	"github.com/maruel/genai/providers/gemini"
 	"github.com/maruel/genai/scoreboard/scoreboardtest"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/cassette"
@@ -346,7 +347,7 @@ func getClientInner(t *testing.T, opts *genai.ProviderOptions) (*gemini.Client, 
 		o.APIKey = "<insert_api_key_here>"
 	}
 	wrapper := func(h http.RoundTripper) http.RoundTripper {
-		return testRecorder.Record(t, h, recorder.WithHook(trimRecordingInternal, recorder.AfterCaptureHook), recorder.WithMatcher(internal.DefaultMatcher))
+		return testRecorder.Record(t, h, recorder.WithHook(trimRecordingInternal, recorder.AfterCaptureHook), recorder.WithMatcher(myrecorder.DefaultMatcher))
 	}
 	return gemini.New(t.Context(), &o, wrapper)
 }

@@ -13,8 +13,8 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
+	"github.com/maruel/genai/internal/myrecorder"
 	"github.com/maruel/genai/scoreboard"
 )
 
@@ -37,7 +37,7 @@ func (m *Model) String() string {
 type GetClient func(t testing.TB, m Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider
 
 // AssertScoreboard regenerates the scoreboard and asserts it is up to date.
-func AssertScoreboard(t *testing.T, gc GetClient, models []Model, rec *internal.Records) {
+func AssertScoreboard(t *testing.T, gc GetClient, models []Model, rec *myrecorder.Records) {
 	if len(models) == 0 {
 		t.Fatal("no models")
 	}

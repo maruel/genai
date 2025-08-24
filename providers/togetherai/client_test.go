@@ -11,7 +11,6 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"strings"
 	"testing"
 
 	"github.com/maruel/genai"
@@ -34,28 +33,11 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 	if model.Thinking {
 		t.Fatal("implement me")
 	}
-	if strings.HasPrefix(model.Model, "black-forest-labs/") {
-		return &smallImageGen{hideHTTP500{c}}
-	}
 	// If anyone at Together.AI reads this, please get your shit together.
 	return &hideHTTP500{c}
 }
 
-type smallImageGen struct {
-	hideHTTP500
-}
-
-func (o *smallImageGen) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	if v, ok := opts.(*genai.OptionsImage); ok {
-		// Ask for a smaller size.
-		n := *v
-		n.Width = 256
-		n.Height = 256
-		opts = &n
-	}
-	return o.hideHTTP500.GenSync(ctx, msgs, opts)
-}
-
+// hideHTTP500 is used to hide HTTP 500 errors from together.ai but also does speed up image generation.
 type hideHTTP500 struct {
 	*togetherai.Client
 }
@@ -65,6 +47,13 @@ func (h *hideHTTP500) Unwrap() genai.Provider {
 }
 
 func (h *hideHTTP500) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
+	if v, ok := opts.(*genai.OptionsImage); ok {
+		// Ask for a smaller size.
+		n := *v
+		n.Width = 256
+		n.Height = 256
+		opts = &n
+	}
 	resp, err := h.Client.GenSync(ctx, msgs, opts)
 	if err != nil {
 		var herr *httpjson.Error
@@ -137,23 +126,20 @@ func TestClient_Provider_errors(t *testing.T) {
 				APIKey: "bad apiKey",
 				Model:  "meta-llama/Llama-3.2-3B-Instruct-Turbo",
 			},
-			ErrGenSync:   "http 401\ninvalid_api_key (invalid_request_error): Invalid API key provided. You can find your API key at https://api.together.xyz/settings/api-keys.",
-			ErrGenStream: "http 401\ninvalid_api_key (invalid_request_error): Invalid API key provided. You can find your API key at https://api.together.xyz/settings/api-keys.",
-			ErrGenDoc:    "can only generate audio and images",
-			ErrListModel: "http 401\nUnauthorized\nget a new API key at https://api.together.xyz/settings/api-keys",
+			ErrGenSync:   "http 401\ninvalid_api_key (invalid_request_error): Invalid API key provided. You can find your API key at https://api.together.ai/settings/api-keys.",
+			ErrGenStream: "http 401\ninvalid_api_key (invalid_request_error): Invalid API key provided. You can find your API key at https://api.together.ai/settings/api-keys.",
+			ErrListModel: "http 401\nUnauthorized\nget a new API key at https://api.together.ai/settings/api-keys",
 		},
-		// TODO: Add back once GenDoc is removed.
-		// {
-		// 	Name: "bad apiKey image",
-		// 	Opts: genai.ProviderOptions{
-		// 		APIKey: "bad apiKey",
-		// 		Model:  "black-forest-labs/FLUX.1-schnell",
-		// 	},
-		// 	ErrGenSync:   "http 401\ninvalid_api_key (invalid_request_error): Invalid API key provided. You can find your API key at https://api.together.xyz/settings/api-keys.",
-		// 	ErrGenStream: "http 401\ninvalid_api_key (invalid_request_error): Invalid API key provided. You can find your API key at https://api.together.xyz/settings/api-keys.",
-		// 	ErrGenDoc:    "http 401\ninvalid_api_key (invalid_request_error): Invalid API key provided. You can find your API key at https://api.together.xyz/settings/api-keys.",
-		// 	ErrListModel: "http 401\nUnauthorized\nget a new API key at https://api.together.xyz/settings/api-keys",
-		// },
+		{
+			Name: "bad apiKey image",
+			Opts: genai.ProviderOptions{
+				APIKey:           "bad apiKey",
+				Model:            "black-forest-labs/FLUX.1-schnell",
+				OutputModalities: genai.Modalities{genai.ModalityImage},
+			},
+			ErrGenSync:   "http 401\ninvalid_api_key (invalid_request_error): Invalid API key provided. You can find your API key at https://api.together.ai/settings/api-keys.",
+			ErrGenStream: "http 401\ninvalid_api_key (invalid_request_error): Invalid API key provided. You can find your API key at https://api.together.ai/settings/api-keys.",
+		},
 		{
 			Name: "bad model",
 			Opts: genai.ProviderOptions{
@@ -161,7 +147,15 @@ func TestClient_Provider_errors(t *testing.T) {
 			},
 			ErrGenSync:   "http 404\nmodel_not_available (invalid_request_error): Unable to access model bad model. Please visit https://api.together.ai/models to view the list of supported models.",
 			ErrGenStream: "http 404\nmodel_not_available (invalid_request_error): Unable to access model bad model. Please visit https://api.together.ai/models to view the list of supported models.",
-			ErrGenDoc:    "can only generate audio and images",
+		},
+		{
+			Name: "bad model image",
+			Opts: genai.ProviderOptions{
+				Model:            "bad model",
+				OutputModalities: genai.Modalities{genai.ModalityImage},
+			},
+			ErrGenSync:   "http 404\nmodel_not_available (invalid_request_error): Unable to access model bad model. Please visit https://api.together.ai/models to view the list of supported models.",
+			ErrGenStream: "http 404\nmodel_not_available (invalid_request_error): Unable to access model bad model. Please visit https://api.together.ai/models to view the list of supported models.",
 		},
 	}
 	f := func(t *testing.T, opts genai.ProviderOptions) (genai.Provider, error) {

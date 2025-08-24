@@ -156,8 +156,17 @@ func TestClient_Provider_errors(t *testing.T) {
 			},
 			ErrGenSync:   "http 401\nIncorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys. (type: invalid_request_error, code: invalid_api_key)",
 			ErrGenStream: "http 401\nIncorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys. (type: invalid_request_error, code: invalid_api_key)",
-			ErrGenDoc:    "http 401\nIncorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys. (type: invalid_request_error, code: invalid_api_key)",
 			ErrListModel: "http 401\nIncorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys. (type: invalid_request_error, code: invalid_api_key)",
+		},
+		{
+			Name: "bad apiKey image",
+			Opts: genai.ProviderOptions{
+				APIKey:           "bad apiKey",
+				Model:            "gpt-image-1",
+				OutputModalities: genai.Modalities{genai.ModalityImage},
+			},
+			ErrGenSync:   "http 401\nIncorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys. (type: invalid_request_error, code: invalid_api_key)",
+			ErrGenStream: "http 401\nIncorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys. (type: invalid_request_error, code: invalid_api_key)",
 		},
 		{
 			Name: "bad model",
@@ -166,7 +175,15 @@ func TestClient_Provider_errors(t *testing.T) {
 			},
 			ErrGenSync:   "http 400\nThe requested model 'bad model' does not exist. (type: invalid_request_error, code: model_not_found)",
 			ErrGenStream: "http 400\nThe requested model 'bad model' does not exist. (type: invalid_request_error, code: model_not_found)",
-			ErrGenDoc:    "http 400\nInvalid value: 'bad model'. Supported values are: 'gpt-image-1', 'gpt-image-0721-mini-alpha', 'dall-e-2', and 'dall-e-3'. (type: invalid_request_error, code: invalid_value)",
+		},
+		{
+			Name: "bad model image",
+			Opts: genai.ProviderOptions{
+				Model:            "bad model",
+				OutputModalities: genai.Modalities{genai.ModalityImage},
+			},
+			ErrGenSync:   "http 400\nThe requested model 'bad model' does not exist. (type: invalid_request_error, code: model_not_found)",
+			ErrGenStream: "http 400\nThe requested model 'bad model' does not exist. (type: invalid_request_error, code: model_not_found)",
 		},
 	}
 	f := func(t *testing.T, opts genai.ProviderOptions) (genai.Provider, error) {

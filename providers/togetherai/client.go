@@ -1026,7 +1026,7 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 		return nil, errors.New("unexpected option Remote")
 	}
 	apiKey := opts.APIKey
-	const apiKeyURL = "https://api.together.xyz/settings/api-keys"
+	const apiKeyURL = "https://api.together.ai/settings/api-keys"
 	var err error
 	if apiKey == "" {
 		if apiKey = os.Getenv("TOGETHER_API_KEY"); apiKey == "" {
@@ -1274,7 +1274,7 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest, out chan<- C
 	return c.impl.GenStreamRaw(ctx, in, out)
 }
 
-// GenDoc implements genai.ProviderGenDoc.
+// GenDoc is a simplified version of GenSync.
 //
 // Use it to generate images.
 func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
@@ -1478,6 +1478,5 @@ func processHeaders(h http.Header) []genai.RateLimit {
 
 var (
 	_ genai.Provider           = &Client{}
-	_ genai.ProviderGenDoc     = &Client{}
 	_ scoreboard.ProviderScore = &Client{}
 )

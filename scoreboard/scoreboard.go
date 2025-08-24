@@ -145,7 +145,7 @@ type Scenario struct {
 	GenSync *FunctionalityText
 	// GenStream declares features supported when using Provider.GenStream
 	GenStream *FunctionalityText
-	// GenDoc declares features supported when using a ProviderGenDoc
+	// GenDoc declares features supported when using a non-text output modality.
 	GenDoc *FunctionalityDoc
 
 	_ struct{}

@@ -1,41 +1,40 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 76
-        host: api.cloudflare.com
-        body: |
-            {"messages":[{"role":"user","content":"Tell a short joke."}],"stream":true}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@hf/nousresearch/hermes-2-pro-mistral-7b
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: 104
-        body: '{"result":null,"success":false,"errors":[{"code":10000,"message":"Authentication error"}],"messages":[]}'
-        headers:
-            Api-Version:
-                - "2025-07-23"
-            Cf-Auditlog-Id:
-                - 019837eb-e5aa-740f-a36d-5b002d97b787
-            Cf-Ray:
-                - 963c3ddc1dc4a2f8-YUL
-            Content-Length:
-                - "104"
-            Content-Type:
-                - application/json
-            Server:
-                - cloudflare
-            Vary:
-                - Accept-Encoding
-        status: 401 Unauthorized
-        code: 401
-        duration: 52ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 76
+    host: api.cloudflare.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"Tell a short joke.\"}],\"stream\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@hf/nousresearch/hermes-2-pro-mistral-7b
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 104
+    body: "{\"result\":null,\"success\":false,\"errors\":[{\"code\":10000,\"message\":\"Authentication error\"}],\"messages\":[]}"
+    headers:
+      Api-Version:
+      - "2025-08-24"
+      Cf-Auditlog-Id:
+      - 0198dce0-dc48-7864-a058-f54f5b64b7fc
+      Cf-Ray:
+      - 97442c337db4b405-YYZ
+      Content-Length:
+      - "104"
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Vary:
+      - Accept-Encoding
+    status: 401 Unauthorized
+    code: 401
+    duration: 57ms

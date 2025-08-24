@@ -1050,12 +1050,6 @@ func (cs *CitationSource) IsZero() bool {
 
 //
 
-// ProviderGenDoc is the interface to interact with a document (audio, image, video, etc) generator.
-type ProviderGenDoc interface {
-	Provider
-	GenDoc(ctx context.Context, msg Message, opts Options) (Result, error)
-}
-
 // ProviderGenAsync is the interface to interact with a batch generator.
 type ProviderGenAsync interface {
 	// GenAsync requests a generation and returns a pending job that can be polled.

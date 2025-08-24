@@ -1,62 +1,52 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 125
-        host: api.together.xyz
-        body: |
-            {"model":"meta-llama/Llama-3.2-3B-Instruct-Turbo","stream":true,"messages":[{"role":"user","content":"Tell a short joke."}]}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.together.xyz/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: 266
-        body: |-
-            {
-              "id": "o64BZ3i-4msxKE-96adfe993d9e3692",
-              "error": {
-                "message": "Invalid API key provided. You can find your API key at https://api.together.xyz/settings/api-keys.",
-                "type": "invalid_request_error",
-                "param": null,
-                "code": "invalid_api_key"
-              }
-            }
-        headers:
-            Access-Control-Allow-Origin:
-                - '*'
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 96adfe993d9e3692-LHR
-            Content-Length:
-                - "266"
-            Content-Type:
-                - application/json; charset=utf-8
-            Etag:
-                - W/"10a-ydLEieNFoSfoCF9OZzp6PpCAf5I"
-            Server:
-                - cloudflare
-            Strict-Transport-Security:
-                - max-age=15552000; includeSubDomains
-            Vary:
-                - Accept-Encoding
-            X-Amzn-Trace-Id:
-                - 02434268-e411-49a1-83b8-adfb1045ccea-noamzn
-            X-Api-Received:
-                - "2025-08-06T10:54:09.277Z"
-            X-Request-Id:
-                - o64BZ3i-4msxKE-96adfe993d9e3692
-        status: 401 Unauthorized
-        code: 401
-        duration: 2.552s
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 125
+    host: api.together.xyz
+    body: "{\"model\":\"meta-llama/Llama-3.2-3B-Instruct-Turbo\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":\"Tell a short joke.\"}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 265
+    body: "{\n  \"id\": \"o8TLTzM-57nCBj-97442c35ea3ba322\",\n  \"error\": {\n    \"message\": \"Invalid API key provided. You can find your API key at https://api.together.ai/settings/api-keys.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": \"invalid_api_key\"\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 97442c35ea3ba322-YUL
+      Content-Length:
+      - "265"
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"109-cEkDJIwwagPFa017HEycNahKCLk"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - cc27e20c-9370-4902-b3e3-8d91ce433bf0-noamzn
+      X-Api-Received:
+      - "2025-08-24T16:19:41.215Z"
+      X-Request-Id:
+      - o8TLTzM-57nCBj-97442c35ea3ba322
+    status: 401 Unauthorized
+    code: 401
+    duration: 129ms

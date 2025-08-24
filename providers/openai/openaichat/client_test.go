@@ -181,8 +181,17 @@ func TestClient_Provider_errors(t *testing.T) {
 			},
 			ErrGenSync:   "http 401\ninvalid_request_error/invalid_api_key: Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
 			ErrGenStream: "http 401\ninvalid_request_error/invalid_api_key: Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
-			ErrGenDoc:    "http 401\ninvalid_request_error/invalid_api_key: Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
 			ErrListModel: "http 401\ninvalid_request_error/invalid_api_key: Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
+		},
+		{
+			Name: "bad apiKey image",
+			Opts: genai.ProviderOptions{
+				APIKey:           "bad apiKey",
+				Model:            "gpt-image-1",
+				OutputModalities: genai.Modalities{genai.ModalityImage},
+			},
+			ErrGenSync:   "http 401\ninvalid_request_error/invalid_api_key: Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
+			ErrGenStream: "http 401\ninvalid_request_error/invalid_api_key: Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
 		},
 		{
 			Name: "bad model",
@@ -191,7 +200,16 @@ func TestClient_Provider_errors(t *testing.T) {
 			},
 			ErrGenSync:   "http 400\ninvalid_request_error: invalid model ID",
 			ErrGenStream: "http 400\ninvalid_request_error: invalid model ID",
-			ErrGenDoc:    "http 400\ninvalid_request_error/invalid_value for \"model\": Invalid value: 'bad model'. Supported values are: 'gpt-image-1', 'gpt-image-1-io', 'gpt-image-0721-mini-alpha', 'dall-e-2', and 'dall-e-3'.",
+		},
+		{
+			Name: "bad model image",
+			Opts: genai.ProviderOptions{
+				Model:            "bad model",
+				OutputModalities: genai.Modalities{genai.ModalityImage},
+			},
+			ErrGenSync:   "http 400\ninvalid_request_error: invalid model ID",
+			ErrGenStream: "http 400\ninvalid_request_error: invalid model ID",
+			// ErrGenDoc:    "http 400\ninvalid_request_error/invalid_value for \"model\": Invalid value: 'bad model'. Supported values are: 'gpt-image-1', 'gpt-image-1-io', 'gpt-image-0721-mini-alpha', 'dall-e-2', and 'dall-e-3'.",
 		},
 	}
 	f := func(t *testing.T, opts genai.ProviderOptions) (genai.Provider, error) {

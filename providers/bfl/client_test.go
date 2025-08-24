@@ -90,7 +90,6 @@ func TestClient_Provider_errors(t *testing.T) {
 			},
 			ErrGenSync:   "http 403\nNot authenticated - Invalid Authentication",
 			ErrGenStream: "http 403\nNot authenticated - Invalid Authentication",
-			ErrGenDoc:    "http 403\nNot authenticated - Invalid Authentication",
 		},
 		{
 			Name: "bad model",
@@ -99,7 +98,6 @@ func TestClient_Provider_errors(t *testing.T) {
 			},
 			ErrGenSync:   "http 404\nNot Found",
 			ErrGenStream: "http 404\nNot Found",
-			ErrGenDoc:    "http 404\nNot Found",
 		},
 	}
 	f := func(t *testing.T, opts genai.ProviderOptions) (genai.Provider, error) {

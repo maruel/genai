@@ -1875,7 +1875,7 @@ func (c *Client) CacheDelete(ctx context.Context, name string) error {
 	return c.Impl.DoRequest(ctx, "DELETE", url, nil, &out)
 }
 
-// GenDoc implements genai.ProviderGenDoc.
+// GenDoc is a simplified version of GenSync.
 //
 // Use it to generate images.
 //

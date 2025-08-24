@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 73
+    host: api.openai.com
+    body: "{\"prompt\":\"Tell a short joke.\",\"model\":\"gpt-image-1\",\"moderation\":\"low\"}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.openai.com/v1/images/generations
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 239
+    body: "{\n  \"error\": {\n    \"message\": \"Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": \"invalid_api_key\"\n  }\n}"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 97442c37db1fa2ce-YUL
+      Content-Length:
+      - "239"
+      Content-Type:
+      - application/json
+      Openai-Processing-Ms:
+      - "113"
+      Openai-Version:
+      - "2020-10-01"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Www-Authenticate:
+      - Bearer realm="OpenAI API"
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "116"
+      X-Request-Id:
+      - req_d3916019c30d29929016c4a54df4902d
+    status: 401 Unauthorized
+    code: 401
+    duration: 233ms

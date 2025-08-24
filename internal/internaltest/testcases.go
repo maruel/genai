@@ -16,23 +16,19 @@ type ProviderError struct {
 	Opts         genai.ProviderOptions
 	ErrGenSync   string
 	ErrGenStream string
-	ErrGenDoc    string
 	ErrListModel string
 }
 
 func TestClient_Provider_errors(t *testing.T, getClient func(t *testing.T, opts genai.ProviderOptions) (genai.Provider, error), lines []ProviderError) {
 	for _, line := range lines {
 		t.Run(line.Name, func(t *testing.T) {
-			tester, err := getClient(t, line.Opts)
-			if line.ErrGenSync != "" || line.ErrGenStream != "" || line.ErrGenDoc != "" || line.ErrListModel != "" {
+			if _, err := getClient(t, line.Opts); line.ErrGenSync != "" || line.ErrGenStream != "" || line.ErrListModel != "" {
 				if err != nil {
 					// It failed but it was not expected.
 					if line.ErrGenSync != "" {
 						t.Fatalf("want %q, got %q", line.ErrGenSync, err)
 					} else if line.ErrGenStream != "" {
 						t.Fatalf("want %q, got %q", line.ErrGenStream, err)
-					} else if line.ErrGenDoc != "" {
-						t.Fatalf("want %q, got %q", line.ErrGenDoc, err)
 					} else if line.ErrListModel != "" {
 						t.Fatalf("want %q, got %q", line.ErrListModel, err)
 					}
@@ -94,32 +90,6 @@ func TestClient_Provider_errors(t *testing.T, getClient func(t *testing.T, opts 
 					}
 				}
 			})
-			if _, ok := tester.(genai.ProviderGenDoc); ok {
-				msg := genai.NewTextMessage("Generate a short joke.")
-				if line.ErrGenDoc != "" {
-					t.Run("GenDoc", func(t *testing.T) {
-						c, err := getClient(t, line.Opts)
-						if err != nil {
-							if err.Error() == line.ErrGenDoc {
-								return
-							}
-							t.Fatal(err)
-						}
-						_, err = c.(genai.ProviderGenDoc).GenDoc(t.Context(), msg, nil)
-						if err == nil {
-							t.Fatal("expected error")
-						} else if _, ok := err.(*genai.UnsupportedContinuableError); ok {
-							t.Fatal("should not be continuable")
-						} else if got := err.Error(); got != line.ErrGenDoc {
-							t.Fatalf("Unexpected error.\nwant: %q\ngot : %q", line.ErrGenDoc, got)
-						}
-					})
-				}
-			} else if tester != nil {
-				if line.ErrGenDoc != "" {
-					t.Fatal("ErrGenDoc is set but client does not support ProviderGenDoc")
-				}
-			}
 			if line.ErrListModel != "" {
 				t.Run("ListModels", func(t *testing.T) {
 					c, err := getClient(t, line.Opts)

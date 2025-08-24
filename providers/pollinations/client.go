@@ -1177,7 +1177,7 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest, out chan<- C
 	return c.impl.GenStreamRaw(ctx, in, out)
 }
 
-// GenDoc implements genai.ProviderGenDoc.
+// GenDoc is a simplified version of GenSync.
 //
 // Use it to generate images.
 //
@@ -1453,6 +1453,5 @@ var Cache ModelCache
 
 var (
 	_ genai.Provider           = &Client{}
-	_ genai.ProviderGenDoc     = &Client{}
 	_ scoreboard.ProviderScore = &Client{}
 )

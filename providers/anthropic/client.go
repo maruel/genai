@@ -1277,6 +1277,7 @@ type ErrorResponse struct {
 		Type    string `json:"type"`
 		Message string `json:"message"`
 	} `json:"error"`
+	RequestID string `json:"request_id"`
 }
 
 func (er *ErrorResponse) Error() string {

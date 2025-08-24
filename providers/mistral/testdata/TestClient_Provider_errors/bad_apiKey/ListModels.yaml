@@ -1,47 +1,47 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        host: api.mistral.ai
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.mistral.ai/v1/models
-        method: GET
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: 25
-        body: '{"detail":"Unauthorized"}'
-        headers:
-            Access-Control-Allow-Origin:
-                - '*'
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 963c4854de4233f1-YUL
-            Content-Length:
-                - "25"
-            Content-Type:
-                - application/json; charset=utf-8
-            Mistral-Correlation-Id:
-                - 019837f2-7142-7871-a527-93f163bb773b
-            Server:
-                - cloudflare
-            Strict-Transport-Security:
-                - max-age=15552000; includeSubDomains
-            X-Kong-Request-Id:
-                - 019837f2-7142-7871-a527-93f163bb773b
-            X-Kong-Response-Latency:
-                - "7"
-        status: 401 Unauthorized
-        code: 401
-        duration: 128ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 0
+    host: api.mistral.ai
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.mistral.ai/v1/models
+    method: GET
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 25
+    body: "{\"detail\":\"Unauthorized\"}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 97442c356ef739f6-YYZ
+      Content-Length:
+      - "25"
+      Content-Type:
+      - application/json; charset=utf-8
+      Mistral-Correlation-Id:
+      - 0198dce0-ddbb-78a6-818a-cfb38b575d49
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      X-Kong-Request-Id:
+      - 0198dce0-ddbb-78a6-818a-cfb38b575d49
+      X-Kong-Response-Latency:
+      - "7"
+    status: 401 Unauthorized
+    code: 401
+    duration: 161ms

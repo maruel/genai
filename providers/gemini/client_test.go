@@ -332,6 +332,16 @@ func TestClient_Provider_errors(t *testing.T) {
 			ErrListModel: "http 400\nINVALID_ARGUMENT (400): API key not valid. Please pass a valid API key.",
 		},
 		{
+			Name: "bad apiKey image",
+			Opts: genai.ProviderOptions{
+				APIKey:           "badApiKey",
+				Model:            "imagen-4.0-fast-generate-001",
+				OutputModalities: genai.Modalities{genai.ModalityImage},
+			},
+			ErrGenSync:   "http 400\nINVALID_ARGUMENT (400): API key not valid. Please pass a valid API key.",
+			ErrGenStream: "http 400\nINVALID_ARGUMENT (400): API key not valid. Please pass a valid API key.",
+		},
+		{
 			Name: "bad model",
 			Opts: genai.ProviderOptions{
 				Model: "bad model",

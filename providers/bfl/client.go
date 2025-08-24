@@ -392,7 +392,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan
 	return base.SimulateStream(ctx, c, msgs, chunks, opts)
 }
 
-// GenDoc implements genai.ProviderGenDoc.
+// GenDoc is a simplified version of GenSync.
 //
 // It synchronously generates a document.
 //
@@ -471,6 +471,5 @@ var waitForPoll = 500 * time.Millisecond
 var (
 	_ genai.Provider           = &Client{}
 	_ genai.ProviderGenAsync   = &Client{}
-	_ genai.ProviderGenDoc     = &Client{}
 	_ scoreboard.ProviderScore = &Client{}
 )

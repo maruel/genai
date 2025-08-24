@@ -1,47 +1,46 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 100
-        host: api.deepseek.com
-        body: |
-            {"model":"deepseek-chat","messages":[{"role":"user","content":"Tell a short joke."}],"stream":true}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.deepseek.com/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: 153
-        body: '{"error":{"message":"Authentication Fails, Your api key: ****iKey is invalid","type":"authentication_error","param":null,"code":"invalid_request_error"}}'
-        headers:
-            Access-Control-Allow-Credentials:
-                - "true"
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 963c41a6bfdaa2a3-YUL
-            Content-Length:
-                - "153"
-            Content-Type:
-                - application/json
-            Server:
-                - cloudflare
-            Strict-Transport-Security:
-                - max-age=31536000; includeSubDomains; preload
-            Vary:
-                - origin, access-control-request-method, access-control-request-headers
-            X-Content-Type-Options:
-                - nosniff
-            X-Ds-Trace-Id:
-                - 4f6e45766f3d34ccdb3ada22de8d1371
-        status: 401 Unauthorized
-        code: 401
-        duration: 280ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 100
+    host: api.deepseek.com
+    body: "{\"model\":\"deepseek-chat\",\"messages\":[{\"role\":\"user\",\"content\":\"Tell a short joke.\"}],\"stream\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.deepseek.com/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 153
+    body: "{\"error\":{\"message\":\"Authentication Fails, Your api key: ****iKey is invalid\",\"type\":\"authentication_error\",\"param\":null,\"code\":\"invalid_request_error\"}}"
+    headers:
+      Access-Control-Allow-Credentials:
+      - "true"
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 97442c34ecca36bf-YYZ
+      Content-Length:
+      - "153"
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Vary:
+      - origin, access-control-request-method, access-control-request-headers
+      X-Content-Type-Options:
+      - nosniff
+      X-Ds-Trace-Id:
+      - 3dbbfa923cb2d5b58fdbbd4d87604e9d
+    status: 401 Unauthorized
+    code: 401
+    duration: 270ms

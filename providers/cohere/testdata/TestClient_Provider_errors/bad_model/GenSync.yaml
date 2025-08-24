@@ -1,53 +1,52 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 122
-        host: api.cohere.com
-        body: |
-            {"stream":false,"model":"bad model","messages":[{"role":"user","content":[{"type":"text","text":"Tell a short joke."}]}]}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.cohere.com/v2/chat
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: 165
-        body: '{"id":"cde5fe6f-e8e4-4854-93fa-93dbc73cafd4","message":"model ''bad model'' not found, make sure the correct model ID was used and that you have access to the model."}'
-        headers:
-            Access-Control-Expose-Headers:
-                - X-Debug-Trace-ID
-            Alt-Svc:
-                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-            Cache-Control:
-                - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
-            Content-Length:
-                - "165"
-            Content-Type:
-                - application/json
-            Expires:
-                - Thu, 01 Jan 1970 00:00:00 GMT
-            Pragma:
-                - no-cache
-            Server:
-                - envoy
-            Vary:
-                - Origin
-            Via:
-                - 1.1 google
-            X-Accel-Expires:
-                - "0"
-            X-Debug-Trace-Id:
-                - 504024373001fe7f8cb91ad7ae2d4df2
-            X-Envoy-Upstream-Service-Time:
-                - "54"
-        status: 404 Not Found
-        code: 404
-        duration: 96ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 122
+    host: api.cohere.com
+    body: "{\"stream\":false,\"model\":\"bad model\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Tell a short joke.\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cohere.com/v2/chat
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 165
+    body: "{\"id\":\"e86c9263-9a3f-4e6c-9254-0aaae55c5acd\",\"message\":\"model 'bad model' not found, make sure the correct model ID was used and that you have access to the model.\"}"
+    headers:
+      Access-Control-Expose-Headers:
+      - X-Debug-Trace-ID
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Cache-Control:
+      - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
+      Content-Length:
+      - "165"
+      Content-Type:
+      - application/json
+      Expires:
+      - Thu, 01 Jan 1970 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - envoy
+      Vary:
+      - Origin
+      Via:
+      - 1.1 google
+      X-Accel-Expires:
+      - "0"
+      X-Debug-Trace-Id:
+      - 30d4e838f44ee2ec39cb667ba9ce6a04
+      X-Envoy-Upstream-Service-Time:
+      - "44"
+    status: 404 Not Found
+    code: 404
+    duration: 85ms

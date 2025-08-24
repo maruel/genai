@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 119
+    host: api.together.xyz
+    body: "{\"model\":\"black-forest-labs/FLUX.1-schnell\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":\"Tell a short joke.\"}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 265
+    body: "{\n  \"id\": \"o8TLUb2-2j9zxn-97442c42ed6fa322\",\n  \"error\": {\n    \"message\": \"Invalid API key provided. You can find your API key at https://api.together.ai/settings/api-keys.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": \"invalid_api_key\"\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 97442c42ed6fa322-YUL
+      Content-Length:
+      - "265"
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"109-q+EOwN7ciYs6UUzEkZWok/947aw"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 26b0c2fb-7ba7-4eba-addf-e009920bfaf3-noamzn
+      X-Api-Received:
+      - "2025-08-24T16:19:43.226Z"
+      X-Request-Id:
+      - o8TLUb2-2j9zxn-97442c42ed6fa322
+    status: 401 Unauthorized
+    code: 401
+    duration: 76ms

@@ -13,7 +13,6 @@ import (
 	"sync"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/base"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -167,51 +166,6 @@ func (c *ProviderIgnoreUnsupported) GenStream(ctx context.Context, msgs genai.Me
 
 func (c *ProviderIgnoreUnsupported) Unwrap() genai.Provider {
 	return c.Provider
-}
-
-//
-
-// ProviderGenDocIgnoreUnsupported wraps a ProviderGenDoc to ignore UnsupportedContinuableError.
-type ProviderGenDocIgnoreUnsupported struct {
-	genai.ProviderGenDoc
-}
-
-func (c *ProviderGenDocIgnoreUnsupported) GenDoc(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
-	res, err := c.ProviderGenDoc.GenDoc(ctx, msg, opts)
-	var uce *genai.UnsupportedContinuableError
-	if errors.As(err, &uce) {
-		err = nil
-	}
-	return res, err
-}
-
-func (c *ProviderGenDocIgnoreUnsupported) Unwrap() genai.Provider {
-	return c.ProviderGenDoc
-}
-
-//
-
-// ProviderGenDocToGen converts a ProviderGenDoc, e.g. a provider only generating audio, images, or videos into a Provider.
-type ProviderGenDocToGen struct {
-	genai.ProviderGenDoc
-}
-
-func (c *ProviderGenDocToGen) GenSync(ctx context.Context, msgs genai.Messages, opts genai.Options) (genai.Result, error) {
-	if len(msgs) != 1 {
-		return genai.Result{}, errors.New("must pass exactly one Message")
-	}
-	return c.GenDoc(ctx, msgs[0], opts)
-}
-
-func (c *ProviderGenDocToGen) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts genai.Options) (genai.Result, error) {
-	if len(msgs) != 1 {
-		return genai.Result{}, errors.New("must pass exactly one Message")
-	}
-	return base.SimulateStream(ctx, c, msgs, chunks, opts)
-}
-
-func (c *ProviderGenDocToGen) Unwrap() genai.Provider {
-	return c.ProviderGenDoc
 }
 
 //

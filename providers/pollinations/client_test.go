@@ -112,7 +112,15 @@ func TestClient_Provider_errors(t *testing.T) {
 			},
 			ErrGenSync:   "model \"bad model\" not supported by pollinations",
 			ErrGenStream: "model \"bad model\" not supported by pollinations",
-			ErrGenDoc:    "model \"bad model\" not supported by pollinations",
+		},
+		{
+			Name: "bad model image",
+			Opts: genai.ProviderOptions{
+				Model:            "bad model",
+				OutputModalities: genai.Modalities{genai.ModalityImage},
+			},
+			ErrGenSync:   "model \"bad model\" not supported by pollinations",
+			ErrGenStream: "model \"bad model\" not supported by pollinations",
 		},
 	}
 	f := func(t *testing.T, opts genai.ProviderOptions) (genai.Provider, error) {

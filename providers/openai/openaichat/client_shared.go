@@ -389,7 +389,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan
 	return c.impl.GenStream(ctx, msgs, chunks, opts)
 }
 
-// GenDoc implements genai.ProviderGenDoc.
+// GenDoc is a simplified version of GenSync.
 func (c *Client) GenDoc(ctx context.Context, msg genai.Message, opts genai.Options) (genai.Result, error) {
 	// https://platform.openai.com/docs/api-reference/images/create
 	res := genai.Result{}

@@ -9,12 +9,14 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"slices"
 	"strings"
 	"testing"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
+	"github.com/maruel/genai/providers/openai/openaichat"
 	"github.com/maruel/genai/providers/openai/openairesponses"
 	"github.com/maruel/genai/scoreboard/scoreboardtest"
 )
@@ -29,13 +31,29 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 		t.Fatal(err)
 	}
 	if model.Thinking {
-		return &injectOption{
+		return &injectOptions{
 			Client: c,
-			opts: openairesponses.OptionsText{
-				// This will lead to spurious HTTP 500 but it is 25% of the cost.
-				ServiceTier:     openairesponses.ServiceTierFlex,
-				ReasoningEffort: openairesponses.ReasoningEffortLow,
+			opts: []genai.Options{
+				&openairesponses.OptionsText{
+					// This will lead to spurious HTTP 500 but it is 25% of the cost.
+					ServiceTier:     openairesponses.ServiceTierFlex,
+					ReasoningEffort: openairesponses.ReasoningEffortLow,
+				},
 			},
+		}
+	}
+	if slices.Equal(c.OutputModalities(), []genai.Modality{genai.ModalityText}) {
+		// See https://platform.openai.com/docs/guides/flex-processing
+		if id := c.ModelID(); id == "o3" || id == "o4-mini" || strings.HasPrefix(id, "gpt-5") {
+			return &injectOptions{
+				Client: c,
+				opts: []genai.Options{
+					&openaichat.OptionsText{
+						// This will lead to spurious HTTP 500 but it is 25% of the cost.
+						ServiceTier: openaichat.ServiceTierFlex,
+					},
+				},
+			}
 		}
 	}
 	return c
@@ -54,17 +72,17 @@ func TestClient_Scoreboard(t *testing.T) {
 	scoreboardtest.AssertScoreboard(t, getClientRT, models, testRecorder.Records)
 }
 
-type injectOption struct {
+type injectOptions struct {
 	*openairesponses.Client
-	opts openairesponses.OptionsText
+	opts []genai.Options
 }
 
-func (i *injectOption) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
-	return i.Client.GenSync(ctx, msgs, append(opts, &i.opts)...)
+func (i *injectOptions) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
+	return i.Client.GenSync(ctx, msgs, append(opts, i.opts...)...)
 }
 
-func (i *injectOption) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
-	return i.Client.GenStream(ctx, msgs, replies, append(opts, &i.opts)...)
+func (i *injectOptions) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
+	return i.Client.GenStream(ctx, msgs, replies, append(opts, i.opts...)...)
 }
 
 /*

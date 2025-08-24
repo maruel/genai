@@ -1,79 +1,66 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 234
-        host: api.openai.com
-        body: |
-            {"model":"gpt-4.1","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Talk about Canada in great details. Start with: Canada is"}]}],"service_tier":"auto","stop":["is"],"stream_options":{"include_usage":true}}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.openai.com/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        body: |+
-            data: {"id":"chatcmpl-BxJsKwWZXaFnSEBlYBLqo37DCmNei","object":"chat.completion.chunk","created":1753477452,"model":"gpt-4.1-2025-04-14","service_tier":"default","system_fingerprint":"fp_b3f1157249","choices":[{"index":0,"delta":{"role":"assistant","content":"","refusal":null},"logprobs":null,"finish_reason":null}],"usage":null}
-
-            data: {"id":"chatcmpl-BxJsKwWZXaFnSEBlYBLqo37DCmNei","object":"chat.completion.chunk","created":1753477452,"model":"gpt-4.1-2025-04-14","service_tier":"default","system_fingerprint":"fp_b3f1157249","choices":[{"index":0,"delta":{"content":"Canada"},"logprobs":null,"finish_reason":null}],"usage":null}
-
-            data: {"id":"chatcmpl-BxJsKwWZXaFnSEBlYBLqo37DCmNei","object":"chat.completion.chunk","created":1753477452,"model":"gpt-4.1-2025-04-14","service_tier":"default","system_fingerprint":"fp_b3f1157249","choices":[{"index":0,"delta":{"content":" "},"logprobs":null,"finish_reason":null}],"usage":null}
-
-            data: {"id":"chatcmpl-BxJsKwWZXaFnSEBlYBLqo37DCmNei","object":"chat.completion.chunk","created":1753477452,"model":"gpt-4.1-2025-04-14","service_tier":"default","system_fingerprint":"fp_b3f1157249","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}],"usage":null}
-
-            data: {"id":"chatcmpl-BxJsKwWZXaFnSEBlYBLqo37DCmNei","object":"chat.completion.chunk","created":1753477452,"model":"gpt-4.1-2025-04-14","service_tier":"default","system_fingerprint":"fp_b3f1157249","choices":[],"usage":{"prompt_tokens":19,"completion_tokens":2,"total_tokens":21,"prompt_tokens_details":{"cached_tokens":0,"audio_tokens":0},"completion_tokens_details":{"reasoning_tokens":0,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0}}}
-
-            data: [DONE]
-
-        headers:
-            Access-Control-Expose-Headers:
-                - X-Request-ID
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 964e9bbf69ea7154-YUL
-            Content-Type:
-                - text/event-stream; charset=utf-8
-            Openai-Organization:
-                - user-vtmtcvpbctksjfewktqdl2sw
-            Openai-Processing-Ms:
-                - "186"
-            Openai-Project:
-                - proj_tH6hQUFvA4Bx6SyAb23zzLEg
-            Openai-Version:
-                - "2020-10-01"
-            Server:
-                - cloudflare
-            Strict-Transport-Security:
-                - max-age=31536000; includeSubDomains; preload
-            X-Content-Type-Options:
-                - nosniff
-            X-Envoy-Upstream-Service-Time:
-                - "189"
-            X-Ratelimit-Limit-Requests:
-                - "500"
-            X-Ratelimit-Limit-Tokens:
-                - "30000"
-            X-Ratelimit-Remaining-Requests:
-                - "499"
-            X-Ratelimit-Remaining-Tokens:
-                - "29983"
-            X-Ratelimit-Reset-Requests:
-                - 120ms
-            X-Ratelimit-Reset-Tokens:
-                - 34ms
-            X-Request-Id:
-                - 1bdb0dd1-c591-4df0-9968-5b36841c122b
-        status: 200 OK
-        code: 200
-        duration: 253ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 212
+    host: api.openai.com
+    body: "{\"model\":\"gpt-4.1\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Talk about Canada in great details. Start with: Canada is\"}]}],\"stop\":[\"is\"],\"stream_options\":{\"include_usage\":true}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.openai.com/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"chatcmpl-C8Cb34OfqS6gSJZ6HSu8dMSD1A5th\",\"object\":\"chat.completion.chunk\",\"created\":1756071081,\"model\":\"gpt-4.1-2025-04-14\",\"service_tier\":\"default\",\"system_fingerprint\":\"fp_3502f4eb73\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\",\"refusal\":null},\"logprobs\":null,\"finish_reason\":null}],\"usage\":null,\"obfuscation\":\"lavHaU65ilO6U\"}\n\ndata: {\"id\":\"chatcmpl-C8Cb34OfqS6gSJZ6HSu8dMSD1A5th\",\"object\":\"chat.completion.chunk\",\"created\":1756071081,\"model\":\"gpt-4.1-2025-04-14\",\"service_tier\":\"default\",\"system_fingerprint\":\"fp_3502f4eb73\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Canada\"},\"logprobs\":null,\"finish_reason\":null}],\"usage\":null,\"obfuscation\":\"c9OTnLYG8\"}\n\ndata: {\"id\":\"chatcmpl-C8Cb34OfqS6gSJZ6HSu8dMSD1A5th\",\"object\":\"chat.completion.chunk\",\"created\":1756071081,\"model\":\"gpt-4.1-2025-04-14\",\"service_tier\":\"default\",\"system_fingerprint\":\"fp_3502f4eb73\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" \"},\"logprobs\":null,\"finish_reason\":null}],\"usage\":null,\"obfuscation\":\"Mf9hIg2RxLiwwK\"}\n\ndata: {\"id\":\"chatcmpl-C8Cb34OfqS6gSJZ6HSu8dMSD1A5th\",\"object\":\"chat.completion.chunk\",\"created\":1756071081,\"model\":\"gpt-4.1-2025-04-14\",\"service_tier\":\"default\",\"system_fingerprint\":\"fp_3502f4eb73\",\"choices\":[{\"index\":0,\"delta\":{},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":null,\"obfuscation\":\"01aqnAlUy\"}\n\ndata: {\"id\":\"chatcmpl-C8Cb34OfqS6gSJZ6HSu8dMSD1A5th\",\"object\":\"chat.completion.chunk\",\"created\":1756071081,\"model\":\"gpt-4.1-2025-04-14\",\"service_tier\":\"default\",\"system_fingerprint\":\"fp_3502f4eb73\",\"choices\":[],\"usage\":{\"prompt_tokens\":19,\"completion_tokens\":2,\"total_tokens\":21,\"prompt_tokens_details\":{\"cached_tokens\":0,\"audio_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0,\"audio_tokens\":0,\"accepted_prediction_tokens\":0,\"rejected_prediction_tokens\":0}},\"obfuscation\":\"YN6WZI5BbGxQng2\"}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Expose-Headers:
+      - X-Request-ID
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9745f4c0fc55a251-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Openai-Organization:
+      - user-vtmtcvpbctksjfewktqdl2sw
+      Openai-Processing-Ms:
+      - "293"
+      Openai-Project:
+      - proj_tH6hQUFvA4Bx6SyAb23zzLEg
+      Openai-Version:
+      - "2020-10-01"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "315"
+      X-Ratelimit-Limit-Requests:
+      - "500"
+      X-Ratelimit-Limit-Tokens:
+      - "30000"
+      X-Ratelimit-Remaining-Requests:
+      - "499"
+      X-Ratelimit-Remaining-Tokens:
+      - "29983"
+      X-Ratelimit-Reset-Requests:
+      - 120ms
+      X-Ratelimit-Reset-Tokens:
+      - 34ms
+      X-Request-Id:
+      - req_8fea15fc3b08464d9658c92e0fa66612
+    status: 200 OK
+    code: 200
+    duration: 409ms

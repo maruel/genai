@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"slices"
 	"strings"
 	"testing"
 	"time"
@@ -32,14 +33,30 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 	}
 	if model.Thinking {
 		return &injectThinking{
-			injectOption: injectOption{
+			injectOptions: injectOptions{
 				Client: c,
-				opts: openaichat.OptionsText{
-					// This will lead to spurious HTTP 500 but it is 25% of the cost.
-					ServiceTier:     openaichat.ServiceTierFlex,
-					ReasoningEffort: openaichat.ReasoningEffortLow,
+				opts: []genai.Options{
+					&openaichat.OptionsText{
+						ReasoningEffort: openaichat.ReasoningEffortLow,
+						// This will lead to spurious HTTP 500 but it is 25% of the cost.
+						ServiceTier: openaichat.ServiceTierFlex,
+					},
 				},
 			},
+		}
+	}
+	if slices.Equal(c.OutputModalities(), []genai.Modality{genai.ModalityText}) {
+		// See https://platform.openai.com/docs/guides/flex-processing
+		if id := c.ModelID(); id == "o3" || id == "o4-mini" || strings.HasPrefix(id, "gpt-5") {
+			return &injectOptions{
+				Client: c,
+				opts: []genai.Options{
+					&openaichat.OptionsText{
+						// This will lead to spurious HTTP 500 but it is 25% of the cost.
+						ServiceTier: openaichat.ServiceTierFlex,
+					},
+				},
+			}
 		}
 	}
 	return c
@@ -58,31 +75,31 @@ func TestClient_Scoreboard(t *testing.T) {
 	scoreboardtest.AssertScoreboard(t, getClientRT, models, testRecorder.Records)
 }
 
-type injectOption struct {
+type injectOptions struct {
 	*openaichat.Client
-	opts openaichat.OptionsText
+	opts []genai.Options
 }
 
-func (i *injectOption) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
-	return i.Client.GenSync(ctx, msgs, append(opts, &i.opts)...)
+func (i *injectOptions) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
+	return i.Client.GenSync(ctx, msgs, append(opts, i.opts...)...)
 }
 
-func (i *injectOption) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
-	return i.Client.GenStream(ctx, msgs, replies, append(opts, &i.opts)...)
+func (i *injectOptions) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
+	return i.Client.GenStream(ctx, msgs, replies, append(opts, i.opts...)...)
 }
 
-func (i *injectOption) Unwrap() genai.Provider {
+func (i *injectOptions) Unwrap() genai.Provider {
 	return i.Client
 }
 
 // OpenAI returns the count of reasoning tokens but never return them. Duh. This messes up the scoreboard so
 // inject fake thinking whitespace.
 type injectThinking struct {
-	injectOption
+	injectOptions
 }
 
 func (i *injectThinking) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
-	res, err := i.injectOption.GenSync(ctx, msgs, opts...)
+	res, err := i.injectOptions.GenSync(ctx, msgs, opts...)
 	if res.Usage.ReasoningTokens > 0 {
 		res.Replies = append(res.Replies, genai.Reply{Thinking: "\n"})
 	}
@@ -90,7 +107,7 @@ func (i *injectThinking) GenSync(ctx context.Context, msgs genai.Messages, opts 
 }
 
 func (i *injectThinking) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
-	res, err := i.injectOption.GenStream(ctx, msgs, replies, opts...)
+	res, err := i.injectOptions.GenStream(ctx, msgs, replies, opts...)
 	return res, err
 }
 

@@ -6,9 +6,9 @@ interactions:
     proto: HTTP/1.1
     proto_major: 1
     proto_minor: 1
-    content_length: 355
+    content_length: 333
     host: api.openai.com
-    body: "{\"model\":\"gpt-4o-audio-preview\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What fruit is it? Reply with only one word.\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.gif\"}}]}],\"service_tier\":\"auto\",\"stream_options\":{\"include_usage\":true}}\n"
+    body: "{\"model\":\"gpt-4o-audio-preview\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What fruit is it? Reply with only one word.\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.gif\"}}]}],\"stream_options\":{\"include_usage\":true}}\n"
     headers:
       Content-Type:
       - application/json; charset=utf-8
@@ -28,7 +28,7 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 973d7b64c8fca2de-YUL
+      - 9745f6697e77a2d2-YUL
       Content-Length:
       - "186"
       Content-Type:
@@ -36,7 +36,7 @@ interactions:
       Openai-Organization:
       - user-vtmtcvpbctksjfewktqdl2sw
       Openai-Processing-Ms:
-      - "268"
+      - "252"
       Openai-Project:
       - proj_tH6hQUFvA4Bx6SyAb23zzLEg
       Openai-Version:
@@ -48,7 +48,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Envoy-Upstream-Service-Time:
-      - "291"
+      - "283"
       X-Ratelimit-Limit-Input-Images:
       - "50000"
       X-Ratelimit-Limit-Requests:
@@ -60,15 +60,15 @@ interactions:
       X-Ratelimit-Remaining-Requests:
       - "499"
       X-Ratelimit-Remaining-Tokens:
-      - "28013"
+      - "27795"
       X-Ratelimit-Reset-Input-Images:
       - 1ms
       X-Ratelimit-Reset-Requests:
       - 120ms
       X-Ratelimit-Reset-Tokens:
-      - 3.972s
+      - 4.409s
       X-Request-Id:
-      - req_602a4dfa6b25428e8797db836e5a9dbf
+      - req_e24787dc313b4c0599220b4501ade4fb
     status: 400 Bad Request
     code: 400
-    duration: 378ms
+    duration: 373ms

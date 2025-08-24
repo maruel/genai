@@ -1,81 +1,66 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 913
-        host: api.openai.com
-        body: |
-            {"model":"gpt-4.1","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"assistant","tool_calls":[{"id":"call_ZFLMill6IOh4torH4VK9gXKQ","type":"function","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},{"role":"tool","content":[{"type":"text","text":"363.89"}],"tool_call_id":"call_ZFLMill6IOh4torH4VK9gXKQ"}],"service_tier":"auto","stream_options":{"include_usage":true},"tools":[{"type":"function","function":{"description":"Calculates and return the square root of a number","name":"square_root","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none","parallel_tool_calls":true}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.openai.com/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        body: |+
-            data: {"id":"chatcmpl-BxbXxqq4fotWEqHsLcNdOz92xCif5","object":"chat.completion.chunk","created":1753545381,"model":"gpt-4.1-2025-04-14","service_tier":"default","system_fingerprint":"fp_799e4ca3f1","choices":[{"index":0,"delta":{"role":"assistant","content":"","refusal":null},"logprobs":null,"finish_reason":null}],"usage":null}
-
-            data: {"id":"chatcmpl-BxbXxqq4fotWEqHsLcNdOz92xCif5","object":"chat.completion.chunk","created":1753545381,"model":"gpt-4.1-2025-04-14","service_tier":"default","system_fingerprint":"fp_799e4ca3f1","choices":[{"index":0,"delta":{"content":"363"},"logprobs":null,"finish_reason":null}],"usage":null}
-
-            data: {"id":"chatcmpl-BxbXxqq4fotWEqHsLcNdOz92xCif5","object":"chat.completion.chunk","created":1753545381,"model":"gpt-4.1-2025-04-14","service_tier":"default","system_fingerprint":"fp_799e4ca3f1","choices":[{"index":0,"delta":{"content":"."},"logprobs":null,"finish_reason":null}],"usage":null}
-
-            data: {"id":"chatcmpl-BxbXxqq4fotWEqHsLcNdOz92xCif5","object":"chat.completion.chunk","created":1753545381,"model":"gpt-4.1-2025-04-14","service_tier":"default","system_fingerprint":"fp_799e4ca3f1","choices":[{"index":0,"delta":{"content":"89"},"logprobs":null,"finish_reason":null}],"usage":null}
-
-            data: {"id":"chatcmpl-BxbXxqq4fotWEqHsLcNdOz92xCif5","object":"chat.completion.chunk","created":1753545381,"model":"gpt-4.1-2025-04-14","service_tier":"default","system_fingerprint":"fp_799e4ca3f1","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}],"usage":null}
-
-            data: {"id":"chatcmpl-BxbXxqq4fotWEqHsLcNdOz92xCif5","object":"chat.completion.chunk","created":1753545381,"model":"gpt-4.1-2025-04-14","service_tier":"default","system_fingerprint":"fp_799e4ca3f1","choices":[],"usage":{"prompt_tokens":101,"completion_tokens":3,"total_tokens":104,"prompt_tokens_details":{"cached_tokens":0,"audio_tokens":0},"completion_tokens_details":{"reasoning_tokens":0,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0}}}
-
-            data: [DONE]
-
-        headers:
-            Access-Control-Expose-Headers:
-                - X-Request-ID
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 9655162aefe1a2cc-YUL
-            Content-Type:
-                - text/event-stream; charset=utf-8
-            Openai-Organization:
-                - user-vtmtcvpbctksjfewktqdl2sw
-            Openai-Processing-Ms:
-                - "171"
-            Openai-Project:
-                - proj_tH6hQUFvA4Bx6SyAb23zzLEg
-            Openai-Version:
-                - "2020-10-01"
-            Server:
-                - cloudflare
-            Strict-Transport-Security:
-                - max-age=31536000; includeSubDomains; preload
-            X-Content-Type-Options:
-                - nosniff
-            X-Envoy-Upstream-Service-Time:
-                - "173"
-            X-Ratelimit-Limit-Requests:
-                - "500"
-            X-Ratelimit-Limit-Tokens:
-                - "30000"
-            X-Ratelimit-Remaining-Requests:
-                - "499"
-            X-Ratelimit-Remaining-Tokens:
-                - "29963"
-            X-Ratelimit-Reset-Requests:
-                - 120ms
-            X-Ratelimit-Reset-Tokens:
-                - 74ms
-            X-Request-Id:
-                - 68cb9aeb-965a-4f19-9d36-4dc1e825be4d
-        status: 200 OK
-        code: 200
-        duration: 248ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 891
+    host: api.openai.com
+    body: "{\"model\":\"gpt-4.1\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"}]},{\"role\":\"assistant\",\"tool_calls\":[{\"id\":\"call_JAErr0E0rnQFRt537Sz7RWzp\",\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\":132413}\"}}]},{\"role\":\"tool\",\"content\":[{\"type\":\"text\",\"text\":\"363.89\"}],\"tool_call_id\":\"call_JAErr0E0rnQFRt537Sz7RWzp\"}],\"stream_options\":{\"include_usage\":true},\"tools\":[{\"type\":\"function\",\"function\":{\"description\":\"Calculates and return the square root of a number\",\"name\":\"square_root\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"tool_choice\":\"none\",\"parallel_tool_calls\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.openai.com/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"chatcmpl-C8Cb49eADi4aglRClxwUuDZZQ0oCZ\",\"object\":\"chat.completion.chunk\",\"created\":1756071082,\"model\":\"gpt-4.1-2025-04-14\",\"service_tier\":\"default\",\"system_fingerprint\":\"fp_daf5fcc80a\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\",\"refusal\":null},\"logprobs\":null,\"finish_reason\":null}],\"usage\":null,\"obfuscation\":\"YLzVeNQnknRam\"}\n\ndata: {\"id\":\"chatcmpl-C8Cb49eADi4aglRClxwUuDZZQ0oCZ\",\"object\":\"chat.completion.chunk\",\"created\":1756071082,\"model\":\"gpt-4.1-2025-04-14\",\"service_tier\":\"default\",\"system_fingerprint\":\"fp_daf5fcc80a\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"363\"},\"logprobs\":null,\"finish_reason\":null}],\"usage\":null,\"obfuscation\":\"4LRsTeO2Yd7D\"}\n\ndata: {\"id\":\"chatcmpl-C8Cb49eADi4aglRClxwUuDZZQ0oCZ\",\"object\":\"chat.completion.chunk\",\"created\":1756071082,\"model\":\"gpt-4.1-2025-04-14\",\"service_tier\":\"default\",\"system_fingerprint\":\"fp_daf5fcc80a\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\".\"},\"logprobs\":null,\"finish_reason\":null}],\"usage\":null,\"obfuscation\":\"DaOYN6gZZIEvWv\"}\n\ndata: {\"id\":\"chatcmpl-C8Cb49eADi4aglRClxwUuDZZQ0oCZ\",\"object\":\"chat.completion.chunk\",\"created\":1756071082,\"model\":\"gpt-4.1-2025-04-14\",\"service_tier\":\"default\",\"system_fingerprint\":\"fp_daf5fcc80a\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"89\"},\"logprobs\":null,\"finish_reason\":null}],\"usage\":null,\"obfuscation\":\"GOIvwc3k6CXGW\"}\n\ndata: {\"id\":\"chatcmpl-C8Cb49eADi4aglRClxwUuDZZQ0oCZ\",\"object\":\"chat.completion.chunk\",\"created\":1756071082,\"model\":\"gpt-4.1-2025-04-14\",\"service_tier\":\"default\",\"system_fingerprint\":\"fp_daf5fcc80a\",\"choices\":[{\"index\":0,\"delta\":{},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":null,\"obfuscation\":\"kDbEuNU7f\"}\n\ndata: {\"id\":\"chatcmpl-C8Cb49eADi4aglRClxwUuDZZQ0oCZ\",\"object\":\"chat.completion.chunk\",\"created\":1756071082,\"model\":\"gpt-4.1-2025-04-14\",\"service_tier\":\"default\",\"system_fingerprint\":\"fp_daf5fcc80a\",\"choices\":[],\"usage\":{\"prompt_tokens\":101,\"completion_tokens\":3,\"total_tokens\":104,\"prompt_tokens_details\":{\"cached_tokens\":0,\"audio_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0,\"audio_tokens\":0,\"accepted_prediction_tokens\":0,\"rejected_prediction_tokens\":0}},\"obfuscation\":\"McD0fVsCIBcwV\"}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Expose-Headers:
+      - X-Request-ID
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9745f4cba838a251-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Openai-Organization:
+      - user-vtmtcvpbctksjfewktqdl2sw
+      Openai-Processing-Ms:
+      - "309"
+      Openai-Project:
+      - proj_tH6hQUFvA4Bx6SyAb23zzLEg
+      Openai-Version:
+      - "2020-10-01"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "333"
+      X-Ratelimit-Limit-Requests:
+      - "500"
+      X-Ratelimit-Limit-Tokens:
+      - "30000"
+      X-Ratelimit-Remaining-Requests:
+      - "498"
+      X-Ratelimit-Remaining-Tokens:
+      - "29963"
+      X-Ratelimit-Reset-Requests:
+      - 174ms
+      X-Ratelimit-Reset-Tokens:
+      - 74ms
+      X-Request-Id:
+      - req_6dfa1d0afd8743f6adc446dc32c46333
+    status: 200 OK
+    code: 200
+    duration: 415ms

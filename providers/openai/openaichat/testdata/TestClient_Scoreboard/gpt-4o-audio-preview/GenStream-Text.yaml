@@ -6,9 +6,9 @@ interactions:
     proto: HTTP/1.1
     proto_major: 1
     proto_minor: 1
-    content_length: 205
+    content_length: 183
     host: api.openai.com
-    body: "{\"model\":\"gpt-4o-audio-preview\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Say hello. Use only one word.\"}]}],\"service_tier\":\"auto\",\"stream_options\":{\"include_usage\":true}}\n"
+    body: "{\"model\":\"gpt-4o-audio-preview\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Say hello. Use only one word.\"}]}],\"stream_options\":{\"include_usage\":true}}\n"
     headers:
       Content-Type:
       - application/json; charset=utf-8
@@ -28,7 +28,7 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 973d7b5a9cbea2de-YUL
+      - 9745f6662a0ba2d2-YUL
       Content-Length:
       - "205"
       Content-Type:
@@ -36,7 +36,7 @@ interactions:
       Openai-Organization:
       - user-vtmtcvpbctksjfewktqdl2sw
       Openai-Processing-Ms:
-      - "49"
+      - "28"
       Openai-Project:
       - proj_tH6hQUFvA4Bx6SyAb23zzLEg
       Openai-Version:
@@ -48,7 +48,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Envoy-Upstream-Service-Time:
-      - "240"
+      - "52"
       X-Ratelimit-Limit-Requests:
       - "500"
       X-Ratelimit-Limit-Tokens:
@@ -62,7 +62,7 @@ interactions:
       X-Ratelimit-Reset-Tokens:
       - 20ms
       X-Request-Id:
-      - req_c03bc9b11619444984d163e0a1a5af63
+      - req_34ef74fb42e4479c9f4953b8669c9f24
     status: 400 Bad Request
     code: 400
-    duration: 680ms
+    duration: 127ms

@@ -61,7 +61,7 @@ const (
 	ServiceTierDefault ServiceTier = "default"
 	// ServiceTierFlex has the request be processed with the Flex Processing service tier.
 	//
-	// Flex processing is in beta, and currently only available for o3 and o4-mini models.
+	// Flex processing is in beta, and currently only available for GPT-5, o3 and o4-mini models.
 	//
 	// https://platform.openai.com/docs/guides/flex-processing
 	ServiceTierFlex ServiceTier = "flex"

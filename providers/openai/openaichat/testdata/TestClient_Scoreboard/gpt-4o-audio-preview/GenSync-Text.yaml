@@ -1,77 +1,68 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 166
-        host: api.openai.com
-        body: |
-            {"model":"gpt-4o-audio-preview","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}],"service_tier":"auto"}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.openai.com/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: 205
-        body: |-
-            {
-              "error": {
-                "message": "This model requires that either input content or output modality contain audio.",
-                "type": "invalid_request_error",
-                "param": "model",
-                "code": "invalid_value"
-              }
-            }
-        headers:
-            Access-Control-Expose-Headers:
-                - X-Request-ID
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 964e976249b9a28d-YUL
-            Content-Length:
-                - "205"
-            Content-Type:
-                - application/json
-            Openai-Organization:
-                - user-vtmtcvpbctksjfewktqdl2sw
-            Openai-Processing-Ms:
-                - "26"
-            Openai-Project:
-                - proj_tH6hQUFvA4Bx6SyAb23zzLEg
-            Openai-Version:
-                - "2020-10-01"
-            Server:
-                - cloudflare
-            Strict-Transport-Security:
-                - max-age=31536000; includeSubDomains; preload
-            X-Content-Type-Options:
-                - nosniff
-            X-Envoy-Upstream-Service-Time:
-                - "14"
-            X-Ratelimit-Limit-Requests:
-                - "500"
-            X-Ratelimit-Limit-Tokens:
-                - "30000"
-            X-Ratelimit-Remaining-Requests:
-                - "499"
-            X-Ratelimit-Remaining-Tokens:
-                - "29990"
-            X-Ratelimit-Reset-Requests:
-                - 120ms
-            X-Ratelimit-Reset-Tokens:
-                - 20ms
-            X-Request-Id:
-                - req_fa7d2abf47c291f012c08f4a2968ec2d
-        status: 400 Bad Request
-        code: 400
-        duration: 443ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 144
+    host: api.openai.com
+    body: "{\"model\":\"gpt-4o-audio-preview\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Say hello. Use only one word.\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.openai.com/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 205
+    body: "{\n  \"error\": {\n    \"message\": \"This model requires that either input content or output modality contain audio.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": \"model\",\n    \"code\": \"invalid_value\"\n  }\n}"
+    headers:
+      Access-Control-Expose-Headers:
+      - X-Request-ID
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9745f6662a0ea2d2-YUL
+      Content-Length:
+      - "205"
+      Content-Type:
+      - application/json
+      Openai-Organization:
+      - user-vtmtcvpbctksjfewktqdl2sw
+      Openai-Processing-Ms:
+      - "47"
+      Openai-Project:
+      - proj_tH6hQUFvA4Bx6SyAb23zzLEg
+      Openai-Version:
+      - "2020-10-01"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "67"
+      X-Ratelimit-Limit-Requests:
+      - "500"
+      X-Ratelimit-Limit-Tokens:
+      - "30000"
+      X-Ratelimit-Remaining-Requests:
+      - "499"
+      X-Ratelimit-Remaining-Tokens:
+      - "29990"
+      X-Ratelimit-Reset-Requests:
+      - 120ms
+      X-Ratelimit-Reset-Tokens:
+      - 20ms
+      X-Request-Id:
+      - req_91a02c2d3fa64987bdc3a1e4799d84ab
+    status: 400 Bad Request
+    code: 400
+    duration: 122ms

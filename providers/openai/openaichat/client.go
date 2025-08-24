@@ -317,7 +317,6 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 			c.ReasoningEffort = v.ReasoningEffort
 			c.ServiceTier = v.ServiceTier
 		case *genai.OptionsText:
-			c.ServiceTier = ServiceTierAuto
 			unsupported = c.initOptions(v, model)
 			sp = v.SystemPrompt
 		default:

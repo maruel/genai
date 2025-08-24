@@ -1,79 +1,66 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 192
-        host: api.openai.com
-        body: |
-            {"model":"gpt-4.1","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}],"service_tier":"auto","stream_options":{"include_usage":true}}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.openai.com/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        body: |+
-            data: {"id":"chatcmpl-BxJsIiIdME80g0gnqiOUK38dNRhlS","object":"chat.completion.chunk","created":1753477450,"model":"gpt-4.1-2025-04-14","service_tier":"default","system_fingerprint":"fp_b3f1157249","choices":[{"index":0,"delta":{"role":"assistant","content":"","refusal":null},"logprobs":null,"finish_reason":null}],"usage":null}
-
-            data: {"id":"chatcmpl-BxJsIiIdME80g0gnqiOUK38dNRhlS","object":"chat.completion.chunk","created":1753477450,"model":"gpt-4.1-2025-04-14","service_tier":"default","system_fingerprint":"fp_b3f1157249","choices":[{"index":0,"delta":{"content":"Hello"},"logprobs":null,"finish_reason":null}],"usage":null}
-
-            data: {"id":"chatcmpl-BxJsIiIdME80g0gnqiOUK38dNRhlS","object":"chat.completion.chunk","created":1753477450,"model":"gpt-4.1-2025-04-14","service_tier":"default","system_fingerprint":"fp_b3f1157249","choices":[{"index":0,"delta":{"content":"!"},"logprobs":null,"finish_reason":null}],"usage":null}
-
-            data: {"id":"chatcmpl-BxJsIiIdME80g0gnqiOUK38dNRhlS","object":"chat.completion.chunk","created":1753477450,"model":"gpt-4.1-2025-04-14","service_tier":"default","system_fingerprint":"fp_b3f1157249","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}],"usage":null}
-
-            data: {"id":"chatcmpl-BxJsIiIdME80g0gnqiOUK38dNRhlS","object":"chat.completion.chunk","created":1753477450,"model":"gpt-4.1-2025-04-14","service_tier":"default","system_fingerprint":"fp_b3f1157249","choices":[],"usage":{"prompt_tokens":15,"completion_tokens":2,"total_tokens":17,"prompt_tokens_details":{"cached_tokens":0,"audio_tokens":0},"completion_tokens_details":{"reasoning_tokens":0,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0}}}
-
-            data: [DONE]
-
-        headers:
-            Access-Control-Expose-Headers:
-                - X-Request-ID
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 964e9bafac957154-YUL
-            Content-Type:
-                - text/event-stream; charset=utf-8
-            Openai-Organization:
-                - user-vtmtcvpbctksjfewktqdl2sw
-            Openai-Processing-Ms:
-                - "663"
-            Openai-Project:
-                - proj_tH6hQUFvA4Bx6SyAb23zzLEg
-            Openai-Version:
-                - "2020-10-01"
-            Server:
-                - cloudflare
-            Strict-Transport-Security:
-                - max-age=31536000; includeSubDomains; preload
-            X-Content-Type-Options:
-                - nosniff
-            X-Envoy-Upstream-Service-Time:
-                - "669"
-            X-Ratelimit-Limit-Requests:
-                - "500"
-            X-Ratelimit-Limit-Tokens:
-                - "30000"
-            X-Ratelimit-Remaining-Requests:
-                - "499"
-            X-Ratelimit-Remaining-Tokens:
-                - "29990"
-            X-Ratelimit-Reset-Requests:
-                - 120ms
-            X-Ratelimit-Reset-Tokens:
-                - 20ms
-            X-Request-Id:
-                - 5935630c-1865-4378-89a6-e988bb496bd1
-        status: 200 OK
-        code: 200
-        duration: 757ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 170
+    host: api.openai.com
+    body: "{\"model\":\"gpt-4.1\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Say hello. Use only one word.\"}]}],\"stream_options\":{\"include_usage\":true}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.openai.com/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"chatcmpl-C8Cb1E8HQIIso1JE5beJYh8IBNsgm\",\"object\":\"chat.completion.chunk\",\"created\":1756071079,\"model\":\"gpt-4.1-2025-04-14\",\"service_tier\":\"default\",\"system_fingerprint\":\"fp_3502f4eb73\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\",\"refusal\":null},\"logprobs\":null,\"finish_reason\":null}],\"usage\":null,\"obfuscation\":\"z2bfsY3VTchV5\"}\n\ndata: {\"id\":\"chatcmpl-C8Cb1E8HQIIso1JE5beJYh8IBNsgm\",\"object\":\"chat.completion.chunk\",\"created\":1756071079,\"model\":\"gpt-4.1-2025-04-14\",\"service_tier\":\"default\",\"system_fingerprint\":\"fp_3502f4eb73\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Hello\"},\"logprobs\":null,\"finish_reason\":null}],\"usage\":null,\"obfuscation\":\"uuYL2nAtCu\"}\n\ndata: {\"id\":\"chatcmpl-C8Cb1E8HQIIso1JE5beJYh8IBNsgm\",\"object\":\"chat.completion.chunk\",\"created\":1756071079,\"model\":\"gpt-4.1-2025-04-14\",\"service_tier\":\"default\",\"system_fingerprint\":\"fp_3502f4eb73\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"!\"},\"logprobs\":null,\"finish_reason\":null}],\"usage\":null,\"obfuscation\":\"gAovt0GpAhAICP\"}\n\ndata: {\"id\":\"chatcmpl-C8Cb1E8HQIIso1JE5beJYh8IBNsgm\",\"object\":\"chat.completion.chunk\",\"created\":1756071079,\"model\":\"gpt-4.1-2025-04-14\",\"service_tier\":\"default\",\"system_fingerprint\":\"fp_3502f4eb73\",\"choices\":[{\"index\":0,\"delta\":{},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":null,\"obfuscation\":\"OLZZeJpRJ\"}\n\ndata: {\"id\":\"chatcmpl-C8Cb1E8HQIIso1JE5beJYh8IBNsgm\",\"object\":\"chat.completion.chunk\",\"created\":1756071079,\"model\":\"gpt-4.1-2025-04-14\",\"service_tier\":\"default\",\"system_fingerprint\":\"fp_3502f4eb73\",\"choices\":[],\"usage\":{\"prompt_tokens\":15,\"completion_tokens\":2,\"total_tokens\":17,\"prompt_tokens_details\":{\"cached_tokens\":0,\"audio_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0,\"audio_tokens\":0,\"accepted_prediction_tokens\":0,\"rejected_prediction_tokens\":0}},\"obfuscation\":\"cStPtFjrnCKPEq6\"}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Expose-Headers:
+      - X-Request-ID
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9745f4b59855a251-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Openai-Organization:
+      - user-vtmtcvpbctksjfewktqdl2sw
+      Openai-Processing-Ms:
+      - "205"
+      Openai-Project:
+      - proj_tH6hQUFvA4Bx6SyAb23zzLEg
+      Openai-Version:
+      - "2020-10-01"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "224"
+      X-Ratelimit-Limit-Requests:
+      - "500"
+      X-Ratelimit-Limit-Tokens:
+      - "30000"
+      X-Ratelimit-Remaining-Requests:
+      - "499"
+      X-Ratelimit-Remaining-Tokens:
+      - "29990"
+      X-Ratelimit-Reset-Requests:
+      - 120ms
+      X-Ratelimit-Reset-Tokens:
+      - 20ms
+      X-Request-Id:
+      - req_d39c58ac767a48b2af54a5667e287880
+    status: 200 OK
+    code: 200
+    duration: 277ms

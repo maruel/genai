@@ -6,9 +6,9 @@ interactions:
     proto: HTTP/1.1
     proto_major: 1
     proto_minor: 1
-    content_length: 355
+    content_length: 333
     host: api.openai.com
-    body: "{\"model\":\"gpt-4o-audio-preview\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What fruit is it? Reply with only one word.\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg\"}}]}],\"service_tier\":\"auto\",\"stream_options\":{\"include_usage\":true}}\n"
+    body: "{\"model\":\"gpt-4o-audio-preview\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What fruit is it? Reply with only one word.\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg\"}}]}],\"stream_options\":{\"include_usage\":true}}\n"
     headers:
       Content-Type:
       - application/json; charset=utf-8
@@ -28,7 +28,7 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 973d7b6a4efea2de-YUL
+      - 9745f66cdab1a2d2-YUL
       Content-Length:
       - "186"
       Content-Type:
@@ -36,7 +36,7 @@ interactions:
       Openai-Organization:
       - user-vtmtcvpbctksjfewktqdl2sw
       Openai-Processing-Ms:
-      - "209"
+      - "92"
       Openai-Project:
       - proj_tH6hQUFvA4Bx6SyAb23zzLEg
       Openai-Version:
@@ -48,7 +48,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Envoy-Upstream-Service-Time:
-      - "230"
+      - "121"
       X-Ratelimit-Limit-Input-Images:
       - "50000"
       X-Ratelimit-Limit-Requests:
@@ -58,17 +58,17 @@ interactions:
       X-Ratelimit-Remaining-Input-Images:
       - "49999"
       X-Ratelimit-Remaining-Requests:
-      - "499"
+      - "496"
       X-Ratelimit-Remaining-Tokens:
-      - "27658"
+      - "24175"
       X-Ratelimit-Reset-Input-Images:
       - 1ms
       X-Ratelimit-Reset-Requests:
-      - 120ms
+      - 361ms
       X-Ratelimit-Reset-Tokens:
-      - 4.682s
+      - 11.649s
       X-Request-Id:
-      - req_9353845df7d44dac9da4f800edeb977f
+      - req_242d607da73c4f5e941d6a0381168edd
     status: 400 Bad Request
     code: 400
-    duration: 314ms
+    duration: 194ms

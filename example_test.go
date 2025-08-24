@@ -20,7 +20,6 @@ import (
 	"github.com/maruel/genai/providers/gemini"
 	"github.com/maruel/genai/providers/groq"
 	"github.com/maruel/roundtrippers"
-	"golang.org/x/sync/errgroup"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/cassette"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
@@ -218,27 +217,11 @@ func ExampleProvider_GenStream() {
 		Seed:      1,
 		MaxTokens: 50,
 	}
-	chunks := make(chan genai.ReplyFragment)
-	eg := errgroup.Group{}
-	eg.Go(func() error {
-		for {
-			select {
-			case <-ctx.Done():
-				return nil
-			case pkt, ok := <-chunks:
-				if !ok {
-					return nil
-				}
-				if _, err2 := os.Stdout.WriteString(pkt.TextFragment); err2 != nil {
-					return err2
-				}
-			}
-		}
-	})
-	_, err = p.GenStream(ctx, msgs, chunks, &opts)
-	close(chunks)
-	_ = eg.Wait()
-	if err != nil {
+	fragments, finish := p.GenStream(ctx, msgs, &opts)
+	for f := range fragments {
+		os.Stdout.WriteString(f.TextFragment)
+	}
+	if _, err := finish(); err != nil {
 		log.Fatal(err)
 	}
 	// This would Output: Response: hello

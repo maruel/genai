@@ -8,6 +8,7 @@ import (
 	"context"
 	_ "embed"
 	"fmt"
+	"iter"
 	"net/http"
 	"os"
 	"slices"
@@ -89,8 +90,8 @@ func (i *injectThinking) GenSync(ctx context.Context, msgs genai.Messages, opts 
 	return res, err
 }
 
-func (i *injectThinking) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
-	res, err := i.Provider.GenStream(ctx, msgs, replies, opts...)
+func (i *injectThinking) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
+	res, err := i.Provider.GenStream(ctx, msgs, opts...)
 	return res, err
 }
 

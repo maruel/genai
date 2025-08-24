@@ -6,6 +6,7 @@ package perplexity_test
 
 import (
 	"context"
+	"iter"
 	"net/http"
 	"os"
 	"strings"
@@ -71,11 +72,11 @@ func (i *injectOptions) GenSync(ctx context.Context, msgs genai.Messages, opts .
 	return i.Provider.GenSync(ctx, msgs, opts...)
 }
 
-func (i *injectOptions) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
+func (i *injectOptions) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
 	if !strings.Contains(msgs[len(msgs)-1].Requests[len(msgs[0].Requests)-1].Text, "Quackiland") {
 		opts = append(opts, i.Opts...)
 	}
-	return i.Provider.GenStream(ctx, msgs, replies, opts...)
+	return i.Provider.GenStream(ctx, msgs, opts...)
 }
 
 func TestClient_Scoreboard(t *testing.T) {

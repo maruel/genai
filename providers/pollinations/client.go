@@ -15,6 +15,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"iter"
 	"net/http"
 	"net/url"
 	"os"
@@ -1159,14 +1160,16 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 }
 
 // GenStream implements genai.Provider.
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
 	if c.isAudio() || c.isImage() {
-		return base.SimulateStream(ctx, c, msgs, chunks, opts...)
+		return base.SimulateStream(ctx, c, msgs, opts...)
 	}
 	if err := Cache.ValidateModality(ctx, c, genai.ModalityText); err != nil {
-		return genai.Result{}, err
+		return yieldNoFragment, func() (genai.Result, error) {
+			return genai.Result{}, err
+		}
 	}
-	return c.impl.GenStream(ctx, msgs, chunks, opts...)
+	return c.impl.GenStream(ctx, msgs, opts...)
 }
 
 // GenStreamRaw provides access to the raw API.
@@ -1444,6 +1447,9 @@ func (m *ModelCache) Clear() {
 
 // Cache is the global cache of the list of models.
 var Cache ModelCache
+
+func yieldNoFragment(yield func(genai.ReplyFragment) bool) {
+}
 
 var (
 	_ genai.Provider           = &Client{}

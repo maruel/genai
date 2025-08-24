@@ -8,13 +8,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"iter"
 	"slices"
 	"strings"
 	"unicode"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/scoreboard"
-	"golang.org/x/sync/errgroup"
 )
 
 // WrapThinking wraps a Provider and processes its output to extract thinking blocks ONLY if needed.
@@ -61,44 +61,49 @@ func (c *ProviderThinking) GenSync(ctx context.Context, msgs genai.Messages, opt
 // GenStream implements the Provider interface for streaming by delegating to the wrapped provider
 // and processing each fragment to extract thinking blocks.
 // If no thinking tags are present, the first part of the message is assumed to be thinking.
-func (c *ProviderThinking) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
-	internalReplies := make(chan genai.ReplyFragment)
+func (c *ProviderThinking) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
 	accumulated := genai.Message{}
-	eg, ctx := errgroup.WithContext(ctx)
-	eg.Go(func() error {
+	var finalErr error
+	fragments, finish := c.Provider.GenStream(ctx, msgs, opts...)
+	fnFragments := func(yield func(genai.ReplyFragment) bool) {
 		state := start
-		for f := range internalReplies {
+		for f := range fragments {
+			var replies []genai.ReplyFragment
 			var err2 error
-			state, err2 = c.processPacket(state, replies, &accumulated, f)
-			if err2 != nil {
-				for range internalReplies {
-					// Drain channel
+			replies, state, err2 = c.processPacket(state, &accumulated, f)
+			if finalErr == nil {
+				finalErr = err2
+			}
+			for _, r := range replies {
+				if !yield(r) {
+					return
 				}
-				return err2
+			}
+			if finalErr != nil {
+				return
 			}
 		}
-		return nil
-	})
-	result, err := c.Provider.GenStream(ctx, msgs, internalReplies, opts...)
-	close(internalReplies)
-	if err3 := eg.Wait(); err == nil {
-		err = err3
 	}
-	// Use the accumulated contents from our processed message, which has correctly
-	// transformed TextFragments to ThinkingFragments according to the state machine
-	if len(accumulated.Replies) > 0 {
-		result.Replies = accumulated.Replies
+	fnFinish := func() (genai.Result, error) {
+		res, err := finish()
+		// Use the accumulated contents from our processed message, which has correctly
+		// transformed TextFragments to ThinkingFragments according to the state machine
+		if len(accumulated.Replies) > 0 {
+			res.Replies = accumulated.Replies
+		}
+		if finalErr != nil {
+			return res, finalErr
+		}
+		return res, err
 	}
-	if err != nil {
-		return result, err
-	}
-	return result, nil
+	return fnFragments, fnFinish
 }
 
 // processPacket is the streaming version of message fragment processing.
-func (c *ProviderThinking) processPacket(state tagProcessingState, replies chan<- genai.ReplyFragment, accumulated *genai.Message, f genai.ReplyFragment) (tagProcessingState, error) {
+func (c *ProviderThinking) processPacket(state tagProcessingState, accumulated *genai.Message, f genai.ReplyFragment) ([]genai.ReplyFragment, tagProcessingState, error) {
+	var replies []genai.ReplyFragment
 	if f.ThinkingFragment != "" {
-		return state, fmt.Errorf("got unexpected thinking fragment: %q; do not use ProviderThinking with an explicit thinking CoT model", f.ThinkingFragment)
+		return replies, state, fmt.Errorf("got unexpected thinking fragment: %q; do not use ProviderThinking with an explicit thinking CoT model", f.ThinkingFragment)
 	}
 	// Mutate the fragment then send it.
 	switch state {
@@ -109,7 +114,7 @@ func (c *ProviderThinking) processPacket(state tagProcessingState, replies chan<
 		// separate event. This requires a small state machine to keep track of that.
 		if tStart := strings.Index(t, c.ThinkingTokenStart); tStart != -1 {
 			if tStart != 0 {
-				return state, fmt.Errorf("unexpected prefix before thinking tag: %q", t[:len(c.ThinkingTokenStart)+1])
+				return replies, state, fmt.Errorf("unexpected prefix before thinking tag: %q", t[:len(c.ThinkingTokenStart)+1])
 			}
 			f.ThinkingFragment = strings.TrimLeftFunc(t[len(c.ThinkingTokenStart):], unicode.IsSpace)
 			f.TextFragment = ""
@@ -138,9 +143,9 @@ func (c *ProviderThinking) processPacket(state tagProcessingState, replies chan<
 				// Unlikely case where we need to flush out the remainder.
 				f.ThinkingFragment = f.ThinkingFragment[:tEnd]
 				f.TextFragment = ""
-				replies <- f
+				replies = append(replies, f)
 				if err := accumulated.Accumulate(f); err != nil {
-					return state, err
+					return replies, state, err
 				}
 			}
 			f.TextFragment = after
@@ -158,11 +163,11 @@ func (c *ProviderThinking) processPacket(state tagProcessingState, replies chan<
 		}
 	case textSeen:
 	default:
-		return state, errors.New("internal error in ProviderThinking.GenStream()")
+		return replies, state, errors.New("internal error in ProviderThinking.GenStream()")
 	}
-	replies <- f
+	replies = append(replies, f)
 	err := accumulated.Accumulate(f)
-	return state, err
+	return replies, state, err
 }
 
 // processThinkingMessage is the non-streaming version of message fragment processing. It's a bit faster since

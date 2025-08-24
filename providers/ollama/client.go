@@ -16,6 +16,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"iter"
 	"net/http"
 	"reflect"
 	"slices"
@@ -727,35 +728,67 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 }
 
 // GenStream implements genai.Provider.
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
-	result := genai.Result{}
-	in := ChatRequest{}
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
+	res := genai.Result{}
 	var continuableErr error
-	if err := in.Init(msgs, c.impl.Model, opts...); err != nil {
-		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
-			continuableErr = uce
-		} else {
-			return result, err
+	var finalErr error
+
+	fnFragments := func(yield func(genai.ReplyFragment) bool) {
+		in := ChatRequest{}
+		if err := in.Init(msgs, c.impl.Model, opts...); err != nil {
+			if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
+				continuableErr = uce
+			} else {
+				finalErr = err
+				return
+			}
+		}
+		chunks := make(chan ChatStreamChunkResponse, 32)
+		// TODO: Replace with an iterator.
+		fragments := make(chan genai.ReplyFragment)
+		eg, ctx := errgroup.WithContext(ctx)
+		eg.Go(func() error {
+			err := processStreamPackets(chunks, fragments, &res)
+			close(fragments)
+			return err
+		})
+		eg.Go(func() error {
+			err := c.GenStreamRaw(ctx, &in, chunks)
+			close(chunks)
+			return err
+		})
+		for {
+			select {
+			case <-ctx.Done():
+				goto stoploop
+			case f, ok := <-fragments:
+				if !ok {
+					goto stoploop
+				}
+				if !yield(f) {
+					goto stoploop
+				}
+			}
+		}
+	stoploop:
+		// Make sure the channel is emptied.
+		for range fragments {
+		}
+		if err2 := eg.Wait(); err2 != nil {
+			finalErr = err2
 		}
 	}
-	ch := make(chan ChatStreamChunkResponse)
-	eg, ctx := errgroup.WithContext(ctx)
-	eg.Go(func() error {
-		return processStreamPackets(ch, chunks, &result)
-	})
-	err := c.GenStreamRaw(ctx, &in, ch)
-	close(ch)
-	if err2 := eg.Wait(); err2 != nil {
-		err = err2
+	fnFinish := func() (genai.Result, error) {
+		if res.Usage.FinishReason == genai.FinishedStop && slices.ContainsFunc(res.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
+			// Lie for the benefit of everyone.
+			res.Usage.FinishReason = genai.FinishedToolCalls
+		}
+		if finalErr != nil {
+			return res, finalErr
+		}
+		return res, continuableErr
 	}
-	if result.Usage.FinishReason == genai.FinishedStop && slices.ContainsFunc(result.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
-		// Lie for the benefit of everyone.
-		result.Usage.FinishReason = genai.FinishedToolCalls
-	}
-	if err != nil {
-		return result, err
-	}
-	return result, continuableErr
+	return fnFragments, fnFinish
 }
 
 // GenStreamRaw provides access to the raw API.

@@ -7,6 +7,7 @@ package adapters_test
 import (
 	"context"
 	"fmt"
+	"slices"
 	"testing"
 
 	"github.com/maruel/genai"
@@ -55,25 +56,9 @@ func TestGenStreamWithToolCallLoop(t *testing.T) {
 			},
 		},
 	}
-	chunks := make(chan genai.ReplyFragment)
-	var frags []genai.ReplyFragment
-	ctx := t.Context()
-	go func() error {
-		for {
-			select {
-			case <-ctx.Done():
-				return ctx.Err()
-			case fragment, ok := <-chunks:
-				if !ok {
-					return nil
-				}
-				frags = append(frags, fragment)
-			}
-		}
-	}()
-
-	respMsgs, usage, err := adapters.GenStreamWithToolCallLoop(ctx, provider, msgs, chunks, opts)
-	close(chunks)
+	fragments, finish := adapters.GenStreamWithToolCallLoop(t.Context(), provider, msgs, opts)
+	got := slices.Collect(fragments)
+	respMsgs, usage, err := finish()
 	if err != nil {
 		t.Fatalf("GenStreamWithToolCallLoop returned an error: %v", err)
 	}
@@ -87,7 +72,7 @@ func TestGenStreamWithToolCallLoop(t *testing.T) {
 		t.Fatalf("Expected usage %+v, got %+v", expectedUsage, usage)
 	}
 	// Verify we received all fragments
-	if len(frags) != 4 { // 2 text fragments + 1 tool call + 1 text fragment
-		t.Fatalf("Expected 4 fragments, got %d", len(frags))
+	if len(got) != 4 { // 2 text fragments + 1 tool call + 1 text fragment
+		t.Fatalf("Expected 4 fragments, got %d", len(got))
 	}
 }

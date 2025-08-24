@@ -14,6 +14,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"iter"
 	"net/http"
 	"reflect"
 	"strings"
@@ -74,8 +75,10 @@ func (*NotImplemented) GenSync(context.Context, genai.Messages, ...genai.Options
 	return genai.Result{}, ErrNotSupported
 }
 
-func (*NotImplemented) GenStream(context.Context, genai.Messages, chan<- genai.ReplyFragment, ...genai.Options) (genai.Result, error) {
-	return genai.Result{}, ErrNotSupported
+func (*NotImplemented) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
+	return yieldNoFragment, func() (genai.Result, error) {
+		return genai.Result{}, ErrNotSupported
+	}
 }
 
 func (*NotImplemented) ListModels(context.Context) ([]genai.Model, error) {
@@ -133,7 +136,9 @@ func (c *ProviderBase[PErrorResponse]) JSONRequest(ctx context.Context, method, 
 		return nil, err
 	}
 	req.Header.Set("Content-Type", "application/json; charset=utf-8")
-	return c.Client.Do(req)
+	resp, err := c.Client.Do(req)
+	// This is a good place to debug if there's an HTTP recording problem.
+	return resp, err
 }
 
 func (c *ProviderBase[PErrorResponse]) Validate() error {
@@ -321,7 +326,7 @@ type Provider[PErrorResponse ErrAPI, PGenRequest InitializableRequest, PGenRespo
 }
 
 func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
-	result := genai.Result{}
+	res := genai.Result{}
 	c.lateInit()
 	in := reflect.New(c.chatRequest).Interface().(PGenRequest)
 	var continuableErr error
@@ -329,73 +334,109 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 			continuableErr = uce
 		} else {
-			return result, err
+			return res, err
 		}
 	}
 	out := reflect.New(c.chatResponse).Interface().(PGenResponse)
 	if err := c.GenSyncRaw(ctx, in, out); err != nil {
-		return result, err
+		return res, err
 	}
-	result, err := out.ToResult()
+	res, err := out.ToResult()
 	if err != nil {
-		return result, err
+		return res, err
 	}
-	if err := result.Validate(); err != nil {
+	if err := res.Validate(); err != nil {
 		// Catch provider implementation bugs.
-		return result, err
+		return res, err
 	}
 
 	lastResp := c.LastResponseHeaders()
 	if c.ProcessHeaders != nil && lastResp != nil {
-		result.Usage.Limits = c.ProcessHeaders(lastResp)
+		res.Usage.Limits = c.ProcessHeaders(lastResp)
 	}
-	return result, continuableErr
+	return res, continuableErr
 }
 
-func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
-	result := genai.Result{}
-
-	c.lateInit()
-	in := reflect.New(c.chatRequest).Interface().(PGenRequest)
+func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
+	res := genai.Result{}
 	var continuableErr error
-	if err := in.Init(msgs, c.Model, opts...); err != nil {
-		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
-			continuableErr = uce
-		} else {
-			return result, err
+	var finalErr error
+
+	fnFragments := func(yield func(genai.ReplyFragment) bool) {
+		c.lateInit()
+		in := reflect.New(c.chatRequest).Interface().(PGenRequest)
+		if err := in.Init(msgs, c.Model, opts...); err != nil {
+			if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
+				continuableErr = uce
+			} else {
+				finalErr = err
+				return
+			}
 		}
-	}
-	ch := make(chan GenStreamChunkResponse)
-	eg, ctx := errgroup.WithContext(ctx)
-	eg.Go(func() error {
-		return c.ProcessStreamPackets(ch, chunks, &result)
-	})
-	err := c.GenStreamRaw(ctx, in, ch)
-	close(ch)
-	if err2 := eg.Wait(); err2 != nil {
-		err = err2
-	}
-	lastResp := c.LastResponseHeaders()
-	if c.ProcessHeaders != nil && lastResp != nil {
-		result.Usage.Limits = c.ProcessHeaders(lastResp)
-	}
-	if c.LieToolCalls && result.Usage.FinishReason == genai.FinishedStop {
-		for i := range result.Replies {
-			if !result.Replies[i].ToolCall.IsZero() {
-				// Lie for the benefit of everyone.
-				result.Usage.FinishReason = genai.FinishedToolCalls
-				break
+		// Buffer the chunks a bit so the HTTP pipe is read a bit in advance.
+		chunks := make(chan GenStreamChunkResponse, 32)
+		// TODO: Replace with an iterator.
+		fragments := make(chan genai.ReplyFragment)
+		eg, ctx := errgroup.WithContext(ctx)
+		eg.Go(func() error {
+			// Converts raw chunks into fragments.
+			err := c.ProcessStreamPackets(chunks, fragments, &res)
+			close(fragments)
+			return err
+		})
+		eg.Go(func() error {
+			// Generate parsed chunks from the raw JSON SSE stream.
+			err := c.GenStreamRaw(ctx, in, chunks)
+			close(chunks)
+			return err
+		})
+		for {
+			select {
+			case <-ctx.Done():
+				goto stoploop
+			case f, ok := <-fragments:
+				if !ok {
+					// Channel closed, exit loop
+					goto stoploop
+				}
+				if !yield(f) {
+					// Consumer stopped, exit loop
+					goto stoploop
+				}
+			}
+		}
+	stoploop:
+		// Make sure the channel is emptied.
+		for range fragments {
+		}
+		if err := eg.Wait(); err != nil {
+			finalErr = err
+		}
+		lastResp := c.LastResponseHeaders()
+		if c.ProcessHeaders != nil && lastResp != nil {
+			res.Usage.Limits = c.ProcessHeaders(lastResp)
+		}
+		if c.LieToolCalls && res.Usage.FinishReason == genai.FinishedStop {
+			for i := range res.Replies {
+				if !res.Replies[i].ToolCall.IsZero() {
+					// Lie for the benefit of everyone.
+					res.Usage.FinishReason = genai.FinishedToolCalls
+					break
+				}
 			}
 		}
 	}
-	if err != nil {
-		return result, err
+	fnFinish := func() (genai.Result, error) {
+		if finalErr != nil {
+			return res, finalErr
+		}
+		if err := res.Validate(); err != nil {
+			// Catch provider implementation bugs.
+			return res, err
+		}
+		return res, continuableErr
 	}
-	if err := result.Validate(); err != nil {
-		// Catch provider implementation bugs.
-		return result, err
-	}
-	return result, continuableErr
+	return fnFragments, fnFinish
 }
 
 // GenSyncRaw is the generic raw implementation for the generation API endpoint.
@@ -458,27 +499,39 @@ func (t *Time) AsTime() time.Time {
 }
 
 // SimulateStream simulates GenStream for APIs that do not support streaming.
-func SimulateStream(ctx context.Context, c genai.Provider, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
-	res, err := c.GenSync(ctx, msgs, opts...)
-	if err == nil {
-		for i := range res.Replies {
-			if !res.Replies[i].Doc.IsZero() {
-				return res, fmt.Errorf("expected Reply with Doc, got %#v", res.Replies[i])
-			}
-			if url := res.Replies[i].Doc.URL; url != "" {
-				chunks <- genai.ReplyFragment{
-					Filename: res.Replies[i].Doc.Filename,
-					URL:      res.Replies[i].Doc.URL,
+func SimulateStream(ctx context.Context, c genai.Provider, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
+	res := genai.Result{}
+	var finalErr error
+
+	fnFragments := func(yield func(genai.ReplyFragment) bool) {
+		res, finalErr = c.GenSync(ctx, msgs, opts...)
+		if finalErr == nil {
+			for i := range res.Replies {
+				if !res.Replies[i].Doc.IsZero() {
+					finalErr = fmt.Errorf("expected Reply with Doc, got %#v", res.Replies[i])
 				}
-			} else {
-				chunks <- genai.ReplyFragment{
-					Filename:         res.Replies[i].Doc.Filename,
-					DocumentFragment: res.Replies[i].Doc.Src.(*bb.BytesBuffer).D,
+				if url := res.Replies[i].Doc.URL; url != "" {
+					if !yield(genai.ReplyFragment{
+						Filename: res.Replies[i].Doc.Filename,
+						URL:      res.Replies[i].Doc.URL,
+					}) {
+						return
+					}
+				} else {
+					if !yield(genai.ReplyFragment{
+						Filename:         res.Replies[i].Doc.Filename,
+						DocumentFragment: res.Replies[i].Doc.Src.(*bb.BytesBuffer).D,
+					}) {
+						return
+					}
 				}
 			}
 		}
 	}
-	return res, err
+	fnFinish := func() (genai.Result, error) {
+		return res, finalErr
+	}
+	return fnFragments, fnFinish
 }
 
 // MimeByExt wraps mime.TypeByExtension.
@@ -486,4 +539,7 @@ func SimulateStream(ctx context.Context, c genai.Provider, msgs genai.Messages, 
 // It overrides audio entries because they vary surprisingly a lot across OSes!
 func MimeByExt(ext string) string {
 	return internal.MimeByExt(ext)
+}
+
+func yieldNoFragment(yield func(genai.ReplyFragment) bool) {
 }

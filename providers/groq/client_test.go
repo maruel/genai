@@ -7,6 +7,7 @@ package groq_test
 import (
 	"context"
 	_ "embed"
+	"iter"
 	"net/http"
 	"os"
 	"slices"
@@ -78,15 +79,15 @@ func (h *handleGroqReasoning) GenSync(ctx context.Context, msgs genai.Messages, 
 	return c.GenSync(ctx, msgs, opts...)
 }
 
-func (h *handleGroqReasoning) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
+func (h *handleGroqReasoning) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
 	for _, opt := range opts {
 		if o, ok := opt.(*genai.OptionsText); ok && len(o.Tools) != 0 || o.DecodeAs != nil || o.ReplyAsJSON {
 			opts = append(opts, &groq.Options{ReasoningFormat: groq.ReasoningFormatParsed})
-			return h.Provider.GenStream(ctx, msgs, replies, opts...)
+			return h.Provider.GenStream(ctx, msgs, opts...)
 		}
 	}
 	c := adapters.ProviderThinking{Provider: h.Provider, ThinkingTokenStart: "<think>", ThinkingTokenEnd: "\n</think>\n"}
-	return c.GenStream(ctx, msgs, replies, opts...)
+	return c.GenStream(ctx, msgs, opts...)
 }
 
 func (h *handleGroqReasoning) Unwrap() genai.Provider {

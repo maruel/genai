@@ -9,11 +9,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"iter"
 	"slices"
 	"sync"
 
 	"github.com/maruel/genai"
-	"golang.org/x/sync/errgroup"
 )
 
 // GenSyncWithToolCallLoop runs a conversation with the LLM, handling tool calls in a loop until there are no
@@ -84,71 +84,67 @@ func GenSyncWithToolCallLoop(ctx context.Context, p genai.Provider, msgs genai.M
 // tool call.
 //
 // No need to process the tool calls or accumulate the ReplyFragment.
-func GenStreamWithToolCallLoop(ctx context.Context, p genai.Provider, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Messages, genai.Usage, error) {
-	usage := genai.Usage{}
+func GenStreamWithToolCallLoop(ctx context.Context, p genai.Provider, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Messages, genai.Usage, error)) {
 	var out genai.Messages
-	workMsgs := make(genai.Messages, len(msgs))
-	copy(workMsgs, msgs)
-	var chatOpts *genai.OptionsText
-	for _, opt := range opts {
-		ok := false
-		if chatOpts, ok = opt.(*genai.OptionsText); ok {
-			break
+	usage := genai.Usage{}
+	var finalErr error
+
+	fnFragments := func(yield func(genai.ReplyFragment) bool) {
+		workMsgs := slices.Clone(msgs)
+		var chatOpts *genai.OptionsText
+		for _, opt := range opts {
+			ok := false
+			if chatOpts, ok = opt.(*genai.OptionsText); ok {
+				break
+			}
 		}
-	}
-	if chatOpts == nil {
-		return out, usage, errors.New("no tools found")
-	}
-	tools := chatOpts.Tools
-	for {
-		internalReplies := make(chan genai.ReplyFragment)
-		reply := genai.Message{}
-		eg := errgroup.Group{}
-		eg.Go(func() error {
-			// TODO: Process tools as they arrive for maximum asynchronicity.
-			for f := range internalReplies {
-				replies <- f
-				if err := reply.Accumulate(f); err != nil {
-					for range internalReplies {
-						// Drain channel
-					}
-					return err
+		if chatOpts == nil {
+			finalErr = errors.New("no tools found")
+			return
+		}
+		tools := chatOpts.Tools
+		for {
+			fragments, finish := p.GenStream(ctx, workMsgs, opts...)
+			send := true
+			for f := range fragments {
+				if send && !yield(f) {
+					send = false
 				}
 			}
-			return nil
-		})
-		result, err := p.GenStream(ctx, workMsgs, internalReplies, opts...)
-		close(internalReplies)
-		usage.InputTokens += result.Usage.InputTokens
-		usage.InputCachedTokens += result.Usage.InputCachedTokens
-		usage.OutputTokens += result.Usage.OutputTokens
-		usage.FinishReason = result.Usage.FinishReason
-		// Note: We already have the complete message in result.Message, but we accumulate separately
-		// to preserve backward compatibility with existing behavior and tests
-		if err3 := eg.Wait(); err == nil {
-			err = err3
-		}
-		if err != nil {
-			return out, usage, err
-		}
-		out = append(out, reply)
-		workMsgs = append(workMsgs, reply)
-		if !slices.ContainsFunc(result.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
-			return out, usage, nil
-		}
-		tr, err := reply.DoToolCalls(ctx, tools)
-		if err != nil {
-			return out, usage, err
-		}
-		if tr.IsZero() {
-			return out, usage, fmt.Errorf("expected tool call to return a result or an error")
-		}
-		out = append(out, tr)
-		workMsgs = append(workMsgs, tr)
-		if chatOpts.ToolCallRequest == genai.ToolCallRequired {
-			chatOpts.ToolCallRequest = genai.ToolCallAny
+			res, err := finish()
+			usage.InputTokens += res.Usage.InputTokens
+			usage.InputCachedTokens += res.Usage.InputCachedTokens
+			usage.OutputTokens += res.Usage.OutputTokens
+			usage.FinishReason = res.Usage.FinishReason
+			if err != nil {
+				finalErr = err
+				return
+			}
+			out = append(out, res.Message)
+			workMsgs = append(workMsgs, res.Message)
+			if !slices.ContainsFunc(res.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
+				return
+			}
+			tr, err := res.DoToolCalls(ctx, tools)
+			if err != nil {
+				finalErr = err
+				return
+			}
+			if tr.IsZero() {
+				finalErr = fmt.Errorf("expected tool call to return a result or an error")
+				return
+			}
+			out = append(out, tr)
+			workMsgs = append(workMsgs, tr)
+			if chatOpts.ToolCallRequest == genai.ToolCallRequired {
+				chatOpts.ToolCallRequest = genai.ToolCallAny
+			}
 		}
 	}
+	fnFinish := func() (genai.Messages, genai.Usage, error) {
+		return out, usage, finalErr
+	}
+	return fnFragments, fnFinish
 }
 
 //
@@ -167,13 +163,16 @@ func (c *ProviderIgnoreUnsupported) GenSync(ctx context.Context, msgs genai.Mess
 	return res, err
 }
 
-func (c *ProviderIgnoreUnsupported) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
-	res, err := c.Provider.GenStream(ctx, msgs, chunks, opts...)
-	var uce *genai.UnsupportedContinuableError
-	if errors.As(err, &uce) {
-		err = nil
+func (c *ProviderIgnoreUnsupported) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
+	fragments, finish := c.Provider.GenStream(ctx, msgs, opts...)
+	return fragments, func() (genai.Result, error) {
+		res, err := finish()
+		var uce *genai.UnsupportedContinuableError
+		if errors.As(err, &uce) {
+			err = nil
+		}
+		return res, err
 	}
-	return res, err
 }
 
 func (c *ProviderIgnoreUnsupported) Unwrap() genai.Provider {
@@ -203,15 +202,18 @@ func (c *ProviderUsage) GenSync(ctx context.Context, msgs genai.Messages, opts .
 }
 
 // GenStream implements the Provider interface and accumulates usage statistics.
-func (c *ProviderUsage) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
+func (c *ProviderUsage) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
 	// Call the wrapped provider and accumulate usage statistics
-	result, err := c.Provider.GenStream(ctx, msgs, replies, opts...)
-	c.mu.Lock()
-	c.accumUsage.InputTokens += result.Usage.InputTokens
-	c.accumUsage.InputCachedTokens += result.Usage.InputCachedTokens
-	c.accumUsage.OutputTokens += result.Usage.OutputTokens
-	c.mu.Unlock()
-	return result, err
+	fragments, finish := c.Provider.GenStream(ctx, msgs, opts...)
+	return fragments, func() (genai.Result, error) {
+		res, err := finish()
+		c.mu.Lock()
+		c.accumUsage.InputTokens += res.Usage.InputTokens
+		c.accumUsage.InputCachedTokens += res.Usage.InputCachedTokens
+		c.accumUsage.OutputTokens += res.Usage.OutputTokens
+		c.mu.Unlock()
+		return res, err
+	}
 }
 
 // GetAccumulatedUsage returns the current accumulated usage values.
@@ -246,13 +248,12 @@ func (c *ProviderAppend) GenSync(ctx context.Context, msgs genai.Messages, opts 
 	return c.Provider.GenSync(ctx, msgs, opts...)
 }
 
-func (c *ProviderAppend) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
-	if len(msgs[len(msgs)-1].Requests) != 0 {
+func (c *ProviderAppend) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
+	if i := len(msgs) - 1; len(msgs[i].Requests) != 0 {
 		msgs = slices.Clone(msgs)
-		msgs[len(msgs)-1].Requests = slices.Clone(msgs[len(msgs)-1].Requests)
-		msgs[len(msgs)-1].Requests = append(msgs[len(msgs)-1].Requests, c.Append)
+		msgs[i].Requests = append(slices.Clone(msgs[i].Requests), c.Append)
 	}
-	return c.Provider.GenStream(ctx, msgs, replies, opts...)
+	return c.Provider.GenStream(ctx, msgs, opts...)
 }
 
 func (c *ProviderAppend) Unwrap() genai.Provider {

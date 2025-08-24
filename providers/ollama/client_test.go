@@ -6,6 +6,7 @@ package ollama_test
 
 import (
 	"context"
+	"log/slog"
 	"net/http"
 	"os"
 	"strings"
@@ -18,6 +19,7 @@ import (
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/ollama"
 	"github.com/maruel/genai/scoreboard/scoreboardtest"
+	"github.com/maruel/roundtrippers"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/cassette"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
@@ -36,7 +38,18 @@ func TestClient(t *testing.T) {
 		}
 		scoreboardtest.AssertScoreboard(t, func(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 			serverURL := s.lazyStart(t)
-			c, err := ollama.New(t.Context(), &genai.ProviderOptions{Remote: serverURL, Model: model.Model}, fn)
+			ctx, l := internaltest.Log(t)
+			fnWithLog := func(h http.RoundTripper) http.RoundTripper {
+				if fn != nil {
+					h = fn(h)
+				}
+				return &roundtrippers.Log{
+					Transport: h,
+					L:         l,
+					Level:     slog.LevelDebug,
+				}
+			}
+			c, err := ollama.New(ctx, &genai.ProviderOptions{Remote: serverURL, Model: model.Model}, fnWithLog)
 			if err != nil {
 				t.Fatal(err)
 			}

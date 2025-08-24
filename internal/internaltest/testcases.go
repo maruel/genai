@@ -69,8 +69,11 @@ func TestClient_Provider_errors(t *testing.T, getClient func(t *testing.T, opts 
 					}
 					t.Fatal(err)
 				}
-				ch := make(chan genai.ReplyFragment, 1)
-				_, err = c.GenStream(t.Context(), msgs, ch)
+
+				fragments, finish := c.GenStream(t.Context(), msgs)
+				for range fragments {
+				}
+				_, err = finish()
 				if line.ErrGenStream == "" {
 					if err != base.ErrNotSupported {
 						t.Fatal("expected unsupported")
@@ -82,11 +85,6 @@ func TestClient_Provider_errors(t *testing.T, getClient func(t *testing.T, opts 
 						t.Fatal("should not be continuable")
 					} else if got := err.Error(); got != line.ErrGenStream {
 						t.Fatalf("Unexpected error.\nwant: %q\ngot : %q", line.ErrGenStream, got)
-					}
-					select {
-					case pkt := <-ch:
-						t.Fatal(pkt)
-					default:
 					}
 				}
 			})

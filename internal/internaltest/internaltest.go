@@ -10,6 +10,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"iter"
 	"log/slog"
 	"net/http"
 	"net/url"
@@ -174,8 +175,8 @@ func (i *InjectOptions) GenSync(ctx context.Context, msgs genai.Messages, opts .
 	return i.Provider.GenSync(ctx, msgs, append(opts, i.Opts...)...)
 }
 
-func (i *InjectOptions) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
-	return i.Provider.GenStream(ctx, msgs, replies, append(opts, i.Opts...)...)
+func (i *InjectOptions) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
+	return i.Provider.GenStream(ctx, msgs, append(opts, i.Opts...)...)
 }
 
 func (i *InjectOptions) Unwrap() genai.Provider {
@@ -196,21 +197,24 @@ func (h *HideHTTP500) GenSync(ctx context.Context, msgs genai.Messages, opts ...
 	if err != nil {
 		var herr *httpjson.Error
 		if errors.As(err, &herr) && herr.StatusCode == 500 {
-			return resp, errors.New("hiding a HTTP 500 error")
+			err = errors.New("hiding a HTTP 500 error")
 		}
 	}
 	return resp, err
 }
 
-func (h *HideHTTP500) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
-	resp, err := h.Provider.GenStream(ctx, msgs, chunks, opts...)
-	if err != nil {
-		var herr *httpjson.Error
-		if errors.As(err, &herr) && herr.StatusCode == 500 {
-			return resp, errors.New("hiding a HTTP 500 error")
+func (h *HideHTTP500) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
+	fragments, finish := h.Provider.GenStream(ctx, msgs, opts...)
+	return fragments, func() (genai.Result, error) {
+		res, err := finish()
+		if err != nil {
+			var herr *httpjson.Error
+			if errors.As(err, &herr) && herr.StatusCode == 500 {
+				err = errors.New("hiding a HTTP 500 error")
+			}
 		}
+		return res, err
 	}
-	return resp, err
 }
 
 //

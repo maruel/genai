@@ -14,6 +14,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"iter"
 	"math"
 	"math/big"
 	"net/http"
@@ -1258,11 +1259,11 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 }
 
 // GenStream implements genai.Provider.
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
 	if c.impl.OutputModalities[0] == genai.ModalityText {
-		return c.impl.GenStream(ctx, msgs, chunks, opts...)
+		return c.impl.GenStream(ctx, msgs, opts...)
 	}
-	return base.SimulateStream(ctx, c, msgs, chunks, opts...)
+	return base.SimulateStream(ctx, c, msgs, opts...)
 }
 
 // GenStreamRaw provides access to the raw API.

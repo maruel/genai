@@ -8,13 +8,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"iter"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/adapters"
 	"github.com/maruel/genai/base"
-	"golang.org/x/sync/errgroup"
 )
 
 func TestProviderThinking_GenSync(t *testing.T) {
@@ -228,21 +228,14 @@ func TestProviderThinking_GenStream(t *testing.T) {
 				mp.streamResponses[0].fragments = append(mp.streamResponses[0].fragments, genai.ReplyFragment{TextFragment: i})
 			}
 			tp := &adapters.ProviderThinking{Provider: mp, ThinkingTokenStart: "<thinking>", ThinkingTokenEnd: "</thinking>"}
-			ch := make(chan genai.ReplyFragment, 100)
-			eg, ctx := errgroup.WithContext(t.Context())
 			accumulated := genai.Message{}
-			eg.Go(func() error {
-				for pkt := range ch {
-					if err2 := accumulated.Accumulate(pkt); err2 != nil {
-						t.Error(err2)
-						return err2
-					}
+			fragments, finish := tp.GenStream(t.Context(), genai.Messages{}, tc.opts)
+			for f := range fragments {
+				if err2 := accumulated.Accumulate(f); err2 != nil {
+					t.Fatal(err2)
 				}
-				return nil
-			})
-			result, err := tp.GenStream(ctx, genai.Messages{}, ch, tc.opts)
-			close(ch)
-			_ = eg.Wait()
+			}
+			result, err := finish()
 			if err != nil {
 				t.Fatalf("unexpected error: %v", err)
 			}
@@ -296,16 +289,10 @@ func TestProviderThinking_GenStream_errors(t *testing.T) {
 				}
 			}
 			tp := &adapters.ProviderThinking{Provider: mp, ThinkingTokenStart: "<thinking>", ThinkingTokenEnd: "</thinking>"}
-			ch := make(chan genai.ReplyFragment, 100)
-			eg := errgroup.Group{}
-			eg.Go(func() error {
-				for range ch {
-				}
-				return nil
-			})
-			_, err := tp.GenStream(t.Context(), genai.Messages{}, ch, nil)
-			close(ch)
-			_ = eg.Wait()
+			fragments, finish := tp.GenStream(t.Context(), genai.Messages{})
+			for range fragments {
+			}
+			_, err := finish()
 			if err == nil {
 				t.Fatal("expected error but got none")
 			}
@@ -364,25 +351,33 @@ func (m *mockProviderGenStream) OutputModalities() genai.Modalities {
 	return nil
 }
 
-func (m *mockProviderGenStream) GenStream(ctx context.Context, msgs genai.Messages, replies chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
-	if m.err != nil {
-		return genai.Result{}, m.err
-	}
-	if m.callIndex >= len(m.streamResponses) {
-		return genai.Result{}, fmt.Errorf("no more mock responses")
-	}
-	resp := m.streamResponses[m.callIndex]
-	m.callIndex++
-	result := genai.Result{Usage: resp.usage}
-	for _, fragment := range resp.fragments {
-		select {
-		case <-ctx.Done():
-			return result, ctx.Err()
-		case replies <- fragment:
-			if err := result.Accumulate(fragment); err != nil {
-				return result, err
+func (m *mockProviderGenStream) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
+	res := genai.Result{}
+	var finalErr error
+	fnFragments := func(yield func(genai.ReplyFragment) bool) {
+		if m.err != nil {
+			finalErr = m.err
+			return
+		}
+		if m.callIndex >= len(m.streamResponses) {
+			finalErr = fmt.Errorf("no more mock responses")
+			return
+		}
+		resp := m.streamResponses[m.callIndex]
+		m.callIndex++
+		res.Usage = resp.usage
+		for _, fragment := range resp.fragments {
+			if err := res.Accumulate(fragment); err != nil {
+				finalErr = err
+				return
+			}
+			if !yield(fragment) {
+				return
 			}
 		}
 	}
-	return result, nil
+	fnFinish := func() (genai.Result, error) {
+		return res, finalErr
+	}
+	return fnFragments, fnFinish
 }

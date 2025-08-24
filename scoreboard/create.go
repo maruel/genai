@@ -669,30 +669,16 @@ func (cs *callState) callGen(ctx context.Context, name string, msgs genai.Messag
 	// internal.Logger(ctx).DebugContext(ctx, name, "msgs", msgs)
 	c, _ := cs.pf(name)
 	var err error
-	var resp genai.Result
+	res := genai.Result{}
 	if cs.isStream {
-		chunks := make(chan genai.ReplyFragment)
-		done := make(chan struct{})
-		go func() {
-			defer close(done)
-			for {
-				select {
-				case <-done:
-					return
-				case _, ok := <-chunks:
-					if !ok {
-						return
-					}
-				}
-			}
-		}()
-		resp, err = c.GenStream(ctx, msgs, chunks, opts...)
-		close(chunks)
-		<-done
+		fragments, finish := c.GenStream(ctx, msgs, opts...)
+		for range fragments {
+		}
+		res, err = finish()
 	} else {
-		resp, err = c.GenSync(ctx, msgs, opts...)
+		res, err = c.GenSync(ctx, msgs, opts...)
 	}
-	for _, c := range resp.Replies {
+	for _, c := range res.Replies {
 		if len(c.Citations) != 0 {
 			cs.hasCitations = true
 		}
@@ -702,12 +688,12 @@ func (cs *callState) callGen(ctx context.Context, name string, msgs genai.Messag
 	}
 	if err != nil {
 		internal.Logger(ctx).DebugContext(ctx, name, "err", err)
-		return resp, err
+		return res, err
 	}
-	cs.usage.InputTokens += resp.Usage.InputTokens
-	cs.usage.InputCachedTokens += resp.Usage.InputCachedTokens
-	cs.usage.OutputTokens += resp.Usage.OutputTokens
-	return resp, err
+	cs.usage.InputTokens += res.Usage.InputTokens
+	cs.usage.InputCachedTokens += res.Usage.InputCachedTokens
+	cs.usage.OutputTokens += res.Usage.OutputTokens
+	return res, err
 }
 
 // Non text modalities

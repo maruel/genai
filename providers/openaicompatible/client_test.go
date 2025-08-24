@@ -13,7 +13,6 @@ import (
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/openaicompatible"
 	"github.com/maruel/roundtrippers"
-	"golang.org/x/sync/errgroup"
 )
 
 // Testing is very different here as we test various providers to see if they work with this generic provider.
@@ -57,41 +56,21 @@ func TestClient_GenStream_simple(t *testing.T) {
 			c := getClient(t, name)
 			msgs := genai.Messages{genai.NewTextMessage("Say hello. Use only one word.")}
 			opts := genai.OptionsText{Temperature: 0.01, MaxTokens: 2000, Seed: 1}
-			ctx := t.Context()
-			chunks := make(chan genai.ReplyFragment)
-			eg := errgroup.Group{}
-			eg.Go(func() error {
-				defer func() {
-					for range chunks {
-					}
-				}()
-				for {
-					select {
-					case <-ctx.Done():
-						return nil
-					case pkt, ok := <-chunks:
-						if !ok {
-							return nil
-						}
-						t.Logf("Packet: %#v", pkt)
-					}
-				}
-			})
-			resp, err := c.GenStream(ctx, msgs, chunks, &opts)
-			close(chunks)
-			if err3 := eg.Wait(); err3 != nil {
-				t.Fatal(err3)
+			fragments, finish := c.GenStream(t.Context(), msgs, &opts)
+			for f := range fragments {
+				t.Logf("Packet: %#v", f)
 			}
+			res, err := finish()
 			if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 				t.Log(uce)
 			} else if err != nil {
 				t.Fatal(err)
 			}
-			t.Logf("Raw response: %#v", resp)
-			if len(resp.Replies) == 0 {
+			t.Logf("Raw response: %#v", res)
+			if len(res.Replies) == 0 {
 				t.Fatal("missing response")
 			}
-			internaltest.ValidateWordResponse(t, resp, "hello")
+			internaltest.ValidateWordResponse(t, res, "hello")
 		})
 	}
 }

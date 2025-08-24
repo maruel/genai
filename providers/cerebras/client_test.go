@@ -5,6 +5,7 @@
 package cerebras_test
 
 import (
+	"log/slog"
 	"net/http"
 	"os"
 	"slices"
@@ -16,6 +17,7 @@ import (
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/cerebras"
 	"github.com/maruel/genai/scoreboard/scoreboardtest"
+	"github.com/maruel/roundtrippers"
 )
 
 func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
@@ -23,7 +25,18 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 	if os.Getenv("CEREBRAS_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	c, err2 := cerebras.New(t.Context(), &genai.ProviderOptions{APIKey: apiKey, Model: model.Model}, fn)
+	ctx, l := internaltest.Log(t)
+	fnWithLog := func(h http.RoundTripper) http.RoundTripper {
+		if fn != nil {
+			h = fn(h)
+		}
+		return &roundtrippers.Log{
+			Transport: h,
+			L:         l,
+			Level:     slog.LevelDebug,
+		}
+	}
+	c, err2 := cerebras.New(ctx, &genai.ProviderOptions{APIKey: apiKey, Model: model.Model}, fnWithLog)
 	if err2 != nil {
 		t.Fatal(err2)
 	}
@@ -117,7 +130,15 @@ func getClientInner(t *testing.T, apiKey, m string) (*cerebras.Client, error) {
 	if apiKey == "" && os.Getenv("CEREBRAS_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	return cerebras.New(t.Context(), &genai.ProviderOptions{APIKey: apiKey, Model: m}, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
+	ctx, l := internaltest.Log(t)
+	return cerebras.New(ctx, &genai.ProviderOptions{APIKey: apiKey, Model: m}, func(h http.RoundTripper) http.RoundTripper {
+		r := testRecorder.Record(t, h)
+		return &roundtrippers.Log{
+			Transport: r,
+			L:         l,
+			Level:     slog.LevelWarn,
+		}
+	})
 }
 
 var testRecorder *internaltest.Records

@@ -61,24 +61,11 @@ func ExampleGenStreamWithToolCallLoop() {
 		// Force the LLM to do a tool call first.
 		ToolCallRequest: genai.ToolCallRequired,
 	}
-	chunks := make(chan genai.ReplyFragment)
-	ctx, cancel := context.WithCancel(ctx)
-	defer cancel()
-	go func() {
-		for {
-			select {
-			case <-ctx.Done():
-				return
-			case fragment, ok := <-chunks:
-				if !ok {
-					return
-				}
-				_, _ = os.Stdout.WriteString(fragment.TextFragment)
-			}
-		}
-	}()
-	_, _, err = adapters.GenStreamWithToolCallLoop(ctx, c, msgs, chunks, &opts)
-	if err != nil {
+	fragments, finish := adapters.GenStreamWithToolCallLoop(ctx, c, msgs, &opts)
+	for f := range fragments {
+		os.Stdout.WriteString(f.TextFragment)
+	}
+	if _, _, err = finish(); err != nil {
 		log.Fatal(err)
 	}
 }

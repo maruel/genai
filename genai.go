@@ -17,6 +17,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"iter"
 	"maps"
 	"path"
 	"path/filepath"
@@ -117,7 +118,7 @@ type Provider interface {
 	// GenStream runs generation synchronously, streaming the results to channel replies.
 	//
 	// No need to accumulate the replies into the result, the Result contains the accumulated message.
-	GenStream(ctx context.Context, msgs Messages, replies chan<- ReplyFragment, opts ...Options) (Result, error)
+	GenStream(ctx context.Context, msgs Messages, opts ...Options) (iter.Seq[ReplyFragment], func() (Result, error))
 }
 
 // ProviderUnwrap is exposed when the Provider is actually a wrapper around another one, like

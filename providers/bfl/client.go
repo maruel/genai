@@ -11,6 +11,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"iter"
 	"net/http"
 	"net/url"
 	"os"
@@ -380,8 +381,8 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 }
 
 // GenStream implements genai.Provider.
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
-	return base.SimulateStream(ctx, c, msgs, chunks, opts...)
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
+	return base.SimulateStream(ctx, c, msgs, opts...)
 }
 
 // GenDoc is a simplified version of GenSync.

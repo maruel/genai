@@ -141,7 +141,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 				}
 			}
 		default:
-			errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
+			errs = append(errs, fmt.Errorf("unsupported options type %T", opt))
 		}
 	}
 
@@ -702,7 +702,7 @@ func (i *ImageRequest) Init(msg genai.Message, model string, opts ...genai.Optio
 		case *genai.OptionsText:
 			i.Seed = v.Seed
 		default:
-			return fmt.Errorf("unsupported options type %T", opts)
+			return fmt.Errorf("unsupported options type %T", opt)
 		}
 	}
 	return nil

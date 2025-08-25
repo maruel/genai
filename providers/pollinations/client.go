@@ -101,7 +101,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 			unsupported, errs = c.initOptions(v, model)
 			sp = v.SystemPrompt
 		default:
-			errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
+			errs = append(errs, fmt.Errorf("unsupported options type %T", opt))
 		}
 	}
 
@@ -1095,7 +1095,7 @@ func (c *Client) genImage(ctx context.Context, msg genai.Message, opts ...genai.
 				qp.Add("seed", strconv.FormatInt(v.Seed, 10))
 			}
 		default:
-			return genai.Result{}, fmt.Errorf("unsupported options type %T", opts)
+			return genai.Result{}, fmt.Errorf("unsupported options type %T", opt)
 		}
 	}
 

@@ -113,7 +113,7 @@ func (r *Response) Init(msgs genai.Messages, model string, opts ...genai.Options
 		case *genai.OptionsText:
 			unsupported, errs = r.initOptions(v, model)
 		default:
-			return fmt.Errorf("unsupported options type %T", opts)
+			return fmt.Errorf("unsupported options type %T", opt)
 		}
 	}
 	if len(msgs) == 0 {

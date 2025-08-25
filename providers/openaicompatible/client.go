@@ -91,7 +91,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 				errs = append(errs, errors.New("unsupported option Tools"))
 			}
 		default:
-			errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
+			errs = append(errs, fmt.Errorf("unsupported options type %T", opt))
 		}
 	}
 

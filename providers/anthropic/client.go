@@ -129,7 +129,7 @@ func (c *ChatRequest) initImpl(msgs genai.Messages, model string, cache bool, op
 		case *genai.OptionsText:
 			unsupported, errs = c.initOptions(v)
 		default:
-			errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
+			errs = append(errs, fmt.Errorf("unsupported options type %T", opt))
 		}
 	}
 

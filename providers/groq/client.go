@@ -141,7 +141,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 			unsupported, errs = c.initOptions(v, model)
 			sp = v.SystemPrompt
 		default:
-			errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
+			errs = append(errs, fmt.Errorf("unsupported options type %T", opt))
 		}
 	}
 

@@ -128,7 +128,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 			c.DisableSearch = v.DisableSearch
 			c.ReturnRelatedQuestions = !v.DisableRelatedQuestions
 		default:
-			errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
+			errs = append(errs, fmt.Errorf("unsupported options type %T", opt))
 		}
 	}
 

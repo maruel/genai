@@ -254,13 +254,13 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 		case *genai.OptionsText:
 			unsupported, errs = c.initOptions(v, model)
 		case *genai.OptionsAudio:
-			errs = append(errs, fmt.Errorf("todo: implement options type %T", opts))
+			errs = append(errs, fmt.Errorf("todo: implement options type %T", opt))
 		case *genai.OptionsImage:
-			errs = append(errs, fmt.Errorf("todo: implement options type %T", opts))
+			errs = append(errs, fmt.Errorf("todo: implement options type %T", opt))
 		case *genai.OptionsVideo:
-			errs = append(errs, fmt.Errorf("todo: implement options type %T", opts))
+			errs = append(errs, fmt.Errorf("todo: implement options type %T", opt))
 		default:
-			errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
+			errs = append(errs, fmt.Errorf("unsupported options type %T", opt))
 		}
 	}
 
@@ -878,7 +878,7 @@ func (i *ImageRequest) Init(msg genai.Message, model string, opts ...genai.Optio
 			}
 			// TODO: Width and Height
 		default:
-			return fmt.Errorf("unsupported options type %T", opts)
+			return fmt.Errorf("unsupported options type %T", opt)
 		}
 	}
 	return uce

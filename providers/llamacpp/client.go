@@ -172,7 +172,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 				}
 			}
 		default:
-			errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
+			errs = append(errs, fmt.Errorf("unsupported options type %T", opt))
 		}
 	}
 
@@ -436,7 +436,7 @@ func (c *CompletionRequest) Init(msgs genai.Messages, model string, opts ...gena
 				errs = append(errs, errors.New("implement option Tools"))
 			}
 		default:
-			errs = append(errs, fmt.Errorf("unsupported options type %T", opts))
+			errs = append(errs, fmt.Errorf("unsupported options type %T", opt))
 		}
 	}
 	// If we have unsupported features but no other errors, return a continuable error

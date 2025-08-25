@@ -146,7 +146,7 @@ func (i *ImageRequest) Init(msg genai.Message, model string, opts ...genai.Optio
 				i.Size = fmt.Sprintf("%dx%d", v.Width, v.Height)
 			}
 		default:
-			return fmt.Errorf("unsupported options type %T", opts)
+			return fmt.Errorf("unsupported options type %T", opt)
 		}
 	}
 	return nil

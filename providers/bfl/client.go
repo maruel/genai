@@ -133,7 +133,7 @@ func (i *ImageRequest) Init(msgs genai.Messages, model string, opts ...genai.Opt
 			i.Width = int64(v.Width)
 			i.Seed = v.Seed
 		default:
-			return fmt.Errorf("unsupported options type %T", opts)
+			return fmt.Errorf("unsupported options type %T", opt)
 		}
 	}
 

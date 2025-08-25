@@ -1099,33 +1099,24 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 // We may want to make this function overridable in the future by the client since this is going to break one
 // day or another.
 func (c *Client) detectModelModalities(ctx context.Context, model string) (genai.Modalities, error) {
-	// TODO: Detect if it is an image model.
-	// Temporarily disabled to ease with the transition away from GenDoc / ProviderGenDoc.
-	// I must not forget to enable this back once I removed GenDoc!
-	if false {
-		mdls, err2 := c.ListModels(ctx)
-		if err2 != nil {
-			return nil, fmt.Errorf("failed to detect the output modality for the model %s: %w", model, err2)
-		}
-		for _, mdl := range mdls {
-			if m := mdl.(*Model); m.ID == model {
-				switch m.Type {
-				case "chat":
-					return genai.Modalities{genai.ModalityText}, nil
-				case "image":
-					return genai.Modalities{genai.ModalityImage}, nil
-				default:
-					return nil, fmt.Errorf("failed to detect the output modality for the model %s: found type %s", model, m.Type)
-				}
+	// Detect if it is an image model.
+	mdls, err2 := c.ListModels(ctx)
+	if err2 != nil {
+		return nil, fmt.Errorf("failed to detect the output modality for the model %s: %w", model, err2)
+	}
+	for _, mdl := range mdls {
+		if m := mdl.(*Model); m.ID == model {
+			switch m.Type {
+			case "chat":
+				return genai.Modalities{genai.ModalityText}, nil
+			case "image":
+				return genai.Modalities{genai.ModalityImage}, nil
+			default:
+				return nil, fmt.Errorf("failed to detect the output modality for the model %s: found type %s", model, m.Type)
 			}
 		}
-		return nil, fmt.Errorf("failed to automatically detect the model modality: model %s not found", model)
 	}
-	if strings.HasPrefix(model, "black-forest-labs/") {
-		return genai.Modalities{genai.ModalityImage}, nil
-	} else {
-		return genai.Modalities{genai.ModalityText}, nil
-	}
+	return nil, fmt.Errorf("failed to automatically detect the model modality: model %s not found", model)
 }
 
 // selectBestTextModel selects the most appropriate model based on the preference (cheap, good, or SOTA).

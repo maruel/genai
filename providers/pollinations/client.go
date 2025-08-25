@@ -1056,7 +1056,7 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 // We may want to make this function overridable in the future by the client since this is going to break one
 // day or another.
 func (c *Client) detectModelModalities(ctx context.Context, model string) (genai.Modalities, error) {
-	mod, err := Cache.ModelModality(ctx, c, model)
+	mod, err := c.modelModality(ctx, model)
 	return genai.Modalities{mod}, err
 }
 
@@ -1147,7 +1147,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 		}
 		return c.genImage(ctx, msgs[0], opts...)
 	}
-	if err := Cache.ValidateModality(ctx, c, genai.ModalityText); err != nil {
+	if err := c.validateModality(ctx, genai.ModalityText); err != nil {
 		return genai.Result{}, err
 	}
 	return c.impl.GenSync(ctx, msgs, opts...)
@@ -1163,7 +1163,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 	if c.isAudio() || c.isImage() {
 		return base.SimulateStream(ctx, c, msgs, opts...)
 	}
-	if err := Cache.ValidateModality(ctx, c, genai.ModalityText); err != nil {
+	if err := c.validateModality(ctx, genai.ModalityText); err != nil {
 		return yieldNoFragment, func() (genai.Result, error) {
 			return genai.Result{}, err
 		}
@@ -1197,7 +1197,7 @@ func (c *Client) genImage(ctx context.Context, msg genai.Message, opts ...genai.
 			return res, errors.New("only text can be passed as input")
 		}
 	}
-	if err := Cache.ValidateModality(ctx, c, genai.ModalityImage); err != nil {
+	if err := c.validateModality(ctx, genai.ModalityImage); err != nil {
 		return genai.Result{}, err
 	}
 	qp := url.Values{}
@@ -1310,6 +1310,35 @@ func (c *Client) isImage() bool {
 	return slices.Contains(c.impl.OutputModalities, genai.ModalityImage)
 }
 
+// modelModality returns the modality of model if found.
+func (c *Client) modelModality(ctx context.Context, model string) (genai.Modality, error) {
+	if _, err := Cache.Warmup(ctx, c); err != nil {
+		return "", err
+	}
+	for _, mdl := range Cache.cachedModels {
+		if mdl.GetID() == model {
+			if _, ok := mdl.(*TextModel); ok {
+				return genai.ModalityText, nil
+			}
+			if _, ok := mdl.(ImageModel); ok {
+				return genai.ModalityImage, nil
+			}
+			break
+		}
+	}
+	return "", fmt.Errorf("model %q not supported by pollinations", model)
+}
+
+// validateModality returns nil if the modality is supported by the model.
+func (c *Client) validateModality(ctx context.Context, mod genai.Modality) error {
+	if got, err := c.modelModality(ctx, c.ModelID()); err != nil {
+		return err
+	} else if got != mod {
+		return fmt.Errorf("modality %s not supported", mod)
+	}
+	return nil
+}
+
 func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ReplyFragment, result *genai.Result) error {
 	defer func() {
 		// We need to empty the channel to avoid blocking the goroutine.
@@ -1395,52 +1424,23 @@ func (e *exponentialBackoff) ShouldRetry(ctx context.Context, start time.Time, t
 type ModelCache struct {
 	// Keep a cache of the model to ensure we don't send a text requested to a image generation model and
 	// vice-versa.
-	mu     sync.Mutex
-	models []genai.Model
-}
-
-// ModelModality returns the modality of model if found.
-func (m *ModelCache) ModelModality(ctx context.Context, c genai.Provider, model string) (genai.Modality, error) {
-	if _, err := m.Warmup(ctx, c); err != nil {
-		return "", err
-	}
-	for _, mdl := range m.models {
-		if mdl.GetID() == model {
-			if _, ok := mdl.(*TextModel); ok {
-				return genai.ModalityText, nil
-			}
-			if _, ok := mdl.(ImageModel); ok {
-				return genai.ModalityImage, nil
-			}
-			break
-		}
-	}
-	return "", fmt.Errorf("model %q not supported by pollinations", model)
-}
-
-// ValidateModality returns nil if the modality is supported by the model.
-func (m *ModelCache) ValidateModality(ctx context.Context, c genai.Provider, mod genai.Modality) error {
-	if got, err := m.ModelModality(ctx, c, c.ModelID()); err != nil {
-		return err
-	} else if got != mod {
-		return fmt.Errorf("modality %s not supported", mod)
-	}
-	return nil
+	mu           sync.Mutex
+	cachedModels []genai.Model
 }
 
 func (m *ModelCache) Warmup(ctx context.Context, c genai.Provider) ([]genai.Model, error) {
 	var err error
 	m.mu.Lock()
-	if m.models == nil {
-		m.models, err = c.ListModels(ctx)
+	if m.cachedModels == nil {
+		m.cachedModels, err = c.ListModels(ctx)
 	}
 	m.mu.Unlock()
-	return m.models, err
+	return m.cachedModels, err
 }
 
 func (m *ModelCache) Clear() {
 	m.mu.Lock()
-	m.models = nil
+	m.cachedModels = nil
 	m.mu.Unlock()
 }
 

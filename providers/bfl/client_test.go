@@ -101,25 +101,26 @@ func TestClient_Provider_errors(t *testing.T) {
 		},
 	}
 	f := func(t *testing.T, opts genai.ProviderOptions) (genai.Provider, error) {
-		return getClientInner(t, opts.APIKey, opts.Model)
+		opts.OutputModalities = genai.Modalities{genai.ModalityImage}
+		return getClientInner(t, opts)
 	}
 	internaltest.TestClient_Provider_errors(t, f, data)
 }
 
 func getClient(t *testing.T, m string) *Client {
 	t.Parallel()
-	c, err := getClientInner(t, "", m)
+	c, err := getClientInner(t, genai.ProviderOptions{Model: m})
 	if err != nil {
 		t.Fatal(err)
 	}
 	return c
 }
 
-func getClientInner(t *testing.T, apiKey, m string) (*Client, error) {
-	if apiKey == "" && os.Getenv("BFL_API_KEY") == "" {
-		apiKey = "<insert_api_key_here>"
+func getClientInner(t *testing.T, opts genai.ProviderOptions) (*Client, error) {
+	if opts.APIKey == "" && os.Getenv("BFL_API_KEY") == "" {
+		opts.APIKey = "<insert_api_key_here>"
 	}
-	return New(t.Context(), &genai.ProviderOptions{APIKey: apiKey, Model: m}, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
+	return New(t.Context(), &opts, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
 }
 
 var testRecorder *internaltest.Records

@@ -1329,6 +1329,7 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			GenSyncURL:           "https://api.anthropic.com/v1/messages",
 			ProcessStreamPackets: processStreamPackets,
+			PreloadedModels:      opts.PreloadedModels,
 			ProcessHeaders:       processHeaders,
 			ProviderBase: base.ProviderBase[*ErrorResponse]{
 				APIKeyURL: apiKeyURL,
@@ -1535,6 +1536,9 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest, out chan<- C
 
 // ListModels implements genai.Provider.
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
+	if c.impl.PreloadedModels != nil {
+		return c.impl.PreloadedModels, nil
+	}
 	// https://docs.anthropic.com/en/api/models-list
 	var resp ModelsResponse
 	if err := c.impl.DoRequest(ctx, "GET", "https://api.anthropic.com/v1/models?limit=1000", nil, &resp); err != nil {

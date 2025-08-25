@@ -777,6 +777,7 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			GenSyncURL:           "https://router.huggingface.co/v1/chat/completions",
 			ProcessStreamPackets: processStreamPackets,
+			PreloadedModels:      opts.PreloadedModels,
 			ProcessHeaders:       processHeaders,
 			ProviderBase: base.ProviderBase[*ErrorResponse]{
 				APIKeyURL: apiKeyURL,
@@ -919,6 +920,9 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest, out chan<- C
 
 // ListModels implements genai.Provider.
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
+	if c.impl.PreloadedModels != nil {
+		return c.impl.PreloadedModels, nil
+	}
 	// https://huggingface.co/docs/hub/api
 	// There's 20k models warm as of March 2025. There's no way to sort by
 	// trending. Sorting by download is not useful. There's no pagination.

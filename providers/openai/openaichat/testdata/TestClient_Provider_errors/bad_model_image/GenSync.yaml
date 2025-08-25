@@ -6,43 +6,49 @@ interactions:
     proto: HTTP/1.1
     proto_major: 1
     proto_minor: 1
-    content_length: 122
+    content_length: 52
     host: api.openai.com
-    body: "{\"model\":\"bad model\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Tell a short joke.\"}]}]}\n"
+    body: "{\"prompt\":\"Tell a short joke.\",\"model\":\"bad model\"}\n"
     headers:
       Content-Type:
       - application/json; charset=utf-8
-    url: https://api.openai.com/v1/chat/completions
+    url: https://api.openai.com/v1/images/generations
     method: POST
   response:
     proto: HTTP/2.0
     proto_major: 2
     proto_minor: 0
-    content_length: 149
-    body: "{\n    \"error\": {\n        \"message\": \"invalid model ID\",\n        \"type\": \"invalid_request_error\",\n        \"param\": null,\n        \"code\": null\n    }\n}\n"
+    content_length: 265
+    body: "{\n  \"error\": {\n    \"message\": \"Invalid value: 'bad model'. Supported values are: 'gpt-image-1', 'gpt-image-1-io', 'gpt-image-0721-mini-alpha', 'dall-e-2', and 'dall-e-3'.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": \"model\",\n    \"code\": \"invalid_value\"\n  }\n}"
     headers:
       Alt-Svc:
       - h3=":443"; ma=86400
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9745e96aca02a2d6-YUL
+      - 974deebb2e44a21c-YYZ
       Content-Length:
-      - "149"
+      - "265"
       Content-Type:
-      - application/json; charset=utf-8
+      - application/json
+      Openai-Organization:
+      - user-vtmtcvpbctksjfewktqdl2sw
+      Openai-Processing-Ms:
+      - "5"
+      Openai-Project:
+      - proj_tH6hQUFvA4Bx6SyAb23zzLEg
+      Openai-Version:
+      - "2020-10-01"
       Server:
       - cloudflare
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains; preload
-      Vary:
-      - Origin
       X-Content-Type-Options:
       - nosniff
       X-Envoy-Upstream-Service-Time:
-      - "6"
+      - "7"
       X-Request-Id:
-      - req_c9ec575249d04402b9ac94b24bd63a75
+      - req_c9c94c13289e227349ea04a3c0a1f792
     status: 400 Bad Request
     code: 400
-    duration: 115ms
+    duration: 366ms

@@ -551,6 +551,7 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			GenSyncURL:           "https://api.perplexity.ai/chat/completions",
 			ProcessStreamPackets: processStreamPackets,
+			PreloadedModels:      opts.PreloadedModels,
 			ProviderBase: base.ProviderBase[*ErrorResponse]{
 				APIKeyURL: apiKeyURL,
 				Lenient:   internal.BeLenient,

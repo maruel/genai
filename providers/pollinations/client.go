@@ -23,7 +23,6 @@ import (
 	"sort"
 	"strconv"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/invopop/jsonschema"
@@ -1013,6 +1012,7 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			GenSyncURL:           "https://text.pollinations.ai/openai",
 			ProcessStreamPackets: processStreamPackets,
+			PreloadedModels:      opts.PreloadedModels,
 			LieToolCalls:         true,
 			ProviderBase: base.ProviderBase[*ErrorResponse]{
 				Lenient: internal.BeLenient,
@@ -1274,6 +1274,9 @@ func (c *Client) genImage(ctx context.Context, msg genai.Message, opts ...genai.
 
 // ListModels implements genai.Provider.
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
+	if c.impl.PreloadedModels != nil {
+		return c.impl.PreloadedModels, nil
+	}
 	// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#list-available-image-models-
 	var out []genai.Model
 	img, err1 := c.ListImageGenModels(ctx)
@@ -1312,10 +1315,11 @@ func (c *Client) isImage() bool {
 
 // modelModality returns the modality of model if found.
 func (c *Client) modelModality(ctx context.Context, model string) (genai.Modality, error) {
-	if _, err := Cache.Warmup(ctx, c); err != nil {
+	mdls, err := c.ListModels(ctx)
+	if err != nil {
 		return "", err
 	}
-	for _, mdl := range Cache.cachedModels {
+	for _, mdl := range mdls {
 		if mdl.GetID() == model {
 			if _, ok := mdl.(*TextModel); ok {
 				return genai.ModalityText, nil
@@ -1419,33 +1423,6 @@ func (e *exponentialBackoff) ShouldRetry(ctx context.Context, start time.Time, t
 	}
 	return e.ExponentialBackoff.ShouldRetry(ctx, start, try, err, resp)
 }
-
-// ModelCache is a cache of the list of models.
-type ModelCache struct {
-	// Keep a cache of the model to ensure we don't send a text requested to a image generation model and
-	// vice-versa.
-	mu           sync.Mutex
-	cachedModels []genai.Model
-}
-
-func (m *ModelCache) Warmup(ctx context.Context, c genai.Provider) ([]genai.Model, error) {
-	var err error
-	m.mu.Lock()
-	if m.cachedModels == nil {
-		m.cachedModels, err = c.ListModels(ctx)
-	}
-	m.mu.Unlock()
-	return m.cachedModels, err
-}
-
-func (m *ModelCache) Clear() {
-	m.mu.Lock()
-	m.cachedModels = nil
-	m.mu.Unlock()
-}
-
-// Cache is the global cache of the list of models.
-var Cache ModelCache
 
 func yieldNoFragment(yield func(genai.ReplyFragment) bool) {
 }

@@ -443,6 +443,9 @@ func (c *Client) genDoc(ctx context.Context, msg genai.Message, opts ...genai.Op
 
 // ListModels implements genai.Provider.
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
+	if c.impl.PreloadedModels != nil {
+		return c.impl.PreloadedModels, nil
+	}
 	// https://platform.openai.com/docs/api-reference/models/list
 	var resp ModelsResponse
 	if err := c.impl.DoRequest(ctx, "GET", "https://api.openai.com/v1/models", nil, &resp); err != nil {

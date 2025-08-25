@@ -563,9 +563,10 @@ func (er *ErrorResponse) IsAPIError() bool {
 
 // Client implements genai.Provider.
 type Client struct {
-	impl    base.ProviderBase[*ErrorResponse]
-	baseURL string
-	chatURL string
+	impl            base.ProviderBase[*ErrorResponse]
+	preloadedModels []genai.Model
+	baseURL         string
+	chatURL         string
 }
 
 // New creates a new client to talk to the Ollama API.
@@ -609,8 +610,9 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 				Transport: &roundtrippers.RequestID{Transport: t},
 			},
 		},
-		baseURL: baseURL,
-		chatURL: baseURL + "/api/chat",
+		preloadedModels: opts.PreloadedModels,
+		baseURL:         baseURL,
+		chatURL:         baseURL + "/api/chat",
 	}
 	switch opts.Model {
 	case genai.ModelNone:
@@ -811,6 +813,9 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest, out chan<- C
 
 // ListModels implements genai.Provider.
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
+	if c.preloadedModels != nil {
+		return c.preloadedModels, nil
+	}
 	// https://github.com/ollama/ollama/blob/main/docs/api.md#list-local-models
 	var resp ModelsResponse
 	if err := c.impl.DoRequest(ctx, "GET", c.baseURL+"/api/tags", nil, &resp); err != nil {

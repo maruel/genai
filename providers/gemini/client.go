@@ -1514,6 +1514,7 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 	c := &Client{
 		Impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			ProcessStreamPackets: processStreamPackets,
+			PreloadedModels:      opts.PreloadedModels,
 			LieToolCalls:         true,
 			ProviderBase: base.ProviderBase[*ErrorResponse]{
 				APIKeyURL: apiKeyURL,
@@ -2000,6 +2001,9 @@ func (c *Client) PokeResultRaw(ctx context.Context, id genai.Job) (Operation, er
 
 // ListModels implements genai.Provider.
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
+	if c.Impl.PreloadedModels != nil {
+		return c.Impl.PreloadedModels, nil
+	}
 	// https://ai.google.dev/api/models?hl=en#method:-models.list
 	var resp ModelsResponse
 	if err := c.Impl.DoRequest(ctx, "GET", "https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000", nil, &resp); err != nil {

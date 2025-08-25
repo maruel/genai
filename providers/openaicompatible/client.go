@@ -391,6 +391,7 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			GenSyncURL:           opts.Remote,
 			ProcessStreamPackets: processStreamPackets,
+			PreloadedModels:      opts.PreloadedModels,
 			ProviderBase: base.ProviderBase[*ErrorResponse]{
 				Model:            model,
 				ModelOptional:    true,

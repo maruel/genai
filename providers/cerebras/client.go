@@ -753,6 +753,7 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 			GenSyncURL:           "https://api.cerebras.ai/v1/chat/completions",
 			ProcessStreamPackets: processStreamPackets,
 			ProcessHeaders:       processHeaders,
+			PreloadedModels:      opts.PreloadedModels,
 			LieToolCalls:         true,
 			ProviderBase: base.ProviderBase[*ErrorResponse]{
 				APIKeyURL: apiKeyURL,
@@ -873,6 +874,9 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest, out chan<- C
 
 // ListModels implements genai.Provider.
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
+	if c.impl.PreloadedModels != nil {
+		return c.impl.PreloadedModels, nil
+	}
 	// https://inference-docs.cerebras.ai/api-reference/models
 	var resp ModelsResponse
 	if err := c.impl.DoRequest(ctx, "GET", "https://api.cerebras.ai/v1/models", nil, &resp); err != nil {

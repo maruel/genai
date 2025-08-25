@@ -9,12 +9,14 @@ import (
 	"net/http"
 	"os"
 	"slices"
+	"sync"
 	"testing"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/adapters"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
+	"github.com/maruel/genai/internal/myrecorder"
 	"github.com/maruel/genai/providers/cerebras"
 	"github.com/maruel/genai/scoreboard/scoreboardtest"
 	"github.com/maruel/roundtrippers"
@@ -36,7 +38,12 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 			Level:     slog.LevelDebug,
 		}
 	}
-	c, err2 := cerebras.New(ctx, &genai.ProviderOptions{APIKey: apiKey, Model: model.Model}, fnWithLog)
+	opts := genai.ProviderOptions{
+		APIKey:          apiKey,
+		Model:           model.Model,
+		PreloadedModels: loadCachedModelsList(t),
+	}
+	c, err2 := cerebras.New(ctx, &opts, fnWithLog)
 	if err2 != nil {
 		t.Fatal(err2)
 	}
@@ -78,8 +85,8 @@ func TestClient_Preferred(t *testing.T) {
 		want string
 	}{
 		{genai.ModelCheap, "llama3.1-8b"},
-		{genai.ModelGood, "llama-4-scout-17b-16e-instruct"},
-		{genai.ModelSOTA, "qwen-3-32b"},
+		{genai.ModelGood, "llama-4-maverick-17b-128e-instruct"},
+		{genai.ModelSOTA, "qwen-3-235b-a22b-instruct-2507"},
 	}
 	for _, line := range data {
 		t.Run(line.name, func(t *testing.T) {
@@ -112,26 +119,31 @@ func TestClient_Provider_errors(t *testing.T) {
 		},
 	}
 	f := func(t *testing.T, opts genai.ProviderOptions) (genai.Provider, error) {
-		return getClientInner(t, opts.APIKey, opts.Model)
+		opts.OutputModalities = genai.Modalities{genai.ModalityText}
+		return getClientInner(t, opts)
 	}
 	internaltest.TestClient_Provider_errors(t, f, data)
 }
 
 func getClient(t *testing.T, m string) *cerebras.Client {
 	t.Parallel()
-	c, err := getClientInner(t, "", m)
+	opts := genai.ProviderOptions{
+		Model:           m,
+		PreloadedModels: loadCachedModelsList(t),
+	}
+	c, err := getClientInner(t, opts)
 	if err != nil {
 		t.Fatal(err)
 	}
 	return c
 }
 
-func getClientInner(t *testing.T, apiKey, m string) (*cerebras.Client, error) {
-	if apiKey == "" && os.Getenv("CEREBRAS_API_KEY") == "" {
-		apiKey = "<insert_api_key_here>"
+func getClientInner(t *testing.T, opts genai.ProviderOptions) (*cerebras.Client, error) {
+	if opts.APIKey == "" && os.Getenv("CEREBRAS_API_KEY") == "" {
+		opts.APIKey = "<insert_api_key_here>"
 	}
 	ctx, l := internaltest.Log(t)
-	return cerebras.New(ctx, &genai.ProviderOptions{APIKey: apiKey, Model: m}, func(h http.RoundTripper) http.RoundTripper {
+	return cerebras.New(ctx, &opts, func(h http.RoundTripper) http.RoundTripper {
 		r := testRecorder.Record(t, h)
 		return &roundtrippers.Log{
 			Transport: r,
@@ -140,6 +152,39 @@ func getClientInner(t *testing.T, apiKey, m string) (*cerebras.Client, error) {
 		}
 	})
 }
+
+func loadCachedModelsList(t testing.TB) []genai.Model {
+	doOnce.Do(func() {
+		var r myrecorder.Recorder
+		var err2 error
+		ctx := t.Context()
+		opts := genai.ProviderOptions{Model: genai.ModelNone}
+		if os.Getenv("CEREBRAS_API_KEY") == "" {
+			opts.APIKey = "<insert_api_key_here>"
+		}
+		c, err := cerebras.New(ctx, &opts, func(h http.RoundTripper) http.RoundTripper {
+			r, err2 = testRecorder.Records.Record("WarmupCache", h)
+			return r
+		})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err2 != nil {
+			t.Fatal(err2)
+		}
+		if cachedModels, err = c.ListModels(ctx); err != nil {
+			t.Fatal(err)
+		}
+		if err = r.Stop(); err != nil {
+			t.Fatal(err)
+		}
+	})
+	return cachedModels
+}
+
+var doOnce sync.Once
+
+var cachedModels []genai.Model
 
 var testRecorder *internaltest.Records
 

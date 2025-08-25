@@ -1053,6 +1053,7 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			GenSyncURL:           "https://api.together.xyz/v1/chat/completions",
 			ProcessStreamPackets: processStreamPackets,
+			PreloadedModels:      opts.PreloadedModels,
 			ProcessHeaders:       processHeaders,
 			ProviderBase: base.ProviderBase[*ErrorResponse]{
 				APIKeyURL: apiKeyURL,
@@ -1309,6 +1310,9 @@ func (c *Client) genImage(ctx context.Context, msg genai.Message, opts ...genai.
 
 // ListModels implements genai.Provider.
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
+	if c.impl.PreloadedModels != nil {
+		return c.impl.PreloadedModels, nil
+	}
 	// https://docs.together.ai/reference/models-1
 	var resp ModelsResponse
 	if err := c.impl.DoRequest(ctx, "GET", "https://api.together.xyz/v1/models", nil, &resp); err != nil {

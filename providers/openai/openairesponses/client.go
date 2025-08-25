@@ -1141,6 +1141,7 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 			GenSyncURL:           "https://api.openai.com/v1/responses",
 			GenStreamURL:         "https://api.openai.com/v1/responses",
 			ProcessStreamPackets: processStreamPackets,
+			PreloadedModels:      opts.PreloadedModels,
 			ProcessHeaders:       processHeaders,
 			ProviderBase: base.ProviderBase[*ErrorResponse]{
 				APIKeyURL: "", // OpenAI error message prints the api key URL already.

@@ -319,6 +319,9 @@ type Provider[PErrorResponse ErrAPI, PGenRequest InitializableRequest, PGenRespo
 	ProcessHeaders func(http.Header) []genai.RateLimit
 	// LieToolCalls lie the FinishReason on tool calls.
 	LieToolCalls bool
+	// PreloadedModels is a list of preloaded models provided by the user to save on HTTP requests for
+	// ListModels.
+	PreloadedModels []genai.Model
 
 	// Protected by Base.mu.
 	chatRequest  reflect.Type

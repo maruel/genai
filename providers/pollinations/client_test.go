@@ -22,7 +22,12 @@ import (
 )
 
 func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
-	c, err := pollinations.New(t.Context(), &genai.ProviderOptions{Model: model.Model}, fn)
+	opts := genai.ProviderOptions{
+		APIKey:          "genai-unittests",
+		Model:           model.Model,
+		PreloadedModels: loadCachedModelsList(t),
+	}
+	c, err := pollinations.New(t.Context(), &opts, fn)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -56,7 +61,7 @@ func (h *smallImage) GenSync(ctx context.Context, msgs genai.Messages, opts ...g
 }
 
 func TestClient_Scoreboard(t *testing.T) {
-	models := warmupCache(t)
+	models := loadCachedModelsList(t)
 	var sbModels []scoreboardtest.Model
 	for _, m := range models {
 		id := m.GetID()
@@ -104,35 +109,42 @@ func TestClient_Provider_errors(t *testing.T) {
 		},
 	}
 	f := func(t *testing.T, opts genai.ProviderOptions) (genai.Provider, error) {
-		return getClientInner(t, &genai.ProviderOptions{APIKey: "genai-unittests", Model: opts.Model, OutputModalities: genai.Modalities{genai.ModalityText}})
+		opts.APIKey = "genai-unittests"
+		opts.OutputModalities = genai.Modalities{genai.ModalityText}
+		return getClientInner(t, opts)
 	}
 	internaltest.TestClient_Provider_errors(t, f, data)
 }
 
 func getClient(t *testing.T, m string) *pollinations.Client {
 	t.Parallel()
-	c, err := getClientInner(t, &genai.ProviderOptions{APIKey: "genai-unittests", Model: m})
+	opts := genai.ProviderOptions{
+		Model:           m,
+		PreloadedModels: loadCachedModelsList(t),
+	}
+	c, err := getClientInner(t, opts)
 	if err != nil {
 		t.Fatal(err)
 	}
 	return c
 }
 
-func getClientInner(t *testing.T, opts *genai.ProviderOptions) (*pollinations.Client, error) {
-	c, err := pollinations.New(t.Context(), opts, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
-	if err != nil {
-		return nil, err
+func getClientInner(t *testing.T, opts genai.ProviderOptions) (*pollinations.Client, error) {
+	if opts.APIKey == "" {
+		opts.APIKey = "genai-unittests"
 	}
-	warmupCache(t)
-	return c, nil
+	return pollinations.New(t.Context(), &opts, func(h http.RoundTripper) http.RoundTripper {
+		return testRecorder.Record(t, h)
+	})
 }
 
-func warmupCache(t testing.TB) []genai.Model {
+func loadCachedModelsList(t testing.TB) []genai.Model {
 	doOnce.Do(func() {
 		var r myrecorder.Recorder
 		var err2 error
 		ctx := t.Context()
-		c, err := pollinations.New(ctx, &genai.ProviderOptions{APIKey: "genai-unittests", Model: genai.ModelNone}, func(h http.RoundTripper) http.RoundTripper {
+		opts := genai.ProviderOptions{APIKey: "genai-unittests", Model: genai.ModelNone}
+		c, err := pollinations.New(ctx, &opts, func(h http.RoundTripper) http.RoundTripper {
 			r, err2 = testRecorder.Records.Record("WarmupCache", h)
 			return r
 		})
@@ -142,7 +154,7 @@ func warmupCache(t testing.TB) []genai.Model {
 		if err2 != nil {
 			t.Fatal(err2)
 		}
-		if cachedModels, err = pollinations.Cache.Warmup(ctx, c); err != nil {
+		if cachedModels, err = c.ListModels(ctx); err != nil {
 			t.Fatal(err)
 		}
 		if err = r.Stop(); err != nil {

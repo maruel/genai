@@ -75,6 +75,11 @@ type ProviderOptions struct {
 	// OutputModalities can be set when Model is set to ModelNone to test if a provider support this modality without
 	// causing a ListModels call.
 	OutputModalities Modalities `json:"modalities,omitzero" yaml:"modalities,omitzero"`
+	// PreloadedModels is a list of models that are preloaded into the provider, to replace the call to
+	// ListModels, for example with automatic model selection and modality detection.
+	//
+	// This is mostly used for unit tests or repeated client creation to save on HTTP requests.
+	PreloadedModels []Model
 
 	_ struct{}
 }

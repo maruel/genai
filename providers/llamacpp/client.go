@@ -1132,6 +1132,7 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			GenSyncURL:           baseURL + "/chat/completions",
 			ProcessStreamPackets: processChatStreamPackets,
+			PreloadedModels:      opts.PreloadedModels,
 			ProviderBase: base.ProviderBase[*ErrorResponse]{
 				ModelOptional: true,
 				Lenient:       internal.BeLenient,
@@ -1224,6 +1225,9 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest, out chan<- C
 
 // ListModels implements genai.Provider.
 func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
+	if c.impl.PreloadedModels != nil {
+		return c.impl.PreloadedModels, nil
+	}
 	var resp ModelsResponse
 	if err := c.impl.DoRequest(ctx, "GET", c.modelsURL, nil, &resp); err != nil {
 		return nil, err

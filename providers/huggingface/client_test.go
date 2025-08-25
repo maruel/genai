@@ -8,18 +8,25 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"sync"
 	"testing"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/adapters"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
+	"github.com/maruel/genai/internal/myrecorder"
 	"github.com/maruel/genai/providers/huggingface"
 	"github.com/maruel/genai/scoreboard/scoreboardtest"
 )
 
 func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
-	c, err := huggingface.New(t.Context(), &genai.ProviderOptions{APIKey: getAPIKeyTest(t), Model: model.Model}, fn)
+	opts := genai.ProviderOptions{
+		APIKey:          getAPIKeyTest(t),
+		Model:           model.Model,
+		PreloadedModels: loadCachedModelsList(t),
+	}
+	c, err := huggingface.New(t.Context(), &opts, fn)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -54,9 +61,10 @@ func TestClient_Preferred(t *testing.T) {
 		name string
 		want string
 	}{
-		{genai.ModelCheap, "meta-llama/Llama-3.2-3B-Instruct"},
+		// It oscillates between models.
+		{genai.ModelCheap, "meta-llama/Llama-3.2-1B-Instruct"},
 		{genai.ModelGood, "Qwen/Qwen3-Coder-480B-A35B-Instruct"},
-		{genai.ModelSOTA, "deepseek-ai/DeepSeek-R1"},
+		{genai.ModelSOTA, "deepseek-ai/DeepSeek-V3.1"},
 	}
 	for _, line := range data {
 		t.Run(line.name, func(t *testing.T) {
@@ -89,25 +97,30 @@ func TestClient_Provider_errors(t *testing.T) {
 		},
 	}
 	f := func(t *testing.T, opts genai.ProviderOptions) (genai.Provider, error) {
-		return getClientInner(t, opts.APIKey, opts.Model)
+		opts.OutputModalities = genai.Modalities{genai.ModalityText}
+		return getClientInner(t, opts)
 	}
 	internaltest.TestClient_Provider_errors(t, f, data)
 }
 
 func getClient(t *testing.T, m string) *huggingface.Client {
 	t.Parallel()
-	c, err := getClientInner(t, "", m)
+	opts := genai.ProviderOptions{
+		Model:           m,
+		PreloadedModels: loadCachedModelsList(t),
+	}
+	c, err := getClientInner(t, opts)
 	if err != nil {
 		t.Fatal(err)
 	}
 	return c
 }
 
-func getClientInner(t *testing.T, apiKey, m string) (*huggingface.Client, error) {
-	if apiKey == "" {
-		apiKey = getAPIKeyTest(t)
+func getClientInner(t *testing.T, opts genai.ProviderOptions) (*huggingface.Client, error) {
+	if opts.APIKey == "" {
+		opts.APIKey = getAPIKeyTest(t)
 	}
-	return huggingface.New(t.Context(), &genai.ProviderOptions{APIKey: apiKey, Model: m}, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
+	return huggingface.New(t.Context(), &opts, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
 }
 
 func getAPIKeyTest(t testing.TB) string {
@@ -117,6 +130,39 @@ func getAPIKeyTest(t testing.TB) string {
 	}
 	return apiKey
 }
+
+func loadCachedModelsList(t testing.TB) []genai.Model {
+	doOnce.Do(func() {
+		var r myrecorder.Recorder
+		var err2 error
+		ctx := t.Context()
+		opts := genai.ProviderOptions{
+			APIKey: getAPIKeyTest(t),
+			Model:  genai.ModelNone,
+		}
+		c, err := huggingface.New(ctx, &opts, func(h http.RoundTripper) http.RoundTripper {
+			r, err2 = testRecorder.Records.Record("WarmupCache", h)
+			return r
+		})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err2 != nil {
+			t.Fatal(err2)
+		}
+		if cachedModels, err = c.ListModels(ctx); err != nil {
+			t.Fatal(err)
+		}
+		if err = r.Stop(); err != nil {
+			t.Fatal(err)
+		}
+	})
+	return cachedModels
+}
+
+var doOnce sync.Once
+
+var cachedModels []genai.Model
 
 var testRecorder *internaltest.Records
 

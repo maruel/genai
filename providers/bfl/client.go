@@ -256,6 +256,9 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 	if len(opts.OutputModalities) != 0 && !slices.Equal(opts.OutputModalities, mod) {
 		return nil, fmt.Errorf("unexpected option Modalities %s, only image is supported", mod)
 	}
+	if len(opts.PreloadedModels) != 0 {
+		return nil, errors.New("unexpected option PreloadedModels")
+	}
 	t := base.DefaultTransport
 	if wrapper != nil {
 		t = wrapper(t)

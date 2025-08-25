@@ -6,35 +6,35 @@ interactions:
     proto: HTTP/1.1
     proto_major: 1
     proto_minor: 1
-    content_length: 205
+    content_length: 52
     host: api.openai.com
-    body: "{\"model\":\"bad model\",\"background\":false,\"reasoning\":{\"summary\":\"auto\"},\"store\":false,\"input\":[{\"type\":\"message\",\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"Tell a short joke.\"}]}],\"stream\":true}\n"
+    body: "{\"prompt\":\"Tell a short joke.\",\"model\":\"bad model\"}\n"
     headers:
       Content-Type:
       - application/json; charset=utf-8
-    url: https://api.openai.com/v1/responses
+    url: https://api.openai.com/v1/images/generations
     method: POST
   response:
     proto: HTTP/2.0
     proto_major: 2
     proto_minor: 0
-    content_length: 175
-    body: "{\n  \"error\": {\n    \"message\": \"The requested model 'bad model' does not exist.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": \"model\",\n    \"code\": \"model_not_found\"\n  }\n}"
+    content_length: 265
+    body: "{\n  \"error\": {\n    \"message\": \"Invalid value: 'bad model'. Supported values are: 'gpt-image-1', 'gpt-image-1-io', 'gpt-image-0721-mini-alpha', 'dall-e-2', and 'dall-e-3'.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": \"model\",\n    \"code\": \"invalid_value\"\n  }\n}"
     headers:
       Alt-Svc:
       - h3=":443"; ma=86400
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9745e9a5fa4ca281-YUL
+      - 974df1739879a2eb-YUL
       Content-Length:
-      - "175"
+      - "265"
       Content-Type:
       - application/json
       Openai-Organization:
       - user-vtmtcvpbctksjfewktqdl2sw
       Openai-Processing-Ms:
-      - "84"
+      - "6"
       Openai-Project:
       - proj_tH6hQUFvA4Bx6SyAb23zzLEg
       Openai-Version:
@@ -46,9 +46,9 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Envoy-Upstream-Service-Time:
-      - "88"
+      - "8"
       X-Request-Id:
-      - req_ecd9ef59f7c510689d1c6bbf4d6297c3
+      - req_0c4baf6902df9ef1e7ecbdf9780928f1
     status: 400 Bad Request
     code: 400
-    duration: 385ms
+    duration: 295ms

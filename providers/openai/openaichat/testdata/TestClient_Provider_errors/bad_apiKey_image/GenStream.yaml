@@ -6,43 +6,47 @@ interactions:
     proto: HTTP/1.1
     proto_major: 1
     proto_minor: 1
-    content_length: 163
+    content_length: 73
     host: api.openai.com
-    body: "{\"model\":\"gpt-image-1\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Tell a short joke.\"}]}],\"stream_options\":{\"include_usage\":true}}\n"
+    body: "{\"prompt\":\"Tell a short joke.\",\"model\":\"gpt-image-1\",\"moderation\":\"low\"}\n"
     headers:
       Content-Type:
       - application/json; charset=utf-8
-    url: https://api.openai.com/v1/chat/completions
+    url: https://api.openai.com/v1/images/generations
     method: POST
   response:
     proto: HTTP/2.0
     proto_major: 2
     proto_minor: 0
-    content_length: 260
-    body: "{\n    \"error\": {\n        \"message\": \"Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.\",\n        \"type\": \"invalid_request_error\",\n        \"param\": null,\n        \"code\": \"invalid_api_key\"\n    }\n}\n"
+    content_length: 239
+    body: "{\n  \"error\": {\n    \"message\": \"Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": \"invalid_api_key\"\n  }\n}"
     headers:
       Alt-Svc:
       - h3=":443"; ma=86400
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9745e968df5ea2d6-YUL
+      - 974dee76afc5a2f6-YUL
       Content-Length:
-      - "260"
+      - "239"
       Content-Type:
-      - application/json; charset=utf-8
+      - application/json
+      Openai-Processing-Ms:
+      - "32"
+      Openai-Version:
+      - "2020-10-01"
       Server:
       - cloudflare
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains; preload
-      Vary:
-      - Origin
+      Www-Authenticate:
+      - Bearer realm="OpenAI API"
       X-Content-Type-Options:
       - nosniff
       X-Envoy-Upstream-Service-Time:
-      - "2"
+      - "33"
       X-Request-Id:
-      - req_d18db1181ae147c9b3bbf3e5a50af91b
+      - req_2501f54c558213242c55c6dd03c1e75d
     status: 401 Unauthorized
     code: 401
-    duration: 113ms
+    duration: 299ms

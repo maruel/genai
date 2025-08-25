@@ -746,31 +746,22 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 		chunks := make(chan ChatStreamChunkResponse, 32)
 		// TODO: Replace with an iterator.
 		fragments := make(chan genai.ReplyFragment)
-		eg, ctx := errgroup.WithContext(ctx)
+		eg, ctx2 := errgroup.WithContext(ctx)
 		eg.Go(func() error {
 			err := processStreamPackets(chunks, fragments, &res)
 			close(fragments)
 			return err
 		})
 		eg.Go(func() error {
-			err := c.GenStreamRaw(ctx, &in, chunks)
+			err := c.GenStreamRaw(ctx2, &in, chunks)
 			close(chunks)
 			return err
 		})
-		for {
-			select {
-			case <-ctx.Done():
-				goto stoploop
-			case f, ok := <-fragments:
-				if !ok {
-					goto stoploop
-				}
-				if !yield(f) {
-					goto stoploop
-				}
+		for f := range fragments {
+			if !yield(f) {
+				break
 			}
 		}
-	stoploop:
 		// Make sure the channel is emptied.
 		for range fragments {
 		}

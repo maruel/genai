@@ -377,7 +377,7 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 		chunks := make(chan GenStreamChunkResponse, 32)
 		// TODO: Replace with an iterator.
 		fragments := make(chan genai.ReplyFragment)
-		eg, ctx := errgroup.WithContext(ctx)
+		eg, ctx2 := errgroup.WithContext(ctx)
 		eg.Go(func() error {
 			// Converts raw chunks into fragments.
 			err := c.ProcessStreamPackets(chunks, fragments, &res)
@@ -386,26 +386,15 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 		})
 		eg.Go(func() error {
 			// Generate parsed chunks from the raw JSON SSE stream.
-			err := c.GenStreamRaw(ctx, in, chunks)
+			err := c.GenStreamRaw(ctx2, in, chunks)
 			close(chunks)
 			return err
 		})
-		for {
-			select {
-			case <-ctx.Done():
-				goto stoploop
-			case f, ok := <-fragments:
-				if !ok {
-					// Channel closed, exit loop
-					goto stoploop
-				}
-				if !yield(f) {
-					// Consumer stopped, exit loop
-					goto stoploop
-				}
+		for f := range fragments {
+			if !yield(f) {
+				break
 			}
 		}
-	stoploop:
 		// Make sure the channel is emptied.
 		for range fragments {
 		}

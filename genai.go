@@ -112,12 +112,12 @@ type Provider interface {
 	ListModels(ctx context.Context) ([]Model, error)
 	// GenSync runs generation synchronously.
 	//
-	// opts can be nil, in this case OptionsText is assumed. It can also be other modalities like *OptionsImage,
-	// *OptionsText or a provider-specialized option struct.
+	// Multiple options can be mixed together, both standard ones like *OptionsImage, *OptionsText and a
+	// provider-specialized options struct.
 	GenSync(ctx context.Context, msgs Messages, opts ...Options) (Result, error)
 	// GenStream runs generation synchronously, yielding the fragments of replies as the server sends them.
 	//
-	// No need to accumulate the fragment into a Message since the Result contains the accumulated message.
+	// No need to accumulate the fragments into a Message since the Result contains the accumulated message.
 	GenStream(ctx context.Context, msgs Messages, opts ...Options) (iter.Seq[ReplyFragment], func() (Result, error))
 }
 

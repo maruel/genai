@@ -41,8 +41,9 @@ var Scoreboard = scoreboard.Score{
 	DashboardURL: "https://dashboard.bfl.ai/",
 	Scenarios: []scoreboard.Scenario{
 		{
+			Comments: "See https://docs.bfl.ai/api-reference/tasks/generate-an-image-with-flux1-[dev]",
 			Models: []string{
-				"flux-dev", // https://docs.bfl.ai/api-reference/tasks/generate-an-image-with-flux1-[dev]
+				"flux-dev",
 			},
 			In: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
 			Out: map[genai.Modality]scoreboard.ModalCapability{
@@ -58,24 +59,22 @@ var Scoreboard = scoreboard.Score{
 				Seed:               true,
 			},
 		},
-		// It cost a fair amount of money to run the test.
-		/*
-			{
-				Models: []string{
-					"flux-kontext-dev",    // Described at https://docs.bfl.ai/api-reference/models/report-model-usage
-					"flux-tools",          // Described at https://docs.bfl.ai/api-reference/models/report-model-usage
-					"flux-pro-1.0-depth",  // https://docs.bfl.ai/api-reference/tasks/generate-an-image-with-flux1-depth-[pro]-using-a-control-image
-					"flux-pro-1.0-canny",  // https://docs.bfl.ai/api-reference/tasks/generate-an-image-with-flux1-canny-[pro]-using-a-control-image
-					"flux-pro-1.0-expand", // https://docs.bfl.ai/api-reference/tasks/expand-an-image-by-adding-pixels-on-any-side
-					"flux-pro-1.0-fill",   // https://docs.bfl.ai/api-reference/tasks/generate-an-image-with-flux1-fill-[pro]-using-an-input-image-and-mask
-					"flux-kontext-pro",    // https://docs.bfl.ai/api-reference/tasks/edit-or-create-an-image-with-flux-kontext-pro
-					"flux-kontext-max",    // https://docs.bfl.ai/api-reference/tasks/edit-or-create-an-image-with-flux-kontext-max
-					"flux-pro-1.1-ultra",  // https://docs.bfl.ai/api-reference/tasks/generate-an-image-with-flux-11-[pro]-with-ultra-mode-and-optional-raw-mode
-					"flux-pro-1.1",        // https://docs.bfl.ai/api-reference/tasks/generate-an-image-with-flux-11-[pro]
-					"flux-pro",            // https://docs.bfl.ai/api-reference/tasks/generate-an-image-with-flux1-[pro]
-				},
+		{
+			Comments: "It cost a fair amount of money to run the test on these models; see https://docs.bfl.ai/api-reference/tasks/ for details.",
+			Models: []string{
+				"flux-kontext-dev",
+				"flux-tools",
+				"flux-pro-1.0-depth",
+				"flux-pro-1.0-canny",
+				"flux-pro-1.0-expand",
+				"flux-pro-1.0-fill",
+				"flux-kontext-pro",
+				"flux-kontext-max",
+				"flux-pro-1.1-ultra",
+				"flux-pro-1.1",
+				"flux-pro",
 			},
-		*/
+		},
 	},
 }
 

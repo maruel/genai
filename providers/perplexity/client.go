@@ -86,9 +86,8 @@ var Scoreboard = scoreboard.Score{
 				NoStopSequence: true,
 			},
 		},
-		// sonar-deep-research has the same capability as sonar-reasoning-pro but it is way too expensive, it cost
-		// over 5$USD to run a scoreboard.
 		{
+			Comments:           "sonar-deep-research has the same capability as sonar-reasoning-pro but it is way too expensive, it cost over 5$USD to run a scoreboard.",
 			Models:             []string{"sonar-deep-research"},
 			Thinking:           true,
 			ThinkingTokenStart: "<think>",

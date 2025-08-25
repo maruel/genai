@@ -47,9 +47,10 @@ var Scoreboard = scoreboard.Score{
 	DashboardURL: "https://auth.pollinations.ai/",
 	Scenarios: []scoreboard.Scenario{
 		{
-			Models: []string{"llamascout"},
-			In:     map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:    map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			Comments: "JSON generated is often bad when using GenStream.",
+			Models:   []string{"llamascout"},
+			In:       map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out:      map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &scoreboard.FunctionalityText{
 				NoMaxTokens:    true,
 				NoStopSequence: true,
@@ -58,7 +59,6 @@ var Scoreboard = scoreboard.Score{
 				JSON:           true,
 				Seed:           true,
 			},
-			// JSON generated is often bad.
 			GenStream: &scoreboard.FunctionalityText{
 				NoMaxTokens:    true,
 				NoStopSequence: true,
@@ -68,6 +68,7 @@ var Scoreboard = scoreboard.Score{
 			},
 		},
 		{
+			Comments: "It was fairly broken at the time of testing.",
 			Models:   []string{"deepseek-reasoning"},
 			Thinking: true,
 			/*
@@ -125,34 +126,34 @@ var Scoreboard = scoreboard.Score{
 				Seed:             true,
 			},
 		},
-		// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md
 		{
-			Models: []string{"openai-audio"},
-			/* TODO: Requires audio and Scoreboard fails to test this use case.
-			In: map[genai.Modality]scoreboard.ModalCapability{
-				genai.ModalityAudio: {
-					Inline:           true,
-					SupportedFormats: []string{"audio/mpeg", "audio/wav", "audio/mp4", "audio/x-m4a", "audio/webm"},
+			Comments: "The scoreboard is currently broken for this use case as the model requires audio input.",
+			Models:   []string{"openai-audio"},
+			/*
+				In: map[genai.Modality]scoreboard.ModalCapability{
+					genai.ModalityAudio: {
+						Inline:           true,
+						SupportedFormats: []string{"audio/mpeg", "audio/wav", "audio/mp4", "audio/x-m4a", "audio/webm"},
+					},
+					genai.ModalityText: {Inline: true},
 				},
-				genai.ModalityText: {Inline: true},
-			},
-			Out: map[genai.Modality]scoreboard.ModalCapability{
-				genai.ModalityAudio: {
-					Inline:           true,
-					SupportedFormats: []string{"audio/mpeg", "audio/wav", "audio/mp4", "audio/x-m4a", "audio/webm"},
+				Out: map[genai.Modality]scoreboard.ModalCapability{
+					genai.ModalityAudio: {
+						Inline:           true,
+						SupportedFormats: []string{"audio/mpeg", "audio/wav", "audio/mp4", "audio/x-m4a", "audio/webm"},
+					},
+					genai.ModalityText: {Inline: true},
 				},
-				genai.ModalityText: {Inline: true},
-			},
-			GenSync: &scoreboard.FunctionalityText{
-				NoMaxTokens: true,
-				JSON:        true,
-				Seed:        true,
-			},
-			// GenStream doesn't succeed in the smoke test, so consider it broken for now.
+				GenSync: &scoreboard.FunctionalityText{
+					NoMaxTokens: true,
+					JSON:        true,
+					Seed:        true,
+				},
+				// GenStream doesn't succeed in the smoke test, so consider it broken for now.
 			*/
 		},
-		// Ignored.
 		{
+			Comments: "Ignored",
 			Models: []string{
 				"bidara",
 				"evil",

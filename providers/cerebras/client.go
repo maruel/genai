@@ -46,10 +46,10 @@ var Scoreboard = scoreboard.Score{
 	DashboardURL: "https://cloud.cerebras.ai",
 	Scenarios: []scoreboard.Scenario{
 		{
-			// "llama-3.1-8b" works too but the ListModels() API returns the malformed string.
-			Models: []string{"llama3.1-8b", "llama-3.3-70b"},
-			In:     map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:    map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			Comments: "llama-3.1-8b works too but the ListModels() API returns the malformed string.",
+			Models:   []string{"llama3.1-8b", "llama-3.3-70b"},
+			In:       map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out:      map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &scoreboard.FunctionalityText{
 				ReportRateLimits: true,
 				Tools:            scoreboard.Flaky,
@@ -94,11 +94,10 @@ var Scoreboard = scoreboard.Score{
 			},
 		},
 		{
-			// Llama-4 scout supports genai.ModalityImage but Cerebras doesn't support this yet.
-			// This may change in the future.
-			Models: []string{"llama-4-scout-17b-16e-instruct"},
-			In:     map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:    map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			Comments: "Llama-4 scout supports genai.ModalityImage but Cerebras doesn't support this yet. This may change in the future.",
+			Models:   []string{"llama-4-scout-17b-16e-instruct"},
+			In:       map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out:      map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &scoreboard.FunctionalityText{
 				ReportRateLimits: true,
 				Tools:            scoreboard.Flaky,

@@ -121,8 +121,8 @@ var Scoreboard = scoreboard.Score{
 			},
 		},
 		{
-			Models: []string{"gemini-2.5-flash"},
-			// It supports URL but only when uploaded to its own storage.
+			Comments: "It supports inputs via URL but only when uploaded to its own storage.",
+			Models:   []string{"gemini-2.5-flash"},
 			In: map[genai.Modality]scoreboard.ModalCapability{
 				genai.ModalityAudio: {
 					Inline:           true,
@@ -157,9 +157,9 @@ var Scoreboard = scoreboard.Score{
 			},
 		},
 		{
+			Comments: "It supports inputs via URL but only when uploaded to its own storage.",
 			Models:   []string{"gemini-2.5-flash"},
 			Thinking: true,
-			// It supports URL but only when uploaded to its own storage.
 			In: map[genai.Modality]scoreboard.ModalCapability{
 				genai.ModalityAudio: {
 					Inline:           true,
@@ -194,9 +194,9 @@ var Scoreboard = scoreboard.Score{
 			},
 		},
 		{
+			Comments: "It supports inputs via URL but only when uploaded to its own storage.",
 			Models:   []string{"gemini-2.5-pro"},
 			Thinking: true,
-			// It supports URL but only when uploaded to its own storage.
 			In: map[genai.Modality]scoreboard.ModalCapability{
 				genai.ModalityAudio: {
 					Inline:           true,
@@ -299,13 +299,23 @@ var Scoreboard = scoreboard.Score{
 				"gemma-3-4b-it",
 				"gemma-3n-e2b-it",
 				"gemma-3n-e4b-it",
+				"learnlm-2.0-flash-experimental",
+				"text-embedding-004",
+			},
+		},
+		{
+			Comments: "Image models; to enable",
+			Models: []string{
 				"imagen-3.0-generate-002",
 				"imagen-4.0-generate-001",
 				"imagen-4.0-generate-preview-06-06",
 				"imagen-4.0-ultra-generate-001",
 				"imagen-4.0-ultra-generate-preview-06-06",
-				"learnlm-2.0-flash-experimental",
-				"text-embedding-004",
+			},
+		},
+		{
+			Comments: "Video models; to enable",
+			Models: []string{
 				"veo-2.0-generate-001",
 				"veo-3.0-fast-generate-preview",
 				"veo-3.0-generate-preview",

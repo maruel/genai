@@ -42,7 +42,8 @@ var Scoreboard = scoreboard.Score{
 	DashboardURL: "https://platform.openai.com/usage",
 	Scenarios: []scoreboard.Scenario{
 		{
-			Models: []string{"gpt-4.1"},
+			Comments: "Token usage is broken only when using MaxTokens.",
+			Models:   []string{"gpt-4.1"},
 			In: map[genai.Modality]scoreboard.ModalCapability{
 				genai.ModalityImage: {
 					Inline:           true,
@@ -56,7 +57,7 @@ var Scoreboard = scoreboard.Score{
 			GenSync: &scoreboard.FunctionalityText{
 				ReportRateLimits: true,
 				NoStopSequence:   true,
-				BrokenTokenUsage: scoreboard.Flaky, // When using MaxTokens.
+				BrokenTokenUsage: scoreboard.Flaky,
 				Tools:            scoreboard.True,
 				BiasedTool:       scoreboard.True,
 				JSON:             true,
@@ -64,20 +65,19 @@ var Scoreboard = scoreboard.Score{
 			},
 			GenStream: &scoreboard.FunctionalityText{
 				NoStopSequence:   true,
-				BrokenTokenUsage: scoreboard.Flaky, // When using MaxTokens.
+				BrokenTokenUsage: scoreboard.Flaky,
 				Tools:            scoreboard.True,
 				BiasedTool:       scoreboard.True,
 				JSON:             true,
 				JSONSchema:       true,
 			},
 		},
-		// https://platform.openai.com/docs/guides/audio
-		// Audio is not yet supported in the Responses API.
 		{
-			Models: []string{"gpt-4o-audio-preview"},
+			Comments: "As of 2025-08, audio is not yet supported in the Responses API. See https://platform.openai.com/docs/guides/audio",
+			Models:   []string{"gpt-4o-audio-preview"},
 		},
-		// The model is completely misbehaving with PDFs. This is weird.
 		{
+			Comments: "The model is completely misbehaving with PDFs. This is weird. Token usage is broken only when using MaxTokens.",
 			Models:   []string{"o4-mini"},
 			Thinking: true,
 			In: map[genai.Modality]scoreboard.ModalCapability{
@@ -93,7 +93,7 @@ var Scoreboard = scoreboard.Score{
 				ReportRateLimits: true,
 				NoStopSequence:   true,
 				NoMaxTokens:      true,
-				BrokenTokenUsage: scoreboard.Flaky, // When using MaxTokens.
+				BrokenTokenUsage: scoreboard.Flaky,
 				Tools:            scoreboard.True,
 				BiasedTool:       scoreboard.True,
 				JSON:             true,
@@ -101,7 +101,7 @@ var Scoreboard = scoreboard.Score{
 			},
 			GenStream: &scoreboard.FunctionalityText{
 				NoStopSequence:   true,
-				BrokenTokenUsage: scoreboard.Flaky, // When using MaxTokens.
+				BrokenTokenUsage: scoreboard.Flaky,
 				Tools:            scoreboard.True,
 				BiasedTool:       scoreboard.True,
 				JSON:             true,
@@ -109,10 +109,10 @@ var Scoreboard = scoreboard.Score{
 			},
 		},
 		{
-			Models: []string{"gpt-image-1"},
-			In:     map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			Comments: "TODO: More output image format are supported by the API",
+			Models:   []string{"gpt-image-1"},
+			In:       map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
 			Out: map[genai.Modality]scoreboard.ModalCapability{
-				// TODO: Expose other supported image formats.
 				genai.ModalityImage: {
 					Inline:           true,
 					SupportedFormats: []string{"image/jpeg"},
@@ -180,7 +180,7 @@ var Scoreboard = scoreboard.Score{
 				"gpt-4o-audio-preview-2025-06-03",
 				"gpt-4o-mini",
 				"gpt-4o-mini-2024-07-18",
-				"gpt-4o-mini-audio-preview", // This model fails the smoke test.
+				"gpt-4o-mini-audio-preview",
 				"gpt-4o-mini-audio-preview-2024-12-17",
 				"gpt-4o-mini-realtime-preview",
 				"gpt-4o-mini-realtime-preview-2024-12-17",

@@ -51,11 +51,10 @@ var Scoreboard = scoreboard.Score{
 	DashboardURL: "https://dash.cloudflare.com",
 	Scenarios: []scoreboard.Scenario{
 		{
-			// Llama-4 scout supports genai.ModalityImage but I'm not sure if cloudflare supports this modality.
-			// This may change in the future.
-			Models: []string{"@cf/meta/llama-4-scout-17b-16e-instruct"},
-			In:     map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:    map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			Comments: "Llama-4 scout supports genai.ModalityImage but I'm not sure if cloudflare supports this modality. This may change in the future.",
+			Models:   []string{"@cf/meta/llama-4-scout-17b-16e-instruct"},
+			In:       map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out:      map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &scoreboard.FunctionalityText{
 				BrokenFinishReason: true,
 				NoStopSequence:     true,

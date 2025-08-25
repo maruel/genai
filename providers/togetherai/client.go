@@ -54,8 +54,8 @@ var Scoreboard = scoreboard.Score{
 	DashboardURL: "https://api.together.ai/settings/billing",
 	Scenarios: []scoreboard.Scenario{
 		{
-			// Tool calling is flaky on llama-4 because it only support tool_choice auto, not required.
-			Models: []string{"meta-llama/Llama-4-Scout-17B-16E-Instruct"},
+			Comments: "Tool calling is flaky because Together.AI only supports tool_choice auto, not required.",
+			Models:   []string{"meta-llama/Llama-4-Scout-17B-16E-Instruct"},
 			In: map[genai.Modality]scoreboard.ModalCapability{
 				genai.ModalityText: {Inline: true},
 				genai.ModalityImage: {
@@ -84,8 +84,8 @@ var Scoreboard = scoreboard.Score{
 			},
 		},
 		{
-			// Tool calling is flaky on llama-4 because it only support tool_choice auto, not required.
-			Models: []string{"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8"},
+			Comments: "Tool calling is flaky because Together.AI only supports tool_choice auto, not required.",
+			Models:   []string{"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8"},
 			In: map[genai.Modality]scoreboard.ModalCapability{
 				genai.ModalityText: {Inline: true},
 				genai.ModalityImage: {
@@ -163,9 +163,10 @@ var Scoreboard = scoreboard.Score{
 			},
 		},
 		{
-			Models: []string{"mistralai/Mistral-Small-24B-Instruct-2501"},
-			In:     map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:    map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			Comments: "FinishReason is only broken with JSON.",
+			Models:   []string{"mistralai/Mistral-Small-24B-Instruct-2501"},
+			In:       map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out:      map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &scoreboard.FunctionalityText{
 				ReportRateLimits:   true,
 				Tools:              scoreboard.Flaky,
@@ -174,7 +175,7 @@ var Scoreboard = scoreboard.Score{
 				JSON:               true,
 				Seed:               true,
 				TopLogprobs:        true,
-				BrokenFinishReason: true, // It's actually JSON that is broken.
+				BrokenFinishReason: true,
 			},
 			GenStream: &scoreboard.FunctionalityText{
 				ReportRateLimits:   true,
@@ -202,8 +203,8 @@ var Scoreboard = scoreboard.Score{
 				BrokenFinishReason: true,
 			},
 		},
-		// Skipped
 		{
+			Comments: "Untested",
 			Models: []string{
 				"Alibaba-NLP/gte-modernbert-base",
 				"NousResearch/Nous-Hermes-2-Mixtral-8x7B-DPO",

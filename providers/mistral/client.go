@@ -161,8 +161,8 @@ var Scoreboard = scoreboard.Score{
 				Seed:       true,
 			},
 		},
-		// Untested.
 		{
+			Comments: "Untested",
 			Models: []string{
 				"codestral-2411-rc5",
 				"codestral-2412",
@@ -220,8 +220,8 @@ var Scoreboard = scoreboard.Score{
 				"voxtral-small-2507",
 			},
 		},
-		// Unsupported.
 		{
+			Comments: "Unsupported",
 			Models: []string{
 				"codestral-embed",
 				"codestral-embed-2505",

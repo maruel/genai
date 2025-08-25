@@ -46,8 +46,9 @@ var Scoreboard = scoreboard.Score{
 	DashboardURL: "https://dashboard.cohere.com/billing",
 	Scenarios: []scoreboard.Scenario{
 		{
+			Comments: "Thinking is only related to tool planning.",
 			Models:   []string{"command-r7b-12-2024"},
-			Thinking: true, // Only related to tool planning.
+			Thinking: true,
 			In:       map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
 			Out:      map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &scoreboard.FunctionalityText{
@@ -69,10 +70,10 @@ var Scoreboard = scoreboard.Score{
 				TopLogprobs:    true,
 			},
 		},
-		// https://docs.cohere.com/docs/aya-vision
 		{
+			Comments: "Thinking is only related to tool planning. See https://docs.cohere.com/docs/aya-vision",
 			Models:   []string{"c4ai-aya-vision-8b"},
-			Thinking: true, // Only related to tool planning.
+			Thinking: true,
 			In: map[genai.Modality]scoreboard.ModalCapability{
 				genai.ModalityText: {Inline: true},
 				genai.ModalityImage: {
@@ -95,8 +96,8 @@ var Scoreboard = scoreboard.Score{
 				TopLogprobs: true,
 			},
 		},
-		// To enable.
 		{
+			Comments: "To enable later",
 			Models: []string{
 				"c4ai-aya-expanse-32b",
 				"c4ai-aya-expanse-8b",
@@ -115,8 +116,8 @@ var Scoreboard = scoreboard.Score{
 				"command-r7b-arabic-02-2025",
 			},
 		},
-		// Unsupported.
 		{
+			Comments: "Unsupported",
 			Models: []string{
 				"embed-english-light-v2.0",
 				"embed-english-light-v3.0",

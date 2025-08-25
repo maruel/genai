@@ -12,6 +12,7 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/internal/myrecorder"
@@ -167,7 +168,7 @@ func runOneModel(t testing.TB, gc getClientOneModel, want scoreboard.Scenario) g
 		want.ThinkingTokenEnd = ""
 	}
 	// Check if valid.
-	if diff := cmp.Diff(want, got, opt); diff != "" {
+	if diff := cmp.Diff(want, got, optTriState, optScenario); diff != "" {
 		t.Errorf("mismatch (-want +got):\n%s", diff)
 	}
 	return usage
@@ -175,10 +176,12 @@ func runOneModel(t testing.TB, gc getClientOneModel, want scoreboard.Scenario) g
 
 //
 
-var opt = cmp.Comparer(func(x, y scoreboard.TriState) bool {
+var optTriState = cmp.Comparer(func(x, y scoreboard.TriState) bool {
 	// TODO: Make this more solid. This requires a better assessment of what "Flaky" is.
 	if x == scoreboard.Flaky || y == scoreboard.Flaky {
 		return true
 	}
 	return x == y
 })
+
+var optScenario = cmpopts.IgnoreFields(scoreboard.Scenario{}, "Comments")

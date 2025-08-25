@@ -73,6 +73,7 @@ var Scoreboard = scoreboard.Score{
 			},
 		},
 		{
+			Comments:           "Seems to use a quantized version, tool calling is more flaky than would normally be expected. It doesn't follow JSON schema instructions.",
 			Models:             []string{"Qwen/Qwen3-4B"},
 			Thinking:           true,
 			ThinkingTokenStart: "<think>",
@@ -81,17 +82,17 @@ var Scoreboard = scoreboard.Score{
 			Out:                map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &scoreboard.FunctionalityText{
 				ReportRateLimits: true,
-				Tools:            scoreboard.Flaky, // Uses a quantized version.
+				Tools:            scoreboard.Flaky,
 				JSON:             true,
-				JSONSchema:       false, // Doesn't follow instructions.
+				JSONSchema:       false,
 				Seed:             true,
 				TopLogprobs:      true,
 			},
 			GenStream: &scoreboard.FunctionalityText{
 				ReportRateLimits: true,
-				Tools:            scoreboard.Flaky, // Uses a quantized version.
+				Tools:            scoreboard.Flaky,
 				JSON:             true,
-				JSONSchema:       true, // Doesn't follow instructions.
+				JSONSchema:       true,
 				Seed:             true,
 				TopLogprobs:      true,
 			},

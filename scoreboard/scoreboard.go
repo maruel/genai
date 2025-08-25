@@ -166,6 +166,9 @@ type Scenario struct {
 	// Models is a *non exhaustive* list of models that support this scenario. It can't be exhaustive since
 	// providers continuouly release new models. It is still valuable to use the first value
 	Models []string `json:"models"`
+	// Comments are notes about the scenario. For example, if a scenario is known to be bugged, deprecated,
+	// expensive, etc.
+	Comments string `json:"comments,omitzero"`
 
 	// Thinking means that the model does either explicit chain-of-thought or hidden thinking. For some
 	// providers, this is controlled via a OptionsText. For some models (like Qwen3), a token "/no_think" or

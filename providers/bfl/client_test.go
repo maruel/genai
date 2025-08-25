@@ -38,10 +38,8 @@ func TestClient_Scoreboard(t *testing.T) {
 	sb := getClient(t, genai.ModelNone).Scoreboard()
 	var models []scoreboardtest.Model
 	for _, sc := range sb.Scenarios {
-		if sc.GenDoc != nil {
-			for _, model := range sc.Models {
-				models = append(models, scoreboardtest.Model{Model: model})
-			}
+		for _, model := range sc.Models {
+			models = append(models, scoreboardtest.Model{Model: model})
 		}
 	}
 	scoreboardtest.AssertScoreboard(t, getClientRT, models, testRecorder.Records)

@@ -129,10 +129,10 @@ var Scoreboard = scoreboard.Score{
 			},
 		},
 		{
-			Models: []string{"gpt-image-1"},
-			In:     map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			Comments: "TODO: More output image format are supported by the API",
+			Models:   []string{"gpt-image-1"},
+			In:       map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
 			Out: map[genai.Modality]scoreboard.ModalCapability{
-				// TODO: Expose other supported image formats.
 				genai.ModalityImage: {
 					Inline:           true,
 					SupportedFormats: []string{"image/jpeg"},

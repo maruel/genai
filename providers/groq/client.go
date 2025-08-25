@@ -42,9 +42,8 @@ var Scoreboard = scoreboard.Score{
 	DashboardURL: "https://console.groq.com/dashboard/usage",
 	Scenarios: []scoreboard.Scenario{
 		{
+			Comments: "llama-3.1-8b-instant will be both indecisive and biased given its size and quantization. 70b is a bit better but not perfect.",
 			Models: []string{
-				// llama-3.1-8b-instant will be both indecisive and biased given its size and quantization. 70b is a
-				// bit better but not perfect.
 				"llama-3.1-8b-instant",
 				"llama-3.3-70b-versatile",
 			},
@@ -68,6 +67,7 @@ var Scoreboard = scoreboard.Score{
 			},
 		},
 		{
+			Comments:           "JSON only works when using ReasoningFormat: ReasoningFormatParsed",
 			Models:             []string{"deepseek-r1-distill-llama-70b"},
 			Thinking:           true,
 			ThinkingTokenStart: "<think>",
@@ -79,7 +79,7 @@ var Scoreboard = scoreboard.Score{
 				Tools:            scoreboard.Flaky,
 				BiasedTool:       scoreboard.True,
 				IndecisiveTool:   scoreboard.Flaky,
-				JSON:             true, // Only when using ReasoningFormat: ReasoningFormatParsed
+				JSON:             true,
 				Seed:             true,
 			},
 			GenStream: &scoreboard.FunctionalityText{
@@ -87,11 +87,12 @@ var Scoreboard = scoreboard.Score{
 				Tools:            scoreboard.Flaky,
 				BiasedTool:       scoreboard.True,
 				IndecisiveTool:   scoreboard.Flaky,
-				JSON:             true, // Only when using ReasoningFormat: ReasoningFormatParsed
+				JSON:             true,
 				Seed:             true,
 			},
 		},
 		{
+			Comments: "Sometimes tool calling fails",
 			Models: []string{
 				"meta-llama/llama-4-scout-17b-16e-instruct",
 				"meta-llama/llama-4-maverick-17b-128e-instruct",
@@ -108,21 +109,22 @@ var Scoreboard = scoreboard.Score{
 			GenSync: &scoreboard.FunctionalityText{
 				ReportRateLimits: true,
 				Tools:            scoreboard.Flaky,
-				BiasedTool:       scoreboard.Flaky, // Sometimes tool calling fails.
-				IndecisiveTool:   scoreboard.Flaky, // Sometimes tool calling fails.
+				BiasedTool:       scoreboard.Flaky,
+				IndecisiveTool:   scoreboard.Flaky,
 				JSON:             true,
 				Seed:             true,
 			},
 			GenStream: &scoreboard.FunctionalityText{
 				ReportRateLimits: true,
 				Tools:            scoreboard.Flaky,
-				BiasedTool:       scoreboard.Flaky, // Sometimes tool calling fails.
-				IndecisiveTool:   scoreboard.Flaky, // Sometimes tool calling fails.
+				BiasedTool:       scoreboard.Flaky,
+				IndecisiveTool:   scoreboard.Flaky,
 				JSON:             true,
 				Seed:             true,
 			},
 		},
 		{
+			Comments:           "JSON only works when using ReasoningFormat: ReasoningFormatParsed",
 			Models:             []string{"qwen/qwen3-32b"},
 			Thinking:           true,
 			ThinkingTokenStart: "<think>",
@@ -134,7 +136,7 @@ var Scoreboard = scoreboard.Score{
 				Tools:            scoreboard.Flaky,
 				IndecisiveTool:   scoreboard.Flaky,
 				BiasedTool:       scoreboard.Flaky,
-				JSON:             true, // Only when using ReasoningFormat: ReasoningFormatParsed
+				JSON:             true,
 				Seed:             true,
 			},
 			GenStream: &scoreboard.FunctionalityText{
@@ -142,39 +144,40 @@ var Scoreboard = scoreboard.Score{
 				Tools:            scoreboard.Flaky,
 				IndecisiveTool:   scoreboard.Flaky,
 				BiasedTool:       scoreboard.Flaky,
-				JSON:             true, // Only when using ReasoningFormat: ReasoningFormatParsed
+				JSON:             true,
 				Seed:             true,
 			},
 		},
 		{
-			Models: []string{"moonshotai/kimi-k2-instruct"},
-			In:     map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:    map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			Comments: "Tool calling is flaky, it's mostly biased but tool calling doesn't always succeed.",
+			Models:   []string{"moonshotai/kimi-k2-instruct"},
+			In:       map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
+			Out:      map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
 			GenSync: &scoreboard.FunctionalityText{
 				ReportRateLimits: true,
 				Tools:            scoreboard.Flaky,
-				BiasedTool:       scoreboard.Flaky, // Mostly true but tool calling itself is flaky.
+				BiasedTool:       scoreboard.Flaky,
 				JSON:             true,
 				Seed:             true,
 			},
 			GenStream: &scoreboard.FunctionalityText{
 				ReportRateLimits: true,
 				Tools:            scoreboard.Flaky,
-				BiasedTool:       scoreboard.Flaky, // Mostly true but tool calling itself is flaky.
+				BiasedTool:       scoreboard.Flaky,
 				JSON:             true,
 				Seed:             true,
 			},
 		},
-		// Deprecated models.
 		{
+			Comments: "Deprecated models.",
 			Models: []string{
 				"gemma2-9b-it",
 				"llama3-70b-8192",
 				"llama3-8b-8192",
 			},
 		},
-		// Unsupported models.
 		{
+			Comments: "Unsupported models.",
 			Models: []string{
 				"allam-2-7b",
 				"compound-beta-mini",

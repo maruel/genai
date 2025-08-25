@@ -57,9 +57,8 @@ var Scoreboard = scoreboard.Score{
 					SupportedFormats: []string{"image/gif", "image/jpeg", "image/png", "image/webp"},
 				},
 				genai.ModalityDocument: {
-					Inline: true,
-					URL:    true,
-					// TODO: Add "text/plain" back.
+					Inline:           true,
+					URL:              true,
 					SupportedFormats: []string{"application/pdf"},
 				},
 			},
@@ -87,9 +86,8 @@ var Scoreboard = scoreboard.Score{
 					SupportedFormats: []string{"image/gif", "image/jpeg", "image/png", "image/webp"},
 				},
 				genai.ModalityDocument: {
-					Inline: true,
-					URL:    true,
-					// TODO: Add "text/plain" back.
+					Inline:           true,
+					URL:              true,
 					SupportedFormats: []string{"application/pdf"},
 				},
 			},
@@ -118,9 +116,8 @@ var Scoreboard = scoreboard.Score{
 					SupportedFormats: []string{"image/gif", "image/jpeg", "image/png", "image/webp"},
 				},
 				genai.ModalityDocument: {
-					Inline: true,
-					URL:    true,
-					// TODO: Add "text/plain" back.
+					Inline:           true,
+					URL:              true,
 					SupportedFormats: []string{"application/pdf"},
 				},
 			},
@@ -138,15 +135,15 @@ var Scoreboard = scoreboard.Score{
 				Citations:        true,
 			},
 		},
-		// They take more than 10 minutes to run the test, which causes it to timeout. And they cost a lot.
 		{
+			Comments: "They take more than 10 minutes to run the test, which causes it to timeout. And they cost a lot.",
 			Models: []string{
 				"claude-opus-4-20250514",
 				"claude-opus-4-1-20250805",
 			},
 		},
-		// Old models
 		{
+			Comments: "Old models",
 			Models: []string{
 				"claude-3-5-sonnet-20240620",
 				"claude-3-5-sonnet-20241022",

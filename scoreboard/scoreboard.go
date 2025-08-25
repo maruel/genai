@@ -7,6 +7,8 @@ package scoreboard
 
 import (
 	"embed"
+	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -43,29 +45,29 @@ type FunctionalityText struct {
 	// Tools means that tool call is supported. This is a requirement for MCP. Some provider support tool
 	// calling but the model is very flaky at actually requesting the calls. This is more frequent on highly
 	// quantized models, small models or MoE models.
-	Tools TriState
+	Tools TriState `json:"tools,omitzero"`
 	// JSON means that the model supports enforcing that the response is valid JSON but not necessarily with a
 	// schema.
-	JSON bool
+	JSON bool `json:"json,omitzero"`
 	// JSONSchema means that the model supports enforcing that the response is a specific JSON schema.
-	JSONSchema bool
+	JSONSchema bool `json:"jsonSchema,omitzero"`
 	// Citations is set when the provider and model combination supports citations in the response.
-	Citations bool
+	Citations bool `json:"citations,omitzero"`
 	// Seed is set when the provider and model combination supports seed for reproducibility.
-	Seed bool
+	Seed bool `json:"seed,omitzero"`
 	// TopLogprobs is set when the provider and model combination supports top_logprobs.
-	TopLogprobs bool
+	TopLogprobs bool `json:"topLogprobs,omitzero"`
 
 	// ReportRateLimits means that the provider reports rate limits in its Usage.
-	ReportRateLimits bool
+	ReportRateLimits bool `json:"reportRateLimits,omitzero"`
 	// BrokenTokenUsage means that the usage is not correctly reported.
-	BrokenTokenUsage TriState
+	BrokenTokenUsage TriState `json:"brokenTokenUsage,omitzero"`
 	// BrokenFinishReason means that the finish reason (FinishStop, FinishLength, etc) is not correctly reported.
-	BrokenFinishReason bool
+	BrokenFinishReason bool `json:"brokenFinishReason,omitzero"`
 	// NoMaxTokens means that the provider doesn't support limiting text output. Only relevant on text output.
-	NoMaxTokens bool
+	NoMaxTokens bool `json:"noMaxTokens,omitzero"`
 	// NoStopSequence means that the provider doesn't support stop words. Only relevant on text output.
-	NoStopSequence bool
+	NoStopSequence bool `json:"noStopSequence,omitzero"`
 	// BiasedTool is true when we ask the LLM to use a tool in an ambiguous biased question, it will always
 	// reply with the first readily available answer.
 	//
@@ -73,13 +75,13 @@ type FunctionalityText struct {
 	// first option.
 	//
 	// This is affected by two factors: model size and quantization. Quantization affects this dramatically.
-	BiasedTool TriState
+	BiasedTool TriState `json:"biasedTool,omitzero"`
 	// IndecisiveTool is True when we ask the LLM to use a tool in an ambiguous biased question, it'll call both
 	// options. It is Flaky when both can happen.
 	//
 	// This is actually fine, it means that the LLM will be less opinionated in some cases. The test into which
 	// a LLM is indecisive is likely model-specific too.
-	IndecisiveTool TriState
+	IndecisiveTool TriState `json:"indecisiveTool,omitzero"`
 
 	_ struct{}
 }
@@ -110,43 +112,75 @@ func (i TriState) GoString() string {
 	return i.String()
 }
 
+func (i TriState) MarshalJSON() ([]byte, error) {
+	switch i {
+	case False:
+		// TODO: Not present.
+		return []byte(`"false"`), nil
+	case True:
+		return []byte(`"true"`), nil
+	case Flaky:
+		return []byte(`"flaky"`), nil
+	default:
+		return nil, fmt.Errorf("invalid TriState: %q", i)
+	}
+}
+
+func (i *TriState) UnmarshalJSON(b []byte) error {
+	s := ""
+	if err := json.Unmarshal(b, &s); err != nil {
+		return err
+	}
+	switch s {
+	case `false`:
+		*i = False
+	case `true`:
+		*i = True
+	case `flaky`:
+		*i = Flaky
+	default:
+		return fmt.Errorf("invalid TriState: %q", s)
+	}
+	return nil
+}
+
 // FunctionalityDoc defines which functionalites are supported in a scenario for non-text output modality.
 type FunctionalityDoc struct {
 	// Seed is set when the provider and model combination supports seed for reproducibility.
-	Seed bool
+	Seed bool `json:"seed,omitzero"`
 
 	// ReportRateLimits means that the provider reports rate limits in its Usage.
-	ReportRateLimits bool
+	ReportRateLimits bool `json:"reportRateLimits,omitzero"`
 	// BrokenTokenUsage means that the usage is not correctly reported.
-	BrokenTokenUsage TriState
+	BrokenTokenUsage TriState `json:"brokenTokenUsage,omitzero"`
 	// BrokenFinishReason means that the finish reason (FinishStop, FinishLength, etc) is not correctly reported.
-	BrokenFinishReason bool
+	BrokenFinishReason bool `json:"brokenFinishReason,omitzero"`
 
 	_ struct{}
 }
 
 // Scenario defines one way to use the provider.
 type Scenario struct {
-	In  map[genai.Modality]ModalCapability
-	Out map[genai.Modality]ModalCapability
+	In  map[genai.Modality]ModalCapability `json:"in"`
+	Out map[genai.Modality]ModalCapability `json:"out"`
 	// Models is a *non exhaustive* list of models that support this scenario. It can't be exhaustive since
 	// providers continuouly release new models. It is still valuable to use the first value
-	Models []string
+	Models []string `json:"models"`
 
 	// Thinking means that the model does either explicit chain-of-thought or hidden thinking. For some
 	// providers, this is controlled via a OptionsText. For some models (like Qwen3), a token "/no_think" or
 	// "/think" is used to control. ThinkingTokenStart and ThinkingTokenEnd must only be set on explicit inline
 	// thinking models. They often use <think> and </think>.
-	Thinking           bool
-	ThinkingTokenStart string
-	ThinkingTokenEnd   string
+	Thinking           bool   `json:"thinking,omitzero"`
+	ThinkingTokenStart string `json:"thinkingTokenStart,omitzero"`
+	ThinkingTokenEnd   string `json:"thinkingTokenEnd,omitzero"`
 
 	// GenSync declares features supported when using Provider.GenSync
-	GenSync *FunctionalityText
+	GenSync *FunctionalityText `json:"GenSync,omitzero,omitempty"`
 	// GenStream declares features supported when using Provider.GenStream
-	GenStream *FunctionalityText
+	GenStream *FunctionalityText `json:"GenStream,omitzero,omitempty"`
 	// GenDoc declares features supported when using a non-text output modality.
-	GenDoc *FunctionalityDoc
+	GenDoc *FunctionalityDoc `json:"GenDoc,omitzero,omitempty"`
 
 	_ struct{}
 }
@@ -154,28 +188,60 @@ type Scenario struct {
 // ModalCapability describes how a modality is supported by a provider.
 type ModalCapability struct {
 	// Inline means content can be embedded directly (e.g., base64 encoded)
-	Inline bool
+	Inline bool `json:"inline,omitzero"`
 	// URL means content can be referenced by URL
-	URL bool
+	URL bool `json:"url,omitzero"`
 	// MaxSize specifies the maximum size in bytes.
-	MaxSize int64
+	MaxSize int64 `json:"maxSize,omitzero"`
 	// SupportedFormats lists supported MIME types for this modality
-	SupportedFormats []string
+	SupportedFormats []string `json:"supportedFormats,omitzero"`
 }
 
 // Thinking specifies if a model Scenario supports thinking.
 type Thinking int8
 
 const (
-	// NoThinking means that no thinking is supported.
-	NoThinking Thinking = 0
+	// ThinkingNone means that no thinking is supported.
+	ThinkingNone Thinking = 0
 	// ThinkingInline means that the thinking tokens are inline and must be explicitly parsed from Content.Text
 	// with adapters.ProviderThinking.
 	ThinkingInline Thinking = 1
-	// ThinkingAutomatic means that the thinking tokens are properly generated and handled by the provider and
+	// ThinkingAuto means that the thinking tokens are properly generated and handled by the provider and
 	// are returned as Content.Thinking.
-	ThinkingAutomatic Thinking = -1
+	ThinkingAuto Thinking = -1
 )
+
+func (i Thinking) MarshalJSON() ([]byte, error) {
+	switch i {
+	case ThinkingNone:
+		// TODO: Not present.
+		return []byte(`"none"`), nil
+	case ThinkingInline:
+		return []byte(`"inline"`), nil
+	case ThinkingAuto:
+		return []byte(`"auto"`), nil
+	default:
+		return nil, fmt.Errorf("invalid Thinking: %q", i)
+	}
+}
+
+func (i *Thinking) UnmarshalJSON(b []byte) error {
+	s := ""
+	if err := json.Unmarshal(b, &s); err != nil {
+		return err
+	}
+	switch s {
+	case `none`:
+		*i = ThinkingNone
+	case `inline`:
+		*i = ThinkingInline
+	case `auto`:
+		*i = ThinkingAuto
+	default:
+		return fmt.Errorf("invalid Thinking: %q", s)
+	}
+	return nil
+}
 
 // Score is a snapshot of the capabilities of the provider. These are smoke tested to confirm the
 // accuracy.
@@ -184,13 +250,13 @@ type Score struct {
 	//
 	// A single provider can provide various distinct use cases, like text-to-text, multi-modal-to-text,
 	// text-to-audio, audio-to-text, etc.
-	Scenarios []Scenario
+	Scenarios []Scenario `json:"scenarios"`
 
 	// Country where the provider is based, e.g. "US", "CN", "EU". Two exceptions: "Local" for local and "N/A"
 	// for pure routers.
-	Country string
+	Country string `json:"country"`
 	// DashboardURL is the URL to the provider's dashboard, if available.
-	DashboardURL string
+	DashboardURL string `json:"dashboardURL"`
 
 	_ struct{}
 }

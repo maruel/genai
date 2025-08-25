@@ -10,6 +10,7 @@ package openaicompatible
 import (
 	"bytes"
 	"context"
+	_ "embed"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -25,16 +26,18 @@ import (
 	"github.com/maruel/roundtrippers"
 )
 
+//go:embed scoreboard.json
+var scoreboardJSON []byte
+
 // Scoreboard for generic OpenAI compatible API.
-var Scoreboard = scoreboard.Score{
-	Scenarios: []scoreboard.Scenario{
-		{
-			In:        map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:       map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync:   &scoreboard.FunctionalityText{},
-			GenStream: &scoreboard.FunctionalityText{},
-		},
-	},
+func Scoreboard() scoreboard.Score {
+	var s scoreboard.Score
+	d := json.NewDecoder(bytes.NewReader(scoreboardJSON))
+	d.DisallowUnknownFields()
+	if err := d.Decode(&s); err != nil {
+		panic(fmt.Errorf("failed to unmarshal scoreboard.json: %w", err))
+	}
+	return s
 }
 
 type ChatRequest struct {
@@ -430,7 +433,7 @@ func (c *Client) OutputModalities() genai.Modalities {
 
 // Scoreboard implements scoreboard.ProviderScore.
 func (c *Client) Scoreboard() scoreboard.Score {
-	return Scoreboard
+	return Scoreboard()
 }
 
 // GenSync implements genai.Provider.

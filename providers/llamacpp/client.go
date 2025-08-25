@@ -14,6 +14,7 @@ package llamacpp
 import (
 	"bytes"
 	"context"
+	_ "embed"
 	"encoding/base64"
 	"encoding/json"
 	"errors"
@@ -40,45 +41,18 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+//go:embed scoreboard.json
+var scoreboardJSON []byte
+
 // Scoreboard for llama.cpp.
-var Scoreboard = scoreboard.Score{
-	Warnings: []string{
-		"The multi-modal file is referred to with \"#\" character.",
-	},
-	Country:      "Local",
-	DashboardURL: "https://github.com/ggml-org/llama.cpp",
-	Scenarios: []scoreboard.Scenario{
-		// https://huggingface.co/ggml-org/gemma-3-4b-it-GGUF/tree/main
-		{
-			// Models: []string{"ggml-org/gemma-3-4b-it-GGUF/gemma-3-4b-it-Q8_0.gguf#mmproj-model-f16.gguf"},
-			Models: []string{"ggml-org/gemma-3-4b-it-GGUF/gemma-3-4b-it-Q4_K_M.gguf#mmproj-model-f16.gguf"},
-			In: map[genai.Modality]scoreboard.ModalCapability{
-				genai.ModalityText: {Inline: true},
-				genai.ModalityImage: {
-					Inline:           true,
-					URL:              true,
-					SupportedFormats: []string{"image/gif", "image/jpeg", "image/png"},
-				},
-			},
-			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &scoreboard.FunctionalityText{
-				Tools:       scoreboard.True,
-				BiasedTool:  scoreboard.True,
-				Seed:        true,
-				TopLogprobs: true,
-				JSON:        true,
-				JSONSchema:  true,
-			},
-			GenStream: &scoreboard.FunctionalityText{
-				Tools:       scoreboard.True,
-				BiasedTool:  scoreboard.True,
-				Seed:        true,
-				TopLogprobs: true,
-				JSON:        true,
-				JSONSchema:  true,
-			},
-		},
-	},
+func Scoreboard() scoreboard.Score {
+	var s scoreboard.Score
+	d := json.NewDecoder(bytes.NewReader(scoreboardJSON))
+	d.DisallowUnknownFields()
+	if err := d.Decode(&s); err != nil {
+		panic(fmt.Errorf("failed to unmarshal scoreboard.json: %w", err))
+	}
+	return s
 }
 
 // ChatRequest is not documented.
@@ -1200,7 +1174,7 @@ func (c *Client) OutputModalities() genai.Modalities {
 
 // Scoreboard implements scoreboard.ProviderScore.
 func (c *Client) Scoreboard() scoreboard.Score {
-	return Scoreboard
+	return Scoreboard()
 }
 
 // GenSync implements genai.Provider.

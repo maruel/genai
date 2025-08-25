@@ -10,6 +10,7 @@ package mistral
 import (
 	"bytes"
 	"context"
+	_ "embed"
 	"encoding/base64"
 	"encoding/json"
 	"errors"
@@ -31,207 +32,18 @@ import (
 	"github.com/maruel/roundtrippers"
 )
 
+//go:embed scoreboard.json
+var scoreboardJSON []byte
+
 // Scoreboard for Mistral.
-var Scoreboard = scoreboard.Score{
-	Warnings: []string{
-		"Mistral supports more than what the client currently supports.",
-		"Tool calling is excellent and unbiased for non \"mini\" models.",
-		"PDF doesn't support inline document while images do.",
-		"Rate limit depends on your tier: https://docs.mistral.ai/deployment/laplateforme/tier/",
-	},
-	Country:      "FR",
-	DashboardURL: "https://console.mistral.ai/usage",
-	Scenarios: []scoreboard.Scenario{
-		{
-			Models: []string{"ministral-3b-latest"},
-			In: map[genai.Modality]scoreboard.ModalCapability{
-				genai.ModalityText: {Inline: true},
-				genai.ModalityDocument: {
-					URL:              true,
-					SupportedFormats: []string{"application/pdf"},
-				},
-			},
-			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &scoreboard.FunctionalityText{
-				ReportRateLimits: true,
-				Tools:            scoreboard.True,
-				BiasedTool:       scoreboard.True,
-				JSON:             true,
-				JSONSchema:       true,
-				Seed:             true,
-			},
-			GenStream: &scoreboard.FunctionalityText{
-				Tools:      scoreboard.True,
-				BiasedTool: scoreboard.True,
-				JSON:       true,
-				JSONSchema: true,
-				Seed:       true,
-			},
-		},
-		{
-			Models: []string{"mistral-small-latest"},
-			In: map[genai.Modality]scoreboard.ModalCapability{
-				genai.ModalityImage: {
-					Inline:           true,
-					URL:              true,
-					SupportedFormats: []string{"image/gif", "image/jpeg", "image/png", "image/webp"},
-				},
-				genai.ModalityDocument: {
-					URL:              true,
-					SupportedFormats: []string{"application/pdf"},
-				},
-				genai.ModalityText: {Inline: true},
-			},
-			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &scoreboard.FunctionalityText{
-				ReportRateLimits: true,
-				Tools:            scoreboard.True,
-				BiasedTool:       scoreboard.True,
-				JSON:             true,
-				JSONSchema:       true,
-				Seed:             true,
-			},
-			GenStream: &scoreboard.FunctionalityText{
-				Tools:      scoreboard.True,
-				BiasedTool: scoreboard.True,
-				JSON:       true,
-				JSONSchema: true,
-				Seed:       true,
-			},
-		},
-		{
-			Models: []string{"pixtral-12b-latest"},
-			In: map[genai.Modality]scoreboard.ModalCapability{
-				genai.ModalityImage: {
-					Inline:           true,
-					URL:              true,
-					SupportedFormats: []string{"image/gif", "image/jpeg", "image/png", "image/webp"},
-				},
-				genai.ModalityDocument: {
-					URL:              true,
-					SupportedFormats: []string{"application/pdf"},
-				},
-				genai.ModalityText: {Inline: true},
-			},
-			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &scoreboard.FunctionalityText{
-				ReportRateLimits: true,
-				Tools:            scoreboard.True,
-				BiasedTool:       scoreboard.True,
-				JSON:             true,
-				JSONSchema:       true,
-				Seed:             true,
-			},
-			GenStream: &scoreboard.FunctionalityText{
-				Tools:      scoreboard.True,
-				BiasedTool: scoreboard.True,
-				JSON:       true,
-				JSONSchema: true,
-				Seed:       true,
-			},
-		},
-		{
-			Models: []string{"voxtral-small-latest"},
-			In: map[genai.Modality]scoreboard.ModalCapability{
-				genai.ModalityAudio: {
-					Inline:           true,
-					SupportedFormats: []string{"audio/flac", "audio/mp3", "audio/ogg", "audio/wav"},
-				},
-				genai.ModalityDocument: {
-					URL:              true,
-					SupportedFormats: []string{"application/pdf"},
-				},
-				genai.ModalityText: {Inline: true},
-			},
-			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &scoreboard.FunctionalityText{
-				ReportRateLimits: true,
-				Tools:            scoreboard.True,
-				BiasedTool:       scoreboard.True,
-				JSON:             true,
-				JSONSchema:       true,
-				Seed:             true,
-			},
-			GenStream: &scoreboard.FunctionalityText{
-				Tools:      scoreboard.True,
-				BiasedTool: scoreboard.True,
-				JSON:       true,
-				JSONSchema: true,
-				Seed:       true,
-			},
-		},
-		{
-			Comments: "Untested",
-			Models: []string{
-				"codestral-2411-rc5",
-				"codestral-2412",
-				"codestral-2501",
-				"codestral-2508",
-				"codestral-latest",
-				"devstral-medium-2507",
-				"devstral-medium-latest",
-				"devstral-small-2505",
-				"devstral-small-2507",
-				"devstral-small-latest",
-				"magistral-medium-2506",
-				"magistral-medium-latest",
-				"magistral-small-2506",
-				"magistral-small-latest",
-				"ministral-3b-2410",
-				"ministral-8b-2410",
-				"ministral-8b-latest",
-				"mistral-large-2407",
-				"mistral-large-2411",
-				"mistral-large-latest",
-				"mistral-large-pixtral-2411",
-				"mistral-medium",
-				"mistral-medium-2505",
-				"mistral-medium-2508",
-				"mistral-medium-latest",
-				"mistral-ocr-2503",
-				"mistral-ocr-2505",
-				"mistral-ocr-latest",
-				"mistral-saba-2502",
-				"mistral-saba-latest",
-				"mistral-small",
-				"mistral-small-2312",
-				"mistral-small-2409",
-				"mistral-small-2501",
-				"mistral-small-2503",
-				"mistral-small-2506",
-				"mistral-tiny",
-				"mistral-tiny-2312",
-				"mistral-tiny-2407",
-				"mistral-tiny-latest",
-				"open-mistral-7b",
-				"open-mistral-nemo",
-				"open-mistral-nemo-2407",
-				"open-mixtral-8x22b",
-				"open-mixtral-8x22b-2404",
-				"open-mixtral-8x7b",
-				"pixtral-12b",
-				"pixtral-12b-2409",
-				"pixtral-large-2411",
-				"pixtral-large-latest",
-				"voxtral-mini-2507",
-				"voxtral-mini-latest",
-				"voxtral-mini-transcribe-2507",
-				"voxtral-small-2507",
-			},
-		},
-		{
-			Comments: "Unsupported",
-			Models: []string{
-				"codestral-embed",
-				"codestral-embed-2505",
-				"magistral-medium-2507",
-				"magistral-small-2507",
-				"mistral-embed",
-				"mistral-moderation-2411",
-				"mistral-moderation-latest",
-			},
-		},
-	},
+func Scoreboard() scoreboard.Score {
+	var s scoreboard.Score
+	d := json.NewDecoder(bytes.NewReader(scoreboardJSON))
+	d.DisallowUnknownFields()
+	if err := d.Decode(&s); err != nil {
+		panic(fmt.Errorf("failed to unmarshal scoreboard.json: %w", err))
+	}
+	return s
 }
 
 // ChatRequest is documented at https://docs.mistral.ai/api/#tag/chat/operation/chat_completion_v1_chat_completions_post
@@ -1073,7 +885,7 @@ func (c *Client) OutputModalities() genai.Modalities {
 
 // Scoreboard implements scoreboard.ProviderScore.
 func (c *Client) Scoreboard() scoreboard.Score {
-	return Scoreboard
+	return Scoreboard()
 }
 
 // GenSync implements genai.Provider.

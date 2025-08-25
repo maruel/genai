@@ -12,7 +12,9 @@ package gemini
 // See official client at https://github.com/google/generative-ai-go
 
 import (
+	"bytes"
 	"context"
+	_ "embed"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -37,6 +39,9 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+//go:embed scoreboard.json
+var scoreboardJSON []byte
+
 // Scoreboard for Gemini.
 //
 // See the following multi-modal sources:
@@ -45,281 +50,14 @@ import (
 // https://ai.google.dev/gemini-api/docs/video-understanding?hl=en#supported-formats
 // https://ai.google.dev/gemini-api/docs/audio?hl=en#supported-formats
 // https://ai.google.dev/gemini-api/docs/document-processing?hl=en&lang=rest#technical-details
-var Scoreboard = scoreboard.Score{
-	Warnings: []string{
-		"Gemini supports basically anything, but often on \"preview\" and \"experimental\" models. This means that the hardcoded model names in this scoreboard will have to be updated once stable models are released.",
-		"Gemini removed thinking in January 2025 and announced they will add a summarized version within 2025.",
-		"Not all features supported by Gemini are implemented, there's just so many.",
-		"Tool calling is excellent and unbiased for non \"-lite\" models.",
-		"Files can be referenced by URL but only if they have been uploaded via the file API, which is not implemented yet.",
-		"Rate limit is based on how much you spend per month: https://ai.google.dev/gemini-api/docs/rate-limits",
-	},
-	Country:      "US",
-	DashboardURL: "http://aistudio.google.com",
-	Scenarios: []scoreboard.Scenario{
-		{
-			Models: []string{"gemini-2.5-flash-lite"},
-			In: map[genai.Modality]scoreboard.ModalCapability{
-				genai.ModalityText: {Inline: true},
-				genai.ModalityImage: {
-					Inline:           true,
-					SupportedFormats: []string{"image/jpeg", "image/png", "image/webp"},
-				},
-				genai.ModalityDocument: {
-					Inline:           true,
-					SupportedFormats: []string{"application/pdf"},
-				},
-			},
-			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &scoreboard.FunctionalityText{
-				Tools:          scoreboard.True,
-				IndecisiveTool: scoreboard.Flaky,
-				JSON:           true,
-				JSONSchema:     true,
-				Seed:           true,
-				TopLogprobs:    true,
-			},
-			GenStream: &scoreboard.FunctionalityText{
-				Tools:          scoreboard.True,
-				IndecisiveTool: scoreboard.Flaky,
-				JSON:           true,
-				JSONSchema:     true,
-				Seed:           true,
-			},
-		},
-		{
-			Models:   []string{"gemini-2.5-flash-lite"},
-			Thinking: true,
-			In: map[genai.Modality]scoreboard.ModalCapability{
-				genai.ModalityText: {Inline: true},
-				genai.ModalityImage: {
-					Inline:           true,
-					SupportedFormats: []string{"image/jpeg", "image/png", "image/webp"},
-				},
-				genai.ModalityDocument: {
-					Inline:           true,
-					SupportedFormats: []string{"application/pdf"},
-				},
-			},
-			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &scoreboard.FunctionalityText{
-				Tools:          scoreboard.True,
-				IndecisiveTool: scoreboard.Flaky,
-				JSON:           true,
-				JSONSchema:     true,
-				Seed:           true,
-				TopLogprobs:    true,
-			},
-			GenStream: &scoreboard.FunctionalityText{
-				Tools:          scoreboard.True,
-				IndecisiveTool: scoreboard.Flaky,
-				JSON:           true,
-				JSONSchema:     true,
-				Seed:           true,
-			},
-		},
-		{
-			Comments: "It supports inputs via URL but only when uploaded to its own storage.",
-			Models:   []string{"gemini-2.5-flash"},
-			In: map[genai.Modality]scoreboard.ModalCapability{
-				genai.ModalityAudio: {
-					Inline:           true,
-					SupportedFormats: []string{"audio/aac", "audio/ogg", "audio/wav"},
-				},
-				genai.ModalityImage: {
-					Inline:           true,
-					SupportedFormats: []string{"image/jpeg", "image/png", "image/webp"},
-				},
-				genai.ModalityDocument: {
-					Inline:           true,
-					SupportedFormats: []string{"application/pdf"},
-				},
-				genai.ModalityText: {Inline: true},
-			},
-			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &scoreboard.FunctionalityText{
-				Tools:          scoreboard.True,
-				BiasedTool:     scoreboard.Flaky,
-				IndecisiveTool: scoreboard.Flaky,
-				JSON:           true,
-				JSONSchema:     true,
-				Seed:           true,
-				TopLogprobs:    true,
-			},
-			GenStream: &scoreboard.FunctionalityText{
-				Tools:      scoreboard.True,
-				BiasedTool: scoreboard.Flaky,
-				JSON:       true,
-				JSONSchema: true,
-				Seed:       true,
-			},
-		},
-		{
-			Comments: "It supports inputs via URL but only when uploaded to its own storage.",
-			Models:   []string{"gemini-2.5-flash"},
-			Thinking: true,
-			In: map[genai.Modality]scoreboard.ModalCapability{
-				genai.ModalityAudio: {
-					Inline:           true,
-					SupportedFormats: []string{"audio/aac", "audio/flac", "audio/mp3", "audio/ogg", "audio/wav"},
-				},
-				genai.ModalityImage: {
-					Inline:           true,
-					SupportedFormats: []string{"image/jpeg", "image/png", "image/webp"},
-				},
-				genai.ModalityDocument: {
-					Inline:           true,
-					SupportedFormats: []string{"application/pdf"},
-				},
-				genai.ModalityText: {Inline: true},
-			},
-			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &scoreboard.FunctionalityText{
-				Tools:          scoreboard.True,
-				BiasedTool:     scoreboard.Flaky,
-				IndecisiveTool: scoreboard.Flaky,
-				JSON:           true,
-				JSONSchema:     true,
-				Seed:           true,
-				TopLogprobs:    true,
-			},
-			GenStream: &scoreboard.FunctionalityText{
-				Tools:      scoreboard.True,
-				BiasedTool: scoreboard.Flaky,
-				JSON:       true,
-				JSONSchema: true,
-				Seed:       true,
-			},
-		},
-		{
-			Comments: "It supports inputs via URL but only when uploaded to its own storage.",
-			Models:   []string{"gemini-2.5-pro"},
-			Thinking: true,
-			In: map[genai.Modality]scoreboard.ModalCapability{
-				genai.ModalityAudio: {
-					Inline:           true,
-					SupportedFormats: []string{"audio/aac", "audio/flac", "audio/wav"},
-				},
-				genai.ModalityImage: {
-					Inline:           true,
-					SupportedFormats: []string{"image/jpeg", "image/png", "image/webp"},
-				},
-				genai.ModalityDocument: {
-					Inline:           true,
-					SupportedFormats: []string{"application/pdf"},
-				},
-				genai.ModalityText: {Inline: true},
-			},
-			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &scoreboard.FunctionalityText{
-				Tools:          scoreboard.True,
-				IndecisiveTool: scoreboard.Flaky,
-				JSON:           true,
-				JSONSchema:     true,
-				Seed:           true,
-				TopLogprobs:    true,
-			},
-			GenStream: &scoreboard.FunctionalityText{
-				Tools:          scoreboard.True,
-				IndecisiveTool: scoreboard.Flaky,
-				JSON:           true,
-				JSONSchema:     true,
-				Seed:           true,
-			},
-		},
-		{
-			Models: []string{"imagen-4.0-fast-generate-001"},
-			In: map[genai.Modality]scoreboard.ModalCapability{
-				genai.ModalityText: {Inline: true},
-			},
-			Out: map[genai.Modality]scoreboard.ModalCapability{
-				genai.ModalityImage: {
-					Inline:           true,
-					SupportedFormats: []string{"image/jpeg"},
-				},
-			},
-			GenDoc: &scoreboard.FunctionalityDoc{
-				BrokenTokenUsage:   scoreboard.True,
-				BrokenFinishReason: true,
-			},
-		},
-		{
-			Models:   []string{"gemini-2.5-flash-exp-native-audio-thinking-dialog"},
-			Thinking: true,
-		},
-		{
-			Models: []string{
-				"aqa",
-				"embedding-001",
-				"embedding-gecko-001",
-				"gemini-1.5-flash",
-				"gemini-1.5-flash-002",
-				"gemini-1.5-flash-8b",
-				"gemini-1.5-flash-8b-001",
-				"gemini-1.5-flash-8b-latest",
-				"gemini-1.5-flash-latest",
-				"gemini-1.5-pro",
-				"gemini-1.5-pro-002",
-				"gemini-1.5-pro-latest",
-				"gemini-2.0-flash",
-				"gemini-2.0-flash-001",
-				"gemini-2.0-flash-exp",
-				"gemini-2.0-flash-exp-image-generation",
-				"gemini-2.0-flash-lite",
-				"gemini-2.0-flash-lite-001",
-				"gemini-2.0-flash-lite-preview",
-				"gemini-2.0-flash-lite-preview-02-05",
-				"gemini-2.0-flash-live-001",
-				"gemini-2.0-flash-preview-image-generation",
-				"gemini-2.0-flash-thinking-exp",
-				"gemini-2.0-flash-thinking-exp-01-21",
-				"gemini-2.0-flash-thinking-exp-1219",
-				"gemini-2.0-pro-exp",
-				"gemini-2.0-pro-exp-02-05",
-				"gemini-2.5-flash-exp-native-audio-thinking-dialog",
-				"gemini-2.5-flash-lite-preview-06-17",
-				"gemini-2.5-flash-live-preview",
-				"gemini-2.5-flash-preview-05-20",
-				"gemini-2.5-flash-preview-native-audio-dialog",
-				"gemini-2.5-flash-preview-tts",
-				"gemini-2.5-pro-preview-03-25",
-				"gemini-2.5-pro-preview-05-06",
-				"gemini-2.5-pro-preview-06-05",
-				"gemini-2.5-pro-preview-tts",
-				"gemini-embedding-001",
-				"gemini-embedding-exp",
-				"gemini-embedding-exp-03-07",
-				"gemini-exp-1206",
-				"gemini-live-2.5-flash-preview",
-				"gemma-3-12b-it",
-				"gemma-3-1b-it",
-				"gemma-3-27b-it",
-				"gemma-3-4b-it",
-				"gemma-3n-e2b-it",
-				"gemma-3n-e4b-it",
-				"learnlm-2.0-flash-experimental",
-				"text-embedding-004",
-			},
-		},
-		{
-			Comments: "Image models; to enable",
-			Models: []string{
-				"imagen-3.0-generate-002",
-				"imagen-4.0-generate-001",
-				"imagen-4.0-generate-preview-06-06",
-				"imagen-4.0-ultra-generate-001",
-				"imagen-4.0-ultra-generate-preview-06-06",
-			},
-		},
-		{
-			Comments: "Video models; to enable",
-			Models: []string{
-				"veo-2.0-generate-001",
-				"veo-3.0-fast-generate-preview",
-				"veo-3.0-generate-preview",
-			},
-		},
-	},
+func Scoreboard() scoreboard.Score {
+	var s scoreboard.Score
+	d := json.NewDecoder(bytes.NewReader(scoreboardJSON))
+	d.DisallowUnknownFields()
+	if err := d.Decode(&s); err != nil {
+		panic(fmt.Errorf("failed to unmarshal scoreboard.json: %w", err))
+	}
+	return s
 }
 
 // Options defines Gemini specific options.
@@ -1703,7 +1441,7 @@ func (c *Client) OutputModalities() genai.Modalities {
 
 // Scoreboard implements scoreboard.ProviderScore.
 func (c *Client) Scoreboard() scoreboard.Score {
-	return Scoreboard
+	return Scoreboard()
 }
 
 // GenSync implements genai.Provider.

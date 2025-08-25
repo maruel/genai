@@ -8,7 +8,10 @@
 package deepseek
 
 import (
+	"bytes"
 	"context"
+	_ "embed"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"iter"
@@ -25,49 +28,18 @@ import (
 	"github.com/maruel/roundtrippers"
 )
 
+//go:embed scoreboard.json
+var scoreboardJSON []byte
+
 // Scoreboard for DeepSeek.
-var Scoreboard = scoreboard.Score{
-	Warnings: []string{
-		"JSON schema decoding is announced to be added later in the doc.",
-		"Tool calling works very well but is biased; the model is lazy and when it's unsure, it will use the tool's first argument.",
-		"Tool calling is not supported with deepseek-reasoner.",
-		"DeepSeek doesn't do rate limiting: https://api-docs.deepseek.com/quick_start/rate_limit",
-	},
-	Country:      "CN",
-	DashboardURL: "https://platform.deepseek.com",
-	Scenarios: []scoreboard.Scenario{
-		{
-			Models: []string{"deepseek-chat"},
-			In:     map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:    map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &scoreboard.FunctionalityText{
-				Tools:          scoreboard.True,
-				IndecisiveTool: scoreboard.True,
-				JSON:           true,
-				TopLogprobs:    true,
-			},
-			GenStream: &scoreboard.FunctionalityText{
-				Tools:          scoreboard.True,
-				IndecisiveTool: scoreboard.True,
-				JSON:           true,
-				TopLogprobs:    true,
-			},
-		},
-		{
-			Models:   []string{"deepseek-reasoner"},
-			Thinking: true,
-			In:       map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:      map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &scoreboard.FunctionalityText{
-				Tools: scoreboard.Flaky,
-				JSON:  true,
-			},
-			GenStream: &scoreboard.FunctionalityText{
-				Tools: scoreboard.Flaky,
-				JSON:  true,
-			},
-		},
-	},
+func Scoreboard() scoreboard.Score {
+	var s scoreboard.Score
+	d := json.NewDecoder(bytes.NewReader(scoreboardJSON))
+	d.DisallowUnknownFields()
+	if err := d.Decode(&s); err != nil {
+		panic(fmt.Errorf("failed to unmarshal scoreboard.json: %w", err))
+	}
+	return s
 }
 
 // ChatRequest is documented at https://api-docs.deepseek.com/api/create-chat-completion
@@ -649,7 +621,7 @@ func (c *Client) OutputModalities() genai.Modalities {
 
 // Scoreboard implements scoreboard.ProviderScore.
 func (c *Client) Scoreboard() scoreboard.Score {
-	return Scoreboard
+	return Scoreboard()
 }
 
 // GenSync implements genai.Provider.

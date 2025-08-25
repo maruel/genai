@@ -10,6 +10,7 @@ package perplexity
 import (
 	"bytes"
 	"context"
+	_ "embed"
 	"encoding/base64"
 	"encoding/json"
 	"errors"
@@ -29,70 +30,18 @@ import (
 	"github.com/maruel/roundtrippers"
 )
 
+//go:embed scoreboard.json
+var scoreboardJSON []byte
+
 // Scoreboard for Perplexity.
-var Scoreboard = scoreboard.Score{
-	Warnings: []string{
-		"Websearch, which is automatic for all models, is very expensive. Disable it manually when testing.",
-		"No tool calling support, but JSON schema is supported so this can be leveraged.",
-	},
-	Country:      "US",
-	DashboardURL: "https://www.perplexity.ai/settings/api",
-	Scenarios: []scoreboard.Scenario{
-		{
-			Models:             []string{"sonar-reasoning", "sonar-reasoning-pro"},
-			Thinking:           true,
-			ThinkingTokenStart: "<think>",
-			ThinkingTokenEnd:   "</think>",
-			In: map[genai.Modality]scoreboard.ModalCapability{
-				genai.ModalityText: {Inline: true},
-				genai.ModalityImage: {
-					Inline:           true,
-					URL:              true,
-					SupportedFormats: []string{"image/gif", "image/jpeg", "image/png", "image/webp"},
-				},
-			},
-			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &scoreboard.FunctionalityText{
-				JSONSchema:     true,
-				Citations:      true,
-				NoStopSequence: true,
-			},
-			GenStream: &scoreboard.FunctionalityText{
-				JSONSchema:     true,
-				Citations:      true,
-				NoStopSequence: true,
-			},
-		},
-		{
-			Models: []string{"sonar", "sonar-pro"},
-			In: map[genai.Modality]scoreboard.ModalCapability{
-				genai.ModalityText: {Inline: true},
-				genai.ModalityImage: {
-					Inline:           true,
-					URL:              true,
-					SupportedFormats: []string{"image/gif", "image/jpeg", "image/png", "image/webp"},
-				},
-			},
-			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &scoreboard.FunctionalityText{
-				JSONSchema:     true,
-				Citations:      true,
-				NoStopSequence: true,
-			},
-			GenStream: &scoreboard.FunctionalityText{
-				JSONSchema:     true,
-				Citations:      true,
-				NoStopSequence: true,
-			},
-		},
-		{
-			Comments:           "sonar-deep-research has the same capability as sonar-reasoning-pro but it is way too expensive, it cost over 5$USD to run a scoreboard.",
-			Models:             []string{"sonar-deep-research"},
-			Thinking:           true,
-			ThinkingTokenStart: "<think>",
-			ThinkingTokenEnd:   "</think>",
-		},
-	},
+func Scoreboard() scoreboard.Score {
+	var s scoreboard.Score
+	d := json.NewDecoder(bytes.NewReader(scoreboardJSON))
+	d.DisallowUnknownFields()
+	if err := d.Decode(&s); err != nil {
+		panic(fmt.Errorf("failed to unmarshal scoreboard.json: %w", err))
+	}
+	return s
 }
 
 // Options defines Perplexity specific options.
@@ -620,7 +569,7 @@ func (c *Client) OutputModalities() genai.Modalities {
 
 // Scoreboard implements scoreboard.ProviderScore.
 func (c *Client) Scoreboard() scoreboard.Score {
-	return Scoreboard
+	return Scoreboard()
 }
 
 // GenSync implements genai.Provider.

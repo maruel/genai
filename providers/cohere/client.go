@@ -12,6 +12,7 @@ package cohere
 import (
 	"bytes"
 	"context"
+	_ "embed"
 	"encoding/base64"
 	"encoding/json"
 	"errors"
@@ -32,108 +33,18 @@ import (
 	"github.com/maruel/roundtrippers"
 )
 
+//go:embed scoreboard.json
+var scoreboardJSON []byte
+
 // Scoreboard for Cohere.
-var Scoreboard = scoreboard.Score{
-	Warnings: []string{
-		"Cohere supports more than what the client currently supports.",
-		"Tool calling works very well but is biased; the model is lazy and when it's unsure, it will use the tool's first argument.",
-		"Free tier rate limit is lower: https://docs.cohere.com/v2/docs/rate-limits",
-	},
-	Country:      "CA",
-	DashboardURL: "https://dashboard.cohere.com/billing",
-	Scenarios: []scoreboard.Scenario{
-		{
-			Comments: "Thinking is only related to tool planning.",
-			Models:   []string{"command-r7b-12-2024"},
-			Thinking: true,
-			In:       map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:      map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &scoreboard.FunctionalityText{
-				Tools:          scoreboard.True,
-				IndecisiveTool: scoreboard.True,
-				JSON:           true,
-				JSONSchema:     true,
-				Citations:      true,
-				Seed:           true,
-				TopLogprobs:    true,
-			},
-			GenStream: &scoreboard.FunctionalityText{
-				Tools:          scoreboard.True,
-				IndecisiveTool: scoreboard.True,
-				JSON:           true,
-				JSONSchema:     true,
-				Citations:      true,
-				Seed:           true,
-				TopLogprobs:    true,
-			},
-		},
-		{
-			Comments: "Thinking is only related to tool planning. See https://docs.cohere.com/docs/aya-vision",
-			Models:   []string{"c4ai-aya-vision-8b"},
-			Thinking: true,
-			In: map[genai.Modality]scoreboard.ModalCapability{
-				genai.ModalityText: {Inline: true},
-				genai.ModalityImage: {
-					Inline:           true,
-					URL:              true,
-					SupportedFormats: []string{"image/gif", "image/jpeg", "image/png", "image/webp"},
-				},
-			},
-			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &scoreboard.FunctionalityText{
-				Tools:       scoreboard.True,
-				Citations:   true,
-				Seed:        true,
-				TopLogprobs: true,
-			},
-			GenStream: &scoreboard.FunctionalityText{
-				Tools:       scoreboard.True,
-				Citations:   true,
-				Seed:        true,
-				TopLogprobs: true,
-			},
-		},
-		{
-			Comments: "To enable later",
-			Models: []string{
-				"c4ai-aya-expanse-32b",
-				"c4ai-aya-expanse-8b",
-				"c4ai-aya-vision-32b",
-				"command",
-				"command-a-03-2025",
-				"command-a-reasoning-08-2025",
-				"command-a-vision-07-2025",
-				"command-light",
-				"command-light-nightly",
-				"command-nightly",
-				"command-r",
-				"command-r-08-2024",
-				"command-r-plus",
-				"command-r-plus-08-2024",
-				"command-r7b-arabic-02-2025",
-			},
-		},
-		{
-			Comments: "Unsupported",
-			Models: []string{
-				"embed-english-light-v2.0",
-				"embed-english-light-v3.0",
-				"embed-english-light-v3.0-image",
-				"embed-english-v2.0",
-				"embed-english-v3.0",
-				"embed-english-v3.0-image",
-				"embed-multilingual-light-v3.0",
-				"embed-multilingual-light-v3.0-image",
-				"embed-multilingual-v2.0",
-				"embed-multilingual-v3.0",
-				"embed-multilingual-v3.0-image",
-				"embed-v4.0",
-				"rerank-english-v3.0",
-				"rerank-multilingual-v3.0",
-				"rerank-v3.5",
-			},
-		},
-	},
+func Scoreboard() scoreboard.Score {
+	var s scoreboard.Score
+	d := json.NewDecoder(bytes.NewReader(scoreboardJSON))
+	d.DisallowUnknownFields()
+	if err := d.Decode(&s); err != nil {
+		panic(fmt.Errorf("failed to unmarshal scoreboard.json: %w", err))
+	}
+	return s
 }
 
 // ChatRequest is documented at https://docs.cohere.com/reference/chat
@@ -1034,7 +945,7 @@ func (c *Client) OutputModalities() genai.Modalities {
 
 // Scoreboard implements scoreboard.ProviderScore.
 func (c *Client) Scoreboard() scoreboard.Score {
-	return Scoreboard
+	return Scoreboard()
 }
 
 // GenSync implements genai.Provider.

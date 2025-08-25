@@ -31,7 +31,7 @@ func TestClient(t *testing.T) {
 
 	t.Run("Scoreboard", func(t *testing.T) {
 		var models []scoreboardtest.Model
-		for _, sc := range ollama.Scoreboard.Scenarios {
+		for _, sc := range ollama.Scoreboard().Scenarios {
 			for _, m := range sc.Models {
 				models = append(models, scoreboardtest.Model{Model: m, Thinking: sc.Thinking})
 			}

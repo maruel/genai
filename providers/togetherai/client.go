@@ -10,6 +10,7 @@ package togetherai
 import (
 	"bytes"
 	"context"
+	_ "embed"
 	"encoding/base64"
 	"encoding/json"
 	"errors"
@@ -35,260 +36,20 @@ import (
 
 // Official python client library at https://github.com/togethercomputer/together-python/tree/main/src/together
 
+//go:embed scoreboard.json
+var scoreboardJSON []byte
+
 // Scoreboard for TogetherAI.
 //
 // See https://docs.together.ai/docs/serverless-models and https://api.together.ai/models
-var Scoreboard = scoreboard.Score{
-	Warnings: []string{
-		"No model supports \"required\" tool calling, thus it's marked as \"flaky\" everywhere.",
-		"Tool calling is solid with llama 3.3 70B quantized in FP8 (-Turbo) but is flaky in more recent models.",
-		"Suffix \"-Turbo\" means FP8 quantization.",
-		"Suffix \"-Lite\" means INT4 quantization.",
-		"Suffix \"-Free\" has lower rate limits.",
-	},
-	Country:      "US",
-	DashboardURL: "https://api.together.ai/settings/billing",
-	Scenarios: []scoreboard.Scenario{
-		{
-			Comments: "Tool calling is flaky because Together.AI only supports tool_choice auto, not required.",
-			Models:   []string{"meta-llama/Llama-4-Scout-17B-16E-Instruct"},
-			In: map[genai.Modality]scoreboard.ModalCapability{
-				genai.ModalityText: {Inline: true},
-				genai.ModalityImage: {
-					Inline:           true,
-					URL:              true,
-					SupportedFormats: []string{"image/gif", "image/jpeg", "image/png", "image/webp"},
-				},
-			},
-			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &scoreboard.FunctionalityText{
-				ReportRateLimits: true,
-				Tools:            scoreboard.Flaky,
-				IndecisiveTool:   scoreboard.Flaky,
-				JSON:             true,
-				JSONSchema:       true,
-				Seed:             true,
-				TopLogprobs:      true,
-			},
-			GenStream: &scoreboard.FunctionalityText{
-				ReportRateLimits: true,
-				Tools:            scoreboard.Flaky,
-				IndecisiveTool:   scoreboard.Flaky,
-				JSON:             true,
-				JSONSchema:       true,
-				TopLogprobs:      true,
-			},
-		},
-		{
-			Comments: "Tool calling is flaky because Together.AI only supports tool_choice auto, not required.",
-			Models:   []string{"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8"},
-			In: map[genai.Modality]scoreboard.ModalCapability{
-				genai.ModalityText: {Inline: true},
-				genai.ModalityImage: {
-					Inline:           true,
-					URL:              true,
-					SupportedFormats: []string{"image/gif", "image/jpeg", "image/png", "image/webp"},
-				},
-			},
-			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &scoreboard.FunctionalityText{
-				ReportRateLimits: true,
-				Tools:            scoreboard.Flaky,
-				JSON:             true,
-				JSONSchema:       true,
-				Seed:             true,
-				TopLogprobs:      true,
-				NoMaxTokens:      true,
-			},
-			GenStream: &scoreboard.FunctionalityText{
-				ReportRateLimits: true,
-				Tools:            scoreboard.Flaky,
-				JSON:             true,
-				JSONSchema:       true,
-				Seed:             true,
-				TopLogprobs:      true,
-				NoMaxTokens:      true,
-			},
-		},
-		{
-			Models: []string{"meta-llama/Llama-Vision-Free"},
-			In: map[genai.Modality]scoreboard.ModalCapability{
-				genai.ModalityText: {Inline: true},
-				genai.ModalityImage: {
-					Inline:           true,
-					URL:              true,
-					SupportedFormats: []string{"image/gif", "image/jpeg", "image/png", "image/webp"},
-				},
-			},
-			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &scoreboard.FunctionalityText{
-				ReportRateLimits: true,
-				Tools:            scoreboard.Flaky,
-				JSONSchema:       true,
-				Seed:             true,
-				TopLogprobs:      true,
-				NoMaxTokens:      true,
-			},
-			GenStream: &scoreboard.FunctionalityText{
-				ReportRateLimits: true,
-				Tools:            scoreboard.Flaky,
-				JSONSchema:       true,
-				TopLogprobs:      true,
-			},
-		},
-		{
-			Models: []string{"moonshotai/Kimi-K2-Instruct"},
-			In:     map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:    map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &scoreboard.FunctionalityText{
-				ReportRateLimits: true,
-				Tools:            scoreboard.Flaky,
-				BiasedTool:       scoreboard.Flaky,
-				JSON:             true,
-				JSONSchema:       true,
-				Seed:             true,
-				TopLogprobs:      true,
-			},
-			GenStream: &scoreboard.FunctionalityText{
-				ReportRateLimits: true,
-				Tools:            scoreboard.Flaky,
-				JSON:             true,
-				JSONSchema:       true,
-				Seed:             true,
-				TopLogprobs:      true,
-			},
-		},
-		{
-			Comments: "FinishReason is only broken with JSON.",
-			Models:   []string{"mistralai/Mistral-Small-24B-Instruct-2501"},
-			In:       map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:      map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &scoreboard.FunctionalityText{
-				ReportRateLimits:   true,
-				Tools:              scoreboard.Flaky,
-				BiasedTool:         scoreboard.Flaky,
-				IndecisiveTool:     scoreboard.Flaky,
-				JSON:               true,
-				Seed:               true,
-				TopLogprobs:        true,
-				BrokenFinishReason: true,
-			},
-			GenStream: &scoreboard.FunctionalityText{
-				ReportRateLimits:   true,
-				Tools:              scoreboard.Flaky,
-				BiasedTool:         scoreboard.Flaky,
-				IndecisiveTool:     scoreboard.Flaky,
-				JSON:               true,
-				Seed:               true,
-				TopLogprobs:        true,
-				BrokenFinishReason: true,
-			},
-		},
-		{
-			Models: []string{"black-forest-labs/FLUX.1-schnell"},
-			In:     map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out: map[genai.Modality]scoreboard.ModalCapability{
-				genai.ModalityImage: {
-					URL:              true,
-					SupportedFormats: []string{"image/jpeg"},
-				},
-			},
-			GenDoc: &scoreboard.FunctionalityDoc{
-				Seed:               true,
-				BrokenTokenUsage:   scoreboard.True,
-				BrokenFinishReason: true,
-			},
-		},
-		{
-			Comments: "Untested",
-			Models: []string{
-				"Alibaba-NLP/gte-modernbert-base",
-				"NousResearch/Nous-Hermes-2-Mixtral-8x7B-DPO",
-				"Qwen/QwQ-32B",
-				"Qwen/Qwen2-72B-Instruct",
-				"Qwen/Qwen2.5-VL-72B-Instruct",
-				"Qwen/Qwen2.5-72B-Instruct-Turbo",
-				"Qwen/Qwen2.5-7B-Instruct-Turbo",
-				"Qwen/Qwen2.5-Coder-32B-Instruct",
-				"Qwen/Qwen3-235B-A22B-Instruct-2507-tput",
-				"Qwen/Qwen3-235B-A22B-Thinking-2507",
-				"Qwen/Qwen3-235B-A22B-fp8-tput",
-				"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8",
-				"Salesforce/Llama-Rank-V1",
-				"Virtue-AI/VirtueGuard-Text-Lite",
-				"arcee-ai/coder-large",
-				"arize-ai/qwen-2-1.5b-instruct",
-				"togethercomputer/m2-bert-80M-32k-retrieval",
-				"deepcogito/cogito-v2-preview-llama-70B",
-				"arcee-ai/AFM-4.5B",
-				"deepcogito/cogito-v2-preview-llama-405B",
-				"arcee-ai/maestro-reasoning",
-				"arcee-ai/virtuoso-large",
-				"arcee_ai/arcee-spotlight",
-				"black-forest-labs/FLUX.1-canny",
-				"black-forest-labs/FLUX.1-depth",
-				"black-forest-labs/FLUX.1-dev",
-				"black-forest-labs/FLUX.1-dev-lora",
-				"black-forest-labs/FLUX.1-kontext-dev",
-				"black-forest-labs/FLUX.1-kontext-max",
-				"black-forest-labs/FLUX.1-kontext-pro",
-				"black-forest-labs/FLUX.1-krea-dev",
-				"black-forest-labs/FLUX.1-pro",
-				"black-forest-labs/FLUX.1-redux",
-				"black-forest-labs/FLUX.1-schnell-Free",
-				"black-forest-labs/FLUX.1.1-pro",
-				"cartesia/sonic",
-				"cartesia/sonic-2",
-				"deepcogito/cogito-v2-preview-deepseek-671b",
-				"deepcogito/cogito-v2-preview-llama-109B-MoE",
-				"deepseek-ai/DeepSeek-R1-0528-tput",
-				"deepseek-ai/DeepSeek-R1-Distill-Llama-70B",
-				"deepseek-ai/DeepSeek-R1-Distill-Llama-70B-free",
-				"deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B",
-				"deepseek-ai/DeepSeek-R1-Distill-Qwen-14B",
-				"deepseek-ai/DeepSeek-V3",
-				"google/gemma-2-27b-it",
-				"google/gemma-3-27b-it",
-				"google/gemma-3n-E4B-it",
-				"intfloat/multilingual-e5-large-instruct",
-				"lgai/exaone-3-5-32b-instruct",
-				"lgai/exaone-deep-32b",
-				"marin-community/marin-8b-instruct",
-				"meta-llama/Llama-2-70b-hf",
-				"meta-llama/Llama-3-70b-chat-hf",
-				"meta-llama/Llama-3-8b-chat-hf",
-				"meta-llama/Llama-3.2-11B-Vision-Instruct-Turbo",
-				"meta-llama/Llama-3.2-3B-Instruct-Turbo",
-				"meta-llama/Llama-3.2-90B-Vision-Instruct-Turbo",
-				"meta-llama/Llama-3.3-70B-Instruct-Turbo",
-				"meta-llama/Llama-3.3-70B-Instruct-Turbo-Free",
-				"meta-llama/Llama-Guard-3-11B-Vision-Turbo",
-				"meta-llama/Llama-Guard-4-12B",
-				"meta-llama/LlamaGuard-2-8b",
-				"meta-llama/Meta-Llama-3-70B-Instruct-Turbo",
-				"meta-llama/Meta-Llama-3-8B-Instruct-Lite",
-				"meta-llama/Meta-Llama-3.1-405B-Instruct-Turbo",
-				"meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo",
-				"meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo",
-				"meta-llama/Meta-Llama-Guard-3-8B",
-				"mistralai/Mistral-7B-Instruct-v0.1",
-				"mistralai/Mistral-7B-Instruct-v0.3",
-				"mistralai/Mixtral-8x7B-Instruct-v0.1",
-				"mixedbread-ai/Mxbai-Rerank-Large-V2",
-				"nvidia/Llama-3.1-Nemotron-70B-Instruct-HF",
-				"openai/gpt-oss-20b",
-				"openai/whisper-large-v3",
-				"perplexity-ai/r1-1776",
-				"scb10x/scb10x-llama3-1-typhoon2-70b-instruct",
-				"scb10x/scb10x-typhoon-2-1-gemma3-12b",
-				"togethercomputer/MoA-1",
-				"togethercomputer/MoA-1-Turbo",
-				"togethercomputer/Refuel-Llm-V2",
-				"togethercomputer/Refuel-Llm-V2-Small",
-				"zai-org/GLM-4.5-Air-FP8",
-			},
-		},
-	},
+func Scoreboard() scoreboard.Score {
+	var s scoreboard.Score
+	d := json.NewDecoder(bytes.NewReader(scoreboardJSON))
+	d.DisallowUnknownFields()
+	if err := d.Decode(&s); err != nil {
+		panic(fmt.Errorf("failed to unmarshal scoreboard.json: %w", err))
+	}
+	return s
 }
 
 // ChatRequest is documented at https://docs.together.ai/reference/chat-completions-1
@@ -1228,7 +989,7 @@ func (c *Client) OutputModalities() genai.Modalities {
 
 // Scoreboard implements scoreboard.ProviderScore.
 func (c *Client) Scoreboard() scoreboard.Score {
-	return Scoreboard
+	return Scoreboard()
 }
 
 // GenSync implements genai.Provider.

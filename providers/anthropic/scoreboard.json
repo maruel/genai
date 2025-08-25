@@ -1,0 +1,161 @@
+{
+  "warnings": [
+    "No Anthropic model support structured output, you have to use tool calling instead.",
+    "Tool calling works very well but is biased; the model is lazy and when it's unsure, it will use the tool's first argument.",
+    "Rate limit is based on how much you spend per month: https://docs.anthropic.com/en/api/rate-limits#requirements-to-advance-tier"
+  ],
+  "country": "US",
+  "dashboardURL": "https://console.anthropic.com/settings/billing",
+  "scenarios": [
+    {
+      "models": [
+        "claude-3-5-haiku-20241022"
+      ],
+      "in": {
+        "text": {
+          "inline": true
+        },
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "document": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "application/pdf"
+          ]
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportRateLimits": true,
+        "tools": "true",
+        "biasedTool": "true",
+        "Citations": true
+      },
+      "GenStream": {
+        "reportRateLimits": true,
+        "tools": "true",
+        "biasedTool": "true",
+        "Citations": true
+      }
+    },
+    {
+      "models": [
+        "claude-sonnet-4-20250514"
+      ],
+      "in": {
+        "text": {
+          "inline": true
+        },
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "document": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "application/pdf"
+          ]
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportRateLimits": true,
+        "tools": "true",
+        "biasedTool": "true",
+        "Citations": true
+      },
+      "GenStream": {
+        "reportRateLimits": true,
+        "tools": "true",
+        "biasedTool": "true",
+        "Citations": true
+      }
+    },
+    {
+      "models": [
+        "claude-sonnet-4-20250514"
+      ],
+      "thinking": true,
+      "in": {
+        "text": {
+          "inline": true
+        },
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "document": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "application/pdf"
+          ]
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportRateLimits": true,
+        "tools": "true",
+        "noMaxTokens": true,
+        "Citations": true
+      },
+      "GenStream": {
+        "reportRateLimits": true,
+        "tools": "true",
+        "noMaxTokens": true,
+        "Citations": true
+      }
+    },
+    {
+      "comments": "They take more than 10 minutes to run the test, which causes it to timeout. And they cost a lot.",
+      "models": [
+        "claude-opus-4-20250514",
+        "claude-opus-4-1-20250805"
+      ]
+    },
+    {
+      "comments": "Old models",
+      "models": [
+        "claude-3-5-sonnet-20240620",
+        "claude-3-5-sonnet-20241022",
+        "claude-3-7-sonnet-20250219",
+        "claude-3-haiku-20240307",
+        "claude-3-opus-20240229"
+      ]
+    }
+  ]
+}

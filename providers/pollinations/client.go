@@ -10,6 +10,7 @@ package pollinations
 import (
 	"bytes"
 	"context"
+	_ "embed"
 	"encoding/base64"
 	"encoding/json"
 	"errors"
@@ -34,149 +35,18 @@ import (
 	"github.com/maruel/roundtrippers"
 )
 
+//go:embed scoreboard.json
+var scoreboardJSON []byte
+
 // Scoreboard for Pollinations.
-var Scoreboard = scoreboard.Score{
-	Warnings: []string{
-		"This is a completely free provider so you get what you pay for. I would recommend against using this provider with any private data.",
-		"Pollinations is a router to other backends, so it inherits the drawback of each sub-provider.",
-	},
-	Country:      "DE",
-	DashboardURL: "https://auth.pollinations.ai/",
-	Scenarios: []scoreboard.Scenario{
-		{
-			Comments: "JSON generated is often bad when using GenStream.",
-			Models:   []string{"llamascout"},
-			In:       map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:      map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &scoreboard.FunctionalityText{
-				NoMaxTokens:    true,
-				NoStopSequence: true,
-				Tools:          scoreboard.Flaky,
-				IndecisiveTool: scoreboard.Flaky,
-				JSON:           true,
-				Seed:           true,
-			},
-			GenStream: &scoreboard.FunctionalityText{
-				NoMaxTokens:    true,
-				NoStopSequence: true,
-				Tools:          scoreboard.Flaky,
-				IndecisiveTool: scoreboard.Flaky,
-				Seed:           true,
-			},
-		},
-		{
-			Comments: "It was fairly broken at the time of testing.",
-			Models:   []string{"deepseek-reasoning"},
-			Thinking: true,
-			/*
-				In:     map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-				Out:    map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-				GenSync: &scoreboard.FunctionalityText{
-					NoMaxTokens:    true,
-					NoStopSequence: true,
-					Seed:           true,
-				},
-				// Upstream parsing is broken, which means we can't recommend GenStream.
-			*/
-		},
-		{
-			Models: []string{"flux"},
-			In:     map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out: map[genai.Modality]scoreboard.ModalCapability{
-				genai.ModalityImage: {
-					Inline:           true,
-					SupportedFormats: []string{"image/jpeg"},
-				},
-			},
-			GenDoc: &scoreboard.FunctionalityDoc{
-				Seed:               true,
-				BrokenTokenUsage:   scoreboard.True,
-				BrokenFinishReason: true,
-			},
-		},
-		{
-			Models: []string{"openai"},
-			In: map[genai.Modality]scoreboard.ModalCapability{
-				genai.ModalityImage: {
-					Inline:           true,
-					URL:              true,
-					SupportedFormats: []string{"image/gif", "image/jpeg", "image/png", "image/webp"},
-				},
-				genai.ModalityText: {Inline: true},
-			},
-			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &scoreboard.FunctionalityText{
-				NoMaxTokens:    true,
-				NoStopSequence: true,
-				Tools:          scoreboard.True,
-				BiasedTool:     scoreboard.True,
-				JSON:           true,
-				Seed:           true,
-			},
-			GenStream: &scoreboard.FunctionalityText{
-				BrokenTokenUsage: scoreboard.True,
-				NoMaxTokens:      true,
-				NoStopSequence:   true,
-				Tools:            scoreboard.True,
-				BiasedTool:       scoreboard.True,
-				JSON:             true,
-				Seed:             true,
-			},
-		},
-		{
-			Comments: "The scoreboard is currently broken for this use case as the model requires audio input.",
-			Models:   []string{"openai-audio"},
-			/*
-				In: map[genai.Modality]scoreboard.ModalCapability{
-					genai.ModalityAudio: {
-						Inline:           true,
-						SupportedFormats: []string{"audio/mpeg", "audio/wav", "audio/mp4", "audio/x-m4a", "audio/webm"},
-					},
-					genai.ModalityText: {Inline: true},
-				},
-				Out: map[genai.Modality]scoreboard.ModalCapability{
-					genai.ModalityAudio: {
-						Inline:           true,
-						SupportedFormats: []string{"audio/mpeg", "audio/wav", "audio/mp4", "audio/x-m4a", "audio/webm"},
-					},
-					genai.ModalityText: {Inline: true},
-				},
-				GenSync: &scoreboard.FunctionalityText{
-					NoMaxTokens: true,
-					JSON:        true,
-					Seed:        true,
-				},
-				// GenStream doesn't succeed in the smoke test, so consider it broken for now.
-			*/
-		},
-		{
-			Comments: "Ignored",
-			Models: []string{
-				"bidara",
-				"evil",
-				"gemini",
-				"geminisearch",
-				"glm",
-				"hypnosis-tracy",
-				"kontext",
-				"llama-fast-roblox",
-				"llama-roblox",
-				"midijourney",
-				"mirexa",
-				"mistral",
-				"mistral-nemo-roblox",
-				"mistral-roblox",
-				"openai-fast",
-				"openai-large",
-				"openai-roblox",
-				"qwen-coder",
-				"rtist",
-				"sur",
-				"turbo",
-				"unity",
-			},
-		},
-	},
+func Scoreboard() scoreboard.Score {
+	var s scoreboard.Score
+	d := json.NewDecoder(bytes.NewReader(scoreboardJSON))
+	d.DisallowUnknownFields()
+	if err := d.Decode(&s); err != nil {
+		panic(fmt.Errorf("failed to unmarshal scoreboard.json: %w", err))
+	}
+	return s
 }
 
 // ChatRequest is barely documented at
@@ -1136,7 +1006,7 @@ func (c *Client) OutputModalities() genai.Modalities {
 
 // Scoreboard implements scoreboard.ProviderScore.
 func (c *Client) Scoreboard() scoreboard.Score {
-	return Scoreboard
+	return Scoreboard()
 }
 
 // GenSync implements genai.Provider.

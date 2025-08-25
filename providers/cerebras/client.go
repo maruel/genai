@@ -10,6 +10,7 @@ package cerebras
 import (
 	"bytes"
 	"context"
+	_ "embed"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -30,105 +31,18 @@ import (
 	"github.com/maruel/roundtrippers"
 )
 
+//go:embed scoreboard.json
+var scoreboardJSON []byte
+
 // Scoreboard for Cerebras.
-var Scoreboard = scoreboard.Score{
-	Warnings: []string{
-		"Cerebras doesn't support images yet even if models could. https://discord.com/channels/1085960591052644463/1376887536072527982/1376887536072527982",
-		"Tool calling is flaky with all models.",
-		"Most models are quantized to unspecified level: https://discord.com/channels/1085960591052644463/1085960592050896937/1372105565655928864",
-		"Free tier has limited context: https://inference-docs.cerebras.ai/support/pricing",
-	},
-	Country:      "US",
-	DashboardURL: "https://cloud.cerebras.ai",
-	Scenarios: []scoreboard.Scenario{
-		{
-			Comments: "llama-3.1-8b works too but the ListModels() API returns the malformed string.",
-			Models:   []string{"llama3.1-8b", "llama-3.3-70b"},
-			In:       map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:      map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &scoreboard.FunctionalityText{
-				ReportRateLimits: true,
-				Tools:            scoreboard.Flaky,
-				BiasedTool:       scoreboard.Flaky,
-				IndecisiveTool:   scoreboard.Flaky,
-				JSON:             true,
-				JSONSchema:       true,
-				Seed:             true,
-				TopLogprobs:      true,
-			},
-			GenStream: &scoreboard.FunctionalityText{
-				ReportRateLimits: true,
-				Tools:            scoreboard.Flaky,
-				BiasedTool:       scoreboard.Flaky,
-				IndecisiveTool:   scoreboard.Flaky,
-				JSON:             true,
-				JSONSchema:       true,
-				Seed:             true,
-				TopLogprobs:      true,
-			},
-		},
-		{
-			Comments:           "qwen-3-32b has broken FinishReason when streaming, and doesn't support tool calling with streaming. The model is not quantized: https://discord.com/channels/1085960591052644463/1085960592050896937/1374399258890997830",
-			Models:             []string{"qwen-3-32b"},
-			Thinking:           true,
-			ThinkingTokenStart: "<think>",
-			ThinkingTokenEnd:   "\n</think>\n",
-			In:                 map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:                map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &scoreboard.FunctionalityText{
-				ReportRateLimits: true,
-				Tools:            scoreboard.Flaky,
-				BiasedTool:       scoreboard.True,
-				JSON:             true,
-				JSONSchema:       true,
-				Seed:             true,
-				TopLogprobs:      true,
-			},
-			GenStream: &scoreboard.FunctionalityText{
-				ReportRateLimits: true,
-				Seed:             true,
-				TopLogprobs:      true,
-			},
-		},
-		{
-			Comments: "Llama-4 scout supports genai.ModalityImage but Cerebras doesn't support this yet. This may change in the future.",
-			Models:   []string{"llama-4-scout-17b-16e-instruct"},
-			In:       map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:      map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &scoreboard.FunctionalityText{
-				ReportRateLimits: true,
-				Tools:            scoreboard.Flaky,
-				BiasedTool:       scoreboard.True,
-				JSON:             true,
-				JSONSchema:       true,
-				Seed:             true,
-				TopLogprobs:      true,
-			},
-			GenStream: &scoreboard.FunctionalityText{
-				ReportRateLimits: true,
-				Tools:            scoreboard.Flaky,
-				BiasedTool:       scoreboard.True,
-				JSON:             true,
-				JSONSchema:       true,
-				Seed:             true,
-				TopLogprobs:      true,
-			},
-		},
-		{
-			Models: []string{
-				"gpt-oss-120b",
-				"llama-4-maverick-17b-128e-instruct",
-				"qwen-3-235b-a22b-instruct-2507",
-				"qwen-3-coder-480b",
-			},
-		},
-		{
-			Models: []string{
-				"qwen-3-235b-a22b-thinking-2507",
-			},
-			Thinking: true,
-		},
-	},
+func Scoreboard() scoreboard.Score {
+	var s scoreboard.Score
+	d := json.NewDecoder(bytes.NewReader(scoreboardJSON))
+	d.DisallowUnknownFields()
+	if err := d.Decode(&s); err != nil {
+		panic(fmt.Errorf("failed to unmarshal scoreboard.json: %w", err))
+	}
+	return s
 }
 
 // Official python client: https://github.com/Cerebras/cerebras-cloud-sdk-python
@@ -849,7 +763,7 @@ func (c *Client) OutputModalities() genai.Modalities {
 
 // Scoreboard implements scoreboard.ProviderScore.
 func (c *Client) Scoreboard() scoreboard.Score {
-	return Scoreboard
+	return Scoreboard()
 }
 
 // GenSync implements genai.Provider.

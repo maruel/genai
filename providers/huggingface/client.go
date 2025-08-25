@@ -11,6 +11,7 @@ package huggingface
 import (
 	"bytes"
 	"context"
+	_ "embed"
 	"encoding/base64"
 	"encoding/json"
 	"errors"
@@ -39,61 +40,18 @@ import (
 // But the real spec source of truth is
 // https://github.com/huggingface/huggingface.js/tree/main/packages/tasks/src/tasks/chat-completion
 
+//go:embed scoreboard.json
+var scoreboardJSON []byte
+
 // Scoreboard for Huggingface.
-var Scoreboard = scoreboard.Score{
-	Warnings: []string{
-		"Huggingface supports a ton of models on its serverless inference platform, more than any other provider.",
-		"Huggingface supports more options and modalities than what the client currently implement.",
-		"Huggingface is also a router to other backends.",
-		"Huggingface as a platform is generally unstable, with error not being properly reported. Use with care.",
-		"Tool calling works very well but is biased; the model is lazy and when it's unsure, it will use the tool's first argument.",
-	},
-	Country:      "US",
-	DashboardURL: "https://huggingface.co/settings/billing",
-	Scenarios: []scoreboard.Scenario{
-		{
-			Models: []string{"meta-llama/Llama-3.3-70B-Instruct"},
-			In:     map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:    map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &scoreboard.FunctionalityText{
-				Tools:       scoreboard.Flaky,
-				JSON:        true,
-				Seed:        true,
-				TopLogprobs: true,
-			},
-			GenStream: &scoreboard.FunctionalityText{
-				Tools:       scoreboard.Flaky,
-				JSON:        true,
-				Seed:        true,
-				TopLogprobs: true,
-			},
-		},
-		{
-			Comments:           "Seems to use a quantized version, tool calling is more flaky than would normally be expected. It doesn't follow JSON schema instructions.",
-			Models:             []string{"Qwen/Qwen3-4B"},
-			Thinking:           true,
-			ThinkingTokenStart: "<think>",
-			ThinkingTokenEnd:   "</think>",
-			In:                 map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:                map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &scoreboard.FunctionalityText{
-				ReportRateLimits: true,
-				Tools:            scoreboard.Flaky,
-				JSON:             true,
-				JSONSchema:       false,
-				Seed:             true,
-				TopLogprobs:      true,
-			},
-			GenStream: &scoreboard.FunctionalityText{
-				ReportRateLimits: true,
-				Tools:            scoreboard.Flaky,
-				JSON:             true,
-				JSONSchema:       true,
-				Seed:             true,
-				TopLogprobs:      true,
-			},
-		},
-	},
+func Scoreboard() scoreboard.Score {
+	var s scoreboard.Score
+	d := json.NewDecoder(bytes.NewReader(scoreboardJSON))
+	d.DisallowUnknownFields()
+	if err := d.Decode(&s); err != nil {
+		panic(fmt.Errorf("failed to unmarshal scoreboard.json: %w", err))
+	}
+	return s
 }
 
 // ChatRequest is underspecified at
@@ -895,7 +853,7 @@ func (c *Client) OutputModalities() genai.Modalities {
 
 // Scoreboard implements scoreboard.ProviderScore.
 func (c *Client) Scoreboard() scoreboard.Score {
-	return Scoreboard
+	return Scoreboard()
 }
 
 // GenSync implements genai.Provider.

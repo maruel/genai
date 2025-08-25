@@ -1,0 +1,125 @@
+{
+	"warnings": [
+		"Cohere supports more than what the client currently supports.",
+		"Tool calling works very well but is biased; the model is lazy and when it's unsure, it will use the tool's first argument.",
+		"Free tier rate limit is lower: https://docs.cohere.com/v2/docs/rate-limits"
+	],
+	"country": "CA",
+	"dashboardURL": "https://dashboard.cohere.com/billing",
+	"scenarios": [
+		{
+			"comments": "Thinking is only related to tool planning.",
+			"models": [
+				"command-r7b-12-2024"
+	  ],
+	  "thinking": true,
+	  "in": {
+		  "text": {
+			  "inline": true
+		  }
+	  },
+	  "out": {
+		  "text": {
+			  "inline": true
+		  }
+	  },
+	  "GenSync": {
+		  "tools": "true",
+		  "indecisiveTool": "true",
+		  "json": true,
+		  "jsonSchema": true,
+		  "citations": true,
+		  "seed": true,
+		  "topLogprobs": true
+	  },
+	  "GenStream": {
+		  "tools": "true",
+		  "indecisiveTool": "true",
+		  "json": true,
+		  "jsonSchema": true,
+		  "citations": true,
+		  "seed": true,
+		  "topLogprobs": true
+	  }
+		},
+		{
+			"comments": "Thinking is only related to tool planning. See https://docs.cohere.com/docs/aya-vision",
+			"models": [
+				"c4ai-aya-vision-8b"
+			],
+			"thinking": true,
+			"in": {
+				"text": {
+					"inline": true
+				},
+				"image": {
+					"inline": true,
+					"url": true,
+					"supportedFormats": [
+						"image/gif",
+						"image/jpeg",
+						"image/png",
+						"image/webp"
+					]
+				}
+			},
+			"out": {
+				"text": {
+					"inline": true
+				}
+			},
+			"GenSync": {
+				"tools": "true",
+				"citations": true,
+				"seed": true,
+				"topLogprobs": true
+			},
+			"GenStream": {
+				"tools": "true",
+				"citations": true,
+				"seed": true,
+				"topLogprobs": true
+			}
+		},
+		{
+			"comments": "To enable later",
+			"models": [
+				"c4ai-aya-expanse-32b",
+				"c4ai-aya-expanse-8b",
+				"c4ai-aya-vision-32b",
+				"command",
+				"command-a-03-2025",
+				"command-a-reasoning-08-2025",
+				"command-a-vision-07-2025",
+				"command-light",
+				"command-light-nightly",
+				"command-nightly",
+				"command-r",
+				"command-r-08-2024",
+				"command-r-plus",
+				"command-r-plus-08-2024",
+				"command-r7b-arabic-02-2025"
+			]
+		},
+		{
+			"comments": "Unsupported",
+			"models": [
+				"embed-english-light-v2.0",
+				"embed-english-light-v3.0",
+				"embed-english-light-v3.0-image",
+				"embed-english-v2.0",
+				"embed-english-v3.0",
+				"embed-english-v3.0-image",
+				"embed-multilingual-light-v3.0",
+				"embed-multilingual-light-v3.0-image",
+				"embed-multilingual-v2.0",
+				"embed-multilingual-v3.0",
+				"embed-multilingual-v3.0-image",
+				"embed-v4.0",
+				"rerank-english-v3.0",
+				"rerank-multilingual-v3.0",
+				"rerank-v3.5"
+			]
+		}
+	]
+}

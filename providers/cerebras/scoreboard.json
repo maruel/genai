@@ -1,0 +1,123 @@
+{
+	"warnings": [
+		"Cerebras doesn't support images yet even if models could. https://discord.com/channels/1085960591052644463/1376887536072527982/1376887536072527982",
+		"Tool calling is flaky with all models.",
+		"Most models are quantized to unspecified level: https://discord.com/channels/1085960591052644463/1085960592050896937/1372105565655928864",
+		"Free tier has limited context: https://inference-docs.cerebras.ai/support/pricing"
+	],
+	"country": "US",
+	"dashboardURL": "https://cloud.cerebras.ai",
+	"scenarios": [
+		{
+			"comments": "llama-3.1-8b works too but the ListModels() API returns the malformed string.",
+			"models": ["llama3.1-8b", "llama-3.3-70b"],
+			"in": {
+				"text": {
+					"inline": true
+				}
+			},
+			"out": {
+				"text": {
+					"inline": true
+				}
+			},
+			"GenSync": {
+				"reportRateLimits": true,
+				"tools": "flaky",
+				"biasedTool": "flaky",
+				"indecisiveTool": "flaky",
+				"json": true,
+				"jsonSchema": true,
+				"seed": true,
+				"topLogprobs": true
+			},
+			"GenStream": {
+				"reportRateLimits": true,
+				"tools": "flaky",
+				"biasedTool": "flaky",
+				"indecisiveTool": "flaky",
+				"json": true,
+				"jsonSchema": true,
+				"seed": true,
+				"topLogprobs": true
+			}
+		},
+		{
+			"comments": "qwen-3-32b has broken FinishReason when streaming, and doesn't support tool calling with streaming. The model is not quantized: https://discord.com/channels/1085960591052644463/1085960592050896937/1374399258890997830",
+			"models": ["qwen-3-32b"],
+			"thinking": true,
+			"thinkingTokenStart": "\u003cthink\u003e",
+			"thinkingTokenEnd": "\n\u003c\u002fthink\u003e\n",
+			"in": {
+				"text": {
+					"inline": true
+				}
+			},
+			"out": {
+				"text": {
+					"inline": true
+				}
+			},
+			"GenSync": {
+				"reportRateLimits": true,
+				"tools": "flaky",
+				"biasedTool": "true",
+				"json": true,
+				"jsonSchema": true,
+				"seed": true,
+				"topLogprobs": true
+			},
+			"GenStream": {
+				"reportRateLimits": true,
+				"seed": true,
+				"topLogprobs": true
+			}
+		},
+		{
+			"comments": "Llama-4 scout supports genai.ModalityImage but Cerebras doesn't support this yet. This may change in the future.",
+			"models": ["llama-4-scout-17b-16e-instruct"],
+			"in": {
+				"text": {
+					"inline": true
+				}
+			},
+			"out": {
+				"text": {
+					"inline": true
+				}
+			},
+			"GenSync": {
+				"reportRateLimits": true,
+				"tools": "flaky",
+				"biasedTool": "true",
+				"json": true,
+				"jsonSchema": true,
+				"seed": true,
+				"topLogprobs": true
+			},
+			"GenStream": {
+				"reportRateLimits": true,
+				"tools": "flaky",
+				"biasedTool": "true",
+				"json": true,
+				"jsonSchema": true,
+				"seed": true,
+				"topLogprobs": true
+			}
+		},
+		{
+			"models": [
+				"gpt-oss-120b",
+				"llama-4-maverick-17b-128e-instruct",
+				"qwen-3-235b-a22b-instruct-2507",
+				"qwen-3-coder-480b"
+			]
+		},
+		{
+			"models": [
+				"qwen-3-235b-a22b-thinking-2507"
+			],
+			"thinking": true
+		}
+	]
+}

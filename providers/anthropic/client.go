@@ -13,6 +13,7 @@ package anthropic
 import (
 	"bytes"
 	"context"
+	_ "embed"
 	"encoding/base64"
 	"encoding/json"
 	"errors"
@@ -35,122 +36,18 @@ import (
 	"github.com/maruel/roundtrippers"
 )
 
+//go:embed scoreboard.json
+var scoreboardJSON []byte
+
 // Scoreboard for Anthropic.
-var Scoreboard = scoreboard.Score{
-	Warnings: []string{
-		"No Anthropic model support structured output, you have to use tool calling instead.",
-		"Tool calling works very well but is biased; the model is lazy and when it's unsure, it will use the tool's first argument.",
-		"Rate limit is based on how much you spend per month: https://docs.anthropic.com/en/api/rate-limits#requirements-to-advance-tier",
-	},
-	Country:      "US",
-	DashboardURL: "https://console.anthropic.com/settings/billing",
-	Scenarios: []scoreboard.Scenario{
-		{
-			Models: []string{"claude-3-5-haiku-20241022"},
-			In: map[genai.Modality]scoreboard.ModalCapability{
-				genai.ModalityText: {Inline: true},
-				genai.ModalityImage: {
-					Inline:           true,
-					URL:              true,
-					SupportedFormats: []string{"image/gif", "image/jpeg", "image/png", "image/webp"},
-				},
-				genai.ModalityDocument: {
-					Inline:           true,
-					URL:              true,
-					SupportedFormats: []string{"application/pdf"},
-				},
-			},
-			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &scoreboard.FunctionalityText{
-				ReportRateLimits: true,
-				Tools:            scoreboard.True,
-				BiasedTool:       scoreboard.True,
-				Citations:        true,
-			},
-			GenStream: &scoreboard.FunctionalityText{
-				ReportRateLimits: true,
-				Tools:            scoreboard.True,
-				BiasedTool:       scoreboard.True,
-				Citations:        true,
-			},
-		},
-		{
-			Models: []string{"claude-sonnet-4-20250514"},
-			In: map[genai.Modality]scoreboard.ModalCapability{
-				genai.ModalityText: {Inline: true},
-				genai.ModalityImage: {
-					Inline:           true,
-					URL:              true,
-					SupportedFormats: []string{"image/gif", "image/jpeg", "image/png", "image/webp"},
-				},
-				genai.ModalityDocument: {
-					Inline:           true,
-					URL:              true,
-					SupportedFormats: []string{"application/pdf"},
-				},
-			},
-			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &scoreboard.FunctionalityText{
-				ReportRateLimits: true,
-				Tools:            scoreboard.True,
-				BiasedTool:       scoreboard.True,
-				Citations:        true,
-			},
-			GenStream: &scoreboard.FunctionalityText{
-				ReportRateLimits: true,
-				Tools:            scoreboard.True,
-				BiasedTool:       scoreboard.True,
-				Citations:        true,
-			},
-		},
-		{
-			Models:   []string{"claude-sonnet-4-20250514"},
-			Thinking: true,
-			In: map[genai.Modality]scoreboard.ModalCapability{
-				genai.ModalityText: {Inline: true},
-				genai.ModalityImage: {
-					Inline:           true,
-					URL:              true,
-					SupportedFormats: []string{"image/gif", "image/jpeg", "image/png", "image/webp"},
-				},
-				genai.ModalityDocument: {
-					Inline:           true,
-					URL:              true,
-					SupportedFormats: []string{"application/pdf"},
-				},
-			},
-			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &scoreboard.FunctionalityText{
-				ReportRateLimits: true,
-				Tools:            scoreboard.True,
-				NoMaxTokens:      true,
-				Citations:        true,
-			},
-			GenStream: &scoreboard.FunctionalityText{
-				ReportRateLimits: true,
-				Tools:            scoreboard.True,
-				NoMaxTokens:      true,
-				Citations:        true,
-			},
-		},
-		{
-			Comments: "They take more than 10 minutes to run the test, which causes it to timeout. And they cost a lot.",
-			Models: []string{
-				"claude-opus-4-20250514",
-				"claude-opus-4-1-20250805",
-			},
-		},
-		{
-			Comments: "Old models",
-			Models: []string{
-				"claude-3-5-sonnet-20240620",
-				"claude-3-5-sonnet-20241022",
-				"claude-3-7-sonnet-20250219",
-				"claude-3-haiku-20240307",
-				"claude-3-opus-20240229",
-			},
-		},
-	},
+func Scoreboard() scoreboard.Score {
+	var s scoreboard.Score
+	d := json.NewDecoder(bytes.NewReader(scoreboardJSON))
+	d.DisallowUnknownFields()
+	if err := d.Decode(&s); err != nil {
+		panic(fmt.Errorf("failed to unmarshal scoreboard.json: %w", err))
+	}
+	return s
 }
 
 // OptionsText defines Anthropic specific options.
@@ -1511,7 +1408,7 @@ func (c *Client) OutputModalities() genai.Modalities {
 
 // Scoreboard implements scoreboard.ProviderScore.
 func (c *Client) Scoreboard() scoreboard.Score {
-	return Scoreboard
+	return Scoreboard()
 }
 
 // GenSync implements genai.Provider.

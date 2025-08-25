@@ -1,0 +1,75 @@
+{
+	"warnings": [
+		"Huggingface supports a ton of models on its serverless inference platform, more than any other provider.",
+		"Huggingface supports more options and modalities than what the client currently implement.",
+		"Huggingface is also a router to other backends.",
+		"Huggingface as a platform is generally unstable, with error not being properly reported. Use with care.",
+		"Tool calling works very well but is biased; the model is lazy and when it's unsure, it will use the tool's first argument."
+	],
+	"country": "US",
+	"dashboardURL": "https://huggingface.co/settings/billing",
+	"scenarios": [
+		{
+			"models": [
+				"meta-llama/Llama-3.3-70B-Instruct"
+	  ],
+	  "in": {
+		  "text": {
+			  "inline": true
+		  }
+	  },
+	  "out": {
+		  "text": {
+			  "inline": true
+		  }
+	  },
+	  "GenSync": {
+		  "tools": "flaky",
+		  "json": true,
+		  "seed": true,
+		  "topLogprobs": true
+	  },
+	  "GenStream": {
+		  "tools": "flaky",
+		  "json": true,
+		  "seed": true,
+		  "topLogprobs": true
+	  }
+		},
+		{
+			"comments": "Seems to use a quantized version, tool calling is more flaky than would normally be expected. It doesn't follow JSON schema instructions.",
+			"models": [
+				"Qwen/Qwen3-4B"
+			],
+			"thinking": true,
+			"thinkingTokenStart": "\u003cthink\u003e",
+			"thinkingTokenEnd": "\u003c\u002fthink\u003e",
+			"in": {
+				"text": {
+					"inline": true
+				}
+			},
+			"out": {
+				"text": {
+					"inline": true
+				}
+			},
+			"GenSync": {
+				"reportRateLimits": true,
+				"tools": "flaky",
+				"json": true,
+				"jsonSchema": false,
+				"seed": true,
+				"topLogprobs": true
+			},
+			"GenStream": {
+				"reportRateLimits": true,
+				"tools": "flaky",
+				"json": true,
+				"jsonSchema": true,
+				"seed": true,
+				"topLogprobs": true
+			}
+		}
+	]
+}

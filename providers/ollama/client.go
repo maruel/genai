@@ -12,6 +12,7 @@ import (
 	"bufio"
 	"bytes"
 	"context"
+	_ "embed"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -33,59 +34,18 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+//go:embed scoreboard.json
+var scoreboardJSON []byte
+
 // Scoreboard for Ollama.
-var Scoreboard = scoreboard.Score{
-	Warnings: []string{
-		"https://ollama.com/search?c=tool is not a reliable source of truth to determine which model has tool support enabled. See https://github.com/ollama/ollama/issues/9680.",
-		"Ollama supports more than what the client currently supports.",
-	},
-	Country:      "Local",
-	DashboardURL: "https://ollama.com/",
-	Scenarios: []scoreboard.Scenario{
-		{
-			Models: []string{"gemma3:4b"},
-			In: map[genai.Modality]scoreboard.ModalCapability{
-				genai.ModalityImage: {
-					Inline:           true,
-					SupportedFormats: []string{"image/jpeg", "image/png", "image/webp"},
-				},
-				genai.ModalityText: {Inline: true},
-			},
-			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &scoreboard.FunctionalityText{
-				JSON:       true,
-				JSONSchema: true,
-				Seed:       true,
-			},
-			GenStream: &scoreboard.FunctionalityText{
-				JSON:       true,
-				JSONSchema: true,
-				Seed:       true,
-			},
-		},
-		{
-			Models:             []string{"qwen3:4b"},
-			Thinking:           true,
-			ThinkingTokenStart: "<think>",
-			ThinkingTokenEnd:   "\n</think>\n",
-			In: map[genai.Modality]scoreboard.ModalCapability{
-				genai.ModalityText: {Inline: true},
-			},
-			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &scoreboard.FunctionalityText{
-				Tools:      scoreboard.True,
-				JSON:       true,
-				JSONSchema: true,
-				Seed:       true,
-			},
-			GenStream: &scoreboard.FunctionalityText{
-				Tools:      scoreboard.True,
-				JSON:       true,
-				JSONSchema: true,
-				Seed:       true,
-			},
-		},
-	},
+func Scoreboard() scoreboard.Score {
+	var s scoreboard.Score
+	d := json.NewDecoder(bytes.NewReader(scoreboardJSON))
+	d.DisallowUnknownFields()
+	if err := d.Decode(&s); err != nil {
+		panic(fmt.Errorf("failed to unmarshal scoreboard.json: %w", err))
+	}
+	return s
 }
 
 // ChatRequest is somewhat documented at
@@ -677,7 +637,7 @@ func (c *Client) OutputModalities() genai.Modalities {
 
 // Scoreboard implements scoreboard.ProviderScore.
 func (c *Client) Scoreboard() scoreboard.Score {
-	return Scoreboard
+	return Scoreboard()
 }
 
 // GenSync implements genai.Provider.

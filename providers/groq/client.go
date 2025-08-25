@@ -8,7 +8,9 @@
 package groq
 
 import (
+	"bytes"
 	"context"
+	_ "embed"
 	"encoding/base64"
 	"encoding/json"
 	"errors"
@@ -30,169 +32,18 @@ import (
 	"github.com/maruel/roundtrippers"
 )
 
+//go:embed scoreboard.json
+var scoreboardJSON []byte
+
 // Scoreboard for Groq.
-var Scoreboard = scoreboard.Score{
-	Warnings: []string{
-		"Thinking models like qwen/qwen3-32b fails with tool calling when streaming. Currently disabled even not streaming in the client code.",
-		"No models has consistent tool calling.",
-	},
-	Country:      "US",
-	DashboardURL: "https://console.groq.com/dashboard/usage",
-	Scenarios: []scoreboard.Scenario{
-		{
-			Comments: "llama-3.1-8b-instant will be both indecisive and biased given its size and quantization. 70b is a bit better but not perfect.",
-			Models: []string{
-				"llama-3.1-8b-instant",
-				"llama-3.3-70b-versatile",
-			},
-			In:  map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &scoreboard.FunctionalityText{
-				ReportRateLimits: true,
-				Tools:            scoreboard.Flaky,
-				BiasedTool:       scoreboard.Flaky,
-				IndecisiveTool:   scoreboard.Flaky,
-				JSON:             true,
-				Seed:             true,
-			},
-			GenStream: &scoreboard.FunctionalityText{
-				ReportRateLimits: true,
-				Tools:            scoreboard.Flaky,
-				BiasedTool:       scoreboard.Flaky,
-				IndecisiveTool:   scoreboard.Flaky,
-				JSON:             true,
-				Seed:             true,
-			},
-		},
-		{
-			Comments:           "JSON only works when using ReasoningFormat: ReasoningFormatParsed",
-			Models:             []string{"deepseek-r1-distill-llama-70b"},
-			Thinking:           true,
-			ThinkingTokenStart: "<think>",
-			ThinkingTokenEnd:   "\n</think>\n",
-			In:                 map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:                map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &scoreboard.FunctionalityText{
-				ReportRateLimits: true,
-				Tools:            scoreboard.Flaky,
-				BiasedTool:       scoreboard.True,
-				IndecisiveTool:   scoreboard.Flaky,
-				JSON:             true,
-				Seed:             true,
-			},
-			GenStream: &scoreboard.FunctionalityText{
-				ReportRateLimits: true,
-				Tools:            scoreboard.Flaky,
-				BiasedTool:       scoreboard.True,
-				IndecisiveTool:   scoreboard.Flaky,
-				JSON:             true,
-				Seed:             true,
-			},
-		},
-		{
-			Comments: "Sometimes tool calling fails",
-			Models: []string{
-				"meta-llama/llama-4-scout-17b-16e-instruct",
-				"meta-llama/llama-4-maverick-17b-128e-instruct",
-			},
-			In: map[genai.Modality]scoreboard.ModalCapability{
-				genai.ModalityImage: {
-					Inline:           true,
-					URL:              true,
-					SupportedFormats: []string{"image/gif", "image/jpeg", "image/png", "image/webp"},
-				},
-				genai.ModalityText: {Inline: true},
-			},
-			Out: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &scoreboard.FunctionalityText{
-				ReportRateLimits: true,
-				Tools:            scoreboard.Flaky,
-				BiasedTool:       scoreboard.Flaky,
-				IndecisiveTool:   scoreboard.Flaky,
-				JSON:             true,
-				Seed:             true,
-			},
-			GenStream: &scoreboard.FunctionalityText{
-				ReportRateLimits: true,
-				Tools:            scoreboard.Flaky,
-				BiasedTool:       scoreboard.Flaky,
-				IndecisiveTool:   scoreboard.Flaky,
-				JSON:             true,
-				Seed:             true,
-			},
-		},
-		{
-			Comments:           "JSON only works when using ReasoningFormat: ReasoningFormatParsed",
-			Models:             []string{"qwen/qwen3-32b"},
-			Thinking:           true,
-			ThinkingTokenStart: "<think>",
-			ThinkingTokenEnd:   "\n</think>\n",
-			In:                 map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:                map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &scoreboard.FunctionalityText{
-				ReportRateLimits: true,
-				Tools:            scoreboard.Flaky,
-				IndecisiveTool:   scoreboard.Flaky,
-				BiasedTool:       scoreboard.Flaky,
-				JSON:             true,
-				Seed:             true,
-			},
-			GenStream: &scoreboard.FunctionalityText{
-				ReportRateLimits: true,
-				Tools:            scoreboard.Flaky,
-				IndecisiveTool:   scoreboard.Flaky,
-				BiasedTool:       scoreboard.Flaky,
-				JSON:             true,
-				Seed:             true,
-			},
-		},
-		{
-			Comments: "Tool calling is flaky, it's mostly biased but tool calling doesn't always succeed.",
-			Models:   []string{"moonshotai/kimi-k2-instruct"},
-			In:       map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:      map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &scoreboard.FunctionalityText{
-				ReportRateLimits: true,
-				Tools:            scoreboard.Flaky,
-				BiasedTool:       scoreboard.Flaky,
-				JSON:             true,
-				Seed:             true,
-			},
-			GenStream: &scoreboard.FunctionalityText{
-				ReportRateLimits: true,
-				Tools:            scoreboard.Flaky,
-				BiasedTool:       scoreboard.Flaky,
-				JSON:             true,
-				Seed:             true,
-			},
-		},
-		{
-			Comments: "Deprecated models.",
-			Models: []string{
-				"gemma2-9b-it",
-				"llama3-70b-8192",
-				"llama3-8b-8192",
-			},
-		},
-		{
-			Comments: "Unsupported models.",
-			Models: []string{
-				"allam-2-7b",
-				"compound-beta-mini",
-				"compound-beta",
-				"distil-whisper-large-v3-en",
-				"meta-llama/llama-guard-4-12b",
-				"meta-llama/llama-prompt-guard-2-22m",
-				"meta-llama/llama-prompt-guard-2-86m",
-				"openai/gpt-oss-20b",
-				"openai/gpt-oss-120b",
-				"playai-tts-arabic",
-				"playai-tts",
-				"whisper-large-v3-turbo",
-				"whisper-large-v3",
-			},
-		},
-	},
+func Scoreboard() scoreboard.Score {
+	var s scoreboard.Score
+	d := json.NewDecoder(bytes.NewReader(scoreboardJSON))
+	d.DisallowUnknownFields()
+	if err := d.Decode(&s); err != nil {
+		panic(fmt.Errorf("failed to unmarshal scoreboard.json: %w", err))
+	}
+	return s
 }
 
 // TODO: Split in two.
@@ -926,7 +777,7 @@ func (c *Client) OutputModalities() genai.Modalities {
 
 // Scoreboard implements scoreboard.ProviderScore.
 func (c *Client) Scoreboard() scoreboard.Score {
-	return Scoreboard
+	return Scoreboard()
 }
 
 // GenSync implements genai.Provider.

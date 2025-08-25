@@ -8,7 +8,10 @@
 package bfl
 
 import (
+	"bytes"
 	"context"
+	_ "embed"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"iter"
@@ -27,56 +30,22 @@ import (
 	"github.com/maruel/roundtrippers"
 )
 
+//go:embed scoreboard.json
+var scoreboardJSON []byte
+
 // Scoreboard for Black Forest Labs.
-var Scoreboard = scoreboard.Score{
-	Warnings: []string{
-		"The API is asynchronous and supports webhook but genai doesn't expose these yet, so the client polls for now.",
-		"The API and acceptable values are highly model-dependent, so it is easy to make an invalid request.",
-	},
-	Country:      "DE",
-	DashboardURL: "https://dashboard.bfl.ai/",
-	Scenarios: []scoreboard.Scenario{
-		{
-			Comments: "See https://docs.bfl.ai/api-reference/tasks/generate-an-image-with-flux1-[dev]",
-			Models: []string{
-				"flux-dev",
-			},
-			In: map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out: map[genai.Modality]scoreboard.ModalCapability{
-				genai.ModalityImage: {
-					URL:              true,
-					SupportedFormats: []string{"image/jpeg"},
-				},
-			},
-			GenDoc: &scoreboard.FunctionalityDoc{
-				ReportRateLimits:   true,
-				BrokenTokenUsage:   scoreboard.True,
-				BrokenFinishReason: true,
-				Seed:               true,
-			},
-		},
-		{
-			Comments: "It cost a fair amount of money to run the test on these models; see https://docs.bfl.ai/api-reference/tasks/ for details.",
-			Models: []string{
-				"flux-kontext-dev",
-				"flux-tools",
-				"flux-pro-1.0-depth",
-				"flux-pro-1.0-canny",
-				"flux-pro-1.0-expand",
-				"flux-pro-1.0-fill",
-				"flux-kontext-pro",
-				"flux-kontext-max",
-				"flux-pro-1.1-ultra",
-				"flux-pro-1.1",
-				"flux-pro",
-			},
-		},
-	},
+func Scoreboard() scoreboard.Score {
+	var s scoreboard.Score
+	d := json.NewDecoder(bytes.NewReader(scoreboardJSON))
+	d.DisallowUnknownFields()
+	if err := d.Decode(&s); err != nil {
+		panic(fmt.Errorf("failed to unmarshal scoreboard.json: %w", err))
+	}
+	return s
 }
 
-// ImageRequest is highly dependent on the model used.
-//
-// It's in https://docs.bfl.ml/api-reference/tasks/generate-an-image-with-flux-11-[pro] and the likes.
+// ImageRequest is described in https://docs.bfl.ml/api-reference/tasks/generate-an-image-with-flux-11-[pro]
+// and the likes.
 type ImageRequest struct {
 	Prompt           string `json:"prompt"`
 	ImagePrompt      []byte `json:"image_prompt,omitzero"`
@@ -336,7 +305,7 @@ func (c *Client) OutputModalities() genai.Modalities {
 
 // Scoreboard implements scoreboard.ProviderScore.
 func (c *Client) Scoreboard() scoreboard.Score {
-	return Scoreboard
+	return Scoreboard()
 }
 
 func processHeaders(h http.Header) []genai.RateLimit {

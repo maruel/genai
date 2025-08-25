@@ -12,6 +12,7 @@ package cloudflare
 import (
 	"bytes"
 	"context"
+	_ "embed"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -34,62 +35,18 @@ import (
 	"github.com/maruel/roundtrippers"
 )
 
+//go:embed scoreboard.json
+var scoreboardJSON []byte
+
 // Scoreboard for Cloudflare.
-var Scoreboard = scoreboard.Score{
-	Warnings: []string{
-		"FinishReason is not returned, ever.",
-		"StopSequence doesn't work.",
-		"Usage tokens isn't reported when streaming or using JSON.",
-		"The structure of ChatRequest format is model dependent.",
-		"Tool calling is supported on some models but it's flaky.",
-		"Given the fact that FinishReason, StopSequence and Usage are broken, I can't recommend this provider beside toys.",
-	},
-	Country:      "US",
-	DashboardURL: "https://dash.cloudflare.com",
-	Scenarios: []scoreboard.Scenario{
-		{
-			Comments: "Llama-4 scout supports genai.ModalityImage but I'm not sure if cloudflare supports this modality. This may change in the future.",
-			Models:   []string{"@cf/meta/llama-4-scout-17b-16e-instruct"},
-			In:       map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:      map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &scoreboard.FunctionalityText{
-				BrokenFinishReason: true,
-				NoStopSequence:     true,
-				Tools:              scoreboard.Flaky,
-				IndecisiveTool:     scoreboard.Flaky,
-				JSON:               true,
-				JSONSchema:         true,
-				Seed:               true,
-			},
-			GenStream: &scoreboard.FunctionalityText{
-				JSONSchema:         true,
-				BrokenFinishReason: true,
-				NoStopSequence:     true,
-				Tools:              scoreboard.Flaky,
-				Seed:               true,
-			},
-		},
-		{
-			Models: []string{"@cf/meta/llama-3.2-3b-instruct"},
-			In:     map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			Out:    map[genai.Modality]scoreboard.ModalCapability{genai.ModalityText: {Inline: true}},
-			GenSync: &scoreboard.FunctionalityText{
-				BrokenFinishReason: true,
-				NoStopSequence:     true,
-				Tools:              scoreboard.Flaky,
-				IndecisiveTool:     scoreboard.Flaky,
-				JSON:               true,
-				Seed:               true,
-			},
-			GenStream: &scoreboard.FunctionalityText{
-				BrokenFinishReason: true,
-				NoStopSequence:     true,
-				Tools:              scoreboard.Flaky,
-				JSON:               true,
-				Seed:               true,
-			},
-		},
-	},
+func Scoreboard() scoreboard.Score {
+	var s scoreboard.Score
+	d := json.NewDecoder(bytes.NewReader(scoreboardJSON))
+	d.DisallowUnknownFields()
+	if err := d.Decode(&s); err != nil {
+		panic(fmt.Errorf("failed to unmarshal scoreboard.json: %w", err))
+	}
+	return s
 }
 
 // ChatRequest structure depends on the model used.
@@ -829,7 +786,7 @@ func (c *Client) OutputModalities() genai.Modalities {
 
 // Scoreboard implements scoreboard.ProviderScore.
 func (c *Client) Scoreboard() scoreboard.Score {
-	return Scoreboard
+	return Scoreboard()
 }
 
 // GenSync implements genai.Provider.

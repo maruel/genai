@@ -31,13 +31,11 @@ import (
 )
 
 // Scoreboard for Groq.
-//
-// # Warnings
-//
-//   - Thinking models like qwen/qwen3-32b fails with tool calling when streaming. Currently disabled even not
-//     streaming in the client code.
-//   - No models has consistent tool calling.
 var Scoreboard = scoreboard.Score{
+	Warnings: []string{
+		"Thinking models like qwen/qwen3-32b fails with tool calling when streaming. Currently disabled even not streaming in the client code.",
+		"No models has consistent tool calling.",
+	},
 	Country:      "US",
 	DashboardURL: "https://console.groq.com/dashboard/usage",
 	Scenarios: []scoreboard.Scenario{

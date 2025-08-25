@@ -33,15 +33,12 @@ import (
 )
 
 // Scoreboard for Cohere.
-//
-// # Warnings
-//
-//   - Cohere doesn't support multimodal inputs yet.
-//   - Tool calling works very well but is biased; the model is lazy and when it's unsure, it will use the
-//     tool's first argument.
-//   - The API has good citations support but it's not well implemented yet.
-//   - Free tier rate limit is lower: https://docs.cohere.com/v2/docs/rate-limits
 var Scoreboard = scoreboard.Score{
+	Warnings: []string{
+		"Cohere supports more than what the client currently supports.",
+		"Tool calling works very well but is biased; the model is lazy and when it's unsure, it will use the tool's first argument.",
+		"Free tier rate limit is lower: https://docs.cohere.com/v2/docs/rate-limits",
+	},
 	Country:      "CA",
 	DashboardURL: "https://dashboard.cohere.com/billing",
 	Scenarios: []scoreboard.Scenario{

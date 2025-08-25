@@ -32,14 +32,13 @@ import (
 )
 
 // Scoreboard for Mistral.
-//
-// # Warnings
-//
-//   - Mistral supports more than what is exposed by the provider.
-//   - Tool calling is excellent and unbiased for non "mini" models.
-//   - PDF doesn't support inline document while images do.
-//   - Rate limit depends on your tier: https://docs.mistral.ai/deployment/laplateforme/tier/
 var Scoreboard = scoreboard.Score{
+	Warnings: []string{
+		"Mistral supports more than what the client currently supports.",
+		"Tool calling is excellent and unbiased for non \"mini\" models.",
+		"PDF doesn't support inline document while images do.",
+		"Rate limit depends on your tier: https://docs.mistral.ai/deployment/laplateforme/tier/",
+	},
 	Country:      "FR",
 	DashboardURL: "https://console.mistral.ai/usage",
 	Scenarios: []scoreboard.Scenario{

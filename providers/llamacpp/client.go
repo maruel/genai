@@ -41,12 +41,10 @@ import (
 )
 
 // Scoreboard for llama.cpp.
-//
-// # Warnings
-//
-//   - The multi-modal file is referred to with "#" character. I was initially using ";" but it caused
-//     "go get" to fail and frankly it was annoying to use when copy-pasting paths in bash.
 var Scoreboard = scoreboard.Score{
+	Warnings: []string{
+		"The multi-modal file is referred to with \"#\" character.",
+	},
 	Country:      "Local",
 	DashboardURL: "https://github.com/ggml-org/llama.cpp",
 	Scenarios: []scoreboard.Scenario{

@@ -26,15 +26,13 @@ import (
 )
 
 // Scoreboard for DeepSeek.
-//
-// # Warnings
-//
-//   - JSON schema decoding is announced to be added later in the doc.
-//   - Tool calling works very well but is biased; the model is lazy and when it's unsure, it will use the
-//     tool's first argument.
-//   - Tool calling is not supported with deepseek-reasoner.
-//   - DeepSeek doesn't do rate limiting: https://api-docs.deepseek.com/quick_start/rate_limit
 var Scoreboard = scoreboard.Score{
+	Warnings: []string{
+		"JSON schema decoding is announced to be added later in the doc.",
+		"Tool calling works very well but is biased; the model is lazy and when it's unsure, it will use the tool's first argument.",
+		"Tool calling is not supported with deepseek-reasoner.",
+		"DeepSeek doesn't do rate limiting: https://api-docs.deepseek.com/quick_start/rate_limit",
+	},
 	Country:      "CN",
 	DashboardURL: "https://platform.deepseek.com",
 	Scenarios: []scoreboard.Scenario{

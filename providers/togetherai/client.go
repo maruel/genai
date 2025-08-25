@@ -37,19 +37,15 @@ import (
 
 // Scoreboard for TogetherAI.
 //
-// # Warnings
-//
-//   - No model supports "required" tool calling, thus it's flaky everywhere.
-//   - Tool calling is solid with llama 3.3 70B quantized in FP8 (-Turbo) but is flaky in more recent models.
-//
-// # Models
-//
-//   - Suffix "-Turbo" means FP8 quantization.
-//   - Suffix "-Lite" means INT4 quantization.
-//   - Suffix "-Free" has lower rate limits.
-//
 // See https://docs.together.ai/docs/serverless-models and https://api.together.ai/models
 var Scoreboard = scoreboard.Score{
+	Warnings: []string{
+		"No model supports \"required\" tool calling, thus it's marked as \"flaky\" everywhere.",
+		"Tool calling is solid with llama 3.3 70B quantized in FP8 (-Turbo) but is flaky in more recent models.",
+		"Suffix \"-Turbo\" means FP8 quantization.",
+		"Suffix \"-Lite\" means INT4 quantization.",
+		"Suffix \"-Free\" has lower rate limits.",
+	},
 	Country:      "US",
 	DashboardURL: "https://api.together.ai/settings/billing",
 	Scenarios: []scoreboard.Scenario{

@@ -34,14 +34,11 @@ import (
 )
 
 // Scoreboard for Ollama.
-//
-// # Warnings
-//
-//   - https://ollama.com/search?c=tool is not a reliable source of truth to determine which model has tool
-//     support enabled. See https://github.com/ollama/ollama/issues/9680.
-//   - Figure out tools as streaming support recently got added to llama.cpp.
-//   - Ollama supports more than what the client supports.
 var Scoreboard = scoreboard.Score{
+	Warnings: []string{
+		"https://ollama.com/search?c=tool is not a reliable source of truth to determine which model has tool support enabled. See https://github.com/ollama/ollama/issues/9680.",
+		"Ollama supports more than what the client currently supports.",
+	},
 	Country:      "Local",
 	DashboardURL: "https://ollama.com/",
 	Scenarios: []scoreboard.Scenario{

@@ -38,17 +38,6 @@ import (
 
 // Scoreboard for Gemini.
 //
-// # Warnings
-//
-//   - Gemini supports basically anything, but often on "preview" and "experimental" models. This means that
-//     the hardcoded model names in this scoreboard will have to be updated once stable models are released.
-//   - Gemini removed thinking in January 2025 and announced they will add a summarized version within 2025.
-//   - Not all features supported by Gemini are implemented, there's just so many.
-//   - Tool calling is excellent and unbiased for non "-lite" models.
-//   - Files can be referenced by URL but only if they have been uploaded via the file API, which is not
-//     implemented yet.
-//   - Rate limit is based on how much you spend per month: https://ai.google.dev/gemini-api/docs/rate-limits
-//
 // See the following multi-modal sources:
 //
 // https://ai.google.dev/gemini-api/docs/image-understanding?hl=en&lang=rest#supported-formats
@@ -56,6 +45,14 @@ import (
 // https://ai.google.dev/gemini-api/docs/audio?hl=en#supported-formats
 // https://ai.google.dev/gemini-api/docs/document-processing?hl=en&lang=rest#technical-details
 var Scoreboard = scoreboard.Score{
+	Warnings: []string{
+		"Gemini supports basically anything, but often on \"preview\" and \"experimental\" models. This means that the hardcoded model names in this scoreboard will have to be updated once stable models are released.",
+		"Gemini removed thinking in January 2025 and announced they will add a summarized version within 2025.",
+		"Not all features supported by Gemini are implemented, there's just so many.",
+		"Tool calling is excellent and unbiased for non \"-lite\" models.",
+		"Files can be referenced by URL but only if they have been uploaded via the file API, which is not implemented yet.",
+		"Rate limit is based on how much you spend per month: https://ai.google.dev/gemini-api/docs/rate-limits",
+	},
 	Country:      "US",
 	DashboardURL: "http://aistudio.google.com",
 	Scenarios: []scoreboard.Scenario{

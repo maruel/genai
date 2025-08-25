@@ -35,15 +35,13 @@ import (
 )
 
 // Scoreboard for OpenAI.
-//
-// # Warnings
-//
-//   - Thinking is not returned.
-//   - OpenAI supports more than what the client supports.
-//   - Tool calling works very well but is biased; the model is lazy and when it's unsure, it will use the
-//     tool's first argument.
-//   - Rate limit is based on how much you spend per month: https://platform.openai.com/docs/guides/rate-limits
 var Scoreboard = scoreboard.Score{
+	Warnings: []string{
+		"Thinking is not returned. Use openairesponses to retrieve a summary of thee thinking tokens.",
+		"OpenAI supports more than what the client currently supports.",
+		"Tool calling works very well but is biased; the model is lazy and when it's unsure, it will use the tool's first argument.",
+		"Rate limit is based on how much you spend per month: https://platform.openai.com/docs/guides/rate-limits",
+	},
 	Country:      "US",
 	DashboardURL: "https://platform.openai.com/usage",
 	Scenarios: []scoreboard.Scenario{

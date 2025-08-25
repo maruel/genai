@@ -31,17 +31,13 @@ import (
 )
 
 // Scoreboard for Cerebras.
-//
-// # Warnings
-//
-//   - qwen-3-32b has broken FinishReason when streaming, and doesn't support tool calling with streaming.
-//   - Cerebras doesn't support images yet even if models could.
-//     https://discord.com/channels/1085960591052644463/1376887536072527982/1376887536072527982
-//   - Tool calling is flaky with all models.
-//   - Most models are quantized to unspecified level: https://discord.com/channels/1085960591052644463/1085960592050896937/1372105565655928864
-//   - qwen-3-32b is not quantized: https://discord.com/channels/1085960591052644463/1085960592050896937/1374399258890997830
-//   - Free tier has limited context: https://inference-docs.cerebras.ai/support/pricing
 var Scoreboard = scoreboard.Score{
+	Warnings: []string{
+		"Cerebras doesn't support images yet even if models could. https://discord.com/channels/1085960591052644463/1376887536072527982/1376887536072527982",
+		"Tool calling is flaky with all models.",
+		"Most models are quantized to unspecified level: https://discord.com/channels/1085960591052644463/1085960592050896937/1372105565655928864",
+		"Free tier has limited context: https://inference-docs.cerebras.ai/support/pricing",
+	},
 	Country:      "US",
 	DashboardURL: "https://cloud.cerebras.ai",
 	Scenarios: []scoreboard.Scenario{
@@ -72,6 +68,7 @@ var Scoreboard = scoreboard.Score{
 			},
 		},
 		{
+			Comments:           "qwen-3-32b has broken FinishReason when streaming, and doesn't support tool calling with streaming. The model is not quantized: https://discord.com/channels/1085960591052644463/1085960592050896937/1374399258890997830",
 			Models:             []string{"qwen-3-32b"},
 			Thinking:           true,
 			ThinkingTokenStart: "<think>",

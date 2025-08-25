@@ -36,14 +36,12 @@ import (
 )
 
 // Scoreboard for Anthropic.
-//
-// # Warnings
-//
-//   - No Anthropic model support structured output, you have to use tool calling instead.
-//   - Tool calling works very well but is biased; the model is lazy and when it's unsure, it will use the
-//     tool's first argument.
-//   - Rate limit is based on how much you spend per month: https://docs.anthropic.com/en/api/rate-limits#requirements-to-advance-tier
 var Scoreboard = scoreboard.Score{
+	Warnings: []string{
+		"No Anthropic model support structured output, you have to use tool calling instead.",
+		"Tool calling works very well but is biased; the model is lazy and when it's unsure, it will use the tool's first argument.",
+		"Rate limit is based on how much you spend per month: https://docs.anthropic.com/en/api/rate-limits#requirements-to-advance-tier",
+	},
 	Country:      "US",
 	DashboardURL: "https://console.anthropic.com/settings/billing",
 	Scenarios: []scoreboard.Scenario{

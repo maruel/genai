@@ -30,12 +30,11 @@ import (
 )
 
 // Scoreboard for Perplexity.
-//
-// # Warnings
-//
-//   - Websearch, which is automatic for all models, is very expensive. Disable it manually when testing.
-//   - No tool calling support.
 var Scoreboard = scoreboard.Score{
+	Warnings: []string{
+		"Websearch, which is automatic for all models, is very expensive. Disable it manually when testing.",
+		"No tool calling support, but JSON schema is supported so this can be leveraged.",
+	},
 	Country:      "US",
 	DashboardURL: "https://www.perplexity.ai/settings/api",
 	Scenarios: []scoreboard.Scenario{

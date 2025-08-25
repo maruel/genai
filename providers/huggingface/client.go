@@ -40,20 +40,16 @@ import (
 // https://github.com/huggingface/huggingface.js/tree/main/packages/tasks/src/tasks/chat-completion
 
 // Scoreboard for Huggingface.
-//
-// # Warnings
-//
-//   - Huggingface supports a ton of models on its serverless inference platform, more than any other
-//     provider.
-//   - Huggingface is also a router to other backends.
-//   - Huggingface as a platform is generally unstable, with error not being properly reported. Use with care.
-//   - It supports way more options than the client currently implements.
-//   - Tool calling works very well but is biased; the model is lazy and when it's unsure, it will use the
-//     tool's first argument.
 var Scoreboard = scoreboard.Score{
+	Warnings: []string{
+		"Huggingface supports a ton of models on its serverless inference platform, more than any other provider.",
+		"Huggingface supports more options and modalities than what the client currently implement.",
+		"Huggingface is also a router to other backends.",
+		"Huggingface as a platform is generally unstable, with error not being properly reported. Use with care.",
+		"Tool calling works very well but is biased; the model is lazy and when it's unsure, it will use the tool's first argument.",
+	},
 	Country:      "US",
 	DashboardURL: "https://huggingface.co/settings/billing",
-	// TODO: Huggingface obviously supports more modalities.
 	Scenarios: []scoreboard.Scenario{
 		{
 			Models: []string{"meta-llama/Llama-3.3-70B-Instruct"},

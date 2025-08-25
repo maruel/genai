@@ -249,6 +249,9 @@ func (i *Thinking) UnmarshalJSON(b []byte) error {
 // Score is a snapshot of the capabilities of the provider. These are smoke tested to confirm the
 // accuracy.
 type Score struct {
+	// Warnings lists concerns the user should be aware of.
+	Warnings []string `json:"warnings,omitzero,omitempty"`
+
 	// Scenarios is the list of all known supported and tested scenarios.
 	//
 	// A single provider can provide various distinct use cases, like text-to-text, multi-modal-to-text,

@@ -28,15 +28,11 @@ import (
 )
 
 // Scoreboard for Black Forest Labs.
-//
-// # Warnings
-//
-//   - The API is asynchronous and supports webhook but genai doesn't expose these yet, so the client polls
-//     for now.
-//   - The API and acceptable values are highly model-dependent, so it is easy to make an invalid request.
-//
-// See https://docs.bfl.ml/quick_start/generating_images
 var Scoreboard = scoreboard.Score{
+	Warnings: []string{
+		"The API is asynchronous and supports webhook but genai doesn't expose these yet, so the client polls for now.",
+		"The API and acceptable values are highly model-dependent, so it is easy to make an invalid request.",
+	},
 	Country:      "DE",
 	DashboardURL: "https://dashboard.bfl.ai/",
 	Scenarios: []scoreboard.Scenario{

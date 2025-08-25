@@ -11,7 +11,6 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
-	"slices"
 	"strings"
 	"sync"
 	"testing"
@@ -41,24 +40,17 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 	if err != nil {
 		t.Fatal(err)
 	}
-	if slices.Contains(c.Impl.OutputModalities, genai.ModalityImage) {
-		return &internaltest.InjectOptions{
-			Provider: c,
-			// TODO: Remove.
-			Opts: []genai.Options{&gemini.Options{ResponseModalities: genai.Modalities{genai.ModalityText, genai.ModalityImage}}},
-		}
-	}
 	if model.Thinking {
 		// https://ai.google.dev/gemini-api/docs/thinking?hl=en
 		return &internaltest.InjectOptions{
 			Provider: c,
-			Opts:     []genai.Options{&gemini.Options{ThinkingBudget: 512, ResponseModalities: genai.Modalities{genai.ModalityText}}},
+			Opts:     []genai.Options{&gemini.Options{ThinkingBudget: 512}},
 		}
 	}
 	// Forcibly disable thinking.
 	return &internaltest.InjectOptions{
 		Provider: c,
-		Opts:     []genai.Options{&gemini.Options{ThinkingBudget: 0, ResponseModalities: genai.Modalities{genai.ModalityText}}},
+		Opts:     []genai.Options{&gemini.Options{ThinkingBudget: 0}},
 	}
 }
 

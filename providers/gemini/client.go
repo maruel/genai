@@ -34,6 +34,7 @@ import (
 	"github.com/maruel/genai/internal/bb"
 	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/roundtrippers"
+	"golang.org/x/sync/errgroup"
 )
 
 // Scoreboard for Gemini.
@@ -326,10 +327,6 @@ type Options struct {
 	// ThinkingBudget is the maximum number of tokens the LLM can use to think about the answer. When 0,
 	// thinking is disabled. It generally must be above 1024 and below MaxTokens and 24576.
 	ThinkingBudget int64
-	// ResponseModalities defines what the LLM can return, text, images or audio. Default to text.
-	//
-	// https://ai.google.dev/gemini-api/docs/image-generation
-	ResponseModalities genai.Modalities
 }
 
 func (o *Options) Validate() error {
@@ -505,8 +502,6 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 		// Disable thinking.
 		c.GenerationConfig.ThinkingConfig = &ThinkingConfig{}
 	}
-	// Default to text generation.
-	c.GenerationConfig.ResponseModalities = []Modality{ModalityText}
 
 	for _, opt := range opts {
 		switch v := opt.(type) {
@@ -516,23 +511,6 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 				c.GenerationConfig.ThinkingConfig = &ThinkingConfig{
 					IncludeThoughts: true,
 					ThinkingBudget:  v.ThinkingBudget,
-				}
-			}
-			if len(v.ResponseModalities) != 0 {
-				c.GenerationConfig.ResponseModalities = make([]Modality, len(v.ResponseModalities))
-				for i, m := range v.ResponseModalities {
-					switch m {
-					case genai.ModalityAudio:
-						c.GenerationConfig.ResponseModalities[i] = ModalityAudio
-					case genai.ModalityImage:
-						c.GenerationConfig.ResponseModalities[i] = ModalityImage
-					case genai.ModalityText:
-						c.GenerationConfig.ResponseModalities[i] = ModalityText
-					case genai.ModalityDocument, genai.ModalityVideo:
-						fallthrough
-					default:
-						errs = append(errs, fmt.Errorf("unsupported modality %s", m))
-					}
 				}
 			}
 		case *genai.OptionsText:
@@ -1736,11 +1714,56 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 		}
 		return c.genDoc(ctx, msgs[0], opts...)
 	}
-	return c.Impl.GenSync(ctx, msgs, opts...)
+	// GenSync must be inlined because we need to call our GenSyncRaw.
+	res := genai.Result{}
+	in := &ChatRequest{}
+	var continuableErr error
+	if err := in.Init(msgs, c.Impl.Model, opts...); err != nil {
+		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
+			continuableErr = uce
+		} else {
+			return res, err
+		}
+	}
+	out := &ChatResponse{}
+	if err := c.GenSyncRaw(ctx, in, out); err != nil {
+		return res, err
+	}
+	res, err := out.ToResult()
+	if err != nil {
+		return res, err
+	}
+	if err := res.Validate(); err != nil {
+		// Catch provider implementation bugs.
+		return res, err
+	}
+
+	lastResp := c.Impl.LastResponseHeaders()
+	if c.Impl.ProcessHeaders != nil && lastResp != nil {
+		res.Usage.Limits = c.Impl.ProcessHeaders(lastResp)
+	}
+	return res, continuableErr
 }
 
 // GenSyncRaw provides access to the raw API.
 func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatResponse) error {
+	if len(in.GenerationConfig.ResponseModalities) == 0 {
+		in.GenerationConfig.ResponseModalities = make([]Modality, len(c.Impl.OutputModalities))
+		for i, m := range c.Impl.OutputModalities {
+			switch m {
+			case genai.ModalityAudio:
+				in.GenerationConfig.ResponseModalities[i] = ModalityAudio
+			case genai.ModalityImage:
+				in.GenerationConfig.ResponseModalities[i] = ModalityImage
+			case genai.ModalityText:
+				in.GenerationConfig.ResponseModalities[i] = ModalityText
+			case genai.ModalityDocument, genai.ModalityVideo:
+				fallthrough
+			default:
+				return fmt.Errorf("unsupported modality %s", m)
+			}
+		}
+	}
 	return c.Impl.GenSyncRaw(ctx, in, out)
 }
 
@@ -1749,11 +1772,95 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 	if c.isAudio() || c.isImage() || c.isVideo() {
 		return base.SimulateStream(ctx, c, msgs, opts...)
 	}
-	return c.Impl.GenStream(ctx, msgs, opts...)
+	// GenStream must be inlined because we need to call our GenStreamRaw.
+	res := genai.Result{}
+	var continuableErr error
+	var finalErr error
+
+	fnFragments := func(yield func(genai.ReplyFragment) bool) {
+		in := &ChatRequest{}
+		if err := in.Init(msgs, c.Impl.Model, opts...); err != nil {
+			if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
+				continuableErr = uce
+			} else {
+				finalErr = err
+				return
+			}
+		}
+		// Buffer the chunks a bit so the HTTP pipe is read a bit in advance.
+		chunks := make(chan ChatStreamChunkResponse, 32)
+		// TODO: Replace with an iterator.
+		fragments := make(chan genai.ReplyFragment)
+		eg, ctx2 := errgroup.WithContext(ctx)
+		eg.Go(func() error {
+			// Converts raw chunks into fragments.
+			err := c.Impl.ProcessStreamPackets(chunks, fragments, &res)
+			close(fragments)
+			return err
+		})
+		eg.Go(func() error {
+			// Generate parsed chunks from the raw JSON SSE stream.
+			err := c.GenStreamRaw(ctx2, in, chunks)
+			close(chunks)
+			return err
+		})
+		for f := range fragments {
+			if !yield(f) {
+				break
+			}
+		}
+		// Make sure the channel is emptied.
+		for range fragments {
+		}
+		if err := eg.Wait(); err != nil {
+			finalErr = err
+		}
+		lastResp := c.Impl.LastResponseHeaders()
+		if c.Impl.ProcessHeaders != nil && lastResp != nil {
+			res.Usage.Limits = c.Impl.ProcessHeaders(lastResp)
+		}
+		if c.Impl.LieToolCalls && res.Usage.FinishReason == genai.FinishedStop {
+			for i := range res.Replies {
+				if !res.Replies[i].ToolCall.IsZero() {
+					// Lie for the benefit of everyone.
+					res.Usage.FinishReason = genai.FinishedToolCalls
+					break
+				}
+			}
+		}
+	}
+	fnFinish := func() (genai.Result, error) {
+		if finalErr != nil {
+			return res, finalErr
+		}
+		if err := res.Validate(); err != nil {
+			// Catch provider implementation bugs.
+			return res, err
+		}
+		return res, continuableErr
+	}
+	return fnFragments, fnFinish
 }
 
 // GenStreamRaw provides access to the raw API.
 func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest, out chan<- ChatStreamChunkResponse) error {
+	if len(in.GenerationConfig.ResponseModalities) == 0 {
+		in.GenerationConfig.ResponseModalities = make([]Modality, len(c.Impl.OutputModalities))
+		for i, m := range c.Impl.OutputModalities {
+			switch m {
+			case genai.ModalityAudio:
+				in.GenerationConfig.ResponseModalities[i] = ModalityAudio
+			case genai.ModalityImage:
+				in.GenerationConfig.ResponseModalities[i] = ModalityImage
+			case genai.ModalityText:
+				in.GenerationConfig.ResponseModalities[i] = ModalityText
+			case genai.ModalityDocument, genai.ModalityVideo:
+				fallthrough
+			default:
+				return fmt.Errorf("unsupported modality %s", m)
+			}
+		}
+	}
 	return c.Impl.GenStreamRaw(ctx, in, out)
 }
 

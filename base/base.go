@@ -444,6 +444,8 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 // GenStreamRaw is the generic raw implementation for streaming Gen API endpoints.
 // It sets Stream to true, enables stream options if available, and handles the SSE response.
 func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenStreamRaw(ctx context.Context, in PGenRequest, out chan<- GenStreamChunkResponse) error {
+	// Normally this shouldn't be needed here but gemini calls this function directly.
+	c.lateInit()
 	if err := c.Validate(); err != nil {
 		return err
 	}

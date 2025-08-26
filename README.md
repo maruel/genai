@@ -170,7 +170,7 @@ go run github.com/maruel/genai/examples/txt_to_txt_stream@latest
 ```
 
 
-### Thinking 🧠
+### Text Thinking 🧠
 
 [examples/txt\_to\_txt\_thinking/main.go](examples/txt_to_txt_thinking/main.go): genai supports for implicit
 thinking (e.g. Anthropic) and explicit thinking (e.g. Deepseek). The package adapters provide logic to
@@ -267,7 +267,7 @@ go run github.com/maruel/genai/examples/txt_to_txt_tool-manual@latest
 ```
 
 
-### Decode reply as a struct ⚙
+### Text Decode reply as a struct ⚙
 
 [examples/txt\_to\_txt\_decode-json/main.go](examples/txt_to_txt_decode-json/main.go): Tell the LLM to use
 a specific Go struct to determine the JSON schema to generate the response. This is much more lightweight than

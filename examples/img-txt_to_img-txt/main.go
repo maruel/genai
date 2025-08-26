@@ -1,6 +1,6 @@
 // Leverage the content.jpg file generated in txt_to_img example to ask
-// Gemini 2.5 Flash to change the image with a prompt and ask the models to
-// explain what it did.
+// gemini-2.5-flash-image-preview to change the image with a prompt and ask
+// the model to explain what it did.
 //
 // This requires `GEMINI_API_KEY` (https://aistudio.google.com/apikey)
 // environment variable to authenticate.

@@ -1,7 +1,7 @@
 // This selects a good default model based on Anthropic's currently published
 // models, sends a prompt and prints the response as it is generated.
 // This leverages go 1.23 iterators (https://go.dev/blog/range-functions).
-// Notice how little difference there is between this and ../text-sync/.
+// Notice how little difference there is between this and ../txt_to_txt_sync/.
 //
 // This requires `ANTHROPIC_API_KEY` (https://console.anthropic.com/settings/keys)
 // environment variable to authenticate.

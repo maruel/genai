@@ -304,6 +304,9 @@ This may generate:
 
 > ![content.jpg](https://raw.githubusercontent.com/wiki/maruel/genai/content.jpg)
 
+This generated picture shows a fake signature. I decided to keep this example as a reminder that the result
+comes from the data harvested that was created by real humans.
+
 
 ### Image-Text to Video 🎥
 
@@ -325,6 +328,8 @@ This may generate:
 drawback is that audio is lost. View the original MP4 with audio (!) at
 [content.mp4](https://raw.githubusercontent.com/wiki/maruel/genai/content.mp4).
 
+This is very impressive, but also very expensive.
+
 
 ### Image-Text to Image 🖌
 
@@ -342,11 +347,11 @@ This may generate:
 > ![content2.jpg](https://raw.githubusercontent.com/wiki/maruel/genai/content2.jpg)
 
 
-### Image-Text to Image-Text 🖼
+### Image-Text to Image-Text 🍌
 
 [examples/img-txt\_to\_img-txt/main.go](examples/img-txt_to_img-txt/main.go): Leverage the
-content.jpg file generated in txt\_to\_img example to ask Gemini 2.5 Flash to change the image with a prompt
-and ask the models to explain what it did.
+content.jpg file generated in txt\_to\_img example to ask gemini-2.5-flash-image-preview to change the image
+with a prompt and ask the model to explain what it did.
 
 This requires [`GEMINI_API_KEY`](https://aistudio.google.com/apikey) environment variable to authenticate.
 
@@ -363,6 +368,8 @@ This may generate:
 > Wrote: content.png
 >
 > ![content.png](https://raw.githubusercontent.com/wiki/maruel/genai/content.png)
+
+This is quite impressive, but also quite expensive.
 
 
 ### Image-Text to Text 👁
@@ -386,7 +393,8 @@ This may generate:
 
 ### Image-Text to Text (local) 🏠
 
-[examples/img-txt_to_txt/main.go](examples/img-txt_to_txt/main.go): is very similar to the previous example!
+[examples/img-txt_to_txt_local/main.go](examples/img-txt_to_txt_local/main.go): is very similar to the
+previous example!
 
 Use [cmd/llama-serve](cmd/llama-serve) to run a LLM locally, including tool calling and vision!
 

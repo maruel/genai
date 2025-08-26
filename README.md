@@ -121,8 +121,10 @@ apply):
 - [Groq](https://console.groq.com/docs/rate-limits) 0.5qps, 500k tokens/day
 - [HuggingFace](https://huggingface.co/docs/api-inference/pricing) 10¢/month
 - [Mistral](https://help.mistral.ai/en/articles/225174-what-are-the-limits-of-the-free-tier) 1qps, 1B tokens/month
-- [Pollinations.ai](https://api.together.ai/settings/plans) provides many models for free
-- [Together.AI](https://api.together.ai/settings/plans) provides many models for free at 1qps
+- [Pollinations.ai](https://api.together.ai/settings/plans) provides many models for free, including image
+  generation
+- [Together.AI](https://api.together.ai/settings/plans) provides many models for free at 1qps, including image
+  generation
 - Running [Ollama](https://ollama.com/) or [llama.cpp](https://github.com/ggml-org/llama.cpp) locally is free. :)
 
 </details>
@@ -168,13 +170,18 @@ This may print:
 
 > Quit your job and follow your dreams, no matter the cost.
 
+ 💡 Click below for advanced features examples like choosing a provider at runtime, streaming, vision, image
+ generation, tool calling and JSON schema.
+
 <details>
   <summary>‼️ Click to see more examples!</summary>
 
+
 ### Any provider
 
-A minimal program that will load a provider by name and send a prompt. The relevant environment variables (e.g.
-`OPENAI_API_KEY`) will be used automatically. Supports [ollama](https://ollama.com/) and
+A minimal program that will load a provider by name and send a prompt. The relevant environment variable (e.g.
+`ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, etc) is used automatically for authentication. Automatically selects a
+models on behalf of the user. Supports [ollama](https://ollama.com/) and
 [llama-server](https://github.com/ggml-org/llama.cpp) even if they run on a remote host or non-default port.
 
 ```go
@@ -198,7 +205,7 @@ func main() {
 	ctx := context.Background()
 	s := strings.Join(slices.Sorted(maps.Keys(providers.Available(ctx))), ", ")
 	if s == "" {
-		s = "set environment variables, e.g. `OPENAI_API_KEY`"
+		s = "set environment variables, e.g. `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, etc"
 	}
 	provider := flag.String("provider", "", "provider to use, "+s)
 	model := flag.String("model", "", "model to use; "+genai.ModelCheap+", "+genai.ModelGood+" (default) or "+genai.ModelSOTA+" for automatic model selection")
@@ -237,6 +244,7 @@ func LoadProvider(ctx context.Context, provider string, opts *genai.ProviderOpti
 	return adapters.WrapThinking(c), nil
 }
 ```
+
 
 ### Tool calling
 
@@ -312,6 +320,118 @@ func main() {
 
 	// Print the result.
 	fmt.Println(resp.String())
+}
+```
+
+
+### Generate an image (for free)
+
+Use Together.AI's free (!) image generation albeit with low rate limit. Some providers return an URL that must be
+fetched manually within a few minutes or hours, some return the data inline. This example handles both cases.
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"io"
+	"log"
+	"net/http"
+	"os"
+
+	"github.com/maruel/genai"
+	"github.com/maruel/genai/providers/togetherai"
+)
+
+func main() {
+	ctx := context.Background()
+	c, err := togetherai.New(ctx, &genai.ProviderOptions{Model: "black-forest-labs/FLUX.1-schnell-Free"}, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	msgs := genai.Messages{
+		genai.NewTextMessage("Carton drawing of a husky playing on the beach."),
+	}
+	result, err := c.GenSync(ctx, msgs)
+	if err != nil {
+		log.Fatal(err)
+	}
+	for _, r := range result.Replies {
+		if r.Doc.IsZero() {
+			fmt.Println(r.Text)
+			continue
+		}
+		// The image can be returned as an URL or inline, depending on the provider.
+		var src io.Reader
+		if r.Doc.URL != "" {
+			req, err := http.Get(r.Doc.URL)
+			if err != nil {
+				log.Fatal(err)
+			} else if req.StatusCode != http.StatusOK {
+				log.Fatal(req.StatusCode)
+			}
+			src = req.Body
+			defer req.Body.Close()
+		} else {
+			src = r.Doc.Src
+		}
+		b, err := io.ReadAll(src)
+		if err != nil {
+			log.Fatal(err)
+		}
+		name := r.Doc.GetFilename()
+		fmt.Printf("Wrote: %s\n", name)
+		if err = os.WriteFile(name, b, 0o644); err != nil {
+			log.Fatal(err)
+		}
+	}
+}
+```
+
+
+### Vision and streaming reply
+
+Leverage the content.jpg generated in the previous step to ask another provider to describe the image. The
+response is streamed out the console as the reply is generated.
+
+```go
+package main
+
+import (
+	"context"
+	"log"
+	"os"
+
+	"github.com/maruel/genai"
+	"github.com/maruel/genai/providers/mistral"
+)
+
+func main() {
+	ctx := context.Background()
+	c, err := mistral.New(ctx, &genai.ProviderOptions{}, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	f, err := os.Open("content.jpg")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
+	msgs := genai.Messages{
+		genai.Message{Requests: []genai.Request{
+			{Text: "Extensively describe this image."},
+			{Doc: genai.Doc{Src: f}},
+		}},
+	}
+	fragments, finish := c.GenStream(ctx, msgs)
+	for f := range fragments {
+		os.Stdout.WriteString(f.TextFragment)
+	}
+	os.Stdout.WriteString("\n")
+	if _, err := finish(); err != nil {
+		log.Fatal(err)
+	}
 }
 ```
 

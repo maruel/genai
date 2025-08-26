@@ -34,7 +34,7 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 		}
 		return &roundtrippers.Log{
 			Transport: h,
-			L:         l,
+			Logger:    l,
 			Level:     slog.LevelDebug,
 		}
 	}
@@ -147,7 +147,7 @@ func getClientInner(t *testing.T, opts genai.ProviderOptions) (*cerebras.Client,
 		r := testRecorder.Record(t, h)
 		return &roundtrippers.Log{
 			Transport: r,
-			L:         l,
+			Logger:    l,
 			Level:     slog.LevelWarn,
 		}
 	})

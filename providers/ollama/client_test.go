@@ -45,7 +45,7 @@ func TestClient(t *testing.T) {
 				}
 				return &roundtrippers.Log{
 					Transport: h,
-					L:         l,
+					Logger:    l,
 					Level:     slog.LevelDebug,
 				}
 			}

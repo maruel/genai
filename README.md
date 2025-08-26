@@ -111,10 +111,10 @@ genai is _different_. Curious why it was created? See the release announcement a
 The following examples intentionally use a variety of providers to show the extent at which you can pick and
 chose.
 
-### Basic ✅
+### Text Basic ✅
 
-[examples/text-sync/main.go](examples/text-sync/main.go): This selects a good default model based on
-Anthropic's currently published models, sends a prompt and prints the response as a string.
+[examples/txt\_to\_txt\_sync/main.go](examples/txt_to_txt_sync/main.go): This selects a good default model based
+on Anthropic's currently published models, sends a prompt and prints the response as a string.
 
 This requires [`ANTHROPIC_API_KEY`](https://console.anthropic.com/settings/keys) environment variable to
 authenticate.
@@ -131,16 +131,22 @@ func main() {
 }
 ```
 
+Try it live:
+
+```bash
+go run github.com/maruel/genai/examples/txt_to_txt_sync@latest
+```
+
 This may print:
 
 > Quit your job and follow your dreams, no matter the cost.
 
 
-### Streaming 🏎
+### Text Streaming 🏎
 
-[examples/text-stream/main.go](examples/text-stream/main.go): This is the same example as above, with the
-output streamed as it replies. This leverages [go 1.23 iterators](https://go.dev/blog/range-functions). Notice
-how little difference there is between both.
+[examples/txt\_to\_txt\_stream/main.go](examples/txt_to_txt_stream/main.go): This is the same example as
+above, with the output streamed as it replies. This leverages [go 1.23
+iterators](https://go.dev/blog/range-functions). Notice how little difference there is between both.
 
 ```go
 func main() {
@@ -157,31 +163,37 @@ func main() {
 }
 ```
 
+Try it live:
+
+```bash
+go run github.com/maruel/genai/examples/txt_to_txt_stream@latest
+```
+
 
 ### Thinking 🧠
 
-[examples/text-thinking/main.go](examples/text-thinking/main.go): genai supports for implicit thinking (e.g.
-Anthropic) and explicit thinking (e.g. Deepseek). The package adapters provide logic to automatically handle
-explicit Chain-of-Thoughts models, generally using `<think>` and `</think>` tokens.
+[examples/txt\_to\_txt\_thinking/main.go](examples/txt_to_txt_thinking/main.go): genai supports for implicit
+thinking (e.g. Anthropic) and explicit thinking (e.g. Deepseek). The package adapters provide logic to
+automatically handle explicit Chain-of-Thoughts models, generally using `<think>` and `</think>` tokens.
 
 This requires [`DEEPSEEK_API_KEY`](https://platform.deepseek.com/api_keys) environment variable to
 authenticate.
 
 ```bash
-go run github.com/maruel/genai/examples/text-thinking@latest
+go run github.com/maruel/genai/examples/txt_to_txt_thinking@latest
 ```
 
 
-### Citations ✍
+### Text Citations ✍
 
-[examples/text-citations/main.go](examples/text-citations/main.go): Send entire documents and leverage
-providers which support automatic citations (Cohere, Anthropic) to leverage their functionality for a
+[examples/txt\_to\_txt\_citations/main.go](examples/txt_to_txt_citations/main.go): Send entire documents and
+leverage providers which support automatic citations (Cohere, Anthropic) to leverage their functionality for a
 supercharged RAG.
 
 This requires [`COHERE_API_KEY`](https://dashboard.cohere.com/api-keys) environment variable to authenticate.
 
 ```bash
-go run github.com/maruel/genai/examples/text-citations@latest
+go run github.com/maruel/genai/examples/txt_to_txt_citations@latest
 ```
 
 When asked _When did Darwin arrive home?_ with the introduction of _On the Origin of Species by Charles
@@ -198,16 +210,16 @@ Darwin_ passed in as a document, this may print:
 > Answer: 1837 was when Darwin returned home and began to reflect on the facts he had gathered during his time on H.M.S. Beagle.
 
 
-### Tools 🧰
+### Text Tools 🧰
 
-[examples/tool-sync/main.go](examples/tool-sync/main.go): A LLM can both retrieve information and act on
-its environment through tool calling. This unblocks a whole realm of possibilities. Our design enables dense
-strongly typed code that favorably compares to python.
+[examples/txt\_to\_txt\_tool-sync/main.go](examples/txt_to_txt_tool-sync/main.go): A LLM can both retrieve
+information and act on its environment through tool calling. This unblocks a whole realm of possibilities. Our
+design enables dense strongly typed code that favorably compares to python.
 
 This requires [`CEREBRAS_API_KEY`](https://cloud.cerebras.ai/platform/) environment variable to authenticate.
 
 ```bash
-go run github.com/maruel/genai/examples/tool-sync@latest
+go run github.com/maruel/genai/examples/txt_to_txt_tool-sync@latest
 ```
 
 When asked _What is 3214 + 5632?_, this may print:
@@ -215,17 +227,17 @@ When asked _What is 3214 + 5632?_, this may print:
 > 8846
 
 
-### Tools (streaming)
+### Text Tools (streaming)
 
-[examples/tool-stream/main.go](examples/tool-stream/main.go): Leverage a thinking model to see the thinking
-process while trying to use tool calls to answer the user's question. This enables keeping the user updated to
-see the progress.
+[examples/txt\_to\_txt\_tool-stream/main.go](examples/txt_to_txt_tool-stream/main.go): Leverage a thinking
+model to see the thinking process while trying to use tool calls to answer the user's question. This enables
+keeping the user updated to see the progress.
 
 This requires [`GROQ_API_KEY`](https://console.groq.com/keys) environment variable to authenticate.
 
 
 ```bash
-go run github.com/maruel/genai/examples/tool-stream@latest
+go run github.com/maruel/genai/examples/txt_to_txt_tool-stream@latest
 ```
 
 When asked _What is 3214 + 5632?_, this may print:
@@ -243,20 +255,21 @@ When asked _What is 3214 + 5632?_, this may print:
 > 8846
 
 
-### Tools (manual)
+### Text Tools (manual)
 
-[examples/tool-manual/main.go](examples/tool-manual/main.go): Runs a manual loop and runs tool calls directly.
+[examples/txt\_to\_txt\_tool-manual/main.go](examples/txt_to_txt_tool-manual/main.go): Runs a manual loop and
+runs tool calls directly.
 
 This requires [`CEREBRAS_API_KEY`](https://cloud.cerebras.ai/platform/) environment variable to authenticate.
 
 ```bash
-go run github.com/maruel/genai/examples/tool-manual@latest
+go run github.com/maruel/genai/examples/txt_to_txt_tool-manual@latest
 ```
 
 
 ### Decode reply as a struct ⚙
 
-[examples/decode-json/main.go](examples/decode-json/main.go): Tell the LLM to use
+[examples/txt\_to\_txt\_decode-json/main.go](examples/txt_to_txt_decode-json/main.go): Tell the LLM to use
 a specific Go struct to determine the JSON schema to generate the response. This is much more lightweight than
 tool calling!
 
@@ -267,13 +280,13 @@ This requires [`OPENAI_API_KEY`](https://platform.openai.com/settings/organizati
 variable to authenticate.
 
 ```bash
-go run github.com/maruel/genai/examples/decode-json@latest
+go run github.com/maruel/genai/examples/txt_to_txt_decode-json@latest
 ```
 
 
-### Text-to-Image 📸
+### Text to Image 📸
 
-[examples/text-to-image/main.go](examples/text-to-image/main.go): Use Together.AI's free (!) image generation
+[examples/txt\_to\_img/main.go](examples/txt_to_img/main.go): Use Together.AI's free (!) image generation
 albeit with
 low rate limit.
 
@@ -284,7 +297,7 @@ This requires [`TOGETHER_API_KEY`](https://api.together.ai/settings/api-keys) en
 authenticate.
 
 ```bash
-go run github.com/maruel/genai/examples/text-to-image@latest
+go run github.com/maruel/genai/examples/txt_to_img@latest
 ```
 
 This may generate:
@@ -292,15 +305,15 @@ This may generate:
 > ![content.jpg](https://raw.githubusercontent.com/wiki/maruel/genai/content.jpg)
 
 
-### Image-to-Video 🎥
+### Image-Text to Video 🎥
 
-[examples/image-to-video/main.go](examples/image-to-video/main.go): Leverage the content.jpg file generated in
-text-to-image example to ask Veo 3 from Google to generate a video based on the image.
+[examples/img-txt\_to\_vid/main.go](examples/img-txt_to_vid/main.go): Leverage the content.jpg file generated in
+txt\_to\_img example to ask Veo 3 from Google to generate a video based on the image.
 
 This requires [`GEMINI_API_KEY`](https://aistudio.google.com/apikey) environment variable to authenticate.
 
 ```bash
-go run github.com/maruel/genai/examples/image-to-video@latest
+go run github.com/maruel/genai/examples/img-txt_to_vid@latest
 ```
 
 This may generate:
@@ -313,15 +326,15 @@ drawback is that audio is lost. View the original MP4 with audio (!) at
 [content.mp4](https://raw.githubusercontent.com/wiki/maruel/genai/content.mp4).
 
 
-### Image-to-Image 🖌
+### Image-Text to Image 🖌
 
-[examples/image-to-image/main.go](examples/image-to-image/main.go): Change an image with a prompt. Leverage
-the content.jpg file generated in text-to-image example.
+[examples/img-txt\_to\_img/main.go](examples/img-txt_to_img/main.go): Change an image with a prompt. Leverage
+the content.jpg file generated in txt\_to\_img example.
 
 This requires [`BFL_API_KEY`](https://dashboard.bfl.ai/keys) environment variable to authenticate.
 
 ```bash
-go run github.com/maruel/genai/examples/image-to-image@latest
+go run github.com/maruel/genai/examples/img-txt_to_img@latest
 ```
 
 This may generate:
@@ -329,16 +342,16 @@ This may generate:
 > ![content2.jpg](https://raw.githubusercontent.com/wiki/maruel/genai/content2.jpg)
 
 
-### Text-Image-to-Text-Image 🖼
+### Image-Text to Image-Text 🖼
 
-[examples/text-image-to-text-image/main.go](examples/text-image-to-text-image/main.go): Leverage the
-content.jpg file generated in text-to-image example to ask Gemini 2.5 Flash to change the image with a prompt
+[examples/img-txt\_to\_img-txt/main.go](examples/img-txt_to_img-txt/main.go): Leverage the
+content.jpg file generated in txt\_to\_img example to ask Gemini 2.5 Flash to change the image with a prompt
 and ask the models to explain what it did.
 
 This requires [`GEMINI_API_KEY`](https://aistudio.google.com/apikey) environment variable to authenticate.
 
 ```bash
-go run github.com/maruel/genai/examples/text-image-to-text-image@latest
+go run github.com/maruel/genai/examples/img-txt_to_img-txt@latest
 ```
 
 This may generate:
@@ -352,16 +365,16 @@ This may generate:
 > ![content.png](https://raw.githubusercontent.com/wiki/maruel/genai/content.png)
 
 
-### Vision 👁
+### Image-Text to Text 👁
 
-[examples/vision/main.go](examples/vision/main.go): Analyze a picture provided as an URL (source:
-[wikipedia](https://en.m.wikipedia.org/wiki/File:Banana-Single.jpg)). The response is streamed out the console
-as the reply is generated.
+[examples/img-txt\_to\_txt/main.go](examples/img-txt_to_txt/main.go): Run vision to analyze a picture provided
+as an URL (source: [wikipedia](https://en.m.wikipedia.org/wiki/File:Banana-Single.jpg)). The response is
+streamed out the console as the reply is generated.
 
 This requires [`MISTRAL_API_KEY`](https://console.mistral.ai/api-keys) environment variable to authenticate.
 
 ```bash
-go run github.com/maruel/genai/examples/vision@latest
+go run github.com/maruel/genai/examples/img-txt_to_txt@latest
 ```
 
 This may generate:
@@ -370,7 +383,10 @@ This may generate:
 > ripeness. The banana is curved, which is typical of its natural shape, and it has a stem at the top. The
 > overall appearance suggests that it is ready to be eaten.
 
-### Vision (local) 🏠
+
+### Image-Text to Text (local) 🏠
+
+[examples/img-txt_to_txt/main.go](examples/img-txt_to_txt/main.go): is very similar to the previous example!
 
 Use [cmd/llama-serve](cmd/llama-serve) to run a LLM locally, including tool calling and vision!
 
@@ -386,13 +402,13 @@ go run github.com/maruel/genai/cmd/llama-serve@latest \
 Run vision 100% locally on CPU with only 8GB of RAM. No GPU required!
 
 ```bash
-go run github.com/maruel/genai/examples/vision-local@latest
+go run github.com/maruel/genai/examples/img-txt_to_txt_local@latest
 ```
 
 
-### Any provider ⁉
+### Text with any provider ⁉
 
-[examples/any-provider/main.go](examples/any-provider/main.go): Let the user chose the provider by name.
+[examples/txt\_to\_txt\_any/main.go](examples/txt_to_txt_any/main.go): Let the user chose the provider by name.
 
 The relevant environment variable (e.g. `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, etc) is used automatically for
 authentication.
@@ -403,7 +419,7 @@ Supports [ollama](https://ollama.com/) and [llama-server](https://github.com/ggm
 run on a remote host or non-default port.
 
 ```bash
-go run github.com/maruel/genai/examples/any-provider@latest \
+go run github.com/maruel/genai/examples/txt_to_txt_any@latest \
     -provider cerebras \
     "Tell a good sounding advice that is a bad idea in practice."
 ```

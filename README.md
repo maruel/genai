@@ -16,7 +16,7 @@ genai is _different_. Curious why it was created? See the release announcement a
   generate, decode the reply into your struct. No need to manually fiddle with
   JSON. Supports required fields, enums, descriptions, etc.
 - **Streaming**: Streams completion reply as the output is being generated, including thinking and tool
-  calling.
+  calling, via [go 1.23 iterators](https://go.dev/blog/range-functions).
 - **Multi-modal**: Process images, PDFs and videos (!) as input or output.
 - **Unit testing friendly**: record and play back API calls at HTTP level to save 💰 and keep tests fast and
   reproducible, via the exposed HTTP transport. See [example](https://pkg.go.dev/github.com/maruel/genai/providers/anthropic#example-New-HTTP_record).
@@ -106,12 +106,281 @@ genai is _different_. Curious why it was created? See the release announcement a
 </details>
 
 
+## Examples
+
+The following examples intentionally use a variety of providers to show the extent at which you can pick and
+chose.
+
+### Basic ✅
+
+[examples/text-sync/main.go](examples/text-sync/main.go): This selects a good default model based on
+Anthropic's currently published models, sends a prompt and prints the response as a string.
+
+This requires [`ANTHROPIC_API_KEY`](https://console.anthropic.com/settings/keys) environment variable to
+authenticate.
+
+```go
+func main() {
+	ctx := context.Background()
+	c, err := anthropic.New(ctx, &genai.ProviderOptions{}, nil)
+	msgs := genai.Messages{
+		genai.NewTextMessage("Give me a life advice that sounds good but is a bad idea in practice."),
+	}
+	result, err := c.GenSync(ctx, msgs)
+	fmt.Println(result.String())
+}
+```
+
+This may print:
+
+> Quit your job and follow your dreams, no matter the cost.
+
+
+### Streaming 🏎
+
+[examples/text-stream/main.go](examples/text-stream/main.go): This is the same example as above, with the
+output streamed as it replies. This leverages [go 1.23 iterators](https://go.dev/blog/range-functions). Notice
+how little difference there is between both.
+
+```go
+func main() {
+	ctx := context.Background()
+	c, err := anthropic.New(ctx, &genai.ProviderOptions{}, nil)
+	msgs := genai.Messages{
+		genai.NewTextMessage("Give me a life advice that sounds good but is a bad idea in practice."),
+	}
+	fragments, finish := c.GenStream(ctx, msgs)
+	for f := range fragments {
+		os.Stdout.WriteString(f.TextFragment)
+	}
+	_, err = finish()
+}
+```
+
+
+### Thinking 🧠
+
+[examples/text-thinking/main.go](examples/text-thinking/main.go): genai supports for implicit thinking (e.g.
+Anthropic) and explicit thinking (e.g. Deepseek). The package adapters provide logic to automatically handle
+explicit Chain-of-Thoughts models, generally using `<think>` and `</think>` tokens.
+
+This requires [`DEEPSEEK_API_KEY`](https://platform.deepseek.com/api_keys) environment variable to
+authenticate.
+
+```bash
+go run github.com/maruel/genai/examples/text-thinking@latest
+```
+
+
+### Citations ✍
+
+[examples/text-citations/main.go](examples/text-citations/main.go): Send entire documents and leverage
+providers which support automatic citations (Cohere, Anthropic) to leverage their functionality for a
+supercharged RAG.
+
+This requires [`COHERE_API_KEY`](https://dashboard.cohere.com/api-keys) environment variable to authenticate.
+
+```bash
+go run github.com/maruel/genai/examples/text-citations@latest
+```
+
+When asked _When did Darwin arrive home?_ with the introduction of _On the Origin of Species by Charles
+Darwin_ passed in as a document, this may print:
+
+> Citation: 1837
+>
+> Citation: returned home
+>
+> Citation: began to reflect on the facts he had gathered
+>
+> Citation: H.M.S. Beagle.
+>
+> Answer: 1837 was when Darwin returned home and began to reflect on the facts he had gathered during his time on H.M.S. Beagle.
+
+
+### Tools 🧰
+
+[examples/tool-sync/main.go](examples/tool-sync/main.go): A LLM can both retrieve information and act on
+its environment through tool calling. This unblocks a whole realm of possibilities. Our design enables dense
+strongly typed code that favorably compares to python.
+
+This requires [`CEREBRAS_API_KEY`](https://cloud.cerebras.ai/platform/) environment variable to authenticate.
+
+```bash
+go run github.com/maruel/genai/examples/tool-sync@latest
+```
+
+When asked _What is 3214 + 5632?_, this may print:
+
+> 8846
+
+
+### Tools (streaming)
+
+[examples/tool-stream/main.go](examples/tool-stream/main.go): Leverage a thinking model to see the thinking
+process while trying to use tool calls to answer the user's question. This enables keeping the user updated to
+see the progress.
+
+This requires [`GROQ_API_KEY`](https://console.groq.com/keys) environment variable to authenticate.
+
+
+```bash
+go run github.com/maruel/genai/examples/tool-stream@latest
+```
+
+When asked _What is 3214 + 5632?_, this may print:
+
+> \# Thinking
+>
+> User wants result of 3214+5632 using tool "add". Must be terse, only answer, no explanation. Need to call add function with a=3214, b=5632.
+>
+> \# Tool call
+>
+> {fc\_e9b9677b-898c-46df-9deb-39122bd6c69a add {"a":3214,"b":5632} map[] {}}
+>
+> \# Answer
+>
+> 8846
+
+
+### Tools (manual)
+
+[examples/tool-manual/main.go](examples/tool-manual/main.go): Runs a manual loop and runs tool calls directly.
+
+This requires [`CEREBRAS_API_KEY`](https://cloud.cerebras.ai/platform/) environment variable to authenticate.
+
+```bash
+go run github.com/maruel/genai/examples/tool-manual@latest
+```
+
+
+### Decode reply as a struct ⚙
+
+[examples/decode-json/main.go](examples/decode-json/main.go): Tell the LLM to use
+a specific Go struct to determine the JSON schema to generate the response. This is much more lightweight than
+tool calling!
+
+It is very useful when we want the LLM to make a choice between values, to return a number or a boolean
+(true/false). Enums are supported.
+
+This requires [`OPENAI_API_KEY`](https://platform.openai.com/settings/organization/api-keys) environment
+variable to authenticate.
+
+```bash
+go run github.com/maruel/genai/examples/decode-json@latest
+```
+
+
+### Text-to-Image 📸
+
+[examples/text-to-image/main.go](examples/text-to-image/main.go): Use Together.AI's free (!) image generation
+albeit with
+low rate limit.
+
+Some providers return an URL that must be fetched manually within a few minutes or hours, some return the data
+inline. This example handles both cases.
+
+This requires [`TOGETHER_API_KEY`](https://api.together.ai/settings/api-keys) environment variable to
+authenticate.
+
+```bash
+go run github.com/maruel/genai/examples/text-to-image@latest
+```
+
+This may generate:
+
+> ![content.jpg](https://raw.githubusercontent.com/wiki/maruel/genai/content.jpg)
+
+
+### Image-to-Video 🎥
+
+[examples/image-to-video/main.go](examples/image-to-video/main.go): Leverage the content.jpg file generated in
+text-to-image example to ask Veo 3 from Google to generate a video based on the image.
+
+This requires [`GEMINI_API_KEY`](https://aistudio.google.com/apikey) environment variable to authenticate.
+
+```bash
+go run github.com/maruel/genai/examples/image-to-video@latest
+```
+
+This may generate:
+
+> ![content.avif](https://raw.githubusercontent.com/wiki/maruel/genai/content.avif)
+
+⚠ The MP4 has been recompressed to AVIF via
+[compress.sh](https://raw.githubusercontent.com/wiki/maruel/genai/compress.sh) so GitHub can render it. The
+drawback is that audio is lost. View the original MP4 with audio (!) at
+[content.mp4](https://raw.githubusercontent.com/wiki/maruel/genai/content.mp4).
+
+
+### Vision 👁
+
+[examples/vision/main.go](examples/vision/main.go): Leverage the content.jpg file generated in
+text-to-image example to describe the image. The response is streamed out the console as the reply is
+generated.
+
+This requires [`MISTRAL_API_KEY`](https://console.mistral.ai/api-keys) environment variable to authenticate.
+
+```bash
+go run github.com/maruel/genai/examples/vision@latest
+```
+
+
+### Vision (local) 🏠
+
+Use [cmd/llama-serve](cmd/llama-serve) to run a LLM locally, including tool calling and vision!
+
+Start llama-server locally either by yourself or with this utility:
+
+```bash
+go run github.com/maruel/genai/cmd/llama-serve@latest \
+  -model ggml-org/gemma-3-4b-it-GGUF/gemma-3-4b-it-Q8_0.gguf#mmproj-model-f16.gguf -- \
+  --temp 1.0 --top-p 0.95 --top-k 64 \
+  --jinja -fa -c 0 --no-warmup
+```
+
+Run vision 100% locally on CPU with only 8GB of RAM. No GPU required!
+
+```bash
+go run github.com/maruel/genai/examples/vision-local@latest
+```
+
+
+### Any provider ⁉
+
+[examples/any-provider/main.go](examples/any-provider/main.go): Let the user chose the provider by name.
+
+The relevant environment variable (e.g. `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, etc) is used automatically for
+authentication.
+
+Automatically selects a models on behalf of the user.
+
+Supports [ollama](https://ollama.com/) and [llama-server](https://github.com/ggml-org/llama.cpp) even if they
+run on a remote host or non-default port.
+
+```bash
+go run github.com/maruel/genai/examples/any-provider@latest \
+    -provider cerebras \
+    "Tell a good sounding advice that is a bad idea in practice."
+```
+
+
+## Models 🗒
+
+Snapshot of all the supported models at [docs/MODELS.md](docs/MODELS.md) is updated weekly.
+
+Try it:
+
+```bash
+go install github.com/maruel/genai/cmd/...@latest
+
+list-models -provider huggingface
+```
+
+
 ## I'm poor 💸
 
-<details>
-  <summary>‼️ Click here for a list of providers offering free quota</summary>
-
-As of May 2025, the following services offer a free tier (other limits
+As of August 2025, the following services offer a free tier (other limits
 apply):
 
 - [Cerebras](https://cerebras.ai/inference) has unspecified "generous" free tier
@@ -126,453 +395,6 @@ apply):
 - [Together.AI](https://api.together.ai/settings/plans) provides many models for free at 1qps, including image
   generation
 - Running [Ollama](https://ollama.com/) or [llama.cpp](https://github.com/ggml-org/llama.cpp) locally is free. :)
-
-</details>
-
-
-## Look and feel
-
-### Sample usage
-
-This selects a good default model based on Anthropic's currently published models, sends a prompt and print
-the response as a string. It uses `ANTHROPIC_API_KEY` environment variable to authenticate.
-
-```go
-package main
-
-import (
-	"context"
-	"fmt"
-	"log"
-
-	"github.com/maruel/genai"
-	"github.com/maruel/genai/providers/anthropic"
-)
-
-func main() {
-	ctx := context.Background()
-	c, err := anthropic.New(ctx, &genai.ProviderOptions{}, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-	msgs := genai.Messages{
-		genai.NewTextMessage("Give me a life advice that sounds good but is a bad idea in practice."),
-	}
-	result, err := c.GenSync(ctx, msgs)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println(result.String())
-}
-```
-
-This may print:
-
-> Quit your job and follow your dreams, no matter the cost.
-
- 💡 Click below for advanced features examples like choosing a provider at runtime, streaming, vision, image
- generation, tool calling and JSON schema.
-
-<details>
-  <summary>‼️ Click to see more examples!</summary>
-
-
-### Any provider
-
-A minimal program that will load a provider by name and send a prompt. The relevant environment variable (e.g.
-`ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, etc) is used automatically for authentication. Automatically selects a
-models on behalf of the user. Supports [ollama](https://ollama.com/) and
-[llama-server](https://github.com/ggml-org/llama.cpp) even if they run on a remote host or non-default port.
-
-```go
-package main
-
-import (
-	"context"
-	"flag"
-	"fmt"
-	"log"
-	"maps"
-	"slices"
-	"strings"
-
-	"github.com/maruel/genai"
-	"github.com/maruel/genai/adapters"
-	"github.com/maruel/genai/providers"
-)
-
-func main() {
-	ctx := context.Background()
-	s := strings.Join(slices.Sorted(maps.Keys(providers.Available(ctx))), ", ")
-	if s == "" {
-		s = "set environment variables, e.g. `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, etc"
-	}
-	provider := flag.String("provider", "", "provider to use, "+s)
-	model := flag.String("model", "", "model to use; "+genai.ModelCheap+", "+genai.ModelGood+" (default) or "+genai.ModelSOTA+" for automatic model selection")
-	remote := flag.String("remote", "", "url to use, e.g. when using ollama or llama-server on another host")
-	flag.Parse()
-
-	query := strings.Join(flag.Args(), " ")
-	if query == "" {
-		log.Fatal("provide a query")
-	}
-	p, err := LoadProvider(ctx, *provider, &genai.ProviderOptions{Model: *model, Remote: *remote})
-	if err != nil {
-		log.Fatal(err)
-	}
-	resp, err := p.GenSync(ctx, genai.Messages{genai.NewTextMessage(query)})
-	if err != nil {
-		log.Fatalf("failed to use provider %q: %s", *provider, err)
-	}
-	fmt.Printf("%s\n", resp.String())
-}
-
-// LoadProvider loads a provider.
-func LoadProvider(ctx context.Context, provider string, opts *genai.ProviderOptions) (genai.Provider, error) {
-	if provider == "" {
-		return nil, fmt.Errorf("no provider specified")
-	}
-	f := providers.All[provider]
-	if f == nil {
-		return nil, fmt.Errorf("unknown provider %q", provider)
-	}
-	c, err := f(ctx, opts, nil)
-	if err != nil {
-		return nil, fmt.Errorf("failed to connect to provider %q: %w", provider, err)
-	}
-	// Wrap the provider with an adapter to process "<think>" tokens automatically ONLY if needed.
-	return adapters.WrapThinking(c), nil
-}
-```
-
-
-### Tool calling
-
-A LLM can both retrieve information and act on its environment through tool calling. It unblocks a whole realm
-of possibilities. Our design enables dense strongly typed code that favorably compares to python.
-
-```go
-package main
-
-import (
-	"context"
-	"fmt"
-	"log"
-
-	"github.com/maruel/genai"
-	"github.com/maruel/genai/adapters"
-	"github.com/maruel/genai/providers/cerebras"
-)
-
-func main() {
-	ctx := context.Background()
-	c, err := cerebras.New(ctx, &genai.ProviderOptions{Model: "qwen-3-235b-a22b-thinking-2507"}, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-	p := adapters.WrapThinking(c)
-	type math struct {
-		A int `json:"a"`
-		B int `json:"b"`
-	}
-	msgs := genai.Messages{
-		genai.NewTextMessage("What is 3214 + 5632? Call the tool \"add\" to tell me the answer. Do not explain. Be terse. Include only the answer."),
-	}
-	opts := genai.OptionsText{
-		Tools: []genai.ToolDef{
-			{
-				Name:        "add",
-				Description: "Add two numbers together and provides the result",
-				Callback: func(ctx context.Context, input *math) (string, error) {
-					return fmt.Sprintf("%d", input.A+input.B), nil
-				},
-			},
-		},
-		// Force the LLM to do a tool call.
-		ToolCallRequest: genai.ToolCallRequired,
-	}
-	resp, err := p.GenSync(ctx, msgs, &opts)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// Add the assistant's message to the messages list.
-	msgs = append(msgs, resp.Message)
-
-	// Process the tool call from the assistant.
-	msg, err := resp.DoToolCalls(ctx, opts.Tools)
-	if err != nil {
-		log.Fatalf("Error calling tool: %v", err)
-	}
-	if msg.IsZero() {
-		log.Fatal("Expected a tool call")
-	}
-
-	// Add the tool call response to the messages list.
-	msgs = append(msgs, msg)
-
-	// Follow up so the LLM can interpret the tool call response. Tell the LLM to not do a tool call this time.
-	opts.ToolCallRequest = genai.ToolCallNone
-	resp, err = p.GenSync(ctx, msgs, &opts)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// Print the result.
-	fmt.Println(resp.String())
-}
-```
-
-
-### Text-to-Image: Generate an image for free
-
-Use Together.AI's free (!) image generation albeit with low rate limit. Some providers return an URL that must be
-fetched manually within a few minutes or hours, some return the data inline. This example handles both cases.
-
-```go
-package main
-
-import (
-	"context"
-	"fmt"
-	"io"
-	"log"
-	"net/http"
-	"os"
-
-	"github.com/maruel/genai"
-	"github.com/maruel/genai/providers/togetherai"
-)
-
-func main() {
-	ctx := context.Background()
-	c, err := togetherai.New(ctx, &genai.ProviderOptions{Model: "black-forest-labs/FLUX.1-schnell-Free"}, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-	msgs := genai.Messages{
-		genai.NewTextMessage("Carton drawing of a husky playing on the beach."),
-	}
-	result, err := c.GenSync(ctx, msgs)
-	if err != nil {
-		log.Fatal(err)
-	}
-	for _, r := range result.Replies {
-		if r.Doc.IsZero() {
-			fmt.Println(r.Text)
-			continue
-		}
-		// The image can be returned as an URL or inline, depending on the provider.
-		var src io.Reader
-		if r.Doc.URL != "" {
-			req, err := c.HTTPClient().Get(r.Doc.URL)
-			if err != nil {
-				log.Fatal(err)
-			} else if req.StatusCode != http.StatusOK {
-				log.Fatal(req.StatusCode)
-			}
-			src = req.Body
-			defer req.Body.Close()
-		} else {
-			src = r.Doc.Src
-		}
-		b, err := io.ReadAll(src)
-		if err != nil {
-			log.Fatal(err)
-		}
-		name := r.Doc.GetFilename()
-		fmt.Printf("Wrote: %s\n", name)
-		if err = os.WriteFile(name, b, 0o644); err != nil {
-			log.Fatal(err)
-		}
-	}
-}
-```
-
-
-### Vision and streaming reply
-
-Leverage the content.jpg generated in the previous step to ask another provider to describe the image. The
-response is streamed out the console as the reply is generated.
-
-```go
-package main
-
-import (
-	"context"
-	"log"
-	"os"
-
-	"github.com/maruel/genai"
-	"github.com/maruel/genai/providers/mistral"
-)
-
-func main() {
-	ctx := context.Background()
-	c, err := mistral.New(ctx, &genai.ProviderOptions{}, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-	// Reuse the image generated by the previous example.
-	f, err := os.Open("content.jpg")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer f.Close()
-	msgs := genai.Messages{
-		genai.Message{Requests: []genai.Request{
-			{Text: "Extensively describe this image."},
-			{Doc: genai.Doc{Src: f}},
-		}},
-	}
-	fragments, finish := c.GenStream(ctx, msgs)
-	for f := range fragments {
-		os.Stdout.WriteString(f.TextFragment)
-	}
-	os.Stdout.WriteString("\n")
-	if _, err := finish(); err != nil {
-		log.Fatal(err)
-	}
-}
-```
-
-
-### Image-to-Video: Generate a video from an image and a prompt
-
-Leverage again the content.jpg generated in the previous step to ask Veo 3 from Google to generate a video
-based on the image.
-
-```go
-package main
-
-import (
-	"context"
-	"fmt"
-	"io"
-	"log"
-	"net/http"
-	"os"
-
-	"github.com/maruel/genai"
-	"github.com/maruel/genai/providers/gemini"
-)
-
-func main() {
-	ctx := context.Background()
-	// Warning: this is expensive.
-	c, err := gemini.New(ctx, &genai.ProviderOptions{Model: "veo-3.0-fast-generate-preview"}, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-	// Reuse the image generated by the previous example.
-	f, err := os.Open("content.jpg")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer f.Close()
-	msgs := genai.Messages{
-		genai.Message{Requests: []genai.Request{
-			{Text: "Carton drawing of a husky playing on the beach."},
-			{Doc: genai.Doc{Src: f}},
-		}},
-	}
-	result, err := c.GenSync(ctx, msgs)
-	if err != nil {
-		log.Fatal(err)
-	}
-	for _, r := range result.Replies {
-		if r.Doc.IsZero() {
-			fmt.Println(r.Text)
-			continue
-		}
-		// The video can be returned as an URL or inline, depending on the provider.
-		var src io.Reader
-		if r.Doc.URL != "" {
-			req, err := c.HTTPClient().Get(r.Doc.URL)
-			if err != nil {
-				log.Fatal(err)
-			} else if req.StatusCode != http.StatusOK {
-				log.Fatal(req.StatusCode)
-			}
-			src = req.Body
-			defer req.Body.Close()
-		} else {
-			src = r.Doc.Src
-		}
-		b, err := io.ReadAll(src)
-		if err != nil {
-			log.Fatal(err)
-		}
-		name := r.Doc.GetFilename()
-		fmt.Printf("Wrote: %s\n", name)
-		if err = os.WriteFile(name, b, 0o644); err != nil {
-			log.Fatal(err)
-		}
-	}
-}
-```
-
-
-### Decoding answer as a typed struct
-
-Tell the LLM to use a specific JSON schema to generate the response. This is much more lightweight than tool
-calling! It is very useful when we want the LLM to make a choice between values, to return a number or a
-boolean (true/false). Enums are supported.
-
-```go
-package main
-
-import (
-	"context"
-	"fmt"
-	"log"
-
-	"github.com/maruel/genai"
-	"github.com/maruel/genai/providers/openai"
-)
-
-func main() {
-	ctx := context.Background()
-	c, err := openai.New(ctx, &genai.ProviderOptions{}, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-	msgs := genai.Messages{
-		genai.NewTextMessage("Is a circle round? Reply as JSON."),
-	}
-	var circle struct {
-		Round bool `json:"round"`
-	}
-	opts := genai.OptionsText{DecodeAs: &circle}
-	resp, err := c.GenSync(ctx, msgs, &opts)
-	if err != nil {
-		log.Fatal(err)
-	}
-	if err := resp.Decode(&circle); err != nil {
-		log.Fatal(err)
-	}
-	fmt.Printf("Round: %v\n", circle.Round)
-}
-```
-
-</details>
-
-
-## Models
-
-Snapshot of all the supported models at [docs/MODELS.md](docs/MODELS.md) is updated weekly.
-
-Try it:
-
-```bash
-go install github.com/maruel/genai/cmd/...@latest
-
-list-models -provider huggingface
-```
-
-## Running locally
-
-Use [cmd/llama-serve](cmd/llama-serve) to run a LLM locally, including tool calling and vision!
 
 
 ## TODO
@@ -594,14 +416,25 @@ PRs are appreciated for any of the following. No need to ask! Just send a PR and
 - Embeddings: [Anthropic](https://docs.anthropic.com/en/docs/build-with-claude/embeddings),
   [Cohere](https://docs.cohere.com/reference/embed), [Gemini](https://ai.google.dev/api/embeddings),
   [OpenAI](https://platform.openai.com/docs/guides/embeddings), [TogetherAI](https://docs.together.ai/docs/embeddings-overview), ...
+- Image to 3D, e.g. [github.com/Tencent-Hunyuan/Hunyuan3D-2](https://github.com/Tencent-Hunyuan/Hunyuan3D-2)
 
 ### Providers
 
-I'm fine with any provider being added, I'm particularly looking forward to these:
+I'd be delighted if you want to contribute any missing provider being added, I'm particularly looking forward to these:
 
+- [Alibaba Cloud](https://www.alibabacloud.com/): Maker of Qwen models.
 - [AWS Bedrock](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_Operations_Amazon_Bedrock.html)
 - [Azure AI](https://learn.microsoft.com/en-us/rest/api/aifoundry/model-inference/get-chat-completions/get-chat-completions)
 - [Fireworks responses](https://fireworks.ai/docs/guides/response-api)
 - [GitHub](https://docs.github.com/en/rest/models/inference) inference API, which works on GitHub Actions (!)
-- [Google's Vertex AI](https://cloud.google.com/vertex-ai/docs/reference/rest)
-- [Runway](https://docs.dev.runwayml.com/api-details/sdks/)
+- [Google's Vertex AI](https://cloud.google.com/vertex-ai/docs/reference/rest): It supports much more
+  features than Gemini API.
+- [LM Studio](https://lmstudio.ai/): Easier way to run local models.
+- [Open Router](https://openrouter.ai/)
+- [Runway](https://docs.dev.runwayml.com/api-details/sdks/): Specialized in images and videos.
+- [Synexai](https://synexa.ai): It's very cheap.
+- [vLLM](https://docs.vllm.ai/): The fastest way to run local models.
+
+Thanks in advance! 🙏
+
+Made with ❤️ by [Marc-Antoine Ruel](https://maruel.ca)

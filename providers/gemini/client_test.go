@@ -47,11 +47,7 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 			Opts:     []genai.Options{&gemini.Options{ThinkingBudget: 512}},
 		}
 	}
-	// Forcibly disable thinking.
-	return &internaltest.InjectOptions{
-		Provider: c,
-		Opts:     []genai.Options{&gemini.Options{ThinkingBudget: 0}},
-	}
+	return c
 }
 
 func TestClient_Scoreboard(t *testing.T) {

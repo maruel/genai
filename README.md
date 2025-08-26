@@ -329,11 +329,34 @@ This may generate:
 > ![content2.jpg](https://raw.githubusercontent.com/wiki/maruel/genai/content2.jpg)
 
 
+### Text-Image-to-Text-Image 🖼
+
+[examples/text-image-to-text-image/main.go](examples/text-image-to-text-image/main.go): Leverage the
+content.jpg file generated in text-to-image example to ask Gemini 2.5 Flash to change the image with a prompt
+and ask the models to explain what it did.
+
+This requires [`GEMINI_API_KEY`](https://aistudio.google.com/apikey) environment variable to authenticate.
+
+```bash
+go run github.com/maruel/genai/examples/text-image-to-text-image@latest
+```
+
+This may generate:
+
+> Of course! Here's an updated image with more animals. I added a playful dolphin jumping out of the water and
+> a flock of seagulls flying overhead. I chose these animals to enhance the beach scene and create a more
+> dynamic and lively atmosphere. 
+>
+> Wrote: content.png
+>
+> ![content.png](https://raw.githubusercontent.com/wiki/maruel/genai/content.png)
+
+
 ### Vision 👁
 
-[examples/vision/main.go](examples/vision/main.go): Leverage the content.jpg file generated in
-text-to-image example to describe the image. The response is streamed out the console as the reply is
-generated.
+[examples/vision/main.go](examples/vision/main.go): Analyze a picture provided as an URL (source:
+[wikipedia](https://en.m.wikipedia.org/wiki/File:Banana-Single.jpg)). The response is streamed out the console
+as the reply is generated.
 
 This requires [`MISTRAL_API_KEY`](https://console.mistral.ai/api-keys) environment variable to authenticate.
 
@@ -341,6 +364,11 @@ This requires [`MISTRAL_API_KEY`](https://console.mistral.ai/api-keys) environme
 go run github.com/maruel/genai/examples/vision@latest
 ```
 
+This may generate:
+
+> The image depicts a single ripe banana. It has a bright yellow peel with a few small brown spots, indicating
+> ripeness. The banana is curved, which is typical of its natural shape, and it has a stem at the top. The
+> overall appearance suggests that it is ready to be eaten.
 
 ### Vision (local) 🏠
 

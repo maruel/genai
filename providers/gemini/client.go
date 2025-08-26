@@ -250,6 +250,9 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 					IncludeThoughts: true,
 					ThinkingBudget:  v.ThinkingBudget,
 				}
+			} else {
+				// Some models really do not want the struct at all, e.g. gemini-2-5-flash-image-preview.
+				c.GenerationConfig.ThinkingConfig = nil
 			}
 		case *genai.OptionsText:
 			unsupported, errs = c.initOptions(v, model)

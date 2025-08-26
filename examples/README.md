@@ -20,5 +20,5 @@ go run ./examples/txt_to_txt_stream
 or directly without a local checkout, e.g.:
 
 ```bash
-go run github.com/maruel/genai/examples/txt_to_txt_stream
+go run github.com/maruel/genai/examples/txt_to_txt_stream@latest
 ```

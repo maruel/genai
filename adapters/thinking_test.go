@@ -9,6 +9,7 @@ import (
 	"errors"
 	"fmt"
 	"iter"
+	"net/http"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -322,6 +323,10 @@ func (m *mockProviderGenSync) OutputModalities() genai.Modalities {
 	return nil
 }
 
+func (m *mockProviderGenSync) HTTPClient() *http.Client {
+	return nil
+}
+
 func (m *mockProviderGenSync) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
 	// Store messages
 	m.msgs = msgs
@@ -352,6 +357,10 @@ func (m *mockProviderGenStream) ModelID() string {
 }
 
 func (m *mockProviderGenStream) OutputModalities() genai.Modalities {
+	return nil
+}
+
+func (m *mockProviderGenStream) HTTPClient() *http.Client {
 	return nil
 }
 

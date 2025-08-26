@@ -365,7 +365,7 @@ func main() {
 		// The image can be returned as an URL or inline, depending on the provider.
 		var src io.Reader
 		if r.Doc.URL != "" {
-			req, err := http.Get(r.Doc.URL)
+			req, err := c.HTTPClient().Get(r.Doc.URL)
 			if err != nil {
 				log.Fatal(err)
 			} else if req.StatusCode != http.StatusOK {

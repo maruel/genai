@@ -19,6 +19,7 @@ import (
 	"io"
 	"iter"
 	"maps"
+	"net/http"
 	"path"
 	"path/filepath"
 	"reflect"
@@ -124,6 +125,10 @@ type Provider interface {
 	//
 	// No need to accumulate the fragments into a Message since the Result contains the accumulated message.
 	GenStream(ctx context.Context, msgs Messages, opts ...Options) (iter.Seq[ReplyFragment], func() (Result, error))
+	// HTTPClient returns the underlying http client. It may be necessary to use it to fetch the results from
+	// the provider. An example is retrieving Veo 3 generated videos from Gemini requires the authentication
+	// headers to be set.
+	HTTPClient() *http.Client
 }
 
 // ProviderUnwrap is exposed when the Provider is actually a wrapper around another one, like

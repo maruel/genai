@@ -64,7 +64,7 @@ func TestProviderThinking_GenSync(t *testing.T) {
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			mp := &mockProviderGenSync{
-				response: genai.Result{Message: genai.Message{Replies: []genai.Reply{{Text: tc.in}}}},
+				responses: []genai.Result{{Message: genai.Message{Replies: []genai.Reply{{Text: tc.in}}}}},
 			}
 			tp := &adapters.ProviderThinking{Provider: mp, ThinkingTokenStart: "<thinking>", ThinkingTokenEnd: "</thinking>"}
 			got, err := tp.GenSync(t.Context(), genai.Messages{}, tc.opts)
@@ -110,8 +110,8 @@ func TestProviderThinking_GenSync_errors(t *testing.T) {
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
 			mp := &mockProviderGenSync{
-				response: genai.Result{Message: genai.Message{Replies: tc.in}},
-				err:      tc.err,
+				responses: []genai.Result{{Message: genai.Message{Replies: tc.in}}},
+				err:       tc.err,
 			}
 			tp := &adapters.ProviderThinking{Provider: mp, ThinkingTokenStart: "<thinking>", ThinkingTokenEnd: "</thinking>"}
 			_, err := tp.GenSync(t.Context(), genai.Messages{})
@@ -307,8 +307,8 @@ func TestProviderThinking_GenStream_errors(t *testing.T) {
 
 type mockProviderGenSync struct {
 	base.NotImplemented
-	response genai.Result
-	err      error
+	responses []genai.Result
+	err       error
 }
 
 func (m *mockProviderGenSync) Name() string {
@@ -324,7 +324,9 @@ func (m *mockProviderGenSync) OutputModalities() genai.Modalities {
 }
 
 func (m *mockProviderGenSync) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
-	return m.response, m.err
+	r := m.responses[0]
+	m.responses = m.responses[1:]
+	return r, m.err
 }
 
 type streamResponse struct {

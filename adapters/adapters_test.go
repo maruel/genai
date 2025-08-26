@@ -14,7 +14,66 @@ import (
 	"github.com/maruel/genai/adapters"
 )
 
-// TestGenStreamWithToolCallLoop tests the GenStreamWithToolCallLoop function.
+func TestGenSyncWithToolCallLoop(t *testing.T) {
+	provider := &mockProviderGenSync{
+		responses: []genai.Result{
+			{
+				Message: genai.Message{
+					Replies: []genai.Reply{
+						{Text: "I'll help you calculate that. "},
+						{Text: "Let me use the calculator tool."},
+						{ToolCall: genai.ToolCall{ID: "1", Name: "calculator", Arguments: `{"a": 5, "b": 3, "operation": "add"}`}},
+					},
+				},
+				Usage: genai.Usage{InputTokens: 10, OutputTokens: 20},
+			},
+			{
+				Message: genai.Message{
+					Replies: []genai.Reply{
+						{Text: "The result of 5 + 3 is 8."},
+					},
+				},
+				Usage: genai.Usage{InputTokens: 15, OutputTokens: 10},
+			},
+		},
+	}
+	msgs := genai.Messages{genai.NewTextMessage("Calculate 5 + 3")}
+	type CalculatorArgs struct {
+		A         int    `json:"a"`
+		B         int    `json:"b"`
+		Operation string `json:"operation"`
+	}
+	opts := &genai.OptionsText{
+		Tools: []genai.ToolDef{
+			{
+				Name:        "calculator",
+				Description: "A simple calculator",
+				Callback: func(ctx context.Context, args *CalculatorArgs) (string, error) {
+					switch args.Operation {
+					case "add":
+						return fmt.Sprintf("%d", args.A+args.B), nil
+					default:
+						return "", fmt.Errorf("unsupported operation: %s", args.Operation)
+					}
+				},
+			},
+		},
+	}
+	respMsgs, usage, err := adapters.GenSyncWithToolCallLoop(t.Context(), provider, msgs, opts)
+	if err != nil {
+		t.Fatalf("GenSyncWithToolCallLoop returned an error: %v", err)
+	}
+	// Verify we got the expected number of messages
+	if len(respMsgs) != 3 { // original + 1 LLM response + 1 tool result
+		t.Fatalf("Expected 3 messages, got %d", len(respMsgs))
+	}
+	t.Logf("Messages: %+v", respMsgs)
+	expectedUsage := genai.Usage{InputTokens: 25, OutputTokens: 30}
+	if usage.InputTokens != expectedUsage.InputTokens || usage.OutputTokens != expectedUsage.OutputTokens {
+		t.Fatalf("Expected usage %+v, got %+v", expectedUsage, usage)
+	}
+}
+
 func TestGenStreamWithToolCallLoop(t *testing.T) {
 	provider := &mockProviderGenStream{
 		streamResponses: []streamResponse{

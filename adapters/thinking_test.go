@@ -303,11 +303,10 @@ func TestProviderThinking_GenStream_errors(t *testing.T) {
 	}
 }
 
-// Mock types for testing
-
 type mockProviderGenSync struct {
 	base.NotImplemented
 	responses []genai.Result
+	msgs      genai.Messages // Messages from the client
 	err       error
 }
 
@@ -324,6 +323,8 @@ func (m *mockProviderGenSync) OutputModalities() genai.Modalities {
 }
 
 func (m *mockProviderGenSync) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
+	// Store messages
+	m.msgs = msgs
 	r := m.responses[0]
 	m.responses = m.responses[1:]
 	return r, m.err
@@ -337,6 +338,7 @@ type streamResponse struct {
 type mockProviderGenStream struct {
 	base.NotImplemented
 	streamResponses []streamResponse
+	msgs            genai.Messages // Messages from the client
 	callIndex       int
 	err             error
 }
@@ -354,6 +356,8 @@ func (m *mockProviderGenStream) OutputModalities() genai.Modalities {
 }
 
 func (m *mockProviderGenStream) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
+	// Store messages
+	m.msgs = msgs
 	res := genai.Result{}
 	var finalErr error
 	fnFragments := func(yield func(genai.ReplyFragment) bool) {

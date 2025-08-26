@@ -10,6 +10,7 @@ import (
 	"slices"
 	"testing"
 
+	"github.com/google/go-cmp/cmp"
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/adapters"
 )
@@ -134,4 +135,90 @@ func TestGenStreamWithToolCallLoop(t *testing.T) {
 	if len(got) != 4 { // 2 text fragments + 1 tool call + 1 text fragment
 		t.Fatalf("Expected 4 fragments, got %d", len(got))
 	}
+}
+
+func TestProviderUsage(t *testing.T) {
+	t.Run("GenSync", func(t *testing.T) {
+		provider := &mockProviderGenSync{
+			responses: []genai.Result{
+				{Usage: genai.Usage{InputTokens: 10, OutputTokens: 20}},
+				{Usage: genai.Usage{InputTokens: 15, OutputTokens: 25}},
+			},
+		}
+		wrapped := &adapters.ProviderUsage{Provider: provider}
+		wrapped.GenSync(t.Context(), nil)
+		wrapped.GenSync(t.Context(), nil)
+		expected := genai.Usage{InputTokens: 25, OutputTokens: 45}
+		if diff := cmp.Diff(expected, wrapped.GetAccumulatedUsage()); diff != "" {
+			t.Fatalf("unexpected usage: %s", diff)
+		}
+	})
+	t.Run("GenStream", func(t *testing.T) {
+		provider := &mockProviderGenStream{
+			streamResponses: []streamResponse{
+				{usage: genai.Usage{InputTokens: 10, OutputTokens: 20}},
+				{usage: genai.Usage{InputTokens: 15, OutputTokens: 25}},
+			},
+		}
+		wrapped := &adapters.ProviderUsage{Provider: provider}
+		fragments, finish := wrapped.GenStream(t.Context(), nil)
+		for range fragments {
+		}
+		finish()
+		fragments, finish = wrapped.GenStream(t.Context(), nil)
+		for range fragments {
+		}
+		finish()
+		expected := genai.Usage{InputTokens: 25, OutputTokens: 45}
+		if diff := cmp.Diff(expected, wrapped.GetAccumulatedUsage()); diff != "" {
+			t.Fatalf("unexpected usage: %s", diff)
+		}
+	})
+	t.Run("Unwrap", func(t *testing.T) {
+		provider := &mockProviderGenSync{}
+		wrapped := &adapters.ProviderUsage{Provider: provider}
+		if wrapped.Unwrap() != provider {
+			t.Fatal("expected unwrapped provider to be the original provider")
+		}
+	})
+}
+
+func TestProviderAppend(t *testing.T) {
+	t.Run("GenSync", func(t *testing.T) {
+		provider := &mockProviderGenSync{
+			responses: []genai.Result{{}},
+		}
+		wrapped := &adapters.ProviderAppend{
+			Provider: provider,
+			Append:   genai.Request{Text: "appended"},
+		}
+		msgs := genai.Messages{{Requests: []genai.Request{{Text: "original"}}}}
+		wrapped.GenSync(t.Context(), msgs)
+		expected := genai.Messages{{Requests: []genai.Request{{Text: "original"}, {Text: "appended"}}}}
+		if diff := cmp.Diff(expected, provider.msgs); diff != "" {
+			t.Fatalf("unexpected messages: %s", diff)
+		}
+	})
+	t.Run("GenStream", func(t *testing.T) {
+		provider := &mockProviderGenStream{
+			streamResponses: []streamResponse{{}},
+		}
+		wrapped := &adapters.ProviderAppend{
+			Provider: provider,
+			Append:   genai.Request{Text: "appended"},
+		}
+		msgs := genai.Messages{{Requests: []genai.Request{{Text: "original"}}}}
+		wrapped.GenStream(t.Context(), msgs)
+		expected := genai.Messages{{Requests: []genai.Request{{Text: "original"}, {Text: "appended"}}}}
+		if diff := cmp.Diff(expected, provider.msgs); diff != "" {
+			t.Fatalf("unexpected messages: %s", diff)
+		}
+	})
+	t.Run("Unwrap", func(t *testing.T) {
+		provider := &mockProviderGenSync{}
+		wrapped := &adapters.ProviderAppend{Provider: provider}
+		if wrapped.Unwrap() != provider {
+			t.Fatal("expected unwrapped provider to be the original provider")
+		}
+	})
 }

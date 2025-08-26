@@ -808,6 +808,8 @@ func (d *Doc) UnmarshalJSON(b []byte) error {
 }
 
 // Read reads the document content into memory.
+//
+// It returns the mime type, the raw bytes and an error if any.
 func (d *Doc) Read(maxSize int64) (string, []byte, error) {
 	// genai cannot depend on base as it would cause a circular import.
 	mimeType := internal.MimeByExt(filepath.Ext(d.GetFilename()))

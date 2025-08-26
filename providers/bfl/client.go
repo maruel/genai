@@ -334,11 +334,17 @@ func processHeaders(h http.Header) []genai.RateLimit {
 
 // GenSync implements genai.Provider.
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
+	var continuableErr error
 	id, err := c.GenAsync(ctx, msgs, opts...)
 	if err != nil {
-		return genai.Result{}, err
+		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
+			continuableErr = uce
+		} else {
+			return genai.Result{}, err
+		}
 	}
 	// They recommend in their documentation to poll every 0.5s.
+	const waitForPoll = 500 * time.Millisecond
 	// TODO: Expose a webhook with a custom OptionsImage.
 	for {
 		select {
@@ -346,6 +352,9 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 			return genai.Result{}, ctx.Err()
 		case <-time.After(waitForPoll):
 			if res, err := c.PokeResult(ctx, id); res.Usage.FinishReason != genai.Pending {
+				if err == nil {
+					err = continuableErr
+				}
 				return res, err
 			}
 		}
@@ -406,8 +415,6 @@ func (c *Client) PokeResultRaw(ctx context.Context, id genai.Job) (ImageResult, 
 	err := c.impl.DoRequest(ctx, "GET", u, nil, &res)
 	return res, err
 }
-
-var waitForPoll = 500 * time.Millisecond
 
 var (
 	_ genai.Provider           = &Client{}

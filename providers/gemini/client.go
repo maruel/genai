@@ -835,7 +835,7 @@ type ChatStreamChunkResponse struct {
 
 // Image
 
-// ImageRequest is not really documented.
+// ImageRequest is not really documented. It is used for both image and video generation.
 //
 // See https://ai.google.dev/gemini-api/docs/imagen#imagen
 //
@@ -846,23 +846,53 @@ type ChatStreamChunkResponse struct {
 // or GenerateImagesConfig and generateImagesInternal() in
 // https://github.com/googleapis/js-genai/blob/main/src/models.ts and generateImagesParametersToMldev() and
 // generateImagesConfigToMldev()
+//
+// As of 2025-08, Google Vertex AI API supports way more features than the Gemini API. For example: specifying
+// the video's last frame, whether to generate audio, compression level, resolution, randomness seed, sending
+// updates to a pubsub topic (instead of polling), etc.
 type ImageRequest struct {
 	// There should be only one instance.
 	Instances  []ImageInstance `json:"instances"`
 	Parameters ImageParameters `json:"parameters"`
 }
 
-func (i *ImageRequest) Init(msg genai.Message, model string, opts ...genai.Options) error {
+func (i *ImageRequest) Init(msg genai.Message, model string, mod genai.Modalities, opts ...genai.Options) error {
 	if err := msg.Validate(); err != nil {
 		return err
 	}
+	var mime string
+	var img []byte
 	for i := range msg.Requests {
-		if msg.Requests[i].Text == "" {
-			return errors.New("only text can be passed as input")
+		if msg.Requests[i].Text != "" {
+			continue
+		}
+		if msg.Requests[i].Doc.IsZero() {
+			return errors.New("only text or image can be passed as input")
+		}
+		if len(img) != 0 {
+			return errors.New("only one image can be passed as input")
+		}
+		var err error
+		if mime, img, err = msg.Requests[i].Doc.Read(10 * 1024 * 1024); err != nil {
+			return err
+		}
+	}
+	if slices.Contains(mod, genai.ModalityImage) {
+		i.Parameters = ImageParameters{
+			IncludeSafetyAttributes: true,
+			IncludeRAIReason:        true,
+			OutputOptions:           ImageOutput{MimeType: "image/jpeg"},
 		}
 	}
 	i.Instances = []ImageInstance{{Prompt: msg.String()}}
+	if len(img) != 0 {
+		i.Instances[0].Image.BytesBase64Encoded = img
+		i.Instances[0].Image.MimeType = mime
+	}
+	// This is important otherwise it can return 2 images.
+	// TODO: Expose it in OptionsImage.
 	i.Parameters.SampleCount = 1
+	// The acceptable value depends on the country the paying user account is associated with.
 	i.Parameters.PersonGeneration = "allow_adult"
 	// Seems like it's not supported?
 	// i.Parameters.EnhancePrompt = true
@@ -875,10 +905,14 @@ func (i *ImageRequest) Init(msg genai.Message, model string, opts ...genai.Optio
 		case *Options:
 		case *genai.OptionsImage:
 			if v.Seed != 0 {
-				// Get a 400 error: i.Parameters.Seed = v.Seed
+				// Seed is only supported with Vertex AI API.
 				uce = &genai.UnsupportedContinuableError{Unsupported: []string{"Seed"}}
 			}
 			// TODO: Width and Height
+		case *genai.OptionsVideo:
+			if v.Duration != 0 {
+				i.Parameters.DurationSeconds = int64(v.Duration.Round(time.Second) / time.Second)
+			}
 		default:
 			return fmt.Errorf("unsupported options type %T", opt)
 		}
@@ -886,14 +920,18 @@ func (i *ImageRequest) Init(msg genai.Message, model string, opts ...genai.Optio
 	return uce
 }
 
+// ImageInstance is not really documented, better to read the SDK code and guess, since they don't use proper
+// structs there either and it's all hand written.
 type ImageInstance struct {
 	Prompt string `json:"prompt"`
-	Image  string `json:"image,omitzero"` // TODO: Confirm.
-	Video  string `json:"video,omitzero"` // Explicitly not supported in Gemini API.
-	// Pricing says there's a way to disable audio when using Veo 3 fast to save on cost.
-	// TODO: Figure out how.
+	Image  struct {
+		BytesBase64Encoded []byte `json:"bytesBase64Encoded,omitzero"`
+		MimeType           string `json:"mimeType,omitzero"`
+	} `json:"image,omitzero"`
 }
 
+// ImageParameters is not really documented, better to read the SDK code and guess, since they don't use proper
+// structs there either and it's all hand written.
 type ImageParameters struct {
 	// Both image and video:
 	SampleCount      int64  `json:"sampleCount,omitzero"` // Number of images to generate. Default to 4.
@@ -1489,6 +1527,8 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 }
 
 // GenSyncRaw provides access to the raw API.
+//
+// It calls the Gemini API method generateContent.
 func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatResponse) error {
 	if len(in.GenerationConfig.ResponseModalities) == 0 {
 		in.GenerationConfig.ResponseModalities = make([]Modality, len(c.impl.OutputModalities))
@@ -1586,6 +1626,8 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 }
 
 // GenStreamRaw provides access to the raw API.
+//
+// It calls the Gemini API method streamGenerateContent?alt=sse.
 func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest, out chan<- ChatStreamChunkResponse) error {
 	if len(in.GenerationConfig.ResponseModalities) == 0 {
 		in.GenerationConfig.ResponseModalities = make([]Modality, len(c.impl.OutputModalities))
@@ -1718,27 +1760,43 @@ func (c *Client) CacheDelete(ctx context.Context, name string) error {
 //
 // genDoc is only supported for models that have "predict" reported in their Model.SupportedGenerationMethods.
 func (c *Client) genDoc(ctx context.Context, msg genai.Message, opts ...genai.Options) (genai.Result, error) {
-	res := genai.Result{}
-	if err := c.impl.Validate(); err != nil {
-		return res, err
-	}
-	req := ImageRequest{
-		// These two fails when running a batch so don't set by default.
-		Parameters: ImageParameters{
-			IncludeSafetyAttributes: true,
-			IncludeRAIReason:        true,
-			OutputOptions:           ImageOutput{MimeType: "image/jpeg"},
-		},
-	}
 	var continuableErr error
-	if err := req.Init(msg, c.impl.Model, opts...); err != nil {
+	// TODO: Smartly decide the method to use instead of hardcoding on the modality.
+	if slices.Contains(c.impl.OutputModalities, genai.ModalityVideo) {
+		id, err := c.GenAsync(ctx, genai.Messages{msg}, opts...)
+		if err != nil {
+			if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
+				continuableErr = uce
+			} else {
+				return genai.Result{}, err
+			}
+		}
+		// Loop until the image is available.
+		const waitForPoll = time.Second
+		for {
+			select {
+			case <-ctx.Done():
+				return genai.Result{}, ctx.Err()
+			case <-time.After(waitForPoll):
+				if res, err := c.PokeResult(ctx, id); res.Usage.FinishReason != genai.Pending {
+					if err == nil {
+						err = continuableErr
+					}
+					return res, err
+				}
+			}
+		}
+	}
+	res := genai.Result{}
+	req := ImageRequest{}
+	if err := req.Init(msg, c.impl.Model, c.impl.OutputModalities, opts...); err != nil {
 		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 			continuableErr = uce
 		} else {
 			return res, err
 		}
 	}
-	resp, err := c.GenDocRaw(ctx, req)
+	resp, err := c.PredictRaw(ctx, req)
 	if err != nil {
 		return res, err
 	}
@@ -1768,14 +1826,6 @@ func (c *Client) genDoc(ctx context.Context, msg genai.Message, opts ...genai.Op
 	return res, continuableErr
 }
 
-func (c *Client) GenDocRaw(ctx context.Context, req ImageRequest) (ImageResponse, error) {
-	resp := ImageResponse{}
-	// https://ai.google.dev/api/models?hl=en#method:-models.predict
-	u := "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(c.impl.Model) + ":predict"
-	err := c.impl.DoRequest(ctx, "POST", u, &req, &resp)
-	return resp, err
-}
-
 // GenAsync implements genai.ProviderGenAsync.
 //
 // It requests the providers' asynchronous API and returns the job ID.
@@ -1794,26 +1844,18 @@ func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts ...gena
 	}
 	req := ImageRequest{}
 	var continuableErr error
-	if err := req.Init(msgs[0], c.impl.Model, opts...); err != nil {
+	if err := req.Init(msgs[0], c.impl.Model, c.impl.OutputModalities, opts...); err != nil {
 		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 			continuableErr = uce
 		} else {
 			return "", err
 		}
 	}
-	resp, err := c.GenAsyncRaw(ctx, req)
+	resp, err := c.PredictLongRunningRaw(ctx, req)
 	if err != nil {
 		return genai.Job(resp.Name), err
 	}
 	return genai.Job(resp.Name), continuableErr
-}
-
-func (c *Client) GenAsyncRaw(ctx context.Context, req ImageRequest) (Operation, error) {
-	// https://ai.google.dev/api/models?hl=en#method:-models.predictlongrunning
-	resp := Operation{}
-	u := "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(c.impl.Model) + ":predictLongRunning"
-	err := c.impl.DoRequest(ctx, "POST", u, &req, &resp)
-	return resp, err
 }
 
 // PokeResult implements genai.ProviderGenAsync.
@@ -1835,6 +1877,35 @@ func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, er
 		res.Replies = []genai.Reply{{Doc: genai.Doc{Filename: "content.mp4", URL: p.Video.URI}}}
 	}
 	return res, nil
+}
+
+// PredictRaw requests the providers' synchronous API to generate an image.
+//
+// The official documentation https://ai.google.dev/api/models?hl=en#method:-models.predict is not really
+// helpful.
+func (c *Client) PredictRaw(ctx context.Context, req ImageRequest) (ImageResponse, error) {
+	res := ImageResponse{}
+	if err := c.impl.Validate(); err != nil {
+		return res, err
+	}
+	// https://ai.google.dev/api/models?hl=en#method:-models.predict
+	u := "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(c.impl.Model) + ":predict"
+	err := c.impl.DoRequest(ctx, "POST", u, &req, &res)
+	return res, err
+}
+
+// PredictLongRunningRaw requests the providers' asynchronous API to generate a video.
+//
+// The official documentation https://ai.google.dev/api/models?hl=en#method:-models.predictlongrunning is not really
+// helpful.
+func (c *Client) PredictLongRunningRaw(ctx context.Context, req ImageRequest) (Operation, error) {
+	res := Operation{}
+	if err := c.impl.Validate(); err != nil {
+		return res, err
+	}
+	u := "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(c.impl.Model) + ":predictLongRunning"
+	err := c.impl.DoRequest(ctx, "POST", u, &req, &res)
+	return res, err
 }
 
 // PokeResultRaw retrieves the result for a job ID if already available.

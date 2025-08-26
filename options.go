@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"reflect"
 	"strings"
+	"time"
 
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai/internal"
@@ -308,6 +309,11 @@ func (o *OptionsImage) Validate() error {
 }
 
 type OptionsVideo struct {
+	// Duration of the video to generate, if supported.
+	//
+	// Veo 2 supports only between 5 and 8 seconds and Veo 3 only supports 8 seconds.
+	Duration time.Duration
+
 	_ struct{}
 }
 

@@ -324,7 +324,7 @@ func main() {
 ```
 
 
-### Generate an image (for free)
+### Text-to-Image: Generate an image for free
 
 Use Together.AI's free (!) image generation albeit with low rate limit. Some providers return an URL that must be
 fetched manually within a few minutes or hours, some return the data inline. This example handles both cases.
@@ -437,7 +437,7 @@ func main() {
 ```
 
 
-### Generate a video from an image and a prompt
+### Image-to-Video: Generate a video from an image and a prompt
 
 Leverage again the content.jpg generated in the previous step to ask Veo 3 from Google to generate a video
 based on the image.

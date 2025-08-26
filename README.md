@@ -185,6 +185,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"maps"
 	"slices"
 	"strings"
 
@@ -208,7 +209,7 @@ func main() {
 	if query == "" {
 		log.Fatal("provide a query")
 	}
-	p, err := LoadProvider(*provider, &genai.ProviderOptions{Model: *model, Remote: *remote})
+	p, err := LoadProvider(ctx, *provider, &genai.ProviderOptions{Model: *model, Remote: *remote})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -256,7 +257,7 @@ import (
 )
 
 func main() {
-    ctx := context.Background()
+	ctx := context.Background()
 	c, err := cerebras.New(ctx, &genai.ProviderOptions{Model: "qwen-3-235b-a22b-thinking-2507"}, nil)
 	if err != nil {
 		log.Fatal(err)

@@ -313,6 +313,22 @@ drawback is that audio is lost. View the original MP4 with audio (!) at
 [content.mp4](https://raw.githubusercontent.com/wiki/maruel/genai/content.mp4).
 
 
+### Image-to-Image 🖌
+
+[examples/image-to-image/main.go](examples/image-to-image/main.go): Change an image with a prompt. Leverage
+the content.jpg file generated in text-to-image example.
+
+This requires [`BFL_API_KEY`](https://dashboard.bfl.ai/keys) environment variable to authenticate.
+
+```bash
+go run github.com/maruel/genai/examples/image-to-image@latest
+```
+
+This may generate:
+
+> ![content2.jpg](https://raw.githubusercontent.com/wiki/maruel/genai/content2.jpg)
+
+
 ### Vision 👁
 
 [examples/vision/main.go](examples/vision/main.go): Leverage the content.jpg file generated in

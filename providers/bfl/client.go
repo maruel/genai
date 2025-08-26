@@ -11,6 +11,7 @@ import (
 	"bytes"
 	"context"
 	_ "embed"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -59,7 +60,7 @@ type ImageRequest struct {
 	WebhookSecret    string `json:"webhook_secret,omitzero"`    // Optional secret for signature verification
 
 	// FLUX.1 [pro], [dev]
-	Steps    int64   `json:"steps,omitzero"`    // Default 40, [1, 50]
+	Steps    int64   `json:"steps,omitzero"`    // Default 28 for dev, 40 for pro, [1, 50]
 	Guidance float64 `json:"guidance,omitzero"` // [1.5, 5]
 
 	// FLUX.1 [pro]
@@ -86,8 +87,11 @@ type ImageRequest struct {
 	ControlImage      []byte `json:"control_image,omitzero"`      // One of the two
 	PreprocessedImage []byte `json:"preprocessed_image,omitzero"` //
 
-	// FLUX Kontext Pro, Max
-	InputImage []byte `json:"input_image,omitzero"`
+	// FLUX Kontext Dev, Pro, Max
+	InputImage  string `json:"input_image,omitzero"`
+	InputImage2 string `json:"input_image2,omitzero"`
+	InputImage3 string `json:"input_image3,omitzero"`
+	InputImage4 string `json:"input_image4,omitzero"`
 }
 
 func (i *ImageRequest) Init(msgs genai.Messages, model string, opts ...genai.Options) error {
@@ -99,26 +103,45 @@ func (i *ImageRequest) Init(msgs genai.Messages, model string, opts ...genai.Opt
 	}
 	msg := msgs[0]
 	msg.Requests = slices.Clone(msg.Requests)
-	for i := range msg.Requests {
-		if msg.Requests[i].Text != "" {
+	for _, r := range msg.Requests {
+		if r.Text != "" {
 			continue
 		}
 		// Check if this is a text/plain document that we can handle
-		if !msg.Requests[i].Doc.IsZero() {
-			mimeType, data, err := msg.Requests[i].Doc.Read(10 * 1024 * 1024)
+		if !r.Doc.IsZero() {
+			mimeType, data, err := r.Doc.Read(10 * 1024 * 1024)
 			if err != nil {
 				return fmt.Errorf("failed to read document: %w", err)
 			}
-			// TODO: kontext support images as imnput
-			if !strings.HasPrefix(mimeType, "text/plain") {
+			switch {
+			case strings.HasPrefix(mimeType, "text/plain"):
+				if r.Doc.URL != "" {
+					return errors.New("text/plain documents must be provided inline, not as a URL")
+				}
+				// Convert document content to text content.
+				r.Text = string(data)
+				r.Doc = genai.Doc{}
+			case strings.HasPrefix(mimeType, "image/"):
+				// Used in Kontext
+				s := r.Doc.URL
+				if s == "" {
+					s = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
+				}
+				if i.InputImage == "" {
+					i.InputImage = s
+				} else if i.InputImage2 == "" {
+					i.InputImage2 = s
+				} else if i.InputImage3 == "" {
+					i.InputImage3 = s
+				} else if i.InputImage4 == "" {
+					i.InputImage4 = s
+				} else {
+					return errors.New("too many images")
+				}
+				r.Doc = genai.Doc{}
+			default:
 				return errors.New("only text and text/plain documents can be passed as input")
 			}
-			if msg.Requests[i].Doc.URL != "" {
-				return errors.New("text/plain documents must be provided inline, not as a URL")
-			}
-			// Convert document content to text content
-			msg.Requests[i].Text = string(data)
-			msg.Requests[i].Doc = genai.Doc{}
 			continue
 		}
 		return errors.New("unknown Request type")
@@ -380,7 +403,9 @@ func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts ...gena
 		return "", err
 	}
 	reqresp, err := c.GenAsyncRaw(ctx, req)
-	return genai.Job(reqresp.ID), err
+	// We return the polling URL instead of the ID, e.g. genai.Job(reqresp.ID). BFL is very clear that we should
+	// not construct the URL ourselves.
+	return genai.Job(reqresp.PollingURL), err
 }
 
 func (c *Client) GenAsyncRaw(ctx context.Context, req ImageRequest) (ImageRequestResponse, error) {
@@ -416,8 +441,15 @@ func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, er
 // PokeResultRaw retrieves the result for a job ID if already available.
 func (c *Client) PokeResultRaw(ctx context.Context, id genai.Job) (ImageResult, error) {
 	res := ImageResult{}
-	u := "https://api.us1.bfl.ai/v1/get_result?id=" + url.QueryEscape(string(id))
-	err := c.impl.DoRequest(ctx, "GET", u, nil, &res)
+	// The job ID is an URL.
+	p, err := url.Parse(string(id))
+	if err != nil {
+		return res, fmt.Errorf("job ID should be the polling URL: %w", err)
+	}
+	if !strings.HasSuffix(p.Hostname(), ".bfl.ai") {
+		return res, fmt.Errorf("job ID should be the polling URL hosted on bfl.ai")
+	}
+	err = c.impl.DoRequest(ctx, "GET", string(id), nil, &res)
 	return res, err
 }
 

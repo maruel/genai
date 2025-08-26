@@ -1446,7 +1446,7 @@ func (c *Client) Scoreboard() scoreboard.Score {
 
 // GenSync implements genai.Provider.
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
-	if c.isAudio() || c.isImage() || c.isVideo() {
+	if !slices.Contains(c.Impl.OutputModalities, genai.ModalityText) {
 		if len(msgs) != 1 {
 			return genai.Result{}, errors.New("must pass exactly one Message")
 		}
@@ -1507,7 +1507,7 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 
 // GenStream implements genai.Provider.
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
-	if c.isAudio() || c.isImage() || c.isVideo() {
+	if !slices.Contains(c.Impl.OutputModalities, genai.ModalityText) {
 		return base.SimulateStream(ctx, c, msgs, opts...)
 	}
 	// GenStream must be inlined because we need to call our GenStreamRaw.
@@ -1855,18 +1855,6 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 		return nil, err
 	}
 	return resp.ToModels(), nil
-}
-
-func (c *Client) isAudio() bool {
-	return slices.Contains(c.Impl.OutputModalities, genai.ModalityAudio)
-}
-
-func (c *Client) isImage() bool {
-	return slices.Contains(c.Impl.OutputModalities, genai.ModalityImage)
-}
-
-func (c *Client) isVideo() bool {
-	return slices.Contains(c.Impl.OutputModalities, genai.ModalityVideo)
 }
 
 // TODO: To implement ProviderGenAsync, we need to use the Vertex API, not the API key based Gemini one.

@@ -210,6 +210,53 @@ Darwin_ passed in as a document, this may print:
 > Answer: 1837 was when Darwin returned home and began to reflect on the facts he had gathered during his time on H.M.S. Beagle.
 
 
+### Text Websearch 🕸️
+
+[examples/txt\_to\_txt\_websearch-sync/main.go](examples/txt_to_txt_websearch-sync/main.go): Searches the web
+to answer your question.
+
+This requires [`PERPLEXITY_API_KEY`](https://www.perplexity.ai/settings/api) environment variable to
+authenticate.
+
+```bash
+go run github.com/maruel/genai/examples/txt_to_txt_websearch-sync@latest
+```
+
+When asked _Who holds ultimate power of Canada?_, this may print:
+
+> Sources:
+>
+> - Prime Minister of Canada / https://en.wikipedia.org/wiki/Prime_Minister_of_Canada
+>
+> - Canadian Parliamentary System - Our Procedure /
+> https://www.ourcommons.ca/procedure/our-procedure/parliamentaryFramework/c_g_parliamentaryframework-e.html
+>
+>
+> (...)
+>
+> Image: https://learn.parl.ca/understanding-comprendre/images/articles/monarch-and-governor-general/house-of-commons.jpg
+>
+> (...)
+>
+> Answer: The **ultimate power in Canada** constitutionally resides with the **monarch (King Charles III)** as
+> the head of state, with executive authority formally vested in him. However, (...)
+
+
+### Text Websearch (streaming) 🔍️
+
+[examples/txt\_to\_txt\_websearch-stream/main.go](examples/txt_to_txt_websearch-stream/main.go): Searches the web
+to answer your question and streams the output to the console.
+
+This requires [`PERPLEXITY_API_KEY`](https://www.perplexity.ai/settings/api) environment variable to
+authenticate.
+
+```bash
+go run github.com/maruel/genai/examples/txt_to_txt_websearch-stream@latest
+```
+
+Same as above, but streaming.
+
+
 ### Text Tools 🧰
 
 [examples/txt\_to\_txt\_tool-sync/main.go](examples/txt_to_txt_tool-sync/main.go): A LLM can both retrieve
@@ -227,7 +274,7 @@ When asked _What is 3214 + 5632?_, this may print:
 > 8846
 
 
-### Text Tools (streaming)
+### Text Tools (streaming) 🐝
 
 [examples/txt\_to\_txt\_tool-stream/main.go](examples/txt_to_txt_tool-stream/main.go): Leverage a thinking
 model to see the thinking process while trying to use tool calls to answer the user's question. This enables

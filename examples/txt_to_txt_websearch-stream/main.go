@@ -1,0 +1,59 @@
+// Use a websearch provider.
+//
+// This requires `PERPLEXITY_API_KEY` (https://www.perplexity.ai/settings/api)
+// environment variable to authenticate.
+
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+	"os"
+
+	"github.com/maruel/genai"
+	"github.com/maruel/genai/providers/perplexity"
+)
+
+func main() {
+	ctx := context.Background()
+	c, err := perplexity.New(ctx, &genai.ProviderOptions{Model: genai.ModelCheap}, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	msgs := genai.Messages{{
+		Requests: []genai.Request{
+			{Text: "Who holds ultimate power of Canada? Answer succinctly."},
+		},
+	}}
+	fragments, finish := c.GenStream(ctx, msgs)
+	firstText := true
+	for f := range fragments {
+		if !f.Citation.IsZero() {
+			fmt.Printf("Sources:\n")
+			for _, src := range f.Citation.Sources {
+				if src.Type == "web" {
+					fmt.Printf("- %s / %s\n", src.Title, src.URL)
+				} else {
+					fmt.Printf("Image: %s\n", src.URL)
+				}
+			}
+		}
+		if f.TextFragment != "" {
+			if firstText {
+				if _, err = os.Stdout.WriteString("\n"); err != nil {
+					break
+				}
+				firstText = false
+			}
+			if _, err = os.Stdout.WriteString(f.TextFragment); err != nil {
+				break
+			}
+		}
+	}
+	_, _ = os.Stdout.WriteString("\n")
+	if _, err = finish(); err != nil {
+		log.Fatal(err)
+	}
+}

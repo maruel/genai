@@ -368,7 +368,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 			ct.Sources[i].Title = c.SearchResults[i].Title
 			ct.Sources[i].URL = c.SearchResults[i].URL
 			if c.SearchResults[i].Date != "" {
-				ct.Sources[i].Metadata = map[string]any{"data": c.SearchResults[i].Date}
+				ct.Sources[i].Metadata = map[string]any{"date": c.SearchResults[i].Date}
 			}
 		}
 		out.Replies[0].Citations = append(out.Replies[0].Citations, ct)
@@ -603,6 +603,9 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		for range ch {
 		}
 	}()
+	// Perplexity has a bug where it will send the search result multiple times. We need to filter them. Use the
+	// URL as key.
+	seen := map[string]struct{}{}
 	for pkt := range ch {
 		if len(pkt.Choices) != 1 {
 			continue
@@ -619,40 +622,58 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		default:
 			return fmt.Errorf("unexpected role %q", role)
 		}
-		f := genai.ReplyFragment{TextFragment: pkt.Choices[0].Delta.Content}
-		if !f.IsZero() {
-			if err := result.Accumulate(f); err != nil {
-				return err
-			}
-			chunks <- f
-		}
-		// We need to do one packet per citation type.
+		// We need to do one packet per citation type. Do that before sending text.
 		if len(pkt.SearchResults) > 0 {
-			f := genai.ReplyFragment{Citation: genai.Citation{Type: "web", Sources: make([]genai.CitationSource, len(pkt.SearchResults))}}
-			for i := range pkt.SearchResults {
-				f.Citation.Sources[i].Type = "web"
-				f.Citation.Sources[i].Title = pkt.SearchResults[i].Title
-				f.Citation.Sources[i].URL = pkt.SearchResults[i].URL
-				if pkt.SearchResults[i].Date != "" {
-					f.Citation.Sources[i].Metadata = map[string]any{"data": pkt.SearchResults[i].Date}
+			f := genai.ReplyFragment{Citation: genai.Citation{Type: "web"}}
+			for _, r := range pkt.SearchResults {
+				if _, ok := seen[r.URL]; ok {
+					continue
 				}
+				seen[r.URL] = struct{}{}
+				var metadata map[string]any
+				if r.Date != "" {
+					metadata = map[string]any{"date": r.Date}
+				}
+				f.Citation.Sources = append(f.Citation.Sources, genai.CitationSource{
+					Type:     "web",
+					Title:    r.Title,
+					URL:      r.URL,
+					Metadata: metadata,
+				})
 			}
-			if err := result.Accumulate(f); err != nil {
-				return err
+			if len(f.Citation.Sources) > 0 {
+				if err := result.Accumulate(f); err != nil {
+					return err
+				}
+				chunks <- f
 			}
-			chunks <- f
 		}
 		if len(pkt.Images) > 0 {
-			f := genai.ReplyFragment{Citation: genai.Citation{Type: "document", Sources: make([]genai.CitationSource, len(pkt.Images))}}
-			for i := range pkt.Images {
-				f.Citation.Sources[i].Type = "image"
-				f.Citation.Sources[i].Title = pkt.Images[i].OriginURL
-				f.Citation.Sources[i].URL = pkt.Images[i].ImageURL
-				f.Citation.Sources[i].Metadata = map[string]any{
-					"width":  pkt.Images[i].Width,
-					"height": pkt.Images[i].Height,
+			f := genai.ReplyFragment{Citation: genai.Citation{Type: "document"}}
+			for _, img := range pkt.Images {
+				if _, ok := seen[img.ImageURL]; ok {
+					continue
 				}
+				seen[img.ImageURL] = struct{}{}
+				f.Citation.Sources = append(f.Citation.Sources, genai.CitationSource{
+					Type:  "image",
+					Title: img.OriginURL,
+					URL:   img.ImageURL,
+					Metadata: map[string]any{
+						"width":  img.Width,
+						"height": img.Height,
+					},
+				})
 			}
+			if len(f.Citation.Sources) > 0 {
+				if err := result.Accumulate(f); err != nil {
+					return err
+				}
+				chunks <- f
+			}
+		}
+		f := genai.ReplyFragment{TextFragment: pkt.Choices[0].Delta.Content}
+		if !f.IsZero() {
 			if err := result.Accumulate(f); err != nil {
 				return err
 			}

@@ -1772,7 +1772,12 @@ func (c *Client) genDoc(ctx context.Context, msg genai.Message, opts ...genai.Op
 			}
 		}
 		// Loop until the image is available.
-		const waitForPoll = time.Second
+		waitForPoll := time.Second
+		for _, opt := range opts {
+			if v, ok := (opt).(*genai.OptionsVideo); ok && v.PollInterval != 0 {
+				waitForPoll = v.PollInterval
+			}
+		}
 		for {
 			select {
 			case <-ctx.Done():

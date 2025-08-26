@@ -344,7 +344,12 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 		}
 	}
 	// They recommend in their documentation to poll every 0.5s.
-	const waitForPoll = 500 * time.Millisecond
+	waitForPoll := 500 * time.Millisecond
+	for _, opt := range opts {
+		if v, ok := (opt).(*genai.OptionsImage); ok && v.PollInterval != 0 {
+			waitForPoll = v.PollInterval
+		}
+	}
 	// TODO: Expose a webhook with a custom OptionsImage.
 	for {
 		select {

@@ -291,6 +291,9 @@ type OptionsImage struct {
 	Width  int
 	Height int
 
+	// PollInterval is the time interval to poll the image generation progress when using GenSync.
+	PollInterval time.Duration
+
 	_ struct{}
 }
 
@@ -313,6 +316,9 @@ type OptionsVideo struct {
 	//
 	// Veo 2 supports only between 5 and 8 seconds and Veo 3 only supports 8 seconds.
 	Duration time.Duration
+
+	// PollInterval is the time interval to poll the image generation progress when using GenSync.
+	PollInterval time.Duration
 
 	_ struct{}
 }

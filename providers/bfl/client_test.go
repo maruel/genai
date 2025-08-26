@@ -2,7 +2,7 @@
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
-package bfl
+package bfl_test
 
 import (
 	"context"
@@ -15,6 +15,7 @@ import (
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
+	"github.com/maruel/genai/providers/bfl"
 	"github.com/maruel/genai/scoreboard/scoreboardtest"
 )
 
@@ -23,7 +24,7 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 	if os.Getenv("BFL_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
-	c, err := New(t.Context(), &genai.ProviderOptions{APIKey: apiKey, Model: model.Model}, fn)
+	c, err := bfl.New(t.Context(), &genai.ProviderOptions{APIKey: apiKey, Model: model.Model}, fn)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -46,7 +47,7 @@ func TestClient_Scoreboard(t *testing.T) {
 }
 
 type imageModelClient struct {
-	*Client
+	*bfl.Client
 }
 
 func (i *imageModelClient) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
@@ -56,6 +57,7 @@ func (i *imageModelClient) GenSync(ctx context.Context, msgs genai.Messages, opt
 			n := *v
 			n.Width = 256
 			n.Height = 256
+			n.PollInterval = time.Millisecond
 			opts[i] = &n
 		}
 	}
@@ -107,7 +109,7 @@ func TestClient_Provider_errors(t *testing.T) {
 	internaltest.TestClient_Provider_errors(t, f, data)
 }
 
-func getClient(t *testing.T, m string) *Client {
+func getClient(t *testing.T, m string) *bfl.Client {
 	t.Parallel()
 	c, err := getClientInner(t, genai.ProviderOptions{Model: m})
 	if err != nil {
@@ -116,11 +118,11 @@ func getClient(t *testing.T, m string) *Client {
 	return c
 }
 
-func getClientInner(t *testing.T, opts genai.ProviderOptions) (*Client, error) {
+func getClientInner(t *testing.T, opts genai.ProviderOptions) (*bfl.Client, error) {
 	if opts.APIKey == "" && os.Getenv("BFL_API_KEY") == "" {
 		opts.APIKey = "<insert_api_key_here>"
 	}
-	return New(t.Context(), &opts, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
+	return bfl.New(t.Context(), &opts, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
 }
 
 var testRecorder *internaltest.Records
@@ -133,6 +135,4 @@ func TestMain(m *testing.M) {
 
 func init() {
 	internal.BeLenient = false
-	// Speed up the test.
-	waitForPoll = time.Millisecond
 }

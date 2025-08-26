@@ -22,7 +22,7 @@ func main() {
 		log.Fatal(err)
 	}
 	msgs := genai.Messages{
-		genai.NewTextMessage("Give me a life advice that sounds good but is a bad idea in practice."),
+		genai.NewTextMessage("Give me a life advice that sounds good but is a bad idea in practice. Answer succinctly."),
 	}
 	result, err := c.GenSync(ctx, msgs)
 	if err != nil {

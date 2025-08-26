@@ -39,4 +39,5 @@ func main() {
 		log.Fatal(err)
 	}
 	fmt.Printf("Round: %v\n", circle.Round)
+	fmt.Printf("\nTokens usage: %s\n", resp.Usage.String())
 }

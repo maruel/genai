@@ -124,7 +124,7 @@ func main() {
 	ctx := context.Background()
 	c, err := anthropic.New(ctx, &genai.ProviderOptions{}, nil)
 	msgs := genai.Messages{
-		genai.NewTextMessage("Give me a life advice that sounds good but is a bad idea in practice."),
+		genai.NewTextMessage("Give me a life advice that sounds good but is a bad idea in practice. Answer succinctly."),
 	}
 	result, err := c.GenSync(ctx, msgs)
 	fmt.Println(result.String())
@@ -139,7 +139,10 @@ go run github.com/maruel/genai/examples/txt_to_txt_sync@latest
 
 This may print:
 
-> Quit your job and follow your dreams, no matter the cost.
+> "Follow your passion and the money will follow."
+>
+> This ignores market realities, financial responsibilities, and the fact that passion alone doesn't guarantee
+> income or career viability.
 
 
 ### Text Streaming 🏎
@@ -300,6 +303,11 @@ When asked _What is 3214 + 5632?_, this may print:
 > \# Answer
 >
 > 8846
+>
+> Tokens usage: in: 349 (cached 0), reasoning: 0, out: 58, total: 0, requests/2025-08-26 19:17:13:
+> 499999/500000, tokens/2025-08-26 19:17:13: 249809/250000
+
+In addition to the token usage, remaining quota is printed.
 
 
 ### Text Tools (manual)
@@ -329,6 +337,15 @@ variable to authenticate.
 ```bash
 go run github.com/maruel/genai/examples/txt_to_txt_decode-json@latest
 ```
+
+This will print:
+
+> Round: true
+>
+> Tokens usage: in: 40 (cached 0), reasoning: 64, out: 81, total: 121, requests/2025-08-26 19:13:29: 499/500,
+> tokens/2025-08-26 19:13:29: 199989/200000
+
+In addition to the token usage, remaining quota is printed.
 
 
 ### Text to Image 📸

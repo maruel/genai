@@ -231,12 +231,12 @@ func (r *RateLimit) String() string {
 		if r.Reset.IsZero() {
 			return fmt.Sprintf("%s: %d/%d", r.Type, r.Remaining, r.Limit)
 		}
-		return fmt.Sprintf("%s/%s: %d/%d", r.Type, r.Reset, r.Remaining, r.Limit)
+		return fmt.Sprintf("%s/%s: %d/%d", r.Type, r.Reset.Format(time.DateTime), r.Remaining, r.Limit)
 	}
 	if r.Reset.IsZero() {
 		return fmt.Sprintf("%s (%s): %d/%d", r.Type, r.Period, r.Remaining, r.Limit)
 	}
-	return fmt.Sprintf("%s/%s (%s): %d/%d", r.Type, r.Reset, r.Period, r.Remaining, r.Limit)
+	return fmt.Sprintf("%s/%s (%s): %d/%d", r.Type, r.Reset.Format(time.DateTime), r.Period, r.Remaining, r.Limit)
 }
 
 func (r *RateLimit) Validate() error {

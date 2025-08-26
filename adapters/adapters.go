@@ -43,20 +43,21 @@ func GenSyncWithToolCallLoop(ctx context.Context, p genai.Provider, msgs genai.M
 	}
 	tools := chatOpts.Tools
 	for {
-		result, err := p.GenSync(ctx, workMsgs, opts...)
-		usage.InputTokens += result.Usage.InputTokens
-		usage.InputCachedTokens += result.Usage.InputCachedTokens
-		usage.OutputTokens += result.Usage.OutputTokens
-		usage.FinishReason = result.Usage.FinishReason
+		res, err := p.GenSync(ctx, workMsgs, opts...)
+		usage.InputTokens += res.Usage.InputTokens
+		usage.InputCachedTokens += res.Usage.InputCachedTokens
+		usage.OutputTokens += res.Usage.OutputTokens
+		usage.FinishReason = res.Usage.FinishReason
+		usage.Limits = res.Usage.Limits
 		if err != nil {
 			return out, usage, err
 		}
-		out = append(out, result.Message)
-		workMsgs = append(workMsgs, result.Message)
-		if !slices.ContainsFunc(result.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
+		out = append(out, res.Message)
+		workMsgs = append(workMsgs, res.Message)
+		if !slices.ContainsFunc(res.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
 			return out, usage, nil
 		}
-		tr, err := result.DoToolCalls(ctx, tools)
+		tr, err := res.DoToolCalls(ctx, tools)
 		if err != nil {
 			return out, usage, err
 		}
@@ -116,6 +117,7 @@ func GenStreamWithToolCallLoop(ctx context.Context, p genai.Provider, msgs genai
 			usage.InputCachedTokens += res.Usage.InputCachedTokens
 			usage.OutputTokens += res.Usage.OutputTokens
 			usage.FinishReason = res.Usage.FinishReason
+			usage.Limits = res.Usage.Limits
 			if err != nil {
 				finalErr = err
 				return
@@ -192,13 +194,14 @@ type ProviderUsage struct {
 
 // GenSync implements the Provider interface and accumulates usage statistics.
 func (c *ProviderUsage) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
-	result, err := c.Provider.GenSync(ctx, msgs, opts...)
+	res, err := c.Provider.GenSync(ctx, msgs, opts...)
 	c.mu.Lock()
-	c.accumUsage.InputTokens += result.Usage.InputTokens
-	c.accumUsage.InputCachedTokens += result.Usage.InputCachedTokens
-	c.accumUsage.OutputTokens += result.Usage.OutputTokens
+	c.accumUsage.InputTokens += res.Usage.InputTokens
+	c.accumUsage.InputCachedTokens += res.Usage.InputCachedTokens
+	c.accumUsage.OutputTokens += res.Usage.OutputTokens
+	c.accumUsage.Limits = res.Usage.Limits
 	c.mu.Unlock()
-	return result, err
+	return res, err
 }
 
 // GenStream implements the Provider interface and accumulates usage statistics.
@@ -211,6 +214,7 @@ func (c *ProviderUsage) GenStream(ctx context.Context, msgs genai.Messages, opts
 		c.accumUsage.InputTokens += res.Usage.InputTokens
 		c.accumUsage.InputCachedTokens += res.Usage.InputCachedTokens
 		c.accumUsage.OutputTokens += res.Usage.OutputTokens
+		c.accumUsage.Limits = res.Usage.Limits
 		c.mu.Unlock()
 		return res, err
 	}

@@ -1536,7 +1536,7 @@ func TestRateLimit(t *testing.T) {
 					Remaining: 50,
 					Reset:     now,
 				},
-				want: fmt.Sprintf("requests/%s (minute): 50/100", now),
+				want: fmt.Sprintf("requests/%s (minute): 50/100", now.Format(time.DateTime)),
 			},
 			{
 				name: "tokens per day",
@@ -1547,7 +1547,7 @@ func TestRateLimit(t *testing.T) {
 					Remaining: 5000,
 					Reset:     now,
 				},
-				want: fmt.Sprintf("tokens/%s (day): 5000/10000", now),
+				want: fmt.Sprintf("tokens/%s (day): 5000/10000", now.Format(time.DateTime)),
 			},
 			{
 				name: "other period",
@@ -1558,7 +1558,7 @@ func TestRateLimit(t *testing.T) {
 					Remaining: 500,
 					Reset:     now,
 				},
-				want: fmt.Sprintf("tokens/%s: 500/1000", now),
+				want: fmt.Sprintf("tokens/%s: 500/1000", now.Format(time.DateTime)),
 			},
 			{
 				name: "zero reset",

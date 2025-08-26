@@ -839,8 +839,10 @@ type ChatStreamChunkResponse struct {
 //
 // See https://ai.google.dev/gemini-api/docs/imagen#imagen
 //
-// See https://pkg.go.dev/google.golang.org/genai#GenerateImagesConfig
-// and generateImagesConfigToMldev() in https://github.com/googleapis/go-genai/blob/main/models.go
+// See https://pkg.go.dev/google.golang.org/genai#GenerateImagesConfig for image generation and
+// https://ai.google.dev/gemini-api/docs/video for video generation.
+//
+// See generateImagesConfigToMldev() in https://github.com/googleapis/go-genai/blob/main/models.go
 // or GenerateImagesConfig and generateImagesInternal() in
 // https://github.com/googleapis/js-genai/blob/main/src/models.ts and generateImagesParametersToMldev() and
 // generateImagesConfigToMldev()
@@ -1800,7 +1802,6 @@ func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts ...gena
 		}
 	}
 	resp, err := c.GenAsyncRaw(ctx, req)
-	fmt.Fprintf(os.Stderr, "%+v\n", resp)
 	if err != nil {
 		return genai.Job(resp.Name), err
 	}

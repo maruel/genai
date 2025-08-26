@@ -644,7 +644,7 @@ type Message struct {
 	Role             string     `json:"role"` // "system", "assistant", "user", "tool"
 	Content          Contents   `json:"content,omitzero"`
 	ToolCalls        []ToolCall `json:"tool_calls,omitzero"`
-	ReasoningContent struct{}   `json:"reasoning_content,omitzero"`
+	ReasoningContent string     `json:"reasoning_content,omitzero"`
 	Name             string     `json:"name,omitzero"`
 	ToolCallID       string     `json:"tool_call_id,omitzero"`
 }
@@ -703,6 +703,9 @@ func (m *Message) To(out *genai.Message) error {
 		out.Replies = make([]genai.Reply, len(m.Content))
 		if err := m.Content[i].To(&out.Replies[i]); err != nil {
 			return fmt.Errorf("reply %d: %w", i, err)
+		}
+		if len(m.ReasoningContent) != 0 {
+			out.Replies = append(out.Replies, genai.Reply{Thinking: m.ReasoningContent})
 		}
 	}
 	for i := range m.ToolCalls {

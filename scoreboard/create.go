@@ -13,6 +13,7 @@ import (
 	"maps"
 	"net/http"
 	"path/filepath"
+	"regexp"
 	"slices"
 	"strings"
 	"sync"
@@ -432,7 +433,7 @@ func exerciseGenTextMultiModal(ctx context.Context, cs *callState, prefix string
 
 func exerciseGenInputDocument(ctx context.Context, cs *callState, f *FunctionalityText, prefix string) (*ModalCapability, error) {
 	var m *ModalCapability
-	want := "orange"
+	want := regexp.MustCompile("^orange$")
 	for _, format := range []extMime{{"pdf", "application/pdf"}} {
 		data, err := testdataFiles.ReadFile("testdata/document." + format.ext)
 		if err != nil {
@@ -477,7 +478,7 @@ func exerciseGenInputDocument(ctx context.Context, cs *callState, f *Functionali
 
 func exerciseGenInputImage(ctx context.Context, cs *callState, f *FunctionalityText, prefix string) (*ModalCapability, error) {
 	var m *ModalCapability
-	want := "banana"
+	want := regexp.MustCompile("^banana$")
 	for _, format := range []extMime{
 		{"gif", "image/gif"},
 		// TODO: {"heic", "image/heic"},
@@ -528,7 +529,7 @@ func exerciseGenInputImage(ctx context.Context, cs *callState, f *FunctionalityT
 
 func exerciseGenInputAudio(ctx context.Context, cs *callState, f *FunctionalityText, prefix string) (*ModalCapability, error) {
 	var m *ModalCapability
-	want := "orange"
+	want := regexp.MustCompile("^orange$")
 	for _, format := range []extMime{
 		{"aac", "audio/aac"},
 		{"flac", "audio/flac"},
@@ -579,7 +580,8 @@ func exerciseGenInputAudio(ctx context.Context, cs *callState, f *FunctionalityT
 
 func exerciseGenInputVideo(ctx context.Context, cs *callState, f *FunctionalityText, prefix string) (*ModalCapability, error) {
 	var m *ModalCapability
-	want := "orange"
+	// Relax the check, as the model will try to describe the fact that the word is rotating.
+	want := regexp.MustCompile("banana")
 	for _, format := range []extMime{
 		{"mp4", "video/mp4"},
 		{"webm", "video/webm"},
@@ -630,11 +632,11 @@ type extMime struct {
 	mime string
 }
 
-func exerciseModal(ctx context.Context, cs *callState, f *FunctionalityText, name string, msgs genai.Messages, want string) error {
+func exerciseModal(ctx context.Context, cs *callState, f *FunctionalityText, name string, msgs genai.Messages, want *regexp.Regexp) error {
 	resp, err := cs.callGen(ctx, name, msgs)
 	if err == nil {
 		got := strings.ToLower(strings.TrimRight(strings.TrimSpace(resp.String()), "."))
-		if want != "" && got != want {
+		if want != nil && !want.MatchString(got) {
 			return fmt.Errorf("got %q, want %q", got, want)
 		}
 		if resp.Usage.InputTokens == 0 || resp.Usage.OutputTokens == 0 {

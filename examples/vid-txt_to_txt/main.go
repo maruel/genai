@@ -25,11 +25,11 @@ func main() {
 	}
 	// Use a video from the test data suite.
 	resp, err := http.Get("https://github.com/maruel/genai/raw/refs/heads/main/scoreboard/testdata/video.mp4")
-	if err != nil {
+	if err != nil || resp.StatusCode != 200 {
 		log.Fatal(err)
 	}
 	b, err := io.ReadAll(resp.Body)
-	resp.Body.Close()
+	_ = resp.Body.Close()
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -663,7 +663,7 @@ Using this video:
 Try it live:
 
 ```bash
-go run github.com/maruel/genai/examples/img-txt_to_txt@latest
+go run github.com/maruel/genai/examples/vid-txt_to_txt@latest
 ```
 
 When asked _What is the word_, this generates:

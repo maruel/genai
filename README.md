@@ -650,6 +650,27 @@ go run github.com/maruel/genai/examples/img-txt_to_txt_local@latest
 ```
 
 
+### Video-Text to Text 🎞️
+
+[examples/vid-txt\_to\_txt/main.go](examples/vid-txt_to_txt/main.go): Run vision to analyze a video.
+
+This requires [`GEMINI_API_KEY`](https://aistudio.google.com/apikey) environment variable to authenticate.
+
+Using this video:
+
+![video.avif](https://raw.githubusercontent.com/wiki/maruel/genai/video.avif)
+
+Try it live:
+
+```bash
+go run github.com/maruel/genai/examples/img-txt_to_txt@latest
+```
+
+When asked _What is the word_, this generates:
+
+> Banana
+
+
 ### Text with any provider ⁉
 
 [examples/txt\_to\_txt\_any/main.go](examples/txt_to_txt_any/main.go): Let the user chose the provider by name.

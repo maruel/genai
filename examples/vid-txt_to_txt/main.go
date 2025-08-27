@@ -1,7 +1,6 @@
-// Analyze a video provided as an URL. The response is streamed out the
-// console as the reply is generated.
+// Run vision to analyze a video.
 //
-// This requires `MISTRAL_API_KEY` (https://console.mistral.ai/api-keys)
+// This requires `GEMINI_API_KEY` (https://aistudio.google.com/apikey)
 // environment variable to authenticate.
 
 package main
@@ -20,7 +19,7 @@ import (
 
 func main() {
 	ctx := context.Background()
-	c, err := gemini.New(ctx, &genai.ProviderOptions{}, nil)
+	c, err := gemini.New(ctx, &genai.ProviderOptions{Model: genai.ModelCheap}, nil)
 	if err != nil {
 		log.Fatal(err)
 	}

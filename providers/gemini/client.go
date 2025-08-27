@@ -1304,8 +1304,8 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 				if c.impl.Model, err = c.selectBestTextModel(ctx, opts.Model); err != nil {
 					return nil, err
 				}
-				c.impl.GenSyncURL = "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(opts.Model) + ":generateContent"
-				c.impl.GenStreamURL = "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(opts.Model) + ":streamGenerateContent?alt=sse"
+				c.impl.GenSyncURL = "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(c.impl.Model) + ":generateContent"
+				c.impl.GenStreamURL = "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(c.impl.Model) + ":streamGenerateContent?alt=sse"
 				c.impl.OutputModalities = genai.Modalities{mod}
 			case genai.ModalityImage:
 				if c.impl.Model, err = c.selectBestImageModel(ctx, opts.Model); err != nil {
@@ -1325,12 +1325,12 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 		default:
 			c.impl.Model = opts.Model
 			if len(opts.OutputModalities) == 0 {
-				c.impl.OutputModalities, err = c.detectModelModalities(ctx, opts.Model)
+				c.impl.OutputModalities, err = c.detectModelModalities(ctx, c.impl.Model)
 			} else {
 				c.impl.OutputModalities = opts.OutputModalities
 			}
-			c.impl.GenSyncURL = "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(opts.Model) + ":generateContent"
-			c.impl.GenStreamURL = "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(opts.Model) + ":streamGenerateContent?alt=sse"
+			c.impl.GenSyncURL = "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(c.impl.Model) + ":generateContent"
+			c.impl.GenStreamURL = "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(c.impl.Model) + ":streamGenerateContent?alt=sse"
 		}
 	}
 	return c, err

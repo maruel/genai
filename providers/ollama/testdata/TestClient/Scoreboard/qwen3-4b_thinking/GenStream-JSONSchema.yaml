@@ -1,42 +1,30 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 369
-        host: localhost
-        body: |
-            {"model":"qwen3:4b","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."},{"role":"user","content":"\n\n/think"}],"stream":true,"format":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: http://localhost/api/chat
-        method: POST
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding:
-            - chunked
-        content_length: -1
-        body: |
-            {"model":"qwen3:4b","created_at":"2025-08-14T18:22:30.479057624Z","message":{"role":"assistant","content":"{\n"},"done":false}
-            {"model":"qwen3:4b","created_at":"2025-08-14T18:22:30.537921688Z","message":{"role":"assistant","content":" "},"done":false}
-            {"model":"qwen3:4b","created_at":"2025-08-14T18:22:30.590099249Z","message":{"role":"assistant","content":" \""},"done":false}
-            {"model":"qwen3:4b","created_at":"2025-08-14T18:22:30.655558145Z","message":{"role":"assistant","content":"is"},"done":false}
-            {"model":"qwen3:4b","created_at":"2025-08-14T18:22:30.721587372Z","message":{"role":"assistant","content":"_f"},"done":false}
-            {"model":"qwen3:4b","created_at":"2025-08-14T18:22:30.777318409Z","message":{"role":"assistant","content":"ruit"},"done":false}
-            {"model":"qwen3:4b","created_at":"2025-08-14T18:22:30.829577826Z","message":{"role":"assistant","content":"\":"},"done":false}
-            {"model":"qwen3:4b","created_at":"2025-08-14T18:22:30.887744272Z","message":{"role":"assistant","content":" true"},"done":false}
-            {"model":"qwen3:4b","created_at":"2025-08-14T18:22:30.946333207Z","message":{"role":"assistant","content":"\n"},"done":false}
-            {"model":"qwen3:4b","created_at":"2025-08-14T18:22:31.001561616Z","message":{"role":"assistant","content":"}"},"done":false}
-            {"model":"qwen3:4b","created_at":"2025-08-14T18:22:31.067205327Z","message":{"role":"assistant","content":""},"done_reason":"stop","done":true,"total_duration":1397374770,"load_duration":27972330,"prompt_eval_count":27,"prompt_eval_duration":144660812,"eval_count":11,"eval_duration":599591876}
-        headers:
-            Content-Type:
-                - application/x-ndjson
-        status: 200 OK
-        code: 200
-        duration: 810ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 369
+    host: localhost
+    body: "{\"model\":\"qwen3:4b\",\"messages\":[{\"role\":\"user\",\"content\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON.\"},{\"role\":\"user\",\"content\":\"\\n\\n/think\"}],\"stream\":true,\"format\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"is_fruit\":{\"type\":\"boolean\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"is_fruit\"]}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: http://localhost/api/chat
+    method: POST
+  response:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    transfer_encoding:
+    - chunked
+    content_length: -1
+    body: "{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:33.205855Z\",\"message\":{\"role\":\"assistant\",\"content\":\"{\\n\"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:33.221098Z\",\"message\":{\"role\":\"assistant\",\"content\":\" \"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:33.235203Z\",\"message\":{\"role\":\"assistant\",\"content\":\" \\\"\"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:33.256951Z\",\"message\":{\"role\":\"assistant\",\"content\":\"is\"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:33.278569Z\",\"message\":{\"role\":\"assistant\",\"content\":\"_f\"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:33.293431Z\",\"message\":{\"role\":\"assistant\",\"content\":\"ruit\"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:33.307726Z\",\"message\":{\"role\":\"assistant\",\"content\":\"\\\":\"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:33.322026Z\",\"message\":{\"role\":\"assistant\",\"content\":\" true\"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:33.336002Z\",\"message\":{\"role\":\"assistant\",\"content\":\"\\n\"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:33.350211Z\",\"message\":{\"role\":\"assistant\",\"content\":\"}\"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:33.364528Z\",\"message\":{\"role\":\"assistant\",\"content\":\"\"},\"done_reason\":\"stop\",\"done\":true,\"total_duration\":393107583,\"load_duration\":35124833,\"prompt_eval_count\":27,\"prompt_eval_duration\":61245083,\"eval_count\":11,\"eval_duration\":167729792}\n"
+    headers:
+      Content-Type:
+      - application/x-ndjson
+    status: 200 OK
+    code: 200
+    duration: 235ms

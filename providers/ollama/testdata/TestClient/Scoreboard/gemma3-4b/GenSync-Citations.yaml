@@ -1,31 +1,30 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 220
-        host: localhost
-        body: |
-            {"model":"gemma3:4b","messages":[{"role":"user","content":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"role":"user","content":"What is the capital of Quackiland?"}],"stream":false}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: http://localhost/api/chat
-        method: POST
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 378
-        body: "{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-14T18:30:27.744127939Z\",\"message\":{\"role\":\"assistant\",\"content\":\"The capital of Quackiland is Quack. \\n\\nThe question is a bit of a trick! \U0001F60A\\n\"},\"done_reason\":\"stop\",\"done\":true,\"total_duration\":3163224142,\"load_duration\":1464607356,\"prompt_eval_count\":40,\"prompt_eval_duration\":431592015,\"eval_count\":24,\"eval_duration\":1251821950}"
-        headers:
-            Content-Length:
-                - "378"
-            Content-Type:
-                - application/json; charset=utf-8
-        status: 200 OK
-        code: 200
-        duration: 3.164s
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 220
+    host: localhost
+    body: "{\"model\":\"gemma3:4b\",\"messages\":[{\"role\":\"user\",\"content\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"role\":\"user\",\"content\":\"What is the capital of Quackiland?\"}],\"stream\":false}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: http://localhost/api/chat
+    method: POST
+  response:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 370
+    body: "{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-27T00:01:27.857395Z\",\"message\":{\"role\":\"assistant\",\"content\":\"The capital of Quackiland is Quack. \\n\\nThe question is a bit of a trick! 😊\\n\"},\"done_reason\":\"stop\",\"done\":true,\"total_duration\":667204542,\"load_duration\":86142833,\"prompt_eval_count\":40,\"prompt_eval_duration\":13265625,\"eval_count\":24,\"eval_duration\":328956208}"
+    headers:
+      Content-Length:
+      - "370"
+      Content-Type:
+      - application/json; charset=utf-8
+    status: 200 OK
+    code: 200
+    duration: 667ms

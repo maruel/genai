@@ -35,7 +35,10 @@ import (
 // https://github.com/ollama/ollama/releases
 //
 // You are free to use the version number that works best for you.
-const Version = "v0.10.1"
+const Version = "v0.11.7"
+
+// When updating the value above, regenerate the recordings with:
+// RECORD=1 go test ./providers/ollama/...
 
 // Server is an "ollama serve" instance.
 type Server struct {
@@ -105,7 +108,7 @@ func New(ctx context.Context, exe string, logOutput io.Writer, hostPort string, 
 		return cmd.Process.Signal(os.Interrupt)
 	}
 	if err = cmd.Start(); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to start ollama: %w", err)
 	}
 	done := make(chan error)
 	go func() {
@@ -211,6 +214,7 @@ func DownloadRelease(ctx context.Context, cache string, version string) (string,
 	switch runtime.GOOS {
 	case "darwin":
 		archiveName = "ollama-darwin.tgz"
+		wantedFiles = append(wantedFiles, "*.dylib", "*.so")
 	case "linux":
 		// TODO: rocm
 		// The files are over 1.5GiB :(
@@ -222,8 +226,7 @@ func DownloadRelease(ctx context.Context, cache string, version string) (string,
 		default:
 			return "", fmt.Errorf("unsupported architecture %q", runtime.GOARCH)
 		}
-		// TODO: Add cuda v12 too.
-		wantedFiles = append(wantedFiles, "libggml-base.so", "libggml-cpu-*.so")
+		wantedFiles = append(wantedFiles, "*.so", "*.so.*")
 	case "windows":
 		// TODO: rocm
 		switch runtime.GOARCH {
@@ -312,7 +315,11 @@ func extractTarGz(archivePath, dstDir string, wantedFiles []string) error {
 		if err != nil {
 			return err
 		}
+		if header.Size == 0 || strings.HasSuffix(header.Name, "/") {
+			continue
+		}
 		// Ignore path.
+		fmt.Fprintf(os.Stderr, "FILENAME: %s\n", header.Name)
 		n := filepath.Base(header.Name)
 		for _, desired := range wantedFiles {
 			if ok, _ := filepath.Match(desired, n); ok {

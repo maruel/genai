@@ -1,31 +1,30 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 370
-        host: localhost
-        body: |
-            {"model":"qwen3:4b","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."},{"role":"user","content":"\n\n/think"}],"stream":false,"format":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: http://localhost/api/chat
-        method: POST
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 319
-        body: '{"model":"qwen3:4b","created_at":"2025-08-14T18:22:31.737380034Z","message":{"role":"assistant","content":"{\n  \"is_fruit\": true\n}"},"done_reason":"stop","done":true,"total_duration":1414435295,"load_duration":21898389,"prompt_eval_count":27,"prompt_eval_duration":67195334,"eval_count":11,"eval_duration":602583247}'
-        headers:
-            Content-Length:
-                - "319"
-            Content-Type:
-                - application/json; charset=utf-8
-        status: 200 OK
-        code: 200
-        duration: 1.415s
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 370
+    host: localhost
+    body: "{\"model\":\"qwen3:4b\",\"messages\":[{\"role\":\"user\",\"content\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON.\"},{\"role\":\"user\",\"content\":\"\\n\\n/think\"}],\"stream\":false,\"format\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"is_fruit\":{\"type\":\"boolean\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"is_fruit\"]}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: http://localhost/api/chat
+    method: POST
+  response:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 315
+    body: "{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:33.543028Z\",\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"is_fruit\\\": true\\n}\"},\"done_reason\":\"stop\",\"done\":true,\"total_duration\":407347042,\"load_duration\":34615417,\"prompt_eval_count\":27,\"prompt_eval_duration\":13133375,\"eval_count\":11,\"eval_duration\":165085250}"
+    headers:
+      Content-Length:
+      - "315"
+      Content-Type:
+      - application/json; charset=utf-8
+    status: 200 OK
+    code: 200
+    duration: 408ms

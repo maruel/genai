@@ -1,39 +1,30 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 220
-        host: localhost
-        body: |
-            {"model":"gemma3:4b","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"stream":true,"format":"json"}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: http://localhost/api/chat
-        method: POST
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding:
-            - chunked
-        content_length: -1
-        body: |
-            {"model":"gemma3:4b","created_at":"2025-08-03T08:46:26.495908245Z","message":{"role":"assistant","content":"{\""},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-08-03T08:46:26.552105241Z","message":{"role":"assistant","content":"is"},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-08-03T08:46:26.609892761Z","message":{"role":"assistant","content":"_"},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-08-03T08:46:26.667744593Z","message":{"role":"assistant","content":"fruit"},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-08-03T08:46:26.725956267Z","message":{"role":"assistant","content":"\":"},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-08-03T08:46:26.783559521Z","message":{"role":"assistant","content":" true"},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-08-03T08:46:26.841890199Z","message":{"role":"assistant","content":"}"},"done":false}
-            {"model":"gemma3:4b","created_at":"2025-08-03T08:46:27.010703368Z","message":{"role":"assistant","content":""},"done_reason":"stop","done":true,"total_duration":11210403865,"load_duration":8262174592,"prompt_eval_count":38,"prompt_eval_duration":55933659,"eval_count":8,"eval_duration":547074781}
-        headers:
-            Content-Type:
-                - application/x-ndjson
-        status: 200 OK
-        code: 200
-        duration: 10.697s
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 220
+    host: localhost
+    body: "{\"model\":\"gemma3:4b\",\"messages\":[{\"role\":\"user\",\"content\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\\\"is_fruit\\\": bool}.\"}],\"stream\":true,\"format\":\"json\"}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: http://localhost/api/chat
+    method: POST
+  response:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    transfer_encoding:
+    - chunked
+    content_length: -1
+    body: "{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-27T00:01:26.077015Z\",\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-27T00:01:26.092211Z\",\"message\":{\"role\":\"assistant\",\"content\":\"is\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-27T00:01:26.106599Z\",\"message\":{\"role\":\"assistant\",\"content\":\"_\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-27T00:01:26.121126Z\",\"message\":{\"role\":\"assistant\",\"content\":\"fruit\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-27T00:01:26.13542Z\",\"message\":{\"role\":\"assistant\",\"content\":\"\\\":\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-27T00:01:26.149967Z\",\"message\":{\"role\":\"assistant\",\"content\":\" true\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-27T00:01:26.164328Z\",\"message\":{\"role\":\"assistant\",\"content\":\"}\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-27T00:01:26.215085Z\",\"message\":{\"role\":\"assistant\",\"content\":\"\"},\"done_reason\":\"stop\",\"done\":true,\"total_duration\":552086542,\"load_duration\":92606250,\"prompt_eval_count\":38,\"prompt_eval_duration\":81443334,\"eval_count\":8,\"eval_duration\":168635083}\n"
+    headers:
+      Content-Type:
+      - application/x-ndjson
+    status: 200 OK
+    code: 200
+    duration: 414ms

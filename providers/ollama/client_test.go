@@ -92,8 +92,11 @@ type lazyServer struct {
 }
 
 func (l *lazyServer) lazyStartWithRecord(t testing.TB) (string, func(http.RoundTripper) http.RoundTripper) {
-	transport := testRecorder.Record(t, http.DefaultTransport,
-		recorder.WithHook(func(i *cassette.Interaction) error { return internaltest.SaveIgnorePort(t, i) }, recorder.AfterCaptureHook),
+	transport := testRecorder.Record(t,
+		http.DefaultTransport,
+		recorder.WithHook(func(i *cassette.Interaction) error {
+			return internaltest.SaveIgnorePort(t, i)
+		}, recorder.AfterCaptureHook),
 		recorder.WithMatcher(internaltest.MatchIgnorePort),
 	)
 	wrapper := func(http.RoundTripper) http.RoundTripper { return transport }

@@ -1,59 +1,57 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 97
-        host: localhost
-        body: |
-            {"model":"bad_model","messages":[{"role":"user","content":"Tell a short joke."}],"stream":false}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: http://localhost/api/chat
-        method: POST
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 63
-        body: '{"error":"model \"bad_model\" not found, try pulling it first"}'
-        headers:
-            Content-Length:
-                - "63"
-            Content-Type:
-                - application/json; charset=utf-8
-        status: 404 Not Found
-        code: 404
-        duration: 1ms
-    - id: 1
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 54
-        host: localhost
-        body: |
-            {"model":"bad_model","insecure":false,"stream":false}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: http://localhost/api/pull
-        method: POST
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 52
-        body: '{"error":"pull model manifest: file does not exist"}'
-        headers:
-            Content-Length:
-                - "52"
-            Content-Type:
-                - application/json
-        status: 500 Internal Server Error
-        code: 500
-        duration: 901ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 97
+    host: localhost
+    body: "{\"model\":\"bad_model\",\"messages\":[{\"role\":\"user\",\"content\":\"Tell a short joke.\"}],\"stream\":false}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: http://localhost/api/chat
+    method: POST
+  response:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 63
+    body: "{\"error\":\"model \\\"bad_model\\\" not found, try pulling it first\"}"
+    headers:
+      Content-Length:
+      - "63"
+      Content-Type:
+      - application/json; charset=utf-8
+    status: 404 Not Found
+    code: 404
+    duration: 1ms
+- id: 1
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 54
+    host: localhost
+    body: "{\"model\":\"bad_model\",\"insecure\":false,\"stream\":false}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: http://localhost/api/pull
+    method: POST
+  response:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 52
+    body: "{\"error\":\"pull model manifest: file does not exist\"}"
+    headers:
+      Content-Length:
+      - "52"
+      Content-Type:
+      - application/json
+    status: 500 Internal Server Error
+    code: 500
+    duration: 221ms

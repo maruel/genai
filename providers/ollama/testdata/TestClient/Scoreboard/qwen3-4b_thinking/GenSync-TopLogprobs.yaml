@@ -1,31 +1,30 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 146
-        host: localhost
-        body: |
-            {"model":"qwen3:4b","messages":[{"role":"user","content":"Say hello. Use only one word."},{"role":"user","content":"\n\n/think"}],"stream":false}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: http://localhost/api/chat
-        method: POST
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 1061
-        body: '{"model":"qwen3:4b","created_at":"2025-08-14T18:22:23.588270524Z","message":{"role":"assistant","content":"\u003cthink\u003e\nOkay, the user said \"Say hello. Use only one word.\" So I need to respond with a single word that means hello. The most common one is \"Hi\" or \"Hello\" itself. But maybe they want something more creative? Let me think. \"Hey\" is another option. But since they specified one word, maybe \"Hi\" is the safest choice. Wait, but \"Hello\" is also a single word. However, sometimes people prefer \"Hi\" as it''s shorter. But the user might not mind either. Let me check if there''s any other possible answer. Maybe \"Hey\" is more casual. But the user didn''t specify the tone. Hmm. The instruction is straightforward: one word. So \"Hi\" or \"Hello\" are both valid. I''ll go with \"Hi\" as it''s commonly used and concise.\n\u003c/think\u003e\n\nHi."},"done_reason":"stop","done":true,"total_duration":21378796827,"load_duration":24542511,"prompt_eval_count":18,"prompt_eval_duration":60359484,"eval_count":181,"eval_duration":11122114826}'
-        headers:
-            Content-Length:
-                - "1061"
-            Content-Type:
-                - application/json; charset=utf-8
-        status: 200 OK
-        code: 200
-        duration: 21.379s
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 146
+    host: localhost
+    body: "{\"model\":\"qwen3:4b\",\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"},{\"role\":\"user\",\"content\":\"\\n\\n/think\"}],\"stream\":false}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: http://localhost/api/chat
+    method: POST
+  response:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 1440
+    body: "{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:31.601298Z\",\"message\":{\"role\":\"assistant\",\"content\":\"\\u003cthink\\u003e\\nOkay, the user said \\\"Say hello. Use only one word.\\\" So I need to respond with a single word that means hello. The most common one is \\\"Hi,\\\" but maybe they want something more formal like \\\"Hello\\\" itself? Wait, but \\\"Hello\\\" is two words. Hmm. Alternatively, maybe \\\"Hey\\\"? But \\\"Hey\\\" is also a single word. Let me check if there's a standard answer here. Usually, \\\"Hi\\\" is the most common single-word greeting. But sometimes people use \\\"Hello\\\" even though it's two words. Wait, maybe the user is testing if I know that \\\"Hello\\\" is two words but they want a one-word alternative. Or maybe they just want the word \\\"Hello\\\" even though it's two words. But the instruction says \\\"use only one word,\\\" so maybe \\\"Hi\\\" is the correct answer. Alternatively, maybe \\\"Hello\\\" is acceptable if it's considered as one word in the response. But in English, \\\"Hello\\\" is typically written as one word. Wait, but the user might be confused. Let me think. The user's instruction is to use only one word. So the answer should be a single word. The most appropriate is \\\"Hi.\\\" So I should respond with \\\"Hi.\\\"\\n\\u003c/think\\u003e\\n\\nHi.\"},\"done_reason\":\"stop\",\"done\":true,\"total_duration\":6533442916,\"load_duration\":33445750,\"prompt_eval_count\":18,\"prompt_eval_duration\":13175875,\"eval_count\":264,\"eval_duration\":3736486750}"
+    headers:
+      Content-Length:
+      - "1440"
+      Content-Type:
+      - application/json; charset=utf-8
+    status: 200 OK
+    code: 200
+    duration: 6.534s

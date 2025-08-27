@@ -1,31 +1,30 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 219
-        host: localhost
-        body: |
-            {"model":"gemma3:4b","messages":[{"role":"user","content":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"role":"user","content":"What is the capital of Quackiland?"}],"stream":true}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: http://localhost/api/chat
-        method: POST
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding:
-            - chunked
-        content_length: -1
-        body: "{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-14T18:31:29.549701168Z\",\"message\":{\"role\":\"assistant\",\"content\":\"The\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-14T18:31:29.603136698Z\",\"message\":{\"role\":\"assistant\",\"content\":\" capital\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-14T18:31:29.65631702Z\",\"message\":{\"role\":\"assistant\",\"content\":\" of\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-14T18:31:29.711553252Z\",\"message\":{\"role\":\"assistant\",\"content\":\" Qu\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-14T18:31:29.763556965Z\",\"message\":{\"role\":\"assistant\",\"content\":\"ack\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-14T18:31:29.814645738Z\",\"message\":{\"role\":\"assistant\",\"content\":\"iland\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-14T18:31:29.867433386Z\",\"message\":{\"role\":\"assistant\",\"content\":\" is\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-14T18:31:29.920634997Z\",\"message\":{\"role\":\"assistant\",\"content\":\" Qu\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-14T18:31:29.971586372Z\",\"message\":{\"role\":\"assistant\",\"content\":\"ack\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-14T18:31:30.023950625Z\",\"message\":{\"role\":\"assistant\",\"content\":\".\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-14T18:31:30.081992941Z\",\"message\":{\"role\":\"assistant\",\"content\":\" \"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-14T18:31:30.136281732Z\",\"message\":{\"role\":\"assistant\",\"content\":\"\\n\\n\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-14T18:31:30.187122198Z\",\"message\":{\"role\":\"assistant\",\"content\":\"The\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-14T18:31:30.241459939Z\",\"message\":{\"role\":\"assistant\",\"content\":\" question\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-14T18:31:30.292497911Z\",\"message\":{\"role\":\"assistant\",\"content\":\" is\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-14T18:31:30.347370904Z\",\"message\":{\"role\":\"assistant\",\"content\":\" a\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-14T18:31:30.400960517Z\",\"message\":{\"role\":\"assistant\",\"content\":\" bit\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-14T18:31:30.452410966Z\",\"message\":{\"role\":\"assistant\",\"content\":\" of\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-14T18:31:30.505395403Z\",\"message\":{\"role\":\"assistant\",\"content\":\" a\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-14T18:31:30.557620449Z\",\"message\":{\"role\":\"assistant\",\"content\":\" trick\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-14T18:31:30.60864472Z\",\"message\":{\"role\":\"assistant\",\"content\":\"!\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-14T18:31:30.662565411Z\",\"message\":{\"role\":\"assistant\",\"content\":\" \U0001F60A\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-14T18:31:30.712604138Z\",\"message\":{\"role\":\"assistant\",\"content\":\"\\n\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-14T18:31:30.762079595Z\",\"message\":{\"role\":\"assistant\",\"content\":\"\"},\"done_reason\":\"stop\",\"done\":true,\"total_duration\":2565050285,\"load_duration\":918753616,\"prompt_eval_count\":40,\"prompt_eval_duration\":415517195,\"eval_count\":24,\"eval_duration\":1212937208}\n"
-        headers:
-            Content-Type:
-                - application/x-ndjson
-        status: 200 OK
-        code: 200
-        duration: 1.353s
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 219
+    host: localhost
+    body: "{\"model\":\"gemma3:4b\",\"messages\":[{\"role\":\"user\",\"content\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"role\":\"user\",\"content\":\"What is the capital of Quackiland?\"}],\"stream\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: http://localhost/api/chat
+    method: POST
+  response:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    transfer_encoding:
+    - chunked
+    content_length: -1
+    body: "{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-27T00:01:27.184031Z\",\"message\":{\"role\":\"assistant\",\"content\":\"The\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-27T00:01:27.197639Z\",\"message\":{\"role\":\"assistant\",\"content\":\" capital\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-27T00:01:27.21112Z\",\"message\":{\"role\":\"assistant\",\"content\":\" of\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-27T00:01:27.22454Z\",\"message\":{\"role\":\"assistant\",\"content\":\" Qu\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-27T00:01:27.238188Z\",\"message\":{\"role\":\"assistant\",\"content\":\"ack\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-27T00:01:27.253235Z\",\"message\":{\"role\":\"assistant\",\"content\":\"iland\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-27T00:01:27.266818Z\",\"message\":{\"role\":\"assistant\",\"content\":\" is\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-27T00:01:27.280314Z\",\"message\":{\"role\":\"assistant\",\"content\":\" Qu\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-27T00:01:27.294827Z\",\"message\":{\"role\":\"assistant\",\"content\":\"ack\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-27T00:01:27.309362Z\",\"message\":{\"role\":\"assistant\",\"content\":\".\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-27T00:01:27.323841Z\",\"message\":{\"role\":\"assistant\",\"content\":\" \"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-27T00:01:27.338404Z\",\"message\":{\"role\":\"assistant\",\"content\":\"\\n\\n\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-27T00:01:27.353018Z\",\"message\":{\"role\":\"assistant\",\"content\":\"The\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-27T00:01:27.367833Z\",\"message\":{\"role\":\"assistant\",\"content\":\" question\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-27T00:01:27.382602Z\",\"message\":{\"role\":\"assistant\",\"content\":\" is\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-27T00:01:27.397489Z\",\"message\":{\"role\":\"assistant\",\"content\":\" a\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-27T00:01:27.412632Z\",\"message\":{\"role\":\"assistant\",\"content\":\" bit\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-27T00:01:27.428512Z\",\"message\":{\"role\":\"assistant\",\"content\":\" of\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-27T00:01:27.442562Z\",\"message\":{\"role\":\"assistant\",\"content\":\" a\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-27T00:01:27.457184Z\",\"message\":{\"role\":\"assistant\",\"content\":\" trick\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-27T00:01:27.471587Z\",\"message\":{\"role\":\"assistant\",\"content\":\"!\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-27T00:01:27.485991Z\",\"message\":{\"role\":\"assistant\",\"content\":\" 😊\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-27T00:01:27.500513Z\",\"message\":{\"role\":\"assistant\",\"content\":\"\\n\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-27T00:01:27.514904Z\",\"message\":{\"role\":\"assistant\",\"content\":\"\"},\"done_reason\":\"stop\",\"done\":true,\"total_duration\":612993042,\"load_duration\":83984667,\"prompt_eval_count\":40,\"prompt_eval_duration\":76766208,\"eval_count\":24,\"eval_duration\":331196417}\n"
+    headers:
+      Content-Type:
+      - application/x-ndjson
+    status: 200 OK
+    code: 200
+    duration: 282ms

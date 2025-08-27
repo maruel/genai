@@ -1,31 +1,30 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 221
-        host: localhost
-        body: |
-            {"model":"gemma3:4b","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"stream":false,"format":"json"}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: http://localhost/api/chat
-        method: POST
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 318
-        body: '{"model":"gemma3:4b","created_at":"2025-08-03T08:46:26.268869598Z","message":{"role":"assistant","content":"{\"is_fruit\": true}"},"done_reason":"stop","done":true,"total_duration":10469384016,"load_duration":8262690308,"prompt_eval_count":38,"prompt_eval_duration":1556366047,"eval_count":8,"eval_duration":522596182}'
-        headers:
-            Content-Length:
-                - "318"
-            Content-Type:
-                - application/json; charset=utf-8
-        status: 200 OK
-        code: 200
-        duration: 10.47s
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 221
+    host: localhost
+    body: "{\"model\":\"gemma3:4b\",\"messages\":[{\"role\":\"user\",\"content\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\\\"is_fruit\\\": bool}.\"}],\"stream\":false,\"format\":\"json\"}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: http://localhost/api/chat
+    method: POST
+  response:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 309
+    body: "{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-27T00:01:26.497244Z\",\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"is_fruit\\\": true}\"},\"done_reason\":\"stop\",\"done\":true,\"total_duration\":637227625,\"load_duration\":94087625,\"prompt_eval_count\":38,\"prompt_eval_duration\":18354125,\"eval_count\":8,\"eval_duration\":165520250}"
+    headers:
+      Content-Length:
+      - "309"
+      Content-Type:
+      - application/json; charset=utf-8
+    status: 200 OK
+    code: 200
+    duration: 637ms

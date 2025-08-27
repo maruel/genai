@@ -1,31 +1,30 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 259
-        host: localhost
-        body: |
-            {"model":"qwen3:4b","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."},{"role":"user","content":"\n\n/think"}],"stream":false,"format":"json"}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: http://localhost/api/chat
-        method: POST
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 319
-        body: '{"model":"qwen3:4b","created_at":"2025-08-14T18:22:30.322449127Z","message":{"role":"assistant","content":"{\n  \"is_fruit\": true\n}"},"done_reason":"stop","done":true,"total_duration":1896512664,"load_duration":21107281,"prompt_eval_count":40,"prompt_eval_duration":67767377,"eval_count":11,"eval_duration":585642856}'
-        headers:
-            Content-Length:
-                - "319"
-            Content-Type:
-                - application/json; charset=utf-8
-        status: 200 OK
-        code: 200
-        duration: 1.897s
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 259
+    host: localhost
+    body: "{\"model\":\"qwen3:4b\",\"messages\":[{\"role\":\"user\",\"content\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\\\"is_fruit\\\": bool}.\"},{\"role\":\"user\",\"content\":\"\\n\\n/think\"}],\"stream\":false,\"format\":\"json\"}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: http://localhost/api/chat
+    method: POST
+  response:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 315
+    body: "{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:33.135278Z\",\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"is_fruit\\\": true\\n}\"},\"done_reason\":\"stop\",\"done\":true,\"total_duration\":397540459,\"load_duration\":33936459,\"prompt_eval_count\":40,\"prompt_eval_duration\":13197208,\"eval_count\":11,\"eval_duration\":150702500}"
+    headers:
+      Content-Length:
+      - "315"
+      Content-Type:
+      - application/json; charset=utf-8
+    status: 200 OK
+    code: 200
+    duration: 398ms

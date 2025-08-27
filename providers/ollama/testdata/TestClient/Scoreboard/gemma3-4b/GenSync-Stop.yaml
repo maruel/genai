@@ -1,31 +1,30 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 162
-        host: localhost
-        body: |
-            {"model":"gemma3:4b","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"stream":false,"options":{"stop":["is"]}}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: http://localhost/api/chat
-        method: POST
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 303
-        body: '{"model":"gemma3:4b","created_at":"2025-08-03T08:34:36.748539258Z","message":{"role":"assistant","content":"Canada "},"done_reason":"stop","done":true,"total_duration":3623756722,"load_duration":211483863,"prompt_eval_count":21,"prompt_eval_duration":1237491844,"eval_count":2,"eval_duration":211987124}'
-        headers:
-            Content-Length:
-                - "303"
-            Content-Type:
-                - application/json; charset=utf-8
-        status: 200 OK
-        code: 200
-        duration: 3.624s
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 162
+    host: localhost
+    body: "{\"model\":\"gemma3:4b\",\"messages\":[{\"role\":\"user\",\"content\":\"Talk about Canada in great details. Start with: Canada is\"}],\"stream\":false,\"options\":{\"stop\":[\"is\"]}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: http://localhost/api/chat
+    method: POST
+  response:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 337
+    body: "{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-27T00:01:25.859624Z\",\"message\":{\"role\":\"assistant\",\"content\":\"Okay, let's dive deep into Canada!\\n\\n**Canada \"},\"done_reason\":\"stop\",\"done\":true,\"total_duration\":746775584,\"load_duration\":89345000,\"prompt_eval_count\":21,\"prompt_eval_duration\":13205917,\"eval_count\":14,\"eval_duration\":183655666}"
+    headers:
+      Content-Length:
+      - "337"
+      Content-Type:
+      - application/json; charset=utf-8
+    status: 200 OK
+    code: 200
+    duration: 747ms

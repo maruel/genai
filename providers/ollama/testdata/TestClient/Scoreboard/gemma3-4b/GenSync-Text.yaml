@@ -1,31 +1,30 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 108
-        host: localhost
-        body: |
-            {"model":"gemma3:4b","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":false}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: http://localhost/api/chat
-        method: POST
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 305
-        body: '{"model":"gemma3:4b","created_at":"2025-08-03T08:34:20.707124244Z","message":{"role":"assistant","content":"Hello."},"done_reason":"stop","done":true,"total_duration":19561100879,"load_duration":16121588699,"prompt_eval_count":17,"prompt_eval_duration":3275314531,"eval_count":3,"eval_duration":150173047}'
-        headers:
-            Content-Length:
-                - "305"
-            Content-Type:
-                - application/json; charset=utf-8
-        status: 200 OK
-        code: 200
-        duration: 19.563s
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 108
+    host: localhost
+    body: "{\"model\":\"gemma3:4b\",\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"}],\"stream\":false}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: http://localhost/api/chat
+    method: POST
+  response:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 297
+    body: "{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-27T00:01:24.256102Z\",\"message\":{\"role\":\"assistant\",\"content\":\"Hello.\"},\"done_reason\":\"stop\",\"done\":true,\"total_duration\":1358696958,\"load_duration\":1125085042,\"prompt_eval_count\":17,\"prompt_eval_duration\":14212500,\"eval_count\":3,\"eval_duration\":27463417}"
+    headers:
+      Content-Length:
+      - "297"
+      Content-Type:
+      - application/json; charset=utf-8
+    status: 200 OK
+    code: 200
+    duration: 1.359s

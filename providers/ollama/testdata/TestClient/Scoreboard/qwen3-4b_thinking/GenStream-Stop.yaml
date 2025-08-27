@@ -1,53 +1,30 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 199
-        host: localhost
-        body: |
-            {"model":"qwen3:4b","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"},{"role":"user","content":"\n\n/think"}],"stream":true,"options":{"stop":["is"]}}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: http://localhost/api/chat
-        method: POST
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding:
-            - chunked
-        content_length: -1
-        body: |
-            {"model":"qwen3:4b","created_at":"2025-08-14T18:22:26.050816548Z","message":{"role":"assistant","content":"\u003cthink\u003e"},"done":false}
-            {"model":"qwen3:4b","created_at":"2025-08-14T18:22:26.145827535Z","message":{"role":"assistant","content":"\n"},"done":false}
-            {"model":"qwen3:4b","created_at":"2025-08-14T18:22:26.209293252Z","message":{"role":"assistant","content":"Okay"},"done":false}
-            {"model":"qwen3:4b","created_at":"2025-08-14T18:22:26.261783924Z","message":{"role":"assistant","content":","},"done":false}
-            {"model":"qwen3:4b","created_at":"2025-08-14T18:22:26.319045678Z","message":{"role":"assistant","content":" the"},"done":false}
-            {"model":"qwen3:4b","created_at":"2025-08-14T18:22:26.376173165Z","message":{"role":"assistant","content":" user"},"done":false}
-            {"model":"qwen3:4b","created_at":"2025-08-14T18:22:26.433121296Z","message":{"role":"assistant","content":" wants"},"done":false}
-            {"model":"qwen3:4b","created_at":"2025-08-14T18:22:26.48879426Z","message":{"role":"assistant","content":" me"},"done":false}
-            {"model":"qwen3:4b","created_at":"2025-08-14T18:22:26.545923503Z","message":{"role":"assistant","content":" to"},"done":false}
-            {"model":"qwen3:4b","created_at":"2025-08-14T18:22:26.604396761Z","message":{"role":"assistant","content":" talk"},"done":false}
-            {"model":"qwen3:4b","created_at":"2025-08-14T18:22:26.657421281Z","message":{"role":"assistant","content":" about"},"done":false}
-            {"model":"qwen3:4b","created_at":"2025-08-14T18:22:26.709960834Z","message":{"role":"assistant","content":" Canada"},"done":false}
-            {"model":"qwen3:4b","created_at":"2025-08-14T18:22:26.768792345Z","message":{"role":"assistant","content":" in"},"done":false}
-            {"model":"qwen3:4b","created_at":"2025-08-14T18:22:26.823351188Z","message":{"role":"assistant","content":" great"},"done":false}
-            {"model":"qwen3:4b","created_at":"2025-08-14T18:22:26.876045647Z","message":{"role":"assistant","content":" detail"},"done":false}
-            {"model":"qwen3:4b","created_at":"2025-08-14T18:22:26.934059109Z","message":{"role":"assistant","content":","},"done":false}
-            {"model":"qwen3:4b","created_at":"2025-08-14T18:22:26.990619062Z","message":{"role":"assistant","content":" starting"},"done":false}
-            {"model":"qwen3:4b","created_at":"2025-08-14T18:22:27.054026132Z","message":{"role":"assistant","content":" with"},"done":false}
-            {"model":"qwen3:4b","created_at":"2025-08-14T18:22:27.113163309Z","message":{"role":"assistant","content":" \""},"done":false}
-            {"model":"qwen3:4b","created_at":"2025-08-14T18:22:27.166679787Z","message":{"role":"assistant","content":"Canada"},"done":false}
-            {"model":"qwen3:4b","created_at":"2025-08-14T18:22:27.22834747Z","message":{"role":"assistant","content":" "},"done":false}
-            {"model":"qwen3:4b","created_at":"2025-08-14T18:22:27.22835137Z","message":{"role":"assistant","content":""},"done_reason":"stop","done":true,"total_duration":2478718518,"load_duration":28740932,"prompt_eval_count":23,"prompt_eval_duration":345136649,"eval_count":21,"eval_duration":1178640409}
-        headers:
-            Content-Type:
-                - application/x-ndjson
-        status: 200 OK
-        code: 200
-        duration: 1.301s
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 199
+    host: localhost
+    body: "{\"model\":\"qwen3:4b\",\"messages\":[{\"role\":\"user\",\"content\":\"Talk about Canada in great details. Start with: Canada is\"},{\"role\":\"user\",\"content\":\"\\n\\n/think\"}],\"stream\":true,\"options\":{\"stop\":[\"is\"]}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: http://localhost/api/chat
+    method: POST
+  response:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    transfer_encoding:
+    - chunked
+    content_length: -1
+    body: "{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:32.156801Z\",\"message\":{\"role\":\"assistant\",\"content\":\"\\u003cthink\\u003e\"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:32.171393Z\",\"message\":{\"role\":\"assistant\",\"content\":\"\\n\"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:32.185678Z\",\"message\":{\"role\":\"assistant\",\"content\":\"Okay\"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:32.19978Z\",\"message\":{\"role\":\"assistant\",\"content\":\",\"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:32.214007Z\",\"message\":{\"role\":\"assistant\",\"content\":\" the\"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:32.22816Z\",\"message\":{\"role\":\"assistant\",\"content\":\" user\"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:32.242419Z\",\"message\":{\"role\":\"assistant\",\"content\":\" wants\"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:32.256493Z\",\"message\":{\"role\":\"assistant\",\"content\":\" me\"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:32.270812Z\",\"message\":{\"role\":\"assistant\",\"content\":\" to\"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:32.285067Z\",\"message\":{\"role\":\"assistant\",\"content\":\" talk\"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:32.299142Z\",\"message\":{\"role\":\"assistant\",\"content\":\" about\"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:32.313419Z\",\"message\":{\"role\":\"assistant\",\"content\":\" Canada\"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:32.327589Z\",\"message\":{\"role\":\"assistant\",\"content\":\" in\"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:32.341662Z\",\"message\":{\"role\":\"assistant\",\"content\":\" great\"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:32.35592Z\",\"message\":{\"role\":\"assistant\",\"content\":\" detail\"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:32.37016Z\",\"message\":{\"role\":\"assistant\",\"content\":\",\"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:32.384512Z\",\"message\":{\"role\":\"assistant\",\"content\":\" starting\"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:32.398627Z\",\"message\":{\"role\":\"assistant\",\"content\":\" with\"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:32.412904Z\",\"message\":{\"role\":\"assistant\",\"content\":\" \\\"\"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:32.427131Z\",\"message\":{\"role\":\"assistant\",\"content\":\"Canada\"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:32.441231Z\",\"message\":{\"role\":\"assistant\",\"content\":\" \"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:32.441233Z\",\"message\":{\"role\":\"assistant\",\"content\":\"\"},\"done_reason\":\"stop\",\"done\":true,\"total_duration\":567401250,\"load_duration\":36650083,\"prompt_eval_count\":23,\"prompt_eval_duration\":58136417,\"eval_count\":21,\"eval_duration\":284781375}\n"
+    headers:
+      Content-Type:
+      - application/x-ndjson
+    status: 200 OK
+    code: 200
+    duration: 283ms

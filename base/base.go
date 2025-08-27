@@ -505,22 +505,36 @@ func SimulateStream(ctx context.Context, c genai.Provider, msgs genai.Messages, 
 	fnFragments := func(yield func(genai.ReplyFragment) bool) {
 		res, finalErr = c.GenSync(ctx, msgs, opts...)
 		if finalErr == nil {
-			for i := range res.Replies {
-				if !res.Replies[i].Doc.IsZero() {
-					finalErr = fmt.Errorf("expected Reply with Doc, got %#v", res.Replies[i])
-				}
-				if url := res.Replies[i].Doc.URL; url != "" {
-					if !yield(genai.ReplyFragment{
-						Filename: res.Replies[i].Doc.Filename,
-						URL:      res.Replies[i].Doc.URL,
-					}) {
+			for _, r := range res.Replies {
+				// Generally we do not expect any not document fragments but this can happen in the future.
+				if r.Text != "" {
+					if !yield(genai.ReplyFragment{TextFragment: r.Text}) {
 						return
 					}
-				} else {
-					if !yield(genai.ReplyFragment{
-						Filename:         res.Replies[i].Doc.Filename,
-						DocumentFragment: res.Replies[i].Doc.Src.(*bb.BytesBuffer).D,
-					}) {
+				}
+				if !r.Doc.IsZero() {
+					if url := r.Doc.URL; url != "" {
+						if !yield(genai.ReplyFragment{Filename: r.Doc.Filename, URL: r.Doc.URL}) {
+							return
+						}
+					} else {
+						if !yield(genai.ReplyFragment{Filename: r.Doc.Filename, DocumentFragment: r.Doc.Src.(*bb.BytesBuffer).D}) {
+							return
+						}
+					}
+				}
+				for j := range r.Citations {
+					if !yield(genai.ReplyFragment{Citation: r.Citations[j]}) {
+						return
+					}
+				}
+				if r.Thinking != "" {
+					if !yield(genai.ReplyFragment{ThinkingFragment: r.Thinking, Opaque: r.Opaque}) {
+						return
+					}
+				}
+				if !r.ToolCall.IsZero() {
+					if !yield(genai.ReplyFragment{ToolCall: r.ToolCall}) {
 						return
 					}
 				}

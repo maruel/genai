@@ -22,6 +22,10 @@ import (
 
 func main() {
 	ctx := context.Background()
+	// Other options (as of 2025-08):
+	// - "gpt-image-1" from openai
+	// - "imagen-4.0-*" from gemini
+	// - pollinations
 	c, err := togetherai.New(ctx, &genai.ProviderOptions{Model: "black-forest-labs/FLUX.1-schnell-Free"}, nil)
 	if err != nil {
 		log.Fatal(err)

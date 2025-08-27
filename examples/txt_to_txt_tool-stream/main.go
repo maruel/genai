@@ -20,6 +20,8 @@ import (
 
 func main() {
 	ctx := context.Background()
+	// Some explicit chain-of-thoughts model-provider combinations only support GenSync and not GenStream.
+	// Refer to the Scoreboard().
 	c, err := groq.New(ctx, &genai.ProviderOptions{Model: "openai/gpt-oss-120b"}, nil)
 	if err != nil {
 		log.Fatal(err)

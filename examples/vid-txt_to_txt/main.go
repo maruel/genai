@@ -19,11 +19,15 @@ import (
 
 func main() {
 	ctx := context.Background()
+	// Other options (as of 2025-08):
+	// - None!
 	c, err := gemini.New(ctx, &genai.ProviderOptions{Model: genai.ModelCheap}, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
 	// Use a video from the test data suite.
+	// Gemini only allows URL references from files uploaded with its file API. Otherwise we need to send it
+	// inline.
 	resp, err := http.Get("https://github.com/maruel/genai/raw/refs/heads/main/scoreboard/testdata/video.mp4")
 	if err != nil || resp.StatusCode != 200 {
 		log.Fatal(err)

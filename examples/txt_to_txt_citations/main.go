@@ -18,6 +18,8 @@ import (
 
 func main() {
 	ctx := context.Background()
+	// Other options (as of 2025-08):
+	// - anthropic
 	c, err := cohere.New(ctx, &genai.ProviderOptions{}, nil)
 	if err != nil {
 		log.Fatal(err)

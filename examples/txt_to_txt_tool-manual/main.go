@@ -20,6 +20,9 @@ import (
 
 func main() {
 	ctx := context.Background()
+	// While most provider support tool calling in theory, most fail reliability smoke tests.
+	// See ../../docs/MODELS.md for the scoreboard and each provider's Scoreboard().
+	// This is continuously improving.
 	c, err := cerebras.New(ctx, &genai.ProviderOptions{Model: "qwen-3-235b-a22b-instruct-2507"}, nil)
 	if err != nil {
 		log.Fatal(err)

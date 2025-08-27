@@ -19,6 +19,8 @@ import (
 
 func main() {
 	ctx := context.Background()
+	// All providers except image-only-providers (e.g. bfl) support streaming.
+	// Streaming may be emulated in some cases, generally in non-text output modalities.
 	c, err := anthropic.New(ctx, &genai.ProviderOptions{}, nil)
 	if err != nil {
 		log.Fatal(err)

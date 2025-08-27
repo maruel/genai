@@ -20,6 +20,7 @@ import (
 
 func main() {
 	ctx := context.Background()
+	// See ../../docs/MODELS.md to see which providers support this.
 	c, err := openai.New(ctx, &genai.ProviderOptions{}, nil)
 	if err != nil {
 		log.Fatal(err)

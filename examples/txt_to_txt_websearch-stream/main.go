@@ -17,6 +17,11 @@ import (
 
 func main() {
 	ctx := context.Background()
+	// Warning: this is surpringly expensive.
+	// Other options (as of 2025-08):
+	// - anthropic (to be implemented, please send a PR! https://docs.anthropic.com/en/docs/agents-and-tools/tool-use/web-search-tool)
+	// - gemini (to be implemented, please send a PR! https://ai.google.dev/gemini-api/docs/google-search)
+	// - openai (to be implemented, please send a PR! https://platform.openai.com/docs/guides/tools-web-search)
 	c, err := perplexity.New(ctx, &genai.ProviderOptions{Model: genai.ModelCheap}, nil)
 	if err != nil {
 		log.Fatal(err)

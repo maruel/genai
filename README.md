@@ -554,7 +554,7 @@ This is very impressive, but also very expensive.
 
 ### Image-Text to Image 🖌
 
-[examples/img-txt\_to\_img/main.go](examples/img-txt_to_img/main.go): Change an image with a prompt. Leverage
+[examples/img-txt\_to\_img/main.go](examples/img-txt_to_img/main.go): Edit an image with a prompt. Leverage
 the content.jpg file generated in txt\_to\_img example.
 
 This requires [`BFL_API_KEY`](https://dashboard.bfl.ai/keys) environment variable to authenticate.
@@ -669,6 +669,26 @@ go run github.com/maruel/genai/examples/vid-txt_to_txt@latest
 When asked _What is the word_, this generates:
 
 > Banana
+
+
+### Audio-Text to Text 🎤
+
+[examples/aud-txt\_to\_txt/main.go](examples/aud-txt_to_txt/main.go):
+Analyze an audio [file](https://github.com/maruel/genai/raw/refs/heads/main/scoreboard/testdata/audio.mp3).
+
+This requires [`OPENAI_API_KEY`](https://platform.openai.com/settings/organization/api-keys) environment
+variable to authenticate.
+
+
+Try it live:
+
+```bash
+go run github.com/maruel/genai/examples/vid-txt_to_txt@latest
+```
+
+When asked _What was the word?_, this generates:
+
+> The word was "orange."
 
 
 ### Text with any provider ⁉

@@ -16,6 +16,10 @@ import (
 
 func main() {
 	ctx := context.Background()
+	// Options (as of 2025-08) are:
+	// - Gemma-3 and medgemma
+	// - Qwen2.5-VL
+	// - Mistral-Small-3.2 and Pixtral
 	c, err := llamacpp.New(ctx, &genai.ProviderOptions{}, nil)
 	if err != nil {
 		log.Fatal(err)

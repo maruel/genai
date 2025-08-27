@@ -1,4 +1,4 @@
-// Change an image with a prompt. Leverage the content.jpg file generated in
+// Edit an image with a prompt. Leverage the content.jpg file generated in
 // txt_to_img example.
 //
 // This requires `BFL_API_KEY` (https://dashboard.bfl.ai/keys)
@@ -21,6 +21,9 @@ import (
 func main() {
 	ctx := context.Background()
 	// Warning: This is a bit expensive.
+	// Other options (as of 2025-08):
+	// - "gpt-image-1" from openai
+	// - "black-forest-labs/FLUX.1-kontext-dev", "-pro", "-max" from togetherai
 	c, err := bfl.New(ctx, &genai.ProviderOptions{Model: "flux-kontext-pro"}, nil)
 	if err != nil {
 		log.Fatal(err)

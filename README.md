@@ -182,6 +182,25 @@ automatically handle explicit Chain-of-Thoughts models, generally using `<think>
 This requires [`DEEPSEEK_API_KEY`](https://platform.deepseek.com/api_keys) environment variable to
 authenticate.
 
+Snippet:
+
+```go
+	c, _ := deepseek.New(ctx, &genai.ProviderOptions{Model: "deepseek-reasoner"}, nil)
+	msgs := genai.Messages{
+		genai.NewTextMessage("Give me a life advice that sounds good but is a bad idea in practice."),
+	}
+	fragments, finish := c.GenStream(ctx, msgs)
+	for f := range fragments {
+		if f.ThinkingFragment != "" {
+			// ...
+		} else if f.TextFragment != "" {
+			// ...
+		}
+	}
+```
+
+Try it live:
+
 ```bash
 go run github.com/maruel/genai/examples/txt_to_txt_thinking@latest
 ```
@@ -220,6 +239,33 @@ to answer your question.
 
 This requires [`PERPLEXITY_API_KEY`](https://www.perplexity.ai/settings/api) environment variable to
 authenticate.
+
+Snippet:
+
+```go
+	c, _ := perplexity.New(ctx, &genai.ProviderOptions{Model: genai.ModelCheap}, nil)
+	msgs := genai.Messages{{
+		Requests: []genai.Request{
+			{Text: "Who holds ultimate power of Canada? Answer succinctly."},
+		},
+	}}
+	res, _ := c.GenSync(ctx, msgs)
+	for _, r := range res.Replies {
+		for _, ci := range r.Citations {
+			fmt.Printf("Sources:\n")
+			for _, src := range ci.Sources {
+				if src.Type == "web" {
+					fmt.Printf("- %s / %s\n", src.Title, src.URL)
+				} else {
+					fmt.Printf("Image: %s\n", src.URL)
+				}
+			}
+		}
+	}
+	fmt.Printf("\nAnswer: %s\n", res.String())
+```
+
+Try it live:
 
 ```bash
 go run github.com/maruel/genai/examples/txt_to_txt_websearch-sync@latest
@@ -434,7 +480,6 @@ Snippet:
 	result, _ := c.GenSync(ctx, msgs)
 	for _, r := range result.Replies {
 		if r.Doc.IsZero() {
-			fmt.Println(r.Text)
 			continue
 		}
 		// The image can be returned as an URL or inline, depending on the provider.

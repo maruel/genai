@@ -1389,6 +1389,7 @@ func (c *Client) GetMetrics(ctx context.Context, m *Metrics) error {
 			m.RequestedPending = i
 		case "llamacpp:n_decode_total":
 		case "llamacpp:n_busy_slots_per_decode":
+		case "llamacpp:n_past_max":
 		default:
 			if !internal.BeLenient {
 				panic(fmt.Sprintf("unknown metric %q", l))
@@ -1462,14 +1463,16 @@ func processChatStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- g
 	}()
 	pendingCall := ToolCall{}
 	for pkt := range ch {
-		if len(pkt.Choices) != 1 {
-			continue
-		}
-		if pkt.Choices[0].FinishReason != "" {
+		if pkt.Usage.PromptTokens != 0 {
 			result.Usage.InputTokens = pkt.Usage.PromptTokens
 			// result.Usage.InputCachedTokens = pkt.Usage.TokensCached
 			result.Usage.OutputTokens = pkt.Usage.CompletionTokens
 			result.Usage.TotalTokens = pkt.Usage.TotalTokens
+		}
+		if len(pkt.Choices) != 1 {
+			continue
+		}
+		if pkt.Choices[0].FinishReason != "" {
 			result.Usage.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
 		}
 		switch role := pkt.Choices[0].Delta.Role; role {

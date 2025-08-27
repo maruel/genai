@@ -17,13 +17,13 @@ interactions:
     proto: HTTP/1.1
     proto_major: 1
     proto_minor: 1
-    content_length: 940
-    body: "{\"models\":[{\"name\":\"/home/maruel/.cache/huggingface/hub/models--ggml-org--gemma-3-4b-it-GGUF/snapshots/d0976223747697cb51e056d85c532013931fe52e/gemma-3-4b-it-Q4_K_M.gguf\",\"model\":\"/home/maruel/.cache/huggingface/hub/models--ggml-org--gemma-3-4b-it-GGUF/snapshots/d0976223747697cb51e056d85c532013931fe52e/gemma-3-4b-it-Q4_K_M.gguf\",\"modified_at\":\"\",\"size\":\"\",\"digest\":\"\",\"type\":\"model\",\"description\":\"\",\"tags\":[\"\"],\"capabilities\":[\"completion\"],\"parameters\":\"\",\"details\":{\"parent_model\":\"\",\"format\":\"gguf\",\"family\":\"\",\"families\":[\"\"],\"parameter_size\":\"\",\"quantization_level\":\"\"}}],\"object\":\"list\",\"data\":[{\"id\":\"/home/maruel/.cache/huggingface/hub/models--ggml-org--gemma-3-4b-it-GGUF/snapshots/d0976223747697cb51e056d85c532013931fe52e/gemma-3-4b-it-Q4_K_M.gguf\",\"object\":\"model\",\"created\":1755798779,\"owned_by\":\"llamacpp\",\"meta\":{\"vocab_type\":1,\"n_vocab\":262144,\"n_ctx_train\":131072,\"n_embd\":2560,\"n_params\":3880099328,\"size\":2483218432}}]}"
+    content_length: 956
+    body: "{\"models\":[{\"name\":\"/Users/maruel/.cache/huggingface/hub/models--ggml-org--gemma-3-4b-it-GGUF/snapshots/d0976223747697cb51e056d85c532013931fe52e/gemma-3-4b-it-Q4_K_M.gguf\",\"model\":\"/Users/maruel/.cache/huggingface/hub/models--ggml-org--gemma-3-4b-it-GGUF/snapshots/d0976223747697cb51e056d85c532013931fe52e/gemma-3-4b-it-Q4_K_M.gguf\",\"modified_at\":\"\",\"size\":\"\",\"digest\":\"\",\"type\":\"model\",\"description\":\"\",\"tags\":[\"\"],\"capabilities\":[\"completion\",\"multimodal\"],\"parameters\":\"\",\"details\":{\"parent_model\":\"\",\"format\":\"gguf\",\"family\":\"\",\"families\":[\"\"],\"parameter_size\":\"\",\"quantization_level\":\"\"}}],\"object\":\"list\",\"data\":[{\"id\":\"/Users/maruel/.cache/huggingface/hub/models--ggml-org--gemma-3-4b-it-GGUF/snapshots/d0976223747697cb51e056d85c532013931fe52e/gemma-3-4b-it-Q4_K_M.gguf\",\"object\":\"model\",\"created\":1756253423,\"owned_by\":\"llamacpp\",\"meta\":{\"vocab_type\":1,\"n_vocab\":262144,\"n_ctx_train\":131072,\"n_embd\":2560,\"n_params\":3880099328,\"size\":2483218432}}]}"
     headers:
       Access-Control-Allow-Origin:
       - ""
       Content-Length:
-      - "940"
+      - "956"
       Content-Type:
       - application/json; charset=utf-8
       Keep-Alive:
@@ -32,4 +32,4 @@ interactions:
       - llama.cpp
     status: 200 OK
     code: 200
-    duration: 1ms
+    duration: 0s

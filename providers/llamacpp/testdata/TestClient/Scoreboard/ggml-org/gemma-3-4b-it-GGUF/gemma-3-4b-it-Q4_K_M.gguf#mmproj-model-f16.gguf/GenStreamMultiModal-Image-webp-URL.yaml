@@ -1,37 +1,36 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 283
-        host: localhost
-        body: |
-            {"stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.webp"}}]}],"cache_prompt":true}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: http://localhost/chat/completions
-        method: POST
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 100
-        body: '{"error":{"code":400,"message":"Failed to load image or audio file","type":"invalid_request_error"}}'
-        headers:
-            Access-Control-Allow-Origin:
-                - ""
-            Content-Length:
-                - "100"
-            Content-Type:
-                - application/json; charset=utf-8
-            Keep-Alive:
-                - timeout=5, max=100
-            Server:
-                - llama.cpp
-        status: 400 Bad Request
-        code: 400
-        duration: 124ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 283
+    host: localhost
+    body: "{\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What fruit is it? Reply with only one word.\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.webp\"}}]}],\"cache_prompt\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: http://localhost/chat/completions
+    method: POST
+  response:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 100
+    body: "{\"error\":{\"code\":400,\"message\":\"Failed to load image or audio file\",\"type\":\"invalid_request_error\"}}"
+    headers:
+      Access-Control-Allow-Origin:
+      - ""
+      Content-Length:
+      - "100"
+      Content-Type:
+      - application/json; charset=utf-8
+      Keep-Alive:
+      - timeout=5, max=100
+      Server:
+      - llama.cpp
+    status: 400 Bad Request
+    code: 400
+    duration: 34ms

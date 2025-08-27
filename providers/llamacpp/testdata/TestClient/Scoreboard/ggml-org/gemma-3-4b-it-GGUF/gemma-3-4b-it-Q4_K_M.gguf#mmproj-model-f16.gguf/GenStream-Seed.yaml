@@ -1,47 +1,36 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 142
-        host: localhost
-        body: |
-            {"stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}],"seed":42,"cache_prompt":true}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: http://localhost/chat/completions
-        method: POST
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding:
-            - chunked
-        content_length: -1
-        body: |+
-            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"role":"assistant","content":null}}],"created":1754931889,"id":"chatcmpl-wPUziLoJYlyYkcRFNqLOm2f0aim3Tjog","model":"gpt-3.5-turbo","system_fingerprint":"b6134-be48528b","object":"chat.completion.chunk"}
-
-            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"Hello"}}],"created":1754931889,"id":"chatcmpl-wPUziLoJYlyYkcRFNqLOm2f0aim3Tjog","model":"gpt-3.5-turbo","system_fingerprint":"b6134-be48528b","object":"chat.completion.chunk"}
-
-            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"."}}],"created":1754931889,"id":"chatcmpl-wPUziLoJYlyYkcRFNqLOm2f0aim3Tjog","model":"gpt-3.5-turbo","system_fingerprint":"b6134-be48528b","object":"chat.completion.chunk"}
-
-            data: {"choices":[{"finish_reason":"stop","index":0,"delta":{}}],"created":1754931889,"id":"chatcmpl-wPUziLoJYlyYkcRFNqLOm2f0aim3Tjog","model":"gpt-3.5-turbo","system_fingerprint":"b6134-be48528b","object":"chat.completion.chunk","usage":{"completion_tokens":3,"prompt_tokens":18,"total_tokens":21},"timings":{"prompt_n":1,"prompt_ms":50.764,"prompt_per_token_ms":50.764,"prompt_per_second":19.698999290836024,"predicted_n":3,"predicted_ms":101.384,"predicted_per_token_ms":33.794666666666664,"predicted_per_second":29.59046792393277}}
-
-            data: [DONE]
-
-        headers:
-            Access-Control-Allow-Origin:
-                - ""
-            Content-Type:
-                - text/event-stream
-            Keep-Alive:
-                - timeout=5, max=100
-            Server:
-                - llama.cpp
-        status: 200 OK
-        code: 200
-        duration: 3ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 142
+    host: localhost
+    body: "{\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Say hello. Use only one word.\"}]}],\"seed\":42,\"cache_prompt\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: http://localhost/chat/completions
+    method: POST
+  response:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    transfer_encoding:
+    - chunked
+    content_length: -1
+    body: "data: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":null}}],\"created\":1756253423,\"id\":\"chatcmpl-ney8srWrolIxdYPNKt5AmTSkELXw583u\",\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"content\":\"Hello\"}}],\"created\":1756253423,\"id\":\"chatcmpl-ney8srWrolIxdYPNKt5AmTSkELXw583u\",\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"content\":\".\"}}],\"created\":1756253423,\"id\":\"chatcmpl-ney8srWrolIxdYPNKt5AmTSkELXw583u\",\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"delta\":{}}],\"created\":1756253423,\"id\":\"chatcmpl-ney8srWrolIxdYPNKt5AmTSkELXw583u\",\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[],\"created\":1756253423,\"id\":\"chatcmpl-ney8srWrolIxdYPNKt5AmTSkELXw583u\",\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion.chunk\",\"usage\":{\"completion_tokens\":3,\"prompt_tokens\":17,\"total_tokens\":20},\"timings\":{\"prompt_n\":1,\"prompt_ms\":15.871,\"prompt_per_token_ms\":15.871,\"prompt_per_second\":63.008002016256064,\"predicted_n\":3,\"predicted_ms\":30.741,\"predicted_per_token_ms\":10.247,\"predicted_per_second\":97.58953840148337}}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - ""
+      Content-Type:
+      - text/event-stream
+      Keep-Alive:
+      - timeout=5, max=100
+      Server:
+      - llama.cpp
+    status: 200 OK
+    code: 200
+    duration: 2ms

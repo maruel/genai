@@ -1,47 +1,36 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 165
-        host: localhost
-        body: |
-            {"stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}],"logprobs":true,"top_logprobs":2,"cache_prompt":true}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: http://localhost/chat/completions
-        method: POST
-      response:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        transfer_encoding:
-            - chunked
-        content_length: -1
-        body: |+
-            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"role":"assistant","content":null}}],"created":1754931889,"id":"chatcmpl-poX70ZBVxuIRLkf9U9wv6yv1p7FwRLN6","model":"gpt-3.5-turbo","system_fingerprint":"b6134-be48528b","object":"chat.completion.chunk"}
-
-            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"Hello"},"logprobs":{"content":[{"id":9259,"token":"Hello","bytes":[72,101,108,108,111],"logprob":-0.00014127299073152244,"top_logprobs":[{"id":9259,"token":"Hello","bytes":[72,101,108,108,111],"logprob":-0.00014127299073152244},{"id":10979,"token":"Hi","bytes":[72,105],"logprob":-8.869922637939453}]}]}}],"created":1754931889,"id":"chatcmpl-poX70ZBVxuIRLkf9U9wv6yv1p7FwRLN6","model":"gpt-3.5-turbo","system_fingerprint":"b6134-be48528b","object":"chat.completion.chunk"}
-
-            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"."},"logprobs":{"content":[{"id":236761,"token":".","bytes":[46],"logprob":-0.00861686933785677,"top_logprobs":[{"id":236761,"token":".","bytes":[46],"logprob":-0.00861686933785677},{"id":236888,"token":"!","bytes":[33],"logprob":-4.758430004119873}]}]}}],"created":1754931889,"id":"chatcmpl-poX70ZBVxuIRLkf9U9wv6yv1p7FwRLN6","model":"gpt-3.5-turbo","system_fingerprint":"b6134-be48528b","object":"chat.completion.chunk"}
-
-            data: {"choices":[{"finish_reason":"stop","index":0,"delta":{}}],"created":1754931889,"id":"chatcmpl-poX70ZBVxuIRLkf9U9wv6yv1p7FwRLN6","model":"gpt-3.5-turbo","system_fingerprint":"b6134-be48528b","object":"chat.completion.chunk","usage":{"completion_tokens":3,"prompt_tokens":18,"total_tokens":21},"timings":{"prompt_n":1,"prompt_ms":50.521,"prompt_per_token_ms":50.521,"prompt_per_second":19.793749134023475,"predicted_n":3,"predicted_ms":143.007,"predicted_per_token_ms":47.669000000000004,"predicted_per_second":20.97799408420567}}
-
-            data: [DONE]
-
-        headers:
-            Access-Control-Allow-Origin:
-                - ""
-            Content-Type:
-                - text/event-stream
-            Keep-Alive:
-                - timeout=5, max=100
-            Server:
-                - llama.cpp
-        status: 200 OK
-        code: 200
-        duration: 1ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 165
+    host: localhost
+    body: "{\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Say hello. Use only one word.\"}]}],\"logprobs\":true,\"top_logprobs\":2,\"cache_prompt\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: http://localhost/chat/completions
+    method: POST
+  response:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    transfer_encoding:
+    - chunked
+    content_length: -1
+    body: "data: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":null}}],\"created\":1756253423,\"id\":\"chatcmpl-1BZcXMVlviXM1CouqaC6YjxQRFj88A6O\",\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"content\":\"Hello\"},\"logprobs\":{\"content\":[{\"id\":9259,\"token\":\"Hello\",\"bytes\":[72,101,108,108,111],\"logprob\":-8.643046749057248e-05,\"top_logprobs\":[{\"id\":9259,\"token\":\"Hello\",\"bytes\":[72,101,108,108,111],\"logprob\":-8.643046749057248e-05},{\"id\":10979,\"token\":\"Hi\",\"bytes\":[72,105],\"logprob\":-9.356837272644043}]}]}}],\"created\":1756253423,\"id\":\"chatcmpl-1BZcXMVlviXM1CouqaC6YjxQRFj88A6O\",\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"content\":\".\"},\"logprobs\":{\"content\":[{\"id\":236761,\"token\":\".\",\"bytes\":[46],\"logprob\":-0.0037564767990261316,\"top_logprobs\":[{\"id\":236761,\"token\":\".\",\"bytes\":[46],\"logprob\":-0.0037564767990261316},{\"id\":236888,\"token\":\"!\",\"bytes\":[33],\"logprob\":-5.586184501647949}]}]}}],\"created\":1756253423,\"id\":\"chatcmpl-1BZcXMVlviXM1CouqaC6YjxQRFj88A6O\",\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"delta\":{}}],\"created\":1756253423,\"id\":\"chatcmpl-1BZcXMVlviXM1CouqaC6YjxQRFj88A6O\",\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[],\"created\":1756253423,\"id\":\"chatcmpl-1BZcXMVlviXM1CouqaC6YjxQRFj88A6O\",\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion.chunk\",\"usage\":{\"completion_tokens\":3,\"prompt_tokens\":17,\"total_tokens\":20},\"timings\":{\"prompt_n\":1,\"prompt_ms\":15.386,\"prompt_per_token_ms\":15.386,\"prompt_per_second\":64.99415052645263,\"predicted_n\":3,\"predicted_ms\":71.362,\"predicted_per_token_ms\":23.787333333333333,\"predicted_per_second\":42.03918051624114}}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - ""
+      Content-Type:
+      - text/event-stream
+      Keep-Alive:
+      - timeout=5, max=100
+      Server:
+      - llama.cpp
+    status: 200 OK
+    code: 200
+    duration: 3ms

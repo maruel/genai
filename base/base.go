@@ -394,6 +394,11 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 			return err
 		})
 		for f := range fragments {
+			if err := f.Validate(); err != nil {
+				// Catch provider implementation bugs.
+				finalErr = err
+				break
+			}
 			if !yield(f) {
 				break
 			}

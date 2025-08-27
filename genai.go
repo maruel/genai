@@ -865,13 +865,78 @@ type ReplyFragment struct {
 	_ struct{}
 }
 
-func (m *ReplyFragment) IsZero() bool {
-	return m.TextFragment == "" && m.ThinkingFragment == "" && len(m.Opaque) == 0 && m.Filename == "" && len(m.DocumentFragment) == 0 && m.URL == "" && m.ToolCall.IsZero() && m.Citation.IsZero()
+func (r *ReplyFragment) IsZero() bool {
+	return r.TextFragment == "" && r.ThinkingFragment == "" && len(r.Opaque) == 0 && r.Filename == "" && len(r.DocumentFragment) == 0 && r.URL == "" && r.ToolCall.IsZero() && r.Citation.IsZero()
 }
 
-func (m *ReplyFragment) GoString() string {
-	b, _ := json.Marshal(m)
+func (r *ReplyFragment) GoString() string {
+	b, _ := json.Marshal(r)
 	return string(b)
+}
+
+// Validate ensures the fragment contains only one of the fields.
+func (r *ReplyFragment) Validate() error {
+	if r.TextFragment != "" {
+		if r.ThinkingFragment != "" {
+			return errors.New("field ThinkingFragment can't be used along TextFragment")
+		}
+		if len(r.Opaque) != 0 {
+			return errors.New("field Opaque can't be used along TextFragment")
+		}
+		if r.Filename != "" {
+			return errors.New("field Filename can't be used along TextFragment")
+		}
+		if len(r.DocumentFragment) != 0 {
+			return errors.New("field DocumentFragment can't be used along TextFragment")
+		}
+		if r.URL != "" {
+			return errors.New("field URL can't be used along TextFragment")
+		}
+		if !r.ToolCall.IsZero() {
+			return errors.New("field ToolCall can't be used along TextFragment")
+		}
+		if !r.Citation.IsZero() {
+			return errors.New("field Citation can't be used along TextFragment")
+		}
+		return nil
+	}
+	if r.ThinkingFragment != "" || len(r.Opaque) != 0 {
+		if r.Filename != "" {
+			return errors.New("field Filename can't be used along ThinkingFragment")
+		}
+		if len(r.DocumentFragment) != 0 {
+			return errors.New("field DocumentFragment can't be used along ThinkingFragment")
+		}
+		if r.URL != "" {
+			return errors.New("field URL can't be used along ThinkingFragment")
+		}
+		if !r.ToolCall.IsZero() {
+			return errors.New("field ToolCall can't be used along ThinkingFragment")
+		}
+		if !r.Citation.IsZero() {
+			return errors.New("field Citation can't be used along ThinkingFragment")
+		}
+		return nil
+	}
+	if r.Filename != "" || len(r.DocumentFragment) != 0 || r.URL != "" {
+		if !r.ToolCall.IsZero() {
+			return errors.New("field ToolCall can't be used along ThinkingFragment")
+		}
+		if !r.Citation.IsZero() {
+			return errors.New("field Citation can't be used along ThinkingFragment")
+		}
+		return nil
+	}
+	if !r.ToolCall.IsZero() {
+		if !r.Citation.IsZero() {
+			return errors.New("field Citation can't be used along ThinkingFragment")
+		}
+		return nil
+	}
+	if !r.Citation.IsZero() {
+		return nil
+	}
+	return errors.New("exactly one of TextFragment, ThinkingFragment, Filename, DocumentFragment, URL, ToolCall, Citation must be set")
 }
 
 // ToolCall is a tool call that the LLM requested to make.

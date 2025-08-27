@@ -108,6 +108,10 @@ func GenStreamWithToolCallLoop(ctx context.Context, p genai.Provider, msgs genai
 			fragments, finish := p.GenStream(ctx, workMsgs, opts...)
 			send := true
 			for f := range fragments {
+				if err := f.Validate(); err != nil {
+					finalErr = err
+					send = false
+				}
 				if send && !yield(f) {
 					send = false
 				}

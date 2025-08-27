@@ -722,11 +722,16 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 			return err
 		})
 		for f := range fragments {
+			if err := f.Validate(); err != nil {
+				// Catch provider implementation bugs.
+				finalErr = err
+				break
+			}
 			if !yield(f) {
 				break
 			}
 		}
-		// Make sure the channel is emptied.
+		// Make sure the channel is emptied. (This is a channel, not an iter.Seq).
 		for range fragments {
 		}
 		if err2 := eg.Wait(); err2 != nil {

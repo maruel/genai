@@ -26,11 +26,11 @@ func main() {
 			{Text: "Who holds ultimate power of Canada? Answer succinctly."},
 		},
 	}}
-	result, err := c.GenSync(ctx, msgs)
+	res, err := c.GenSync(ctx, msgs)
 	if err != nil {
 		log.Fatal(err)
 	}
-	for _, r := range result.Replies {
+	for _, r := range res.Replies {
 		for _, ci := range r.Citations {
 			fmt.Printf("Sources:\n")
 			for _, src := range ci.Sources {
@@ -42,5 +42,5 @@ func main() {
 			}
 		}
 	}
-	fmt.Printf("\nAnswer: %s\n", result.String())
+	fmt.Printf("\nAnswer: %s\n", res.String())
 }

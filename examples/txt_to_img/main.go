@@ -29,11 +29,11 @@ func main() {
 	msgs := genai.Messages{
 		genai.NewTextMessage("Carton drawing of a husky playing on the beach."),
 	}
-	result, err := c.GenSync(ctx, msgs)
+	res, err := c.GenSync(ctx, msgs)
 	if err != nil {
 		log.Fatal(err)
 	}
-	for _, r := range result.Replies {
+	for _, r := range res.Replies {
 		if r.Doc.IsZero() {
 			fmt.Println(r.Text)
 			continue

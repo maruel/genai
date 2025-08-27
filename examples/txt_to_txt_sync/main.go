@@ -24,9 +24,9 @@ func main() {
 	msgs := genai.Messages{
 		genai.NewTextMessage("Give me a life advice that sounds good but is a bad idea in practice. Answer succinctly."),
 	}
-	result, err := c.GenSync(ctx, msgs)
+	res, err := c.GenSync(ctx, msgs)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(result.String())
+	fmt.Println(res.String())
 }

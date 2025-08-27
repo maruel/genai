@@ -23,7 +23,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	type math struct {
+	type numbers struct {
 		A int `json:"a"`
 		B int `json:"b"`
 	}
@@ -35,7 +35,7 @@ func main() {
 			{
 				Name:        "add",
 				Description: "Add two numbers together and provides the result",
-				Callback: func(ctx context.Context, input *math) (string, error) {
+				Callback: func(ctx context.Context, input *numbers) (string, error) {
 					return fmt.Sprintf("%d", input.A+input.B), nil
 				},
 			},
@@ -45,10 +45,10 @@ func main() {
 	}
 
 	// Run the loop.
-	resp, _, err := adapters.GenSyncWithToolCallLoop(ctx, c, msgs, &opts)
+	res, _, err := adapters.GenSyncWithToolCallLoop(ctx, c, msgs, &opts)
 	if err != nil {
 		log.Fatal(err)
 	}
 	// Print the answer which is the last message generated.
-	fmt.Println(resp[len(resp)-1].String())
+	fmt.Println(res[len(res)-1].String())
 }

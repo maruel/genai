@@ -268,6 +268,38 @@ design enables dense strongly typed code that favorably compares to python.
 
 This requires [`CEREBRAS_API_KEY`](https://cloud.cerebras.ai/platform/) environment variable to authenticate.
 
+Snippet:
+
+```go
+	type numbers struct {
+		A int `json:"a"`
+		B int `json:"b"`
+	}
+	msgs := genai.Messages{
+		genai.NewTextMessage("What is 3214 + 5632? Call the tool \"add\" to tell me the answer. Do not explain. Be terse. Include only the answer."),
+	}
+	opts := genai.OptionsText{
+		Tools: []genai.ToolDef{
+			{
+				Name:        "add",
+				Description: "Add two numbers together and provides the result",
+				Callback: func(ctx context.Context, input *numbers) (string, error) {
+					return fmt.Sprintf("%d", input.A+input.B), nil
+				},
+			},
+		},
+		// Force the LLM to do a tool call.
+		ToolCallRequest: genai.ToolCallRequired,
+	}
+
+	// Run the loop.
+	res, _, _ := adapters.GenSyncWithToolCallLoop(ctx, c, msgs, &opts)
+	// Print the answer which is the last message generated.
+	fmt.Println(res[len(res)-1].String())
+```
+
+Try it live:
+
 ```bash
 go run github.com/maruel/genai/examples/txt_to_txt_tool-sync@latest
 ```
@@ -285,6 +317,22 @@ keeping the user updated to see the progress.
 
 This requires [`GROQ_API_KEY`](https://console.groq.com/keys) environment variable to authenticate.
 
+Snippet:
+
+```go
+	fragments, finish := adapters.GenStreamWithToolCallLoop(ctx, p, msgs, &opts)
+	for f := range fragments {
+		if f.ThinkingFragment != "" {
+			// ...
+		} else if f.TextFragment != "" {
+			// ...
+		} else if !f.ToolCall.IsZero() {
+			// ...
+		}
+	}
+```
+
+Try it live:
 
 ```bash
 go run github.com/maruel/genai/examples/txt_to_txt_tool-stream@latest
@@ -334,6 +382,23 @@ It is very useful when we want the LLM to make a choice between values, to retur
 This requires [`OPENAI_API_KEY`](https://platform.openai.com/settings/organization/api-keys) environment
 variable to authenticate.
 
+Snippet:
+
+```go
+	msgs := genai.Messages{
+		genai.NewTextMessage("Is a circle round? Reply as JSON."),
+	}
+	var circle struct {
+		Round bool `json:"round"`
+	}
+	opts := genai.OptionsText{DecodeAs: &circle}
+	res, _ := c.GenSync(ctx, msgs, &opts)
+	res.Decode(&circle)
+	fmt.Printf("Round: %v\n", circle.Round)
+```
+
+Try it live:
+
 ```bash
 go run github.com/maruel/genai/examples/txt_to_txt_decode-json@latest
 ```
@@ -360,6 +425,34 @@ inline. This example handles both cases.
 This requires [`TOGETHER_API_KEY`](https://api.together.ai/settings/api-keys) environment variable to
 authenticate.
 
+Snippet:
+
+```go
+	msgs := genai.Messages{
+		genai.NewTextMessage("Carton drawing of a husky playing on the beach."),
+	}
+	result, _ := c.GenSync(ctx, msgs)
+	for _, r := range result.Replies {
+		if r.Doc.IsZero() {
+			fmt.Println(r.Text)
+			continue
+		}
+		// The image can be returned as an URL or inline, depending on the provider.
+		var src io.Reader
+		if r.Doc.URL != "" {
+			req, _ := c.HTTPClient().Get(r.Doc.URL)
+			src = req.Body
+			defer req.Body.Close()
+		} else {
+			src = r.Doc.Src
+		}
+		b, _ := io.ReadAll(src)
+		os.WriteFile(r.Doc.GetFilename(), b, 0o644)
+	}
+```
+
+Try it live:
+
 ```bash
 go run github.com/maruel/genai/examples/txt_to_img@latest
 ```
@@ -378,6 +471,25 @@ comes from the data harvested that was created by real humans.
 txt\_to\_img example to ask Veo 3 from Google to generate a video based on the image.
 
 This requires [`GEMINI_API_KEY`](https://aistudio.google.com/apikey) environment variable to authenticate.
+
+Snippet:
+
+```go
+	// Warning: this is expensive.
+	c, _ := gemini.New(ctx, &genai.ProviderOptions{Model: "veo-3.0-fast-generate-preview"}, nil)
+	f, _ := os.Open("content.jpg")
+	defer f.Close()
+	msgs := genai.Messages{
+		genai.Message{Requests: []genai.Request{
+			{Text: "Carton drawing of a husky playing on the beach."},
+			{Doc: genai.Doc{Src: f}},
+		}},
+	}
+	res, _ := c.GenSync(ctx, msgs)
+	// Save the file in Replies like in the previous example ...
+```
+
+Try it live:
 
 ```bash
 go run github.com/maruel/genai/examples/img-txt_to_vid@latest
@@ -418,6 +530,21 @@ content.jpg file generated in txt\_to\_img example to ask gemini-2.5-flash-image
 with a prompt and ask the model to explain what it did.
 
 This requires [`GEMINI_API_KEY`](https://aistudio.google.com/apikey) environment variable to authenticate.
+
+Snippet:
+
+```go
+	// Warning: This is a bit expensive.
+	opts := genai.ProviderOptions{
+		Model:            "gemini-2.5-flash-image-preview",
+		OutputModalities: genai.Modalities{genai.ModalityImage, genai.ModalityText},
+	}
+	c, _ := gemini.New(ctx, &opts, nil)
+	// ...
+	res, _ := c.GenSync(ctx, msgs, &gemini.Options{ThinkingBudget: 0})
+```
+
+Try it live:
 
 ```bash
 go run github.com/maruel/genai/examples/img-txt_to_img-txt@latest

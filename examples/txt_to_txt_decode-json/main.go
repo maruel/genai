@@ -31,13 +31,13 @@ func main() {
 		Round bool `json:"round"`
 	}
 	opts := genai.OptionsText{DecodeAs: &circle}
-	resp, err := c.GenSync(ctx, msgs, &opts)
+	res, err := c.GenSync(ctx, msgs, &opts)
 	if err != nil {
 		log.Fatal(err)
 	}
-	if err = resp.Decode(&circle); err != nil {
+	if err = res.Decode(&circle); err != nil {
 		log.Fatal(err)
 	}
 	fmt.Printf("Round: %v\n", circle.Round)
-	fmt.Printf("\nTokens usage: %s\n", resp.Usage.String())
+	fmt.Printf("\nTokens usage: %s\n", res.Usage.String())
 }

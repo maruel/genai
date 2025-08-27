@@ -44,14 +44,14 @@ been hasty in coming to a decision.
 			{Text: "When did Darwin arrive home?"},
 		},
 	}}
-	result, err := c.GenSync(ctx, msgs)
+	res, err := c.GenSync(ctx, msgs)
 	if err != nil {
 		log.Fatal(err)
 	}
-	for _, r := range result.Replies {
+	for _, r := range res.Replies {
 		for _, ci := range r.Citations {
 			fmt.Printf("Citation: %s\n", ci.Text)
 		}
 	}
-	fmt.Printf("\nAnswer: %s\n", result.String())
+	fmt.Printf("\nAnswer: %s\n", res.String())
 }

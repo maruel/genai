@@ -43,11 +43,11 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	resp, err := p.GenSync(ctx, genai.Messages{genai.NewTextMessage(query)})
+	res, err := p.GenSync(ctx, genai.Messages{genai.NewTextMessage(query)})
 	if err != nil {
 		log.Fatalf("failed to use provider %q: %s", *provider, err)
 	}
-	fmt.Printf("%s\n", resp.String())
+	fmt.Printf("%s\n", res.String())
 }
 
 // LoadProvider loads a provider.

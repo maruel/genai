@@ -44,16 +44,16 @@ func main() {
 		// Force the LLM to do a tool call.
 		ToolCallRequest: genai.ToolCallRequired,
 	}
-	resp, err := c.GenSync(ctx, msgs, &opts)
+	res, err := c.GenSync(ctx, msgs, &opts)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// Add the assistant's message to the messages list.
-	msgs = append(msgs, resp.Message)
+	msgs = append(msgs, res.Message)
 
 	// Process the tool call from the assistant.
-	msg, err := resp.DoToolCalls(ctx, opts.Tools)
+	msg, err := res.DoToolCalls(ctx, opts.Tools)
 	if err != nil {
 		log.Fatalf("Error calling tool: %v", err)
 	}
@@ -66,11 +66,11 @@ func main() {
 
 	// Follow up so the LLM can interpret the tool call response. Tell the LLM to not do a tool call this time.
 	opts.ToolCallRequest = genai.ToolCallNone
-	resp, err = c.GenSync(ctx, msgs, &opts)
+	res, err = c.GenSync(ctx, msgs, &opts)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// Print the result.
-	fmt.Println(resp.String())
+	fmt.Println(res.String())
 }

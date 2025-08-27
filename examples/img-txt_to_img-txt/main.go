@@ -42,11 +42,11 @@ func main() {
 			{Doc: genai.Doc{Src: f}},
 		}},
 	}
-	result, err := c.GenSync(ctx, msgs, &gemini.Options{ThinkingBudget: 0})
+	res, err := c.GenSync(ctx, msgs, &gemini.Options{ThinkingBudget: 0})
 	if err != nil {
 		log.Fatal(err)
 	}
-	for _, r := range result.Replies {
+	for _, r := range res.Replies {
 		if r.Doc.IsZero() {
 			fmt.Println(r.Text)
 			continue

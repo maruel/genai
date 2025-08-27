@@ -3,7 +3,8 @@
 // The relevant environment variable (e.g. `ANTHROPIC_API_KEY`,
 // `OPENAI_API_KEY`, etc) is used automatically for authentication.
 //
-// Automatically selects a models on behalf of the user.
+// Automatically selects a models on behalf of the user. Wraps the explicit
+// thinking tokens if needed.
 //
 // Supports Ollama (https://ollama.com/) and llama-server (https://github.com/ggml-org/llama.cpp)
 // even if they run on a remote host or non-default port.
@@ -26,11 +27,11 @@ import (
 
 func main() {
 	ctx := context.Background()
-	s := strings.Join(slices.Sorted(maps.Keys(providers.Available(ctx))), ", ")
-	if s == "" {
-		s = "set environment variables, e.g. `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, etc"
+	names := strings.Join(slices.Sorted(maps.Keys(providers.Available(ctx))), ", ")
+	if names == "" {
+		names = "set environment variables, e.g. `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, etc"
 	}
-	provider := flag.String("provider", "", "provider to use, "+s)
+	provider := flag.String("provider", "", "provider to use, "+names)
 	model := flag.String("model", "", "model to use; "+genai.ModelCheap+", "+genai.ModelGood+" (default) or "+genai.ModelSOTA+" for automatic model selection")
 	remote := flag.String("remote", "", "url to use, e.g. when using ollama or llama-server on another host")
 	flag.Parse()

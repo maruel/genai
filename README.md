@@ -678,10 +678,26 @@ When asked _What is the word_, this generates:
 The relevant environment variable (e.g. `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, etc) is used automatically for
 authentication.
 
-Automatically selects a models on behalf of the user.
+Automatically selects a models on behalf of the user. Wraps the explicit thinking tokens if needed.
 
 Supports [ollama](https://ollama.com/) and [llama-server](https://github.com/ggml-org/llama.cpp) even if they
 run on a remote host or non-default port.
+
+Snippet:
+
+```go
+	names := strings.Join(slices.Sorted(maps.Keys(providers.Available(ctx))), ", ")
+	provider := flag.String("provider", "", "provider to use, "+names)
+	flag.Parse()
+
+	f := providers.All[*provider]
+	c, _ := f(ctx, &genai.ProviderOptions{}, nil)
+	p := adapters.WrapThinking(c)
+	res, _ := p.GenSync(...)
+```
+
+
+Try it live:
 
 ```bash
 go run github.com/maruel/genai/examples/txt_to_txt_any@latest \

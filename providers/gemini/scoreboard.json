@@ -341,7 +341,12 @@
     },
     {
       "models": [
-        "imagen-4.0-fast-generate-001"
+        "imagen-4.0-fast-generate-001",
+        "imagen-3.0-generate-002",
+        "imagen-4.0-generate-001",
+        "imagen-4.0-generate-preview-06-06",
+        "imagen-4.0-ultra-generate-001",
+        "imagen-4.0-ultra-generate-preview-06-06"
       ],
       "in": {
         "text": {
@@ -365,10 +370,46 @@
       "thinking": true
     },
     {
+      "comments": "Open source models",
+      "models": [
+        "gemma-3-12b-it",
+        "gemma-3-1b-it",
+        "gemma-3-27b-it",
+        "gemma-3-4b-it",
+        "gemma-3n-e2b-it",
+        "gemma-3n-e4b-it"
+      ]
+    },
+    {
+      "comments": "Video models; to enable",
+      "models": [
+        "veo-2.0-generate-001",
+        "veo-3.0-fast-generate-preview",
+        "veo-3.0-generate-preview"
+      ]
+    },
+    {
       "models": [
         "aqa",
         "embedding-001",
         "embedding-gecko-001",
+        "gemini-2.5-flash-exp-native-audio-thinking-dialog",
+        "gemini-2.5-flash-live-preview",
+        "gemini-2.5-flash-preview-native-audio-dialog",
+        "gemini-2.5-flash-preview-tts",
+        "gemini-2.5-pro-preview-tts",
+        "gemini-embedding-001",
+        "gemini-embedding-exp",
+        "gemini-embedding-exp-03-07",
+        "gemini-exp-1206",
+        "gemini-live-2.5-flash-preview",
+        "learnlm-2.0-flash-experimental",
+        "text-embedding-004"
+      ]
+    },
+    {
+      "comments": "Old models; do not use",
+      "models": [
         "gemini-1.5-flash",
         "gemini-1.5-flash-002",
         "gemini-1.5-flash-8b",
@@ -393,47 +434,11 @@
         "gemini-2.0-flash-thinking-exp-1219",
         "gemini-2.0-pro-exp",
         "gemini-2.0-pro-exp-02-05",
-        "gemini-2.5-flash-exp-native-audio-thinking-dialog",
         "gemini-2.5-flash-lite-preview-06-17",
-        "gemini-2.5-flash-live-preview",
         "gemini-2.5-flash-preview-05-20",
-        "gemini-2.5-flash-preview-native-audio-dialog",
-        "gemini-2.5-flash-preview-tts",
         "gemini-2.5-pro-preview-03-25",
         "gemini-2.5-pro-preview-05-06",
-        "gemini-2.5-pro-preview-06-05",
-        "gemini-2.5-pro-preview-tts",
-        "gemini-embedding-001",
-        "gemini-embedding-exp",
-        "gemini-embedding-exp-03-07",
-        "gemini-exp-1206",
-        "gemini-live-2.5-flash-preview",
-        "gemma-3-12b-it",
-        "gemma-3-1b-it",
-        "gemma-3-27b-it",
-        "gemma-3-4b-it",
-        "gemma-3n-e2b-it",
-        "gemma-3n-e4b-it",
-        "learnlm-2.0-flash-experimental",
-        "text-embedding-004"
-      ]
-    },
-    {
-      "comments": "Image models",
-      "models": [
-        "imagen-3.0-generate-002",
-        "imagen-4.0-generate-001",
-        "imagen-4.0-generate-preview-06-06",
-        "imagen-4.0-ultra-generate-001",
-        "imagen-4.0-ultra-generate-preview-06-06"
-      ]
-    },
-    {
-      "comments": "Video models; to enable",
-      "models": [
-        "veo-2.0-generate-001",
-        "veo-3.0-fast-generate-preview",
-        "veo-3.0-generate-preview"
+        "gemini-2.5-pro-preview-06-05"
       ]
     }
   ]

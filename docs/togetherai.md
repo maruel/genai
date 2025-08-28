@@ -12,11 +12,10 @@
 | NousResearch/Nous-Hermes-2-Mixtral-8x7B-DPO       | ❌    | ❌     | ❌   | ❌     | ❌   | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌    | ❌     |
 | Qwen/QwQ-32B                                      | ❌    | ❌     | ❌   | ❌     | ❌   | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌    | ❌     |
 | Qwen/Qwen2-72B-Instruct                           | ❌    | ❌     | ❌   | ❌     | ❌   | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌    | ❌     |
-| Qwen/Qwen2-VL-72B-Instruct                        | ❌    | ❌     | ❌   | ❌     | ❌   | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌    | ❌     |
+| Qwen/Qwen2.5-VL-72B-Instruct                      | ❌    | ❌     | ❌   | ❌     | ❌   | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌    | ❌     |
 | Qwen/Qwen2.5-72B-Instruct-Turbo                   | ❌    | ❌     | ❌   | ❌     | ❌   | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌    | ❌     |
 | Qwen/Qwen2.5-7B-Instruct-Turbo                    | ❌    | ❌     | ❌   | ❌     | ❌   | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌    | ❌     |
 | Qwen/Qwen2.5-Coder-32B-Instruct                   | ❌    | ❌     | ❌   | ❌     | ❌   | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌    | ❌     |
-| Qwen/Qwen2.5-VL-72B-Instruct                      | ❌    | ❌     | ❌   | ❌     | ❌   | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌    | ❌     |
 | Qwen/Qwen3-235B-A22B-Instruct-2507-tput           | ❌    | ❌     | ❌   | ❌     | ❌   | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌    | ❌     |
 | Qwen/Qwen3-235B-A22B-Thinking-2507                | ❌    | ❌     | ❌   | ❌     | ❌   | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌    | ❌     |
 | Qwen/Qwen3-235B-A22B-fp8-tput                     | ❌    | ❌     | ❌   | ❌     | ❌   | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌    | ❌     |
@@ -24,6 +23,11 @@
 | Salesforce/Llama-Rank-V1                          | ❌    | ❌     | ❌   | ❌     | ❌   | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌    | ❌     |
 | Virtue-AI/VirtueGuard-Text-Lite                   | ❌    | ❌     | ❌   | ❌     | ❌   | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌    | ❌     |
 | arcee-ai/coder-large                              | ❌    | ❌     | ❌   | ❌     | ❌   | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌    | ❌     |
+| arize-ai/qwen-2-1.5b-instruct                     | ❌    | ❌     | ❌   | ❌     | ❌   | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌    | ❌     |
+| togethercomputer/m2-bert-80M-32k-retrieval        | ❌    | ❌     | ❌   | ❌     | ❌   | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌    | ❌     |
+| deepcogito/cogito-v2-preview-llama-70B            | ❌    | ❌     | ❌   | ❌     | ❌   | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌    | ❌     |
+| arcee-ai/AFM-4.5B                                 | ❌    | ❌     | ❌   | ❌     | ❌   | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌    | ❌     |
+| deepcogito/cogito-v2-preview-llama-405B           | ❌    | ❌     | ❌   | ❌     | ❌   | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌    | ❌     |
 | arcee-ai/maestro-reasoning                        | ❌    | ❌     | ❌   | ❌     | ❌   | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌    | ❌     |
 | arcee-ai/virtuoso-large                           | ❌    | ❌     | ❌   | ❌     | ❌   | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌    | ❌     |
 | arcee_ai/arcee-spotlight                          | ❌    | ❌     | ❌   | ❌     | ❌   | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌    | ❌     |
@@ -42,7 +46,7 @@
 | cartesia/sonic                                    | ❌    | ❌     | ❌   | ❌     | ❌   | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌    | ❌     |
 | cartesia/sonic-2                                  | ❌    | ❌     | ❌   | ❌     | ❌   | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌    | ❌     |
 | deepcogito/cogito-v2-preview-deepseek-671b        | ❌    | ❌     | ❌   | ❌     | ❌   | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌    | ❌     |
-| deepseek-ai/DeepSeek-R1                           | ❌    | ❌     | ❌   | ❌     | ❌   | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌    | ❌     |
+| deepcogito/cogito-v2-preview-llama-109B-MoE       | ❌    | ❌     | ❌   | ❌     | ❌   | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌    | ❌     |
 | deepseek-ai/DeepSeek-R1-0528-tput                 | ❌    | ❌     | ❌   | ❌     | ❌   | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌    | ❌     |
 | deepseek-ai/DeepSeek-R1-Distill-Llama-70B         | ❌    | ❌     | ❌   | ❌     | ❌   | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌    | ❌     |
 | deepseek-ai/DeepSeek-R1-Distill-Llama-70B-free    | ❌    | ❌     | ❌   | ❌     | ❌   | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌    | ❌     |
@@ -74,12 +78,10 @@
 | meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo       | ❌    | ❌     | ❌   | ❌     | ❌   | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌    | ❌     |
 | meta-llama/Meta-Llama-Guard-3-8B                  | ❌    | ❌     | ❌   | ❌     | ❌   | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌    | ❌     |
 | mistralai/Mistral-7B-Instruct-v0.1                | ❌    | ❌     | ❌   | ❌     | ❌   | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌    | ❌     |
-| mistralai/Mistral-7B-Instruct-v0.2                | ❌    | ❌     | ❌   | ❌     | ❌   | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌    | ❌     |
 | mistralai/Mistral-7B-Instruct-v0.3                | ❌    | ❌     | ❌   | ❌     | ❌   | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌    | ❌     |
 | mistralai/Mixtral-8x7B-Instruct-v0.1              | ❌    | ❌     | ❌   | ❌     | ❌   | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌    | ❌     |
 | mixedbread-ai/Mxbai-Rerank-Large-V2               | ❌    | ❌     | ❌   | ❌     | ❌   | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌    | ❌     |
 | nvidia/Llama-3.1-Nemotron-70B-Instruct-HF         | ❌    | ❌     | ❌   | ❌     | ❌   | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌    | ❌     |
-| openai/gpt-oss-120b                               | ❌    | ❌     | ❌   | ❌     | ❌   | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌    | ❌     |
 | openai/gpt-oss-20b                                | ❌    | ❌     | ❌   | ❌     | ❌   | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌    | ❌     |
 | openai/whisper-large-v3                           | ❌    | ❌     | ❌   | ❌     | ❌   | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌    | ❌     |
 | perplexity-ai/r1-1776                             | ❌    | ❌     | ❌   | ❌     | ❌   | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌    | ❌     |

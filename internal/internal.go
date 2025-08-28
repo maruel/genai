@@ -19,6 +19,7 @@ import (
 	"github.com/maruel/httpjson"
 )
 
+//go:generate go run regen_docs.go ..
 //go:generate go run regen_readme.go ..
 //go:generate go run regen_scoreboards.go ..
 

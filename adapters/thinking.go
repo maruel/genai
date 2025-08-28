@@ -37,7 +37,8 @@ func WrapThinking(c genai.Provider) genai.Provider {
 type ProviderThinking struct {
 	genai.Provider
 
-	// ThinkingTokenStart is the start thinking token. It is often "<think>\n".
+	// ThinkingTokenStart is the start thinking token. It is often "<think>\n" but there are cases when it can
+	// be never output, like "qwen-3-235b-a22b-thinking-2507".
 	ThinkingTokenStart string
 	// ThinkingTokenEnd is the end thinking token, where the explicit answer lies after. It is often "\n</think>\n".
 	ThinkingTokenEnd string
@@ -64,6 +65,10 @@ func (c *ProviderThinking) GenStream(ctx context.Context, msgs genai.Messages, o
 	fragments, finish := c.Provider.GenStream(ctx, msgs, opts...)
 	fnFragments := func(yield func(genai.ReplyFragment) bool) {
 		state := start
+		if c.ThinkingTokenStart == "" {
+			// Simulate that the thinking tag was seen.
+			state = startTagSeen
+		}
 		for f := range fragments {
 			var replies []genai.ReplyFragment
 			var err2 error
@@ -188,13 +193,21 @@ func (c *ProviderThinking) processThinkingMessage(m *genai.Message) error {
 		return nil
 	}
 
-	tStart := strings.Index(text, c.ThinkingTokenStart)
-	if tStart == -1 {
-		// This response does not contain thinking text, it could be JSON or something else.
-		return nil
-	}
-	if prefix := text[:tStart]; strings.TrimSpace(prefix) != "" {
-		return fmt.Errorf("unexpected prefix before thinking tag: %q", prefix)
+	tStart := 0
+	if c.ThinkingTokenStart != "" {
+		tStart = strings.Index(text, c.ThinkingTokenStart)
+		if tStart == -1 {
+			// This response does not contain thinking text, it could be JSON or something else.
+			return nil
+		}
+		if prefix := text[:tStart]; strings.TrimSpace(prefix) != "" {
+			return fmt.Errorf("unexpected prefix before thinking tag: %q", prefix)
+		}
+	} else {
+		// Check if there's an end tag. Otherwise it was not thinking at all.
+		if strings.Index(text, c.ThinkingTokenEnd) == -1 {
+			return nil
+		}
 	}
 	// Zap the text.
 	for i := range m.Replies {

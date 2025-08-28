@@ -70,7 +70,11 @@ func TestProviderThinking(t *testing.T) {
 					mp := &mockProviderGenSync{
 						responses: []genai.Result{{Message: genai.Message{Replies: []genai.Reply{{Text: tc.in}}}}},
 					}
-					tp := &adapters.ProviderThinking{Provider: mp, ThinkingTokenStart: "<thinking>", ThinkingTokenEnd: "</thinking>"}
+					tp := &adapters.ProviderThinking{
+						Provider:           mp,
+						ThinkingTokenStart: "<thinking>",
+						ThinkingTokenEnd:   "</thinking>",
+					}
 					got, err := tp.GenSync(t.Context(), genai.Messages{}, tc.opts)
 					if err != nil {
 						t.Fatalf("unexpected error: %v", err)
@@ -115,7 +119,11 @@ func TestProviderThinking(t *testing.T) {
 							responses: []genai.Result{{Message: genai.Message{Replies: tc.in}}},
 							err:       tc.err,
 						}
-						tp := &adapters.ProviderThinking{Provider: mp, ThinkingTokenStart: "<thinking>", ThinkingTokenEnd: "</thinking>"}
+						tp := &adapters.ProviderThinking{
+							Provider:           mp,
+							ThinkingTokenStart: "<thinking>",
+							ThinkingTokenEnd:   "</thinking>",
+						}
 						_, err := tp.GenSync(t.Context(), genai.Messages{})
 						if err == nil {
 							t.Fatal("expected error but got none")
@@ -232,7 +240,11 @@ func TestProviderThinking(t *testing.T) {
 					for _, i := range tc.in {
 						mp.streamResponses[0].fragments = append(mp.streamResponses[0].fragments, genai.ReplyFragment{TextFragment: i})
 					}
-					tp := &adapters.ProviderThinking{Provider: mp, ThinkingTokenStart: "<thinking>", ThinkingTokenEnd: "</thinking>"}
+					tp := &adapters.ProviderThinking{
+						Provider:           mp,
+						ThinkingTokenStart: "<thinking>",
+						ThinkingTokenEnd:   "</thinking>",
+					}
 					accumulated := genai.Message{}
 					fragments, finish := tp.GenStream(t.Context(), genai.Messages{}, tc.opts)
 					for f := range fragments {
@@ -292,7 +304,11 @@ func TestProviderThinking(t *testing.T) {
 							mp.streamResponses[0].fragments = append(mp.streamResponses[0].fragments, genai.ReplyFragment{TextFragment: i})
 						}
 					}
-					tp := &adapters.ProviderThinking{Provider: mp, ThinkingTokenStart: "<thinking>", ThinkingTokenEnd: "</thinking>"}
+					tp := &adapters.ProviderThinking{
+						Provider:           mp,
+						ThinkingTokenStart: "<thinking>",
+						ThinkingTokenEnd:   "</thinking>",
+					}
 					fragments, finish := tp.GenStream(t.Context(), genai.Messages{})
 					for range fragments {
 					}

@@ -2,7 +2,7 @@
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
-package scoreboard
+package smoke
 
 import (
 	"context"
@@ -15,9 +15,10 @@ import (
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
+	"github.com/maruel/genai/scoreboard"
 )
 
-func exerciseGenTools(ctx context.Context, cs *callState, f *Functionality, prefix string) error {
+func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Functionality, prefix string) error {
 	msgs := genai.Messages{genai.NewTextMessage("Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.")}
 	type got struct {
 		Number json.Number `json:"number" jsonschema:"type=number"`
@@ -79,9 +80,9 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *Functionality, pref
 	if err != nil || !slices.ContainsFunc(resp.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
 		internal.Logger(ctx).DebugContext(ctx, "SquareRoot", "err", err)
 		// Tools are not supported, no need to do the rest.
-		f.Tools = False
-		f.ToolsBiased = False
-		f.ToolsIndecisive = False
+		f.Tools = scoreboard.False
+		f.ToolsBiased = scoreboard.False
+		f.ToolsIndecisive = scoreboard.False
 		return nil
 	}
 
@@ -89,7 +90,7 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *Functionality, pref
 	tr, err := resp.DoToolCalls(ctx, optsTools.Tools)
 	if err != nil {
 		internal.Logger(ctx).DebugContext(ctx, "SquareRoot-1 (do calls)", "err", err)
-		f.Tools = False
+		f.Tools = scoreboard.False
 		return nil
 	}
 	if tr.IsZero() {
@@ -105,28 +106,28 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *Functionality, pref
 	}
 	if err != nil || slices.ContainsFunc(resp.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
 		internal.Logger(ctx).DebugContext(ctx, "SquareRoot-2", "err", err)
-		f.Tools = Flaky
-		f.ToolsBiased = False
-		f.ToolsIndecisive = False
+		f.Tools = scoreboard.Flaky
+		f.ToolsBiased = scoreboard.False
+		f.ToolsIndecisive = scoreboard.False
 		return nil
 	}
 
 	if flaky {
-		f.Tools = Flaky
+		f.Tools = scoreboard.Flaky
 	} else {
-		f.Tools = True
+		f.Tools = scoreboard.True
 	}
 	if resp.Usage.InputTokens == 0 || resp.Usage.OutputTokens == 0 {
-		if f.ReportTokenUsage != False {
+		if f.ReportTokenUsage != scoreboard.False {
 			internal.Logger(ctx).DebugContext(ctx, "SquareRoot", "issue", "token usage")
-			f.ReportTokenUsage = Flaky
+			f.ReportTokenUsage = scoreboard.Flaky
 		}
 	}
 	// The finish reason for tool calls is genai.FinishedToolCalls
 	if expectedFR := genai.FinishedStop; resp.Usage.FinishReason != expectedFR {
-		if f.ReportTokenUsage != False {
+		if f.ReportTokenUsage != scoreboard.False {
 			internal.Logger(ctx).DebugContext(ctx, "SquareRoot", "issue", "finish reason", "expected", expectedFR, "got", resp.Usage.FinishReason)
-			f.ReportFinishReason = Flaky
+			f.ReportFinishReason = scoreboard.Flaky
 		}
 	}
 
@@ -175,25 +176,25 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *Functionality, pref
 		if err != nil {
 			// If there's an error, it means the tool call failed.
 			// This might indicate flaky tool support.
-			f.Tools = Flaky
+			f.Tools = scoreboard.Flaky
 			continue // Skip to next test case
 		}
 		if !slices.ContainsFunc(resp.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
 			// No tool call, even though ToolCallRequired was set.
 			// This also indicates flaky tool support.
-			f.Tools = Flaky
+			f.Tools = scoreboard.Flaky
 			continue
 		}
 		if resp.Usage.InputTokens == 0 || resp.Usage.OutputTokens == 0 {
-			if f.ReportTokenUsage != False {
+			if f.ReportTokenUsage != scoreboard.False {
 				internal.Logger(ctx).DebugContext(ctx, check, "issue", "token usage")
-				f.ReportTokenUsage = Flaky
+				f.ReportTokenUsage = scoreboard.Flaky
 			}
 		}
 		if expectedFR := genai.FinishedToolCalls; resp.Usage.FinishReason != expectedFR {
-			if f.ReportTokenUsage != False {
+			if f.ReportTokenUsage != scoreboard.False {
 				internal.Logger(ctx).DebugContext(ctx, check, "issue", "finish reason", "expected", expectedFR, "got", resp.Usage.FinishReason)
-				f.ReportFinishReason = Flaky
+				f.ReportFinishReason = scoreboard.Flaky
 			}
 		}
 		toolCalls := 0
@@ -212,7 +213,7 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *Functionality, pref
 					// Error during tool execution. This only happens if the json schema is not followed. For example
 					// I've seen on Huggingface using "country1" and "country2", aka being indecisive with a single
 					// function call.
-					f.Tools = Flaky
+					f.Tools = scoreboard.Flaky
 					continue
 				}
 				biasedResults[i] = res == line.countrySelected
@@ -226,7 +227,7 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *Functionality, pref
 				}
 				res, err := resp.Replies[j].ToolCall.Call(ctx, opts.Tools)
 				if err != nil {
-					f.Tools = Flaky
+					f.Tools = scoreboard.Flaky
 					continue
 				}
 				countries = append(countries, res)
@@ -235,29 +236,29 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *Functionality, pref
 			slices.Sort(countries)
 			if !slices.Equal(countries, []string{"Canada", "USA"}) {
 				// This is an unexpected result for indecisive.
-				f.Tools = Flaky // Mark overall tools as flaky if indecisive result is not as expected
+				f.Tools = scoreboard.Flaky // Mark overall tools as flaky if indecisive result is not as expected
 			}
 		} else {
 			// More than 2 tool calls, unexpected.
-			f.Tools = Flaky
+			f.Tools = scoreboard.Flaky
 			continue
 		}
 	}
 
 	if indecisiveOccurred {
-		f.ToolsIndecisive = True
+		f.ToolsIndecisive = scoreboard.True
 	} else {
-		f.ToolsIndecisive = False
+		f.ToolsIndecisive = scoreboard.False
 	}
 
 	if biasedResults[0] == biasedResults[1] {
 		if biasedResults[0] {
-			f.ToolsBiased = True
+			f.ToolsBiased = scoreboard.True
 		} else {
-			f.ToolsBiased = False
+			f.ToolsBiased = scoreboard.False
 		}
 	} else {
-		f.ToolsBiased = Flaky
+		f.ToolsBiased = scoreboard.Flaky
 	}
 	return nil
 }

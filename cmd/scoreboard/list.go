@@ -28,16 +28,11 @@ func printList(ctx context.Context) error {
 			fmt.Fprintf(os.Stderr, "ignoring provider %s: %v\n", name, err)
 			continue
 		}
-		ps, ok := c.(scoreboard.ProviderScore)
-		if !ok {
-			fmt.Fprintf(os.Stderr, "ignoring provider %s: doesn't support scoreboard\n", name)
-			continue
-		}
 		async := ""
 		if _, isAsync := c.(genai.ProviderGenAsync); isAsync {
 			async = "✅batch "
 		}
-		for _, scenario := range ps.Scoreboard().Scenarios {
+		for _, scenario := range c.Scoreboard().Scenarios {
 			m := scenario.Models
 			if len(m) > 3 {
 				m = append(slices.Clone(m[:3]), "...")

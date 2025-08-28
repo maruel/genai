@@ -379,7 +379,7 @@ func (c *Client) OutputModalities() genai.Modalities {
 	return c.impl.OutputModalities
 }
 
-// Scoreboard implements scoreboard.ProviderScore.
+// Scoreboard implements genai.Provider.
 func (c *Client) Scoreboard() scoreboard.Score {
 	return Scoreboard()
 }

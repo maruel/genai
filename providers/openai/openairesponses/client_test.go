@@ -18,10 +18,10 @@ import (
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/internal/myrecorder"
 	"github.com/maruel/genai/providers/openai/openairesponses"
-	"github.com/maruel/genai/scoreboard/scoreboardtest"
+	"github.com/maruel/genai/smoke/smoketest"
 )
 
-func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 	apiKey := ""
 	if os.Getenv("OPENAI_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
@@ -69,12 +69,12 @@ func TestClient_Scoreboard(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	var models []scoreboardtest.Model
+	var models []smoketest.Model
 	for _, m := range genaiModels {
 		id := m.GetID()
-		models = append(models, scoreboardtest.Model{Model: id, Thinking: strings.HasPrefix(id, "o") && !strings.Contains(id, "moderation")})
+		models = append(models, smoketest.Model{Model: id, Thinking: strings.HasPrefix(id, "o") && !strings.Contains(id, "moderation")})
 	}
-	scoreboardtest.AssertScoreboard(t, getClientRT, models, testRecorder.Records)
+	smoketest.Run(t, getClientRT, models, testRecorder.Records)
 }
 
 /*

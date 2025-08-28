@@ -567,7 +567,7 @@ func (c *Client) OutputModalities() genai.Modalities {
 	return c.impl.OutputModalities
 }
 
-// Scoreboard implements scoreboard.ProviderScore.
+// Scoreboard implements genai.Provider.
 func (c *Client) Scoreboard() scoreboard.Score {
 	return Scoreboard()
 }
@@ -683,7 +683,4 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 	return nil
 }
 
-var (
-	_ genai.Provider           = &Client{}
-	_ scoreboard.ProviderScore = &Client{}
-)
+var _ genai.Provider = &Client{}

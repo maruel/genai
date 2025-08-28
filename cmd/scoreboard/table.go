@@ -27,7 +27,7 @@ type tableSummaryRow struct {
 	tableDataRow
 }
 
-func (t *tableSummaryRow) initFromScoreboard(p scoreboard.ProviderScore) {
+func (t *tableSummaryRow) initFromScoreboard(p genai.Provider) {
 	sb := p.Scoreboard()
 	t.Provider = p.Name()
 	if sb.DashboardURL != "" {
@@ -237,13 +237,8 @@ func printSummaryTable(ctx context.Context, all map[string]func(ctx context.Cont
 			continue
 		}
 		seen[p.Name()] = struct{}{}
-		ps, ok := p.(scoreboard.ProviderScore)
-		if !ok {
-			fmt.Fprintf(os.Stderr, "ignoring provider %s: doesn't support scoreboard\n", name)
-			continue
-		}
 		row := tableSummaryRow{}
-		row.initFromScoreboard(ps)
+		row.initFromScoreboard(p)
 		rows = append(rows, row)
 	}
 	slices.SortFunc(rows, func(a, b tableSummaryRow) int {
@@ -255,11 +250,7 @@ func printSummaryTable(ctx context.Context, all map[string]func(ctx context.Cont
 
 func printProviderTable(p genai.Provider) error {
 	var rows []tableModelRow
-	ps, ok := p.(scoreboard.ProviderScore)
-	if !ok {
-		return fmt.Errorf("provider %s: doesn't support scoreboardn", p.Name())
-	}
-	sb := ps.Scoreboard()
+	sb := p.Scoreboard()
 	for i := range sb.Scenarios {
 		row := tableModelRow{}
 		row.initFromScenario(&sb.Scenarios[i])

@@ -761,7 +761,7 @@ func (c *Client) OutputModalities() genai.Modalities {
 	return c.impl.OutputModalities
 }
 
-// Scoreboard implements scoreboard.ProviderScore.
+// Scoreboard implements genai.Provider.
 func (c *Client) Scoreboard() scoreboard.Score {
 	return Scoreboard()
 }
@@ -890,7 +890,4 @@ func processHeaders(h http.Header) []genai.RateLimit {
 	return limits
 }
 
-var (
-	_ genai.Provider           = &Client{}
-	_ scoreboard.ProviderScore = &Client{}
-)
+var _ genai.Provider = &Client{}

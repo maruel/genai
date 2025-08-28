@@ -2,34 +2,34 @@
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
-// Package scoreboard contains all dynamic scoreboard creation and gathering logic.
+// Package scoreboard declares the structures to define a scoreboard.
+//
+// It is in a separate package from genai to reduce noise.
 package scoreboard
 
 import (
 	"embed"
 	"encoding/json"
 	"fmt"
-	"net/http"
 	"strconv"
-
-	"github.com/maruel/genai"
 )
 
-//
+// Modality is one of the supported modalities.
+type Modality string
 
-// ProviderScore describes the known state of the provider.
-type ProviderScore interface {
-	genai.Provider
-	// Scoreboard returns what the provider supports.
-	//
-	// Some models have more features than others, e.g. some models may be text-only while others have vision or
-	// audio support.
-	//
-	// The client code may be the limiting factor for some models, and not the provider itself.
-	//
-	// The values returned here are gone through a smoke test to make sure they are valid.
-	Scoreboard() Score
-}
+const (
+	// ModalityAudio is support for audio formats like MP3, WAV, Opus, Flac, etc.
+	ModalityAudio Modality = "audio"
+	// ModalityDocument is support for PDF with multi-modal comprehension, both images and text. This includes
+	// code blocks.
+	ModalityDocument Modality = "document"
+	// ModalityImage is support for image formats like PNG, JPEG, often single frame GIF, and WEBP.
+	ModalityImage Modality = "image"
+	// ModalityText is for raw text.
+	ModalityText Modality = "text"
+	// ModalityVideo is support for video formats like MP4 or MKV.
+	ModalityVideo Modality = "video"
+)
 
 // Functionality defines which functionalites are supported in a scenario.
 //
@@ -168,8 +168,8 @@ type Scenario struct {
 	ThinkingTokenStart string `json:"thinkingTokenStart,omitzero"`
 	ThinkingTokenEnd   string `json:"thinkingTokenEnd,omitzero"`
 
-	In  map[genai.Modality]ModalCapability `json:"in,omitzero"`
-	Out map[genai.Modality]ModalCapability `json:"out,omitzero"`
+	In  map[Modality]ModalCapability `json:"in,omitzero"`
+	Out map[Modality]ModalCapability `json:"out,omitzero"`
 
 	// GenSync declares features supported when using Provider.GenSync
 	GenSync *Functionality `json:"GenSync,omitzero,omitempty"`
@@ -275,12 +275,9 @@ func (s *Score) Validate() error {
 	return nil
 }
 
-//go:embed testdata/*
-var testdataFiles embed.FS
-
-// ProviderFactory is a function that returns a provider instance. The name represents the sub-test name.
+// TestdataFiles embeds the testdata/ directory for use in smoke tests.
 //
-// This may be used for HTTP recording and replays.
-type ProviderFactory func(name string) (genai.Provider, http.RoundTripper)
-
-var _ genai.Validatable = (*Score)(nil)
+// They are the canonical data to be used to declare the supported modalities.
+//
+//go:embed testdata/*
+var TestdataFiles embed.FS

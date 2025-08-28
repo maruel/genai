@@ -18,10 +18,10 @@ import (
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/internal/myrecorder"
 	"github.com/maruel/genai/providers/pollinations"
-	"github.com/maruel/genai/scoreboard/scoreboardtest"
+	"github.com/maruel/genai/smoke/smoketest"
 )
 
-func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 	opts := genai.ProviderOptions{
 		APIKey:          "genai-unittests",
 		Model:           model.Model,
@@ -62,12 +62,12 @@ func (h *smallImage) GenSync(ctx context.Context, msgs genai.Messages, opts ...g
 
 func TestClient_Scoreboard(t *testing.T) {
 	models := loadCachedModelsList(t)
-	var sbModels []scoreboardtest.Model
+	var sbModels []smoketest.Model
 	for _, m := range models {
 		id := m.GetID()
-		sbModels = append(sbModels, scoreboardtest.Model{Model: id, Thinking: id == "deepseek-reasoning"})
+		sbModels = append(sbModels, smoketest.Model{Model: id, Thinking: id == "deepseek-reasoning"})
 	}
-	scoreboardtest.AssertScoreboard(t, getClientRT, sbModels, testRecorder.Records)
+	smoketest.Run(t, getClientRT, sbModels, testRecorder.Records)
 }
 
 func TestClient_Preferred(t *testing.T) {

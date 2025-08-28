@@ -28,6 +28,7 @@ import (
 
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/bb"
+	"github.com/maruel/genai/scoreboard"
 )
 
 // Provider
@@ -129,6 +130,15 @@ type Provider interface {
 	// the provider. An example is retrieving Veo 3 generated videos from Gemini requires the authentication
 	// headers to be set.
 	HTTPClient() *http.Client
+	// Scoreboard returns what the provider supports.
+	//
+	// Some models have more features than others, e.g. some models may be text-only while others have vision or
+	// audio support.
+	//
+	// The client code may be the limiting factor for some models, and not the provider itself.
+	//
+	// The values returned here should have gone through a smoke test to make sure they are valid.
+	Scoreboard() scoreboard.Score
 }
 
 // ProviderUnwrap is exposed when the Provider is actually a wrapper around another one, like

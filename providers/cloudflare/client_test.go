@@ -15,12 +15,12 @@ import (
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/internal/myrecorder"
 	"github.com/maruel/genai/providers/cloudflare"
-	"github.com/maruel/genai/scoreboard/scoreboardtest"
+	"github.com/maruel/genai/smoke/smoketest"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/cassette"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
 
-func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 	apiKey := ""
 	if os.Getenv("CLOUDFLARE_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
@@ -48,13 +48,13 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 func TestClient_Scoreboard(t *testing.T) {
 	// Cloudflare hosts a ton of useless models, so just get the ones already in the scoreboard.
 	sb := getClient(t, genai.ModelNone).Scoreboard()
-	var models []scoreboardtest.Model
+	var models []smoketest.Model
 	for _, sc := range sb.Scenarios {
 		for _, model := range sc.Models {
-			models = append(models, scoreboardtest.Model{Model: model})
+			models = append(models, smoketest.Model{Model: model})
 		}
 	}
-	scoreboardtest.AssertScoreboard(t, getClientRT, models, testRecorder.Records)
+	smoketest.Run(t, getClientRT, models, testRecorder.Records)
 }
 
 func TestClient_Preferred(t *testing.T) {

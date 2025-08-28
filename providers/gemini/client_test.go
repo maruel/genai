@@ -21,12 +21,12 @@ import (
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/internal/myrecorder"
 	"github.com/maruel/genai/providers/gemini"
-	"github.com/maruel/genai/scoreboard/scoreboardtest"
+	"github.com/maruel/genai/smoke/smoketest"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/cassette"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
 
-func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 	apiKey := ""
 	if os.Getenv("GEMINI_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
@@ -55,18 +55,18 @@ func TestClient_Scoreboard(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	var models []scoreboardtest.Model
+	var models []smoketest.Model
 	for _, m := range genaiModels {
 		id := m.GetID()
 		if id != "gemini-2.5-pro" {
 			// According to https://ai.google.dev/gemini-api/docs/thinking?hl=en, thinking cannot be disabled.
-			models = append(models, scoreboardtest.Model{Model: id})
+			models = append(models, smoketest.Model{Model: id})
 		}
 		if strings.HasPrefix(id, "gemini-2.5-") && !strings.Contains(id, "preview") {
-			models = append(models, scoreboardtest.Model{Model: id, Thinking: true})
+			models = append(models, smoketest.Model{Model: id, Thinking: true})
 		}
 	}
-	scoreboardtest.AssertScoreboard(t, getClientRT, models, testRecorder.Records)
+	smoketest.Run(t, getClientRT, models, testRecorder.Records)
 }
 
 func TestClient_Preferred(t *testing.T) {

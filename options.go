@@ -14,6 +14,7 @@ import (
 
 	"github.com/invopop/jsonschema"
 	"github.com/maruel/genai/internal"
+	"github.com/maruel/genai/scoreboard"
 )
 
 // UnsupportedContinuableError is an error when an unsupported option is used but the operation still
@@ -40,25 +41,28 @@ type Options interface {
 	Validatable
 }
 
-// Modality is one of the supported modalities.
-type Modality string
+// Modality is a modality supported by the provider.
+//
+// It is aliased from scoreboard.Modality to avoid a circular dependency.
+type Modality = scoreboard.Modality
 
 const (
+	// ModalityAudio is support for audio formats like MP3, WAV, Opus, Flac, etc.
+	ModalityAudio = scoreboard.ModalityAudio
+	// ModalityDocument is support for PDF with multi-modal comprehension, both images and text. This includes
+	// code blocks.
+	ModalityDocument = scoreboard.ModalityDocument
+	// ModalityImage is support for image formats like PNG, JPEG, often single frame GIF, and WEBP.
+	ModalityImage = scoreboard.ModalityImage
 	// ModalityText is for raw text.
-	ModalityText Modality = "text"
-	// ModalityImage is support for PNG, JPG, often single frame GIF, WEBP.
-	ModalityImage Modality = "image"
-	// ModalityVideo is support for codecs like H264 and containers like MP4 or MKV.
-	ModalityVideo Modality = "video"
-	// ModalityDocument is support for PDF with multi-modal comprehension, both images and text. This includes code blocks.
-	ModalityDocument Modality = "document"
-	// ModalityAudio is support for audio MP3, sometimes OPUS.
-	ModalityAudio Modality = "audio"
+	ModalityText = scoreboard.ModalityText
+	// ModalityVideo is support for video formats like MP4 or MKV.
+	ModalityVideo = scoreboard.ModalityVideo
 )
 
 // Modalities represents the modality supported by the provider in a specific scenario. It can be multiple
 // modalities in multi-modals scenarios.
-type Modalities []Modality
+type Modalities []scoreboard.Modality
 
 func (m Modalities) String() string {
 	switch len(m) {

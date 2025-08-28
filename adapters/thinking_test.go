@@ -16,6 +16,7 @@ import (
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/adapters"
 	"github.com/maruel/genai/base"
+	"github.com/maruel/genai/scoreboard"
 )
 
 func TestProviderThinking_GenSync(t *testing.T) {
@@ -327,6 +328,10 @@ func (m *mockProviderGenSync) HTTPClient() *http.Client {
 	return nil
 }
 
+func (m *mockProviderGenSync) Scoreboard() scoreboard.Score {
+	return scoreboard.Score{}
+}
+
 func (m *mockProviderGenSync) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
 	// Store messages
 	m.msgs = msgs
@@ -362,6 +367,10 @@ func (m *mockProviderGenStream) OutputModalities() genai.Modalities {
 
 func (m *mockProviderGenStream) HTTPClient() *http.Client {
 	return nil
+}
+
+func (m *mockProviderGenStream) Scoreboard() scoreboard.Score {
+	return scoreboard.Score{}
 }
 
 func (m *mockProviderGenStream) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {

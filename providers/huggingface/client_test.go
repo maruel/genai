@@ -17,10 +17,10 @@ import (
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/internal/myrecorder"
 	"github.com/maruel/genai/providers/huggingface"
-	"github.com/maruel/genai/scoreboard/scoreboardtest"
+	"github.com/maruel/genai/smoke/smoketest"
 )
 
-func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 	opts := genai.ProviderOptions{
 		APIKey:          getAPIKeyTest(t),
 		Model:           model.Model,
@@ -47,13 +47,13 @@ func getClientRT(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTri
 func TestClient_Scoreboard(t *testing.T) {
 	// We do not want to test thousands of models, so get the ones already in the scoreboard.
 	sb := getClient(t, genai.ModelNone).Scoreboard()
-	var models []scoreboardtest.Model
+	var models []smoketest.Model
 	for _, sc := range sb.Scenarios {
 		for _, model := range sc.Models {
-			models = append(models, scoreboardtest.Model{Model: model, Thinking: sc.Thinking})
+			models = append(models, smoketest.Model{Model: model, Thinking: sc.Thinking})
 		}
 	}
-	scoreboardtest.AssertScoreboard(t, getClientRT, models, testRecorder.Records)
+	smoketest.Run(t, getClientRT, models, testRecorder.Records)
 }
 
 func TestClient_Preferred(t *testing.T) {

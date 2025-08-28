@@ -1180,7 +1180,4 @@ func processStreamPackets(ch <-chan ResponseStreamChunkResponse, chunks chan<- g
 	return nil
 }
 
-var (
-	_ genai.Provider           = &Client{}
-	_ scoreboard.ProviderScore = &Client{}
-)
+var _ genai.Provider = &Client{}

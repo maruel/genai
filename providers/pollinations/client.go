@@ -1004,7 +1004,7 @@ func (c *Client) OutputModalities() genai.Modalities {
 	return c.impl.OutputModalities
 }
 
-// Scoreboard implements scoreboard.ProviderScore.
+// Scoreboard implements genai.Provider.
 func (c *Client) Scoreboard() scoreboard.Score {
 	return Scoreboard()
 }
@@ -1302,7 +1302,4 @@ func (e *exponentialBackoff) ShouldRetry(ctx context.Context, start time.Time, t
 func yieldNoFragment(yield func(genai.ReplyFragment) bool) {
 }
 
-var (
-	_ genai.Provider           = &Client{}
-	_ scoreboard.ProviderScore = &Client{}
-)
+var _ genai.Provider = &Client{}

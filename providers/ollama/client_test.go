@@ -18,7 +18,7 @@ import (
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/ollama"
-	"github.com/maruel/genai/scoreboard/scoreboardtest"
+	"github.com/maruel/genai/smoke/smoketest"
 	"github.com/maruel/roundtrippers"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/cassette"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
@@ -30,13 +30,13 @@ func TestClient(t *testing.T) {
 	s := lazyServer{t: t}
 
 	t.Run("Scoreboard", func(t *testing.T) {
-		var models []scoreboardtest.Model
+		var models []smoketest.Model
 		for _, sc := range ollama.Scoreboard().Scenarios {
 			for _, m := range sc.Models {
-				models = append(models, scoreboardtest.Model{Model: m, Thinking: sc.Thinking})
+				models = append(models, smoketest.Model{Model: m, Thinking: sc.Thinking})
 			}
 		}
-		scoreboardtest.AssertScoreboard(t, func(t testing.TB, model scoreboardtest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+		smoketest.Run(t, func(t testing.TB, model smoketest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 			serverURL := s.lazyStart(t)
 			ctx, l := internaltest.Log(t)
 			fnWithLog := func(h http.RoundTripper) http.RoundTripper {

@@ -1239,7 +1239,6 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 }
 
 var (
-	_ genai.Provider           = &Client{}
-	_ genai.ProviderCache      = &Client{}
-	_ scoreboard.ProviderScore = &Client{}
+	_ genai.Provider      = &Client{}
+	_ genai.ProviderCache = &Client{}
 )

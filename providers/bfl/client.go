@@ -326,7 +326,7 @@ func (c *Client) OutputModalities() genai.Modalities {
 	return c.impl.OutputModalities
 }
 
-// Scoreboard implements scoreboard.ProviderScore.
+// Scoreboard implements genai.Provider.
 func (c *Client) Scoreboard() scoreboard.Score {
 	return Scoreboard()
 }
@@ -454,7 +454,6 @@ func (c *Client) PokeResultRaw(ctx context.Context, id genai.Job) (ImageResult, 
 }
 
 var (
-	_ genai.Provider           = &Client{}
-	_ genai.ProviderGenAsync   = &Client{}
-	_ scoreboard.ProviderScore = &Client{}
+	_ genai.Provider         = &Client{}
+	_ genai.ProviderGenAsync = &Client{}
 )

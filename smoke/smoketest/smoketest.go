@@ -2,8 +2,8 @@
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
-// Package scoreboardtest runs a scoreboard in test mode.
-package scoreboardtest
+// Package smoketest runs a scoreboard in test mode.
+package smoketest
 
 import (
 	"flag"
@@ -17,6 +17,7 @@ import (
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/internal/myrecorder"
 	"github.com/maruel/genai/scoreboard"
+	"github.com/maruel/genai/smoke"
 )
 
 // Model is a model to test. It specifies if the model should run in "thinking  mode" or not. Most models only
@@ -34,11 +35,11 @@ func (m *Model) String() string {
 	return m.Model
 }
 
-// GetClient is the client to assert the scoreboard. It will have the HTTP requests recorded.
-type GetClient func(t testing.TB, m Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider
+// ProviderFactory is the client to assert the scoreboard. It will have the HTTP requests recorded.
+type ProviderFactory func(t testing.TB, m Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider
 
-// AssertScoreboard regenerates the scoreboard and asserts it is up to date.
-func AssertScoreboard(t *testing.T, gc GetClient, models []Model, rec *myrecorder.Records) {
+// Run regenerates the scoreboard and asserts it is up to date.
+func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Records) {
 	if len(models) == 0 {
 		t.Fatal("no models")
 	}
@@ -53,16 +54,8 @@ func AssertScoreboard(t *testing.T, gc GetClient, models []Model, rec *myrecorde
 	usage := genai.Usage{}
 
 	// Find the reference.
-	cc := gc(t, Model{Model: genai.ModelNone}, nil)
-	og := cc
-	for {
-		if u, ok := og.(genai.ProviderUnwrap); ok {
-			og = u.Unwrap()
-		} else {
-			break
-		}
-	}
-	sb := og.(scoreboard.ProviderScore).Scoreboard()
+	cc := pf(t, Model{Model: genai.ModelNone}, nil)
+	sb := cc.Scoreboard()
 	if err := sb.Validate(); err != nil {
 		t.Fatal(err)
 	}
@@ -120,7 +113,7 @@ func AssertScoreboard(t *testing.T, gc GetClient, models []Model, rec *myrecorde
 					rt = r
 					return r
 				}
-				return gc(t, m, fn), rt
+				return pf(t, m, fn), rt
 			}, want)
 			usage.Add(u)
 		})
@@ -147,9 +140,6 @@ func AssertScoreboard(t *testing.T, gc GetClient, models []Model, rec *myrecorde
 type getClientOneModel func(t testing.TB, scenarioName string) (genai.Provider, http.RoundTripper)
 
 // runOneModel runs the scoreboard on one model.
-//
-// It must implement scoreboard.ProviderScoreboard. If it is wrapped, the wrappers must implement
-// genai.ProviderUnwrap.
 func runOneModel(t testing.TB, gc getClientOneModel, want scoreboard.Scenario) genai.Usage {
 	// Calculate the scenario.
 	providerFactory := func(name string) (genai.Provider, http.RoundTripper) {
@@ -161,7 +151,7 @@ func runOneModel(t testing.TB, gc getClientOneModel, want scoreboard.Scenario) g
 		return p, rt
 	}
 	ctx, _ := internaltest.Log(t)
-	got, usage, err := scoreboard.CreateScenario(ctx, providerFactory)
+	got, usage, err := smoke.Run(ctx, providerFactory)
 	t.Logf("Usage: %#v", usage)
 	if err != nil {
 		t.Fatalf("CreateScenario failed: %v", err)

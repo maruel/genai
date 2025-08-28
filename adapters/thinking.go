@@ -14,17 +14,14 @@ import (
 	"unicode"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/scoreboard"
 )
 
 // WrapThinking wraps a Provider and processes its output to extract thinking blocks ONLY if needed.
 func WrapThinking(c genai.Provider) genai.Provider {
-	if s, ok := c.(scoreboard.ProviderScore); ok {
-		id := c.ModelID()
-		for _, sc := range s.Scoreboard().Scenarios {
-			if slices.Contains(sc.Models, id) && sc.ThinkingTokenStart != "" {
-				return &ProviderThinking{Provider: c, ThinkingTokenStart: sc.ThinkingTokenStart, ThinkingTokenEnd: sc.ThinkingTokenEnd}
-			}
+	id := c.ModelID()
+	for _, sc := range c.Scoreboard().Scenarios {
+		if slices.Contains(sc.Models, id) && sc.ThinkingTokenStart != "" {
+			return &ProviderThinking{Provider: c, ThinkingTokenStart: sc.ThinkingTokenStart, ThinkingTokenEnd: sc.ThinkingTokenEnd}
 		}
 	}
 	return c

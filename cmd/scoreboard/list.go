@@ -118,7 +118,7 @@ func functionalityText(f *scoreboard.FunctionalityText) string {
 
 	if flakyTool {
 		items = append(items, "💔flaky tool")
-	} else if f.BiasedTool == scoreboard.True && f.IndecisiveTool == scoreboard.False {
+	} else if f.ToolsBiased == scoreboard.True && f.ToolsIndecisive == scoreboard.False {
 		// Flaky is okay.
 		items = append(items, "💔biased tool")
 	}

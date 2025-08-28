@@ -46,6 +46,21 @@ type FunctionalityText struct {
 	// calling but the model is very flaky at actually requesting the calls. This is more frequent on highly
 	// quantized models, small models or MoE models.
 	Tools TriState `json:"tools,omitzero"`
+	// ToolsBiased is true when we ask the LLM to use a tool in an ambiguous biased question, it will always
+	// reply with the first readily available answer.
+	//
+	// This means that when using enum, it is important to understand that the LLM will put heavy weight on the
+	// first option.
+	//
+	// This is affected by two factors: model size and quantization. Quantization affects this dramatically.
+	ToolsBiased TriState `json:"toolsBiased,omitzero"`
+	// ToolsIndecisive is True when we ask the LLM to use a tool in an ambiguous biased question, it'll call both
+	// options. It is Flaky when both can happen.
+	//
+	// This is actually fine, it means that the LLM will be less opinionated in some cases. The test into which
+	// a LLM is indecisive is likely model-specific too.
+	ToolsIndecisive TriState `json:"toolsIndecisive,omitzero"`
+
 	// JSON means that the model supports enforcing that the response is valid JSON but not necessarily with a
 	// schema.
 	JSON bool `json:"json,omitzero"`
@@ -75,20 +90,6 @@ type FunctionalityText struct {
 	ReportTokenUsage TriState `json:"reportTokenUsage,omitzero"`
 	// ReportFinishReason means that the finish reason (FinishStop, FinishLength, etc) is not correctly reported.
 	ReportFinishReason TriState `json:"reportFinishReason,omitzero"`
-	// BiasedTool is true when we ask the LLM to use a tool in an ambiguous biased question, it will always
-	// reply with the first readily available answer.
-	//
-	// This means that when using enum, it is important to understand that the LLM will put heavy weight on the
-	// first option.
-	//
-	// This is affected by two factors: model size and quantization. Quantization affects this dramatically.
-	BiasedTool TriState `json:"biasedTool,omitzero"`
-	// IndecisiveTool is True when we ask the LLM to use a tool in an ambiguous biased question, it'll call both
-	// options. It is Flaky when both can happen.
-	//
-	// This is actually fine, it means that the LLM will be less opinionated in some cases. The test into which
-	// a LLM is indecisive is likely model-specific too.
-	IndecisiveTool TriState `json:"indecisiveTool,omitzero"`
 
 	_ struct{}
 }

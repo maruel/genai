@@ -47,6 +47,7 @@
       },
       "GenSync": {
         "tools": "true",
+        "toolsIndecisive": "flaky",
         "json": true,
         "jsonSchema": true,
         "seed": true,
@@ -54,19 +55,18 @@
         "maxTokens": true,
         "stopSequence": true,
         "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "indecisiveTool": "flaky"
+        "reportFinishReason": "true"
       },
       "GenStream": {
         "tools": "true",
+        "toolsIndecisive": "flaky",
         "json": true,
         "jsonSchema": true,
         "seed": true,
         "maxTokens": true,
         "stopSequence": true,
         "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "indecisiveTool": "flaky"
+        "reportFinishReason": "true"
       }
     },
     {
@@ -107,6 +107,7 @@
       },
       "GenSync": {
         "tools": "true",
+        "toolsIndecisive": "flaky",
         "json": true,
         "jsonSchema": true,
         "seed": true,
@@ -114,19 +115,18 @@
         "maxTokens": true,
         "stopSequence": true,
         "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "indecisiveTool": "flaky"
+        "reportFinishReason": "true"
       },
       "GenStream": {
         "tools": "true",
+        "toolsIndecisive": "flaky",
         "json": true,
         "jsonSchema": true,
         "seed": true,
         "maxTokens": true,
         "stopSequence": true,
         "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "indecisiveTool": "flaky"
+        "reportFinishReason": "true"
       }
     },
     {
@@ -175,6 +175,8 @@
       },
       "GenSync": {
         "tools": "true",
+        "toolsBiased": "flaky",
+        "toolsIndecisive": "flaky",
         "json": true,
         "jsonSchema": true,
         "seed": true,
@@ -182,20 +184,18 @@
         "maxTokens": true,
         "stopSequence": true,
         "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "biasedTool": "flaky",
-        "indecisiveTool": "flaky"
+        "reportFinishReason": "true"
       },
       "GenStream": {
         "tools": "true",
+        "toolsBiased": "flaky",
         "json": true,
         "jsonSchema": true,
         "seed": true,
         "maxTokens": true,
         "stopSequence": true,
         "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "biasedTool": "flaky"
+        "reportFinishReason": "true"
       }
     },
     {
@@ -247,6 +247,8 @@
       },
       "GenSync": {
         "tools": "true",
+        "toolsBiased": "flaky",
+        "toolsIndecisive": "flaky",
         "json": true,
         "jsonSchema": true,
         "seed": true,
@@ -254,20 +256,18 @@
         "maxTokens": true,
         "stopSequence": true,
         "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "biasedTool": "flaky",
-        "indecisiveTool": "flaky"
+        "reportFinishReason": "true"
       },
       "GenStream": {
         "tools": "true",
+        "toolsBiased": "flaky",
         "json": true,
         "jsonSchema": true,
         "seed": true,
         "maxTokens": true,
         "stopSequence": true,
         "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "biasedTool": "flaky"
+        "reportFinishReason": "true"
       }
     },
     {
@@ -317,6 +317,7 @@
       },
       "GenSync": {
         "tools": "true",
+        "toolsIndecisive": "flaky",
         "json": true,
         "jsonSchema": true,
         "seed": true,
@@ -324,19 +325,18 @@
         "maxTokens": true,
         "stopSequence": true,
         "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "indecisiveTool": "flaky"
+        "reportFinishReason": "true"
       },
       "GenStream": {
         "tools": "true",
+        "toolsIndecisive": "flaky",
         "json": true,
         "jsonSchema": true,
         "seed": true,
         "maxTokens": true,
         "stopSequence": true,
         "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "indecisiveTool": "flaky"
+        "reportFinishReason": "true"
       }
     },
     {

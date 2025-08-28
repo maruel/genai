@@ -40,6 +40,7 @@
       },
       "GenSync": {
         "tools": "true",
+        "toolsIndecisive": "true",
         "json": true,
         "jsonSchema": true,
         "seed": true,
@@ -48,11 +49,11 @@
         "stopSequence": true,
         "reportRateLimits": true,
         "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "indecisiveTool": "true"
+        "reportFinishReason": "true"
       },
       "GenStream": {
         "tools": "true",
+        "toolsIndecisive": "true",
         "json": true,
         "jsonSchema": true,
         "seed": true,
@@ -61,8 +62,7 @@
         "stopSequence": true,
         "reportRateLimits": true,
         "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "indecisiveTool": "true"
+        "reportFinishReason": "true"
       }
     },
     {
@@ -124,23 +124,23 @@
       },
       "GenSync": {
         "tools": "true",
+        "toolsBiased": "flaky",
         "json": true,
         "jsonSchema": true,
         "seed": true,
         "reportRateLimits": true,
         "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "biasedTool": "flaky"
+        "reportFinishReason": "true"
       },
       "GenStream": {
         "tools": "true",
+        "toolsBiased": "flaky",
         "json": true,
         "jsonSchema": true,
         "seed": true,
         "reportRateLimits": true,
         "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "biasedTool": "flaky"
+        "reportFinishReason": "true"
       }
     },
     {

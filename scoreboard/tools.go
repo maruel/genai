@@ -80,8 +80,8 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *FunctionalityText, 
 		internal.Logger(ctx).DebugContext(ctx, "SquareRoot", "err", err)
 		// Tools are not supported, no need to do the rest.
 		f.Tools = False
-		f.BiasedTool = False
-		f.IndecisiveTool = False
+		f.ToolsBiased = False
+		f.ToolsIndecisive = False
 		return nil
 	}
 
@@ -106,8 +106,8 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *FunctionalityText, 
 	if err != nil || slices.ContainsFunc(resp.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
 		internal.Logger(ctx).DebugContext(ctx, "SquareRoot-2", "err", err)
 		f.Tools = Flaky
-		f.BiasedTool = False
-		f.IndecisiveTool = False
+		f.ToolsBiased = False
+		f.ToolsIndecisive = False
 		return nil
 	}
 
@@ -245,19 +245,19 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *FunctionalityText, 
 	}
 
 	if indecisiveOccurred {
-		f.IndecisiveTool = True
+		f.ToolsIndecisive = True
 	} else {
-		f.IndecisiveTool = False
+		f.ToolsIndecisive = False
 	}
 
 	if biasedResults[0] == biasedResults[1] {
 		if biasedResults[0] {
-			f.BiasedTool = True
+			f.ToolsBiased = True
 		} else {
-			f.BiasedTool = False
+			f.ToolsBiased = False
 		}
 	} else {
-		f.BiasedTool = Flaky
+		f.ToolsBiased = Flaky
 	}
 	return nil
 }

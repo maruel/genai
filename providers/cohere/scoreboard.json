@@ -25,6 +25,7 @@
       },
       "GenSync": {
         "tools": "true",
+        "toolsIndecisive": "true",
         "json": true,
         "jsonSchema": true,
         "citations": true,
@@ -33,11 +34,11 @@
         "maxTokens": true,
         "stopSequence": true,
         "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "indecisiveTool": "true"
+        "reportFinishReason": "true"
       },
       "GenStream": {
         "tools": "true",
+        "toolsIndecisive": "true",
         "json": true,
         "jsonSchema": true,
         "citations": true,
@@ -46,8 +47,7 @@
         "maxTokens": true,
         "stopSequence": true,
         "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "indecisiveTool": "true"
+        "reportFinishReason": "true"
       }
     },
     {

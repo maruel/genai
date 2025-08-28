@@ -143,10 +143,10 @@ func (t *tableDataRow) initFromScenario(s *scoreboard.Scenario) {
 				t.Tools = "💨"
 			}
 		}
-		if s.GenSync.BiasedTool != scoreboard.False && !strings.Contains(t.Tools, "🧐") {
+		if s.GenSync.ToolsBiased != scoreboard.False && !strings.Contains(t.Tools, "🧐") {
 			t.Tools += "🧐"
 		}
-		if s.GenSync.IndecisiveTool == scoreboard.True && !strings.Contains(t.Tools, "💥") {
+		if s.GenSync.ToolsIndecisive == scoreboard.True && !strings.Contains(t.Tools, "💥") {
 			t.Tools += "💥"
 		}
 		t.Tools = sortString(t.Tools)

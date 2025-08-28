@@ -31,6 +31,15 @@ const (
 	ModalityVideo Modality = "video"
 )
 
+func (m Modality) Validate() error {
+	switch m {
+	case ModalityAudio, ModalityDocument, ModalityImage, ModalityText, ModalityVideo:
+		return nil
+	default:
+		return fmt.Errorf("invalid Modality: %q", m)
+	}
+}
+
 // Functionality defines which functionalites are supported in a scenario.
 //
 // The first group is for all models. The remainder is for text models.
@@ -107,20 +116,29 @@ const triStateName = "flakyfalsetrue"
 
 var triStateIndex = [...]uint8{0, 5, 10, 14}
 
-func (i TriState) String() string {
-	i -= -1
-	if i < 0 || i >= TriState(len(triStateIndex)-1) {
-		return "TriState(" + strconv.FormatInt(int64(i+-1), 10) + ")"
+func (t TriState) String() string {
+	t -= -1
+	if t < 0 || t >= TriState(len(triStateIndex)-1) {
+		return "TriState(" + strconv.FormatInt(int64(t+-1), 10) + ")"
 	}
-	return triStateName[triStateIndex[i]:triStateIndex[i+1]]
+	return triStateName[triStateIndex[t]:triStateIndex[t+1]]
 }
 
-func (i TriState) GoString() string {
-	return i.String()
+func (t TriState) GoString() string {
+	return t.String()
 }
 
-func (i TriState) MarshalJSON() ([]byte, error) {
-	switch i {
+func (t TriState) Validate() error {
+	switch t {
+	case False, True, Flaky:
+		return nil
+	default:
+		return fmt.Errorf("invalid TriState: %q", t)
+	}
+}
+
+func (t TriState) MarshalJSON() ([]byte, error) {
+	switch t {
 	case False:
 		// TODO: Not present.
 		return []byte(`"false"`), nil
@@ -129,22 +147,22 @@ func (i TriState) MarshalJSON() ([]byte, error) {
 	case Flaky:
 		return []byte(`"flaky"`), nil
 	default:
-		return nil, fmt.Errorf("invalid TriState: %q", i)
+		return nil, fmt.Errorf("invalid TriState: %q", t)
 	}
 }
 
-func (i *TriState) UnmarshalJSON(b []byte) error {
+func (t *TriState) UnmarshalJSON(b []byte) error {
 	s := ""
 	if err := json.Unmarshal(b, &s); err != nil {
 		return err
 	}
 	switch s {
-	case `false`:
-		*i = False
-	case `true`:
-		*i = True
-	case `flaky`:
-		*i = Flaky
+	case "false":
+		*t = False
+	case "true":
+		*t = True
+	case "flaky":
+		*t = Flaky
 	default:
 		return fmt.Errorf("invalid TriState: %q", s)
 	}
@@ -179,6 +197,20 @@ type Scenario struct {
 	_ struct{}
 }
 
+func (s *Scenario) Validate() error {
+	for k := range s.In {
+		if err := k.Validate(); err != nil {
+			return err
+		}
+	}
+	for k := range s.In {
+		if err := k.Validate(); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 // ModalCapability describes how a modality is supported by a provider.
 type ModalCapability struct {
 	// Inline means content can be embedded directly (e.g., base64 encoded)
@@ -205,8 +237,17 @@ const (
 	ThinkingAuto Thinking = -1
 )
 
-func (i Thinking) MarshalJSON() ([]byte, error) {
-	switch i {
+func (t Thinking) Validate() error {
+	switch t {
+	case ThinkingNone, ThinkingInline, ThinkingAuto:
+		return nil
+	default:
+		return fmt.Errorf("invalid Thinking: %q", t)
+	}
+}
+
+func (t Thinking) MarshalJSON() ([]byte, error) {
+	switch t {
 	case ThinkingNone:
 		// TODO: Not present.
 		return []byte(`"none"`), nil
@@ -215,22 +256,22 @@ func (i Thinking) MarshalJSON() ([]byte, error) {
 	case ThinkingAuto:
 		return []byte(`"auto"`), nil
 	default:
-		return nil, fmt.Errorf("invalid Thinking: %q", i)
+		return nil, fmt.Errorf("invalid Thinking: %q", t)
 	}
 }
 
-func (i *Thinking) UnmarshalJSON(b []byte) error {
+func (t *Thinking) UnmarshalJSON(b []byte) error {
 	s := ""
 	if err := json.Unmarshal(b, &s); err != nil {
 		return err
 	}
 	switch s {
-	case `none`:
-		*i = ThinkingNone
-	case `inline`:
-		*i = ThinkingInline
-	case `auto`:
-		*i = ThinkingAuto
+	case "none":
+		*t = ThinkingNone
+	case "inline":
+		*t = ThinkingInline
+	case "auto":
+		*t = ThinkingAuto
 	default:
 		return fmt.Errorf("invalid Thinking: %q", s)
 	}

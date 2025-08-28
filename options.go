@@ -87,6 +87,15 @@ func (m Modalities) String() string {
 	}
 }
 
+func (m Modalities) Validate() error {
+	for _, mod := range m {
+		if err := mod.Validate(); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 // OptionsText is a list of frequent options supported by most Provider with text output modality.
 // Each provider is free to support more options through a specialized struct.
 //

@@ -694,6 +694,9 @@ type Client struct {
 // wrapper can be used to add the HTTP header "X-HF-Bill-To" via roundtrippers.Header. See
 // https://huggingface.co/docs/inference-providers/pricing#organization-billing
 func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
+	if err := opts.Validate(); err != nil {
+		return nil, err
+	}
 	if opts.AccountID != "" {
 		return nil, errors.New("unexpected option AccountID")
 	}

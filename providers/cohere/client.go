@@ -820,6 +820,9 @@ type Client struct {
 // Tool use requires the use a model that supports structured output.
 // https://docs.cohere.com/v2/docs/structured-outputs
 func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
+	if err := opts.Validate(); err != nil {
+		return nil, err
+	}
 	if opts.AccountID != "" {
 		return nil, errors.New("unexpected option AccountID")
 	}

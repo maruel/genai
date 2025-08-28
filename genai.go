@@ -86,6 +86,10 @@ type ProviderOptions struct {
 	_ struct{}
 }
 
+func (p *ProviderOptions) Validate() error {
+	return p.OutputModalities.Validate()
+}
+
 // Model markers to pass to ProviderOptions.Model.
 const (
 	// ModelNone explicitly tells the provider to not automatically select a model. The use case is when the

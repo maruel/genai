@@ -765,6 +765,9 @@ type Client struct {
 // Tool use requires a model which has the tool capability. See
 // https://docs.mistral.ai/capabilities/function_calling/
 func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
+	if err := opts.Validate(); err != nil {
+		return nil, err
+	}
 	if opts.AccountID != "" {
 		return nil, errors.New("unexpected option AccountID")
 	}

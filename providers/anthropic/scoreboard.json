@@ -44,6 +44,7 @@
         "reportFinishReason": "true",
         "tools": "true",
         "toolsBiased": "true",
+        "toolCallRequired": true,
         "citations": true,
         "maxTokens": true,
         "stopSequence": true
@@ -54,6 +55,7 @@
         "reportFinishReason": "true",
         "tools": "true",
         "toolsBiased": "true",
+        "toolCallRequired": true,
         "citations": true,
         "maxTokens": true,
         "stopSequence": true
@@ -96,6 +98,7 @@
         "reportFinishReason": "true",
         "tools": "true",
         "toolsBiased": "true",
+        "toolCallRequired": true,
         "citations": true,
         "maxTokens": true,
         "stopSequence": true
@@ -106,6 +109,7 @@
         "reportFinishReason": "true",
         "tools": "true",
         "toolsBiased": "true",
+        "toolCallRequired": true,
         "citations": true,
         "maxTokens": true,
         "stopSequence": true
@@ -148,7 +152,8 @@
         "reportRateLimits": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
-        "tools": "true",
+        "tools": "flaky",
+        "toolsBiased": "flaky",
         "citations": true,
         "stopSequence": true
       },
@@ -156,7 +161,7 @@
         "reportRateLimits": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
-        "tools": "true",
+        "tools": "flaky",
         "citations": true,
         "stopSequence": true
       }

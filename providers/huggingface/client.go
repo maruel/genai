@@ -622,6 +622,7 @@ type ErrorResponse struct {
 	Reason    string     `json:"reason"`
 	Message   string     `json:"message"`
 	Metadata  struct{}   `json:"metadata"`
+	Type      string     `json:"type"` // "server_error"
 }
 
 func (er *ErrorResponse) Error() string {

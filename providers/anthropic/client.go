@@ -133,6 +133,12 @@ func (c *ChatRequest) initImpl(msgs genai.Messages, model string, cache bool, op
 		}
 	}
 
+	// Post process to take into account limitations by the provider.
+	if c.Model == "claude-sonnet-4-20250514" && c.Thinking.Type == "enabled" && c.ToolChoice.Type == ToolChoiceAny {
+		unsupported = append(unsupported, "ToolCallRequest")
+		c.ToolChoice.Type = ToolChoiceAuto
+	}
+
 	c.Messages = make([]Message, 0, len(msgs))
 	for i := range msgs {
 		c.Messages = append(c.Messages, Message{})
@@ -1171,6 +1177,7 @@ func (r *ModelsResponse) ToModels() []genai.Model {
 type ErrorResponse struct {
 	Type     string `json:"type"` // "error"
 	ErrorVal struct {
+		Details struct{} `json:"details"`
 		// Type is one of "invalid_request_error", "authentication_error", "billing_error", "permission_error", "not_found_error", "rate_limit_error", "timeout_error", "api_error", "overloaded_error"
 		Type    string `json:"type"`
 		Message string `json:"message"`

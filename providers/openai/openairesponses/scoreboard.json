@@ -44,6 +44,7 @@
         "reportFinishReason": "true",
         "tools": "true",
         "toolsBiased": "true",
+        "toolCallRequired": true,
         "json": true,
         "jsonSchema": true,
         "maxTokens": true
@@ -53,6 +54,7 @@
         "reportFinishReason": "true",
         "tools": "true",
         "toolsBiased": "true",
+        "toolCallRequired": true,
         "json": true,
         "jsonSchema": true,
         "maxTokens": true
@@ -96,6 +98,7 @@
         "reportFinishReason": "true",
         "tools": "true",
         "toolsBiased": "true",
+        "toolCallRequired": true,
         "json": true,
         "jsonSchema": true
       },
@@ -103,7 +106,8 @@
         "reportTokenUsage": "flaky",
         "reportFinishReason": "true",
         "tools": "true",
-        "toolsBiased": "true",
+        "toolsBiased": "flaky",
+        "toolCallRequired": true,
         "json": true,
         "jsonSchema": true,
         "maxTokens": true

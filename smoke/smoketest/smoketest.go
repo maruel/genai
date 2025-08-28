@@ -163,8 +163,8 @@ func runOneModel(t testing.TB, gc getClientOneModel, want scoreboard.Scenario) g
 		want.ThinkingTokenEnd = ""
 	}
 	// Check if valid.
-	// if diff := cmp.Diff(want, got, optScenario, optFunctionalityText); diff != "" {
-	if diff := cmp.Diff(want, got, optTriState, optScenario); diff != "" {
+	// optTriState,
+	if diff := cmp.Diff(want, got, optScenario); diff != "" {
 		t.Errorf("mismatch (-want +got):\n%s", diff)
 	}
 	return usage
@@ -172,6 +172,9 @@ func runOneModel(t testing.TB, gc getClientOneModel, want scoreboard.Scenario) g
 
 //
 
+var optScenario = cmpopts.IgnoreFields(scoreboard.Scenario{}, "Comments")
+
+/*
 var optTriState = cmp.Comparer(func(x, y scoreboard.TriState) bool {
 	// TODO: Make this more solid. This requires a better assessment of what "Flaky" is.
 	if x == scoreboard.Flaky || y == scoreboard.Flaky {
@@ -179,7 +182,6 @@ var optTriState = cmp.Comparer(func(x, y scoreboard.TriState) bool {
 	}
 	return x == y
 })
-
-var optScenario = cmpopts.IgnoreFields(scoreboard.Scenario{}, "Comments")
+*/
 
 // var optFunctionalityText = cmpopts.IgnoreFields(scoreboard.FunctionalityText{}, "Tools", "IndecisiveTool", "BiasedTool")

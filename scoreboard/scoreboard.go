@@ -78,6 +78,9 @@ type Functionality struct {
 	// This is actually fine, it means that the LLM will be less opinionated in some cases. The test into which
 	// a LLM is indecisive is likely model-specific too.
 	ToolsIndecisive TriState `json:"toolsIndecisive,omitzero"`
+	// ToolCallRequired is true when the value genai.ToolCallRequired works. Not supporting it significantly
+	// increases the risk of flakiness.
+	ToolCallRequired bool `json:"toolCallRequired,omitzero"`
 
 	// JSON means that the model supports enforcing that the response is valid JSON but not necessarily with a
 	// schema.

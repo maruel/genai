@@ -45,6 +45,7 @@
         "seed": true,
         "tools": "true",
         "toolsIndecisive": "true",
+        "toolCallRequired": true,
         "json": true,
         "jsonSchema": true,
         "topLogprobs": true,
@@ -58,6 +59,7 @@
         "seed": true,
         "tools": "true",
         "toolsIndecisive": "true",
+        "toolCallRequired": true,
         "json": true,
         "jsonSchema": true,
         "topLogprobs": true,
@@ -128,7 +130,8 @@
         "reportFinishReason": "true",
         "seed": true,
         "tools": "true",
-        "toolsBiased": "flaky",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
         "json": true,
         "jsonSchema": true
       },
@@ -139,6 +142,7 @@
         "seed": true,
         "tools": "true",
         "toolsBiased": "flaky",
+        "toolCallRequired": true,
         "json": true,
         "jsonSchema": true
       }

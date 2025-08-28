@@ -1,0 +1,60 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 557
+    host: router.huggingface.co
+    body: "{\"model\":\"meta-llama/Llama-3.3-70B-Instruct\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"}],\"tool_choice\":\"auto\",\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"arguments\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://router.huggingface.co/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 123
+    body: "{\"message\":\"unknown error in the model inference server trace_id: b690b3ea9b12ea7c715d86568fcc5562\",\"type\":\"server_error\"}\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Expose-Headers:
+      - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+      Content-Length:
+      - "123"
+      Content-Type:
+      - application/json
+      Cross-Origin-Opener-Policy:
+      - same-origin
+      Inference-Id:
+      - 0-0198f32a-5df4-7c21-9bab-12e8d43642ee
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Vary:
+      - Origin
+      Via:
+      - 1.1 f0b5ff1c80ac588b3de0f130e6e2c0b6.cloudfront.net (CloudFront)
+      X-Amz-Cf-Id:
+      - ywheyDhOWZzoXzaiiGXmtbRKA0nE8PAJL6cZd1ysTmNWU1P4hfniIA==
+      X-Amz-Cf-Pop:
+      - YTO50-P1
+      X-Cache:
+      - Error from cloudfront
+      X-Inference-Provider:
+      - novita
+      X-Powered-By:
+      - huggingface-moon
+      X-Request-Id:
+      - XvV00EEDF_2PvxYO
+      X-Robots-Tag:
+      - none
+      X-Trace-Id:
+      - b690b3ea9b12ea7c715d86568fcc5562
+    status: 500 Internal Server Error
+    code: 500
+    duration: 6.225s

@@ -23,7 +23,6 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 	type got struct {
 		Number json.Number `json:"number" jsonschema:"type=number"`
 	}
-	requiredSupported := true
 	optsTools := genai.OptionsText{
 		Tools: []genai.ToolDef{
 			{
@@ -56,17 +55,22 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 	}
 	internal.Logger(ctx).DebugContext(ctx, "SquareRoot-1", "resp", resp)
 	flaky := false
+	f.ToolCallRequired = true
 	var uerr *genai.UnsupportedContinuableError
 	if errors.As(err, &uerr) {
 		// Cheap trick to make sure the error is not wrapped. Figure out if there's another way!
 		if strings.HasPrefix(err.Error(), "unsupported options: ") {
 			if slices.Contains(uerr.Unsupported, "ToolCallRequest") {
-				// At best, tool calling is flaky.
-				flaky = true
+				// Do not mark the test as flaky since it worked. Remember about ToolCallRequired not being supported
+				// though.
+				f.ToolCallRequired = false
+				err = nil
 			}
 		}
 	}
-	if err != nil {
+	hasCalls := slices.ContainsFunc(resp.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() })
+	if !hasCalls || err != nil {
+		f.ToolCallRequired = false
 		internal.Logger(ctx).DebugContext(ctx, "SquareRoot-1", "err", err, "msg", "trying toolany")
 		// Try a second time without forcing a tool call.
 		optsTools.ToolCallRequest = genai.ToolCallAny
@@ -75,16 +79,17 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 			internal.Logger(ctx).DebugContext(ctx, "SquareRoot-1-any", "err", err)
 			return err
 		}
+		hasCalls = slices.ContainsFunc(resp.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() })
 		flaky = true
-		requiredSupported = false
 	}
 
-	if err != nil || !slices.ContainsFunc(resp.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
+	if err != nil || !hasCalls {
 		internal.Logger(ctx).DebugContext(ctx, "SquareRoot", "err", err)
 		// Tools are not supported, no need to do the rest.
 		f.Tools = scoreboard.False
 		f.ToolsBiased = scoreboard.False
 		f.ToolsIndecisive = scoreboard.False
+		f.ToolCallRequired = false
 		return nil
 	}
 
@@ -93,9 +98,16 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 	if err != nil {
 		internal.Logger(ctx).DebugContext(ctx, "SquareRoot-1 (do calls)", "err", err)
 		f.Tools = scoreboard.False
+		f.ToolsBiased = scoreboard.False
+		f.ToolsIndecisive = scoreboard.False
+		f.ToolCallRequired = false
 		return nil
 	}
 	if tr.IsZero() {
+		f.Tools = scoreboard.False
+		f.ToolsBiased = scoreboard.False
+		f.ToolsIndecisive = scoreboard.False
+		f.ToolCallRequired = false
 		return fmt.Errorf("expected tool call to return a result or an error")
 	}
 	msgs = append(msgs, tr)
@@ -168,7 +180,7 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 				},
 			},
 		}
-		if requiredSupported {
+		if f.ToolCallRequired {
 			// Some providers like cerebras and togetherai absolutely do not support this flag. So do not use it
 			// unless it's supported.
 			opts.ToolCallRequest = genai.ToolCallRequired

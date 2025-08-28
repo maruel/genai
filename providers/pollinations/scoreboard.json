@@ -25,16 +25,18 @@
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "seed": true,
-        "tools": "flaky",
-        "toolsIndecisive": "flaky",
+        "tools": "true",
+        "toolsIndecisive": "true",
+        "toolCallRequired": true,
         "json": true
       },
       "GenStream": {
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "seed": true,
-        "tools": "flaky",
-        "toolsIndecisive": "flaky"
+        "tools": "true",
+        "toolsIndecisive": "true",
+        "toolCallRequired": true
       }
     },
     {
@@ -95,6 +97,7 @@
         "seed": true,
         "tools": "true",
         "toolsBiased": "true",
+        "toolCallRequired": true,
         "json": true
       },
       "GenStream": {
@@ -102,6 +105,7 @@
         "seed": true,
         "tools": "true",
         "toolsBiased": "true",
+        "toolCallRequired": true,
         "json": true
       }
     },

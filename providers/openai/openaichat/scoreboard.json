@@ -44,6 +44,7 @@
         "jsonSchema": true,
         "seed": true,
         "topLogprobs": true,
+        "maxTokens": true,
         "reportRateLimits": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
@@ -55,6 +56,7 @@
         "jsonSchema": true,
         "seed": true,
         "topLogprobs": true,
+        "maxTokens": true,
         "reportRateLimits": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
@@ -126,7 +128,6 @@
         "reportRateLimits": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
-        "noMaxTokens": true,
         "noStopSequence": true,
         "biasedTool": "flaky"
       },
@@ -138,7 +139,6 @@
         "reportRateLimits": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
-        "noMaxTokens": true,
         "noStopSequence": true,
         "biasedTool": "flaky"
       }

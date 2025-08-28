@@ -125,7 +125,7 @@ func (t *tableDataRow) initFromScenario(s *scoreboard.Scenario) {
 				if s.GenSync.ReportFinishReason != scoreboard.True && !strings.Contains(t.Chat, "🚩") {
 					t.Chat += "🚩"
 				}
-				if (s.GenSync.NoMaxTokens || s.GenSync.NoStopSequence) && !strings.Contains(t.Chat, "🤪") {
+				if (!s.GenSync.MaxTokens || s.GenSync.NoStopSequence) && !strings.Contains(t.Chat, "🤪") {
 					t.Chat += "🤪"
 				}
 				t.Chat = sortString(t.Chat)
@@ -175,7 +175,7 @@ func (t *tableDataRow) initFromScenario(s *scoreboard.Scenario) {
 				if s.GenStream.ReportFinishReason != scoreboard.True && !strings.Contains(t.Streaming, "🚩") {
 					t.Streaming += "🚩"
 				}
-				if (s.GenStream.NoMaxTokens || s.GenStream.NoStopSequence) && !strings.Contains(t.Streaming, "🤪") {
+				if (!s.GenStream.MaxTokens || s.GenStream.NoStopSequence) && !strings.Contains(t.Streaming, "🤪") {
 					t.Streaming += "🤪"
 				}
 				t.Streaming = sortString(t.Streaming)

@@ -40,6 +40,7 @@
         "jsonSchema": true,
         "seed": true,
         "topLogprobs": true,
+        "maxTokens": true,
         "reportRateLimits": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
@@ -50,6 +51,7 @@
         "json": true,
         "jsonSchema": true,
         "topLogprobs": true,
+        "maxTokens": true,
         "reportRateLimits": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
@@ -89,8 +91,7 @@
         "topLogprobs": true,
         "reportRateLimits": true,
         "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "noMaxTokens": true
+        "reportFinishReason": "true"
       },
       "GenStream": {
         "tools": "flaky",
@@ -100,8 +101,7 @@
         "topLogprobs": true,
         "reportRateLimits": true,
         "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "noMaxTokens": true
+        "reportFinishReason": "true"
       }
     },
     {
@@ -135,13 +135,13 @@
         "topLogprobs": true,
         "reportRateLimits": true,
         "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "noMaxTokens": true
+        "reportFinishReason": "true"
       },
       "GenStream": {
         "tools": "flaky",
         "jsonSchema": true,
         "topLogprobs": true,
+        "maxTokens": true,
         "reportRateLimits": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "true"
@@ -167,6 +167,7 @@
         "jsonSchema": true,
         "seed": true,
         "topLogprobs": true,
+        "maxTokens": true,
         "reportRateLimits": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
@@ -178,6 +179,7 @@
         "jsonSchema": true,
         "seed": true,
         "topLogprobs": true,
+        "maxTokens": true,
         "reportRateLimits": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "true"
@@ -203,6 +205,7 @@
         "json": true,
         "seed": true,
         "topLogprobs": true,
+        "maxTokens": true,
         "reportRateLimits": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "flaky",
@@ -214,6 +217,7 @@
         "json": true,
         "seed": true,
         "topLogprobs": true,
+        "maxTokens": true,
         "reportRateLimits": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "flaky",

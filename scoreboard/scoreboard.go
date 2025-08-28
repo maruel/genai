@@ -57,6 +57,9 @@ type FunctionalityText struct {
 	Seed bool `json:"seed,omitzero"`
 	// TopLogprobs is set when the provider and model combination supports top_logprobs.
 	TopLogprobs bool `json:"topLogprobs,omitzero"`
+	// MaxTokens means that the provider doesn't support limiting text output. It fails more often with model
+	// with implicit thinking.
+	MaxTokens bool `json:"maxTokens,omitzero"`
 
 	// ReportRateLimits means that the provider reports rate limits in its Usage.
 	ReportRateLimits bool `json:"reportRateLimits,omitzero"`
@@ -65,8 +68,6 @@ type FunctionalityText struct {
 	ReportTokenUsage TriState `json:"reportTokenUsage,omitzero"`
 	// ReportFinishReason means that the finish reason (FinishStop, FinishLength, etc) is not correctly reported.
 	ReportFinishReason TriState `json:"reportFinishReason,omitzero"`
-	// NoMaxTokens means that the provider doesn't support limiting text output. Only relevant on text output.
-	NoMaxTokens bool `json:"noMaxTokens,omitzero"`
 	// NoStopSequence means that the provider doesn't support stop words. Only relevant on text output.
 	NoStopSequence bool `json:"noStopSequence,omitzero"`
 	// BiasedTool is true when we ask the LLM to use a tool in an ambiguous biased question, it will always

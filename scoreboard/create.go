@@ -270,16 +270,16 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*Fu
 	if isBadError(ctx, err) {
 		return f, err
 	}
-	f.NoMaxTokens = err != nil || strings.Count(resp.String(), " ")+1 > 20
+	f.MaxTokens = err == nil && strings.Count(resp.String(), " ")+1 <= 20
 	if err == nil {
-		if !f.NoMaxTokens && (resp.Usage.InputTokens == 0 || resp.Usage.OutputTokens == 0) {
+		if f.MaxTokens && (resp.Usage.InputTokens == 0 || resp.Usage.OutputTokens == 0) {
 			if f.ReportTokenUsage != False {
 				internal.Logger(ctx).DebugContext(ctx, "MaxTokens", "issue", "token usage")
 				f.ReportTokenUsage = Flaky
 			}
 		}
 		expectedFR := genai.FinishedLength
-		if f.NoMaxTokens {
+		if !f.MaxTokens {
 			expectedFR = genai.FinishedStop
 		}
 		if resp.Usage.FinishReason != expectedFR {

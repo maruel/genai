@@ -41,6 +41,7 @@
       "GenSync": {
         "tools": "true",
         "citations": true,
+        "maxTokens": true,
         "reportRateLimits": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
@@ -49,6 +50,7 @@
       "GenStream": {
         "tools": "true",
         "citations": true,
+        "maxTokens": true,
         "reportRateLimits": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
@@ -89,6 +91,7 @@
       "GenSync": {
         "tools": "true",
         "citations": true,
+        "maxTokens": true,
         "reportRateLimits": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
@@ -97,6 +100,7 @@
       "GenStream": {
         "tools": "true",
         "citations": true,
+        "maxTokens": true,
         "reportRateLimits": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
@@ -140,16 +144,14 @@
         "citations": true,
         "reportRateLimits": true,
         "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "noMaxTokens": true
+        "reportFinishReason": "true"
       },
       "GenStream": {
         "tools": "true",
         "citations": true,
         "reportRateLimits": true,
         "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "noMaxTokens": true
+        "reportFinishReason": "true"
       }
     },
     {

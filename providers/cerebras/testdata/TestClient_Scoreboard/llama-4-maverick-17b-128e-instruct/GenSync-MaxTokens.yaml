@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 166
+    host: api.cerebras.ai
+    body: "{\"model\":\"llama-4-maverick-17b-128e-instruct\",\"messages\":[{\"role\":\"user\",\"content\":\"Explain the theory of relativity in great details.\"}],\"max_completion_tokens\":16}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cerebras.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-eb27f073-2c6e-4ccb-9fd2-4c77f064876b\",\"choices\":[{\"finish_reason\":\"length\",\"index\":0,\"message\":{\"content\":\"The theory of relativity, developed by Albert Einstein, is a fundamental concept in modern\",\"role\":\"assistant\"}}],\"created\":1756417538,\"model\":\"llama-4-maverick-17b-128e-instruct\",\"system_fingerprint\":\"fp_aae0da8c4c7b9d1c0ddb\",\"object\":\"chat.completion\",\"usage\":{\"prompt_tokens\":19,\"completion_tokens\":16,\"total_tokens\":35,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":0.000125189,\"prompt_time\":0.002443744,\"completion_time\":0.004710708,\"total_time\":0.008530616760253906,\"created\":1756417538}}"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9766ff2d0d4dc994-IAD
+      Content-Type:
+      - application/json
+      Inference-Id:
+      - chatcmpl-eb27f073-2c6e-4ccb-9fd2-4c77f064876b
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=3600; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Ratelimit-Limit-Requests-Day:
+      - "14400"
+      X-Ratelimit-Limit-Tokens-Minute:
+      - "60000"
+      X-Ratelimit-Remaining-Requests-Day:
+      - "14394"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "59895"
+      X-Ratelimit-Reset-Requests-Day:
+      - "8061.779306411743"
+      X-Ratelimit-Reset-Tokens-Minute:
+      - "21.779306411743164"
+      X-Request-Id:
+      - 9766ff2d0d4dc994-IAD
+    status: 200 OK
+    code: 200
+    duration: 216ms

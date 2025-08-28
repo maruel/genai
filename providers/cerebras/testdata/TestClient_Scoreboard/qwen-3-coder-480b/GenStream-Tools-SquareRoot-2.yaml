@@ -1,0 +1,58 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 793
+    host: api.cerebras.ai
+    body: "{\"model\":\"qwen-3-coder-480b\",\"messages\":[{\"role\":\"user\",\"content\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"},{\"role\":\"assistant\",\"tool_calls\":[{\"type\":\"function\",\"id\":\"546a0a859\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\": 132413}\"}}]},{\"role\":\"tool\",\"content\":\"363.89\",\"tool_call_id\":\"546a0a859\",\"name\":\"square_root\"}],\"stream\":true,\"tool_choice\":\"none\",\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"parallel_tool_calls\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cerebras.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"chatcmpl-2f828c74-2e47-459b-9a74-59a79266a2cf\",\"choices\":[{\"delta\":{\"role\":\"assistant\"},\"index\":0}],\"created\":1756417806,\"model\":\"qwen-3-coder-480b\",\"system_fingerprint\":\"fp_4405be376d055dc5bff7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-2f828c74-2e47-459b-9a74-59a79266a2cf\",\"choices\":[{\"delta\":{\"content\":\"3\"},\"index\":0}],\"created\":1756417806,\"model\":\"qwen-3-coder-480b\",\"system_fingerprint\":\"fp_4405be376d055dc5bff7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-2f828c74-2e47-459b-9a74-59a79266a2cf\",\"choices\":[{\"delta\":{\"content\":\"6\"},\"index\":0}],\"created\":1756417806,\"model\":\"qwen-3-coder-480b\",\"system_fingerprint\":\"fp_4405be376d055dc5bff7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-2f828c74-2e47-459b-9a74-59a79266a2cf\",\"choices\":[{\"delta\":{\"content\":\"3\"},\"index\":0}],\"created\":1756417806,\"model\":\"qwen-3-coder-480b\",\"system_fingerprint\":\"fp_4405be376d055dc5bff7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-2f828c74-2e47-459b-9a74-59a79266a2cf\",\"choices\":[{\"delta\":{\"content\":\".\"},\"index\":0}],\"created\":1756417806,\"model\":\"qwen-3-coder-480b\",\"system_fingerprint\":\"fp_4405be376d055dc5bff7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-2f828c74-2e47-459b-9a74-59a79266a2cf\",\"choices\":[{\"delta\":{\"content\":\"8\"},\"index\":0}],\"created\":1756417806,\"model\":\"qwen-3-coder-480b\",\"system_fingerprint\":\"fp_4405be376d055dc5bff7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-2f828c74-2e47-459b-9a74-59a79266a2cf\",\"choices\":[{\"delta\":{\"content\":\"9\"},\"index\":0}],\"created\":1756417806,\"model\":\"qwen-3-coder-480b\",\"system_fingerprint\":\"fp_4405be376d055dc5bff7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-2f828c74-2e47-459b-9a74-59a79266a2cf\",\"choices\":[{\"delta\":{},\"index\":0}],\"created\":1756417806,\"model\":\"qwen-3-coder-480b\",\"system_fingerprint\":\"fp_4405be376d055dc5bff7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-2f828c74-2e47-459b-9a74-59a79266a2cf\",\"choices\":[{\"delta\":{},\"finish_reason\":\"stop\",\"index\":0}],\"created\":1756417806,\"model\":\"qwen-3-coder-480b\",\"system_fingerprint\":\"fp_4405be376d055dc5bff7\",\"object\":\"chat.completion.chunk\",\"usage\":{\"prompt_tokens\":87,\"completion_tokens\":7,\"total_tokens\":94,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":3.449533514,\"prompt_time\":0.007430377,\"completion_time\":0.02356457,\"total_time\":3.4827322959899902,\"created\":1756417806}}\n\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 976705be1b25a506-EWR
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Inference-Id:
+      - chatcmpl-2f828c74-2e47-459b-9a74-59a79266a2cf
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=3600; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Ratelimit-Limit-Requests-Day:
+      - "100"
+      X-Ratelimit-Limit-Tokens-Minute:
+      - "150000"
+      X-Ratelimit-Remaining-Requests-Day:
+      - "82"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "148824"
+      X-Ratelimit-Reset-Requests-Day:
+      - "7792.693023681641"
+      X-Ratelimit-Reset-Tokens-Minute:
+      - "52.693023681640625"
+      X-Request-Id:
+      - 976705be1b25a506-EWR
+    status: 200 OK
+    code: 200
+    duration: 2.827s

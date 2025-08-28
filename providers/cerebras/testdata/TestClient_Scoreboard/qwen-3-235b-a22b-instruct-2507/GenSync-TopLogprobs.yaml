@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 147
+    host: api.cerebras.ai
+    body: "{\"model\":\"qwen-3-235b-a22b-instruct-2507\",\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"}],\"logprobs\":true,\"top_logprobs\":2}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cerebras.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-853882e2-cb8a-4270-b519-eae0be8e9a12\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"Hello.\",\"role\":\"assistant\"},\"logprobs\":{\"content\":[{\"token\":\"Hello\",\"logprob\":-0.0005516675882972777,\"bytes\":[72,101,108,108,111],\"top_logprobs\":[{\"token\":\"Hello\",\"logprob\":-0.0005516675882972777,\"bytes\":[72,101,108,108,111]},{\"token\":\"Hi\",\"logprob\":-7.828676700592041,\"bytes\":[72,105]}]},{\"token\":\".\",\"logprob\":-0.288548082113266,\"bytes\":[46],\"top_logprobs\":[{\"token\":\".\",\"logprob\":-0.288548082113266,\"bytes\":[46]},{\"token\":\"<|im_end|>\",\"logprob\":-1.4447981119155884,\"bytes\":[60,124,105,109,95,101,110,100,124,62]}]},{\"token\":\"<|im_end|>\",\"logprob\":0.0,\"bytes\":[60,124,105,109,95,101,110,100,124,62],\"top_logprobs\":[{\"token\":\"<|im_end|>\",\"logprob\":0.0,\"bytes\":[60,124,105,109,95,101,110,100,124,62]},{\"token\":\" �\",\"logprob\":-17.234375,\"bytes\":[32,239,191,189]}]}]}}],\"created\":1756417630,\"model\":\"qwen-3-235b-a22b-instruct-2507\",\"system_fingerprint\":\"fp_b79cb466bb8a1b29b77f\",\"object\":\"chat.completion\",\"usage\":{\"prompt_tokens\":16,\"completion_tokens\":3,\"total_tokens\":19,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":0.049501109,\"prompt_time\":0.001276817,\"completion_time\":0.010626369,\"total_time\":0.06371665000915527,\"created\":1756417630}}"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9767016baf7aa320-YUL
+      Content-Type:
+      - application/json
+      Inference-Id:
+      - chatcmpl-853882e2-cb8a-4270-b519-eae0be8e9a12
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=3600; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Ratelimit-Limit-Requests-Day:
+      - "14400"
+      X-Ratelimit-Limit-Tokens-Minute:
+      - "60000"
+      X-Ratelimit-Remaining-Requests-Day:
+      - "14393"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "59871"
+      X-Ratelimit-Reset-Requests-Day:
+      - "7969.841431856155"
+      X-Ratelimit-Reset-Tokens-Minute:
+      - "49.841431856155396"
+      X-Request-Id:
+      - 9767016baf7aa320-YUL
+    status: 200 OK
+    code: 200
+    duration: 2.598s

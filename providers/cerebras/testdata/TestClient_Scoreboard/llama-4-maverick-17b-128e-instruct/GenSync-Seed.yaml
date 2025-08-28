@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 128
+    host: api.cerebras.ai
+    body: "{\"model\":\"llama-4-maverick-17b-128e-instruct\",\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"}],\"seed\":42}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cerebras.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-0d55c72e-06e9-4dba-a81d-c9ca848f71eb\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"Hello.\",\"role\":\"assistant\"}}],\"created\":1756417537,\"model\":\"llama-4-maverick-17b-128e-instruct\",\"system_fingerprint\":\"fp_aae0da8c4c7b9d1c0ddb\",\"object\":\"chat.completion\",\"usage\":{\"prompt_tokens\":18,\"completion_tokens\":3,\"total_tokens\":21,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":0.00010799,\"prompt_time\":0.002593353,\"completion_time\":0.001042767,\"total_time\":0.004720449447631836,\"created\":1756417537}}"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9766ff2a9f53c994-IAD
+      Content-Type:
+      - application/json
+      Inference-Id:
+      - chatcmpl-0d55c72e-06e9-4dba-a81d-c9ca848f71eb
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=3600; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Ratelimit-Limit-Requests-Day:
+      - "14400"
+      X-Ratelimit-Limit-Tokens-Minute:
+      - "60000"
+      X-Ratelimit-Remaining-Requests-Day:
+      - "14396"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "59937"
+      X-Ratelimit-Reset-Requests-Day:
+      - "8062.172649383545"
+      X-Ratelimit-Reset-Tokens-Minute:
+      - "22.172649383544922"
+      X-Request-Id:
+      - 9766ff2a9f53c994-IAD
+    status: 200 OK
+    code: 200
+    duration: 1.426s

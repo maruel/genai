@@ -1,0 +1,58 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 266
+    host: api.cerebras.ai
+    body: "{\"model\":\"qwen-3-235b-a22b-instruct-2507\",\"messages\":[{\"role\":\"user\",\"content\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\\\"is_fruit\\\": bool}.\"}],\"response_format\":{\"type\":\"json_object\"},\"stream\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cerebras.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"chatcmpl-8e03429a-f3ec-41a8-b56a-0b838ab8c528\",\"choices\":[{\"delta\":{\"role\":\"assistant\"},\"index\":0}],\"created\":1756417630,\"model\":\"qwen-3-235b-a22b-instruct-2507\",\"system_fingerprint\":\"fp_b79cb466bb8a1b29b77f\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-8e03429a-f3ec-41a8-b56a-0b838ab8c528\",\"choices\":[{\"delta\":{\"content\":\"{\\\"\"},\"index\":0}],\"created\":1756417630,\"model\":\"qwen-3-235b-a22b-instruct-2507\",\"system_fingerprint\":\"fp_b79cb466bb8a1b29b77f\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-8e03429a-f3ec-41a8-b56a-0b838ab8c528\",\"choices\":[{\"delta\":{\"content\":\"is\"},\"index\":0}],\"created\":1756417630,\"model\":\"qwen-3-235b-a22b-instruct-2507\",\"system_fingerprint\":\"fp_b79cb466bb8a1b29b77f\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-8e03429a-f3ec-41a8-b56a-0b838ab8c528\",\"choices\":[{\"delta\":{\"content\":\"_f\"},\"index\":0}],\"created\":1756417630,\"model\":\"qwen-3-235b-a22b-instruct-2507\",\"system_fingerprint\":\"fp_b79cb466bb8a1b29b77f\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-8e03429a-f3ec-41a8-b56a-0b838ab8c528\",\"choices\":[{\"delta\":{\"content\":\"ruit\"},\"index\":0}],\"created\":1756417630,\"model\":\"qwen-3-235b-a22b-instruct-2507\",\"system_fingerprint\":\"fp_b79cb466bb8a1b29b77f\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-8e03429a-f3ec-41a8-b56a-0b838ab8c528\",\"choices\":[{\"delta\":{\"content\":\"\\\":\"},\"index\":0}],\"created\":1756417630,\"model\":\"qwen-3-235b-a22b-instruct-2507\",\"system_fingerprint\":\"fp_b79cb466bb8a1b29b77f\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-8e03429a-f3ec-41a8-b56a-0b838ab8c528\",\"choices\":[{\"delta\":{\"content\":\" true\"},\"index\":0}],\"created\":1756417630,\"model\":\"qwen-3-235b-a22b-instruct-2507\",\"system_fingerprint\":\"fp_b79cb466bb8a1b29b77f\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-8e03429a-f3ec-41a8-b56a-0b838ab8c528\",\"choices\":[{\"delta\":{\"content\":\"}\"},\"index\":0}],\"created\":1756417630,\"model\":\"qwen-3-235b-a22b-instruct-2507\",\"system_fingerprint\":\"fp_b79cb466bb8a1b29b77f\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-8e03429a-f3ec-41a8-b56a-0b838ab8c528\",\"choices\":[{\"delta\":{},\"index\":0}],\"created\":1756417630,\"model\":\"qwen-3-235b-a22b-instruct-2507\",\"system_fingerprint\":\"fp_b79cb466bb8a1b29b77f\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-8e03429a-f3ec-41a8-b56a-0b838ab8c528\",\"choices\":[{\"delta\":{},\"finish_reason\":\"stop\",\"index\":0}],\"created\":1756417630,\"model\":\"qwen-3-235b-a22b-instruct-2507\",\"system_fingerprint\":\"fp_b79cb466bb8a1b29b77f\",\"object\":\"chat.completion.chunk\",\"usage\":{\"prompt_tokens\":37,\"completion_tokens\":8,\"total_tokens\":45,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":0.122070938,\"prompt_time\":0.006805664,\"completion_time\":0.007035112,\"total_time\":0.13743090629577637,\"created\":1756417630}}\n\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 976701741e2ab407-YYZ
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Inference-Id:
+      - chatcmpl-8e03429a-f3ec-41a8-b56a-0b838ab8c528
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=3600; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Ratelimit-Limit-Requests-Day:
+      - "14400"
+      X-Ratelimit-Limit-Tokens-Minute:
+      - "60000"
+      X-Ratelimit-Remaining-Requests-Day:
+      - "14389"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "59794"
+      X-Ratelimit-Reset-Requests-Day:
+      - "7968.515140533447"
+      X-Ratelimit-Reset-Tokens-Minute:
+      - "48.515140533447266"
+      X-Request-Id:
+      - 976701741e2ab407-YYZ
+    status: 200 OK
+    code: 200
+    duration: 1.365s

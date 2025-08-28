@@ -1,0 +1,58 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 582
+    host: api.cerebras.ai
+    body: "{\"model\":\"qwen-3-coder-480b\",\"messages\":[{\"role\":\"user\",\"content\":\"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one.\"}],\"stream\":true,\"tool_choice\":\"required\",\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"description\":\"A tool to specify the best country\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"country\":{\"type\":\"string\",\"enum\":[\"Canada\",\"USA\"]}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"country\"]}}}],\"parallel_tool_calls\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cerebras.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"chatcmpl-267089e5-af15-482e-bbfe-fa445221fe95\",\"choices\":[{\"delta\":{\"role\":\"assistant\"},\"index\":0}],\"created\":1756417810,\"model\":\"qwen-3-coder-480b\",\"system_fingerprint\":\"fp_4405be376d055dc5bff7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-267089e5-af15-482e-bbfe-fa445221fe95\",\"choices\":[{\"delta\":{\"tool_calls\":[{\"function\":{\"name\":\"best_country\",\"arguments\":\"{\\\"country\\\": \\\"Canada\\\"}\"},\"type\":\"function\",\"id\":\"069b43cf4\",\"index\":0}]},\"index\":0}],\"created\":1756417810,\"model\":\"qwen-3-coder-480b\",\"system_fingerprint\":\"fp_4405be376d055dc5bff7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-267089e5-af15-482e-bbfe-fa445221fe95\",\"choices\":[{\"delta\":{},\"finish_reason\":\"tool_calls\",\"index\":0}],\"created\":1756417810,\"model\":\"qwen-3-coder-480b\",\"system_fingerprint\":\"fp_4405be376d055dc5bff7\",\"object\":\"chat.completion.chunk\",\"usage\":{\"prompt_tokens\":313,\"completion_tokens\":23,\"total_tokens\":336,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":0.00020854,\"prompt_time\":0.017248393,\"completion_time\":0.02093042,\"total_time\":0.039743900299072266,\"created\":1756417810}}\n\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 976705dd1fd0aa9e-YYZ
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Inference-Id:
+      - chatcmpl-267089e5-af15-482e-bbfe-fa445221fe95
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=3600; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Ratelimit-Limit-Requests-Day:
+      - "100"
+      X-Ratelimit-Limit-Tokens-Minute:
+      - "150000"
+      X-Ratelimit-Remaining-Requests-Day:
+      - "78"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "147937"
+      X-Ratelimit-Reset-Requests-Day:
+      - "7787.803873062134"
+      X-Ratelimit-Reset-Tokens-Minute:
+      - "47.80387306213379"
+      X-Request-Id:
+      - 976705dd1fd0aa9e-YYZ
+    status: 200 OK
+    code: 200
+    duration: 1.388s

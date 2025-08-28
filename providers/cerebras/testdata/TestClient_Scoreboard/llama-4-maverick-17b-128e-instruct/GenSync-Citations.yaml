@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 230
+    host: api.cerebras.ai
+    body: "{\"model\":\"llama-4-maverick-17b-128e-instruct\",\"messages\":[{\"role\":\"user\",\"content\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"role\":\"user\",\"content\":\"What is the capital of Quackiland?\"}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cerebras.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-f431f53e-832d-4f59-a7ef-af2e81e7d163\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"The capital of Quackiland is Quack.\",\"role\":\"assistant\"}}],\"created\":1756417543,\"model\":\"llama-4-maverick-17b-128e-instruct\",\"system_fingerprint\":\"fp_aae0da8c4c7b9d1c0ddb\",\"object\":\"chat.completion\",\"usage\":{\"prompt_tokens\":46,\"completion_tokens\":11,\"total_tokens\":57,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":0.00011931,\"prompt_time\":0.002899967,\"completion_time\":0.002662048,\"total_time\":0.006757020950317383,\"created\":1756417543}}"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9766ff4ba88fbacb-IAD
+      Content-Type:
+      - application/json
+      Inference-Id:
+      - chatcmpl-f431f53e-832d-4f59-a7ef-af2e81e7d163
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=3600; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Ratelimit-Limit-Requests-Day:
+      - "14400"
+      X-Ratelimit-Limit-Tokens-Minute:
+      - "60000"
+      X-Ratelimit-Remaining-Requests-Day:
+      - "14381"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "58152"
+      X-Ratelimit-Reset-Requests-Day:
+      - "8056.843838453293"
+      X-Ratelimit-Reset-Tokens-Minute:
+      - "16.843838453292847"
+      X-Request-Id:
+      - 9766ff4ba88fbacb-IAD
+    status: 200 OK
+    code: 200
+    duration: 236ms

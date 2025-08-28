@@ -1,0 +1,58 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 240
+    host: api.cerebras.ai
+    body: "{\"model\":\"qwen-3-235b-a22b-instruct-2507\",\"messages\":[{\"role\":\"user\",\"content\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"role\":\"user\",\"content\":\"What is the capital of Quackiland?\"}],\"stream\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cerebras.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"chatcmpl-ed4b8e81-7fee-4a14-8b23-241d843aaa2b\",\"choices\":[{\"delta\":{\"role\":\"assistant\"},\"index\":0}],\"created\":1756417636,\"model\":\"qwen-3-235b-a22b-instruct-2507\",\"system_fingerprint\":\"fp_b79cb466bb8a1b29b77f\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ed4b8e81-7fee-4a14-8b23-241d843aaa2b\",\"choices\":[{\"delta\":{\"content\":\"The\"},\"index\":0}],\"created\":1756417636,\"model\":\"qwen-3-235b-a22b-instruct-2507\",\"system_fingerprint\":\"fp_b79cb466bb8a1b29b77f\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ed4b8e81-7fee-4a14-8b23-241d843aaa2b\",\"choices\":[{\"delta\":{\"content\":\" capital\"},\"index\":0}],\"created\":1756417636,\"model\":\"qwen-3-235b-a22b-instruct-2507\",\"system_fingerprint\":\"fp_b79cb466bb8a1b29b77f\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ed4b8e81-7fee-4a14-8b23-241d843aaa2b\",\"choices\":[{\"delta\":{\"content\":\" of\"},\"index\":0}],\"created\":1756417636,\"model\":\"qwen-3-235b-a22b-instruct-2507\",\"system_fingerprint\":\"fp_b79cb466bb8a1b29b77f\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ed4b8e81-7fee-4a14-8b23-241d843aaa2b\",\"choices\":[{\"delta\":{\"content\":\" Qu\"},\"index\":0}],\"created\":1756417636,\"model\":\"qwen-3-235b-a22b-instruct-2507\",\"system_fingerprint\":\"fp_b79cb466bb8a1b29b77f\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ed4b8e81-7fee-4a14-8b23-241d843aaa2b\",\"choices\":[{\"delta\":{\"content\":\"ack\"},\"index\":0}],\"created\":1756417636,\"model\":\"qwen-3-235b-a22b-instruct-2507\",\"system_fingerprint\":\"fp_b79cb466bb8a1b29b77f\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ed4b8e81-7fee-4a14-8b23-241d843aaa2b\",\"choices\":[{\"delta\":{\"content\":\"iland\"},\"index\":0}],\"created\":1756417636,\"model\":\"qwen-3-235b-a22b-instruct-2507\",\"system_fingerprint\":\"fp_b79cb466bb8a1b29b77f\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ed4b8e81-7fee-4a14-8b23-241d843aaa2b\",\"choices\":[{\"delta\":{\"content\":\" is\"},\"index\":0}],\"created\":1756417636,\"model\":\"qwen-3-235b-a22b-instruct-2507\",\"system_fingerprint\":\"fp_b79cb466bb8a1b29b77f\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ed4b8e81-7fee-4a14-8b23-241d843aaa2b\",\"choices\":[{\"delta\":{\"content\":\" Qu\"},\"index\":0}],\"created\":1756417636,\"model\":\"qwen-3-235b-a22b-instruct-2507\",\"system_fingerprint\":\"fp_b79cb466bb8a1b29b77f\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ed4b8e81-7fee-4a14-8b23-241d843aaa2b\",\"choices\":[{\"delta\":{\"content\":\"ack\"},\"index\":0}],\"created\":1756417636,\"model\":\"qwen-3-235b-a22b-instruct-2507\",\"system_fingerprint\":\"fp_b79cb466bb8a1b29b77f\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ed4b8e81-7fee-4a14-8b23-241d843aaa2b\",\"choices\":[{\"delta\":{\"content\":\".\"},\"index\":0}],\"created\":1756417636,\"model\":\"qwen-3-235b-a22b-instruct-2507\",\"system_fingerprint\":\"fp_b79cb466bb8a1b29b77f\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ed4b8e81-7fee-4a14-8b23-241d843aaa2b\",\"choices\":[{\"delta\":{},\"index\":0}],\"created\":1756417636,\"model\":\"qwen-3-235b-a22b-instruct-2507\",\"system_fingerprint\":\"fp_b79cb466bb8a1b29b77f\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-ed4b8e81-7fee-4a14-8b23-241d843aaa2b\",\"choices\":[{\"delta\":{},\"finish_reason\":\"stop\",\"index\":0}],\"created\":1756417636,\"model\":\"qwen-3-235b-a22b-instruct-2507\",\"system_fingerprint\":\"fp_b79cb466bb8a1b29b77f\",\"object\":\"chat.completion.chunk\",\"usage\":{\"prompt_tokens\":43,\"completion_tokens\":11,\"total_tokens\":54,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":1.291141274,\"prompt_time\":0.089711249,\"completion_time\":0.006325299,\"total_time\":1.3928260803222656,\"created\":1756417636}}\n\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9767019dccb6b407-YYZ
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Inference-Id:
+      - chatcmpl-ed4b8e81-7fee-4a14-8b23-241d843aaa2b
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=3600; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Ratelimit-Limit-Requests-Day:
+      - "14400"
+      X-Ratelimit-Limit-Tokens-Minute:
+      - "60000"
+      X-Ratelimit-Remaining-Requests-Day:
+      - "14375"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "57616"
+      X-Ratelimit-Reset-Requests-Day:
+      - "7961.840920209885"
+      X-Ratelimit-Reset-Tokens-Minute:
+      - "41.840920209884644"
+      X-Request-Id:
+      - 9767019dccb6b407-YYZ
+    status: 200 OK
+    code: 200
+    duration: 1.353s

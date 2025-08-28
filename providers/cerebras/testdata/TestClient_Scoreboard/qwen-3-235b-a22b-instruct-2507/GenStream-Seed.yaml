@@ -1,0 +1,58 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 138
+    host: api.cerebras.ai
+    body: "{\"model\":\"qwen-3-235b-a22b-instruct-2507\",\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"}],\"seed\":42,\"stream\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cerebras.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"chatcmpl-6522c0a4-f10f-4208-83f1-e1517623e0b7\",\"choices\":[{\"delta\":{\"role\":\"assistant\"},\"index\":0}],\"created\":1756417628,\"model\":\"qwen-3-235b-a22b-instruct-2507\",\"system_fingerprint\":\"fp_b79cb466bb8a1b29b77f\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-6522c0a4-f10f-4208-83f1-e1517623e0b7\",\"choices\":[{\"delta\":{\"content\":\"Hello\"},\"index\":0}],\"created\":1756417628,\"model\":\"qwen-3-235b-a22b-instruct-2507\",\"system_fingerprint\":\"fp_b79cb466bb8a1b29b77f\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-6522c0a4-f10f-4208-83f1-e1517623e0b7\",\"choices\":[{\"delta\":{\"content\":\".\"},\"index\":0}],\"created\":1756417628,\"model\":\"qwen-3-235b-a22b-instruct-2507\",\"system_fingerprint\":\"fp_b79cb466bb8a1b29b77f\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-6522c0a4-f10f-4208-83f1-e1517623e0b7\",\"choices\":[{\"delta\":{},\"index\":0}],\"created\":1756417628,\"model\":\"qwen-3-235b-a22b-instruct-2507\",\"system_fingerprint\":\"fp_b79cb466bb8a1b29b77f\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-6522c0a4-f10f-4208-83f1-e1517623e0b7\",\"choices\":[{\"delta\":{},\"finish_reason\":\"stop\",\"index\":0}],\"created\":1756417628,\"model\":\"qwen-3-235b-a22b-instruct-2507\",\"system_fingerprint\":\"fp_b79cb466bb8a1b29b77f\",\"object\":\"chat.completion.chunk\",\"usage\":{\"prompt_tokens\":16,\"completion_tokens\":3,\"total_tokens\":19,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":0.00004718,\"prompt_time\":0.000752348,\"completion_time\":0.010485247,\"total_time\":0.013187170028686523,\"created\":1756417628}}\n\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 97670161acbca320-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Inference-Id:
+      - chatcmpl-6522c0a4-f10f-4208-83f1-e1517623e0b7
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=3600; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Ratelimit-Limit-Requests-Day:
+      - "14400"
+      X-Ratelimit-Limit-Tokens-Minute:
+      - "60000"
+      X-Ratelimit-Remaining-Requests-Day:
+      - "14395"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "59944"
+      X-Ratelimit-Reset-Requests-Day:
+      - "7971.4914808273315"
+      X-Ratelimit-Reset-Tokens-Minute:
+      - "51.49148082733154"
+      X-Request-Id:
+      - 97670161acbca320-YUL
+    status: 200 OK
+    code: 200
+    duration: 1.284s

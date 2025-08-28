@@ -48,7 +48,7 @@ func (t *tableSummaryRow) initFromScoreboard(p genai.Provider) {
 	for i := range sb.Scenarios {
 		t.initFromScenario(&sb.Scenarios[i])
 	}
-	addNopes(t)
+	fillEmptyFields(t, "❌")
 }
 
 type tableModelRow struct {
@@ -261,8 +261,10 @@ func printProviderTable(p genai.Provider) error {
 			if _, isFiles := p.(genai.ProviderCache); isFiles {
 				row.Files = "✅"
 			}
+			fillEmptyFields(&row, "❌")
+		} else {
+			fillEmptyFields(&row, "?")
 		}
-		addNopes(&row)
 		for j := range sb.Scenarios[i].Models {
 			row.Model = sb.Scenarios[i].Models[j]
 			rows = append(rows, row)
@@ -308,13 +310,13 @@ func getTitles[T any]() []string {
 	return titles
 }
 
-// addNopes adds "❌" to all empty string fields.
-func addNopes(c any) {
+// fillEmptyFields sets all empty string fields to def.
+func fillEmptyFields(c any, def string) {
 	visitFields(reflect.ValueOf(c), func(v reflect.Value) {
 		v = v.Elem()
 		if l := len(v.String()); l == 0 {
 			if v.Kind() == reflect.String {
-				v.SetString("❌")
+				v.SetString(def)
 			}
 		}
 	})

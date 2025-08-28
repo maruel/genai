@@ -122,7 +122,7 @@ func functionalityText(f *scoreboard.FunctionalityText) string {
 		// Flaky is okay.
 		items = append(items, "💔biased tool")
 	}
-	if f.BrokenTokenUsage != scoreboard.False {
+	if f.ReportTokenUsage != scoreboard.True {
 		items = append(items, "💔usage")
 	}
 	if f.BrokenFinishReason {
@@ -136,7 +136,7 @@ func functionalityText(f *scoreboard.FunctionalityText) string {
 
 func functionalityDoc(f *scoreboard.FunctionalityDoc) string {
 	var items []string
-	if f.BrokenTokenUsage != scoreboard.False {
+	if f.ReportTokenUsage != scoreboard.True {
 		items = append(items, "💔usage")
 	}
 	if f.BrokenFinishReason {

@@ -119,7 +119,7 @@ func (t *tableDataRow) initFromScenario(s *scoreboard.Scenario) {
 				if t.Chat == "" {
 					t.Chat = "✅"
 				}
-				if s.GenSync.BrokenTokenUsage != scoreboard.False && !strings.Contains(t.Chat, "💸") {
+				if s.GenSync.ReportTokenUsage != scoreboard.True && !strings.Contains(t.Chat, "💸") {
 					t.Chat += "💸"
 				}
 				if s.GenSync.BrokenFinishReason && !strings.Contains(t.Chat, "🚩") {
@@ -169,7 +169,7 @@ func (t *tableDataRow) initFromScenario(s *scoreboard.Scenario) {
 				if t.Streaming == "" {
 					t.Streaming = "✅"
 				}
-				if s.GenStream.BrokenTokenUsage != scoreboard.False && !strings.Contains(t.Streaming, "💸") {
+				if s.GenStream.ReportTokenUsage != scoreboard.True && !strings.Contains(t.Streaming, "💸") {
 					t.Streaming += "💸"
 				}
 				if s.GenStream.BrokenFinishReason && !strings.Contains(t.Streaming, "🚩") {
@@ -189,7 +189,7 @@ func (t *tableDataRow) initFromScenario(s *scoreboard.Scenario) {
 		if s.GenDoc.ReportRateLimits {
 			t.ReportRateLimits = "✅"
 		}
-		if s.GenDoc.BrokenTokenUsage != scoreboard.False || s.GenDoc.BrokenFinishReason {
+		if s.GenDoc.ReportTokenUsage != scoreboard.True || s.GenDoc.BrokenFinishReason {
 			// TODO.
 		}
 	}

@@ -51,6 +51,7 @@
         "jsonSchema": true,
         "seed": true,
         "topLogprobs": true,
+        "reportTokenUsage": "true",
         "indecisiveTool": "flaky"
       },
       "GenStream": {
@@ -58,6 +59,7 @@
         "json": true,
         "jsonSchema": true,
         "seed": true,
+        "reportTokenUsage": "true",
         "indecisiveTool": "flaky"
       }
     },
@@ -103,6 +105,7 @@
         "jsonSchema": true,
         "seed": true,
         "topLogprobs": true,
+        "reportTokenUsage": "true",
         "indecisiveTool": "flaky"
       },
       "GenStream": {
@@ -110,6 +113,7 @@
         "json": true,
         "jsonSchema": true,
         "seed": true,
+        "reportTokenUsage": "true",
         "indecisiveTool": "flaky"
       }
     },
@@ -163,6 +167,7 @@
         "jsonSchema": true,
         "seed": true,
         "topLogprobs": true,
+        "reportTokenUsage": "true",
         "biasedTool": "flaky",
         "indecisiveTool": "flaky"
       },
@@ -171,6 +176,7 @@
         "json": true,
         "jsonSchema": true,
         "seed": true,
+        "reportTokenUsage": "true",
         "biasedTool": "flaky"
       }
     },
@@ -227,6 +233,7 @@
         "jsonSchema": true,
         "seed": true,
         "topLogprobs": true,
+        "reportTokenUsage": "true",
         "biasedTool": "flaky",
         "indecisiveTool": "flaky"
       },
@@ -235,6 +242,7 @@
         "json": true,
         "jsonSchema": true,
         "seed": true,
+        "reportTokenUsage": "true",
         "biasedTool": "flaky"
       }
     },
@@ -289,6 +297,7 @@
         "jsonSchema": true,
         "seed": true,
         "topLogprobs": true,
+        "reportTokenUsage": "true",
         "indecisiveTool": "flaky"
       },
       "GenStream": {
@@ -296,6 +305,7 @@
         "json": true,
         "jsonSchema": true,
         "seed": true,
+        "reportTokenUsage": "true",
         "indecisiveTool": "flaky"
       }
     },
@@ -317,7 +327,6 @@
         }
       },
       "GenDoc": {
-        "brokenTokenUsage": "true",
         "brokenFinishReason": true
       }
     },

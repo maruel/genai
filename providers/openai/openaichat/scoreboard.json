@@ -45,6 +45,7 @@
         "seed": true,
         "topLogprobs": true,
         "reportRateLimits": true,
+        "reportTokenUsage": "true",
         "indecisiveTool": "true"
       },
       "GenStream": {
@@ -54,10 +55,12 @@
         "seed": true,
         "topLogprobs": true,
         "reportRateLimits": true,
+        "reportTokenUsage": "true",
         "indecisiveTool": "true"
       }
     },
     {
+      "comments": "Investigate lack of token usage report",
       "models": [
         "gpt-4o-audio-preview"
       ],
@@ -119,6 +122,7 @@
         "jsonSchema": true,
         "seed": true,
         "reportRateLimits": true,
+        "reportTokenUsage": "true",
         "noMaxTokens": true,
         "noStopSequence": true,
         "biasedTool": "flaky"
@@ -129,6 +133,7 @@
         "jsonSchema": true,
         "seed": true,
         "reportRateLimits": true,
+        "reportTokenUsage": "true",
         "noMaxTokens": true,
         "noStopSequence": true,
         "biasedTool": "flaky"
@@ -154,7 +159,6 @@
       },
       "GenDoc": {
         "seed": true,
-        "brokenTokenUsage": "true",
         "brokenFinishReason": true
       }
     },

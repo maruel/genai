@@ -41,6 +41,7 @@
         "seed": true,
         "topLogprobs": true,
         "reportRateLimits": true,
+        "reportTokenUsage": "true",
         "indecisiveTool": "flaky"
       },
       "GenStream": {
@@ -49,6 +50,7 @@
         "jsonSchema": true,
         "topLogprobs": true,
         "reportRateLimits": true,
+        "reportTokenUsage": "true",
         "indecisiveTool": "flaky"
       }
     },
@@ -84,6 +86,7 @@
         "seed": true,
         "topLogprobs": true,
         "reportRateLimits": true,
+        "reportTokenUsage": "true",
         "noMaxTokens": true
       },
       "GenStream": {
@@ -93,6 +96,7 @@
         "seed": true,
         "topLogprobs": true,
         "reportRateLimits": true,
+        "reportTokenUsage": "true",
         "noMaxTokens": true
       }
     },
@@ -126,13 +130,15 @@
         "seed": true,
         "topLogprobs": true,
         "reportRateLimits": true,
+        "reportTokenUsage": "true",
         "noMaxTokens": true
       },
       "GenStream": {
         "tools": "flaky",
         "jsonSchema": true,
         "topLogprobs": true,
-        "reportRateLimits": true
+        "reportRateLimits": true,
+        "reportTokenUsage": "true"
       }
     },
     {
@@ -156,6 +162,7 @@
         "seed": true,
         "topLogprobs": true,
         "reportRateLimits": true,
+        "reportTokenUsage": "true",
         "biasedTool": "flaky"
       },
       "GenStream": {
@@ -164,7 +171,8 @@
         "jsonSchema": true,
         "seed": true,
         "topLogprobs": true,
-        "reportRateLimits": true
+        "reportRateLimits": true,
+        "reportTokenUsage": "true"
       }
     },
     {
@@ -188,6 +196,7 @@
         "seed": true,
         "topLogprobs": true,
         "reportRateLimits": true,
+        "reportTokenUsage": "true",
         "brokenFinishReason": true,
         "biasedTool": "flaky",
         "indecisiveTool": "flaky"
@@ -198,6 +207,7 @@
         "seed": true,
         "topLogprobs": true,
         "reportRateLimits": true,
+        "reportTokenUsage": "true",
         "brokenFinishReason": true,
         "biasedTool": "flaky",
         "indecisiveTool": "flaky"
@@ -222,7 +232,6 @@
       },
       "GenDoc": {
         "seed": true,
-        "brokenTokenUsage": "true",
         "brokenFinishReason": true
       }
     },

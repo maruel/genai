@@ -178,6 +178,7 @@ func runOneModel(t testing.TB, gc getClientOneModel, want scoreboard.Scenario) g
 		want.ThinkingTokenEnd = ""
 	}
 	// Check if valid.
+	// if diff := cmp.Diff(want, got, optScenario, optFunctionalityText); diff != "" {
 	if diff := cmp.Diff(want, got, optTriState, optScenario); diff != "" {
 		t.Errorf("mismatch (-want +got):\n%s", diff)
 	}
@@ -195,3 +196,5 @@ var optTriState = cmp.Comparer(func(x, y scoreboard.TriState) bool {
 })
 
 var optScenario = cmpopts.IgnoreFields(scoreboard.Scenario{}, "Comments")
+
+// optFunctionalityText = cmpopts.IgnoreFields(scoreboard.FunctionalityText{}, "Tools", "IndecisiveTool", "BiasedTool")

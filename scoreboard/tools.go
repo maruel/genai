@@ -117,8 +117,10 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *FunctionalityText, 
 		f.Tools = True
 	}
 	if resp.Usage.InputTokens == 0 || resp.Usage.OutputTokens == 0 {
-		internal.Logger(ctx).DebugContext(ctx, "SquareRoot", "issue", "token usage")
-		f.BrokenTokenUsage = True
+		if f.ReportTokenUsage != False {
+			internal.Logger(ctx).DebugContext(ctx, "SquareRoot", "issue", "token usage")
+			f.ReportTokenUsage = Flaky
+		}
 	}
 	// The finish reason for tool calls is genai.FinishedToolCalls
 	if expectedFR := genai.FinishedStop; resp.Usage.FinishReason != expectedFR {
@@ -181,8 +183,10 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *FunctionalityText, 
 			continue
 		}
 		if resp.Usage.InputTokens == 0 || resp.Usage.OutputTokens == 0 {
-			internal.Logger(ctx).DebugContext(ctx, check, "issue", "token usage")
-			f.BrokenTokenUsage = True
+			if f.ReportTokenUsage != False {
+				internal.Logger(ctx).DebugContext(ctx, check, "issue", "token usage")
+				f.ReportTokenUsage = Flaky
+			}
 		}
 		if expectedFR := genai.FinishedToolCalls; resp.Usage.FinishReason != expectedFR {
 			internal.Logger(ctx).DebugContext(ctx, check, "issue", "finish reason", "expected", expectedFR, "got", resp.Usage.FinishReason)

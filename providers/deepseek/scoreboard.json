@@ -26,12 +26,14 @@
         "tools": "true",
         "json": true,
         "topLogprobs": true,
+        "reportTokenUsage": "true",
         "indecisiveTool": "true"
       },
       "GenStream": {
         "tools": "true",
         "json": true,
         "topLogprobs": true,
+        "reportTokenUsage": "true",
         "indecisiveTool": "true"
       }
     },
@@ -52,11 +54,13 @@
       },
       "GenSync": {
         "tools": "flaky",
-        "json": true
+        "json": true,
+        "reportTokenUsage": "true"
       },
       "GenStream": {
         "tools": "flaky",
-        "json": true
+        "json": true,
+        "reportTokenUsage": "true"
       }
     }
   ]

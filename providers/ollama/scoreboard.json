@@ -31,12 +31,14 @@
       "GenSync": {
         "json": true,
         "jsonSchema": true,
-        "seed": true
+        "seed": true,
+        "reportTokenUsage": "true"
       },
       "GenStream": {
         "json": true,
         "jsonSchema": true,
-        "seed": true
+        "seed": true,
+        "reportTokenUsage": "true"
       }
     },
     {
@@ -60,13 +62,15 @@
         "tools": "true",
         "json": true,
         "jsonSchema": true,
-        "seed": true
+        "seed": true,
+        "reportTokenUsage": "true"
       },
       "GenStream": {
         "tools": "true",
         "json": true,
         "jsonSchema": true,
-        "seed": true
+        "seed": true,
+        "reportTokenUsage": "true"
       }
     }
   ]

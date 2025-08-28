@@ -14,8 +14,12 @@
           "inline": true
         }
       },
-      "GenSync": {},
-      "GenStream": {}
+      "GenSync": {
+        "reportTokenUsage": "true"
+      },
+      "GenStream": {
+        "reportTokenUsage": "true"
+      }
     }
   ]
 }

@@ -43,7 +43,7 @@
         "json": true,
         "jsonSchema": true,
         "reportRateLimits": true,
-        "brokenTokenUsage": "flaky",
+        "reportTokenUsage": "flaky",
         "noStopSequence": true,
         "biasedTool": "true"
       },
@@ -51,7 +51,7 @@
         "tools": "true",
         "json": true,
         "jsonSchema": true,
-        "brokenTokenUsage": "flaky",
+        "reportTokenUsage": "flaky",
         "noStopSequence": true,
         "biasedTool": "true"
       }
@@ -93,7 +93,7 @@
         "json": true,
         "jsonSchema": true,
         "reportRateLimits": true,
-        "brokenTokenUsage": "flaky",
+        "reportTokenUsage": "true",
         "noMaxTokens": true,
         "noStopSequence": true,
         "biasedTool": "true"
@@ -102,7 +102,7 @@
         "tools": "true",
         "json": true,
         "jsonSchema": true,
-        "brokenTokenUsage": "flaky",
+        "reportTokenUsage": "flaky",
         "noStopSequence": true,
         "biasedTool": "true"
       }
@@ -127,7 +127,6 @@
       },
       "GenDoc": {
         "seed": true,
-        "brokenTokenUsage": "true",
         "brokenFinishReason": true
       }
     },

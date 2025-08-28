@@ -60,8 +60,9 @@ type FunctionalityText struct {
 
 	// ReportRateLimits means that the provider reports rate limits in its Usage.
 	ReportRateLimits bool `json:"reportRateLimits,omitzero"`
-	// BrokenTokenUsage means that the usage is not correctly reported.
-	BrokenTokenUsage TriState `json:"brokenTokenUsage,omitzero"`
+	// ReportTokenUsage means that the token usage is correctly reported in all cases. It is flaky if it is not
+	// reported in some specific cases. A frequent example is tokens not being reported in JSON output mode.
+	ReportTokenUsage TriState `json:"reportTokenUsage,omitzero"`
 	// BrokenFinishReason means that the finish reason (FinishStop, FinishLength, etc) is not correctly reported.
 	BrokenFinishReason bool `json:"brokenFinishReason,omitzero"`
 	// NoMaxTokens means that the provider doesn't support limiting text output. Only relevant on text output.
@@ -151,8 +152,9 @@ type FunctionalityDoc struct {
 
 	// ReportRateLimits means that the provider reports rate limits in its Usage.
 	ReportRateLimits bool `json:"reportRateLimits,omitzero"`
-	// BrokenTokenUsage means that the usage is not correctly reported.
-	BrokenTokenUsage TriState `json:"brokenTokenUsage,omitzero"`
+	// ReportTokenUsage means that the token usage is correctly reported in all cases. It is flaky if it is not
+	// reported in some specific cases. A frequent example is tokens not being reported in JSON output mode.
+	ReportTokenUsage TriState `json:"reportTokenUsage,omitzero"`
 	// BrokenFinishReason means that the finish reason (FinishStop, FinishLength, etc) is not correctly reported.
 	BrokenFinishReason bool `json:"brokenFinishReason,omitzero"`
 

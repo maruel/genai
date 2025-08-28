@@ -30,6 +30,7 @@
         "seed": true,
         "topLogprobs": true,
         "reportRateLimits": true,
+        "reportTokenUsage": "true",
         "biasedTool": "flaky",
         "indecisiveTool": "flaky"
       },
@@ -40,6 +41,7 @@
         "seed": true,
         "topLogprobs": true,
         "reportRateLimits": true,
+        "reportTokenUsage": "true",
         "biasedTool": "flaky",
         "indecisiveTool": "flaky"
       }
@@ -65,6 +67,7 @@
         "seed": true,
         "topLogprobs": true,
         "reportRateLimits": true,
+        "reportTokenUsage": "true",
         "biasedTool": "flaky",
         "indecisiveTool": "flaky"
       },
@@ -75,6 +78,7 @@
         "seed": true,
         "topLogprobs": true,
         "reportRateLimits": true,
+        "reportTokenUsage": "true",
         "biasedTool": "flaky",
         "indecisiveTool": "flaky"
       }
@@ -104,12 +108,14 @@
         "seed": true,
         "topLogprobs": true,
         "reportRateLimits": true,
+        "reportTokenUsage": "true",
         "biasedTool": "true"
       },
       "GenStream": {
         "seed": true,
         "topLogprobs": true,
-        "reportRateLimits": true
+        "reportRateLimits": true,
+        "reportTokenUsage": "true"
       }
     },
     {
@@ -134,6 +140,7 @@
         "seed": true,
         "topLogprobs": true,
         "reportRateLimits": true,
+        "reportTokenUsage": "true",
         "biasedTool": "true"
       },
       "GenStream": {
@@ -143,6 +150,7 @@
         "seed": true,
         "topLogprobs": true,
         "reportRateLimits": true,
+        "reportTokenUsage": "true",
         "biasedTool": "true"
       }
     },

@@ -22,19 +22,19 @@
         }
       },
       "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
         "tools": "flaky",
         "toolsIndecisive": "flaky",
         "json": true,
-        "seed": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true"
+        "seed": true
       },
       "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
         "tools": "flaky",
         "toolsIndecisive": "flaky",
-        "seed": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true"
+        "seed": true
       }
     },
     {
@@ -90,19 +90,19 @@
         }
       },
       "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
         "tools": "true",
         "toolsBiased": "true",
         "json": true,
-        "seed": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true"
+        "seed": true
       },
       "GenStream": {
+        "reportFinishReason": "true",
         "tools": "true",
         "toolsBiased": "true",
         "json": true,
-        "seed": true,
-        "reportFinishReason": "true"
+        "seed": true
       }
     },
     {

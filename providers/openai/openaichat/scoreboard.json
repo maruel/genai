@@ -39,6 +39,9 @@
         }
       },
       "GenSync": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
         "tools": "true",
         "toolsIndecisive": "true",
         "json": true,
@@ -46,12 +49,12 @@
         "seed": true,
         "topLogprobs": true,
         "maxTokens": true,
-        "stopSequence": true,
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true"
+        "stopSequence": true
       },
       "GenStream": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
         "tools": "true",
         "toolsIndecisive": "true",
         "json": true,
@@ -59,10 +62,7 @@
         "seed": true,
         "topLogprobs": true,
         "maxTokens": true,
-        "stopSequence": true,
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true"
+        "stopSequence": true
       }
     },
     {
@@ -123,24 +123,24 @@
         }
       },
       "GenSync": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
         "tools": "true",
         "toolsBiased": "flaky",
         "json": true,
         "jsonSchema": true,
-        "seed": true,
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true"
+        "seed": true
       },
       "GenStream": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
         "tools": "true",
         "toolsBiased": "flaky",
         "json": true,
         "jsonSchema": true,
-        "seed": true,
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true"
+        "seed": true
       }
     },
     {

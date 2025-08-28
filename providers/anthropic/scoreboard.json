@@ -39,24 +39,24 @@
         }
       },
       "GenSync": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
         "tools": "true",
         "toolsBiased": "true",
         "citations": true,
         "maxTokens": true,
-        "stopSequence": true,
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true"
+        "stopSequence": true
       },
       "GenStream": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
         "tools": "true",
         "toolsBiased": "true",
         "citations": true,
         "maxTokens": true,
-        "stopSequence": true,
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true"
+        "stopSequence": true
       }
     },
     {
@@ -91,24 +91,24 @@
         }
       },
       "GenSync": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
         "tools": "true",
         "toolsBiased": "true",
         "citations": true,
         "maxTokens": true,
-        "stopSequence": true,
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true"
+        "stopSequence": true
       },
       "GenStream": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
         "tools": "true",
         "toolsBiased": "true",
         "citations": true,
         "maxTokens": true,
-        "stopSequence": true,
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true"
+        "stopSequence": true
       }
     },
     {
@@ -144,20 +144,20 @@
         }
       },
       "GenSync": {
-        "tools": "true",
-        "citations": true,
-        "stopSequence": true,
         "reportRateLimits": true,
         "reportTokenUsage": "true",
-        "reportFinishReason": "true"
+        "reportFinishReason": "true",
+        "tools": "true",
+        "citations": true,
+        "stopSequence": true
       },
       "GenStream": {
-        "tools": "true",
-        "citations": true,
-        "stopSequence": true,
         "reportRateLimits": true,
         "reportTokenUsage": "true",
-        "reportFinishReason": "true"
+        "reportFinishReason": "true",
+        "tools": "true",
+        "citations": true,
+        "stopSequence": true
       }
     },
     {

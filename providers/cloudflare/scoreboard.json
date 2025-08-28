@@ -26,22 +26,22 @@
         }
       },
       "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "flaky",
         "tools": "flaky",
         "toolsIndecisive": "flaky",
         "json": true,
         "jsonSchema": true,
         "seed": true,
-        "maxTokens": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "flaky"
+        "maxTokens": true
       },
       "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "flaky",
         "tools": "flaky",
         "jsonSchema": true,
         "seed": true,
-        "maxTokens": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "flaky"
+        "maxTokens": true
       }
     },
     {
@@ -59,21 +59,21 @@
         }
       },
       "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "flaky",
         "tools": "flaky",
         "toolsIndecisive": "flaky",
         "json": true,
         "seed": true,
-        "maxTokens": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "flaky"
+        "maxTokens": true
       },
       "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "flaky",
         "tools": "flaky",
         "json": true,
         "seed": true,
-        "maxTokens": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "flaky"
+        "maxTokens": true
       }
     }
   ]

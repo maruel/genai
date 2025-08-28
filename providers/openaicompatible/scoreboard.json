@@ -15,16 +15,16 @@
         }
       },
       "GenSync": {
-        "maxTokens": true,
-        "stopSequence": true,
         "reportTokenUsage": "true",
-        "reportFinishReason": "true"
+        "reportFinishReason": "true",
+        "maxTokens": true,
+        "stopSequence": true
       },
       "GenStream": {
-        "maxTokens": true,
-        "stopSequence": true,
         "reportTokenUsage": "true",
-        "reportFinishReason": "true"
+        "reportFinishReason": "true",
+        "maxTokens": true,
+        "stopSequence": true
       }
     }
   ]

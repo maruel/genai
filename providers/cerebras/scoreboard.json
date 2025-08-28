@@ -24,6 +24,9 @@
         }
       },
       "GenSync": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
         "tools": "flaky",
         "toolsBiased": "flaky",
         "toolsIndecisive": "flaky",
@@ -32,12 +35,12 @@
         "seed": true,
         "topLogprobs": true,
         "maxTokens": true,
-        "stopSequence": true,
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true"
+        "stopSequence": true
       },
       "GenStream": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
         "tools": "flaky",
         "toolsBiased": "flaky",
         "toolsIndecisive": "flaky",
@@ -46,10 +49,7 @@
         "seed": true,
         "topLogprobs": true,
         "maxTokens": true,
-        "stopSequence": true,
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true"
+        "stopSequence": true
       }
     },
     {
@@ -67,6 +67,9 @@
         }
       },
       "GenSync": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
         "tools": "flaky",
         "toolsBiased": "flaky",
         "toolsIndecisive": "flaky",
@@ -75,12 +78,12 @@
         "seed": true,
         "topLogprobs": true,
         "maxTokens": true,
-        "stopSequence": true,
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true"
+        "stopSequence": true
       },
       "GenStream": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
         "tools": "flaky",
         "toolsBiased": "flaky",
         "toolsIndecisive": "flaky",
@@ -89,10 +92,7 @@
         "seed": true,
         "topLogprobs": true,
         "maxTokens": true,
-        "stopSequence": true,
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true"
+        "stopSequence": true
       }
     },
     {
@@ -114,6 +114,9 @@
         }
       },
       "GenSync": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
         "tools": "flaky",
         "toolsBiased": "true",
         "json": true,
@@ -121,19 +124,16 @@
         "seed": true,
         "topLogprobs": true,
         "maxTokens": true,
-        "stopSequence": true,
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true"
+        "stopSequence": true
       },
       "GenStream": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
         "seed": true,
         "topLogprobs": true,
         "maxTokens": true,
-        "stopSequence": true,
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true"
+        "stopSequence": true
       }
     },
     {
@@ -152,6 +152,9 @@
         }
       },
       "GenSync": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
         "tools": "flaky",
         "toolsBiased": "true",
         "json": true,
@@ -159,12 +162,12 @@
         "seed": true,
         "topLogprobs": true,
         "maxTokens": true,
-        "stopSequence": true,
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true"
+        "stopSequence": true
       },
       "GenStream": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
         "tools": "flaky",
         "toolsBiased": "true",
         "json": true,
@@ -172,10 +175,7 @@
         "seed": true,
         "topLogprobs": true,
         "maxTokens": true,
-        "stopSequence": true,
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true"
+        "stopSequence": true
       }
     },
     {

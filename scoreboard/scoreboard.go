@@ -42,6 +42,16 @@ type ProviderScore interface {
 // The third group is to identify bugged providers. A provider is considered to be bugged if any of the field
 // is false.
 type FunctionalityText struct {
+	// ReportRateLimits means that the provider reports rate limits in its Usage.
+	ReportRateLimits bool `json:"reportRateLimits,omitzero"`
+	// ReportTokenUsage means that the token usage is correctly reported in all cases. It is flaky if it is not
+	// reported in some specific cases. A frequent example is tokens not being reported in JSON output mode.
+	ReportTokenUsage TriState `json:"reportTokenUsage,omitzero"`
+	// ReportFinishReason means that the finish reason (FinishStop, FinishLength, etc) is not correctly reported.
+	ReportFinishReason TriState `json:"reportFinishReason,omitzero"`
+
+	// Text related fields.
+
 	// Tools means that tool call is supported. This is a requirement for MCP. Some provider support tool
 	// calling but the model is very flaky at actually requesting the calls. This is more frequent on highly
 	// quantized models, small models or MoE models.
@@ -82,14 +92,6 @@ type FunctionalityText struct {
 	// StopSequence means that the provider supports stop words. The number of stop words is generally limited,
 	// frequently to 5 words. The sequence should be a valid token in the model's vocabulary.
 	StopSequence bool `json:"stopSequence,omitzero"`
-
-	// ReportRateLimits means that the provider reports rate limits in its Usage.
-	ReportRateLimits bool `json:"reportRateLimits,omitzero"`
-	// ReportTokenUsage means that the token usage is correctly reported in all cases. It is flaky if it is not
-	// reported in some specific cases. A frequent example is tokens not being reported in JSON output mode.
-	ReportTokenUsage TriState `json:"reportTokenUsage,omitzero"`
-	// ReportFinishReason means that the finish reason (FinishStop, FinishLength, etc) is not correctly reported.
-	ReportFinishReason TriState `json:"reportFinishReason,omitzero"`
 
 	_ struct{}
 }

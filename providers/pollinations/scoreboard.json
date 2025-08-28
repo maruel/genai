@@ -26,6 +26,7 @@
         "json": true,
         "seed": true,
         "reportTokenUsage": "true",
+        "reportFinishReason": "true",
         "noMaxTokens": true,
         "noStopSequence": true,
         "indecisiveTool": "flaky"
@@ -34,6 +35,7 @@
         "tools": "flaky",
         "seed": true,
         "reportTokenUsage": "true",
+        "reportFinishReason": "true",
         "noMaxTokens": true,
         "noStopSequence": true,
         "indecisiveTool": "flaky"
@@ -64,8 +66,7 @@
         }
       },
       "GenDoc": {
-        "seed": true,
-        "brokenFinishReason": true
+        "seed": true
       }
     },
     {
@@ -97,6 +98,7 @@
         "json": true,
         "seed": true,
         "reportTokenUsage": "true",
+        "reportFinishReason": "true",
         "noMaxTokens": true,
         "noStopSequence": true,
         "biasedTool": "true"
@@ -105,6 +107,7 @@
         "tools": "true",
         "json": true,
         "seed": true,
+        "reportFinishReason": "true",
         "noMaxTokens": true,
         "noStopSequence": true,
         "biasedTool": "true"

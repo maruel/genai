@@ -31,7 +31,7 @@
         "jsonSchema": true,
         "seed": true,
         "reportTokenUsage": "true",
-        "brokenFinishReason": true,
+        "reportFinishReason": "flaky",
         "noStopSequence": true,
         "indecisiveTool": "flaky"
       },
@@ -40,7 +40,7 @@
         "jsonSchema": true,
         "seed": true,
         "reportTokenUsage": "true",
-        "brokenFinishReason": true,
+        "reportFinishReason": "flaky",
         "noStopSequence": true
       }
     },
@@ -63,7 +63,7 @@
         "json": true,
         "seed": true,
         "reportTokenUsage": "true",
-        "brokenFinishReason": true,
+        "reportFinishReason": "flaky",
         "noStopSequence": true,
         "indecisiveTool": "flaky"
       },
@@ -72,7 +72,7 @@
         "json": true,
         "seed": true,
         "reportTokenUsage": "true",
-        "brokenFinishReason": true,
+        "reportFinishReason": "flaky",
         "noStopSequence": true
       }
     }

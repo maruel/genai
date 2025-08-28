@@ -46,6 +46,7 @@
         "topLogprobs": true,
         "reportRateLimits": true,
         "reportTokenUsage": "true",
+        "reportFinishReason": "true",
         "indecisiveTool": "true"
       },
       "GenStream": {
@@ -56,6 +57,7 @@
         "topLogprobs": true,
         "reportRateLimits": true,
         "reportTokenUsage": "true",
+        "reportFinishReason": "true",
         "indecisiveTool": "true"
       }
     },
@@ -123,6 +125,7 @@
         "seed": true,
         "reportRateLimits": true,
         "reportTokenUsage": "true",
+        "reportFinishReason": "true",
         "noMaxTokens": true,
         "noStopSequence": true,
         "biasedTool": "flaky"
@@ -134,6 +137,7 @@
         "seed": true,
         "reportRateLimits": true,
         "reportTokenUsage": "true",
+        "reportFinishReason": "true",
         "noMaxTokens": true,
         "noStopSequence": true,
         "biasedTool": "flaky"
@@ -158,8 +162,7 @@
         }
       },
       "GenDoc": {
-        "seed": true,
-        "brokenFinishReason": true
+        "seed": true
       }
     },
     {

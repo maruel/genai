@@ -197,4 +197,4 @@ var optTriState = cmp.Comparer(func(x, y scoreboard.TriState) bool {
 
 var optScenario = cmpopts.IgnoreFields(scoreboard.Scenario{}, "Comments")
 
-// optFunctionalityText = cmpopts.IgnoreFields(scoreboard.FunctionalityText{}, "Tools", "IndecisiveTool", "BiasedTool")
+// var optFunctionalityText = cmpopts.IgnoreFields(scoreboard.FunctionalityText{}, "Tools", "IndecisiveTool", "BiasedTool")

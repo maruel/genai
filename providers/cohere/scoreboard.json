@@ -31,6 +31,7 @@
         "seed": true,
         "topLogprobs": true,
         "reportTokenUsage": "true",
+        "reportFinishReason": "true",
         "indecisiveTool": "true"
       },
       "GenStream": {
@@ -41,6 +42,7 @@
         "seed": true,
         "topLogprobs": true,
         "reportTokenUsage": "true",
+        "reportFinishReason": "true",
         "indecisiveTool": "true"
       }
     },
@@ -75,14 +77,16 @@
         "citations": true,
         "seed": true,
         "topLogprobs": true,
-        "reportTokenUsage": "true"
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true"
       },
       "GenStream": {
         "tools": "true",
         "citations": true,
         "seed": true,
         "topLogprobs": true,
-        "reportTokenUsage": "true"
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true"
       }
     },
     {

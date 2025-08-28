@@ -125,7 +125,7 @@ func functionalityText(f *scoreboard.FunctionalityText) string {
 	if f.ReportTokenUsage != scoreboard.True {
 		items = append(items, "💔usage")
 	}
-	if f.BrokenFinishReason {
+	if f.ReportFinishReason != scoreboard.True {
 		items = append(items, "💔finishreason")
 	}
 	if f.NoStopSequence {
@@ -139,7 +139,7 @@ func functionalityDoc(f *scoreboard.FunctionalityDoc) string {
 	if f.ReportTokenUsage != scoreboard.True {
 		items = append(items, "💔usage")
 	}
-	if f.BrokenFinishReason {
+	if f.ReportFinishReason != scoreboard.True {
 		items = append(items, "💔finishreason")
 	}
 	return strings.Join(items, " ")

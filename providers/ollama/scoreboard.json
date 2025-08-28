@@ -32,13 +32,15 @@
         "json": true,
         "jsonSchema": true,
         "seed": true,
-        "reportTokenUsage": "true"
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true"
       },
       "GenStream": {
         "json": true,
         "jsonSchema": true,
         "seed": true,
-        "reportTokenUsage": "true"
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true"
       }
     },
     {
@@ -63,14 +65,16 @@
         "json": true,
         "jsonSchema": true,
         "seed": true,
-        "reportTokenUsage": "true"
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true"
       },
       "GenStream": {
         "tools": "true",
         "json": true,
         "jsonSchema": true,
         "seed": true,
-        "reportTokenUsage": "true"
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true"
       }
     }
   ]

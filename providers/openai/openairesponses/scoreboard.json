@@ -44,6 +44,7 @@
         "jsonSchema": true,
         "reportRateLimits": true,
         "reportTokenUsage": "flaky",
+        "reportFinishReason": "true",
         "noStopSequence": true,
         "biasedTool": "true"
       },
@@ -52,6 +53,7 @@
         "json": true,
         "jsonSchema": true,
         "reportTokenUsage": "flaky",
+        "reportFinishReason": "true",
         "noStopSequence": true,
         "biasedTool": "true"
       }
@@ -94,6 +96,7 @@
         "jsonSchema": true,
         "reportRateLimits": true,
         "reportTokenUsage": "true",
+        "reportFinishReason": "true",
         "noMaxTokens": true,
         "noStopSequence": true,
         "biasedTool": "true"
@@ -103,6 +106,7 @@
         "json": true,
         "jsonSchema": true,
         "reportTokenUsage": "flaky",
+        "reportFinishReason": "true",
         "noStopSequence": true,
         "biasedTool": "true"
       }
@@ -126,8 +130,7 @@
         }
       },
       "GenDoc": {
-        "seed": true,
-        "brokenFinishReason": true
+        "seed": true
       }
     },
     {

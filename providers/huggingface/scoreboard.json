@@ -28,14 +28,16 @@
         "json": true,
         "seed": true,
         "topLogprobs": true,
-        "reportTokenUsage": "true"
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true"
       },
       "GenStream": {
         "tools": "flaky",
         "json": true,
         "seed": true,
         "topLogprobs": true,
-        "reportTokenUsage": "true"
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true"
       }
     },
     {
@@ -62,7 +64,8 @@
         "seed": true,
         "topLogprobs": true,
         "reportRateLimits": true,
-        "reportTokenUsage": "true"
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true"
       },
       "GenStream": {
         "tools": "flaky",
@@ -71,7 +74,8 @@
         "seed": true,
         "topLogprobs": true,
         "reportRateLimits": true,
-        "reportTokenUsage": "true"
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true"
       }
     }
   ]

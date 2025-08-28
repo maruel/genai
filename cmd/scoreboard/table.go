@@ -254,11 +254,13 @@ func printProviderTable(p genai.Provider) error {
 	for i := range sb.Scenarios {
 		row := tableModelRow{}
 		row.initFromScenario(&sb.Scenarios[i])
-		if _, isAsync := p.(genai.ProviderGenAsync); isAsync {
-			row.Batch = "✅"
-		}
-		if _, isFiles := p.(genai.ProviderCache); isFiles {
-			row.Files = "✅"
+		if row.Inputs != "" {
+			if _, isAsync := p.(genai.ProviderGenAsync); isAsync {
+				row.Batch = "✅"
+			}
+			if _, isFiles := p.(genai.ProviderCache); isFiles {
+				row.Files = "✅"
+			}
 		}
 		addNopes(&row)
 		for j := range sb.Scenarios[i].Models {

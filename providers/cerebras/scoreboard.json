@@ -180,7 +180,39 @@
     },
     {
       "models": [
-        "gpt-oss-120b",
+        "gpt-oss-120b"
+      ],
+      "thinking": true,
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "tools": "flaky",
+        "topLogprobs": true,
+        "maxTokens": true
+      },
+      "GenStream": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "topLogprobs": true,
+        "maxTokens": true
+      }
+    },
+    {
+      "models": [
         "llama-4-maverick-17b-128e-instruct",
         "qwen-3-235b-a22b-instruct-2507",
         "qwen-3-coder-480b"

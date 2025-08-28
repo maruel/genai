@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"slices"
+	"strings"
 	"sync"
 	"testing"
 
@@ -47,7 +48,7 @@ func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper)
 	if err2 != nil {
 		t.Fatal(err2)
 	}
-	if model.Thinking {
+	if model.Thinking && !strings.HasPrefix(model.Model, "gpt-oss") {
 		return &adapters.ProviderThinking{
 			Provider:           &adapters.ProviderAppend{Provider: c, Append: genai.Request{Text: "\n\n/think"}},
 			ThinkingTokenStart: "<think>",

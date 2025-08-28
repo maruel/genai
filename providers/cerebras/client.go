@@ -203,6 +203,7 @@ func (c *ChatRequest) SetStream(stream bool) {
 type Message struct {
 	Role       string     `json:"role,omitzero"` // "system", "assistant", "user"
 	Content    Contents   `json:"content,omitzero"`
+	Reasoning  string     `json:"reasoning,omitzero"`
 	ToolCalls  []ToolCall `json:"tool_calls,omitzero"`
 	ToolCallID string     `json:"tool_call_id,omitzero"`
 	Name       string     `json:"name,omitzero"` // Tool call name.
@@ -235,7 +236,12 @@ func (m *Message) From(in *genai.Message) error {
 			}
 			continue
 		}
-		if err := m.Content[i].FromReply(&in.Replies[i]); err != nil {
+		// Do not include thinking in the message.
+		if in.Replies[i].Thinking != "" {
+			continue
+		}
+		m.Content = append(m.Content, Content{})
+		if err := m.Content[len(m.Content)-1].FromReply(&in.Replies[i]); err != nil {
 			return fmt.Errorf("reply #%d: %w", i, err)
 		}
 	}
@@ -251,6 +257,9 @@ func (m *Message) From(in *genai.Message) error {
 
 func (m *Message) To(out *genai.Message) error {
 	out.Replies = make([]genai.Reply, 0, len(m.Content)+len(m.ToolCalls))
+	if m.Reasoning != "" {
+		out.Replies = append(out.Replies, genai.Reply{Thinking: m.Reasoning})
+	}
 	for _, content := range m.Content {
 		switch content.Type {
 		case ContentText:
@@ -496,6 +505,7 @@ type ChatStreamChunkResponse struct {
 		Delta struct {
 			Role      string     `json:"role"`
 			Content   Contents   `json:"content"`
+			Reasoning string     `json:"reasoning"`
 			ToolCalls []ToolCall `json:"tool_calls"`
 		} `json:"delta"`
 		Index        int64        `json:"index"`
@@ -836,6 +846,13 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 				Name:      nt.Function.Name,
 				Arguments: nt.Function.Arguments,
 			}}
+			if err := result.Accumulate(f); err != nil {
+				return err
+			}
+			chunks <- f
+		}
+		if pkt.Choices[0].Delta.Reasoning != "" {
+			f := genai.ReplyFragment{ThinkingFragment: pkt.Choices[0].Delta.Reasoning}
 			if err := result.Accumulate(f); err != nil {
 				return err
 			}

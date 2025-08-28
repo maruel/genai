@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 138
+    host: api.cerebras.ai
+    body: "{\"model\":\"gpt-oss-120b\",\"messages\":[{\"role\":\"user\",\"content\":\"Talk about Canada in great details. Start with: Canada is\"}],\"stop\":[\"is\"]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cerebras.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-6ec1a20d-4d71-4f43-a331-8d2cf1256f8f\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"role\":\"assistant\"}}],\"created\":1756416740,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_ff3ef99a3d759cf4f806\",\"object\":\"chat.completion\",\"usage\":{\"prompt_tokens\":79,\"completion_tokens\":3,\"total_tokens\":82,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":0.015114069,\"prompt_time\":0.015801247,\"completion_time\":0.002332734,\"total_time\":0.03578615188598633,\"created\":1756416740}}"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9766ebb17a2bf965-EWR
+      Content-Type:
+      - application/json
+      Inference-Id:
+      - chatcmpl-6ec1a20d-4d71-4f43-a331-8d2cf1256f8f
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=3600; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Ratelimit-Limit-Requests-Day:
+      - "14400"
+      X-Ratelimit-Limit-Tokens-Minute:
+      - "64000"
+      X-Ratelimit-Remaining-Requests-Day:
+      - "14360"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "63088"
+      X-Ratelimit-Reset-Requests-Day:
+      - "8859.772915124893"
+      X-Ratelimit-Reset-Tokens-Minute:
+      - "39.77291512489319"
+      X-Request-Id:
+      - 9766ebb17a2bf965-EWR
+    status: 200 OK
+    code: 200
+    duration: 213ms

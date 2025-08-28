@@ -17,9 +17,16 @@ func mainImpl() error {
 	ctx := context.Background()
 	table := flag.Bool("table", false, "output a markdown table")
 	provider := flag.String("provider", "", "output a table only for one provider")
+	model := flag.String("model", "", "run a smoke test on the model and output the JSON")
 	flag.Parse()
 	if flag.NArg() != 0 {
 		return errors.New("unexpected arguments")
+	}
+	if *model != "" {
+		if *provider == "" {
+			return errors.New("-model requires -provider")
+		}
+		return smokeModel(ctx, *provider, *model)
 	}
 	if *table {
 		return printTable(ctx, *provider)

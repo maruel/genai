@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 144
+    host: api.cerebras.ai
+    body: "{\"model\":\"gpt-oss-120b\",\"messages\":[{\"role\":\"user\",\"content\":\"Explain the theory of relativity in great details.\"}],\"max_completion_tokens\":16}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cerebras.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-e90c63f7-e030-41b1-add4-5ba71e92d239\",\"choices\":[{\"finish_reason\":\"length\",\"index\":0,\"message\":{\"reasoning\":\"We need to explain the theory of relativity in great detail.\",\"role\":\"assistant\"}}],\"created\":1756416739,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_ff3ef99a3d759cf4f806\",\"object\":\"chat.completion\",\"usage\":{\"prompt_tokens\":77,\"completion_tokens\":16,\"total_tokens\":93,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":0.000199562,\"prompt_time\":0.004213681,\"completion_time\":0.009711186,\"total_time\":0.015781402587890625,\"created\":1756416739}}"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9766ebaf6becf965-EWR
+      Content-Type:
+      - application/json
+      Inference-Id:
+      - chatcmpl-e90c63f7-e030-41b1-add4-5ba71e92d239
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=3600; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Ratelimit-Limit-Requests-Day:
+      - "14400"
+      X-Ratelimit-Limit-Tokens-Minute:
+      - "64000"
+      X-Ratelimit-Remaining-Requests-Day:
+      - "14362"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "63274"
+      X-Ratelimit-Reset-Requests-Day:
+      - "8859.988399267197"
+      X-Ratelimit-Reset-Tokens-Minute:
+      - "39.988399267196655"
+      X-Request-Id:
+      - 9766ebaf6becf965-EWR
+    status: 200 OK
+    code: 200
+    duration: 1.448s

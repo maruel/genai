@@ -31,7 +31,7 @@ import (
 // ProviderFactory is a function that returns a provider instance. The name represents the sub-test name.
 //
 // This may be used for HTTP recording and replays.
-type ProviderFactory func(name string) (genai.Provider, http.RoundTripper)
+type ProviderFactory func(name string) genai.Provider
 
 // Run runs a smoke test on the provider and model.
 //
@@ -40,7 +40,7 @@ type ProviderFactory func(name string) (genai.Provider, http.RoundTripper)
 // ProviderFactory must be concurrent safe and never fail.
 func Run(ctx context.Context, pf ProviderFactory) (scoreboard.Scenario, genai.Usage, error) {
 	usage := genai.Usage{}
-	c, _ := pf("")
+	c := pf("")
 	m := c.ModelID()
 	if m == "" {
 		return scoreboard.Scenario{}, usage, errors.New("provider must have a model")
@@ -715,7 +715,7 @@ type callState struct {
 
 func (cs *callState) callGen(ctx context.Context, name string, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
 	// internal.Logger(ctx).DebugContext(ctx, name, "msgs", msgs)
-	c, _ := cs.pf(name)
+	c := cs.pf(name)
 	var err error
 	res := genai.Result{}
 	if cs.isStream {
@@ -774,7 +774,7 @@ func exerciseGenNonText(ctx context.Context, pf ProviderFactory) (scoreboard.Sce
 }
 
 func exerciseGenImage(ctx context.Context, pf ProviderFactory, name string, out *scoreboard.Scenario, usage *genai.Usage) error {
-	c, rt := pf(name)
+	c := pf(name)
 	if !slices.Contains(c.OutputModalities(), genai.ModalityImage) {
 		return nil
 	}
@@ -817,18 +817,17 @@ func exerciseGenImage(ctx context.Context, pf ProviderFactory, name string, out 
 		if len(resp.Replies) == 0 {
 			return fmt.Errorf("%s: no content", name)
 		}
-		c := resp.Replies[0]
-		fn := c.Doc.GetFilename()
+		r := resp.Replies[0]
+		fn := r.Doc.GetFilename()
 		if fn == "" {
 			return fmt.Errorf("%s: no content filename", name)
 		}
 		out.In[genai.ModalityText] = scoreboard.ModalCapability{Inline: true}
 		v := out.Out[genai.ModalityImage]
-		if c.Doc.URL != "" {
+		if r.Doc.URL != "" {
 			v.URL = true
 			// Retrieve the result file.
-			internal.Logger(ctx).ErrorContext(ctx, name, "rt", fmt.Sprintf("%T", rt))
-			resp2, err2 := (&http.Client{Transport: rt}).Get(c.Doc.URL)
+			resp2, err2 := c.HTTPClient().Get(r.Doc.URL)
 			if err2 != nil {
 				return fmt.Errorf("failed to download generated result: %w", err2)
 			}
@@ -840,10 +839,10 @@ func exerciseGenImage(ctx context.Context, pf ProviderFactory, name string, out 
 			if err2 != nil {
 				return fmt.Errorf("failed to download generated result: %w", err2)
 			}
-			internal.Logger(ctx).DebugContext(ctx, name, "generated", len(body), "url", c.Doc.URL)
+			internal.Logger(ctx).DebugContext(ctx, name, "generated", len(body), "url", r.Doc.URL)
 		} else {
 			v.Inline = true
-			_, body, err2 := c.Doc.Read(10 * 1024 * 1024)
+			_, body, err2 := r.Doc.Read(10 * 1024 * 1024)
 			if err2 != nil {
 				return fmt.Errorf("failed to download generated result: %w", err2)
 			}
@@ -875,7 +874,7 @@ func exerciseGenImage(ctx context.Context, pf ProviderFactory, name string, out 
 }
 
 func exerciseGenAudio(ctx context.Context, pf ProviderFactory, name string, out *scoreboard.Scenario, usage *genai.Usage) error {
-	c, rt := pf(name)
+	c := pf(name)
 	if !slices.Contains(c.OutputModalities(), genai.ModalityAudio) {
 		return nil
 	}
@@ -907,19 +906,18 @@ func exerciseGenAudio(ctx context.Context, pf ProviderFactory, name string, out 
 		if len(resp.Replies) == 0 {
 			return fmt.Errorf("%s: no content", name)
 		}
-		c := resp.Replies[0]
-		fn := c.Doc.GetFilename()
+		r := resp.Replies[0]
+		fn := r.Doc.GetFilename()
 		if fn == "" {
 			return fmt.Errorf("%s: no content filename", name)
 		}
 		out.In[genai.ModalityText] = scoreboard.ModalCapability{Inline: true}
 		out.Out[genai.ModalityAudio] = scoreboard.ModalCapability{Inline: true}
 		v := out.Out[genai.ModalityAudio]
-		if c.Doc.URL != "" {
+		if r.Doc.URL != "" {
 			v.URL = true
 			// Retrieve the result file.
-			internal.Logger(ctx).ErrorContext(ctx, name, "rt", fmt.Sprintf("%T", rt))
-			resp2, err2 := (&http.Client{Transport: rt}).Get(c.Doc.URL)
+			resp2, err2 := c.HTTPClient().Get(r.Doc.URL)
 			if err2 != nil {
 				return fmt.Errorf("failed to download generated result: %w", err2)
 			}
@@ -931,10 +929,10 @@ func exerciseGenAudio(ctx context.Context, pf ProviderFactory, name string, out 
 			if err2 != nil {
 				return fmt.Errorf("failed to download generated result: %w", err2)
 			}
-			internal.Logger(ctx).DebugContext(ctx, name, "generated", len(body), "url", c.Doc.URL)
+			internal.Logger(ctx).DebugContext(ctx, name, "generated", len(body), "url", r.Doc.URL)
 		} else {
 			v.Inline = true
-			_, body, err2 := c.Doc.Read(10 * 1024 * 1024)
+			_, body, err2 := r.Doc.Read(10 * 1024 * 1024)
 			if err2 != nil {
 				return fmt.Errorf("failed to download generated result: %w", err2)
 			}

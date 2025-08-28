@@ -94,11 +94,9 @@ func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Recor
 			}
 
 			// Run one model at a time otherwise we can't collect the total usage.
-			u := runOneModel(t, func(t testing.TB, sn string) (genai.Provider, http.RoundTripper) {
-				var rt http.RoundTripper
+			u := runOneModel(t, func(t testing.TB, sn string) genai.Provider {
 				fn := func(h http.RoundTripper) http.RoundTripper {
 					if sn == "" {
-						rt = h
 						return h
 					}
 					r, err2 := rec.Record(sn, h)
@@ -110,10 +108,9 @@ func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Recor
 							t.Error(err3)
 						}
 					})
-					rt = r
 					return r
 				}
-				return pf(t, m, fn), rt
+				return pf(t, m, fn)
 			}, want)
 			usage.Add(u)
 		})
@@ -137,18 +134,16 @@ func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Recor
 }
 
 // getClientOneModel returns a provider client for a specific model.
-type getClientOneModel func(t testing.TB, scenarioName string) (genai.Provider, http.RoundTripper)
+type getClientOneModel func(t testing.TB, scenarioName string) genai.Provider
 
 // runOneModel runs the scoreboard on one model.
 func runOneModel(t testing.TB, gc getClientOneModel, want scoreboard.Scenario) genai.Usage {
 	// Calculate the scenario.
-	providerFactory := func(name string) (genai.Provider, http.RoundTripper) {
+	providerFactory := func(name string) genai.Provider {
 		if name == "" {
-			p, rt := gc(t, name)
-			return p, rt
+			return gc(t, name)
 		}
-		p, rt := gc(t, t.Name()+"/"+name)
-		return p, rt
+		return gc(t, t.Name()+"/"+name)
 	}
 	ctx, _ := internaltest.Log(t)
 	got, usage, err := smoke.Run(ctx, providerFactory)

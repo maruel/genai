@@ -19,7 +19,8 @@ import (
 	"github.com/maruel/httpjson"
 )
 
-//go:generate go run update_readme.go
+//go:generate go run regen_readme.go ..
+//go:generate go run regen_scoreboards.go ..
 
 // BeLenient is used by all clients to enable or disable httpjson.Client.Lenient.
 //

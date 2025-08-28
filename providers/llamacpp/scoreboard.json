@@ -1,49 +1,49 @@
 {
-	"warnings": [
-		"The multi-modal file is referred to with \"#\" character."
-	],
-	"country": "Local",
-	"dashboardURL": "https://github.com/ggml-org/llama.cpp",
-	"scenarios": [
-		{
-			"models": [
-				"ggml-org/gemma-3-4b-it-GGUF/gemma-3-4b-it-Q4_K_M.gguf#mmproj-model-f16.gguf"
-	  ],
-	  "in": {
-		  "text": {
-			  "inline": true
-		  },
-		  "image": {
-			  "inline": true,
-			  "url": true,
-			  "supportedFormats": [
-				  "image/gif",
-				  "image/jpeg",
-				  "image/png"
-			  ]
-		  }
-	  },
-	  "out": {
-		  "text": {
-			  "inline": true
-		  }
-	  },
-	  "GenSync": {
-		  "tools": "true",
-		  "biasedTool": "true",
-		  "seed": true,
-		  "topLogprobs": true,
-		  "json": true,
-		  "jsonSchema": true
-	  },
-	  "GenStream": {
-		  "tools": "true",
-		  "biasedTool": "true",
-		  "seed": true,
-		  "topLogprobs": true,
-		  "json": true,
-		  "jsonSchema": true
-	  }
-		}
-	]
+  "warnings": [
+    "The multi-modal file is referred to with \"#\" character."
+  ],
+  "country": "Local",
+  "dashboardURL": "https://github.com/ggml-org/llama.cpp",
+  "scenarios": [
+    {
+      "models": [
+        "ggml-org/gemma-3-4b-it-GGUF/gemma-3-4b-it-Q4_K_M.gguf#mmproj-model-f16.gguf"
+      ],
+      "in": {
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "tools": "true",
+        "json": true,
+        "jsonSchema": true,
+        "seed": true,
+        "topLogprobs": true,
+        "biasedTool": "true"
+      },
+      "GenStream": {
+        "tools": "true",
+        "json": true,
+        "jsonSchema": true,
+        "seed": true,
+        "topLogprobs": true,
+        "biasedTool": "true"
+      }
+    }
+  ]
 }

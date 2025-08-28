@@ -1,94 +1,94 @@
 {
-	"warnings": [
-		"Websearch, which is automatic for all models, is very expensive. Disable it manually when testing.",
-		"No tool calling support, but JSON schema is supported so this can be leveraged."
-	],
-	"country": "US",
-	"dashboardURL": "https://www.perplexity.ai/settings/api",
-	"scenarios": [
-		{
-			"models": [
-				"sonar-reasoning",
-				"sonar-reasoning-pro"
-			],
-			"thinking": true,
-			"thinkingTokenStart": "\u003cthink\u003e",
-			"thinkingTokenEnd": "\u003c\u002fthink\u003e",
-			"in": {
-				"text": {
-					"inline": true
-				},
-				"image": {
-					"inline": true,
-					"url": true,
-					"supportedFormats": [
-						"image/gif",
-						"image/jpeg",
-						"image/png",
-						"image/webp"
-					]
-				}
-			},
-			"out": {
-				"text": {
-					"inline": true
-				}
-			},
-			"GenSync": {
-				"jsonSchema": true,
-				"citations": true,
-				"noStopSequence": true
-			},
-			"GenStream": {
-				"jsonSchema": true,
-				"citations": true,
-				"noStopSequence": true
-			}
-		},
-		{
-			"models": [
-				"sonar",
-				"sonar-pro"
-			],
-			"in": {
-				"text": {
-					"inline": true
-				},
-				"image": {
-					"inline": true,
-					"url": true,
-					"supportedFormats": [
-						"image/gif",
-						"image/jpeg",
-						"image/png",
-						"image/webp"
-					]
-				}
-			},
-			"out": {
-				"text": {
-					"inline": true
-				}
-			},
-			"GenSync": {
-				"jsonSchema": true,
-				"citations": true,
-				"noStopSequence": true
-			},
-			"GenStream": {
-				"jsonSchema": true,
-				"citations": true,
-				"noStopSequence": true
-			}
-		},
-		{
-			"models": [
-				"sonar-deep-research"
-			],
-			"comments": "sonar-deep-research has the same capability as sonar-reasoning-pro but it is way too expensive, it cost over 5$USD to run a scoreboard.",
-			"thinking": true,
-			"thinkingTokenStart": "\u003cthink\u003e",
-			"thinkingTokenEnd": "\u003c\u002fthink\u003e"
-		}
-	]
+  "warnings": [
+    "Websearch, which is automatic for all models, is very expensive. Disable it manually when testing.",
+    "No tool calling support, but JSON schema is supported so this can be leveraged."
+  ],
+  "country": "US",
+  "dashboardURL": "https://www.perplexity.ai/settings/api",
+  "scenarios": [
+    {
+      "models": [
+        "sonar-reasoning",
+        "sonar-reasoning-pro"
+      ],
+      "thinking": true,
+      "thinkingTokenStart": "\u003cthink\u003e",
+      "thinkingTokenEnd": "\u003c/think\u003e",
+      "in": {
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "jsonSchema": true,
+        "citations": true,
+        "noStopSequence": true
+      },
+      "GenStream": {
+        "jsonSchema": true,
+        "citations": true,
+        "noStopSequence": true
+      }
+    },
+    {
+      "models": [
+        "sonar",
+        "sonar-pro"
+      ],
+      "in": {
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "jsonSchema": true,
+        "citations": true,
+        "noStopSequence": true
+      },
+      "GenStream": {
+        "jsonSchema": true,
+        "citations": true,
+        "noStopSequence": true
+      }
+    },
+    {
+      "comments": "sonar-deep-research has the same capability as sonar-reasoning-pro but it is way too expensive, it cost over 5$USD to run a scoreboard.",
+      "models": [
+        "sonar-deep-research"
+      ],
+      "thinking": true,
+      "thinkingTokenStart": "\u003cthink\u003e",
+      "thinkingTokenEnd": "\u003c/think\u003e"
+    }
+  ]
 }

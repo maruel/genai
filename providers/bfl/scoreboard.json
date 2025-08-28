@@ -1,46 +1,50 @@
 {
-	"warnings": [
-		"The API is asynchronous and supports webhook but genai doesn't expose these yet, so the client polls for now.",
-		"The API and acceptable values are highly model-dependent, so it is easy to make an invalid request."
-	],
-	"country": "DE",
-	"dashboardURL": "https://dashboard.bfl.ai/",
-	"scenarios": [
-		{
-			"comments": "See https://docs.bfl.ai/api-reference/tasks/generate-an-image-with-flux1-[dev]",
-			"models": ["flux-dev"],
-			"in": {
-				"text": {
-					"inline": true
-				}
-			},
-			"out": {
-				"image": {
-					"url": true,
-					"supportedFormats": ["image/jpeg"]
-				}
-			},
-			"GenDoc": {
-				"reportRateLimits": true,
-				"brokenTokenUsage": "true",
-				"brokenFinishReason": true,
-				"seed": true
-			}
-		},
-		{
-			"comments": "It cost a fair amount of money to run the test on these models; see https://docs.bfl.ai/api-reference/tasks/ for details.",
-			"models": [
-				"flux-tools",
-				"flux-pro-1.0-depth",
-				"flux-pro-1.0-canny",
-				"flux-pro-1.0-expand",
-				"flux-pro-1.0-fill",
-				"flux-kontext-pro",
-				"flux-kontext-max",
-				"flux-pro-1.1-ultra",
-				"flux-pro-1.1",
-				"flux-pro"
-			]
-		}
-	]
+  "warnings": [
+    "The API is asynchronous and supports webhook but genai doesn't expose these yet, so the client polls for now.",
+    "The API and acceptable values are highly model-dependent, so it is easy to make an invalid request."
+  ],
+  "country": "DE",
+  "dashboardURL": "https://dashboard.bfl.ai/",
+  "scenarios": [
+    {
+      "comments": "See https://docs.bfl.ai/api-reference/tasks/generate-an-image-with-flux1-[dev]",
+      "models": [
+        "flux-dev"
+      ],
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "image": {
+          "url": true,
+          "supportedFormats": [
+            "image/jpeg"
+          ]
+        }
+      },
+      "GenDoc": {
+        "seed": true,
+        "reportRateLimits": true,
+        "brokenTokenUsage": "true",
+        "brokenFinishReason": true
+      }
+    },
+    {
+      "comments": "It cost a fair amount of money to run the test on these models; see https://docs.bfl.ai/api-reference/tasks/ for details.",
+      "models": [
+        "flux-tools",
+        "flux-pro-1.0-depth",
+        "flux-pro-1.0-canny",
+        "flux-pro-1.0-expand",
+        "flux-pro-1.0-fill",
+        "flux-kontext-pro",
+        "flux-kontext-max",
+        "flux-pro-1.1-ultra",
+        "flux-pro-1.1",
+        "flux-pro"
+      ]
+    }
+  ]
 }

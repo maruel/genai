@@ -1,63 +1,63 @@
 {
-	"warnings": [
-		"JSON schema decoding is announced to be added later in the doc.",
-		"Tool calling works very well but is biased; the model is lazy and when it's unsure, it will use the tool's first argument.",
-		"Tool calling is not supported with deepseek-reasoner.",
-		"DeepSeek doesn't do rate limiting: https://api-docs.deepseek.com/quick_start/rate_limit"
-	],
-	"country": "CN",
-	"dashboardURL": "https://platform.deepseek.com",
-	"scenarios": [
-		{
-			"models": [
-				"deepseek-chat"
-	  ],
-	  "in": {
-		  "text": {
-			  "inline": true
-		  }
-	  },
-	  "out": {
-		  "text": {
-			  "inline": true
-		  }
-	  },
-	  "GenSync": {
-		  "tools": "true",
-		  "indecisiveTool": "true",
-		  "json": true,
-		  "topLogprobs": true
-	  },
-	  "GenStream": {
-		  "tools": "true",
-		  "indecisiveTool": "true",
-		  "json": true,
-		  "topLogprobs": true
-	  }
-		},
-		{
-			"models": [
-				"deepseek-reasoner"
-			],
-			"thinking": true,
-			"in": {
-				"text": {
-					"inline": true
-				}
-			},
-			"out": {
-				"text": {
-					"inline": true
-				}
-			},
-			"GenSync": {
-				"tools": "flaky",
-				"json": true
-			},
-			"GenStream": {
-				"tools": "flaky",
-				"json": true
-			}
-		}
-	]
+  "warnings": [
+    "JSON schema decoding is announced to be added later in the doc.",
+    "Tool calling works very well but is biased; the model is lazy and when it's unsure, it will use the tool's first argument.",
+    "Tool calling is not supported with deepseek-reasoner.",
+    "DeepSeek doesn't do rate limiting: https://api-docs.deepseek.com/quick_start/rate_limit"
+  ],
+  "country": "CN",
+  "dashboardURL": "https://platform.deepseek.com",
+  "scenarios": [
+    {
+      "models": [
+        "deepseek-chat"
+      ],
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "tools": "true",
+        "json": true,
+        "topLogprobs": true,
+        "indecisiveTool": "true"
+      },
+      "GenStream": {
+        "tools": "true",
+        "json": true,
+        "topLogprobs": true,
+        "indecisiveTool": "true"
+      }
+    },
+    {
+      "models": [
+        "deepseek-reasoner"
+      ],
+      "thinking": true,
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "tools": "flaky",
+        "json": true
+      },
+      "GenStream": {
+        "tools": "flaky",
+        "json": true
+      }
+    }
+  ]
 }

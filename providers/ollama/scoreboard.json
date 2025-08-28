@@ -1,73 +1,73 @@
 {
-	"warnings": [
-		"https://ollama.com/search?c=tool is not a reliable source of truth to determine which model has tool support enabled. See https://github.com/ollama/ollama/issues/9680.",
-		"Ollama supports more than what the client currently supports."
-	],
-	"country": "Local",
-	"dashboardURL": "https://ollama.com/",
-	"scenarios": [
-		{
-			"models": [
-				"gemma3:4b"
-	  ],
-	  "in": {
-		  "text": {
-			  "inline": true
-		  },
-		  "image": {
-			  "inline": true,
-			  "supportedFormats": [
-				  "image/jpeg",
-				  "image/png",
-				  "image/webp"
-			  ]
-		  }
-	  },
-	  "out": {
-		  "text": {
-			  "inline": true
-		  }
-	  },
-	  "GenSync": {
-		  "json": true,
-		  "jsonSchema": true,
-		  "seed": true
-	  },
-	  "GenStream": {
-		  "json": true,
-		  "jsonSchema": true,
-		  "seed": true
-	  }
-		},
-		{
-			"models": [
-				"qwen3:4b"
-			],
-			"thinking": true,
-			"thinkingTokenStart": "\u003cthink\u003e",
-			"thinkingTokenEnd": "\n\u003c\u002fthink\u003e\n",
-			"in": {
-				"text": {
-					"inline": true
-				}
-			},
-			"out": {
-				"text": {
-					"inline": true
-				}
-			},
-			"GenSync": {
-				"tools": "true",
-				"json": true,
-				"jsonSchema": true,
-				"seed": true
-			},
-			"GenStream": {
-				"tools": "true",
-				"json": true,
-				"jsonSchema": true,
-				"seed": true
-			}
-		}
-	]
+  "warnings": [
+    "https://ollama.com/search?c=tool is not a reliable source of truth to determine which model has tool support enabled. See https://github.com/ollama/ollama/issues/9680.",
+    "Ollama supports more than what the client currently supports."
+  ],
+  "country": "Local",
+  "dashboardURL": "https://ollama.com/",
+  "scenarios": [
+    {
+      "models": [
+        "gemma3:4b"
+      ],
+      "in": {
+        "image": {
+          "inline": true,
+          "supportedFormats": [
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "json": true,
+        "jsonSchema": true,
+        "seed": true
+      },
+      "GenStream": {
+        "json": true,
+        "jsonSchema": true,
+        "seed": true
+      }
+    },
+    {
+      "models": [
+        "qwen3:4b"
+      ],
+      "thinking": true,
+      "thinkingTokenStart": "\u003cthink\u003e",
+      "thinkingTokenEnd": "\n\u003c/think\u003e\n",
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "tools": "true",
+        "json": true,
+        "jsonSchema": true,
+        "seed": true
+      },
+      "GenStream": {
+        "tools": "true",
+        "json": true,
+        "jsonSchema": true,
+        "seed": true
+      }
+    }
+  ]
 }

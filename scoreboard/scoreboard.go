@@ -161,14 +161,12 @@ type FunctionalityDoc struct {
 
 // Scenario defines one way to use the provider.
 type Scenario struct {
-	In  map[genai.Modality]ModalCapability `json:"in"`
-	Out map[genai.Modality]ModalCapability `json:"out"`
-	// Models is a *non exhaustive* list of models that support this scenario. It can't be exhaustive since
-	// providers continuouly release new models. It is still valuable to use the first value
-	Models []string `json:"models"`
 	// Comments are notes about the scenario. For example, if a scenario is known to be bugged, deprecated,
 	// expensive, etc.
 	Comments string `json:"comments,omitzero"`
+	// Models is a *non exhaustive* list of models that support this scenario. It can't be exhaustive since
+	// providers continuouly release new models. It is still valuable to use the first value
+	Models []string `json:"models"`
 
 	// Thinking means that the model does either explicit chain-of-thought or hidden thinking. For some
 	// providers, this is controlled via a OptionsText. For some models (like Qwen3), a token "/no_think" or
@@ -177,6 +175,9 @@ type Scenario struct {
 	Thinking           bool   `json:"thinking,omitzero"`
 	ThinkingTokenStart string `json:"thinkingTokenStart,omitzero"`
 	ThinkingTokenEnd   string `json:"thinkingTokenEnd,omitzero"`
+
+	In  map[genai.Modality]ModalCapability `json:"in,omitzero"`
+	Out map[genai.Modality]ModalCapability `json:"out,omitzero"`
 
 	// GenSync declares features supported when using Provider.GenSync
 	GenSync *FunctionalityText `json:"GenSync,omitzero,omitempty"`
@@ -251,18 +252,17 @@ func (i *Thinking) UnmarshalJSON(b []byte) error {
 type Score struct {
 	// Warnings lists concerns the user should be aware of.
 	Warnings []string `json:"warnings,omitzero,omitempty"`
+	// Country where the provider is based, e.g. "US", "CN", "EU". Two exceptions: "Local" for local and "N/A"
+	// for pure routers.
+	Country string `json:"country"`
+	// DashboardURL is the URL to the provider's dashboard, if available.
+	DashboardURL string `json:"dashboardURL"`
 
 	// Scenarios is the list of all known supported and tested scenarios.
 	//
 	// A single provider can provide various distinct use cases, like text-to-text, multi-modal-to-text,
 	// text-to-audio, audio-to-text, etc.
 	Scenarios []Scenario `json:"scenarios"`
-
-	// Country where the provider is based, e.g. "US", "CN", "EU". Two exceptions: "Local" for local and "N/A"
-	// for pure routers.
-	Country string `json:"country"`
-	// DashboardURL is the URL to the provider's dashboard, if available.
-	DashboardURL string `json:"dashboardURL"`
 
 	_ struct{}
 }

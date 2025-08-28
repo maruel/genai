@@ -12,8 +12,12 @@
         "claude-3-5-haiku-20241022"
       ],
       "in": {
-        "text": {
-          "inline": true
+        "document": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "application/pdf"
+          ]
         },
         "image": {
           "inline": true,
@@ -25,12 +29,8 @@
             "image/webp"
           ]
         },
-        "document": {
-          "inline": true,
-          "url": true,
-          "supportedFormats": [
-            "application/pdf"
-          ]
+        "text": {
+          "inline": true
         }
       },
       "out": {
@@ -39,16 +39,16 @@
         }
       },
       "GenSync": {
-        "reportRateLimits": true,
         "tools": "true",
-        "biasedTool": "true",
-        "Citations": true
+        "citations": true,
+        "reportRateLimits": true,
+        "biasedTool": "true"
       },
       "GenStream": {
-        "reportRateLimits": true,
         "tools": "true",
-        "biasedTool": "true",
-        "Citations": true
+        "citations": true,
+        "reportRateLimits": true,
+        "biasedTool": "true"
       }
     },
     {
@@ -56,8 +56,12 @@
         "claude-sonnet-4-20250514"
       ],
       "in": {
-        "text": {
-          "inline": true
+        "document": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "application/pdf"
+          ]
         },
         "image": {
           "inline": true,
@@ -69,12 +73,8 @@
             "image/webp"
           ]
         },
-        "document": {
-          "inline": true,
-          "url": true,
-          "supportedFormats": [
-            "application/pdf"
-          ]
+        "text": {
+          "inline": true
         }
       },
       "out": {
@@ -83,16 +83,16 @@
         }
       },
       "GenSync": {
-        "reportRateLimits": true,
         "tools": "true",
-        "biasedTool": "true",
-        "Citations": true
+        "citations": true,
+        "reportRateLimits": true,
+        "biasedTool": "true"
       },
       "GenStream": {
-        "reportRateLimits": true,
         "tools": "true",
-        "biasedTool": "true",
-        "Citations": true
+        "citations": true,
+        "reportRateLimits": true,
+        "biasedTool": "true"
       }
     },
     {
@@ -101,8 +101,12 @@
       ],
       "thinking": true,
       "in": {
-        "text": {
-          "inline": true
+        "document": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "application/pdf"
+          ]
         },
         "image": {
           "inline": true,
@@ -114,12 +118,8 @@
             "image/webp"
           ]
         },
-        "document": {
-          "inline": true,
-          "url": true,
-          "supportedFormats": [
-            "application/pdf"
-          ]
+        "text": {
+          "inline": true
         }
       },
       "out": {
@@ -128,16 +128,16 @@
         }
       },
       "GenSync": {
-        "reportRateLimits": true,
         "tools": "true",
-        "noMaxTokens": true,
-        "Citations": true
+        "citations": true,
+        "reportRateLimits": true,
+        "noMaxTokens": true
       },
       "GenStream": {
-        "reportRateLimits": true,
         "tools": "true",
-        "noMaxTokens": true,
-        "Citations": true
+        "citations": true,
+        "reportRateLimits": true,
+        "noMaxTokens": true
       }
     },
     {

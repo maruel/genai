@@ -1,146 +1,146 @@
 {
-	"warnings": [
-		"This is a completely free provider so you get what you pay for. I would recommend against using this provider with any private data.",
-		"Pollinations is a router to other backends, so it inherits the drawback of each sub-provider."
-	],
-	"country": "DE",
-	"dashboardURL": "https://auth.pollinations.ai/",
-	"scenarios": [
-		{
-			"comments": "JSON generated is often bad when using GenStream.",
-			"models": [
-				"llamascout"
-	  ],
-	  "in": {
-		  "text": {
-			  "inline": true
-		  }
-	  },
-	  "out": {
-		  "text": {
-			  "inline": true
-		  }
-	  },
-	  "GenSync": {
-		  "noMaxTokens": true,
-		  "noStopSequence": true,
-		  "tools": "flaky",
-		  "indecisiveTool": "flaky",
-		  "json": true,
-		  "seed": true
-	  },
-	  "GenStream": {
-		  "noMaxTokens": true,
-		  "noStopSequence": true,
-		  "tools": "flaky",
-		  "indecisiveTool": "flaky",
-		  "seed": true
-	  }
-		},
-		{
-			"comments": "It was fairly broken at the time of testing.",
-			"models": [
-				"deepseek-reasoning"
-			],
-			"thinking": true
-		},
-		{
-			"models": [
-				"flux"
-			],
-			"in": {
-				"text": {
-					"inline": true
-				}
-			},
-			"out": {
-				"image": {
-					"inline": true,
-					"supportedFormats": [
-						"image/jpeg"
-					]
-				}
-			},
-			"GenDoc": {
-				"seed": true,
-				"brokenTokenUsage": "true",
-				"brokenFinishReason": true
-			}
-		},
-		{
-			"models": [
-				"openai"
-			],
-			"in": {
-				"text": {
-					"inline": true
-				},
-				"image": {
-					"inline": true,
-					"url": true,
-					"supportedFormats": [
-						"image/gif",
-						"image/jpeg",
-						"image/png",
-						"image/webp"
-					]
-				}
-			},
-			"out": {
-				"text": {
-					"inline": true
-				}
-			},
-			"GenSync": {
-				"noMaxTokens": true,
-				"noStopSequence": true,
-				"tools": "true",
-				"biasedTool": "true",
-				"json": true,
-				"seed": true
-			},
-			"GenStream": {
-				"brokenTokenUsage": "true",
-				"noMaxTokens": true,
-				"noStopSequence": true,
-				"tools": "true",
-				"biasedTool": "true",
-				"json": true,
-				"seed": true
-			}
-		},
-		{
-			"comments": "The scoreboard is currently broken for this use case as the model requires audio input.",
-			"models": [
-				"openai-audio"
-			]
-		},
-		{
-			"comments": "Ignored",
-			"models": [
-				"bidara",
-				"evil",
-				"gemini",
-				"geminisearch",
-				"glm",
-				"hypnosis-tracy",
-				"kontext",
-				"llama-fast-roblox",
-				"llama-roblox",
-				"midijourney",
-				"mirexa",
-				"mistral",
-				"mistral-nemo-roblox",
-				"mistral-roblox",
-				"openai-fast",
-				"openai-large",
-				"openai-roblox",
-				"qwen-coder",
-				"rtist",
-				"sur",
-				"turbo",
-				"unity"
-			]
-		}
-	]
+  "warnings": [
+    "This is a completely free provider so you get what you pay for. I would recommend against using this provider with any private data.",
+    "Pollinations is a router to other backends, so it inherits the drawback of each sub-provider."
+  ],
+  "country": "DE",
+  "dashboardURL": "https://auth.pollinations.ai/",
+  "scenarios": [
+    {
+      "comments": "JSON generated is often bad when using GenStream.",
+      "models": [
+        "llamascout"
+      ],
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "tools": "flaky",
+        "json": true,
+        "seed": true,
+        "noMaxTokens": true,
+        "noStopSequence": true,
+        "indecisiveTool": "flaky"
+      },
+      "GenStream": {
+        "tools": "flaky",
+        "seed": true,
+        "noMaxTokens": true,
+        "noStopSequence": true,
+        "indecisiveTool": "flaky"
+      }
+    },
+    {
+      "comments": "It was fairly broken at the time of testing.",
+      "models": [
+        "deepseek-reasoning"
+      ],
+      "thinking": true
+    },
+    {
+      "models": [
+        "flux"
+      ],
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "image": {
+          "inline": true,
+          "supportedFormats": [
+            "image/jpeg"
+          ]
+        }
+      },
+      "GenDoc": {
+        "seed": true,
+        "brokenTokenUsage": "true",
+        "brokenFinishReason": true
+      }
+    },
+    {
+      "models": [
+        "openai"
+      ],
+      "in": {
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "tools": "true",
+        "json": true,
+        "seed": true,
+        "noMaxTokens": true,
+        "noStopSequence": true,
+        "biasedTool": "true"
+      },
+      "GenStream": {
+        "tools": "true",
+        "json": true,
+        "seed": true,
+        "brokenTokenUsage": "true",
+        "noMaxTokens": true,
+        "noStopSequence": true,
+        "biasedTool": "true"
+      }
+    },
+    {
+      "comments": "The scoreboard is currently broken for this use case as the model requires audio input.",
+      "models": [
+        "openai-audio"
+      ]
+    },
+    {
+      "comments": "Ignored",
+      "models": [
+        "bidara",
+        "evil",
+        "gemini",
+        "geminisearch",
+        "glm",
+        "hypnosis-tracy",
+        "kontext",
+        "llama-fast-roblox",
+        "llama-roblox",
+        "midijourney",
+        "mirexa",
+        "mistral",
+        "mistral-nemo-roblox",
+        "mistral-roblox",
+        "openai-fast",
+        "openai-large",
+        "openai-roblox",
+        "qwen-coder",
+        "rtist",
+        "sur",
+        "turbo",
+        "unity"
+      ]
+    }
+  ]
 }

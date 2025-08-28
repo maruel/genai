@@ -8,6 +8,7 @@
 package main
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"os"
@@ -17,18 +18,20 @@ import (
 )
 
 func mainImpl() error {
-	root := ".."
-
-	c := exec.Command("go", "run", filepath.Join(root, "cmd", "scoreboard"), "-table")
-	rawNew, err := c.Output()
-	if err != nil {
-		return fmt.Errorf("go run failed: %w: %s", err, string(rawNew))
+	if len(os.Args) != 2 {
+		return fmt.Errorf("usage: %s <root>", os.Args[0])
 	}
-	rawReadme, err := os.ReadFile(filepath.Join(root, "README.md"))
+	root := os.Args[1]
+	c := exec.Command("go", "run", filepath.Join(root, "cmd", "scoreboard"), "-table")
+	rawNewTable, err := c.Output()
+	if err != nil {
+		return fmt.Errorf("go run failed: %w: %s", err, string(rawNewTable))
+	}
+	rawReadmeOld, err := os.ReadFile(filepath.Join(root, "README.md"))
 	if err != nil {
 		return err
 	}
-	readme := string(rawReadme)
+	readme := string(rawReadmeOld)
 	start := strings.Index(readme, "| Provider")
 	if start < 0 {
 		return errors.New("could not find table in README.md")
@@ -37,11 +40,16 @@ func mainImpl() error {
 	if end < 0 {
 		return errors.New("could not find end of table in README.md")
 	}
-	n := readme[:start] + string(rawNew) + readme[start+end+1:]
+	n := readme[:start] + string(rawNewTable) + readme[start+end+1:]
 	if n == readme {
 		return nil
 	}
-	if err := os.WriteFile(filepath.Join(root, "README.md"), []byte(n), 0644); err != nil {
+	rawReadmeNew := []byte(n)
+	if bytes.Equal(rawReadmeNew, rawReadmeOld) {
+		return nil
+	}
+	fmt.Printf("- Updating %s\n", filepath.Join(root, "README.md"))
+	if err := os.WriteFile(filepath.Join(root, "README.md"), rawReadmeNew, 0o644); err != nil {
 		return err
 	}
 	return nil

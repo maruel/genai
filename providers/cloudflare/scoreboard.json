@@ -1,72 +1,76 @@
 {
-	"warnings": [
-		"FinishReason is not returned, ever.",
-		"StopSequence doesn't work.",
-		"Usage tokens isn't reported when streaming or using JSON.",
-		"The structure of ChatRequest format is model dependent.",
-		"Tool calling is supported on some models but it's flaky.",
-		"Given the fact that FinishReason, StopSequence and Usage are broken, I can't recommend this provider beside toys."
-	],
-	"country": "US",
-	"dashboardURL": "https://dash.cloudflare.com",
-	"scenarios": [
-		{
-			"comments": "Llama-4 scout supports genai.ModalityImage but I'm not sure if cloudflare supports this modality. This may change in the future.",
-			"models": ["@cf/meta/llama-4-scout-17b-16e-instruct"],
-			"in": {
-				"text": {
-					"inline": true
-				}
-			},
-			"out": {
-				"text": {
-					"inline": true
-				}
-			},
-			"GenSync": {
-				"brokenFinishReason": true,
-				"noStopSequence": true,
-				"tools": "flaky",
-				"indecisiveTool": "flaky",
-				"json": true,
-				"jsonSchema": true,
-				"seed": true
-			},
-			"GenStream": {
-				"jsonSchema": true,
-				"brokenFinishReason": true,
-				"noStopSequence": true,
-				"tools": "flaky",
-				"seed": true
-			}
-		},
-		{
-			"models": ["@cf/meta/llama-3.2-3b-instruct"],
-			"in": {
-				"text": {
-					"inline": true
-				}
-			},
-			"out": {
-				"text": {
-					"inline": true
-				}
-			},
-			"GenSync": {
-				"brokenFinishReason": true,
-				"noStopSequence": true,
-				"tools": "flaky",
-				"indecisiveTool": "flaky",
-				"json": true,
-				"seed": true
-			},
-			"GenStream": {
-				"brokenFinishReason": true,
-				"noStopSequence": true,
-				"tools": "flaky",
-				"json": true,
-				"seed": true
-			}
-		}
-	]
+  "warnings": [
+    "FinishReason is not returned, ever.",
+    "StopSequence doesn't work.",
+    "Usage tokens isn't reported when streaming or using JSON.",
+    "The structure of ChatRequest format is model dependent.",
+    "Tool calling is supported on some models but it's flaky.",
+    "Given the fact that FinishReason, StopSequence and Usage are broken, I can't recommend this provider beside toys."
+  ],
+  "country": "US",
+  "dashboardURL": "https://dash.cloudflare.com",
+  "scenarios": [
+    {
+      "comments": "Llama-4 scout supports genai.ModalityImage but I'm not sure if cloudflare supports this modality. This may change in the future.",
+      "models": [
+        "@cf/meta/llama-4-scout-17b-16e-instruct"
+      ],
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "tools": "flaky",
+        "json": true,
+        "jsonSchema": true,
+        "seed": true,
+        "brokenFinishReason": true,
+        "noStopSequence": true,
+        "indecisiveTool": "flaky"
+      },
+      "GenStream": {
+        "tools": "flaky",
+        "jsonSchema": true,
+        "seed": true,
+        "brokenFinishReason": true,
+        "noStopSequence": true
+      }
+    },
+    {
+      "models": [
+        "@cf/meta/llama-3.2-3b-instruct"
+      ],
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "tools": "flaky",
+        "json": true,
+        "seed": true,
+        "brokenFinishReason": true,
+        "noStopSequence": true,
+        "indecisiveTool": "flaky"
+      },
+      "GenStream": {
+        "tools": "flaky",
+        "json": true,
+        "seed": true,
+        "brokenFinishReason": true,
+        "noStopSequence": true
+      }
+    }
+  ]
 }

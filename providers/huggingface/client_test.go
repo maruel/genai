@@ -7,6 +7,7 @@ package huggingface_test
 import (
 	"net/http"
 	"os"
+	"slices"
 	"strings"
 	"sync"
 	"testing"
@@ -31,14 +32,21 @@ func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper)
 		t.Fatal(err)
 	}
 	if strings.HasPrefix(model.Model, "Qwen/Qwen3") {
-		if model.Thinking {
-			return &adapters.ProviderThinking{
-				Provider:           &adapters.ProviderAppend{Provider: c, Append: genai.Request{Text: "\n\n/think"}},
-				ThinkingTokenStart: "<think>",
-				ThinkingTokenEnd:   "</think>",
-			}
-		} else {
+		if !model.Thinking {
 			return &adapters.ProviderAppend{Provider: c, Append: genai.Request{Text: "\n\n/no_think"}}
+		}
+		// Check if it has predefined thinking tokens.
+		for _, sc := range c.Scoreboard().Scenarios {
+			if sc.Thinking && slices.Contains(sc.Models, model.Model) {
+				if sc.ThinkingTokenStart != "" && sc.ThinkingTokenEnd != "" {
+					return &adapters.ProviderThinking{
+						Provider:           &adapters.ProviderAppend{Provider: c, Append: genai.Request{Text: "\n\n/think"}},
+						ThinkingTokenStart: sc.ThinkingTokenStart,
+						ThinkingTokenEnd:   sc.ThinkingTokenEnd,
+					}
+				}
+				break
+			}
 		}
 	}
 	return c

@@ -42,6 +42,7 @@ func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper)
 	if strings.HasPrefix(model.Model, "qwen/") && model.Thinking {
 		c = &adapters.ProviderAppend{Provider: c, Append: genai.Request{Text: "\n\n/think"}}
 	}
+	// OpenAI must not enable the ReasoningFormat flag.
 	if model.Thinking && !strings.HasPrefix(model.Model, "openai/") {
 		return &handleGroqReasoning{Provider: c}
 	}

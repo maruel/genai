@@ -9,6 +9,7 @@ import (
 	_ "embed"
 	"net/http"
 	"os"
+	"slices"
 	"sync"
 	"testing"
 
@@ -33,7 +34,18 @@ func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper)
 	}
 	c2 := &smallImage{Provider: &internaltest.HideHTTP500{Provider: c}}
 	if model.Thinking {
-		return &adapters.ProviderThinking{Provider: c2, ThinkingTokenStart: "<think>", ThinkingTokenEnd: "\n</think>\n"}
+		for _, sc := range c.Scoreboard().Scenarios {
+			if sc.Thinking && slices.Contains(sc.Models, model.Model) {
+				if sc.ThinkingTokenStart != "" && sc.ThinkingTokenEnd != "" {
+					return &adapters.ProviderThinking{
+						Provider:           c2,
+						ThinkingTokenStart: sc.ThinkingTokenStart,
+						ThinkingTokenEnd:   sc.ThinkingTokenEnd,
+					}
+				}
+				break
+			}
+		}
 	}
 	return c2
 }

@@ -9,6 +9,7 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
+	"slices"
 	"strings"
 	"sync"
 	"testing"
@@ -57,10 +58,18 @@ func TestClient(t *testing.T) {
 				if !model.Thinking {
 					t.Fatal("expected thinking")
 				}
-				return &adapters.ProviderThinking{
-					Provider:           &adapters.ProviderAppend{Provider: c, Append: genai.Request{Text: "\n\n/think"}},
-					ThinkingTokenStart: "<think>",
-					ThinkingTokenEnd:   "\n</think>\n",
+				// Check if it has predefined thinking tokens.
+				for _, sc := range c.Scoreboard().Scenarios {
+					if sc.Thinking && slices.Contains(sc.Models, model.Model) {
+						if sc.ThinkingTokenStart != "" && sc.ThinkingTokenEnd != "" {
+							return &adapters.ProviderThinking{
+								Provider:           &adapters.ProviderAppend{Provider: c, Append: genai.Request{Text: "\n\n/think"}},
+								ThinkingTokenStart: sc.ThinkingTokenStart,
+								ThinkingTokenEnd:   sc.ThinkingTokenEnd,
+							}
+						}
+						break
+					}
 				}
 			}
 			return c

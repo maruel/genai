@@ -9,6 +9,7 @@ import (
 	"iter"
 	"net/http"
 	"os"
+	"slices"
 	"strings"
 	"testing"
 
@@ -50,7 +51,18 @@ func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper)
 		Opts:     []genai.Options{&perplexity.Options{DisableSearch: true, DisableRelatedQuestions: true}},
 	}
 	if model.Thinking {
-		p = &adapters.ProviderThinking{Provider: p, ThinkingTokenStart: "<think>", ThinkingTokenEnd: "</think>"}
+		for _, sc := range c.Scoreboard().Scenarios {
+			if sc.Thinking && slices.Contains(sc.Models, model.Model) {
+				if sc.ThinkingTokenStart != "" && sc.ThinkingTokenEnd != "" {
+					return &adapters.ProviderThinking{
+						Provider:           p,
+						ThinkingTokenStart: sc.ThinkingTokenStart,
+						ThinkingTokenEnd:   sc.ThinkingTokenEnd,
+					}
+				}
+				break
+			}
+		}
 	}
 	return p
 }

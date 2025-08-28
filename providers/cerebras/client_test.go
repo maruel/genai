@@ -9,7 +9,6 @@ import (
 	"net/http"
 	"os"
 	"slices"
-	"strings"
 	"sync"
 	"testing"
 
@@ -48,11 +47,19 @@ func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper)
 	if err2 != nil {
 		t.Fatal(err2)
 	}
-	if model.Thinking && !strings.HasPrefix(model.Model, "gpt-oss") {
-		return &adapters.ProviderThinking{
-			Provider:           &adapters.ProviderAppend{Provider: c, Append: genai.Request{Text: "\n\n/think"}},
-			ThinkingTokenStart: "<think>",
-			ThinkingTokenEnd:   "\n</think>\n",
+	if model.Thinking {
+		// Check if it has predefined thinking tokens.
+		for _, sc := range c.Scoreboard().Scenarios {
+			if sc.Thinking && slices.Contains(sc.Models, model.Model) {
+				if sc.ThinkingTokenStart != "" && sc.ThinkingTokenEnd != "" {
+					return &adapters.ProviderThinking{
+						Provider:           &adapters.ProviderAppend{Provider: c, Append: genai.Request{Text: "\n\n/think"}},
+						ThinkingTokenStart: sc.ThinkingTokenStart,
+						ThinkingTokenEnd:   sc.ThinkingTokenEnd,
+					}
+				}
+				break
+			}
 		}
 	}
 	return c

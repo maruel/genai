@@ -42,6 +42,14 @@ func AssertScoreboard(t *testing.T, gc GetClient, models []Model, rec *myrecorde
 	if len(models) == 0 {
 		t.Fatal("no models")
 	}
+	seen := map[Model]struct{}{}
+	for _, m := range models {
+		if _, ok := seen[m]; ok {
+			t.Fatalf("duplicate model in ListModel: %v", m)
+		}
+		seen[m] = struct{}{}
+	}
+
 	usage := genai.Usage{}
 
 	// Find the reference.
@@ -55,30 +63,31 @@ func AssertScoreboard(t *testing.T, gc GetClient, models []Model, rec *myrecorde
 		}
 	}
 	sb := og.(scoreboard.ProviderScore).Scoreboard()
-	// Check for duplicates. Disambiguates between thinking and non-thinking.
-	sbModels := map[Model]struct{}{}
+	if err := sb.Validate(); err != nil {
+		t.Fatal(err)
+	}
+
+	modelsToTest := map[Model]struct{}{}
 	for _, sc := range sb.Scenarios {
 		for _, model := range sc.Models {
-			k := Model{Model: model, Thinking: sc.Thinking}
-			if _, ok := sbModels[k]; ok {
-				t.Fatalf("duplicate model in scoreboard: %v", k)
-			}
-			sbModels[k] = struct{}{}
+			modelsToTest[Model{Model: model, Thinking: sc.Thinking}] = struct{}{}
 		}
 	}
 
-	seen := map[Model]struct{}{}
 	for _, m := range models {
 		t.Run(m.String(), func(t *testing.T) {
-			if _, ok := seen[m]; ok {
-				t.Fatalf("duplicate model in ListModel: %v", m)
-			}
-			seen[m] = struct{}{}
-
 			// Find the reference.
 			var want scoreboard.Scenario
 			for _, sc := range sb.Scenarios {
-				if slices.Contains(sc.Models, m.Model) && m.Thinking == sc.Thinking {
+				if m.Thinking != sc.Thinking {
+					continue
+				}
+				if slices.Contains(sc.Models, m.Model) {
+					if sc.Models[0] != m.Model {
+						// We only run the first model in the scenario for cost savings purposes. Create one scenario per
+						// model to smoke test.
+						t.Skip("Only run first model in scenario for cost savings")
+					}
 					want = sc
 					want.Models = []string{m.Model}
 					break
@@ -118,6 +127,7 @@ func AssertScoreboard(t *testing.T, gc GetClient, models []Model, rec *myrecorde
 	}
 	t.Logf("Usage: %#v", usage)
 
+	// Do this at the end.
 	filtered := false
 	flag.Visit(func(f *flag.Flag) {
 		if f.Name == "test.run" {
@@ -125,7 +135,7 @@ func AssertScoreboard(t *testing.T, gc GetClient, models []Model, rec *myrecorde
 		}
 	})
 	if !filtered {
-		for model := range sbModels {
+		for model := range modelsToTest {
 			if _, ok := seen[model]; !ok {
 				t.Errorf("stale model in scoreboard: %v", model)
 			}

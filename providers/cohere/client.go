@@ -1022,6 +1022,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 				return fmt.Errorf("expected content %#v", pkt)
 			}
 			if t := pkt.Delta.Message.Content[0].Type; t != ContentText {
+				// TODO: Thinking for SOTA model.
 				return fmt.Errorf("implement content %q", t)
 			}
 		case ChunkContentDelta:

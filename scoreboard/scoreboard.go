@@ -267,6 +267,24 @@ type Score struct {
 	_ struct{}
 }
 
+func (s *Score) Validate() error {
+	type pair struct {
+		name     string
+		thinking bool
+	}
+	seen := map[pair]struct{}{}
+	for _, sc := range s.Scenarios {
+		for _, model := range sc.Models {
+			k := pair{name: model, thinking: sc.Thinking}
+			if _, ok := seen[k]; ok {
+				return fmt.Errorf("duplicate model in scoreboard: %v", k)
+			}
+			seen[k] = struct{}{}
+		}
+	}
+	return nil
+}
+
 //go:embed testdata/*
 var testdataFiles embed.FS
 
@@ -274,3 +292,5 @@ var testdataFiles embed.FS
 //
 // This may be used for HTTP recording and replays.
 type ProviderFactory func(name string) (genai.Provider, http.RoundTripper)
+
+var _ genai.Validatable = (*Score)(nil)

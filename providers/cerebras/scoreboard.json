@@ -10,7 +10,41 @@
 	"scenarios": [
 		{
 			"comments": "llama-3.1-8b works too but the ListModels() API returns the malformed string.",
-			"models": ["llama3.1-8b", "llama-3.3-70b"],
+			"models": ["llama3.1-8b"],
+			"in": {
+				"text": {
+					"inline": true
+				}
+			},
+			"out": {
+				"text": {
+					"inline": true
+				}
+			},
+			"GenSync": {
+				"reportRateLimits": true,
+				"tools": "flaky",
+				"biasedTool": "flaky",
+				"indecisiveTool": "flaky",
+				"json": true,
+				"jsonSchema": true,
+				"seed": true,
+				"topLogprobs": true
+			},
+			"GenStream": {
+				"reportRateLimits": true,
+				"tools": "flaky",
+				"biasedTool": "flaky",
+				"indecisiveTool": "flaky",
+				"json": true,
+				"jsonSchema": true,
+				"seed": true,
+				"topLogprobs": true
+			}
+		},
+		{
+			"comments": "",
+			"models": ["llama-3.3-70b"],
 			"in": {
 				"text": {
 					"inline": true

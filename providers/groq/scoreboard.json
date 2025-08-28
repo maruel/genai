@@ -7,9 +7,40 @@
 	"dashboardURL": "https://console.groq.com/dashboard/usage",
 	"scenarios": [
 		{
-			"comments": "llama-3.1-8b-instant will be both indecisive and biased given its size and quantization. 70b is a bit better but not perfect.",
+			"comments": "Is both indecisive and biased given its size and quantization.",
 			"models": [
-				"llama-3.1-8b-instant",
+				"llama-3.1-8b-instant"
+			],
+			"in": {
+				"text": {
+					"inline": true
+				}
+			},
+			"out": {
+				"text": {
+					"inline": true
+				}
+			},
+			"GenSync": {
+				"reportRateLimits": true,
+				"tools": "flaky",
+				"biasedTool": "flaky",
+				"indecisiveTool": "flaky",
+				"json": true,
+				"seed": true
+			},
+			"GenStream": {
+				"reportRateLimits": true,
+				"tools": "flaky",
+				"biasedTool": "flaky",
+				"indecisiveTool": "flaky",
+				"json": true,
+				"seed": true
+			}
+		},
+		{
+			"comments": "70b is a bit better than 8b but not perfect.",
+			"models": [
 				"llama-3.3-70b-versatile"
 			],
 			"in": {
@@ -77,7 +108,43 @@
 		{
 			"comments": "Sometimes tool calling fails",
 			"models": [
-				"meta-llama/llama-4-scout-17b-16e-instruct",
+				"meta-llama/llama-4-scout-17b-16e-instruct"
+			],
+			"in": {
+				"image": {
+					"inline": true,
+					"url": true,
+					"supportedFormats": ["image/gif", "image/jpeg", "image/png", "image/webp"]
+				},
+				"text": {
+					"inline": true
+				}
+			},
+			"out": {
+				"text": {
+					"inline": true
+				}
+			},
+			"GenSync": {
+				"reportRateLimits": true,
+				"tools": "flaky",
+				"biasedTool": "flaky",
+				"indecisiveTool": "flaky",
+				"json": true,
+				"seed": true
+			},
+			"GenStream": {
+				"reportRateLimits": true,
+				"tools": "flaky",
+				"biasedTool": "flaky",
+				"indecisiveTool": "flaky",
+				"json": true,
+				"seed": true
+			}
+		},
+		{
+			"comments": "Sometimes tool calling fails",
+			"models": [
 				"meta-llama/llama-4-maverick-17b-128e-instruct"
 			],
 			"in": {

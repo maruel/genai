@@ -1,81 +1,68 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 587
-        host: api.together.xyz
-        body: |
-            {"model":"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8","stream":true,"messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.together.xyz/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        body: |+
-            data: {"id":"o4XEkXe-28Eivz-964e00c40852a272","object":"chat.completion.chunk","created":1753471105,"model":"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8","choices":[{"index":0,"delta":{"role":"assistant","content":null},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"o4XEkXe-28Eivz-964e00c40852a272","object":"chat.completion.chunk","created":1753471105,"model":"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"id":"call_ndcqmpejazwcjjvubbsqksew","type":"function","function":{"name":"best_country","arguments":""}}]},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"o4XEkXe-28Eivz-964e00c40852a272","object":"chat.completion.chunk","created":1753471105,"model":"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"{\"country\":\"Canada\"}"}}]},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"o4XEkXe-28Eivz-964e00c40852a272","object":"chat.completion.chunk","created":1753471105,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":"tool_calls","stop_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","tool_calls":null}}],"model":"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8","usage":null}
-
-            data: {"id":"o4XEkXe-28Eivz-964e00c40852a272","object":"chat.completion.chunk","created":1753471105,"choices":[],"model":"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8","usage":{"prompt_tokens":828,"total_tokens":857,"completion_tokens":29},"warnings":[{"message":"Model supports only tool_choice auto"}]}
-
-            data: [DONE]
-
-        headers:
-            Access-Control-Allow-Origin:
-                - '*'
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cache-Control:
-                - no-cache, no-transform
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 964e00c40852a272-YUL
-            Content-Type:
-                - text/event-stream;charset=utf-8
-            Retry-After:
-                - "2"
-            Server:
-                - cloudflare
-            Strict-Transport-Security:
-                - max-age=15552000; includeSubDomains
-            Vary:
-                - Accept-Encoding
-            X-Amzn-Trace-Id:
-                - 55cfccc6-224e-4ce5-9c87-5db599718e4a-noamzn
-            X-Api-Call-Start:
-                - "2025-07-25T19:18:25.641Z"
-            X-Api-Received:
-                - "2025-07-25T19:18:25.093Z"
-            X-Inference-Version:
-                - v2
-            X-Ratelimit:
-                - "false"
-            X-Ratelimit-Limit:
-                - "1"
-            X-Ratelimit-Limit-Tokens:
-                - "1000"
-            X-Ratelimit-Remaining:
-                - "1"
-            X-Ratelimit-Remaining-Tokens:
-                - "1000"
-            X-Ratelimit-Reset:
-                - "2"
-            X-Request-Id:
-                - o4XEkXe-28Eivz-964e00c40852a272
-        status: 200 OK
-        code: 200
-        duration: 3.539s
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 583
+    host: api.together.xyz
+    body: "{\"model\":\"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":\"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one.\"}],\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"description\":\"A tool to specify the best country\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"country\":{\"type\":\"string\",\"enum\":[\"Canada\",\"USA\"]}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"country\"]}}}],\"tool_choice\":\"auto\"}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"o91pCpo-zqrih-976739593ca3a2c0\",\"object\":\"chat.completion.chunk\",\"created\":1756419921,\"model\":\"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":null},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"o91pCpo-zqrih-976739593ca3a2c0\",\"object\":\"chat.completion.chunk\",\"created\":1756419921,\"model\":\"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8\",\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[{\"index\":0,\"id\":\"call_uluslf2zf57xeghs791702q2\",\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"arguments\":\"\"}}]},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"o91pCpo-zqrih-976739593ca3a2c0\",\"object\":\"chat.completion.chunk\",\"created\":1756419921,\"model\":\"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8\",\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[{\"index\":0,\"function\":{\"arguments\":\"{\\\"country\\\":\\\"Canada\\\"}\"}}]},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"o91pCpo-zqrih-976739593ca3a2c0\",\"object\":\"chat.completion.chunk\",\"created\":1756419921,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":\"tool_calls\",\"stop_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":null}}],\"model\":\"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"o91pCpo-zqrih-976739593ca3a2c0\",\"object\":\"chat.completion.chunk\",\"created\":1756419921,\"choices\":[],\"model\":\"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8\",\"usage\":{\"prompt_tokens\":828,\"total_tokens\":857,\"completion_tokens\":29}}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - no-cache, no-transform
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 976739593ca3a2c0-YUL
+      Content-Type:
+      - text/event-stream;charset=utf-8
+      Retry-After:
+      - "2"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 80980a6c-9e4e-4de5-a3b4-5317cd4290eb-noamzn
+      X-Api-Call-Start:
+      - "2025-08-28T22:25:21.395Z"
+      X-Api-Received:
+      - "2025-08-28T22:25:21.208Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "19"
+      X-Ratelimit-Remaining-Tokens:
+      - "3000"
+      X-Ratelimit-Reset:
+      - "2"
+      X-Request-Id:
+      - o91pCpo-zqrih-976739593ca3a2c0
+    status: 200 OK
+    code: 200
+    duration: 1.019s

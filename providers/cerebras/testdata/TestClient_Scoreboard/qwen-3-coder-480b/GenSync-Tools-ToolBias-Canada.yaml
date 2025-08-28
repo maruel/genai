@@ -6,9 +6,9 @@ interactions:
     proto: HTTP/1.1
     proto_major: 1
     proto_minor: 1
-    content_length: 568
+    content_length: 564
     host: api.cerebras.ai
-    body: "{\"model\":\"qwen-3-coder-480b\",\"messages\":[{\"role\":\"user\",\"content\":\"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one.\"}],\"tool_choice\":\"required\",\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"description\":\"A tool to specify the best country\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"country\":{\"type\":\"string\",\"enum\":[\"Canada\",\"USA\"]}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"country\"]}}}],\"parallel_tool_calls\":true}\n"
+    body: "{\"model\":\"qwen-3-coder-480b\",\"messages\":[{\"role\":\"user\",\"content\":\"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one.\"}],\"tool_choice\":\"auto\",\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"description\":\"A tool to specify the best country\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"country\":{\"type\":\"string\",\"enum\":[\"Canada\",\"USA\"]}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"country\"]}}}],\"parallel_tool_calls\":true}\n"
     headers:
       Content-Type:
       - application/json; charset=utf-8
@@ -20,18 +20,18 @@ interactions:
     proto_minor: 0
     content_length: -1
     uncompressed: true
-    body: "{\"id\":\"chatcmpl-010b8426-6ea2-4a09-b077-bede1fc76801\",\"choices\":[{\"finish_reason\":\"tool_calls\",\"index\":0,\"message\":{\"tool_calls\":[{\"id\":\"de19f52a4\",\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"arguments\":\"{\\\"country\\\": \\\"Canada\\\"}\"}}],\"role\":\"assistant\"}}],\"created\":1756417807,\"model\":\"qwen-3-coder-480b\",\"system_fingerprint\":\"fp_4405be376d055dc5bff7\",\"object\":\"chat.completion\",\"usage\":{\"prompt_tokens\":313,\"completion_tokens\":23,\"total_tokens\":336,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":0.184327697,\"prompt_time\":0.02765009,\"completion_time\":0.019844715,\"total_time\":0.2329714298248291,\"created\":1756417807}}"
+    body: "{\"id\":\"chatcmpl-3d1c3c22-5b0c-4ae4-be02-c66869b8a691\",\"choices\":[{\"finish_reason\":\"tool_calls\",\"index\":0,\"message\":{\"tool_calls\":[{\"id\":\"1112acd4e\",\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"arguments\":\"{\\\"country\\\": \\\"Canada\\\"}\"}}],\"role\":\"assistant\"}}],\"created\":1756421169,\"model\":\"qwen-3-coder-480b\",\"system_fingerprint\":\"fp_4405be376d055dc5bff7\",\"object\":\"chat.completion\",\"usage\":{\"prompt_tokens\":313,\"completion_tokens\":23,\"total_tokens\":336,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":0.00014851,\"prompt_time\":0.016610516,\"completion_time\":0.01948725,\"total_time\":0.03751826286315918,\"created\":1756421169}}"
     headers:
       Alt-Svc:
       - h3=":443"; ma=86400
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 976705ca696ea506-EWR
+      - 976757d1cbd6a290-YUL
       Content-Type:
       - application/json
       Inference-Id:
-      - chatcmpl-010b8426-6ea2-4a09-b077-bede1fc76801
+      - chatcmpl-3d1c3c22-5b0c-4ae4-be02-c66869b8a691
       Referrer-Policy:
       - strict-origin-when-cross-origin
       Server:
@@ -45,15 +45,15 @@ interactions:
       X-Ratelimit-Limit-Tokens-Minute:
       - "150000"
       X-Ratelimit-Remaining-Requests-Day:
-      - "82"
+      - "69"
       X-Ratelimit-Remaining-Tokens-Minute:
-      - "148730"
+      - "149328"
       X-Ratelimit-Reset-Requests-Day:
-      - "7790.598461389542"
+      - "4430.720885515213"
       X-Ratelimit-Reset-Tokens-Minute:
-      - "50.598461389541626"
+      - "50.72088551521301"
       X-Request-Id:
-      - 976705ca696ea506-EWR
+      - 976757d1cbd6a290-YUL
     status: 200 OK
     code: 200
-    duration: 441ms
+    duration: 2.921s

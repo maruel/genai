@@ -1,81 +1,68 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 579
-        host: api.together.xyz
-        body: |
-            {"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","stream":true,"messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.together.xyz/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        body: |+
-            data: {"id":"o4dhZo8-4Yz4kd-9654fa326811a30f","object":"chat.completion.chunk","created":1753544236,"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","choices":[{"index":0,"delta":{"role":"assistant","content":null},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"o4dhZo8-4Yz4kd-9654fa326811a30f","object":"chat.completion.chunk","created":1753544236,"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"id":"call_xl8yquj96p6pryq4pd20fmle","type":"function","function":{"name":"best_country","arguments":""}}]},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"o4dhZo8-4Yz4kd-9654fa326811a30f","object":"chat.completion.chunk","created":1753544236,"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"{\"country\":\"Canada\"}"}}]},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"o4dhZo8-4Yz4kd-9654fa326811a30f","object":"chat.completion.chunk","created":1753544235,"choices":[{"index":0,"text":"","logprobs":null,"finish_reason":"tool_calls","stop_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","tool_calls":null}}],"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","usage":null}
-
-            data: {"id":"o4dhZo8-4Yz4kd-9654fa326811a30f","object":"chat.completion.chunk","created":1753544235,"choices":[],"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","usage":{"prompt_tokens":828,"total_tokens":857,"completion_tokens":29},"warnings":[{"message":"Model supports only tool_choice auto"}]}
-
-            data: [DONE]
-
-        headers:
-            Access-Control-Allow-Origin:
-                - '*'
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cache-Control:
-                - no-cache, no-transform
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 9654fa326811a30f-YUL
-            Content-Type:
-                - text/event-stream;charset=utf-8
-            Retry-After:
-                - "2"
-            Server:
-                - cloudflare
-            Strict-Transport-Security:
-                - max-age=15552000; includeSubDomains
-            Vary:
-                - Accept-Encoding
-            X-Amzn-Trace-Id:
-                - 10508868-7dd3-4d92-92cb-f57f5ea4e4ae-noamzn
-            X-Api-Call-Start:
-                - "2025-07-26T15:37:16.035Z"
-            X-Api-Received:
-                - "2025-07-26T15:37:15.987Z"
-            X-Inference-Version:
-                - v2
-            X-Ratelimit:
-                - "false"
-            X-Ratelimit-Limit:
-                - "1"
-            X-Ratelimit-Limit-Tokens:
-                - "1000"
-            X-Ratelimit-Remaining:
-                - "1"
-            X-Ratelimit-Remaining-Tokens:
-                - "1000"
-            X-Ratelimit-Reset:
-                - "2"
-            X-Request-Id:
-                - o4dhZo8-4Yz4kd-9654fa326811a30f
-        status: 200 OK
-        code: 200
-        duration: 2.826s
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 575
+    host: api.together.xyz
+    body: "{\"model\":\"meta-llama/Llama-4-Scout-17B-16E-Instruct\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":\"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one.\"}],\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"description\":\"A tool to specify the best country\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"country\":{\"type\":\"string\",\"enum\":[\"Canada\",\"USA\"]}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"country\"]}}}],\"tool_choice\":\"auto\"}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"o91pDGH-2j9zxn-976739642afda2c0\",\"object\":\"chat.completion.chunk\",\"created\":1756419927,\"model\":\"meta-llama/Llama-4-Scout-17B-16E-Instruct\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":null},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"o91pDGH-2j9zxn-976739642afda2c0\",\"object\":\"chat.completion.chunk\",\"created\":1756419927,\"model\":\"meta-llama/Llama-4-Scout-17B-16E-Instruct\",\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[{\"index\":0,\"id\":\"call_9n3b1x12bksd5ebj0no68xbq\",\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"arguments\":\"\"}}]},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"o91pDGH-2j9zxn-976739642afda2c0\",\"object\":\"chat.completion.chunk\",\"created\":1756419927,\"model\":\"meta-llama/Llama-4-Scout-17B-16E-Instruct\",\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[{\"index\":0,\"function\":{\"arguments\":\"{\\\"country\\\":\\\"Canada\\\"}\"}}]},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"o91pDGH-2j9zxn-976739642afda2c0\",\"object\":\"chat.completion.chunk\",\"created\":1756419927,\"model\":\"meta-llama/Llama-4-Scout-17B-16E-Instruct\",\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[{\"index\":1,\"id\":\"call_gwsuovsf00qzdc7hahikiink\",\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"arguments\":\"\"}}]},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"o91pDGH-2j9zxn-976739642afda2c0\",\"object\":\"chat.completion.chunk\",\"created\":1756419927,\"model\":\"meta-llama/Llama-4-Scout-17B-16E-Instruct\",\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[{\"index\":1,\"function\":{\"arguments\":\"{\\\"country\\\":\\\"USA\\\"}\"}}]},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"o91pDGH-2j9zxn-976739642afda2c0\",\"object\":\"chat.completion.chunk\",\"created\":1756419922,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":\"tool_calls\",\"stop_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":null}}],\"model\":\"meta-llama/Llama-4-Scout-17B-16E-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"o91pDGH-2j9zxn-976739642afda2c0\",\"object\":\"chat.completion.chunk\",\"created\":1756419922,\"choices\":[],\"model\":\"meta-llama/Llama-4-Scout-17B-16E-Instruct\",\"usage\":{\"prompt_tokens\":828,\"total_tokens\":883,\"completion_tokens\":55}}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - no-cache, no-transform
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 976739642afda2c0-YUL
+      Content-Type:
+      - text/event-stream;charset=utf-8
+      Retry-After:
+      - "2"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - d3c9a3fc-1df8-4490-8d4c-31b2b894cbcc-noamzn
+      X-Api-Call-Start:
+      - "2025-08-28T22:25:25.917Z"
+      X-Api-Received:
+      - "2025-08-28T22:25:22.718Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "19"
+      X-Ratelimit-Remaining-Tokens:
+      - "3000"
+      X-Ratelimit-Reset:
+      - "2"
+      X-Request-Id:
+      - o91pDGH-2j9zxn-976739642afda2c0
+    status: 200 OK
+    code: 200
+    duration: 5.054s

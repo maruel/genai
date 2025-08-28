@@ -1022,11 +1022,15 @@ const (
 )
 
 type Usage struct {
-	InputTokens              int64  `json:"input_tokens"`
-	OutputTokens             int64  `json:"output_tokens"`
-	CacheCreationInputTokens int64  `json:"cache_creation_input_tokens"`
-	CacheReadInputTokens     int64  `json:"cache_read_input_tokens"`
-	ServiceTier              string `json:"service_tier"` // "standard", "batch"
+	InputTokens              int64 `json:"input_tokens"`
+	OutputTokens             int64 `json:"output_tokens"`
+	CacheCreationInputTokens int64 `json:"cache_creation_input_tokens"`
+	CacheReadInputTokens     int64 `json:"cache_read_input_tokens"`
+	CacheCreation            struct {
+		Ephemeral1hInputTokens int64 `json:"ephemeral_1h_input_tokens"`
+		Ephemeral5mInputTokens int64 `json:"ephemeral_5m_input_tokens"`
+	} `json:"cache_creation"`
+	ServiceTier string `json:"service_tier"` // "standard", "batch"
 }
 
 //

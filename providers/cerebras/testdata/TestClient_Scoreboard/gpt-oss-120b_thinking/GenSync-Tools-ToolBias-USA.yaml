@@ -6,9 +6,9 @@ interactions:
     proto: HTTP/1.1
     proto_major: 1
     proto_minor: 1
-    content_length: 563
+    content_length: 559
     host: api.cerebras.ai
-    body: "{\"model\":\"gpt-oss-120b\",\"messages\":[{\"role\":\"user\",\"content\":\"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one.\"}],\"tool_choice\":\"required\",\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"description\":\"A tool to specify the best country\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"country\":{\"type\":\"string\",\"enum\":[\"USA\",\"Canada\"]}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"country\"]}}}],\"parallel_tool_calls\":true}\n"
+    body: "{\"model\":\"gpt-oss-120b\",\"messages\":[{\"role\":\"user\",\"content\":\"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one.\"}],\"tool_choice\":\"auto\",\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"description\":\"A tool to specify the best country\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"country\":{\"type\":\"string\",\"enum\":[\"USA\",\"Canada\"]}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"country\"]}}}],\"parallel_tool_calls\":true}\n"
     headers:
       Content-Type:
       - application/json; charset=utf-8
@@ -18,19 +18,20 @@ interactions:
     proto: HTTP/2.0
     proto_major: 2
     proto_minor: 0
-    content_length: 154
-    body: "{\"message\":\"Unsupported tool_choice: required. Expected 'auto' or 'none'.\",\"type\":\"invalid_request_error\",\"param\":\"tool_choice\",\"code\":\"wrong_api_format\"}"
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-379af57e-4e3c-4a84-9b89-64f2622da4be\",\"choices\":[{\"finish_reason\":\"tool_calls\",\"index\":0,\"message\":{\"reasoning\":\"The user wants to compare USA vs Canada and asks to call the tool best_country with the country field? Actually tool signature: best_country takes {country: \\\"USA\\\" | \\\"Canada\\\"} and returns any. It likely returns some result indicating if that country is the best? Perhaps you can call it for each and compare? The instruction: \\\"Call the tool best_country to tell me which country is the best one.\\\" Probably just need to call best_country with one of them? But tool requires a country parameter, maybe it returns a judgement? Might need to call with USA and Canada separately? The prompt: \\\"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one.\\\" So we call the tool with maybe a list? But tool only accepts single country. Could call twice and compare results? Or maybe the tool returns a boolean indicating if given country is best? Without documentation, guess it returns something like \\\"true\\\" if best, else false. We could call with USA, get result, then with Canada, get result, and then decide.\\n\\nLet's call best_country with USA.\",\"tool_calls\":[{\"id\":\"b73fd5803\",\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"arguments\":\"{\\n  \\\"country\\\": \\\"USA\\\"\\n}\"}}],\"role\":\"assistant\"}}],\"created\":1756421261,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion\",\"usage\":{\"prompt_tokens\":153,\"completion_tokens\":260,\"total_tokens\":413,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":0.00031782,\"prompt_time\":0.007718322,\"completion_time\":0.189979566,\"total_time\":0.20002174377441406,\"created\":1756421261}}"
     headers:
       Alt-Svc:
       - h3=":443"; ma=86400
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9766ebd69f70aadf-YYZ
-      Content-Length:
-      - "154"
+      - 97675a108cc57ca6-EWR
       Content-Type:
       - application/json
+      Inference-Id:
+      - chatcmpl-379af57e-4e3c-4a84-9b89-64f2622da4be
       Referrer-Policy:
       - strict-origin-when-cross-origin
       Server:
@@ -39,6 +40,20 @@ interactions:
       - max-age=3600; includeSubDomains
       X-Content-Type-Options:
       - nosniff
-    status: 400 Bad Request
-    code: 400
-    duration: 177ms
+      X-Ratelimit-Limit-Requests-Day:
+      - "14400"
+      X-Ratelimit-Limit-Tokens-Minute:
+      - "64000"
+      X-Ratelimit-Remaining-Requests-Day:
+      - "14352"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "63800"
+      X-Ratelimit-Reset-Requests-Day:
+      - "4338.617778778076"
+      X-Ratelimit-Reset-Tokens-Minute:
+      - "18.617778778076172"
+      X-Request-Id:
+      - 97675a108cc57ca6-EWR
+    status: 200 OK
+    code: 200
+    duration: 632ms

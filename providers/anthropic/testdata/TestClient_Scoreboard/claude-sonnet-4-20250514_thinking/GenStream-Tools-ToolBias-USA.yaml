@@ -1,47 +1,70 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 632
-        host: api.anthropic.com
-        body: |
-            {"model":"claude-sonnet-4-20250514","max_tokens":32000,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"stream":true,"thinking":{"budget_tokens":1024,"type":"enabled"},"tool_choice":{"type":"any"},"tools":[{"description":"A tool to specify the best country","input_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]},"name":"best_country"}]}
-        headers:
-            Anthropic-Version:
-                - "2023-06-01"
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.anthropic.com/v1/messages
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: 131
-        body: '{"type":"error","error":{"type":"invalid_request_error","message":"Thinking may not be enabled when tool_choice forces tool use."}}'
-        headers:
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 965578d378e0a2c6-YUL
-            Content-Length:
-                - "131"
-            Content-Type:
-                - application/json
-            Server:
-                - cloudflare
-            Strict-Transport-Security:
-                - max-age=31536000; includeSubDomains; preload
-            Via:
-                - 1.1 google
-            X-Robots-Tag:
-                - none
-            X-Should-Retry:
-                - "false"
-        status: 400 Bad Request
-        code: 400
-        duration: 75ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 633
+    host: api.anthropic.com
+    body: "{\"model\":\"claude-sonnet-4-20250514\",\"max_tokens\":32000,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one.\"}]}],\"stream\":true,\"thinking\":{\"budget_tokens\":1024,\"type\":\"enabled\"},\"tool_choice\":{\"type\":\"auto\"},\"tools\":[{\"description\":\"A tool to specify the best country\",\"input_schema\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"country\":{\"type\":\"string\",\"enum\":[\"USA\",\"Canada\"]}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"country\"]},\"name\":\"best_country\"}]}\n"
+    headers:
+      Anthropic-Version:
+      - "2023-06-01"
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.anthropic.com/v1/messages
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "event: message_start\ndata: {\"type\":\"message_start\",\"message\":{\"id\":\"msg_01SVxfQbiuZX7gn8vpBQnHUn\",\"type\":\"message\",\"role\":\"assistant\",\"model\":\"claude-sonnet-4-20250514\",\"content\":[],\"stop_reason\":null,\"stop_sequence\":null,\"usage\":{\"input_tokens\":470,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"cache_creation\":{\"ephemeral_5m_input_tokens\":0,\"ephemeral_1h_input_tokens\":0},\"output_tokens\":4,\"service_tier\":\"standard\"}}         }\n\nevent: content_block_start\ndata: {\"type\":\"content_block_start\",\"index\":0,\"content_block\":{\"type\":\"thinking\",\"thinking\":\"\",\"signature\":\"\"}    }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"The user is\"}       }\n\nevent: ping\ndata: {\"type\": \"ping\"}\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" asking me to call the \\\"best_country\\\" tool to determine\"}        }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" which country is better between USA and Canada. Looking\"}    }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" at the function definition, it takes a parameter\"}            }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" called \\\"country\\\" which must be either \\\"USA\\\" or \\\"Canada\\\". \"}             }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"\\n\\nHowever, the user is asking me to determine\"}           }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" which one is the \\\"best\\\" -\"}}\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" they want me to make that determination and call the tool with\"}     }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" the result. But the tool seems to be designed to specify\"}  }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" what the best country is, not to compare them\"}            }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\". \\n\\nLooking more carefully at the function description\"}            }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\": \\\"A tool to specify the best country\\\" -\"}             }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" this suggests I need to specify which one I think\"}            }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" is the best country, not that the tool will tell me which\"}   }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" is best.\\n\\nThe user is asking me to call the tool to\"}        }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" tell them which country is best, so I nee\"}      }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"d to make a choice between USA and Canada. Since\"}    }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" this is subjective and I don't have clear\"}   }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" criteria, I should probably explain that this\"}     }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" is subjective, but I can call\"}              }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" the tool with one of the values\"}              }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" if they'd like me to pick one.\\n\\nActually\"}               }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\", re-reading the user's request: \\\"Call the tool best\"}               }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"_country to tell me which country is\"}      }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" the best one\\\" - they\"}     }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" want me to use the tool. I\"}          }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" need to pick either USA or Canada to pass\"}          }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" to the tool. Since\"}             }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" they're asking me to determine\"}      }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" which is best, I should make that determination an\"}         }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"d call the tool accordingly.\\n\\nThis is a subj\"}          }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"ective question and both countries have their merits. I should probably explain this\"} }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" is subjective but make a call if\"}     }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" requested.\"}}\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"signature_delta\",\"signature\":\"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\"}          }\n\nevent: content_block_stop\ndata: {\"type\":\"content_block_stop\",\"index\":0               }\n\nevent: content_block_start\ndata: {\"type\":\"content_block_start\",\"index\":1,\"content_block\":{\"type\":\"text\",\"text\":\"\"}          }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"text_delta\",\"text\":\"I can call the best\"}             }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"text_delta\",\"text\":\"_country tool for you, but I should note that determining\"}   }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"text_delta\",\"text\":\" which country is \\\"best\\\" is quite subjective an\"}              }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"text_delta\",\"text\":\"d depends on many factors like personal values, priorities\"}             }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"text_delta\",\"text\":\", and circumstances.\\n\\nSince you're asking me to make\"}           }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"text_delta\",\"text\":\" this determination, I'll call the tool.\"} }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"text_delta\",\"text\":\" Both countries have their strengths,\"}             }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"text_delta\",\"text\":\" but I'll go with Canada for this call\"}         }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"text_delta\",\"text\":\":\"}   }\n\nevent: content_block_stop\ndata: {\"type\":\"content_block_stop\",\"index\":1        }\n\nevent: content_block_start\ndata: {\"type\":\"content_block_start\",\"index\":2,\"content_block\":{\"type\":\"tool_use\",\"id\":\"toolu_019xHbRLzF7riCaodWTcv6NJ\",\"name\":\"best_country\",\"input\":{}}               }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":2,\"delta\":{\"type\":\"input_json_delta\",\"partial_json\":\"\"}   }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":2,\"delta\":{\"type\":\"input_json_delta\",\"partial_json\":\"{\\\"coun\"}       }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":2,\"delta\":{\"type\":\"input_json_delta\",\"partial_json\":\"tr\"}   }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":2,\"delta\":{\"type\":\"input_json_delta\",\"partial_json\":\"y\\\": \\\"\"}          }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":2,\"delta\":{\"type\":\"input_json_delta\",\"partial_json\":\"Canada\"}       }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":2,\"delta\":{\"type\":\"input_json_delta\",\"partial_json\":\"\\\"}\"}         }\n\nevent: content_block_stop\ndata: {\"type\":\"content_block_stop\",\"index\":2}\n\nevent: message_delta\ndata: {\"type\":\"message_delta\",\"delta\":{\"stop_reason\":\"tool_use\",\"stop_sequence\":null},\"usage\":{\"input_tokens\":470,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":464}       }\n\nevent: message_stop\ndata: {\"type\":\"message_stop\"       }\n\n"
+    headers:
+      Anthropic-Ratelimit-Input-Tokens-Limit:
+      - "2000000"
+      Anthropic-Ratelimit-Input-Tokens-Remaining:
+      - "2000000"
+      Anthropic-Ratelimit-Input-Tokens-Reset:
+      - "2025-08-28T22:53:03Z"
+      Anthropic-Ratelimit-Output-Tokens-Limit:
+      - "400000"
+      Anthropic-Ratelimit-Output-Tokens-Remaining:
+      - "400000"
+      Anthropic-Ratelimit-Output-Tokens-Reset:
+      - "2025-08-28T22:53:03Z"
+      Anthropic-Ratelimit-Requests-Limit:
+      - "4000"
+      Anthropic-Ratelimit-Requests-Remaining:
+      - "3999"
+      Anthropic-Ratelimit-Requests-Reset:
+      - "2025-08-28T22:53:03Z"
+      Anthropic-Ratelimit-Tokens-Limit:
+      - "2400000"
+      Anthropic-Ratelimit-Tokens-Remaining:
+      - "2400000"
+      Anthropic-Ratelimit-Tokens-Reset:
+      - "2025-08-28T22:53:03Z"
+      Cache-Control:
+      - no-cache
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 976761ef3c05a2cc-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Via:
+      - 1.1 google
+      X-Envoy-Upstream-Service-Time:
+      - "821"
+      X-Robots-Tag:
+      - none
+    status: 200 OK
+    code: 200
+    duration: 917ms

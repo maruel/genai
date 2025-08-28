@@ -23,6 +23,7 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 	type got struct {
 		Number json.Number `json:"number" jsonschema:"type=number"`
 	}
+	requiredSupported := true
 	optsTools := genai.OptionsText{
 		Tools: []genai.ToolDef{
 			{
@@ -75,6 +76,7 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 			return err
 		}
 		flaky = true
+		requiredSupported = false
 	}
 
 	if err != nil || !slices.ContainsFunc(resp.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
@@ -165,7 +167,11 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 					Callback:    line.callback,
 				},
 			},
-			ToolCallRequest: genai.ToolCallRequired,
+		}
+		if requiredSupported {
+			// Some providers like cerebras and togetherai absolutely do not support this flag. So do not use it
+			// unless it's supported.
+			opts.ToolCallRequest = genai.ToolCallRequired
 		}
 
 		check := prefix + fmt.Sprintf("ToolBias-%s", line.countrySelected)

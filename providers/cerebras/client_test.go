@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"slices"
+	"strings"
 	"sync"
 	"testing"
 
@@ -47,13 +48,19 @@ func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper)
 	if err2 != nil {
 		t.Fatal(err2)
 	}
+	var p genai.Provider = c
 	if model.Thinking {
 		// Check if it has predefined thinking tokens.
 		for _, sc := range c.Scoreboard().Scenarios {
 			if sc.Thinking && slices.Contains(sc.Models, model.Model) {
 				if sc.ThinkingTokenStart != "" && sc.ThinkingTokenEnd != "" {
+					// This is bad. We should have a better way to determine if a model needs to be prompted to think
+					// (qwen-3-32b) or must not (qwen-3-235b-a22b-thinking-2507).
+					if !strings.Contains(model.Model, "-thinking-") {
+						p = &adapters.ProviderAppend{Provider: p, Append: genai.Request{Text: "\n\n/think"}}
+					}
 					return &adapters.ProviderThinking{
-						Provider:           &adapters.ProviderAppend{Provider: c, Append: genai.Request{Text: "\n\n/think"}},
+						Provider:           p,
 						ThinkingTokenStart: sc.ThinkingTokenStart,
 						ThinkingTokenEnd:   sc.ThinkingTokenEnd,
 					}
@@ -62,7 +69,7 @@ func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper)
 			}
 		}
 	}
-	return c
+	return p
 }
 
 func TestClient_Scoreboard(t *testing.T) {

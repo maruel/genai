@@ -1,67 +1,58 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 558
-        host: api.groq.com
-        body: |
-            {"messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"model":"llama-3.1-8b-instant","stream":true,"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.groq.com/openai/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        body: |+
-            data: {"id":"chatcmpl-e2cf0d60-7906-4444-a439-882dd126496a","object":"chat.completion.chunk","created":1753549602,"model":"llama-3.1-8b-instant","system_fingerprint":"fp_140f3e3520","choices":[{"index":0,"delta":{"role":"assistant","content":null},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"chatcmpl-e2cf0d60-7906-4444-a439-882dd126496a","object":"chat.completion.chunk","created":1753549602,"model":"llama-3.1-8b-instant","system_fingerprint":"fp_140f3e3520","choices":[{"index":0,"delta":{"tool_calls":[{"id":"zyvt67vg1","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"},"index":0}]},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"chatcmpl-e2cf0d60-7906-4444-a439-882dd126496a","object":"chat.completion.chunk","created":1753549602,"model":"llama-3.1-8b-instant","system_fingerprint":"fp_140f3e3520","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"tool_calls"}],"x_groq":{"id":"req_01k13v6znqf9s9fn27zehgt3zx","usage":{"queue_time":0.070505092,"prompt_tokens":285,"prompt_time":0.050559439,"completion_tokens":12,"completion_time":0.020865288,"total_tokens":297,"total_time":0.071424727}}}
-
-            data: [DONE]
-
-        headers:
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cache-Control:
-                - no-cache
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 96557d375c14a2ae-YUL
-            Content-Type:
-                - text/event-stream
-            Server:
-                - cloudflare
-            Vary:
-                - Origin
-            Via:
-                - 1.1 google
-            X-Groq-Region:
-                - msp
-            X-Ratelimit-Limit-Requests:
-                - "500000"
-            X-Ratelimit-Limit-Tokens:
-                - "250000"
-            X-Ratelimit-Remaining-Requests:
-                - "499994"
-            X-Ratelimit-Remaining-Tokens:
-                - "249628"
-            X-Ratelimit-Reset-Requests:
-                - 864.799999ms
-            X-Ratelimit-Reset-Tokens:
-                - 89.12ms
-            X-Request-Id:
-                - req_01k13v6znqf9s9fn27zehgt3zx
-        status: 200 OK
-        code: 200
-        duration: 203ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 554
+    host: api.groq.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one.\"}],\"model\":\"llama-3.1-8b-instant\",\"stream\":true,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"description\":\"A tool to specify the best country\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"country\":{\"type\":\"string\",\"enum\":[\"USA\",\"Canada\"]}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"country\"]}}}],\"tool_choice\":\"auto\"}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.groq.com/openai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"chatcmpl-c9e353e8-e1c2-442e-93e1-6a92101a99c0\",\"object\":\"chat.completion.chunk\",\"created\":1756420009,\"model\":\"llama-3.1-8b-instant\",\"system_fingerprint\":\"fp_eeeeebe98a\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":null},\"logprobs\":null,\"finish_reason\":null}],\"x_groq\":{\"id\":\"req_01k3scmvk8ex6sp2mpf62qzd77\"}}\n\ndata: {\"id\":\"chatcmpl-c9e353e8-e1c2-442e-93e1-6a92101a99c0\",\"object\":\"chat.completion.chunk\",\"created\":1756420009,\"model\":\"llama-3.1-8b-instant\",\"system_fingerprint\":\"fp_eeeeebe98a\",\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[{\"id\":\"0yqj0zj4t\",\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"arguments\":\"{\\\"country\\\":\\\"USA\\\"}\"},\"index\":0}]},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-c9e353e8-e1c2-442e-93e1-6a92101a99c0\",\"object\":\"chat.completion.chunk\",\"created\":1756420009,\"model\":\"llama-3.1-8b-instant\",\"system_fingerprint\":\"fp_eeeeebe98a\",\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[{\"id\":\"s7963kmwt\",\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"arguments\":\"{\\\"country\\\":\\\"Canada\\\"}\"},\"index\":1}]},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-c9e353e8-e1c2-442e-93e1-6a92101a99c0\",\"object\":\"chat.completion.chunk\",\"created\":1756420009,\"model\":\"llama-3.1-8b-instant\",\"system_fingerprint\":\"fp_eeeeebe98a\",\"choices\":[{\"index\":0,\"delta\":{},\"logprobs\":null,\"finish_reason\":\"tool_calls\"}],\"x_groq\":{\"id\":\"req_01k3scmvk8ex6sp2mpf62qzd77\",\"usage\":{\"queue_time\":0.067151187,\"prompt_tokens\":269,\"prompt_time\":0.02235422,\"completion_tokens\":29,\"completion_time\":0.030915351,\"total_tokens\":298,\"total_time\":0.053269571}}}\n\ndata: [DONE]\n\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - no-cache
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 97673b838c20a25a-YUL
+      Content-Type:
+      - text/event-stream
+      Server:
+      - cloudflare
+      Vary:
+      - Origin
+      Via:
+      - 1.1 google
+      X-Groq-Region:
+      - msp
+      X-Ratelimit-Limit-Requests:
+      - "500000"
+      X-Ratelimit-Limit-Tokens:
+      - "250000"
+      X-Ratelimit-Remaining-Requests:
+      - "499997"
+      X-Ratelimit-Remaining-Tokens:
+      - "249729"
+      X-Ratelimit-Reset-Requests:
+      - 507.399999ms
+      X-Ratelimit-Reset-Tokens:
+      - 65ms
+      X-Request-Id:
+      - req_01k3scmvk8ex6sp2mpf62qzd77
+    status: 200 OK
+    code: 200
+    duration: 203ms

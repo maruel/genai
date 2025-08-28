@@ -19,18 +19,18 @@ interactions:
     proto_major: 2
     proto_minor: 0
     content_length: -1
-    body: "data: {\"id\":\"chatcmpl-267089e5-af15-482e-bbfe-fa445221fe95\",\"choices\":[{\"delta\":{\"role\":\"assistant\"},\"index\":0}],\"created\":1756417810,\"model\":\"qwen-3-coder-480b\",\"system_fingerprint\":\"fp_4405be376d055dc5bff7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-267089e5-af15-482e-bbfe-fa445221fe95\",\"choices\":[{\"delta\":{\"tool_calls\":[{\"function\":{\"name\":\"best_country\",\"arguments\":\"{\\\"country\\\": \\\"Canada\\\"}\"},\"type\":\"function\",\"id\":\"069b43cf4\",\"index\":0}]},\"index\":0}],\"created\":1756417810,\"model\":\"qwen-3-coder-480b\",\"system_fingerprint\":\"fp_4405be376d055dc5bff7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-267089e5-af15-482e-bbfe-fa445221fe95\",\"choices\":[{\"delta\":{},\"finish_reason\":\"tool_calls\",\"index\":0}],\"created\":1756417810,\"model\":\"qwen-3-coder-480b\",\"system_fingerprint\":\"fp_4405be376d055dc5bff7\",\"object\":\"chat.completion.chunk\",\"usage\":{\"prompt_tokens\":313,\"completion_tokens\":23,\"total_tokens\":336,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":0.00020854,\"prompt_time\":0.017248393,\"completion_time\":0.02093042,\"total_time\":0.039743900299072266,\"created\":1756417810}}\n\n"
+    body: "data: {\"id\":\"chatcmpl-b9af685e-855b-4c8d-a084-8aa18bd37cac\",\"choices\":[{\"delta\":{\"role\":\"assistant\"},\"index\":0}],\"created\":1756421166,\"model\":\"qwen-3-coder-480b\",\"system_fingerprint\":\"fp_4405be376d055dc5bff7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9af685e-855b-4c8d-a084-8aa18bd37cac\",\"choices\":[{\"delta\":{\"tool_calls\":[{\"function\":{\"name\":\"best_country\",\"arguments\":\"{\\\"country\\\": \\\"Canada\\\"}\"},\"type\":\"function\",\"id\":\"c48a9ef1f\",\"index\":0}]},\"index\":0}],\"created\":1756421166,\"model\":\"qwen-3-coder-480b\",\"system_fingerprint\":\"fp_4405be376d055dc5bff7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-b9af685e-855b-4c8d-a084-8aa18bd37cac\",\"choices\":[{\"delta\":{},\"finish_reason\":\"tool_calls\",\"index\":0}],\"created\":1756421166,\"model\":\"qwen-3-coder-480b\",\"system_fingerprint\":\"fp_4405be376d055dc5bff7\",\"object\":\"chat.completion.chunk\",\"usage\":{\"prompt_tokens\":313,\"completion_tokens\":23,\"total_tokens\":336,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":0.303137997,\"prompt_time\":0.021672992,\"completion_time\":0.019269817,\"total_time\":0.34560084342956543,\"created\":1756421166}}\n\n"
     headers:
       Alt-Svc:
       - h3=":443"; ma=86400
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 976705dd1fd0aa9e-YYZ
+      - 976757c27c577cff-EWR
       Content-Type:
       - text/event-stream; charset=utf-8
       Inference-Id:
-      - chatcmpl-267089e5-af15-482e-bbfe-fa445221fe95
+      - chatcmpl-b9af685e-855b-4c8d-a084-8aa18bd37cac
       Referrer-Policy:
       - strict-origin-when-cross-origin
       Server:
@@ -44,15 +44,15 @@ interactions:
       X-Ratelimit-Limit-Tokens-Minute:
       - "150000"
       X-Ratelimit-Remaining-Requests-Day:
-      - "78"
+      - "70"
       X-Ratelimit-Remaining-Tokens-Minute:
-      - "147937"
+      - "150000"
       X-Ratelimit-Reset-Requests-Day:
-      - "7787.803873062134"
+      - "4433.377944469452"
       X-Ratelimit-Reset-Tokens-Minute:
-      - "47.80387306213379"
+      - "53.377944469451904"
       X-Request-Id:
-      - 976705dd1fd0aa9e-YYZ
+      - 976757c27c577cff-EWR
     status: 200 OK
     code: 200
-    duration: 1.388s
+    duration: 272ms

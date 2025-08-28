@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 620
+    host: api.cerebras.ai
+    body: "{\"model\":\"qwen-3-235b-a22b-thinking-2507\",\"messages\":[{\"role\":\"user\",\"content\":\"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one.\"},{\"role\":\"user\",\"content\":\"\\n\\n/think\"}],\"tool_choice\":\"required\",\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"description\":\"A tool to specify the best country\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"country\":{\"type\":\"string\",\"enum\":[\"USA\",\"Canada\"]}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"country\"]}}}],\"parallel_tool_calls\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cerebras.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-f6a87642-e84c-446c-87db-c1c5572a77ca\",\"choices\":[{\"finish_reason\":\"tool_calls\",\"index\":0,\"message\":{\"tool_calls\":[{\"id\":\"35f5487eb\",\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"arguments\":\"{\\\"country\\\": \\\"USA\\\"}\"}}],\"role\":\"assistant\"}}],\"created\":1756419585,\"model\":\"qwen-3-235b-a22b-thinking-2507\",\"system_fingerprint\":\"fp_c9f89a26d3dfc34f2b15\",\"object\":\"chat.completion\",\"usage\":{\"prompt_tokens\":238,\"completion_tokens\":1579,\"total_tokens\":1817,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":0.316097077,\"prompt_time\":0.023405113,\"completion_time\":2.521997375,\"total_time\":2.862581491470337,\"created\":1756419585}}"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 976731284ff67d26-EWR
+      Content-Type:
+      - application/json
+      Inference-Id:
+      - chatcmpl-f6a87642-e84c-446c-87db-c1c5572a77ca
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=3600; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Ratelimit-Limit-Requests-Day:
+      - "14400"
+      X-Ratelimit-Limit-Tokens-Minute:
+      - "60000"
+      X-Ratelimit-Remaining-Requests-Day:
+      - "14354"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "51519"
+      X-Ratelimit-Reset-Requests-Day:
+      - "6011.695427894592"
+      X-Ratelimit-Reset-Tokens-Minute:
+      - "11.695427894592285"
+      X-Request-Id:
+      - 976731284ff67d26-EWR
+    status: 200 OK
+    code: 200
+    duration: 3.042s

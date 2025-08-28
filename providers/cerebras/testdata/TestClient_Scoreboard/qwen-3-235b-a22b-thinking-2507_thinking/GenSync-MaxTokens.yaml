@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 201
+    host: api.cerebras.ai
+    body: "{\"model\":\"qwen-3-235b-a22b-thinking-2507\",\"messages\":[{\"role\":\"user\",\"content\":\"Explain the theory of relativity in great details.\"},{\"role\":\"user\",\"content\":\"\\n\\n/think\"}],\"max_completion_tokens\":16}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cerebras.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-61a3a2de-7f1c-4663-a22e-a4f605776739\",\"choices\":[{\"finish_reason\":\"length\",\"index\":0,\"message\":{\"content\":\"Okay, the user asked for a detailed explanation of the theory of relativity.\",\"role\":\"assistant\"}}],\"created\":1756419569,\"model\":\"qwen-3-235b-a22b-thinking-2507\",\"system_fingerprint\":\"fp_c9f89a26d3dfc34f2b15\",\"object\":\"chat.completion\",\"usage\":{\"prompt_tokens\":28,\"completion_tokens\":16,\"total_tokens\":44,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":0.698397441,\"prompt_time\":0.007466527,\"completion_time\":0.007679568,\"total_time\":0.7165999412536621,\"created\":1756419569}}"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 976730c228a67d26-EWR
+      Content-Type:
+      - application/json
+      Inference-Id:
+      - chatcmpl-61a3a2de-7f1c-4663-a22e-a4f605776739
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=3600; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Ratelimit-Limit-Requests-Day:
+      - "14400"
+      X-Ratelimit-Limit-Tokens-Minute:
+      - "60000"
+      X-Ratelimit-Remaining-Requests-Day:
+      - "14362"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "56189"
+      X-Ratelimit-Reset-Requests-Day:
+      - "6030.177698135376"
+      X-Ratelimit-Reset-Tokens-Minute:
+      - "30.177698135375977"
+      X-Request-Id:
+      - 976730c228a67d26-EWR
+    status: 200 OK
+    code: 200
+    duration: 898ms

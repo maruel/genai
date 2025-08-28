@@ -339,7 +339,45 @@
       "models": [
         "qwen-3-235b-a22b-thinking-2507"
       ],
-      "thinking": true
+      "thinking": true,
+      "thinkingTokenStart": "\u003cthink\u003e",
+      "thinkingTokenEnd": "\n\u003c/think\u003e\n",
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "tools": "true",
+        "toolsBiased": "true",
+        "json": true,
+        "jsonSchema": true,
+        "topLogprobs": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "tools": "true",
+        "toolsBiased": "true",
+        "json": true,
+        "jsonSchema": true,
+        "topLogprobs": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
     }
   ]
 }

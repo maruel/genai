@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 792
+    host: api.cerebras.ai
+    body: "{\"model\":\"qwen-3-235b-a22b-thinking-2507\",\"messages\":[{\"role\":\"user\",\"content\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"},{\"role\":\"assistant\",\"tool_calls\":[{\"type\":\"function\",\"id\":\"222c0033f\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\": 132413}\"}}]},{\"role\":\"tool\",\"content\":\"363.89\",\"tool_call_id\":\"222c0033f\",\"name\":\"square_root\"}],\"tool_choice\":\"none\",\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"parallel_tool_calls\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cerebras.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-8a1e7269-3697-4f3c-8fda-487768a95370\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"Okay, the user asked me to calculate the square root of 132413 using the square_root tool and just reply with the result. Let me check what's going on here.\\n\\nFirst, I need to verify the correct square root of 132413. Let me do a quick calculation. 363 squared is 363*363. Let's compute that: 360^2 is 129600, and 3^2 is 9, plus 2*360*3=2160, so total is 129600 + 2160 +9 = 131769. Wait, that's 363²=131769. Then 364² would be (363+1)² = 363² + 2*363 +1 = 131769 +726 +1=132496. Hmm, 132496 is actually larger than 132413. So the square root of 132413 is between 363 and 364.\\n\\nLet me calculate 363.89² to see if that matches. Let's compute 363.89 * 363.89. Maybe approximate it. Alternatively, maybe the tool gave 363.89 as the result.\\n\\nWait, the user provided a tool response with 363.89. But let me check with a calculator. Let's see, 363.89 squared:\\n\\nFirst, 363^2 = 131769 as before.\\n\\nNow, 0.89^2 = 0.7921.\\n\\nThe cross term is 2*363*0.89 = 726 *0.89.\\n\\nCalculate 726 * 0.8 = 580.8, 726*0.09=65.34. So total 580.8 +65.34=646.14.\\n\\nSo total (363 +0.89)^2 = 131769 + 646.14 +0.7921 = 131769 + 646.9321 = 132415.9321.\\n\\nWait, but 363.89 squared is approximately 132415.93, but the original number is 132413. So that's a bit over. Maybe the correct value is slightly less than 363.89.\\n\\nWait, maybe the tool rounded to two decimal places. Let's see: 363.88^2.\\n\\nCompute 363.88^2: same approach.\\n\\n363^2 = 131769.\\n\\n0.88^2 = 0.7744.\\n\\nCross term: 2*363*0.88 = 726 *0.88 = 726*(0.8 +0.08) = 580.8 +58.08=638.88.\\n\\nTotal: 131769 +638.88 +0.7744 = 132408.6544.\\n\\nHmm, 132408.65 is less than 132413.\\n\\nSo 363.88² ≈ 132408.65\\n\\n363.89² ≈ 132415.93\\n\\nOur target is 132413, which is between these two.\\n\\nThe difference between 132413 and 132408.65 is 4.35.\\n\\nThe interval between 363.88 and 363.89 is 0.01 in x, which causes 132415.93 -132408.65 =7.28 in x².\\n\\nSo, to get 4.35 into that interval, 4.35/7.28 ≈ 0.597 of the interval.\\n\\nSo approximate x is 363.88 + 0.00597 ≈ 363.886.\\n\\nRounded to two decimal places, that's 363.89. So probably the tool is rounding to two decimal places, so 363.89 is the correct answer as per the tool's calculation.\\n\\nTherefore, the user wants me to just output that number. So according to the tool response they included, the answer is 363.89.\\n</think>\\n\\n363.89\",\"role\":\"assistant\"}}],\"created\":1756419580,\"model\":\"qwen-3-235b-a22b-thinking-2507\",\"system_fingerprint\":\"fp_c9f89a26d3dfc34f2b15\",\"object\":\"chat.completion\",\"usage\":{\"prompt_tokens\":85,\"completion_tokens\":1096,\"total_tokens\":1181,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":0.000128259,\"prompt_time\":0.006753838,\"completion_time\":1.023720586,\"total_time\":1.0315055847167969,\"created\":1756419580}}"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9767310ff9ac7d26-EWR
+      Content-Type:
+      - application/json
+      Inference-Id:
+      - chatcmpl-8a1e7269-3697-4f3c-8fda-487768a95370
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=3600; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Ratelimit-Limit-Requests-Day:
+      - "14400"
+      X-Ratelimit-Limit-Tokens-Minute:
+      - "60000"
+      X-Ratelimit-Remaining-Requests-Day:
+      - "14356"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "54222"
+      X-Ratelimit-Reset-Requests-Day:
+      - "6017.407067060471"
+      X-Ratelimit-Reset-Tokens-Minute:
+      - "17.40706706047058"
+      X-Request-Id:
+      - 9767310ff9ac7d26-EWR
+    status: 200 OK
+    code: 200
+    duration: 1.229s

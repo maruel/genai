@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 256
+    host: api.groq.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\\\"is_fruit\\\": bool}.\"}],\"model\":\"openai/gpt-oss-120b\",\"response_format\":{\"type\":\"json_object\"},\"stream\":false}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.groq.com/openai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-012ae7f3-b229-4368-b741-477b1bda11be\",\"object\":\"chat.completion\",\"created\":1756415360,\"model\":\"openai/gpt-oss-120b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"is_fruit\\\": true}\",\"reasoning\":\"User asks: \\\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\\\"is_fruit\\\": bool}.\\\"\\n\\nWe need to answer with JSON: {\\\"is_fruit\\\": true} (since banana is a fruit). Must not include any explanation, only JSON. Ensure proper JSON formatting.\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":0.020431736,\"prompt_tokens\":107,\"prompt_time\":0.00496972,\"completion_tokens\":90,\"completion_time\":0.179541338,\"total_tokens\":197,\"total_time\":0.184511058},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_f9eef9d030\",\"x_groq\":{\"id\":\"req_01k3s86zbtf379dt79q1d6r91b\"},\"service_tier\":\"on_demand\"}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - private, max-age=0, no-store, no-cache, must-revalidate
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9766ca021e4da2e6-YUL
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Vary:
+      - Origin
+      Via:
+      - 1.1 google
+      X-Groq-Region:
+      - msp
+      X-Ratelimit-Limit-Requests:
+      - "500000"
+      X-Ratelimit-Limit-Tokens:
+      - "250000"
+      X-Ratelimit-Remaining-Requests:
+      - "499999"
+      X-Ratelimit-Remaining-Tokens:
+      - "247795"
+      X-Ratelimit-Reset-Requests:
+      - 172.799999ms
+      X-Ratelimit-Reset-Tokens:
+      - 529.04ms
+      X-Request-Id:
+      - req_01k3s86zbtf379dt79q1d6r91b
+    status: 200 OK
+    code: 200
+    duration: 289ms

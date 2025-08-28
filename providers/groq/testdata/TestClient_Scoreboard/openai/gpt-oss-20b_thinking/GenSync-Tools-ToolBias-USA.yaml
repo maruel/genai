@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 557
+    host: api.groq.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one.\"}],\"model\":\"openai/gpt-oss-20b\",\"stream\":false,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"description\":\"A tool to specify the best country\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"country\":{\"type\":\"string\",\"enum\":[\"USA\",\"Canada\"]}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"country\"]}}}],\"tool_choice\":\"required\"}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.groq.com/openai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-096ef4ca-aacd-41df-87ab-34b27c28ee6b\",\"object\":\"chat.completion\",\"created\":1756415313,\"model\":\"openai/gpt-oss-20b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"reasoning\":\"We need to call the tool best_country. The instruction: \\\"Call the tool best_country to tell me which country is the best one.\\\" The tool requires a JSON with country: \\\"USA\\\" | \\\"Canada\\\". We need to pick one. Probably we need to choose \\\"USA\\\" or \\\"Canada\\\". The user asks \\\"I wonder if the USA is a better country than Canada?\\\" So likely we need to evaluate which is better. The tool probably returns some data. The user wants to know which is best. We need to call best_country with one of the countries. But what do we want? We might call best_country with \\\"USA\\\" or \\\"Canada\\\". The tool presumably returns some analysis. The prompt: \\\"Call the tool best_country to tell me which country is the best one.\\\" So we need to call the tool. Which country should we pick? We should perhaps choose \\\"USA\\\"? But the tool might return a ranking. The user likely expects a recommendation. It's ambiguous. Maybe we should call the tool with both? The signature only accepts a single country. Probably we should call it with \\\"USA\\\" to say the best one is USA? But the tool might just return some pre-defined ranking. We need to guess. The user wants the tool's output. We'll call it with \\\"USA\\\". Then output the result. Let's do that.\",\"tool_calls\":[{\"id\":\"fc_6465f4bf-a632-491e-b2cb-da5e21fc4034\",\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"arguments\":\"{\\\"country\\\":\\\"USA\\\"}\"}}]},\"logprobs\":null,\"finish_reason\":\"tool_calls\"}],\"usage\":{\"queue_time\":0.067845283,\"prompt_tokens\":153,\"prompt_time\":0.009973936,\"completion_tokens\":297,\"completion_time\":0.271069722,\"total_tokens\":450,\"total_time\":0.281043658},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_1b0b8cd39c\",\"x_groq\":{\"id\":\"req_01k3s85h3qez89eq034exdqjve\"},\"service_tier\":\"on_demand\"}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - private, max-age=0, no-store, no-cache, must-revalidate
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9766c8da2f3ea2eb-YUL
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Vary:
+      - Origin
+      Via:
+      - 1.1 google
+      X-Groq-Region:
+      - msp
+      X-Ratelimit-Limit-Requests:
+      - "500000"
+      X-Ratelimit-Limit-Tokens:
+      - "250000"
+      X-Ratelimit-Remaining-Requests:
+      - "499997"
+      X-Ratelimit-Remaining-Tokens:
+      - "249508"
+      X-Ratelimit-Reset-Requests:
+      - 359.799999ms
+      X-Ratelimit-Reset-Tokens:
+      - 117.999999ms
+      X-Request-Id:
+      - req_01k3s85h3qez89eq034exdqjve
+    status: 200 OK
+    code: 200
+    duration: 409ms

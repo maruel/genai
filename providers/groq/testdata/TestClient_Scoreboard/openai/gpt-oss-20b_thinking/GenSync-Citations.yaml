@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 251
+    host: api.groq.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}],\"model\":\"openai/gpt-oss-20b\",\"stream\":false}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.groq.com/openai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-068b301d-0693-4003-a20c-b3116fbc9554\",\"object\":\"chat.completion\",\"created\":1756415313,\"model\":\"openai/gpt-oss-20b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"Quack.\",\"reasoning\":\"The user is repeating the same question: The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland? So answer: Quack. The user gave the answer in the question but wants to confirm. So respond: Quack. Probably short.\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":0.06793832,\"prompt_tokens\":100,\"prompt_time\":0.00646372,\"completion_tokens\":79,\"completion_time\":0.07065137,\"total_tokens\":179,\"total_time\":0.07711509},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_ab31407964\",\"x_groq\":{\"id\":\"req_01k3s85hgmfb28pzf9e5fyxqyt\"},\"service_tier\":\"on_demand\"}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - private, max-age=0, no-store, no-cache, must-revalidate
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9766c8dcbaf1a2eb-YUL
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Vary:
+      - Origin
+      Via:
+      - 1.1 google
+      X-Groq-Region:
+      - msp
+      X-Ratelimit-Limit-Requests:
+      - "500000"
+      X-Ratelimit-Limit-Tokens:
+      - "250000"
+      X-Ratelimit-Remaining-Requests:
+      - "499998"
+      X-Ratelimit-Remaining-Tokens:
+      - "249872"
+      X-Ratelimit-Reset-Requests:
+      - 278.2ms
+      X-Ratelimit-Reset-Tokens:
+      - 30.519999ms
+      X-Request-Id:
+      - req_01k3s85hgmfb28pzf9e5fyxqyt
+    status: 200 OK
+    code: 200
+    duration: 209ms

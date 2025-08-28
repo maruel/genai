@@ -55,7 +55,7 @@ genai is _different_. Curious why it was created? See the release announcement a
 | [cohere](https://dashboard.cohere.com/billing)              | 🇨🇦   | 💬📸       | 💬     | ✅   | ✅     | ✅     | ✅     | ✅💥   | ❌    | ✅   | ❌   | ✅   | ✅    | ✅    | ❌     |
 | [deepseek](https://platform.deepseek.com)                   | 🇨🇳   | 💬         | 💬     | ✅   | ❌     | ✅     | ✅     | ✅💥   | ❌    | ❌   | ❌   | ❌   | ✅    | ✅    | ❌     |
 | [gemini](http://aistudio.google.com)                        | 🇺🇸   | 🎤🎥💬📄📸 | 💬📸   | ✅   | ✅     | ✅     | ✅     | ✅🧐   | ✅    | ✅   | ✅   | ❌   | ✅    | ✅    | ❌     |
-| [groq](https://console.groq.com/dashboard/usage)            | 🇺🇸   | 💬📸       | 💬     | ✅   | ❌     | ✅     | ✅     | 💨🧐   | ❌    | ✅   | ❌   | ❌   | ✅    | ❌    | ✅     |
+| [groq](https://console.groq.com/dashboard/usage)            | 🇺🇸   | 💬📸       | 💬     | ✅   | ❌     | ✅     | ✅     | ✅🧐   | ❌    | ✅   | ❌   | ❌   | ✅    | ❌    | ✅     |
 | [huggingface](https://huggingface.co/settings/billing)      | 🇺🇸   | 💬         | 💬     | ✅   | ❌     | ✅     | ✅     | 💨     | ❌    | ✅   | ❌   | ❌   | ✅    | ✅    | ✅     |
 | [llamacpp](https://github.com/ggml-org/llama.cpp)           | 🏠   | 💬📸       | 💬     | ✅   | ✅     | ✅     | ✅     | ✅🧐   | ❌    | ✅   | ❌   | ❌   | ❌    | ✅    | ❌     |
 | [mistral](https://console.mistral.ai/usage)                 | 🇫🇷   | 🎤💬📄📸   | 💬     | ✅   | ✅     | ✅     | ✅     | ✅🧐   | ❌    | ✅   | ❌   | ❌   | ❌    | ❌    | ✅     |

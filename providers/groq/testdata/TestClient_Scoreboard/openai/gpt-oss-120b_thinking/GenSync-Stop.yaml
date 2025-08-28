@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 160
+    host: api.groq.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"Talk about Canada in great details. Start with: Canada is\"}],\"model\":\"openai/gpt-oss-120b\",\"stop\":[\"is\"],\"stream\":false}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.groq.com/openai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-b1509d5a-c3fe-46e3-acde-c485aef0836d\",\"object\":\"chat.completion\",\"created\":1756415360,\"model\":\"openai/gpt-oss-120b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\"The user wants \\\"Talk about Canada in great details. Start with: Canada \"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":0.07533524,\"prompt_tokens\":83,\"prompt_time\":0.003310176,\"completion_tokens\":2488,\"completion_time\":5.015891397,\"total_tokens\":2571,\"total_time\":5.019201573},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_cc94b54a04\",\"x_groq\":{\"id\":\"req_01k3s86t9pe7yvgb9w173mtzhx\"},\"service_tier\":\"on_demand\"}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - private, max-age=0, no-store, no-cache, must-revalidate
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9766c9e1bcd9a2e6-YUL
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Vary:
+      - Origin
+      Via:
+      - 1.1 google
+      X-Groq-Region:
+      - msp
+      X-Ratelimit-Limit-Requests:
+      - "500000"
+      X-Ratelimit-Limit-Tokens:
+      - "250000"
+      X-Ratelimit-Remaining-Requests:
+      - "499995"
+      X-Ratelimit-Remaining-Tokens:
+      - "249916"
+      X-Ratelimit-Reset-Requests:
+      - 815.8ms
+      X-Ratelimit-Reset-Tokens:
+      - 20.159999ms
+      X-Request-Id:
+      - req_01k3s86t9pe7yvgb9w173mtzhx
+    status: 200 OK
+    code: 200
+    duration: 5.182s

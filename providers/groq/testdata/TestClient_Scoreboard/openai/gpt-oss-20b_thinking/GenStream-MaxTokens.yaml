@@ -1,0 +1,58 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 164
+    host: api.groq.com
+    body: "{\"max_completion_tokens\":16,\"messages\":[{\"role\":\"user\",\"content\":\"Explain the theory of relativity in great details.\"}],\"model\":\"openai/gpt-oss-20b\",\"stream\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.groq.com/openai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"chatcmpl-06ed12c6-7b78-4650-a903-cfe77aa87c07\",\"object\":\"chat.completion.chunk\",\"created\":1756415308,\"model\":\"openai/gpt-oss-20b\",\"system_fingerprint\":\"fp_38ef40470f\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"logprobs\":null,\"finish_reason\":null}],\"x_groq\":{\"id\":\"req_01k3s85d3weyybabqpky94ek7n\"}}\n\ndata: {\"id\":\"chatcmpl-06ed12c6-7b78-4650-a903-cfe77aa87c07\",\"object\":\"chat.completion.chunk\",\"created\":1756415309,\"model\":\"openai/gpt-oss-20b\",\"system_fingerprint\":\"fp_38ef40470f\",\"choices\":[{\"index\":0,\"delta\":{\"reasoning\":\"We\",\"channel\":\"analysis\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-06ed12c6-7b78-4650-a903-cfe77aa87c07\",\"object\":\"chat.completion.chunk\",\"created\":1756415309,\"model\":\"openai/gpt-oss-20b\",\"system_fingerprint\":\"fp_38ef40470f\",\"choices\":[{\"index\":0,\"delta\":{\"reasoning\":\" need\",\"channel\":\"analysis\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-06ed12c6-7b78-4650-a903-cfe77aa87c07\",\"object\":\"chat.completion.chunk\",\"created\":1756415309,\"model\":\"openai/gpt-oss-20b\",\"system_fingerprint\":\"fp_38ef40470f\",\"choices\":[{\"index\":0,\"delta\":{\"reasoning\":\" to\",\"channel\":\"analysis\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-06ed12c6-7b78-4650-a903-cfe77aa87c07\",\"object\":\"chat.completion.chunk\",\"created\":1756415309,\"model\":\"openai/gpt-oss-20b\",\"system_fingerprint\":\"fp_38ef40470f\",\"choices\":[{\"index\":0,\"delta\":{\"reasoning\":\" explain\",\"channel\":\"analysis\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-06ed12c6-7b78-4650-a903-cfe77aa87c07\",\"object\":\"chat.completion.chunk\",\"created\":1756415309,\"model\":\"openai/gpt-oss-20b\",\"system_fingerprint\":\"fp_38ef40470f\",\"choices\":[{\"index\":0,\"delta\":{\"reasoning\":\" the\",\"channel\":\"analysis\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-06ed12c6-7b78-4650-a903-cfe77aa87c07\",\"object\":\"chat.completion.chunk\",\"created\":1756415309,\"model\":\"openai/gpt-oss-20b\",\"system_fingerprint\":\"fp_38ef40470f\",\"choices\":[{\"index\":0,\"delta\":{\"reasoning\":\" theory\",\"channel\":\"analysis\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-06ed12c6-7b78-4650-a903-cfe77aa87c07\",\"object\":\"chat.completion.chunk\",\"created\":1756415309,\"model\":\"openai/gpt-oss-20b\",\"system_fingerprint\":\"fp_38ef40470f\",\"choices\":[{\"index\":0,\"delta\":{\"reasoning\":\" of\",\"channel\":\"analysis\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-06ed12c6-7b78-4650-a903-cfe77aa87c07\",\"object\":\"chat.completion.chunk\",\"created\":1756415309,\"model\":\"openai/gpt-oss-20b\",\"system_fingerprint\":\"fp_38ef40470f\",\"choices\":[{\"index\":0,\"delta\":{\"reasoning\":\" relat\",\"channel\":\"analysis\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-06ed12c6-7b78-4650-a903-cfe77aa87c07\",\"object\":\"chat.completion.chunk\",\"created\":1756415309,\"model\":\"openai/gpt-oss-20b\",\"system_fingerprint\":\"fp_38ef40470f\",\"choices\":[{\"index\":0,\"delta\":{\"reasoning\":\"ivity\",\"channel\":\"analysis\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-06ed12c6-7b78-4650-a903-cfe77aa87c07\",\"object\":\"chat.completion.chunk\",\"created\":1756415309,\"model\":\"openai/gpt-oss-20b\",\"system_fingerprint\":\"fp_38ef40470f\",\"choices\":[{\"index\":0,\"delta\":{\"reasoning\":\" in\",\"channel\":\"analysis\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-06ed12c6-7b78-4650-a903-cfe77aa87c07\",\"object\":\"chat.completion.chunk\",\"created\":1756415309,\"model\":\"openai/gpt-oss-20b\",\"system_fingerprint\":\"fp_38ef40470f\",\"choices\":[{\"index\":0,\"delta\":{\"reasoning\":\" great\",\"channel\":\"analysis\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-06ed12c6-7b78-4650-a903-cfe77aa87c07\",\"object\":\"chat.completion.chunk\",\"created\":1756415309,\"model\":\"openai/gpt-oss-20b\",\"system_fingerprint\":\"fp_38ef40470f\",\"choices\":[{\"index\":0,\"delta\":{\"reasoning\":\" detail\",\"channel\":\"analysis\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-06ed12c6-7b78-4650-a903-cfe77aa87c07\",\"object\":\"chat.completion.chunk\",\"created\":1756415309,\"model\":\"openai/gpt-oss-20b\",\"system_fingerprint\":\"fp_38ef40470f\",\"choices\":[{\"index\":0,\"delta\":{\"reasoning\":\".\",\"channel\":\"analysis\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-06ed12c6-7b78-4650-a903-cfe77aa87c07\",\"object\":\"chat.completion.chunk\",\"created\":1756415309,\"model\":\"openai/gpt-oss-20b\",\"system_fingerprint\":\"fp_38ef40470f\",\"choices\":[{\"index\":0,\"delta\":{},\"logprobs\":null,\"finish_reason\":\"length\"}],\"x_groq\":{\"id\":\"req_01k3s85d3weyybabqpky94ek7n\",\"usage\":{\"queue_time\":0.068697471,\"prompt_tokens\":81,\"prompt_time\":0.005260961,\"completion_tokens\":16,\"completion_time\":0.014199571,\"total_tokens\":97,\"total_time\":0.019460532}}}\n\ndata: [DONE]\n\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - no-cache
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9766c8c08dfea2eb-YUL
+      Content-Type:
+      - text/event-stream
+      Server:
+      - cloudflare
+      Vary:
+      - Origin
+      Via:
+      - 1.1 google
+      X-Groq-Region:
+      - msp
+      X-Ratelimit-Limit-Requests:
+      - "500000"
+      X-Ratelimit-Limit-Tokens:
+      - "250000"
+      X-Ratelimit-Remaining-Requests:
+      - "499996"
+      X-Ratelimit-Remaining-Tokens:
+      - "249918"
+      X-Ratelimit-Reset-Requests:
+      - 522.199999ms
+      X-Ratelimit-Reset-Tokens:
+      - 19.68ms
+      X-Request-Id:
+      - req_01k3s85d3weyybabqpky94ek7n
+    status: 200 OK
+    code: 200
+    duration: 138ms

@@ -565,6 +565,7 @@ type ChatStreamChunkResponse struct {
 			Role      string     `json:"role"`
 			Content   string     `json:"content"`
 			Reasoning string     `json:"reasoning"`
+			Channel   string     `json:"channel"` // "analysis"
 			ToolCalls []ToolCall `json:"tool_calls"`
 		} `json:"delta"`
 		Logprobs     struct{}     `json:"logprobs"`

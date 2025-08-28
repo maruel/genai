@@ -27,6 +27,7 @@
         "json": true,
         "topLogprobs": true,
         "maxTokens": true,
+        "stopSequence": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "indecisiveTool": "true"
@@ -36,6 +37,7 @@
         "json": true,
         "topLogprobs": true,
         "maxTokens": true,
+        "stopSequence": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "indecisiveTool": "true"
@@ -60,6 +62,7 @@
         "tools": "flaky",
         "json": true,
         "maxTokens": true,
+        "stopSequence": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "true"
       },
@@ -67,6 +70,7 @@
         "tools": "flaky",
         "json": true,
         "maxTokens": true,
+        "stopSequence": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "true"
       }

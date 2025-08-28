@@ -298,8 +298,8 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*Fu
 	}
 	// Some model (in particular Gemma3 4B in Q4_K_M) will not start with "Canada is". They will still stop but
 	// only after a while.
-	f.NoStopSequence = err != nil || strings.Count(resp.String(), " ")+1 > 30 || strings.Contains(resp.String(), " is ")
-	if !f.NoStopSequence && (resp.Usage.InputTokens == 0 || resp.Usage.OutputTokens == 0) {
+	f.StopSequence = err == nil && strings.Count(resp.String(), " ")+1 <= 30 && !strings.Contains(resp.String(), " is ")
+	if f.StopSequence && (resp.Usage.InputTokens == 0 || resp.Usage.OutputTokens == 0) {
 		if f.ReportTokenUsage != False {
 			internal.Logger(ctx).DebugContext(ctx, "Stop", "issue", "token usage")
 			f.ReportTokenUsage = Flaky
@@ -308,7 +308,7 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*Fu
 	if err == nil {
 		// Don't fail if unsupported.
 		expectedFR := genai.FinishedStopSequence
-		if f.NoStopSequence {
+		if !f.StopSequence {
 			expectedFR = genai.FinishedStop
 		}
 		if resp.Usage.FinishReason != expectedFR {

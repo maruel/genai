@@ -57,9 +57,16 @@ type FunctionalityText struct {
 	Seed bool `json:"seed,omitzero"`
 	// TopLogprobs is set when the provider and model combination supports top_logprobs.
 	TopLogprobs bool `json:"topLogprobs,omitzero"`
-	// MaxTokens means that the provider doesn't support limiting text output. It fails more often with model
-	// with implicit thinking.
+	// MaxTokens means that the provider supports limiting text output to a specific number of tokens.
+	//
+	// Tokens are characters nor words. The tokens are embedding specific, and each model family uses a
+	// different vocabulary. Thus the number of characters generated varies wildly.
+	//
+	// It fails more often with model with implicit thinking.
 	MaxTokens bool `json:"maxTokens,omitzero"`
+	// StopSequence means that the provider supports stop words. The number of stop words is generally limited,
+	// frequently to 5 words. The sequence should be a valid token in the model's vocabulary.
+	StopSequence bool `json:"stopSequence,omitzero"`
 
 	// ReportRateLimits means that the provider reports rate limits in its Usage.
 	ReportRateLimits bool `json:"reportRateLimits,omitzero"`
@@ -68,8 +75,6 @@ type FunctionalityText struct {
 	ReportTokenUsage TriState `json:"reportTokenUsage,omitzero"`
 	// ReportFinishReason means that the finish reason (FinishStop, FinishLength, etc) is not correctly reported.
 	ReportFinishReason TriState `json:"reportFinishReason,omitzero"`
-	// NoStopSequence means that the provider doesn't support stop words. Only relevant on text output.
-	NoStopSequence bool `json:"noStopSequence,omitzero"`
 	// BiasedTool is true when we ask the LLM to use a tool in an ambiguous biased question, it will always
 	// reply with the first readily available answer.
 	//

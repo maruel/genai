@@ -45,6 +45,7 @@
         "seed": true,
         "topLogprobs": true,
         "maxTokens": true,
+        "stopSequence": true,
         "reportRateLimits": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
@@ -57,6 +58,7 @@
         "seed": true,
         "topLogprobs": true,
         "maxTokens": true,
+        "stopSequence": true,
         "reportRateLimits": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
@@ -128,7 +130,6 @@
         "reportRateLimits": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
-        "noStopSequence": true,
         "biasedTool": "flaky"
       },
       "GenStream": {
@@ -139,7 +140,6 @@
         "reportRateLimits": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
-        "noStopSequence": true,
         "biasedTool": "flaky"
       }
     },

@@ -31,18 +31,18 @@
       "GenSync": {
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
+        "seed": true,
         "json": true,
         "jsonSchema": true,
-        "seed": true,
         "maxTokens": true,
         "stopSequence": true
       },
       "GenStream": {
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
+        "seed": true,
         "json": true,
         "jsonSchema": true,
-        "seed": true,
         "maxTokens": true,
         "stopSequence": true
       }
@@ -67,20 +67,20 @@
       "GenSync": {
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
+        "seed": true,
         "tools": "true",
         "json": true,
         "jsonSchema": true,
-        "seed": true,
         "maxTokens": true,
         "stopSequence": true
       },
       "GenStream": {
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
+        "seed": true,
         "tools": "true",
         "json": true,
         "jsonSchema": true,
-        "seed": true,
         "maxTokens": true,
         "stopSequence": true
       }

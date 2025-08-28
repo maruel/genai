@@ -26,9 +26,9 @@
       "GenSync": {
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
+        "seed": true,
         "tools": "flaky",
         "json": true,
-        "seed": true,
         "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
@@ -36,9 +36,9 @@
       "GenStream": {
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
+        "seed": true,
         "tools": "flaky",
         "json": true,
-        "seed": true,
         "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
@@ -66,9 +66,9 @@
         "reportRateLimits": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
+        "seed": true,
         "tools": "flaky",
         "json": true,
-        "seed": true,
         "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
@@ -77,10 +77,10 @@
         "reportRateLimits": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
+        "seed": true,
         "tools": "flaky",
         "json": true,
         "jsonSchema": true,
-        "seed": true,
         "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true

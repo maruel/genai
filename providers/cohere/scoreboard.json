@@ -26,12 +26,12 @@
       "GenSync": {
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
+        "seed": true,
         "tools": "true",
         "toolsIndecisive": "true",
         "json": true,
         "jsonSchema": true,
         "citations": true,
-        "seed": true,
         "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
@@ -39,12 +39,12 @@
       "GenStream": {
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
+        "seed": true,
         "tools": "true",
         "toolsIndecisive": "true",
         "json": true,
         "jsonSchema": true,
         "citations": true,
-        "seed": true,
         "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
@@ -79,9 +79,9 @@
       "GenSync": {
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
+        "seed": true,
         "tools": "true",
         "citations": true,
-        "seed": true,
         "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
@@ -89,9 +89,9 @@
       "GenStream": {
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
+        "seed": true,
         "tools": "true",
         "citations": true,
-        "seed": true,
         "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true

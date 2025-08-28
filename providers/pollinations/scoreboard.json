@@ -24,17 +24,17 @@
       "GenSync": {
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
+        "seed": true,
         "tools": "flaky",
         "toolsIndecisive": "flaky",
-        "json": true,
-        "seed": true
+        "json": true
       },
       "GenStream": {
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
+        "seed": true,
         "tools": "flaky",
-        "toolsIndecisive": "flaky",
-        "seed": true
+        "toolsIndecisive": "flaky"
       }
     },
     {
@@ -92,17 +92,17 @@
       "GenSync": {
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
+        "seed": true,
         "tools": "true",
         "toolsBiased": "true",
-        "json": true,
-        "seed": true
+        "json": true
       },
       "GenStream": {
         "reportFinishReason": "true",
+        "seed": true,
         "tools": "true",
         "toolsBiased": "true",
-        "json": true,
-        "seed": true
+        "json": true
       }
     },
     {

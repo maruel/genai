@@ -28,19 +28,19 @@
       "GenSync": {
         "reportTokenUsage": "true",
         "reportFinishReason": "flaky",
+        "seed": true,
         "tools": "flaky",
         "toolsIndecisive": "flaky",
         "json": true,
         "jsonSchema": true,
-        "seed": true,
         "maxTokens": true
       },
       "GenStream": {
         "reportTokenUsage": "true",
         "reportFinishReason": "flaky",
+        "seed": true,
         "tools": "flaky",
         "jsonSchema": true,
-        "seed": true,
         "maxTokens": true
       }
     },
@@ -61,18 +61,18 @@
       "GenSync": {
         "reportTokenUsage": "true",
         "reportFinishReason": "flaky",
+        "seed": true,
         "tools": "flaky",
         "toolsIndecisive": "flaky",
         "json": true,
-        "seed": true,
         "maxTokens": true
       },
       "GenStream": {
         "reportTokenUsage": "true",
         "reportFinishReason": "flaky",
+        "seed": true,
         "tools": "flaky",
         "json": true,
-        "seed": true,
         "maxTokens": true
       }
     }

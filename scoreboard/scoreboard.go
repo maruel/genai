@@ -49,6 +49,8 @@ type FunctionalityText struct {
 	ReportTokenUsage TriState `json:"reportTokenUsage,omitzero"`
 	// ReportFinishReason means that the finish reason (FinishStop, FinishLength, etc) is not correctly reported.
 	ReportFinishReason TriState `json:"reportFinishReason,omitzero"`
+	// Seed is set when the provider and model combination supports seed for reproducibility.
+	Seed bool `json:"seed,omitzero"`
 
 	// Text related fields.
 
@@ -78,8 +80,6 @@ type FunctionalityText struct {
 	JSONSchema bool `json:"jsonSchema,omitzero"`
 	// Citations is set when the provider and model combination supports citations in the response.
 	Citations bool `json:"citations,omitzero"`
-	// Seed is set when the provider and model combination supports seed for reproducibility.
-	Seed bool `json:"seed,omitzero"`
 	// TopLogprobs is set when the provider and model combination supports top_logprobs.
 	TopLogprobs bool `json:"topLogprobs,omitzero"`
 	// MaxTokens means that the provider supports limiting text output to a specific number of tokens.

@@ -182,17 +182,6 @@ func (t *tableDataRow) initFromScenario(s *scoreboard.Scenario) {
 			}
 		}
 	}
-	if s.GenDoc != nil {
-		if s.GenDoc.Seed {
-			t.Seed = "✅"
-		}
-		if s.GenDoc.ReportRateLimits {
-			t.ReportRateLimits = "✅"
-		}
-		if s.GenDoc.ReportTokenUsage != scoreboard.True || s.GenDoc.ReportFinishReason != scoreboard.True {
-			// TODO.
-		}
-	}
 }
 
 var countryMap = map[string]string{

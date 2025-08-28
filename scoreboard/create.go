@@ -51,57 +51,84 @@ func CreateScenario(ctx context.Context, pf ProviderFactory) (Scenario, genai.Us
 	doSyncNonText := !slices.Equal(mods, genai.Modalities{genai.ModalityText})
 
 	eg := errgroup.Group{}
-	if doSyncText {
+	if doSyncText || doSyncNonText {
 		eg.Go(func() error {
-			cs := callState{pf: pf, isStream: false}
-			ctx2 := internal.WithLogger(ctx, internal.Logger(ctx).With("fn", "GenSync"))
-			f, err := exerciseGenTextOnly(ctx2, &cs, "GenSync-")
-			mu.Lock()
-			usage.Add(cs.usage)
-			if f != nil {
-				result.In[genai.ModalityText] = ModalCapability{Inline: true}
-				if cs.isThinking {
-					result.Thinking = true
+			if doSyncText {
+				cs := callState{pf: pf, isStream: false}
+				ctx2 := internal.WithLogger(ctx, internal.Logger(ctx).With("fn", "GenSync"))
+				f, err := exerciseGenTextOnly(ctx2, &cs, "GenSync-")
+				mu.Lock()
+				usage.Add(cs.usage)
+				if f != nil {
+					result.In[genai.ModalityText] = ModalCapability{Inline: true}
+					if cs.isThinking {
+						result.Thinking = true
+					}
+					if cs.hasCitations {
+						f.Citations = true
+					}
+					result.GenSync = f
 				}
-				if cs.hasCitations {
-					f.Citations = true
+				mu.Unlock()
+				if err != nil {
+					return fmt.Errorf("failed with GenSync: %w", err)
 				}
-				result.GenSync = f
-			}
-			mu.Unlock()
-			if err != nil {
-				return fmt.Errorf("failed with GenSync: %w", err)
+
+				cs = callState{pf: pf, isStream: false}
+				ctx2 = internal.WithLogger(ctx, internal.Logger(ctx).With("fn", "GenSyncMultiModal"))
+				in, out, f, err := exerciseGenTextMultiModal(ctx2, &cs, "GenSyncMultiModal-")
+				mu.Lock()
+				usage.Add(cs.usage)
+				if len(in) != 0 {
+					result.In = mergeModalities(result.In, in)
+					result.Out = mergeModalities(result.Out, out)
+					if result.GenSync == nil {
+						result.GenSync = f
+					} else {
+						if f.ReportTokenUsage != False {
+							result.GenSync.ReportTokenUsage = f.ReportTokenUsage
+						}
+						if f.ReportFinishReason != False {
+							result.GenSync.ReportFinishReason = f.ReportFinishReason
+						}
+					}
+					if cs.isThinking {
+						result.Thinking = true
+					}
+					if cs.hasCitations {
+						result.GenSync.Citations = true
+					}
+				}
+				mu.Unlock()
+				if err != nil {
+					return fmt.Errorf("failed with GenSync: %w", err)
+				}
 			}
 
-			cs = callState{pf: pf, isStream: false}
-			ctx2 = internal.WithLogger(ctx, internal.Logger(ctx).With("fn", "GenSyncMultiModal"))
-			in, out, f, err := exerciseGenTextMultiModal(ctx2, &cs, "GenSyncMultiModal-")
-			mu.Lock()
-			usage.Add(cs.usage)
-			if len(in) != 0 {
-				result.In = mergeModalities(result.In, in)
-				result.Out = mergeModalities(result.Out, out)
-				if result.GenSync == nil {
-					result.GenSync = f
-				} else {
-					if f.ReportTokenUsage != False {
-						result.GenSync.ReportTokenUsage = f.ReportTokenUsage
+			if doSyncNonText {
+				eg.Go(func() error {
+					// TODO: Rename because GenDoc is not used in the code anymore.
+					ctx2 := internal.WithLogger(ctx, internal.Logger(ctx).With("fn", "GenDoc"))
+					outDoc, usageDoc, err := exerciseGenNonText(ctx2, pf)
+					mu.Lock()
+					usage.Add(usageDoc)
+					result.In = mergeModalities(result.In, outDoc.In)
+					result.Out = mergeModalities(result.Out, outDoc.Out)
+					if result.GenSync == nil {
+						result.GenSync = outDoc.GenSync
+					} else if outDoc.GenSync != nil {
+						// This is tricky, we need to merge the results. The only case where this is known to happen is
+						// gemini-2.5-flash-image-preview. Keep the panic so I don't forget about it.
+						panic("implement support for multi-modal output")
 					}
-					if f.ReportFinishReason != False {
-						result.GenSync.ReportFinishReason = f.ReportFinishReason
+					mu.Unlock()
+					if err != nil {
+						return fmt.Errorf("failed with GenDoc: %w", err)
 					}
-				}
-				if cs.isThinking {
-					result.Thinking = true
-				}
-				if cs.hasCitations {
-					result.GenSync.Citations = true
-				}
+					return nil
+				})
 			}
-			mu.Unlock()
-			if err != nil {
-				return fmt.Errorf("failed with GenSync: %w", err)
-			}
+
 			return nil
 		})
 	}
@@ -161,31 +188,13 @@ func CreateScenario(ctx context.Context, pf ProviderFactory) (Scenario, genai.Us
 		})
 	}
 
-	if doSyncNonText {
-		eg.Go(func() error {
-			// TODO: Rename when GenDoc is removed.
-			ctx2 := internal.WithLogger(ctx, internal.Logger(ctx).With("fn", "GenDoc"))
-			outDoc, usageDoc, err := exerciseGenNonText(ctx2, pf)
-			mu.Lock()
-			usage.Add(usageDoc)
-			result.In = mergeModalities(result.In, outDoc.In)
-			result.Out = mergeModalities(result.Out, outDoc.Out)
-			result.GenDoc = outDoc.GenDoc
-			mu.Unlock()
-			if err != nil {
-				return fmt.Errorf("failed with GenDoc: %w", err)
-			}
-			return nil
-		})
-	}
-
 	err := eg.Wait()
 	return result, usage, err
 }
 
 // genai.Provider
 
-func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*FunctionalityText, error) {
+func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*Functionality, error) {
 	// Make sure simple text generation works, otherwise there's no point.
 	msgs := genai.Messages{genai.NewTextMessage("Say hello. Use only one word.")}
 	resp, err := cs.callGen(ctx, prefix+"Text", msgs)
@@ -196,7 +205,7 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*Fu
 		}
 		return nil, err
 	}
-	f := &FunctionalityText{}
+	f := &Functionality{}
 	// Optimistically assume it works.
 	f.ReportTokenUsage = True
 	f.ReportFinishReason = True
@@ -419,10 +428,10 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*Fu
 	return f, nil
 }
 
-func exerciseGenTextMultiModal(ctx context.Context, cs *callState, prefix string) (map[genai.Modality]ModalCapability, map[genai.Modality]ModalCapability, *FunctionalityText, error) {
+func exerciseGenTextMultiModal(ctx context.Context, cs *callState, prefix string) (map[genai.Modality]ModalCapability, map[genai.Modality]ModalCapability, *Functionality, error) {
 	in := map[genai.Modality]ModalCapability{}
 	out := map[genai.Modality]ModalCapability{}
-	f := &FunctionalityText{}
+	f := &Functionality{}
 	m, err := exerciseGenInputDocument(ctx, cs, f, prefix+"Document-")
 	if m != nil {
 		in[genai.ModalityDocument] = *m
@@ -455,7 +464,7 @@ func exerciseGenTextMultiModal(ctx context.Context, cs *callState, prefix string
 	return in, out, f, err
 }
 
-func exerciseGenInputDocument(ctx context.Context, cs *callState, f *FunctionalityText, prefix string) (*ModalCapability, error) {
+func exerciseGenInputDocument(ctx context.Context, cs *callState, f *Functionality, prefix string) (*ModalCapability, error) {
 	var m *ModalCapability
 	want := regexp.MustCompile("^orange$")
 	for _, format := range []extMime{{"pdf", "application/pdf"}} {
@@ -500,7 +509,7 @@ func exerciseGenInputDocument(ctx context.Context, cs *callState, f *Functionali
 	return m, nil
 }
 
-func exerciseGenInputImage(ctx context.Context, cs *callState, f *FunctionalityText, prefix string) (*ModalCapability, error) {
+func exerciseGenInputImage(ctx context.Context, cs *callState, f *Functionality, prefix string) (*ModalCapability, error) {
 	var m *ModalCapability
 	want := regexp.MustCompile("^banana$")
 	for _, format := range []extMime{
@@ -551,7 +560,7 @@ func exerciseGenInputImage(ctx context.Context, cs *callState, f *FunctionalityT
 	return m, nil
 }
 
-func exerciseGenInputAudio(ctx context.Context, cs *callState, f *FunctionalityText, prefix string) (*ModalCapability, error) {
+func exerciseGenInputAudio(ctx context.Context, cs *callState, f *Functionality, prefix string) (*ModalCapability, error) {
 	var m *ModalCapability
 	want := regexp.MustCompile("^orange$")
 	for _, format := range []extMime{
@@ -602,7 +611,7 @@ func exerciseGenInputAudio(ctx context.Context, cs *callState, f *FunctionalityT
 	return m, nil
 }
 
-func exerciseGenInputVideo(ctx context.Context, cs *callState, f *FunctionalityText, prefix string) (*ModalCapability, error) {
+func exerciseGenInputVideo(ctx context.Context, cs *callState, f *Functionality, prefix string) (*ModalCapability, error) {
 	var m *ModalCapability
 	// Relax the check, as the model will try to describe the fact that the word is rotating.
 	want := regexp.MustCompile("banana")
@@ -656,7 +665,7 @@ type extMime struct {
 	mime string
 }
 
-func exerciseModal(ctx context.Context, cs *callState, f *FunctionalityText, name string, msgs genai.Messages, want *regexp.Regexp) error {
+func exerciseModal(ctx context.Context, cs *callState, f *Functionality, name string, msgs genai.Messages, want *regexp.Regexp) error {
 	resp, err := cs.callGen(ctx, name, msgs)
 	if err == nil {
 		got := strings.ToLower(strings.TrimRight(strings.TrimSpace(resp.String()), "."))
@@ -729,12 +738,15 @@ func (cs *callState) callGen(ctx context.Context, name string, msgs genai.Messag
 // Non text modalities
 
 // exerciseGenNonText exercises the non-text functionality of genai.Provider.
+//
+// It only tests GenSync, not GenStream. Most non-text modalities are fairly expensive to run (some cost a few
+// bucks). If you have a business case and would like to pay me to test more, please let me know.
 func exerciseGenNonText(ctx context.Context, pf ProviderFactory) (Scenario, genai.Usage, error) {
 	prefix := "GenDoc-"
 	out := Scenario{
-		In:     map[genai.Modality]ModalCapability{},
-		Out:    map[genai.Modality]ModalCapability{},
-		GenDoc: &FunctionalityDoc{},
+		In:      map[genai.Modality]ModalCapability{},
+		Out:     map[genai.Modality]ModalCapability{},
+		GenSync: &Functionality{},
 	}
 	usage := genai.Usage{}
 	if err := exerciseGenImage(ctx, pf, prefix+"Image", &out, &usage); err != nil {
@@ -747,7 +759,7 @@ func exerciseGenNonText(ctx context.Context, pf ProviderFactory) (Scenario, gena
 		return out, usage, err
 	}
 	if len(out.In) == 0 || len(out.Out) == 0 {
-		out.GenDoc = nil
+		out.GenSync = nil
 	}
 	return out, usage, nil
 }
@@ -773,19 +785,19 @@ func exerciseGenImage(ctx context.Context, pf ProviderFactory, name string, out 
 	usage.InputTokens += resp.Usage.InputTokens
 	usage.InputCachedTokens += resp.Usage.InputCachedTokens
 	usage.OutputTokens += resp.Usage.OutputTokens
-	out.GenDoc.Seed = true
+	out.GenSync.Seed = true
 	var uerr *genai.UnsupportedContinuableError
 	if errors.As(err, &uerr) {
 		// Cheap trick to make sure the error is not wrapped. Figure out if there's another way!
 		if strings.HasPrefix(err.Error(), "unsupported options: ") {
 			if slices.Contains(uerr.Unsupported, "Seed") {
-				out.GenDoc.Seed = false
+				out.GenSync.Seed = false
 			}
 			err = nil
 		}
 	}
 	if len(resp.Usage.Limits) != 0 {
-		out.GenDoc.ReportRateLimits = true
+		out.GenSync.ReportRateLimits = true
 		for _, l := range resp.Usage.Limits {
 			if err2 := l.Validate(); err2 != nil {
 				return err2
@@ -832,17 +844,17 @@ func exerciseGenImage(ctx context.Context, pf ProviderFactory, name string, out 
 		out.Out[genai.ModalityImage] = v
 		if resp.Usage.InputTokens == 0 || resp.Usage.OutputTokens == 0 {
 			internal.Logger(ctx).DebugContext(ctx, name, "issue", "token usage")
-			out.GenDoc.ReportTokenUsage = False
+			out.GenSync.ReportTokenUsage = False
 		} else {
 			// TODO: incorrect.
-			out.GenDoc.ReportTokenUsage = True
+			out.GenSync.ReportTokenUsage = True
 		}
 		if expectedFR := genai.FinishedStop; resp.Usage.FinishReason != expectedFR {
 			internal.Logger(ctx).DebugContext(ctx, name, "issue", "finish reason", "expected", expectedFR, "got", resp.Usage.FinishReason)
-			out.GenDoc.ReportFinishReason = False
+			out.GenSync.ReportFinishReason = False
 		} else {
 			// TODO: incorrect.
-			out.GenDoc.ReportFinishReason = True
+			out.GenSync.ReportFinishReason = True
 		}
 	} else {
 		if isBadError(ctx, err) {
@@ -863,19 +875,19 @@ func exerciseGenAudio(ctx context.Context, pf ProviderFactory, name string, out 
 	usage.InputTokens += resp.Usage.InputTokens
 	usage.InputCachedTokens += resp.Usage.InputCachedTokens
 	usage.OutputTokens += resp.Usage.OutputTokens
-	out.GenDoc.Seed = true
+	out.GenSync.Seed = true
 	var uerr *genai.UnsupportedContinuableError
 	if errors.As(err, &uerr) {
 		// Cheap trick to make sure the error is not wrapped. Figure out if there's another way!
 		if strings.HasPrefix(err.Error(), "unsupported options: ") {
 			if slices.Contains(uerr.Unsupported, "Seed") {
-				out.GenDoc.Seed = false
+				out.GenSync.Seed = false
 			}
 			err = nil
 		}
 	}
 	if len(resp.Usage.Limits) != 0 {
-		out.GenDoc.ReportRateLimits = true
+		out.GenSync.ReportRateLimits = true
 		for _, l := range resp.Usage.Limits {
 			if err2 := l.Validate(); err2 != nil {
 				return err2
@@ -923,17 +935,17 @@ func exerciseGenAudio(ctx context.Context, pf ProviderFactory, name string, out 
 		out.Out[genai.ModalityAudio] = v
 		if resp.Usage.InputTokens == 0 || resp.Usage.OutputTokens == 0 {
 			internal.Logger(ctx).DebugContext(ctx, name, "issue", "token usage")
-			out.GenDoc.ReportTokenUsage = False
+			out.GenSync.ReportTokenUsage = False
 		} else {
 			// TODO: incorrect.
-			out.GenDoc.ReportTokenUsage = True
+			out.GenSync.ReportTokenUsage = True
 		}
 		if expectedFR := genai.FinishedStop; resp.Usage.FinishReason != expectedFR {
 			internal.Logger(ctx).DebugContext(ctx, name, "issue", "finish reason", "expected", expectedFR, "got", resp.Usage.FinishReason)
-			out.GenDoc.ReportFinishReason = False
+			out.GenSync.ReportFinishReason = False
 		} else {
 			// TODO: incorrect.
-			out.GenDoc.ReportFinishReason = True
+			out.GenSync.ReportFinishReason = True
 		}
 	} else {
 		if isBadError(ctx, err) {

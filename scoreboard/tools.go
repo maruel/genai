@@ -17,7 +17,7 @@ import (
 	"github.com/maruel/genai/internal"
 )
 
-func exerciseGenTools(ctx context.Context, cs *callState, f *FunctionalityText, prefix string) error {
+func exerciseGenTools(ctx context.Context, cs *callState, f *Functionality, prefix string) error {
 	msgs := genai.Messages{genai.NewTextMessage("Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.")}
 	type got struct {
 		Number json.Number `json:"number" jsonschema:"type=number"`

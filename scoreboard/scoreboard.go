@@ -31,17 +31,14 @@ type ProviderScore interface {
 	Scoreboard() Score
 }
 
-// FunctionalityText defines which functionalites are supported in a scenario for models that support text
-// output modality.
+// Functionality defines which functionalites are supported in a scenario.
 //
-// The first group is for multi-modal models, either with non-text inputs (e.g. vision, STT) or outputs
-// (combined text and image generation).
+// The first group is for all models. The remainder is for text models.
 //
-// The second group are supported functional features for agency.
+// The second group is about tool use, is as of 2025-08 is only supported for text models.
 //
-// The third group is to identify bugged providers. A provider is considered to be bugged if any of the field
-// is false.
-type FunctionalityText struct {
+// The third group is about text specific features.
+type Functionality struct {
 	// ReportRateLimits means that the provider reports rate limits in its Usage.
 	ReportRateLimits bool `json:"reportRateLimits,omitzero"`
 	// ReportTokenUsage means that the token usage is correctly reported in all cases. It is flaky if it is not
@@ -154,22 +151,6 @@ func (i *TriState) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-// FunctionalityDoc defines which functionalites are supported in a scenario for non-text output modality.
-type FunctionalityDoc struct {
-	// Seed is set when the provider and model combination supports seed for reproducibility.
-	Seed bool `json:"seed,omitzero"`
-
-	// ReportRateLimits means that the provider reports rate limits in its Usage.
-	ReportRateLimits bool `json:"reportRateLimits,omitzero"`
-	// ReportTokenUsage means that the token usage is correctly reported in all cases. It is flaky if it is not
-	// reported in some specific cases. A frequent example is tokens not being reported in JSON output mode.
-	ReportTokenUsage TriState `json:"reportTokenUsage,omitzero"`
-	// BrokenFinishReason means that the finish reason (FinishStop, FinishLength, etc) is not correctly reported.
-	ReportFinishReason TriState `json:"reportFinishReason,omitzero"`
-
-	_ struct{}
-}
-
 // Scenario defines one way to use the provider.
 type Scenario struct {
 	// Comments are notes about the scenario. For example, if a scenario is known to be bugged, deprecated,
@@ -191,11 +172,9 @@ type Scenario struct {
 	Out map[genai.Modality]ModalCapability `json:"out,omitzero"`
 
 	// GenSync declares features supported when using Provider.GenSync
-	GenSync *FunctionalityText `json:"GenSync,omitzero,omitempty"`
+	GenSync *Functionality `json:"GenSync,omitzero,omitempty"`
 	// GenStream declares features supported when using Provider.GenStream
-	GenStream *FunctionalityText `json:"GenStream,omitzero,omitempty"`
-	// GenDoc declares features supported when using a non-text output modality.
-	GenDoc *FunctionalityDoc `json:"GenDoc,omitzero,omitempty"`
+	GenStream *Functionality `json:"GenStream,omitzero,omitempty"`
 
 	_ struct{}
 }

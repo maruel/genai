@@ -53,10 +53,10 @@ func printList(ctx context.Context) error {
 			chat := ""
 			stream := ""
 			if scenario.GenSync != nil {
-				chat = functionalityText(scenario.GenSync)
+				chat = functionality(scenario.GenSync)
 			}
 			if scenario.GenStream != nil {
-				stream = functionalityText(scenario.GenStream)
+				stream = functionality(scenario.GenStream)
 			}
 			if chat == stream {
 				if chat != "" {
@@ -68,11 +68,6 @@ func printList(ctx context.Context) error {
 				}
 				if stream != "" {
 					fmt.Printf("    streamed: %s%s\n", async, stream)
-				}
-			}
-			if scenario.GenDoc != nil {
-				if s := functionalityDoc(scenario.GenDoc); s != "" {
-					fmt.Printf("    doc:      %s\n", s)
 				}
 			}
 		}
@@ -98,7 +93,7 @@ func isTextOnly(m map[genai.Modality]scoreboard.ModalCapability) bool {
 	return len(m) == 1 && m[genai.ModalityText].Inline
 }
 
-func functionalityText(f *scoreboard.FunctionalityText) string {
+func functionality(f *scoreboard.Functionality) string {
 	var items []string
 	if f.JSON {
 		items = append(items, "✅json")
@@ -130,17 +125,6 @@ func functionalityText(f *scoreboard.FunctionalityText) string {
 	}
 	if !f.StopSequence {
 		items = append(items, "💔stopsequence")
-	}
-	return strings.Join(items, " ")
-}
-
-func functionalityDoc(f *scoreboard.FunctionalityDoc) string {
-	var items []string
-	if f.ReportTokenUsage != scoreboard.True {
-		items = append(items, "💔usage")
-	}
-	if f.ReportFinishReason != scoreboard.True {
-		items = append(items, "💔finishreason")
 	}
 	return strings.Join(items, " ")
 }

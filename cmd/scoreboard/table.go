@@ -39,6 +39,7 @@ const legend = `<details>
 - 🎤: Audio: process an audio file (e.g. MP3, WAV, Flac, Opus) as input, or generate audio
 - 🎥: Video: process a video (e.g. MP4) as input, or generate a video (e.g. Veo 3)
 - 💨: Feature is flaky (Tool calling) or inconsistent (Usage is not always reported)
+- 🪨: Tool calling can be forced; aka you can force the model to call a tool. This is great.
 - 🧐: Tool calling is **not** biased towards the first value in an enum. This is good. If the provider doesn't
 	have this, be mindful of the order of the values presented in the prompt!
 - 💥: Tool calling is indecisive. When unsure about an answer, it'll call both options. This is good.
@@ -172,6 +173,9 @@ func (t *tableDataRow) initFromScenario(s *scoreboard.Scenario, f *scoreboard.Fu
 		t.Tools = "✅"
 	} else if s.GenSync.Tools == scoreboard.Flaky {
 		t.Tools = "💨"
+	}
+	if f.ToolCallRequired {
+		t.Tools += "🪨"
 	}
 	if f.ToolsBiased != scoreboard.False {
 		t.Tools += "🧐"
@@ -438,7 +442,7 @@ func visibleWidth(s string) int {
 
 func runeWidth(r rune) int {
 	switch r {
-	case '🏠', '❌', '💬', '✅', '📄', '🎤', '🤪', '🚩', '💨', '💸', '🤷', '📸', '🎥', '💥', '🤐', '🧐', '🌐', '🤏', '📡', '🌱':
+	case '🏠', '❌', '💬', '✅', '📄', '🎤', '🤪', '🚩', '💨', '💸', '🤷', '📸', '🎥', '💥', '🤐', '🧐', '🌐', '🤏', '📡', '🌱', '🪨':
 		return 2
 	case '🖼', '🎞', '⚖': // '🕰️'
 		return 0

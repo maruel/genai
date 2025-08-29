@@ -1,39 +1,39 @@
 # Scoreboard
 
-| Model                                         | Mode    | ➛In   | Out➛   | JSON | Schema | Tool   | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
-| --------------------------------------------- | ------- | ----- | ------ | ---- | ------ | ------ | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
-| llama-3.1-8b-instant                          | Sync    | 💬    | 💬     | ✅   | ❌     | 💨🧐💥 | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| llama-3.1-8b-instant                          | Stream  | 💬    | 💬     | ✅   | ❌     | 💨🧐💥 | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| llama-3.3-70b-versatile                       | Sync    | 💬    | 💬     | ✅   | ❌     | ✅🧐💥 | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| llama-3.3-70b-versatile                       | Stream  | 💬    | 💬     | ✅   | ❌     | ✅🧐💥 | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| deepseek-r1-distill-llama-70b                 | Sync🧠   | 💬    | 💬     | ✅   | ❌     | ✅🧐   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| deepseek-r1-distill-llama-70b                 | Stream🧠 | 💬    | 💬     | ✅   | ❌     | ✅🧐   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| meta-llama/llama-4-scout-17b-16e-instruct     | Sync    | 💬📸  | 💬     | ✅   | ❌     | ✅🧐💥 | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| meta-llama/llama-4-scout-17b-16e-instruct     | Stream  | 💬📸  | 💬     | ✅   | ❌     | ✅🧐💥 | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| meta-llama/llama-4-maverick-17b-128e-instruct | Sync    | 💬📸  | 💬     | ✅   | ❌     | ✅🧐💥 | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| meta-llama/llama-4-maverick-17b-128e-instruct | Stream  | 💬📸  | 💬     | ✅   | ❌     | ✅🧐   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| qwen/qwen3-32b                                | Sync🧠   | 💬    | 💬     | ✅   | ❌     | ✅🧐💥 | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| qwen/qwen3-32b                                | Stream🧠 | 💬    | 💬     | ✅   | ❌     | ✅🧐💥 | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| moonshotai/kimi-k2-instruct                   | Sync    | 💬    | 💬     | ✅   | ❌     | ❌     | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| moonshotai/kimi-k2-instruct                   | Stream  | 💬    | 💬     | ✅   | ❌     | ❌     | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| openai/gpt-oss-20b                            | Sync🧠   | 💬    | 💬     | ✅   | ❌     | ✅🧐   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| openai/gpt-oss-20b                            | Stream🧠 | 💬    | 💬     | ✅   | ❌     | ✅🧐   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| openai/gpt-oss-120b                           | Sync🧠   | 💬    | 💬     | ✅   | ❌     | ✅🧐   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| openai/gpt-oss-120b                           | Stream🧠 | 💬    | 💬     | ✅   | ❌     | ✅🧐   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| gemma2-9b-it                                  | ?       | ?     | ?      | ?    | ?      | ?      | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| llama3-70b-8192                               | ?       | ?     | ?      | ?    | ?      | ?      | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| llama3-8b-8192                                | ?       | ?     | ?      | ?    | ?      | ?      | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| allam-2-7b                                    | ?       | ?     | ?      | ?    | ?      | ?      | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| compound-beta-mini                            | ?       | ?     | ?      | ?    | ?      | ?      | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| compound-beta                                 | ?       | ?     | ?      | ?    | ?      | ?      | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| distil-whisper-large-v3-en                    | ?       | ?     | ?      | ?    | ?      | ?      | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| meta-llama/llama-guard-4-12b                  | ?       | ?     | ?      | ?    | ?      | ?      | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| meta-llama/llama-prompt-guard-2-22m           | ?       | ?     | ?      | ?    | ?      | ?      | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| meta-llama/llama-prompt-guard-2-86m           | ?       | ?     | ?      | ?    | ?      | ?      | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| playai-tts-arabic                             | ?       | ?     | ?      | ?    | ?      | ?      | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| playai-tts                                    | ?       | ?     | ?      | ?    | ?      | ?      | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| whisper-large-v3-turbo                        | ?       | ?     | ?      | ?    | ?      | ?      | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| whisper-large-v3                              | ?       | ?     | ?      | ?    | ?      | ?      | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| Model                                         | Mode    | ➛In   | Out➛   | JSON | Schema | Tool     | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
+| --------------------------------------------- | ------- | ----- | ------ | ---- | ------ | -------- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
+| llama-3.1-8b-instant                          | Sync    | 💬    | 💬     | ✅   | ❌     | 💨🧐💥   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
+| llama-3.1-8b-instant                          | Stream  | 💬    | 💬     | ✅   | ❌     | 💨🧐💥   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
+| llama-3.3-70b-versatile                       | Sync    | 💬    | 💬     | ✅   | ❌     | ✅🪨🧐💥 | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
+| llama-3.3-70b-versatile                       | Stream  | 💬    | 💬     | ✅   | ❌     | ✅🪨🧐💥 | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
+| deepseek-r1-distill-llama-70b                 | Sync🧠   | 💬    | 💬     | ✅   | ❌     | ✅🪨🧐   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
+| deepseek-r1-distill-llama-70b                 | Stream🧠 | 💬    | 💬     | ✅   | ❌     | ✅🪨🧐   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
+| meta-llama/llama-4-scout-17b-16e-instruct     | Sync    | 💬📸  | 💬     | ✅   | ❌     | ✅🪨🧐💥 | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
+| meta-llama/llama-4-scout-17b-16e-instruct     | Stream  | 💬📸  | 💬     | ✅   | ❌     | ✅🪨🧐💥 | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
+| meta-llama/llama-4-maverick-17b-128e-instruct | Sync    | 💬📸  | 💬     | ✅   | ❌     | ✅🪨🧐💥 | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
+| meta-llama/llama-4-maverick-17b-128e-instruct | Stream  | 💬📸  | 💬     | ✅   | ❌     | ✅🪨🧐   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
+| qwen/qwen3-32b                                | Sync🧠   | 💬    | 💬     | ✅   | ❌     | ✅🪨🧐💥 | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
+| qwen/qwen3-32b                                | Stream🧠 | 💬    | 💬     | ✅   | ❌     | ✅🪨🧐💥 | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
+| moonshotai/kimi-k2-instruct                   | Sync    | 💬    | 💬     | ✅   | ❌     | ❌       | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
+| moonshotai/kimi-k2-instruct                   | Stream  | 💬    | 💬     | ✅   | ❌     | ❌       | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
+| openai/gpt-oss-20b                            | Sync🧠   | 💬    | 💬     | ✅   | ❌     | ✅🪨🧐   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
+| openai/gpt-oss-20b                            | Stream🧠 | 💬    | 💬     | ✅   | ❌     | ✅🪨🧐   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
+| openai/gpt-oss-120b                           | Sync🧠   | 💬    | 💬     | ✅   | ❌     | ✅🪨🧐   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
+| openai/gpt-oss-120b                           | Stream🧠 | 💬    | 💬     | ✅   | ❌     | ✅🪨🧐   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
+| gemma2-9b-it                                  | ?       | ?     | ?      | ?    | ?      | ?        | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| llama3-70b-8192                               | ?       | ?     | ?      | ?    | ?      | ?        | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| llama3-8b-8192                                | ?       | ?     | ?      | ?    | ?      | ?        | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| allam-2-7b                                    | ?       | ?     | ?      | ?    | ?      | ?        | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| compound-beta-mini                            | ?       | ?     | ?      | ?    | ?      | ?        | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| compound-beta                                 | ?       | ?     | ?      | ?    | ?      | ?        | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| distil-whisper-large-v3-en                    | ?       | ?     | ?      | ?    | ?      | ?        | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| meta-llama/llama-guard-4-12b                  | ?       | ?     | ?      | ?    | ?      | ?        | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| meta-llama/llama-prompt-guard-2-22m           | ?       | ?     | ?      | ?    | ?      | ?        | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| meta-llama/llama-prompt-guard-2-86m           | ?       | ?     | ?      | ?    | ?      | ?        | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| playai-tts-arabic                             | ?       | ?     | ?      | ?    | ?      | ?        | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| playai-tts                                    | ?       | ?     | ?      | ?    | ?      | ?        | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| whisper-large-v3-turbo                        | ?       | ?     | ?      | ?    | ?      | ?        | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| whisper-large-v3                              | ?       | ?     | ?      | ?    | ?      | ?        | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 <details>
 <summary>‼️ Click here for the legend of columns and symbols</summary>
 
@@ -53,6 +53,7 @@
 - 🎤: Audio: process an audio file (e.g. MP3, WAV, Flac, Opus) as input, or generate audio
 - 🎥: Video: process a video (e.g. MP4) as input, or generate a video (e.g. Veo 3)
 - 💨: Feature is flaky (Tool calling) or inconsistent (Usage is not always reported)
+- 🪨: Tool calling can be forced; aka you can force the model to call a tool. This is great.
 - 🧐: Tool calling is **not** biased towards the first value in an enum. This is good. If the provider doesn't
 	have this, be mindful of the order of the values presented in the prompt!
 - 💥: Tool calling is indecisive. When unsure about an answer, it'll call both options. This is good.

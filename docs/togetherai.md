@@ -2,15 +2,15 @@
 
 | Model                                             | Mode   | ➛In   | Out➛   | JSON | Schema | Tool | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
 | ------------------------------------------------- | ------ | ----- | ------ | ---- | ------ | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
-| meta-llama/Llama-4-Scout-17B-16E-Instruct         | Sync   | 💬📸  | 💬     | ✅   | ✅     | ✅💥 | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
-| meta-llama/Llama-4-Scout-17B-16E-Instruct         | Stream | 💬📸  | 💬     | ✅   | ✅     | ✅💥 | ❌    | ❌   | ❌   | 📏🛑   | ✅    | ✅     | ✅    | ✅     |
-| meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8 | Sync   | 💬📸  | 💬     | ✅   | ✅     | ✅🧐 | ❌    | ❌   | ❌   | 🌱🛑  | ✅    | ✅     | ✅    | ✅     |
-| meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8 | Stream | 💬📸  | 💬     | ✅   | ✅     | ✅🧐 | ❌    | ❌   | ❌   | 🌱🛑  | ✅    | ✅     | ✅    | ✅     |
+| meta-llama/Llama-4-Scout-17B-16E-Instruct         | Sync   | 💬📸  | 💬     | ✅   | ✅     | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
+| meta-llama/Llama-4-Scout-17B-16E-Instruct         | Stream | 💬📸  | 💬     | ✅   | ✅     | ✅   | ❌    | ❌   | ❌   | 📏🛑   | ✅    | ✅     | ✅    | ✅     |
+| meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8 | Sync   | 💬📸  | 💬     | ✅   | ✅     | ✅   | ❌    | ❌   | ❌   | 🌱🛑  | ✅    | ✅     | ✅    | ✅     |
+| meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8 | Stream | 💬📸  | 💬     | ✅   | ✅     | ✅   | ❌    | ❌   | ❌   | 🌱🛑  | ✅    | ✅     | ✅    | ✅     |
 | meta-llama/Llama-Vision-Free                      | Sync   | 💬📸  | 💬     | ❌   | ✅     | ❌   | ❌    | ❌   | ❌   | 🌱🛑  | ✅    | ✅     | ✅    | ✅     |
 | meta-llama/Llama-Vision-Free                      | Stream | 💬📸  | 💬     | ❌   | ✅     | ❌   | ❌    | ❌   | ❌   | 📏🛑   | ✅    | ✅     | ✅    | ✅     |
 | moonshotai/Kimi-K2-Instruct                       | Sync   | 💬    | 💬     | ✅   | ✅     | ❌   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
 | moonshotai/Kimi-K2-Instruct                       | Stream | 💬    | 💬     | ✅   | ✅     | ❌   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
-| mistralai/Mistral-Small-24B-Instruct-2501         | Sync   | 💬    | 💬     | ✅   | ❌     | 💨🧐 | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | 💨     |
+| mistralai/Mistral-Small-24B-Instruct-2501         | Sync   | 💬    | 💬     | ✅   | ❌     | 💨   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | 💨     |
 | mistralai/Mistral-Small-24B-Instruct-2501         | Stream | 💬    | 💬     | ✅   | ❌     | 💨   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | 💨     |
 | black-forest-labs/FLUX.1-schnell                  | Sync   | 💬    | 📸     | ❌   | ❌     | ❌   | ❌    | ❌   | ❌   | 🌱   | ❌    | ❌     | ❌    | ❌     |
 | Alibaba-NLP/gte-modernbert-base                   | ?      | ?     | ?      | ?    | ?      | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -117,12 +117,9 @@
 - 🎥: Video: process a video (e.g. MP4) as input, or generate a video (e.g. Veo 3)
 - 💨: Feature is flaky (Tool calling) or inconsistent (Usage is not always reported)
 - 🪨: Tool calling can be forced; aka you can force the model to call a tool. This is great.
-- 🧐: Tool calling is **not** biased towards the first value in an enum. This is good. If the provider doesn't
-	have this, be mindful of the order of the values presented in the prompt!
-- 💥: Tool calling is indecisive. When unsure about an answer, it'll call both options. This is good.
 - 🌐: Country where the company is located
 - JSON and Schema: ability to output JSON in free form, or with a forced schema specified as a Go struct
-- Tool: Tool calling, using [genai.ToolDef](https://pkg.go.dev/github.com/maruel/genai#ToolDef); best is ✅🪨🧐💥
+- Tool: Tool calling, using [genai.ToolDef](https://pkg.go.dev/github.com/maruel/genai#ToolDef); best is ✅🪨
 - Batch: Process asynchronously batches during off peak hours at a discounts
 - Text: Text features
     - '🌱': Seed option for deterministic output

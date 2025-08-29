@@ -68,6 +68,7 @@ genai is _different_. Curious why it was created? See the release announcement a
 | openaicompatible                           | N/A  | 🕰️📡  | 💬         | 💬     | ❌   | ❌     | ❌   | ❌    | ❌   | ❌   | 📏🛑   | ❌    | ❌     | ✅    | ❌     |
 <details>
   <summary>‼️ Click here for legend of 🏠 ✅ ❌ 💬 📄 📸 🎤 🎥 🤪 💸 🚩 💨 🧐 💥 and columns</summary>
+
 - 🏠: Runs locally.
 - 🕰️: Runs synchronously, the reply is only returned once completely generated.
 - 📡: Runs asynchronously, the reply is returned as soon as it is available.

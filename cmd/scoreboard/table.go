@@ -274,7 +274,7 @@ func printSummaryTable(ctx context.Context, all map[string]func(ctx context.Cont
 		return strings.Compare(a.Provider, b.Provider)
 	})
 	printMarkdownTable(os.Stdout, rows)
-	os.Stdout.WriteString(legend)
+	_, _ = os.Stdout.WriteString(legend)
 	return nil
 }
 
@@ -311,7 +311,7 @@ func printProviderTable(p genai.Provider) error {
 		}
 	}
 	printMarkdownTable(os.Stdout, rows)
-	os.Stdout.WriteString(legend)
+	_, _ = os.Stdout.WriteString(legend)
 	return nil
 }
 

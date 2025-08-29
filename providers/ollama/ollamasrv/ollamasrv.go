@@ -319,7 +319,6 @@ func extractTarGz(archivePath, dstDir string, wantedFiles []string) error {
 			continue
 		}
 		// Ignore path.
-		fmt.Fprintf(os.Stderr, "FILENAME: %s\n", header.Name)
 		n := filepath.Base(header.Name)
 		for _, desired := range wantedFiles {
 			if ok, _ := filepath.Match(desired, n); ok {

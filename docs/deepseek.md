@@ -5,7 +5,7 @@
 | deepseek-chat     | Sync    | 💬    | 💬     | ✅🪨 | ☁️   | ❌    | ❌   | ❌   | 📏🛑   | ✅    | ❌     | ✅    | ✅     |
 | deepseek-chat     | Stream  | 💬    | 💬     | ✅🪨 | ☁️   | ❌    | ❌   | ❌   | 📏🛑   | ✅    | ❌     | ✅    | ✅     |
 | deepseek-reasoner | Sync🧠   | 💬    | 💬     | 💨   | ☁️   | ❌    | ❌   | ❌   | 📏🛑   | ❌    | ❌     | ✅    | ✅     |
-| deepseek-reasoner | Stream🧠 | 💬    | 💬     | 💨   | ☁️   | ❌    | ❌   | ❌   | 📏🛑   | ❌    | ❌     | ✅    | ✅     |
+| deepseek-reasoner | Stream🧠 | 💬    | 💬     | ✅   | ☁️   | ❌    | ❌   | ❌   | 📏🛑   | ❌    | ❌     | ✅    | ✅     |
 <details>
 <summary>‼️ Click here for the legend of columns and symbols</summary>
 

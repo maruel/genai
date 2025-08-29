@@ -366,5 +366,7 @@ var (
 	_ Options     = (*OptionsImage)(nil)
 	_ Options     = (*OptionsVideo)(nil)
 	_ Options     = (*OptionsText)(nil)
+	_ Validatable = (*Modality)(nil)
+	_ Validatable = (*Modalities)(nil)
 	_ Validatable = (*ToolDef)(nil)
 )

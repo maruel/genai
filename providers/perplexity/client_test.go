@@ -22,6 +22,65 @@ import (
 	"github.com/maruel/roundtrippers"
 )
 
+func TestClient(t *testing.T) {
+	t.Run("Scoreboard", func(t *testing.T) {
+		// Perplexity doesn't support listing models. See https://docs.perplexity.ai/api-reference
+		sb := getClient(t, genai.ModelNone).Scoreboard()
+		var models []smoketest.Model
+		for _, sc := range sb.Scenarios {
+			for _, model := range sc.Models {
+				models = append(models, smoketest.Model{Model: model, Thinking: sc.Thinking})
+			}
+		}
+		smoketest.Run(t, getClientRT, models, testRecorder.Records)
+	})
+
+	t.Run("Preferred", func(t *testing.T) {
+		data := []struct {
+			name string
+			want string
+		}{
+			{genai.ModelCheap, "sonar"},
+			{genai.ModelGood, "sonar-pro"},
+			{genai.ModelSOTA, "sonar-reasoning-pro"},
+		}
+		for _, line := range data {
+			t.Run(line.name, func(t *testing.T) {
+				if got := getClient(t, line.name).ModelID(); got != line.want {
+					t.Fatalf("got model %q, want %q", got, line.want)
+				}
+			})
+		}
+	})
+
+	t.Run("errors", func(t *testing.T) {
+		data := []internaltest.ProviderError{
+			{
+				Name: "bad apiKey",
+				Opts: genai.ProviderOptions{
+					APIKey: "bad apiKey",
+					Model:  "sonar",
+				},
+				// It returns an HTML page...
+				ErrGenSync:   "http 401\nget a new API key at https://www.perplexity.ai/settings/api",
+				ErrGenStream: "http 401\nget a new API key at https://www.perplexity.ai/settings/api",
+			},
+			{
+				Name: "bad model",
+				Opts: genai.ProviderOptions{
+					Model: "bad model",
+				},
+				ErrGenSync:   "http 400\ninvalid_model (400): Invalid model 'bad model'. Permitted models can be found in the documentation at https://docs.perplexity.ai/guides/model-cards.",
+				ErrGenStream: "http 400\ninvalid_model (400): Invalid model 'bad model'. Permitted models can be found in the documentation at https://docs.perplexity.ai/guides/model-cards.",
+			},
+		}
+		f := func(t *testing.T, opts genai.ProviderOptions) (genai.Provider, error) {
+			return getClientInner(t, opts.APIKey, opts.Model)
+		}
+		internaltest.TestClient_Provider_errors(t, f, data)
+	})
+}
+
 func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 	apiKey := ""
 	if os.Getenv("PERPLEXITY_API_KEY") == "" {
@@ -89,63 +148,6 @@ func (i *injectOptions) GenStream(ctx context.Context, msgs genai.Messages, opts
 		opts = append(opts, i.Opts...)
 	}
 	return i.Provider.GenStream(ctx, msgs, opts...)
-}
-
-func TestClient_Scoreboard(t *testing.T) {
-	// Perplexity doesn't support listing models. See https://docs.perplexity.ai/api-reference
-	sb := getClient(t, genai.ModelNone).Scoreboard()
-	var models []smoketest.Model
-	for _, sc := range sb.Scenarios {
-		for _, model := range sc.Models {
-			models = append(models, smoketest.Model{Model: model, Thinking: sc.Thinking})
-		}
-	}
-	smoketest.Run(t, getClientRT, models, testRecorder.Records)
-}
-
-func TestClient_Preferred(t *testing.T) {
-	data := []struct {
-		name string
-		want string
-	}{
-		{genai.ModelCheap, "sonar"},
-		{genai.ModelGood, "sonar-pro"},
-		{genai.ModelSOTA, "sonar-reasoning-pro"},
-	}
-	for _, line := range data {
-		t.Run(line.name, func(t *testing.T) {
-			if got := getClient(t, line.name).ModelID(); got != line.want {
-				t.Fatalf("got model %q, want %q", got, line.want)
-			}
-		})
-	}
-}
-
-func TestClient_Provider_errors(t *testing.T) {
-	data := []internaltest.ProviderError{
-		{
-			Name: "bad apiKey",
-			Opts: genai.ProviderOptions{
-				APIKey: "bad apiKey",
-				Model:  "sonar",
-			},
-			// It returns an HTML page...
-			ErrGenSync:   "http 401\nget a new API key at https://www.perplexity.ai/settings/api",
-			ErrGenStream: "http 401\nget a new API key at https://www.perplexity.ai/settings/api",
-		},
-		{
-			Name: "bad model",
-			Opts: genai.ProviderOptions{
-				Model: "bad model",
-			},
-			ErrGenSync:   "http 400\ninvalid_model (400): Invalid model 'bad model'. Permitted models can be found in the documentation at https://docs.perplexity.ai/guides/model-cards.",
-			ErrGenStream: "http 400\ninvalid_model (400): Invalid model 'bad model'. Permitted models can be found in the documentation at https://docs.perplexity.ai/guides/model-cards.",
-		},
-	}
-	f := func(t *testing.T, opts genai.ProviderOptions) (genai.Provider, error) {
-		return getClientInner(t, opts.APIKey, opts.Model)
-	}
-	internaltest.TestClient_Provider_errors(t, f, data)
 }
 
 func getClient(t *testing.T, m string) *perplexity.Client {

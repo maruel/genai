@@ -21,6 +21,98 @@ import (
 	"github.com/maruel/genai/smoke/smoketest"
 )
 
+func TestClient(t *testing.T) {
+	t.Run("Scoreboard", func(t *testing.T) {
+		genaiModels, err := getClient(t, genai.ModelNone).ListModels(t.Context())
+		if err != nil {
+			t.Fatal(err)
+		}
+		var models []smoketest.Model
+		for _, m := range genaiModels {
+			models = append(models, smoketest.Model{Model: m.GetID()})
+		}
+		smoketest.Run(t, getClientRT, models, testRecorder.Records)
+	})
+
+	t.Run("Preferred", func(t *testing.T) {
+		data := []struct {
+			modality genai.Modality
+			name     string
+			want     string
+		}{
+			{genai.ModalityText, genai.ModelCheap, "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free"},
+			{genai.ModalityText, genai.ModelGood, "Qwen/Qwen2.5-7B-Instruct-Turbo"},
+			{genai.ModalityText, genai.ModelSOTA, "Qwen/Qwen3-235B-A22B-Thinking-2507"},
+			{genai.ModalityImage, genai.ModelCheap, "black-forest-labs/FLUX.1-schnell"},
+			{genai.ModalityImage, genai.ModelGood, "black-forest-labs/FLUX.1-krea-dev"},
+			{genai.ModalityImage, genai.ModelSOTA, "black-forest-labs/FLUX.1.1-pro"},
+		}
+		for _, line := range data {
+			t.Run(fmt.Sprintf("%s-%s", line.modality, line.name), func(t *testing.T) {
+				opts := genai.ProviderOptions{
+					Model:            line.name,
+					OutputModalities: genai.Modalities{line.modality},
+					PreloadedModels:  loadCachedModelsList(t),
+				}
+				c, err := getClientInner(t, &opts)
+				if err != nil {
+					t.Fatal(err)
+				}
+				if got := c.ModelID(); got != line.want {
+					t.Fatalf("got model %q, want %q", got, line.want)
+				}
+			})
+		}
+	})
+
+	t.Run("errors", func(t *testing.T) {
+		data := []internaltest.ProviderError{
+			{
+				Name: "bad apiKey",
+				Opts: genai.ProviderOptions{
+					APIKey: "bad apiKey",
+					Model:  "meta-llama/Llama-3.2-3B-Instruct-Turbo",
+				},
+				ErrGenSync:   "http 401\ninvalid_api_key (invalid_request_error): Invalid API key provided. You can find your API key at https://api.together.ai/settings/api-keys.",
+				ErrGenStream: "http 401\ninvalid_api_key (invalid_request_error): Invalid API key provided. You can find your API key at https://api.together.ai/settings/api-keys.",
+				ErrListModel: "http 401\nUnauthorized\nget a new API key at https://api.together.ai/settings/api-keys",
+			},
+			{
+				Name: "bad apiKey image",
+				Opts: genai.ProviderOptions{
+					APIKey:           "bad apiKey",
+					Model:            "black-forest-labs/FLUX.1-schnell",
+					OutputModalities: genai.Modalities{genai.ModalityImage},
+				},
+				ErrGenSync:   "http 401\ninvalid_api_key (invalid_request_error): Invalid API key provided. You can find your API key at https://api.together.ai/settings/api-keys.",
+				ErrGenStream: "http 401\ninvalid_api_key (invalid_request_error): Invalid API key provided. You can find your API key at https://api.together.ai/settings/api-keys.",
+			},
+			{
+				Name: "bad model",
+				Opts: genai.ProviderOptions{
+					Model: "bad model",
+				},
+				ErrGenSync:   "http 404\nmodel_not_available (invalid_request_error): Unable to access model bad model. Please visit https://api.together.ai/models to view the list of supported models.",
+				ErrGenStream: "http 404\nmodel_not_available (invalid_request_error): Unable to access model bad model. Please visit https://api.together.ai/models to view the list of supported models.",
+			},
+			{
+				Name: "bad model image",
+				Opts: genai.ProviderOptions{
+					Model:            "bad model",
+					OutputModalities: genai.Modalities{genai.ModalityImage},
+				},
+				ErrGenSync:   "http 404\nmodel_not_available (invalid_request_error): Unable to access model bad model. Please visit https://api.together.ai/models to view the list of supported models.",
+				ErrGenStream: "http 404\nmodel_not_available (invalid_request_error): Unable to access model bad model. Please visit https://api.together.ai/models to view the list of supported models.",
+			},
+		}
+		f := func(t *testing.T, opts genai.ProviderOptions) (genai.Provider, error) {
+			opts.OutputModalities = genai.Modalities{genai.ModalityText}
+			return getClientInner(t, &opts)
+		}
+		internaltest.TestClient_Provider_errors(t, f, data)
+	})
+}
+
 func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 	apiKey := ""
 	if os.Getenv("TOGETHER_API_KEY") == "" {
@@ -58,96 +150,6 @@ func (h *smallImage) GenSync(ctx context.Context, msgs genai.Messages, opts ...g
 		}
 	}
 	return h.Provider.GenSync(ctx, msgs, opts...)
-}
-
-func TestClient_Scoreboard(t *testing.T) {
-	genaiModels, err := getClient(t, genai.ModelNone).ListModels(t.Context())
-	if err != nil {
-		t.Fatal(err)
-	}
-	var models []smoketest.Model
-	for _, m := range genaiModels {
-		models = append(models, smoketest.Model{Model: m.GetID()})
-	}
-	smoketest.Run(t, getClientRT, models, testRecorder.Records)
-}
-
-func TestClient_Preferred(t *testing.T) {
-	data := []struct {
-		modality genai.Modality
-		name     string
-		want     string
-	}{
-		{genai.ModalityText, genai.ModelCheap, "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free"},
-		{genai.ModalityText, genai.ModelGood, "Qwen/Qwen2.5-7B-Instruct-Turbo"},
-		{genai.ModalityText, genai.ModelSOTA, "Qwen/Qwen3-235B-A22B-Thinking-2507"},
-		{genai.ModalityImage, genai.ModelCheap, "black-forest-labs/FLUX.1-schnell"},
-		{genai.ModalityImage, genai.ModelGood, "black-forest-labs/FLUX.1-krea-dev"},
-		{genai.ModalityImage, genai.ModelSOTA, "black-forest-labs/FLUX.1.1-pro"},
-	}
-	for _, line := range data {
-		t.Run(fmt.Sprintf("%s-%s", line.modality, line.name), func(t *testing.T) {
-			opts := genai.ProviderOptions{
-				Model:            line.name,
-				OutputModalities: genai.Modalities{line.modality},
-				PreloadedModels:  loadCachedModelsList(t),
-			}
-			c, err := getClientInner(t, &opts)
-			if err != nil {
-				t.Fatal(err)
-			}
-			if got := c.ModelID(); got != line.want {
-				t.Fatalf("got model %q, want %q", got, line.want)
-			}
-		})
-	}
-}
-
-func TestClient_Provider_errors(t *testing.T) {
-	data := []internaltest.ProviderError{
-		{
-			Name: "bad apiKey",
-			Opts: genai.ProviderOptions{
-				APIKey: "bad apiKey",
-				Model:  "meta-llama/Llama-3.2-3B-Instruct-Turbo",
-			},
-			ErrGenSync:   "http 401\ninvalid_api_key (invalid_request_error): Invalid API key provided. You can find your API key at https://api.together.ai/settings/api-keys.",
-			ErrGenStream: "http 401\ninvalid_api_key (invalid_request_error): Invalid API key provided. You can find your API key at https://api.together.ai/settings/api-keys.",
-			ErrListModel: "http 401\nUnauthorized\nget a new API key at https://api.together.ai/settings/api-keys",
-		},
-		{
-			Name: "bad apiKey image",
-			Opts: genai.ProviderOptions{
-				APIKey:           "bad apiKey",
-				Model:            "black-forest-labs/FLUX.1-schnell",
-				OutputModalities: genai.Modalities{genai.ModalityImage},
-			},
-			ErrGenSync:   "http 401\ninvalid_api_key (invalid_request_error): Invalid API key provided. You can find your API key at https://api.together.ai/settings/api-keys.",
-			ErrGenStream: "http 401\ninvalid_api_key (invalid_request_error): Invalid API key provided. You can find your API key at https://api.together.ai/settings/api-keys.",
-		},
-		{
-			Name: "bad model",
-			Opts: genai.ProviderOptions{
-				Model: "bad model",
-			},
-			ErrGenSync:   "http 404\nmodel_not_available (invalid_request_error): Unable to access model bad model. Please visit https://api.together.ai/models to view the list of supported models.",
-			ErrGenStream: "http 404\nmodel_not_available (invalid_request_error): Unable to access model bad model. Please visit https://api.together.ai/models to view the list of supported models.",
-		},
-		{
-			Name: "bad model image",
-			Opts: genai.ProviderOptions{
-				Model:            "bad model",
-				OutputModalities: genai.Modalities{genai.ModalityImage},
-			},
-			ErrGenSync:   "http 404\nmodel_not_available (invalid_request_error): Unable to access model bad model. Please visit https://api.together.ai/models to view the list of supported models.",
-			ErrGenStream: "http 404\nmodel_not_available (invalid_request_error): Unable to access model bad model. Please visit https://api.together.ai/models to view the list of supported models.",
-		},
-	}
-	f := func(t *testing.T, opts genai.ProviderOptions) (genai.Provider, error) {
-		opts.OutputModalities = genai.Modalities{genai.ModalityText}
-		return getClientInner(t, &opts)
-	}
-	internaltest.TestClient_Provider_errors(t, f, data)
 }
 
 func getClient(t *testing.T, m string) *togetherai.Client {

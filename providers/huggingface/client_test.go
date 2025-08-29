@@ -21,6 +21,67 @@ import (
 	"github.com/maruel/genai/smoke/smoketest"
 )
 
+func TestClient(t *testing.T) {
+	t.Run("Scoreboard", func(t *testing.T) {
+		// We do not want to test thousands of models, so get the ones already in the scoreboard.
+		sb := getClient(t, genai.ModelNone).Scoreboard()
+		var models []smoketest.Model
+		for _, sc := range sb.Scenarios {
+			for _, model := range sc.Models {
+				models = append(models, smoketest.Model{Model: model, Thinking: sc.Thinking})
+			}
+		}
+		smoketest.Run(t, getClientRT, models, testRecorder.Records)
+	})
+
+	t.Run("Preferred", func(t *testing.T) {
+		data := []struct {
+			name string
+			want string
+		}{
+			// It oscillates between models.
+			{genai.ModelCheap, "meta-llama/Llama-3.2-1B-Instruct"},
+			{genai.ModelGood, "Qwen/Qwen3-Coder-480B-A35B-Instruct"},
+			{genai.ModelSOTA, "deepseek-ai/DeepSeek-V3.1"},
+		}
+		for _, line := range data {
+			t.Run(line.name, func(t *testing.T) {
+				if got := getClient(t, line.name).ModelID(); got != line.want {
+					t.Fatalf("got model %q, want %q", got, line.want)
+				}
+			})
+		}
+	})
+
+	t.Run("errors", func(t *testing.T) {
+		data := []internaltest.ProviderError{
+			{
+				Name: "bad apiKey",
+				Opts: genai.ProviderOptions{
+					APIKey: "bad apiKey",
+					Model:  "Qwen/Qwen3-4B",
+				},
+				ErrGenSync:   "http 401\nInvalid credentials in Authorization header\nget a new API key at https://huggingface.co/settings/tokens",
+				ErrGenStream: "http 401\nInvalid credentials in Authorization header\nget a new API key at https://huggingface.co/settings/tokens",
+				ErrListModel: "http 401\nInvalid credentials in Authorization header\nget a new API key at https://huggingface.co/settings/tokens",
+			},
+			{
+				Name: "bad model",
+				Opts: genai.ProviderOptions{
+					Model: "bad model",
+				},
+				ErrGenSync:   "http 400\ninvalid_request_error (model_not_found): model: The requested model 'bad model' does not exist.",
+				ErrGenStream: "http 400\ninvalid_request_error (model_not_found): model: The requested model 'bad model' does not exist.",
+			},
+		}
+		f := func(t *testing.T, opts genai.ProviderOptions) (genai.Provider, error) {
+			opts.OutputModalities = genai.Modalities{genai.ModalityText}
+			return getClientInner(t, opts)
+		}
+		internaltest.TestClient_Provider_errors(t, f, data)
+	})
+}
+
 func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 	opts := genai.ProviderOptions{
 		APIKey:          getAPIKeyTest(t),
@@ -50,65 +111,6 @@ func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper)
 		}
 	}
 	return c
-}
-
-func TestClient_Scoreboard(t *testing.T) {
-	// We do not want to test thousands of models, so get the ones already in the scoreboard.
-	sb := getClient(t, genai.ModelNone).Scoreboard()
-	var models []smoketest.Model
-	for _, sc := range sb.Scenarios {
-		for _, model := range sc.Models {
-			models = append(models, smoketest.Model{Model: model, Thinking: sc.Thinking})
-		}
-	}
-	smoketest.Run(t, getClientRT, models, testRecorder.Records)
-}
-
-func TestClient_Preferred(t *testing.T) {
-	data := []struct {
-		name string
-		want string
-	}{
-		// It oscillates between models.
-		{genai.ModelCheap, "meta-llama/Llama-3.2-1B-Instruct"},
-		{genai.ModelGood, "Qwen/Qwen3-Coder-480B-A35B-Instruct"},
-		{genai.ModelSOTA, "deepseek-ai/DeepSeek-V3.1"},
-	}
-	for _, line := range data {
-		t.Run(line.name, func(t *testing.T) {
-			if got := getClient(t, line.name).ModelID(); got != line.want {
-				t.Fatalf("got model %q, want %q", got, line.want)
-			}
-		})
-	}
-}
-
-func TestClient_Provider_errors(t *testing.T) {
-	data := []internaltest.ProviderError{
-		{
-			Name: "bad apiKey",
-			Opts: genai.ProviderOptions{
-				APIKey: "bad apiKey",
-				Model:  "Qwen/Qwen3-4B",
-			},
-			ErrGenSync:   "http 401\nInvalid credentials in Authorization header\nget a new API key at https://huggingface.co/settings/tokens",
-			ErrGenStream: "http 401\nInvalid credentials in Authorization header\nget a new API key at https://huggingface.co/settings/tokens",
-			ErrListModel: "http 401\nInvalid credentials in Authorization header\nget a new API key at https://huggingface.co/settings/tokens",
-		},
-		{
-			Name: "bad model",
-			Opts: genai.ProviderOptions{
-				Model: "bad model",
-			},
-			ErrGenSync:   "http 400\ninvalid_request_error (model_not_found): model: The requested model 'bad model' does not exist.",
-			ErrGenStream: "http 400\ninvalid_request_error (model_not_found): model: The requested model 'bad model' does not exist.",
-		},
-	}
-	f := func(t *testing.T, opts genai.ProviderOptions) (genai.Provider, error) {
-		opts.OutputModalities = genai.Modalities{genai.ModalityText}
-		return getClientInner(t, opts)
-	}
-	internaltest.TestClient_Provider_errors(t, f, data)
 }
 
 func getClient(t *testing.T, m string) *huggingface.Client {

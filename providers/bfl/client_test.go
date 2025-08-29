@@ -19,6 +19,65 @@ import (
 	"github.com/maruel/genai/smoke/smoketest"
 )
 
+func TestClient(t *testing.T) {
+	t.Run("Scoreboard", func(t *testing.T) {
+		// bfl does not have a public API to list models.
+		sb := getClient(t, genai.ModelNone).Scoreboard()
+		var models []smoketest.Model
+		for _, sc := range sb.Scenarios {
+			for _, model := range sc.Models {
+				models = append(models, smoketest.Model{Model: model})
+			}
+		}
+		smoketest.Run(t, getClientRT, models, testRecorder.Records)
+	})
+
+	t.Run("Preferred", func(t *testing.T) {
+		data := []struct {
+			name string
+			want string
+		}{
+			{genai.ModelCheap, "flux-dev"},
+			{genai.ModelGood, "flux-pro-1.1"},
+			{genai.ModelSOTA, "flux-pro-1.1-ultra"},
+		}
+		for _, line := range data {
+			t.Run(line.name, func(t *testing.T) {
+				if got := getClient(t, line.name).ModelID(); got != line.want {
+					t.Fatalf("got model %q, want %q", got, line.want)
+				}
+			})
+		}
+	})
+
+	t.Run("errors", func(t *testing.T) {
+		data := []internaltest.ProviderError{
+			{
+				Name: "bad apiKey",
+				Opts: genai.ProviderOptions{
+					APIKey: "bad apiKey",
+					Model:  "flux-dev",
+				},
+				ErrGenSync:   "http 403\nNot authenticated - Invalid Authentication",
+				ErrGenStream: "http 403\nNot authenticated - Invalid Authentication",
+			},
+			{
+				Name: "bad model",
+				Opts: genai.ProviderOptions{
+					Model: "bad model",
+				},
+				ErrGenSync:   "http 404\nNot Found",
+				ErrGenStream: "http 404\nNot Found",
+			},
+		}
+		f := func(t *testing.T, opts genai.ProviderOptions) (genai.Provider, error) {
+			opts.OutputModalities = genai.Modalities{genai.ModalityImage}
+			return getClientInner(t, opts)
+		}
+		internaltest.TestClient_Provider_errors(t, f, data)
+	})
+}
+
 func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 	apiKey := ""
 	if os.Getenv("BFL_API_KEY") == "" {
@@ -32,18 +91,6 @@ func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper)
 		t.Fatal("unexpected")
 	}
 	return &imageModelClient{c}
-}
-
-func TestClient_Scoreboard(t *testing.T) {
-	// bfl does not have a public API to list models.
-	sb := getClient(t, genai.ModelNone).Scoreboard()
-	var models []smoketest.Model
-	for _, sc := range sb.Scenarios {
-		for _, model := range sc.Models {
-			models = append(models, smoketest.Model{Model: model})
-		}
-	}
-	smoketest.Run(t, getClientRT, models, testRecorder.Records)
 }
 
 type imageModelClient struct {
@@ -62,51 +109,6 @@ func (i *imageModelClient) GenSync(ctx context.Context, msgs genai.Messages, opt
 		}
 	}
 	return i.Client.GenSync(ctx, msgs, opts...)
-}
-
-func TestClient_Preferred(t *testing.T) {
-	data := []struct {
-		name string
-		want string
-	}{
-		{genai.ModelCheap, "flux-dev"},
-		{genai.ModelGood, "flux-pro-1.1"},
-		{genai.ModelSOTA, "flux-pro-1.1-ultra"},
-	}
-	for _, line := range data {
-		t.Run(line.name, func(t *testing.T) {
-			if got := getClient(t, line.name).ModelID(); got != line.want {
-				t.Fatalf("got model %q, want %q", got, line.want)
-			}
-		})
-	}
-}
-
-func TestClient_Provider_errors(t *testing.T) {
-	data := []internaltest.ProviderError{
-		{
-			Name: "bad apiKey",
-			Opts: genai.ProviderOptions{
-				APIKey: "bad apiKey",
-				Model:  "flux-dev",
-			},
-			ErrGenSync:   "http 403\nNot authenticated - Invalid Authentication",
-			ErrGenStream: "http 403\nNot authenticated - Invalid Authentication",
-		},
-		{
-			Name: "bad model",
-			Opts: genai.ProviderOptions{
-				Model: "bad model",
-			},
-			ErrGenSync:   "http 404\nNot Found",
-			ErrGenStream: "http 404\nNot Found",
-		},
-	}
-	f := func(t *testing.T, opts genai.ProviderOptions) (genai.Provider, error) {
-		opts.OutputModalities = genai.Modalities{genai.ModalityImage}
-		return getClientInner(t, opts)
-	}
-	internaltest.TestClient_Provider_errors(t, f, data)
 }
 
 func getClient(t *testing.T, m string) *bfl.Client {

@@ -16,63 +16,64 @@ import (
 )
 
 // Testing is very different here as we test various providers to see if they work with this generic provider.
+func TestClient(t *testing.T) {
+	t.Run("Preferred", func(t *testing.T) {
+		for _, line := range []string{genai.ModelCheap, genai.ModelGood, genai.ModelSOTA} {
+			t.Run(line, func(t *testing.T) {
+				_, err := openaicompatible.New(t.Context(), &genai.ProviderOptions{Remote: "http://localhost", Model: line}, nil)
+				if err != nil {
+					t.Fatalf("unexpected error %q", err)
+				}
+			})
+		}
+	})
 
-func TestClient_Preferred(t *testing.T) {
-	for _, line := range []string{genai.ModelCheap, genai.ModelGood, genai.ModelSOTA} {
-		t.Run(line, func(t *testing.T) {
-			_, err := openaicompatible.New(t.Context(), &genai.ProviderOptions{Remote: "http://localhost", Model: line}, nil)
-			if err != nil {
-				t.Fatalf("unexpected error %q", err)
-			}
-		})
-	}
-}
+	t.Run("GenSync_simple", func(t *testing.T) {
+		for name := range providers {
+			t.Run(name, func(t *testing.T) {
+				c := getClient(t, name)
+				msgs := genai.Messages{genai.NewTextMessage("Say hello. Use only one word.")}
+				opts := genai.OptionsText{Temperature: 0.01, MaxTokens: 2000, Seed: 1}
+				ctx := t.Context()
+				resp, err := c.GenSync(ctx, msgs, &opts)
+				if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
+					t.Log(uce)
+				} else if err != nil {
+					t.Fatal(err)
+				}
+				t.Logf("Raw response: %#v", resp)
+				if len(resp.Replies) == 0 {
+					t.Fatal("missing response")
+				}
+				internaltest.ValidateWordResponse(t, resp, "hello")
+			})
+		}
+	})
 
-func TestClient_GenSync_simple(t *testing.T) {
-	for name := range providers {
-		t.Run(name, func(t *testing.T) {
-			c := getClient(t, name)
-			msgs := genai.Messages{genai.NewTextMessage("Say hello. Use only one word.")}
-			opts := genai.OptionsText{Temperature: 0.01, MaxTokens: 2000, Seed: 1}
-			ctx := t.Context()
-			resp, err := c.GenSync(ctx, msgs, &opts)
-			if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
-				t.Log(uce)
-			} else if err != nil {
-				t.Fatal(err)
-			}
-			t.Logf("Raw response: %#v", resp)
-			if len(resp.Replies) == 0 {
-				t.Fatal("missing response")
-			}
-			internaltest.ValidateWordResponse(t, resp, "hello")
-		})
-	}
-}
-
-func TestClient_GenStream_simple(t *testing.T) {
-	for name := range providers {
-		t.Run(name, func(t *testing.T) {
-			c := getClient(t, name)
-			msgs := genai.Messages{genai.NewTextMessage("Say hello. Use only one word.")}
-			opts := genai.OptionsText{Temperature: 0.01, MaxTokens: 2000, Seed: 1}
-			fragments, finish := c.GenStream(t.Context(), msgs, &opts)
-			for f := range fragments {
-				t.Logf("Packet: %#v", f)
-			}
-			res, err := finish()
-			if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
-				t.Log(uce)
-			} else if err != nil {
-				t.Fatal(err)
-			}
-			t.Logf("Raw response: %#v", res)
-			if len(res.Replies) == 0 {
-				t.Fatal("missing response")
-			}
-			internaltest.ValidateWordResponse(t, res, "hello")
-		})
-	}
+	t.Run("GenStream_simple", func(t *testing.T) {
+		for name := range providers {
+			t.Run(name, func(t *testing.T) {
+				c := getClient(t, name)
+				msgs := genai.Messages{genai.NewTextMessage("Say hello. Use only one word.")}
+				opts := genai.OptionsText{Temperature: 0.01, MaxTokens: 2000, Seed: 1}
+				fragments, finish := c.GenStream(t.Context(), msgs, &opts)
+				for f := range fragments {
+					t.Logf("Packet: %#v", f)
+				}
+				res, err := finish()
+				if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
+					t.Log(uce)
+				} else if err != nil {
+					t.Fatal(err)
+				}
+				t.Logf("Raw response: %#v", res)
+				if len(res.Replies) == 0 {
+					t.Fatal("missing response")
+				}
+				internaltest.ValidateWordResponse(t, res, "hello")
+			})
+		}
+	})
 }
 
 type provider struct {

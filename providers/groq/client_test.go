@@ -24,52 +24,75 @@ import (
 	"github.com/maruel/genai/smoke/smoketest"
 )
 
-func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
-	apiKey := ""
-	if os.Getenv("GROQ_API_KEY") == "" {
-		apiKey = "<insert_api_key_here>"
-	}
-	opts := genai.ProviderOptions{
-		APIKey:          apiKey,
-		Model:           model.Model,
-		PreloadedModels: loadCachedModelsList(t),
-	}
-	cl, err := groq.New(t.Context(), &opts, fn)
-	if err != nil {
-		t.Fatal(err)
-	}
-	var c genai.Provider = cl
-	if strings.HasPrefix(model.Model, "qwen/") && model.Thinking {
-		c = &adapters.ProviderAppend{Provider: c, Append: genai.Request{Text: "\n\n/think"}}
-	}
-	// OpenAI must not enable the ReasoningFormat flag.
-	if model.Thinking && !strings.HasPrefix(model.Model, "openai/") {
-		return &handleGroqReasoning{Provider: c}
-	}
-	return c
-}
-
-func TestClient_Scoreboard(t *testing.T) {
-	c := getClient(t, genai.ModelNone)
-	genaiModels, err := c.ListModels(t.Context())
-	if err != nil {
-		t.Fatal(err)
-	}
-	scenarios := c.Scoreboard().Scenarios
-	var models []smoketest.Model
-	for _, m := range genaiModels {
-		id := m.GetID()
-		thinking := false
-		for _, sc := range scenarios {
-			if slices.Contains(sc.Models, id) {
-				t.Logf("%s: %t", id, sc.Thinking)
-				thinking = sc.Thinking
-				break
-			}
+func TestClient(t *testing.T) {
+	t.Run("Scoreboard", func(t *testing.T) {
+		c := getClient(t, genai.ModelNone)
+		genaiModels, err := c.ListModels(t.Context())
+		if err != nil {
+			t.Fatal(err)
 		}
-		models = append(models, smoketest.Model{Model: id, Thinking: thinking})
-	}
-	smoketest.Run(t, getClientRT, models, testRecorder.Records)
+		scenarios := c.Scoreboard().Scenarios
+		var models []smoketest.Model
+		for _, m := range genaiModels {
+			id := m.GetID()
+			thinking := false
+			for _, sc := range scenarios {
+				if slices.Contains(sc.Models, id) {
+					t.Logf("%s: %t", id, sc.Thinking)
+					thinking = sc.Thinking
+					break
+				}
+			}
+			models = append(models, smoketest.Model{Model: id, Thinking: thinking})
+		}
+		smoketest.Run(t, getClientRT, models, testRecorder.Records)
+	})
+
+	t.Run("Preferred", func(t *testing.T) {
+		data := []struct {
+			name string
+			want string
+		}{
+			{genai.ModelCheap, "llama-3.1-8b-instant"},
+			{genai.ModelGood, "meta-llama/llama-4-maverick-17b-128e-instruct"},
+			{genai.ModelSOTA, "qwen/qwen3-32b"},
+		}
+		for _, line := range data {
+			t.Run(line.name, func(t *testing.T) {
+				if got := getClient(t, line.name).ModelID(); got != line.want {
+					t.Fatalf("got model %q, want %q", got, line.want)
+				}
+			})
+		}
+	})
+
+	t.Run("errors", func(t *testing.T) {
+		data := []internaltest.ProviderError{
+			{
+				Name: "bad apiKey",
+				Opts: genai.ProviderOptions{
+					APIKey: "bad apiKey",
+					Model:  "llama-3.1-8b-instant",
+				},
+				ErrGenSync:   "http 401\ninvalid_api_key (invalid_request_error): Invalid API Key\nget a new API key at https://console.groq.com/keys",
+				ErrGenStream: "http 401\ninvalid_api_key (invalid_request_error): Invalid API Key\nget a new API key at https://console.groq.com/keys",
+				ErrListModel: "http 401\ninvalid_api_key (invalid_request_error): Invalid API Key\nget a new API key at https://console.groq.com/keys",
+			},
+			{
+				Name: "bad model",
+				Opts: genai.ProviderOptions{
+					Model: "bad model",
+				},
+				ErrGenSync:   "http 404\nmodel_not_found (invalid_request_error): The model `bad model` does not exist or you do not have access to it.",
+				ErrGenStream: "http 404\nmodel_not_found (invalid_request_error): The model `bad model` does not exist or you do not have access to it.",
+			},
+		}
+		f := func(t *testing.T, opts genai.ProviderOptions) (genai.Provider, error) {
+			opts.OutputModalities = genai.Modalities{genai.ModalityText}
+			return getClientInner(t, opts)
+		}
+		internaltest.TestClient_Provider_errors(t, f, data)
+	})
 }
 
 type handleGroqReasoning struct {
@@ -102,50 +125,29 @@ func (h *handleGroqReasoning) Unwrap() genai.Provider {
 	return h.Provider
 }
 
-func TestClient_Preferred(t *testing.T) {
-	data := []struct {
-		name string
-		want string
-	}{
-		{genai.ModelCheap, "llama-3.1-8b-instant"},
-		{genai.ModelGood, "meta-llama/llama-4-maverick-17b-128e-instruct"},
-		{genai.ModelSOTA, "qwen/qwen3-32b"},
+func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+	apiKey := ""
+	if os.Getenv("GROQ_API_KEY") == "" {
+		apiKey = "<insert_api_key_here>"
 	}
-	for _, line := range data {
-		t.Run(line.name, func(t *testing.T) {
-			if got := getClient(t, line.name).ModelID(); got != line.want {
-				t.Fatalf("got model %q, want %q", got, line.want)
-			}
-		})
+	opts := genai.ProviderOptions{
+		APIKey:          apiKey,
+		Model:           model.Model,
+		PreloadedModels: loadCachedModelsList(t),
 	}
-}
-
-func TestClient_Provider_errors(t *testing.T) {
-	data := []internaltest.ProviderError{
-		{
-			Name: "bad apiKey",
-			Opts: genai.ProviderOptions{
-				APIKey: "bad apiKey",
-				Model:  "llama-3.1-8b-instant",
-			},
-			ErrGenSync:   "http 401\ninvalid_api_key (invalid_request_error): Invalid API Key\nget a new API key at https://console.groq.com/keys",
-			ErrGenStream: "http 401\ninvalid_api_key (invalid_request_error): Invalid API Key\nget a new API key at https://console.groq.com/keys",
-			ErrListModel: "http 401\ninvalid_api_key (invalid_request_error): Invalid API Key\nget a new API key at https://console.groq.com/keys",
-		},
-		{
-			Name: "bad model",
-			Opts: genai.ProviderOptions{
-				Model: "bad model",
-			},
-			ErrGenSync:   "http 404\nmodel_not_found (invalid_request_error): The model `bad model` does not exist or you do not have access to it.",
-			ErrGenStream: "http 404\nmodel_not_found (invalid_request_error): The model `bad model` does not exist or you do not have access to it.",
-		},
+	cl, err := groq.New(t.Context(), &opts, fn)
+	if err != nil {
+		t.Fatal(err)
 	}
-	f := func(t *testing.T, opts genai.ProviderOptions) (genai.Provider, error) {
-		opts.OutputModalities = genai.Modalities{genai.ModalityText}
-		return getClientInner(t, opts)
+	var c genai.Provider = cl
+	if strings.HasPrefix(model.Model, "qwen/") && model.Thinking {
+		c = &adapters.ProviderAppend{Provider: c, Append: genai.Request{Text: "\n\n/think"}}
 	}
-	internaltest.TestClient_Provider_errors(t, f, data)
+	// OpenAI must not enable the ReasoningFormat flag.
+	if model.Thinking && !strings.HasPrefix(model.Model, "openai/") {
+		return &handleGroqReasoning{Provider: c}
+	}
+	return c
 }
 
 func getClient(t *testing.T, m string) *groq.Client {

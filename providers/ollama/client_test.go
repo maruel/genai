@@ -76,7 +76,7 @@ func TestClient(t *testing.T) {
 		}, models, testRecorder.Records)
 	})
 
-	t.Run("Provider_errors", func(t *testing.T) {
+	t.Run("errors", func(t *testing.T) {
 		data := []internaltest.ProviderError{
 			{
 				Name: "bad model",

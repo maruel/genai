@@ -22,6 +22,64 @@ import (
 	"github.com/maruel/genai/smoke/smoketest"
 )
 
+func TestClient(t *testing.T) {
+	t.Run("Scoreboard", func(t *testing.T) {
+		models := loadCachedModelsList(t)
+		var sbModels []smoketest.Model
+		for _, m := range models {
+			id := m.GetID()
+			sbModels = append(sbModels, smoketest.Model{Model: id, Thinking: id == "deepseek-reasoning"})
+		}
+		smoketest.Run(t, getClientRT, sbModels, testRecorder.Records)
+	})
+
+	t.Run("Preferred", func(t *testing.T) {
+		data := []struct {
+			name string
+			want string
+		}{
+			{genai.ModelCheap, "llamascout"},
+			{genai.ModelGood, "openai-large"},
+			{genai.ModelSOTA, "deepseek-reasoning"},
+		}
+		for _, line := range data {
+			t.Run(line.name, func(t *testing.T) {
+				if got := getClient(t, line.name).ModelID(); got != line.want {
+					t.Fatalf("got model %q, want %q", got, line.want)
+				}
+			})
+		}
+	})
+
+	t.Run("errors", func(t *testing.T) {
+		data := []internaltest.ProviderError{
+			{
+				Name: "bad model",
+				Opts: genai.ProviderOptions{
+					Model: "bad model",
+				},
+				ErrGenSync:   "model \"bad model\" not supported by pollinations",
+				ErrGenStream: "model \"bad model\" not supported by pollinations",
+			},
+			{
+				Name: "bad model image",
+				Opts: genai.ProviderOptions{
+					Model:            "bad model",
+					OutputModalities: genai.Modalities{genai.ModalityImage},
+				},
+				ErrGenSync:   "model \"bad model\" not supported by pollinations",
+				ErrGenStream: "model \"bad model\" not supported by pollinations",
+			},
+		}
+		f := func(t *testing.T, opts genai.ProviderOptions) (genai.Provider, error) {
+			opts.APIKey = "genai-unittests"
+			opts.OutputModalities = genai.Modalities{genai.ModalityText}
+			return getClientInner(t, opts)
+		}
+		internaltest.TestClient_Provider_errors(t, f, data)
+	})
+}
+
 func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 	opts := genai.ProviderOptions{
 		APIKey:          "genai-unittests",
@@ -70,62 +128,6 @@ func (h *smallImage) GenSync(ctx context.Context, msgs genai.Messages, opts ...g
 		}
 	}
 	return h.Provider.GenSync(ctx, msgs, opts...)
-}
-
-func TestClient_Scoreboard(t *testing.T) {
-	models := loadCachedModelsList(t)
-	var sbModels []smoketest.Model
-	for _, m := range models {
-		id := m.GetID()
-		sbModels = append(sbModels, smoketest.Model{Model: id, Thinking: id == "deepseek-reasoning"})
-	}
-	smoketest.Run(t, getClientRT, sbModels, testRecorder.Records)
-}
-
-func TestClient_Preferred(t *testing.T) {
-	data := []struct {
-		name string
-		want string
-	}{
-		{genai.ModelCheap, "llamascout"},
-		{genai.ModelGood, "openai-large"},
-		{genai.ModelSOTA, "deepseek-reasoning"},
-	}
-	for _, line := range data {
-		t.Run(line.name, func(t *testing.T) {
-			if got := getClient(t, line.name).ModelID(); got != line.want {
-				t.Fatalf("got model %q, want %q", got, line.want)
-			}
-		})
-	}
-}
-
-func TestClient_Provider_errors(t *testing.T) {
-	data := []internaltest.ProviderError{
-		{
-			Name: "bad model",
-			Opts: genai.ProviderOptions{
-				Model: "bad model",
-			},
-			ErrGenSync:   "model \"bad model\" not supported by pollinations",
-			ErrGenStream: "model \"bad model\" not supported by pollinations",
-		},
-		{
-			Name: "bad model image",
-			Opts: genai.ProviderOptions{
-				Model:            "bad model",
-				OutputModalities: genai.Modalities{genai.ModalityImage},
-			},
-			ErrGenSync:   "model \"bad model\" not supported by pollinations",
-			ErrGenStream: "model \"bad model\" not supported by pollinations",
-		},
-	}
-	f := func(t *testing.T, opts genai.ProviderOptions) (genai.Provider, error) {
-		opts.APIKey = "genai-unittests"
-		opts.OutputModalities = genai.Modalities{genai.ModalityText}
-		return getClientInner(t, opts)
-	}
-	internaltest.TestClient_Provider_errors(t, f, data)
 }
 
 func getClient(t *testing.T, m string) *pollinations.Client {

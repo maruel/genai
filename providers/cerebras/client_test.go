@@ -23,6 +23,76 @@ import (
 	"github.com/maruel/roundtrippers"
 )
 
+func TestClient(t *testing.T) {
+	t.Run("Scoreboard", func(t *testing.T) {
+		c := getClient(t, genai.ModelNone)
+		genaiModels, err := c.ListModels(t.Context())
+		if err != nil {
+			t.Fatal(err)
+		}
+		scenarios := c.Scoreboard().Scenarios
+		var models []smoketest.Model
+		for _, m := range genaiModels {
+			id := m.GetID()
+			thinking := false
+			for _, sc := range scenarios {
+				if slices.Contains(sc.Models, id) {
+					thinking = sc.Thinking
+					break
+				}
+			}
+			models = append(models, smoketest.Model{Model: id, Thinking: thinking})
+		}
+		smoketest.Run(t, getClientRT, models, testRecorder.Records)
+	})
+
+	t.Run("Preferred", func(t *testing.T) {
+		data := []struct {
+			name string
+			want string
+		}{
+			{genai.ModelCheap, "llama3.1-8b"},
+			{genai.ModelGood, "llama-4-maverick-17b-128e-instruct"},
+			{genai.ModelSOTA, "qwen-3-235b-a22b-instruct-2507"},
+		}
+		for _, line := range data {
+			t.Run(line.name, func(t *testing.T) {
+				if got := getClient(t, line.name).ModelID(); got != line.want {
+					t.Fatalf("got model %q, want %q", got, line.want)
+				}
+			})
+		}
+	})
+
+	t.Run("errors", func(t *testing.T) {
+		data := []internaltest.ProviderError{
+			{
+				Name: "bad apiKey",
+				Opts: genai.ProviderOptions{
+					APIKey: "bad apiKey",
+					Model:  "llama-3.1-8b",
+				},
+				ErrGenSync:   "http 401\ninvalid_request_error/api_key/wrong_api_key: Wrong API Key\nget a new API key at https://cloud.cerebras.ai/platform/",
+				ErrGenStream: "http 401\ninvalid_request_error/api_key/wrong_api_key: Wrong API Key\nget a new API key at https://cloud.cerebras.ai/platform/",
+				ErrListModel: "http 401\ninvalid_request_error/api_key/wrong_api_key: Wrong API Key\nget a new API key at https://cloud.cerebras.ai/platform/",
+			},
+			{
+				Name: "bad model",
+				Opts: genai.ProviderOptions{
+					Model: "bad model",
+				},
+				ErrGenSync:   "http 404\nnot_found_error/model/model_not_found: Model bad model does not exist or you do not have access to it.",
+				ErrGenStream: "http 404\nnot_found_error/model/model_not_found: Model bad model does not exist or you do not have access to it.",
+			},
+		}
+		f := func(t *testing.T, opts genai.ProviderOptions) (genai.Provider, error) {
+			opts.OutputModalities = genai.Modalities{genai.ModalityText}
+			return getClientInner(t, opts)
+		}
+		internaltest.TestClient_Provider_errors(t, f, data)
+	})
+}
+
 func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 	apiKey := ""
 	if os.Getenv("CEREBRAS_API_KEY") == "" {
@@ -70,74 +140,6 @@ func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper)
 		}
 	}
 	return p
-}
-
-func TestClient_Scoreboard(t *testing.T) {
-	c := getClient(t, genai.ModelNone)
-	genaiModels, err := c.ListModels(t.Context())
-	if err != nil {
-		t.Fatal(err)
-	}
-	scenarios := c.Scoreboard().Scenarios
-	var models []smoketest.Model
-	for _, m := range genaiModels {
-		id := m.GetID()
-		thinking := false
-		for _, sc := range scenarios {
-			if slices.Contains(sc.Models, id) {
-				thinking = sc.Thinking
-				break
-			}
-		}
-		models = append(models, smoketest.Model{Model: id, Thinking: thinking})
-	}
-	smoketest.Run(t, getClientRT, models, testRecorder.Records)
-}
-
-func TestClient_Preferred(t *testing.T) {
-	data := []struct {
-		name string
-		want string
-	}{
-		{genai.ModelCheap, "llama3.1-8b"},
-		{genai.ModelGood, "llama-4-maverick-17b-128e-instruct"},
-		{genai.ModelSOTA, "qwen-3-235b-a22b-instruct-2507"},
-	}
-	for _, line := range data {
-		t.Run(line.name, func(t *testing.T) {
-			if got := getClient(t, line.name).ModelID(); got != line.want {
-				t.Fatalf("got model %q, want %q", got, line.want)
-			}
-		})
-	}
-}
-
-func TestClient_Provider_errors(t *testing.T) {
-	data := []internaltest.ProviderError{
-		{
-			Name: "bad apiKey",
-			Opts: genai.ProviderOptions{
-				APIKey: "bad apiKey",
-				Model:  "llama-3.1-8b",
-			},
-			ErrGenSync:   "http 401\ninvalid_request_error/api_key/wrong_api_key: Wrong API Key\nget a new API key at https://cloud.cerebras.ai/platform/",
-			ErrGenStream: "http 401\ninvalid_request_error/api_key/wrong_api_key: Wrong API Key\nget a new API key at https://cloud.cerebras.ai/platform/",
-			ErrListModel: "http 401\ninvalid_request_error/api_key/wrong_api_key: Wrong API Key\nget a new API key at https://cloud.cerebras.ai/platform/",
-		},
-		{
-			Name: "bad model",
-			Opts: genai.ProviderOptions{
-				Model: "bad model",
-			},
-			ErrGenSync:   "http 404\nnot_found_error/model/model_not_found: Model bad model does not exist or you do not have access to it.",
-			ErrGenStream: "http 404\nnot_found_error/model/model_not_found: Model bad model does not exist or you do not have access to it.",
-		},
-	}
-	f := func(t *testing.T, opts genai.ProviderOptions) (genai.Provider, error) {
-		opts.OutputModalities = genai.Modalities{genai.ModalityText}
-		return getClientInner(t, opts)
-	}
-	internaltest.TestClient_Provider_errors(t, f, data)
 }
 
 func getClient(t *testing.T, m string) *cerebras.Client {

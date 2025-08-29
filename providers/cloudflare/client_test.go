@@ -20,6 +20,66 @@ import (
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
 
+func TestClient(t *testing.T) {
+	t.Run("Scoreboard", func(t *testing.T) {
+		// Cloudflare hosts a ton of useless models, so just get the ones already in the scoreboard.
+		sb := getClient(t, genai.ModelNone).Scoreboard()
+		var models []smoketest.Model
+		for _, sc := range sb.Scenarios {
+			for _, model := range sc.Models {
+				models = append(models, smoketest.Model{Model: model})
+			}
+		}
+		smoketest.Run(t, getClientRT, models, testRecorder.Records)
+	})
+
+	t.Run("Preferred", func(t *testing.T) {
+		data := []struct {
+			name string
+			want string
+		}{
+			{genai.ModelCheap, "@cf/meta/llama-3.2-1b-instruct"},
+			{genai.ModelGood, "@cf/meta/llama-3.3-70b-instruct-fp8-fast"},
+			{genai.ModelSOTA, "@cf/deepseek-ai/deepseek-r1-distill-qwen-32b"},
+		}
+		for _, line := range data {
+			t.Run(line.name, func(t *testing.T) {
+				if got := getClient(t, line.name).ModelID(); got != line.want {
+					t.Fatalf("got model %q, want %q", got, line.want)
+				}
+			})
+		}
+	})
+
+	t.Run("errors", func(t *testing.T) {
+		data := []internaltest.ProviderError{
+			{
+				Name: "bad apiKey",
+				Opts: genai.ProviderOptions{
+					APIKey: "bad apiKey",
+					Model:  "@hf/nousresearch/hermes-2-pro-mistral-7b",
+				},
+				ErrGenSync:   "http 401\nAuthentication error\nget a new API key at https://dash.cloudflare.com/profile/api-tokens",
+				ErrGenStream: "http 401\nAuthentication error\nget a new API key at https://dash.cloudflare.com/profile/api-tokens",
+				ErrListModel: "http 400\nUnable to authenticate request",
+			},
+			{
+				Name: "bad model",
+				Opts: genai.ProviderOptions{
+					Model: "bad model",
+				},
+				ErrGenSync:   "http 400\nNo route for that URI",
+				ErrGenStream: "http 400\nNo route for that URI",
+			},
+		}
+		f := func(t *testing.T, opts genai.ProviderOptions) (genai.Provider, error) {
+			opts.OutputModalities = genai.Modalities{genai.ModalityText}
+			return getClientInner(t, opts)
+		}
+		internaltest.TestClient_Provider_errors(t, f, data)
+	})
+}
+
 func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 	apiKey := ""
 	if os.Getenv("CLOUDFLARE_API_KEY") == "" {
@@ -43,64 +103,6 @@ func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper)
 		t.Fatal("implement me")
 	}
 	return c
-}
-
-func TestClient_Scoreboard(t *testing.T) {
-	// Cloudflare hosts a ton of useless models, so just get the ones already in the scoreboard.
-	sb := getClient(t, genai.ModelNone).Scoreboard()
-	var models []smoketest.Model
-	for _, sc := range sb.Scenarios {
-		for _, model := range sc.Models {
-			models = append(models, smoketest.Model{Model: model})
-		}
-	}
-	smoketest.Run(t, getClientRT, models, testRecorder.Records)
-}
-
-func TestClient_Preferred(t *testing.T) {
-	data := []struct {
-		name string
-		want string
-	}{
-		{genai.ModelCheap, "@cf/meta/llama-3.2-1b-instruct"},
-		{genai.ModelGood, "@cf/meta/llama-3.3-70b-instruct-fp8-fast"},
-		{genai.ModelSOTA, "@cf/deepseek-ai/deepseek-r1-distill-qwen-32b"},
-	}
-	for _, line := range data {
-		t.Run(line.name, func(t *testing.T) {
-			if got := getClient(t, line.name).ModelID(); got != line.want {
-				t.Fatalf("got model %q, want %q", got, line.want)
-			}
-		})
-	}
-}
-
-func TestClient_Provider_errors(t *testing.T) {
-	data := []internaltest.ProviderError{
-		{
-			Name: "bad apiKey",
-			Opts: genai.ProviderOptions{
-				APIKey: "bad apiKey",
-				Model:  "@hf/nousresearch/hermes-2-pro-mistral-7b",
-			},
-			ErrGenSync:   "http 401\nAuthentication error\nget a new API key at https://dash.cloudflare.com/profile/api-tokens",
-			ErrGenStream: "http 401\nAuthentication error\nget a new API key at https://dash.cloudflare.com/profile/api-tokens",
-			ErrListModel: "http 400\nUnable to authenticate request",
-		},
-		{
-			Name: "bad model",
-			Opts: genai.ProviderOptions{
-				Model: "bad model",
-			},
-			ErrGenSync:   "http 400\nNo route for that URI",
-			ErrGenStream: "http 400\nNo route for that URI",
-		},
-	}
-	f := func(t *testing.T, opts genai.ProviderOptions) (genai.Provider, error) {
-		opts.OutputModalities = genai.Modalities{genai.ModalityText}
-		return getClientInner(t, opts)
-	}
-	internaltest.TestClient_Provider_errors(t, f, data)
 }
 
 func getClient(t *testing.T, m string) *cloudflare.Client {

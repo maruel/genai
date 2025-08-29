@@ -23,13 +23,14 @@ func mainImpl() error {
 	}
 	root := os.Args[1]
 	c := exec.Command("go", "run", filepath.Join(root, "cmd", "scoreboard"), "-table")
-	rawNewTable, err := c.Output()
+	rawNewTable, err := c.CombinedOutput()
 	if err != nil {
 		return fmt.Errorf("go run failed: %w: %s", err, string(rawNewTable))
 	}
-	rawReadmeOld, err := os.ReadFile(filepath.Join(root, "README.md"))
+	p := filepath.Join(root, "README.md")
+	rawReadmeOld, err := os.ReadFile(p)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to read %s: %w", p, err)
 	}
 	readme := string(rawReadmeOld)
 	start := strings.Index(readme, "| Provider")
@@ -48,9 +49,9 @@ func mainImpl() error {
 	if bytes.Equal(rawReadmeNew, rawReadmeOld) {
 		return nil
 	}
-	fmt.Printf("- Updating %s\n", filepath.Join(root, "README.md"))
-	if err := os.WriteFile(filepath.Join(root, "README.md"), rawReadmeNew, 0o644); err != nil {
-		return err
+	fmt.Printf("- Updating %s\n", p)
+	if err := os.WriteFile(p, rawReadmeNew, 0o644); err != nil {
+		return fmt.Errorf("failed to write %s: %w", p, err)
 	}
 	return nil
 }

@@ -46,7 +46,15 @@ func (t *tableSummaryRow) initFromScoreboard(p genai.Provider) {
 		t.Files = "✅"
 	}
 	for i := range sb.Scenarios {
-		t.initFromScenario(&sb.Scenarios[i])
+		// Assume GenSync has the best values.
+		f := sb.Scenarios[i].GenSync
+		if f == nil {
+			continue
+		}
+		t.initFromScenario(&sb.Scenarios[i], f)
+		if sb.Scenarios[i].GenStream != nil && !strings.Contains(t.Mode, "📡") {
+			t.Mode += "📡"
+		}
 	}
 	fillEmptyFields(t, "❌")
 }
@@ -59,27 +67,34 @@ type tableModelRow struct {
 
 type tableDataRow struct {
 	// Model specific
-	Thinking         string `title:"Think"`
-	Inputs           string `title:"➛In"` // Has to be large enough otherwise the emojis warp on github visualization
-	Outputs          string `title:"Out➛"`
-	JSON             string `title:"JSON"`
-	JSONSchema       string `title:"Schema"`
-	Chat             string `title:"Chat"`
-	Streaming        string `title:"Stream"`
-	Tools            string `title:"Tool"`
-	Batch            string `title:"Batch"`
-	Seed             string `title:"Seed"`
-	Files            string `title:"File"`
-	Citations        string `title:"Cite"`
-	Logprobs         string `title:"Probs"`
-	ReportRateLimits string `title:"Limits"`
+	Mode         string `title:"Mode"`
+	Inputs       string `title:"➛In"` // Has to be large enough otherwise the emojis warp on github visualization
+	Outputs      string `title:"Out➛"`
+	JSON         string `title:"JSON"`
+	JSONSchema   string `title:"Schema"`
+	Tools        string `title:"Tool"`
+	Batch        string `title:"Batch"`
+	Files        string `title:"File"`
+	Citations    string `title:"Cite"`
+	TextFeatures string `title:"Text"`
+	// Reporting.
+	Logprobs   string `title:"Probs"`
+	RateLimits string `title:"Limits"`
+	Usage      string `title:"Usage"`
+	Finish     string `title:"Finish"`
 }
 
-func (t *tableDataRow) initFromScenario(s *scoreboard.Scenario) {
+func (t *tableDataRow) initFromScenario(s *scoreboard.Scenario, f *scoreboard.Functionality) {
+	if s.GenStream == f && !strings.Contains(t.Mode, "📡") {
+		t.Mode += "📡"
+	}
+	if s.GenSync == f && !strings.Contains(t.Mode, "🕰️") {
+		t.Mode += "🕰️"
+	}
+	if s.Thinking && !strings.Contains(t.Mode, "🧠") {
+		t.Mode += "🧠"
+	}
 	for m := range s.In {
-		if s.Thinking {
-			t.Thinking = "✅"
-		}
 		if v, ok := modalityMap[m]; !ok {
 			panic("unknown modality: " + m)
 		} else if !strings.Contains(t.Inputs, v) {
@@ -95,99 +110,49 @@ func (t *tableDataRow) initFromScenario(s *scoreboard.Scenario) {
 		}
 	}
 	t.Outputs = sortString(t.Outputs)
-	if s.GenSync != nil {
-		if s.GenSync.JSON {
-			if s.GenStream != nil && s.GenStream.JSON {
-				if t.JSON == "" {
-					t.JSON = "✅"
-				}
-			} else {
-				t.JSON = "🤪"
-			}
-		}
-		if s.GenSync.JSONSchema {
-			if s.GenStream != nil && s.GenStream.JSONSchema {
-				if t.JSONSchema == "" {
-					t.JSONSchema = "✅"
-				}
-			} else {
-				t.JSONSchema = "🤪"
-			}
-		}
-		if _, hasTextIn := s.In[genai.ModalityText]; hasTextIn {
-			if _, hasTextOut := s.Out[genai.ModalityText]; hasTextOut {
-				if t.Chat == "" {
-					t.Chat = "✅"
-				}
-				if s.GenSync.ReportTokenUsage != scoreboard.True && !strings.Contains(t.Chat, "💸") {
-					t.Chat += "💸"
-				}
-				if s.GenSync.ReportFinishReason != scoreboard.True && !strings.Contains(t.Chat, "🚩") {
-					t.Chat += "🚩"
-				}
-				if (!s.GenSync.MaxTokens || !s.GenSync.StopSequence) && !strings.Contains(t.Chat, "🤪") {
-					t.Chat += "🤪"
-				}
-				t.Chat = sortString(t.Chat)
-			}
-		}
-		// TODO: Keep the best out of all the options. This is "✅"
-		// TODO: Make it clearer when tools are only supported in sync and not in stream. This is surprisingly
-		// frequent.
-		if s.GenSync.Tools == scoreboard.True && (s.GenStream != nil && s.GenStream.Tools == scoreboard.True) {
-			if t.Tools == "" {
-				t.Tools = "✅"
-			} else if strings.Contains(t.Tools, "💨") {
-				t.Tools = strings.Replace(t.Tools, "💨", "✅", 1)
-			}
-		} else if s.GenSync.Tools == scoreboard.Flaky && (s.GenStream != nil && s.GenStream.Tools == scoreboard.Flaky) {
-			if t.Tools == "" {
-				t.Tools = "💨"
-			}
-		}
-		if s.GenSync.ToolsBiased != scoreboard.False && !strings.Contains(t.Tools, "🧐") {
-			t.Tools += "🧐"
-		}
-		if s.GenSync.ToolsIndecisive == scoreboard.True && !strings.Contains(t.Tools, "💥") {
-			t.Tools += "💥"
-		}
-		t.Tools = sortString(t.Tools)
-		if s.GenSync.Citations {
-			t.Citations = "✅"
-		}
-		if s.GenSync.Seed {
-			t.Seed = "✅"
-		}
-		if s.GenSync.TopLogprobs {
-			t.Logprobs = "✅"
-		}
-		if s.GenSync.ReportRateLimits {
-			t.ReportRateLimits = "✅"
-		}
+	if f.JSON {
+		t.JSON = "✅"
 	}
-	if s.GenStream != nil {
-		if _, hasTextIn := s.In[genai.ModalityText]; hasTextIn {
-			if _, hasTextOut := s.Out[genai.ModalityText]; hasTextOut {
-				if t.Streaming == "" {
-					// Check if GenStream is not the same as GenSync. If so, use the emoji.
-					if s.GenStream.Less(s.GenSync) {
-						t.Streaming = "🤏"
-					} else {
-						t.Streaming = "✅"
-					}
-				}
-				if s.GenStream.ReportTokenUsage != scoreboard.True && !strings.Contains(t.Streaming, "💸") {
-					t.Streaming += "💸"
-				}
-				if s.GenStream.ReportFinishReason != scoreboard.True && !strings.Contains(t.Streaming, "🚩") {
-					t.Streaming += "🚩"
-				}
-				if (!s.GenStream.MaxTokens || !s.GenStream.StopSequence) && !strings.Contains(t.Streaming, "🤪") {
-					t.Streaming += "🤪"
-				}
-				t.Streaming = sortString(t.Streaming)
-			}
-		}
+	if f.JSONSchema {
+		t.JSONSchema = "✅"
+	}
+	if f.Tools == scoreboard.True {
+		t.Tools = "✅"
+	} else if s.GenSync.Tools == scoreboard.Flaky {
+		t.Tools = "💨"
+	}
+	if f.ToolsBiased != scoreboard.False {
+		t.Tools += "🧐"
+	}
+	if f.ToolsIndecisive == scoreboard.True {
+		t.Tools += "💥"
+	}
+	if f.Citations {
+		t.Citations = "✅"
+	}
+
+	if f.Seed && !strings.Contains(t.TextFeatures, "🌱") {
+		t.TextFeatures += "🌱"
+	}
+	if f.MaxTokens && !strings.Contains(t.TextFeatures, "📏") {
+		t.TextFeatures += "📏"
+	}
+	if f.StopSequence && !strings.Contains(t.TextFeatures, "🛑") {
+		t.TextFeatures += "🛑"
+	}
+
+	// Reporting.
+	if f.TopLogprobs {
+		t.Logprobs = "✅"
+	}
+	if f.ReportRateLimits {
+		t.RateLimits = "✅"
+	}
+	if f.ReportTokenUsage == scoreboard.True {
+		t.Usage = "✅"
+	}
+	if f.ReportFinishReason != scoreboard.True {
+		t.Finish = "✅"
 	}
 }
 
@@ -258,10 +223,14 @@ func printSummaryTable(ctx context.Context, all map[string]func(ctx context.Cont
 func printProviderTable(p genai.Provider) error {
 	var rows []tableModelRow
 	sb := p.Scoreboard()
-	for i := range sb.Scenarios {
-		row := tableModelRow{}
-		row.initFromScenario(&sb.Scenarios[i])
-		if row.Inputs != "" {
+	for _, sc := range sb.Scenarios {
+		var tmpRows []tableModelRow
+		for _, f := range []*scoreboard.Functionality{sc.GenSync, sc.GenStream} {
+			if f == nil {
+				continue
+			}
+			row := tableModelRow{}
+			row.initFromScenario(&sc, f)
 			if _, isAsync := p.(genai.ProviderGenAsync); isAsync {
 				row.Batch = "✅"
 			}
@@ -269,12 +238,18 @@ func printProviderTable(p genai.Provider) error {
 				row.Files = "✅"
 			}
 			fillEmptyFields(&row, "❌")
-		} else {
-			fillEmptyFields(&row, "?")
+			tmpRows = append(tmpRows, row)
 		}
-		for j := range sb.Scenarios[i].Models {
-			row.Model = sb.Scenarios[i].Models[j]
-			rows = append(rows, row)
+		if len(tmpRows) == 0 {
+			row := tableModelRow{}
+			fillEmptyFields(&row, "?")
+			tmpRows = append(tmpRows, row)
+		}
+		for _, m := range sc.Models {
+			for i := range tmpRows {
+				tmpRows[i].Model = m
+				rows = append(rows, tmpRows[i])
+			}
 		}
 	}
 	printMarkdownTable(os.Stdout, rows)
@@ -405,9 +380,9 @@ func visibleWidth(s string) int {
 
 func runeWidth(r rune) int {
 	switch r {
-	case '🏠', '❌', '💬', '✅', '📄', '🎤', '🤪', '🚩', '💨', '💸', '🤷', '📸', '🎥', '💥', '🤐', '🧐', '🌐', '🤏':
+	case '🏠', '❌', '💬', '✅', '📄', '🎤', '🤪', '🚩', '💨', '💸', '🤷', '📸', '🎥', '💥', '🤐', '🧐', '🌐', '🤏', '📡', '🌱':
 		return 2
-	case '🖼', '🎞', '⚖':
+	case '🖼', '🎞', '⚖': // '🕰️'
 		return 0
 	default:
 		return 1

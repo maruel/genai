@@ -7,10 +7,12 @@ package gemini_test
 import (
 	"context"
 	_ "embed"
+	"errors"
 	"fmt"
 	"log/slog"
 	"net/http"
 	"os"
+	"slices"
 	"strings"
 	"sync"
 	"testing"
@@ -28,12 +30,12 @@ import (
 
 func TestClient(t *testing.T) {
 	t.Run("Scoreboard", func(t *testing.T) {
-		genaiModels, err := getClient(t, genai.ModelNone).ListModels(t.Context())
+		mdls, err := getClient(t, genai.ModelNone).ListModels(t.Context())
 		if err != nil {
 			t.Fatal(err)
 		}
 		var models []smoketest.Model
-		for _, m := range genaiModels {
+		for _, m := range mdls {
 			id := m.GetID()
 			if id != "gemini-2.5-pro" {
 				// According to https://ai.google.dev/gemini-api/docs/thinking?hl=en, thinking cannot be disabled.
@@ -212,6 +214,71 @@ func TestClient(t *testing.T) {
 		}
 	})
 
+	// Models have really different behavior. Some require a thought, some cannot.
+	t.Run("ThinkingBudget", func(t *testing.T) {
+		// Similar to Scoreboard but run only a very small test on all gemini 2.5+ models.
+		allMdls, err := getClient(t, genai.ModelNone).ListModels(t.Context())
+		if err != nil {
+			t.Fatal(err)
+		}
+		msgs := genai.Messages{
+			genai.NewTextMessage("Say hello. Do not emit other words."),
+		}
+		for _, m := range allMdls {
+			mdl := m.(*gemini.Model)
+			if !slices.Contains(mdl.SupportedGenerationMethods, "generateContent") {
+				continue
+			}
+			id := m.GetID()
+			// Don't test the non-gemini models and older (2.0 and earlier) models.
+			if !strings.HasPrefix(id, "gemini-") ||
+				strings.HasPrefix(id, "gemini-exp-") ||
+				strings.HasPrefix(id, "gemini-1") ||
+				strings.HasPrefix(id, "gemini-2.0-") ||
+				strings.HasSuffix(id, "-tts") {
+				continue
+			}
+			// Make sure models work with default settings. It was not as obvious as it may seem.
+			t.Run(id, func(t *testing.T) {
+				t.Run("default", func(t *testing.T) {
+					c := getClient(t, id)
+					if _, err := c.GenSync(t.Context(), msgs); err != nil {
+						t.Fatal(err)
+					}
+				})
+				t.Run("thinking", func(t *testing.T) {
+					c := getClient(t, id)
+					opts := gemini.Options{ThinkingBudget: 512}
+					res, err := c.GenSync(t.Context(), msgs, &opts)
+					if err != nil {
+						t.Fatal(err)
+					}
+					if res.Usage.ReasoningTokens == 0 {
+						t.Fatal("Expected reasoning tokens")
+					}
+				})
+				t.Run("nothinking", func(t *testing.T) {
+					c := getClient(t, id)
+					opts := gemini.Options{ThinkingBudget: 0}
+					res, err := c.GenSync(t.Context(), msgs, &opts)
+					if err != nil {
+						t.Fatal(err)
+					}
+					if strings.Contains(id, "pro") {
+						// Pro always think.
+						if res.Usage.ReasoningTokens == 0 {
+							t.Fatal("Expected reasoning tokens")
+						}
+					} else {
+						if res.Usage.ReasoningTokens != 0 {
+							t.Fatal("unexpected reasoning tokens")
+						}
+					}
+				})
+			})
+		}
+	})
+
 	t.Run("errors", func(t *testing.T) {
 		data := []internaltest.ProviderError{
 			{
@@ -249,6 +316,19 @@ func TestClient(t *testing.T) {
 		}
 		internaltest.TestClient_Provider_errors(t, f, data)
 	})
+
+	t.Run("ErrorResponse", func(t *testing.T) {
+		// Use a model we know we do not have quota and make sure the error response is parsed.
+		c := getClient(t, "gemini-exp-1206")
+		msgs := genai.Messages{
+			genai.NewTextMessage("Say hello. Do not emit other words."),
+		}
+		_, err := c.GenSync(t.Context(), msgs)
+		var er *gemini.ErrorResponse
+		if !errors.As(err, &er) {
+			t.Fatalf("Expected ErrorResponse, got %T", err)
+		}
+	})
 }
 
 //
@@ -275,6 +355,14 @@ func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper)
 		return &internaltest.InjectOptions{
 			Provider: c,
 			Opts:     []genai.Options{&gemini.Options{ThinkingBudget: 512}},
+		}
+	}
+	if model.Model == "gemini-2.5-flash" {
+		// Explicitly disable thinking for flash to save time and money. It is explicitly tested in Thinking
+		// subtest.
+		return &internaltest.InjectOptions{
+			Provider: c,
+			Opts:     []genai.Options{&gemini.Options{ThinkingBudget: 0}},
 		}
 	}
 	return c

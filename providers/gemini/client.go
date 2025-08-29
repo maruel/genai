@@ -62,8 +62,30 @@ func Scoreboard() scoreboard.Score {
 
 // Options defines Gemini specific options.
 type Options struct {
-	// ThinkingBudget is the maximum number of tokens the LLM can use to think about the answer. When 0,
-	// thinking is disabled. It generally must be above 1024 and below MaxTokens and 24576.
+	// ThinkingBudget is the maximum number of tokens the LLM can use to think about the answer.
+	//
+	// From https://ai.google.dev/gemini-api/docs/thinking#set-budget
+	//
+	// # gemini-2.5-pro
+	//
+	// - Default: Dynamic thinking, model decides when and how much to think
+	// - Range: 128 to 32768
+	// - Cannot disable thinking
+	// - Dynamic thinking: -1
+	//
+	// # gemini-2.5-flash
+	//
+	// - Default: Dynamic thinking, model decides when and how much to think
+	// - Range: 0 to 24576
+	// - Disable thinking with 0
+	// - Dynamic thinking: -1
+	//
+	// # gemini-2.5-flash-lite
+	//
+	// - Default: Model does not think
+	// - Range: 512 to 24576
+	// - Disable thinking with 0
+	// - Dynamic thinking: -1
 	ThinkingBudget int64
 }
 
@@ -211,7 +233,7 @@ type ChatRequest struct {
 		} `json:"speechConfig,omitzero"`
 		// See https://ai.google.dev/gemini-api/docs/thinking#rest
 		// This is frustrating: it must be present for thinking models to make it possible to disable thinking. It
-		// must NOT be present for non-thinking models, like "gemini-2.0-flash-lite" which we use for smoke tests.
+		// must NOT be present for non-thinking models.
 		ThinkingConfig  *ThinkingConfig `json:"thinkingConfig,omitempty"`
 		MediaResolution MediaResolution `json:"mediaResolution,omitzero"`
 	} `json:"generationConfig,omitzero"`
@@ -227,37 +249,27 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 	var errs []error
 	var unsupported []string
 
-	// Disable thinking by default.
-	// Hard code which models accept it.
-	// - Gemini only.
-	// - Not lite
-	// - Not 1.x
-	// - Not 2.0-flash except if contains thinking.
-	if !strings.Contains(model, "lite") &&
-		strings.HasPrefix(model, "gemini-") &&
-		!strings.HasPrefix(model, "gemini-1") &&
-		(!strings.HasPrefix(model, "gemini-2.0-flash") || strings.Contains(model, "thinking")) {
-		// Disable thinking.
-		c.GenerationConfig.ThinkingConfig = &ThinkingConfig{}
-	} else if strings.Contains(model, "-pro") {
-		// Gemini Pro only works with thinking enabled. Make sure the default is right.
-		c.GenerationConfig.ThinkingConfig = &ThinkingConfig{
-			IncludeThoughts: true,
-		}
-	}
-
 	for _, opt := range opts {
 		switch v := opt.(type) {
 		case *Options:
-			if v.ThinkingBudget > 0 {
+			// Accept both positive numbers and -1 (dynamic thinking)
+			if v.ThinkingBudget != 0 {
 				// https://ai.google.dev/gemini-api/docs/thinking
 				c.GenerationConfig.ThinkingConfig = &ThinkingConfig{
 					IncludeThoughts: true,
 					ThinkingBudget:  v.ThinkingBudget,
 				}
 			} else {
-				// Some models really do not want the struct at all, e.g. gemini-2-5-flash-image-preview.
-				c.GenerationConfig.ThinkingConfig = nil
+				// We need to set it to disable thinking on gemini-2.5-flash.
+				//
+				// Most models really do not want the struct at all, e.g. gemini-2-5-flash-image-preview. Setting the
+				// struct to empty will fail the RPC. :(
+				if strings.HasPrefix(model, "gemini-2.5-flash") &&
+					!strings.Contains(model, "image") &&
+					!strings.Contains(model, "live") &&
+					!strings.Contains(model, "tts") {
+					c.GenerationConfig.ThinkingConfig = &ThinkingConfig{}
+				}
 			}
 		case *genai.OptionsText:
 			unsupported, errs = c.initOptions(v, model)
@@ -1170,6 +1182,9 @@ func (r *ModelsResponse) ToModels() []genai.Model {
 
 //
 
+// ErrorResponse represents the response structure for Gemini errors.
+//
+// It is returned as an error.
 type ErrorResponse struct {
 	ErrorVal ErrorResponseError `json:"error"`
 }
@@ -1183,9 +1198,9 @@ func (e *ErrorResponse) IsAPIError() bool {
 }
 
 type ErrorResponseError struct {
-	Code    int64  `json:"code"`
+	Code    int64  `json:"code"` // 429
 	Message string `json:"message"`
-	Status  string `json:"status"`
+	Status  string `json:"status"` // "RESOURCE_EXHAUSTED"
 	Details []struct {
 		Type     string `json:"@type"`
 		Reason   string `json:"reason"`
@@ -1199,6 +1214,31 @@ type ErrorResponseError struct {
 		} `json:"fieldViolations"`
 		Locale  string `json:"locale"`
 		Message string `json:"message"`
+
+		// "type.googleapis.com/google.rpc.QuotaFailure"
+		Violations []struct {
+			// "generativelanguage.googleapis.com/generate_requests_per_model_per_day"
+			// "generativelanguage.googleapis.com/generate_requests_per_model"
+			// "generativelanguage.googleapis.com/generate_content_paid_tier_input_token_count"
+			QuotaMetric string `json:"quotaMetric"`
+			// "GenerateRequestsPerDayPerProjectPerModel"
+			// "GenerateRequestsPerMinutePerProjectPerModel"
+			// "GenerateContentPaidTierInputTokensPerModelPerMinute"
+			QuotaID         string `json:"quotaId"`
+			QuotaDimensions struct {
+				Location string `json:"location"` // "global"
+				Model    string `json:"model"`    // model name
+			} `json:"quotaDimensions"`
+		} `json:"violations"`
+
+		// "type.googleapis.com/google.rpc.Help"
+		Links []struct {
+			Description string `json:"description"`
+			URL         string `json:"url"`
+		} `json:"links"`
+
+		// Type == "type.googleapis.com/google.rpc.RetryInfo"
+		RetryDelay string `json:"retryDelay"` // "28s"
 	} `json:"details"`
 }
 

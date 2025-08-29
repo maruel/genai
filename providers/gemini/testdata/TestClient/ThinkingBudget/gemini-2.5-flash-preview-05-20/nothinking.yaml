@@ -1,0 +1,45 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 201
+    host: generativelanguage.googleapis.com
+    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"Say hello. Do not emit other words.\"}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":false,\"thinkingBudget\":0}}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"Hello\"\n          }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\": \"STOP\",\n      \"index\": 0\n    }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\": 10,\n    \"candidatesTokenCount\": 1,\n    \"totalTokenCount\": 11,\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 10\n      }\n    ]\n  },\n  \"modelVersion\": \"models/gemini-2.5-flash-preview-05-20\",\n  \"responseId\": \"BPKxaO7rH5-d1MkP9PKMoA0\"\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Type:
+      - application/json; charset=UTF-8
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=444
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - "0"
+    status: 200 OK
+    code: 200
+    duration: 454ms

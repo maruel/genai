@@ -1,0 +1,45 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 202
+    host: generativelanguage.googleapis.com
+    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"Say hello. Do not emit other words.\"}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite-preview-06-17:generateContent
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"**A Singular Directive**\\n\\nMy task is clear: a simple \\\"hello.\\\" The user, likely expecting a nuanced response in other scenarios, now desires a completely unadorned greeting. I must adhere strictly to this constraint, avoiding any elaboration or extraneous words. My expertise, my capacity for complex communication, must be momentarily suspended in favor of this single, focused output.\\n\",\n            \"thought\": true\n          },\n          {\n            \"text\": \"Hello.\"\n          }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\": \"STOP\",\n      \"index\": 0\n    }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\": 10,\n    \"candidatesTokenCount\": 2,\n    \"totalTokenCount\": 39,\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 10\n      }\n    ],\n    \"thoughtsTokenCount\": 27\n  },\n  \"modelVersion\": \"gemini-2.5-flash-lite-preview-06-17\",\n  \"responseId\": \"B_KxaPDRLYTtugeih7vxCA\"\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Type:
+      - application/json; charset=UTF-8
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=1108
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - "0"
+    status: 200 OK
+    code: 200
+    duration: 1.118s

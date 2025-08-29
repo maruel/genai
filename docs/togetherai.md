@@ -122,7 +122,7 @@
 - 💥: Tool calling is indecisive. When unsure about an answer, it'll call both options. This is good.
 - 🌐: Country where the company is located
 - JSON and Schema: ability to output JSON in free form, or with a forced schema specified as a Go struct
-- Tool: Tool calling, using [genai.ToolDef](https://pkg.go.dev/github.com/maruel/genai#ToolDef)
+- Tool: Tool calling, using [genai.ToolDef](https://pkg.go.dev/github.com/maruel/genai#ToolDef); best is ✅🪨🧐💥
 - Batch: Process asynchronously batches during off peak hours at a discounts
 - Text: Text features
     - '🌱': Seed option for deterministic output

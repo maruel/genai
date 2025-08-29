@@ -27,7 +27,7 @@ import (
 
 func printStructDense(v any, indent string) string {
 	val := reflect.ValueOf(v)
-	if val.Kind() == reflect.Ptr {
+	if val.Kind() == reflect.Pointer {
 		if val.IsNil() {
 			return indent + "nil"
 		}
@@ -47,7 +47,7 @@ func printStructDense(v any, indent string) string {
 			// Recursively print nested structs
 			v := printStructDense(f.Interface(), indent+"  ")
 			fields = append(fields, fmt.Sprintf("%s%s: {\n%s\n}", indent, fn, v))
-		case reflect.Ptr:
+		case reflect.Pointer:
 			if f.IsNil() {
 				fields = append(fields, fmt.Sprintf("%s%s: nil", indent, fn))
 			} else {
@@ -62,7 +62,7 @@ func printStructDense(v any, indent string) string {
 				var elements []string
 				for j := range f.Len() {
 					elem := f.Index(j)
-					if elem.Kind() == reflect.Struct || elem.Kind() == reflect.Ptr {
+					if elem.Kind() == reflect.Struct || elem.Kind() == reflect.Pointer {
 						elements = append(elements, printStructDense(elem.Interface(), indent+"  "))
 					} else {
 						elements = append(elements, fmt.Sprintf("%v", elem.Interface()))

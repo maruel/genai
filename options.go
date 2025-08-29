@@ -234,7 +234,7 @@ func (t *ToolDef) Validate() error {
 			return fmt.Errorf("field Callback: must accept exactly two parameters, first that is a context.Context, not a %q", paramType.Name())
 		}
 		paramType = cbType.In(1)
-		if paramType.Kind() != reflect.Ptr {
+		if paramType.Kind() != reflect.Pointer {
 			return fmt.Errorf("field Callback: must accept exactly two parameters, second that is a pointer to a struct, not a %q", paramType.Name())
 		}
 		paramType = paramType.Elem()
@@ -344,7 +344,7 @@ func (o *OptionsVideo) Validate() error {
 
 func validateReflectedToJSON(r any) error {
 	tp := reflect.TypeOf(r)
-	if tp.Kind() == reflect.Ptr {
+	if tp.Kind() == reflect.Pointer {
 		tp = tp.Elem()
 		if _, ok := r.(*jsonschema.Schema); ok {
 			return errors.New("must be an actual struct serializable as JSON, not a *jsonschema.Schema")

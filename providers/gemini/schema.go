@@ -112,7 +112,7 @@ type Schema struct {
 // FromGoObj generates a gemini.Schema from a Go object.
 func (s *Schema) FromGoObj(v any) error {
 	val := reflect.ValueOf(v)
-	if val.Kind() == reflect.Ptr {
+	if val.Kind() == reflect.Pointer {
 		val = val.Elem()
 	}
 	t := val.Type()
@@ -268,7 +268,7 @@ func (s *Schema) FromGoType(t reflect.Type, tag reflect.StructTag, parent string
 			if jsonTag == "-" {
 				continue
 			}
-			if !strings.Contains(jsonTag, "omitempty") && !strings.Contains(jsonTag, "omitzero") && field.Type.Kind() != reflect.Ptr {
+			if !strings.Contains(jsonTag, "omitempty") && !strings.Contains(jsonTag, "omitzero") && field.Type.Kind() != reflect.Pointer {
 				s.Required = append(s.Required, jsonName)
 			}
 		}
@@ -280,7 +280,7 @@ func (s *Schema) FromGoType(t reflect.Type, tag reflect.StructTag, parent string
 		// For maps, we don't have predefined properties like structs.
 		// The Schema struct doesn't have AdditionalProperties to describe arbitrary key-value pairs.
 		// So, we set Type to TypeObject and leave Properties empty.
-	case reflect.Ptr:
+	case reflect.Pointer:
 		s.Nullable = true
 		return s.FromGoType(t.Elem(), tag, parent) // Pass tag to underlying element.
 	case reflect.Invalid, reflect.Complex64, reflect.Complex128, reflect.Chan, reflect.Func, reflect.Interface, reflect.UnsafePointer:

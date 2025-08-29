@@ -37,11 +37,13 @@ func mainImpl() error {
 	if start < 0 {
 		return errors.New("could not find table in README.md")
 	}
-	end := strings.Index(readme[start:], "\n\n")
+	// This is fragile.
+	endMarker := "</details>\n"
+	end := strings.Index(readme[start:], endMarker)
 	if end < 0 {
 		return errors.New("could not find end of table in README.md")
 	}
-	n := readme[:start] + string(rawNewTable) + readme[start+end+1:]
+	n := readme[:start] + string(rawNewTable) + readme[start+end+len(endMarker):]
 	if n == readme {
 		return nil
 	}

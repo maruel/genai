@@ -39,10 +39,13 @@ const legend = `<details>
 - 🎤: Audio: process an audio file (e.g. MP3, WAV, Flac, Opus) as input, or generate audio
 - 🎥: Video: process a video (e.g. MP4) as input, or generate a video (e.g. Veo 3)
 - 💨: Feature is flaky (Tool calling) or inconsistent (Usage is not always reported)
-- 🪨: Tool calling can be forced; aka you can force the model to call a tool. This is great.
 - 🌐: Country where the company is located
-- JSON and Schema: ability to output JSON in free form, or with a forced schema specified as a Go struct
 - Tool: Tool calling, using [genai.ToolDef](https://pkg.go.dev/github.com/maruel/genai#ToolDef); best is ✅🪨
+		- 🪨: Tool calling can be forced; aka you can force the model to call a tool. This is great.
+- JSON: ability to output JSON in free form, or with a forced schema specified as a Go struct
+    - ✅: Supports both free form and with a schema
+    - ☁️ :Supports only free form
+		- 📐: Supports only a schema
 - Batch: Process asynchronously batches during off peak hours at a discounts
 - Text: Text features
     - '🌱': Seed option for deterministic output
@@ -121,9 +124,8 @@ type tableDataRow struct {
 	Mode         string `title:"Mode"`
 	Inputs       string `title:"➛In"` // Has to be large enough otherwise the emojis warp on github visualization
 	Outputs      string `title:"Out➛"`
-	JSON         string `title:"JSON"`
-	JSONSchema   string `title:"Schema"`
 	Tools        string `title:"Tool"`
+	JSON         string `title:"JSON"`
 	Batch        string `title:"Batch"`
 	Files        string `title:"File"`
 	Citations    string `title:"Cite"`
@@ -167,11 +169,12 @@ func (t *tableDataRow) initFromScenario(s *scoreboard.Scenario, f *scoreboard.Fu
 		}
 	}
 	t.Outputs = sortString(t.Outputs)
-	if f.JSON {
+	if f.JSON && f.JSONSchema {
 		t.JSON = "✅"
-	}
-	if f.JSONSchema {
-		t.JSONSchema = "✅"
+	} else if f.JSON && !strings.Contains(t.JSON, "✅") {
+		t.JSON = "☁️"
+	} else if f.JSONSchema && !strings.Contains(t.JSON, "✅") {
+		t.JSON = "📐"
 	}
 	if f.Tools == scoreboard.True && !strings.Contains(t.Tools, "✅") {
 		t.Tools = "✅"

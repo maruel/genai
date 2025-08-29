@@ -169,18 +169,18 @@ func (t *tableDataRow) initFromScenario(s *scoreboard.Scenario, f *scoreboard.Fu
 	if f.JSONSchema {
 		t.JSONSchema = "✅"
 	}
-	if f.Tools == scoreboard.True {
+	if f.Tools == scoreboard.True && !strings.Contains(t.Tools, "✅") {
 		t.Tools = "✅"
-	} else if s.GenSync.Tools == scoreboard.Flaky {
+	} else if s.GenSync.Tools == scoreboard.Flaky && !strings.Contains(t.Tools, "✅") {
 		t.Tools = "💨"
 	}
-	if f.ToolCallRequired {
+	if f.ToolCallRequired && !strings.Contains(t.Tools, "🪨") {
 		t.Tools += "🪨"
 	}
-	if f.ToolsBiased != scoreboard.False {
+	if f.ToolsBiased != scoreboard.False && !strings.Contains(t.Tools, "🧐") {
 		t.Tools += "🧐"
 	}
-	if f.ToolsIndecisive == scoreboard.True {
+	if f.ToolsIndecisive == scoreboard.True && !strings.Contains(t.Tools, "💥") {
 		t.Tools += "💥"
 	}
 	if f.Citations {
@@ -206,12 +206,12 @@ func (t *tableDataRow) initFromScenario(s *scoreboard.Scenario, f *scoreboard.Fu
 	}
 	if f.ReportTokenUsage == scoreboard.True {
 		t.Usage = "✅"
-	} else if s.GenSync.ReportTokenUsage == scoreboard.Flaky {
+	} else if s.GenSync.ReportTokenUsage == scoreboard.Flaky && !strings.Contains(t.Usage, "✅") {
 		t.Usage = "💨"
 	}
 	if f.ReportFinishReason == scoreboard.True {
 		t.Finish = "✅"
-	} else if s.GenSync.ReportFinishReason == scoreboard.Flaky {
+	} else if s.GenSync.ReportFinishReason == scoreboard.Flaky && !strings.Contains(t.Finish, "✅") {
 		t.Finish = "💨"
 	}
 }
@@ -321,7 +321,7 @@ func printProviderTable(p genai.Provider) error {
 // Magical markdown table generator.
 
 func visitFieldsType(t reflect.Type, fn func(f reflect.StructField)) {
-	if t.Kind() == reflect.Ptr {
+	if t.Kind() == reflect.Pointer {
 		t = t.Elem()
 	}
 	for i := range t.NumField() {

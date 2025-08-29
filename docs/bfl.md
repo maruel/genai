@@ -32,8 +32,9 @@
 - 🎤: Audio: process an audio file (e.g. MP3, WAV, Flac, Opus) as input, or generate audio
 - 🎥: Video: process a video (e.g. MP4) as input, or generate a video (e.g. Veo 3)
 - 💨: Feature is flaky (Tool calling) or inconsistent (Usage is not always reported)
-- 🧐: Tool calling is **not** biased towards the first value in an enum. If the provider doesn't have this, be
-  mindful of the order of the values!
+- 🧐: Tool calling is **not** biased towards the first value in an enum. This is good. If the provider doesn't
+	have this, be mindful of the order of the values presented in the prompt!
+- 💥: Tool calling is indecisive. When unsure about an answer, it'll call both options. This is good.
 - 🌐: Country where the company is located
 - JSON and Schema: ability to output JSON in free form, or with a forced schema specified as a Go struct
 - Tool: Tool calling, using [genai.ToolDef](https://pkg.go.dev/github.com/maruel/genai#ToolDef)

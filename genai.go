@@ -1131,7 +1131,7 @@ type CitationSource struct {
 // Validate ensures the citation source is valid.
 func (cs *CitationSource) Validate() error {
 	if cs.ID == "" && cs.URL == "" {
-		return fmt.Errorf("citation source must have either ID or URL; %+v", cs)
+		return fmt.Errorf("citation source must have either ID or URL")
 	}
 	return nil
 }

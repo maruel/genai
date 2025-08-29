@@ -424,10 +424,11 @@ type Content struct {
 	} `json:"source,omitzero"`
 
 	// Type == ContentToolUse, ContentServerToolUse
-	ID   string `json:"id,omitzero"`
-	Name string `json:"name,omitzero"`
+	ID string `json:"id,omitzero"`
 	// For ContentServerToolUse, it will be {"query": "..."}.
-	Input any `json:"input,omitzero"`
+	Input any `json:"input,omitzero"` // To reorder, I need to redo HTTP recordings.
+	// Type == ContentToolUse, ContentServerToolUse
+	Name string `json:"name,omitzero"`
 
 	// Type == ContentToolResult
 	ToolUseID string `json:"tool_use_id,omitzero"`

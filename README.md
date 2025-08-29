@@ -129,7 +129,7 @@ func main() {
 }
 ```
 
-Try it live:
+Try it locally:
 
 ```bash
 go run github.com/maruel/genai/examples/txt_to_txt_sync@latest
@@ -164,7 +164,7 @@ func main() {
 }
 ```
 
-Try it live:
+Try it locally:
 
 ```bash
 go run github.com/maruel/genai/examples/txt_to_txt_stream@latest
@@ -197,7 +197,7 @@ Snippet:
 	}
 ```
 
-Try it live:
+Try it locally:
 
 ```bash
 go run github.com/maruel/genai/examples/txt_to_txt_thinking@latest
@@ -263,7 +263,7 @@ Snippet:
 	fmt.Printf("\nAnswer: %s\n", res.String())
 ```
 
-Try it live:
+Try it locally:
 
 ```bash
 go run github.com/maruel/genai/examples/txt_to_txt_websearch-sync@latest
@@ -342,7 +342,7 @@ Snippet:
 	fmt.Println(res[len(res)-1].String())
 ```
 
-Try it live:
+Try it locally:
 
 ```bash
 go run github.com/maruel/genai/examples/txt_to_txt_tool-sync@latest
@@ -376,7 +376,7 @@ Snippet:
 	}
 ```
 
-Try it live:
+Try it locally:
 
 ```bash
 go run github.com/maruel/genai/examples/txt_to_txt_tool-stream@latest
@@ -441,7 +441,7 @@ Snippet:
 	fmt.Printf("Round: %v\n", circle.Round)
 ```
 
-Try it live:
+Try it locally:
 
 ```bash
 go run github.com/maruel/genai/examples/txt_to_txt_decode-json@latest
@@ -494,7 +494,7 @@ Snippet:
 	}
 ```
 
-Try it live:
+Try it locally:
 
 ```bash
 go run github.com/maruel/genai/examples/txt_to_img@latest
@@ -532,7 +532,7 @@ Snippet:
 	// Save the file in Replies like in the previous example ...
 ```
 
-Try it live:
+Try it locally:
 
 ```bash
 go run github.com/maruel/genai/examples/img-txt_to_vid@latest
@@ -587,7 +587,7 @@ Snippet:
 	res, _ := c.GenSync(ctx, msgs, &gemini.Options{ThinkingBudget: 0})
 ```
 
-Try it live:
+Try it locally:
 
 ```bash
 go run github.com/maruel/genai/examples/img-txt_to_img-txt@latest
@@ -658,7 +658,7 @@ Using this video:
 
 ![video.avif](https://raw.githubusercontent.com/wiki/maruel/genai/video.avif)
 
-Try it live:
+Try it locally:
 
 ```bash
 go run github.com/maruel/genai/examples/vid-txt_to_txt@latest
@@ -678,7 +678,7 @@ This requires [`OPENAI_API_KEY`](https://platform.openai.com/settings/organizati
 variable to authenticate.
 
 
-Try it live:
+Try it locally:
 
 ```bash
 go run github.com/maruel/genai/examples/vid-txt_to_txt@latest
@@ -714,8 +714,7 @@ Snippet:
 	res, _ := p.GenSync(...)
 ```
 
-
-Try it live:
+Try it locally:
 
 ```bash
 go run github.com/maruel/genai/examples/txt_to_txt_any@latest \
@@ -728,7 +727,7 @@ go run github.com/maruel/genai/examples/txt_to_txt_any@latest \
 
 Snapshot of all the supported models at [docs/MODELS.md](docs/MODELS.md) is updated weekly.
 
-Try it:
+Try it locally:
 
 ```bash
 go install github.com/maruel/genai/cmd/...@latest

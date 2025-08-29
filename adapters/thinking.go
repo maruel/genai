@@ -205,7 +205,7 @@ func (c *ProviderThinking) processThinkingMessage(m *genai.Message) error {
 		}
 	} else {
 		// Check if there's an end tag. Otherwise it was not thinking at all.
-		if strings.Index(text, c.ThinkingTokenEnd) == -1 {
+		if !strings.Contains(text, c.ThinkingTokenEnd) {
 			return nil
 		}
 	}

@@ -105,6 +105,36 @@ type Functionality struct {
 	_ struct{}
 }
 
+func (f *Functionality) Validate() error {
+	if err := f.ReportTokenUsage.Validate(); err != nil {
+		return fmt.Errorf("invalid ReportTokenUsage: %w", err)
+	}
+	if err := f.ReportFinishReason.Validate(); err != nil {
+		return fmt.Errorf("invalid ReportFinishReason: %w", err)
+	}
+	if err := f.Tools.Validate(); err != nil {
+		return fmt.Errorf("invalid Tools: %w", err)
+	}
+	if err := f.ToolsBiased.Validate(); err != nil {
+		return fmt.Errorf("invalid ToolsBiased: %w", err)
+	}
+	if err := f.ToolsIndecisive.Validate(); err != nil {
+		return fmt.Errorf("invalid ToolsIndecisive: %w", err)
+	}
+	if f.Tools == False {
+		if f.ToolsBiased != False {
+			return fmt.Errorf("invalid ToolsBiased %s when Tools is false", f.ToolsBiased.String())
+		}
+		if f.ToolsIndecisive != False {
+			return fmt.Errorf("invalid ToolsIndecisive %s when Tools is false", f.ToolsIndecisive.String())
+		}
+		if f.ToolCallRequired {
+			return fmt.Errorf("invalid ToolCallRequired %t when Tools is false", f.ToolCallRequired)
+		}
+	}
+	return nil
+}
+
 // TriState helps describing support when a feature "kinda work", which is frequent with LLM's inherent
 // non-determinism.
 type TriState int8
@@ -208,6 +238,16 @@ func (s *Scenario) Validate() error {
 	}
 	for k := range s.In {
 		if err := k.Validate(); err != nil {
+			return err
+		}
+	}
+	if s.GenSync == nil {
+		if err := s.GenSync.Validate(); err != nil {
+			return err
+		}
+	}
+	if s.GenStream == nil {
+		if err := s.GenStream.Validate(); err != nil {
 			return err
 		}
 	}

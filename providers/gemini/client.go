@@ -239,6 +239,11 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 		(!strings.HasPrefix(model, "gemini-2.0-flash") || strings.Contains(model, "thinking")) {
 		// Disable thinking.
 		c.GenerationConfig.ThinkingConfig = &ThinkingConfig{}
+	} else if strings.Contains(model, "-pro") {
+		// Gemini Pro only works with thinking enabled. Make sure the default is right.
+		c.GenerationConfig.ThinkingConfig = &ThinkingConfig{
+			IncludeThoughts: true,
+		}
 	}
 
 	for _, opt := range opts {

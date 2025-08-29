@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 419
+    host: api.cerebras.ai
+    body: "{\"model\":\"qwen-3-235b-a22b-thinking-2507\",\"messages\":[{\"role\":\"user\",\"content\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON.\"}],\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"\",\"schema\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"is_fruit\":{\"type\":\"boolean\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"is_fruit\"]},\"strict\":true}}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cerebras.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-0aa70e42-fdb0-425e-b664-c724bd607d0f\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"is_fruit\\\": true}\",\"role\":\"assistant\"}}],\"created\":1756422340,\"model\":\"qwen-3-235b-a22b-thinking-2507\",\"system_fingerprint\":\"fp_c9f89a26d3dfc34f2b15\",\"object\":\"chat.completion\",\"usage\":{\"prompt_tokens\":168,\"completion_tokens\":194,\"total_tokens\":362,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":0.234495317,\"prompt_time\":0.010507698,\"completion_time\":0.292547443,\"total_time\":0.5385305881500244,\"created\":1756422340}}"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 976774693814a223-YYZ
+      Content-Type:
+      - application/json
+      Inference-Id:
+      - chatcmpl-0aa70e42-fdb0-425e-b664-c724bd607d0f
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=3600; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Ratelimit-Limit-Requests-Day:
+      - "14400"
+      X-Ratelimit-Limit-Tokens-Minute:
+      - "60000"
+      X-Ratelimit-Remaining-Requests-Day:
+      - "14341"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "59439"
+      X-Ratelimit-Reset-Requests-Day:
+      - "3259.2848415374756"
+      X-Ratelimit-Reset-Tokens-Minute:
+      - "19.284841537475586"
+      X-Request-Id:
+      - 976774693814a223-YYZ
+    status: 200 OK
+    code: 200
+    duration: 724ms

@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 226
+    host: api.cerebras.ai
+    body: "{\"model\":\"qwen-3-235b-a22b-thinking-2507\",\"messages\":[{\"role\":\"user\",\"content\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"role\":\"user\",\"content\":\"What is the capital of Quackiland?\"}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cerebras.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-602ca92b-493c-48dd-b462-5d0eb060e6c5\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"Okay, the user is asking about the capital of Quackiland. Let me recall the information they provided earlier. In the previous message, they stated that \\\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\\\" So the capital is clearly named Quack.\\n\\nHmm, why would someone ask this right after providing the answer? Maybe they're testing if I was paying attention. Or perhaps they're setting up a pattern for a joke or a trick question. Quackiland sounds made-up, and \\\"quack\\\" is duck-related, which makes me think of the Big Canard Statue—canard is French for duck. So this is probably a playful, fictional scenario.\\n\\nThe user might be checking if I can follow simple instructions or remember prior context. Since they gave the answer directly, the correct response is straightforward. But I should make sure not to overcomplicate it. They might also be looking for consistency in answers, especially if this is part of a series of questions. \\n\\nWait, is there a deeper need here? Maybe they want to confirm that the AI processes sequential information correctly. Or they could be preparing for a trivia game with inside jokes. The mention of a duck statue hints at humor, so the user might appreciate a lighthearted confirmation. \\n\\nI should stick to the facts given: capital is Quack. No need for extra info unless asked. Keeping it precise shows reliability. Also, avoiding any confusion—since Quackiland isn't real, there's no risk of misinformation. Just mirror their provided data clearly. \\n\\nSo, the answer is Quack. Simple and direct, as the user set it up. No tricks here, just reinforcing their statement. They'll probably smile at the duck pun.\\n</think>\\n\\nBased **exclusively** on the information you provided:  \\n\\n**The capital of Quackiland is Quack.**  \\n\\nYou stated this directly in your first message:  \\n> *\\\"The capital of Quackiland is Quack.\\\"*  \\n\\nTherefore, the answer is **Quack**. 😄  \\n\\n*(Note: Quackiland and Quack are fictional, likely a playful reference to \\\"quack\\\" = duck sounds. The Big Canard Statue — \\\"canard\\\" being French for \\\"duck\\\" — confirms the duck theme!)*\",\"role\":\"assistant\"}}],\"created\":1756422348,\"model\":\"qwen-3-235b-a22b-thinking-2507\",\"system_fingerprint\":\"fp_c9f89a26d3dfc34f2b15\",\"object\":\"chat.completion\",\"usage\":{\"prompt_tokens\":45,\"completion_tokens\":474,\"total_tokens\":519,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":0.000135639,\"prompt_time\":0.005749339,\"completion_time\":0.698975945,\"total_time\":0.7075536251068115,\"created\":1756422348}}"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 976774a70b2ea25a-YUL
+      Content-Type:
+      - application/json
+      Inference-Id:
+      - chatcmpl-602ca92b-493c-48dd-b462-5d0eb060e6c5
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=3600; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Ratelimit-Limit-Requests-Day:
+      - "14400"
+      X-Ratelimit-Limit-Tokens-Minute:
+      - "60000"
+      X-Ratelimit-Remaining-Requests-Day:
+      - "14335"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "53747"
+      X-Ratelimit-Reset-Requests-Day:
+      - "3249.2350282669067"
+      X-Ratelimit-Reset-Tokens-Minute:
+      - "9.235028266906738"
+      X-Request-Id:
+      - 976774a70b2ea25a-YUL
+    status: 200 OK
+    code: 200
+    duration: 909ms

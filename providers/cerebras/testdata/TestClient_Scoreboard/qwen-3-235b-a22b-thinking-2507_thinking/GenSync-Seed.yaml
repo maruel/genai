@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 124
+    host: api.cerebras.ai
+    body: "{\"model\":\"qwen-3-235b-a22b-thinking-2507\",\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"}],\"seed\":42}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cerebras.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-b1e78a43-7d36-4441-9bf2-043cd3a75c1a\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"Hmm, the user just asked me to say hello with only one word. That's straightforward - they want a minimal response. \\n\\nOkay, let's see... they specifically said \\\"only one word\\\" so I can't add anything extra like \\\"Hi there!\\\" or even punctuation. Must be strictly one word. \\n\\nThe most common one-word greeting is \\\"Hello\\\" itself. \\\"Hi\\\" would also work but \\\"Hello\\\" feels slightly more formal and matches their phrasing. \\n\\nI wonder if they're testing my ability to follow simple instructions? Or maybe setting up for a longer conversation later. Either way, best to comply precisely. \\n\\n*Double-checks*: Yep, \\\"Hello\\\" is one word. No hidden characters. Doesn't violate any rules. \\n\\nUser seems direct - probably appreciates efficiency. No need to overthink this one. Just deliver the clean response they requested.\\n</think>\\n\\nHello\",\"role\":\"assistant\"}}],\"created\":1756421933,\"model\":\"qwen-3-235b-a22b-thinking-2507\",\"system_fingerprint\":\"fp_c9f89a26d3dfc34f2b15\",\"object\":\"chat.completion\",\"usage\":{\"prompt_tokens\":18,\"completion_tokens\":182,\"total_tokens\":200,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":9.1569e-05,\"prompt_time\":0.003377273,\"completion_time\":0.279988352,\"total_time\":0.2844815254211426,\"created\":1756421933}}"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 97676a838a614544-EWR
+      Content-Type:
+      - application/json
+      Inference-Id:
+      - chatcmpl-b1e78a43-7d36-4441-9bf2-043cd3a75c1a
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=3600; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Ratelimit-Limit-Requests-Day:
+      - "14400"
+      X-Ratelimit-Limit-Tokens-Minute:
+      - "60000"
+      X-Ratelimit-Remaining-Requests-Day:
+      - "14350"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "59762"
+      X-Ratelimit-Reset-Requests-Day:
+      - "3664.941677570343"
+      X-Ratelimit-Reset-Tokens-Minute:
+      - "4.941677570343018"
+      X-Request-Id:
+      - 97676a838a614544-EWR
+    status: 200 OK
+    code: 200
+    duration: 547ms

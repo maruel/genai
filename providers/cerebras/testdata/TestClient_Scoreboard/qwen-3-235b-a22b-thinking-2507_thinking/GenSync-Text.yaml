@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 114
+    host: api.cerebras.ai
+    body: "{\"model\":\"qwen-3-235b-a22b-thinking-2507\",\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cerebras.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-db5ab44d-6115-4557-86e3-8099e8041e7c\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"Okay, user just asked me to say hello using only one word. That's super simple but also interestingly specific. \\n\\nHmm, they're testing boundaries - probably checking if I can follow ultra-concise instructions or just wants minimal interaction. Maybe in a hurry? Or could be part of some bot-check experiment. \\n\\n\\\"Greetings\\\" feels too formal. \\\"Hi\\\" is safe but... wait, \\\"Hello\\\" itself is one word! Perfect. No need to overcomplicate when they literally said \\\"say hello\\\". \\n\\n*Double-checking*: Yep, \\\"Hello\\\" has one word, meets the brief, and stays polite. Zero risk of misinterpretation. \\n\\nSide note: User seems to enjoy precise constraints. Might remember that for future interactions.\\n</think>\\n\\nHello\",\"role\":\"assistant\"}}],\"created\":1756421913,\"model\":\"qwen-3-235b-a22b-thinking-2507\",\"system_fingerprint\":\"fp_c9f89a26d3dfc34f2b15\",\"object\":\"chat.completion\",\"usage\":{\"prompt_tokens\":18,\"completion_tokens\":157,\"total_tokens\":175,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":0.001741263,\"prompt_time\":0.002381863,\"completion_time\":0.272566108,\"total_time\":0.27779507637023926,\"created\":1756421913}}"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 97676a083c098c53-EWR
+      Content-Type:
+      - application/json
+      Inference-Id:
+      - chatcmpl-db5ab44d-6115-4557-86e3-8099e8041e7c
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=3600; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Ratelimit-Limit-Requests-Day:
+      - "14400"
+      X-Ratelimit-Limit-Tokens-Minute:
+      - "60000"
+      X-Ratelimit-Remaining-Requests-Day:
+      - "14351"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "59937"
+      X-Ratelimit-Reset-Requests-Day:
+      - "3684.519609928131"
+      X-Ratelimit-Reset-Tokens-Minute:
+      - "24.519609928131104"
+      X-Request-Id:
+      - 97676a083c098c53-EWR
+    status: 200 OK
+    code: 200
+    duration: 724ms

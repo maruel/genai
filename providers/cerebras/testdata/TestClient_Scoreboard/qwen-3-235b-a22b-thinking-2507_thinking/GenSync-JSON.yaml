@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 252
+    host: api.cerebras.ai
+    body: "{\"model\":\"qwen-3-235b-a22b-thinking-2507\",\"messages\":[{\"role\":\"user\",\"content\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\\\"is_fruit\\\": bool}.\"}],\"response_format\":{\"type\":\"json_object\"}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cerebras.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-5f9896e5-0a79-4c3b-a2f1-d97266850b92\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"is_fruit\\\": true}\",\"role\":\"assistant\"}}],\"created\":1756422339,\"model\":\"qwen-3-235b-a22b-thinking-2507\",\"system_fingerprint\":\"fp_c9f89a26d3dfc34f2b15\",\"object\":\"chat.completion\",\"usage\":{\"prompt_tokens\":39,\"completion_tokens\":100,\"total_tokens\":139,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":0.004316023,\"prompt_time\":0.004234445,\"completion_time\":0.140302955,\"total_time\":0.15025997161865234,\"created\":1756422339}}"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 976774667ce4a223-YYZ
+      Content-Type:
+      - application/json
+      Inference-Id:
+      - chatcmpl-5f9896e5-0a79-4c3b-a2f1-d97266850b92
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=3600; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Ratelimit-Limit-Requests-Day:
+      - "14400"
+      X-Ratelimit-Limit-Tokens-Minute:
+      - "60000"
+      X-Ratelimit-Remaining-Requests-Day:
+      - "14342"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "59578"
+      X-Ratelimit-Reset-Requests-Day:
+      - "3260.0119202136993"
+      X-Ratelimit-Reset-Tokens-Minute:
+      - "20.01192021369934"
+      X-Request-Id:
+      - 976774667ce4a223-YYZ
+    status: 200 OK
+    code: 200
+    duration: 1.607s

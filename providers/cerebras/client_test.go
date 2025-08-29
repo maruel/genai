@@ -53,7 +53,7 @@ func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper)
 		// Check if it has predefined thinking tokens.
 		for _, sc := range c.Scoreboard().Scenarios {
 			if sc.Thinking && slices.Contains(sc.Models, model.Model) {
-				if sc.ThinkingTokenStart != "" && sc.ThinkingTokenEnd != "" {
+				if sc.ThinkingTokenEnd != "" {
 					// This is bad. We should have a better way to determine if a model needs to be prompted to think
 					// (qwen-3-32b) or must not (qwen-3-235b-a22b-thinking-2507).
 					if !strings.Contains(model.Model, "-thinking-") {

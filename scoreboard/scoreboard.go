@@ -105,6 +105,46 @@ type Functionality struct {
 	_ struct{}
 }
 
+// Less returns true if the functionality is less that the other.
+func (f *Functionality) Less(rhs *Functionality) bool {
+	if !f.ReportRateLimits && rhs.ReportRateLimits {
+		return true
+	}
+	if f.ReportTokenUsage == False && rhs.ReportTokenUsage != False {
+		return true
+	}
+	if f.ReportFinishReason == False && rhs.ReportFinishReason != False {
+		return true
+	}
+	if !f.Seed && rhs.Seed {
+		return true
+	}
+	if f.Tools == False && rhs.Tools != False {
+		return true
+	}
+	// Ignore ToolsBiased and ToolsIndecisive.
+	if !f.ToolCallRequired && rhs.ToolCallRequired {
+		return true
+	}
+	if !f.JSON && rhs.JSON {
+		return true
+	}
+	if !f.JSONSchema && rhs.JSONSchema {
+		return true
+	}
+	if !f.Citations && rhs.Citations {
+		return true
+	}
+	// Ignore TopLogprobs, it's not important enough.
+	if !f.MaxTokens && rhs.MaxTokens {
+		return true
+	}
+	if !f.StopSequence && rhs.StopSequence {
+		return true
+	}
+	return false
+}
+
 func (f *Functionality) Validate() error {
 	if err := f.ReportTokenUsage.Validate(); err != nil {
 		return fmt.Errorf("invalid ReportTokenUsage: %w", err)

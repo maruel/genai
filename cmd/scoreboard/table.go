@@ -132,6 +132,8 @@ func (t *tableDataRow) initFromScenario(s *scoreboard.Scenario) {
 			}
 		}
 		// TODO: Keep the best out of all the options. This is "✅"
+		// TODO: Make it clearer when tools are only supported in sync and not in stream. This is surprisingly
+		// frequent.
 		if s.GenSync.Tools == scoreboard.True && (s.GenStream != nil && s.GenStream.Tools == scoreboard.True) {
 			if t.Tools == "" {
 				t.Tools = "✅"
@@ -167,7 +169,12 @@ func (t *tableDataRow) initFromScenario(s *scoreboard.Scenario) {
 		if _, hasTextIn := s.In[genai.ModalityText]; hasTextIn {
 			if _, hasTextOut := s.Out[genai.ModalityText]; hasTextOut {
 				if t.Streaming == "" {
-					t.Streaming = "✅"
+					// Check if GenStream is not the same as GenSync. If so, use the emoji.
+					if s.GenStream.Less(s.GenSync) {
+						t.Streaming = "🤏"
+					} else {
+						t.Streaming = "✅"
+					}
 				}
 				if s.GenStream.ReportTokenUsage != scoreboard.True && !strings.Contains(t.Streaming, "💸") {
 					t.Streaming += "💸"
@@ -398,7 +405,7 @@ func visibleWidth(s string) int {
 
 func runeWidth(r rune) int {
 	switch r {
-	case '🏠', '❌', '💬', '✅', '📄', '🎤', '🤪', '🚩', '💨', '💸', '🤷', '📸', '🎥', '💥', '🤐', '🧐', '🌐':
+	case '🏠', '❌', '💬', '✅', '📄', '🎤', '🤪', '🚩', '💨', '💸', '🤷', '📸', '🎥', '💥', '🤐', '🧐', '🌐', '🤏':
 		return 2
 	case '🖼', '🎞', '⚖':
 		return 0

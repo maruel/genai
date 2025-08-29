@@ -5,16 +5,19 @@ The opinionated high performance professional-grade AI package for Go.
 genai is _different_. Curious why it was created? See the release announcement at
 [maruel.ca/post/genai-v0.1.0](https://maruel.ca/post/genai-v0.1.0).
 
+[![Go Reference](https://pkg.go.dev/badge/github.com/maruel/genai/.svg)](https://pkg.go.dev/github.com/maruel/genai/)
+[![codecov](https://codecov.io/gh/maruel/genai/graph/badge.svg?token=VLBH363B6N)](https://codecov.io/gh/maruel/genai)
+
 
 ## Features
 
 - **Full functionality**: Full access to each backend-specific functionality.
   Access the raw API if needed with full message schema as Go structs.
-- **Tool calling via reflection**: Tell the LLM to call a tool directly, described a Go
+- **Tool calling via reflection**: Tell the LLM to call a tool directly, described as a Go
   struct. No need to manually fiddle with JSON.
 - **Native JSON struct serialization**: Pass a struct to tell the LLM what to
   generate, decode the reply into your struct. No need to manually fiddle with
-  JSON. Supports required fields, enums, descriptions, etc.
+  JSON. Supports required fields, enums, descriptions, etc. You can still fiddle if you want to. :)
 - **Streaming**: Streams completion reply as the output is being generated, including thinking and tool
   calling, via [go 1.23 iterators](https://go.dev/blog/range-functions).
 - **Multi-modal**: Process images, PDFs and videos (!) as input or output.
@@ -23,9 +26,6 @@ genai is _different_. Curious why it was created? See the release announcement a
 - **Rate limits and usage**: Parse the provider-specific HTTP headers and JSON response to get the tokens usage
   and remaining quota.
 - Provide access to HTTP headers to enable [beta features](https://pkg.go.dev/github.com/maruel/genai#example-package-GenSyncWithToolCallLoop_with_custom_HTTP_Header).
-
-[![Go Reference](https://pkg.go.dev/badge/github.com/maruel/genai/.svg)](https://pkg.go.dev/github.com/maruel/genai/)
-[![codecov](https://codecov.io/gh/maruel/genai/graph/badge.svg?token=VLBH363B6N)](https://codecov.io/gh/maruel/genai)
 
 
 ## Design
@@ -37,7 +37,7 @@ genai is _different_. Curious why it was created? See the release announcement a
 - **Professional grade**. smoke tested on live services with recorded traces located in `testdata/`
   directories, e.g.
   [providers/anthropic/testdata/TestClient_Scoreboard/](https://github.com/maruel/genai/tree/main/providers/anthropic/testdata/TestClient_Scoreboard/).
-- **Trust, But verify**. It generates a [scoreboard](#scoreboard) based on actual behavior from each provider.
+- **Trust, but verify**. It generates a [scoreboard](#scoreboard) based on actual behavior from each provider.
 - **Optimized for speed**. Minimize memory allocations, compress data at the
   transport layer when possible. Groq, Mistral and OpenAI use brotli for HTTP compression instead of gzip,
   and POST's body to Google are gzip compressed.
@@ -741,7 +741,7 @@ list-models -provider huggingface
 ```
 
 
-## I'm poor 💸
+## Providers with free tier 💸
 
 As of August 2025, the following services offer a free tier (other limits
 apply):

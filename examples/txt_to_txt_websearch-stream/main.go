@@ -19,9 +19,9 @@ func main() {
 	ctx := context.Background()
 	// Warning: this is surpringly expensive.
 	// Other options (as of 2025-08):
-	// - anthropic (to be implemented, please send a PR! https://docs.anthropic.com/en/docs/agents-and-tools/tool-use/web-search-tool)
-	// - gemini (to be implemented, please send a PR! https://ai.google.dev/gemini-api/docs/google-search)
-	// - openai (to be implemented, please send a PR! https://platform.openai.com/docs/guides/tools-web-search)
+	// - anthropic
+	// - gemini
+	// - openai
 	c, err := perplexity.New(ctx, &genai.ProviderOptions{Model: genai.ModelCheap}, nil)
 	if err != nil {
 		log.Fatal(err)
@@ -32,7 +32,10 @@ func main() {
 			{Text: "Who holds ultimate power of Canada? Answer succinctly."},
 		},
 	}}
-	fragments, finish := c.GenStream(ctx, msgs)
+	// perplexity has websearch enabled by default so this is a no-op. It is needed to enable websearch for
+	// anthropic, gemini and openai.
+	opts := genai.OptionsTools{WebSearch: true}
+	fragments, finish := c.GenStream(ctx, msgs, &opts)
 	firstText := true
 	for f := range fragments {
 		if !f.Citation.IsZero() {

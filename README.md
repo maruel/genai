@@ -242,7 +242,11 @@ Snippet:
 			{Text: "Who holds ultimate power of Canada? Answer succinctly."},
 		},
 	}}
-	res, _ := c.GenSync(ctx, msgs)
+
+	// perplexity has websearch enabled by default so this is a no-op.
+	//  It is needed to enable websearch for anthropic, gemini and openai.
+	opts := genai.OptionsTools{WebSearch: true}
+	res, _ := c.GenSync(ctx, msgs, &opts)
 	for _, r := range res.Replies {
 		for _, ci := range r.Citations {
 			fmt.Printf("Sources:\n")

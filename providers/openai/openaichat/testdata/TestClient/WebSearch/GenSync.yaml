@@ -1,0 +1,67 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 190
+    host: api.openai.com
+    body: "{\"model\":\"gpt-4o-mini-search-preview\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What's the full name of the IANA organization\"}]}],\"web_search_options\":{}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.openai.com/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"chatcmpl-d075d7c6-7d0b-432c-9341-b2545cc6c0a8\",\n  \"object\": \"chat.completion\",\n  \"created\": 1756507389,\n  \"model\": \"gpt-4o-mini-search-preview-2025-03-11\",\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"The full name of the IANA organization is the Internet Assigned Numbers Authority. IANA is responsible for coordinating key elements that keep the Internet running smoothly, including the management of the DNS Root, IP address allocation, and protocol assignments. These services are provided by Public Technical Identifiers (PTI), an affiliate of the Internet Corporation for Assigned Names and Numbers (ICANN). ([iana.org](https://www.iana.org/about.html?utm_source=openai)) \",\n        \"refusal\": null,\n        \"annotations\": [\n          {\n            \"type\": \"url_citation\",\n            \"url_citation\": {\n              \"end_index\": 476,\n              \"start_index\": 413,\n              \"title\": \"About us\",\n              \"url\": \"https://www.iana.org/about.html?utm_source=openai\"\n            }\n          }\n        ]\n      },\n      \"finish_reason\": \"stop\"\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 9,\n    \"completion_tokens\": 93,\n    \"total_tokens\": 102,\n    \"prompt_tokens_details\": {\n      \"cached_tokens\": 0,\n      \"audio_tokens\": 0\n    },\n    \"completion_tokens_details\": {\n      \"reasoning_tokens\": 0,\n      \"audio_tokens\": 0,\n      \"accepted_prediction_tokens\": 0,\n      \"rejected_prediction_tokens\": 0\n    }\n  },\n  \"system_fingerprint\": \"\"\n}\n"
+    headers:
+      Access-Control-Expose-Headers:
+      - X-Request-ID
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 976f90cadc6da2ac-YUL
+      Content-Type:
+      - application/json
+      Openai-Organization:
+      - user-vtmtcvpbctksjfewktqdl2sw
+      Openai-Processing-Ms:
+      - "2693"
+      Openai-Project:
+      - proj_tH6hQUFvA4Bx6SyAb23zzLEg
+      Openai-Version:
+      - "2020-10-01"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "2699"
+      X-Ratelimit-Limit-Requests:
+      - "100"
+      X-Ratelimit-Limit-Tokens:
+      - "6000"
+      X-Ratelimit-Remaining-Requests:
+      - "99"
+      X-Ratelimit-Remaining-Tokens:
+      - "5986"
+      X-Ratelimit-Reset-Requests:
+      - 600ms
+      X-Ratelimit-Reset-Tokens:
+      - 140ms
+      X-Request-Id:
+      - req_197c1d7270c84ce1ae7c60a9d035b685
+    status: 200 OK
+    code: 200
+    duration: 3.437s

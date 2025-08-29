@@ -152,6 +152,9 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 					c.Tools[i].Function.Strict = true
 				}
 			}
+			if v.WebSearch {
+				unsupported = append(unsupported, "OptionsTools.WebSearch")
+			}
 		default:
 			errs = append(errs, fmt.Errorf("unsupported options type %T", opt))
 		}

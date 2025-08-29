@@ -137,8 +137,12 @@ type Tool struct {
 		} `json:"dynamicRetrievalConfig,omitzero"`
 	} `json:"googleSearchRetrieval,omitzero"`
 	CodeExecution struct{} `json:"codeExecution,omitzero"`
-	GoogleSearch  struct{} `json:"googleSearch,omitzero"`
+	// GoogleSearch presence signifies that it should be enabled,
+	GoogleSearch *GoogleSearch `json:"googleSearch,omitzero"`
 }
+
+// GoogleSearch is "documented" at https://ai.google.dev/gemini-api/docs/google-search
+type GoogleSearch struct{}
 
 // FunctionDeclaration is documented at https://ai.google.dev/api/caching?hl=en#FunctionDeclaration
 type FunctionDeclaration struct {
@@ -368,6 +372,10 @@ func (c *ChatRequest) initOptionsTools(v *genai.OptionsTools) ([]string, []error
 				errs = append(errs, fmt.Errorf("%s: tool response: %w", t.Name, err))
 			}
 		}
+	}
+	if v.WebSearch {
+		// https://ai.google.dev/gemini-api/docs/google-search
+		c.Tools = append(c.Tools, Tool{GoogleSearch: &GoogleSearch{}})
 	}
 	return unsupported, errs
 }
@@ -657,75 +665,11 @@ type ThinkingConfig struct {
 
 // ChatResponse is documented at https://ai.google.dev/api/generate-content?hl=en#v1beta.GenerateContentResponse
 type ChatResponse struct {
-	// https://ai.google.dev/api/generate-content?hl=en#v1beta.Candidate
-	Candidates []struct {
-		Content      Content      `json:"content"`
-		FinishReason FinishReason `json:"finishReason"`
-		// https://ai.google.dev/api/generate-content?hl=en#v1beta.SafetyRating
-		SafetyRatings []struct {
-			// https://ai.google.dev/api/generate-content?hl=en#v1beta.HarmCategory
-			Category string `json:"category"`
-			// https://ai.google.dev/api/generate-content?hl=en#HarmProbability
-			Probability string `json:"probability"`
-			Blocked     bool   `json:"blocked"`
-		} `json:"safetyRatings"`
-		// https://ai.google.dev/api/generate-content?hl=en#v1beta.CitationMetadata
-		CitationMetadata struct {
-			// https://ai.google.dev/api/generate-content?hl=en#CitationSource
-			CitationSources []struct {
-				StartIndex int64  `json:"startIndex"`
-				EndIndex   int64  `json:"endIndex"`
-				URI        string `json:"uri"`
-				License    string `json:"license"`
-			} `json:"citationSources"`
-		} `json:"citationMetadata"`
-		TokenCount int64 `json:"tokenCount"`
-		// https://ai.google.dev/api/generate-content?hl=en#GroundingAttribution
-		GroundingAttributions []struct {
-			SourceID string  `json:"sourceId"`
-			Countent Content `json:"countent"`
-		} `json:"groundingAttributions"`
-		// https://ai.google.dev/api/generate-content?hl=en#GroundingMetadata
-		GroundingMetadata struct {
-			// https://ai.google.dev/api/generate-content?hl=en#GroundingChunk
-			GroundingChunks []struct {
-				// https://ai.google.dev/api/generate-content?hl=en#Web
-				Web struct {
-					URI   string `json:"uri"`
-					Title string `json:"title"`
-				} `json:"web"`
-			} `json:"groundingChunks"`
-			// https://ai.google.dev/api/generate-content?hl=en#GroundingSupport
-			GroundingSupports []struct {
-				GroundingChunkIndices []int64   `json:"groundingChunkIndices"`
-				ConfidenceScores      []float64 `json:"confidenceScores"`
-				// https://ai.google.dev/api/generate-content?hl=en#Segment
-				Segment struct {
-					PartIndex  int64  `json:"partIndex"`
-					StartIndex int64  `json:"startIndex"`
-					EndIndex   int64  `json:"endIndex"`
-					Text       string `json:"text"`
-				} `json:"segment"`
-			} `json:"groundingSupports"`
-			WebSearchQueries []string `json:"webSearchQueries"`
-			// https://ai.google.dev/api/generate-content?hl=en#SearchEntryPoint
-			SearchEntryPoint struct {
-				RenderedContent string `json:"renderedContent"`
-				SDKBlob         []byte `json:"sdkBlob"` // JSON encoded list of (search term,search url) results
-			} `json:"searchEntryPoint"`
-			// https://ai.google.dev/api/generate-content?hl=en#RetrievalMetadata
-			RetrievalMetadata struct {
-				GoogleSearchDynamicRetrievalScore float64 `json:"googleSearchDynamicRetrievalScore"`
-			} `json:"retrievalMetadata"`
-		} `json:"groundingMetadata"`
-		AvgLogprobs    float64        `json:"avgLogprobs"`
-		LogprobsResult LogprobsResult `json:"logprobsResult"`
-		Index          int64          `json:"index"`
-	} `json:"candidates"`
-	PromptFeedback struct{}      `json:"promptFeedback,omitzero"`
-	UsageMetadata  UsageMetadata `json:"usageMetadata"`
-	ModelVersion   string        `json:"modelVersion"`
-	ResponseID     string        `json:"responseId"`
+	Candidates     []ResponseCandidate `json:"candidates"`
+	PromptFeedback struct{}            `json:"promptFeedback,omitzero"`
+	UsageMetadata  UsageMetadata       `json:"usageMetadata"`
+	ModelVersion   string              `json:"modelVersion"`
+	ResponseID     string              `json:"responseId"`
 }
 
 func (c *ChatResponse) ToResult() (genai.Result, error) {
@@ -743,7 +687,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	}
 	// Gemini is the only one returning uppercase so convert down for compatibility.
 	out.Usage.FinishReason = c.Candidates[0].FinishReason.ToFinishReason()
-	err := c.Candidates[0].Content.To(&out.Message)
+	err := c.Candidates[0].To(&out.Message)
 	if out.Usage.FinishReason == genai.FinishedStop && slices.ContainsFunc(out.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
 		// Lie for the benefit of everyone.
 		out.Usage.FinishReason = genai.FinishedToolCalls
@@ -756,10 +700,135 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	return out, err
 }
 
+// ResponseCandidate is described at https://ai.google.dev/api/generate-content?hl=en#v1beta.Candidate
+//
+// It is essentially a "Message".
+type ResponseCandidate struct {
+	Content      Content      `json:"content"`
+	FinishReason FinishReason `json:"finishReason"`
+	// https://ai.google.dev/api/generate-content?hl=en#v1beta.SafetyRating
+	SafetyRatings []struct {
+		// https://ai.google.dev/api/generate-content?hl=en#v1beta.HarmCategory
+		Category string `json:"category"`
+		// https://ai.google.dev/api/generate-content?hl=en#HarmProbability
+		Probability string `json:"probability"`
+		Blocked     bool   `json:"blocked"`
+	} `json:"safetyRatings"`
+	// https://ai.google.dev/api/generate-content?hl=en#v1beta.CitationMetadata
+	CitationMetadata struct {
+		// https://ai.google.dev/api/generate-content?hl=en#CitationSource
+		CitationSources []struct {
+			StartIndex int64  `json:"startIndex"`
+			EndIndex   int64  `json:"endIndex"`
+			URI        string `json:"uri"`
+			License    string `json:"license"`
+		} `json:"citationSources"`
+	} `json:"citationMetadata"`
+	TokenCount int64 `json:"tokenCount"`
+	// https://ai.google.dev/api/generate-content?hl=en#GroundingAttribution
+	GroundingAttributions []struct {
+		SourceID string  `json:"sourceId"`
+		Countent Content `json:"countent"`
+	} `json:"groundingAttributions"`
+	GroundingMetadata GroundingMetadata `json:"groundingMetadata"`
+	AvgLogprobs       float64           `json:"avgLogprobs"`
+	LogprobsResult    LogprobsResult    `json:"logprobsResult"`
+	Index             int64             `json:"index"`
+}
+
+func (r *ResponseCandidate) To(out *genai.Message) error {
+	if err := r.Content.To(out); err != nil {
+		return err
+	}
+	if !internal.BeLenient {
+		// TODO: Implement.
+		if len(r.SafetyRatings) > 0 {
+			return fmt.Errorf("unexpected safety rating: %v", r.SafetyRatings)
+		}
+		if len(r.CitationMetadata.CitationSources) > 0 {
+			return fmt.Errorf("unexpected citation metadata: %v", r.CitationMetadata.CitationSources)
+		}
+		if len(r.GroundingAttributions) > 0 {
+			return fmt.Errorf("unexpected grounding attributions: %v", r.GroundingAttributions)
+		}
+	}
+	if len(r.GroundingMetadata.GroundingChunks) > 0 {
+		rp := genai.Reply{}
+		if err := r.GroundingMetadata.To(&rp); err != nil {
+			return err
+		}
+		out.Replies = append(out.Replies, rp)
+	}
+	return nil
+}
+
+// GroundingMetadata is documented at https://ai.google.dev/api/generate-content?hl=en#GroundingMetadata
+type GroundingMetadata struct {
+	// https://ai.google.dev/api/generate-content?hl=en#GroundingChunk
+	GroundingChunks []struct {
+		// https://ai.google.dev/api/generate-content?hl=en#Web
+		Web struct {
+			URI   string `json:"uri,omitzero"`
+			Title string `json:"title,omitzero"`
+		} `json:"web,omitzero"`
+	} `json:"groundingChunks,omitzero"`
+	// https://ai.google.dev/api/generate-content?hl=en#GroundingSupport
+	GroundingSupports []struct {
+		GroundingChunkIndices []int64   `json:"groundingChunkIndices,omitzero"`
+		ConfidenceScores      []float64 `json:"confidenceScores,omitzero"`
+		// https://ai.google.dev/api/generate-content?hl=en#Segment
+		Segment struct {
+			PartIndex  int64  `json:"partIndex,omitzero"`
+			StartIndex int64  `json:"startIndex,omitzero"`
+			EndIndex   int64  `json:"endIndex,omitzero"`
+			Text       string `json:"text,omitzero"`
+		} `json:"segment,omitzero"`
+	} `json:"groundingSupports,omitzero"`
+	WebSearchQueries []string `json:"webSearchQueries,omitzero"`
+	// https://ai.google.dev/api/generate-content?hl=en#SearchEntryPoint
+	SearchEntryPoint struct {
+		RenderedContent string `json:"renderedContent,omitzero"`
+		SDKBlob         []byte `json:"sdkBlob,omitzero"` // JSON encoded list of (search term,search url) results
+	} `json:"searchEntryPoint,omitzero"`
+	// https://ai.google.dev/api/generate-content?hl=en#RetrievalMetadata
+	RetrievalMetadata struct {
+		GoogleSearchDynamicRetrievalScore float64 `json:"googleSearchDynamicRetrievalScore,omitzero"`
+	} `json:"retrievalMetadata,omitzero"`
+}
+
+func (g *GroundingMetadata) To(out *genai.Reply) error {
+	for _, s := range g.GroundingSupports {
+		c := genai.Citation{
+			Type:       "web",
+			Text:       s.Segment.Text,
+			StartIndex: s.Segment.StartIndex,
+			EndIndex:   s.Segment.EndIndex,
+		}
+		// This will cause duplicate source.
+		for _, idx := range s.GroundingChunkIndices {
+			if idx < 0 || idx > int64(len(g.GroundingChunks)) {
+				return fmt.Errorf("invalid grounding chunk index: %v", idx)
+			}
+			// TODO: The URL points to https://vertexaisearch.cloud.google.com/grounding-api-redirect/... which is
+			// not good. We should to a HEAD request to get the actual URL.
+			gc := g.GroundingChunks[idx]
+			c.Sources = append(c.Sources, genai.CitationSource{
+				Type:  "web",
+				URL:   gc.Web.URI,
+				Title: gc.Web.Title,
+			})
+		}
+		out.Citations = append(out.Citations, c)
+	}
+	// TODO: WebSearchQueries.
+	// SearchEntryPoint will contain some HTML.
+	return nil
+}
+
 // LogprobsResult is documented at https://ai.google.dev/api/generate-content#LogprobsResult
 type LogprobsResult struct {
-	TopCandidates    []TopCandidate `json:"topCandidates"`
-	ChosenCandidates []Candidate    `json:"chosenCandidates"`
+	TopCandidates    []TopCandidate   `json:"topCandidates"`
+	ChosenCandidates []TokenCandidate `json:"chosenCandidates"`
 }
 
 func (l *LogprobsResult) To() []genai.Logprobs {
@@ -776,11 +845,11 @@ func (l *LogprobsResult) To() []genai.Logprobs {
 
 // TopCandidate is documented at https://ai.google.dev/api/generate-content#TopCandidates
 type TopCandidate struct {
-	Candidates []Candidate `json:"candidates"`
+	Candidates []TokenCandidate `json:"candidates"`
 }
 
-// Candidate is documented at https://ai.google.dev/api/generate-content#Candidate
-type Candidate struct {
+// TokenCandidate is documented at https://ai.google.dev/api/generate-content#TokenCandidate
+type TokenCandidate struct {
 	Token          string  `json:"token"`
 	TokenID        int64   `json:"tokenId"`
 	LogProbability float64 `json:"logProbability"`
@@ -856,9 +925,10 @@ type ModalityTokenCount struct {
 
 type ChatStreamChunkResponse struct {
 	Candidates []struct {
-		Content      Content      `json:"content"`
-		FinishReason FinishReason `json:"finishReason"`
-		Index        int64        `json:"index"`
+		Content           Content           `json:"content"`
+		FinishReason      FinishReason      `json:"finishReason"`
+		Index             int64             `json:"index"`
+		GroundingMetadata GroundingMetadata `json:"groundingMetadata"`
 	} `json:"candidates"`
 	UsageMetadata UsageMetadata `json:"usageMetadata"`
 	ModelVersion  string        `json:"modelVersion"`
@@ -2037,8 +2107,25 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			return fmt.Errorf("unexpected role %q", role)
 		}
 
-		// Gemini is the only one returning uppercase so convert down for compatibility.
 		f := genai.ReplyFragment{}
+
+		if len(pkt.Candidates[0].GroundingMetadata.GroundingSupports) > 1 {
+			return fmt.Errorf("implement grounding supports %#v", pkt.Candidates[0].GroundingMetadata.GroundingSupports)
+		} else if len(pkt.Candidates[0].GroundingMetadata.GroundingSupports) == 1 {
+			// TODO: Could be cleaner.
+			r := genai.Reply{}
+			if err := pkt.Candidates[0].GroundingMetadata.To(&r); err != nil {
+				return err
+			}
+			f.Citation = r.Citations[0]
+			if err := result.Accumulate(f); err != nil {
+				return err
+			}
+			chunks <- f
+			// Handle citation as a separate packet.
+			f = genai.ReplyFragment{}
+		}
+
 		for _, part := range pkt.Candidates[0].Content.Parts {
 			if part.Thought {
 				f.ThinkingFragment += part.Text

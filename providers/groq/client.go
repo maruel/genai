@@ -138,12 +138,12 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 			c.ServiceTier = v.ServiceTier
 			c.ReasoningFormat = v.ReasoningFormat
 		case *genai.OptionsText:
-			u, e := c.initOptionsText(v, model)
+			u, e := c.initOptionsText(v)
 			unsupported = append(unsupported, u...)
 			errs = append(errs, e...)
 			sp = v.SystemPrompt
 		case *genai.OptionsTools:
-			u, e := c.initOptionsTools(v, model)
+			u, e := c.initOptionsTools(v)
 			unsupported = append(unsupported, u...)
 			errs = append(errs, e...)
 		default:
@@ -188,7 +188,7 @@ func (c *ChatRequest) SetStream(stream bool) {
 	c.Stream = stream
 }
 
-func (c *ChatRequest) initOptionsText(v *genai.OptionsText, model string) ([]string, []error) {
+func (c *ChatRequest) initOptionsText(v *genai.OptionsText) ([]string, []error) {
 	var errs []error
 	var unsupported []string
 	c.MaxChatTokens = v.MaxTokens
@@ -212,7 +212,7 @@ func (c *ChatRequest) initOptionsText(v *genai.OptionsText, model string) ([]str
 	return unsupported, errs
 }
 
-func (c *ChatRequest) initOptionsTools(v *genai.OptionsTools, model string) ([]string, []error) {
+func (c *ChatRequest) initOptionsTools(v *genai.OptionsTools) ([]string, []error) {
 	var errs []error
 	var unsupported []string
 	if len(v.Tools) != 0 {
@@ -234,6 +234,9 @@ func (c *ChatRequest) initOptionsTools(v *genai.OptionsTools, model string) ([]s
 				c.Tools[i].Function.Parameters = t.GetInputSchema()
 			}
 		}
+	}
+	if v.WebSearch {
+		unsupported = append(unsupported, "OptionsTools.WebSearch")
 	}
 	return unsupported, errs
 }

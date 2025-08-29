@@ -107,7 +107,10 @@ func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper)
 	// Save on costs when running the smoke test.
 	var p genai.Provider = &injectOptions{
 		Provider: c,
-		Opts:     []genai.Options{&perplexity.Options{DisableSearch: true, DisableRelatedQuestions: true}},
+		Opts: []genai.Options{
+			&genai.OptionsTools{WebSearch: false},
+			&perplexity.Options{DisableRelatedQuestions: true},
+		},
 	}
 	if model.Thinking {
 		for _, sc := range c.Scoreboard().Scenarios {

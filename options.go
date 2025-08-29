@@ -180,6 +180,9 @@ type OptionsTools struct {
 	Tools []ToolDef
 	// Force tells the LLM a tool call must be done, or not.
 	Force ToolCallRequest
+	// WebSearch specifies if websearch should be enabled. It is generally disabled by default except for
+	// perplexity.
+	WebSearch bool
 }
 
 // Validate ensures the completion options are valid.
@@ -194,7 +197,7 @@ func (o *OptionsTools) Validate() error {
 		}
 		names[t.Name] = i
 	}
-	if len(o.Tools) == 0 && o.Force == ToolCallRequired {
+	if len(o.Tools) == 0 && !o.WebSearch && o.Force == ToolCallRequired {
 		return fmt.Errorf("field Force is ToolCallRequired: Tools are required")
 	}
 	return nil

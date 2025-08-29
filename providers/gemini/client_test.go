@@ -283,6 +283,44 @@ func TestClient(t *testing.T) {
 		}
 	})
 
+	t.Run("WebSearch", func(t *testing.T) {
+		opts := genai.OptionsTools{WebSearch: true}
+		t.Run("GenSync", func(t *testing.T) {
+			c := getClient(t, "gemini-2.5-flash-lite")
+			msgs := genai.Messages{genai.NewTextMessage("What's the full name of the IANA organization")}
+			res, err := c.GenSync(t.Context(), msgs, &opts)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if !slices.ContainsFunc(res.Replies, func(r genai.Reply) bool {
+				return r.Citations != nil
+			}) {
+				t.Logf("%+v", res)
+				t.Fatal("no citations")
+			}
+		})
+		t.Run("GenStream", func(t *testing.T) {
+			c := getClient(t, "gemini-2.5-flash-lite")
+			msgs := genai.Messages{genai.NewTextMessage("What's the full name of the IANA organization")}
+			fragments, finish := c.GenStream(t.Context(), msgs, &opts)
+			hasCitation := false
+			for f := range fragments {
+				if !f.Citation.IsZero() {
+					hasCitation = true
+				}
+				// t.Logf("%+v", f)
+			}
+			res, err := finish()
+			if err != nil {
+				t.Fatal(err)
+			}
+			if !hasCitation {
+				t.Logf("%+v", res)
+				t.Fatal("no citations")
+			}
+		})
+	})
+
 	t.Run("errors", func(t *testing.T) {
 		data := []internaltest.ProviderError{
 			{

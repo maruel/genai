@@ -106,9 +106,10 @@ type ChatRequest struct {
 	// 		Name string `json:"name,omitzero"`
 	// 	} `json:"function,omitzero"`
 	// } `json:"tool_choice,omitzero"`
-	ToolChoice        string `json:"tool_choice,omitzero"` // "none", "auto", "required"
-	ParallelToolCalls bool   `json:"parallel_tool_calls,omitzero"`
-	User              string `json:"user,omitzero"`
+	ToolChoice        string            `json:"tool_choice,omitzero"` // "none", "auto", "required"
+	ParallelToolCalls bool              `json:"parallel_tool_calls,omitzero"`
+	User              string            `json:"user,omitzero"`
+	WebSearchOptions  *WebSearchOptions `json:"web_search_options,omitzero"`
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
@@ -249,7 +250,22 @@ func (c *ChatRequest) initOptionsTools(v *genai.OptionsTools, model string) []st
 			}
 		}
 	}
+	if v.WebSearch {
+		c.WebSearchOptions = &WebSearchOptions{}
+	}
 	return unsupported
+}
+
+// WebSearchOptions is "documented" at https://platform.openai.com/docs/guides/tools-web-search
+type WebSearchOptions struct {
+	UserLocation struct {
+		Type        string `json:"type,omitzero"` // "approximate"
+		Approximate struct {
+			Country string `json:"country,omitzero"` // "GB"
+			City    string `json:"city,omitzero"`    // "London"
+			Region  string `json:"region,omitzero"`  // "London"
+		} `json:"approximate,omitzero"`
+	} `json:"user_location,omitzero"`
 }
 
 // Message is documented at https://platform.openai.com/docs/api-reference/chat/create
@@ -261,9 +277,9 @@ type Message struct {
 	Audio   struct {
 		ID string `json:"id,omitzero"`
 	} `json:"audio,omitzero"`
-	ToolCalls   []ToolCall `json:"tool_calls,omitzero"`
-	ToolCallID  string     `json:"tool_call_id,omitzero"` // TODO
-	Annotations []struct{} `json:"annotations,omitzero"`
+	ToolCalls   []ToolCall   `json:"tool_calls,omitzero"`
+	ToolCallID  string       `json:"tool_call_id,omitzero"` // TODO
+	Annotations []Annotation `json:"annotations,omitzero"`
 }
 
 // From must be called with at most one ToolCallResults.
@@ -330,7 +346,29 @@ func (m *Message) To(out *genai.Message) error {
 		out.Replies = append(out.Replies, genai.Reply{})
 		m.ToolCalls[i].To(&out.Replies[len(out.Replies)-1].ToolCall)
 	}
+	for _, a := range m.Annotations {
+		if a.Type != "url_citation" {
+			return fmt.Errorf("unsupported annotation type %q", a.Type)
+		}
+		c := genai.Citation{
+			Type:       "web",
+			StartIndex: a.URLCitation.StartIndex,
+			EndIndex:   a.URLCitation.EndIndex,
+			Sources:    []genai.CitationSource{{Type: "web", URL: a.URLCitation.URL}},
+		}
+		out.Replies = append(out.Replies, genai.Reply{Citations: []genai.Citation{c}})
+	}
 	return nil
+}
+
+type Annotation struct {
+	Type        string `json:"type,omitzero"` // "url_citation"
+	URLCitation struct {
+		StartIndex int64  `json:"start_index,omitzero"`
+		EndIndex   int64  `json:"end_index,omitzero"`
+		Title      string `json:"title,omitzero"`
+		URL        string `json:"url,omitzero"` // Has a ?utm_source=openai suffix.
+	} `json:"url_citation,omitzero"`
 }
 
 type Contents []Content
@@ -705,10 +743,11 @@ func (l *Logprobs) To() []genai.Logprobs {
 type ChatStreamChunkResponse struct {
 	Choices []struct {
 		Delta struct {
-			Content   string     `json:"content"`
-			Role      string     `json:"role"`
-			Refusal   string     `json:"refusal"`
-			ToolCalls []ToolCall `json:"tool_calls"`
+			Content     string       `json:"content"`
+			Role        string       `json:"role"`
+			Refusal     string       `json:"refusal"`
+			ToolCalls   []ToolCall   `json:"tool_calls"`
+			Annotations []Annotation `json:"annotations"`
 		} `json:"delta"`
 		FinishReason FinishReason `json:"finish_reason"`
 		Index        int64        `json:"index"`
@@ -1209,7 +1248,24 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		if r := pkt.Choices[0].Delta.Refusal; r != "" {
 			return fmt.Errorf("refused: %q", r)
 		}
-		f := genai.ReplyFragment{TextFragment: pkt.Choices[0].Delta.Content}
+
+		f := genai.ReplyFragment{}
+		if len(pkt.Choices[0].Delta.Annotations) > 1 {
+			return fmt.Errorf("implement multiple annotations: %#v", pkt)
+		} else if len(pkt.Choices[0].Delta.Annotations) == 1 {
+			a := pkt.Choices[0].Delta.Annotations[0]
+			f.Citation.Type = "web"
+			f.Citation.StartIndex = a.URLCitation.StartIndex
+			f.Citation.EndIndex = a.URLCitation.EndIndex
+			f.Citation.Sources = []genai.CitationSource{{Type: "web", URL: a.URLCitation.URL}}
+			if err := result.Accumulate(f); err != nil {
+				return err
+			}
+			chunks <- f
+			f = genai.ReplyFragment{}
+		}
+
+		f.TextFragment = pkt.Choices[0].Delta.Content
 		// OpenAI streams the arguments. Buffer the arguments to send the fragment as a whole tool call.
 		if len(pkt.Choices[0].Delta.ToolCalls) == 1 {
 			if t := pkt.Choices[0].Delta.ToolCalls[0]; t.ID != "" {

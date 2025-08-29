@@ -46,8 +46,6 @@ func Scoreboard() scoreboard.Score {
 
 // Options defines Perplexity specific options.
 type Options struct {
-	// DisableSearch disables websearch, which is automatic for all models.
-	DisableSearch bool
 	// DisableRelatedQuestions disabled related questions, to save on tokens and latency.
 	DisableRelatedQuestions bool
 }
@@ -124,8 +122,15 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 		case *genai.OptionsText:
 			unsupported, errs = c.initOptionsText(v)
 			sp = v.SystemPrompt
+		case *genai.OptionsTools:
+			c.DisableSearch = !v.WebSearch
+			if len(v.Tools) != 0 {
+				errs = append(errs, errors.New("unsupported options OptionsTools.Tools"))
+			}
+			if v.Force == genai.ToolCallRequired {
+				unsupported = append(unsupported, "OptionsTools.Force")
+			}
 		case *Options:
-			c.DisableSearch = v.DisableSearch
 			c.ReturnRelatedQuestions = !v.DisableRelatedQuestions
 		default:
 			errs = append(errs, fmt.Errorf("unsupported options type %T", opt))

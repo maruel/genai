@@ -76,6 +76,45 @@ func TestClient(t *testing.T) {
 		*/
 	})
 
+	t.Run("WebSearch", func(t *testing.T) {
+		// See https://platform.openai.com/docs/guides/tools-web-search
+		opts := genai.OptionsTools{WebSearch: true, Force: genai.ToolCallRequired}
+		t.Run("GenSync", func(t *testing.T) {
+			c := getClient(t, "gpt-4o-mini")
+			msgs := genai.Messages{genai.NewTextMessage("Search the web to determine what's the full name of the IANA organization")}
+			res, err := c.GenSync(t.Context(), msgs, &opts)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if !slices.ContainsFunc(res.Replies, func(r genai.Reply) bool {
+				return r.Citations != nil
+			}) {
+				t.Logf("%+v", res)
+				t.Fatal("no citations")
+			}
+		})
+		t.Run("GenStream", func(t *testing.T) {
+			c := getClient(t, "gpt-4o-mini")
+			msgs := genai.Messages{genai.NewTextMessage("Search the web to determine what's the full name of the IANA organization")}
+			fragments, finish := c.GenStream(t.Context(), msgs, &opts)
+			hasCitation := false
+			for f := range fragments {
+				if !f.Citation.IsZero() {
+					hasCitation = true
+				}
+				// t.Logf("%+v", f)
+			}
+			res, err := finish()
+			if err != nil {
+				t.Fatal(err)
+			}
+			if !hasCitation {
+				t.Logf("%+v", res)
+				t.Fatal("no citations")
+			}
+		})
+	})
+
 	t.Run("Preferred", func(t *testing.T) {
 		data := []struct {
 			modality genai.Modality

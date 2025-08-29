@@ -197,6 +197,9 @@ func (c *ChatRequest) initOptionsTools(v *genai.OptionsTools) ([]string, []error
 			}
 		}
 	}
+	if v.WebSearch {
+		unsupported = append(unsupported, "OptionsTools.WebSearch")
+	}
 	return unsupported, errs
 }
 

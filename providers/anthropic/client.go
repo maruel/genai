@@ -228,6 +228,14 @@ func (c *ChatRequest) initOptionsTools(v *genai.OptionsTools) ([]string, []error
 			}
 		}
 	}
+	if v.WebSearch {
+		// https://docs.anthropic.com/en/docs/agents-and-tools/tool-use/web-search-tool
+		c.Tools = append(c.Tools, Tool{
+			Type: "web_search_20250305",
+			Name: "web_search",
+			// MaxUses: 10,
+		})
+	}
 	return unsupported, errs
 }
 
@@ -351,7 +359,18 @@ func (m *Message) To(out *genai.Message) error {
 			} else if !skip {
 				out.Replies = append(out.Replies, c)
 			}
-		case ContentImage, ContentDocument, ContentToolResult:
+		case ContentServerToolUse:
+		// TODO: We drop the value, which makes the next request unusable.
+		// TODO: Send in Reply.Opaque.
+		case ContentWebSearchToolResult:
+			c := genai.Reply{}
+			if skip, err := m.Content[i].To(&c); err != nil {
+				return fmt.Errorf("reply #%d: %w", i, err)
+			} else if skip {
+				return fmt.Errorf("reply #%d: unexpected skipped web search tool result", i)
+			}
+			out.Replies = append(out.Replies, c)
+		case ContentWebSearchResult, ContentImage, ContentDocument, ContentToolResult:
 			fallthrough
 		default:
 			return fmt.Errorf("unsupported content type %q", m.Content[i].Type)
@@ -362,61 +381,73 @@ func (m *Message) To(out *genai.Message) error {
 
 type Content struct {
 	Type ContentType `json:"type"`
-	// Valid with Type == ContentText.
+	// Type == ContentText.
 	Text string `json:"text,omitzero"`
 
-	// Valid with Type == ContentThinking.
+	// Type == ContentThinking.
 	Thinking  string `json:"thinking,omitzero"`
 	Signature []byte `json:"signature,omitzero"`
 
-	// Valid with Type == ContentRedactedThinking.
+	// Type == ContentRedactedThinking.
 	Data string `json:"data,omitzero"`
 
-	// Valid with Type == ContentText, ContentImage, ContentDocument, ContentToolUse, ContentToolResult.
+	// Type == ContentText, ContentImage, ContentDocument, ContentToolUse, ContentToolResult.
 	CacheControl struct {
 		Type string `json:"type,omitzero"` // "ephemeral"
 	} `json:"cache_control,omitzero"`
 
-	// Valid with Type == ContentText, ContentDocument.
+	// Type == ContentText, ContentDocument.
 	Citations Citations `json:"citations,omitzero"`
 
-	// Valid with Type == ContentImage, ContentDocument.
+	// Type == ContentImage, ContentDocument.
 	Source struct {
 		Type SourceType `json:"type,omitzero"`
 
-		// Valid with Source.Type == SourceBase64, SourceURL, SourceText
+		// Source.Type == SourceBase64, SourceURL, SourceText
+		//
 		// Content.Type == ContentImage: "image/gif", "image/jpeg", "image/png", "image/webp"
 		// Content.Type == ContentDocument: "application/pdf", "text/plain"
 		MediaType string `json:"media_type,omitzero"`
 
-		// Valid with Source.Type == SourceBase64, SourceURL, SourceText
+		// Source.Type == SourceBase64, SourceURL, SourceText
 		Data string `json:"data,omitzero"` // base64 encoded if base64, else as is, e.g. text plain data.
 
-		// Valid with Source.Type == SourceURL
+		// Source.Type == SourceURL
 		URL string `json:"url,omitzero"`
 
-		// Valid with Source.Type == SourceContent
+		// Source.Type == SourceContent
 		// Only ContentText and ContentImage are allowed.
 		Content []Content `json:"content,omitzero"`
 
-		// Valid with Source.Type == SourceFileID
+		// Source.Type == SourceFileID
 		FileID string `json:"file_id,omitzero"` // File ID for the content, used for file uploads.
 	} `json:"source,omitzero"`
 
-	// Valid with Type == ContentToolUse
-	ID    string `json:"id,omitzero"`
-	Input any    `json:"input,omitzero"`
-	Name  string `json:"name,omitzero"`
+	// Type == ContentToolUse, ContentServerToolUse
+	ID   string `json:"id,omitzero"`
+	Name string `json:"name,omitzero"`
+	// For ContentServerToolUse, it will be {"query": "..."}.
+	Input any `json:"input,omitzero"`
 
-	// Valid with Type == ContentToolResult
+	// Type == ContentToolResult
 	ToolUseID string `json:"tool_use_id,omitzero"`
 	IsError   bool   `json:"is_error,omitzero"`
-	// Only ContentText and ContentImage are allowed.
+
+	// Type == ContentToolResult, ContentWebSearchToolResult
+	// - ContentToolResult: Only ContentText and ContentImage are allowed.
+	// - ContentWebSearchToolResult: Only ContentWebSearchResult is allowed.
 	Content []Content `json:"content,omitzero"`
 
-	// Valid with Type == ContentDocument
+	// Type == ContentDocument
 	Context string `json:"context,omitzero"` // Context about the document that will not be cited from
-	Title   string `json:"title,omitzero"`   // Document title when using Source
+
+	// Type == ContentWebSearchResult
+	URL              string `json:"url,omitzero"`
+	EncryptedContent string `json:"encrypted_content,omitzero"`
+	PageAge          string `json:"page_age,omitzero"`
+
+	// Type == ContentDocument, ContentWebSearchResult
+	Title string `json:"title,omitzero"` // Document title when using Source, web page title
 }
 
 func (c *Content) Validate() error {
@@ -469,6 +500,18 @@ func (c *Content) Validate() error {
 		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || c.ID != "" || c.Name != "" || c.Input != nil ||
 			c.Context != "" || c.Title != "" {
 			return errors.New("ContentToolResult: unexpected fields set")
+		}
+	case ContentServerToolUse:
+		if c.ID == "" || c.Name == "" || c.Input == nil {
+			return errors.New("expected fields unset for ContentServerToolUse")
+		}
+	case ContentWebSearchToolResult:
+		if c.ToolUseID == "" || len(c.Content) == 0 {
+			return errors.New("expected fields unset for ContentWebSearchResult")
+		}
+	case ContentWebSearchResult:
+		if c.URL == "" {
+			return errors.New("ContentWebSearchResult: URL must be set")
 		}
 	default:
 		return fmt.Errorf("unknown ContentType %q", c.Type)
@@ -658,7 +701,20 @@ func (c *Content) To(out *genai.Reply) (bool, error) {
 		}
 		out.ToolCall.Arguments = string(raw)
 		return false, nil
-	case ContentImage, ContentDocument, ContentToolResult:
+	case ContentWebSearchToolResult:
+		out.Citations = []genai.Citation{{Type: "web", Sources: make([]genai.CitationSource, len(c.Content))}}
+		for i, cc := range c.Content {
+			if cc.Type != ContentWebSearchResult {
+				return false, fmt.Errorf("unsupported content type %q while processing %q", cc.Type, c.Type)
+			}
+			out.Citations[0].Sources[i].Type = "web"
+			out.Citations[0].Sources[i].URL = cc.URL
+			out.Citations[0].Sources[i].Title = cc.Title
+			out.Citations[0].Sources[i].Metadata = map[string]any{"date": cc.PageAge}
+			// EncryptedContent is not really useful?
+		}
+		return false, nil
+	case ContentWebSearchResult, ContentServerToolUse, ContentImage, ContentDocument, ContentToolResult:
 		fallthrough
 	default:
 		return false, fmt.Errorf("unsupported content type %q", c.Type)
@@ -742,13 +798,16 @@ func (c Citations) MarshalJSON() ([]byte, error) {
 type ContentType string
 
 const (
-	ContentText             ContentType = "text"
-	ContentImage            ContentType = "image"
-	ContentToolUse          ContentType = "tool_use"
-	ContentToolResult       ContentType = "tool_result"
-	ContentDocument         ContentType = "document"
-	ContentThinking         ContentType = "thinking"
-	ContentRedactedThinking ContentType = "redacted_thinking"
+	ContentText                ContentType = "text"
+	ContentImage               ContentType = "image"
+	ContentToolUse             ContentType = "tool_use"
+	ContentToolResult          ContentType = "tool_result"
+	ContentDocument            ContentType = "document"
+	ContentThinking            ContentType = "thinking"
+	ContentRedactedThinking    ContentType = "redacted_thinking"
+	ContentServerToolUse       ContentType = "server_tool_use"
+	ContentWebSearchResult     ContentType = "web_search_result"
+	ContentWebSearchToolResult ContentType = "web_search_tool_result"
 )
 
 // Citation is used both for system message and user message.
@@ -758,19 +817,25 @@ const (
 type Citation struct {
 	Type string `json:"type,omitzero"` // "char_location", "page_location", "content_block_location", "web_search_result_location"
 
+	// Content.Type == "text", "web_search_result_location"
+	CitedText string `json:"cited_text,omitzero"`
+
 	// Content.Type == "text"
-	CitedText     string `json:"cited_text,omitzero"`
 	DocumentIndex int64  `json:"document_index,omitzero"`
 	DocumentTitle string `json:"document_title,omitzero"`
+
 	// Type == "char_location"
 	EndCharIndex   int64 `json:"end_char_index,omitzero"`
 	StartCharIndex int64 `json:"start_char_index,omitzero"`
+
 	// Type == "page_location"
 	EndPageNumber   int64 `json:"end_page_number,omitzero"`
 	StartPageNumber int64 `json:"start_page_number,omitzero"`
+
 	// Type == "content_block_location"
 	EndBlockIndex   int64 `json:"end_block_index,omitzero"`
 	StartBlockIndex int64 `json:"start_block_index,omitzero"`
+
 	// Type == "web_search_result_location"
 	EncryptedIndex string `json:"encrypted_index,omitzero"`
 	Title          string `json:"title,omitzero"`
@@ -802,11 +867,11 @@ func (c *Citation) To(dst *genai.Citation) error {
 	case "web_search_result_location":
 		// For web search results, create a source with URL and title
 		dst.Sources = []genai.CitationSource{{
-			Type:  "web",
-			URL:   c.URL,
-			Title: c.Title,
+			Type:     "web",
+			URL:      c.URL,
+			Title:    c.Title,
 			Metadata: map[string]any{
-				"encrypted_index": c.EncryptedIndex,
+				// Not really useful? "encrypted_index": c.EncryptedIndex,
 			},
 		}}
 	}
@@ -861,7 +926,7 @@ type ToolChoice struct {
 
 // Tool is documented at  https://docs.anthropic.com/en/api/messages#body-tools
 type Tool struct {
-	Type string `json:"type,omitzero"` // "custom", "computer_20241022", "computer_20250124", "bash_20241022", "bash_20250124", "text_editor_20241022", "text_editor_20250124"
+	Type string `json:"type,omitzero"` // "custom", "computer_20241022", "computer_20250124", "bash_20241022", "bash_20250124", "text_editor_20241022", "text_editor_20250124", "web_search_20250305"
 	// Type == "custom"
 	Description string             `json:"description,omitzero"`
 	InputSchema *jsonschema.Schema `json:"input_schema,omitzero"`
@@ -881,6 +946,17 @@ type Tool struct {
 	DisplayNumber   int64 `json:"display_number,omitzero"`
 	DisplayHeightPX int64 `json:"display_height_px,omitzero"`
 	DisplayWidthPX  int64 `json:"display_width_px,omitzero"`
+
+	// Type == "web_search_20250305"
+	AllowedDomains []string `json:"allowed_domains,omitzero"`
+	BlockedDomains []string `json:"blocked_domains,omitzero"`
+	UserLocation   struct {
+		Type     string `json:"type,omitzero"`     // "approximate"
+		City     string `json:"city,omitzero"`     // "San Francisco"
+		Region   string `json:"region,omitzero"`   // "California"
+		Country  string `json:"country,omitzero"`  // "US"
+		Timezone string `json:"timezone,omitzero"` // "America/Los_Angeles"; https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+	} `json:"user_location,omitzero"`
 }
 
 type ChatResponse struct {
@@ -989,6 +1065,10 @@ type ChatStreamChunkResponse struct {
 		Input any    `json:"input"`
 
 		Citations []struct{} `json:"citations"` // Empty, not used in the API.
+
+		// Type == ContentWebSearchToolResult
+		ToolUseID string    `json:"tool_use_id"`
+		Content   []Content `json:"content"`
 	} `json:"content_block"`
 
 	// Type == ChunkContentBlockDelta
@@ -1048,7 +1128,11 @@ type Usage struct {
 		Ephemeral1hInputTokens int64 `json:"ephemeral_1h_input_tokens"`
 		Ephemeral5mInputTokens int64 `json:"ephemeral_5m_input_tokens"`
 	} `json:"cache_creation"`
-	ServiceTier string `json:"service_tier"` // "standard", "batch"
+	ServiceTier   string `json:"service_tier"` // "standard", "batch"
+	ServerToolUse struct {
+		WebSearchRequests int64 `json:"web_search_requests"`
+		WebFetchRequests  int64 `json:"web_fetch_requests"`
+	} `json:"server_tool_use"`
 }
 
 //
@@ -1136,7 +1220,7 @@ func (b *BatchQueryResponse) To(out *genai.Message) error {
 			} else if !skip {
 				out.Replies = append(out.Replies, c)
 			}
-		case ContentImage, ContentDocument, ContentToolResult:
+		case ContentWebSearchResult, ContentServerToolUse, ContentWebSearchToolResult, ContentImage, ContentDocument, ContentToolResult:
 			fallthrough
 		default:
 			return fmt.Errorf("unsupported content type %q", b.Result.Message.Content[i].Type)
@@ -1512,7 +1596,22 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 				// TODO: Is there anything to do with Input? pendingCall.Arguments = pkt.ContentBlock.Input
 			case ContentRedactedThinking:
 				f.Opaque = map[string]any{"redacted_thinking": pkt.ContentBlock.Signature}
-			case ContentImage, ContentDocument, ContentToolResult:
+			case ContentServerToolUse:
+				// Discard the data for now. It may be necessary in the future to keep in in Opaque.
+			case ContentWebSearchToolResult:
+				f.Citation.Type = "web"
+				f.Citation.Sources = make([]genai.CitationSource, len(pkt.ContentBlock.Content))
+				for i, cc := range pkt.ContentBlock.Content {
+					if cc.Type != ContentWebSearchResult {
+						return fmt.Errorf("unsupported content type %q while processing %q", cc.Type, pkt.ContentBlock.Type)
+					}
+					f.Citation.Sources[i].Type = "web"
+					f.Citation.Sources[i].URL = cc.URL
+					f.Citation.Sources[i].Title = cc.Title
+					f.Citation.Sources[i].Metadata = map[string]any{"date": cc.PageAge}
+					// EncryptedContent is not really useful?
+				}
+			case ContentWebSearchResult, ContentImage, ContentDocument, ContentToolResult:
 				fallthrough
 			default:
 				return fmt.Errorf("missing implementation for content block %q", pkt.ContentBlock.Type)

@@ -66,10 +66,8 @@ genai is _different_. Curious why it was created? See the release announcement a
 | [pollinations](docs/pollinations.md)       | 🇩🇪   | 🕰️📡  | 💬📸       | 💬📸   | ✅   | ❌     | ✅🧐 | ❌    | ❌   | ❌   | 🌱   | ❌    | ❌     | ✅    | ✅     |
 | [togetherai](docs/togetherai.md)           | 🇺🇸   | 🕰️📡  | 💬📸       | 💬📸   | ✅   | ✅     | 💨🧐 | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
 | openaicompatible                           | N/A  | 🕰️📡  | 💬         | 💬     | ❌   | ❌     | ❌   | ❌    | ❌   | ❌   | 📏🛑   | ❌    | ❌     | ✅    | ❌     |
-
 <details>
   <summary>‼️ Click here for legend of 🏠 ✅ ❌ 💬 📄 📸 🎤 🎥 🤪 💸 🚩 💨 🧐 💥 and columns</summary>
-
 - 🏠: Runs locally.
 - 🕰️: Runs synchronously, the reply is only returned once completely generated.
 - 📡: Runs asynchronously, the reply is returned as soon as it is available.
@@ -104,7 +102,6 @@ genai is _different_. Curious why it was created? See the release announcement a
 - Cite: Citation generation. Especially useful for RAG.
 - Probs: return logprobs. Many do not support this in streaming mode.
 - Limits: returns the rate limits, including the remaining quota.
-
 </details>
 
 

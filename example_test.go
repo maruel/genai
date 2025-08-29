@@ -315,10 +315,10 @@ func Example_genSyncWithToolCallLoop_with_custom_HTTP_Header() {
 		log.Fatal(err)
 	}
 	msgs := genai.Messages{genai.NewTextMessage("What season is Montréal currently in?")}
-	opts := genai.OptionsText{
+	opts := genai.OptionsTools{
 		Tools: []genai.ToolDef{locationClockTime},
 		// Force the LLM to do a tool call first.
-		ToolCallRequest: genai.ToolCallRequired,
+		Force: genai.ToolCallRequired,
 	}
 	newMsgs, _, err := adapters.GenSyncWithToolCallLoop(ctx, c, msgs, &opts)
 	if err != nil {

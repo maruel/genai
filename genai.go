@@ -123,8 +123,8 @@ type Provider interface {
 	ListModels(ctx context.Context) ([]Model, error)
 	// GenSync runs generation synchronously.
 	//
-	// Multiple options can be mixed together, both standard ones like *OptionsImage, *OptionsText and a
-	// provider-specialized options struct.
+	// Multiple options can be mixed together, both standard ones like *OptionsImage, *OptionsText,
+	// *OptionsTools and provider-specialized options struct, e.g. *anthropic.Options, *gemini.Options.
 	GenSync(ctx context.Context, msgs Messages, opts ...Options) (Result, error)
 	// GenStream runs generation synchronously, yielding the fragments of replies as the server sends them.
 	//

@@ -22,7 +22,7 @@ import (
 // It calls the provided Provider.GenSync() method, processes any tool calls using Message.DoToolCalls(),
 // and continues the conversation in a loop until the LLM's response has no more tool calls.
 //
-// Warning: If opts.ToolCallRequest == ToolCallRequired, it will be mutated to ToolCallAny after the first
+// Warning: If opts.Force == ToolCallRequired, it will be mutated to ToolCallAny after the first
 // tool call.
 //
 // It returns the messages to accumulate to the thread. The last message is the LLM's response.
@@ -31,17 +31,17 @@ func GenSyncWithToolCallLoop(ctx context.Context, p genai.Provider, msgs genai.M
 	var out genai.Messages
 	workMsgs := make(genai.Messages, len(msgs))
 	copy(workMsgs, msgs)
-	var chatOpts *genai.OptionsText
+	var toolsOpts *genai.OptionsTools
 	for _, opt := range opts {
 		ok := false
-		if chatOpts, ok = opt.(*genai.OptionsText); ok {
+		if toolsOpts, ok = opt.(*genai.OptionsTools); ok {
 			break
 		}
 	}
-	if chatOpts == nil {
+	if toolsOpts == nil {
 		return out, usage, errors.New("no tools found")
 	}
-	tools := chatOpts.Tools
+	tools := toolsOpts.Tools
 	for {
 		res, err := p.GenSync(ctx, workMsgs, opts...)
 		usage.InputTokens += res.Usage.InputTokens
@@ -66,8 +66,8 @@ func GenSyncWithToolCallLoop(ctx context.Context, p genai.Provider, msgs genai.M
 		}
 		out = append(out, tr)
 		workMsgs = append(workMsgs, tr)
-		if chatOpts.ToolCallRequest == genai.ToolCallRequired {
-			chatOpts.ToolCallRequest = genai.ToolCallAny
+		if toolsOpts.Force == genai.ToolCallRequired {
+			toolsOpts.Force = genai.ToolCallAny
 		}
 	}
 }
@@ -81,7 +81,7 @@ func GenSyncWithToolCallLoop(ctx context.Context, p genai.Provider, msgs genai.M
 // all the messages including the original ones, the LLM's responses, and the tool call result
 // messages.
 //
-// Warning: If opts.ToolCallRequest == ToolCallRequired, it will be mutated to ToolCallAny after the first
+// Warning: If opts.Force == ToolCallRequired, it will be mutated to ToolCallAny after the first
 // tool call.
 //
 // No need to process the tool calls or accumulate the ReplyFragment.
@@ -92,18 +92,18 @@ func GenStreamWithToolCallLoop(ctx context.Context, p genai.Provider, msgs genai
 
 	fnFragments := func(yield func(genai.ReplyFragment) bool) {
 		workMsgs := slices.Clone(msgs)
-		var chatOpts *genai.OptionsText
+		var toolsOpts *genai.OptionsTools
 		for _, opt := range opts {
 			ok := false
-			if chatOpts, ok = opt.(*genai.OptionsText); ok {
+			if toolsOpts, ok = opt.(*genai.OptionsTools); ok {
 				break
 			}
 		}
-		if chatOpts == nil {
+		if toolsOpts == nil {
 			finalErr = errors.New("no tools found")
 			return
 		}
-		tools := chatOpts.Tools
+		tools := toolsOpts.Tools
 		for {
 			fragments, finish := p.GenStream(ctx, workMsgs, opts...)
 			send := true
@@ -142,8 +142,8 @@ func GenStreamWithToolCallLoop(ctx context.Context, p genai.Provider, msgs genai
 			}
 			out = append(out, tr)
 			workMsgs = append(workMsgs, tr)
-			if chatOpts.ToolCallRequest == genai.ToolCallRequired {
-				chatOpts.ToolCallRequest = genai.ToolCallAny
+			if toolsOpts.Force == genai.ToolCallRequired {
+				toolsOpts.Force = genai.ToolCallAny
 			}
 		}
 	}

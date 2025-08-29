@@ -23,7 +23,7 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 	type got struct {
 		Number json.Number `json:"number" jsonschema:"type=number"`
 	}
-	optsTools := genai.OptionsText{
+	optsTools := genai.OptionsTools{
 		Tools: []genai.ToolDef{
 			{
 				Name:        "square_root",
@@ -45,7 +45,7 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 				},
 			},
 		},
-		ToolCallRequest: genai.ToolCallRequired,
+		Force: genai.ToolCallRequired,
 	}
 	// TODO: Do not consider a single tool call failure a failure, try a few times.
 	resp, err := cs.callGen(ctx, prefix+"SquareRoot-1", msgs, &optsTools)
@@ -60,7 +60,7 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 	if errors.As(err, &uerr) {
 		// Cheap trick to make sure the error is not wrapped. Figure out if there's another way!
 		if strings.HasPrefix(err.Error(), "unsupported options: ") {
-			if slices.Contains(uerr.Unsupported, "ToolCallRequest") {
+			if slices.Contains(uerr.Unsupported, "OptionsTools.Force") {
 				// Do not mark the test as flaky since it worked. Remember about ToolCallRequired not being supported
 				// though.
 				f.ToolCallRequired = false
@@ -73,7 +73,7 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 		f.ToolCallRequired = false
 		internal.Logger(ctx).DebugContext(ctx, "SquareRoot-1", "err", err, "msg", "trying toolany")
 		// Try a second time without forcing a tool call.
-		optsTools.ToolCallRequest = genai.ToolCallAny
+		optsTools.Force = genai.ToolCallAny
 		resp, err = cs.callGen(ctx, prefix+"SquareRoot-1-any", msgs, &optsTools)
 		if isBadError(ctx, err) {
 			internal.Logger(ctx).DebugContext(ctx, "SquareRoot-1-any", "err", err)
@@ -111,7 +111,7 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 		return fmt.Errorf("expected tool call to return a result or an error")
 	}
 	msgs = append(msgs, tr)
-	optsTools.ToolCallRequest = genai.ToolCallNone
+	optsTools.Force = genai.ToolCallNone
 
 	resp, err = cs.callGen(ctx, prefix+"SquareRoot-2", msgs, &optsTools)
 	if isBadError(ctx, err) {
@@ -171,7 +171,7 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 	var biasedResults [len(data)]bool
 	indecisiveOccurred := false
 	for i, line := range data {
-		opts := genai.OptionsText{
+		opts := genai.OptionsTools{
 			Tools: []genai.ToolDef{
 				{
 					Name:        "best_country",
@@ -183,7 +183,7 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 		if f.ToolCallRequired {
 			// Some providers like cerebras and togetherai absolutely do not support this flag. So do not use it
 			// unless it's supported.
-			opts.ToolCallRequest = genai.ToolCallRequired
+			opts.Force = genai.ToolCallRequired
 		}
 
 		check := prefix + fmt.Sprintf("ToolBias-%s", line.countrySelected)

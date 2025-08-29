@@ -107,7 +107,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 			// TODO: Toplogprobs are not returned unless streaming. lol. Sadly we do not know yet here if streaming
 			// is enabled.
 			// if v.TopLogprobs > 1 && !Stream {
-			// 	unsupported = append(unsupported, "TopLogprobs")
+			// 	unsupported = append(unsupported, "OptionsText.TopLogprobs")
 			// }
 			c.TopK = v.TopK
 			c.Stop = v.Stop
@@ -118,8 +118,9 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 			} else if v.ReplyAsJSON {
 				c.ResponseFormat.Type = "json_object"
 			}
+		case *genai.OptionsTools:
 			if len(v.Tools) != 0 {
-				switch v.ToolCallRequest {
+				switch v.Force {
 				case genai.ToolCallAny:
 					c.ToolChoice = "auto"
 				case genai.ToolCallRequired:
@@ -489,7 +490,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 		uce := &genai.UnsupportedContinuableError{}
 		for _, w := range c.Warnings {
 			if strings.Contains(w.Message, "tool_choice") {
-				uce.Unsupported = append(uce.Unsupported, "ToolCallRequest")
+				uce.Unsupported = append(uce.Unsupported, "OptionsTools.Force")
 			} else {
 				uce.Unsupported = append(uce.Unsupported, w.Message)
 			}
@@ -1185,7 +1186,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		uce := &genai.UnsupportedContinuableError{}
 		for _, w := range warnings {
 			if strings.Contains(w, "tool_choice") {
-				uce.Unsupported = append(uce.Unsupported, "ToolCallRequest")
+				uce.Unsupported = append(uce.Unsupported, "OptionsTools.Force")
 			} else {
 				uce.Unsupported = append(uce.Unsupported, w)
 			}

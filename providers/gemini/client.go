@@ -272,7 +272,13 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 				}
 			}
 		case *genai.OptionsText:
-			unsupported, errs = c.initOptions(v, model)
+			u, e := c.initOptionsText(v)
+			unsupported = append(unsupported, u...)
+			errs = append(errs, e...)
+		case *genai.OptionsTools:
+			u, e := c.initOptionsTools(v)
+			unsupported = append(unsupported, u...)
+			errs = append(errs, e...)
 		case *genai.OptionsAudio:
 			errs = append(errs, fmt.Errorf("todo: implement options type %T", opt))
 		case *genai.OptionsImage:
@@ -301,7 +307,7 @@ func (c *ChatRequest) SetStream(stream bool) {
 	// There's no field to set, the URL is different.
 }
 
-func (c *ChatRequest) initOptions(v *genai.OptionsText, model string) ([]string, []error) {
+func (c *ChatRequest) initOptionsText(v *genai.OptionsText) ([]string, []error) {
 	var unsupported []string
 	var errs []error
 	c.GenerationConfig.MaxOutputTokens = v.MaxTokens
@@ -327,8 +333,14 @@ func (c *ChatRequest) initOptions(v *genai.OptionsText, model string) ([]string,
 	} else if v.ReplyAsJSON {
 		c.GenerationConfig.ResponseMimeType = "application/json"
 	}
+	return unsupported, errs
+}
+
+func (c *ChatRequest) initOptionsTools(v *genai.OptionsTools) ([]string, []error) {
+	var unsupported []string
+	var errs []error
 	if len(v.Tools) != 0 {
-		switch v.ToolCallRequest {
+		switch v.Force {
 		case genai.ToolCallAny:
 			c.ToolConfig.FunctionCallingConfig.Mode = ToolModeValidated
 		case genai.ToolCallRequired:
@@ -926,7 +938,7 @@ func (i *ImageRequest) Init(msg genai.Message, model string, mod genai.Modalitie
 		case *genai.OptionsImage:
 			if v.Seed != 0 {
 				// Seed is only supported with Vertex AI API.
-				uce = &genai.UnsupportedContinuableError{Unsupported: []string{"Seed"}}
+				uce = &genai.UnsupportedContinuableError{Unsupported: []string{"OptionsText.Seed"}}
 			}
 			// TODO: Width and Height
 		case *genai.OptionsVideo:

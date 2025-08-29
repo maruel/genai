@@ -111,7 +111,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 				c.Logprobs = true
 			}
 			if v.TopK != 0 {
-				unsupported = append(unsupported, "TopK")
+				unsupported = append(unsupported, "OptionsText.TopK")
 			}
 			c.Stop = v.Stop
 			if v.DecodeAs != nil {
@@ -121,8 +121,9 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 			} else if v.ReplyAsJSON {
 				c.ResponseFormat.Type = "json_object"
 			}
+		case *genai.OptionsTools:
 			if len(v.Tools) != 0 {
-				switch v.ToolCallRequest {
+				switch v.Force {
 				case genai.ToolCallAny:
 					c.ToolChoice = "auto"
 				case genai.ToolCallRequired:

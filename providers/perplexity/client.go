@@ -122,7 +122,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 		}
 		switch v := opt.(type) {
 		case *genai.OptionsText:
-			unsupported, errs = c.initOptions(v)
+			unsupported, errs = c.initOptionsText(v)
 			sp = v.SystemPrompt
 		case *Options:
 			c.DisableSearch = v.DisableSearch
@@ -156,18 +156,18 @@ func (c *ChatRequest) SetStream(stream bool) {
 	c.Stream = stream
 }
 
-func (c *ChatRequest) initOptions(v *genai.OptionsText) ([]string, []error) {
+func (c *ChatRequest) initOptionsText(v *genai.OptionsText) ([]string, []error) {
 	var unsupported []string
 	var errs []error
 	c.MaxTokens = v.MaxTokens
 	c.Temperature = v.Temperature
 	c.TopP = v.TopP
 	if v.Seed != 0 {
-		unsupported = append(unsupported, "Seed")
+		unsupported = append(unsupported, "OptionsText.Seed")
 	}
 	c.TopK = v.TopK
 	if v.TopLogprobs > 0 {
-		unsupported = append(unsupported, "TopLogprobs")
+		unsupported = append(unsupported, "OptionsText.TopLogprobs")
 	}
 	if len(v.Stop) != 0 {
 		errs = append(errs, errors.New("unsupported option Stop"))
@@ -178,9 +178,6 @@ func (c *ChatRequest) initOptions(v *genai.OptionsText) ([]string, []error) {
 		c.ResponseFormat.JSONSchema.Schema = internal.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
 	} else if v.ReplyAsJSON {
 		errs = append(errs, errors.New("unsupported option ReplyAsJSON"))
-	}
-	if len(v.Tools) != 0 {
-		errs = append(errs, errors.New("unsupported option Tools"))
 	}
 	return unsupported, errs
 }

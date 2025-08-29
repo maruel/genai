@@ -28,12 +28,12 @@ func ExampleGenSyncWithToolCallLoop() {
 		log.Fatal(err)
 	}
 	msgs := genai.Messages{genai.NewTextMessage("What season are we in?")}
-	opts := genai.OptionsText{
+	opts := genai.OptionsTools{
 		// GetTodayClockTime returns the current time and day in a format that the LLM
 		// can understand. It includes the weekend.
 		Tools: []genai.ToolDef{GetTodayClockTime},
 		// Force the LLM to do a tool call first.
-		ToolCallRequest: genai.ToolCallRequired,
+		Force: genai.ToolCallRequired,
 	}
 	newMsgs, _, err := adapters.GenSyncWithToolCallLoop(ctx, c, msgs, &opts)
 	if err != nil {
@@ -54,12 +54,12 @@ func ExampleGenStreamWithToolCallLoop() {
 		log.Fatal(err)
 	}
 	msgs := genai.Messages{genai.NewTextMessage("What season are we in?")}
-	opts := genai.OptionsText{
+	opts := genai.OptionsTools{
 		// GetTodayClockTime returns the current time and day in a format that the LLM
 		// can understand. It includes the weekend.
 		Tools: []genai.ToolDef{GetTodayClockTime},
 		// Force the LLM to do a tool call first.
-		ToolCallRequest: genai.ToolCallRequired,
+		Force: genai.ToolCallRequired,
 	}
 	fragments, finish := adapters.GenStreamWithToolCallLoop(ctx, c, msgs, &opts)
 	for f := range fragments {

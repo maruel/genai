@@ -106,8 +106,9 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 			} else if v.ReplyAsJSON {
 				c.ResponseFormat.Type = "json_object"
 			}
+		case *genai.OptionsTools:
 			if len(v.Tools) != 0 {
-				switch v.ToolCallRequest {
+				switch v.Force {
 				case genai.ToolCallAny:
 				case genai.ToolCallRequired:
 					c.ToolChoice = "required"

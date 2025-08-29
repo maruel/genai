@@ -144,10 +144,6 @@ type OptionsText struct {
 	//
 	// See https://github.com/invopop/jsonschema#example for more examples.
 	DecodeAs any
-	// Tools is the list of tools that the LLM can request to call.
-	Tools []ToolDef
-	// ToolCallRequest tells the LLM a tool call must be done.
-	ToolCallRequest ToolCallRequest
 
 	_ struct{}
 }
@@ -174,6 +170,20 @@ func (o *OptionsText) Validate() error {
 			return fmt.Errorf("field DecodeAs: %w", err)
 		}
 	}
+	return nil
+}
+
+// Tools
+
+type OptionsTools struct {
+	// Tools is the list of tools that the LLM can request to call.
+	Tools []ToolDef
+	// Force tells the LLM a tool call must be done, or not.
+	Force ToolCallRequest
+}
+
+// Validate ensures the completion options are valid.
+func (o *OptionsTools) Validate() error {
 	names := map[string]int{}
 	for i, t := range o.Tools {
 		if err := t.Validate(); err != nil {
@@ -184,13 +194,11 @@ func (o *OptionsText) Validate() error {
 		}
 		names[t.Name] = i
 	}
-	if len(o.Tools) == 0 && o.ToolCallRequest == ToolCallRequired {
-		return fmt.Errorf("field ToolCallRequest is ToolCallRequired: Tools are required")
+	if len(o.Tools) == 0 && o.Force == ToolCallRequired {
+		return fmt.Errorf("field Force is ToolCallRequired: Tools are required")
 	}
 	return nil
 }
-
-// Tools
 
 // ToolDef describes a tool that the LLM can request to use.
 type ToolDef struct {
@@ -366,6 +374,7 @@ var (
 	_ Options     = (*OptionsImage)(nil)
 	_ Options     = (*OptionsVideo)(nil)
 	_ Options     = (*OptionsText)(nil)
+	_ Options     = (*OptionsTools)(nil)
 	_ Validatable = (*Modality)(nil)
 	_ Validatable = (*Modalities)(nil)
 	_ Validatable = (*ToolDef)(nil)

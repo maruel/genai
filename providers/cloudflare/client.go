@@ -94,7 +94,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 			c.Seed = v.Seed
 			c.TopK = v.TopK
 			if v.TopLogprobs > 0 {
-				unsupported = append(unsupported, "TopLogprobs")
+				unsupported = append(unsupported, "OptionsText.TopLogprobs")
 			}
 			if len(v.Stop) != 0 {
 				errs = append(errs, errors.New("unsupported option Stop"))
@@ -105,10 +105,11 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 			} else if v.ReplyAsJSON {
 				c.ResponseFormat.Type = "json_object"
 			}
+		case *genai.OptionsTools:
 			if len(v.Tools) != 0 {
-				if v.ToolCallRequest != genai.ToolCallAny {
+				if v.Force != genai.ToolCallAny {
 					// Cloudflare doesn't provide a way to force tool use. Don't fail.
-					unsupported = append(unsupported, "ToolCallRequest")
+					unsupported = append(unsupported, "OptionsTools.Force")
 				}
 				c.Tools = make([]Tool, len(v.Tools))
 				for i, t := range v.Tools {

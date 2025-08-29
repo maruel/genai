@@ -248,7 +248,7 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 	}
 	var uerr *genai.UnsupportedContinuableError
 	if errors.As(err, &uerr) {
-		f.Seed = !slices.Contains(uerr.Unsupported, "Seed")
+		f.Seed = !slices.Contains(uerr.Unsupported, "OptionsText.Seed")
 	} else if err == nil {
 		f.Seed = true
 	}
@@ -260,7 +260,7 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 		return f, err
 	}
 	if errors.As(err, &uerr) {
-		f.TopLogprobs = !slices.Contains(uerr.Unsupported, "TopLogprobs")
+		f.TopLogprobs = !slices.Contains(uerr.Unsupported, "OptionsText.TopLogprobs")
 	} else if err == nil {
 		// TODO: We'll need to be more detailed than that. Most don't report the ID or bytes, some only report
 		// logprobs, etc.
@@ -799,7 +799,7 @@ func exerciseGenImage(ctx context.Context, pf ProviderFactory, name string, out 
 	if errors.As(err, &uerr) {
 		// Cheap trick to make sure the error is not wrapped. Figure out if there's another way!
 		if strings.HasPrefix(err.Error(), "unsupported options: ") {
-			if slices.Contains(uerr.Unsupported, "Seed") {
+			if slices.Contains(uerr.Unsupported, "OptionsText.Seed") {
 				out.GenSync.Seed = false
 			}
 			err = nil
@@ -888,7 +888,7 @@ func exerciseGenAudio(ctx context.Context, pf ProviderFactory, name string, out 
 	if errors.As(err, &uerr) {
 		// Cheap trick to make sure the error is not wrapped. Figure out if there's another way!
 		if strings.HasPrefix(err.Error(), "unsupported options: ") {
-			if slices.Contains(uerr.Unsupported, "Seed") {
+			if slices.Contains(uerr.Unsupported, "OptionsText.Seed") {
 				out.GenSync.Seed = false
 			}
 			err = nil

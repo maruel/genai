@@ -72,13 +72,13 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 			c.TopP = v.TopP
 			sp = v.SystemPrompt
 			if v.Seed != 0 {
-				unsupported = append(unsupported, "Seed")
+				unsupported = append(unsupported, "OptionsText.Seed")
 			}
 			if v.TopK != 0 {
-				unsupported = append(unsupported, "TopK")
+				unsupported = append(unsupported, "OptionsText.TopK")
 			}
 			if v.TopLogprobs > 0 {
-				unsupported = append(unsupported, "TopLogprobs")
+				unsupported = append(unsupported, "OptionsText.TopLogprobs")
 			}
 			c.Stop = v.Stop
 			if v.ReplyAsJSON {
@@ -86,9 +86,6 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 			}
 			if v.DecodeAs != nil {
 				errs = append(errs, errors.New("unsupported option DecodeAs"))
-			}
-			if len(v.Tools) != 0 {
-				errs = append(errs, errors.New("unsupported option Tools"))
 			}
 		default:
 			errs = append(errs, fmt.Errorf("unsupported options type %T", opt))

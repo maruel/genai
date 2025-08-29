@@ -138,8 +138,14 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 			c.ServiceTier = v.ServiceTier
 			c.ReasoningFormat = v.ReasoningFormat
 		case *genai.OptionsText:
-			unsupported, errs = c.initOptions(v, model)
+			u, e := c.initOptionsText(v, model)
+			unsupported = append(unsupported, u...)
+			errs = append(errs, e...)
 			sp = v.SystemPrompt
+		case *genai.OptionsTools:
+			u, e := c.initOptionsTools(v, model)
+			unsupported = append(unsupported, u...)
+			errs = append(errs, e...)
 		default:
 			errs = append(errs, fmt.Errorf("unsupported options type %T", opt))
 		}
@@ -182,7 +188,7 @@ func (c *ChatRequest) SetStream(stream bool) {
 	c.Stream = stream
 }
 
-func (c *ChatRequest) initOptions(v *genai.OptionsText, model string) ([]string, []error) {
+func (c *ChatRequest) initOptionsText(v *genai.OptionsText, model string) ([]string, []error) {
 	var errs []error
 	var unsupported []string
 	c.MaxChatTokens = v.MaxTokens
@@ -190,10 +196,10 @@ func (c *ChatRequest) initOptions(v *genai.OptionsText, model string) ([]string,
 	c.TopP = v.TopP
 	c.Seed = v.Seed
 	if v.TopK != 0 {
-		unsupported = append(unsupported, "TopK")
+		unsupported = append(unsupported, "OptionsText.TopK")
 	}
 	if v.TopLogprobs != 0 {
-		unsupported = append(unsupported, "TopLogprobs")
+		unsupported = append(unsupported, "OptionsText.TopLogprobs")
 	}
 	c.Stop = v.Stop
 	if v.DecodeAs != nil {
@@ -203,8 +209,14 @@ func (c *ChatRequest) initOptions(v *genai.OptionsText, model string) ([]string,
 	} else if v.ReplyAsJSON {
 		c.ResponseFormat.Type = "json_object"
 	}
+	return unsupported, errs
+}
+
+func (c *ChatRequest) initOptionsTools(v *genai.OptionsTools, model string) ([]string, []error) {
+	var errs []error
+	var unsupported []string
 	if len(v.Tools) != 0 {
-		switch v.ToolCallRequest {
+		switch v.Force {
 		case genai.ToolCallAny:
 			c.ToolChoice = "auto"
 		case genai.ToolCallRequired:

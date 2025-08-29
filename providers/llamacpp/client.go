@@ -158,6 +158,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 				c.ResponseFormat.Type = "json_schema"
 				c.ResponseFormat.JSONSchema.Schema = internal.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
 			}
+		case *genai.OptionsTools:
 			if len(v.Tools) != 0 {
 				c.Tools = make([]Tool, len(v.Tools))
 				for i := range c.Tools {
@@ -420,7 +421,7 @@ func (c *CompletionRequest) Init(msgs genai.Messages, model string, opts ...gena
 			c.Seed = v.Seed
 			if v.TopLogprobs > 0 {
 				// TODO: This should be supported.
-				unsupported = append(unsupported, "TopLogprobs")
+				unsupported = append(unsupported, "OptionsText.TopLogprobs")
 			}
 			c.Temperature = v.Temperature
 			c.TopP = v.TopP
@@ -431,9 +432,6 @@ func (c *CompletionRequest) Init(msgs genai.Messages, model string, opts ...gena
 			}
 			if v.DecodeAs != nil {
 				errs = append(errs, errors.New("implement option DecodeAs"))
-			}
-			if len(v.Tools) != 0 {
-				errs = append(errs, errors.New("implement option Tools"))
 			}
 		default:
 			errs = append(errs, fmt.Errorf("unsupported options type %T", opt))

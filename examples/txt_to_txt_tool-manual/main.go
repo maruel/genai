@@ -34,7 +34,7 @@ func main() {
 	msgs := genai.Messages{
 		genai.NewTextMessage("What is 3214 + 5632? Call the tool \"add\" to tell me the answer. Do not explain. Be terse. Include only the answer."),
 	}
-	opts := genai.OptionsText{
+	opts := genai.OptionsTools{
 		Tools: []genai.ToolDef{
 			{
 				Name:        "add",
@@ -45,7 +45,7 @@ func main() {
 			},
 		},
 		// Force the LLM to do a tool call.
-		ToolCallRequest: genai.ToolCallRequired,
+		Force: genai.ToolCallRequired,
 	}
 	res, err := c.GenSync(ctx, msgs, &opts)
 	if err != nil {
@@ -68,7 +68,7 @@ func main() {
 	msgs = append(msgs, msg)
 
 	// Follow up so the LLM can interpret the tool call response. Tell the LLM to not do a tool call this time.
-	opts.ToolCallRequest = genai.ToolCallNone
+	opts.Force = genai.ToolCallNone
 	res, err = c.GenSync(ctx, msgs, &opts)
 	if err != nil {
 		log.Fatal(err)

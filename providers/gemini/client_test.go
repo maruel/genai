@@ -145,20 +145,24 @@ func TestClient(t *testing.T) {
 		type got struct {
 			Word string `json:"word" jsonschema:"enum=Orange,enum=Banana,enum=Apple"`
 		}
-		opts := genai.OptionsText{
-			// Burn tokens to add up to 4k.
-			SystemPrompt: prompt4K,
-			Tools: []genai.ToolDef{
-				{
-					Name:        "hidden_word",
-					Description: "A tool to state what word was seen in the video.",
-					Callback: func(ctx context.Context, g *got) (string, error) {
-						return "", nil
+		opts := []genai.Options{
+			&genai.OptionsText{
+				// Burn tokens to add up to 4k.
+				SystemPrompt: prompt4K,
+			},
+			&genai.OptionsTools{
+				Tools: []genai.ToolDef{
+					{
+						Name:        "hidden_word",
+						Description: "A tool to state what word was seen in the video.",
+						Callback: func(ctx context.Context, g *got) (string, error) {
+							return "", nil
+						},
 					},
 				},
 			},
 		}
-		name, err := c.CacheAddRequest(ctx, msgs, "", "Show time", 10*time.Minute, &opts)
+		name, err := c.CacheAddRequest(ctx, msgs, "", "Show time", 10*time.Minute, opts...)
 		if err != nil {
 			t.Fatal(err)
 		}

@@ -111,7 +111,13 @@ func (r *Response) Init(msgs genai.Messages, model string, opts ...genai.Options
 			r.Reasoning.Effort = v.ReasoningEffort
 			r.ServiceTier = v.ServiceTier
 		case *genai.OptionsText:
-			unsupported, errs = r.initOptions(v, model)
+			u, e := r.initOptionsText(v)
+			unsupported = append(unsupported, u...)
+			errs = append(errs, e...)
+		case *genai.OptionsTools:
+			u, e := r.initOptionsTools(v)
+			unsupported = append(unsupported, u...)
+			errs = append(errs, e...)
 		default:
 			return fmt.Errorf("unsupported options type %T", opt)
 		}
@@ -220,7 +226,7 @@ func (r *Response) ToResult() (genai.Result, error) {
 	return res, nil
 }
 
-func (r *Response) initOptions(v *genai.OptionsText, model string) ([]string, []error) {
+func (r *Response) initOptionsText(v *genai.OptionsText) ([]string, []error) {
 	var unsupported []string
 	var errs []error
 	r.MaxOutputTokens = v.MaxTokens
@@ -230,10 +236,10 @@ func (r *Response) initOptions(v *genai.OptionsText, model string) ([]string, []
 		r.Instructions = v.SystemPrompt
 	}
 	if v.Seed != 0 {
-		unsupported = append(unsupported, "Seed")
+		unsupported = append(unsupported, "OptionsText.Seed")
 	}
 	if v.TopK != 0 {
-		unsupported = append(unsupported, "TopK")
+		unsupported = append(unsupported, "OptionsText.TopK")
 	}
 	if v.TopLogprobs > 0 {
 		r.TopLogprobs = v.TopLogprobs
@@ -250,9 +256,15 @@ func (r *Response) initOptions(v *genai.OptionsText, model string) ([]string, []
 	} else if v.ReplyAsJSON {
 		r.Text.Format.Type = "json_object"
 	}
+	return unsupported, errs
+}
+
+func (r *Response) initOptionsTools(v *genai.OptionsTools) ([]string, []error) {
+	var unsupported []string
+	var errs []error
 	if len(v.Tools) != 0 {
 		r.ParallelToolCalls = true
-		switch v.ToolCallRequest {
+		switch v.Force {
 		case genai.ToolCallAny:
 			r.ToolChoice = "auto"
 		case genai.ToolCallRequired:

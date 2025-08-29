@@ -94,12 +94,6 @@ func TestOptionsText(t *testing.T) {
 						Stop:        []string{"stop"},
 						ReplyAsJSON: true,
 						DecodeAs:    struct{}{},
-						Tools: []ToolDef{
-							{
-								Name:        "tool",
-								Description: "do stuff",
-							},
-						},
 					},
 				},
 				{
@@ -156,16 +150,62 @@ func TestOptionsText(t *testing.T) {
 					in:     OptionsText{DecodeAs: "string"},
 					errMsg: "field DecodeAs: must be a struct, not string",
 				},
+			}
+			for _, tt := range tests {
+				t.Run(tt.name, func(t *testing.T) {
+					if err := tt.in.Validate(); err == nil || err.Error() != tt.errMsg {
+						t.Fatalf("error mismatch\nwant %q\ngot  %q", tt.errMsg, err)
+					}
+				})
+			}
+		})
+	})
+}
+
+func TestOptionsTools(t *testing.T) {
+	t.Run("Validate", func(t *testing.T) {
+		t.Run("valid", func(t *testing.T) {
+			tests := []struct {
+				name string
+				in   OptionsTools
+			}{
+				{
+					name: "Valid options with all fields set",
+					in: OptionsTools{
+						Tools: []ToolDef{
+							{
+								Name:        "tool",
+								Description: "do stuff",
+							},
+						},
+						Force: ToolCallRequired,
+					},
+				},
+			}
+			for _, tt := range tests {
+				t.Run(tt.name, func(t *testing.T) {
+					if err := tt.in.Validate(); err != nil {
+						t.Fatalf("unexpected error: %q", err)
+					}
+				})
+			}
+		})
+		t.Run("error", func(t *testing.T) {
+			tests := []struct {
+				name   string
+				in     OptionsTools
+				errMsg string
+			}{
 				{
 					name: "ToolCallRequired without Tools",
-					in: OptionsText{
-						ToolCallRequest: ToolCallRequired,
+					in: OptionsTools{
+						Force: ToolCallRequired,
 					},
-					errMsg: "field ToolCallRequest is ToolCallRequired: Tools are required",
+					errMsg: "field Force is ToolCallRequired: Tools are required",
 				},
 				{
 					name: "Duplicate tool names",
-					in: OptionsText{
+					in: OptionsTools{
 						Tools: []ToolDef{
 							{Name: "tool1", Description: "desc1"},
 							{Name: "tool1", Description: "desc2"},
@@ -175,7 +215,7 @@ func TestOptionsText(t *testing.T) {
 				},
 				{
 					name: "Tool validation error",
-					in: OptionsText{
+					in: OptionsTools{
 						Tools: []ToolDef{
 							{Name: "tool1"},
 						},

@@ -115,10 +115,10 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 			sp = v.SystemPrompt
 			c.RandomSeed = v.Seed
 			if v.TopK != 0 {
-				unsupported = append(unsupported, "TopK")
+				unsupported = append(unsupported, "OptionsText.TopK")
 			}
 			if v.TopLogprobs > 0 {
-				unsupported = append(unsupported, "TopLogprobs")
+				unsupported = append(unsupported, "OptionsText.TopLogprobs")
 			}
 			c.Stop = v.Stop
 			if v.DecodeAs != nil {
@@ -130,8 +130,9 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 			} else if v.ReplyAsJSON {
 				c.ResponseFormat.Type = "json_object"
 			}
+		case *genai.OptionsTools:
 			if len(v.Tools) != 0 {
-				switch v.ToolCallRequest {
+				switch v.Force {
 				case genai.ToolCallAny:
 					c.ToolChoice = "auto"
 				case genai.ToolCallRequired:

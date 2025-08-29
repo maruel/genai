@@ -129,8 +129,10 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 			c.ReasoningEffort = v.ReasoningEffort
 			c.ServiceTier = v.ServiceTier
 		case *genai.OptionsText:
-			unsupported = c.initOptions(v, model)
+			unsupported = append(unsupported, c.initOptionsText(v, model)...)
 			sp = v.SystemPrompt
+		case *genai.OptionsTools:
+			unsupported = append(unsupported, c.initOptionsTools(v, model)...)
 		default:
 			errs = append(errs, fmt.Errorf("unsupported options type %T", opt))
 		}
@@ -178,7 +180,7 @@ func (c *ChatRequest) SetStream(stream bool) {
 	c.StreamOptions.IncludeUsage = stream
 }
 
-func (c *ChatRequest) initOptions(v *genai.OptionsText, model string) []string {
+func (c *ChatRequest) initOptionsText(v *genai.OptionsText, model string) []string {
 	var unsupported []string
 	c.MaxChatTokens = v.MaxTokens
 	// TODO: This is not great.
@@ -188,7 +190,7 @@ func (c *ChatRequest) initOptions(v *genai.OptionsText, model string) []string {
 		strings.HasPrefix(model, "o3-") ||
 		strings.HasPrefix(model, "o4-") {
 		if v.Temperature != 0 {
-			unsupported = append(unsupported, "Temperature")
+			unsupported = append(unsupported, "OptionsText.Temperature")
 		}
 	} else {
 		c.Temperature = v.Temperature
@@ -196,7 +198,7 @@ func (c *ChatRequest) initOptions(v *genai.OptionsText, model string) []string {
 	c.TopP = v.TopP
 	if strings.HasPrefix(model, "gpt-4o-") && strings.Contains(model, "-search") {
 		if v.Seed != 0 {
-			unsupported = append(unsupported, "Seed")
+			unsupported = append(unsupported, "OptionsText.Seed")
 		}
 	} else {
 		c.Seed = v.Seed
@@ -207,7 +209,7 @@ func (c *ChatRequest) initOptions(v *genai.OptionsText, model string) []string {
 	}
 	if v.TopK != 0 {
 		// Track this as an unsupported feature that can be ignored
-		unsupported = append(unsupported, "TopK")
+		unsupported = append(unsupported, "OptionsText.TopK")
 	}
 	c.Stop = v.Stop
 	if v.DecodeAs != nil {
@@ -219,12 +221,17 @@ func (c *ChatRequest) initOptions(v *genai.OptionsText, model string) []string {
 	} else if v.ReplyAsJSON {
 		c.ResponseFormat.Type = "json_object"
 	}
+	return unsupported
+}
+
+func (c *ChatRequest) initOptionsTools(v *genai.OptionsTools, model string) []string {
+	var unsupported []string
 	if len(v.Tools) != 0 {
 		// TODO: Determine exactly which models do not support this.
 		if model != "o4-mini" {
 			c.ParallelToolCalls = true
 		}
-		switch v.ToolCallRequest {
+		switch v.Force {
 		case genai.ToolCallAny:
 			c.ToolChoice = "auto"
 		case genai.ToolCallRequired:

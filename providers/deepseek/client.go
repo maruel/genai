@@ -98,10 +98,10 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 				c.Logprobs = true
 			}
 			if v.Seed != 0 {
-				unsupported = append(unsupported, "Seed")
+				unsupported = append(unsupported, "OptionsText.Seed")
 			}
 			if v.TopK != 0 {
-				unsupported = append(unsupported, "TopK")
+				unsupported = append(unsupported, "OptionsText.TopK")
 			}
 			c.Stop = v.Stop
 			if v.ReplyAsJSON {
@@ -110,14 +110,15 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 			if v.DecodeAs != nil {
 				errs = append(errs, errors.New("unsupported option DecodeAs"))
 			}
+		case *genai.OptionsTools:
 			if len(v.Tools) != 0 {
-				switch v.ToolCallRequest {
+				switch v.Force {
 				case genai.ToolCallAny:
 					c.ToolChoice = "auto"
 				case genai.ToolCallRequired:
 					if strings.Contains(model, "reasoner") {
 						// "deepseek-reasoner does not support this tool_choice"
-						unsupported = append(unsupported, "ToolCallRequired")
+						unsupported = append(unsupported, "OptionsTools.Force")
 					} else {
 						c.ToolChoice = "required"
 					}

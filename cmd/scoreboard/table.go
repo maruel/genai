@@ -59,6 +59,7 @@ type tableModelRow struct {
 
 type tableDataRow struct {
 	// Model specific
+	Thinking         string `title:"Think"`
 	Inputs           string `title:"➛In"` // Has to be large enough otherwise the emojis warp on github visualization
 	Outputs          string `title:"Out➛"`
 	JSON             string `title:"JSON"`
@@ -70,7 +71,6 @@ type tableDataRow struct {
 	Seed             string `title:"Seed"`
 	Files            string `title:"File"`
 	Citations        string `title:"Cite"`
-	Thinking         string `title:"Think"`
 	Logprobs         string `title:"Probs"`
 	ReportRateLimits string `title:"Limits"`
 }

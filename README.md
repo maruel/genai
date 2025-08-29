@@ -46,26 +46,26 @@ genai is _different_. Curious why it was created? See the release announcement a
 
 ## Scoreboard
 
-| Provider                                                    | 🌐   | ➛In        | Out➛   | JSON | Schema | Chat   | Stream | Tool   | Batch | Seed | File | Cite | Think | Probs | Limits |
-| ----------------------------------------------------------- | ---- | ---------- | ------ | ---- | ------ | ------ | ------ | ------ | ----- | ---- | ---- | ---- | ----- | ----- | ------ |
-| [anthropic](https://console.anthropic.com/settings/billing) | 🇺🇸   | 💬📄📸     | 💬     | ❌   | ❌     | ✅🤪   | ✅🤪   | ✅🧐   | ✅    | ❌   | ❌   | ✅   | ✅    | ❌    | ✅     |
-| [bfl](https://dashboard.bfl.ai/)                            | 🇩🇪   | 💬         | 📸     | ❌   | ❌     | ❌     | ❌     | ❌     | ✅    | ✅   | ❌   | ❌   | ❌    | ❌    | ✅     |
-| [cerebras](https://cloud.cerebras.ai)                       | 🇺🇸   | 💬         | 💬     | 🤪   | 🤪     | ✅🤪   | ✅🤪   | ✅🧐   | ❌    | ✅   | ❌   | ❌   | ✅    | ✅    | ✅     |
-| [cloudflare](https://dash.cloudflare.com)                   | 🇺🇸   | 💬         | 💬     | 🤪   | ✅     | ✅🚩🤪 | ✅🚩🤪 | ❌     | ❌    | ✅   | ❌   | ❌   | ❌    | ❌    | ❌     |
-| [cohere](https://dashboard.cohere.com/billing)              | 🇨🇦   | 💬📸       | 💬     | ✅   | ✅     | ✅     | ✅     | ✅💥   | ❌    | ✅   | ❌   | ✅   | ✅    | ✅    | ❌     |
-| [deepseek](https://platform.deepseek.com)                   | 🇨🇳   | 💬         | 💬     | ✅   | ❌     | ✅     | ✅     | ✅💥🧐 | ❌    | ❌   | ❌   | ❌   | ✅    | ✅    | ❌     |
-| [gemini](http://aistudio.google.com)                        | 🇺🇸   | 🎤🎥💬📄📸 | 💬📸   | ✅   | ✅     | ✅     | ✅     | ✅💥🧐 | ✅    | ✅   | ✅   | ❌   | ✅    | ✅    | ❌     |
-| [groq](https://console.groq.com/dashboard/usage)            | 🇺🇸   | 💬📸       | 💬     | ✅   | ❌     | ✅     | ✅     | ✅💥🧐 | ❌    | ✅   | ❌   | ❌   | ✅    | ❌    | ✅     |
-| [huggingface](https://huggingface.co/settings/billing)      | 🇺🇸   | 💬         | 💬     | ✅   | ❌     | ✅     | ✅     | ❌     | ❌    | ✅   | ❌   | ❌   | ✅    | ✅    | ✅     |
-| [llamacpp](https://github.com/ggml-org/llama.cpp)           | 🏠   | 💬📸       | 💬     | ✅   | ✅     | ✅     | ✅     | ✅🧐   | ❌    | ✅   | ❌   | ❌   | ❌    | ✅    | ❌     |
-| [mistral](https://console.mistral.ai/usage)                 | 🇫🇷   | 🎤💬📄📸   | 💬     | ✅   | ✅     | ✅     | ✅     | ✅🧐   | ❌    | ✅   | ❌   | ❌   | ❌    | ❌    | ✅     |
-| [ollama](https://ollama.com/)                               | 🏠   | 💬📸       | 💬     | ✅   | ✅     | ✅     | ✅     | 💨     | ❌    | ✅   | ❌   | ❌   | ✅    | ❌    | ❌     |
-| [openai](https://platform.openai.com/usage)                 | 🇺🇸   | 🎤💬📄📸   | 💬📸   | ✅   | ✅     | ✅🤪   | ✅🤪   | ✅💥🧐 | ✅    | ✅   | ✅   | ❌   | ✅    | ✅    | ✅     |
-| [openairesponses](https://platform.openai.com/usage)        | 🇺🇸   | 💬📄📸     | 💬📸   | ✅   | ✅     | ✅💸🤪 | ✅💸🤪 | ✅🧐   | ❌    | ✅   | ❌   | ❌   | ✅    | ❌    | ✅     |
-| [perplexity](https://www.perplexity.ai/settings/api)        | 🇺🇸   | 💬📸       | 💬     | ❌   | ✅     | ✅🤪   | ✅🤪   | ❌     | ❌    | ❌   | ❌   | ✅   | ✅    | ❌    | ❌     |
-| [pollinations](https://auth.pollinations.ai/)               | 🇩🇪   | 💬📸       | 💬📸   | 🤪   | ❌     | ✅🤪   | ✅💸🤪 | ✅💥🧐 | ❌    | ✅   | ❌   | ❌   | ❌    | ❌    | ❌     |
-| [togetherai](https://api.together.ai/settings/billing)      | 🇺🇸   | 💬📸       | 💬📸   | ✅   | ✅     | ✅🚩🤪 | ✅🚩🤪 | ✅💥🧐 | ❌    | ✅   | ❌   | ❌   | ❌    | ✅    | ✅     |
-| openaicompatible                                            | N/A  | 💬         | 💬     | ❌   | ❌     | ✅     | ✅     | ❌     | ❌    | ❌   | ❌   | ❌   | ❌    | ❌    | ❌     |
+| Provider                                                    | 🌐   | Think | ➛In        | Out➛   | JSON | Schema | Chat   | Stream | Tool   | Batch | Seed | File | Cite | Probs | Limits |
+| ----------------------------------------------------------- | ---- | ----- | ---------- | ------ | ---- | ------ | ------ | ------ | ------ | ----- | ---- | ---- | ---- | ----- | ------ |
+| [anthropic](https://console.anthropic.com/settings/billing) | 🇺🇸   | ✅    | 💬📄📸     | 💬     | ❌   | ❌     | ✅🤪   | ✅🤪   | ✅🧐   | ✅    | ❌   | ❌   | ✅   | ❌    | ✅     |
+| [bfl](https://dashboard.bfl.ai/)                            | 🇩🇪   | ❌    | 💬         | 📸     | ❌   | ❌     | ❌     | ❌     | ❌     | ✅    | ✅   | ❌   | ❌   | ❌    | ✅     |
+| [cerebras](https://cloud.cerebras.ai)                       | 🇺🇸   | ✅    | 💬         | 💬     | 🤪   | 🤪     | ✅🤪   | ✅🤪   | ✅🧐   | ❌    | ✅   | ❌   | ❌   | ✅    | ✅     |
+| [cloudflare](https://dash.cloudflare.com)                   | 🇺🇸   | ❌    | 💬         | 💬     | 🤪   | ✅     | ✅🚩🤪 | ✅🚩🤪 | ❌     | ❌    | ✅   | ❌   | ❌   | ❌    | ❌     |
+| [cohere](https://dashboard.cohere.com/billing)              | 🇨🇦   | ✅    | 💬📸       | 💬     | ✅   | ✅     | ✅     | ✅     | ✅💥   | ❌    | ✅   | ❌   | ✅   | ✅    | ❌     |
+| [deepseek](https://platform.deepseek.com)                   | 🇨🇳   | ✅    | 💬         | 💬     | ✅   | ❌     | ✅     | ✅     | ✅💥🧐 | ❌    | ❌   | ❌   | ❌   | ✅    | ❌     |
+| [gemini](http://aistudio.google.com)                        | 🇺🇸   | ✅    | 🎤🎥💬📄📸 | 💬📸   | ✅   | ✅     | ✅     | ✅     | ✅💥🧐 | ✅    | ✅   | ✅   | ❌   | ✅    | ❌     |
+| [groq](https://console.groq.com/dashboard/usage)            | 🇺🇸   | ✅    | 💬📸       | 💬     | ✅   | ❌     | ✅     | ✅     | ✅💥🧐 | ❌    | ✅   | ❌   | ❌   | ❌    | ✅     |
+| [huggingface](https://huggingface.co/settings/billing)      | 🇺🇸   | ✅    | 💬         | 💬     | ✅   | ❌     | ✅     | ✅     | ❌     | ❌    | ✅   | ❌   | ❌   | ✅    | ✅     |
+| [llamacpp](https://github.com/ggml-org/llama.cpp)           | 🏠   | ❌    | 💬📸       | 💬     | ✅   | ✅     | ✅     | ✅     | ✅🧐   | ❌    | ✅   | ❌   | ❌   | ✅    | ❌     |
+| [mistral](https://console.mistral.ai/usage)                 | 🇫🇷   | ❌    | 🎤💬📄📸   | 💬     | ✅   | ✅     | ✅     | ✅     | ✅🧐   | ❌    | ✅   | ❌   | ❌   | ❌    | ✅     |
+| [ollama](https://ollama.com/)                               | 🏠   | ✅    | 💬📸       | 💬     | ✅   | ✅     | ✅     | ✅     | 💨     | ❌    | ✅   | ❌   | ❌   | ❌    | ❌     |
+| [openai](https://platform.openai.com/usage)                 | 🇺🇸   | ✅    | 🎤💬📄📸   | 💬📸   | ✅   | ✅     | ✅🤪   | ✅🤪   | ✅💥🧐 | ✅    | ✅   | ✅   | ❌   | ✅    | ✅     |
+| [openairesponses](https://platform.openai.com/usage)        | 🇺🇸   | ✅    | 💬📄📸     | 💬📸   | ✅   | ✅     | ✅💸🤪 | ✅💸🤪 | ✅🧐   | ❌    | ✅   | ❌   | ❌   | ❌    | ✅     |
+| [perplexity](https://www.perplexity.ai/settings/api)        | 🇺🇸   | ✅    | 💬📸       | 💬     | ❌   | ✅     | ✅🤪   | ✅🤪   | ❌     | ❌    | ❌   | ❌   | ✅   | ❌    | ❌     |
+| [pollinations](https://auth.pollinations.ai/)               | 🇩🇪   | ❌    | 💬📸       | 💬📸   | 🤪   | ❌     | ✅🤪   | ✅💸🤪 | ✅💥🧐 | ❌    | ✅   | ❌   | ❌   | ❌    | ❌     |
+| [togetherai](https://api.together.ai/settings/billing)      | 🇺🇸   | ❌    | 💬📸       | 💬📸   | ✅   | ✅     | ✅🚩🤪 | ✅🚩🤪 | ✅💥🧐 | ❌    | ✅   | ❌   | ❌   | ✅    | ✅     |
+| openaicompatible                                            | N/A  | ❌    | 💬         | 💬     | ❌   | ❌     | ✅     | ✅     | ❌     | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     |
 
 <details>
   <summary>‼️ Click here for legend of 🏠 ✅ ❌ 💬 📄 📸 🎤 🎥 🤪 💸 🚩 💨 🧐 💥 and columns</summary>
@@ -90,6 +90,10 @@ genai is _different_. Curious why it was created? See the release announcement a
 - 💥: Tool calling is undecided when asked a question that has no clear answer and will call both options
   instead of calling ont at random. This is good.
 - 🌐: Country where the company is located.
+- Think: Supports chain-of-thought thinking process.
+    - Both redacted (Anthropic, Gemini) and explicit (Deepseek R1, Qwen3, etc).
+    - Some models can be used in both mode. In this case they will have two rows, one with thinking and one
+      without. It is frequent that certain functionalities are limited in thinking mode, like tool calling.
 - JSON and Schema: ability to output JSON in free form, or with a forced schema specified as a Go struct
 - Chat: Buffered chat.
 - Stream: Streaming output.
@@ -98,8 +102,6 @@ genai is _different_. Curious why it was created? See the release announcement a
 - Seed: Deterministic seed for reproducibility.
 - File: Upload and store large files.
 - Cite: Citation generation. Especially useful for RAG.
-- Think: Supports chain-of-thought thinking process.
-    - Both redacted (Anthropic, Gemini) and explicit (Deepseek R1, Qwen3, etc).
 - Probs: return logprobs. Many do not support this in streaming mode.
 - Limits: returns the rate limits, including the remaining quota.
 

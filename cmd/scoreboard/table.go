@@ -30,8 +30,10 @@ type tableSummaryRow struct {
 func (t *tableSummaryRow) initFromScoreboard(p genai.Provider) {
 	sb := p.Scoreboard()
 	t.Provider = p.Name()
+	// We could link to the dashboard (sb.DashboardURL) but assume we want to link to the generated doc.
+	base := "docs/"
 	if sb.DashboardURL != "" {
-		t.Provider = "[" + p.Name() + "](" + sb.DashboardURL + ")"
+		t.Provider = "[" + p.Name() + "](" + base + p.Name() + ".md" + ")"
 	}
 	t.Country = countryMap[strings.ToLower(sb.Country)]
 	if t.Country == "" {

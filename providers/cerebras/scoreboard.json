@@ -347,7 +347,6 @@
         "qwen-3-235b-a22b-thinking-2507"
       ],
       "thinking": true,
-      "thinkingTokenStart": "",
       "thinkingTokenEnd": "\n\u003c/think\u003e\n",
       "in": {
         "text": {
@@ -366,9 +365,9 @@
         "seed": true,
         "tools": "true",
         "toolsBiased": "true",
-		"toolCallRequired":true,
-		"json": true,
-		"jsonSchema": true,
+        "toolCallRequired": true,
+        "json": true,
+        "jsonSchema": true,
         "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true

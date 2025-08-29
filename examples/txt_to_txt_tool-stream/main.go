@@ -83,9 +83,7 @@ func main() {
 		}
 	}
 	_, _ = os.Stdout.WriteString("\n")
-	_, usage, err := finish()
-	fmt.Printf("\nTokens usage: %s\n", usage.String())
-	if err != nil {
+	if _, _, err := finish(); err != nil {
 		log.Fatal(err)
 	}
 }

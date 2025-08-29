@@ -42,7 +42,12 @@ been hasty in coming to a decision.
 `
 	msgs := genai.Messages{{
 		Requests: []genai.Request{
-			{Doc: genai.Doc{Filename: "On-the-Origin-of-Species-by-Charles-Darwin.txt", Src: strings.NewReader(context)}},
+			{
+				Doc: genai.Doc{
+					Filename: "On-the-Origin-of-Species-by-Charles-Darwin.txt",
+					Src:      strings.NewReader(context),
+				},
+			},
 			{Text: "When did Darwin arrive home?"},
 		},
 	}}

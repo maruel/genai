@@ -113,9 +113,7 @@ chose.
 
 [examples/txt\_to\_txt\_sync/main.go](examples/txt_to_txt_sync/main.go): This selects a good default model based
 on Anthropic's currently published models, sends a prompt and prints the response as a string.
-
-This requires [`ANTHROPIC_API_KEY`](https://console.anthropic.com/settings/keys) environment variable to
-authenticate.
+💡 Set [`ANTHROPIC_API_KEY`](https://console.anthropic.com/settings/keys).
 
 ```go
 func main() {
@@ -127,12 +125,6 @@ func main() {
 	result, err := c.GenSync(ctx, msgs)
 	fmt.Println(result.String())
 }
-```
-
-Try it locally:
-
-```bash
-go run github.com/maruel/genai/examples/txt_to_txt_sync@latest
 ```
 
 This may print:
@@ -164,21 +156,13 @@ func main() {
 }
 ```
 
-Try it locally:
-
-```bash
-go run github.com/maruel/genai/examples/txt_to_txt_stream@latest
-```
-
 
 ### Text Thinking 🧠
 
 [examples/txt\_to\_txt\_thinking/main.go](examples/txt_to_txt_thinking/main.go): genai supports for implicit
 thinking (e.g. Anthropic) and explicit thinking (e.g. Deepseek). The package adapters provide logic to
 automatically handle explicit Chain-of-Thoughts models, generally using `<think>` and `</think>` tokens.
-
-This requires [`DEEPSEEK_API_KEY`](https://platform.deepseek.com/api_keys) environment variable to
-authenticate.
+💡 Set [`DEEPSEEK_API_KEY`](https://platform.deepseek.com/api_keys).
 
 Snippet:
 
@@ -197,23 +181,36 @@ Snippet:
 	}
 ```
 
-Try it locally:
-
-```bash
-go run github.com/maruel/genai/examples/txt_to_txt_thinking@latest
-```
-
 
 ### Text Citations ✍
 
 [examples/txt\_to\_txt\_citations/main.go](examples/txt_to_txt_citations/main.go): Send entire documents and
 leverage providers which support automatic citations (Cohere, Anthropic) to leverage their functionality for a
 supercharged RAG.
+💡 Set [`COHERE_API_KEY`](https://dashboard.cohere.com/api-keys).
 
-This requires [`COHERE_API_KEY`](https://dashboard.cohere.com/api-keys) environment variable to authenticate.
+Snippet:
 
-```bash
-go run github.com/maruel/genai/examples/txt_to_txt_citations@latest
+```go
+	const context = `...` // Introduction of On the Origin of Species by Charles Darwin...
+	msgs := genai.Messages{{
+		Requests: []genai.Request{
+			{
+				Doc: genai.Doc{
+					Filename: "On-the-Origin-of-Species-by-Charles-Darwin.txt",
+					Src:      strings.NewReader(context),
+				},
+			},
+			{Text: "When did Darwin arrive home?"},
+		},
+	}}
+	res, _ := c.GenSync(ctx, msgs)
+	for _, r := range res.Replies {
+		for _, ci := range r.Citations {
+			fmt.Printf("Citation: %s\n", ci.Text)
+		}
+	}
+	fmt.Printf("\nAnswer: %s\n", res.String())
 ```
 
 When asked _When did Darwin arrive home?_ with the introduction of _On the Origin of Species by Charles
@@ -234,9 +231,7 @@ Darwin_ passed in as a document, this may print:
 
 [examples/txt\_to\_txt\_websearch-sync/main.go](examples/txt_to_txt_websearch-sync/main.go): Searches the web
 to answer your question.
-
-This requires [`PERPLEXITY_API_KEY`](https://www.perplexity.ai/settings/api) environment variable to
-authenticate.
+💡 Set [`PERPLEXITY_API_KEY`](https://www.perplexity.ai/settings/api).
 
 Snippet:
 
@@ -293,9 +288,7 @@ When asked _Who holds ultimate power of Canada?_, this may print:
 
 [examples/txt\_to\_txt\_websearch-stream/main.go](examples/txt_to_txt_websearch-stream/main.go): Searches the web
 to answer your question and streams the output to the console.
-
-This requires [`PERPLEXITY_API_KEY`](https://www.perplexity.ai/settings/api) environment variable to
-authenticate.
+💡 Set [`PERPLEXITY_API_KEY`](https://www.perplexity.ai/settings/api).
 
 ```bash
 go run github.com/maruel/genai/examples/txt_to_txt_websearch-stream@latest
@@ -309,8 +302,7 @@ Same as above, but streaming.
 [examples/txt\_to\_txt\_tool-sync/main.go](examples/txt_to_txt_tool-sync/main.go): A LLM can both retrieve
 information and act on its environment through tool calling. This unblocks a whole realm of possibilities. Our
 design enables dense strongly typed code that favorably compares to python.
-
-This requires [`CEREBRAS_API_KEY`](https://cloud.cerebras.ai/platform/) environment variable to authenticate.
+💡 Set [`CEREBRAS_API_KEY`](https://cloud.cerebras.ai/platform/).
 
 Snippet:
 
@@ -342,12 +334,6 @@ Snippet:
 	fmt.Println(res[len(res)-1].String())
 ```
 
-Try it locally:
-
-```bash
-go run github.com/maruel/genai/examples/txt_to_txt_tool-sync@latest
-```
-
 When asked _What is 3214 + 5632?_, this may print:
 
 > 8846
@@ -358,8 +344,7 @@ When asked _What is 3214 + 5632?_, this may print:
 [examples/txt\_to\_txt\_tool-stream/main.go](examples/txt_to_txt_tool-stream/main.go): Leverage a thinking
 model to see the thinking process while trying to use tool calls to answer the user's question. This enables
 keeping the user updated to see the progress.
-
-This requires [`GROQ_API_KEY`](https://console.groq.com/keys) environment variable to authenticate.
+💡 Set [`GROQ_API_KEY`](https://console.groq.com/keys).
 
 Snippet:
 
@@ -375,12 +360,7 @@ Snippet:
 		}
 	}
 ```
-
-Try it locally:
-
-```bash
-go run github.com/maruel/genai/examples/txt_to_txt_tool-stream@latest
-```
+``
 
 When asked _What is 3214 + 5632?_, this may print:
 
@@ -395,22 +375,26 @@ When asked _What is 3214 + 5632?_, this may print:
 > \# Answer
 >
 > 8846
->
-> Tokens usage: in: 349 (cached 0), reasoning: 0, out: 58, total: 0, requests/2025-08-26 19:17:13:
-> 499999/500000, tokens/2025-08-26 19:17:13: 249809/250000
-
-In addition to the token usage, remaining quota is printed.
 
 
 ### Text Tools (manual)
 
 [examples/txt\_to\_txt\_tool-manual/main.go](examples/txt_to_txt_tool-manual/main.go): Runs a manual loop and
 runs tool calls directly.
+💡 Set [`CEREBRAS_API_KEY`](https://cloud.cerebras.ai/platform/).
 
-This requires [`CEREBRAS_API_KEY`](https://cloud.cerebras.ai/platform/) environment variable to authenticate.
+Snippet:
 
-```bash
-go run github.com/maruel/genai/examples/txt_to_txt_tool-manual@latest
+```go
+	res, _ := c.GenSync(ctx, msgs, &opts)
+	// Add the assistant's message to the messages list.
+	msgs = append(msgs, res.Message)
+	// Process the tool call from the assistant.
+	msg, _ := res.DoToolCalls(ctx, opts.Tools)
+	// Add the tool call response to the messages list.
+	msgs = append(msgs, msg)
+	// Follow up so the LLM can interpret the tool call response.
+	res, _ = c.GenSync(ctx, msgs, &opts)
 ```
 
 
@@ -422,9 +406,7 @@ tool calling!
 
 It is very useful when we want the LLM to make a choice between values, to return a number or a boolean
 (true/false). Enums are supported.
-
-This requires [`OPENAI_API_KEY`](https://platform.openai.com/settings/organization/api-keys) environment
-variable to authenticate.
+💡 Set [`OPENAI_API_KEY`](https://platform.openai.com/settings/organization/api-keys).
 
 Snippet:
 
@@ -441,20 +423,9 @@ Snippet:
 	fmt.Printf("Round: %v\n", circle.Round)
 ```
 
-Try it locally:
-
-```bash
-go run github.com/maruel/genai/examples/txt_to_txt_decode-json@latest
-```
-
 This will print:
 
 > Round: true
->
-> Tokens usage: in: 40 (cached 0), reasoning: 64, out: 81, total: 121, requests/2025-08-26 19:13:29: 499/500,
-> tokens/2025-08-26 19:13:29: 199989/200000
-
-In addition to the token usage, remaining quota is printed.
 
 
 ### Text to Image 📸
@@ -465,9 +436,7 @@ low rate limit.
 
 Some providers return an URL that must be fetched manually within a few minutes or hours, some return the data
 inline. This example handles both cases.
-
-This requires [`TOGETHER_API_KEY`](https://api.together.ai/settings/api-keys) environment variable to
-authenticate.
+💡 Set [`TOGETHER_API_KEY`](https://api.together.ai/settings/api-keys).
 
 Snippet:
 
@@ -512,8 +481,7 @@ comes from the data harvested that was created by real humans.
 
 [examples/img-txt\_to\_vid/main.go](examples/img-txt_to_vid/main.go): Leverage the content.jpg file generated in
 txt\_to\_img example to ask Veo 3 from Google to generate a video based on the image.
-
-This requires [`GEMINI_API_KEY`](https://aistudio.google.com/apikey) environment variable to authenticate.
+💡 Set [`GEMINI_API_KEY`](https://aistudio.google.com/apikey).
 
 Snippet:
 
@@ -545,7 +513,7 @@ This may generate:
 ⚠ The MP4 has been recompressed to AVIF via
 [compress.sh](https://raw.githubusercontent.com/wiki/maruel/genai/compress.sh) so GitHub can render it. The
 drawback is that audio is lost. View the original MP4 with audio (!) at
-[content.mp4](https://raw.githubusercontent.com/wiki/maruel/genai/content.mp4).
+[content.mp4](https://raw.githubusercontent.com/wiki/maruel/genai/content.mp4). May not work on Safari.
 
 This is very impressive, but also very expensive.
 
@@ -554,8 +522,7 @@ This is very impressive, but also very expensive.
 
 [examples/img-txt\_to\_img/main.go](examples/img-txt_to_img/main.go): Edit an image with a prompt. Leverage
 the content.jpg file generated in txt\_to\_img example.
-
-This requires [`BFL_API_KEY`](https://dashboard.bfl.ai/keys) environment variable to authenticate.
+💡 Set [`BFL_API_KEY`](https://dashboard.bfl.ai/keys).
 
 ```bash
 go run github.com/maruel/genai/examples/img-txt_to_img@latest
@@ -571,8 +538,7 @@ This may generate:
 [examples/img-txt\_to\_img-txt/main.go](examples/img-txt_to_img-txt/main.go): Leverage the
 content.jpg file generated in txt\_to\_img example to ask gemini-2.5-flash-image-preview to change the image
 with a prompt and ask the model to explain what it did.
-
-This requires [`GEMINI_API_KEY`](https://aistudio.google.com/apikey) environment variable to authenticate.
+💡 Set [`GEMINI_API_KEY`](https://aistudio.google.com/apikey).
 
 Snippet:
 
@@ -611,8 +577,7 @@ This is quite impressive, but also quite expensive.
 [examples/img-txt\_to\_txt/main.go](examples/img-txt_to_txt/main.go): Run vision to analyze a picture provided
 as an URL (source: [wikipedia](https://en.m.wikipedia.org/wiki/File:Banana-Single.jpg)). The response is
 streamed out the console as the reply is generated.
-
-This requires [`MISTRAL_API_KEY`](https://console.mistral.ai/api-keys) environment variable to authenticate.
+💡 Set [`MISTRAL_API_KEY`](https://console.mistral.ai/api-keys).
 
 ```bash
 go run github.com/maruel/genai/examples/img-txt_to_txt@latest
@@ -651,8 +616,7 @@ go run github.com/maruel/genai/examples/img-txt_to_txt_local@latest
 ### Video-Text to Text 🎞️
 
 [examples/vid-txt\_to\_txt/main.go](examples/vid-txt_to_txt/main.go): Run vision to analyze a video.
-
-This requires [`GEMINI_API_KEY`](https://aistudio.google.com/apikey) environment variable to authenticate.
+💡 Set [`GEMINI_API_KEY`](https://aistudio.google.com/apikey).
 
 Using this video:
 
@@ -673,9 +637,7 @@ When asked _What is the word_, this generates:
 
 [examples/aud-txt\_to\_txt/main.go](examples/aud-txt_to_txt/main.go):
 Analyze an audio [file](https://github.com/maruel/genai/raw/refs/heads/main/scoreboard/testdata/audio.mp3).
-
-This requires [`OPENAI_API_KEY`](https://platform.openai.com/settings/organization/api-keys) environment
-variable to authenticate.
+💡 Set [`OPENAI_API_KEY`](https://platform.openai.com/settings/organization/api-keys).
 
 
 Try it locally:
@@ -687,6 +649,36 @@ go run github.com/maruel/genai/examples/vid-txt_to_txt@latest
 When asked _What was the word?_, this generates:
 
 > The word was "orange."
+
+
+### Usage and Quota 🍟🧀🥣
+
+[examples/txt\_to\_txt\_quota/main.go](examples/txt_to_txt_quota/main.go): Prints the tokens processed and
+generated for the request and the remaining quota if the provider supports it.
+💡 Set [`GROQ_API_KEY`](https://console.groq.com/keys).
+
+Snippet:
+
+```go
+	msgs := genai.Messages{
+		genai.NewTextMessage("Describe poutine as a French person who just arrived in Québec"),
+	}
+	res, _ := c.GenSync(ctx, msgs)
+	fmt.Println(res.String())
+	fmt.Printf("\nTokens usage: %s\n", res.Usage.String())
+```
+
+This may generate:
+
+> **« Je viens tout juste d’arriver au Québec et, pour être honnête, je n’avais jamais entendu parler du
+> fameux « poutine » avant de mettre le pied dans un petit resto du coin. »**
+>
+> (...)
+>
+> Tokens usage: in: 83 (cached 0), reasoning: 0, out: 818, total: 901, requests/2025-08-29 15:58:13:
+> 499999/500000, tokens/2025-08-29 15:58:12: 249916/250000
+
+In addition to the token usage, remaining quota is printed.
 
 
 ### Text with any provider ⁉

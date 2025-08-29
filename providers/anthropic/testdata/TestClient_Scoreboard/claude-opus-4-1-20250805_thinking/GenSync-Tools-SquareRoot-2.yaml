@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 1666
+    host: api.anthropic.com
+    body: "{\"model\":\"claude-opus-4-1-20250805\",\"max_tokens\":32000,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"}]},{\"role\":\"assistant\",\"content\":[{\"type\":\"thinking\",\"thinking\":\"The user wants me to calculate the square root of 132413 using the square_root tool and only provide the result without explanation. I have all the required parameters (number = 132413) to make the function call.\",\"signature\":\"Ev0CCkYIBxgCKkCHHelE2JPt54teyvoHNACjp6eyDAA+Oo133ty9evIhXvtKsXRGo+uOeHI8UX2BDyrBbyS23mg7//3Cf4ycuqCGEgwPzUVuIfSWrLuiqLoaDMdGE9hMbYTv6cgFNiIwwqkKtUC+TL4OHFf2tI4WKp3f02gO9bv6UckClL26D4LMLgcARm3kGICg+EmhvWbRKuQBYcp/s5mYnserIhW2YO+W8Fh9pZToBR7OiXFq/9yYas3fitLR7NDkIkS22I48PbSDvful4s5TlH89HnpvCURKa28NYYurYz1yzgILOsOXU0Q5OfO8XU4tmucnE8LqiTsnh+u+iSvFcjsRnU3noUuLo5JrmQlND/MP8gtehcTFd7lRThDLc/rYLrhu+6ADNQ/bhn+8A4TwAK3tAFmEnhnbDYae3Ondh3db7WSqBxRsXznFjVjBR0dOSWQSsWjZXFE6JxjZi1ffah7Sj5x8K1mJNZy9cXKnfYwN3U5yS3ZUSo1/PRkhGAE=\"},{\"type\":\"tool_use\",\"id\":\"toolu_01HNad284V5qynw9QrJxG1kC\",\"input\":{\"number\":132413},\"name\":\"square_root\"}]},{\"role\":\"user\",\"content\":[{\"type\":\"tool_result\",\"tool_use_id\":\"toolu_01HNad284V5qynw9QrJxG1kC\",\"content\":[{\"type\":\"text\",\"text\":\"363.89\"}]}]}],\"thinking\":{\"budget_tokens\":1024,\"type\":\"enabled\"},\"tool_choice\":{\"type\":\"none\"},\"tools\":[{\"description\":\"Calculates and return the square root of a number\",\"input_schema\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]},\"name\":\"square_root\"}]}\n"
+    headers:
+      Anthropic-Version:
+      - "2023-06-01"
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.anthropic.com/v1/messages
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"msg_01PRVshDehawx9aj2H1NGGJu\",\"type\":\"message\",\"role\":\"assistant\",\"model\":\"claude-opus-4-1-20250805\",\"content\":[{\"type\":\"text\",\"text\":\"363.89\"}],\"stop_reason\":\"end_turn\",\"stop_sequence\":null,\"usage\":{\"input_tokens\":591,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"cache_creation\":{\"ephemeral_5m_input_tokens\":0,\"ephemeral_1h_input_tokens\":0},\"output_tokens\":6,\"service_tier\":\"standard\"}}"
+    headers:
+      Anthropic-Ratelimit-Input-Tokens-Limit:
+      - "2000000"
+      Anthropic-Ratelimit-Input-Tokens-Remaining:
+      - "2000000"
+      Anthropic-Ratelimit-Input-Tokens-Reset:
+      - "2025-08-29T14:31:16Z"
+      Anthropic-Ratelimit-Output-Tokens-Limit:
+      - "400000"
+      Anthropic-Ratelimit-Output-Tokens-Remaining:
+      - "400000"
+      Anthropic-Ratelimit-Output-Tokens-Reset:
+      - "2025-08-29T14:31:17Z"
+      Anthropic-Ratelimit-Requests-Limit:
+      - "4000"
+      Anthropic-Ratelimit-Requests-Remaining:
+      - "3999"
+      Anthropic-Ratelimit-Requests-Reset:
+      - "2025-08-29T14:31:15Z"
+      Anthropic-Ratelimit-Tokens-Limit:
+      - "2400000"
+      Anthropic-Ratelimit-Tokens-Remaining:
+      - "2400000"
+      Anthropic-Ratelimit-Tokens-Reset:
+      - "2025-08-29T14:31:16Z"
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 976cc04138a6a2f4-YUL
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Via:
+      - 1.1 google
+      X-Envoy-Upstream-Service-Time:
+      - "1725"
+      X-Robots-Tag:
+      - none
+    status: 200 OK
+    code: 200
+    duration: 1.782s

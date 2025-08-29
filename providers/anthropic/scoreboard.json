@@ -167,11 +167,110 @@
       }
     },
     {
-      "comments": "They take more than 10 minutes to run the test, which causes it to timeout. And they cost a lot.",
+      "comments": "It cost a lot.",
       "models": [
-        "claude-opus-4-20250514",
         "claude-opus-4-1-20250805"
-      ]
+      ],
+      "in": {
+        "document": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "application/pdf"
+          ]
+        },
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
+        "citations": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
+        "citations": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
+    },
+    {
+      "comments": "It cost a lot.",
+      "models": [
+        "claude-opus-4-1-20250805"
+      ],
+      "thinking": true,
+      "in": {
+        "document": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "application/pdf"
+          ]
+        },
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "tools": "flaky",
+        "toolsIndecisive": "true",
+        "citations": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "tools": "flaky",
+        "citations": true,
+        "stopSequence": true
+      }
     },
     {
       "comments": "Old models",
@@ -180,8 +279,16 @@
         "claude-3-5-sonnet-20241022",
         "claude-3-7-sonnet-20250219",
         "claude-3-haiku-20240307",
-        "claude-3-opus-20240229"
+        "claude-3-opus-20240229",
+        "claude-opus-4-20250514"
       ]
+    },
+    {
+      "comments": "Old models",
+      "models": [
+        "claude-opus-4-20250514"
+      ],
+      "thinking": true
     }
   ]
 }

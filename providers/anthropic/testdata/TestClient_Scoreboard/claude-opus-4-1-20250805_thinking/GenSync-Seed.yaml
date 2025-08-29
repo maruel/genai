@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 203
+    host: api.anthropic.com
+    body: "{\"model\":\"claude-opus-4-1-20250805\",\"max_tokens\":32000,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Say hello. Use only one word.\"}]}],\"thinking\":{\"budget_tokens\":1024,\"type\":\"enabled\"}}\n"
+    headers:
+      Anthropic-Version:
+      - "2023-06-01"
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.anthropic.com/v1/messages
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"msg_01Gm6QyhXkq3GSGKQs57Xbxu\",\"type\":\"message\",\"role\":\"assistant\",\"model\":\"claude-opus-4-1-20250805\",\"content\":[{\"type\":\"thinking\",\"thinking\":\"The human is asking me to say hello using only one word. The simplest and most direct response would be \\\"Hello\\\" - which is exactly one word and fulfills the request perfectly.\",\"signature\":\"EtgCCkYIBxgCKkCGfSJ3wtN3NBH2qTQtkrED6AjRmzFPjUjHd1zZqvwmhm9IhJG1i85uxhtzRBRPlmjAot4ydBi//ToxuqhtdX4dEgxZ35I20UsAi+hHit4aDMnNW/viI/TBEQioXiIw4HFp3Qk9PiFoB6VqMPnulTVwTEzrlqVG/oW9KTm8Iif9lfTfGfNpRrEvMzEM1buuKr8BuC+Dwy6NLinZ/+LNTras3FDFXKDdDSkEP4XJueH2UwApQ9tOfC8d658p34fAm06ikc2mmLNFnuT7D2XeRBSfHqW/e0mWwikwDiK8XcXFrkdos3SzJR/uL1IvE2/tlvA3MyyqDCW+dM7v4dQ/opXCaqTswZQZdeG54jiif+BUyaIHvKBYc3Wk7qdgt/HBtSR5Scd35Kh5oj9PonGn0GP/IjLDIzWRRn/qrMW4DX8Cgya7HXpaNW6vGjJXvzy6O1AYAQ==\"},{\"type\":\"text\",\"text\":\"Hello.\"}],\"stop_reason\":\"end_turn\",\"stop_sequence\":null,\"usage\":{\"input_tokens\":43,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"cache_creation\":{\"ephemeral_5m_input_tokens\":0,\"ephemeral_1h_input_tokens\":0},\"output_tokens\":52,\"service_tier\":\"standard\"}}"
+    headers:
+      Anthropic-Ratelimit-Input-Tokens-Limit:
+      - "2000000"
+      Anthropic-Ratelimit-Input-Tokens-Remaining:
+      - "2000000"
+      Anthropic-Ratelimit-Input-Tokens-Reset:
+      - "2025-08-29T14:31:02Z"
+      Anthropic-Ratelimit-Output-Tokens-Limit:
+      - "400000"
+      Anthropic-Ratelimit-Output-Tokens-Remaining:
+      - "400000"
+      Anthropic-Ratelimit-Output-Tokens-Reset:
+      - "2025-08-29T14:31:04Z"
+      Anthropic-Ratelimit-Requests-Limit:
+      - "4000"
+      Anthropic-Ratelimit-Requests-Remaining:
+      - "3999"
+      Anthropic-Ratelimit-Requests-Reset:
+      - "2025-08-29T14:30:58Z"
+      Anthropic-Ratelimit-Tokens-Limit:
+      - "2400000"
+      Anthropic-Ratelimit-Tokens-Remaining:
+      - "2400000"
+      Anthropic-Ratelimit-Tokens-Reset:
+      - "2025-08-29T14:31:02Z"
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 976cbfd8aaa4a2f4-YUL
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Via:
+      - 1.1 google
+      X-Envoy-Upstream-Service-Time:
+      - "6026"
+      X-Robots-Tag:
+      - none
+    status: 200 OK
+    code: 200
+    duration: 6.084s

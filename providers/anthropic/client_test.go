@@ -56,7 +56,7 @@ func TestClient_Scoreboard(t *testing.T) {
 	for _, m := range genaiModels {
 		id := m.GetID()
 		models = append(models, smoketest.Model{Model: id})
-		if strings.HasPrefix(id, "claude-sonnet") {
+		if strings.HasPrefix(id, "claude-sonnet") || strings.HasPrefix(id, "claude-opus") {
 			models = append(models, smoketest.Model{Model: id, Thinking: true})
 		}
 	}

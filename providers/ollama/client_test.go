@@ -21,8 +21,6 @@ import (
 	"github.com/maruel/genai/providers/ollama"
 	"github.com/maruel/genai/smoke/smoketest"
 	"github.com/maruel/roundtrippers"
-	"gopkg.in/dnaeon/go-vcr.v4/pkg/cassette"
-	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
 
 // Not implementing TestClient_AllModels since we need to preload Ollama models. Can be done later.
@@ -101,13 +99,7 @@ type lazyServer struct {
 }
 
 func (l *lazyServer) lazyStartWithRecord(t testing.TB) (string, func(http.RoundTripper) http.RoundTripper) {
-	transport := testRecorder.Record(t,
-		http.DefaultTransport,
-		recorder.WithHook(func(i *cassette.Interaction) error {
-			return internaltest.SaveIgnorePort(t, i)
-		}, recorder.AfterCaptureHook),
-		recorder.WithMatcher(internaltest.MatchIgnorePort),
-	)
+	transport := testRecorder.Record(t, http.DefaultTransport)
 	wrapper := func(http.RoundTripper) http.RoundTripper { return transport }
 	if !transport.IsNewCassette() {
 		return "http://localhost:0", wrapper

@@ -13,7 +13,6 @@ import (
 	"iter"
 	"log/slog"
 	"net/http"
-	"net/url"
 	"os"
 	"path/filepath"
 	"slices"
@@ -24,7 +23,6 @@ import (
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/myrecorder"
 	"github.com/maruel/httpjson"
-	"gopkg.in/dnaeon/go-vcr.v4/pkg/cassette"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
 
@@ -65,7 +63,7 @@ func (r *Records) Close() int {
 //
 // It ignores the port number in the URL both for recording and playback so it
 // works with local services like ollama and llama-server.
-func (r *Records) Record(t testing.TB, h http.RoundTripper, opts ...recorder.Option) myrecorder.Recorder {
+func (r *Records) Record(t testing.TB, h http.RoundTripper, opts ...recorder.Option) *myrecorder.Recorder {
 	rr, err := r.Records.Record(t.Name(), h, opts...)
 	if err != nil {
 		t.Fatal(err)
@@ -76,27 +74,6 @@ func (r *Records) Record(t testing.TB, h http.RoundTripper, opts ...recorder.Opt
 		}
 	})
 	return rr
-}
-
-// SaveIgnorePort is a recorder.HookFunc (with a testing.T).
-func SaveIgnorePort(t testing.TB, i *cassette.Interaction) error {
-	i.Request.Host = strings.Split(i.Request.Host, ":")[0]
-	u, err := url.Parse(i.Request.URL)
-	if err != nil {
-		t.Fatal(err)
-	}
-	u.Host = strings.Split(u.Host, ":")[0]
-	i.Request.URL = u.String()
-	return nil
-}
-
-// MatchIgnorePort is a recorder.MatcherFunc that ignore the host port number. This is useful for locally
-// hosted LLM providers like llamacpp and ollama.
-func MatchIgnorePort(r *http.Request, i cassette.Request) bool {
-	r = r.Clone(r.Context())
-	r.URL.Host = strings.Split(r.URL.Host, ":")[0]
-	r.Host = strings.Split(r.Host, ":")[0]
-	return myrecorder.DefaultMatcher(r, i)
 }
 
 // ValidateWordResponse validates that the response contains exactly one of the expected words.

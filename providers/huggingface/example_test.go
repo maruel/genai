@@ -11,11 +11,10 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"time"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/httprecord"
 	"github.com/maruel/genai/providers/huggingface"
-	"gopkg.in/dnaeon/go-vcr.v4/pkg/cassette"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
 
@@ -38,16 +37,8 @@ func ExampleNew_hTTP_record() {
 		mode = recorder.ModeRecordOnly
 	}
 	wrapper := func(h http.RoundTripper) http.RoundTripper {
-		// Remove API key when matching the request, so the playback doesn't need to have access to the API key.
-		m := cassette.NewDefaultMatcher(cassette.WithIgnoreHeaders("Authorization", "X-Request-Id"))
 		var err error
-		rr, err = recorder.New("testdata/example",
-			recorder.WithHook(trimResponseHeaders, recorder.AfterCaptureHook),
-			recorder.WithMode(mode),
-			recorder.WithSkipRequestLatency(true),
-			recorder.WithRealTransport(h),
-			recorder.WithMatcher(m),
-		)
+		rr, err = httprecord.New("testdata/example", h, recorder.WithMode(mode))
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -83,16 +74,4 @@ func getAPIKey() (string, error) {
 		}
 	}
 	return "", nil
-}
-
-// trimResponseHeaders trims API key and noise from the recording.
-func trimResponseHeaders(i *cassette.Interaction) error {
-	// Do not save the API key in the recording.
-	i.Request.Headers.Del("Authorization")
-	i.Request.Headers.Del("X-Request-Id")
-	// Reduce noise.
-	i.Response.Headers.Del("Date")
-	i.Response.Headers.Del("X-Request-Id")
-	i.Response.Duration = i.Response.Duration.Round(time.Millisecond)
-	return nil
 }

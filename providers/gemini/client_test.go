@@ -24,8 +24,6 @@ import (
 	"github.com/maruel/genai/internal/myrecorder"
 	"github.com/maruel/genai/providers/gemini"
 	"github.com/maruel/genai/smoke/smoketest"
-	"gopkg.in/dnaeon/go-vcr.v4/pkg/cassette"
-	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
 
 func TestClient(t *testing.T) {
@@ -428,22 +426,14 @@ func getClientInner(t *testing.T, opts genai.ProviderOptions) (*gemini.Client, e
 		opts.APIKey = "<insert_api_key_here>"
 	}
 	wrapper := func(h http.RoundTripper) http.RoundTripper {
-		return testRecorder.Record(t, h, recorder.WithHook(trimRecordingInternal, recorder.AfterCaptureHook), recorder.WithMatcher(myrecorder.DefaultMatcher))
+		return testRecorder.Record(t, h)
 	}
 	return gemini.New(t.Context(), &opts, wrapper)
 }
 
-func trimRecordingInternal(i *cassette.Interaction) error {
-	// Do not save the API key.
-	i.Request.Headers.Del("X-Goog-Api-Key")
-	// OMG What are they thinking? This happens on HTTP 302 redirect when fetching Veo generated videos:
-	i.Response.Headers.Del("X-Goog-Api-Key")
-	return nil
-}
-
 func loadCachedModelsList(t testing.TB) []genai.Model {
 	doOnce.Do(func() {
-		var r myrecorder.Recorder
+		var r *myrecorder.Recorder
 		var err2 error
 		ctx := t.Context()
 		opts := genai.ProviderOptions{Model: genai.ModelNone}

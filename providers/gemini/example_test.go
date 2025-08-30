@@ -10,11 +10,10 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"time"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/httprecord"
 	"github.com/maruel/genai/providers/gemini"
-	"gopkg.in/dnaeon/go-vcr.v4/pkg/cassette"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
 
@@ -31,22 +30,14 @@ func ExampleNew_hTTP_record() {
 		}
 	}()
 
+	// Simple trick to force recording via an environment variable.
+	mode := recorder.ModeRecordOnce
+	if os.Getenv("RECORD") == "1" {
+		mode = recorder.ModeRecordOnly
+	}
 	wrapper := func(h http.RoundTripper) http.RoundTripper {
-		// Simple trick to force recording via an environment variable.
-		mode := recorder.ModeRecordOnce
-		if os.Getenv("RECORD") == "1" {
-			mode = recorder.ModeRecordOnly
-		}
-		// Remove API key when matching the request, so the playback doesn't need to have access to the API key.
-		// Gemini is more complicated because we also need to mutate the URL.
 		var err error
-		rr, err = recorder.New("testdata/example",
-			recorder.WithHook(trimRecording, recorder.AfterCaptureHook),
-			recorder.WithMode(mode),
-			recorder.WithSkipRequestLatency(true),
-			recorder.WithRealTransport(h),
-			recorder.WithMatcher(defaultMatcher),
-		)
+		rr, err = httprecord.New("testdata/example", h, recorder.WithMode(mode))
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -70,18 +61,3 @@ func ExampleNew_hTTP_record() {
 	// Output:
 	// Found 57 models
 }
-
-// trimRecording trims API key and noise from the recording.
-func trimRecording(i *cassette.Interaction) error {
-	// Do not record API key.
-	i.Request.Headers.Del("X-Goog-Api-Key")
-	// OMG What are they thinking? This happens on HTTP 302 redirect when fetching Veo generated videos:
-	i.Response.Headers.Del("X-Goog-Api-Key")
-	// Reduce noise.
-	i.Request.Headers.Del("X-Request-Id")
-	i.Response.Headers.Del("Date")
-	i.Response.Duration = i.Response.Duration.Round(time.Millisecond)
-	return nil
-}
-
-var defaultMatcher = cassette.NewDefaultMatcher(cassette.WithIgnoreHeaders("Authorization", "X-Goog-Api-Key", "X-Request-Id"))

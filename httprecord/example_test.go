@@ -2,7 +2,7 @@
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
-package anthropic_test
+package httprecord_test
 
 import (
 	"context"
@@ -13,11 +13,11 @@ import (
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/httprecord"
-	"github.com/maruel/genai/providers/anthropic"
+	"github.com/maruel/genai/providers/groq"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
 
-func ExampleNew_hTTP_record() {
+func ExampleNew() {
 	// Example to do HTTP recording and playback for smoke testing.
 	// The example recording is in testdata/example.yaml.
 	var rr *recorder.Recorder
@@ -45,11 +45,11 @@ func ExampleNew_hTTP_record() {
 	}
 	// When playing back the smoke test, no API key is needed. Insert a fake API key.
 	apiKey := ""
-	if os.Getenv("ANTHROPIC_API_KEY") == "" {
+	if os.Getenv("GROQ_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
 	ctx := context.Background()
-	c, err := anthropic.New(ctx, &genai.ProviderOptions{APIKey: apiKey, Model: genai.ModelNone}, wrapper)
+	c, err := groq.New(ctx, &genai.ProviderOptions{APIKey: apiKey, Model: genai.ModelNone}, wrapper)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -59,5 +59,5 @@ func ExampleNew_hTTP_record() {
 	}
 	fmt.Printf("Found %d models\n", len(models))
 	// Output:
-	// Found 9 models
+	// Found 23 models
 }

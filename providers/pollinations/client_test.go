@@ -154,7 +154,7 @@ func getClientInner(t *testing.T, opts genai.ProviderOptions) (*pollinations.Cli
 
 func loadCachedModelsList(t testing.TB) []genai.Model {
 	doOnce.Do(func() {
-		var r myrecorder.Recorder
+		var r *myrecorder.Recorder
 		var err2 error
 		ctx := t.Context()
 		opts := genai.ProviderOptions{APIKey: "genai-unittests", Model: genai.ModelNone}

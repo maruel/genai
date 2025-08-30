@@ -18,10 +18,7 @@ import (
 	"github.com/maruel/genai/adapters"
 	"github.com/maruel/genai/providers/anthropic"
 	"github.com/maruel/genai/providers/gemini"
-	"github.com/maruel/genai/providers/groq"
 	"github.com/maruel/roundtrippers"
-	"gopkg.in/dnaeon/go-vcr.v4/pkg/cassette"
-	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
 
 func ExampleProvider_genSync_vision() {
@@ -225,77 +222,6 @@ func ExampleProvider_GenStream() {
 		log.Fatal(err)
 	}
 	// This would Output: Response: hello
-}
-
-func ExampleProvider_hTTP_record() {
-	// Example to do HTTP recording and playback for smoke testing.
-	// The example recording is in testdata/example.yaml.
-	//
-	// WARNING: Many providers use a slightly different way to send the tokens. Examples include Anthropic,
-	// Cloudflare and Gemini. Make sure to do a test recording first and confirm no key is saved. See the
-	// ExampleProvider_hTTP_record example for each provider to learn how to do a safe HTTP record.
-	var rr *recorder.Recorder
-	defer func() {
-		// In a smoke test, use t.Cleanup().
-		if rr != nil {
-			if err := rr.Stop(); err != nil {
-				log.Printf("Failed saving recordings: %v", err)
-			}
-		}
-	}()
-
-	wrapper := func(h http.RoundTripper) http.RoundTripper {
-		// Simple trick to force recording via an environment variable.
-		mode := recorder.ModeRecordOnce
-		if os.Getenv("RECORD") == "1" {
-			mode = recorder.ModeRecordOnly
-		}
-		// Remove API key when matching the request, so the playback doesn't need to have access to the API key.
-		// See the corresponding provider example as each provider has its own way to set the API key.
-		m := cassette.NewDefaultMatcher(cassette.WithIgnoreHeaders("Authorization", "X-Request-Id"))
-		var err error
-		rr, err = recorder.New("testdata/example",
-			recorder.WithHook(trimResponseHeaders, recorder.AfterCaptureHook),
-			recorder.WithMode(mode),
-			recorder.WithSkipRequestLatency(true),
-			recorder.WithRealTransport(h),
-			recorder.WithMatcher(m),
-		)
-		if err != nil {
-			log.Fatal(err)
-		}
-		return rr
-	}
-	// When playing back the smoke test, no API key is needed. Insert a fake API key.
-	apiKey := ""
-	if os.Getenv("GROQ_API_KEY") == "" {
-		apiKey = "<insert_api_key_here>"
-	}
-	ctx := context.Background()
-	c, err := groq.New(ctx, &genai.ProviderOptions{APIKey: apiKey, Model: genai.ModelNone}, wrapper)
-	if err != nil {
-		log.Fatal(err)
-	}
-	models, err := c.ListModels(ctx)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Printf("Found %d models\n", len(models))
-	// Output:
-	// Found 23 models
-}
-
-// trimResponseHeaders trims API key and noise from the recording.
-func trimResponseHeaders(i *cassette.Interaction) error {
-	// Do not save the API key in the recording.
-	i.Request.Headers.Del("Authorization")
-	i.Request.Headers.Del("X-Request-Id")
-	i.Response.Headers.Del("Set-Cookie")
-	// Reduce noise.
-	i.Response.Headers.Del("Date")
-	i.Response.Headers.Del("X-Request-Id")
-	i.Response.Duration = i.Response.Duration.Round(time.Millisecond)
-	return nil
 }
 
 func Example_genSyncWithToolCallLoop_with_custom_HTTP_Header() {

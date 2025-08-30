@@ -16,8 +16,6 @@ import (
 	"github.com/maruel/genai/internal/myrecorder"
 	"github.com/maruel/genai/providers/cloudflare"
 	"github.com/maruel/genai/smoke/smoketest"
-	"gopkg.in/dnaeon/go-vcr.v4/pkg/cassette"
-	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
 
 func TestClient(t *testing.T) {
@@ -126,28 +124,14 @@ func getClientInner(t *testing.T, opts genai.ProviderOptions) (*cloudflare.Clien
 		opts.AccountID = "ACCOUNT_ID"
 	}
 	wrapper := func(h http.RoundTripper) http.RoundTripper {
-		return testRecorder.Record(t, h, recorder.WithHook(trimRecordingInternal, recorder.AfterCaptureHook), recorder.WithMatcher(matchCassetteInternal))
+		return testRecorder.Record(t, h)
 	}
 	return cloudflare.New(t.Context(), &opts, wrapper)
 }
 
-// trimRecording trims API key and noise from the recording.
-func trimRecordingInternal(i *cassette.Interaction) error {
-	// Zap the account ID from the URL path before saving.
-	i.Request.URL = reAccount.ReplaceAllString(i.Request.URL, "/accounts/ACCOUNT_ID/")
-	return nil
-}
-
-func matchCassetteInternal(r *http.Request, i cassette.Request) bool {
-	r = r.Clone(r.Context())
-	// When matching, ignore the account ID from the URL path.
-	r.URL.Path = reAccount.ReplaceAllString(r.URL.Path, "/accounts/ACCOUNT_ID/")
-	return myrecorder.DefaultMatcher(r, i)
-}
-
 func loadCachedModelsList(t testing.TB) []genai.Model {
 	doOnce.Do(func() {
-		var r myrecorder.Recorder
+		var r *myrecorder.Recorder
 		var err2 error
 		ctx := t.Context()
 		opts := genai.ProviderOptions{Model: genai.ModelNone}

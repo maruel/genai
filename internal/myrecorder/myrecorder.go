@@ -8,33 +8,20 @@
 package myrecorder
 
 import (
-	"bytes"
 	"fmt"
 	"io"
 	"io/fs"
 	"maps"
 	"net/http"
-	"net/url"
 	"os"
 	"path/filepath"
-	"regexp"
 	"slices"
 	"strings"
 	"sync"
-	"time"
 
-	"gopkg.in/dnaeon/go-vcr.v4/pkg/cassette"
+	"github.com/maruel/genai/httprecord"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
-
-// DefaultMatcher ignores authentication via API keys.
-var DefaultMatcher = cassette.NewDefaultMatcher(cassette.WithIgnoreHeaders("Authorization", "X-Api-Key", "X-Goog-Api-Key", "X-Key", "X-Request-Id"))
-
-type Recorder interface {
-	http.RoundTripper
-	Stop() error
-	IsNewCassette() bool
-}
 
 // Records represents HTTP recordings.
 type Records struct {
@@ -90,7 +77,9 @@ func (r *Records) Signal(name string) {
 //
 // It ignores the port number in the URL both for recording and playback so it
 // works with local services like ollama and llama-server.
-func (r *Records) Record(name string, h http.RoundTripper, opts ...recorder.Option) (Recorder, error) {
+//
+// Don't forget to call Stop()!
+func (r *Records) Record(name string, h http.RoundTripper, opts ...recorder.Option) (*Recorder, error) {
 	name = strings.ReplaceAll(strings.ReplaceAll(name, "/", string(os.PathSeparator)), ":", "-")
 	if d := filepath.Dir(name); d != "." {
 		if err := os.MkdirAll(filepath.Join(r.root, d), 0o755); err != nil {
@@ -104,34 +93,14 @@ func (r *Records) Record(name string, h http.RoundTripper, opts ...recorder.Opti
 		mode = recorder.ModeReplayWithNewEpisodes
 	}
 	args := []recorder.Option{
-		recorder.WithHook(trimResponseHeaders, recorder.AfterCaptureHook),
-		recorder.WithHook(trimRecordingCloudflare, recorder.AfterCaptureHook),
-		recorder.WithHook(trimRecordingHostPort, recorder.AfterCaptureHook),
 		recorder.WithMode(mode),
-		recorder.WithSkipRequestLatency(true),
-		recorder.WithRealTransport(h),
-		recorder.WithMatcher(matchIgnorePort),
-		recorder.WithFS(&skipEmptyFS{FS: cassette.NewDiskFS()}),
 	}
 	r.Signal(name)
-	// Don't forget to call Stop()!
-	rec, err := recorder.New(filepath.Join(r.root, name), append(args, opts...)...)
+	rec, err := httprecord.New(filepath.Join(r.root, name), h, append(args, opts...)...)
 	if err != nil {
 		return nil, err
 	}
-	return &recorderWithBody{Recorder: rec, name: name + ".yaml"}, nil
-}
-
-type skipEmptyFS struct {
-	cassette.FS
-}
-
-func (c *skipEmptyFS) WriteFile(name string, data []byte) error {
-	if bytes.Contains(data, []byte("interactions: []")) {
-		// Do not save files without an interaction.
-		return nil
-	}
-	return c.FS.WriteFile(name, data)
+	return &Recorder{Recorder: rec, name: name + ".yaml"}, nil
 }
 
 type orphanedError struct {
@@ -143,70 +112,15 @@ func (e *orphanedError) Error() string {
 	return fmt.Sprintf("Found orphaned recordings in %s:\n- %s", e.root, strings.Join(e.name, "\n- "))
 }
 
-func trimResponseHeaders(i *cassette.Interaction) error {
-	// Authentication via API keys.
-	i.Request.Headers.Del("Authorization")
-	i.Request.Headers.Del("X-Api-Key")
-	i.Request.Headers.Del("X-Goog-Api-Key")
-	i.Request.Headers.Del("X-Key")
-	// OMG What are they thinking? This happens on HTTP 302 redirect when fetching Veo generated videos:
-	i.Response.Headers.Del("X-Goog-Api-Key")
-	// Noise.
-	i.Request.Headers.Del("X-Request-Id")
-	i.Response.Headers.Del("Date")
-	i.Response.Headers.Del("Request-Id")
-	// Remove this here since it also happens in openaicompatible.
-	i.Response.Headers.Del("Anthropic-Organization-Id")
-	// The cookie may be used for authentication?
-	i.Response.Headers.Del("Set-Cookie")
-	// Noise.
-	i.Response.Duration = i.Response.Duration.Round(time.Millisecond)
-	return nil
-}
+//
 
-var reCloudflareAccount = regexp.MustCompile(`/accounts/[0-9a-fA-F]{32}/`)
-
-func trimRecordingCloudflare(i *cassette.Interaction) error {
-	// Zap the account ID from the URL path before saving.
-	i.Request.URL = reCloudflareAccount.ReplaceAllString(i.Request.URL, "/accounts/ACCOUNT_ID/")
-	return nil
-}
-
-func matchCassetteCloudflare(r *http.Request, i cassette.Request) bool {
-	r = r.Clone(r.Context())
-	// When matching, ignore the account ID from the URL path.
-	r.URL.Path = reCloudflareAccount.ReplaceAllString(r.URL.Path, "/accounts/ACCOUNT_ID/")
-	return DefaultMatcher(r, i)
-}
-
-// trimRecordingHostPort is a recorder.HookFunc to remove the port number when recording.
-func trimRecordingHostPort(i *cassette.Interaction) error {
-	i.Request.Host = strings.Split(i.Request.Host, ":")[0]
-	u, err := url.Parse(i.Request.URL)
-	if err != nil {
-		return err
-	}
-	u.Host = strings.Split(u.Host, ":")[0]
-	i.Request.URL = u.String()
-	return nil
-}
-
-// matchIgnorePort is a recorder.MatcherFunc that ignore the host port number. This is useful for locally
-// hosted LLM providers like llamacpp and ollama.
-func matchIgnorePort(r *http.Request, i cassette.Request) bool {
-	r = r.Clone(r.Context())
-	r.URL.Host = strings.Split(r.URL.Host, ":")[0]
-	r.Host = strings.Split(r.Host, ":")[0]
-	return matchCassetteCloudflare(r, i)
-}
-
-// recorderWithBody wraps the POST body in the error message.
-type recorderWithBody struct {
+// Recorder wraps the POST body in the error message.
+type Recorder struct {
 	*recorder.Recorder
 	name string
 }
 
-func (r *recorderWithBody) RoundTrip(req *http.Request) (*http.Response, error) {
+func (r *Recorder) RoundTrip(req *http.Request) (*http.Response, error) {
 	resp, err := r.Recorder.RoundTrip(req)
 	if err != nil && req.GetBody != nil {
 		if body, _ := req.GetBody(); body != nil {

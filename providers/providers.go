@@ -237,8 +237,8 @@ var All = map[string]Config{
 }
 
 // Available returns the factories that are valid.
-func Available(ctx context.Context) map[string]func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-	avail := map[string]func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error){}
+func Available(ctx context.Context) map[string]Config {
+	avail := map[string]Config{}
 	for name, cfg := range All {
 		if c, err := cfg.Factory(ctx, &genai.ProviderOptions{Model: genai.ModelNone}, nil); err == nil {
 			if p, ok := c.(genai.ProviderPing); ok {
@@ -246,7 +246,7 @@ func Available(ctx context.Context) map[string]func(ctx context.Context, opts *g
 					continue
 				}
 			}
-			avail[name] = cfg.Factory
+			avail[name] = cfg
 		}
 	}
 	return avail

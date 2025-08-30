@@ -125,8 +125,8 @@ func LoadProvider(ctx context.Context, provider string, opts *genai.ProviderOpti
 func LoadDefaultProvider(ctx context.Context) (genai.Provider, error) {
 	avail := providers.Available(ctx)
 	if len(avail) == 1 {
-		for _, f := range avail {
-			return f(ctx, &genai.ProviderOptions{Model: genai.ModelNone}, nil)
+		for _, cfg := range avail {
+			return cfg.Factory(ctx, &genai.ProviderOptions{Model: genai.ModelNone}, nil)
 		}
 	}
 	if len(avail) == 0 {

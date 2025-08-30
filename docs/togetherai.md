@@ -6,8 +6,6 @@
 | meta-llama/Llama-4-Scout-17B-16E-Instruct         | Stream | 💬📸  | 💬     | ✅   | ✅   | ❌    | ❌   | ❌   | 📏🛑   | ✅    | ✅     | ✅    | ✅     |
 | meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8 | Sync   | 💬📸  | 💬     | ✅   | ✅   | ❌    | ❌   | ❌   | 🌱🛑  | ✅    | ✅     | ✅    | ✅     |
 | meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8 | Stream | 💬📸  | 💬     | ✅   | ✅   | ❌    | ❌   | ❌   | 🌱🛑  | ✅    | ✅     | ✅    | ✅     |
-| meta-llama/Llama-Vision-Free                      | Sync   | 💬📸  | 💬     | ❌   | 📐    | ❌    | ❌   | ❌   | 🌱🛑  | ✅    | ✅     | ✅    | ✅     |
-| meta-llama/Llama-Vision-Free                      | Stream | 💬📸  | 💬     | ❌   | 📐    | ❌    | ❌   | ❌   | 📏🛑   | ✅    | ✅     | ✅    | ✅     |
 | moonshotai/Kimi-K2-Instruct                       | Sync   | 💬    | 💬     | ❌   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
 | moonshotai/Kimi-K2-Instruct                       | Stream | 💬    | 💬     | ❌   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
 | mistralai/Mistral-Small-24B-Instruct-2501         | Sync   | 💬    | 💬     | 💨   | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | 💨     |
@@ -17,25 +15,22 @@
 | NousResearch/Nous-Hermes-2-Mixtral-8x7B-DPO       | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | Qwen/QwQ-32B                                      | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | Qwen/Qwen2-72B-Instruct                           | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| Qwen/Qwen2.5-VL-72B-Instruct                      | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | Qwen/Qwen2.5-72B-Instruct-Turbo                   | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | Qwen/Qwen2.5-7B-Instruct-Turbo                    | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | Qwen/Qwen2.5-Coder-32B-Instruct                   | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| Qwen/Qwen2.5-VL-72B-Instruct                      | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | Qwen/Qwen3-235B-A22B-Instruct-2507-tput           | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | Qwen/Qwen3-235B-A22B-Thinking-2507                | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | Qwen/Qwen3-235B-A22B-fp8-tput                     | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8           | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | Salesforce/Llama-Rank-V1                          | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | Virtue-AI/VirtueGuard-Text-Lite                   | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| arcee-ai/coder-large                              | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| arize-ai/qwen-2-1.5b-instruct                     | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| togethercomputer/m2-bert-80M-32k-retrieval        | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| deepcogito/cogito-v2-preview-llama-70B            | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | arcee-ai/AFM-4.5B                                 | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| deepcogito/cogito-v2-preview-llama-405B           | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| arcee-ai/coder-large                              | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | arcee-ai/maestro-reasoning                        | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | arcee-ai/virtuoso-large                           | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | arcee_ai/arcee-spotlight                          | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| arize-ai/qwen-2-1.5b-instruct                     | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | black-forest-labs/FLUX.1-canny                    | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | black-forest-labs/FLUX.1-depth                    | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | black-forest-labs/FLUX.1-dev                      | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -52,6 +47,8 @@
 | cartesia/sonic-2                                  | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | deepcogito/cogito-v2-preview-deepseek-671b        | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | deepcogito/cogito-v2-preview-llama-109B-MoE       | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| deepcogito/cogito-v2-preview-llama-405B           | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| deepcogito/cogito-v2-preview-llama-70B            | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | deepseek-ai/DeepSeek-R1-0528-tput                 | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | deepseek-ai/DeepSeek-R1-Distill-Llama-70B         | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | deepseek-ai/DeepSeek-R1-Distill-Llama-70B-free    | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -75,6 +72,7 @@
 | meta-llama/Llama-3.3-70B-Instruct-Turbo-Free      | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | meta-llama/Llama-Guard-3-11B-Vision-Turbo         | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | meta-llama/Llama-Guard-4-12B                      | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| meta-llama/Llama-Vision-Free                      | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | meta-llama/LlamaGuard-2-8b                        | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | meta-llama/Meta-Llama-3-70B-Instruct-Turbo        | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | meta-llama/Meta-Llama-3-8B-Instruct-Lite          | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -96,6 +94,7 @@
 | togethercomputer/MoA-1-Turbo                      | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | togethercomputer/Refuel-Llm-V2                    | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | togethercomputer/Refuel-Llm-V2-Small              | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| togethercomputer/m2-bert-80M-32k-retrieval        | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | zai-org/GLM-4.5-Air-FP8                           | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 <details>
 <summary>‼️ Click here for the legend of columns and symbols</summary>

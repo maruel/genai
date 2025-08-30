@@ -209,7 +209,7 @@ func (m *Message) From(in *genai.Message) error {
 			}
 			if in.Replies[i].Text != "" {
 				m.Content = append(m.Content, Content{Type: ContentText, Text: in.Replies[i].Text})
-			} else if in.Replies[i].Thinking != "" {
+			} else if in.Replies[i].Reasoning != "" {
 				// Ignore
 			} else if !in.Replies[i].Doc.IsZero() {
 				// Check if this is a text/plain document

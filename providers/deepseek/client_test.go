@@ -28,7 +28,7 @@ func TestClient(t *testing.T) {
 		var models []smoketest.Model
 		for _, m := range genaiModels {
 			id := m.GetID()
-			models = append(models, smoketest.Model{Model: id, Thinking: strings.Contains(id, "reasoner")})
+			models = append(models, smoketest.Model{Model: id, Reasoning: strings.Contains(id, "reasoner")})
 		}
 		smoketest.Run(t, getClientRT, models, testRecorder.Records)
 	})

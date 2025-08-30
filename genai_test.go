@@ -358,9 +358,9 @@ func TestMessage(t *testing.T) {
 			},
 			{
 				name:     "Add thinking to existing thinking",
-				message:  Message{Replies: []Reply{{Thinking: "I think "}}},
-				fragment: ReplyFragment{ThinkingFragment: "therefore I am"},
-				want:     Message{Replies: []Reply{{Thinking: "I think therefore I am"}}},
+				message:  Message{Replies: []Reply{{Reasoning: "I think "}}},
+				fragment: ReplyFragment{ReasoningFragment: "therefore I am"},
+				want:     Message{Replies: []Reply{{Reasoning: "I think therefore I am"}}},
 			},
 			{
 				name:     "Join assistant text",
@@ -716,7 +716,7 @@ func TestReply(t *testing.T) {
 				{
 					name: "citations with thinking",
 					in: Reply{
-						Thinking:  "reasoning",
+						Reasoning: "reasoning",
 						Citations: []Citation{{Text: "example"}},
 					},
 					errMsg: "field Citations can only be used with Text",
@@ -762,9 +762,9 @@ func TestReply(t *testing.T) {
 					want: Reply{Text: "Hello world"},
 				},
 				{
-					name: "Thinking content",
+					name: "Reasoning content",
 					in:   `{"thinking": "Let me think about this"}`,
-					want: Reply{Thinking: "Let me think about this"},
+					want: Reply{Reasoning: "Let me think about this"},
 				},
 				{
 					name: "Opaque content",
@@ -825,9 +825,9 @@ func TestReply(t *testing.T) {
 					errMsg: "json: unknown field \"unknown_field\"",
 				},
 				{
-					name:   "Text and Thinking together",
+					name:   "Text and Reasoning together",
 					in:     `{"text": "Hello", "thinking": "Let me think"}`,
-					errMsg: "field Thinking can't be used along Text",
+					errMsg: "field Reasoning can't be used along Text",
 				},
 				{
 					name:   "Document without filename",
@@ -873,7 +873,7 @@ func TestContentFragment(t *testing.T) {
 			},
 			{
 				name: "thinking fragment",
-				in:   ReplyFragment{ThinkingFragment: "thinking"},
+				in:   ReplyFragment{ReasoningFragment: "thinking"},
 				want: false,
 			},
 			{

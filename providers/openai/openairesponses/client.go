@@ -481,7 +481,7 @@ func (m *Message) To(out *genai.Message) error {
 			if m.Summary[i].Type != "summary_text" {
 				return fmt.Errorf("unsupported summary type %q", m.Summary[i].Type)
 			}
-			out.Replies = append(out.Replies, genai.Reply{Thinking: m.Summary[i].Text})
+			out.Replies = append(out.Replies, genai.Reply{Reasoning: m.Summary[i].Text})
 		}
 	case MessageFunctionCall:
 		out.Replies = append(out.Replies, genai.Reply{ToolCall: genai.ToolCall{ID: m.CallID, Name: m.Name, Arguments: m.Arguments}})
@@ -1190,7 +1190,7 @@ func processStreamPackets(ch <-chan ResponseStreamChunkResponse, chunks chan<- g
 				for i := range pkt.Item.Summary {
 					bits = append(bits, pkt.Item.Summary[i].Text)
 				}
-				f.ThinkingFragment = strings.Join(bits, "")
+				f.ReasoningFragment = strings.Join(bits, "")
 			case MessageWebSearchCall:
 				// TODO: Send a fragment to tell the user. It's a server-side tool call, we don't have infrastructure
 				// to surface that to the user yet.
@@ -1231,7 +1231,7 @@ func processStreamPackets(ch <-chan ResponseStreamChunkResponse, chunks chan<- g
 			pendingToolCall = genai.ToolCall{}
 		case ResponseReasoningSummaryPartAdded:
 		case ResponseReasoningSummaryTextDelta:
-			f.ThinkingFragment = pkt.Delta
+			f.ReasoningFragment = pkt.Delta
 		case ResponseReasoningSummaryTextDone:
 		case ResponseReasoningSummaryPartDone:
 		case ResponseError:

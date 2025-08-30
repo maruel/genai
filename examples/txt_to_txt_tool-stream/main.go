@@ -1,4 +1,4 @@
-// Leverage a thinking model to see the thinking process while trying to use
+// Leverage a thinking model to see the reasoning process while trying to use
 // tool calls to answer the user's question. This enables keeping the user
 // updated to see the progress.
 //
@@ -26,7 +26,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	p := adapters.WrapThinking(c)
+	p := adapters.WrapReasoning(c)
 	type math struct {
 		A int `json:"a"`
 		B int `json:"b"`
@@ -50,14 +50,14 @@ func main() {
 	fragments, finish := adapters.GenStreamWithToolCallLoop(ctx, p, msgs, &opts)
 	mode := ""
 	for f := range fragments {
-		if f.ThinkingFragment != "" {
-			if mode != "thinking" {
-				if _, err = os.Stdout.WriteString("# Thinking\n"); err != nil {
+		if f.ReasoningFragment != "" {
+			if mode != "reasoning" {
+				if _, err = os.Stdout.WriteString("# Reasoning\n"); err != nil {
 					break
 				}
-				mode = "thinking"
+				mode = "reasoning"
 			}
-			if _, err = os.Stdout.WriteString(f.ThinkingFragment); err != nil {
+			if _, err = os.Stdout.WriteString(f.ReasoningFragment); err != nil {
 				break
 			}
 		} else if f.TextFragment != "" {

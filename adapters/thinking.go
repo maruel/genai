@@ -16,62 +16,63 @@ import (
 	"github.com/maruel/genai"
 )
 
-// WrapThinking wraps a Provider and processes its output to extract thinking blocks ONLY if needed.
-func WrapThinking(c genai.Provider) genai.Provider {
+// WrapReasoning wraps a Provider and processes its output to extract reasoning blocks ONLY if needed.
+func WrapReasoning(c genai.Provider) genai.Provider {
 	id := c.ModelID()
 	for _, sc := range c.Scoreboard().Scenarios {
-		// Some models like qwen-3-235b-a22b-thinking-2507 do not use ThinkingTokenStart.
-		if slices.Contains(sc.Models, id) && sc.ThinkingTokenEnd != "" {
-			return &ProviderThinking{
-				Provider:           c,
-				ThinkingTokenStart: sc.ThinkingTokenStart,
-				ThinkingTokenEnd:   sc.ThinkingTokenEnd,
+		// Some models like qwen-3-235b-a22b-thinking-2507 do not use ReasoningTokenStart.
+		if slices.Contains(sc.Models, id) && sc.ReasoningTokenEnd != "" {
+			return &ProviderReasoning{
+				Provider:            c,
+				ReasoningTokenStart: sc.ReasoningTokenStart,
+				ReasoningTokenEnd:   sc.ReasoningTokenEnd,
 			}
 		}
 	}
 	return c
 }
 
-// ProviderThinking wraps a Provider and processes its output to extract thinking blocks.
+// ProviderReasoning wraps a Provider and processes its output to extract reasoning blocks.
 //
-// It looks for content within tags ThinkingTokenStart and ThinkingTokenEnd and places it in Thinking Content
-// blocks instead of Text.
+// It looks for content within tags ReasoningTokenStart and ReasoningTokenEnd and places it in Reasoning
+// Content blocks instead of Text.
 //
-// It requires the starting thinking tag. Otherwise, the content is assumed to be text. This is necessary for
+// It requires the starting reasoning tag. Otherwise, the content is assumed to be text. This is necessary for
 // JSON formatted responses.
-type ProviderThinking struct {
+type ProviderReasoning struct {
 	genai.Provider
 
-	// ThinkingTokenStart is the start thinking token. It is often "<think>\n" but there are cases when it can
+	// ReasoningTokenStart is the start reasoning token. It is often "<think>\n" but there are cases when it can
 	// be never output, like "qwen-3-235b-a22b-thinking-2507".
-	ThinkingTokenStart string
-	// ThinkingTokenEnd is the end thinking token, where the explicit answer lies after. It is often "\n</think>\n".
-	ThinkingTokenEnd string
+	ReasoningTokenStart string
+	// ReasoningTokenEnd is the end reasoning token, where the explicit answer lies after. It is often
+	// "\n</think>\n".
+	ReasoningTokenEnd string
 
 	_ struct{}
 }
 
 // GenSync implements the Provider interface by delegating to the wrapped provider
-// and processing the result to extract thinking blocks.
-func (c *ProviderThinking) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
+// and processing the result to extract reasoning blocks.
+func (c *ProviderReasoning) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
 	result, err := c.Provider.GenSync(ctx, msgs, opts...)
-	if err2 := c.processThinkingMessage(&result.Message); err == nil {
+	if err2 := c.processReasoningMessage(&result.Message); err == nil {
 		err = err2
 	}
 	return result, err
 }
 
 // GenStream implements the Provider interface for streaming by delegating to the wrapped provider
-// and processing each fragment to extract thinking blocks.
-// If no thinking tags are present, the first part of the message is assumed to be thinking.
-func (c *ProviderThinking) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
+// and processing each fragment to extract reasoning blocks.
+// If no reasoning tags are present, the first part of the message is assumed to be reasoning.
+func (c *ProviderReasoning) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
 	accumulated := genai.Message{}
 	var finalErr error
 	fragments, finish := c.Provider.GenStream(ctx, msgs, opts...)
 	fnFragments := func(yield func(genai.ReplyFragment) bool) {
 		state := start
-		if c.ThinkingTokenStart == "" {
-			// Simulate that the thinking tag was seen.
+		if c.ReasoningTokenStart == "" {
+			// Simulate that the reasoning tag was seen.
 			state = startTagSeen
 		}
 		for f := range fragments {
@@ -94,7 +95,7 @@ func (c *ProviderThinking) GenStream(ctx context.Context, msgs genai.Messages, o
 	fnFinish := func() (genai.Result, error) {
 		res, err := finish()
 		// Use the accumulated contents from our processed message, which has correctly
-		// transformed TextFragments to ThinkingFragments according to the state machine
+		// transformed TextFragment's to ReasoningFragment's according to the state machine.
 		if len(accumulated.Replies) > 0 {
 			res.Replies = accumulated.Replies
 		}
@@ -107,48 +108,48 @@ func (c *ProviderThinking) GenStream(ctx context.Context, msgs genai.Messages, o
 }
 
 // processPacket is the streaming version of message fragment processing.
-func (c *ProviderThinking) processPacket(state tagProcessingState, accumulated *genai.Message, f genai.ReplyFragment) ([]genai.ReplyFragment, tagProcessingState, error) {
+func (c *ProviderReasoning) processPacket(state tagProcessingState, accumulated *genai.Message, f genai.ReplyFragment) ([]genai.ReplyFragment, tagProcessingState, error) {
 	var replies []genai.ReplyFragment
-	if f.ThinkingFragment != "" {
-		return replies, state, fmt.Errorf("got unexpected thinking fragment: %q; do not use ProviderThinking with an explicit thinking CoT model", f.ThinkingFragment)
+	if f.ReasoningFragment != "" {
+		return replies, state, fmt.Errorf("got unexpected reasoning fragment: %q; do not use ProviderReasoning with an explicit reasoning CoT model", f.ReasoningFragment)
 	}
 	// Mutate the fragment then send it.
 	switch state {
 	case start:
-		// Ignore whitespace until text or thinking tag is seen.
+		// Ignore whitespace until text or reasoning tag is seen.
 		t := strings.TrimLeftFunc(f.TextFragment, unicode.IsSpace)
 		// The tokens always have a trailing "\n". When streaming, the trailing "\n" will likely be sent as a
 		// separate event. This requires a small state machine to keep track of that.
-		if tStart := strings.Index(t, c.ThinkingTokenStart); tStart != -1 {
+		if tStart := strings.Index(t, c.ReasoningTokenStart); tStart != -1 {
 			if tStart != 0 {
-				return replies, state, fmt.Errorf("unexpected prefix before thinking tag: %q", t[:len(c.ThinkingTokenStart)+1])
+				return replies, state, fmt.Errorf("unexpected prefix before reasoning tag: %q", t[:len(c.ReasoningTokenStart)+1])
 			}
-			f.ThinkingFragment = strings.TrimLeftFunc(t[len(c.ThinkingTokenStart):], unicode.IsSpace)
+			f.ReasoningFragment = strings.TrimLeftFunc(t[len(c.ReasoningTokenStart):], unicode.IsSpace)
 			f.TextFragment = ""
 			state = thinkingTextSeen
 		} else if t != "" {
-			// This response does not contain thinking text, it could be JSON or something else.
+			// This response does not contain reasoning text, it could be JSON or something else.
 			state = textSeen
 		} else {
 			f.TextFragment = ""
 		}
 	case startTagSeen:
 		// Ignore whitespace until text is seen.
-		f.ThinkingFragment = f.TextFragment
+		f.ReasoningFragment = f.TextFragment
 		f.TextFragment = ""
-		if buf := strings.TrimLeftFunc(f.ThinkingFragment, unicode.IsSpace); buf != "" {
+		if buf := strings.TrimLeftFunc(f.ReasoningFragment, unicode.IsSpace); buf != "" {
 			state = thinkingTextSeen
-			f.ThinkingFragment = buf
+			f.ReasoningFragment = buf
 		}
 	case thinkingTextSeen:
-		f.ThinkingFragment = f.TextFragment
+		f.ReasoningFragment = f.TextFragment
 		f.TextFragment = ""
-		if tEnd := strings.Index(f.ThinkingFragment, c.ThinkingTokenEnd); tEnd != -1 {
+		if tEnd := strings.Index(f.ReasoningFragment, c.ReasoningTokenEnd); tEnd != -1 {
 			state = endTagSeen
-			after := f.ThinkingFragment[tEnd+len(c.ThinkingTokenEnd):]
+			after := f.ReasoningFragment[tEnd+len(c.ReasoningTokenEnd):]
 			if tEnd != 0 {
 				// Unlikely case where we need to flush out the remainder.
-				f.ThinkingFragment = f.ThinkingFragment[:tEnd]
+				f.ReasoningFragment = f.ReasoningFragment[:tEnd]
 				f.TextFragment = ""
 				replies = append(replies, f)
 				if err := accumulated.Accumulate(f); err != nil {
@@ -156,7 +157,7 @@ func (c *ProviderThinking) processPacket(state tagProcessingState, accumulated *
 				}
 			}
 			f.TextFragment = after
-			f.ThinkingFragment = ""
+			f.ReasoningFragment = ""
 			if buf := strings.TrimLeftFunc(f.TextFragment, unicode.IsSpace); buf != "" {
 				state = textSeen
 				f.TextFragment = buf
@@ -170,25 +171,25 @@ func (c *ProviderThinking) processPacket(state tagProcessingState, accumulated *
 		}
 	case textSeen:
 	default:
-		return replies, state, errors.New("internal error in ProviderThinking.GenStream()")
+		return replies, state, errors.New("internal error in ProviderReasoning.GenStream()")
 	}
 	replies = append(replies, f)
 	err := accumulated.Accumulate(f)
 	return replies, state, err
 }
 
-// processThinkingMessage is the non-streaming version of message fragment processing. It's a bit faster since
+// processReasoningMessage is the non-streaming version of message fragment processing. It's a bit faster since
 // it can slice things directly.
-func (c *ProviderThinking) processThinkingMessage(m *genai.Message) error {
+func (c *ProviderReasoning) processReasoningMessage(m *genai.Message) error {
 	if len(m.Replies) == 0 {
 		// It can be a function call.
 		return nil
 	}
 
-	// Check if one of the contents is already a Thinking block
+	// Check if one of the contents is already a Reasoning block
 	for _, c := range m.Replies {
-		if c.Thinking != "" {
-			return fmt.Errorf("got unexpected thinking content: %q; do not use ProviderThinking with an explicit thinking CoT model", c.Thinking)
+		if c.Reasoning != "" {
+			return fmt.Errorf("got unexpected reasoning content: %q; do not use ProviderReasoning with an explicit reasoning CoT model", c.Reasoning)
 		}
 	}
 
@@ -199,18 +200,18 @@ func (c *ProviderThinking) processThinkingMessage(m *genai.Message) error {
 	}
 
 	tStart := 0
-	if c.ThinkingTokenStart != "" {
-		tStart = strings.Index(text, c.ThinkingTokenStart)
+	if c.ReasoningTokenStart != "" {
+		tStart = strings.Index(text, c.ReasoningTokenStart)
 		if tStart == -1 {
-			// This response does not contain thinking text, it could be JSON or something else.
+			// This response does not contain reasoning text, it could be JSON or something else.
 			return nil
 		}
 		if prefix := text[:tStart]; strings.TrimSpace(prefix) != "" {
-			return fmt.Errorf("unexpected prefix before thinking tag: %q", prefix)
+			return fmt.Errorf("unexpected prefix before reasoning tag: %q", prefix)
 		}
 	} else {
-		// Check if there's an end tag. Otherwise it was not thinking at all.
-		if !strings.Contains(text, c.ThinkingTokenEnd) {
+		// Check if there's an end tag. Otherwise it was not reasoning at all.
+		if !strings.Contains(text, c.ReasoningTokenEnd) {
 			return nil
 		}
 	}
@@ -219,25 +220,25 @@ func (c *ProviderThinking) processThinkingMessage(m *genai.Message) error {
 		m.Replies[i].Text = ""
 	}
 	// Remove whitespace after the starting tag.
-	textAfterStartTag := strings.TrimLeftFunc(text[tStart+len(c.ThinkingTokenStart):], unicode.IsSpace)
-	if tEnd := strings.Index(textAfterStartTag, c.ThinkingTokenEnd); tEnd != -1 {
+	textAfterStartTag := strings.TrimLeftFunc(text[tStart+len(c.ReasoningTokenStart):], unicode.IsSpace)
+	if tEnd := strings.Index(textAfterStartTag, c.ReasoningTokenEnd); tEnd != -1 {
 		thinkingContent := textAfterStartTag[:tEnd]
-		remainingText := strings.TrimLeftFunc(textAfterStartTag[tEnd+len(c.ThinkingTokenEnd):], unicode.IsSpace)
-		m.Replies[0].Thinking = thinkingContent
+		remainingText := strings.TrimLeftFunc(textAfterStartTag[tEnd+len(c.ReasoningTokenEnd):], unicode.IsSpace)
+		m.Replies[0].Reasoning = thinkingContent
 		if len(m.Replies) == 1 {
 			m.Replies = append(m.Replies, genai.Reply{})
 		}
 		m.Replies[len(m.Replies)-1].Text = remainingText
 	} else {
 		// This happens when MaxTokens is used or another reason which cut the stream off before the end tag is seen.
-		// Consider everything thinking.
+		// Consider everything reasoning.
 		// We do not return an error so the user can process the data.
-		m.Replies[0].Thinking = textAfterStartTag
+		m.Replies[0].Reasoning = textAfterStartTag
 	}
 	return nil
 }
 
-func (c *ProviderThinking) Unwrap() genai.Provider {
+func (c *ProviderReasoning) Unwrap() genai.Provider {
 	return c.Provider
 }
 

@@ -28,7 +28,7 @@ func TestClient(t *testing.T) {
 		var models []smoketest.Model
 		for _, sc := range sb.Scenarios {
 			for _, model := range sc.Models {
-				models = append(models, smoketest.Model{Model: model, Thinking: sc.Thinking})
+				models = append(models, smoketest.Model{Model: model, Reasoning: sc.Reason})
 			}
 		}
 		smoketest.Run(t, getClientRT, models, testRecorder.Records)
@@ -93,17 +93,17 @@ func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper)
 		t.Fatal(err)
 	}
 	if strings.HasPrefix(model.Model, "Qwen/Qwen3") {
-		if !model.Thinking {
+		if !model.Reasoning {
 			return &adapters.ProviderAppend{Provider: c, Append: genai.Request{Text: "\n\n/no_think"}}
 		}
 		// Check if it has predefined thinking tokens.
 		for _, sc := range c.Scoreboard().Scenarios {
-			if sc.Thinking && slices.Contains(sc.Models, model.Model) {
-				if sc.ThinkingTokenStart != "" && sc.ThinkingTokenEnd != "" {
-					return &adapters.ProviderThinking{
-						Provider:           &adapters.ProviderAppend{Provider: c, Append: genai.Request{Text: "\n\n/think"}},
-						ThinkingTokenStart: sc.ThinkingTokenStart,
-						ThinkingTokenEnd:   sc.ThinkingTokenEnd,
+			if sc.Reason && slices.Contains(sc.Models, model.Model) {
+				if sc.ReasoningTokenStart != "" && sc.ReasoningTokenEnd != "" {
+					return &adapters.ProviderReasoning{
+						Provider:            &adapters.ProviderAppend{Provider: c, Append: genai.Request{Text: "\n\n/think"}},
+						ReasoningTokenStart: sc.ReasoningTokenStart,
+						ReasoningTokenEnd:   sc.ReasoningTokenEnd,
 					}
 				}
 				break

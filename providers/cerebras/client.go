@@ -241,7 +241,7 @@ func (m *Message) From(in *genai.Message) error {
 			continue
 		}
 		// Do not include thinking in the message.
-		if in.Replies[i].Thinking != "" {
+		if in.Replies[i].Reasoning != "" {
 			continue
 		}
 		m.Content = append(m.Content, Content{})
@@ -262,7 +262,7 @@ func (m *Message) From(in *genai.Message) error {
 func (m *Message) To(out *genai.Message) error {
 	out.Replies = make([]genai.Reply, 0, len(m.Content)+len(m.ToolCalls))
 	if m.Reasoning != "" {
-		out.Replies = append(out.Replies, genai.Reply{Thinking: m.Reasoning})
+		out.Replies = append(out.Replies, genai.Reply{Reasoning: m.Reasoning})
 	}
 	for _, content := range m.Content {
 		switch content.Type {
@@ -316,7 +316,7 @@ func (c *Content) FromReply(in *genai.Reply) error {
 	if in.Text != "" {
 		c.Type = ContentText
 		c.Text = in.Text
-	} else if in.Thinking != "" {
+	} else if in.Reasoning != "" {
 		// Ignore
 	} else if !in.Doc.IsZero() {
 		// Check if this is a text/plain document
@@ -856,7 +856,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			chunks <- f
 		}
 		if pkt.Choices[0].Delta.Reasoning != "" {
-			f := genai.ReplyFragment{ThinkingFragment: pkt.Choices[0].Delta.Reasoning}
+			f := genai.ReplyFragment{ReasoningFragment: pkt.Choices[0].Delta.Reasoning}
 			if err := result.Accumulate(f); err != nil {
 				return err
 			}

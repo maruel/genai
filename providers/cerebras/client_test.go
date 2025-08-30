@@ -37,11 +37,11 @@ func TestClient(t *testing.T) {
 			thinking := false
 			for _, sc := range scenarios {
 				if slices.Contains(sc.Models, id) {
-					thinking = sc.Thinking
+					thinking = sc.Reason
 					break
 				}
 			}
-			models = append(models, smoketest.Model{Model: id, Thinking: thinking})
+			models = append(models, smoketest.Model{Model: id, Reasoning: thinking})
 		}
 		smoketest.Run(t, getClientRT, models, testRecorder.Records)
 	})
@@ -119,20 +119,20 @@ func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper)
 		t.Fatal(err2)
 	}
 	var p genai.Provider = c
-	if model.Thinking {
+	if model.Reasoning {
 		// Check if it has predefined thinking tokens.
 		for _, sc := range c.Scoreboard().Scenarios {
-			if sc.Thinking && slices.Contains(sc.Models, model.Model) {
-				if sc.ThinkingTokenEnd != "" {
+			if sc.Reason && slices.Contains(sc.Models, model.Model) {
+				if sc.ReasoningTokenEnd != "" {
 					// This is bad. We should have a better way to determine if a model needs to be prompted to think
 					// (qwen-3-32b) or must not (qwen-3-235b-a22b-thinking-2507).
 					if !strings.Contains(model.Model, "-thinking-") {
 						p = &adapters.ProviderAppend{Provider: p, Append: genai.Request{Text: "\n\n/think"}}
 					}
-					return &adapters.ProviderThinking{
-						Provider:           p,
-						ThinkingTokenStart: sc.ThinkingTokenStart,
-						ThinkingTokenEnd:   sc.ThinkingTokenEnd,
+					return &adapters.ProviderReasoning{
+						Provider:            p,
+						ReasoningTokenStart: sc.ReasoningTokenStart,
+						ReasoningTokenEnd:   sc.ReasoningTokenEnd,
 					}
 				}
 				break

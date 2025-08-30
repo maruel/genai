@@ -20,16 +20,16 @@ import (
 	"github.com/maruel/genai/smoke"
 )
 
-// Model is a model to test. It specifies if the model should run in "thinking  mode" or not. Most models only
+// Model is a model to test. It specifies if the model should run in "reasoning mode" or not. Most models only
 // support one or the other but a few support both. Often their functionality is different depending if
-// thinking is enabled or not.
+// reasoning is enabled or not.
 type Model struct {
-	Model    string
-	Thinking bool
+	Model     string
+	Reasoning bool
 }
 
 func (m *Model) String() string {
-	if m.Thinking {
+	if m.Reasoning {
 		return m.Model + "_thinking"
 	}
 	return m.Model
@@ -63,7 +63,7 @@ func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Recor
 	modelsToTest := map[Model]struct{}{}
 	for _, sc := range sb.Scenarios {
 		for _, model := range sc.Models {
-			modelsToTest[Model{Model: model, Thinking: sc.Thinking}] = struct{}{}
+			modelsToTest[Model{Model: model, Reasoning: sc.Reason}] = struct{}{}
 		}
 	}
 
@@ -72,7 +72,7 @@ func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Recor
 			// Find the reference.
 			var want scoreboard.Scenario
 			for _, sc := range sb.Scenarios {
-				if m.Thinking != sc.Thinking {
+				if m.Reasoning != sc.Reason {
 					continue
 				}
 				if slices.Contains(sc.Models, m.Model) {
@@ -151,16 +151,16 @@ func runOneModel(t testing.TB, gc getClientOneModel, want scoreboard.Scenario) g
 	if err != nil {
 		t.Fatalf("CreateScenario failed: %v", err)
 	}
-	if !want.Thinking {
-		if want.ThinkingTokenStart != "" {
-			t.Fatal("unexpected ThinkingTokenStart")
+	if !want.Reason {
+		if want.ReasoningTokenStart != "" {
+			t.Fatal("unexpected ReasoningTokenStart")
 		}
-		if want.ThinkingTokenEnd != "" {
-			t.Fatal("unexpected ThinkingTokenEnd")
+		if want.ReasoningTokenEnd != "" {
+			t.Fatal("unexpected ReasoningTokenEnd")
 		}
 	} else {
-		want.ThinkingTokenStart = ""
-		want.ThinkingTokenEnd = ""
+		want.ReasoningTokenStart = ""
+		want.ReasoningTokenEnd = ""
 	}
 	// Check if valid.
 	// optTriState,

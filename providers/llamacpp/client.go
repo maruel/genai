@@ -706,7 +706,7 @@ func (m *Message) To(out *genai.Message) error {
 			return fmt.Errorf("reply %d: %w", i, err)
 		}
 		if len(m.ReasoningContent) != 0 {
-			out.Replies = append(out.Replies, genai.Reply{Thinking: m.ReasoningContent})
+			out.Replies = append(out.Replies, genai.Reply{Reasoning: m.ReasoningContent})
 		}
 	}
 	for i := range m.ToolCalls {
@@ -810,7 +810,7 @@ func (c *Content) FromReply(in *genai.Reply) (bool, error) {
 	if len(in.Opaque) != 0 {
 		return false, errors.New("field Reply.Opaque not supported")
 	}
-	if in.Thinking != "" {
+	if in.Reasoning != "" {
 		return true, nil
 	}
 	if in.Text != "" {
@@ -1486,7 +1486,7 @@ func processChatStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- g
 		}
 		f := genai.ReplyFragment{
 			TextFragment: pkt.Choices[0].Delta.Content,
-			// ThinkingFragment: pkt.Choices[0].Delta.ReasoningContent,
+			// ReasoningFragment: pkt.Choices[0].Delta.ReasoningContent,
 		}
 		if len(pkt.Choices[0].Delta.ToolCalls) > 1 {
 			return fmt.Errorf("implement multiple tool calls: %#v", pkt)

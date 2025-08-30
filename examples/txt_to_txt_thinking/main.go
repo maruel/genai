@@ -1,4 +1,4 @@
-// This selects a model that output thinking tokens.
+// This selects a model that output reasoning tokens.
 //
 // This requires `DEEPSEEK_API_KEY` (https://platform.deepseek.com/api_keys)
 // environment variable to authenticate.
@@ -26,24 +26,24 @@ func main() {
 		genai.NewTextMessage("Give me a life advice that sounds good but is a bad idea in practice."),
 	}
 	fragments, finish := c.GenStream(ctx, msgs)
-	thinking := false
+	reasoning := false
 	for f := range fragments {
-		if f.ThinkingFragment != "" {
-			if !thinking {
-				if _, err = os.Stdout.WriteString("# Thinking\n"); err != nil {
+		if f.ReasoningFragment != "" {
+			if !reasoning {
+				if _, err = os.Stdout.WriteString("# Reasoning\n"); err != nil {
 					break
 				}
-				thinking = true
+				reasoning = true
 			}
-			if _, err = os.Stdout.WriteString(f.ThinkingFragment); err != nil {
+			if _, err = os.Stdout.WriteString(f.ReasoningFragment); err != nil {
 				break
 			}
 		} else if f.TextFragment != "" {
-			if thinking {
+			if reasoning {
 				if _, err = os.Stdout.WriteString("\n\n# Answer\n"); err != nil {
 					break
 				}
-				thinking = false
+				reasoning = false
 			}
 			if _, err = os.Stdout.WriteString(f.TextFragment); err != nil {
 				break

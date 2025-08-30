@@ -52,9 +52,9 @@ func Scoreboard() scoreboard.Score {
 
 // OptionsText defines Anthropic specific options.
 type OptionsText struct {
-	// ThinkingBudget is the maximum number of tokens the LLM can use to think about the answer. When 0,
+	// ReasoningBudget is the maximum number of tokens the LLM can use to think about the answer. When 0,
 	// thinking is disabled. It generally must be above 1024 and below MaxTokens.
-	ThinkingBudget int64
+	ReasoningBudget int64
 	// MessagesToCache specify the number of messages to cache in the request.
 	//
 	// By default, the system prompt and tools will be cached.
@@ -117,13 +117,13 @@ func (c *ChatRequest) initImpl(msgs genai.Messages, model string, cache bool, op
 			} else if v.MessagesToCache != 0 {
 				unsupported = append(unsupported, "OptionsText.MessagesToCache")
 			}
-			if v.ThinkingBudget > 0 {
-				if v.ThinkingBudget >= c.MaxTokens {
-					errs = append(errs, fmt.Errorf("invalid ThinkingBudget(%d) >= MaxTokens(%d)", v.ThinkingBudget, c.MaxTokens))
+			if v.ReasoningBudget > 0 {
+				if v.ReasoningBudget >= c.MaxTokens {
+					errs = append(errs, fmt.Errorf("invalid ThinkingBudget(%d) >= MaxTokens(%d)", v.ReasoningBudget, c.MaxTokens))
 				}
 				// https://docs.anthropic.com/en/docs/build-with-claude/extended-thinking
 				// Thinking isn’t compatible with temperature, top_p, or top_k modifications as well as forced tool use.
-				c.Thinking.BudgetTokens = v.ThinkingBudget
+				c.Thinking.BudgetTokens = v.ReasoningBudget
 				c.Thinking.Type = "enabled"
 			}
 		case *genai.OptionsText:
@@ -582,9 +582,9 @@ func (c *Content) FromReply(in *genai.Reply) error {
 		c.Text = in.Text
 		return nil
 	}
-	if in.Thinking != "" {
+	if in.Reasoning != "" {
 		c.Type = ContentThinking
-		c.Thinking = in.Thinking
+		c.Thinking = in.Reasoning
 		if in.Opaque != nil {
 			if b, ok := in.Opaque["signature"].([]byte); ok {
 				c.Signature = b
@@ -689,7 +689,7 @@ func (c *Content) To(out *genai.Reply) (bool, error) {
 			return true, nil
 		}
 	case ContentThinking:
-		out.Thinking = c.Thinking
+		out.Reasoning = c.Thinking
 		out.Opaque = map[string]any{"signature": c.Signature}
 	case ContentRedactedThinking:
 		out.Opaque = map[string]any{"redacted_thinking": c.Signature}
@@ -1590,7 +1590,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			case ContentText:
 				f.TextFragment = pkt.ContentBlock.Text
 			case ContentThinking:
-				f.ThinkingFragment = pkt.ContentBlock.Thinking
+				f.ReasoningFragment = pkt.ContentBlock.Thinking
 			case ContentToolUse:
 				pendingCall.ID = pkt.ContentBlock.ID
 				pendingCall.Name = pkt.ContentBlock.Name
@@ -1623,7 +1623,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			case DeltaText:
 				f.TextFragment = pkt.Delta.Text
 			case DeltaThinking:
-				f.ThinkingFragment = pkt.Delta.Thinking
+				f.ReasoningFragment = pkt.Delta.Thinking
 			case DeltaSignature:
 				f.Opaque = map[string]any{"signature": pkt.Delta.Signature}
 			case DeltaInputJSON:

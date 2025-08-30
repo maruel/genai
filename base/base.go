@@ -528,8 +528,8 @@ func SimulateStream(ctx context.Context, c genai.Provider, msgs genai.Messages, 
 						return
 					}
 				}
-				if r.Thinking != "" {
-					if !yield(genai.ReplyFragment{ThinkingFragment: r.Thinking, Opaque: r.Opaque}) {
+				if r.Reasoning != "" {
+					if !yield(genai.ReplyFragment{ReasoningFragment: r.Reasoning, Opaque: r.Opaque}) {
 						return
 					}
 				}

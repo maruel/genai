@@ -70,8 +70,8 @@ func Run(ctx context.Context, pf ProviderFactory) (scoreboard.Scenario, genai.Us
 				usage.Add(cs.usage)
 				if f != nil {
 					result.In[genai.ModalityText] = scoreboard.ModalCapability{Inline: true}
-					if cs.isThinking {
-						result.Thinking = true
+					if cs.isReasoning {
+						result.Reason = true
 					}
 					if cs.hasCitations {
 						f.Citations = true
@@ -101,8 +101,8 @@ func Run(ctx context.Context, pf ProviderFactory) (scoreboard.Scenario, genai.Us
 							result.GenSync.ReportFinishReason = f.ReportFinishReason
 						}
 					}
-					if cs.isThinking {
-						result.Thinking = true
+					if cs.isReasoning {
+						result.Reason = true
 					}
 					if cs.hasCitations {
 						result.GenSync.Citations = true
@@ -151,8 +151,8 @@ func Run(ctx context.Context, pf ProviderFactory) (scoreboard.Scenario, genai.Us
 			if f != nil {
 				result.In[genai.ModalityText] = scoreboard.ModalCapability{Inline: true}
 				result.Out[genai.ModalityText] = scoreboard.ModalCapability{Inline: true}
-				if cs.isThinking {
-					result.Thinking = true
+				if cs.isReasoning {
+					result.Reason = true
 				}
 				if cs.hasCitations {
 					f.Citations = true
@@ -182,8 +182,8 @@ func Run(ctx context.Context, pf ProviderFactory) (scoreboard.Scenario, genai.Us
 						result.GenStream.ReportFinishReason = f.ReportFinishReason
 					}
 				}
-				if cs.isThinking {
-					result.Thinking = true
+				if cs.isReasoning {
+					result.Reason = true
 				}
 				if cs.hasCitations {
 					result.GenStream.Citations = true
@@ -228,7 +228,7 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 		f.ReportFinishReason = scoreboard.False
 	}
 	if strings.Contains(resp.String(), "<think") {
-		return nil, fmt.Errorf("response contains <think: use adapters.ProviderThinking")
+		return nil, fmt.Errorf("response contains <think: use adapters.ProviderReasoning")
 	}
 	if len(resp.Logprobs) != 0 {
 		return nil, fmt.Errorf("received Logprobs when not supported")
@@ -709,7 +709,7 @@ type callState struct {
 	usage    genai.Usage
 
 	// discovered states
-	isThinking   bool
+	isReasoning  bool
 	hasCitations bool
 }
 
@@ -730,8 +730,8 @@ func (cs *callState) callGen(ctx context.Context, name string, msgs genai.Messag
 		if len(c.Citations) != 0 {
 			cs.hasCitations = true
 		}
-		if c.Thinking != "" {
-			cs.isThinking = true
+		if c.Reasoning != "" {
+			cs.isReasoning = true
 		}
 	}
 	if err != nil {

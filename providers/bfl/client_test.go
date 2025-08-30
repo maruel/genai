@@ -87,7 +87,7 @@ func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if model.Thinking {
+	if model.Reasoning {
 		t.Fatal("unexpected")
 	}
 	return &imageModelClient{c}

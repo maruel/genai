@@ -257,8 +257,8 @@ func (m *Message) From(in *genai.Message) error {
 				return fmt.Errorf("reply #%d: deepseek only supports text/plain documents, got %s", 0, mimeType)
 			}
 			m.Content += string(data)
-		} else if in.Replies[i].Thinking != "" {
-			// Thinking content should not be returned to the model.
+		} else if in.Replies[i].Reasoning != "" {
+			// Reasoning content should not be returned to the model.
 		} else if !in.Replies[i].ToolCall.IsZero() {
 			m.ToolCalls = append(m.ToolCalls, ToolCall{})
 			if err := m.ToolCalls[len(m.ToolCalls)-1].From(&in.Replies[i].ToolCall); err != nil {
@@ -280,7 +280,7 @@ func (m *Message) From(in *genai.Message) error {
 func (m *Message) To(out *genai.Message) error {
 	// Both ReasoningContent and Content can be set on the same reply.
 	if m.ReasoningContent != "" {
-		out.Replies = append(out.Replies, genai.Reply{Thinking: m.ReasoningContent})
+		out.Replies = append(out.Replies, genai.Reply{Reasoning: m.ReasoningContent})
 	}
 	if m.Content != "" {
 		out.Replies = append(out.Replies, genai.Reply{Text: m.Content})
@@ -698,8 +698,8 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			return fmt.Errorf("unexpected role %q", role)
 		}
 		f := genai.ReplyFragment{
-			TextFragment:     pkt.Choices[0].Delta.Content,
-			ThinkingFragment: pkt.Choices[0].Delta.ReasoningContent,
+			TextFragment:      pkt.Choices[0].Delta.Content,
+			ReasoningFragment: pkt.Choices[0].Delta.ReasoningContent,
 		}
 		// DeepSeek streams the arguments. Buffer the arguments to send the fragment as a whole tool call.
 		if len(pkt.Choices[0].Delta.ToolCalls) == 1 {

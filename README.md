@@ -160,7 +160,7 @@ func main() {
 ### Text Thinking 🧠
 
 [examples/txt\_to\_txt\_thinking/main.go](examples/txt_to_txt_thinking/main.go): genai supports for implicit
-thinking (e.g. Anthropic) and explicit thinking (e.g. Deepseek). The package adapters provide logic to
+reasoning (e.g. Anthropic) and explicit reasoning (e.g. Deepseek). The package adapters provide logic to
 automatically handle explicit Chain-of-Thoughts models, generally using `<think>` and `</think>` tokens.
 💡 Set [`DEEPSEEK_API_KEY`](https://platform.deepseek.com/api_keys).
 
@@ -173,7 +173,7 @@ Snippet:
 	}
 	fragments, finish := c.GenStream(ctx, msgs)
 	for f := range fragments {
-		if f.ThinkingFragment != "" {
+		if f.ReasoningFragment != "" {
 			// ...
 		} else if f.TextFragment != "" {
 			// ...
@@ -355,7 +355,7 @@ Snippet:
 ```go
 	fragments, finish := adapters.GenStreamWithToolCallLoop(ctx, p, msgs, &opts)
 	for f := range fragments {
-		if f.ThinkingFragment != "" {
+		if f.ReasoningFragment != "" {
 			// ...
 		} else if f.TextFragment != "" {
 			// ...
@@ -368,7 +368,7 @@ Snippet:
 
 When asked _What is 3214 + 5632?_, this may print:
 
-> \# Thinking
+> \# Reasoning
 >
 > User wants result of 3214+5632 using tool "add". Must be terse, only answer, no explanation. Need to call add function with a=3214, b=5632.
 >
@@ -554,7 +554,7 @@ Snippet:
 	}
 	c, _ := gemini.New(ctx, &opts, nil)
 	// ...
-	res, _ := c.GenSync(ctx, msgs, &gemini.Options{ThinkingBudget: 0})
+	res, _ := c.GenSync(ctx, msgs, &gemini.Options{ReasoningBudget: 0})
 ```
 
 Try it locally:
@@ -706,7 +706,7 @@ Snippet:
 
 	f := providers.All[*provider]
 	c, _ := f(ctx, &genai.ProviderOptions{}, nil)
-	p := adapters.WrapThinking(c)
+	p := adapters.WrapReasoning(c)
 	res, _ := p.GenSync(...)
 ```
 

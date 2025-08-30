@@ -34,7 +34,7 @@ func TestClient(t *testing.T) {
 		var models []smoketest.Model
 		for _, m := range genaiModels {
 			id := m.GetID()
-			models = append(models, smoketest.Model{Model: id, Thinking: strings.HasPrefix(id, "o") && !strings.Contains(id, "moderation")})
+			models = append(models, smoketest.Model{Model: id, Reasoning: strings.HasPrefix(id, "o") && !strings.Contains(id, "moderation")})
 		}
 		smoketest.Run(t, getClientRT, models, testRecorder.Records)
 	})
@@ -210,7 +210,7 @@ func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if model.Thinking {
+	if model.Reasoning {
 		return &injectThinking{
 			Provider: &internaltest.InjectOptions{
 				Provider: c,
@@ -250,7 +250,7 @@ type injectThinking struct {
 func (i *injectThinking) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
 	res, err := i.Provider.GenSync(ctx, msgs, opts...)
 	if res.Usage.ReasoningTokens > 0 {
-		res.Replies = append(res.Replies, genai.Reply{Thinking: "\n"})
+		res.Replies = append(res.Replies, genai.Reply{Reasoning: "\n"})
 	}
 	return res, err
 }

@@ -96,7 +96,7 @@ type Functionality struct {
 	// Tokens are characters nor words. The tokens are embedding specific, and each model family uses a
 	// different vocabulary. Thus the number of characters generated varies wildly.
 	//
-	// It fails more often with model with implicit thinking.
+	// It fails more often with model with implicit reasoning.
 	MaxTokens bool `json:"maxTokens,omitzero"`
 	// StopSequence means that the provider supports stop words. The number of stop words is generally limited,
 	// frequently to 5 words. The sequence should be a valid token in the model's vocabulary.
@@ -251,13 +251,13 @@ type Scenario struct {
 	// providers continuouly release new models. It is still valuable to use the first value
 	Models []string `json:"models"`
 
-	// Thinking means that the model does either explicit chain-of-thought or hidden thinking. For some
+	// Reason means that the model does either explicit chain-of-thought or hidden reasoning. For some
 	// providers, this is controlled via a OptionsText. For some models (like Qwen3), a token "/no_think" or
-	// "/think" is used to control. ThinkingTokenStart and ThinkingTokenEnd must only be set on explicit inline
-	// thinking models. They often use <think> and </think>.
-	Thinking           bool   `json:"thinking,omitzero"`
-	ThinkingTokenStart string `json:"thinkingTokenStart,omitzero"`
-	ThinkingTokenEnd   string `json:"thinkingTokenEnd,omitzero"`
+	// "/think" is used to control. ReasoningTokenStart and ReasoningTokenEnd must only be set on explicit inline
+	// reasoning models. They often use <think> and </think>.
+	Reason              bool   `json:"thinking,omitzero"`
+	ReasoningTokenStart string `json:"thinkingTokenStart,omitzero"`
+	ReasoningTokenEnd   string `json:"thinkingTokenEnd,omitzero"`
 
 	In  map[Modality]ModalCapability `json:"in,omitzero"`
 	Out map[Modality]ModalCapability `json:"out,omitzero"`
@@ -306,57 +306,57 @@ type ModalCapability struct {
 	SupportedFormats []string `json:"supportedFormats,omitzero"`
 }
 
-// Thinking specifies if a model Scenario supports thinking.
-type Thinking int8
+// Reason specifies if a model Scenario supports thinking.
+type Reason int8
 
 const (
-	// ThinkingNone means that no thinking is supported.
-	ThinkingNone Thinking = 0
-	// ThinkingInline means that the thinking tokens are inline and must be explicitly parsed from Content.Text
-	// with adapters.ProviderThinking.
-	ThinkingInline Thinking = 1
-	// ThinkingAuto means that the thinking tokens are properly generated and handled by the provider and
-	// are returned as Content.Thinking.
-	ThinkingAuto Thinking = -1
+	// ReasonNone means that no thinking is supported.
+	ReasonNone Reason = 0
+	// ReasonInline means that the thinking tokens are inline and must be explicitly parsed from Content.Text
+	// with adapters.ProviderReasoning.
+	ReasonInline Reason = 1
+	// ReasonAuto means that the thinking tokens are properly generated and handled by the provider and
+	// are returned as Content.Reasoning.
+	ReasonAuto Reason = -1
 )
 
-func (t Thinking) Validate() error {
+func (t Reason) Validate() error {
 	switch t {
-	case ThinkingNone, ThinkingInline, ThinkingAuto:
+	case ReasonNone, ReasonInline, ReasonAuto:
 		return nil
 	default:
-		return fmt.Errorf("invalid Thinking: %q", t)
+		return fmt.Errorf("invalid Reason: %q", t)
 	}
 }
 
-func (t Thinking) MarshalJSON() ([]byte, error) {
+func (t Reason) MarshalJSON() ([]byte, error) {
 	switch t {
-	case ThinkingNone:
+	case ReasonNone:
 		// TODO: Not present.
 		return []byte(`"none"`), nil
-	case ThinkingInline:
+	case ReasonInline:
 		return []byte(`"inline"`), nil
-	case ThinkingAuto:
+	case ReasonAuto:
 		return []byte(`"auto"`), nil
 	default:
-		return nil, fmt.Errorf("invalid Thinking: %q", t)
+		return nil, fmt.Errorf("invalid Reason: %q", t)
 	}
 }
 
-func (t *Thinking) UnmarshalJSON(b []byte) error {
+func (t *Reason) UnmarshalJSON(b []byte) error {
 	s := ""
 	if err := json.Unmarshal(b, &s); err != nil {
 		return err
 	}
 	switch s {
 	case "none":
-		*t = ThinkingNone
+		*t = ReasonNone
 	case "inline":
-		*t = ThinkingInline
+		*t = ReasonInline
 	case "auto":
-		*t = ThinkingAuto
+		*t = ReasonAuto
 	default:
-		return fmt.Errorf("invalid Thinking: %q", s)
+		return fmt.Errorf("invalid Reason: %q", s)
 	}
 	return nil
 }
@@ -389,7 +389,7 @@ func (s *Score) Validate() error {
 	seen := map[pair]struct{}{}
 	for _, sc := range s.Scenarios {
 		for _, model := range sc.Models {
-			k := pair{name: model, thinking: sc.Thinking}
+			k := pair{name: model, thinking: sc.Reason}
 			if _, ok := seen[k]; ok {
 				return fmt.Errorf("duplicate model in scoreboard: %v", k)
 			}

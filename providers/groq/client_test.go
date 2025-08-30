@@ -38,12 +38,12 @@ func TestClient(t *testing.T) {
 			thinking := false
 			for _, sc := range scenarios {
 				if slices.Contains(sc.Models, id) {
-					t.Logf("%s: %t", id, sc.Thinking)
-					thinking = sc.Thinking
+					t.Logf("%s: %t", id, sc.Reason)
+					thinking = sc.Reason
 					break
 				}
 			}
-			models = append(models, smoketest.Model{Model: id, Thinking: thinking})
+			models = append(models, smoketest.Model{Model: id, Reasoning: thinking})
 		}
 		smoketest.Run(t, getClientRT, models, testRecorder.Records)
 	})
@@ -110,7 +110,7 @@ func (h *handleGroqReasoning) GenSync(ctx context.Context, msgs genai.Messages, 
 			return h.Provider.GenSync(ctx, msgs, opts...)
 		}
 	}
-	c := adapters.ProviderThinking{Provider: h.Provider, ThinkingTokenStart: "<think>", ThinkingTokenEnd: "\n</think>\n"}
+	c := adapters.ProviderReasoning{Provider: h.Provider, ReasoningTokenStart: "<think>", ReasoningTokenEnd: "\n</think>\n"}
 	return c.GenSync(ctx, msgs, opts...)
 }
 
@@ -125,7 +125,7 @@ func (h *handleGroqReasoning) GenStream(ctx context.Context, msgs genai.Messages
 			return h.Provider.GenStream(ctx, msgs, opts...)
 		}
 	}
-	c := adapters.ProviderThinking{Provider: h.Provider, ThinkingTokenStart: "<think>", ThinkingTokenEnd: "\n</think>\n"}
+	c := adapters.ProviderReasoning{Provider: h.Provider, ReasoningTokenStart: "<think>", ReasoningTokenEnd: "\n</think>\n"}
 	return c.GenStream(ctx, msgs, opts...)
 }
 
@@ -148,11 +148,11 @@ func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper)
 		t.Fatal(err)
 	}
 	var c genai.Provider = cl
-	if strings.HasPrefix(model.Model, "qwen/") && model.Thinking {
+	if strings.HasPrefix(model.Model, "qwen/") && model.Reasoning {
 		c = &adapters.ProviderAppend{Provider: c, Append: genai.Request{Text: "\n\n/think"}}
 	}
 	// OpenAI must not enable the ReasoningFormat flag.
-	if model.Thinking && !strings.HasPrefix(model.Model, "openai/") {
+	if model.Reasoning && !strings.HasPrefix(model.Model, "openai/") {
 		return &handleGroqReasoning{Provider: c}
 	}
 	return c

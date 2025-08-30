@@ -242,7 +242,7 @@ func (m *Message) From(in *genai.Message) error {
 	}
 	if len(in.Replies) != 0 {
 		for i := range in.Replies {
-			if in.Replies[i].Thinking != "" {
+			if in.Replies[i].Reasoning != "" {
 				continue
 			}
 			if !in.Replies[i].ToolCall.IsZero() {
@@ -562,7 +562,7 @@ func (m *MessageResponse) To(out *genai.Message) error {
 	if m.ReasoningContent != "" {
 		// Paper over broken "deepseek".
 		if len(out.Replies) == 1 && out.Replies[0].Text != "" {
-			out.Replies = append(out.Replies, genai.Reply{Thinking: m.ReasoningContent})
+			out.Replies = append(out.Replies, genai.Reply{Reasoning: m.ReasoningContent})
 		} else {
 			out.Replies = append(out.Replies, genai.Reply{Text: m.ReasoningContent})
 		}
@@ -1266,8 +1266,8 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			return fmt.Errorf("implement multiple tool calls: %#v", pkt)
 		}
 		f := genai.ReplyFragment{
-			TextFragment:     pkt.Choices[0].Delta.Content,
-			ThinkingFragment: pkt.Choices[0].Delta.ReasoningContent,
+			TextFragment:      pkt.Choices[0].Delta.Content,
+			ReasoningFragment: pkt.Choices[0].Delta.ReasoningContent,
 		}
 		// Pollinations streams the arguments. Buffer the arguments to send the fragment as a whole tool call.
 		if len(pkt.Choices[0].Delta.ToolCalls) == 1 {

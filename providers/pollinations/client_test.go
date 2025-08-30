@@ -28,7 +28,7 @@ func TestClient(t *testing.T) {
 		var sbModels []smoketest.Model
 		for _, m := range models {
 			id := m.GetID()
-			sbModels = append(sbModels, smoketest.Model{Model: id, Thinking: id == "deepseek-reasoning"})
+			sbModels = append(sbModels, smoketest.Model{Model: id, Reasoning: id == "deepseek-reasoning"})
 		}
 		smoketest.Run(t, getClientRT, sbModels, testRecorder.Records)
 	})
@@ -91,14 +91,14 @@ func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper)
 		t.Fatal(err)
 	}
 	c2 := &smallImage{Provider: &internaltest.HideHTTP500{Provider: c}}
-	if model.Thinking {
+	if model.Reasoning {
 		for _, sc := range c.Scoreboard().Scenarios {
-			if sc.Thinking && slices.Contains(sc.Models, model.Model) {
-				if sc.ThinkingTokenStart != "" && sc.ThinkingTokenEnd != "" {
-					return &adapters.ProviderThinking{
-						Provider:           c2,
-						ThinkingTokenStart: sc.ThinkingTokenStart,
-						ThinkingTokenEnd:   sc.ThinkingTokenEnd,
+			if sc.Reason && slices.Contains(sc.Models, model.Model) {
+				if sc.ReasoningTokenStart != "" && sc.ReasoningTokenEnd != "" {
+					return &adapters.ProviderReasoning{
+						Provider:            c2,
+						ReasoningTokenStart: sc.ReasoningTokenStart,
+						ReasoningTokenEnd:   sc.ReasoningTokenEnd,
 					}
 				}
 				break

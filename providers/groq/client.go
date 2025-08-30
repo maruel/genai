@@ -286,7 +286,7 @@ func (m *Message) From(in *genai.Message) error {
 	if len(in.Replies) != 0 {
 		m.Content = make(Contents, 0, len(in.Replies))
 		for i := range in.Replies {
-			if in.Replies[i].Thinking != "" {
+			if in.Replies[i].Reasoning != "" {
 				// DeepSeek and Qwen recommend against passing reasoning back.
 				continue
 			}
@@ -556,7 +556,7 @@ type MessageResponse struct {
 
 func (m *MessageResponse) To(out *genai.Message) error {
 	if m.Reasoning != "" {
-		out.Replies = append(out.Replies, genai.Reply{Thinking: m.Reasoning})
+		out.Replies = append(out.Replies, genai.Reply{Reasoning: m.Reasoning})
 	}
 	if m.Content != "" {
 		out.Replies = append(out.Replies, genai.Reply{Text: m.Content})
@@ -862,8 +862,8 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			return errors.New("implement multiple tool calls")
 		}
 		f := genai.ReplyFragment{
-			TextFragment:     pkt.Choices[0].Delta.Content,
-			ThinkingFragment: pkt.Choices[0].Delta.Reasoning,
+			TextFragment:      pkt.Choices[0].Delta.Content,
+			ReasoningFragment: pkt.Choices[0].Delta.Reasoning,
 		}
 		if len(pkt.Choices[0].Delta.ToolCalls) == 1 {
 			pkt.Choices[0].Delta.ToolCalls[0].To(&f.ToolCall)

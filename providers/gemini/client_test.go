@@ -42,7 +42,7 @@ func TestClient(t *testing.T) {
 				models = append(models, smoketest.Model{Model: id})
 			}
 			if strings.HasPrefix(id, "gemini-2.5-") && !strings.Contains(id, "preview") {
-				models = append(models, smoketest.Model{Model: id, Thinking: true})
+				models = append(models, smoketest.Model{Model: id, Reasoning: true})
 			}
 		}
 		smoketest.Run(t, getClientRT, models, testRecorder.Records)
@@ -252,7 +252,7 @@ func TestClient(t *testing.T) {
 				})
 				t.Run("thinking", func(t *testing.T) {
 					c := getClient(t, id)
-					opts := gemini.Options{ThinkingBudget: 512}
+					opts := gemini.Options{ReasoningBudget: 512}
 					res, err := c.GenSync(t.Context(), msgs, &opts)
 					if err != nil {
 						t.Fatal(err)
@@ -263,7 +263,7 @@ func TestClient(t *testing.T) {
 				})
 				t.Run("nothinking", func(t *testing.T) {
 					c := getClient(t, id)
-					opts := gemini.Options{ThinkingBudget: 0}
+					opts := gemini.Options{ReasoningBudget: 0}
 					res, err := c.GenSync(t.Context(), msgs, &opts)
 					if err != nil {
 						t.Fatal(err)
@@ -392,11 +392,11 @@ func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if model.Thinking {
+	if model.Reasoning {
 		// https://ai.google.dev/gemini-api/docs/thinking?hl=en
 		return &internaltest.InjectOptions{
 			Provider: c,
-			Opts:     []genai.Options{&gemini.Options{ThinkingBudget: 512}},
+			Opts:     []genai.Options{&gemini.Options{ReasoningBudget: 512}},
 		}
 	}
 	if model.Model == "gemini-2.5-flash" {
@@ -404,7 +404,7 @@ func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper)
 		// subtest.
 		return &internaltest.InjectOptions{
 			Provider: c,
-			Opts:     []genai.Options{&gemini.Options{ThinkingBudget: 0}},
+			Opts:     []genai.Options{&gemini.Options{ReasoningBudget: 0}},
 		}
 	}
 	return c

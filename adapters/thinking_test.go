@@ -19,7 +19,7 @@ import (
 	"github.com/maruel/genai/scoreboard"
 )
 
-func TestProviderThinking(t *testing.T) {
+func TestProviderReasoning(t *testing.T) {
 	t.Run("GenSync", func(t *testing.T) {
 		t.Run("valid", func(t *testing.T) {
 			tests := []struct {
@@ -37,7 +37,7 @@ func TestProviderThinking(t *testing.T) {
 					name: "With thinking tags at the beginning",
 					in:   "<thinking>\nThis is my thinking process</thinking>\nThis is the response",
 					want: []genai.Reply{
-						{Thinking: "This is my thinking process"},
+						{Reasoning: "This is my thinking process"},
 						{Text: "This is the response"},
 					},
 				},
@@ -45,14 +45,14 @@ func TestProviderThinking(t *testing.T) {
 					name: "With only whitespace before tag",
 					in:   "  \n\t<thinking>\nThinking with whitespace before</thinking>\nResponse",
 					want: []genai.Reply{
-						{Thinking: "Thinking with whitespace before"},
+						{Reasoning: "Thinking with whitespace before"},
 						{Text: "Response"},
 					},
 				},
 				{
 					name: "With only whitespace before tag and cut off",
 					in:   "  \n\t<thinking>\nThinking with whitespace",
-					want: []genai.Reply{{Thinking: "Thinking with whitespace"}},
+					want: []genai.Reply{{Reasoning: "Thinking with whitespace"}},
 				},
 				{
 					name: "JSON",
@@ -70,10 +70,10 @@ func TestProviderThinking(t *testing.T) {
 					mp := &mockProviderGenSync{
 						responses: []genai.Result{{Message: genai.Message{Replies: []genai.Reply{{Text: tc.in}}}}},
 					}
-					tp := &adapters.ProviderThinking{
-						Provider:           mp,
-						ThinkingTokenStart: "<thinking>",
-						ThinkingTokenEnd:   "</thinking>",
+					tp := &adapters.ProviderReasoning{
+						Provider:            mp,
+						ReasoningTokenStart: "<thinking>",
+						ReasoningTokenEnd:   "</thinking>",
 					}
 					got, err := tp.GenSync(t.Context(), genai.Messages{}, tc.opts)
 					if err != nil {
@@ -94,7 +94,7 @@ func TestProviderThinking(t *testing.T) {
 					{
 						name: "With non-empty content before tag",
 						in:   []genai.Reply{{Text: "Text before <thinking>\nThis is thinking</thinking>\nThis is response"}},
-						want: "unexpected prefix before thinking tag: \"Text before \"",
+						want: "unexpected prefix before reasoning tag: \"Text before \"",
 					},
 					{
 						name: "Error from underlying GenSync",
@@ -104,12 +104,12 @@ func TestProviderThinking(t *testing.T) {
 					{
 						name: "Multiple content blocks",
 						in:   []genai.Reply{{Text: "First part. "}, {Text: "<thinking>Thinking part</thinking>"}, {Text: " Second part."}},
-						want: "unexpected prefix before thinking tag: \"First part. \"",
+						want: "unexpected prefix before reasoning tag: \"First part. \"",
 					},
 					{
 						name: "Message with existing thinking content",
-						in:   []genai.Reply{{Thinking: "Existing thinking"}, {Text: "Some text"}},
-						want: `got unexpected thinking content: "Existing thinking"; do not use ProviderThinking with an explicit thinking CoT model`,
+						in:   []genai.Reply{{Reasoning: "Existing thinking"}, {Text: "Some text"}},
+						want: `got unexpected reasoning content: "Existing thinking"; do not use ProviderReasoning with an explicit reasoning CoT model`,
 					},
 				}
 
@@ -119,17 +119,17 @@ func TestProviderThinking(t *testing.T) {
 							responses: []genai.Result{{Message: genai.Message{Replies: tc.in}}},
 							err:       tc.err,
 						}
-						tp := &adapters.ProviderThinking{
-							Provider:           mp,
-							ThinkingTokenStart: "<thinking>",
-							ThinkingTokenEnd:   "</thinking>",
+						tp := &adapters.ProviderReasoning{
+							Provider:            mp,
+							ReasoningTokenStart: "<thinking>",
+							ReasoningTokenEnd:   "</thinking>",
 						}
 						_, err := tp.GenSync(t.Context(), genai.Messages{})
 						if err == nil {
 							t.Fatal("expected error but got none")
 						}
 						if got := err.Error(); got != tc.want {
-							t.Fatalf("expected %q but got %q", tc.want, got)
+							t.Fatalf("invalid error\nwant %q\ngot  %q", tc.want, got)
 						}
 					})
 				}
@@ -154,7 +154,7 @@ func TestProviderThinking(t *testing.T) {
 					name: "With thinking tags in separate fragments",
 					in:   []string{"<thinking>", "This is my ", "thinking process", "</thinking>", "This is the response"},
 					want: []genai.Reply{
-						{Thinking: "This is my thinking process"},
+						{Reasoning: "This is my thinking process"},
 						{Text: "This is the response"},
 					},
 				},
@@ -162,7 +162,7 @@ func TestProviderThinking(t *testing.T) {
 					name: "With whitespace before tag",
 					in:   []string{"  \n\t<thinking>", "Thinking content", "</thinking>", "Response"},
 					want: []genai.Reply{
-						{Thinking: "Thinking content"},
+						{Reasoning: "Thinking content"},
 						{Text: "Response"},
 					},
 				},
@@ -170,20 +170,20 @@ func TestProviderThinking(t *testing.T) {
 					name: "With whitespace before tag as a separate packet",
 					in:   []string{"  \n\t", "<thinking>", "Thinking content", "</thinking>", "Response"},
 					want: []genai.Reply{
-						{Thinking: "Thinking content"},
+						{Reasoning: "Thinking content"},
 						{Text: "Response"},
 					},
 				},
 				{
 					name: "With thinking tag at the end",
 					in:   []string{"<thinking>", "This is thinking only"},
-					want: []genai.Reply{{Thinking: "This is thinking only"}},
+					want: []genai.Reply{{Reasoning: "This is thinking only"}},
 				},
 				{
 					name: "With start tag and text in same fragment",
 					in:   []string{"<thinking>Some text", " after tag", "</thinking>", "Response"},
 					want: []genai.Reply{
-						{Thinking: "Some text after tag"},
+						{Reasoning: "Some text after tag"},
 						{Text: "Response"},
 					},
 				},
@@ -191,7 +191,7 @@ func TestProviderThinking(t *testing.T) {
 					name: "With end tag and response in same fragment",
 					in:   []string{"<thinking>", "Thinking", "</thinking>Response"},
 					want: []genai.Reply{
-						{Thinking: "Thinking"},
+						{Reasoning: "Thinking"},
 						{Text: "Response"},
 					},
 				},
@@ -199,7 +199,7 @@ func TestProviderThinking(t *testing.T) {
 					name: "End tag not at start of fragment",
 					in:   []string{"<thinking>", "Thinking1", "Thinking2</thinking>", "Response"},
 					want: []genai.Reply{
-						{Thinking: "Thinking1Thinking2"},
+						{Reasoning: "Thinking1Thinking2"},
 						{Text: "Response"},
 					},
 				},
@@ -207,7 +207,7 @@ func TestProviderThinking(t *testing.T) {
 					name: "Text state fragments",
 					in:   []string{"<thinking>", "Thinking", "</thinking>", "Response1", "Response2"},
 					want: []genai.Reply{
-						{Thinking: "Thinking"},
+						{Reasoning: "Thinking"},
 						{Text: "Response1Response2"},
 					},
 				},
@@ -215,7 +215,7 @@ func TestProviderThinking(t *testing.T) {
 					name: "End tag at the start of a fragment",
 					in:   []string{"<thinking>", "Thinking content", "</thinking>", "Response"},
 					want: []genai.Reply{
-						{Thinking: "Thinking content"},
+						{Reasoning: "Thinking content"},
 						{Text: "Response"},
 					},
 				},
@@ -223,7 +223,7 @@ func TestProviderThinking(t *testing.T) {
 					name: "Text after start tag",
 					in:   []string{"<thinking>\nOkay", " content", "</thinking>", "Response"},
 					want: []genai.Reply{
-						{Thinking: "Okay content"},
+						{Reasoning: "Okay content"},
 						{Text: "Response"},
 					},
 				},
@@ -240,10 +240,10 @@ func TestProviderThinking(t *testing.T) {
 					for _, i := range tc.in {
 						mp.streamResponses[0].fragments = append(mp.streamResponses[0].fragments, genai.ReplyFragment{TextFragment: i})
 					}
-					tp := &adapters.ProviderThinking{
-						Provider:           mp,
-						ThinkingTokenStart: "<thinking>",
-						ThinkingTokenEnd:   "</thinking>",
+					tp := &adapters.ProviderReasoning{
+						Provider:            mp,
+						ReasoningTokenStart: "<thinking>",
+						ReasoningTokenEnd:   "</thinking>",
 					}
 					accumulated := genai.Message{}
 					fragments, finish := tp.GenStream(t.Context(), genai.Messages{}, tc.opts)
@@ -276,7 +276,7 @@ func TestProviderThinking(t *testing.T) {
 				{
 					name: "With text before tag in same fragment - error case",
 					in:   []string{"Text before <thinking>", "This is thinking", "</thinking>", "This is response"},
-					want: "unexpected prefix before thinking tag: \"Text before\"",
+					want: "unexpected prefix before reasoning tag: \"Text before\"",
 				},
 				{
 					name: "Error from underlying GenStream",
@@ -288,9 +288,9 @@ func TestProviderThinking(t *testing.T) {
 					name: "Unexpected thinking fragment in stream",
 					in:   []string{},
 					fragments: []genai.ReplyFragment{
-						{ThinkingFragment: "This is an unexpected thinking fragment"},
+						{ReasoningFragment: "This is an unexpected thinking fragment"},
 					},
-					want: `got unexpected thinking fragment: "This is an unexpected thinking fragment"; do not use ProviderThinking with an explicit thinking CoT model`,
+					want: `got unexpected reasoning fragment: "This is an unexpected thinking fragment"; do not use ProviderReasoning with an explicit reasoning CoT model`,
 				},
 			}
 
@@ -304,10 +304,10 @@ func TestProviderThinking(t *testing.T) {
 							mp.streamResponses[0].fragments = append(mp.streamResponses[0].fragments, genai.ReplyFragment{TextFragment: i})
 						}
 					}
-					tp := &adapters.ProviderThinking{
-						Provider:           mp,
-						ThinkingTokenStart: "<thinking>",
-						ThinkingTokenEnd:   "</thinking>",
+					tp := &adapters.ProviderReasoning{
+						Provider:            mp,
+						ReasoningTokenStart: "<thinking>",
+						ReasoningTokenEnd:   "</thinking>",
 					}
 					fragments, finish := tp.GenStream(t.Context(), genai.Messages{})
 					for range fragments {

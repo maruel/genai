@@ -146,7 +146,7 @@ type Provider interface {
 }
 
 // ProviderUnwrap is exposed when the Provider is actually a wrapper around another one, like
-// ProviderThinking or ProviderUsage. This is useful when looking for other interfaces.
+// adapters.ProviderReasoning or ProviderUsage. This is useful when looking for other interfaces.
 type ProviderUnwrap interface {
 	Unwrap() Provider
 }
@@ -412,7 +412,7 @@ func (m *Message) Role() string {
 
 // String is a short hand to get the request or reply content as text.
 //
-// It ignores Thinking or multi-modal content.
+// It ignores reasoning or multi-modal content.
 func (m *Message) String() string {
 	var data [32]string
 	out := data[:0]
@@ -496,10 +496,10 @@ func (m *Message) GoString() string {
 // It is used by GenStream. There's generally no need to call it by end users.
 func (m *Message) Accumulate(mf ReplyFragment) error {
 	// Generally the first message fragment.
-	if mf.ThinkingFragment != "" {
+	if mf.ReasoningFragment != "" {
 		if len(m.Replies) != 0 {
-			if lastBlock := &m.Replies[len(m.Replies)-1]; lastBlock.Thinking != "" {
-				lastBlock.Thinking += mf.ThinkingFragment
+			if lastBlock := &m.Replies[len(m.Replies)-1]; lastBlock.Reasoning != "" {
+				lastBlock.Reasoning += mf.ReasoningFragment
 				if len(mf.Opaque) != 0 {
 					if lastBlock.Opaque == nil {
 						lastBlock.Opaque = map[string]any{}
@@ -509,13 +509,13 @@ func (m *Message) Accumulate(mf ReplyFragment) error {
 				return nil
 			}
 		}
-		m.Replies = append(m.Replies, Reply{Thinking: mf.ThinkingFragment, Opaque: mf.Opaque})
+		m.Replies = append(m.Replies, Reply{Reasoning: mf.ReasoningFragment, Opaque: mf.Opaque})
 		return nil
 	}
 	if len(mf.Opaque) != 0 {
 		if len(m.Replies) != 0 {
-			// Only add Opaque to Thinking block.
-			if lastBlock := &m.Replies[len(m.Replies)-1]; lastBlock.Thinking != "" {
+			// Only add Opaque to Reasoning block.
+			if lastBlock := &m.Replies[len(m.Replies)-1]; lastBlock.Reasoning != "" {
 				if lastBlock.Opaque == nil {
 					lastBlock.Opaque = map[string]any{}
 				}
@@ -637,8 +637,8 @@ type Reply struct {
 	// Only valid when Text is set and the provider supports citations.
 	Citations []Citation `json:"citations,omitzero"`
 
-	// Thinking is the reasoning done by the LLM.
-	Thinking string `json:"thinking,omitzero"`
+	// Reasoning is the reasoning done by the LLM.
+	Reasoning string `json:"thinking,omitzero"`
 	// Opaque is added to keep continuity on the processing. A good example is Anthropic's extended thinking. It
 	// must be kept during an exchange.
 	//
@@ -663,24 +663,24 @@ func (r *Reply) Validate() error {
 		if !r.Doc.IsZero() {
 			return errors.New("field Doc can't be used along Text")
 		}
-		if r.Thinking != "" {
-			return errors.New("field Thinking can't be used along Text")
+		if r.Reasoning != "" {
+			return errors.New("field Reasoning can't be used along Text")
 		}
 		if len(r.Opaque) != 0 {
 			return errors.New("field Opaque can't be used along Text")
 		}
-		// Thinking is allowed.
+		// Reasoning is allowed.
 		//
 		// We should not accept Text along with ToolCall. It is tricky to evaluate since explicit Chain-of-Thought
-		// models like Qwen 3 Thinking or Deepseek R1 return their thinking as text until it is parsed by
-		// adapters.ProviderThinking.
+		// models like Qwen 3 Thinking or Deepseek R1 return their reasoning as text until it is parsed by
+		// adapters.ProviderReasoning.
 		//
-		// It is possible to use a hack to allow it by assuming all explicit CoT models return thinking as text
+		// It is possible to use a hack to allow it by assuming all explicit CoT models return reasoning as text
 		// starting with "<".
 		//
-		// The problem is with deepseek-reasoner. It returns both Text, Thinking, and ToolCall as a single reply!
+		// The problem is with deepseek-reasoner. It returns both Text, Reasoning, and ToolCall as a single reply!
 		// The text can be discarded in GenSync which would make this check pass, but the Text cannot be discarded
-		// in GenStream because the ordering of the generated content is Thinking, then Text, then ToolCall.
+		// in GenStream because the ordering of the generated content is Reasoning, then Text, then ToolCall.
 		//
 		// See providers/deepseek/testdata/TestClient_Scoreboard/deepseek-reasoner_thinking/GenStream-Tools-SquareRoot-1-any.yaml
 		// for an example.
@@ -691,13 +691,13 @@ func (r *Reply) Validate() error {
 		if !r.ToolCall.IsZero() {
 			return errors.New("field ToolCall can't be used along Doc")
 		}
-		// Thinking is allowed.
-	} else if r.Thinking != "" || len(r.Opaque) != 0 {
+		// Reasoning is allowed.
+	} else if r.Reasoning != "" || len(r.Opaque) != 0 {
 		if len(r.Citations) != 0 {
 			return errors.New("field Citations can only be used with Text")
 		}
 		if !r.Doc.IsZero() {
-			return errors.New("field Doc can't be used along Thinking")
+			return errors.New("field Doc can't be used along Reasoning")
 		}
 		// ToolCall is allowed.
 	} else if len(r.Citations) != 0 {
@@ -864,8 +864,8 @@ func (d *Doc) Read(maxSize int64) (string, []byte, error) {
 type ReplyFragment struct {
 	TextFragment string `json:"text,omitzero"`
 
-	ThinkingFragment string         `json:"thinking,omitzero"`
-	Opaque           map[string]any `json:"opaque,omitzero"`
+	ReasoningFragment string         `json:"reasoning,omitzero"`
+	Opaque            map[string]any `json:"opaque,omitzero"`
 
 	Filename         string `json:"filename,omitzero"`
 	DocumentFragment []byte `json:"document,omitzero"`
@@ -880,7 +880,7 @@ type ReplyFragment struct {
 }
 
 func (r *ReplyFragment) IsZero() bool {
-	return r.TextFragment == "" && r.ThinkingFragment == "" && len(r.Opaque) == 0 && r.Filename == "" && len(r.DocumentFragment) == 0 && r.URL == "" && r.ToolCall.IsZero() && r.Citation.IsZero()
+	return r.TextFragment == "" && r.ReasoningFragment == "" && len(r.Opaque) == 0 && r.Filename == "" && len(r.DocumentFragment) == 0 && r.URL == "" && r.ToolCall.IsZero() && r.Citation.IsZero()
 }
 
 func (r *ReplyFragment) GoString() string {
@@ -891,8 +891,8 @@ func (r *ReplyFragment) GoString() string {
 // Validate ensures the fragment contains only one of the fields.
 func (r *ReplyFragment) Validate() error {
 	if r.TextFragment != "" {
-		if r.ThinkingFragment != "" {
-			return errors.New("field ThinkingFragment can't be used along TextFragment")
+		if r.ReasoningFragment != "" {
+			return errors.New("field ReasoningFragment can't be used along TextFragment")
 		}
 		if len(r.Opaque) != 0 {
 			return errors.New("field Opaque can't be used along TextFragment")
@@ -914,43 +914,43 @@ func (r *ReplyFragment) Validate() error {
 		}
 		return nil
 	}
-	if r.ThinkingFragment != "" || len(r.Opaque) != 0 {
+	if r.ReasoningFragment != "" || len(r.Opaque) != 0 {
 		if r.Filename != "" {
-			return errors.New("field Filename can't be used along ThinkingFragment")
+			return errors.New("field Filename can't be used along ReasoningFragment")
 		}
 		if len(r.DocumentFragment) != 0 {
-			return errors.New("field DocumentFragment can't be used along ThinkingFragment")
+			return errors.New("field DocumentFragment can't be used along ReasoningFragment")
 		}
 		if r.URL != "" {
-			return errors.New("field URL can't be used along ThinkingFragment")
+			return errors.New("field URL can't be used along ReasoningFragment")
 		}
 		if !r.ToolCall.IsZero() {
-			return errors.New("field ToolCall can't be used along ThinkingFragment")
+			return errors.New("field ToolCall can't be used along ReasoningFragment")
 		}
 		if !r.Citation.IsZero() {
-			return errors.New("field Citation can't be used along ThinkingFragment")
+			return errors.New("field Citation can't be used along ReasoningFragment")
 		}
 		return nil
 	}
 	if r.Filename != "" || len(r.DocumentFragment) != 0 || r.URL != "" {
 		if !r.ToolCall.IsZero() {
-			return errors.New("field ToolCall can't be used along ThinkingFragment")
+			return errors.New("field ToolCall can't be used along ReasoningFragment")
 		}
 		if !r.Citation.IsZero() {
-			return errors.New("field Citation can't be used along ThinkingFragment")
+			return errors.New("field Citation can't be used along ReasoningFragment")
 		}
 		return nil
 	}
 	if !r.ToolCall.IsZero() {
 		if !r.Citation.IsZero() {
-			return errors.New("field Citation can't be used along ThinkingFragment")
+			return errors.New("field Citation can't be used along ReasoningFragment")
 		}
 		return nil
 	}
 	if !r.Citation.IsZero() {
 		return nil
 	}
-	return errors.New("exactly one of TextFragment, ThinkingFragment, Filename, DocumentFragment, URL, ToolCall, Citation must be set")
+	return errors.New("exactly one of TextFragment, ReasoningFragment, Filename, DocumentFragment, URL, ToolCall, Citation must be set")
 }
 
 // ToolCall is a tool call that the LLM requested to make.

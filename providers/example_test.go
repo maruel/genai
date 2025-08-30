@@ -118,7 +118,7 @@ func LoadProvider(ctx context.Context, provider string, opts *genai.ProviderOpti
 		return nil, fmt.Errorf("failed to connect to provider %q: %w", provider, err)
 	}
 	// Wrap the provider with an adapter to process "<think>" tokens automatically ONLY if needed.
-	return adapters.WrapThinking(c), nil
+	return adapters.WrapReasoning(c), nil
 }
 
 // LoadDefaultProvider loads a provider if there's exactly one available.

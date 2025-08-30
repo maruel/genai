@@ -222,7 +222,7 @@ func (m *Message) From(in *genai.Message) ([]Document, error) {
 			if len(in.Replies[i].Opaque) != 0 {
 				return nil, fmt.Errorf("reply #%d: field Reply.Opaque not supported", i)
 			}
-			if in.Replies[i].Thinking != "" {
+			if in.Replies[i].Reasoning != "" {
 				// Silently ignore thinking blocks.
 				continue
 			}
@@ -582,7 +582,7 @@ func (m *MessageResponse) To(out *genai.Message) error {
 		return fmt.Errorf("implement tool call id")
 	}
 	if m.ToolPlan != "" {
-		out.Replies = []genai.Reply{{Thinking: m.ToolPlan}}
+		out.Replies = []genai.Reply{{Reasoning: m.ToolPlan}}
 	}
 	if len(m.Content) != 0 {
 		for i := range m.Content {
@@ -1029,14 +1029,14 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 				return fmt.Errorf("expected content %#v", pkt)
 			}
 			if t := pkt.Delta.Message.Content[0].Type; t != ContentText {
-				// TODO: Thinking for SOTA model.
+				// TODO: Reasoning for SOTA model.
 				return fmt.Errorf("implement content %q", t)
 			}
 		case ChunkContentDelta:
 		case ChunkContentEnd:
 			// Will be useful when there's multiple index.
 		case ChunkToolPlanDelta:
-			f.ThinkingFragment = pkt.Delta.Message.ToolPlan
+			f.ReasoningFragment = pkt.Delta.Message.ToolPlan
 		case ChunkToolCallStart:
 			if len(pkt.Delta.Message.ToolCalls) != 1 {
 				return fmt.Errorf("expected tool call %#v", pkt)

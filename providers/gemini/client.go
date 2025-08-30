@@ -62,7 +62,7 @@ func Scoreboard() scoreboard.Score {
 
 // Options defines Gemini specific options.
 type Options struct {
-	// ThinkingBudget is the maximum number of tokens the LLM can use to think about the answer.
+	// ReasoningBudget is the maximum number of tokens the LLM can use to think about the answer.
 	//
 	// From https://ai.google.dev/gemini-api/docs/thinking#set-budget
 	//
@@ -86,7 +86,7 @@ type Options struct {
 	// - Range: 512 to 24576
 	// - Disable thinking with 0
 	// - Dynamic thinking: -1
-	ThinkingBudget int64
+	ReasoningBudget int64
 }
 
 func (o *Options) Validate() error {
@@ -257,11 +257,11 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 		switch v := opt.(type) {
 		case *Options:
 			// Accept both positive numbers and -1 (dynamic thinking)
-			if v.ThinkingBudget != 0 {
+			if v.ReasoningBudget != 0 {
 				// https://ai.google.dev/gemini-api/docs/thinking
 				c.GenerationConfig.ThinkingConfig = &ThinkingConfig{
 					IncludeThoughts: true,
-					ThinkingBudget:  v.ThinkingBudget,
+					ThinkingBudget:  v.ReasoningBudget,
 				}
 			} else {
 				// We need to set it to disable thinking on gemini-2.5-flash.
@@ -423,7 +423,7 @@ func (c *Content) From(in *genai.Message) error {
 func (c *Content) To(out *genai.Message) error {
 	for _, part := range c.Parts {
 		if part.Thought {
-			out.Replies = append(out.Replies, genai.Reply{Thinking: part.Text})
+			out.Replies = append(out.Replies, genai.Reply{Reasoning: part.Text})
 			continue
 		}
 		// There's no signal as to what it is, we have to test its content.
@@ -540,9 +540,9 @@ func (p *Part) FromReply(in *genai.Reply) error {
 	if len(in.Opaque) != 0 {
 		return errors.New("field Reply.Opaque not supported")
 	}
-	if in.Thinking != "" {
+	if in.Reasoning != "" {
 		p.Thought = true
-		p.Text = in.Thinking
+		p.Text = in.Reasoning
 		return nil
 	}
 	if in.Text != "" {
@@ -2128,7 +2128,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 
 		for _, part := range pkt.Candidates[0].Content.Parts {
 			if part.Thought {
-				f.ThinkingFragment += part.Text
+				f.ReasoningFragment += part.Text
 			} else {
 				f.TextFragment += part.Text
 			}

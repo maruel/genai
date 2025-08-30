@@ -150,7 +150,7 @@ func (t *tableDataRow) initFromScenario(s *scoreboard.Scenario, f *scoreboard.Fu
 		}
 		t.Mode += "Stream"
 	}
-	if s.Thinking && !strings.Contains(t.Mode, "🧠") {
+	if s.Reason && !strings.Contains(t.Mode, "🧠") {
 		t.Mode += "🧠"
 	}
 	for m := range s.In {

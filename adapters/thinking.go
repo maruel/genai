@@ -20,8 +20,13 @@ import (
 func WrapThinking(c genai.Provider) genai.Provider {
 	id := c.ModelID()
 	for _, sc := range c.Scoreboard().Scenarios {
-		if slices.Contains(sc.Models, id) && sc.ThinkingTokenStart != "" {
-			return &ProviderThinking{Provider: c, ThinkingTokenStart: sc.ThinkingTokenStart, ThinkingTokenEnd: sc.ThinkingTokenEnd}
+		// Some models like qwen-3-235b-a22b-thinking-2507 do not use ThinkingTokenStart.
+		if slices.Contains(sc.Models, id) && sc.ThinkingTokenEnd != "" {
+			return &ProviderThinking{
+				Provider:           c,
+				ThinkingTokenStart: sc.ThinkingTokenStart,
+				ThinkingTokenEnd:   sc.ThinkingTokenEnd,
+			}
 		}
 	}
 	return c

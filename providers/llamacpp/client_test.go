@@ -26,12 +26,43 @@ import (
 )
 
 func TestClient(t *testing.T) {
+	testRecorder := internaltest.NewRecords()
+	t.Cleanup(func() {
+		if err := testRecorder.Close(); err != nil {
+			t.Error(err)
+		}
+	})
+
 	b := [12]byte{}
 	if _, err := io.ReadFull(rand.Reader, b[:]); err != nil {
 		t.Fatal(err)
 	}
 	apiKey := base64.RawURLEncoding.EncodeToString(b[:])
 	s := lazyServer{t: t, apiKey: apiKey}
+
+	t.Run("Scoreboard", func(t *testing.T) {
+		serverURL := s.lazyStart(t)
+		ctx := t.Context()
+		c, err := llamacpp.New(ctx, &genai.ProviderOptions{APIKey: apiKey, Remote: serverURL, Model: genai.ModelNone}, func(h http.RoundTripper) http.RoundTripper {
+			return testRecorder.Record(t, h)
+		})
+		if err != nil {
+			t.Fatal(err)
+		}
+		var models []smoketest.Model
+		for _, sc := range c.Scoreboard().Scenarios {
+			for _, id := range sc.Models {
+				models = append(models, smoketest.Model{Model: id})
+			}
+		}
+		smoketest.Run(t, func(t testing.TB, model smoketest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+			c2, err2 := llamacpp.New(ctx, &genai.ProviderOptions{APIKey: apiKey, Remote: serverURL, Model: model.Model}, fn)
+			if err2 != nil {
+				t.Fatal(err2)
+			}
+			return c2
+		}, models, testRecorder.Records)
+	})
 
 	t.Run("Preferred", func(t *testing.T) {
 		data := []struct {
@@ -74,30 +105,6 @@ func TestClient(t *testing.T) {
 		if len(genaiModels) != 1 {
 			t.Fatalf("unexpected: %#v", genaiModels)
 		}
-	})
-
-	t.Run("Scoreboard", func(t *testing.T) {
-		serverURL := s.lazyStart(t)
-		ctx := t.Context()
-		c, err := llamacpp.New(ctx, &genai.ProviderOptions{APIKey: apiKey, Remote: serverURL, Model: genai.ModelNone}, func(h http.RoundTripper) http.RoundTripper {
-			return testRecorder.Record(t, h)
-		})
-		if err != nil {
-			t.Fatal(err)
-		}
-		var models []smoketest.Model
-		for _, sc := range c.Scoreboard().Scenarios {
-			for _, id := range sc.Models {
-				models = append(models, smoketest.Model{Model: id})
-			}
-		}
-		smoketest.Run(t, func(t testing.TB, model smoketest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
-			c2, err2 := llamacpp.New(ctx, &genai.ProviderOptions{APIKey: apiKey, Remote: serverURL, Model: model.Model}, fn)
-			if err2 != nil {
-				t.Fatal(err2)
-			}
-			return c2
-		}, models, testRecorder.Records)
 	})
 
 	// Run this at the end so there would be non-zero values.
@@ -189,14 +196,6 @@ func startServerTest(t testing.TB, author, repo, modelfile, multimodal, apiKey s
 		t.Fatal(err)
 	}
 	return srv
-}
-
-var testRecorder *internaltest.Records
-
-func TestMain(m *testing.M) {
-	testRecorder = internaltest.NewRecords()
-	code := m.Run()
-	os.Exit(max(code, testRecorder.Close()))
 }
 
 func init() {

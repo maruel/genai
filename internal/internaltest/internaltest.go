@@ -9,7 +9,6 @@ import (
 	"context"
 	"errors"
 	"flag"
-	"fmt"
 	"iter"
 	"log/slog"
 	"net/http"
@@ -35,11 +34,13 @@ func NewRecords() *Records {
 	if err != nil {
 		panic(err)
 	}
-	rr.Signal("example")
+	if err := rr.Signal("example"); err != nil {
+		panic(err.Error())
+	}
 	return &Records{Records: rr}
 }
 
-func (r *Records) Close() int {
+func (r *Records) Close() error {
 	filtered := false
 	flag.Visit(func(f *flag.Flag) {
 		if f.Name == "test.run" {
@@ -47,13 +48,9 @@ func (r *Records) Close() int {
 		}
 	})
 	if filtered {
-		return 0
+		return nil
 	}
-	if err := r.Records.Close(); err != nil {
-		fmt.Fprintf(os.Stderr, "%v\n", err)
-		return 1
-	}
-	return 0
+	return r.Records.Close()
 }
 
 // Record records and replays HTTP requests for unit testing.
@@ -64,7 +61,11 @@ func (r *Records) Close() int {
 // It ignores the port number in the URL both for recording and playback so it
 // works with local services like ollama and llama-server.
 func (r *Records) Record(t testing.TB, h http.RoundTripper, opts ...recorder.Option) *myrecorder.Recorder {
-	rr, err := r.Records.Record(t.Name(), h, opts...)
+	return r.RecordWithName(t, t.Name(), h, opts...)
+}
+
+func (r *Records) RecordWithName(t testing.TB, name string, h http.RoundTripper, opts ...recorder.Option) *myrecorder.Recorder {
+	rr, err := r.Records.Record(name, h, opts...)
 	if err != nil {
 		t.Fatal(err)
 	}

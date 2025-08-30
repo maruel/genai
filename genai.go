@@ -1144,6 +1144,7 @@ func (cs *CitationSource) IsZero() bool {
 
 // ProviderGenAsync is the interface to interact with a batch generator.
 type ProviderGenAsync interface {
+	Provider
 	// GenAsync requests a generation and returns a pending job that can be polled.
 	GenAsync(ctx context.Context, msgs Messages, opts ...Options) (Job, error)
 	// PokeResult requests the state of the job.
@@ -1166,6 +1167,7 @@ type CacheEntry interface {
 
 // ProviderCache provides a high level way to manage files cached on the provider.
 type ProviderCache interface {
+	Provider
 	CacheAddRequest(ctx context.Context, msgs Messages, name, displayName string, ttl time.Duration, opts ...Options) (string, error)
 	CacheList(ctx context.Context) ([]CacheEntry, error)
 	CacheDelete(ctx context.Context, name string) error

@@ -57,17 +57,18 @@ func (r *Records) Close() error {
 	return nil
 }
 
-func (r *Records) Signal(name string) {
+func (r *Records) Signal(name string) error {
 	if name == "" {
-		return
+		return nil
 	}
 	r.mu.Lock()
 	_, ok := r.recorded[name+".yaml"]
 	r.recorded[name+".yaml"] = struct{}{}
 	r.mu.Unlock()
 	if ok {
-		panic(fmt.Sprintf("refusing duplicate %q", name))
+		return fmt.Errorf("refusing duplicate %q", name)
 	}
+	return nil
 }
 
 // Record records and replays HTTP requests.
@@ -95,7 +96,9 @@ func (r *Records) Record(name string, h http.RoundTripper, opts ...recorder.Opti
 	args := []recorder.Option{
 		recorder.WithMode(mode),
 	}
-	r.Signal(name)
+	if err := r.Signal(name); err != nil {
+		return nil, err
+	}
 	rec, err := httprecord.New(filepath.Join(r.root, name), h, append(args, opts...)...)
 	if err != nil {
 		return nil, err

@@ -5,25 +5,58 @@
 package cerebras_test
 
 import (
-	"log/slog"
 	"net/http"
 	"os"
 	"slices"
 	"strings"
-	"sync"
 	"testing"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/adapters"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
-	"github.com/maruel/genai/internal/myrecorder"
 	"github.com/maruel/genai/providers/cerebras"
 	"github.com/maruel/genai/smoke/smoketest"
-	"github.com/maruel/roundtrippers"
 )
 
+func getClientInner(t *testing.T, opts genai.ProviderOptions, fn func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
+	if opts.APIKey == "" && os.Getenv("CEREBRAS_API_KEY") == "" {
+		opts.APIKey = "<insert_api_key_here>"
+	}
+	// ctx, l := internaltest.Log(t)
+	// return &roundtrippers.Log{Transport: r, Logger: l, Level: slog.LevelWarn}
+	return cerebras.New(t.Context(), &opts, fn)
+}
+
 func TestClient(t *testing.T) {
+	testRecorder := internaltest.NewRecords()
+	t.Cleanup(func() {
+		if err := testRecorder.Close(); err != nil {
+			t.Error(err)
+		}
+	})
+	cl, err2 := getClientInner(t, genai.ProviderOptions{Model: genai.ModelNone}, func(h http.RoundTripper) http.RoundTripper {
+		return testRecorder.RecordWithName(t, t.Name()+"/Warmup", h)
+	})
+	if err2 != nil {
+		t.Fatal(err2)
+	}
+	cachedModels, err2 := cl.ListModels(t.Context())
+	if err2 != nil {
+		t.Fatal(err2)
+	}
+	getClient := func(t *testing.T, m string) genai.Provider {
+		t.Parallel()
+		opts := genai.ProviderOptions{Model: m, PreloadedModels: cachedModels}
+		ci, err := getClientInner(t, opts, func(h http.RoundTripper) http.RoundTripper {
+			return testRecorder.Record(t, h)
+		})
+		if err != nil {
+			t.Fatal(err)
+		}
+		return ci
+	}
+
 	t.Run("Scoreboard", func(t *testing.T) {
 		c := getClient(t, genai.ModelNone)
 		genaiModels, err := c.ListModels(t.Context())
@@ -43,6 +76,47 @@ func TestClient(t *testing.T) {
 			}
 			models = append(models, smoketest.Model{Model: id, Reason: thinking})
 		}
+		getClientRT := func(t testing.TB, model smoketest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+			opts := genai.ProviderOptions{Model: model.Model, PreloadedModels: cachedModels}
+			if os.Getenv("CEREBRAS_API_KEY") == "" {
+				opts.APIKey = "<insert_api_key_here>"
+			}
+			ctx := t.Context()
+			// ctx, l := internaltest.Log(t)
+			fnWithLog := func(h http.RoundTripper) http.RoundTripper {
+				if fn != nil {
+					h = fn(h)
+				}
+				return h
+				// return &roundtrippers.Log{Transport: h, Logger: l, Level: slog.LevelDebug}
+			}
+			c, err2 := cerebras.New(ctx, &opts, fnWithLog)
+			if err2 != nil {
+				t.Fatal(err2)
+			}
+			var p genai.Provider = c
+			if model.Reason {
+				// Check if it has predefined thinking tokens.
+				for _, sc := range c.Scoreboard().Scenarios {
+					if sc.Reason && slices.Contains(sc.Models, model.Model) {
+						if sc.ReasoningTokenEnd != "" {
+							// This is bad. We should have a better way to determine if a model needs to be prompted to think
+							// (qwen-3-32b) or must not (qwen-3-235b-a22b-thinking-2507).
+							if !strings.Contains(model.Model, "-thinking-") {
+								p = &adapters.ProviderAppend{Provider: p, Append: genai.Request{Text: "\n\n/think"}}
+							}
+							return &adapters.ProviderReasoning{
+								Provider:            p,
+								ReasoningTokenStart: sc.ReasoningTokenStart,
+								ReasoningTokenEnd:   sc.ReasoningTokenEnd,
+							}
+						}
+						break
+					}
+				}
+			}
+			return p
+		}
 		smoketest.Run(t, getClientRT, models, testRecorder.Records)
 	})
 
@@ -52,8 +126,8 @@ func TestClient(t *testing.T) {
 			want string
 		}{
 			{genai.ModelCheap, "llama3.1-8b"},
-			{genai.ModelGood, "llama-4-maverick-17b-128e-instruct"},
-			{genai.ModelSOTA, "qwen-3-235b-a22b-instruct-2507"},
+			{genai.ModelGood, "qwen-3-235b-a22b-instruct-2507"},
+			{genai.ModelSOTA, "qwen-3-235b-a22b-thinking-2507"},
 		}
 		for _, line := range data {
 			t.Run(line.name, func(t *testing.T) {
@@ -87,128 +161,12 @@ func TestClient(t *testing.T) {
 		}
 		f := func(t *testing.T, opts genai.ProviderOptions) (genai.Provider, error) {
 			opts.OutputModalities = genai.Modalities{genai.ModalityText}
-			return getClientInner(t, opts)
+			return getClientInner(t, opts, func(h http.RoundTripper) http.RoundTripper {
+				return testRecorder.Record(t, h)
+			})
 		}
 		internaltest.TestClient_Provider_errors(t, f, data)
 	})
-}
-
-func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
-	apiKey := ""
-	if os.Getenv("CEREBRAS_API_KEY") == "" {
-		apiKey = "<insert_api_key_here>"
-	}
-	ctx, l := internaltest.Log(t)
-	fnWithLog := func(h http.RoundTripper) http.RoundTripper {
-		if fn != nil {
-			h = fn(h)
-		}
-		return &roundtrippers.Log{
-			Transport: h,
-			Logger:    l,
-			Level:     slog.LevelDebug,
-		}
-	}
-	opts := genai.ProviderOptions{
-		APIKey:          apiKey,
-		Model:           model.Model,
-		PreloadedModels: loadCachedModelsList(t),
-	}
-	c, err2 := cerebras.New(ctx, &opts, fnWithLog)
-	if err2 != nil {
-		t.Fatal(err2)
-	}
-	var p genai.Provider = c
-	if model.Reason {
-		// Check if it has predefined thinking tokens.
-		for _, sc := range c.Scoreboard().Scenarios {
-			if sc.Reason && slices.Contains(sc.Models, model.Model) {
-				if sc.ReasoningTokenEnd != "" {
-					// This is bad. We should have a better way to determine if a model needs to be prompted to think
-					// (qwen-3-32b) or must not (qwen-3-235b-a22b-thinking-2507).
-					if !strings.Contains(model.Model, "-thinking-") {
-						p = &adapters.ProviderAppend{Provider: p, Append: genai.Request{Text: "\n\n/think"}}
-					}
-					return &adapters.ProviderReasoning{
-						Provider:            p,
-						ReasoningTokenStart: sc.ReasoningTokenStart,
-						ReasoningTokenEnd:   sc.ReasoningTokenEnd,
-					}
-				}
-				break
-			}
-		}
-	}
-	return p
-}
-
-func getClient(t *testing.T, m string) *cerebras.Client {
-	t.Parallel()
-	opts := genai.ProviderOptions{
-		Model:           m,
-		PreloadedModels: loadCachedModelsList(t),
-	}
-	c, err := getClientInner(t, opts)
-	if err != nil {
-		t.Fatal(err)
-	}
-	return c
-}
-
-func getClientInner(t *testing.T, opts genai.ProviderOptions) (*cerebras.Client, error) {
-	if opts.APIKey == "" && os.Getenv("CEREBRAS_API_KEY") == "" {
-		opts.APIKey = "<insert_api_key_here>"
-	}
-	ctx, l := internaltest.Log(t)
-	return cerebras.New(ctx, &opts, func(h http.RoundTripper) http.RoundTripper {
-		r := testRecorder.Record(t, h)
-		return &roundtrippers.Log{
-			Transport: r,
-			Logger:    l,
-			Level:     slog.LevelWarn,
-		}
-	})
-}
-
-func loadCachedModelsList(t testing.TB) []genai.Model {
-	doOnce.Do(func() {
-		var r *myrecorder.Recorder
-		var err2 error
-		ctx := t.Context()
-		opts := genai.ProviderOptions{Model: genai.ModelNone}
-		if os.Getenv("CEREBRAS_API_KEY") == "" {
-			opts.APIKey = "<insert_api_key_here>"
-		}
-		c, err := cerebras.New(ctx, &opts, func(h http.RoundTripper) http.RoundTripper {
-			r, err2 = testRecorder.Records.Record("WarmupCache", h)
-			return r
-		})
-		if err != nil {
-			t.Fatal(err)
-		}
-		if err2 != nil {
-			t.Fatal(err2)
-		}
-		if cachedModels, err = c.ListModels(ctx); err != nil {
-			t.Fatal(err)
-		}
-		if err = r.Stop(); err != nil {
-			t.Fatal(err)
-		}
-	})
-	return cachedModels
-}
-
-var doOnce sync.Once
-
-var cachedModels []genai.Model
-
-var testRecorder *internaltest.Records
-
-func TestMain(m *testing.M) {
-	testRecorder = internaltest.NewRecords()
-	code := m.Run()
-	os.Exit(max(code, testRecorder.Close()))
 }
 
 func init() {

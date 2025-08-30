@@ -22,7 +22,32 @@ import (
 	"github.com/maruel/roundtrippers"
 )
 
+func getClientInner(t *testing.T, opts genai.ProviderOptions, fn func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
+	if opts.APIKey == "" && os.Getenv("PERPLEXITY_API_KEY") == "" {
+		opts.APIKey = "<insert_api_key_here>"
+	}
+	return perplexity.New(t.Context(), &opts, fn)
+}
+
 func TestClient(t *testing.T) {
+	testRecorder := internaltest.NewRecords()
+	t.Cleanup(func() {
+		if err := testRecorder.Close(); err != nil {
+			t.Error(err)
+		}
+	})
+	getClient := func(t *testing.T, m string) genai.Provider {
+		t.Parallel()
+		opts := genai.ProviderOptions{Model: m}
+		ci, err := getClientInner(t, opts, func(h http.RoundTripper) http.RoundTripper {
+			return testRecorder.Record(t, h)
+		})
+		if err != nil {
+			t.Fatal(err)
+		}
+		return ci
+	}
+
 	t.Run("Scoreboard", func(t *testing.T) {
 		// Perplexity doesn't support listing models. See https://docs.perplexity.ai/api-reference
 		sb := getClient(t, genai.ModelNone).Scoreboard()
@@ -31,6 +56,53 @@ func TestClient(t *testing.T) {
 			for _, model := range sc.Models {
 				models = append(models, smoketest.Model{Model: model, Reason: sc.Reason})
 			}
+		}
+		getClientRT := func(t testing.TB, model smoketest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+			opts := genai.ProviderOptions{Model: model.Model}
+			if os.Getenv("PERPLEXITY_API_KEY") == "" {
+				opts.APIKey = "<insert_api_key_here>"
+			}
+			c, err := perplexity.New(t.Context(), &opts, func(h http.RoundTripper) http.RoundTripper {
+				// Perplexity is quick to ban users. It first start with 429 and then Cloudflare blocks it with a
+				// javascript challenge. It's extra dumb because it is an API endpoint.
+				// https://docs.perplexity.ai/guides/usage-tiers
+				qps := 48. / 60.
+				if strings.Contains(model.Model, "deep") {
+					// Assume Tier 0 with is 5 RPM. For this test to succeed, it must be run with "go test -timeout 1h"
+					qps = 4.8 / 60.
+				}
+				h = &roundtrippers.Throttle{QPS: qps, Transport: h}
+				if fn != nil {
+					h = fn(h)
+				}
+				return h
+			})
+			if err != nil {
+				t.Fatal(err)
+			}
+			// Save on costs when running the smoke test.
+			var p genai.Provider = &injectOptions{
+				Provider: c,
+				Opts: []genai.Options{
+					&genai.OptionsTools{WebSearch: false},
+					&perplexity.Options{DisableRelatedQuestions: true},
+				},
+			}
+			if model.Reason {
+				for _, sc := range c.Scoreboard().Scenarios {
+					if sc.Reason && slices.Contains(sc.Models, model.Model) {
+						if sc.ReasoningTokenStart != "" && sc.ReasoningTokenEnd != "" {
+							return &adapters.ProviderReasoning{
+								Provider:            p,
+								ReasoningTokenStart: sc.ReasoningTokenStart,
+								ReasoningTokenEnd:   sc.ReasoningTokenEnd,
+							}
+						}
+						break
+					}
+				}
+			}
+			return p
 		}
 		smoketest.Run(t, getClientRT, models, testRecorder.Records)
 	})
@@ -75,58 +147,12 @@ func TestClient(t *testing.T) {
 			},
 		}
 		f := func(t *testing.T, opts genai.ProviderOptions) (genai.Provider, error) {
-			return getClientInner(t, opts.APIKey, opts.Model)
+			return getClientInner(t, opts, func(h http.RoundTripper) http.RoundTripper {
+				return testRecorder.Record(t, h)
+			})
 		}
 		internaltest.TestClient_Provider_errors(t, f, data)
 	})
-}
-
-func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
-	apiKey := ""
-	if os.Getenv("PERPLEXITY_API_KEY") == "" {
-		apiKey = "<insert_api_key_here>"
-	}
-	c, err := perplexity.New(t.Context(), &genai.ProviderOptions{APIKey: apiKey, Model: model.Model}, func(h http.RoundTripper) http.RoundTripper {
-		// Perplexity is quick to ban users. It first start with 429 and then Cloudflare blocks it with a
-		// javascript challenge. It's extra dumb because it is an API endpoint.
-		// https://docs.perplexity.ai/guides/usage-tiers
-		qps := 48. / 60.
-		if strings.Contains(model.Model, "deep") {
-			// Assume Tier 0 with is 5 RPM. For this test to succeed, it must be run with "go test -timeout 1h"
-			qps = 4.8 / 60.
-		}
-		h = &roundtrippers.Throttle{QPS: qps, Transport: h}
-		if fn != nil {
-			h = fn(h)
-		}
-		return h
-	})
-	if err != nil {
-		t.Fatal(err)
-	}
-	// Save on costs when running the smoke test.
-	var p genai.Provider = &injectOptions{
-		Provider: c,
-		Opts: []genai.Options{
-			&genai.OptionsTools{WebSearch: false},
-			&perplexity.Options{DisableRelatedQuestions: true},
-		},
-	}
-	if model.Reason {
-		for _, sc := range c.Scoreboard().Scenarios {
-			if sc.Reason && slices.Contains(sc.Models, model.Model) {
-				if sc.ReasoningTokenStart != "" && sc.ReasoningTokenEnd != "" {
-					return &adapters.ProviderReasoning{
-						Provider:            p,
-						ReasoningTokenStart: sc.ReasoningTokenStart,
-						ReasoningTokenEnd:   sc.ReasoningTokenEnd,
-					}
-				}
-				break
-			}
-		}
-	}
-	return p
 }
 
 // injectOptions generally inject the option unless "Quackiland" is in the last message.
@@ -151,31 +177,6 @@ func (i *injectOptions) GenStream(ctx context.Context, msgs genai.Messages, opts
 		opts = append(opts, i.Opts...)
 	}
 	return i.Provider.GenStream(ctx, msgs, opts...)
-}
-
-func getClient(t *testing.T, m string) *perplexity.Client {
-	t.Parallel()
-	c, err := getClientInner(t, "", m)
-	if err != nil {
-		t.Fatal(err)
-	}
-	return c
-}
-
-func getClientInner(t *testing.T, apiKey, m string) (*perplexity.Client, error) {
-	if apiKey == "" && os.Getenv("PERPLEXITY_API_KEY") == "" {
-		apiKey = "<insert_api_key_here>"
-	}
-	return perplexity.New(t.Context(), &genai.ProviderOptions{APIKey: apiKey, Model: m}, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
-}
-
-var testRecorder *internaltest.Records
-
-func TestMain(m *testing.M) {
-	testRecorder = internaltest.NewRecords()
-	code := m.Run()
-	testRecorder.Close()
-	os.Exit(code)
 }
 
 func init() {

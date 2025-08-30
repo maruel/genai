@@ -17,6 +17,33 @@ import (
 
 // Testing is very different here as we test various providers to see if they work with this generic provider.
 func TestClient(t *testing.T) {
+	testRecorder := internaltest.NewRecords()
+	t.Cleanup(func() {
+		if err := testRecorder.Close(); err != nil {
+			t.Error(err)
+		}
+	})
+
+	getClient := func(t *testing.T, provider string) genai.Provider {
+		t.Parallel()
+		p := providers[provider]
+		apiKey := os.Getenv(p.envAPIKey)
+		if apiKey == "" {
+			apiKey = "<insert_api_key_here>"
+		}
+		wrapper := func(h http.RoundTripper) http.RoundTripper {
+			return &roundtrippers.Header{
+				Header:    p.header(apiKey),
+				Transport: testRecorder.Record(t, h),
+			}
+		}
+		c, err := openaicompatible.New(t.Context(), &genai.ProviderOptions{Remote: p.chatURL, Model: p.model}, wrapper)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return c
+	}
+
 	t.Run("Preferred", func(t *testing.T) {
 		for _, line := range []string{genai.ModelCheap, genai.ModelGood, genai.ModelSOTA} {
 			t.Run(line, func(t *testing.T) {
@@ -175,32 +202,4 @@ var providers = map[string]provider{
 		},
 		model: "meta-llama/Llama-3.2-3B-Instruct-Turbo",
 	},
-}
-
-func getClient(t *testing.T, provider string) genai.Provider {
-	t.Parallel()
-	p := providers[provider]
-	apiKey := os.Getenv(p.envAPIKey)
-	if apiKey == "" {
-		apiKey = "<insert_api_key_here>"
-	}
-	wrapper := func(h http.RoundTripper) http.RoundTripper {
-		return &roundtrippers.Header{
-			Header:    p.header(apiKey),
-			Transport: testRecorder.Record(t, h),
-		}
-	}
-	c, err := openaicompatible.New(t.Context(), &genai.ProviderOptions{Remote: p.chatURL, Model: p.model}, wrapper)
-	if err != nil {
-		t.Fatal(err)
-	}
-	return c
-}
-
-var testRecorder *internaltest.Records
-
-func TestMain(m *testing.M) {
-	testRecorder = internaltest.NewRecords()
-	code := m.Run()
-	os.Exit(max(code, testRecorder.Close()))
 }

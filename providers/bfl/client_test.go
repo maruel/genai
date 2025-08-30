@@ -19,7 +19,32 @@ import (
 	"github.com/maruel/genai/smoke/smoketest"
 )
 
+func getClientInner(t *testing.T, opts genai.ProviderOptions, fn func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
+	if opts.APIKey == "" && os.Getenv("BFL_API_KEY") == "" {
+		opts.APIKey = "<insert_api_key_here>"
+	}
+	return bfl.New(t.Context(), &opts, fn)
+}
+
 func TestClient(t *testing.T) {
+	testRecorder := internaltest.NewRecords()
+	t.Cleanup(func() {
+		if err := testRecorder.Close(); err != nil {
+			t.Error(err)
+		}
+	})
+
+	getClient := func(t *testing.T, m string) genai.Provider {
+		t.Parallel()
+		ci, err := getClientInner(t, genai.ProviderOptions{Model: m}, func(h http.RoundTripper) http.RoundTripper {
+			return testRecorder.Record(t, h)
+		})
+		if err != nil {
+			t.Fatal(err)
+		}
+		return ci
+	}
+
 	t.Run("Scoreboard", func(t *testing.T) {
 		// bfl does not have a public API to list models.
 		sb := getClient(t, genai.ModelNone).Scoreboard()
@@ -28,6 +53,20 @@ func TestClient(t *testing.T) {
 			for _, model := range sc.Models {
 				models = append(models, smoketest.Model{Model: model})
 			}
+		}
+		getClientRT := func(t testing.TB, model smoketest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+			opts := genai.ProviderOptions{Model: model.Model}
+			if os.Getenv("BFL_API_KEY") == "" {
+				opts.APIKey = "<insert_api_key_here>"
+			}
+			c, err := bfl.New(t.Context(), &opts, fn)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if model.Reason {
+				t.Fatal("unexpected")
+			}
+			return &imageModelClient{c}
 		}
 		smoketest.Run(t, getClientRT, models, testRecorder.Records)
 	})
@@ -72,25 +111,12 @@ func TestClient(t *testing.T) {
 		}
 		f := func(t *testing.T, opts genai.ProviderOptions) (genai.Provider, error) {
 			opts.OutputModalities = genai.Modalities{genai.ModalityImage}
-			return getClientInner(t, opts)
+			return getClientInner(t, opts, func(h http.RoundTripper) http.RoundTripper {
+				return testRecorder.Record(t, h)
+			})
 		}
 		internaltest.TestClient_Provider_errors(t, f, data)
 	})
-}
-
-func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
-	apiKey := ""
-	if os.Getenv("BFL_API_KEY") == "" {
-		apiKey = "<insert_api_key_here>"
-	}
-	c, err := bfl.New(t.Context(), &genai.ProviderOptions{APIKey: apiKey, Model: model.Model}, fn)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if model.Reason {
-		t.Fatal("unexpected")
-	}
-	return &imageModelClient{c}
 }
 
 type imageModelClient struct {
@@ -109,30 +135,6 @@ func (i *imageModelClient) GenSync(ctx context.Context, msgs genai.Messages, opt
 		}
 	}
 	return i.Client.GenSync(ctx, msgs, opts...)
-}
-
-func getClient(t *testing.T, m string) *bfl.Client {
-	t.Parallel()
-	c, err := getClientInner(t, genai.ProviderOptions{Model: m})
-	if err != nil {
-		t.Fatal(err)
-	}
-	return c
-}
-
-func getClientInner(t *testing.T, opts genai.ProviderOptions) (*bfl.Client, error) {
-	if opts.APIKey == "" && os.Getenv("BFL_API_KEY") == "" {
-		opts.APIKey = "<insert_api_key_here>"
-	}
-	return bfl.New(t.Context(), &opts, func(h http.RoundTripper) http.RoundTripper { return testRecorder.Record(t, h) })
-}
-
-var testRecorder *internaltest.Records
-
-func TestMain(m *testing.M) {
-	testRecorder = internaltest.NewRecords()
-	code := m.Run()
-	os.Exit(max(code, testRecorder.Close()))
 }
 
 func init() {

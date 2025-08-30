@@ -737,13 +737,13 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 				selectedModel = m.ID
 			}
 		} else if good {
-			if strings.HasPrefix(m.ID, "llama-4") && (created == 0 || m.Created > created) {
+			if strings.HasPrefix(m.ID, "qwen-") && strings.Contains(m.ID, "-instruct-") && (created == 0 || m.Created > created) {
 				// For the greatest, we want the newest model as it is generally better.
 				created = m.Created
 				selectedModel = m.ID
 			}
 		} else {
-			if strings.HasPrefix(m.ID, "qwen-") && (created == 0 || m.Created > created) {
+			if strings.HasPrefix(m.ID, "qwen-") && strings.Contains(m.ID, "-thinking-") && (created == 0 || m.Created > created) {
 				// For the greatest, we want the newest model as it is generally better.
 				created = m.Created
 				selectedModel = m.ID

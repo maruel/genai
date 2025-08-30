@@ -10,18 +10,51 @@ import (
 	"os"
 	"slices"
 	"strings"
-	"sync"
 	"testing"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
-	"github.com/maruel/genai/internal/myrecorder"
 	"github.com/maruel/genai/providers/openairesponses"
 	"github.com/maruel/genai/smoke/smoketest"
 )
 
+func getClientInner(t *testing.T, opts genai.ProviderOptions, fn func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
+	if opts.APIKey == "" && os.Getenv("OPENAI_API_KEY") == "" {
+		opts.APIKey = "<insert_api_key_here>"
+	}
+	return openairesponses.New(t.Context(), &opts, fn)
+}
+
 func TestClient(t *testing.T) {
+	testRecorder := internaltest.NewRecords()
+	t.Cleanup(func() {
+		if err := testRecorder.Close(); err != nil {
+			t.Error(err)
+		}
+	})
+	cl, err2 := getClientInner(t, genai.ProviderOptions{Model: genai.ModelNone}, func(h http.RoundTripper) http.RoundTripper {
+		return testRecorder.RecordWithName(t, t.Name()+"/Warmup", h)
+	})
+	if err2 != nil {
+		t.Fatal(err2)
+	}
+	cachedModels, err2 := cl.ListModels(t.Context())
+	if err2 != nil {
+		t.Fatal(err2)
+	}
+	getClient := func(t *testing.T, m string) genai.Provider {
+		t.Parallel()
+		opts := genai.ProviderOptions{Model: m, PreloadedModels: cachedModels}
+		ci, err := getClientInner(t, opts, func(h http.RoundTripper) http.RoundTripper {
+			return testRecorder.Record(t, h)
+		})
+		if err != nil {
+			t.Fatal(err)
+		}
+		return ci
+	}
+
 	t.Run("Scoreboard", func(t *testing.T) {
 		genaiModels, err := getClient(t, genai.ModelNone).ListModels(t.Context())
 		if err != nil {
@@ -31,6 +64,43 @@ func TestClient(t *testing.T) {
 		for _, m := range genaiModels {
 			id := m.GetID()
 			models = append(models, smoketest.Model{Model: id, Reason: strings.HasPrefix(id, "o") && !strings.Contains(id, "moderation")})
+		}
+		getClientRT := func(t testing.TB, model smoketest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+			opts := genai.ProviderOptions{Model: model.Model, PreloadedModels: cachedModels}
+			if os.Getenv("OPENAI_API_KEY") == "" {
+				opts.APIKey = "<insert_api_key_here>"
+			}
+			c, err := openairesponses.New(t.Context(), &opts, fn)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if model.Reason {
+				return &internaltest.InjectOptions{
+					Provider: c,
+					Opts: []genai.Options{
+						&openairesponses.OptionsText{
+							// This will lead to spurious HTTP 500 but it is 25% of the cost.
+							ServiceTier:     openairesponses.ServiceTierFlex,
+							ReasoningEffort: openairesponses.ReasoningEffortLow,
+						},
+					},
+				}
+			}
+			if slices.Equal(c.OutputModalities(), []genai.Modality{genai.ModalityText}) {
+				// See https://platform.openai.com/docs/guides/flex-processing
+				if id := c.ModelID(); id == "o3" || id == "o4-mini" || strings.HasPrefix(id, "gpt-5") {
+					return &internaltest.InjectOptions{
+						Provider: c,
+						Opts: []genai.Options{
+							&openairesponses.OptionsText{
+								// This will lead to spurious HTTP 500 but it is 25% of the cost.
+								ServiceTier: openairesponses.ServiceTierFlex,
+							},
+						},
+					}
+				}
+			}
+			return c
 		}
 		smoketest.Run(t, getClientRT, models, testRecorder.Records)
 	})
@@ -134,9 +204,11 @@ func TestClient(t *testing.T) {
 					opts := genai.ProviderOptions{
 						Model:            line.name,
 						OutputModalities: genai.Modalities{line.modality},
-						PreloadedModels:  loadCachedModelsList(t),
+						PreloadedModels:  cachedModels,
 					}
-					c, err := getClientInner(t, opts)
+					c, err := getClientInner(t, opts, func(h http.RoundTripper) http.RoundTripper {
+						return testRecorder.Record(t, h)
+					})
 					if err != nil {
 						t.Fatal(err)
 					}
@@ -189,116 +261,12 @@ func TestClient(t *testing.T) {
 			},
 		}
 		f := func(t *testing.T, opts genai.ProviderOptions) (genai.Provider, error) {
-			return getClientInner(t, opts)
+			return getClientInner(t, opts, func(h http.RoundTripper) http.RoundTripper {
+				return testRecorder.Record(t, h)
+			})
 		}
 		internaltest.TestClient_Provider_errors(t, f, data)
 	})
-}
-
-func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
-	apiKey := ""
-	if os.Getenv("OPENAI_API_KEY") == "" {
-		apiKey = "<insert_api_key_here>"
-	}
-	opts := genai.ProviderOptions{
-		APIKey:          apiKey,
-		Model:           model.Model,
-		PreloadedModels: loadCachedModelsList(t),
-	}
-	c, err := openairesponses.New(t.Context(), &opts, fn)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if model.Reason {
-		return &internaltest.InjectOptions{
-			Provider: c,
-			Opts: []genai.Options{
-				&openairesponses.OptionsText{
-					// This will lead to spurious HTTP 500 but it is 25% of the cost.
-					ServiceTier:     openairesponses.ServiceTierFlex,
-					ReasoningEffort: openairesponses.ReasoningEffortLow,
-				},
-			},
-		}
-	}
-	if slices.Equal(c.OutputModalities(), []genai.Modality{genai.ModalityText}) {
-		// See https://platform.openai.com/docs/guides/flex-processing
-		if id := c.ModelID(); id == "o3" || id == "o4-mini" || strings.HasPrefix(id, "gpt-5") {
-			return &internaltest.InjectOptions{
-				Provider: c,
-				Opts: []genai.Options{
-					&openairesponses.OptionsText{
-						// This will lead to spurious HTTP 500 but it is 25% of the cost.
-						ServiceTier: openairesponses.ServiceTierFlex,
-					},
-				},
-			}
-		}
-	}
-	return c
-}
-
-func getClient(t *testing.T, m string) *openairesponses.Client {
-	t.Parallel()
-	opts := genai.ProviderOptions{
-		Model:           m,
-		PreloadedModels: loadCachedModelsList(t),
-	}
-	c, err := getClientInner(t, opts)
-	if err != nil {
-		t.Fatal(err)
-	}
-	return c
-}
-
-func getClientInner(t *testing.T, opts genai.ProviderOptions) (*openairesponses.Client, error) {
-	if opts.APIKey == "" && os.Getenv("OPENAI_API_KEY") == "" {
-		opts.APIKey = "<insert_api_key_here>"
-	}
-	return openairesponses.New(t.Context(), &opts, func(h http.RoundTripper) http.RoundTripper {
-		return testRecorder.Record(t, h)
-	})
-}
-
-func loadCachedModelsList(t testing.TB) []genai.Model {
-	doOnce.Do(func() {
-		var r *myrecorder.Recorder
-		var err2 error
-		ctx := t.Context()
-		opts := genai.ProviderOptions{Model: genai.ModelNone}
-		if os.Getenv("OPENAI_API_KEY") == "" {
-			opts.APIKey = "<insert_api_key_here>"
-		}
-		c, err := openairesponses.New(ctx, &opts, func(h http.RoundTripper) http.RoundTripper {
-			r, err2 = testRecorder.Records.Record("WarmupCache", h)
-			return r
-		})
-		if err != nil {
-			t.Fatal(err)
-		}
-		if err2 != nil {
-			t.Fatal(err2)
-		}
-		if cachedModels, err = c.ListModels(ctx); err != nil {
-			t.Fatal(err)
-		}
-		if err = r.Stop(); err != nil {
-			t.Fatal(err)
-		}
-	})
-	return cachedModels
-}
-
-var doOnce sync.Once
-
-var cachedModels []genai.Model
-
-var testRecorder *internaltest.Records
-
-func TestMain(m *testing.M) {
-	testRecorder = internaltest.NewRecords()
-	code := m.Run()
-	os.Exit(max(code, testRecorder.Close()))
 }
 
 func init() {

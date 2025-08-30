@@ -10,19 +10,52 @@ import (
 	"os"
 	"slices"
 	"strings"
-	"sync"
 	"testing"
 	"time"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
-	"github.com/maruel/genai/internal/myrecorder"
 	"github.com/maruel/genai/providers/anthropic"
 	"github.com/maruel/genai/smoke/smoketest"
 )
 
+func getClientInner(t *testing.T, opts genai.ProviderOptions, fn func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
+	if opts.APIKey == "" && os.Getenv("ANTHROPIC_API_KEY") == "" {
+		opts.APIKey = "<insert_api_key_here>"
+	}
+	return anthropic.New(t.Context(), &opts, fn)
+}
+
 func TestClient(t *testing.T) {
+	testRecorder := internaltest.NewRecords()
+	t.Cleanup(func() {
+		if err := testRecorder.Close(); err != nil {
+			t.Error(err)
+		}
+	})
+	cl, err2 := getClientInner(t, genai.ProviderOptions{Model: genai.ModelNone}, func(h http.RoundTripper) http.RoundTripper {
+		return testRecorder.RecordWithName(t, t.Name()+"/Warmup", h)
+	})
+	if err2 != nil {
+		t.Fatal(err2)
+	}
+	cachedModels, err2 := cl.ListModels(t.Context())
+	if err2 != nil {
+		t.Fatal(err2)
+	}
+	getClient := func(t *testing.T, m string) genai.Provider {
+		t.Parallel()
+		opts := genai.ProviderOptions{Model: m, PreloadedModels: cachedModels}
+		ci, err := getClientInner(t, opts, func(h http.RoundTripper) http.RoundTripper {
+			return testRecorder.Record(t, h)
+		})
+		if err != nil {
+			t.Fatal(err)
+		}
+		return ci
+	}
+
 	t.Run("Scoreboard", func(t *testing.T) {
 		genaiModels, err := getClient(t, genai.ModelNone).ListModels(t.Context())
 		if err != nil {
@@ -36,6 +69,28 @@ func TestClient(t *testing.T) {
 				models = append(models, smoketest.Model{Model: id, Reason: true})
 			}
 		}
+
+		getClientRT := func(t testing.TB, model smoketest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+			opts := genai.ProviderOptions{Model: model.Model, PreloadedModels: cachedModels}
+			if os.Getenv("ANTHROPIC_API_KEY") == "" {
+				opts.APIKey = "<insert_api_key_here>"
+			}
+			c, err := anthropic.New(t.Context(), &opts, fn)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if model.Reason {
+				return &internaltest.InjectOptions{
+					Provider: c,
+					Opts:     []genai.Options{&anthropic.OptionsText{ThinkingBudget: 1024}},
+				}
+			}
+			return &internaltest.InjectOptions{
+				Provider: c,
+				Opts:     []genai.Options{&anthropic.OptionsText{ThinkingBudget: 0}},
+			}
+		}
+
 		smoketest.Run(t, getClientRT, models, testRecorder.Records)
 	})
 
@@ -44,7 +99,7 @@ func TestClient(t *testing.T) {
 		ctx := t.Context()
 		// Using an extremely old cheap model that nobody uses helps a lot on reducing the latency, I got it to work
 		// within a few minutes.
-		c := getClient(t, "claude-3-haiku-20240307")
+		c := getClient(t, "claude-3-haiku-20240307").(*anthropic.Client)
 		msgs := genai.Messages{genai.NewTextMessage("Tell a joke in 10 words")}
 		job, err := c.GenAsync(ctx, msgs)
 		if err != nil {
@@ -156,99 +211,12 @@ func TestClient(t *testing.T) {
 		}
 		f := func(t *testing.T, opts genai.ProviderOptions) (genai.Provider, error) {
 			opts.OutputModalities = genai.Modalities{genai.ModalityText}
-			return getClientInner(t, opts)
+			return getClientInner(t, opts, func(h http.RoundTripper) http.RoundTripper {
+				return testRecorder.Record(t, h)
+			})
 		}
 		internaltest.TestClient_Provider_errors(t, f, data)
 	})
-}
-
-func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
-	apiKey := ""
-	if os.Getenv("ANTHROPIC_API_KEY") == "" {
-		apiKey = "<insert_api_key_here>"
-	}
-	opts := genai.ProviderOptions{
-		APIKey:          apiKey,
-		Model:           model.Model,
-		PreloadedModels: loadCachedModelsList(t),
-	}
-	c, err := anthropic.New(t.Context(), &opts, fn)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if model.Reason {
-		return &internaltest.InjectOptions{
-			Provider: c,
-			Opts:     []genai.Options{&anthropic.OptionsText{ThinkingBudget: 1024}},
-		}
-	}
-	return &internaltest.InjectOptions{
-		Provider: c,
-		Opts:     []genai.Options{&anthropic.OptionsText{ThinkingBudget: 0}},
-	}
-}
-
-func getClient(t *testing.T, m string) *anthropic.Client {
-	t.Parallel()
-	opts := genai.ProviderOptions{
-		Model:           m,
-		PreloadedModels: loadCachedModelsList(t),
-	}
-	c, err := getClientInner(t, opts)
-	if err != nil {
-		t.Fatal(err)
-	}
-	return c
-}
-
-func getClientInner(t *testing.T, opts genai.ProviderOptions) (*anthropic.Client, error) {
-	if opts.APIKey == "" && os.Getenv("ANTHROPIC_API_KEY") == "" {
-		opts.APIKey = "<insert_api_key_here>"
-	}
-	return anthropic.New(t.Context(), &opts, func(h http.RoundTripper) http.RoundTripper {
-		return testRecorder.Record(t, h)
-	})
-}
-
-func loadCachedModelsList(t testing.TB) []genai.Model {
-	doOnce.Do(func() {
-		var r *myrecorder.Recorder
-		var err2 error
-		ctx := t.Context()
-		opts := genai.ProviderOptions{Model: genai.ModelNone}
-		if os.Getenv("ANTHROPIC_API_KEY") == "" {
-			opts.APIKey = "<insert_api_key_here>"
-		}
-		c, err := anthropic.New(ctx, &opts, func(h http.RoundTripper) http.RoundTripper {
-			r, err2 = testRecorder.Records.Record("WarmupCache", h)
-			return r
-		})
-		if err != nil {
-			t.Fatal(err)
-		}
-		if err2 != nil {
-			t.Fatal(err2)
-		}
-		if cachedModels, err = c.ListModels(ctx); err != nil {
-			t.Fatal(err)
-		}
-		if err = r.Stop(); err != nil {
-			t.Fatal(err)
-		}
-	})
-	return cachedModels
-}
-
-var doOnce sync.Once
-
-var cachedModels []genai.Model
-
-var testRecorder *internaltest.Records
-
-func TestMain(m *testing.M) {
-	testRecorder = internaltest.NewRecords()
-	code := m.Run()
-	os.Exit(max(code, testRecorder.Close()))
 }
 
 func init() {

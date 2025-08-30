@@ -26,6 +26,13 @@ import (
 // Not implementing TestClient_AllModels since we need to preload Ollama models. Can be done later.
 
 func TestClient(t *testing.T) {
+	testRecorder := internaltest.NewRecords()
+	t.Cleanup(func() {
+		if err := testRecorder.Close(); err != nil {
+			t.Error(err)
+		}
+	})
+
 	s := lazyServer{t: t}
 
 	t.Run("Scoreboard", func(t *testing.T) {
@@ -74,6 +81,30 @@ func TestClient(t *testing.T) {
 		}, models, testRecorder.Records)
 	})
 
+	// This test doesn't require the server to start.
+	t.Run("Preferred", func(t *testing.T) {
+		data := []struct {
+			name string
+			want string
+		}{
+			{genai.ModelCheap, "gemma3:1b"},
+			{genai.ModelGood, "qwen3:30b"},
+			{genai.ModelSOTA, "qwen3:32b"},
+		}
+		for _, line := range data {
+			t.Run(line.name, func(t *testing.T) {
+				// Do not connect for real.
+				c, err := ollama.New(t.Context(), &genai.ProviderOptions{Model: line.name, Remote: "http://localhost:66666"}, nil)
+				if err != nil {
+					t.Fatal(err)
+				}
+				if got := c.ModelID(); got != line.want {
+					t.Fatalf("got model %q, want %q", got, line.want)
+				}
+			})
+		}
+	})
+
 	t.Run("errors", func(t *testing.T) {
 		data := []internaltest.ProviderError{
 			{
@@ -86,7 +117,23 @@ func TestClient(t *testing.T) {
 			},
 		}
 		f := func(t *testing.T, opts genai.ProviderOptions) (genai.Provider, error) {
-			return s.getClient(t, opts.Model)
+			serverURL := ""
+			transport := testRecorder.Record(t, http.DefaultTransport)
+			wrapper := func(h http.RoundTripper) http.RoundTripper { return transport }
+			if !transport.IsNewCassette() {
+				serverURL = "http://localhost:0"
+			} else {
+				name := "testdata/" + strings.ReplaceAll(t.Name(), "/", "_") + ".yaml"
+				t.Cleanup(func() {
+					if t.Failed() {
+						t.Log("Removing record")
+						_ = os.Remove(name)
+					}
+				})
+				serverURL = s.lazyStart(t)
+			}
+			opts.Remote = serverURL
+			return ollama.New(t.Context(), &opts, wrapper)
 		}
 		internaltest.TestClient_Provider_errors(t, f, data)
 	})
@@ -96,22 +143,6 @@ type lazyServer struct {
 	t   *testing.T
 	mu  sync.Mutex
 	url string
-}
-
-func (l *lazyServer) lazyStartWithRecord(t testing.TB) (string, func(http.RoundTripper) http.RoundTripper) {
-	transport := testRecorder.Record(t, http.DefaultTransport)
-	wrapper := func(http.RoundTripper) http.RoundTripper { return transport }
-	if !transport.IsNewCassette() {
-		return "http://localhost:0", wrapper
-	}
-	name := "testdata/" + strings.ReplaceAll(t.Name(), "/", "_") + ".yaml"
-	t.Cleanup(func() {
-		if t.Failed() {
-			t.Log("Removing record")
-			_ = os.Remove(name)
-		}
-	})
-	return l.lazyStart(t), wrapper
 }
 
 func (l *lazyServer) lazyStart(t testing.TB) string {
@@ -135,42 +166,6 @@ func (l *lazyServer) lazyStart(t testing.TB) string {
 		})
 	}
 	return l.url
-}
-
-func (l *lazyServer) getClient(t testing.TB, model string) (genai.Provider, error) {
-	serverURL, wrapper := l.lazyStartWithRecord(t)
-	return ollama.New(t.Context(), &genai.ProviderOptions{Remote: serverURL, Model: model}, wrapper)
-}
-
-// This test doesn't require the server to start.
-func TestClient_Preferred(t *testing.T) {
-	data := []struct {
-		name string
-		want string
-	}{
-		{genai.ModelCheap, "gemma3:1b"},
-		{genai.ModelGood, "qwen3:30b"},
-		{genai.ModelSOTA, "qwen3:32b"},
-	}
-	for _, line := range data {
-		t.Run(line.name, func(t *testing.T) {
-			c, err := ollama.New(t.Context(), &genai.ProviderOptions{Model: line.name}, nil)
-			if err != nil {
-				t.Fatal(err)
-			}
-			if got := c.ModelID(); got != line.want {
-				t.Fatalf("got model %q, want %q", got, line.want)
-			}
-		})
-	}
-}
-
-var testRecorder *internaltest.Records
-
-func TestMain(m *testing.M) {
-	testRecorder = internaltest.NewRecords()
-	code := m.Run()
-	os.Exit(max(code, testRecorder.Close()))
 }
 
 func init() {

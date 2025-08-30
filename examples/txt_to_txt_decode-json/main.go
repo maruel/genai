@@ -15,13 +15,13 @@ import (
 	"log"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/providers/openai"
+	"github.com/maruel/genai/providers/openaichat"
 )
 
 func main() {
 	ctx := context.Background()
 	// See ../../docs/MODELS.md to see which providers support this.
-	c, err := openai.New(ctx, &genai.ProviderOptions{}, nil)
+	c, err := openaichat.New(ctx, &genai.ProviderOptions{}, nil)
 	if err != nil {
 		log.Fatal(err)
 	}

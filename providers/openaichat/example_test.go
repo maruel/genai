@@ -13,7 +13,7 @@ import (
 	"time"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/providers/openai/openaichat"
+	"github.com/maruel/genai/providers/openaichat"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/cassette"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )

@@ -22,16 +22,18 @@ import (
 	"github.com/maruel/genai/providers/llamacpp"
 	"github.com/maruel/genai/providers/mistral"
 	"github.com/maruel/genai/providers/ollama"
-	"github.com/maruel/genai/providers/openai"
-	"github.com/maruel/genai/providers/openai/openaichat"
-	"github.com/maruel/genai/providers/openai/openairesponses"
+	"github.com/maruel/genai/providers/openaichat"
 	"github.com/maruel/genai/providers/openaicompatible"
+	"github.com/maruel/genai/providers/openairesponses"
 	"github.com/maruel/genai/providers/perplexity"
 	"github.com/maruel/genai/providers/pollinations"
 	"github.com/maruel/genai/providers/togetherai"
 )
 
 // All is a easy way to propose the user to load any of the supported provider.
+//
+// The keys are aliases and there can be duplicate aliases. As of now, "openai" links to "openaichat". Use
+// Provider.Name to get the real provider name.
 var All = map[string]func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error){
 	"anthropic": func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
 		p, err := anthropic.New(ctx, opts, wrapper)
@@ -117,8 +119,9 @@ var All = map[string]func(ctx context.Context, opts *genai.ProviderOptions, wrap
 		}
 		return p, err
 	},
+	// Create an alias for "openai" that refers to openaichat.
 	"openai": func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-		p, err := openai.New(ctx, opts, wrapper)
+		p, err := openaichat.New(ctx, opts, wrapper)
 		if p == nil {
 			return nil, err
 		}

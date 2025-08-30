@@ -14,7 +14,7 @@ import (
 	"net/http"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/providers/openai"
+	"github.com/maruel/genai/providers/openaichat"
 )
 
 func main() {
@@ -22,7 +22,7 @@ func main() {
 	// Other options (as of 2025-08):
 	// - "voxtral-*-latest" from mistral
 	// - any "gemini-2-5-*" model from gemini
-	c, err := openai.New(ctx, &genai.ProviderOptions{Model: "gpt-4o-audio-preview"}, nil)
+	c, err := openaichat.New(ctx, &genai.ProviderOptions{Model: "gpt-4o-audio-preview"}, nil)
 	if err != nil {
 		log.Fatal(err)
 	}

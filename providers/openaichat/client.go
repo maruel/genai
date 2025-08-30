@@ -1013,7 +1013,7 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 //
 // It returns the name of the provider.
 func (c *Client) Name() string {
-	return "openai"
+	return "openaichat"
 }
 
 // GenSyncRaw provides access to the raw API.

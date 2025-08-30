@@ -9,6 +9,7 @@ package main
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"maps"
 	"os"
@@ -16,6 +17,7 @@ import (
 	"path/filepath"
 	"slices"
 
+	"github.com/maruel/genai"
 	"github.com/maruel/genai/providers"
 )
 
@@ -40,12 +42,17 @@ func mainImpl() error {
 		return fmt.Errorf("usage: %s <root>", os.Args[0])
 	}
 	root := os.Args[1]
-	for _, name := range slices.Sorted(maps.Keys(providers.All)) {
-		if name == "openaicompatible" {
+	for _, alias := range slices.Sorted(maps.Keys(providers.All)) {
+		if alias == "openaicompatible" {
 			continue
 		}
+		c, _ := providers.All[alias](context.Background(), &genai.ProviderOptions{Model: genai.ModelNone}, nil)
+		if c == nil {
+			continue
+		}
+		name := c.Name()
 		if err := run(root, name); err != nil {
-			return fmt.Errorf("failed processing %s: %w", name, err)
+			return fmt.Errorf("failed processing %s: %w", alias, err)
 		}
 	}
 	return nil

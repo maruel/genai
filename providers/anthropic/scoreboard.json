@@ -116,11 +116,11 @@
       }
     },
     {
-      "comments": "When thinking is enabled, ToolCallRequired is not supported",
+      "comments": "When reasoning is enabled, ToolCallRequired is not supported",
       "models": [
         "claude-sonnet-4-20250514"
       ],
-      "thinking": true,
+      "reason": true,
       "in": {
         "document": {
           "inline": true,
@@ -226,7 +226,7 @@
       "models": [
         "claude-opus-4-1-20250805"
       ],
-      "thinking": true,
+      "reason": true,
       "in": {
         "document": {
           "inline": true,
@@ -288,7 +288,7 @@
       "models": [
         "claude-opus-4-20250514"
       ],
-      "thinking": true
+      "reason": true
     }
   ]
 }

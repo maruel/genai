@@ -47,9 +47,9 @@
       "models": [
         "Qwen/Qwen3-4B"
       ],
-      "thinking": true,
-      "thinkingTokenStart": "\u003cthink\u003e",
-      "thinkingTokenEnd": "\u003c/think\u003e",
+      "reason": true,
+      "reasoningTokenStart": "\u003cthink\u003e",
+      "reasoningTokenEnd": "\u003c/think\u003e",
       "in": {
         "text": {
           "inline": true

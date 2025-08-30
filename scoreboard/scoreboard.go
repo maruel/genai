@@ -255,9 +255,9 @@ type Scenario struct {
 	// providers, this is controlled via a OptionsText. For some models (like Qwen3), a token "/no_think" or
 	// "/think" is used to control. ReasoningTokenStart and ReasoningTokenEnd must only be set on explicit inline
 	// reasoning models. They often use <think> and </think>.
-	Reason              bool   `json:"thinking,omitzero"`
-	ReasoningTokenStart string `json:"thinkingTokenStart,omitzero"`
-	ReasoningTokenEnd   string `json:"thinkingTokenEnd,omitzero"`
+	Reason              bool   `json:"reason,omitzero"`
+	ReasoningTokenStart string `json:"reasoningTokenStart,omitzero"`
+	ReasoningTokenEnd   string `json:"reasoningTokenEnd,omitzero"`
 
 	In  map[Modality]ModalCapability `json:"in,omitzero"`
 	Out map[Modality]ModalCapability `json:"out,omitzero"`

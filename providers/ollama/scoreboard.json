@@ -51,9 +51,9 @@
       "models": [
         "qwen3:4b"
       ],
-      "thinking": true,
-      "thinkingTokenStart": "\u003cthink\u003e",
-      "thinkingTokenEnd": "\n\u003c/think\u003e\n",
+      "reason": true,
+      "reasoningTokenStart": "\u003cthink\u003e",
+      "reasoningTokenEnd": "\n\u003c/think\u003e\n",
       "in": {
         "text": {
           "inline": true

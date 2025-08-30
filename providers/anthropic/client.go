@@ -1108,6 +1108,7 @@ const (
 	ChunkContentBlockDelta ChunkType = "content_block_delta"
 	ChunkContentBlockStop  ChunkType = "content_block_stop"
 	ChunkPing              ChunkType = "ping"
+	ChunkError             ChunkType = "error"
 )
 
 type DeltaType string
@@ -1650,6 +1651,9 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		case ChunkPing:
 			// Doesn't contain anything.
 			continue
+		case ChunkError:
+			// TODO: See it in the field to decode properly.
+			return fmt.Errorf("got error: %+v", pkt)
 		default:
 			return fmt.Errorf("unknown stream block %q", pkt.Type)
 		}

@@ -62,7 +62,7 @@ func Scoreboard() scoreboard.Score {
 
 // Options defines Gemini specific options.
 type Options struct {
-	// ReasoningBudget is the maximum number of tokens the LLM can use to think about the answer.
+	// ThinkingBudget is the maximum number of tokens the LLM can use to reason about the answer.
 	//
 	// From https://ai.google.dev/gemini-api/docs/thinking#set-budget
 	//
@@ -86,7 +86,7 @@ type Options struct {
 	// - Range: 512 to 24576
 	// - Disable thinking with 0
 	// - Dynamic thinking: -1
-	ReasoningBudget int64
+	ThinkingBudget int64
 }
 
 func (o *Options) Validate() error {
@@ -257,11 +257,11 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 		switch v := opt.(type) {
 		case *Options:
 			// Accept both positive numbers and -1 (dynamic thinking)
-			if v.ReasoningBudget != 0 {
+			if v.ThinkingBudget != 0 {
 				// https://ai.google.dev/gemini-api/docs/thinking
 				c.GenerationConfig.ThinkingConfig = &ThinkingConfig{
 					IncludeThoughts: true,
-					ThinkingBudget:  v.ReasoningBudget,
+					ThinkingBudget:  v.ThinkingBudget,
 				}
 			} else {
 				// We need to set it to disable thinking on gemini-2.5-flash.

@@ -307,7 +307,7 @@ func (m *Message) From(in *genai.Message) error {
 	if len(in.Replies) != 0 {
 		for i := range in.Replies {
 			if in.Replies[i].Reasoning != "" {
-				// Ignore thinking messages.
+				// Ignore reasoning messages.
 				continue
 			}
 			if !in.Replies[i].ToolCall.IsZero() {

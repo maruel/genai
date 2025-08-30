@@ -52,9 +52,9 @@ func Scoreboard() scoreboard.Score {
 
 // OptionsText defines Anthropic specific options.
 type OptionsText struct {
-	// ReasoningBudget is the maximum number of tokens the LLM can use to think about the answer. When 0,
-	// thinking is disabled. It generally must be above 1024 and below MaxTokens.
-	ReasoningBudget int64
+	// ThinkingBudget is the maximum number of tokens the LLM can use to reason about the answer. When 0,
+	// reasoning is disabled. It generally must be above 1024 and below MaxTokens.
+	ThinkingBudget int64
 	// MessagesToCache specify the number of messages to cache in the request.
 	//
 	// By default, the system prompt and tools will be cached.
@@ -117,13 +117,13 @@ func (c *ChatRequest) initImpl(msgs genai.Messages, model string, cache bool, op
 			} else if v.MessagesToCache != 0 {
 				unsupported = append(unsupported, "OptionsText.MessagesToCache")
 			}
-			if v.ReasoningBudget > 0 {
-				if v.ReasoningBudget >= c.MaxTokens {
-					errs = append(errs, fmt.Errorf("invalid ThinkingBudget(%d) >= MaxTokens(%d)", v.ReasoningBudget, c.MaxTokens))
+			if v.ThinkingBudget > 0 {
+				if v.ThinkingBudget >= c.MaxTokens {
+					errs = append(errs, fmt.Errorf("invalid ThinkingBudget(%d) >= MaxTokens(%d)", v.ThinkingBudget, c.MaxTokens))
 				}
 				// https://docs.anthropic.com/en/docs/build-with-claude/extended-thinking
 				// Thinking isn’t compatible with temperature, top_p, or top_k modifications as well as forced tool use.
-				c.Thinking.BudgetTokens = v.ReasoningBudget
+				c.Thinking.BudgetTokens = v.ThinkingBudget
 				c.Thinking.Type = "enabled"
 			}
 		case *genai.OptionsText:

@@ -94,7 +94,7 @@ func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if model.Reasoning {
+	if model.Reason {
 		t.Fatal("implement me")
 	}
 	if strings.HasPrefix(model.Model, "voxtral") {

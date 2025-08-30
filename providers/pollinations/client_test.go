@@ -28,7 +28,7 @@ func TestClient(t *testing.T) {
 		var sbModels []smoketest.Model
 		for _, m := range models {
 			id := m.GetID()
-			sbModels = append(sbModels, smoketest.Model{Model: id, Reasoning: id == "deepseek-reasoning"})
+			sbModels = append(sbModels, smoketest.Model{Model: id, Reason: id == "deepseek-reasoning"})
 		}
 		smoketest.Run(t, getClientRT, sbModels, testRecorder.Records)
 	})
@@ -91,7 +91,7 @@ func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper)
 		t.Fatal(err)
 	}
 	c2 := &smallImage{Provider: &internaltest.HideHTTP500{Provider: c}}
-	if model.Reasoning {
+	if model.Reason {
 		for _, sc := range c.Scoreboard().Scenarios {
 			if sc.Reason && slices.Contains(sc.Models, model.Model) {
 				if sc.ReasoningTokenStart != "" && sc.ReasoningTokenEnd != "" {

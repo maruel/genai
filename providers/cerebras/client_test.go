@@ -41,7 +41,7 @@ func TestClient(t *testing.T) {
 					break
 				}
 			}
-			models = append(models, smoketest.Model{Model: id, Reasoning: thinking})
+			models = append(models, smoketest.Model{Model: id, Reason: thinking})
 		}
 		smoketest.Run(t, getClientRT, models, testRecorder.Records)
 	})
@@ -119,7 +119,7 @@ func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper)
 		t.Fatal(err2)
 	}
 	var p genai.Provider = c
-	if model.Reasoning {
+	if model.Reason {
 		// Check if it has predefined thinking tokens.
 		for _, sc := range c.Scoreboard().Scenarios {
 			if sc.Reason && slices.Contains(sc.Models, model.Model) {

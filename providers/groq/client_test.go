@@ -35,15 +35,15 @@ func TestClient(t *testing.T) {
 		var models []smoketest.Model
 		for _, m := range genaiModels {
 			id := m.GetID()
-			thinking := false
+			reason := false
 			for _, sc := range scenarios {
 				if slices.Contains(sc.Models, id) {
 					t.Logf("%s: %t", id, sc.Reason)
-					thinking = sc.Reason
+					reason = sc.Reason
 					break
 				}
 			}
-			models = append(models, smoketest.Model{Model: id, Reasoning: thinking})
+			models = append(models, smoketest.Model{Model: id, Reason: reason})
 		}
 		smoketest.Run(t, getClientRT, models, testRecorder.Records)
 	})
@@ -148,11 +148,11 @@ func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper)
 		t.Fatal(err)
 	}
 	var c genai.Provider = cl
-	if strings.HasPrefix(model.Model, "qwen/") && model.Reasoning {
+	if strings.HasPrefix(model.Model, "qwen/") && model.Reason {
 		c = &adapters.ProviderAppend{Provider: c, Append: genai.Request{Text: "\n\n/think"}}
 	}
 	// OpenAI must not enable the ReasoningFormat flag.
-	if model.Reasoning && !strings.HasPrefix(model.Model, "openai/") {
+	if model.Reason && !strings.HasPrefix(model.Model, "openai/") {
 		return &handleGroqReasoning{Provider: c}
 	}
 	return c

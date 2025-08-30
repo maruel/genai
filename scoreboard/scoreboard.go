@@ -306,17 +306,17 @@ type ModalCapability struct {
 	SupportedFormats []string `json:"supportedFormats,omitzero"`
 }
 
-// Reason specifies if a model Scenario supports thinking.
+// Reason specifies if a model Scenario supports reasoning (thinking).
 type Reason int8
 
 const (
-	// ReasonNone means that no thinking is supported.
+	// ReasonNone means that no reasoning is supported.
 	ReasonNone Reason = 0
-	// ReasonInline means that the thinking tokens are inline and must be explicitly parsed from Content.Text
+	// ReasonInline means that the reasoning tokens are inline and must be explicitly parsed from Content.Text
 	// with adapters.ProviderReasoning.
 	ReasonInline Reason = 1
-	// ReasonAuto means that the thinking tokens are properly generated and handled by the provider and
-	// are returned as Content.Reasoning.
+	// ReasonAuto means that the reasoning tokens are properly generated and handled by the provider and are
+	// returned as Content.Reasoning.
 	ReasonAuto Reason = -1
 )
 
@@ -383,13 +383,13 @@ type Score struct {
 
 func (s *Score) Validate() error {
 	type pair struct {
-		name     string
-		thinking bool
+		name   string
+		reason bool
 	}
 	seen := map[pair]struct{}{}
 	for _, sc := range s.Scenarios {
 		for _, model := range sc.Models {
-			k := pair{name: model, thinking: sc.Reason}
+			k := pair{name: model, reason: sc.Reason}
 			if _, ok := seen[k]; ok {
 				return fmt.Errorf("duplicate model in scoreboard: %v", k)
 			}

@@ -28,7 +28,7 @@ func TestClient(t *testing.T) {
 		var models []smoketest.Model
 		for _, sc := range sb.Scenarios {
 			for _, model := range sc.Models {
-				models = append(models, smoketest.Model{Model: model, Reasoning: sc.Reason})
+				models = append(models, smoketest.Model{Model: model, Reason: sc.Reason})
 			}
 		}
 		smoketest.Run(t, getClientRT, models, testRecorder.Records)
@@ -93,10 +93,10 @@ func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper)
 		t.Fatal(err)
 	}
 	if strings.HasPrefix(model.Model, "Qwen/Qwen3") {
-		if !model.Reasoning {
+		if !model.Reason {
 			return &adapters.ProviderAppend{Provider: c, Append: genai.Request{Text: "\n\n/no_think"}}
 		}
-		// Check if it has predefined thinking tokens.
+		// Check if it has predefined reasoning tokens.
 		for _, sc := range c.Scoreboard().Scenarios {
 			if sc.Reason && slices.Contains(sc.Models, model.Model) {
 				if sc.ReasoningTokenStart != "" && sc.ReasoningTokenEnd != "" {

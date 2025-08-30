@@ -30,7 +30,7 @@ func TestClient(t *testing.T) {
 		var models []smoketest.Model
 		for _, m := range genaiModels {
 			id := m.GetID()
-			models = append(models, smoketest.Model{Model: id, Reasoning: strings.HasPrefix(id, "o") && !strings.Contains(id, "moderation")})
+			models = append(models, smoketest.Model{Model: id, Reason: strings.HasPrefix(id, "o") && !strings.Contains(id, "moderation")})
 		}
 		smoketest.Run(t, getClientRT, models, testRecorder.Records)
 	})
@@ -209,7 +209,7 @@ func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if model.Reasoning {
+	if model.Reason {
 		return &internaltest.InjectOptions{
 			Provider: c,
 			Opts: []genai.Options{

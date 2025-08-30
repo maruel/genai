@@ -34,7 +34,7 @@ func TestClient(t *testing.T) {
 		var models []smoketest.Model
 		for _, sc := range ollama.Scoreboard().Scenarios {
 			for _, m := range sc.Models {
-				models = append(models, smoketest.Model{Model: m, Reasoning: sc.Reason})
+				models = append(models, smoketest.Model{Model: m, Reason: sc.Reason})
 			}
 		}
 		smoketest.Run(t, func(t testing.TB, model smoketest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
@@ -55,7 +55,7 @@ func TestClient(t *testing.T) {
 				t.Fatal(err)
 			}
 			if strings.HasPrefix(model.Model, "qwen") {
-				if !model.Reasoning {
+				if !model.Reason {
 					t.Fatal("expected thinking")
 				}
 				// Check if it has predefined thinking tokens.

@@ -29,7 +29,7 @@ func TestClient(t *testing.T) {
 		var models []smoketest.Model
 		for _, sc := range sb.Scenarios {
 			for _, model := range sc.Models {
-				models = append(models, smoketest.Model{Model: model, Reasoning: sc.Reason})
+				models = append(models, smoketest.Model{Model: model, Reason: sc.Reason})
 			}
 		}
 		smoketest.Run(t, getClientRT, models, testRecorder.Records)
@@ -112,7 +112,7 @@ func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper)
 			&perplexity.Options{DisableRelatedQuestions: true},
 		},
 	}
-	if model.Reasoning {
+	if model.Reason {
 		for _, sc := range c.Scoreboard().Scenarios {
 			if sc.Reason && slices.Contains(sc.Models, model.Model) {
 				if sc.ReasoningTokenStart != "" && sc.ReasoningTokenEnd != "" {

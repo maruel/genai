@@ -33,7 +33,7 @@ func TestClient(t *testing.T) {
 			id := m.GetID()
 			models = append(models, smoketest.Model{Model: id})
 			if strings.HasPrefix(id, "claude-sonnet") || strings.HasPrefix(id, "claude-opus") {
-				models = append(models, smoketest.Model{Model: id, Reasoning: true})
+				models = append(models, smoketest.Model{Model: id, Reason: true})
 			}
 		}
 		smoketest.Run(t, getClientRT, models, testRecorder.Records)
@@ -176,15 +176,15 @@ func getClientRT(t testing.TB, model smoketest.Model, fn func(http.RoundTripper)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if model.Reasoning {
+	if model.Reason {
 		return &internaltest.InjectOptions{
 			Provider: c,
-			Opts:     []genai.Options{&anthropic.OptionsText{ReasoningBudget: 1024}},
+			Opts:     []genai.Options{&anthropic.OptionsText{ThinkingBudget: 1024}},
 		}
 	}
 	return &internaltest.InjectOptions{
 		Provider: c,
-		Opts:     []genai.Options{&anthropic.OptionsText{ReasoningBudget: 0}},
+		Opts:     []genai.Options{&anthropic.OptionsText{ThinkingBudget: 0}},
 	}
 }
 

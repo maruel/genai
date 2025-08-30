@@ -24,12 +24,13 @@ import (
 // support one or the other but a few support both. Often their functionality is different depending if
 // reasoning is enabled or not.
 type Model struct {
-	Model     string
-	Reasoning bool
+	Model  string
+	Reason bool
 }
 
 func (m *Model) String() string {
-	if m.Reasoning {
+	if m.Reason {
+		// I may change this later.
 		return m.Model + "_thinking"
 	}
 	return m.Model
@@ -63,7 +64,7 @@ func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Recor
 	modelsToTest := map[Model]struct{}{}
 	for _, sc := range sb.Scenarios {
 		for _, model := range sc.Models {
-			modelsToTest[Model{Model: model, Reasoning: sc.Reason}] = struct{}{}
+			modelsToTest[Model{Model: model, Reason: sc.Reason}] = struct{}{}
 		}
 	}
 
@@ -72,7 +73,7 @@ func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Recor
 			// Find the reference.
 			var want scoreboard.Scenario
 			for _, sc := range sb.Scenarios {
-				if m.Reasoning != sc.Reason {
+				if m.Reason != sc.Reason {
 					continue
 				}
 				if slices.Contains(sc.Models, m.Model) {

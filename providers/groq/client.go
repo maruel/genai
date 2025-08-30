@@ -50,8 +50,8 @@ func Scoreboard() scoreboard.Score {
 
 // Options is the Groq-specific options.
 type Options struct {
-	// ReasoningFormat requests Groq to process the stream on our behalf. It must only be used on thinking
-	// models. It is required for thinking models to enable JSON structured output or tool calling.
+	// ReasoningFormat requests Groq to process the stream on our behalf. It must only be used on reasoning
+	// models. It is required for reasoning models to enable JSON structured output or tool calling.
 	ReasoningFormat ReasoningFormat
 	// ServiceTier specify the priority.
 	ServiceTier ServiceTier

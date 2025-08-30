@@ -29,7 +29,7 @@ func TestClient(t *testing.T) {
 			id := m.GetID()
 			// Hack.
 			if id == "c4ai-aya-vision-8b" || id == "command-r7b-12-2024" {
-				models = append(models, smoketest.Model{Model: id, Reasoning: true})
+				models = append(models, smoketest.Model{Model: id, Reason: true})
 			} else {
 				models = append(models, smoketest.Model{Model: id})
 			}

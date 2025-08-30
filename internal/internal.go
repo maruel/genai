@@ -93,6 +93,9 @@ func MimeByExt(ext string) string {
 		return "audio/flac"
 	case ".wav":
 		return "audio/wav"
+	case ".md":
+		// It is the case on linux but it is blank on macOS (!?)
+		return "text/markdown"
 	default:
 		return mime.TypeByExtension(ext)
 	}

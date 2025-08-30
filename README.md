@@ -704,8 +704,8 @@ Snippet:
 	provider := flag.String("provider", "", "provider to use, "+names)
 	flag.Parse()
 
-	f := providers.All[*provider]
-	c, _ := f(ctx, &genai.ProviderOptions{}, nil)
+	cfg := providers.All[*provider]
+	c, _ := cfg.Factory(ctx, &genai.ProviderOptions{}, nil)
 	p := adapters.WrapReasoning(c)
 	res, _ := p.GenSync(...)
 ```

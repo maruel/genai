@@ -9,7 +9,6 @@ import (
 	"fmt"
 	"io"
 	"maps"
-	"net/http"
 	"os"
 	"reflect"
 	"slices"
@@ -247,27 +246,30 @@ func printTable(ctx context.Context, provider string) error {
 	if provider == "" {
 		return printSummaryTable(ctx, all)
 	}
-	f := all[provider]
-	if f == nil {
+	cfg := all[provider]
+	if cfg.Factory == nil {
 		return fmt.Errorf("provider %s: not found", provider)
 	}
-	c, err := f(ctx, &genai.ProviderOptions{Model: genai.ModelNone}, nil)
+	c, err := cfg.Factory(ctx, &genai.ProviderOptions{Model: genai.ModelNone}, nil)
 	if c == nil {
 		return fmt.Errorf("provider %s: %w", provider, err)
 	}
 	return printProviderTable(c)
 }
 
-func printSummaryTable(ctx context.Context, all map[string]func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error)) error {
+func printSummaryTable(ctx context.Context, all map[string]providers.Config) error {
 	var rows []tableSummaryRow
 	seen := map[string]struct{}{}
-	for name, f := range all {
+	for name, cfg := range all {
+		if cfg.Alias != "" {
+			continue
+		}
 		opts := &genai.ProviderOptions{Model: genai.ModelNone}
 		if name == "openaicompatible" {
 			// Make sure the remote it set for this one.
 			opts.Remote = "http://localhost:0"
 		}
-		p, err := f(ctx, opts, nil)
+		p, err := cfg.Factory(ctx, opts, nil)
 		// The function can return an error and still return a client when no API key was found. It's okay here
 		// because we won't use the service provider.
 		if p == nil {

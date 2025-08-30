@@ -18,11 +18,11 @@ import (
 func smokeModel(ctx context.Context, provider, model string) error {
 	// TODO: We may want to run in strict mode?
 	// TODO: We will want to record the HTTP requests, it's wasteful otherwise.
-	if _, err := providers.All[provider](ctx, &genai.ProviderOptions{Model: model}, nil); err != nil {
+	if _, err := providers.All[provider].Factory(ctx, &genai.ProviderOptions{Model: model}, nil); err != nil {
 		return err
 	}
 	pf := func(name string) genai.Provider {
-		p, _ := providers.All[provider](ctx, &genai.ProviderOptions{Model: model}, nil)
+		p, _ := providers.All[provider].Factory(ctx, &genai.ProviderOptions{Model: model}, nil)
 		return p
 	}
 	sc, usage, err := smoke.Run(ctx, pf)

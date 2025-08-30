@@ -56,11 +56,11 @@ func LoadProvider(ctx context.Context, provider string, opts *genai.ProviderOpti
 	if provider == "" {
 		return nil, fmt.Errorf("no provider specified")
 	}
-	f := providers.All[provider]
-	if f == nil {
+	cfg := providers.All[provider]
+	if cfg.Factory == nil {
 		return nil, fmt.Errorf("unknown provider %q", provider)
 	}
-	c, err := f(ctx, opts, nil)
+	c, err := cfg.Factory(ctx, opts, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to provider %q: %w", provider, err)
 	}

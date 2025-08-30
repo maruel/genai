@@ -100,7 +100,8 @@ func mainImpl() error {
 	if !slices.Contains(names, *provider) {
 		return fmt.Errorf("unknown backend %q", *provider)
 	}
-	c, err := providers.All[*provider](ctx, &genai.ProviderOptions{Model: genai.ModelNone}, nil)
+	cfg := providers.All[*provider]
+	c, err := cfg.Factory(ctx, &genai.ProviderOptions{Model: genai.ModelNone}, nil)
 	if err != nil {
 		return err
 	}

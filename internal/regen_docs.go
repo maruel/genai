@@ -46,7 +46,11 @@ func mainImpl() error {
 		if alias == "openaicompatible" {
 			continue
 		}
-		c, _ := providers.All[alias](context.Background(), &genai.ProviderOptions{Model: genai.ModelNone}, nil)
+		cfg := providers.All[alias]
+		if cfg.Alias != "" {
+			continue
+		}
+		c, _ := cfg.Factory(context.Background(), &genai.ProviderOptions{Model: genai.ModelNone}, nil)
 		if c == nil {
 			continue
 		}

@@ -24,8 +24,8 @@ import (
 
 func Example_all_ListModel() {
 	ctx := context.Background()
-	for name, f := range providers.All {
-		c, err := f(ctx, &genai.ProviderOptions{Model: genai.ModelNone}, nil)
+	for name, cfg := range providers.All {
+		c, err := cfg.Factory(ctx, &genai.ProviderOptions{Model: genai.ModelNone}, nil)
 		if err != nil {
 			continue
 		}
@@ -45,8 +45,8 @@ func Example_all_ListModel() {
 
 func Example_all_Provider() {
 	ctx := context.Background()
-	for name, f := range providers.All {
-		c, err := f(ctx, &genai.ProviderOptions{Model: genai.ModelCheap}, nil)
+	for name, cfg := range providers.All {
+		c, err := cfg.Factory(ctx, &genai.ProviderOptions{Model: genai.ModelCheap}, nil)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -109,11 +109,11 @@ func LoadProvider(ctx context.Context, provider string, opts *genai.ProviderOpti
 	if provider == "" {
 		return nil, fmt.Errorf("no provider specified")
 	}
-	f := providers.All[provider]
-	if f == nil {
+	cfg := providers.All[provider]
+	if cfg.Factory == nil {
 		return nil, fmt.Errorf("unknown provider %q", provider)
 	}
-	c, err := f(ctx, opts, nil)
+	c, err := cfg.Factory(ctx, opts, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to provider %q: %w", provider, err)
 	}
@@ -178,8 +178,8 @@ func Example_all_GetProvidersGenAsync() {
 //     environment variables FOO_API_KEY are set.
 func GetProvidersGenAsync(ctx context.Context) []string {
 	var names []string
-	for name, f := range providers.All {
-		c, _ := f(ctx, &genai.ProviderOptions{Model: genai.ModelNone}, nil)
+	for name, cfg := range providers.All {
+		c, _ := cfg.Factory(ctx, &genai.ProviderOptions{Model: genai.ModelNone}, nil)
 		if c == nil {
 			continue
 		}

@@ -2,7 +2,9 @@
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
-// Package providers is the root of all known providers.
+// Package providers is the root of all standard providers.
+//
+// It contains a registry of all known providers.
 package providers
 
 import (
@@ -30,158 +32,221 @@ import (
 	"github.com/maruel/genai/providers/togetherai"
 )
 
+// Config is a registry entry
+type Config struct {
+	APIKeyEnvVar string
+	Alias        string
+	Factory      func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error)
+}
+
 // All is a easy way to propose the user to load any of the supported provider.
 //
 // The keys are aliases and there can be duplicate aliases. As of now, "openai" links to "openaichat". Use
 // Provider.Name to get the real provider name.
-var All = map[string]func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error){
-	"anthropic": func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-		p, err := anthropic.New(ctx, opts, wrapper)
-		if p == nil {
-			return nil, err
-		}
-		return p, err
+var All = map[string]Config{
+	"anthropic": {
+		APIKeyEnvVar: "ANTHROPIC_API_KEY",
+		Factory: func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
+			p, err := anthropic.New(ctx, opts, wrapper)
+			if p == nil {
+				return nil, err
+			}
+			return p, err
+		},
 	},
-	"bfl": func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-		p, err := bfl.New(ctx, opts, wrapper)
-		if p == nil {
-			return nil, err
-		}
-		return p, err
+	"bfl": {
+		APIKeyEnvVar: "BFL_API_KEY",
+		Factory: func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
+			p, err := bfl.New(ctx, opts, wrapper)
+			if p == nil {
+				return nil, err
+			}
+			return p, err
+		},
 	},
-	"cerebras": func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-		p, err := cerebras.New(ctx, opts, wrapper)
-		if p == nil {
-			return nil, err
-		}
-		return p, err
+	"cerebras": {
+		APIKeyEnvVar: "CEREBRAS_API_KEY",
+		Factory: func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
+			p, err := cerebras.New(ctx, opts, wrapper)
+			if p == nil {
+				return nil, err
+			}
+			return p, err
+		},
 	},
-	"cloudflare": func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-		p, err := cloudflare.New(ctx, opts, wrapper)
-		if p == nil {
-			return nil, err
-		}
-		return p, err
+	"cloudflare": {
+		APIKeyEnvVar: "CLOUDFLARE_API_KEY",
+		Factory: func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
+			p, err := cloudflare.New(ctx, opts, wrapper)
+			if p == nil {
+				return nil, err
+			}
+			return p, err
+		},
 	},
-	"cohere": func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-		p, err := cohere.New(ctx, opts, wrapper)
-		if p == nil {
-			return nil, err
-		}
-		return p, err
+	"cohere": {
+		APIKeyEnvVar: "COHERE_API_KEY",
+		Factory: func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
+			p, err := cohere.New(ctx, opts, wrapper)
+			if p == nil {
+				return nil, err
+			}
+			return p, err
+		},
 	},
-	"deepseek": func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-		p, err := deepseek.New(ctx, opts, wrapper)
-		if p == nil {
-			return nil, err
-		}
-		return p, err
+	"deepseek": {
+		APIKeyEnvVar: "DEEPSEEK_API_KEY",
+		Factory: func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
+			p, err := deepseek.New(ctx, opts, wrapper)
+			if p == nil {
+				return nil, err
+			}
+			return p, err
+		},
 	},
-	"gemini": func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-		p, err := gemini.New(ctx, opts, wrapper)
-		if p == nil {
-			return nil, err
-		}
-		return p, err
+	"gemini": {
+		APIKeyEnvVar: "GEMINI_API_KEY",
+		Factory: func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
+			p, err := gemini.New(ctx, opts, wrapper)
+			if p == nil {
+				return nil, err
+			}
+			return p, err
+		},
 	},
-	"groq": func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-		p, err := groq.New(ctx, opts, wrapper)
-		if p == nil {
-			return nil, err
-		}
-		return p, err
+	"groq": {
+		APIKeyEnvVar: "GROQ_API_KEY",
+		Factory: func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
+			p, err := groq.New(ctx, opts, wrapper)
+			if p == nil {
+				return nil, err
+			}
+			return p, err
+		},
 	},
-	"huggingface": func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-		p, err := huggingface.New(ctx, opts, wrapper)
-		if p == nil {
-			return nil, err
-		}
-		return p, err
+	"huggingface": {
+		APIKeyEnvVar: "HUGGINGFACE_API_KEY",
+		Factory: func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
+			p, err := huggingface.New(ctx, opts, wrapper)
+			if p == nil {
+				return nil, err
+			}
+			return p, err
+		},
 	},
-	"llamacpp": func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-		p, err := llamacpp.New(ctx, opts, wrapper)
-		if p == nil {
-			return nil, err
-		}
-		return p, err
+	"llamacpp": {
+		APIKeyEnvVar: "",
+		Factory: func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
+			p, err := llamacpp.New(ctx, opts, wrapper)
+			if p == nil {
+				return nil, err
+			}
+			return p, err
+		},
 	},
-	"mistral": func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-		p, err := mistral.New(ctx, opts, wrapper)
-		if p == nil {
-			return nil, err
-		}
-		return p, err
+	"mistral": {
+		APIKeyEnvVar: "MISTRAL_API_KEY",
+		Factory: func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
+			p, err := mistral.New(ctx, opts, wrapper)
+			if p == nil {
+				return nil, err
+			}
+			return p, err
+		},
 	},
-	"ollama": func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-		p, err := ollama.New(ctx, opts, wrapper)
-		if p == nil {
-			return nil, err
-		}
-		return p, err
+	"ollama": {
+		APIKeyEnvVar: "",
+		Factory: func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
+			p, err := ollama.New(ctx, opts, wrapper)
+			if p == nil {
+				return nil, err
+			}
+			return p, err
+		},
 	},
-	// Create an alias for "openai" that refers to openaichat.
-	"openai": func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-		p, err := openaichat.New(ctx, opts, wrapper)
-		if p == nil {
-			return nil, err
-		}
-		return p, err
+	"openai": {
+		APIKeyEnvVar: "OPENAI_API_KEY",
+		Alias:        "openaichat",
+		Factory: func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
+			p, err := openaichat.New(ctx, opts, wrapper)
+			if p == nil {
+				return nil, err
+			}
+			return p, err
+		},
 	},
-	"openaichat": func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-		p, err := openaichat.New(ctx, opts, wrapper)
-		if p == nil {
-			return nil, err
-		}
-		return p, err
+	"openaichat": {
+		APIKeyEnvVar: "OPENAI_API_KEY",
+		Factory: func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
+			p, err := openaichat.New(ctx, opts, wrapper)
+			if p == nil {
+				return nil, err
+			}
+			return p, err
+		},
 	},
-	"openairesponses": func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-		p, err := openairesponses.New(ctx, opts, wrapper)
-		if p == nil {
-			return nil, err
-		}
-		return p, err
+	"openairesponses": {
+		APIKeyEnvVar: "OPENAI_API_KEY",
+		Factory: func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
+			p, err := openairesponses.New(ctx, opts, wrapper)
+			if p == nil {
+				return nil, err
+			}
+			return p, err
+		},
 	},
-	"openaicompatible": func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-		p, err := openaicompatible.New(ctx, opts, wrapper)
-		if p == nil {
-			return nil, err
-		}
-		return p, err
+	"openaicompatible": {
+		Factory: func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
+			p, err := openaicompatible.New(ctx, opts, wrapper)
+			if p == nil {
+				return nil, err
+			}
+			return p, err
+		},
 	},
-	"perplexity": func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-		p, err := perplexity.New(ctx, opts, wrapper)
-		if p == nil {
-			return nil, err
-		}
-		return p, err
+	"perplexity": {
+		APIKeyEnvVar: "PERPLEXITY_API_KEY",
+		Factory: func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
+			p, err := perplexity.New(ctx, opts, wrapper)
+			if p == nil {
+				return nil, err
+			}
+			return p, err
+		},
 	},
-	"pollinations": func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-		p, err := pollinations.New(ctx, opts, wrapper)
-		if p == nil {
-			return nil, err
-		}
-		return p, err
+	"pollinations": {
+		APIKeyEnvVar: "POLLINATIONS_API_KEY",
+		Factory: func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
+			p, err := pollinations.New(ctx, opts, wrapper)
+			if p == nil {
+				return nil, err
+			}
+			return p, err
+		},
 	},
-	"togetherai": func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-		p, err := togetherai.New(ctx, opts, wrapper)
-		if p == nil {
-			return nil, err
-		}
-		return p, err
+	"togetherai": {
+		APIKeyEnvVar: "TOGETHER_API_KEY",
+		Factory: func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
+			p, err := togetherai.New(ctx, opts, wrapper)
+			if p == nil {
+				return nil, err
+			}
+			return p, err
+		},
 	},
 }
 
 // Available returns the factories that are valid.
 func Available(ctx context.Context) map[string]func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
 	avail := map[string]func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error){}
-	for name, f := range All {
-		if c, err := f(ctx, &genai.ProviderOptions{Model: genai.ModelNone}, nil); err == nil {
+	for name, cfg := range All {
+		if c, err := cfg.Factory(ctx, &genai.ProviderOptions{Model: genai.ModelNone}, nil); err == nil {
 			if p, ok := c.(genai.ProviderPing); ok {
 				if err = p.Ping(ctx); err != nil {
 					continue
 				}
 			}
-			avail[name] = f
+			avail[name] = cfg.Factory
 		}
 	}
 	return avail

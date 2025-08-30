@@ -1,0 +1,60 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 321
+    host: router.huggingface.co
+    body: "{\"model\":\"meta-llama/Llama-3.3-70B-Instruct\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"# Quackiland\\n\\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}],\"stream_options\":{\"include_usage\":true}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://router.huggingface.co/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"65315daa6ee08565f9a926097f27d0f0\",\"object\":\"chat.completion.chunk\",\"created\":1756559597,\"model\":\"meta-llama/llama-3.3-70b-instruct\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\"},\"finish_reason\":null,\"content_filter_results\":{\"hate\":{\"filtered\":false},\"self_harm\":{\"filtered\":false},\"sexual\":{\"filtered\":false},\"violence\":{\"filtered\":false},\"jailbreak\":{\"filtered\":false,\"detected\":false},\"profanity\":{\"filtered\":false,\"detected\":false}}}],\"system_fingerprint\":\"\",\"usage\":{\"prompt_tokens\":70,\"completion_tokens\":0,\"total_tokens\":70,\"prompt_tokens_details\":null,\"completion_tokens_details\":null},\"sla_metrics\":{\"ttft_ms\":462,\"ts_us\":1756559597218828}}\n\ndata: {\"id\":\"65315daa6ee08565f9a926097f27d0f0\",\"object\":\"chat.completion.chunk\",\"created\":1756559597,\"model\":\"meta-llama/llama-3.3-70b-instruct\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"The\"},\"finish_reason\":null,\"content_filter_results\":{\"hate\":{\"filtered\":false},\"self_harm\":{\"filtered\":false},\"sexual\":{\"filtered\":false},\"violence\":{\"filtered\":false},\"jailbreak\":{\"filtered\":false,\"detected\":false},\"profanity\":{\"filtered\":false,\"detected\":false}}}],\"system_fingerprint\":\"\",\"usage\":{\"prompt_tokens\":70,\"completion_tokens\":1,\"total_tokens\":71,\"prompt_tokens_details\":null,\"completion_tokens_details\":null},\"sla_metrics\":{\"ttft_ms\":462,\"ts_us\":1756559597218879}}\n\ndata: {\"id\":\"65315daa6ee08565f9a926097f27d0f0\",\"object\":\"chat.completion.chunk\",\"created\":1756559597,\"model\":\"meta-llama/llama-3.3-70b-instruct\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" capital\"},\"finish_reason\":null,\"content_filter_results\":{\"hate\":{\"filtered\":false},\"self_harm\":{\"filtered\":false},\"sexual\":{\"filtered\":false},\"violence\":{\"filtered\":false},\"jailbreak\":{\"filtered\":false,\"detected\":false},\"profanity\":{\"filtered\":false,\"detected\":false}}}],\"system_fingerprint\":\"\",\"usage\":{\"prompt_tokens\":70,\"completion_tokens\":2,\"total_tokens\":72,\"prompt_tokens_details\":null,\"completion_tokens_details\":null},\"sla_metrics\":{\"ttft_ms\":462,\"ts_us\":1756559597241181}}\n\ndata: {\"id\":\"65315daa6ee08565f9a926097f27d0f0\",\"object\":\"chat.completion.chunk\",\"created\":1756559597,\"model\":\"meta-llama/llama-3.3-70b-instruct\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" of\"},\"finish_reason\":null,\"content_filter_results\":{\"hate\":{\"filtered\":false},\"self_harm\":{\"filtered\":false},\"sexual\":{\"filtered\":false},\"violence\":{\"filtered\":false},\"jailbreak\":{\"filtered\":false,\"detected\":false},\"profanity\":{\"filtered\":false,\"detected\":false}}}],\"system_fingerprint\":\"\",\"usage\":{\"prompt_tokens\":70,\"completion_tokens\":3,\"total_tokens\":73,\"prompt_tokens_details\":null,\"completion_tokens_details\":null},\"sla_metrics\":{\"ttft_ms\":462,\"ts_us\":1756559597262312}}\n\ndata: {\"id\":\"65315daa6ee08565f9a926097f27d0f0\",\"object\":\"chat.completion.chunk\",\"created\":1756559597,\"model\":\"meta-llama/llama-3.3-70b-instruct\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" Qu\"},\"finish_reason\":null,\"content_filter_results\":{\"hate\":{\"filtered\":false},\"self_harm\":{\"filtered\":false},\"sexual\":{\"filtered\":false},\"violence\":{\"filtered\":false},\"jailbreak\":{\"filtered\":false,\"detected\":false},\"profanity\":{\"filtered\":false,\"detected\":false}}}],\"system_fingerprint\":\"\",\"usage\":{\"prompt_tokens\":70,\"completion_tokens\":4,\"total_tokens\":74,\"prompt_tokens_details\":null,\"completion_tokens_details\":null},\"sla_metrics\":{\"ttft_ms\":462,\"ts_us\":1756559597284957}}\n\ndata: {\"id\":\"65315daa6ee08565f9a926097f27d0f0\",\"object\":\"chat.completion.chunk\",\"created\":1756559597,\"model\":\"meta-llama/llama-3.3-70b-instruct\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"ack\"},\"finish_reason\":null,\"content_filter_results\":{\"hate\":{\"filtered\":false},\"self_harm\":{\"filtered\":false},\"sexual\":{\"filtered\":false},\"violence\":{\"filtered\":false},\"jailbreak\":{\"filtered\":false,\"detected\":false},\"profanity\":{\"filtered\":false,\"detected\":false}}}],\"system_fingerprint\":\"\",\"usage\":{\"prompt_tokens\":70,\"completion_tokens\":5,\"total_tokens\":75,\"prompt_tokens_details\":null,\"completion_tokens_details\":null},\"sla_metrics\":{\"ttft_ms\":462,\"ts_us\":1756559597306951}}\n\ndata: {\"id\":\"65315daa6ee08565f9a926097f27d0f0\",\"object\":\"chat.completion.chunk\",\"created\":1756559597,\"model\":\"meta-llama/llama-3.3-70b-instruct\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"iland\"},\"finish_reason\":null,\"content_filter_results\":{\"hate\":{\"filtered\":false},\"self_harm\":{\"filtered\":false},\"sexual\":{\"filtered\":false},\"violence\":{\"filtered\":false},\"jailbreak\":{\"filtered\":false,\"detected\":false},\"profanity\":{\"filtered\":false,\"detected\":false}}}],\"system_fingerprint\":\"\",\"usage\":{\"prompt_tokens\":70,\"completion_tokens\":6,\"total_tokens\":76,\"prompt_tokens_details\":null,\"completion_tokens_details\":null},\"sla_metrics\":{\"ttft_ms\":462,\"ts_us\":1756559597328372}}\n\ndata: {\"id\":\"65315daa6ee08565f9a926097f27d0f0\",\"object\":\"chat.completion.chunk\",\"created\":1756559597,\"model\":\"meta-llama/llama-3.3-70b-instruct\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" is\"},\"finish_reason\":null,\"content_filter_results\":{\"hate\":{\"filtered\":false},\"self_harm\":{\"filtered\":false},\"sexual\":{\"filtered\":false},\"violence\":{\"filtered\":false},\"jailbreak\":{\"filtered\":false,\"detected\":false},\"profanity\":{\"filtered\":false,\"detected\":false}}}],\"system_fingerprint\":\"\",\"usage\":{\"prompt_tokens\":70,\"completion_tokens\":7,\"total_tokens\":77,\"prompt_tokens_details\":null,\"completion_tokens_details\":null},\"sla_metrics\":{\"ttft_ms\":462,\"ts_us\":1756559597350951}}\n\ndata: {\"id\":\"65315daa6ee08565f9a926097f27d0f0\",\"object\":\"chat.completion.chunk\",\"created\":1756559597,\"model\":\"meta-llama/llama-3.3-70b-instruct\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" Qu\"},\"finish_reason\":null,\"content_filter_results\":{\"hate\":{\"filtered\":false},\"self_harm\":{\"filtered\":false},\"sexual\":{\"filtered\":false},\"violence\":{\"filtered\":false},\"jailbreak\":{\"filtered\":false,\"detected\":false},\"profanity\":{\"filtered\":false,\"detected\":false}}}],\"system_fingerprint\":\"\",\"usage\":{\"prompt_tokens\":70,\"completion_tokens\":8,\"total_tokens\":78,\"prompt_tokens_details\":null,\"completion_tokens_details\":null},\"sla_metrics\":{\"ttft_ms\":462,\"ts_us\":1756559597373041}}\n\ndata: {\"id\":\"65315daa6ee08565f9a926097f27d0f0\",\"object\":\"chat.completion.chunk\",\"created\":1756559597,\"model\":\"meta-llama/llama-3.3-70b-instruct\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"ack\"},\"finish_reason\":null,\"content_filter_results\":{\"hate\":{\"filtered\":false},\"self_harm\":{\"filtered\":false},\"sexual\":{\"filtered\":false},\"violence\":{\"filtered\":false},\"jailbreak\":{\"filtered\":false,\"detected\":false},\"profanity\":{\"filtered\":false,\"detected\":false}}}],\"system_fingerprint\":\"\",\"usage\":{\"prompt_tokens\":70,\"completion_tokens\":9,\"total_tokens\":79,\"prompt_tokens_details\":null,\"completion_tokens_details\":null},\"sla_metrics\":{\"ttft_ms\":462,\"ts_us\":1756559597395062}}\n\ndata: {\"id\":\"65315daa6ee08565f9a926097f27d0f0\",\"object\":\"chat.completion.chunk\",\"created\":1756559597,\"model\":\"meta-llama/llama-3.3-70b-instruct\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\".\"},\"finish_reason\":null,\"content_filter_results\":{\"hate\":{\"filtered\":false},\"self_harm\":{\"filtered\":false},\"sexual\":{\"filtered\":false},\"violence\":{\"filtered\":false},\"jailbreak\":{\"filtered\":false,\"detected\":false},\"profanity\":{\"filtered\":false,\"detected\":false}}}],\"system_fingerprint\":\"\",\"usage\":{\"prompt_tokens\":70,\"completion_tokens\":10,\"total_tokens\":80,\"prompt_tokens_details\":null,\"completion_tokens_details\":null},\"sla_metrics\":{\"ttft_ms\":462,\"ts_us\":1756559597415656}}\n\ndata: {\"id\":\"65315daa6ee08565f9a926097f27d0f0\",\"object\":\"chat.completion.chunk\",\"created\":1756559597,\"model\":\"meta-llama/llama-3.3-70b-instruct\",\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"stop\",\"content_filter_results\":{\"hate\":{\"filtered\":false},\"self_harm\":{\"filtered\":false},\"sexual\":{\"filtered\":false},\"violence\":{\"filtered\":false},\"jailbreak\":{\"filtered\":false,\"detected\":false},\"profanity\":{\"filtered\":false,\"detected\":false}}}],\"system_fingerprint\":\"\",\"usage\":{\"prompt_tokens\":70,\"completion_tokens\":11,\"total_tokens\":81,\"prompt_tokens_details\":null,\"completion_tokens_details\":null},\"sla_metrics\":{\"ttft_ms\":462,\"ts_us\":1756559597437700}}\n\ndata: {\"id\":\"65315daa6ee08565f9a926097f27d0f0\",\"object\":\"chat.completion.chunk\",\"created\":1756559597,\"model\":\"meta-llama/llama-3.3-70b-instruct\",\"choices\":[],\"system_fingerprint\":\"\",\"usage\":{\"prompt_tokens\":70,\"completion_tokens\":11,\"total_tokens\":81,\"prompt_tokens_details\":null,\"completion_tokens_details\":null},\"sla_metrics\":{\"ttft_ms\":462,\"ts_us\":1756559597437736}}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Expose-Headers:
+      - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+      Cache-Control:
+      - no-cache
+      Content-Type:
+      - text/event-stream
+      Cross-Origin-Opener-Policy:
+      - same-origin
+      Inference-Id:
+      - 0-0198fb1c-5cd4-7b8c-af79-0fb11789e60e
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Vary:
+      - Origin
+      Via:
+      - 1.1 81f76a57a3b40a803013e33a76a4e06e.cloudfront.net (CloudFront)
+      X-Amz-Cf-Id:
+      - VNCktVbIUN1qG5kPttDucZAaWX2ljlO8bnkVGE0gRZXa-vziuPEu0w==
+      X-Amz-Cf-Pop:
+      - YTO50-P1
+      X-Cache:
+      - Miss from cloudfront
+      X-Inference-Provider:
+      - novita
+      X-Powered-By:
+      - huggingface-moon
+      X-Request-Id:
+      - O1Gd1MflAaONVgQE
+      X-Robots-Tag:
+      - none
+      X-Trace-Id:
+      - 65315daa6ee08565f9a926097f27d0f0
+    status: 200 OK
+    code: 200
+    duration: 642ms

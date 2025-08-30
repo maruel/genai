@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 225
+    host: api.cerebras.ai
+    body: "{\"model\":\"llama-3.3-70b\",\"messages\":[{\"role\":\"user\",\"content\":\"# Quackiland\\n\\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"role\":\"user\",\"content\":\"What is the capital of Quackiland?\"}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cerebras.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-0af03126-1336-4554-af68-68ea37dd1a8f\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"The capital of Quackiland is Quack.\",\"role\":\"assistant\"}}],\"created\":1756559153,\"model\":\"llama-3.3-70b\",\"system_fingerprint\":\"fp_b92a3779805e66dbb198\",\"object\":\"chat.completion\",\"usage\":{\"prompt_tokens\":75,\"completion_tokens\":11,\"total_tokens\":86,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":0.00010593,\"prompt_time\":0.003082014,\"completion_time\":0.004728967,\"total_time\":0.009418964385986328,\"created\":1756559153}}"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 97748096c9a1a2a2-YUL
+      Content-Type:
+      - application/json
+      Inference-Id:
+      - chatcmpl-0af03126-1336-4554-af68-68ea37dd1a8f
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=3600; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Ratelimit-Limit-Requests-Day:
+      - "14400"
+      X-Ratelimit-Limit-Tokens-Minute:
+      - "64000"
+      X-Ratelimit-Remaining-Requests-Day:
+      - "14400"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "64000"
+      X-Ratelimit-Reset-Requests-Day:
+      - "39246.14652514458"
+      X-Ratelimit-Reset-Tokens-Minute:
+      - "6.146525144577026"
+      X-Request-Id:
+      - 97748096c9a1a2a2-YUL
+    status: 200 OK
+    code: 200
+    duration: 182ms

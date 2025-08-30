@@ -595,6 +595,14 @@ func (c *Content) FromRequest(in *genai.Request) error {
 			} else {
 				c.ImageURL = in.Doc.URL
 			}
+			// text/plain, text/markdown
+		case strings.HasPrefix(mimeType, "text/"):
+			// OpenAI responses API doesn't support text documents as attachment.
+			c.Type = ContentInputText
+			if in.Doc.URL != "" {
+				return fmt.Errorf("%s documents must be provided inline, not as a URL", mimeType)
+			}
+			c.Text = string(data)
 		default:
 			if in.Doc.URL != "" {
 				return fmt.Errorf("URL to %s file not supported", mimeType)
@@ -647,6 +655,14 @@ func (c *Content) FromReply(in *genai.Reply) error {
 			} else {
 				c.ImageURL = in.Doc.URL
 			}
+			// text/plain, text/markdown
+		case strings.HasPrefix(mimeType, "text/"):
+			// OpenAI responses API doesn't support text documents as attachment.
+			c.Type = ContentInputText
+			if in.Doc.URL != "" {
+				return fmt.Errorf("%s documents must be provided inline, not as a URL", mimeType)
+			}
+			c.Text = string(data)
 		default:
 			if in.Doc.URL != "" {
 				return fmt.Errorf("URL to %s file not supported", mimeType)

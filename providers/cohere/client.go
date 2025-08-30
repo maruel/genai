@@ -291,9 +291,10 @@ func (c *Content) FromRequest(in *genai.Request) (*Document, error) {
 				c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
 			}
 			return nil, nil
-		case strings.HasPrefix(mimeType, "text/plain"):
+			// text/plain, text/markdown
+		case strings.HasPrefix(mimeType, "text/"):
 			if in.Doc.URL != "" {
-				return nil, errors.New("text/plain documents must be provided inline, not as a URL")
+				return nil, fmt.Errorf("%s documents must be provided inline, not as a URL", mimeType)
 			}
 			name := in.Doc.GetFilename()
 			d := &Document{
@@ -329,9 +330,10 @@ func (c *Content) FromReply(in *genai.Reply) (*Document, error) {
 				c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
 			}
 			return nil, nil
-		case strings.HasPrefix(mimeType, "text/plain"):
+			// text/plain, text/markdown
+		case strings.HasPrefix(mimeType, "text/"):
 			if in.Doc.URL != "" {
-				return nil, errors.New("text/plain documents must be provided inline, not as a URL")
+				return nil, fmt.Errorf("%s documents must be provided inline, not as a URL", mimeType)
 			}
 			name := in.Doc.GetFilename()
 			d := &Document{

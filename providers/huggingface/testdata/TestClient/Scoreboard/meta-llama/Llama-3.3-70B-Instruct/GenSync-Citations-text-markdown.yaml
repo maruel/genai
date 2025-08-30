@@ -1,0 +1,60 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 282
+    host: router.huggingface.co
+    body: "{\"model\":\"meta-llama/Llama-3.3-70B-Instruct\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"# Quackiland\\n\\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://router.huggingface.co/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 654
+    body: "{\"id\":\"dbe9cc1df0d7380103fc0753b0692f5a\",\"object\":\"chat.completion\",\"created\":1756559596,\"model\":\"meta-llama/llama-3.3-70b-instruct\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"The capital of Quackiland is Quack.\"},\"finish_reason\":\"stop\",\"content_filter_results\":{\"hate\":{\"filtered\":false},\"self_harm\":{\"filtered\":false},\"sexual\":{\"filtered\":false},\"violence\":{\"filtered\":false},\"jailbreak\":{\"filtered\":false,\"detected\":false},\"profanity\":{\"filtered\":false,\"detected\":false}}}],\"usage\":{\"prompt_tokens\":70,\"completion_tokens\":11,\"total_tokens\":81,\"prompt_tokens_details\":null,\"completion_tokens_details\":null},\"system_fingerprint\":\"\"}\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Expose-Headers:
+      - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+      Content-Length:
+      - "654"
+      Content-Type:
+      - application/json
+      Cross-Origin-Opener-Policy:
+      - same-origin
+      Inference-Id:
+      - 0-0198fb1c-5cd5-72b9-b362-6bdcc2ac087a
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Vary:
+      - Origin
+      Via:
+      - 1.1 81f76a57a3b40a803013e33a76a4e06e.cloudfront.net (CloudFront)
+      X-Amz-Cf-Id:
+      - mOKf9BgeZ4c3CFH-NQKB1GbNQddoZc_TciRtZxcSg-s43q2BuMhTPw==
+      X-Amz-Cf-Pop:
+      - YTO50-P1
+      X-Cache:
+      - Miss from cloudfront
+      X-Inference-Provider:
+      - novita
+      X-Powered-By:
+      - huggingface-moon
+      X-Request-Id:
+      - X-vPtbyTBO3sqFSE
+      X-Robots-Tag:
+      - none
+      X-Trace-Id:
+      - dbe9cc1df0d7380103fc0753b0692f5a
+    status: 200 OK
+    code: 200
+    duration: 812ms

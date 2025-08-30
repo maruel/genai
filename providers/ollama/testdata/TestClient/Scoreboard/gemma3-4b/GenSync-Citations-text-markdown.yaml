@@ -1,0 +1,30 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 236
+    host: localhost
+    body: "{\"model\":\"gemma3:4b\",\"messages\":[{\"role\":\"user\",\"content\":\"# Quackiland\\n\\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"role\":\"user\",\"content\":\"What is the capital of Quackiland?\"}],\"stream\":false}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: http://localhost/api/chat
+    method: POST
+  response:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 333
+    body: "{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-30T13:18:44.924088425Z\",\"message\":{\"role\":\"assistant\",\"content\":\"The capital of Quackiland is Quack.\\n\"},\"done_reason\":\"stop\",\"done\":true,\"total_duration\":3116490046,\"load_duration\":1523471153,\"prompt_eval_count\":45,\"prompt_eval_duration\":46371980,\"eval_count\":12,\"eval_duration\":546506318}"
+    headers:
+      Content-Length:
+      - "333"
+      Content-Type:
+      - application/json; charset=utf-8
+    status: 200 OK
+    code: 200
+    duration: 3.117s

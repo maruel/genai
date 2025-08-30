@@ -1,0 +1,56 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 329
+    host: api.cohere.com
+    body: "{\"stream\":false,\"model\":\"command-r7b-12-2024\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}],\"documents\":[{\"id\":\"capital_info.md\",\"data\":{\"snippet\":\"# Quackiland\\n\\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\",\"title\":\"capital_info.md\"}}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cohere.com/v2/chat
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 588
+    body: "{\"id\":\"fa9c3b0d-8be6-40b1-9518-ffe74bab7c25\",\"message\":{\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"The capital of Quackiland is Quack.\"}],\"citations\":[{\"start\":29,\"end\":35,\"text\":\"Quack.\",\"sources\":[{\"type\":\"document\",\"id\":\"capital_info.md\",\"document\":{\"id\":\"capital_info.md\",\"snippet\":\"# Quackiland\\n\\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\",\"title\":\"capital_info.md\"}}],\"type\":\"TEXT_CONTENT\"}]},\"finish_reason\":\"COMPLETE\",\"usage\":{\"billed_units\":{\"input_tokens\":46,\"output_tokens\":10},\"tokens\":{\"input_tokens\":1690,\"output_tokens\":22}}}"
+    headers:
+      Access-Control-Expose-Headers:
+      - X-Debug-Trace-ID
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Cache-Control:
+      - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
+      Content-Length:
+      - "588"
+      Content-Type:
+      - application/json
+      Expires:
+      - Thu, 01 Jan 1970 00:00:00 GMT
+      Num_chars:
+      - "7903"
+      Num_tokens:
+      - "56"
+      Pragma:
+      - no-cache
+      Server:
+      - envoy
+      Vary:
+      - Origin
+      Via:
+      - 1.1 google
+      X-Accel-Expires:
+      - "0"
+      X-Debug-Trace-Id:
+      - 3626d7956b3775f80e943d78a2de11c7
+      X-Envoy-Upstream-Service-Time:
+      - "213"
+    status: 200 OK
+    code: 200
+    duration: 256ms

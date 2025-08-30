@@ -1,0 +1,45 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 291
+    host: generativelanguage.googleapis.com
+    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"text\":\"What is the capital of Quackiland?\"}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"**Here's how I'm approaching this:**\\n\\nOkay, so the user wants to know the capital of Quackiland.  My initial step is always to identify those crucial keywords – \\\"capital\\\" and \\\"Quackiland\\\" – to pinpoint the relevant information quickly.  I immediately started scanning the provided text, and right there in the very first sentence, I found it: \\\"The capital of Quackiland is Quack.\\\"  Perfect! It's right there, plain as day.\\n\\nSo, the next step is to formulate the answer concisely and directly.  I'll want to acknowledge the source text to demonstrate how I arrived at the solution. I'm going to respond with something like, \\\"Based on the information you provided, the capital of Quackiland is Quack.\\\"  That's straightforward, and it clearly answers the user's question.\\n\",\n            \"thought\": true\n          },\n          {\n            \"text\": \"Based on the information you provided, the capital of Quackiland is **Quack**.\"\n          }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\": \"STOP\",\n      \"index\": 0\n    }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\": 31,\n    \"candidatesTokenCount\": 18,\n    \"totalTokenCount\": 317,\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 31\n      }\n    ],\n    \"thoughtsTokenCount\": 268\n  },\n  \"modelVersion\": \"gemini-2.5-pro\",\n  \"responseId\": \"f_iyaPb8C-u3_uMP74j6yAg\"\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Type:
+      - application/json; charset=UTF-8
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=4547
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - "0"
+    status: 200 OK
+    code: 200
+    duration: 4.554s

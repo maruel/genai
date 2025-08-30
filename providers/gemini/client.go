@@ -514,10 +514,10 @@ func (p *Part) FromRequest(in *genai.Request) error {
 			if mimeType, data, err = in.Doc.Read(10 * 1024 * 1024); err != nil {
 				return err
 			}
-			if mimeType == "text/plain" {
-				// Gemini refuses text/plain as attachment.
+			// Gemini refuses text documents as attachment. WTF.
+			if strings.HasPrefix(mimeType, "text/") {
 				if in.Doc.URL != "" {
-					return fmt.Errorf("text/plain is not supported as inline data for URL %q", in.Doc.URL)
+					return fmt.Errorf("%s documents must be provided inline, not as a URL", mimeType)
 				}
 				p.Text = string(data)
 			} else {
@@ -572,10 +572,10 @@ func (p *Part) FromReply(in *genai.Reply) error {
 			if mimeType, data, err = in.Doc.Read(10 * 1024 * 1024); err != nil {
 				return err
 			}
-			if mimeType == "text/plain" {
-				// Gemini refuses text/plain as attachment.
+			// Gemini refuses text documents as attachment. WTF.
+			if strings.HasPrefix(mimeType, "text/") {
 				if in.Doc.URL != "" {
-					return fmt.Errorf("text/plain is not supported as inline data for URL %q", in.Doc.URL)
+					return fmt.Errorf("%s documents must be provided inline, not as a URL", mimeType)
 				}
 				p.Text = string(data)
 			} else {

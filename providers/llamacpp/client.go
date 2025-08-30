@@ -769,15 +769,16 @@ func (c *Content) FromRequest(in *genai.Request) (bool, error) {
 		return false, nil
 	}
 	if !in.Doc.IsZero() {
-		// Check if this is a text/plain document
+		// Check if this is a text document
 		mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
 		if err != nil {
 			return false, fmt.Errorf("failed to read document: %w", err)
 		}
 		switch {
-		case strings.HasPrefix(mimeType, "text/plain"):
+		// text/plain, text/markdown
+		case strings.HasPrefix(mimeType, "text/"):
 			if in.Doc.URL != "" {
-				return false, errors.New("text/plain documents must be provided inline, not as a URL")
+				return false, fmt.Errorf("%s documents must be provided inline, not as a URL", mimeType)
 			}
 			c.Type = "text"
 			c.Text = string(data)
@@ -819,15 +820,16 @@ func (c *Content) FromReply(in *genai.Reply) (bool, error) {
 		return false, nil
 	}
 	if !in.Doc.IsZero() {
-		// Check if this is a text/plain document
+		// Check if this is a text document
 		mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
 		if err != nil {
 			return false, fmt.Errorf("failed to read document: %w", err)
 		}
 		switch {
-		case strings.HasPrefix(mimeType, "text/plain"):
+		// text/plain, text/markdown
+		case strings.HasPrefix(mimeType, "text/"):
 			if in.Doc.URL != "" {
-				return false, errors.New("text/plain documents must be provided inline, not as a URL")
+				return false, fmt.Errorf("%s documents must be provided inline, not as a URL", mimeType)
 			}
 			c.Type = "text"
 			c.Text = string(data)

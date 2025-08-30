@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 309
+    host: text.pollinations.ai
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"# Quackiland\\n\\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}],\"model\":\"openai\",\"stream\":true,\"private\":true,\"stream_options\":{\"include_usage\":true}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://text.pollinations.ai/openai
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"choices\":[],\"created\":0,\"id\":\"\",\"model\":\"\",\"object\":\"\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"jailbreak\":{\"filtered\":false,\"detected\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}]}\n\ndata: {\"choices\":[{\"content_filter_results\":{},\"delta\":{\"content\":\"\",\"refusal\":null,\"role\":\"assistant\"},\"finish_reason\":null,\"index\":0,\"logprobs\":null}],\"created\":1756558247,\"id\":\"chatcmpl-CAFKZKj9oXMOcFy8vQXzdMARXbQyX\",\"model\":\"gpt-4.1-nano-2025-04-14\",\"object\":\"chat.completion.chunk\",\"system_fingerprint\":\"fp_368a354b49\"}\n\ndata: {\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"delta\":{\"content\":\"The\"},\"finish_reason\":null,\"index\":0,\"logprobs\":null}],\"created\":1756558247,\"id\":\"chatcmpl-CAFKZKj9oXMOcFy8vQXzdMARXbQyX\",\"model\":\"gpt-4.1-nano-2025-04-14\",\"object\":\"chat.completion.chunk\",\"system_fingerprint\":\"fp_368a354b49\"}\n\ndata: {\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"delta\":{\"content\":\" capital\"},\"finish_reason\":null,\"index\":0,\"logprobs\":null}],\"created\":1756558247,\"id\":\"chatcmpl-CAFKZKj9oXMOcFy8vQXzdMARXbQyX\",\"model\":\"gpt-4.1-nano-2025-04-14\",\"object\":\"chat.completion.chunk\",\"system_fingerprint\":\"fp_368a354b49\"}\n\ndata: {\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"delta\":{\"content\":\" of\"},\"finish_reason\":null,\"index\":0,\"logprobs\":null}],\"created\":1756558247,\"id\":\"chatcmpl-CAFKZKj9oXMOcFy8vQXzdMARXbQyX\",\"model\":\"gpt-4.1-nano-2025-04-14\",\"object\":\"chat.completion.chunk\",\"system_fingerprint\":\"fp_368a354b49\"}\n\ndata: {\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"delta\":{\"content\":\" Qu\"},\"finish_reason\":null,\"index\":0,\"logprobs\":null}],\"created\":1756558247,\"id\":\"chatcmpl-CAFKZKj9oXMOcFy8vQXzdMARXbQyX\",\"model\":\"gpt-4.1-nano-2025-04-14\",\"object\":\"chat.completion.chunk\",\"system_fingerprint\":\"fp_368a354b49\"}\n\ndata: {\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"delta\":{\"content\":\"ack\"},\"finish_reason\":null,\"index\":0,\"logprobs\":null}],\"created\":1756558247,\"id\":\"chatcmpl-CAFKZKj9oXMOcFy8vQXzdMARXbQyX\",\"model\":\"gpt-4.1-nano-2025-04-14\",\"object\":\"chat.completion.chunk\",\"system_fingerprint\":\"fp_368a354b49\"}\n\ndata: {\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"delta\":{\"content\":\"iland\"},\"finish_reason\":null,\"index\":0,\"logprobs\":null}],\"created\":1756558247,\"id\":\"chatcmpl-CAFKZKj9oXMOcFy8vQXzdMARXbQyX\",\"model\":\"gpt-4.1-nano-2025-04-14\",\"object\":\"chat.completion.chunk\",\"system_fingerprint\":\"fp_368a354b49\"}\n\ndata: {\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"delta\":{\"content\":\" is\"},\"finish_reason\":null,\"index\":0,\"logprobs\":null}],\"created\":1756558247,\"id\":\"chatcmpl-CAFKZKj9oXMOcFy8vQXzdMARXbQyX\",\"model\":\"gpt-4.1-nano-2025-04-14\",\"object\":\"chat.completion.chunk\",\"system_fingerprint\":\"fp_368a354b49\"}\n\ndata: {\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"delta\":{\"content\":\" Qu\"},\"finish_reason\":null,\"index\":0,\"logprobs\":null}],\"created\":1756558247,\"id\":\"chatcmpl-CAFKZKj9oXMOcFy8vQXzdMARXbQyX\",\"model\":\"gpt-4.1-nano-2025-04-14\",\"object\":\"chat.completion.chunk\",\"system_fingerprint\":\"fp_368a354b49\"}\n\ndata: {\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"delta\":{\"content\":\"ack\"},\"finish_reason\":null,\"index\":0,\"logprobs\":null}],\"created\":1756558247,\"id\":\"chatcmpl-CAFKZKj9oXMOcFy8vQXzdMARXbQyX\",\"model\":\"gpt-4.1-nano-2025-04-14\",\"object\":\"chat.completion.chunk\",\"system_fingerprint\":\"fp_368a354b49\"}\n\ndata: {\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"delta\":{\"content\":\".\"},\"finish_reason\":null,\"index\":0,\"logprobs\":null}],\"created\":1756558247,\"id\":\"chatcmpl-CAFKZKj9oXMOcFy8vQXzdMARXbQyX\",\"model\":\"gpt-4.1-nano-2025-04-14\",\"object\":\"chat.completion.chunk\",\"system_fingerprint\":\"fp_368a354b49\"}\n\ndata: {\"choices\":[{\"content_filter_results\":{},\"delta\":{},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null}],\"created\":1756558247,\"id\":\"chatcmpl-CAFKZKj9oXMOcFy8vQXzdMARXbQyX\",\"model\":\"gpt-4.1-nano-2025-04-14\",\"object\":\"chat.completion.chunk\",\"system_fingerprint\":\"fp_368a354b49\"}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 97746a6c5f1ea2c6-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=0; includeSubDomains; preload
+      Vary:
+      - Accept-Encoding
+      X-Cache:
+      - MISS
+      X-Cache-Key:
+      - 14cd84d74044ebcfec344caa20e3deb0a8162700835c58c814e48e0e71e977f8
+      X-Content-Type-Options:
+      - nosniff
+      X-Powered-By:
+      - Express
+    status: 200 OK
+    code: 200
+    duration: 1.816s

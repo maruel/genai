@@ -557,16 +557,17 @@ func (c *Content) FromRequest(in *genai.Request) error {
 				c.Source.Type = SourceBase64
 				c.Source.Data = base64.StdEncoding.EncodeToString(data)
 			}
-		case strings.HasPrefix(mimeType, "text/plain"):
+			// text/plain, text/markdown
+		case strings.HasPrefix(mimeType, "text/"):
 			c.Type = ContentDocument
 			if in.Doc.URL != "" {
-				return errors.New("text/plain documents must be provided inline, not as a URL")
+				return fmt.Errorf("%s documents must be provided inline, not as a URL", mimeType)
 			}
-			// In particular, the API refuses "text/plain; charset=utf-8". WTF.
+			// In particular, the API refuses "text/plain; charset=utf-8" or "text/markdown". WTF.
 			c.Source.MediaType = "text/plain"
 			c.Source.Type = SourceText
 			c.Source.Data = string(data)
-			// Enable citations for text/plain documents
+			// Enable citations for text documents
 			c.Citations = Citations{Enabled: true}
 		default:
 			return fmt.Errorf("unsupported content mime-type %s", mimeType)
@@ -643,16 +644,17 @@ func (c *Content) FromReply(in *genai.Reply) error {
 				c.Source.Type = SourceBase64
 				c.Source.Data = base64.StdEncoding.EncodeToString(data)
 			}
-		case strings.HasPrefix(mimeType, "text/plain"):
+			// text/plain, text/markdown
+		case strings.HasPrefix(mimeType, "text/"):
 			c.Type = ContentDocument
 			if in.Doc.URL != "" {
-				return errors.New("text/plain documents must be provided inline, not as a URL")
+				return fmt.Errorf("%s documents must be provided inline, not as a URL", mimeType)
 			}
-			// In particular, the API refuses "text/plain; charset=utf-8". WTF.
+			// In particular, the API refuses "text/plain; charset=utf-8" or "text/markdown". WTF.
 			c.Source.MediaType = "text/plain"
 			c.Source.Type = SourceText
 			c.Source.Data = string(data)
-			// Enable citations for text/plain documents
+			// Enable citations for text documents
 			c.Citations = Citations{Enabled: true}
 		default:
 			return fmt.Errorf("unsupported content mime-type %s", mimeType)

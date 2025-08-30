@@ -208,15 +208,16 @@ func (m *Message) From(in *genai.Message) error {
 		if in.Requests[i].Text != "" {
 			m.Content = append(m.Content, Content{Type: "text", Text: in.Requests[i].Text})
 		} else if !in.Requests[i].Doc.IsZero() {
-			// Check if this is a text/plain document
+			// Check if this is a text document
 			mimeType, data, err := in.Requests[i].Doc.Read(10 * 1024 * 1024)
 			if err != nil {
 				return fmt.Errorf("request #%d: failed to read document: %w", i, err)
 			}
 			switch {
-			case strings.HasPrefix(mimeType, "text/plain"):
+			// text/plain, text/markdown
+			case strings.HasPrefix(mimeType, "text/"):
 				if in.Requests[i].Doc.URL != "" {
-					return fmt.Errorf("request #%d: text/plain documents must be provided inline, not as a URL", i)
+					return fmt.Errorf("request #%d: %s documents must be provided inline, not as a URL", i, mimeType)
 				}
 				m.Content = append(m.Content, Content{Type: "text", Text: string(data)})
 			case strings.HasPrefix(mimeType, "image/"):
@@ -228,7 +229,7 @@ func (m *Message) From(in *genai.Message) error {
 				}
 				m.Content = append(m.Content, c)
 			default:
-				return fmt.Errorf("request #%d: perplexity only supports text/plain documents, got %s", i, mimeType)
+				return fmt.Errorf("request #%d: perplexity only supports text documents, got %s", i, mimeType)
 			}
 		} else {
 			return fmt.Errorf("request #%d: unknown Request type", i)
@@ -241,15 +242,16 @@ func (m *Message) From(in *genai.Message) error {
 		if in.Replies[i].Text != "" {
 			m.Content = append(m.Content, Content{Type: "text", Text: in.Replies[i].Text})
 		} else if !in.Requests[i].Doc.IsZero() {
-			// Check if this is a text/plain document
+			// Check if this is a text document
 			mimeType, data, err := in.Replies[i].Doc.Read(10 * 1024 * 1024)
 			if err != nil {
 				return fmt.Errorf("reply #%d: failed to read document: %w", i, err)
 			}
 			switch {
-			case strings.HasPrefix(mimeType, "text/plain"):
+			// text/plain, text/markdown
+			case strings.HasPrefix(mimeType, "text/"):
 				if in.Replies[i].Doc.URL != "" {
-					return fmt.Errorf("reply #%d: text/plain documents must be provided inline, not as a URL", i)
+					return fmt.Errorf("reply #%d: %s documents must be provided inline, not as a URL", i, mimeType)
 				}
 				m.Content = append(m.Content, Content{Type: "text", Text: string(data)})
 			case strings.HasPrefix(mimeType, "image/"):
@@ -261,7 +263,7 @@ func (m *Message) From(in *genai.Message) error {
 				}
 				m.Content = append(m.Content, c)
 			default:
-				return fmt.Errorf("reply #%d: perplexity only supports text/plain documents, got %s", i, mimeType)
+				return fmt.Errorf("reply #%d: perplexity only supports text documents, got %s", i, mimeType)
 			}
 		} else {
 			return fmt.Errorf("reply #%d: unknown Reply type", i)
@@ -344,6 +346,7 @@ type ChatResponse struct {
 		Title       string `json:"title"`
 		URL         string `json:"url"`          // URL to the search result
 		LastUpdated string `json:"last_updated"` // YYYY-MM-DD
+		Snippet     string `json:"snippet"`      // TODO: Add!
 	} `json:"search_results"`
 	Usage Usage `json:"usage"`
 }

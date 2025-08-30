@@ -114,9 +114,10 @@ func (i *ImageRequest) Init(msgs genai.Messages, model string, opts ...genai.Opt
 				return fmt.Errorf("failed to read document: %w", err)
 			}
 			switch {
-			case strings.HasPrefix(mimeType, "text/plain"):
+			// text/plain, text/markdown
+			case strings.HasPrefix(mimeType, "text/"):
 				if r.Doc.URL != "" {
-					return errors.New("text/plain documents must be provided inline, not as a URL")
+					return fmt.Errorf("%s documents must be provided inline, not as a URL", mimeType)
 				}
 				// Convert document content to text content.
 				r.Text = string(data)
@@ -140,7 +141,7 @@ func (i *ImageRequest) Init(msgs genai.Messages, model string, opts ...genai.Opt
 				}
 				r.Doc = genai.Doc{}
 			default:
-				return errors.New("only text and text/plain documents can be passed as input")
+				return errors.New("only text and text documents can be passed as input")
 			}
 			continue
 		}

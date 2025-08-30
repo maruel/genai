@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 329
+    host: api.openai.com
+    body: "{\"model\":\"gpt-4.1\",\"background\":false,\"reasoning\":{\"summary\":\"auto\"},\"store\":false,\"input\":[{\"type\":\"message\",\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"input_text\",\"text\":\"What is the capital of Quackiland?\"}]}],\"stream\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.openai.com/v1/responses
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "event: response.created\ndata: {\"type\":\"response.created\",\"sequence_number\":0,\"response\":{\"id\":\"resp_68b2fbcc44508194bb5dc657d3192c330f6cddec2ad6ce90\",\"object\":\"response\",\"created_at\":1756560332,\"status\":\"in_progress\",\"background\":false,\"error\":null,\"incomplete_details\":null,\"instructions\":null,\"max_output_tokens\":null,\"max_tool_calls\":null,\"model\":\"gpt-4.1-2025-04-14\",\"output\":[],\"parallel_tool_calls\":true,\"previous_response_id\":null,\"prompt_cache_key\":null,\"reasoning\":{\"effort\":null,\"summary\":null},\"safety_identifier\":null,\"service_tier\":\"auto\",\"store\":false,\"temperature\":1.0,\"text\":{\"format\":{\"type\":\"text\"},\"verbosity\":\"medium\"},\"tool_choice\":\"auto\",\"tools\":[],\"top_logprobs\":0,\"top_p\":1.0,\"truncation\":\"disabled\",\"usage\":null,\"user\":null,\"metadata\":{}}}\n\nevent: response.in_progress\ndata: {\"type\":\"response.in_progress\",\"sequence_number\":1,\"response\":{\"id\":\"resp_68b2fbcc44508194bb5dc657d3192c330f6cddec2ad6ce90\",\"object\":\"response\",\"created_at\":1756560332,\"status\":\"in_progress\",\"background\":false,\"error\":null,\"incomplete_details\":null,\"instructions\":null,\"max_output_tokens\":null,\"max_tool_calls\":null,\"model\":\"gpt-4.1-2025-04-14\",\"output\":[],\"parallel_tool_calls\":true,\"previous_response_id\":null,\"prompt_cache_key\":null,\"reasoning\":{\"effort\":null,\"summary\":null},\"safety_identifier\":null,\"service_tier\":\"auto\",\"store\":false,\"temperature\":1.0,\"text\":{\"format\":{\"type\":\"text\"},\"verbosity\":\"medium\"},\"tool_choice\":\"auto\",\"tools\":[],\"top_logprobs\":0,\"top_p\":1.0,\"truncation\":\"disabled\",\"usage\":null,\"user\":null,\"metadata\":{}}}\n\nevent: response.output_item.added\ndata: {\"type\":\"response.output_item.added\",\"sequence_number\":2,\"output_index\":0,\"item\":{\"id\":\"msg_68b2fbccfbfc8194aee61696ff8b895f0f6cddec2ad6ce90\",\"type\":\"message\",\"status\":\"in_progress\",\"content\":[],\"role\":\"assistant\"}}\n\nevent: response.content_part.added\ndata: {\"type\":\"response.content_part.added\",\"sequence_number\":3,\"item_id\":\"msg_68b2fbccfbfc8194aee61696ff8b895f0f6cddec2ad6ce90\",\"output_index\":0,\"content_index\":0,\"part\":{\"type\":\"output_text\",\"annotations\":[],\"logprobs\":[],\"text\":\"\"}}\n\nevent: response.output_text.delta\ndata: {\"type\":\"response.output_text.delta\",\"sequence_number\":4,\"item_id\":\"msg_68b2fbccfbfc8194aee61696ff8b895f0f6cddec2ad6ce90\",\"output_index\":0,\"content_index\":0,\"delta\":\"The\",\"logprobs\":[],\"obfuscation\":\"707CCtIjMWJKm\"}\n\nevent: response.output_text.delta\ndata: {\"type\":\"response.output_text.delta\",\"sequence_number\":5,\"item_id\":\"msg_68b2fbccfbfc8194aee61696ff8b895f0f6cddec2ad6ce90\",\"output_index\":0,\"content_index\":0,\"delta\":\" capital\",\"logprobs\":[],\"obfuscation\":\"bsoL2xG2\"}\n\nevent: response.output_text.delta\ndata: {\"type\":\"response.output_text.delta\",\"sequence_number\":6,\"item_id\":\"msg_68b2fbccfbfc8194aee61696ff8b895f0f6cddec2ad6ce90\",\"output_index\":0,\"content_index\":0,\"delta\":\" of\",\"logprobs\":[],\"obfuscation\":\"7b1gBuFxVzbj2\"}\n\nevent: response.output_text.delta\ndata: {\"type\":\"response.output_text.delta\",\"sequence_number\":7,\"item_id\":\"msg_68b2fbccfbfc8194aee61696ff8b895f0f6cddec2ad6ce90\",\"output_index\":0,\"content_index\":0,\"delta\":\" Qu\",\"logprobs\":[],\"obfuscation\":\"zFKD6MSKatOs6\"}\n\nevent: response.output_text.delta\ndata: {\"type\":\"response.output_text.delta\",\"sequence_number\":8,\"item_id\":\"msg_68b2fbccfbfc8194aee61696ff8b895f0f6cddec2ad6ce90\",\"output_index\":0,\"content_index\":0,\"delta\":\"ack\",\"logprobs\":[],\"obfuscation\":\"wl4BJoJFg3KAQ\"}\n\nevent: response.output_text.delta\ndata: {\"type\":\"response.output_text.delta\",\"sequence_number\":9,\"item_id\":\"msg_68b2fbccfbfc8194aee61696ff8b895f0f6cddec2ad6ce90\",\"output_index\":0,\"content_index\":0,\"delta\":\"iland\",\"logprobs\":[],\"obfuscation\":\"QQC2nxQFZPh\"}\n\nevent: response.output_text.delta\ndata: {\"type\":\"response.output_text.delta\",\"sequence_number\":10,\"item_id\":\"msg_68b2fbccfbfc8194aee61696ff8b895f0f6cddec2ad6ce90\",\"output_index\":0,\"content_index\":0,\"delta\":\" is\",\"logprobs\":[],\"obfuscation\":\"oPGAy5MeLGuA7\"}\n\nevent: response.output_text.delta\ndata: {\"type\":\"response.output_text.delta\",\"sequence_number\":11,\"item_id\":\"msg_68b2fbccfbfc8194aee61696ff8b895f0f6cddec2ad6ce90\",\"output_index\":0,\"content_index\":0,\"delta\":\" **\",\"logprobs\":[],\"obfuscation\":\"MBl2t0lA6akBW\"}\n\nevent: response.output_text.delta\ndata: {\"type\":\"response.output_text.delta\",\"sequence_number\":12,\"item_id\":\"msg_68b2fbccfbfc8194aee61696ff8b895f0f6cddec2ad6ce90\",\"output_index\":0,\"content_index\":0,\"delta\":\"Qu\",\"logprobs\":[],\"obfuscation\":\"rz46tD6C7iLHoM\"}\n\nevent: response.output_text.delta\ndata: {\"type\":\"response.output_text.delta\",\"sequence_number\":13,\"item_id\":\"msg_68b2fbccfbfc8194aee61696ff8b895f0f6cddec2ad6ce90\",\"output_index\":0,\"content_index\":0,\"delta\":\"ack\",\"logprobs\":[],\"obfuscation\":\"63FHYYCf9WUgo\"}\n\nevent: response.output_text.delta\ndata: {\"type\":\"response.output_text.delta\",\"sequence_number\":14,\"item_id\":\"msg_68b2fbccfbfc8194aee61696ff8b895f0f6cddec2ad6ce90\",\"output_index\":0,\"content_index\":0,\"delta\":\"**\",\"logprobs\":[],\"obfuscation\":\"lVGW1bRgnejjzQ\"}\n\nevent: response.output_text.delta\ndata: {\"type\":\"response.output_text.delta\",\"sequence_number\":15,\"item_id\":\"msg_68b2fbccfbfc8194aee61696ff8b895f0f6cddec2ad6ce90\",\"output_index\":0,\"content_index\":0,\"delta\":\".\",\"logprobs\":[],\"obfuscation\":\"Ys7Rz9Cowri4Qyl\"}\n\nevent: response.output_text.done\ndata: {\"type\":\"response.output_text.done\",\"sequence_number\":16,\"item_id\":\"msg_68b2fbccfbfc8194aee61696ff8b895f0f6cddec2ad6ce90\",\"output_index\":0,\"content_index\":0,\"text\":\"The capital of Quackiland is **Quack**.\",\"logprobs\":[]}\n\nevent: response.content_part.done\ndata: {\"type\":\"response.content_part.done\",\"sequence_number\":17,\"item_id\":\"msg_68b2fbccfbfc8194aee61696ff8b895f0f6cddec2ad6ce90\",\"output_index\":0,\"content_index\":0,\"part\":{\"type\":\"output_text\",\"annotations\":[],\"logprobs\":[],\"text\":\"The capital of Quackiland is **Quack**.\"}}\n\nevent: response.output_item.done\ndata: {\"type\":\"response.output_item.done\",\"sequence_number\":18,\"output_index\":0,\"item\":{\"id\":\"msg_68b2fbccfbfc8194aee61696ff8b895f0f6cddec2ad6ce90\",\"type\":\"message\",\"status\":\"completed\",\"content\":[{\"type\":\"output_text\",\"annotations\":[],\"logprobs\":[],\"text\":\"The capital of Quackiland is **Quack**.\"}],\"role\":\"assistant\"}}\n\nevent: response.completed\ndata: {\"type\":\"response.completed\",\"sequence_number\":19,\"response\":{\"id\":\"resp_68b2fbcc44508194bb5dc657d3192c330f6cddec2ad6ce90\",\"object\":\"response\",\"created_at\":1756560332,\"status\":\"completed\",\"background\":false,\"error\":null,\"incomplete_details\":null,\"instructions\":null,\"max_output_tokens\":null,\"max_tool_calls\":null,\"model\":\"gpt-4.1-2025-04-14\",\"output\":[{\"id\":\"msg_68b2fbccfbfc8194aee61696ff8b895f0f6cddec2ad6ce90\",\"type\":\"message\",\"status\":\"completed\",\"content\":[{\"type\":\"output_text\",\"annotations\":[],\"logprobs\":[],\"text\":\"The capital of Quackiland is **Quack**.\"}],\"role\":\"assistant\"}],\"parallel_tool_calls\":true,\"previous_response_id\":null,\"prompt_cache_key\":null,\"reasoning\":{\"effort\":null,\"summary\":null},\"safety_identifier\":null,\"service_tier\":\"default\",\"store\":false,\"temperature\":1.0,\"text\":{\"format\":{\"type\":\"text\"},\"verbosity\":\"medium\"},\"tool_choice\":\"auto\",\"tools\":[],\"top_logprobs\":0,\"top_p\":1.0,\"truncation\":\"disabled\",\"usage\":{\"input_tokens\":36,\"input_tokens_details\":{\"cached_tokens\":0},\"output_tokens\":13,\"output_tokens_details\":{\"reasoning_tokens\":0},\"total_tokens\":49},\"user\":null,\"metadata\":{}}}\n\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 97749d5c4df8a29e-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Openai-Organization:
+      - user-vtmtcvpbctksjfewktqdl2sw
+      Openai-Processing-Ms:
+      - "74"
+      Openai-Project:
+      - proj_tH6hQUFvA4Bx6SyAb23zzLEg
+      Openai-Version:
+      - "2020-10-01"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "80"
+      X-Request-Id:
+      - req_e5ef6381e0892480cefed0763421c164
+    status: 200 OK
+    code: 200
+    duration: 182ms

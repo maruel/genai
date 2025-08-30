@@ -1,0 +1,45 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 244
+    host: api.deepseek.com
+    body: "{\"model\":\"deepseek-reasoner\",\"messages\":[{\"role\":\"user\",\"content\":\"# Quackiland\\n\\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"role\":\"user\",\"content\":\"What is the capital of Quackiland?\"}],\"stream\":false}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.deepseek.com/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"0bfcbc23-9a4c-426b-9b73-b31cfba5cf8d\",\"object\":\"chat.completion\",\"created\":1756559321,\"model\":\"deepseek-reasoner\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"Based on the information you provided, the capital of Quackiland is Quack. This is confirmed by your statement that the Big Canard Statue is located in Quack, which aligns with Quack being the capital city. If you have any more questions about Quackiland, feel free to ask!\",\"reasoning_content\":\"First, the user says: \\\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\\\" Then they ask: \\\"What is the capital of Quackiland?\\\"\\n\\nFrom the first sentence, it directly states that the capital is Quack. So, the answer should be straightforward. The mention of the Big Canard Statue seems like extra information, but it reinforces that Quack is a place, probably the capital city.\\n\\nI need to respond helpfully. Since the answer is already given in the query, I should just confirm it.\\n\\nFinal answer: The capital of Quackiland is Quack.\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":40,\"completion_tokens\":194,\"total_tokens\":234,\"prompt_tokens_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":131},\"prompt_cache_hit_tokens\":0,\"prompt_cache_miss_tokens\":40},\"system_fingerprint\":\"fp_feb633d1f5_prod0820_fp8_kvcache\"}"
+    headers:
+      Access-Control-Allow-Credentials:
+      - "true"
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 977484ae2f04a1fc-YYZ
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Vary:
+      - origin, access-control-request-method, access-control-request-headers
+      X-Content-Type-Options:
+      - nosniff
+      X-Ds-Trace-Id:
+      - a259c1fafd43d4fb0d350f331896322d
+    status: 200 OK
+    code: 200
+    duration: 473ms

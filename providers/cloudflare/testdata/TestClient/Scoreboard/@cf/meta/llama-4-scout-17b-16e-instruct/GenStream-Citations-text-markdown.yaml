@@ -1,0 +1,40 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 215
+    host: api.cloudflare.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"# Quackiland\\n\\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"role\":\"user\",\"content\":\"What is the capital of Quackiland?\"}],\"stream\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/meta/llama-4-scout-17b-16e-instruct
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"response\":\"\",\"tool_calls\":[],\"p\":\"abdefg\"}\n\ndata: {\"response\":\"The\",\"tool_calls\":[],\"p\":\"abdefghijklmnoprstuvxyz123456789\"}\n\ndata: {\"response\":\" capital\",\"tool_calls\":[],\"p\":\"abdefghijk\"}\n\ndata: {\"response\":\" of\",\"tool_calls\":[],\"p\":\"abdefghijklmnoprstuvxyz1234567890\"}\n\ndata: {\"response\":\" Qu\",\"tool_calls\":[],\"p\":\"abdefghijklmnoprstuvxyz1234567890abde\"}\n\ndata: {\"response\":\"ack\",\"tool_calls\":[],\"p\":\"abdefghijklmnoprstuvxyz1234567890abde\"}\n\ndata: {\"response\":\"iland\",\"tool_calls\":[],\"p\":\"abdefghijklmn\"}\n\ndata: {\"response\":\" is\",\"tool_calls\":[],\"p\":\"abdefghijklmnoprstuvxyz1234567890abdefghijklmnopr\"}\n\ndata: {\"response\":\" Qu\",\"tool_calls\":[],\"p\":\"abdefghijklmnoprstuvxyz123456789\"}\n\ndata: {\"response\":\"ack\",\"tool_calls\":[],\"p\":\"abdefghijklmnoprstuvxyz1234567890abdefghijklmnoprs\"}\n\ndata: {\"response\":\".\",\"tool_calls\":[],\"p\":\"abdefghijklmnoprstuvxyz1234567890\"}\n\ndata: {\"response\":\"\",\"tool_calls\":[],\"p\":\"abdefghijkl\"}\n\ndata: {\"tool_calls\":[],\"p\":\"abdefghijklmno\"}\n\ndata: {\"response\":\"\",\"usage\":{\"prompt_tokens\":119,\"completion_tokens\":11,\"total_tokens\":130}}\n\ndata: [DONE]\n\n"
+    headers:
+      Api-Version:
+      - "2025-08-30"
+      Cf-Ai-Req-Id:
+      - fead1dc4-8f33-4974-822b-992b36e6cf86
+      Cf-Auditlog-Id:
+      - 0198fb16-a977-71cc-8590-f990d5c0d972
+      Cf-Ray:
+      - 977482489d25a226-YYZ
+      Content-Type:
+      - text/event-stream
+      Server:
+      - cloudflare
+      Vary:
+      - Accept-Encoding
+    status: 200 OK
+    code: 200
+    duration: 1.189s

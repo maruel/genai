@@ -187,16 +187,17 @@ func (m *Message) From(in *genai.Message) error {
 			if in.Requests[i].Text != "" {
 				m.Content = append(m.Content, Content{Type: ContentText, Text: in.Requests[i].Text})
 			} else if !in.Requests[i].Doc.IsZero() {
-				// Check if this is a text/plain document
+				// Check if this is a text document
 				mimeType, data, err := in.Requests[i].Doc.Read(10 * 1024 * 1024)
 				if err != nil {
 					return fmt.Errorf("request #%d: failed to read document: %w", i, err)
 				}
-				if !strings.HasPrefix(mimeType, "text/plain") {
-					return fmt.Errorf("request #%d: openaicompatible only supports text/plain documents, got %s", i, mimeType)
+				// text/plain, text/markdown
+				if !strings.HasPrefix(mimeType, "text/") {
+					return fmt.Errorf("request #%d: openaicompatible only supports text documents, got %s", i, mimeType)
 				}
 				if in.Requests[i].Doc.URL != "" {
-					return fmt.Errorf("request #%d: text/plain documents must be provided inline, not as a URL", i)
+					return fmt.Errorf("request #%d: %s documents must be provided inline, not as a URL", i, mimeType)
 				}
 				m.Content = append(m.Content, Content{Type: ContentText, Text: string(data)})
 			} else {
@@ -212,16 +213,17 @@ func (m *Message) From(in *genai.Message) error {
 			} else if in.Replies[i].Reasoning != "" {
 				// Ignore
 			} else if !in.Replies[i].Doc.IsZero() {
-				// Check if this is a text/plain document
+				// Check if this is a text document
 				mimeType, data, err := in.Replies[i].Doc.Read(10 * 1024 * 1024)
 				if err != nil {
 					return fmt.Errorf("reply #%d: failed to read document: %w", i, err)
 				}
-				if !strings.HasPrefix(mimeType, "text/plain") {
-					return fmt.Errorf("reply #%d: openaicompatible only supports text/plain documents, got %s", i, mimeType)
+				// text/plain, text/markdown
+				if !strings.HasPrefix(mimeType, "text/") {
+					return fmt.Errorf("reply #%d: openaicompatible only supports text documents, got %s", i, mimeType)
 				}
 				if in.Replies[i].Doc.URL != "" {
-					return fmt.Errorf("reply #%d: text/plain documents must be provided inline, not as a URL", i)
+					return fmt.Errorf("reply #%d: %s documents must be provided inline, not as a URL", i, mimeType)
 				}
 				m.Content = append(m.Content, Content{Type: ContentText, Text: string(data)})
 			} else {

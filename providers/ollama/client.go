@@ -262,9 +262,10 @@ func (m *Message) From(in *genai.Message) error {
 					return errors.New("url are not supported for images")
 				}
 				m.Images = append(m.Images, data)
-			case strings.HasPrefix(mimeType, "text/plain"):
+				// text/plain, text/markdown
+			case strings.HasPrefix(mimeType, "text/"):
 				if in.Requests[0].Doc.URL != "" {
-					return errors.New("text/plain documents must be provided inline, not as a URL")
+					return fmt.Errorf("%s documents must be provided inline, not as a URL", mimeType)
 				}
 				// Append text/plain document content to the message content
 				if m.Content != "" {
@@ -296,11 +297,12 @@ func (m *Message) From(in *genai.Message) error {
 					return fmt.Errorf("reply #%d: url are not supported for images", i)
 				}
 				m.Images = append(m.Images, data)
-			case strings.HasPrefix(mimeType, "text/plain"):
+				// text/plain, text/markdown
+			case strings.HasPrefix(mimeType, "text/"):
 				if in.Replies[i].Doc.URL != "" {
-					return fmt.Errorf("reply #%d: text/plain documents must be provided inline, not as a URL", i)
+					return fmt.Errorf("reply #%d: %s documents must be provided inline, not as a URL", i, mimeType)
 				}
-				// Append text/plain document content to the message content
+				// Append text document content to the message content
 				if m.Content != "" {
 					m.Content += "\n" + string(data)
 				} else {

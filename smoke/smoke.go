@@ -397,6 +397,7 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 
 	// Citations
 	// Force triggering citations for a document provided.
+	hasCitations := false
 	msgs = genai.Messages{
 		genai.Message{
 			Requests: []genai.Request{
@@ -410,7 +411,50 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 			},
 		},
 	}
-	resp, err = cs.callGen(ctx, prefix+"Citations", msgs)
+	resp, err = cs.callGen(ctx, prefix+"Citations-text-plain", msgs)
+	if isBadError(ctx, err) {
+		return f, err
+	}
+	if errors.As(err, &uerr) {
+		// Cheap trick to make sure the error is not wrapped. Figure out if there's another way!
+		if strings.HasPrefix(err.Error(), "unsupported options: ") {
+			err = nil
+		}
+	}
+	if err == nil {
+		hasCitations = true
+		if resp.Usage.InputTokens == 0 || resp.Usage.OutputTokens == 0 {
+			if f.ReportTokenUsage != scoreboard.False {
+				internal.Logger(ctx).DebugContext(ctx, "Citations-text-plain", "issue", "token usage")
+				f.ReportTokenUsage = scoreboard.Flaky
+			}
+		}
+		if expectedFR := genai.FinishedStop; f.Citations && resp.Usage.FinishReason != expectedFR {
+			if f.ReportTokenUsage != scoreboard.False {
+				internal.Logger(ctx).DebugContext(ctx, "Citations-text-plain", "issue", "finish reason", "expected", expectedFR, "got", resp.Usage.FinishReason)
+				f.ReportFinishReason = scoreboard.Flaky
+			}
+		}
+	} else {
+		// The client code must provide the text as inline content.
+		return f, fmt.Errorf("providers must support text/plain: %w", err)
+	}
+
+	// Try again with markdown. This is important to make sure the client doesn't lock onto text/plain.
+	msgs = genai.Messages{
+		genai.Message{
+			Requests: []genai.Request{
+				{
+					Doc: genai.Doc{
+						Src:      strings.NewReader("# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."),
+						Filename: "capital_info.md",
+					},
+				},
+				{Text: "What is the capital of Quackiland?"},
+			},
+		},
+	}
+	resp, err = cs.callGen(ctx, prefix+"Citations-text-markdown", msgs)
 	if isBadError(ctx, err) {
 		return f, err
 	}
@@ -423,17 +467,20 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 	if err == nil {
 		if resp.Usage.InputTokens == 0 || resp.Usage.OutputTokens == 0 {
 			if f.ReportTokenUsage != scoreboard.False {
-				internal.Logger(ctx).DebugContext(ctx, "Citations", "issue", "token usage")
+				internal.Logger(ctx).DebugContext(ctx, "Citations-text-markdown", "issue", "token usage")
 				f.ReportTokenUsage = scoreboard.Flaky
 			}
 		}
 		if expectedFR := genai.FinishedStop; f.Citations && resp.Usage.FinishReason != expectedFR {
 			if f.ReportTokenUsage != scoreboard.False {
-				internal.Logger(ctx).DebugContext(ctx, "Citations", "issue", "finish reason", "expected", expectedFR, "got", resp.Usage.FinishReason)
+				internal.Logger(ctx).DebugContext(ctx, "Citations-text-markdown", "issue", "finish reason", "expected", expectedFR, "got", resp.Usage.FinishReason)
 				f.ReportFinishReason = scoreboard.Flaky
 			}
 		}
+	} else if hasCitations {
+		return f, fmt.Errorf("supports text/plain but not text/markdown; this is incorrect: %w", err)
 	}
+
 	return f, nil
 }
 

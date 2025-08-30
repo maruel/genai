@@ -316,10 +316,11 @@ func (c *Content) FromRequest(in *genai.Request) error {
 			}
 			c.DocumentName = in.Doc.GetFilename()
 			c.DocumentURL = in.Doc.URL
-		case strings.HasPrefix(mimeType, "text/plain"):
+			// text/plain, text/markdown
+		case strings.HasPrefix(mimeType, "text/"):
 			c.Type = ContentText
 			if in.Doc.URL != "" {
-				return errors.New("text/plain documents must be provided inline, not as a URL")
+				return fmt.Errorf("%s documents must be provided inline, not as a URL", mimeType)
 			}
 			c.Text = string(data)
 		default:
@@ -366,10 +367,11 @@ func (c *Content) FromReply(in *genai.Reply) error {
 			}
 			c.DocumentName = in.Doc.GetFilename()
 			c.DocumentURL = in.Doc.URL
-		case strings.HasPrefix(mimeType, "text/plain"):
+			// text/plain, text/markdown
+		case strings.HasPrefix(mimeType, "text/"):
 			c.Type = ContentText
 			if in.Doc.URL != "" {
-				return errors.New("text/plain documents must be provided inline, not as a URL")
+				return fmt.Errorf("%s documents must be provided inline, not as a URL", mimeType)
 			}
 			c.Text = string(data)
 		default:
@@ -533,7 +535,8 @@ type ChatStreamChunkResponse struct {
 		FinishReason FinishReason `json:"finish_reason"`
 		Logprobs     struct{}     `json:"logprobs"`
 	} `json:"choices"`
-	Usage Usage `json:"usage"`
+	Usage Usage  `json:"usage"`
+	P     string `json:"p"` // "abcdefghijklmnopqrstu" WTF?
 }
 
 // Model is documented at https://docs.mistral.ai/api/#tag/models/operation/retrieve_model_v1_models__model_id__get

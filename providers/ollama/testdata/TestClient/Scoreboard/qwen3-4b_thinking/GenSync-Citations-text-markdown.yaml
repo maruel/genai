@@ -1,0 +1,30 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 274
+    host: localhost
+    body: "{\"model\":\"qwen3:4b\",\"messages\":[{\"role\":\"user\",\"content\":\"# Quackiland\\n\\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"role\":\"user\",\"content\":\"What is the capital of Quackiland?\"},{\"role\":\"user\",\"content\":\"\\n\\n/think\"}],\"stream\":false}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: http://localhost/api/chat
+    method: POST
+  response:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 1394
+    body: "{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-30T13:18:59.632362639Z\",\"message\":{\"role\":\"assistant\",\"content\":\"\\u003cthink\\u003e\\nOkay, let's see. The user is asking for the capital of Quackiland. The problem statement says that the capital is Quack, and the Big Canard Statue is located in Quack. So, the answer should be straightforward.\\n\\nWait, but maybe there's a trick here? Sometimes these questions are designed to test if you read carefully. The first sentence says \\\"The capital of Quackiland is Quack.\\\" So that's pretty direct. The second sentence mentions the Big Canard Statue in Quack, which reinforces that Quack is the capital. \\n\\nI don't see any ambiguity here. The answer is Quack. Maybe the mention of the statue is just extra information to confirm the capital's name. No need to overcomplicate it. The user might be testing if I can extract the correct information from the given statements. So, the answer is definitely Quack.\\n\\u003c/think\\u003e\\n\\nThe capital of Quackiland is **Quack**. The statement explicitly confirms this, and the mention of the Big Canard Statue in Quack serves as additional context. No ambiguity exists in the provided information. \\n\\n**Answer:** Quack.\"},\"done_reason\":\"stop\",\"done\":true,\"total_duration\":14682262381,\"load_duration\":2475449508,\"prompt_eval_count\":45,\"prompt_eval_duration\":503018519,\"eval_count\":235,\"eval_duration\":11695987194}"
+    headers:
+      Content-Length:
+      - "1394"
+      Content-Type:
+      - application/json; charset=utf-8
+    status: 200 OK
+    code: 200
+    duration: 14.683s

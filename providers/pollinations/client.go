@@ -352,10 +352,11 @@ func (c *Content) FromRequest(in *genai.Request) error {
 			} else {
 				c.ImageURL.URL = in.Doc.URL
 			}
-		case strings.HasPrefix(mimeType, "text/plain"):
+			// text/plain, text/markdown
+		case strings.HasPrefix(mimeType, "text/"):
 			c.Type = ContentText
 			if in.Doc.URL != "" {
-				return errors.New("text/plain documents must be provided inline, not as a URL")
+				return fmt.Errorf("%s documents must be provided inline, not as a URL", mimeType)
 			}
 			c.Text = string(data)
 		default:
@@ -395,10 +396,11 @@ func (c *Content) FromReply(in *genai.Reply) error {
 			} else {
 				c.ImageURL.URL = in.Doc.URL
 			}
-		case strings.HasPrefix(mimeType, "text/plain"):
+			// text/plain, text/markdown
+		case strings.HasPrefix(mimeType, "text/"):
 			c.Type = ContentText
 			if in.Doc.URL != "" {
-				return errors.New("text/plain documents must be provided inline, not as a URL")
+				return fmt.Errorf("%s documents must be provided inline, not as a URL", mimeType)
 			}
 			c.Text = string(data)
 		default:
@@ -467,6 +469,7 @@ type ChatResponse struct {
 	SystemFingerprint   string               `json:"system_fingerprint"`
 	PromptLogprobs      struct{}             `json:"prompt_logprobs"`
 	KVTransferParams    struct{}             `json:"kv_transfer_params"`
+	UserTier            string               `json:"user_tier"`
 }
 
 func (c *ChatResponse) ToResult() (genai.Result, error) {

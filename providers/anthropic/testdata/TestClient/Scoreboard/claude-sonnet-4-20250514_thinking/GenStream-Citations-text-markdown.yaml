@@ -1,0 +1,70 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 463
+    host: api.anthropic.com
+    body: "{\"model\":\"claude-sonnet-4-20250514\",\"max_tokens\":32000,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"document\",\"cache_control\":{\"type\":\"ephemeral\"},\"citations\":{\"enabled\":true},\"source\":{\"type\":\"text\",\"media_type\":\"text/plain\",\"data\":\"# Quackiland\\n\\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"}},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}],\"stream\":true,\"thinking\":{\"budget_tokens\":1024,\"type\":\"enabled\"}}\n"
+    headers:
+      Anthropic-Version:
+      - "2023-06-01"
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.anthropic.com/v1/messages
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "event: message_start\ndata: {\"type\":\"message_start\",\"message\":{\"id\":\"msg_01DaaAAw88fGs2sqs277sVFJ\",\"type\":\"message\",\"role\":\"assistant\",\"model\":\"claude-sonnet-4-20250514\",\"content\":[],\"stop_reason\":null,\"stop_sequence\":null,\"usage\":{\"input_tokens\":631,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"cache_creation\":{\"ephemeral_5m_input_tokens\":0,\"ephemeral_1h_input_tokens\":0},\"output_tokens\":8,\"service_tier\":\"standard\"}}  }\n\nevent: content_block_start\ndata: {\"type\":\"content_block_start\",\"index\":0,\"content_block\":{\"type\":\"thinking\",\"thinking\":\"\",\"signature\":\"\"}}\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"The user is asking about the capital\"}           }\n\nevent: ping\ndata: {\"type\": \"ping\"}\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" of Quackiland. Looking at the document, sentence\"}               }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" 1-1 states \\\"The capital of Quackilan\"}               }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"d is Quack.\\\" This directly answers the\"}    }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" user's question, so I should cite\"}              }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" this sentence.\"} }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"signature_delta\",\"signature\":\"EvsCCkYIBxgCKkCc4E5acxG4KDDUU3/a2WHdy7bui3iGIHau95F6E77OBpf6TCCcyFTC5zP9KfTIZhFHlWQLq35DWfNtiPBXA+TYEgxJECpUXAl67VgYJO8aDJ0Sy6kMLcstpZJj8yIwrCajnv6AmdYprBi21lXVke+H/3KGGr4OU52Lp5nD5D1bYsHAWdXIdx0UEuVEJzgsKuIBErC+TdoZiDnxwuXKqlJWXeWpsDfYXnlabCLlDYyxwhoDB3qSY/VBHBEFwn5eOIMeBchTgo8SVUho/dQD224NXBnVSKyY3TGnJ565l5EbUTsduhWu0CEhJIqymI0OPOVf7EQJNdsfh8591VwYNRrbc15JFEXDhu4KwwA45r9Xc1Drjd1ekt9WKsXh6a84u17xsdSCFer/4cKZsHquy8oI7MMo8guLzDq9UIKIVz57dj4MinI3pbnCoWR0LxoscYYcUebPzdW5GdFv0Eit2MOhuZi1yRxDKUFMcN6gBzaE5EXbrBgB\"}    }\n\nevent: content_block_stop\ndata: {\"type\":\"content_block_stop\",\"index\":0 }\n\nevent: content_block_start\ndata: {\"type\":\"content_block_start\",\"index\":1,\"content_block\":{\"type\":\"text\",\"text\":\"\"}           }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"text_delta\",\"text\":\"\"}              }\n\nevent: content_block_stop\ndata: {\"type\":\"content_block_stop\",\"index\":1              }\n\nevent: content_block_start\ndata: {\"type\":\"content_block_start\",\"index\":2,\"content_block\":{\"citations\":[],\"type\":\"text\",\"text\":\"\"}   }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":2,\"delta\":{\"type\":\"citations_delta\",\"citation\":{\"type\":\"char_location\",\"cited_text\":\"# Quackiland\\n\\nThe capital of Quackiland is Quack. \",\"document_index\":0,\"document_title\":null,\"start_char_index\":0,\"end_char_index\":50}}        }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":2,\"delta\":{\"type\":\"text_delta\",\"text\":\"The capital of Quackiland is Quack.\"}               }\n\nevent: content_block_stop\ndata: {\"type\":\"content_block_stop\",\"index\":2               }\n\nevent: message_delta\ndata: {\"type\":\"message_delta\",\"delta\":{\"stop_reason\":\"end_turn\",\"stop_sequence\":null},\"usage\":{\"input_tokens\":631,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":96}            }\n\nevent: message_stop\ndata: {\"type\":\"message_stop\"  }\n\n"
+    headers:
+      Anthropic-Ratelimit-Input-Tokens-Limit:
+      - "2000000"
+      Anthropic-Ratelimit-Input-Tokens-Remaining:
+      - "2000000"
+      Anthropic-Ratelimit-Input-Tokens-Reset:
+      - "2025-08-30T13:03:46Z"
+      Anthropic-Ratelimit-Output-Tokens-Limit:
+      - "400000"
+      Anthropic-Ratelimit-Output-Tokens-Remaining:
+      - "400000"
+      Anthropic-Ratelimit-Output-Tokens-Reset:
+      - "2025-08-30T13:03:46Z"
+      Anthropic-Ratelimit-Requests-Limit:
+      - "4000"
+      Anthropic-Ratelimit-Requests-Remaining:
+      - "3999"
+      Anthropic-Ratelimit-Requests-Reset:
+      - "2025-08-30T13:03:46Z"
+      Anthropic-Ratelimit-Tokens-Limit:
+      - "2400000"
+      Anthropic-Ratelimit-Tokens-Remaining:
+      - "2400000"
+      Anthropic-Ratelimit-Tokens-Reset:
+      - "2025-08-30T13:03:46Z"
+      Cache-Control:
+      - no-cache
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 97747d7dcee2a26f-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Via:
+      - 1.1 google
+      X-Envoy-Upstream-Service-Time:
+      - "1085"
+      X-Robots-Tag:
+      - none
+    status: 200 OK
+    code: 200
+    duration: 1.143s

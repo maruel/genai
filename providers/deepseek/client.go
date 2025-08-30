@@ -223,15 +223,15 @@ func (m *Message) From(in *genai.Message) error {
 		if in.Requests[0].Text != "" {
 			m.Content += in.Requests[0].Text
 		} else if !in.Requests[0].Doc.IsZero() {
-			if in.Requests[0].Doc.URL != "" {
-				return errors.New("deepseek doesn't support document content blocks with URLs")
-			}
 			mimeType, data, err := in.Requests[0].Doc.Read(10 * 1024 * 1024)
 			if err != nil {
 				return fmt.Errorf("failed to read document: %w", err)
 			}
-			if !strings.HasPrefix(mimeType, "text/plain") {
-				return fmt.Errorf("deepseek only supports text/plain documents, got %s", mimeType)
+			if !strings.HasPrefix(mimeType, "text/") {
+				return fmt.Errorf("deepseek only supports text documents, got %s", mimeType)
+			}
+			if in.Requests[0].Doc.URL != "" {
+				return fmt.Errorf("%s documents must be provided inline, not as a URL", mimeType)
 			}
 			m.Content += string(data)
 		} else {
@@ -253,8 +253,8 @@ func (m *Message) From(in *genai.Message) error {
 			if in.Replies[i].Doc.URL != "" {
 				return fmt.Errorf("reply #%d: deepseek doesn't support document content blocks with URLs", i)
 			}
-			if !strings.HasPrefix(mimeType, "text/plain") {
-				return fmt.Errorf("reply #%d: deepseek only supports text/plain documents, got %s", 0, mimeType)
+			if !strings.HasPrefix(mimeType, "text/") {
+				return fmt.Errorf("reply #%d: deepseek only supports text documents, got %s", 0, mimeType)
 			}
 			m.Content += string(data)
 		} else if in.Replies[i].Reasoning != "" {

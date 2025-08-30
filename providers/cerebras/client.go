@@ -291,16 +291,16 @@ func (c *Content) FromRequest(in *genai.Request) error {
 		return nil
 	}
 	if !in.Doc.IsZero() {
-		// Check if this is a text/plain document
+		// Check if this is a text document
 		mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
 		if err != nil {
 			return fmt.Errorf("failed to read document: %w", err)
 		}
-		if !strings.HasPrefix(mimeType, "text/plain") {
-			return fmt.Errorf("cerebras only supports text/plain documents, got %s", mimeType)
+		if !strings.HasPrefix(mimeType, "text/") {
+			return fmt.Errorf("cerebras only supports text documents, got %s", mimeType)
 		}
 		if in.Doc.URL != "" {
-			return errors.New("text/plain documents must be provided inline, not as a URL")
+			return fmt.Errorf("%s documents must be provided inline, not as a URL", mimeType)
 		}
 		c.Type = ContentText
 		c.Text = string(data)
@@ -319,16 +319,16 @@ func (c *Content) FromReply(in *genai.Reply) error {
 	} else if in.Reasoning != "" {
 		// Ignore
 	} else if !in.Doc.IsZero() {
-		// Check if this is a text/plain document
+		// Check if this is a text document
 		mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
 		if err != nil {
 			return fmt.Errorf("failed to read document: %w", err)
 		}
-		if !strings.HasPrefix(mimeType, "text/plain") {
-			return fmt.Errorf("cerebras only supports text/plain documents, got %s", mimeType)
+		if !strings.HasPrefix(mimeType, "text/") {
+			return fmt.Errorf("cerebras only supports text documents, got %s", mimeType)
 		}
 		if in.Doc.URL != "" {
-			return errors.New("text/plain documents must be provided inline, not as a URL")
+			return fmt.Errorf("%s documents must be provided inline, not as a URL", mimeType)
 		}
 		c.Type = ContentText
 		c.Text = string(data)

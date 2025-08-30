@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 261
+    host: api.cerebras.ai
+    body: "{\"model\":\"qwen-3-32b\",\"messages\":[{\"role\":\"user\",\"content\":\"# Quackiland\\n\\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"role\":\"user\",\"content\":\"What is the capital of Quackiland?\"},{\"role\":\"user\",\"content\":\"\\n\\n/think\"}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cerebras.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-2eee4a66-a805-4444-94a0-2b17bbddca15\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"<think>\\nOkay, the user asked, \\\"What is the capital of Quackiland?\\\" and the previous message mentioned that the capital is Quack with the Big Canard Statue there. Let me check if there's any need to confirm or elaborate.\\n\\nQuackiland isn't a real place, so it must be a fictional location. The user is probably familiar with the context, maybe from a story, game, or a joke about ducks since \\\"quack\\\" relates to duck sounds. I should keep the answer straightforward but friendly, maybe add a duck emoji to keep the tone light. No contradictions in the info, so just restate the answer from the history. Also, offer to help with more questions in case they need details about the Big Canard Statue or other aspects of Quackiland. Let me make sure the response is clear and concise without overcomplicating things.\\n</think>\\n\\nThe capital of Quackiland is **Quack**! 🦆 The Big Canard Statue is located there, proudly representing the duck-themed nation. Let me know if you'd like to know more about Quackiland's quirky attractions or its famous \\\"honk\\\" laws!\",\"role\":\"assistant\"}}],\"created\":1756559141,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c8e8cd78ea58dce346b0\",\"object\":\"chat.completion\",\"usage\":{\"prompt_tokens\":55,\"completion_tokens\":238,\"total_tokens\":293,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":10.738498392,\"prompt_time\":0.008020419,\"completion_time\":0.271698414,\"total_time\":11.019808053970337,\"created\":1756559141}}"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 977480485b20a2a2-YUL
+      Content-Type:
+      - application/json
+      Inference-Id:
+      - chatcmpl-2eee4a66-a805-4444-94a0-2b17bbddca15
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=3600; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Ratelimit-Limit-Requests-Day:
+      - "14400"
+      X-Ratelimit-Limit-Tokens-Minute:
+      - "64000"
+      X-Ratelimit-Remaining-Requests-Day:
+      - "14400"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "64000"
+      X-Ratelimit-Reset-Requests-Day:
+      - "39247.69551038742"
+      X-Ratelimit-Reset-Tokens-Minute:
+      - "7.695510387420654"
+      X-Request-Id:
+      - 977480485b20a2a2-YUL
+    status: 200 OK
+    code: 200
+    duration: 11.186s

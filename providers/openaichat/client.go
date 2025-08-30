@@ -463,10 +463,12 @@ func (c *Content) FromRequest(in *genai.Request) error {
 			c.Type = ContentInputAudio
 			c.InputAudio.Data = data
 			c.InputAudio.Format = "wav"
-		case strings.HasPrefix(mimeType, "text/plain"):
+			// text/plain, text/markdown
+		case strings.HasPrefix(mimeType, "text/"):
+			// OpenAI chat API doesn't support text documents as attachment.
 			c.Type = ContentText
 			if in.Doc.URL != "" {
-				return errors.New("text/plain documents must be provided inline, not as a URL")
+				return fmt.Errorf("%s documents must be provided inline, not as a URL", mimeType)
 			}
 			c.Text = string(data)
 		default:
@@ -534,10 +536,12 @@ func (c *Content) FromReply(in *genai.Reply) error {
 			c.Type = ContentInputAudio
 			c.InputAudio.Data = data
 			c.InputAudio.Format = "wav"
-		case strings.HasPrefix(mimeType, "text/plain"):
+			// text/plain, text/markdown
+		case strings.HasPrefix(mimeType, "text/"):
+			// OpenAI chat API doesn't support text documents as attachment.
 			c.Type = ContentText
 			if in.Doc.URL != "" {
-				return errors.New("text/plain documents must be provided inline, not as a URL")
+				return fmt.Errorf("%s documents must be provided inline, not as a URL", mimeType)
 			}
 			c.Text = string(data)
 		default:

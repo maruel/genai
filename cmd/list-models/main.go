@@ -112,14 +112,14 @@ func getModels(ctx context.Context, provider string) ([]string, map[string]genai
 		name := model.String()
 		id := model.GetID()
 		// The same model can be in multiple categories.
-		if id == cheap {
-			name += " (" + genai.ModelCheap + ")"
+		if id == sota {
+			name += " 🥇"
 		}
 		if id == good {
-			name += " (" + genai.ModelGood + ")"
+			name += " 🥈"
 		}
-		if id == sota {
-			name += " (" + genai.ModelSOTA + ")"
+		if id == cheap {
+			name += " 🥉"
 		}
 		names = append(names, name)
 		m[name] = model

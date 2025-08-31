@@ -4,15 +4,15 @@ Snapshot of the models available on each provider as of 2025-08-31
 
 ## anthropic
 
-- claude-3-5-haiku-20241022: Claude Haiku 3.5 (2024-10-22) (CHEAP)
+- claude-3-5-haiku-20241022: Claude Haiku 3.5 (2024-10-22) 🥉
 - claude-3-5-sonnet-20240620: Claude Sonnet 3.5 (Old) (2024-06-20)
 - claude-3-5-sonnet-20241022: Claude Sonnet 3.5 (New) (2024-10-22)
 - claude-3-7-sonnet-20250219: Claude Sonnet 3.7 (2025-02-24)
 - claude-3-haiku-20240307: Claude Haiku 3 (2024-03-07)
 - claude-3-opus-20240229: Claude Opus 3 (2024-02-29)
-- claude-opus-4-1-20250805: Claude Opus 4.1 (2025-08-05) (SOTA)
+- claude-opus-4-1-20250805: Claude Opus 4.1 (2025-08-05) 🥇
 - claude-opus-4-20250514: Claude Opus 4 (2025-05-22)
-- claude-sonnet-4-20250514: Claude Sonnet 4 (2025-05-22) (GOOD)
+- claude-sonnet-4-20250514: Claude Sonnet 4 (2025-05-22) 🥈
 
 ## cerebras
 
@@ -20,9 +20,9 @@ Snapshot of the models available on each provider as of 2025-08-31
 - llama-3.3-70b
 - llama-4-maverick-17b-128e-instruct
 - llama-4-scout-17b-16e-instruct
-- llama3.1-8b (CHEAP)
-- qwen-3-235b-a22b-instruct-2507 (GOOD)
-- qwen-3-235b-a22b-thinking-2507 (SOTA)
+- llama3.1-8b 🥉
+- qwen-3-235b-a22b-instruct-2507 🥈
+- qwen-3-235b-a22b-thinking-2507 🥇
 - qwen-3-32b
 - qwen-3-coder-480b
 
@@ -38,7 +38,7 @@ Snapshot of the models available on each provider as of 2025-08-31
 - @cf/deepgram/aura-1 (async_queue=true, partner=true, price=[0$USD/min], realtime=true)
 - @cf/deepgram/nova-3 (async_queue=true, partner=true, price=[0.0052$USD/min], realtime=true)
 - @cf/deepseek-ai/deepseek-math-7b-instruct (beta=true, context_window=4096)
-- @cf/deepseek-ai/deepseek-r1-distill-qwen-32b (context_window=80000, price=[0.5$USD/Mt in, 4.88$USD/Mt out]) (SOTA)
+- @cf/deepseek-ai/deepseek-r1-distill-qwen-32b (context_window=80000, price=[0.5$USD/Mt in, 4.88$USD/Mt out]) 🥇
 - @cf/defog/sqlcoder-7b-2 (beta=true, context_window=10000)
 - @cf/facebook/bart-large-cnn (beta=true, price=[0$USD/Mt in])
 - @cf/fblgit/una-cybertron-7b-v2-bf16 (beta=true, context_window=15000)
@@ -58,9 +58,9 @@ Snapshot of the models available on each provider as of 2025-08-31
 - @cf/meta/llama-3.1-8b-instruct-awq (context_window=8192, price=[0.12$USD/Mt in, 0.27$USD/Mt out])
 - @cf/meta/llama-3.1-8b-instruct-fp8 (context_window=32000, price=[0.15$USD/Mt in, 0.29$USD/Mt out])
 - @cf/meta/llama-3.2-11b-vision-instruct (context_window=128000, lora=true, price=[0.049$USD/Mt in, 0.68$USD/Mt out])
-- @cf/meta/llama-3.2-1b-instruct (context_window=60000, price=[0.027$USD/Mt in, 0.2$USD/Mt out]) (CHEAP)
+- @cf/meta/llama-3.2-1b-instruct (context_window=60000, price=[0.027$USD/Mt in, 0.2$USD/Mt out]) 🥉
 - @cf/meta/llama-3.2-3b-instruct (context_window=128000, price=[0.051$USD/Mt in, 0.34$USD/Mt out])
-- @cf/meta/llama-3.3-70b-instruct-fp8-fast (async_queue=true, context_window=24000, function_calling=true, price=[0.29$USD/Mt in, 2.25$USD/Mt out]) (GOOD)
+- @cf/meta/llama-3.3-70b-instruct-fp8-fast (async_queue=true, context_window=24000, function_calling=true, price=[0.29$USD/Mt in, 2.25$USD/Mt out]) 🥈
 - @cf/meta/llama-4-scout-17b-16e-instruct (async_queue=true, context_window=131000, function_calling=true, price=[0.27$USD/Mt in, 0.85$USD/Mt out])
 - @cf/meta/llama-guard-3-8b (lora=true, price=[0.48$USD/Mt in, 0.03$USD/Mt out])
 - @cf/meta/m2m100-1.2b (async_queue=true, languages=english, chinese, french, spanish, arabic, russian, german, japanese, portuguese, hindi, price=[0.34$USD/Mt in, 0.34$USD/Mt out])
@@ -110,16 +110,16 @@ Snapshot of the models available on each provider as of 2025-08-31
 - c4ai-aya-expanse-8b: chat/generate Context: 8192
 - c4ai-aya-vision-32b: chat with logprobs/vision Context: 16384 (vision)
 - c4ai-aya-vision-8b: chat with logprobs/vision Context: 16384 (vision)
-- command-a-reasoning-08-2025: chat with json_mode/json_schema/logprobs/reasoning/safety_modes/strict_tools/tools Context: 288768 (SOTA)
+- command-a-reasoning-08-2025: chat with json_mode/json_schema/logprobs/reasoning/safety_modes/strict_tools/tools Context: 288768 🥇
 - command-a-translate-08-2025: chat with json_mode/json_schema/safety_modes/tools Context: 8992
 - command-a-vision-07-2025: chat with json_mode/json_schema/logprobs/safety_modes/strict_tools/vision Context: 128000 (vision)
 - command-light-nightly: chat/generate/summarize Context: 4096
-- command-light: chat/generate/summarize Context: 4096 (CHEAP)
+- command-light: chat/generate/summarize Context: 4096 🥉
 - command-nightly: chat with json_mode/json_schema/logprobs/safety_modes/strict_tools/tools Context: 288000
 - command-r-08-2024: chat/generate/summarize with json_mode/json_schema/logprobs/safety_modes/strict_tools/tools Context: 132096
 - command-r-plus-08-2024: chat/generate/summarize with json_mode/json_schema/logprobs/safety_modes/strict_tools/tools Context: 132096
 - command-r-plus: chat/generate/summarize with json_mode/json_schema/logprobs/strict_tools/tools Context: 132096
-- command-r7b-12-2024: chat/generate with json_mode/json_schema/logprobs/safety_modes/strict_tools/tools Context: 132000 (GOOD)
+- command-r7b-12-2024: chat/generate with json_mode/json_schema/logprobs/safety_modes/strict_tools/tools Context: 132000 🥈
 - command-r7b-arabic-02-2025: chat/generate with json_mode/json_schema/logprobs/safety_modes/strict_tools/tools Context: 128000
 - command-r: chat/generate/summarize with json_mode/json_schema/logprobs/strict_tools/tools Context: 132096
 - command: chat/generate/summarize Context: 4096
@@ -141,8 +141,8 @@ Snapshot of the models available on each provider as of 2025-08-31
 
 ## deepseek
 
-- deepseek-chat (CHEAP)
-- deepseek-reasoner (GOOD) (SOTA)
+- deepseek-chat 🥉
+- deepseek-reasoner 🥇 🥈
 
 ## gemini
 
@@ -176,17 +176,17 @@ Snapshot of the models available on each provider as of 2025-08-31
 - gemini-2.5-flash-exp-native-audio-thinking-dialog: Gemini 2.5 Flash Exp Native Audio Thinking Dialog (Gemini 2.5 Flash Exp Native Audio Thinking Dialog) Context: 131072/8192
 - gemini-2.5-flash-image-preview: Nano Banana (Gemini 2.5 Flash Preview Image) Context: 32768/8192
 - gemini-2.5-flash-lite-preview-06-17: Gemini 2.5 Flash-Lite Preview 06-17 (Preview release (June 11th, 2025) of Gemini 2.5 Flash-Lite) Context: 1048576/65536
-- gemini-2.5-flash-lite: Gemini 2.5 Flash-Lite (Stable version of Gemini 2.5 Flash-Lite, released in July of 2025) Context: 1048576/65536 (CHEAP)
+- gemini-2.5-flash-lite: Gemini 2.5 Flash-Lite (Stable version of Gemini 2.5 Flash-Lite, released in July of 2025) Context: 1048576/65536 🥉
 - gemini-2.5-flash-live-preview: Gemini 2.5 Flash Live Preview (Gemini 2.5 Flash Live Preview) Context: 1048576/65536
 - gemini-2.5-flash-preview-05-20: Gemini 2.5 Flash Preview 05-20 (Preview release (April 17th, 2025) of Gemini 2.5 Flash) Context: 1048576/65536
 - gemini-2.5-flash-preview-native-audio-dialog: Gemini 2.5 Flash Preview Native Audio Dialog (Gemini 2.5 Flash Preview Native Audio Dialog) Context: 131072/8192
 - gemini-2.5-flash-preview-tts: Gemini 2.5 Flash Preview TTS (Gemini 2.5 Flash Preview TTS) Context: 8192/16384
-- gemini-2.5-flash: Gemini 2.5 Flash (Stable version of Gemini 2.5 Flash, our mid-size multimodal model that supports up to 1 million tokens, released in June of 2025) Context: 1048576/65536 (GOOD)
+- gemini-2.5-flash: Gemini 2.5 Flash (Stable version of Gemini 2.5 Flash, our mid-size multimodal model that supports up to 1 million tokens, released in June of 2025) Context: 1048576/65536 🥈
 - gemini-2.5-pro-preview-03-25: Gemini 2.5 Pro Preview 03-25 (Gemini 2.5 Pro Preview 03-25) Context: 1048576/65536
 - gemini-2.5-pro-preview-05-06: Gemini 2.5 Pro Preview 05-06 (Preview release (May 6th, 2025) of Gemini 2.5 Pro) Context: 1048576/65536
 - gemini-2.5-pro-preview-06-05: Gemini 2.5 Pro Preview (Preview release (June 5th, 2025) of Gemini 2.5 Pro) Context: 1048576/65536
 - gemini-2.5-pro-preview-tts: Gemini 2.5 Pro Preview TTS (Gemini 2.5 Pro Preview TTS) Context: 8192/16384
-- gemini-2.5-pro: Gemini 2.5 Pro (Stable release (June 17th, 2025) of Gemini 2.5 Pro) Context: 1048576/65536 (SOTA)
+- gemini-2.5-pro: Gemini 2.5 Pro (Stable release (June 17th, 2025) of Gemini 2.5 Pro) Context: 1048576/65536 🥇
 - gemini-embedding-001: Gemini Embedding 001 (Obtain a distributed representation of a text) Context: 2048/1
 - gemini-embedding-exp-03-07: Gemini Embedding Experimental 03-07 (Obtain a distributed representation of a text) Context: 8192/1
 - gemini-embedding-exp: Gemini Embedding Experimental (Obtain a distributed representation of a text) Context: 8192/1
@@ -217,11 +217,10 @@ Snapshot of the models available on each provider as of 2025-08-31
 - compound-beta-mini (2025-03-26) Context: 131072/8192
 - deepseek-r1-distill-llama-70b (2025-01-26) Context: 131072/131072
 - gemma2-9b-it (2023-09-03) Context: 8192/8192
-- llama-3.1-8b-instant (2023-09-03) Context: 131072/131072 (CHEAP)
+- llama-3.1-8b-instant (2023-09-03) Context: 131072/131072 🥉
 - llama-3.3-70b-versatile (2024-12-06) Context: 131072/32768
-- llama3-70b-8192 (2023-09-03) Context: 8192/8192
 - llama3-8b-8192 (2023-09-03) Context: 8192/8192
-- meta-llama/llama-4-maverick-17b-128e-instruct (2025-04-05) Context: 131072/8192 (GOOD)
+- meta-llama/llama-4-maverick-17b-128e-instruct (2025-04-05) Context: 131072/8192 🥈
 - meta-llama/llama-4-scout-17b-16e-instruct (2025-04-05) Context: 131072/8192
 - meta-llama/llama-guard-4-12b (2025-05-08) Context: 131072/1024
 - meta-llama/llama-prompt-guard-2-22m (2025-05-30) Context: 512/512
@@ -231,7 +230,7 @@ Snapshot of the models available on each provider as of 2025-08-31
 - openai/gpt-oss-20b (2025-08-05) Context: 131072/65536
 - playai-tts (2025-02-27) Context: 8192/8192
 - playai-tts-arabic (2025-02-27) Context: 8192/8192
-- qwen/qwen3-32b (2025-05-28) Context: 131072/40960 (SOTA)
+- qwen/qwen3-32b (2025-05-28) Context: 131072/40960 🥇
 - whisper-large-v3 (2023-09-03) Context: 448/448
 - whisper-large-v3-turbo (2024-10-08) Context: 448/448
 
@@ -293,7 +292,7 @@ Snapshot of the models available on each provider as of 2025-08-31
 - artificialguybr/ColoringBookRedmond-V2 (2023-10-07) text-to-image Trending: 1.0
 - BAAI/bge-base-en-v1.5 (2023-09-11) feature-extraction Trending: 3.0
 - BAAI/bge-en-icl (2024-07-25) feature-extraction Trending: 1.0
-- BAAI/bge-large-en-v1.5 (2023-09-12) feature-extraction Trending: 4.0
+- BAAI/bge-large-en-v1.5 (2023-09-12) feature-extraction Trending: 5.0
 - BAAI/bge-large-zh-v1.5 (2023-09-12) feature-extraction Trending: 2.0
 - BAAI/bge-m3 (2024-01-27) sentence-similarity Trending: 17.0
 - BAAI/bge-small-en-v1.5 (2023-09-12) feature-extraction Trending: 1.0
@@ -302,11 +301,11 @@ Snapshot of the models available on each provider as of 2025-08-31
 - baidu/ERNIE-4.5-0.3B-PT (2025-06-28) text-generation Trending: 1.0
 - baidu/ERNIE-4.5-21B-A3B-PT (2025-06-28) text-generation Trending: 2.0
 - bhadresh-savani/distilbert-base-uncased-emotion (2022-03-02) text-classification Trending: 1.0
-- black-forest-labs/FLUX.1-dev (2024-07-31) text-to-image Trending: 63.0
+- black-forest-labs/FLUX.1-dev (2024-07-31) text-to-image Trending: 64.0
 - black-forest-labs/FLUX.1-Kontext-dev (2025-05-28) image-to-image Trending: 54.0
 - black-forest-labs/FLUX.1-Krea-dev (2025-07-07) text-to-image Trending: 22.0
 - black-forest-labs/FLUX.1-schnell (2024-07-31) text-to-image Trending: 23.0
-- blurgy/CoMPaSS-FLUX.1 (2025-01-10) text-to-image Trending: 20.0
+- blurgy/CoMPaSS-FLUX.1 (2025-01-10) text-to-image Trending: 21.0
 - bluuwhale/L3-SthenoMaidBlackroot-8B-V1 (2024-06-09) text-generation Trending: 1.0
 - BootesVoid/cmefxlkmn0lryrts8smuwyifz_cmeptr48z0atetlqbr9uwi6gy (2025-08-24) text-to-image Trending: 1.0
 - borisn70/bert-43-multilabel-emotion-detection (2024-04-01) text-classification Trending: 1.0
@@ -351,7 +350,7 @@ Snapshot of the models available on each provider as of 2025-08-31
 - deepseek-ai/DeepSeek-R1-Distill-Qwen-7B (2025-01-20) text-generation Trending: 7.0
 - deepseek-ai/DeepSeek-V3 (2024-12-25) text-generation Trending: 5.0
 - deepseek-ai/DeepSeek-V3-0324 (2025-03-24) text-generation Trending: 7.0
-- deepseek-ai/DeepSeek-V3.1 (2025-08-21) text-generation Trending: 163.0 (SOTA)
+- deepseek-ai/DeepSeek-V3.1 (2025-08-21) text-generation Trending: 163.0 🥇
 - deepset/roberta-base-squad2 (2022-03-02) question-answering Trending: 1.0
 - deepvk/USER2-base (2025-02-25) sentence-similarity Trending: 1.0
 - Delta-Vector/Plesio-70B (2025-07-06) text-generation Trending: 1.0
@@ -504,7 +503,7 @@ Snapshot of the models available on each provider as of 2025-08-31
 - meta-llama/Llama-3.1-70B-Instruct (2024-07-16) text-generation Trending: 4.0
 - meta-llama/Llama-3.1-8B (2024-07-14) text-generation Trending: 11.0
 - meta-llama/Llama-3.1-8B-Instruct (2024-07-18) text-generation Trending: 40.0
-- meta-llama/Llama-3.2-1B-Instruct (2024-09-18) text-generation Trending: 10.0 (CHEAP)
+- meta-llama/Llama-3.2-1B-Instruct (2024-09-18) text-generation Trending: 10.0 🥉
 - meta-llama/Llama-3.2-3B-Instruct (2024-09-18) text-generation Trending: 7.0
 - meta-llama/Llama-3.3-70B-Instruct (2024-11-26) text-generation Trending: 3.0
 - meta-llama/Llama-4-Maverick-17B-128E-Instruct (2025-04-01) image-text-to-text Trending: 1.0
@@ -543,7 +542,7 @@ Snapshot of the models available on each provider as of 2025-08-31
 - MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7 (2022-08-22) zero-shot-classification Trending: 1.0
 - mrm8488/distilroberta-finetuned-financial-news-sentiment-analysis (2022-03-02) text-classification Trending: 2.0
 - multimodalart/isometric-skeumorphic-3d-bnb (2025-05-15) text-to-image Trending: 1.0
-- nari-labs/Dia-1.6B (2025-04-20) text-to-speech Trending: 6.0
+- nari-labs/Dia-1.6B (2025-04-20) text-to-speech Trending: 7.0
 - nectec/Pathumma-llm-text-1.0.0 (2024-10-22) text-generation Trending: 1.0
 - nerijs/pixel-art-xl (2023-08-03) text-to-image Trending: 2.0
 - neuralmind/bert-large-portuguese-cased (2022-03-02) fill-mask Trending: 1.0
@@ -568,7 +567,7 @@ Snapshot of the models available on each provider as of 2025-08-31
 - nvidia/OpenReasoning-Nemotron-7B (2025-07-15) text-generation Trending: 2.0
 - nvidia/segformer-b5-finetuned-ade-640-640 (2022-03-02) image-segmentation Trending: 1.0
 - oliverguhr/fullstop-punctuation-multilang-large (2022-03-02) token-classification Trending: 1.0
-- openai/gpt-oss-120b (2025-08-04) text-generation Trending: 112.0
+- openai/gpt-oss-120b (2025-08-04) text-generation Trending: 113.0
 - openai/gpt-oss-20b (2025-08-04) text-generation Trending: 126.0
 - openai/whisper-large-v3 (2023-11-07) automatic-speech-recognition Trending: 33.0
 - openai/whisper-large-v3-turbo (2024-10-01) automatic-speech-recognition Trending: 9.0
@@ -595,7 +594,7 @@ Snapshot of the models available on each provider as of 2025-08-31
 - Qwen/Qwen-Image-Edit (2025-08-17) image-to-image Trending: 359.0
 - Qwen/Qwen1.5-1.8B-Chat (2024-01-30) text-generation Trending: 1.0
 - Qwen/Qwen2-7B-Instruct (2024-06-04) text-generation Trending: 1.0
-- Qwen/Qwen2.5-1.5B (2024-09-15) text-generation Trending: 4.0
+- Qwen/Qwen2.5-1.5B (2024-09-15) text-generation Trending: 5.0
 - Qwen/Qwen2.5-1.5B-Instruct (2024-09-17) text-generation Trending: 3.0
 - Qwen/Qwen2.5-14B-Instruct (2024-09-16) text-generation Trending: 2.0
 - Qwen/Qwen2.5-32B (2024-09-15) text-generation Trending: 2.0
@@ -628,7 +627,7 @@ Snapshot of the models available on each provider as of 2025-08-31
 - Qwen/Qwen3-8B (2025-04-27) text-generation Trending: 14.0
 - Qwen/Qwen3-8B-Base (2025-04-28) text-generation Trending: 3.0
 - Qwen/Qwen3-Coder-30B-A3B-Instruct (2025-07-31) text-generation Trending: 21.0
-- Qwen/Qwen3-Coder-480B-A35B-Instruct (2025-07-22) text-generation Trending: 20.0 (GOOD)
+- Qwen/Qwen3-Coder-480B-A35B-Instruct (2025-07-22) text-generation Trending: 20.0 🥈
 - Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8 (2025-07-22) text-generation Trending: 1.0
 - Qwen/Qwen3-Embedding-8B (2025-06-03) feature-extraction Trending: 14.0
 - Qwen/QwQ-32B (2025-03-05) text-generation Trending: 5.0
@@ -702,7 +701,7 @@ Snapshot of the models available on each provider as of 2025-08-31
 - Tesslate/Synthia-S1-27b (2025-04-02) image-text-to-text Trending: 1.0
 - Tesslate/UIGEN-T3-8B-Preview (2025-06-10) text-generation Trending: 1.0
 - thedeoxen/FLUX.1-Kontext-dev-reference-depth-fusion-LORA (2025-08-17) image-to-image Trending: 9.0
-- thedeoxen/refcontrol-flux-kontext-reference-canny-lora (2025-08-31) image-to-image Trending: 2.0
+- thedeoxen/refcontrol-flux-kontext-reference-canny-lora (2025-08-31) image-to-image Trending: 3.0
 - thedeoxen/refcontrol-flux-kontext-reference-pose-lora (2025-08-24) image-to-image Trending: 26.0
 - thenlper/gte-large-zh (2023-11-07) sentence-similarity Trending: 1.0
 - TheRaf7/ultra-real-wan2.2 (2025-08-10) text-to-image Trending: 1.0
@@ -782,12 +781,12 @@ Snapshot of the models available on each provider as of 2025-08-31
 - mistral-embed:  Context: 8192
 - mistral-large-2407: chat/function/fine-tuning Context: 131072
 - mistral-large-2411: chat/function/fine-tuning Context: 131072
-- mistral-large-latest: chat/function/fine-tuning/vision Context: 131072 (SOTA)
+- mistral-large-latest: chat/function/fine-tuning/vision Context: 131072 🥇
 - mistral-large-pixtral-2411 (pixtral-large-2411): chat/function/vision Context: 131072
 - mistral-medium (mistral-medium-2508): chat/function/fine-tuning/vision Context: 131072
 - mistral-medium-2505: chat/function/fine-tuning/vision Context: 131072
 - mistral-medium-2508: chat/function/fine-tuning/vision Context: 131072
-- mistral-medium-latest (mistral-medium-2508): chat/function/fine-tuning/vision Context: 131072 (GOOD)
+- mistral-medium-latest (mistral-medium-2508): chat/function/fine-tuning/vision Context: 131072 🥈
 - mistral-moderation-2411:  Context: 8192
 - mistral-moderation-latest (mistral-moderation-2411):  Context: 8192
 - mistral-ocr-2503: chat/function/vision Context: 16384
@@ -805,7 +804,7 @@ Snapshot of the models available on each provider as of 2025-08-31
 - mistral-tiny (open-mistral-7b): chat/function/fine-tuning Context: 32768
 - mistral-tiny-2312 (open-mistral-7b): chat/function/fine-tuning Context: 32768
 - mistral-tiny-2407 (open-mistral-nemo): chat/function/fine-tuning Context: 131072
-- mistral-tiny-latest (open-mistral-nemo): chat/function/fine-tuning Context: 131072 (CHEAP)
+- mistral-tiny-latest (open-mistral-nemo): chat/function/fine-tuning Context: 131072 🥉
 - open-mistral-7b: chat/function/fine-tuning Context: 32768
 - open-mistral-nemo-2407 (open-mistral-nemo): chat/function/fine-tuning Context: 131072
 - open-mistral-nemo: chat/function/fine-tuning Context: 131072
@@ -847,7 +846,7 @@ Snapshot of the models available on each provider as of 2025-08-31
 - gpt-4.1-2025-04-14 (2025-04-10)
 - gpt-4.1-mini (2025-04-10)
 - gpt-4.1-mini-2025-04-14 (2025-04-10)
-- gpt-4.1-nano (2025-04-10) (CHEAP)
+- gpt-4.1-nano (2025-04-10) 🥉
 - gpt-4.1-nano-2025-04-14 (2025-04-10)
 - gpt-4o (2024-05-10)
 - gpt-4o-2024-05-13 (2024-05-10)
@@ -877,7 +876,7 @@ Snapshot of the models available on each provider as of 2025-08-31
 - gpt-5 (2025-08-05)
 - gpt-5-2025-08-07 (2025-08-01)
 - gpt-5-chat-latest (2025-08-01)
-- gpt-5-mini (2025-08-05) (GOOD)
+- gpt-5-mini (2025-08-05) 🥈
 - gpt-5-mini-2025-08-07 (2025-08-05)
 - gpt-5-nano (2025-08-05)
 - gpt-5-nano-2025-08-07 (2025-08-05)
@@ -898,7 +897,7 @@ Snapshot of the models available on each provider as of 2025-08-31
 - o3-deep-research-2025-06-26 (2025-06-25)
 - o3-mini (2025-01-17)
 - o3-mini-2025-01-31 (2025-01-27)
-- o3-pro (2025-05-28) (SOTA)
+- o3-pro (2025-05-28) 🥇
 - o3-pro-2025-06-10 (2025-06-05)
 - o4-mini (2025-04-09)
 - o4-mini-2025-04-16 (2025-04-08)
@@ -918,7 +917,7 @@ Snapshot of the models available on each provider as of 2025-08-31
 ## pollinations
 
 - bidara in:image,text,tools; out:text; provider:azure; BIDARA (Biomimetic Designer and Research Assistant by NASA)
-- deepseek-reasoning in:text; out:text; provider:bedrock; DeepSeek R1 0528 (Bedrock) (SOTA)
+- deepseek-reasoning in:text; out:text; provider:bedrock; DeepSeek R1 0528 (Bedrock) 🥇
 - evil in:image,text,tools; out:text; provider:scaleway; Evil
 - flux in:text out:image
 - gemini in:text,tools; out:text; provider:api.navy; Gemini 2.5 Flash Lite (api.navy)
@@ -926,7 +925,7 @@ Snapshot of the models available on each provider as of 2025-08-31
 - kontext in:text out:image
 - llama-fast-roblox in:image,text,tools; out:text; provider:cloudflare; Llama 3.2 1B
 - llama-roblox in:text,tools; out:text; provider:nebius; Llama 3.1 8B Instruct
-- llamascout in:text; out:text; provider:cloudflare; Llama 4 Scout 17B (CHEAP)
+- llamascout in:text; out:text; provider:cloudflare; Llama 4 Scout 17B 🥉
 - midijourney in:text,tools; out:text; provider:azure; MIDIjourney
 - mirexa in:image,text,tools; out:text; provider:azure; Mirexa AI Companion
 - mistral in:text,tools; out:text; provider:scaleway; Mistral Small 3.1 24B
@@ -936,7 +935,7 @@ Snapshot of the models available on each provider as of 2025-08-31
 - openai in:image,text,tools; out:text; provider:azure; OpenAI GPT-4.1 Nano
 - openai-audio in:audio,image,text,tools; out:audio,text; provider:azure; OpenAI GPT-4o Mini Audio Preview
 - openai-fast in:image,text,tools; out:text; provider:azure; OpenAI GPT-4.1 Nano
-- openai-large in:image,text,tools; out:text; provider:azure; OpenAI GPT-4.1 (GOOD)
+- openai-large in:image,text,tools; out:text; provider:azure; OpenAI GPT-4.1 🥈
 - openai-reasoning in:text,tools; out:text; provider:api.navy; OpenAI o4-mini (api.navy)
 - openai-roblox in:image,text,tools; out:text; provider:azure; OpenAI GPT-4.1 Nano
 - qwen-coder in:text,tools; out:text; provider:scaleway; Qwen 2.5 Coder 32B
@@ -988,7 +987,7 @@ Snapshot of the models available on each provider as of 2025-08-31
 - meta-llama/Llama-3-70b-chat-hf (2024-04-18): chat Context: 8192; in: 0.88$/Mt out: 0.88$/Mt
 - meta-llama/Llama-3.2-3B-Instruct-Turbo (2024-09-25): chat Context: 131072; in: 0.06$/Mt out: 0.06$/Mt
 - meta-llama/Llama-3.3-70B-Instruct-Turbo (2024-12-06): chat Context: 131072; in: 0.88$/Mt out: 0.88$/Mt
-- meta-llama/Llama-3.3-70B-Instruct-Turbo-Free (2024-12-12): chat Context: 131072; in: 0.00$/Mt out: 0.00$/Mt (CHEAP)
+- meta-llama/Llama-3.3-70B-Instruct-Turbo-Free (2024-12-12): chat Context: 131072; in: 0.00$/Mt out: 0.00$/Mt 🥉
 - meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8 (2025-04-05): chat Context: 1048576/32768; in: 0.27$/Mt out: 0.85$/Mt
 - meta-llama/Llama-4-Scout-17B-16E-Instruct (2025-04-05): chat Context: 1048576; in: 0.18$/Mt out: 0.59$/Mt
 - meta-llama/Llama-Guard-3-11B-Vision-Turbo (2024-09-25): moderation Context: 131072; in: 0.18$/Mt out: 0.18$/Mt
@@ -1009,12 +1008,12 @@ Snapshot of the models available on each provider as of 2025-08-31
 - openai/gpt-oss-20b (2025-08-06): chat Context: 131072; in: 0.05$/Mt out: 0.20$/Mt
 - openai/whisper-large-v3 (2025-05-28): transcribe Context: 0; in: 0.27$/Mt out: 0.85$/Mt
 - Qwen/Qwen2.5-72B-Instruct-Turbo (2024-10-11): chat Context: 131072; in: 1.20$/Mt out: 1.20$/Mt
-- Qwen/Qwen2.5-7B-Instruct-Turbo (2024-10-11): chat Context: 32768; in: 0.30$/Mt out: 0.30$/Mt (GOOD)
+- Qwen/Qwen2.5-7B-Instruct-Turbo (2024-10-11): chat Context: 32768; in: 0.30$/Mt out: 0.30$/Mt 🥈
 - Qwen/Qwen2.5-Coder-32B-Instruct (2024-11-14): chat Context: 16384; in: 0.80$/Mt out: 0.80$/Mt
 - Qwen/Qwen2.5-VL-72B-Instruct (2025-03-19): chat Context: 32768; in: 1.95$/Mt out: 8.00$/Mt
 - Qwen/Qwen3-235B-A22B-fp8-tput (2025-05-21): chat Context: 40960; in: 0.20$/Mt out: 0.60$/Mt
 - Qwen/Qwen3-235B-A22B-Instruct-2507-tput (2025-07-22): chat Context: 262144; in: 0.20$/Mt out: 0.60$/Mt
-- Qwen/Qwen3-235B-A22B-Thinking-2507 (2025-07-25): chat Context: 262144; in: 0.65$/Mt out: 3.00$/Mt (SOTA)
+- Qwen/Qwen3-235B-A22B-Thinking-2507 (2025-07-25): chat Context: 262144; in: 0.65$/Mt out: 3.00$/Mt 🥇
 - Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8 (2025-07-23): chat Context: 262144; in: 2.00$/Mt out: 2.00$/Mt
 - Qwen/QwQ-32B (2025-03-05): chat Context: 131072/32768; in: 1.20$/Mt out: 1.20$/Mt
 - Salesforce/Llama-Rank-V1 (2024-08-15): rerank Context: 8192; in: 0.10$/Mt out: 0.10$/Mt

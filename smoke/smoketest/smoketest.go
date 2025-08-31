@@ -121,13 +121,28 @@ func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Recor
 	// Check if the order is SOTA, Good, Cheap then the rest.
 	// HACK FOR llamacpp; there's only one model and the reported ID and the scoreboard name do not match.
 	if len(sb.Scenarios) > 1 {
-		if sota := pf(t, Model{Model: genai.ModelSOTA}, nil).ModelID(); sb.Scenarios[0].Models[0] != sota {
+		// It'd be nicer to use PreloadedModels. In practice most do already.
+		name := "sota"
+		fn := func(h http.RoundTripper) http.RoundTripper {
+			r, err2 := rec.Record(name, h)
+			if err2 != nil {
+				t.Fatal(err2)
+			}
+			t.Cleanup(func() {
+				if err3 := r.Stop(); err3 != nil {
+					t.Error(err3)
+				}
+			})
+			return r
+		}
+		if sota := pf(t, Model{Model: genai.ModelSOTA}, fn).ModelID(); sb.Scenarios[0].Models[0] != sota {
 			t.Errorf("SOTA should be first: %q", sota)
 		} else if !sb.Scenarios[0].SOTA {
 			t.Errorf("SOTA should be true: %q", sota)
 		}
 
-		if good := pf(t, Model{Model: genai.ModelGood}, nil).ModelID(); sb.Scenarios[0].Models[0] == good {
+		name = "good"
+		if good := pf(t, Model{Model: genai.ModelGood}, fn).ModelID(); sb.Scenarios[0].Models[0] == good {
 			if !sb.Scenarios[0].Good {
 				t.Errorf("Good should be true: %q", good)
 			}
@@ -139,7 +154,8 @@ func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Recor
 			t.Errorf("Good should be first or second: %q", good)
 		}
 
-		if cheap := pf(t, Model{Model: genai.ModelCheap}, nil).ModelID(); sb.Scenarios[0].Models[0] == cheap {
+		name = "cheap"
+		if cheap := pf(t, Model{Model: genai.ModelCheap}, fn).ModelID(); sb.Scenarios[0].Models[0] == cheap {
 			if !sb.Scenarios[0].Cheap {
 				t.Errorf("Cheap should be true: %q", cheap)
 			}

@@ -14,11 +14,11 @@
 | Alibaba-NLP/gte-modernbert-base                   | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | Qwen/QwQ-32B                                      | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | Qwen/Qwen2.5-72B-Instruct-Turbo                   | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| Qwen/Qwen2.5-7B-Instruct-Turbo                    | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| Qwen/Qwen2.5-7B-Instruct-Turbo🥈                   | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | Qwen/Qwen2.5-Coder-32B-Instruct                   | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | Qwen/Qwen2.5-VL-72B-Instruct                      | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | Qwen/Qwen3-235B-A22B-Instruct-2507-tput           | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| Qwen/Qwen3-235B-A22B-Thinking-2507                | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| Qwen/Qwen3-235B-A22B-Thinking-2507🥇               | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | Qwen/Qwen3-235B-A22B-fp8-tput                     | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8           | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | Salesforce/Llama-Rank-V1                          | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
@@ -61,7 +61,7 @@
 | meta-llama/Llama-3-70b-chat-hf                    | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | meta-llama/Llama-3.2-3B-Instruct-Turbo            | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | meta-llama/Llama-3.3-70B-Instruct-Turbo           | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
-| meta-llama/Llama-3.3-70B-Instruct-Turbo-Free      | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| meta-llama/Llama-3.3-70B-Instruct-Turbo-Free🥉     | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | meta-llama/Llama-Guard-3-11B-Vision-Turbo         | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | meta-llama/Llama-Guard-4-12B                      | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | meta-llama/LlamaGuard-2-8b                        | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |

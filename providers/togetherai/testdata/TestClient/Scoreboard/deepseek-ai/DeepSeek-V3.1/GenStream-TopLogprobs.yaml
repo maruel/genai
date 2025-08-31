@@ -1,0 +1,68 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 136
+    host: api.together.xyz
+    body: "{\"model\":\"deepseek-ai/DeepSeek-V3.1\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"}],\"logprobs\":2}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"o9RNF1U-3QRW2y-9780a4713958a2d6\",\"object\":\"chat.completion.chunk\",\"created\":1756686451,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"deepseek-ai/DeepSeek-V3.1\",\"usage\":null}\n\ndata: {\"id\":\"o9RNF1U-3QRW2y-9780a4713958a2d6\",\"object\":\"chat.completion.chunk\",\"created\":1756686451,\"choices\":[{\"index\":0,\"text\":\"Hello\",\"logprobs\":{\"tokens\":[\"Hello\"],\"token_logprobs\":[-0.0027859837282449007],\"top_logprobs\":[[{\"token\":\"Hello\",\"logprob\":-0.0027859837282449007},{\"token\":\"Hi\",\"logprob\":-6.074220180511475}]]},\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"Hello\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"deepseek-ai/DeepSeek-V3.1\",\"usage\":null}\n\ndata: {\"id\":\"o9RNF1U-3QRW2y-9780a4713958a2d6\",\"object\":\"chat.completion.chunk\",\"created\":1756686451,\"choices\":[{\"index\":0,\"text\":\".\",\"logprobs\":{\"tokens\":[\".\",\"<｜end▁of▁sentence｜>\"],\"token_logprobs\":[-0.056212179362773895,-1.1920928244535389e-7],\"top_logprobs\":[[{\"token\":\".\",\"logprob\":-0.056212179362773895},{\"token\":\"<｜end▁of▁sentence｜>\",\"logprob\":-2.913355588912964}],[{\"token\":\".\",\"logprob\":-0.056212179362773895},{\"token\":\"<｜end▁of▁sentence｜>\",\"logprob\":-2.913355588912964}]]},\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\".\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"deepseek-ai/DeepSeek-V3.1\",\"usage\":null}\n\ndata: {\"id\":\"o9RNF1U-3QRW2y-9780a4713958a2d6\",\"object\":\"chat.completion.chunk\",\"created\":1756686451,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":\"stop\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"deepseek-ai/DeepSeek-V3.1\",\"usage\":null}\n\ndata: {\"id\":\"o9RNF1U-3QRW2y-9780a4713958a2d6\",\"object\":\"chat.completion.chunk\",\"created\":1756686451,\"choices\":[],\"model\":\"deepseek-ai/DeepSeek-V3.1\",\"usage\":{\"prompt_tokens\":12,\"total_tokens\":15,\"completion_tokens\":3,\"prompt_tokens_details\":null,\"reasoning_tokens\":0}}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - no-cache, no-transform
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9780a4713958a2d6-YUL
+      Content-Type:
+      - text/event-stream;charset=utf-8
+      Retry-After:
+      - "1"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - b2179320-6bb0-43a2-921f-2e55d86ed877-noamzn
+      X-Api-Call-Start:
+      - "2025-09-01T00:27:31.568Z"
+      X-Api-Received:
+      - "2025-09-01T00:27:31.548Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "16"
+      X-Ratelimit-Remaining-Tokens:
+      - "2688"
+      X-Ratelimit-Reset:
+      - "1"
+      X-Request-Id:
+      - o9RNF1U-3QRW2y-9780a4713958a2d6
+    status: 200 OK
+    code: 200
+    duration: 327ms

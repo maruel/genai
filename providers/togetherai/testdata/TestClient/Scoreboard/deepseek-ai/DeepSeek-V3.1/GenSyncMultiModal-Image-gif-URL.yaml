@@ -1,0 +1,71 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 299
+    host: api.together.xyz
+    body: "{\"model\":\"deepseek-ai/DeepSeek-V3.1\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What fruit is it? Reply with only one word.\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.gif\"}}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"o9RNq8o-3QRW2y-9780a73f4d76a2d6\",\n  \"object\": \"chat.completion\",\n  \"created\": 1756686567,\n  \"model\": \"deepseek-ai/DeepSeek-V3.1\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"Apple\",\n        \"tool_calls\": [],\n        \"reasoning\": null\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 15,\n    \"total_tokens\": 17,\n    \"completion_tokens\": 2\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9780a73f4d76a2d6-YUL
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"235-fiqGnXAlsTuXaD0qETiQdlHIN1M"
+      Retry-After:
+      - "2"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 2c59d188-bd00-4caf-bd59-523bbe845138-noamzn
+      X-Api-Call-End:
+      - "2025-09-01T00:29:27.106Z"
+      X-Api-Call-Start:
+      - "2025-09-01T00:29:26.374Z"
+      X-Api-Received:
+      - "2025-09-01T00:29:26.348Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "19"
+      X-Ratelimit-Remaining-Tokens:
+      - "2983"
+      X-Ratelimit-Reset:
+      - "2"
+      X-Request-Id:
+      - o9RNq8o-3QRW2y-9780a73f4d76a2d6
+    status: 200 OK
+    code: 200
+    duration: 871ms

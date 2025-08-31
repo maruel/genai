@@ -1,0 +1,68 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 296
+    host: api.together.xyz
+    body: "{\"model\":\"openai/gpt-oss-20b\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What is the word said? Reply with only the word.\"},{\"type\":\"video_url\",\"video_url\":{\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/video.mp4\"}}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"o9RFhSs-4Yz4kd-978085461fb0a2a0\",\"object\":\"chat.completion.chunk\",\"created\":1756685174,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"openai/gpt-oss-20b\",\"usage\":null}\n\ndata: {\"id\":\"o9RFhSs-4Yz4kd-978085461fb0a2a0\",\"object\":\"chat.completion.chunk\",\"created\":1756685174,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":null,\"reasoning\":\"We need to parse the user query. The user says: \\\"What is the word said? Reply with only the word.\\\" This is ambiguous: There's no context. Might be a trick. Could be referencing a previous conversation or a puzzle. We just see that the user is asking to reply with the word that was said. But we don't have any prior context. So maybe it's a riddle where the answer is \\\"word\\\". Or maybe the answer is \\\"word\\\" because they ask \\\"What is the word said?\\\" The answer may be \\\"word\\\". But could be \\\"said\\\". Or \\\"What\\\". Hmm.\\n\\nCould it be a meta puzzle: The phrase \\\"What is the word said?\\\" The word said might be \\\"said\\\". But reply only with the word. So answer: \\\"said\\\". Could also be \\\"word\\\". Let's think: The question is: \\\"What is the word said? Reply with only the word.\\\" That could be a cryptic instruction: The word that's being said. The only word said is \\\"word\\\". But maybe they want the word \\\"said\\\". The phrase \\\"What is the word said?\\\" The word that is said is \\\"word\\\". But that seems circular. Actually, the question: \\\"What is the word said?\\\" If we parse it: It's asking: What is the word that is said? The word that is said is \\\"word\\\". Because the question itself says \\\"What is the word said?\\\" So the word that is said is \\\"word\\\". But maybe it's \\\"said\\\". The word \\\"said\\\" is said. But the phrase \\\"word said\\\" might be a phrase. The answer might be \\\"word\\\". There's too little context.\\n\\nCould be a trick: They want the word \\\"what\\\". Because the question starts with \\\"What\\\". The word that is said is \\\"What\\\". But the question is \\\"What is the word said?\\\" The word that is said is \\\"word\\\". Because it's a riddle that answer is \\\"word\\\". Many puzzles: \\\"What is the word that is said but never spoken?\\\" The answer might be \\\"word\\\". But this is not exactly that. But maybe the puzzle is: \\\"What is the word said?\\\" The answer is \\\"said\\\". But the user says: \\\"Reply with only the word.\\\" So we must output the word only, no punctuation or explanation.\\n\\nWe need to decide. The simplest is \\\"word\\\". But maybe the trick is \\\"said\\\". The question: \\\"What is the word said?\\\" The word that is said is \\\"said\\\". Because the word \\\"said\\\" is said. So answer: \\\"said\\\". But if the question is \\\"What is the word said?\\\" could be \\\"word\\\". Because the question itself says \\\"What is the word said?\\\" and the word that is said is \\\"word\\\". It's ambiguous.\\n\\nLet's consider typical puzzles: \\\"What is the only word that can be pronounced with no vocal cords?\\\" The answer: \\\"shh\\\". But no.\\n\\nMaybe it's a riddle: \\\"What is the word said?\\\" If you read it in a certain way: \\\"What is the word said?\\\" The word \\\"said\\\" is said. The pun. So answer \\\"said\\\". But the user says \\\"reply with only the word.\\\" So we output \\\"said\\\".\\n\\nAlternatively, maybe it's a meta puzzle: The answer is \\\"the word said\\\". But they want one word. So maybe \\\"said\\\". I'll answer \\\"said\\\".\"}}],\"model\":\"openai/gpt-oss-20b\",\"usage\":null}\n\ndata: {\"id\":\"o9RFhSs-4Yz4kd-978085461fb0a2a0\",\"object\":\"chat.completion.chunk\",\"created\":1756685174,\"choices\":[{\"index\":0,\"text\":\"said\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"said\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"openai/gpt-oss-20b\",\"usage\":null}\n\ndata: {\"id\":\"o9RFhSs-4Yz4kd-978085461fb0a2a0\",\"object\":\"chat.completion.chunk\",\"created\":1756685174,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":\"stop\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"openai/gpt-oss-20b\",\"usage\":null}\n\ndata: {\"id\":\"o9RFhSs-4Yz4kd-978085461fb0a2a0\",\"object\":\"chat.completion.chunk\",\"created\":1756685174,\"choices\":[],\"model\":\"openai/gpt-oss-20b\",\"usage\":{\"prompt_tokens\":79,\"total_tokens\":779,\"completion_tokens\":700,\"prompt_tokens_details\":null,\"reasoning_tokens\":0}}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - no-cache, no-transform
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 978085461fb0a2a0-YUL
+      Content-Type:
+      - text/event-stream;charset=utf-8
+      Retry-After:
+      - "1"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 5ed02325-8394-45a7-a484-2f3d7a88bdeb-noamzn
+      X-Api-Call-Start:
+      - "2025-09-01T00:06:14.712Z"
+      X-Api-Received:
+      - "2025-09-01T00:06:14.700Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "18"
+      X-Ratelimit-Remaining-Tokens:
+      - "2794"
+      X-Ratelimit-Reset:
+      - "1"
+      X-Request-Id:
+      - o9RFhSs-4Yz4kd-978085461fb0a2a0
+    status: 200 OK
+    code: 200
+    duration: 162ms

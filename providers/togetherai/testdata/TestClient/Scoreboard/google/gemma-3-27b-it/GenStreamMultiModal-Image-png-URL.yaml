@@ -1,0 +1,70 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 294
+    host: api.together.xyz
+    body: "{\"model\":\"google/gemma-3-27b-it\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What fruit is it? Reply with only one word.\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.png\"}}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"chatcmpl-1f5b028695ea43978dfecc0394daa1ea\",\"object\":\"chat.completion.chunk\",\"created\":1756686324,\"choices\":[{\"index\":0,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" \",\"tool_calls\":null},\"logprobs\":null,\"finish_reason\":null}],\"model\":\"google/gemma-3-27b-it\"}\n\ndata: {\"id\":\"chatcmpl-1f5b028695ea43978dfecc0394daa1ea\",\"object\":\"chat.completion.chunk\",\"created\":1756686324,\"choices\":[{\"index\":0,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" \",\"tool_calls\":null},\"logprobs\":null,\"finish_reason\":null}],\"model\":\"google/gemma-3-27b-it\"}\n\ndata: {\"id\":\"chatcmpl-1f5b028695ea43978dfecc0394daa1ea\",\"object\":\"chat.completion.chunk\",\"created\":1756686324,\"choices\":[{\"index\":0,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" \",\"tool_calls\":null},\"logprobs\":null,\"finish_reason\":\"stop\",\"stop_reason\":106}],\"model\":\"google/gemma-3-27b-it\"}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - no-cache, no-transform
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9780a153f918a28c-YUL
+      Content-Type:
+      - text/event-stream;charset=utf-8
+      Retry-After:
+      - "0"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 299c2e5c-a023-4fb4-b4aa-f70bfc8fba83-noamzn
+      X-Api-Call-Start:
+      - "2025-09-01T00:25:24.471Z"
+      X-Api-Received:
+      - "2025-09-01T00:25:24.121Z"
+      X-Api-Retries:
+      - "5"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "15"
+      X-Ratelimit-Remaining-Tokens:
+      - "2718"
+      X-Ratelimit-Reset:
+      - "0"
+      X-Request-Id:
+      - o9RMb8U-66dFFu-9780a153f918a28c
+    status: 200 OK
+    code: 200
+    duration: 703ms

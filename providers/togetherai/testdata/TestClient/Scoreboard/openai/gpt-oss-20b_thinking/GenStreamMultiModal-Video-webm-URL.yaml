@@ -1,0 +1,68 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 297
+    host: api.together.xyz
+    body: "{\"model\":\"openai/gpt-oss-20b\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What is the word said? Reply with only the word.\"},{\"type\":\"video_url\",\"video_url\":{\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/video.webm\"}}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"o9RFj3C-4YNCb4-978085670e16a2a0\",\"object\":\"chat.completion.chunk\",\"created\":1756685180,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"openai/gpt-oss-20b\",\"usage\":null}\n\ndata: {\"id\":\"o9RFj3C-4YNCb4-978085670e16a2a0\",\"object\":\"chat.completion.chunk\",\"created\":1756685180,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":null,\"reasoning\":\"The user asks: \\\"What is the word said? Reply with only the word.\\\" This is ambiguous context. Likely a riddle: \\\"What is the word said?\\\" Could refer to a previous conversation? There is no prior context. The instruction: reply with only the word. So likely the answer is a specific word. But we need to guess context: maybe it's a classic riddle: \\\"What word is spoken when you say 'stop'?\\\" The answer: \\\"Stop.\\\" Or \\\"The word said?\\\" Might be a trick: the word said is \\\"Silence\\\". Or \\\"Word\\\" itself. Or \\\"Hello\\\".\\n\\nCould be a puzzle: The phrase \\\"What is the word said?\\\" might be a riddle from a puzzle book. Without context, we might guess the answer is \\\"silence\\\". Because if you say the word \\\"silence\\\", then you are saying silence. Or the word \\\"silence\\\" is said. But the instruction is to reply with only the word. So maybe the answer is \\\"silence\\\". Alternatively, the riddle \\\"What is the word that is spoken when you say 'stop'?\\\" The answer: \\\"Stop.\\\" But that seems too trivial.\\n\\nMaybe it's a lateral thinking: The word said is \\\"Hello\\\". The phrase \\\"What is the word said?\\\" could be a meta riddle about a word that is 'said' meaning spoken. The answer could be \\\"word\\\" itself, because you said the word \\\"word\\\". The riddle: \\\"What word can be spelled incorrectly in every dictionary?\\\" Answer: \\\"Incorrectly\\\". But no.\\n\\nCould be a trick: The answer is \\\"said\\\". Because the question: \\\"What is the word said?\\\" The word that is said is \\\"said\\\". So reply with \\\"said\\\".\\n\\nBut the instruction: reply with only the word. So maybe the answer: \\\"silence\\\" because if you say silence, you say silence. But the riddle might be: \\\"What is the word that is spoken when you say 'stop'?\\\" And the answer: \\\"Stop\\\". But that seems too obvious.\\n\\nAlternatively, the riddle could be: \\\"What is the word that when spoken, you always have to be careful?\\\" Answer: \\\"Blind\\\". No.\\n\\nLet's think of known riddles: \\\"What word is spoken when you say it?\\\" Answer: \\\"Silence\\\". Because if you say the word silence, it's the word 'silence', which is spoken. Or \\\"What is the word that is spoken when you say 'silence'? It's silence.\\\" That fits.\\n\\nBut the phrasing: \\\"What is the word said?\\\" might be a puzzle: The answer is \\\"said\\\". Because the word said is the word \\\"said\\\". So reply with \\\"said\\\". That seems plausible.\\n\\nBut maybe this is a puzzle from \\\"What is the word said?\\\" where you need to think about the word \\\"said\\\" itself. The question: \\\"What is the word said?\\\" The word said is \\\"said\\\". So answer: said.\\n\\nI think the intended is the pun: The word that is said is \\\"said\\\". So output \\\"said\\\".\\n\\nThus reply with \\\"said\\\".\"}}],\"model\":\"openai/gpt-oss-20b\",\"usage\":null}\n\ndata: {\"id\":\"o9RFj3C-4YNCb4-978085670e16a2a0\",\"object\":\"chat.completion.chunk\",\"created\":1756685180,\"choices\":[{\"index\":0,\"text\":\"said\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"said\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"openai/gpt-oss-20b\",\"usage\":null}\n\ndata: {\"id\":\"o9RFj3C-4YNCb4-978085670e16a2a0\",\"object\":\"chat.completion.chunk\",\"created\":1756685180,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":\"stop\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"openai/gpt-oss-20b\",\"usage\":null}\n\ndata: {\"id\":\"o9RFj3C-4YNCb4-978085670e16a2a0\",\"object\":\"chat.completion.chunk\",\"created\":1756685180,\"choices\":[],\"model\":\"openai/gpt-oss-20b\",\"usage\":{\"prompt_tokens\":79,\"total_tokens\":728,\"completion_tokens\":649,\"prompt_tokens_details\":null,\"reasoning_tokens\":0}}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - no-cache, no-transform
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 978085670e16a2a0-YUL
+      Content-Type:
+      - text/event-stream;charset=utf-8
+      Retry-After:
+      - "2"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - a51218b8-35d3-4b52-9739-261968890770-noamzn
+      X-Api-Call-Start:
+      - "2025-09-01T00:06:20.076Z"
+      X-Api-Received:
+      - "2025-09-01T00:06:20.056Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "19"
+      X-Ratelimit-Remaining-Tokens:
+      - "2801"
+      X-Ratelimit-Reset:
+      - "2"
+      X-Request-Id:
+      - o9RFj3C-4YNCb4-978085670e16a2a0
+    status: 200 OK
+    code: 200
+    duration: 138ms

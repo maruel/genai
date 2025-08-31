@@ -1,0 +1,70 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 132
+    host: api.together.xyz
+    body: "{\"model\":\"google/gemma-3-27b-it\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"}],\"logprobs\":2}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 177
+    body: "{\n  \"id\": \"o9RMYWo-66dFFu-9780a11e79d4a28c\",\n  \"error\": {\n    \"message\": \"Input validation error\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": null\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9780a11e79d4a28c-YUL
+      Content-Length:
+      - "177"
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"b1-d8xOm7MKk4kr/N99dmxNSRzZFfU"
+      Retry-After:
+      - "1"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - acc6f3e4-b44a-4127-a791-e4b0853e06ec-noamzn
+      X-Api-Received:
+      - "2025-09-01T00:25:15.324Z"
+      X-Api-Retries:
+      - "5"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "16"
+      X-Ratelimit-Remaining-Tokens:
+      - "2979"
+      X-Ratelimit-Reset:
+      - "1"
+      X-Request-Id:
+      - o9RMYWo-66dFFu-9780a11e79d4a28c
+    status: 400 Bad Request
+    code: 400
+    duration: 416ms

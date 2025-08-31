@@ -1,0 +1,71 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 299
+    host: api.together.xyz
+    body: "{\"model\":\"openai/gpt-oss-120b\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What is the word said? Reply with only the word.\"},{\"type\":\"video_url\",\"video_url\":{\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/video.webm\"}}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"o9RLQfB-3QRW2y-97809bb5be31a2f4\",\n  \"object\": \"chat.completion\",\n  \"created\": 1756686094,\n  \"model\": \"openai/gpt-oss-120b\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"said\",\n        \"tool_calls\": [],\n        \"reasoning\": \"The user says: \\\"What is the word said? Reply with only the word.\\\" This is ambiguous. Possibly they ask to guess a word? Could be a riddle? There's no context. Might be a trick: The word \\\"said\\\". The phrase \\\"What is the word said?\\\" could be interpreted as \\\"What is the word 'said'?\\\" The answer could be \\\"said\\\". Or maybe they want the word that was said in previous conversation, but none. Could be a test to see if the assistant replies with only a word. Could answer \\\"silence\\\"? Or \\\"word\\\"? The instruction: \\\"Reply with only the word.\\\" So we need to output a single word. Likely the answer is \\\"said\\\". But the question: \\\"What is the word said?\\\" Might be reading literally: The word \\\"said\\\". So answer: \\\"said\\\". I'll respond with that.\"\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 79,\n    \"total_tokens\": 268,\n    \"completion_tokens\": 189\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 97809bb5be31a2f4-YUL
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"51f-8aczlhf3Yu2S1IVexEYX0VS+xhg"
+      Retry-After:
+      - "1"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 45bcae9a-5d4e-4359-bfd7-5e939376062b-noamzn
+      X-Api-Call-End:
+      - "2025-09-01T00:21:34.478Z"
+      X-Api-Call-Start:
+      - "2025-09-01T00:21:33.805Z"
+      X-Api-Received:
+      - "2025-09-01T00:21:33.786Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "17"
+      X-Ratelimit-Remaining-Tokens:
+      - "2586"
+      X-Ratelimit-Reset:
+      - "1"
+      X-Request-Id:
+      - o9RLQfB-3QRW2y-97809bb5be31a2f4
+    status: 200 OK
+    code: 200
+    duration: 816ms

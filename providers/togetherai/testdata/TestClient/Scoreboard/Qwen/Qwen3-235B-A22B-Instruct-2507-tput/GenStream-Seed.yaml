@@ -1,0 +1,68 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 147
+    host: api.together.xyz
+    body: "{\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"}],\"seed\":42}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"o9RDmGB-zqrih-97807c0c4f45a30b\",\"object\":\"chat.completion.chunk\",\"created\":1756684797,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"usage\":null}\n\ndata: {\"id\":\"o9RDmGB-zqrih-97807c0c4f45a30b\",\"object\":\"chat.completion.chunk\",\"created\":1756684797,\"choices\":[{\"index\":0,\"text\":\"Hello\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"Hello\",\"tool_calls\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"usage\":null}\n\ndata: {\"id\":\"o9RDmGB-zqrih-97807c0c4f45a30b\",\"object\":\"chat.completion.chunk\",\"created\":1756684797,\"choices\":[{\"index\":0,\"text\":\".\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\".\",\"tool_calls\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"usage\":null}\n\ndata: {\"id\":\"o9RDmGB-zqrih-97807c0c4f45a30b\",\"object\":\"chat.completion.chunk\",\"created\":1756684797,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":\"stop\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"usage\":null}\n\ndata: {\"id\":\"o9RDmGB-zqrih-97807c0c4f45a30b\",\"object\":\"chat.completion.chunk\",\"created\":1756684797,\"choices\":[],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"usage\":{\"prompt_tokens\":16,\"total_tokens\":19,\"completion_tokens\":3}}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - no-cache, no-transform
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 97807c0c4f45a30b-YUL
+      Content-Type:
+      - text/event-stream;charset=utf-8
+      Retry-After:
+      - "2"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 76a4d366-5130-4400-a752-27a00eac1e5a-noamzn
+      X-Api-Call-Start:
+      - "2025-08-31T23:59:57.332Z"
+      X-Api-Received:
+      - "2025-08-31T23:59:57.313Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "19"
+      X-Ratelimit-Remaining-Tokens:
+      - "3000"
+      X-Ratelimit-Reset:
+      - "2"
+      X-Request-Id:
+      - o9RDmGB-zqrih-97807c0c4f45a30b
+    status: 200 OK
+    code: 200
+    duration: 569ms

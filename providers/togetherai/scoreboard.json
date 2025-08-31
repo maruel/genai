@@ -10,25 +10,133 @@
   "dashboardURL": "https://api.together.ai/settings/billing",
   "scenarios": [
     {
-      "comments": "Untested",
       "models": [
         "Qwen/Qwen3-235B-A22B-Thinking-2507"
       ],
-      "sota": true
+      "sota": true,
+	  "reason": true,
+      "reasoningTokenStart": "\u003cthink\u003e",
+      "reasoningTokenEnd": "\u003c/think\u003e",
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+		"tools": "true",
+		"toolsBiased": "true",
+		"toolCallRequired": true,
+        "json": true,
+        "jsonSchema": true,
+        "topLogprobs": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+		"tools": "true",
+		"toolsBiased": "true",
+		"toolCallRequired": true,
+        "json": true,
+        "jsonSchema": true,
+        "topLogprobs": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
     },
     {
-      "comments": "Untested",
       "models": [
         "Qwen/Qwen3-235B-A22B-Instruct-2507-tput"
       ],
-      "good": true
+      "good": true,
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+		"tools": "true",
+		"toolsBiased": "true",
+		"toolCallRequired": true,
+        "json": true,
+        "jsonSchema": true,
+        "topLogprobs": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+		"tools": "true",
+		"toolsBiased": "true",
+		"toolCallRequired": true,
+        "json": true,
+        "jsonSchema": true,
+        "topLogprobs": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
     },
     {
-      "comments": "Untested",
+      "comments": "TogetherAI has broken reasoning parsing during tool call and JSON output",
       "models": [
         "openai/gpt-oss-20b"
       ],
-      "cheap": true
+      "cheap": true,
+	  "reason": true,
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+		"tools": "flaky",
+		"toolsBiased": "true",
+        "topLogprobs": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+		"tools": "flaky",
+		"toolCallRequired": true,
+        "topLogprobs": true
+      }
     },
     {
       "models": [
@@ -65,6 +173,79 @@
         "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
+      }
+    },
+    {
+      "models": [
+        "deepseek-ai/DeepSeek-V3.1"
+      ],
+      "in": {
+        "image": {
+          "url": true,
+          "supportedFormats": [
+            "image/jpeg"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "topLogprobs": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "topLogprobs": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
+    },
+    {
+      "comments": "TogetherAI has broken reasoning parsing during tool call and JSON output",
+      "models": [
+        "openai/gpt-oss-120b"
+      ],
+      "cheap": true,
+	  "reason": true,
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "topLogprobs": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "topLogprobs": true
       }
     },
     {
@@ -208,7 +389,89 @@
     },
     {
       "models": [
+        "google/gemma-3-27b-it"
+      ],
+      "in": {
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "flaky",
+        "seed": true,
+        "json": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "reportRateLimits": true,
+        "reportFinishReason": "true",
+        "seed": true,
+        "maxTokens": true
+      }
+    },
+    {
+      "models": [
+        "black-forest-labs/FLUX.1-schnell-Free"
+      ],
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "image": {
+          "url": true,
+          "supportedFormats": [
+            "image/jpeg"
+          ]
+        }
+      },
+      "GenSync": {
+        "seed": true
+      }
+    },
+    {
+      "models": [
         "black-forest-labs/FLUX.1-schnell"
+      ],
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "image": {
+          "url": true,
+          "supportedFormats": [
+            "image/jpeg"
+          ]
+        }
+      },
+      "GenSync": {
+        "seed": true
+      }
+    },
+    {
+      "models": [
+        "black-forest-labs/FLUX.1-dev"
       ],
       "in": {
         "text": {
@@ -246,14 +509,12 @@
         "arcee-ai/virtuoso-large",
         "arcee_ai/arcee-spotlight",
         "arize-ai/qwen-2-1.5b-instruct",
-        "black-forest-labs/FLUX.1-dev",
         "black-forest-labs/FLUX.1-dev-lora",
         "black-forest-labs/FLUX.1-kontext-dev",
         "black-forest-labs/FLUX.1-kontext-max",
         "black-forest-labs/FLUX.1-kontext-pro",
         "black-forest-labs/FLUX.1-krea-dev",
         "black-forest-labs/FLUX.1-pro",
-        "black-forest-labs/FLUX.1-schnell-Free",
         "black-forest-labs/FLUX.1.1-pro",
         "cartesia/sonic",
         "cartesia/sonic-2",
@@ -267,8 +528,6 @@
         "deepseek-ai/DeepSeek-R1-Distill-Llama-70B-free",
         "deepseek-ai/DeepSeek-R1-Distill-Qwen-14B",
         "deepseek-ai/DeepSeek-V3",
-        "deepseek-ai/DeepSeek-V3.1",
-        "google/gemma-3-27b-it",
         "google/gemma-3n-E4B-it",
         "intfloat/multilingual-e5-large-instruct",
         "lgai/exaone-3-5-32b-instruct",
@@ -292,7 +551,6 @@
         "mistralai/Mistral-7B-Instruct-v0.3",
         "mistralai/Mixtral-8x7B-Instruct-v0.1",
         "mixedbread-ai/Mxbai-Rerank-Large-V2",
-        "openai/gpt-oss-120b",
         "openai/whisper-large-v3",
         "scb10x/scb10x-llama3-1-typhoon2-70b-instruct",
         "scb10x/scb10x-typhoon-2-1-gemma3-12b",

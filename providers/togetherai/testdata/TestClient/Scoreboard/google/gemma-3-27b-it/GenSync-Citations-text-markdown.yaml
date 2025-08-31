@@ -1,0 +1,71 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 270
+    host: api.together.xyz
+    body: "{\"model\":\"google/gemma-3-27b-it\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"# Quackiland\\n\\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"o9RMZcV-62bZhn-9780a1358ea8a28c\",\n  \"object\": \"chat.completion\",\n  \"created\": 1756686319,\n  \"model\": \"google/gemma-3-27b-it\",\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"logprobs\": null,\n      \"index\": 0,\n      \"seed\": null,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"The capital of Quackiland is **Quack**. \\n\\nThe question states it directly! It's a bit of a trick question. 😊\",\n        \"tool_calls\": []\n      }\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 44,\n    \"total_tokens\": 75,\n    \"completion_tokens\": 31,\n    \"prompt_tokens_details\": null\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9780a1358ea8a28c-YUL
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"252-Rjh4Io2HAYHN2xSrhR34xidtyu4"
+      Retry-After:
+      - "0"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 2bdfb8ce-942b-4e7f-aabf-69dfbd23b0f3-noamzn
+      X-Api-Call-End:
+      - "2025-09-01T00:25:19.462Z"
+      X-Api-Call-Start:
+      - "2025-09-01T00:25:19.022Z"
+      X-Api-Received:
+      - "2025-09-01T00:25:19.018Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "16"
+      X-Ratelimit-Remaining-Tokens:
+      - "2954"
+      X-Ratelimit-Reset:
+      - "0"
+      X-Request-Id:
+      - o9RMZcV-62bZhn-9780a1358ea8a28c
+    status: 200 OK
+    code: 200
+    duration: 537ms

@@ -1,0 +1,68 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 397
+    host: api.together.xyz
+    body: "{\"model\":\"Qwen/Qwen3-235B-A22B-Thinking-2507\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON.\"}],\"response_format\":{\"type\":\"json_schema\",\"schema\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"is_fruit\":{\"type\":\"boolean\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"is_fruit\"]}}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"o9RCuMk-28Eivz-978077f5be69a2a3\",\"object\":\"chat.completion.chunk\",\"created\":1756684629,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-Thinking-2507\",\"usage\":null}\n\ndata: {\"id\":\"o9RCuMk-28Eivz-978077f5be69a2a3\",\"object\":\"chat.completion.chunk\",\"created\":1756684629,\"choices\":[{\"index\":0,\"text\":\"{\\\"\",\"logprobs\":null,\"tool_calls\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"{\\\"\",\"tool_calls\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-Thinking-2507\",\"usage\":null}\n\ndata: {\"id\":\"o9RCuMk-28Eivz-978077f5be69a2a3\",\"object\":\"chat.completion.chunk\",\"created\":1756684629,\"choices\":[{\"index\":0,\"text\":\"is\",\"logprobs\":null,\"tool_calls\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"is\",\"tool_calls\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-Thinking-2507\",\"usage\":null}\n\ndata: {\"id\":\"o9RCuMk-28Eivz-978077f5be69a2a3\",\"object\":\"chat.completion.chunk\",\"created\":1756684629,\"choices\":[{\"index\":0,\"text\":\"_f\",\"logprobs\":null,\"tool_calls\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"_f\",\"tool_calls\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-Thinking-2507\",\"usage\":null}\n\ndata: {\"id\":\"o9RCuMk-28Eivz-978077f5be69a2a3\",\"object\":\"chat.completion.chunk\",\"created\":1756684629,\"choices\":[{\"index\":0,\"text\":\"ruit\",\"logprobs\":null,\"tool_calls\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"ruit\",\"tool_calls\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-Thinking-2507\",\"usage\":null}\n\ndata: {\"id\":\"o9RCuMk-28Eivz-978077f5be69a2a3\",\"object\":\"chat.completion.chunk\",\"created\":1756684629,\"choices\":[{\"index\":0,\"text\":\"\\\":\",\"logprobs\":null,\"tool_calls\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\\\":\",\"tool_calls\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-Thinking-2507\",\"usage\":null}\n\ndata: {\"id\":\"o9RCuMk-28Eivz-978077f5be69a2a3\",\"object\":\"chat.completion.chunk\",\"created\":1756684629,\"choices\":[{\"index\":0,\"text\":\" true\",\"logprobs\":null,\"tool_calls\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" true\",\"tool_calls\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-Thinking-2507\",\"usage\":null}\n\ndata: {\"id\":\"o9RCuMk-28Eivz-978077f5be69a2a3\",\"object\":\"chat.completion.chunk\",\"created\":1756684629,\"choices\":[{\"index\":0,\"text\":\"}\",\"logprobs\":null,\"tool_calls\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"}\",\"tool_calls\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-Thinking-2507\",\"usage\":null}\n\ndata: {\"id\":\"o9RCuMk-28Eivz-978077f5be69a2a3\",\"object\":\"chat.completion.chunk\",\"created\":1756684629,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":\"stop\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-Thinking-2507\",\"usage\":null}\n\ndata: {\"id\":\"o9RCuMk-28Eivz-978077f5be69a2a3\",\"object\":\"chat.completion.chunk\",\"created\":1756684629,\"choices\":[],\"model\":\"Qwen/Qwen3-235B-A22B-Thinking-2507\",\"usage\":{\"prompt_tokens\":27,\"total_tokens\":35,\"completion_tokens\":8}}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - no-cache, no-transform
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 978077f5be69a2a3-YUL
+      Content-Type:
+      - text/event-stream;charset=utf-8
+      Retry-After:
+      - "1"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 7a9edcff-4ea4-4d4e-a914-4330648fed73-noamzn
+      X-Api-Call-Start:
+      - "2025-08-31T23:57:09.453Z"
+      X-Api-Received:
+      - "2025-08-31T23:57:09.435Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "16"
+      X-Ratelimit-Remaining-Tokens:
+      - "2922"
+      X-Ratelimit-Reset:
+      - "1"
+      X-Request-Id:
+      - o9RCuMk-28Eivz-978077f5be69a2a3
+    status: 200 OK
+    code: 200
+    duration: 168ms

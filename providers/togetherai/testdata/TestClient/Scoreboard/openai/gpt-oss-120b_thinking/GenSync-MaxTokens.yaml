@@ -1,0 +1,71 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 155
+    host: api.together.xyz
+    body: "{\"model\":\"openai/gpt-oss-120b\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":\"Explain the theory of relativity in great details.\"}],\"max_tokens\":16}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"o9RLLmT-3QRW2y-97809b63eba5a2f4\",\n  \"object\": \"chat.completion\",\n  \"created\": 1756686080,\n  \"model\": \"openai/gpt-oss-120b\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"analysisWe need to explain the theory of relativity in great detail.\",\n        \"tool_calls\": [],\n        \"reasoning\": null\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"length\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 77,\n    \"total_tokens\": 93,\n    \"completion_tokens\": 16\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 97809b63eba5a2f4-YUL
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"271-knHl3PmEvo0UIVLVveTeS2e7FL0"
+      Retry-After:
+      - "0"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 60f05b0c-5a8c-45c5-85c0-e1a27d2211ac-noamzn
+      X-Api-Call-End:
+      - "2025-09-01T00:21:20.804Z"
+      X-Api-Call-Start:
+      - "2025-09-01T00:21:20.721Z"
+      X-Api-Received:
+      - "2025-09-01T00:21:20.695Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "15"
+      X-Ratelimit-Remaining-Tokens:
+      - "2684"
+      X-Ratelimit-Reset:
+      - "0"
+      X-Request-Id:
+      - o9RLLmT-3QRW2y-97809b63eba5a2f4
+    status: 200 OK
+    code: 200
+    duration: 240ms

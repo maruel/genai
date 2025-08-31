@@ -1,0 +1,73 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 162
+    host: api.together.xyz
+    body: "{\"model\":\"google/gemma-3-27b-it\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":\"Talk about Canada in great details. Start with: Canada is\"}],\"stop\":[\"is\"]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"o9RMYtX-66dFFu-9780a1264b6ea28c\",\n  \"object\": \"chat.completion\",\n  \"created\": 1756686316,\n  \"model\": \"google/gemma-3-27b-it\",\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"logprobs\": null,\n      \"index\": 0,\n      \"seed\": null,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"## Canada \",\n        \"tool_calls\": []\n      }\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 21,\n    \"total_tokens\": 24,\n    \"completion_tokens\": 3,\n    \"prompt_tokens_details\": null\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9780a1264b6ea28c-YUL
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"1ea-MFtTpWI55E70gnFIfLtdhAK+OhY"
+      Retry-After:
+      - "2"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - ee6f6dc8-9c94-48a8-a02c-08a4437831c2-noamzn
+      X-Api-Call-End:
+      - "2025-09-01T00:25:17.050Z"
+      X-Api-Call-Start:
+      - "2025-09-01T00:25:16.883Z"
+      X-Api-Received:
+      - "2025-09-01T00:25:16.585Z"
+      X-Api-Retries:
+      - "5"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "19"
+      X-Ratelimit-Remaining-Tokens:
+      - "3000"
+      X-Ratelimit-Reset:
+      - "2"
+      X-Request-Id:
+      - o9RMYtX-66dFFu-9780a1264b6ea28c
+    status: 200 OK
+    code: 200
+    duration: 546ms

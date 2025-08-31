@@ -1,0 +1,70 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 545
+    host: api.together.xyz
+    body: "{\"model\":\"google/gemma-3-27b-it\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"}],\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"tool_choice\":\"auto\"}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 177
+    body: "{\n  \"id\": \"o9RMZHv-66dFFu-9780a12eae13a28c\",\n  \"error\": {\n    \"message\": \"Input validation error\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": null\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9780a12eae13a28c-YUL
+      Content-Length:
+      - "177"
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"b1-V3pHNZ+IvNZELxZYTP2THSwLkVs"
+      Retry-After:
+      - "1"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 5e4bd126-ee39-4e71-8781-a057afb4b1d7-noamzn
+      X-Api-Received:
+      - "2025-09-01T00:25:17.942Z"
+      X-Api-Retries:
+      - "5"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "15"
+      X-Ratelimit-Remaining-Tokens:
+      - "2942"
+      X-Ratelimit-Reset:
+      - "1"
+      X-Request-Id:
+      - o9RMZHv-66dFFu-9780a12eae13a28c
+    status: 400 Bad Request
+    code: 400
+    duration: 2.179s

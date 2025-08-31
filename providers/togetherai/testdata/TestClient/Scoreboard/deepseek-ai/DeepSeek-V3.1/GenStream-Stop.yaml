@@ -1,0 +1,68 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 165
+    host: api.together.xyz
+    body: "{\"model\":\"deepseek-ai/DeepSeek-V3.1\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":\"Talk about Canada in great details. Start with: Canada is\"}],\"stop\":[\"is\"]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"o9RNFS8-3QRW2y-9780a47abcbfa2d6\",\"object\":\"chat.completion.chunk\",\"created\":1756686452,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"deepseek-ai/DeepSeek-V3.1\",\"usage\":null}\n\ndata: {\"id\":\"o9RNFS8-3QRW2y-9780a47abcbfa2d6\",\"object\":\"chat.completion.chunk\",\"created\":1756686452,\"choices\":[{\"index\":0,\"text\":\"Canada\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"Canada\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"deepseek-ai/DeepSeek-V3.1\",\"usage\":null}\n\ndata: {\"id\":\"o9RNFS8-3QRW2y-9780a47abcbfa2d6\",\"object\":\"chat.completion.chunk\",\"created\":1756686452,\"choices\":[{\"index\":0,\"text\":\" \",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" \",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"deepseek-ai/DeepSeek-V3.1\",\"usage\":null}\n\ndata: {\"id\":\"o9RNFS8-3QRW2y-9780a47abcbfa2d6\",\"object\":\"chat.completion.chunk\",\"created\":1756686452,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":\"stop\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"deepseek-ai/DeepSeek-V3.1\",\"usage\":null}\n\ndata: {\"id\":\"o9RNFS8-3QRW2y-9780a47abcbfa2d6\",\"object\":\"chat.completion.chunk\",\"created\":1756686452,\"choices\":[],\"model\":\"deepseek-ai/DeepSeek-V3.1\",\"usage\":{\"prompt_tokens\":16,\"total_tokens\":18,\"completion_tokens\":2,\"prompt_tokens_details\":null,\"reasoning_tokens\":0}}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - no-cache, no-transform
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9780a47abcbfa2d6-YUL
+      Content-Type:
+      - text/event-stream;charset=utf-8
+      Retry-After:
+      - "2"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 1e1727b0-483c-403f-af3c-f6b923e406ea-noamzn
+      X-Api-Call-Start:
+      - "2025-09-01T00:27:33.751Z"
+      X-Api-Received:
+      - "2025-09-01T00:27:32.977Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "19"
+      X-Ratelimit-Remaining-Tokens:
+      - "3000"
+      X-Ratelimit-Reset:
+      - "2"
+      X-Request-Id:
+      - o9RNFS8-3QRW2y-9780a47abcbfa2d6
+    status: 200 OK
+    code: 200
+    duration: 1.794s

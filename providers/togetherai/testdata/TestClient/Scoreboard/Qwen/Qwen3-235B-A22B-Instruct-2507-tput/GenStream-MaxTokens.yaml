@@ -1,0 +1,68 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 174
+    host: api.together.xyz
+    body: "{\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":\"Explain the theory of relativity in great details.\"}],\"max_tokens\":16}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"o9RDmQT-zqrih-97807c11ae1aa30b\",\"object\":\"chat.completion.chunk\",\"created\":1756684797,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"usage\":null}\n\ndata: {\"id\":\"o9RDmQT-zqrih-97807c11ae1aa30b\",\"object\":\"chat.completion.chunk\",\"created\":1756684797,\"choices\":[{\"index\":0,\"text\":\"The\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"The\",\"tool_calls\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"usage\":null}\n\ndata: {\"id\":\"o9RDmQT-zqrih-97807c11ae1aa30b\",\"object\":\"chat.completion.chunk\",\"created\":1756684797,\"choices\":[{\"index\":0,\"text\":\" **\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" **\",\"tool_calls\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"usage\":null}\n\ndata: {\"id\":\"o9RDmQT-zqrih-97807c11ae1aa30b\",\"object\":\"chat.completion.chunk\",\"created\":1756684797,\"choices\":[{\"index\":0,\"text\":\"Theory\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"Theory\",\"tool_calls\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"usage\":null}\n\ndata: {\"id\":\"o9RDmQT-zqrih-97807c11ae1aa30b\",\"object\":\"chat.completion.chunk\",\"created\":1756684797,\"choices\":[{\"index\":0,\"text\":\" of\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" of\",\"tool_calls\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"usage\":null}\n\ndata: {\"id\":\"o9RDmQT-zqrih-97807c11ae1aa30b\",\"object\":\"chat.completion.chunk\",\"created\":1756684797,\"choices\":[{\"index\":0,\"text\":\" Rel\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" Rel\",\"tool_calls\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"usage\":null}\n\ndata: {\"id\":\"o9RDmQT-zqrih-97807c11ae1aa30b\",\"object\":\"chat.completion.chunk\",\"created\":1756684797,\"choices\":[{\"index\":0,\"text\":\"ativity\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"ativity\",\"tool_calls\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"usage\":null}\n\ndata: {\"id\":\"o9RDmQT-zqrih-97807c11ae1aa30b\",\"object\":\"chat.completion.chunk\",\"created\":1756684797,\"choices\":[{\"index\":0,\"text\":\"**\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"**\",\"tool_calls\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"usage\":null}\n\ndata: {\"id\":\"o9RDmQT-zqrih-97807c11ae1aa30b\",\"object\":\"chat.completion.chunk\",\"created\":1756684797,\"choices\":[{\"index\":0,\"text\":\" is\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" is\",\"tool_calls\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"usage\":null}\n\ndata: {\"id\":\"o9RDmQT-zqrih-97807c11ae1aa30b\",\"object\":\"chat.completion.chunk\",\"created\":1756684797,\"choices\":[{\"index\":0,\"text\":\" one\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" one\",\"tool_calls\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"usage\":null}\n\ndata: {\"id\":\"o9RDmQT-zqrih-97807c11ae1aa30b\",\"object\":\"chat.completion.chunk\",\"created\":1756684797,\"choices\":[{\"index\":0,\"text\":\" of\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" of\",\"tool_calls\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"usage\":null}\n\ndata: {\"id\":\"o9RDmQT-zqrih-97807c11ae1aa30b\",\"object\":\"chat.completion.chunk\",\"created\":1756684797,\"choices\":[{\"index\":0,\"text\":\" the\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" the\",\"tool_calls\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"usage\":null}\n\ndata: {\"id\":\"o9RDmQT-zqrih-97807c11ae1aa30b\",\"object\":\"chat.completion.chunk\",\"created\":1756684797,\"choices\":[{\"index\":0,\"text\":\" most\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" most\",\"tool_calls\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"usage\":null}\n\ndata: {\"id\":\"o9RDmQT-zqrih-97807c11ae1aa30b\",\"object\":\"chat.completion.chunk\",\"created\":1756684797,\"choices\":[{\"index\":0,\"text\":\" profound\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" profound\",\"tool_calls\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"usage\":null}\n\ndata: {\"id\":\"o9RDmQT-zqrih-97807c11ae1aa30b\",\"object\":\"chat.completion.chunk\",\"created\":1756684797,\"choices\":[{\"index\":0,\"text\":\" and\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" and\",\"tool_calls\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"usage\":null}\n\ndata: {\"id\":\"o9RDmQT-zqrih-97807c11ae1aa30b\",\"object\":\"chat.completion.chunk\",\"created\":1756684797,\"choices\":[{\"index\":0,\"text\":\" revolutionary\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" revolutionary\",\"tool_calls\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"usage\":null}\n\ndata: {\"id\":\"o9RDmQT-zqrih-97807c11ae1aa30b\",\"object\":\"chat.completion.chunk\",\"created\":1756684797,\"choices\":[{\"index\":0,\"text\":\" achievements\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":\"length\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" achievements\",\"tool_calls\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"usage\":null}\n\ndata: {\"id\":\"o9RDmQT-zqrih-97807c11ae1aa30b\",\"object\":\"chat.completion.chunk\",\"created\":1756684797,\"choices\":[],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"usage\":{\"prompt_tokens\":19,\"total_tokens\":35,\"completion_tokens\":16}}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - no-cache, no-transform
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 97807c11ae1aa30b-YUL
+      Content-Type:
+      - text/event-stream;charset=utf-8
+      Retry-After:
+      - "2"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 488cf5c8-a73a-44c8-ac7c-7876cedeee60-noamzn
+      X-Api-Call-Start:
+      - "2025-08-31T23:59:57.807Z"
+      X-Api-Received:
+      - "2025-08-31T23:59:57.792Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "17"
+      X-Ratelimit-Remaining-Tokens:
+      - "2962"
+      X-Ratelimit-Reset:
+      - "2"
+      X-Request-Id:
+      - o9RDmQT-zqrih-97807c11ae1aa30b
+    status: 200 OK
+    code: 200
+    duration: 184ms

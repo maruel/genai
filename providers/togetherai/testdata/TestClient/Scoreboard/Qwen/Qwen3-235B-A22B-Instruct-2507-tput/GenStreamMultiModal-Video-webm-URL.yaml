@@ -1,0 +1,68 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 318
+    host: api.together.xyz
+    body: "{\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What is the word said? Reply with only the word.\"},{\"type\":\"video_url\",\"video_url\":{\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/video.webm\"}}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 177
+    body: "{\n  \"id\": \"o9RDp1s-28Eivz-97807c48cd65a30b\",\n  \"error\": {\n    \"message\": \"Input validation error\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": null\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 97807c48cd65a30b-YUL
+      Content-Length:
+      - "177"
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"b1-3RqS/F4BTGQY++hAQNjQEANoSYw"
+      Retry-After:
+      - "1"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 2d025967-a41e-4230-90eb-8bb7174138a5-noamzn
+      X-Api-Received:
+      - "2025-09-01T00:00:06.574Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "15"
+      X-Ratelimit-Remaining-Tokens:
+      - "3000"
+      X-Ratelimit-Reset:
+      - "1"
+      X-Request-Id:
+      - o9RDp1s-28Eivz-97807c48cd65a30b
+    status: 400 Bad Request
+    code: 400
+    duration: 90ms

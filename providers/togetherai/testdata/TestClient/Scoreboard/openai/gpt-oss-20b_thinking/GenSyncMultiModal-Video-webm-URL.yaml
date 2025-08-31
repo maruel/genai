@@ -1,0 +1,71 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 298
+    host: api.together.xyz
+    body: "{\"model\":\"openai/gpt-oss-20b\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What is the word said? Reply with only the word.\"},{\"type\":\"video_url\",\"video_url\":{\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/video.webm\"}}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"o9RH6oX-4Yz4kd-97808bf498ec53dd\",\n  \"object\": \"chat.completion\",\n  \"created\": 1756685450,\n  \"model\": \"openai/gpt-oss-20b\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"said\",\n        \"tool_calls\": [],\n        \"reasoning\": \"The user says: \\\"What is the word said? Reply with only the word.\\\" They didn't specify context. We need to infer from previous conversation? There's no prior conversation in this message. Possibly this is a riddle: \\\"What is the word said?\\\" Maybe they want the word \\\"said\\\"? But that seems too trivial. Could be referencing the phrase \\\"word said\\\" meaning \\\"the word that was spoken\\\"? This is ambiguous. Maybe this is a standard prompt to test for a \\\"word\\\" that is hidden in a phrase: \\\"What is the word said? Reply with only the word.\\\" Could be a trick: The word is \\\"said\\\". The instruction: \\\"Reply with only the word.\\\" So we would reply \\\"said\\\". That seems plausible.\\n\\nBut maybe there's a hidden message: \\\"What is the word said?\\\" They might be asking to identify a specific word that was said previously in a conversation or riddle. Since no context, maybe they want \\\"the word said\\\" meaning \\\"the word that was said in the question\\\". The question says \\\"What is the word said?\\\" The word \\\"said\\\" appears. So answer \\\"said\\\".\\n\\nLet's consider other possibilities: \\\"What is the word said?\\\" could be a puzzle: The word \\\"said\\\" is a word that could be said. So answer \\\"said\\\". Could also be \\\"word\\\" as the word that is said: \\\"word\\\". But the phrase \\\"the word said\\\" could be \\\"said\\\". I'd go with \\\"said\\\".\\n\\nThus reply: said.\"\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 79,\n    \"total_tokens\": 396,\n    \"completion_tokens\": 317\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 97808bf498ec53dd-YYZ
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"777-K0ECagXfcsm4jDeM7ELuZMxNkN8"
+      Retry-After:
+      - "1"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 783fd2ad-0fa9-437e-94f4-0501c5e910bb-noamzn
+      X-Api-Call-End:
+      - "2025-09-01T00:10:50.478Z"
+      X-Api-Call-Start:
+      - "2025-09-01T00:10:48.392Z"
+      X-Api-Received:
+      - "2025-09-01T00:10:48.382Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "18"
+      X-Ratelimit-Remaining-Tokens:
+      - "2734"
+      X-Ratelimit-Reset:
+      - "1"
+      X-Request-Id:
+      - o9RH6oX-4Yz4kd-97808bf498ec53dd
+    status: 200 OK
+    code: 200
+    duration: 2.209s

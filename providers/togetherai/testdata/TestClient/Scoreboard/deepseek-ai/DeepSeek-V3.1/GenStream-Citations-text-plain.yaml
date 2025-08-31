@@ -1,0 +1,68 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 257
+    host: api.together.xyz
+    body: "{\"model\":\"deepseek-ai/DeepSeek-V3.1\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"o9RNqSH-3QRW2y-9780a7446c70a2d6\",\"object\":\"chat.completion.chunk\",\"created\":1756686567,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"deepseek-ai/DeepSeek-V3.1\",\"usage\":null}\n\ndata: {\"id\":\"o9RNqSH-3QRW2y-9780a7446c70a2d6\",\"object\":\"chat.completion.chunk\",\"created\":1756686567,\"choices\":[{\"index\":0,\"text\":\"Based\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"Based\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"deepseek-ai/DeepSeek-V3.1\",\"usage\":null}\n\ndata: {\"id\":\"o9RNqSH-3QRW2y-9780a7446c70a2d6\",\"object\":\"chat.completion.chunk\",\"created\":1756686567,\"choices\":[{\"index\":0,\"text\":\" on the information\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" on the information\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"deepseek-ai/DeepSeek-V3.1\",\"usage\":null}\n\ndata: {\"id\":\"o9RNqSH-3QRW2y-9780a7446c70a2d6\",\"object\":\"chat.completion.chunk\",\"created\":1756686567,\"choices\":[{\"index\":0,\"text\":\" provided, the capital\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" provided, the capital\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"deepseek-ai/DeepSeek-V3.1\",\"usage\":null}\n\ndata: {\"id\":\"o9RNqSH-3QRW2y-9780a7446c70a2d6\",\"object\":\"chat.completion.chunk\",\"created\":1756686567,\"choices\":[{\"index\":0,\"text\":\" of Quackiland\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" of Quackiland\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"deepseek-ai/DeepSeek-V3.1\",\"usage\":null}\n\ndata: {\"id\":\"o9RNqSH-3QRW2y-9780a7446c70a2d6\",\"object\":\"chat.completion.chunk\",\"created\":1756686567,\"choices\":[{\"index\":0,\"text\":\" is Quack.\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" is Quack.\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"deepseek-ai/DeepSeek-V3.1\",\"usage\":null}\n\ndata: {\"id\":\"o9RNqSH-3QRW2y-9780a7446c70a2d6\",\"object\":\"chat.completion.chunk\",\"created\":1756686567,\"choices\":[{\"index\":0,\"text\":\" The Big\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" The Big\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"deepseek-ai/DeepSeek-V3.1\",\"usage\":null}\n\ndata: {\"id\":\"o9RNqSH-3QRW2y-9780a7446c70a2d6\",\"object\":\"chat.completion.chunk\",\"created\":1756686567,\"choices\":[{\"index\":0,\"text\":\" Canard Stat\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" Canard Stat\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"deepseek-ai/DeepSeek-V3.1\",\"usage\":null}\n\ndata: {\"id\":\"o9RNqSH-3QRW2y-9780a7446c70a2d6\",\"object\":\"chat.completion.chunk\",\"created\":1756686567,\"choices\":[{\"index\":0,\"text\":\"ue being\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"ue being\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"deepseek-ai/DeepSeek-V3.1\",\"usage\":null}\n\ndata: {\"id\":\"o9RNqSH-3QRW2y-9780a7446c70a2d6\",\"object\":\"chat.completion.chunk\",\"created\":1756686567,\"choices\":[{\"index\":0,\"text\":\" located in Quack\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" located in Quack\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"deepseek-ai/DeepSeek-V3.1\",\"usage\":null}\n\ndata: {\"id\":\"o9RNqSH-3QRW2y-9780a7446c70a2d6\",\"object\":\"chat.completion.chunk\",\"created\":1756686567,\"choices\":[{\"index\":0,\"text\":\" does\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" does\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"deepseek-ai/DeepSeek-V3.1\",\"usage\":null}\n\ndata: {\"id\":\"o9RNqSH-3QRW2y-9780a7446c70a2d6\",\"object\":\"chat.completion.chunk\",\"created\":1756686567,\"choices\":[{\"index\":0,\"text\":\" not change\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" not change\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"deepseek-ai/DeepSeek-V3.1\",\"usage\":null}\n\ndata: {\"id\":\"o9RNqSH-3QRW2y-9780a7446c70a2d6\",\"object\":\"chat.completion.chunk\",\"created\":1756686567,\"choices\":[{\"index\":0,\"text\":\" the\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" the\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"deepseek-ai/DeepSeek-V3.1\",\"usage\":null}\n\ndata: {\"id\":\"o9RNqSH-3QRW2y-9780a7446c70a2d6\",\"object\":\"chat.completion.chunk\",\"created\":1756686567,\"choices\":[{\"index\":0,\"text\":\" capital; it\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" capital; it\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"deepseek-ai/DeepSeek-V3.1\",\"usage\":null}\n\ndata: {\"id\":\"o9RNqSH-3QRW2y-9780a7446c70a2d6\",\"object\":\"chat.completion.chunk\",\"created\":1756686567,\"choices\":[{\"index\":0,\"text\":\" simply confirms\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" simply confirms\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"deepseek-ai/DeepSeek-V3.1\",\"usage\":null}\n\ndata: {\"id\":\"o9RNqSH-3QRW2y-9780a7446c70a2d6\",\"object\":\"chat.completion.chunk\",\"created\":1756686567,\"choices\":[{\"index\":0,\"text\":\" that Quack is\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" that Quack is\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"deepseek-ai/DeepSeek-V3.1\",\"usage\":null}\n\ndata: {\"id\":\"o9RNqSH-3QRW2y-9780a7446c70a2d6\",\"object\":\"chat.completion.chunk\",\"created\":1756686567,\"choices\":[{\"index\":0,\"text\":\" the capital since\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" the capital since\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"deepseek-ai/DeepSeek-V3.1\",\"usage\":null}\n\ndata: {\"id\":\"o9RNqSH-3QRW2y-9780a7446c70a2d6\",\"object\":\"chat.completion.chunk\",\"created\":1756686567,\"choices\":[{\"index\":0,\"text\":\" it is mentioned\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" it is mentioned\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"deepseek-ai/DeepSeek-V3.1\",\"usage\":null}\n\ndata: {\"id\":\"o9RNqSH-3QRW2y-9780a7446c70a2d6\",\"object\":\"chat.completion.chunk\",\"created\":1756686567,\"choices\":[{\"index\":0,\"text\":\" as being\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" as being\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"deepseek-ai/DeepSeek-V3.1\",\"usage\":null}\n\ndata: {\"id\":\"o9RNqSH-3QRW2y-9780a7446c70a2d6\",\"object\":\"chat.completion.chunk\",\"created\":1756686567,\"choices\":[{\"index\":0,\"text\":\" in the capital\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" in the capital\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"deepseek-ai/DeepSeek-V3.1\",\"usage\":null}\n\ndata: {\"id\":\"o9RNqSH-3QRW2y-9780a7446c70a2d6\",\"object\":\"chat.completion.chunk\",\"created\":1756686567,\"choices\":[{\"index\":0,\"text\":\" city\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" city\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"deepseek-ai/DeepSeek-V3.1\",\"usage\":null}\n\ndata: {\"id\":\"o9RNqSH-3QRW2y-9780a7446c70a2d6\",\"object\":\"chat.completion.chunk\",\"created\":1756686567,\"choices\":[{\"index\":0,\"text\":\". Therefore, the\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\". Therefore, the\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"deepseek-ai/DeepSeek-V3.1\",\"usage\":null}\n\ndata: {\"id\":\"o9RNqSH-3QRW2y-9780a7446c70a2d6\",\"object\":\"chat.completion.chunk\",\"created\":1756686567,\"choices\":[{\"index\":0,\"text\":\" capital of Quack\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" capital of Quack\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"deepseek-ai/DeepSeek-V3.1\",\"usage\":null}\n\ndata: {\"id\":\"o9RNqSH-3QRW2y-9780a7446c70a2d6\",\"object\":\"chat.completion.chunk\",\"created\":1756686567,\"choices\":[{\"index\":0,\"text\":\"iland is Quack\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"iland is Quack\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"deepseek-ai/DeepSeek-V3.1\",\"usage\":null}\n\ndata: {\"id\":\"o9RNqSH-3QRW2y-9780a7446c70a2d6\",\"object\":\"chat.completion.chunk\",\"created\":1756686567,\"choices\":[{\"index\":0,\"text\":\".\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\".\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"deepseek-ai/DeepSeek-V3.1\",\"usage\":null}\n\ndata: {\"id\":\"o9RNqSH-3QRW2y-9780a7446c70a2d6\",\"object\":\"chat.completion.chunk\",\"created\":1756686567,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":\"stop\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"deepseek-ai/DeepSeek-V3.1\",\"usage\":null}\n\ndata: {\"id\":\"o9RNqSH-3QRW2y-9780a7446c70a2d6\",\"object\":\"chat.completion.chunk\",\"created\":1756686567,\"choices\":[],\"model\":\"deepseek-ai/DeepSeek-V3.1\",\"usage\":{\"prompt_tokens\":35,\"total_tokens\":101,\"completion_tokens\":66,\"prompt_tokens_details\":null,\"reasoning_tokens\":0}}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - no-cache, no-transform
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9780a7446c70a2d6-YUL
+      Content-Type:
+      - text/event-stream;charset=utf-8
+      Retry-After:
+      - "1"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 45a9b4a4-47a0-4811-90c5-91622cc6fb40-noamzn
+      X-Api-Call-Start:
+      - "2025-09-01T00:29:27.384Z"
+      X-Api-Received:
+      - "2025-09-01T00:29:27.363Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "17"
+      X-Ratelimit-Remaining-Tokens:
+      - "2966"
+      X-Ratelimit-Reset:
+      - "1"
+      X-Request-Id:
+      - o9RNqSH-3QRW2y-9780a7446c70a2d6
+    status: 200 OK
+    code: 200
+    duration: 530ms

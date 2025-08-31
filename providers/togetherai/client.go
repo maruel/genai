@@ -190,7 +190,7 @@ func (c *ChatRequest) SetStream(stream bool) {
 type Message struct {
 	Role      string   `json:"role,omitzero"` // "system", "assistant", "user"
 	Content   Contents `json:"content,omitzero"`
-	Reasoning struct{} `json:"reasoning,omitzero"`
+	Reasoning string   `json:"reasoning,omitzero"`
 	// Warning: using a small model may fail.
 	ToolCalls  []ToolCall `json:"tool_calls,omitzero"`
 	ToolCallID string     `json:"tool_call_id,omitzero"`
@@ -253,6 +253,9 @@ func (m *Message) To(out *genai.Message) error {
 				return fmt.Errorf("reply #%d: %w", i, err)
 			}
 		}
+	}
+	if m.Reasoning != "" {
+		out.Replies = append(out.Replies, genai.Reply{Reasoning: m.Reasoning})
 	}
 	for i := range m.ToolCalls {
 		out.Replies = append(out.Replies, genai.Reply{})
@@ -467,13 +470,19 @@ type ChatResponse struct {
 		Message      Message      `json:"message"`
 		Logprobs     Logprobs     `json:"logprobs"`
 	} `json:"choices"`
-	Usage    Usage     `json:"usage"`
-	Created  base.Time `json:"created"`
-	Model    string    `json:"model"`
-	Object   string    `json:"object"` // "chat.completion"
-	Warnings []struct {
+	Usage            Usage     `json:"usage"`
+	Created          base.Time `json:"created"`
+	Model            string    `json:"model"`
+	KVTransferParams struct{}  `json:"kv_transfer_params"`
+	Object           string    `json:"object"` // "chat.completion"
+	Warnings         []struct {
 		Message string `json:"message"`
 	} `json:"warnings"`
+	SystemFingerprint struct{} `json:"system_fingerprint"`
+	Servicetier       struct{} `json:"service_tier"`
+	Metadata          struct {
+		WeightVersion string `json:"weight_version"` // "default"
+	} `json:"metadata"`
 }
 
 func (c *ChatResponse) ToResult() (genai.Result, error) {
@@ -481,6 +490,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 		Usage: genai.Usage{
 			InputTokens:       c.Usage.PromptTokens,
 			InputCachedTokens: c.Usage.CachedTokens,
+			ReasoningTokens:   c.Usage.ReasoningTokens,
 			OutputTokens:      c.Usage.CompletionTokens,
 			TotalTokens:       c.Usage.TotalTokens,
 		},
@@ -517,7 +527,7 @@ const (
 
 func (f FinishReason) ToFinishReason() genai.FinishReason {
 	switch f {
-	case FinishStop:
+	case FinishStop, "":
 		return genai.FinishedStop
 	case FinishEOS:
 		return genai.FinishedStopSequence
@@ -560,6 +570,24 @@ type LogprobsChunk struct {
 	} `json:"top_logprobs"`
 }
 
+// UnmarshalJSON implements json.Unmarshaler.
+//
+// For some models, the logprobs are returned as a float with no context.
+func (l *LogprobsChunk) UnmarshalJSON(b []byte) error {
+	// Sometimes it's a 0. Yo.
+	v := 0.
+	if err := json.Unmarshal(b, &v); err == nil {
+		*l = LogprobsChunk{TokenLogprobs: []float64{v}}
+		return nil
+	}
+
+	type Alias LogprobsChunk
+	a := struct{ *Alias }{Alias: (*Alias)(l)}
+	d := json.NewDecoder(bytes.NewReader(b))
+	d.DisallowUnknownFields()
+	return d.Decode(&a)
+}
+
 func (l *LogprobsChunk) ToLogprobs() []genai.Logprobs {
 	if len(l.Tokens) == 0 {
 		return nil
@@ -577,6 +605,7 @@ func (l *LogprobsChunk) ToLogprobs() []genai.Logprobs {
 type Usage struct {
 	PromptTokens        int64    `json:"prompt_tokens"`
 	CompletionTokens    int64    `json:"completion_tokens"`
+	ReasoningTokens     int64    `json:"reasoning_tokens"`
 	TotalTokens         int64    `json:"total_tokens"`
 	CachedTokens        int64    `json:"cached_tokens"`
 	PromptTokensDetails struct{} `json:"prompt_tokens_details"`
@@ -596,7 +625,7 @@ type ChatStreamChunkResponse struct {
 			Role      string     `json:"role"`
 			Content   string     `json:"content"`
 			ToolCalls []ToolCall `json:"tool_calls"`
-			Reasoning struct{}   `json:"reasoning"`
+			Reasoning string     `json:"reasoning"`
 		} `json:"delta"`
 		Logprobs     LogprobsChunk `json:"logprobs"`
 		FinishReason FinishReason  `json:"finish_reason"`
@@ -1111,6 +1140,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		if pkt.Usage.TotalTokens != 0 {
 			result.Usage.InputTokens = pkt.Usage.PromptTokens
 			result.Usage.InputCachedTokens = pkt.Usage.CachedTokens
+			result.Usage.ReasoningTokens = pkt.Usage.ReasoningTokens
 			result.Usage.OutputTokens = pkt.Usage.CompletionTokens
 			result.Usage.TotalTokens = pkt.Usage.TotalTokens
 		}
@@ -1176,7 +1206,10 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 				chunks <- f
 			}
 		}
-		f := genai.ReplyFragment{TextFragment: pkt.Choices[0].Delta.Content}
+		f := genai.ReplyFragment{
+			TextFragment:      pkt.Choices[0].Delta.Content,
+			ReasoningFragment: pkt.Choices[0].Delta.Reasoning,
+		}
 		if !f.IsZero() {
 			if err := result.Accumulate(f); err != nil {
 				return err

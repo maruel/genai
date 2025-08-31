@@ -1,0 +1,71 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 293
+    host: api.together.xyz
+    body: "{\"model\":\"openai/gpt-oss-20b\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What fruit is it? Reply with only one word.\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.webp\"}}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"o9RH4af-4YNCb4-97808bc55a1153dd\",\n  \"object\": \"chat.completion\",\n  \"created\": 1756685443,\n  \"model\": \"openai/gpt-oss-20b\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"Apple\",\n        \"tool_calls\": [],\n        \"reasoning\": \"We need context. The user says: \\\"What fruit is it? Reply with only one word.\\\" There's no picture or description given. Maybe it's a trick? The conversation: user: \\\"What fruit is it? Reply with only one word.\\\" No other context. There must be some hidden context like in a previous image or something. As ChatGPT, we only have the text. There is no description. We must guess? Probably the question is incomplete. But maybe the user expects us to answer \\\"apple\\\" or something. Could be a common riddle: \\\"What fruit is it?\\\" Without context, the best guess is \\\"apple\\\" because it's common. But we need only one word. But we might need to respond \\\"Apple\\\". But maybe the user expects \\\"banana\\\" or \\\"orange\\\". Without context, can't decide. Maybe in previous context it's a picture of a fruit. But we don't have it. Might be a test: answer \\\"banana\\\" because it's a fruit that is banana shaped. But maybe it's a puzzle: \\\"What fruit is it?\\\" Answer: \\\"pear\\\". I'm not sure. In absence of context, we cannot answer. Possibly the best is \\\"apple\\\" because it's common. But we could also say \\\"fruit\\\" but that's not a fruit. The instruction: reply with only one word. So we need one word. I'd guess \\\"apple\\\". Let's do that.\"\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 78,\n    \"total_tokens\": 370,\n    \"completion_tokens\": 292\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 97808bc55a1153dd-YYZ
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"6f9-ANJf1RkSVKYWZV7ksVokH6ZCUkQ"
+      Retry-After:
+      - "2"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 9675fcda-e689-4090-9791-de443c85f192-noamzn
+      X-Api-Call-End:
+      - "2025-09-01T00:10:43.149Z"
+      X-Api-Call-Start:
+      - "2025-09-01T00:10:40.922Z"
+      X-Api-Received:
+      - "2025-09-01T00:10:40.909Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "19"
+      X-Ratelimit-Remaining-Tokens:
+      - "2508"
+      X-Ratelimit-Reset:
+      - "2"
+      X-Request-Id:
+      - o9RH4af-4YNCb4-97808bc55a1153dd
+    status: 200 OK
+    code: 200
+    duration: 2.326s

@@ -1,0 +1,70 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 550
+    host: api.together.xyz
+    body: "{\"model\":\"google/gemma-3-27b-it\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"}],\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"tool_choice\":\"required\"}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 224
+    body: "{\n  \"id\": \"o9RMZBP-62bZhn-9780a12c6b4aa28c\",\n  \"error\": {\n    \"message\": \"The provided JSON schema contains features not supported by xgrammar.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": null\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9780a12c6b4aa28c-YUL
+      Content-Length:
+      - "224"
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"e0-Hwwj5Vv+0BjBFC5NK39BXFFe59w"
+      Retry-After:
+      - "2"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 209b488c-8168-44cb-9b0e-23edcd1f55e5-noamzn
+      X-Api-Call-Start:
+      - "2025-09-01T00:25:17.564Z"
+      X-Api-Received:
+      - "2025-09-01T00:25:17.562Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "17"
+      X-Ratelimit-Remaining-Tokens:
+      - "2954"
+      X-Ratelimit-Reset:
+      - "2"
+      X-Request-Id:
+      - o9RMZBP-62bZhn-9780a12c6b4aa28c
+    status: 400 Bad Request
+    code: 400
+    duration: 99ms

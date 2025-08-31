@@ -1,0 +1,71 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 292
+    host: api.together.xyz
+    body: "{\"model\":\"openai/gpt-oss-20b\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What fruit is it? Reply with only one word.\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.gif\"}}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"o9RH1HC-4Yz4kd-97808b806a9b53dd\",\n  \"object\": \"chat.completion\",\n  \"created\": 1756685430,\n  \"model\": \"openai/gpt-oss-20b\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"Mango\",\n        \"tool_calls\": [],\n        \"reasoning\": \"We need to answer with only one word. But we don't know context. The user asks: \\\"What fruit is it? Reply with only one word.\\\" There's no context of fruit. Perhaps the assistant is expected to guess a fruit. But we need context. Perhaps the user wants a random fruit. We can pick one. Answer: \\\"Mango\\\". That's one word.\"\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 78,\n    \"total_tokens\": 165,\n    \"completion_tokens\": 87\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 97808b806a9b53dd-YYZ
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"36f-DlCnrRkMs/8OsWrQ37EHtYnn4u0"
+      Retry-After:
+      - "2"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 967cd438-ca77-431e-b311-032ece0225bd-noamzn
+      X-Api-Call-End:
+      - "2025-09-01T00:10:30.505Z"
+      X-Api-Call-Start:
+      - "2025-09-01T00:10:29.816Z"
+      X-Api-Received:
+      - "2025-09-01T00:10:29.803Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "19"
+      X-Ratelimit-Remaining-Tokens:
+      - "2701"
+      X-Ratelimit-Reset:
+      - "2"
+      X-Request-Id:
+      - o9RH1HC-4Yz4kd-97808b806a9b53dd
+    status: 200 OK
+    code: 200
+    duration: 830ms

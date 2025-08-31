@@ -1,0 +1,71 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 293
+    host: api.together.xyz
+    body: "{\"model\":\"openai/gpt-oss-120b\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What fruit is it? Reply with only one word.\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.gif\"}}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"o9RLNTG-31r7CA-97809b875bfaa2f4\",\n  \"object\": \"chat.completion\",\n  \"created\": 1756686087,\n  \"model\": \"openai/gpt-oss-120b\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"apple\",\n        \"tool_calls\": [],\n        \"reasoning\": \"The user asks: \\\"What fruit is it? Reply with only one word.\\\" There's no context. Likely they want a fruit name. Maybe they want a random fruit? The question is ambiguous. Could be a trick: maybe the fruit is \\\"apple\\\". Or they want me to guess a fruit based on some previous context, but no context given. Since they ask \\\"What fruit is it?\\\" with no reference, I need to respond with a single word fruit. Choose a fruit. I'll pick \\\"apple\\\". Ensure only one word, no punctuation? Probably just \\\"apple\\\".\"\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 78,\n    \"total_tokens\": 205,\n    \"completion_tokens\": 127\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 97809b875bfaa2f4-YUL
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"42b-Cmh1KMeHZz9WtvQsDtqbT380Czs"
+      Retry-After:
+      - "1"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - b06d726e-a5e7-4f3e-b35d-1e74d67d63c7-noamzn
+      X-Api-Call-End:
+      - "2025-09-01T00:21:27.234Z"
+      X-Api-Call-Start:
+      - "2025-09-01T00:21:26.584Z"
+      X-Api-Received:
+      - "2025-09-01T00:21:26.367Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "15"
+      X-Ratelimit-Remaining-Tokens:
+      - "2275"
+      X-Ratelimit-Reset:
+      - "1"
+      X-Request-Id:
+      - o9RLNTG-31r7CA-97809b875bfaa2f4
+    status: 200 OK
+    code: 200
+    duration: 1.015s

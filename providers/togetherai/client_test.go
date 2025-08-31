@@ -10,9 +10,12 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"slices"
+	"strings"
 	"testing"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/adapters"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/togetherai"
@@ -62,7 +65,8 @@ func TestClient(t *testing.T) {
 		}
 		var models []smoketest.Model
 		for _, m := range genaiModels {
-			models = append(models, smoketest.Model{Model: m.GetID()})
+			reason := strings.Contains(m.GetID(), "-Thinking-") || strings.HasPrefix(m.GetID(), "openai/gpt")
+			models = append(models, smoketest.Model{Model: m.GetID(), Reason: reason})
 		}
 		getClientRT := func(t testing.TB, model smoketest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 			opts := genai.ProviderOptions{Model: model.Model, PreloadedModels: cachedModels}
@@ -74,7 +78,15 @@ func TestClient(t *testing.T) {
 				t.Fatal(err)
 			}
 			if model.Reason {
-				t.Fatal("implement me")
+				for _, sc := range c.Scoreboard().Scenarios {
+					if sc.ReasoningTokenEnd != "" && slices.Contains(sc.Models, model.Model) {
+						return &adapters.ProviderReasoning{
+							Provider:            c,
+							ReasoningTokenStart: sc.ReasoningTokenStart,
+							ReasoningTokenEnd:   sc.ReasoningTokenEnd,
+						}
+					}
+				}
 			}
 			// If anyone at Together.AI reads this, please get your shit together.
 			return &smallImage{Provider: &internaltest.HideHTTP500{Provider: c}}

@@ -1,0 +1,71 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 543
+    host: api.together.xyz
+    body: "{\"model\":\"openai/gpt-oss-20b\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"}],\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"tool_choice\":\"auto\"}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"o9RGwEN-4Yz4kd-97808b2abd9653dd\",\n  \"object\": \"chat.completion\",\n  \"created\": 1756685417,\n  \"model\": \"openai/gpt-oss-20b\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"logprobs\": null,\n      \"finish_reason\": \"tool_calls\",\n      \"seed\": null,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": null,\n        \"tool_calls\": [\n          {\n            \"index\": 0,\n            \"id\": \"call_dy76kmhkzztdblqqyw05x8l7\",\n            \"type\": \"function\",\n            \"function\": {\n              \"arguments\": \"{\\\"number\\\":132413}\",\n              \"name\": \"square_root\"\n            }\n          }\n        ]\n      }\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 151,\n    \"total_tokens\": 397,\n    \"completion_tokens\": 246\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 97808b2abd9653dd-YYZ
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"324-/D2Y4DAyfU9DpcByYpz7yiqY5M8"
+      Retry-After:
+      - "2"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 357da2e1-67c0-4324-925e-64cb79c30e40-noamzn
+      X-Api-Call-End:
+      - "2025-09-01T00:10:17.391Z"
+      X-Api-Call-Start:
+      - "2025-09-01T00:10:16.193Z"
+      X-Api-Received:
+      - "2025-09-01T00:10:16.184Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "19"
+      X-Ratelimit-Remaining-Tokens:
+      - "2789"
+      X-Ratelimit-Reset:
+      - "2"
+      X-Request-Id:
+      - o9RGwEN-4Yz4kd-97808b2abd9653dd
+    status: 200 OK
+    code: 200
+    duration: 1.32s

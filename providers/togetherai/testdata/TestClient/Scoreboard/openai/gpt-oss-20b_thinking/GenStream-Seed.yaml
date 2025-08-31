@@ -1,0 +1,68 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 126
+    host: api.together.xyz
+    body: "{\"model\":\"openai/gpt-oss-20b\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"}],\"seed\":42}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"o9RHpmk-4Yz4kd-97808f654e96a24e\",\"object\":\"chat.completion.chunk\",\"created\":1756685589,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"openai/gpt-oss-20b\",\"usage\":null}\n\ndata: {\"id\":\"o9RHpmk-4Yz4kd-97808f654e96a24e\",\"object\":\"chat.completion.chunk\",\"created\":1756685589,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":null,\"reasoning\":\"User says: \\\"Say hello. Use only one word.\\\" So we must respond with a single word: \\\"Hello\\\". Probably just output \\\"Hello\\\". Ensure no other words.\"}}],\"model\":\"openai/gpt-oss-20b\",\"usage\":null}\n\ndata: {\"id\":\"o9RHpmk-4Yz4kd-97808f654e96a24e\",\"object\":\"chat.completion.chunk\",\"created\":1756685589,\"choices\":[{\"index\":0,\"text\":\"Hello\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"Hello\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"openai/gpt-oss-20b\",\"usage\":null}\n\ndata: {\"id\":\"o9RHpmk-4Yz4kd-97808f654e96a24e\",\"object\":\"chat.completion.chunk\",\"created\":1756685589,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":\"stop\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"openai/gpt-oss-20b\",\"usage\":null}\n\ndata: {\"id\":\"o9RHpmk-4Yz4kd-97808f654e96a24e\",\"object\":\"chat.completion.chunk\",\"created\":1756685589,\"choices\":[],\"model\":\"openai/gpt-oss-20b\",\"usage\":{\"prompt_tokens\":75,\"total_tokens\":121,\"completion_tokens\":46,\"prompt_tokens_details\":null,\"reasoning_tokens\":0}}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - no-cache, no-transform
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 97808f654e96a24e-YUL
+      Content-Type:
+      - text/event-stream;charset=utf-8
+      Retry-After:
+      - "2"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 1fada71c-41fd-4c76-a8e4-9e1223c3bcc1-noamzn
+      X-Api-Call-Start:
+      - "2025-09-01T00:13:09.582Z"
+      X-Api-Received:
+      - "2025-09-01T00:13:09.568Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "19"
+      X-Ratelimit-Remaining-Tokens:
+      - "2604"
+      X-Ratelimit-Reset:
+      - "2"
+      X-Request-Id:
+      - o9RHpmk-4Yz4kd-97808f654e96a24e
+    status: 200 OK
+    code: 200
+    duration: 383ms

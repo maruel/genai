@@ -89,8 +89,8 @@ func TestClient(t *testing.T) {
 			name     string
 			want     string
 		}{
-			{genai.ModalityText, genai.ModelCheap, "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free"},
-			{genai.ModalityText, genai.ModelGood, "Qwen/Qwen2.5-7B-Instruct-Turbo"},
+			{genai.ModalityText, genai.ModelCheap, "openai/gpt-oss-20b"},
+			{genai.ModalityText, genai.ModelGood, "Qwen/Qwen3-235B-A22B-Instruct-2507-tput"},
 			{genai.ModalityText, genai.ModelSOTA, "Qwen/Qwen3-235B-A22B-Thinking-2507"},
 			{genai.ModalityImage, genai.ModelCheap, "black-forest-labs/FLUX.1-schnell"},
 			{genai.ModalityImage, genai.ModelGood, "black-forest-labs/FLUX.1-krea-dev"},

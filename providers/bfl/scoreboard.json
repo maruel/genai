@@ -7,6 +7,18 @@
   "dashboardURL": "https://dashboard.bfl.ai/",
   "scenarios": [
     {
+      "comments": "Untested",
+      "models": [
+        "flux-pro-1.1-ultra"
+      ]
+    },
+    {
+      "comments": "Untested",
+      "models": [
+        "flux-pro-1.1"
+      ]
+    },
+    {
       "comments": "See https://docs.bfl.ai/api-reference/tasks/generate-an-image-with-flux1-[dev]",
       "models": [
         "flux-dev"
@@ -39,8 +51,6 @@
         "flux-pro-1.0-fill",
         "flux-kontext-pro",
         "flux-kontext-max",
-        "flux-pro-1.1-ultra",
-        "flux-pro-1.1",
         "flux-pro"
       ]
     }

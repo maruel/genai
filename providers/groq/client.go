@@ -19,6 +19,7 @@ import (
 	"net/http"
 	"os"
 	"reflect"
+	"regexp"
 	"slices"
 	"strconv"
 	"strings"
@@ -751,19 +752,38 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 	cheap := preference == genai.ModelCheap
 	good := preference == genai.ModelGood || preference == ""
 	selectedModel := ""
+	nb := regexp.MustCompile(`(\d+)`)
 	for _, mdl := range mdls {
 		m := mdl.(*Model)
 		// This is meh.
 		if cheap {
-			if strings.HasSuffix(m.ID, "instant") {
+			if strings.HasPrefix(m.ID, "openai/") {
+				if selectedModel != "" {
+					m1 := nb.FindStringSubmatch(m.ID)
+					m2 := nb.FindStringSubmatch(selectedModel)
+					i1, _ := strconv.Atoi(m1[1])
+					i2, _ := strconv.Atoi(m2[1])
+					if i1 > i2 {
+						continue
+					}
+				}
 				selectedModel = m.ID
 			}
 		} else if good {
-			if strings.Contains(m.ID, "maverick") {
+			if strings.Contains(m.ID, "openai/") {
+				if selectedModel != "" {
+					m1 := nb.FindStringSubmatch(m.ID)
+					m2 := nb.FindStringSubmatch(selectedModel)
+					i1, _ := strconv.Atoi(m1[1])
+					i2, _ := strconv.Atoi(m2[1])
+					if i1 < i2 {
+						continue
+					}
+				}
 				selectedModel = m.ID
 			}
 		} else {
-			if strings.HasPrefix(m.ID, "qwen") {
+			if strings.HasPrefix(m.ID, "moonshotai/") {
 				selectedModel = m.ID
 			}
 		}

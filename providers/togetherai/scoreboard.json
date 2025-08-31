@@ -10,6 +10,61 @@
   "dashboardURL": "https://api.together.ai/settings/billing",
   "scenarios": [
     {
+      "comments": "Untested",
+      "models": [
+        "Qwen/Qwen3-235B-A22B-Thinking-2507"
+      ]
+    },
+    {
+      "comments": "Untested",
+      "models": [
+        "Qwen/Qwen3-235B-A22B-Instruct-2507-tput"
+      ]
+    },
+    {
+      "comments": "Untested",
+      "models": [
+        "openai/gpt-oss-20b"
+      ]
+    },
+    {
+      "models": [
+        "moonshotai/Kimi-K2-Instruct"
+      ],
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "json": true,
+        "jsonSchema": true,
+        "topLogprobs": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "json": true,
+        "jsonSchema": true,
+        "topLogprobs": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
+    },
+    {
       "comments": "Tool calling is flaky because Together.AI only supports tool_choice auto, not required.",
       "models": [
         "meta-llama/Llama-4-Scout-17B-16E-Instruct"
@@ -111,43 +166,6 @@
       }
     },
     {
-      "models": [
-        "moonshotai/Kimi-K2-Instruct"
-      ],
-      "in": {
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "json": true,
-        "jsonSchema": true,
-        "topLogprobs": true,
-        "maxTokens": true,
-        "stopSequence": true
-      },
-      "GenStream": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "json": true,
-        "jsonSchema": true,
-        "topLogprobs": true,
-        "maxTokens": true,
-        "stopSequence": true
-      }
-    },
-    {
       "comments": "FinishReason is only broken with JSON.",
       "models": [
         "mistralai/Mistral-Small-24B-Instruct-2501"
@@ -209,16 +227,14 @@
     {
       "comments": "Untested",
       "models": [
+        "Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8",
         "Alibaba-NLP/gte-modernbert-base",
         "Qwen/QwQ-32B",
         "Qwen/Qwen2.5-72B-Instruct-Turbo",
         "Qwen/Qwen2.5-7B-Instruct-Turbo",
         "Qwen/Qwen2.5-Coder-32B-Instruct",
         "Qwen/Qwen2.5-VL-72B-Instruct",
-        "Qwen/Qwen3-235B-A22B-Instruct-2507-tput",
-        "Qwen/Qwen3-235B-A22B-Thinking-2507",
         "Qwen/Qwen3-235B-A22B-fp8-tput",
-        "Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8",
         "Salesforce/Llama-Rank-V1",
         "Virtue-AI/VirtueGuard-Text-Lite",
         "arcee-ai/AFM-4.5B",
@@ -274,7 +290,6 @@
         "mistralai/Mixtral-8x7B-Instruct-v0.1",
         "mixedbread-ai/Mxbai-Rerank-Large-V2",
         "openai/gpt-oss-120b",
-        "openai/gpt-oss-20b",
         "openai/whisper-large-v3",
         "scb10x/scb10x-llama3-1-typhoon2-70b-instruct",
         "scb10x/scb10x-typhoon-2-1-gemma3-12b",

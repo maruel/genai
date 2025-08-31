@@ -1,11 +1,14 @@
 # Scoreboard
 
-| Model                             | Mode    | ➛In   | Out➛   | Tool | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
-| --------------------------------- | ------- | ----- | ------ | ---- | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
-| meta-llama/Llama-3.3-70B-Instruct | Sync    | 💬    | 💬     | ❌   | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| meta-llama/Llama-3.3-70B-Instruct | Stream  | 💬    | 💬     | ❌   | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| Qwen/Qwen3-4B                     | Sync🧠   | 💬    | 💬     | ❌   | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
-| Qwen/Qwen3-4B                     | Stream🧠 | 💬    | 💬     | ❌   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
+| Model                                | Mode    | ➛In   | Out➛   | Tool | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
+| ------------------------------------ | ------- | ----- | ------ | ---- | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
+| deepseek-ai/DeepSeek-V3.1🥇           | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| Qwen/Qwen3-Coder-480B-A35B-Instruct🥈 | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| meta-llama/Llama-3.2-1B-Instruct🥉    | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| meta-llama/Llama-3.3-70B-Instruct    | Sync    | 💬    | 💬     | ❌   | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| meta-llama/Llama-3.3-70B-Instruct    | Stream  | 💬    | 💬     | ❌   | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| Qwen/Qwen3-4B                        | Sync🧠   | 💬    | 💬     | ❌   | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
+| Qwen/Qwen3-4B                        | Stream🧠 | 💬    | 💬     | ❌   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
 <details>
 <summary>‼️ Click here for the legend of columns and symbols</summary>
 

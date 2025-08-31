@@ -8,6 +8,12 @@
   "dashboardURL": "https://dashboard.cohere.com/billing",
   "scenarios": [
     {
+      "comments": "Untested",
+      "models": [
+        "command-a-reasoning-08-2025"
+      ]
+    },
+    {
       "comments": "Thinking is only related to tool planning.",
       "models": [
         "command-r7b-12-2024"
@@ -51,6 +57,12 @@
         "maxTokens": true,
         "stopSequence": true
       }
+    },
+    {
+      "comments": "Untested",
+      "models": [
+        "command-light"
+      ]
     },
     {
       "comments": "Thinking is only related to tool planning. See https://docs.cohere.com/docs/aya-vision",
@@ -106,10 +118,8 @@
         "c4ai-aya-expanse-8b",
         "c4ai-aya-vision-32b",
         "command",
-        "command-a-reasoning-08-2025",
         "command-a-translate-08-2025",
         "command-a-vision-07-2025",
-        "command-light",
         "command-light-nightly",
         "command-nightly",
         "command-r",

@@ -11,6 +11,148 @@
   "dashboardURL": "http://aistudio.google.com",
   "scenarios": [
     {
+      "comments": "It supports inputs via URL but only when uploaded to its own storage.",
+      "models": [
+        "gemini-2.5-pro"
+      ],
+      "reason": true,
+      "in": {
+        "audio": {
+          "inline": true,
+          "supportedFormats": [
+            "audio/aac",
+            "audio/flac",
+            "audio/wav"
+          ]
+        },
+        "document": {
+          "inline": true,
+          "supportedFormats": [
+            "application/pdf"
+          ]
+        },
+        "image": {
+          "inline": true,
+          "supportedFormats": [
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        },
+        "video": {
+          "inline": true,
+          "supportedFormats": [
+            "video/mp4",
+            "video/webm"
+          ]
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "tools": "true",
+        "toolsIndecisive": "true",
+        "toolCallRequired": true,
+        "json": true,
+        "jsonSchema": true,
+        "topLogprobs": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "tools": "true",
+        "toolsBiased": "flaky",
+        "toolsIndecisive": "true",
+        "toolCallRequired": true,
+        "json": true,
+        "jsonSchema": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
+    },
+    {
+      "comments": "It supports inputs via URL but only when uploaded to its own storage.",
+      "models": [
+        "gemini-2.5-flash"
+      ],
+      "in": {
+        "audio": {
+          "inline": true,
+          "supportedFormats": [
+            "audio/aac",
+            "audio/ogg",
+            "audio/wav"
+          ]
+        },
+        "document": {
+          "inline": true,
+          "supportedFormats": [
+            "application/pdf"
+          ]
+        },
+        "image": {
+          "inline": true,
+          "supportedFormats": [
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        },
+        "video": {
+          "inline": true,
+          "supportedFormats": [
+            "video/mp4",
+            "video/webm"
+          ]
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
+        "json": true,
+        "jsonSchema": true,
+        "topLogprobs": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
+        "json": true,
+        "jsonSchema": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
+    },
+    {
       "models": [
         "gemini-2.5-flash-lite"
       ],
@@ -124,76 +266,6 @@
         "reportFinishReason": "true",
         "seed": true,
         "tools": "true",
-        "toolCallRequired": true,
-        "json": true,
-        "jsonSchema": true,
-        "maxTokens": true,
-        "stopSequence": true
-      }
-    },
-    {
-      "comments": "It supports inputs via URL but only when uploaded to its own storage.",
-      "models": [
-        "gemini-2.5-flash"
-      ],
-      "in": {
-        "audio": {
-          "inline": true,
-          "supportedFormats": [
-            "audio/aac",
-            "audio/ogg",
-            "audio/wav"
-          ]
-        },
-        "document": {
-          "inline": true,
-          "supportedFormats": [
-            "application/pdf"
-          ]
-        },
-        "image": {
-          "inline": true,
-          "supportedFormats": [
-            "image/jpeg",
-            "image/png",
-            "image/webp"
-          ]
-        },
-        "text": {
-          "inline": true
-        },
-        "video": {
-          "inline": true,
-          "supportedFormats": [
-            "video/mp4",
-            "video/webm"
-          ]
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "tools": "true",
-        "toolsBiased": "true",
-        "toolCallRequired": true,
-        "json": true,
-        "jsonSchema": true,
-        "topLogprobs": true,
-        "maxTokens": true,
-        "stopSequence": true
-      },
-      "GenStream": {
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "tools": "true",
-        "toolsBiased": "true",
         "toolCallRequired": true,
         "json": true,
         "jsonSchema": true,
@@ -267,78 +339,6 @@
         "seed": true,
         "tools": "true",
         "toolsBiased": "flaky",
-        "toolCallRequired": true,
-        "json": true,
-        "jsonSchema": true,
-        "maxTokens": true,
-        "stopSequence": true
-      }
-    },
-    {
-      "comments": "It supports inputs via URL but only when uploaded to its own storage.",
-      "models": [
-        "gemini-2.5-pro"
-      ],
-      "reason": true,
-      "in": {
-        "audio": {
-          "inline": true,
-          "supportedFormats": [
-            "audio/aac",
-            "audio/flac",
-            "audio/wav"
-          ]
-        },
-        "document": {
-          "inline": true,
-          "supportedFormats": [
-            "application/pdf"
-          ]
-        },
-        "image": {
-          "inline": true,
-          "supportedFormats": [
-            "image/jpeg",
-            "image/png",
-            "image/webp"
-          ]
-        },
-        "text": {
-          "inline": true
-        },
-        "video": {
-          "inline": true,
-          "supportedFormats": [
-            "video/mp4",
-            "video/webm"
-          ]
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "tools": "true",
-        "toolsIndecisive": "true",
-        "toolCallRequired": true,
-        "json": true,
-        "jsonSchema": true,
-        "topLogprobs": true,
-        "maxTokens": true,
-        "stopSequence": true
-      },
-      "GenStream": {
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "tools": "true",
-        "toolsBiased": "flaky",
-        "toolsIndecisive": "true",
         "toolCallRequired": true,
         "json": true,
         "jsonSchema": true,

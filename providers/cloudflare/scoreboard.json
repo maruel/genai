@@ -11,6 +11,24 @@
   "dashboardURL": "https://dash.cloudflare.com",
   "scenarios": [
     {
+      "comments": "Untested",
+      "models": [
+        "@cf/deepseek-ai/deepseek-r1-distill-qwen-32b"
+      ]
+    },
+    {
+      "comments": "Untested",
+      "models": [
+        "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
+      ]
+    },
+    {
+      "comments": "Untested",
+      "models": [
+        "@cf/meta/llama-3.2-1b-instruct"
+      ]
+    },
+    {
       "comments": "Llama-4 scout supports genai.ModalityImage but I'm not sure if cloudflare supports this modality. This may change in the future.",
       "models": [
         "@cf/meta/llama-4-scout-17b-16e-instruct"

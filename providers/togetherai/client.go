@@ -912,13 +912,13 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 			continue
 		}
 		if cheap {
-			if strings.HasPrefix(m.ID, "meta-llama/") && (m.Pricing.Output == 0 || (price > m.Pricing.Output)) {
+			if strings.HasPrefix(m.ID, "openai/gpt") && (m.Pricing.Output == 0 || (price > m.Pricing.Output)) {
 				price = m.Pricing.Output
 				// date = m.Created
 				selectedModel = m.ID
 			}
 		} else if good {
-			if strings.HasPrefix(m.ID, "Qwen/Qwen") && price > m.Pricing.Output {
+			if strings.HasPrefix(m.ID, "Qwen/Qwen") && !strings.HasPrefix(m.ID, "Qwen/Qwen2") && price > m.Pricing.Output {
 				// Take the most expensive
 				price = m.Pricing.Output
 				selectedModel = m.ID

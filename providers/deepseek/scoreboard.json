@@ -10,6 +10,40 @@
   "scenarios": [
     {
       "models": [
+        "deepseek-reasoner"
+      ],
+      "reason": true,
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "tools": "flaky",
+        "toolsBiased": "true",
+        "json": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "tools": "true",
+        "toolsBiased": "true",
+        "json": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
+    },
+    {
+      "models": [
         "deepseek-chat"
       ],
       "in": {
@@ -41,40 +75,6 @@
         "toolCallRequired": true,
         "json": true,
         "topLogprobs": true,
-        "maxTokens": true,
-        "stopSequence": true
-      }
-    },
-    {
-      "models": [
-        "deepseek-reasoner"
-      ],
-      "reason": true,
-      "in": {
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "tools": "flaky",
-        "toolsBiased": "true",
-        "json": true,
-        "maxTokens": true,
-        "stopSequence": true
-      },
-      "GenStream": {
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "tools": "true",
-        "toolsBiased": "true",
-        "json": true,
         "maxTokens": true,
         "stopSequence": true
       }

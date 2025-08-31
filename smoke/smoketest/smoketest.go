@@ -118,6 +118,23 @@ func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Recor
 	}
 	t.Logf("Usage: %#v", usage)
 
+	// Check if the order is SOTA, Good, Cheap then the rest.
+	// HACK FOR llamacpp; there's only one model and the reported ID and the scoreboard name do not match.
+	if len(sb.Scenarios) > 1 {
+		if sota := pf(t, Model{Model: genai.ModelSOTA}, nil).ModelID(); !slices.Contains(sb.Scenarios[0].Models, sota) {
+			t.Errorf("SOTA should be first: %q", sota)
+		}
+		if good := pf(t, Model{Model: genai.ModelGood}, nil).ModelID(); !slices.Contains(sb.Scenarios[0].Models, good) &&
+			(len(sb.Scenarios) < 2 || !slices.Contains(sb.Scenarios[1].Models, good)) {
+			t.Errorf("Good should be first or second: %q", good)
+		}
+		if cheap := pf(t, Model{Model: genai.ModelCheap}, nil).ModelID(); !slices.Contains(sb.Scenarios[0].Models, cheap) &&
+			(len(sb.Scenarios) < 2 || !slices.Contains(sb.Scenarios[1].Models, cheap)) &&
+			(len(sb.Scenarios) < 3 || !slices.Contains(sb.Scenarios[2].Models, cheap)) {
+			t.Errorf("Cheap should be in first 3: %q", cheap)
+		}
+	}
+
 	// Do this at the end.
 	filtered := false
 	flag.Visit(func(f *flag.Flag) {

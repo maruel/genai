@@ -9,6 +9,24 @@
   "dashboardURL": "https://console.mistral.ai/usage",
   "scenarios": [
     {
+      "comments": "Untested",
+      "models": [
+        "mistral-large-latest"
+      ]
+    },
+    {
+      "comments": "Untested",
+      "models": [
+        "mistral-medium-latest"
+      ]
+    },
+    {
+      "comments": "Untested",
+      "models": [
+        "mistral-tiny-latest"
+      ]
+    },
+    {
       "models": [
         "ministral-3b-latest"
       ],
@@ -243,12 +261,10 @@
         "ministral-8b-latest",
         "mistral-large-2407",
         "mistral-large-2411",
-        "mistral-large-latest",
         "mistral-large-pixtral-2411",
         "mistral-medium",
         "mistral-medium-2505",
         "mistral-medium-2508",
-        "mistral-medium-latest",
         "mistral-ocr-2503",
         "mistral-ocr-2505",
         "mistral-ocr-latest",
@@ -263,7 +279,6 @@
         "mistral-tiny",
         "mistral-tiny-2312",
         "mistral-tiny-2407",
-        "mistral-tiny-latest",
         "open-mistral-7b",
         "open-mistral-nemo",
         "open-mistral-nemo-2407",

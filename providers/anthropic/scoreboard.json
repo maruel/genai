@@ -8,8 +8,9 @@
   "dashboardURL": "https://console.anthropic.com/settings/billing",
   "scenarios": [
     {
+      "comments": "It cost a lot.",
       "models": [
-        "claude-3-5-haiku-20241022"
+        "claude-opus-4-1-20250805"
       ],
       "in": {
         "document": {
@@ -64,6 +65,60 @@
     {
       "models": [
         "claude-sonnet-4-20250514"
+      ],
+      "in": {
+        "document": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "application/pdf"
+          ]
+        },
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
+        "citations": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
+        "citations": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
+    },
+    {
+      "models": [
+        "claude-3-5-haiku-20241022"
       ],
       "in": {
         "document": {
@@ -163,61 +218,6 @@
         "reportFinishReason": "true",
         "tools": "flaky",
         "citations": true,
-        "stopSequence": true
-      }
-    },
-    {
-      "comments": "It cost a lot.",
-      "models": [
-        "claude-opus-4-1-20250805"
-      ],
-      "in": {
-        "document": {
-          "inline": true,
-          "url": true,
-          "supportedFormats": [
-            "application/pdf"
-          ]
-        },
-        "image": {
-          "inline": true,
-          "url": true,
-          "supportedFormats": [
-            "image/gif",
-            "image/jpeg",
-            "image/png",
-            "image/webp"
-          ]
-        },
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "tools": "true",
-        "toolsBiased": "true",
-        "toolCallRequired": true,
-        "citations": true,
-        "maxTokens": true,
-        "stopSequence": true
-      },
-      "GenStream": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "tools": "true",
-        "toolsBiased": "true",
-        "toolCallRequired": true,
-        "citations": true,
-        "maxTokens": true,
         "stopSequence": true
       }
     },

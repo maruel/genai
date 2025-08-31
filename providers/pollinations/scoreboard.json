@@ -7,6 +7,19 @@
   "dashboardURL": "https://auth.pollinations.ai/",
   "scenarios": [
     {
+      "comments": "It was fairly broken at the time of testing.",
+      "models": [
+        "deepseek-reasoning"
+      ],
+      "reason": true
+    },
+    {
+      "comments": "It was fairly broken at the time of testing.",
+      "models": [
+        "openai-large"
+      ]
+    },
+    {
       "comments": "JSON generated is often bad when using GenStream.",
       "models": [
         "llamascout"
@@ -38,13 +51,6 @@
         "toolsIndecisive": "true",
         "toolCallRequired": true
       }
-    },
-    {
-      "comments": "It was fairly broken at the time of testing.",
-      "models": [
-        "deepseek-reasoning"
-      ],
-      "reason": true
     },
     {
       "models": [
@@ -132,7 +138,6 @@
         "mistral-roblox",
         "nova-fast",
         "openai-fast",
-        "openai-large",
         "openai-reasoning",
         "openai-roblox",
         "qwen-coder",

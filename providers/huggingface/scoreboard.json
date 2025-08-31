@@ -10,6 +10,24 @@
   "dashboardURL": "https://huggingface.co/settings/billing",
   "scenarios": [
     {
+      "comments": "Untested",
+      "models": [
+        "deepseek-ai/DeepSeek-V3.1"
+      ]
+    },
+    {
+      "comments": "Untested",
+      "models": [
+        "Qwen/Qwen3-Coder-480B-A35B-Instruct"
+      ]
+    },
+    {
+      "comments": "Untested",
+      "models": [
+        "meta-llama/Llama-3.2-1B-Instruct"
+      ]
+    },
+    {
       "models": [
         "meta-llama/Llama-3.3-70B-Instruct"
       ],

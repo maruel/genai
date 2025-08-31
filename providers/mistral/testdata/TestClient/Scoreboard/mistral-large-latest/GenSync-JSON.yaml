@@ -1,0 +1,65 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 282
+    host: api.mistral.ai
+    body: "{\"model\":\"mistral-large-latest\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\\\"is_fruit\\\": bool}.\"}]}],\"response_format\":{\"type\":\"json_object\"}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.mistral.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"a90446a966cc46bf81e69716d3c8fa23\",\"created\":1756683688,\"model\":\"mistral-large-latest\",\"usage\":{\"prompt_tokens\":32,\"total_tokens\":40,\"completion_tokens\":8},\"object\":\"chat.completion\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"tool_calls\":null,\"content\":\"{\\\"is_fruit\\\": true}\"}}]}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 978060fd3e55a2b8-YUL
+      Content-Type:
+      - application/json
+      Mistral-Correlation-Id:
+      - 01990281-da86-74b1-ab9e-8b4616fd0c71
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      X-Envoy-Upstream-Service-Time:
+      - "127"
+      X-Kong-Proxy-Latency:
+      - "7"
+      X-Kong-Request-Id:
+      - 01990281-da86-74b1-ab9e-8b4616fd0c71
+      X-Kong-Upstream-Latency:
+      - "127"
+      X-Ratelimit-Limit-Req-10-Second:
+      - "60"
+      X-Ratelimit-Limit-Tokens-Minute:
+      - "2000000"
+      X-Ratelimit-Limit-Tokens-Month:
+      - "10000000000"
+      X-Ratelimit-Remaining-Req-10-Second:
+      - "47"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "1999714"
+      X-Ratelimit-Remaining-Tokens-Month:
+      - "9999988936"
+      X-Ratelimit-Tokens-Query-Cost:
+      - "40"
+    status: 200 OK
+    code: 200
+    duration: 266ms

@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 281
+    host: api.mistral.ai
+    body: "{\"model\":\"mistral-large-latest\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\\\"is_fruit\\\": bool}.\"}]}],\"response_format\":{\"type\":\"json_object\"}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.mistral.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"9f1725d131554246934149d7cf466063\",\"object\":\"chat.completion.chunk\",\"created\":1756683688,\"model\":\"mistral-large-latest\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"9f1725d131554246934149d7cf466063\",\"object\":\"chat.completion.chunk\",\"created\":1756683688,\"model\":\"mistral-large-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"{\\\"\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwxyz0\"}\n\ndata: {\"id\":\"9f1725d131554246934149d7cf466063\",\"object\":\"chat.completion.chunk\",\"created\":1756683688,\"model\":\"mistral-large-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"is_fruit\\\":\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwxyz01234\"}\n\ndata: {\"id\":\"9f1725d131554246934149d7cf466063\",\"object\":\"chat.completion.chunk\",\"created\":1756683688,\"model\":\"mistral-large-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" true}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":32,\"total_tokens\":40,\"completion_tokens\":8},\"p\":\"abcdefghijklmnopqrstuvwxyz012345\"}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 978060f9fa2fa2b8-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Mistral-Correlation-Id:
+      - 01990281-d87c-7a46-9c03-08668a0de708
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      X-Envoy-Upstream-Service-Time:
+      - "127"
+      X-Kong-Proxy-Latency:
+      - "6"
+      X-Kong-Request-Id:
+      - 01990281-d87c-7a46-9c03-08668a0de708
+      X-Kong-Upstream-Latency:
+      - "128"
+    status: 200 OK
+    code: 200
+    duration: 259ms

@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 294
+    host: api.mistral.ai
+    body: "{\"model\":\"mistral-medium-latest\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What fruit is it? Reply with only one word.\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.png\"}}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.mistral.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"6f3d5ce3a6cf41dfa7292aeae2db6ed3\",\"object\":\"chat.completion.chunk\",\"created\":1756683707,\"model\":\"mistral-medium-latest\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"6f3d5ce3a6cf41dfa7292aeae2db6ed3\",\"object\":\"chat.completion.chunk\",\"created\":1756683707,\"model\":\"mistral-medium-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Ban\"},\"finish_reason\":null}],\"p\":\"abcdefghijklm\"}\n\ndata: {\"id\":\"6f3d5ce3a6cf41dfa7292aeae2db6ed3\",\"object\":\"chat.completion.chunk\",\"created\":1756683707,\"model\":\"mistral-medium-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"ana\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":157,\"total_tokens\":160,\"completion_tokens\":3},\"p\":\"abcdefghijklmnopqrstuvwxyz01\"}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9780617058eca2b8-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Mistral-Correlation-Id:
+      - 01990282-2285-7821-9c9b-62b2b2a6d9da
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      X-Envoy-Upstream-Service-Time:
+      - "217"
+      X-Kong-Proxy-Latency:
+      - "7"
+      X-Kong-Request-Id:
+      - 01990282-2285-7821-9c9b-62b2b2a6d9da
+      X-Kong-Upstream-Latency:
+      - "218"
+    status: 200 OK
+    code: 200
+    duration: 369ms

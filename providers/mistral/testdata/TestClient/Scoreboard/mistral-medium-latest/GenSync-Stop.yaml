@@ -1,0 +1,65 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 187
+    host: api.mistral.ai
+    body: "{\"model\":\"mistral-medium-latest\",\"stream\":false,\"stop\":[\"is\"],\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Talk about Canada in great details. Start with: Canada is\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.mistral.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"bc471c517d6a4b42acf3ac470ed4852a\",\"created\":1756683698,\"model\":\"mistral-medium-latest\",\"usage\":{\"prompt_tokens\":15,\"total_tokens\":18,\"completion_tokens\":3},\"object\":\"chat.completion\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"tool_calls\":null,\"content\":\"**Canada \"}}]}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 978061394890a2b8-YUL
+      Content-Type:
+      - application/json
+      Mistral-Correlation-Id:
+      - 01990282-000e-75b7-97e0-8a2407c3f568
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      X-Envoy-Upstream-Service-Time:
+      - "2419"
+      X-Kong-Proxy-Latency:
+      - "6"
+      X-Kong-Request-Id:
+      - 01990282-000e-75b7-97e0-8a2407c3f568
+      X-Kong-Upstream-Latency:
+      - "2419"
+      X-Ratelimit-Limit-Req-10-Second:
+      - "60"
+      X-Ratelimit-Limit-Tokens-Minute:
+      - "2000000"
+      X-Ratelimit-Limit-Tokens-Month:
+      - "10000000000"
+      X-Ratelimit-Remaining-Req-10-Second:
+      - "18"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "1995546"
+      X-Ratelimit-Remaining-Tokens-Month:
+      - "9999984768"
+      X-Ratelimit-Tokens-Query-Cost:
+      - "18"
+    status: 200 OK
+    code: 200
+    duration: 2.55s

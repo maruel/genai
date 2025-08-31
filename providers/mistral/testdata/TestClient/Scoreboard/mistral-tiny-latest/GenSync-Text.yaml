@@ -1,0 +1,65 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 143
+    host: api.mistral.ai
+    body: "{\"model\":\"mistral-tiny-latest\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Say hello. Use only one word.\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.mistral.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"aed2e1ca800a4c1c8a8901074c6c5831\",\"created\":1756683710,\"model\":\"mistral-tiny-latest\",\"usage\":{\"prompt_tokens\":11,\"total_tokens\":13,\"completion_tokens\":2},\"object\":\"chat.completion\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"tool_calls\":null,\"content\":\"Hello\"}}]}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 978061874ef6a2b8-YUL
+      Content-Type:
+      - application/json
+      Mistral-Correlation-Id:
+      - 01990282-30d0-7a0b-a2da-b56508ebc6d6
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      X-Envoy-Upstream-Service-Time:
+      - "99"
+      X-Kong-Proxy-Latency:
+      - "7"
+      X-Kong-Request-Id:
+      - 01990282-30d0-7a0b-a2da-b56508ebc6d6
+      X-Kong-Upstream-Latency:
+      - "100"
+      X-Ratelimit-Limit-Req-10-Second:
+      - "60"
+      X-Ratelimit-Limit-Tokens-Minute:
+      - "2000000"
+      X-Ratelimit-Limit-Tokens-Month:
+      - "10000000000"
+      X-Ratelimit-Remaining-Req-10-Second:
+      - "19"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "1991387"
+      X-Ratelimit-Remaining-Tokens-Month:
+      - "9999980609"
+      X-Ratelimit-Tokens-Query-Cost:
+      - "13"
+    status: 200 OK
+    code: 200
+    duration: 256ms

@@ -1,0 +1,65 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 180
+    host: api.mistral.ai
+    body: "{\"model\":\"mistral-tiny-latest\",\"max_tokens\":16,\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Explain the theory of relativity in great details.\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.mistral.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"9ab9f6bffddc4e6298b31a0680e1111c\",\"created\":1756683711,\"model\":\"mistral-tiny-latest\",\"usage\":{\"prompt_tokens\":13,\"total_tokens\":29,\"completion_tokens\":16},\"object\":\"chat.completion\",\"choices\":[{\"index\":0,\"finish_reason\":\"length\",\"message\":{\"role\":\"assistant\",\"tool_calls\":null,\"content\":\"The theory of relativity is a fundamental concept in physics developed by Albert Einstein in the\"}}]}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9780618b9d74a2b8-YUL
+      Content-Type:
+      - application/json
+      Mistral-Correlation-Id:
+      - 01990282-3388-7c2a-9021-4392cc93b269
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      X-Envoy-Upstream-Service-Time:
+      - "153"
+      X-Kong-Proxy-Latency:
+      - "8"
+      X-Kong-Request-Id:
+      - 01990282-3388-7c2a-9021-4392cc93b269
+      X-Kong-Upstream-Latency:
+      - "154"
+      X-Ratelimit-Limit-Req-10-Second:
+      - "60"
+      X-Ratelimit-Limit-Tokens-Minute:
+      - "2000000"
+      X-Ratelimit-Limit-Tokens-Month:
+      - "10000000000"
+      X-Ratelimit-Remaining-Req-10-Second:
+      - "17"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "1991306"
+      X-Ratelimit-Remaining-Tokens-Month:
+      - "9999980528"
+      X-Ratelimit-Tokens-Query-Cost:
+      - "29"
+    status: 200 OK
+    code: 200
+    duration: 290ms

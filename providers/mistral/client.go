@@ -850,9 +850,8 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 		if !strings.HasSuffix(m.ID, "latest") || strings.HasPrefix(m.ID, "devstral") || strings.HasPrefix(m.ID, "magistral") || strings.HasPrefix(m.ID, "pixtral") {
 			continue
 		}
-		// This is not great. To improve.
 		if cheap {
-			if strings.Contains(m.ID, "tiny") {
+			if strings.Contains(m.ID, "small") {
 				selectedModel = m.ID
 			}
 		} else if good {

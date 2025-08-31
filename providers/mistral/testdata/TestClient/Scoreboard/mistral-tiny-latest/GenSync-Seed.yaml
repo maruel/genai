@@ -1,0 +1,65 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 160
+    host: api.mistral.ai
+    body: "{\"model\":\"mistral-tiny-latest\",\"stream\":false,\"random_seed\":42,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Say hello. Use only one word.\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.mistral.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"ac4e9b81feb14a789eac7c9b681dc8cb\",\"created\":1756683710,\"model\":\"mistral-tiny-latest\",\"usage\":{\"prompt_tokens\":11,\"total_tokens\":13,\"completion_tokens\":2},\"object\":\"chat.completion\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"tool_calls\":null,\"content\":\"Hello\"}}]}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 97806188d97da2b8-YUL
+      Content-Type:
+      - application/json
+      Mistral-Correlation-Id:
+      - 01990282-31cf-7a69-a140-690926fa10b9
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      X-Envoy-Upstream-Service-Time:
+      - "76"
+      X-Kong-Proxy-Latency:
+      - "6"
+      X-Kong-Request-Id:
+      - 01990282-31cf-7a69-a140-690926fa10b9
+      X-Kong-Upstream-Latency:
+      - "77"
+      X-Ratelimit-Limit-Req-10-Second:
+      - "60"
+      X-Ratelimit-Limit-Tokens-Minute:
+      - "2000000"
+      X-Ratelimit-Limit-Tokens-Month:
+      - "10000000000"
+      X-Ratelimit-Remaining-Req-10-Second:
+      - "18"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "1991361"
+      X-Ratelimit-Remaining-Tokens-Month:
+      - "9999980583"
+      X-Ratelimit-Tokens-Query-Cost:
+      - "13"
+    status: 200 OK
+    code: 200
+    duration: 221ms

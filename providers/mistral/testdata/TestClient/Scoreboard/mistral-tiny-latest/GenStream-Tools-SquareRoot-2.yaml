@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 832
+    host: api.mistral.ai
+    body: "{\"model\":\"mistral-tiny-latest\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"}]},{\"role\":\"assistant\",\"tool_calls\":[{\"id\":\"kPPxCBvY4\",\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\": 132413}\"}}]},{\"role\":\"tool\",\"content\":[{\"type\":\"text\",\"text\":\"363.89\"}],\"tool_call_id\":\"kPPxCBvY4\",\"name\":\"square_root\"}],\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"strict\":true,\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"tool_choice\":\"none\"}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.mistral.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"283e098f1c4444998d878bf3616f60b6\",\"object\":\"chat.completion.chunk\",\"created\":1756683712,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"283e098f1c4444998d878bf3616f60b6\",\"object\":\"chat.completion.chunk\",\"created\":1756683712,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"3\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopq\"}\n\ndata: {\"id\":\"283e098f1c4444998d878bf3616f60b6\",\"object\":\"chat.completion.chunk\",\"created\":1756683712,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"63.8\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwxyz01234567\"}\n\ndata: {\"id\":\"283e098f1c4444998d878bf3616f60b6\",\"object\":\"chat.completion.chunk\",\"created\":1756683712,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"9\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":191,\"total_tokens\":198,\"completion_tokens\":7},\"p\":\"abc\"}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 978061956a81a2b8-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Mistral-Correlation-Id:
+      - 01990282-39a3-78e1-97a8-3407621498aa
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      X-Envoy-Upstream-Service-Time:
+      - "94"
+      X-Kong-Proxy-Latency:
+      - "6"
+      X-Kong-Request-Id:
+      - 01990282-39a3-78e1-97a8-3407621498aa
+      X-Kong-Upstream-Latency:
+      - "95"
+    status: 200 OK
+    code: 200
+    duration: 223ms

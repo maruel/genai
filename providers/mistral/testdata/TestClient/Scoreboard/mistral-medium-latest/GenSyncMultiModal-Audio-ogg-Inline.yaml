@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 3032
+    host: api.mistral.ai
+    body: "{\"model\":\"mistral-medium-latest\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What is the word said? Reply with only the word.\"},{\"type\":\"input_audio\",\"input_audio\":\"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\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.mistral.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 137
+    body: "{\"object\":\"error\",\"message\":\"Audio input is not enabled for this model\",\"type\":\"invalid_request_invalid_args\",\"param\":null,\"code\":\"3051\"}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 978061844a8fa2b8-YUL
+      Content-Length:
+      - "137"
+      Content-Type:
+      - application/json
+      Mistral-Correlation-Id:
+      - 01990282-2eea-7b5d-ac44-0ba53e46d959
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      X-Envoy-Upstream-Service-Time:
+      - "35"
+      X-Kong-Proxy-Latency:
+      - "7"
+      X-Kong-Request-Id:
+      - 01990282-2eea-7b5d-ac44-0ba53e46d959
+      X-Kong-Upstream-Latency:
+      - "35"
+    status: 400 Bad Request
+    code: 400
+    duration: 169ms

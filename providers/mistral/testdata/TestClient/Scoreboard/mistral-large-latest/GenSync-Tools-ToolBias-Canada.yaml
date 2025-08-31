@@ -1,0 +1,65 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 598
+    host: api.mistral.ai
+    body: "{\"model\":\"mistral-large-latest\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one.\"}]}],\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"description\":\"A tool to specify the best country\",\"strict\":true,\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"country\":{\"type\":\"string\",\"enum\":[\"Canada\",\"USA\"]}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"country\"]}}}],\"tool_choice\":\"required\"}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.mistral.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"7eba31c2f73f4c56b64a663e47844aee\",\"created\":1756683690,\"model\":\"mistral-large-latest\",\"usage\":{\"prompt_tokens\":129,\"total_tokens\":140,\"completion_tokens\":11},\"object\":\"chat.completion\",\"choices\":[{\"index\":0,\"finish_reason\":\"tool_calls\",\"message\":{\"role\":\"assistant\",\"tool_calls\":[{\"id\":\"VJQtDlsr3\",\"function\":{\"name\":\"best_country\",\"arguments\":\"{\\\"country\\\": \\\"Canada\\\"}\"},\"index\":0}],\"content\":\"\"}}]}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 978061060924a2b8-YUL
+      Content-Type:
+      - application/json
+      Mistral-Correlation-Id:
+      - 01990281-e009-7fd8-98fe-5f171e0eac41
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      X-Envoy-Upstream-Service-Time:
+      - "331"
+      X-Kong-Proxy-Latency:
+      - "11"
+      X-Kong-Request-Id:
+      - 01990281-e009-7fd8-98fe-5f171e0eac41
+      X-Kong-Upstream-Latency:
+      - "331"
+      X-Ratelimit-Limit-Req-10-Second:
+      - "60"
+      X-Ratelimit-Limit-Tokens-Minute:
+      - "2000000"
+      X-Ratelimit-Limit-Tokens-Month:
+      - "10000000000"
+      X-Ratelimit-Remaining-Req-10-Second:
+      - "39"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "1998660"
+      X-Ratelimit-Remaining-Tokens-Month:
+      - "9999987882"
+      X-Ratelimit-Tokens-Query-Cost:
+      - "140"
+    status: 200 OK
+    code: 200
+    duration: 465ms

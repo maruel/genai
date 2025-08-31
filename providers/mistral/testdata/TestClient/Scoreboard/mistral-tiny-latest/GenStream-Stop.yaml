@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 184
+    host: api.mistral.ai
+    body: "{\"model\":\"mistral-tiny-latest\",\"stream\":true,\"stop\":[\"is\"],\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Talk about Canada in great details. Start with: Canada is\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.mistral.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"7cc81d91e8a5448480d2728abc38883f\",\"object\":\"chat.completion.chunk\",\"created\":1756683711,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"7cc81d91e8a5448480d2728abc38883f\",\"object\":\"chat.completion.chunk\",\"created\":1756683711,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"**\"},\"finish_reason\":null}],\"p\":\"ab\"}\n\ndata: {\"id\":\"7cc81d91e8a5448480d2728abc38883f\",\"object\":\"chat.completion.chunk\",\"created\":1756683711,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Canada \"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":15,\"total_tokens\":18,\"completion_tokens\":3},\"p\":\"abcdefghijklmnopqrs\"}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9780618ef9fea2b8-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Mistral-Correlation-Id:
+      - 01990282-3596-7443-8bbe-895cb213f511
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      X-Envoy-Upstream-Service-Time:
+      - "65"
+      X-Kong-Proxy-Latency:
+      - "7"
+      X-Kong-Request-Id:
+      - 01990282-3596-7443-8bbe-895cb213f511
+      X-Kong-Upstream-Latency:
+      - "66"
+    status: 200 OK
+    code: 200
+    duration: 200ms

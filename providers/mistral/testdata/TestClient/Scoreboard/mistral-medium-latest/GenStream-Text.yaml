@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 144
+    host: api.mistral.ai
+    body: "{\"model\":\"mistral-medium-latest\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Say hello. Use only one word.\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.mistral.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"523c98a12b8a4296803b99a5b1788b96\",\"object\":\"chat.completion.chunk\",\"created\":1756683696,\"model\":\"mistral-medium-latest\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"523c98a12b8a4296803b99a5b1788b96\",\"object\":\"chat.completion.chunk\",\"created\":1756683696,\"model\":\"mistral-medium-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Hi\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwxyz0123456\"}\n\ndata: {\"id\":\"523c98a12b8a4296803b99a5b1788b96\",\"object\":\"chat.completion.chunk\",\"created\":1756683696,\"model\":\"mistral-medium-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"!\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":11,\"total_tokens\":14,\"completion_tokens\":3},\"p\":\"abcdefghijklmnopqrs\"}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 97806130ee4ca2b8-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Mistral-Correlation-Id:
+      - 01990281-fae3-742d-ae2e-5cd87384cf96
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      X-Envoy-Upstream-Service-Time:
+      - "106"
+      X-Kong-Proxy-Latency:
+      - "5"
+      X-Kong-Request-Id:
+      - 01990281-fae3-742d-ae2e-5cd87384cf96
+      X-Kong-Upstream-Latency:
+      - "106"
+    status: 200 OK
+    code: 200
+    duration: 251ms

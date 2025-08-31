@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 294
+    host: api.mistral.ai
+    body: "{\"model\":\"mistral-large-latest\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What is the word? Reply with only the word.\"},{\"type\":\"document_url\",\"document_url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/document.pdf\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.mistral.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"970d845ed72f4e9a96185d6b5677959a\",\"object\":\"chat.completion.chunk\",\"created\":1756683691,\"model\":\"mistral-large-latest\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"970d845ed72f4e9a96185d6b5677959a\",\"object\":\"chat.completion.chunk\",\"created\":1756683691,\"model\":\"mistral-large-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"orange\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvw\"}\n\ndata: {\"id\":\"970d845ed72f4e9a96185d6b5677959a\",\"object\":\"chat.completion.chunk\",\"created\":1756683691,\"model\":\"mistral-large-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":28,\"total_tokens\":30,\"completion_tokens\":2},\"p\":\"abcdefghijklmnopqrstuvwxyz0123\"}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9780610c4928a2b8-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Mistral-Correlation-Id:
+      - 01990281-e3f8-735d-8715-e260651c3f6a
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      X-Envoy-Upstream-Service-Time:
+      - "645"
+      X-Kong-Proxy-Latency:
+      - "7"
+      X-Kong-Request-Id:
+      - 01990281-e3f8-735d-8715-e260651c3f6a
+      X-Kong-Upstream-Latency:
+      - "645"
+    status: 200 OK
+    code: 200
+    duration: 789ms

@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 596
+    host: api.mistral.ai
+    body: "{\"model\":\"mistral-tiny-latest\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one.\"}]}],\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"description\":\"A tool to specify the best country\",\"strict\":true,\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"country\":{\"type\":\"string\",\"enum\":[\"Canada\",\"USA\"]}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"country\"]}}}],\"tool_choice\":\"required\"}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.mistral.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"86cb49d4f04d4498ba081a00c5761d16\",\"object\":\"chat.completion.chunk\",\"created\":1756683713,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"86cb49d4f04d4498ba081a00c5761d16\",\"object\":\"chat.completion.chunk\",\"created\":1756683713,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[{\"id\":\"mZnh8sU9U\",\"function\":{\"name\":\"best_country\",\"arguments\":\"{\\\"country\\\": \\\"Canada\\\"}\"},\"index\":0}]},\"finish_reason\":\"tool_calls\"}],\"usage\":{\"prompt_tokens\":129,\"total_tokens\":149,\"completion_tokens\":20},\"p\":\"abcdef\"}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 978061971c7da2b8-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Mistral-Correlation-Id:
+      - 01990282-3aac-741e-a11b-3d4c93947880
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      X-Envoy-Upstream-Service-Time:
+      - "215"
+      X-Kong-Proxy-Latency:
+      - "7"
+      X-Kong-Request-Id:
+      - 01990282-3aac-741e-a11b-3d4c93947880
+      X-Kong-Upstream-Latency:
+      - "216"
+    status: 200 OK
+    code: 200
+    duration: 362ms

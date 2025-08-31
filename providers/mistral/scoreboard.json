@@ -13,31 +13,80 @@
       "models": [
         "mistral-large-latest"
       ],
-      "sota": true
+      "sota": true,
+      "in": {
+        "document": {
+          "url": true,
+          "supportedFormats": [
+            "application/pdf"
+          ]
+        },
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
+        "json": true,
+        "jsonSchema": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
+        "json": true,
+        "jsonSchema": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
     },
     {
       "comments": "Untested",
       "models": [
         "mistral-medium-latest"
       ],
-      "good": true
-    },
-    {
-      "comments": "Untested",
-      "models": [
-        "mistral-tiny-latest"
-      ],
-      "cheap": true
-    },
-    {
-      "models": [
-        "ministral-3b-latest"
-      ],
+      "good": true,
       "in": {
         "document": {
           "url": true,
           "supportedFormats": [
             "application/pdf"
+          ]
+        },
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
           ]
         },
         "text": {
@@ -79,6 +128,7 @@
       "models": [
         "mistral-small-latest"
       ],
+      "cheap": true,
       "in": {
         "document": {
           "url": true,
@@ -94,6 +144,100 @@
             "image/jpeg",
             "image/png",
             "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
+        "json": true,
+        "jsonSchema": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
+        "json": true,
+        "jsonSchema": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
+    },
+    {
+      "comments": "Untested",
+      "models": [
+        "mistral-tiny-latest"
+      ],
+      "in": {
+        "document": {
+          "url": true,
+          "supportedFormats": [
+            "application/pdf"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "tools": "true",
+        "toolsBiased": "flaky",
+        "toolsIndecisive": "true",
+        "toolCallRequired": true,
+        "json": true,
+        "jsonSchema": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
+        "json": true,
+        "jsonSchema": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
+    },
+    {
+      "models": [
+        "ministral-3b-latest"
+      ],
+      "in": {
+        "document": {
+          "url": true,
+          "supportedFormats": [
+            "application/pdf"
           ]
         },
         "text": {

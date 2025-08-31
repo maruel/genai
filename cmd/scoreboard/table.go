@@ -317,21 +317,21 @@ func printProviderTable(p genai.Provider) error {
 			fillEmptyFields(&row, "?")
 			tmpRows = append(tmpRows, row)
 		}
-		for _, m := range sc.Models {
-			for i := range tmpRows {
-				tmpRows[i].Model = m
+		for i, m := range sc.Models {
+			for j := range tmpRows {
+				tmpRows[j].Model = m
 				if i == 0 {
 					if sc.SOTA {
-						tmpRows[i].Model += "🥇"
+						tmpRows[j].Model += "🥇"
 					}
 					if sc.Good {
-						tmpRows[i].Model += "🥈"
+						tmpRows[j].Model += "🥈"
 					}
 					if sc.Cheap {
-						tmpRows[i].Model += "🥉"
+						tmpRows[j].Model += "🥉"
 					}
 				}
-				rows = append(rows, tmpRows[i])
+				rows = append(rows, tmpRows[j])
 			}
 		}
 	}

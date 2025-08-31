@@ -135,40 +135,61 @@ func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Recor
 			})
 			return r
 		}
-		if sota := pf(t, Model{Model: genai.ModelSOTA}, fn).ModelID(); sb.Scenarios[0].Models[0] != sota {
+		sota := pf(t, Model{Model: genai.ModelSOTA}, fn).ModelID()
+		name = "good"
+		good := pf(t, Model{Model: genai.ModelGood}, fn).ModelID()
+		name = "cheap"
+		cheap := pf(t, Model{Model: genai.ModelCheap}, fn).ModelID()
+		// Some models support both reasoning and non-reasoning. We want to keep them aside, otherwise the table
+		// looks weird. But we skip the duplicate row.
+		// TODO: Have a way to query from the Provider if the currently selected model supports reasoning.
+
+		i := 0
+		if sb.Scenarios[i].Models[0] != sota {
 			t.Errorf("SOTA should be first: %q", sota)
-		} else if !sb.Scenarios[0].SOTA {
+		} else if !sb.Scenarios[i].SOTA {
 			t.Errorf("SOTA should be true: %q", sota)
 		}
-
-		name = "good"
-		if good := pf(t, Model{Model: genai.ModelGood}, fn).ModelID(); sb.Scenarios[0].Models[0] == good {
-			if !sb.Scenarios[0].Good {
+		// There's two options, the SOTA model is also Good, or there's a duplicate of the first row for
+		// reasoning/non-reasoning.
+		if sota == good {
+			if !sb.Scenarios[i].Good {
 				t.Errorf("Good should be true: %q", good)
 			}
-		} else if len(sb.Scenarios) >= 2 && sb.Scenarios[1].Models[0] == good {
-			if !sb.Scenarios[1].Good {
+			if good == cheap {
+				if !sb.Scenarios[i].Cheap {
+					t.Errorf("Cheap should be true: %q", cheap)
+				}
+			} else {
+				i++
+				if sb.Scenarios[i].Models[0] == good {
+					i++
+				}
+				if !sb.Scenarios[i].Cheap {
+					t.Errorf("Cheap should be true: %q", cheap)
+				}
+			}
+		} else {
+			i++
+			if sb.Scenarios[i].Models[0] == sota {
+				i++
+			}
+			if sb.Scenarios[i].Models[0] != good {
 				t.Errorf("Good should be true: %q", good)
 			}
-		} else {
-			t.Errorf("Good should be first or second: %q", good)
-		}
-
-		name = "cheap"
-		if cheap := pf(t, Model{Model: genai.ModelCheap}, fn).ModelID(); sb.Scenarios[0].Models[0] == cheap {
-			if !sb.Scenarios[0].Cheap {
-				t.Errorf("Cheap should be true: %q", cheap)
+			if good == cheap {
+				if !sb.Scenarios[i].Cheap {
+					t.Errorf("Cheap should be true: %q", cheap)
+				}
+			} else {
+				i++
+				if sb.Scenarios[i].Models[0] == good {
+					i++
+				}
+				if !sb.Scenarios[i].Cheap {
+					t.Errorf("Cheap should be true: %q", cheap)
+				}
 			}
-		} else if len(sb.Scenarios) >= 2 && sb.Scenarios[1].Models[0] == cheap {
-			if !sb.Scenarios[1].Cheap {
-				t.Errorf("Cheap should be true: %q", cheap)
-			}
-		} else if len(sb.Scenarios) >= 3 && sb.Scenarios[2].Models[0] == cheap {
-			if !sb.Scenarios[2].Cheap {
-				t.Errorf("Cheap should be true: %q", cheap)
-			}
-		} else {
-			t.Errorf("Cheap should be in first 3: %q", cheap)
 		}
 	}
 

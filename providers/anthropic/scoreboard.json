@@ -64,10 +64,11 @@
       }
     },
     {
+      "comments": "It cost a lot.",
       "models": [
-        "claude-sonnet-4-20250514"
+        "claude-opus-4-1-20250805"
       ],
-      "good": true,
+      "reason": true,
       "in": {
         "document": {
           "inline": true,
@@ -99,30 +100,25 @@
         "reportRateLimits": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
-        "tools": "true",
-        "toolsBiased": "true",
-        "toolCallRequired": true,
+        "tools": "flaky",
+        "toolsIndecisive": "true",
         "citations": true,
-        "maxTokens": true,
         "stopSequence": true
       },
       "GenStream": {
         "reportRateLimits": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
-        "tools": "true",
-        "toolsBiased": "true",
-        "toolCallRequired": true,
+        "tools": "flaky",
         "citations": true,
-        "maxTokens": true,
         "stopSequence": true
       }
     },
     {
       "models": [
-        "claude-3-5-haiku-20241022"
+        "claude-sonnet-4-20250514"
       ],
-      "cheap": true,
+      "good": true,
       "in": {
         "document": {
           "inline": true,
@@ -225,11 +221,10 @@
       }
     },
     {
-      "comments": "It cost a lot.",
       "models": [
-        "claude-opus-4-1-20250805"
+        "claude-3-5-haiku-20241022"
       ],
-      "reason": true,
+      "cheap": true,
       "in": {
         "document": {
           "inline": true,
@@ -261,17 +256,22 @@
         "reportRateLimits": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
-        "tools": "flaky",
-        "toolsIndecisive": "true",
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
         "citations": true,
+        "maxTokens": true,
         "stopSequence": true
       },
       "GenStream": {
         "reportRateLimits": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
-        "tools": "flaky",
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
         "citations": true,
+        "maxTokens": true,
         "stopSequence": true
       }
     },

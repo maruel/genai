@@ -3,9 +3,9 @@
 | Model               | Mode    | ➛In   | Out➛   | Tool | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
 | ------------------- | ------- | ----- | ------ | ---- | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
 | deepseek-reasoner🥇🥈 | Sync🧠   | 💬    | 💬     | 💨   | ☁️   | ❌    | ❌   | ❌   | 📏🛑   | ❌    | ❌     | ✅    | ✅     |
-| deepseek-reasoner   | Stream🧠 | 💬    | 💬     | ✅   | ☁️   | ❌    | ❌   | ❌   | 📏🛑   | ❌    | ❌     | ✅    | ✅     |
+| deepseek-reasoner🥇🥈 | Stream🧠 | 💬    | 💬     | ✅   | ☁️   | ❌    | ❌   | ❌   | 📏🛑   | ❌    | ❌     | ✅    | ✅     |
 | deepseek-chat🥉      | Sync    | 💬    | 💬     | ✅🪨 | ☁️   | ❌    | ❌   | ❌   | 📏🛑   | ✅    | ❌     | ✅    | ✅     |
-| deepseek-chat       | Stream  | 💬    | 💬     | ✅🪨 | ☁️   | ❌    | ❌   | ❌   | 📏🛑   | ✅    | ❌     | ✅    | ✅     |
+| deepseek-chat🥉      | Stream  | 💬    | 💬     | ✅🪨 | ☁️   | ❌    | ❌   | ❌   | 📏🛑   | ✅    | ❌     | ✅    | ✅     |
 <details>
 <summary>‼️ Click here for the legend of columns and symbols</summary>
 

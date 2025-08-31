@@ -1,0 +1,58 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 147
+    host: api.cohere.com
+    body: "{\"stream\":false,\"model\":\"command-light\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Say hello. Use only one word.\"}]}],\"seed\":42}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cohere.com/v2/chat
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 255
+    body: "{\"id\":\"df7980ed-1a6b-4968-971d-10eac05b2a45\",\"message\":{\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"Hello\"}]},\"finish_reason\":\"COMPLETE\",\"usage\":{\"billed_units\":{\"input_tokens\":8,\"output_tokens\":1},\"tokens\":{\"input_tokens\":70,\"output_tokens\":1}}}"
+    headers:
+      Access-Control-Expose-Headers:
+      - X-Debug-Trace-ID
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Cache-Control:
+      - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
+      Content-Length:
+      - "255"
+      Content-Type:
+      - application/json
+      Expires:
+      - Thu, 01 Jan 1970 00:00:00 GMT
+      Num_chars:
+      - "322"
+      Num_tokens:
+      - "9"
+      Pragma:
+      - no-cache
+      Server:
+      - envoy
+      Vary:
+      - Origin
+      Via:
+      - 1.1 google
+      X-Accel-Expires:
+      - "0"
+      X-Api-Warning:
+      - model 'command-light' is deprecated and will be removed September 15 2025. Please consider upgrading to a newer model to avoid future service disruptions
+      X-Debug-Trace-Id:
+      - f88699fe3648f4a8d1ae67ed73268a0f
+      X-Envoy-Upstream-Service-Time:
+      - "46"
+    status: 200 OK
+    code: 200
+    duration: 88ms

@@ -1,0 +1,54 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 282
+    host: api.cohere.com
+    body: "{\"stream\":true,\"model\":\"command-r\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What fruit is it? Reply with only one word.\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.png\"}}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cohere.com/v2/chat
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 120
+    body: "{\"id\":\"2106164c-7ce1-4733-8561-1fef9c2e54a1\",\"message\":\"invalid request: image content is not supported for this model\"}"
+    headers:
+      Access-Control-Expose-Headers:
+      - X-Debug-Trace-ID
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Cache-Control:
+      - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
+      Content-Length:
+      - "120"
+      Content-Type:
+      - application/json
+      Expires:
+      - Thu, 01 Jan 1970 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - envoy
+      Vary:
+      - Origin
+      Via:
+      - 1.1 google
+      X-Accel-Expires:
+      - "0"
+      X-Api-Warning:
+      - model 'command-r' is deprecated and will be removed September 15 2025. Please consider upgrading to a newer model to avoid future service disruptions
+      X-Debug-Trace-Id:
+      - 5699b266269e3b8486d1274a869e4f9e
+      X-Envoy-Upstream-Service-Time:
+      - "9"
+    status: 400 Bad Request
+    code: 400
+    duration: 52ms

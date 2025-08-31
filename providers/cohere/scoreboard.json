@@ -51,9 +51,53 @@
     {
       "comments": "Thinking is only related to tool planning.",
       "models": [
-        "command-r7b-12-2024"
+        "command-r"
       ],
       "good": true,
+      "reason": true,
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "tools": "flaky",
+        "toolsBiased": "true",
+        "json": true,
+        "jsonSchema": true,
+        "citations": true,
+        "topLogprobs": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "tools": "flaky",
+        "toolsBiased": "true",
+        "json": true,
+        "jsonSchema": true,
+        "citations": true,
+        "topLogprobs": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
+    },
+    {
+      "comments": "Thinking is only related to tool planning.",
+      "models": [
+        "command-r7b-12-2024"
+      ],
+      "cheap": true,
       "reason": true,
       "in": {
         "text": {
@@ -99,7 +143,32 @@
       "models": [
         "command-light"
       ],
-      "cheap": true
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "citations": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "citations": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
     },
     {
       "comments": "Thinking is only related to tool planning. See https://docs.cohere.com/docs/aya-vision",
@@ -157,34 +226,12 @@
         "command",
         "command-a-translate-08-2025",
         "command-a-vision-07-2025",
-        "command-light-nightly",
-        "command-nightly",
-        "command-r",
         "command-r-08-2024",
         "command-r-plus",
         "command-r-plus-08-2024",
         "command-r7b-arabic-02-2025"
-      ]
-    },
-    {
-      "comments": "Unsupported",
-      "models": [
-        "embed-english-light-v2.0",
-        "embed-english-light-v3.0",
-        "embed-english-light-v3.0-image",
-        "embed-english-v2.0",
-        "embed-english-v3.0",
-        "embed-english-v3.0-image",
-        "embed-multilingual-light-v3.0",
-        "embed-multilingual-light-v3.0-image",
-        "embed-multilingual-v2.0",
-        "embed-multilingual-v3.0",
-        "embed-multilingual-v3.0-image",
-        "embed-v4.0",
-        "rerank-english-v3.0",
-        "rerank-multilingual-v3.0",
-        "rerank-v3.5"
-      ]
+      ],
+			"reason": true
     }
   ]
 }

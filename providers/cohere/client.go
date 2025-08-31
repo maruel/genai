@@ -919,22 +919,22 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 		if !slices.Contains(m.Endpoints, "chat") || strings.Contains(m.Name, "nightly") {
 			continue
 		}
+		if !slices.Contains(m.Features, "strict_tools") {
+			continue
+		}
 		if cheap {
-			if strings.Contains(m.Name, "light") && (context == 0 || context > m.ContextLength) {
-				// For the cheapest, we want the smallest context.
+			if strings.Contains(m.Name, "r7b") && !strings.Contains(m.Name, "arabic") && (context == 0 || context < m.ContextLength) {
 				context = m.ContextLength
 				selectedModel = m.Name
 			}
 		} else if good {
-			if strings.Contains(m.Name, "r7b") && (context == 0 || context < m.ContextLength) {
+			if !strings.Contains(m.Name, "r7b") && !strings.Contains(m.Name, "reasoning") && !strings.Contains(m.Name, "plus") && (context == 0 || context < m.ContextLength) {
 				// For the greatest, we want the largest context.
 				context = m.ContextLength
 				selectedModel = m.Name
 			}
 		} else {
-			// We want to select Command-A. We go by elimination to increase the probability of being future
-			// proof.
-			if !strings.HasPrefix(m.Name, "command-r") && (context == 0 || context < m.ContextLength) {
+			if strings.Contains(m.Name, "reasoning") && (context == 0 || context < m.ContextLength) {
 				// For the greatest, we want the largest context.
 				context = m.ContextLength
 				selectedModel = m.Name
@@ -1065,6 +1065,8 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			case ContentThinking:
 				f.ReasoningFragment = pkt.Delta.Message.Content[0].Text
 				wasThinking = true
+			case ContentDocument, ContentImageURL:
+				fallthrough
 			default:
 				return fmt.Errorf("implement content %q", t)
 			}

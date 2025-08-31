@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 322
+    host: api.cohere.com
+    body: "{\"stream\":true,\"model\":\"command-light\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}],\"documents\":[{\"id\":\"capital_info.md\",\"data\":{\"snippet\":\"# Quackiland\\n\\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\",\"title\":\"capital_info.md\"}}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cohere.com/v2/chat
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "event: message-start\ndata: {\"id\":\"37aa51e2-5dc3-4e59-baae-637c925a673c\",\"type\":\"message-start\",\"delta\":{\"message\":{\"role\":\"assistant\",\"content\":[],\"tool_plan\":\"\",\"tool_calls\":[],\"citations\":[]}}}\n\nevent: content-start\ndata: {\"type\":\"content-start\",\"index\":0,\"delta\":{\"message\":{\"content\":{\"type\":\"text\",\"text\":\"\"}}}}\n\nevent: content-delta\ndata: {\"type\":\"content-delta\",\"index\":0,\"delta\":{\"message\":{\"content\":{\"text\":\"The\"}}}}\n\nevent: content-delta\ndata: {\"type\":\"content-delta\",\"index\":0,\"delta\":{\"message\":{\"content\":{\"text\":\" capital\"}}}}\n\nevent: content-delta\ndata: {\"type\":\"content-delta\",\"index\":0,\"delta\":{\"message\":{\"content\":{\"text\":\" of\"}}}}\n\nevent: content-delta\ndata: {\"type\":\"content-delta\",\"index\":0,\"delta\":{\"message\":{\"content\":{\"text\":\" Qu\"}}}}\n\nevent: content-delta\ndata: {\"type\":\"content-delta\",\"index\":0,\"delta\":{\"message\":{\"content\":{\"text\":\"ack\"}}}}\n\nevent: content-delta\ndata: {\"type\":\"content-delta\",\"index\":0,\"delta\":{\"message\":{\"content\":{\"text\":\"iland\"}}}}\n\nevent: content-delta\ndata: {\"type\":\"content-delta\",\"index\":0,\"delta\":{\"message\":{\"content\":{\"text\":\" is\"}}}}\n\nevent: content-delta\ndata: {\"type\":\"content-delta\",\"index\":0,\"delta\":{\"message\":{\"content\":{\"text\":\" Qu\"}}}}\n\nevent: content-delta\ndata: {\"type\":\"content-delta\",\"index\":0,\"delta\":{\"message\":{\"content\":{\"text\":\"ack\"}}}}\n\nevent: content-delta\ndata: {\"type\":\"content-delta\",\"index\":0,\"delta\":{\"message\":{\"content\":{\"text\":\".\"}}}}\n\nevent: content-delta\ndata: {\"type\":\"content-delta\",\"index\":0,\"delta\":{\"message\":{\"content\":{\"text\":\" The\"}}}}\n\nevent: content-delta\ndata: {\"type\":\"content-delta\",\"index\":0,\"delta\":{\"message\":{\"content\":{\"text\":\" town\"}}}}\n\nevent: content-delta\ndata: {\"type\":\"content-delta\",\"index\":0,\"delta\":{\"message\":{\"content\":{\"text\":\" is\"}}}}\n\nevent: content-delta\ndata: {\"type\":\"content-delta\",\"index\":0,\"delta\":{\"message\":{\"content\":{\"text\":\" known\"}}}}\n\nevent: content-delta\ndata: {\"type\":\"content-delta\",\"index\":0,\"delta\":{\"message\":{\"content\":{\"text\":\" for\"}}}}\n\nevent: content-delta\ndata: {\"type\":\"content-delta\",\"index\":0,\"delta\":{\"message\":{\"content\":{\"text\":\" its\"}}}}\n\nevent: content-delta\ndata: {\"type\":\"content-delta\",\"index\":0,\"delta\":{\"message\":{\"content\":{\"text\":\" Big\"}}}}\n\nevent: content-delta\ndata: {\"type\":\"content-delta\",\"index\":0,\"delta\":{\"message\":{\"content\":{\"text\":\" Can\"}}}}\n\nevent: content-delta\ndata: {\"type\":\"content-delta\",\"index\":0,\"delta\":{\"message\":{\"content\":{\"text\":\"ard\"}}}}\n\nevent: content-delta\ndata: {\"type\":\"content-delta\",\"index\":0,\"delta\":{\"message\":{\"content\":{\"text\":\" Statue\"}}}}\n\nevent: content-delta\ndata: {\"type\":\"content-delta\",\"index\":0,\"delta\":{\"message\":{\"content\":{\"text\":\".\"}}}}\n\nevent: citation-start\ndata: {\"type\":\"citation-start\",\"index\":0,\"delta\":{\"message\":{\"citations\":{\"start\":29,\"end\":35,\"text\":\"Quack.\",\"sources\":[{\"type\":\"document\",\"id\":\"capital_info.md\",\"document\":{\"id\":\"capital_info.md\",\"snippet\":\"# Quackiland\\n\\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\",\"title\":\"capital_info.md\"}}],\"type\":\"TEXT_CONTENT\"}}}}\n\nevent: citation-end\ndata: {\"type\":\"citation-end\",\"index\":0}\n\nevent: citation-start\ndata: {\"type\":\"citation-start\",\"index\":1,\"delta\":{\"message\":{\"citations\":{\"start\":62,\"end\":80,\"text\":\"Big Canard Statue.\",\"sources\":[{\"type\":\"document\",\"id\":\"capital_info.md\",\"document\":{\"id\":\"capital_info.md\",\"snippet\":\"# Quackiland\\n\\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\",\"title\":\"capital_info.md\"}}],\"type\":\"TEXT_CONTENT\"}}}}\n\nevent: citation-end\ndata: {\"type\":\"citation-end\",\"index\":1}\n\nevent: content-end\ndata: {\"type\":\"content-end\",\"index\":0}\n\nevent: message-end\ndata: {\"type\":\"message-end\",\"delta\":{\"finish_reason\":\"COMPLETE\",\"usage\":{\"billed_units\":{\"input_tokens\":46,\"output_tokens\":21},\"tokens\":{\"input_tokens\":611,\"output_tokens\":79}}}}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Expose-Headers:
+      - X-Debug-Trace-ID
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Cache-Control:
+      - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
+      Content-Type:
+      - text/event-stream
+      Expires:
+      - Thu, 01 Jan 1970 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - envoy
+      Vary:
+      - Origin
+      Via:
+      - 1.1 google
+      X-Accel-Expires:
+      - "0"
+      X-Api-Warning:
+      - model 'command-light' is deprecated and will be removed September 15 2025. Please consider upgrading to a newer model to avoid future service disruptions
+      X-Debug-Trace-Id:
+      - de43016d9cad427b8bf2aee8c2166e03
+      X-Envoy-Upstream-Service-Time:
+      - "33"
+    status: 200 OK
+    code: 200
+    duration: 73ms

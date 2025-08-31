@@ -1,0 +1,58 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 189
+    host: api.cohere.com
+    body: "{\"stream\":false,\"model\":\"command-light\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Talk about Canada in great details. Start with: Canada is\"}]}],\"stop_sequences\":[\"is\"]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cohere.com/v2/chat
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 264
+    body: "{\"id\":\"edae586e-7c8c-4712-b7b9-32c0f97d7c2d\",\"message\":{\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"Canada\"}]},\"finish_reason\":\"STOP_SEQUENCE\",\"usage\":{\"billed_units\":{\"input_tokens\":12,\"output_tokens\":1},\"tokens\":{\"input_tokens\":74,\"output_tokens\":386}}}"
+    headers:
+      Access-Control-Expose-Headers:
+      - X-Debug-Trace-ID
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Cache-Control:
+      - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
+      Content-Length:
+      - "264"
+      Content-Type:
+      - application/json
+      Expires:
+      - Thu, 01 Jan 1970 00:00:00 GMT
+      Num_chars:
+      - "350"
+      Num_tokens:
+      - "13"
+      Pragma:
+      - no-cache
+      Server:
+      - envoy
+      Vary:
+      - Origin
+      Via:
+      - 1.1 google
+      X-Accel-Expires:
+      - "0"
+      X-Api-Warning:
+      - model 'command-light' is deprecated and will be removed September 15 2025. Please consider upgrading to a newer model to avoid future service disruptions
+      X-Debug-Trace-Id:
+      - 0bff5a1cda2de62f8d1fe5f21669940c
+      X-Envoy-Upstream-Service-Time:
+      - "4120"
+    status: 200 OK
+    code: 200
+    duration: 4.162s

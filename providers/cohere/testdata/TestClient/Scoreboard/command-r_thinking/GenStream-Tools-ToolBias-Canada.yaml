@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 547
+    host: api.cohere.com
+    body: "{\"stream\":true,\"model\":\"command-r\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one.\"}]}],\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"country\":{\"type\":\"string\",\"enum\":[\"Canada\",\"USA\"]}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"country\"]},\"description\":\"A tool to specify the best country\"}}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cohere.com/v2/chat
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "event: message-start\ndata: {\"id\":\"b8b03165-e62a-4d96-b0be-315f60a799a2\",\"type\":\"message-start\",\"delta\":{\"message\":{\"role\":\"assistant\",\"content\":[],\"tool_plan\":\"\",\"tool_calls\":[],\"citations\":[]}}}\n\nevent: tool-plan-delta\ndata: {\"type\":\"tool-plan-delta\",\"delta\":{\"message\":{\"tool_plan\":\"I\"}}}\n\nevent: tool-plan-delta\ndata: {\"type\":\"tool-plan-delta\",\"delta\":{\"message\":{\"tool_plan\":\" will\"}}}\n\nevent: tool-plan-delta\ndata: {\"type\":\"tool-plan-delta\",\"delta\":{\"message\":{\"tool_plan\":\" call\"}}}\n\nevent: tool-plan-delta\ndata: {\"type\":\"tool-plan-delta\",\"delta\":{\"message\":{\"tool_plan\":\" the\"}}}\n\nevent: tool-plan-delta\ndata: {\"type\":\"tool-plan-delta\",\"delta\":{\"message\":{\"tool_plan\":\" best\"}}}\n\nevent: tool-plan-delta\ndata: {\"type\":\"tool-plan-delta\",\"delta\":{\"message\":{\"tool_plan\":\"_\"}}}\n\nevent: tool-plan-delta\ndata: {\"type\":\"tool-plan-delta\",\"delta\":{\"message\":{\"tool_plan\":\"country\"}}}\n\nevent: tool-plan-delta\ndata: {\"type\":\"tool-plan-delta\",\"delta\":{\"message\":{\"tool_plan\":\" tool\"}}}\n\nevent: tool-plan-delta\ndata: {\"type\":\"tool-plan-delta\",\"delta\":{\"message\":{\"tool_plan\":\" and\"}}}\n\nevent: tool-plan-delta\ndata: {\"type\":\"tool-plan-delta\",\"delta\":{\"message\":{\"tool_plan\":\" pass\"}}}\n\nevent: tool-plan-delta\ndata: {\"type\":\"tool-plan-delta\",\"delta\":{\"message\":{\"tool_plan\":\" in\"}}}\n\nevent: tool-plan-delta\ndata: {\"type\":\"tool-plan-delta\",\"delta\":{\"message\":{\"tool_plan\":\" the\"}}}\n\nevent: tool-plan-delta\ndata: {\"type\":\"tool-plan-delta\",\"delta\":{\"message\":{\"tool_plan\":\" parameter\"}}}\n\nevent: tool-plan-delta\ndata: {\"type\":\"tool-plan-delta\",\"delta\":{\"message\":{\"tool_plan\":\" '\"}}}\n\nevent: tool-plan-delta\ndata: {\"type\":\"tool-plan-delta\",\"delta\":{\"message\":{\"tool_plan\":\"Canada\"}}}\n\nevent: tool-plan-delta\ndata: {\"type\":\"tool-plan-delta\",\"delta\":{\"message\":{\"tool_plan\":\"'\"}}}\n\nevent: tool-plan-delta\ndata: {\"type\":\"tool-plan-delta\",\"delta\":{\"message\":{\"tool_plan\":\" to\"}}}\n\nevent: tool-plan-delta\ndata: {\"type\":\"tool-plan-delta\",\"delta\":{\"message\":{\"tool_plan\":\" see\"}}}\n\nevent: tool-plan-delta\ndata: {\"type\":\"tool-plan-delta\",\"delta\":{\"message\":{\"tool_plan\":\" which\"}}}\n\nevent: tool-plan-delta\ndata: {\"type\":\"tool-plan-delta\",\"delta\":{\"message\":{\"tool_plan\":\" country\"}}}\n\nevent: tool-plan-delta\ndata: {\"type\":\"tool-plan-delta\",\"delta\":{\"message\":{\"tool_plan\":\" is\"}}}\n\nevent: tool-plan-delta\ndata: {\"type\":\"tool-plan-delta\",\"delta\":{\"message\":{\"tool_plan\":\" deemed\"}}}\n\nevent: tool-plan-delta\ndata: {\"type\":\"tool-plan-delta\",\"delta\":{\"message\":{\"tool_plan\":\" the\"}}}\n\nevent: tool-plan-delta\ndata: {\"type\":\"tool-plan-delta\",\"delta\":{\"message\":{\"tool_plan\":\" best\"}}}\n\nevent: tool-plan-delta\ndata: {\"type\":\"tool-plan-delta\",\"delta\":{\"message\":{\"tool_plan\":\".\"}}}\n\nevent: tool-call-start\ndata: {\"type\":\"tool-call-start\",\"index\":0,\"delta\":{\"message\":{\"tool_calls\":{\"id\":\"best_country_hqtesah2v57r\",\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"arguments\":\"\"}}}}}\n\nevent: tool-call-delta\ndata: {\"type\":\"tool-call-delta\",\"index\":0,\"delta\":{\"message\":{\"tool_calls\":{\"function\":{\"arguments\":\"{\\n    \\\"\"}}}}}\n\nevent: tool-call-delta\ndata: {\"type\":\"tool-call-delta\",\"index\":0,\"delta\":{\"message\":{\"tool_calls\":{\"function\":{\"arguments\":\"country\"}}}}}\n\nevent: tool-call-delta\ndata: {\"type\":\"tool-call-delta\",\"index\":0,\"delta\":{\"message\":{\"tool_calls\":{\"function\":{\"arguments\":\"\\\":\"}}}}}\n\nevent: tool-call-delta\ndata: {\"type\":\"tool-call-delta\",\"index\":0,\"delta\":{\"message\":{\"tool_calls\":{\"function\":{\"arguments\":\" \\\"\"}}}}}\n\nevent: tool-call-delta\ndata: {\"type\":\"tool-call-delta\",\"index\":0,\"delta\":{\"message\":{\"tool_calls\":{\"function\":{\"arguments\":\"Canada\"}}}}}\n\nevent: tool-call-delta\ndata: {\"type\":\"tool-call-delta\",\"index\":0,\"delta\":{\"message\":{\"tool_calls\":{\"function\":{\"arguments\":\"\\\"\"}}}}}\n\nevent: tool-call-delta\ndata: {\"type\":\"tool-call-delta\",\"index\":0,\"delta\":{\"message\":{\"tool_calls\":{\"function\":{\"arguments\":\"\\n\"}}}}}\n\nevent: tool-call-delta\ndata: {\"type\":\"tool-call-delta\",\"index\":0,\"delta\":{\"message\":{\"tool_calls\":{\"function\":{\"arguments\":\"}\"}}}}}\n\nevent: tool-call-end\ndata: {\"type\":\"tool-call-end\",\"index\":0}\n\nevent: message-end\ndata: {\"type\":\"message-end\",\"delta\":{\"finish_reason\":\"TOOL_CALL\",\"usage\":{\"billed_units\":{\"input_tokens\":49,\"output_tokens\":33},\"tokens\":{\"input_tokens\":925,\"output_tokens\":67}}}}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Expose-Headers:
+      - X-Debug-Trace-ID
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Cache-Control:
+      - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
+      Content-Type:
+      - text/event-stream
+      Expires:
+      - Thu, 01 Jan 1970 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - envoy
+      Vary:
+      - Origin
+      Via:
+      - 1.1 google
+      X-Accel-Expires:
+      - "0"
+      X-Api-Warning:
+      - model 'command-r' is deprecated and will be removed September 15 2025. Please consider upgrading to a newer model to avoid future service disruptions
+      X-Debug-Trace-Id:
+      - b8f0d8e853b31ba4d62a41fb42dabde9
+      X-Envoy-Upstream-Service-Time:
+      - "141"
+    status: 200 OK
+    code: 200
+    duration: 183ms

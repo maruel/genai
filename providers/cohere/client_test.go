@@ -7,6 +7,7 @@ package cohere_test
 import (
 	"net/http"
 	"os"
+	"slices"
 	"strings"
 	"testing"
 
@@ -60,12 +61,15 @@ func TestClient(t *testing.T) {
 		}
 		var models []smoketest.Model
 		for _, m := range genaiModels {
-			id := m.GetID()
-			// Hack.
-			if id == "c4ai-aya-vision-8b" || id == "command-r7b-12-2024" || strings.Contains(id, "reasoning") {
-				models = append(models, smoketest.Model{Model: id, Reason: true})
+			mdl := m.(*cohere.Model)
+			if !slices.Contains(mdl.Endpoints, "chat") || strings.Contains(mdl.Name, "nightly") {
+				continue
+			}
+			// All models "reason" when tool calling except light because it doesn't support tool calling.
+			if !strings.Contains(mdl.Name, "light") {
+				models = append(models, smoketest.Model{Model: mdl.Name, Reason: true})
 			} else {
-				models = append(models, smoketest.Model{Model: id})
+				models = append(models, smoketest.Model{Model: mdl.Name})
 			}
 		}
 		getClientRT := func(t testing.TB, model smoketest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
@@ -87,8 +91,8 @@ func TestClient(t *testing.T) {
 			name string
 			want string
 		}{
-			{genai.ModelCheap, "command-light"},
-			{genai.ModelGood, "command-r7b-12-2024"},
+			{genai.ModelCheap, "command-r7b-12-2024"},
+			{genai.ModelGood, "command-r"},
 			{genai.ModelSOTA, "command-a-reasoning-08-2025"},
 		}
 		for _, line := range data {

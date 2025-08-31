@@ -1,0 +1,58 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 305
+    host: api.cohere.com
+    body: "{\"stream\":false,\"model\":\"command-r\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}],\"documents\":[{\"id\":\"capital_info.txt\",\"data\":{\"snippet\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\",\"title\":\"capital_info.txt\"}}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cohere.com/v2/chat
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 588
+    body: "{\"id\":\"653c2003-ab65-4b42-a3dd-9404e2c20103\",\"message\":{\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"The capital of Quackiland is a city called Quack.\"}],\"citations\":[{\"start\":43,\"end\":49,\"text\":\"Quack.\",\"sources\":[{\"type\":\"document\",\"id\":\"capital_info.txt\",\"document\":{\"id\":\"capital_info.txt\",\"snippet\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\",\"title\":\"capital_info.txt\"}}],\"type\":\"TEXT_CONTENT\"}]},\"finish_reason\":\"COMPLETE\",\"usage\":{\"billed_units\":{\"input_tokens\":40,\"output_tokens\":13},\"tokens\":{\"input_tokens\":720,\"output_tokens\":58}}}"
+    headers:
+      Access-Control-Expose-Headers:
+      - X-Debug-Trace-ID
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Cache-Control:
+      - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
+      Content-Length:
+      - "588"
+      Content-Type:
+      - application/json
+      Expires:
+      - Thu, 01 Jan 1970 00:00:00 GMT
+      Num_chars:
+      - "3635"
+      Num_tokens:
+      - "53"
+      Pragma:
+      - no-cache
+      Server:
+      - envoy
+      Vary:
+      - Origin
+      Via:
+      - 1.1 google
+      X-Accel-Expires:
+      - "0"
+      X-Api-Warning:
+      - model 'command-r' is deprecated and will be removed September 15 2025. Please consider upgrading to a newer model to avoid future service disruptions
+      X-Debug-Trace-Id:
+      - 357e12c1e27cf90e03979e1848e07f1c
+      X-Envoy-Upstream-Service-Time:
+      - "805"
+    status: 200 OK
+    code: 200
+    duration: 848ms

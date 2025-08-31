@@ -1,0 +1,58 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 149
+    host: api.cohere.com
+    body: "{\"stream\":false,\"model\":\"command-r\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Say hello. Use only one word.\"}]}],\"logprobs\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cohere.com/v2/chat
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 383
+    body: "{\"id\":\"655b5c1f-82bb-40b8-93c0-6c11968e5670\",\"message\":{\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"Hello!\"}]},\"finish_reason\":\"COMPLETE\",\"usage\":{\"billed_units\":{\"input_tokens\":8,\"output_tokens\":2},\"tokens\":{\"input_tokens\":74,\"output_tokens\":2}},\"logprobs\":[{\"text\":\"Hello\",\"token_ids\":[28339],\"logprobs\":[-0.5796721]},{\"text\":\"!\",\"token_ids\":[8],\"logprobs\":[-0.3526775]}]}"
+    headers:
+      Access-Control-Expose-Headers:
+      - X-Debug-Trace-ID
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Cache-Control:
+      - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
+      Content-Length:
+      - "383"
+      Content-Type:
+      - application/json
+      Expires:
+      - Thu, 01 Jan 1970 00:00:00 GMT
+      Num_chars:
+      - "445"
+      Num_tokens:
+      - "10"
+      Pragma:
+      - no-cache
+      Server:
+      - envoy
+      Vary:
+      - Origin
+      Via:
+      - 1.1 google
+      X-Accel-Expires:
+      - "0"
+      X-Api-Warning:
+      - model 'command-r' is deprecated and will be removed September 15 2025. Please consider upgrading to a newer model to avoid future service disruptions
+      X-Debug-Trace-Id:
+      - 03eaae25898353cebd62848e911c0842
+      X-Envoy-Upstream-Service-Time:
+      - "113"
+    status: 200 OK
+    code: 200
+    duration: 156ms

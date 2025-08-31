@@ -538,7 +538,21 @@ func (m *Model) String() string {
 			if err := d.Decode(&mp); err == nil {
 				var s []string
 				for _, l := range mp {
-					s = append(s, fmt.Sprintf("%g$%s %s", l.Price, l.Currency, l.Unit))
+					// Try to simplify the unit.
+					unit := ""
+					switch l.Unit {
+					case "per M input tokens":
+						unit = "/Mt in"
+					case "per M output tokens":
+						unit = "/Mt out"
+					case "per audio minute":
+						unit = "/min"
+					case "per 512 by 512 tile":
+						unit = "/512x512"
+					default:
+						unit = " " + l.Unit
+					}
+					s = append(s, fmt.Sprintf("%g$%s%s", l.Price, l.Currency, unit))
 				}
 				suffixes = append(suffixes, fmt.Sprintf("%s=[%s]", p.PropertyID, strings.Join(s, ", ")))
 			} else {

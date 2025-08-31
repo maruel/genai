@@ -766,7 +766,10 @@ func (m *Model) String() string {
 		sort.Strings(features)
 		f = " with " + strings.Join(features, "/")
 	}
-	return fmt.Sprintf("%s: %s%s. Context: %d%s", m.Name, strings.Join(endpoints, "/"), f, m.ContextLength, suffix)
+	if m.ContextLength == 0 {
+		return fmt.Sprintf("%s: %s%s%s", m.Name, strings.Join(endpoints, "/"), f, suffix)
+	}
+	return fmt.Sprintf("%s: %s%s Context: %d%s", m.Name, strings.Join(endpoints, "/"), f, m.ContextLength, suffix)
 }
 
 func (m *Model) Context() int64 {

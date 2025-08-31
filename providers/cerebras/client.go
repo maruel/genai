@@ -574,6 +574,9 @@ func (m *Model) GetID() string {
 }
 
 func (m *Model) String() string {
+	if m.Created < 100 {
+		return m.ID
+	}
 	return fmt.Sprintf("%s (%s)", m.ID, m.Created.AsTime().Format("2006-01-02"))
 }
 

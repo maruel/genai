@@ -1240,7 +1240,8 @@ func (m *Model) String() string {
 	if m.Description == "" {
 		return fmt.Sprintf("%s: %s Context: %d/%d", m.GetID(), m.DisplayName, m.InputTokenLimit, m.OutputTokenLimit)
 	}
-	return fmt.Sprintf("%s: %s (%s) Context: %d/%d", m.GetID(), m.DisplayName, m.Description, m.InputTokenLimit, m.OutputTokenLimit)
+	d := strings.TrimSuffix(m.Description, ".")
+	return fmt.Sprintf("%s: %s (%s) Context: %d/%d", m.GetID(), m.DisplayName, d, m.InputTokenLimit, m.OutputTokenLimit)
 }
 
 func (m *Model) Context() int64 {

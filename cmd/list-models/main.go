@@ -79,6 +79,57 @@ func printStructDense(v any, indent string) string {
 	return strings.Join(fields, "\n")
 }
 
+func getModels(ctx context.Context, provider string) ([]string, map[string]genai.Model, error) {
+	cfg := providers.All[provider]
+	c, err := cfg.Factory(ctx, &genai.ProviderOptions{Model: genai.ModelNone}, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+	models, err := c.ListModels(ctx)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	if c, err = cfg.Factory(ctx, &genai.ProviderOptions{Model: genai.ModelCheap}, nil); err != nil {
+		return nil, nil, err
+	}
+	cheap := c.ModelID()
+	if c, err = cfg.Factory(ctx, &genai.ProviderOptions{Model: genai.ModelGood}, nil); err != nil {
+		return nil, nil, err
+	}
+	good := c.ModelID()
+	if c, err = cfg.Factory(ctx, &genai.ProviderOptions{Model: genai.ModelSOTA}, nil); err != nil {
+		return nil, nil, err
+	}
+	sota := c.ModelID()
+
+	m := make(map[string]genai.Model, len(models))
+	names := make([]string, 0, len(models))
+	for _, model := range models {
+		if t, ok := model.(*huggingface.Model); ok && t.TrendingScore < 1 {
+			continue
+		}
+		name := model.String()
+		id := model.GetID()
+		// The same model can be in multiple categories.
+		if id == cheap {
+			name += " (" + genai.ModelCheap + ")"
+		}
+		if id == good {
+			name += " (" + genai.ModelGood + ")"
+		}
+		if id == sota {
+			name += " (" + genai.ModelSOTA + ")"
+		}
+		names = append(names, name)
+		m[name] = model
+	}
+	sort.Slice(names, func(i, j int) bool {
+		return strings.ToLower(names[i]) < strings.ToLower(names[j])
+	})
+	return names, m, nil
+}
+
 func mainImpl() error {
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 	defer stop()
@@ -100,34 +151,14 @@ func mainImpl() error {
 	if !slices.Contains(names, *provider) {
 		return fmt.Errorf("unknown backend %q", *provider)
 	}
-	cfg := providers.All[*provider]
-	c, err := cfg.Factory(ctx, &genai.ProviderOptions{Model: genai.ModelNone}, nil)
+	names, models, err := getModels(ctx, *provider)
 	if err != nil {
 		return err
 	}
-	models, err := c.ListModels(ctx)
-	if err != nil {
-		return err
-	}
-	m := make(map[string]genai.Model, len(models))
-	s := make([]string, 0, len(models))
-	for _, model := range models {
-		if t, ok := model.(*huggingface.Model); ok {
-			if t.TrendingScore < 1 {
-				continue
-			}
-		}
-		name := model.String()
-		s = append(s, name)
-		m[name] = model
-	}
-	sort.Slice(s, func(i, j int) bool {
-		return strings.ToLower(s[i]) < strings.ToLower(s[j])
-	})
-	for _, name := range s {
+	for _, name := range names {
 		fmt.Printf("%s\n", name)
 		if *all {
-			_, _ = os.Stdout.WriteString(printStructDense(m[name], "  ") + "\n")
+			_, _ = os.Stdout.WriteString(printStructDense(models[name], "  ") + "\n")
 		}
 	}
 	return nil

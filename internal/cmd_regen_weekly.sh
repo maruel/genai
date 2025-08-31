@@ -9,6 +9,7 @@ cd "$(dirname $0)"
 cd ..
 
 go install ./cmd/list-models ./cmd/scoreboard
+# TODO: get the list automatically. Note that we want "openai", not "openaichat and "openairesponses".
 PROVIDERS=(anthropic cerebras cloudflare cohere deepseek gemini groq huggingface mistral openai pollinations togetherai)
 
 echo "# List of models available on each provider" > docs/MODELS.new.md
@@ -26,9 +27,7 @@ for i in "${PROVIDERS[@]}"; do
 		go test ./providers/$i/...
 		exit 1
 	fi
-    echo "# Scoreboard" > docs/$i.md
-	echo "" >> docs/$i.md
-	scoreboard -table -provider $i >> docs/$i.md
 done
-
 mv docs/MODELS.new.md docs/MODELS.md
+
+go generate ./...

@@ -254,21 +254,7 @@ func printTable(ctx context.Context, provider string) error {
 	if c == nil {
 		return fmt.Errorf("provider %s: %w", provider, err)
 	}
-
-	cheap, good, sota := "", "", ""
-	{
-		if c2, err2 := cfg.Factory(ctx, &genai.ProviderOptions{Model: genai.ModelCheap}, nil); err2 == nil {
-			cheap = c2.ModelID()
-		}
-		if c2, err2 := cfg.Factory(ctx, &genai.ProviderOptions{Model: genai.ModelGood}, nil); err2 == nil {
-			good = c2.ModelID()
-		}
-		if c2, err2 := cfg.Factory(ctx, &genai.ProviderOptions{Model: genai.ModelSOTA}, nil); err2 == nil {
-			sota = c2.ModelID()
-		}
-	}
-
-	return printProviderTable(c, cheap, good, sota)
+	return printProviderTable(c)
 }
 
 func printSummaryTable(ctx context.Context, all map[string]providers.Config) error {
@@ -306,7 +292,7 @@ func printSummaryTable(ctx context.Context, all map[string]providers.Config) err
 	return nil
 }
 
-func printProviderTable(p genai.Provider, cheap, good, sota string) error {
+func printProviderTable(p genai.Provider) error {
 	var rows []tableModelRow
 	sb := p.Scoreboard()
 	for _, sc := range sb.Scenarios {
@@ -334,21 +320,19 @@ func printProviderTable(p genai.Provider, cheap, good, sota string) error {
 		for _, m := range sc.Models {
 			for i := range tmpRows {
 				tmpRows[i].Model = m
+				if i == 0 {
+					if sc.SOTA {
+						tmpRows[i].Model += "🥇"
+					}
+					if sc.Good {
+						tmpRows[i].Model += "🥈"
+					}
+					if sc.Cheap {
+						tmpRows[i].Model += "🥉"
+					}
+				}
 				rows = append(rows, tmpRows[i])
 			}
-		}
-	}
-
-	for i := range rows {
-		// The same model can be selected for multiple categories.
-		if rows[i].Model == sota {
-			rows[i].Model += "🥇"
-		}
-		if rows[i].Model == good {
-			rows[i].Model += "🥈"
-		}
-		if rows[i].Model == cheap {
-			rows[i].Model += "🥉"
 		}
 	}
 	printMarkdownTable(os.Stdout, rows)

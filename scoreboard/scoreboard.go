@@ -251,6 +251,13 @@ type Scenario struct {
 	// providers continuouly release new models. It is still valuable to use the first value
 	Models []string `json:"models"`
 
+	// These mean that the model is automatically selected. There can be multiple SOTA models, one per
+	// modalities (e.g. text output vs image output). They must be first. Models must be a list of one model in
+	// this case.
+	SOTA  bool `json:"sota,omitzero"`
+	Good  bool `json:"good,omitzero"`
+	Cheap bool `json:"cheap,omitzero"`
+
 	// Reason means that the model does either explicit chain-of-thought or hidden reasoning. For some
 	// providers, this is controlled via a OptionsText. For some models (like Qwen3), a token "/no_think" or
 	// "/think" is used to control. ReasoningTokenStart and ReasoningTokenEnd must only be set on explicit inline

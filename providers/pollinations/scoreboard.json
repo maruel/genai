@@ -11,19 +11,22 @@
       "models": [
         "deepseek-reasoning"
       ],
+      "sota": true,
       "reason": true
     },
     {
       "comments": "It was fairly broken at the time of testing.",
       "models": [
         "openai-large"
-      ]
+      ],
+      "good": true
     },
     {
       "comments": "JSON generated is often bad when using GenStream.",
       "models": [
         "llamascout"
       ],
+      "cheap": true,
       "in": {
         "text": {
           "inline": true

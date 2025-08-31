@@ -11,13 +11,15 @@
       "comments": "Untested",
       "models": [
         "command-a-reasoning-08-2025"
-      ]
+      ],
+      "sota": true
     },
     {
       "comments": "Thinking is only related to tool planning.",
       "models": [
         "command-r7b-12-2024"
       ],
+      "good": true,
       "reason": true,
       "in": {
         "text": {
@@ -62,7 +64,8 @@
       "comments": "Untested",
       "models": [
         "command-light"
-      ]
+      ],
+      "cheap": true
     },
     {
       "comments": "Thinking is only related to tool planning. See https://docs.cohere.com/docs/aya-vision",

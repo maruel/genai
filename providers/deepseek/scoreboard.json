@@ -12,6 +12,8 @@
       "models": [
         "deepseek-reasoner"
       ],
+      "sota": true,
+      "good": true,
       "reason": true,
       "in": {
         "text": {
@@ -46,6 +48,7 @@
       "models": [
         "deepseek-chat"
       ],
+      "cheap": true,
       "in": {
         "text": {
           "inline": true

@@ -7,13 +7,24 @@
   "dashboardURL": "https://www.perplexity.ai/settings/api",
   "scenarios": [
     {
+      "comments": "Untested, same as sonar-reasoning but more expensive",
       "models": [
-        "sonar-reasoning",
         "sonar-reasoning-pro"
       ],
-      "reason": true,
-      "reasoningTokenStart": "\u003cthink\u003e",
-      "reasoningTokenEnd": "\u003c/think\u003e",
+      "sota": true
+    },
+    {
+      "comments": "Untested, same as sonar but more expensive",
+      "models": [
+        "sonar-pro"
+      ],
+      "good": true
+    },
+    {
+      "models": [
+        "sonar"
+      ],
+      "cheap": true,
       "in": {
         "image": {
           "inline": true,
@@ -51,9 +62,11 @@
     },
     {
       "models": [
-        "sonar",
-        "sonar-pro"
+        "sonar-reasoning"
       ],
+      "reason": true,
+      "reasoningTokenStart": "\u003cthink\u003e",
+      "reasoningTokenEnd": "\u003c/think\u003e",
       "in": {
         "image": {
           "inline": true,

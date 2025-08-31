@@ -12,6 +12,7 @@
       "models": [
         "qwen-3-235b-a22b-thinking-2507"
       ],
+      "sota": true,
       "reason": true,
       "reasoningTokenEnd": "\n\u003c/think\u003e\n",
       "in": {
@@ -52,6 +53,7 @@
       "models": [
         "qwen-3-235b-a22b-instruct-2507"
       ],
+      "good": true,
       "in": {
         "text": {
           "inline": true
@@ -96,6 +98,7 @@
       "models": [
         "llama3.1-8b"
       ],
+      "cheap": true,
       "in": {
         "text": {
           "inline": true

@@ -121,16 +121,37 @@ func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Recor
 	// Check if the order is SOTA, Good, Cheap then the rest.
 	// HACK FOR llamacpp; there's only one model and the reported ID and the scoreboard name do not match.
 	if len(sb.Scenarios) > 1 {
-		if sota := pf(t, Model{Model: genai.ModelSOTA}, nil).ModelID(); !slices.Contains(sb.Scenarios[0].Models, sota) {
+		if sota := pf(t, Model{Model: genai.ModelSOTA}, nil).ModelID(); sb.Scenarios[0].Models[0] != sota {
 			t.Errorf("SOTA should be first: %q", sota)
+		} else if !sb.Scenarios[0].SOTA {
+			t.Errorf("SOTA should be true: %q", sota)
 		}
-		if good := pf(t, Model{Model: genai.ModelGood}, nil).ModelID(); !slices.Contains(sb.Scenarios[0].Models, good) &&
-			(len(sb.Scenarios) < 2 || !slices.Contains(sb.Scenarios[1].Models, good)) {
+
+		if good := pf(t, Model{Model: genai.ModelGood}, nil).ModelID(); sb.Scenarios[0].Models[0] == good {
+			if !sb.Scenarios[0].Good {
+				t.Errorf("Good should be true: %q", good)
+			}
+		} else if len(sb.Scenarios) >= 2 && sb.Scenarios[1].Models[0] == good {
+			if !sb.Scenarios[1].Good {
+				t.Errorf("Good should be true: %q", good)
+			}
+		} else {
 			t.Errorf("Good should be first or second: %q", good)
 		}
-		if cheap := pf(t, Model{Model: genai.ModelCheap}, nil).ModelID(); !slices.Contains(sb.Scenarios[0].Models, cheap) &&
-			(len(sb.Scenarios) < 2 || !slices.Contains(sb.Scenarios[1].Models, cheap)) &&
-			(len(sb.Scenarios) < 3 || !slices.Contains(sb.Scenarios[2].Models, cheap)) {
+
+		if cheap := pf(t, Model{Model: genai.ModelCheap}, nil).ModelID(); sb.Scenarios[0].Models[0] == cheap {
+			if !sb.Scenarios[0].Cheap {
+				t.Errorf("Cheap should be true: %q", cheap)
+			}
+		} else if len(sb.Scenarios) >= 2 && sb.Scenarios[1].Models[0] == cheap {
+			if !sb.Scenarios[1].Cheap {
+				t.Errorf("Cheap should be true: %q", cheap)
+			}
+		} else if len(sb.Scenarios) >= 3 && sb.Scenarios[2].Models[0] == cheap {
+			if !sb.Scenarios[2].Cheap {
+				t.Errorf("Cheap should be true: %q", cheap)
+			}
+		} else {
 			t.Errorf("Cheap should be in first 3: %q", cheap)
 		}
 	}
@@ -190,7 +211,7 @@ func runOneModel(t testing.TB, gc getClientOneModel, want scoreboard.Scenario) g
 
 //
 
-var optScenario = cmpopts.IgnoreFields(scoreboard.Scenario{}, "Comments")
+var optScenario = cmpopts.IgnoreFields(scoreboard.Scenario{}, "Comments", "SOTA", "Good", "Cheap")
 
 /*
 var optTriState = cmp.Comparer(func(x, y scoreboard.TriState) bool {

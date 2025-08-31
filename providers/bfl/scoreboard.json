@@ -10,19 +10,22 @@
       "comments": "Untested",
       "models": [
         "flux-pro-1.1-ultra"
-      ]
+      ],
+      "sota": true
     },
     {
       "comments": "Untested",
       "models": [
         "flux-pro-1.1"
-      ]
+      ],
+      "good": true
     },
     {
       "comments": "See https://docs.bfl.ai/api-reference/tasks/generate-an-image-with-flux1-[dev]",
       "models": [
         "flux-dev"
       ],
+      "cheap": true,
       "in": {
         "text": {
           "inline": true

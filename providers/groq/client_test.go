@@ -71,7 +71,6 @@ func TestClient(t *testing.T) {
 			reason := false
 			for _, sc := range scenarios {
 				if slices.Contains(sc.Models, id) {
-					t.Logf("%s: %t", id, sc.Reason)
 					reason = sc.Reason
 					break
 				}

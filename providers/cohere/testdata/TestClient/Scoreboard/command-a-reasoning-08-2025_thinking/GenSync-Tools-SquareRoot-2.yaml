@@ -1,0 +1,56 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 837
+    host: api.cohere.com
+    body: "{\"stream\":false,\"model\":\"command-a-reasoning-08-2025\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"}]},{\"role\":\"assistant\",\"tool_calls\":[{\"id\":\"square_root_axdxz68abgbs\",\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\":132413.0}\"}}]},{\"role\":\"tool\",\"content\":[{\"type\":\"text\",\"text\":\"363.89\"}],\"tool_call_id\":\"square_root_axdxz68abgbs\"}],\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]},\"description\":\"Calculates and return the square root of a number\"}}],\"tool_choice\":\"none\"}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cohere.com/v2/chat
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 1017
+    body: "{\"id\":\"025fa66d-b9f5-4cf5-9b26-d89f6ce3b68e\",\"message\":{\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"Okay, let's check the user's request. They want the square root of 132413 calculated using the square_root tool and just the result, no explanation.\\n\\nFirst, I need to call the square_root tool with the number 132413. The tool's parameters require a \\\"number\\\" type, so that's correct. I'll generate a tool call with that number. \\n\\nAfter getting the tool's response, which is 363.89, I should present this as the final answer without any additional text. The user specified not to include an explanation, so I must ensure the response is just the numerical result.363.89\"}],\"citations\":[{\"start\":0,\"end\":6,\"text\":\"363.89\",\"sources\":[{\"type\":\"tool\",\"id\":\"square_root_axdxz68abgbs:0\",\"tool_output\":{\"content\":\"363.89\"}}],\"type\":\"TEXT_CONTENT\",\"content_index\":0}]},\"finish_reason\":\"COMPLETE\",\"usage\":{\"billed_units\":{\"input_tokens\":55,\"output_tokens\":147},\"tokens\":{\"input_tokens\":1601,\"output_tokens\":161}}}"
+    headers:
+      Access-Control-Expose-Headers:
+      - X-Debug-Trace-ID
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Cache-Control:
+      - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
+      Content-Length:
+      - "1017"
+      Content-Type:
+      - application/json
+      Expires:
+      - Thu, 01 Jan 1970 00:00:00 GMT
+      Num_chars:
+      - "7460"
+      Num_tokens:
+      - "202"
+      Pragma:
+      - no-cache
+      Server:
+      - envoy
+      Vary:
+      - Origin
+      Via:
+      - 1.1 google
+      X-Accel-Expires:
+      - "0"
+      X-Debug-Trace-Id:
+      - c2c0100b7d22fe72b08e8e862a1197f2
+      X-Envoy-Upstream-Service-Time:
+      - "1236"
+    status: 200 OK
+    code: 200
+    duration: 48.796s

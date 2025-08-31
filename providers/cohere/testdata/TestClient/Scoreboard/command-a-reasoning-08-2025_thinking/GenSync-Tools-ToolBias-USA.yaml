@@ -1,0 +1,56 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 611
+    host: api.cohere.com
+    body: "{\"stream\":false,\"model\":\"command-a-reasoning-08-2025\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one.\"}]}],\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"country\":{\"type\":\"string\",\"enum\":[\"USA\",\"Canada\"]}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"country\"]},\"description\":\"A tool to specify the best country\"}}],\"tool_choice\":\"required\",\"strict_tools\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cohere.com/v2/chat
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 594
+    body: "{\"id\":\"73661f6a-beed-4d37-a247-4bf176ff0bc7\",\"message\":{\"role\":\"assistant\",\"content\":[{\"type\":\"thinking\",\"thinking\":\"I will use one or more of the available tools to find the answer\"}],\"tool_calls\":[{\"id\":\"best_country_px1hd7dxar4b\",\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"arguments\":\"{\\\"country\\\":\\\"USA\\\"}\"}},{\"id\":\"best_country_hb33vprdn0d4\",\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"arguments\":\"{\\\"country\\\":\\\"Canada\\\"}\"}}]},\"finish_reason\":\"TOOL_CALL\",\"usage\":{\"billed_units\":{\"input_tokens\":49,\"output_tokens\":30},\"tokens\":{\"input_tokens\":1524,\"output_tokens\":63}}}"
+    headers:
+      Access-Control-Expose-Headers:
+      - X-Debug-Trace-ID
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Cache-Control:
+      - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
+      Content-Length:
+      - "594"
+      Content-Type:
+      - application/json
+      Expires:
+      - Thu, 01 Jan 1970 00:00:00 GMT
+      Num_chars:
+      - "7146"
+      Num_tokens:
+      - "79"
+      Pragma:
+      - no-cache
+      Server:
+      - envoy
+      Vary:
+      - Origin
+      Via:
+      - 1.1 google
+      X-Accel-Expires:
+      - "0"
+      X-Debug-Trace-Id:
+      - c14a6bf66f74e412c094de7b5e656460
+      X-Envoy-Upstream-Service-Time:
+      - "690"
+    status: 200 OK
+    code: 200
+    duration: 732ms

@@ -1,0 +1,56 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 161
+    host: api.cohere.com
+    body: "{\"stream\":false,\"model\":\"command-a-reasoning-08-2025\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Say hello. Use only one word.\"}]}],\"seed\":42}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cohere.com/v2/chat
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 830
+    body: "{\"id\":\"4a8fcdfe-ae19-4859-8e66-820c2c9653d7\",\"message\":{\"role\":\"assistant\",\"content\":[{\"type\":\"thinking\",\"thinking\":\"Okay, the user wants me to say hello using only one word. Let me think. The most straightforward way is to just say \\\"Hello\\\". But wait, are there any other single-word greetings? Like \\\"Hi\\\" or \\\"Hey\\\"? But the user specified \\\"hello\\\", so maybe they want the exact word. Let me check the instruction again. It says \\\"Say hello. Use only one word.\\\" So the task is to respond with the word \\\"hello\\\" as a single word. I should make sure not to add any other words or punctuation. Just \\\"hello\\\" by itself. Alright, that's simple enough.\"},{\"type\":\"text\",\"text\":\"Hello\"}]},\"finish_reason\":\"COMPLETE\",\"usage\":{\"billed_units\":{\"input_tokens\":8,\"output_tokens\":1},\"tokens\":{\"input_tokens\":1393,\"output_tokens\":131}}}"
+    headers:
+      Access-Control-Expose-Headers:
+      - X-Debug-Trace-ID
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Cache-Control:
+      - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
+      Content-Length:
+      - "830"
+      Content-Type:
+      - application/json
+      Expires:
+      - Thu, 01 Jan 1970 00:00:00 GMT
+      Num_chars:
+      - "6615"
+      Num_tokens:
+      - "9"
+      Pragma:
+      - no-cache
+      Server:
+      - envoy
+      Vary:
+      - Origin
+      Via:
+      - 1.1 google
+      X-Accel-Expires:
+      - "0"
+      X-Debug-Trace-Id:
+      - 4f796e4d287a44c5db1c2ec4e09f296a
+      X-Envoy-Upstream-Service-Time:
+      - "1078"
+    status: 200 OK
+    code: 200
+    duration: 1.121s

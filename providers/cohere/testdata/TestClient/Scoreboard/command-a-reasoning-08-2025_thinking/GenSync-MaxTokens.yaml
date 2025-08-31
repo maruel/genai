@@ -1,0 +1,56 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 188
+    host: api.cohere.com
+    body: "{\"stream\":false,\"model\":\"command-a-reasoning-08-2025\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Explain the theory of relativity in great details.\"}]}],\"max_tokens\":16}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cohere.com/v2/chat
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 332
+    body: "{\"id\":\"81156f7d-4acf-4413-9691-33462529cb5d\",\"message\":{\"role\":\"assistant\",\"content\":[{\"type\":\"thinking\",\"thinking\":\"Okay, so I need to explain the theory of relativity in great detail.\"}]},\"finish_reason\":\"MAX_TOKENS\",\"usage\":{\"billed_units\":{\"input_tokens\":9,\"output_tokens\":15},\"tokens\":{\"input_tokens\":1394,\"output_tokens\":16}}}"
+    headers:
+      Access-Control-Expose-Headers:
+      - X-Debug-Trace-ID
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Cache-Control:
+      - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
+      Content-Length:
+      - "332"
+      Content-Type:
+      - application/json
+      Expires:
+      - Thu, 01 Jan 1970 00:00:00 GMT
+      Num_chars:
+      - "6636"
+      Num_tokens:
+      - "24"
+      Pragma:
+      - no-cache
+      Server:
+      - envoy
+      Vary:
+      - Origin
+      Via:
+      - 1.1 google
+      X-Accel-Expires:
+      - "0"
+      X-Debug-Trace-Id:
+      - 62aa95c384c1021a7ee2e59ea26766c0
+      X-Envoy-Upstream-Service-Time:
+      - "203"
+    status: 200 OK
+    code: 200
+    duration: 247ms

@@ -7,6 +7,7 @@ package cohere_test
 import (
 	"net/http"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/maruel/genai"
@@ -61,7 +62,7 @@ func TestClient(t *testing.T) {
 		for _, m := range genaiModels {
 			id := m.GetID()
 			// Hack.
-			if id == "c4ai-aya-vision-8b" || id == "command-r7b-12-2024" {
+			if id == "c4ai-aya-vision-8b" || id == "command-r7b-12-2024" || strings.Contains(id, "reasoning") {
 				models = append(models, smoketest.Model{Model: id, Reason: true})
 			} else {
 				models = append(models, smoketest.Model{Model: id})

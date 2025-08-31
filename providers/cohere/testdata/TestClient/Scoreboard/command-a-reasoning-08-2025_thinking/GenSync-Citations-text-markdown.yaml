@@ -1,0 +1,56 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 337
+    host: api.cohere.com
+    body: "{\"stream\":false,\"model\":\"command-a-reasoning-08-2025\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}],\"documents\":[{\"id\":\"capital_info.md\",\"data\":{\"snippet\":\"# Quackiland\\n\\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\",\"title\":\"capital_info.md\"}}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cohere.com/v2/chat
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 937
+    body: "{\"id\":\"e0f941a1-3320-4b61-8008-7d020e16c52c\",\"message\":{\"role\":\"assistant\",\"content\":[{\"type\":\"thinking\",\"thinking\":\"After retrieving the document using the direct-injected-document tool, I found that the capital of Quackiland is explicitly stated as Quack in the provided snippet. The Big Canard Statue is also mentioned as being located there, which confirms the capital's name. No further tool calls are needed.\"},{\"type\":\"text\",\"text\":\"The capital of Quackiland is Quack.\"}],\"citations\":[{\"start\":29,\"end\":35,\"text\":\"Quack.\",\"sources\":[{\"type\":\"document\",\"id\":\"capital_info.md\",\"document\":{\"id\":\"capital_info.md\",\"snippet\":\"# Quackiland\\n\\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\",\"title\":\"capital_info.md\"}}],\"type\":\"TEXT_CONTENT\",\"content_index\":1}]},\"finish_reason\":\"COMPLETE\",\"usage\":{\"billed_units\":{\"input_tokens\":46,\"output_tokens\":10},\"tokens\":{\"input_tokens\":1700,\"output_tokens\":85}}}"
+    headers:
+      Access-Control-Expose-Headers:
+      - X-Debug-Trace-ID
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Cache-Control:
+      - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
+      Content-Length:
+      - "937"
+      Content-Type:
+      - application/json
+      Expires:
+      - Thu, 01 Jan 1970 00:00:00 GMT
+      Num_chars:
+      - "7966"
+      Num_tokens:
+      - "56"
+      Pragma:
+      - no-cache
+      Server:
+      - envoy
+      Vary:
+      - Origin
+      Via:
+      - 1.1 google
+      X-Accel-Expires:
+      - "0"
+      X-Debug-Trace-Id:
+      - 975c9c9b3a73e0b5b42b463815bda5cf
+      X-Envoy-Upstream-Service-Time:
+      - "815"
+    status: 200 OK
+    code: 200
+    duration: 855ms

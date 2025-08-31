@@ -1,0 +1,56 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 289
+    host: api.cohere.com
+    body: "{\"stream\":false,\"model\":\"command-a-reasoning-08-2025\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\\\"is_fruit\\\": bool}.\"}]}],\"response_format\":{\"type\":\"json_object\"}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cohere.com/v2/chat
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 1431
+    body: "{\"id\":\"583f287f-c3c0-48cb-986b-85250bcb4466\",\"message\":{\"role\":\"assistant\",\"content\":[{\"type\":\"thinking\",\"thinking\":\"Okay, the user is asking if a banana is a fruit and wants the answer in JSON format without any explanation. Let me start by recalling what I know about bananas.\\n\\nFrom my knowledge, a banana is indeed a fruit. Botanically, fruits are the mature ovary of a flowering plant, usually containing seeds. Bananas develop from the banana plant's flowers and have seeds, although the ones we commonly eat are seedless varieties. So, according to botanical definitions, bananas are fruits. \\n\\nI should check if there's any ambiguity. Sometimes people confuse fruits with vegetables in culinary terms, but the question doesn't specify culinary classification. Since the default understanding in biology is that bananas are fruits, the answer should be true. \\n\\nNow, I need to make sure the response is exactly as specified: a JSON object with \\\"is_fruit\\\" as the key and a boolean value. No extra explanations or text. Just {\\\"is_fruit\\\": true}. That's straightforward. I don't need to call any external tools here because this is general knowledge. Confirming once more, yes, bananas are fruits. So the final answer is correct.\"},{\"type\":\"text\",\"text\":\"{\\\"is_fruit\\\": true}\"}]},\"finish_reason\":\"COMPLETE\",\"usage\":{\"billed_units\":{\"input_tokens\":29,\"output_tokens\":7},\"tokens\":{\"input_tokens\":1414,\"output_tokens\":244}}}"
+    headers:
+      Access-Control-Expose-Headers:
+      - X-Debug-Trace-ID
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Cache-Control:
+      - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
+      Content-Length:
+      - "1431"
+      Content-Type:
+      - application/json
+      Expires:
+      - Thu, 01 Jan 1970 00:00:00 GMT
+      Num_chars:
+      - "6710"
+      Num_tokens:
+      - "36"
+      Pragma:
+      - no-cache
+      Server:
+      - envoy
+      Vary:
+      - Origin
+      Via:
+      - 1.1 google
+      X-Accel-Expires:
+      - "0"
+      X-Debug-Trace-Id:
+      - ad7988e1c618a99e3af277a968729e1b
+      X-Envoy-Upstream-Service-Time:
+      - "2106"
+    status: 200 OK
+    code: 200
+    duration: 2.15s

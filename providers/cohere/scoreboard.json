@@ -8,11 +8,45 @@
   "dashboardURL": "https://dashboard.cohere.com/billing",
   "scenarios": [
     {
-      "comments": "Untested",
       "models": [
         "command-a-reasoning-08-2025"
       ],
-      "sota": true
+      "sota": true,
+      "reason": true,
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "tools": "true",
+        "toolsIndecisive": "true",
+        "toolCallRequired": true,
+        "json": true,
+        "jsonSchema": true,
+        "citations": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "tools": "true",
+        "toolsIndecisive": "true",
+        "toolCallRequired": true,
+        "json": true,
+        "jsonSchema": true,
+        "citations": true
+      }
     },
     {
       "comments": "Thinking is only related to tool planning.",

@@ -1,0 +1,56 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 421
+    host: api.cohere.com
+    body: "{\"stream\":false,\"model\":\"command-a-reasoning-08-2025\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON.\"}]}],\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"is_fruit\":{\"type\":\"boolean\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"is_fruit\"]}}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cohere.com/v2/chat
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 1783
+    body: "{\"id\":\"e6f1ab87-4fb5-44be-80d1-d298ae795efb\",\"message\":{\"role\":\"assistant\",\"content\":[{\"type\":\"thinking\",\"thinking\":\"Okay, the user is asking if a banana is a fruit and wants the answer in JSON format without any explanation. Let me start by recalling what I know about bananas.\\n\\nFirst, botanically, a fruit is the mature ovary of a flowering plant, usually containing seeds. Bananas develop from the flower of the banana plant and have seeds in their wild form, though commercial varieties are typically seedless. So, by the botanical definition, a banana is a fruit.\\n\\nBut sometimes people get confused because of culinary definitions. In cooking, fruits are often sweet and used in desserts, while vegetables are savory. Bananas are sweet and used in sweet dishes, which aligns with the culinary definition of a fruit. So both botanically and culinarily, a banana is considered a fruit.\\n\\nWait, but I should make sure there's no exception here. Are there any cases where bananas might be classified differently? I don't think so. Even though they're sometimes used in savory dishes in some cultures, that doesn't change their botanical classification. The key point is the botanical definition, which is the scientific standard.\\n\\nSo the answer is yes, a banana is a fruit. Now, the user wants the response as JSON with only the answer, no explanation. The structure should probably be a simple key-value pair. Maybe {\\\"is_fruit\\\": true} or something similar. Let me confirm the correct JSON syntax. Yes, that's valid. No extra explanations, just the JSON object. Alright, that's it.\"},{\"type\":\"text\",\"text\":\"{\\\"is_fruit\\\": true}\"}]},\"finish_reason\":\"COMPLETE\",\"usage\":{\"billed_units\":{\"input_tokens\":17,\"output_tokens\":7},\"tokens\":{\"input_tokens\":1402,\"output_tokens\":322}}}"
+    headers:
+      Access-Control-Expose-Headers:
+      - X-Debug-Trace-ID
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Cache-Control:
+      - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
+      Content-Length:
+      - "1783"
+      Content-Type:
+      - application/json
+      Expires:
+      - Thu, 01 Jan 1970 00:00:00 GMT
+      Num_chars:
+      - "6657"
+      Num_tokens:
+      - "24"
+      Pragma:
+      - no-cache
+      Server:
+      - envoy
+      Vary:
+      - Origin
+      Via:
+      - 1.1 google
+      X-Accel-Expires:
+      - "0"
+      X-Debug-Trace-Id:
+      - f9bbd12c0d076f267f1c1bc36905ab71
+      X-Envoy-Upstream-Service-Time:
+      - "2662"
+    status: 200 OK
+    code: 200
+    duration: 2.708s

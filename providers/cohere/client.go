@@ -257,8 +257,9 @@ func (m *Message) From(in *genai.Message) ([]Document, error) {
 }
 
 type Content struct {
-	Type ContentType `json:"type,omitzero"`
-	Text string      `json:"text,omitzero"`
+	Type     ContentType `json:"type,omitzero"`
+	Text     string      `json:"text,omitzero"`
+	Thinking string      `json:"thinking,omitzero"`
 
 	// Only used when Type == ContentImageURL and Role == "user".
 	ImageURL struct {
@@ -345,6 +346,10 @@ func (c *Content) FromReply(in *genai.Reply) (*Document, error) {
 		default:
 			return nil, fmt.Errorf("unsupported mime type %s", mimeType)
 		}
+	} else if in.Reasoning != "" {
+		// Unclear if we should send it back.
+		c.Type = ContentThinking
+		c.Thinking = in.Reasoning
 	} else {
 		return nil, errors.New("unknown Reply type")
 	}
@@ -355,6 +360,8 @@ func (c *Content) To(in *genai.Reply) error {
 	switch c.Type {
 	case ContentText:
 		in.Text = c.Text
+	case ContentThinking:
+		in.Reasoning = c.Thinking
 	case ContentDocument, ContentImageURL:
 		fallthrough
 	default:
@@ -368,6 +375,7 @@ type ContentType string
 
 const (
 	ContentText     ContentType = "text"
+	ContentThinking ContentType = "thinking"
 	ContentImageURL ContentType = "image_url"
 	ContentDocument ContentType = "document"
 )
@@ -413,11 +421,12 @@ func (c Citations) To(dst *genai.Reply) error {
 
 // Citation is only used with messages from the LLM.
 type Citation struct {
-	Start   int64            `json:"start,omitzero"`
-	End     int64            `json:"end,omitzero"`
-	Text    string           `json:"text,omitzero"`
-	Sources []CitationSource `json:"sources,omitzero"`
-	Type    string           `json:"type,omitzero"` // "TEXT_CONTENT", "PLAN"
+	Type         string           `json:"type,omitzero"` // "TEXT_CONTENT", "PLAN"
+	Start        int64            `json:"start,omitzero"`
+	End          int64            `json:"end,omitzero"`
+	Text         string           `json:"text,omitzero"`
+	Sources      []CitationSource `json:"sources,omitzero"`
+	ContentIndex int64            `json:"content_index,omitzero"`
 }
 
 func (c *Citation) To(dst *genai.Citation) error {
@@ -454,7 +463,11 @@ type CitationSource struct {
 	ToolOutput map[string]any `json:"tool_output,omitzero"`
 
 	// Type == "document"
-	Document map[string]any `json:"document,omitzero"`
+	Document struct {
+		ID      string `json:"id,omitzero"`
+		Snippet string `json:"snippet,omitzero"`
+		Title   string `json:"title,omitzero"`
+	} `json:"document,omitzero"`
 }
 
 type Tool struct {
@@ -524,7 +537,7 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 	case FinishStopSequence:
 		return genai.FinishedStopSequence
 	case FinishError:
-		fallthrough
+		return "Error"
 	default:
 		if !internal.BeLenient {
 			panic(f)
@@ -704,18 +717,6 @@ func (t *ToolCalls) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-type ChatStreamChunkResponse struct {
-	ID    string    `json:"id"`
-	Type  ChunkType `json:"type"`
-	Index int64     `json:"index"`
-	Delta struct {
-		Message      MessageResponse `json:"message"`
-		FinishReason FinishReason    `json:"finish_reason"`
-		Usage        Usage           `json:"usage"`
-	} `json:"delta"`
-	Logprobs Logprobs `json:"logprobs"`
-}
-
 type ChunkType string
 
 const (
@@ -731,6 +732,19 @@ const (
 	ChunkCitationStart ChunkType = "citation-start"
 	ChunkCitationEnd   ChunkType = "citation-end"
 )
+
+type ChatStreamChunkResponse struct {
+	Type  ChunkType `json:"type"`
+	ID    string    `json:"id"`
+	Index int64     `json:"index"`
+	Delta struct {
+		Message      MessageResponse `json:"message"`
+		FinishReason FinishReason    `json:"finish_reason"`
+		Usage        Usage           `json:"usage"`
+		Error        string          `json:"error"`
+	} `json:"delta"`
+	Logprobs Logprobs `json:"logprobs"`
+}
 
 type Model struct {
 	Name             string   `json:"name"`
@@ -1004,6 +1018,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		for range ch {
 		}
 	}()
+	wasThinking := false
 	pendingCall := ToolCall{}
 	for pkt := range ch {
 		// These can't happen.
@@ -1013,19 +1028,29 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		if len(pkt.Delta.Message.ToolCalls) > 1 {
 			return errors.New("implement multiple tool calls")
 		}
-
 		switch role := pkt.Delta.Message.Role; role {
 		case "assistant", "":
 		default:
 			return fmt.Errorf("unexpected role %q", role)
 		}
+		if pkt.Logprobs.Text != "" {
+			result.Logprobs = append(result.Logprobs, pkt.Logprobs.To())
+		}
 		f := genai.ReplyFragment{}
 		switch pkt.Type {
 		case ChunkMessageStart:
 			// Nothing useful.
-			continue
+			if len(pkt.Delta.Message.Content) != 0 {
+				return fmt.Errorf("expected no content %#v", pkt)
+			}
 		case ChunkMessageEnd:
 			// Contain usage and finish reason.
+			if pkt.Delta.FinishReason == FinishError {
+				return errors.New(pkt.Delta.Error)
+			}
+			if len(pkt.Delta.Message.Content) != 0 {
+				return fmt.Errorf("expected no content %#v", pkt)
+			}
 			result.Usage.InputTokens = pkt.Delta.Usage.Tokens.InputTokens
 			result.Usage.OutputTokens = pkt.Delta.Usage.Tokens.OutputTokens
 			result.Usage.FinishReason = pkt.Delta.FinishReason.ToFinishReason()
@@ -1033,13 +1058,36 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			if len(pkt.Delta.Message.Content) != 1 {
 				return fmt.Errorf("expected content %#v", pkt)
 			}
-			if t := pkt.Delta.Message.Content[0].Type; t != ContentText {
-				// TODO: Reasoning for SOTA model.
+			switch t := pkt.Delta.Message.Content[0].Type; t {
+			case ContentText:
+				f.TextFragment = pkt.Delta.Message.Content[0].Text
+				wasThinking = false
+			case ContentThinking:
+				f.ReasoningFragment = pkt.Delta.Message.Content[0].Text
+				wasThinking = true
+			default:
 				return fmt.Errorf("implement content %q", t)
 			}
 		case ChunkContentDelta:
+			// Sometimes the delta is empty?
+			if len(pkt.Delta.Message.Content) == 1 {
+				t := pkt.Delta.Message.Content[0].Text
+				if t == "" {
+					return fmt.Errorf("empty content %#v", pkt)
+				}
+				// Type is not set. We need to remember the value from ChunkContentStart.
+				if wasThinking {
+					f.ReasoningFragment = t
+				} else {
+					f.TextFragment = t
+				}
+			}
 		case ChunkContentEnd:
 			// Will be useful when there's multiple index.
+			// Sometimes the delta is empty?
+			if len(pkt.Delta.Message.Content) != 0 {
+				return fmt.Errorf("unexpected content %#v", pkt)
+			}
 		case ChunkToolPlanDelta:
 			f.ReasoningFragment = pkt.Delta.Message.ToolPlan
 		case ChunkToolCallStart:
@@ -1053,25 +1101,20 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			pendingCall.To(&f.ToolCall)
 			pendingCall = ToolCall{}
 		case ChunkCitationStart:
-			if len(pkt.Delta.Message.Citations) == 1 {
-				if err := pkt.Delta.Message.Citations[0].To(&f.Citation); err != nil {
-					return fmt.Errorf("mapping citations: %w", err)
-				}
-			} else {
-				return fmt.Errorf("expected one citation, got %d", len(pkt.Delta.Message.Citations))
+			if len(pkt.Delta.Message.Citations) != 1 {
+				return fmt.Errorf("expected one citation, got %v", pkt)
+			}
+			if err := pkt.Delta.Message.Citations[0].To(&f.Citation); err != nil {
+				return fmt.Errorf("mapping citations: %w", err)
 			}
 		case ChunkCitationEnd:
+			if len(pkt.Delta.Message.Citations) != 0 {
+				return fmt.Errorf("expected no citations, got %v", pkt)
+			}
 		default:
 			if !internal.BeLenient {
 				return fmt.Errorf("unknown packet %q", pkt.Type)
 			}
-		}
-
-		if len(pkt.Delta.Message.Content) == 1 {
-			f.TextFragment = pkt.Delta.Message.Content[0].Text
-		}
-		if pkt.Logprobs.Text != "" {
-			result.Logprobs = append(result.Logprobs, pkt.Logprobs.To())
 		}
 		if !f.IsZero() {
 			if err := result.Accumulate(f); err != nil {

@@ -1,0 +1,56 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 323
+    host: api.cohere.com
+    body: "{\"stream\":false,\"model\":\"command-a-reasoning-08-2025\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}],\"documents\":[{\"id\":\"capital_info.txt\",\"data\":{\"snippet\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\",\"title\":\"capital_info.txt\"}}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cohere.com/v2/chat
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 948
+    body: "{\"id\":\"3df4846a-bf71-47e8-a6f8-651c5bbb55d3\",\"message\":{\"role\":\"assistant\",\"content\":[{\"type\":\"thinking\",\"thinking\":\"Okay, let's see. The user asked for the capital of Quackiland. I used the direct-injected-document tool to get any relevant information from uploaded documents. The tool returned a snippet saying the capital is Quack and mentions the Big Canard Statue. That directly answers the question, so I can provide the answer now.\"},{\"type\":\"text\",\"text\":\"The capital of Quackiland is Quack.\"}],\"citations\":[{\"start\":29,\"end\":35,\"text\":\"Quack.\",\"sources\":[{\"type\":\"document\",\"id\":\"capital_info.txt\",\"document\":{\"id\":\"capital_info.txt\",\"snippet\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\",\"title\":\"capital_info.txt\"}}],\"type\":\"TEXT_CONTENT\",\"content_index\":1}]},\"finish_reason\":\"COMPLETE\",\"usage\":{\"billed_units\":{\"input_tokens\":40,\"output_tokens\":10},\"tokens\":{\"input_tokens\":1693,\"output_tokens\":93}}}"
+    headers:
+      Access-Control-Expose-Headers:
+      - X-Debug-Trace-ID
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Cache-Control:
+      - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
+      Content-Length:
+      - "948"
+      Content-Type:
+      - application/json
+      Expires:
+      - Thu, 01 Jan 1970 00:00:00 GMT
+      Num_chars:
+      - "7951"
+      Num_tokens:
+      - "50"
+      Pragma:
+      - no-cache
+      Server:
+      - envoy
+      Vary:
+      - Origin
+      Via:
+      - 1.1 google
+      X-Accel-Expires:
+      - "0"
+      X-Debug-Trace-Id:
+      - dcc86799451ec4169886216a7579a690
+      X-Envoy-Upstream-Service-Time:
+      - "884"
+    status: 200 OK
+    code: 200
+    duration: 926ms

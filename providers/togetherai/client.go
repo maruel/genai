@@ -1134,7 +1134,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		for range ch {
 		}
 	}()
-	pendingCall := ToolCall{}
+	pendingToolCall := ToolCall{}
 	var warnings []string
 	for pkt := range ch {
 		if pkt.Usage.TotalTokens != 0 {
@@ -1172,33 +1172,33 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			t := pkt.Choices[0].Delta.ToolCalls[0]
 			if t.ID != "" {
 				// A new call.
-				if pendingCall.ID != "" {
+				if pendingToolCall.ID != "" {
 					// Flush.
 					f := genai.ReplyFragment{ToolCall: genai.ToolCall{
-						ID:        pendingCall.ID,
-						Name:      pendingCall.Function.Name,
-						Arguments: pendingCall.Function.Arguments,
+						ID:        pendingToolCall.ID,
+						Name:      pendingToolCall.Function.Name,
+						Arguments: pendingToolCall.Function.Arguments,
 					}}
 					if err := result.Accumulate(f); err != nil {
 						return err
 					}
 					chunks <- f
 				}
-				pendingCall = t
+				pendingToolCall = t
 				continue
 			}
-			if pendingCall.ID != "" {
+			if pendingToolCall.ID != "" {
 				// Continuation.
-				pendingCall.Function.Arguments += t.Function.Arguments
+				pendingToolCall.Function.Arguments += t.Function.Arguments
 				continue
 			}
 		} else {
-			if pendingCall.ID != "" {
+			if pendingToolCall.ID != "" {
 				// Flush.
 				f := genai.ReplyFragment{ToolCall: genai.ToolCall{
-					ID:        pendingCall.ID,
-					Name:      pendingCall.Function.Name,
-					Arguments: pendingCall.Function.Arguments,
+					ID:        pendingToolCall.ID,
+					Name:      pendingToolCall.Function.Name,
+					Arguments: pendingToolCall.Function.Arguments,
 				}}
 				if err := result.Accumulate(f); err != nil {
 					return err

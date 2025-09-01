@@ -1467,7 +1467,7 @@ func processChatStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- g
 		for range ch {
 		}
 	}()
-	pendingCall := ToolCall{}
+	pendingToolCall := ToolCall{}
 	for pkt := range ch {
 		if pkt.Usage.PromptTokens != 0 {
 			result.Usage.InputTokens = pkt.Usage.PromptTokens
@@ -1496,28 +1496,28 @@ func processChatStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- g
 		if len(pkt.Choices[0].Delta.ToolCalls) == 1 {
 			if t := pkt.Choices[0].Delta.ToolCalls[0]; t.ID != "" {
 				// A new call.
-				if pendingCall.ID == "" {
-					pendingCall = t
+				if pendingToolCall.ID == "" {
+					pendingToolCall = t
 					if !f.IsZero() {
 						return fmt.Errorf("implement tool call with metadata: %#v", pkt)
 					}
 					continue
 				}
 				// Flush.
-				pendingCall.To(&f.ToolCall)
-				pendingCall = t
-			} else if pendingCall.ID != "" {
+				pendingToolCall.To(&f.ToolCall)
+				pendingToolCall = t
+			} else if pendingToolCall.ID != "" {
 				// Continuation.
-				pendingCall.Function.Arguments += t.Function.Arguments
+				pendingToolCall.Function.Arguments += t.Function.Arguments
 				if !f.IsZero() {
 					return fmt.Errorf("implement tool call with metadata: %#v", pkt)
 				}
 				continue
 			}
-		} else if pendingCall.ID != "" {
+		} else if pendingToolCall.ID != "" {
 			// Flush.
-			pendingCall.To(&f.ToolCall)
-			pendingCall = ToolCall{}
+			pendingToolCall.To(&f.ToolCall)
+			pendingToolCall = ToolCall{}
 		}
 		if !f.IsZero() {
 			if err := result.Accumulate(f); err != nil {

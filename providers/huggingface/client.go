@@ -916,7 +916,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		for range ch {
 		}
 	}()
-	pendingCall := ToolCall{}
+	pendingToolCall := ToolCall{}
 	for pkt := range ch {
 		if pkt.Usage.PromptTokens != 0 {
 			result.Usage.InputTokens = pkt.Usage.PromptTokens
@@ -945,30 +945,30 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		// Huggingface streams the arguments. Buffer the arguments to send the fragment as a whole tool call.
 		if len(pkt.Choices[0].Delta.ToolCalls) == 1 {
 			// ID is not consistently set. Use Name for now but that's risky.
-			if t := pkt.Choices[0].Delta.ToolCalls[0]; t.Function.Name == pendingCall.Function.Name {
+			if t := pkt.Choices[0].Delta.ToolCalls[0]; t.Function.Name == pendingToolCall.Function.Name {
 				// Continuation.
-				pendingCall.Function.Arguments += t.Function.Arguments
+				pendingToolCall.Function.Arguments += t.Function.Arguments
 				if !f.IsZero() {
 					return fmt.Errorf("implement tool call with metadata: %#v", pkt)
 				}
 				continue
 			} else {
 				// A new call.
-				if pendingCall.Function.Name == "" {
-					pendingCall = t
+				if pendingToolCall.Function.Name == "" {
+					pendingToolCall = t
 					if !f.IsZero() {
 						return fmt.Errorf("implement tool call with metadata: %#v", pkt)
 					}
 					continue
 				}
 				// Flush.
-				pendingCall.To(&f.ToolCall)
-				pendingCall = ToolCall{}
+				pendingToolCall.To(&f.ToolCall)
+				pendingToolCall = ToolCall{}
 			}
-		} else if pendingCall.Function.Name != "" {
+		} else if pendingToolCall.Function.Name != "" {
 			// Flush.
-			pendingCall.To(&f.ToolCall)
-			pendingCall = ToolCall{}
+			pendingToolCall.To(&f.ToolCall)
+			pendingToolCall = ToolCall{}
 		}
 		if !f.IsZero() {
 			if err := result.Accumulate(f); err != nil {
@@ -978,10 +978,10 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		}
 	}
 	// Hugginface doesn't send an "ending" packet, FinishReason isn't even set on the last packet.
-	if pendingCall.Function.Name != "" {
+	if pendingToolCall.Function.Name != "" {
 		// Flush.
 		f := genai.ReplyFragment{}
-		pendingCall.To(&f.ToolCall)
+		pendingToolCall.To(&f.ToolCall)
 		if err := result.Accumulate(f); err != nil {
 			return err
 		}

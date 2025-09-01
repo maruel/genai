@@ -1019,7 +1019,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		}
 	}()
 	wasThinking := false
-	pendingCall := ToolCall{}
+	pendingToolCall := ToolCall{}
 	for pkt := range ch {
 		// These can't happen.
 		if len(pkt.Delta.Message.Content) > 1 {
@@ -1096,12 +1096,12 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			if len(pkt.Delta.Message.ToolCalls) != 1 {
 				return fmt.Errorf("expected tool call %#v", pkt)
 			}
-			pendingCall = pkt.Delta.Message.ToolCalls[0]
+			pendingToolCall = pkt.Delta.Message.ToolCalls[0]
 		case ChunkToolCallDelta:
-			pendingCall.Function.Arguments += pkt.Delta.Message.ToolCalls[0].Function.Arguments
+			pendingToolCall.Function.Arguments += pkt.Delta.Message.ToolCalls[0].Function.Arguments
 		case ChunkToolCallEnd:
-			pendingCall.To(&f.ToolCall)
-			pendingCall = ToolCall{}
+			pendingToolCall.To(&f.ToolCall)
+			pendingToolCall = ToolCall{}
 		case ChunkCitationStart:
 			if len(pkt.Delta.Message.Citations) != 1 {
 				return fmt.Errorf("expected one citation, got %v", pkt)

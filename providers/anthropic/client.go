@@ -1569,7 +1569,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		for range ch {
 		}
 	}()
-	pendingCall := genai.ToolCall{}
+	pendingToolCall := genai.ToolCall{}
 	for pkt := range ch {
 		f := genai.ReplyFragment{}
 		// See testdata/TestClient_Chat_thinking/ChatStream.yaml as a great example.
@@ -1594,9 +1594,9 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			case ContentThinking:
 				f.ReasoningFragment = pkt.ContentBlock.Thinking
 			case ContentToolUse:
-				pendingCall.ID = pkt.ContentBlock.ID
-				pendingCall.Name = pkt.ContentBlock.Name
-				pendingCall.Arguments = ""
+				pendingToolCall.ID = pkt.ContentBlock.ID
+				pendingToolCall.Name = pkt.ContentBlock.Name
+				pendingToolCall.Arguments = ""
 				// TODO: Is there anything to do with Input? pendingCall.Arguments = pkt.ContentBlock.Input
 			case ContentRedactedThinking:
 				f.Opaque = map[string]any{"redacted_thinking": pkt.ContentBlock.Signature}
@@ -1629,7 +1629,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			case DeltaSignature:
 				f.Opaque = map[string]any{"signature": pkt.Delta.Signature}
 			case DeltaInputJSON:
-				pendingCall.Arguments += pkt.Delta.PartialJSON
+				pendingToolCall.Arguments += pkt.Delta.PartialJSON
 			case DeltaCitations:
 				if err := pkt.Delta.Citation.To(&f.Citation); err != nil {
 					return fmt.Errorf("failed to parse citation: %w", err)
@@ -1639,9 +1639,9 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			}
 		case ChunkContentBlockStop:
 			// Marks a closure of the block pkt.Index. Nothing to do.
-			if pendingCall.ID != "" {
-				f.ToolCall = pendingCall
-				pendingCall = genai.ToolCall{}
+			if pendingToolCall.ID != "" {
+				f.ToolCall = pendingToolCall
+				pendingToolCall = genai.ToolCall{}
 			}
 		case ChunkMessageDelta:
 			// Includes finish reason and output tokens usage (but not input tokens!)

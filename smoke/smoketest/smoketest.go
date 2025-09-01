@@ -191,6 +191,8 @@ func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Recor
 				}
 			}
 		}
+
+		// TODO: Make sure other models are not marked as SOTA, Good or Cheap!
 	}
 
 	// Do this at the end.

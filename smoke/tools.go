@@ -70,6 +70,10 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 	}
 	hasCalls := slices.ContainsFunc(resp.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() })
 	if !hasCalls || err != nil {
+		// It is not necessarily flaky if the client returned an error, it's often that ToolCallRequired is not
+		// supported. But if the client didn't report an error and there are no tool calls, that's bad and it's
+		// really flaky.
+		flaky = err == nil
 		f.ToolCallRequired = false
 		internal.Logger(ctx).DebugContext(ctx, "SquareRoot-1", "err", err, "msg", "trying toolany")
 		// Try a second time without forcing a tool call.
@@ -80,7 +84,6 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 			return err
 		}
 		hasCalls = slices.ContainsFunc(resp.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() })
-		flaky = true
 	}
 
 	if err != nil || !hasCalls {

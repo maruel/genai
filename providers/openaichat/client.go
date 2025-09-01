@@ -1227,6 +1227,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		for range ch {
 		}
 	}()
+	sent := false
 	pendingToolCall := ToolCall{}
 	for pkt := range ch {
 		if pkt.Usage.PromptTokens != 0 {
@@ -1266,6 +1267,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 				return err
 			}
 			chunks <- f
+			sent = true
 			f = genai.ReplyFragment{}
 		}
 
@@ -1302,8 +1304,13 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 				return err
 			}
 			chunks <- f
+			sent = true
 		}
 		result.Logprobs = append(result.Logprobs, pkt.Choices[0].Logprobs.To()...)
+	}
+	if !sent {
+		// This happens with MaxTokens.
+		return errors.New("model sent no reply")
 	}
 	return nil
 }

@@ -213,18 +213,18 @@ func (r *Response) ToResult() (genai.Result, error) {
 			}
 		}
 	}
+	var err error
 	if r.IncompleteDetails.Reason != "" {
 		if r.IncompleteDetails.Reason == "max_output_tokens" {
 			res.Usage.FinishReason = genai.FinishedLength
-		} else {
-			res.Usage.FinishReason = genai.FinishReason(r.IncompleteDetails.Reason)
 		}
+		err = errors.New(r.IncompleteDetails.Reason)
 	} else if slices.ContainsFunc(res.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
 		res.Usage.FinishReason = genai.FinishedToolCalls
 	} else {
 		res.Usage.FinishReason = genai.FinishedStop
 	}
-	return res, nil
+	return res, err
 }
 
 func (r *Response) initOptionsText(v *genai.OptionsText) ([]string, []error) {
@@ -1146,6 +1146,7 @@ func processStreamPackets(ch <-chan ResponseStreamChunkResponse, chunks chan<- g
 		}
 	}()
 
+	sent := false
 	pendingToolCall := genai.ToolCall{}
 	for pkt := range ch {
 		f := genai.ReplyFragment{}
@@ -1189,7 +1190,10 @@ func processStreamPackets(ch <-chan ResponseStreamChunkResponse, chunks chan<- g
 			result.Usage.InputCachedTokens = pkt.Response.Usage.InputTokensDetails.CachedTokens
 			result.Usage.ReasoningTokens = pkt.Response.Usage.OutputTokensDetails.ReasoningTokens
 			result.Usage.OutputTokens = pkt.Response.Usage.OutputTokens
-			result.Usage.FinishReason = genai.FinishedLength // Likely reason for incomplete
+			if pkt.Response.IncompleteDetails.Reason == "max_output_tokens" {
+				result.Usage.FinishReason = genai.FinishedLength
+			}
+			return errors.New(pkt.Response.IncompleteDetails.Reason)
 		case ResponseOutputTextDelta:
 			f.TextFragment = pkt.Delta
 		case ResponseOutputTextDone:
@@ -1278,10 +1282,15 @@ func processStreamPackets(ch <-chan ResponseStreamChunkResponse, chunks chan<- g
 				return err
 			}
 			chunks <- f
+			sent = true
 		}
 	}
 	if !pendingToolCall.IsZero() {
 		return errors.New("unexpected pending tool call")
+	}
+	if !sent {
+		// Happens with MaxTokens
+		return errors.New("model sent no reply")
 	}
 	return nil
 }

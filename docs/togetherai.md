@@ -8,6 +8,8 @@
 | Qwen/Qwen3-235B-A22B-Instruct-2507-tput🥈          | Stream  | 💬    | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
 | openai/gpt-oss-20b🥉                               | Sync🧠   | 💬    | 💬     | 💨   | ❌   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
 | openai/gpt-oss-20b🥉                               | Stream🧠 | 💬    | 💬     | 💨🪨 | ❌   | ❌    | ❌   | ❌   | 🌱   | ✅    | ✅     | ✅    | ✅     |
+| Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8           | Sync    | 💬    | 💬     | ❌   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
+| Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8           | Stream  | 💬    | 💬     | ❌   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
 | moonshotai/Kimi-K2-Instruct                       | Sync    | 💬    | 💬     | ❌   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
 | moonshotai/Kimi-K2-Instruct                       | Stream  | 💬    | 💬     | ❌   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
 | deepseek-ai/DeepSeek-V3.1                         | Sync    | 💬📸  | 💬     | ❌   | ❌   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
@@ -25,7 +27,6 @@
 | black-forest-labs/FLUX.1-schnell-Free             | Sync    | 💬    | 📸     | ❌   | ❌   | ❌    | ❌   | ❌   | 🌱   | ❌    | ❌     | ❌    | ❌     |
 | black-forest-labs/FLUX.1-schnell                  | Sync    | 💬    | 📸     | ❌   | ❌   | ❌    | ❌   | ❌   | 🌱   | ❌    | ❌     | ❌    | ❌     |
 | black-forest-labs/FLUX.1-dev                      | Sync    | 💬    | 📸     | ❌   | ❌   | ❌    | ❌   | ❌   | 🌱   | ❌    | ❌     | ❌    | ❌     |
-| Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8           | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | Alibaba-NLP/gte-modernbert-base                   | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | Qwen/QwQ-32B                                      | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | Qwen/Qwen2.5-72B-Instruct-Turbo                   | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |

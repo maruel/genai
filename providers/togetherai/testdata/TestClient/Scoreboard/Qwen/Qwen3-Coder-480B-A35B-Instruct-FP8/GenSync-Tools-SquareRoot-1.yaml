@@ -1,0 +1,71 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 568
+    host: api.together.xyz
+    body: "{\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"}],\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"tool_choice\":\"required\"}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"o9RRGL8-zqrih-9780b2d7e93da2c6\",\n  \"object\": \"chat.completion\",\n  \"created\": 1756687041,\n  \"model\": \"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"363.88612395391436\",\n        \"tool_calls\": [],\n        \"reasoning\": null\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 309,\n    \"total_tokens\": 328,\n    \"completion_tokens\": 19\n  },\n  \"warnings\": [\n    {\n      \"message\": \"Model supports only tool_choice auto\"\n    }\n  ]\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9780b2d7e93da2c6-YUL
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"276-jIqQiDK7if3mX+TTxifB7SGJj5g"
+      Retry-After:
+      - "1"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 19f8b9c6-fa54-438b-83d4-71a232563c0b-noamzn
+      X-Api-Call-End:
+      - "2025-09-01T00:37:21.904Z"
+      X-Api-Call-Start:
+      - "2025-09-01T00:37:21.337Z"
+      X-Api-Received:
+      - "2025-09-01T00:37:21.330Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "17"
+      X-Ratelimit-Remaining-Tokens:
+      - "2964"
+      X-Ratelimit-Reset:
+      - "1"
+      X-Request-Id:
+      - o9RRGL8-zqrih-9780b2d7e93da2c6
+    status: 200 OK
+    code: 200
+    duration: 692ms

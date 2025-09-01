@@ -1,0 +1,68 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 174
+    host: api.together.xyz
+    body: "{\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":\"Explain the theory of relativity in great details.\"}],\"max_tokens\":16}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"o9RRFbX-28Eivz-9780b2c80db4a2c6\",\"object\":\"chat.completion.chunk\",\"created\":1756687038,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"o9RRFbX-28Eivz-9780b2c80db4a2c6\",\"object\":\"chat.completion.chunk\",\"created\":1756687038,\"choices\":[{\"index\":0,\"text\":\"#\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"#\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"o9RRFbX-28Eivz-9780b2c80db4a2c6\",\"object\":\"chat.completion.chunk\",\"created\":1756687038,\"choices\":[{\"index\":0,\"text\":\" The\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" The\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"o9RRFbX-28Eivz-9780b2c80db4a2c6\",\"object\":\"chat.completion.chunk\",\"created\":1756687038,\"choices\":[{\"index\":0,\"text\":\" Theory\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" Theory\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"o9RRFbX-28Eivz-9780b2c80db4a2c6\",\"object\":\"chat.completion.chunk\",\"created\":1756687038,\"choices\":[{\"index\":0,\"text\":\" of\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" of\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"o9RRFbX-28Eivz-9780b2c80db4a2c6\",\"object\":\"chat.completion.chunk\",\"created\":1756687038,\"choices\":[{\"index\":0,\"text\":\" Rel\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" Rel\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"o9RRFbX-28Eivz-9780b2c80db4a2c6\",\"object\":\"chat.completion.chunk\",\"created\":1756687038,\"choices\":[{\"index\":0,\"text\":\"ativity\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"ativity\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"o9RRFbX-28Eivz-9780b2c80db4a2c6\",\"object\":\"chat.completion.chunk\",\"created\":1756687038,\"choices\":[{\"index\":0,\"text\":\":\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\":\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"o9RRFbX-28Eivz-9780b2c80db4a2c6\",\"object\":\"chat.completion.chunk\",\"created\":1756687038,\"choices\":[{\"index\":0,\"text\":\" A\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" A\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"o9RRFbX-28Eivz-9780b2c80db4a2c6\",\"object\":\"chat.completion.chunk\",\"created\":1756687038,\"choices\":[{\"index\":0,\"text\":\" Comprehensive\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" Comprehensive\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"o9RRFbX-28Eivz-9780b2c80db4a2c6\",\"object\":\"chat.completion.chunk\",\"created\":1756687038,\"choices\":[{\"index\":0,\"text\":\" Explanation\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" Explanation\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"o9RRFbX-28Eivz-9780b2c80db4a2c6\",\"object\":\"chat.completion.chunk\",\"created\":1756687038,\"choices\":[{\"index\":0,\"text\":\"\\n\\n\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\\n\\n\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"o9RRFbX-28Eivz-9780b2c80db4a2c6\",\"object\":\"chat.completion.chunk\",\"created\":1756687038,\"choices\":[{\"index\":0,\"text\":\"The\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"The\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"o9RRFbX-28Eivz-9780b2c80db4a2c6\",\"object\":\"chat.completion.chunk\",\"created\":1756687038,\"choices\":[{\"index\":0,\"text\":\" theory\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" theory\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"o9RRFbX-28Eivz-9780b2c80db4a2c6\",\"object\":\"chat.completion.chunk\",\"created\":1756687038,\"choices\":[{\"index\":0,\"text\":\" of\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" of\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"o9RRFbX-28Eivz-9780b2c80db4a2c6\",\"object\":\"chat.completion.chunk\",\"created\":1756687038,\"choices\":[{\"index\":0,\"text\":\" rel\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" rel\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"o9RRFbX-28Eivz-9780b2c80db4a2c6\",\"object\":\"chat.completion.chunk\",\"created\":1756687038,\"choices\":[{\"index\":0,\"text\":\"ativity\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"ativity\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"o9RRFbX-28Eivz-9780b2c80db4a2c6\",\"object\":\"chat.completion.chunk\",\"created\":1756687038,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":\"length\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"o9RRFbX-28Eivz-9780b2c80db4a2c6\",\"object\":\"chat.completion.chunk\",\"created\":1756687038,\"choices\":[],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":{\"prompt_tokens\":19,\"total_tokens\":35,\"completion_tokens\":16,\"prompt_tokens_details\":null}}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - no-cache, no-transform
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9780b2c80db4a2c6-YUL
+      Content-Type:
+      - text/event-stream;charset=utf-8
+      Retry-After:
+      - "1"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - b96f1cf2-2996-4ef5-b333-e331884de84d-noamzn
+      X-Api-Call-Start:
+      - "2025-09-01T00:37:18.869Z"
+      X-Api-Received:
+      - "2025-09-01T00:37:18.858Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "15"
+      X-Ratelimit-Remaining-Tokens:
+      - "2962"
+      X-Ratelimit-Reset:
+      - "1"
+      X-Request-Id:
+      - o9RRFbX-28Eivz-9780b2c80db4a2c6
+    status: 200 OK
+    code: 200
+    duration: 367ms

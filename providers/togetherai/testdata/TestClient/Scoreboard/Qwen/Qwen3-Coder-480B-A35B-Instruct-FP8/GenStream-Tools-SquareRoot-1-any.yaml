@@ -1,0 +1,68 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 563
+    host: api.together.xyz
+    body: "{\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"}],\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"tool_choice\":\"auto\"}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"o9RRGTA-zqrih-9780b2da6bfaa2c6\",\"object\":\"chat.completion.chunk\",\"created\":1756687041,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"o9RRGTA-zqrih-9780b2da6bfaa2c6\",\"object\":\"chat.completion.chunk\",\"created\":1756687041,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"tool_calls\":[{\"id\":\"call_94ad0cc1ec764407b814d322\",\"index\":-1,\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\": 132413}\"}}],\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"o9RRGTA-zqrih-9780b2da6bfaa2c6\",\"object\":\"chat.completion.chunk\",\"created\":1756687041,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":\"tool_calls\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"o9RRGTA-zqrih-9780b2da6bfaa2c6\",\"object\":\"chat.completion.chunk\",\"created\":1756687041,\"choices\":[],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":{\"prompt_tokens\":309,\"total_tokens\":337,\"completion_tokens\":28,\"prompt_tokens_details\":null}}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - no-cache, no-transform
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9780b2da6bfaa2c6-YUL
+      Content-Type:
+      - text/event-stream;charset=utf-8
+      Retry-After:
+      - "1"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - a1408c95-60c2-4f62-9657-9611fefb7f47-noamzn
+      X-Api-Call-Start:
+      - "2025-09-01T00:37:21.748Z"
+      X-Api-Received:
+      - "2025-09-01T00:37:21.737Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "16"
+      X-Ratelimit-Remaining-Tokens:
+      - "2627"
+      X-Ratelimit-Reset:
+      - "1"
+      X-Request-Id:
+      - o9RRGTA-zqrih-9780b2da6bfaa2c6
+    status: 200 OK
+    code: 200
+    duration: 326ms

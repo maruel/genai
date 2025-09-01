@@ -140,6 +140,43 @@
     },
     {
       "models": [
+        "Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8"
+      ],
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "json": true,
+        "jsonSchema": true,
+        "topLogprobs": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "json": true,
+        "jsonSchema": true,
+        "topLogprobs": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
+    },
+    {
+      "models": [
         "moonshotai/Kimi-K2-Instruct"
       ],
       "in": {
@@ -492,7 +529,6 @@
     {
       "comments": "Untested",
       "models": [
-        "Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8",
         "Alibaba-NLP/gte-modernbert-base",
         "Qwen/QwQ-32B",
         "Qwen/Qwen2.5-72B-Instruct-Turbo",

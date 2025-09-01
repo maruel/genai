@@ -847,7 +847,7 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 	for _, mdl := range mdls {
 		m := mdl.(*Model)
 		// TODO: Support magistral.
-		if !strings.HasSuffix(m.ID, "latest") || strings.HasPrefix(m.ID, "devstral") || strings.HasPrefix(m.ID, "magistral") || strings.HasPrefix(m.ID, "pixtral") {
+		if !strings.HasSuffix(m.ID, "latest") || strings.HasPrefix(m.ID, "devstral") || strings.HasPrefix(m.ID, "magistral") || strings.HasPrefix(m.ID, "pixtral") || strings.HasPrefix(m.ID, "voxtral") {
 			continue
 		}
 		if cheap {

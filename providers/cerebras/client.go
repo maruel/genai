@@ -276,6 +276,10 @@ func (m *Message) To(out *genai.Message) error {
 		out.Replies = append(out.Replies, genai.Reply{})
 		m.ToolCalls[i].To(&out.Replies[len(out.Replies)-1].ToolCall)
 	}
+	if len(out.Replies) == 0 {
+		// This happens with gpt-oss-120b with Stop.
+		return errors.New("model sent no reply")
+	}
 	return nil
 }
 
@@ -830,6 +834,9 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		for range ch {
 		}
 	}()
+	sent := false
+	// gpt-oss-* streams the tool call arguments but not the other models. Fun.
+	pendingToolCall := ToolCall{}
 	for pkt := range ch {
 		if len(pkt.Choices) != 1 {
 			continue
@@ -848,15 +855,26 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		}
 
 		for _, nt := range pkt.Choices[0].Delta.ToolCalls {
-			f := genai.ReplyFragment{ToolCall: genai.ToolCall{
-				ID:        nt.ID,
-				Name:      nt.Function.Name,
-				Arguments: nt.Function.Arguments,
-			}}
-			if err := result.Accumulate(f); err != nil {
-				return err
+			// We need to determine if the model streams too calls or not. gpt-oss-* streams the tool call arguments
+			// but not others.
+			if pendingToolCall.ID != "" {
+				if nt.ID == "" {
+					// Continuation.
+					pendingToolCall.Function.Arguments += nt.Function.Arguments
+				} else {
+					// Flush first.
+					f := genai.ReplyFragment{}
+					pendingToolCall.To(&f.ToolCall)
+					if err := result.Accumulate(f); err != nil {
+						return err
+					}
+					chunks <- f
+					sent = true
+					pendingToolCall = nt
+				}
+			} else {
+				pendingToolCall = nt
 			}
-			chunks <- f
 		}
 		if pkt.Choices[0].Delta.Reasoning != "" {
 			f := genai.ReplyFragment{ReasoningFragment: pkt.Choices[0].Delta.Reasoning}
@@ -864,6 +882,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 				return err
 			}
 			chunks <- f
+			sent = true
 		}
 		for _, content := range pkt.Choices[0].Delta.Content {
 			switch content.Type {
@@ -874,6 +893,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 						return err
 					}
 					chunks <- f
+					sent = true
 				}
 			default:
 				return fmt.Errorf("unexpected content type %q", content.Type)
@@ -882,6 +902,19 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		if len(pkt.Choices[0].Logprobs.Content) != 0 {
 			result.Logprobs = append(result.Logprobs, pkt.Choices[0].Logprobs.To()...)
 		}
+	}
+	if pendingToolCall.ID != "" {
+		f := genai.ReplyFragment{}
+		pendingToolCall.To(&f.ToolCall)
+		if err := result.Accumulate(f); err != nil {
+			return err
+		}
+		chunks <- f
+		sent = true
+	}
+	if !sent {
+		// This happens with gpt-oss-120b with Stop.
+		return errors.New("model sent no reply")
 	}
 	return nil
 }

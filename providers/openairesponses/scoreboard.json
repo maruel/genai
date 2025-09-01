@@ -8,12 +8,54 @@
   "dashboardURL": "https://platform.openai.com/usage",
   "scenarios": [
     {
-      "comments": "Untested",
       "models": [
-        "o3-pro"
+        "gpt-5"
       ],
       "sota": true,
-      "reason": true
+      "reason": true,
+      "in": {
+        "document": {
+          "inline": true,
+          "supportedFormats": [
+            "application/pdf"
+          ]
+        },
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "flaky",
+        "tools": "flaky",
+        "toolCallRequired": true,
+        "json": true,
+        "jsonSchema": true,
+        "maxTokens": true
+      },
+      "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "tools": "flaky",
+        "toolCallRequired": true,
+        "json": true,
+        "jsonSchema": true
+      }
     },
     {
       "models": [
@@ -100,55 +142,6 @@
         "toolCallRequired": true,
         "json": true,
         "jsonSchema": true
-      },
-      "GenStream": {
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "tools": "flaky",
-        "toolCallRequired": true,
-        "json": true,
-        "jsonSchema": true
-      }
-    },
-    {
-      "models": [
-        "gpt-5"
-      ],
-      "reason": true,
-      "in": {
-        "document": {
-          "inline": true,
-          "supportedFormats": [
-            "application/pdf"
-          ]
-        },
-        "image": {
-          "inline": true,
-          "url": true,
-          "supportedFormats": [
-            "image/gif",
-            "image/jpeg",
-            "image/png",
-            "image/webp"
-          ]
-        },
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportTokenUsage": "true",
-        "reportFinishReason": "flaky",
-        "tools": "flaky",
-        "toolCallRequired": true,
-        "json": true,
-        "jsonSchema": true,
-        "maxTokens": true
       },
       "GenStream": {
         "reportTokenUsage": "true",
@@ -291,6 +284,7 @@
       ]
     },
     {
+      "comments": "Untested",
       "models": [
         "gpt-5-2025-08-07",
         "gpt-5-chat-latest",
@@ -308,6 +302,7 @@
         "o3-deep-research-2025-06-26",
         "o3-mini",
         "o3-mini-2025-01-31",
+        "o3-pro",
         "o3-pro-2025-06-10",
         "o4-mini-2025-04-16",
         "o4-mini-deep-research",
@@ -316,6 +311,7 @@
       "reason": true
     },
     {
+      "comments": "Untested",
       "models": [
         "chatgpt-4o-latest",
         "codex-mini-latest",

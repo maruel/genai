@@ -453,6 +453,10 @@ func (m *Message) From(in *genai.Message) error {
 		m.Type = MessageMessage
 		m.Role = "assistant"
 		for j := range in.Replies {
+			// TODO: should we send it back?
+			if in.Replies[j].Reasoning != "" {
+				continue
+			}
 			m.Content = append(m.Content, Content{})
 			if err := m.Content[len(m.Content)-1].FromReply(&in.Replies[j]); err != nil {
 				return fmt.Errorf("reply #%d: %w", j, err)

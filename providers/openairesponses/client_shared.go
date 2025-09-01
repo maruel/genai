@@ -301,21 +301,26 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 	var created base.Time
 	for _, mdl := range mdls {
 		m := mdl.(*Model)
+		// Do not select the specialized models automatically.
+		if strings.Contains(m.ID, "audio") || strings.Contains(m.ID, "deep") || strings.Contains(m.ID, "realtime") || strings.Contains(m.ID, "search") {
+			continue
+		}
+		// The o family of models is not usable with completion API.
+		if strings.HasPrefix(m.ID, "o") {
+			continue
+		}
 		if cheap {
-			if strings.HasSuffix(m.ID, "-nano") && (created == 0 || m.Created < created) {
-				// For the cheapest, we want the oldest model as it is generally cheaper.
+			if strings.HasPrefix(m.ID, "gpt") && strings.HasSuffix(m.ID, "-nano") && (created == 0 || m.Created > created) {
 				created = m.Created
 				selectedModel = m.ID
 			}
 		} else if good {
-			if strings.HasSuffix(m.ID, "-mini") && (created == 0 || m.Created > created) {
-				// For the greatest, we want the newest model as it is generally better.
+			if strings.HasPrefix(m.ID, "gpt") && strings.HasSuffix(m.ID, "-mini") && (created == 0 || m.Created > created) {
 				created = m.Created
 				selectedModel = m.ID
 			}
 		} else {
-			if strings.HasSuffix(m.ID, "-pro") && (created == 0 || m.Created > created) {
-				// For the greatest, we want the newest model as it is generally better.
+			if strings.HasPrefix(m.ID, "gpt") && !strings.Contains(m.ID, "-nano") && !strings.Contains(m.ID, "-mini") && (created == 0 || m.Created > created) {
 				created = m.Created
 				selectedModel = m.ID
 			}

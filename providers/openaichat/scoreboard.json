@@ -9,12 +9,58 @@
   "dashboardURL": "https://platform.openai.com/usage",
   "scenarios": [
     {
-      "comments": "TODO: Costly to test",
       "models": [
-        "o3-pro"
+        "gpt-5"
       ],
       "sota": true,
-      "reason": true
+      "in": {
+        "document": {
+          "inline": true,
+          "supportedFormats": [
+            "application/pdf"
+          ]
+        },
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "tools": "true",
+        "toolsBiased": "flaky",
+        "toolCallRequired": true,
+        "json": true,
+        "jsonSchema": true
+      },
+      "GenStream": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "tools": "true",
+        "toolsBiased": "flaky",
+        "toolCallRequired": true,
+        "json": true,
+        "jsonSchema": true
+      }
     },
     {
       "models": [
@@ -185,59 +231,6 @@
     },
     {
       "models": [
-        "gpt-5"
-      ],
-      "in": {
-        "document": {
-          "inline": true,
-          "supportedFormats": [
-            "application/pdf"
-          ]
-        },
-        "image": {
-          "inline": true,
-          "url": true,
-          "supportedFormats": [
-            "image/gif",
-            "image/jpeg",
-            "image/png",
-            "image/webp"
-          ]
-        },
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "tools": "true",
-        "toolsBiased": "flaky",
-        "toolCallRequired": true,
-        "json": true,
-        "jsonSchema": true
-      },
-      "GenStream": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "tools": "true",
-        "toolsBiased": "flaky",
-        "toolCallRequired": true,
-        "json": true,
-        "jsonSchema": true
-      }
-    },
-    {
-      "models": [
         "gpt-4.1"
       ],
       "in": {
@@ -398,6 +391,7 @@
       }
     },
     {
+      "comments": "Most of these models are not accessible by this API",
       "models": [
         "o1",
         "o1-2024-12-17",
@@ -409,6 +403,7 @@
         "o3-2025-04-16",
         "o3-deep-research",
         "o3-deep-research-2025-06-26",
+        "o3-pro",
         "o3-mini",
         "o3-mini-2025-01-31",
         "o3-pro-2025-06-10",

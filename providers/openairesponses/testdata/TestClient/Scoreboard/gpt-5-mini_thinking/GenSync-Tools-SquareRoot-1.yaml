@@ -1,0 +1,65 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 684
+    host: api.openai.com
+    body: "{\"model\":\"gpt-5-mini\",\"background\":false,\"parallel_tool_calls\":true,\"reasoning\":{\"effort\":\"low\",\"summary\":\"auto\"},\"service_tier\":\"flex\",\"store\":false,\"tool_choice\":\"required\",\"tools\":[{\"type\":\"function\",\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}],\"input\":[{\"type\":\"message\",\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.openai.com/v1/responses
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"resp_68b4f29369e48193acaa8fe6230b6871018117bf5f190d98\",\n  \"object\": \"response\",\n  \"created_at\": 1756689043,\n  \"status\": \"completed\",\n  \"background\": false,\n  \"error\": null,\n  \"incomplete_details\": null,\n  \"instructions\": null,\n  \"max_output_tokens\": null,\n  \"max_tool_calls\": null,\n  \"model\": \"gpt-5-mini-2025-08-07\",\n  \"output\": [\n    {\n      \"id\": \"rs_68b4f2944a9c81938216cf5e9faa7ad7018117bf5f190d98\",\n      \"type\": \"reasoning\",\n      \"summary\": [\n        {\n          \"type\": \"summary_text\",\n          \"text\": \"**Calculating square root**\\n\\nI need to call the square root function with the number 132413. It seems straightforward; I\\u2019ll just use the tool to do that. Once I have the result, I can return it to the user. It\\u2019s just about getting that calculation done efficiently and making sure the user gets what they need without any unnecessary details. Let\\u2019s go ahead and call it!\"\n        }\n      ]\n    },\n    {\n      \"id\": \"fc_68b4f295d57881939c0c7f46df3f3e6a018117bf5f190d98\",\n      \"type\": \"function_call\",\n      \"status\": \"completed\",\n      \"arguments\": \"{\\\"number\\\":132413}\",\n      \"call_id\": \"call_r6yPeDtWh9P8ytI99lLRiqSP\",\n      \"name\": \"square_root\"\n    }\n  ],\n  \"parallel_tool_calls\": true,\n  \"previous_response_id\": null,\n  \"prompt_cache_key\": null,\n  \"reasoning\": {\n    \"effort\": \"low\",\n    \"summary\": \"detailed\"\n  },\n  \"safety_identifier\": null,\n  \"service_tier\": \"flex\",\n  \"store\": false,\n  \"temperature\": 1.0,\n  \"text\": {\n    \"format\": {\n      \"type\": \"text\"\n    },\n    \"verbosity\": \"medium\"\n  },\n  \"tool_choice\": \"required\",\n  \"tools\": [\n    {\n      \"type\": \"function\",\n      \"description\": \"Calculates and return the square root of a number\",\n      \"name\": \"square_root\",\n      \"parameters\": {\n        \"properties\": {\n          \"number\": {\n            \"type\": \"number\"\n          }\n        },\n        \"additionalProperties\": false,\n        \"type\": \"object\",\n        \"required\": [\n          \"number\"\n        ]\n      },\n      \"strict\": true\n    }\n  ],\n  \"top_logprobs\": 0,\n  \"top_p\": 1.0,\n  \"truncation\": \"disabled\",\n  \"usage\": {\n    \"input_tokens\": 73,\n    \"input_tokens_details\": {\n      \"cached_tokens\": 0\n    },\n    \"output_tokens\": 21,\n    \"output_tokens_details\": {\n      \"reasoning_tokens\": 0\n    },\n    \"total_tokens\": 94\n  },\n  \"user\": null,\n  \"metadata\": {}\n}"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9780e3b8ef0da2ff-YUL
+      Content-Type:
+      - application/json
+      Openai-Organization:
+      - user-vtmtcvpbctksjfewktqdl2sw
+      Openai-Processing-Ms:
+      - "2719"
+      Openai-Project:
+      - proj_tH6hQUFvA4Bx6SyAb23zzLEg
+      Openai-Version:
+      - "2020-10-01"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "2741"
+      X-Ratelimit-Limit-Requests:
+      - "500"
+      X-Ratelimit-Limit-Tokens:
+      - "200000"
+      X-Ratelimit-Remaining-Requests:
+      - "499"
+      X-Ratelimit-Remaining-Tokens:
+      - "199317"
+      X-Ratelimit-Reset-Requests:
+      - 120ms
+      X-Ratelimit-Reset-Tokens:
+      - 204ms
+      X-Request-Id:
+      - req_f0cacc72f9c8251c196c25c641ecbf48
+    status: 200 OK
+    code: 200
+    duration: 2.828s

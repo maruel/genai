@@ -1,0 +1,53 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 395
+    host: api.openai.com
+    body: "{\"model\":\"gpt-5\",\"background\":false,\"reasoning\":{\"effort\":\"low\",\"summary\":\"auto\"},\"service_tier\":\"flex\",\"store\":false,\"input\":[{\"type\":\"message\",\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"What fruit is it? Reply with only one word.\"},{\"type\":\"input_image\",\"image_url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg\",\"detail\":\"auto\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.openai.com/v1/responses
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"resp_68b4f47ea0448197b41250b03bc9515b0fcb0819055d69e0\",\n  \"object\": \"response\",\n  \"created_at\": 1756689534,\n  \"status\": \"completed\",\n  \"background\": false,\n  \"error\": null,\n  \"incomplete_details\": null,\n  \"instructions\": null,\n  \"max_output_tokens\": null,\n  \"max_tool_calls\": null,\n  \"model\": \"gpt-5-2025-08-07\",\n  \"output\": [\n    {\n      \"id\": \"rs_68b4f480a32c8197ba43770043b984a50fcb0819055d69e0\",\n      \"type\": \"reasoning\",\n      \"summary\": [\n        {\n          \"type\": \"summary_text\",\n          \"text\": \"**Identifying fruit in image**\\n\\nI'm focused on identifying the fruit in the image, which is a banana. I think a one-word answer is needed, and it could be either \\\"Banana\\\" or \\\"banana.\\\" They haven\\u2019t specified which case to use, so I\\u2019ll lean towards the standard \\\"Banana.\\\" Keeping it simple with just one word is key here!\"\n        }\n      ]\n    },\n    {\n      \"id\": \"msg_68b4f482549c8197ad106613db9474000fcb0819055d69e0\",\n      \"type\": \"message\",\n      \"status\": \"completed\",\n      \"content\": [\n        {\n          \"type\": \"output_text\",\n          \"annotations\": [],\n          \"logprobs\": [],\n          \"text\": \"Banana\"\n        }\n      ],\n      \"role\": \"assistant\"\n    }\n  ],\n  \"parallel_tool_calls\": true,\n  \"previous_response_id\": null,\n  \"prompt_cache_key\": null,\n  \"reasoning\": {\n    \"effort\": \"low\",\n    \"summary\": \"detailed\"\n  },\n  \"safety_identifier\": null,\n  \"service_tier\": \"flex\",\n  \"store\": false,\n  \"temperature\": 1.0,\n  \"text\": {\n    \"format\": {\n      \"type\": \"text\"\n    },\n    \"verbosity\": \"medium\"\n  },\n  \"tool_choice\": \"auto\",\n  \"tools\": [],\n  \"top_logprobs\": 0,\n  \"top_p\": 1.0,\n  \"truncation\": \"disabled\",\n  \"usage\": {\n    \"input_tokens\": 227,\n    \"input_tokens_details\": {\n      \"cached_tokens\": 0\n    },\n    \"output_tokens\": 8,\n    \"output_tokens_details\": {\n      \"reasoning_tokens\": 0\n    },\n    \"total_tokens\": 235\n  },\n  \"user\": null,\n  \"metadata\": {}\n}"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9780efb70ef2a2f6-YUL
+      Content-Type:
+      - application/json
+      Openai-Organization:
+      - user-vtmtcvpbctksjfewktqdl2sw
+      Openai-Processing-Ms:
+      - "3788"
+      Openai-Project:
+      - proj_tH6hQUFvA4Bx6SyAb23zzLEg
+      Openai-Version:
+      - "2020-10-01"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "3793"
+      X-Request-Id:
+      - req_91a5694e14f0339ee3f14f4ee3f54e9b
+    status: 200 OK
+    code: 200
+    duration: 3.881s

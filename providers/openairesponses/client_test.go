@@ -63,7 +63,8 @@ func TestClient(t *testing.T) {
 		var models []smoketest.Model
 		for _, m := range genaiModels {
 			id := m.GetID()
-			models = append(models, smoketest.Model{Model: id, Reason: strings.HasPrefix(id, "o") && !strings.Contains(id, "moderation")})
+			reason := (strings.HasPrefix(id, "gpt-5") || strings.HasPrefix(id, "o")) && !strings.Contains(id, "moderation")
+			models = append(models, smoketest.Model{Model: id, Reason: reason})
 		}
 		getClientRT := func(t testing.TB, model smoketest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 			opts := genai.ProviderOptions{Model: model.Model, PreloadedModels: cachedModels}

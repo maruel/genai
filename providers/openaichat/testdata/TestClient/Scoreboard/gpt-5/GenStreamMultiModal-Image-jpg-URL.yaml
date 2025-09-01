@@ -1,0 +1,72 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 340
+    host: api.openai.com
+    body: "{\"model\":\"gpt-5\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What fruit is it? Reply with only one word.\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg\"}}]}],\"service_tier\":\"flex\",\"stream_options\":{\"include_usage\":true}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.openai.com/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"chatcmpl-CAnAfRDGsiDHVPWjpcxQyJAvBCZTF\",\"object\":\"chat.completion.chunk\",\"created\":1756688329,\"model\":\"gpt-5-2025-08-07\",\"service_tier\":\"flex\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\",\"refusal\":null},\"finish_reason\":null}],\"usage\":null,\"obfuscation\":\"dHUtTmArca3rM\"}\n\ndata: {\"id\":\"chatcmpl-CAnAfRDGsiDHVPWjpcxQyJAvBCZTF\",\"object\":\"chat.completion.chunk\",\"created\":1756688329,\"model\":\"gpt-5-2025-08-07\",\"service_tier\":\"flex\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Ban\"},\"finish_reason\":null}],\"usage\":null,\"obfuscation\":\"f3F3u2iGnTYj\"}\n\ndata: {\"id\":\"chatcmpl-CAnAfRDGsiDHVPWjpcxQyJAvBCZTF\",\"object\":\"chat.completion.chunk\",\"created\":1756688329,\"model\":\"gpt-5-2025-08-07\",\"service_tier\":\"flex\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{\"content\":\"ana\"},\"finish_reason\":null}],\"usage\":null,\"obfuscation\":\"TMW9sU5kCIQ9\"}\n\ndata: {\"id\":\"chatcmpl-CAnAfRDGsiDHVPWjpcxQyJAvBCZTF\",\"object\":\"chat.completion.chunk\",\"created\":1756688329,\"model\":\"gpt-5-2025-08-07\",\"service_tier\":\"flex\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"stop\"}],\"usage\":null,\"obfuscation\":\"wJX8ZYHgR\"}\n\ndata: {\"id\":\"chatcmpl-CAnAfRDGsiDHVPWjpcxQyJAvBCZTF\",\"object\":\"chat.completion.chunk\",\"created\":1756688329,\"model\":\"gpt-5-2025-08-07\",\"service_tier\":\"flex\",\"system_fingerprint\":null,\"choices\":[],\"usage\":{\"prompt_tokens\":227,\"completion_tokens\":75,\"total_tokens\":302,\"prompt_tokens_details\":{\"cached_tokens\":0,\"audio_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":64,\"audio_tokens\":0,\"accepted_prediction_tokens\":0,\"rejected_prediction_tokens\":0}},\"obfuscation\":\"5F7Cbw47nsR\"}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Expose-Headers:
+      - X-Request-ID
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9780d249af1ca29a-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Openai-Organization:
+      - user-vtmtcvpbctksjfewktqdl2sw
+      Openai-Processing-Ms:
+      - "1670"
+      Openai-Project:
+      - proj_tH6hQUFvA4Bx6SyAb23zzLEg
+      Openai-Version:
+      - "2020-10-01"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "1597"
+      X-Ratelimit-Limit-Input-Images:
+      - "50000"
+      X-Ratelimit-Limit-Requests:
+      - "500"
+      X-Ratelimit-Limit-Tokens:
+      - "30000"
+      X-Ratelimit-Remaining-Input-Images:
+      - "49999"
+      X-Ratelimit-Remaining-Requests:
+      - "499"
+      X-Ratelimit-Remaining-Tokens:
+      - "28804"
+      X-Ratelimit-Reset-Input-Images:
+      - 1ms
+      X-Ratelimit-Reset-Requests:
+      - 120ms
+      X-Ratelimit-Reset-Tokens:
+      - 2.391s
+      X-Request-Id:
+      - req_d2240c7bb7524645a000e28d71f7fb18
+    status: 200 OK
+    code: 200
+    duration: 1.773s

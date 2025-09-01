@@ -1,0 +1,66 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 662
+    host: api.openai.com
+    body: "{\"model\":\"gpt-5-mini\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one.\"}]}],\"service_tier\":\"flex\",\"stream_options\":{\"include_usage\":true},\"tools\":[{\"type\":\"function\",\"function\":{\"description\":\"A tool to specify the best country\",\"name\":\"best_country\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"country\":{\"type\":\"string\",\"enum\":[\"USA\",\"Canada\"]}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"country\"]}}}],\"tool_choice\":\"required\",\"parallel_tool_calls\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.openai.com/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"chatcmpl-CAn1GZNKQ279pEYSdEOaBxAu5aKqm\",\"object\":\"chat.completion.chunk\",\"created\":1756687746,\"model\":\"gpt-5-mini-2025-08-07\",\"service_tier\":\"flex\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":null,\"tool_calls\":[{\"index\":0,\"id\":\"call_R6PjP0yApj8VFFft3kDLZNjV\",\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"arguments\":\"\"}}],\"refusal\":null},\"finish_reason\":null}],\"usage\":null,\"obfuscation\":\"HH\"}\n\ndata: {\"id\":\"chatcmpl-CAn1GZNKQ279pEYSdEOaBxAu5aKqm\",\"object\":\"chat.completion.chunk\",\"created\":1756687746,\"model\":\"gpt-5-mini-2025-08-07\",\"service_tier\":\"flex\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[{\"index\":0,\"function\":{\"arguments\":\"{\\\"\"}}]},\"finish_reason\":null}],\"usage\":null,\"obfuscation\":\"FFEnWSnPTwxVs\"}\n\ndata: {\"id\":\"chatcmpl-CAn1GZNKQ279pEYSdEOaBxAu5aKqm\",\"object\":\"chat.completion.chunk\",\"created\":1756687746,\"model\":\"gpt-5-mini-2025-08-07\",\"service_tier\":\"flex\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[{\"index\":0,\"function\":{\"arguments\":\"country\"}}]},\"finish_reason\":null}],\"usage\":null,\"obfuscation\":\"kcvlT1f8r\"}\n\ndata: {\"id\":\"chatcmpl-CAn1GZNKQ279pEYSdEOaBxAu5aKqm\",\"object\":\"chat.completion.chunk\",\"created\":1756687746,\"model\":\"gpt-5-mini-2025-08-07\",\"service_tier\":\"flex\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[{\"index\":0,\"function\":{\"arguments\":\"\\\":\\\"\"}}]},\"finish_reason\":null}],\"usage\":null,\"obfuscation\":\"T7tCJSg0C79\"}\n\ndata: {\"id\":\"chatcmpl-CAn1GZNKQ279pEYSdEOaBxAu5aKqm\",\"object\":\"chat.completion.chunk\",\"created\":1756687746,\"model\":\"gpt-5-mini-2025-08-07\",\"service_tier\":\"flex\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[{\"index\":0,\"function\":{\"arguments\":\"USA\"}}]},\"finish_reason\":null}],\"usage\":null,\"obfuscation\":\"B6CuvmPZcyFHY\"}\n\ndata: {\"id\":\"chatcmpl-CAn1GZNKQ279pEYSdEOaBxAu5aKqm\",\"object\":\"chat.completion.chunk\",\"created\":1756687746,\"model\":\"gpt-5-mini-2025-08-07\",\"service_tier\":\"flex\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[{\"index\":0,\"function\":{\"arguments\":\"\\\"}\"}}]},\"finish_reason\":null}],\"usage\":null,\"obfuscation\":\"q8sKQe7BKJCT4\"}\n\ndata: {\"id\":\"chatcmpl-CAn1GZNKQ279pEYSdEOaBxAu5aKqm\",\"object\":\"chat.completion.chunk\",\"created\":1756687746,\"model\":\"gpt-5-mini-2025-08-07\",\"service_tier\":\"flex\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"tool_calls\"}],\"usage\":null,\"obfuscation\":\"RidRZ78pLqZDAI\"}\n\ndata: {\"id\":\"chatcmpl-CAn1GZNKQ279pEYSdEOaBxAu5aKqm\",\"object\":\"chat.completion.chunk\",\"created\":1756687746,\"model\":\"gpt-5-mini-2025-08-07\",\"service_tier\":\"flex\",\"system_fingerprint\":null,\"choices\":[],\"usage\":{\"prompt_tokens\":159,\"completion_tokens\":471,\"total_tokens\":630,\"prompt_tokens_details\":{\"cached_tokens\":0,\"audio_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":448,\"audio_tokens\":0,\"accepted_prediction_tokens\":0,\"rejected_prediction_tokens\":0}},\"obfuscation\":\"Q2oN\"}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Expose-Headers:
+      - X-Request-ID
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9780c40befe5a286-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Openai-Organization:
+      - user-vtmtcvpbctksjfewktqdl2sw
+      Openai-Processing-Ms:
+      - "3857"
+      Openai-Project:
+      - proj_tH6hQUFvA4Bx6SyAb23zzLEg
+      Openai-Version:
+      - "2020-10-01"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "3861"
+      X-Ratelimit-Limit-Requests:
+      - "500"
+      X-Ratelimit-Limit-Tokens:
+      - "200000"
+      X-Ratelimit-Remaining-Requests:
+      - "499"
+      X-Ratelimit-Remaining-Tokens:
+      - "199966"
+      X-Ratelimit-Reset-Requests:
+      - 120ms
+      X-Ratelimit-Reset-Tokens:
+      - 9ms
+      X-Request-Id:
+      - req_b7c4c7afee214fdf952505ef2581c741
+    status: 200 OK
+    code: 200
+    duration: 3.966s

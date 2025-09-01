@@ -1,0 +1,66 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 916
+    host: api.openai.com
+    body: "{\"model\":\"gpt-5-mini\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"}]},{\"role\":\"assistant\",\"tool_calls\":[{\"id\":\"call_YELcBh57aTjPJRG4M97JZpEV\",\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\":132413}\"}}]},{\"role\":\"tool\",\"content\":[{\"type\":\"text\",\"text\":\"363.89\"}],\"tool_call_id\":\"call_YELcBh57aTjPJRG4M97JZpEV\"}],\"service_tier\":\"flex\",\"stream_options\":{\"include_usage\":true},\"tools\":[{\"type\":\"function\",\"function\":{\"description\":\"Calculates and return the square root of a number\",\"name\":\"square_root\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"tool_choice\":\"none\",\"parallel_tool_calls\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.openai.com/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"chatcmpl-CAn1AFPE1XHtAhK2dQVK9u3PDd3qv\",\"object\":\"chat.completion.chunk\",\"created\":1756687740,\"model\":\"gpt-5-mini-2025-08-07\",\"service_tier\":\"flex\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\",\"refusal\":null},\"finish_reason\":null}],\"usage\":null,\"obfuscation\":\"vM5tcDrj\"}\n\ndata: {\"id\":\"chatcmpl-CAn1AFPE1XHtAhK2dQVK9u3PDd3qv\",\"object\":\"chat.completion.chunk\",\"created\":1756687740,\"model\":\"gpt-5-mini-2025-08-07\",\"service_tier\":\"flex\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{\"content\":\"363\"},\"finish_reason\":null}],\"usage\":null,\"obfuscation\":\"M8HWXjB\"}\n\ndata: {\"id\":\"chatcmpl-CAn1AFPE1XHtAhK2dQVK9u3PDd3qv\",\"object\":\"chat.completion.chunk\",\"created\":1756687740,\"model\":\"gpt-5-mini-2025-08-07\",\"service_tier\":\"flex\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{\"content\":\".\"},\"finish_reason\":null}],\"usage\":null,\"obfuscation\":\"Tmdrbdtrt\"}\n\ndata: {\"id\":\"chatcmpl-CAn1AFPE1XHtAhK2dQVK9u3PDd3qv\",\"object\":\"chat.completion.chunk\",\"created\":1756687740,\"model\":\"gpt-5-mini-2025-08-07\",\"service_tier\":\"flex\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{\"content\":\"89\"},\"finish_reason\":null}],\"usage\":null,\"obfuscation\":\"Ad1hTag2\"}\n\ndata: {\"id\":\"chatcmpl-CAn1AFPE1XHtAhK2dQVK9u3PDd3qv\",\"object\":\"chat.completion.chunk\",\"created\":1756687740,\"model\":\"gpt-5-mini-2025-08-07\",\"service_tier\":\"flex\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"stop\"}],\"usage\":null,\"obfuscation\":\"H19m\"}\n\ndata: {\"id\":\"chatcmpl-CAn1AFPE1XHtAhK2dQVK9u3PDd3qv\",\"object\":\"chat.completion.chunk\",\"created\":1756687740,\"model\":\"gpt-5-mini-2025-08-07\",\"service_tier\":\"flex\",\"system_fingerprint\":null,\"choices\":[],\"usage\":{\"prompt_tokens\":187,\"completion_tokens\":332,\"total_tokens\":519,\"prompt_tokens_details\":{\"cached_tokens\":0,\"audio_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":320,\"audio_tokens\":0,\"accepted_prediction_tokens\":0,\"rejected_prediction_tokens\":0}},\"obfuscation\":\"GtLA\"}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Expose-Headers:
+      - X-Request-ID
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9780c3e60eefa286-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Openai-Organization:
+      - user-vtmtcvpbctksjfewktqdl2sw
+      Openai-Processing-Ms:
+      - "2527"
+      Openai-Project:
+      - proj_tH6hQUFvA4Bx6SyAb23zzLEg
+      Openai-Version:
+      - "2020-10-01"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "2529"
+      X-Ratelimit-Limit-Requests:
+      - "500"
+      X-Ratelimit-Limit-Tokens:
+      - "200000"
+      X-Ratelimit-Remaining-Requests:
+      - "499"
+      X-Ratelimit-Remaining-Tokens:
+      - "199963"
+      X-Ratelimit-Reset-Requests:
+      - 120ms
+      X-Ratelimit-Reset-Tokens:
+      - 11ms
+      X-Request-Id:
+      - req_1ddee9ef998545079e0fd6c94f7eed43
+    status: 200 OK
+    code: 200
+    duration: 2.652s

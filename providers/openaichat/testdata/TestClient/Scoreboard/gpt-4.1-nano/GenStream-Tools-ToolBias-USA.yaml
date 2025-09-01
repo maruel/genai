@@ -1,0 +1,66 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 642
+    host: api.openai.com
+    body: "{\"model\":\"gpt-4.1-nano\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one.\"}]}],\"stream_options\":{\"include_usage\":true},\"tools\":[{\"type\":\"function\",\"function\":{\"description\":\"A tool to specify the best country\",\"name\":\"best_country\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"country\":{\"type\":\"string\",\"enum\":[\"USA\",\"Canada\"]}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"country\"]}}}],\"tool_choice\":\"required\",\"parallel_tool_calls\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.openai.com/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"chatcmpl-CAn679j9GC8mhlG2S37LU8I12xKbr\",\"object\":\"chat.completion.chunk\",\"created\":1756688047,\"model\":\"gpt-4.1-nano-2025-04-14\",\"service_tier\":\"default\",\"system_fingerprint\":\"fp_c4c155951e\",\"usage\":null,\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":null},\"logprobs\":null,\"finish_reason\":null}],\"obfuscation\":\"CVC2c\"}\n\ndata: {\"id\":\"chatcmpl-CAn679j9GC8mhlG2S37LU8I12xKbr\",\"object\":\"chat.completion.chunk\",\"created\":1756688047,\"model\":\"gpt-4.1-nano-2025-04-14\",\"service_tier\":\"default\",\"system_fingerprint\":\"fp_c4c155951e\",\"usage\":null,\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[{\"index\":0,\"id\":\"call_5Zg7e68QsWklkifSm2G9s4i9\",\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"arguments\":\"\"}}]},\"logprobs\":null,\"finish_reason\":null}],\"obfuscation\":\"L7O\"}\n\ndata: {\"id\":\"chatcmpl-CAn679j9GC8mhlG2S37LU8I12xKbr\",\"object\":\"chat.completion.chunk\",\"created\":1756688047,\"model\":\"gpt-4.1-nano-2025-04-14\",\"service_tier\":\"default\",\"system_fingerprint\":\"fp_c4c155951e\",\"usage\":null,\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[{\"index\":0,\"function\":{\"arguments\":\"{\\\"co\"}}]},\"logprobs\":null,\"finish_reason\":null}],\"obfuscation\":\"ePsOzuEuo6s\"}\n\ndata: {\"id\":\"chatcmpl-CAn679j9GC8mhlG2S37LU8I12xKbr\",\"object\":\"chat.completion.chunk\",\"created\":1756688047,\"model\":\"gpt-4.1-nano-2025-04-14\",\"service_tier\":\"default\",\"system_fingerprint\":\"fp_c4c155951e\",\"usage\":null,\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[{\"index\":0,\"function\":{\"arguments\":\"untry\"}}]},\"logprobs\":null,\"finish_reason\":null}],\"obfuscation\":\"sc6S3LkHDQx\"}\n\ndata: {\"id\":\"chatcmpl-CAn679j9GC8mhlG2S37LU8I12xKbr\",\"object\":\"chat.completion.chunk\",\"created\":1756688047,\"model\":\"gpt-4.1-nano-2025-04-14\",\"service_tier\":\"default\",\"system_fingerprint\":\"fp_c4c155951e\",\"usage\":null,\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[{\"index\":0,\"function\":{\"arguments\":\"\\\": \\\"US\"}}]},\"logprobs\":null,\"finish_reason\":null}],\"obfuscation\":\"JPZHhJAb\"}\n\ndata: {\"id\":\"chatcmpl-CAn679j9GC8mhlG2S37LU8I12xKbr\",\"object\":\"chat.completion.chunk\",\"created\":1756688047,\"model\":\"gpt-4.1-nano-2025-04-14\",\"service_tier\":\"default\",\"system_fingerprint\":\"fp_c4c155951e\",\"usage\":null,\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[{\"index\":0,\"function\":{\"arguments\":\"A\\\"}\"}}]},\"logprobs\":null,\"finish_reason\":null}],\"obfuscation\":\"4h5Aath7QGY6\"}\n\ndata: {\"id\":\"chatcmpl-CAn679j9GC8mhlG2S37LU8I12xKbr\",\"object\":\"chat.completion.chunk\",\"created\":1756688047,\"model\":\"gpt-4.1-nano-2025-04-14\",\"service_tier\":\"default\",\"system_fingerprint\":\"fp_c4c155951e\",\"usage\":null,\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[{\"index\":1,\"id\":\"call_jplxomCm2NsZznYFbepGYKfN\",\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"arguments\":\"\"}}]},\"logprobs\":null,\"finish_reason\":null}],\"obfuscation\":\"OuV\"}\n\ndata: {\"id\":\"chatcmpl-CAn679j9GC8mhlG2S37LU8I12xKbr\",\"object\":\"chat.completion.chunk\",\"created\":1756688047,\"model\":\"gpt-4.1-nano-2025-04-14\",\"service_tier\":\"default\",\"system_fingerprint\":\"fp_c4c155951e\",\"usage\":null,\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[{\"index\":1,\"function\":{\"arguments\":\"{\\\"co\"}}]},\"logprobs\":null,\"finish_reason\":null}],\"obfuscation\":\"Qh79Df79hLG\"}\n\ndata: {\"id\":\"chatcmpl-CAn679j9GC8mhlG2S37LU8I12xKbr\",\"object\":\"chat.completion.chunk\",\"created\":1756688047,\"model\":\"gpt-4.1-nano-2025-04-14\",\"service_tier\":\"default\",\"system_fingerprint\":\"fp_c4c155951e\",\"usage\":null,\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[{\"index\":1,\"function\":{\"arguments\":\"untry\"}}]},\"logprobs\":null,\"finish_reason\":null}],\"obfuscation\":\"TKcYxSR09w1\"}\n\ndata: {\"id\":\"chatcmpl-CAn679j9GC8mhlG2S37LU8I12xKbr\",\"object\":\"chat.completion.chunk\",\"created\":1756688047,\"model\":\"gpt-4.1-nano-2025-04-14\",\"service_tier\":\"default\",\"system_fingerprint\":\"fp_c4c155951e\",\"usage\":null,\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[{\"index\":1,\"function\":{\"arguments\":\"\\\": \\\"Ca\"}}]},\"logprobs\":null,\"finish_reason\":null}],\"obfuscation\":\"5aJwdhuc\"}\n\ndata: {\"id\":\"chatcmpl-CAn679j9GC8mhlG2S37LU8I12xKbr\",\"object\":\"chat.completion.chunk\",\"created\":1756688047,\"model\":\"gpt-4.1-nano-2025-04-14\",\"service_tier\":\"default\",\"system_fingerprint\":\"fp_c4c155951e\",\"usage\":null,\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[{\"index\":1,\"function\":{\"arguments\":\"nada\"}}]},\"logprobs\":null,\"finish_reason\":null}],\"obfuscation\":\"ebd9CVzBU6e7\"}\n\ndata: {\"id\":\"chatcmpl-CAn679j9GC8mhlG2S37LU8I12xKbr\",\"object\":\"chat.completion.chunk\",\"created\":1756688047,\"model\":\"gpt-4.1-nano-2025-04-14\",\"service_tier\":\"default\",\"system_fingerprint\":\"fp_c4c155951e\",\"usage\":null,\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[{\"index\":1,\"function\":{\"arguments\":\"\\\"}\"}}]},\"logprobs\":null,\"finish_reason\":null}],\"obfuscation\":\"lNqLXrX6s1yZn\"}\n\ndata: {\"id\":\"chatcmpl-CAn679j9GC8mhlG2S37LU8I12xKbr\",\"object\":\"chat.completion.chunk\",\"created\":1756688047,\"model\":\"gpt-4.1-nano-2025-04-14\",\"service_tier\":\"default\",\"system_fingerprint\":\"fp_c4c155951e\",\"choices\":[{\"index\":0,\"delta\":{},\"logprobs\":null,\"finish_reason\":\"tool_calls\"}],\"usage\":null,\"obfuscation\":\"HZMlJlPH1JNoWS\"}\n\ndata: {\"id\":\"chatcmpl-CAn679j9GC8mhlG2S37LU8I12xKbr\",\"object\":\"chat.completion.chunk\",\"created\":1756688047,\"model\":\"gpt-4.1-nano-2025-04-14\",\"service_tier\":\"default\",\"system_fingerprint\":\"fp_c4c155951e\",\"choices\":[],\"usage\":{\"prompt_tokens\":78,\"completion_tokens\":45,\"total_tokens\":123,\"prompt_tokens_details\":{\"cached_tokens\":0,\"audio_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0,\"audio_tokens\":0,\"accepted_prediction_tokens\":0,\"rejected_prediction_tokens\":0}},\"obfuscation\":\"l2xWeuiF\"}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Expose-Headers:
+      - X-Request-ID
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9780cb687d90a273-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Openai-Organization:
+      - user-vtmtcvpbctksjfewktqdl2sw
+      Openai-Processing-Ms:
+      - "495"
+      Openai-Project:
+      - proj_tH6hQUFvA4Bx6SyAb23zzLEg
+      Openai-Version:
+      - "2020-10-01"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "501"
+      X-Ratelimit-Limit-Requests:
+      - "500"
+      X-Ratelimit-Limit-Tokens:
+      - "200000"
+      X-Ratelimit-Remaining-Requests:
+      - "499"
+      X-Ratelimit-Remaining-Tokens:
+      - "199967"
+      X-Ratelimit-Reset-Requests:
+      - 120ms
+      X-Ratelimit-Reset-Tokens:
+      - 9ms
+      X-Request-Id:
+      - req_fb150e2bb247473a8ad79b79d837a374
+    status: 200 OK
+    code: 200
+    duration: 602ms

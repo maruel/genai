@@ -1,0 +1,65 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 679
+    host: api.openai.com
+    body: "{\"model\":\"gpt-5-mini\",\"background\":false,\"parallel_tool_calls\":true,\"reasoning\":{\"summary\":\"auto\"},\"service_tier\":\"flex\",\"store\":false,\"tool_choice\":\"required\",\"tools\":[{\"type\":\"function\",\"name\":\"best_country\",\"description\":\"A tool to specify the best country\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"country\":{\"type\":\"string\",\"enum\":[\"USA\",\"Canada\"]}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"country\"]}}],\"input\":[{\"type\":\"message\",\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one.\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.openai.com/v1/responses
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"resp_68b4f1703b888197bad846951d4af13d06de07de0df61833\",\n  \"object\": \"response\",\n  \"created_at\": 1756688752,\n  \"status\": \"completed\",\n  \"background\": false,\n  \"error\": null,\n  \"incomplete_details\": null,\n  \"instructions\": null,\n  \"max_output_tokens\": null,\n  \"max_tool_calls\": null,\n  \"model\": \"gpt-5-mini-2025-08-07\",\n  \"output\": [\n    {\n      \"id\": \"rs_68b4f1715a30819798d33f098f516e9b06de07de0df61833\",\n      \"type\": \"reasoning\",\n      \"summary\": [\n        {\n          \"type\": \"summary_text\",\n          \"text\": \"**Evaluating country comparison**\\n\\nI need to use a function called from the functions namespace to compare the USA and Canada. The user wants to know if the USA is better, so I\\u2019ll call the best_country tool with \\u201cUSA\\u201d as a choice. It seems that\\u2019s the most relevant option since they specifically asked about the USA. I\\u2019m a bit unsure about what the tool will return, but it\\u2019s essential to follow through and make the call promptly.\"\n        },\n        {\n          \"type\": \"summary_text\",\n          \"text\": \"**Crafting balanced comparison**\\n\\nOnce I get the function\\u2019s return, I\\u2019ll need to create a response for the user that gives a balanced comparison between the USA and Canada. I can't say definitively which is \\\"best\\\" because that's subjective and depends on the specific metrics. I'll look into aspects like healthcare, education, economy, quality of life, and more. I want to conclude by stating that there isn't a clear \\\"best\\\" option, as it varies based on personal priorities. I\\u2019ll ensure to reflect the tool\\u2019s output accurately without faking it.\"\n        }\n      ]\n    },\n    {\n      \"id\": \"fc_68b4f177cf108197a9513453a0c791aa06de07de0df61833\",\n      \"type\": \"function_call\",\n      \"status\": \"completed\",\n      \"arguments\": \"{\\\"country\\\":\\\"USA\\\"}\",\n      \"call_id\": \"call_dezBHExhTobMQiNBLBtDW2ZS\",\n      \"name\": \"best_country\"\n    }\n  ],\n  \"parallel_tool_calls\": true,\n  \"previous_response_id\": null,\n  \"prompt_cache_key\": null,\n  \"reasoning\": {\n    \"effort\": \"medium\",\n    \"summary\": \"detailed\"\n  },\n  \"safety_identifier\": null,\n  \"service_tier\": \"flex\",\n  \"store\": false,\n  \"temperature\": 1.0,\n  \"text\": {\n    \"format\": {\n      \"type\": \"text\"\n    },\n    \"verbosity\": \"medium\"\n  },\n  \"tool_choice\": \"required\",\n  \"tools\": [\n    {\n      \"type\": \"function\",\n      \"description\": \"A tool to specify the best country\",\n      \"name\": \"best_country\",\n      \"parameters\": {\n        \"properties\": {\n          \"country\": {\n            \"type\": \"string\",\n            \"enum\": [\n              \"USA\",\n              \"Canada\"\n            ]\n          }\n        },\n        \"additionalProperties\": false,\n        \"type\": \"object\",\n        \"required\": [\n          \"country\"\n        ]\n      },\n      \"strict\": true\n    }\n  ],\n  \"top_logprobs\": 0,\n  \"top_p\": 1.0,\n  \"truncation\": \"disabled\",\n  \"usage\": {\n    \"input_tokens\": 77,\n    \"input_tokens_details\": {\n      \"cached_tokens\": 0\n    },\n    \"output_tokens\": 276,\n    \"output_tokens_details\": {\n      \"reasoning_tokens\": 256\n    },\n    \"total_tokens\": 353\n  },\n  \"user\": null,\n  \"metadata\": {}\n}"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9780dc9cdf5aa2de-YUL
+      Content-Type:
+      - application/json
+      Openai-Organization:
+      - user-vtmtcvpbctksjfewktqdl2sw
+      Openai-Processing-Ms:
+      - "7691"
+      Openai-Project:
+      - proj_tH6hQUFvA4Bx6SyAb23zzLEg
+      Openai-Version:
+      - "2020-10-01"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "7720"
+      X-Ratelimit-Limit-Requests:
+      - "500"
+      X-Ratelimit-Limit-Tokens:
+      - "200000"
+      X-Ratelimit-Remaining-Requests:
+      - "499"
+      X-Ratelimit-Remaining-Tokens:
+      - "199313"
+      X-Ratelimit-Reset-Requests:
+      - 120ms
+      X-Ratelimit-Reset-Tokens:
+      - 205ms
+      X-Request-Id:
+      - req_c644b89f44cff251c32ca049c73eccf3
+    status: 200 OK
+    code: 200
+    duration: 7.814s

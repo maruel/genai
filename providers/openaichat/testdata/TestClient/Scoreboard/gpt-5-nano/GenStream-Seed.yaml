@@ -1,0 +1,66 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 205
+    host: api.openai.com
+    body: "{\"model\":\"gpt-5-nano\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Say hello. Use only one word.\"}]}],\"seed\":42,\"service_tier\":\"flex\",\"stream_options\":{\"include_usage\":true}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.openai.com/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"chatcmpl-CAn7wQodTTAhbfecLpcJfALoqVr6A\",\"object\":\"chat.completion.chunk\",\"created\":1756688160,\"model\":\"gpt-5-nano-2025-08-07\",\"service_tier\":\"flex\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\",\"refusal\":null},\"finish_reason\":null}],\"usage\":null,\"obfuscation\":\"tECs9caj\"}\n\ndata: {\"id\":\"chatcmpl-CAn7wQodTTAhbfecLpcJfALoqVr6A\",\"object\":\"chat.completion.chunk\",\"created\":1756688160,\"model\":\"gpt-5-nano-2025-08-07\",\"service_tier\":\"flex\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Hello\"},\"finish_reason\":null}],\"usage\":null,\"obfuscation\":\"1cFCH\"}\n\ndata: {\"id\":\"chatcmpl-CAn7wQodTTAhbfecLpcJfALoqVr6A\",\"object\":\"chat.completion.chunk\",\"created\":1756688160,\"model\":\"gpt-5-nano-2025-08-07\",\"service_tier\":\"flex\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"stop\"}],\"usage\":null,\"obfuscation\":\"nA7P\"}\n\ndata: {\"id\":\"chatcmpl-CAn7wQodTTAhbfecLpcJfALoqVr6A\",\"object\":\"chat.completion.chunk\",\"created\":1756688160,\"model\":\"gpt-5-nano-2025-08-07\",\"service_tier\":\"flex\",\"system_fingerprint\":null,\"choices\":[],\"usage\":{\"prompt_tokens\":14,\"completion_tokens\":138,\"total_tokens\":152,\"prompt_tokens_details\":{\"cached_tokens\":0,\"audio_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":128,\"audio_tokens\":0,\"accepted_prediction_tokens\":0,\"rejected_prediction_tokens\":0}},\"obfuscation\":\"ueAOA\"}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Expose-Headers:
+      - X-Request-ID
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9780ce2a9e77a29a-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Openai-Organization:
+      - user-vtmtcvpbctksjfewktqdl2sw
+      Openai-Processing-Ms:
+      - "1008"
+      Openai-Project:
+      - proj_tH6hQUFvA4Bx6SyAb23zzLEg
+      Openai-Version:
+      - "2020-10-01"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "1012"
+      X-Ratelimit-Limit-Requests:
+      - "500"
+      X-Ratelimit-Limit-Tokens:
+      - "200000"
+      X-Ratelimit-Remaining-Requests:
+      - "499"
+      X-Ratelimit-Remaining-Tokens:
+      - "199990"
+      X-Ratelimit-Reset-Requests:
+      - 120ms
+      X-Ratelimit-Reset-Tokens:
+      - 3ms
+      X-Request-Id:
+      - req_73a0e022eaa042b08f3e3af5bbada000
+    status: 200 OK
+    code: 200
+    duration: 1.191s

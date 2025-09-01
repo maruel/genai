@@ -9,7 +9,7 @@
   "dashboardURL": "https://platform.openai.com/usage",
   "scenarios": [
     {
-      "comments": "Untested",
+      "comments": "TODO: Costly to test",
       "models": [
         "o3-pro"
       ],
@@ -17,18 +17,224 @@
       "reason": true
     },
     {
-      "comments": "Untested",
       "models": [
         "gpt-5-mini"
       ],
-      "good": true
+      "good": true,
+      "in": {
+        "document": {
+          "inline": true,
+          "supportedFormats": [
+            "application/pdf"
+          ]
+        },
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "tools": "true",
+        "toolsBiased": "flaky",
+        "toolCallRequired": true,
+        "json": true,
+        "jsonSchema": true
+      },
+      "GenStream": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
+        "json": true,
+        "jsonSchema": true
+      }
     },
     {
-      "comments": "Untested",
+      "models": [
+        "gpt-5-nano"
+      ],
+      "cheap": true,
+      "in": {
+        "document": {
+          "inline": true,
+          "supportedFormats": [
+            "application/pdf"
+          ]
+        },
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
+        "json": true,
+        "jsonSchema": true
+      },
+      "GenStream": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
+        "json": true,
+        "jsonSchema": true
+      }
+    },
+    {
       "models": [
         "gpt-4.1-nano"
       ],
-      "cheap": true
+      "in": {
+        "document": {
+          "inline": true,
+          "supportedFormats": [
+            "application/pdf"
+          ]
+        },
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "tools": "true",
+        "toolsIndecisive": "true",
+        "toolCallRequired": true,
+        "json": true,
+        "jsonSchema": true,
+        "topLogprobs": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "tools": "true",
+        "toolsIndecisive": "true",
+        "toolCallRequired": true,
+        "json": true,
+        "jsonSchema": true,
+        "topLogprobs": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
+    },
+    {
+      "models": [
+        "gpt-5"
+      ],
+      "in": {
+        "document": {
+          "inline": true,
+          "supportedFormats": [
+            "application/pdf"
+          ]
+        },
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "tools": "true",
+        "toolsBiased": "flaky",
+        "toolCallRequired": true,
+        "json": true,
+        "jsonSchema": true
+      },
+      "GenStream": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "tools": "true",
+        "toolsBiased": "flaky",
+        "toolCallRequired": true,
+        "json": true,
+        "jsonSchema": true
+      }
     },
     {
       "models": [
@@ -260,11 +466,9 @@
         "gpt-4o-search-preview",
         "gpt-4o-search-preview-2025-03-11",
         "gpt-4o-transcribe",
-        "gpt-5",
         "gpt-5-2025-08-07",
         "gpt-5-chat-latest",
         "gpt-5-mini-2025-08-07",
-        "gpt-5-nano",
         "gpt-5-nano-2025-08-07",
         "gpt-audio",
         "gpt-audio-2025-08-28",

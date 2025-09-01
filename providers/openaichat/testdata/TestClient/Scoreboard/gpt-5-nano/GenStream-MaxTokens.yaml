@@ -1,0 +1,66 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 243
+    host: api.openai.com
+    body: "{\"model\":\"gpt-5-nano\",\"max_completion_tokens\":16,\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Explain the theory of relativity in great details.\"}]}],\"service_tier\":\"flex\",\"stream_options\":{\"include_usage\":true}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.openai.com/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"chatcmpl-CAn7xygPTFaDKh9lltFg1Jca04p8U\",\"object\":\"chat.completion.chunk\",\"created\":1756688161,\"model\":\"gpt-5-nano-2025-08-07\",\"service_tier\":\"flex\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\",\"refusal\":null},\"finish_reason\":null}],\"usage\":null,\"obfuscation\":\"w9wTCfzW\"}\n\ndata: {\"id\":\"chatcmpl-CAn7xygPTFaDKh9lltFg1Jca04p8U\",\"object\":\"chat.completion.chunk\",\"created\":1756688161,\"model\":\"gpt-5-nano-2025-08-07\",\"service_tier\":\"flex\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"length\"}],\"usage\":null,\"obfuscation\":\"yL\"}\n\ndata: {\"id\":\"chatcmpl-CAn7xygPTFaDKh9lltFg1Jca04p8U\",\"object\":\"chat.completion.chunk\",\"created\":1756688161,\"model\":\"gpt-5-nano-2025-08-07\",\"service_tier\":\"flex\",\"system_fingerprint\":null,\"choices\":[],\"usage\":{\"prompt_tokens\":16,\"completion_tokens\":16,\"total_tokens\":32,\"prompt_tokens_details\":{\"cached_tokens\":0,\"audio_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":16,\"audio_tokens\":0,\"accepted_prediction_tokens\":0,\"rejected_prediction_tokens\":0}},\"obfuscation\":\"bpYKdFtG\"}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Expose-Headers:
+      - X-Request-ID
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9780ce32897ca29a-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Openai-Organization:
+      - user-vtmtcvpbctksjfewktqdl2sw
+      Openai-Processing-Ms:
+      - "465"
+      Openai-Project:
+      - proj_tH6hQUFvA4Bx6SyAb23zzLEg
+      Openai-Version:
+      - "2020-10-01"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "469"
+      X-Ratelimit-Limit-Requests:
+      - "500"
+      X-Ratelimit-Limit-Tokens:
+      - "200000"
+      X-Ratelimit-Remaining-Requests:
+      - "497"
+      X-Ratelimit-Remaining-Tokens:
+      - "199985"
+      X-Ratelimit-Reset-Requests:
+      - 328ms
+      X-Ratelimit-Reset-Tokens:
+      - 4ms
+      X-Request-Id:
+      - req_8f98ca9ba19b44099104a28f8d17558a
+    status: 200 OK
+    code: 200
+    duration: 583ms

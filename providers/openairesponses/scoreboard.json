@@ -16,18 +16,155 @@
       "reason": true
     },
     {
-      "comments": "Untested",
       "models": [
         "gpt-5-mini"
       ],
-      "good": true
+      "good": true,
+      "reason": true,
+      "in": {
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "tools": "flaky",
+        "toolCallRequired": true,
+        "json": true,
+        "jsonSchema": true
+      },
+      "GenStream": {
+        "reportTokenUsage": "flaky",
+        "reportFinishReason": "true",
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
+        "json": true,
+        "jsonSchema": true,
+        "maxTokens": true
+      }
+    },
+    {
+      "models": [
+        "gpt-5-nano"
+      ],
+      "cheap": true,
+      "reason": true,
+      "in": {
+        "document": {
+          "inline": true,
+          "supportedFormats": [
+            "application/pdf"
+          ]
+        },
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "tools": "flaky",
+        "toolCallRequired": true,
+        "json": true,
+        "jsonSchema": true
+      },
+      "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "tools": "flaky",
+        "toolCallRequired": true,
+        "json": true,
+        "jsonSchema": true
+      }
+    },
+    {
+      "models": [
+        "gpt-5"
+      ],
+      "reason": true,
+      "in": {
+        "document": {
+          "inline": true,
+          "supportedFormats": [
+            "application/pdf"
+          ]
+        },
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "flaky",
+        "reportFinishReason": "flaky",
+        "tools": "flaky",
+        "toolCallRequired": true,
+        "json": true,
+        "jsonSchema": true,
+        "maxTokens": true
+      },
+      "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "tools": "flaky",
+        "toolCallRequired": true,
+        "json": true,
+        "jsonSchema": true
+      }
     },
     {
       "comments": "Untested",
       "models": [
         "gpt-4.1-nano"
-      ],
-      "cheap": true
+      ]
     },
     {
       "comments": "Token usage is broken only when using MaxTokens.",
@@ -159,6 +296,10 @@
     },
     {
       "models": [
+        "gpt-5-2025-08-07",
+        "gpt-5-chat-latest",
+        "gpt-5-mini-2025-08-07",
+        "gpt-5-nano-2025-08-07",
         "o1",
         "o1-2024-12-17",
         "o1-mini",
@@ -226,12 +367,6 @@
         "gpt-4o-search-preview",
         "gpt-4o-search-preview-2025-03-11",
         "gpt-4o-transcribe",
-        "gpt-5",
-        "gpt-5-2025-08-07",
-        "gpt-5-chat-latest",
-        "gpt-5-mini-2025-08-07",
-        "gpt-5-nano",
-        "gpt-5-nano-2025-08-07",
         "gpt-audio",
         "gpt-audio-2025-08-28",
         "gpt-realtime",

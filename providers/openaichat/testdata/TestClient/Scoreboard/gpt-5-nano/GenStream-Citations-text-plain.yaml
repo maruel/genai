@@ -1,0 +1,66 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 304
+    host: api.openai.com
+    body: "{\"model\":\"gpt-5-nano\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}],\"service_tier\":\"flex\",\"stream_options\":{\"include_usage\":true}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.openai.com/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"chatcmpl-CAn8GWWjbSuhR7cobFpi9UKDItgGy\",\"object\":\"chat.completion.chunk\",\"created\":1756688180,\"model\":\"gpt-5-nano-2025-08-07\",\"service_tier\":\"flex\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\",\"refusal\":null},\"finish_reason\":null}],\"usage\":null,\"obfuscation\":\"eNPypkyw\"}\n\ndata: {\"id\":\"chatcmpl-CAn8GWWjbSuhR7cobFpi9UKDItgGy\",\"object\":\"chat.completion.chunk\",\"created\":1756688180,\"model\":\"gpt-5-nano-2025-08-07\",\"service_tier\":\"flex\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Qu\"},\"finish_reason\":null}],\"usage\":null,\"obfuscation\":\"vf2qAHNw\"}\n\ndata: {\"id\":\"chatcmpl-CAn8GWWjbSuhR7cobFpi9UKDItgGy\",\"object\":\"chat.completion.chunk\",\"created\":1756688180,\"model\":\"gpt-5-nano-2025-08-07\",\"service_tier\":\"flex\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{\"content\":\"ack\"},\"finish_reason\":null}],\"usage\":null,\"obfuscation\":\"NFP49gy\"}\n\ndata: {\"id\":\"chatcmpl-CAn8GWWjbSuhR7cobFpi9UKDItgGy\",\"object\":\"chat.completion.chunk\",\"created\":1756688180,\"model\":\"gpt-5-nano-2025-08-07\",\"service_tier\":\"flex\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{\"content\":\".\"},\"finish_reason\":null}],\"usage\":null,\"obfuscation\":\"leNBFQsO0\"}\n\ndata: {\"id\":\"chatcmpl-CAn8GWWjbSuhR7cobFpi9UKDItgGy\",\"object\":\"chat.completion.chunk\",\"created\":1756688180,\"model\":\"gpt-5-nano-2025-08-07\",\"service_tier\":\"flex\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"stop\"}],\"usage\":null,\"obfuscation\":\"1Hiu\"}\n\ndata: {\"id\":\"chatcmpl-CAn8GWWjbSuhR7cobFpi9UKDItgGy\",\"object\":\"chat.completion.chunk\",\"created\":1756688180,\"model\":\"gpt-5-nano-2025-08-07\",\"service_tier\":\"flex\",\"system_fingerprint\":null,\"choices\":[],\"usage\":{\"prompt_tokens\":35,\"completion_tokens\":268,\"total_tokens\":303,\"prompt_tokens_details\":{\"cached_tokens\":0,\"audio_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":256,\"audio_tokens\":0,\"accepted_prediction_tokens\":0,\"rejected_prediction_tokens\":0}},\"obfuscation\":\"Shxt7\"}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Expose-Headers:
+      - X-Request-ID
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9780cea52dc2a29a-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Openai-Organization:
+      - user-vtmtcvpbctksjfewktqdl2sw
+      Openai-Processing-Ms:
+      - "1208"
+      Openai-Project:
+      - proj_tH6hQUFvA4Bx6SyAb23zzLEg
+      Openai-Version:
+      - "2020-10-01"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "1211"
+      X-Ratelimit-Limit-Requests:
+      - "500"
+      X-Ratelimit-Limit-Tokens:
+      - "200000"
+      X-Ratelimit-Remaining-Requests:
+      - "499"
+      X-Ratelimit-Remaining-Tokens:
+      - "199970"
+      X-Ratelimit-Reset-Requests:
+      - 120ms
+      X-Ratelimit-Reset-Tokens:
+      - 9ms
+      X-Request-Id:
+      - req_9dc493b178664da6b60233ca0231aa51
+    status: 200 OK
+    code: 200
+    duration: 1.742s

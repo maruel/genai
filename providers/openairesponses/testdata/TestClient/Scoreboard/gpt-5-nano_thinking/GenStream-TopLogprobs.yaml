@@ -1,0 +1,54 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 271
+    host: api.openai.com
+    body: "{\"model\":\"gpt-5-nano\",\"background\":false,\"reasoning\":{\"effort\":\"low\",\"summary\":\"auto\"},\"service_tier\":\"flex\",\"store\":false,\"top_logprobs\":2,\"input\":[{\"type\":\"message\",\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"Say hello. Use only one word.\"}]}],\"stream\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.openai.com/v1/responses
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 190
+    body: "{\n  \"error\": {\n    \"message\": \"logprobs are not supported with reasoning models.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": \"top_logprobs\",\n    \"code\": \"unsupported_parameter\"\n  }\n}"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9780e293ebf3a2ff-YUL
+      Content-Length:
+      - "190"
+      Content-Type:
+      - application/json
+      Openai-Organization:
+      - user-vtmtcvpbctksjfewktqdl2sw
+      Openai-Processing-Ms:
+      - "23"
+      Openai-Project:
+      - proj_tH6hQUFvA4Bx6SyAb23zzLEg
+      Openai-Version:
+      - "2020-10-01"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "28"
+      X-Request-Id:
+      - req_69a9c40d21692bc49dbb4f52ce612f49
+    status: 400 Bad Request
+    code: 400
+    duration: 137ms

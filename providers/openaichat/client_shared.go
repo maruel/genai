@@ -302,20 +302,17 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 	for _, mdl := range mdls {
 		m := mdl.(*Model)
 		if cheap {
-			if strings.HasSuffix(m.ID, "-nano") && (created == 0 || m.Created < created) {
-				// For the cheapest, we want the oldest model as it is generally cheaper.
+			if strings.HasSuffix(m.ID, "-nano") && (created == 0 || m.Created > created) {
 				created = m.Created
 				selectedModel = m.ID
 			}
 		} else if good {
 			if strings.HasSuffix(m.ID, "-mini") && (created == 0 || m.Created > created) {
-				// For the greatest, we want the newest model as it is generally better.
 				created = m.Created
 				selectedModel = m.ID
 			}
 		} else {
 			if strings.HasSuffix(m.ID, "-pro") && (created == 0 || m.Created > created) {
-				// For the greatest, we want the newest model as it is generally better.
 				created = m.Created
 				selectedModel = m.ID
 			}

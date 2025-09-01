@@ -194,7 +194,7 @@ func TestClient(t *testing.T) {
 			name     string
 			want     string
 		}{
-			{genai.ModalityText, genai.ModelCheap, "gpt-4.1-nano"},
+			{genai.ModalityText, genai.ModelCheap, "gpt-5-nano"},
 			{genai.ModalityText, genai.ModelGood, "gpt-5-mini"},
 			{genai.ModalityText, genai.ModelSOTA, "o3-pro"},
 			{genai.ModalityImage, genai.ModelCheap, "dall-e-3"},

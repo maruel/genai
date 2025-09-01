@@ -14,7 +14,7 @@
         "Qwen/Qwen3-235B-A22B-Thinking-2507"
       ],
       "sota": true,
-	  "reason": true,
+      "reason": true,
       "reasoningTokenStart": "\u003cthink\u003e",
       "reasoningTokenEnd": "\u003c/think\u003e",
       "in": {
@@ -32,9 +32,9 @@
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "seed": true,
-		"tools": "true",
-		"toolsBiased": "true",
-		"toolCallRequired": true,
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
         "json": true,
         "jsonSchema": true,
         "topLogprobs": true,
@@ -46,9 +46,9 @@
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "seed": true,
-		"tools": "true",
-		"toolsBiased": "true",
-		"toolCallRequired": true,
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
         "json": true,
         "jsonSchema": true,
         "topLogprobs": true,
@@ -76,9 +76,9 @@
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "seed": true,
-		"tools": "true",
-		"toolsBiased": "true",
-		"toolCallRequired": true,
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
         "json": true,
         "jsonSchema": true,
         "topLogprobs": true,
@@ -90,9 +90,9 @@
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "seed": true,
-		"tools": "true",
-		"toolsBiased": "true",
-		"toolCallRequired": true,
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
         "json": true,
         "jsonSchema": true,
         "topLogprobs": true,
@@ -106,7 +106,7 @@
         "openai/gpt-oss-20b"
       ],
       "cheap": true,
-	  "reason": true,
+      "reason": true,
       "in": {
         "text": {
           "inline": true
@@ -122,8 +122,8 @@
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "seed": true,
-		"tools": "flaky",
-		"toolsBiased": "true",
+        "tools": "flaky",
+        "toolsBiased": "true",
         "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
@@ -133,8 +133,8 @@
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "seed": true,
-		"tools": "flaky",
-		"toolCallRequired": true,
+        "tools": "flaky",
+        "toolCallRequired": true,
         "topLogprobs": true
       }
     },
@@ -220,7 +220,7 @@
         "openai/gpt-oss-120b"
       ],
       "cheap": true,
-	  "reason": true,
+      "reason": true,
       "in": {
         "text": {
           "inline": true

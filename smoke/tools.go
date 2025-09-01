@@ -134,7 +134,7 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 	} else {
 		f.Tools = scoreboard.True
 	}
-	if resp.Usage.InputTokens == 0 || resp.Usage.OutputTokens == 0 {
+	if isZeroUsage(resp.Usage) {
 		if f.ReportTokenUsage != scoreboard.False {
 			internal.Logger(ctx).DebugContext(ctx, "SquareRoot", "issue", "token usage")
 			f.ReportTokenUsage = scoreboard.Flaky
@@ -206,7 +206,7 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 			f.Tools = scoreboard.Flaky
 			continue
 		}
-		if resp.Usage.InputTokens == 0 || resp.Usage.OutputTokens == 0 {
+		if isZeroUsage(resp.Usage) {
 			if f.ReportTokenUsage != scoreboard.False {
 				internal.Logger(ctx).DebugContext(ctx, check, "issue", "token usage")
 				f.ReportTokenUsage = scoreboard.Flaky

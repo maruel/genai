@@ -85,6 +85,9 @@ func JSONSchemaFor(t reflect.Type) *jsonschema.Schema {
 	return r.ReflectFromType(t)
 }
 
+// MimeByExt returns the mime type for the given extension.
+//
+// It works around OS-specific bugs for audio and markdown.
 func MimeByExt(ext string) string {
 	switch ext {
 	case ".aac":
@@ -99,6 +102,19 @@ func MimeByExt(ext string) string {
 	default:
 		return mime.TypeByExtension(ext)
 	}
+}
+
+// BadError is a bad error that must stop the smoke test.
+type BadError struct {
+	Err error
+}
+
+func (b *BadError) Error() string {
+	return b.Err.Error()
+}
+
+func (b *BadError) Unwrap() error {
+	return b.Err
 }
 
 //

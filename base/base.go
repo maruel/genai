@@ -350,7 +350,7 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 	}
 	if err := res.Validate(); err != nil {
 		// Catch provider implementation bugs.
-		return res, err
+		return res, &internal.BadError{Err: err}
 	}
 
 	lastResp := c.LastResponseHeaders()
@@ -396,7 +396,7 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 		for f := range fragments {
 			if err := f.Validate(); err != nil {
 				// Catch provider implementation bugs.
-				finalErr = err
+				finalErr = &internal.BadError{Err: err}
 				break
 			}
 			if !yield(f) {
@@ -429,7 +429,7 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 		}
 		if err := res.Validate(); err != nil {
 			// Catch provider implementation bugs.
-			return res, err
+			return res, &internal.BadError{Err: err}
 		}
 		return res, continuableErr
 	}

@@ -205,11 +205,12 @@ func Run(ctx context.Context, pf ProviderFactory) (scoreboard.Scenario, genai.Us
 
 func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*scoreboard.Functionality, error) {
 	// Make sure simple text generation works, otherwise there's no point.
+	ctxCheck := internal.WithLogger(ctx, internal.Logger(ctx).With("check", "Text"))
 	msgs := genai.Messages{genai.NewTextMessage("Say hello. Use only one word.")}
-	resp, err := cs.callGen(ctx, prefix+"Text", msgs)
+	resp, err := cs.callGen(ctxCheck, prefix+"Text", msgs)
 	if err != nil {
 		// It happens when the model is audio gen only.
-		if !isBadError(ctx, err) {
+		if !isBadError(ctxCheck, err) {
 			err = nil
 		}
 		return nil, err
@@ -218,13 +219,13 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 	// Optimistically assume it works.
 	f.ReportTokenUsage = scoreboard.True
 	f.ReportFinishReason = scoreboard.True
-	if resp.Usage.InputTokens == 0 || resp.Usage.OutputTokens == 0 {
+	if isZeroUsage(resp.Usage) {
 		// If it fails at this one, it's never going to succeed.
-		internal.Logger(ctx).DebugContext(ctx, "Text", "issue", "token usage")
+		internal.Logger(ctxCheck).DebugContext(ctxCheck, "no usage")
 		f.ReportTokenUsage = scoreboard.False
 	}
 	if expectedFR := genai.FinishedStop; resp.Usage.FinishReason != expectedFR {
-		internal.Logger(ctx).DebugContext(ctx, "Text", "issue", "finish reason", "expected", expectedFR, "got", resp.Usage.FinishReason)
+		internal.Logger(ctxCheck).DebugContext(ctxCheck, "bad finishreason", "expected", expectedFR, "got", resp.Usage.FinishReason)
 		f.ReportFinishReason = scoreboard.False
 	}
 	if strings.Contains(resp.String(), "<think") {
@@ -241,9 +242,10 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 	}
 
 	// Seed
+	ctxCheck = internal.WithLogger(ctx, internal.Logger(ctx).With("check", "Seed"))
 	msgs = genai.Messages{genai.NewTextMessage("Say hello. Use only one word.")}
-	resp, err = cs.callGen(ctx, prefix+"Seed", msgs, &genai.OptionsText{Seed: 42})
-	if isBadError(ctx, err) {
+	resp, err = cs.callGen(ctxCheck, prefix+"Seed", msgs, &genai.OptionsText{Seed: 42})
+	if isBadError(ctxCheck, err) {
 		return f, err
 	}
 	var uerr *genai.UnsupportedContinuableError
@@ -254,9 +256,10 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 	}
 
 	// TopLogprobs
+	ctxCheck = internal.WithLogger(ctx, internal.Logger(ctx).With("check", "TopLogprobs"))
 	msgs = genai.Messages{genai.NewTextMessage("Say hello. Use only one word.")}
-	resp, err = cs.callGen(ctx, prefix+"TopLogprobs", msgs, &genai.OptionsText{TopLogprobs: 2})
-	if isBadError(ctx, err) {
+	resp, err = cs.callGen(ctxCheck, prefix+"TopLogprobs", msgs, &genai.OptionsText{TopLogprobs: 2})
+	if isBadError(ctxCheck, err) {
 		return f, err
 	}
 	if errors.As(err, &uerr) {
@@ -285,16 +288,18 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 
 	// MaxTokens
 	// This will trigger citations on providers with search enabled.
+	ctxCheck = internal.WithLogger(ctx, internal.Logger(ctx).With("check", "MaxTokens"))
 	msgs = genai.Messages{genai.NewTextMessage("Explain the theory of relativity in great details.")}
-	resp, err = cs.callGen(ctx, prefix+"MaxTokens", msgs, &genai.OptionsText{MaxTokens: 16})
-	if isBadError(ctx, err) {
+	resp, err = cs.callGen(ctxCheck, prefix+"MaxTokens", msgs, &genai.OptionsText{MaxTokens: 16})
+	if isBadError(ctxCheck, err) {
 		return f, err
 	}
-	f.MaxTokens = err == nil && strings.Count(resp.String(), " ")+1 <= 20
+	// MaxTokens is reported as false if there's no returned output.
+	f.MaxTokens = err == nil && strings.Count(resp.String(), " ")+1 <= 20 && (len(resp.String()) > 0 || len(resp.Reasoning()) > 0)
 	if err == nil {
-		if f.MaxTokens && (resp.Usage.InputTokens == 0 || resp.Usage.OutputTokens == 0) {
+		if f.MaxTokens && isZeroUsage(resp.Usage) {
 			if f.ReportTokenUsage != scoreboard.False {
-				internal.Logger(ctx).DebugContext(ctx, "MaxTokens", "issue", "token usage")
+				internal.Logger(ctxCheck).DebugContext(ctxCheck, "no usage")
 				f.ReportTokenUsage = scoreboard.Flaky
 			}
 		}
@@ -304,24 +309,25 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 		}
 		if resp.Usage.FinishReason != expectedFR {
 			if f.ReportTokenUsage != scoreboard.False {
-				internal.Logger(ctx).DebugContext(ctx, "MaxTokens", "issue", "finish reason", "expected", expectedFR, "got", resp.Usage.FinishReason)
+				internal.Logger(ctxCheck).DebugContext(ctxCheck, "bad finish reason", "expected", expectedFR, "got", resp.Usage.FinishReason)
 				f.ReportFinishReason = scoreboard.Flaky
 			}
 		}
 	}
 
 	// Stop
+	ctxCheck = internal.WithLogger(ctx, internal.Logger(ctx).With("check", "Stop"))
 	msgs = genai.Messages{genai.NewTextMessage("Talk about Canada in great details. Start with: Canada is")}
-	resp, err = cs.callGen(ctx, prefix+"Stop", msgs, &genai.OptionsText{Stop: []string{"is"}})
-	if isBadError(ctx, err) {
+	resp, err = cs.callGen(ctxCheck, prefix+"Stop", msgs, &genai.OptionsText{Stop: []string{"is"}})
+	if isBadError(ctxCheck, err) {
 		return f, err
 	}
 	// Some model (in particular Gemma3 4B in Q4_K_M) will not start with "Canada is". They will still stop but
 	// only after a while.
 	f.StopSequence = err == nil && strings.Count(resp.String(), " ")+1 <= 30 && !strings.Contains(resp.String(), " is ")
-	if f.StopSequence && (resp.Usage.InputTokens == 0 || resp.Usage.OutputTokens == 0) {
+	if f.StopSequence && isZeroUsage(resp.Usage) {
 		if f.ReportTokenUsage != scoreboard.False {
-			internal.Logger(ctx).DebugContext(ctx, "Stop", "issue", "token usage")
+			internal.Logger(ctxCheck).DebugContext(ctxCheck, "no usage")
 			f.ReportTokenUsage = scoreboard.Flaky
 		}
 	}
@@ -333,16 +339,17 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 		}
 		if resp.Usage.FinishReason != expectedFR {
 			if f.ReportTokenUsage != scoreboard.False {
-				internal.Logger(ctx).DebugContext(ctx, "Stop", "issue", "finish reason", "expected", expectedFR, "got", resp.Usage.FinishReason)
+				internal.Logger(ctxCheck).DebugContext(ctxCheck, "bad finish reason", "expected", genai.FinishedStopSequence, "got", resp.Usage.FinishReason)
 				f.ReportFinishReason = scoreboard.Flaky
 			}
 		}
 	}
 
 	// JSON
+	ctxCheck = internal.WithLogger(ctx, internal.Logger(ctx).With("check", "JSON"))
 	msgs = genai.Messages{genai.NewTextMessage(`Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {"is_fruit": bool}.`)}
-	resp, err = cs.callGen(ctx, prefix+"JSON", msgs, &genai.OptionsText{ReplyAsJSON: true})
-	if isBadError(ctx, err) {
+	resp, err = cs.callGen(ctxCheck, prefix+"JSON", msgs, &genai.OptionsText{ReplyAsJSON: true})
+	if isBadError(ctxCheck, err) {
 		return f, err
 	}
 	if err == nil {
@@ -350,15 +357,15 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 		// We could check for "is_fruit". In practice the fact that it's JSON is good enough to have the flag set.
 		f.JSON = resp.Decode(&data) == nil
 		if f.JSON {
-			if resp.Usage.InputTokens == 0 || resp.Usage.OutputTokens == 0 {
+			if isZeroUsage(resp.Usage) {
 				if f.ReportTokenUsage != scoreboard.False {
-					internal.Logger(ctx).DebugContext(ctx, "JSON", "issue", "token usage")
+					internal.Logger(ctxCheck).DebugContext(ctxCheck, "no usage")
 					f.ReportTokenUsage = scoreboard.Flaky
 				}
 			}
 			if expectedFR := genai.FinishedStop; f.JSON && resp.Usage.FinishReason != expectedFR {
 				if f.ReportTokenUsage != scoreboard.False {
-					internal.Logger(ctx).DebugContext(ctx, "JSON", "issue", "finish reason", "expected", expectedFR, "got", resp.Usage.FinishReason)
+					internal.Logger(ctxCheck).DebugContext(ctxCheck, "bad finish reason", "expected", expectedFR, "got", resp.Usage.FinishReason)
 					f.ReportFinishReason = scoreboard.Flaky
 				}
 			}
@@ -366,27 +373,28 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 	}
 
 	// JSONSchema
+	ctxCheck = internal.WithLogger(ctx, internal.Logger(ctx).With("check", "JSONSchema"))
 	msgs = genai.Messages{genai.NewTextMessage(`Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON.`)}
 	type schema struct {
 		IsFruit bool `json:"is_fruit"`
 	}
-	resp, err = cs.callGen(ctx, prefix+"JSONSchema", msgs, &genai.OptionsText{DecodeAs: &schema{}})
-	if isBadError(ctx, err) {
+	resp, err = cs.callGen(ctxCheck, prefix+"JSONSchema", msgs, &genai.OptionsText{DecodeAs: &schema{}})
+	if isBadError(ctxCheck, err) {
 		return f, err
 	}
 	if err == nil {
 		data := schema{}
 		f.JSONSchema = resp.Decode(&data) == nil && data.IsFruit
 		if f.JSONSchema {
-			if resp.Usage.InputTokens == 0 || resp.Usage.OutputTokens == 0 {
+			if isZeroUsage(resp.Usage) {
 				if f.ReportTokenUsage != scoreboard.False {
-					internal.Logger(ctx).DebugContext(ctx, "JSONSchema", "issue", "token usage")
+					internal.Logger(ctxCheck).DebugContext(ctxCheck, "no usage")
 					f.ReportTokenUsage = scoreboard.Flaky
 				}
 			}
 			if expectedFR := genai.FinishedStop; f.JSONSchema && resp.Usage.FinishReason != expectedFR {
 				if f.ReportTokenUsage != scoreboard.False {
-					internal.Logger(ctx).DebugContext(ctx, "JSONSchema", "issue", "finish reason", "expected", expectedFR, "got", resp.Usage.FinishReason)
+					internal.Logger(ctxCheck).DebugContext(ctxCheck, "bad finish reason", "expected", expectedFR, "got", resp.Usage.FinishReason)
 					f.ReportFinishReason = scoreboard.Flaky
 				}
 			}
@@ -399,6 +407,7 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 
 	// Citations
 	// Force triggering citations for a document provided.
+	ctxCheck = internal.WithLogger(ctx, internal.Logger(ctx).With("check", "Citations", "type", "text/plain"))
 	hasCitations := false
 	msgs = genai.Messages{
 		genai.Message{
@@ -413,8 +422,8 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 			},
 		},
 	}
-	resp, err = cs.callGen(ctx, prefix+"Citations-text-plain", msgs)
-	if isBadError(ctx, err) {
+	resp, err = cs.callGen(ctxCheck, prefix+"Citations-text-plain", msgs)
+	if isBadError(ctxCheck, err) {
 		return f, err
 	}
 	if errors.As(err, &uerr) {
@@ -425,15 +434,15 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 	}
 	if err == nil {
 		hasCitations = true
-		if resp.Usage.InputTokens == 0 || resp.Usage.OutputTokens == 0 {
+		if isZeroUsage(resp.Usage) {
 			if f.ReportTokenUsage != scoreboard.False {
-				internal.Logger(ctx).DebugContext(ctx, "Citations-text-plain", "issue", "token usage")
+				internal.Logger(ctxCheck).DebugContext(ctxCheck, "no usage")
 				f.ReportTokenUsage = scoreboard.Flaky
 			}
 		}
 		if expectedFR := genai.FinishedStop; f.Citations && resp.Usage.FinishReason != expectedFR {
 			if f.ReportTokenUsage != scoreboard.False {
-				internal.Logger(ctx).DebugContext(ctx, "Citations-text-plain", "issue", "finish reason", "expected", expectedFR, "got", resp.Usage.FinishReason)
+				internal.Logger(ctxCheck).DebugContext(ctxCheck, "bad finish reason", "expected", expectedFR, "got", resp.Usage.FinishReason)
 				f.ReportFinishReason = scoreboard.Flaky
 			}
 		}
@@ -443,6 +452,7 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 	}
 
 	// Try again with markdown. This is important to make sure the client doesn't lock onto text/plain.
+	ctxCheck = internal.WithLogger(ctx, internal.Logger(ctx).With("check", "Citations", "type", "text/markdown"))
 	msgs = genai.Messages{
 		genai.Message{
 			Requests: []genai.Request{
@@ -456,8 +466,8 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 			},
 		},
 	}
-	resp, err = cs.callGen(ctx, prefix+"Citations-text-markdown", msgs)
-	if isBadError(ctx, err) {
+	resp, err = cs.callGen(ctxCheck, prefix+"Citations-text-markdown", msgs)
+	if isBadError(ctxCheck, err) {
 		return f, err
 	}
 	if errors.As(err, &uerr) {
@@ -467,15 +477,15 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 		}
 	}
 	if err == nil {
-		if resp.Usage.InputTokens == 0 || resp.Usage.OutputTokens == 0 {
+		if isZeroUsage(resp.Usage) {
 			if f.ReportTokenUsage != scoreboard.False {
-				internal.Logger(ctx).DebugContext(ctx, "Citations-text-markdown", "issue", "token usage")
+				internal.Logger(ctxCheck).DebugContext(ctxCheck, "no usage")
 				f.ReportTokenUsage = scoreboard.Flaky
 			}
 		}
 		if expectedFR := genai.FinishedStop; f.Citations && resp.Usage.FinishReason != expectedFR {
 			if f.ReportTokenUsage != scoreboard.False {
-				internal.Logger(ctx).DebugContext(ctx, "Citations-text-markdown", "issue", "finish reason", "expected", expectedFR, "got", resp.Usage.FinishReason)
+				internal.Logger(ctxCheck).DebugContext(ctxCheck, "bad finish reason", "expected", expectedFR, "got", resp.Usage.FinishReason)
 				f.ReportFinishReason = scoreboard.Flaky
 			}
 		}
@@ -730,7 +740,7 @@ func exerciseModal(ctx context.Context, cs *callState, f *scoreboard.Functionali
 		if want != nil && !want.MatchString(got) {
 			return fmt.Errorf("got %q, want %q", got, want)
 		}
-		if resp.Usage.InputTokens == 0 || resp.Usage.OutputTokens == 0 {
+		if isZeroUsage(resp.Usage) {
 			if f.ReportTokenUsage != scoreboard.False {
 				internal.Logger(ctx).DebugContext(ctx, name, "issue", "token usage")
 				f.ReportTokenUsage = scoreboard.Flaky
@@ -1020,11 +1030,21 @@ func exerciseGenVideo(ctx context.Context, pf ProviderFactory, name string, out 
 const rootURL = "https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/"
 
 func isBadError(ctx context.Context, err error) bool {
-	var uerr *httpjson.UnknownFieldError
-	if errors.Is(err, cassette.ErrInteractionNotFound) || errors.As(err, &uerr) {
+	if errors.Is(err, cassette.ErrInteractionNotFound) {
 		internal.Logger(ctx).ErrorContext(ctx, "isBadError", "type", "cassette", "err", err)
 		return true
 	}
+	var uerr *httpjson.UnknownFieldError
+	if errors.Is(err, cassette.ErrInteractionNotFound) || errors.As(err, &uerr) {
+		internal.Logger(ctx).ErrorContext(ctx, "isBadError", "type", "UnknownFieldError", "err", err)
+		return true
+	}
+	var be *internal.BadError
+	if errors.As(err, &be) {
+		internal.Logger(ctx).ErrorContext(ctx, "isBadError", "type", "BadError", "err", err)
+		return true
+	}
+
 	// API error are never 'bad'.
 	var ua base.ErrAPI
 	if errors.As(err, &ua) && ua.IsAPIError() {
@@ -1060,4 +1080,14 @@ func mergeSortedUnique(s1, s2 []string) []string {
 	combined := append(s1, s2...)
 	slices.Sort(combined)
 	return slices.Compact(combined)
+}
+
+func isZeroUsage(u genai.Usage) bool {
+	// Tolerate cases like OpenAI Responses API with gpt-5 in thinking mode with MaxTokens will only return
+	// TotalTokens being set. Good enough.
+	return u.InputTokens == 0 &&
+		u.InputCachedTokens == 0 &&
+		u.ReasoningTokens == 0 &&
+		u.OutputTokens == 0 &&
+		u.TotalTokens == 0
 }

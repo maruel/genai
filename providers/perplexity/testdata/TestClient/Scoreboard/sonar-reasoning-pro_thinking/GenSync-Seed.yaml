@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 186
+    host: api.perplexity.ai
+    body: "{\"model\":\"sonar-reasoning-pro\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Say hello. Use only one word.\"}]}],\"return_images\":true,\"stream\":false,\"disable_search\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.perplexity.ai/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\": \"8be7e7bd-15ed-4af9-9603-69af9c799ad1\", \"model\": \"sonar-reasoning-pro\", \"created\": 1756687420, \"usage\": {\"prompt_tokens\": 8, \"completion_tokens\": 55, \"total_tokens\": 63, \"search_context_size\": \"low\", \"cost\": {\"input_tokens_cost\": 0.0, \"output_tokens_cost\": 0.0, \"request_cost\": 0.006, \"total_cost\": 0.006}}, \"citations\": [], \"search_results\": [], \"images\": [{\"image_url\": \"https://waldenwatercolors.com/wp-content/uploads/2020/01/One-Word-Greeting-Card-Pack.jpg\", \"origin_url\": \"https://waldenwatercolors.com/product/one-word-greeting-card-pack/\", \"height\": 500, \"width\": 500}, {\"image_url\": \"https://cdn.shopify.com/s/files/1/0593/2373/products/greeting-cards.jpg?v=1574063720\", \"origin_url\": \"https://www.thewordchanges.com/products/oneword-greeting-cards\", \"height\": 768, \"width\": 600}, {\"image_url\": \"https://chivewholesale.com/cdn/shop/files/GCNONB-1.png?v=1750283340&width=1000\", \"origin_url\": \"https://chivewholesale.com/products/non-birthday-greeting-cards-96pc-assortment\", \"height\": 1000, \"width\": 1000}, {\"image_url\": \"https://www.shutterstock.com/image-vector/wish-continuous-one-line-calligraphy-260nw-2226336267.jpg\", \"origin_url\": \"https://www.shutterstock.com/search/single-word-quotes\", \"height\": 280, \"width\": 606}, {\"image_url\": \"https://bungu.store/cdn/shop/files/mini-1-word-greeting-cards-letterpress-letters-bungu-187372.jpg?v=1728376794&width=1214\", \"origin_url\": \"https://bungu.store/products/mini-1-word-greeting-cards\", \"height\": 1214, \"width\": 1214}], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": \"stop\", \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nThe user is asking me to say hello using only one word. This is a simple request - I just need to respond with a single word greeting. \\\"Hello\\\" itself would be the most straightforward response that fulfills their request exactly.\\n</think>\\n\\nHello.\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"\"}}]}"
+    headers:
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9780bc05589ca275-YUL
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+    status: 200 OK
+    code: 200
+    duration: 3.903s

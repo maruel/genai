@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 305
+    host: api.perplexity.ai
+    body: "{\"model\":\"sonar-reasoning-pro\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}],\"return_images\":true,\"return_related_questions\":true,\"stream\":false}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.perplexity.ai/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\": \"a76cf0d9-a505-49b2-8aa5-8991959c499d\", \"model\": \"sonar-reasoning-pro\", \"created\": 1756687472, \"usage\": {\"prompt_tokens\": 30, \"completion_tokens\": 124, \"total_tokens\": 154, \"search_context_size\": \"low\", \"cost\": {\"input_tokens_cost\": 0.0, \"output_tokens_cost\": 0.001, \"request_cost\": 0.006, \"total_cost\": 0.007}}, \"citations\": [], \"search_results\": [], \"images\": [{\"image_url\": \"https://www.shutterstock.com/image-vector/illustration-duck-making-quacking-sound-260nw-1721554777.jpg\", \"origin_url\": \"https://www.shutterstock.com/search/quack-quack\", \"height\": 280, \"width\": 213}, {\"image_url\": \"https://media.istockphoto.com/id/1648505532/photo/typical-architecture-of-greenland-capital-nuuk-with-colored-houses-located-near-fjords-and.jpg?s=612x612&w=0&k=20&c=BqZzuhqhMI5KhoWgTw0XUhqqfhf9XC11AkXpIbOM4wI=\", \"origin_url\": \"https://www.istockphoto.com/photos/greenland-capital-city\", \"height\": 390, \"width\": 612}, {\"image_url\": \"https://s2.coinmarketcap.com/static/img/coins/200x200/31001.png\", \"origin_url\": \"https://coinmarketcap.com/currencies/quack-capital/\", \"height\": 200, \"width\": 200}, {\"image_url\": \"https://www.shutterstock.com/image-photo/typical-architecture-greenland-capital-nuuk-600w-2551565893.jpg\", \"origin_url\": \"https://www.shutterstock.com/search/greenland-capital\", \"height\": 265, \"width\": 600}, {\"image_url\": \"https://webkinznewz.ganzworld.com/wp-content/uploads/2017/01/Dr-Quack-Mayor-Waving.png\", \"origin_url\": \"https://webkinznewz.ganzworld.com/announcements/special-announcement-from-dr-quack/\", \"height\": 632, \"width\": 507}], \"related_questions\": [\"What is the significance of the Big Canard Statue in Quackiland\", \"Are there any famous landmarks in Quackiland besides the Big Canard Statue\", \"How did Quackiland get its name\", \"What is the history behind the Big Canard Statue\", \"Are there any annual festivals or events in Quackiland\"], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": \"stop\", \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nThe user is telling me about a fictional place called \\\"Quackiland\\\" and its capital \\\"Quack\\\". They mention that the Big Canard Statue is located in Quack. Then they ask what the capital of Quackiland is.\\n\\nThis seems straightforward - they just told me that the capital of Quackiland is Quack, and then they're asking me to confirm this information. Since this appears to be a fictional place they've created, I should simply answer based on the information they provided.\\n</think>\\n\\nBased on the information you provided, the capital of Quackiland is Quack.\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"\"}}]}"
+    headers:
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9780bd37f9e8a275-YUL
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+    status: 200 OK
+    code: 200
+    duration: 5.918s

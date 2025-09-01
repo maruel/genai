@@ -1,0 +1,38 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 456
+    host: api.perplexity.ai
+    body: "{\"model\":\"sonar-pro\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON.\"}]}],\"return_images\":true,\"stream\":true,\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"schema\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"is_fruit\":{\"type\":\"boolean\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"is_fruit\"]}}},\"disable_search\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.perplexity.ai/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\": \"a0709aa8-9c88-415a-89c9-8bc7f9384818\", \"model\": \"sonar-pro\", \"created\": 1756687324, \"usage\": {\"prompt_tokens\": 17, \"completion_tokens\": 1, \"total_tokens\": 18, \"search_context_size\": \"low\"}, \"citations\": [], \"search_results\": [], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"{\\\"\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"{\\\"\"}}]}\r\n\r\ndata: {\"id\": \"a0709aa8-9c88-415a-89c9-8bc7f9384818\", \"model\": \"sonar-pro\", \"created\": 1756687324, \"usage\": {\"prompt_tokens\": 17, \"completion_tokens\": 2, \"total_tokens\": 19, \"search_context_size\": \"low\"}, \"citations\": [], \"search_results\": [], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"{\\\"is\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"is\"}}]}\r\n\r\ndata: {\"id\": \"a0709aa8-9c88-415a-89c9-8bc7f9384818\", \"model\": \"sonar-pro\", \"created\": 1756687324, \"usage\": {\"prompt_tokens\": 17, \"completion_tokens\": 3, \"total_tokens\": 20, \"search_context_size\": \"low\"}, \"citations\": [], \"search_results\": [], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"{\\\"is_f\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"_f\"}}]}\r\n\r\ndata: {\"id\": \"a0709aa8-9c88-415a-89c9-8bc7f9384818\", \"model\": \"sonar-pro\", \"created\": 1756687324, \"usage\": {\"prompt_tokens\": 17, \"completion_tokens\": 4, \"total_tokens\": 21, \"search_context_size\": \"low\"}, \"citations\": [], \"search_results\": [], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"{\\\"is_fruit\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"ruit\"}}]}\r\n\r\ndata: {\"id\": \"a0709aa8-9c88-415a-89c9-8bc7f9384818\", \"model\": \"sonar-pro\", \"created\": 1756687324, \"usage\": {\"prompt_tokens\": 17, \"completion_tokens\": 5, \"total_tokens\": 22, \"search_context_size\": \"low\"}, \"citations\": [], \"search_results\": [], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"{\\\"is_fruit\\\":\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"\\\":\"}}]}\r\n\r\ndata: {\"id\": \"a0709aa8-9c88-415a-89c9-8bc7f9384818\", \"model\": \"sonar-pro\", \"created\": 1756687324, \"usage\": {\"prompt_tokens\": 17, \"completion_tokens\": 6, \"total_tokens\": 23, \"search_context_size\": \"low\"}, \"citations\": [], \"search_results\": [], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"{\\\"is_fruit\\\": true\"}, \"delta\": {\"role\": \"assistant\", \"content\": \" true\"}}]}\r\n\r\ndata: {\"id\": \"a0709aa8-9c88-415a-89c9-8bc7f9384818\", \"model\": \"sonar-pro\", \"created\": 1756687324, \"usage\": {\"prompt_tokens\": 17, \"completion_tokens\": 7, \"total_tokens\": 24, \"search_context_size\": \"low\"}, \"citations\": [], \"search_results\": [], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"{\\\"is_fruit\\\": true}\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"}\"}}]}\r\n\r\ndata: {\"id\": \"a0709aa8-9c88-415a-89c9-8bc7f9384818\", \"model\": \"sonar-pro\", \"created\": 1756687324, \"usage\": {\"prompt_tokens\": 17, \"completion_tokens\": 7, \"total_tokens\": 24, \"search_context_size\": \"low\", \"cost\": {\"input_tokens_cost\": 0.0, \"output_tokens_cost\": 0.0, \"request_cost\": 0.006, \"total_cost\": 0.006}}, \"citations\": [], \"search_results\": [], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": \"stop\", \"message\": {\"role\": \"assistant\", \"content\": \"{\\\"is_fruit\\\": true}\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"\"}}]}\r\n\r\n"
+    headers:
+      Cache-Control:
+      - no-cache
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9780b9bb39032659-YYZ
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+    status: 200 OK
+    code: 200
+    duration: 794ms

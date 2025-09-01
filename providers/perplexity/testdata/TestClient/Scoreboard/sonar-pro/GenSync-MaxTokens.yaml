@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 213
+    host: api.perplexity.ai
+    body: "{\"model\":\"sonar-pro\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Explain the theory of relativity in great details.\"}]}],\"max_tokens\":16,\"return_images\":true,\"stream\":false,\"disable_search\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.perplexity.ai/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\": \"99af6703-9201-4924-920f-abc25db1e2fb\", \"model\": \"sonar-pro\", \"created\": 1756687326, \"usage\": {\"prompt_tokens\": 11, \"completion_tokens\": 15, \"total_tokens\": 26, \"search_context_size\": \"low\", \"cost\": {\"input_tokens_cost\": 0.0, \"output_tokens_cost\": 0.0, \"request_cost\": 0.006, \"total_cost\": 0.006}}, \"citations\": [], \"search_results\": [], \"images\": [{\"image_url\": \"https://cdn1.byjus.com/wp-content/uploads/2023/03/Special-Theory-of-Relativity.png\", \"origin_url\": \"https://byjus.com/physics/special-theory-of-relativity/\", \"height\": 613, \"width\": 750}, {\"image_url\": \"https://scx2.b-cdn.net/gfx/news/2017/einsteinsimp.jpg\", \"origin_url\": \"https://phys.org/news/2017-06-einstein-theory-relativity.html\", \"height\": 857, \"width\": 1500}, {\"image_url\": \"https://www.azoquantum.com/images/Article_Images/ImageForArticle_361_16599581290953360.jpg\", \"origin_url\": \"https://www.azoquantum.com/Article.aspx?ArticleID=361\", \"height\": 563, \"width\": 1000}, {\"image_url\": \"https://i0.wp.com/www.sciencenews.org/wp-content/uploads/2021/01/100-universe_expansion_schematic.png?resize=1030%2C781&ssl=1\", \"origin_url\": \"https://www.sciencenews.org/century/wild-universe-einstein-general-relativity-spacetime\", \"height\": 781, \"width\": 1030}, {\"image_url\": \"https://s3.amazonaws.com/cms.ipressroom.com/173/files/20196/5d35ff9a2cfac239e9942675_Andrea+Ghez+art+1+final+by+Nicolle+Fuller+2019/Andrea+Ghez+art+1+final+by+Nicolle+Fuller+2019_hero.jpg\", \"origin_url\": \"https://newsroom.ucla.edu/releases/einstein-general-relativity-theory-questioned-ghez\", \"height\": 779, \"width\": 1170}], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": \"length\", \"message\": {\"role\": \"assistant\", \"content\": \"Certainly! The **theory of relativity** is a fundamental framework in modern\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"\"}}]}"
+    headers:
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9780b9c688002659-YYZ
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+    status: 200 OK
+    code: 200
+    duration: 1.805s

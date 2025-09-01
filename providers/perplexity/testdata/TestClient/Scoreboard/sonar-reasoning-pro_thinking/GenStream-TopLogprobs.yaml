@@ -1,0 +1,38 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 185
+    host: api.perplexity.ai
+    body: "{\"model\":\"sonar-reasoning-pro\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Say hello. Use only one word.\"}]}],\"return_images\":true,\"stream\":true,\"disable_search\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.perplexity.ai/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\": \"46e1c895-44b3-4d89-828d-166ccf5ef28e\", \"model\": \"sonar-reasoning-pro\", \"created\": 1756687418, \"usage\": {\"prompt_tokens\": 8, \"completion_tokens\": 2, \"total_tokens\": 10, \"search_context_size\": \"low\"}, \"citations\": [], \"search_results\": [], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\n\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"<think>\\n\"}}]}\r\n\r\ndata: {\"id\": \"46e1c895-44b3-4d89-828d-166ccf5ef28e\", \"model\": \"sonar-reasoning-pro\", \"created\": 1756687418, \"usage\": {\"prompt_tokens\": 8, \"completion_tokens\": 9, \"total_tokens\": 17, \"search_context_size\": \"low\"}, \"citations\": [], \"search_results\": [], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nThe user is asking me to say\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"The user is asking me to say\"}}]}\r\n\r\ndata: {\"id\": \"46e1c895-44b3-4d89-828d-166ccf5ef28e\", \"model\": \"sonar-reasoning-pro\", \"created\": 1756687418, \"usage\": {\"prompt_tokens\": 8, \"completion_tokens\": 17, \"total_tokens\": 25, \"search_context_size\": \"low\"}, \"citations\": [], \"search_results\": [], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nThe user is asking me to say hello using only one word. This is\"}, \"delta\": {\"role\": \"assistant\", \"content\": \" hello using only one word. This is\"}}]}\r\n\r\ndata: {\"id\": \"46e1c895-44b3-4d89-828d-166ccf5ef28e\", \"model\": \"sonar-reasoning-pro\", \"created\": 1756687418, \"usage\": {\"prompt_tokens\": 8, \"completion_tokens\": 29, \"total_tokens\": 37, \"search_context_size\": \"low\"}, \"citations\": [], \"search_results\": [], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nThe user is asking me to say hello using only one word. This is straightforward - I should just respond with \\\"Hello\\\" as that\"}, \"delta\": {\"role\": \"assistant\", \"content\": \" straightforward - I should just respond with \\\"Hello\\\" as that\"}}]}\r\n\r\ndata: {\"id\": \"46e1c895-44b3-4d89-828d-166ccf5ef28e\", \"model\": \"sonar-reasoning-pro\", \"created\": 1756687419, \"usage\": {\"prompt_tokens\": 8, \"completion_tokens\": 37, \"total_tokens\": 45, \"search_context_size\": \"low\"}, \"citations\": [], \"search_results\": [], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nThe user is asking me to say hello using only one word. This is straightforward - I should just respond with \\\"Hello\\\" as that's the most direct one-word greeting.\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"'s the most direct one-word greeting.\"}}]}\r\n\r\ndata: {\"id\": \"46e1c895-44b3-4d89-828d-166ccf5ef28e\", \"model\": \"sonar-reasoning-pro\", \"created\": 1756687419, \"usage\": {\"prompt_tokens\": 8, \"completion_tokens\": 40, \"total_tokens\": 48, \"search_context_size\": \"low\"}, \"citations\": [], \"search_results\": [], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nThe user is asking me to say hello using only one word. This is straightforward - I should just respond with \\\"Hello\\\" as that's the most direct one-word greeting.\\n</think>\\n\\n\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"\\n</think>\\n\\n\"}}]}\r\n\r\ndata: {\"id\": \"46e1c895-44b3-4d89-828d-166ccf5ef28e\", \"model\": \"sonar-reasoning-pro\", \"created\": 1756687419, \"usage\": {\"prompt_tokens\": 8, \"completion_tokens\": 42, \"total_tokens\": 50, \"search_context_size\": \"low\"}, \"citations\": [], \"search_results\": [], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nThe user is asking me to say hello using only one word. This is straightforward - I should just respond with \\\"Hello\\\" as that's the most direct one-word greeting.\\n</think>\\n\\nHello.\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"Hello.\"}}]}\r\n\r\ndata: {\"id\": \"46e1c895-44b3-4d89-828d-166ccf5ef28e\", \"model\": \"sonar-reasoning-pro\", \"created\": 1756687419, \"usage\": {\"prompt_tokens\": 8, \"completion_tokens\": 42, \"total_tokens\": 50, \"search_context_size\": \"low\", \"cost\": {\"input_tokens_cost\": 0.0, \"output_tokens_cost\": 0.0, \"request_cost\": 0.006, \"total_cost\": 0.006}}, \"citations\": [], \"search_results\": [], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": \"stop\", \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nThe user is asking me to say hello using only one word. This is straightforward - I should just respond with \\\"Hello\\\" as that's the most direct one-word greeting.\\n</think>\\n\\nHello.\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"\"}}]}\r\n\r\n"
+    headers:
+      Cache-Control:
+      - no-cache
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9780bc08ff34a275-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+    status: 200 OK
+    code: 200
+    duration: 1.15s

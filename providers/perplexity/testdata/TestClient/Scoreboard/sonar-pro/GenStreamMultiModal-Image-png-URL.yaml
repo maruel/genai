@@ -1,0 +1,38 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 325
+    host: api.perplexity.ai
+    body: "{\"model\":\"sonar-pro\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What fruit is it? Reply with only one word.\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.png\"}}]}],\"return_images\":true,\"stream\":true,\"disable_search\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.perplexity.ai/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\": \"025999dd-78ac-41a1-b23f-a2071f9716d8\", \"model\": \"sonar-pro\", \"created\": 1756687344, \"usage\": {\"prompt_tokens\": 139, \"completion_tokens\": 1, \"total_tokens\": 140, \"search_context_size\": \"low\"}, \"citations\": [], \"search_results\": [], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"Ban\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"Ban\"}}]}\r\n\r\ndata: {\"id\": \"025999dd-78ac-41a1-b23f-a2071f9716d8\", \"model\": \"sonar-pro\", \"created\": 1756687344, \"usage\": {\"prompt_tokens\": 139, \"completion_tokens\": 2, \"total_tokens\": 141, \"search_context_size\": \"low\"}, \"citations\": [], \"search_results\": [], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"Banana\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"ana\"}}]}\r\n\r\ndata: {\"id\": \"025999dd-78ac-41a1-b23f-a2071f9716d8\", \"model\": \"sonar-pro\", \"created\": 1756687344, \"usage\": {\"prompt_tokens\": 139, \"completion_tokens\": 2, \"total_tokens\": 141, \"search_context_size\": \"low\", \"cost\": {\"input_tokens_cost\": 0.0, \"output_tokens_cost\": 0.0, \"request_cost\": 0.006, \"total_cost\": 0.006}}, \"citations\": [], \"search_results\": [], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": \"stop\", \"message\": {\"role\": \"assistant\", \"content\": \"Banana\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"\"}}]}\r\n\r\n"
+    headers:
+      Cache-Control:
+      - no-cache
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9780ba325dd42659-YYZ
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+    status: 200 OK
+    code: 200
+    duration: 2.352s

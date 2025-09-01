@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 295
+    host: api.perplexity.ai
+    body: "{\"model\":\"sonar-pro\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}],\"return_images\":true,\"return_related_questions\":true,\"stream\":false}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.perplexity.ai/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\": \"c560c81a-2f4a-48e8-9f4e-6c24353415c3\", \"model\": \"sonar-pro\", \"created\": 1756687332, \"usage\": {\"prompt_tokens\": 29, \"completion_tokens\": 10, \"total_tokens\": 39, \"search_context_size\": \"low\", \"cost\": {\"input_tokens_cost\": 0.0, \"output_tokens_cost\": 0.0, \"request_cost\": 0.006, \"total_cost\": 0.006}}, \"citations\": [], \"search_results\": [], \"images\": [{\"image_url\": \"https://cdn.vectorstock.com/i/500p/34/96/quacking-duck-expressive-farm-animal-design-vector-58973496.jpg\", \"origin_url\": \"https://www.vectorstock.com/royalty-free-vectors/quack-vectors\", \"height\": 500, \"width\": 889}, {\"image_url\": \"https://www.shutterstock.com/image-photo/white-duck-quacking-on-dock-600w-2567057545.jpg\", \"origin_url\": \"https://www.shutterstock.com/search/duck-quack\", \"height\": 420, \"width\": 600}, {\"image_url\": \"https://media.istockphoto.com/id/1175525738/photo/group-of-white-pekin-ducks-quacking.jpg?s=170667a&w=is&k=20&c=9EIU-KpV8B1atnek0CB47wILUjiwUdolpTCxMeZ0vLk=\", \"origin_url\": \"https://www.istockphoto.com/photos/quacking\", \"height\": 339, \"width\": 509}, {\"image_url\": \"https://media.istockphoto.com/id/1177001075/vector/funny-vector-illustration-of-three-walking-ducks-phrase-quack-quack.jpg?s=612x612&w=0&k=20&c=j7b9VeV937jFCExm5k5c6xCci1G4AAl-92skNYg6ZWs=\", \"origin_url\": \"https://www.istockphoto.com/photos/duck-quacking\", \"height\": 612, \"width\": 612}, {\"image_url\": \"https://media.gettyimages.com/id/1479288815/photo/mallard-duck-calling-out.jpg?s=612x612&w=gi&k=20&c=2yOLCB6dP_VA1nvgUyiYxZNMOgb2ne1-NDnn0amdwTM=\", \"origin_url\": \"https://www.gettyimages.com/photos/quack-quack\", \"height\": 408, \"width\": 612}], \"related_questions\": [\"What is the significance of the Big Canard Statue in Quackiland\", \"Are there any famous landmarks in Quackiland besides the Big Canard Statue\", \"How did Quackiland get its name\", \"What is the history behind the Big Canard Statue\", \"Are there any annual festivals or events in Quackiland\"], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": \"stop\", \"message\": {\"role\": \"assistant\", \"content\": \"The capital of Quackiland is Quack.\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"\"}}]}"
+    headers:
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9780b9dc3dd82659-YYZ
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+    status: 200 OK
+    code: 200
+    duration: 3.624s

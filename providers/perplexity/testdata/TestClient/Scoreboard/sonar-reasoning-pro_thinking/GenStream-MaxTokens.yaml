@@ -1,0 +1,38 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 222
+    host: api.perplexity.ai
+    body: "{\"model\":\"sonar-reasoning-pro\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Explain the theory of relativity in great details.\"}]}],\"max_tokens\":16,\"return_images\":true,\"stream\":true,\"disable_search\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.perplexity.ai/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\": \"0dfa782c-6218-4c82-b717-0b0cd559476d\", \"model\": \"sonar-reasoning-pro\", \"created\": 1756687420, \"usage\": {\"prompt_tokens\": 9, \"completion_tokens\": 2, \"total_tokens\": 11, \"search_context_size\": \"low\"}, \"citations\": [], \"search_results\": [], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\n\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"<think>\\n\"}}]}\r\n\r\ndata: {\"id\": \"0dfa782c-6218-4c82-b717-0b0cd559476d\", \"model\": \"sonar-reasoning-pro\", \"created\": 1756687420, \"usage\": {\"prompt_tokens\": 9, \"completion_tokens\": 8, \"total_tokens\": 17, \"search_context_size\": \"low\"}, \"citations\": [], \"search_results\": [], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nThe user is asking for a\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"The user is asking for a\"}}]}\r\n\r\ndata: {\"id\": \"0dfa782c-6218-4c82-b717-0b0cd559476d\", \"model\": \"sonar-reasoning-pro\", \"created\": 1756687420, \"usage\": {\"prompt_tokens\": 9, \"completion_tokens\": 16, \"total_tokens\": 25, \"search_context_size\": \"low\"}, \"citations\": [], \"search_results\": [], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nThe user is asking for a detailed explanation of the theory of relativity.\"}, \"delta\": {\"role\": \"assistant\", \"content\": \" detailed explanation of the theory of relativity.\"}}]}\r\n\r\ndata: {\"id\": \"0dfa782c-6218-4c82-b717-0b0cd559476d\", \"model\": \"sonar-reasoning-pro\", \"created\": 1756687420, \"usage\": {\"prompt_tokens\": 9, \"completion_tokens\": 16, \"total_tokens\": 25, \"search_context_size\": \"low\", \"cost\": {\"input_tokens_cost\": 0.0, \"output_tokens_cost\": 0.0, \"request_cost\": 0.006, \"total_cost\": 0.006}}, \"citations\": [], \"search_results\": [], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": \"length\", \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nThe user is asking for a detailed explanation of the theory of relativity.\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"\"}}]}\r\n\r\n"
+    headers:
+      Cache-Control:
+      - no-cache
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9780bc135ee2a275-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+    status: 200 OK
+    code: 200
+    duration: 1.459s

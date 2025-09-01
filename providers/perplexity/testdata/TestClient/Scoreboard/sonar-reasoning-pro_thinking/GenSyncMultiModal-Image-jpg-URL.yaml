@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 336
+    host: api.perplexity.ai
+    body: "{\"model\":\"sonar-reasoning-pro\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What fruit is it? Reply with only one word.\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg\"}}]}],\"return_images\":true,\"stream\":false,\"disable_search\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.perplexity.ai/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\": \"4db98b18-cae6-47d9-a69c-9b09e8584986\", \"model\": \"sonar-reasoning-pro\", \"created\": 1756687533, \"usage\": {\"prompt_tokens\": 139, \"completion_tokens\": 93, \"total_tokens\": 232, \"search_context_size\": \"low\", \"cost\": {\"input_tokens_cost\": 0.0, \"output_tokens_cost\": 0.001, \"request_cost\": 0.006, \"total_cost\": 0.007}}, \"citations\": [], \"search_results\": [], \"images\": [{\"image_url\": \"https://cdn.vectorstock.com/i/1000v/62/59/banana-fruit-cartoon-colored-clipart-vector-46536259.jpg\", \"origin_url\": \"https://www.vectorstock.com/royalty-free-vector/banana-fruit-cartoon-colored-clipart-vector-46536259\", \"height\": 1080, \"width\": 920}, {\"image_url\": \"https://media.istockphoto.com/id/465069526/photo/isolated-shot-of-bunch-of-bananas-on-white-background.jpg?s=612x612&w=0&k=20&c=RIyYBUXSJ7dlPwRxrasmtSYdJXRPCrYgrCu7YPbGAA8=\", \"origin_url\": \"https://www.istockphoto.com/photos/banana-fruit\", \"height\": 612, \"width\": 408}, {\"image_url\": \"https://media.istockphoto.com/id/925190686/photo/banana-bunch-on-the-wooden-table.jpg?s=612x612&w=0&k=20&c=houjpv4nNP5LF3MeUr1tih2sftpLcAe17K5RNkF2FfU=\", \"origin_url\": \"https://www.istockphoto.com/photos/cavendish-banana-fruit\", \"height\": 502, \"width\": 612}, {\"image_url\": \"https://i5.walmartimages.com/seo/Fresh-Banana-Each_5939a6fa-a0d6-431c-88c6-b4f21608e4be.f7cd0cc487761d74c69b7731493c1581.jpeg\", \"origin_url\": \"https://www.walmart.com/ip/Fresh-Banana-Each/44390948\", \"height\": 3300, \"width\": 3300}, {\"image_url\": \"https://thumbs.dreamstime.com/b/banana-9217754.jpg\", \"origin_url\": \"https://www.dreamstime.com/illustration/banana-fruit.html\", \"height\": 622, \"width\": 800}], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": \"stop\", \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nThe user has shown me an image and asked what fruit it is, requesting only one word as a reply. Looking at the image, I can see a yellow curved fruit that is clearly a banana. It has the characteristic elongated curved shape and yellow color of a ripe banana, with the brown stem end visible at the top.\\n\\nThe user specifically asked for only one word, so I should just respond with \\\"Banana\\\".\\n</think>\\n\\nBanana\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"\"}}]}"
+    headers:
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9780bebe4f76a275-YUL
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+    status: 200 OK
+    code: 200
+    duration: 5.018s

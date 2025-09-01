@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 176
+    host: api.perplexity.ai
+    body: "{\"model\":\"sonar-pro\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Say hello. Use only one word.\"}]}],\"return_images\":true,\"stream\":false,\"disable_search\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.perplexity.ai/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\": \"28e1ab86-5f56-4a4e-a160-a00425fa2d7b\", \"model\": \"sonar-pro\", \"created\": 1756687325, \"usage\": {\"prompt_tokens\": 8, \"completion_tokens\": 2, \"total_tokens\": 10, \"search_context_size\": \"low\", \"cost\": {\"input_tokens_cost\": 0.0, \"output_tokens_cost\": 0.0, \"request_cost\": 0.006, \"total_cost\": 0.006}}, \"citations\": [], \"search_results\": [], \"images\": [{\"image_url\": \"https://media.istockphoto.com/id/1065465342/vector/cute-vector-speech-bubble-icon-with-hello-greeting.jpg?s=612x612&w=0&k=20&c=dIq85nTuC9OGJAuuIUdz0u0EQg2N4pEpWzKxa8S0gbY=\", \"origin_url\": \"https://www.istockphoto.com/photos/say-hello\", \"height\": 612, \"width\": 612}, {\"image_url\": \"https://img.freepik.com/free-vector/word-hello-typography-vector_53876-85344.jpg?semt=ais_hybrid&w=740&q=80\", \"origin_url\": \"https://www.freepik.com/free-photos-vectors/cute-hello\", \"height\": 740, \"width\": 740}, {\"image_url\": \"https://plus.unsplash.com/premium_photo-1687203673190-d39c3719123a?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aGVsbG98ZW58MHx8MHx8fDA%3D\", \"origin_url\": \"https://unsplash.com/s/photos/hello\", \"height\": 1875, \"width\": 3000}, {\"image_url\": \"https://static.vecteezy.com/system/resources/previews/025/894/618/non_2x/cute-word-hello-cartoon-style-illustration-vector.jpg\", \"origin_url\": \"https://www.vecteezy.com/vector-art/25894618-cute-word-hello-cartoon-style-vector-illustration\", \"height\": 980, \"width\": 1813}, {\"image_url\": \"https://i.etsystatic.com/29488153/r/il/e0f22b/3860244894/il_fullxfull.3860244894_p9az.jpg\", \"origin_url\": \"https://www.etsy.com/listing/1215176242/hello-svg-hello-png-hellow-dxf-hello-cut\", \"height\": 2025, \"width\": 2700}], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": \"stop\", \"message\": {\"role\": \"assistant\", \"content\": \"Hello!\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"\"}}]}"
+    headers:
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9780b9bc6c3d2659-YYZ
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+    status: 200 OK
+    code: 200
+    duration: 1.612s

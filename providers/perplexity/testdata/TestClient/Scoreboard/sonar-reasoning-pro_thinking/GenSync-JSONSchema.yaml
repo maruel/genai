@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 467
+    host: api.perplexity.ai
+    body: "{\"model\":\"sonar-reasoning-pro\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON.\"}]}],\"return_images\":true,\"stream\":false,\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"schema\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"is_fruit\":{\"type\":\"boolean\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"is_fruit\"]}}},\"disable_search\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.perplexity.ai/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\": \"d741f5b3-77a1-46ec-b2d9-1f704197bba9\", \"model\": \"sonar-reasoning-pro\", \"created\": 1756687466, \"usage\": {\"prompt_tokens\": 17, \"completion_tokens\": 96, \"total_tokens\": 113, \"search_context_size\": \"low\", \"cost\": {\"input_tokens_cost\": 0.0, \"output_tokens_cost\": 0.001, \"request_cost\": 0.006, \"total_cost\": 0.007}}, \"citations\": [], \"search_results\": [], \"images\": [{\"image_url\": \"https://static.vecteezy.com/system/resources/previews/050/245/161/non_2x/yellow-banana-fresh-fruit-clipart-with-clean-lines-free-vector.jpg\", \"origin_url\": \"https://www.vecteezy.com/vector-art/50245161-yellow-banana-fresh-fruit-clipart-with-clean-lines\", \"height\": 980, \"width\": 980}, {\"image_url\": \"https://www.clipartmax.com/png/middle/123-1237142_banana-clipart-natural-thing-banana-fruit-png.png\", \"origin_url\": \"https://www.clipartmax.com/middle/m2i8N4H7G6H7m2b1_banana-clipart-natural-thing-banana-fruit-png/\", \"height\": 645, \"width\": 840}, {\"image_url\": \"https://media.springernature.com/m685/springer-static/image/art%3A10.1038%2Fs41598-019-40053-3/MediaObjects/41598_2019_40053_Fig1_HTML.png\", \"origin_url\": \"https://www.nature.com/articles/s41598-019-40053-3\", \"height\": 596, \"width\": 685}, {\"image_url\": \"https://images-prod.healthline.com/hlcmsresource/images/plantain-vs-banana-1296x728-feature.jpg\", \"origin_url\": \"https://www.healthline.com/nutrition/plantain-vs-banana\", \"height\": 728, \"width\": 1296}], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": \"stop\", \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nOkay, the user is asking if a banana is a fruit and wants the answer only in JSON without an explanation. Let me recall: botanically, a banana is a berry, which is a type of fruit. So the answer should be true. I need to structure it as JSON with \\\"is_fruit\\\" key. No extra text, just the JSON. Make sure it's correct and follows the instructions strictly.\\n</think>\\n\\n{\\\"is_fruit\\\": true}\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"\"}}]}"
+    headers:
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9780bd1f390fa275-YUL
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+    status: 200 OK
+    code: 200
+    duration: 3.96s

@@ -11,14 +11,85 @@
       "models": [
         "sonar-reasoning-pro"
       ],
-      "sota": true
+      "sota": true,
+      "reason": true,
+      "reasoningTokenStart": "\u003cthink\u003e",
+      "reasoningTokenEnd": "\u003c/think\u003e",
+      "in": {
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "jsonSchema": true,
+        "citations": true,
+        "maxTokens": true
+      },
+      "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "jsonSchema": true,
+        "citations": true,
+        "maxTokens": true
+      }
     },
     {
       "comments": "Untested, same as sonar but more expensive",
       "models": [
         "sonar-pro"
       ],
-      "good": true
+      "good": true,
+      "in": {
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "jsonSchema": true,
+        "citations": true,
+        "maxTokens": true
+      },
+      "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "jsonSchema": true,
+        "citations": true,
+        "maxTokens": true
+      }
     },
     {
       "models": [

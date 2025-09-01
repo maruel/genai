@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 337
+    host: api.perplexity.ai
+    body: "{\"model\":\"sonar-reasoning-pro\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What fruit is it? Reply with only one word.\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.webp\"}}]}],\"return_images\":true,\"stream\":false,\"disable_search\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.perplexity.ai/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\": \"9a816ea5-694c-4f6f-b01a-d0ce76c82ce5\", \"model\": \"sonar-reasoning-pro\", \"created\": 1756687556, \"usage\": {\"prompt_tokens\": 139, \"completion_tokens\": 72, \"total_tokens\": 211, \"search_context_size\": \"low\", \"cost\": {\"input_tokens_cost\": 0.0, \"output_tokens_cost\": 0.001, \"request_cost\": 0.006, \"total_cost\": 0.007}}, \"citations\": [], \"search_results\": [], \"images\": [{\"image_url\": \"https://t4.ftcdn.net/jpg/13/76/80/01/360_F_1376800144_BdFAxlejh3KAhraR64joy5eQJx7isLjf.jpg\", \"origin_url\": \"https://stock.adobe.com/search?k=picture+of+banana\", \"height\": 360, \"width\": 540}, {\"image_url\": \"https://t3.ftcdn.net/jpg/15/80/07/74/360_F_1580077469_iBLmB3ypmt3fPsbr2rTFFVpgzDoqtVYc.jpg\", \"origin_url\": \"https://stock.adobe.com/search?k=%22bunch+of+banana%22\", \"height\": 360, \"width\": 505}, {\"image_url\": \"https://www.shutterstock.com/image-photo/organic-yellow-bananas-ready-sell-600nw-2553661811.jpg\", \"origin_url\": \"https://www.shutterstock.com/search/banana-plant\", \"height\": 450, \"width\": 600}, {\"image_url\": \"https://www.dole.com/sites/default/files/styles/512w512h-80/public/media/2025-02/Dole_HP_Motiv_1080x1080px_Banane_0.jpg?itok=_qbPhqIY-_u0SMyQV\", \"origin_url\": \"https://www.dole.com/produce/bananas\", \"height\": 512, \"width\": 512}, {\"image_url\": \"https://tropicalfruitbox.com/cdn/shop/files/Manzano12lbs3.jpg?v=1715108414\", \"origin_url\": \"https://tropicalfruitbox.com/products/apple-banana-manzano-box\", \"height\": 1080, \"width\": 1080}], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": \"stop\", \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nLooking at the image, I can see a yellow, curved fruit that has the distinctive shape and color of a banana. It has the characteristic elongated curved shape, yellow peel, and brown stem end that are typical of a banana. The user asked for only one word, so I should just say \\\"Banana\\\".\\n</think>\\n\\nBanana\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"\"}}]}"
+    headers:
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9780bf465bd0a275-YUL
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+    status: 200 OK
+    code: 200
+    duration: 5.897s

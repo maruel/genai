@@ -1,0 +1,38 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 185
+    host: api.perplexity.ai
+    body: "{\"model\":\"sonar-reasoning-pro\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Say hello. Use only one word.\"}]}],\"return_images\":true,\"stream\":true,\"disable_search\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.perplexity.ai/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\": \"474f4534-4e11-42a9-a37e-d5ead9f26f6b\", \"model\": \"sonar-reasoning-pro\", \"created\": 1756687414, \"usage\": {\"prompt_tokens\": 8, \"completion_tokens\": 2, \"total_tokens\": 10, \"search_context_size\": \"low\"}, \"citations\": [], \"search_results\": [], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\n\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"<think>\\n\"}}]}\r\n\r\ndata: {\"id\": \"474f4534-4e11-42a9-a37e-d5ead9f26f6b\", \"model\": \"sonar-reasoning-pro\", \"created\": 1756687414, \"usage\": {\"prompt_tokens\": 8, \"completion_tokens\": 9, \"total_tokens\": 17, \"search_context_size\": \"low\"}, \"citations\": [], \"search_results\": [], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nThe user is asking me to say\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"The user is asking me to say\"}}]}\r\n\r\ndata: {\"id\": \"474f4534-4e11-42a9-a37e-d5ead9f26f6b\", \"model\": \"sonar-reasoning-pro\", \"created\": 1756687414, \"usage\": {\"prompt_tokens\": 8, \"completion_tokens\": 16, \"total_tokens\": 24, \"search_context_size\": \"low\"}, \"citations\": [], \"search_results\": [], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nThe user is asking me to say hello using only one word. This\"}, \"delta\": {\"role\": \"assistant\", \"content\": \" hello using only one word. This\"}}]}\r\n\r\ndata: {\"id\": \"474f4534-4e11-42a9-a37e-d5ead9f26f6b\", \"model\": \"sonar-reasoning-pro\", \"created\": 1756687414, \"usage\": {\"prompt_tokens\": 8, \"completion_tokens\": 23, \"total_tokens\": 31, \"search_context_size\": \"low\"}, \"citations\": [], \"search_results\": [], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nThe user is asking me to say hello using only one word. This is a simple request. The most\"}, \"delta\": {\"role\": \"assistant\", \"content\": \" is a simple request. The most\"}}]}\r\n\r\ndata: {\"id\": \"474f4534-4e11-42a9-a37e-d5ead9f26f6b\", \"model\": \"sonar-reasoning-pro\", \"created\": 1756687414, \"usage\": {\"prompt_tokens\": 8, \"completion_tokens\": 27, \"total_tokens\": 35, \"search_context_size\": \"low\"}, \"citations\": [], \"search_results\": [], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nThe user is asking me to say hello using only one word. This is a simple request. The most straightforward one-word greeting\"}, \"delta\": {\"role\": \"assistant\", \"content\": \" straightforward one-word greeting\"}}]}\r\n\r\ndata: {\"id\": \"474f4534-4e11-42a9-a37e-d5ead9f26f6b\", \"model\": \"sonar-reasoning-pro\", \"created\": 1756687414, \"usage\": {\"prompt_tokens\": 8, \"completion_tokens\": 34, \"total_tokens\": 42, \"search_context_size\": \"low\"}, \"citations\": [], \"search_results\": [], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nThe user is asking me to say hello using only one word. This is a simple request. The most straightforward one-word greeting would be \\\"Hello\\\" itself.\"}, \"delta\": {\"role\": \"assistant\", \"content\": \" would be \\\"Hello\\\" itself.\"}}]}\r\n\r\ndata: {\"id\": \"474f4534-4e11-42a9-a37e-d5ead9f26f6b\", \"model\": \"sonar-reasoning-pro\", \"created\": 1756687414, \"usage\": {\"prompt_tokens\": 8, \"completion_tokens\": 37, \"total_tokens\": 45, \"search_context_size\": \"low\"}, \"citations\": [], \"search_results\": [], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nThe user is asking me to say hello using only one word. This is a simple request. The most straightforward one-word greeting would be \\\"Hello\\\" itself.\\n</think>\\n\\n\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"\\n</think>\\n\\n\"}}]}\r\n\r\ndata: {\"id\": \"474f4534-4e11-42a9-a37e-d5ead9f26f6b\", \"model\": \"sonar-reasoning-pro\", \"created\": 1756687414, \"usage\": {\"prompt_tokens\": 8, \"completion_tokens\": 39, \"total_tokens\": 47, \"search_context_size\": \"low\"}, \"citations\": [], \"search_results\": [], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": null, \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nThe user is asking me to say hello using only one word. This is a simple request. The most straightforward one-word greeting would be \\\"Hello\\\" itself.\\n</think>\\n\\nHello.\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"Hello.\"}}]}\r\n\r\ndata: {\"id\": \"474f4534-4e11-42a9-a37e-d5ead9f26f6b\", \"model\": \"sonar-reasoning-pro\", \"created\": 1756687414, \"usage\": {\"prompt_tokens\": 8, \"completion_tokens\": 39, \"total_tokens\": 47, \"search_context_size\": \"low\", \"cost\": {\"input_tokens_cost\": 0.0, \"output_tokens_cost\": 0.0, \"request_cost\": 0.006, \"total_cost\": 0.006}}, \"citations\": [], \"search_results\": [], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": \"stop\", \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nThe user is asking me to say hello using only one word. This is a simple request. The most straightforward one-word greeting would be \\\"Hello\\\" itself.\\n</think>\\n\\nHello.\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"\"}}]}\r\n\r\n"
+    headers:
+      Cache-Control:
+      - no-cache
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9780bbecee61a275-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+    status: 200 OK
+    code: 200
+    duration: 1.154s

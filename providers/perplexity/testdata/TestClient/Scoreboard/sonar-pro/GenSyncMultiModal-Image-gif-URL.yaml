@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 326
+    host: api.perplexity.ai
+    body: "{\"model\":\"sonar-pro\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What fruit is it? Reply with only one word.\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.gif\"}}]}],\"return_images\":true,\"stream\":false,\"disable_search\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.perplexity.ai/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\": \"6081669a-5b03-4ec4-bd77-18519509b7e6\", \"model\": \"sonar-pro\", \"created\": 1756687341, \"usage\": {\"prompt_tokens\": 139, \"completion_tokens\": 2, \"total_tokens\": 141, \"search_context_size\": \"low\", \"cost\": {\"input_tokens_cost\": 0.0, \"output_tokens_cost\": 0.0, \"request_cost\": 0.006, \"total_cost\": 0.006}}, \"citations\": [], \"search_results\": [], \"images\": [{\"image_url\": \"https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8YmFuYW5hfGVufDB8fDB8fHww\", \"origin_url\": \"https://unsplash.com/s/photos/banana\", \"height\": 3000, \"width\": 3000}, {\"image_url\": \"https://img.freepik.com/free-photo/single-banana-isolated-white-background_839833-17794.jpg?semt=ais_hybrid&w=740&q=80\", \"origin_url\": \"https://www.freepik.com/free-photos-vectors/banana-fruit\", \"height\": 501, \"width\": 740}, {\"image_url\": \"https://media.gettyimages.com/id/173242750/photo/banana-bunch.jpg?s=612x612&w=gi&k=20&c=0zMAHtwBfpRc6EVz-JSmpkhPn9wVIJt6O_4DSzc3UTw=\", \"origin_url\": \"https://www.gettyimages.com/photos/banana\", \"height\": 505, \"width\": 612}, {\"image_url\": \"https://media.istockphoto.com/id/172876004/photo/banana-wallpaper.jpg?s=612x612&w=0&k=20&c=DjUIq77Fh3ljde_WJNwYl17e86VxMUpOwYiVL2XJo9U=\", \"origin_url\": \"https://www.istockphoto.com/photos/yellow-banana\", \"height\": 612, \"width\": 483}, {\"image_url\": \"https://media.istockphoto.com/id/1154935375/photo/peeled-banana-on-white-background-photo-with-clipping-path.jpg?s=612x612&w=0&k=20&c=1k2Vczv77F2k6FhlFwL1xrtvQ1lq6_1aaO8Eo4rHKQ8=\", \"origin_url\": \"https://www.istockphoto.com/photos/peeled-banana\", \"height\": 612, \"width\": 481}], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": \"stop\", \"message\": {\"role\": \"assistant\", \"content\": \"Banana\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"\"}}]}"
+    headers:
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9780ba1d5e832659-YYZ
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+    status: 200 OK
+    code: 200
+    duration: 2.779s

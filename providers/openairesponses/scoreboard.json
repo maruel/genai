@@ -220,12 +220,6 @@
       }
     },
     {
-      "comments": "As of 2025-08, audio is not yet supported in the Responses API. See https://platform.openai.com/docs/guides/audio",
-      "models": [
-        "gpt-4o-audio-preview"
-      ]
-    },
-    {
       "comments": "The model is completely misbehaving with PDFs. This is weird. Token usage is broken only when using MaxTokens.",
       "models": [
         "o4-mini"
@@ -293,6 +287,12 @@
       "GenSync": {
         "seed": true
       }
+    },
+    {
+      "comments": "As of 2025-08, audio is not yet supported in the Responses API. See https://platform.openai.com/docs/guides/audio",
+      "models": [
+        "gpt-4o-audio-preview"
+      ]
     },
     {
       "models": [

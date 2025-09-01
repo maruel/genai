@@ -866,6 +866,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		for range ch {
 		}
 	}()
+	sent := false
 	for pkt := range ch {
 		if pkt.Usage.TotalTokens != 0 {
 			result.Usage.InputTokens = pkt.Usage.PromptTokens
@@ -880,7 +881,11 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 				return err
 			}
 			chunks <- f
+			sent = true
 		}
+	}
+	if !sent {
+		return errors.New("model sent no reply")
 	}
 	return nil
 }

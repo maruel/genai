@@ -1018,6 +1018,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		for range ch {
 		}
 	}()
+	sent := false
 	wasThinking := false
 	pendingToolCall := ToolCall{}
 	for pkt := range ch {
@@ -1123,7 +1124,11 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 				return err
 			}
 			chunks <- f
+			sent = true
 		}
+	}
+	if !sent {
+		return errors.New("model sent no reply")
 	}
 	return nil
 }

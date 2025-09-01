@@ -261,6 +261,10 @@ func (m *Message) To(out *genai.Message) error {
 		out.Replies = append(out.Replies, genai.Reply{})
 		m.ToolCalls[i].To(&out.Replies[len(out.Replies)-1].ToolCall)
 	}
+	if len(out.Replies) == 0 {
+		// This happens with gpt-oss-120b with MaxTokens.
+		return errors.New("model sent no reply")
+	}
 	return nil
 }
 
@@ -1136,6 +1140,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 	}()
 	pendingToolCall := ToolCall{}
 	var warnings []string
+	sent := false
 	for pkt := range ch {
 		if pkt.Usage.TotalTokens != 0 {
 			result.Usage.InputTokens = pkt.Usage.PromptTokens
@@ -1183,6 +1188,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 						return err
 					}
 					chunks <- f
+					sent = true
 				}
 				pendingToolCall = t
 				continue
@@ -1204,6 +1210,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 					return err
 				}
 				chunks <- f
+				sent = true
 			}
 		}
 		f := genai.ReplyFragment{
@@ -1215,10 +1222,15 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 				return err
 			}
 			chunks <- f
+			sent = true
 		}
 		if len(pkt.Choices[0].Logprobs.Tokens) != 0 {
 			result.Logprobs = append(result.Logprobs, pkt.Choices[0].Logprobs.ToLogprobs()...)
 		}
+	}
+	if !sent {
+		// This happens with gpt-oss-120b with MaxTokens.
+		return errors.New("model sent no reply")
 	}
 	if len(warnings) != 0 {
 		uce := &genai.UnsupportedContinuableError{}

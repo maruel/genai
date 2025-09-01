@@ -10,6 +10,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -113,6 +114,72 @@ func TestMessages(t *testing.T) {
 }
 
 func TestMessage(t *testing.T) {
+	t.Run("String", func(t *testing.T) {
+		tests := []struct {
+			in   Message
+			want string
+		}{
+			{
+				in: Message{
+					Requests: []Request{
+						{Text: "Hello"},
+						{Doc: Doc{Filename: "document.txt", Src: strings.NewReader("document content")}},
+					},
+				},
+				want: "Hello",
+			},
+			{
+				in: Message{
+					Replies: []Reply{
+						{Text: "I can help with that"},
+						{ToolCall: ToolCall{Name: "tool", Arguments: "{}"}},
+						{Reasoning: "thinking"},
+					},
+				},
+				want: "I can help with that",
+			},
+		}
+		for i, tt := range tests {
+			t.Run(strconv.Itoa(i), func(t *testing.T) {
+				if got := tt.in.String(); got != tt.want {
+					t.Fatalf("String mismatch\nwant %q\ngot  %q", tt.want, got)
+				}
+			})
+		}
+	})
+	t.Run("Reasoning", func(t *testing.T) {
+		tests := []struct {
+			in   Message
+			want string
+		}{
+			{
+				in: Message{
+					Requests: []Request{
+						{Text: "Hello"},
+						{Doc: Doc{Filename: "document.txt", Src: strings.NewReader("document content")}},
+					},
+				},
+				want: "",
+			},
+			{
+				in: Message{
+					Replies: []Reply{
+						{Text: "I can help with that"},
+						{ToolCall: ToolCall{Name: "tool", Arguments: "{}"}},
+						{Reasoning: "thinking"},
+					},
+				},
+				want: "thinking",
+			},
+		}
+		for i, tt := range tests {
+			t.Run(strconv.Itoa(i), func(t *testing.T) {
+				if got := tt.in.Reasoning(); got != tt.want {
+					t.Fatalf("String mismatch\nwant %q\ngot  %q", tt.want, got)
+				}
+			})
+		}
+	})
 	t.Run("Validate", func(t *testing.T) {
 		t.Run("valid", func(t *testing.T) {
 			tests := []struct {
@@ -301,7 +368,7 @@ func TestMessage(t *testing.T) {
 				{
 					name:   "Unknown field",
 					in:     `{"request": [{"text": "Hi"}], "unknown_field": "value"}`,
-					errMsg: "json: unknown field \"unknown_field\"",
+					errMsg: "failed to decode message: json: unknown field \"unknown_field\"",
 				},
 				{
 					name:   "User with User field",
@@ -1108,7 +1175,7 @@ func TestToolCall(t *testing.T) {
 				{
 					name:   "Invalid arguments JSON",
 					in:     `{"name": "tool", "arguments": "invalid json"}`,
-					errMsg: "field Arguments: invalid character 'i' looking for beginning of value",
+					errMsg: "failed to decode tool call arguments \"invalid json\": invalid character 'i' looking for beginning of value",
 				},
 				{
 					name:   "Missing both ID and name",

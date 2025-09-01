@@ -430,6 +430,18 @@ func (m *Message) String() string {
 	return strings.Join(out, "")
 }
 
+// Reasoning returns all the reasoning concatenated, if any.
+func (m *Message) Reasoning() string {
+	var data [32]string
+	out := data[:0]
+	for i := range m.Replies {
+		if s := m.Replies[i].Reasoning; s != "" {
+			out = append(out, s)
+		}
+	}
+	return strings.Join(out, "")
+}
+
 // Decode decodes the JSON message into the struct.
 //
 // Requires using either ReplyAsJSON or DecodeAs in the OptionsText.
@@ -479,7 +491,7 @@ func (m *Message) UnmarshalJSON(b []byte) error {
 	d := json.NewDecoder(bytes.NewReader(b))
 	d.DisallowUnknownFields()
 	if err := d.Decode(&a); err != nil {
-		return err
+		return fmt.Errorf("failed to decode message: %w", err)
 	}
 	// We do not need to check each individual fields since they each implement json.Unmarshaler that explicitly
 	// call their own Validate() method.
@@ -984,7 +996,7 @@ func (t *ToolCall) Validate() error {
 	d.UseNumber()
 	var x any
 	if err := d.Decode(&x); err != nil {
-		return fmt.Errorf("field Arguments: %w", err)
+		return fmt.Errorf("failed to decode tool call arguments %q: %w", t.Arguments, err)
 	}
 	return nil
 }

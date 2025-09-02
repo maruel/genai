@@ -16,6 +16,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"slices"
+	"sort"
 	"strings"
 	"sync"
 
@@ -552,6 +553,7 @@ func exerciseGenInputDocument(ctx context.Context, cs *callState, f *scoreboard.
 			m.Inline = true
 			if !slices.Contains(m.SupportedFormats, format.mime) {
 				m.SupportedFormats = append(m.SupportedFormats, format.mime)
+				sort.Strings(m.SupportedFormats)
 			}
 		} else if isBadError(ctx, err) {
 			return m, err
@@ -567,6 +569,7 @@ func exerciseGenInputDocument(ctx context.Context, cs *callState, f *scoreboard.
 			m.URL = true
 			if !slices.Contains(m.SupportedFormats, format.mime) {
 				m.SupportedFormats = append(m.SupportedFormats, format.mime)
+				sort.Strings(m.SupportedFormats)
 			}
 		} else if isBadError(ctx, err) {
 			return m, err
@@ -580,10 +583,11 @@ func exerciseGenInputDocument(ctx context.Context, cs *callState, f *scoreboard.
 func exerciseGenInputImage(ctx context.Context, cs *callState, f *scoreboard.Functionality, prefix string) (*scoreboard.ModalCapability, error) {
 	var m *scoreboard.ModalCapability
 	want := regexp.MustCompile("^banana$")
-	for _, format := range []extMime{
+	// Try jpeg first. If jpg is not supported, there is no point in trying other formats.
+	for i, format := range []extMime{
+		{"jpg", "image/jpeg"},
 		{"gif", "image/gif"},
 		// TODO: {"heic", "image/heic"},
-		{"jpg", "image/jpeg"},
 		{"png", "image/png"},
 		{"webp", "image/webp"},
 	} {
@@ -603,6 +607,7 @@ func exerciseGenInputImage(ctx context.Context, cs *callState, f *scoreboard.Fun
 			m.Inline = true
 			if !slices.Contains(m.SupportedFormats, format.mime) {
 				m.SupportedFormats = append(m.SupportedFormats, format.mime)
+				sort.Strings(m.SupportedFormats)
 			}
 		} else if isBadError(ctx, err) {
 			return m, err
@@ -618,11 +623,15 @@ func exerciseGenInputImage(ctx context.Context, cs *callState, f *scoreboard.Fun
 			m.URL = true
 			if !slices.Contains(m.SupportedFormats, format.mime) {
 				m.SupportedFormats = append(m.SupportedFormats, format.mime)
+				sort.Strings(m.SupportedFormats)
 			}
 		} else if isBadError(ctx, err) {
 			return m, err
 		} else {
 			internal.Logger(ctx).DebugContext(ctx, name, "err", err)
+		}
+		if m == nil && i == 0 {
+			break
 		}
 	}
 	return m, nil
@@ -631,10 +640,11 @@ func exerciseGenInputImage(ctx context.Context, cs *callState, f *scoreboard.Fun
 func exerciseGenInputAudio(ctx context.Context, cs *callState, f *scoreboard.Functionality, prefix string) (*scoreboard.ModalCapability, error) {
 	var m *scoreboard.ModalCapability
 	want := regexp.MustCompile("^orange$")
-	for _, format := range []extMime{
+	// Try MP3 then AAC first. If both MP3 and AAC are not supported, there is no point in trying other formats.
+	for i, format := range []extMime{
+		{"mp3", "audio/mp3"},
 		{"aac", "audio/aac"},
 		{"flac", "audio/flac"},
-		{"mp3", "audio/mp3"},
 		{"ogg", "audio/ogg"},
 		{"wav", "audio/wav"},
 	} {
@@ -654,6 +664,7 @@ func exerciseGenInputAudio(ctx context.Context, cs *callState, f *scoreboard.Fun
 			m.Inline = true
 			if !slices.Contains(m.SupportedFormats, format.mime) {
 				m.SupportedFormats = append(m.SupportedFormats, format.mime)
+				sort.Strings(m.SupportedFormats)
 			}
 		} else if isBadError(ctx, err) {
 			return m, err
@@ -669,11 +680,15 @@ func exerciseGenInputAudio(ctx context.Context, cs *callState, f *scoreboard.Fun
 			m.URL = true
 			if !slices.Contains(m.SupportedFormats, format.mime) {
 				m.SupportedFormats = append(m.SupportedFormats, format.mime)
+				sort.Strings(m.SupportedFormats)
 			}
 		} else if isBadError(ctx, err) {
 			return m, err
 		} else {
 			internal.Logger(ctx).DebugContext(ctx, name, "err", err)
+		}
+		if m == nil && i == 1 {
+			break
 		}
 	}
 	return m, nil
@@ -683,7 +698,8 @@ func exerciseGenInputVideo(ctx context.Context, cs *callState, f *scoreboard.Fun
 	var m *scoreboard.ModalCapability
 	// Relax the check, as the model will try to describe the fact that the word is rotating.
 	want := regexp.MustCompile("banana")
-	for _, format := range []extMime{
+	// Try MP4 first. If MP4 is not supported, there is no point in trying other formats.
+	for i, format := range []extMime{
 		{"mp4", "video/mp4"},
 		{"webm", "video/webm"},
 	} {
@@ -703,6 +719,7 @@ func exerciseGenInputVideo(ctx context.Context, cs *callState, f *scoreboard.Fun
 			m.Inline = true
 			if !slices.Contains(m.SupportedFormats, format.mime) {
 				m.SupportedFormats = append(m.SupportedFormats, format.mime)
+				sort.Strings(m.SupportedFormats)
 			}
 		} else if isBadError(ctx, err) {
 			return m, err
@@ -718,11 +735,15 @@ func exerciseGenInputVideo(ctx context.Context, cs *callState, f *scoreboard.Fun
 			m.URL = true
 			if !slices.Contains(m.SupportedFormats, format.mime) {
 				m.SupportedFormats = append(m.SupportedFormats, format.mime)
+				sort.Strings(m.SupportedFormats)
 			}
 		} else if isBadError(ctx, err) {
 			return m, err
 		} else {
 			internal.Logger(ctx).DebugContext(ctx, name, "err", err)
+		}
+		if m == nil && i == 0 {
+			break
 		}
 	}
 	return m, nil

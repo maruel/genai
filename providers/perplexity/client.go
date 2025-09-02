@@ -366,17 +366,19 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	}
 	out.Usage.FinishReason = c.Choices[0].FinishReason.ToFinishReason()
 	err := c.Choices[0].Message.To(&out.Message)
-	if len(c.SearchResults) > 0 && len(out.Replies) > 0 {
-		ct := genai.Citation{Type: "web", Sources: make([]genai.CitationSource, len(c.SearchResults))}
-		for i := range c.SearchResults {
-			ct.Sources[i].Type = "web"
-			ct.Sources[i].Title = c.SearchResults[i].Title
-			ct.Sources[i].URL = c.SearchResults[i].URL
-			if c.SearchResults[i].Date != "" {
-				ct.Sources[i].Metadata = map[string]any{"date": c.SearchResults[i].Date}
+	if len(out.Replies) > 0 {
+		if len(c.SearchResults) > 0 {
+			ct := genai.Citation{Type: "web", Sources: make([]genai.CitationSource, len(c.SearchResults))}
+			for i := range c.SearchResults {
+				ct.Sources[i].Type = "web"
+				ct.Sources[i].Title = c.SearchResults[i].Title
+				ct.Sources[i].URL = c.SearchResults[i].URL
+				if c.SearchResults[i].Date != "" {
+					ct.Sources[i].Metadata = map[string]any{"date": c.SearchResults[i].Date}
+				}
 			}
+			out.Replies[0].Citations = append(out.Replies[0].Citations, ct)
 		}
-		out.Replies[0].Citations = append(out.Replies[0].Citations, ct)
 		if len(c.Images) > 0 {
 			ct := genai.Citation{Type: "document", Sources: make([]genai.CitationSource, len(c.Images))}
 			for i := range c.Images {
@@ -389,6 +391,9 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 				}
 			}
 			out.Replies[0].Citations = append(out.Replies[0].Citations, ct)
+		}
+		if len(c.RelatedQuestions) > 0 {
+			// TODO: Figure out how to return this.
 		}
 	}
 	return out, err
@@ -679,6 +684,9 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 				}
 				chunks <- f
 			}
+		}
+		if len(pkt.RelatedQuestions) > 0 {
+			// TODO: Figure out how to return this.
 		}
 		f := genai.ReplyFragment{TextFragment: pkt.Choices[0].Delta.Content}
 		if !f.IsZero() {

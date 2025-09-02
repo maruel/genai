@@ -74,9 +74,6 @@ func Run(ctx context.Context, pf ProviderFactory) (scoreboard.Scenario, genai.Us
 					if cs.isReasoning {
 						result.Reason = true
 					}
-					if cs.hasCitations {
-						f.Citations = true
-					}
 					result.GenSync = f
 				}
 				mu.Unlock()
@@ -104,9 +101,6 @@ func Run(ctx context.Context, pf ProviderFactory) (scoreboard.Scenario, genai.Us
 					}
 					if cs.isReasoning {
 						result.Reason = true
-					}
-					if cs.hasCitations {
-						result.GenSync.Citations = true
 					}
 				}
 				mu.Unlock()
@@ -155,9 +149,6 @@ func Run(ctx context.Context, pf ProviderFactory) (scoreboard.Scenario, genai.Us
 				if cs.isReasoning {
 					result.Reason = true
 				}
-				if cs.hasCitations {
-					f.Citations = true
-				}
 				result.GenStream = f
 			}
 			mu.Unlock()
@@ -185,9 +176,6 @@ func Run(ctx context.Context, pf ProviderFactory) (scoreboard.Scenario, genai.Us
 				}
 				if cs.isReasoning {
 					result.Reason = true
-				}
-				if cs.hasCitations {
-					result.GenStream.Citations = true
 				}
 			}
 			mu.Unlock()
@@ -409,7 +397,6 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 	// Citations
 	// Force triggering citations for a document provided.
 	ctxCheck = internal.WithLogger(ctx, internal.Logger(ctx).With("check", "Citations", "type", "text/plain"))
-	hasCitations := false
 	msgs = genai.Messages{
 		genai.Message{
 			Requests: []genai.Request{
@@ -434,7 +421,7 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 		}
 	}
 	if err == nil {
-		hasCitations = true
+		f.Citations = slices.ContainsFunc(resp.Replies, func(r genai.Reply) bool { return len(r.Citations) > 0 })
 		if isZeroUsage(resp.Usage) {
 			if f.ReportTokenUsage != scoreboard.False {
 				internal.Logger(ctxCheck).DebugContext(ctxCheck, "no usage")
@@ -446,6 +433,12 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 				internal.Logger(ctxCheck).DebugContext(ctxCheck, "bad finish reason", "expected", expectedFR, "got", resp.Usage.FinishReason)
 				f.ReportFinishReason = scoreboard.Flaky
 			}
+		}
+		for _, r := range resp.Replies {
+			if len(r.Citations) == 0 {
+				continue
+			}
+			internal.Logger(ctxCheck).DebugContext(ctx, "WebSearch", "citations", r.Citations)
 		}
 	} else {
 		// The client code must provide the text as inline content.
@@ -490,7 +483,7 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 				f.ReportFinishReason = scoreboard.Flaky
 			}
 		}
-	} else if hasCitations {
+	} else if f.Citations {
 		return f, fmt.Errorf("supports text/plain but not text/markdown; this is incorrect: %w", err)
 	}
 
@@ -546,7 +539,7 @@ func exerciseGenInputDocument(ctx context.Context, cs *callState, f *scoreboard.
 			{Doc: genai.Doc{Src: bytes.NewReader(data), Filename: "document." + format.ext}},
 		}}}
 		name := prefix + format.ext + "-Inline"
-		if err = exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
+		if res, err := exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
 			if m == nil {
 				m = &scoreboard.ModalCapability{}
 			}
@@ -555,6 +548,9 @@ func exerciseGenInputDocument(ctx context.Context, cs *callState, f *scoreboard.
 				m.SupportedFormats = append(m.SupportedFormats, format.mime)
 				sort.Strings(m.SupportedFormats)
 			}
+			if slices.ContainsFunc(res.Replies, func(r genai.Reply) bool { return len(r.Citations) > 0 }) {
+				panic("Handle a provider that cite a PDF document, that would be great; hasn't happened yet")
+			}
 		} else if isBadError(ctx, err) {
 			return m, err
 		} else {
@@ -562,7 +558,7 @@ func exerciseGenInputDocument(ctx context.Context, cs *callState, f *scoreboard.
 		}
 		msgs[0].Requests[1] = genai.Request{Doc: genai.Doc{URL: rootURL + "document." + format.ext}}
 		name = prefix + format.ext + "-URL"
-		if err = exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
+		if res, err := exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
 			if m == nil {
 				m = &scoreboard.ModalCapability{}
 			}
@@ -570,6 +566,9 @@ func exerciseGenInputDocument(ctx context.Context, cs *callState, f *scoreboard.
 			if !slices.Contains(m.SupportedFormats, format.mime) {
 				m.SupportedFormats = append(m.SupportedFormats, format.mime)
 				sort.Strings(m.SupportedFormats)
+			}
+			if slices.ContainsFunc(res.Replies, func(r genai.Reply) bool { return len(r.Citations) > 0 }) {
+				panic("Handle a provider that cite a PDF document, that would be great; hasn't happened yet")
 			}
 		} else if isBadError(ctx, err) {
 			return m, err
@@ -600,7 +599,7 @@ func exerciseGenInputImage(ctx context.Context, cs *callState, f *scoreboard.Fun
 			{Doc: genai.Doc{Src: bytes.NewReader(data), Filename: "image." + format.ext}},
 		}}}
 		name := prefix + format.ext + "-Inline"
-		if err = exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
+		if _, err = exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
 			if m == nil {
 				m = &scoreboard.ModalCapability{}
 			}
@@ -616,7 +615,7 @@ func exerciseGenInputImage(ctx context.Context, cs *callState, f *scoreboard.Fun
 		}
 		msgs[0].Requests[1] = genai.Request{Doc: genai.Doc{URL: rootURL + "image." + format.ext}}
 		name = prefix + format.ext + "-URL"
-		if err = exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
+		if _, err = exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
 			if m == nil {
 				m = &scoreboard.ModalCapability{}
 			}
@@ -657,7 +656,7 @@ func exerciseGenInputAudio(ctx context.Context, cs *callState, f *scoreboard.Fun
 			{Doc: genai.Doc{Src: bytes.NewReader(data), Filename: "audio." + format.ext}},
 		}}}
 		name := prefix + format.ext + "-Inline"
-		if err = exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
+		if _, err = exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
 			if m == nil {
 				m = &scoreboard.ModalCapability{}
 			}
@@ -673,7 +672,7 @@ func exerciseGenInputAudio(ctx context.Context, cs *callState, f *scoreboard.Fun
 		}
 		msgs[0].Requests[1] = genai.Request{Doc: genai.Doc{URL: rootURL + "audio." + format.ext}}
 		name = prefix + format.ext + "-URL"
-		if err = exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
+		if _, err = exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
 			if m == nil {
 				m = &scoreboard.ModalCapability{}
 			}
@@ -712,7 +711,7 @@ func exerciseGenInputVideo(ctx context.Context, cs *callState, f *scoreboard.Fun
 			{Doc: genai.Doc{Src: bytes.NewReader(data), Filename: "video." + format.ext}},
 		}}}
 		name := prefix + format.ext + "-Inline"
-		if err = exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
+		if _, err = exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
 			if m == nil {
 				m = &scoreboard.ModalCapability{}
 			}
@@ -728,7 +727,7 @@ func exerciseGenInputVideo(ctx context.Context, cs *callState, f *scoreboard.Fun
 		}
 		msgs[0].Requests[1] = genai.Request{Doc: genai.Doc{URL: rootURL + "video." + format.ext}}
 		name = prefix + format.ext + "-URL"
-		if err = exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
+		if _, err = exerciseModal(ctx, cs, f, name, msgs, want); err == nil {
 			if m == nil {
 				m = &scoreboard.ModalCapability{}
 			}
@@ -754,33 +753,33 @@ type extMime struct {
 	mime string
 }
 
-func exerciseModal(ctx context.Context, cs *callState, f *scoreboard.Functionality, name string, msgs genai.Messages, want *regexp.Regexp) error {
-	resp, err := cs.callGen(ctx, name, msgs)
+func exerciseModal(ctx context.Context, cs *callState, f *scoreboard.Functionality, name string, msgs genai.Messages, want *regexp.Regexp) (genai.Message, error) {
+	res, err := cs.callGen(ctx, name, msgs)
 	if err == nil {
-		got := strings.ToLower(strings.TrimRight(strings.TrimSpace(resp.String()), "."))
+		got := strings.ToLower(strings.TrimRight(strings.TrimSpace(res.String()), "."))
 		if want != nil && !want.MatchString(got) {
-			return fmt.Errorf("got %q, want %q", got, want)
+			return res.Message, fmt.Errorf("got %q, want %q", got, want)
 		}
-		if isZeroUsage(resp.Usage) {
+		if isZeroUsage(res.Usage) {
 			if f.ReportTokenUsage != scoreboard.False {
 				internal.Logger(ctx).DebugContext(ctx, name, "issue", "token usage")
 				f.ReportTokenUsage = scoreboard.Flaky
 			}
 		}
-		if expectedFR := genai.FinishedStop; resp.Usage.FinishReason != expectedFR {
+		if expectedFR := genai.FinishedStop; res.Usage.FinishReason != expectedFR {
 			if f.ReportTokenUsage != scoreboard.False {
-				internal.Logger(ctx).DebugContext(ctx, name, "issue", "finish reason", "expected", expectedFR, "got", resp.Usage.FinishReason)
+				internal.Logger(ctx).DebugContext(ctx, name, "issue", "finish reason", "expected", expectedFR, "got", res.Usage.FinishReason)
 				f.ReportFinishReason = scoreboard.Flaky
 			}
 		}
-		f.ReportRateLimits = len(resp.Usage.Limits) != 0
-		for _, l := range resp.Usage.Limits {
+		f.ReportRateLimits = len(res.Usage.Limits) != 0
+		for _, l := range res.Usage.Limits {
 			if err = l.Validate(); err != nil {
-				return err
+				return res.Message, err
 			}
 		}
 	}
-	return err
+	return res.Message, err
 }
 
 type callState struct {
@@ -789,8 +788,7 @@ type callState struct {
 	usage    genai.Usage
 
 	// discovered states
-	isReasoning  bool
-	hasCitations bool
+	isReasoning bool
 }
 
 func (cs *callState) callGen(ctx context.Context, name string, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
@@ -807,9 +805,6 @@ func (cs *callState) callGen(ctx context.Context, name string, msgs genai.Messag
 		res, err = c.GenSync(ctx, msgs, opts...)
 	}
 	for _, c := range res.Replies {
-		if len(c.Citations) != 0 {
-			cs.hasCitations = true
-		}
 		if c.Reasoning != "" {
 			cs.isReasoning = true
 		}

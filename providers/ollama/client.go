@@ -282,7 +282,7 @@ func (m *Message) From(in *genai.Message) error {
 	}
 	for i := range in.Replies {
 		if len(in.Replies[i].Opaque) != 0 {
-			return fmt.Errorf("reply #%d: field Reply.Opaque not supported", i)
+			return &internal.BadError{Err: fmt.Errorf("reply #%d: field Reply.Opaque not supported", i)}
 		}
 		if in.Replies[i].Text != "" {
 			m.Content = in.Replies[i].Text
@@ -309,15 +309,17 @@ func (m *Message) From(in *genai.Message) error {
 					m.Content = string(data)
 				}
 			default:
-				return fmt.Errorf("reply #%d: ollama unsupported content type %q", i, mimeType)
+				return &internal.BadError{Err: fmt.Errorf("reply #%d: ollama unsupported content type %q", i, mimeType)}
 			}
 		} else if !in.Replies[i].ToolCall.IsZero() {
 			m.ToolCalls = append(m.ToolCalls, ToolCall{})
 			if err := m.ToolCalls[len(m.ToolCalls)-1].From(&in.Replies[i].ToolCall); err != nil {
 				return fmt.Errorf("reply #%d: %w", i, err)
 			}
+		} else if in.Replies[i].Reasoning != "" {
+			// Don't send reasoning back.
 		} else {
-			return fmt.Errorf("reply #%d: unknown Reply type", i)
+			return &internal.BadError{Err: fmt.Errorf("reply #%d: unknown Reply type: %v", i, in.Replies)}
 		}
 	}
 	if len(in.ToolCallResults) != 0 {
@@ -359,7 +361,7 @@ type ToolCall struct {
 
 func (t *ToolCall) From(in *genai.ToolCall) error {
 	if len(in.Opaque) != 0 {
-		return errors.New("field ToolCall.Opaque not supported")
+		return &internal.BadError{Err: errors.New("field ToolCall.Opaque not supported")}
 	}
 	t.Function.Name = in.Name
 	return json.Unmarshal([]byte(in.Arguments), &t.Function.Arguments)
@@ -888,12 +890,12 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		switch role := pkt.Message.Role; role {
 		case "", "assistant":
 		default:
-			return fmt.Errorf("unexpected role %q", role)
+			return &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
 		}
 		for i := range pkt.Message.ToolCalls {
 			f := genai.ReplyFragment{}
 			if err := pkt.Message.ToolCalls[i].To(&f.ToolCall); err != nil {
-				return err
+				return &internal.BadError{Err: err}
 			}
 			if err := result.Accumulate(f); err != nil {
 				return err

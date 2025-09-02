@@ -497,7 +497,7 @@ func (c *Content) FromRequest(in *genai.Request) error {
 
 func (c *Content) FromReply(in *genai.Reply) error {
 	if len(in.Opaque) != 0 {
-		return errors.New("field Reply.Opaque not supported")
+		return &internal.BadError{Err: errors.New("field Reply.Opaque not supported")}
 	}
 	if in.Text != "" {
 		c.Type = ContentText
@@ -555,7 +555,7 @@ func (c *Content) FromReply(in *genai.Reply) error {
 					return err
 				}
 				if len(exts) == 0 {
-					return fmt.Errorf("unknown extension for mime type %s", mimeType)
+					return &internal.BadError{Err: fmt.Errorf("unknown extension for mime type %s", mimeType)}
 				}
 				filename = "content" + exts[0]
 			}
@@ -565,7 +565,7 @@ func (c *Content) FromReply(in *genai.Reply) error {
 		}
 		return nil
 	}
-	return errors.New("unknown Reply type")
+	return &internal.BadError{Err: errors.New("unknown Reply type")}
 }
 
 func (c *Content) To(out *genai.Reply) error {
@@ -1245,18 +1245,18 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		switch role := pkt.Choices[0].Delta.Role; role {
 		case "", "assistant":
 		default:
-			return fmt.Errorf("unexpected role %q", role)
+			return &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
 		}
 		if len(pkt.Choices[0].Delta.ToolCalls) > 1 {
-			return fmt.Errorf("implement multiple tool calls: %#v", pkt)
+			return &internal.BadError{Err: fmt.Errorf("implement multiple tool calls: %#v", pkt)}
 		}
 		if r := pkt.Choices[0].Delta.Refusal; r != "" {
-			return fmt.Errorf("refused: %q", r)
+			return &internal.BadError{Err: fmt.Errorf("refused: %q", r)}
 		}
 
 		f := genai.ReplyFragment{}
 		if len(pkt.Choices[0].Delta.Annotations) > 1 {
-			return fmt.Errorf("implement multiple annotations: %#v", pkt)
+			return &internal.BadError{Err: fmt.Errorf("implement multiple annotations: %#v", pkt)}
 		} else if len(pkt.Choices[0].Delta.Annotations) == 1 {
 			a := pkt.Choices[0].Delta.Annotations[0]
 			f.Citation.Type = "web"
@@ -1279,7 +1279,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 				if pendingToolCall.ID == "" {
 					pendingToolCall = t
 					if !f.IsZero() {
-						return fmt.Errorf("implement tool call with metadata: %#v", pkt)
+						return &internal.BadError{Err: fmt.Errorf("implement tool call with metadata: %#v", pkt)}
 					}
 					continue
 				}
@@ -1290,7 +1290,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 				// Continuation.
 				pendingToolCall.Function.Arguments += t.Function.Arguments
 				if !f.IsZero() {
-					return fmt.Errorf("implement tool call with metadata: %#v", pkt)
+					return &internal.BadError{Err: fmt.Errorf("implement tool call with metadata: %#v", pkt)}
 				}
 				continue
 			}

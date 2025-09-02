@@ -364,7 +364,7 @@ func (c *Content) FromRequest(in *genai.Request) error {
 
 func (c *Content) FromReply(in *genai.Reply) error {
 	if len(in.Opaque) != 0 {
-		return errors.New("field ToolCall.Opaque not supported")
+		return &internal.BadError{Err: errors.New("field ToolCall.Opaque not supported")}
 	}
 	if in.Text != "" {
 		c.Type = ContentText
@@ -399,11 +399,11 @@ func (c *Content) FromReply(in *genai.Reply) error {
 			}
 			c.Text = string(data)
 		default:
-			return fmt.Errorf("unsupported mime type %s", mimeType)
+			return &internal.BadError{Err: fmt.Errorf("unsupported mime type %s", mimeType)}
 		}
 		return nil
 	}
-	return errors.New("unknown Reply type")
+	return &internal.BadError{Err: errors.New("unknown Reply type")}
 }
 
 func (c *Content) To(out *genai.Reply) error {
@@ -413,7 +413,7 @@ func (c *Content) To(out *genai.Reply) error {
 	case ContentImageURL, ContentVideoURL:
 		fallthrough
 	default:
-		return fmt.Errorf("unsupported content type %q", c.Type)
+		return &internal.BadError{Err: fmt.Errorf("unsupported content type %q", c.Type)}
 	}
 	return nil
 }
@@ -447,7 +447,7 @@ type ToolCall struct {
 
 func (t *ToolCall) From(in *genai.ToolCall) error {
 	if len(in.Opaque) != 0 {
-		return errors.New("field ToolCall.Opaque not supported")
+		return &internal.BadError{Err: errors.New("field ToolCall.Opaque not supported")}
 	}
 	t.Type = "function"
 	t.ID = in.ID
@@ -635,7 +635,7 @@ type ChatStreamChunkResponse struct {
 		FinishReason FinishReason  `json:"finish_reason"`
 		MatchedStop  int64         `json:"matched_stop"`
 		StopReason   int64         `json:"stop_reason"` // Seems to be a token
-		ToolCalls    []ToolCall    `json:"tool_calls"`  // TODO: Implement.
+		ToolCalls    []ToolCall    `json:"tool_calls"`
 	} `json:"choices"`
 	// SystemFingerprint string `json:"system_fingerprint"`
 	Usage    Usage `json:"usage"`
@@ -1161,15 +1161,14 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		switch role := pkt.Choices[0].Delta.Role; role {
 		case "assistant", "":
 		default:
-			return fmt.Errorf("unexpected role %q", role)
+			return &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
 		}
 		// There's only one at a time ever.
 		if len(pkt.Choices[0].Delta.ToolCalls) > 1 {
-			return fmt.Errorf("implement multiple tool calls: %#v", pkt.Choices[0].Delta.ToolCalls)
+			return &internal.BadError{Err: fmt.Errorf("implement multiple delta tool calls: %#v", pkt.Choices[0].Delta.ToolCalls)}
 		}
-		// TODO: It's new, I'm not sure it's used.
-		if len(pkt.Choices[0].ToolCalls) > 0 {
-			return fmt.Errorf("implement tool calls: %#v", pkt.Choices[0].ToolCalls)
+		if len(pkt.Choices[0].ToolCalls) > 1 {
+			return &internal.BadError{Err: fmt.Errorf("implement multiple tool calls: %#v", pkt.Choices[0].ToolCalls)}
 		}
 		// TogetherAI streams the arguments. Buffer the arguments to send the fragment as a
 		// whole tool call.
@@ -1212,6 +1211,16 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 				chunks <- f
 				sent = true
 			}
+		}
+		if len(pkt.Choices[0].ToolCalls) == 1 {
+			// That's a non-streamed tool call.
+			f := genai.ReplyFragment{}
+			pkt.Choices[0].ToolCalls[0].To(&f.ToolCall)
+			if err := result.Accumulate(f); err != nil {
+				return err
+			}
+			chunks <- f
+			sent = true
 		}
 		f := genai.ReplyFragment{
 			TextFragment:      pkt.Choices[0].Delta.Content,

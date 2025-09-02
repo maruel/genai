@@ -404,11 +404,11 @@ func (c *Content) FromReply(in *genai.Reply) error {
 			}
 			c.Text = string(data)
 		default:
-			return fmt.Errorf("unsupported mime type %s", mimeType)
+			return &internal.BadError{Err: fmt.Errorf("unsupported mime type %s", mimeType)}
 		}
 		return nil
 	}
-	return errors.New("unknown Reply type")
+	return &internal.BadError{Err: errors.New("unknown Reply type")}
 }
 
 type ContentType string
@@ -559,7 +559,7 @@ func (m *MessageResponse) To(out *genai.Message) error {
 		if m.Content[i].Text != "" {
 			out.Replies = append(out.Replies, genai.Reply{Text: m.Content[i].Text})
 		} else {
-			return fmt.Errorf("unsupported content #%d: %q", i, m.Content[i])
+			return &internal.BadError{Err: fmt.Errorf("unsupported content #%d: %q", i, m.Content[i])}
 		}
 	}
 	if m.ReasoningContent != "" {
@@ -1263,10 +1263,10 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		switch role := pkt.Choices[0].Delta.Role; role {
 		case "assistant", "":
 		default:
-			return fmt.Errorf("unexpected role %q", role)
+			return &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
 		}
 		if len(pkt.Choices[0].Delta.ToolCalls) > 1 {
-			return fmt.Errorf("implement multiple tool calls: %#v", pkt)
+			return &internal.BadError{Err: fmt.Errorf("implement multiple tool calls: %#v", pkt)}
 		}
 		f := genai.ReplyFragment{
 			TextFragment:      pkt.Choices[0].Delta.Content,
@@ -1279,7 +1279,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 				if pendingToolCall.ID == "" {
 					pendingToolCall = t
 					if !f.IsZero() {
-						return fmt.Errorf("implement tool call with metadata: %#v", pkt)
+						return &internal.BadError{Err: fmt.Errorf("implement tool call with metadata: %#v", pkt)}
 					}
 					continue
 				}
@@ -1290,7 +1290,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 				// Continuation.
 				pendingToolCall.Function.Arguments += t.Function.Arguments
 				if !f.IsZero() {
-					return fmt.Errorf("implement tool call with metadata: %#v", pkt)
+					return &internal.BadError{Err: fmt.Errorf("implement tool call with metadata: %#v", pkt)}
 				}
 				continue
 			}

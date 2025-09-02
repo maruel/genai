@@ -206,7 +206,7 @@ func (m *Message) From(in *genai.Message) error {
 		}
 		for i := range in.Replies {
 			if len(in.Replies[i].Opaque) != 0 {
-				return fmt.Errorf("reply #%d: field Reply.Opaque not supported", i)
+				return &internal.BadError{Err: fmt.Errorf("reply #%d: field Reply.Opaque not supported", i)}
 			}
 			if in.Replies[i].Text != "" {
 				m.Content = append(m.Content, Content{Type: ContentText, Text: in.Replies[i].Text})
@@ -227,7 +227,7 @@ func (m *Message) From(in *genai.Message) error {
 				}
 				m.Content = append(m.Content, Content{Type: ContentText, Text: string(data)})
 			} else {
-				return fmt.Errorf("reply #%d: unknown Reply type", i)
+				return &internal.BadError{Err: fmt.Errorf("reply #%d: unknown Reply type", i)}
 			}
 		}
 	}
@@ -482,7 +482,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			switch role := pkt.Choices[0].Delta.Role; role {
 			case "", "assistant":
 			default:
-				return fmt.Errorf("unexpected role %q", role)
+				return &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
 			}
 			for _, content := range pkt.Choices[0].Delta.Content {
 				switch content.Type {
@@ -495,7 +495,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 						chunks <- f
 					}
 				default:
-					return fmt.Errorf("unexpected content type %q", content.Type)
+					return &internal.BadError{Err: fmt.Errorf("unexpected content type %q", content.Type)}
 				}
 			}
 			continue
@@ -511,7 +511,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		switch role := m.Role; role {
 		case "", "assistant":
 		default:
-			return fmt.Errorf("unexpected role %q", role)
+			return &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
 		}
 		if m.IsZero() {
 			f := genai.ReplyFragment{TextFragment: pkt.Delta.Text}

@@ -384,7 +384,7 @@ func (c *Content) FromRequest(in *genai.Request) error {
 
 func (c *Content) FromReply(in *genai.Reply) error {
 	if len(in.Opaque) != 0 {
-		return errors.New("field Reply.Opaque not supported")
+		return &internal.BadError{Err: errors.New("field Reply.Opaque not supported")}
 	}
 	// DeepSeek and Qwen recommend against passing reasoning back to the model.
 	if in.Text != "" {
@@ -413,11 +413,11 @@ func (c *Content) FromReply(in *genai.Reply) error {
 			}
 			c.Text = string(data)
 		default:
-			return fmt.Errorf("unsupported mime type %s", mimeType)
+			return &internal.BadError{Err: fmt.Errorf("unsupported mime type %s", mimeType)}
 		}
 		return nil
 	}
-	return errors.New("unknown Reply type")
+	return &internal.BadError{Err: errors.New("unknown Reply type")}
 }
 
 type ContentType string
@@ -506,7 +506,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 		},
 	}
 	if len(c.Choices) != 1 {
-		return out, fmt.Errorf("server returned an unexpected number of choices, expected 1, got %d", len(c.Choices))
+		return out, &internal.BadError{Err: fmt.Errorf("server returned an unexpected number of choices, expected 1, got %d", len(c.Choices))}
 	}
 	out.Usage.FinishReason = c.Choices[0].FinishReason.ToFinishReason()
 	err := c.Choices[0].Message.To(&out.Message)
@@ -878,10 +878,10 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		switch role := pkt.Choices[0].Delta.Role; role {
 		case "assistant", "":
 		default:
-			return fmt.Errorf("unexpected role %q", role)
+			return &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
 		}
 		if len(pkt.Choices[0].Delta.ToolCalls) > 1 {
-			return errors.New("implement multiple tool calls")
+			return &internal.BadError{Err: errors.New("implement multiple tool calls")}
 		}
 		f := genai.ReplyFragment{
 			TextFragment:      pkt.Choices[0].Delta.Content,

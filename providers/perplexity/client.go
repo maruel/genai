@@ -237,7 +237,7 @@ func (m *Message) From(in *genai.Message) error {
 	}
 	for i := range in.Replies {
 		if len(in.Replies[i].Opaque) != 0 {
-			return fmt.Errorf("reply #%d: field Reply.Opaque not supported", i)
+			return &internal.BadError{Err: fmt.Errorf("reply #%d: field Reply.Opaque not supported", i)}
 		}
 		if in.Replies[i].Text != "" {
 			m.Content = append(m.Content, Content{Type: "text", Text: in.Replies[i].Text})
@@ -245,13 +245,13 @@ func (m *Message) From(in *genai.Message) error {
 			// Check if this is a text document
 			mimeType, data, err := in.Replies[i].Doc.Read(10 * 1024 * 1024)
 			if err != nil {
-				return fmt.Errorf("reply #%d: failed to read document: %w", i, err)
+				return &internal.BadError{Err: fmt.Errorf("reply #%d: failed to read document: %w", i, err)}
 			}
 			switch {
 			// text/plain, text/markdown
 			case strings.HasPrefix(mimeType, "text/"):
 				if in.Replies[i].Doc.URL != "" {
-					return fmt.Errorf("reply #%d: %s documents must be provided inline, not as a URL", i, mimeType)
+					return &internal.BadError{Err: fmt.Errorf("reply #%d: %s documents must be provided inline, not as a URL", i, mimeType)}
 				}
 				m.Content = append(m.Content, Content{Type: "text", Text: string(data)})
 			case strings.HasPrefix(mimeType, "image/"):
@@ -263,10 +263,10 @@ func (m *Message) From(in *genai.Message) error {
 				}
 				m.Content = append(m.Content, c)
 			default:
-				return fmt.Errorf("reply #%d: perplexity only supports text documents, got %s", i, mimeType)
+				return &internal.BadError{Err: fmt.Errorf("reply #%d: perplexity only supports text documents, got %s", i, mimeType)}
 			}
 		} else {
-			return fmt.Errorf("reply #%d: unknown Reply type", i)
+			return &internal.BadError{Err: fmt.Errorf("reply #%d: unknown Reply type", i)}
 		}
 	}
 	return nil
@@ -280,7 +280,7 @@ func (m *Message) To(out *genai.Message) error {
 		if m.Content[i].Type == "text" {
 			out.Replies = append(out.Replies, genai.Reply{Text: m.Content[i].Text})
 		} else {
-			return fmt.Errorf("unsupported content type %q", m.Content[i].Type)
+			return &internal.BadError{Err: fmt.Errorf("unsupported content type %q", m.Content[i].Type)}
 		}
 	}
 	return nil
@@ -628,7 +628,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		switch role := pkt.Choices[0].Delta.Role; role {
 		case "", "assistant":
 		default:
-			return fmt.Errorf("unexpected role %q", role)
+			return &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
 		}
 		// We need to do one packet per citation type. Do that before sending text.
 		if len(pkt.SearchResults) > 0 {

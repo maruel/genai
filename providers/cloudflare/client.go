@@ -225,7 +225,7 @@ func (m *Message) From(in *genai.Message) error {
 	}
 	if len(in.Replies) != 0 {
 		if len(in.Replies[0].Opaque) != 0 {
-			return errors.New("field Reply.Opaque not supported")
+			return &internal.BadError{Err: errors.New("field Reply.Opaque not supported")}
 		}
 		if in.Replies[0].Text != "" {
 			m.Content = in.Replies[0].Text
@@ -244,12 +244,12 @@ func (m *Message) From(in *genai.Message) error {
 			m.Content = string(data)
 		} else if !in.Replies[0].ToolCall.IsZero() {
 			if len(in.Replies[0].ToolCall.Opaque) != 0 {
-				return errors.New("field ToolCall.Opaque not supported")
+				return &internal.BadError{Err: errors.New("field ToolCall.Opaque not supported")}
 			}
 			m.ToolCallID = in.Replies[0].ToolCall.ID
 			m.Content = in.Replies[0].ToolCall.Arguments
 		} else {
-			return fmt.Errorf("unsupported content type %#v", in.Replies[0])
+			return &internal.BadError{Err: fmt.Errorf("unsupported content type %#v", in.Replies[0])}
 		}
 		return nil
 	}
@@ -260,7 +260,7 @@ func (m *Message) From(in *genai.Message) error {
 		m.Content = in.ToolCallResults[0].Result
 		return nil
 	}
-	return errors.New("internal error")
+	return &internal.BadError{Err: errors.New("internal error")}
 }
 
 type Tool struct {

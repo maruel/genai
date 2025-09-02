@@ -277,7 +277,7 @@ func (m *Message) From(in *genai.Message) error {
 	return nil
 }
 
-func (m *Message) To(out *genai.Message) error {
+func (m *Message) To(out *genai.Message) {
 	// Both ReasoningContent and Content can be set on the same reply.
 	if m.ReasoningContent != "" {
 		out.Replies = append(out.Replies, genai.Reply{Reasoning: m.ReasoningContent})
@@ -289,7 +289,6 @@ func (m *Message) To(out *genai.Message) error {
 		out.Replies = append(out.Replies, genai.Reply{})
 		m.ToolCalls[i].To(&out.Replies[len(out.Replies)-1].ToolCall)
 	}
-	return nil
 }
 
 type ToolCall struct {
@@ -356,9 +355,9 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 		return out, fmt.Errorf("expected 1 choice, got %#v", c.Choices)
 	}
 	out.Usage.FinishReason = c.Choices[0].FinishReason.ToFinishReason()
-	err := c.Choices[0].Message.To(&out.Message)
+	c.Choices[0].Message.To(&out.Message)
 	out.Logprobs = c.Choices[0].Logprobs.To()
-	return out, err
+	return out, nil
 }
 
 type FinishReason string
@@ -690,12 +689,12 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			result.Usage.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
 		}
 		if len(pkt.Choices[0].Delta.ToolCalls) > 1 {
-			return fmt.Errorf("implement multiple tool calls: %#v", pkt)
+			return &internal.BadError{Err: fmt.Errorf("implement multiple tool calls: %#v", pkt)}
 		}
 		switch role := pkt.Choices[0].Delta.Role; role {
 		case "assistant", "":
 		default:
-			return fmt.Errorf("unexpected role %q", role)
+			return &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
 		}
 		f := genai.ReplyFragment{
 			TextFragment:      pkt.Choices[0].Delta.Content,
@@ -708,7 +707,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 				if pendingToolCall.ID == "" {
 					pendingToolCall = t
 					if !f.IsZero() {
-						return fmt.Errorf("implement tool call with metadata: %#v", pkt)
+						return &internal.BadError{Err: fmt.Errorf("implement tool call with metadata: %#v", pkt)}
 					}
 					continue
 				}
@@ -719,7 +718,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 				// Continuation.
 				pendingToolCall.Function.Arguments += t.Function.Arguments
 				if !f.IsZero() {
-					return fmt.Errorf("implement tool call with metadata: %#v", pkt)
+					return &internal.BadError{Err: fmt.Errorf("implement tool call with metadata: %#v", pkt)}
 				}
 				continue
 			}

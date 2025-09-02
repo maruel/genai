@@ -269,7 +269,7 @@ func (m *Message) To(out *genai.Message) error {
 		case ContentText:
 			out.Replies = append(out.Replies, genai.Reply{Text: content.Text})
 		default:
-			return fmt.Errorf("unsupported content type %q", content.Type)
+			return &internal.BadError{Err: fmt.Errorf("implement content type %q", content.Type)}
 		}
 	}
 	for i := range m.ToolCalls {
@@ -315,7 +315,7 @@ func (c *Content) FromRequest(in *genai.Request) error {
 
 func (c *Content) FromReply(in *genai.Reply) error {
 	if len(in.Opaque) != 0 {
-		return errors.New("field Reply.Opaque not supported")
+		return &internal.BadError{Err: errors.New("field Reply.Opaque not supported")}
 	}
 	if in.Text != "" {
 		c.Type = ContentText
@@ -338,7 +338,7 @@ func (c *Content) FromReply(in *genai.Reply) error {
 		c.Text = string(data)
 	} else {
 		// Cerebras doesn't support other document types.
-		return errors.New("internal error: unknown Reply type")
+		return &internal.BadError{Err: errors.New("internal error: unknown Reply type")}
 	}
 	return nil
 }
@@ -896,7 +896,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 					sent = true
 				}
 			default:
-				return fmt.Errorf("unexpected content type %q", content.Type)
+				return &internal.BadError{Err: fmt.Errorf("implement content type %q", content.Type)}
 			}
 		}
 		if len(pkt.Choices[0].Logprobs.Content) != 0 {

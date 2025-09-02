@@ -483,7 +483,7 @@ func (m *Message) To(out *genai.Message) error {
 	case MessageReasoning:
 		for i := range m.Summary {
 			if m.Summary[i].Type != "summary_text" {
-				return fmt.Errorf("unsupported summary type %q", m.Summary[i].Type)
+				return &internal.BadError{Err: fmt.Errorf("unsupported summary type %q", m.Summary[i].Type)}
 			}
 			out.Replies = append(out.Replies, genai.Reply{Reasoning: m.Summary[i].Text})
 		}
@@ -491,7 +491,7 @@ func (m *Message) To(out *genai.Message) error {
 		out.Replies = append(out.Replies, genai.Reply{ToolCall: genai.ToolCall{ID: m.CallID, Name: m.Name, Arguments: m.Arguments}})
 	case MessageWebSearchCall:
 		if m.Action.Type != "search" {
-			return fmt.Errorf("unsupported action type %q", m.Action.Type)
+			return &internal.BadError{Err: fmt.Errorf("unsupported action type %q", m.Action.Type)}
 		}
 		c := genai.Citation{Text: m.Action.Query, Sources: make([]genai.CitationSource, len(m.Action.Sources))}
 		for i, src := range m.Action.Sources {
@@ -502,7 +502,7 @@ func (m *Message) To(out *genai.Message) error {
 	case MessageFileSearchCall, MessageComputerCall, MessageImageGenerationCall, MessageCodeInterpreterCall, MessageLocalShellCall, MessageMcpListTools, MessageMcpApprovalRequest, MessageMcpCall, MessageComputerCallOutput, MessageFunctionCallOutput, MessageLocalShellCallOutput, MessageMcpApprovalResponse, MessageItemReference:
 		fallthrough
 	default:
-		return fmt.Errorf("unsupported output type %q", m.Type)
+		return &internal.BadError{Err: fmt.Errorf("unsupported output type %q", m.Type)}
 	}
 	return nil
 }
@@ -550,10 +550,10 @@ type Content struct {
 func (c *Content) To(out *genai.Reply) error {
 	for _, a := range c.Annotations {
 		if a.Type != "url_citation" {
-			return fmt.Errorf("unsupported annotation type %q", a.Type)
+			return &internal.BadError{Err: fmt.Errorf("unsupported annotation type %q", a.Type)}
 		}
 		if a.FileID != "" {
-			return fmt.Errorf("field Annotation.FileID not supported")
+			return &internal.BadError{Err: fmt.Errorf("field Annotation.FileID not supported")}
 		}
 		c := genai.Citation{
 			Type:       "web",
@@ -567,9 +567,9 @@ func (c *Content) To(out *genai.Reply) error {
 	case ContentOutputText:
 		out.Text = c.Text
 	case ContentInputText, ContentInputImage, ContentInputFile, ContentRefusal:
-		return fmt.Errorf("implement content type %q", c.Type)
+		return &internal.BadError{Err: fmt.Errorf("implement content type %q", c.Type)}
 	default:
-		return fmt.Errorf("unsupported content type %q", c.Type)
+		return &internal.BadError{Err: fmt.Errorf("implement content type %q", c.Type)}
 	}
 	return nil
 }
@@ -633,7 +633,7 @@ func (c *Content) FromRequest(in *genai.Request) error {
 
 func (c *Content) FromReply(in *genai.Reply) error {
 	if len(in.Opaque) != 0 {
-		return errors.New("field Reply.Opaque not supported")
+		return &internal.BadError{Err: errors.New("field Reply.Opaque not supported")}
 	}
 	if in.Text != "" {
 		c.Type = ContentInputText
@@ -688,7 +688,7 @@ func (c *Content) FromReply(in *genai.Reply) error {
 		}
 		return nil
 	}
-	return errors.New("unknown Reply type")
+	return &internal.BadError{Err: errors.New("unknown Reply type")}
 }
 
 // APIError represents an API error in the response.
@@ -1166,7 +1166,7 @@ func processStreamPackets(ch <-chan ResponseStreamChunkResponse, chunks chan<- g
 			result.Usage.OutputTokens = pkt.Response.Usage.OutputTokens
 			if len(pkt.Response.Output) == 0 {
 				// TODO: Likely failed.
-				return fmt.Errorf("no output: %#v", pkt)
+				return &internal.BadError{Err: fmt.Errorf("no output: %#v", pkt)}
 			}
 			// TODO: OpenAI supports "multiple messages" as output.
 			result.Usage.FinishReason = genai.FinishedStop
@@ -1184,7 +1184,7 @@ func processStreamPackets(ch <-chan ResponseStreamChunkResponse, chunks chan<- g
 				case "failed":
 					return fmt.Errorf("failed: %#v", pkt)
 				default:
-					return fmt.Errorf("unknown status %q: %#v", msg.Status, pkt)
+					return &internal.BadError{Err: fmt.Errorf("unknown status %q: %#v", msg.Status, pkt)}
 				}
 			}
 		case ResponseFailed:
@@ -1221,7 +1221,7 @@ func processStreamPackets(ch <-chan ResponseStreamChunkResponse, chunks chan<- g
 			case MessageFileSearchCall, MessageComputerCall, MessageImageGenerationCall, MessageCodeInterpreterCall, MessageLocalShellCall, MessageMcpListTools, MessageMcpApprovalRequest, MessageMcpCall, MessageComputerCallOutput, MessageFunctionCallOutput, MessageLocalShellCallOutput, MessageMcpApprovalResponse, MessageItemReference:
 				fallthrough
 			default:
-				return fmt.Errorf("implement item: %q", pkt.Item.Type)
+				return &internal.BadError{Err: fmt.Errorf("implement item: %q", pkt.Item.Type)}
 			}
 		case ResponseOutputItemDone:
 			// Unnecessary.
@@ -1229,24 +1229,24 @@ func processStreamPackets(ch <-chan ResponseStreamChunkResponse, chunks chan<- g
 			switch pkt.Part.Type {
 			case ContentOutputText:
 				if len(pkt.Part.Annotations) > 0 {
-					return fmt.Errorf("implement citations: %#v", pkt.Part.Annotations)
+					return &internal.BadError{Err: fmt.Errorf("implement citations: %#v", pkt.Part.Annotations)}
 				}
 				if len(pkt.Part.Text) > 0 {
-					return fmt.Errorf("unexpected text: %q", pkt.Part.Text)
+					return &internal.BadError{Err: fmt.Errorf("unexpected text: %q", pkt.Part.Text)}
 				}
 			case ContentRefusal, ContentInputText, ContentInputImage, ContentInputFile:
 				fallthrough
 			default:
-				return fmt.Errorf("implement part: %q", pkt.Part.Type)
+				return &internal.BadError{Err: fmt.Errorf("implement part: %q", pkt.Part.Type)}
 			}
 		case ResponseContentPartDone:
 			// Unnecessary, as we already streamed the content in ResponseContentPartAdded.
 		case ResponseRefusalDelta:
-			// TODO: It's not an error.
-			return fmt.Errorf("refused: %s", pkt.Delta)
+			// TODO: It's not an error but catch it in the smoke test in case it happens.
+			return &internal.BadError{Err: fmt.Errorf("refused: %s", pkt.Delta)}
 		case ResponseRefusalDone:
-			// TODO: It's not an error.
-			return fmt.Errorf("refused: %s", pkt.Refusal)
+			// TODO: It's not an error but catch it in the smoke test in case it happens.
+			return &internal.BadError{Err: fmt.Errorf("refused: %s", pkt.Refusal)}
 		case ResponseFunctionCallArgumentsDelta:
 			// Unnecessary. The content is sent in ResponseFunctionCallArgumentsDone.
 		case ResponseFunctionCallArgumentsDone:
@@ -1259,7 +1259,7 @@ func processStreamPackets(ch <-chan ResponseStreamChunkResponse, chunks chan<- g
 		case ResponseReasoningSummaryTextDone:
 		case ResponseReasoningSummaryPartDone:
 		case ResponseError:
-			return fmt.Errorf("error: %s", pkt.Message)
+			return &internal.BadError{Err: fmt.Errorf("error: %s", pkt.Message)}
 		case ResponseWebSearchCallInProgress:
 			// Not much to surface.
 		case ResponseWebSearchCallSearching:
@@ -1268,7 +1268,7 @@ func processStreamPackets(ch <-chan ResponseStreamChunkResponse, chunks chan<- g
 			// Not much to surface.
 		case ResponseOutputTextAnnotationAdded:
 			if pkt.Annotation.Type != "url_citation" {
-				return fmt.Errorf("unexpected annotation type: %q", pkt.Annotation.Type)
+				return &internal.BadError{Err: fmt.Errorf("implement annotation type: %q", pkt.Annotation.Type)}
 			}
 			f.Citation.Type = "web"
 			f.Citation.StartIndex = pkt.Annotation.StartIndex
@@ -1279,7 +1279,7 @@ func processStreamPackets(ch <-chan ResponseStreamChunkResponse, chunks chan<- g
 		case ResponseFileSearchCallCompleted, ResponseFileSearchCallInProgress, ResponseFileSearchCallSearching, ResponseImageGenerationCallCompleted, ResponseImageGenerationCallGenerating, ResponseImageGenerationCallInProgress, ResponseImageGenerationCallPartialImage, ResponseMCPCallArgumentsDelta, ResponseMCPCallArgumentsDone, ResponseMCPCallCompleted, ResponseMCPCallFailed, ResponseMCPCallInProgress, ResponseMCPListToolsCompleted, ResponseMCPListToolsFailed, ResponseMCPListToolsInProgress, ResponseQueued, ResponseReasoningDelta, ResponseReasoningDone, ResponseReasoningSummaryDelta, ResponseReasoningSummaryDone:
 			fallthrough
 		default:
-			return fmt.Errorf("implement packet: %q", pkt.Type)
+			return &internal.BadError{Err: fmt.Errorf("implement packet: %q", pkt.Type)}
 		}
 		if !f.IsZero() {
 			if err := result.Accumulate(f); err != nil {
@@ -1290,7 +1290,7 @@ func processStreamPackets(ch <-chan ResponseStreamChunkResponse, chunks chan<- g
 		}
 	}
 	if !pendingToolCall.IsZero() {
-		return errors.New("unexpected pending tool call")
+		return &internal.BadError{Err: errors.New("unexpected pending tool call")}
 	}
 	if !sent {
 		// Happens with MaxTokens

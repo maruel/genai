@@ -806,10 +806,10 @@ func (c *Content) FromRequest(in *genai.Request) (bool, error) {
 
 func (c *Content) FromReply(in *genai.Reply) (bool, error) {
 	if len(in.Citations) != 0 {
-		return false, errors.New("field Reply.Citations not supported")
+		return false, &internal.BadError{Err: errors.New("field Reply.Citations not supported")}
 	}
 	if len(in.Opaque) != 0 {
-		return false, errors.New("field Reply.Opaque not supported")
+		return false, &internal.BadError{Err: errors.New("field Reply.Opaque not supported")}
 	}
 	if in.Reasoning != "" {
 		return true, nil
@@ -848,11 +848,11 @@ func (c *Content) FromReply(in *genai.Reply) (bool, error) {
 				c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
 			}
 		default:
-			return false, fmt.Errorf("mime type %s is unsupported", mimeType)
+			return false, &internal.BadError{Err: fmt.Errorf("mime type %s is unsupported", mimeType)}
 		}
 		return false, nil
 	}
-	return false, errors.New("unknown Reply type")
+	return false, &internal.BadError{Err: errors.New("unknown Reply type")}
 }
 
 func (c *Content) To(out *genai.Reply) error {
@@ -1484,14 +1484,14 @@ func processChatStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- g
 		switch role := pkt.Choices[0].Delta.Role; role {
 		case "assistant", "":
 		default:
-			return fmt.Errorf("unexpected role %q", role)
+			return &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
 		}
 		f := genai.ReplyFragment{
 			TextFragment: pkt.Choices[0].Delta.Content,
 			// ReasoningFragment: pkt.Choices[0].Delta.ReasoningContent,
 		}
 		if len(pkt.Choices[0].Delta.ToolCalls) > 1 {
-			return fmt.Errorf("implement multiple tool calls: %#v", pkt)
+			return &internal.BadError{Err: fmt.Errorf("implement multiple tool calls: %#v", pkt)}
 		}
 		if len(pkt.Choices[0].Delta.ToolCalls) == 1 {
 			if t := pkt.Choices[0].Delta.ToolCalls[0]; t.ID != "" {
@@ -1499,7 +1499,7 @@ func processChatStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- g
 				if pendingToolCall.ID == "" {
 					pendingToolCall = t
 					if !f.IsZero() {
-						return fmt.Errorf("implement tool call with metadata: %#v", pkt)
+						return &internal.BadError{Err: fmt.Errorf("implement tool call with metadata: %#v", pkt)}
 					}
 					continue
 				}
@@ -1510,7 +1510,7 @@ func processChatStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- g
 				// Continuation.
 				pendingToolCall.Function.Arguments += t.Function.Arguments
 				if !f.IsZero() {
-					return fmt.Errorf("implement tool call with metadata: %#v", pkt)
+					return &internal.BadError{Err: fmt.Errorf("implement tool call with metadata: %#v", pkt)}
 				}
 				continue
 			}

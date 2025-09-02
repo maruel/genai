@@ -344,14 +344,14 @@ func (c *Content) FromReply(in *genai.Reply) (*Document, error) {
 			// This is handled as ChatRequest.Documents.
 			return d, nil
 		default:
-			return nil, fmt.Errorf("unsupported mime type %s", mimeType)
+			return nil, &internal.BadError{Err: fmt.Errorf("unsupported mime type %s", mimeType)}
 		}
 	} else if in.Reasoning != "" {
 		// Unclear if we should send it back.
 		c.Type = ContentThinking
 		c.Thinking = in.Reasoning
 	} else {
-		return nil, errors.New("unknown Reply type")
+		return nil, &internal.BadError{Err: errors.New("unknown Reply type")}
 	}
 	return nil, nil
 }
@@ -365,7 +365,7 @@ func (c *Content) To(in *genai.Reply) error {
 	case ContentDocument, ContentImageURL:
 		fallthrough
 	default:
-		return fmt.Errorf("implement %s", c.Type)
+		return &internal.BadError{Err: fmt.Errorf("implement %s", c.Type)}
 	}
 	return nil
 }
@@ -412,9 +412,7 @@ func (c *Citations) UnmarshalJSON(b []byte) error {
 func (c Citations) To(dst *genai.Reply) error {
 	dst.Citations = make([]genai.Citation, len(c))
 	for i := range c {
-		if err := c[i].To(&dst.Citations[i]); err != nil {
-			return fmt.Errorf("citation %d: %w", i, err)
-		}
+		c[i].To(&dst.Citations[i])
 	}
 	return nil
 }
@@ -429,7 +427,7 @@ type Citation struct {
 	ContentIndex int64            `json:"content_index,omitzero"`
 }
 
-func (c *Citation) To(dst *genai.Citation) error {
+func (c *Citation) To(dst *genai.Citation) {
 	dst.Text = c.Text
 	dst.StartIndex = c.Start
 	dst.EndIndex = c.End
@@ -450,7 +448,6 @@ func (c *Citation) To(dst *genai.Citation) error {
 			}
 		}
 	}
-	return nil
 }
 
 type CitationSource struct {
@@ -1024,15 +1021,15 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 	for pkt := range ch {
 		// These can't happen.
 		if len(pkt.Delta.Message.Content) > 1 {
-			return errors.New("implement multiple content")
+			return &internal.BadError{Err: errors.New("implement multiple content")}
 		}
 		if len(pkt.Delta.Message.ToolCalls) > 1 {
-			return errors.New("implement multiple tool calls")
+			return &internal.BadError{Err: errors.New("implement multiple tool calls")}
 		}
 		switch role := pkt.Delta.Message.Role; role {
 		case "assistant", "":
 		default:
-			return fmt.Errorf("unexpected role %q", role)
+			return &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
 		}
 		if pkt.Logprobs.Text != "" {
 			result.Logprobs = append(result.Logprobs, pkt.Logprobs.To())
@@ -1042,7 +1039,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		case ChunkMessageStart:
 			// Nothing useful.
 			if len(pkt.Delta.Message.Content) != 0 {
-				return fmt.Errorf("expected no content %#v", pkt)
+				return &internal.BadError{Err: fmt.Errorf("expected no content %#v", pkt)}
 			}
 		case ChunkMessageEnd:
 			// Contain usage and finish reason.
@@ -1050,14 +1047,14 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 				return errors.New(pkt.Delta.Error)
 			}
 			if len(pkt.Delta.Message.Content) != 0 {
-				return fmt.Errorf("expected no content %#v", pkt)
+				return &internal.BadError{Err: fmt.Errorf("expected no content %#v", pkt)}
 			}
 			result.Usage.InputTokens = pkt.Delta.Usage.Tokens.InputTokens
 			result.Usage.OutputTokens = pkt.Delta.Usage.Tokens.OutputTokens
 			result.Usage.FinishReason = pkt.Delta.FinishReason.ToFinishReason()
 		case ChunkContentStart:
 			if len(pkt.Delta.Message.Content) != 1 {
-				return fmt.Errorf("expected content %#v", pkt)
+				return &internal.BadError{Err: fmt.Errorf("expected content %#v", pkt)}
 			}
 			switch t := pkt.Delta.Message.Content[0].Type; t {
 			case ContentText:
@@ -1069,14 +1066,14 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			case ContentDocument, ContentImageURL:
 				fallthrough
 			default:
-				return fmt.Errorf("implement content %q", t)
+				return &internal.BadError{Err: fmt.Errorf("implement content %q", t)}
 			}
 		case ChunkContentDelta:
 			// Sometimes the delta is empty?
 			if len(pkt.Delta.Message.Content) == 1 {
 				t := pkt.Delta.Message.Content[0].Text
 				if t == "" {
-					return fmt.Errorf("empty content %#v", pkt)
+					return &internal.BadError{Err: fmt.Errorf("empty content %#v", pkt)}
 				}
 				// Type is not set. We need to remember the value from ChunkContentStart.
 				if wasThinking {
@@ -1089,13 +1086,13 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			// Will be useful when there's multiple index.
 			// Sometimes the delta is empty?
 			if len(pkt.Delta.Message.Content) != 0 {
-				return fmt.Errorf("unexpected content %#v", pkt)
+				return &internal.BadError{Err: fmt.Errorf("unexpected content %#v", pkt)}
 			}
 		case ChunkToolPlanDelta:
 			f.ReasoningFragment = pkt.Delta.Message.ToolPlan
 		case ChunkToolCallStart:
 			if len(pkt.Delta.Message.ToolCalls) != 1 {
-				return fmt.Errorf("expected tool call %#v", pkt)
+				return &internal.BadError{Err: fmt.Errorf("expected tool call %#v", pkt)}
 			}
 			pendingToolCall = pkt.Delta.Message.ToolCalls[0]
 		case ChunkToolCallDelta:
@@ -1105,18 +1102,16 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			pendingToolCall = ToolCall{}
 		case ChunkCitationStart:
 			if len(pkt.Delta.Message.Citations) != 1 {
-				return fmt.Errorf("expected one citation, got %v", pkt)
+				return &internal.BadError{Err: fmt.Errorf("expected one citation, got %v", pkt)}
 			}
-			if err := pkt.Delta.Message.Citations[0].To(&f.Citation); err != nil {
-				return fmt.Errorf("mapping citations: %w", err)
-			}
+			pkt.Delta.Message.Citations[0].To(&f.Citation)
 		case ChunkCitationEnd:
 			if len(pkt.Delta.Message.Citations) != 0 {
-				return fmt.Errorf("expected no citations, got %v", pkt)
+				return &internal.BadError{Err: fmt.Errorf("expected no citations, got %v", pkt)}
 			}
 		default:
 			if !internal.BeLenient {
-				return fmt.Errorf("unknown packet %q", pkt.Type)
+				return &internal.BadError{Err: fmt.Errorf("unknown packet %q", pkt.Type)}
 			}
 		}
 		if !f.IsZero() {

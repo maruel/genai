@@ -1,0 +1,68 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 817
+    host: api.together.xyz
+    body: "{\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"},{\"role\":\"assistant\",\"tool_calls\":[{\"index\":0,\"id\":\"call_5f5f9eae81a143d7bdb42eb5\",\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\": 132413}\"}}]},{\"role\":\"tool\",\"content\":\"363.89\",\"tool_call_id\":\"call_5f5f9eae81a143d7bdb42eb5\"}],\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"tool_choice\":\"none\"}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"o9frtH8-zqrih-979048d18c21a2f4\",\"object\":\"chat.completion.chunk\",\"created\":1756850471,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"o9frtH8-zqrih-979048d18c21a2f4\",\"object\":\"chat.completion.chunk\",\"created\":1756850471,\"choices\":[{\"index\":0,\"text\":\"The\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"The\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"o9frtH8-zqrih-979048d18c21a2f4\",\"object\":\"chat.completion.chunk\",\"created\":1756850471,\"choices\":[{\"index\":0,\"text\":\" square\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" square\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"o9frtH8-zqrih-979048d18c21a2f4\",\"object\":\"chat.completion.chunk\",\"created\":1756850471,\"choices\":[{\"index\":0,\"text\":\" root\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" root\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"o9frtH8-zqrih-979048d18c21a2f4\",\"object\":\"chat.completion.chunk\",\"created\":1756850471,\"choices\":[{\"index\":0,\"text\":\" of\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" of\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"o9frtH8-zqrih-979048d18c21a2f4\",\"object\":\"chat.completion.chunk\",\"created\":1756850471,\"choices\":[{\"index\":0,\"text\":\" \",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" \",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"o9frtH8-zqrih-979048d18c21a2f4\",\"object\":\"chat.completion.chunk\",\"created\":1756850471,\"choices\":[{\"index\":0,\"text\":\"1\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"1\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"o9frtH8-zqrih-979048d18c21a2f4\",\"object\":\"chat.completion.chunk\",\"created\":1756850471,\"choices\":[{\"index\":0,\"text\":\"3\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"3\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"o9frtH8-zqrih-979048d18c21a2f4\",\"object\":\"chat.completion.chunk\",\"created\":1756850471,\"choices\":[{\"index\":0,\"text\":\"2\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"2\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"o9frtH8-zqrih-979048d18c21a2f4\",\"object\":\"chat.completion.chunk\",\"created\":1756850471,\"choices\":[{\"index\":0,\"text\":\"4\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"4\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"o9frtH8-zqrih-979048d18c21a2f4\",\"object\":\"chat.completion.chunk\",\"created\":1756850471,\"choices\":[{\"index\":0,\"text\":\"1\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"1\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"o9frtH8-zqrih-979048d18c21a2f4\",\"object\":\"chat.completion.chunk\",\"created\":1756850471,\"choices\":[{\"index\":0,\"text\":\"3\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"3\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"o9frtH8-zqrih-979048d18c21a2f4\",\"object\":\"chat.completion.chunk\",\"created\":1756850471,\"choices\":[{\"index\":0,\"text\":\" is\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" is\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"o9frtH8-zqrih-979048d18c21a2f4\",\"object\":\"chat.completion.chunk\",\"created\":1756850471,\"choices\":[{\"index\":0,\"text\":\" approximately\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" approximately\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"o9frtH8-zqrih-979048d18c21a2f4\",\"object\":\"chat.completion.chunk\",\"created\":1756850471,\"choices\":[{\"index\":0,\"text\":\" \",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" \",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"o9frtH8-zqrih-979048d18c21a2f4\",\"object\":\"chat.completion.chunk\",\"created\":1756850471,\"choices\":[{\"index\":0,\"text\":\"3\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"3\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"o9frtH8-zqrih-979048d18c21a2f4\",\"object\":\"chat.completion.chunk\",\"created\":1756850471,\"choices\":[{\"index\":0,\"text\":\"6\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"6\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"o9frtH8-zqrih-979048d18c21a2f4\",\"object\":\"chat.completion.chunk\",\"created\":1756850471,\"choices\":[{\"index\":0,\"text\":\"3\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"3\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"o9frtH8-zqrih-979048d18c21a2f4\",\"object\":\"chat.completion.chunk\",\"created\":1756850471,\"choices\":[{\"index\":0,\"text\":\".\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\".\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"o9frtH8-zqrih-979048d18c21a2f4\",\"object\":\"chat.completion.chunk\",\"created\":1756850471,\"choices\":[{\"index\":0,\"text\":\"8\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"8\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"o9frtH8-zqrih-979048d18c21a2f4\",\"object\":\"chat.completion.chunk\",\"created\":1756850471,\"choices\":[{\"index\":0,\"text\":\"9\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"9\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"o9frtH8-zqrih-979048d18c21a2f4\",\"object\":\"chat.completion.chunk\",\"created\":1756850471,\"choices\":[{\"index\":0,\"text\":\".\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\".\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"o9frtH8-zqrih-979048d18c21a2f4\",\"object\":\"chat.completion.chunk\",\"created\":1756850471,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":\"stop\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"o9frtH8-zqrih-979048d18c21a2f4\",\"object\":\"chat.completion.chunk\",\"created\":1756850471,\"choices\":[],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":{\"prompt_tokens\":330,\"total_tokens\":352,\"completion_tokens\":22,\"prompt_tokens_details\":null}}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - no-cache, no-transform
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 979048d18c21a2f4-YUL
+      Content-Type:
+      - text/event-stream;charset=utf-8
+      Retry-After:
+      - "2"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 55423a11-a3d3-4038-b33b-3f6bc8e6740c-noamzn
+      X-Api-Call-Start:
+      - "2025-09-02T22:01:11.018Z"
+      X-Api-Received:
+      - "2025-09-02T22:01:11.003Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "19"
+      X-Ratelimit-Remaining-Tokens:
+      - "3000"
+      X-Ratelimit-Reset:
+      - "2"
+      X-Request-Id:
+      - o9frtH8-zqrih-979048d18c21a2f4
+    status: 200 OK
+    code: 200
+    duration: 978ms

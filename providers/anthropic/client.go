@@ -154,8 +154,10 @@ func (c *ChatRequest) initImpl(msgs genai.Messages, model string, cache bool, op
 		if i == msgToCache-1 {
 			c.Messages[i].CacheControl.Type = "ephemeral"
 		}
-		if err := c.Messages[len(c.Messages)-1].Validate(); err != nil {
-			errs = append(errs, fmt.Errorf("message #%d: %w", i, err))
+		if len(errs) == 0 {
+			if err := c.Messages[len(c.Messages)-1].Validate(); err != nil {
+				errs = append(errs, fmt.Errorf("message #%d: %w", i, err))
+			}
 		}
 	}
 	// If we have unsupported features but no other errors, return a continuable error
@@ -180,12 +182,7 @@ func (c *ChatRequest) initOptionsText(v *genai.OptionsText) ([]string, []error) 
 	}
 	c.Temperature = v.Temperature
 	if v.SystemPrompt != "" {
-		c.System = []SystemMessage{
-			{
-				Type: "text",
-				Text: v.SystemPrompt,
-			},
-		}
+		c.System = []SystemMessage{{Type: "text", Text: v.SystemPrompt}}
 		// TODO: Add automatic caching.
 		// c.System[0].CacheControl.Type = "ephemeral"
 	}
@@ -293,18 +290,18 @@ type Message struct {
 func (m *Message) Validate() error {
 	if m.Type != "" && m.Type != "message" {
 		// Allow empty type, it is not required.
-		return fmt.Errorf("unsupported message type %q", m.Type)
+		return &internal.BadError{Err: fmt.Errorf("implement message type %q", m.Type)}
 	}
 	switch m.Role {
 	case "assistant", "user":
 		// Valid.
 	case "":
-		return errors.New("message doesn't have role defined")
+		return &internal.BadError{Err: errors.New("message doesn't have role defined")}
 	default:
-		return fmt.Errorf("unsupported role %q", m.Role)
+		return &internal.BadError{Err: fmt.Errorf("unsupported role %q", m.Role)}
 	}
 	if len(m.Content) == 0 {
-		return errors.New("message doesn't have content defined")
+		return &internal.BadError{Err: errors.New("message doesn't have content defined")}
 	}
 	for i := range m.Content {
 		if err := m.Content[i].Validate(); err != nil {
@@ -321,7 +318,7 @@ func (m *Message) From(in *genai.Message) error {
 	case "computer":
 		m.Role = "user"
 	default:
-		return fmt.Errorf("unsupported role %q", r)
+		return &internal.BadError{Err: fmt.Errorf("unsupported role %q", r)}
 	}
 	m.Content = make([]Content, len(in.Requests)+len(in.Replies)+len(in.ToolCallResults))
 	for i := range in.Requests {
@@ -337,9 +334,7 @@ func (m *Message) From(in *genai.Message) error {
 	}
 	offset += len(in.Replies)
 	for i := range in.ToolCallResults {
-		if err := m.Content[offset+i].FromToolCallResult(&in.ToolCallResults[i]); err != nil {
-			return fmt.Errorf("tool call results #%d: %w", offset+i, err)
-		}
+		m.Content[offset+i].FromToolCallResult(&in.ToolCallResults[i])
 	}
 	return nil
 }
@@ -367,13 +362,13 @@ func (m *Message) To(out *genai.Message) error {
 			if skip, err := m.Content[i].To(&c); err != nil {
 				return fmt.Errorf("reply #%d: %w", i, err)
 			} else if skip {
-				return fmt.Errorf("reply #%d: unexpected skipped web search tool result", i)
+				return &internal.BadError{Err: fmt.Errorf("reply #%d: unexpected skipped web search tool result", i)}
 			}
 			out.Replies = append(out.Replies, c)
 		case ContentWebSearchResult, ContentImage, ContentDocument, ContentToolResult:
 			fallthrough
 		default:
-			return fmt.Errorf("unsupported content type %q", m.Content[i].Type)
+			return &internal.BadError{Err: fmt.Errorf("implement content type %q", m.Content[i].Type)}
 		}
 	}
 	return nil
@@ -460,62 +455,62 @@ func (c *Content) Validate() error {
 		// }
 		if c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || c.ID != "" || c.Name != "" || c.Input != nil ||
 			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.Context != "" || c.Title != "" {
-			return errors.New("ContentText: unexpected fields set")
+			return &internal.BadError{Err: errors.New("ContentText: unexpected fields set")}
 		}
 	case ContentThinking:
 		if c.Thinking == "" {
-			return errors.New("ContentThinking: Thinking must be set")
+			return &internal.BadError{Err: errors.New("ContentThinking: Thinking must be set")}
 		}
 		if c.Text != "" || len(c.Signature) > 0 && c.Signature == nil || c.Data != "" || c.ID != "" || c.Name != "" || c.Input != nil ||
 			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.Context != "" || c.Title != "" {
-			return errors.New("ContentThinking: unexpected fields set")
+			return &internal.BadError{Err: errors.New("ContentThinking: unexpected fields set")}
 		}
 	case ContentRedactedThinking:
 		if c.Data == "" {
-			return errors.New("ContentRedactedThinking: Data must be set")
+			return &internal.BadError{Err: errors.New("ContentRedactedThinking: Data must be set")}
 		}
 		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.ID != "" || c.Name != "" || c.Input != nil ||
 			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.Context != "" || c.Title != "" {
-			return errors.New("ContentRedactedThinking: unexpected fields set")
+			return &internal.BadError{Err: errors.New("ContentRedactedThinking: unexpected fields set")}
 		}
 	case ContentImage, ContentDocument:
 		if c.Source.Type == "" && c.Source.URL == "" && c.Source.Data == "" {
-			return fmt.Errorf("%s: Source must be set", c.Type)
+			return &internal.BadError{Err: fmt.Errorf("%s: Source must be set", c.Type)}
 		}
 		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || c.ID != "" || c.Name != "" || c.Input != nil ||
 			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 {
-			return fmt.Errorf("%s: unexpected fields set", c.Type)
+			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
 		}
 	case ContentToolUse:
 		if c.ID == "" || c.Name == "" {
-			return errors.New("ContentToolUse: ID and Name must be set")
+			return &internal.BadError{Err: errors.New("ContentToolUse: ID and Name must be set")}
 		}
 		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" ||
 			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.Context != "" || c.Title != "" {
-			return errors.New("ContentToolUse: unexpected fields set")
+			return &internal.BadError{Err: errors.New("ContentToolUse: unexpected fields set")}
 		}
 	case ContentToolResult:
 		if c.ToolUseID == "" {
-			return errors.New("ContentToolResult: ToolUseID must be set")
+			return &internal.BadError{Err: errors.New("ContentToolResult: ToolUseID must be set")}
 		}
 		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || c.ID != "" || c.Name != "" || c.Input != nil ||
 			c.Context != "" || c.Title != "" {
-			return errors.New("ContentToolResult: unexpected fields set")
+			return &internal.BadError{Err: errors.New("ContentToolResult: unexpected fields set")}
 		}
 	case ContentServerToolUse:
 		if c.ID == "" || c.Name == "" || c.Input == nil {
-			return errors.New("expected fields unset for ContentServerToolUse")
+			return &internal.BadError{Err: errors.New("expected fields unset for ContentServerToolUse")}
 		}
 	case ContentWebSearchToolResult:
 		if c.ToolUseID == "" || len(c.Content) == 0 {
-			return errors.New("expected fields unset for ContentWebSearchResult")
+			return &internal.BadError{Err: errors.New("expected fields unset for ContentWebSearchResult")}
 		}
 	case ContentWebSearchResult:
 		if c.URL == "" {
-			return errors.New("ContentWebSearchResult: URL must be set")
+			return &internal.BadError{Err: errors.New("ContentWebSearchResult: URL must be set")}
 		}
 	default:
-		return fmt.Errorf("unknown ContentType %q", c.Type)
+		return &internal.BadError{Err: fmt.Errorf("unknown ContentType %q", c.Type)}
 	}
 	return nil
 }
@@ -661,17 +656,16 @@ func (c *Content) FromReply(in *genai.Reply) error {
 		}
 		return nil
 	}
-	return errors.New("unknown Reply type")
+	return &internal.BadError{Err: errors.New("unknown Reply type")}
 }
 
-func (c *Content) FromToolCallResult(in *genai.ToolCallResult) error {
+func (c *Content) FromToolCallResult(in *genai.ToolCallResult) {
 	// TODO: Support text citation.
 	// TODO: Support image.
 	c.Type = ContentToolResult
 	c.ToolUseID = in.ID
 	c.IsError = false // Interesting!
 	c.Content = []Content{{Type: ContentText, Text: in.Result}}
-	return nil
 }
 
 func (c *Content) To(out *genai.Reply) (bool, error) {
@@ -700,7 +694,7 @@ func (c *Content) To(out *genai.Reply) (bool, error) {
 		out.ToolCall.Name = c.Name
 		raw, err := json.Marshal(c.Input)
 		if err != nil {
-			return false, fmt.Errorf("failed to marshal input: %w; for tool call: %#v", err, c)
+			return false, &internal.BadError{Err: fmt.Errorf("failed to marshal input: %w; for tool call: %#v", err, c)}
 		}
 		out.ToolCall.Arguments = string(raw)
 		return false, nil
@@ -708,7 +702,7 @@ func (c *Content) To(out *genai.Reply) (bool, error) {
 		out.Citations = []genai.Citation{{Type: "web", Sources: make([]genai.CitationSource, len(c.Content))}}
 		for i, cc := range c.Content {
 			if cc.Type != ContentWebSearchResult {
-				return false, fmt.Errorf("unsupported content type %q while processing %q", cc.Type, c.Type)
+				return false, &internal.BadError{Err: fmt.Errorf("implement content type %q while processing %q", cc.Type, c.Type)}
 			}
 			out.Citations[0].Sources[i].Type = "web"
 			out.Citations[0].Sources[i].URL = cc.URL
@@ -1579,7 +1573,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			switch pkt.Message.Role {
 			case "assistant":
 			default:
-				return fmt.Errorf("unexpected role %q", pkt.Message.Role)
+				return &internal.BadError{Err: fmt.Errorf("unexpected role %q", pkt.Message.Role)}
 			}
 			result.Usage.InputTokens = pkt.Message.Usage.InputTokens
 			result.Usage.InputCachedTokens = pkt.Message.Usage.CacheReadInputTokens
@@ -1607,7 +1601,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 				f.Citation.Sources = make([]genai.CitationSource, len(pkt.ContentBlock.Content))
 				for i, cc := range pkt.ContentBlock.Content {
 					if cc.Type != ContentWebSearchResult {
-						return fmt.Errorf("unsupported content type %q while processing %q", cc.Type, pkt.ContentBlock.Type)
+						return &internal.BadError{Err: fmt.Errorf("implement content type %q while processing %q", cc.Type, pkt.ContentBlock.Type)}
 					}
 					f.Citation.Sources[i].Type = "web"
 					f.Citation.Sources[i].URL = cc.URL
@@ -1618,7 +1612,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			case ContentWebSearchResult, ContentImage, ContentDocument, ContentToolResult:
 				fallthrough
 			default:
-				return fmt.Errorf("missing implementation for content block %q", pkt.ContentBlock.Type)
+				return &internal.BadError{Err: fmt.Errorf("implement content block %q", pkt.ContentBlock.Type)}
 			}
 		case ChunkContentBlockDelta:
 			switch pkt.Delta.Type {
@@ -1632,10 +1626,10 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 				pendingToolCall.Arguments += pkt.Delta.PartialJSON
 			case DeltaCitations:
 				if err := pkt.Delta.Citation.To(&f.Citation); err != nil {
-					return fmt.Errorf("failed to parse citation: %w", err)
+					return &internal.BadError{Err: fmt.Errorf("failed to parse citation: %w", err)}
 				}
 			default:
-				return fmt.Errorf("missing implementation for content block delta %q", pkt.Delta.Type)
+				return &internal.BadError{Err: fmt.Errorf("implement content block delta %q", pkt.Delta.Type)}
 			}
 		case ChunkContentBlockStop:
 			// Marks a closure of the block pkt.Index. Nothing to do.
@@ -1657,7 +1651,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			// TODO: See it in the field to decode properly.
 			return fmt.Errorf("got error: %+v", pkt)
 		default:
-			return fmt.Errorf("unknown stream block %q", pkt.Type)
+			return &internal.BadError{Err: fmt.Errorf("implement stream block %q", pkt.Type)}
 		}
 		if !f.IsZero() {
 			if err := result.Accumulate(f); err != nil {

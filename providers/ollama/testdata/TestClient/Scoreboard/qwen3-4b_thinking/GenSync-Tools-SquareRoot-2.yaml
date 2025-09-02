@@ -1,0 +1,30 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 649
+    host: localhost
+    body: "{\"model\":\"qwen3:4b\",\"messages\":[{\"role\":\"user\",\"content\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"},{\"role\":\"assistant\",\"tool_calls\":[{\"function\":{\"name\":\"square_root\",\"arguments\":{\"number\":132413}}}]},{\"role\":\"tool\",\"content\":\"363.89\"}],\"stream\":false,\"tools\":[{\"type\":\"function\",\"function\":{\"description\":\"Calculates and return the square root of a number\",\"name\":\"square_root\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: http://localhost/api/chat
+    method: POST
+  response:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 606
+    body: "{\"model\":\"qwen3:4b\",\"created_at\":\"2025-09-02T21:47:57.426383038Z\",\"message\":{\"role\":\"assistant\",\"content\":\"\\u003cthink\\u003e\\nOkay, the user asked for the square root of 132413 using the square_root tool. I called the function with the number 132413 and got the result 363.89. Now I need to reply with just the result. Let me make sure I don't add any extra text. The answer is 363.89.\\n\\u003c/think\\u003e\\n\\n363.89\"},\"done_reason\":\"stop\",\"done\":true,\"total_duration\":14291802906,\"load_duration\":2602815481,\"prompt_eval_count\":215,\"prompt_eval_duration\":51834923,\"eval_count\":93,\"eval_duration\":4659798757}"
+    headers:
+      Content-Length:
+      - "606"
+      Content-Type:
+      - application/json; charset=utf-8
+    status: 200 OK
+    code: 200
+    duration: 14.292s

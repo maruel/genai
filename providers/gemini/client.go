@@ -435,7 +435,7 @@ func (c *Content) To(out *genai.Message) error {
 		if part.InlineData.MimeType != "" {
 			exts, err := mime.ExtensionsByType(part.InlineData.MimeType)
 			if err != nil {
-				return fmt.Errorf("failed to get extension for mime type %q: %w", part.InlineData.MimeType, err)
+				return &internal.BadError{Err: fmt.Errorf("failed to get extension for mime type %q: %w", part.InlineData.MimeType, err)}
 			}
 			if len(exts) == 0 {
 				return fmt.Errorf("mime type %q has no extension", part.InlineData.MimeType)
@@ -448,10 +448,10 @@ func (c *Content) To(out *genai.Message) error {
 		if part.FileData.MimeType != "" {
 			exts, err := mime.ExtensionsByType(part.InlineData.MimeType)
 			if err != nil {
-				return fmt.Errorf("failed to get extension for mime type %q: %w", part.InlineData.MimeType, err)
+				return &internal.BadError{Err: fmt.Errorf("failed to get extension for mime type %q: %w", part.InlineData.MimeType, err)}
 			}
 			if len(exts) == 0 {
-				return fmt.Errorf("mime type %q has no extension", part.InlineData.MimeType)
+				return &internal.BadError{Err: fmt.Errorf("mime type %q has no extension", part.InlineData.MimeType)}
 			}
 			out.Replies = append(out.Replies, genai.Reply{Doc: genai.Doc{Filename: "content" + exts[0], URL: part.FileData.FileURI}})
 			continue
@@ -470,7 +470,7 @@ func (c *Content) To(out *genai.Message) error {
 		if reflect.ValueOf(part).IsZero() {
 			continue
 		}
-		return fmt.Errorf("unsupported part %#v", part)
+		return &internal.BadError{Err: fmt.Errorf("implement support for part %#v", part)}
 	}
 	return nil
 }
@@ -538,7 +538,7 @@ func (p *Part) FromRequest(in *genai.Request) error {
 
 func (p *Part) FromReply(in *genai.Reply) error {
 	if len(in.Opaque) != 0 {
-		return errors.New("field Reply.Opaque not supported")
+		return &internal.BadError{Err: errors.New("field Reply.Opaque not supported")}
 	}
 	if in.Reasoning != "" {
 		p.Thought = true
@@ -591,7 +591,7 @@ func (p *Part) FromReply(in *genai.Reply) error {
 		}
 		return nil
 	}
-	return errors.New("unknown Reply type")
+	return &internal.BadError{Err: errors.New("unknown Reply type")}
 }
 
 // FunctionCall is documented at https://ai.google.dev/api/caching?hl=en#FunctionCall
@@ -605,7 +605,7 @@ func (f *FunctionCall) From(in *genai.ToolCall) error {
 	f.ID = in.ID
 	f.Name = in.Name
 	if err := json.Unmarshal([]byte(in.Arguments), &f.Args); err != nil {
-		return fmt.Errorf("failed to unmarshal arguments: %w", err)
+		return &internal.BadError{Err: fmt.Errorf("failed to unmarshal arguments: %w", err)}
 	}
 	return nil
 }
@@ -615,7 +615,7 @@ func (f *FunctionCall) To(out *genai.ToolCall) error {
 	out.Name = f.Name
 	raw, err := json.Marshal(f.Args)
 	if err != nil {
-		return fmt.Errorf("failed to marshal arguments: %w", err)
+		return &internal.BadError{Err: fmt.Errorf("failed to marshal arguments: %w", err)}
 	}
 	out.Arguments = string(raw)
 	return nil
@@ -741,15 +741,14 @@ func (r *ResponseCandidate) To(out *genai.Message) error {
 		return err
 	}
 	if !internal.BeLenient {
-		// TODO: Implement.
 		if len(r.SafetyRatings) > 0 {
-			return fmt.Errorf("unexpected safety rating: %v", r.SafetyRatings)
+			return &internal.BadError{Err: fmt.Errorf("implement safety rating: %v", r.SafetyRatings)}
 		}
 		if len(r.CitationMetadata.CitationSources) > 0 {
-			return fmt.Errorf("unexpected citation metadata: %v", r.CitationMetadata.CitationSources)
+			return &internal.BadError{Err: fmt.Errorf("implement citation metadata: %v", r.CitationMetadata.CitationSources)}
 		}
 		if len(r.GroundingAttributions) > 0 {
-			return fmt.Errorf("unexpected grounding attributions: %v", r.GroundingAttributions)
+			return &internal.BadError{Err: fmt.Errorf("implement grounding attributions: %v", r.GroundingAttributions)}
 		}
 	}
 	if len(r.GroundingMetadata.GroundingChunks) > 0 {
@@ -807,7 +806,7 @@ func (g *GroundingMetadata) To(out *genai.Reply) error {
 		// This will cause duplicate source.
 		for _, idx := range s.GroundingChunkIndices {
 			if idx < 0 || idx > int64(len(g.GroundingChunks)) {
-				return fmt.Errorf("invalid grounding chunk index: %v", idx)
+				return &internal.BadError{Err: fmt.Errorf("invalid grounding chunk index: %v", idx)}
 			}
 			// TODO: The URL points to https://vertexaisearch.cloud.google.com/grounding-api-redirect/... which is
 			// not good. We should to a HEAD request to get the actual URL.
@@ -2111,7 +2110,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		f := genai.ReplyFragment{}
 
 		if len(pkt.Candidates[0].GroundingMetadata.GroundingSupports) > 1 {
-			return fmt.Errorf("implement grounding supports %#v", pkt.Candidates[0].GroundingMetadata.GroundingSupports)
+			return &internal.BadError{Err: fmt.Errorf("implement grounding supports %#v", pkt.Candidates[0].GroundingMetadata.GroundingSupports)}
 		} else if len(pkt.Candidates[0].GroundingMetadata.GroundingSupports) == 1 {
 			// TODO: Could be cleaner.
 			r := genai.Reply{}
@@ -2136,10 +2135,10 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			if part.InlineData.MimeType != "" || len(part.InlineData.Data) != 0 {
 				exts, err := mime.ExtensionsByType(part.InlineData.MimeType)
 				if err != nil {
-					return fmt.Errorf("failed to get extension for mime type %q: %w", part.InlineData.MimeType, err)
+					return &internal.BadError{Err: fmt.Errorf("failed to get extension for mime type %q: %w", part.InlineData.MimeType, err)}
 				}
 				if len(exts) == 0 {
-					return fmt.Errorf("mime type %q has no extension", part.InlineData.MimeType)
+					return &internal.BadError{Err: fmt.Errorf("mime type %q has no extension", part.InlineData.MimeType)}
 				}
 				f.Filename = "content" + exts[0]
 				f.DocumentFragment = part.InlineData.Data
@@ -2156,18 +2155,18 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			}
 			if part.FunctionResponse.ID != "" {
 				// https://ai.google.dev/api/caching?hl=en#FunctionResponse
-				return fmt.Errorf("implement function response %#v", part)
+				return &internal.BadError{Err: fmt.Errorf("implement function response %#v", part)}
 			}
 			if part.FileData.MimeType != "" || part.FileData.FileURI != "" {
-				return fmt.Errorf("implement file data %#v", part)
+				return &internal.BadError{Err: fmt.Errorf("implement file data %#v", part)}
 			}
 			if part.ExecutableCode.Language != "" || part.ExecutableCode.Code != "" {
 				// https://ai.google.dev/api/caching?hl=en#ExecutableCode
-				return fmt.Errorf("implement executable code %#v", part)
+				return &internal.BadError{Err: fmt.Errorf("implement executable code %#v", part)}
 			}
 			if part.CodeExecutionResult.Outcome != "" || part.CodeExecutionResult.Output != "" {
 				// https://ai.google.dev/api/caching?hl=en#CodeExecutionResult
-				return fmt.Errorf("implement code execution result %#v", part)
+				return &internal.BadError{Err: fmt.Errorf("implement code execution result %#v", part)}
 			}
 		}
 		if !f.IsZero() {

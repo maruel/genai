@@ -333,7 +333,7 @@ func (c *Content) FromRequest(in *genai.Request) error {
 
 func (c *Content) FromReply(in *genai.Reply) error {
 	if len(in.Opaque) != 0 {
-		return errors.New("field Reply.Opaque not supported")
+		return &internal.BadError{Err: errors.New("field Reply.Opaque not supported")}
 	}
 	if in.Text != "" {
 		c.Type = ContentText
@@ -375,11 +375,11 @@ func (c *Content) FromReply(in *genai.Reply) error {
 			}
 			c.Text = string(data)
 		default:
-			return fmt.Errorf("unsupported mime type %s", mimeType)
+			return &internal.BadError{Err: fmt.Errorf("unsupported mime type %s", mimeType)}
 		}
 		return nil
 	}
-	return errors.New("unknown Reply type")
+	return &internal.BadError{Err: errors.New("unknown Reply type")}
 }
 
 // ContentType is the type of a content block in a message.
@@ -954,7 +954,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		switch role := pkt.Choices[0].Delta.Role; role {
 		case "assistant", "":
 		default:
-			return fmt.Errorf("unexpected role %q", role)
+			return &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
 		}
 		f := genai.ReplyFragment{TextFragment: pkt.Choices[0].Delta.Content}
 		if !f.IsZero() {

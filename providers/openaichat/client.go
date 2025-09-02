@@ -351,10 +351,9 @@ func (m *Message) To(out *genai.Message) error {
 			return fmt.Errorf("unsupported annotation type %q", a.Type)
 		}
 		c := genai.Citation{
-			Type:       "web",
 			StartIndex: a.URLCitation.StartIndex,
 			EndIndex:   a.URLCitation.EndIndex,
-			Sources:    []genai.CitationSource{{Type: "web", URL: a.URLCitation.URL}},
+			Sources:    []genai.CitationSource{{Type: genai.CitationWeb, URL: a.URLCitation.URL}},
 		}
 		out.Replies = append(out.Replies, genai.Reply{Citations: []genai.Citation{c}})
 	}
@@ -1259,10 +1258,9 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			return &internal.BadError{Err: fmt.Errorf("implement multiple annotations: %#v", pkt)}
 		} else if len(pkt.Choices[0].Delta.Annotations) == 1 {
 			a := pkt.Choices[0].Delta.Annotations[0]
-			f.Citation.Type = "web"
 			f.Citation.StartIndex = a.URLCitation.StartIndex
 			f.Citation.EndIndex = a.URLCitation.EndIndex
-			f.Citation.Sources = []genai.CitationSource{{Type: "web", URL: a.URLCitation.URL}}
+			f.Citation.Sources = []genai.CitationSource{{Type: genai.CitationWeb, URL: a.URLCitation.URL}}
 			if err := result.Accumulate(f); err != nil {
 				return err
 			}

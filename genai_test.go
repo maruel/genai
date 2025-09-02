@@ -745,24 +745,18 @@ func TestReply(t *testing.T) {
 					in: Reply{
 						Text: "The capital is Paris.",
 						Citations: []Citation{{
-							Text:       "Paris",
 							StartIndex: 15,
 							EndIndex:   20,
-							Sources:    []CitationSource{{ID: "doc1", Type: "document"}},
+							Sources:    []CitationSource{{ID: "doc1", Type: CitationDocument}},
 						}},
 					},
-				},
-				// Can happen with tool calling, e.g. cohere
-				{
-					name: "citations without text",
-					in:   Reply{Citations: []Citation{{Text: "example"}}},
 				},
 				{
 					// Technically it need a source. wantErr: true,
 					name: "invalid citation",
 					in: Reply{
 						Text:      "The capital is Paris.",
-						Citations: []Citation{{Text: ""}}, // Empty text
+						Citations: []Citation{{}},
 					},
 				},
 			}
@@ -784,7 +778,7 @@ func TestReply(t *testing.T) {
 					name: "citations with thinking",
 					in: Reply{
 						Reasoning: "reasoning",
-						Citations: []Citation{{Text: "example"}},
+						Citations: []Citation{{}},
 					},
 					errMsg: "field Citations can only be used with Text",
 				},
@@ -960,7 +954,7 @@ func TestContentFragment(t *testing.T) {
 			},
 			{
 				name: "citation fragment",
-				in:   ReplyFragment{Citation: Citation{Text: "citation"}},
+				in:   ReplyFragment{Citation: Citation{Sources: []CitationSource{{Title: "citation"}}}},
 				want: false,
 			},
 		}
@@ -1288,16 +1282,14 @@ func TestCitation(t *testing.T) {
 				{
 					name: "valid citation",
 					in: Citation{
-						Text:       "example text",
 						StartIndex: 0,
 						EndIndex:   12,
-						Sources:    []CitationSource{{ID: "doc1", Type: "document"}},
+						Sources:    []CitationSource{{ID: "doc1", Type: CitationDocument}},
 					},
 				},
 				{
 					name: "empty text",
 					in: Citation{
-						Text:       "",
 						StartIndex: 0,
 						EndIndex:   10,
 					},
@@ -1305,7 +1297,6 @@ func TestCitation(t *testing.T) {
 				{
 					name: "zero end index is valid",
 					in: Citation{
-						Text:       "example",
 						StartIndex: 0,
 						EndIndex:   0, // Zero is allowed as it may indicate position-only citation
 					},
@@ -1328,7 +1319,6 @@ func TestCitation(t *testing.T) {
 				{
 					name: "negative start index",
 					in: Citation{
-						Text:       "example",
 						StartIndex: -1,
 						EndIndex:   10,
 					},
@@ -1337,7 +1327,6 @@ func TestCitation(t *testing.T) {
 				{
 					name: "end index before start",
 					in: Citation{
-						Text:       "example",
 						StartIndex: 10,
 						EndIndex:   5,
 					},
@@ -1346,7 +1335,6 @@ func TestCitation(t *testing.T) {
 				{
 					name: "end index equal to start",
 					in: Citation{
-						Text:       "example",
 						StartIndex: 10,
 						EndIndex:   10,
 					},
@@ -1355,7 +1343,6 @@ func TestCitation(t *testing.T) {
 				{
 					name: "invalid citation source",
 					in: Citation{
-						Text:    "example",
 						Sources: []CitationSource{{}},
 					},
 					errMsg: "source 0: citation source must have either ID or URL",
@@ -1363,7 +1350,6 @@ func TestCitation(t *testing.T) {
 				{
 					name: "end index equal to start",
 					in: Citation{
-						Text:       "example",
 						StartIndex: 10,
 						EndIndex:   10,
 					},
@@ -1390,15 +1376,15 @@ func TestCitationSource(t *testing.T) {
 			}{
 				{
 					name: "valid with ID",
-					in:   CitationSource{ID: "doc1", Type: "document"},
+					in:   CitationSource{ID: "doc1", Type: CitationDocument},
 				},
 				{
 					name: "valid with URL",
-					in:   CitationSource{URL: "https://example.com", Type: "web"},
+					in:   CitationSource{URL: "https://example.com", Type: CitationWeb},
 				},
 				{
 					name: "valid with both ID and URL",
-					in:   CitationSource{ID: "doc1", URL: "https://example.com", Type: "document"},
+					in:   CitationSource{ID: "doc1", URL: "https://example.com", Type: CitationDocument},
 				},
 			}
 			for _, tt := range tests {
@@ -1417,7 +1403,7 @@ func TestCitationSource(t *testing.T) {
 			}{
 				{
 					name:   "invalid without ID or URL",
-					in:     CitationSource{Type: "document"},
+					in:     CitationSource{Type: CitationDocument},
 					errMsg: "citation source must have either ID or URL",
 				},
 			}
@@ -1449,7 +1435,7 @@ func TestCitationSource(t *testing.T) {
 			},
 			{
 				name: "with Type",
-				in:   CitationSource{Type: "document"},
+				in:   CitationSource{Type: CitationDocument},
 				want: false,
 			},
 			{

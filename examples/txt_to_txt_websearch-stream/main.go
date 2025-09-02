@@ -41,10 +41,11 @@ func main() {
 		if !f.Citation.IsZero() {
 			fmt.Printf("Sources:\n")
 			for _, src := range f.Citation.Sources {
-				if src.Type == "web" {
+				switch src.Type {
+				case genai.CitationWeb:
 					fmt.Printf("- %s / %s\n", src.Title, src.URL)
-				} else {
-					fmt.Printf("Image: %s\n", src.URL)
+				case genai.CitationWebImage:
+					fmt.Printf("- image: %s\n", src.URL)
 				}
 			}
 		}

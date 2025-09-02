@@ -355,16 +355,39 @@ func (m *Message) To(out *genai.Message) error {
 				out.Replies = append(out.Replies, c)
 			}
 		case ContentServerToolUse:
-		// TODO: We drop the value, which makes the next request unusable.
-		// TODO: Send in Reply.Opaque.
+			// TODO: We drop the value, which makes the next request unusable.
+			switch m.Content[i].Name {
+			case "web_search":
+				q := WebSearch{}
+				// We marshal then unmarshal to normalize the input.
+				b, err := json.Marshal(m.Content[i].Input)
+				if err != nil {
+					return &internal.BadError{Err: fmt.Errorf("failed to marshal server tool call %s: %w", m.Content[i].Name, err)}
+				}
+				d := json.NewDecoder(bytes.NewReader(b))
+				if !internal.BeLenient {
+					d.DisallowUnknownFields()
+				}
+				if err := d.Decode(&q); err != nil {
+					return &internal.BadError{Err: fmt.Errorf("failed to decode server tool call %s: %w", m.Content[i].Name, err)}
+				}
+				out.Replies = append(out.Replies, genai.Reply{
+					Citations: []genai.Citation{{Sources: []genai.CitationSource{{Type: genai.CitationWebQuery, Snippet: q.Query}}}},
+				})
+			default:
+				// Oops, more work to do!
+				if !internal.BeLenient {
+					return &internal.BadError{Err: fmt.Errorf("implement server tool call %q", m.Content[i].Name)}
+				}
+			}
 		case ContentWebSearchToolResult:
-			c := genai.Reply{}
-			if skip, err := m.Content[i].To(&c); err != nil {
+			r := genai.Reply{}
+			if skip, err := m.Content[i].To(&r); err != nil {
 				return fmt.Errorf("reply #%d: %w", i, err)
 			} else if skip {
 				return &internal.BadError{Err: fmt.Errorf("reply #%d: unexpected skipped web search tool result", i)}
 			}
-			out.Replies = append(out.Replies, c)
+			out.Replies = append(out.Replies, r)
 		case ContentWebSearchResult, ContentImage, ContentDocument, ContentToolResult:
 			fallthrough
 		default:
@@ -440,7 +463,7 @@ type Content struct {
 	// Type == ContentWebSearchResult
 	URL              string `json:"url,omitzero"`
 	EncryptedContent string `json:"encrypted_content,omitzero"`
-	PageAge          string `json:"page_age,omitzero"`
+	PageAge          string `json:"page_age,omitzero"` // "12 hours ago", "4 days ago", "1 week ago", "April 29, 2025", null
 
 	// Type == ContentDocument, ContentWebSearchResult
 	Title string `json:"title,omitzero"` // Document title when using Source, web page title
@@ -699,24 +722,32 @@ func (c *Content) To(out *genai.Reply) (bool, error) {
 		out.ToolCall.Arguments = string(raw)
 		return false, nil
 	case ContentWebSearchToolResult:
-		out.Citations = []genai.Citation{{Type: "web", Sources: make([]genai.CitationSource, len(c.Content))}}
+		out.Citations = []genai.Citation{{Sources: make([]genai.CitationSource, len(c.Content))}}
 		for i, cc := range c.Content {
 			if cc.Type != ContentWebSearchResult {
 				return false, &internal.BadError{Err: fmt.Errorf("implement content type %q while processing %q", cc.Type, c.Type)}
 			}
-			out.Citations[0].Sources[i].Type = "web"
+			out.Citations[0].Sources[i].Type = genai.CitationWeb
 			out.Citations[0].Sources[i].URL = cc.URL
 			out.Citations[0].Sources[i].Title = cc.Title
-			out.Citations[0].Sources[i].Metadata = map[string]any{"date": cc.PageAge}
-			// EncryptedContent is not really useful?
+			out.Citations[0].Sources[i].Date = cc.PageAge
+			// TODO: Keep cc.EncryptedContent to be able to continue the thread.
 		}
 		return false, nil
-	case ContentWebSearchResult, ContentServerToolUse, ContentImage, ContentDocument, ContentToolResult:
+	case ContentServerToolUse:
+		// TODO: web_search tool query.
+		panic("shouln't happen")
+	case ContentWebSearchResult, ContentImage, ContentDocument, ContentToolResult:
 		fallthrough
 	default:
 		return false, fmt.Errorf("unsupported content type %q", c.Type)
 	}
 	return false, nil
+}
+
+// WebSearch is the server tool use.
+type WebSearch struct {
+	Query string `json:"query"`
 }
 
 // Citations is a mess.
@@ -807,33 +838,43 @@ const (
 	ContentWebSearchToolResult ContentType = "web_search_tool_result"
 )
 
+type CitationType string
+
+const (
+	CitationText                    CitationType = "text"
+	CitationCharLocation            CitationType = "char_location"
+	CitationPageLocation            CitationType = "page_location"
+	CitationContentBlockLocation    CitationType = "content_block_location"
+	CitationWebSearchResultLocation CitationType = "web_search_result_location"
+)
+
 // Citation is used both for system message and user message.
 //
 // https://docs.anthropic.com/en/api/messages#body-messages-content-citations
 // https://docs.anthropic.com/en/api/messages#body-system-citations
 type Citation struct {
-	Type string `json:"type,omitzero"` // "char_location", "page_location", "content_block_location", "web_search_result_location"
+	Type CitationType `json:"type,omitzero"`
 
-	// Content.Type == "text", "web_search_result_location"
+	// Content.Type == CitationText, CitationCharLocation, CitationWebSearchResultLocation
 	CitedText string `json:"cited_text,omitzero"`
 
-	// Content.Type == "text"
+	// Content.Type == CitationText
 	DocumentIndex int64  `json:"document_index,omitzero"`
 	DocumentTitle string `json:"document_title,omitzero"`
 
-	// Type == "char_location"
+	// Type == CitationCharLocation
 	EndCharIndex   int64 `json:"end_char_index,omitzero"`
 	StartCharIndex int64 `json:"start_char_index,omitzero"`
 
-	// Type == "page_location"
+	// Type == CitationPageLocation
 	EndPageNumber   int64 `json:"end_page_number,omitzero"`
 	StartPageNumber int64 `json:"start_page_number,omitzero"`
 
-	// Type == "content_block_location"
+	// Type == CitationContentBlockLocation
 	EndBlockIndex   int64 `json:"end_block_index,omitzero"`
 	StartBlockIndex int64 `json:"start_block_index,omitzero"`
 
-	// Type == "web_search_result_location"
+	// Type == CitationWebSearchResultLocation
 	EncryptedIndex string `json:"encrypted_index,omitzero"`
 	Title          string `json:"title,omitzero"`
 	URL            string `json:"url,omitzero"`
@@ -843,50 +884,32 @@ type Citation struct {
 }
 
 func (c *Citation) To(dst *genai.Citation) error {
-	dst.Text = c.CitedText
-	dst.Type = c.Type
 	switch c.Type {
-	case "char_location":
-		dst.StartIndex = c.StartCharIndex
-		dst.EndIndex = c.EndCharIndex
-	case "page_location":
-		// For page location, we'll store the page info in Location
-		dst.Location = map[string]any{
-			"start_page": c.StartPageNumber,
-			"end_page":   c.EndPageNumber,
-		}
-	case "content_block_location":
-		// For block location, we'll store the block info in Location
-		dst.Location = map[string]any{
-			"start_block": c.StartBlockIndex,
-			"end_block":   c.EndBlockIndex,
-		}
-	case "web_search_result_location":
-		// For web search results, create a source with URL and title
+	case CitationText, CitationCharLocation, CitationPageLocation, CitationContentBlockLocation:
+		// TODO: Trigger CitationPageLocation, CitationContentBlockLocation in the smoke test.
 		dst.Sources = []genai.CitationSource{{
-			Type:     "web",
-			URL:      c.URL,
-			Title:    c.Title,
-			Metadata: map[string]any{
-				// Not really useful? "encrypted_index": c.EncryptedIndex,
-			},
+			Type:            genai.CitationDocument,
+			Title:           c.DocumentTitle,
+			ID:              strconv.FormatInt(c.DocumentIndex, 10),
+			Snippet:         c.CitedText,
+			StartCharIndex:  c.StartCharIndex,
+			EndCharIndex:    c.EndCharIndex,
+			StartPageNumber: c.StartPageNumber,
+			EndPageNumber:   c.EndPageNumber,
+			StartBlockIndex: c.StartBlockIndex,
+			EndBlockIndex:   c.EndBlockIndex,
 		}}
-	}
-	// Add document information as a source if available
-	if c.DocumentIndex > 0 || c.DocumentTitle != "" {
-		docSource := genai.CitationSource{
-			Type:  "document",
-			Title: c.DocumentTitle,
-			Metadata: map[string]any{
-				"document_index": c.DocumentIndex,
-			},
-		}
-		// For web search results, we already have sources, so append
-		if c.Type == "web_search_result_location" {
-			dst.Sources = append(dst.Sources, docSource)
-		} else {
-			dst.Sources = []genai.CitationSource{docSource}
-		}
+	case CitationWebSearchResultLocation:
+		// This is only emitted by claude-sonnet-4-20250514 and claude-opus-4-1-20250805 and not
+		// claude-3-5-haiku-20241022.
+		dst.Sources = []genai.CitationSource{{
+			Type:    genai.CitationWeb,
+			URL:     c.URL,
+			Title:   c.Title,
+			Snippet: c.CitedText,
+		}}
+	default:
+		return &internal.BadError{Err: fmt.Errorf("implement handling citation type: %s", c.Type)}
 	}
 	return nil
 }
@@ -1221,7 +1244,7 @@ func (b *BatchQueryResponse) To(out *genai.Message) error {
 		case ContentWebSearchResult, ContentServerToolUse, ContentWebSearchToolResult, ContentImage, ContentDocument, ContentToolResult:
 			fallthrough
 		default:
-			return fmt.Errorf("unsupported content type %q", b.Result.Message.Content[i].Type)
+			return &internal.BadError{Err: fmt.Errorf("implement content type %q", b.Result.Message.Content[i].Type)}
 		}
 	}
 	return nil
@@ -1563,6 +1586,9 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		for range ch {
 		}
 	}()
+	// At the moment, only supported for server_tool_use / web_search.
+	pendingServerCall := ""
+	pendingJSON := ""
 	pendingToolCall := genai.ToolCall{}
 	for pkt := range ch {
 		f := genai.ReplyFragment{}
@@ -1596,17 +1622,26 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 				f.Opaque = map[string]any{"redacted_thinking": pkt.ContentBlock.Signature}
 			case ContentServerToolUse:
 				// Discard the data for now. It may be necessary in the future to keep in in Opaque.
+				pendingServerCall = pkt.ContentBlock.Name
+				switch pendingServerCall {
+				case "web_search":
+					// This is great!
+				default:
+					// Oops, more work to do!
+					if !internal.BeLenient {
+						return &internal.BadError{Err: fmt.Errorf("implement server tool call %q", pendingServerCall)}
+					}
+				}
 			case ContentWebSearchToolResult:
-				f.Citation.Type = "web"
 				f.Citation.Sources = make([]genai.CitationSource, len(pkt.ContentBlock.Content))
 				for i, cc := range pkt.ContentBlock.Content {
 					if cc.Type != ContentWebSearchResult {
 						return &internal.BadError{Err: fmt.Errorf("implement content type %q while processing %q", cc.Type, pkt.ContentBlock.Type)}
 					}
-					f.Citation.Sources[i].Type = "web"
+					f.Citation.Sources[i].Type = genai.CitationWeb
 					f.Citation.Sources[i].URL = cc.URL
 					f.Citation.Sources[i].Title = cc.Title
-					f.Citation.Sources[i].Metadata = map[string]any{"date": cc.PageAge}
+					f.Citation.Sources[i].Date = cc.PageAge
 					// EncryptedContent is not really useful?
 				}
 			case ContentWebSearchResult, ContentImage, ContentDocument, ContentToolResult:
@@ -1623,7 +1658,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			case DeltaSignature:
 				f.Opaque = map[string]any{"signature": pkt.Delta.Signature}
 			case DeltaInputJSON:
-				pendingToolCall.Arguments += pkt.Delta.PartialJSON
+				pendingJSON += pkt.Delta.PartialJSON
 			case DeltaCitations:
 				if err := pkt.Delta.Citation.To(&f.Citation); err != nil {
 					return &internal.BadError{Err: fmt.Errorf("failed to parse citation: %w", err)}
@@ -1632,11 +1667,36 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 				return &internal.BadError{Err: fmt.Errorf("implement content block delta %q", pkt.Delta.Type)}
 			}
 		case ChunkContentBlockStop:
-			// Marks a closure of the block pkt.Index. Nothing to do.
+			// Marks a closure of the block pkt.Index. Flush accumulated JSON if appropriate.
 			if pendingToolCall.ID != "" {
+				pendingToolCall.Arguments = pendingJSON
 				f.ToolCall = pendingToolCall
 				pendingToolCall = genai.ToolCall{}
 			}
+			// Why not web_search_20250305 ??
+			switch pendingServerCall {
+			case "web_search":
+				q := WebSearch{}
+				d := json.NewDecoder(strings.NewReader(pendingJSON))
+				if !internal.BeLenient {
+					d.DisallowUnknownFields()
+				}
+				if err := d.Decode(&q); err != nil {
+					return &internal.BadError{Err: fmt.Errorf("failed to decode pending server tool call %s: %w", pendingServerCall, err)}
+				}
+				f.Citation.Sources = []genai.CitationSource{{
+					Type:    genai.CitationWebQuery,
+					Snippet: q.Query,
+				}}
+				pendingServerCall = ""
+			case "":
+			default:
+				// Oops, more work to do!
+				if !internal.BeLenient {
+					return &internal.BadError{Err: fmt.Errorf("implement server tool call %q", pendingServerCall)}
+				}
+			}
+			pendingJSON = ""
 		case ChunkMessageDelta:
 			// Includes finish reason and output tokens usage (but not input tokens!)
 			result.Usage.FinishReason = pkt.Delta.StopReason.ToFinishReason()

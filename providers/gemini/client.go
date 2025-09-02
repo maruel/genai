@@ -751,7 +751,7 @@ func (r *ResponseCandidate) To(out *genai.Message) error {
 			return &internal.BadError{Err: fmt.Errorf("implement grounding attributions: %v", r.GroundingAttributions)}
 		}
 	}
-	if len(r.GroundingMetadata.GroundingChunks) > 0 {
+	if !r.GroundingMetadata.IsZero() {
 		rp := genai.Reply{}
 		if err := r.GroundingMetadata.To(&rp); err != nil {
 			return err
@@ -795,14 +795,21 @@ type GroundingMetadata struct {
 	} `json:"retrievalMetadata,omitzero"`
 }
 
+func (g *GroundingMetadata) IsZero() bool {
+	return len(g.GroundingChunks) == 0 && len(g.GroundingSupports) == 0 && len(g.WebSearchQueries) == 0 && len(g.SearchEntryPoint.SDKBlob) == 0 && g.RetrievalMetadata.GoogleSearchDynamicRetrievalScore == 0
+}
+
 func (g *GroundingMetadata) To(out *genai.Reply) error {
+	var src []genai.CitationSource
+	for _, q := range g.WebSearchQueries {
+		src = append(src, genai.CitationSource{Type: genai.CitationWebQuery, Snippet: q})
+	}
 	for _, s := range g.GroundingSupports {
 		c := genai.Citation{
-			Type:       "web",
-			Text:       s.Segment.Text,
 			StartIndex: s.Segment.StartIndex,
 			EndIndex:   s.Segment.EndIndex,
 		}
+		c.Sources = append(c.Sources, src...)
 		// This will cause duplicate source.
 		for _, idx := range s.GroundingChunkIndices {
 			if idx < 0 || idx > int64(len(g.GroundingChunks)) {
@@ -812,14 +819,17 @@ func (g *GroundingMetadata) To(out *genai.Reply) error {
 			// not good. We should to a HEAD request to get the actual URL.
 			gc := g.GroundingChunks[idx]
 			c.Sources = append(c.Sources, genai.CitationSource{
-				Type:  "web",
+				Type:  genai.CitationWeb,
 				URL:   gc.Web.URI,
 				Title: gc.Web.Title,
 			})
 		}
 		out.Citations = append(out.Citations, c)
 	}
-	// TODO: WebSearchQueries.
+	// Sometimes there's no GroundingSupports. Make sure to still flush the web query.
+	if len(src) > 0 && len(g.GroundingSupports) == 0 {
+		out.Citations = append(out.Citations, genai.Citation{Sources: src})
+	}
 	// SearchEntryPoint will contain some HTML.
 	return nil
 }
@@ -2104,25 +2114,24 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		switch role := pkt.Candidates[0].Content.Role; role {
 		case "model", "":
 		default:
-			return fmt.Errorf("unexpected role %q", role)
+			return &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
 		}
 
 		f := genai.ReplyFragment{}
 
-		if len(pkt.Candidates[0].GroundingMetadata.GroundingSupports) > 1 {
-			return &internal.BadError{Err: fmt.Errorf("implement grounding supports %#v", pkt.Candidates[0].GroundingMetadata.GroundingSupports)}
-		} else if len(pkt.Candidates[0].GroundingMetadata.GroundingSupports) == 1 {
-			// TODO: Could be cleaner.
+		if !pkt.Candidates[0].GroundingMetadata.IsZero() {
 			r := genai.Reply{}
 			if err := pkt.Candidates[0].GroundingMetadata.To(&r); err != nil {
-				return err
+				return &internal.BadError{Err: err}
 			}
-			f.Citation = r.Citations[0]
-			if err := result.Accumulate(f); err != nil {
-				return err
+			// Handle citations as a separate packet.
+			for _, c := range r.Citations {
+				f.Citation = c
+				if err := result.Accumulate(f); err != nil {
+					return err
+				}
+				chunks <- f
 			}
-			chunks <- f
-			// Handle citation as a separate packet.
 			f = genai.ReplyFragment{}
 		}
 

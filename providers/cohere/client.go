@@ -127,7 +127,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 				}
 			}
 			if v.WebSearch {
-				unsupported = append(unsupported, "OptionsTools.WebSearch")
+				errs = append(errs, errors.New("unsupported OptionsTools.WebSearch"))
 			}
 		default:
 			errs = append(errs, fmt.Errorf("unsupported options type %T", opt))
@@ -417,9 +417,16 @@ func (c Citations) To(dst *genai.Reply) error {
 	return nil
 }
 
+type CitationType string
+
+const (
+	CitationTextContent CitationType = "TEXT_CONTENT"
+	CitationPlan        CitationType = "PLAN"
+)
+
 // Citation is only used with messages from the LLM.
 type Citation struct {
-	Type         string           `json:"type,omitzero"` // "TEXT_CONTENT", "PLAN"
+	Type         CitationType     `json:"type,omitzero"`
 	Start        int64            `json:"start,omitzero"`
 	End          int64            `json:"end,omitzero"`
 	Text         string           `json:"text,omitzero"`
@@ -427,39 +434,53 @@ type Citation struct {
 	ContentIndex int64            `json:"content_index,omitzero"`
 }
 
-func (c *Citation) To(dst *genai.Citation) {
-	dst.Text = c.Text
-	dst.StartIndex = c.Start
-	dst.EndIndex = c.End
-	dst.Type = c.Type
-	dst.Sources = make([]genai.CitationSource, len(c.Sources))
+func (c *Citation) To(out *genai.Citation) error {
+	out.Sources = make([]genai.CitationSource, len(c.Sources))
 	for i, source := range c.Sources {
-		cs := &dst.Sources[i]
+		cs := &out.Sources[i]
 		cs.ID = source.ID
-		cs.Type = source.Type
 		switch source.Type {
-		case "tool":
-			cs.Metadata = map[string]any{
-				"tool_output": source.ToolOutput,
-			}
-		case "document":
-			cs.Metadata = map[string]any{
-				"document": source.Document,
-			}
+		case SourceTool:
+			// Triggered in SquareRoot-2.
+			cs.Type = genai.CitationTool
+			b, _ := json.Marshal(source.ToolOutput)
+			cs.Snippet = string(b)
+		case SourceDocument:
+			// Triggered in Citations-text-plain.
+			cs.Type = genai.CitationDocument
+			cs.ID = source.Document.ID
+			cs.Title = source.Document.Title
+			// The snippet is essentially the whole text. This is not ideal.
+			// cs.Snippet = source.Document.Snippet
+			cs.Snippet = c.Text
+			// This is problematic because the citation is from the document but it doesn't seem to be working. If
+			// someone take the time to figure it out, please send a PR.
+			cs.StartCharIndex = c.Start
+			cs.EndCharIndex = c.End
+		default:
+			return fmt.Errorf("implement citation source type %q", source.Type)
 		}
 	}
+	return nil
 }
 
-type CitationSource struct {
-	Type string `json:"type,omitzero"` // "tool", "document"
+type SourceType string
 
-	// Type == "tool", "document"
+const (
+	SourceTool     SourceType = "tool"
+	SourceDocument SourceType = "document"
+)
+
+type CitationSource struct {
+	Type SourceType `json:"type,omitzero"`
+
+	// Type == SourceTool, SourceDocument
 	ID string `json:"id,omitzero"`
 
-	// Type == "tool"
+	// Type == SourceTool
 	ToolOutput map[string]any `json:"tool_output,omitzero"`
 
-	// Type == "document"
+	// Type == SourceDocument
 	Document struct {
 		ID      string `json:"id,omitzero"`
 		Snippet string `json:"snippet,omitzero"`

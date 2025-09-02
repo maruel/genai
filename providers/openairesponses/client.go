@@ -483,7 +483,7 @@ func (m *Message) To(out *genai.Message) error {
 	case MessageReasoning:
 		for i := range m.Summary {
 			if m.Summary[i].Type != "summary_text" {
-				return &internal.BadError{Err: fmt.Errorf("unsupported summary type %q", m.Summary[i].Type)}
+				return &internal.BadError{Err: fmt.Errorf("implement summary type %q", m.Summary[i].Type)}
 			}
 			out.Replies = append(out.Replies, genai.Reply{Reasoning: m.Summary[i].Text})
 		}
@@ -491,12 +491,14 @@ func (m *Message) To(out *genai.Message) error {
 		out.Replies = append(out.Replies, genai.Reply{ToolCall: genai.ToolCall{ID: m.CallID, Name: m.Name, Arguments: m.Arguments}})
 	case MessageWebSearchCall:
 		if m.Action.Type != "search" {
-			return &internal.BadError{Err: fmt.Errorf("unsupported action type %q", m.Action.Type)}
+			return &internal.BadError{Err: fmt.Errorf("implement action type %q", m.Action.Type)}
 		}
-		c := genai.Citation{Text: m.Action.Query, Sources: make([]genai.CitationSource, len(m.Action.Sources))}
+		c := genai.Citation{Sources: make([]genai.CitationSource, len(m.Action.Sources)+1)}
+		c.Sources[0].Type = genai.CitationWebQuery
+		c.Sources[0].Snippet = m.Action.Query
 		for i, src := range m.Action.Sources {
-			c.Sources[i].Type = "web"
-			c.Sources[i].URL = src.URL
+			c.Sources[i+1].Type = genai.CitationWeb
+			c.Sources[i+1].URL = src.URL
 		}
 		out.Replies = append(out.Replies, genai.Reply{Citations: []genai.Citation{c}})
 	case MessageFileSearchCall, MessageComputerCall, MessageImageGenerationCall, MessageCodeInterpreterCall, MessageLocalShellCall, MessageMcpListTools, MessageMcpApprovalRequest, MessageMcpCall, MessageComputerCallOutput, MessageFunctionCallOutput, MessageLocalShellCallOutput, MessageMcpApprovalResponse, MessageItemReference:
@@ -556,10 +558,9 @@ func (c *Content) To(out *genai.Reply) error {
 			return &internal.BadError{Err: fmt.Errorf("field Annotation.FileID not supported")}
 		}
 		c := genai.Citation{
-			Type:       "web",
 			StartIndex: a.StartIndex,
 			EndIndex:   a.EndIndex,
-			Sources:    []genai.CitationSource{{Type: "web", URL: a.URL, Title: a.Title}},
+			Sources:    []genai.CitationSource{{Type: genai.CitationWeb, URL: a.URL, Title: a.Title}},
 		}
 		out.Citations = append(out.Citations, c)
 	}
@@ -1160,6 +1161,7 @@ func processStreamPackets(ch <-chan ResponseStreamChunkResponse, chunks chan<- g
 		switch pkt.Type {
 		case ResponseCreated, ResponseInProgress:
 		case ResponseCompleted:
+			// This message contains all the data duplicated. :( It's clear they never thought about efficiency.
 			result.Usage.InputTokens = pkt.Response.Usage.InputTokens
 			result.Usage.InputCachedTokens = pkt.Response.Usage.InputTokensDetails.CachedTokens
 			result.Usage.ReasoningTokens = pkt.Response.Usage.OutputTokensDetails.ReasoningTokens
@@ -1224,7 +1226,25 @@ func processStreamPackets(ch <-chan ResponseStreamChunkResponse, chunks chan<- g
 				return &internal.BadError{Err: fmt.Errorf("implement item: %q", pkt.Item.Type)}
 			}
 		case ResponseOutputItemDone:
-			// Unnecessary.
+			// Perfect place to handle  web server, since the "pending" has no data.
+			switch pkt.Item.Type {
+			case MessageWebSearchCall:
+				// TODO: Check for pkt.Item.Status == "completed"
+				switch pkt.Item.Action.Type {
+				case "search":
+					f.Citation.Sources = make([]genai.CitationSource, len(pkt.Item.Action.Sources)+1)
+					f.Citation.Sources[0].Type = genai.CitationWebQuery
+					f.Citation.Sources[0].Snippet = pkt.Item.Action.Query
+					for i, src := range pkt.Item.Action.Sources {
+						f.Citation.Sources[i+1].Type = genai.CitationWeb
+						f.Citation.Sources[i+1].URL = src.URL
+					}
+				default:
+					return &internal.BadError{Err: fmt.Errorf("implement action type %q", pkt.Item.Action.Type)}
+				}
+			default:
+				// The default stance is to ignore this event since it's generally duplicate information.
+			}
 		case ResponseContentPartAdded:
 			switch pkt.Part.Type {
 			case ContentOutputText:
@@ -1261,20 +1281,19 @@ func processStreamPackets(ch <-chan ResponseStreamChunkResponse, chunks chan<- g
 		case ResponseError:
 			return &internal.BadError{Err: fmt.Errorf("error: %s", pkt.Message)}
 		case ResponseWebSearchCallInProgress:
-			// Not much to surface.
+			// Data is sent in ResponseOutputItemDone.
 		case ResponseWebSearchCallSearching:
-			// Not much to surface.
+			// Data is sent in ResponseOutputItemDone.
 		case ResponseWebSearchCallCompleted:
-			// Not much to surface.
+			// Data is sent in ResponseOutputItemDone.
 		case ResponseOutputTextAnnotationAdded:
 			if pkt.Annotation.Type != "url_citation" {
 				return &internal.BadError{Err: fmt.Errorf("implement annotation type: %q", pkt.Annotation.Type)}
 			}
-			f.Citation.Type = "web"
 			f.Citation.StartIndex = pkt.Annotation.StartIndex
 			f.Citation.EndIndex = pkt.Annotation.EndIndex
 			f.Citation.Sources = []genai.CitationSource{
-				{Type: "web", URL: pkt.Annotation.URL, Title: pkt.Annotation.Title},
+				{Type: genai.CitationWeb, URL: pkt.Annotation.URL, Title: pkt.Annotation.Title},
 			}
 		case ResponseFileSearchCallCompleted, ResponseFileSearchCallInProgress, ResponseFileSearchCallSearching, ResponseImageGenerationCallCompleted, ResponseImageGenerationCallGenerating, ResponseImageGenerationCallInProgress, ResponseImageGenerationCallPartialImage, ResponseMCPCallArgumentsDelta, ResponseMCPCallArgumentsDone, ResponseMCPCallCompleted, ResponseMCPCallFailed, ResponseMCPCallInProgress, ResponseMCPListToolsCompleted, ResponseMCPListToolsFailed, ResponseMCPListToolsInProgress, ResponseQueued, ResponseReasoningDelta, ResponseReasoningDone, ResponseReasoningSummaryDelta, ResponseReasoningSummaryDone:
 			fallthrough

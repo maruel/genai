@@ -368,21 +368,19 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	err := c.Choices[0].Message.To(&out.Message)
 	if len(out.Replies) > 0 {
 		if len(c.SearchResults) > 0 {
-			ct := genai.Citation{Type: "web", Sources: make([]genai.CitationSource, len(c.SearchResults))}
+			ct := genai.Citation{Sources: make([]genai.CitationSource, len(c.SearchResults))}
 			for i := range c.SearchResults {
-				ct.Sources[i].Type = "web"
+				ct.Sources[i].Type = genai.CitationWeb
 				ct.Sources[i].Title = c.SearchResults[i].Title
 				ct.Sources[i].URL = c.SearchResults[i].URL
-				if c.SearchResults[i].Date != "" {
-					ct.Sources[i].Metadata = map[string]any{"date": c.SearchResults[i].Date}
-				}
+				ct.Sources[i].Date = c.SearchResults[i].Date
 			}
 			out.Replies[0].Citations = append(out.Replies[0].Citations, ct)
 		}
 		if len(c.Images) > 0 {
-			ct := genai.Citation{Type: "document", Sources: make([]genai.CitationSource, len(c.Images))}
+			ct := genai.Citation{Sources: make([]genai.CitationSource, len(c.Images))}
 			for i := range c.Images {
-				ct.Sources[i].Type = "image"
+				ct.Sources[i].Type = genai.CitationDocument
 				ct.Sources[i].Title = c.Images[i].OriginURL
 				ct.Sources[i].URL = c.Images[i].ImageURL
 				ct.Sources[i].Metadata = map[string]any{
@@ -637,21 +635,17 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		}
 		// We need to do one packet per citation type. Do that before sending text.
 		if len(pkt.SearchResults) > 0 {
-			f := genai.ReplyFragment{Citation: genai.Citation{Type: "web"}}
+			f := genai.ReplyFragment{}
 			for _, r := range pkt.SearchResults {
 				if _, ok := seen[r.URL]; ok {
 					continue
 				}
 				seen[r.URL] = struct{}{}
-				var metadata map[string]any
-				if r.Date != "" {
-					metadata = map[string]any{"date": r.Date}
-				}
 				f.Citation.Sources = append(f.Citation.Sources, genai.CitationSource{
-					Type:     "web",
-					Title:    r.Title,
-					URL:      r.URL,
-					Metadata: metadata,
+					Type:  genai.CitationWeb,
+					Title: r.Title,
+					URL:   r.URL,
+					Date:  r.Date,
 				})
 			}
 			if len(f.Citation.Sources) > 0 {
@@ -662,14 +656,14 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			}
 		}
 		if len(pkt.Images) > 0 {
-			f := genai.ReplyFragment{Citation: genai.Citation{Type: "document"}}
+			f := genai.ReplyFragment{}
 			for _, img := range pkt.Images {
 				if _, ok := seen[img.ImageURL]; ok {
 					continue
 				}
 				seen[img.ImageURL] = struct{}{}
 				f.Citation.Sources = append(f.Citation.Sources, genai.CitationSource{
-					Type:  "image",
+					Type:  genai.CitationDocument,
 					Title: img.OriginURL,
 					URL:   img.ImageURL,
 					Metadata: map[string]any{

@@ -81,6 +81,8 @@ type Functionality struct {
 	// ToolCallRequired is true when the value genai.ToolCallRequired works. Not supporting it significantly
 	// increases the risk of flakiness.
 	ToolCallRequired bool `json:"toolCallRequired,omitzero"`
+	// WebSearch is true if the provider supports web search via its own backend.
+	WebSearch bool `json:"webSearch,omitzero"`
 
 	// JSON means that the model supports enforcing that the response is valid JSON but not necessarily with a
 	// schema.

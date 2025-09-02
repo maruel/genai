@@ -46,26 +46,26 @@ genai is _different_. Curious why it was created? See the release announcement a
 
 ## Scoreboard
 
-| Provider                                   | 🌐   | Mode          | ➛In        | Out➛   | Tool | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
-| ------------------------------------------ | ---- | ------------- | ---------- | ------ | ---- | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
-| [anthropic](docs/anthropic.md)             | 🇺🇸   | Sync, Stream🧠 | 💬📄📸     | 💬     | ✅🪨 | ❌   | ✅    | ❌   | ✅   | 📏🛑   | ❌    | ✅     | ✅    | ✅     |
-| [bfl](docs/bfl.md)                         | 🇩🇪   | Sync          | 💬         | 📸     | ❌   | ❌   | ✅    | ❌   | ❌   | 🌱   | ❌    | ✅     | ❌    | ❌     |
-| [cerebras](docs/cerebras.md)               | 🇺🇸   | Sync, Stream🧠 | 💬         | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
-| [cloudflare](docs/cloudflare.md)           | 🇺🇸   | Sync, Stream  | 💬         | 💬     | 💨   | ✅   | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | 💨     |
-| [cohere](docs/cohere.md)                   | 🇨🇦   | Sync, Stream🧠 | 💬📸       | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ✅   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| [deepseek](docs/deepseek.md)               | 🇨🇳   | Sync, Stream🧠 | 💬         | 💬     | ✅🪨 | ☁️   | ❌    | ❌   | ❌   | 📏🛑   | ✅    | ❌     | ✅    | ✅     |
-| [gemini](docs/gemini.md)                   | 🇺🇸   | Sync, Stream🧠 | 🎤🎥💬📄📸 | 💬📸   | ✅🪨 | ✅   | ✅    | ✅   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| [groq](docs/groq.md)                       | 🇺🇸   | Sync, Stream🧠 | 💬📸       | 💬     | ✅🪨 | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| [huggingface](docs/huggingface.md)         | 🇺🇸   | Sync, Stream🧠 | 💬         | 💬     | ❌   | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
-| [llamacpp](docs/llamacpp.md)               | 🏠   | Sync, Stream  | 💬📸       | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| [mistral](docs/mistral.md)                 | 🇫🇷   | Sync, Stream  | 🎤💬📄📸   | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| [ollama](docs/ollama.md)                   | 🏠   | Sync, Stream🧠 | 💬📸       | 💬     | 💨   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
-| [openaichat](docs/openaichat.md)           | 🇺🇸   | Sync, Stream🧠 | 🎤💬📄📸   | 💬📸   | ✅🪨 | ✅   | ✅    | ✅   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
-| [openairesponses](docs/openairesponses.md) | 🇺🇸   | Sync, Stream🧠 | 💬📄📸     | 💬📸   | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 📏🌱  | ❌    | ✅     | ✅    | ✅     |
-| [perplexity](docs/perplexity.md)           | 🇺🇸   | Sync, Stream🧠 | 💬📸       | 💬     | ❌   | 📐    | ❌    | ❌   | ✅   | 📏    | ❌    | ❌     | ✅    | ✅     |
-| [pollinations](docs/pollinations.md)       | 🇩🇪   | Sync, Stream  | 💬📸       | 💬📸   | ✅🪨 | ☁️   | ❌    | ❌   | ❌   | 🌱   | ❌    | ❌     | ✅    | ✅     |
-| [togetherai](docs/togetherai.md)           | 🇺🇸   | Sync, Stream🧠 | 💬📸       | 💬📸   | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
-| openaicompatible                           | N/A  | Sync, Stream  | 💬         | 💬     | ❌   | ❌   | ❌    | ❌   | ❌   | 📏🛑   | ❌    | ❌     | ✅    | ✅     |
+| Provider                                   | 🌐   | Mode          | ➛In        | Out➛   | Tool   | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
+| ------------------------------------------ | ---- | ------------- | ---------- | ------ | ------ | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
+| [anthropic](docs/anthropic.md)             | 🇺🇸   | Sync, Stream🧠 | 💬📄📸     | 💬     | ✅🪨🕸️ | ❌   | ✅    | ❌   | ✅   | 📏🛑   | ❌    | ✅     | ✅    | ✅     |
+| [bfl](docs/bfl.md)                         | 🇩🇪   | Sync          | 💬         | 📸     | ❌     | ❌   | ✅    | ❌   | ❌   | 🌱   | ❌    | ✅     | ❌    | ❌     |
+| [cerebras](docs/cerebras.md)               | 🇺🇸   | Sync, Stream🧠 | 💬         | 💬     | ✅🪨   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
+| [cloudflare](docs/cloudflare.md)           | 🇺🇸   | Sync, Stream  | 💬         | 💬     | 💨     | ✅   | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | 💨     |
+| [cohere](docs/cohere.md)                   | 🇨🇦   | Sync, Stream🧠 | 💬📸       | 💬     | ✅🪨   | ✅   | ❌    | ❌   | ✅   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| [deepseek](docs/deepseek.md)               | 🇨🇳   | Sync, Stream🧠 | 💬         | 💬     | ✅🪨   | ☁️   | ❌    | ❌   | ❌   | 📏🛑   | ✅    | ❌     | ✅    | ✅     |
+| [gemini](docs/gemini.md)                   | 🇺🇸   | Sync, Stream🧠 | 🎤🎥💬📄📸 | 💬📸   | ✅🪨🕸️ | ✅   | ✅    | ✅   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| [groq](docs/groq.md)                       | 🇺🇸   | Sync, Stream🧠 | 💬📸       | 💬     | ✅🪨   | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
+| [huggingface](docs/huggingface.md)         | 🇺🇸   | Sync, Stream🧠 | 💬         | 💬     | ❌     | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
+| [llamacpp](docs/llamacpp.md)               | 🏠   | Sync, Stream  | 💬📸       | 💬     | ✅🪨   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| [mistral](docs/mistral.md)                 | 🇫🇷   | Sync, Stream  | 🎤💬📄📸   | 💬     | ✅🪨   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
+| [ollama](docs/ollama.md)                   | 🏠   | Sync, Stream🧠 | 💬📸       | 💬     | 💨     | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
+| [openaichat](docs/openaichat.md)           | 🇺🇸   | Sync, Stream🧠 | 🎤💬📄📸   | 💬📸   | ✅🪨   | ✅   | ✅    | ✅   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
+| [openairesponses](docs/openairesponses.md) | 🇺🇸   | Sync, Stream🧠 | 💬📄📸     | 💬📸   | ✅🪨🕸️ | ✅   | ❌    | ❌   | ❌   | 📏🌱  | ❌    | ✅     | ✅    | ✅     |
+| [perplexity](docs/perplexity.md)           | 🇺🇸   | Sync, Stream🧠 | 💬📸       | 💬     | ❌     | 📐    | ❌    | ❌   | ✅   | 📏    | ❌    | ❌     | ✅    | ✅     |
+| [pollinations](docs/pollinations.md)       | 🇩🇪   | Sync, Stream  | 💬📸       | 💬📸   | ✅🪨   | ☁️   | ❌    | ❌   | ❌   | 🌱   | ❌    | ❌     | ✅    | ✅     |
+| [togetherai](docs/togetherai.md)           | 🇺🇸   | Sync, Stream🧠 | 💬📸       | 💬📸   | ✅🪨   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
+| openaicompatible                           | N/A  | Sync, Stream  | 💬         | 💬     | ❌     | ❌   | ❌    | ❌   | ❌   | 📏🛑   | ❌    | ❌     | ✅    | ✅     |
 <details>
 <summary>‼️ Click here for the legend of columns and symbols</summary>
 
@@ -86,8 +86,9 @@ genai is _different_. Curious why it was created? See the release announcement a
 - 🎥: Video: process a video (e.g. MP4) as input, or generate a video (e.g. Veo 3)
 - 💨: Feature is flaky (Tool calling) or inconsistent (Usage is not always reported)
 - 🌐: Country where the company is located
-- Tool: Tool calling, using [genai.ToolDef](https://pkg.go.dev/github.com/maruel/genai#ToolDef); best is ✅🪨
+- Tool: Tool calling, using [genai.ToolDef](https://pkg.go.dev/github.com/maruel/genai#ToolDef); best is ✅🪨🕸️
 		- 🪨: Tool calling can be forced; aka you can force the model to call a tool. This is great.
+		- 🕸️: Web search
 - JSON: ability to output JSON in free form, or with a forced schema specified as a Go struct
     - ✅: Supports both free form and with a schema
     - ☁️ :Supports only free form
@@ -206,8 +207,11 @@ Snippet:
 	}}
 	res, _ := c.GenSync(ctx, msgs)
 	for _, r := range res.Replies {
+		fmt.Printf("Citation:\n")
 		for _, ci := range r.Citations {
-			fmt.Printf("Citation: %s\n", ci.Text)
+			for _, src := range ci.Sources {
+				fmt.Printf("- %q\n", src.Snippet)
+			}
 		}
 	}
 	fmt.Printf("\nAnswer: %s\n", res.String())
@@ -216,13 +220,9 @@ Snippet:
 When asked _When did Darwin arrive home?_ with the introduction of _On the Origin of Species by Charles
 Darwin_ passed in as a document, this may print:
 
-> Citation: 1837
->
-> Citation: returned home
->
-> Citation: began to reflect on the facts he had gathered
->
-> Citation: H.M.S. Beagle.
+> Citation:
+> - "excerpt from Charles Darwin's work 'On the Origin of Species'"
+> - "returned home in 1837."
 >
 > Answer: 1837 was when Darwin returned home and began to reflect on the facts he had gathered during his time on H.M.S. Beagle.
 
@@ -251,10 +251,11 @@ Snippet:
 		for _, ci := range r.Citations {
 			fmt.Printf("Sources:\n")
 			for _, src := range ci.Sources {
-				if src.Type == "web" {
+				switch src.Type {
+				case genai.CitationWeb:
 					fmt.Printf("- %s / %s\n", src.Title, src.URL)
-				} else {
-					fmt.Printf("Image: %s\n", src.URL)
+				case genai.CitationWebImage:
+					fmt.Printf("- image: %s\n", src.URL)
 				}
 			}
 		}

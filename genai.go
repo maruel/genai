@@ -1076,23 +1076,18 @@ func (t *ToolCallResult) UnmarshalJSON(b []byte) error {
 
 // Citation represents a reference to source material that supports content.
 // It provides a unified interface for different provider citation formats.
+//
+// Normally one of CitedText or StartIndex/EndIndex is set.
 type Citation struct {
-	// Text is the exact text that is being cited.
-	Text string `json:"text,omitzero"`
-	// StartIndex is the starting character position of the citation in the content (0-based).
-	// For providers that support character-level citations.
+	// CitedText is the text that was cited.
+	CitedText string `json:"cited_text,omitzero"`
+	// StartIndex is the starting character position of the citation in the answer (0-based).
 	StartIndex int64 `json:"start_index,omitzero"`
-	// EndIndex is the ending character position of the citation in the content (0-based, exclusive).
-	// For providers that support character-level citations.
+	// EndIndex is the ending character position of the citation in the answer (0-based, exclusive).
 	EndIndex int64 `json:"end_index,omitzero"`
+
 	// Sources contains information about the source documents or tools that support this citation.
 	Sources []CitationSource `json:"sources,omitzero"`
-	// Location provides additional location information (page numbers, block indices, etc.)
-	// that varies by provider and source type.
-	Location map[string]any `json:"location,omitzero"`
-	// Type indicates the citation type (e.g., "text", "document", "tool", "web").
-	// This is provider-specific and may be empty for unified citations.
-	Type string `json:"type,omitzero"`
 
 	_ struct{}
 }
@@ -1118,19 +1113,50 @@ func (c *Citation) Validate() error {
 }
 
 func (c *Citation) IsZero() bool {
-	return c.Text == "" && c.StartIndex == 0 && c.EndIndex == 0 && len(c.Sources) == 0 && len(c.Location) == 0 && c.Type == ""
+	return c.StartIndex == 0 && c.EndIndex == 0 && len(c.Sources) == 0
 }
+
+// CitationType is a citation that a model returned as part of its reply.
+type CitationType int8
+
+const (
+	// CitationWebQuery is an query used as part of a web search.
+	CitationWebQuery CitationType = iota + 1
+	// CitationWeb is an URL from a web search.
+	CitationWeb
+	// CitationWebImage is an URL to an image from a web search.
+	CitationWebImage
+	// CitationDocument is from a document provided as input or explicitly referenced.
+	CitationDocument
+	// CitationTool is when the provider refers to the result of a tool call in its answer.
+	CitationTool
+)
 
 // CitationSource represents a source that supports a citation.
 type CitationSource struct {
+	// Type indicates the source type.
+	Type CitationType `json:"type,omitzero"`
 	// ID is a unique identifier for the source (e.g., document ID, tool call ID).
 	ID string `json:"id,omitzero"`
-	// Type indicates the source type (e.g., "document", "tool", "web").
-	Type string `json:"type,omitzero"`
 	// Title is the human-readable title of the source.
 	Title string `json:"title,omitzero"`
 	// URL is the web URL for the source, if applicable.
 	URL string `json:"url,omitzero"`
+	// Snippet is a snippet from the source, if applicable. It is the web search query for CitationWebQuery.
+	Snippet string `json:"snippet,omitzero"`
+	// StartCharIndex is the starting character position of the citation in the sourced document (0-based).
+	StartCharIndex int64 `json:"start_index,omitzero"`
+	// EndCharIndex is the ending character position of the citation in the the sourced document (0-based, exclusive).
+	EndCharIndex int64 `json:"end_index,omitzero"`
+	// StartPageNumber is the starting page number of the citation in the sourced document (1-based).
+	StartPageNumber int64 `json:"start_page_number,omitzero"`
+	EndPageNumber   int64 `json:"end_page_number,omitzero"`
+	// StartBlockIndex is the starting block index of the citation in the sourced document (0-based).
+	StartBlockIndex int64 `json:"start_block_index,omitzero"`
+	EndBlockIndex   int64 `json:"end_block_index,omitzero"`
+
+	// Date is the date of the source, if applicable.
+	Date string `json:"date,omitzero"`
 	// Metadata contains additional source-specific information.
 	// For document sources: document index, page numbers, etc.
 	// For tool sources: tool output, function name, etc.
@@ -1142,14 +1168,15 @@ type CitationSource struct {
 
 // Validate ensures the citation source is valid.
 func (cs *CitationSource) Validate() error {
-	if cs.ID == "" && cs.URL == "" {
+	if cs.ID == "" && cs.URL == "" && cs.Type != CitationWebQuery {
 		return fmt.Errorf("citation source must have either ID or URL")
 	}
 	return nil
 }
 
 func (cs *CitationSource) IsZero() bool {
-	return cs.ID == "" && cs.Type == "" && cs.Title == "" && cs.URL == "" && len(cs.Metadata) == 0
+	return cs.Type == 0 && cs.ID == "" && cs.Title == "" && cs.URL == "" &&
+		cs.Snippet == "" && cs.Date == "" && len(cs.Metadata) == 0
 }
 
 //

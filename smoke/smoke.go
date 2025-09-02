@@ -438,7 +438,12 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 			if len(r.Citations) == 0 {
 				continue
 			}
-			internal.Logger(ctxCheck).DebugContext(ctx, "WebSearch", "citations", r.Citations)
+			for _, c := range r.Citations {
+				if len(c.Sources) == 0 {
+					return f, fmt.Errorf("citation has no sources: %#v", resp)
+				}
+			}
+			internal.Logger(ctxCheck).DebugContext(ctx, "citations", "citations", r.Citations)
 		}
 	} else {
 		// The client code must provide the text as inline content.

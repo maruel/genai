@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log/slog"
 	"math"
 	"slices"
 	"strings"
@@ -280,6 +281,52 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 		}
 	} else {
 		f.ToolsBiased = scoreboard.Flaky
+	}
+
+	// Test the WebSearch tool. It's a costly test.
+	msgs = genai.Messages{genai.NewTextMessage("Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation.")}
+	optsTools = genai.OptionsTools{WebSearch: true}
+	resp, err = cs.callGen(ctx, prefix+"WebSearch", msgs, &optsTools)
+	if isBadError(ctx, err) {
+		internal.Logger(ctx).DebugContext(ctx, "WebSearch", "err", err)
+		return err
+	}
+	internal.Logger(ctx).DebugContext(ctx, "WebSearch", "resp", resp)
+	// It must contains citations.
+	if err == nil {
+		f.WebSearch = slices.ContainsFunc(resp.Replies, func(r genai.Reply) bool { return len(r.Citations) > 0 })
+		for _, r := range resp.Replies {
+			if len(r.Citations) == 0 {
+				continue
+			}
+			for _, c := range r.Citations {
+				if len(c.Sources) == 0 {
+					return fmt.Errorf("citation has no sources: %#v", resp)
+				}
+			}
+			slog.DebugContext(ctx, "WebSearch", "citations", r.Citations)
+		}
+		if !slices.ContainsFunc(resp.Replies, func(r genai.Reply) bool {
+			return slices.ContainsFunc(r.Citations, func(c genai.Citation) bool {
+				return slices.ContainsFunc(c.Sources, func(s genai.CitationSource) bool {
+					return s.Type == genai.CitationWebQuery
+				})
+			})
+		}) {
+			return fmt.Errorf("missing query from WebSearch citation: %#v", resp)
+		}
+		// This happens with gemini-2.5-pro, it seems the web results gets eaten by the thought summarization.
+		if false {
+			if !slices.ContainsFunc(resp.Replies, func(r genai.Reply) bool {
+				return slices.ContainsFunc(r.Citations, func(c genai.Citation) bool {
+					return slices.ContainsFunc(c.Sources, func(s genai.CitationSource) bool {
+						return s.Type == genai.CitationWeb
+					})
+				})
+			}) {
+				return fmt.Errorf("missing URLs from WebSearch citation: %#v", resp)
+			}
+		}
 	}
 	return nil
 }

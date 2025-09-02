@@ -118,8 +118,9 @@
 - 🎥: Video: process a video (e.g. MP4) as input, or generate a video (e.g. Veo 3)
 - 💨: Feature is flaky (Tool calling) or inconsistent (Usage is not always reported)
 - 🌐: Country where the company is located
-- Tool: Tool calling, using [genai.ToolDef](https://pkg.go.dev/github.com/maruel/genai#ToolDef); best is ✅🪨
+- Tool: Tool calling, using [genai.ToolDef](https://pkg.go.dev/github.com/maruel/genai#ToolDef); best is ✅🪨🕸️
 		- 🪨: Tool calling can be forced; aka you can force the model to call a tool. This is great.
+		- 🕸️: Web search
 - JSON: ability to output JSON in free form, or with a forced schema specified as a Go struct
     - ✅: Supports both free form and with a schema
     - ☁️ :Supports only free form

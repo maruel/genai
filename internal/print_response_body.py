@@ -17,6 +17,14 @@ import sys
 import yaml
 
 
+def print_line(line):
+    try:
+        d = json.loads(line)
+        print(json.dumps(d, indent=2))
+    except ValueError:
+        print(line)
+
+
 def main():
     if len(sys.argv) < 2:
         print("Usage: print_response_body.py <filename>")
@@ -25,19 +33,17 @@ def main():
         data = yaml.safe_load(f)
     for interaction in data["interactions"]:
         body = interaction["response"]["body"]
-        if body.startswith("data:"):
+        if body.startswith(("data:", "event:")):
             for line in body.split("\n"):
+                if line.startswith("event:"):
+                    continue
                 if line.startswith("data:"):
                     line = line[5:]
                 line = line.strip()
                 if line:
-                    try:
-                        d = json.loads(line)
-                        print(json.dumps(d, indent=2))
-                    except ValueError:
-                        print(line)
+                    print_line(line)
         else:
-            print(body)
+            print_line(body)
     return 0
 
 

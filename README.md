@@ -2,7 +2,7 @@
 
 The opinionated high performance professional-grade AI package for Go.
 
-genai is _different_. Curious why it was created? See the release announcement at
+genai is _intentional_. Curious why it was created? See the release announcement at
 [maruel.ca/post/genai-v0.1.0](https://maruel.ca/post/genai-v0.1.0).
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/maruel/genai/.svg)](https://pkg.go.dev/github.com/maruel/genai/)

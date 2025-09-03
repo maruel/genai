@@ -279,7 +279,7 @@ func TestToolDef(t *testing.T) {
 				{
 					name:   "Missing Name",
 					in:     ToolDef{Description: "do stuff"},
-					errMsg: "field Name: required",
+					errMsg: "field Name: must be a valid tool name between 1 and 64 characters and contain only [a-zA-Z0-9_-]",
 				},
 				{
 					name:   "Missing Description",

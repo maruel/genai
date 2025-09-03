@@ -9,6 +9,7 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
+	"regexp"
 	"strings"
 	"time"
 
@@ -224,10 +225,15 @@ type ToolDef struct {
 	_ struct{}
 }
 
+var reToolName = regexp.MustCompile(`^[a-zA-Z0-9_-]{1,64}$`)
+
 // Validate ensures the tool definition is valid.
+//
+// For the Name field, it uses the rule according to
+// https://docs.anthropic.com/en/docs/agents-and-tools/tool-use/implement-tool-use#example-simple-tool-definition
 func (t *ToolDef) Validate() error {
-	if t.Name == "" {
-		return errors.New("field Name: required")
+	if !reToolName.MatchString(t.Name) {
+		return errors.New("field Name: must be a valid tool name between 1 and 64 characters and contain only [a-zA-Z0-9_-]")
 	}
 	if t.Description == "" {
 		return errors.New("field Description: required")

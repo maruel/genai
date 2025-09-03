@@ -1,38 +1,37 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 291
-        host: api.perplexity.ai
-        body: |
-            {"model":"sonar","messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"return_images":true,"return_related_questions":true,"stream":false}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.perplexity.ai/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        uncompressed: true
-        body: '{"id": "1c03b333-48da-4e40-8be6-6116659b3117", "model": "sonar", "created": 1754745880, "usage": {"prompt_tokens": 29, "completion_tokens": 69, "total_tokens": 98, "search_context_size": "low", "cost": {"input_tokens_cost": 2.9e-05, "output_tokens_cost": 6.9e-05, "request_cost": 0.005, "total_cost": 0.005098}}, "citations": ["https://www.youtube.com/watch?v=lp6psSgjenc"], "search_results": [{"title": "Peep And The Big Wide World | The Most Beautiful Song | Akili Kids!", "url": "https://www.youtube.com/watch?v=lp6psSgjenc", "date": "2021-06-21", "last_updated": null}], "images": [{"image_url": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0a/a0/80/fd/ganh-dau-phu-quoc.jpg?w=1200&h=1200&s=1", "origin_url": "https://www.tripadvisor.in/Attraction_Review-g469418-d10031150-Reviews-Phu_Quoc_Island_Holidays-Phu_Quoc_Island_Kien_Giang_Province.html", "height": 528, "width": 800}], "related_questions": ["What is the significance of the Big Canard Statue in Quackiland", "Are there any famous landmarks in Quackiland besides the Big Canard Statue", "How did Quackiland get its name", "What is the history behind the capital city of Quackiland", "Are there any unique cultural practices in Quackiland"], "object": "chat.completion", "choices": [{"index": 0, "finish_reason": "stop", "message": {"role": "assistant", "content": "The capital of Quackiland is **Quack**. \n\nThis is directly stated in your query: \"The capital of Quackiland is Quack.\" Additionally, the Big Canard Statue is located in Quack, reinforcing Quack as the central city or capital of Quackiland. There are no conflicting details in the search results."}, "delta": {"role": "assistant", "content": ""}}]}'
-        headers:
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 96c79324cd5ca2eb-YUL
-            Content-Type:
-                - application/json
-            Server:
-                - cloudflare
-            Strict-Transport-Security:
-                - max-age=15552000; includeSubDomains; preload
-        status: 200 OK
-        code: 200
-        duration: 3.38s
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 281
+    host: api.perplexity.ai
+    body: "{\"model\":\"sonar\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}],\"return_images\":true,\"stream\":false,\"disable_search\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.perplexity.ai/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\": \"9356140f-5bb8-478a-9de1-fd57ee45401b\", \"model\": \"sonar\", \"created\": 1756858626, \"usage\": {\"prompt_tokens\": 29, \"completion_tokens\": 10, \"total_tokens\": 39, \"search_context_size\": \"low\", \"cost\": {\"input_tokens_cost\": 0.0, \"output_tokens_cost\": 0.0, \"request_cost\": 0.005, \"total_cost\": 0.005}}, \"citations\": [], \"search_results\": [], \"images\": [{\"image_url\": \"https://webkinznewz.ganzworld.com/wp-content/uploads/2021/12/QUACK_OH_DEAR.jpg\", \"origin_url\": \"https://webkinznewz.ganzworld.com/announcements/message-about-mayor-dr-quacks-community-codes/\", \"height\": 264, \"width\": 560}, {\"image_url\": \"https://webkinznewz.ganzworld.com/wp-content/uploads/2017/01/Dr-Quack-Mayor-Waving.png\", \"origin_url\": \"https://webkinznewz.ganzworld.com/announcements/special-announcement-from-dr-quack/\", \"height\": 632, \"width\": 507}, {\"image_url\": \"https://assets.coingecko.com/coin_social_images/coin_social_image/crypto_symbol_image/36174/original/coin_social_image_crypto_symbol_3749320250417-7-8du1da.webp?1744915133\", \"origin_url\": \"https://www.coingecko.com/en/coins/quack-capital\", \"height\": 630, \"width\": 1200}, {\"image_url\": \"https://static.coinpaprika.com/coin/quack-quack-capital/card.png?11257573\", \"origin_url\": \"https://coinpaprika.com/coin/quack-quack-capital/\", \"height\": 768, \"width\": 1536}], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": \"stop\", \"message\": {\"role\": \"assistant\", \"content\": \"The capital of Quackiland is Quack.\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"\"}}]}"
+    headers:
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 97910fea0facab94-YYZ
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+    status: 200 OK
+    code: 200
+    duration: 1.371s

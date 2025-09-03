@@ -282,11 +282,14 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 	} else {
 		f.ToolsBiased = scoreboard.Flaky
 	}
+	return nil
+}
 
+func exerciseWebSearch(ctx context.Context, cs *callState, f *scoreboard.Functionality, prefix string) error {
 	// Test the WebSearch tool. It's a costly test.
-	msgs = genai.Messages{genai.NewTextMessage("Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation.")}
-	optsTools = genai.OptionsTools{WebSearch: true}
-	res, err = cs.callGen(ctx, prefix+"WebSearch", msgs, &optsTools)
+	msgs := genai.Messages{genai.NewTextMessage("Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation.")}
+	optsTools := genai.OptionsTools{WebSearch: true}
+	res, err := cs.callGen(ctx, prefix+"WebSearch", msgs, &optsTools)
 	if isBadError(ctx, err) {
 		internal.Logger(ctx).DebugContext(ctx, "WebSearch", "err", err)
 		return err
@@ -306,14 +309,17 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 			}
 			slog.DebugContext(ctx, "WebSearch", "citations", r.Citations)
 		}
-		if !slices.ContainsFunc(res.Replies, func(r genai.Reply) bool {
-			return slices.ContainsFunc(r.Citations, func(c genai.Citation) bool {
-				return slices.ContainsFunc(c.Sources, func(s genai.CitationSource) bool {
-					return s.Type == genai.CitationWebQuery
+		// This happens with perplexity because the prompt is the query.
+		if false {
+			if !slices.ContainsFunc(res.Replies, func(r genai.Reply) bool {
+				return slices.ContainsFunc(r.Citations, func(c genai.Citation) bool {
+					return slices.ContainsFunc(c.Sources, func(s genai.CitationSource) bool {
+						return s.Type == genai.CitationWebQuery
+					})
 				})
-			})
-		}) {
-			return fmt.Errorf("missing query from WebSearch citation: %#v", res)
+			}) {
+				return fmt.Errorf("missing query from WebSearch citation: %#v", res)
+			}
 		}
 		// This happens with gemini-2.5-pro, it seems the web results gets eaten by the thought summarization.
 		if false {

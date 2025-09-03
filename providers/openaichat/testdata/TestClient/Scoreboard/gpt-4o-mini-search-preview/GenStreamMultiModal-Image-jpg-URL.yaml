@@ -1,0 +1,64 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 339
+    host: api.openai.com
+    body: "{\"model\":\"gpt-4o-mini-search-preview\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What fruit is it? Reply with only one word.\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg\"}}]}],\"stream_options\":{\"include_usage\":true}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.openai.com/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 350
+    body: "{\n    \"error\": {\n        \"message\": \"Request too large for gpt-4o-mini-search-preview in organization org-XGcJCOumpl5c4UUd5LHggLh7 on input-images per min: Limit 0, Requested 1. Visit https://platform.openai.com/account/rate-limits to learn more.\",\n        \"type\": \"input-images\",\n        \"param\": null,\n        \"code\": \"rate_limit_exceeded\"\n    }\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9790f07d7cc5a2e6-YUL
+      Content-Length:
+      - "350"
+      Content-Type:
+      - application/json; charset=utf-8
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Vary:
+      - Origin
+      X-Content-Type-Options:
+      - nosniff
+      X-Ratelimit-Limit-Input-Images:
+      - "0"
+      X-Ratelimit-Limit-Requests:
+      - "100"
+      X-Ratelimit-Limit-Tokens:
+      - "6000"
+      X-Ratelimit-Remaining-Input-Images:
+      - "0"
+      X-Ratelimit-Remaining-Requests:
+      - "0"
+      X-Ratelimit-Remaining-Tokens:
+      - "0"
+      X-Ratelimit-Reset-Input-Images:
+      - 0s
+      X-Ratelimit-Reset-Requests:
+      - 0s
+      X-Ratelimit-Reset-Tokens:
+      - 0s
+      X-Request-Id:
+      - req_00ea8d06d2ae48f09bd3bf5a5c3ebdac
+    status: 429 Too Many Requests
+    code: 429
+    duration: 1m14.147s

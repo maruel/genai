@@ -251,14 +251,17 @@ func (c *ChatRequest) initOptionsTools(v *genai.OptionsTools, model string) []st
 		}
 	}
 	if v.WebSearch {
-		c.WebSearchOptions = &WebSearchOptions{}
+		c.WebSearchOptions = &WebSearchOptions{
+			SearchContextSize: "high",
+		}
 	}
 	return unsupported
 }
 
 // WebSearchOptions is "documented" at https://platform.openai.com/docs/guides/tools-web-search
 type WebSearchOptions struct {
-	UserLocation struct {
+	SearchContextSize string `json:"search_context_size,omitzero"` // "low", "medium", "high"
+	UserLocation      struct {
 		Type        string `json:"type,omitzero"` // "approximate"
 		Approximate struct {
 			Country string `json:"country,omitzero"` // "GB"
@@ -348,12 +351,16 @@ func (m *Message) To(out *genai.Message) error {
 	}
 	for _, a := range m.Annotations {
 		if a.Type != "url_citation" {
-			return fmt.Errorf("unsupported annotation type %q", a.Type)
+			return &internal.BadError{Err: fmt.Errorf("unsupported annotation type %q", a.Type)}
 		}
 		c := genai.Citation{
 			StartIndex: a.URLCitation.StartIndex,
 			EndIndex:   a.URLCitation.EndIndex,
-			Sources:    []genai.CitationSource{{Type: genai.CitationWeb, URL: a.URLCitation.URL}},
+			Sources: []genai.CitationSource{{
+				Type:  genai.CitationWeb,
+				Title: a.URLCitation.Title,
+				URL:   a.URLCitation.URL,
+			}},
 		}
 		out.Replies = append(out.Replies, genai.Reply{Citations: []genai.Citation{c}})
 	}
@@ -1254,10 +1261,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		}
 
 		f := genai.ReplyFragment{}
-		if len(pkt.Choices[0].Delta.Annotations) > 1 {
-			return &internal.BadError{Err: fmt.Errorf("implement multiple annotations: %#v", pkt)}
-		} else if len(pkt.Choices[0].Delta.Annotations) == 1 {
-			a := pkt.Choices[0].Delta.Annotations[0]
+		for _, a := range pkt.Choices[0].Delta.Annotations {
 			f.Citation.StartIndex = a.URLCitation.StartIndex
 			f.Citation.EndIndex = a.URLCitation.EndIndex
 			f.Citation.Sources = []genai.CitationSource{{Type: genai.CitationWeb, URL: a.URLCitation.URL}}

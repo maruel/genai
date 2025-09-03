@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 294
+    host: api.perplexity.ai
+    body: "{\"model\":\"sonar-pro\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation.\"}]}],\"return_images\":true,\"return_related_questions\":true,\"stream\":false}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.perplexity.ai/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\": \"7962908b-fa9f-418a-bca4-744906d29bc7\", \"model\": \"sonar-pro\", \"created\": 1756858706, \"usage\": {\"prompt_tokens\": 28, \"completion_tokens\": 8, \"total_tokens\": 36, \"search_context_size\": \"low\", \"cost\": {\"input_tokens_cost\": 0.0, \"output_tokens_cost\": 0.0, \"request_cost\": 0.006, \"total_cost\": 0.006}}, \"citations\": [\"https://abcnews.go.com/International/canada-new-prime-minister/story?id=119606459\", \"https://en.wikipedia.org/wiki/List_of_prime_ministers_of_Canada\", \"https://en.wikipedia.org/wiki/Mark_Carney\", \"https://www.youtube.com/watch?v=6WElL4goB9Q\", \"https://www.pm.gc.ca/en/about\"], \"search_results\": [{\"title\": \"Mark Carney named as Canada's prime minister-elect amid US ...\", \"url\": \"https://abcnews.go.com/International/canada-new-prime-minister/story?id=119606459\", \"date\": \"2025-03-09\", \"last_updated\": \"2025-09-01\", \"snippet\": \"Canada's Liberal Party announced that Mark Carney was chosen to succeed Trudeau after party members voted in a nominating contest between four candidates.\"}, {\"title\": \"List of prime ministers of Canada\", \"url\": \"https://en.wikipedia.org/wiki/List_of_prime_ministers_of_Canada\", \"date\": \"2003-07-01\", \"last_updated\": \"2025-08-18\", \"snippet\": \"The prime minister of Canada is the official who serves as the primary minister of the Crown, chair of the Cabinet, and thus head of government of Canada.\"}, {\"title\": \"Mark Carney - Wikipedia\", \"url\": \"https://en.wikipedia.org/wiki/Mark_Carney\", \"date\": \"2007-10-04\", \"last_updated\": \"2025-08-30\", \"snippet\": \"Mark Joseph Carney (born March 16, 1965) is a Canadian politician and economist who is the 24th and current prime minister of Canada since 2025.\"}, {\"title\": \"Mark Carney named the prime minister of Canada\", \"url\": \"https://www.youtube.com/watch?v=6WElL4goB9Q\", \"date\": \"2025-04-06\", \"last_updated\": \"2025-07-23\", \"snippet\": \"Former Bank of England governor Mark Carney has been named Canadian prime minister after winning the Liberal Party leadership in a landslide ...\"}, {\"title\": \"About | Prime Minister of Canada\", \"url\": \"https://www.pm.gc.ca/en/about\", \"date\": \"2025-08-13\", \"last_updated\": \"2025-09-02\", \"snippet\": \"Mark Carney is Canada's 24th Prime Minister. He was elected Leader of the Liberal Party of Canada and sworn in as Prime Minister in March 2025.\"}], \"images\": [{\"image_url\": \"https://www.telegraph.co.uk/content/dam/en-us/comment/2025/07/23/TELEMMGLPICT000432613580_17532896480590_trans_NvBQzQNjv4BqpVlberWd9EgFPZtcLiMQf0Rf_Wk3V23H2268P_XkPxc.jpeg?imwidth=640\", \"origin_url\": \"https://www.telegraph.co.uk/us/comment/2025/07/23/mark-carney-seems-terrified-of-being-found-out/\", \"height\": 400, \"width\": 640}, {\"image_url\": \"https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Mark_Carney_portrait_February_2020.jpg/960px-Mark_Carney_portrait_February_2020.jpg\", \"origin_url\": \"https://en.wikipedia.org/wiki/Mark_Carney\", \"height\": 1280, \"width\": 960}, {\"image_url\": \"https://www.bankofcanada.ca/wp-content/uploads/2014/02/mark-carney.jpg\", \"origin_url\": \"https://www.bankofcanada.ca/profile/mark-carney/\", \"height\": 1200, \"width\": 1200}, {\"image_url\": \"https://upload.wikimedia.org/wikipedia/commons/3/3d/Prime_Minister_Mark_Carney_June_2025.jpg\", \"origin_url\": \"https://simple.wikipedia.org/wiki/Mark_Carney\", \"height\": 483, \"width\": 362}, {\"image_url\": \"https://elections.harvard.edu/sites/g/files/omnuum1736/files/styles/hwp_4_5__480x600/public/elections/files/carney_photo_ovr_2020.jpg?itok=PqR7lLZV\", \"origin_url\": \"https://elections.harvard.edu/people/mark-j-carney\", \"height\": 600, \"width\": 480}], \"related_questions\": [\"What are Mark Carney's key policies\", \"How did Mark Carney transition from finance to politics\", \"What challenges is Mark Carney facing as the new Prime Minister\", \"How did Mark Carney's leadership campaign differ from previous ones\", \"What is Mark Carney's stance on the U.S.-Canada trade relations\"], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": \"stop\", \"message\": {\"role\": \"assistant\", \"content\": \"**Mark Carney**[1].\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"\"}}]}"
+    headers:
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 979111d26b94a1e4-YYZ
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+    status: 200 OK
+    code: 200
+    duration: 3.113s

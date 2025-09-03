@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 304
+    host: api.perplexity.ai
+    body: "{\"model\":\"sonar-reasoning-pro\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation.\"}]}],\"return_images\":true,\"return_related_questions\":true,\"stream\":false}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.perplexity.ai/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\": \"8f486e56-8328-4b8b-83a4-d61fa7e697fb\", \"model\": \"sonar-reasoning-pro\", \"created\": 1756859036, \"usage\": {\"prompt_tokens\": 28, \"completion_tokens\": 378, \"total_tokens\": 406, \"search_context_size\": \"low\", \"cost\": {\"input_tokens_cost\": 0.0, \"output_tokens_cost\": 0.003, \"request_cost\": 0.006, \"total_cost\": 0.009}}, \"citations\": [\"https://en.wikipedia.org/wiki/Mark_Carney\", \"https://en.wikipedia.org/wiki/List_of_prime_ministers_of_Canada\", \"https://www.pm.gc.ca/en/about\", \"https://www.youtube.com/watch?v=CtY93zrxAfY\", \"https://en.wikipedia.org/wiki/Prime_Minister_of_Canada\"], \"search_results\": [{\"title\": \"Mark Carney\", \"url\": \"https://en.wikipedia.org/wiki/Mark_Carney\", \"date\": \"2007-10-04\", \"last_updated\": \"2025-08-30\", \"snippet\": \"Mark Joseph Carney (born March 16, 1965) is a Canadian politician and economist who is the 24th and current prime minister of Canada since 2025.\"}, {\"title\": \"List of prime ministers of Canada\", \"url\": \"https://en.wikipedia.org/wiki/List_of_prime_ministers_of_Canada\", \"date\": \"2003-07-01\", \"last_updated\": \"2025-08-18\", \"snippet\": \"The prime minister of Canada is the official who serves as the primary minister of the Crown, chair of the Cabinet, and thus head of government of Canada.\"}, {\"title\": \"About | Prime Minister of Canada\", \"url\": \"https://www.pm.gc.ca/en/about\", \"date\": \"2025-08-13\", \"last_updated\": \"2025-09-02\", \"snippet\": \"Mark Carney is Canada's 24th Prime Minister. He was elected Leader of the Liberal Party of Canada and sworn in as Prime Minister in March 2025.\"}, {\"title\": \"Canada elects a new Prime Minister | April 30, 2025\", \"url\": \"https://www.youtube.com/watch?v=CtY93zrxAfY\", \"date\": \"2025-05-06\", \"last_updated\": \"2025-08-19\", \"snippet\": \"The voters elected Mark Carney to keep his role as prime minister after he recently took over from Justin Trudeau.\"}, {\"title\": \"Prime Minister of Canada\", \"url\": \"https://en.wikipedia.org/wiki/Prime_Minister_of_Canada\", \"date\": \"2001-07-31\", \"last_updated\": \"2025-09-02\", \"snippet\": \"Mark Carney is the current prime minister of Canada, taking office on March 14, 2025. Since the Confederation of Canada in 1867, 24 prime ministers have formed ...\"}], \"images\": [{\"image_url\": \"https://upload.wikimedia.org/wikipedia/commons/d/db/Mark_Carney_portrait_February_2020.jpg\", \"origin_url\": \"https://en.wikipedia.org/wiki/Mark_Carney\", \"height\": 3833, \"width\": 2875}], \"related_questions\": [\"What are Mark Carney's key policies since becoming Prime Minister\", \"How did Mark Carney's background in finance influence his political career\", \"What challenges has Mark Carney faced during his tenure as Prime Minister\", \"How did Mark Carney's leadership campaign differ from previous Liberal Party leadership campaigns\", \"What are the main differences between Mark Carney's government and Justin Trudeau's government\"], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": \"stop\", \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nThe user is asking for the current Prime Minister of Canada and specifically wants \\\"only the name with no explanation.\\\" They also mention \\\"Search the web to tell\\\" and \\\"Only search for one result\\\" but I've already been provided with search results.\\n\\nLooking at the search results:\\n\\nFrom search result [1]: \\\"Mark Joseph Carney (born March 16, 1965) is a Canadian politician and economist who is the 24th and current prime minister of Canada since 2025.\\\"\\n\\nFrom search result [2]: \\\"The 24th and current prime minister is Mark Carney, who assumed office on 14 March 2025.\\\"\\n\\nFrom search result [3]: \\\"Mark Carney is Canada's 24th Prime Minister. He was elected Leader of the Liberal Party of Canada and sworn in as Prime Minister in March 2025.\\\"\\n\\nFrom search result [4]: \\\"The voters elected Mark Carney to keep his role as prime minister after he recently took over from Justin Trudeau.\\\"\\n\\nFrom search result [5]: \\\"Mark Carney is the current prime minister of Canada, taking office on March 14, 2025.\\\"\\n\\nAll sources consistently indicate that Mark Carney is the current Prime Minister of Canada.\\n\\nThe user specifically asked for \\\"only the name with no explanation.\\\" So I should just provide the name. However, I should still follow the citation rules and cite the source.\\n\\nWait, let me re-read the user's request. They said \\\"Give only the name with no explanation.\\\" This is a very specific instruction that takes priority over other formatting rules as mentioned in instruction 8: \\\"Following user instruction takes priority over any other formatting rules listed here.\\\"\\n\\nSo I should just provide the name, but I think I should still cite it since that's a core requirement for accuracy.\\n</think>\\n\\nMark Carney[1][2][3]\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"\"}}]}"
+    headers:
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 979119a83985ebba-YYZ
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+    status: 200 OK
+    code: 200
+    duration: 11.564s

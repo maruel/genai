@@ -6,9 +6,9 @@ interactions:
     proto: HTTP/1.1
     proto_major: 1
     proto_minor: 1
-    content_length: 327
+    content_length: 355
     host: api.openai.com
-    body: "{\"model\":\"gpt-5-mini\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation.\"}]}],\"service_tier\":\"flex\",\"stream_options\":{\"include_usage\":true},\"web_search_options\":{}}\n"
+    body: "{\"model\":\"gpt-5-mini\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation.\"}]}],\"service_tier\":\"flex\",\"stream_options\":{\"include_usage\":true},\"web_search_options\":{\"search_context_size\":\"high\"}}\n"
     headers:
       Content-Type:
       - application/json; charset=utf-8
@@ -28,7 +28,7 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 978f53907b39a2a0-YUL
+      - 979105425cb1a2e6-YUL
       Content-Length:
       - "183"
       Content-Type:
@@ -36,7 +36,7 @@ interactions:
       Openai-Organization:
       - user-vtmtcvpbctksjfewktqdl2sw
       Openai-Processing-Ms:
-      - "37"
+      - "120"
       Openai-Project:
       - proj_tH6hQUFvA4Bx6SyAb23zzLEg
       Openai-Version:
@@ -48,7 +48,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Envoy-Upstream-Service-Time:
-      - "41"
+      - "146"
       X-Ratelimit-Limit-Requests:
       - "500"
       X-Ratelimit-Limit-Tokens:
@@ -62,7 +62,7 @@ interactions:
       X-Ratelimit-Reset-Tokens:
       - 11ms
       X-Request-Id:
-      - req_c3a73ffc7bfc43138caa96bab613aa88
+      - req_c246a480c314428b97802a14e87bdcd2
     status: 400 Bad Request
     code: 400
-    duration: 720ms
+    duration: 239ms

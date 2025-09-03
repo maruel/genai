@@ -74,6 +74,9 @@ func Run(ctx context.Context, pf ProviderFactory) (scoreboard.Scenario, genai.Us
 					if cs.isReasoning {
 						result.Reason = true
 					}
+					if cs.hasWebResults {
+						f.WebSearch = true
+					}
 					result.GenSync = f
 				}
 				mu.Unlock()
@@ -101,6 +104,9 @@ func Run(ctx context.Context, pf ProviderFactory) (scoreboard.Scenario, genai.Us
 					}
 					if cs.isReasoning {
 						result.Reason = true
+					}
+					if cs.hasWebResults {
+						f.WebSearch = true
 					}
 				}
 				mu.Unlock()
@@ -149,6 +155,9 @@ func Run(ctx context.Context, pf ProviderFactory) (scoreboard.Scenario, genai.Us
 				if cs.isReasoning {
 					result.Reason = true
 				}
+				if cs.hasWebResults {
+					f.WebSearch = true
+				}
 				result.GenStream = f
 			}
 			mu.Unlock()
@@ -176,6 +185,9 @@ func Run(ctx context.Context, pf ProviderFactory) (scoreboard.Scenario, genai.Us
 				}
 				if cs.isReasoning {
 					result.Reason = true
+				}
+				if cs.hasWebResults {
+					f.WebSearch = true
 				}
 			}
 			mu.Unlock()
@@ -391,6 +403,9 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 	}
 
 	if err = exerciseGenTools(ctx, cs, f, prefix+"Tools-"); err != nil {
+		return f, err
+	}
+	if err = exerciseWebSearch(ctx, cs, f, prefix+"Tools-"); err != nil {
 		return f, err
 	}
 
@@ -793,7 +808,8 @@ type callState struct {
 	usage    genai.Usage
 
 	// discovered states
-	isReasoning bool
+	isReasoning   bool
+	hasWebResults bool
 }
 
 func (cs *callState) callGen(ctx context.Context, name string, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
@@ -809,9 +825,19 @@ func (cs *callState) callGen(ctx context.Context, name string, msgs genai.Messag
 	} else {
 		res, err = c.GenSync(ctx, msgs, opts...)
 	}
-	for _, c := range res.Replies {
-		if c.Reasoning != "" {
+	for _, rep := range res.Replies {
+		if rep.Reasoning != "" {
 			cs.isReasoning = true
+		}
+		// This is annoying. openaichat with gpt-4o-mini-search-preview returns web results only when it feels
+		// like it, which is not often. It fails to return web results when request but it does at other times. So
+		// do a catch all here.
+		if slices.ContainsFunc(rep.Citations, func(ci genai.Citation) bool {
+			return slices.ContainsFunc(ci.Sources, func(s genai.CitationSource) bool {
+				return s.Type == genai.CitationWeb
+			})
+		}) {
+			cs.hasWebResults = true
 		}
 	}
 	if err != nil {

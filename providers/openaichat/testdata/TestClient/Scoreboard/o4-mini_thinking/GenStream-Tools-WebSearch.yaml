@@ -6,9 +6,9 @@ interactions:
     proto: HTTP/1.1
     proto_major: 1
     proto_minor: 1
-    content_length: 349
+    content_length: 377
     host: api.openai.com
-    body: "{\"model\":\"o4-mini\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation.\"}]}],\"reasoning_effort\":\"low\",\"service_tier\":\"flex\",\"stream_options\":{\"include_usage\":true},\"web_search_options\":{}}\n"
+    body: "{\"model\":\"o4-mini\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation.\"}]}],\"reasoning_effort\":\"low\",\"service_tier\":\"flex\",\"stream_options\":{\"include_usage\":true},\"web_search_options\":{\"search_context_size\":\"high\"}}\n"
     headers:
       Content-Type:
       - application/json; charset=utf-8
@@ -28,7 +28,7 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 978f537feb98a2a0-YUL
+      - 97910538eea8a2e6-YUL
       Content-Length:
       - "183"
       Content-Type:
@@ -36,7 +36,7 @@ interactions:
       Openai-Organization:
       - user-vtmtcvpbctksjfewktqdl2sw
       Openai-Processing-Ms:
-      - "9"
+      - "15"
       Openai-Project:
       - proj_tH6hQUFvA4Bx6SyAb23zzLEg
       Openai-Version:
@@ -48,21 +48,21 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Envoy-Upstream-Service-Time:
-      - "13"
+      - "22"
       X-Ratelimit-Limit-Requests:
       - "500"
       X-Ratelimit-Limit-Tokens:
       - "200000"
       X-Ratelimit-Remaining-Requests:
-      - "499"
+      - "498"
       X-Ratelimit-Remaining-Tokens:
-      - "199963"
+      - "199926"
       X-Ratelimit-Reset-Requests:
-      - 120ms
+      - 239ms
       X-Ratelimit-Reset-Tokens:
-      - 11ms
+      - 22ms
       X-Request-Id:
-      - req_e4edb510739e4ad7bf69b875e03c461f
+      - req_18c4a2f93d294bc0833b817390c95039
     status: 400 Bad Request
     code: 400
-    duration: 842ms
+    duration: 143ms

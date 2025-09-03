@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 300
+    host: api.perplexity.ai
+    body: "{\"model\":\"sonar-reasoning\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation.\"}]}],\"return_images\":true,\"return_related_questions\":true,\"stream\":false}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.perplexity.ai/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\": \"5a1f86ae-f77a-4f8f-86a7-659bb746210f\", \"model\": \"sonar-reasoning\", \"created\": 1756858770, \"usage\": {\"prompt_tokens\": 28, \"completion_tokens\": 141, \"total_tokens\": 169, \"search_context_size\": \"low\", \"cost\": {\"input_tokens_cost\": 0.0, \"output_tokens_cost\": 0.001, \"request_cost\": 0.005, \"total_cost\": 0.006}}, \"citations\": [\"https://abcnews.go.com/International/canada-new-prime-minister/story?id=119606459\", \"https://www.youtube.com/watch?v=K0izowU_zD0\", \"https://en.wikipedia.org/wiki/Mark_Carney\", \"https://en.wikipedia.org/wiki/List_of_prime_ministers_of_Canada\", \"https://www.pm.gc.ca/en/about\"], \"search_results\": [{\"title\": \"Mark Carney named as Canada's prime minister-elect amid US ...\", \"url\": \"https://abcnews.go.com/International/canada-new-prime-minister/story?id=119606459\", \"date\": \"2025-03-09\", \"last_updated\": \"2025-09-01\", \"snippet\": \"Canada's Liberal Party announced that Mark Carney was chosen to succeed Trudeau after party members voted in a nominating contest between four candidates.\"}, {\"title\": \"Mark Carney chosen to succeed Trudeau as Canada's ...\", \"url\": \"https://www.youtube.com/watch?v=K0izowU_zD0\", \"date\": \"2025-04-06\", \"last_updated\": \"2025-07-05\", \"snippet\": \"Mark Carney will be the next prime minister of Canada after he won the race to lead the party he will replace Justin Trudeau.\"}, {\"title\": \"Mark Carney - Wikipedia\", \"url\": \"https://en.wikipedia.org/wiki/Mark_Carney\", \"date\": \"2007-10-04\", \"last_updated\": \"2025-08-30\", \"snippet\": \"Mark Joseph Carney (born March 16, 1965) is a Canadian politician and economist who is the 24th and current prime minister of Canada since 2025.\"}, {\"title\": \"List of prime ministers of Canada\", \"url\": \"https://en.wikipedia.org/wiki/List_of_prime_ministers_of_Canada\", \"date\": \"2003-07-01\", \"last_updated\": \"2025-08-18\", \"snippet\": \"The prime minister of Canada is the official who serves as the primary minister of the Crown, chair of the Cabinet, and thus head of government of Canada.\"}, {\"title\": \"About | Prime Minister of Canada\", \"url\": \"https://www.pm.gc.ca/en/about\", \"date\": \"2025-08-13\", \"last_updated\": \"2025-09-02\", \"snippet\": \"Mark Carney is Canada's 24th Prime Minister. He was elected Leader of the Liberal Party of Canada and sworn in as Prime Minister in March 2025.\"}], \"images\": [{\"image_url\": \"https://i.abcnewsfe.com/a/91c732be-a843-4131-8f4e-5c85a3ca3385/Mark-carney-7-rt-gmh-250309_1741561962607_hpMain_16x9.jpg?w=384\", \"origin_url\": \"https://abcnews.go.com/International/canada-new-prime-minister/story?id=119606459\", \"height\": 216, \"width\": 384}, {\"image_url\": \"https://upload.wikimedia.org/wikipedia/commons/d/db/Mark_Carney_portrait_February_2020.jpg\", \"origin_url\": \"https://en.wikipedia.org/wiki/Mark_Carney\", \"height\": 3833, \"width\": 2875}], \"related_questions\": [\"What are Mark Carney's key policies\", \"How did Mark Carney transition from banking to politics\", \"What challenges has Mark Carney faced since becoming Prime Minister\", \"How did the Liberal Party choose Mark Carney as their leader\", \"What is Mark Carney's stance on the U.S.-Canada trade relations\"], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": \"stop\", \"message\": {\"role\": \"assistant\", \"content\": \"<think>\\nThe user is asking for the current Prime Minister of Canada and specifically requests only the name with no explanation. Looking at the search results:\\n\\nFrom multiple sources ([1], [3], [4], [5]), I can see that Mark Carney is identified as Canada's current (24th) Prime Minister. The search results indicate he was chosen to succeed Justin Trudeau, won the Liberal Party leadership election, and was sworn in as Prime Minister in March 2025.\\n\\nThe user specifically asked for \\\"only the name with no explanation\\\" so I should just provide the name without any additional details, despite having comprehensive information available.\\n</think>\\n\\nMark Carney[3][4][5]\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"\"}}]}"
+    headers:
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 97911346bee1ac9c-YYZ
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+    status: 200 OK
+    code: 200
+    duration: 6.873s

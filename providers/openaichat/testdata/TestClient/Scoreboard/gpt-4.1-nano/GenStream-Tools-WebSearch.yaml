@@ -6,9 +6,9 @@ interactions:
     proto: HTTP/1.1
     proto_major: 1
     proto_minor: 1
-    content_length: 307
+    content_length: 335
     host: api.openai.com
-    body: "{\"model\":\"gpt-4.1-nano\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation.\"}]}],\"stream_options\":{\"include_usage\":true},\"web_search_options\":{}}\n"
+    body: "{\"model\":\"gpt-4.1-nano\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation.\"}]}],\"stream_options\":{\"include_usage\":true},\"web_search_options\":{\"search_context_size\":\"high\"}}\n"
     headers:
       Content-Type:
       - application/json; charset=utf-8
@@ -28,7 +28,7 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 978f538d6f2fa2a0-YUL
+      - 9791053d8d31a2e6-YUL
       Content-Length:
       - "177"
       Content-Type:
@@ -36,7 +36,7 @@ interactions:
       Openai-Organization:
       - user-vtmtcvpbctksjfewktqdl2sw
       Openai-Processing-Ms:
-      - "23"
+      - "9"
       Openai-Project:
       - proj_tH6hQUFvA4Bx6SyAb23zzLEg
       Openai-Version:
@@ -48,7 +48,7 @@ interactions:
       X-Content-Type-Options:
       - nosniff
       X-Envoy-Upstream-Service-Time:
-      - "31"
+      - "12"
       X-Ratelimit-Limit-Requests:
       - "500"
       X-Ratelimit-Limit-Tokens:
@@ -56,13 +56,13 @@ interactions:
       X-Ratelimit-Remaining-Requests:
       - "499"
       X-Ratelimit-Remaining-Tokens:
-      - "199962"
+      - "199963"
       X-Ratelimit-Reset-Requests:
       - 120ms
       X-Ratelimit-Reset-Tokens:
       - 11ms
       X-Request-Id:
-      - req_e3ed9340dfd740bfb8d93d95449f5552
+      - req_dd3bbf84cf2041b3a745cac08f4c6eaa
     status: 400 Bad Request
     code: 400
-    duration: 109ms
+    duration: 247ms

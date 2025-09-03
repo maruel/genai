@@ -369,6 +369,36 @@
       }
     },
     {
+      "models": [
+        "gpt-4o-mini-search-preview",
+        "gpt-4o-search-preview"
+      ],
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "webSearch": true,
+        "jsonSchema": true
+      },
+      "GenStream": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "webSearch": true,
+        "jsonSchema": true
+      }
+    },
+    {
       "comments": "TODO: More output image format are supported by the API",
       "models": [
         "gpt-image-1"
@@ -450,7 +480,6 @@
         "gpt-4o-mini-audio-preview-2024-12-17",
         "gpt-4o-mini-realtime-preview",
         "gpt-4o-mini-realtime-preview-2024-12-17",
-        "gpt-4o-mini-search-preview",
         "gpt-4o-mini-search-preview-2025-03-11",
         "gpt-4o-mini-transcribe",
         "gpt-4o-mini-tts",
@@ -458,7 +487,6 @@
         "gpt-4o-realtime-preview-2024-10-01",
         "gpt-4o-realtime-preview-2024-12-17",
         "gpt-4o-realtime-preview-2025-06-03",
-        "gpt-4o-search-preview",
         "gpt-4o-search-preview-2025-03-11",
         "gpt-4o-transcribe",
         "gpt-5-2025-08-07",

@@ -1,0 +1,66 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 189
+    host: api.openai.com
+    body: "{\"model\":\"gpt-4o-mini-search-preview\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Say hello. Use only one word.\"}]}],\"stream_options\":{\"include_usage\":true}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.openai.com/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"chatcmpl-96ba0fdc-f018-49d4-8e8e-6fb8b0dc6e59\",\"object\":\"chat.completion.chunk\",\"created\":1756856977,\"model\":\"gpt-4o-mini-search-preview-2025-03-11\",\"service_tier\":\"default\",\"system_fingerprint\":\"\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\",\"refusal\":null},\"finish_reason\":null}],\"usage\":null,\"obfuscation\":\"\"}\n\ndata: {\"id\":\"chatcmpl-96ba0fdc-f018-49d4-8e8e-6fb8b0dc6e59\",\"object\":\"chat.completion.chunk\",\"created\":1756856977,\"model\":\"gpt-4o-mini-search-preview-2025-03-11\",\"service_tier\":\"default\",\"system_fingerprint\":\"\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Hello\"},\"finish_reason\":null}],\"usage\":null,\"obfuscation\":\"fRk2Dq6IwnUqR\"}\n\ndata: {\"id\":\"chatcmpl-96ba0fdc-f018-49d4-8e8e-6fb8b0dc6e59\",\"object\":\"chat.completion.chunk\",\"created\":1756856977,\"model\":\"gpt-4o-mini-search-preview-2025-03-11\",\"service_tier\":\"default\",\"system_fingerprint\":\"\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\".\"},\"finish_reason\":null}],\"usage\":null,\"obfuscation\":\"e\"}\n\ndata: {\"id\":\"chatcmpl-96ba0fdc-f018-49d4-8e8e-6fb8b0dc6e59\",\"object\":\"chat.completion.chunk\",\"created\":1756856977,\"model\":\"gpt-4o-mini-search-preview-2025-03-11\",\"service_tier\":\"default\",\"system_fingerprint\":\"\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" \"},\"finish_reason\":null}],\"usage\":null,\"obfuscation\":\"L\"}\n\ndata: {\"id\":\"chatcmpl-96ba0fdc-f018-49d4-8e8e-6fb8b0dc6e59\",\"object\":\"chat.completion.chunk\",\"created\":1756856977,\"model\":\"gpt-4o-mini-search-preview-2025-03-11\",\"service_tier\":\"default\",\"system_fingerprint\":\"\",\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"stop\"}],\"usage\":null,\"obfuscation\":\"Fa6PbDVi3IIw\"}\n\ndata: {\"id\":\"chatcmpl-96ba0fdc-f018-49d4-8e8e-6fb8b0dc6e59\",\"object\":\"chat.completion.chunk\",\"created\":1756856977,\"model\":\"gpt-4o-mini-search-preview-2025-03-11\",\"service_tier\":\"default\",\"system_fingerprint\":\"\",\"choices\":[],\"usage\":{\"prompt_tokens\":8,\"completion_tokens\":3,\"total_tokens\":11,\"prompt_tokens_details\":{\"cached_tokens\":0,\"audio_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0,\"audio_tokens\":0,\"accepted_prediction_tokens\":0,\"rejected_prediction_tokens\":0}},\"obfuscation\":\"83Y\"}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Expose-Headers:
+      - X-Request-ID
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9790e7a76830a2f3-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Openai-Organization:
+      - user-vtmtcvpbctksjfewktqdl2sw
+      Openai-Processing-Ms:
+      - "829"
+      Openai-Project:
+      - proj_tH6hQUFvA4Bx6SyAb23zzLEg
+      Openai-Version:
+      - "2020-10-01"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "833"
+      X-Ratelimit-Limit-Requests:
+      - "100"
+      X-Ratelimit-Limit-Tokens:
+      - "6000"
+      X-Ratelimit-Remaining-Requests:
+      - "99"
+      X-Ratelimit-Remaining-Tokens:
+      - "5990"
+      X-Ratelimit-Reset-Requests:
+      - 600ms
+      X-Ratelimit-Reset-Tokens:
+      - 100ms
+      X-Request-Id:
+      - req_f08da025876f4d77a2a5177c9faf901a
+    status: 200 OK
+    code: 200
+    duration: 1.49s

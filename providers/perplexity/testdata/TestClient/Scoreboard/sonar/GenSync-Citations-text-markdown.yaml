@@ -6,9 +6,9 @@ interactions:
     proto: HTTP/1.1
     proto_major: 1
     proto_minor: 1
-    content_length: 307
+    content_length: 297
     host: api.perplexity.ai
-    body: "{\"model\":\"sonar\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"# Quackiland\\n\\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}],\"return_images\":true,\"return_related_questions\":true,\"stream\":false}\n"
+    body: "{\"model\":\"sonar\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"# Quackiland\\n\\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}],\"return_images\":true,\"stream\":false,\"disable_search\":true}\n"
     headers:
       Content-Type:
       - application/json; charset=utf-8
@@ -20,12 +20,12 @@ interactions:
     proto_minor: 0
     content_length: -1
     uncompressed: true
-    body: "{\"id\": \"bfd2a17d-fcc6-4ab2-b1f6-7cd3854b637b\", \"model\": \"sonar\", \"created\": 1756558404, \"usage\": {\"prompt_tokens\": 34, \"completion_tokens\": 109, \"total_tokens\": 143, \"search_context_size\": \"low\", \"cost\": {\"input_tokens_cost\": 0.0, \"output_tokens_cost\": 0.0, \"request_cost\": 0.005, \"total_cost\": 0.005}}, \"citations\": [\"https://www.youtube.com/watch?v=DGnjSia8Lm0\", \"https://www.youtube.com/watch?v=LdAvKJnAsXc\", \"https://www.youtube.com/watch?v=lRnGQT6iNA0\"], \"search_results\": [{\"title\": \"Peep and the Big Wide World: Quack's Square Deal - YouTube\", \"url\": \"https://www.youtube.com/watch?v=DGnjSia8Lm0\", \"date\": \"2011-04-28\", \"last_updated\": \"2025-07-20\", \"snippet\": \"Missing: Quackiland Statue\"}, {\"title\": \"Peep and the Big Wide World: Quack and the Amazing Sandy Magic\", \"url\": \"https://www.youtube.com/watch?v=LdAvKJnAsXc\", \"date\": \"2012-11-28\", \"last_updated\": \"2025-05-21\", \"snippet\": \"Missing: Quackiland Statue\"}, {\"title\": \"Peep and the Big Wide World: Peep in Rabbitland - YouTube\", \"url\": \"https://www.youtube.com/watch?v=lRnGQT6iNA0\", \"date\": \"2011-05-19\", \"last_updated\": \"2025-08-26\", \"snippet\": \"After falling into a rabbit hole and meeting three fuzzy bunnies, Peep decides to try life underground. For interactive games for kids, ...\"}], \"images\": [{\"image_url\": \"https://i.pinimg.com/474x/10/9f/a4/109fa4b427fcf50919f05932c2b033ed.jpg\", \"origin_url\": \"https://www.pinterest.com/pin/the-big-duck-brutalist-architecture-statue--195625177534325897/\", \"height\": 592, \"width\": 474}, {\"image_url\": \"https://i.pinimg.com/736x/1f/11/58/1f11584702320db80a3aebbd4bbb8c72.jpg\", \"origin_url\": \"https://www.pinterest.com/pin/the-big-duck--162622236519638866/\", \"height\": 640, \"width\": 623}, {\"image_url\": \"https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Big_Duck_2018_05.jpg/330px-Big_Duck_2018_05.jpg\", \"origin_url\": \"https://en.wikipedia.org/wiki/Big_Duck\", \"height\": 223, \"width\": 330}, {\"image_url\": \"https://destinationaccessible.org/wp-content/uploads/2020/01/912d204514bc02cb8b0431f7a66c49ff.jpg\", \"origin_url\": \"https://destinationaccessible.org/big-duck/\", \"height\": 563, \"width\": 1000}, {\"image_url\": \"https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0b/5d/0f/36/photo1jpg.jpg?w=900&h=500&s=1\", \"origin_url\": \"https://www.tripadvisor.com/Attraction_Review-g754554-d3292234-Reviews-The_Big_Duck-Flanders_Long_Island_New_York.html\", \"height\": 500, \"width\": 900}], \"related_questions\": [\"What other famous landmarks are in Quackiland\", \"How did Quackiland get its name\", \"What is the history behind the Big Canard Statue\", \"Are there any unique traditions or festivals in Quackiland\", \"How does Quackiland celebrate its national day\"], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": \"stop\", \"message\": {\"role\": \"assistant\", \"content\": \"The capital of Quackiland is **Quack**. The Big Canard Statue is located there. This confirms that Quack is the capital city of Quackiland as stated in your query. \\n\\nThe search results related to \\\"Peep and the Big Wide World\\\" mention Quack as a character but do not contradict or add further details about Quackiland\\u2019s capital or the Big Canard Statue[1][2][3]. Thus, the direct answer from your given information stands: Quack is the capital of Quackiland.\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"\"}}]}"
+    body: "{\"id\": \"e47884da-af38-4a99-9a7d-736fe10f1d36\", \"model\": \"sonar\", \"created\": 1756858628, \"usage\": {\"prompt_tokens\": 34, \"completion_tokens\": 10, \"total_tokens\": 44, \"search_context_size\": \"low\", \"cost\": {\"input_tokens_cost\": 0.0, \"output_tokens_cost\": 0.0, \"request_cost\": 0.005, \"total_cost\": 0.005}}, \"citations\": [], \"search_results\": [], \"images\": [{\"image_url\": \"https://webkinznewz.ganzworld.com/wp-content/uploads/2021/12/QUACK_OH_DEAR.jpg\", \"origin_url\": \"https://webkinznewz.ganzworld.com/announcements/message-about-mayor-dr-quacks-community-codes/\", \"height\": 264, \"width\": 560}, {\"image_url\": \"https://webkinznewz.ganzworld.com/wp-content/uploads/2017/01/Dr-Quack-Mayor-Waving.png\", \"origin_url\": \"https://webkinznewz.ganzworld.com/announcements/special-announcement-from-dr-quack/\", \"height\": 632, \"width\": 507}, {\"image_url\": \"https://assets.coingecko.com/coin_social_images/coin_social_image/crypto_symbol_image/36174/original/coin_social_image_crypto_symbol_3749320250417-7-8du1da.webp?1744915133\", \"origin_url\": \"https://www.coingecko.com/en/coins/quack-capital\", \"height\": 630, \"width\": 1200}, {\"image_url\": \"https://static.coinpaprika.com/coin/quack-quack-capital/card.png?11257573\", \"origin_url\": \"https://coinpaprika.com/coin/quack-quack-capital/\", \"height\": 768, \"width\": 1536}], \"object\": \"chat.completion\", \"choices\": [{\"index\": 0, \"finish_reason\": \"stop\", \"message\": {\"role\": \"assistant\", \"content\": \"The capital of Quackiland is Quack.\"}, \"delta\": {\"role\": \"assistant\", \"content\": \"\"}}]}"
     headers:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 97746e25292ea2b8-YUL
+      - 97910ff24aa8ab94-YYZ
       Content-Type:
       - application/json
       Server:
@@ -34,4 +34,4 @@ interactions:
       - max-age=15552000; includeSubDomains; preload
     status: 200 OK
     code: 200
-    duration: 5.902s
+    duration: 1.769s

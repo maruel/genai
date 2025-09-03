@@ -21,6 +21,7 @@ genai is _intentional_. Curious why it was created? See the release announcement
 - **Streaming**: Streams completion reply as the output is being generated, including thinking and tool
   calling, via [go 1.23 iterators](https://go.dev/blog/range-functions).
 - **Multi-modal**: Process images, PDFs and videos (!) as input or output.
+- **Web Search**: Search the web to answer your question and cite documents passed in.
 - **Unit testing friendly**: record and play back API calls at HTTP level to save 💰 and keep tests fast and
   reproducible, via the exposed HTTP transport. See [example](https://pkg.go.dev/github.com/maruel/genai/providers/anthropic#example-New-HTTP_record).
 - **Rate limits and usage**: Parse the provider-specific HTTP headers and JSON response to get the tokens usage
@@ -60,9 +61,9 @@ genai is _intentional_. Curious why it was created? See the release announcement
 | [llamacpp](docs/llamacpp.md)               | 🏠   | Sync, Stream  | 💬📸       | 💬     | ✅🪨   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
 | [mistral](docs/mistral.md)                 | 🇫🇷   | Sync, Stream  | 🎤💬📄📸   | 💬     | ✅🪨   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
 | [ollama](docs/ollama.md)                   | 🏠   | Sync, Stream🧠 | 💬📸       | 💬     | 💨     | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
-| [openaichat](docs/openaichat.md)           | 🇺🇸   | Sync, Stream🧠 | 🎤💬📄📸   | 💬📸   | ✅🪨   | ✅   | ✅    | ✅   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
+| [openaichat](docs/openaichat.md)           | 🇺🇸   | Sync, Stream🧠 | 🎤💬📄📸   | 💬📸   | ✅🪨🕸️ | ✅   | ✅    | ✅   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
 | [openairesponses](docs/openairesponses.md) | 🇺🇸   | Sync, Stream🧠 | 💬📄📸     | 💬📸   | ✅🪨🕸️ | ✅   | ❌    | ❌   | ❌   | 📏🌱  | ❌    | ✅     | ✅    | ✅     |
-| [perplexity](docs/perplexity.md)           | 🇺🇸   | Sync, Stream🧠 | 💬📸       | 💬     | ❌     | 📐    | ❌    | ❌   | ✅   | 📏    | ❌    | ❌     | ✅    | ✅     |
+| [perplexity](docs/perplexity.md)           | 🇺🇸   | Sync, Stream🧠 | 💬📸       | 💬     | 🕸️     | 📐    | ❌    | ❌   | ✅   | 📏    | ❌    | ❌     | ✅    | ✅     |
 | [pollinations](docs/pollinations.md)       | 🇩🇪   | Sync, Stream  | 💬📸       | 💬📸   | ✅🪨   | ☁️   | ❌    | ❌   | ❌   | 🌱   | ❌    | ❌     | ✅    | ✅     |
 | [togetherai](docs/togetherai.md)           | 🇺🇸   | Sync, Stream🧠 | 💬📸       | 💬📸   | ✅🪨   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
 | openaicompatible                           | N/A  | Sync, Stream  | 💬         | 💬     | ❌     | ❌   | ❌    | ❌   | ❌   | 📏🛑   | ❌    | ❌     | ✅    | ✅     |

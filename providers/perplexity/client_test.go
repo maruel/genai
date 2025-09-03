@@ -166,14 +166,20 @@ func (i *injectOptions) Unwrap() genai.Provider {
 }
 
 func (i *injectOptions) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
-	if !strings.Contains(msgs[len(msgs)-1].Requests[len(msgs[0].Requests)-1].Text, "Quackiland") {
+	if !slices.ContainsFunc(opts, func(o genai.Options) bool {
+		v, ok := o.(*genai.OptionsTools)
+		return ok && v.WebSearch
+	}) {
 		opts = append(opts, i.Opts...)
 	}
 	return i.Provider.GenSync(ctx, msgs, opts...)
 }
 
 func (i *injectOptions) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
-	if !strings.Contains(msgs[len(msgs)-1].Requests[len(msgs[0].Requests)-1].Text, "Quackiland") {
+	if !slices.ContainsFunc(opts, func(o genai.Options) bool {
+		v, ok := o.(*genai.OptionsTools)
+		return ok && v.WebSearch
+	}) {
 		opts = append(opts, i.Opts...)
 	}
 	return i.Provider.GenStream(ctx, msgs, opts...)

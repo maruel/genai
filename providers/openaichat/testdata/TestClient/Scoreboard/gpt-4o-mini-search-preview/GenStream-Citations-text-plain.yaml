@@ -1,0 +1,66 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 298
+    host: api.openai.com
+    body: "{\"model\":\"gpt-4o-mini-search-preview\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}],\"stream_options\":{\"include_usage\":true}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.openai.com/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"chatcmpl-feb42dd9-6f70-4460-b47f-9fbf7fcd955e\",\"object\":\"chat.completion.chunk\",\"created\":1756857187,\"model\":\"gpt-4o-mini-search-preview-2025-03-11\",\"service_tier\":\"default\",\"system_fingerprint\":\"\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\",\"refusal\":null},\"finish_reason\":null}],\"usage\":null,\"obfuscation\":\"\"}\n\ndata: {\"id\":\"chatcmpl-feb42dd9-6f70-4460-b47f-9fbf7fcd955e\",\"object\":\"chat.completion.chunk\",\"created\":1756857187,\"model\":\"gpt-4o-mini-search-preview-2025-03-11\",\"service_tier\":\"default\",\"system_fingerprint\":\"\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"The\"},\"finish_reason\":null}],\"usage\":null,\"obfuscation\":\"k1DTV6oGxGyh2BR\"}\n\ndata: {\"id\":\"chatcmpl-feb42dd9-6f70-4460-b47f-9fbf7fcd955e\",\"object\":\"chat.completion.chunk\",\"created\":1756857187,\"model\":\"gpt-4o-mini-search-preview-2025-03-11\",\"service_tier\":\"default\",\"system_fingerprint\":\"\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" capital\"},\"finish_reason\":null}],\"usage\":null,\"obfuscation\":\"Ds99VY8HrU\"}\n\ndata: {\"id\":\"chatcmpl-feb42dd9-6f70-4460-b47f-9fbf7fcd955e\",\"object\":\"chat.completion.chunk\",\"created\":1756857187,\"model\":\"gpt-4o-mini-search-preview-2025-03-11\",\"service_tier\":\"default\",\"system_fingerprint\":\"\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" of\"},\"finish_reason\":null}],\"usage\":null,\"obfuscation\":\"1w9uMf0Rt0poHaO\"}\n\ndata: {\"id\":\"chatcmpl-feb42dd9-6f70-4460-b47f-9fbf7fcd955e\",\"object\":\"chat.completion.chunk\",\"created\":1756857187,\"model\":\"gpt-4o-mini-search-preview-2025-03-11\",\"service_tier\":\"default\",\"system_fingerprint\":\"\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" Qu\"},\"finish_reason\":null}],\"usage\":null,\"obfuscation\":\"Et9mvW8gVZpSoA8\"}\n\ndata: {\"id\":\"chatcmpl-feb42dd9-6f70-4460-b47f-9fbf7fcd955e\",\"object\":\"chat.completion.chunk\",\"created\":1756857187,\"model\":\"gpt-4o-mini-search-preview-2025-03-11\",\"service_tier\":\"default\",\"system_fingerprint\":\"\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"ack\"},\"finish_reason\":null}],\"usage\":null,\"obfuscation\":\"sFGA3ETKDr0423n\"}\n\ndata: {\"id\":\"chatcmpl-feb42dd9-6f70-4460-b47f-9fbf7fcd955e\",\"object\":\"chat.completion.chunk\",\"created\":1756857187,\"model\":\"gpt-4o-mini-search-preview-2025-03-11\",\"service_tier\":\"default\",\"system_fingerprint\":\"\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"iland\"},\"finish_reason\":null}],\"usage\":null,\"obfuscation\":\"J4MnH1sDokbC2\"}\n\ndata: {\"id\":\"chatcmpl-feb42dd9-6f70-4460-b47f-9fbf7fcd955e\",\"object\":\"chat.completion.chunk\",\"created\":1756857187,\"model\":\"gpt-4o-mini-search-preview-2025-03-11\",\"service_tier\":\"default\",\"system_fingerprint\":\"\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" is\"},\"finish_reason\":null}],\"usage\":null,\"obfuscation\":\"FSpIPhN4EM39ZH5\"}\n\ndata: {\"id\":\"chatcmpl-feb42dd9-6f70-4460-b47f-9fbf7fcd955e\",\"object\":\"chat.completion.chunk\",\"created\":1756857187,\"model\":\"gpt-4o-mini-search-preview-2025-03-11\",\"service_tier\":\"default\",\"system_fingerprint\":\"\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" Qu\"},\"finish_reason\":null}],\"usage\":null,\"obfuscation\":\"GKaN4oGJAUjCHIy\"}\n\ndata: {\"id\":\"chatcmpl-feb42dd9-6f70-4460-b47f-9fbf7fcd955e\",\"object\":\"chat.completion.chunk\",\"created\":1756857187,\"model\":\"gpt-4o-mini-search-preview-2025-03-11\",\"service_tier\":\"default\",\"system_fingerprint\":\"\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"ack\"},\"finish_reason\":null}],\"usage\":null,\"obfuscation\":\"u0Leog1vrw6yQX3\"}\n\ndata: {\"id\":\"chatcmpl-feb42dd9-6f70-4460-b47f-9fbf7fcd955e\",\"object\":\"chat.completion.chunk\",\"created\":1756857187,\"model\":\"gpt-4o-mini-search-preview-2025-03-11\",\"service_tier\":\"default\",\"system_fingerprint\":\"\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\".\"},\"finish_reason\":null}],\"usage\":null,\"obfuscation\":\"K\"}\n\ndata: {\"id\":\"chatcmpl-feb42dd9-6f70-4460-b47f-9fbf7fcd955e\",\"object\":\"chat.completion.chunk\",\"created\":1756857187,\"model\":\"gpt-4o-mini-search-preview-2025-03-11\",\"service_tier\":\"default\",\"system_fingerprint\":\"\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" \"},\"finish_reason\":null}],\"usage\":null,\"obfuscation\":\"b\"}\n\ndata: {\"id\":\"chatcmpl-feb42dd9-6f70-4460-b47f-9fbf7fcd955e\",\"object\":\"chat.completion.chunk\",\"created\":1756857187,\"model\":\"gpt-4o-mini-search-preview-2025-03-11\",\"service_tier\":\"default\",\"system_fingerprint\":\"\",\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"stop\"}],\"usage\":null,\"obfuscation\":\"2H2kgcC0eu8i\"}\n\ndata: {\"id\":\"chatcmpl-feb42dd9-6f70-4460-b47f-9fbf7fcd955e\",\"object\":\"chat.completion.chunk\",\"created\":1756857187,\"model\":\"gpt-4o-mini-search-preview-2025-03-11\",\"service_tier\":\"default\",\"system_fingerprint\":\"\",\"choices\":[],\"usage\":{\"prompt_tokens\":29,\"completion_tokens\":11,\"total_tokens\":40,\"prompt_tokens_details\":{\"cached_tokens\":0,\"audio_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0,\"audio_tokens\":0,\"accepted_prediction_tokens\":0,\"rejected_prediction_tokens\":0}},\"obfuscation\":\"Q\"}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Expose-Headers:
+      - X-Request-ID
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9790ecca8cfaa2b7-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Openai-Organization:
+      - user-vtmtcvpbctksjfewktqdl2sw
+      Openai-Processing-Ms:
+      - "1685"
+      Openai-Project:
+      - proj_tH6hQUFvA4Bx6SyAb23zzLEg
+      Openai-Version:
+      - "2020-10-01"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "1690"
+      X-Ratelimit-Limit-Requests:
+      - "100"
+      X-Ratelimit-Limit-Tokens:
+      - "6000"
+      X-Ratelimit-Remaining-Requests:
+      - "99"
+      X-Ratelimit-Remaining-Tokens:
+      - "5970"
+      X-Ratelimit-Reset-Requests:
+      - 600ms
+      X-Ratelimit-Reset-Tokens:
+      - 300ms
+      X-Request-Id:
+      - req_0072a0b9fa514f3d9e1d3adede7e568b
+    status: 200 OK
+    code: 200
+    duration: 1.778s

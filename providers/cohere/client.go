@@ -412,7 +412,9 @@ func (c *Citations) UnmarshalJSON(b []byte) error {
 func (c Citations) To(dst *genai.Reply) error {
 	dst.Citations = make([]genai.Citation, len(c))
 	for i := range c {
-		c[i].To(&dst.Citations[i])
+		if err := c[i].To(&dst.Citations[i]); err != nil {
+			return err
+		}
 	}
 	return nil
 }
@@ -458,7 +460,7 @@ func (c *Citation) To(out *genai.Citation) error {
 			cs.StartCharIndex = c.Start
 			cs.EndCharIndex = c.End
 		default:
-			return fmt.Errorf("implement citation source type %q", source.Type)
+			return &internal.BadError{Err: fmt.Errorf("implement citation source type %q", source.Type)}
 		}
 	}
 	return nil
@@ -1125,7 +1127,9 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 			if len(pkt.Delta.Message.Citations) != 1 {
 				return &internal.BadError{Err: fmt.Errorf("expected one citation, got %v", pkt)}
 			}
-			pkt.Delta.Message.Citations[0].To(&f.Citation)
+			if err := pkt.Delta.Message.Citations[0].To(&f.Citation); err != nil {
+				return err
+			}
 		case ChunkCitationEnd:
 			if len(pkt.Delta.Message.Citations) != 0 {
 				return &internal.BadError{Err: fmt.Errorf("expected no citations, got %v", pkt)}

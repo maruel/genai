@@ -6,7 +6,7 @@
 | @cf/meta/llama-3.3-70b-instruct-fp8-fast🥈     | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | @cf/meta/llama-3.2-1b-instruct🥉               | ?      | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | @cf/meta/llama-4-scout-17b-16e-instruct       | Sync   | 💬    | 💬     | 💨   | ✅   | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | 💨     |
-| @cf/meta/llama-4-scout-17b-16e-instruct       | Stream | 💬    | 💬     | 💨   | 📐    | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | 💨     |
+| @cf/meta/llama-4-scout-17b-16e-instruct       | Stream | 💬    | 💬     | 💨   | ✅   | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | 💨     |
 | @cf/meta/llama-3.2-3b-instruct                | Sync   | 💬    | 💬     | 💨   | ☁️   | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | 💨     |
 | @cf/meta/llama-3.2-3b-instruct                | Stream | 💬    | 💬     | 💨   | ☁️   | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | 💨     |
 <details>

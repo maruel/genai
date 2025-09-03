@@ -634,7 +634,7 @@ type ChatStreamChunkResponse struct {
 		Logprobs     LogprobsChunk `json:"logprobs"`
 		FinishReason FinishReason  `json:"finish_reason"`
 		MatchedStop  int64         `json:"matched_stop"`
-		StopReason   int64         `json:"stop_reason"` // Seems to be a token
+		StopReason   StopReason    `json:"stop_reason"`
 		ToolCalls    []ToolCall    `json:"tool_calls"`
 	} `json:"choices"`
 	// SystemFingerprint string `json:"system_fingerprint"`
@@ -642,6 +642,18 @@ type ChatStreamChunkResponse struct {
 	Warnings []struct {
 		Message string `json:"message"`
 	} `json:"warnings"`
+}
+
+// StopReason is sometimes a string, sometimes a number, maybe it is a token number?
+type StopReason string
+
+func (s *StopReason) UnmarshalJSON(b []byte) error {
+	v := 0
+	if err := json.Unmarshal(b, &v); err == nil {
+		*s = StopReason(strconv.Itoa(v))
+		return nil
+	}
+	return json.Unmarshal(b, (*string)(s))
 }
 
 type Model struct {

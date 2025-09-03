@@ -430,10 +430,22 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 // ChatStreamChunkResponse is not documented.
 // If you find the documentation for this please tell me!
 type ChatStreamChunkResponse struct {
-	Response  string     `json:"response"`
+	Response  Response   `json:"response"`
 	P         string     `json:"p"`
 	ToolCalls []ToolCall `json:"tool_calls"`
 	Usage     Usage      `json:"usage"`
+}
+
+// Response is normally the response but it can be true (bool) sometimes?
+type Response string
+
+func (r *Response) UnmarshalJSON(b []byte) error {
+	v := false
+	if err := json.Unmarshal(b, &v); err == nil {
+		*r = Response(strconv.FormatBool(v))
+		return nil
+	}
+	return json.Unmarshal(b, (*string)(r))
 }
 
 type Usage struct {
@@ -876,7 +888,7 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		}
 		// TODO: Tools.
 		if word := pkt.Response; word != "" {
-			f := genai.ReplyFragment{TextFragment: word}
+			f := genai.ReplyFragment{TextFragment: string(word)}
 			if err := result.Accumulate(f); err != nil {
 				return err
 			}

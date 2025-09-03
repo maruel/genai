@@ -29,7 +29,7 @@ func Process[T any](body io.Reader, out chan<- T, er error, lenient bool) error 
 				return nil
 			}
 		} else if err != nil {
-			return fmt.Errorf("failed to get server response: %w", err)
+			return &internal.BadError{Err: fmt.Errorf("failed to get server response: %w", err)}
 		}
 		if len(line) == 0 {
 			continue
@@ -58,9 +58,9 @@ func Process[T any](body io.Reader, out chan<- T, er error, lenient bool) error 
 			}
 			if er == nil {
 				if err == nil {
-					return fmt.Errorf("failed to decode server response %q", string(line))
+					return &internal.BadError{Err: fmt.Errorf("failed to decode server response %q", string(line))}
 				}
-				return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
+				return &internal.BadError{Err: fmt.Errorf("failed to decode server response %q: %w", string(line), err)}
 			}
 			if _, err2 := r.Seek(0, 0); err2 != nil {
 				return err2
@@ -73,7 +73,7 @@ func Process[T any](body io.Reader, out chan<- T, er error, lenient bool) error 
 				return er
 			}
 			// Falling back or when in strict mode, return the decoding error instead.
-			return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
+			return &internal.BadError{Err: fmt.Errorf("failed to decode server response %q: %w", string(line), err)}
 		case bytes.Equal(line, keepAlive):
 			// Ignore keep-alive messages. Very few send this.
 		case bytes.Equal(line, keepAliveHuggingface):
@@ -81,7 +81,7 @@ func Process[T any](body io.Reader, out chan<- T, er error, lenient bool) error 
 		case bytes.HasPrefix(line, eventPrefix):
 			// Ignore event headers. Very few send this.
 		default:
-			return fmt.Errorf("unexpected line. expected \"data: \", got %q", line)
+			return &internal.BadError{Err: fmt.Errorf("unexpected line. expected \"data: \", got %q", line)}
 		}
 	}
 }

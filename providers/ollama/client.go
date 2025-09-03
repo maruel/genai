@@ -848,7 +848,7 @@ func processJSONStream(body io.Reader, out chan<- ChatStreamChunkResponse, lenie
 				return nil
 			}
 		} else if err != nil {
-			return fmt.Errorf("failed to get server response: %w", err)
+			return &internal.BadError{Err: fmt.Errorf("failed to get server response: %w", err)}
 		}
 		if len(line) == 0 {
 			continue
@@ -867,7 +867,7 @@ func processJSONStream(body io.Reader, out chan<- ChatStreamChunkResponse, lenie
 			d.UseNumber()
 			er := ErrorResponse{}
 			if err := d.Decode(&er); err != nil {
-				return fmt.Errorf("failed to decode server response %q: %w", string(line), err)
+				return &internal.BadError{Err: fmt.Errorf("failed to decode server response %q: %w", string(line), err)}
 			}
 			return &er
 		}

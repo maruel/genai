@@ -22,8 +22,7 @@ for i in "${PROVIDERS[@]}"; do
     echo "## $i" >> docs/MODELS.new.md
 	echo "" >> docs/MODELS.new.md
 	if ! (list-models -strict -provider $i | sed 's/^/- /' >> docs/MODELS.new.md); then
-		rm providers/$i/testdata/TestClient_Scoreboard/ListModels.yaml
-		rm providers/$i/testdata/TestClient_Preferred/*.yaml
+		find ./providers/$i -name Warmup.yaml -delete
 		go test ./providers/$i/...
 		exit 1
 	fi

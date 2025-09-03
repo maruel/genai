@@ -32,8 +32,10 @@ def main():
     with open(sys.argv[1], "r") as f:
         data = yaml.safe_load(f)
     for interaction in data["interactions"]:
-        print("\033[1mRequest:\033[0m")
-        print_line(interaction["request"]["body"])
+        req = interaction["request"].get("body")
+        if req:
+            print("\033[1mRequest:\033[0m")
+            print_line(req)
         print("\033[1mResponse:\033[0m")
         body = interaction["response"]["body"]
         if body.startswith(("data:", "event:")):

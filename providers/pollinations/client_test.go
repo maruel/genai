@@ -92,7 +92,7 @@ func TestClient(t *testing.T) {
 			name string
 			want string
 		}{
-			{genai.ModelCheap, "llamascout"},
+			{genai.ModelCheap, "gemini"},
 			{genai.ModelGood, "openai-large"},
 			{genai.ModelSOTA, "deepseek-reasoning"},
 		}

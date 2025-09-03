@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 309
+    host: text.pollinations.ai
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"# Quackiland\\n\\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}],\"model\":\"gemini\",\"stream\":true,\"private\":true,\"stream_options\":{\"include_usage\":true}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://text.pollinations.ai/openai
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"chatcmpl-gemini-1756930673286\",\"object\":\"chat.completion.chunk\",\"created\":1756930673,\"model\":\"gemini-2.5-flash-lite\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"The capital of Quackiland\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-gemini-1756930673366\",\"object\":\"chat.completion.chunk\",\"created\":1756930673,\"model\":\"gemini-2.5-flash-lite\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" is **Quack**.\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-gemini-1756930673371\",\"object\":\"chat.completion.chunk\",\"created\":1756930673,\"model\":\"gemini-2.5-flash-lite\",\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"stop\"}]}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9797eec8adbb36bb-YYZ
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=0; includeSubDomains; preload
+      Vary:
+      - Accept-Encoding
+      X-Cache:
+      - MISS
+      X-Cache-Key:
+      - 14cf18b06aa363cbcff56f8a187e48843ee0f89a2fe378c7a90ef2297f1b9050
+      X-Content-Type-Options:
+      - nosniff
+      X-Powered-By:
+      - Express
+    status: 200 OK
+    code: 200
+    duration: 4.48s

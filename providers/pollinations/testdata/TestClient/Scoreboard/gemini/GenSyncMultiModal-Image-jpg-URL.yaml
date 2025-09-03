@@ -1,0 +1,48 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 335
+    host: text.pollinations.ai
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What fruit is it? Reply with only one word.\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg\"}}]}],\"model\":\"gemini\",\"stream\":false,\"private\":true,\"stream_options\":{\"include_usage\":true}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://text.pollinations.ai/openai
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 262
+    body: "{\"error\":\"400 Bad Request\",\"status\":400,\"details\":{\"error\":{\"message\":\"openai error: Unable to process input image. Please retry or report in https://developers.generativeai.google/guide/troubleshooting\",\"type\":null,\"param\":null,\"code\":400},\"provider\":\"openai\"}}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9797ef554fd436bb-YYZ
+      Content-Length:
+      - "262"
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"106-iqyfrndgb5TDKVqc2TPz2X2i9Mo"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=0; includeSubDomains; preload
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Powered-By:
+      - Express
+    status: 400 Bad Request
+    code: 400
+    duration: 3.865s

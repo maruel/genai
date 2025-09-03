@@ -694,7 +694,15 @@ func (m *Model) String() string {
 	} else {
 		c = fmt.Sprintf("%d", m.ContextLength)
 	}
-	return fmt.Sprintf("%s (%s): %s Context: %s; in: %.2f$/Mt out: %.2f$/Mt", m.ID, m.Created.AsTime().Format("2006-01-02"), m.Type, c, m.Pricing.Input, m.Pricing.Output)
+	created := ""
+	if m.Created > 1000 {
+		created = " (" + m.Created.AsTime().Format("2006-01-02") + ")"
+	}
+	pricing := ""
+	if m.Pricing.Input != 0 || m.Pricing.Output != 0 {
+		pricing = fmt.Sprintf("; in: %.2f$/Mt out: %.2f$/Mt", m.Pricing.Input, m.Pricing.Output)
+	}
+	return fmt.Sprintf("%s%s: %s Context: %s%s", m.ID, created, m.Type, c, pricing)
 }
 
 func (m *Model) Context() int64 {

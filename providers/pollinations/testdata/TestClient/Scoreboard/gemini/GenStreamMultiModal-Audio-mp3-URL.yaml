@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 257
+    host: text.pollinations.ai
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What is the word said? Reply with only the word.\"},{\"type\":\"input_audio\",\"input_audio\":{\"format\":\"mp3\"}}]}],\"model\":\"gemini\",\"stream\":true,\"private\":true,\"stream_options\":{\"include_usage\":true}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://text.pollinations.ai/openai
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"chatcmpl-gemini-1756930712757\",\"object\":\"chat.completion.chunk\",\"created\":1756930712,\"model\":\"gemini-2.5-flash-lite\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"said\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-gemini-1756930712766\",\"object\":\"chat.completion.chunk\",\"created\":1756930712,\"model\":\"gemini-2.5-flash-lite\",\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"stop\"}]}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9797efcb2b5236bb-YYZ
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=0; includeSubDomains; preload
+      Vary:
+      - Accept-Encoding
+      X-Cache:
+      - MISS
+      X-Cache-Key:
+      - 6b14f542defba00868961cb9a661a594ecfceadc45a5200b0bc897c47af40177
+      X-Content-Type-Options:
+      - nosniff
+      X-Powered-By:
+      - Express
+    status: 200 OK
+    code: 200
+    duration: 2.594s

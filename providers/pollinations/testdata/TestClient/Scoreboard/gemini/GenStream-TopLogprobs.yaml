@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 192
+    host: text.pollinations.ai
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"}],\"model\":\"gemini\",\"stream\":true,\"private\":true,\"stream_options\":{\"include_usage\":true},\"logprobs\":true,\"top_logprobs\":2}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://text.pollinations.ai/openai
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"chatcmpl-gemini-1756930630041\",\"object\":\"chat.completion.chunk\",\"created\":1756930630,\"model\":\"gemini-2.5-flash-lite\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Hello\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-gemini-1756930630043\",\"object\":\"chat.completion.chunk\",\"created\":1756930630,\"model\":\"gemini-2.5-flash-lite\",\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"stop\"}]}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9797edc41d1936bb-YYZ
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=0; includeSubDomains; preload
+      Vary:
+      - Accept-Encoding
+      X-Cache:
+      - MISS
+      X-Cache-Key:
+      - 62ef4d06a6fa17b92a50784c679823c7aa598d52b3d0e631b5855b99d0124f65
+      X-Content-Type-Options:
+      - nosniff
+      X-Powered-By:
+      - Express
+    status: 200 OK
+    code: 200
+    duration: 2.931s

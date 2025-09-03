@@ -1,0 +1,47 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 294
+    host: text.pollinations.ai
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}],\"model\":\"gemini\",\"stream\":false,\"private\":true,\"stream_options\":{\"include_usage\":true}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://text.pollinations.ai/openai
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"pllns_13bb6208385f7daefa74a9ce16bf8f89\",\"object\":\"chat.completion\",\"created\":1756930677,\"model\":\"gemini-2.5-flash-lite\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"The capital of Quackiland is Quack.\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":68,\"completion_tokens\":9,\"total_tokens\":77},\"user_tier\":\"anonymous\"}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9797eeef989436bb-YYZ
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"15a-kXbtTPA+wylhcaQz/uckgxCGzak"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=0; includeSubDomains; preload
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Powered-By:
+      - Express
+    status: 200 OK
+    code: 200
+    duration: 3.822s

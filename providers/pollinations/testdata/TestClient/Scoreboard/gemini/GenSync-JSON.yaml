@@ -1,0 +1,47 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 298
+    host: text.pollinations.ai
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\\\"is_fruit\\\": bool}.\"}],\"model\":\"gemini\",\"stream\":false,\"response_format\":{\"type\":\"json_object\"},\"private\":true,\"stream_options\":{\"include_usage\":true}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://text.pollinations.ai/openai
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"pllns_b35c9659d657b690b90577e69ca47810\",\"object\":\"chat.completion\",\"created\":1756930666,\"model\":\"gemini-2.5-flash-lite\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\\"is_fruit\\\": true}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":39,\"completion_tokens\":8,\"total_tokens\":47},\"user_tier\":\"anonymous\"}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9797ee90dc8436bb-YYZ
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"159-NnXE2rf1ry2MITFIGQTCRCEV8Kk"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=0; includeSubDomains; preload
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Powered-By:
+      - Express
+    status: 200 OK
+    code: 200
+    duration: 6.986s

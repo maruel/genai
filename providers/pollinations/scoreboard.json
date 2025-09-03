@@ -22,12 +22,19 @@
       "good": true
     },
     {
-      "comments": "JSON generated is often bad when using GenStream.",
       "models": [
-        "llamascout"
+        "gemini"
       ],
       "cheap": true,
       "in": {
+        "image": {
+          "inline": true,
+          "supportedFormats": [
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
         "text": {
           "inline": true
         }
@@ -40,19 +47,11 @@
       "GenSync": {
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
-        "seed": true,
-        "tools": "true",
-        "toolsIndecisive": "true",
-        "toolCallRequired": true,
-        "json": true
+        "seed": true
       },
       "GenStream": {
-        "reportTokenUsage": "true",
         "reportFinishReason": "true",
-        "seed": true,
-        "tools": "true",
-        "toolsIndecisive": "true",
-        "toolCallRequired": true
+        "seed": true
       }
     },
     {
@@ -129,20 +128,14 @@
       "models": [
         "bidara",
         "evil",
-        "gemini",
         "gpt-5-nano",
         "kontext",
-        "llama-fast-roblox",
-        "llama-roblox",
         "midijourney",
         "mirexa",
         "mistral",
-        "mistral-nemo-roblox",
-        "mistral-roblox",
         "nova-fast",
         "openai-fast",
         "openai-reasoning",
-        "openai-roblox",
         "qwen-coder",
         "roblox-rp",
         "rtist",

@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 297
+    host: text.pollinations.ai
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\\\"is_fruit\\\": bool}.\"}],\"model\":\"gemini\",\"stream\":true,\"response_format\":{\"type\":\"json_object\"},\"private\":true,\"stream_options\":{\"include_usage\":true}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://text.pollinations.ai/openai
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"chatcmpl-gemini-1756930659212\",\"object\":\"chat.completion.chunk\",\"created\":1756930659,\"model\":\"gemini-2.5-flash-lite\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"```json\\n{\\\"is_\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-gemini-1756930659233\",\"object\":\"chat.completion.chunk\",\"created\":1756930659,\"model\":\"gemini-2.5-flash-lite\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"fruit\\\": true}\\n```\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-gemini-1756930659246\",\"object\":\"chat.completion.chunk\",\"created\":1756930659,\"model\":\"gemini-2.5-flash-lite\",\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"stop\"}]}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Cache-Control:
+      - no-cache
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9797ee5a09aa36bb-YYZ
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=0; includeSubDomains; preload
+      Vary:
+      - Accept-Encoding
+      X-Cache:
+      - MISS
+      X-Cache-Key:
+      - 623cecaa82e008134a019de938699079115b7af5da6e78ffc467811d434bbe38
+      X-Content-Type-Options:
+      - nosniff
+      X-Powered-By:
+      - Express
+    status: 200 OK
+    code: 200
+    duration: 8.114s

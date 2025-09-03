@@ -678,22 +678,22 @@ func (r *ImageModelsResponse) ToModels() []genai.Model {
 
 type TextModel struct {
 	Audio            bool     `json:"audio"`
-	Aliases          string   `json:"aliases"`
+	Aliases          Strings  `json:"aliases"`
 	Community        bool     `json:"community"`
 	Description      string   `json:"description"`
-	InputModalities  []string `json:"input_modalities"`
+	InputModalities  []string `json:"input_modalities"` // "text", "image", "audio"
 	MaxInputChars    int64    `json:"maxInputChars"`
 	Name             string   `json:"name"`
 	OriginalName     string   `json:"original_name"`
-	OutputModalities []string `json:"output_modalities"`
+	OutputModalities []string `json:"output_modalities"` // "text", "image", "audio"
 	Pricing          struct {
 		PromptTokens     float64 `json:"prompt_tokens"`
 		CompletionTokens float64 `json:"completion_tokens"`
 	} `json:"pricing,omitzero"`
-	Provider   string   `json:"provider"`
+	Provider   string   `json:"provider"` // "api.navy", "azure", "bedrock", "scaleway"
 	Reasoning  bool     `json:"reasoning"`
 	Search     bool     `json:"search"`
-	Tier       string   `json:"tier"` // "seed", "flower"
+	Tier       string   `json:"tier"` // "anonymous", "seed", "flower"
 	Tools      bool     `json:"tools"`
 	Uncensored bool     `json:"uncensored"`
 	Voices     []string `json:"voices"`
@@ -744,6 +744,18 @@ func (r *TextModelsResponse) ToModels() []genai.Model {
 		models[i] = &(*r)[i]
 	}
 	return models
+}
+
+// Strings is generally a list of strings but can be a single string.
+type Strings []string
+
+func (s *Strings) UnmarshalJSON(b []byte) error {
+	var ss string
+	if err := json.Unmarshal(b, &ss); err == nil {
+		*s = Strings{ss}
+		return nil
+	}
+	return json.Unmarshal(b, (*[]string)(s))
 }
 
 //
@@ -971,7 +983,7 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 		}
 		// This is meh.
 		if cheap {
-			if strings.HasPrefix(m.Name, "llama") {
+			if strings.HasPrefix(m.Name, "gemini") {
 				selectedModel = m.Name
 			}
 		} else if good {

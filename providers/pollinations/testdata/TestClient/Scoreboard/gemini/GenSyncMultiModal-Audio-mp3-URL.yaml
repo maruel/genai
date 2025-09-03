@@ -1,0 +1,47 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 258
+    host: text.pollinations.ai
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What is the word said? Reply with only the word.\"},{\"type\":\"input_audio\",\"input_audio\":{\"format\":\"mp3\"}}]}],\"model\":\"gemini\",\"stream\":false,\"private\":true,\"stream_options\":{\"include_usage\":true}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://text.pollinations.ai/openai
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"pllns_f7a9475a57995a88fce14869811dd272\",\"object\":\"chat.completion\",\"created\":1756930732,\"model\":\"gemini-2.5-flash-lite\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"said\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":51,\"completion_tokens\":1,\"total_tokens\":52},\"user_tier\":\"anonymous\"}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9797f0452cc036bb-YYZ
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"13b-iw+pl84D6mDBZlmtOAj92q4FV5k"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=0; includeSubDomains; preload
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Powered-By:
+      - Express
+    status: 200 OK
+    code: 200
+    duration: 3.881s

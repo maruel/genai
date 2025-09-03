@@ -1,0 +1,65 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 694
+    host: api.openai.com
+    body: "{\"model\":\"gpt-5-nano\",\"background\":false,\"parallel_tool_calls\":true,\"reasoning\":{\"effort\":\"low\",\"summary\":\"auto\"},\"service_tier\":\"flex\",\"store\":false,\"tool_choice\":\"required\",\"tools\":[{\"type\":\"function\",\"name\":\"best_country\",\"description\":\"A tool to specify the best country\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"country\":{\"type\":\"string\",\"enum\":[\"USA\",\"Canada\"]}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"country\"]}}],\"input\":[{\"type\":\"message\",\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one.\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.openai.com/v1/responses
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"resp_68b84aa7420c8193b43d6675425b02c10767fa04221b6150\",\n  \"object\": \"response\",\n  \"created_at\": 1756908199,\n  \"status\": \"completed\",\n  \"background\": false,\n  \"error\": null,\n  \"incomplete_details\": null,\n  \"instructions\": null,\n  \"max_output_tokens\": null,\n  \"max_tool_calls\": null,\n  \"model\": \"gpt-5-nano-2025-08-07\",\n  \"output\": [\n    {\n      \"id\": \"rs_68b84ac7d5cc8193bacf7b448ff4709f0767fa04221b6150\",\n      \"type\": \"reasoning\",\n      \"summary\": [\n        {\n          \"type\": \"summary_text\",\n          \"text\": \"**Deciding on the best country**\\n\\nI need to call the best_country tool with either \\\"USA\\\" or \\\"Canada.\\\" The user's asking which is better, but the tool can only pick one. I'm thinking of going with the USA since \\\"best\\\" is subjective, and the tool will likely give me a definitive answer based on the selection I've made. I'll go ahead and call the function with { country: \\\"USA\\\" } and present the result once it returns!\"\n        }\n      ]\n    },\n    {\n      \"id\": \"fc_68b84acd0cf08193bbdced474a60a1b70767fa04221b6150\",\n      \"type\": \"function_call\",\n      \"status\": \"completed\",\n      \"arguments\": \"{\\\"country\\\":\\\"USA\\\"}\",\n      \"call_id\": \"call_0Tni8ULxUdlLPjhVQdm0CXFS\",\n      \"name\": \"best_country\"\n    }\n  ],\n  \"parallel_tool_calls\": true,\n  \"previous_response_id\": null,\n  \"prompt_cache_key\": null,\n  \"reasoning\": {\n    \"effort\": \"low\",\n    \"summary\": \"detailed\"\n  },\n  \"safety_identifier\": null,\n  \"service_tier\": \"flex\",\n  \"store\": false,\n  \"temperature\": 1.0,\n  \"text\": {\n    \"format\": {\n      \"type\": \"text\"\n    },\n    \"verbosity\": \"medium\"\n  },\n  \"tool_choice\": \"required\",\n  \"tools\": [\n    {\n      \"type\": \"function\",\n      \"description\": \"A tool to specify the best country\",\n      \"name\": \"best_country\",\n      \"parameters\": {\n        \"properties\": {\n          \"country\": {\n            \"type\": \"string\",\n            \"enum\": [\n              \"USA\",\n              \"Canada\"\n            ]\n          }\n        },\n        \"additionalProperties\": false,\n        \"type\": \"object\",\n        \"required\": [\n          \"country\"\n        ]\n      },\n      \"strict\": true\n    }\n  ],\n  \"top_logprobs\": 0,\n  \"top_p\": 1.0,\n  \"truncation\": \"disabled\",\n  \"usage\": {\n    \"input_tokens\": 77,\n    \"input_tokens_details\": {\n      \"cached_tokens\": 0\n    },\n    \"output_tokens\": 148,\n    \"output_tokens_details\": {\n      \"reasoning_tokens\": 128\n    },\n    \"total_tokens\": 225\n  },\n  \"user\": null,\n  \"metadata\": {}\n}"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9795ca34db0fa2d5-YUL
+      Content-Type:
+      - application/json
+      Openai-Organization:
+      - user-vtmtcvpbctksjfewktqdl2sw
+      Openai-Processing-Ms:
+      - "39165"
+      Openai-Project:
+      - proj_tH6hQUFvA4Bx6SyAb23zzLEg
+      Openai-Version:
+      - "2020-10-01"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "39172"
+      X-Ratelimit-Limit-Requests:
+      - "500"
+      X-Ratelimit-Limit-Tokens:
+      - "200000"
+      X-Ratelimit-Remaining-Requests:
+      - "499"
+      X-Ratelimit-Remaining-Tokens:
+      - "199313"
+      X-Ratelimit-Reset-Requests:
+      - 120ms
+      X-Ratelimit-Reset-Tokens:
+      - 205ms
+      X-Request-Id:
+      - req_13d1e0a1cfeeb53b991b1900490710c9
+    status: 200 OK
+    code: 200
+    duration: 39.294s

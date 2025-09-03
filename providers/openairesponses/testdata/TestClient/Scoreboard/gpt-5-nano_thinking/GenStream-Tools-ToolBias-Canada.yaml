@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 708
+    host: api.openai.com
+    body: "{\"model\":\"gpt-5-nano\",\"background\":false,\"parallel_tool_calls\":true,\"reasoning\":{\"effort\":\"low\",\"summary\":\"auto\"},\"service_tier\":\"flex\",\"store\":false,\"tool_choice\":\"required\",\"tools\":[{\"type\":\"function\",\"name\":\"best_country\",\"description\":\"A tool to specify the best country\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"country\":{\"type\":\"string\",\"enum\":[\"Canada\",\"USA\"]}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"country\"]}}],\"input\":[{\"type\":\"message\",\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one.\"}]}],\"stream\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.openai.com/v1/responses
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "event: response.created\ndata: {\"type\":\"response.created\",\"sequence_number\":0,\"response\":{\"id\":\"resp_68b859e718048196ad6196f8ae67c02706f4f4cf023be2f9\",\"object\":\"response\",\"created_at\":1756912103,\"status\":\"in_progress\",\"background\":false,\"error\":null,\"incomplete_details\":null,\"instructions\":null,\"max_output_tokens\":null,\"max_tool_calls\":null,\"model\":\"gpt-5-nano-2025-08-07\",\"output\":[],\"parallel_tool_calls\":true,\"previous_response_id\":null,\"prompt_cache_key\":null,\"reasoning\":{\"effort\":\"low\",\"summary\":\"detailed\"},\"safety_identifier\":null,\"service_tier\":\"flex\",\"store\":false,\"temperature\":1.0,\"text\":{\"format\":{\"type\":\"text\"},\"verbosity\":\"medium\"},\"tool_choice\":\"required\",\"tools\":[{\"type\":\"function\",\"description\":\"A tool to specify the best country\",\"name\":\"best_country\",\"parameters\":{\"properties\":{\"country\":{\"type\":\"string\",\"enum\":[\"Canada\",\"USA\"]}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"country\"]},\"strict\":true}],\"top_logprobs\":0,\"top_p\":1.0,\"truncation\":\"disabled\",\"usage\":null,\"user\":null,\"metadata\":{}}}\n\nevent: response.in_progress\ndata: {\"type\":\"response.in_progress\",\"sequence_number\":1,\"response\":{\"id\":\"resp_68b859e718048196ad6196f8ae67c02706f4f4cf023be2f9\",\"object\":\"response\",\"created_at\":1756912103,\"status\":\"in_progress\",\"background\":false,\"error\":null,\"incomplete_details\":null,\"instructions\":null,\"max_output_tokens\":null,\"max_tool_calls\":null,\"model\":\"gpt-5-nano-2025-08-07\",\"output\":[],\"parallel_tool_calls\":true,\"previous_response_id\":null,\"prompt_cache_key\":null,\"reasoning\":{\"effort\":\"low\",\"summary\":\"detailed\"},\"safety_identifier\":null,\"service_tier\":\"flex\",\"store\":false,\"temperature\":1.0,\"text\":{\"format\":{\"type\":\"text\"},\"verbosity\":\"medium\"},\"tool_choice\":\"required\",\"tools\":[{\"type\":\"function\",\"description\":\"A tool to specify the best country\",\"name\":\"best_country\",\"parameters\":{\"properties\":{\"country\":{\"type\":\"string\",\"enum\":[\"Canada\",\"USA\"]}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"country\"]},\"strict\":true}],\"top_logprobs\":0,\"top_p\":1.0,\"truncation\":\"disabled\",\"usage\":null,\"user\":null,\"metadata\":{}}}\n\nevent: error\ndata: {\"type\":\"error\",\"sequence_number\":2,\"error\":{\"type\":\"server_error\",\"code\":\"server_error\",\"message\":\"An error occurred while processing your request. You can retry your request, or contact us through our help center at help.openai.com if the error persists. Please include the request ID req_4b3282f7a7c265286d3b4d73a3d6ae44 in your message.\",\"param\":null}}\n\nevent: response.failed\ndata: {\"type\":\"response.failed\",\"sequence_number\":3,\"response\":{\"id\":\"resp_68b859e718048196ad6196f8ae67c02706f4f4cf023be2f9\",\"object\":\"response\",\"created_at\":1756912103,\"status\":\"failed\",\"background\":false,\"error\":{\"code\":\"server_error\",\"message\":\"An error occurred while processing your request. You can retry your request, or contact us through our help center at help.openai.com if the error persists. Please include the request ID req_4b3282f7a7c265286d3b4d73a3d6ae44 in your message.\"},\"incomplete_details\":null,\"instructions\":null,\"max_output_tokens\":null,\"max_tool_calls\":null,\"model\":\"gpt-5-nano-2025-08-07\",\"output\":[],\"parallel_tool_calls\":true,\"previous_response_id\":null,\"prompt_cache_key\":null,\"reasoning\":{\"effort\":\"low\",\"summary\":\"detailed\"},\"safety_identifier\":null,\"service_tier\":\"flex\",\"store\":false,\"temperature\":1.0,\"text\":{\"format\":{\"type\":\"text\"},\"verbosity\":\"medium\"},\"tool_choice\":\"required\",\"tools\":[{\"type\":\"function\",\"description\":\"A tool to specify the best country\",\"name\":\"best_country\",\"parameters\":{\"properties\":{\"country\":{\"type\":\"string\",\"enum\":[\"Canada\",\"USA\"]}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"country\"]},\"strict\":true}],\"top_logprobs\":0,\"top_p\":1.0,\"truncation\":\"disabled\",\"usage\":null,\"user\":null,\"metadata\":{}}}\n\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 979629826c0aa2ff-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Openai-Organization:
+      - user-vtmtcvpbctksjfewktqdl2sw
+      Openai-Processing-Ms:
+      - "118"
+      Openai-Project:
+      - proj_tH6hQUFvA4Bx6SyAb23zzLEg
+      Openai-Version:
+      - "2020-10-01"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "128"
+      X-Request-Id:
+      - req_4b3282f7a7c265286d3b4d73a3d6ae44
+    status: 200 OK
+    code: 200
+    duration: 507ms

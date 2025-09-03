@@ -136,9 +136,9 @@ func (r *Response) Init(msgs genai.Messages, model string, opts ...genai.Options
 				msgCopy := msgs[i]
 				msgCopy.ToolCallResults = []genai.ToolCallResult{msgs[i].ToolCallResults[j]}
 				var newMsg Message
-				if err := newMsg.From(&msgCopy); err != nil {
+				if skip, err := newMsg.From(&msgCopy); err != nil {
 					errs = append(errs, fmt.Errorf("message #%d: tool call results #%d: %w", i, j, err))
-				} else {
+				} else if !skip {
 					r.Input = append(r.Input, newMsg)
 				}
 			}
@@ -150,9 +150,9 @@ func (r *Response) Init(msgs genai.Messages, model string, opts ...genai.Options
 					msgCopy := msgs[i]
 					msgCopy.Replies = []genai.Reply{msgs[i].Replies[j]}
 					var newMsg Message
-					if err := newMsg.From(&msgCopy); err != nil {
+					if skip, err := newMsg.From(&msgCopy); err != nil {
 						errs = append(errs, fmt.Errorf("message #%d: tool call #%d: %w", i, j, err))
-					} else {
+					} else if !skip {
 						r.Input = append(r.Input, newMsg)
 					}
 				} else {
@@ -164,18 +164,18 @@ func (r *Response) Init(msgs genai.Messages, model string, opts ...genai.Options
 				msgCopy := msgs[i]
 				msgCopy.Replies = txt
 				var newMsg Message
-				if err := newMsg.From(&msgCopy); err != nil {
+				if skip, err := newMsg.From(&msgCopy); err != nil {
 					errs = append(errs, fmt.Errorf("message #%d: %w", i, err))
-				} else {
+				} else if !skip {
 					r.Input = append(r.Input, newMsg)
 				}
 			}
 		} else {
 			// It's a Request, send it as-is.
 			var newMsg Message
-			if err := newMsg.From(&msgs[i]); err != nil {
+			if skip, err := newMsg.From(&msgs[i]); err != nil {
 				errs = append(errs, fmt.Errorf("message #%d: %w", i, err))
-			} else {
+			} else if !skip {
 				r.Input = append(r.Input, newMsg)
 			}
 		}
@@ -414,9 +414,9 @@ type Message struct {
 }
 
 // From must be called with at most one ToolCallResults.
-func (m *Message) From(in *genai.Message) error {
+func (m *Message) From(in *genai.Message) (bool, error) {
 	if len(in.ToolCallResults) > 1 {
-		return errors.New("internal error")
+		return false, &internal.BadError{Err: errors.New("internal error")}
 	}
 	if len(in.ToolCallResults) != 0 {
 		// Handle multiple tool call results by creating multiple messages
@@ -424,7 +424,7 @@ func (m *Message) From(in *genai.Message) error {
 		m.Type = MessageFunctionCallOutput
 		m.CallID = in.ToolCallResults[0].ID
 		m.Output = in.ToolCallResults[0].Result
-		return nil
+		return false, nil
 	}
 	if len(in.Requests) != 0 {
 		m.Type = MessageMessage
@@ -432,39 +432,39 @@ func (m *Message) From(in *genai.Message) error {
 		m.Content = make([]Content, len(in.Requests))
 		for j := range in.Requests {
 			if err := m.Content[j].FromRequest(&in.Requests[j]); err != nil {
-				return fmt.Errorf("request #%d: %w", j, err)
+				return false, fmt.Errorf("request #%d: %w", j, err)
 			}
 		}
-		return nil
+		return len(m.Content) == 0, nil
 	}
 	if len(in.Replies) != 0 {
 		// Handle multiple tool calls by creating multiple messages
 		// The caller (Init method) should handle this by creating separate messages
 		if !in.Replies[0].ToolCall.IsZero() {
 			if len(in.Replies[0].ToolCall.Opaque) != 0 {
-				return errors.New("field ToolCall.Opaque not supported")
+				return false, &internal.BadError{Err: errors.New("field ToolCall.Opaque not supported")}
 			}
 			m.Type = MessageFunctionCall
 			m.CallID = in.Replies[0].ToolCall.ID
 			m.Name = in.Replies[0].ToolCall.Name
 			m.Arguments = in.Replies[0].ToolCall.Arguments
-			return nil
+			return false, nil
 		}
 		m.Type = MessageMessage
 		m.Role = "assistant"
 		for j := range in.Replies {
-			// TODO: should we send it back?
+			// TODO: should we send it back, at least the ID?
 			if in.Replies[j].Reasoning != "" {
 				continue
 			}
 			m.Content = append(m.Content, Content{})
 			if err := m.Content[len(m.Content)-1].FromReply(&in.Replies[j]); err != nil {
-				return fmt.Errorf("reply #%d: %w", j, err)
+				return false, fmt.Errorf("reply #%d: %w", j, err)
 			}
 		}
-		return nil
+		return len(m.Content) == 0, nil
 	}
-	return fmt.Errorf("implement message: %#v", in)
+	return false, &internal.BadError{Err: fmt.Errorf("implement message: %#v", in)}
 }
 
 // To is different here because it can be called multiple times on the same out.
@@ -694,8 +694,12 @@ func (c *Content) FromReply(in *genai.Reply) error {
 
 // APIError represents an API error in the response.
 type APIError struct {
-	Code    string `json:"code"`
+	Code    string `json:"code"` // "server_error"
 	Message string `json:"message"`
+}
+
+func (e *APIError) Error() string {
+	return fmt.Sprintf("%s: %s", e.Code, e.Message)
 }
 
 // IncompleteDetails represents details about why a response is incomplete.
@@ -797,20 +801,24 @@ const (
 	ResponseMCPListToolsCompleted           ResponseType = "response.mcp_list_tools.completed"
 	ResponseMCPListToolsFailed              ResponseType = "response.mcp_list_tools.failed"
 	ResponseMCPListToolsInProgress          ResponseType = "response.mcp_list_tools.in_progress"
+	ResponseCodeInterpreterCallInterpreting ResponseType = "response.code_interpreter_call.interpreting"
+	ResponseCodeInterpreterCallCompleted    ResponseType = "response.code_interpreter_call.completed"
+	ResponseCustomToolCallInputDelta        ResponseType = "response.custom_tool_call_input.delta"
+	ResponseCustomToolCallInputDone         ResponseType = "response.custom_tool_call_input.done"
+	ResponseCodeInterpreterCallDelta        ResponseType = "response.code_interpreter_call.delta"
+	ResponseCodeInterpreterCallDone         ResponseType = "response.code_interpreter_call.done"
 	ResponseOutputItemAdded                 ResponseType = "response.output_item.added"
 	ResponseOutputItemDone                  ResponseType = "response.output_item.done"
 	ResponseOutputTextDelta                 ResponseType = "response.output_text.delta"
 	ResponseOutputTextDone                  ResponseType = "response.output_text.done"
 	ResponseOutputTextAnnotationAdded       ResponseType = "response.output_text.annotation.added"
 	ResponseQueued                          ResponseType = "response.queued"
-	ResponseReasoningDelta                  ResponseType = "response.reasoning.delta"
-	ResponseReasoningDone                   ResponseType = "response.reasoning.done"
-	ResponseReasoningSummaryDelta           ResponseType = "response.reasoning_summary.delta"
-	ResponseReasoningSummaryDone            ResponseType = "response.reasoning_summary.done"
 	ResponseReasoningSummaryPartAdded       ResponseType = "response.reasoning_summary_part.added"
 	ResponseReasoningSummaryPartDone        ResponseType = "response.reasoning_summary_part.done"
 	ResponseReasoningSummaryTextDelta       ResponseType = "response.reasoning_summary_text.delta"
 	ResponseReasoningSummaryTextDone        ResponseType = "response.reasoning_summary_text.done"
+	ResponseReasoningTextDelta              ResponseType = "response.reasoning_text.delta"
+	ResponseReasoningTextDone               ResponseType = "response.reasoning_text.done"
 	ResponseRefusalDelta                    ResponseType = "response.refusal.delta"
 	ResponseRefusalDone                     ResponseType = "response.refusal.done"
 	ResponseWebSearchCallCompleted          ResponseType = "response.web_search_call.completed"
@@ -833,23 +841,21 @@ type ResponseStreamChunkResponse struct {
 	// ResponseContentPartDone, ResponseOutputTextDelta, ResponseOutputTextDone, ResponseRefusalDelta,
 	// ResponseRefusalDone, ResponseFunctionCallArgumentsDelta, ResponseFunctionCallArgumentsDone,
 	// ResponseReasoningSummaryPartAdded, ResponseReasoningSummaryPartDone, ResponseReasoningSummaryTextDelta,
-	// ResponseReasoningSummaryTextDone, ResponseReasoningDone, ResponseReasoningSummaryDelta,
-	// ResponseReasoningSummaryDone, ResponseOutputTextAnnotationAdded
+	// ResponseReasoningSummaryTextDone, ResponseOutputTextAnnotationAdded
 	OutputIndex int64 `json:"output_index,omitzero"`
 
 	// Type == ResponseOutputItemAdded, ResponseOutputItemDone
 	Item Message `json:"item,omitzero"`
 
 	// Type == ResponseContentPartAdded, ResponseContentPartDone, ResponseOutputTextDelta,
-	// ResponseOutputTextDone, ResponseRefusalDelta, ResponseRefusalDone, ResponseReasoningDelta,
-	// ResponseReasoningDone, ResponseOutputTextAnnotationAdded
+	// ResponseOutputTextDone, ResponseRefusalDelta, ResponseRefusalDone,
+	//  ResponseOutputTextAnnotationAdded
 	ContentIndex int64 `json:"content_index,omitzero"`
 
 	// Type == ResponseContentPartAdded, ResponseContentPartDone, ResponseOutputTextDelta,
 	// ResponseOutputTextDone, ResponseRefusalDelta, ResponseRefusalDone, ResponseFunctionCallArgumentsDelta,
 	// ResponseFunctionCallArgumentsDone, ResponseReasoningSummaryPartAdded, ResponseReasoningSummaryPartDone,
-	// ResponseReasoningSummaryTextDelta, ResponseReasoningSummaryTextDone, ResponseReasoningDelta,
-	// ResponseReasoningDone, ResponseReasoningSummaryDelta, ResponseReasoningSummaryDone, ResponseOutputTextAnnotationAdded
+	// ResponseReasoningSummaryTextDelta, ResponseReasoningSummaryTextDone, ResponseOutputTextAnnotationAdded
 	ItemID string `json:"item_id,omitzero"`
 
 	// Type == ResponseContentPartAdded, ResponseContentPartDone, ResponseReasoningSummaryPartAdded,
@@ -857,11 +863,10 @@ type ResponseStreamChunkResponse struct {
 	Part Content `json:"part,omitzero"`
 
 	// Type == ResponseOutputTextDelta, ResponseRefusalDelta, ResponseFunctionCallArgumentsDelta,
-	// ResponseReasoningSummaryTextDelta, ResponseReasoningDelta, ResponseReasoningSummaryDelta
+	// ResponseReasoningSummaryTextDelta
 	Delta string `json:"delta,omitzero"`
 
-	// Type == ResponseOutputTextDone, ResponseReasoningSummaryTextDone, ResponseReasoningDone,
-	// ResponseReasoningSummaryDone
+	// Type == ResponseOutputTextDone, ResponseReasoningSummaryTextDone
 	Text string `json:"text,omitzero"`
 
 	// Type == ResponseRefusalDone
@@ -871,8 +876,7 @@ type ResponseStreamChunkResponse struct {
 	Arguments string `json:"arguments,omitzero"`
 
 	// Type == ResponseReasoningSummaryPartAdded, ResponseReasoningSummaryPartDone,
-	// ResponseReasoningSummaryTextDelta, ResponseReasoningSummaryTextDone, ResponseReasoningSummaryDelta,
-	// ResponseReasoningSummaryDone
+	// ResponseReasoningSummaryTextDelta, ResponseReasoningSummaryTextDone
 	SummaryIndex int64 `json:"summary_index,omitzero"`
 
 	// Type == ResponseOutputTextAnnotationAdded
@@ -880,9 +884,7 @@ type ResponseStreamChunkResponse struct {
 	AnnotationIndex int64      `json:"annotation_index,omitzero"`
 
 	// Type == ResponseError
-	Code    string `json:"code,omitzero"`
-	Message string `json:"message,omitzero"`
-	Param   string `json:"param,omitzero"`
+	ErrorResponse
 
 	Logprobs []Logprobs `json:"logprobs,omitzero"`
 
@@ -924,12 +926,9 @@ type BatchRequestInput struct {
 
 // BatchRequestOutput is documented at https://platform.openai.com/docs/api-reference/batch/request-output
 type BatchRequestOutput struct {
-	CustomID string `json:"custom_id"`
-	ID       string `json:"id"`
-	Error    struct {
-		Code    string `json:"code"`
-		Message string `json:"message"`
-	} `json:"error"`
+	CustomID string   `json:"custom_id"`
+	ID       string   `json:"id"`
+	Error    APIError `json:"error"`
 	Response struct {
 		StatusCode int      `json:"status_code"`
 		RequestID  string   `json:"request_id"` // To use when contacting support
@@ -1160,7 +1159,11 @@ func processStreamPackets(ch <-chan ResponseStreamChunkResponse, chunks chan<- g
 		}
 		switch pkt.Type {
 		case ResponseCreated, ResponseInProgress:
+			// https://platform.openai.com/docs/api-reference/responses_streaming/response/created
+			// https://platform.openai.com/docs/api-reference/responses_streaming/response/in_progress
+			// Both are useless.
 		case ResponseCompleted:
+			// https://platform.openai.com/docs/api-reference/responses_streaming/response/completed
 			// This message contains all the data duplicated. :( It's clear they never thought about efficiency.
 			result.Usage.InputTokens = pkt.Response.Usage.InputTokens
 			result.Usage.InputCachedTokens = pkt.Response.Usage.InputTokensDetails.CachedTokens
@@ -1189,9 +1192,17 @@ func processStreamPackets(ch <-chan ResponseStreamChunkResponse, chunks chan<- g
 					return &internal.BadError{Err: fmt.Errorf("unknown status %q: %#v", msg.Status, pkt)}
 				}
 			}
+
 		case ResponseFailed:
-			return fmt.Errorf("response failed: %s", pkt.Response.Error.Message)
+			// https://platform.openai.com/docs/api-reference/responses_streaming/response/failed
+			return &internal.BadError{Err: &pkt.Response.Error}
+		case ResponseError:
+			// https://platform.openai.com/docs/api-reference/responses_streaming/error
+			// This happens fairly consistently with gpt-5-nano_thinking/GenStream-Tools-ToolBias-Canada.yaml.
+			// Normally this should be a BadError but that would break the smoke test.
+			return &pkt.ErrorResponse
 		case ResponseIncomplete:
+			// https://platform.openai.com/docs/api-reference/responses_streaming/response/incomplete
 			result.Usage.InputTokens = pkt.Response.Usage.InputTokens
 			result.Usage.InputCachedTokens = pkt.Response.Usage.InputTokensDetails.CachedTokens
 			result.Usage.ReasoningTokens = pkt.Response.Usage.OutputTokensDetails.ReasoningTokens
@@ -1200,11 +1211,9 @@ func processStreamPackets(ch <-chan ResponseStreamChunkResponse, chunks chan<- g
 				result.Usage.FinishReason = genai.FinishedLength
 			}
 			return errors.New(pkt.Response.IncompleteDetails.Reason)
-		case ResponseOutputTextDelta:
-			f.TextFragment = pkt.Delta
-		case ResponseOutputTextDone:
-			// Unnecessary, we captured the text via ResponseOutputTextDelta.
+
 		case ResponseOutputItemAdded:
+			// https://platform.openai.com/docs/api-reference/responses_streaming/response/output_item/added
 			switch pkt.Item.Type {
 			case MessageMessage:
 				// Unnecessary.
@@ -1226,7 +1235,8 @@ func processStreamPackets(ch <-chan ResponseStreamChunkResponse, chunks chan<- g
 				return &internal.BadError{Err: fmt.Errorf("implement item: %q", pkt.Item.Type)}
 			}
 		case ResponseOutputItemDone:
-			// Perfect place to handle  web server, since the "pending" has no data.
+			// https://platform.openai.com/docs/api-reference/responses_streaming/response/output_item/done
+			// Perfect place to handle web search, since the "pending" has no data.
 			switch pkt.Item.Type {
 			case MessageWebSearchCall:
 				// TODO: Check for pkt.Item.Status == "completed"
@@ -1247,6 +1257,7 @@ func processStreamPackets(ch <-chan ResponseStreamChunkResponse, chunks chan<- g
 				// The default stance is to ignore this event since it's generally duplicate information.
 			}
 		case ResponseContentPartAdded:
+			// https://platform.openai.com/docs/api-reference/responses_streaming/response/content_part/added
 			switch pkt.Part.Type {
 			case ContentOutputText:
 				if len(pkt.Part.Annotations) > 0 {
@@ -1261,33 +1272,77 @@ func processStreamPackets(ch <-chan ResponseStreamChunkResponse, chunks chan<- g
 				return &internal.BadError{Err: fmt.Errorf("implement part: %q", pkt.Part.Type)}
 			}
 		case ResponseContentPartDone:
+			// https://platform.openai.com/docs/api-reference/responses_streaming/response/content_part/done
 			// Unnecessary, as we already streamed the content in ResponseContentPartAdded.
+		case ResponseOutputTextDelta:
+			// https://platform.openai.com/docs/api-reference/responses_streaming/response/output_text/delta
+			f.TextFragment = pkt.Delta
+		case ResponseOutputTextDone:
+			// https://platform.openai.com/docs/api-reference/responses_streaming/response/output_text/done
+			// Unnecessary, we captured the text via ResponseOutputTextDelta.
+
 		case ResponseRefusalDelta:
+			// https://platform.openai.com/docs/api-reference/responses_streaming/response/refusal/delta
 			// TODO: It's not an error but catch it in the smoke test in case it happens.
 			return &internal.BadError{Err: fmt.Errorf("refused: %s", pkt.Delta)}
 		case ResponseRefusalDone:
+			// https://platform.openai.com/docs/api-reference/responses_streaming/response/refusal/done
 			// TODO: It's not an error but catch it in the smoke test in case it happens.
 			return &internal.BadError{Err: fmt.Errorf("refused: %s", pkt.Refusal)}
+
 		case ResponseFunctionCallArgumentsDelta:
+			// https://platform.openai.com/docs/api-reference/responses_streaming/response/function_call_arguments/delta
 			// Unnecessary. The content is sent in ResponseFunctionCallArgumentsDone.
 		case ResponseFunctionCallArgumentsDone:
+			// https://platform.openai.com/docs/api-reference/responses_streaming/response/function_call_arguments/done
 			pendingToolCall.Arguments = pkt.Arguments
 			f.ToolCall = pendingToolCall
 			pendingToolCall = genai.ToolCall{}
-		case ResponseReasoningSummaryPartAdded:
-		case ResponseReasoningSummaryTextDelta:
-			f.ReasoningFragment = pkt.Delta
-		case ResponseReasoningSummaryTextDone:
-		case ResponseReasoningSummaryPartDone:
-		case ResponseError:
-			return &internal.BadError{Err: fmt.Errorf("error: %s", pkt.Message)}
+
+		case ResponseFileSearchCallInProgress, ResponseFileSearchCallSearching, ResponseFileSearchCallCompleted:
+			// https://platform.openai.com/docs/api-reference/responses_streaming/response/file_search_call/in_progress
+			return &internal.BadError{Err: fmt.Errorf("implement packet: %q", pkt.Type)}
+
 		case ResponseWebSearchCallInProgress:
+			// https://platform.openai.com/docs/api-reference/responses_streaming/response/web_search_call/in_progress
 			// Data is sent in ResponseOutputItemDone.
 		case ResponseWebSearchCallSearching:
+			// https://platform.openai.com/docs/api-reference/responses_streaming/response/web_search_call/searching
 			// Data is sent in ResponseOutputItemDone.
 		case ResponseWebSearchCallCompleted:
+			// https://platform.openai.com/docs/api-reference/responses_streaming/response/web_search_call/completed
 			// Data is sent in ResponseOutputItemDone.
+
+		case ResponseReasoningSummaryPartAdded:
+			// https://platform.openai.com/docs/api-reference/responses_streaming/response/reasoning_summary_part/added
+		case ResponseReasoningSummaryPartDone:
+			// https://platform.openai.com/docs/api-reference/responses_streaming/response/reasoning_summary_part/done
+		case ResponseReasoningSummaryTextDelta:
+			// https://platform.openai.com/docs/api-reference/responses_streaming/response/reasoning_summary_text/delta
+			f.ReasoningFragment = pkt.Delta
+		case ResponseReasoningSummaryTextDone:
+			// https://platform.openai.com/docs/api-reference/responses_streaming/response/reasoning_summary_text/done
+		case ResponseReasoningTextDelta:
+			// https://platform.openai.com/docs/api-reference/responses_streaming/response/reasoning_text/delta
+			// I'm not sure it will ever happen.
+			f.ReasoningFragment = pkt.Delta
+		case ResponseReasoningTextDone:
+			// https://platform.openai.com/docs/api-reference/responses_streaming/response/reasoning_text/done
+
+		case ResponseImageGenerationCallCompleted, ResponseImageGenerationCallGenerating, ResponseImageGenerationCallInProgress, ResponseImageGenerationCallPartialImage:
+			// https://platform.openai.com/docs/api-reference/responses_streaming/response/image_generation_call/completed
+			return &internal.BadError{Err: fmt.Errorf("implement packet: %q", pkt.Type)}
+
+		case ResponseMCPCallArgumentsDelta, ResponseMCPCallArgumentsDone, ResponseMCPCallCompleted, ResponseMCPCallFailed, ResponseMCPCallInProgress, ResponseMCPListToolsCompleted, ResponseMCPListToolsFailed, ResponseMCPListToolsInProgress:
+			// https://platform.openai.com/docs/api-reference/responses_streaming/response/mcp_call_arguments/delta
+			return &internal.BadError{Err: fmt.Errorf("implement packet: %q", pkt.Type)}
+
+		case ResponseCodeInterpreterCallInterpreting, ResponseCodeInterpreterCallCompleted, ResponseCodeInterpreterCallDelta, ResponseCodeInterpreterCallDone:
+			// https://platform.openai.com/docs/api-reference/responses_streaming/response/code_interpreter_call/in_progress
+			return &internal.BadError{Err: fmt.Errorf("implement packet: %q", pkt.Type)}
+
 		case ResponseOutputTextAnnotationAdded:
+			// https://platform.openai.com/docs/api-reference/responses_streaming/response/output_text/annotation/added
 			if pkt.Annotation.Type != "url_citation" {
 				return &internal.BadError{Err: fmt.Errorf("implement annotation type: %q", pkt.Annotation.Type)}
 			}
@@ -1296,8 +1351,14 @@ func processStreamPackets(ch <-chan ResponseStreamChunkResponse, chunks chan<- g
 			f.Citation.Sources = []genai.CitationSource{
 				{Type: genai.CitationWeb, URL: pkt.Annotation.URL, Title: pkt.Annotation.Title},
 			}
-		case ResponseFileSearchCallCompleted, ResponseFileSearchCallInProgress, ResponseFileSearchCallSearching, ResponseImageGenerationCallCompleted, ResponseImageGenerationCallGenerating, ResponseImageGenerationCallInProgress, ResponseImageGenerationCallPartialImage, ResponseMCPCallArgumentsDelta, ResponseMCPCallArgumentsDone, ResponseMCPCallCompleted, ResponseMCPCallFailed, ResponseMCPCallInProgress, ResponseMCPListToolsCompleted, ResponseMCPListToolsFailed, ResponseMCPListToolsInProgress, ResponseQueued, ResponseReasoningDelta, ResponseReasoningDone, ResponseReasoningSummaryDelta, ResponseReasoningSummaryDone:
-			fallthrough
+		case ResponseQueued:
+			// https://platform.openai.com/docs/api-reference/responses_streaming/response/queued
+			// Ignore.
+
+		case ResponseCustomToolCallInputDelta, ResponseCustomToolCallInputDone:
+			// https://platform.openai.com/docs/api-reference/responses_streaming/response/custom_tool_call_input/delta
+			return &internal.BadError{Err: fmt.Errorf("implement packet: %q", pkt.Type)}
+
 		default:
 			return &internal.BadError{Err: fmt.Errorf("implement packet: %q", pkt.Type)}
 		}

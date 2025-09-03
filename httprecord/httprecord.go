@@ -66,15 +66,21 @@ func trimResponseHeaders(i *cassette.Interaction) error {
 	i.Request.Headers.Del("X-Key")
 	// OMG What are they thinking? This happens on HTTP 302 redirect when fetching Veo generated videos:
 	i.Response.Headers.Del("X-Goog-Api-Key")
+	// Personal information.
+	i.Response.Headers.Del("Anthropic-Organization-Id")
+	i.Response.Headers.Del("Openai-Organization")
+	i.Response.Headers.Del("Openai-Project")
+	// The cookie may be used for authentication?
+	i.Response.Headers.Del("Set-Cookie")
+
 	// Noise.
 	i.Request.Headers.Del("X-Request-Id")
 	i.Response.Headers.Del("Date")
+	i.Response.Headers.Del("Inference-Id")
 	i.Response.Headers.Del("Request-Id")
-	// Remove this here since it also happens in openaicompatible.
-	i.Response.Headers.Del("Anthropic-Organization-Id")
-	// The cookie may be used for authentication?
-	i.Response.Headers.Del("Set-Cookie")
-	// Noise.
+	i.Response.Headers.Del("X-Ds-Trace-Id")
+	i.Response.Headers.Del("X-Ms-Request-Id")
+	i.Response.Headers.Del("X-Request-Id")
 	i.Response.Duration = i.Response.Duration.Round(time.Millisecond)
 	return nil
 }

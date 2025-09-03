@@ -82,11 +82,6 @@ func (r *Records) Signal(name string) error {
 // Don't forget to call Stop()!
 func (r *Records) Record(name string, h http.RoundTripper, opts ...recorder.Option) (*Recorder, error) {
 	name = strings.ReplaceAll(strings.ReplaceAll(name, "/", string(os.PathSeparator)), ":", "-")
-	if d := filepath.Dir(name); d != "." {
-		if err := os.MkdirAll(filepath.Join(r.root, d), 0o755); err != nil {
-			return nil, err
-		}
-	}
 	mode := recorder.ModeRecordOnce
 	if v := os.Getenv("RECORD"); v == "1" {
 		mode = recorder.ModeRecordOnly

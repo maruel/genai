@@ -12,6 +12,8 @@ import (
 	"bytes"
 	"net/http"
 	"net/url"
+	"os"
+	"path/filepath"
 	"regexp"
 	"strings"
 	"time"
@@ -44,6 +46,33 @@ func New(path string, h http.RoundTripper, opts ...recorder.Option) (*recorder.R
 	return recorder.New(path, append(args, opts...)...)
 }
 
+// TB is a subset of testing.TB.
+type TB interface {
+	Cleanup(func())
+	Error(args ...any)
+	Fatal(args ...any)
+	Name() string
+}
+
+// Wrap returns a wrapper that records HTTP requests and saves them in testdata/<testname>.yaml.
+//
+// It is only meant to be used in tests.
+func Wrap(t TB, opts ...recorder.Option) func(h http.RoundTripper) http.RoundTripper {
+	return func(h http.RoundTripper) http.RoundTripper {
+		name := strings.ReplaceAll(strings.ReplaceAll(t.Name(), "/", string(os.PathSeparator)), ":", "-")
+		r, err := New(filepath.Join("testdata", name), h, opts...)
+		if err != nil {
+			t.Fatal(err)
+		}
+		t.Cleanup(func() {
+			if err2 := r.Stop(); err2 != nil {
+				t.Error(err2)
+			}
+		})
+		return r
+	}
+}
+
 type skipEmptyFS struct {
 	cassette.FS
 }
@@ -52,6 +81,11 @@ func (c *skipEmptyFS) WriteFile(name string, data []byte) error {
 	if bytes.Contains(data, []byte("interactions: []")) {
 		// Do not save files without an interaction.
 		return nil
+	}
+	if d := filepath.Dir(name); d != "." {
+		if err := os.MkdirAll(d, 0o755); err != nil {
+			return err
+		}
 	}
 	return c.FS.WriteFile(name, data)
 }

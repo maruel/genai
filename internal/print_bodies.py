@@ -3,12 +3,12 @@
 # Use of this source code is governed under the Apache License, Version 2.0
 # that can be found in the LICENSE file.
 
-"""Print the response body of an interaction file.
+"""Print the request and response bodies of an interaction file.
 
 Recommended usage:
-  ./internal/print_response_body.py \
+  ./internal/print_bodies.py \
     providers/cerebras/testdata/TestClient/Scoreboard/gpt-oss-120b_thinking/GenStream-Tools-SquareRoot-1-any.yaml
-    | less
+    | less -R
 
 """
 
@@ -27,11 +27,14 @@ def print_line(line):
 
 def main():
     if len(sys.argv) < 2:
-        print("Usage: print_response_body.py <filename>")
+        print("Usage: print_bodies.py <filename>")
         return 1
     with open(sys.argv[1], "r") as f:
         data = yaml.safe_load(f)
     for interaction in data["interactions"]:
+        print("\033[1mRequest:\033[0m")
+        print_line(interaction["request"]["body"])
+        print("\033[1mResponse:\033[0m")
         body = interaction["response"]["body"]
         if body.startswith(("data:", "event:")):
             for line in body.split("\n"):

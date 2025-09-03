@@ -47,6 +47,7 @@ func main() {
 					fmt.Printf("- %s / %s\n", src.Title, src.URL)
 				case genai.CitationWebImage:
 					fmt.Printf("- image: %s\n", src.URL)
+				case genai.CitationWebQuery, genai.CitationDocument, genai.CitationTool:
 				}
 			}
 		}

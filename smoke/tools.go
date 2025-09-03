@@ -49,12 +49,12 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 		Force: genai.ToolCallRequired,
 	}
 	// TODO: Do not consider a single tool call failure a failure, try a few times.
-	resp, err := cs.callGen(ctx, prefix+"SquareRoot-1", msgs, &optsTools)
+	res, err := cs.callGen(ctx, prefix+"SquareRoot-1", msgs, &optsTools)
 	if isBadError(ctx, err) {
 		internal.Logger(ctx).DebugContext(ctx, "SquareRoot-1", "err", err)
 		return err
 	}
-	internal.Logger(ctx).DebugContext(ctx, "SquareRoot-1", "resp", resp)
+	internal.Logger(ctx).DebugContext(ctx, "SquareRoot-1", "resp", res)
 	flaky := false
 	f.ToolCallRequired = true
 	var uerr *genai.UnsupportedContinuableError
@@ -69,7 +69,7 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 			}
 		}
 	}
-	hasCalls := slices.ContainsFunc(resp.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() })
+	hasCalls := slices.ContainsFunc(res.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() })
 	if !hasCalls || err != nil {
 		// It is not necessarily flaky if the client returned an error, it's often that ToolCallRequired is not
 		// supported. But if the client didn't report an error and there are no tool calls, that's bad and it's
@@ -79,12 +79,12 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 		internal.Logger(ctx).DebugContext(ctx, "SquareRoot-1", "err", err, "msg", "trying toolany")
 		// Try a second time without forcing a tool call.
 		optsTools.Force = genai.ToolCallAny
-		resp, err = cs.callGen(ctx, prefix+"SquareRoot-1-any", msgs, &optsTools)
+		res, err = cs.callGen(ctx, prefix+"SquareRoot-1-any", msgs, &optsTools)
 		if isBadError(ctx, err) {
 			internal.Logger(ctx).DebugContext(ctx, "SquareRoot-1-any", "err", err)
 			return err
 		}
-		hasCalls = slices.ContainsFunc(resp.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() })
+		hasCalls = slices.ContainsFunc(res.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() })
 	}
 
 	if err != nil || !hasCalls {
@@ -97,8 +97,8 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 		return nil
 	}
 
-	msgs = append(msgs, resp.Message)
-	tr, err := resp.DoToolCalls(ctx, optsTools.Tools)
+	msgs = append(msgs, res.Message)
+	tr, err := res.DoToolCalls(ctx, optsTools.Tools)
 	if err != nil {
 		internal.Logger(ctx).DebugContext(ctx, "SquareRoot-1 (do calls)", "err", err)
 		f.Tools = scoreboard.False
@@ -117,12 +117,12 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 	msgs = append(msgs, tr)
 	optsTools.Force = genai.ToolCallNone
 
-	resp, err = cs.callGen(ctx, prefix+"SquareRoot-2", msgs, &optsTools)
+	res, err = cs.callGen(ctx, prefix+"SquareRoot-2", msgs, &optsTools)
 	if isBadError(ctx, err) {
 		internal.Logger(ctx).DebugContext(ctx, "SquareRoot-2", "err", err)
 		return err
 	}
-	if err != nil || slices.ContainsFunc(resp.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
+	if err != nil || slices.ContainsFunc(res.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
 		internal.Logger(ctx).DebugContext(ctx, "SquareRoot-2", "err", err)
 		f.Tools = scoreboard.Flaky
 		f.ToolsBiased = scoreboard.False
@@ -135,16 +135,16 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 	} else {
 		f.Tools = scoreboard.True
 	}
-	if isZeroUsage(resp.Usage) {
+	if isZeroUsage(res.Usage) {
 		if f.ReportTokenUsage != scoreboard.False {
 			internal.Logger(ctx).DebugContext(ctx, "SquareRoot", "issue", "token usage")
 			f.ReportTokenUsage = scoreboard.Flaky
 		}
 	}
 	// The finish reason for tool calls is genai.FinishedToolCalls
-	if expectedFR := genai.FinishedStop; resp.Usage.FinishReason != expectedFR {
+	if expectedFR := genai.FinishedStop; res.Usage.FinishReason != expectedFR {
 		if f.ReportTokenUsage != scoreboard.False {
-			internal.Logger(ctx).DebugContext(ctx, "SquareRoot", "issue", "finish reason", "expected", expectedFR, "got", resp.Usage.FinishReason)
+			internal.Logger(ctx).DebugContext(ctx, "SquareRoot", "issue", "finish reason", "expected", expectedFR, "got", res.Usage.FinishReason)
 			f.ReportFinishReason = scoreboard.Flaky
 		}
 	}
@@ -191,7 +191,7 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 		}
 
 		check := prefix + fmt.Sprintf("ToolBias-%s", line.countrySelected)
-		resp, err := cs.callGen(ctx, check, genai.Messages{genai.NewTextMessage(line.prompt)}, &opts)
+		res, err = cs.callGen(ctx, check, genai.Messages{genai.NewTextMessage(line.prompt)}, &opts)
 		if isBadError(ctx, err) {
 			return err
 		}
@@ -201,58 +201,58 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 			f.Tools = scoreboard.Flaky
 			continue // Skip to next test case
 		}
-		if !slices.ContainsFunc(resp.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
+		if !slices.ContainsFunc(res.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
 			// No tool call, even though ToolCallRequired was set.
 			// This also indicates flaky tool support.
 			f.Tools = scoreboard.Flaky
 			continue
 		}
-		if isZeroUsage(resp.Usage) {
+		if isZeroUsage(res.Usage) {
 			if f.ReportTokenUsage != scoreboard.False {
 				internal.Logger(ctx).DebugContext(ctx, check, "issue", "token usage")
 				f.ReportTokenUsage = scoreboard.Flaky
 			}
 		}
-		if expectedFR := genai.FinishedToolCalls; resp.Usage.FinishReason != expectedFR {
+		if expectedFR := genai.FinishedToolCalls; res.Usage.FinishReason != expectedFR {
 			if f.ReportTokenUsage != scoreboard.False {
-				internal.Logger(ctx).DebugContext(ctx, check, "issue", "finish reason", "expected", expectedFR, "got", resp.Usage.FinishReason)
+				internal.Logger(ctx).DebugContext(ctx, check, "issue", "finish reason", "expected", expectedFR, "got", res.Usage.FinishReason)
 				f.ReportFinishReason = scoreboard.Flaky
 			}
 		}
 		toolCalls := 0
-		for _, r := range resp.Replies {
+		for _, r := range res.Replies {
 			if !r.ToolCall.IsZero() {
 				toolCalls++
 			}
 		}
 		if toolCalls == 1 {
-			for j := range resp.Replies {
-				if resp.Replies[j].ToolCall.IsZero() {
+			for j := range res.Replies {
+				if res.Replies[j].ToolCall.IsZero() {
 					continue
 				}
-				res, err := resp.Replies[j].ToolCall.Call(ctx, opts.Tools)
-				if err != nil {
+				res2, err2 := res.Replies[j].ToolCall.Call(ctx, opts.Tools)
+				if err2 != nil {
 					// Error during tool execution. This only happens if the json schema is not followed. For example
 					// I've seen on Huggingface using "country1" and "country2", aka being indecisive with a single
 					// function call.
 					f.Tools = scoreboard.Flaky
 					continue
 				}
-				biasedResults[i] = res == line.countrySelected
+				biasedResults[i] = res2 == line.countrySelected
 			}
 		} else if toolCalls == 2 {
 			indecisiveOccurred = true
 			var countries []string
-			for j := range resp.Replies {
-				if resp.Replies[j].ToolCall.IsZero() {
+			for j := range res.Replies {
+				if res.Replies[j].ToolCall.IsZero() {
 					continue
 				}
-				res, err := resp.Replies[j].ToolCall.Call(ctx, opts.Tools)
-				if err != nil {
+				res2, err2 := res.Replies[j].ToolCall.Call(ctx, opts.Tools)
+				if err2 != nil {
 					f.Tools = scoreboard.Flaky
 					continue
 				}
-				countries = append(countries, res)
+				countries = append(countries, res2)
 			}
 			// Verify countries if indecisive.
 			slices.Sort(countries)
@@ -286,45 +286,45 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 	// Test the WebSearch tool. It's a costly test.
 	msgs = genai.Messages{genai.NewTextMessage("Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation.")}
 	optsTools = genai.OptionsTools{WebSearch: true}
-	resp, err = cs.callGen(ctx, prefix+"WebSearch", msgs, &optsTools)
+	res, err = cs.callGen(ctx, prefix+"WebSearch", msgs, &optsTools)
 	if isBadError(ctx, err) {
 		internal.Logger(ctx).DebugContext(ctx, "WebSearch", "err", err)
 		return err
 	}
-	internal.Logger(ctx).DebugContext(ctx, "WebSearch", "resp", resp)
+	internal.Logger(ctx).DebugContext(ctx, "WebSearch", "resp", res)
 	// It must contains citations.
 	if err == nil {
-		f.WebSearch = slices.ContainsFunc(resp.Replies, func(r genai.Reply) bool { return len(r.Citations) > 0 })
-		for _, r := range resp.Replies {
+		f.WebSearch = slices.ContainsFunc(res.Replies, func(r genai.Reply) bool { return len(r.Citations) > 0 })
+		for _, r := range res.Replies {
 			if len(r.Citations) == 0 {
 				continue
 			}
 			for _, c := range r.Citations {
 				if len(c.Sources) == 0 {
-					return fmt.Errorf("citation has no sources: %#v", resp)
+					return fmt.Errorf("citation has no sources: %#v", res)
 				}
 			}
 			slog.DebugContext(ctx, "WebSearch", "citations", r.Citations)
 		}
-		if !slices.ContainsFunc(resp.Replies, func(r genai.Reply) bool {
+		if !slices.ContainsFunc(res.Replies, func(r genai.Reply) bool {
 			return slices.ContainsFunc(r.Citations, func(c genai.Citation) bool {
 				return slices.ContainsFunc(c.Sources, func(s genai.CitationSource) bool {
 					return s.Type == genai.CitationWebQuery
 				})
 			})
 		}) {
-			return fmt.Errorf("missing query from WebSearch citation: %#v", resp)
+			return fmt.Errorf("missing query from WebSearch citation: %#v", res)
 		}
 		// This happens with gemini-2.5-pro, it seems the web results gets eaten by the thought summarization.
 		if false {
-			if !slices.ContainsFunc(resp.Replies, func(r genai.Reply) bool {
+			if !slices.ContainsFunc(res.Replies, func(r genai.Reply) bool {
 				return slices.ContainsFunc(r.Citations, func(c genai.Citation) bool {
 					return slices.ContainsFunc(c.Sources, func(s genai.CitationSource) bool {
 						return s.Type == genai.CitationWeb
 					})
 				})
 			}) {
-				return fmt.Errorf("missing URLs from WebSearch citation: %#v", resp)
+				return fmt.Errorf("missing URLs from WebSearch citation: %#v", res)
 			}
 		}
 	}

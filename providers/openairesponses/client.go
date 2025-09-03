@@ -1242,6 +1242,7 @@ func processStreamPackets(ch <-chan ResponseStreamChunkResponse, chunks chan<- g
 				default:
 					return &internal.BadError{Err: fmt.Errorf("implement action type %q", pkt.Item.Action.Type)}
 				}
+			case MessageMessage, MessageFileSearchCall, MessageComputerCall, MessageFunctionCall, MessageReasoning, MessageImageGenerationCall, MessageCodeInterpreterCall, MessageLocalShellCall, MessageMcpListTools, MessageMcpApprovalRequest, MessageMcpCall, MessageComputerCallOutput, MessageFunctionCallOutput, MessageLocalShellCallOutput, MessageMcpApprovalResponse, MessageItemReference:
 			default:
 				// The default stance is to ignore this event since it's generally duplicate information.
 			}

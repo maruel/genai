@@ -162,7 +162,6 @@ func Example_all_GetProvidersGenAsync() {
 	// anthropic
 	// bfl
 	// gemini
-	// openai
 	// openaichat
 }
 
@@ -178,13 +177,13 @@ func Example_all_GetProvidersGenAsync() {
 //     environment variables FOO_API_KEY are set.
 func GetProvidersGenAsync(ctx context.Context) []string {
 	var names []string
-	for name, cfg := range providers.All {
+	for _, cfg := range providers.All {
 		c, _ := cfg.Factory(ctx, &genai.ProviderOptions{Model: genai.ModelNone}, nil)
 		if c == nil {
 			continue
 		}
 		if _, ok := c.(genai.ProviderGenAsync); ok {
-			names = append(names, name)
+			names = append(names, c.Name())
 		}
 	}
 	sort.Strings(names)

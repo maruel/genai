@@ -41,7 +41,7 @@ type Config struct {
 
 // All is a easy way to propose the user to load any of the supported provider.
 //
-// The keys are aliases and there can be duplicate aliases. As of now, "openai" links to "openaichat". Use
+// The keys are aliases and there can be duplicate aliases. "openai" links to "openairesponses". Use
 // Provider.Name to get the real provider name.
 var All = map[string]Config{
 	"anthropic": {
@@ -166,9 +166,9 @@ var All = map[string]Config{
 	},
 	"openai": {
 		APIKeyEnvVar: "OPENAI_API_KEY",
-		Alias:        "openaichat",
+		Alias:        "openairesponses",
 		Factory: func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-			p, err := openaichat.New(ctx, opts, wrapper)
+			p, err := openairesponses.New(ctx, opts, wrapper)
 			if p == nil {
 				return nil, err
 			}

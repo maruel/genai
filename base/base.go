@@ -191,13 +191,14 @@ func (c *ProviderBase[PErrorResponse]) DecodeResponse(resp *http.Response, url s
 		r2 = r
 	}
 	var errs []error
-	if foundExtraKeys, err2 := internal.DecodeJSON(d, out, r2); err2 == nil {
+	foundExtraKeys, errJSON := internal.DecodeJSON(d, out, r2)
+	if errJSON == nil {
 		// It may have succeeded but not decoded anything.
 		if v := reflect.ValueOf(out); !reflect.DeepEqual(out, reflect.Zero(v.Type()).Interface()) {
 			return nil
 		}
 	} else if foundExtraKeys {
-		errs = append(errs, err2)
+		errs = append(errs, errJSON)
 	}
 	if _, err = r.Seek(0, 0); err != nil {
 		return err
@@ -212,13 +213,13 @@ func (c *ProviderBase[PErrorResponse]) DecodeResponse(resp *http.Response, url s
 		// It may have succeeded but not decoded anything.
 		if v := reflect.ValueOf(er); !reflect.DeepEqual(v, reflect.Zero(c.errorResponse).Interface()) {
 			errs = append(errs, er)
-		} else {
-			errs = append(errs, err)
 		}
 	} else if foundExtraKeys {
 		// This is confusing, not sure it's a good idea. The problem is that we need to detect when error fields
 		// appear too!
-		errs = append(errs, err)
+		if len(errs) == 0 {
+			errs = append(errs, errJSON)
+		}
 	} else {
 		// Return only the original error.
 		return err

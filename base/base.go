@@ -76,7 +76,7 @@ func (*NotImplemented) GenSync(context.Context, genai.Messages, ...genai.Options
 }
 
 func (*NotImplemented) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
-	return yieldNoFragment, func() (genai.Result, error) {
+	return yieldNothing[genai.ReplyFragment], func() (genai.Result, error) {
 		return genai.Result{}, ErrNotSupported
 	}
 }
@@ -441,7 +441,7 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 // It sets Stream to false and sends a request to the chat URL.
 func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenSyncRaw(ctx context.Context, in PGenRequest, out PGenResponse) error {
 	if err := c.Validate(); err != nil {
-		return err
+		return &internal.BadError{Err: err}
 	}
 	in.SetStream(false)
 	return c.DoRequest(ctx, "POST", c.GenSyncURL, in, out)
@@ -453,7 +453,7 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 	// Normally this shouldn't be needed here but gemini calls this function directly.
 	c.lateInit()
 	if err := c.Validate(); err != nil {
-		return err
+		return &internal.BadError{Err: err}
 	}
 	in.SetStream(true)
 	url := c.GenStreamURL
@@ -462,10 +462,11 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 	}
 	resp, err := c.JSONRequest(ctx, "POST", url, in)
 	if err != nil {
-		return fmt.Errorf("failed to get server response: %w", err)
+		return &internal.BadError{Err: fmt.Errorf("failed to get server response: %w", err)}
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
+		// Generally happens when the request is something the server doesn't support, e.g. logprobs.
 		return c.DecodeError(url, resp)
 	}
 	c.mu.Lock()
@@ -559,5 +560,5 @@ func MimeByExt(ext string) string {
 	return internal.MimeByExt(ext)
 }
 
-func yieldNoFragment(yield func(genai.ReplyFragment) bool) {
+func yieldNothing[T any](yield func(T) bool) {
 }

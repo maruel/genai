@@ -77,12 +77,12 @@ func TestProcess(t *testing.T) {
 			{
 				name:  "invalid json",
 				input: "data: {invalid json}\n\n",
-				want:  "foo",
+				want:  "failed to decode server response \"data: {invalid json}\": invalid character 'i' looking for beginning of object key string",
 			},
 			{
 				name:  "unexpected format",
 				input: "unexpected: {\"text\":\"message\"}\n\n",
-				want:  "foo",
+				want:  "unexpected line. expected \"data: \", got \"unexpected: {\\\"text\\\":\\\"message\\\"}\"",
 			},
 		}
 		for _, tt := range tests {
@@ -94,7 +94,7 @@ func TestProcess(t *testing.T) {
 					t.Fatal("expected error")
 				}
 				if s := err.Error(); s != tt.want {
-					t.Fatalf("unexpected error\ngot:  %v\nwant: %v", err, tt.want)
+					t.Fatalf("unexpected error\ngot:  %q\nwant: %q", err, tt.want)
 				}
 			})
 		}

@@ -77,7 +77,7 @@ type ChatRequest struct {
 	ToolChoice       string  `json:"tool_choice,omitzero"`       // "auto", "none", "any", "required"
 	PresencePenalty  float64 `json:"presence_penalty,omitzero"`  // [-2.0, 2.0]
 	FrequencyPenalty float64 `json:"frequency_penalty,omitzero"` // [-2.0, 2.0]
-	N                int64   `json:"n,omitzero"`                 // Number of choices
+	N                int64   `json:"n,omitzero"`                 // Number of choices; input tokens are only billed once
 	Prediction       struct {
 		// Enable users to specify expected results, optimizing response times by
 		// leveraging known or predictable content. This approach is especially
@@ -86,7 +86,9 @@ type ChatRequest struct {
 		Type    string `json:"type,omitzero"` // "content"
 		Content string `json:"content,omitzero"`
 	} `json:"prediction,omitzero"`
-	SafePrompt bool `json:"safe_prompt,omitzero"`
+	ParallelToolCalls bool   `json:"parallel_tool_calls,omitzero"` // defaults to true anyway
+	PromptMode        string `json:"prompt_mode,omitzero"`         // "reasoning"
+	SafePrompt        bool   `json:"safe_prompt,omitzero"`         // Injects a safety prompt
 
 	// See https://docs.mistral.ai/capabilities/document/
 	DocumentImageLimit int64 `json:"document_image_limit,omitzero"`

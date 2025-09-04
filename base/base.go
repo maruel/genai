@@ -472,7 +472,11 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 	c.lastResp = resp.Header
 	c.mu.Unlock()
 	er := reflect.New(c.errorResponse).Interface().(PErrorResponse)
-	return sse.Process(resp.Body, out, er, c.Lenient)
+	it, finish := sse.Process[GenStreamChunkResponse](resp.Body, er, c.Lenient)
+	for pkt := range it {
+		out <- pkt
+	}
+	return finish()
 }
 
 func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) lateInit() {

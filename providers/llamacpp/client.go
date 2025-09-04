@@ -1311,7 +1311,11 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest,
 	if resp.StatusCode != 200 {
 		return c.impl.DecodeError(c.completionsURL, resp)
 	}
-	return sse.Process(resp.Body, out, nil, c.impl.Lenient)
+	it, finish := sse.Process[CompletionStreamChunkResponse](resp.Body, nil, c.impl.Lenient)
+	for pkt := range it {
+		out <- pkt
+	}
+	return finish()
 }
 
 func (c *Client) GetHealth(ctx context.Context) (string, error) {

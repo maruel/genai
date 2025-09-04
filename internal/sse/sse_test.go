@@ -46,15 +46,13 @@ func TestProcess(t *testing.T) {
 
 		for _, tt := range tests {
 			t.Run(tt.name, func(t *testing.T) {
-				outChan := make(chan testResponse, len(tt.want)+1)
-				err := Process(strings.NewReader(tt.input), outChan, nil, false)
-				close(outChan)
-				if err != nil {
-					t.Fatal(err)
-				}
+				it, finish := Process[testResponse](strings.NewReader(tt.input), nil, false)
 				var got []testResponse
-				for msg := range outChan {
+				for msg := range it {
 					got = append(got, msg)
+				}
+				if err := finish(); err != nil {
+					t.Fatal(err)
 				}
 				if len(got) != len(tt.want) {
 					t.Fatalf("got %d messages, want %d", len(got), len(tt.want))
@@ -87,13 +85,12 @@ func TestProcess(t *testing.T) {
 		}
 		for _, tt := range tests {
 			t.Run(tt.name, func(t *testing.T) {
-				outChan := make(chan testResponse, 100)
-				err := Process(strings.NewReader(tt.input), outChan, nil, false)
-				close(outChan)
-				if err == nil {
-					t.Fatal("expected error")
+				it, finish := Process[testResponse](strings.NewReader(tt.input), nil, false)
+				for range it {
 				}
-				if s := err.Error(); s != tt.want {
+				if err := finish(); err == nil {
+					t.Fatal("expected error")
+				} else if s := err.Error(); s != tt.want {
 					t.Fatalf("unexpected error\ngot:  %q\nwant: %q", err, tt.want)
 				}
 			})
@@ -103,12 +100,12 @@ func TestProcess(t *testing.T) {
 	t.Run("ReaderError", func(t *testing.T) {
 		// Test with a reader that returns an error
 		errorReader := &errorReaderMock{err: errors.New("read error")}
-		outChan := make(chan testResponse)
-		err := Process(errorReader, outChan, nil, false)
-		if err == nil {
-			t.Fatal("expected error")
+		it, finish := Process[testResponse](errorReader, nil, false)
+		for range it {
 		}
-		if !errors.Is(err, errorReader.err) {
+		if err := finish(); err == nil {
+			t.Fatal("expected error")
+		} else if !errors.Is(err, errorReader.err) {
 			t.Fatal("incorrect error")
 		}
 	})

@@ -14,94 +14,104 @@ type testResponse struct {
 	Text string `json:"text"`
 }
 
-func TestProcessSSE(t *testing.T) {
-	tests := []struct {
-		name          string
-		input         string
-		expectedMsgs  []testResponse
-		expectedError bool
-	}{
-		{
-			name:  "basic processing",
-			input: "data: {\"text\":\"message 1\"}\n\ndata: {\"text\":\"message 2\"}\n\ndata: [DONE]\n\n",
-			expectedMsgs: []testResponse{
-				{Text: "message 1"},
-				{Text: "message 2"},
+func TestProcess(t *testing.T) {
+	t.Run("valid", func(t *testing.T) {
+		tests := []struct {
+			name  string
+			input string
+			want  []testResponse
+		}{
+			{
+				name:  "basic processing",
+				input: "data: {\"text\":\"message 1\"}\n\ndata: {\"text\":\"message 2\"}\n\ndata: [DONE]\n\n",
+				want: []testResponse{
+					{Text: "message 1"},
+					{Text: "message 2"},
+				},
 			},
-			expectedError: false,
-		},
-		{
-			name:          "invalid json",
-			input:         "data: {invalid json}\n\n",
-			expectedMsgs:  nil,
-			expectedError: true,
-		},
-		{
-			name:  "with keep-alive",
-			input: "data: {\"text\":\"message 1\"}\n\n: keep-alive\n\ndata: {\"text\":\"message 2\"}\n\n",
-			expectedMsgs: []testResponse{
-				{Text: "message 1"},
-				{Text: "message 2"},
+			{
+				name:  "with keep-alive",
+				input: "data: {\"text\":\"message 1\"}\n\n: keep-alive\n\ndata: {\"text\":\"message 2\"}\n\n",
+				want: []testResponse{
+					{Text: "message 1"},
+					{Text: "message 2"},
+				},
 			},
-			expectedError: false,
-		},
-		{
-			name:          "unexpected format",
-			input:         "unexpected: {\"text\":\"message\"}\n\n",
-			expectedMsgs:  nil,
-			expectedError: true,
-		},
-		{
-			name:          "event prefix is ignored",
-			input:         "event: message\n\ndata: {\"text\":\"message\"}\n\n",
-			expectedMsgs:  []testResponse{{Text: "message"}},
-			expectedError: false,
-		},
-	}
+			{
+				name:  "event prefix is ignored",
+				input: "event: message\n\ndata: {\"text\":\"message\"}\n\n",
+				want:  []testResponse{{Text: "message"}},
+			},
+		}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			reader := strings.NewReader(tt.input)
-			outChan := make(chan testResponse, len(tt.expectedMsgs)+1)
-
-			err := Process(reader, outChan, nil, false)
-			close(outChan)
-
-			if (err != nil) != tt.expectedError {
-				t.Errorf("ProcessSSE() error = %v, expectedError %v", err, tt.expectedError)
-				return
-			}
-
-			var receivedMsgs []testResponse
-			for msg := range outChan {
-				receivedMsgs = append(receivedMsgs, msg)
-			}
-
-			if len(receivedMsgs) != len(tt.expectedMsgs) {
-				t.Errorf("ProcessSSE() received %d messages, expected %d",
-					len(receivedMsgs), len(tt.expectedMsgs))
-				return
-			}
-
-			for i, expected := range tt.expectedMsgs {
-				if receivedMsgs[i].Text != expected.Text {
-					t.Errorf("ProcessSSE() message[%d] = %v, expected %v",
-						i, receivedMsgs[i], expected)
+		for _, tt := range tests {
+			t.Run(tt.name, func(t *testing.T) {
+				outChan := make(chan testResponse, len(tt.want)+1)
+				err := Process(strings.NewReader(tt.input), outChan, nil, false)
+				close(outChan)
+				if err != nil {
+					t.Fatal(err)
 				}
-			}
-		})
-	}
-}
+				var got []testResponse
+				for msg := range outChan {
+					got = append(got, msg)
+				}
+				if len(got) != len(tt.want) {
+					t.Fatalf("got %d messages, want %d", len(got), len(tt.want))
+				}
+				for i, expected := range tt.want {
+					if got[i].Text != expected.Text {
+						t.Errorf("unexpected message\ngot:  [%d] %v\nwant: %v", i, got[i], expected)
+					}
+				}
+			})
+		}
+	})
 
-func TestProcessSSEWithReader(t *testing.T) {
-	// Test with a reader that returns an error
-	errorReader := &errorReaderMock{err: errors.New("read error")}
-	outChan := make(chan testResponse)
+	t.Run("errors", func(t *testing.T) {
+		tests := []struct {
+			name  string
+			input string
+			want  string
+		}{
+			{
+				name:  "invalid json",
+				input: "data: {invalid json}\n\n",
+				want:  "foo",
+			},
+			{
+				name:  "unexpected format",
+				input: "unexpected: {\"text\":\"message\"}\n\n",
+				want:  "foo",
+			},
+		}
+		for _, tt := range tests {
+			t.Run(tt.name, func(t *testing.T) {
+				outChan := make(chan testResponse, 100)
+				err := Process(strings.NewReader(tt.input), outChan, nil, false)
+				close(outChan)
+				if err == nil {
+					t.Fatal("expected error")
+				}
+				if s := err.Error(); s != tt.want {
+					t.Fatalf("unexpected error\ngot:  %v\nwant: %v", err, tt.want)
+				}
+			})
+		}
+	})
 
-	err := Process(errorReader, outChan, nil, false)
-	if err == nil {
-		t.Errorf("ProcessSSE() with error reader should return an error")
-	}
+	t.Run("ReaderError", func(t *testing.T) {
+		// Test with a reader that returns an error
+		errorReader := &errorReaderMock{err: errors.New("read error")}
+		outChan := make(chan testResponse)
+		err := Process(errorReader, outChan, nil, false)
+		if err == nil {
+			t.Fatal("expected error")
+		}
+		if !errors.Is(err, errorReader.err) {
+			t.Fatal("incorrect error")
+		}
+	})
 }
 
 // Mock implementation of io.Reader that returns an error

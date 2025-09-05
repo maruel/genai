@@ -1144,241 +1144,265 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *Response) (iter.Seq[Respo
 
 // processStreamPackets processes stream packets for the OpenAI Responses API.
 // This is a placeholder - will be implemented when GenStream is added.
-func processStreamPackets(ch <-chan ResponseStreamChunkResponse, chunks chan<- genai.ReplyFragment, result *genai.Result) error {
-	defer func() {
-		// We need to empty the channel to avoid blocking the goroutine.
-		for range ch {
-		}
-	}()
-
+func processStreamPackets(chunks iter.Seq[ResponseStreamChunkResponse], result *genai.Result) (iter.Seq[genai.ReplyFragment], func() error) {
+	var finalErr error
 	sent := false
 	pendingToolCall := genai.ToolCall{}
-	for pkt := range ch {
-		f := genai.ReplyFragment{}
-		for _, lp := range pkt.Logprobs {
-			result.Logprobs = append(result.Logprobs, lp.To())
-		}
-		switch pkt.Type {
-		case ResponseCreated, ResponseInProgress:
-			// https://platform.openai.com/docs/api-reference/responses_streaming/response/created
-			// https://platform.openai.com/docs/api-reference/responses_streaming/response/in_progress
-			// Both are useless.
-		case ResponseCompleted:
-			// https://platform.openai.com/docs/api-reference/responses_streaming/response/completed
-			// This message contains all the data duplicated. :( It's clear they never thought about efficiency.
-			result.Usage.InputTokens = pkt.Response.Usage.InputTokens
-			result.Usage.InputCachedTokens = pkt.Response.Usage.InputTokensDetails.CachedTokens
-			result.Usage.ReasoningTokens = pkt.Response.Usage.OutputTokensDetails.ReasoningTokens
-			result.Usage.OutputTokens = pkt.Response.Usage.OutputTokens
-			if len(pkt.Response.Output) == 0 {
-				// TODO: Likely failed.
-				return &internal.BadError{Err: fmt.Errorf("no output: %#v", pkt)}
-			}
-			// TODO: OpenAI supports "multiple messages" as output.
-			result.Usage.FinishReason = genai.FinishedStop
-			for i := range pkt.Response.Output {
-				msg := pkt.Response.Output[i]
-				switch msg.Status {
-				case "":
-				case "completed":
-					if msg.Type == MessageFunctionCall {
-						result.Usage.FinishReason = genai.FinishedToolCalls
+
+	return func(yield func(genai.ReplyFragment) bool) {
+			for pkt := range chunks {
+				f := genai.ReplyFragment{}
+				for _, lp := range pkt.Logprobs {
+					result.Logprobs = append(result.Logprobs, lp.To())
+				}
+				switch pkt.Type {
+				case ResponseCreated, ResponseInProgress:
+					// https://platform.openai.com/docs/api-reference/responses_streaming/response/created
+					// https://platform.openai.com/docs/api-reference/responses_streaming/response/in_progress
+					// Both are useless.
+				case ResponseCompleted:
+					// https://platform.openai.com/docs/api-reference/responses_streaming/response/completed
+					// This message contains all the data duplicated. :( It's clear they never thought about efficiency.
+					result.Usage.InputTokens = pkt.Response.Usage.InputTokens
+					result.Usage.InputCachedTokens = pkt.Response.Usage.InputTokensDetails.CachedTokens
+					result.Usage.ReasoningTokens = pkt.Response.Usage.OutputTokensDetails.ReasoningTokens
+					result.Usage.OutputTokens = pkt.Response.Usage.OutputTokens
+					if len(pkt.Response.Output) == 0 {
+						// TODO: Likely failed.
+						finalErr = &internal.BadError{Err: fmt.Errorf("no output: %#v", pkt)}
+						return
 					}
-				case "in_progress":
-				case "incomplete":
-					result.Usage.FinishReason = genai.FinishedLength
-				case "failed":
-					return fmt.Errorf("failed: %#v", pkt)
-				default:
-					return &internal.BadError{Err: fmt.Errorf("unknown status %q: %#v", msg.Status, pkt)}
-				}
-			}
-
-		case ResponseFailed:
-			// https://platform.openai.com/docs/api-reference/responses_streaming/response/failed
-			return &internal.BadError{Err: &pkt.Response.Error}
-		case ResponseError:
-			// https://platform.openai.com/docs/api-reference/responses_streaming/error
-			// This happens fairly consistently with gpt-5-nano_thinking/GenStream-Tools-ToolBias-Canada.yaml.
-			// Normally this should be a BadError but that would break the smoke test.
-			return &pkt.ErrorResponse
-		case ResponseIncomplete:
-			// https://platform.openai.com/docs/api-reference/responses_streaming/response/incomplete
-			result.Usage.InputTokens = pkt.Response.Usage.InputTokens
-			result.Usage.InputCachedTokens = pkt.Response.Usage.InputTokensDetails.CachedTokens
-			result.Usage.ReasoningTokens = pkt.Response.Usage.OutputTokensDetails.ReasoningTokens
-			result.Usage.OutputTokens = pkt.Response.Usage.OutputTokens
-			if pkt.Response.IncompleteDetails.Reason == "max_output_tokens" {
-				result.Usage.FinishReason = genai.FinishedLength
-			}
-			return errors.New(pkt.Response.IncompleteDetails.Reason)
-
-		case ResponseOutputItemAdded:
-			// https://platform.openai.com/docs/api-reference/responses_streaming/response/output_item/added
-			switch pkt.Item.Type {
-			case MessageMessage:
-				// Unnecessary.
-			case MessageFunctionCall:
-				pendingToolCall.Name = pkt.Item.Name
-				pendingToolCall.ID = pkt.Item.CallID
-			case MessageReasoning:
-				var bits []string
-				for i := range pkt.Item.Summary {
-					bits = append(bits, pkt.Item.Summary[i].Text)
-				}
-				f.ReasoningFragment = strings.Join(bits, "")
-			case MessageWebSearchCall:
-				// TODO: Send a fragment to tell the user. It's a server-side tool call, we don't have infrastructure
-				// to surface that to the user yet.
-			case MessageFileSearchCall, MessageComputerCall, MessageImageGenerationCall, MessageCodeInterpreterCall, MessageLocalShellCall, MessageMcpListTools, MessageMcpApprovalRequest, MessageMcpCall, MessageComputerCallOutput, MessageFunctionCallOutput, MessageLocalShellCallOutput, MessageMcpApprovalResponse, MessageItemReference:
-				fallthrough
-			default:
-				return &internal.BadError{Err: fmt.Errorf("implement item: %q", pkt.Item.Type)}
-			}
-		case ResponseOutputItemDone:
-			// https://platform.openai.com/docs/api-reference/responses_streaming/response/output_item/done
-			// Perfect place to handle web search, since the "pending" has no data.
-			switch pkt.Item.Type {
-			case MessageWebSearchCall:
-				// TODO: Check for pkt.Item.Status == "completed"
-				switch pkt.Item.Action.Type {
-				case "search":
-					f.Citation.Sources = make([]genai.CitationSource, len(pkt.Item.Action.Sources)+1)
-					f.Citation.Sources[0].Type = genai.CitationWebQuery
-					f.Citation.Sources[0].Snippet = pkt.Item.Action.Query
-					for i, src := range pkt.Item.Action.Sources {
-						f.Citation.Sources[i+1].Type = genai.CitationWeb
-						f.Citation.Sources[i+1].URL = src.URL
+					// TODO: OpenAI supports "multiple messages" as output.
+					result.Usage.FinishReason = genai.FinishedStop
+					for i := range pkt.Response.Output {
+						msg := pkt.Response.Output[i]
+						switch msg.Status {
+						case "":
+						case "completed":
+							if msg.Type == MessageFunctionCall {
+								result.Usage.FinishReason = genai.FinishedToolCalls
+							}
+						case "in_progress":
+						case "incomplete":
+							result.Usage.FinishReason = genai.FinishedLength
+						case "failed":
+							finalErr = fmt.Errorf("failed: %#v", pkt)
+							return
+						default:
+							finalErr = &internal.BadError{Err: fmt.Errorf("unknown status %q: %#v", msg.Status, pkt)}
+							return
+						}
 					}
+
+				case ResponseFailed:
+					// https://platform.openai.com/docs/api-reference/responses_streaming/response/failed
+					finalErr = &internal.BadError{Err: &pkt.Response.Error}
+					return
+				case ResponseError:
+					// https://platform.openai.com/docs/api-reference/responses_streaming/error
+					// This happens fairly consistently with gpt-5-nano_thinking/GenStream-Tools-ToolBias-Canada.yaml.
+					// Normally this should be a BadError but that would break the smoke test.
+					finalErr = &pkt.ErrorResponse
+					return
+				case ResponseIncomplete:
+					// https://platform.openai.com/docs/api-reference/responses_streaming/response/incomplete
+					result.Usage.InputTokens = pkt.Response.Usage.InputTokens
+					result.Usage.InputCachedTokens = pkt.Response.Usage.InputTokensDetails.CachedTokens
+					result.Usage.ReasoningTokens = pkt.Response.Usage.OutputTokensDetails.ReasoningTokens
+					result.Usage.OutputTokens = pkt.Response.Usage.OutputTokens
+					if pkt.Response.IncompleteDetails.Reason == "max_output_tokens" {
+						result.Usage.FinishReason = genai.FinishedLength
+					}
+					finalErr = errors.New(pkt.Response.IncompleteDetails.Reason)
+					return
+
+				case ResponseOutputItemAdded:
+					// https://platform.openai.com/docs/api-reference/responses_streaming/response/output_item/added
+					switch pkt.Item.Type {
+					case MessageMessage:
+						// Unnecessary.
+					case MessageFunctionCall:
+						pendingToolCall.Name = pkt.Item.Name
+						pendingToolCall.ID = pkt.Item.CallID
+					case MessageReasoning:
+						var bits []string
+						for i := range pkt.Item.Summary {
+							bits = append(bits, pkt.Item.Summary[i].Text)
+						}
+						f.ReasoningFragment = strings.Join(bits, "")
+					case MessageWebSearchCall:
+						// TODO: Send a fragment to tell the user. It's a server-side tool call, we don't have infrastructure
+						// to surface that to the user yet.
+					case MessageFileSearchCall, MessageComputerCall, MessageImageGenerationCall, MessageCodeInterpreterCall, MessageLocalShellCall, MessageMcpListTools, MessageMcpApprovalRequest, MessageMcpCall, MessageComputerCallOutput, MessageFunctionCallOutput, MessageLocalShellCallOutput, MessageMcpApprovalResponse, MessageItemReference:
+						fallthrough
+					default:
+						finalErr = &internal.BadError{Err: fmt.Errorf("implement item: %q", pkt.Item.Type)}
+						return
+					}
+				case ResponseOutputItemDone:
+					// https://platform.openai.com/docs/api-reference/responses_streaming/response/output_item/done
+					// Perfect place to handle web search, since the "pending" has no data.
+					switch pkt.Item.Type {
+					case MessageWebSearchCall:
+						// TODO: Check for pkt.Item.Status == "completed"
+						switch pkt.Item.Action.Type {
+						case "search":
+							f.Citation.Sources = make([]genai.CitationSource, len(pkt.Item.Action.Sources)+1)
+							f.Citation.Sources[0].Type = genai.CitationWebQuery
+							f.Citation.Sources[0].Snippet = pkt.Item.Action.Query
+							for i, src := range pkt.Item.Action.Sources {
+								f.Citation.Sources[i+1].Type = genai.CitationWeb
+								f.Citation.Sources[i+1].URL = src.URL
+							}
+						default:
+							finalErr = &internal.BadError{Err: fmt.Errorf("implement action type %q", pkt.Item.Action.Type)}
+							return
+						}
+					case MessageMessage, MessageFileSearchCall, MessageComputerCall, MessageFunctionCall, MessageReasoning, MessageImageGenerationCall, MessageCodeInterpreterCall, MessageLocalShellCall, MessageMcpListTools, MessageMcpApprovalRequest, MessageMcpCall, MessageComputerCallOutput, MessageFunctionCallOutput, MessageLocalShellCallOutput, MessageMcpApprovalResponse, MessageItemReference:
+					default:
+						// The default stance is to ignore this event since it's generally duplicate information.
+					}
+				case ResponseContentPartAdded:
+					// https://platform.openai.com/docs/api-reference/responses_streaming/response/content_part/added
+					switch pkt.Part.Type {
+					case ContentOutputText:
+						if len(pkt.Part.Annotations) > 0 {
+							finalErr = &internal.BadError{Err: fmt.Errorf("implement citations: %#v", pkt.Part.Annotations)}
+							return
+						}
+						if len(pkt.Part.Text) > 0 {
+							finalErr = &internal.BadError{Err: fmt.Errorf("unexpected text: %q", pkt.Part.Text)}
+							return
+						}
+					case ContentRefusal, ContentInputText, ContentInputImage, ContentInputFile:
+						fallthrough
+					default:
+						finalErr = &internal.BadError{Err: fmt.Errorf("implement part: %q", pkt.Part.Type)}
+						return
+					}
+				case ResponseContentPartDone:
+					// https://platform.openai.com/docs/api-reference/responses_streaming/response/content_part/done
+					// Unnecessary, as we already streamed the content in ResponseContentPartAdded.
+				case ResponseOutputTextDelta:
+					// https://platform.openai.com/docs/api-reference/responses_streaming/response/output_text/delta
+					f.TextFragment = pkt.Delta
+				case ResponseOutputTextDone:
+					// https://platform.openai.com/docs/api-reference/responses_streaming/response/output_text/done
+					// Unnecessary, we captured the text via ResponseOutputTextDelta.
+
+				case ResponseRefusalDelta:
+					// https://platform.openai.com/docs/api-reference/responses_streaming/response/refusal/delta
+					// TODO: It's not an error but catch it in the smoke test in case it happens.
+					finalErr = &internal.BadError{Err: fmt.Errorf("refused: %s", pkt.Delta)}
+					return
+				case ResponseRefusalDone:
+					// https://platform.openai.com/docs/api-reference/responses_streaming/response/refusal/done
+					// TODO: It's not an error but catch it in the smoke test in case it happens.
+					finalErr = &internal.BadError{Err: fmt.Errorf("refused: %s", pkt.Refusal)}
+					return
+
+				case ResponseFunctionCallArgumentsDelta:
+					// https://platform.openai.com/docs/api-reference/responses_streaming/response/function_call_arguments/delta
+					// Unnecessary. The content is sent in ResponseFunctionCallArgumentsDone.
+				case ResponseFunctionCallArgumentsDone:
+					// https://platform.openai.com/docs/api-reference/responses_streaming/response/function_call_arguments/done
+					pendingToolCall.Arguments = pkt.Arguments
+					f.ToolCall = pendingToolCall
+					pendingToolCall = genai.ToolCall{}
+
+				case ResponseFileSearchCallInProgress, ResponseFileSearchCallSearching, ResponseFileSearchCallCompleted:
+					// https://platform.openai.com/docs/api-reference/responses_streaming/response/file_search_call/in_progress
+					finalErr = &internal.BadError{Err: fmt.Errorf("implement packet: %q", pkt.Type)}
+					return
+
+				case ResponseWebSearchCallInProgress:
+					// https://platform.openai.com/docs/api-reference/responses_streaming/response/web_search_call/in_progress
+					// Data is sent in ResponseOutputItemDone.
+				case ResponseWebSearchCallSearching:
+					// https://platform.openai.com/docs/api-reference/responses_streaming/response/web_search_call/searching
+					// Data is sent in ResponseOutputItemDone.
+				case ResponseWebSearchCallCompleted:
+					// https://platform.openai.com/docs/api-reference/responses_streaming/response/web_search_call/completed
+					// Data is sent in ResponseOutputItemDone.
+
+				case ResponseReasoningSummaryPartAdded:
+					// https://platform.openai.com/docs/api-reference/responses_streaming/response/reasoning_summary_part/added
+				case ResponseReasoningSummaryPartDone:
+					// https://platform.openai.com/docs/api-reference/responses_streaming/response/reasoning_summary_part/done
+				case ResponseReasoningSummaryTextDelta:
+					// https://platform.openai.com/docs/api-reference/responses_streaming/response/reasoning_summary_text/delta
+					f.ReasoningFragment = pkt.Delta
+				case ResponseReasoningSummaryTextDone:
+					// https://platform.openai.com/docs/api-reference/responses_streaming/response/reasoning_summary_text/done
+				case ResponseReasoningTextDelta:
+					// https://platform.openai.com/docs/api-reference/responses_streaming/response/reasoning_text/delta
+					// I'm not sure it will ever happen.
+					f.ReasoningFragment = pkt.Delta
+				case ResponseReasoningTextDone:
+					// https://platform.openai.com/docs/api-reference/responses_streaming/response/reasoning_text/done
+
+				case ResponseImageGenerationCallCompleted, ResponseImageGenerationCallGenerating, ResponseImageGenerationCallInProgress, ResponseImageGenerationCallPartialImage:
+					// https://platform.openai.com/docs/api-reference/responses_streaming/response/image_generation_call/completed
+					finalErr = &internal.BadError{Err: fmt.Errorf("implement packet: %q", pkt.Type)}
+					return
+
+				case ResponseMCPCallArgumentsDelta, ResponseMCPCallArgumentsDone, ResponseMCPCallCompleted, ResponseMCPCallFailed, ResponseMCPCallInProgress, ResponseMCPListToolsCompleted, ResponseMCPListToolsFailed, ResponseMCPListToolsInProgress:
+					// https://platform.openai.com/docs/api-reference/responses_streaming/response/mcp_call_arguments/delta
+					finalErr = &internal.BadError{Err: fmt.Errorf("implement packet: %q", pkt.Type)}
+					return
+
+				case ResponseCodeInterpreterCallInterpreting, ResponseCodeInterpreterCallCompleted, ResponseCodeInterpreterCallDelta, ResponseCodeInterpreterCallDone:
+					// https://platform.openai.com/docs/api-reference/responses_streaming/response/code_interpreter_call/in_progress
+					finalErr = &internal.BadError{Err: fmt.Errorf("implement packet: %q", pkt.Type)}
+					return
+
+				case ResponseOutputTextAnnotationAdded:
+					// https://platform.openai.com/docs/api-reference/responses_streaming/response/output_text/annotation/added
+					if pkt.Annotation.Type != "url_citation" {
+						finalErr = &internal.BadError{Err: fmt.Errorf("implement annotation type: %q", pkt.Annotation.Type)}
+						return
+					}
+					f.Citation.StartIndex = pkt.Annotation.StartIndex
+					f.Citation.EndIndex = pkt.Annotation.EndIndex
+					f.Citation.Sources = []genai.CitationSource{
+						{Type: genai.CitationWeb, URL: pkt.Annotation.URL, Title: pkt.Annotation.Title},
+					}
+				case ResponseQueued:
+					// https://platform.openai.com/docs/api-reference/responses_streaming/response/queued
+					// Ignore.
+
+				case ResponseCustomToolCallInputDelta, ResponseCustomToolCallInputDone:
+					// https://platform.openai.com/docs/api-reference/responses_streaming/response/custom_tool_call_input/delta
+					finalErr = &internal.BadError{Err: fmt.Errorf("implement packet: %q", pkt.Type)}
+					return
+
 				default:
-					return &internal.BadError{Err: fmt.Errorf("implement action type %q", pkt.Item.Action.Type)}
+					finalErr = &internal.BadError{Err: fmt.Errorf("implement packet: %q", pkt.Type)}
+					return
 				}
-			case MessageMessage, MessageFileSearchCall, MessageComputerCall, MessageFunctionCall, MessageReasoning, MessageImageGenerationCall, MessageCodeInterpreterCall, MessageLocalShellCall, MessageMcpListTools, MessageMcpApprovalRequest, MessageMcpCall, MessageComputerCallOutput, MessageFunctionCallOutput, MessageLocalShellCallOutput, MessageMcpApprovalResponse, MessageItemReference:
-			default:
-				// The default stance is to ignore this event since it's generally duplicate information.
-			}
-		case ResponseContentPartAdded:
-			// https://platform.openai.com/docs/api-reference/responses_streaming/response/content_part/added
-			switch pkt.Part.Type {
-			case ContentOutputText:
-				if len(pkt.Part.Annotations) > 0 {
-					return &internal.BadError{Err: fmt.Errorf("implement citations: %#v", pkt.Part.Annotations)}
+				if !f.IsZero() {
+					if err := result.Accumulate(f); err != nil {
+						finalErr = err
+						return
+					}
+					if !yield(f) {
+						return
+					}
+					sent = true
 				}
-				if len(pkt.Part.Text) > 0 {
-					return &internal.BadError{Err: fmt.Errorf("unexpected text: %q", pkt.Part.Text)}
-				}
-			case ContentRefusal, ContentInputText, ContentInputImage, ContentInputFile:
-				fallthrough
-			default:
-				return &internal.BadError{Err: fmt.Errorf("implement part: %q", pkt.Part.Type)}
 			}
-		case ResponseContentPartDone:
-			// https://platform.openai.com/docs/api-reference/responses_streaming/response/content_part/done
-			// Unnecessary, as we already streamed the content in ResponseContentPartAdded.
-		case ResponseOutputTextDelta:
-			// https://platform.openai.com/docs/api-reference/responses_streaming/response/output_text/delta
-			f.TextFragment = pkt.Delta
-		case ResponseOutputTextDone:
-			// https://platform.openai.com/docs/api-reference/responses_streaming/response/output_text/done
-			// Unnecessary, we captured the text via ResponseOutputTextDelta.
-
-		case ResponseRefusalDelta:
-			// https://platform.openai.com/docs/api-reference/responses_streaming/response/refusal/delta
-			// TODO: It's not an error but catch it in the smoke test in case it happens.
-			return &internal.BadError{Err: fmt.Errorf("refused: %s", pkt.Delta)}
-		case ResponseRefusalDone:
-			// https://platform.openai.com/docs/api-reference/responses_streaming/response/refusal/done
-			// TODO: It's not an error but catch it in the smoke test in case it happens.
-			return &internal.BadError{Err: fmt.Errorf("refused: %s", pkt.Refusal)}
-
-		case ResponseFunctionCallArgumentsDelta:
-			// https://platform.openai.com/docs/api-reference/responses_streaming/response/function_call_arguments/delta
-			// Unnecessary. The content is sent in ResponseFunctionCallArgumentsDone.
-		case ResponseFunctionCallArgumentsDone:
-			// https://platform.openai.com/docs/api-reference/responses_streaming/response/function_call_arguments/done
-			pendingToolCall.Arguments = pkt.Arguments
-			f.ToolCall = pendingToolCall
-			pendingToolCall = genai.ToolCall{}
-
-		case ResponseFileSearchCallInProgress, ResponseFileSearchCallSearching, ResponseFileSearchCallCompleted:
-			// https://platform.openai.com/docs/api-reference/responses_streaming/response/file_search_call/in_progress
-			return &internal.BadError{Err: fmt.Errorf("implement packet: %q", pkt.Type)}
-
-		case ResponseWebSearchCallInProgress:
-			// https://platform.openai.com/docs/api-reference/responses_streaming/response/web_search_call/in_progress
-			// Data is sent in ResponseOutputItemDone.
-		case ResponseWebSearchCallSearching:
-			// https://platform.openai.com/docs/api-reference/responses_streaming/response/web_search_call/searching
-			// Data is sent in ResponseOutputItemDone.
-		case ResponseWebSearchCallCompleted:
-			// https://platform.openai.com/docs/api-reference/responses_streaming/response/web_search_call/completed
-			// Data is sent in ResponseOutputItemDone.
-
-		case ResponseReasoningSummaryPartAdded:
-			// https://platform.openai.com/docs/api-reference/responses_streaming/response/reasoning_summary_part/added
-		case ResponseReasoningSummaryPartDone:
-			// https://platform.openai.com/docs/api-reference/responses_streaming/response/reasoning_summary_part/done
-		case ResponseReasoningSummaryTextDelta:
-			// https://platform.openai.com/docs/api-reference/responses_streaming/response/reasoning_summary_text/delta
-			f.ReasoningFragment = pkt.Delta
-		case ResponseReasoningSummaryTextDone:
-			// https://platform.openai.com/docs/api-reference/responses_streaming/response/reasoning_summary_text/done
-		case ResponseReasoningTextDelta:
-			// https://platform.openai.com/docs/api-reference/responses_streaming/response/reasoning_text/delta
-			// I'm not sure it will ever happen.
-			f.ReasoningFragment = pkt.Delta
-		case ResponseReasoningTextDone:
-			// https://platform.openai.com/docs/api-reference/responses_streaming/response/reasoning_text/done
-
-		case ResponseImageGenerationCallCompleted, ResponseImageGenerationCallGenerating, ResponseImageGenerationCallInProgress, ResponseImageGenerationCallPartialImage:
-			// https://platform.openai.com/docs/api-reference/responses_streaming/response/image_generation_call/completed
-			return &internal.BadError{Err: fmt.Errorf("implement packet: %q", pkt.Type)}
-
-		case ResponseMCPCallArgumentsDelta, ResponseMCPCallArgumentsDone, ResponseMCPCallCompleted, ResponseMCPCallFailed, ResponseMCPCallInProgress, ResponseMCPListToolsCompleted, ResponseMCPListToolsFailed, ResponseMCPListToolsInProgress:
-			// https://platform.openai.com/docs/api-reference/responses_streaming/response/mcp_call_arguments/delta
-			return &internal.BadError{Err: fmt.Errorf("implement packet: %q", pkt.Type)}
-
-		case ResponseCodeInterpreterCallInterpreting, ResponseCodeInterpreterCallCompleted, ResponseCodeInterpreterCallDelta, ResponseCodeInterpreterCallDone:
-			// https://platform.openai.com/docs/api-reference/responses_streaming/response/code_interpreter_call/in_progress
-			return &internal.BadError{Err: fmt.Errorf("implement packet: %q", pkt.Type)}
-
-		case ResponseOutputTextAnnotationAdded:
-			// https://platform.openai.com/docs/api-reference/responses_streaming/response/output_text/annotation/added
-			if pkt.Annotation.Type != "url_citation" {
-				return &internal.BadError{Err: fmt.Errorf("implement annotation type: %q", pkt.Annotation.Type)}
+			if !pendingToolCall.IsZero() {
+				finalErr = &internal.BadError{Err: errors.New("unexpected pending tool call")}
+				return
 			}
-			f.Citation.StartIndex = pkt.Annotation.StartIndex
-			f.Citation.EndIndex = pkt.Annotation.EndIndex
-			f.Citation.Sources = []genai.CitationSource{
-				{Type: genai.CitationWeb, URL: pkt.Annotation.URL, Title: pkt.Annotation.Title},
+			if !sent {
+				// Happens with MaxTokens
+				finalErr = errors.New("model sent no reply")
+				return
 			}
-		case ResponseQueued:
-			// https://platform.openai.com/docs/api-reference/responses_streaming/response/queued
-			// Ignore.
-
-		case ResponseCustomToolCallInputDelta, ResponseCustomToolCallInputDone:
-			// https://platform.openai.com/docs/api-reference/responses_streaming/response/custom_tool_call_input/delta
-			return &internal.BadError{Err: fmt.Errorf("implement packet: %q", pkt.Type)}
-
-		default:
-			return &internal.BadError{Err: fmt.Errorf("implement packet: %q", pkt.Type)}
+		}, func() error {
+			return finalErr
 		}
-		if !f.IsZero() {
-			if err := result.Accumulate(f); err != nil {
-				return err
-			}
-			chunks <- f
-			sent = true
-		}
-	}
-	if !pendingToolCall.IsZero() {
-		return &internal.BadError{Err: errors.New("unexpected pending tool call")}
-	}
-	if !sent {
-		// Happens with MaxTokens
-		return errors.New("model sent no reply")
-	}
-	return nil
 }
 
 var _ genai.Provider = &Client{}

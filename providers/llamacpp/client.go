@@ -38,7 +38,6 @@ import (
 	"github.com/maruel/genai/internal/sse"
 	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/roundtrippers"
-	"golang.org/x/sync/errgroup"
 )
 
 //go:embed scoreboard.json
@@ -1256,66 +1255,108 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 	return c.impl.DoRequest(ctx, "POST", c.completionsURL, in, out)
 }
 
-func (c *Client) CompletionsStream(ctx context.Context, msgs genai.Messages, chunks chan<- genai.ReplyFragment, opts ...genai.Options) (genai.Result, error) {
-	result := genai.Result{}
-	if err := msgs.Validate(); err != nil {
-		return result, err
-	}
-	for i, msg := range msgs {
-		for j, content := range msg.Replies {
-			if len(content.Opaque) != 0 {
-				return result, fmt.Errorf("message #%d content #%d: Opaque field not supported", i, j)
+func (c *Client) CompletionsStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
+	res := genai.Result{}
+	var continuableErr error
+	var finalErr error
+
+	fnFragments := func(yield func(genai.ReplyFragment) bool) {
+		in := CompletionRequest{}
+		if err := in.Init(msgs, "", opts...); err != nil {
+			if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
+				continuableErr = uce
+			} else {
+				finalErr = err
+				return
 			}
 		}
-	}
-
-	in := CompletionRequest{}
-	var continuableErr error
-	if err := in.Init(msgs, "", opts...); err != nil {
-		// If it's an UnsupportedContinuableError, we can continue
-		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
-			// Store the error to return later if no other error occurs
-			continuableErr = uce
-			// Otherwise log the error but continue
-		} else {
-			return result, err
+		// Converts raw chunks into fragments.
+		// Generate parsed chunks from the raw JSON SSE stream.
+		chunks, finish := c.CompletionStreamRaw(ctx, &in)
+		fragments, finish2 := processCompletionsStreamPackets(chunks, &res)
+		for f := range fragments {
+			if err := f.Validate(); err != nil {
+				// Catch provider implementation bugs.
+				finalErr = &internal.BadError{Err: err}
+				break
+			}
+			if !yield(f) {
+				break
+			}
 		}
+		if err := finish(); finalErr == nil {
+			finalErr = err
+		}
+		if err := finish2(); finalErr == nil {
+			finalErr = err
+		}
+		/*
+			lastResp := c.LastResponseHeaders()
+			if c.ProcessHeaders != nil && lastResp != nil {
+				res.Usage.Limits = c.ProcessHeaders(lastResp)
+			}
+			if c.LieToolCalls && res.Usage.FinishReason == genai.FinishedStop {
+				for i := range res.Replies {
+					if !res.Replies[i].ToolCall.IsZero() {
+						// Lie for the benefit of everyone.
+						res.Usage.FinishReason = genai.FinishedToolCalls
+						break
+					}
+				}
+			}
+		*/
 	}
-	if err := c.initPrompt(ctx, &in, msgs, opts...); err != nil {
-		return result, err
+	fnFinish := func() (genai.Result, error) {
+		if finalErr != nil {
+			return res, finalErr
+		}
+		if err := res.Validate(); err != nil {
+			// Catch provider implementation bugs.
+			return res, &internal.BadError{Err: err}
+		}
+		return res, continuableErr
 	}
-	ch := make(chan CompletionStreamChunkResponse)
-	eg, ctx := errgroup.WithContext(ctx)
-	eg.Go(func() error {
-		return processCompletionsStreamPackets(ch, chunks, &result)
-	})
-	err := c.CompletionStreamRaw(ctx, &in, ch)
-	close(ch)
-	if err2 := eg.Wait(); err2 != nil {
-		err = err2
-	}
-	// Return the continuable error if no other error occurred
-	if err == nil && continuableErr != nil {
-		return result, continuableErr
-	}
-	return result, err
+	return fnFragments, fnFinish
 }
 
-func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest, out chan<- CompletionStreamChunkResponse) error {
+func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest) (iter.Seq[CompletionStreamChunkResponse], func() error) {
 	in.Stream = true
 	resp, err := c.impl.JSONRequest(ctx, "POST", c.completionsURL, in)
 	if err != nil {
-		return fmt.Errorf("failed to get llama server response: %w", err)
+		return yieldNothing[CompletionStreamChunkResponse], func() error {
+			return &internal.BadError{Err: fmt.Errorf("failed to get llama server response: %w", err)}
+		}
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
-		return c.impl.DecodeError(c.completionsURL, resp)
+		return yieldNothing[CompletionStreamChunkResponse], func() error {
+			return &internal.BadError{Err: c.impl.DecodeError(c.completionsURL, resp)}
+		}
 	}
-	it, finish := sse.Process[CompletionStreamChunkResponse](resp.Body, nil, c.impl.Lenient)
-	for pkt := range it {
-		out <- pkt
-	}
-	return finish()
+	// Process the stream in a separate goroutine to make sure that when the client iterate, there is already a
+	// packet waiting for it. This reduces the overall latency.
+	out := make(chan CompletionStreamChunkResponse, 16)
+	ch := make(chan error)
+	go func() {
+		er := ErrorResponse{}
+		it, finish := sse.Process[CompletionStreamChunkResponse](resp.Body, &er, c.impl.Lenient)
+		for pkt := range it {
+			out <- pkt
+		}
+		err := finish()
+		close(out)
+		ch <- err
+	}()
+
+	return func(yield func(CompletionStreamChunkResponse) bool) {
+			for pkt := range out {
+				if !yield(pkt) {
+					break
+				}
+			}
+		}, func() error {
+			return <-ch
+		}
 }
 
 func (c *Client) GetHealth(ctx context.Context) (string, error) {
@@ -1465,93 +1506,110 @@ func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, msgs gen
 	return nil
 }
 
-func processChatStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ReplyFragment, result *genai.Result) error {
-	defer func() {
-		// We need to empty the channel to avoid blocking the goroutine.
-		for range ch {
-		}
-	}()
-	pendingToolCall := ToolCall{}
-	for pkt := range ch {
-		if pkt.Usage.PromptTokens != 0 {
-			result.Usage.InputTokens = pkt.Usage.PromptTokens
-			// result.Usage.InputCachedTokens = pkt.Usage.TokensCached
-			result.Usage.OutputTokens = pkt.Usage.CompletionTokens
-			result.Usage.TotalTokens = pkt.Usage.TotalTokens
-		}
-		if len(pkt.Choices) != 1 {
-			continue
-		}
-		if pkt.Choices[0].FinishReason != "" {
-			result.Usage.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
-		}
-		switch role := pkt.Choices[0].Delta.Role; role {
-		case "assistant", "":
-		default:
-			return &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
-		}
-		f := genai.ReplyFragment{
-			TextFragment: pkt.Choices[0].Delta.Content,
-			// ReasoningFragment: pkt.Choices[0].Delta.ReasoningContent,
-		}
-		if len(pkt.Choices[0].Delta.ToolCalls) > 1 {
-			return &internal.BadError{Err: fmt.Errorf("implement multiple tool calls: %#v", pkt)}
-		}
-		if len(pkt.Choices[0].Delta.ToolCalls) == 1 {
-			if t := pkt.Choices[0].Delta.ToolCalls[0]; t.ID != "" {
-				// A new call.
-				if pendingToolCall.ID == "" {
-					pendingToolCall = t
-					if !f.IsZero() {
-						return &internal.BadError{Err: fmt.Errorf("implement tool call with metadata: %#v", pkt)}
-					}
+func processChatStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *genai.Result) (iter.Seq[genai.ReplyFragment], func() error) {
+	var finalErr error
+
+	return func(yield func(genai.ReplyFragment) bool) {
+			pendingToolCall := ToolCall{}
+			for pkt := range chunks {
+				if pkt.Usage.PromptTokens != 0 {
+					result.Usage.InputTokens = pkt.Usage.PromptTokens
+					// result.Usage.InputCachedTokens = pkt.Usage.TokensCached
+					result.Usage.OutputTokens = pkt.Usage.CompletionTokens
+					result.Usage.TotalTokens = pkt.Usage.TotalTokens
+				}
+				if len(pkt.Choices) != 1 {
 					continue
 				}
-				// Flush.
-				pendingToolCall.To(&f.ToolCall)
-				pendingToolCall = t
-			} else if pendingToolCall.ID != "" {
-				// Continuation.
-				pendingToolCall.Function.Arguments += t.Function.Arguments
-				if !f.IsZero() {
-					return &internal.BadError{Err: fmt.Errorf("implement tool call with metadata: %#v", pkt)}
+				if pkt.Choices[0].FinishReason != "" {
+					result.Usage.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
 				}
-				continue
+				switch role := pkt.Choices[0].Delta.Role; role {
+				case "assistant", "":
+				default:
+					finalErr = &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
+					return
+				}
+				f := genai.ReplyFragment{
+					TextFragment: pkt.Choices[0].Delta.Content,
+					// ReasoningFragment: pkt.Choices[0].Delta.ReasoningContent,
+				}
+				if len(pkt.Choices[0].Delta.ToolCalls) > 1 {
+					finalErr = &internal.BadError{Err: fmt.Errorf("implement multiple tool calls: %#v", pkt)}
+					return
+				}
+				if len(pkt.Choices[0].Delta.ToolCalls) == 1 {
+					if t := pkt.Choices[0].Delta.ToolCalls[0]; t.ID != "" {
+						// A new call.
+						if pendingToolCall.ID == "" {
+							pendingToolCall = t
+							if !f.IsZero() {
+								finalErr = &internal.BadError{Err: fmt.Errorf("implement tool call with metadata: %#v", pkt)}
+								return
+							}
+							continue
+						}
+						// Flush.
+						pendingToolCall.To(&f.ToolCall)
+						pendingToolCall = t
+					} else if pendingToolCall.ID != "" {
+						// Continuation.
+						pendingToolCall.Function.Arguments += t.Function.Arguments
+						if !f.IsZero() {
+							finalErr = &internal.BadError{Err: fmt.Errorf("implement tool call with metadata: %#v", pkt)}
+							return
+						}
+						continue
+					}
+				} else if pendingToolCall.ID != "" {
+					// Flush.
+					pendingToolCall.To(&f.ToolCall)
+					pendingToolCall = ToolCall{}
+				}
+				if !f.IsZero() {
+					if err := result.Accumulate(f); err != nil {
+						finalErr = err
+						return
+					}
+					if !yield(f) {
+						break
+					}
+				}
+				result.Logprobs = append(result.Logprobs, pkt.Choices[0].Logprobs.To()...)
 			}
-		} else if pendingToolCall.ID != "" {
-			// Flush.
-			pendingToolCall.To(&f.ToolCall)
-			pendingToolCall = ToolCall{}
+		}, func() error {
+			return finalErr
 		}
-		if !f.IsZero() {
-			if err := result.Accumulate(f); err != nil {
-				return err
-			}
-			chunks <- f
-		}
-		result.Logprobs = append(result.Logprobs, pkt.Choices[0].Logprobs.To()...)
-	}
-	return nil
 }
 
-func processCompletionsStreamPackets(ch <-chan CompletionStreamChunkResponse, chunks chan<- genai.ReplyFragment, result *genai.Result) error {
-	for msg := range ch {
-		if msg.Timings.PredictedN != 0 {
-			result.Usage.InputTokens = msg.Timings.PromptN
-			result.Usage.OutputTokens = msg.Timings.PredictedN
-		}
-		if msg.StopType != "" {
-			result.Usage.FinishReason = msg.StopType.ToFinishReason()
-		}
-		f := genai.ReplyFragment{TextFragment: msg.Content}
-		if !f.IsZero() {
-			if err := result.Accumulate(f); err != nil {
-				return err
+func processCompletionsStreamPackets(chunks iter.Seq[CompletionStreamChunkResponse], result *genai.Result) (iter.Seq[genai.ReplyFragment], func() error) {
+	var finalErr error
+
+	return func(yield func(genai.ReplyFragment) bool) {
+			for pkt := range chunks {
+				if pkt.Timings.PredictedN != 0 {
+					result.Usage.InputTokens = pkt.Timings.PromptN
+					result.Usage.OutputTokens = pkt.Timings.PredictedN
+				}
+				if pkt.StopType != "" {
+					result.Usage.FinishReason = pkt.StopType.ToFinishReason()
+				}
+				f := genai.ReplyFragment{TextFragment: pkt.Content}
+				if !f.IsZero() {
+					if err := result.Accumulate(f); err != nil {
+						finalErr = err
+					}
+					if !yield(f) {
+						break
+					}
+				}
 			}
-			chunks <- f
+		}, func() error {
+			return finalErr
 		}
-	}
-	return nil
+}
+
+func yieldNothing[T any](yield func(T) bool) {
 }
 
 var _ genai.Provider = &Client{}

@@ -716,25 +716,8 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 				return
 			}
 		}
-		chunks := make(chan ChatStreamChunkResponse, 32)
-		// TODO: Replace with an iterator.
-		fragments := make(chan genai.ReplyFragment)
-		eg, ctx2 := errgroup.WithContext(ctx)
-		eg.Go(func() error {
-			err := processStreamPackets(chunks, fragments, &res)
-			close(fragments)
-			return err
-		})
-		eg.Go(func() error {
-			it, finish := c.GenStreamRaw(ctx2, &in)
-			for pkt := range it {
-				chunks <- pkt
-			}
-			err := finish()
-			close(chunks)
-			return err
-		})
-
+		chunks, finish1 := c.GenStreamRaw(ctx, &in)
+		fragments, finish2 := processStreamPackets(chunks, &res)
 		for f := range fragments {
 			if err := f.Validate(); err != nil {
 				// Catch provider implementation bugs.
@@ -745,11 +728,11 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 				break
 			}
 		}
-		// Make sure the channel is emptied. (This is a channel, not an iter.Seq).
-		for range fragments {
+		if err := finish1(); finalErr == nil {
+			finalErr = err
 		}
-		if err2 := eg.Wait(); err2 != nil {
-			finalErr = err2
+		if err := finish2(); finalErr == nil {
+			finalErr = err
 		}
 	}
 	fnFinish := func() (genai.Result, error) {
@@ -907,42 +890,50 @@ func processJSONStream(body io.Reader, out chan<- ChatStreamChunkResponse, lenie
 	}
 }
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ReplyFragment, result *genai.Result) error {
-	defer func() {
-		// We need to empty the channel to avoid blocking the goroutine.
-		for range ch {
-		}
-	}()
-	for pkt := range ch {
-		if pkt.EvalCount != 0 {
-			result.Usage.InputTokens = pkt.PromptEvalCount
-			result.Usage.OutputTokens = pkt.EvalCount
-			result.Usage.FinishReason = pkt.DoneReason.ToFinishReason()
-		}
-		switch role := pkt.Message.Role; role {
-		case "", "assistant":
-		default:
-			return &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
-		}
-		for i := range pkt.Message.ToolCalls {
-			f := genai.ReplyFragment{}
-			if err := pkt.Message.ToolCalls[i].To(&f.ToolCall); err != nil {
-				return &internal.BadError{Err: err}
+func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *genai.Result) (iter.Seq[genai.ReplyFragment], func() error) {
+	var finalErr error
+
+	return func(yield func(genai.ReplyFragment) bool) {
+			for pkt := range chunks {
+				if pkt.EvalCount != 0 {
+					result.Usage.InputTokens = pkt.PromptEvalCount
+					result.Usage.OutputTokens = pkt.EvalCount
+					result.Usage.FinishReason = pkt.DoneReason.ToFinishReason()
+				}
+				switch role := pkt.Message.Role; role {
+				case "", "assistant":
+				default:
+					finalErr = &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
+					return
+				}
+				for i := range pkt.Message.ToolCalls {
+					f := genai.ReplyFragment{}
+					if err := pkt.Message.ToolCalls[i].To(&f.ToolCall); err != nil {
+						finalErr = &internal.BadError{Err: err}
+						return
+					}
+					if err := result.Accumulate(f); err != nil {
+						finalErr = err
+						return
+					}
+					if !yield(f) {
+						return
+					}
+				}
+				f := genai.ReplyFragment{TextFragment: pkt.Message.Content}
+				if !f.IsZero() {
+					if err := result.Accumulate(f); err != nil {
+						finalErr = err
+						return
+					}
+					if !yield(f) {
+						return
+					}
+				}
 			}
-			if err := result.Accumulate(f); err != nil {
-				return err
-			}
-			chunks <- f
+		}, func() error {
+			return finalErr
 		}
-		f := genai.ReplyFragment{TextFragment: pkt.Message.Content}
-		if !f.IsZero() {
-			if err := result.Accumulate(f); err != nil {
-				return err
-			}
-			chunks <- f
-		}
-	}
-	return nil
 }
 
 func yieldNothing[T any](yield func(T) bool) {

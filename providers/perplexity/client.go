@@ -608,89 +608,99 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest) (iter.Seq[Ch
 	return c.impl.GenStreamRaw(ctx, in)
 }
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ReplyFragment, result *genai.Result) error {
-	defer func() {
-		// We need to empty the channel to avoid blocking the goroutine.
-		for range ch {
-		}
-	}()
+func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *genai.Result) (iter.Seq[genai.ReplyFragment], func() error) {
+	var finalErr error
 	// Perplexity has a bug where it will send the search result multiple times. We need to filter them. Use the
 	// URL as key.
 	seen := map[string]struct{}{}
-	for pkt := range ch {
-		if len(pkt.Choices) != 1 {
-			continue
-		}
-		if pkt.Usage.PromptTokens != 0 {
-			result.Usage.InputTokens = pkt.Usage.PromptTokens
-			result.Usage.OutputTokens = pkt.Usage.CompletionTokens
-		}
-		if pkt.Choices[0].FinishReason != "" {
-			result.Usage.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
-		}
-		switch role := pkt.Choices[0].Delta.Role; role {
-		case "", "assistant":
-		default:
-			return &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
-		}
-		// We need to do one packet per citation type. Do that before sending text.
-		if len(pkt.SearchResults) > 0 {
-			f := genai.ReplyFragment{}
-			for _, r := range pkt.SearchResults {
-				if _, ok := seen[r.URL]; ok {
+
+	return func(yield func(genai.ReplyFragment) bool) {
+			for pkt := range chunks {
+				if len(pkt.Choices) != 1 {
 					continue
 				}
-				seen[r.URL] = struct{}{}
-				f.Citation.Sources = append(f.Citation.Sources, genai.CitationSource{
-					Type:  genai.CitationWeb,
-					Title: r.Title,
-					URL:   r.URL,
-					Date:  r.Date,
-				})
-			}
-			if len(f.Citation.Sources) > 0 {
-				if err := result.Accumulate(f); err != nil {
-					return err
+				if pkt.Usage.PromptTokens != 0 {
+					result.Usage.InputTokens = pkt.Usage.PromptTokens
+					result.Usage.OutputTokens = pkt.Usage.CompletionTokens
 				}
-				chunks <- f
-			}
-		}
-		if len(pkt.Images) > 0 {
-			f := genai.ReplyFragment{}
-			for _, img := range pkt.Images {
-				if _, ok := seen[img.ImageURL]; ok {
-					continue
+				if pkt.Choices[0].FinishReason != "" {
+					result.Usage.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
 				}
-				seen[img.ImageURL] = struct{}{}
-				f.Citation.Sources = append(f.Citation.Sources, genai.CitationSource{
-					Type:  genai.CitationDocument,
-					Title: img.OriginURL,
-					URL:   img.ImageURL,
-					Metadata: map[string]any{
-						"width":  img.Width,
-						"height": img.Height,
-					},
-				})
-			}
-			if len(f.Citation.Sources) > 0 {
-				if err := result.Accumulate(f); err != nil {
-					return err
+				switch role := pkt.Choices[0].Delta.Role; role {
+				case "", "assistant":
+				default:
+					finalErr = &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
+					return
 				}
-				chunks <- f
+				// We need to do one packet per citation type. Do that before sending text.
+				if len(pkt.SearchResults) > 0 {
+					f := genai.ReplyFragment{}
+					for _, r := range pkt.SearchResults {
+						if _, ok := seen[r.URL]; ok {
+							continue
+						}
+						seen[r.URL] = struct{}{}
+						f.Citation.Sources = append(f.Citation.Sources, genai.CitationSource{
+							Type:  genai.CitationWeb,
+							Title: r.Title,
+							URL:   r.URL,
+							Date:  r.Date,
+						})
+					}
+					if len(f.Citation.Sources) > 0 {
+						if err := result.Accumulate(f); err != nil {
+							finalErr = err
+							return
+						}
+						if !yield(f) {
+							return
+						}
+					}
+				}
+				if len(pkt.Images) > 0 {
+					f := genai.ReplyFragment{}
+					for _, img := range pkt.Images {
+						if _, ok := seen[img.ImageURL]; ok {
+							continue
+						}
+						seen[img.ImageURL] = struct{}{}
+						f.Citation.Sources = append(f.Citation.Sources, genai.CitationSource{
+							Type:  genai.CitationDocument,
+							Title: img.OriginURL,
+							URL:   img.ImageURL,
+							Metadata: map[string]any{
+								"width":  img.Width,
+								"height": img.Height,
+							},
+						})
+					}
+					if len(f.Citation.Sources) > 0 {
+						if err := result.Accumulate(f); err != nil {
+							finalErr = err
+							return
+						}
+						if !yield(f) {
+							return
+						}
+					}
+				}
+				if len(pkt.RelatedQuestions) > 0 {
+					// TODO: Figure out how to return this.
+				}
+				f := genai.ReplyFragment{TextFragment: pkt.Choices[0].Delta.Content}
+				if !f.IsZero() {
+					if err := result.Accumulate(f); err != nil {
+						finalErr = err
+						return
+					}
+					if !yield(f) {
+						return
+					}
+				}
 			}
+		}, func() error {
+			return finalErr
 		}
-		if len(pkt.RelatedQuestions) > 0 {
-			// TODO: Figure out how to return this.
-		}
-		f := genai.ReplyFragment{TextFragment: pkt.Choices[0].Delta.Content}
-		if !f.IsZero() {
-			if err := result.Accumulate(f); err != nil {
-				return err
-			}
-			chunks <- f
-		}
-	}
-	return nil
 }
 
 var _ genai.Provider = &Client{}

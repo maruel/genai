@@ -670,74 +670,81 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 
 // TODO: Caching: https://api-docs.deepseek.com/guides/kv_cache
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ReplyFragment, result *genai.Result) error {
-	defer func() {
-		// We need to empty the channel to avoid blocking the goroutine.
-		for range ch {
-		}
-	}()
+func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *genai.Result) (iter.Seq[genai.ReplyFragment], func() error) {
+	var finalErr error
 	pendingToolCall := ToolCall{}
-	for pkt := range ch {
-		if len(pkt.Choices) != 1 {
-			continue
-		}
-		if pkt.Usage.CompletionTokens != 0 {
-			result.Usage.InputTokens = pkt.Usage.PromptTokens
-			result.Usage.InputCachedTokens = pkt.Usage.PromptCacheHitTokens
-			result.Usage.ReasoningTokens = pkt.Usage.ChatTokensDetails.ReasoningTokens
-			result.Usage.OutputTokens = pkt.Usage.CompletionTokens
-			result.Usage.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
-		}
-		if len(pkt.Choices[0].Delta.ToolCalls) > 1 {
-			return &internal.BadError{Err: fmt.Errorf("implement multiple tool calls: %#v", pkt)}
-		}
-		switch role := pkt.Choices[0].Delta.Role; role {
-		case "assistant", "":
-		default:
-			return &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
-		}
-		f := genai.ReplyFragment{
-			TextFragment:      pkt.Choices[0].Delta.Content,
-			ReasoningFragment: pkt.Choices[0].Delta.ReasoningContent,
-		}
-		// DeepSeek streams the arguments. Buffer the arguments to send the fragment as a whole tool call.
-		if len(pkt.Choices[0].Delta.ToolCalls) == 1 {
-			if t := pkt.Choices[0].Delta.ToolCalls[0]; t.ID != "" {
-				// A new call.
-				if pendingToolCall.ID == "" {
-					pendingToolCall = t
-					if !f.IsZero() {
-						return &internal.BadError{Err: fmt.Errorf("implement tool call with metadata: %#v", pkt)}
-					}
+
+	return func(yield func(genai.ReplyFragment) bool) {
+			for pkt := range chunks {
+				if len(pkt.Choices) != 1 {
 					continue
 				}
-				// Flush.
-				pendingToolCall.To(&f.ToolCall)
-				pendingToolCall = t
-			} else if pendingToolCall.ID != "" {
-				// Continuation.
-				pendingToolCall.Function.Arguments += t.Function.Arguments
-				if !f.IsZero() {
-					return &internal.BadError{Err: fmt.Errorf("implement tool call with metadata: %#v", pkt)}
+				if pkt.Usage.CompletionTokens != 0 {
+					result.Usage.InputTokens = pkt.Usage.PromptTokens
+					result.Usage.InputCachedTokens = pkt.Usage.PromptCacheHitTokens
+					result.Usage.ReasoningTokens = pkt.Usage.ChatTokensDetails.ReasoningTokens
+					result.Usage.OutputTokens = pkt.Usage.CompletionTokens
+					result.Usage.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
 				}
-				continue
+				if len(pkt.Choices[0].Delta.ToolCalls) > 1 {
+					finalErr = &internal.BadError{Err: fmt.Errorf("implement multiple tool calls: %#v", pkt)}
+					return
+				}
+				switch role := pkt.Choices[0].Delta.Role; role {
+				case "assistant", "":
+				default:
+					finalErr = &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
+					return
+				}
+				f := genai.ReplyFragment{
+					TextFragment:      pkt.Choices[0].Delta.Content,
+					ReasoningFragment: pkt.Choices[0].Delta.ReasoningContent,
+				}
+				// DeepSeek streams the arguments. Buffer the arguments to send the fragment as a whole tool call.
+				if len(pkt.Choices[0].Delta.ToolCalls) == 1 {
+					if t := pkt.Choices[0].Delta.ToolCalls[0]; t.ID != "" {
+						// A new call.
+						if pendingToolCall.ID == "" {
+							pendingToolCall = t
+							if !f.IsZero() {
+								finalErr = &internal.BadError{Err: fmt.Errorf("implement tool call with metadata: %#v", pkt)}
+								return
+							}
+							continue
+						}
+						// Flush.
+						pendingToolCall.To(&f.ToolCall)
+						pendingToolCall = t
+					} else if pendingToolCall.ID != "" {
+						// Continuation.
+						pendingToolCall.Function.Arguments += t.Function.Arguments
+						if !f.IsZero() {
+							finalErr = &internal.BadError{Err: fmt.Errorf("implement tool call with metadata: %#v", pkt)}
+							return
+						}
+						continue
+					}
+				} else if pendingToolCall.ID != "" {
+					// Flush.
+					pendingToolCall.To(&f.ToolCall)
+					pendingToolCall = ToolCall{}
+				}
+				if !f.IsZero() {
+					if err := result.Accumulate(f); err != nil {
+						finalErr = err
+						return
+					}
+					if !yield(f) {
+						return
+					}
+				}
+				if len(pkt.Choices[0].Logprobs.Content) != 0 {
+					result.Logprobs = append(result.Logprobs, pkt.Choices[0].Logprobs.To()...)
+				}
 			}
-		} else if pendingToolCall.ID != "" {
-			// Flush.
-			pendingToolCall.To(&f.ToolCall)
-			pendingToolCall = ToolCall{}
+		}, func() error {
+			return finalErr
 		}
-		if !f.IsZero() {
-			if err := result.Accumulate(f); err != nil {
-				return err
-			}
-			chunks <- f
-		}
-		if len(pkt.Choices[0].Logprobs.Content) != 0 {
-			result.Logprobs = append(result.Logprobs, pkt.Choices[0].Logprobs.To()...)
-		}
-	}
-	return nil
 }
 
 var _ genai.Provider = &Client{}

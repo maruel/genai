@@ -1580,147 +1580,159 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	return resp.ToModels(), nil
 }
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ReplyFragment, result *genai.Result) error {
-	defer func() {
-		// We need to empty the channel to avoid blocking the goroutine.
-		for range ch {
-		}
-	}()
-	// At the moment, only supported for server_tool_use / web_search.
-	pendingServerCall := ""
-	pendingJSON := ""
-	pendingToolCall := genai.ToolCall{}
-	for pkt := range ch {
-		f := genai.ReplyFragment{}
-		// See testdata/TestClient_Chat_thinking/ChatStream.yaml as a great example.
-		// TODO: pkt.Index matters here, as the LLM may fill multiple content blocks simultaneously.
-		switch pkt.Type {
-		case ChunkMessageStart:
-			switch pkt.Message.Role {
-			case "assistant":
-			default:
-				return &internal.BadError{Err: fmt.Errorf("unexpected role %q", pkt.Message.Role)}
-			}
-			result.Usage.InputTokens = pkt.Message.Usage.InputTokens
-			result.Usage.InputCachedTokens = pkt.Message.Usage.CacheReadInputTokens
-			// There's some tokens listed there. Still save it in case it breaks midway.
-			result.Usage.OutputTokens = pkt.Message.Usage.OutputTokens
-			result.Usage.TotalTokens = result.Usage.InputTokens + result.Usage.InputCachedTokens + result.Usage.OutputTokens
-			continue
-		case ChunkContentBlockStart:
-			switch pkt.ContentBlock.Type {
-			case ContentText:
-				f.TextFragment = pkt.ContentBlock.Text
-			case ContentThinking:
-				f.ReasoningFragment = pkt.ContentBlock.Thinking
-			case ContentToolUse:
-				pendingToolCall.ID = pkt.ContentBlock.ID
-				pendingToolCall.Name = pkt.ContentBlock.Name
-				pendingToolCall.Arguments = ""
-				// TODO: Is there anything to do with Input? pendingCall.Arguments = pkt.ContentBlock.Input
-			case ContentRedactedThinking:
-				f.Opaque = map[string]any{"redacted_thinking": pkt.ContentBlock.Signature}
-			case ContentServerToolUse:
-				// Discard the data for now. It may be necessary in the future to keep in in Opaque.
-				pendingServerCall = pkt.ContentBlock.Name
-				switch pendingServerCall {
-				case "web_search":
-					// This is great!
+func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *genai.Result) (iter.Seq[genai.ReplyFragment], func() error) {
+	var finalErr error
+	return func(yield func(genai.ReplyFragment) bool) {
+			// At the moment, only supported for server_tool_use / web_search.
+			pendingServerCall := ""
+			pendingJSON := ""
+			pendingToolCall := genai.ToolCall{}
+			for pkt := range chunks {
+				f := genai.ReplyFragment{}
+				// See testdata/TestClient_Chat_thinking/ChatStream.yaml as a great example.
+				// TODO: pkt.Index matters here, as the LLM may fill multiple content blocks simultaneously.
+				switch pkt.Type {
+				case ChunkMessageStart:
+					switch pkt.Message.Role {
+					case "assistant":
+					default:
+						finalErr = &internal.BadError{Err: fmt.Errorf("unexpected role %q", pkt.Message.Role)}
+						return
+					}
+					result.Usage.InputTokens = pkt.Message.Usage.InputTokens
+					result.Usage.InputCachedTokens = pkt.Message.Usage.CacheReadInputTokens
+					// There's some tokens listed there. Still save it in case it breaks midway.
+					result.Usage.OutputTokens = pkt.Message.Usage.OutputTokens
+					result.Usage.TotalTokens = result.Usage.InputTokens + result.Usage.InputCachedTokens + result.Usage.OutputTokens
+					continue
+				case ChunkContentBlockStart:
+					switch pkt.ContentBlock.Type {
+					case ContentText:
+						f.TextFragment = pkt.ContentBlock.Text
+					case ContentThinking:
+						f.ReasoningFragment = pkt.ContentBlock.Thinking
+					case ContentToolUse:
+						pendingToolCall.ID = pkt.ContentBlock.ID
+						pendingToolCall.Name = pkt.ContentBlock.Name
+						pendingToolCall.Arguments = ""
+						// TODO: Is there anything to do with Input? pendingCall.Arguments = pkt.ContentBlock.Input
+					case ContentRedactedThinking:
+						f.Opaque = map[string]any{"redacted_thinking": pkt.ContentBlock.Signature}
+					case ContentServerToolUse:
+						// Discard the data for now. It may be necessary in the future to keep in in Opaque.
+						pendingServerCall = pkt.ContentBlock.Name
+						switch pendingServerCall {
+						case "web_search":
+							// This is great!
+						default:
+							// Oops, more work to do!
+							if !internal.BeLenient {
+								finalErr = &internal.BadError{Err: fmt.Errorf("implement server tool call %q", pendingServerCall)}
+								return
+							}
+						}
+					case ContentWebSearchToolResult:
+						f.Citation.Sources = make([]genai.CitationSource, len(pkt.ContentBlock.Content))
+						for i, cc := range pkt.ContentBlock.Content {
+							if cc.Type != ContentWebSearchResult {
+								finalErr = &internal.BadError{Err: fmt.Errorf("implement content type %q while processing %q", cc.Type, pkt.ContentBlock.Type)}
+								return
+							}
+							f.Citation.Sources[i].Type = genai.CitationWeb
+							f.Citation.Sources[i].URL = cc.URL
+							f.Citation.Sources[i].Title = cc.Title
+							f.Citation.Sources[i].Date = cc.PageAge
+							// EncryptedContent is not really useful?
+						}
+					case ContentWebSearchResult, ContentImage, ContentDocument, ContentToolResult:
+						fallthrough
+					default:
+						finalErr = &internal.BadError{Err: fmt.Errorf("implement content block %q", pkt.ContentBlock.Type)}
+						return
+					}
+				case ChunkContentBlockDelta:
+					switch pkt.Delta.Type {
+					case DeltaText:
+						f.TextFragment = pkt.Delta.Text
+					case DeltaThinking:
+						f.ReasoningFragment = pkt.Delta.Thinking
+					case DeltaSignature:
+						f.Opaque = map[string]any{"signature": pkt.Delta.Signature}
+					case DeltaInputJSON:
+						pendingJSON += pkt.Delta.PartialJSON
+					case DeltaCitations:
+						if err := pkt.Delta.Citation.To(&f.Citation); err != nil {
+							finalErr = &internal.BadError{Err: fmt.Errorf("failed to parse citation: %w", err)}
+							return
+						}
+					default:
+						finalErr = &internal.BadError{Err: fmt.Errorf("implement content block delta %q", pkt.Delta.Type)}
+						return
+					}
+				case ChunkContentBlockStop:
+					// Marks a closure of the block pkt.Index. Flush accumulated JSON if appropriate.
+					if pendingToolCall.ID != "" {
+						pendingToolCall.Arguments = pendingJSON
+						f.ToolCall = pendingToolCall
+						pendingToolCall = genai.ToolCall{}
+					}
+					// Why not web_search_20250305 ??
+					switch pendingServerCall {
+					case "web_search":
+						q := WebSearch{}
+						d := json.NewDecoder(strings.NewReader(pendingJSON))
+						if !internal.BeLenient {
+							d.DisallowUnknownFields()
+						}
+						if err := d.Decode(&q); err != nil {
+							finalErr = &internal.BadError{Err: fmt.Errorf("failed to decode pending server tool call %s: %w", pendingServerCall, err)}
+							return
+						}
+						f.Citation.Sources = []genai.CitationSource{{
+							Type:    genai.CitationWebQuery,
+							Snippet: q.Query,
+						}}
+						pendingServerCall = ""
+					case "":
+					default:
+						// Oops, more work to do!
+						if !internal.BeLenient {
+							finalErr = &internal.BadError{Err: fmt.Errorf("implement server tool call %q", pendingServerCall)}
+							return
+						}
+					}
+					pendingJSON = ""
+				case ChunkMessageDelta:
+					// Includes finish reason and output tokens usage (but not input tokens!)
+					result.Usage.FinishReason = pkt.Delta.StopReason.ToFinishReason()
+					result.Usage.OutputTokens = pkt.Usage.OutputTokens
+				case ChunkMessageStop:
+					// Doesn't contain anything.
+					continue
+				case ChunkPing:
+					// Doesn't contain anything.
+					continue
+				case ChunkError:
+					// TODO: See it in the field to decode properly.
+					finalErr = fmt.Errorf("got error: %+v", pkt)
+					return
 				default:
-					// Oops, more work to do!
-					if !internal.BeLenient {
-						return &internal.BadError{Err: fmt.Errorf("implement server tool call %q", pendingServerCall)}
+					finalErr = &internal.BadError{Err: fmt.Errorf("implement stream block %q", pkt.Type)}
+					return
+				}
+				if !f.IsZero() {
+					if err := result.Accumulate(f); err != nil {
+						finalErr = err
+						return
+					}
+					if !yield(f) {
+						return
 					}
 				}
-			case ContentWebSearchToolResult:
-				f.Citation.Sources = make([]genai.CitationSource, len(pkt.ContentBlock.Content))
-				for i, cc := range pkt.ContentBlock.Content {
-					if cc.Type != ContentWebSearchResult {
-						return &internal.BadError{Err: fmt.Errorf("implement content type %q while processing %q", cc.Type, pkt.ContentBlock.Type)}
-					}
-					f.Citation.Sources[i].Type = genai.CitationWeb
-					f.Citation.Sources[i].URL = cc.URL
-					f.Citation.Sources[i].Title = cc.Title
-					f.Citation.Sources[i].Date = cc.PageAge
-					// EncryptedContent is not really useful?
-				}
-			case ContentWebSearchResult, ContentImage, ContentDocument, ContentToolResult:
-				fallthrough
-			default:
-				return &internal.BadError{Err: fmt.Errorf("implement content block %q", pkt.ContentBlock.Type)}
 			}
-		case ChunkContentBlockDelta:
-			switch pkt.Delta.Type {
-			case DeltaText:
-				f.TextFragment = pkt.Delta.Text
-			case DeltaThinking:
-				f.ReasoningFragment = pkt.Delta.Thinking
-			case DeltaSignature:
-				f.Opaque = map[string]any{"signature": pkt.Delta.Signature}
-			case DeltaInputJSON:
-				pendingJSON += pkt.Delta.PartialJSON
-			case DeltaCitations:
-				if err := pkt.Delta.Citation.To(&f.Citation); err != nil {
-					return &internal.BadError{Err: fmt.Errorf("failed to parse citation: %w", err)}
-				}
-			default:
-				return &internal.BadError{Err: fmt.Errorf("implement content block delta %q", pkt.Delta.Type)}
-			}
-		case ChunkContentBlockStop:
-			// Marks a closure of the block pkt.Index. Flush accumulated JSON if appropriate.
-			if pendingToolCall.ID != "" {
-				pendingToolCall.Arguments = pendingJSON
-				f.ToolCall = pendingToolCall
-				pendingToolCall = genai.ToolCall{}
-			}
-			// Why not web_search_20250305 ??
-			switch pendingServerCall {
-			case "web_search":
-				q := WebSearch{}
-				d := json.NewDecoder(strings.NewReader(pendingJSON))
-				if !internal.BeLenient {
-					d.DisallowUnknownFields()
-				}
-				if err := d.Decode(&q); err != nil {
-					return &internal.BadError{Err: fmt.Errorf("failed to decode pending server tool call %s: %w", pendingServerCall, err)}
-				}
-				f.Citation.Sources = []genai.CitationSource{{
-					Type:    genai.CitationWebQuery,
-					Snippet: q.Query,
-				}}
-				pendingServerCall = ""
-			case "":
-			default:
-				// Oops, more work to do!
-				if !internal.BeLenient {
-					return &internal.BadError{Err: fmt.Errorf("implement server tool call %q", pendingServerCall)}
-				}
-			}
-			pendingJSON = ""
-		case ChunkMessageDelta:
-			// Includes finish reason and output tokens usage (but not input tokens!)
-			result.Usage.FinishReason = pkt.Delta.StopReason.ToFinishReason()
-			result.Usage.OutputTokens = pkt.Usage.OutputTokens
-		case ChunkMessageStop:
-			// Doesn't contain anything.
-			continue
-		case ChunkPing:
-			// Doesn't contain anything.
-			continue
-		case ChunkError:
-			// TODO: See it in the field to decode properly.
-			return fmt.Errorf("got error: %+v", pkt)
-		default:
-			return &internal.BadError{Err: fmt.Errorf("implement stream block %q", pkt.Type)}
+		}, func() error {
+			return finalErr
 		}
-		if !f.IsZero() {
-			if err := result.Accumulate(f); err != nil {
-				return err
-			}
-			chunks <- f
-		}
-	}
-	return nil
 }
 
 func processHeaders(h http.Header) []genai.RateLimit {

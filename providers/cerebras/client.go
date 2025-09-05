@@ -828,95 +828,110 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	return resp.ToModels(), nil
 }
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ReplyFragment, result *genai.Result) error {
-	defer func() {
-		// We need to empty the channel to avoid blocking the goroutine.
-		for range ch {
-		}
-	}()
+func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *genai.Result) (iter.Seq[genai.ReplyFragment], func() error) {
+	var finalErr error
 	sent := false
 	// gpt-oss-* streams the tool call arguments but not the other models. Fun.
 	pendingToolCall := ToolCall{}
-	for pkt := range ch {
-		if len(pkt.Choices) != 1 {
-			continue
-		}
-		switch role := pkt.Choices[0].Delta.Role; role {
-		case "", "assistant":
-		default:
-			return fmt.Errorf("unexpected role %q", role)
-		}
-		if pkt.Usage.TotalTokens != 0 {
-			result.Usage.InputTokens = pkt.Usage.PromptTokens
-			result.Usage.InputCachedTokens = pkt.Usage.PromptTokensDetails.CachedTokens
-			result.Usage.OutputTokens = pkt.Usage.CompletionTokens
-			result.Usage.TotalTokens = pkt.Usage.TotalTokens
-			result.Usage.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
-		}
 
-		for _, nt := range pkt.Choices[0].Delta.ToolCalls {
-			// We need to determine if the model streams too calls or not. gpt-oss-* streams the tool call arguments
-			// but not others.
+	return func(yield func(genai.ReplyFragment) bool) {
+			for pkt := range chunks {
+				if len(pkt.Choices) != 1 {
+					continue
+				}
+				switch role := pkt.Choices[0].Delta.Role; role {
+				case "", "assistant":
+				default:
+					finalErr = &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
+					return
+				}
+				if pkt.Usage.TotalTokens != 0 {
+					result.Usage.InputTokens = pkt.Usage.PromptTokens
+					result.Usage.InputCachedTokens = pkt.Usage.PromptTokensDetails.CachedTokens
+					result.Usage.OutputTokens = pkt.Usage.CompletionTokens
+					result.Usage.TotalTokens = pkt.Usage.TotalTokens
+					result.Usage.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
+				}
+
+				for _, nt := range pkt.Choices[0].Delta.ToolCalls {
+					// We need to determine if the model streams too calls or not. gpt-oss-* streams the tool call arguments
+					// but not others.
+					if pendingToolCall.ID != "" {
+						if nt.ID == "" {
+							// Continuation.
+							pendingToolCall.Function.Arguments += nt.Function.Arguments
+						} else {
+							// Flush first.
+							f := genai.ReplyFragment{}
+							pendingToolCall.To(&f.ToolCall)
+							if err := result.Accumulate(f); err != nil {
+								finalErr = err
+								return
+							}
+							if !yield(f) {
+								return
+							}
+							sent = true
+							pendingToolCall = nt
+						}
+					} else {
+						pendingToolCall = nt
+					}
+				}
+				if pkt.Choices[0].Delta.Reasoning != "" {
+					f := genai.ReplyFragment{ReasoningFragment: pkt.Choices[0].Delta.Reasoning}
+					if err := result.Accumulate(f); err != nil {
+						finalErr = err
+						return
+					}
+					if !yield(f) {
+						return
+					}
+					sent = true
+				}
+				for _, content := range pkt.Choices[0].Delta.Content {
+					switch content.Type {
+					case ContentText:
+						f := genai.ReplyFragment{TextFragment: content.Text}
+						if !f.IsZero() {
+							if err := result.Accumulate(f); err != nil {
+								finalErr = err
+								return
+							}
+							if !yield(f) {
+								return
+							}
+							sent = true
+						}
+					default:
+						finalErr = &internal.BadError{Err: fmt.Errorf("implement content type %q", content.Type)}
+						return
+					}
+				}
+				if len(pkt.Choices[0].Logprobs.Content) != 0 {
+					result.Logprobs = append(result.Logprobs, pkt.Choices[0].Logprobs.To()...)
+				}
+			}
 			if pendingToolCall.ID != "" {
-				if nt.ID == "" {
-					// Continuation.
-					pendingToolCall.Function.Arguments += nt.Function.Arguments
-				} else {
-					// Flush first.
-					f := genai.ReplyFragment{}
-					pendingToolCall.To(&f.ToolCall)
-					if err := result.Accumulate(f); err != nil {
-						return err
-					}
-					chunks <- f
-					sent = true
-					pendingToolCall = nt
+				f := genai.ReplyFragment{}
+				pendingToolCall.To(&f.ToolCall)
+				if err := result.Accumulate(f); err != nil {
+					finalErr = err
+					return
 				}
-			} else {
-				pendingToolCall = nt
-			}
-		}
-		if pkt.Choices[0].Delta.Reasoning != "" {
-			f := genai.ReplyFragment{ReasoningFragment: pkt.Choices[0].Delta.Reasoning}
-			if err := result.Accumulate(f); err != nil {
-				return err
-			}
-			chunks <- f
-			sent = true
-		}
-		for _, content := range pkt.Choices[0].Delta.Content {
-			switch content.Type {
-			case ContentText:
-				f := genai.ReplyFragment{TextFragment: content.Text}
-				if !f.IsZero() {
-					if err := result.Accumulate(f); err != nil {
-						return err
-					}
-					chunks <- f
-					sent = true
+				if !yield(f) {
+					return
 				}
-			default:
-				return &internal.BadError{Err: fmt.Errorf("implement content type %q", content.Type)}
+				sent = true
 			}
+			if !sent {
+				// This happens with gpt-oss-120b with Stop.
+				finalErr = errors.New("model sent no reply")
+				return
+			}
+		}, func() error {
+			return finalErr
 		}
-		if len(pkt.Choices[0].Logprobs.Content) != 0 {
-			result.Logprobs = append(result.Logprobs, pkt.Choices[0].Logprobs.To()...)
-		}
-	}
-	if pendingToolCall.ID != "" {
-		f := genai.ReplyFragment{}
-		pendingToolCall.To(&f.ToolCall)
-		if err := result.Accumulate(f); err != nil {
-			return err
-		}
-		chunks <- f
-		sent = true
-	}
-	if !sent {
-		// This happens with gpt-oss-120b with Stop.
-		return errors.New("model sent no reply")
-	}
-	return nil
 }
 
 func processHeaders(h http.Header) []genai.RateLimit {

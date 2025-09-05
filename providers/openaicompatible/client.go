@@ -463,77 +463,89 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest) (iter.Seq[Ch
 	return c.impl.GenStreamRaw(ctx, in)
 }
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ReplyFragment, result *genai.Result) error {
-	defer func() {
-		// We need to empty the channel to avoid blocking the goroutine.
-		for range ch {
-		}
-	}()
-	for pkt := range ch {
-		if pkt.Usage.TotalTokens != 0 {
-			result.Usage.InputTokens = pkt.Usage.PromptTokens
-			result.Usage.OutputTokens = pkt.Usage.CompletionTokens
-			result.Usage.TotalTokens = pkt.Usage.TotalTokens
-		}
-		if len(pkt.Choices) == 1 {
-			if pkt.Choices[0].FinishReason != "" {
-				result.Usage.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
-			}
-			switch role := pkt.Choices[0].Delta.Role; role {
-			case "", "assistant":
-			default:
-				return &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
-			}
-			for _, content := range pkt.Choices[0].Delta.Content {
-				switch content.Type {
-				case ContentText:
+func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *genai.Result) (iter.Seq[genai.ReplyFragment], func() error) {
+	var finalErr error
+
+	return func(yield func(genai.ReplyFragment) bool) {
+			for pkt := range chunks {
+				if pkt.Usage.TotalTokens != 0 {
+					result.Usage.InputTokens = pkt.Usage.PromptTokens
+					result.Usage.OutputTokens = pkt.Usage.CompletionTokens
+					result.Usage.TotalTokens = pkt.Usage.TotalTokens
+				}
+				if len(pkt.Choices) == 1 {
+					if pkt.Choices[0].FinishReason != "" {
+						result.Usage.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
+					}
+					switch role := pkt.Choices[0].Delta.Role; role {
+					case "", "assistant":
+					default:
+						finalErr = &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
+						return
+					}
+					for _, content := range pkt.Choices[0].Delta.Content {
+						switch content.Type {
+						case ContentText:
+							f := genai.ReplyFragment{TextFragment: content.Text}
+							if !f.IsZero() {
+								if err := result.Accumulate(f); err != nil {
+									finalErr = err
+									return
+								}
+								if !yield(f) {
+									return
+								}
+							}
+						default:
+							finalErr = &internal.BadError{Err: fmt.Errorf("unexpected content type %q", content.Type)}
+							return
+						}
+					}
+					continue
+				}
+				if pkt.FinishReason != "" {
+					result.Usage.FinishReason = pkt.FinishReason.ToFinishReason()
+				}
+				m := pkt.Delta.Message
+				c := pkt.Delta.Message.Content
+				if m.IsZero() {
+					m = pkt.Delta.Message
+				}
+				switch role := m.Role; role {
+				case "", "assistant":
+				default:
+					finalErr = &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
+					return
+				}
+				if m.IsZero() {
+					f := genai.ReplyFragment{TextFragment: pkt.Delta.Text}
+					if !f.IsZero() {
+						if err := result.Accumulate(f); err != nil {
+							finalErr = err
+							return
+						}
+						if !yield(f) {
+							return
+						}
+					}
+					continue
+				}
+				for _, content := range c {
 					f := genai.ReplyFragment{TextFragment: content.Text}
 					if !f.IsZero() {
 						if err := result.Accumulate(f); err != nil {
-							return err
+							finalErr = err
+							return
 						}
-						chunks <- f
+						if !yield(f) {
+							return
+						}
 					}
-				default:
-					return &internal.BadError{Err: fmt.Errorf("unexpected content type %q", content.Type)}
 				}
 			}
-			continue
+		}, func() error {
+			return finalErr
 		}
-		if pkt.FinishReason != "" {
-			result.Usage.FinishReason = pkt.FinishReason.ToFinishReason()
-		}
-		m := pkt.Delta.Message
-		c := pkt.Delta.Message.Content
-		if m.IsZero() {
-			m = pkt.Delta.Message
-		}
-		switch role := m.Role; role {
-		case "", "assistant":
-		default:
-			return &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
-		}
-		if m.IsZero() {
-			f := genai.ReplyFragment{TextFragment: pkt.Delta.Text}
-			if !f.IsZero() {
-				if err := result.Accumulate(f); err != nil {
-					return err
-				}
-				chunks <- f
-			}
-			continue
-		}
-		for _, content := range c {
-			f := genai.ReplyFragment{TextFragment: content.Text}
-			if !f.IsZero() {
-				if err := result.Accumulate(f); err != nil {
-					return err
-				}
-				chunks <- f
-			}
-		}
-	}
-	return nil
 }
 
 var _ genai.Provider = &Client{}

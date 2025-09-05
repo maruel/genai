@@ -1032,125 +1032,144 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	return resp.ToModels(), nil
 }
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ReplyFragment, result *genai.Result) error {
-	defer func() {
-		// We need to empty the channel to avoid blocking the goroutine.
-		for range ch {
-		}
-	}()
+func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *genai.Result) (iter.Seq[genai.ReplyFragment], func() error) {
+	var finalErr error
 	sent := false
 	wasThinking := false
 	pendingToolCall := ToolCall{}
-	for pkt := range ch {
-		// These can't happen.
-		if len(pkt.Delta.Message.Content) > 1 {
-			return &internal.BadError{Err: errors.New("implement multiple content")}
-		}
-		if len(pkt.Delta.Message.ToolCalls) > 1 {
-			return &internal.BadError{Err: errors.New("implement multiple tool calls")}
-		}
-		switch role := pkt.Delta.Message.Role; role {
-		case "assistant", "":
-		default:
-			return &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
-		}
-		if pkt.Logprobs.Text != "" {
-			result.Logprobs = append(result.Logprobs, pkt.Logprobs.To())
-		}
-		f := genai.ReplyFragment{}
-		switch pkt.Type {
-		case ChunkMessageStart:
-			// Nothing useful.
-			if len(pkt.Delta.Message.Content) != 0 {
-				return &internal.BadError{Err: fmt.Errorf("expected no content %#v", pkt)}
-			}
-		case ChunkMessageEnd:
-			// Contain usage and finish reason.
-			if pkt.Delta.FinishReason == FinishError {
-				return errors.New(pkt.Delta.Error)
-			}
-			if len(pkt.Delta.Message.Content) != 0 {
-				return &internal.BadError{Err: fmt.Errorf("expected no content %#v", pkt)}
-			}
-			result.Usage.InputTokens = pkt.Delta.Usage.Tokens.InputTokens
-			result.Usage.OutputTokens = pkt.Delta.Usage.Tokens.OutputTokens
-			result.Usage.FinishReason = pkt.Delta.FinishReason.ToFinishReason()
-		case ChunkContentStart:
-			if len(pkt.Delta.Message.Content) != 1 {
-				return &internal.BadError{Err: fmt.Errorf("expected content %#v", pkt)}
-			}
-			switch t := pkt.Delta.Message.Content[0].Type; t {
-			case ContentText:
-				f.TextFragment = pkt.Delta.Message.Content[0].Text
-				wasThinking = false
-			case ContentThinking:
-				f.ReasoningFragment = pkt.Delta.Message.Content[0].Text
-				wasThinking = true
-			case ContentDocument, ContentImageURL:
-				fallthrough
-			default:
-				return &internal.BadError{Err: fmt.Errorf("implement content %q", t)}
-			}
-		case ChunkContentDelta:
-			// Sometimes the delta is empty?
-			if len(pkt.Delta.Message.Content) == 1 {
-				t := pkt.Delta.Message.Content[0].Text
-				if t == "" {
-					return &internal.BadError{Err: fmt.Errorf("empty content %#v", pkt)}
+
+	return func(yield func(genai.ReplyFragment) bool) {
+			for pkt := range chunks {
+				// These can't happen.
+				if len(pkt.Delta.Message.Content) > 1 {
+					finalErr = &internal.BadError{Err: errors.New("implement multiple content")}
+					return
 				}
-				// Type is not set. We need to remember the value from ChunkContentStart.
-				if wasThinking {
-					f.ReasoningFragment = t
-				} else {
-					f.TextFragment = t
+				if len(pkt.Delta.Message.ToolCalls) > 1 {
+					finalErr = &internal.BadError{Err: errors.New("implement multiple tool calls")}
+					return
+				}
+				switch role := pkt.Delta.Message.Role; role {
+				case "assistant", "":
+				default:
+					finalErr = &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
+					return
+				}
+				if pkt.Logprobs.Text != "" {
+					result.Logprobs = append(result.Logprobs, pkt.Logprobs.To())
+				}
+				f := genai.ReplyFragment{}
+				switch pkt.Type {
+				case ChunkMessageStart:
+					// Nothing useful.
+					if len(pkt.Delta.Message.Content) != 0 {
+						finalErr = &internal.BadError{Err: fmt.Errorf("expected no content %#v", pkt)}
+						return
+					}
+				case ChunkMessageEnd:
+					// Contain usage and finish reason.
+					if pkt.Delta.FinishReason == FinishError {
+						finalErr = errors.New(pkt.Delta.Error)
+						return
+					}
+					if len(pkt.Delta.Message.Content) != 0 {
+						finalErr = &internal.BadError{Err: fmt.Errorf("expected no content %#v", pkt)}
+						return
+					}
+					result.Usage.InputTokens = pkt.Delta.Usage.Tokens.InputTokens
+					result.Usage.OutputTokens = pkt.Delta.Usage.Tokens.OutputTokens
+					result.Usage.FinishReason = pkt.Delta.FinishReason.ToFinishReason()
+				case ChunkContentStart:
+					if len(pkt.Delta.Message.Content) != 1 {
+						finalErr = &internal.BadError{Err: fmt.Errorf("expected content %#v", pkt)}
+						return
+					}
+					switch t := pkt.Delta.Message.Content[0].Type; t {
+					case ContentText:
+						f.TextFragment = pkt.Delta.Message.Content[0].Text
+						wasThinking = false
+					case ContentThinking:
+						f.ReasoningFragment = pkt.Delta.Message.Content[0].Text
+						wasThinking = true
+					case ContentDocument, ContentImageURL:
+						fallthrough
+					default:
+						finalErr = &internal.BadError{Err: fmt.Errorf("implement content %q", t)}
+						return
+					}
+				case ChunkContentDelta:
+					// Sometimes the delta is empty?
+					if len(pkt.Delta.Message.Content) == 1 {
+						t := pkt.Delta.Message.Content[0].Text
+						if t == "" {
+							finalErr = &internal.BadError{Err: fmt.Errorf("empty content %#v", pkt)}
+							return
+						}
+						// Type is not set. We need to remember the value from ChunkContentStart.
+						if wasThinking {
+							f.ReasoningFragment = t
+						} else {
+							f.TextFragment = t
+						}
+					}
+				case ChunkContentEnd:
+					// Will be useful when there's multiple index.
+					// Sometimes the delta is empty?
+					if len(pkt.Delta.Message.Content) != 0 {
+						finalErr = &internal.BadError{Err: fmt.Errorf("unexpected content %#v", pkt)}
+						return
+					}
+				case ChunkToolPlanDelta:
+					f.ReasoningFragment = pkt.Delta.Message.ToolPlan
+				case ChunkToolCallStart:
+					if len(pkt.Delta.Message.ToolCalls) != 1 {
+						finalErr = &internal.BadError{Err: fmt.Errorf("expected tool call %#v", pkt)}
+						return
+					}
+					pendingToolCall = pkt.Delta.Message.ToolCalls[0]
+				case ChunkToolCallDelta:
+					pendingToolCall.Function.Arguments += pkt.Delta.Message.ToolCalls[0].Function.Arguments
+				case ChunkToolCallEnd:
+					pendingToolCall.To(&f.ToolCall)
+					pendingToolCall = ToolCall{}
+				case ChunkCitationStart:
+					if len(pkt.Delta.Message.Citations) != 1 {
+						finalErr = &internal.BadError{Err: fmt.Errorf("expected one citation, got %v", pkt)}
+						return
+					}
+					if err := pkt.Delta.Message.Citations[0].To(&f.Citation); err != nil {
+						finalErr = err
+						return
+					}
+				case ChunkCitationEnd:
+					if len(pkt.Delta.Message.Citations) != 0 {
+						finalErr = &internal.BadError{Err: fmt.Errorf("expected no citations, got %v", pkt)}
+						return
+					}
+				default:
+					if !internal.BeLenient {
+						finalErr = &internal.BadError{Err: fmt.Errorf("unknown packet %q", pkt.Type)}
+						return
+					}
+				}
+				if !f.IsZero() {
+					if err := result.Accumulate(f); err != nil {
+						finalErr = err
+						return
+					}
+					if !yield(f) {
+						return
+					}
+					sent = true
 				}
 			}
-		case ChunkContentEnd:
-			// Will be useful when there's multiple index.
-			// Sometimes the delta is empty?
-			if len(pkt.Delta.Message.Content) != 0 {
-				return &internal.BadError{Err: fmt.Errorf("unexpected content %#v", pkt)}
+			if !sent {
+				finalErr = errors.New("model sent no reply")
+				return
 			}
-		case ChunkToolPlanDelta:
-			f.ReasoningFragment = pkt.Delta.Message.ToolPlan
-		case ChunkToolCallStart:
-			if len(pkt.Delta.Message.ToolCalls) != 1 {
-				return &internal.BadError{Err: fmt.Errorf("expected tool call %#v", pkt)}
-			}
-			pendingToolCall = pkt.Delta.Message.ToolCalls[0]
-		case ChunkToolCallDelta:
-			pendingToolCall.Function.Arguments += pkt.Delta.Message.ToolCalls[0].Function.Arguments
-		case ChunkToolCallEnd:
-			pendingToolCall.To(&f.ToolCall)
-			pendingToolCall = ToolCall{}
-		case ChunkCitationStart:
-			if len(pkt.Delta.Message.Citations) != 1 {
-				return &internal.BadError{Err: fmt.Errorf("expected one citation, got %v", pkt)}
-			}
-			if err := pkt.Delta.Message.Citations[0].To(&f.Citation); err != nil {
-				return err
-			}
-		case ChunkCitationEnd:
-			if len(pkt.Delta.Message.Citations) != 0 {
-				return &internal.BadError{Err: fmt.Errorf("expected no citations, got %v", pkt)}
-			}
-		default:
-			if !internal.BeLenient {
-				return &internal.BadError{Err: fmt.Errorf("unknown packet %q", pkt.Type)}
-			}
+		}, func() error {
+			return finalErr
 		}
-		if !f.IsZero() {
-			if err := result.Accumulate(f); err != nil {
-				return err
-			}
-			chunks <- f
-			sent = true
-		}
-	}
-	if !sent {
-		return errors.New("model sent no reply")
-	}
-	return nil
 }
 
 var _ genai.Provider = &Client{}

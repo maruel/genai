@@ -1228,94 +1228,106 @@ func (c *Client) FilesListRaw(ctx context.Context) ([]File, error) {
 	return resp.Data, err
 }
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ReplyFragment, result *genai.Result) error {
-	defer func() {
-		// We need to empty the channel to avoid blocking the goroutine.
-		for range ch {
-		}
-	}()
+func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *genai.Result) (iter.Seq[genai.ReplyFragment], func() error) {
+	var finalErr error
 	sent := false
 	pendingToolCall := ToolCall{}
-	for pkt := range ch {
-		if pkt.Usage.PromptTokens != 0 {
-			result.Usage.InputTokens = pkt.Usage.PromptTokens
-			result.Usage.InputCachedTokens = pkt.Usage.PromptTokensDetails.CachedTokens
-			result.Usage.ReasoningTokens = pkt.Usage.CompletionTokensDetails.ReasoningTokens
-			result.Usage.OutputTokens = pkt.Usage.CompletionTokens
-		}
-		if len(pkt.Choices) != 1 {
-			continue
-		}
-		if fr := pkt.Choices[0].FinishReason; fr != "" {
-			result.Usage.FinishReason = fr.ToFinishReason()
-		}
-		switch role := pkt.Choices[0].Delta.Role; role {
-		case "", "assistant":
-		default:
-			return &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
-		}
-		if len(pkt.Choices[0].Delta.ToolCalls) > 1 {
-			return &internal.BadError{Err: fmt.Errorf("implement multiple tool calls: %#v", pkt)}
-		}
-		if r := pkt.Choices[0].Delta.Refusal; r != "" {
-			return &internal.BadError{Err: fmt.Errorf("refused: %q", r)}
-		}
 
-		f := genai.ReplyFragment{}
-		for _, a := range pkt.Choices[0].Delta.Annotations {
-			f.Citation.StartIndex = a.URLCitation.StartIndex
-			f.Citation.EndIndex = a.URLCitation.EndIndex
-			f.Citation.Sources = []genai.CitationSource{{Type: genai.CitationWeb, URL: a.URLCitation.URL}}
-			if err := result.Accumulate(f); err != nil {
-				return err
-			}
-			chunks <- f
-			sent = true
-			f = genai.ReplyFragment{}
-		}
-
-		f.TextFragment = pkt.Choices[0].Delta.Content
-		// OpenAI streams the arguments. Buffer the arguments to send the fragment as a whole tool call.
-		if len(pkt.Choices[0].Delta.ToolCalls) == 1 {
-			if t := pkt.Choices[0].Delta.ToolCalls[0]; t.ID != "" {
-				// A new call.
-				if pendingToolCall.ID == "" {
-					pendingToolCall = t
-					if !f.IsZero() {
-						return &internal.BadError{Err: fmt.Errorf("implement tool call with metadata: %#v", pkt)}
-					}
+	return func(yield func(genai.ReplyFragment) bool) {
+			for pkt := range chunks {
+				if pkt.Usage.PromptTokens != 0 {
+					result.Usage.InputTokens = pkt.Usage.PromptTokens
+					result.Usage.InputCachedTokens = pkt.Usage.PromptTokensDetails.CachedTokens
+					result.Usage.ReasoningTokens = pkt.Usage.CompletionTokensDetails.ReasoningTokens
+					result.Usage.OutputTokens = pkt.Usage.CompletionTokens
+				}
+				if len(pkt.Choices) != 1 {
 					continue
 				}
-				// Flush.
-				pendingToolCall.To(&f.ToolCall)
-				pendingToolCall = t
-			} else if pendingToolCall.ID != "" {
-				// Continuation.
-				pendingToolCall.Function.Arguments += t.Function.Arguments
-				if !f.IsZero() {
-					return &internal.BadError{Err: fmt.Errorf("implement tool call with metadata: %#v", pkt)}
+				if fr := pkt.Choices[0].FinishReason; fr != "" {
+					result.Usage.FinishReason = fr.ToFinishReason()
 				}
-				continue
+				switch role := pkt.Choices[0].Delta.Role; role {
+				case "", "assistant":
+				default:
+					finalErr = &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
+					return
+				}
+				if len(pkt.Choices[0].Delta.ToolCalls) > 1 {
+					finalErr = &internal.BadError{Err: fmt.Errorf("implement multiple tool calls: %#v", pkt)}
+					return
+				}
+				if r := pkt.Choices[0].Delta.Refusal; r != "" {
+					finalErr = &internal.BadError{Err: fmt.Errorf("refused: %q", r)}
+					return
+				}
+
+				f := genai.ReplyFragment{}
+				for _, a := range pkt.Choices[0].Delta.Annotations {
+					f.Citation.StartIndex = a.URLCitation.StartIndex
+					f.Citation.EndIndex = a.URLCitation.EndIndex
+					f.Citation.Sources = []genai.CitationSource{{Type: genai.CitationWeb, URL: a.URLCitation.URL}}
+					if err := result.Accumulate(f); err != nil {
+						finalErr = err
+						return
+					}
+					if !yield(f) {
+						return
+					}
+					sent = true
+					f = genai.ReplyFragment{}
+				}
+
+				f.TextFragment = pkt.Choices[0].Delta.Content
+				// OpenAI streams the arguments. Buffer the arguments to send the fragment as a whole tool call.
+				if len(pkt.Choices[0].Delta.ToolCalls) == 1 {
+					if t := pkt.Choices[0].Delta.ToolCalls[0]; t.ID != "" {
+						// A new call.
+						if pendingToolCall.ID == "" {
+							pendingToolCall = t
+							if !f.IsZero() {
+								finalErr = &internal.BadError{Err: fmt.Errorf("implement tool call with metadata: %#v", pkt)}
+								return
+							}
+							continue
+						}
+						// Flush.
+						pendingToolCall.To(&f.ToolCall)
+						pendingToolCall = t
+					} else if pendingToolCall.ID != "" {
+						// Continuation.
+						pendingToolCall.Function.Arguments += t.Function.Arguments
+						if !f.IsZero() {
+							finalErr = &internal.BadError{Err: fmt.Errorf("implement tool call with metadata: %#v", pkt)}
+							return
+						}
+						continue
+					}
+				} else if pendingToolCall.ID != "" {
+					// Flush.
+					pendingToolCall.To(&f.ToolCall)
+					pendingToolCall = ToolCall{}
+				}
+				if !f.IsZero() {
+					if err := result.Accumulate(f); err != nil {
+						finalErr = err
+						return
+					}
+					if !yield(f) {
+						return
+					}
+					sent = true
+				}
+				result.Logprobs = append(result.Logprobs, pkt.Choices[0].Logprobs.To()...)
 			}
-		} else if pendingToolCall.ID != "" {
-			// Flush.
-			pendingToolCall.To(&f.ToolCall)
-			pendingToolCall = ToolCall{}
-		}
-		if !f.IsZero() {
-			if err := result.Accumulate(f); err != nil {
-				return err
+			if !sent {
+				// This happens with MaxTokens.
+				finalErr = errors.New("model sent no reply")
+				return
 			}
-			chunks <- f
-			sent = true
+		}, func() error {
+			return finalErr
 		}
-		result.Logprobs = append(result.Logprobs, pkt.Choices[0].Logprobs.To()...)
-	}
-	if !sent {
-		// This happens with MaxTokens.
-		return errors.New("model sent no reply")
-	}
-	return nil
 }
 
 var (

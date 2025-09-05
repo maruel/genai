@@ -1152,127 +1152,143 @@ func (c *Client) isImage() bool {
 	return strings.HasPrefix(c.impl.Model, "black-forest-labs/")
 }
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ReplyFragment, result *genai.Result) error {
-	defer func() {
-		// We need to empty the channel to avoid blocking the goroutine.
-		for range ch {
-		}
-	}()
+func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *genai.Result) (iter.Seq[genai.ReplyFragment], func() error) {
+	var finalErr error
 	pendingToolCall := ToolCall{}
 	var warnings []string
 	sent := false
-	for pkt := range ch {
-		if pkt.Usage.TotalTokens != 0 {
-			result.Usage.InputTokens = pkt.Usage.PromptTokens
-			result.Usage.InputCachedTokens = pkt.Usage.CachedTokens
-			result.Usage.ReasoningTokens = pkt.Usage.ReasoningTokens
-			result.Usage.OutputTokens = pkt.Usage.CompletionTokens
-			result.Usage.TotalTokens = pkt.Usage.TotalTokens
-		}
-		for _, w := range pkt.Warnings {
-			warnings = append(warnings, w.Message)
-		}
-		if len(pkt.Choices) != 1 {
-			continue
-		}
-		if pkt.Choices[0].FinishReason != "" {
-			result.Usage.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
-		}
-		switch role := pkt.Choices[0].Delta.Role; role {
-		case "assistant", "":
-		default:
-			return &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
-		}
-		// There's only one at a time ever.
-		if len(pkt.Choices[0].Delta.ToolCalls) > 1 {
-			return &internal.BadError{Err: fmt.Errorf("implement multiple delta tool calls: %#v", pkt.Choices[0].Delta.ToolCalls)}
-		}
-		if len(pkt.Choices[0].ToolCalls) > 1 {
-			return &internal.BadError{Err: fmt.Errorf("implement multiple tool calls: %#v", pkt.Choices[0].ToolCalls)}
-		}
-		// TogetherAI streams the arguments. Buffer the arguments to send the fragment as a
-		// whole tool call.
-		if len(pkt.Choices[0].Delta.ToolCalls) == 1 {
-			t := pkt.Choices[0].Delta.ToolCalls[0]
-			if t.ID != "" {
-				// A new call.
-				if pendingToolCall.ID != "" {
-					// Flush.
-					f := genai.ReplyFragment{ToolCall: genai.ToolCall{
-						ID:        pendingToolCall.ID,
-						Name:      pendingToolCall.Function.Name,
-						Arguments: pendingToolCall.Function.Arguments,
-					}}
-					if err := result.Accumulate(f); err != nil {
-						return err
+
+	return func(yield func(genai.ReplyFragment) bool) {
+			for pkt := range chunks {
+				if pkt.Usage.TotalTokens != 0 {
+					result.Usage.InputTokens = pkt.Usage.PromptTokens
+					result.Usage.InputCachedTokens = pkt.Usage.CachedTokens
+					result.Usage.ReasoningTokens = pkt.Usage.ReasoningTokens
+					result.Usage.OutputTokens = pkt.Usage.CompletionTokens
+					result.Usage.TotalTokens = pkt.Usage.TotalTokens
+				}
+				for _, w := range pkt.Warnings {
+					warnings = append(warnings, w.Message)
+				}
+				if len(pkt.Choices) != 1 {
+					continue
+				}
+				if pkt.Choices[0].FinishReason != "" {
+					result.Usage.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
+				}
+				switch role := pkt.Choices[0].Delta.Role; role {
+				case "assistant", "":
+				default:
+					finalErr = &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
+					return
+				}
+				// There's only one at a time ever.
+				if len(pkt.Choices[0].Delta.ToolCalls) > 1 {
+					finalErr = &internal.BadError{Err: fmt.Errorf("implement multiple delta tool calls: %#v", pkt.Choices[0].Delta.ToolCalls)}
+					return
+				}
+				if len(pkt.Choices[0].ToolCalls) > 1 {
+					finalErr = &internal.BadError{Err: fmt.Errorf("implement multiple tool calls: %#v", pkt.Choices[0].ToolCalls)}
+					return
+				}
+				// TogetherAI streams the arguments. Buffer the arguments to send the fragment as a
+				// whole tool call.
+				if len(pkt.Choices[0].Delta.ToolCalls) == 1 {
+					t := pkt.Choices[0].Delta.ToolCalls[0]
+					if t.ID != "" {
+						// A new call.
+						if pendingToolCall.ID != "" {
+							// Flush.
+							f := genai.ReplyFragment{ToolCall: genai.ToolCall{
+								ID:        pendingToolCall.ID,
+								Name:      pendingToolCall.Function.Name,
+								Arguments: pendingToolCall.Function.Arguments,
+							}}
+							if err := result.Accumulate(f); err != nil {
+								finalErr = err
+								return
+							}
+							if !yield(f) {
+								return
+							}
+							sent = true
+						}
+						pendingToolCall = t
+						continue
 					}
-					chunks <- f
+					if pendingToolCall.ID != "" {
+						// Continuation.
+						pendingToolCall.Function.Arguments += t.Function.Arguments
+						continue
+					}
+				} else {
+					if pendingToolCall.ID != "" {
+						// Flush.
+						f := genai.ReplyFragment{ToolCall: genai.ToolCall{
+							ID:        pendingToolCall.ID,
+							Name:      pendingToolCall.Function.Name,
+							Arguments: pendingToolCall.Function.Arguments,
+						}}
+						if err := result.Accumulate(f); err != nil {
+							finalErr = err
+							return
+						}
+						if !yield(f) {
+							return
+						}
+						sent = true
+					}
+				}
+				if len(pkt.Choices[0].ToolCalls) == 1 {
+					// That's a non-streamed tool call.
+					f := genai.ReplyFragment{}
+					pkt.Choices[0].ToolCalls[0].To(&f.ToolCall)
+					if err := result.Accumulate(f); err != nil {
+						finalErr = err
+						return
+					}
+					if !yield(f) {
+						return
+					}
 					sent = true
 				}
-				pendingToolCall = t
-				continue
-			}
-			if pendingToolCall.ID != "" {
-				// Continuation.
-				pendingToolCall.Function.Arguments += t.Function.Arguments
-				continue
-			}
-		} else {
-			if pendingToolCall.ID != "" {
-				// Flush.
-				f := genai.ReplyFragment{ToolCall: genai.ToolCall{
-					ID:        pendingToolCall.ID,
-					Name:      pendingToolCall.Function.Name,
-					Arguments: pendingToolCall.Function.Arguments,
-				}}
-				if err := result.Accumulate(f); err != nil {
-					return err
+				f := genai.ReplyFragment{
+					TextFragment:      pkt.Choices[0].Delta.Content,
+					ReasoningFragment: pkt.Choices[0].Delta.Reasoning,
 				}
-				chunks <- f
-				sent = true
+				if !f.IsZero() {
+					if err := result.Accumulate(f); err != nil {
+						finalErr = err
+						return
+					}
+					if !yield(f) {
+						return
+					}
+					sent = true
+				}
+				if len(pkt.Choices[0].Logprobs.Tokens) != 0 {
+					result.Logprobs = append(result.Logprobs, pkt.Choices[0].Logprobs.ToLogprobs()...)
+				}
 			}
-		}
-		if len(pkt.Choices[0].ToolCalls) == 1 {
-			// That's a non-streamed tool call.
-			f := genai.ReplyFragment{}
-			pkt.Choices[0].ToolCalls[0].To(&f.ToolCall)
-			if err := result.Accumulate(f); err != nil {
-				return err
+			if !sent {
+				// This happens with gpt-oss-120b with MaxTokens.
+				finalErr = errors.New("model sent no reply")
+				return
 			}
-			chunks <- f
-			sent = true
-		}
-		f := genai.ReplyFragment{
-			TextFragment:      pkt.Choices[0].Delta.Content,
-			ReasoningFragment: pkt.Choices[0].Delta.Reasoning,
-		}
-		if !f.IsZero() {
-			if err := result.Accumulate(f); err != nil {
-				return err
+		}, func() error {
+			if len(warnings) != 0 {
+				uce := &genai.UnsupportedContinuableError{}
+				for _, w := range warnings {
+					if strings.Contains(w, "tool_choice") {
+						uce.Unsupported = append(uce.Unsupported, "OptionsTools.Force")
+					} else {
+						uce.Unsupported = append(uce.Unsupported, w)
+					}
+				}
+				return uce
 			}
-			chunks <- f
-			sent = true
+			return finalErr
 		}
-		if len(pkt.Choices[0].Logprobs.Tokens) != 0 {
-			result.Logprobs = append(result.Logprobs, pkt.Choices[0].Logprobs.ToLogprobs()...)
-		}
-	}
-	if !sent {
-		// This happens with gpt-oss-120b with MaxTokens.
-		return errors.New("model sent no reply")
-	}
-	if len(warnings) != 0 {
-		uce := &genai.UnsupportedContinuableError{}
-		for _, w := range warnings {
-			if strings.Contains(w, "tool_choice") {
-				uce.Unsupported = append(uce.Unsupported, "OptionsTools.Force")
-			} else {
-				uce.Unsupported = append(uce.Unsupported, w)
-			}
-		}
-		return uce
-	}
-	return nil
 }
 
 func processHeaders(h http.Header) []genai.RateLimit {

@@ -35,7 +35,6 @@ import (
 	"github.com/maruel/genai/internal/bb"
 	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/roundtrippers"
-	"golang.org/x/sync/errgroup"
 )
 
 //go:embed scoreboard.json
@@ -1712,26 +1711,10 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 				return
 			}
 		}
-		// Buffer the chunks a bit so the HTTP pipe is read a bit in advance.
-		chunks := make(chan ChatStreamChunkResponse, 32)
-		// TODO: Replace with an iterator.
-		fragments := make(chan genai.ReplyFragment)
-		eg, ctx2 := errgroup.WithContext(ctx)
-		eg.Go(func() error {
-			// Converts raw chunks into fragments.
-			err := c.impl.ProcessStreamPackets(chunks, fragments, &res)
-			close(fragments)
-			return err
-		})
-		eg.Go(func() error {
-			// Generate parsed chunks from the raw JSON SSE stream.
-			it, finish := c.GenStreamRaw(ctx2, in)
-			for pkt := range it {
-				chunks <- pkt
-			}
-			close(chunks)
-			return finish()
-		})
+		// Generate parsed chunks from the raw JSON SSE stream.
+		chunks, finish1 := c.GenStreamRaw(ctx, in)
+		// Converts raw chunks into fragments.
+		fragments, finish2 := c.impl.ProcessStreamPackets(chunks, &res)
 		for f := range fragments {
 			if err := f.Validate(); err != nil {
 				// Catch provider implementation bugs.
@@ -1742,10 +1725,10 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 				break
 			}
 		}
-		// Make sure the channel is emptied.
-		for range fragments {
+		if err := finish1(); finalErr == nil {
+			finalErr = err
 		}
-		if err := eg.Wait(); err != nil {
+		if err := finish2(); finalErr == nil {
 			finalErr = err
 		}
 		lastResp := c.impl.LastResponseHeaders()
@@ -2095,101 +2078,116 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 
 // processStreamPackets is the function used to convert the chunks sent by Gemini's SSE data into
 // contentfragment.
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ReplyFragment, result *genai.Result) error {
-	defer func() {
-		// We need to empty the channel to avoid blocking the goroutine.
-		for range ch {
-		}
-	}()
-	for pkt := range ch {
-		if len(pkt.Candidates) != 1 {
-			continue
-		}
-		if pkt.UsageMetadata.TotalTokenCount != 0 {
-			// Not 100% sure.
-			result.Usage.InputTokens = pkt.UsageMetadata.PromptTokenCount
-			result.Usage.ReasoningTokens = pkt.UsageMetadata.ThoughtsTokenCount
-			result.Usage.OutputTokens = pkt.UsageMetadata.CandidatesTokenCount + pkt.UsageMetadata.ToolUsePromptTokenCount + pkt.UsageMetadata.ThoughtsTokenCount
-			result.Usage.TotalTokens = pkt.UsageMetadata.TotalTokenCount
-		}
-		if pkt.Candidates[0].FinishReason != "" {
-			result.Usage.FinishReason = pkt.Candidates[0].FinishReason.ToFinishReason()
-		}
-		switch role := pkt.Candidates[0].Content.Role; role {
-		case "model", "":
-		default:
-			return &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
-		}
+func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *genai.Result) (iter.Seq[genai.ReplyFragment], func() error) {
+	var finalErr error
 
-		f := genai.ReplyFragment{}
+	return func(yield func(genai.ReplyFragment) bool) {
+			for pkt := range chunks {
+				if len(pkt.Candidates) != 1 {
+					continue
+				}
+				if pkt.UsageMetadata.TotalTokenCount != 0 {
+					// Not 100% sure.
+					result.Usage.InputTokens = pkt.UsageMetadata.PromptTokenCount
+					result.Usage.ReasoningTokens = pkt.UsageMetadata.ThoughtsTokenCount
+					result.Usage.OutputTokens = pkt.UsageMetadata.CandidatesTokenCount + pkt.UsageMetadata.ToolUsePromptTokenCount + pkt.UsageMetadata.ThoughtsTokenCount
+					result.Usage.TotalTokens = pkt.UsageMetadata.TotalTokenCount
+				}
+				if pkt.Candidates[0].FinishReason != "" {
+					result.Usage.FinishReason = pkt.Candidates[0].FinishReason.ToFinishReason()
+				}
+				switch role := pkt.Candidates[0].Content.Role; role {
+				case "model", "":
+				default:
+					finalErr = &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
+					return
+				}
 
-		if !pkt.Candidates[0].GroundingMetadata.IsZero() {
-			r := genai.Reply{}
-			if err := pkt.Candidates[0].GroundingMetadata.To(&r); err != nil {
-				return &internal.BadError{Err: err}
-			}
-			// Handle citations as a separate packet.
-			for _, c := range r.Citations {
-				f.Citation = c
-				if err := result.Accumulate(f); err != nil {
-					return err
-				}
-				chunks <- f
-			}
-			f = genai.ReplyFragment{}
-		}
+				f := genai.ReplyFragment{}
 
-		for _, part := range pkt.Candidates[0].Content.Parts {
-			if part.Thought {
-				f.ReasoningFragment += part.Text
-			} else {
-				f.TextFragment += part.Text
-			}
-			if part.InlineData.MimeType != "" || len(part.InlineData.Data) != 0 {
-				exts, err := mime.ExtensionsByType(part.InlineData.MimeType)
-				if err != nil {
-					return &internal.BadError{Err: fmt.Errorf("failed to get extension for mime type %q: %w", part.InlineData.MimeType, err)}
+				if !pkt.Candidates[0].GroundingMetadata.IsZero() {
+					r := genai.Reply{}
+					if err := pkt.Candidates[0].GroundingMetadata.To(&r); err != nil {
+						finalErr = &internal.BadError{Err: err}
+						return
+					}
+					// Handle citations as a separate packet.
+					for _, c := range r.Citations {
+						f.Citation = c
+						if err := result.Accumulate(f); err != nil {
+							finalErr = err
+							return
+						}
+						if !yield(f) {
+							return
+						}
+					}
+					f = genai.ReplyFragment{}
 				}
-				if len(exts) == 0 {
-					return &internal.BadError{Err: fmt.Errorf("mime type %q has no extension", part.InlineData.MimeType)}
+
+				for _, part := range pkt.Candidates[0].Content.Parts {
+					if part.Thought {
+						f.ReasoningFragment += part.Text
+					} else {
+						f.TextFragment += part.Text
+					}
+					if part.InlineData.MimeType != "" || len(part.InlineData.Data) != 0 {
+						exts, err := mime.ExtensionsByType(part.InlineData.MimeType)
+						if err != nil {
+							finalErr = &internal.BadError{Err: fmt.Errorf("failed to get extension for mime type %q: %w", part.InlineData.MimeType, err)}
+							return
+						}
+						if len(exts) == 0 {
+							finalErr = &internal.BadError{Err: fmt.Errorf("mime type %q has no extension", part.InlineData.MimeType)}
+							return
+						}
+						f.Filename = "content" + exts[0]
+						f.DocumentFragment = part.InlineData.Data
+						// return fmt.Errorf("implement inline blob %#v", part)
+					}
+					if part.FunctionCall.ID != "" || part.FunctionCall.Name != "" {
+						// https://ai.google.dev/api/caching?hl=en#FunctionCall
+						if len(part.ThoughtSignature) != 0 {
+							f.ToolCall.Opaque = map[string]any{"signature": part.ThoughtSignature}
+						}
+						if err := part.FunctionCall.To(&f.ToolCall); err != nil {
+							finalErr = err
+							return
+						}
+					}
+					if part.FunctionResponse.ID != "" {
+						// https://ai.google.dev/api/caching?hl=en#FunctionResponse
+						finalErr = &internal.BadError{Err: fmt.Errorf("implement function response %#v", part)}
+						return
+					}
+					if part.FileData.MimeType != "" || part.FileData.FileURI != "" {
+						finalErr = &internal.BadError{Err: fmt.Errorf("implement file data %#v", part)}
+						return
+					}
+					if part.ExecutableCode.Language != "" || part.ExecutableCode.Code != "" {
+						// https://ai.google.dev/api/caching?hl=en#ExecutableCode
+						finalErr = &internal.BadError{Err: fmt.Errorf("implement executable code %#v", part)}
+						return
+					}
+					if part.CodeExecutionResult.Outcome != "" || part.CodeExecutionResult.Output != "" {
+						// https://ai.google.dev/api/caching?hl=en#CodeExecutionResult
+						finalErr = &internal.BadError{Err: fmt.Errorf("implement code execution result %#v", part)}
+						return
+					}
 				}
-				f.Filename = "content" + exts[0]
-				f.DocumentFragment = part.InlineData.Data
-				// return fmt.Errorf("implement inline blob %#v", part)
-			}
-			if part.FunctionCall.ID != "" || part.FunctionCall.Name != "" {
-				// https://ai.google.dev/api/caching?hl=en#FunctionCall
-				if len(part.ThoughtSignature) != 0 {
-					f.ToolCall.Opaque = map[string]any{"signature": part.ThoughtSignature}
-				}
-				if err := part.FunctionCall.To(&f.ToolCall); err != nil {
-					return err
+				if !f.IsZero() {
+					if err := result.Accumulate(f); err != nil {
+						finalErr = err
+						return
+					}
+					if !yield(f) {
+						return
+					}
 				}
 			}
-			if part.FunctionResponse.ID != "" {
-				// https://ai.google.dev/api/caching?hl=en#FunctionResponse
-				return &internal.BadError{Err: fmt.Errorf("implement function response %#v", part)}
-			}
-			if part.FileData.MimeType != "" || part.FileData.FileURI != "" {
-				return &internal.BadError{Err: fmt.Errorf("implement file data %#v", part)}
-			}
-			if part.ExecutableCode.Language != "" || part.ExecutableCode.Code != "" {
-				// https://ai.google.dev/api/caching?hl=en#ExecutableCode
-				return &internal.BadError{Err: fmt.Errorf("implement executable code %#v", part)}
-			}
-			if part.CodeExecutionResult.Outcome != "" || part.CodeExecutionResult.Output != "" {
-				// https://ai.google.dev/api/caching?hl=en#CodeExecutionResult
-				return &internal.BadError{Err: fmt.Errorf("implement code execution result %#v", part)}
-			}
+		}, func() error {
+			return finalErr
 		}
-		if !f.IsZero() {
-			if err := result.Accumulate(f); err != nil {
-				return err
-			}
-			chunks <- f
-		}
-	}
-	return nil
 }
 
 func yieldNothing[T any](yield func(T) bool) {

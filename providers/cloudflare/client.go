@@ -872,34 +872,38 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	return models, nil
 }
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ReplyFragment, result *genai.Result) error {
-	defer func() {
-		// We need to empty the channel to avoid blocking the goroutine.
-		for range ch {
-		}
-	}()
+func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *genai.Result) (iter.Seq[genai.ReplyFragment], func() error) {
+	var finalErr error
 	sent := false
-	for pkt := range ch {
-		if pkt.Usage.TotalTokens != 0 {
-			result.Usage.InputTokens = pkt.Usage.PromptTokens
-			result.Usage.OutputTokens = pkt.Usage.CompletionTokens
-			result.Usage.TotalTokens = pkt.Usage.TotalTokens
-			// Cloudflare doesn't provide FinishReason.
-		}
-		// TODO: Tools.
-		if word := pkt.Response; word != "" {
-			f := genai.ReplyFragment{TextFragment: string(word)}
-			if err := result.Accumulate(f); err != nil {
-				return err
+
+	return func(yield func(genai.ReplyFragment) bool) {
+			for pkt := range chunks {
+				if pkt.Usage.TotalTokens != 0 {
+					result.Usage.InputTokens = pkt.Usage.PromptTokens
+					result.Usage.OutputTokens = pkt.Usage.CompletionTokens
+					result.Usage.TotalTokens = pkt.Usage.TotalTokens
+					// Cloudflare doesn't provide FinishReason.
+				}
+				// TODO: Tools.
+				if word := pkt.Response; word != "" {
+					f := genai.ReplyFragment{TextFragment: string(word)}
+					if err := result.Accumulate(f); err != nil {
+						finalErr = err
+						return
+					}
+					if !yield(f) {
+						return
+					}
+					sent = true
+				}
 			}
-			chunks <- f
-			sent = true
+			if !sent {
+				finalErr = errors.New("model sent no reply")
+				return
+			}
+		}, func() error {
+			return finalErr
 		}
-	}
-	if !sent {
-		return errors.New("model sent no reply")
-	}
-	return nil
 }
 
 var _ genai.Provider = &Client{}

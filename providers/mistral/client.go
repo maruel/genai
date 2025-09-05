@@ -937,48 +937,55 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	return resp.ToModels(), nil
 }
 
-func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai.ReplyFragment, result *genai.Result) error {
-	defer func() {
-		// We need to empty the channel to avoid blocking the goroutine.
-		for range ch {
-		}
-	}()
-	for pkt := range ch {
-		if len(pkt.Choices) != 1 {
-			continue
-		}
-		if pkt.Usage.PromptTokens != 0 {
-			result.Usage.InputTokens = pkt.Usage.PromptTokens
-			result.Usage.OutputTokens = pkt.Usage.CompletionTokens
-			result.Usage.TotalTokens = pkt.Usage.TotalTokens
-			result.Usage.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
-		}
-		switch role := pkt.Choices[0].Delta.Role; role {
-		case "assistant", "":
-		default:
-			return &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
-		}
-		f := genai.ReplyFragment{TextFragment: pkt.Choices[0].Delta.Content}
-		if !f.IsZero() {
-			if err := result.Accumulate(f); err != nil {
-				return err
-			}
-			chunks <- f
-		}
-		// Mistral is one of the rare provider that can stream multiple tool calls all at once. It's probably
-		// because it's buffering server-side.
-		for i := range pkt.Choices[0].Delta.ToolCalls {
-			f := genai.ReplyFragment{}
-			pkt.Choices[0].Delta.ToolCalls[i].To(&f.ToolCall)
-			if !f.IsZero() {
-				if err := result.Accumulate(f); err != nil {
-					return err
+func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *genai.Result) (iter.Seq[genai.ReplyFragment], func() error) {
+	var finalErr error
+
+	return func(yield func(genai.ReplyFragment) bool) {
+			for pkt := range chunks {
+				if len(pkt.Choices) != 1 {
+					continue
 				}
-				chunks <- f
+				if pkt.Usage.PromptTokens != 0 {
+					result.Usage.InputTokens = pkt.Usage.PromptTokens
+					result.Usage.OutputTokens = pkt.Usage.CompletionTokens
+					result.Usage.TotalTokens = pkt.Usage.TotalTokens
+					result.Usage.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
+				}
+				switch role := pkt.Choices[0].Delta.Role; role {
+				case "assistant", "":
+				default:
+					finalErr = &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
+					return
+				}
+				f := genai.ReplyFragment{TextFragment: pkt.Choices[0].Delta.Content}
+				if !f.IsZero() {
+					if err := result.Accumulate(f); err != nil {
+						finalErr = err
+						return
+					}
+					if !yield(f) {
+						return
+					}
+				}
+				// Mistral is one of the rare provider that can stream multiple tool calls all at once. It's probably
+				// because it's buffering server-side.
+				for i := range pkt.Choices[0].Delta.ToolCalls {
+					f := genai.ReplyFragment{}
+					pkt.Choices[0].Delta.ToolCalls[i].To(&f.ToolCall)
+					if !f.IsZero() {
+						if err := result.Accumulate(f); err != nil {
+							finalErr = err
+							return
+						}
+						if !yield(f) {
+							return
+						}
+					}
+				}
 			}
+		}, func() error {
+			return finalErr
 		}
-	}
-	return nil
 }
 
 func processHeaders(h http.Header) []genai.RateLimit {

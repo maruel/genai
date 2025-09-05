@@ -27,7 +27,6 @@ import (
 	"github.com/maruel/genai/internal/sse"
 	"github.com/maruel/httpjson"
 	"github.com/maruel/roundtrippers"
-	"golang.org/x/sync/errgroup"
 )
 
 // DefaultTransport integrates HTTP retries.
@@ -315,7 +314,7 @@ type Provider[PErrorResponse ErrAPI, PGenRequest InitializableRequest, PGenRespo
 	// GenStreamURL is the endpoint URL for chat stream API requests. It defaults to GenURL if unset.
 	GenStreamURL string
 	// ProcessStreamPackets is the function that processes stream packets used by GenStream.
-	ProcessStreamPackets func(ch <-chan GenStreamChunkResponse, chunks chan<- genai.ReplyFragment, result *genai.Result) error
+	ProcessStreamPackets func(it iter.Seq[GenStreamChunkResponse], result *genai.Result) (iter.Seq[genai.ReplyFragment], func() error)
 	// ProcessHeaders is the function that processes HTTP headers to extract rate limit information.
 	ProcessHeaders func(http.Header) []genai.RateLimit
 	// LieToolCalls lie the FinishReason on tool calls.
@@ -377,26 +376,10 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 				return
 			}
 		}
-		// Buffer the chunks a bit so the HTTP pipe is read a bit in advance.
-		chunks := make(chan GenStreamChunkResponse, 32)
-		// TODO: Replace with an iterator.
-		fragments := make(chan genai.ReplyFragment)
-		eg, ctx2 := errgroup.WithContext(ctx)
-		eg.Go(func() error {
-			// Converts raw chunks into fragments.
-			err := c.ProcessStreamPackets(chunks, fragments, &res)
-			close(fragments)
-			return err
-		})
-		eg.Go(func() error {
-			// Generate parsed chunks from the raw JSON SSE stream.
-			it, finish := c.GenStreamRaw(ctx2, in)
-			for pkt := range it {
-				chunks <- pkt
-			}
-			close(chunks)
-			return finish()
-		})
+		// Converts raw chunks into fragments.
+		// Generate parsed chunks from the raw JSON SSE stream.
+		chunks, finish := c.GenStreamRaw(ctx, in)
+		fragments, finish2 := c.ProcessStreamPackets(chunks, &res)
 		for f := range fragments {
 			if err := f.Validate(); err != nil {
 				// Catch provider implementation bugs.
@@ -407,10 +390,10 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 				break
 			}
 		}
-		// Make sure the channel is emptied.
-		for range fragments {
+		if err := finish(); finalErr == nil {
+			finalErr = err
 		}
-		if err := eg.Wait(); err != nil {
+		if err := finish2(); finalErr == nil {
 			finalErr = err
 		}
 		lastResp := c.LastResponseHeaders()
@@ -485,8 +468,8 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 	// Process the stream in a separate goroutine to make sure that when the client iterate, there is already a
 	// packet waiting for it. This reduces the overall latency.
 	out := make(chan GenStreamChunkResponse, 16)
-	eg := errgroup.Group{}
-	eg.Go(func() error {
+	ch := make(chan error)
+	go func() {
 		er := reflect.New(c.errorResponse).Interface().(PErrorResponse)
 		it, finish := sse.Process[GenStreamChunkResponse](resp.Body, er, c.Lenient)
 		for pkt := range it {
@@ -494,8 +477,8 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 		}
 		err := finish()
 		close(out)
-		return err
-	})
+		ch <- err
+	}()
 
 	return func(yield func(GenStreamChunkResponse) bool) {
 			for pkt := range out {
@@ -504,7 +487,7 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 				}
 			}
 		}, func() error {
-			return eg.Wait()
+			return <-ch
 		}
 }
 

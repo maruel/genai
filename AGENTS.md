@@ -1,6 +1,20 @@
-# Dear LLM 🤖
+# Agent Development Guide
 
-This document provides guidance for AI assistants working on the `genai` project.
+A file to [guide coding agents](https://agents.md/).
+
+# Commands
+
+- **Build:** `go build ./...`
+- **Test:** `go test ./...`
+- **Test with filter**: `go test ./<directory>`
+- **Format source files**: `gofmt -w -s .`
+- **Retrieve documentation**: `godoc -all ./<directory>`
+
+## Directory Structure
+
+- Shared client implementation: `base/`
+- Each provider implementation: `providers/`
+- Smoke testing code: `smoke/`
 
 ## Personality
 
@@ -52,7 +66,7 @@ All Go files must start with:
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 ```
-with the right year.
+with the current year.
 
 ### Package Documentation
 
@@ -73,12 +87,12 @@ Every package should have comprehensive documentation explaining:
 
 - Write comprehensive unit tests for all functionality
 - Use table-driven tests for multiple scenarios
-- Test both success and error paths
+- Use subtest to separatetly test valid and errors code paths
 - Use HTTP record/playback for provider integration tests
 - Store test data in `testdata/` directories
-- Test files should be named `*_test.go`
-- Test using HTTP recording often fails when run inside the environment. Ask for help when this happens, do
-  not try to resolve by yourself.
+- Test files are named `*_test.go`
+- Test using HTTP recording often fails when run inside the environment. Ask the user how to continue when
+  this happens, do not try to resolve by yourself.
 
 ### Performance Considerations
 
@@ -103,14 +117,9 @@ When implementing a new provider:
    package that start with `Provider`. Use go doc to get the up to date list. Ensure that the provider
    implements all necessary methods for the interfaces it claims to support.
 
-3. **Follow naming conventions**:
-   - Constructor: `New(apiKey, model string, opts *Options) (*Client, error)`
-   - Main client struct: `Client`
-   - Provider-specific options: `Options`
-
-4. **Handle provider-specific features**:
+3. **Handle provider-specific features**:
    - Map genai types to provider-specific API structures
-   - Implement proper error handling for rate limits, auth, etc.
+   - Implement proper error handling for rate limits, auth, etc
    - Support streaming if the provider offers it
    - Handle provider-specific limitations gracefully
    - Implement `Raw` suffix methods for raw API access
@@ -167,8 +176,7 @@ func (o *Options) Validate() error {
 
 ### HTTP Recording
 
-- Use `gopkg.in/dnaeon/go-vcr.v4` for HTTP recording
-- Sanitize sensitive data (API keys, personal info)
+- Use package internal/internaltest for HTTP recording, it sanitizes sensitive data (API keys, personal info)
 - Update recordings when API changes
 - Test both success and error scenarios
 
@@ -221,4 +229,5 @@ func (o *Options) Validate() error {
 
 ---
 
-*This document should be updated as the project evolves. When in doubt, follow existing patterns in the codebase and prioritize clarity, performance, and reliability.*
+*This document should be updated as the project evolves. When in doubt, follow existing patterns in the
+codebase and prioritize clarity, performance, and reliability.*

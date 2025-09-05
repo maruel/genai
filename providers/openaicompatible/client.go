@@ -394,9 +394,9 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 	}
 	return &Client{
 		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
-			GenSyncURL:           opts.Remote,
-			ProcessStreamPackets: processStreamPackets,
-			PreloadedModels:      opts.PreloadedModels,
+			GenSyncURL:      opts.Remote,
+			ProcessStream:   ProcessStream,
+			PreloadedModels: opts.PreloadedModels,
 			ProviderBase: base.ProviderBase[*ErrorResponse]{
 				Model:            model,
 				ModelOptional:    true,
@@ -463,7 +463,8 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest) (iter.Seq[Ch
 	return c.impl.GenStreamRaw(ctx, in)
 }
 
-func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
+// ProcessStream converts the raw packets from the streaming API into ReplyFragments.
+func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
 	var finalErr error
 	u := genai.Usage{}
 

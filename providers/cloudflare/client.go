@@ -711,8 +711,8 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 	// https://developers.cloudflare.com/workers/examples/websockets/
 	c := &Client{
 		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
-			ProcessStreamPackets: processStreamPackets,
-			PreloadedModels:      opts.PreloadedModels,
+			ProcessStream:   ProcessStream,
+			PreloadedModels: opts.PreloadedModels,
 			ProviderBase: base.ProviderBase[*ErrorResponse]{
 				APIKeyURL: apiKeyURL,
 				Lenient:   internal.BeLenient,
@@ -872,7 +872,8 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	return models, nil
 }
 
-func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
+// ProcessStream converts the raw packets from the streaming API into ReplyFragments.
+func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
 	var finalErr error
 	u := genai.Usage{}
 

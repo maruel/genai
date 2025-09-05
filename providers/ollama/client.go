@@ -717,7 +717,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 			}
 		}
 		chunks, finish1 := c.GenStreamRaw(ctx, &in)
-		fragments, finish2 := processStreamPackets(chunks)
+		fragments, finish2 := ProcessStream(chunks)
 		for f := range fragments {
 			if f.IsZero() {
 				continue
@@ -899,7 +899,8 @@ func processJSONStream(body io.Reader, out chan<- ChatStreamChunkResponse, lenie
 	}
 }
 
-func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
+// ProcessStream converts the raw packets from the streaming API into ReplyFragments.
+func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
 	var finalErr error
 	u := genai.Usage{}
 

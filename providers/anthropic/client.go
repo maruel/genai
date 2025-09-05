@@ -1355,10 +1355,10 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 	// Anthropic allows Opaque fields for thinking signatures
 	c := &Client{
 		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
-			GenSyncURL:           "https://api.anthropic.com/v1/messages",
-			ProcessStreamPackets: processStreamPackets,
-			PreloadedModels:      opts.PreloadedModels,
-			ProcessHeaders:       processHeaders,
+			GenSyncURL:      "https://api.anthropic.com/v1/messages",
+			ProcessStream:   ProcessStream,
+			PreloadedModels: opts.PreloadedModels,
+			ProcessHeaders:  processHeaders,
 			ProviderBase: base.ProviderBase[*ErrorResponse]{
 				APIKeyURL: apiKeyURL,
 				Lenient:   internal.BeLenient,
@@ -1580,7 +1580,8 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	return resp.ToModels(), nil
 }
 
-func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
+// ProcessStream converts the raw packets from the streaming API into ReplyFragments.
+func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
 	var finalErr error
 	var u genai.Usage
 

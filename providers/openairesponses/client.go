@@ -1061,11 +1061,11 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 	}
 	c := &Client{
 		impl: base.Provider[*ErrorResponse, *Response, *Response, ResponseStreamChunkResponse]{
-			GenSyncURL:           "https://api.openai.com/v1/responses",
-			GenStreamURL:         "https://api.openai.com/v1/responses",
-			ProcessStreamPackets: processStreamPackets,
-			PreloadedModels:      opts.PreloadedModels,
-			ProcessHeaders:       processHeaders,
+			GenSyncURL:      "https://api.openai.com/v1/responses",
+			GenStreamURL:    "https://api.openai.com/v1/responses",
+			ProcessStream:   ProcessStream,
+			PreloadedModels: opts.PreloadedModels,
+			ProcessHeaders:  processHeaders,
 			ProviderBase: base.ProviderBase[*ErrorResponse]{
 				APIKeyURL: "", // OpenAI error message prints the api key URL already.
 				Lenient:   internal.BeLenient,
@@ -1142,9 +1142,8 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *Response) (iter.Seq[Respo
 	return c.impl.GenStreamRaw(ctx, in)
 }
 
-// processStreamPackets processes stream packets for the OpenAI Responses API.
-// This is a placeholder - will be implemented when GenStream is added.
-func processStreamPackets(chunks iter.Seq[ResponseStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
+// ProcessStream converts the raw packets from the streaming API into ReplyFragments.
+func ProcessStream(chunks iter.Seq[ResponseStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
 	var finalErr error
 	u := genai.Usage{}
 	var l []genai.Logprobs

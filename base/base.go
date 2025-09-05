@@ -313,8 +313,9 @@ type Provider[PErrorResponse ErrAPI, PGenRequest InitializableRequest, PGenRespo
 	GenSyncURL string
 	// GenStreamURL is the endpoint URL for chat stream API requests. It defaults to GenURL if unset.
 	GenStreamURL string
-	// ProcessStreamPackets is the function that processes stream packets used by GenStream.
-	ProcessStreamPackets func(it iter.Seq[GenStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error))
+	// ProcessStream is the function that processes stream packets created by GenStreamRaw to be used in
+	// GenStream.
+	ProcessStream func(it iter.Seq[GenStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error))
 	// ProcessHeaders is the function that processes HTTP headers to extract rate limit information.
 	ProcessHeaders func(http.Header) []genai.RateLimit
 	// LieToolCalls lie the FinishReason on tool calls.
@@ -379,7 +380,7 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 		// Converts raw chunks into fragments.
 		// Generate parsed chunks from the raw JSON SSE stream.
 		chunks, finish := c.GenStreamRaw(ctx, in)
-		fragments, finish2 := c.ProcessStreamPackets(chunks)
+		fragments, finish2 := c.ProcessStream(chunks)
 		sent := false
 		for f := range fragments {
 			// Instead of having each parser check for empty fragments, check it here. It's slightly less efficient

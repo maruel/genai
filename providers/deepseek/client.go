@@ -543,9 +543,9 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 	}
 	c := &Client{
 		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
-			GenSyncURL:           "https://api.deepseek.com/chat/completions",
-			ProcessStreamPackets: processStreamPackets,
-			PreloadedModels:      opts.PreloadedModels,
+			GenSyncURL:      "https://api.deepseek.com/chat/completions",
+			ProcessStream:   ProcessStream,
+			PreloadedModels: opts.PreloadedModels,
 			ProviderBase: base.ProviderBase[*ErrorResponse]{
 				APIKeyURL: apiKeyURL,
 				Lenient:   internal.BeLenient,
@@ -670,7 +670,8 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 
 // TODO: Caching: https://api-docs.deepseek.com/guides/kv_cache
 
-func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
+// ProcessStream converts the raw packets from the streaming API into ReplyFragments.
+func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
 	var finalErr error
 	u := genai.Usage{}
 	var l []genai.Logprobs

@@ -1408,9 +1408,9 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 	// Eventually, use OAuth https://ai.google.dev/gemini-api/docs/oauth#curl
 	c := &Client{
 		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
-			ProcessStreamPackets: processStreamPackets,
-			PreloadedModels:      opts.PreloadedModels,
-			LieToolCalls:         true,
+			ProcessStream:   ProcessStream,
+			PreloadedModels: opts.PreloadedModels,
+			LieToolCalls:    true,
 			ProviderBase: base.ProviderBase[*ErrorResponse]{
 				APIKeyURL: apiKeyURL,
 				Lenient:   internal.BeLenient,
@@ -1714,7 +1714,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 		// Generate parsed chunks from the raw JSON SSE stream.
 		chunks, finish1 := c.GenStreamRaw(ctx, in)
 		// Converts raw chunks into fragments.
-		fragments, finish2 := c.impl.ProcessStreamPackets(chunks)
+		fragments, finish2 := c.impl.ProcessStream(chunks)
 		for f := range fragments {
 			if f.IsZero() {
 				continue
@@ -2085,9 +2085,8 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 // https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/batch-prediction-api
 // This may require creating a whole new provider with Vertex AI API surface.
 
-// processStreamPackets is the function used to convert the chunks sent by Gemini's SSE data into
-// contentfragment.
-func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
+// ProcessStream converts the raw packets from the streaming API into ReplyFragments.
+func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
 	var finalErr error
 	u := genai.Usage{}
 

@@ -913,10 +913,10 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 	}
 	c := &Client{
 		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
-			GenSyncURL:           "https://text.pollinations.ai/openai",
-			ProcessStreamPackets: processStreamPackets,
-			PreloadedModels:      opts.PreloadedModels,
-			LieToolCalls:         true,
+			GenSyncURL:      "https://text.pollinations.ai/openai",
+			ProcessStream:   ProcessStream,
+			PreloadedModels: opts.PreloadedModels,
+			LieToolCalls:    true,
 			ProviderBase: base.ProviderBase[*ErrorResponse]{
 				Lenient: internal.BeLenient,
 				Client: http.Client{
@@ -1251,7 +1251,8 @@ func (c *Client) validateModality(ctx context.Context, mod genai.Modality) error
 	return nil
 }
 
-func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
+// ProcessStream converts the raw packets from the streaming API into ReplyFragments.
+func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
 	var finalErr error
 	u := genai.Usage{}
 

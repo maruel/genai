@@ -956,10 +956,10 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 	}
 	c := &Client{
 		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
-			GenSyncURL:           "https://api.openai.com/v1/chat/completions",
-			ProcessStreamPackets: processStreamPackets,
-			PreloadedModels:      opts.PreloadedModels,
-			ProcessHeaders:       processHeaders,
+			GenSyncURL:      "https://api.openai.com/v1/chat/completions",
+			ProcessStream:   ProcessStream,
+			PreloadedModels: opts.PreloadedModels,
+			ProcessHeaders:  processHeaders,
 			ProviderBase: base.ProviderBase[*ErrorResponse]{
 				// OpenAI error message prints the api key URL already.
 				APIKeyURL: "",
@@ -1228,7 +1228,8 @@ func (c *Client) FilesListRaw(ctx context.Context) ([]File, error) {
 	return resp.Data, err
 }
 
-func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
+// ProcessStream converts the raw packets from the streaming API into ReplyFragments.
+func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
 	var finalErr error
 	u := genai.Usage{}
 	var l []genai.Logprobs

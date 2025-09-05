@@ -1112,9 +1112,9 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 	}
 	c := &Client{
 		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
-			GenSyncURL:           baseURL + "/chat/completions",
-			ProcessStreamPackets: processChatStreamPackets,
-			PreloadedModels:      opts.PreloadedModels,
+			GenSyncURL:      baseURL + "/chat/completions",
+			ProcessStream:   ProcessStream,
+			PreloadedModels: opts.PreloadedModels,
 			ProviderBase: base.ProviderBase[*ErrorResponse]{
 				ModelOptional: true,
 				Lenient:       internal.BeLenient,
@@ -1222,7 +1222,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	return resp.ToModels(), nil
 }
 
-func (c *Client) Completions(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
+func (c *Client) Completion(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
 	// https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md#post-completion-given-a-prompt-it-returns-the-predicted-completion
 	// Doc mentions Cache:true causes non-determinism even if a non-zero seed is
 	// specified. Disable if it becomes a problem.
@@ -1255,7 +1255,7 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 	return c.impl.DoRequest(ctx, "POST", c.completionsURL, in, out)
 }
 
-func (c *Client) CompletionsStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
+func (c *Client) CompletionStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
 	res := genai.Result{}
 	var continuableErr error
 	var finalErr error
@@ -1273,7 +1273,7 @@ func (c *Client) CompletionsStream(ctx context.Context, msgs genai.Messages, opt
 		// Converts raw chunks into fragments.
 		// Generate parsed chunks from the raw JSON SSE stream.
 		chunks, finish := c.CompletionStreamRaw(ctx, &in)
-		fragments, finish2 := processCompletionsStreamPackets(chunks)
+		fragments, finish2 := ProcessCompletionStream(chunks)
 		for f := range fragments {
 			if f.IsZero() {
 				continue
@@ -1500,7 +1500,8 @@ func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, msgs gen
 	return nil
 }
 
-func processChatStreamPackets(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
+// ProcessStream converts the raw packets from the streaming API into ReplyFragments.
+func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
 	var finalErr error
 	u := genai.Usage{}
 	var l []genai.Logprobs
@@ -1571,7 +1572,8 @@ func processChatStreamPackets(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Se
 		}
 }
 
-func processCompletionsStreamPackets(chunks iter.Seq[CompletionStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
+// ProcessCompletionStream converts the raw packets from the completion streaming API into ReplyFragments.
+func ProcessCompletionStream(chunks iter.Seq[CompletionStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
 	var finalErr error
 	u := genai.Usage{}
 

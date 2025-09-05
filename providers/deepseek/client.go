@@ -734,10 +734,8 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[ge
 					pendingToolCall.To(&f.ToolCall)
 					pendingToolCall = ToolCall{}
 				}
-				if !f.IsZero() {
-					if !yield(f) {
-						return
-					}
+				if !yield(f) {
+					return
 				}
 			}
 		}, func() (genai.Usage, []genai.Logprobs, error) {

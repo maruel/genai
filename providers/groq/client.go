@@ -891,10 +891,8 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[ge
 				if len(pkt.Choices[0].Delta.ToolCalls) == 1 {
 					pkt.Choices[0].Delta.ToolCalls[0].To(&f.ToolCall)
 				}
-				if !f.IsZero() {
-					if !yield(f) {
-						return
-					}
+				if !yield(f) {
+					return
 				}
 			}
 		}, func() (genai.Usage, []genai.Logprobs, error) {

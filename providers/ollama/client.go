@@ -719,6 +719,9 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 		chunks, finish1 := c.GenStreamRaw(ctx, &in)
 		fragments, finish2 := processStreamPackets(chunks)
 		for f := range fragments {
+			if f.IsZero() {
+				continue
+			}
 			if err := f.Validate(); err != nil {
 				// Catch provider implementation bugs.
 				finalErr = &internal.BadError{Err: err}
@@ -923,11 +926,8 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[ge
 						return
 					}
 				}
-				f := genai.ReplyFragment{TextFragment: pkt.Message.Content}
-				if !f.IsZero() {
-					if !yield(f) {
-						return
-					}
+				if !yield(genai.ReplyFragment{TextFragment: pkt.Message.Content}) {
+					return
 				}
 			}
 		}, func() (genai.Usage, []genai.Logprobs, error) {

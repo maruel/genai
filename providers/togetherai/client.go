@@ -1242,10 +1242,8 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[ge
 					TextFragment:      pkt.Choices[0].Delta.Content,
 					ReasoningFragment: pkt.Choices[0].Delta.Reasoning,
 				}
-				if !f.IsZero() {
-					if !yield(f) {
-						return
-					}
+				if !yield(f) {
+					return
 				}
 				if len(pkt.Choices[0].Logprobs.Tokens) != 0 {
 					l = append(l, pkt.Choices[0].Logprobs.ToLogprobs()...)

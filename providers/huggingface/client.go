@@ -974,10 +974,8 @@ func processStreamPackets(chunk iter.Seq[ChatStreamChunkResponse]) (iter.Seq[gen
 					pendingToolCall.To(&f.ToolCall)
 					pendingToolCall = ToolCall{}
 				}
-				if !f.IsZero() {
-					if !yield(f) {
-						return
-					}
+				if !yield(f) {
+					return
 				}
 			}
 			// Hugginface doesn't send an "ending" packet, FinishReason isn't even set on the last packet.

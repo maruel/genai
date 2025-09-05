@@ -382,6 +382,11 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 		fragments, finish2 := c.ProcessStreamPackets(chunks)
 		sent := false
 		for f := range fragments {
+			// Instead of having each parser check for empty fragments, check it here. It's slightly less efficient
+			// but makes the code easier to write.
+			if f.IsZero() {
+				continue
+			}
 			if err := f.Validate(); err != nil {
 				// Catch provider implementation bugs.
 				finalErr = &internal.BadError{Err: err}

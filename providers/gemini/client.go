@@ -1716,6 +1716,9 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 		// Converts raw chunks into fragments.
 		fragments, finish2 := c.impl.ProcessStreamPackets(chunks)
 		for f := range fragments {
+			if f.IsZero() {
+				continue
+			}
 			if err := f.Validate(); err != nil {
 				// Catch provider implementation bugs.
 				finalErr = &internal.BadError{Err: err}
@@ -2178,10 +2181,8 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[ge
 						return
 					}
 				}
-				if !f.IsZero() {
-					if !yield(f) {
-						return
-					}
+				if !yield(f) {
+					return
 				}
 			}
 		}, func() (genai.Usage, []genai.Logprobs, error) {

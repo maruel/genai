@@ -487,11 +487,8 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[ge
 					for _, content := range pkt.Choices[0].Delta.Content {
 						switch content.Type {
 						case ContentText:
-							f := genai.ReplyFragment{TextFragment: content.Text}
-							if !f.IsZero() {
-								if !yield(f) {
-									return
-								}
+							if !yield(genai.ReplyFragment{TextFragment: content.Text}) {
+								return
 							}
 						default:
 							finalErr = &internal.BadError{Err: fmt.Errorf("unexpected content type %q", content.Type)}
@@ -515,20 +512,14 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[ge
 					return
 				}
 				if m.IsZero() {
-					f := genai.ReplyFragment{TextFragment: pkt.Delta.Text}
-					if !f.IsZero() {
-						if !yield(f) {
-							return
-						}
+					if !yield(genai.ReplyFragment{TextFragment: pkt.Delta.Text}) {
+						return
 					}
 					continue
 				}
 				for _, content := range c {
-					f := genai.ReplyFragment{TextFragment: content.Text}
-					if !f.IsZero() {
-						if !yield(f) {
-							return
-						}
+					if !yield(genai.ReplyFragment{TextFragment: content.Text}) {
+						return
 					}
 				}
 			}

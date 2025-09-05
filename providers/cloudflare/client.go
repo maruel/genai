@@ -885,10 +885,8 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[ge
 					// Cloudflare doesn't provide FinishReason.
 				}
 				// TODO: Tools.
-				if word := pkt.Response; word != "" {
-					if !yield(genai.ReplyFragment{TextFragment: string(word)}) {
-						return
-					}
+				if !yield(genai.ReplyFragment{TextFragment: string(pkt.Response)}) {
+					return
 				}
 			}
 		}, func() (genai.Usage, []genai.Logprobs, error) {

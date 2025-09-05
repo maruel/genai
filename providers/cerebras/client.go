@@ -874,20 +874,14 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[ge
 						pendingToolCall = nt
 					}
 				}
-				if pkt.Choices[0].Delta.Reasoning != "" {
-					f := genai.ReplyFragment{ReasoningFragment: pkt.Choices[0].Delta.Reasoning}
-					if !yield(f) {
-						return
-					}
+				if !yield(genai.ReplyFragment{ReasoningFragment: pkt.Choices[0].Delta.Reasoning}) {
+					return
 				}
 				for _, content := range pkt.Choices[0].Delta.Content {
 					switch content.Type {
 					case ContentText:
-						f := genai.ReplyFragment{TextFragment: content.Text}
-						if !f.IsZero() {
-							if !yield(f) {
-								return
-							}
+						if !yield(genai.ReplyFragment{TextFragment: content.Text}) {
+							return
 						}
 					default:
 						finalErr = &internal.BadError{Err: fmt.Errorf("implement content type %q", content.Type)}

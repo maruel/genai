@@ -1275,6 +1275,9 @@ func (c *Client) CompletionsStream(ctx context.Context, msgs genai.Messages, opt
 		chunks, finish := c.CompletionStreamRaw(ctx, &in)
 		fragments, finish2 := processCompletionsStreamPackets(chunks)
 		for f := range fragments {
+			if f.IsZero() {
+				continue
+			}
 			if err := f.Validate(); err != nil {
 				// Catch provider implementation bugs.
 				finalErr = &internal.BadError{Err: err}
@@ -1513,6 +1516,7 @@ func processChatStreamPackets(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Se
 				if len(pkt.Choices) != 1 {
 					continue
 				}
+				l = append(l, pkt.Choices[0].Logprobs.To()...)
 				if pkt.Choices[0].FinishReason != "" {
 					u.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
 				}
@@ -1558,12 +1562,9 @@ func processChatStreamPackets(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Se
 					pendingToolCall.To(&f.ToolCall)
 					pendingToolCall = ToolCall{}
 				}
-				if !f.IsZero() {
-					if !yield(f) {
-						break
-					}
+				if !yield(f) {
+					break
 				}
-				l = append(l, pkt.Choices[0].Logprobs.To()...)
 			}
 		}, func() (genai.Usage, []genai.Logprobs, error) {
 			return u, l, finalErr
@@ -1583,11 +1584,8 @@ func processCompletionsStreamPackets(chunks iter.Seq[CompletionStreamChunkRespon
 				if pkt.StopType != "" {
 					u.FinishReason = pkt.StopType.ToFinishReason()
 				}
-				f := genai.ReplyFragment{TextFragment: pkt.Content}
-				if !f.IsZero() {
-					if !yield(f) {
-						break
-					}
+				if !yield(genai.ReplyFragment{TextFragment: pkt.Content}) {
+					break
 				}
 			}
 		}, func() (genai.Usage, []genai.Logprobs, error) {

@@ -1148,7 +1148,6 @@ func processStreamPackets(chunks iter.Seq[ResponseStreamChunkResponse]) (iter.Se
 	var finalErr error
 	u := genai.Usage{}
 	var l []genai.Logprobs
-	sent := false
 
 	return func(yield func(genai.ReplyFragment) bool) {
 			pendingToolCall := genai.ToolCall{}
@@ -1382,20 +1381,12 @@ func processStreamPackets(chunks iter.Seq[ResponseStreamChunkResponse]) (iter.Se
 					finalErr = &internal.BadError{Err: fmt.Errorf("implement packet: %q", pkt.Type)}
 					return
 				}
-				if !f.IsZero() {
-					if !yield(f) {
-						return
-					}
-					sent = true
+				if !yield(f) {
+					return
 				}
 			}
 			if !pendingToolCall.IsZero() {
 				finalErr = &internal.BadError{Err: errors.New("unexpected pending tool call")}
-				return
-			}
-			if !sent {
-				// Happens with MaxTokens
-				finalErr = errors.New("model sent no reply")
 				return
 			}
 		}, func() (genai.Usage, []genai.Logprobs, error) {

@@ -680,11 +680,8 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[ge
 				if len(pkt.RelatedQuestions) > 0 {
 					// TODO: Figure out how to return this.
 				}
-				f := genai.ReplyFragment{TextFragment: pkt.Choices[0].Delta.Content}
-				if !f.IsZero() {
-					if !yield(f) {
-						return
-					}
+				if !yield(genai.ReplyFragment{TextFragment: pkt.Choices[0].Delta.Content}) {
+					return
 				}
 			}
 		}, func() (genai.Usage, []genai.Logprobs, error) {

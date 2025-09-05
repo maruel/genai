@@ -958,21 +958,16 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[ge
 					finalErr = &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
 					return
 				}
-				f := genai.ReplyFragment{TextFragment: pkt.Choices[0].Delta.Content}
-				if !f.IsZero() {
-					if !yield(f) {
-						return
-					}
+				if !yield(genai.ReplyFragment{TextFragment: pkt.Choices[0].Delta.Content}) {
+					return
 				}
 				// Mistral is one of the rare provider that can stream multiple tool calls all at once. It's probably
 				// because it's buffering server-side.
 				for i := range pkt.Choices[0].Delta.ToolCalls {
 					f := genai.ReplyFragment{}
 					pkt.Choices[0].Delta.ToolCalls[i].To(&f.ToolCall)
-					if !f.IsZero() {
-						if !yield(f) {
-							return
-						}
+					if !yield(f) {
+						return
 					}
 				}
 			}

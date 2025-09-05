@@ -886,12 +886,7 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *gena
 				}
 				// TODO: Tools.
 				if word := pkt.Response; word != "" {
-					f := genai.ReplyFragment{TextFragment: string(word)}
-					if err := result.Accumulate(f); err != nil {
-						finalErr = err
-						return
-					}
-					if !yield(f) {
+					if !yield(genai.ReplyFragment{TextFragment: string(word)}) {
 						return
 					}
 					sent = true

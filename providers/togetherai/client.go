@@ -1204,10 +1204,6 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *gena
 								Name:      pendingToolCall.Function.Name,
 								Arguments: pendingToolCall.Function.Arguments,
 							}}
-							if err := result.Accumulate(f); err != nil {
-								finalErr = err
-								return
-							}
 							if !yield(f) {
 								return
 							}
@@ -1229,10 +1225,6 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *gena
 							Name:      pendingToolCall.Function.Name,
 							Arguments: pendingToolCall.Function.Arguments,
 						}}
-						if err := result.Accumulate(f); err != nil {
-							finalErr = err
-							return
-						}
 						if !yield(f) {
 							return
 						}
@@ -1243,10 +1235,6 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *gena
 					// That's a non-streamed tool call.
 					f := genai.ReplyFragment{}
 					pkt.Choices[0].ToolCalls[0].To(&f.ToolCall)
-					if err := result.Accumulate(f); err != nil {
-						finalErr = err
-						return
-					}
 					if !yield(f) {
 						return
 					}
@@ -1257,10 +1245,6 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *gena
 					ReasoningFragment: pkt.Choices[0].Delta.Reasoning,
 				}
 				if !f.IsZero() {
-					if err := result.Accumulate(f); err != nil {
-						finalErr = err
-						return
-					}
 					if !yield(f) {
 						return
 					}

@@ -1721,6 +1721,10 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 				finalErr = &internal.BadError{Err: err}
 				break
 			}
+			if err := res.Accumulate(f); err != nil {
+				finalErr = &internal.BadError{Err: err}
+				break
+			}
 			if !yield(f) {
 				break
 			}
@@ -2114,10 +2118,6 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *gena
 					// Handle citations as a separate packet.
 					for _, c := range r.Citations {
 						f.Citation = c
-						if err := result.Accumulate(f); err != nil {
-							finalErr = err
-							return
-						}
 						if !yield(f) {
 							return
 						}
@@ -2176,10 +2176,6 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *gena
 					}
 				}
 				if !f.IsZero() {
-					if err := result.Accumulate(f); err != nil {
-						finalErr = err
-						return
-					}
 					if !yield(f) {
 						return
 					}

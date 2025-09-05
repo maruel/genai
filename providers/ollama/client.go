@@ -721,8 +721,12 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 		for f := range fragments {
 			if err := f.Validate(); err != nil {
 				// Catch provider implementation bugs.
-				finalErr = err
+				finalErr = &internal.BadError{Err: err}
 				break
+			}
+			if err := res.Accumulate(f); err != nil {
+				finalErr = &internal.BadError{Err: err}
+				return
 			}
 			if !yield(f) {
 				break
@@ -912,20 +916,12 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *gena
 						finalErr = &internal.BadError{Err: err}
 						return
 					}
-					if err := result.Accumulate(f); err != nil {
-						finalErr = err
-						return
-					}
 					if !yield(f) {
 						return
 					}
 				}
 				f := genai.ReplyFragment{TextFragment: pkt.Message.Content}
 				if !f.IsZero() {
-					if err := result.Accumulate(f); err != nil {
-						finalErr = err
-						return
-					}
 					if !yield(f) {
 						return
 					}

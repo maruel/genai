@@ -1280,6 +1280,10 @@ func (c *Client) CompletionsStream(ctx context.Context, msgs genai.Messages, opt
 				finalErr = &internal.BadError{Err: err}
 				break
 			}
+			if err := res.Accumulate(f); err != nil {
+				finalErr = &internal.BadError{Err: err}
+				return
+			}
 			if !yield(f) {
 				break
 			}
@@ -1290,21 +1294,6 @@ func (c *Client) CompletionsStream(ctx context.Context, msgs genai.Messages, opt
 		if err := finish2(); finalErr == nil {
 			finalErr = err
 		}
-		/*
-			lastResp := c.LastResponseHeaders()
-			if c.ProcessHeaders != nil && lastResp != nil {
-				res.Usage.Limits = c.ProcessHeaders(lastResp)
-			}
-			if c.LieToolCalls && res.Usage.FinishReason == genai.FinishedStop {
-				for i := range res.Replies {
-					if !res.Replies[i].ToolCall.IsZero() {
-						// Lie for the benefit of everyone.
-						res.Usage.FinishReason = genai.FinishedToolCalls
-						break
-					}
-				}
-			}
-		*/
 	}
 	fnFinish := func() (genai.Result, error) {
 		if finalErr != nil {
@@ -1567,10 +1556,6 @@ func processChatStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *
 					pendingToolCall = ToolCall{}
 				}
 				if !f.IsZero() {
-					if err := result.Accumulate(f); err != nil {
-						finalErr = err
-						return
-					}
 					if !yield(f) {
 						break
 					}
@@ -1596,9 +1581,6 @@ func processCompletionsStreamPackets(chunks iter.Seq[CompletionStreamChunkRespon
 				}
 				f := genai.ReplyFragment{TextFragment: pkt.Content}
 				if !f.IsZero() {
-					if err := result.Accumulate(f); err != nil {
-						finalErr = err
-					}
 					if !yield(f) {
 						break
 					}

@@ -488,10 +488,6 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *gena
 						case ContentText:
 							f := genai.ReplyFragment{TextFragment: content.Text}
 							if !f.IsZero() {
-								if err := result.Accumulate(f); err != nil {
-									finalErr = err
-									return
-								}
 								if !yield(f) {
 									return
 								}
@@ -520,10 +516,6 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *gena
 				if m.IsZero() {
 					f := genai.ReplyFragment{TextFragment: pkt.Delta.Text}
 					if !f.IsZero() {
-						if err := result.Accumulate(f); err != nil {
-							finalErr = err
-							return
-						}
 						if !yield(f) {
 							return
 						}
@@ -533,10 +525,6 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *gena
 				for _, content := range c {
 					f := genai.ReplyFragment{TextFragment: content.Text}
 					if !f.IsZero() {
-						if err := result.Accumulate(f); err != nil {
-							finalErr = err
-							return
-						}
 						if !yield(f) {
 							return
 						}

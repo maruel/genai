@@ -1381,10 +1381,6 @@ func processStreamPackets(chunks iter.Seq[ResponseStreamChunkResponse], result *
 					return
 				}
 				if !f.IsZero() {
-					if err := result.Accumulate(f); err != nil {
-						finalErr = err
-						return
-					}
 					if !yield(f) {
 						return
 					}

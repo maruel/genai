@@ -864,10 +864,6 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *gena
 							// Flush first.
 							f := genai.ReplyFragment{}
 							pendingToolCall.To(&f.ToolCall)
-							if err := result.Accumulate(f); err != nil {
-								finalErr = err
-								return
-							}
 							if !yield(f) {
 								return
 							}
@@ -880,10 +876,6 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *gena
 				}
 				if pkt.Choices[0].Delta.Reasoning != "" {
 					f := genai.ReplyFragment{ReasoningFragment: pkt.Choices[0].Delta.Reasoning}
-					if err := result.Accumulate(f); err != nil {
-						finalErr = err
-						return
-					}
 					if !yield(f) {
 						return
 					}
@@ -894,10 +886,6 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *gena
 					case ContentText:
 						f := genai.ReplyFragment{TextFragment: content.Text}
 						if !f.IsZero() {
-							if err := result.Accumulate(f); err != nil {
-								finalErr = err
-								return
-							}
 							if !yield(f) {
 								return
 							}
@@ -915,10 +903,6 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *gena
 			if pendingToolCall.ID != "" {
 				f := genai.ReplyFragment{}
 				pendingToolCall.To(&f.ToolCall)
-				if err := result.Accumulate(f); err != nil {
-					finalErr = err
-					return
-				}
 				if !yield(f) {
 					return
 				}

@@ -1153,10 +1153,6 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *gena
 					}
 				}
 				if !f.IsZero() {
-					if err := result.Accumulate(f); err != nil {
-						finalErr = err
-						return
-					}
 					if !yield(f) {
 						return
 					}

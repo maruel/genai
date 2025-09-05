@@ -973,10 +973,6 @@ func processStreamPackets(chunk iter.Seq[ChatStreamChunkResponse], result *genai
 					pendingToolCall = ToolCall{}
 				}
 				if !f.IsZero() {
-					if err := result.Accumulate(f); err != nil {
-						finalErr = err
-						return
-					}
 					if !yield(f) {
 						return
 					}
@@ -987,10 +983,6 @@ func processStreamPackets(chunk iter.Seq[ChatStreamChunkResponse], result *genai
 				// Flush.
 				f := genai.ReplyFragment{}
 				pendingToolCall.To(&f.ToolCall)
-				if err := result.Accumulate(f); err != nil {
-					finalErr = err
-					return
-				}
 				if !yield(f) {
 					return
 				}

@@ -1267,10 +1267,6 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *gena
 					f.Citation.StartIndex = a.URLCitation.StartIndex
 					f.Citation.EndIndex = a.URLCitation.EndIndex
 					f.Citation.Sources = []genai.CitationSource{{Type: genai.CitationWeb, URL: a.URLCitation.URL}}
-					if err := result.Accumulate(f); err != nil {
-						finalErr = err
-						return
-					}
 					if !yield(f) {
 						return
 					}
@@ -1309,10 +1305,6 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *gena
 					pendingToolCall = ToolCall{}
 				}
 				if !f.IsZero() {
-					if err := result.Accumulate(f); err != nil {
-						finalErr = err
-						return
-					}
 					if !yield(f) {
 						return
 					}

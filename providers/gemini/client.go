@@ -19,7 +19,6 @@ import (
 	"errors"
 	"fmt"
 	"iter"
-	"log/slog"
 	"mime"
 	"net/http"
 	"net/url"
@@ -1833,7 +1832,7 @@ func (c *Client) CacheAddRequest(ctx context.Context, msgs genai.Messages, name,
 		return "", err
 	}
 	name = strings.TrimPrefix(out.Name, "cachedContents/")
-	slog.InfoContext(ctx, "gemini", "cached", name, "tokens", out.UsageMetadata.TotalTokenCount)
+	// slog.InfoContext(ctx, "gemini", "cached", name, "tokens", out.UsageMetadata.TotalTokenCount)
 	return name, nil
 }
 

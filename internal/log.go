@@ -29,7 +29,7 @@ func LogTransport(t http.RoundTripper) http.RoundTripper {
 			if r.Response.Body != nil {
 				respb, _ = io.ReadAll(r.Response.Body)
 			}
-			slog.InfoContext(r.Request.Context(), "log", "url", r.Request.URL.String(), "hdr", r.Request.Header, "post", reqb, "resp", respb)
+			slog.DebugContext(r.Request.Context(), "log", "url", r.Request.URL.String(), "hdr", r.Request.Header, "post", reqb, "resp", respb)
 		}
 	}()
 	return &roundtrippers.Capture{Transport: t, C: ch}

@@ -4,16 +4,20 @@
 
 package main
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/maruel/genai/internal/internaltest"
+)
 
 func TestPrintList(t *testing.T) {
 	t.Parallel()
-	printList(t.Context())
+	printList(t.Context(), &internaltest.WriterToLog{T: t})
 }
 
 func TestPrintTable(t *testing.T) {
 	t.Parallel()
 	ctx := t.Context()
-	printTable(ctx, "")
-	printTable(ctx, "openaicompatible")
+	printTable(ctx, &internaltest.WriterToLog{T: t}, "")
+	printTable(ctx, &internaltest.WriterToLog{T: t}, "openaicompatible")
 }

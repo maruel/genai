@@ -7,8 +7,8 @@ package main
 import (
 	"context"
 	"fmt"
+	"io"
 	"maps"
-	"os"
 	"slices"
 	"strings"
 
@@ -17,15 +17,15 @@ import (
 	"github.com/maruel/genai/scoreboard"
 )
 
-func printList(ctx context.Context) error {
+func printList(ctx context.Context, w io.Writer) error {
 	all := maps.Clone(providers.All)
 	for _, name := range slices.Sorted(maps.Keys(all)) {
-		fmt.Printf("- %s\n", name)
+		fmt.Fprintf(w, "- %s\n", name)
 		c, err := all[name].Factory(ctx, &genai.ProviderOptions{Model: genai.ModelNone}, nil)
 		// The function can return an error and still return a client when no API key was found. It's okay here
 		// because we won't use the service provider.
 		if c == nil {
-			fmt.Fprintf(os.Stderr, "ignoring provider %s: %v\n", name, err)
+			fmt.Fprintf(w, "ignoring provider %s: %v\n", name, err)
 			continue
 		}
 		async := ""
@@ -37,13 +37,13 @@ func printList(ctx context.Context) error {
 			if len(m) > 3 {
 				m = append(slices.Clone(m[:3]), "...")
 			}
-			fmt.Printf("  - %s\n", strings.Join(m, ", "))
+			fmt.Fprintf(w, "  - %s\n", strings.Join(m, ", "))
 			if isTextOnly(scenario.In) && isTextOnly(scenario.Out) {
-				fmt.Printf("    in/out:   text only\n")
+				fmt.Fprintf(w, "    in/out:   text only\n")
 			} else {
 				in := getDeliveryConstraints(scenario.In)
 				out := getDeliveryConstraints(scenario.Out)
-				fmt.Printf("    in/out:   ⇒ %s%s / %s%s ⇒\n", modalityMapToString(scenario.In), in, modalityMapToString(scenario.Out), out)
+				fmt.Fprintf(w, "    in/out:   ⇒ %s%s / %s%s ⇒\n", modalityMapToString(scenario.In), in, modalityMapToString(scenario.Out), out)
 			}
 			chat := ""
 			stream := ""
@@ -55,14 +55,14 @@ func printList(ctx context.Context) error {
 			}
 			if chat == stream {
 				if chat != "" {
-					fmt.Printf("    features: %s%s\n", async, chat)
+					fmt.Fprintf(w, "    features: %s%s\n", async, chat)
 				}
 			} else {
 				if chat != "" {
-					fmt.Printf("    buffered: %s%s\n", async, chat)
+					fmt.Fprintf(w, "    buffered: %s%s\n", async, chat)
 				}
 				if stream != "" {
-					fmt.Printf("    streamed: %s%s\n", async, stream)
+					fmt.Fprintf(w, "    streamed: %s%s\n", async, stream)
 				}
 			}
 		}

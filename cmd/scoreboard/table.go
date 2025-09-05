@@ -245,10 +245,10 @@ var modalityMap = map[genai.Modality]string{
 	genai.ModalityDocument: "📄", // "📚",
 }
 
-func printTable(ctx context.Context, provider string) error {
+func printTable(ctx context.Context, w io.Writer, provider string) error {
 	all := maps.Clone(providers.All)
 	if provider == "" {
-		return printSummaryTable(ctx, all)
+		return printSummaryTable(ctx, w, all)
 	}
 	cfg := all[provider]
 	if cfg.Factory == nil {
@@ -258,10 +258,10 @@ func printTable(ctx context.Context, provider string) error {
 	if c == nil {
 		return fmt.Errorf("provider %s: %w", provider, err)
 	}
-	return printProviderTable(c)
+	return printProviderTable(c, w)
 }
 
-func printSummaryTable(ctx context.Context, all map[string]providers.Config) error {
+func printSummaryTable(ctx context.Context, w io.Writer, all map[string]providers.Config) error {
 	var rows []tableSummaryRow
 	seen := map[string]struct{}{}
 	for name, cfg := range all {
@@ -291,12 +291,12 @@ func printSummaryTable(ctx context.Context, all map[string]providers.Config) err
 	slices.SortFunc(rows, func(a, b tableSummaryRow) int {
 		return strings.Compare(a.Provider, b.Provider)
 	})
-	printMarkdownTable(os.Stdout, rows)
-	_, _ = os.Stdout.WriteString(legend)
+	printMarkdownTable(w, rows)
+	_, _ = io.WriteString(w, legend)
 	return nil
 }
 
-func printProviderTable(p genai.Provider) error {
+func printProviderTable(p genai.Provider, w io.Writer) error {
 	var rows []tableModelRow
 	sb := p.Scoreboard()
 	for _, sc := range sb.Scenarios {
@@ -339,8 +339,8 @@ func printProviderTable(p genai.Provider) error {
 			}
 		}
 	}
-	printMarkdownTable(os.Stdout, rows)
-	_, _ = os.Stdout.WriteString(legend)
+	printMarkdownTable(w, rows)
+	_, _ = io.WriteString(w, legend)
 	return nil
 }
 

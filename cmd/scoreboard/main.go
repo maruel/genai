@@ -26,16 +26,16 @@ func mainImpl() error {
 		if *provider == "" {
 			return errors.New("-model requires -provider")
 		}
-		return smokeModel(ctx, *provider, *model)
+		return smokeModel(ctx, os.Stdout, *provider, *model)
 	}
 	if *table {
-		return printTable(ctx, *provider)
+		return printTable(ctx, os.Stdout, *provider)
 	}
 	if *provider != "" {
 		// TODO: Add it to list too.
 		return errors.New("-provider requires -table")
 	}
-	return printList(ctx)
+	return printList(ctx, os.Stdout)
 }
 
 func main() {

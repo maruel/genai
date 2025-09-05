@@ -294,7 +294,6 @@ func exerciseWebSearch(ctx context.Context, cs *callState, f *scoreboard.Functio
 		internal.Logger(ctx).DebugContext(ctx, "WebSearch", "err", err)
 		return err
 	}
-	internal.Logger(ctx).DebugContext(ctx, "WebSearch", "resp", res)
 	// It must contains citations.
 	if err == nil {
 		f.WebSearch = slices.ContainsFunc(res.Replies, func(r genai.Reply) bool { return len(r.Citations) > 0 })

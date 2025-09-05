@@ -8,6 +8,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"os"
 
 	"github.com/maruel/genai"
@@ -15,7 +16,7 @@ import (
 	"github.com/maruel/genai/smoke"
 )
 
-func smokeModel(ctx context.Context, provider, model string) error {
+func smokeModel(ctx context.Context, w io.Writer, provider, model string) error {
 	// TODO: We may want to run in strict mode?
 	// TODO: We will want to record the HTTP requests, it's wasteful otherwise.
 	if _, err := providers.All[provider].Factory(ctx, &genai.ProviderOptions{Model: model}, nil); err != nil {
@@ -30,7 +31,7 @@ func smokeModel(ctx context.Context, provider, model string) error {
 		return err
 	}
 	b, _ := json.MarshalIndent(sc, "", "  ")
-	fmt.Printf("%s\n", string(b))
+	fmt.Fprintf(w, "%s\n", string(b))
 	fmt.Fprintf(os.Stderr, "Usage: %s\n", usage.String())
 	return nil
 }

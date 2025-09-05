@@ -99,7 +99,7 @@ func Log(tb testing.TB) (context.Context, *slog.Logger) {
 			}
 		})
 	}
-	l := slog.New(slog.NewTextHandler(&testWriter{t: tb}, &slog.HandlerOptions{
+	l := slog.New(slog.NewTextHandler(&WriterToLog{T: tb}, &slog.HandlerOptions{
 		AddSource: true,
 		Level:     level,
 		ReplaceAttr: func(groups []string, a slog.Attr) slog.Attr {
@@ -197,14 +197,14 @@ func (h *HideHTTP500) GenStream(ctx context.Context, msgs genai.Messages, opts .
 
 //
 
-// testWriter wraps t.Log() to implement io.Writer
-type testWriter struct {
-	t testing.TB
+// WriterToLog wraps t.Log() to implement io.Writer
+type WriterToLog struct {
+	T testing.TB
 }
 
-func (tw *testWriter) Write(p []byte) (n int, err error) {
+func (tw *WriterToLog) Write(p []byte) (n int, err error) {
 	// Sadly the log output is attributed to this line.
-	tw.t.Log(strings.TrimSpace(string(p)))
+	tw.T.Log(strings.TrimSpace(string(p)))
 	return len(p), nil
 }
 

@@ -78,6 +78,7 @@ func startServer(ctx context.Context) (*ollamasrv.Server, error) {
 			}
 			return a
 		},
+		// Level: slog.LevelDebug,
 	}))}
 	return ollamasrv.New(ctx, exe, l, "", []string{"OLLAMA_FLASH_ATTENTION=1", "OLLAMA_KV_CACHE_TYPE=q8_0"})
 }
@@ -93,7 +94,7 @@ func (w *logWriter) Write(p []byte) (n int, err error) {
 		if i == len(lines)-1 && len(line) == 0 {
 			continue
 		}
-		w.logger.Info("ollama", "ollama", string(line))
+		w.logger.Debug("ollama", "ollama", string(line))
 	}
 	return len(p), nil
 }

@@ -1032,13 +1032,14 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	return resp.ToModels(), nil
 }
 
-func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *genai.Result) (iter.Seq[genai.ReplyFragment], func() error) {
+func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
 	var finalErr error
-	sent := false
-	wasThinking := false
-	pendingToolCall := ToolCall{}
+	u := genai.Usage{}
+	var l []genai.Logprobs
 
 	return func(yield func(genai.ReplyFragment) bool) {
+			wasThinking := false
+			pendingToolCall := ToolCall{}
 			for pkt := range chunks {
 				// These can't happen.
 				if len(pkt.Delta.Message.Content) > 1 {
@@ -1056,7 +1057,7 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *gena
 					return
 				}
 				if pkt.Logprobs.Text != "" {
-					result.Logprobs = append(result.Logprobs, pkt.Logprobs.To())
+					l = append(l, pkt.Logprobs.To())
 				}
 				f := genai.ReplyFragment{}
 				switch pkt.Type {
@@ -1076,9 +1077,9 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *gena
 						finalErr = &internal.BadError{Err: fmt.Errorf("expected no content %#v", pkt)}
 						return
 					}
-					result.Usage.InputTokens = pkt.Delta.Usage.Tokens.InputTokens
-					result.Usage.OutputTokens = pkt.Delta.Usage.Tokens.OutputTokens
-					result.Usage.FinishReason = pkt.Delta.FinishReason.ToFinishReason()
+					u.InputTokens = pkt.Delta.Usage.Tokens.InputTokens
+					u.OutputTokens = pkt.Delta.Usage.Tokens.OutputTokens
+					u.FinishReason = pkt.Delta.FinishReason.ToFinishReason()
 				case ChunkContentStart:
 					if len(pkt.Delta.Message.Content) != 1 {
 						finalErr = &internal.BadError{Err: fmt.Errorf("expected content %#v", pkt)}
@@ -1156,15 +1157,10 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *gena
 					if !yield(f) {
 						return
 					}
-					sent = true
 				}
 			}
-			if !sent {
-				finalErr = errors.New("model sent no reply")
-				return
-			}
-		}, func() error {
-			return finalErr
+		}, func() (genai.Usage, []genai.Logprobs, error) {
+			return u, l, finalErr
 		}
 }
 

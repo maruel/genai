@@ -937,8 +937,9 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	return resp.ToModels(), nil
 }
 
-func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *genai.Result) (iter.Seq[genai.ReplyFragment], func() error) {
+func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
 	var finalErr error
+	u := genai.Usage{}
 
 	return func(yield func(genai.ReplyFragment) bool) {
 			for pkt := range chunks {
@@ -946,10 +947,10 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *gena
 					continue
 				}
 				if pkt.Usage.PromptTokens != 0 {
-					result.Usage.InputTokens = pkt.Usage.PromptTokens
-					result.Usage.OutputTokens = pkt.Usage.CompletionTokens
-					result.Usage.TotalTokens = pkt.Usage.TotalTokens
-					result.Usage.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
+					u.InputTokens = pkt.Usage.PromptTokens
+					u.OutputTokens = pkt.Usage.CompletionTokens
+					u.TotalTokens = pkt.Usage.TotalTokens
+					u.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
 				}
 				switch role := pkt.Choices[0].Delta.Role; role {
 				case "assistant", "":
@@ -975,8 +976,8 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *gena
 					}
 				}
 			}
-		}, func() error {
-			return finalErr
+		}, func() (genai.Usage, []genai.Logprobs, error) {
+			return u, nil, finalErr
 		}
 }
 

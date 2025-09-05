@@ -1580,8 +1580,10 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	return resp.ToModels(), nil
 }
 
-func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *genai.Result) (iter.Seq[genai.ReplyFragment], func() error) {
+func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
 	var finalErr error
+	var u genai.Usage
+
 	return func(yield func(genai.ReplyFragment) bool) {
 			// At the moment, only supported for server_tool_use / web_search.
 			pendingServerCall := ""
@@ -1599,11 +1601,11 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *gena
 						finalErr = &internal.BadError{Err: fmt.Errorf("unexpected role %q", pkt.Message.Role)}
 						return
 					}
-					result.Usage.InputTokens = pkt.Message.Usage.InputTokens
-					result.Usage.InputCachedTokens = pkt.Message.Usage.CacheReadInputTokens
+					u.InputTokens = pkt.Message.Usage.InputTokens
+					u.InputCachedTokens = pkt.Message.Usage.CacheReadInputTokens
 					// There's some tokens listed there. Still save it in case it breaks midway.
-					result.Usage.OutputTokens = pkt.Message.Usage.OutputTokens
-					result.Usage.TotalTokens = result.Usage.InputTokens + result.Usage.InputCachedTokens + result.Usage.OutputTokens
+					u.OutputTokens = pkt.Message.Usage.OutputTokens
+					u.TotalTokens = u.InputTokens + u.InputCachedTokens + u.OutputTokens
 					continue
 				case ChunkContentBlockStart:
 					switch pkt.ContentBlock.Type {
@@ -1704,8 +1706,8 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *gena
 					pendingJSON = ""
 				case ChunkMessageDelta:
 					// Includes finish reason and output tokens usage (but not input tokens!)
-					result.Usage.FinishReason = pkt.Delta.StopReason.ToFinishReason()
-					result.Usage.OutputTokens = pkt.Usage.OutputTokens
+					u.FinishReason = pkt.Delta.StopReason.ToFinishReason()
+					u.OutputTokens = pkt.Usage.OutputTokens
 				case ChunkMessageStop:
 					// Doesn't contain anything.
 					continue
@@ -1726,8 +1728,8 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *gena
 					}
 				}
 			}
-		}, func() error {
-			return finalErr
+		}, func() (genai.Usage, []genai.Logprobs, error) {
+			return u, nil, finalErr
 		}
 }
 

@@ -670,21 +670,26 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 
 // TODO: Caching: https://api-docs.deepseek.com/guides/kv_cache
 
-func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *genai.Result) (iter.Seq[genai.ReplyFragment], func() error) {
+func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
 	var finalErr error
-	pendingToolCall := ToolCall{}
+	u := genai.Usage{}
+	var l []genai.Logprobs
 
 	return func(yield func(genai.ReplyFragment) bool) {
+			pendingToolCall := ToolCall{}
 			for pkt := range chunks {
 				if len(pkt.Choices) != 1 {
 					continue
 				}
+				if len(pkt.Choices[0].Logprobs.Content) != 0 {
+					l = append(l, pkt.Choices[0].Logprobs.To()...)
+				}
 				if pkt.Usage.CompletionTokens != 0 {
-					result.Usage.InputTokens = pkt.Usage.PromptTokens
-					result.Usage.InputCachedTokens = pkt.Usage.PromptCacheHitTokens
-					result.Usage.ReasoningTokens = pkt.Usage.ChatTokensDetails.ReasoningTokens
-					result.Usage.OutputTokens = pkt.Usage.CompletionTokens
-					result.Usage.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
+					u.InputTokens = pkt.Usage.PromptTokens
+					u.InputCachedTokens = pkt.Usage.PromptCacheHitTokens
+					u.ReasoningTokens = pkt.Usage.ChatTokensDetails.ReasoningTokens
+					u.OutputTokens = pkt.Usage.CompletionTokens
+					u.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
 				}
 				if len(pkt.Choices[0].Delta.ToolCalls) > 1 {
 					finalErr = &internal.BadError{Err: fmt.Errorf("implement multiple tool calls: %#v", pkt)}
@@ -734,12 +739,9 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *gena
 						return
 					}
 				}
-				if len(pkt.Choices[0].Logprobs.Content) != 0 {
-					result.Logprobs = append(result.Logprobs, pkt.Choices[0].Logprobs.To()...)
-				}
 			}
-		}, func() error {
-			return finalErr
+		}, func() (genai.Usage, []genai.Logprobs, error) {
+			return u, l, finalErr
 		}
 }
 

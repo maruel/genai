@@ -1144,16 +1144,18 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *Response) (iter.Seq[Respo
 
 // processStreamPackets processes stream packets for the OpenAI Responses API.
 // This is a placeholder - will be implemented when GenStream is added.
-func processStreamPackets(chunks iter.Seq[ResponseStreamChunkResponse], result *genai.Result) (iter.Seq[genai.ReplyFragment], func() error) {
+func processStreamPackets(chunks iter.Seq[ResponseStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
 	var finalErr error
+	u := genai.Usage{}
+	var l []genai.Logprobs
 	sent := false
-	pendingToolCall := genai.ToolCall{}
 
 	return func(yield func(genai.ReplyFragment) bool) {
+			pendingToolCall := genai.ToolCall{}
 			for pkt := range chunks {
 				f := genai.ReplyFragment{}
 				for _, lp := range pkt.Logprobs {
-					result.Logprobs = append(result.Logprobs, lp.To())
+					l = append(l, lp.To())
 				}
 				switch pkt.Type {
 				case ResponseCreated, ResponseInProgress:
@@ -1163,28 +1165,28 @@ func processStreamPackets(chunks iter.Seq[ResponseStreamChunkResponse], result *
 				case ResponseCompleted:
 					// https://platform.openai.com/docs/api-reference/responses_streaming/response/completed
 					// This message contains all the data duplicated. :( It's clear they never thought about efficiency.
-					result.Usage.InputTokens = pkt.Response.Usage.InputTokens
-					result.Usage.InputCachedTokens = pkt.Response.Usage.InputTokensDetails.CachedTokens
-					result.Usage.ReasoningTokens = pkt.Response.Usage.OutputTokensDetails.ReasoningTokens
-					result.Usage.OutputTokens = pkt.Response.Usage.OutputTokens
+					u.InputTokens = pkt.Response.Usage.InputTokens
+					u.InputCachedTokens = pkt.Response.Usage.InputTokensDetails.CachedTokens
+					u.ReasoningTokens = pkt.Response.Usage.OutputTokensDetails.ReasoningTokens
+					u.OutputTokens = pkt.Response.Usage.OutputTokens
 					if len(pkt.Response.Output) == 0 {
 						// TODO: Likely failed.
 						finalErr = &internal.BadError{Err: fmt.Errorf("no output: %#v", pkt)}
 						return
 					}
 					// TODO: OpenAI supports "multiple messages" as output.
-					result.Usage.FinishReason = genai.FinishedStop
+					u.FinishReason = genai.FinishedStop
 					for i := range pkt.Response.Output {
 						msg := pkt.Response.Output[i]
 						switch msg.Status {
 						case "":
 						case "completed":
 							if msg.Type == MessageFunctionCall {
-								result.Usage.FinishReason = genai.FinishedToolCalls
+								u.FinishReason = genai.FinishedToolCalls
 							}
 						case "in_progress":
 						case "incomplete":
-							result.Usage.FinishReason = genai.FinishedLength
+							u.FinishReason = genai.FinishedLength
 						case "failed":
 							finalErr = fmt.Errorf("failed: %#v", pkt)
 							return
@@ -1206,12 +1208,12 @@ func processStreamPackets(chunks iter.Seq[ResponseStreamChunkResponse], result *
 					return
 				case ResponseIncomplete:
 					// https://platform.openai.com/docs/api-reference/responses_streaming/response/incomplete
-					result.Usage.InputTokens = pkt.Response.Usage.InputTokens
-					result.Usage.InputCachedTokens = pkt.Response.Usage.InputTokensDetails.CachedTokens
-					result.Usage.ReasoningTokens = pkt.Response.Usage.OutputTokensDetails.ReasoningTokens
-					result.Usage.OutputTokens = pkt.Response.Usage.OutputTokens
+					u.InputTokens = pkt.Response.Usage.InputTokens
+					u.InputCachedTokens = pkt.Response.Usage.InputTokensDetails.CachedTokens
+					u.ReasoningTokens = pkt.Response.Usage.OutputTokensDetails.ReasoningTokens
+					u.OutputTokens = pkt.Response.Usage.OutputTokens
 					if pkt.Response.IncompleteDetails.Reason == "max_output_tokens" {
-						result.Usage.FinishReason = genai.FinishedLength
+						u.FinishReason = genai.FinishedLength
 					}
 					finalErr = errors.New(pkt.Response.IncompleteDetails.Reason)
 					return
@@ -1396,8 +1398,8 @@ func processStreamPackets(chunks iter.Seq[ResponseStreamChunkResponse], result *
 				finalErr = errors.New("model sent no reply")
 				return
 			}
-		}, func() error {
-			return finalErr
+		}, func() (genai.Usage, []genai.Logprobs, error) {
+			return u, l, finalErr
 		}
 }
 

@@ -608,8 +608,9 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest) (iter.Seq[Ch
 	return c.impl.GenStreamRaw(ctx, in)
 }
 
-func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *genai.Result) (iter.Seq[genai.ReplyFragment], func() error) {
+func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
 	var finalErr error
+	u := genai.Usage{}
 	// Perplexity has a bug where it will send the search result multiple times. We need to filter them. Use the
 	// URL as key.
 	seen := map[string]struct{}{}
@@ -620,11 +621,11 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *gena
 					continue
 				}
 				if pkt.Usage.PromptTokens != 0 {
-					result.Usage.InputTokens = pkt.Usage.PromptTokens
-					result.Usage.OutputTokens = pkt.Usage.CompletionTokens
+					u.InputTokens = pkt.Usage.PromptTokens
+					u.OutputTokens = pkt.Usage.CompletionTokens
 				}
 				if pkt.Choices[0].FinishReason != "" {
-					result.Usage.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
+					u.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
 				}
 				switch role := pkt.Choices[0].Delta.Role; role {
 				case "", "assistant":
@@ -686,8 +687,8 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *gena
 					}
 				}
 			}
-		}, func() error {
-			return finalErr
+		}, func() (genai.Usage, []genai.Logprobs, error) {
+			return u, nil, finalErr
 		}
 }
 

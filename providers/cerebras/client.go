@@ -828,13 +828,14 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	return resp.ToModels(), nil
 }
 
-func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *genai.Result) (iter.Seq[genai.ReplyFragment], func() error) {
+func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
 	var finalErr error
-	sent := false
-	// gpt-oss-* streams the tool call arguments but not the other models. Fun.
-	pendingToolCall := ToolCall{}
+	u := genai.Usage{}
+	var l []genai.Logprobs
 
 	return func(yield func(genai.ReplyFragment) bool) {
+			// gpt-oss-* streams the tool call arguments but not the other models. Fun.
+			pendingToolCall := ToolCall{}
 			for pkt := range chunks {
 				if len(pkt.Choices) != 1 {
 					continue
@@ -846,11 +847,11 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *gena
 					return
 				}
 				if pkt.Usage.TotalTokens != 0 {
-					result.Usage.InputTokens = pkt.Usage.PromptTokens
-					result.Usage.InputCachedTokens = pkt.Usage.PromptTokensDetails.CachedTokens
-					result.Usage.OutputTokens = pkt.Usage.CompletionTokens
-					result.Usage.TotalTokens = pkt.Usage.TotalTokens
-					result.Usage.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
+					u.InputTokens = pkt.Usage.PromptTokens
+					u.InputCachedTokens = pkt.Usage.PromptTokensDetails.CachedTokens
+					u.OutputTokens = pkt.Usage.CompletionTokens
+					u.TotalTokens = pkt.Usage.TotalTokens
+					u.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
 				}
 
 				for _, nt := range pkt.Choices[0].Delta.ToolCalls {
@@ -867,7 +868,6 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *gena
 							if !yield(f) {
 								return
 							}
-							sent = true
 							pendingToolCall = nt
 						}
 					} else {
@@ -879,7 +879,6 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *gena
 					if !yield(f) {
 						return
 					}
-					sent = true
 				}
 				for _, content := range pkt.Choices[0].Delta.Content {
 					switch content.Type {
@@ -889,7 +888,6 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *gena
 							if !yield(f) {
 								return
 							}
-							sent = true
 						}
 					default:
 						finalErr = &internal.BadError{Err: fmt.Errorf("implement content type %q", content.Type)}
@@ -897,7 +895,7 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *gena
 					}
 				}
 				if len(pkt.Choices[0].Logprobs.Content) != 0 {
-					result.Logprobs = append(result.Logprobs, pkt.Choices[0].Logprobs.To()...)
+					l = append(l, pkt.Choices[0].Logprobs.To()...)
 				}
 			}
 			if pendingToolCall.ID != "" {
@@ -906,15 +904,9 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *gena
 				if !yield(f) {
 					return
 				}
-				sent = true
 			}
-			if !sent {
-				// This happens with gpt-oss-120b with Stop.
-				finalErr = errors.New("model sent no reply")
-				return
-			}
-		}, func() error {
-			return finalErr
+		}, func() (genai.Usage, []genai.Logprobs, error) {
+			return u, l, finalErr
 		}
 }
 

@@ -314,7 +314,7 @@ type Provider[PErrorResponse ErrAPI, PGenRequest InitializableRequest, PGenRespo
 	// GenStreamURL is the endpoint URL for chat stream API requests. It defaults to GenURL if unset.
 	GenStreamURL string
 	// ProcessStreamPackets is the function that processes stream packets used by GenStream.
-	ProcessStreamPackets func(it iter.Seq[GenStreamChunkResponse], result *genai.Result) (iter.Seq[genai.ReplyFragment], func() error)
+	ProcessStreamPackets func(it iter.Seq[GenStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error))
 	// ProcessHeaders is the function that processes HTTP headers to extract rate limit information.
 	ProcessHeaders func(http.Header) []genai.RateLimit
 	// LieToolCalls lie the FinishReason on tool calls.
@@ -379,7 +379,8 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 		// Converts raw chunks into fragments.
 		// Generate parsed chunks from the raw JSON SSE stream.
 		chunks, finish := c.GenStreamRaw(ctx, in)
-		fragments, finish2 := c.ProcessStreamPackets(chunks, &res)
+		fragments, finish2 := c.ProcessStreamPackets(chunks)
+		sent := false
 		for f := range fragments {
 			if err := f.Validate(); err != nil {
 				// Catch provider implementation bugs.
@@ -388,8 +389,9 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 			}
 			if err := res.Accumulate(f); err != nil {
 				finalErr = &internal.BadError{Err: err}
-				return
+				break
 			}
+			sent = true
 			if !yield(f) {
 				break
 			}
@@ -397,8 +399,14 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 		if err := finish(); finalErr == nil {
 			finalErr = err
 		}
-		if err := finish2(); finalErr == nil {
+		var err error
+		res.Usage, res.Logprobs, err = finish2()
+		if finalErr == nil {
 			finalErr = err
+		}
+		if !sent && finalErr == nil {
+			// This happens with some internal failures, like gpt-oss-120b with Stop.
+			finalErr = errors.New("model sent no reply")
 		}
 		lastResp := c.LastResponseHeaders()
 		if c.ProcessHeaders != nil && lastResp != nil {

@@ -1714,7 +1714,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 		// Generate parsed chunks from the raw JSON SSE stream.
 		chunks, finish1 := c.GenStreamRaw(ctx, in)
 		// Converts raw chunks into fragments.
-		fragments, finish2 := c.impl.ProcessStreamPackets(chunks, &res)
+		fragments, finish2 := c.impl.ProcessStreamPackets(chunks)
 		for f := range fragments {
 			if err := f.Validate(); err != nil {
 				// Catch provider implementation bugs.
@@ -1732,7 +1732,9 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 		if err := finish1(); finalErr == nil {
 			finalErr = err
 		}
-		if err := finish2(); finalErr == nil {
+		var err error
+		res.Usage, res.Logprobs, err = finish2()
+		if finalErr == nil {
 			finalErr = err
 		}
 		lastResp := c.impl.LastResponseHeaders()
@@ -2082,8 +2084,9 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 
 // processStreamPackets is the function used to convert the chunks sent by Gemini's SSE data into
 // contentfragment.
-func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *genai.Result) (iter.Seq[genai.ReplyFragment], func() error) {
+func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
 	var finalErr error
+	u := genai.Usage{}
 
 	return func(yield func(genai.ReplyFragment) bool) {
 			for pkt := range chunks {
@@ -2092,13 +2095,13 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *gena
 				}
 				if pkt.UsageMetadata.TotalTokenCount != 0 {
 					// Not 100% sure.
-					result.Usage.InputTokens = pkt.UsageMetadata.PromptTokenCount
-					result.Usage.ReasoningTokens = pkt.UsageMetadata.ThoughtsTokenCount
-					result.Usage.OutputTokens = pkt.UsageMetadata.CandidatesTokenCount + pkt.UsageMetadata.ToolUsePromptTokenCount + pkt.UsageMetadata.ThoughtsTokenCount
-					result.Usage.TotalTokens = pkt.UsageMetadata.TotalTokenCount
+					u.InputTokens = pkt.UsageMetadata.PromptTokenCount
+					u.ReasoningTokens = pkt.UsageMetadata.ThoughtsTokenCount
+					u.OutputTokens = pkt.UsageMetadata.CandidatesTokenCount + pkt.UsageMetadata.ToolUsePromptTokenCount + pkt.UsageMetadata.ThoughtsTokenCount
+					u.TotalTokens = pkt.UsageMetadata.TotalTokenCount
 				}
 				if pkt.Candidates[0].FinishReason != "" {
-					result.Usage.FinishReason = pkt.Candidates[0].FinishReason.ToFinishReason()
+					u.FinishReason = pkt.Candidates[0].FinishReason.ToFinishReason()
 				}
 				switch role := pkt.Candidates[0].Content.Role; role {
 				case "model", "":
@@ -2181,8 +2184,8 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *gena
 					}
 				}
 			}
-		}, func() error {
-			return finalErr
+		}, func() (genai.Usage, []genai.Logprobs, error) {
+			return u, nil, finalErr
 		}
 }
 

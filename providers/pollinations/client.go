@@ -1251,24 +1251,25 @@ func (c *Client) validateModality(ctx context.Context, mod genai.Modality) error
 	return nil
 }
 
-func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *genai.Result) (iter.Seq[genai.ReplyFragment], func() error) {
+func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
 	var finalErr error
-	pendingToolCall := ToolCall{}
+	u := genai.Usage{}
 
 	return func(yield func(genai.ReplyFragment) bool) {
+			pendingToolCall := ToolCall{}
 			for pkt := range chunks {
 				if pkt.Usage.PromptTokens != 0 {
-					result.Usage.InputTokens = pkt.Usage.PromptTokens
-					result.Usage.InputCachedTokens = pkt.Usage.PromptTokensDetails.CachedTokens
-					result.Usage.ReasoningTokens = pkt.Usage.CompletionTokensDetails.ReasoningTokens
-					result.Usage.OutputTokens = pkt.Usage.CompletionTokens
-					result.Usage.TotalTokens = pkt.Usage.TotalTokens
+					u.InputTokens = pkt.Usage.PromptTokens
+					u.InputCachedTokens = pkt.Usage.PromptTokensDetails.CachedTokens
+					u.ReasoningTokens = pkt.Usage.CompletionTokensDetails.ReasoningTokens
+					u.OutputTokens = pkt.Usage.CompletionTokens
+					u.TotalTokens = pkt.Usage.TotalTokens
 				}
 				if len(pkt.Choices) != 1 {
 					continue
 				}
 				if fr := pkt.Choices[0].FinishReason; fr != "" {
-					result.Usage.FinishReason = fr.ToFinishReason()
+					u.FinishReason = fr.ToFinishReason()
 				}
 				switch role := pkt.Choices[0].Delta.Role; role {
 				case "assistant", "":
@@ -1319,8 +1320,8 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *gena
 					}
 				}
 			}
-		}, func() error {
-			return finalErr
+		}, func() (genai.Usage, []genai.Logprobs, error) {
+			return u, nil, finalErr
 		}
 }
 

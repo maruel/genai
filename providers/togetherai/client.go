@@ -1152,20 +1152,21 @@ func (c *Client) isImage() bool {
 	return strings.HasPrefix(c.impl.Model, "black-forest-labs/")
 }
 
-func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *genai.Result) (iter.Seq[genai.ReplyFragment], func() error) {
+func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
 	var finalErr error
-	pendingToolCall := ToolCall{}
 	var warnings []string
-	sent := false
+	u := genai.Usage{}
+	var l []genai.Logprobs
 
 	return func(yield func(genai.ReplyFragment) bool) {
+			pendingToolCall := ToolCall{}
 			for pkt := range chunks {
 				if pkt.Usage.TotalTokens != 0 {
-					result.Usage.InputTokens = pkt.Usage.PromptTokens
-					result.Usage.InputCachedTokens = pkt.Usage.CachedTokens
-					result.Usage.ReasoningTokens = pkt.Usage.ReasoningTokens
-					result.Usage.OutputTokens = pkt.Usage.CompletionTokens
-					result.Usage.TotalTokens = pkt.Usage.TotalTokens
+					u.InputTokens = pkt.Usage.PromptTokens
+					u.InputCachedTokens = pkt.Usage.CachedTokens
+					u.ReasoningTokens = pkt.Usage.ReasoningTokens
+					u.OutputTokens = pkt.Usage.CompletionTokens
+					u.TotalTokens = pkt.Usage.TotalTokens
 				}
 				for _, w := range pkt.Warnings {
 					warnings = append(warnings, w.Message)
@@ -1174,7 +1175,7 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *gena
 					continue
 				}
 				if pkt.Choices[0].FinishReason != "" {
-					result.Usage.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
+					u.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
 				}
 				switch role := pkt.Choices[0].Delta.Role; role {
 				case "assistant", "":
@@ -1207,7 +1208,6 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *gena
 							if !yield(f) {
 								return
 							}
-							sent = true
 						}
 						pendingToolCall = t
 						continue
@@ -1228,7 +1228,6 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *gena
 						if !yield(f) {
 							return
 						}
-						sent = true
 					}
 				}
 				if len(pkt.Choices[0].ToolCalls) == 1 {
@@ -1238,7 +1237,6 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *gena
 					if !yield(f) {
 						return
 					}
-					sent = true
 				}
 				f := genai.ReplyFragment{
 					TextFragment:      pkt.Choices[0].Delta.Content,
@@ -1248,18 +1246,12 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *gena
 					if !yield(f) {
 						return
 					}
-					sent = true
 				}
 				if len(pkt.Choices[0].Logprobs.Tokens) != 0 {
-					result.Logprobs = append(result.Logprobs, pkt.Choices[0].Logprobs.ToLogprobs()...)
+					l = append(l, pkt.Choices[0].Logprobs.ToLogprobs()...)
 				}
 			}
-			if !sent {
-				// This happens with gpt-oss-120b with MaxTokens.
-				finalErr = errors.New("model sent no reply")
-				return
-			}
-		}, func() error {
+		}, func() (genai.Usage, []genai.Logprobs, error) {
 			if len(warnings) != 0 {
 				uce := &genai.UnsupportedContinuableError{}
 				for _, w := range warnings {
@@ -1269,9 +1261,9 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *gena
 						uce.Unsupported = append(uce.Unsupported, w)
 					}
 				}
-				return uce
+				return u, l, uce
 			}
-			return finalErr
+			return u, l, finalErr
 		}
 }
 

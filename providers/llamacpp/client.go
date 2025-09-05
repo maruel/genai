@@ -1273,7 +1273,7 @@ func (c *Client) CompletionsStream(ctx context.Context, msgs genai.Messages, opt
 		// Converts raw chunks into fragments.
 		// Generate parsed chunks from the raw JSON SSE stream.
 		chunks, finish := c.CompletionStreamRaw(ctx, &in)
-		fragments, finish2 := processCompletionsStreamPackets(chunks, &res)
+		fragments, finish2 := processCompletionsStreamPackets(chunks)
 		for f := range fragments {
 			if err := f.Validate(); err != nil {
 				// Catch provider implementation bugs.
@@ -1291,7 +1291,9 @@ func (c *Client) CompletionsStream(ctx context.Context, msgs genai.Messages, opt
 		if err := finish(); finalErr == nil {
 			finalErr = err
 		}
-		if err := finish2(); finalErr == nil {
+		var err error
+		res.Usage, res.Logprobs, err = finish2()
+		if finalErr == nil {
 			finalErr = err
 		}
 	}
@@ -1495,23 +1497,24 @@ func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, msgs gen
 	return nil
 }
 
-func processChatStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *genai.Result) (iter.Seq[genai.ReplyFragment], func() error) {
+func processChatStreamPackets(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
 	var finalErr error
+	u := genai.Usage{}
+	var l []genai.Logprobs
 
 	return func(yield func(genai.ReplyFragment) bool) {
 			pendingToolCall := ToolCall{}
 			for pkt := range chunks {
 				if pkt.Usage.PromptTokens != 0 {
-					result.Usage.InputTokens = pkt.Usage.PromptTokens
-					// result.Usage.InputCachedTokens = pkt.Usage.TokensCached
-					result.Usage.OutputTokens = pkt.Usage.CompletionTokens
-					result.Usage.TotalTokens = pkt.Usage.TotalTokens
+					u.InputTokens = pkt.Usage.PromptTokens
+					u.OutputTokens = pkt.Usage.CompletionTokens
+					u.TotalTokens = pkt.Usage.TotalTokens
 				}
 				if len(pkt.Choices) != 1 {
 					continue
 				}
 				if pkt.Choices[0].FinishReason != "" {
-					result.Usage.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
+					u.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
 				}
 				switch role := pkt.Choices[0].Delta.Role; role {
 				case "assistant", "":
@@ -1560,24 +1563,25 @@ func processChatStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *
 						break
 					}
 				}
-				result.Logprobs = append(result.Logprobs, pkt.Choices[0].Logprobs.To()...)
+				l = append(l, pkt.Choices[0].Logprobs.To()...)
 			}
-		}, func() error {
-			return finalErr
+		}, func() (genai.Usage, []genai.Logprobs, error) {
+			return u, l, finalErr
 		}
 }
 
-func processCompletionsStreamPackets(chunks iter.Seq[CompletionStreamChunkResponse], result *genai.Result) (iter.Seq[genai.ReplyFragment], func() error) {
+func processCompletionsStreamPackets(chunks iter.Seq[CompletionStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
 	var finalErr error
+	u := genai.Usage{}
 
 	return func(yield func(genai.ReplyFragment) bool) {
 			for pkt := range chunks {
 				if pkt.Timings.PredictedN != 0 {
-					result.Usage.InputTokens = pkt.Timings.PromptN
-					result.Usage.OutputTokens = pkt.Timings.PredictedN
+					u.InputTokens = pkt.Timings.PromptN
+					u.OutputTokens = pkt.Timings.PredictedN
 				}
 				if pkt.StopType != "" {
-					result.Usage.FinishReason = pkt.StopType.ToFinishReason()
+					u.FinishReason = pkt.StopType.ToFinishReason()
 				}
 				f := genai.ReplyFragment{TextFragment: pkt.Content}
 				if !f.IsZero() {
@@ -1586,8 +1590,8 @@ func processCompletionsStreamPackets(chunks iter.Seq[CompletionStreamChunkRespon
 					}
 				}
 			}
-		}, func() error {
-			return finalErr
+		}, func() (genai.Usage, []genai.Logprobs, error) {
+			return u, nil, finalErr
 		}
 }
 

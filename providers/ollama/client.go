@@ -717,7 +717,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 			}
 		}
 		chunks, finish1 := c.GenStreamRaw(ctx, &in)
-		fragments, finish2 := processStreamPackets(chunks, &res)
+		fragments, finish2 := processStreamPackets(chunks)
 		for f := range fragments {
 			if err := f.Validate(); err != nil {
 				// Catch provider implementation bugs.
@@ -735,7 +735,9 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 		if err := finish1(); finalErr == nil {
 			finalErr = err
 		}
-		if err := finish2(); finalErr == nil {
+		var err error
+		res.Usage, res.Logprobs, err = finish2()
+		if finalErr == nil {
 			finalErr = err
 		}
 	}
@@ -894,15 +896,16 @@ func processJSONStream(body io.Reader, out chan<- ChatStreamChunkResponse, lenie
 	}
 }
 
-func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *genai.Result) (iter.Seq[genai.ReplyFragment], func() error) {
+func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
 	var finalErr error
+	u := genai.Usage{}
 
 	return func(yield func(genai.ReplyFragment) bool) {
 			for pkt := range chunks {
 				if pkt.EvalCount != 0 {
-					result.Usage.InputTokens = pkt.PromptEvalCount
-					result.Usage.OutputTokens = pkt.EvalCount
-					result.Usage.FinishReason = pkt.DoneReason.ToFinishReason()
+					u.InputTokens = pkt.PromptEvalCount
+					u.OutputTokens = pkt.EvalCount
+					u.FinishReason = pkt.DoneReason.ToFinishReason()
 				}
 				switch role := pkt.Message.Role; role {
 				case "", "assistant":
@@ -927,8 +930,8 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *gena
 					}
 				}
 			}
-		}, func() error {
-			return finalErr
+		}, func() (genai.Usage, []genai.Logprobs, error) {
+			return u, nil, finalErr
 		}
 }
 

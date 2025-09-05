@@ -910,26 +910,28 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	return resp.ToModels(), nil
 }
 
-func processStreamPackets(chunk iter.Seq[ChatStreamChunkResponse], result *genai.Result) (iter.Seq[genai.ReplyFragment], func() error) {
+func processStreamPackets(chunk iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
 	var finalErr error
-	pendingToolCall := ToolCall{}
+	u := genai.Usage{}
+	var l []genai.Logprobs
 
 	return func(yield func(genai.ReplyFragment) bool) {
+			pendingToolCall := ToolCall{}
 			for pkt := range chunk {
 				if pkt.Usage.PromptTokens != 0 {
-					result.Usage.InputTokens = pkt.Usage.PromptTokens
-					result.Usage.InputCachedTokens = pkt.Usage.PromptTokensDetails.CachedTokens
-					result.Usage.ReasoningTokens = pkt.Usage.CompletionTokensDetails.ReasoningTokens
-					result.Usage.OutputTokens = pkt.Usage.CompletionTokens
-					result.Usage.TotalTokens = pkt.Usage.TotalTokens
+					u.InputTokens = pkt.Usage.PromptTokens
+					u.InputCachedTokens = pkt.Usage.PromptTokensDetails.CachedTokens
+					u.ReasoningTokens = pkt.Usage.CompletionTokensDetails.ReasoningTokens
+					u.OutputTokens = pkt.Usage.CompletionTokens
+					u.TotalTokens = pkt.Usage.TotalTokens
 				}
 				if len(pkt.Choices) != 1 {
 					continue
 				}
 				if pkt.Choices[0].FinishReason != "" {
-					result.Usage.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
+					u.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
 				}
-				result.Logprobs = append(result.Logprobs, pkt.Choices[0].Logprobs.To()...)
+				l = append(l, pkt.Choices[0].Logprobs.To()...)
 				switch role := pkt.Choices[0].Delta.Role; role {
 				case "assistant", "":
 				default:
@@ -987,8 +989,8 @@ func processStreamPackets(chunk iter.Seq[ChatStreamChunkResponse], result *genai
 					return
 				}
 			}
-		}, func() error {
-			return finalErr
+		}, func() (genai.Usage, []genai.Logprobs, error) {
+			return u, l, finalErr
 		}
 }
 

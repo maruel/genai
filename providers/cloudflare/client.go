@@ -872,16 +872,16 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	return models, nil
 }
 
-func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *genai.Result) (iter.Seq[genai.ReplyFragment], func() error) {
+func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
 	var finalErr error
-	sent := false
+	u := genai.Usage{}
 
 	return func(yield func(genai.ReplyFragment) bool) {
 			for pkt := range chunks {
 				if pkt.Usage.TotalTokens != 0 {
-					result.Usage.InputTokens = pkt.Usage.PromptTokens
-					result.Usage.OutputTokens = pkt.Usage.CompletionTokens
-					result.Usage.TotalTokens = pkt.Usage.TotalTokens
+					u.InputTokens = pkt.Usage.PromptTokens
+					u.OutputTokens = pkt.Usage.CompletionTokens
+					u.TotalTokens = pkt.Usage.TotalTokens
 					// Cloudflare doesn't provide FinishReason.
 				}
 				// TODO: Tools.
@@ -889,15 +889,10 @@ func processStreamPackets(chunks iter.Seq[ChatStreamChunkResponse], result *gena
 					if !yield(genai.ReplyFragment{TextFragment: string(word)}) {
 						return
 					}
-					sent = true
 				}
 			}
-			if !sent {
-				finalErr = errors.New("model sent no reply")
-				return
-			}
-		}, func() error {
-			return finalErr
+		}, func() (genai.Usage, []genai.Logprobs, error) {
+			return u, nil, finalErr
 		}
 }
 

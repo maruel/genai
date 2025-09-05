@@ -17,6 +17,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"iter"
 	"mime"
 	"net/http"
 	"os"
@@ -1137,8 +1138,8 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *Response, out *Response) er
 }
 
 // GenStreamRaw provides access to the raw API.
-func (c *Client) GenStreamRaw(ctx context.Context, in *Response, out chan<- ResponseStreamChunkResponse) error {
-	return c.impl.GenStreamRaw(ctx, in, out)
+func (c *Client) GenStreamRaw(ctx context.Context, in *Response) (iter.Seq[ResponseStreamChunkResponse], func() error) {
+	return c.impl.GenStreamRaw(ctx, in)
 }
 
 // processStreamPackets processes stream packets for the OpenAI Responses API.

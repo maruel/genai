@@ -726,10 +726,15 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 			return err
 		})
 		eg.Go(func() error {
-			err := c.GenStreamRaw(ctx2, &in, chunks)
+			it, finish := c.GenStreamRaw(ctx2, &in)
+			for pkt := range it {
+				chunks <- pkt
+			}
+			err := finish()
 			close(chunks)
 			return err
 		})
+
 		for f := range fragments {
 			if err := f.Validate(); err != nil {
 				// Catch provider implementation bugs.
@@ -761,33 +766,60 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 }
 
 // GenStreamRaw provides access to the raw API.
-func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest, out chan<- ChatStreamChunkResponse) error {
-	if err := c.Validate(); err != nil {
-		return err
+func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest) (iter.Seq[ChatStreamChunkResponse], func() error) {
+	var finalError error
+	finish := func() error {
+		return finalError
+	}
+	if finalError = c.Validate(); finalError != nil {
+		finalError = &internal.BadError{Err: finalError}
+		return yieldNothing[ChatStreamChunkResponse], finish
 	}
 	in.Stream = true
 	// Try first, if it immediately errors out requesting to pull, pull then try again.
-	resp, err := c.impl.JSONRequest(ctx, "POST", c.chatURL, in)
-	if err != nil {
-		return fmt.Errorf("failed to get server response: %w", err)
+	resp, err1 := c.impl.JSONRequest(ctx, "POST", c.chatURL, in)
+	if err1 != nil {
+		finalError = &internal.BadError{Err: fmt.Errorf("failed to get server response: %w", err1)}
+		return yieldNothing[ChatStreamChunkResponse], finish
 	}
-	err = processJSONStream(resp.Body, out, c.impl.Lenient)
-	_ = resp.Body.Close()
-	if err == nil || !strings.Contains(err.Error(), "not found, try pulling it first") {
-		return err
-	}
-	// Model was not present. Try to pull then rerun again.
-	if err = c.PullModel(ctx, c.impl.Model); err != nil {
-		return err
-	}
-	if resp, err = c.impl.JSONRequest(ctx, "POST", c.chatURL, in); err != nil {
-		return fmt.Errorf("failed to get server response: %w", err)
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != 200 {
-		return c.impl.DecodeError(c.chatURL, resp)
-	}
-	return processJSONStream(resp.Body, out, c.impl.Lenient)
+
+	// Process the stream in a separate goroutine to make sure that when the client iterate, there is already a
+	// packet waiting for it. This reduces the overall latency.
+	out := make(chan ChatStreamChunkResponse, 16)
+	eg := errgroup.Group{}
+	eg.Go(func() error {
+		defer close(out)
+		// Ollama doesn't use SSE.
+		err2 := processJSONStream(resp.Body, out, c.impl.Lenient)
+		_ = resp.Body.Close()
+		if err2 == nil || !strings.Contains(err2.Error(), "not found, try pulling it first") {
+			return err2
+		}
+		// Model was not present. Try to pull then rerun again.
+		if err2 = c.PullModel(ctx, c.impl.Model); err2 != nil {
+			return &internal.BadError{Err: err2}
+		}
+		// Try a second time now that the model was pulled successfully.
+		if resp, err2 = c.impl.JSONRequest(ctx, "POST", c.chatURL, in); err2 != nil {
+			return &internal.BadError{Err: fmt.Errorf("failed to get server response: %w", err2)}
+		}
+		defer resp.Body.Close()
+		if resp.StatusCode != 200 {
+			return c.impl.DecodeError(c.chatURL, resp)
+		}
+		// Ollama doesn't use SSE.
+		return processJSONStream(resp.Body, out, c.impl.Lenient)
+	})
+
+	return func(yield func(ChatStreamChunkResponse) bool) {
+			for pkt := range out {
+				if !yield(pkt) {
+					break
+				}
+			}
+		}, func() error {
+			return eg.Wait()
+		}
 }
 
 // ListModels implements genai.Provider.
@@ -911,6 +943,9 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		}
 	}
 	return nil
+}
+
+func yieldNothing[T any](yield func(T) bool) {
 }
 
 var _ genai.Provider = &Client{}

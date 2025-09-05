@@ -1709,7 +1709,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 			if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
 				continuableErr = uce
 			} else {
-				finalErr = err
+				finalErr = &internal.BadError{Err: err}
 				return
 			}
 		}
@@ -1726,14 +1726,17 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 		})
 		eg.Go(func() error {
 			// Generate parsed chunks from the raw JSON SSE stream.
-			err := c.GenStreamRaw(ctx2, in, chunks)
+			it, finish := c.GenStreamRaw(ctx2, in)
+			for pkt := range it {
+				chunks <- pkt
+			}
 			close(chunks)
-			return err
+			return finish()
 		})
 		for f := range fragments {
 			if err := f.Validate(); err != nil {
 				// Catch provider implementation bugs.
-				finalErr = err
+				finalErr = &internal.BadError{Err: err}
 				break
 			}
 			if !yield(f) {
@@ -1776,7 +1779,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 // GenStreamRaw provides access to the raw API.
 //
 // It calls the Gemini API method streamGenerateContent?alt=sse.
-func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest, out chan<- ChatStreamChunkResponse) error {
+func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest) (iter.Seq[ChatStreamChunkResponse], func() error) {
 	if len(in.GenerationConfig.ResponseModalities) == 0 {
 		in.GenerationConfig.ResponseModalities = make([]Modality, len(c.impl.OutputModalities))
 		for i, m := range c.impl.OutputModalities {
@@ -1790,11 +1793,13 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest, out chan<- C
 			case genai.ModalityDocument, genai.ModalityVideo:
 				fallthrough
 			default:
-				return fmt.Errorf("unsupported modality %s", m)
+				return yieldNothing[ChatStreamChunkResponse], func() error {
+					return &internal.BadError{Err: fmt.Errorf("unsupported modality %s", m)}
+				}
 			}
 		}
 	}
-	return c.impl.GenStreamRaw(ctx, in, out)
+	return c.impl.GenStreamRaw(ctx, in)
 }
 
 // CacheAddRequest caches the content for later use.
@@ -2186,6 +2191,9 @@ func processStreamPackets(ch <-chan ChatStreamChunkResponse, chunks chan<- genai
 		}
 	}
 	return nil
+}
+
+func yieldNothing[T any](yield func(T) bool) {
 }
 
 var (

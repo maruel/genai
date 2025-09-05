@@ -811,8 +811,8 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 }
 
 // GenStreamRaw provides access to the raw API.
-func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest, out chan<- ChatStreamChunkResponse) error {
-	return c.impl.GenStreamRaw(ctx, in, out)
+func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest) (iter.Seq[ChatStreamChunkResponse], func() error) {
+	return c.impl.GenStreamRaw(ctx, in)
 }
 
 // ListModels implements genai.Provider.

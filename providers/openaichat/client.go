@@ -18,6 +18,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"iter"
 	"mime"
 	"mime/multipart"
 	"net/http"
@@ -1032,8 +1033,8 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 }
 
 // GenStreamRaw provides access to the raw API.
-func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest, out chan<- ChatStreamChunkResponse) error {
-	return c.impl.GenStreamRaw(ctx, in, out)
+func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest) (iter.Seq[ChatStreamChunkResponse], func() error) {
+	return c.impl.GenStreamRaw(ctx, in)
 }
 
 // GenAsync implements genai.ProviderGenAsync.

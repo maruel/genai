@@ -390,9 +390,12 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 		})
 		eg.Go(func() error {
 			// Generate parsed chunks from the raw JSON SSE stream.
-			err := c.GenStreamRaw(ctx2, in, chunks)
+			it, finish := c.GenStreamRaw(ctx2, in)
+			for pkt := range it {
+				chunks <- pkt
+			}
 			close(chunks)
-			return err
+			return finish()
 		})
 		for f := range fragments {
 			if err := f.Validate(); err != nil {
@@ -449,11 +452,13 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 
 // GenStreamRaw is the generic raw implementation for streaming Gen API endpoints.
 // It sets Stream to true, enables stream options if available, and handles the SSE response.
-func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenStreamRaw(ctx context.Context, in PGenRequest, out chan<- GenStreamChunkResponse) error {
+func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenStreamRaw(ctx context.Context, in PGenRequest) (iter.Seq[GenStreamChunkResponse], func() error) {
 	// Normally this shouldn't be needed here but gemini calls this function directly.
 	c.lateInit()
 	if err := c.Validate(); err != nil {
-		return &internal.BadError{Err: err}
+		return yieldNothing[GenStreamChunkResponse], func() error {
+			return &internal.BadError{Err: err}
+		}
 	}
 	in.SetStream(true)
 	url := c.GenStreamURL
@@ -462,22 +467,44 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 	}
 	resp, err := c.JSONRequest(ctx, "POST", url, in)
 	if err != nil {
-		return &internal.BadError{Err: fmt.Errorf("failed to get server response: %w", err)}
+		return yieldNothing[GenStreamChunkResponse], func() error {
+			return &internal.BadError{Err: fmt.Errorf("failed to get server response: %w", err)}
+		}
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
-		// Generally happens when the request is something the server doesn't support, e.g. logprobs.
-		return c.DecodeError(url, resp)
+		return yieldNothing[GenStreamChunkResponse], func() error {
+			// Generally happens when the request is something the server doesn't support, e.g. logprobs.
+			return c.DecodeError(url, resp)
+		}
 	}
 	c.mu.Lock()
 	c.lastResp = resp.Header
 	c.mu.Unlock()
-	er := reflect.New(c.errorResponse).Interface().(PErrorResponse)
-	it, finish := sse.Process[GenStreamChunkResponse](resp.Body, er, c.Lenient)
-	for pkt := range it {
-		out <- pkt
-	}
-	return finish()
+
+	// Process the stream in a separate goroutine to make sure that when the client iterate, there is already a
+	// packet waiting for it. This reduces the overall latency.
+	out := make(chan GenStreamChunkResponse, 16)
+	eg := errgroup.Group{}
+	eg.Go(func() error {
+		er := reflect.New(c.errorResponse).Interface().(PErrorResponse)
+		it, finish := sse.Process[GenStreamChunkResponse](resp.Body, er, c.Lenient)
+		for pkt := range it {
+			out <- pkt
+		}
+		close(out)
+		return finish()
+	})
+
+	return func(yield func(GenStreamChunkResponse) bool) {
+			for pkt := range out {
+				if !yield(pkt) {
+					break
+				}
+			}
+		}, func() error {
+			return eg.Wait()
+		}
 }
 
 func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) lateInit() {

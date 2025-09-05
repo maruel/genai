@@ -492,8 +492,9 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 		for pkt := range it {
 			out <- pkt
 		}
+		err := finish()
 		close(out)
-		return finish()
+		return err
 	})
 
 	return func(yield func(GenStreamChunkResponse) bool) {

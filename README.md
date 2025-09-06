@@ -37,7 +37,7 @@ genai is _intentional_. Curious why it was created? See the release announcement
 - **Stateless**. No global state, it is safe to use clients concurrently.
 - **Professional grade**. smoke tested on live services with recorded traces located in `testdata/`
   directories, e.g.
-  [providers/anthropic/testdata/TestClient_Scoreboard/](https://github.com/maruel/genai/tree/main/providers/anthropic/testdata/TestClient_Scoreboard/).
+  [providers/anthropic/testdata/TestClient/Scoreboard/](https://github.com/maruel/genai/tree/main/providers/anthropic/testdata/TestClient/Scoreboard/).
 - **Trust, but verify**. It generates a [scoreboard](#scoreboard) based on actual behavior from each provider.
 - **Optimized for speed**. Minimize memory allocations, compress data at the
   transport layer when possible. Groq, Mistral and OpenAI use brotli for HTTP compression instead of gzip,

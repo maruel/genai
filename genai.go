@@ -694,7 +694,8 @@ func (r *Reply) Validate() error {
 		// The text can be discarded in GenSync which would make this check pass, but the Text cannot be discarded
 		// in GenStream because the ordering of the generated content is Reasoning, then Text, then ToolCall.
 		//
-		// See providers/deepseek/testdata/TestClient_Scoreboard/deepseek-reasoner_thinking/GenStream-Tools-SquareRoot-1-any.yaml
+		// See
+		// providers/deepseek/testdata/TestClient/Scoreboard/deepseek-reasoner_thinking/GenStream-Tools-SquareRoot-1.yaml
 		// for an example.
 	} else if !r.Doc.IsZero() {
 		if err := r.Doc.Validate(); err != nil {

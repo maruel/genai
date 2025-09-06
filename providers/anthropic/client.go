@@ -320,21 +320,24 @@ func (m *Message) From(in *genai.Message) error {
 	default:
 		return &internal.BadError{Err: fmt.Errorf("unsupported role %q", r)}
 	}
-	m.Content = make([]Content, len(in.Requests)+len(in.Replies)+len(in.ToolCallResults))
+	m.Content = make([]Content, 0, len(in.Requests)+len(in.Replies)+len(in.ToolCallResults))
 	for i := range in.Requests {
-		if err := m.Content[i].FromRequest(&in.Requests[i]); err != nil {
+		m.Content = append(m.Content, Content{})
+		if err := m.Content[len(m.Content)-1].FromRequest(&in.Requests[i]); err != nil {
 			return fmt.Errorf("request #%d: %w", i, err)
 		}
 	}
-	offset := len(in.Requests)
 	for i := range in.Replies {
-		if err := m.Content[i+offset].FromReply(&in.Replies[i]); err != nil {
+		c := Content{}
+		if skip, err := c.FromReply(&in.Replies[i]); err != nil {
 			return fmt.Errorf("reply #%d: %w", i, err)
+		} else if !skip {
+			m.Content = append(m.Content, c)
 		}
 	}
-	offset += len(in.Replies)
 	for i := range in.ToolCallResults {
-		m.Content[offset+i].FromToolCallResult(&in.ToolCallResults[i])
+		m.Content = append(m.Content, Content{})
+		m.Content[len(m.Content)-1].FromToolCallResult(&in.ToolCallResults[i])
 	}
 	return nil
 }
@@ -592,11 +595,11 @@ func (c *Content) FromRequest(in *genai.Request) error {
 	return errors.New("unknown Request type")
 }
 
-func (c *Content) FromReply(in *genai.Reply) error {
+func (c *Content) FromReply(in *genai.Reply) (bool, error) {
 	if in.Text != "" {
 		c.Type = ContentText
 		c.Text = in.Text
-		return nil
+		return false, nil
 	}
 	if in.Reasoning != "" {
 		c.Type = ContentThinking
@@ -606,36 +609,36 @@ func (c *Content) FromReply(in *genai.Reply) error {
 				c.Signature = b
 			}
 		}
-		return nil
+		return false, nil
 	}
 	if in.Opaque != nil {
 		if s, ok := in.Opaque["redacted_thinking"].(string); ok {
 			c.Type = ContentRedactedThinking
 			c.Data = s
-			return nil
+			return false, nil
 		}
-		return fmt.Errorf("unexpected Opaque %v", in.Opaque)
+		return false, fmt.Errorf("unexpected Opaque %v", in.Opaque)
 	}
 	if !in.ToolCall.IsZero() {
 		if len(in.ToolCall.Opaque) != 0 {
-			return errors.New("field ToolCall.Opaque not supported")
+			return false, errors.New("field ToolCall.Opaque not supported")
 		}
 		c.Type = ContentToolUse
 		c.ID = in.ToolCall.ID
 		c.Name = in.ToolCall.Name
 		if err := json.Unmarshal([]byte(in.ToolCall.Arguments), &c.Input); err != nil {
-			return fmt.Errorf("failed to marshal input: %w; for tool call: %#v", err, in)
+			return false, fmt.Errorf("failed to marshal input: %w; for tool call: %#v", err, in)
 		}
-		return nil
+		return false, nil
 	}
 	if !in.Doc.IsZero() {
 		mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
 		if err != nil {
-			return err
+			return false, err
 		}
 		// Anthropic require a mime-type to determine if image or PDF.
 		if mimeType == "" {
-			return fmt.Errorf("unspecified mime type for URL %q", in.Doc.URL)
+			return false, fmt.Errorf("unspecified mime type for URL %q", in.Doc.URL)
 		}
 		c.CacheControl.Type = "ephemeral"
 		switch {
@@ -663,7 +666,7 @@ func (c *Content) FromReply(in *genai.Reply) error {
 		case strings.HasPrefix(mimeType, "text/"):
 			c.Type = ContentDocument
 			if in.Doc.URL != "" {
-				return fmt.Errorf("%s documents must be provided inline, not as a URL", mimeType)
+				return false, fmt.Errorf("%s documents must be provided inline, not as a URL", mimeType)
 			}
 			// In particular, the API refuses "text/plain; charset=utf-8" or "text/markdown". WTF.
 			c.Source.MediaType = "text/plain"
@@ -672,11 +675,15 @@ func (c *Content) FromReply(in *genai.Reply) error {
 			// Enable citations for text documents
 			c.Citations = Citations{Enabled: true}
 		default:
-			return fmt.Errorf("unsupported content mime-type %s", mimeType)
+			return false, fmt.Errorf("unsupported content mime-type %s", mimeType)
 		}
-		return nil
+		return false, nil
 	}
-	return &internal.BadError{Err: errors.New("unknown Reply type")}
+	if len(in.Citations) > 0 {
+		// Skip.
+		return true, nil
+	}
+	return false, &internal.BadError{Err: errors.New("unknown Reply type")}
 }
 
 func (c *Content) FromToolCallResult(in *genai.ToolCallResult) {
@@ -692,19 +699,21 @@ func (c *Content) To() ([]genai.Reply, error) {
 	var out []genai.Reply
 	switch c.Type {
 	case ContentText:
-		r := genai.Reply{}
 		if c.Text != "" {
-			r.Text = c.Text
+			r := genai.Reply{Text: c.Text}
+			if len(c.Citations.Citations) > 0 {
+				// Signal that if we ever send the citations back, we want to merge them with the text.
+				r.Opaque = map[string]any{"merge": true}
+			}
+			out = append(out, r)
 		}
 		if len(c.Citations.Citations) > 0 {
-			r.Citations = make([]genai.Citation, len(c.Citations.Citations))
+			r := genai.Reply{Citations: make([]genai.Citation, len(c.Citations.Citations))}
 			for i := range c.Citations.Citations {
 				if err := c.Citations.Citations[i].To(&r.Citations[i]); err != nil {
 					return out, fmt.Errorf("citation %d: %w", i, err)
 				}
 			}
-		}
-		if !r.IsZero() {
 			out = append(out, r)
 		}
 	case ContentThinking:

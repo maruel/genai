@@ -685,9 +685,6 @@ func (r *Reply) Validate() error {
 		if r.Reasoning != "" {
 			return errors.New("field Reasoning can't be used along Text")
 		}
-		if len(r.Opaque) != 0 {
-			return errors.New("field Opaque can't be used along Text")
-		}
 		// Reasoning is allowed.
 		//
 		// We should not accept Text along with ToolCall. It is tricky to evaluate since explicit Chain-of-Thought

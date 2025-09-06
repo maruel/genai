@@ -187,11 +187,11 @@ func TestMessage(t *testing.T) {
 				in   Message
 			}{
 				{
-					name: "Valid user text message",
+					name: "user text message",
 					in:   NewTextMessage("Hello"),
 				},
 				{
-					name: "Valid user document message",
+					name: "user document message",
 					in: Message{
 						Requests: []Request{
 							{Doc: Doc{Filename: "document.txt", Src: strings.NewReader("document content")}},
@@ -199,25 +199,19 @@ func TestMessage(t *testing.T) {
 					},
 				},
 				{
-					name: "Valid assistant message",
+					name: "assistant message",
 					in:   Message{Replies: []Reply{{Text: "I can help with that"}}},
 				},
 				{
-					name: "Valid assistant with tool calls",
+					name: "assistant with tool calls",
 					in: Message{
 						Replies: []Reply{{ToolCall: ToolCall{Name: "tool", Arguments: "{}"}}},
 					},
 				},
 				{
-					name: "Valid user with tool call results",
+					name: "user with tool call results",
 					in: Message{
 						ToolCallResults: []ToolCallResult{{Name: "tool", Result: "result"}},
-					},
-				},
-				{
-					name: "Valid assistant with reply and tool calls",
-					in: Message{
-						Replies: []Reply{{Text: "I'll call a tool", ToolCall: ToolCall{Name: "tool", Arguments: "{}"}}},
 					},
 				},
 			}
@@ -264,6 +258,13 @@ func TestMessage(t *testing.T) {
 						},
 					},
 					errMsg: "reply #0: field ToolCall can't be used along Doc",
+				},
+				{
+					name: "assistant with reply and tool calls",
+					in: Message{
+						Replies: []Reply{{Text: "I'll call a tool", ToolCall: ToolCall{Name: "tool", Arguments: "{}"}}},
+					},
+					errMsg: "reply #0: field ToolCall can't be used along Text",
 				},
 			}
 			for _, tt := range tests {
@@ -733,17 +734,16 @@ func TestReply(t *testing.T) {
 				in   Reply
 			}{
 				{
-					name: "Valid text block",
+					name: "text block",
 					in:   Reply{Text: "Hello"},
 				},
 				{
-					name: "Valid document block",
+					name: "document block",
 					in:   Reply{Doc: Doc{Filename: "document.txt", Src: strings.NewReader("document content")}},
 				},
 				{
-					name: "valid text with citations",
+					name: "citations",
 					in: Reply{
-						Text: "The capital is Paris.",
 						Citations: []Citation{{
 							StartIndex: 15,
 							EndIndex:   20,
@@ -755,7 +755,6 @@ func TestReply(t *testing.T) {
 					// Technically it need a source. wantErr: true,
 					name: "invalid citation",
 					in: Reply{
-						Text:      "The capital is Paris.",
 						Citations: []Citation{{}},
 					},
 				},
@@ -780,7 +779,19 @@ func TestReply(t *testing.T) {
 						Reasoning: "reasoning",
 						Citations: []Citation{{}},
 					},
-					errMsg: "field Citations can only be used with Text",
+					errMsg: "field Reasoning can't be used along Citations",
+				},
+				{
+					name: "text with citations",
+					in: Reply{
+						Text: "The capital is Paris.",
+						Citations: []Citation{{
+							StartIndex: 15,
+							EndIndex:   20,
+							Sources:    []CitationSource{{ID: "doc1", Type: CitationDocument}},
+						}},
+					},
+					errMsg: "field Citations can't be used along Text",
 				},
 			}
 			for _, tt := range tests {

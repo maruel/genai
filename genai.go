@@ -513,30 +513,12 @@ func (m *Message) Accumulate(mf ReplyFragment) error {
 			if lastBlock := &m.Replies[len(m.Replies)-1]; lastBlock.Reasoning != "" {
 				lastBlock.Reasoning += mf.ReasoningFragment
 				if len(mf.Opaque) != 0 {
-					if lastBlock.Opaque == nil {
-						lastBlock.Opaque = map[string]any{}
-					}
-					maps.Copy(lastBlock.Opaque, mf.Opaque)
+					return fmt.Errorf("cannot add Opaque to a Reasoning block")
 				}
 				return nil
 			}
 		}
 		m.Replies = append(m.Replies, Reply{Reasoning: mf.ReasoningFragment, Opaque: mf.Opaque})
-		return nil
-	}
-	if len(mf.Opaque) != 0 {
-		if len(m.Replies) != 0 {
-			// Only add Opaque to Reasoning block.
-			if lastBlock := &m.Replies[len(m.Replies)-1]; lastBlock.Reasoning != "" {
-				if lastBlock.Opaque == nil {
-					lastBlock.Opaque = map[string]any{}
-				}
-				maps.Copy(lastBlock.Opaque, mf.Opaque)
-				return nil
-			}
-		}
-		// Unlikely.
-		m.Replies = append(m.Replies, Reply{Opaque: mf.Opaque})
 		return nil
 	}
 
@@ -588,6 +570,21 @@ func (m *Message) Accumulate(mf ReplyFragment) error {
 		m.Replies = append(m.Replies, Reply{Citations: []Citation{mf.Citation}})
 		return nil
 	}
+	if len(mf.Opaque) != 0 {
+		if len(m.Replies) != 0 {
+			// Only add Opaque to Reasoning block.
+			if lastBlock := &m.Replies[len(m.Replies)-1]; lastBlock.Reasoning != "" {
+				if lastBlock.Opaque == nil {
+					lastBlock.Opaque = map[string]any{}
+				}
+				maps.Copy(lastBlock.Opaque, mf.Opaque)
+				return nil
+			}
+		}
+		// Unlikely.
+		m.Replies = append(m.Replies, Reply{Opaque: mf.Opaque})
+		return nil
+	}
 
 	// Nothing to accumulate. It should be an error but there are bugs where the system hangs.
 	return nil
@@ -634,10 +631,13 @@ func (r *Request) UnmarshalJSON(b []byte) error {
 	return r.Validate()
 }
 
-// Reply is a block of content in the message meant to be visible in a
-// chat setting.
+// Reply is a block of information returned by the provider.
 //
-// It can also be a silent tool call request.
+// Normally only one of the field must be set. The exception is the Opaque field.
+//
+// Reply generally represents content returned by the provider, like a block of text or a document returned by
+// the model. It can be a silent tool call request. It can also be an opaque block. A good example is traces
+// of server side tool calling like WebSearch or MCP tool calling.
 type Reply struct {
 	// Text is the content of the text message.
 	Text string `json:"text,omitzero"`
@@ -651,14 +651,18 @@ type Reply struct {
 
 	// Reasoning is the reasoning done by the LLM.
 	Reasoning string `json:"thinking,omitzero"`
-	// Opaque is added to keep continuity on the processing. A good example is Anthropic's extended thinking. It
-	// must be kept during an exchange.
-	//
-	// A message with only Opaque set is valid.
-	Opaque map[string]any `json:"opaque,omitzero"`
 
 	// ToolCall is a tool call that the LLM requested to make.
 	ToolCall ToolCall `json:"tool_call,omitzero"`
+
+	// Opaque is added to keep continuity on the processing. A good example is Anthropic's extended thinking, or
+	// server-side tool calling. It must be kept during an exchange.
+	//
+	// A message with only Opaque set is valid. It can be used in combination with other fields. This field is
+	// specific to both the provider and the model.
+	//
+	// The data must be JSON-serializable.
+	Opaque map[string]any `json:"opaque,omitzero"`
 
 	_ struct{}
 }
@@ -672,18 +676,18 @@ func (r *Reply) IsZero() bool {
 
 // Validate ensures the block is valid.
 func (r *Reply) Validate() error {
-	// Validate citations when text is present
-	for i, citation := range r.Citations {
-		if err := citation.Validate(); err != nil {
-			return fmt.Errorf("citation %d: %w", i, err)
-		}
-	}
 	if r.Text != "" {
 		if !r.Doc.IsZero() {
 			return errors.New("field Doc can't be used along Text")
 		}
+		if len(r.Citations) != 0 {
+			return errors.New("field Citations can't be used along Text")
+		}
 		if r.Reasoning != "" {
 			return errors.New("field Reasoning can't be used along Text")
+		}
+		if !r.ToolCall.IsZero() {
+			return errors.New("field ToolCall can't be used along Text")
 		}
 		// Reasoning is allowed.
 		//
@@ -708,18 +712,15 @@ func (r *Reply) Validate() error {
 		if !r.ToolCall.IsZero() {
 			return errors.New("field ToolCall can't be used along Doc")
 		}
-		// Reasoning is allowed.
-	} else if r.Reasoning != "" || len(r.Opaque) != 0 {
-		if len(r.Citations) != 0 {
-			return errors.New("field Citations can only be used with Text")
-		}
-		if !r.Doc.IsZero() {
-			return errors.New("field Doc can't be used along Reasoning")
-		}
-		// ToolCall is allowed.
 	} else if len(r.Citations) != 0 {
-		if len(r.Opaque) != 0 {
-			return errors.New("field Opaque can't be used along a Citations")
+		// Reasoning is allowed.
+		for i, citation := range r.Citations {
+			if err := citation.Validate(); err != nil {
+				return fmt.Errorf("citation %d: %w", i, err)
+			}
+		}
+		if r.Reasoning != "" {
+			return errors.New("field Reasoning can't be used along Citations")
 		}
 		if !r.Doc.IsZero() {
 			return errors.New("field Doc can't be used along Citations")
@@ -727,14 +728,19 @@ func (r *Reply) Validate() error {
 		if !r.ToolCall.IsZero() {
 			return errors.New("field ToolCall can't be used along Citations")
 		}
+	} else if r.Reasoning != "" {
+		if len(r.Citations) != 0 {
+			return errors.New("field Citations can only be used with Text")
+		}
+		if !r.Doc.IsZero() {
+			return errors.New("field Doc can't be used along Reasoning")
+		}
+		// ToolCall is allowed.
 	} else if !r.ToolCall.IsZero() {
 		if err := r.ToolCall.Validate(); err != nil {
 			return err
 		}
-		if len(r.Opaque) != 0 {
-			return errors.New("field Opaque can't be used along ToolCall")
-		}
-	} else {
+	} else if len(r.Opaque) == 0 {
 		return errors.New("an empty Reply is invalid")
 	}
 	return nil
@@ -877,21 +883,22 @@ func (d *Doc) Read(maxSize int64) (string, []byte, error) {
 // ReplyFragment is a fragment of a content the LLM is sending back as part
 // of the GenStream().
 //
-// Use Message.Accumulate to accumulate the fragments into a Message.
+// Use Message.Accumulate to accumulate the fragments into a Message's Replies field.
 type ReplyFragment struct {
 	TextFragment string `json:"text,omitzero"`
-
-	ReasoningFragment string         `json:"reasoning,omitzero"`
-	Opaque            map[string]any `json:"opaque,omitzero"`
 
 	Filename         string `json:"filename,omitzero"`
 	DocumentFragment []byte `json:"document,omitzero"`
 	URL              string `json:"url,omitzero"`
 
+	Citation Citation `json:"citation,omitzero"`
+
+	ReasoningFragment string `json:"reasoning,omitzero"`
+
 	// ToolCall is a tool call that the LLM requested to make.
 	ToolCall ToolCall `json:"tool_call,omitzero"`
 
-	Citation Citation `json:"citation,omitzero"`
+	Opaque map[string]any `json:"opaque,omitzero"`
 
 	_ struct{}
 }

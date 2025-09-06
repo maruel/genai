@@ -663,6 +663,13 @@ type Reply struct {
 	_ struct{}
 }
 
+// IsZero returns true if the Reply is empty.
+//
+// An empty reply is not valid.
+func (r *Reply) IsZero() bool {
+	return r.Text == "" && r.Doc.IsZero() && len(r.Citations) == 0 && r.Reasoning == "" && len(r.Opaque) == 0 && r.ToolCall.IsZero()
+}
+
 // Validate ensures the block is valid.
 func (r *Reply) Validate() error {
 	// Validate citations when text is present

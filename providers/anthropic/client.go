@@ -348,12 +348,11 @@ func (m *Message) To(out *genai.Message) error {
 	for i := range m.Content {
 		switch m.Content[i].Type {
 		case ContentText, ContentThinking, ContentRedactedThinking, ContentToolUse:
-			c := genai.Reply{}
-			if skip, err := m.Content[i].To(&c); err != nil {
+			replies, err := m.Content[i].To()
+			if err != nil {
 				return fmt.Errorf("reply #%d: %w", i, err)
-			} else if !skip {
-				out.Replies = append(out.Replies, c)
 			}
+			out.Replies = append(out.Replies, replies...)
 		case ContentServerToolUse:
 			// TODO: We drop the value, which makes the next request unusable.
 			switch m.Content[i].Name {
@@ -381,13 +380,11 @@ func (m *Message) To(out *genai.Message) error {
 				}
 			}
 		case ContentWebSearchToolResult:
-			r := genai.Reply{}
-			if skip, err := m.Content[i].To(&r); err != nil {
+			replies, err := m.Content[i].To()
+			if err != nil {
 				return fmt.Errorf("reply #%d: %w", i, err)
-			} else if skip {
-				return &internal.BadError{Err: fmt.Errorf("reply #%d: unexpected skipped web search tool result", i)}
 			}
-			out.Replies = append(out.Replies, r)
+			out.Replies = append(out.Replies, replies...)
 		case ContentWebSearchResult, ContentImage, ContentDocument, ContentToolResult:
 			fallthrough
 		default:
@@ -691,58 +688,57 @@ func (c *Content) FromToolCallResult(in *genai.ToolCallResult) {
 	c.Content = []Content{{Type: ContentText, Text: in.Result}}
 }
 
-func (c *Content) To(out *genai.Reply) (bool, error) {
+func (c *Content) To() ([]genai.Reply, error) {
+	var out []genai.Reply
 	switch c.Type {
 	case ContentText:
-		out.Text = c.Text
+		r := genai.Reply{}
+		if c.Text != "" {
+			r.Text = c.Text
+		}
 		if len(c.Citations.Citations) > 0 {
-			out.Citations = make([]genai.Citation, len(c.Citations.Citations))
+			r.Citations = make([]genai.Citation, len(c.Citations.Citations))
 			for i := range c.Citations.Citations {
-				if err := c.Citations.Citations[i].To(&out.Citations[i]); err != nil {
-					return false, fmt.Errorf("citation %d: %w", i, err)
+				if err := c.Citations.Citations[i].To(&r.Citations[i]); err != nil {
+					return out, fmt.Errorf("citation %d: %w", i, err)
 				}
 			}
-		} else if len(out.Text) == 0 {
-			// This happens with citations with claude 4 sonnet with thinking enabled where an empty text packet is
-			// sent first.
-			return true, nil
+		}
+		if !r.IsZero() {
+			out = append(out, r)
 		}
 	case ContentThinking:
-		out.Reasoning = c.Thinking
-		out.Opaque = map[string]any{"signature": c.Signature}
+		out = append(out, genai.Reply{Reasoning: c.Thinking, Opaque: map[string]any{"signature": c.Signature}})
 	case ContentRedactedThinking:
-		out.Opaque = map[string]any{"redacted_thinking": c.Signature}
+		out = append(out, genai.Reply{Opaque: map[string]any{"redacted_thinking": c.Signature}})
 	case ContentToolUse:
-		out.ToolCall.ID = c.ID
-		out.ToolCall.Name = c.Name
 		raw, err := json.Marshal(c.Input)
 		if err != nil {
-			return false, &internal.BadError{Err: fmt.Errorf("failed to marshal input: %w; for tool call: %#v", err, c)}
+			return out, &internal.BadError{Err: fmt.Errorf("failed to marshal input: %w; for tool call: %#v", err, c)}
 		}
-		out.ToolCall.Arguments = string(raw)
-		return false, nil
+		out = append(out, genai.Reply{ToolCall: genai.ToolCall{ID: c.ID, Name: c.Name, Arguments: string(raw)}})
 	case ContentWebSearchToolResult:
-		out.Citations = []genai.Citation{{Sources: make([]genai.CitationSource, len(c.Content))}}
+		r := genai.Reply{Citations: []genai.Citation{{Sources: make([]genai.CitationSource, len(c.Content))}}}
 		for i, cc := range c.Content {
 			if cc.Type != ContentWebSearchResult {
-				return false, &internal.BadError{Err: fmt.Errorf("implement content type %q while processing %q", cc.Type, c.Type)}
+				return out, &internal.BadError{Err: fmt.Errorf("implement content type %q while processing %q", cc.Type, c.Type)}
 			}
-			out.Citations[0].Sources[i].Type = genai.CitationWeb
-			out.Citations[0].Sources[i].URL = cc.URL
-			out.Citations[0].Sources[i].Title = cc.Title
-			out.Citations[0].Sources[i].Date = cc.PageAge
+			r.Citations[0].Sources[i].Type = genai.CitationWeb
+			r.Citations[0].Sources[i].URL = cc.URL
+			r.Citations[0].Sources[i].Title = cc.Title
+			r.Citations[0].Sources[i].Date = cc.PageAge
 			// TODO: Keep cc.EncryptedContent to be able to continue the thread.
 		}
-		return false, nil
+		out = append(out, r)
 	case ContentServerToolUse:
 		// TODO: web_search tool query.
 		panic("shouln't happen")
 	case ContentWebSearchResult, ContentImage, ContentDocument, ContentToolResult:
 		fallthrough
 	default:
-		return false, fmt.Errorf("unsupported content type %q", c.Type)
+		return out, fmt.Errorf("unsupported content type %q", c.Type)
 	}
-	return false, nil
+	return out, nil
 }
 
 // WebSearch is the server tool use.
@@ -1235,12 +1231,11 @@ func (b *BatchQueryResponse) To(out *genai.Message) error {
 	for i := range b.Result.Message.Content {
 		switch b.Result.Message.Content[i].Type {
 		case ContentText, ContentThinking, ContentRedactedThinking, ContentToolUse:
-			c := genai.Reply{}
-			if skip, err := b.Result.Message.Content[i].To(&c); err != nil {
+			replies, err := b.Result.Message.Content[i].To()
+			if err != nil {
 				return fmt.Errorf("block %d: %w", i, err)
-			} else if !skip {
-				out.Replies = append(out.Replies, c)
 			}
+			out.Replies = append(out.Replies, replies...)
 		case ContentWebSearchResult, ContentServerToolUse, ContentWebSearchToolResult, ContentImage, ContentDocument, ContentToolResult:
 			fallthrough
 		default:

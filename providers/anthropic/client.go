@@ -394,7 +394,22 @@ func (m *Message) To(out *genai.Message) error {
 				return fmt.Errorf("reply #%d: %w", i, err)
 			}
 			out.Replies = append(out.Replies, replies...)
-		case ContentWebSearchResult, ContentImage, ContentDocument, ContentToolResult, ContentMCPToolUse, ContentMCPToolResult:
+		case ContentMCPToolUse:
+			opaque := map[string]any{"mcp_tool_use": map[string]any{
+				"id":    m.Content[i].ID,
+				"input": m.Content[i].Input,
+				"name":  m.Content[i].Name,
+			}}
+			out.Replies = append(out.Replies, genai.Reply{Opaque: opaque})
+		case ContentMCPToolResult:
+			opaque := map[string]any{"mcp_tool_result": map[string]any{
+				"tool_use_id": m.Content[i].ToolUseID,
+				"is_error":    m.Content[i].IsError,
+				"content":     m.Content[i].Content,
+				"server_name": m.Content[i].ServerName,
+			}}
+			out.Replies = append(out.Replies, genai.Reply{Opaque: opaque})
+		case ContentWebSearchResult, ContentImage, ContentDocument, ContentToolResult:
 			fallthrough
 		default:
 			return &internal.BadError{Err: fmt.Errorf("implement content type %q", m.Content[i].Type)}
@@ -464,7 +479,7 @@ type Content struct {
 	// - ContentWebSearchToolResult: Only ContentWebSearchResult is allowed.
 	Content []Content `json:"content,omitzero"`
 
-	// Type == ContentMCPToolResult
+	// Type == ContentMCPToolUse
 	ServerName string `json:"server_name,omitzero"`
 
 	// Type == ContentDocument
@@ -530,6 +545,14 @@ func (c *Content) Validate() error {
 			c.Context != "" || c.Title != "" {
 			return &internal.BadError{Err: errors.New("ContentToolResult: unexpected fields set")}
 		}
+	case ContentMCPToolUse:
+		if c.ID == "" || c.Name == "" || c.Input == nil || c.ServerName == "" {
+			return &internal.BadError{Err: fmt.Errorf("expected fields ID, Name, Input, ServerName unset for %s", c.Type)}
+		}
+	case ContentMCPToolResult:
+		if c.ToolUseID == "" || len(c.Content) == 0 {
+			return &internal.BadError{Err: fmt.Errorf("expected fields ToolUseID, Content unset for %s", c.Type)}
+		}
 	case ContentServerToolUse:
 		if c.ID == "" || c.Name == "" || c.Input == nil {
 			return &internal.BadError{Err: fmt.Errorf("expected fields ID, Name, Input unset for %s", c.Type)}
@@ -542,8 +565,6 @@ func (c *Content) Validate() error {
 		if c.URL == "" {
 			return &internal.BadError{Err: fmt.Errorf("expected fields URL unset for %s", c.Type)}
 		}
-	case ContentMCPToolUse, ContentMCPToolResult:
-		fallthrough
 	default:
 		return &internal.BadError{Err: fmt.Errorf("implement ContentType %q", c.Type)}
 	}
@@ -629,6 +650,37 @@ func (c *Content) FromReply(in *genai.Reply) (bool, error) {
 			c.Data = s
 			return false, nil
 		}
+		if v, ok := in.Opaque["mcp_tool_use"].(map[string]any); ok {
+			c.Type = ContentMCPToolUse
+			ok := false
+			if c.ID, ok = v["id"].(string); !ok {
+				return false, errors.New("field Opaque.mcp_tool_use.id not found")
+			}
+			if c.Name, ok = v["name"].(string); !ok {
+				return false, errors.New("field Opaque.mcp_tool_use.name not found")
+			}
+			if c.Input, ok = v["input"]; !ok {
+				return false, errors.New("field Opaque.mcp_tool_use.input not found")
+			}
+			return false, nil
+		}
+		if v, ok := in.Opaque["mcp_tool_result"].(map[string]any); ok {
+			c.Type = ContentMCPToolResult
+			ok := false
+			if c.ToolUseID, ok = v["tool_use_id"].(string); !ok {
+				return false, errors.New("field Opaque.mcp_tool_result.tool_use_id not found")
+			}
+			if c.IsError, ok = v["is_error"].(bool); !ok {
+				return false, errors.New("field Opaque.mcp_tool_result.is_error not found")
+			}
+			if c.Content, ok = v["content"].([]Content); !ok {
+				return false, errors.New("field Opaque.mcp_tool_result.content not found")
+			}
+			if c.ServerName, ok = v["tool_use_id"].(string); !ok {
+				return false, errors.New("field Opaque.mcp_tool_result.server_name not found")
+			}
+			return false, nil
+		}
 		return false, fmt.Errorf("unexpected Opaque %v", in.Opaque)
 	}
 	if !in.ToolCall.IsZero() {
@@ -703,7 +755,7 @@ func (c *Content) FromToolCallResult(in *genai.ToolCallResult) {
 	// TODO: Support image.
 	c.Type = ContentToolResult
 	c.ToolUseID = in.ID
-	c.IsError = false // Interesting!
+	c.IsError = false
 	c.Content = []Content{{Type: ContentText, Text: in.Result}}
 }
 
@@ -751,10 +803,16 @@ func (c *Content) To() ([]genai.Reply, error) {
 			// TODO: Keep cc.EncryptedContent to be able to continue the thread.
 		}
 		out = append(out, r)
+	case ContentMCPToolUse:
+		// TODO.
+		panic(5)
+	case ContentMCPToolResult:
+		// TODO.
+		panic(6)
 	case ContentServerToolUse:
 		// TODO: web_search tool query.
-		panic("shouln't happen")
-	case ContentWebSearchResult, ContentImage, ContentDocument, ContentToolResult, ContentMCPToolUse, ContentMCPToolResult:
+		return out, fmt.Errorf("shouln't happen")
+	case ContentWebSearchResult, ContentImage, ContentDocument, ContentToolResult:
 		fallthrough
 	default:
 		return out, fmt.Errorf("unsupported content type %q", c.Type)
@@ -1098,14 +1156,14 @@ type ChatStreamChunkResponse struct {
 		Thinking  string `json:"thinking"`
 		Signature []byte `json:"signature"` // Never actually filed but present on content_block_start.
 
-		// Type == ContentToolUse
+		// Type == ContentToolUse, ContentMCPToolUse
 		ID    string `json:"id"`
 		Name  string `json:"name"`
 		Input any    `json:"input"`
 
 		Citations []struct{} `json:"citations"` // Empty, not used in the API.
 
-		// Type == ContentWebSearchToolResult
+		// Type == ContentWebSearchToolResult, ContentMCPToolResult
 		ToolUseID string    `json:"tool_use_id"`
 		Content   []Content `json:"content"`
 
@@ -1136,6 +1194,7 @@ type ChatStreamChunkResponse struct {
 		StopReason   StopReason `json:"stop_reason"`
 		StopSequence string     `json:"stop_sequence"`
 	} `json:"delta"`
+
 	Usage Usage `json:"usage"`
 }
 
@@ -1255,18 +1314,11 @@ type BatchQueryResponse struct {
 func (b *BatchQueryResponse) To(out *genai.Message) error {
 	// We need to split actual content and tool calls.
 	for i := range b.Result.Message.Content {
-		switch b.Result.Message.Content[i].Type {
-		case ContentText, ContentThinking, ContentRedactedThinking, ContentToolUse:
-			replies, err := b.Result.Message.Content[i].To()
-			if err != nil {
-				return fmt.Errorf("block %d: %w", i, err)
-			}
-			out.Replies = append(out.Replies, replies...)
-		case ContentWebSearchResult, ContentServerToolUse, ContentWebSearchToolResult, ContentImage, ContentDocument, ContentToolResult, ContentMCPToolUse, ContentMCPToolResult:
-			fallthrough
-		default:
-			return &internal.BadError{Err: fmt.Errorf("implement content type %q", b.Result.Message.Content[i].Type)}
+		replies, err := b.Result.Message.Content[i].To()
+		if err != nil {
+			return fmt.Errorf("block %d: %w", i, err)
 		}
+		out.Replies = append(out.Replies, replies...)
 	}
 	return nil
 }
@@ -1668,7 +1720,20 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 							f.Citation.Sources[i].Date = cc.PageAge
 							// EncryptedContent is not really useful?
 						}
-					case ContentWebSearchResult, ContentImage, ContentDocument, ContentToolResult, ContentMCPToolUse, ContentMCPToolResult:
+					case ContentMCPToolUse:
+						f.Opaque = map[string]any{"mcp_tool_use": map[string]any{
+							"id":    pkt.ContentBlock.ID,
+							"input": pkt.ContentBlock.Input,
+							"name":  pkt.ContentBlock.Name,
+						}}
+					case ContentMCPToolResult:
+						f.Opaque = map[string]any{"mcp_tool_result": map[string]any{
+							"tool_use_id": pkt.ContentBlock.ToolUseID,
+							//"is_error":    pkt.ContentBlock.IsError,
+							"content":     pkt.ContentBlock.Content,
+							"server_name": pkt.ContentBlock.ServerName,
+						}}
+					case ContentWebSearchResult, ContentImage, ContentDocument, ContentToolResult:
 						fallthrough
 					default:
 						finalErr = &internal.BadError{Err: fmt.Errorf("implement content block %q", pkt.ContentBlock.Type)}

@@ -6,6 +6,7 @@ package anthropic_test
 
 import (
 	_ "embed"
+	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -17,6 +18,7 @@ import (
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/anthropic"
 	"github.com/maruel/genai/smoke/smoketest"
+	"github.com/maruel/roundtrippers"
 )
 
 func getClientInner(t *testing.T, opts genai.ProviderOptions, fn func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
@@ -129,6 +131,87 @@ func TestClient(t *testing.T) {
 			}
 			break
 		}
+	})
+
+	t.Run("MCP", func(t *testing.T) {
+		// Anthropic requires an HTTP header to enable MCP use. See
+		// https://docs.anthropic.com/en/docs/agents-and-tools/mcp-connector
+		wrapper := func(h http.RoundTripper) http.RoundTripper {
+			return &roundtrippers.Header{
+				Transport: h,
+				Header:    http.Header{"anthropic-beta": []string{"mcp-client-2025-04-04"}},
+			}
+		}
+		prompt := "Remember that my name is Bob, my mother is Jane and my father is John. If you saved it, reply with 'Done'."
+		msgs := genai.Messages{genai.NewTextMessage(prompt)}
+		mcp := anthropic.MCPServer{
+			Name:              "memory",
+			Type:              "url",
+			URL:               "https://mcp.maruel.ca",
+			ToolConfiguration: anthropic.ToolConfiguration{Enabled: true},
+		}
+		t.Run("GenSyncRaw", func(t *testing.T) {
+			cc, err := getClientInner(t, genai.ProviderOptions{}, func(h http.RoundTripper) http.RoundTripper {
+				return wrapper(testRecorder.Record(t, h))
+			})
+			if err != nil {
+				log.Fatal(err)
+			}
+			c := cc.(*anthropic.Client)
+			// Use raw calls to use the MCP client. It is not yet generalized in genai.
+			in := anthropic.ChatRequest{MCPServers: []anthropic.MCPServer{mcp}}
+			if err = in.Init(msgs, c.ModelID()); err != nil {
+				t.Fatal(err)
+			}
+			out := anthropic.ChatResponse{}
+			if err = c.GenSyncRaw(t.Context(), &in, &out); err != nil {
+				t.Fatal(err)
+			}
+			res, err := out.ToResult()
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got := res.String(); !strings.Contains(got, "memory") {
+				t.Fatal(got)
+			}
+		})
+		t.Run("GenStreamRaw", func(t *testing.T) {
+			cc, err := getClientInner(t, genai.ProviderOptions{}, func(h http.RoundTripper) http.RoundTripper {
+				return wrapper(testRecorder.Record(t, h))
+			})
+			if err != nil {
+				log.Fatal(err)
+			}
+			c := cc.(*anthropic.Client)
+			// Use raw calls to use the MCP client. It is not yet generalized in genai.
+			in := anthropic.ChatRequest{MCPServers: []anthropic.MCPServer{mcp}}
+			if err = in.Init(msgs, c.ModelID()); err != nil {
+				t.Fatal(err)
+			}
+			chunks, finish := c.GenStreamRaw(t.Context(), &in)
+			fragments, finish2 := anthropic.ProcessStream(chunks)
+			res := genai.Result{}
+			for f := range fragments {
+				if f.IsZero() {
+					continue
+				}
+				if err := f.Validate(); err != nil {
+					t.Fatal(err)
+				}
+				if err := res.Accumulate(f); err != nil {
+					t.Fatal(err)
+				}
+			}
+			if err := finish(); err != nil {
+				t.Fatal(err)
+			}
+			if res.Usage, res.Logprobs, err = finish2(); err != nil {
+				t.Fatal(err)
+			}
+			if got := res.String(); !strings.Contains(got, "memory") {
+				t.Fatal(got)
+			}
+		})
 	})
 
 	t.Run("Preferred", func(t *testing.T) {

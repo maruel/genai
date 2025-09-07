@@ -476,10 +476,11 @@ func (m *Message) To(out *genai.Message) error {
 	switch m.Type {
 	case MessageMessage:
 		for i := range m.Content {
-			out.Replies = append(out.Replies, genai.Reply{})
-			if err := m.Content[i].To(&out.Replies[len(out.Replies)-1]); err != nil {
+			replies, err := m.Content[i].To()
+			if err != nil {
 				return fmt.Errorf("reply %d: %w", i, err)
 			}
+			out.Replies = append(out.Replies, replies...)
 		}
 	case MessageReasoning:
 		for i := range m.Summary {
@@ -550,30 +551,31 @@ type Content struct {
 	Refusal string `json:"refusal,omitzero"`
 }
 
-func (c *Content) To(out *genai.Reply) error {
+func (c *Content) To() ([]genai.Reply, error) {
+	var out []genai.Reply
 	for _, a := range c.Annotations {
 		if a.Type != "url_citation" {
-			return &internal.BadError{Err: fmt.Errorf("unsupported annotation type %q", a.Type)}
+			return out, &internal.BadError{Err: fmt.Errorf("unsupported annotation type %q", a.Type)}
 		}
 		if a.FileID != "" {
-			return &internal.BadError{Err: fmt.Errorf("field Annotation.FileID not supported")}
+			return out, &internal.BadError{Err: fmt.Errorf("field Annotation.FileID not supported")}
 		}
 		c := genai.Citation{
 			StartIndex: a.StartIndex,
 			EndIndex:   a.EndIndex,
 			Sources:    []genai.CitationSource{{Type: genai.CitationWeb, URL: a.URL, Title: a.Title}},
 		}
-		out.Citations = append(out.Citations, c)
+		out = append(out, genai.Reply{Citations: []genai.Citation{c}})
 	}
 	switch c.Type {
 	case ContentOutputText:
-		out.Text = c.Text
+		out = append(out, genai.Reply{Text: c.Text})
 	case ContentInputText, ContentInputImage, ContentInputFile, ContentRefusal:
-		return &internal.BadError{Err: fmt.Errorf("implement content type %q", c.Type)}
+		return out, &internal.BadError{Err: fmt.Errorf("implement content type %q", c.Type)}
 	default:
-		return &internal.BadError{Err: fmt.Errorf("implement content type %q", c.Type)}
+		return out, &internal.BadError{Err: fmt.Errorf("implement content type %q", c.Type)}
 	}
-	return nil
+	return out, nil
 }
 
 func (c *Content) FromRequest(in *genai.Request) error {

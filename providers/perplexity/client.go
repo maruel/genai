@@ -289,7 +289,7 @@ func (m *Message) To(search []SearchResult, images []Images, related []string, o
 			ct.Sources[i].URL = search[i].URL
 			ct.Sources[i].Date = search[i].Date
 		}
-		out.Replies[0].Citations = append(out.Replies[0].Citations, ct)
+		out.Replies = append(out.Replies, genai.Reply{Citations: []genai.Citation{ct}})
 	}
 	if len(images) > 0 {
 		ct := genai.Citation{Sources: make([]genai.CitationSource, len(images))}
@@ -302,7 +302,7 @@ func (m *Message) To(search []SearchResult, images []Images, related []string, o
 				"height": images[i].Height,
 			}
 		}
-		out.Replies[0].Citations = append(out.Replies[0].Citations, ct)
+		out.Replies = append(out.Replies, genai.Reply{Citations: []genai.Citation{ct}})
 	}
 	// if len(related) > 0 {
 	// TODO: Figure out how to return this.

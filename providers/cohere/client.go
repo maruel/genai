@@ -627,14 +627,9 @@ func (m *MessageResponse) To(out *genai.Message) error {
 			}
 		}
 		if len(m.Citations) != 0 {
-			for i := range out.Replies {
-				if out.Replies[i].Text != "" {
-					if err := m.Citations.To(&out.Replies[i]); err != nil {
-						return fmt.Errorf("mapping citations: %w", err)
-					}
-					// TODO: handle multiple citations.
-					break
-				}
+			out.Replies = append(out.Replies, genai.Reply{})
+			if err := m.Citations.To(&out.Replies[len(out.Replies)-1]); err != nil {
+				return fmt.Errorf("mapping citations: %w", err)
 			}
 		}
 	}

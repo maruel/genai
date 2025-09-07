@@ -294,6 +294,10 @@ type Message struct {
 }
 
 func (m *Message) Validate() error {
+	return m.validate(true)
+}
+
+func (m *Message) validate(strict bool) error {
 	if m.Type != "" && m.Type != "message" {
 		// Allow empty type, it is not required.
 		return &internal.BadError{Err: fmt.Errorf("implement message type %q", m.Type)}
@@ -310,7 +314,7 @@ func (m *Message) Validate() error {
 		return &internal.BadError{Err: errors.New("message doesn't have content defined")}
 	}
 	for i := range m.Content {
-		if err := m.Content[i].Validate(); err != nil {
+		if err := m.Content[i].validate(strict); err != nil {
 			return fmt.Errorf("content block %d: %w", i, err)
 		}
 	}
@@ -350,75 +354,25 @@ func (m *Message) From(in *genai.Message) error {
 
 func (m *Message) To(out *genai.Message) error {
 	// Make sure the message was initialized properly before converting.
-	if err := m.Validate(); err != nil {
+	// Ask for a "non-strict" check because sometimes the server replies with an invalid message (!)
+	if err := m.validate(false); err != nil {
 		return err
 	}
 	// We need to split actual content and tool calls.
 	for i := range m.Content {
-		switch m.Content[i].Type {
-		case ContentText, ContentThinking, ContentRedactedThinking, ContentToolUse:
-			replies, err := m.Content[i].To()
-			if err != nil {
-				return fmt.Errorf("reply #%d: %w", i, err)
-			}
-			out.Replies = append(out.Replies, replies...)
-		case ContentServerToolUse:
-			// TODO: We drop the value, which makes the next request unusable.
-			switch m.Content[i].Name {
-			case "web_search":
-				q := WebSearch{}
-				// We marshal then unmarshal to normalize the input.
-				b, err := json.Marshal(m.Content[i].Input)
-				if err != nil {
-					return &internal.BadError{Err: fmt.Errorf("failed to marshal server tool call %s: %w", m.Content[i].Name, err)}
-				}
-				d := json.NewDecoder(bytes.NewReader(b))
-				if !internal.BeLenient {
-					d.DisallowUnknownFields()
-				}
-				if err := d.Decode(&q); err != nil {
-					return &internal.BadError{Err: fmt.Errorf("failed to decode server tool call %s: %w", m.Content[i].Name, err)}
-				}
-				out.Replies = append(out.Replies, genai.Reply{
-					Citations: []genai.Citation{{Sources: []genai.CitationSource{{Type: genai.CitationWebQuery, Snippet: q.Query}}}},
-				})
-			default:
-				// Oops, more work to do!
-				if !internal.BeLenient {
-					return &internal.BadError{Err: fmt.Errorf("implement server tool call %q", m.Content[i].Name)}
-				}
-			}
-		case ContentWebSearchToolResult:
-			replies, err := m.Content[i].To()
-			if err != nil {
-				return fmt.Errorf("reply #%d: %w", i, err)
-			}
-			out.Replies = append(out.Replies, replies...)
-		case ContentMCPToolUse:
-			opaque := map[string]any{"mcp_tool_use": map[string]any{
-				"id":    m.Content[i].ID,
-				"input": m.Content[i].Input,
-				"name":  m.Content[i].Name,
-			}}
-			out.Replies = append(out.Replies, genai.Reply{Opaque: opaque})
-		case ContentMCPToolResult:
-			opaque := map[string]any{"mcp_tool_result": map[string]any{
-				"tool_use_id": m.Content[i].ToolUseID,
-				"is_error":    m.Content[i].IsError,
-				"content":     m.Content[i].Content,
-				"server_name": m.Content[i].ServerName,
-			}}
-			out.Replies = append(out.Replies, genai.Reply{Opaque: opaque})
-		case ContentWebSearchResult, ContentImage, ContentDocument, ContentToolResult:
-			fallthrough
-		default:
-			return &internal.BadError{Err: fmt.Errorf("implement content type %q", m.Content[i].Type)}
+		replies, err := m.Content[i].To()
+		if err != nil {
+			return fmt.Errorf("reply #%d: %w", i, err)
 		}
+		out.Replies = append(out.Replies, replies...)
 	}
 	return nil
 }
 
+// Content is a recursive data type of content.
 type Content struct {
+	// Type is what this content is, which defines which fields are valid. Some types are only valid at the root
+	// level and some types are only valid in embedded content.
 	Type ContentType `json:"type"`
 	// Type == ContentText.
 	Text string `json:"text,omitzero"`
@@ -439,28 +393,7 @@ type Content struct {
 	Citations Citations `json:"citations,omitzero"`
 
 	// Type == ContentImage, ContentDocument.
-	Source struct {
-		Type SourceType `json:"type,omitzero"`
-
-		// Source.Type == SourceBase64, SourceURL, SourceText
-		//
-		// Content.Type == ContentImage: "image/gif", "image/jpeg", "image/png", "image/webp"
-		// Content.Type == ContentDocument: "application/pdf", "text/plain"
-		MediaType string `json:"media_type,omitzero"`
-
-		// Source.Type == SourceBase64, SourceURL, SourceText
-		Data string `json:"data,omitzero"` // base64 encoded if base64, else as is, e.g. text plain data.
-
-		// Source.Type == SourceURL
-		URL string `json:"url,omitzero"`
-
-		// Source.Type == SourceContent
-		// Only ContentText and ContentImage are allowed.
-		Content []Content `json:"content,omitzero"`
-
-		// Source.Type == SourceFileID
-		FileID string `json:"file_id,omitzero"` // File ID for the content, used for file uploads.
-	} `json:"source,omitzero"`
+	Source Source `json:"source,omitzero"`
 
 	// Type == ContentToolUse, ContentServerToolUse, ContentMCPToolUse
 	ID string `json:"id,omitzero"`
@@ -494,76 +427,107 @@ type Content struct {
 	Title string `json:"title,omitzero"` // Document title when using Source, web page title
 }
 
+// Validate checks that the expected fields are set.
 func (c *Content) Validate() error {
+	return c.validate(true)
+}
+
+// validate checks that the expected fields are set.
+func (c *Content) validate(strict bool) error {
 	switch c.Type {
 	case ContentText:
 		// It happens with citations.
-		// if c.Text == "" {
-		// 	return errors.New("ContentText: Text must be set")
-		// }
-		if c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || c.ID != "" || c.Name != "" || c.Input != nil ||
-			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.Context != "" || c.Title != "" {
-			return &internal.BadError{Err: errors.New("ContentText: unexpected fields set")}
+		if c.Text == "" && len(c.Citations.Citations) == 0 {
+			// The server sometimes return invalid messages with no text or citations (!). This is present in
+			// testdata/TestClient/Scoreboard/claude-sonnet-4-20250514_thinking/GenSync-Citations-text-plain.yaml
+			if strict {
+				return &internal.BadError{Err: fmt.Errorf("%s: fields Text or Citations must be set", c.Type)}
+			}
+		}
+		if c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || !c.Source.IsZero() || c.ID != "" || c.Name != "" || c.Input != nil ||
+			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.ServerName != "" || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" {
+			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
 		}
 	case ContentThinking:
 		if c.Thinking == "" {
-			return &internal.BadError{Err: fmt.Errorf("expected fields Thinking unset for %s", c.Type)}
+			// c.Signature is optional.
+			return &internal.BadError{Err: fmt.Errorf("%s: fields Thinking must be set", c.Type)}
 		}
-		if c.Text != "" || len(c.Signature) > 0 && c.Signature == nil || c.Data != "" || c.ID != "" || c.Name != "" || c.Input != nil ||
-			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.Context != "" || c.Title != "" {
-			return &internal.BadError{Err: errors.New("ContentThinking: unexpected fields set")}
+		if c.Text != "" || c.Data != "" || len(c.Citations.Citations) > 0 || !c.Source.IsZero() || c.ID != "" || c.Name != "" || c.Input != nil ||
+			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.ServerName != "" || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" {
+			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
 		}
 	case ContentRedactedThinking:
 		if c.Data == "" {
-			return &internal.BadError{Err: fmt.Errorf("expected fields Data unset for %s", c.Type)}
+			return &internal.BadError{Err: fmt.Errorf("%s: fields Data must be set", c.Type)}
 		}
-		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.ID != "" || c.Name != "" || c.Input != nil ||
-			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.Context != "" || c.Title != "" {
-			return &internal.BadError{Err: errors.New("ContentRedactedThinking: unexpected fields set")}
+		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || len(c.Citations.Citations) > 0 || !c.Source.IsZero() || c.ID != "" || c.Name != "" || c.Input != nil ||
+			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.ServerName != "" || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" {
+			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
 		}
 	case ContentImage, ContentDocument:
 		if c.Source.Type == "" && c.Source.URL == "" && c.Source.Data == "" {
-			return &internal.BadError{Err: fmt.Errorf("expected fields Source.Type, Source.URL, Source.Data unset for %s", c.Type)}
+			return &internal.BadError{Err: fmt.Errorf("%s: fields Source must be set", c.Type)}
 		}
-		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || c.ID != "" || c.Name != "" || c.Input != nil ||
-			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 {
+		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || len(c.Citations.Citations) > 0 || c.ID != "" || c.Name != "" || c.Input != nil ||
+			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.ServerName != "" || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" {
 			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
 		}
 	case ContentToolUse:
-		if c.ID == "" || c.Name == "" {
-			return &internal.BadError{Err: fmt.Errorf("expected fields ID, Name unset for %s", c.Type)}
+		if c.ID == "" || c.Name == "" || c.Input == nil {
+			return &internal.BadError{Err: fmt.Errorf("%s: fields ID, Name, Input must be set", c.Type)}
 		}
-		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" ||
-			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.Context != "" || c.Title != "" {
-			return &internal.BadError{Err: errors.New("ContentToolUse: unexpected fields set")}
+		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || len(c.Citations.Citations) > 0 || !c.Source.IsZero() ||
+			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.ServerName != "" || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" {
+			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
 		}
 	case ContentToolResult:
-		if c.ToolUseID == "" {
-			return &internal.BadError{Err: fmt.Errorf("expected fields ToolUseID unset for %s", c.Type)}
+		if c.ToolUseID == "" || len(c.Content) == 0 {
+			return &internal.BadError{Err: fmt.Errorf("%s: fields ToolUseID, Content, must be set", c.Type)}
 		}
-		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || c.ID != "" || c.Name != "" || c.Input != nil ||
-			c.Context != "" || c.Title != "" {
-			return &internal.BadError{Err: errors.New("ContentToolResult: unexpected fields set")}
+		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || len(c.Citations.Citations) > 0 || !c.Source.IsZero() || c.ID != "" || c.Name != "" || c.Input != nil ||
+			c.IsError || c.ServerName != "" || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" {
+			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
 		}
 	case ContentMCPToolUse:
 		if c.ID == "" || c.Name == "" || c.Input == nil || c.ServerName == "" {
-			return &internal.BadError{Err: fmt.Errorf("expected fields ID, Name, Input, ServerName unset for %s", c.Type)}
+			return &internal.BadError{Err: fmt.Errorf("%s: fields ID, Name, Input, ServerName must be set", c.Type)}
+		}
+		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || len(c.Citations.Citations) > 0 || !c.Source.IsZero() ||
+			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" {
+			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
 		}
 	case ContentMCPToolResult:
 		if c.ToolUseID == "" || len(c.Content) == 0 {
-			return &internal.BadError{Err: fmt.Errorf("expected fields ToolUseID, Content unset for %s", c.Type)}
+			return &internal.BadError{Err: fmt.Errorf("%s: fields ToolUseID, Content must be set", c.Type)}
+		}
+		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || len(c.Citations.Citations) > 0 || !c.Source.IsZero() || c.ID != "" || c.Name != "" || c.Input != nil ||
+			c.ServerName != "" || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" {
+			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
 		}
 	case ContentServerToolUse:
 		if c.ID == "" || c.Name == "" || c.Input == nil {
-			return &internal.BadError{Err: fmt.Errorf("expected fields ID, Name, Input unset for %s", c.Type)}
+			return &internal.BadError{Err: fmt.Errorf("%s: fields ID, Name, Input must be set", c.Type)}
+		}
+		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || len(c.Citations.Citations) > 0 || !c.Source.IsZero() ||
+			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.ServerName != "" || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" {
+			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
 		}
 	case ContentWebSearchToolResult:
 		if c.ToolUseID == "" || len(c.Content) == 0 {
-			return &internal.BadError{Err: fmt.Errorf("expected fields ToolUseID, Content unset for %s", c.Type)}
+			return &internal.BadError{Err: fmt.Errorf("%s: fields ToolUseID, Content must be set", c.Type)}
+		}
+		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || len(c.Citations.Citations) > 0 || !c.Source.IsZero() || c.ID != "" || c.Name != "" || c.Input != nil ||
+			c.ServerName != "" || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" {
+			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
 		}
 	case ContentWebSearchResult:
 		if c.URL == "" {
-			return &internal.BadError{Err: fmt.Errorf("expected fields URL unset for %s", c.Type)}
+			return &internal.BadError{Err: fmt.Errorf("%s: fields URL must be set", c.Type)}
+		}
+		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || len(c.Citations.Citations) > 0 || !c.Source.IsZero() || c.ID != "" || c.Name != "" || c.Input != nil ||
+			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.ServerName != "" || c.Context != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" {
+			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
 		}
 	default:
 		return &internal.BadError{Err: fmt.Errorf("implement ContentType %q", c.Type)}
@@ -803,19 +767,51 @@ func (c *Content) To() ([]genai.Reply, error) {
 			// TODO: Keep cc.EncryptedContent to be able to continue the thread.
 		}
 		out = append(out, r)
-	case ContentMCPToolUse:
-		// TODO.
-		panic(5)
-	case ContentMCPToolResult:
-		// TODO.
-		panic(6)
 	case ContentServerToolUse:
-		// TODO: web_search tool query.
-		return out, fmt.Errorf("shouln't happen")
+		// TODO: We drop the value, which makes the next request unusable.
+		switch c.Name {
+		case "web_search":
+			q := WebSearch{}
+			// We marshal then unmarshal to normalize the input.
+			b, err := json.Marshal(c.Input)
+			if err != nil {
+				return out, &internal.BadError{Err: fmt.Errorf("failed to marshal server tool call %s: %w", c.Name, err)}
+			}
+			d := json.NewDecoder(bytes.NewReader(b))
+			if !internal.BeLenient {
+				d.DisallowUnknownFields()
+			}
+			if err := d.Decode(&q); err != nil {
+				return out, &internal.BadError{Err: fmt.Errorf("failed to decode server tool call %s: %w", c.Name, err)}
+			}
+			out = append(out, genai.Reply{
+				Citations: []genai.Citation{{Sources: []genai.CitationSource{{Type: genai.CitationWebQuery, Snippet: q.Query}}}},
+			})
+		default:
+			// Oops, more work to do!
+			if !internal.BeLenient {
+				return out, &internal.BadError{Err: fmt.Errorf("implement server tool call %q", c.Name)}
+			}
+		}
+	case ContentMCPToolUse:
+		opaque := map[string]any{"mcp_tool_use": map[string]any{
+			"id":    c.ID,
+			"input": c.Input,
+			"name":  c.Name,
+		}}
+		out = append(out, genai.Reply{Opaque: opaque})
+	case ContentMCPToolResult:
+		opaque := map[string]any{"mcp_tool_result": map[string]any{
+			"tool_use_id": c.ToolUseID,
+			"is_error":    c.IsError,
+			"content":     c.Content,
+			"server_name": c.ServerName,
+		}}
+		out = append(out, genai.Reply{Opaque: opaque})
 	case ContentWebSearchResult, ContentImage, ContentDocument, ContentToolResult:
 		fallthrough
 	default:
-		return out, fmt.Errorf("unsupported content type %q", c.Type)
+		return out, &internal.BadError{Err: fmt.Errorf("implement content type %q", c.Type)}
 	}
 	return out, nil
 }
@@ -823,6 +819,43 @@ func (c *Content) To() ([]genai.Reply, error) {
 // WebSearch is the server tool use.
 type WebSearch struct {
 	Query string `json:"query"`
+}
+
+// SourceType is described at https://docs.anthropic.com/en/api/messages#body-messages-content-source
+type SourceType string
+
+const (
+	SourceBase64  SourceType = "base64"
+	SourceURL     SourceType = "url"
+	SourceText    SourceType = "text"
+	SourceContent SourceType = "content"
+)
+
+type Source struct {
+	Type SourceType `json:"type,omitzero"`
+
+	// Type == SourceBase64, SourceURL, SourceText
+	//
+	// Content.Type == ContentImage: "image/gif", "image/jpeg", "image/png", "image/webp"
+	// Content.Type == ContentDocument: "application/pdf", "text/plain"
+	MediaType string `json:"media_type,omitzero"`
+
+	// Type == SourceBase64, SourceURL, SourceText
+	Data string `json:"data,omitzero"` // base64 encoded if base64, else as is, e.g. text plain data.
+
+	// Type == SourceURL
+	URL string `json:"url,omitzero"`
+
+	// Type == SourceContent
+	// Only ContentText and ContentImage are allowed.
+	Content []Content `json:"content,omitzero"`
+
+	// Type == SourceFileID
+	FileID string `json:"file_id,omitzero"` // File ID for the content, used for file uploads.
+}
+
+func (s *Source) IsZero() bool {
+	return s.Type == "" && s.MediaType == "" && s.Data == "" && s.URL == "" && len(s.Content) == 0 && s.FileID == ""
 }
 
 // Citations is a mess.
@@ -842,16 +875,6 @@ type Citations struct {
 type citationsObject struct {
 	Enabled bool `json:"enabled"`
 }
-
-// SourceType is described at https://docs.anthropic.com/en/api/messages#body-messages-content-source
-type SourceType string
-
-const (
-	SourceBase64  SourceType = "base64"
-	SourceURL     SourceType = "url"
-	SourceText    SourceType = "text"
-	SourceContent SourceType = "content"
-)
 
 // UnmarshalJSON implements json.Unmarshaler for Citations.
 // It attempts to unmarshal the input as either a slice of Citations or a struct with an Enabled field.

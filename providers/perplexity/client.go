@@ -273,9 +273,7 @@ func (m *Message) From(in *genai.Message) error {
 }
 
 // To converts the message to a genai.Message.
-//
-// Warning: it doesn't include the web search results, use ChatResponse.ToResult().
-func (m *Message) To(out *genai.Message) error {
+func (m *Message) To(search []SearchResult, images []Images, related []string, out *genai.Message) error {
 	for i := range m.Content {
 		if m.Content[i].Type == "text" {
 			out.Replies = append(out.Replies, genai.Reply{Text: m.Content[i].Text})
@@ -283,6 +281,32 @@ func (m *Message) To(out *genai.Message) error {
 			return &internal.BadError{Err: fmt.Errorf("unsupported content type %q", m.Content[i].Type)}
 		}
 	}
+	if len(search) > 0 {
+		ct := genai.Citation{Sources: make([]genai.CitationSource, len(search))}
+		for i := range search {
+			ct.Sources[i].Type = genai.CitationWeb
+			ct.Sources[i].Title = search[i].Title
+			ct.Sources[i].URL = search[i].URL
+			ct.Sources[i].Date = search[i].Date
+		}
+		out.Replies[0].Citations = append(out.Replies[0].Citations, ct)
+	}
+	if len(images) > 0 {
+		ct := genai.Citation{Sources: make([]genai.CitationSource, len(images))}
+		for i := range images {
+			ct.Sources[i].Type = genai.CitationDocument
+			ct.Sources[i].Title = images[i].OriginURL
+			ct.Sources[i].URL = images[i].ImageURL
+			ct.Sources[i].Metadata = map[string]any{
+				"width":  images[i].Width,
+				"height": images[i].Height,
+			}
+		}
+		out.Replies[0].Citations = append(out.Replies[0].Citations, ct)
+	}
+	// if len(related) > 0 {
+	// TODO: Figure out how to return this.
+	// }
 	return nil
 }
 
@@ -325,13 +349,8 @@ type ChatResponse struct {
 	Object    string    `json:"object"` // "chat.completion"
 	Created   base.Time `json:"created"`
 	Citations []string  `json:"citations"` // Same URLs from SearchResults in the same order.
-	Images    []struct {
-		Height    int64  `json:"height"`     // in pixels
-		ImageURL  string `json:"image_url"`  // URL to the image
-		OriginURL string `json:"origin_url"` // URL to the page that contains the image
-		Width     int64  `json:"width"`      // in pixels
-	} `json:"images"` // The images do not seem to have a direct relation with the citations.
-	Choices []struct {
+	Images    []Images  `json:"images"`    // The images do not seem to have a direct relation with the citations.
+	Choices   []struct {
 		Index        int64        `json:"index"`
 		FinishReason FinishReason `json:"finish_reason"`
 		Message      Message      `json:"message"`
@@ -340,15 +359,9 @@ type ChatResponse struct {
 			Role    string `json:"role"`
 		} `json:"delta"`
 	} `json:"choices"`
-	RelatedQuestions []string `json:"related_questions"` // Questions related to the query
-	SearchResults    []struct {
-		Date        string `json:"date"` // RFC3339 date, or null
-		Title       string `json:"title"`
-		URL         string `json:"url"`          // URL to the search result
-		LastUpdated string `json:"last_updated"` // YYYY-MM-DD
-		Snippet     string `json:"snippet"`      // TODO: Add!
-	} `json:"search_results"`
-	Usage Usage `json:"usage"`
+	RelatedQuestions []string       `json:"related_questions"` // Questions related to the query
+	SearchResults    []SearchResult `json:"search_results"`
+	Usage            Usage          `json:"usage"`
 }
 
 func (c *ChatResponse) ToResult() (genai.Result, error) {
@@ -365,36 +378,23 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 		return out, errors.New("expected 1 choice")
 	}
 	out.Usage.FinishReason = c.Choices[0].FinishReason.ToFinishReason()
-	err := c.Choices[0].Message.To(&out.Message)
-	if len(out.Replies) > 0 {
-		if len(c.SearchResults) > 0 {
-			ct := genai.Citation{Sources: make([]genai.CitationSource, len(c.SearchResults))}
-			for i := range c.SearchResults {
-				ct.Sources[i].Type = genai.CitationWeb
-				ct.Sources[i].Title = c.SearchResults[i].Title
-				ct.Sources[i].URL = c.SearchResults[i].URL
-				ct.Sources[i].Date = c.SearchResults[i].Date
-			}
-			out.Replies[0].Citations = append(out.Replies[0].Citations, ct)
-		}
-		if len(c.Images) > 0 {
-			ct := genai.Citation{Sources: make([]genai.CitationSource, len(c.Images))}
-			for i := range c.Images {
-				ct.Sources[i].Type = genai.CitationDocument
-				ct.Sources[i].Title = c.Images[i].OriginURL
-				ct.Sources[i].URL = c.Images[i].ImageURL
-				ct.Sources[i].Metadata = map[string]any{
-					"width":  c.Images[i].Width,
-					"height": c.Images[i].Height,
-				}
-			}
-			out.Replies[0].Citations = append(out.Replies[0].Citations, ct)
-		}
-		if len(c.RelatedQuestions) > 0 {
-			// TODO: Figure out how to return this.
-		}
-	}
+	err := c.Choices[0].Message.To(c.SearchResults, c.Images, c.RelatedQuestions, &out.Message)
 	return out, err
+}
+
+type Images struct {
+	Height    int64  `json:"height"`     // in pixels
+	ImageURL  string `json:"image_url"`  // URL to the image
+	OriginURL string `json:"origin_url"` // URL to the page that contains the image
+	Width     int64  `json:"width"`      // in pixels
+}
+
+type SearchResult struct {
+	Date        string `json:"date"` // RFC3339 date, or null
+	Title       string `json:"title"`
+	URL         string `json:"url"`          // URL to the search result
+	LastUpdated string `json:"last_updated"` // YYYY-MM-DD
+	Snippet     string `json:"snippet"`      // TODO: Add!
 }
 
 type FinishReason string

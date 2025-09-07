@@ -690,14 +690,15 @@ type TextModel struct {
 		PromptTokens     float64 `json:"prompt_tokens"`
 		CompletionTokens float64 `json:"completion_tokens"`
 	} `json:"pricing,omitzero"`
-	Provider   string   `json:"provider"` // "api.navy", "azure", "bedrock", "scaleway"
-	Reasoning  bool     `json:"reasoning"`
-	Search     bool     `json:"search"`
-	Tier       string   `json:"tier"` // "anonymous", "seed", "flower"
-	Tools      bool     `json:"tools"`
-	Uncensored bool     `json:"uncensored"`
-	Voices     []string `json:"voices"`
-	Vision     bool     `json:"vision"`
+	Provider               string   `json:"provider"` // "api.navy", "azure", "bedrock", "scaleway"
+	Reasoning              bool     `json:"reasoning"`
+	Search                 bool     `json:"search"`
+	SupportsSystemMessages bool     `json:"supportsSystemMessages"`
+	Tier                   string   `json:"tier"` // "anonymous", "seed", "flower"
+	Tools                  bool     `json:"tools"`
+	Uncensored             bool     `json:"uncensored"`
+	Voices                 []string `json:"voices"`
+	Vision                 bool     `json:"vision"`
 }
 
 func (t *TextModel) GetID() string {

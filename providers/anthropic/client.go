@@ -253,16 +253,22 @@ func modelsMaxTokens(model string) int64 {
 	return 32000
 }
 
-// MCPServer is documented at  https://docs.anthropic.com/en/api/messages#body-mcp-servers
+// MCPServer is documented at https://docs.anthropic.com/en/api/messages#body-mcp-servers
+//
+// https://docs.anthropic.com/en/docs/agents-and-tools/mcp-connector
+// states that HTTP header "anthropic-beta": "mcp-client-2025-04-04"
+// required.
 type MCPServer struct {
-	Name               string `json:"name"` //
-	Type               string `json:"type"` // "url"
-	URL                string `json:"url"`
-	AuthorizationToken string `json:"authorization_token,omitzero"`
-	ToolConfiguration  struct {
-		AllowedTools []string `json:"allowed_tools,omitzero"`
-		Enabled      bool     `json:"enabled,omitzero"`
-	} `json:"tool_configuration,omitzero"`
+	Name               string            `json:"name"` //
+	Type               string            `json:"type"` // "url"
+	URL                string            `json:"url"`
+	AuthorizationToken string            `json:"authorization_token,omitzero"`
+	ToolConfiguration  ToolConfiguration `json:"tool_configuration,omitzero"`
+}
+
+type ToolConfiguration struct {
+	AllowedTools []string `json:"allowed_tools,omitzero"`
+	Enabled      bool     `json:"enabled,omitzero"`
 }
 
 // SystemMessage is used in the system prompt.
@@ -388,7 +394,7 @@ func (m *Message) To(out *genai.Message) error {
 				return fmt.Errorf("reply #%d: %w", i, err)
 			}
 			out.Replies = append(out.Replies, replies...)
-		case ContentWebSearchResult, ContentImage, ContentDocument, ContentToolResult:
+		case ContentWebSearchResult, ContentImage, ContentDocument, ContentToolResult, ContentMCPToolUse, ContentMCPToolResult:
 			fallthrough
 		default:
 			return &internal.BadError{Err: fmt.Errorf("implement content type %q", m.Content[i].Type)}
@@ -441,21 +447,25 @@ type Content struct {
 		FileID string `json:"file_id,omitzero"` // File ID for the content, used for file uploads.
 	} `json:"source,omitzero"`
 
-	// Type == ContentToolUse, ContentServerToolUse
+	// Type == ContentToolUse, ContentServerToolUse, ContentMCPToolUse
 	ID string `json:"id,omitzero"`
-	// For ContentServerToolUse, it will be {"query": "..."}.
+	// For ContentServerToolUse, it will be {"query": "..."}. For ContentMCPToolUse, it depends on the MCP
+	// server.
 	Input any `json:"input,omitzero"` // To reorder, I need to redo HTTP recordings.
-	// Type == ContentToolUse, ContentServerToolUse
+	// Type == ContentToolUse, ContentServerToolUse, ContentMCPToolUse
 	Name string `json:"name,omitzero"`
 
-	// Type == ContentToolResult
+	// Type == ContentToolResult, ContentMCPToolResult
 	ToolUseID string `json:"tool_use_id,omitzero"`
 	IsError   bool   `json:"is_error,omitzero"`
 
-	// Type == ContentToolResult, ContentWebSearchToolResult
+	// Type == ContentToolResult, ContentWebSearchToolResult, ContentMCPToolResult
 	// - ContentToolResult: Only ContentText and ContentImage are allowed.
 	// - ContentWebSearchToolResult: Only ContentWebSearchResult is allowed.
 	Content []Content `json:"content,omitzero"`
+
+	// Type == ContentMCPToolResult
+	ServerName string `json:"server_name,omitzero"`
 
 	// Type == ContentDocument
 	Context string `json:"context,omitzero"` // Context about the document that will not be cited from
@@ -482,7 +492,7 @@ func (c *Content) Validate() error {
 		}
 	case ContentThinking:
 		if c.Thinking == "" {
-			return &internal.BadError{Err: errors.New("ContentThinking: Thinking must be set")}
+			return &internal.BadError{Err: fmt.Errorf("expected fields Thinking unset for %s", c.Type)}
 		}
 		if c.Text != "" || len(c.Signature) > 0 && c.Signature == nil || c.Data != "" || c.ID != "" || c.Name != "" || c.Input != nil ||
 			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.Context != "" || c.Title != "" {
@@ -490,7 +500,7 @@ func (c *Content) Validate() error {
 		}
 	case ContentRedactedThinking:
 		if c.Data == "" {
-			return &internal.BadError{Err: errors.New("ContentRedactedThinking: Data must be set")}
+			return &internal.BadError{Err: fmt.Errorf("expected fields Data unset for %s", c.Type)}
 		}
 		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.ID != "" || c.Name != "" || c.Input != nil ||
 			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.Context != "" || c.Title != "" {
@@ -498,7 +508,7 @@ func (c *Content) Validate() error {
 		}
 	case ContentImage, ContentDocument:
 		if c.Source.Type == "" && c.Source.URL == "" && c.Source.Data == "" {
-			return &internal.BadError{Err: fmt.Errorf("%s: Source must be set", c.Type)}
+			return &internal.BadError{Err: fmt.Errorf("expected fields Source.Type, Source.URL, Source.Data unset for %s", c.Type)}
 		}
 		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || c.ID != "" || c.Name != "" || c.Input != nil ||
 			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 {
@@ -506,7 +516,7 @@ func (c *Content) Validate() error {
 		}
 	case ContentToolUse:
 		if c.ID == "" || c.Name == "" {
-			return &internal.BadError{Err: errors.New("ContentToolUse: ID and Name must be set")}
+			return &internal.BadError{Err: fmt.Errorf("expected fields ID, Name unset for %s", c.Type)}
 		}
 		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" ||
 			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.Context != "" || c.Title != "" {
@@ -514,7 +524,7 @@ func (c *Content) Validate() error {
 		}
 	case ContentToolResult:
 		if c.ToolUseID == "" {
-			return &internal.BadError{Err: errors.New("ContentToolResult: ToolUseID must be set")}
+			return &internal.BadError{Err: fmt.Errorf("expected fields ToolUseID unset for %s", c.Type)}
 		}
 		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || c.ID != "" || c.Name != "" || c.Input != nil ||
 			c.Context != "" || c.Title != "" {
@@ -522,18 +532,20 @@ func (c *Content) Validate() error {
 		}
 	case ContentServerToolUse:
 		if c.ID == "" || c.Name == "" || c.Input == nil {
-			return &internal.BadError{Err: errors.New("expected fields unset for ContentServerToolUse")}
+			return &internal.BadError{Err: fmt.Errorf("expected fields ID, Name, Input unset for %s", c.Type)}
 		}
 	case ContentWebSearchToolResult:
 		if c.ToolUseID == "" || len(c.Content) == 0 {
-			return &internal.BadError{Err: errors.New("expected fields unset for ContentWebSearchResult")}
+			return &internal.BadError{Err: fmt.Errorf("expected fields ToolUseID, Content unset for %s", c.Type)}
 		}
 	case ContentWebSearchResult:
 		if c.URL == "" {
-			return &internal.BadError{Err: errors.New("ContentWebSearchResult: URL must be set")}
+			return &internal.BadError{Err: fmt.Errorf("expected fields URL unset for %s", c.Type)}
 		}
+	case ContentMCPToolUse, ContentMCPToolResult:
+		fallthrough
 	default:
-		return &internal.BadError{Err: fmt.Errorf("unknown ContentType %q", c.Type)}
+		return &internal.BadError{Err: fmt.Errorf("implement ContentType %q", c.Type)}
 	}
 	return nil
 }
@@ -742,7 +754,7 @@ func (c *Content) To() ([]genai.Reply, error) {
 	case ContentServerToolUse:
 		// TODO: web_search tool query.
 		panic("shouln't happen")
-	case ContentWebSearchResult, ContentImage, ContentDocument, ContentToolResult:
+	case ContentWebSearchResult, ContentImage, ContentDocument, ContentToolResult, ContentMCPToolUse, ContentMCPToolResult:
 		fallthrough
 	default:
 		return out, fmt.Errorf("unsupported content type %q", c.Type)
@@ -835,6 +847,8 @@ const (
 	ContentImage               ContentType = "image"
 	ContentToolUse             ContentType = "tool_use"
 	ContentToolResult          ContentType = "tool_result"
+	ContentMCPToolUse          ContentType = "mcp_tool_use"
+	ContentMCPToolResult       ContentType = "mcp_tool_result"
 	ContentDocument            ContentType = "document"
 	ContentThinking            ContentType = "thinking"
 	ContentRedactedThinking    ContentType = "redacted_thinking"
@@ -924,7 +938,7 @@ type Thinking struct {
 	Type         string `json:"type,omitzero"`          // "enabled", "disabled"
 }
 
-// ToolChoiceType is documented at  https://docs.anthropic.com/en/api/messages#body-tool-choice
+// ToolChoiceType is documented at https://docs.anthropic.com/en/api/messages#body-tool-choice
 type ToolChoiceType string
 
 const (
@@ -949,7 +963,7 @@ type ToolChoice struct {
 	Name string `json:"name,omitzero"`
 }
 
-// Tool is documented at  https://docs.anthropic.com/en/api/messages#body-tools
+// Tool is documented at https://docs.anthropic.com/en/api/messages#body-tools
 type Tool struct {
 	Type string `json:"type,omitzero"` // "custom", "computer_20241022", "computer_20250124", "bash_20241022", "bash_20250124", "text_editor_20241022", "text_editor_20250124", "web_search_20250305"
 	// Type == "custom"
@@ -1094,6 +1108,9 @@ type ChatStreamChunkResponse struct {
 		// Type == ContentWebSearchToolResult
 		ToolUseID string    `json:"tool_use_id"`
 		Content   []Content `json:"content"`
+
+		// Type == ContentMCPToolResult
+		ServerName string `json:"server_name,omitzero"`
 	} `json:"content_block"`
 
 	// Type == ChunkContentBlockDelta
@@ -1245,7 +1262,7 @@ func (b *BatchQueryResponse) To(out *genai.Message) error {
 				return fmt.Errorf("block %d: %w", i, err)
 			}
 			out.Replies = append(out.Replies, replies...)
-		case ContentWebSearchResult, ContentServerToolUse, ContentWebSearchToolResult, ContentImage, ContentDocument, ContentToolResult:
+		case ContentWebSearchResult, ContentServerToolUse, ContentWebSearchToolResult, ContentImage, ContentDocument, ContentToolResult, ContentMCPToolUse, ContentMCPToolResult:
 			fallthrough
 		default:
 			return &internal.BadError{Err: fmt.Errorf("implement content type %q", b.Result.Message.Content[i].Type)}
@@ -1651,7 +1668,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 							f.Citation.Sources[i].Date = cc.PageAge
 							// EncryptedContent is not really useful?
 						}
-					case ContentWebSearchResult, ContentImage, ContentDocument, ContentToolResult:
+					case ContentWebSearchResult, ContentImage, ContentDocument, ContentToolResult, ContentMCPToolUse, ContentMCPToolResult:
 						fallthrough
 					default:
 						finalErr = &internal.BadError{Err: fmt.Errorf("implement content block %q", pkt.ContentBlock.Type)}

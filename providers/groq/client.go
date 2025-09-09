@@ -93,6 +93,12 @@ type ChatRequest struct {
 		Type       string             `json:"type,omitzero"` // "json_object", "json_schema"
 		JSONSchema *jsonschema.Schema `json:"json_schema,omitzero"`
 	} `json:"response_format,omitzero"`
+	SearchSettings struct {
+		Country        string   `json:"country,omitzero"`
+		ExcludeDomains []string `json:"exclude_domains,omitzero"`
+		IncludeDomains []string `json:"include_domains,omitzero"`
+		IncludeImages  bool     `json:"include_images,omitzero"`
+	} `json:"search_settings,omitzero"`
 	Seed          int64       `json:"seed,omitzero"`
 	ServiceTier   ServiceTier `json:"service_tier,omitzero"`
 	Stop          []string    `json:"stop,omitzero"` // keywords to stop completion
@@ -237,7 +243,10 @@ func (c *ChatRequest) initOptionsTools(v *genai.OptionsTools) ([]string, []error
 		}
 	}
 	if v.WebSearch {
-		errs = append(errs, errors.New("unsupported OptionsTools.WebSearch"))
+		// https://console.groq.com/docs/browser-search
+		// TODO: Country and domains
+		c.SearchSettings.IncludeImages = true
+		c.Tools = append(c.Tools, Tool{Type: "browser_search"})
 	}
 	return unsupported, errs
 }
@@ -262,6 +271,26 @@ type Message struct {
 	Channel    string     `json:"channel,omitzero"`   // "analysis"
 	ToolCalls  []ToolCall `json:"tool_calls,omitzero"`
 	ToolCallID string     `json:"tool_call_id,omitzero"`
+
+	// "browser_search"
+	ExecutedTools []struct {
+		Name string `json:"name,omitzero"` // "browser.search", "browser.open", "browser.find"
+		// Arguments is a JSON encoded arguments for the server side tool.
+		//  - "browser.search" uses BrowserSearchArguments.
+		//  - "browser.open" uses BrowserOpenArguments.
+		Arguments     string `json:"arguments,omitzero"`
+		Index         int64  `json:"index,omitzero"`
+		Type          string `json:"type,omitzero"` // "function"
+		Output        string `json:"output,omitzero"`
+		SearchResults struct {
+			Results []struct {
+				Title   string `json:"title,omitzero"`
+				URL     string `json:"url,omitzero"`
+				Content string `json:"content,omitzero"`
+				Score   int64  `json:"score,omitzero"` // Always 0?
+			} `json:"results,omitzero"`
+		} `json:"search_results,omitzero"`
+	} `json:"executed_tools,omitzero"`
 }
 
 // From must be called with at most one ToolCallResults.
@@ -335,6 +364,34 @@ func (m *Message) To(out *genai.Message) error {
 	for i := range m.ToolCalls {
 		out.Replies = append(out.Replies, genai.Reply{})
 		m.ToolCalls[i].To(&out.Replies[len(out.Replies)-1].ToolCall)
+	}
+	for _, t := range m.ExecutedTools {
+		switch t.Name {
+		case "browser.search":
+			d := json.NewDecoder(strings.NewReader(t.Arguments))
+			d.DisallowUnknownFields()
+			args := BrowserSearchArguments{}
+			if err := d.Decode(&args); err != nil {
+				return &internal.BadError{Err: fmt.Errorf("failed to unmarshal arguments for executed tool %q: %w", t.Name, err)}
+			}
+			c := genai.Citation{
+				Sources: make([]genai.CitationSource, 0, len(t.SearchResults.Results)+1),
+			}
+			c.Sources = append(c.Sources, genai.CitationSource{
+				Type:    genai.CitationWebQuery,
+				Snippet: args.Query,
+			})
+			for _, r := range t.SearchResults.Results {
+				c.Sources = append(c.Sources, genai.CitationSource{
+					Type: genai.CitationWeb, Title: r.Title, URL: r.URL, Snippet: r.Content,
+				})
+			}
+			out.Replies = append(out.Replies, genai.Reply{Citations: []genai.Citation{c}})
+		case "browser.open", "browser.find":
+			// Ignore, it's really useless.
+		default:
+			return &internal.BadError{Err: fmt.Errorf("implement executed tool %q", t.Name)}
+		}
 	}
 	return nil
 }
@@ -472,6 +529,7 @@ func (c *Content) FromReply(in *genai.Reply) error {
 		}
 		return nil
 	}
+	// TODO: ExecutedTools.
 	return &internal.BadError{Err: errors.New("unknown Reply type")}
 }
 
@@ -605,6 +663,24 @@ type Usage struct {
 	TotalTime        float64 `json:"total_time"`
 }
 
+// BrowserSearchArguments is the Argument for the "browser.search" tool.
+type BrowserSearchArguments struct {
+	Query  string `json:"query,omitzero"`
+	TopN   int64  `json:"topn,omitzero"`
+	Source string `json:"source,omitzero"`
+}
+
+// BrowserOpenArguments is the Argument for the "browser.open" tool.
+type BrowserOpenArguments struct {
+	Cursor int64 `json:"cursor,omitzero"`
+	ID     int64 `json:"id,omitzero"`
+}
+
+// BrowserFindArguments is the Argument for the "browser.find" tool.
+type BrowserFindArguments struct {
+	Cursor  int64  `json:"cursor,omitzero"`
+	Pattern string `json:"pattern,omitzero"`
+}
 type ChatStreamChunkResponse struct {
 	ID                string    `json:"id"`
 	Object            string    `json:"object"`
@@ -614,7 +690,7 @@ type ChatStreamChunkResponse struct {
 	Choices           []struct {
 		Index        int64        `json:"index"`
 		Delta        Message      `json:"delta"`
-		Logprobs     struct{}     `json:"logprobs"`
+		Logprobs     struct{}     `json:"logprobs"` // Groq doesn't support logprobs but still sent a null item.
 		FinishReason FinishReason `json:"finish_reason"`
 	} `json:"choices"`
 	Xgroq struct {
@@ -670,8 +746,9 @@ func (r *ModelsResponse) ToModels() []genai.Model {
 type ErrorResponse struct {
 	ErrorVal struct {
 		Message          string `json:"message"`
-		Type             string `json:"type"`
-		Code             string `json:"code"`
+		Type             string `json:"type"`  // e.g. "invalid_request_error"
+		Code             string `json:"code"`  // e.g. "context_length_exceeded"
+		Param            string `json:"param"` // e.g. "messages"
 		FailedGeneration string `json:"failed_generation"`
 		StatusCode       int64  `json:"status_code"`
 	} `json:"error"`
@@ -679,8 +756,11 @@ type ErrorResponse struct {
 
 func (er *ErrorResponse) Error() string {
 	suffix := ""
+	if er.ErrorVal.Param != "" {
+		suffix += fmt.Sprintf(" (param: %q)", er.ErrorVal.Param)
+	}
 	if er.ErrorVal.FailedGeneration != "" {
-		suffix = fmt.Sprintf("failed generation: %q", er.ErrorVal.FailedGeneration)
+		suffix += fmt.Sprintf("failed generation: %q", er.ErrorVal.FailedGeneration)
 	}
 	return fmt.Sprintf("%s (%s): %s%s", er.ErrorVal.Code, er.ErrorVal.Type, er.ErrorVal.Message, suffix)
 }
@@ -931,6 +1011,40 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 					f := genai.ReplyFragment{}
 					t.To(&f.ToolCall)
 					if !yield(f) {
+						return
+					}
+				}
+				for _, t := range pkt.Choices[0].Delta.ExecutedTools {
+					// Investigate merging with Message.To.
+					switch t.Name {
+					case "browser.search":
+						d := json.NewDecoder(strings.NewReader(t.Arguments))
+						d.DisallowUnknownFields()
+						args := BrowserSearchArguments{}
+						if err := d.Decode(&args); err != nil {
+							finalErr = &internal.BadError{
+								Err: fmt.Errorf("failed to unmarshal arguments for executed tool %q: %w", t.Name, err),
+							}
+							return
+						}
+						f := genai.ReplyFragment{}
+						f.Citation.Sources = make([]genai.CitationSource, 0, len(t.SearchResults.Results)+1)
+						f.Citation.Sources = append(f.Citation.Sources, genai.CitationSource{
+							Type:    genai.CitationWebQuery,
+							Snippet: args.Query,
+						})
+						for _, r := range t.SearchResults.Results {
+							f.Citation.Sources = append(f.Citation.Sources, genai.CitationSource{
+								Type: genai.CitationWeb, Title: r.Title, URL: r.URL, Snippet: r.Content,
+							})
+						}
+						if !yield(f) {
+							return
+						}
+					case "browser.open", "browser.find":
+						// Ignore, it's really useless.
+					default:
+						finalErr = &internal.BadError{Err: fmt.Errorf("implement executed tool %q", t.Name)}
 						return
 					}
 				}

@@ -183,6 +183,11 @@ type OptionsTools struct {
 	Force ToolCallRequest
 	// WebSearch specifies if websearch should be enabled. It is generally disabled by default except for
 	// perplexity.
+	//
+	// # Warning
+	//
+	// This will become a structure to provide information about included and excluded domains, and the user's
+	// location.
 	WebSearch bool
 }
 

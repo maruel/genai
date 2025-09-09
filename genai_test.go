@@ -1477,13 +1477,13 @@ func TestRateLimit(t *testing.T) {
 				{
 					name: "invalid type",
 					in: RateLimit{
-						Type:      "invalid",
+						Type:      -1,
 						Period:    PerMinute,
 						Limit:     100,
 						Remaining: 50,
 						Reset:     now,
 					},
-					errMsg: "unknown limit type \"invalid\"",
+					errMsg: "invalid limit type -1",
 				},
 				{
 					name: "zero limit",
@@ -1500,12 +1500,12 @@ func TestRateLimit(t *testing.T) {
 					name: "invalid period",
 					in: RateLimit{
 						Type:      Requests,
-						Period:    "invalid",
+						Period:    -1,
 						Limit:     100,
 						Remaining: 50,
 						Reset:     now,
 					},
-					errMsg: "unknown limit period \"invalid\"",
+					errMsg: "invalid limit period -1",
 				},
 				{
 					name: "zero reset",

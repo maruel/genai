@@ -306,7 +306,7 @@ Same as above, but streaming.
 ### Log probabilities
 
 [examples/txt\_to\_txt\_logprobs/main.go](examples/txt_to_txt_logprobs/main.go): List the alternative tokens
-that were considered during generation.
+that were considered during generation. This helps tune Temperature, TopP or TopK.
 
 Try it locally:
 
@@ -314,7 +314,7 @@ Try it locally:
 go run github.com/maruel/genai/examples/txt_to_txt_logprobs@latest
 ```
 
-May output:
+When asked _Tell a joke_, this may print:
 
 ```
 Provider huggingface

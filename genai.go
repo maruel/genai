@@ -217,21 +217,21 @@ func (u *Usage) Add(r Usage) {
 }
 
 // RateLimitType defines the type of rate limit.
-type RateLimitType string
+type RateLimitType int32
 
 const (
-	Requests RateLimitType = "requests"
-	Tokens   RateLimitType = "tokens"
+	Requests RateLimitType = iota + 1
+	Tokens
 )
 
 // RateLimitPeriod defines the time period for a rate limit.
-type RateLimitPeriod string
+type RateLimitPeriod int32
 
 const (
-	PerMinute RateLimitPeriod = "minute"
-	PerDay    RateLimitPeriod = "day"
-	PerMonth  RateLimitPeriod = "month"
-	PerOther  RateLimitPeriod = "other" // For non-standard periods
+	PerOther RateLimitPeriod = iota // For non-standard periods
+	PerMinute
+	PerDay
+	PerMonth
 )
 
 // RateLimit contains the limit, remaining, and reset values for a metric.
@@ -244,23 +244,37 @@ type RateLimit struct {
 }
 
 func (r *RateLimit) String() string {
-	if r.Period == PerOther {
-		if r.Reset.IsZero() {
-			return fmt.Sprintf("%s: %d/%d", r.Type, r.Remaining, r.Limit)
-		}
-		return fmt.Sprintf("%s/%s: %d/%d", r.Type, r.Reset.Format(time.DateTime), r.Remaining, r.Limit)
+	out := ""
+	switch r.Type {
+	case Requests:
+		out = "requests"
+	case Tokens:
+		out = "tokens"
+	default:
+		return "invalid RateLimit"
 	}
-	if r.Reset.IsZero() {
-		return fmt.Sprintf("%s (%s): %d/%d", r.Type, r.Period, r.Remaining, r.Limit)
+	if !r.Reset.IsZero() {
+		out += fmt.Sprintf("/%s", r.Reset.Format(time.DateTime))
 	}
-	return fmt.Sprintf("%s/%s (%s): %d/%d", r.Type, r.Reset.Format(time.DateTime), r.Period, r.Remaining, r.Limit)
+	switch r.Period {
+	case PerMinute:
+		out += " (minute)"
+	case PerDay:
+		out += " (day)"
+	case PerMonth:
+		out += " (month)"
+	case PerOther:
+	default:
+		return "invalid RateLimit"
+	}
+	return out + fmt.Sprintf(": %d/%d", r.Remaining, r.Limit)
 }
 
 func (r *RateLimit) Validate() error {
 	switch r.Type {
 	case Requests, Tokens:
 	default:
-		return fmt.Errorf("unknown limit type %q", r.Type)
+		return fmt.Errorf("invalid limit type %v", r.Type)
 	}
 	if r.Limit == 0 {
 		return errors.New("limit is 0")
@@ -269,7 +283,7 @@ func (r *RateLimit) Validate() error {
 	switch r.Period {
 	case PerMinute, PerDay, PerMonth, PerOther:
 	default:
-		return fmt.Errorf("unknown limit period %q", r.Period)
+		return fmt.Errorf("invalid limit period %v", r.Period)
 	}
 	if r.Reset.IsZero() {
 		return errors.New("reset is 0")
@@ -1051,7 +1065,7 @@ func (c *Citation) IsZero() bool {
 }
 
 // CitationType is a citation that a model returned as part of its reply.
-type CitationType int8
+type CitationType int32
 
 const (
 	// CitationWebQuery is an query used as part of a web search.

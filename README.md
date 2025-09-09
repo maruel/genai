@@ -759,37 +759,57 @@ PRs are appreciated for any of the following. No need to ask! Just send a PR and
 
 ### Features
 
-- Authentication: OAuth, service account, OIDC,
+- [ ] Authentication: OAuth, service account, OIDC,
   [GITHUB_TOKEN](https://docs.github.com/en/github-models/use-github-models/integrating-ai-models-into-your-development-workflow#using-ai-models-with-github-actions).
-- Server-side MCP: [Anthropic](https://docs.anthropic.com/en/docs/agents-and-tools/mcp-connector),
-  [OpenAI](https://platform.openai.com/docs/guides/tools-remote-mcp)
-- Real-time / Live: [Gemini](https://ai.google.dev/api/live),
+- [ ] Server-side MCP Client: [OpenAI](https://platform.openai.com/docs/guides/tools-remote-mcp)
+  - [x] [Anthropic](https://docs.anthropic.com/en/docs/agents-and-tools/mcp-connector) raw API is implemented
+    and smoke tested but there's no abstraction layer yet
+- [ ] Real-time / Live: [Gemini](https://ai.google.dev/api/live),
   [OpenAI](https://platform.openai.com/docs/guides/realtime),
   [TogetherAI](https://docs.together.ai/docs/text-to-speech), ...
-- More comprehensive file/cache abstraction
-- Tokens counting: [Anthropic](https://docs.anthropic.com/en/docs/build-with-claude/token-counting),
+- [ ] More comprehensive file/cache abstraction
+- [ ] Tokens counting: [Anthropic](https://docs.anthropic.com/en/docs/build-with-claude/token-counting),
   [Cohere](https://docs.cohere.com/reference/tokenize), [Gemini](https://ai.google.dev/api/tokens), ...
-- Embeddings: [Anthropic](https://docs.anthropic.com/en/docs/build-with-claude/embeddings),
+- [ ] Embeddings: [Anthropic](https://docs.anthropic.com/en/docs/build-with-claude/embeddings),
   [Cohere](https://docs.cohere.com/reference/embed), [Gemini](https://ai.google.dev/api/embeddings),
   [OpenAI](https://platform.openai.com/docs/guides/embeddings), [TogetherAI](https://docs.together.ai/docs/embeddings-overview), ...
-- Image to 3D, e.g. [github.com/Tencent-Hunyuan/Hunyuan3D-2](https://github.com/Tencent-Hunyuan/Hunyuan3D-2)
+- [ ] Image to 3D, e.g. [github.com/Tencent-Hunyuan/Hunyuan3D-2](https://github.com/Tencent-Hunyuan/Hunyuan3D-2)
 
 ### Providers
 
 I'd be delighted if you want to contribute any missing provider being added, I'm particularly looking forward to these:
 
-- [Alibaba Cloud](https://www.alibabacloud.com/): Maker of Qwen models.
-- [AWS Bedrock](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_Operations_Amazon_Bedrock.html)
-- [Azure AI](https://learn.microsoft.com/en-us/rest/api/aifoundry/model-inference/get-chat-completions/get-chat-completions)
-- [Fireworks responses](https://fireworks.ai/docs/guides/response-api)
-- [GitHub](https://docs.github.com/en/rest/models/inference) inference API, which works on GitHub Actions (!)
-- [Google's Vertex AI](https://cloud.google.com/vertex-ai/docs/reference/rest): It supports much more
+- [ ] [Alibaba Cloud](https://www.alibabacloud.com/): Maker of Qwen models.
+- [ ] [AWS Bedrock](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_Operations_Amazon_Bedrock.html)
+- [ ] [Azure AI](https://learn.microsoft.com/en-us/rest/api/aifoundry/model-inference/get-chat-completions/get-chat-completions)
+- [ ] [Fireworks responses](https://fireworks.ai/docs/guides/response-api)
+- [ ] [GitHub](https://docs.github.com/en/rest/models/inference) inference API, which works on GitHub Actions (!)
+- [ ] [Google's Vertex AI](https://cloud.google.com/vertex-ai/docs/reference/rest): It supports much more
   features than Gemini API.
-- [LM Studio](https://lmstudio.ai/): Easier way to run local models.
-- [Open Router](https://openrouter.ai/)
-- [Runway](https://docs.dev.runwayml.com/api-details/sdks/): Specialized in images and videos.
-- [Synexai](https://synexa.ai): It's very cheap.
-- [vLLM](https://docs.vllm.ai/): The fastest way to run local models.
+- [ ] Groq
+    - [ ] [Speech to Text (STT)](https://console.groq.com/docs/speech-to-text)
+    - [ ] [Text to Speech (TTS)](https://console.groq.com/docs/text-to-speech)
+    - [ ] [Batch](https://console.groq.com/docs/batch)
+- [ ] [LM Studio](https://lmstudio.ai/): Easier way to run local models.
+- [ ] Mistral
+    - [ ]
+      [Batch](https://docs.mistral.ai/api/#tag/models/operation/jobs_api_routes_fine_tuning_unarchive_fine_tuned_model)
+    - [ ] [Fill in the Middle
+      (FIM)](https://docs.mistral.ai/api/#tag/chat/operation/chat_completion_v1_chat_completions_post)
+    - [ ] [Transcription](https://docs.mistral.ai/api/#tag/ocr/operation/ocr_v1_ocr_post)
+- [ ] [Novita](https://novita.ai/): Supports lots of modalities.
+- [ ] [Open Router](https://openrouter.ai/)
+- [ ] OpenAI
+    - [ ] [Audio](https://platform.openai.com/docs/api-reference/audio/createSpeech)
+    - [ ] [Batch Responses API](https://platform.openai.com/docs/api-reference/batch)
+    - [ ] [Files](https://platform.openai.com/docs/api-reference/files/create)
+    - [ ] [Image streaming](https://platform.openai.com/docs/api-reference/images-streaming/image_generation)
+- [ ] [Runway](https://docs.dev.runwayml.com/api-details/sdks/): Specialized in images and videos.
+- [ ] [Synexai](https://synexa.ai): It's very cheap.
+- [ ] [vLLM](https://docs.vllm.ai/): The fastest way to run local models.
+
+I'm also looking to disconnect more the scoreboard from the Go code. I believe the scoreboard is useful in
+itself and is not Go specific. I appreciate ideas towards achieving this, send them my way!
 
 Thanks in advance! 🙏
 

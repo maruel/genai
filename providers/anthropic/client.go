@@ -1871,7 +1871,7 @@ func processHeaders(h http.Header) []genai.RateLimit {
 }
 
 var (
-	_ genai.Validatable = &Message{}
-	_ genai.Validatable = &Content{}
-	_ genai.Provider    = &Client{}
+	_ internal.Validatable = &Message{}
+	_ internal.Validatable = &Content{}
+	_ genai.Provider       = &Client{}
 )

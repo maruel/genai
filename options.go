@@ -32,14 +32,10 @@ func (u *UnsupportedContinuableError) Error() string {
 	return fmt.Sprintf("unsupported options: %s", strings.Join(u.Unsupported, ", "))
 }
 
-// Validatable is an interface to an object that can be validated.
-type Validatable interface {
-	Validate() error
-}
-
 // Options is options that can be provided to a Provider interface.
 type Options interface {
-	Validatable
+	// Validate ensures the options object is valid.
+	Validate() error
 }
 
 // Modality is a modality supported by the provider.
@@ -384,12 +380,12 @@ func isErrorType(t reflect.Type) bool {
 }
 
 var (
-	_ Options     = (*OptionsAudio)(nil)
-	_ Options     = (*OptionsImage)(nil)
-	_ Options     = (*OptionsVideo)(nil)
-	_ Options     = (*OptionsText)(nil)
-	_ Options     = (*OptionsTools)(nil)
-	_ Validatable = (*Modality)(nil)
-	_ Validatable = (*Modalities)(nil)
-	_ Validatable = (*ToolDef)(nil)
+	_ Options              = (*OptionsAudio)(nil)
+	_ Options              = (*OptionsImage)(nil)
+	_ Options              = (*OptionsVideo)(nil)
+	_ Options              = (*OptionsText)(nil)
+	_ Options              = (*OptionsTools)(nil)
+	_ internal.Validatable = (*Modality)(nil)
+	_ internal.Validatable = (*Modalities)(nil)
+	_ internal.Validatable = (*ToolDef)(nil)
 )

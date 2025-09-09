@@ -28,6 +28,12 @@ import (
 // It is true by default. Tests must manually set it to false.
 var BeLenient = true
 
+// Validatable is an interface to an object that can be validated.
+type Validatable interface {
+	// Validate ensures the object is valid.
+	Validate() error
+}
+
 // Logger retrieves a slog.Logger from the context if any, otherwise returns slog.Default().
 func Logger(ctx context.Context) *slog.Logger {
 	v := ctx.Value(contextKey{})

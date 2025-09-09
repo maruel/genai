@@ -1183,13 +1183,13 @@ type ProviderPing interface {
 }
 
 var (
-	_ Validatable = (*Citation)(nil)
-	_ Validatable = (*CitationSource)(nil)
-	_ Validatable = (*Message)(nil)
-	_ Validatable = (*Messages)(nil)
-	_ Validatable = (*RateLimit)(nil)
-	_ Validatable = (*Reply)(nil)
-	_ Validatable = (*Request)(nil)
-	_ Validatable = (*ToolCall)(nil)
-	_ Validatable = (*ToolCallResult)(nil)
+	_ internal.Validatable = (*Citation)(nil)
+	_ internal.Validatable = (*CitationSource)(nil)
+	_ internal.Validatable = (*Message)(nil)
+	_ internal.Validatable = (*Messages)(nil)
+	_ internal.Validatable = (*RateLimit)(nil)
+	_ internal.Validatable = (*Reply)(nil)
+	_ internal.Validatable = (*Request)(nil)
+	_ internal.Validatable = (*ToolCall)(nil)
+	_ internal.Validatable = (*ToolCallResult)(nil)
 )

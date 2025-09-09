@@ -255,9 +255,11 @@ const (
 
 // Message is documented at https://console.groq.com/docs/api-reference#chat-create
 type Message struct {
-	Role       string     `json:"role"`          // "system", "assistant", "user"
-	Name       string     `json:"name,omitzero"` // An optional name for the participant. Provides the model information to differentiate between participants of the same role.
-	Content    Contents   `json:"content,omitzero"`
+	Role       string     `json:"role"`               // "system", "assistant", "user"
+	Name       string     `json:"name,omitzero"`      // An optional name for the participant. Provides the model information to differentiate between participants of the same role.
+	Content    Contents   `json:"content,omitzero"`   // Content is always returned as a string.
+	Reasoning  string     `json:"reasoning,omitzero"` // In replies
+	Channel    string     `json:"channel,omitzero"`   // "analysis"
 	ToolCalls  []ToolCall `json:"tool_calls,omitzero"`
 	ToolCallID string     `json:"tool_call_id,omitzero"`
 }
@@ -313,6 +315,30 @@ func (m *Message) From(in *genai.Message) error {
 	return nil
 }
 
+func (m *Message) To(out *genai.Message) error {
+	if m.Reasoning != "" {
+		out.Replies = append(out.Replies, genai.Reply{Reasoning: m.Reasoning})
+	}
+	for _, c := range m.Content {
+		switch c.Type {
+		case ContentText:
+			if c.Text == "" {
+				return &internal.BadError{Err: errors.New("empty content text")}
+			}
+			out.Replies = append(out.Replies, genai.Reply{Text: c.Text})
+		case ContentImageURL:
+			fallthrough
+		default:
+			return &internal.BadError{Err: fmt.Errorf("implement content type %q", c.Type)}
+		}
+	}
+	for i := range m.ToolCalls {
+		out.Replies = append(out.Replies, genai.Reply{})
+		m.ToolCalls[i].To(&out.Replies[len(out.Replies)-1].ToolCall)
+	}
+	return nil
+}
+
 // Contents exists to marshal single content text block as a string.
 //
 // Groq requires this for assistant messages.
@@ -332,6 +358,35 @@ func (c *Contents) MarshalJSON() ([]byte, error) {
 		return json.Marshal((*c)[0].Text)
 	}
 	return json.Marshal(([]Content)(*c))
+}
+
+func (c *Contents) UnmarshalJSON(b []byte) error {
+	if bytes.Equal(b, []byte("null")) {
+		// e.g. tool calls.
+		*c = nil
+		return nil
+	}
+	if err := json.Unmarshal(b, (*[]Content)(c)); err == nil {
+		return nil
+	}
+
+	v := Content{}
+	if err := json.Unmarshal(b, &v); err == nil {
+		*c = Contents{v}
+		return nil
+	}
+
+	s := ""
+	if err := json.Unmarshal(b, &s); err != nil {
+		return err
+	}
+	if s != "" {
+		*c = Contents{{Type: ContentText, Text: s}}
+	} else {
+		// Decode empty string as nil.
+		*c = nil
+	}
+	return nil
 }
 
 type Content struct {
@@ -465,10 +520,10 @@ func (t *ToolCall) To(out *genai.ToolCall) {
 
 type ChatResponse struct {
 	Choices []struct {
-		FinishReason FinishReason    `json:"finish_reason"`
-		Index        int64           `json:"index"`
-		Message      MessageResponse `json:"message"`
-		Logprobs     struct{}        `json:"logprobs"`
+		FinishReason FinishReason `json:"finish_reason"`
+		Index        int64        `json:"index"`
+		Message      Message      `json:"message"`
+		Logprobs     struct{}     `json:"logprobs"`
 	} `json:"choices"`
 	Created        base.Time `json:"created"`
 	ID             string    `json:"id"`
@@ -550,27 +605,6 @@ type Usage struct {
 	TotalTime        float64 `json:"total_time"`
 }
 
-type MessageResponse struct {
-	Role      string     `json:"role"`
-	Reasoning string     `json:"reasoning"`
-	Content   string     `json:"content"`
-	ToolCalls []ToolCall `json:"tool_calls"`
-}
-
-func (m *MessageResponse) To(out *genai.Message) error {
-	if m.Reasoning != "" {
-		out.Replies = append(out.Replies, genai.Reply{Reasoning: m.Reasoning})
-	}
-	if m.Content != "" {
-		out.Replies = append(out.Replies, genai.Reply{Text: m.Content})
-	}
-	for i := range m.ToolCalls {
-		out.Replies = append(out.Replies, genai.Reply{})
-		m.ToolCalls[i].To(&out.Replies[len(out.Replies)-1].ToolCall)
-	}
-	return nil
-}
-
 type ChatStreamChunkResponse struct {
 	ID                string    `json:"id"`
 	Object            string    `json:"object"`
@@ -578,14 +612,8 @@ type ChatStreamChunkResponse struct {
 	Model             string    `json:"model"`
 	SystemFingerprint string    `json:"system_fingerprint"`
 	Choices           []struct {
-		Index int64 `json:"index"`
-		Delta struct {
-			Role      string     `json:"role"`
-			Content   string     `json:"content"`
-			Reasoning string     `json:"reasoning"`
-			Channel   string     `json:"channel"` // "analysis"
-			ToolCalls []ToolCall `json:"tool_calls"`
-		} `json:"delta"`
+		Index        int64        `json:"index"`
+		Delta        Message      `json:"delta"`
 		Logprobs     struct{}     `json:"logprobs"`
 		FinishReason FinishReason `json:"finish_reason"`
 	} `json:"choices"`
@@ -881,19 +909,30 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 					finalErr = &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
 					return
 				}
-				if len(pkt.Choices[0].Delta.ToolCalls) > 1 {
-					finalErr = &internal.BadError{Err: errors.New("implement multiple tool calls")}
-					return
+				if s := pkt.Choices[0].Delta.Reasoning; s != "" {
+					if !yield(genai.ReplyFragment{ReasoningFragment: s}) {
+						return
+					}
 				}
-				f := genai.ReplyFragment{
-					TextFragment:      pkt.Choices[0].Delta.Content,
-					ReasoningFragment: pkt.Choices[0].Delta.Reasoning,
+				for _, c := range pkt.Choices[0].Delta.Content {
+					switch c.Type {
+					case ContentText:
+						if !yield(genai.ReplyFragment{TextFragment: c.Text}) {
+							return
+						}
+					case ContentImageURL:
+						fallthrough
+					default:
+						finalErr = &internal.BadError{Err: fmt.Errorf("implement content type %q", c.Type)}
+						return
+					}
 				}
-				if len(pkt.Choices[0].Delta.ToolCalls) == 1 {
-					pkt.Choices[0].Delta.ToolCalls[0].To(&f.ToolCall)
-				}
-				if !yield(f) {
-					return
+				for _, t := range pkt.Choices[0].Delta.ToolCalls {
+					f := genai.ReplyFragment{}
+					t.To(&f.ToolCall)
+					if !yield(f) {
+						return
+					}
 				}
 			}
 		}, func() (genai.Usage, []genai.Logprobs, error) {

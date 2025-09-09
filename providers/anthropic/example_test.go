@@ -38,7 +38,7 @@ func ExampleNew_mCP_client() {
 	}
 	// Use raw calls to use the MCP client. It is not yet generalized in genai.
 	in := anthropic.ChatRequest{}
-	if err := in.Init(msgs, c.ModelID()); err != nil {
+	if err = in.Init(msgs, c.ModelID()); err != nil {
 		log.Fatal(err)
 	}
 	// Use your own MCP server. This one runs a modified version of

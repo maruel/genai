@@ -195,14 +195,14 @@ func TestClient(t *testing.T) {
 				if f.IsZero() {
 					continue
 				}
-				if err := f.Validate(); err != nil {
+				if err = f.Validate(); err != nil {
 					t.Fatal(err)
 				}
-				if err := res.Accumulate(f); err != nil {
+				if err = res.Accumulate(f); err != nil {
 					t.Fatal(err)
 				}
 			}
-			if err := finish(); err != nil {
+			if err = finish(); err != nil {
 				t.Fatal(err)
 			}
 			if res.Usage, res.Logprobs, err = finish2(); err != nil {

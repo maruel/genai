@@ -303,6 +303,65 @@ go run github.com/maruel/genai/examples/txt_to_txt_websearch-stream@latest
 Same as above, but streaming.
 
 
+### Log probabilities
+
+[examples/txt\_to\_txt\_logprobs/main.go](examples/txt_to_txt_logprobs/main.go): List the alternative tokens
+that were considered during generation.
+
+Try it locally:
+
+```bash
+go run github.com/maruel/genai/examples/txt_to_txt_logprobs@latest
+```
+
+May output:
+
+```
+Provider huggingface
+  Reply:
+    Why don't scientists trust atoms?
+
+    Because they make up everything!
+  Logprobs:
+    *    -0.000082: "Why"
+         -9.625082: "Here"
+        -11.250082: "What"
+        -13.875082: "A"
+        -14.500082: "How"
+    *    -0.000003: " don"
+        -14.125003: " do"
+        -14.625003: " did"
+        -14.625003: " dont"
+        -14.875003: " didn"
+    *    -0.000001: "'t"
+        -14.000001: "’t"
+        -18.062500: "'"
+        -18.875000: "'T"
+        -19.812500: "'s"
+    *    -0.000002: " scientists"
+        -14.250002: " Scientists"
+        -14.250002: " eggs"
+        -15.125002: " skeletons"
+        -16.125002: " programmers"
+    *    -0.000000: " trust"
+        -16.250000: " trusts"
+        -16.250000: " Trust"
+        -17.250000: " like"
+        -18.000000: " trusted"
+    *    -0.000006: " atoms"
+        -13.250006: "atoms"
+        -13.500006: " stairs"
+        -14.625006: " their"
+        -15.000006: " electrons"
+    *    -0.000011: "?\n\n"
+        -12.125011: "?\n"
+        -12.125011: "?"
+        -14.750011: "？\n\n"
+        -16.500011: " anymore"
+(...)
+```
+
+
 ### Text Tools 🧰
 
 [examples/txt\_to\_txt\_tool-sync/main.go](examples/txt_to_txt_tool-sync/main.go): A LLM can both retrieve

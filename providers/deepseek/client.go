@@ -417,16 +417,19 @@ type Logprobs struct {
 	} `json:"content"`
 }
 
-func (l *Logprobs) To() []genai.Logprobs {
+func (l *Logprobs) To() [][]genai.Logprob {
 	if len(l.Content) == 0 {
 		return nil
 	}
-	out := make([]genai.Logprobs, 0, len(l.Content))
-	for i, c := range l.Content {
-		out = append(out, genai.Logprobs{Text: c.Token, Bytes: c.Bytes, Logprob: c.Logprob, TopLogprobs: make([]genai.TopLogprob, 0, len(c.TopLogprobs))})
+	out := make([][]genai.Logprob, 0, len(l.Content))
+	for _, c := range l.Content {
+		lp := make([]genai.Logprob, 1, len(c.TopLogprobs)+1)
+		// Intentionally discard Bytes.
+		lp[0] = genai.Logprob{Text: c.Token, Logprob: c.Logprob}
 		for _, tlp := range c.TopLogprobs {
-			out[i].TopLogprobs = append(out[i].TopLogprobs, genai.TopLogprob{Text: tlp.Token, Bytes: tlp.Bytes, Logprob: tlp.Logprob})
+			lp = append(lp, genai.Logprob{Text: tlp.Token, Logprob: tlp.Logprob})
 		}
+		out = append(out, lp)
 	}
 	return out
 }
@@ -671,10 +674,10 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 // TODO: Caching: https://api-docs.deepseek.com/guides/kv_cache
 
 // ProcessStream converts the raw packets from the streaming API into Reply fragments.
-func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, []genai.Logprobs, error)) {
+func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, [][]genai.Logprob, error)) {
 	var finalErr error
 	u := genai.Usage{}
-	var l []genai.Logprobs
+	var l [][]genai.Logprob
 
 	return func(yield func(genai.Reply) bool) {
 			pendingToolCall := ToolCall{}
@@ -739,7 +742,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 					return
 				}
 			}
-		}, func() (genai.Usage, []genai.Logprobs, error) {
+		}, func() (genai.Usage, [][]genai.Logprob, error) {
 			return u, l, finalErr
 		}
 }

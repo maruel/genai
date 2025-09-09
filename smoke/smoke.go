@@ -268,22 +268,8 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 	} else if err == nil {
 		// TODO: We'll need to be more detailed than that. Most don't report the ID or bytes, some only report
 		// logprobs, etc.
-		f.TopLogprobs = true
-	}
-	if f.TopLogprobs {
-		if len(resp.Logprobs) == 0 {
-			// It's not actually supported.
-			f.TopLogprobs = false
-		} else {
-			if len(resp.Logprobs) == 0 {
-				return nil, fmt.Errorf("received empty Logprobs")
-			}
-		}
-	} else {
 		if len(resp.Logprobs) != 0 {
-			// This one is weird, it happens with cohere. Is it "supported" when it returns the logprobs but not
-			// output and no alternatives from the one selected?
-			// return nil, fmt.Errorf("received Logprobs when not supported")
+			f.TopLogprobs = true
 		}
 	}
 

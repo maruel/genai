@@ -839,12 +839,13 @@ type LogprobsResult struct {
 	ChosenCandidates []TokenCandidate `json:"chosenCandidates"`
 }
 
-func (l *LogprobsResult) To() []genai.Logprobs {
-	var out []genai.Logprobs
+func (l *LogprobsResult) To() [][]genai.Logprob {
+	var out [][]genai.Logprob
 	for i, chosen := range l.ChosenCandidates {
-		lp := genai.Logprobs{ID: chosen.TokenID, Text: chosen.Token, Logprob: chosen.LogProbability, TopLogprobs: make([]genai.TopLogprob, 0, len(l.TopCandidates[i].Candidates))}
+		lp := make([]genai.Logprob, 1, len(l.TopCandidates[i].Candidates)+1)
+		lp[0] = genai.Logprob{ID: chosen.TokenID, Text: chosen.Token, Logprob: chosen.LogProbability}
 		for _, tc := range l.TopCandidates[i].Candidates {
-			lp.TopLogprobs = append(lp.TopLogprobs, genai.TopLogprob{ID: tc.TokenID, Text: tc.Token, Logprob: tc.LogProbability})
+			lp = append(lp, genai.Logprob{ID: tc.TokenID, Text: tc.Token, Logprob: tc.LogProbability})
 		}
 		out = append(out, lp)
 	}
@@ -2087,7 +2088,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 // This may require creating a whole new provider with Vertex AI API surface.
 
 // ProcessStream converts the raw packets from the streaming API into Reply fragments.
-func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, []genai.Logprobs, error)) {
+func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, [][]genai.Logprob, error)) {
 	var finalErr error
 	u := genai.Usage{}
 
@@ -2184,7 +2185,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 					return
 				}
 			}
-		}, func() (genai.Usage, []genai.Logprobs, error) {
+		}, func() (genai.Usage, [][]genai.Logprob, error) {
 			return u, nil, finalErr
 		}
 }

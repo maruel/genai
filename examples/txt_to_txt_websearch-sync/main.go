@@ -17,9 +17,10 @@ import (
 func main() {
 	ctx := context.Background()
 	// Warning: this is surpringly expensive.
-	// Other options (as of 2025-08):
+	// Other options (as of 2025-09):
 	// - anthropic
 	// - gemini
+	// - groq
 	// - openai
 	c, err := perplexity.New(ctx, &genai.ProviderOptions{Model: genai.ModelCheap}, nil)
 	if err != nil {

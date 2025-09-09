@@ -268,16 +268,19 @@ type Logprobs struct {
 	} `json:"content"`
 }
 
-func (l *Logprobs) To() []genai.Logprobs {
+func (l *Logprobs) To() [][]genai.Logprob {
 	if len(l.Content) == 0 {
 		return nil
 	}
-	out := make([]genai.Logprobs, 0, len(l.Content))
-	for i, lp := range l.Content {
-		out = append(out, genai.Logprobs{ID: lp.ID, Text: lp.Token, Bytes: lp.Bytes, Logprob: lp.Logprob, TopLogprobs: make([]genai.TopLogprob, 0, len(lp.TopLogprobs))})
-		for _, tlp := range lp.TopLogprobs {
-			out[i].TopLogprobs = append(out[i].TopLogprobs, genai.TopLogprob{ID: tlp.ID, Text: tlp.Token, Bytes: tlp.Bytes, Logprob: tlp.Logprob})
+	out := make([][]genai.Logprob, 0, len(l.Content))
+	for _, p := range l.Content {
+		lp := make([]genai.Logprob, 1, len(p.TopLogprobs)+1)
+		// Intentionally discard Bytes.
+		lp[0] = genai.Logprob{ID: p.ID, Text: p.Token, Logprob: p.Logprob}
+		for _, tlp := range p.TopLogprobs {
+			lp = append(lp, genai.Logprob{ID: tlp.ID, Text: tlp.Token, Logprob: tlp.Logprob})
 		}
+		out = append(out, lp)
 	}
 	return out
 }
@@ -1501,10 +1504,10 @@ func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, msgs gen
 }
 
 // ProcessStream converts the raw packets from the streaming API into Reply fragments.
-func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, []genai.Logprobs, error)) {
+func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, [][]genai.Logprob, error)) {
 	var finalErr error
 	u := genai.Usage{}
-	var l []genai.Logprobs
+	var l [][]genai.Logprob
 
 	return func(yield func(genai.Reply) bool) {
 			pendingToolCall := ToolCall{}
@@ -1567,13 +1570,13 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 					break
 				}
 			}
-		}, func() (genai.Usage, []genai.Logprobs, error) {
+		}, func() (genai.Usage, [][]genai.Logprob, error) {
 			return u, l, finalErr
 		}
 }
 
 // ProcessCompletionStream converts the raw packets from the completion streaming API into Reply fragments.
-func ProcessCompletionStream(chunks iter.Seq[CompletionStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, []genai.Logprobs, error)) {
+func ProcessCompletionStream(chunks iter.Seq[CompletionStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, [][]genai.Logprob, error)) {
 	var finalErr error
 	u := genai.Usage{}
 
@@ -1590,7 +1593,7 @@ func ProcessCompletionStream(chunks iter.Seq[CompletionStreamChunkResponse]) (it
 					break
 				}
 			}
-		}, func() (genai.Usage, []genai.Logprobs, error) {
+		}, func() (genai.Usage, [][]genai.Logprob, error) {
 			return u, nil, finalErr
 		}
 }

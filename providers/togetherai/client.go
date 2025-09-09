@@ -553,14 +553,14 @@ type Logprobs struct {
 	TokenIDs      []struct{} `json:"token_ids"` // Not set.
 }
 
-func (l *Logprobs) To() []genai.Logprobs {
+func (l *Logprobs) To() [][]genai.Logprob {
 	if len(l.Tokens) == 0 {
 		return nil
 	}
 	// Toplogprobs are not returned when not streaming (!!)
-	out := make([]genai.Logprobs, 0, len(l.Tokens))
+	out := make([][]genai.Logprob, 0, len(l.Tokens))
 	for i := range l.Tokens {
-		out = append(out, genai.Logprobs{Text: l.Tokens[i], Logprob: l.TokenLogprobs[i]})
+		out = append(out, []genai.Logprob{{Text: l.Tokens[i], Logprob: l.TokenLogprobs[i]}})
 	}
 	return out
 }
@@ -592,16 +592,18 @@ func (l *LogprobsChunk) UnmarshalJSON(b []byte) error {
 	return d.Decode(&a)
 }
 
-func (l *LogprobsChunk) ToLogprobs() []genai.Logprobs {
+func (l *LogprobsChunk) To() [][]genai.Logprob {
 	if len(l.Tokens) == 0 {
 		return nil
 	}
-	out := make([]genai.Logprobs, len(l.Tokens))
+	out := make([][]genai.Logprob, 0, len(l.Tokens))
 	for i := range l.Tokens {
-		out[i] = genai.Logprobs{Text: l.Tokens[i], Logprob: l.TokenLogprobs[i], TopLogprobs: make([]genai.TopLogprob, 0, len(l.TopLogprobs[i]))}
+		lp := make([]genai.Logprob, 1, len(l.TopLogprobs[i])+1)
+		lp[0] = genai.Logprob{Text: l.Tokens[i], Logprob: l.TokenLogprobs[i]}
 		for _, tlp := range l.TopLogprobs[i] {
-			out[i].TopLogprobs = append(out[i].TopLogprobs, genai.TopLogprob{Text: tlp.Token, Logprob: tlp.Logprob})
+			lp = append(lp, genai.Logprob{Text: tlp.Token, Logprob: tlp.Logprob})
 		}
+		out = append(out, lp)
 	}
 	return out
 }
@@ -1153,11 +1155,11 @@ func (c *Client) isImage() bool {
 }
 
 // ProcessStream converts the raw packets from the streaming API into Reply fragments.
-func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, []genai.Logprobs, error)) {
+func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, [][]genai.Logprob, error)) {
 	var finalErr error
 	var warnings []string
 	u := genai.Usage{}
-	var l []genai.Logprobs
+	var l [][]genai.Logprob
 
 	return func(yield func(genai.Reply) bool) {
 			pendingToolCall := ToolCall{}
@@ -1247,10 +1249,10 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 					return
 				}
 				if len(pkt.Choices[0].Logprobs.Tokens) != 0 {
-					l = append(l, pkt.Choices[0].Logprobs.ToLogprobs()...)
+					l = append(l, pkt.Choices[0].Logprobs.To()...)
 				}
 			}
-		}, func() (genai.Usage, []genai.Logprobs, error) {
+		}, func() (genai.Usage, [][]genai.Logprob, error) {
 			if len(warnings) != 0 {
 				uce := &genai.UnsupportedContinuableError{}
 				for _, w := range warnings {

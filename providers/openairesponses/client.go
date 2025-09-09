@@ -741,10 +741,12 @@ type Logprobs struct {
 	} `json:"top_logprobs,omitzero"`
 }
 
-func (l *Logprobs) To() genai.Logprobs {
-	out := genai.Logprobs{Text: l.Token, Bytes: l.Bytes, Logprob: l.Logprob, TopLogprobs: make([]genai.TopLogprob, 0, len(l.TopLogprobs))}
+func (l *Logprobs) To() []genai.Logprob {
+	out := make([]genai.Logprob, 1, len(l.TopLogprobs)+1)
+	// Intentionally discard Bytes.
+	out[0] = genai.Logprob{Text: l.Token, Logprob: l.Logprob}
 	for _, tlp := range l.TopLogprobs {
-		out.TopLogprobs = append(out.TopLogprobs, genai.TopLogprob{Text: tlp.Token, Bytes: tlp.Bytes, Logprob: tlp.Logprob})
+		out = append(out, genai.Logprob{Text: tlp.Token, Logprob: tlp.Logprob})
 	}
 	return out
 }
@@ -1145,10 +1147,10 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *Response) (iter.Seq[Respo
 }
 
 // ProcessStream converts the raw packets from the streaming API into Reply fragments.
-func ProcessStream(chunks iter.Seq[ResponseStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, []genai.Logprobs, error)) {
+func ProcessStream(chunks iter.Seq[ResponseStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, [][]genai.Logprob, error)) {
 	var finalErr error
 	u := genai.Usage{}
-	var l []genai.Logprobs
+	var l [][]genai.Logprob
 
 	return func(yield func(genai.Reply) bool) {
 			pendingToolCall := genai.ToolCall{}
@@ -1390,7 +1392,7 @@ func ProcessStream(chunks iter.Seq[ResponseStreamChunkResponse]) (iter.Seq[genai
 				finalErr = &internal.BadError{Err: errors.New("unexpected pending tool call")}
 				return
 			}
-		}, func() (genai.Usage, []genai.Logprobs, error) {
+		}, func() (genai.Usage, [][]genai.Logprob, error) {
 			return u, l, finalErr
 		}
 }

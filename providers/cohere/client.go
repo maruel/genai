@@ -526,7 +526,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 		},
 	}
 	if len(c.Logprobs) != 0 {
-		out.Logprobs = make([]genai.Logprobs, len(c.Logprobs))
+		out.Logprobs = make([][]genai.Logprob, len(c.Logprobs))
 		for i, lp := range c.Logprobs {
 			out.Logprobs[i] = lp.To()
 		}
@@ -572,10 +572,11 @@ type Logprobs struct {
 	Logprobs []float64 `json:"logprobs"`
 }
 
-func (l *Logprobs) To() genai.Logprobs {
-	out := genai.Logprobs{Text: l.Text, Logprob: l.Logprobs[0], TopLogprobs: make([]genai.TopLogprob, len(l.Logprobs))}
-	for i := range l.Logprobs {
-		out.TopLogprobs[i] = genai.TopLogprob{ID: l.TokenIDs[i], Logprob: l.Logprobs[i]}
+func (l *Logprobs) To() []genai.Logprob {
+	out := make([]genai.Logprob, 1, len(l.Logprobs)+1)
+	out[0] = genai.Logprob{Text: l.Text, ID: l.TokenIDs[0], Logprob: l.Logprobs[0]}
+	for i := 1; i < len(l.Logprobs); i++ {
+		out = append(out, genai.Logprob{ID: l.TokenIDs[i], Logprob: l.Logprobs[i]})
 	}
 	return out
 }
@@ -1029,10 +1030,10 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 }
 
 // ProcessStream converts the raw packets from the streaming API into Reply fragments.
-func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, []genai.Logprobs, error)) {
+func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, [][]genai.Logprob, error)) {
 	var finalErr error
 	u := genai.Usage{}
-	var l []genai.Logprobs
+	var l [][]genai.Logprob
 
 	return func(yield func(genai.Reply) bool) {
 			wasThinking := false
@@ -1154,7 +1155,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 					return
 				}
 			}
-		}, func() (genai.Usage, []genai.Logprobs, error) {
+		}, func() (genai.Usage, [][]genai.Logprob, error) {
 			return u, l, finalErr
 		}
 }

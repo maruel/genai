@@ -159,25 +159,28 @@ type ProviderUnwrap interface {
 // and the provider support it.
 type Result struct {
 	Message
-	Usage    Usage
-	Logprobs []Logprobs
+	Usage Usage
+	// Logprobs is a list of multiple log probabilities, each for a token.
+	//
+	// The first item of each subslice is the chosen token. The next items are the candidates not chosen.
+	//
+	// Some providers only return the probability for the chosen tokens and not for the candidates.
+	Logprobs [][]Logprob
 }
 
-// Logprobs represents the log probability information for a single token.
-type Logprobs struct {
-	ID          int64        `json:"id,omitempty"`           // Input token ID. Not always provided.
-	Text        string       `json:"text,omitempty"`         // Text in UTF-8.
-	Bytes       []byte       `json:"bytes,omitempty"`        // Bytes representation of the text, in case it's not valid UTF-8. Not always provided.
-	Logprob     float64      `json:"logprob"`                // The log probability of the token
-	TopLogprobs []TopLogprob `json:"top_logprobs,omitempty"` // Top candidates.
+// Logprob represents a single log probability information for a token.
+//
+// One of ID or Text must be set.
+type Logprob struct {
+	ID      int64   `json:"id,omitempty"`   // Input token ID.
+	Text    string  `json:"text,omitempty"` // Text in UTF-8.
+	Logprob float64 `json:"logprob"`        // Log probability of the token. It should normally be non-zero but sometimes it is.
 }
 
-// TopLogprob represents the log probability information for a top token.
-type TopLogprob struct {
-	ID      int64   `json:"id,omitempty"`
-	Text    string  `json:"text,omitempty"`
-	Bytes   []byte  `json:"bytes,omitempty"`
-	Logprob float64 `json:"logprob"`
+// GoString returns a JSON representation of the reply for debugging purposes.
+func (l *Logprob) GoString() string {
+	b, _ := json.Marshal(l)
+	return string(b)
 }
 
 // Usage from the LLM provider.
@@ -498,6 +501,7 @@ func (m *Message) UnmarshalJSON(b []byte) error {
 	return errors.Join(m.validateShallow()...)
 }
 
+// GoString returns a JSON representation of the reply for debugging purposes.
 func (m *Message) GoString() string {
 	b, _ := json.Marshal(m)
 	return string(b)

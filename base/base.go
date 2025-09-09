@@ -315,7 +315,7 @@ type Provider[PErrorResponse ErrAPI, PGenRequest InitializableRequest, PGenRespo
 	GenStreamURL string
 	// ProcessStream is the function that processes stream packets created by GenStreamRaw to be used in
 	// GenStream.
-	ProcessStream func(it iter.Seq[GenStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, []genai.Logprobs, error))
+	ProcessStream func(it iter.Seq[GenStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, [][]genai.Logprob, error))
 	// ProcessHeaders is the function that processes HTTP headers to extract rate limit information.
 	ProcessHeaders func(http.Header) []genai.RateLimit
 	// LieToolCalls lie the FinishReason on tool calls.

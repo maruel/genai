@@ -701,12 +701,12 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 }
 
 // GenStream implements genai.Provider.
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	res := genai.Result{}
 	var continuableErr error
 	var finalErr error
 
-	fnFragments := func(yield func(genai.ReplyFragment) bool) {
+	fnFragments := func(yield func(genai.Reply) bool) {
 		in := ChatRequest{}
 		if err := in.Init(msgs, c.impl.Model, opts...); err != nil {
 			if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
@@ -899,12 +899,12 @@ func processJSONStream(body io.Reader, out chan<- ChatStreamChunkResponse, lenie
 	}
 }
 
-// ProcessStream converts the raw packets from the streaming API into ReplyFragments.
-func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
+// ProcessStream converts the raw packets from the streaming API into Reply fragments.
+func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, []genai.Logprobs, error)) {
 	var finalErr error
 	u := genai.Usage{}
 
-	return func(yield func(genai.ReplyFragment) bool) {
+	return func(yield func(genai.Reply) bool) {
 			for pkt := range chunks {
 				if pkt.EvalCount != 0 {
 					u.InputTokens = pkt.PromptEvalCount
@@ -918,7 +918,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 					return
 				}
 				for i := range pkt.Message.ToolCalls {
-					f := genai.ReplyFragment{}
+					f := genai.Reply{}
 					if err := pkt.Message.ToolCalls[i].To(&f.ToolCall); err != nil {
 						finalErr = &internal.BadError{Err: err}
 						return
@@ -927,7 +927,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 						return
 					}
 				}
-				if !yield(genai.ReplyFragment{TextFragment: pkt.Message.Content}) {
+				if !yield(genai.Reply{Text: pkt.Message.Content}) {
 					return
 				}
 			}

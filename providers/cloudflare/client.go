@@ -838,7 +838,7 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 }
 
 // GenStream implements genai.Provider.
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	return c.impl.GenStream(ctx, msgs, opts...)
 }
 
@@ -872,12 +872,12 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	return models, nil
 }
 
-// ProcessStream converts the raw packets from the streaming API into ReplyFragments.
-func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
+// ProcessStream converts the raw packets from the streaming API into Reply fragments.
+func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, []genai.Logprobs, error)) {
 	var finalErr error
 	u := genai.Usage{}
 
-	return func(yield func(genai.ReplyFragment) bool) {
+	return func(yield func(genai.Reply) bool) {
 			for pkt := range chunks {
 				if pkt.Usage.TotalTokens != 0 {
 					u.InputTokens = pkt.Usage.PromptTokens
@@ -886,7 +886,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 					// Cloudflare doesn't provide FinishReason.
 				}
 				// TODO: Tools.
-				if !yield(genai.ReplyFragment{TextFragment: string(pkt.Response)}) {
+				if !yield(genai.Reply{Text: string(pkt.Response)}) {
 					return
 				}
 			}

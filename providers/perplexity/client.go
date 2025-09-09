@@ -599,7 +599,7 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 }
 
 // GenStream implements genai.Provider.
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	return c.impl.GenStream(ctx, msgs, opts...)
 }
 
@@ -608,15 +608,15 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest) (iter.Seq[Ch
 	return c.impl.GenStreamRaw(ctx, in)
 }
 
-// ProcessStream converts the raw packets from the streaming API into ReplyFragments.
-func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
+// ProcessStream converts the raw packets from the streaming API into Reply fragments.
+func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, []genai.Logprobs, error)) {
 	var finalErr error
 	u := genai.Usage{}
 	// Perplexity has a bug where it will send the search result multiple times. We need to filter them. Use the
 	// URL as key.
 	seen := map[string]struct{}{}
 
-	return func(yield func(genai.ReplyFragment) bool) {
+	return func(yield func(genai.Reply) bool) {
 			for pkt := range chunks {
 				if len(pkt.Choices) != 1 {
 					continue
@@ -636,7 +636,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 				}
 				// We need to do one packet per citation type. Do that before sending text.
 				if len(pkt.SearchResults) > 0 {
-					f := genai.ReplyFragment{}
+					f := genai.Reply{}
 					for _, r := range pkt.SearchResults {
 						if _, ok := seen[r.URL]; ok {
 							continue
@@ -656,7 +656,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 					}
 				}
 				if len(pkt.Images) > 0 {
-					f := genai.ReplyFragment{}
+					f := genai.Reply{}
 					for _, img := range pkt.Images {
 						if _, ok := seen[img.ImageURL]; ok {
 							continue
@@ -681,7 +681,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 				if len(pkt.RelatedQuestions) > 0 {
 					// TODO: Figure out how to return this.
 				}
-				if !yield(genai.ReplyFragment{TextFragment: pkt.Choices[0].Delta.Content}) {
+				if !yield(genai.Reply{Text: pkt.Choices[0].Delta.Content}) {
 					return
 				}
 			}

@@ -216,7 +216,7 @@ func ExampleProvider_GenStream() {
 	}
 	fragments, finish := p.GenStream(ctx, msgs, &opts)
 	for f := range fragments {
-		os.Stdout.WriteString(f.TextFragment)
+		os.Stdout.WriteString(f.Text)
 	}
 	if _, err := finish(); err != nil {
 		log.Fatal(err)

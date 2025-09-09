@@ -79,16 +79,16 @@ func TestGenStreamWithToolCallLoop(t *testing.T) {
 	provider := &mockProviderGenStream{
 		streamResponses: []streamResponse{
 			{
-				fragments: []genai.ReplyFragment{
-					{TextFragment: "I'll help you calculate that. "},
-					{TextFragment: "Let me use the calculator tool."},
+				fragments: []genai.Reply{
+					{Text: "I'll help you calculate that. "},
+					{Text: "Let me use the calculator tool."},
 					{ToolCall: genai.ToolCall{ID: "1", Name: "calculator", Arguments: `{"a": 5, "b": 3, "operation": "add"}`}},
 				},
 				usage: genai.Usage{InputTokens: 10, OutputTokens: 20},
 			},
 			{
-				fragments: []genai.ReplyFragment{
-					{TextFragment: "The result of 5 + 3 is 8."},
+				fragments: []genai.Reply{
+					{Text: "The result of 5 + 3 is 8."},
 				},
 				usage: genai.Usage{InputTokens: 15, OutputTokens: 10},
 			},

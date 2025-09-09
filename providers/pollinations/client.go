@@ -1068,7 +1068,7 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 }
 
 // GenStream implements genai.Provider.
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	if c.isAudio() || c.isImage() {
 		return base.SimulateStream(ctx, c, msgs, opts...)
 	}
@@ -1252,12 +1252,12 @@ func (c *Client) validateModality(ctx context.Context, mod genai.Modality) error
 	return nil
 }
 
-// ProcessStream converts the raw packets from the streaming API into ReplyFragments.
-func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
+// ProcessStream converts the raw packets from the streaming API into Reply fragments.
+func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, []genai.Logprobs, error)) {
 	var finalErr error
 	u := genai.Usage{}
 
-	return func(yield func(genai.ReplyFragment) bool) {
+	return func(yield func(genai.Reply) bool) {
 			pendingToolCall := ToolCall{}
 			for pkt := range chunks {
 				if pkt.Usage.PromptTokens != 0 {
@@ -1283,9 +1283,9 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 					finalErr = &internal.BadError{Err: fmt.Errorf("implement multiple tool calls: %#v", pkt)}
 					return
 				}
-				f := genai.ReplyFragment{
-					TextFragment:      pkt.Choices[0].Delta.Content,
-					ReasoningFragment: pkt.Choices[0].Delta.ReasoningContent,
+				f := genai.Reply{
+					Text:      pkt.Choices[0].Delta.Content,
+					Reasoning: pkt.Choices[0].Delta.ReasoningContent,
 				}
 				// Pollinations streams the arguments. Buffer the arguments to send the fragment as a whole tool call.
 				if len(pkt.Choices[0].Delta.ToolCalls) == 1 {
@@ -1336,7 +1336,7 @@ func (e *exponentialBackoff) ShouldRetry(ctx context.Context, start time.Time, t
 	return e.ExponentialBackoff.ShouldRetry(ctx, start, try, err, resp)
 }
 
-func yieldNoFragment(yield func(genai.ReplyFragment) bool) {
+func yieldNoFragment(yield func(genai.Reply) bool) {
 }
 
 var _ genai.Provider = &Client{}

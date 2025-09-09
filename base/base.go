@@ -74,8 +74,8 @@ func (*NotImplemented) GenSync(context.Context, genai.Messages, ...genai.Options
 	return genai.Result{}, ErrNotSupported
 }
 
-func (*NotImplemented) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
-	return yieldNothing[genai.ReplyFragment], func() (genai.Result, error) {
+func (*NotImplemented) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
+	return yieldNothing[genai.Reply], func() (genai.Result, error) {
 		return genai.Result{}, ErrNotSupported
 	}
 }
@@ -315,7 +315,7 @@ type Provider[PErrorResponse ErrAPI, PGenRequest InitializableRequest, PGenRespo
 	GenStreamURL string
 	// ProcessStream is the function that processes stream packets created by GenStreamRaw to be used in
 	// GenStream.
-	ProcessStream func(it iter.Seq[GenStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error))
+	ProcessStream func(it iter.Seq[GenStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, []genai.Logprobs, error))
 	// ProcessHeaders is the function that processes HTTP headers to extract rate limit information.
 	ProcessHeaders func(http.Header) []genai.RateLimit
 	// LieToolCalls lie the FinishReason on tool calls.
@@ -361,12 +361,12 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 	return res, continuableErr
 }
 
-func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
+func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	res := genai.Result{}
 	var continuableErr error
 	var finalErr error
 
-	fnFragments := func(yield func(genai.ReplyFragment) bool) {
+	fnFragments := func(yield func(genai.Reply) bool) {
 		c.lateInit()
 		in := reflect.New(c.chatRequest).Interface().(PGenRequest)
 		if err := in.Init(msgs, c.Model, opts...); err != nil {
@@ -536,43 +536,53 @@ func (t *Time) AsTime() time.Time {
 }
 
 // SimulateStream simulates GenStream for APIs that do not support streaming.
-func SimulateStream(ctx context.Context, c genai.Provider, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
+func SimulateStream(ctx context.Context, c genai.Provider, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	res := genai.Result{}
 	var finalErr error
 
-	fnFragments := func(yield func(genai.ReplyFragment) bool) {
+	fnFragments := func(yield func(genai.Reply) bool) {
 		res, finalErr = c.GenSync(ctx, msgs, opts...)
 		if finalErr == nil {
 			for _, r := range res.Replies {
 				// Generally we do not expect any not document fragments but this can happen in the future.
 				if r.Text != "" {
-					if !yield(genai.ReplyFragment{TextFragment: r.Text}) {
+					if !yield(genai.Reply{Text: r.Text}) {
 						return
 					}
 				}
 				if !r.Doc.IsZero() {
 					if url := r.Doc.URL; url != "" {
-						if !yield(genai.ReplyFragment{Filename: r.Doc.Filename, URL: r.Doc.URL}) {
+						if !yield(genai.Reply{Doc: r.Doc}) {
 							return
 						}
 					} else {
-						if !yield(genai.ReplyFragment{Filename: r.Doc.Filename, DocumentFragment: r.Doc.Src.(*bb.BytesBuffer).D}) {
+						// We need to buffer and convert.
+						src, ok := r.Doc.Src.(*bb.BytesBuffer)
+						if !ok {
+							raw, err := io.ReadAll(r.Doc.Src)
+							if err != nil {
+								finalErr = err
+								return
+							}
+							src = &bb.BytesBuffer{D: raw}
+						}
+						if !yield(genai.Reply{Doc: genai.Doc{Filename: r.Doc.Filename, Src: src}}) {
 							return
 						}
 					}
 				}
 				if !r.Citation.IsZero() {
-					if !yield(genai.ReplyFragment{Citation: r.Citation}) {
+					if !yield(genai.Reply{Citation: r.Citation}) {
 						return
 					}
 				}
 				if r.Reasoning != "" {
-					if !yield(genai.ReplyFragment{ReasoningFragment: r.Reasoning, Opaque: r.Opaque}) {
+					if !yield(genai.Reply{Reasoning: r.Reasoning, Opaque: r.Opaque}) {
 						return
 					}
 				}
 				if !r.ToolCall.IsZero() {
-					if !yield(genai.ReplyFragment{ToolCall: r.ToolCall}) {
+					if !yield(genai.Reply{ToolCall: r.ToolCall}) {
 						return
 					}
 				}

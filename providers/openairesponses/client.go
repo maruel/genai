@@ -1144,16 +1144,16 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *Response) (iter.Seq[Respo
 	return c.impl.GenStreamRaw(ctx, in)
 }
 
-// ProcessStream converts the raw packets from the streaming API into ReplyFragments.
-func ProcessStream(chunks iter.Seq[ResponseStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
+// ProcessStream converts the raw packets from the streaming API into Reply fragments.
+func ProcessStream(chunks iter.Seq[ResponseStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, []genai.Logprobs, error)) {
 	var finalErr error
 	u := genai.Usage{}
 	var l []genai.Logprobs
 
-	return func(yield func(genai.ReplyFragment) bool) {
+	return func(yield func(genai.Reply) bool) {
 			pendingToolCall := genai.ToolCall{}
 			for pkt := range chunks {
-				f := genai.ReplyFragment{}
+				f := genai.Reply{}
 				for _, lp := range pkt.Logprobs {
 					l = append(l, lp.To())
 				}
@@ -1231,7 +1231,7 @@ func ProcessStream(chunks iter.Seq[ResponseStreamChunkResponse]) (iter.Seq[genai
 						for i := range pkt.Item.Summary {
 							bits = append(bits, pkt.Item.Summary[i].Text)
 						}
-						f.ReasoningFragment = strings.Join(bits, "")
+						f.Reasoning = strings.Join(bits, "")
 					case MessageWebSearchCall:
 						// TODO: Send a fragment to tell the user. It's a server-side tool call, we don't have infrastructure
 						// to surface that to the user yet.
@@ -1287,7 +1287,7 @@ func ProcessStream(chunks iter.Seq[ResponseStreamChunkResponse]) (iter.Seq[genai
 					// Unnecessary, as we already streamed the content in ResponseContentPartAdded.
 				case ResponseOutputTextDelta:
 					// https://platform.openai.com/docs/api-reference/responses_streaming/response/output_text/delta
-					f.TextFragment = pkt.Delta
+					f.Text = pkt.Delta
 				case ResponseOutputTextDone:
 					// https://platform.openai.com/docs/api-reference/responses_streaming/response/output_text/done
 					// Unnecessary, we captured the text via ResponseOutputTextDelta.
@@ -1333,13 +1333,13 @@ func ProcessStream(chunks iter.Seq[ResponseStreamChunkResponse]) (iter.Seq[genai
 					// https://platform.openai.com/docs/api-reference/responses_streaming/response/reasoning_summary_part/done
 				case ResponseReasoningSummaryTextDelta:
 					// https://platform.openai.com/docs/api-reference/responses_streaming/response/reasoning_summary_text/delta
-					f.ReasoningFragment = pkt.Delta
+					f.Reasoning = pkt.Delta
 				case ResponseReasoningSummaryTextDone:
 					// https://platform.openai.com/docs/api-reference/responses_streaming/response/reasoning_summary_text/done
 				case ResponseReasoningTextDelta:
 					// https://platform.openai.com/docs/api-reference/responses_streaming/response/reasoning_text/delta
 					// I'm not sure it will ever happen.
-					f.ReasoningFragment = pkt.Delta
+					f.Reasoning = pkt.Delta
 				case ResponseReasoningTextDone:
 					// https://platform.openai.com/docs/api-reference/responses_streaming/response/reasoning_text/done
 

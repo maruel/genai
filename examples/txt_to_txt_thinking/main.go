@@ -28,24 +28,24 @@ func main() {
 	fragments, finish := c.GenStream(ctx, msgs)
 	reasoning := false
 	for f := range fragments {
-		if f.ReasoningFragment != "" {
+		if f.Reasoning != "" {
 			if !reasoning {
 				if _, err = os.Stdout.WriteString("# Reasoning\n"); err != nil {
 					break
 				}
 				reasoning = true
 			}
-			if _, err = os.Stdout.WriteString(f.ReasoningFragment); err != nil {
+			if _, err = os.Stdout.WriteString(f.Reasoning); err != nil {
 				break
 			}
-		} else if f.TextFragment != "" {
+		} else if f.Text != "" {
 			if reasoning {
 				if _, err = os.Stdout.WriteString("\n\n# Answer\n"); err != nil {
 					break
 				}
 				reasoning = false
 			}
-			if _, err = os.Stdout.WriteString(f.TextFragment); err != nil {
+			if _, err = os.Stdout.WriteString(f.Text); err != nil {
 				break
 			}
 		}

@@ -1201,7 +1201,7 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 }
 
 // GenStream implements genai.Provider.
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	return c.impl.GenStream(ctx, msgs, opts...)
 }
 
@@ -1255,12 +1255,12 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 	return c.impl.DoRequest(ctx, "POST", c.completionsURL, in, out)
 }
 
-func (c *Client) CompletionStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
+func (c *Client) CompletionStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	res := genai.Result{}
 	var continuableErr error
 	var finalErr error
 
-	fnFragments := func(yield func(genai.ReplyFragment) bool) {
+	fnFragments := func(yield func(genai.Reply) bool) {
 		in := CompletionRequest{}
 		if err := in.Init(msgs, "", opts...); err != nil {
 			if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
@@ -1500,13 +1500,13 @@ func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, msgs gen
 	return nil
 }
 
-// ProcessStream converts the raw packets from the streaming API into ReplyFragments.
-func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
+// ProcessStream converts the raw packets from the streaming API into Reply fragments.
+func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, []genai.Logprobs, error)) {
 	var finalErr error
 	u := genai.Usage{}
 	var l []genai.Logprobs
 
-	return func(yield func(genai.ReplyFragment) bool) {
+	return func(yield func(genai.Reply) bool) {
 			pendingToolCall := ToolCall{}
 			for pkt := range chunks {
 				if pkt.Usage.PromptTokens != 0 {
@@ -1527,9 +1527,9 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 					finalErr = &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
 					return
 				}
-				f := genai.ReplyFragment{
-					TextFragment: pkt.Choices[0].Delta.Content,
-					// ReasoningFragment: pkt.Choices[0].Delta.ReasoningContent,
+				f := genai.Reply{
+					Text: pkt.Choices[0].Delta.Content,
+					// Reasoning: pkt.Choices[0].Delta.ReasoningContent,
 				}
 				if len(pkt.Choices[0].Delta.ToolCalls) > 1 {
 					finalErr = &internal.BadError{Err: fmt.Errorf("implement multiple tool calls: %#v", pkt)}
@@ -1572,12 +1572,12 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 		}
 }
 
-// ProcessCompletionStream converts the raw packets from the completion streaming API into ReplyFragments.
-func ProcessCompletionStream(chunks iter.Seq[CompletionStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
+// ProcessCompletionStream converts the raw packets from the completion streaming API into Reply fragments.
+func ProcessCompletionStream(chunks iter.Seq[CompletionStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, []genai.Logprobs, error)) {
 	var finalErr error
 	u := genai.Usage{}
 
-	return func(yield func(genai.ReplyFragment) bool) {
+	return func(yield func(genai.Reply) bool) {
 			for pkt := range chunks {
 				if pkt.Timings.PredictedN != 0 {
 					u.InputTokens = pkt.Timings.PromptN
@@ -1586,7 +1586,7 @@ func ProcessCompletionStream(chunks iter.Seq[CompletionStreamChunkResponse]) (it
 				if pkt.StopType != "" {
 					u.FinishReason = pkt.StopType.ToFinishReason()
 				}
-				if !yield(genai.ReplyFragment{TextFragment: pkt.Content}) {
+				if !yield(genai.Reply{Text: pkt.Content}) {
 					break
 				}
 			}

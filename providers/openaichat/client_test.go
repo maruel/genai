@@ -247,7 +247,7 @@ func (i *injectReasoning) GenSync(ctx context.Context, msgs genai.Messages, opts
 	return res, err
 }
 
-func (i *injectReasoning) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
+func (i *injectReasoning) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	res, err := i.Provider.GenStream(ctx, msgs, opts...)
 	return res, err
 }

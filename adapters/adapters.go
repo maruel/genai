@@ -84,13 +84,13 @@ func GenSyncWithToolCallLoop(ctx context.Context, p genai.Provider, msgs genai.M
 // Warning: If opts.Force == ToolCallRequired, it will be mutated to ToolCallAny after the first
 // tool call.
 //
-// No need to process the tool calls or accumulate the ReplyFragment.
-func GenStreamWithToolCallLoop(ctx context.Context, p genai.Provider, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Messages, genai.Usage, error)) {
+// No need to process the tool calls or accumulate the Reply fragments.
+func GenStreamWithToolCallLoop(ctx context.Context, p genai.Provider, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.Reply], func() (genai.Messages, genai.Usage, error)) {
 	var out genai.Messages
 	usage := genai.Usage{}
 	var finalErr error
 
-	fnFragments := func(yield func(genai.ReplyFragment) bool) {
+	fnFragments := func(yield func(genai.Reply) bool) {
 		workMsgs := slices.Clone(msgs)
 		var toolsOpts *genai.OptionsTools
 		for _, opt := range opts {
@@ -169,7 +169,7 @@ func (c *ProviderIgnoreUnsupported) GenSync(ctx context.Context, msgs genai.Mess
 	return res, err
 }
 
-func (c *ProviderIgnoreUnsupported) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
+func (c *ProviderIgnoreUnsupported) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	fragments, finish := c.Provider.GenStream(ctx, msgs, opts...)
 	return fragments, func() (genai.Result, error) {
 		res, err := finish()
@@ -209,7 +209,7 @@ func (c *ProviderUsage) GenSync(ctx context.Context, msgs genai.Messages, opts .
 }
 
 // GenStream implements the Provider interface and accumulates usage statistics.
-func (c *ProviderUsage) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
+func (c *ProviderUsage) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	// Call the wrapped provider and accumulate usage statistics
 	fragments, finish := c.Provider.GenStream(ctx, msgs, opts...)
 	return fragments, func() (genai.Result, error) {
@@ -256,7 +256,7 @@ func (c *ProviderAppend) GenSync(ctx context.Context, msgs genai.Messages, opts 
 	return c.Provider.GenSync(ctx, msgs, opts...)
 }
 
-func (c *ProviderAppend) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
+func (c *ProviderAppend) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	if i := len(msgs) - 1; len(msgs[i].Requests) != 0 {
 		msgs = slices.Clone(msgs)
 		msgs[i].Requests = append(slices.Clone(msgs[i].Requests), c.Append)

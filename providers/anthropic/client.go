@@ -1652,7 +1652,7 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 }
 
 // GenStream implements genai.Provider.
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	return c.impl.GenStream(ctx, msgs, opts...)
 }
 
@@ -1674,18 +1674,18 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	return resp.ToModels(), nil
 }
 
-// ProcessStream converts the raw packets from the streaming API into ReplyFragments.
-func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
+// ProcessStream converts the raw packets from the streaming API into Reply fragments.
+func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, []genai.Logprobs, error)) {
 	var finalErr error
 	var u genai.Usage
 
-	return func(yield func(genai.ReplyFragment) bool) {
+	return func(yield func(genai.Reply) bool) {
 			// At the moment, only supported for server_tool_use / web_search.
 			pendingServerCall := ""
 			pendingJSON := ""
 			pendingToolCall := genai.ToolCall{}
 			for pkt := range chunks {
-				f := genai.ReplyFragment{}
+				f := genai.Reply{}
 				// See testdata/TestClient_Chat_thinking/ChatStream.yaml as a great example.
 				// TODO: pkt.Index matters here, as the LLM may fill multiple content blocks simultaneously.
 				switch pkt.Type {
@@ -1705,9 +1705,9 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 				case ChunkContentBlockStart:
 					switch pkt.ContentBlock.Type {
 					case ContentText:
-						f.TextFragment = pkt.ContentBlock.Text
+						f.Text = pkt.ContentBlock.Text
 					case ContentThinking:
-						f.ReasoningFragment = pkt.ContentBlock.Thinking
+						f.Reasoning = pkt.ContentBlock.Thinking
 					case ContentToolUse:
 						pendingToolCall.ID = pkt.ContentBlock.ID
 						pendingToolCall.Name = pkt.ContentBlock.Name
@@ -1763,9 +1763,9 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 				case ChunkContentBlockDelta:
 					switch pkt.Delta.Type {
 					case DeltaText:
-						f.TextFragment = pkt.Delta.Text
+						f.Text = pkt.Delta.Text
 					case DeltaThinking:
-						f.ReasoningFragment = pkt.Delta.Thinking
+						f.Reasoning = pkt.Delta.Thinking
 					case DeltaSignature:
 						f.Opaque = map[string]any{"signature": pkt.Delta.Signature}
 					case DeltaInputJSON:

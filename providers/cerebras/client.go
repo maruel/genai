@@ -806,7 +806,7 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 }
 
 // GenStream implements genai.Provider.
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	return c.impl.GenStream(ctx, msgs, opts...)
 }
 
@@ -828,13 +828,13 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	return resp.ToModels(), nil
 }
 
-// ProcessStream converts the raw packets from the streaming API into ReplyFragments.
-func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
+// ProcessStream converts the raw packets from the streaming API into Reply fragments.
+func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, []genai.Logprobs, error)) {
 	var finalErr error
 	u := genai.Usage{}
 	var l []genai.Logprobs
 
-	return func(yield func(genai.ReplyFragment) bool) {
+	return func(yield func(genai.Reply) bool) {
 			// gpt-oss-* streams the tool call arguments but not the other models. Fun.
 			pendingToolCall := ToolCall{}
 			for pkt := range chunks {
@@ -864,7 +864,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 							pendingToolCall.Function.Arguments += nt.Function.Arguments
 						} else {
 							// Flush first.
-							f := genai.ReplyFragment{}
+							f := genai.Reply{}
 							pendingToolCall.To(&f.ToolCall)
 							if !yield(f) {
 								return
@@ -875,13 +875,13 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 						pendingToolCall = nt
 					}
 				}
-				if !yield(genai.ReplyFragment{ReasoningFragment: pkt.Choices[0].Delta.Reasoning}) {
+				if !yield(genai.Reply{Reasoning: pkt.Choices[0].Delta.Reasoning}) {
 					return
 				}
 				for _, content := range pkt.Choices[0].Delta.Content {
 					switch content.Type {
 					case ContentText:
-						if !yield(genai.ReplyFragment{TextFragment: content.Text}) {
+						if !yield(genai.Reply{Text: content.Text}) {
 							return
 						}
 					default:
@@ -894,7 +894,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 				}
 			}
 			if pendingToolCall.ID != "" {
-				f := genai.ReplyFragment{}
+				f := genai.Reply{}
 				pendingToolCall.To(&f.ToolCall)
 				if !yield(f) {
 					return

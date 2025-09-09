@@ -1693,7 +1693,7 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 }
 
 // GenStream implements genai.Provider.
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	if !slices.Contains(c.impl.OutputModalities, genai.ModalityText) {
 		return base.SimulateStream(ctx, c, msgs, opts...)
 	}
@@ -1702,7 +1702,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 	var continuableErr error
 	var finalErr error
 
-	fnFragments := func(yield func(genai.ReplyFragment) bool) {
+	fnFragments := func(yield func(genai.Reply) bool) {
 		in := &ChatRequest{}
 		if err := in.Init(msgs, c.impl.Model, opts...); err != nil {
 			if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
@@ -2086,12 +2086,12 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 // https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/batch-prediction-api
 // This may require creating a whole new provider with Vertex AI API surface.
 
-// ProcessStream converts the raw packets from the streaming API into ReplyFragments.
-func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
+// ProcessStream converts the raw packets from the streaming API into Reply fragments.
+func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, []genai.Logprobs, error)) {
 	var finalErr error
 	u := genai.Usage{}
 
-	return func(yield func(genai.ReplyFragment) bool) {
+	return func(yield func(genai.Reply) bool) {
 			for pkt := range chunks {
 				if len(pkt.Candidates) != 1 {
 					continue
@@ -2113,7 +2113,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 					return
 				}
 
-				f := genai.ReplyFragment{}
+				f := genai.Reply{}
 
 				if !pkt.Candidates[0].GroundingMetadata.IsZero() {
 					replies, err := pkt.Candidates[0].GroundingMetadata.To()
@@ -2128,14 +2128,14 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 							return
 						}
 					}
-					f = genai.ReplyFragment{}
+					f = genai.Reply{}
 				}
 
 				for _, part := range pkt.Candidates[0].Content.Parts {
 					if part.Thought {
-						f.ReasoningFragment += part.Text
+						f.Reasoning += part.Text
 					} else {
-						f.TextFragment += part.Text
+						f.Text += part.Text
 					}
 					if part.InlineData.MimeType != "" || len(part.InlineData.Data) != 0 {
 						exts, err := mime.ExtensionsByType(part.InlineData.MimeType)
@@ -2147,9 +2147,8 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 							finalErr = &internal.BadError{Err: fmt.Errorf("mime type %q has no extension", part.InlineData.MimeType)}
 							return
 						}
-						f.Filename = "content" + exts[0]
-						f.DocumentFragment = part.InlineData.Data
-						// return fmt.Errorf("implement inline blob %#v", part)
+						f.Doc.Filename = "content" + exts[0]
+						f.Doc.Src = &bb.BytesBuffer{D: part.InlineData.Data}
 					}
 					if part.FunctionCall.ID != "" || part.FunctionCall.Name != "" {
 						// https://ai.google.dev/api/caching?hl=en#FunctionCall

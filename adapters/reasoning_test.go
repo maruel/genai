@@ -318,7 +318,7 @@ func TestProviderReasoning(t *testing.T) {
 				t.Run(tc.name, func(t *testing.T) {
 					mp := &mockProviderGenStream{streamResponses: []streamResponse{{}}}
 					for _, i := range tc.in {
-						mp.streamResponses[0].fragments = append(mp.streamResponses[0].fragments, genai.ReplyFragment{TextFragment: i})
+						mp.streamResponses[0].fragments = append(mp.streamResponses[0].fragments, genai.Reply{Text: i})
 					}
 					tp := &adapters.ProviderReasoning{
 						Provider:            mp,
@@ -351,7 +351,7 @@ func TestProviderReasoning(t *testing.T) {
 				startToken string
 				endToken   string
 				in         []string
-				fragments  []genai.ReplyFragment
+				fragments  []genai.Reply
 				err        error
 				want       string
 			}{
@@ -375,8 +375,8 @@ func TestProviderReasoning(t *testing.T) {
 					startToken: "<thinking>",
 					endToken:   "</thinking>",
 					in:         []string{},
-					fragments: []genai.ReplyFragment{
-						{ReasoningFragment: "This is an unexpected thinking fragment"},
+					fragments: []genai.Reply{
+						{Reasoning: "This is an unexpected thinking fragment"},
 					},
 					want: `got unexpected reasoning fragment: "This is an unexpected thinking fragment"; do not use ProviderReasoning with an explicit reasoning CoT model`,
 				},
@@ -389,7 +389,7 @@ func TestProviderReasoning(t *testing.T) {
 						mp.streamResponses[0].fragments = tc.fragments
 					} else {
 						for _, i := range tc.in {
-							mp.streamResponses[0].fragments = append(mp.streamResponses[0].fragments, genai.ReplyFragment{TextFragment: i})
+							mp.streamResponses[0].fragments = append(mp.streamResponses[0].fragments, genai.Reply{Text: i})
 						}
 					}
 					tp := &adapters.ProviderReasoning{
@@ -449,7 +449,7 @@ func (m *mockProviderGenSync) GenSync(ctx context.Context, msgs genai.Messages, 
 }
 
 type streamResponse struct {
-	fragments []genai.ReplyFragment
+	fragments []genai.Reply
 	usage     genai.Usage
 }
 
@@ -481,12 +481,12 @@ func (m *mockProviderGenStream) Scoreboard() scoreboard.Score {
 	return scoreboard.Score{}
 }
 
-func (m *mockProviderGenStream) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
+func (m *mockProviderGenStream) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	// Store messages
 	m.msgs = msgs
 	res := genai.Result{}
 	var finalErr error
-	fnFragments := func(yield func(genai.ReplyFragment) bool) {
+	fnFragments := func(yield func(genai.Reply) bool) {
 		if m.err != nil {
 			finalErr = m.err
 			return

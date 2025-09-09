@@ -1006,7 +1006,7 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 }
 
 // GenStream implements genai.Provider.
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	return c.impl.GenStream(ctx, msgs, opts...)
 }
 
@@ -1028,13 +1028,13 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	return resp.ToModels(), nil
 }
 
-// ProcessStream converts the raw packets from the streaming API into ReplyFragments.
-func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
+// ProcessStream converts the raw packets from the streaming API into Reply fragments.
+func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, []genai.Logprobs, error)) {
 	var finalErr error
 	u := genai.Usage{}
 	var l []genai.Logprobs
 
-	return func(yield func(genai.ReplyFragment) bool) {
+	return func(yield func(genai.Reply) bool) {
 			wasThinking := false
 			pendingToolCall := ToolCall{}
 			for pkt := range chunks {
@@ -1056,7 +1056,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 				if pkt.Logprobs.Text != "" {
 					l = append(l, pkt.Logprobs.To())
 				}
-				f := genai.ReplyFragment{}
+				f := genai.Reply{}
 				switch pkt.Type {
 				case ChunkMessageStart:
 					// Nothing useful.
@@ -1084,10 +1084,10 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 					}
 					switch t := pkt.Delta.Message.Content[0].Type; t {
 					case ContentText:
-						f.TextFragment = pkt.Delta.Message.Content[0].Text
+						f.Text = pkt.Delta.Message.Content[0].Text
 						wasThinking = false
 					case ContentThinking:
-						f.ReasoningFragment = pkt.Delta.Message.Content[0].Text
+						f.Reasoning = pkt.Delta.Message.Content[0].Text
 						wasThinking = true
 					case ContentDocument, ContentImageURL:
 						fallthrough
@@ -1105,9 +1105,9 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 						}
 						// Type is not set. We need to remember the value from ChunkContentStart.
 						if wasThinking {
-							f.ReasoningFragment = t
+							f.Reasoning = t
 						} else {
-							f.TextFragment = t
+							f.Text = t
 						}
 					}
 				case ChunkContentEnd:
@@ -1118,7 +1118,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 						return
 					}
 				case ChunkToolPlanDelta:
-					f.ReasoningFragment = pkt.Delta.Message.ToolPlan
+					f.Reasoning = pkt.Delta.Message.ToolPlan
 				case ChunkToolCallStart:
 					if len(pkt.Delta.Message.ToolCalls) != 1 {
 						finalErr = &internal.BadError{Err: fmt.Errorf("expected tool call %#v", pkt)}

@@ -153,7 +153,7 @@ func (i *InjectOptions) GenSync(ctx context.Context, msgs genai.Messages, opts .
 	return i.Provider.GenSync(ctx, msgs, append(opts, i.Opts...)...)
 }
 
-func (i *InjectOptions) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
+func (i *InjectOptions) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	return i.Provider.GenStream(ctx, msgs, append(opts, i.Opts...)...)
 }
 
@@ -181,7 +181,7 @@ func (h *HideHTTP500) GenSync(ctx context.Context, msgs genai.Messages, opts ...
 	return resp, err
 }
 
-func (h *HideHTTP500) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
+func (h *HideHTTP500) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	fragments, finish := h.Provider.GenStream(ctx, msgs, opts...)
 	return fragments, func() (genai.Result, error) {
 		res, err := finish()

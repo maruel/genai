@@ -152,7 +152,7 @@ func main() {
 	}
 	fragments, finish := c.GenStream(ctx, msgs)
 	for f := range fragments {
-		os.Stdout.WriteString(f.TextFragment)
+		os.Stdout.WriteString(f.Text)
 	}
 	_, err = finish()
 }
@@ -175,9 +175,9 @@ Snippet:
 	}
 	fragments, finish := c.GenStream(ctx, msgs)
 	for f := range fragments {
-		if f.ReasoningFragment != "" {
+		if f.Reasoning != "" {
 			// ...
-		} else if f.TextFragment != "" {
+		} else if f.Text != "" {
 			// ...
 		}
 	}
@@ -357,9 +357,9 @@ Snippet:
 ```go
 	fragments, finish := adapters.GenStreamWithToolCallLoop(ctx, p, msgs, &opts)
 	for f := range fragments {
-		if f.ReasoningFragment != "" {
+		if f.Reasoning != "" {
 			// ...
-		} else if f.TextFragment != "" {
+		} else if f.Text != "" {
 			// ...
 		} else if !f.ToolCall.IsZero() {
 			// ...

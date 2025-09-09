@@ -1076,7 +1076,7 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 }
 
 // GenStream implements genai.Provider.
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	if c.impl.OutputModalities[0] == genai.ModalityText {
 		return c.impl.GenStream(ctx, msgs, opts...)
 	}
@@ -1152,14 +1152,14 @@ func (c *Client) isImage() bool {
 	return strings.HasPrefix(c.impl.Model, "black-forest-labs/")
 }
 
-// ProcessStream converts the raw packets from the streaming API into ReplyFragments.
-func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
+// ProcessStream converts the raw packets from the streaming API into Reply fragments.
+func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, []genai.Logprobs, error)) {
 	var finalErr error
 	var warnings []string
 	u := genai.Usage{}
 	var l []genai.Logprobs
 
-	return func(yield func(genai.ReplyFragment) bool) {
+	return func(yield func(genai.Reply) bool) {
 			pendingToolCall := ToolCall{}
 			for pkt := range chunks {
 				if pkt.Usage.TotalTokens != 0 {
@@ -1201,7 +1201,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 						// A new call.
 						if pendingToolCall.ID != "" {
 							// Flush.
-							f := genai.ReplyFragment{ToolCall: genai.ToolCall{
+							f := genai.Reply{ToolCall: genai.ToolCall{
 								ID:        pendingToolCall.ID,
 								Name:      pendingToolCall.Function.Name,
 								Arguments: pendingToolCall.Function.Arguments,
@@ -1221,7 +1221,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 				} else {
 					if pendingToolCall.ID != "" {
 						// Flush.
-						f := genai.ReplyFragment{ToolCall: genai.ToolCall{
+						f := genai.Reply{ToolCall: genai.ToolCall{
 							ID:        pendingToolCall.ID,
 							Name:      pendingToolCall.Function.Name,
 							Arguments: pendingToolCall.Function.Arguments,
@@ -1233,15 +1233,15 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 				}
 				if len(pkt.Choices[0].ToolCalls) == 1 {
 					// That's a non-streamed tool call.
-					f := genai.ReplyFragment{}
+					f := genai.Reply{}
 					pkt.Choices[0].ToolCalls[0].To(&f.ToolCall)
 					if !yield(f) {
 						return
 					}
 				}
-				f := genai.ReplyFragment{
-					TextFragment:      pkt.Choices[0].Delta.Content,
-					ReasoningFragment: pkt.Choices[0].Delta.Reasoning,
+				f := genai.Reply{
+					Text:      pkt.Choices[0].Delta.Content,
+					Reasoning: pkt.Choices[0].Delta.Reasoning,
 				}
 				if !yield(f) {
 					return

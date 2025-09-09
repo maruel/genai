@@ -129,7 +129,7 @@ type Provider interface {
 	// GenStream runs generation synchronously, yielding the fragments of replies as the server sends them.
 	//
 	// No need to accumulate the fragments into a Message since the Result contains the accumulated message.
-	GenStream(ctx context.Context, msgs Messages, opts ...Options) (iter.Seq[ReplyFragment], func() (Result, error))
+	GenStream(ctx context.Context, msgs Messages, opts ...Options) (iter.Seq[Reply], func() (Result, error))
 	// HTTPClient returns the underlying http client. It may be necessary to use it to fetch the results from
 	// the provider. An example is retrieving Veo 3 generated videos from Gemini requires the authentication
 	// headers to be set.
@@ -503,42 +503,50 @@ func (m *Message) GoString() string {
 	return string(b)
 }
 
-// Accumulate adds a ReplyFragment to the message being streamed.
+// Accumulate adds a Reply to the message being streamed.
 //
 // It is used by GenStream. There's generally no need to call it by end users.
-func (m *Message) Accumulate(mf ReplyFragment) error {
+func (m *Message) Accumulate(mf Reply) error {
 	// Generally the first message fragment.
-	if mf.ReasoningFragment != "" {
+	if mf.Reasoning != "" {
 		if len(m.Replies) != 0 {
 			if lastBlock := &m.Replies[len(m.Replies)-1]; lastBlock.Reasoning != "" {
-				lastBlock.Reasoning += mf.ReasoningFragment
+				lastBlock.Reasoning += mf.Reasoning
 				if len(mf.Opaque) != 0 {
-					return fmt.Errorf("cannot add Opaque to a Reasoning block")
+					return &internal.BadError{Err: fmt.Errorf("cannot add Opaque to a Reasoning block")}
 				}
 				return nil
 			}
 		}
-		m.Replies = append(m.Replies, Reply{Reasoning: mf.ReasoningFragment, Opaque: mf.Opaque})
+		m.Replies = append(m.Replies, Reply{Reasoning: mf.Reasoning, Opaque: mf.Opaque})
 		return nil
 	}
 
 	// Content.
-	if mf.TextFragment != "" {
+	if mf.Text != "" {
 		if len(m.Replies) != 0 {
 			if lastBlock := &m.Replies[len(m.Replies)-1]; lastBlock.Text != "" {
-				lastBlock.Text += mf.TextFragment
+				lastBlock.Text += mf.Text
 				return nil
 			}
 		}
-		m.Replies = append(m.Replies, Reply{Text: mf.TextFragment})
+		m.Replies = append(m.Replies, Reply{Text: mf.Text})
 		return nil
 	}
 
-	if mf.URL != "" {
-		m.Replies = append(m.Replies, Reply{Doc: Doc{Filename: mf.Filename, URL: mf.URL}})
+	if mf.Doc.URL != "" {
+		m.Replies = append(m.Replies, Reply{Doc: Doc{Filename: mf.Doc.Filename, URL: mf.Doc.URL}})
 		return nil
 	}
-	if mf.DocumentFragment != nil {
+	if mf.Doc.Src != nil {
+		src, ok := mf.Doc.Src.(*bb.BytesBuffer)
+		if !ok {
+			raw, err := io.ReadAll(mf.Doc.Src)
+			if err != nil {
+				return &internal.BadError{Err: fmt.Errorf("failed to read document source: %w", err)}
+			}
+			src = &bb.BytesBuffer{D: raw}
+		}
 		if len(m.Replies) != 0 {
 			if lastBlock := &m.Replies[len(m.Replies)-1]; lastBlock.Doc.Filename != "" || lastBlock.Doc.Src != nil {
 				if lastBlock.Doc.Src == nil {
@@ -546,17 +554,23 @@ func (m *Message) Accumulate(mf ReplyFragment) error {
 				}
 				if lastBlock.Doc.Filename == "" {
 					// Unlikely.
-					lastBlock.Doc.Filename = mf.Filename
+					lastBlock.Doc.Filename = mf.Doc.Filename
 				}
-				_, _ = lastBlock.Doc.Src.(*bb.BytesBuffer).Write(mf.DocumentFragment)
+				// We are almost guaranteed that the last block is a bb.BytesBuffer but we go safe and just look for
+				// io.Writer. This permits users to use their own types.
+				lastSrc, ok := lastBlock.Doc.Src.(io.Writer)
+				if !ok {
+					return &internal.BadError{Err: fmt.Errorf("invalid document source type: %T", lastBlock.Doc.Src)}
+				}
+				_, _ = lastSrc.Write(src.D)
 				return nil
 			}
 		}
-		m.Replies = append(m.Replies, Reply{Doc: Doc{Filename: mf.Filename, Src: &bb.BytesBuffer{D: mf.DocumentFragment}}})
+		m.Replies = append(m.Replies, Reply{Doc: Doc{Filename: mf.Doc.Filename, Src: src}})
 		return nil
 	}
-	if mf.Filename != "" {
-		m.Replies = append(m.Replies, Reply{Doc: Doc{Filename: mf.Filename}})
+	if mf.Doc.Filename != "" {
+		m.Replies = append(m.Replies, Reply{Doc: Doc{Filename: mf.Doc.Filename}})
 		return nil
 	}
 
@@ -671,6 +685,12 @@ type Reply struct {
 // An empty reply is not valid.
 func (r *Reply) IsZero() bool {
 	return r.Text == "" && r.Doc.IsZero() && r.Citation.IsZero() && r.Reasoning == "" && len(r.Opaque) == 0 && r.ToolCall.IsZero()
+}
+
+// GoString returns a JSON representation of the reply for debugging purposes.
+func (r *Reply) GoString() string {
+	b, _ := json.Marshal(r)
+	return string(b)
 }
 
 // Validate ensures the block is valid.
@@ -873,103 +893,6 @@ func (d *Doc) Read(maxSize int64) (string, []byte, error) {
 		return "", nil, errors.New("empty data")
 	}
 	return mimeType, data, nil
-}
-
-// ReplyFragment is a fragment of a content the LLM is sending back as part
-// of the GenStream().
-//
-// Use Message.Accumulate to accumulate the fragments into a Message's Replies field.
-type ReplyFragment struct {
-	TextFragment string `json:"text,omitzero"`
-
-	Filename         string `json:"filename,omitzero"`
-	DocumentFragment []byte `json:"document,omitzero"`
-	URL              string `json:"url,omitzero"`
-
-	Citation Citation `json:"citation,omitzero"`
-
-	ReasoningFragment string `json:"reasoning,omitzero"`
-
-	// ToolCall is a tool call that the LLM requested to make.
-	ToolCall ToolCall `json:"tool_call,omitzero"`
-
-	Opaque map[string]any `json:"opaque,omitzero"`
-
-	_ struct{}
-}
-
-func (r *ReplyFragment) IsZero() bool {
-	return r.TextFragment == "" && r.ReasoningFragment == "" && len(r.Opaque) == 0 && r.Filename == "" && len(r.DocumentFragment) == 0 && r.URL == "" && r.ToolCall.IsZero() && r.Citation.IsZero()
-}
-
-func (r *ReplyFragment) GoString() string {
-	b, _ := json.Marshal(r)
-	return string(b)
-}
-
-// Validate ensures the fragment contains only one of the fields.
-func (r *ReplyFragment) Validate() error {
-	if r.TextFragment != "" {
-		if r.ReasoningFragment != "" {
-			return errors.New("field ReasoningFragment can't be used along TextFragment")
-		}
-		if len(r.Opaque) != 0 {
-			return errors.New("field Opaque can't be used along TextFragment")
-		}
-		if r.Filename != "" {
-			return errors.New("field Filename can't be used along TextFragment")
-		}
-		if len(r.DocumentFragment) != 0 {
-			return errors.New("field DocumentFragment can't be used along TextFragment")
-		}
-		if r.URL != "" {
-			return errors.New("field URL can't be used along TextFragment")
-		}
-		if !r.ToolCall.IsZero() {
-			return errors.New("field ToolCall can't be used along TextFragment")
-		}
-		if !r.Citation.IsZero() {
-			return errors.New("field Citation can't be used along TextFragment")
-		}
-		return nil
-	}
-	if r.ReasoningFragment != "" || len(r.Opaque) != 0 {
-		if r.Filename != "" {
-			return errors.New("field Filename can't be used along ReasoningFragment")
-		}
-		if len(r.DocumentFragment) != 0 {
-			return errors.New("field DocumentFragment can't be used along ReasoningFragment")
-		}
-		if r.URL != "" {
-			return errors.New("field URL can't be used along ReasoningFragment")
-		}
-		if !r.ToolCall.IsZero() {
-			return errors.New("field ToolCall can't be used along ReasoningFragment")
-		}
-		if !r.Citation.IsZero() {
-			return errors.New("field Citation can't be used along ReasoningFragment")
-		}
-		return nil
-	}
-	if r.Filename != "" || len(r.DocumentFragment) != 0 || r.URL != "" {
-		if !r.ToolCall.IsZero() {
-			return errors.New("field ToolCall can't be used along ReasoningFragment")
-		}
-		if !r.Citation.IsZero() {
-			return errors.New("field Citation can't be used along ReasoningFragment")
-		}
-		return nil
-	}
-	if !r.ToolCall.IsZero() {
-		if !r.Citation.IsZero() {
-			return errors.New("field Citation can't be used along ReasoningFragment")
-		}
-		return nil
-	}
-	if !r.Citation.IsZero() {
-		return nil
-	}
-	return errors.New("exactly one of TextFragment, ReasoningFragment, Filename, DocumentFragment, URL, ToolCall, Citation must be set")
 }
 
 // ToolCall is a tool call that the LLM requested to make.

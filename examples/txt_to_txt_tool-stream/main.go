@@ -50,24 +50,24 @@ func main() {
 	fragments, finish := adapters.GenStreamWithToolCallLoop(ctx, p, msgs, &opts)
 	mode := ""
 	for f := range fragments {
-		if f.ReasoningFragment != "" {
+		if f.Reasoning != "" {
 			if mode != "reasoning" {
 				if _, err = os.Stdout.WriteString("# Reasoning\n"); err != nil {
 					break
 				}
 				mode = "reasoning"
 			}
-			if _, err = os.Stdout.WriteString(f.ReasoningFragment); err != nil {
+			if _, err = os.Stdout.WriteString(f.Reasoning); err != nil {
 				break
 			}
-		} else if f.TextFragment != "" {
+		} else if f.Text != "" {
 			if mode != "text" {
 				if _, err = os.Stdout.WriteString("\n# Answer\n"); err != nil {
 					break
 				}
 				mode = "text"
 			}
-			if _, err = os.Stdout.WriteString(f.TextFragment); err != nil {
+			if _, err = os.Stdout.WriteString(f.Text); err != nil {
 				break
 			}
 		} else if !f.ToolCall.IsZero() {

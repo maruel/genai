@@ -30,7 +30,7 @@ func main() {
 	}
 	fragments, finish := c.GenStream(ctx, msgs)
 	for f := range fragments {
-		if _, err = os.Stdout.WriteString(f.TextFragment); err != nil {
+		if _, err = os.Stdout.WriteString(f.Text); err != nil {
 			break
 		}
 	}

@@ -50,14 +50,14 @@ func main() {
 				}
 			}
 		}
-		if f.TextFragment != "" {
+		if f.Text != "" {
 			if firstText {
 				if _, err = os.Stdout.WriteString("\n"); err != nil {
 					break
 				}
 				firstText = false
 			}
-			if _, err = os.Stdout.WriteString(f.TextFragment); err != nil {
+			if _, err = os.Stdout.WriteString(f.Text); err != nil {
 				break
 			}
 		}

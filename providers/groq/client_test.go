@@ -167,7 +167,7 @@ func (h *handleGroqReasoning) GenSync(ctx context.Context, msgs genai.Messages, 
 	return c.GenSync(ctx, msgs, opts...)
 }
 
-func (h *handleGroqReasoning) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
+func (h *handleGroqReasoning) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	for _, opt := range opts {
 		if o, ok := opt.(*genai.OptionsTools); ok && len(o.Tools) != 0 {
 			opts = append(opts, &groq.Options{ReasoningFormat: groq.ReasoningFormatParsed})

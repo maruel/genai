@@ -175,7 +175,7 @@ func (i *injectOptions) GenSync(ctx context.Context, msgs genai.Messages, opts .
 	return i.Provider.GenSync(ctx, msgs, opts...)
 }
 
-func (i *injectOptions) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
+func (i *injectOptions) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	if !slices.ContainsFunc(opts, func(o genai.Options) bool {
 		v, ok := o.(*genai.OptionsTools)
 		return ok && v.WebSearch

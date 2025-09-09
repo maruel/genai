@@ -65,18 +65,18 @@ func (c *ProviderReasoning) GenSync(ctx context.Context, msgs genai.Messages, op
 // GenStream implements the Provider interface for streaming by delegating to the wrapped provider
 // and processing each fragment to extract reasoning blocks.
 // If no reasoning tags are present, the first part of the message is assumed to be reasoning.
-func (c *ProviderReasoning) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
+func (c *ProviderReasoning) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	accumulated := genai.Message{}
 	var finalErr error
 	fragments, finish := c.Provider.GenStream(ctx, msgs, opts...)
-	fnFragments := func(yield func(genai.ReplyFragment) bool) {
+	fnFragments := func(yield func(genai.Reply) bool) {
 		state := start
 		if c.ReasoningTokenStart == "" {
 			// Simulate that the reasoning tag was seen.
 			state = startTagSeen
 		}
 		for f := range fragments {
-			var replies []genai.ReplyFragment
+			var replies []genai.Reply
 			var err2 error
 			replies, state, err2 = c.processPacket(state, &accumulated, f)
 			if finalErr == nil {
@@ -95,7 +95,7 @@ func (c *ProviderReasoning) GenStream(ctx context.Context, msgs genai.Messages, 
 	fnFinish := func() (genai.Result, error) {
 		res, err := finish()
 		// Use the accumulated contents from our processed message, which has correctly
-		// transformed TextFragment's to ReasoningFragment's according to the state machine.
+		// transformed Text's to Reasoning's according to the state machine.
 		if len(accumulated.Replies) > 0 {
 			res.Replies = accumulated.Replies
 		}
@@ -108,66 +108,66 @@ func (c *ProviderReasoning) GenStream(ctx context.Context, msgs genai.Messages, 
 }
 
 // processPacket is the streaming version of message fragment processing.
-func (c *ProviderReasoning) processPacket(state tagProcessingState, accumulated *genai.Message, f genai.ReplyFragment) ([]genai.ReplyFragment, tagProcessingState, error) {
-	var replies []genai.ReplyFragment
-	if f.ReasoningFragment != "" {
-		return replies, state, fmt.Errorf("got unexpected reasoning fragment: %q; do not use ProviderReasoning with an explicit reasoning CoT model", f.ReasoningFragment)
+func (c *ProviderReasoning) processPacket(state tagProcessingState, accumulated *genai.Message, f genai.Reply) ([]genai.Reply, tagProcessingState, error) {
+	var replies []genai.Reply
+	if f.Reasoning != "" {
+		return replies, state, fmt.Errorf("got unexpected reasoning fragment: %q; do not use ProviderReasoning with an explicit reasoning CoT model", f.Reasoning)
 	}
 	// Mutate the fragment then send it.
 	switch state {
 	case start:
 		// Ignore whitespace until text or reasoning tag is seen.
-		t := strings.TrimLeftFunc(f.TextFragment, unicode.IsSpace)
+		t := strings.TrimLeftFunc(f.Text, unicode.IsSpace)
 		// The tokens always have a trailing "\n". When streaming, the trailing "\n" will likely be sent as a
 		// separate event. This requires a small state machine to keep track of that.
 		if tStart := strings.Index(t, c.ReasoningTokenStart); tStart != -1 {
 			if tStart != 0 {
 				return replies, state, fmt.Errorf("unexpected prefix before reasoning tag: %q", t[:len(c.ReasoningTokenStart)+1])
 			}
-			f.ReasoningFragment = strings.TrimLeftFunc(t[len(c.ReasoningTokenStart):], unicode.IsSpace)
-			f.TextFragment = ""
+			f.Reasoning = strings.TrimLeftFunc(t[len(c.ReasoningTokenStart):], unicode.IsSpace)
+			f.Text = ""
 			state = thinkingTextSeen
 		} else if t != "" {
 			// This response does not contain reasoning text, it could be JSON or something else.
 			state = textSeen
 		} else {
-			f.TextFragment = ""
+			f.Text = ""
 		}
 	case startTagSeen:
 		// Ignore whitespace until text is seen.
-		f.ReasoningFragment = f.TextFragment
-		f.TextFragment = ""
-		if buf := strings.TrimLeftFunc(f.ReasoningFragment, unicode.IsSpace); buf != "" {
+		f.Reasoning = f.Text
+		f.Text = ""
+		if buf := strings.TrimLeftFunc(f.Reasoning, unicode.IsSpace); buf != "" {
 			state = thinkingTextSeen
-			f.ReasoningFragment = buf
+			f.Reasoning = buf
 		}
 	case thinkingTextSeen:
-		f.ReasoningFragment = f.TextFragment
-		f.TextFragment = ""
-		if tEnd := strings.Index(f.ReasoningFragment, c.ReasoningTokenEnd); tEnd != -1 {
+		f.Reasoning = f.Text
+		f.Text = ""
+		if tEnd := strings.Index(f.Reasoning, c.ReasoningTokenEnd); tEnd != -1 {
 			state = endTagSeen
-			after := f.ReasoningFragment[tEnd+len(c.ReasoningTokenEnd):]
+			after := f.Reasoning[tEnd+len(c.ReasoningTokenEnd):]
 			if tEnd != 0 {
 				// Unlikely case where we need to flush out the remainder.
-				f.ReasoningFragment = f.ReasoningFragment[:tEnd]
-				f.TextFragment = ""
+				f.Reasoning = f.Reasoning[:tEnd]
+				f.Text = ""
 				replies = append(replies, f)
 				if err := accumulated.Accumulate(f); err != nil {
 					return replies, state, err
 				}
 			}
-			f.TextFragment = after
-			f.ReasoningFragment = ""
-			if buf := strings.TrimLeftFunc(f.TextFragment, unicode.IsSpace); buf != "" {
+			f.Text = after
+			f.Reasoning = ""
+			if buf := strings.TrimLeftFunc(f.Text, unicode.IsSpace); buf != "" {
 				state = textSeen
-				f.TextFragment = buf
+				f.Text = buf
 			}
 		}
 	case endTagSeen:
 		// Ignore whitespace until text is seen.
-		if buf := strings.TrimLeftFunc(f.TextFragment, unicode.IsSpace); buf != "" {
+		if buf := strings.TrimLeftFunc(f.Text, unicode.IsSpace); buf != "" {
 			state = textSeen
-			f.TextFragment = buf
+			f.Text = buf
 		}
 	case textSeen:
 	default:

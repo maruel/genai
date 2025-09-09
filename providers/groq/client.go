@@ -945,7 +945,7 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 }
 
 // GenStream implements genai.Provider.
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.ReplyFragment], func() (genai.Result, error)) {
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	return c.impl.GenStream(ctx, msgs, opts...)
 }
 
@@ -967,12 +967,12 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	return resp.ToModels(), nil
 }
 
-// ProcessStream converts the raw packets from the streaming API into ReplyFragments.
-func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
+// ProcessStream converts the raw packets from the streaming API into Reply fragments.
+func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, []genai.Logprobs, error)) {
 	var finalErr error
 	u := genai.Usage{}
 
-	return func(yield func(genai.ReplyFragment) bool) {
+	return func(yield func(genai.Reply) bool) {
 			for pkt := range chunks {
 				if len(pkt.Choices) != 1 {
 					continue
@@ -990,14 +990,14 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 					return
 				}
 				if s := pkt.Choices[0].Delta.Reasoning; s != "" {
-					if !yield(genai.ReplyFragment{ReasoningFragment: s}) {
+					if !yield(genai.Reply{Reasoning: s}) {
 						return
 					}
 				}
 				for _, c := range pkt.Choices[0].Delta.Content {
 					switch c.Type {
 					case ContentText:
-						if !yield(genai.ReplyFragment{TextFragment: c.Text}) {
+						if !yield(genai.Reply{Text: c.Text}) {
 							return
 						}
 					case ContentImageURL:
@@ -1008,7 +1008,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 					}
 				}
 				for _, t := range pkt.Choices[0].Delta.ToolCalls {
-					f := genai.ReplyFragment{}
+					f := genai.Reply{}
 					t.To(&f.ToolCall)
 					if !yield(f) {
 						return
@@ -1027,7 +1027,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 							}
 							return
 						}
-						f := genai.ReplyFragment{}
+						f := genai.Reply{}
 						f.Citation.Sources = make([]genai.CitationSource, 0, len(t.SearchResults.Results)+1)
 						f.Citation.Sources = append(f.Citation.Sources, genai.CitationSource{
 							Type:    genai.CitationWebQuery,

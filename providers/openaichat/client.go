@@ -1228,13 +1228,13 @@ func (c *Client) FilesListRaw(ctx context.Context) ([]File, error) {
 	return resp.Data, err
 }
 
-// ProcessStream converts the raw packets from the streaming API into ReplyFragments.
-func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.ReplyFragment], func() (genai.Usage, []genai.Logprobs, error)) {
+// ProcessStream converts the raw packets from the streaming API into Reply fragments.
+func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, []genai.Logprobs, error)) {
 	var finalErr error
 	u := genai.Usage{}
 	var l []genai.Logprobs
 
-	return func(yield func(genai.ReplyFragment) bool) {
+	return func(yield func(genai.Reply) bool) {
 			pendingToolCall := ToolCall{}
 			for pkt := range chunks {
 				if pkt.Usage.PromptTokens != 0 {
@@ -1265,7 +1265,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 					return
 				}
 
-				f := genai.ReplyFragment{}
+				f := genai.Reply{}
 				for _, a := range pkt.Choices[0].Delta.Annotations {
 					f.Citation.StartIndex = a.URLCitation.StartIndex
 					f.Citation.EndIndex = a.URLCitation.EndIndex
@@ -1273,10 +1273,10 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 					if !yield(f) {
 						return
 					}
-					f = genai.ReplyFragment{}
+					f = genai.Reply{}
 				}
 
-				f.TextFragment = pkt.Choices[0].Delta.Content
+				f.Text = pkt.Choices[0].Delta.Content
 				// OpenAI streams the arguments. Buffer the arguments to send the fragment as a whole tool call.
 				if len(pkt.Choices[0].Delta.ToolCalls) == 1 {
 					if t := pkt.Choices[0].Delta.ToolCalls[0]; t.ID != "" {

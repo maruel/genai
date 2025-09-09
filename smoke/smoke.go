@@ -436,7 +436,7 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 		}
 	}
 	if err == nil {
-		f.Citations = slices.ContainsFunc(resp.Replies, func(r genai.Reply) bool { return len(r.Citations) > 0 })
+		f.Citations = slices.ContainsFunc(resp.Replies, func(r genai.Reply) bool { return !r.Citation.IsZero() })
 		if isZeroUsage(resp.Usage) {
 			if f.ReportTokenUsage != scoreboard.False {
 				internal.Logger(ctxCheck).DebugContext(ctxCheck, "no usage")
@@ -450,15 +450,13 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 			}
 		}
 		for _, r := range resp.Replies {
-			if len(r.Citations) == 0 {
+			if r.Citation.IsZero() {
 				continue
 			}
-			for _, c := range r.Citations {
-				if len(c.Sources) == 0 {
-					return f, fmt.Errorf("citation has no sources: %#v", resp)
-				}
+			if len(r.Citation.Sources) == 0 {
+				return f, fmt.Errorf("citation has no sources: %#v", resp)
 			}
-			internal.Logger(ctxCheck).DebugContext(ctx, "citations", "citations", r.Citations)
+			internal.Logger(ctxCheck).DebugContext(ctx, "citations", "citation", r.Citation)
 		}
 	} else {
 		// The client code must provide the text as inline content.
@@ -568,7 +566,7 @@ func exerciseGenInputDocument(ctx context.Context, cs *callState, f *scoreboard.
 				m.SupportedFormats = append(m.SupportedFormats, format.mime)
 				sort.Strings(m.SupportedFormats)
 			}
-			if slices.ContainsFunc(res.Replies, func(r genai.Reply) bool { return len(r.Citations) > 0 }) {
+			if slices.ContainsFunc(res.Replies, func(r genai.Reply) bool { return !r.Citation.IsZero() }) {
 				panic("Handle a provider that cite a PDF document, that would be great; hasn't happened yet")
 			}
 		} else if isBadError(ctx, err) {
@@ -587,7 +585,7 @@ func exerciseGenInputDocument(ctx context.Context, cs *callState, f *scoreboard.
 				m.SupportedFormats = append(m.SupportedFormats, format.mime)
 				sort.Strings(m.SupportedFormats)
 			}
-			if slices.ContainsFunc(res.Replies, func(r genai.Reply) bool { return len(r.Citations) > 0 }) {
+			if slices.ContainsFunc(res.Replies, func(r genai.Reply) bool { return !r.Citation.IsZero() }) {
 				panic("Handle a provider that cite a PDF document, that would be great; hasn't happened yet")
 			}
 		} else if isBadError(ctx, err) {
@@ -832,10 +830,8 @@ func (cs *callState) callGen(ctx context.Context, name string, msgs genai.Messag
 		// This is annoying. openaichat with gpt-4o-mini-search-preview returns web results only when it feels
 		// like it, which is not often. It fails to return web results when request but it does at other times. So
 		// do a catch all here.
-		if slices.ContainsFunc(rep.Citations, func(ci genai.Citation) bool {
-			return slices.ContainsFunc(ci.Sources, func(s genai.CitationSource) bool {
-				return s.Type == genai.CitationWeb
-			})
+		if slices.ContainsFunc(rep.Citation.Sources, func(s genai.CitationSource) bool {
+			return s.Type == genai.CitationWeb
 		}) {
 			cs.hasWebResults = true
 		}

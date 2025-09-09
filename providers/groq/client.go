@@ -386,7 +386,7 @@ func (m *Message) To(out *genai.Message) error {
 					Type: genai.CitationWeb, Title: r.Title, URL: r.URL, Snippet: r.Content,
 				})
 			}
-			out.Replies = append(out.Replies, genai.Reply{Citations: []genai.Citation{c}})
+			out.Replies = append(out.Replies, genai.Reply{Citation: c})
 		case "browser.open", "browser.find":
 			// Ignore, it's really useless.
 		default:

@@ -425,7 +425,7 @@ func TestMessage(t *testing.T) {
 				want:     Message{Replies: []Reply{{Text: "Hello world"}}},
 			},
 			{
-				name:     "Add thinking to existing thinking",
+				name:     "Add thinking to existing reasoning",
 				message:  Message{Replies: []Reply{{Reasoning: "I think "}}},
 				fragment: ReplyFragment{ReasoningFragment: "therefore I am"},
 				want:     Message{Replies: []Reply{{Reasoning: "I think therefore I am"}}},
@@ -744,18 +744,11 @@ func TestReply(t *testing.T) {
 				{
 					name: "citations",
 					in: Reply{
-						Citations: []Citation{{
+						Citation: Citation{
 							StartIndex: 15,
 							EndIndex:   20,
 							Sources:    []CitationSource{{ID: "doc1", Type: CitationDocument}},
-						}},
-					},
-				},
-				{
-					// Technically it need a source. wantErr: true,
-					name: "invalid citation",
-					in: Reply{
-						Citations: []Citation{{}},
+						},
 					},
 				},
 			}
@@ -774,24 +767,29 @@ func TestReply(t *testing.T) {
 				errMsg string
 			}{
 				{
-					name: "citations with thinking",
+					name:   "empty reply",
+					in:     Reply{},
+					errMsg: "an empty Reply is invalid",
+				},
+				{
+					name: "citations with reasoning",
 					in: Reply{
 						Reasoning: "reasoning",
-						Citations: []Citation{{}},
+						Citation:  Citation{CitedText: "reasoning"},
 					},
-					errMsg: "field Reasoning can't be used along Citations",
+					errMsg: "field Reasoning can't be used along Citation",
 				},
 				{
 					name: "text with citations",
 					in: Reply{
 						Text: "The capital is Paris.",
-						Citations: []Citation{{
+						Citation: Citation{
 							StartIndex: 15,
 							EndIndex:   20,
 							Sources:    []CitationSource{{ID: "doc1", Type: CitationDocument}},
-						}},
+						},
 					},
-					errMsg: "field Citations can't be used along Text",
+					errMsg: "field Citation can't be used along Text",
 				},
 			}
 			for _, tt := range tests {
@@ -835,7 +833,7 @@ func TestReply(t *testing.T) {
 				},
 				{
 					name: "Reasoning content",
-					in:   `{"thinking": "Let me think about this"}`,
+					in:   `{"reasoning": "Let me think about this"}`,
 					want: Reply{Reasoning: "Let me think about this"},
 				},
 				{
@@ -898,7 +896,7 @@ func TestReply(t *testing.T) {
 				},
 				{
 					name:   "Text and Reasoning together",
-					in:     `{"text": "Hello", "thinking": "Let me think"}`,
+					in:     `{"text": "Hello", "reasoning": "Let me think"}`,
 					errMsg: "field Reasoning can't be used along Text",
 				},
 				{
@@ -944,7 +942,7 @@ func TestContentFragment(t *testing.T) {
 				want: false,
 			},
 			{
-				name: "thinking fragment",
+				name: "reasoning fragment",
 				in:   ReplyFragment{ReasoningFragment: "thinking"},
 				want: false,
 			},

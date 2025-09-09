@@ -39,9 +39,9 @@ func main() {
 		log.Fatal(err)
 	}
 	for _, r := range res.Replies {
-		for _, ci := range r.Citations {
+		if !r.Citation.IsZero() {
 			fmt.Printf("Sources:\n")
-			for _, src := range ci.Sources {
+			for _, src := range r.Citation.Sources {
 				switch src.Type {
 				case genai.CitationWeb:
 					fmt.Printf("- %s / %s\n", src.Title, src.URL)

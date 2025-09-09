@@ -502,7 +502,7 @@ func (m *Message) To(out *genai.Message) error {
 			c.Sources[i+1].Type = genai.CitationWeb
 			c.Sources[i+1].URL = src.URL
 		}
-		out.Replies = append(out.Replies, genai.Reply{Citations: []genai.Citation{c}})
+		out.Replies = append(out.Replies, genai.Reply{Citation: c})
 	case MessageFileSearchCall, MessageComputerCall, MessageImageGenerationCall, MessageCodeInterpreterCall, MessageLocalShellCall, MessageMcpListTools, MessageMcpApprovalRequest, MessageMcpCall, MessageComputerCallOutput, MessageFunctionCallOutput, MessageLocalShellCallOutput, MessageMcpApprovalResponse, MessageItemReference:
 		fallthrough
 	default:
@@ -565,7 +565,7 @@ func (c *Content) To() ([]genai.Reply, error) {
 			EndIndex:   a.EndIndex,
 			Sources:    []genai.CitationSource{{Type: genai.CitationWeb, URL: a.URL, Title: a.Title}},
 		}
-		out = append(out, genai.Reply{Citations: []genai.Citation{c}})
+		out = append(out, genai.Reply{Citation: c})
 	}
 	switch c.Type {
 	case ContentOutputText:

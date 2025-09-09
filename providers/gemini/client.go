@@ -750,11 +750,11 @@ func (r *ResponseCandidate) To(out *genai.Message) error {
 		}
 	}
 	if !r.GroundingMetadata.IsZero() {
-		rp := genai.Reply{}
-		if err := r.GroundingMetadata.To(&rp); err != nil {
+		replies, err := r.GroundingMetadata.To()
+		if err != nil {
 			return err
 		}
-		out.Replies = append(out.Replies, rp)
+		out.Replies = append(out.Replies, replies...)
 	}
 	return nil
 }
@@ -797,7 +797,8 @@ func (g *GroundingMetadata) IsZero() bool {
 	return len(g.GroundingChunks) == 0 && len(g.GroundingSupports) == 0 && len(g.WebSearchQueries) == 0 && len(g.SearchEntryPoint.SDKBlob) == 0 && g.RetrievalMetadata.GoogleSearchDynamicRetrievalScore == 0
 }
 
-func (g *GroundingMetadata) To(out *genai.Reply) error {
+func (g *GroundingMetadata) To() ([]genai.Reply, error) {
+	var out []genai.Reply
 	var src []genai.CitationSource
 	for _, q := range g.WebSearchQueries {
 		src = append(src, genai.CitationSource{Type: genai.CitationWebQuery, Snippet: q})
@@ -811,7 +812,7 @@ func (g *GroundingMetadata) To(out *genai.Reply) error {
 		// This will cause duplicate source.
 		for _, idx := range s.GroundingChunkIndices {
 			if idx < 0 || idx > int64(len(g.GroundingChunks)) {
-				return &internal.BadError{Err: fmt.Errorf("invalid grounding chunk index: %v", idx)}
+				return out, &internal.BadError{Err: fmt.Errorf("invalid grounding chunk index: %v", idx)}
 			}
 			// TODO: The URL points to https://vertexaisearch.cloud.google.com/grounding-api-redirect/... which is
 			// not good. We should to a HEAD request to get the actual URL.
@@ -822,14 +823,14 @@ func (g *GroundingMetadata) To(out *genai.Reply) error {
 				Title: gc.Web.Title,
 			})
 		}
-		out.Citations = append(out.Citations, c)
+		out = append(out, genai.Reply{Citation: c})
 	}
 	// Sometimes there's no GroundingSupports. Make sure to still flush the web query.
 	if len(src) > 0 && len(g.GroundingSupports) == 0 {
-		out.Citations = append(out.Citations, genai.Citation{Sources: src})
+		out = append(out, genai.Reply{Citation: genai.Citation{Sources: src}})
 	}
 	// SearchEntryPoint will contain some HTML.
-	return nil
+	return out, nil
 }
 
 // LogprobsResult is documented at https://ai.google.dev/api/generate-content#LogprobsResult
@@ -2115,14 +2116,14 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 				f := genai.ReplyFragment{}
 
 				if !pkt.Candidates[0].GroundingMetadata.IsZero() {
-					r := genai.Reply{}
-					if err := pkt.Candidates[0].GroundingMetadata.To(&r); err != nil {
+					replies, err := pkt.Candidates[0].GroundingMetadata.To()
+					if err != nil {
 						finalErr = &internal.BadError{Err: err}
 						return
 					}
 					// Handle citations as a separate packet.
-					for _, c := range r.Citations {
-						f.Citation = c
+					for _, r := range replies {
+						f.Citation = r.Citation
 						if !yield(f) {
 							return
 						}

@@ -363,7 +363,7 @@ func (m *Message) To(out *genai.Message) error {
 				URL:   a.URLCitation.URL,
 			}},
 		}
-		out.Replies = append(out.Replies, genai.Reply{Citations: []genai.Citation{c}})
+		out.Replies = append(out.Replies, genai.Reply{Citation: c})
 	}
 	return nil
 }

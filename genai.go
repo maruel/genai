@@ -567,7 +567,7 @@ func (m *Message) Accumulate(mf ReplyFragment) error {
 
 	if !mf.Citation.IsZero() {
 		// For now always add a new block.
-		m.Replies = append(m.Replies, Reply{Citations: []Citation{mf.Citation}})
+		m.Replies = append(m.Replies, Reply{Citation: mf.Citation})
 		return nil
 	}
 	if len(mf.Opaque) != 0 {
@@ -645,12 +645,11 @@ type Reply struct {
 	// Doc can be audio, video, image, PDF or any other format, including reference text.
 	Doc Doc `json:"doc,omitzero"`
 
-	// Citations contains references to source material that support the content.
-	// Only valid when Text is set and the provider supports citations.
-	Citations []Citation `json:"citations,omitzero"`
+	// Citation contains references to source material that support the content.
+	Citation Citation `json:"citation,omitzero"`
 
 	// Reasoning is the reasoning done by the LLM.
-	Reasoning string `json:"thinking,omitzero"`
+	Reasoning string `json:"reasoning,omitzero"`
 
 	// ToolCall is a tool call that the LLM requested to make.
 	ToolCall ToolCall `json:"tool_call,omitzero"`
@@ -671,7 +670,7 @@ type Reply struct {
 //
 // An empty reply is not valid.
 func (r *Reply) IsZero() bool {
-	return r.Text == "" && r.Doc.IsZero() && len(r.Citations) == 0 && r.Reasoning == "" && len(r.Opaque) == 0 && r.ToolCall.IsZero()
+	return r.Text == "" && r.Doc.IsZero() && r.Citation.IsZero() && r.Reasoning == "" && len(r.Opaque) == 0 && r.ToolCall.IsZero()
 }
 
 // Validate ensures the block is valid.
@@ -680,8 +679,8 @@ func (r *Reply) Validate() error {
 		if !r.Doc.IsZero() {
 			return errors.New("field Doc can't be used along Text")
 		}
-		if len(r.Citations) != 0 {
-			return errors.New("field Citations can't be used along Text")
+		if !r.Citation.IsZero() {
+			return errors.New("field Citation can't be used along Text")
 		}
 		if r.Reasoning != "" {
 			return errors.New("field Reasoning can't be used along Text")
@@ -709,33 +708,29 @@ func (r *Reply) Validate() error {
 		if err := r.Doc.Validate(); err != nil {
 			return err
 		}
+		if !r.Citation.IsZero() {
+			return errors.New("field Citation can't be used along Doc")
+		}
+		if r.Reasoning != "" {
+			return errors.New("field Reasoning can't be used along Doc")
+		}
 		if !r.ToolCall.IsZero() {
 			return errors.New("field ToolCall can't be used along Doc")
 		}
-	} else if len(r.Citations) != 0 {
-		// Reasoning is allowed.
-		for i, citation := range r.Citations {
-			if err := citation.Validate(); err != nil {
-				return fmt.Errorf("citation %d: %w", i, err)
-			}
+	} else if !r.Citation.IsZero() {
+		if err := r.Citation.Validate(); err != nil {
+			return err
 		}
 		if r.Reasoning != "" {
-			return errors.New("field Reasoning can't be used along Citations")
-		}
-		if !r.Doc.IsZero() {
-			return errors.New("field Doc can't be used along Citations")
+			return errors.New("field Reasoning can't be used along Citation")
 		}
 		if !r.ToolCall.IsZero() {
-			return errors.New("field ToolCall can't be used along Citations")
+			return errors.New("field ToolCall can't be used along Citation")
 		}
 	} else if r.Reasoning != "" {
-		if len(r.Citations) != 0 {
-			return errors.New("field Citations can only be used with Text")
+		if !r.ToolCall.IsZero() {
+			return errors.New("field ToolCall can't be used along Reasoning")
 		}
-		if !r.Doc.IsZero() {
-			return errors.New("field Doc can't be used along Reasoning")
-		}
-		// ToolCall is allowed.
 	} else if !r.ToolCall.IsZero() {
 		if err := r.ToolCall.Validate(); err != nil {
 			return err
@@ -983,7 +978,7 @@ type ToolCall struct {
 	Name      string `json:"name,omitzero"`      // Tool being called.
 	Arguments string `json:"arguments,omitzero"` // encoded as JSON
 
-	// Opaque is added to keep continuity on the processing. A good example is Gemini's extended thinking. It
+	// Opaque is added to keep continuity on the processing. A good example is Anthropic's extended thinking. It
 	// must be kept during an exchange.
 	//
 	// A message with only Opaque set is valid.
@@ -1125,7 +1120,7 @@ func (c *Citation) Validate() error {
 }
 
 func (c *Citation) IsZero() bool {
-	return c.StartIndex == 0 && c.EndIndex == 0 && len(c.Sources) == 0
+	return c.CitedText == "" && c.StartIndex == 0 && c.EndIndex == 0 && len(c.Sources) == 0
 }
 
 // CitationType is a citation that a model returned as part of its reply.

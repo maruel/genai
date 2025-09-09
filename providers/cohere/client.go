@@ -409,14 +409,14 @@ func (c *Citations) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-func (c Citations) To(dst *genai.Reply) error {
-	dst.Citations = make([]genai.Citation, len(c))
+func (c Citations) To() ([]genai.Reply, error) {
+	out := make([]genai.Reply, len(c))
 	for i := range c {
-		if err := c[i].To(&dst.Citations[i]); err != nil {
-			return err
+		if err := c[i].To(&out[i].Citation); err != nil {
+			return out, err
 		}
 	}
-	return nil
+	return out, nil
 }
 
 type CitationType string
@@ -627,10 +627,11 @@ func (m *MessageResponse) To(out *genai.Message) error {
 			}
 		}
 		if len(m.Citations) != 0 {
-			out.Replies = append(out.Replies, genai.Reply{})
-			if err := m.Citations.To(&out.Replies[len(out.Replies)-1]); err != nil {
+			replies, err := m.Citations.To()
+			if err != nil {
 				return fmt.Errorf("mapping citations: %w", err)
 			}
+			out.Replies = append(out.Replies, replies...)
 		}
 	}
 	for i := range m.ToolCalls {

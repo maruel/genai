@@ -208,9 +208,9 @@ Snippet:
 	}}
 	res, _ := c.GenSync(ctx, msgs)
 	for _, r := range res.Replies {
-		fmt.Printf("Citation:\n")
-		for _, ci := range r.Citations {
-			for _, src := range ci.Sources {
+		if !r.Citation.IsZero() {
+			fmt.Printf("Citation:\n")
+			for _, src := range r.Citation.Sources {
 				fmt.Printf("- %q\n", src.Snippet)
 			}
 		}
@@ -249,9 +249,9 @@ Snippet:
 	opts := genai.OptionsTools{WebSearch: true}
 	res, _ := c.GenSync(ctx, msgs, &opts)
 	for _, r := range res.Replies {
-		for _, ci := range r.Citations {
+		if !r.Citation.IsZero() {
 			fmt.Printf("Sources:\n")
-			for _, src := range ci.Sources {
+			for _, src := range r.Citation.Sources {
 				switch src.Type {
 				case genai.CitationWeb:
 					fmt.Printf("- %s / %s\n", src.Title, src.URL)

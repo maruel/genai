@@ -804,8 +804,8 @@ func (c *Content) FromRequest(in *genai.Request) (bool, error) {
 }
 
 func (c *Content) FromReply(in *genai.Reply) (bool, error) {
-	if len(in.Citations) != 0 {
-		return false, &internal.BadError{Err: errors.New("field Reply.Citations not supported")}
+	if !in.Citation.IsZero() {
+		return false, &internal.BadError{Err: errors.New("field Reply.Citation not supported")}
 	}
 	if len(in.Opaque) != 0 {
 		return false, &internal.BadError{Err: errors.New("field Reply.Opaque not supported")}

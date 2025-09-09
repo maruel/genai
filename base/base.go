@@ -561,8 +561,8 @@ func SimulateStream(ctx context.Context, c genai.Provider, msgs genai.Messages, 
 						}
 					}
 				}
-				for j := range r.Citations {
-					if !yield(genai.ReplyFragment{Citation: r.Citations[j]}) {
+				if !r.Citation.IsZero() {
+					if !yield(genai.ReplyFragment{Citation: r.Citation}) {
 						return
 					}
 				}

@@ -707,7 +707,7 @@ func (c *Content) FromReply(in *genai.Reply) (bool, error) {
 		}
 		return false, nil
 	}
-	if len(in.Citations) > 0 {
+	if !in.Citation.IsZero() {
 		// Skip.
 		return true, nil
 	}
@@ -735,12 +735,10 @@ func (c *Content) To() ([]genai.Reply, error) {
 			}
 			out = append(out, r)
 		}
-		if len(c.Citations.Citations) > 0 {
-			r := genai.Reply{Citations: make([]genai.Citation, len(c.Citations.Citations))}
-			for i := range c.Citations.Citations {
-				if err := c.Citations.Citations[i].To(&r.Citations[i]); err != nil {
-					return out, fmt.Errorf("citation %d: %w", i, err)
-				}
+		for i := range c.Citations.Citations {
+			r := genai.Reply{}
+			if err := c.Citations.Citations[i].To(&r.Citation); err != nil {
+				return out, fmt.Errorf("citation %d: %w", i, err)
 			}
 			out = append(out, r)
 		}
@@ -755,18 +753,18 @@ func (c *Content) To() ([]genai.Reply, error) {
 		}
 		out = append(out, genai.Reply{ToolCall: genai.ToolCall{ID: c.ID, Name: c.Name, Arguments: string(raw)}})
 	case ContentWebSearchToolResult:
-		r := genai.Reply{Citations: []genai.Citation{{Sources: make([]genai.CitationSource, len(c.Content))}}}
+		src := make([]genai.CitationSource, len(c.Content))
 		for i, cc := range c.Content {
 			if cc.Type != ContentWebSearchResult {
 				return out, &internal.BadError{Err: fmt.Errorf("implement content type %q while processing %q", cc.Type, c.Type)}
 			}
-			r.Citations[0].Sources[i].Type = genai.CitationWeb
-			r.Citations[0].Sources[i].URL = cc.URL
-			r.Citations[0].Sources[i].Title = cc.Title
-			r.Citations[0].Sources[i].Date = cc.PageAge
+			src[i].Type = genai.CitationWeb
+			src[i].URL = cc.URL
+			src[i].Title = cc.Title
+			src[i].Date = cc.PageAge
 			// TODO: Keep cc.EncryptedContent to be able to continue the thread.
 		}
-		out = append(out, r)
+		out = append(out, genai.Reply{Citation: genai.Citation{Sources: src}})
 	case ContentServerToolUse:
 		// TODO: We drop the value, which makes the next request unusable.
 		switch c.Name {
@@ -785,7 +783,7 @@ func (c *Content) To() ([]genai.Reply, error) {
 				return out, &internal.BadError{Err: fmt.Errorf("failed to decode server tool call %s: %w", c.Name, err)}
 			}
 			out = append(out, genai.Reply{
-				Citations: []genai.Citation{{Sources: []genai.CitationSource{{Type: genai.CitationWebQuery, Snippet: q.Query}}}},
+				Citation: genai.Citation{Sources: []genai.CitationSource{{Type: genai.CitationWebQuery, Snippet: q.Query}}},
 			})
 		default:
 			// Oops, more work to do!

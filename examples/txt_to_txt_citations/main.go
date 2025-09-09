@@ -56,9 +56,9 @@ been hasty in coming to a decision.
 		log.Fatal(err)
 	}
 	for _, r := range res.Replies {
-		fmt.Printf("Citation:\n")
-		for _, ci := range r.Citations {
-			for _, src := range ci.Sources {
+		if !r.Citation.IsZero() {
+			fmt.Printf("Citation:\n")
+			for _, src := range r.Citation.Sources {
 				fmt.Printf("- %q\n", src.Snippet)
 			}
 		}

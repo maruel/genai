@@ -43,11 +43,6 @@ var DefaultTransport http.RoundTripper = &roundtrippers.Retry{
 	},
 }
 
-// ErrNotSupported is returned when a method is not implemented because the provider doesn't support it.
-//
-// For example Perplexity doesn't have an API to lists its supported models (this may change in the future).
-var ErrNotSupported = errors.New("not supported")
-
 // ErrAPIKeyRequired is returned by the providers New() function when no key was found.
 type ErrAPIKeyRequired struct {
 	EnvVar string
@@ -67,21 +62,40 @@ type ErrAPI interface {
 	IsAPIError() bool
 }
 
+// ErrNotSupported is returned when a method or option is not implemented because the provider doesn't support
+// it.
+//
+// If the API doesn't support an option, the option will be added to the Options field.
+//
+// For example:
+//   - Anthropic doesn't support Seed. In this case, Options will contain "OptionsText.Seed".
+//   - Perplexity doesn't have an API to lists its supported models (this may change in the future).
+type ErrNotSupported struct {
+	Options []string
+}
+
+func (e *ErrNotSupported) Error() string {
+	if len(e.Options) == 0 {
+		return "not supported"
+	}
+	return fmt.Sprintf("not supported: %s", strings.Join(e.Options, ", "))
+}
+
 // NotImplemented implements most genai.Provider methods all returning ErrNotSupported.
 type NotImplemented struct{}
 
 func (*NotImplemented) GenSync(context.Context, genai.Messages, ...genai.Options) (genai.Result, error) {
-	return genai.Result{}, ErrNotSupported
+	return genai.Result{}, &ErrNotSupported{}
 }
 
 func (*NotImplemented) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	return yieldNothing[genai.Reply], func() (genai.Result, error) {
-		return genai.Result{}, ErrNotSupported
+		return genai.Result{}, &ErrNotSupported{}
 	}
 }
 
 func (*NotImplemented) ListModels(context.Context) ([]genai.Model, error) {
-	return nil, ErrNotSupported
+	return nil, &ErrNotSupported{}
 }
 
 // ProviderBase implements the basse functionality to help implementing a base.Provider.
@@ -333,13 +347,8 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 	res := genai.Result{}
 	c.lateInit()
 	in := reflect.New(c.chatRequest).Interface().(PGenRequest)
-	var continuableErr error
 	if err := in.Init(msgs, c.Model, opts...); err != nil {
-		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
-			continuableErr = uce
-		} else {
-			return res, err
-		}
+		return res, err
 	}
 	out := reflect.New(c.chatResponse).Interface().(PGenResponse)
 	if err := c.GenSyncRaw(ctx, in, out); err != nil {
@@ -358,24 +367,19 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 	if c.ProcessHeaders != nil && lastResp != nil {
 		res.Usage.Limits = c.ProcessHeaders(lastResp)
 	}
-	return res, continuableErr
+	return res, nil
 }
 
 func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	res := genai.Result{}
-	var continuableErr error
 	var finalErr error
 
 	fnFragments := func(yield func(genai.Reply) bool) {
 		c.lateInit()
 		in := reflect.New(c.chatRequest).Interface().(PGenRequest)
 		if err := in.Init(msgs, c.Model, opts...); err != nil {
-			if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
-				continuableErr = uce
-			} else {
-				finalErr = err
-				return
-			}
+			finalErr = err
+			return
 		}
 		// Converts raw chunks into fragments.
 		// Generate parsed chunks from the raw JSON SSE stream.
@@ -436,7 +440,7 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 			// Catch provider implementation bugs.
 			return res, &internal.BadError{Err: err}
 		}
-		return res, continuableErr
+		return res, nil
 	}
 	return fnFragments, fnFinish
 }

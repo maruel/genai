@@ -298,9 +298,9 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 			errs = append(errs, fmt.Errorf("message #%d: %w", i, err))
 		}
 	}
-	// If we have unsupported features but no other errors, return a continuable error
+	// If we have unsupported features but no other errors, return a structured error.
 	if len(unsupported) > 0 && len(errs) == 0 {
-		return &genai.UnsupportedContinuableError{Unsupported: unsupported}
+		return &base.ErrNotSupported{Options: unsupported}
 	}
 	return errors.Join(errs...)
 }
@@ -1017,7 +1017,7 @@ func (i *ImageRequest) Init(msg genai.Message, model string, mod genai.Modalitie
 		case *genai.OptionsImage:
 			if v.Seed != 0 {
 				// Seed is only supported with Vertex AI API.
-				uce = &genai.UnsupportedContinuableError{Unsupported: []string{"OptionsText.Seed"}}
+				uce = &base.ErrNotSupported{Options: []string{"OptionsText.Seed"}}
 			}
 			// TODO: Width and Height
 		case *genai.OptionsVideo:
@@ -1641,13 +1641,8 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 	// GenSync must be inlined because we need to call our GenSyncRaw.
 	res := genai.Result{}
 	in := &ChatRequest{}
-	var continuableErr error
 	if err := in.Init(msgs, c.impl.Model, opts...); err != nil {
-		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
-			continuableErr = uce
-		} else {
-			return res, err
-		}
+		return res, err
 	}
 	out := &ChatResponse{}
 	if err := c.GenSyncRaw(ctx, in, out); err != nil {
@@ -1666,7 +1661,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 	if c.impl.ProcessHeaders != nil && lastResp != nil {
 		res.Usage.Limits = c.impl.ProcessHeaders(lastResp)
 	}
-	return res, continuableErr
+	return res, nil
 }
 
 // GenSyncRaw provides access to the raw API.
@@ -1700,18 +1695,13 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 	}
 	// GenStream must be inlined because we need to call our GenStreamRaw.
 	res := genai.Result{}
-	var continuableErr error
 	var finalErr error
 
 	fnFragments := func(yield func(genai.Reply) bool) {
 		in := &ChatRequest{}
 		if err := in.Init(msgs, c.impl.Model, opts...); err != nil {
-			if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
-				continuableErr = uce
-			} else {
-				finalErr = &internal.BadError{Err: err}
-				return
-			}
+			finalErr = &internal.BadError{Err: err}
+			return
 		}
 		// Generate parsed chunks from the raw JSON SSE stream.
 		chunks, finish1 := c.GenStreamRaw(ctx, in)
@@ -1764,7 +1754,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 			// Catch provider implementation bugs.
 			return res, err
 		}
-		return res, continuableErr
+		return res, nil
 	}
 	return fnFragments, fnFinish
 }
@@ -1906,16 +1896,11 @@ func (c *Client) CacheDelete(ctx context.Context, name string) error {
 //
 // genDoc is only supported for models that have "predict" reported in their Model.SupportedGenerationMethods.
 func (c *Client) genDoc(ctx context.Context, msg genai.Message, opts ...genai.Options) (genai.Result, error) {
-	var continuableErr error
 	// TODO: Smartly decide the method to use instead of hardcoding on the modality.
 	if slices.Contains(c.impl.OutputModalities, genai.ModalityVideo) {
 		id, err := c.GenAsync(ctx, genai.Messages{msg}, opts...)
 		if err != nil {
-			if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
-				continuableErr = uce
-			} else {
-				return genai.Result{}, err
-			}
+			return genai.Result{}, err
 		}
 		// Loop until the image is available.
 		waitForPoll := time.Second
@@ -1930,9 +1915,6 @@ func (c *Client) genDoc(ctx context.Context, msg genai.Message, opts ...genai.Op
 				return genai.Result{}, ctx.Err()
 			case <-time.After(waitForPoll):
 				if res, err := c.PokeResult(ctx, id); res.Usage.FinishReason != genai.Pending {
-					if err == nil {
-						err = continuableErr
-					}
 					return res, err
 				}
 			}
@@ -1941,11 +1923,7 @@ func (c *Client) genDoc(ctx context.Context, msg genai.Message, opts ...genai.Op
 	res := genai.Result{}
 	req := ImageRequest{}
 	if err := req.Init(msg, c.impl.Model, c.impl.OutputModalities, opts...); err != nil {
-		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
-			continuableErr = uce
-		} else {
-			return res, err
-		}
+		return res, err
 	}
 	resp, err := c.PredictRaw(ctx, req)
 	if err != nil {
@@ -1974,7 +1952,7 @@ func (c *Client) genDoc(ctx context.Context, msg genai.Message, opts ...genai.Op
 	if err = res.Validate(); err != nil {
 		return res, err
 	}
-	return res, continuableErr
+	return res, nil
 }
 
 // GenAsync implements genai.ProviderGenAsync.
@@ -1994,19 +1972,11 @@ func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts ...gena
 		return "", errors.New("only one message can be passed as input")
 	}
 	req := ImageRequest{}
-	var continuableErr error
 	if err := req.Init(msgs[0], c.impl.Model, c.impl.OutputModalities, opts...); err != nil {
-		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
-			continuableErr = uce
-		} else {
-			return "", err
-		}
+		return "", err
 	}
 	resp, err := c.PredictLongRunningRaw(ctx, req)
-	if err != nil {
-		return genai.Job(resp.Name), err
-	}
-	return genai.Job(resp.Name), continuableErr
+	return genai.Job(resp.Name), err
 }
 
 // PokeResult implements genai.ProviderGenAsync.

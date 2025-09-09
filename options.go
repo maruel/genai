@@ -18,20 +18,6 @@ import (
 	"github.com/maruel/genai/scoreboard"
 )
 
-// UnsupportedContinuableError is an error when an unsupported option is used but the operation still
-// succeeded.
-type UnsupportedContinuableError struct {
-	// Unsupported is the list of arguments that were not supported and were silently ignored.
-	Unsupported []string
-}
-
-func (u *UnsupportedContinuableError) Error() string {
-	if len(u.Unsupported) == 0 {
-		return "no unsupported options"
-	}
-	return fmt.Sprintf("unsupported options: %s", strings.Join(u.Unsupported, ", "))
-}
-
 // Options is options that can be provided to a Provider interface.
 type Options interface {
 	// Validate ensures the options object is valid.
@@ -99,7 +85,7 @@ func (m Modalities) Validate() error {
 // The first group are options supported by (nearly) all providers.
 //
 // The second group are options supported only by some providers. Using them may cause the chat operation to
-// succeed while returning a UnsupportedContinuableError.
+// return a base.ErrNotsupported.
 //
 // The third group are options supported by a few providers and a few models on each, that will slow down
 // generation (increase latency) and will increase token use (cost).

@@ -30,7 +30,8 @@ func Example_all_ListModel() {
 			continue
 		}
 		models, err := c.ListModels(context.Background())
-		if err == base.ErrNotSupported {
+		var ent *base.ErrNotSupported
+		if errors.As(err, &ent) {
 			continue
 		}
 		fmt.Printf("%s:\n", name)
@@ -60,11 +61,7 @@ func Example_all_Provider() {
 		}
 		response, err := c.GenSync(context.Background(), msgs, opts)
 		if err != nil {
-			if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
-				fmt.Printf("- %s (ignored args: %s): %v\n", name, strings.Join(uce.Unsupported, ","), response)
-			} else {
-				fmt.Printf("- %s: %v\n", name, err)
-			}
+			fmt.Printf("- %s: %v\n", name, err)
 		} else {
 			fmt.Printf("- %s: %v\n", name, response)
 		}
@@ -143,13 +140,18 @@ func Example_available() {
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 	}
-	// Wrap the provider with an adapter to ignore errors caused by unsupported features. Even if Seed is not
-	// supported, no error will be returned.
-	c = &adapters.ProviderIgnoreUnsupported{Provider: c}
 	msgs := genai.Messages{genai.NewTextMessage("Provide a life tip that sounds good but is actually a bad idea.")}
-	resp, err := c.GenSync(ctx, msgs, &genai.OptionsText{Seed: 42})
+	opts := genai.OptionsText{Seed: 42}
+	resp, err := c.GenSync(ctx, msgs, &opts)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "error: %v\n", err)
+		var ent *base.ErrNotSupported
+		if errors.As(err, &ent) && slices.Contains(ent.Options, "OptionsText.Seed") {
+			opts.Seed = 0
+			if resp, err = c.GenSync(ctx, msgs, &opts); err != nil {
+				fmt.Fprintf(os.Stderr, "error: %v\n", err)
+				return
+			}
+		}
 	}
 	fmt.Printf("%s\n", resp.String())
 }

@@ -18,13 +18,13 @@ interactions:
     proto: HTTP/1.1
     proto_major: 1
     proto_minor: 1
-    content_length: 932
-    body: "{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:38.271733Z\",\"message\":{\"role\":\"assistant\",\"content\":\"\\u003cthink\\u003e\\nOkay, the user wants me to calculate the square root of 132413 using the square_root tool. Let me check the function parameters. The function requires a \\\"number\\\" parameter. So I need to call the function with the number 132413. The user specified to reply only with the result, so once I get the result from the tool, I should just present it without any explanation. Let me make sure I format the tool call correctly. The function name is square_root, and the argument is {\\\"number\\\": 132413}. That should do it.\\n\\u003c/think\\u003e\\n\\n\",\"tool_calls\":[{\"function\":{\"name\":\"square_root\",\"arguments\":{\"number\":132413}}}]},\"done_reason\":\"stop\",\"done\":true,\"total_duration\":4728120125,\"load_duration\":35262500,\"prompt_eval_count\":174,\"prompt_eval_duration\":14886541,\"eval_count\":155,\"eval_duration\":2195678834}"
+    content_length: 813
+    body: "{\"model\":\"qwen3:4b\",\"created_at\":\"2025-09-09T23:36:30.615381119Z\",\"message\":{\"role\":\"assistant\",\"content\":\"\\u003cthink\\u003e\\nOkay, the user wants me to calculate the square root of 132413 using the square_root tool. Let me check the function parameters. The function requires a \\\"number\\\" parameter, which is a number. So I need to call the function with the number 132413. I should return the result directly without any explanation. Let me make sure I format the tool call correctly in JSON inside the XML tags.\\n\\u003c/think\\u003e\\n\\n\",\"tool_calls\":[{\"function\":{\"name\":\"square_root\",\"arguments\":{\"number\":132413}}}]},\"done_reason\":\"stop\",\"done\":true,\"total_duration\":11260483060,\"load_duration\":2576279170,\"prompt_eval_count\":174,\"prompt_eval_duration\":1936458842,\"eval_count\":120,\"eval_duration\":6743218560}"
     headers:
       Content-Length:
-      - "932"
+      - "813"
       Content-Type:
       - application/json; charset=utf-8
     status: 200 OK
     code: 200
-    duration: 4.728s
+    duration: 11.275s

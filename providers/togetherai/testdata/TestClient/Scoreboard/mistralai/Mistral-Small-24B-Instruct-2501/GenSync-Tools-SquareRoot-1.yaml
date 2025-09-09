@@ -1,112 +1,69 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 570
-        host: api.together.xyz
-        body: |
-            {"model":"mistralai/Mistral-Small-24B-Instruct-2501","stream":false,"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required"}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.together.xyz/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        uncompressed: true
-        body: |-
-            {
-              "id": "o4dhX7V-62bZhn-9654f9f9f85ba320",
-              "object": "chat.completion",
-              "created": 1753544226,
-              "model": "mistralai/Mistral-Small-24B-Instruct-2501",
-              "prompt": [],
-              "choices": [
-                {
-                  "index": 0,
-                  "logprobs": null,
-                  "finish_reason": "tool_calls",
-                  "seed": null,
-                  "message": {
-                    "role": "assistant",
-                    "content": null,
-                    "tool_calls": [
-                      {
-                        "index": 0,
-                        "id": "call_azbrbfnmthqry8n2dmr63bb5",
-                        "type": "function",
-                        "function": {
-                          "arguments": "{\"number\":132413}",
-                          "name": "square_root"
-                        }
-                      }
-                    ]
-                  }
-                }
-              ],
-              "usage": {
-                "prompt_tokens": 456,
-                "total_tokens": 480,
-                "completion_tokens": 24
-              },
-              "warnings": [
-                {
-                  "message": "Model supports only tool_choice auto"
-                }
-              ]
-            }
-        headers:
-            Access-Control-Allow-Origin:
-                - '*'
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 9654f9f9f85ba320-YUL
-            Content-Type:
-                - application/json; charset=utf-8
-            Etag:
-                - W/"35e-k1V3C6OwU3SMf+t5bRlJdrmKlAY"
-            Retry-After:
-                - "2"
-            Server:
-                - cloudflare
-            Strict-Transport-Security:
-                - max-age=15552000; includeSubDomains
-            Vary:
-                - Accept-Encoding
-            X-Amzn-Trace-Id:
-                - 9ad20914-82f4-4833-8dcb-8cf44e9e8140-noamzn
-            X-Api-Call-End:
-                - "2025-07-26T15:37:07.302Z"
-            X-Api-Call-Start:
-                - "2025-07-26T15:37:06.964Z"
-            X-Api-Received:
-                - "2025-07-26T15:37:06.960Z"
-            X-Inference-Version:
-                - v2
-            X-Ratelimit:
-                - "false"
-            X-Ratelimit-Limit:
-                - "1"
-            X-Ratelimit-Limit-Tokens:
-                - "1000"
-            X-Ratelimit-Remaining:
-                - "1"
-            X-Ratelimit-Remaining-Tokens:
-                - "1000"
-            X-Ratelimit-Reset:
-                - "2"
-            X-Request-Id:
-                - o4dhX7V-62bZhn-9654f9f9f85ba320
-        status: 200 OK
-        code: 200
-        duration: 521ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 570
+    host: api.together.xyz
+    body: "{\"model\":\"mistralai/Mistral-Small-24B-Instruct-2501\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"}],\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"tool_choice\":\"required\"}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"oAcASX5-62bZhn-97cae3a91b35a30f\",\n  \"object\": \"chat.completion\",\n  \"created\": 1757464987,\n  \"model\": \"mistralai/Mistral-Small-24B-Instruct-2501\",\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"[]{\\\"name\\\": \\\"square_root\\\", \\\"arguments\\\": {\\\"number\\\": 132.413}}[][]{\\\"name\\\": \\\"square_root\\\", \\\"arguments\\\": {\\\"number\\\": 132413}}\",\n        \"tool_calls\": []\n      }\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 456,\n    \"total_tokens\": 502,\n    \"completion_tokens\": 46\n  },\n  \"warnings\": [\n    {\n      \"message\": \"Model supports only tool_choice auto\"\n    }\n  ]\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 97cae3a91b35a30f-YUL
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"2d3-vT/O7iCG2Sy3PH9p9cpwd+g9Fcw"
+      Retry-After:
+      - "2"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 71d663c7-4c4b-465e-b554-4c22082ef7ae-noamzn
+      X-Api-Call-End:
+      - "2025-09-10T00:43:07.710Z"
+      X-Api-Call-Start:
+      - "2025-09-10T00:43:07.152Z"
+      X-Api-Received:
+      - "2025-09-10T00:43:07.148Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "19"
+      X-Ratelimit-Remaining-Tokens:
+      - "3000"
+      X-Ratelimit-Reset:
+      - "2"
+    status: 200 OK
+    code: 200
+    duration: 777ms

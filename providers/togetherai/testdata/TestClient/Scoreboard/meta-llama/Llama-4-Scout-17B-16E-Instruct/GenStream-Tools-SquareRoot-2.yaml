@@ -8,7 +8,7 @@ interactions:
     proto_minor: 1
     content_length: 818
     host: api.together.xyz
-    body: "{\"model\":\"meta-llama/Llama-4-Scout-17B-16E-Instruct\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"},{\"role\":\"assistant\",\"tool_calls\":[{\"index\":0,\"id\":\"call_asylb73ykoeinwk7vesx4uis\",\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\":132413}\"}}]},{\"role\":\"tool\",\"content\":\"363.89\",\"tool_call_id\":\"call_asylb73ykoeinwk7vesx4uis\"}],\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"tool_choice\":\"none\"}\n"
+    body: "{\"model\":\"meta-llama/Llama-4-Scout-17B-16E-Instruct\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"},{\"role\":\"assistant\",\"tool_calls\":[{\"index\":0,\"id\":\"call_dlep79ogntxb4ildkmv5bf7x\",\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\":132413}\"}}]},{\"role\":\"tool\",\"content\":\"363.89\",\"tool_call_id\":\"call_dlep79ogntxb4ildkmv5bf7x\"}],\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"tool_choice\":\"none\"}\n"
     headers:
       Content-Type:
       - application/json; charset=utf-8
@@ -19,7 +19,7 @@ interactions:
     proto_major: 2
     proto_minor: 0
     content_length: -1
-    body: "data: {\"id\":\"o92MxuD-62bZhn-9767d0a49c5da320\",\"object\":\"chat.completion.chunk\",\"created\":1756426117,\"choices\":[{\"index\":0,\"text\":\"363\",\"logprobs\":null,\"finish_reason\":null,\"stop_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"363\",\"tool_calls\":null}}],\"model\":\"meta-llama/Llama-4-Scout-17B-16E-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"o92MxuD-62bZhn-9767d0a49c5da320\",\"object\":\"chat.completion.chunk\",\"created\":1756426117,\"choices\":[{\"index\":0,\"text\":\".\",\"logprobs\":null,\"finish_reason\":null,\"stop_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\".\",\"tool_calls\":null}}],\"model\":\"meta-llama/Llama-4-Scout-17B-16E-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"o92MxuD-62bZhn-9767d0a49c5da320\",\"object\":\"chat.completion.chunk\",\"created\":1756426117,\"choices\":[{\"index\":0,\"text\":\"89\",\"logprobs\":null,\"finish_reason\":null,\"stop_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"89\",\"tool_calls\":null}}],\"model\":\"meta-llama/Llama-4-Scout-17B-16E-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"o92MxuD-62bZhn-9767d0a49c5da320\",\"object\":\"chat.completion.chunk\",\"created\":1756426117,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":\"stop\",\"stop_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":null}}],\"model\":\"meta-llama/Llama-4-Scout-17B-16E-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"o92MxuD-62bZhn-9767d0a49c5da320\",\"object\":\"chat.completion.chunk\",\"created\":1756426117,\"choices\":[],\"model\":\"meta-llama/Llama-4-Scout-17B-16E-Instruct\",\"usage\":{\"prompt_tokens\":62,\"total_tokens\":66,\"completion_tokens\":4}}\n\ndata: [DONE]\n\n"
+    body: "data: {\"id\":\"oAcBmdy-62bZhn-97cae9fe9bffa27b\",\"object\":\"chat.completion.chunk\",\"created\":1757465246,\"choices\":[{\"index\":0,\"text\":\"363\",\"logprobs\":null,\"finish_reason\":null,\"stop_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"363\",\"tool_calls\":null}}],\"model\":\"meta-llama/Llama-4-Scout-17B-16E-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oAcBmdy-62bZhn-97cae9fe9bffa27b\",\"object\":\"chat.completion.chunk\",\"created\":1757465246,\"choices\":[{\"index\":0,\"text\":\".\",\"logprobs\":null,\"finish_reason\":null,\"stop_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\".\",\"tool_calls\":null}}],\"model\":\"meta-llama/Llama-4-Scout-17B-16E-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oAcBmdy-62bZhn-97cae9fe9bffa27b\",\"object\":\"chat.completion.chunk\",\"created\":1757465246,\"choices\":[{\"index\":0,\"text\":\"89\",\"logprobs\":null,\"finish_reason\":null,\"stop_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"89\",\"tool_calls\":null}}],\"model\":\"meta-llama/Llama-4-Scout-17B-16E-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oAcBmdy-62bZhn-97cae9fe9bffa27b\",\"object\":\"chat.completion.chunk\",\"created\":1757465246,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":\"stop\",\"stop_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":null}}],\"model\":\"meta-llama/Llama-4-Scout-17B-16E-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oAcBmdy-62bZhn-97cae9fe9bffa27b\",\"object\":\"chat.completion.chunk\",\"created\":1757465246,\"choices\":[],\"model\":\"meta-llama/Llama-4-Scout-17B-16E-Instruct\",\"usage\":{\"prompt_tokens\":62,\"total_tokens\":66,\"completion_tokens\":4}}\n\ndata: [DONE]\n\n"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -30,7 +30,7 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9767d0a49c5da320-YUL
+      - 97cae9fe9bffa27b-YUL
       Content-Type:
       - text/event-stream;charset=utf-8
       Retry-After:
@@ -42,11 +42,11 @@ interactions:
       Vary:
       - Accept-Encoding
       X-Amzn-Trace-Id:
-      - 47d746f3-b599-4267-87fd-19d367dd5db8-noamzn
+      - 23242107-a758-448a-8d42-ca8cb777c642-noamzn
       X-Api-Call-Start:
-      - "2025-08-29T00:08:38.095Z"
+      - "2025-09-10T00:47:26.596Z"
       X-Api-Received:
-      - "2025-08-29T00:08:37.952Z"
+      - "2025-09-10T00:47:26.576Z"
       X-Inference-Version:
       - v2
       X-Ratelimit:
@@ -58,11 +58,9 @@ interactions:
       X-Ratelimit-Remaining:
       - "19"
       X-Ratelimit-Remaining-Tokens:
-      - "3000"
+      - "2473"
       X-Ratelimit-Reset:
       - "2"
-      X-Request-Id:
-      - o92MxuD-62bZhn-9767d0a49c5da320
     status: 200 OK
     code: 200
-    duration: 371ms
+    duration: 239ms

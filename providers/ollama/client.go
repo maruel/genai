@@ -215,9 +215,9 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 			}
 		}
 	}
-	// If we have unsupported features but no other errors, return a continuable error
+	// If we have unsupported features but no other errors, return a structured error.
 	if len(unsupported) > 0 && len(errs) == 0 {
-		return &genai.UnsupportedContinuableError{Unsupported: unsupported}
+		return &base.ErrNotSupported{Options: unsupported}
 	}
 	return errors.Join(errs...)
 }
@@ -656,28 +656,23 @@ func (c *Client) HTTPClient() *http.Client {
 
 // GenSync implements genai.Provider.
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
-	result := genai.Result{}
+	res := genai.Result{}
 	in := ChatRequest{}
-	var continuableErr error
 	if err := in.Init(msgs, c.impl.Model, opts...); err != nil {
-		if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
-			continuableErr = uce
-		} else {
-			return result, err
-		}
+		return res, err
 	}
 	var out ChatResponse
 	if err := c.GenSyncRaw(ctx, &in, &out); err != nil {
-		return result, err
+		return res, err
 	}
-	result, err := out.ToResult()
+	res, err := out.ToResult()
 	if err != nil {
-		return result, err
+		return res, err
 	}
-	if err = result.Validate(); err != nil {
-		return result, err
+	if err = res.Validate(); err != nil {
+		return res, &internal.BadError{Err: err}
 	}
-	return result, continuableErr
+	return res, nil
 }
 
 // GenSyncRaw provides access to the raw API.
@@ -703,18 +698,13 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 // GenStream implements genai.Provider.
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	res := genai.Result{}
-	var continuableErr error
 	var finalErr error
 
 	fnFragments := func(yield func(genai.Reply) bool) {
 		in := ChatRequest{}
 		if err := in.Init(msgs, c.impl.Model, opts...); err != nil {
-			if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
-				continuableErr = uce
-			} else {
-				finalErr = err
-				return
-			}
+			finalErr = err
+			return
 		}
 		chunks, finish1 := c.GenStreamRaw(ctx, &in)
 		fragments, finish2 := ProcessStream(chunks)
@@ -749,10 +739,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 			// Lie for the benefit of everyone.
 			res.Usage.FinishReason = genai.FinishedToolCalls
 		}
-		if finalErr != nil {
-			return res, finalErr
-		}
-		return res, continuableErr
+		return res, finalErr
 	}
 	return fnFragments, fnFinish
 }

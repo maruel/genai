@@ -155,38 +155,6 @@ func GenStreamWithToolCallLoop(ctx context.Context, p genai.Provider, msgs genai
 
 //
 
-// ProviderIgnoreUnsupported wraps a Provider to ignore UnsupportedContinuableError.
-type ProviderIgnoreUnsupported struct {
-	genai.Provider
-}
-
-func (c *ProviderIgnoreUnsupported) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
-	res, err := c.Provider.GenSync(ctx, msgs, opts...)
-	var uce *genai.UnsupportedContinuableError
-	if errors.As(err, &uce) {
-		err = nil
-	}
-	return res, err
-}
-
-func (c *ProviderIgnoreUnsupported) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
-	fragments, finish := c.Provider.GenStream(ctx, msgs, opts...)
-	return fragments, func() (genai.Result, error) {
-		res, err := finish()
-		var uce *genai.UnsupportedContinuableError
-		if errors.As(err, &uce) {
-			err = nil
-		}
-		return res, err
-	}
-}
-
-func (c *ProviderIgnoreUnsupported) Unwrap() genai.Provider {
-	return c.Provider
-}
-
-//
-
 // ProviderUsage wraps a Provider and accumulates Usage values
 // across multiple requests to track total token consumption.
 type ProviderUsage struct {

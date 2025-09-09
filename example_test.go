@@ -205,8 +205,6 @@ func ExampleProvider_GenStream() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	// Does not return an error if Seed or MaxTokens are unsupported.
-	p := &adapters.ProviderIgnoreUnsupported{Provider: c}
 	msgs := genai.Messages{
 		genai.NewTextMessage("Say hello. Use only one word."),
 	}
@@ -214,7 +212,7 @@ func ExampleProvider_GenStream() {
 		Seed:      1,
 		MaxTokens: 50,
 	}
-	fragments, finish := p.GenStream(ctx, msgs, &opts)
+	fragments, finish := c.GenStream(ctx, msgs, &opts)
 	for f := range fragments {
 		os.Stdout.WriteString(f.Text)
 	}

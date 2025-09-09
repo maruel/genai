@@ -249,9 +249,9 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 	if isBadError(ctxCheck, err) {
 		return f, err
 	}
-	var uerr *genai.UnsupportedContinuableError
+	var uerr *base.ErrNotSupported
 	if errors.As(err, &uerr) {
-		f.Seed = !slices.Contains(uerr.Unsupported, "OptionsText.Seed")
+		f.Seed = !slices.Contains(uerr.Options, "OptionsText.Seed")
 	} else if err == nil {
 		f.Seed = true
 	}
@@ -264,7 +264,7 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 		return f, err
 	}
 	if errors.As(err, &uerr) {
-		f.TopLogprobs = !slices.Contains(uerr.Unsupported, "OptionsText.TopLogprobs")
+		f.TopLogprobs = !slices.Contains(uerr.Options, "OptionsText.TopLogprobs")
 	} else if err == nil {
 		// TODO: We'll need to be more detailed than that. Most don't report the ID or bytes, some only report
 		// logprobs, etc.
@@ -883,14 +883,14 @@ func exerciseGenImage(ctx context.Context, pf ProviderFactory, name string, out 
 	usage.InputCachedTokens += resp.Usage.InputCachedTokens
 	usage.OutputTokens += resp.Usage.OutputTokens
 	out.GenSync.Seed = true
-	var uerr *genai.UnsupportedContinuableError
+	var uerr *base.ErrNotSupported
 	if errors.As(err, &uerr) {
-		// Cheap trick to make sure the error is not wrapped. Figure out if there's another way!
-		if strings.HasPrefix(err.Error(), "unsupported options: ") {
-			if slices.Contains(uerr.Unsupported, "OptionsText.Seed") {
-				out.GenSync.Seed = false
-			}
-			err = nil
+		if slices.Contains(uerr.Options, "OptionsText.Seed") {
+			out.GenSync.Seed = false
+			resp, err = c.GenSync(ctx, msgs, &genai.OptionsImage{})
+			usage.InputTokens += resp.Usage.InputTokens
+			usage.InputCachedTokens += resp.Usage.InputCachedTokens
+			usage.OutputTokens += resp.Usage.OutputTokens
 		}
 	}
 	if len(resp.Usage.Limits) != 0 {
@@ -972,14 +972,14 @@ func exerciseGenAudio(ctx context.Context, pf ProviderFactory, name string, out 
 	usage.InputCachedTokens += resp.Usage.InputCachedTokens
 	usage.OutputTokens += resp.Usage.OutputTokens
 	out.GenSync.Seed = true
-	var uerr *genai.UnsupportedContinuableError
+	var uerr *base.ErrNotSupported
 	if errors.As(err, &uerr) {
-		// Cheap trick to make sure the error is not wrapped. Figure out if there's another way!
-		if strings.HasPrefix(err.Error(), "unsupported options: ") {
-			if slices.Contains(uerr.Unsupported, "OptionsText.Seed") {
-				out.GenSync.Seed = false
-			}
-			err = nil
+		if slices.Contains(uerr.Options, "OptionsText.Seed") {
+			out.GenSync.Seed = false
+			resp, err = c.GenSync(ctx, msgs, &genai.OptionsAudio{})
+			usage.InputTokens += resp.Usage.InputTokens
+			usage.InputCachedTokens += resp.Usage.InputCachedTokens
+			usage.OutputTokens += resp.Usage.OutputTokens
 		}
 	}
 	if len(resp.Usage.Limits) != 0 {

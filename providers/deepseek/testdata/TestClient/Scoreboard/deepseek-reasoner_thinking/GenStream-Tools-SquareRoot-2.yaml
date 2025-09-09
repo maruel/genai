@@ -6,9 +6,9 @@ interactions:
     proto: HTTP/1.1
     proto_major: 1
     proto_minor: 1
-    content_length: 843
+    content_length: 791
     host: api.deepseek.com
-    body: "{\"model\":\"deepseek-reasoner\",\"messages\":[{\"role\":\"user\",\"content\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"},{\"role\":\"assistant\",\"content\":\"363.8870719903447\",\"tool_calls\":[{\"id\":\"call_0_3cd54f88-73e2-464a-bcac-9078a1980053\",\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\": 132413}\"}}]},{\"role\":\"tool\",\"content\":\"363.89\",\"tool_call_id\":\"call_0_3cd54f88-73e2-464a-bcac-9078a1980053\"}],\"stream\":true,\"tool_choice\":\"none\",\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}]}\n"
+    body: "{\"model\":\"deepseek-reasoner\",\"messages\":[{\"role\":\"user\",\"content\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"},{\"role\":\"assistant\",\"tool_calls\":[{\"id\":\"call_00_FL3F6qrZb7Jr3KzD87PxvP8E\",\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\": 132413}\"}}]},{\"role\":\"tool\",\"content\":\"363.89\",\"tool_call_id\":\"call_00_FL3F6qrZb7Jr3KzD87PxvP8E\"}],\"stream\":true,\"tool_choice\":\"none\",\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}]}\n"
     headers:
       Content-Type:
       - application/json; charset=utf-8
@@ -19,7 +19,7 @@ interactions:
     proto_major: 2
     proto_minor: 0
     content_length: -1
-    body: "data: {\"id\":\"0306974c-3063-4fbf-87fa-8d923b98fa3e\",\"object\":\"chat.completion.chunk\",\"created\":1756500584,\"model\":\"deepseek-chat\",\"system_fingerprint\":\"fp_feb633d1f5_prod0820_fp8_kvcache\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"0306974c-3063-4fbf-87fa-8d923b98fa3e\",\"object\":\"chat.completion.chunk\",\"created\":1756500584,\"model\":\"deepseek-chat\",\"system_fingerprint\":\"fp_feb633d1f5_prod0820_fp8_kvcache\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"363\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"0306974c-3063-4fbf-87fa-8d923b98fa3e\",\"object\":\"chat.completion.chunk\",\"created\":1756500584,\"model\":\"deepseek-chat\",\"system_fingerprint\":\"fp_feb633d1f5_prod0820_fp8_kvcache\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\".\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"0306974c-3063-4fbf-87fa-8d923b98fa3e\",\"object\":\"chat.completion.chunk\",\"created\":1756500584,\"model\":\"deepseek-chat\",\"system_fingerprint\":\"fp_feb633d1f5_prod0820_fp8_kvcache\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"887\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"0306974c-3063-4fbf-87fa-8d923b98fa3e\",\"object\":\"chat.completion.chunk\",\"created\":1756500584,\"model\":\"deepseek-chat\",\"system_fingerprint\":\"fp_feb633d1f5_prod0820_fp8_kvcache\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"071\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"0306974c-3063-4fbf-87fa-8d923b98fa3e\",\"object\":\"chat.completion.chunk\",\"created\":1756500584,\"model\":\"deepseek-chat\",\"system_fingerprint\":\"fp_feb633d1f5_prod0820_fp8_kvcache\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"990\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"0306974c-3063-4fbf-87fa-8d923b98fa3e\",\"object\":\"chat.completion.chunk\",\"created\":1756500584,\"model\":\"deepseek-chat\",\"system_fingerprint\":\"fp_feb633d1f5_prod0820_fp8_kvcache\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"344\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"0306974c-3063-4fbf-87fa-8d923b98fa3e\",\"object\":\"chat.completion.chunk\",\"created\":1756500584,\"model\":\"deepseek-chat\",\"system_fingerprint\":\"fp_feb633d1f5_prod0820_fp8_kvcache\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"7\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"0306974c-3063-4fbf-87fa-8d923b98fa3e\",\"object\":\"chat.completion.chunk\",\"created\":1756500584,\"model\":\"deepseek-chat\",\"system_fingerprint\":\"fp_feb633d1f5_prod0820_fp8_kvcache\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":58,\"completion_tokens\":7,\"total_tokens\":65,\"prompt_tokens_details\":{\"cached_tokens\":0},\"prompt_cache_hit_tokens\":0,\"prompt_cache_miss_tokens\":58}}\n\ndata: [DONE]\n\n"
+    body: "data: {\"id\":\"2b48f37c-1de4-4ff1-8122-07e2ba8923c5\",\"object\":\"chat.completion.chunk\",\"created\":1757464936,\"model\":\"deepseek-chat\",\"system_fingerprint\":\"fp_08f168e49b_prod0820_fp8_kvcache\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"2b48f37c-1de4-4ff1-8122-07e2ba8923c5\",\"object\":\"chat.completion.chunk\",\"created\":1757464936,\"model\":\"deepseek-chat\",\"system_fingerprint\":\"fp_08f168e49b_prod0820_fp8_kvcache\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"363\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"2b48f37c-1de4-4ff1-8122-07e2ba8923c5\",\"object\":\"chat.completion.chunk\",\"created\":1757464936,\"model\":\"deepseek-chat\",\"system_fingerprint\":\"fp_08f168e49b_prod0820_fp8_kvcache\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\".\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"2b48f37c-1de4-4ff1-8122-07e2ba8923c5\",\"object\":\"chat.completion.chunk\",\"created\":1757464936,\"model\":\"deepseek-chat\",\"system_fingerprint\":\"fp_08f168e49b_prod0820_fp8_kvcache\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"89\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"2b48f37c-1de4-4ff1-8122-07e2ba8923c5\",\"object\":\"chat.completion.chunk\",\"created\":1757464936,\"model\":\"deepseek-chat\",\"system_fingerprint\":\"fp_08f168e49b_prod0820_fp8_kvcache\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":51,\"completion_tokens\":3,\"total_tokens\":54,\"prompt_tokens_details\":{\"cached_tokens\":0},\"prompt_cache_hit_tokens\":0,\"prompt_cache_miss_tokens\":51}}\n\ndata: [DONE]\n\n"
     headers:
       Access-Control-Allow-Credentials:
       - "true"
@@ -28,7 +28,7 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 976eeaabb864ec6f-YYZ
+      - 97cae2698aeca247-YYZ
       Content-Type:
       - text/event-stream; charset=utf-8
       Server:
@@ -39,8 +39,6 @@ interactions:
       - origin, access-control-request-method, access-control-request-headers
       X-Content-Type-Options:
       - nosniff
-      X-Ds-Trace-Id:
-      - 8d1c04e1ad87ea9d9c118bf9bcf64580
     status: 200 OK
     code: 200
-    duration: 339ms
+    duration: 351ms

@@ -175,9 +175,9 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 			}
 		}
 	}
-	// If we have unsupported features but no other errors, return a continuable error
+	// If we have unsupported features but no other errors, return a structured error.
 	if len(unsupported) > 0 && len(errs) == 0 {
-		return &genai.UnsupportedContinuableError{Unsupported: unsupported}
+		return &base.ErrNotSupported{Options: unsupported}
 	}
 	return errors.Join(errs...)
 }
@@ -506,15 +506,15 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	out.Logprobs = c.Choices[0].Logprobs.To()
 	err := c.Choices[0].Message.To(&out.Message)
 	if err == nil && len(c.Warnings) != 0 {
-		uce := &genai.UnsupportedContinuableError{}
+		ent := &base.ErrNotSupported{}
 		for _, w := range c.Warnings {
 			if strings.Contains(w.Message, "tool_choice") {
-				uce.Unsupported = append(uce.Unsupported, "OptionsTools.Force")
+				ent.Options = append(ent.Options, "OptionsTools.Force")
 			} else {
-				uce.Unsupported = append(uce.Unsupported, w.Message)
+				ent.Options = append(ent.Options, w.Message)
 			}
 		}
-		return out, uce
+		return out, ent
 	}
 	return out, err
 }
@@ -1254,12 +1254,12 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 			}
 		}, func() (genai.Usage, [][]genai.Logprob, error) {
 			if len(warnings) != 0 {
-				uce := &genai.UnsupportedContinuableError{}
+				uce := &base.ErrNotSupported{}
 				for _, w := range warnings {
 					if strings.Contains(w, "tool_choice") {
-						uce.Unsupported = append(uce.Unsupported, "OptionsTools.Force")
+						uce.Options = append(uce.Options, "OptionsTools.Force")
 					} else {
-						uce.Unsupported = append(uce.Unsupported, w)
+						uce.Options = append(uce.Options, w)
 					}
 				}
 				return u, l, uce

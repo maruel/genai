@@ -22,36 +22,36 @@ interactions:
     proto_minor: 0
     content_length: -1
     uncompressed: true
-    body: "{\"id\":\"msg_01UEFMhGdZFxRC521ghDXiRb\",\"type\":\"message\",\"role\":\"assistant\",\"model\":\"claude-sonnet-4-20250514\",\"content\":[{\"type\":\"thinking\",\"thinking\":\"The user wants me to use the square_root tool to calculate the square root of 132413, and they want only the result with no explanation. I need to call the function with the number 132413.\",\"signature\":\"EuUCCkYIBxgCKkCie6IdjC+vDXjfCVHJ7ektTBoGaQvf3fMW81TFztdGJFDCuNVCjW7nihvBnrnLNLwhloxS30osq5raHim9+A5fEgzgvuwkHnt2vtG26E4aDDX2qwYv9JNHxup1PyIwqfDCO/iczlJzLn+6cnpCdlN9Nxa14XInF4Zf3nizAAHan62X8+YdZm182N96Te8VKswBkesp12qOaSJIZciFv5ATe851Udd7aPIJ079wRt/koAVZUa96YtHdtmfVEE7oooRItRU22wYCrqDFl9ChMNsmO4ME0LsQmS35jZbBG1FfTx0U2cmgJ53I763Asbw9pykVhWhbrlO8aB+ZL+TdrSCX9a4I7yVOCU5k3+M4I6S1TmnJKFmvjqCKQ2OIHsxAIX88RI8dezXdK5IRcf2c+hYxbSRtXgfBPIurcc4vWG6U0DqGfYEHBtg7E0CRvjAR6dP+wXFrAzEo+5IMI7oWGAE=\"},{\"type\":\"tool_use\",\"id\":\"toolu_018Lt7PMnK14iajXfVcxv2C3\",\"name\":\"square_root\",\"input\":{\"number\":132413}}],\"stop_reason\":\"tool_use\",\"stop_sequence\":null,\"usage\":{\"input_tokens\":466,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"cache_creation\":{\"ephemeral_5m_input_tokens\":0,\"ephemeral_1h_input_tokens\":0},\"output_tokens\":107,\"service_tier\":\"standard\"}}"
+    body: "{\"id\":\"msg_01PgBYqZ86EWDodcGRmJBz8p\",\"type\":\"message\",\"role\":\"assistant\",\"model\":\"claude-sonnet-4-20250514\",\"content\":[{\"type\":\"thinking\",\"thinking\":\"The user wants me to use the square_root tool to calculate the square root of 132413 and reply with only the result, without explanation. I need to call the function with the parameter 132413.\",\"signature\":\"EukCCkYIBxgCKkABqRmE6vM6OtHymMPOTAbWM4lLqA8w5el1x8H72iDHZG5WcvmD8rCHiCDANQ3j5u9OzRYA61qsCx7pQSI+EW9DEgyh9c1WmyZHQAnxHKUaDCh9mQMgVdLcBgXXnyIwo9oynuJ3EdodV0YSiIGgfDXPtB8QLl0Q90SZTNluS4xpu17xxW1XBPexwMtBy3S6KtABI2oeRfrcsI+aJ9ilZjakGihxQwV4diXFpfNue1aDncLp37egKoTELRQpbc40kRtslS+/9Tn3/MXuHDkLhFpHDf9kvrUVPYgS97BQmh1mBXQNUPeYumdVAzQrBxnQL4jISfnpnJHcmun3YgX+yWxlUn4MtlUJM/mzKJDqIZNEXKf+KzbeP/ysOCsW1Zp72JcDRH2nX/VNa/hJ0KouqOz5jatvotRkfGwFmAmZMq3QipAPi8sr0eiehFUdj7pWRwMPKgU+DOmC6IoS3GjfMRkYWBgB\"},{\"type\":\"tool_use\",\"id\":\"toolu_015yx5jdTgwqTLFpek5rVmmY\",\"name\":\"square_root\",\"input\":{\"number\":132413}}],\"stop_reason\":\"tool_use\",\"stop_sequence\":null,\"usage\":{\"input_tokens\":466,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"cache_creation\":{\"ephemeral_5m_input_tokens\":0,\"ephemeral_1h_input_tokens\":0},\"output_tokens\":107,\"service_tier\":\"standard\"}}"
     headers:
       Anthropic-Ratelimit-Input-Tokens-Limit:
       - "2000000"
       Anthropic-Ratelimit-Input-Tokens-Remaining:
       - "2000000"
       Anthropic-Ratelimit-Input-Tokens-Reset:
-      - "2025-08-29T00:00:24Z"
+      - "2025-09-09T23:36:20Z"
       Anthropic-Ratelimit-Output-Tokens-Limit:
       - "400000"
       Anthropic-Ratelimit-Output-Tokens-Remaining:
       - "400000"
       Anthropic-Ratelimit-Output-Tokens-Reset:
-      - "2025-08-29T00:00:25Z"
+      - "2025-09-09T23:36:21Z"
       Anthropic-Ratelimit-Requests-Limit:
       - "4000"
       Anthropic-Ratelimit-Requests-Remaining:
       - "3998"
       Anthropic-Ratelimit-Requests-Reset:
-      - "2025-08-29T00:00:22Z"
+      - "2025-09-09T23:36:19Z"
       Anthropic-Ratelimit-Tokens-Limit:
       - "2400000"
       Anthropic-Ratelimit-Tokens-Remaining:
       - "2400000"
       Anthropic-Ratelimit-Tokens-Reset:
-      - "2025-08-29T00:00:24Z"
+      - "2025-09-09T23:36:20Z"
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9767c48ea825a2e8-YUL
+      - 97ca81cfda36a2f9-YUL
       Content-Type:
       - application/json
       Server:
@@ -60,8 +60,10 @@ interactions:
       - max-age=31536000; includeSubDomains; preload
       Via:
       - 1.1 google
+      X-Envoy-Upstream-Service-Time:
+      - "1837"
       X-Robots-Tag:
       - none
     status: 200 OK
     code: 200
-    duration: 2.901s
+    duration: 1.92s

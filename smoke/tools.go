@@ -12,9 +12,9 @@ import (
 	"log/slog"
 	"math"
 	"slices"
-	"strings"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/scoreboard"
 )
@@ -57,16 +57,12 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 	internal.Logger(ctx).DebugContext(ctx, "SquareRoot-1", "resp", res)
 	flaky := false
 	f.ToolCallRequired = true
-	var uerr *genai.UnsupportedContinuableError
+	var uerr *base.ErrNotSupported
 	if errors.As(err, &uerr) {
-		// Cheap trick to make sure the error is not wrapped. Figure out if there's another way!
-		if strings.HasPrefix(err.Error(), "unsupported options: ") {
-			if slices.Contains(uerr.Unsupported, "OptionsTools.Force") {
-				// Do not mark the test as flaky since it worked. Remember about ToolCallRequired not being supported
-				// though.
-				f.ToolCallRequired = false
-				err = nil
-			}
+		if slices.Contains(uerr.Options, "OptionsTools.Force") {
+			// Do not mark the test as flaky since it worked. Remember about ToolCallRequired not being supported
+			// though.
+			f.ToolCallRequired = false
 		}
 	}
 	hasCalls := slices.ContainsFunc(res.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() })

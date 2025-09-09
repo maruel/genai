@@ -208,9 +208,9 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 			}
 		}
 	}
-	// If we have unsupported features but no other errors, return a continuable error
+	// If we have unsupported features but no other errors, return a structured error.
 	if len(unsupported) > 0 && len(errs) == 0 {
-		return &genai.UnsupportedContinuableError{Unsupported: unsupported}
+		return &base.ErrNotSupported{Options: unsupported}
 	}
 	return errors.Join(errs...)
 }
@@ -442,9 +442,9 @@ func (c *CompletionRequest) Init(msgs genai.Messages, model string, opts ...gena
 			errs = append(errs, fmt.Errorf("unsupported options type %T", opt))
 		}
 	}
-	// If we have unsupported features but no other errors, return a continuable error
+	// If we have unsupported features but no other errors, return a structured error.
 	if len(unsupported) > 0 && len(errs) == 0 {
-		return &genai.UnsupportedContinuableError{Unsupported: unsupported}
+		return &base.ErrNotSupported{Options: unsupported}
 	}
 	return errors.Join(errs...)
 }
@@ -630,9 +630,9 @@ func (a *applyTemplateRequest) Init(msgs genai.Messages, opts ...genai.Options) 
 			}
 		}
 	}
-	// If we have unsupported features but no other errors, return a continuable error
+	// If we have unsupported features but no other errors, return a structured error.
 	if len(unsupported) > 0 && len(errs) == 0 {
-		return &genai.UnsupportedContinuableError{Unsupported: unsupported}
+		return &base.ErrNotSupported{Options: unsupported}
 	}
 	return errors.Join(errs...)
 }
@@ -1260,18 +1260,13 @@ func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *
 
 func (c *Client) CompletionStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	res := genai.Result{}
-	var continuableErr error
 	var finalErr error
 
 	fnFragments := func(yield func(genai.Reply) bool) {
 		in := CompletionRequest{}
 		if err := in.Init(msgs, "", opts...); err != nil {
-			if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
-				continuableErr = uce
-			} else {
-				finalErr = err
-				return
-			}
+			finalErr = err
+			return
 		}
 		// Converts raw chunks into fragments.
 		// Generate parsed chunks from the raw JSON SSE stream.
@@ -1311,7 +1306,7 @@ func (c *Client) CompletionStream(ctx context.Context, msgs genai.Messages, opts
 			// Catch provider implementation bugs.
 			return res, &internal.BadError{Err: err}
 		}
-		return res, continuableErr
+		return res, nil
 	}
 	return fnFragments, fnFinish
 }
@@ -1452,26 +1447,14 @@ func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, msgs gen
 	if c.encoding == nil {
 		// Use the server to convert the OpenAI style format into a templated form.
 		in2 := applyTemplateRequest{}
-		var continuableErr error
 		if err := in2.Init(msgs, opts...); err != nil {
-			// If it's an UnsupportedContinuableError, we can continue
-			if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
-				// Store the error to return later if no other error occurs
-				continuableErr = uce
-				// Otherwise log the error but continue
-			} else {
-				return err
-			}
+			return err
 		}
 		out := applyTemplateResponse{}
 		if err := c.impl.DoRequest(ctx, "POST", c.baseURL+"/apply-template", &in2, &out); err != nil {
 			return err
 		}
 		in.Prompt = out.Prompt
-		// Return the continuable error if no other error occurred
-		if continuableErr != nil {
-			return continuableErr
-		}
 		return nil
 	}
 

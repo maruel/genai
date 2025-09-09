@@ -20,7 +20,7 @@ interactions:
     proto_minor: 0
     content_length: -1
     uncompressed: true
-    body: "{\n  \"id\": \"o92LLWF-4YNCb4-9767c8e42ea7a286\",\n  \"object\": \"chat.completion\",\n  \"created\": 1756425800,\n  \"model\": \"mistralai/Mistral-Small-24B-Instruct-2501\",\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"I can't call the tool best_country because it operates on a single country: you can't directly compare the two countries.\",\n        \"tool_calls\": []\n      }\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 463,\n    \"total_tokens\": 489,\n    \"completion_tokens\": 26\n  }\n}"
+    body: "{\n  \"id\": \"oAcAjjF-62bZhn-97cae51318a4a269\",\n  \"object\": \"chat.completion\",\n  \"created\": 1757465045,\n  \"model\": \"mistralai/Mistral-Small-24B-Instruct-2501\",\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"logprobs\": null,\n      \"finish_reason\": \"tool_calls\",\n      \"seed\": null,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": null,\n        \"tool_calls\": [\n          {\n            \"index\": 0,\n            \"id\": \"call_aw9rimjdcgkertp2iri33ryy\",\n            \"type\": \"function\",\n            \"function\": {\n              \"arguments\": \"{\\\"country\\\":{\\\"arguments\\\":{},\\\"name\\\":\\\"Canada\\\"}}\",\n              \"name\": \"best_country\"\n            }\n          },\n          {\n            \"index\": 1,\n            \"id\": \"call_8e6krosyg36oej0m5qc1yem6\",\n            \"type\": \"function\",\n            \"function\": {\n              \"arguments\": \"{\\\"country\\\":{\\\"arguments\\\":{},\\\"name\\\":\\\"USA\\\"}}\",\n              \"name\": \"best_country\"\n            }\n          }\n        ]\n      }\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 463,\n    \"total_tokens\": 522,\n    \"completion_tokens\": 59\n  }\n}"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -29,13 +29,13 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9767c8e42ea7a286-YUL
+      - 97cae51318a4a269-YUL
       Content-Type:
       - application/json; charset=utf-8
       Etag:
-      - W/"26c-pSN795VlB7SPqlHiHRvQLfm+kAA"
+      - W/"448-GM51eFXt4AwIDrmcMnTBJ+dfwN8"
       Retry-After:
-      - "2"
+      - "1"
       Server:
       - cloudflare
       Strict-Transport-Security:
@@ -43,13 +43,13 @@ interactions:
       Vary:
       - Accept-Encoding
       X-Amzn-Trace-Id:
-      - 53671ca6-5a6d-4cf3-b3b4-949b28b8c86e-noamzn
+      - bdbbb3d1-8a63-409a-bb39-2f225cb1ff35-noamzn
       X-Api-Call-End:
-      - "2025-08-29T00:03:20.760Z"
+      - "2025-09-10T00:44:05.753Z"
       X-Api-Call-Start:
-      - "2025-08-29T00:03:20.412Z"
+      - "2025-09-10T00:44:05.046Z"
       X-Api-Received:
-      - "2025-08-29T00:03:20.405Z"
+      - "2025-09-10T00:44:05.042Z"
       X-Inference-Version:
       - v2
       X-Ratelimit:
@@ -61,11 +61,9 @@ interactions:
       X-Ratelimit-Remaining:
       - "18"
       X-Ratelimit-Remaining-Tokens:
-      - "3000"
+      - "2522"
       X-Ratelimit-Reset:
-      - "2"
-      X-Request-Id:
-      - o92LLWF-4YNCb4-9767c8e42ea7a286
+      - "1"
     status: 200 OK
     code: 200
-    duration: 443ms
+    duration: 833ms

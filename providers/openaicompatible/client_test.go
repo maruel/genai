@@ -5,11 +5,14 @@
 package openaicompatible_test
 
 import (
+	"errors"
 	"net/http"
 	"os"
+	"slices"
 	"testing"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/openaicompatible"
 	"github.com/maruel/roundtrippers"
@@ -63,10 +66,16 @@ func TestClient(t *testing.T) {
 				opts := genai.OptionsText{Temperature: 0.01, MaxTokens: 2000, Seed: 1}
 				ctx := t.Context()
 				resp, err := c.GenSync(ctx, msgs, &opts)
-				if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
-					t.Log(uce)
-				} else if err != nil {
-					t.Fatal(err)
+				if err != nil {
+					var ent *base.ErrNotSupported
+					if !errors.As(err, &ent) || !slices.Contains(ent.Options, "OptionsText.Seed") {
+						t.Fatal(err)
+					}
+					// Try again without seed.
+					opts.Seed = 0
+					if resp, err = c.GenSync(ctx, msgs, &opts); err != nil {
+						t.Fatal(err)
+					}
 				}
 				t.Logf("Raw response: %#v", resp)
 				if len(resp.Replies) == 0 {
@@ -88,10 +97,20 @@ func TestClient(t *testing.T) {
 					t.Logf("Packet: %#v", f)
 				}
 				res, err := finish()
-				if uce, ok := err.(*genai.UnsupportedContinuableError); ok {
-					t.Log(uce)
-				} else if err != nil {
-					t.Fatal(err)
+				if err != nil {
+					var ent *base.ErrNotSupported
+					if !errors.As(err, &ent) || !slices.Contains(ent.Options, "OptionsText.Seed") {
+						t.Fatal(err)
+					}
+					// Try again without seed.
+					opts.Seed = 0
+					fragments, finish := c.GenStream(t.Context(), msgs, &opts)
+					for f := range fragments {
+						t.Logf("Packet: %#v", f)
+					}
+					if res, err = finish(); err != nil {
+						t.Fatal(err)
+					}
 				}
 				t.Logf("Raw response: %#v", res)
 				if len(res.Replies) == 0 {

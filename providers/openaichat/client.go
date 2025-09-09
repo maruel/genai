@@ -170,9 +170,9 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 			}
 		}
 	}
-	// If we have unsupported features but no other errors, return a continuable error
+	// If we have unsupported features but no other errors, return a structured error.
 	if len(unsupported) > 0 && len(errs) == 0 {
-		return &genai.UnsupportedContinuableError{Unsupported: unsupported}
+		return &base.ErrNotSupported{Options: unsupported}
 	}
 	return errors.Join(errs...)
 }

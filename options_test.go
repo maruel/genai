@@ -11,38 +11,6 @@ import (
 	"github.com/invopop/jsonschema"
 )
 
-func TestUnsupportedContinuableError(t *testing.T) {
-	tests := []struct {
-		name        string
-		unsupported []string
-		want        string
-	}{
-		{
-			name:        "no unsupported options",
-			unsupported: []string{},
-			want:        "no unsupported options",
-		},
-		{
-			name:        "single unsupported option",
-			unsupported: []string{"foo"},
-			want:        "unsupported options: foo",
-		},
-		{
-			name:        "multiple unsupported options",
-			unsupported: []string{"foo", "bar"},
-			want:        "unsupported options: foo, bar",
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			u := &UnsupportedContinuableError{Unsupported: tt.unsupported}
-			if got := u.Error(); got != tt.want {
-				t.Errorf("Error() = %q, want %q", got, tt.want)
-			}
-		})
-	}
-}
-
 func TestModalities(t *testing.T) {
 	t.Run("String", func(t *testing.T) {
 		tests := []struct {

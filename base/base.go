@@ -493,8 +493,8 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 		for pkt := range it {
 			out <- pkt
 		}
-		err := finish()
 		close(out)
+		err := finish()
 		ch <- err
 	}()
 
@@ -503,6 +503,9 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 				if !yield(pkt) {
 					break
 				}
+			}
+			// We need to flush out the packets.
+			for range out {
 			}
 		}, func() error {
 			return <-ch

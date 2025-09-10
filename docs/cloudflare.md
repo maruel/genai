@@ -46,3 +46,12 @@
 - Probs: Return logprobs to analyse each token probabilities
 - Limits: Returns the rate limits, including the remaining quota
 </details>
+
+## Warnings
+
+- FinishReason is not returned, ever.
+- StopSequence doesn't work.
+- Usage tokens isn't reported when streaming or using JSON.
+- The structure of ChatRequest format is model dependent.
+- Tool calling is supported on some models but it's flaky.
+- Given the fact that FinishReason, StopSequence and Usage are broken, I can't recommend this provider beside toys.

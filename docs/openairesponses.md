@@ -133,3 +133,9 @@
 - Probs: Return logprobs to analyse each token probabilities
 - Limits: Returns the rate limits, including the remaining quota
 </details>
+
+## Warnings
+
+- OpenAI API supports more than what the client currently supports.
+- Tool calling works very well but is biased; the model is lazy and when it's unsure, it will use the tool's first argument.
+- Rate limit is based on how much you spend per month: https://platform.openai.com/docs/guides/rate-limits

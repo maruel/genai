@@ -70,3 +70,8 @@
 - Probs: Return logprobs to analyse each token probabilities
 - Limits: Returns the rate limits, including the remaining quota
 </details>
+
+## Warnings
+
+- Reasoning models like qwen/qwen3-32b fails with tool calling when streaming. Currently disabled even not streaming in the client code.
+- No models has consistent tool calling.

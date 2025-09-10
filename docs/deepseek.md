@@ -43,3 +43,10 @@
 - Probs: Return logprobs to analyse each token probabilities
 - Limits: Returns the rate limits, including the remaining quota
 </details>
+
+## Warnings
+
+- JSON schema decoding is announced to be added later in the doc.
+- Tool calling works very well but is biased; the model is lazy and when it's unsure, it will use the tool's first argument.
+- Tool calling is not supported with deepseek-reasoner.
+- DeepSeek doesn't do rate limiting: https://api-docs.deepseek.com/quick_start/rate_limit

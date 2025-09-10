@@ -130,3 +130,11 @@
 - Probs: Return logprobs to analyse each token probabilities
 - Limits: Returns the rate limits, including the remaining quota
 </details>
+
+## Warnings
+
+- No model supports "required" tool calling, thus it's marked as "flaky" everywhere.
+- Tool calling is solid with llama 3.3 70B quantized in FP8 (-Turbo) but is flaky in more recent models.
+- Suffix "-Turbo" means FP8 quantization.
+- Suffix "-Lite" means INT4 quantization.
+- Suffix "-Free" has lower rate limits.

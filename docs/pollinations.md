@@ -61,3 +61,8 @@
 - Probs: Return logprobs to analyse each token probabilities
 - Limits: Returns the rate limits, including the remaining quota
 </details>
+
+## Warnings
+
+- This is a completely free provider so you get what you pay for. I would recommend against using this provider with any private data.
+- Pollinations is a router to other backends, so it inherits the drawback of each sub-provider.

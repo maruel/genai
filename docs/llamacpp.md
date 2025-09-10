@@ -41,3 +41,7 @@
 - Probs: Return logprobs to analyse each token probabilities
 - Limits: Returns the rate limits, including the remaining quota
 </details>
+
+## Warnings
+
+- The multi-modal file is referred to with "#" character.

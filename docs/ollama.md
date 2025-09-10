@@ -43,3 +43,8 @@
 - Probs: Return logprobs to analyse each token probabilities
 - Limits: Returns the rate limits, including the remaining quota
 </details>
+
+## Warnings
+
+- https://ollama.com/search?c=tool is not a reliable source of truth to determine which model has tool support enabled. See https://github.com/ollama/ollama/issues/9680.
+- Ollama supports more than what the client currently supports.

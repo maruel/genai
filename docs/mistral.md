@@ -111,3 +111,10 @@
 - Probs: Return logprobs to analyse each token probabilities
 - Limits: Returns the rate limits, including the remaining quota
 </details>
+
+## Warnings
+
+- Mistral supports more than what the client currently supports.
+- Tool calling is excellent and unbiased for non "mini" models.
+- PDF doesn't support inline document while images do.
+- Rate limit depends on your tier: https://docs.mistral.ai/deployment/laplateforme/tier/

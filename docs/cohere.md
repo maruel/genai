@@ -59,3 +59,9 @@
 - Probs: Return logprobs to analyse each token probabilities
 - Limits: Returns the rate limits, including the remaining quota
 </details>
+
+## Warnings
+
+- Cohere supports more than what the client currently supports.
+- Tool calling works very well but is biased; the model is lazy and when it's unsure, it will use the tool's first argument.
+- Free tier rate limit is lower: https://docs.cohere.com/v2/docs/rate-limits

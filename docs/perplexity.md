@@ -48,3 +48,8 @@
 - Probs: Return logprobs to analyse each token probabilities
 - Limits: Returns the rate limits, including the remaining quota
 </details>
+
+## Warnings
+
+- Websearch, which is automatic for all models, is very expensive. Disable it manually when testing.
+- No tool calling support, but JSON schema is supported so this can be leveraged.

@@ -261,6 +261,7 @@ func printTable(ctx context.Context, w io.Writer, provider string) error {
 	return printProviderTable(c, w)
 }
 
+// printSummaryTable prints a summary table for all the providers.
 func printSummaryTable(ctx context.Context, w io.Writer, all map[string]providers.Config) error {
 	var rows []tableSummaryRow
 	seen := map[string]struct{}{}
@@ -296,6 +297,7 @@ func printSummaryTable(ctx context.Context, w io.Writer, all map[string]provider
 	return nil
 }
 
+// printProviderTable prints a table of all the models for a specific provider.
 func printProviderTable(p genai.Provider, w io.Writer) error {
 	var rows []tableModelRow
 	sb := p.Scoreboard()
@@ -341,6 +343,12 @@ func printProviderTable(p genai.Provider, w io.Writer) error {
 	}
 	printMarkdownTable(w, rows)
 	_, _ = io.WriteString(w, legend)
+	if len(sb.Warnings) > 0 {
+		_, _ = io.WriteString(w, "\n## Warnings\n\n")
+		for _, wrn := range sb.Warnings {
+			fmt.Fprintf(w, "- %s\n", wrn)
+		}
+	}
 	return nil
 }
 

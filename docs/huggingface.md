@@ -46,3 +46,11 @@
 - Probs: Return logprobs to analyse each token probabilities
 - Limits: Returns the rate limits, including the remaining quota
 </details>
+
+## Warnings
+
+- Huggingface supports a ton of models on its serverless inference platform, more than any other provider.
+- Huggingface supports more options and modalities than what the client currently implement.
+- Huggingface is also a router to other backends.
+- Huggingface as a platform is generally unstable, with error not being properly reported. Use with care.
+- Tool calling works very well but is biased; the model is lazy and when it's unsure, it will use the tool's first argument.

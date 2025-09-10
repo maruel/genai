@@ -50,3 +50,8 @@
 - Probs: Return logprobs to analyse each token probabilities
 - Limits: Returns the rate limits, including the remaining quota
 </details>
+
+## Warnings
+
+- The API is asynchronous and supports webhook but genai doesn't expose these yet, so the client polls for now.
+- The API and acceptable values are highly model-dependent, so it is easy to make an invalid request.

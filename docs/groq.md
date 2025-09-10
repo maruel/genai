@@ -73,5 +73,4 @@
 
 ## Warnings
 
-- Reasoning models like qwen/qwen3-32b fails with tool calling when streaming. Currently disabled even not streaming in the client code.
-- No models has consistent tool calling.
+- Not every API that Groq supports are implemented by the client.

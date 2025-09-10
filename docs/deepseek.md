@@ -46,7 +46,7 @@
 
 ## Warnings
 
-- JSON schema decoding is announced to be added later in the doc.
+- JSON schema decoding is now supported on the server but the client wasn't updated yet.
 - Tool calling works very well but is biased; the model is lazy and when it's unsure, it will use the tool's first argument.
-- Tool calling is not supported with deepseek-reasoner.
+- Tool calling can't be forced with reasoning.
 - DeepSeek doesn't do rate limiting: https://api-docs.deepseek.com/quick_start/rate_limit

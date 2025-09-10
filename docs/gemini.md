@@ -113,7 +113,6 @@
 
 ## Warnings
 
-- Gemini supports basically anything, but often on "preview" and "experimental" models. This means that the hardcoded model names in this scoreboard will have to be updated once stable models are released.
 - Gemini removed reasoning in January 2025 and announced they will add a summarized version within 2025.
 - Not all features supported by Gemini are implemented, there's just so many.
 - Tool calling is excellent and unbiased for non "-lite" models.

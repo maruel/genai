@@ -285,17 +285,17 @@ func (s *Scenario) Validate() error {
 			return err
 		}
 	}
-	for k := range s.In {
+	for k := range s.Out {
 		if err := k.Validate(); err != nil {
 			return err
 		}
 	}
-	if s.GenSync == nil {
+	if s.GenSync != nil {
 		if err := s.GenSync.Validate(); err != nil {
 			return err
 		}
 	}
-	if s.GenStream == nil {
+	if s.GenStream != nil {
 		if err := s.GenStream.Validate(); err != nil {
 			return err
 		}

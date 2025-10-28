@@ -137,6 +137,34 @@ This may print:
 > income or career viability.
 
 
+### Multiple Text Completions
+
+[examples/txt\_to\_txt\_sync\_multi/main.go](examples/txt_to_txt_sync_multi.go): This shows how to do multiple message
+round trips adding additional follow-up messages from users. Set [`OPENAI_API_KEY`](https://platform.openai.com/api-keys).
+
+```go
+func main() {
+	ctx := context.Background()
+	c, err := anthropic.New(ctx, &genai.ProviderOptions{}, nil)
+	msgs := genai.Messages{
+		genai.NewTextMessage("Let's play a word association game. You pick a single word, then I pick the first word I think of, then you respond with a word, and so on.")
+	}
+	result, err := c.GenSync(ctx, msgs)
+    if err != nil {
+        panic(err)
+    }
+    // Show the message from ChatGPT
+	fmt.Println(result.String())
+    // Save the message in the collection of messages to build up context
+    msgs = append(msgs, result.Message)
+    // Add another user message
+    msgs = append(msgs, genai.NewTextMessage("nightwish"))
+    // Get another completion
+    result, err := c.GenSync(ctx, msgs)
+    // ...and so on.
+}
+```
+
 ### Text Streaming 🏎
 
 [examples/txt\_to\_txt\_stream/main.go](examples/txt_to_txt_stream/main.go): This is the same example as

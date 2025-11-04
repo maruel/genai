@@ -76,3 +76,40 @@ func TestTriState(t *testing.T) {
 		}
 	})
 }
+
+func TestScenarioValidate(t *testing.T) {
+	t.Run("Valid", func(t *testing.T) {
+		sc := Scenario{
+			In: map[Modality]ModalCapability{
+				ModalityText: {},
+			},
+			Out: map[Modality]ModalCapability{
+				ModalityText: {},
+			},
+			GenSync: &Functionality{},
+		}
+		if err := sc.Validate(); err != nil {
+			t.Fatalf("Scenario.Validate() returned error: %v", err)
+		}
+	})
+
+	t.Run("InvalidModality", func(t *testing.T) {
+		sc := Scenario{
+			In: map[Modality]ModalCapability{
+				Modality("unsupported"): {},
+			},
+		}
+		if err := sc.Validate(); err == nil {
+			t.Fatal("Scenario.Validate() returned nil error")
+		}
+	})
+
+	t.Run("InvalidFunctionality", func(t *testing.T) {
+		sc := Scenario{
+			GenStream: &Functionality{Tools: TriState(42)},
+		}
+		if err := sc.Validate(); err == nil {
+			t.Fatal("Scenario.Validate() returned nil error")
+		}
+	})
+}

@@ -219,8 +219,8 @@ func TestClient(t *testing.T) {
 			name string
 			want string
 		}{
-			{genai.ModelCheap, "claude-3-5-haiku-20241022"},
-			{genai.ModelGood, "claude-sonnet-4-20250514"},
+			{genai.ModelCheap, "claude-haiku-4-5-20251001"},
+			{genai.ModelGood, "claude-sonnet-4-5-20250929"},
 			{genai.ModelSOTA, "claude-opus-4-1-20250805"},
 		}
 		for _, line := range data {

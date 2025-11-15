@@ -1,308 +1,467 @@
 {
-  "warnings": [
-    "No Anthropic model support structured output, you have to use tool calling instead.",
-    "Tool calling can't be forced when reasoning and becomes much more flaky.",
-    "Tool calling works very well but is biased; the model is lazy and when it's unsure, it will use the tool's first argument.",
-    "Rate limit is based on how much you spend per month: https://docs.anthropic.com/en/api/rate-limits#requirements-to-advance-tier"
-  ],
-  "country": "US",
-  "dashboardURL": "https://console.anthropic.com/settings/billing",
-  "scenarios": [
-    {
-      "comments": "It cost a lot.",
-      "models": [
-        "claude-opus-4-1-20250805"
-      ],
-      "sota": true,
-      "in": {
-        "document": {
-          "inline": true,
-          "url": true,
-          "supportedFormats": [
-            "application/pdf"
-          ]
+    "warnings": [
+        "No Anthropic model support structured output, you have to use tool calling instead.",
+        "Tool calling can't be forced when reasoning and becomes much more flaky.",
+        "Tool calling works very well but is biased; the model is lazy and when it's unsure, it will use the tool's first argument.",
+        "Rate limit is based on how much you spend per month: https://docs.anthropic.com/en/api/rate-limits#requirements-to-advance-tier"
+    ],
+    "country": "US",
+    "dashboardURL": "https://console.anthropic.com/settings/billing",
+    "scenarios": [
+        {
+			"comments": "It cost a lot.",
+            "models": [
+                "claude-opus-4-1-20250805"
+            ],
+            "sota": true,
+            "reason": true,
+            "in": {
+                "document": {
+                    "inline": true,
+                    "url": true,
+                    "supportedFormats": [
+                        "application/pdf"
+                    ]
+                },
+                "image": {
+                    "inline": true,
+                    "url": true,
+                    "supportedFormats": [
+                        "image/gif",
+                        "image/jpeg",
+                        "image/png",
+                        "image/webp"
+                    ]
+                },
+                "text": {
+                    "inline": true
+                }
+            },
+            "out": {
+                "text": {
+                    "inline": true
+                }
+            },
+            "GenSync": {
+                "reportRateLimits": true,
+                "reportTokenUsage": "true",
+                "reportFinishReason": "true",
+                "tools": "flaky",
+                "toolsIndecisive": "true",
+                "webSearch": true,
+                "citations": true,
+                "stopSequence": true
+            },
+            "GenStream": {
+                "reportRateLimits": true,
+                "reportTokenUsage": "true",
+                "reportFinishReason": "true",
+                "tools": "flaky",
+                "webSearch": true,
+                "citations": true,
+                "stopSequence": true
+            }
         },
-        "image": {
-          "inline": true,
-          "url": true,
-          "supportedFormats": [
-            "image/gif",
-            "image/jpeg",
-            "image/png",
-            "image/webp"
-          ]
+        {
+            "models": [
+                "claude-sonnet-4-5-20250929"
+            ],
+            "reason": true,
+            "in": {
+                "document": {
+                    "inline": true,
+                    "url": true,
+                    "supportedFormats": [
+                        "application/pdf"
+                    ]
+                },
+                "image": {
+                    "inline": true,
+                    "url": true,
+                    "supportedFormats": [
+                        "image/gif",
+                        "image/jpeg",
+                        "image/png",
+                        "image/webp"
+                    ]
+                },
+                "text": {
+                    "inline": true
+                }
+            },
+            "out": {
+                "text": {
+                    "inline": true
+                }
+            },
+            "GenSync": {
+                "reportRateLimits": true,
+                "reportTokenUsage": "true",
+                "reportFinishReason": "true",
+                "tools": "flaky",
+                "webSearch": true,
+                "citations": true,
+                "stopSequence": true
+            },
+            "GenStream": {
+                "reportRateLimits": true,
+                "reportTokenUsage": "true",
+                "reportFinishReason": "true",
+                "tools": "flaky",
+                "webSearch": true,
+                "citations": true,
+                "stopSequence": true
+            }
         },
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "tools": "true",
-        "toolsBiased": "true",
-        "toolCallRequired": true,
-        "webSearch": true,
-        "citations": true,
-        "maxTokens": true,
-        "stopSequence": true
-      },
-      "GenStream": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "tools": "true",
-        "toolsBiased": "true",
-        "toolCallRequired": true,
-        "webSearch": true,
-        "citations": true,
-        "maxTokens": true,
-        "stopSequence": true
-      }
-    },
-    {
-      "comments": "It cost a lot.",
-      "models": [
-        "claude-opus-4-1-20250805"
-      ],
-      "reason": true,
-      "in": {
-        "document": {
-          "inline": true,
-          "url": true,
-          "supportedFormats": [
-            "application/pdf"
-          ]
+        {
+            "models": [
+                "claude-haiku-4-5-20251001"
+            ],
+            "cheap": true,
+            "in": {
+                "document": {
+                    "inline": true,
+                    "url": true,
+                    "supportedFormats": [
+                        "application/pdf"
+                    ]
+                },
+                "image": {
+                    "inline": true,
+                    "url": true,
+                    "supportedFormats": [
+                        "image/gif",
+                        "image/jpeg",
+                        "image/png",
+                        "image/webp"
+                    ]
+                },
+                "text": {
+                    "inline": true
+                }
+            },
+            "out": {
+                "text": {
+                    "inline": true
+                }
+            },
+            "GenSync": {
+                "reportRateLimits": true,
+                "reportTokenUsage": "true",
+                "reportFinishReason": "true",
+                "tools": "true",
+                "toolsBiased": "true",
+                "toolCallRequired": true,
+                "webSearch": true,
+                "citations": true,
+                "maxTokens": true,
+                "stopSequence": true
+            },
+            "GenStream": {
+                "reportRateLimits": true,
+                "reportTokenUsage": "true",
+                "reportFinishReason": "true",
+                "tools": "true",
+                "toolsBiased": "true",
+                "toolCallRequired": true,
+                "webSearch": true,
+                "citations": true,
+                "maxTokens": true,
+                "stopSequence": true
+            }
         },
-        "image": {
-          "inline": true,
-          "url": true,
-          "supportedFormats": [
-            "image/gif",
-            "image/jpeg",
-            "image/png",
-            "image/webp"
-          ]
+        {
+            "comments": "It cost a lot.",
+            "models": [
+                "claude-opus-4-1-20250805"
+            ],
+            "in": {
+                "document": {
+                    "inline": true,
+                    "url": true,
+                    "supportedFormats": [
+                        "application/pdf"
+                    ]
+                },
+                "image": {
+                    "inline": true,
+                    "url": true,
+                    "supportedFormats": [
+                        "image/gif",
+                        "image/jpeg",
+                        "image/png",
+                        "image/webp"
+                    ]
+                },
+                "text": {
+                    "inline": true
+                }
+            },
+            "out": {
+                "text": {
+                    "inline": true
+                }
+            },
+            "GenSync": {
+                "reportRateLimits": true,
+                "reportTokenUsage": "true",
+                "reportFinishReason": "true",
+                "tools": "true",
+                "toolsBiased": "true",
+                "toolCallRequired": true,
+                "webSearch": true,
+                "citations": true,
+                "maxTokens": true,
+                "stopSequence": true
+            },
+            "GenStream": {
+                "reportRateLimits": true,
+                "reportTokenUsage": "true",
+                "reportFinishReason": "true",
+                "tools": "true",
+                "toolsBiased": "true",
+                "toolCallRequired": true,
+                "webSearch": true,
+                "citations": true,
+                "maxTokens": true,
+                "stopSequence": true
+            }
         },
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "tools": "flaky",
-        "toolsIndecisive": "true",
-        "webSearch": true,
-        "citations": true,
-        "stopSequence": true
-      },
-      "GenStream": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "tools": "flaky",
-        "webSearch": true,
-        "citations": true,
-        "stopSequence": true
-      }
-    },
-    {
-      "models": [
-        "claude-sonnet-4-20250514"
-      ],
-      "good": true,
-      "in": {
-        "document": {
-          "inline": true,
-          "url": true,
-          "supportedFormats": [
-            "application/pdf"
-          ]
+        {
+            "models": [
+                "claude-sonnet-4-5-20250929"
+            ],
+            "in": {
+                "document": {
+                    "inline": true,
+                    "url": true,
+                    "supportedFormats": [
+                        "application/pdf"
+                    ]
+                },
+                "image": {
+                    "inline": true,
+                    "url": true,
+                    "supportedFormats": [
+                        "image/gif",
+                        "image/jpeg",
+                        "image/png",
+                        "image/webp"
+                    ]
+                },
+                "text": {
+                    "inline": true
+                }
+            },
+            "out": {
+                "text": {
+                    "inline": true
+                }
+            },
+            "GenSync": {
+                "reportRateLimits": true,
+                "reportTokenUsage": "true",
+                "reportFinishReason": "true",
+                "tools": "true",
+                "toolsBiased": "true",
+                "toolCallRequired": true,
+                "webSearch": true,
+                "citations": true,
+                "maxTokens": true,
+                "stopSequence": true
+            },
+            "GenStream": {
+                "reportRateLimits": true,
+                "reportTokenUsage": "true",
+                "reportFinishReason": "true",
+                "tools": "true",
+                "toolsBiased": "true",
+                "toolCallRequired": true,
+                "webSearch": true,
+                "citations": true,
+                "maxTokens": true
+            }
         },
-        "image": {
-          "inline": true,
-          "url": true,
-          "supportedFormats": [
-            "image/gif",
-            "image/jpeg",
-            "image/png",
-            "image/webp"
-          ]
+        {
+            "models": [
+                "claude-sonnet-4-20250514"
+            ],
+            "in": {
+                "document": {
+                    "inline": true,
+                    "url": true,
+                    "supportedFormats": [
+                        "application/pdf"
+                    ]
+                },
+                "image": {
+                    "inline": true,
+                    "url": true,
+                    "supportedFormats": [
+                        "image/gif",
+                        "image/jpeg",
+                        "image/png",
+                        "image/webp"
+                    ]
+                },
+                "text": {
+                    "inline": true
+                }
+            },
+            "out": {
+                "text": {
+                    "inline": true
+                }
+            },
+            "GenSync": {
+                "reportRateLimits": true,
+                "reportTokenUsage": "true",
+                "reportFinishReason": "true",
+                "tools": "true",
+                "toolsBiased": "true",
+                "toolCallRequired": true,
+                "webSearch": true,
+                "citations": true,
+                "maxTokens": true,
+                "stopSequence": true
+            },
+            "GenStream": {
+                "reportRateLimits": true,
+                "reportTokenUsage": "true",
+                "reportFinishReason": "true",
+                "tools": "true",
+                "toolsBiased": "true",
+                "toolCallRequired": true,
+                "webSearch": true,
+                "citations": true,
+                "maxTokens": true,
+                "stopSequence": true
+            }
         },
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "tools": "true",
-        "toolsBiased": "true",
-        "toolCallRequired": true,
-        "webSearch": true,
-        "citations": true,
-        "maxTokens": true,
-        "stopSequence": true
-      },
-      "GenStream": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "tools": "true",
-        "toolsBiased": "true",
-        "toolCallRequired": true,
-        "webSearch": true,
-        "citations": true,
-        "maxTokens": true,
-        "stopSequence": true
-      }
-    },
-    {
-      "comments": "When reasoning is enabled, ToolCallRequired is not supported",
-      "models": [
-        "claude-sonnet-4-20250514"
-      ],
-      "reason": true,
-      "in": {
-        "document": {
-          "inline": true,
-          "url": true,
-          "supportedFormats": [
-            "application/pdf"
-          ]
+        {
+            "comments": "When reasoning is enabled, ToolCallRequired is not supported",
+            "models": [
+                "claude-sonnet-4-20250514"
+            ],
+            "reason": true,
+            "in": {
+                "document": {
+                    "inline": true,
+                    "url": true,
+                    "supportedFormats": [
+                        "application/pdf"
+                    ]
+                },
+                "image": {
+                    "inline": true,
+                    "url": true,
+                    "supportedFormats": [
+                        "image/gif",
+                        "image/jpeg",
+                        "image/png",
+                        "image/webp"
+                    ]
+                },
+                "text": {
+                    "inline": true
+                }
+            },
+            "out": {
+                "text": {
+                    "inline": true
+                }
+            },
+            "GenSync": {
+                "reportRateLimits": true,
+                "reportTokenUsage": "true",
+                "reportFinishReason": "true",
+                "tools": "flaky",
+                "toolsBiased": "flaky",
+                "webSearch": true,
+                "citations": true,
+                "stopSequence": true
+            },
+            "GenStream": {
+                "reportRateLimits": true,
+                "reportTokenUsage": "true",
+                "reportFinishReason": "true",
+                "tools": "flaky",
+                "webSearch": true,
+                "citations": true,
+                "stopSequence": true
+            }
         },
-        "image": {
-          "inline": true,
-          "url": true,
-          "supportedFormats": [
-            "image/gif",
-            "image/jpeg",
-            "image/png",
-            "image/webp"
-          ]
+        {
+            "models": [
+                "claude-3-5-haiku-20241022"
+            ],
+            "in": {
+                "document": {
+                    "inline": true,
+                    "url": true,
+                    "supportedFormats": [
+                        "application/pdf"
+                    ]
+                },
+                "image": {
+                    "inline": true,
+                    "url": true,
+                    "supportedFormats": [
+                        "image/gif",
+                        "image/jpeg",
+                        "image/png",
+                        "image/webp"
+                    ]
+                },
+                "text": {
+                    "inline": true
+                }
+            },
+            "out": {
+                "text": {
+                    "inline": true
+                }
+            },
+            "GenSync": {
+                "reportRateLimits": true,
+                "reportTokenUsage": "true",
+                "reportFinishReason": "true",
+                "tools": "true",
+                "toolsBiased": "true",
+                "toolCallRequired": true,
+                "webSearch": true,
+                "citations": true,
+                "maxTokens": true,
+                "stopSequence": true
+            },
+            "GenStream": {
+                "reportRateLimits": true,
+                "reportTokenUsage": "true",
+                "reportFinishReason": "true",
+                "tools": "true",
+                "toolsBiased": "true",
+                "toolCallRequired": true,
+                "webSearch": true,
+                "citations": true,
+                "maxTokens": true,
+                "stopSequence": true
+            }
         },
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "tools": "flaky",
-        "toolsBiased": "flaky",
-        "webSearch": true,
-        "citations": true,
-        "stopSequence": true
-      },
-      "GenStream": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "tools": "flaky",
-        "webSearch": true,
-        "citations": true,
-        "stopSequence": true
-      }
-    },
-    {
-      "models": [
-        "claude-3-5-haiku-20241022"
-      ],
-      "cheap": true,
-      "in": {
-        "document": {
-          "inline": true,
-          "url": true,
-          "supportedFormats": [
-            "application/pdf"
-          ]
+        {
+            "comments": "Old models",
+            "models": [
+                "claude-3-7-sonnet-20250219",
+                "claude-3-haiku-20240307",
+                "claude-3-opus-20240229",
+                "claude-opus-4-20250514"
+            ]
         },
-        "image": {
-          "inline": true,
-          "url": true,
-          "supportedFormats": [
-            "image/gif",
-            "image/jpeg",
-            "image/png",
-            "image/webp"
-          ]
-        },
-        "text": {
-          "inline": true
+        {
+            "comments": "Old models",
+            "models": [
+                "claude-opus-4-20250514"
+            ],
+            "reason": true
         }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "tools": "true",
-        "toolsBiased": "true",
-        "toolCallRequired": true,
-        "webSearch": true,
-        "citations": true,
-        "maxTokens": true,
-        "stopSequence": true
-      },
-      "GenStream": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "tools": "true",
-        "toolsBiased": "true",
-        "toolCallRequired": true,
-        "webSearch": true,
-        "citations": true,
-        "maxTokens": true,
-        "stopSequence": true
-      }
-    },
-    {
-      "comments": "Old models",
-      "models": [
-        "claude-3-5-sonnet-20240620",
-        "claude-3-5-sonnet-20241022",
-        "claude-3-7-sonnet-20250219",
-        "claude-3-haiku-20240307",
-        "claude-3-opus-20240229",
-        "claude-opus-4-20250514"
-      ]
-    },
-    {
-      "comments": "Old models",
-      "models": [
-        "claude-opus-4-20250514"
-      ],
-      "reason": true
-    }
-  ]
+    ]
 }

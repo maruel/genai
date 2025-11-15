@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 398
+    host: api.anthropic.com
+    body: "{\"model\":\"claude-sonnet-4-5-20250929\",\"max_tokens\":32000,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What fruit is it? Reply with only one word.\"},{\"type\":\"image\",\"cache_control\":{\"type\":\"ephemeral\"},\"source\":{\"type\":\"url\",\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.gif\"}}]}],\"thinking\":{\"budget_tokens\":1024,\"type\":\"enabled\"}}\n"
+    headers:
+      Anthropic-Version:
+      - "2023-06-01"
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.anthropic.com/v1/messages
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"model\":\"claude-sonnet-4-5-20250929\",\"id\":\"msg_016pd8f5VstR9kqvhfStoiKN\",\"type\":\"message\",\"role\":\"assistant\",\"content\":[{\"type\":\"thinking\",\"thinking\":\"This is a clear image of a banana. It's yellow, curved, and has the characteristic shape of a banana. The user wants only one word as a reply.\",\"signature\":\"ErcCCkYICRgCKkCOy+weECLQDtRhdjd9BKSs3oKICi2Crv7unnLRoUxSj7RXa440/2E+VKGqkTX76PXcHaeY4eDX3JxjZwOI/PuMEgz4jF2EQv03aqmTG6AaDJkO8hHQj9/qdrJTFSIw+oo5tWnjGaQznYpllXyZuF+owp2mtPqsN+m5Y5Ee1flPOZZWbWhY86zNaW5U4yhJKp4BVnIwsEgFST9GBkgSPPk9GcE+weF1q75KMUJhfkb1KXkebPsk+hSv2Q6I+x8jz1nu4qpmvA+gfjoLRSsTrgMoCKqMN6vga65r3f/wlVPNeWGBO708f+3D4ClTX/AtV7pFttoZP/QiSbTMmXxNDlDw7NcOkTvHZlf8g/BMKGKkYnZ5H1iMzEmEcNVtxYuel0VOuruUj8Nar2GJ4/188pEYAQ==\"},{\"type\":\"text\",\"text\":\"Banana\"}],\"stop_reason\":\"end_turn\",\"stop_sequence\":null,\"usage\":{\"input_tokens\":182,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"cache_creation\":{\"ephemeral_5m_input_tokens\":0,\"ephemeral_1h_input_tokens\":0},\"output_tokens\":47,\"service_tier\":\"standard\"}}"
+    headers:
+      Anthropic-Ratelimit-Input-Tokens-Limit:
+      - "2000000"
+      Anthropic-Ratelimit-Input-Tokens-Remaining:
+      - "2000000"
+      Anthropic-Ratelimit-Input-Tokens-Reset:
+      - "2025-11-15T22:18:54Z"
+      Anthropic-Ratelimit-Output-Tokens-Limit:
+      - "400000"
+      Anthropic-Ratelimit-Output-Tokens-Remaining:
+      - "400000"
+      Anthropic-Ratelimit-Output-Tokens-Reset:
+      - "2025-11-15T22:18:55Z"
+      Anthropic-Ratelimit-Requests-Limit:
+      - "4000"
+      Anthropic-Ratelimit-Requests-Remaining:
+      - "3999"
+      Anthropic-Ratelimit-Requests-Reset:
+      - "2025-11-15T22:18:52Z"
+      Anthropic-Ratelimit-Tokens-Limit:
+      - "2400000"
+      Anthropic-Ratelimit-Tokens-Remaining:
+      - "2400000"
+      Anthropic-Ratelimit-Tokens-Reset:
+      - "2025-11-15T22:18:54Z"
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 99f2207eddfa3d45-YVR
+      Content-Type:
+      - application/json
+      Retry-After:
+      - "6"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Envoy-Upstream-Service-Time:
+      - "2803"
+      X-Robots-Tag:
+      - none
+    status: 200 OK
+    code: 200
+    duration: 2.891s

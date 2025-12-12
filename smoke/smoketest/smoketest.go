@@ -16,6 +16,10 @@
 //
 // The scoreboard.json file will be automatically updated with the new scenario results while
 // preserving existing metadata like Comments, SOTA, Good, and Cheap flags.
+//
+// When a model is no longer being tested (e.g., the provider stopped supporting it), the
+// corresponding HTTP recordings in testdata/TestClient/Scoreboard/<model>/ are automatically
+// deleted to keep the repository clean and remove stale test data.
 package smoketest
 
 import (
@@ -60,7 +64,8 @@ type ProviderFactory func(t testing.TB, m Model, fn func(http.RoundTripper) http
 var updateScoreboard = flag.Bool("update-scoreboard", false, "Update scoreboard.json for each provider with current test results")
 
 // Run regenerates the scoreboard and asserts it is up to date.
-// If the -update-scoreboard flag is set, it will update the scoreboard files.
+// If the -update-scoreboard flag is set, it will update the scoreboard files
+// and automatically delete stale recordings for models that are no longer available.
 func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Records) {
 	if len(models) == 0 {
 		t.Fatal("no models")
@@ -75,6 +80,7 @@ func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Recor
 
 	usage := genai.Usage{}
 	updatedScenarios := []scoreboard.Scenario{}
+	var staleScenarios []scoreboard.Scenario
 
 	// Find the reference.
 	cc := pf(t, Model{Model: genai.ModelNone}, nil)
@@ -230,15 +236,30 @@ func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Recor
 	if !filtered {
 		for model := range modelsToTest {
 			if _, ok := seen[model]; !ok {
-				t.Errorf("stale model in scoreboard: %v", model)
+				// Track stale models when updating scoreboard
+				for _, sc := range sb.Scenarios {
+					if len(sc.Models) > 0 && sc.Models[0] == model.Model && sc.Reason == model.Reason {
+						staleScenarios = append(staleScenarios, sc)
+					}
+				}
+				if !*updateScoreboard {
+					t.Errorf("stale model in scoreboard: %v", model)
+				}
 			}
 		}
 	}
 
 	// Update scoreboards if requested
-	if *updateScoreboard && len(updatedScenarios) > 0 {
-		if err := DefaultUpdateScoreboard(t, ".", updatedScenarios); err != nil {
-			t.Errorf("failed to update scoreboard: %v", err)
+	if *updateScoreboard {
+		if len(updatedScenarios) > 0 {
+			if err := defaultUpdateScoreboard(t, ".", updatedScenarios); err != nil {
+				t.Errorf("failed to update scoreboard: %v", err)
+			}
+		}
+		if len(staleScenarios) > 0 {
+			if err := deleteStaleRecordings(t, staleScenarios); err != nil {
+				t.Errorf("failed to delete stale recordings: %v", err)
+			}
 		}
 	}
 }
@@ -285,9 +306,32 @@ func runOneModel(t testing.TB, gc getClientOneModel, want scoreboard.Scenario) (
 
 var optScenario = cmpopts.IgnoreFields(scoreboard.Scenario{}, "Comments", "SOTA", "Good", "Cheap", "ReasoningTokenStart", "ReasoningTokenEnd")
 
-// DefaultUpdateScoreboard is the default implementation for updating scoreboards.
+// deleteStaleRecordings removes HTTP recordings for models that are no longer being tested.
+func deleteStaleRecordings(t testing.TB, staleScenarios []scoreboard.Scenario) error {
+	scoreBoardDir := filepath.Join("testdata", "TestClient", "Scoreboard")
+	for _, sc := range staleScenarios {
+		if len(sc.Models) == 0 {
+			continue
+		}
+		model := sc.Models[0]
+		modelDir := model
+		if sc.Reason {
+			modelDir += "_thinking"
+		}
+		path := filepath.Join(scoreBoardDir, modelDir)
+		if _, err := os.Stat(path); err == nil {
+			t.Logf("Deleting stale model recordings for %s", modelDir)
+			if err := os.RemoveAll(path); err != nil {
+				return fmt.Errorf("failed to delete stale recordings for %s: %w", modelDir, err)
+			}
+		}
+	}
+	return nil
+}
+
+// defaultUpdateScoreboard is the default implementation for updating scoreboards.
 // It merges the updated scenarios with the existing scoreboard while preserving metadata like comments, SOTA, Good, Cheap flags, and reasoning tokens.
-func DefaultUpdateScoreboard(t testing.TB, providerDir string, scenarios []scoreboard.Scenario) error {
+func defaultUpdateScoreboard(t testing.TB, providerDir string, scenarios []scoreboard.Scenario) error {
 	scoreboardPath := filepath.Join(providerDir, "scoreboard.json")
 
 	// Read the existing scoreboard

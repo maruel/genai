@@ -30,7 +30,7 @@ func main() {
 
 	// Tell the user what we're doing. We'll also use this as a prompt for the
 	// LLM itself so everyone plays with the same rules.
-	prompt := "Let's play a word association game. You pick a single word, then I say the first word I think of, then you respond with a word, and so on. You go first.\n> "
+	const prompt = "Let's play a word association game. You pick a single word, then I say the first word I think of, then you respond with a word, and so on. You go first.\n> "
 	fmt.Printf(prompt)
 	var msgs genai.Messages
 

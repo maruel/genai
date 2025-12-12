@@ -3,11 +3,29 @@
 // that can be found in the LICENSE file.
 
 // Package smoketest runs a scoreboard in test mode.
+//
+// # Automatic Scoreboard Updates
+//
+// The package supports automatic updates to scoreboard.json files when tests are run with the
+// -update-scoreboard flag. This is useful when you want to update the provider's capabilities
+// based on the latest test results.
+//
+// Run your tests with:
+//
+//	go test ./providers/yourprovider -update-scoreboard
+//
+// The scoreboard.json file will be automatically updated with the new scenario results while
+// preserving existing metadata like Comments, SOTA, Good, and Cheap flags.
 package smoketest
 
 import (
+	"bytes"
+	"encoding/json"
 	"flag"
+	"fmt"
 	"net/http"
+	"os"
+	"path/filepath"
 	"slices"
 	"testing"
 
@@ -39,7 +57,10 @@ func (m *Model) String() string {
 // ProviderFactory is the client to assert the scoreboard. It will have the HTTP requests recorded.
 type ProviderFactory func(t testing.TB, m Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider
 
+var updateScoreboard = flag.Bool("update-scoreboard", false, "Update scoreboard.json for each provider with current test results")
+
 // Run regenerates the scoreboard and asserts it is up to date.
+// If the -update-scoreboard flag is set, it will update the scoreboard files.
 func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Records) {
 	if len(models) == 0 {
 		t.Fatal("no models")
@@ -53,6 +74,7 @@ func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Recor
 	}
 
 	usage := genai.Usage{}
+	updatedScenarios := []scoreboard.Scenario{}
 
 	// Find the reference.
 	cc := pf(t, Model{Model: genai.ModelNone}, nil)
@@ -95,7 +117,7 @@ func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Recor
 			}
 
 			// Run one model at a time otherwise we can't collect the total usage.
-			u := runOneModel(t, func(t testing.TB, sn string) genai.Provider {
+			u, got := runOneModel(t, func(t testing.TB, sn string) genai.Provider {
 				fn := func(h http.RoundTripper) http.RoundTripper {
 					if sn == "" {
 						return h
@@ -114,6 +136,9 @@ func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Recor
 				return pf(t, m, fn)
 			}, want)
 			usage.Add(u)
+			if *updateScoreboard && got != nil {
+				updatedScenarios = append(updatedScenarios, *got)
+			}
 		})
 	}
 	t.Logf("Usage: %#v", usage)
@@ -209,13 +234,21 @@ func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Recor
 			}
 		}
 	}
+
+	// Update scoreboards if requested
+	if *updateScoreboard && len(updatedScenarios) > 0 {
+		if err := DefaultUpdateScoreboard(t, ".", updatedScenarios); err != nil {
+			t.Errorf("failed to update scoreboard: %v", err)
+		}
+	}
 }
 
 // getClientOneModel returns a provider client for a specific model.
 type getClientOneModel func(t testing.TB, scenarioName string) genai.Provider
 
 // runOneModel runs the scoreboard on one model.
-func runOneModel(t testing.TB, gc getClientOneModel, want scoreboard.Scenario) genai.Usage {
+// Returns the usage and the generated scenario (or nil if not updated).
+func runOneModel(t testing.TB, gc getClientOneModel, want scoreboard.Scenario) (genai.Usage, *scoreboard.Scenario) {
 	// Calculate the scenario.
 	providerFactory := func(name string) genai.Provider {
 		if name == "" {
@@ -245,12 +278,93 @@ func runOneModel(t testing.TB, gc getClientOneModel, want scoreboard.Scenario) g
 	if diff := cmp.Diff(want, got, optScenario); diff != "" {
 		t.Errorf("mismatch (-want +got):\n%s", diff)
 	}
-	return usage
+	return usage, &got
 }
 
 //
 
-var optScenario = cmpopts.IgnoreFields(scoreboard.Scenario{}, "Comments", "SOTA", "Good", "Cheap")
+var optScenario = cmpopts.IgnoreFields(scoreboard.Scenario{}, "Comments", "SOTA", "Good", "Cheap", "ReasoningTokenStart", "ReasoningTokenEnd")
+
+// DefaultUpdateScoreboard is the default implementation for updating scoreboards.
+// It merges the updated scenarios with the existing scoreboard while preserving metadata like comments, SOTA, Good, Cheap flags, and reasoning tokens.
+func DefaultUpdateScoreboard(t testing.TB, providerDir string, scenarios []scoreboard.Scenario) error {
+	scoreboardPath := filepath.Join(providerDir, "scoreboard.json")
+
+	// Read the existing scoreboard
+	rawOld, err := os.ReadFile(scoreboardPath)
+	if err != nil {
+		return fmt.Errorf("failed to read scoreboard.json: %w", err)
+	}
+
+	d := json.NewDecoder(bytes.NewReader(rawOld))
+	d.DisallowUnknownFields()
+	existingScore := scoreboard.Score{}
+	if err := d.Decode(&existingScore); err != nil {
+		return fmt.Errorf("failed to decode scoreboard.json: %w", err)
+	}
+
+	// Create a map of new scenarios by model and reason for quick lookup
+	newScenarioMap := make(map[string]map[bool]*scoreboard.Scenario)
+	for i := range scenarios {
+		s := scenarios[i]
+		if len(s.Models) == 0 {
+			continue
+		}
+		model := s.Models[0]
+		if newScenarioMap[model] == nil {
+			newScenarioMap[model] = make(map[bool]*scoreboard.Scenario)
+		}
+		newScenarioMap[model][s.Reason] = &scenarios[i]
+	}
+
+	// Update existing scenarios with new results, preserving metadata
+	for i := range existingScore.Scenarios {
+		sc := &existingScore.Scenarios[i]
+		if len(sc.Models) == 0 {
+			continue
+		}
+		model := sc.Models[0]
+		if updated, ok := newScenarioMap[model][sc.Reason]; ok {
+			// Preserve metadata from existing scenario
+			comments := sc.Comments
+			sota := sc.SOTA
+			good := sc.Good
+			cheap := sc.Cheap
+			reasoningTokenStart := sc.ReasoningTokenStart
+			reasoningTokenEnd := sc.ReasoningTokenEnd
+
+			// Replace with updated scenario
+			*sc = *updated
+
+			// Restore metadata
+			sc.Comments = comments
+			sc.SOTA = sota
+			sc.Good = good
+			sc.Cheap = cheap
+			sc.ReasoningTokenStart = reasoningTokenStart
+			sc.ReasoningTokenEnd = reasoningTokenEnd
+		}
+	}
+
+	// Encode the updated scoreboard
+	rawNew, err := json.MarshalIndent(existingScore, "", "  ")
+	if err != nil {
+		return fmt.Errorf("failed to encode scoreboard: %w", err)
+	}
+	rawNew = append(rawNew, '\n')
+
+	// Write back if changed
+	if !bytes.Equal(rawNew, rawOld) {
+		t.Logf("Updating %s", scoreboardPath)
+		if err = os.WriteFile(scoreboardPath, rawNew, 0o644); err != nil {
+			return fmt.Errorf("failed to write scoreboard.json: %w", err)
+		}
+	} else {
+		t.Logf("No changes to %s", scoreboardPath)
+	}
+
+	return nil
+}
 
 /*
 var optTriState = cmp.Comparer(func(x, y scoreboard.TriState) bool {

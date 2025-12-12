@@ -138,6 +138,18 @@ When implementing a new provider:
 - **Smoke tests**: Test against live services with recorded traces
 - **Functionality tests**: Test provider capabilities systematically
 
+### Smoke Testing with Automatic Scoreboard Updates
+
+The smoke test framework supports automatic updating of `scoreboard.json` files when test results change. This is particularly useful when provider capabilities evolve.
+
+#### Running Smoke Tests with Scoreboard Updates
+
+To automatically update the scoreboard for a provider with the latest test results:
+
+```bash
+go test ./providers/<provider> -update-scoreboard
+```
+
 ## Common Patterns
 
 ### Validation

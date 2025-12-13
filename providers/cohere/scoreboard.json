@@ -12,6 +12,7 @@
         "command-a-reasoning-08-2025"
       ],
       "sota": true,
+      "good": true,
       "reason": true,
       "in": {
         "text": {
@@ -46,50 +47,6 @@
         "json": true,
         "jsonSchema": true,
         "citations": true
-      }
-    },
-    {
-      "comments": "Thinking is only related to tool planning.",
-      "models": [
-        "command-r"
-      ],
-      "good": true,
-      "reason": true,
-      "in": {
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "tools": "true",
-        "toolsBiased": "true",
-        "json": true,
-        "jsonSchema": true,
-        "citations": true,
-        "topLogprobs": true,
-        "maxTokens": true,
-        "stopSequence": true
-      },
-      "GenStream": {
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "tools": "true",
-        "toolsBiased": "true",
-        "json": true,
-        "jsonSchema": true,
-        "citations": true,
-        "topLogprobs": true,
-        "maxTokens": true,
-        "stopSequence": true
       }
     },
     {
@@ -134,38 +91,6 @@
         "jsonSchema": true,
         "citations": true,
         "topLogprobs": true,
-        "maxTokens": true,
-        "stopSequence": true
-      }
-    },
-    {
-      "comments": "Untested",
-      "models": [
-        "command-light"
-      ],
-      "in": {
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "citations": true,
-        "maxTokens": true,
-        "stopSequence": true
-      },
-      "GenStream": {
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "citations": true,
         "maxTokens": true,
         "stopSequence": true
       }
@@ -223,12 +148,11 @@
         "c4ai-aya-expanse-32b",
         "c4ai-aya-expanse-8b",
         "c4ai-aya-vision-32b",
-        "command",
         "command-a-translate-08-2025",
         "command-a-vision-07-2025",
-        "command-r-08-2024",
-        "command-r-plus",
-        "command-r-plus-08-2024",
+	"command-a-03-2025",
+	"command-r-08-2024",
+	"command-r-plus-08-2024",
         "command-r7b-arabic-02-2025"
       ],
       "reason": true

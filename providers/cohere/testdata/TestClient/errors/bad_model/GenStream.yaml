@@ -18,8 +18,9 @@ interactions:
     proto: HTTP/2.0
     proto_major: 2
     proto_minor: 0
-    content_length: 165
-    body: "{\"id\":\"016ae9ff-c0d5-4d3f-a55b-957a7fdae15a\",\"message\":\"model 'bad model' not found, make sure the correct model ID was used and that you have access to the model.\"}"
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"94ed162c-fe4a-4885-a641-080f16e1c0c1\",\"message\":\"model 'bad model' not found, make sure the correct model ID was used and that you have access to the model.\"}"
     headers:
       Access-Control-Expose-Headers:
       - X-Debug-Trace-ID
@@ -27,8 +28,6 @@ interactions:
       - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
       Cache-Control:
       - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
-      Content-Length:
-      - "165"
       Content-Type:
       - application/json
       Expires:
@@ -38,15 +37,15 @@ interactions:
       Server:
       - envoy
       Vary:
-      - Origin
+      - Origin,Accept-Encoding
       Via:
       - 1.1 google
       X-Accel-Expires:
       - "0"
       X-Debug-Trace-Id:
-      - 0c8387fba39130c172f3e29b57a40403
+      - b145e20a3c63503e808aae376b7306e1
       X-Envoy-Upstream-Service-Time:
-      - "31"
+      - "13"
     status: 404 Not Found
     code: 404
-    duration: 76ms
+    duration: 55ms

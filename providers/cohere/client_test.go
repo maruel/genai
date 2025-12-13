@@ -92,7 +92,7 @@ func TestClient(t *testing.T) {
 			want string
 		}{
 			{genai.ModelCheap, "command-r7b-12-2024"},
-			{genai.ModelGood, "command-r"},
+			{genai.ModelGood, "command-a-reasoning-08-2025"},
 			{genai.ModelSOTA, "command-a-reasoning-08-2025"},
 		}
 		for _, line := range data {

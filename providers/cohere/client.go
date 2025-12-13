@@ -517,12 +517,12 @@ type ChatResponse struct {
 
 func (c *ChatResponse) ToResult() (genai.Result, error) {
 	out := genai.Result{
-		// At the moment, Cohere doesn't support cached tokens.
 		Usage: genai.Usage{
 			// What about BilledUnits, especially for SearchUnits and Classifications?
-			InputTokens:  c.Usage.Tokens.InputTokens,
-			OutputTokens: c.Usage.Tokens.OutputTokens,
-			FinishReason: c.FinishReason.ToFinishReason(),
+			InputTokens:       c.Usage.Tokens.InputTokens,
+			InputCachedTokens: c.Usage.CachedTokens,
+			OutputTokens:      c.Usage.Tokens.OutputTokens,
+			FinishReason:      c.FinishReason.ToFinishReason(),
 		},
 	}
 	if len(c.Logprobs) != 0 {
@@ -593,6 +593,7 @@ type Usage struct {
 		OutputTokens int64 `json:"output_tokens"`
 		ImageTokens  int64 `json:"image_tokens"`
 	} `json:"tokens"`
+	CachedTokens int64 `json:"cached_tokens,omitzero"`
 }
 
 // MessageResponse handles all the various forms that Cohere can reply.
@@ -931,6 +932,7 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 	good := preference == genai.ModelGood || preference == ""
 	selectedModel := ""
 	var context int64
+
 	for _, mdl := range mdls {
 		m := mdl.(*Model)
 		if !slices.Contains(m.Endpoints, "chat") || strings.Contains(m.Name, "nightly") {
@@ -945,8 +947,8 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 				selectedModel = m.Name
 			}
 		} else if good {
-			if !strings.Contains(m.Name, "r7b") && !strings.Contains(m.Name, "reasoning") && !strings.Contains(m.Name, "plus") && (context == 0 || context < m.ContextLength) {
-				// For the greatest, we want the largest context.
+			// Prefer reasoning models as they're more capable
+			if strings.Contains(m.Name, "reasoning") && (context == 0 || context < m.ContextLength) {
 				context = m.ContextLength
 				selectedModel = m.Name
 			}
@@ -1076,6 +1078,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 						return
 					}
 					u.InputTokens = pkt.Delta.Usage.Tokens.InputTokens
+					u.InputCachedTokens = pkt.Delta.Usage.CachedTokens
 					u.OutputTokens = pkt.Delta.Usage.Tokens.OutputTokens
 					u.FinishReason = pkt.Delta.FinishReason.ToFinishReason()
 				case ChunkContentStart:

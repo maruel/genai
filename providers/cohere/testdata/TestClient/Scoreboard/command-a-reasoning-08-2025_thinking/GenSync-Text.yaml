@@ -18,8 +18,9 @@ interactions:
     proto: HTTP/2.0
     proto_major: 2
     proto_minor: 0
-    content_length: 645
-    body: "{\"id\":\"0d94f0b6-f6ea-452c-9e0b-16395236ca3d\",\"message\":{\"role\":\"assistant\",\"content\":[{\"type\":\"thinking\",\"thinking\":\"Okay, the user wants me to say hello using only one word. Let me think. The most straightforward way to greet someone in English is \\\"Hello.\\\" That's a single word and fits the requirement perfectly. I don't need to overcomplicate this. Just make sure there are no other words or punctuation that might add extra characters. Yep, \\\"Hello\\\" should do it.\"},{\"type\":\"text\",\"text\":\"Hello\"}]},\"finish_reason\":\"COMPLETE\",\"usage\":{\"billed_units\":{\"input_tokens\":8,\"output_tokens\":1},\"tokens\":{\"input_tokens\":1393,\"output_tokens\":82}}}"
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"93e867ce-54e4-4ef8-9a79-e000718d65f1\",\"message\":{\"role\":\"assistant\",\"content\":[{\"type\":\"thinking\",\"thinking\":\"Okay, the user wants me to say hello using only one word. Let me start by recalling the most common greeting in English, which is \\\"Hello.\\\" But wait, maybe they want something more informal or shorter? Like \\\"Hi\\\" or \\\"Hey\\\"? However, the instruction specifies to use only one word, and \\\"Hello\\\" is a single word. \\\"Hi\\\" is also one word. But \\\"Hello\\\" is more standard. Let me check if there's any trick here. The user might be testing if I can follow the one-word constraint. So, I should pick the most straightforward greeting. \\\"Hello\\\" fits perfectly. I need to make sure not to add any exclamation mark or extra words. Just the single word. Alright, that should do it.\"},{\"type\":\"text\",\"text\":\"Hello\"}]},\"finish_reason\":\"COMPLETE\",\"usage\":{\"billed_units\":{\"input_tokens\":8,\"output_tokens\":157},\"tokens\":{\"input_tokens\":1394,\"output_tokens\":161},\"cached_tokens\":1344}}"
     headers:
       Access-Control-Expose-Headers:
       - X-Debug-Trace-ID
@@ -27,30 +28,28 @@ interactions:
       - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
       Cache-Control:
       - no-cache, no-store, no-transform, must-revalidate, private, max-age=0
-      Content-Length:
-      - "645"
       Content-Type:
       - application/json
       Expires:
       - Thu, 01 Jan 1970 00:00:00 GMT
       Num_chars:
-      - "6615"
+      - "6616"
       Num_tokens:
-      - "9"
+      - "165"
       Pragma:
       - no-cache
       Server:
       - envoy
       Vary:
-      - Origin
+      - Origin,Accept-Encoding
       Via:
       - 1.1 google
       X-Accel-Expires:
       - "0"
       X-Debug-Trace-Id:
-      - 7959fb81555dd1604330f1a065cb1297
+      - 14419b8be33a72b96c086c57c6344dfc
       X-Envoy-Upstream-Service-Time:
-      - "777"
+      - "2082"
     status: 200 OK
     code: 200
-    duration: 857ms
+    duration: 2.123s

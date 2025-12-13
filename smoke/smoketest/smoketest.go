@@ -81,6 +81,7 @@ func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Recor
 	usage := genai.Usage{}
 	updatedScenarios := []scoreboard.Scenario{}
 	var staleScenarios []scoreboard.Scenario
+	preferredModels := map[string]string{} // maps genai.ModelXXX to actual model ID
 
 	// Find the reference.
 	cc := pf(t, Model{Model: genai.ModelNone}, nil)
@@ -167,10 +168,13 @@ func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Recor
 			return r
 		}
 		sota := pf(t, Model{Model: genai.ModelSOTA}, fn).ModelID()
+		preferredModels["sota"] = sota
 		name = "good"
 		good := pf(t, Model{Model: genai.ModelGood}, fn).ModelID()
+		preferredModels["good"] = good
 		name = "cheap"
 		cheap := pf(t, Model{Model: genai.ModelCheap}, fn).ModelID()
+		preferredModels["cheap"] = cheap
 		// Some models support both reasoning and non-reasoning. We want to keep them aside, otherwise the table
 		// looks weird. But we skip the duplicate row.
 		// TODO: Have a way to query from the Provider if the currently selected model supports reasoning.
@@ -252,7 +256,7 @@ func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Recor
 	// Update scoreboards if requested
 	if *updateScoreboard {
 		if len(updatedScenarios) > 0 {
-			if err := defaultUpdateScoreboard(t, ".", updatedScenarios); err != nil {
+			if err := defaultUpdateScoreboard(t, ".", updatedScenarios, preferredModels); err != nil {
 				t.Errorf("failed to update scoreboard: %v", err)
 			}
 		}
@@ -330,8 +334,9 @@ func deleteStaleRecordings(t testing.TB, staleScenarios []scoreboard.Scenario) e
 }
 
 // defaultUpdateScoreboard is the default implementation for updating scoreboards.
-// It merges the updated scenarios with the existing scoreboard while preserving metadata like comments, SOTA, Good, Cheap flags, and reasoning tokens.
-func defaultUpdateScoreboard(t testing.TB, providerDir string, scenarios []scoreboard.Scenario) error {
+// It merges the updated scenarios with the existing scoreboard while preserving metadata like comments and reasoning tokens.
+// It also updates the SOTA, Good, Cheap flags based on the preferred models.
+func defaultUpdateScoreboard(t testing.TB, providerDir string, scenarios []scoreboard.Scenario, preferredModels map[string]string) error {
 	scoreboardPath := filepath.Join(providerDir, "scoreboard.json")
 
 	// Read the existing scoreboard
@@ -371,9 +376,6 @@ func defaultUpdateScoreboard(t testing.TB, providerDir string, scenarios []score
 		if updated, ok := newScenarioMap[model][sc.Reason]; ok {
 			// Preserve metadata from existing scenario
 			comments := sc.Comments
-			sota := sc.SOTA
-			good := sc.Good
-			cheap := sc.Cheap
 			reasoningTokenStart := sc.ReasoningTokenStart
 			reasoningTokenEnd := sc.ReasoningTokenEnd
 
@@ -382,12 +384,14 @@ func defaultUpdateScoreboard(t testing.TB, providerDir string, scenarios []score
 
 			// Restore metadata
 			sc.Comments = comments
-			sc.SOTA = sota
-			sc.Good = good
-			sc.Cheap = cheap
 			sc.ReasoningTokenStart = reasoningTokenStart
 			sc.ReasoningTokenEnd = reasoningTokenEnd
 		}
+		// Always update SOTA, Good, Cheap flags based on preferred models, even for untested scenarios.
+		// This ensures old flags are cleared when preferred models change.
+		sc.SOTA = preferredModels["sota"] == model
+		sc.Good = preferredModels["good"] == model
+		sc.Cheap = preferredModels["cheap"] == model
 	}
 
 	// Encode the updated scoreboard

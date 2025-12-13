@@ -297,8 +297,8 @@ func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Recor
 
 	// Update scoreboards if requested
 	if *updateScoreboard {
-		if len(updatedScenarios) > 0 {
-			if err := defaultUpdateScoreboard(t, ".", updatedScenarios, preferredModels); err != nil {
+		if len(updatedScenarios) > 0 || len(staleScenarios) > 0 {
+			if err := defaultUpdateScoreboard(t, ".", updatedScenarios, preferredModels, staleScenarios); err != nil {
 				t.Errorf("failed to update scoreboard: %v", err)
 			}
 		}
@@ -420,7 +420,8 @@ func deleteOrphanedRecordings(t testing.TB, seen map[Model]struct{}) error {
 // defaultUpdateScoreboard is the default implementation for updating scoreboards.
 // It merges the updated scenarios with the existing scoreboard while preserving metadata like comments and reasoning tokens.
 // It also updates the SOTA, Good, Cheap flags based on the preferred models.
-func defaultUpdateScoreboard(t testing.TB, providerDir string, scenarios []scoreboard.Scenario, preferredModels map[string]string) error {
+// Stale scenarios (models no longer being tested) are removed from the scoreboard.
+func defaultUpdateScoreboard(t testing.TB, providerDir string, scenarios []scoreboard.Scenario, preferredModels map[string]string, staleScenarios []scoreboard.Scenario) error {
 	scoreboardPath := filepath.Join(providerDir, "scoreboard.json")
 
 	// Read the existing scoreboard
@@ -499,6 +500,37 @@ func defaultUpdateScoreboard(t testing.TB, providerDir string, scenarios []score
 			// This is a new model/reason combination, add it to the scoreboard
 			existingScore.Scenarios = append(existingScore.Scenarios, newScenario)
 		}
+	}
+
+	// Remove stale scenarios (models no longer being tested)
+	if len(staleScenarios) > 0 {
+		staleMap := make(map[string]map[bool]struct{})
+		for _, sc := range staleScenarios {
+			if len(sc.Models) == 0 {
+				continue
+			}
+			model := sc.Models[0]
+			if staleMap[model] == nil {
+				staleMap[model] = make(map[bool]struct{})
+			}
+			staleMap[model][sc.Reason] = struct{}{}
+		}
+
+		// Filter out stale scenarios
+		filtered := make([]scoreboard.Scenario, 0, len(existingScore.Scenarios))
+		for _, sc := range existingScore.Scenarios {
+			if len(sc.Models) == 0 {
+				filtered = append(filtered, sc)
+				continue
+			}
+			model := sc.Models[0]
+			if _, isStale := staleMap[model][sc.Reason]; !isStale {
+				filtered = append(filtered, sc)
+			} else {
+				t.Logf("Removing stale scenario for model %q with reason=%v", model, sc.Reason)
+			}
+		}
+		existingScore.Scenarios = filtered
 	}
 
 	// Encode the updated scoreboard

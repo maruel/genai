@@ -594,6 +594,56 @@ func defaultUpdateScoreboard(t testing.TB, providerDir string, scenarios []score
 		existingScore.Scenarios = filtered
 	}
 
+	// Sort scenarios so SOTA, Good, Cheap appear first in the expected order
+	// Build a priority map for sorting
+	priority := make(map[string]map[bool]int)
+	if sota := preferredModels["sota"]; sota != "" {
+		if priority[sota] == nil {
+			priority[sota] = make(map[bool]int)
+		}
+		priority[sota][false] = 0
+		priority[sota][true] = 0 // SOTA with reasoning also gets priority 0
+	}
+	if good := preferredModels["good"]; good != "" && good != preferredModels["sota"] {
+		if priority[good] == nil {
+			priority[good] = make(map[bool]int)
+		}
+		priority[good][false] = 1
+		priority[good][true] = 1
+	}
+	if cheap := preferredModels["cheap"]; cheap != "" && cheap != preferredModels["sota"] && cheap != preferredModels["good"] {
+		if priority[cheap] == nil {
+			priority[cheap] = make(map[bool]int)
+		}
+		priority[cheap][false] = 2
+		priority[cheap][true] = 2
+	}
+
+	slices.SortFunc(existingScore.Scenarios, func(a, b scoreboard.Scenario) int {
+		// Get priority for each scenario (lower = comes first)
+		getPriority := func(sc scoreboard.Scenario) int {
+			if len(sc.Models) == 0 {
+				return 999 // Scenarios with no models go to the end
+			}
+			model := sc.Models[0]
+			if p, ok := priority[model]; ok {
+				if pval, ok := p[sc.Reason]; ok {
+					return pval
+				}
+				// If this model has priority but not for this reason value, use a higher priority
+				return 100
+			}
+			return 999 // No priority means it goes to the end
+		}
+		aPrio := getPriority(a)
+		bPrio := getPriority(b)
+		if aPrio != bPrio {
+			return aPrio - bPrio
+		}
+		// If same priority, maintain original order
+		return 0
+	})
+
 	// Encode the updated scoreboard
 	rawNew, err := json.MarshalIndent(existingScore, "", "  ")
 	if err != nil {

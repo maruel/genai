@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 396
+    host: api.anthropic.com
+    body: "{\"model\":\"claude-opus-4-5-20251101\",\"max_tokens\":32000,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What fruit is it? Reply with only one word.\"},{\"type\":\"image\",\"cache_control\":{\"type\":\"ephemeral\"},\"source\":{\"type\":\"url\",\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg\"}}]}],\"thinking\":{\"budget_tokens\":1024,\"type\":\"enabled\"}}\n"
+    headers:
+      Anthropic-Version:
+      - "2023-06-01"
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.anthropic.com/v1/messages
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"model\":\"claude-opus-4-5-20251101\",\"id\":\"msg_019PARed1A6RSWCZSXDfCPYd\",\"type\":\"message\",\"role\":\"assistant\",\"content\":[{\"type\":\"thinking\",\"thinking\":\"The image shows a yellow banana. It's a single banana fruit with the characteristic curved shape and yellow color.\",\"signature\":\"EpsCCkYIChgCKkDoUsE/0rBzWDEBzA9/ulF8VrdUcmbU4ifpuyNNb3mJqkK9axyYiBAW6vxFk1YmozF8vxBT5MahM7/XNr6DseGLEgzlOshr5l4m3AuNhksaDNt4li2N/kIwKWcBYiIwYjNHe6Kx8IRJ1EEDme1nHfZ+TSXJxiTqPkHMECiZKe9cGHWMklv0FE4Z+gB4EcSqKoIB3Fm9jzp8SPeP71CU67G+GNXPNZ8ifhgNiZVQOoLR5wKPckWy9+TIYZd8EN5sLdo7geKP3g/5uylk6cpHBoGG7HbRcF5aNHUXF3ZPab5zoHFwzNens9lHH0/OzhE8KQ2+zx9eNMBQjvXe8XLeMGgrnK+2a9I/nPGCZRejPEqnQ2NS8hgB\"},{\"type\":\"text\",\"text\":\"Banana\"}],\"stop_reason\":\"end_turn\",\"stop_sequence\":null,\"usage\":{\"input_tokens\":182,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"cache_creation\":{\"ephemeral_5m_input_tokens\":0,\"ephemeral_1h_input_tokens\":0},\"output_tokens\":35,\"service_tier\":\"standard\"}}"
+    headers:
+      Anthropic-Ratelimit-Input-Tokens-Limit:
+      - "2000000"
+      Anthropic-Ratelimit-Input-Tokens-Remaining:
+      - "2000000"
+      Anthropic-Ratelimit-Input-Tokens-Reset:
+      - "2025-12-13T02:13:46Z"
+      Anthropic-Ratelimit-Output-Tokens-Limit:
+      - "400000"
+      Anthropic-Ratelimit-Output-Tokens-Remaining:
+      - "400000"
+      Anthropic-Ratelimit-Output-Tokens-Reset:
+      - "2025-12-13T02:13:47Z"
+      Anthropic-Ratelimit-Requests-Limit:
+      - "4000"
+      Anthropic-Ratelimit-Requests-Remaining:
+      - "3999"
+      Anthropic-Ratelimit-Requests-Reset:
+      - "2025-12-13T02:13:45Z"
+      Anthropic-Ratelimit-Tokens-Limit:
+      - "2400000"
+      Anthropic-Ratelimit-Tokens-Remaining:
+      - "2400000"
+      Anthropic-Ratelimit-Tokens-Reset:
+      - "2025-12-13T02:13:46Z"
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad1f1b1b84aa2a8-YUL
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Vary:
+      - Accept-Encoding
+      X-Envoy-Upstream-Service-Time:
+      - "1825"
+      X-Robots-Tag:
+      - none
+    status: 200 OK
+    code: 200
+    duration: 2.006s

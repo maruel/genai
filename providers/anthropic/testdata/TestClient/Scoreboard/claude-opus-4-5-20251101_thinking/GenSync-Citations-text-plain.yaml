@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 433
+    host: api.anthropic.com
+    body: "{\"model\":\"claude-opus-4-5-20251101\",\"max_tokens\":32000,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"document\",\"cache_control\":{\"type\":\"ephemeral\"},\"citations\":{\"enabled\":true},\"source\":{\"type\":\"text\",\"media_type\":\"text/plain\",\"data\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"}},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}],\"thinking\":{\"budget_tokens\":1024,\"type\":\"enabled\"}}\n"
+    headers:
+      Anthropic-Version:
+      - "2023-06-01"
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.anthropic.com/v1/messages
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"model\":\"claude-opus-4-5-20251101\",\"id\":\"msg_012jTst3DHr56Ra28FMutdxK\",\"type\":\"message\",\"role\":\"assistant\",\"content\":[{\"type\":\"thinking\",\"thinking\":\"The user is asking about the capital of Quackiland. According to the document, the capital of Quackiland is Quack.\",\"signature\":\"EpsCCkYIChgCKkDqoKvE0biy8KbzVBcaMi4UuaXgnJxfe4roU+G7hSxQ64AQTKDyB0nAzYjUreGy9DLXlTa5qn4WFVnVY1bByBlUEgyUd94x01DSrdJuSNAaDLDFnRg5zHqGf2WnFiIwgfkZvBMCHr+5QXmXcWsMdUPq01sQJS29Rw+0D7k4I/OKasamg00Ly66JoOqG6Om6KoIBkAp0kRvVuZnr/V3Jk3oi184k34ifq2t/Qkj2MOqBuDhrhPqH6QctaSuXCV/sodtph6X57gSin4Xj704oH8bF62uphO8TvZasjZxSKN92WSX+zlI8ndrBQxTBDoeyG3MHU2waKOBbvShTVkUonETnIrf2U77l9Vst7peW3zYca81gWhgB\"},{\"type\":\"text\",\"text\":\"\"},{\"citations\":[{\"type\":\"char_location\",\"cited_text\":\"The capital of Quackiland is Quack. \",\"document_index\":0,\"document_title\":null,\"start_char_index\":0,\"end_char_index\":36}],\"type\":\"text\",\"text\":\"The capital of Quackiland is Quack.\"}],\"stop_reason\":\"end_turn\",\"stop_sequence\":null,\"usage\":{\"input_tokens\":625,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"cache_creation\":{\"ephemeral_5m_input_tokens\":0,\"ephemeral_1h_input_tokens\":0},\"output_tokens\":72,\"service_tier\":\"standard\"}}"
+    headers:
+      Anthropic-Ratelimit-Input-Tokens-Limit:
+      - "2000000"
+      Anthropic-Ratelimit-Input-Tokens-Remaining:
+      - "2000000"
+      Anthropic-Ratelimit-Input-Tokens-Reset:
+      - "2025-12-13T02:13:35Z"
+      Anthropic-Ratelimit-Output-Tokens-Limit:
+      - "400000"
+      Anthropic-Ratelimit-Output-Tokens-Remaining:
+      - "400000"
+      Anthropic-Ratelimit-Output-Tokens-Reset:
+      - "2025-12-13T02:13:35Z"
+      Anthropic-Ratelimit-Requests-Limit:
+      - "4000"
+      Anthropic-Ratelimit-Requests-Remaining:
+      - "3999"
+      Anthropic-Ratelimit-Requests-Reset:
+      - "2025-12-13T02:13:33Z"
+      Anthropic-Ratelimit-Tokens-Limit:
+      - "2400000"
+      Anthropic-Ratelimit-Tokens-Remaining:
+      - "2400000"
+      Anthropic-Ratelimit-Tokens-Reset:
+      - "2025-12-13T02:13:35Z"
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad1f1622c8ba2a8-YUL
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Vary:
+      - Accept-Encoding
+      X-Envoy-Upstream-Service-Time:
+      - "2777"
+      X-Robots-Tag:
+      - none
+    status: 200 OK
+    code: 200
+    duration: 2.868s

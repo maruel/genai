@@ -221,7 +221,7 @@ func TestClient(t *testing.T) {
 		}{
 			{genai.ModelCheap, "claude-haiku-4-5-20251001"},
 			{genai.ModelGood, "claude-sonnet-4-5-20250929"},
-			{genai.ModelSOTA, "claude-opus-4-1-20250805"},
+			{genai.ModelSOTA, "claude-opus-4-5-20251101"},
 		}
 		for _, line := range data {
 			t.Run(line.name, func(t *testing.T) {

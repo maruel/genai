@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 869
+    host: api.anthropic.com
+    body: "{\"model\":\"claude-opus-4-5-20251101\",\"max_tokens\":32000,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"}]},{\"role\":\"assistant\",\"content\":[{\"type\":\"tool_use\",\"id\":\"toolu_016bqAQn8Rtz44t1LQaHKvQM\",\"input\":{\"number\":132413},\"name\":\"square_root\"}]},{\"role\":\"user\",\"content\":[{\"type\":\"tool_result\",\"tool_use_id\":\"toolu_016bqAQn8Rtz44t1LQaHKvQM\",\"content\":[{\"type\":\"text\",\"text\":\"363.89\"}]}]}],\"thinking\":{\"type\":\"disabled\"},\"tool_choice\":{\"type\":\"none\"},\"tools\":[{\"description\":\"Calculates and return the square root of a number\",\"input_schema\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]},\"name\":\"square_root\"}]}\n"
+    headers:
+      Anthropic-Version:
+      - "2023-06-01"
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.anthropic.com/v1/messages
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"model\":\"claude-opus-4-5-20251101\",\"id\":\"msg_016KEaFQqk5fHHEJTJ1ZHuyF\",\"type\":\"message\",\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"363.89\"}],\"stop_reason\":\"end_turn\",\"stop_sequence\":null,\"usage\":{\"input_tokens\":690,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"cache_creation\":{\"ephemeral_5m_input_tokens\":0,\"ephemeral_1h_input_tokens\":0},\"output_tokens\":6,\"service_tier\":\"standard\"}}"
+    headers:
+      Anthropic-Ratelimit-Input-Tokens-Limit:
+      - "2000000"
+      Anthropic-Ratelimit-Input-Tokens-Remaining:
+      - "2000000"
+      Anthropic-Ratelimit-Input-Tokens-Reset:
+      - "2025-12-13T02:12:15Z"
+      Anthropic-Ratelimit-Output-Tokens-Limit:
+      - "400000"
+      Anthropic-Ratelimit-Output-Tokens-Remaining:
+      - "400000"
+      Anthropic-Ratelimit-Output-Tokens-Reset:
+      - "2025-12-13T02:12:16Z"
+      Anthropic-Ratelimit-Requests-Limit:
+      - "4000"
+      Anthropic-Ratelimit-Requests-Remaining:
+      - "3999"
+      Anthropic-Ratelimit-Requests-Reset:
+      - "2025-12-13T02:12:13Z"
+      Anthropic-Ratelimit-Tokens-Limit:
+      - "2400000"
+      Anthropic-Ratelimit-Tokens-Remaining:
+      - "2400000"
+      Anthropic-Ratelimit-Tokens-Reset:
+      - "2025-12-13T02:12:15Z"
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad1ef7168d0a2a8-YUL
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Vary:
+      - Accept-Encoding
+      X-Envoy-Upstream-Service-Time:
+      - "2445"
+      X-Robots-Tag:
+      - none
+    status: 200 OK
+    code: 200
+    duration: 2.502s

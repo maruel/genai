@@ -1,0 +1,70 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 416
+    host: api.anthropic.com
+    body: "{\"model\":\"claude-opus-4-5-20251101\",\"max_tokens\":32000,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What is the word? Reply with only the word.\"},{\"type\":\"document\",\"cache_control\":{\"type\":\"ephemeral\"},\"source\":{\"type\":\"url\",\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/document.pdf\"}}]}],\"stream\":true,\"thinking\":{\"budget_tokens\":1024,\"type\":\"enabled\"}}\n"
+    headers:
+      Anthropic-Version:
+      - "2023-06-01"
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.anthropic.com/v1/messages
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "event: message_start\ndata: {\"type\":\"message_start\",\"message\":{\"model\":\"claude-opus-4-5-20251101\",\"id\":\"msg_01YGxLbycB26WEvSEJ8SYFW6\",\"type\":\"message\",\"role\":\"assistant\",\"content\":[],\"stop_reason\":null,\"stop_sequence\":null,\"usage\":{\"input_tokens\":1623,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"cache_creation\":{\"ephemeral_5m_input_tokens\":0,\"ephemeral_1h_input_tokens\":0},\"output_tokens\":5,\"service_tier\":\"standard\"}}}\n\nevent: content_block_start\ndata: {\"type\":\"content_block_start\",\"index\":0,\"content_block\":{\"type\":\"thinking\",\"thinking\":\"\",\"signature\":\"\"} }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"The user is asking me\"} }\n\nevent: ping\ndata: {\"type\": \"ping\"}\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" to identify\"}         }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" the wor\"}        }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"d in\"}}\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" the PDF\"}       }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" document. Looking at the\"}           }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" document content\"}   }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\", I can see the\"}         }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" wor\"}         }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"d \\\"orange\"} }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"\\\" appears at\"}              }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" the top\"}               }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" of\"} }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" the page\"}     }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\".\"}        }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" The\"}       }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" user wants me to reply\"}       }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" with only\"}      }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" the word.\"}       }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"\"}            }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"signature_delta\",\"signature\":\"EvQCCkYIChgCKkA4fvxa+PoqK3hkwK031SunPKhgzQBrKfm8cwXWfBQ7NQPmF9jK6AU4jDWTx00WgCxaHqAE7VzG6Wyd/Xvudba/Egzw9AiBWdSk5lttlbcaDOYxb+bFwDu1B9kgUyIwKv+d4jci/Zr+q10qxixOBgOPjia9uOTEZ6c/hfq3RAgEQJbk1/xddR62tC2NVbFQKtsBDWIGZ4R5lnt6Sm268AiK4rVfUvDQVn7q7/O0KRj7KCuiyoEKjlQT66lVUoUKuwPrAsqSFxgzD1Jv1MWJHWLlOU7jRa4tfnar9Jo+FkJgrtAupkJXI/o57DmmcUzAK7fuxWYDU+VtdRZRwxci0CpLYwjualVrjQ3PTi/fZCsnaPmWYe6fE07PUrM5KzENZ5/xHttsSCJfSbgq6h96XwLWUqI3CEKDt0e3w/meWQYnjZPtrlcUz2B0beu29hm4BD9+l5eo3A5YXagBGuYqBE4+I8Nc0jKbIzHWk4xiGAE=\"} }\n\nevent: content_block_stop\ndata: {\"type\":\"content_block_stop\",\"index\":0             }\n\nevent: content_block_start\ndata: {\"type\":\"content_block_start\",\"index\":1,\"content_block\":{\"type\":\"text\",\"text\":\"\"}    }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"text_delta\",\"text\":\"orange\"}    }\n\nevent: content_block_stop\ndata: {\"type\":\"content_block_stop\",\"index\":1       }\n\nevent: message_delta\ndata: {\"type\":\"message_delta\",\"delta\":{\"stop_reason\":\"end_turn\",\"stop_sequence\":null},\"usage\":{\"input_tokens\":1623,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":59}}\n\nevent: message_stop\ndata: {\"type\":\"message_stop\"               }\n\n"
+    headers:
+      Anthropic-Ratelimit-Input-Tokens-Limit:
+      - "2000000"
+      Anthropic-Ratelimit-Input-Tokens-Remaining:
+      - "1973000"
+      Anthropic-Ratelimit-Input-Tokens-Reset:
+      - "2025-12-13T02:13:44Z"
+      Anthropic-Ratelimit-Output-Tokens-Limit:
+      - "400000"
+      Anthropic-Ratelimit-Output-Tokens-Remaining:
+      - "400000"
+      Anthropic-Ratelimit-Output-Tokens-Reset:
+      - "2025-12-13T02:13:44Z"
+      Anthropic-Ratelimit-Requests-Limit:
+      - "4000"
+      Anthropic-Ratelimit-Requests-Remaining:
+      - "3999"
+      Anthropic-Ratelimit-Requests-Reset:
+      - "2025-12-13T02:13:44Z"
+      Anthropic-Ratelimit-Tokens-Limit:
+      - "2400000"
+      Anthropic-Ratelimit-Tokens-Remaining:
+      - "2373000"
+      Anthropic-Ratelimit-Tokens-Reset:
+      - "2025-12-13T02:13:44Z"
+      Cache-Control:
+      - no-cache
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad1f1a5fd9aa2a8-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Vary:
+      - Accept-Encoding
+      X-Envoy-Upstream-Service-Time:
+      - "842"
+      X-Robots-Tag:
+      - none
+    status: 200 OK
+    code: 200
+    duration: 912ms

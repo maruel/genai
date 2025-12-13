@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 619
+    host: api.anthropic.com
+    body: "{\"model\":\"claude-opus-4-5-20251101\",\"max_tokens\":32000,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one.\"}]}],\"thinking\":{\"budget_tokens\":1024,\"type\":\"enabled\"},\"tool_choice\":{\"type\":\"auto\"},\"tools\":[{\"description\":\"A tool to specify the best country\",\"input_schema\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"country\":{\"type\":\"string\",\"enum\":[\"Canada\",\"USA\"]}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"country\"]},\"name\":\"best_country\"}]}\n"
+    headers:
+      Anthropic-Version:
+      - "2023-06-01"
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.anthropic.com/v1/messages
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"model\":\"claude-opus-4-5-20251101\",\"id\":\"msg_01AwTvVBa125DAwwbaPwEgMe\",\"type\":\"message\",\"role\":\"assistant\",\"content\":[{\"type\":\"thinking\",\"thinking\":\"The user is asking me to use the best_country tool to determine which country is \\\"best\\\" between Canada and the USA. However, I should be careful here - this is a subjective question and there's no objective answer to which country is \\\"best.\\\" \\n\\nThe tool exists and allows me to select either \\\"Canada\\\" or \\\"USA\\\" as options, but I shouldn't make an arbitrary choice or pretend there's an objective answer to a subjective question.\\n\\nI should explain to the user that this is a subjective matter and that I can't objectively determine which country is \\\"best\\\" - it depends on individual preferences, values, and priorities. Different people might prefer one country over the other based on various factors like healthcare, climate, job opportunities, culture, etc.\\n\\nI'll decline to use the tool in a way that would imply there's an objective \\\"best\\\" country, and instead explain my reasoning to the user.\",\"signature\":\"EqkICkYIChgCKkBIE9eDxHCmlqshXQlh9v83Ox+sP6NS/JlTq25lw/I8EG3Rlh6idFUC76dHYI+Zdw5iIRvX+fJu3yJpzrexDl44EgwfufI38ciu1BE/iGYaDHRgvmKrMphvP8DyCCIwI+3EWQu98UX+WDZVpJPgnboftVgTYykSYqwIPV0ZwJPljx7XYl0K7j7p28N5HalVKpAHe67WaX3tBmVl27vctjNMM9JKxHB9x8fK3BGNAlWIhWJCiMOwaOgNqr74SeNzUzFNUfH3wk4OYFawrPKIvIABqSgQ1mVKUjra0ptQa8QH490h+Fomc4xmP3mrc8E0dL2HLTpUGBnzwoabpdWy8F7mA/+nALWNA4E9+ziT3l9mDcYJNfySQfhUr6syRHrJQ+zg3OHALjPSdMTqeB5LlRT3zd/PhkmblwIvTBXhO/4ApGR/7RtRZ7rlzQ7VCk9KtxIgHAPZgUi7P3GWka+TCfys5pTWRSn06CoZWSnK8PuY8PeXgOv3hLBc1NivaIm3uI4F45w4PZ0MrFFncpK5ZqYqCr5MyH/W3v8pjVnHPKg24ufu8/3jYbBb5op6HNN/gAEeTzQU0UAaCsGvSr5S2NFP2EFUp3hHTeFYPonSSwZQuW9hSFHXmiDtwPIr65NXGGL1zh8DU/vCpB+AOA/JU0M1ZoOk8hzV+xx0ieeBedgwoiJwir5kUwXXzISIsnQNZ3J2M2V4jfItq8h05EDbX5l3bZC41+IW3aPoLeE2lk5jez9gPRbQ8pO3EzEYa4KT1QEmDj3kcrY6oCoMzzNQ1c5Smxxdkba/fiulHBS4WXt5S/mIWT0S184zckliSIBbKymwOdgegEt6b41yDKKRC5Uu5SWv05Hq4cfSMpzf4Mw4zvLtBAQCgQRWh0bARH+qwB9rSzuKIddPkf9kWe1OSzgwR8VfIaO0e+4Xx+0IHCKFw381AvP3gYOCp6GeiVX7RPYDtvyxNZYpIjC+AMAkHLzBJD/Un8/i2h4qP5zvO9Tshs+zw85Ljub5jh4H8gNC4oR3XCSomyN9i7VoCFWqIptbyLIlS1zjz9fRTDYsc+k8vEEILL6UTtrSmAqwdztVaQffAMoQNkRtzG4FHyit7g0N2jiU73VuA0RDzBjV+rdmHLlW7welv1h+d7ypER3dHhddmpcrcRu6gF21KQ1IIGb46e6Td40tPk43c3p0Hdh90NpIHGIPgnKDqxttAdwI5S3h0Yvd/KnIsE/j5c2LGxfhIrrXmLcl2PM1i4AaxUNSaIt0zrJcK6UbG0e8BqyanQb6JxnBI1j+pHiaR+VOqfMHKds8owBr5Rwr47uV4kKqyBmU4hgMKBPvLGFj62YwCGXpWa6LerOffzkRl1NF/9F1hc5ghJgqLOMLTVRLV6YDszFkrVvBFKNJ/UgDFc2PDTxWGAE=\"},{\"type\":\"text\",\"text\":\"I appreciate the question, but I don't think I should use this tool to declare one country as objectively \\\"better\\\" than the other. Here's why:\\n\\n**There's no objective \\\"best\\\" country** - Which country is better depends entirely on individual preferences, values, and circumstances. Some factors people consider include:\\n\\n- **Healthcare systems**\\n- **Climate preferences**\\n- **Job opportunities in specific fields**\\n- **Cost of living**\\n- **Cultural fit**\\n- **Immigration policies**\\n- **Geographic preferences**\\n\\nBoth Canada and the USA are developed nations with their own unique strengths and challenges. What's \\\"best\\\" for one person might not be best for another.\\n\\nIf you'd like, I'd be happy to **compare specific aspects** of these two countries (like healthcare, education, climate, etc.) so you can form your own opinion based on what matters most to you. Would that be helpful?\"}],\"stop_reason\":\"end_turn\",\"stop_sequence\":null,\"usage\":{\"input_tokens\":654,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"cache_creation\":{\"ephemeral_5m_input_tokens\":0,\"ephemeral_1h_input_tokens\":0},\"output_tokens\":400,\"service_tier\":\"standard\"}}"
+    headers:
+      Anthropic-Ratelimit-Input-Tokens-Limit:
+      - "2000000"
+      Anthropic-Ratelimit-Input-Tokens-Remaining:
+      - "2000000"
+      Anthropic-Ratelimit-Input-Tokens-Reset:
+      - "2025-12-13T02:13:09Z"
+      Anthropic-Ratelimit-Output-Tokens-Limit:
+      - "400000"
+      Anthropic-Ratelimit-Output-Tokens-Remaining:
+      - "400000"
+      Anthropic-Ratelimit-Output-Tokens-Reset:
+      - "2025-12-13T02:13:16Z"
+      Anthropic-Ratelimit-Requests-Limit:
+      - "4000"
+      Anthropic-Ratelimit-Requests-Remaining:
+      - "3999"
+      Anthropic-Ratelimit-Requests-Reset:
+      - "2025-12-13T02:13:07Z"
+      Anthropic-Ratelimit-Tokens-Limit:
+      - "2400000"
+      Anthropic-Ratelimit-Tokens-Remaining:
+      - "2400000"
+      Anthropic-Ratelimit-Tokens-Reset:
+      - "2025-12-13T02:13:09Z"
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad1f0c2cc00a2a8-YUL
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Vary:
+      - Accept-Encoding
+      X-Envoy-Upstream-Service-Time:
+      - "8609"
+      X-Robots-Tag:
+      - none
+    status: 200 OK
+    code: 200
+    duration: 8.683s

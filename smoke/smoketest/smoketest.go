@@ -91,12 +91,26 @@ func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Recor
 	}
 
 	modelsToTest := map[Model]struct{}{}
+	allScoreboardModels := map[string]struct{}{} // Track all models in scoreboard for stale detection
+	staleModels := map[string]map[bool]struct{}{} // Track stale models by name and reason
 	for _, sc := range sb.Scenarios {
 		if len(sc.Models) == 0 {
 			continue
 		}
-		// Only track the first model from each scenario (others are skipped for cost savings)
-		modelsToTest[Model{Model: sc.Models[0], Reason: sc.Reason}] = struct{}{}
+		// Track all models from scenarios for stale detection
+		for _, modelName := range sc.Models {
+			allScoreboardModels[modelName] = struct{}{}
+			// Only mark first model as expected to be tested (others skipped for cost savings)
+			if modelName == sc.Models[0] {
+				modelsToTest[Model{Model: modelName, Reason: sc.Reason}] = struct{}{}
+			}
+		}
+	}
+
+	// Build a set of discovered models from the filtered test list
+	discoveredModels := map[string]struct{}{}
+	for _, m := range models {
+		discoveredModels[m.Model] = struct{}{}
 	}
 
 	for _, m := range models {
@@ -280,6 +294,7 @@ func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Recor
 		}
 	})
 	if !filtered {
+		// Check for models that should have been tested but weren't
 		for model := range modelsToTest {
 			if _, ok := seen[model]; !ok {
 				// Track stale models when updating scoreboard
@@ -291,6 +306,46 @@ func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Recor
 				if !*updateScoreboard {
 					t.Errorf("stale model in scoreboard: %v", model)
 				}
+			}
+		}
+
+		// Check for models in scoreboard that are not in discovered models
+		// These are truly stale (removed from the API)
+		for sbModel := range allScoreboardModels {
+			if _, ok := discoveredModels[sbModel]; !ok {
+				// This model is in scoreboard but not in API
+				// Find which scenario it's in to determine the reason
+				for _, sc := range sb.Scenarios {
+					for _, m := range sc.Models {
+						if m == sbModel {
+							// Skip marking as stale if this is a "To enable later" scenario
+							// (indicated by having no In/Out modalities defined)
+							if (sc.In == nil || len(sc.In) == 0) && (sc.Out == nil || len(sc.Out) == 0) {
+								// This is a "To enable later" model, don't mark as stale
+								break
+							}
+							// Mark this specific model as stale
+							if staleModels[sbModel] == nil {
+								staleModels[sbModel] = make(map[bool]struct{})
+							}
+							staleModels[sbModel][sc.Reason] = struct{}{}
+							break
+						}
+					}
+				}
+				if !*updateScoreboard {
+					t.Errorf("stale model in scoreboard: %v", sbModel)
+				}
+			}
+		}
+
+		// Convert stale models to scenario format for defaultUpdateScoreboard
+		for sbModel := range staleModels {
+			for reason := range staleModels[sbModel] {
+				staleScenarios = append(staleScenarios, scoreboard.Scenario{
+					Models: []string{sbModel},
+					Reason: reason,
+				})
 			}
 		}
 	}
@@ -502,32 +557,38 @@ func defaultUpdateScoreboard(t testing.TB, providerDir string, scenarios []score
 		}
 	}
 
-	// Remove stale scenarios (models no longer being tested)
+	// Remove stale models from scenarios
 	if len(staleScenarios) > 0 {
-		staleMap := make(map[string]map[bool]struct{})
+		staleSet := make(map[string]map[bool]struct{})
 		for _, sc := range staleScenarios {
-			if len(sc.Models) == 0 {
-				continue
+			for _, model := range sc.Models {
+				if staleSet[model] == nil {
+					staleSet[model] = make(map[bool]struct{})
+				}
+				staleSet[model][sc.Reason] = struct{}{}
 			}
-			model := sc.Models[0]
-			if staleMap[model] == nil {
-				staleMap[model] = make(map[bool]struct{})
-			}
-			staleMap[model][sc.Reason] = struct{}{}
 		}
 
-		// Filter out stale scenarios
+		// Filter out stale models from scenarios
 		filtered := make([]scoreboard.Scenario, 0, len(existingScore.Scenarios))
 		for _, sc := range existingScore.Scenarios {
 			if len(sc.Models) == 0 {
 				filtered = append(filtered, sc)
 				continue
 			}
-			model := sc.Models[0]
-			if _, isStale := staleMap[model][sc.Reason]; !isStale {
+			// Remove stale models from this scenario
+			remainingModels := []string{}
+			for _, model := range sc.Models {
+				if _, isStale := staleSet[model][sc.Reason]; !isStale {
+					remainingModels = append(remainingModels, model)
+				} else {
+					t.Logf("Removing stale model %q with reason=%v from scenario", model, sc.Reason)
+				}
+			}
+			// Only add scenario back if it still has models
+			if len(remainingModels) > 0 {
+				sc.Models = remainingModels
 				filtered = append(filtered, sc)
-			} else {
-				t.Logf("Removing stale scenario for model %q with reason=%v", model, sc.Reason)
 			}
 		}
 		existingScore.Scenarios = filtered

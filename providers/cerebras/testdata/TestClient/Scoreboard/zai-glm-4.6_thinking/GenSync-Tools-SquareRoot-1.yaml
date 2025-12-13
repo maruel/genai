@@ -1,0 +1,58 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 552
+    host: api.cerebras.ai
+    body: "{\"model\":\"zai-glm-4.6\",\"messages\":[{\"role\":\"user\",\"content\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"}],\"tool_choice\":\"required\",\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"parallel_tool_calls\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cerebras.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-ba0946d7-85f4-4de9-9ddc-5fe7e7adf682\",\"choices\":[{\"finish_reason\":\"tool_calls\",\"index\":0,\"message\":{\"reasoning\":\"The user wants me to use the square_root tool to calculate the square root of 132413, and they want only the result with no explanation.\\n\\nI have the square_root function available with:\\n- name: square_root\\n- required parameter: number (type: number)\\n\\nThe user provided the number 132413, so I have all the required parameters.\",\"tool_calls\":[{\"id\":\"817a69d29\",\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\": 132413}\"}}],\"role\":\"assistant\"}}],\"created\":1765575867,\"model\":\"zai-glm-4.6\",\"system_fingerprint\":\"fp_e6c956b85601b6c6db6c\",\"object\":\"chat.completion\",\"usage\":{\"total_tokens\":315,\"completion_tokens\":92,\"prompt_tokens\":223,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":0.003218734,\"prompt_time\":0.008101807,\"completion_time\":0.229141904,\"total_time\":0.24231863021850586,\"created\":1765575867.494643}}"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad067335d50a20e-YYZ
+      Content-Type:
+      - application/json
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - cloudflare
+      Server-Timing:
+      - cfCacheStatus;desc="DYNAMIC"
+      - cfEdge;dur=8,cfOrigin;dur=408
+      Strict-Transport-Security:
+      - max-age=3600; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Ratelimit-Remaining-Requests-Day:
+      - "66"
+      X-Ratelimit-Remaining-Requests-Hour:
+      - "66"
+      X-Ratelimit-Remaining-Requests-Minute:
+      - "8"
+      X-Ratelimit-Remaining-Tokens-Day:
+      - "907329"
+      X-Ratelimit-Remaining-Tokens-Hour:
+      - "16328"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "19010"
+    status: 200 OK
+    code: 200
+    duration: 430ms

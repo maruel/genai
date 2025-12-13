@@ -19,24 +19,27 @@ interactions:
     proto_minor: 0
     content_length: -1
     uncompressed: true
-    body: "{\"object\":\"list\",\"data\":[{\"id\":\"qwen-3-235b-a22b-instruct-2507\",\"object\":\"model\",\"created\":0,\"owned_by\":\"Cerebras\"},{\"id\":\"qwen-3-coder-480b\",\"object\":\"model\",\"created\":0,\"owned_by\":\"Cerebras\"},{\"id\":\"gpt-oss-120b\",\"object\":\"model\",\"created\":0,\"owned_by\":\"Cerebras\"},{\"id\":\"llama-4-maverick-17b-128e-instruct\",\"object\":\"model\",\"created\":0,\"owned_by\":\"Cerebras\"},{\"id\":\"llama-3.3-70b\",\"object\":\"model\",\"created\":0,\"owned_by\":\"Cerebras\"},{\"id\":\"llama3.1-8b\",\"object\":\"model\",\"created\":0,\"owned_by\":\"Cerebras\"},{\"id\":\"llama-4-scout-17b-16e-instruct\",\"object\":\"model\",\"created\":0,\"owned_by\":\"Cerebras\"},{\"id\":\"qwen-3-32b\",\"object\":\"model\",\"created\":0,\"owned_by\":\"Cerebras\"},{\"id\":\"qwen-3-235b-a22b-thinking-2507\",\"object\":\"model\",\"created\":0,\"owned_by\":\"Cerebras\"}]}"
+    body: "{\"object\":\"list\",\"data\":[{\"id\":\"qwen-3-235b-a22b-instruct-2507\",\"object\":\"model\",\"created\":0,\"owned_by\":\"Cerebras\"},{\"id\":\"gpt-oss-120b\",\"object\":\"model\",\"created\":0,\"owned_by\":\"Cerebras\"},{\"id\":\"llama-3.3-70b\",\"object\":\"model\",\"created\":0,\"owned_by\":\"Cerebras\"},{\"id\":\"zai-glm-4.6\",\"object\":\"model\",\"created\":0,\"owned_by\":\"Cerebras\"},{\"id\":\"qwen-3-32b\",\"object\":\"model\",\"created\":0,\"owned_by\":\"Cerebras\"},{\"id\":\"llama3.1-8b\",\"object\":\"model\",\"created\":0,\"owned_by\":\"Cerebras\"}]}"
     headers:
       Alt-Svc:
       - h3=":443"; ma=86400
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9776bb239f1c36bb-YYZ
+      - 9ad01a71cb6ba2f7-YUL
       Content-Type:
       - application/json
       Referrer-Policy:
       - strict-origin-when-cross-origin
       Server:
       - cloudflare
+      Server-Timing:
+      - cfCacheStatus;desc="DYNAMIC"
+      - cfEdge;dur=9,cfOrigin;dur=89
       Strict-Transport-Security:
       - max-age=3600; includeSubDomains
       X-Content-Type-Options:
       - nosniff
     status: 200 OK
     code: 200
-    duration: 174ms
+    duration: 149ms

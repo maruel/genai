@@ -1,0 +1,57 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 786
+    host: api.cerebras.ai
+    body: "{\"model\":\"qwen-3-32b\",\"messages\":[{\"role\":\"user\",\"content\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"},{\"role\":\"assistant\",\"tool_calls\":[{\"type\":\"function\",\"id\":\"eb96a8b6e\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\": 132413}\"}}]},{\"role\":\"tool\",\"content\":\"363.89\",\"tool_call_id\":\"eb96a8b6e\",\"name\":\"square_root\"}],\"stream\":true,\"tool_choice\":\"none\",\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"parallel_tool_calls\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cerebras.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"chatcmpl-606dbef3-cac5-414e-b717-ac846d7619c3\",\"choices\":[{\"delta\":{\"role\":\"assistant\"},\"index\":0}],\"created\":1765575879,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-606dbef3-cac5-414e-b717-ac846d7619c3\",\"choices\":[{\"delta\":{\"content\":\"<think>\"},\"index\":0}],\"created\":1765575879,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-606dbef3-cac5-414e-b717-ac846d7619c3\",\"choices\":[{\"delta\":{\"content\":\"\\nOkay, let me check the user's\"},\"index\":0}],\"created\":1765575879,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-606dbef3-cac5-414e-b717-ac846d7619c3\",\"choices\":[{\"delta\":{\"content\":\" query again. They wanted the square\"},\"index\":0}],\"created\":1765575879,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-606dbef3-cac5-414e-b717-ac846d7619c3\",\"choices\":[{\"delta\":{\"content\":\" root of 132413 using the square_root tool\"},\"index\":0}],\"created\":1765575879,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-606dbef3-cac5-414e-b717-ac846d7619c3\",\"choices\":[{\"delta\":{\"content\":\". The tool response came back as \"},\"index\":0}],\"created\":1765575879,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-606dbef3-cac5-414e-b717-ac846d7619c3\",\"choices\":[{\"delta\":{\"content\":\"363.89. Hmm, I\"},\"index\":0}],\"created\":1765575879,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-606dbef3-cac5-414e-b717-ac846d7619c3\",\"choices\":[{\"delta\":{\"content\":\" need to verify if that's accurate.\\n\\nFirst\"},\"index\":0}],\"created\":1765575879,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-606dbef3-cac5-414e-b717-ac846d7619c3\",\"choices\":[{\"delta\":{\"content\":\", I'll calculate 36\"},\"index\":0}],\"created\":1765575879,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-606dbef3-cac5-414e-b717-ac846d7619c3\",\"choices\":[{\"delta\":{\"content\":\"3.89 squared to see if it's close to 13\"},\"index\":0}],\"created\":1765575879,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-606dbef3-cac5-414e-b717-ac846d7619c3\",\"choices\":[{\"delta\":{\"content\":\"2413. Let's do the math:\"},\"index\":0}],\"created\":1765575879,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-606dbef3-cac5-414e-b717-ac846d7619c3\",\"choices\":[{\"delta\":{\"content\":\" 363.89 * 36\"},\"index\":0}],\"created\":1765575879,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-606dbef3-cac5-414e-b717-ac846d7619c3\",\"choices\":[{\"delta\":{\"content\":\"3.89. Breaking it down, 360 squared\"},\"index\":0}],\"created\":1765575879,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-606dbef3-cac5-414e-b717-ac846d7619c3\",\"choices\":[{\"delta\":{\"content\":\" is 12960\"},\"index\":0}],\"created\":1765575879,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-606dbef3-cac5-414e-b717-ac846d7619c3\",\"choices\":[{\"delta\":{\"content\":\"0. Then, 3.89 squared is about \"},\"index\":0}],\"created\":1765575879,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-606dbef3-cac5-414e-b717-ac846d7619c3\",\"choices\":[{\"delta\":{\"content\":\"15.13. The cross term is\"},\"index\":0}],\"created\":1765575879,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-606dbef3-cac5-414e-b717-ac846d7619c3\",\"choices\":[{\"delta\":{\"content\":\" 2*360*3.89 = 2\"},\"index\":0}],\"created\":1765575879,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-606dbef3-cac5-414e-b717-ac846d7619c3\",\"choices\":[{\"delta\":{\"content\":\"*360*3.89 = 72\"},\"index\":0}],\"created\":1765575879,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-606dbef3-cac5-414e-b717-ac846d7619c3\",\"choices\":[{\"delta\":{\"content\":\"0*3.89 ≈ 2800\"},\"index\":0}],\"created\":1765575879,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-606dbef3-cac5-414e-b717-ac846d7619c3\",\"choices\":[{\"delta\":{\"content\":\".8. Adding them up: 1\"},\"index\":0}],\"created\":1765575879,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-606dbef3-cac5-414e-b717-ac846d7619c3\",\"choices\":[{\"delta\":{\"content\":\"29600 + 2800.8\"},\"index\":0}],\"created\":1765575879,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-606dbef3-cac5-414e-b717-ac846d7619c3\",\"choices\":[{\"delta\":{\"content\":\" + 15.13 ≈ 13\"},\"index\":0}],\"created\":1765575879,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-606dbef3-cac5-414e-b717-ac846d7619c3\",\"choices\":[{\"delta\":{\"content\":\"2,415.93. That's pretty\"},\"index\":0}],\"created\":1765575879,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-606dbef3-cac5-414e-b717-ac846d7619c3\",\"choices\":[{\"delta\":{\"content\":\" close to 132,413\"},\"index\":0}],\"created\":1765575879,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-606dbef3-cac5-414e-b717-ac846d7619c3\",\"choices\":[{\"delta\":{\"content\":\". The slight difference might be due\"},\"index\":0}],\"created\":1765575879,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-606dbef3-cac5-414e-b717-ac846d7619c3\",\"choices\":[{\"delta\":{\"content\":\" to rounding. The tool probably rounded to two decimal places\"},\"index\":0}],\"created\":1765575879,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-606dbef3-cac5-414e-b717-ac846d7619c3\",\"choices\":[{\"delta\":{\"content\":\", so 363.89 is correct.\"},\"index\":0}],\"created\":1765575879,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-606dbef3-cac5-414e-b717-ac846d7619c3\",\"choices\":[{\"delta\":{\"content\":\" I should just present the result as given.\\n\"},\"index\":0}],\"created\":1765575879,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-606dbef3-cac5-414e-b717-ac846d7619c3\",\"choices\":[{\"delta\":{\"content\":\"</think>\"},\"index\":0}],\"created\":1765575879,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-606dbef3-cac5-414e-b717-ac846d7619c3\",\"choices\":[{\"delta\":{\"content\":\"\\n\\n363.89\"},\"index\":0}],\"created\":1765575879,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-606dbef3-cac5-414e-b717-ac846d7619c3\",\"choices\":[{\"delta\":{},\"finish_reason\":\"stop\",\"index\":0}],\"created\":1765575879,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\",\"usage\":{\"total_tokens\":373,\"completion_tokens\":290,\"prompt_tokens\":83,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":0.00004821,\"prompt_time\":0.002387858,\"completion_time\":0.131385391,\"total_time\":0.14052462577819824,\"created\":1765575879.7022817}}\n\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad0677fa8a1a20e-YYZ
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - cloudflare
+      Server-Timing:
+      - cfCacheStatus;desc="DYNAMIC"
+      - cfEdge;dur=8,cfOrigin;dur=123
+      Strict-Transport-Security:
+      - max-age=3600; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Ratelimit-Remaining-Requests-Day:
+      - "14390"
+      X-Ratelimit-Remaining-Requests-Hour:
+      - "890"
+      X-Ratelimit-Remaining-Requests-Minute:
+      - "20"
+      X-Ratelimit-Remaining-Tokens-Day:
+      - "982237"
+      X-Ratelimit-Remaining-Tokens-Hour:
+      - "982237"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "46237"
+    status: 200 OK
+    code: 200
+    duration: 145ms

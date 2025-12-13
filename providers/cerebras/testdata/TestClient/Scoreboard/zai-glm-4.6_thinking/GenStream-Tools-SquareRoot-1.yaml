@@ -1,0 +1,57 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 566
+    host: api.cerebras.ai
+    body: "{\"model\":\"zai-glm-4.6\",\"messages\":[{\"role\":\"user\",\"content\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"}],\"stream\":true,\"tool_choice\":\"required\",\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"parallel_tool_calls\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cerebras.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"chatcmpl-8d574620-2215-4a69-a6d2-018da5615a33\",\"choices\":[{\"delta\":{\"role\":\"assistant\"},\"index\":0}],\"created\":1765575807,\"model\":\"zai-glm-4.6\",\"system_fingerprint\":\"fp_e6c956b85601b6c6db6c\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-8d574620-2215-4a69-a6d2-018da5615a33\",\"choices\":[{\"delta\":{\"reasoning\":\"The\"},\"index\":0}],\"created\":1765575807,\"model\":\"zai-glm-4.6\",\"system_fingerprint\":\"fp_e6c956b85601b6c6db6c\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-8d574620-2215-4a69-a6d2-018da5615a33\",\"choices\":[{\"delta\":{\"reasoning\":\" user wants me to use the square_root\"},\"index\":0}],\"created\":1765575807,\"model\":\"zai-glm-4.6\",\"system_fingerprint\":\"fp_e6c956b85601b6c6db6c\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-8d574620-2215-4a69-a6d2-018da5615a33\",\"choices\":[{\"delta\":{\"reasoning\":\" tool to\"},\"index\":0}],\"created\":1765575807,\"model\":\"zai-glm-4.6\",\"system_fingerprint\":\"fp_e6c956b85601b6c6db6c\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-8d574620-2215-4a69-a6d2-018da5615a33\",\"choices\":[{\"delta\":{\"reasoning\":\" calculate the square root of 132413, and\"},\"index\":0}],\"created\":1765575807,\"model\":\"zai-glm-4.6\",\"system_fingerprint\":\"fp_e6c956b85601b6c6db6c\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-8d574620-2215-4a69-a6d2-018da5615a33\",\"choices\":[{\"delta\":{\"reasoning\":\" they want\"},\"index\":0}],\"created\":1765575807,\"model\":\"zai-glm-4.6\",\"system_fingerprint\":\"fp_e6c956b85601b6c6db6c\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-8d574620-2215-4a69-a6d2-018da5615a33\",\"choices\":[{\"delta\":{\"reasoning\":\" only\"},\"index\":0}],\"created\":1765575807,\"model\":\"zai-glm-4.6\",\"system_fingerprint\":\"fp_e6c956b85601b6c6db6c\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-8d574620-2215-4a69-a6d2-018da5615a33\",\"choices\":[{\"delta\":{\"reasoning\":\" the\"},\"index\":0}],\"created\":1765575807,\"model\":\"zai-glm-4.6\",\"system_fingerprint\":\"fp_e6c956b85601b6c6db6c\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-8d574620-2215-4a69-a6d2-018da5615a33\",\"choices\":[{\"delta\":{\"reasoning\":\" result with no\"},\"index\":0}],\"created\":1765575807,\"model\":\"zai-glm-4.6\",\"system_fingerprint\":\"fp_e6c956b85601b6c6db6c\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-8d574620-2215-4a69-a6d2-018da5615a33\",\"choices\":[{\"delta\":{\"reasoning\":\" explanation. Let\"},\"index\":0}],\"created\":1765575807,\"model\":\"zai-glm-4.6\",\"system_fingerprint\":\"fp_e6c956b85601b6c6db6c\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-8d574620-2215-4a69-a6d2-018da5615a33\",\"choices\":[{\"delta\":{\"reasoning\":\" me\"},\"index\":0}],\"created\":1765575807,\"model\":\"zai-glm-4.6\",\"system_fingerprint\":\"fp_e6c956b85601b6c6db6c\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-8d574620-2215-4a69-a6d2-018da5615a33\",\"choices\":[{\"delta\":{\"reasoning\":\" call\"},\"index\":0}],\"created\":1765575807,\"model\":\"zai-glm-4.6\",\"system_fingerprint\":\"fp_e6c956b85601b6c6db6c\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-8d574620-2215-4a69-a6d2-018da5615a33\",\"choices\":[{\"delta\":{\"reasoning\":\" the\"},\"index\":0}],\"created\":1765575807,\"model\":\"zai-glm-4.6\",\"system_fingerprint\":\"fp_e6c956b85601b6c6db6c\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-8d574620-2215-4a69-a6d2-018da5615a33\",\"choices\":[{\"delta\":{\"reasoning\":\" function with this\"},\"index\":0}],\"created\":1765575807,\"model\":\"zai-glm-4.6\",\"system_fingerprint\":\"fp_e6c956b85601b6c6db6c\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-8d574620-2215-4a69-a6d2-018da5615a33\",\"choices\":[{\"delta\":{\"reasoning\":\" number\"},\"index\":0}],\"created\":1765575807,\"model\":\"zai-glm-4.6\",\"system_fingerprint\":\"fp_e6c956b85601b6c6db6c\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-8d574620-2215-4a69-a6d2-018da5615a33\",\"choices\":[{\"delta\":{\"reasoning\":\".\"},\"index\":0}],\"created\":1765575807,\"model\":\"zai-glm-4.6\",\"system_fingerprint\":\"fp_e6c956b85601b6c6db6c\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-8d574620-2215-4a69-a6d2-018da5615a33\",\"choices\":[{\"delta\":{\"tool_calls\":[{\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\": 132413}\"},\"type\":\"function\",\"id\":\"c8fd2079a\",\"index\":0}]},\"index\":0}],\"created\":1765575807,\"model\":\"zai-glm-4.6\",\"system_fingerprint\":\"fp_e6c956b85601b6c6db6c\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-8d574620-2215-4a69-a6d2-018da5615a33\",\"choices\":[{\"delta\":{},\"finish_reason\":\"tool_calls\",\"index\":0}],\"created\":1765575807,\"model\":\"zai-glm-4.6\",\"system_fingerprint\":\"fp_e6c956b85601b6c6db6c\",\"object\":\"chat.completion.chunk\",\"usage\":{\"total_tokens\":281,\"completion_tokens\":58,\"prompt_tokens\":223,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":0.003206445,\"prompt_time\":0.007213437,\"completion_time\":0.10113221,\"total_time\":0.11355757713317871,\"created\":1765575807.0416994}}\n\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad065b99898a20e-YYZ
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - cloudflare
+      Server-Timing:
+      - cfCacheStatus;desc="DYNAMIC"
+      - cfEdge;dur=5,cfOrigin;dur=157
+      Strict-Transport-Security:
+      - max-age=3600; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Ratelimit-Remaining-Requests-Day:
+      - "73"
+      X-Ratelimit-Remaining-Requests-Hour:
+      - "73"
+      X-Ratelimit-Remaining-Requests-Minute:
+      - "8"
+      X-Ratelimit-Remaining-Tokens-Day:
+      - "910076"
+      X-Ratelimit-Remaining-Tokens-Hour:
+      - "15659"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "19010"
+    status: 200 OK
+    code: 200
+    duration: 59.268s

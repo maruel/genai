@@ -25,7 +25,7 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 97442c35f9177c6c-EWR
+      - 9ad01a73ee6da2f7-YUL
       Content-Length:
       - "99"
       Content-Type:
@@ -34,10 +34,13 @@ interactions:
       - strict-origin-when-cross-origin
       Server:
       - cloudflare
+      Server-Timing:
+      - cfCacheStatus;desc="DYNAMIC"
+      - cfEdge;dur=6,cfOrigin;dur=77
       Strict-Transport-Security:
       - max-age=3600; includeSubDomains
       X-Content-Type-Options:
       - nosniff
     status: 401 Unauthorized
     code: 401
-    duration: 101ms
+    duration: 91ms

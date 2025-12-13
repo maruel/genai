@@ -1,0 +1,57 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 247
+    host: api.cerebras.ai
+    body: "{\"model\":\"zai-glm-4.6\",\"messages\":[{\"role\":\"user\",\"content\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\\\"is_fruit\\\": bool}.\"}],\"response_format\":{\"type\":\"json_object\"},\"stream\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cerebras.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"chatcmpl-3b2ed2ac-f257-4b96-973b-7eff3ac34afd\",\"choices\":[{\"delta\":{\"role\":\"assistant\"},\"index\":0}],\"created\":1765575744,\"model\":\"zai-glm-4.6\",\"system_fingerprint\":\"fp_e6c956b85601b6c6db6c\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-3b2ed2ac-f257-4b96-973b-7eff3ac34afd\",\"choices\":[{\"delta\":{\"content\":\"{\\\"\"},\"index\":0}],\"created\":1765575744,\"model\":\"zai-glm-4.6\",\"system_fingerprint\":\"fp_e6c956b85601b6c6db6c\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-3b2ed2ac-f257-4b96-973b-7eff3ac34afd\",\"choices\":[{\"delta\":{\"content\":\"is_f\"},\"index\":0}],\"created\":1765575744,\"model\":\"zai-glm-4.6\",\"system_fingerprint\":\"fp_e6c956b85601b6c6db6c\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-3b2ed2ac-f257-4b96-973b-7eff3ac34afd\",\"choices\":[{\"delta\":{\"content\":\"ruit\\\": true}\\r\\n\"},\"index\":0}],\"created\":1765575744,\"model\":\"zai-glm-4.6\",\"system_fingerprint\":\"fp_e6c956b85601b6c6db6c\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-3b2ed2ac-f257-4b96-973b-7eff3ac34afd\",\"choices\":[{\"delta\":{},\"index\":0}],\"created\":1765575744,\"model\":\"zai-glm-4.6\",\"system_fingerprint\":\"fp_e6c956b85601b6c6db6c\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-3b2ed2ac-f257-4b96-973b-7eff3ac34afd\",\"choices\":[{\"delta\":{},\"finish_reason\":\"stop\",\"index\":0}],\"created\":1765575744,\"model\":\"zai-glm-4.6\",\"system_fingerprint\":\"fp_e6c956b85601b6c6db6c\",\"object\":\"chat.completion.chunk\",\"usage\":{\"total_tokens\":124,\"completion_tokens\":12,\"prompt_tokens\":112,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":0.00287954,\"prompt_time\":0.005045872,\"completion_time\":0.031128924,\"total_time\":0.04141950607299805,\"created\":1765575744.6506171}}\n\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad06444bc35a220-YYZ
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - cloudflare
+      Server-Timing:
+      - cfCacheStatus;desc="DYNAMIC"
+      - cfEdge;dur=5,cfOrigin;dur=211
+      Strict-Transport-Security:
+      - max-age=3600; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Ratelimit-Remaining-Requests-Day:
+      - "76"
+      X-Ratelimit-Remaining-Requests-Hour:
+      - "76"
+      X-Ratelimit-Remaining-Requests-Minute:
+      - "5"
+      X-Ratelimit-Remaining-Tokens-Day:
+      - "951358"
+      X-Ratelimit-Remaining-Tokens-Hour:
+      - "56941"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "19009"
+    status: 200 OK
+    code: 200
+    duration: 1m0.354s

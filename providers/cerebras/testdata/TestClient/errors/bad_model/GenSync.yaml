@@ -27,17 +27,20 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 97442c36a9b97c6c-EWR
+      - 9ad01a747f33a2f7-YUL
       Content-Type:
       - application/json
       Referrer-Policy:
       - strict-origin-when-cross-origin
       Server:
       - cloudflare
+      Server-Timing:
+      - cfCacheStatus;desc="DYNAMIC"
+      - cfEdge;dur=6,cfOrigin;dur=91
       Strict-Transport-Security:
       - max-age=3600; includeSubDomains
       X-Content-Type-Options:
       - nosniff
     status: 404 Not Found
     code: 404
-    duration: 115ms
+    duration: 105ms

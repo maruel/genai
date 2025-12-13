@@ -1,0 +1,58 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 95
+    host: api.cerebras.ai
+    body: "{\"model\":\"zai-glm-4.6\",\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cerebras.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-9c630b58-13ff-452c-80b6-048c9d222f39\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"\\nHello.\",\"reasoning\":\"\\n1.  **Analyze the user's request:**\\n    *   \\\"Say hello.\\\" - The core task is to provide a greeting.\\n    *   \\\"Use only one word.\\\" - This is a strict constraint. The response must be exactly one word.\\n\\n2.  **Brainstorm possible one-word greetings:**\\n    *   Hello\\n    *   Hi\\n    *   Hey\\n    *   Greetings (This is technically one word, but a bit formal for this kind of interaction)\\n    *   Salutations (Even more formal, also one word)\\n    *   Yo (Very informal)\\n    *   Howdy (Informal, regional)\\n\\n3.  **Evaluate the options against the request:**\\n    *   The request itself uses the word \\\"hello\\\".\\n    *   Using \\\"hello\\\" directly fulfills the request in the most straightforward and literal way.\\n    *   \\\"Hi\\\" is a good alternative. It's friendly, common, and one word.\\n    *   \\\"Hey\\\" is also good, but can sometimes be seen as slightly more attention-grabbing than a simple \\\"hello\\\".\\n    *   \\\"Greetings\\\" and \\\"Salutations\\\" are technically correct but might feel a bit stilted or robotic for a simple \\\"say hello\\\" prompt.\\n    *   \\\"Yo\\\" and \\\"Howdy\\\" are stylistic choices. They're correct, but \\\"Hello\\\" is the most neutral and direct answer.\\n\\n4.  **Select the best option:**\\n    *   The most direct, simple, and universally understood answer that perfectly matches the request is \\\"Hello\\\".\\n    *   It's the word the user literally asked me to say.\\n    *   It adheres to the \\\"one word\\\" rule.\\n    *   There's no ambiguity.\\n\\n5.  **Final check:**\\n    *   Does the response \\\"Hello\\\" meet all criteria?\\n        *   Does it say hello? Yes, it is \\\"hello\\\".\\n        *   Is it only one word? Yes.\\n    *   The response is \\\"Hello\\\". Perfect. No extra text, no punctuation (unless it's part of the word, which it isn't). Just the single word.\",\"role\":\"assistant\"}}],\"created\":1765575683,\"model\":\"zai-glm-4.6\",\"system_fingerprint\":\"fp_e6c956b85601b6c6db6c\",\"object\":\"chat.completion\",\"usage\":{\"total_tokens\":465,\"completion_tokens\":452,\"prompt_tokens\":13,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":0.000526289,\"prompt_time\":0.003680963,\"completion_time\":0.695364354,\"total_time\":0.7008826732635498,\"created\":1765575683.9718366}}"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad062b81d77a216-YYZ
+      Content-Type:
+      - application/json
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - cloudflare
+      Server-Timing:
+      - cfCacheStatus;desc="DYNAMIC"
+      - cfEdge;dur=6,cfOrigin;dur=875
+      Strict-Transport-Security:
+      - max-age=3600; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Ratelimit-Remaining-Requests-Day:
+      - "86"
+      X-Ratelimit-Remaining-Requests-Hour:
+      - "86"
+      X-Ratelimit-Remaining-Requests-Minute:
+      - "9"
+      X-Ratelimit-Remaining-Tokens-Day:
+      - "954916"
+      X-Ratelimit-Remaining-Tokens-Hour:
+      - "54916"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "19033"
+    status: 200 OK
+    code: 200
+    duration: 893ms

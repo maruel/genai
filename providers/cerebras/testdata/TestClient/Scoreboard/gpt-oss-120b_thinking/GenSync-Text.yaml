@@ -20,40 +20,39 @@ interactions:
     proto_minor: 0
     content_length: -1
     uncompressed: true
-    body: "{\"id\":\"chatcmpl-a1ca741d-ba32-4e25-81ce-250fce002b03\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"Hello\",\"reasoning\":\"The user wants a one-word response that says hello. So we need a single word which conveys hello. Could be \\\"Hello\\\". That is one word. Should we add punctuation? The instruction says \\\"Use only one word.\\\" Likely punctuation is okay if attached? Safer to just output \\\"Hello\\\". That's a word, presumably okay.\",\"role\":\"assistant\"}}],\"created\":1756416738,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_a5fe16f102a24cf8caf1\",\"object\":\"chat.completion\",\"usage\":{\"prompt_tokens\":75,\"completion_tokens\":79,\"total_tokens\":154,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":0.001352534,\"prompt_time\":0.004138691,\"completion_time\":0.085803829,\"total_time\":0.09269571304321289,\"created\":1756416738}}"
+    body: "{\"id\":\"chatcmpl-66ec8265-ec22-404e-baec-e1a7e40a3b29\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"Hello\",\"reasoning\":\"We need to respond with a single word, saying hello. So just \\\"Hello\\\". Ensure only one word.\",\"role\":\"assistant\"}}],\"created\":1765572846,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_b39cfdb1b0484bd984f9\",\"object\":\"chat.completion\",\"usage\":{\"total_tokens\":108,\"completion_tokens\":33,\"prompt_tokens\":75,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":0.169318321,\"prompt_time\":0.00617716,\"completion_time\":0.019029832,\"total_time\":0.19560813903808594,\"created\":1765572846.7660706}}"
     headers:
       Alt-Svc:
       - h3=":443"; ma=86400
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9766eba40c9557f3-IAD
+      - 9ad01d6d3e1aa2f7-YUL
       Content-Type:
       - application/json
-      Inference-Id:
-      - chatcmpl-a1ca741d-ba32-4e25-81ce-250fce002b03
       Referrer-Policy:
       - strict-origin-when-cross-origin
       Server:
       - cloudflare
+      Server-Timing:
+      - cfCacheStatus;desc="DYNAMIC"
+      - cfEdge;dur=6,cfOrigin;dur=445
       Strict-Transport-Security:
       - max-age=3600; includeSubDomains
       X-Content-Type-Options:
       - nosniff
-      X-Ratelimit-Limit-Requests-Day:
-      - "14400"
-      X-Ratelimit-Limit-Tokens-Minute:
-      - "64000"
       X-Ratelimit-Remaining-Requests-Day:
-      - "14368"
+      - "14398"
+      X-Ratelimit-Remaining-Requests-Hour:
+      - "898"
+      X-Ratelimit-Remaining-Requests-Minute:
+      - "28"
+      X-Ratelimit-Remaining-Tokens-Day:
+      - "967116"
+      X-Ratelimit-Remaining-Tokens-Hour:
+      - "967116"
       X-Ratelimit-Remaining-Tokens-Minute:
-      - "64000"
-      X-Ratelimit-Reset-Requests-Day:
-      - "8861.845868587494"
-      X-Ratelimit-Reset-Tokens-Minute:
-      - "41.8458685874939"
-      X-Request-Id:
-      - 9766eba40c9557f3-IAD
+      - "31116"
     status: 200 OK
     code: 200
-    duration: 356ms
+    duration: 1m0.621s

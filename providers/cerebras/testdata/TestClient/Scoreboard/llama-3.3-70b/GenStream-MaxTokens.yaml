@@ -1,95 +1,57 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 159
-        host: api.cerebras.ai
-        body: |
-            {"model":"llama-3.3-70b","messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"max_completion_tokens":16,"stream":true}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.cerebras.ai/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        body: |+
-            data: {"id":"chatcmpl-42584453-34ee-43bf-a54c-5e444bb4a059","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1753569322,"model":"llama-3.3-70b","system_fingerprint":"fp_e922c6c4c8013529051a","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-42584453-34ee-43bf-a54c-5e444bb4a059","choices":[{"delta":{"content":"The"},"index":0}],"created":1753569322,"model":"llama-3.3-70b","system_fingerprint":"fp_e922c6c4c8013529051a","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-42584453-34ee-43bf-a54c-5e444bb4a059","choices":[{"delta":{"content":" theory"},"index":0}],"created":1753569322,"model":"llama-3.3-70b","system_fingerprint":"fp_e922c6c4c8013529051a","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-42584453-34ee-43bf-a54c-5e444bb4a059","choices":[{"delta":{"content":" of"},"index":0}],"created":1753569322,"model":"llama-3.3-70b","system_fingerprint":"fp_e922c6c4c8013529051a","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-42584453-34ee-43bf-a54c-5e444bb4a059","choices":[{"delta":{"content":" rel"},"index":0}],"created":1753569322,"model":"llama-3.3-70b","system_fingerprint":"fp_e922c6c4c8013529051a","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-42584453-34ee-43bf-a54c-5e444bb4a059","choices":[{"delta":{"content":"ativity"},"index":0}],"created":1753569322,"model":"llama-3.3-70b","system_fingerprint":"fp_e922c6c4c8013529051a","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-42584453-34ee-43bf-a54c-5e444bb4a059","choices":[{"delta":{"content":","},"index":0}],"created":1753569322,"model":"llama-3.3-70b","system_fingerprint":"fp_e922c6c4c8013529051a","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-42584453-34ee-43bf-a54c-5e444bb4a059","choices":[{"delta":{"content":" developed"},"index":0}],"created":1753569322,"model":"llama-3.3-70b","system_fingerprint":"fp_e922c6c4c8013529051a","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-42584453-34ee-43bf-a54c-5e444bb4a059","choices":[{"delta":{"content":" by"},"index":0}],"created":1753569322,"model":"llama-3.3-70b","system_fingerprint":"fp_e922c6c4c8013529051a","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-42584453-34ee-43bf-a54c-5e444bb4a059","choices":[{"delta":{"content":" Albert"},"index":0}],"created":1753569322,"model":"llama-3.3-70b","system_fingerprint":"fp_e922c6c4c8013529051a","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-42584453-34ee-43bf-a54c-5e444bb4a059","choices":[{"delta":{"content":" Einstein"},"index":0}],"created":1753569322,"model":"llama-3.3-70b","system_fingerprint":"fp_e922c6c4c8013529051a","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-42584453-34ee-43bf-a54c-5e444bb4a059","choices":[{"delta":{"content":","},"index":0}],"created":1753569322,"model":"llama-3.3-70b","system_fingerprint":"fp_e922c6c4c8013529051a","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-42584453-34ee-43bf-a54c-5e444bb4a059","choices":[{"delta":{"content":" is"},"index":0}],"created":1753569322,"model":"llama-3.3-70b","system_fingerprint":"fp_e922c6c4c8013529051a","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-42584453-34ee-43bf-a54c-5e444bb4a059","choices":[{"delta":{"content":" a"},"index":0}],"created":1753569322,"model":"llama-3.3-70b","system_fingerprint":"fp_e922c6c4c8013529051a","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-42584453-34ee-43bf-a54c-5e444bb4a059","choices":[{"delta":{"content":" fundamental"},"index":0}],"created":1753569322,"model":"llama-3.3-70b","system_fingerprint":"fp_e922c6c4c8013529051a","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-42584453-34ee-43bf-a54c-5e444bb4a059","choices":[{"delta":{"content":" concept"},"index":0}],"created":1753569322,"model":"llama-3.3-70b","system_fingerprint":"fp_e922c6c4c8013529051a","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-42584453-34ee-43bf-a54c-5e444bb4a059","choices":[{"delta":{"content":" in"},"index":0}],"created":1753569322,"model":"llama-3.3-70b","system_fingerprint":"fp_e922c6c4c8013529051a","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-42584453-34ee-43bf-a54c-5e444bb4a059","choices":[{"delta":{},"finish_reason":"length","index":0}],"created":1753569322,"model":"llama-3.3-70b","system_fingerprint":"fp_e922c6c4c8013529051a","object":"chat.completion.chunk","usage":{"prompt_tokens":46,"completion_tokens":16,"total_tokens":62,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.000652325,"prompt_time":0.002282369,"completion_time":0.005404364,"total_time":0.010620355606079102,"created":1753569322}}
-
-        headers:
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 96575eab6b22a275-YUL
-            Content-Type:
-                - text/event-stream; charset=utf-8
-            Inference-Id:
-                - chatcmpl-42584453-34ee-43bf-a54c-5e444bb4a059
-            Referrer-Policy:
-                - strict-origin-when-cross-origin
-            Server:
-                - cloudflare
-            Strict-Transport-Security:
-                - max-age=3600; includeSubDomains
-            X-Content-Type-Options:
-                - nosniff
-            X-Ratelimit-Limit-Requests-Day:
-                - "14400"
-            X-Ratelimit-Limit-Tokens-Minute:
-                - "64000"
-            X-Ratelimit-Remaining-Requests-Day:
-                - "14366"
-            X-Ratelimit-Remaining-Tokens-Minute:
-                - "63862"
-            X-Ratelimit-Reset-Requests-Day:
-                - "5077.007632732391"
-            X-Ratelimit-Reset-Tokens-Minute:
-                - "37.00763273239136"
-            X-Request-Id:
-                - 96575eab6b22a275-YUL
-        status: 200 OK
-        code: 200
-        duration: 255ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 159
+    host: api.cerebras.ai
+    body: "{\"model\":\"llama-3.3-70b\",\"messages\":[{\"role\":\"user\",\"content\":\"Explain the theory of relativity in great details.\"}],\"max_completion_tokens\":16,\"stream\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cerebras.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"chatcmpl-76018f91-25ba-4ed6-a0ca-417e45965991\",\"choices\":[{\"delta\":{\"role\":\"assistant\"},\"index\":0}],\"created\":1765575979,\"model\":\"llama-3.3-70b\",\"system_fingerprint\":\"fp_be206b5e5c4f87591303\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-76018f91-25ba-4ed6-a0ca-417e45965991\",\"choices\":[{\"delta\":{\"content\":\"The\"},\"index\":0}],\"created\":1765575979,\"model\":\"llama-3.3-70b\",\"system_fingerprint\":\"fp_be206b5e5c4f87591303\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-76018f91-25ba-4ed6-a0ca-417e45965991\",\"choices\":[{\"delta\":{\"content\":\" theory of relativity, developed by Albert Einstein, is a fundamental concept\"},\"index\":0}],\"created\":1765575979,\"model\":\"llama-3.3-70b\",\"system_fingerprint\":\"fp_be206b5e5c4f87591303\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-76018f91-25ba-4ed6-a0ca-417e45965991\",\"choices\":[{\"delta\":{\"content\":\" in\"},\"index\":0}],\"created\":1765575979,\"model\":\"llama-3.3-70b\",\"system_fingerprint\":\"fp_be206b5e5c4f87591303\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-76018f91-25ba-4ed6-a0ca-417e45965991\",\"choices\":[{\"delta\":{},\"finish_reason\":\"length\",\"index\":0}],\"created\":1765575979,\"model\":\"llama-3.3-70b\",\"system_fingerprint\":\"fp_be206b5e5c4f87591303\",\"object\":\"chat.completion.chunk\",\"usage\":{\"total_tokens\":62,\"completion_tokens\":16,\"prompt_tokens\":46,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":0.012628444,\"prompt_time\":0.0025428429999999995,\"completion_time\":0.006726737,\"total_time\":0.02375197410583496,\"created\":1765575979.1860948}}\n\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad069ed5daea2be-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - cloudflare
+      Server-Timing:
+      - cfCacheStatus;desc="DYNAMIC"
+      - cfEdge;dur=7,cfOrigin;dur=154
+      Strict-Transport-Security:
+      - max-age=3600; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Ratelimit-Remaining-Requests-Day:
+      - "14369"
+      X-Ratelimit-Remaining-Requests-Hour:
+      - "869"
+      X-Ratelimit-Remaining-Requests-Minute:
+      - "15"
+      X-Ratelimit-Remaining-Tokens-Day:
+      - "988491"
+      X-Ratelimit-Remaining-Tokens-Hour:
+      - "988491"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "52491"
+    status: 200 OK
+    code: 200
+    duration: 169ms

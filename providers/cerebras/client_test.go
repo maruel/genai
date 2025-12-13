@@ -125,9 +125,9 @@ func TestClient(t *testing.T) {
 			name string
 			want string
 		}{
-			{genai.ModelCheap, "llama3.1-8b"},
+			{genai.ModelCheap, "gpt-oss-120b"},
 			{genai.ModelGood, "qwen-3-235b-a22b-instruct-2507"},
-			{genai.ModelSOTA, "qwen-3-235b-a22b-thinking-2507"},
+			{genai.ModelSOTA, "zai-glm-4.6"},
 		}
 		for _, line := range data {
 			t.Run(line.name, func(t *testing.T) {

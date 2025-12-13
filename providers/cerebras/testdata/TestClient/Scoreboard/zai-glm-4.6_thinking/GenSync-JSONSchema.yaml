@@ -1,0 +1,58 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 400
+    host: api.cerebras.ai
+    body: "{\"model\":\"zai-glm-4.6\",\"messages\":[{\"role\":\"user\",\"content\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON.\"}],\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"\",\"schema\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"is_fruit\":{\"type\":\"boolean\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"is_fruit\"]},\"strict\":true}}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cerebras.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-d5dedc78-fb93-4925-bae5-ff16444ccb54\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"is_fruit\\\":true}\",\"role\":\"assistant\"}}],\"created\":1765575864,\"model\":\"zai-glm-4.6\",\"system_fingerprint\":\"fp_e6c956b85601b6c6db6c\",\"object\":\"chat.completion\",\"usage\":{\"total_tokens\":167,\"completion_tokens\":10,\"prompt_tokens\":157,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":0.002979889,\"prompt_time\":0.006336025,\"completion_time\":0.033128953,\"total_time\":0.04412341117858887,\"created\":1765575864.4386852}}"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad06731ac11a20e-YYZ
+      Content-Type:
+      - application/json
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - cloudflare
+      Server-Timing:
+      - cfCacheStatus;desc="DYNAMIC"
+      - cfEdge;dur=8,cfOrigin;dur=247
+      Strict-Transport-Security:
+      - max-age=3600; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Ratelimit-Remaining-Requests-Day:
+      - "67"
+      X-Ratelimit-Remaining-Requests-Hour:
+      - "67"
+      X-Ratelimit-Remaining-Requests-Minute:
+      - "9"
+      X-Ratelimit-Remaining-Tokens-Day:
+      - "948319"
+      X-Ratelimit-Remaining-Tokens-Hour:
+      - "57318"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "19023"
+    status: 200 OK
+    code: 200
+    duration: 1m0.353s

@@ -1,79 +1,57 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 416
-        host: api.cerebras.ai
-        body: |
-            {"model":"llama-3.3-70b","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}],"response_format":{"type":"json_schema","json_schema":{"name":"","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]},"strict":true}},"stream":true}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.cerebras.ai/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        body: |+
-            data: {"id":"chatcmpl-aeb371fb-1dae-455a-ae4c-9d5d18905853","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1753569323,"model":"llama-3.3-70b","system_fingerprint":"fp_e922c6c4c8013529051a","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-aeb371fb-1dae-455a-ae4c-9d5d18905853","choices":[{"delta":{"content":"{\""},"index":0}],"created":1753569323,"model":"llama-3.3-70b","system_fingerprint":"fp_e922c6c4c8013529051a","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-aeb371fb-1dae-455a-ae4c-9d5d18905853","choices":[{"delta":{"content":"is"},"index":0}],"created":1753569323,"model":"llama-3.3-70b","system_fingerprint":"fp_e922c6c4c8013529051a","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-aeb371fb-1dae-455a-ae4c-9d5d18905853","choices":[{"delta":{"content":"_f"},"index":0}],"created":1753569323,"model":"llama-3.3-70b","system_fingerprint":"fp_e922c6c4c8013529051a","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-aeb371fb-1dae-455a-ae4c-9d5d18905853","choices":[{"delta":{"content":"ruit"},"index":0}],"created":1753569323,"model":"llama-3.3-70b","system_fingerprint":"fp_e922c6c4c8013529051a","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-aeb371fb-1dae-455a-ae4c-9d5d18905853","choices":[{"delta":{"content":"\":"},"index":0}],"created":1753569323,"model":"llama-3.3-70b","system_fingerprint":"fp_e922c6c4c8013529051a","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-aeb371fb-1dae-455a-ae4c-9d5d18905853","choices":[{"delta":{"content":" true"},"index":0}],"created":1753569323,"model":"llama-3.3-70b","system_fingerprint":"fp_e922c6c4c8013529051a","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-aeb371fb-1dae-455a-ae4c-9d5d18905853","choices":[{"delta":{"content":"}"},"index":0}],"created":1753569323,"model":"llama-3.3-70b","system_fingerprint":"fp_e922c6c4c8013529051a","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-aeb371fb-1dae-455a-ae4c-9d5d18905853","choices":[{"delta":{},"index":0}],"created":1753569323,"model":"llama-3.3-70b","system_fingerprint":"fp_e922c6c4c8013529051a","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-aeb371fb-1dae-455a-ae4c-9d5d18905853","choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1753569323,"model":"llama-3.3-70b","system_fingerprint":"fp_e922c6c4c8013529051a","object":"chat.completion.chunk","usage":{"prompt_tokens":185,"completion_tokens":8,"total_tokens":193,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.0021308,"prompt_time":0.005245154,"completion_time":0.002051805,"total_time":0.011451482772827148,"created":1753569323}}
-
-        headers:
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 96575eafd9a8a275-YUL
-            Content-Type:
-                - text/event-stream; charset=utf-8
-            Inference-Id:
-                - chatcmpl-aeb371fb-1dae-455a-ae4c-9d5d18905853
-            Referrer-Policy:
-                - strict-origin-when-cross-origin
-            Server:
-                - cloudflare
-            Strict-Transport-Security:
-                - max-age=3600; includeSubDomains
-            X-Content-Type-Options:
-                - nosniff
-            X-Ratelimit-Limit-Requests-Day:
-                - "14400"
-            X-Ratelimit-Limit-Tokens-Minute:
-                - "64000"
-            X-Ratelimit-Remaining-Requests-Day:
-                - "14362"
-            X-Ratelimit-Remaining-Tokens-Minute:
-                - "63641"
-            X-Ratelimit-Reset-Requests-Day:
-                - "5076.400483608246"
-            X-Ratelimit-Reset-Tokens-Minute:
-                - "36.40048360824585"
-            X-Request-Id:
-                - 96575eafd9a8a275-YUL
-        status: 200 OK
-        code: 200
-        duration: 156ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 416
+    host: api.cerebras.ai
+    body: "{\"model\":\"llama-3.3-70b\",\"messages\":[{\"role\":\"user\",\"content\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON.\"}],\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"name\":\"\",\"schema\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"is_fruit\":{\"type\":\"boolean\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"is_fruit\"]},\"strict\":true}},\"stream\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cerebras.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"chatcmpl-88eac55f-99d4-41ab-b570-5c136d43f0de\",\"choices\":[{\"delta\":{\"role\":\"assistant\"},\"index\":0}],\"created\":1765575979,\"model\":\"llama-3.3-70b\",\"system_fingerprint\":\"fp_be206b5e5c4f87591303\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-88eac55f-99d4-41ab-b570-5c136d43f0de\",\"choices\":[{\"delta\":{\"content\":\"{\\\"\"},\"index\":0}],\"created\":1765575979,\"model\":\"llama-3.3-70b\",\"system_fingerprint\":\"fp_be206b5e5c4f87591303\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-88eac55f-99d4-41ab-b570-5c136d43f0de\",\"choices\":[{\"delta\":{\"content\":\"is_fruit\\\": true}\"},\"index\":0}],\"created\":1765575979,\"model\":\"llama-3.3-70b\",\"system_fingerprint\":\"fp_be206b5e5c4f87591303\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-88eac55f-99d4-41ab-b570-5c136d43f0de\",\"choices\":[{\"delta\":{},\"finish_reason\":\"stop\",\"index\":0}],\"created\":1765575979,\"model\":\"llama-3.3-70b\",\"system_fingerprint\":\"fp_be206b5e5c4f87591303\",\"object\":\"chat.completion.chunk\",\"usage\":{\"total_tokens\":193,\"completion_tokens\":8,\"prompt_tokens\":185,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":0.000783307,\"prompt_time\":0.004718093,\"completion_time\":0.005360217,\"total_time\":0.012582778930664062,\"created\":1765575979.8011556}}\n\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad069f14bd1a2be-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - cloudflare
+      Server-Timing:
+      - cfCacheStatus;desc="DYNAMIC"
+      - cfEdge;dur=6,cfOrigin;dur=127
+      Strict-Transport-Security:
+      - max-age=3600; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Ratelimit-Remaining-Requests-Day:
+      - "14366"
+      X-Ratelimit-Remaining-Requests-Hour:
+      - "866"
+      X-Ratelimit-Remaining-Requests-Minute:
+      - "28"
+      X-Ratelimit-Remaining-Tokens-Day:
+      - "980127"
+      X-Ratelimit-Remaining-Tokens-Hour:
+      - "980127"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "44127"
+    status: 200 OK
+    code: 200
+    duration: 141ms

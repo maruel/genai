@@ -1,0 +1,58 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 773
+    host: api.cerebras.ai
+    body: "{\"model\":\"zai-glm-4.6\",\"messages\":[{\"role\":\"user\",\"content\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"},{\"role\":\"assistant\",\"tool_calls\":[{\"type\":\"function\",\"id\":\"817a69d29\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\": 132413}\"}}]},{\"role\":\"tool\",\"content\":\"363.89\",\"tool_call_id\":\"817a69d29\",\"name\":\"square_root\"}],\"tool_choice\":\"none\",\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"parallel_tool_calls\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cerebras.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-5ce051be-13e8-40c2-8d80-14ee35f14606\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"\\n363.89\",\"reasoning\":\"\\nThe user wants me to calculate the square root of 132413.\\nThey have specified to use the \\\"square_root\\\" tool.\\nI have already done that in the previous turn. The tool returned `363.89`.\\nThe user also specified to reply with \\\"only the result\\\" and \\\"Do not give an explanation.\\\"\\n\\nMy previous response was \\\"None\\\", which is incorrect. It should have been the result from the tool. I need to provide the correct output now.\\n\\nThe result from the tool is `363.89`.\\nI will output this number and nothing else.\",\"role\":\"assistant\"}}],\"created\":1765575865,\"model\":\"zai-glm-4.6\",\"system_fingerprint\":\"fp_e6c956b85601b6c6db6c\",\"object\":\"chat.completion\",\"usage\":{\"total_tokens\":191,\"completion_tokens\":126,\"prompt_tokens\":65,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":0.00014556,\"prompt_time\":0.0048542,\"completion_time\":0.33541206,\"total_time\":0.3416454792022705,\"created\":1765575865.1884878}}"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad067360edea20e-YYZ
+      Content-Type:
+      - application/json
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - cloudflare
+      Server-Timing:
+      - cfCacheStatus;desc="DYNAMIC"
+      - cfEdge;dur=5,cfOrigin;dur=536
+      Strict-Transport-Security:
+      - max-age=3600; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Ratelimit-Remaining-Requests-Day:
+      - "65"
+      X-Ratelimit-Remaining-Requests-Hour:
+      - "65"
+      X-Ratelimit-Remaining-Requests-Minute:
+      - "7"
+      X-Ratelimit-Remaining-Tokens-Day:
+      - "907147"
+      X-Ratelimit-Remaining-Tokens-Hour:
+      - "16146"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "18828"
+    status: 200 OK
+    code: 200
+    duration: 554ms

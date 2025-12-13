@@ -1,65 +1,57 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 153
-        host: api.cerebras.ai
-        body: |
-            {"model":"llama-3.3-70b","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"stop":["is"],"stream":true}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.cerebras.ai/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        body: |+
-            data: {"id":"chatcmpl-290116ef-533a-4121-b07d-8f40fa3051bf","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1753569322,"model":"llama-3.3-70b","system_fingerprint":"fp_e922c6c4c8013529051a","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-290116ef-533a-4121-b07d-8f40fa3051bf","choices":[{"delta":{"content":"Canada "},"index":0}],"created":1753569322,"model":"llama-3.3-70b","system_fingerprint":"fp_e922c6c4c8013529051a","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-290116ef-533a-4121-b07d-8f40fa3051bf","choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1753569322,"model":"llama-3.3-70b","system_fingerprint":"fp_e922c6c4c8013529051a","object":"chat.completion.chunk","usage":{"prompt_tokens":47,"completion_tokens":4,"total_tokens":51,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.000158679,"prompt_time":0.002752753,"completion_time":0.000440293,"total_time":0.006443023681640625,"created":1753569322}}
-
-        headers:
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 96575ead7e29a275-YUL
-            Content-Type:
-                - text/event-stream; charset=utf-8
-            Inference-Id:
-                - chatcmpl-290116ef-533a-4121-b07d-8f40fa3051bf
-            Referrer-Policy:
-                - strict-origin-when-cross-origin
-            Server:
-                - cloudflare
-            Strict-Transport-Security:
-                - max-age=3600; includeSubDomains
-            X-Content-Type-Options:
-                - nosniff
-            X-Ratelimit-Limit-Requests-Day:
-                - "14400"
-            X-Ratelimit-Limit-Tokens-Minute:
-                - "64000"
-            X-Ratelimit-Remaining-Requests-Day:
-                - "14364"
-            X-Ratelimit-Remaining-Tokens-Minute:
-                - "63754"
-            X-Ratelimit-Reset-Requests-Day:
-                - "5076.782388448715"
-            X-Ratelimit-Reset-Tokens-Minute:
-                - "36.78238844871521"
-            X-Request-Id:
-                - 96575ead7e29a275-YUL
-        status: 200 OK
-        code: 200
-        duration: 157ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 153
+    host: api.cerebras.ai
+    body: "{\"model\":\"llama-3.3-70b\",\"messages\":[{\"role\":\"user\",\"content\":\"Talk about Canada in great details. Start with: Canada is\"}],\"stop\":[\"is\"],\"stream\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cerebras.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"chatcmpl-4ea1f8a8-ea90-4454-8166-df469c54a091\",\"choices\":[{\"delta\":{\"role\":\"assistant\"},\"index\":0}],\"created\":1765575979,\"model\":\"llama-3.3-70b\",\"system_fingerprint\":\"fp_be206b5e5c4f87591303\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-4ea1f8a8-ea90-4454-8166-df469c54a091\",\"choices\":[{\"delta\":{\"content\":\"Canada \"},\"index\":0}],\"created\":1765575979,\"model\":\"llama-3.3-70b\",\"system_fingerprint\":\"fp_be206b5e5c4f87591303\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-4ea1f8a8-ea90-4454-8166-df469c54a091\",\"choices\":[{\"delta\":{},\"finish_reason\":\"stop\",\"index\":0}],\"created\":1765575979,\"model\":\"llama-3.3-70b\",\"system_fingerprint\":\"fp_be206b5e5c4f87591303\",\"object\":\"chat.completion.chunk\",\"usage\":{\"total_tokens\":51,\"completion_tokens\":4,\"prompt_tokens\":47,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":0.032724141000000005,\"prompt_time\":0.0027041289999999996,\"completion_time\":0.000080106,\"total_time\":0.03836512565612793,\"created\":1765575979.373511}}\n\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad069ee8f8da2be-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - cloudflare
+      Server-Timing:
+      - cfCacheStatus;desc="DYNAMIC"
+      - cfEdge;dur=6,cfOrigin;dur=151
+      Strict-Transport-Security:
+      - max-age=3600; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Ratelimit-Remaining-Requests-Day:
+      - "14368"
+      X-Ratelimit-Remaining-Requests-Hour:
+      - "868"
+      X-Ratelimit-Remaining-Requests-Minute:
+      - "14"
+      X-Ratelimit-Remaining-Tokens-Day:
+      - "988438"
+      X-Ratelimit-Remaining-Tokens-Hour:
+      - "988438"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "52438"
+    status: 200 OK
+    code: 200
+    duration: 167ms

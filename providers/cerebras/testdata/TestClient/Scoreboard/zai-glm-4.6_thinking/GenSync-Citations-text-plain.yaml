@@ -1,0 +1,58 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 207
+    host: api.cerebras.ai
+    body: "{\"model\":\"zai-glm-4.6\",\"messages\":[{\"role\":\"user\",\"content\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"role\":\"user\",\"content\":\"What is the capital of Quackiland?\"}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cerebras.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-c0f69607-315b-4169-915c-329bd5456835\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"\\nThe capital of Quackiland is Quack.\",\"reasoning\":\"\\n1.  **Analyze the User's Request:** The user is asking a direct question: \\\"What is the capital of Quackiland?\\\"\\n\\n2.  **Scan the Provided Context:** The initial prompt provides two key pieces of information:\\n    *   \\\"The capital of Quackiland is Quack.\\\"\\n    *   \\\"The Big Canard Statue is located in Quack.\\\"\\n\\n3.  **Identify the Core Question:** The question is about the *capital* of a specific place, \\\"Quackiland\\\".\\n\\n4.  **Locate the Answer in the Context:** The very first sentence of the context directly answers the question. It states, \\\"The capital of Quackiland is Quack.\\\"\\n\\n5.  **Formulate the Answer:**\\n    *   Start with a direct, concise answer. The most straightforward answer is simply \\\"Quack.\\\"\\n    *   Consider adding the context to show *how* I know the answer. This builds trust and demonstrates that I'm using the provided information. I can state, \\\"Based on the information you provided...\\\" or \\\"According to the text you gave me...\\\"\\n    *   Combine these elements into a clear and helpful response.\\n\\n6.  **Drafting - Attempt 1 (Minimalist):**\\n    > Quack.\\n    This is correct, but a bit blunt. It doesn't show my reasoning.\\n\\n7.  **Drafting - Attempt 2 (Slightly more helpful):**\\n    > The capital of Quackiland is Quack.\\n    This is better. It's a full sentence and directly answers the question.\\n\\n8.  **Drafting - Attempt 3 (Most helpful and transparent):**\\n    > The capital of Quackiland is Quack.\\n    Another way to phrase this could be: \\\"Based on the information you provided, the capital of Quackiland is Quack.\\\" This is excellent because it explicitly states my source.\\n\\n9.  **Final Polish:** Let's go with a slightly more conversational but still direct approach. The first sentence of the provided text is the answer. I can just state it clearly.\\n\\n    *   \\\"The capital of Quackiland is Quack.\\\" - This is the most direct and accurate answer based *only* on the provided text.\\n    *   I could also add, \\\"You mentioned that in the first sentence.\\\" or something similar, but it might be over-explaining. The primary goal is to answer the question accurately based on the context.\\n\\n10. **Final Decision:** The best answer is the most direct one that restates the fact from the provided text. It's accurate, concise, and directly addresses the user's query using their own information.\\n\\n    *   Question: \\\"What is the capital of Quackiland?\\\"\\n    *   Provided Text: \\\"The capital of Quackiland is Quack.\\\"\\n    *   Answer: \\\"Quack.\\\" or \\\"The capital of Quackiland is Quack.\\\"\\n\\n    I'll choose the latter as it's a complete sentence and feels more natural. I don't need to add \\\"According to your text...\\\" unless prompted to show my work. The user is asking a simple question of recall from the context they just gave. Just answering is the most efficient and effective response.\",\"role\":\"assistant\"}}],\"created\":1765575866,\"model\":\"zai-glm-4.6\",\"system_fingerprint\":\"fp_e6c956b85601b6c6db6c\",\"object\":\"chat.completion\",\"usage\":{\"total_tokens\":711,\"completion_tokens\":674,\"prompt_tokens\":37,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":1.73632851,\"prompt_time\":0.006845722,\"completion_time\":1.344042178,\"total_time\":3.089184284210205,\"created\":1765575866.861268}}"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad06740ddd2a20e-YYZ
+      Content-Type:
+      - application/json
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - cloudflare
+      Server-Timing:
+      - cfCacheStatus;desc="DYNAMIC"
+      - cfEdge;dur=5,cfOrigin;dur=3218
+      Strict-Transport-Security:
+      - max-age=3600; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Ratelimit-Remaining-Requests-Day:
+      - "62"
+      X-Ratelimit-Remaining-Requests-Hour:
+      - "62"
+      X-Ratelimit-Remaining-Requests-Minute:
+      - "4"
+      X-Ratelimit-Remaining-Tokens-Day:
+      - "906234"
+      X-Ratelimit-Remaining-Tokens-Hour:
+      - "15233"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "17915"
+    status: 200 OK
+    code: 200
+    duration: 3.237s

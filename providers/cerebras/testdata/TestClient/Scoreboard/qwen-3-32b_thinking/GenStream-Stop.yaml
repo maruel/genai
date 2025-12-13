@@ -1,99 +1,57 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 189
-        host: api.cerebras.ai
-        body: |
-            {"model":"qwen-3-32b","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"},{"role":"user","content":"\n\n/think"}],"stop":["is"],"stream":true}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.cerebras.ai/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        body: |+
-            data: {"id":"chatcmpl-04a59d16-22d8-41c3-80fa-b7ebf0e4cca6","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1755298807,"model":"qwen-3-32b","system_fingerprint":"fp_c8e8cd78ea58dce346b0","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-04a59d16-22d8-41c3-80fa-b7ebf0e4cca6","choices":[{"delta":{"content":"<think>"},"index":0}],"created":1755298807,"model":"qwen-3-32b","system_fingerprint":"fp_c8e8cd78ea58dce346b0","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-04a59d16-22d8-41c3-80fa-b7ebf0e4cca6","choices":[{"delta":{"content":"\n"},"index":0}],"created":1755298807,"model":"qwen-3-32b","system_fingerprint":"fp_c8e8cd78ea58dce346b0","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-04a59d16-22d8-41c3-80fa-b7ebf0e4cca6","choices":[{"delta":{"content":"Okay"},"index":0}],"created":1755298807,"model":"qwen-3-32b","system_fingerprint":"fp_c8e8cd78ea58dce346b0","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-04a59d16-22d8-41c3-80fa-b7ebf0e4cca6","choices":[{"delta":{"content":","},"index":0}],"created":1755298807,"model":"qwen-3-32b","system_fingerprint":"fp_c8e8cd78ea58dce346b0","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-04a59d16-22d8-41c3-80fa-b7ebf0e4cca6","choices":[{"delta":{"content":" I"},"index":0}],"created":1755298807,"model":"qwen-3-32b","system_fingerprint":"fp_c8e8cd78ea58dce346b0","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-04a59d16-22d8-41c3-80fa-b7ebf0e4cca6","choices":[{"delta":{"content":" need"},"index":0}],"created":1755298807,"model":"qwen-3-32b","system_fingerprint":"fp_c8e8cd78ea58dce346b0","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-04a59d16-22d8-41c3-80fa-b7ebf0e4cca6","choices":[{"delta":{"content":" to"},"index":0}],"created":1755298807,"model":"qwen-3-32b","system_fingerprint":"fp_c8e8cd78ea58dce346b0","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-04a59d16-22d8-41c3-80fa-b7ebf0e4cca6","choices":[{"delta":{"content":" talk"},"index":0}],"created":1755298807,"model":"qwen-3-32b","system_fingerprint":"fp_c8e8cd78ea58dce346b0","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-04a59d16-22d8-41c3-80fa-b7ebf0e4cca6","choices":[{"delta":{"content":" about"},"index":0}],"created":1755298807,"model":"qwen-3-32b","system_fingerprint":"fp_c8e8cd78ea58dce346b0","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-04a59d16-22d8-41c3-80fa-b7ebf0e4cca6","choices":[{"delta":{"content":" Canada"},"index":0}],"created":1755298807,"model":"qwen-3-32b","system_fingerprint":"fp_c8e8cd78ea58dce346b0","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-04a59d16-22d8-41c3-80fa-b7ebf0e4cca6","choices":[{"delta":{"content":" in"},"index":0}],"created":1755298807,"model":"qwen-3-32b","system_fingerprint":"fp_c8e8cd78ea58dce346b0","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-04a59d16-22d8-41c3-80fa-b7ebf0e4cca6","choices":[{"delta":{"content":" great"},"index":0}],"created":1755298807,"model":"qwen-3-32b","system_fingerprint":"fp_c8e8cd78ea58dce346b0","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-04a59d16-22d8-41c3-80fa-b7ebf0e4cca6","choices":[{"delta":{"content":" detail"},"index":0}],"created":1755298807,"model":"qwen-3-32b","system_fingerprint":"fp_c8e8cd78ea58dce346b0","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-04a59d16-22d8-41c3-80fa-b7ebf0e4cca6","choices":[{"delta":{"content":" and"},"index":0}],"created":1755298807,"model":"qwen-3-32b","system_fingerprint":"fp_c8e8cd78ea58dce346b0","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-04a59d16-22d8-41c3-80fa-b7ebf0e4cca6","choices":[{"delta":{"content":" start"},"index":0}],"created":1755298807,"model":"qwen-3-32b","system_fingerprint":"fp_c8e8cd78ea58dce346b0","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-04a59d16-22d8-41c3-80fa-b7ebf0e4cca6","choices":[{"delta":{"content":" with"},"index":0}],"created":1755298807,"model":"qwen-3-32b","system_fingerprint":"fp_c8e8cd78ea58dce346b0","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-04a59d16-22d8-41c3-80fa-b7ebf0e4cca6","choices":[{"delta":{"content":" \""},"index":0}],"created":1755298807,"model":"qwen-3-32b","system_fingerprint":"fp_c8e8cd78ea58dce346b0","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-04a59d16-22d8-41c3-80fa-b7ebf0e4cca6","choices":[{"delta":{"content":"Canada "},"index":0}],"created":1755298807,"model":"qwen-3-32b","system_fingerprint":"fp_c8e8cd78ea58dce346b0","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-04a59d16-22d8-41c3-80fa-b7ebf0e4cca6","choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1755298807,"model":"qwen-3-32b","system_fingerprint":"fp_c8e8cd78ea58dce346b0","object":"chat.completion.chunk","usage":{"prompt_tokens":27,"completion_tokens":20,"total_tokens":47,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.297612829,"prompt_time":0.005388975,"completion_time":0.016742655,"total_time":0.32372093200683594,"created":1755298807}}
-
-        headers:
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 96fc4e681c8036d0-YYZ
-            Content-Type:
-                - text/event-stream; charset=utf-8
-            Inference-Id:
-                - chatcmpl-04a59d16-22d8-41c3-80fa-b7ebf0e4cca6
-            Referrer-Policy:
-                - strict-origin-when-cross-origin
-            Server:
-                - cloudflare
-            Strict-Transport-Security:
-                - max-age=3600; includeSubDomains
-            X-Content-Type-Options:
-                - nosniff
-            X-Ratelimit-Limit-Requests-Day:
-                - "14400"
-            X-Ratelimit-Limit-Tokens-Minute:
-                - "64000"
-            X-Ratelimit-Remaining-Requests-Day:
-                - "14388"
-            X-Ratelimit-Remaining-Tokens-Minute:
-                - "63378"
-            X-Ratelimit-Reset-Requests-Day:
-                - "3592.888110637665"
-            X-Ratelimit-Reset-Tokens-Minute:
-                - "52.888110637664795"
-            X-Request-Id:
-                - 96fc4e681c8036d0-YYZ
-        status: 200 OK
-        code: 200
-        duration: 100ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 189
+    host: api.cerebras.ai
+    body: "{\"model\":\"qwen-3-32b\",\"messages\":[{\"role\":\"user\",\"content\":\"Talk about Canada in great details. Start with: Canada is\"},{\"role\":\"user\",\"content\":\"\\n\\n/think\"}],\"stop\":[\"is\"],\"stream\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cerebras.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"chatcmpl-abc0429b-4053-4e7c-ba3e-bcc0ed5ec1d1\",\"choices\":[{\"delta\":{\"role\":\"assistant\"},\"index\":0}],\"created\":1765575878,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-abc0429b-4053-4e7c-ba3e-bcc0ed5ec1d1\",\"choices\":[{\"delta\":{\"content\":\"<think>\"},\"index\":0}],\"created\":1765575878,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-abc0429b-4053-4e7c-ba3e-bcc0ed5ec1d1\",\"choices\":[{\"delta\":{\"content\":\"\\nOkay, so the user wants me to talk about Canada in great detail\"},\"index\":0}],\"created\":1765575878,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-abc0429b-4053-4e7c-ba3e-bcc0ed5ec1d1\",\"choices\":[{\"delta\":{\"content\":\", starting with \\\"Canada \"},\"index\":0}],\"created\":1765575878,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-abc0429b-4053-4e7c-ba3e-bcc0ed5ec1d1\",\"choices\":[{\"delta\":{},\"finish_reason\":\"stop\",\"index\":0}],\"created\":1765575878,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\",\"usage\":{\"total_tokens\":50,\"completion_tokens\":23,\"prompt_tokens\":27,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":0.000075401,\"prompt_time\":0.001246135,\"completion_time\":0.009961018,\"total_time\":0.014020681381225586,\"created\":1765575878.1383839}}\n\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad06775ea21a20e-YYZ
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - cloudflare
+      Server-Timing:
+      - cfCacheStatus;desc="DYNAMIC"
+      - cfEdge;dur=6,cfOrigin;dur=127
+      Strict-Transport-Security:
+      - max-age=3600; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Ratelimit-Remaining-Requests-Day:
+      - "14394"
+      X-Ratelimit-Remaining-Requests-Hour:
+      - "894"
+      X-Ratelimit-Remaining-Requests-Minute:
+      - "24"
+      X-Ratelimit-Remaining-Tokens-Day:
+      - "991183"
+      X-Ratelimit-Remaining-Tokens-Hour:
+      - "991183"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "55183"
+    status: 200 OK
+    code: 200
+    duration: 146ms

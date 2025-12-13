@@ -1,0 +1,57 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 151
+    host: api.cerebras.ai
+    body: "{\"model\":\"zai-glm-4.6\",\"messages\":[{\"role\":\"user\",\"content\":\"Talk about Canada in great details. Start with: Canada is\"}],\"stop\":[\"is\"],\"stream\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cerebras.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"chatcmpl-172a93d0-d178-46c1-a952-2a50eee35655\",\"choices\":[{\"delta\":{\"role\":\"assistant\"},\"index\":0}],\"created\":1765575687,\"model\":\"zai-glm-4.6\",\"system_fingerprint\":\"fp_e6c956b85601b6c6db6c\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-172a93d0-d178-46c1-a952-2a50eee35655\",\"choices\":[{\"delta\":{\"reasoning\":\"\\n\"},\"index\":0}],\"created\":1765575687,\"model\":\"zai-glm-4.6\",\"system_fingerprint\":\"fp_e6c956b85601b6c6db6c\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-172a93d0-d178-46c1-a952-2a50eee35655\",\"choices\":[{\"delta\":{\"reasoning\":\"1.  **Deconstruct the User's Request:**\\n    *   **Core Subject\"},\"index\":0}],\"created\":1765575687,\"model\":\"zai-glm-4.6\",\"system_fingerprint\":\"fp_e6c956b85601b6c6db6c\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-172a93d0-d178-46c1-a952-2a50eee35655\",\"choices\":[{\"delta\":{\"reasoning\":\":** Canada\"},\"index\":0}],\"created\":1765575687,\"model\":\"zai-glm-4.6\",\"system_fingerprint\":\"fp_e6c956b85601b6c6db6c\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-172a93d0-d178-46c1-a952-2a50eee35655\",\"choices\":[{\"delta\":{\"reasoning\":\".\\n    *   **Instruction \"},\"index\":0}],\"created\":1765575687,\"model\":\"zai-glm-4.6\",\"system_fingerprint\":\"fp_e6c956b85601b6c6db6c\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-172a93d0-d178-46c1-a952-2a50eee35655\",\"choices\":[{\"delta\":{\"reasoning\":\"1\"},\"index\":0}],\"created\":1765575687,\"model\":\"zai-glm-4.6\",\"system_fingerprint\":\"fp_e6c956b85601b6c6db6c\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-172a93d0-d178-46c1-a952-2a50eee35655\",\"choices\":[{\"delta\":{\"reasoning\":\":** \\\"Talk about Canada\"},\"index\":0}],\"created\":1765575687,\"model\":\"zai-glm-4.6\",\"system_fingerprint\":\"fp_e6c956b85601b6c6db6c\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-172a93d0-d178-46c1-a952-2a50eee35655\",\"choices\":[{\"delta\":{\"reasoning\":\" in great details.\\\" Th\"},\"index\":0}],\"created\":1765575687,\"model\":\"zai-glm-4.6\",\"system_fingerprint\":\"fp_e6c956b85601b6c6db6c\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-172a93d0-d178-46c1-a952-2a50eee35655\",\"choices\":[{\"delta\":{},\"finish_reason\":\"stop\",\"index\":0}],\"created\":1765575687,\"model\":\"zai-glm-4.6\",\"system_fingerprint\":\"fp_e6c956b85601b6c6db6c\",\"object\":\"chat.completion.chunk\",\"usage\":{\"total_tokens\":62,\"completion_tokens\":45,\"prompt_tokens\":17,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":0.00007366,\"prompt_time\":0.004520085,\"completion_time\":0.029711016,\"total_time\":0.03703904151916504,\"created\":1765575687.0697174}}\n\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad062cb68b7a216-YYZ
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - cloudflare
+      Server-Timing:
+      - cfCacheStatus;desc="DYNAMIC"
+      - cfEdge;dur=6,cfOrigin;dur=179
+      Strict-Transport-Security:
+      - max-age=3600; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Ratelimit-Remaining-Requests-Day:
+      - "81"
+      X-Ratelimit-Remaining-Requests-Hour:
+      - "81"
+      X-Ratelimit-Remaining-Requests-Minute:
+      - "4"
+      X-Ratelimit-Remaining-Tokens-Day:
+      - "952745"
+      X-Ratelimit-Remaining-Tokens-Hour:
+      - "58328"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "19026"
+    status: 200 OK
+    code: 200
+    duration: 198ms

@@ -741,19 +741,21 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 		// WARNING: This is fragile and will break in the future.
 		m := mdl.(*Model)
 		if cheap {
-			if strings.HasPrefix(m.ID, "llama3") && (created == 0 || m.Created < created) {
-				// For the cheapest, we want the oldest model as it is generally cheaper.
+			// That's gpt-oss-120b
+			if strings.HasPrefix(m.ID, "gpt") && (created == 0 || m.Created > created) {
 				created = m.Created
 				selectedModel = m.ID
 			}
 		} else if good {
+			// That's qwen-3-235b-a22b-instruct-2507, currently in preview
 			if strings.HasPrefix(m.ID, "qwen-") && strings.Contains(m.ID, "-instruct-") && (created == 0 || m.Created > created) {
 				// For the greatest, we want the newest model as it is generally better.
 				created = m.Created
 				selectedModel = m.ID
 			}
 		} else {
-			if strings.HasPrefix(m.ID, "qwen-") && strings.Contains(m.ID, "-thinking-") && (created == 0 || m.Created > created) {
+			// That's zai-glm-4.6, currently in preview
+			if strings.HasPrefix(m.ID, "zai-") && (created == 0 || m.Created > created) {
 				// For the greatest, we want the newest model as it is generally better.
 				created = m.Created
 				selectedModel = m.ID

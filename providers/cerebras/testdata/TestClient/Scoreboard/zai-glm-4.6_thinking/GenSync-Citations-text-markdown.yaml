@@ -1,0 +1,58 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 223
+    host: api.cerebras.ai
+    body: "{\"model\":\"zai-glm-4.6\",\"messages\":[{\"role\":\"user\",\"content\":\"# Quackiland\\n\\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"role\":\"user\",\"content\":\"What is the capital of Quackiland?\"}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cerebras.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-ba6616d1-3d2b-4676-b3e6-f41f2c164a6d\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"\\nThe capital of Quackiland is Quack.\",\"reasoning\":\"\\n1.  **Identify the user's core question:** The user wants to know the capital of Quackiland.\\n\\n2.  **Scan the provided text for keywords:** I'm looking for \\\"Quackiland,\\\" \\\"capital,\\\" and any city names.\\n\\n3.  **Locate the relevant sentence:** The first sentence is \\\"The capital of Quackiland is Quack.\\\"\\n\\n4.  **Extract the direct answer:** The answer is \\\"Quack.\\\"\\n\\n5.  **Formulate the response:**\\n    *   Start with a direct, concise answer to the user's question. This is the most important part. \\\"The capital of Quackiland is Quack.\\\"\\n    *   Keep it simple. The provided information is very straightforward. There's no need for extra explanation or deduction.\\n    *   (Self-Correction/Refinement): Should I add the information about the Big Canard Statue? The user *didn't* ask for that. It's related but secondary. Including it might be seen as helpful, but it could also be seen as cluttering the answer. The best practice is to answer the specific question directly and cleanly. If the user had asked \\\"Tell me about Quack,\\\" then the statue information would be relevant. Since they only asked about the capital, just provide the capital's name.\\n\\n6.  **Final Answer Construction:**\\n    *   Start with the answer: \\\"The capital of Quackiland is Quack.\\\"\\n    *   That's it. It's complete and accurate based *only* on the provided text. This is a key constraint. I must not invent outside knowledge.\\n\\n7.  **Review:**\\n    *   Does the answer directly address the user's question? Yes.\\n    *   Is the answer derived *only* from the provided text? Yes.\\n    *   Is it clear and concise? Yes.\\n\\nThis process leads directly to the final, simple answer: \\\"The capital of Quackiland is Quack.\\\" It's a pure information retrieval task from a very small, defined dataset.\",\"role\":\"assistant\"}}],\"created\":1765575873,\"model\":\"zai-glm-4.6\",\"system_fingerprint\":\"fp_e6c956b85601b6c6db6c\",\"object\":\"chat.completion\",\"usage\":{\"total_tokens\":475,\"completion_tokens\":433,\"prompt_tokens\":42,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":3.349803054,\"prompt_time\":0.006204419,\"completion_time\":0.75806109,\"total_time\":4.115977764129639,\"created\":1765575873.9526966}}"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad067551b57a20e-YYZ
+      Content-Type:
+      - application/json
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - cloudflare
+      Server-Timing:
+      - cfCacheStatus;desc="DYNAMIC"
+      - cfEdge;dur=12,cfOrigin;dur=4358
+      Strict-Transport-Security:
+      - max-age=3600; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Ratelimit-Remaining-Requests-Day:
+      - "61"
+      X-Ratelimit-Remaining-Requests-Hour:
+      - "61"
+      X-Ratelimit-Remaining-Requests-Minute:
+      - "3"
+      X-Ratelimit-Remaining-Tokens-Day:
+      - "905862"
+      X-Ratelimit-Remaining-Tokens-Hour:
+      - "14861"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "17543"
+    status: 200 OK
+    code: 200
+    duration: 4.384s

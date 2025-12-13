@@ -1,0 +1,58 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 562
+    host: api.cerebras.ai
+    body: "{\"model\":\"zai-glm-4.6\",\"messages\":[{\"role\":\"user\",\"content\":\"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one.\"}],\"tool_choice\":\"required\",\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"description\":\"A tool to specify the best country\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"country\":{\"type\":\"string\",\"enum\":[\"USA\",\"Canada\"]}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"country\"]}}}],\"parallel_tool_calls\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cerebras.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-1edf279d-be48-42d7-8bde-cb076b2a921b\",\"choices\":[{\"finish_reason\":\"tool_calls\",\"index\":0,\"message\":{\"reasoning\":\"The user is asking me to use the \\\"best_country\\\" tool to determine which country is better between USA and Canada. Looking at the tool definition:\\n\\n- The tool is called \\\"best_country\\\"\\n- It requires one parameter: \\\"country\\\" \\n- The country parameter can only be \\\"USA\\\" or \\\"Canada\\\" (enum values)\\n\\nThe user specifically mentions comparing USA and Canada, and wants to know which is the best. Since they mentioned the USA first and seem to be asking about it, I think they want me to check if the USA is the best country. I'll call the tool with \\\"USA\\\" as the parameter.\",\"tool_calls\":[{\"id\":\"623d25e4d\",\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"arguments\":\"{\\\"country\\\": \\\"USA\\\"}\"}}],\"role\":\"assistant\"}}],\"created\":1765575866,\"model\":\"zai-glm-4.6\",\"system_fingerprint\":\"fp_e6c956b85601b6c6db6c\",\"object\":\"chat.completion\",\"usage\":{\"total_tokens\":371,\"completion_tokens\":143,\"prompt_tokens\":228,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":0.00321202,\"prompt_time\":0.010603612,\"completion_time\":0.370637085,\"total_time\":0.3861885070800781,\"created\":1765575866.301357}}"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad0673d4b50a20e-YYZ
+      Content-Type:
+      - application/json
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - cloudflare
+      Server-Timing:
+      - cfCacheStatus;desc="DYNAMIC"
+      - cfEdge;dur=6,cfOrigin;dur=551
+      Strict-Transport-Security:
+      - max-age=3600; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Ratelimit-Remaining-Requests-Day:
+      - "63"
+      X-Ratelimit-Remaining-Requests-Hour:
+      - "63"
+      X-Ratelimit-Remaining-Requests-Minute:
+      - "5"
+      X-Ratelimit-Remaining-Tokens-Day:
+      - "906643"
+      X-Ratelimit-Remaining-Tokens-Hour:
+      - "15642"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "18324"
+    status: 200 OK
+    code: 200
+    duration: 570ms

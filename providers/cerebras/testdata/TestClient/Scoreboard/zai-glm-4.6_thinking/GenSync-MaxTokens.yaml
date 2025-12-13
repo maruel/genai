@@ -1,0 +1,58 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 143
+    host: api.cerebras.ai
+    body: "{\"model\":\"zai-glm-4.6\",\"messages\":[{\"role\":\"user\",\"content\":\"Explain the theory of relativity in great details.\"}],\"max_completion_tokens\":16}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cerebras.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-828ff383-c16a-492d-985e-8856c93b3b6c\",\"choices\":[{\"finish_reason\":\"length\",\"index\":0,\"message\":{\"reasoning\":\"\\n1.  **Deconstruct the User's Request:** The user wants\",\"role\":\"assistant\"}}],\"created\":1765575746,\"model\":\"zai-glm-4.6\",\"system_fingerprint\":\"fp_e6c956b85601b6c6db6c\",\"object\":\"chat.completion\",\"usage\":{\"total_tokens\":32,\"completion_tokens\":16,\"prompt_tokens\":16,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":6.58e-05,\"prompt_time\":0.004854244,\"completion_time\":0.005314656,\"total_time\":0.011720418930053711,\"created\":1765575746.3541179}}"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad0643de8dda27f-YUL
+      Content-Type:
+      - application/json
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - cloudflare
+      Server-Timing:
+      - cfCacheStatus;desc="DYNAMIC"
+      - cfEdge;dur=6,cfOrigin;dur=199
+      Strict-Transport-Security:
+      - max-age=3600; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Ratelimit-Remaining-Requests-Day:
+      - "78"
+      X-Ratelimit-Remaining-Requests-Hour:
+      - "78"
+      X-Ratelimit-Remaining-Requests-Minute:
+      - "7"
+      X-Ratelimit-Remaining-Tokens-Day:
+      - "992406"
+      X-Ratelimit-Remaining-Tokens-Hour:
+      - "97989"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "59972"
+    status: 200 OK
+    code: 200
+    duration: 213ms

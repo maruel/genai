@@ -1,0 +1,58 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 105
+    host: api.cerebras.ai
+    body: "{\"model\":\"zai-glm-4.6\",\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"}],\"seed\":42}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cerebras.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-243def08-df1c-4d2a-bffc-9b76151f6a28\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"\\nHello\",\"reasoning\":\"\\n1.  **Analyze the user's request.**\\n    *   **Core command:** \\\"Say hello.\\\" This is the primary action required.\\n    *   **Constraint:** \\\"Use only one word.\\\" This is a strict, limiting rule.\\n\\n2.  **Brainstorm possible responses.**\\n    *   The most direct response to \\\"Say hello\\\" is \\\"Hello\\\".\\n    *   Other single-word greetings:\\n        *   Hi\\n        *   Hey\\n        *   Greetings (a bit formal)\\n        *   Salutations (very formal)\\n        *   Yo (very informal)\\n        *   Howdy (regional)\\n    *   Are there any other ways to interpret \\\"Say hello\\\"?\\n        *   Could I say the *word* \\\"hello\\\"? Yes, that's the most straightforward interpretation.\\n        *   Could I use a synonym? Yes, \\\"Hi\\\", \\\"Hey\\\", etc., all fit the spirit of the request.\\n        *   Could I do something tricky? Like \\\"Hello?\\\" or \\\"Hello!\\\" No, the punctuation adds characters and might be seen as violating the \\\"one word\\\" rule, though it's debatable. The safest bet is just the word itself.\\n\\n3.  **Evaluate the options against the constraints.**\\n    *   **\\\"Hello\\\"**:\\n        *   Says hello? Yes, directly.\\n        *   Is it one word? Yes.\\n        *   Is it the most obvious and expected answer? Yes. This is a strong candidate.\\n    *   **\\\"Hi\\\"**:\\n        *   Says hello? Yes, it's a common synonym.\\n        *   Is it one word? Yes.\\n        *   Is it as good as \\\"Hello\\\"? It's a valid alternative. \\\"Hello\\\" is a more literal response to the prompt \\\"Say hello\\\".\\n    *   **\\\"Hey\\\"**:\\n        *   Similar to \\\"Hi\\\", a valid synonym. Again, \\\"Hello\\\" is more direct.\\n    *   **\\\"Greetings\\\"**:\\n        *   Fits the criteria, but it's a bit more formal and less common in everyday casual interaction. Might sound a bit robotic or overly formal for a simple \\\"hello\\\".\\n    *   **\\\"Salutations\\\"**:\\n        *   Very formal, almost archaic. Would likely come across as quirky or trying too hard to be different. Not the best, most direct answer.\\n\\n4.  **Select the best option.**\\n    *   The user's request is simple and direct: \\\"Say hello.\\\"\\n    *   The most direct, simple, and universally understood response that perfectly fulfills the \\\"one word\\\" constraint is simply the word \\\"Hello\\\".\\n    *   Any other word, while technically correct, adds a layer of interpretation (e.g., choosing a synonym, a different level of formality). The most elegant and precise answer is the one that mirrors the prompt exactly.\\n    *   Therefore, \\\"Hello\\\" is the optimal response. It's concise, accurate, and directly follows the instruction.\\n\\n5.  **Final check.**\\n    *   Request: \\\"Say hello.\\\"\\n    *   Constraint: \\\"Use only one word.\\\"\\n    *   Proposed answer: \\\"Hello.\\\"\\n    *   Does \\\"Hello\\\" satisfy the request? Yes.\\n    *   Does \\\"Hello\\\" satisfy the constraint? Yes.\\n    *   Is there any ambiguity? No.\\n    *   The plan is solid. I will output \\\"Hello\\\".\",\"role\":\"assistant\"}}],\"created\":1765575744,\"model\":\"zai-glm-4.6\",\"system_fingerprint\":\"fp_e6c956b85601b6c6db6c\",\"object\":\"chat.completion\",\"usage\":{\"total_tokens\":721,\"completion_tokens\":708,\"prompt_tokens\":13,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":7.395e-05,\"prompt_time\":0.004095757,\"completion_time\":0.772904501,\"total_time\":0.7785830497741699,\"created\":1765575744.0382657}}"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad0642f7aa6a27f-YUL
+      Content-Type:
+      - application/json
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - cloudflare
+      Server-Timing:
+      - cfCacheStatus;desc="DYNAMIC"
+      - cfEdge;dur=5,cfOrigin;dur=956
+      Strict-Transport-Security:
+      - max-age=3600; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Ratelimit-Remaining-Requests-Day:
+      - "80"
+      X-Ratelimit-Remaining-Requests-Hour:
+      - "80"
+      X-Ratelimit-Remaining-Requests-Minute:
+      - "9"
+      X-Ratelimit-Remaining-Tokens-Day:
+      - "952686"
+      X-Ratelimit-Remaining-Tokens-Hour:
+      - "58269"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "19033"
+    status: 200 OK
+    code: 200
+    duration: 1m0.139s

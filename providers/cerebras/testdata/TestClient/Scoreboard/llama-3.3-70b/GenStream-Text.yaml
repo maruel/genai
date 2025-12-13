@@ -1,69 +1,57 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 111
-        host: api.cerebras.ai
-        body: |
-            {"model":"llama-3.3-70b","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":true}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.cerebras.ai/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        body: |+
-            data: {"id":"chatcmpl-32095d4a-c738-416f-82a9-7c1d2148724b","choices":[{"delta":{"role":"assistant"},"index":0}],"created":1753569321,"model":"llama-3.3-70b","system_fingerprint":"fp_e922c6c4c8013529051a","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-32095d4a-c738-416f-82a9-7c1d2148724b","choices":[{"delta":{"content":"Hello"},"index":0}],"created":1753569321,"model":"llama-3.3-70b","system_fingerprint":"fp_e922c6c4c8013529051a","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-32095d4a-c738-416f-82a9-7c1d2148724b","choices":[{"delta":{"content":"."},"index":0}],"created":1753569321,"model":"llama-3.3-70b","system_fingerprint":"fp_e922c6c4c8013529051a","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-32095d4a-c738-416f-82a9-7c1d2148724b","choices":[{"delta":{},"index":0}],"created":1753569321,"model":"llama-3.3-70b","system_fingerprint":"fp_e922c6c4c8013529051a","object":"chat.completion.chunk"}
-
-            data: {"id":"chatcmpl-32095d4a-c738-416f-82a9-7c1d2148724b","choices":[{"delta":{},"finish_reason":"stop","index":0}],"created":1753569321,"model":"llama-3.3-70b","system_fingerprint":"fp_e922c6c4c8013529051a","object":"chat.completion.chunk","usage":{"prompt_tokens":43,"completion_tokens":3,"total_tokens":46,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.000140669,"prompt_time":0.002585545,"completion_time":0.000471132,"total_time":0.0055866241455078125,"created":1753569321}}
-
-        headers:
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 96575ea17b7ba2f6-YUL
-            Content-Type:
-                - text/event-stream; charset=utf-8
-            Inference-Id:
-                - chatcmpl-32095d4a-c738-416f-82a9-7c1d2148724b
-            Referrer-Policy:
-                - strict-origin-when-cross-origin
-            Server:
-                - cloudflare
-            Strict-Transport-Security:
-                - max-age=3600; includeSubDomains
-            X-Content-Type-Options:
-                - nosniff
-            X-Ratelimit-Limit-Requests-Day:
-                - "14400"
-            X-Ratelimit-Limit-Tokens-Minute:
-                - "64000"
-            X-Ratelimit-Remaining-Requests-Day:
-                - "14369"
-            X-Ratelimit-Remaining-Tokens-Minute:
-                - "64000"
-            X-Ratelimit-Reset-Requests-Day:
-                - "5078.661782741547"
-            X-Ratelimit-Reset-Tokens-Minute:
-                - "38.66178274154663"
-            X-Request-Id:
-                - 96575ea17b7ba2f6-YUL
-        status: 200 OK
-        code: 200
-        duration: 195ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 111
+    host: api.cerebras.ai
+    body: "{\"model\":\"llama-3.3-70b\",\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"}],\"stream\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cerebras.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"chatcmpl-2c47d55e-0782-4111-b490-26e1f485d0d3\",\"choices\":[{\"delta\":{\"role\":\"assistant\"},\"index\":0}],\"created\":1765575978,\"model\":\"llama-3.3-70b\",\"system_fingerprint\":\"fp_be206b5e5c4f87591303\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-2c47d55e-0782-4111-b490-26e1f485d0d3\",\"choices\":[{\"delta\":{\"content\":\"Hello\"},\"index\":0}],\"created\":1765575978,\"model\":\"llama-3.3-70b\",\"system_fingerprint\":\"fp_be206b5e5c4f87591303\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-2c47d55e-0782-4111-b490-26e1f485d0d3\",\"choices\":[{\"delta\":{\"content\":\".\"},\"index\":0}],\"created\":1765575978,\"model\":\"llama-3.3-70b\",\"system_fingerprint\":\"fp_be206b5e5c4f87591303\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-2c47d55e-0782-4111-b490-26e1f485d0d3\",\"choices\":[{\"delta\":{},\"finish_reason\":\"stop\",\"index\":0}],\"created\":1765575978,\"model\":\"llama-3.3-70b\",\"system_fingerprint\":\"fp_be206b5e5c4f87591303\",\"object\":\"chat.completion.chunk\",\"usage\":{\"total_tokens\":46,\"completion_tokens\":3,\"prompt_tokens\":43,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":0.107847175,\"prompt_time\":0.002332833999999999,\"completion_time\":0.00005721,\"total_time\":0.12039422988891602,\"created\":1765575978.5291233}}\n\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad069e94f05a2be-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - cloudflare
+      Server-Timing:
+      - cfCacheStatus;desc="DYNAMIC"
+      - cfEdge;dur=6,cfOrigin;dur=140
+      Strict-Transport-Security:
+      - max-age=3600; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Ratelimit-Remaining-Requests-Day:
+      - "14372"
+      X-Ratelimit-Remaining-Requests-Hour:
+      - "872"
+      X-Ratelimit-Remaining-Requests-Minute:
+      - "18"
+      X-Ratelimit-Remaining-Tokens-Day:
+      - "988611"
+      X-Ratelimit-Remaining-Tokens-Hour:
+      - "988611"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "52611"
+    status: 200 OK
+    code: 200
+    duration: 181ms

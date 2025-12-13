@@ -1,45 +1,57 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 604
-        host: api.cerebras.ai
-        body: |
-            {"model":"qwen-3-32b","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"user","content":"\n\n/think"}],"stream":true,"tool_choice":"required","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"parallel_tool_calls":true}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.cerebras.ai/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: 180
-        body: '{"message":"\"stream=true\" with structured outputs is currently not supported for reasoning models.","type":"invalid_request_error","param":"tools_mode","code":"wrong_api_format"}'
-        headers:
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 96fc4e7318d436d0-YYZ
-            Content-Length:
-                - "180"
-            Content-Type:
-                - application/json
-            Referrer-Policy:
-                - strict-origin-when-cross-origin
-            Server:
-                - cloudflare
-            Strict-Transport-Security:
-                - max-age=3600; includeSubDomains
-            X-Content-Type-Options:
-                - nosniff
-        status: 400 Bad Request
-        code: 400
-        duration: 121ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 604
+    host: api.cerebras.ai
+    body: "{\"model\":\"qwen-3-32b\",\"messages\":[{\"role\":\"user\",\"content\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"},{\"role\":\"user\",\"content\":\"\\n\\n/think\"}],\"stream\":true,\"tool_choice\":\"required\",\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"parallel_tool_calls\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cerebras.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"chatcmpl-dbc7e356-41b4-4c3d-ac9b-dc225030d5e5\",\"choices\":[{\"delta\":{\"role\":\"assistant\"},\"index\":0}],\"created\":1765575876,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-dbc7e356-41b4-4c3d-ac9b-dc225030d5e5\",\"choices\":[{\"delta\":{\"content\":\"<think>\"},\"index\":0}],\"created\":1765575876,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-dbc7e356-41b4-4c3d-ac9b-dc225030d5e5\",\"choices\":[{\"delta\":{\"content\":\"\\nOkay, I need to\"},\"index\":0}],\"created\":1765575876,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-dbc7e356-41b4-4c3d-ac9b-dc225030d5e5\",\"choices\":[{\"delta\":{\"content\":\" calculate the square root of 132413 using the provided square\"},\"index\":0}],\"created\":1765575876,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-dbc7e356-41b4-4c3d-ac9b-dc225030d5e5\",\"choices\":[{\"delta\":{\"content\":\"_root function. Let me check the function's\"},\"index\":0}],\"created\":1765575876,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-dbc7e356-41b4-4c3d-ac9b-dc225030d5e5\",\"choices\":[{\"delta\":{\"content\":\" parameters. The function requires a\"},\"index\":0}],\"created\":1765575876,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-dbc7e356-41b4-4c3d-ac9b-dc225030d5e5\",\"choices\":[{\"delta\":{\"content\":\" \\\"number\\\" property of type number.\"},\"index\":0}],\"created\":1765575876,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-dbc7e356-41b4-4c3d-ac9b-dc225030d5e5\",\"choices\":[{\"delta\":{\"content\":\" The input is 132413, which\"},\"index\":0}],\"created\":1765575876,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-dbc7e356-41b4-4c3d-ac9b-dc225030d5e5\",\"choices\":[{\"delta\":{\"content\":\" is a valid number. I should structure the\"},\"index\":0}],\"created\":1765575876,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-dbc7e356-41b4-4c3d-ac9b-dc225030d5e5\",\"choices\":[{\"delta\":{\"content\":\" tool call with the function name \\\"square_root\\\"\"},\"index\":0}],\"created\":1765575876,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-dbc7e356-41b4-4c3d-ac9b-dc225030d5e5\",\"choices\":[{\"delta\":{\"content\":\" and the argument as 132413. Make sure\"},\"index\":0}],\"created\":1765575876,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-dbc7e356-41b4-4c3d-ac9b-dc225030d5e5\",\"choices\":[{\"delta\":{\"content\":\" the JSON is correctly formatted without any\"},\"index\":0}],\"created\":1765575876,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-dbc7e356-41b4-4c3d-ac9b-dc225030d5e5\",\"choices\":[{\"delta\":{\"content\":\" extra text. Just the result should be\"},\"index\":0}],\"created\":1765575876,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-dbc7e356-41b4-4c3d-ac9b-dc225030d5e5\",\"choices\":[{\"delta\":{\"content\":\" returned, no explanations.\\n\"},\"index\":0}],\"created\":1765575876,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-dbc7e356-41b4-4c3d-ac9b-dc225030d5e5\",\"choices\":[{\"delta\":{\"content\":\"</think>\"},\"index\":0}],\"created\":1765575876,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-dbc7e356-41b4-4c3d-ac9b-dc225030d5e5\",\"choices\":[{\"delta\":{\"tool_calls\":[{\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\": 132413}\"},\"type\":\"function\",\"id\":\"eb96a8b6e\",\"index\":0}]},\"index\":0}],\"created\":1765575876,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-dbc7e356-41b4-4c3d-ac9b-dc225030d5e5\",\"choices\":[{\"delta\":{},\"finish_reason\":\"tool_calls\",\"index\":0}],\"created\":1765575876,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion.chunk\",\"usage\":{\"total_tokens\":372,\"completion_tokens\":138,\"prompt_tokens\":234,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":0.003078561,\"prompt_time\":0.004800401,\"completion_time\":0.112432755,\"total_time\":0.12220525741577148,\"created\":1765575876.6220074}}\n\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad0677ddf68a20e-YYZ
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - cloudflare
+      Server-Timing:
+      - cfCacheStatus;desc="DYNAMIC"
+      - cfEdge;dur=5,cfOrigin;dur=153
+      Strict-Transport-Security:
+      - max-age=3600; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Ratelimit-Remaining-Requests-Day:
+      - "14391"
+      X-Ratelimit-Remaining-Requests-Hour:
+      - "891"
+      X-Ratelimit-Remaining-Requests-Minute:
+      - "21"
+      X-Ratelimit-Remaining-Tokens-Day:
+      - "982595"
+      X-Ratelimit-Remaining-Tokens-Hour:
+      - "982595"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "46595"
+    status: 200 OK
+    code: 200
+    duration: 171ms

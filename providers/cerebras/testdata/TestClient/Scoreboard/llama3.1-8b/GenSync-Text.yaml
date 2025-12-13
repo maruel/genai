@@ -1,60 +1,58 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 95
-        host: api.cerebras.ai
-        body: |
-            {"model":"llama3.1-8b","messages":[{"role":"user","content":"Say hello. Use only one word."}]}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.cerebras.ai/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        uncompressed: true
-        body: '{"id":"chatcmpl-6ef08f4f-395f-4d0f-9948-6273ba11c763","choices":[{"finish_reason":"stop","index":0,"message":{"content":"Hello","role":"assistant"}}],"created":1753569313,"model":"llama3.1-8b","system_fingerprint":"fp_390dc65d3f27cee4c692","object":"chat.completion","usage":{"prompt_tokens":43,"completion_tokens":2,"total_tokens":45,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":0.000381019,"prompt_time":0.002169373,"completion_time":0.000882696,"total_time":0.006226062774658203,"created":1753569313}}'
-        headers:
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 96575e6f38b8a27e-YUL
-            Content-Type:
-                - application/json
-            Inference-Id:
-                - chatcmpl-6ef08f4f-395f-4d0f-9948-6273ba11c763
-            Referrer-Policy:
-                - strict-origin-when-cross-origin
-            Server:
-                - cloudflare
-            Strict-Transport-Security:
-                - max-age=3600; includeSubDomains
-            X-Content-Type-Options:
-                - nosniff
-            X-Ratelimit-Limit-Requests-Day:
-                - "14400"
-            X-Ratelimit-Limit-Tokens-Minute:
-                - "60000"
-            X-Ratelimit-Remaining-Requests-Day:
-                - "14370"
-            X-Ratelimit-Remaining-Tokens-Minute:
-                - "60000"
-            X-Ratelimit-Reset-Requests-Day:
-                - "5086.674144029617"
-            X-Ratelimit-Reset-Tokens-Minute:
-                - "46.67414402961731"
-            X-Request-Id:
-                - 96575e6f38b8a27e-YUL
-        status: 200 OK
-        code: 200
-        duration: 268ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 95
+    host: api.cerebras.ai
+    body: "{\"model\":\"llama3.1-8b\",\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cerebras.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-db7e1a48-2181-4882-a291-3250da4ba34d\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"Hello.\",\"role\":\"assistant\"}}],\"created\":1765572847,\"model\":\"llama3.1-8b\",\"system_fingerprint\":\"fp_2df2c50ce520692a7dce\",\"object\":\"chat.completion\",\"usage\":{\"total_tokens\":46,\"completion_tokens\":3,\"prompt_tokens\":43,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":2.629727973,\"prompt_time\":0.004891023,\"completion_time\":0.001169133,\"total_time\":2.636740207672119,\"created\":1765572847.9187007}}"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad01d73c94aa2f7-YUL
+      Content-Type:
+      - application/json
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - cloudflare
+      Server-Timing:
+      - cfCacheStatus;desc="DYNAMIC"
+      - cfEdge;dur=9,cfOrigin;dur=2993
+      Strict-Transport-Security:
+      - max-age=3600; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Ratelimit-Remaining-Requests-Day:
+      - "14399"
+      X-Ratelimit-Remaining-Requests-Hour:
+      - "899"
+      X-Ratelimit-Remaining-Requests-Minute:
+      - "29"
+      X-Ratelimit-Remaining-Tokens-Day:
+      - "991801"
+      X-Ratelimit-Remaining-Tokens-Hour:
+      - "991801"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "51801"
+    status: 200 OK
+    code: 200
+    duration: 3.011s

@@ -1,0 +1,57 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 157
+    host: api.cerebras.ai
+    body: "{\"model\":\"zai-glm-4.6\",\"messages\":[{\"role\":\"user\",\"content\":\"Explain the theory of relativity in great details.\"}],\"max_completion_tokens\":16,\"stream\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cerebras.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"chatcmpl-7d03b485-e7df-43eb-af12-f5fa92e8588b\",\"choices\":[{\"delta\":{\"role\":\"assistant\"},\"index\":0}],\"created\":1765575687,\"model\":\"zai-glm-4.6\",\"system_fingerprint\":\"fp_e6c956b85601b6c6db6c\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-7d03b485-e7df-43eb-af12-f5fa92e8588b\",\"choices\":[{\"delta\":{\"reasoning\":\"\\n\"},\"index\":0}],\"created\":1765575687,\"model\":\"zai-glm-4.6\",\"system_fingerprint\":\"fp_e6c956b85601b6c6db6c\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-7d03b485-e7df-43eb-af12-f5fa92e8588b\",\"choices\":[{\"delta\":{\"reasoning\":\"1.  **Deconstruct the User's Request:** The user wants\"},\"index\":0}],\"created\":1765575687,\"model\":\"zai-glm-4.6\",\"system_fingerprint\":\"fp_e6c956b85601b6c6db6c\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"id\":\"chatcmpl-7d03b485-e7df-43eb-af12-f5fa92e8588b\",\"choices\":[{\"delta\":{},\"finish_reason\":\"length\",\"index\":0}],\"created\":1765575687,\"model\":\"zai-glm-4.6\",\"system_fingerprint\":\"fp_e6c956b85601b6c6db6c\",\"object\":\"chat.completion.chunk\",\"usage\":{\"total_tokens\":32,\"completion_tokens\":16,\"prompt_tokens\":16,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":0.00004623,\"prompt_time\":0.005033145,\"completion_time\":0.003829858,\"total_time\":0.011334657669067383,\"created\":1765575687.8077517}}\n\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad062c9aff7a216-YYZ
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - cloudflare
+      Server-Timing:
+      - cfCacheStatus;desc="DYNAMIC"
+      - cfEdge;dur=5,cfOrigin;dur=250
+      Strict-Transport-Security:
+      - max-age=3600; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Ratelimit-Remaining-Requests-Day:
+      - "82"
+      X-Ratelimit-Remaining-Requests-Hour:
+      - "82"
+      X-Ratelimit-Remaining-Requests-Minute:
+      - "5"
+      X-Ratelimit-Remaining-Tokens-Day:
+      - "953207"
+      X-Ratelimit-Remaining-Tokens-Hour:
+      - "58790"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "58291"
+    status: 200 OK
+    code: 200
+    duration: 268ms

@@ -1,60 +1,58 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 133
-        host: api.cerebras.ai
-        body: |
-            {"model":"qwen-3-32b","messages":[{"role":"user","content":"Say hello. Use only one word."},{"role":"user","content":"\n\n/think"}]}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.cerebras.ai/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        uncompressed: true
-        body: '{"id":"chatcmpl-220f342f-33b2-4f1a-afaa-02b26dd05b2c","choices":[{"finish_reason":"stop","index":0,"message":{"content":"<think>\nOkay, the user asked me to say hello using only one word. Let me think about how to approach this. The simplest way is to use the word \"Hello\" itself. It''s a single word and appropriately conveys the greeting. I need to make sure there are no extra words or explanations. Let me check if \"Hello\" is the correct and only word required. Since the instruction specifies \"use only one word,\" I should confirm that \"Hello\" fits that constraint. There''s no need for punctuation or additional characters, so it''s straightforward. The response should just be the word \"Hello\" without any other text. I''ll go with that.\n</think>\n\nHello.","role":"assistant"}}],"created":1755298798,"model":"qwen-3-32b","system_fingerprint":"fp_c8e8cd78ea58dce346b0","object":"chat.completion","usage":{"prompt_tokens":23,"completion_tokens":140,"total_tokens":163,"prompt_tokens_details":{"cached_tokens":0}},"time_info":{"queue_time":9.223e-05,"prompt_time":0.001397378,"completion_time":0.086096138,"total_time":0.08874130249023438,"created":1755298798}}'
-        headers:
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 96fc4e34ddbb36d0-YYZ
-            Content-Type:
-                - application/json
-            Inference-Id:
-                - chatcmpl-220f342f-33b2-4f1a-afaa-02b26dd05b2c
-            Referrer-Policy:
-                - strict-origin-when-cross-origin
-            Server:
-                - cloudflare
-            Strict-Transport-Security:
-                - max-age=3600; includeSubDomains
-            X-Content-Type-Options:
-                - nosniff
-            X-Ratelimit-Limit-Requests-Day:
-                - "14400"
-            X-Ratelimit-Limit-Tokens-Minute:
-                - "64000"
-            X-Ratelimit-Remaining-Requests-Day:
-                - "14398"
-            X-Ratelimit-Remaining-Tokens-Minute:
-                - "64000"
-            X-Ratelimit-Reset-Requests-Day:
-                - "3600.942107439041"
-            X-Ratelimit-Reset-Tokens-Minute:
-                - "0.9421074390411377"
-            X-Request-Id:
-                - 96fc4e34ddbb36d0-YYZ
-        status: 200 OK
-        code: 200
-        duration: 299ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 133
+    host: api.cerebras.ai
+    body: "{\"model\":\"qwen-3-32b\",\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"},{\"role\":\"user\",\"content\":\"\\n\\n/think\"}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cerebras.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-510965ab-fc91-41fe-bbd4-2d43c50a094b\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"<think>\\nOkay, the user just said \\\"Say hello. Use only one word.\\\" and I need to respond with just one word. Let me think.\\n\\n\\\"Hello\\\" is the most straightforward, but maybe they want a different one. However, the instruction was to use only one word, so \\\"Hello\\\" should work. Let me check if there's a trick here. Maybe they want a greeting in another language? But the example given is in English. The user might be testing if I can follow the one-word constraint. \\\"Hello\\\" is the standard response, so I'll go with that.\\n</think>\\n\\nHello.\",\"role\":\"assistant\"}}],\"created\":1765572843,\"model\":\"qwen-3-32b\",\"system_fingerprint\":\"fp_c6d200ac10606b9c1aa7\",\"object\":\"chat.completion\",\"usage\":{\"total_tokens\":149,\"completion_tokens\":126,\"prompt_tokens\":23,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":5.8101e-05,\"prompt_time\":0.001314054,\"completion_time\":0.067678693,\"total_time\":0.07021594047546387,\"created\":1765572843.743597}}"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad01d723e68a2f7-YUL
+      Content-Type:
+      - application/json
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - cloudflare
+      Server-Timing:
+      - cfCacheStatus;desc="DYNAMIC"
+      - cfEdge;dur=7,cfOrigin;dur=230
+      Strict-Transport-Security:
+      - max-age=3600; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Ratelimit-Remaining-Requests-Day:
+      - "14399"
+      X-Ratelimit-Remaining-Requests-Hour:
+      - "899"
+      X-Ratelimit-Remaining-Requests-Minute:
+      - "29"
+      X-Ratelimit-Remaining-Tokens-Day:
+      - "991799"
+      X-Ratelimit-Remaining-Tokens-Hour:
+      - "991799"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "55799"
+    status: 200 OK
+    code: 200
+    duration: 245ms

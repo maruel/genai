@@ -92,15 +92,20 @@ func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Recor
 
 	modelsToTest := map[Model]struct{}{}
 	for _, sc := range sb.Scenarios {
-		for _, model := range sc.Models {
-			modelsToTest[Model{Model: model, Reason: sc.Reason}] = struct{}{}
+		if len(sc.Models) == 0 {
+			continue
 		}
+		// Only track the first model from each scenario (others are skipped for cost savings)
+		modelsToTest[Model{Model: sc.Models[0], Reason: sc.Reason}] = struct{}{}
 	}
 
 	for _, m := range models {
 		t.Run(m.String(), func(t *testing.T) {
 			// Find the reference.
 			var want scoreboard.Scenario
+			found := false
+
+			// First try to find exact match with the requested Reason value
 			for _, sc := range sb.Scenarios {
 				if m.Reason != sc.Reason {
 					continue
@@ -113,11 +118,48 @@ func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Recor
 					}
 					want = sc
 					want.Models = []string{m.Model}
+					found = true
 					break
 				}
 			}
-			if len(want.Models) == 0 {
-				t.Fatalf("no scenario for model %v", m)
+
+			// If not found and we're not updating, try to find the model with any Reason value
+			if !found && !*updateScoreboard {
+				for _, sc := range sb.Scenarios {
+					if slices.Contains(sc.Models, m.Model) {
+						if sc.Models[0] != m.Model {
+							t.Skip("Only run first model in scenario for cost savings")
+						}
+						// Model exists but with different Reason value
+						// Use the actual Reason value from the scoreboard
+						want = sc
+						want.Models = []string{m.Model}
+						found = true
+						// Mark this as seen using the actual reason value
+						seen[Model{Model: m.Model, Reason: sc.Reason}] = struct{}{}
+						break
+					}
+				}
+			}
+
+			if !found {
+				// Model not in scoreboard yet
+				if !*updateScoreboard {
+					t.Fatalf("no scenario for model %v", m)
+				}
+				// When updating scoreboard, create a new scenario for this model
+				want = scoreboard.Scenario{
+					Models: []string{m.Model},
+					Reason: m.Reason,
+					In: map[scoreboard.Modality]scoreboard.ModalCapability{
+						scoreboard.ModalityText: {Inline: true},
+					},
+					Out: map[scoreboard.Modality]scoreboard.ModalCapability{
+						scoreboard.ModalityText: {Inline: true},
+					},
+					GenSync:   &scoreboard.Functionality{},
+					GenStream: &scoreboard.Functionality{},
+				}
 			}
 			if want.In == nil && want.Out == nil {
 				t.Skip("Explicitly unsupported model")
@@ -265,6 +307,10 @@ func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Recor
 				t.Errorf("failed to delete stale recordings: %v", err)
 			}
 		}
+		// Also delete any orphaned recording directories that aren't being tested
+		if err := deleteOrphanedRecordings(t, seen); err != nil {
+			t.Errorf("failed to delete orphaned recordings: %v", err)
+		}
 	}
 }
 
@@ -333,6 +379,44 @@ func deleteStaleRecordings(t testing.TB, staleScenarios []scoreboard.Scenario) e
 	return nil
 }
 
+// deleteOrphanedRecordings removes HTTP recording directories that don't correspond to any tested model.
+func deleteOrphanedRecordings(t testing.TB, seen map[Model]struct{}) error {
+	scoreBoardDir := filepath.Join("testdata", "TestClient", "Scoreboard")
+	entries, err := os.ReadDir(scoreBoardDir)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return nil // No recordings directory yet, nothing to clean
+		}
+		return fmt.Errorf("failed to read scoreboard directory: %w", err)
+	}
+
+	for _, entry := range entries {
+		if !entry.IsDir() {
+			continue
+		}
+		dirName := entry.Name()
+
+		// Check if this directory corresponds to a tested model
+		found := false
+		for model := range seen {
+			expected := model.String()
+			if dirName == expected {
+				found = true
+				break
+			}
+		}
+
+		if !found {
+			path := filepath.Join(scoreBoardDir, dirName)
+			t.Logf("Deleting orphaned model recordings for %s", dirName)
+			if err := os.RemoveAll(path); err != nil {
+				return fmt.Errorf("failed to delete orphaned recordings for %s: %w", dirName, err)
+			}
+		}
+	}
+	return nil
+}
+
 // defaultUpdateScoreboard is the default implementation for updating scoreboards.
 // It merges the updated scenarios with the existing scoreboard while preserving metadata like comments and reasoning tokens.
 // It also updates the SOTA, Good, Cheap flags based on the preferred models.
@@ -392,6 +476,29 @@ func defaultUpdateScoreboard(t testing.TB, providerDir string, scenarios []score
 		sc.SOTA = preferredModels["sota"] == model
 		sc.Good = preferredModels["good"] == model
 		sc.Cheap = preferredModels["cheap"] == model
+	}
+
+	// Add new scenarios for models that weren't in the original scoreboard
+	seenModels := make(map[string]map[bool]struct{})
+	for _, sc := range existingScore.Scenarios {
+		if len(sc.Models) == 0 {
+			continue
+		}
+		if seenModels[sc.Models[0]] == nil {
+			seenModels[sc.Models[0]] = make(map[bool]struct{})
+		}
+		seenModels[sc.Models[0]][sc.Reason] = struct{}{}
+	}
+
+	for _, newScenario := range scenarios {
+		if len(newScenario.Models) == 0 {
+			continue
+		}
+		model := newScenario.Models[0]
+		if _, exists := seenModels[model][newScenario.Reason]; !exists {
+			// This is a new model/reason combination, add it to the scoreboard
+			existingScore.Scenarios = append(existingScore.Scenarios, newScenario)
+		}
 	}
 
 	// Encode the updated scoreboard

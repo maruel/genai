@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 297
+    host: api.mistral.ai
+    body: "{\"model\":\"labs-devstral-small-2512\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What fruit is it? Reply with only one word.\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.gif\"}}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.mistral.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"010dc062159044a5bcb15f0d693d7aa6\",\"object\":\"chat.completion.chunk\",\"created\":1765716894,\"model\":\"labs-devstral-small-2512\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"010dc062159044a5bcb15f0d693d7aa6\",\"object\":\"chat.completion.chunk\",\"created\":1765716894,\"model\":\"labs-devstral-small-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Ban\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvw\"}\n\ndata: {\"id\":\"010dc062159044a5bcb15f0d693d7aa6\",\"object\":\"chat.completion.chunk\",\"created\":1765716894,\"model\":\"labs-devstral-small-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"ana\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwxyz0\"}\n\ndata: {\"id\":\"010dc062159044a5bcb15f0d693d7aa6\",\"object\":\"chat.completion.chunk\",\"created\":1765716894,\"model\":\"labs-devstral-small-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":157,\"total_tokens\":160,\"completion_tokens\":3},\"p\":\"abcdefghijklmnopqrstuvw\"}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9addda3dfe56a286-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Mistral-Correlation-Id:
+      - 019b1ced-a306-76eb-be18-f148b3571c33
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "383"
+      X-Kong-Proxy-Latency:
+      - "10"
+      X-Kong-Request-Id:
+      - 019b1ced-a306-76eb-be18-f148b3571c33
+      X-Kong-Upstream-Latency:
+      - "384"
+    status: 200 OK
+    code: 200
+    duration: 538ms

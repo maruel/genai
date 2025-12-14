@@ -1,0 +1,67 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 601
+    host: api.mistral.ai
+    body: "{\"model\":\"mistral-vibe-cli-latest\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one.\"}]}],\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"description\":\"A tool to specify the best country\",\"strict\":true,\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"country\":{\"type\":\"string\",\"enum\":[\"USA\",\"Canada\"]}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"country\"]}}}],\"tool_choice\":\"required\"}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.mistral.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"9062f0045d774c1797aebfd5e00dd5ac\",\"created\":1765716883,\"model\":\"mistral-vibe-cli-latest\",\"usage\":{\"prompt_tokens\":129,\"total_tokens\":150,\"completion_tokens\":21},\"object\":\"chat.completion\",\"choices\":[{\"index\":0,\"finish_reason\":\"tool_calls\",\"message\":{\"role\":\"assistant\",\"tool_calls\":[{\"id\":\"4dYuDN9DC\",\"function\":{\"name\":\"best_country\",\"arguments\":\"{\\\"country\\\": \\\"USA\\\"}\"},\"index\":0},{\"id\":\"l7rS6iBwC\",\"function\":{\"name\":\"best_country\",\"arguments\":\"{\\\"country\\\": \\\"Canada\\\"}\"},\"index\":1}],\"content\":\"\"}}]}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9addd9fa6eeba286-YUL
+      Content-Type:
+      - application/json
+      Mistral-Correlation-Id:
+      - 019b1ced-78c0-79ca-b182-1c79bda73c2c
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "413"
+      X-Kong-Proxy-Latency:
+      - "9"
+      X-Kong-Request-Id:
+      - 019b1ced-78c0-79ca-b182-1c79bda73c2c
+      X-Kong-Upstream-Latency:
+      - "414"
+      X-Ratelimit-Limit-Req-60-Second:
+      - "1200"
+      X-Ratelimit-Limit-Tokens-Minute:
+      - "2000000"
+      X-Ratelimit-Limit-Tokens-Month:
+      - "10000000000"
+      X-Ratelimit-Remaining-Req-60-Second:
+      - "1177"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "1998354"
+      X-Ratelimit-Remaining-Tokens-Month:
+      - "9999851735"
+      X-Ratelimit-Tokens-Query-Cost:
+      - "150"
+    status: 200 OK
+    code: 200
+    duration: 546ms

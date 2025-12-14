@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 594
+    host: api.mistral.ai
+    body: "{\"model\":\"ministral-3b-2512\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one.\"}]}],\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"description\":\"A tool to specify the best country\",\"strict\":true,\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"country\":{\"type\":\"string\",\"enum\":[\"Canada\",\"USA\"]}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"country\"]}}}],\"tool_choice\":\"required\"}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.mistral.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"e9112aaa3502465c840639a67699136a\",\"object\":\"chat.completion.chunk\",\"created\":1765716916,\"model\":\"ministral-3b-2512\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"e9112aaa3502465c840639a67699136a\",\"object\":\"chat.completion.chunk\",\"created\":1765716916,\"model\":\"ministral-3b-2512\",\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[{\"id\":\"K8wk0FQeM\",\"function\":{\"name\":\"best_country\",\"arguments\":\"{\\\"country\\\": \\\"Canada\\\"}\"},\"index\":0},{\"id\":\"2OR8Lmwqi\",\"function\":{\"name\":\"best_country\",\"arguments\":\"{\\\"country\\\": \\\"USA\\\"}\"},\"index\":1}]},\"finish_reason\":\"tool_calls\"}],\"usage\":{\"prompt_tokens\":129,\"total_tokens\":150,\"completion_tokens\":21},\"p\":\"abcdefghijklmnopqrstuvwxyz01234\"}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9adddaca6f05a286-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Mistral-Correlation-Id:
+      - 019b1ced-fac5-7fed-b5d6-a2990f47277b
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "132"
+      X-Kong-Proxy-Latency:
+      - "7"
+      X-Kong-Request-Id:
+      - 019b1ced-fac5-7fed-b5d6-a2990f47277b
+      X-Kong-Upstream-Latency:
+      - "133"
+    status: 200 OK
+    code: 200
+    duration: 269ms

@@ -1,61 +1,52 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 292
-        host: api.mistral.ai
-        body: |
-            {"model":"pixtral-12b-latest","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.webp"}}]}]}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.mistral.ai/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        body: |+
-            data: {"id":"64f51a07865a4b4e9806859fd9d0ffc1","object":"chat.completion.chunk","created":1753232179,"model":"pixtral-12b-latest","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
-
-            data: {"id":"64f51a07865a4b4e9806859fd9d0ffc1","object":"chat.completion.chunk","created":1753232179,"model":"pixtral-12b-latest","choices":[{"index":0,"delta":{"content":"Ban"},"finish_reason":null}]}
-
-            data: {"id":"64f51a07865a4b4e9806859fd9d0ffc1","object":"chat.completion.chunk","created":1753232179,"model":"pixtral-12b-latest","choices":[{"index":0,"delta":{"content":"ana"},"finish_reason":null}]}
-
-            data: {"id":"64f51a07865a4b4e9806859fd9d0ffc1","object":"chat.completion.chunk","created":1753232179,"model":"pixtral-12b-latest","choices":[{"index":0,"delta":{"content":""},"finish_reason":"stop"}],"usage":{"prompt_tokens":432,"total_tokens":435,"completion_tokens":3}}
-
-            data: [DONE]
-
-        headers:
-            Access-Control-Allow-Origin:
-                - '*'
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 963737a31af6a2f8-YUL
-            Content-Type:
-                - text/event-stream; charset=utf-8
-            Mistral-Correlation-Id:
-                - 019834c8-0234-701f-967b-e10ed9076b27
-            Server:
-                - cloudflare
-            Strict-Transport-Security:
-                - max-age=15552000; includeSubDomains
-            X-Envoy-Upstream-Service-Time:
-                - "386"
-            X-Kong-Proxy-Latency:
-                - "8"
-            X-Kong-Request-Id:
-                - 019834c8-0234-701f-967b-e10ed9076b27
-            X-Kong-Upstream-Latency:
-                - "387"
-        status: 200 OK
-        code: 200
-        duration: 556ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 292
+    host: api.mistral.ai
+    body: "{\"model\":\"pixtral-12b-latest\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What fruit is it? Reply with only one word.\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.webp\"}}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.mistral.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"62b28fbf27a9478c8f9f5314f93af2c5\",\"object\":\"chat.completion.chunk\",\"created\":1765716126,\"model\":\"pixtral-12b-latest\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"62b28fbf27a9478c8f9f5314f93af2c5\",\"object\":\"chat.completion.chunk\",\"created\":1765716126,\"model\":\"pixtral-12b-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Ban\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwxyz0123456789\"}\n\ndata: {\"id\":\"62b28fbf27a9478c8f9f5314f93af2c5\",\"object\":\"chat.completion.chunk\",\"created\":1765716126,\"model\":\"pixtral-12b-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"ana\"},\"finish_reason\":null}],\"p\":\"abcde\"}\n\ndata: {\"id\":\"62b28fbf27a9478c8f9f5314f93af2c5\",\"object\":\"chat.completion.chunk\",\"created\":1765716126,\"model\":\"pixtral-12b-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":432,\"total_tokens\":435,\"completion_tokens\":3},\"p\":\"a\"}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9addc77b79d4a2bc-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Mistral-Correlation-Id:
+      - 019b1ce1-e973-7d28-97bd-fc915beb5c80
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "378"
+      X-Kong-Proxy-Latency:
+      - "7"
+      X-Kong-Request-Id:
+      - 019b1ce1-e973-7d28-97bd-fc915beb5c80
+      X-Kong-Upstream-Latency:
+      - "378"
+    status: 200 OK
+    code: 200
+    duration: 511ms

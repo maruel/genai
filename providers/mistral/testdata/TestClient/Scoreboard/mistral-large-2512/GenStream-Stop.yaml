@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 183
+    host: api.mistral.ai
+    body: "{\"model\":\"mistral-large-2512\",\"stream\":true,\"stop\":[\"is\"],\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Talk about Canada in great details. Start with: Canada is\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.mistral.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"3cee2dd7a80a4d5199b16883d118fa91\",\"object\":\"chat.completion.chunk\",\"created\":1765716898,\"model\":\"mistral-large-2512\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"3cee2dd7a80a4d5199b16883d118fa91\",\"object\":\"chat.completion.chunk\",\"created\":1765716898,\"model\":\"mistral-large-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"**\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"3cee2dd7a80a4d5199b16883d118fa91\",\"object\":\"chat.completion.chunk\",\"created\":1765716898,\"model\":\"mistral-large-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Canada:\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"3cee2dd7a80a4d5199b16883d118fa91\",\"object\":\"chat.completion.chunk\",\"created\":1765716898,\"model\":\"mistral-large-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" A Land\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"3cee2dd7a80a4d5199b16883d118fa91\",\"object\":\"chat.completion.chunk\",\"created\":1765716898,\"model\":\"mistral-large-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" of V\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"3cee2dd7a80a4d5199b16883d118fa91\",\"object\":\"chat.completion.chunk\",\"created\":1765716898,\"model\":\"mistral-large-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"ast Beauty\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"3cee2dd7a80a4d5199b16883d118fa91\",\"object\":\"chat.completion.chunk\",\"created\":1765716898,\"model\":\"mistral-large-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\", Diversity\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"3cee2dd7a80a4d5199b16883d118fa91\",\"object\":\"chat.completion.chunk\",\"created\":1765716898,\"model\":\"mistral-large-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\", and Opportunity\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"3cee2dd7a80a4d5199b16883d118fa91\",\"object\":\"chat.completion.chunk\",\"created\":1765716898,\"model\":\"mistral-large-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"**\\n\\nCanada \"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":15,\"total_tokens\":32,\"completion_tokens\":17}}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9addda57deffa286-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Mistral-Correlation-Id:
+      - 019b1ced-b325-70dd-babc-bba318744dd9
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "199"
+      X-Kong-Proxy-Latency:
+      - "10"
+      X-Kong-Request-Id:
+      - 019b1ced-b325-70dd-babc-bba318744dd9
+      X-Kong-Upstream-Latency:
+      - "200"
+    status: 200 OK
+    code: 200
+    duration: 329ms

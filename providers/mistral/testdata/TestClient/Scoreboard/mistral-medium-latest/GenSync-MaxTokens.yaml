@@ -20,7 +20,7 @@ interactions:
     proto_minor: 0
     content_length: -1
     uncompressed: true
-    body: "{\"id\":\"14884ff21bb24c7da31cd247186f64e8\",\"created\":1756683697,\"model\":\"mistral-medium-latest\",\"usage\":{\"prompt_tokens\":13,\"total_tokens\":29,\"completion_tokens\":16},\"object\":\"chat.completion\",\"choices\":[{\"index\":0,\"finish_reason\":\"length\",\"message\":{\"role\":\"assistant\",\"tool_calls\":null,\"content\":\"Albert Einstein's **Theory of Relativity** is one of the most profound\"}}]}"
+    body: "{\"id\":\"d271339d9e6a4a319597219a5debe203\",\"created\":1765716054,\"model\":\"mistral-medium-latest\",\"usage\":{\"prompt_tokens\":13,\"total_tokens\":29,\"completion_tokens\":16},\"object\":\"chat.completion\",\"choices\":[{\"index\":0,\"finish_reason\":\"length\",\"message\":{\"role\":\"assistant\",\"tool_calls\":null,\"content\":\"Albert Einstein's **Theory of Relativity** is one of the most profound\"}}]}"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -29,37 +29,39 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 978061372e16a2b8-YUL
+      - 9addc5b9dba9a2e2-YUL
       Content-Type:
       - application/json
       Mistral-Correlation-Id:
-      - 01990281-feba-7411-a907-887b7e68ea8b
+      - 019b1ce0-d06e-732e-92a2-e96da5f84755
       Server:
       - cloudflare
       Strict-Transport-Security:
-      - max-age=15552000; includeSubDomains
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
       X-Envoy-Upstream-Service-Time:
-      - "210"
+      - "224"
       X-Kong-Proxy-Latency:
-      - "6"
+      - "10"
       X-Kong-Request-Id:
-      - 01990281-feba-7411-a907-887b7e68ea8b
+      - 019b1ce0-d06e-732e-92a2-e96da5f84755
       X-Kong-Upstream-Latency:
-      - "211"
-      X-Ratelimit-Limit-Req-10-Second:
-      - "60"
-      X-Ratelimit-Limit-Tokens-Minute:
-      - "2000000"
+      - "225"
+      X-Ratelimit-Limit-Req-60-Second:
+      - "360"
+      X-Ratelimit-Limit-Tokens-5-Minute:
+      - "600000"
       X-Ratelimit-Limit-Tokens-Month:
-      - "10000000000"
-      X-Ratelimit-Remaining-Req-10-Second:
-      - "5"
-      X-Ratelimit-Remaining-Tokens-Minute:
-      - "1995564"
+      - "200000000000"
+      X-Ratelimit-Remaining-Req-60-Second:
+      - "354"
+      X-Ratelimit-Remaining-Tokens-5-Minute:
+      - "595414"
       X-Ratelimit-Remaining-Tokens-Month:
-      - "9999984786"
+      - "199999987062"
       X-Ratelimit-Tokens-Query-Cost:
       - "29"
     status: 200 OK
     code: 200
-    duration: 346ms
+    duration: 365ms

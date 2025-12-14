@@ -59,5 +59,5 @@ func ExampleNew_hTTP_record() {
 	}
 	fmt.Printf("Found %d models\n", len(models))
 	// Output:
-	// Found 65 models
+	// Found 61 models
 }

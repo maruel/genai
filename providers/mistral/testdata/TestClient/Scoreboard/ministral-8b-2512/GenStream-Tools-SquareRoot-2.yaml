@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 830
+    host: api.mistral.ai
+    body: "{\"model\":\"ministral-8b-2512\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"}]},{\"role\":\"assistant\",\"tool_calls\":[{\"id\":\"NmkXzu3wK\",\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\": 132413}\"}}]},{\"role\":\"tool\",\"content\":[{\"type\":\"text\",\"text\":\"363.89\"}],\"tool_call_id\":\"NmkXzu3wK\",\"name\":\"square_root\"}],\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"strict\":true,\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"tool_choice\":\"none\"}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.mistral.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"aff6e8dd6e644437bd9b6f9670ac5086\",\"object\":\"chat.completion.chunk\",\"created\":1765716925,\"model\":\"ministral-8b-2512\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"aff6e8dd6e644437bd9b6f9670ac5086\",\"object\":\"chat.completion.chunk\",\"created\":1765716925,\"model\":\"ministral-8b-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"3\"},\"finish_reason\":null}],\"p\":\"abcdefghij\"}\n\ndata: {\"id\":\"aff6e8dd6e644437bd9b6f9670ac5086\",\"object\":\"chat.completion.chunk\",\"created\":1765716925,\"model\":\"ministral-8b-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"6\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqr\"}\n\ndata: {\"id\":\"aff6e8dd6e644437bd9b6f9670ac5086\",\"object\":\"chat.completion.chunk\",\"created\":1765716925,\"model\":\"ministral-8b-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"3\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvw\"}\n\ndata: {\"id\":\"aff6e8dd6e644437bd9b6f9670ac5086\",\"object\":\"chat.completion.chunk\",\"created\":1765716925,\"model\":\"ministral-8b-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\".\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwx\"}\n\ndata: {\"id\":\"aff6e8dd6e644437bd9b6f9670ac5086\",\"object\":\"chat.completion.chunk\",\"created\":1765716925,\"model\":\"ministral-8b-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"8\"},\"finish_reason\":null}],\"p\":\"abcdefghijk\"}\n\ndata: {\"id\":\"aff6e8dd6e644437bd9b6f9670ac5086\",\"object\":\"chat.completion.chunk\",\"created\":1765716925,\"model\":\"ministral-8b-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"9\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstu\"}\n\ndata: {\"id\":\"aff6e8dd6e644437bd9b6f9670ac5086\",\"object\":\"chat.completion.chunk\",\"created\":1765716925,\"model\":\"ministral-8b-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":152,\"total_tokens\":159,\"completion_tokens\":7},\"p\":\"abcdefghi\"}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9adddafd7d5fa286-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Mistral-Correlation-Id:
+      - 019b1cee-1ab0-7308-9092-689ca566a3f8
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "58"
+      X-Kong-Proxy-Latency:
+      - "8"
+      X-Kong-Request-Id:
+      - 019b1cee-1ab0-7308-9092-689ca566a3f8
+      X-Kong-Upstream-Latency:
+      - "59"
+    status: 200 OK
+    code: 200
+    duration: 197ms

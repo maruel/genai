@@ -1,66 +1,67 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 185
-        host: api.mistral.ai
-        body: |
-            {"model":"ministral-3b-latest","stream":false,"stop":["is"],"messages":[{"role":"user","content":[{"type":"text","text":"Talk about Canada in great details. Start with: Canada is"}]}]}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.mistral.ai/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        uncompressed: true
-        body: '{"id":"d965881281474602a2d2ce84b8b3ea8d","object":"chat.completion","created":1753147549,"model":"ministral-3b-latest","choices":[{"index":0,"message":{"role":"assistant","tool_calls":null,"content":"Canada "},"finish_reason":"stop"}],"usage":{"prompt_tokens":15,"total_tokens":17,"completion_tokens":2}}'
-        headers:
-            Access-Control-Allow-Origin:
-                - '*'
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 962f2575393433f1-YUL
-            Content-Type:
-                - application/json
-            Mistral-Correlation-Id:
-                - 01982fbc-a59c-7979-8d29-9fe96fbd929a
-            Server:
-                - cloudflare
-            Strict-Transport-Security:
-                - max-age=15552000; includeSubDomains
-            X-Envoy-Upstream-Service-Time:
-                - "88"
-            X-Kong-Proxy-Latency:
-                - "6"
-            X-Kong-Request-Id:
-                - 01982fbc-a59c-7979-8d29-9fe96fbd929a
-            X-Kong-Upstream-Latency:
-                - "88"
-            X-Ratelimit-Limit-Req-10-Second:
-                - "60"
-            X-Ratelimit-Limit-Tokens-Minute:
-                - "2000000"
-            X-Ratelimit-Limit-Tokens-Month:
-                - "10000000000"
-            X-Ratelimit-Remaining-Req-10-Second:
-                - "51"
-            X-Ratelimit-Remaining-Tokens-Minute:
-                - "1999852"
-            X-Ratelimit-Remaining-Tokens-Month:
-                - "9999999536"
-            X-Ratelimit-Tokens-Query-Cost:
-                - "17"
-        status: 200 OK
-        code: 200
-        duration: 261ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 185
+    host: api.mistral.ai
+    body: "{\"model\":\"ministral-3b-latest\",\"stream\":false,\"stop\":[\"is\"],\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Talk about Canada in great details. Start with: Canada is\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.mistral.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"2f4d868075464c4391b669ec0f08480a\",\"created\":1765716111,\"model\":\"ministral-3b-latest\",\"usage\":{\"prompt_tokens\":15,\"total_tokens\":33,\"completion_tokens\":18},\"object\":\"chat.completion\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"tool_calls\":null,\"content\":\"**Canada: A Land of Diversity, Natural Beauty, and Rich Cultural Heritage**\\n\\nCanada \"}}]}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9addc71e7b7aa2bc-YUL
+      Content-Type:
+      - application/json
+      Mistral-Correlation-Id:
+      - 019b1ce1-af55-7811-85f6-96b122fe5802
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "130"
+      X-Kong-Proxy-Latency:
+      - "8"
+      X-Kong-Request-Id:
+      - 019b1ce1-af55-7811-85f6-96b122fe5802
+      X-Kong-Upstream-Latency:
+      - "131"
+      X-Ratelimit-Limit-Req-60-Second:
+      - "360"
+      X-Ratelimit-Limit-Tokens-Minute:
+      - "2000000"
+      X-Ratelimit-Limit-Tokens-Month:
+      - "10000000000"
+      X-Ratelimit-Remaining-Req-60-Second:
+      - "106"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "1983029"
+      X-Ratelimit-Remaining-Tokens-Month:
+      - "9999866495"
+      X-Ratelimit-Tokens-Query-Cost:
+      - "33"
+    status: 200 OK
+    code: 200
+    duration: 274ms

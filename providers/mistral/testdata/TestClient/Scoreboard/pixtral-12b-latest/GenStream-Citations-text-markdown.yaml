@@ -19,7 +19,7 @@ interactions:
     proto_major: 2
     proto_minor: 0
     content_length: -1
-    body: "data: {\"id\":\"4c7f58de3416466da75ff463398c3508\",\"object\":\"chat.completion.chunk\",\"created\":1756559811,\"model\":\"pixtral-12b-latest\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"4c7f58de3416466da75ff463398c3508\",\"object\":\"chat.completion.chunk\",\"created\":1756559811,\"model\":\"pixtral-12b-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Qu\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopq\"}\n\ndata: {\"id\":\"4c7f58de3416466da75ff463398c3508\",\"object\":\"chat.completion.chunk\",\"created\":1756559811,\"model\":\"pixtral-12b-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"ack\"},\"finish_reason\":null}],\"p\":\"abcdef\"}\n\ndata: {\"id\":\"4c7f58de3416466da75ff463398c3508\",\"object\":\"chat.completion.chunk\",\"created\":1756559811,\"model\":\"pixtral-12b-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":38,\"total_tokens\":41,\"completion_tokens\":3},\"p\":\"abcdefghijklmnopqrstuvwxyz0123\"}\n\ndata: [DONE]\n\n"
+    body: "data: {\"id\":\"3f885e8279da49a7ba1101d7cd37fd76\",\"object\":\"chat.completion.chunk\",\"created\":1765716122,\"model\":\"pixtral-12b-latest\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"3f885e8279da49a7ba1101d7cd37fd76\",\"object\":\"chat.completion.chunk\",\"created\":1765716122,\"model\":\"pixtral-12b-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Qu\"},\"finish_reason\":null}],\"p\":\"abcdef\"}\n\ndata: {\"id\":\"3f885e8279da49a7ba1101d7cd37fd76\",\"object\":\"chat.completion.chunk\",\"created\":1765716122,\"model\":\"pixtral-12b-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"ack\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":38,\"total_tokens\":41,\"completion_tokens\":3},\"p\":\"a\"}\n\ndata: [DONE]\n\n"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -28,23 +28,25 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 977490a7dd012706-YYZ
+      - 9addc762b9e6a2bc-YUL
       Content-Type:
       - text/event-stream; charset=utf-8
       Mistral-Correlation-Id:
-      - 0198fb1f-a52a-7611-a359-2f2988c4183f
+      - 019b1ce1-d9f6-79e3-9615-66595148e4a0
       Server:
       - cloudflare
       Strict-Transport-Security:
-      - max-age=15552000; includeSubDomains
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
       X-Envoy-Upstream-Service-Time:
-      - "64"
+      - "151"
       X-Kong-Proxy-Latency:
-      - "7"
+      - "8"
       X-Kong-Request-Id:
-      - 0198fb1f-a52a-7611-a359-2f2988c4183f
+      - 019b1ce1-d9f6-79e3-9615-66595148e4a0
       X-Kong-Upstream-Latency:
-      - "65"
+      - "152"
     status: 200 OK
     code: 200
-    duration: 211ms
+    duration: 283ms

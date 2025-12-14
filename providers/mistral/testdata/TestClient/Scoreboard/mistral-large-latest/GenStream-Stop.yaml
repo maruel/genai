@@ -19,7 +19,7 @@ interactions:
     proto_major: 2
     proto_minor: 0
     content_length: -1
-    body: "data: {\"id\":\"ee1372cf4feb4697a8cc356014bfc582\",\"object\":\"chat.completion.chunk\",\"created\":1756683687,\"model\":\"mistral-large-latest\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"ee1372cf4feb4697a8cc356014bfc582\",\"object\":\"chat.completion.chunk\",\"created\":1756683687,\"model\":\"mistral-large-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"**\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwxyz01\"}\n\ndata: {\"id\":\"ee1372cf4feb4697a8cc356014bfc582\",\"object\":\"chat.completion.chunk\",\"created\":1756683687,\"model\":\"mistral-large-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Canada \"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":15,\"total_tokens\":18,\"completion_tokens\":3},\"p\":\"ab\"}\n\ndata: [DONE]\n\n"
+    body: "data: {\"id\":\"5b48a7cff8294bf48b48b59822949d32\",\"object\":\"chat.completion.chunk\",\"created\":1765716097,\"model\":\"mistral-large-latest\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"5b48a7cff8294bf48b48b59822949d32\",\"object\":\"chat.completion.chunk\",\"created\":1765716097,\"model\":\"mistral-large-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"**\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"5b48a7cff8294bf48b48b59822949d32\",\"object\":\"chat.completion.chunk\",\"created\":1765716097,\"model\":\"mistral-large-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Canada: A Land of Vast Beauty, Diversity, and Opportunity\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"5b48a7cff8294bf48b48b59822949d32\",\"object\":\"chat.completion.chunk\",\"created\":1765716097,\"model\":\"mistral-large-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"**\\n\\nCanada \"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":15,\"total_tokens\":32,\"completion_tokens\":17}}\n\ndata: [DONE]\n\n"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -28,23 +28,25 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 978060f87896a2b8-YUL
+      - 9addc6c8d86ea2bc-YUL
       Content-Type:
       - text/event-stream; charset=utf-8
       Mistral-Correlation-Id:
-      - 01990281-d798-7a78-8f28-ead222f1d237
+      - 019b1ce1-79c6-733c-9d0f-0c8fba9b1b6f
       Server:
       - cloudflare
       Strict-Transport-Security:
-      - max-age=15552000; includeSubDomains
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
       X-Envoy-Upstream-Service-Time:
-      - "72"
+      - "447"
       X-Kong-Proxy-Latency:
       - "6"
       X-Kong-Request-Id:
-      - 01990281-d798-7a78-8f28-ead222f1d237
+      - 019b1ce1-79c6-733c-9d0f-0c8fba9b1b6f
       X-Kong-Upstream-Latency:
-      - "73"
+      - "449"
     status: 200 OK
     code: 200
-    duration: 213ms
+    duration: 578ms

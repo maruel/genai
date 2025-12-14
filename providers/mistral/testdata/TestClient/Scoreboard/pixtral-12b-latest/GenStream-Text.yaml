@@ -1,59 +1,52 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 141
-        host: api.mistral.ai
-        body: |
-            {"model":"pixtral-12b-latest","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}]}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.mistral.ai/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        body: |+
-            data: {"id":"12008594510d4822a14dc43f3e3b0b08","object":"chat.completion.chunk","created":1753188024,"model":"pixtral-12b-latest","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
-
-            data: {"id":"12008594510d4822a14dc43f3e3b0b08","object":"chat.completion.chunk","created":1753188024,"model":"pixtral-12b-latest","choices":[{"index":0,"delta":{"content":"Hello"},"finish_reason":null}]}
-
-            data: {"id":"12008594510d4822a14dc43f3e3b0b08","object":"chat.completion.chunk","created":1753188024,"model":"pixtral-12b-latest","choices":[{"index":0,"delta":{"content":""},"finish_reason":"stop"}],"usage":{"prompt_tokens":11,"total_tokens":13,"completion_tokens":2}}
-
-            data: [DONE]
-
-        headers:
-            Access-Control-Allow-Origin:
-                - '*'
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 963301a10945a290-YUL
-            Content-Type:
-                - text/event-stream; charset=utf-8
-            Mistral-Correlation-Id:
-                - 01983226-40ff-7c34-88b5-0d1340ac8016
-            Server:
-                - cloudflare
-            Strict-Transport-Security:
-                - max-age=15552000; includeSubDomains
-            X-Envoy-Upstream-Service-Time:
-                - "77"
-            X-Kong-Proxy-Latency:
-                - "5"
-            X-Kong-Request-Id:
-                - 01983226-40ff-7c34-88b5-0d1340ac8016
-            X-Kong-Upstream-Latency:
-                - "78"
-        status: 200 OK
-        code: 200
-        duration: 305ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 141
+    host: api.mistral.ai
+    body: "{\"model\":\"pixtral-12b-latest\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Say hello. Use only one word.\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.mistral.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"c0d460e0f85c437a94c856bd2b594462\",\"object\":\"chat.completion.chunk\",\"created\":1765716118,\"model\":\"pixtral-12b-latest\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"c0d460e0f85c437a94c856bd2b594462\",\"object\":\"chat.completion.chunk\",\"created\":1765716118,\"model\":\"pixtral-12b-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Hello\"},\"finish_reason\":null}],\"p\":\"abcdefghijklm\"}\n\ndata: {\"id\":\"c0d460e0f85c437a94c856bd2b594462\",\"object\":\"chat.completion.chunk\",\"created\":1765716118,\"model\":\"pixtral-12b-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":11,\"total_tokens\":13,\"completion_tokens\":2},\"p\":\"abcdefghijklmnopqrstuv\"}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9addc74a2ac9a2bc-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Mistral-Correlation-Id:
+      - 019b1ce1-ca9d-75a3-8604-f9a026413401
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "128"
+      X-Kong-Proxy-Latency:
+      - "7"
+      X-Kong-Request-Id:
+      - 019b1ce1-ca9d-75a3-8604-f9a026413401
+      X-Kong-Upstream-Latency:
+      - "128"
+    status: 200 OK
+    code: 200
+    duration: 270ms

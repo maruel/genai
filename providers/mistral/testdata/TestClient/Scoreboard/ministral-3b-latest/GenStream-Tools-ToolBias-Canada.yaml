@@ -1,57 +1,52 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 596
-        host: api.mistral.ai
-        body: |
-            {"model":"ministral-3b-latest","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","strict":true,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.mistral.ai/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        body: |+
-            data: {"id":"0e862f37038c4719af9132fe59eb79cd","object":"chat.completion.chunk","created":1753471460,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
-
-            data: {"id":"0e862f37038c4719af9132fe59eb79cd","object":"chat.completion.chunk","created":1753471460,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"tool_calls":[{"id":"HwKQTFAnA","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"},"index":0}]},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":129,"total_tokens":149,"completion_tokens":20}}
-
-            data: [DONE]
-
-        headers:
-            Access-Control-Allow-Origin:
-                - '*'
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 964e0974a9e2a2c9-YUL
-            Content-Type:
-                - text/event-stream; charset=utf-8
-            Mistral-Correlation-Id:
-                - 0198430b-252a-7ad8-916c-6a6ec055e346
-            Server:
-                - cloudflare
-            Strict-Transport-Security:
-                - max-age=15552000; includeSubDomains
-            X-Envoy-Upstream-Service-Time:
-                - "205"
-            X-Kong-Proxy-Latency:
-                - "7"
-            X-Kong-Request-Id:
-                - 0198430b-252a-7ad8-916c-6a6ec055e346
-            X-Kong-Upstream-Latency:
-                - "206"
-        status: 200 OK
-        code: 200
-        duration: 349ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 596
+    host: api.mistral.ai
+    body: "{\"model\":\"ministral-3b-latest\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one.\"}]}],\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"description\":\"A tool to specify the best country\",\"strict\":true,\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"country\":{\"type\":\"string\",\"enum\":[\"Canada\",\"USA\"]}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"country\"]}}}],\"tool_choice\":\"required\"}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.mistral.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"8cb74dfd5494459f92fc6ef0fa6bafe5\",\"object\":\"chat.completion.chunk\",\"created\":1765716112,\"model\":\"ministral-3b-latest\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"8cb74dfd5494459f92fc6ef0fa6bafe5\",\"object\":\"chat.completion.chunk\",\"created\":1765716112,\"model\":\"ministral-3b-latest\",\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[{\"id\":\"XWjeDvMYp\",\"function\":{\"name\":\"best_country\",\"arguments\":\"{\\\"country\\\": \\\"Canada\\\"}\"},\"index\":0},{\"id\":\"gEsfuxnvB\",\"function\":{\"name\":\"best_country\",\"arguments\":\"{\\\"country\\\": \\\"USA\\\"}\"},\"index\":1}]},\"finish_reason\":\"tool_calls\"}],\"usage\":{\"prompt_tokens\":129,\"total_tokens\":150,\"completion_tokens\":21},\"p\":\"abcdefghi\"}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9addc7270d2fa2bc-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Mistral-Correlation-Id:
+      - 019b1ce1-b4a5-7651-ac75-a45f4c1be8f1
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "121"
+      X-Kong-Proxy-Latency:
+      - "10"
+      X-Kong-Request-Id:
+      - 019b1ce1-b4a5-7651-ac75-a45f4c1be8f1
+      X-Kong-Upstream-Latency:
+      - "122"
+    status: 200 OK
+    code: 200
+    duration: 252ms

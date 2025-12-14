@@ -1,66 +1,67 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 295
-        host: api.mistral.ai
-        body: |
-            {"model":"mistral-small-latest","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"What is the word? Reply with only the word."},{"type":"document_url","document_url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/document.pdf"}]}]}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.mistral.ai/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        uncompressed: true
-        body: '{"id":"ed1ac3556b9c43c8b56396c99cc04750","created":1753215956,"model":"mistral-small-latest","usage":{"prompt_tokens":28,"total_tokens":30,"completion_tokens":2},"object":"chat.completion","choices":[{"index":0,"finish_reason":"stop","message":{"role":"assistant","tool_calls":null,"content":"orange"}}]}'
-        headers:
-            Access-Control-Allow-Origin:
-                - '*'
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 9635ab8f7a61a1de-YYZ
-            Content-Type:
-                - application/json
-            Mistral-Correlation-Id:
-                - 019833d0-760a-7626-990a-f46f30f7cd92
-            Server:
-                - cloudflare
-            Strict-Transport-Security:
-                - max-age=15552000; includeSubDomains
-            X-Envoy-Upstream-Service-Time:
-                - "1166"
-            X-Kong-Proxy-Latency:
-                - "8"
-            X-Kong-Request-Id:
-                - 019833d0-760a-7626-990a-f46f30f7cd92
-            X-Kong-Upstream-Latency:
-                - "1166"
-            X-Ratelimit-Limit-Req-10-Second:
-                - "60"
-            X-Ratelimit-Limit-Tokens-Minute:
-                - "2000000"
-            X-Ratelimit-Limit-Tokens-Month:
-                - "10000000000"
-            X-Ratelimit-Remaining-Req-10-Second:
-                - "17"
-            X-Ratelimit-Remaining-Tokens-Minute:
-                - "1992796"
-            X-Ratelimit-Remaining-Tokens-Month:
-                - "9999967766"
-            X-Ratelimit-Tokens-Query-Cost:
-                - "30"
-        status: 200 OK
-        code: 200
-        duration: 1.359s
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 295
+    host: api.mistral.ai
+    body: "{\"model\":\"mistral-small-latest\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What is the word? Reply with only the word.\"},{\"type\":\"document_url\",\"document_url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/document.pdf\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.mistral.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"4c7d0b4a1df240c48aa8257459047e97\",\"created\":1765716083,\"model\":\"mistral-small-latest\",\"usage\":{\"prompt_tokens\":28,\"total_tokens\":30,\"completion_tokens\":2},\"object\":\"chat.completion\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"tool_calls\":null,\"content\":\"orange\"}}]}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9addc673ffc3a2bc-YUL
+      Content-Type:
+      - application/json
+      Mistral-Correlation-Id:
+      - 019b1ce1-44bf-71ad-8977-beee601ba12a
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "532"
+      X-Kong-Proxy-Latency:
+      - "9"
+      X-Kong-Request-Id:
+      - 019b1ce1-44bf-71ad-8977-beee601ba12a
+      X-Kong-Upstream-Latency:
+      - "532"
+      X-Ratelimit-Limit-Req-60-Second:
+      - "360"
+      X-Ratelimit-Limit-Tokens-Minute:
+      - "2000000"
+      X-Ratelimit-Limit-Tokens-Month:
+      - "10000000000"
+      X-Ratelimit-Remaining-Req-60-Second:
+      - "221"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "1992773"
+      X-Ratelimit-Remaining-Tokens-Month:
+      - "9999876239"
+      X-Ratelimit-Tokens-Query-Cost:
+      - "30"
+    status: 200 OK
+    code: 200
+    duration: 666ms

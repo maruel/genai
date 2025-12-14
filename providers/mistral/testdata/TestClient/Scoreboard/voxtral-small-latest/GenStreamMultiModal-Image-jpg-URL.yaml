@@ -1,53 +1,54 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 293
-        host: api.mistral.ai
-        body: |
-            {"model":"voxtral-small-latest","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg"}}]}]}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.mistral.ai/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: 137
-        body: '{"object":"error","message":"Image input is not enabled for this model","type":"invalid_request_invalid_args","param":null,"code":"3051"}'
-        headers:
-            Access-Control-Allow-Origin:
-                - '*'
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 963737c139f7a2f8-YUL
-            Content-Length:
-                - "137"
-            Content-Type:
-                - application/json
-            Mistral-Correlation-Id:
-                - 019834c8-1507-7be6-9b87-cba55c6c8972
-            Server:
-                - cloudflare
-            Strict-Transport-Security:
-                - max-age=15552000; includeSubDomains
-            X-Envoy-Upstream-Service-Time:
-                - "79"
-            X-Kong-Proxy-Latency:
-                - "6"
-            X-Kong-Request-Id:
-                - 019834c8-1507-7be6-9b87-cba55c6c8972
-            X-Kong-Upstream-Latency:
-                - "80"
-        status: 400 Bad Request
-        code: 400
-        duration: 240ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 293
+    host: api.mistral.ai
+    body: "{\"model\":\"voxtral-small-latest\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What fruit is it? Reply with only one word.\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg\"}}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.mistral.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 137
+    body: "{\"object\":\"error\",\"message\":\"Image input is not enabled for this model\",\"type\":\"invalid_request_invalid_args\",\"param\":null,\"code\":\"3051\"}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9addc6b3fd79a2bc-YUL
+      Content-Length:
+      - "137"
+      Content-Type:
+      - application/json
+      Mistral-Correlation-Id:
+      - 019b1ce1-6cc1-7a83-a3b0-d157052e7db5
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "28"
+      X-Kong-Proxy-Latency:
+      - "11"
+      X-Kong-Request-Id:
+      - 019b1ce1-6cc1-7a83-a3b0-d157052e7db5
+      X-Kong-Upstream-Latency:
+      - "29"
+    status: 400 Bad Request
+    code: 400
+    duration: 172ms

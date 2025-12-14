@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 250
+    host: api.mistral.ai
+    body: "{\"model\":\"ministral-14b-2512\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.mistral.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"45dfd637cffe4d5a8475177739204a3a\",\"object\":\"chat.completion.chunk\",\"created\":1765716935,\"model\":\"ministral-14b-2512\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"45dfd637cffe4d5a8475177739204a3a\",\"object\":\"chat.completion.chunk\",\"created\":1765716935,\"model\":\"ministral-14b-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"The\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwxyz012345678\"}\n\ndata: {\"id\":\"45dfd637cffe4d5a8475177739204a3a\",\"object\":\"chat.completion.chunk\",\"created\":1765716935,\"model\":\"ministral-14b-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" capital\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwxyz01234567\"}\n\ndata: {\"id\":\"45dfd637cffe4d5a8475177739204a3a\",\"object\":\"chat.completion.chunk\",\"created\":1765716935,\"model\":\"ministral-14b-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" of\"},\"finish_reason\":null}],\"p\":\"a\"}\n\ndata: {\"id\":\"45dfd637cffe4d5a8475177739204a3a\",\"object\":\"chat.completion.chunk\",\"created\":1765716935,\"model\":\"ministral-14b-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" Qu\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrs\"}\n\ndata: {\"id\":\"45dfd637cffe4d5a8475177739204a3a\",\"object\":\"chat.completion.chunk\",\"created\":1765716935,\"model\":\"ministral-14b-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"ack\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwxyz012345\"}\n\ndata: {\"id\":\"45dfd637cffe4d5a8475177739204a3a\",\"object\":\"chat.completion.chunk\",\"created\":1765716935,\"model\":\"ministral-14b-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"iland\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrs\"}\n\ndata: {\"id\":\"45dfd637cffe4d5a8475177739204a3a\",\"object\":\"chat.completion.chunk\",\"created\":1765716935,\"model\":\"ministral-14b-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" is\"},\"finish_reason\":null}],\"p\":\"abcdefghij\"}\n\ndata: {\"id\":\"45dfd637cffe4d5a8475177739204a3a\",\"object\":\"chat.completion.chunk\",\"created\":1765716935,\"model\":\"ministral-14b-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" **\"},\"finish_reason\":null}],\"p\":\"abcdefg\"}\n\ndata: {\"id\":\"45dfd637cffe4d5a8475177739204a3a\",\"object\":\"chat.completion.chunk\",\"created\":1765716935,\"model\":\"ministral-14b-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Qu\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwxyz0123456789\"}\n\ndata: {\"id\":\"45dfd637cffe4d5a8475177739204a3a\",\"object\":\"chat.completion.chunk\",\"created\":1765716935,\"model\":\"ministral-14b-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"ack\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwxyz0123456789\"}\n\ndata: {\"id\":\"45dfd637cffe4d5a8475177739204a3a\",\"object\":\"chat.completion.chunk\",\"created\":1765716935,\"model\":\"ministral-14b-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"**.\"},\"finish_reason\":null}],\"p\":\"abcdef\"}\n\ndata: {\"id\":\"45dfd637cffe4d5a8475177739204a3a\",\"object\":\"chat.completion.chunk\",\"created\":1765716935,\"model\":\"ministral-14b-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":33,\"total_tokens\":45,\"completion_tokens\":12},\"p\":\"ab\"}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9adddb3f7cd2a286-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Mistral-Correlation-Id:
+      - 019b1cee-43ee-7607-92c8-2740ec71a8e6
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "58"
+      X-Kong-Proxy-Latency:
+      - "8"
+      X-Kong-Request-Id:
+      - 019b1cee-43ee-7607-92c8-2740ec71a8e6
+      X-Kong-Upstream-Latency:
+      - "59"
+    status: 200 OK
+    code: 200
+    duration: 188ms

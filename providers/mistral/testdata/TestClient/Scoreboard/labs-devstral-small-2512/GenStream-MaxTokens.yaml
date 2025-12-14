@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 184
+    host: api.mistral.ai
+    body: "{\"model\":\"labs-devstral-small-2512\",\"max_tokens\":16,\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Explain the theory of relativity in great details.\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.mistral.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"2ecb234a9ccf4704b39a55b087551fd1\",\"object\":\"chat.completion.chunk\",\"created\":1765716889,\"model\":\"labs-devstral-small-2512\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"2ecb234a9ccf4704b39a55b087551fd1\",\"object\":\"chat.completion.chunk\",\"created\":1765716889,\"model\":\"labs-devstral-small-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"The\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqr\"}\n\ndata: {\"id\":\"2ecb234a9ccf4704b39a55b087551fd1\",\"object\":\"chat.completion.chunk\",\"created\":1765716889,\"model\":\"labs-devstral-small-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" **\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrs\"}\n\ndata: {\"id\":\"2ecb234a9ccf4704b39a55b087551fd1\",\"object\":\"chat.completion.chunk\",\"created\":1765716889,\"model\":\"labs-devstral-small-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"The\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvw\"}\n\ndata: {\"id\":\"2ecb234a9ccf4704b39a55b087551fd1\",\"object\":\"chat.completion.chunk\",\"created\":1765716889,\"model\":\"labs-devstral-small-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"ory\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwxyz01234567\"}\n\ndata: {\"id\":\"2ecb234a9ccf4704b39a55b087551fd1\",\"object\":\"chat.completion.chunk\",\"created\":1765716889,\"model\":\"labs-devstral-small-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" of\"},\"finish_reason\":null}],\"p\":\"abcdefghijkl\"}\n\ndata: {\"id\":\"2ecb234a9ccf4704b39a55b087551fd1\",\"object\":\"chat.completion.chunk\",\"created\":1765716889,\"model\":\"labs-devstral-small-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" Rel\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrst\"}\n\ndata: {\"id\":\"2ecb234a9ccf4704b39a55b087551fd1\",\"object\":\"chat.completion.chunk\",\"created\":1765716889,\"model\":\"labs-devstral-small-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"ativity\"},\"finish_reason\":null}],\"p\":\"abcdefghi\"}\n\ndata: {\"id\":\"2ecb234a9ccf4704b39a55b087551fd1\",\"object\":\"chat.completion.chunk\",\"created\":1765716889,\"model\":\"labs-devstral-small-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"**,\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopq\"}\n\ndata: {\"id\":\"2ecb234a9ccf4704b39a55b087551fd1\",\"object\":\"chat.completion.chunk\",\"created\":1765716889,\"model\":\"labs-devstral-small-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" developed\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwx\"}\n\ndata: {\"id\":\"2ecb234a9ccf4704b39a55b087551fd1\",\"object\":\"chat.completion.chunk\",\"created\":1765716889,\"model\":\"labs-devstral-small-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" by\"},\"finish_reason\":null}],\"p\":\"a\"}\n\ndata: {\"id\":\"2ecb234a9ccf4704b39a55b087551fd1\",\"object\":\"chat.completion.chunk\",\"created\":1765716889,\"model\":\"labs-devstral-small-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" **\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvw\"}\n\ndata: {\"id\":\"2ecb234a9ccf4704b39a55b087551fd1\",\"object\":\"chat.completion.chunk\",\"created\":1765716889,\"model\":\"labs-devstral-small-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Albert\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuv\"}\n\ndata: {\"id\":\"2ecb234a9ccf4704b39a55b087551fd1\",\"object\":\"chat.completion.chunk\",\"created\":1765716889,\"model\":\"labs-devstral-small-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" Einstein\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwx\"}\n\ndata: {\"id\":\"2ecb234a9ccf4704b39a55b087551fd1\",\"object\":\"chat.completion.chunk\",\"created\":1765716889,\"model\":\"labs-devstral-small-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"**\"},\"finish_reason\":null}],\"p\":\"abcdefghijk\"}\n\ndata: {\"id\":\"2ecb234a9ccf4704b39a55b087551fd1\",\"object\":\"chat.completion.chunk\",\"created\":1765716889,\"model\":\"labs-devstral-small-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" in\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwxyz0123456\"}\n\ndata: {\"id\":\"2ecb234a9ccf4704b39a55b087551fd1\",\"object\":\"chat.completion.chunk\",\"created\":1765716889,\"model\":\"labs-devstral-small-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" the\"},\"finish_reason\":\"length\"}],\"usage\":{\"prompt_tokens\":13,\"total_tokens\":29,\"completion_tokens\":16},\"p\":\"abcdefghijklmnopqrstuvwx\"}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9addda1b8cb4a286-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Mistral-Correlation-Id:
+      - 019b1ced-8d87-742c-ab7a-5c7470f1e57d
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "111"
+      X-Kong-Proxy-Latency:
+      - "7"
+      X-Kong-Request-Id:
+      - 019b1ced-8d87-742c-ab7a-5c7470f1e57d
+      X-Kong-Upstream-Latency:
+      - "112"
+    status: 200 OK
+    code: 200
+    duration: 256ms

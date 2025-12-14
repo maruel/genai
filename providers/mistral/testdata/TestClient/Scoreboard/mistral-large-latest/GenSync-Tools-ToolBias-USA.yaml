@@ -20,7 +20,7 @@ interactions:
     proto_minor: 0
     content_length: -1
     uncompressed: true
-    body: "{\"id\":\"1cdbf4e8c9614fe3b93ad2bb4a071221\",\"created\":1756683690,\"model\":\"mistral-large-latest\",\"usage\":{\"prompt_tokens\":129,\"total_tokens\":140,\"completion_tokens\":11},\"object\":\"chat.completion\",\"choices\":[{\"index\":0,\"finish_reason\":\"tool_calls\",\"message\":{\"role\":\"assistant\",\"tool_calls\":[{\"id\":\"bKPj5KAiO\",\"function\":{\"name\":\"best_country\",\"arguments\":\"{\\\"country\\\": \\\"USA\\\"}\"},\"index\":0}],\"content\":\"\"}}]}"
+    body: "{\"id\":\"417249dd35c246459b79e6cf6617b5aa\",\"created\":1765716100,\"model\":\"mistral-large-latest\",\"usage\":{\"prompt_tokens\":129,\"total_tokens\":150,\"completion_tokens\":21},\"object\":\"chat.completion\",\"choices\":[{\"index\":0,\"finish_reason\":\"tool_calls\",\"message\":{\"role\":\"assistant\",\"tool_calls\":[{\"id\":\"GBqrxuNJE\",\"function\":{\"name\":\"best_country\",\"arguments\":\"{\\\"country\\\": \\\"USA\\\"}\"},\"index\":0},{\"id\":\"XtnsZ9kTE\",\"function\":{\"name\":\"best_country\",\"arguments\":\"{\\\"country\\\": \\\"Canada\\\"}\"},\"index\":1}],\"content\":\"\"}}]}"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -29,37 +29,39 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 97806108fd10a2b8-YUL
+      - 9addc6dc4b33a2bc-YUL
       Content-Type:
       - application/json
       Mistral-Correlation-Id:
-      - 01990281-e1db-7236-a2be-1e5468c92f43
+      - 019b1ce1-85ec-7ee2-9b5c-2f3c848e86d0
       Server:
       - cloudflare
       Strict-Transport-Security:
-      - max-age=15552000; includeSubDomains
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
       X-Envoy-Upstream-Service-Time:
-      - "277"
+      - "485"
       X-Kong-Proxy-Latency:
       - "7"
       X-Kong-Request-Id:
-      - 01990281-e1db-7236-a2be-1e5468c92f43
+      - 019b1ce1-85ec-7ee2-9b5c-2f3c848e86d0
       X-Kong-Upstream-Latency:
-      - "277"
-      X-Ratelimit-Limit-Req-10-Second:
-      - "60"
+      - "486"
+      X-Ratelimit-Limit-Req-60-Second:
+      - "360"
       X-Ratelimit-Limit-Tokens-Minute:
       - "2000000"
       X-Ratelimit-Limit-Tokens-Month:
       - "10000000000"
-      X-Ratelimit-Remaining-Req-10-Second:
-      - "36"
-      X-Ratelimit-Remaining-Tokens-Minute:
-      - "1998475"
-      X-Ratelimit-Remaining-Tokens-Month:
-      - "9999987697"
-      X-Ratelimit-Tokens-Query-Cost:
+      X-Ratelimit-Remaining-Req-60-Second:
       - "140"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "1986282"
+      X-Ratelimit-Remaining-Tokens-Month:
+      - "9999869748"
+      X-Ratelimit-Tokens-Query-Cost:
+      - "150"
     status: 200 OK
     code: 200
-    duration: 416ms
+    duration: 618ms

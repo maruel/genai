@@ -28,25 +28,27 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 978061a8ec08a2b8-YUL
+      - 9addc629ea89a2bc-YUL
       Content-Length:
       - "137"
       Content-Type:
       - application/json
       Mistral-Correlation-Id:
-      - 01990282-45da-7ed1-abde-85e5d4acd397
+      - 019b1ce1-1679-75f3-acc9-5514ac37935f
       Server:
       - cloudflare
       Strict-Transport-Security:
-      - max-age=15552000; includeSubDomains
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
       X-Envoy-Upstream-Service-Time:
-      - "31"
+      - "104"
       X-Kong-Proxy-Latency:
-      - "5"
+      - "6"
       X-Kong-Request-Id:
-      - 01990282-45da-7ed1-abde-85e5d4acd397
+      - 019b1ce1-1679-75f3-acc9-5514ac37935f
       X-Kong-Upstream-Latency:
-      - "32"
+      - "105"
     status: 400 Bad Request
     code: 400
-    duration: 177ms
+    duration: 240ms

@@ -19,7 +19,7 @@ interactions:
     proto_major: 2
     proto_minor: 0
     content_length: -1
-    body: "data: {\"id\":\"11138f75601447b1b7a52875ee9d383c\",\"object\":\"chat.completion.chunk\",\"created\":1756683713,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"11138f75601447b1b7a52875ee9d383c\",\"object\":\"chat.completion.chunk\",\"created\":1756683713,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"The\"},\"finish_reason\":null}],\"p\":\"abcde\"}\n\ndata: {\"id\":\"11138f75601447b1b7a52875ee9d383c\",\"object\":\"chat.completion.chunk\",\"created\":1756683713,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" capital of Quack\"},\"finish_reason\":null}],\"p\":\"abcdefghijklm\"}\n\ndata: {\"id\":\"11138f75601447b1b7a52875ee9d383c\",\"object\":\"chat.completion.chunk\",\"created\":1756683713,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"iland is Quack\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmno\"}\n\ndata: {\"id\":\"11138f75601447b1b7a52875ee9d383c\",\"object\":\"chat.completion.chunk\",\"created\":1756683713,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\".\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":33,\"total_tokens\":44,\"completion_tokens\":11},\"p\":\"abcdefghijklm\"}\n\ndata: [DONE]\n\n"
+    body: "data: {\"id\":\"7c52b171721c42fba5e1a00333bd4ab7\",\"object\":\"chat.completion.chunk\",\"created\":1765716070,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"7c52b171721c42fba5e1a00333bd4ab7\",\"object\":\"chat.completion.chunk\",\"created\":1765716070,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"The\"},\"finish_reason\":null}],\"p\":\"abc\"}\n\ndata: {\"id\":\"7c52b171721c42fba5e1a00333bd4ab7\",\"object\":\"chat.completion.chunk\",\"created\":1765716070,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" capital of Quack\"},\"finish_reason\":null}],\"p\":\"abcdefghijklm\"}\n\ndata: {\"id\":\"7c52b171721c42fba5e1a00333bd4ab7\",\"object\":\"chat.completion.chunk\",\"created\":1765716070,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"iland is Quack\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwxyz01234\"}\n\ndata: {\"id\":\"7c52b171721c42fba5e1a00333bd4ab7\",\"object\":\"chat.completion.chunk\",\"created\":1765716070,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\".\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":33,\"total_tokens\":44,\"completion_tokens\":11},\"p\":\"abcdefghijklmnopqrs\"}\n\ndata: [DONE]\n\n"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -28,23 +28,25 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9780619baa2ca2b8-YUL
+      - 9addc620cc44a2bc-YUL
       Content-Type:
       - text/event-stream; charset=utf-8
       Mistral-Correlation-Id:
-      - 01990282-3d8c-735b-bee9-417640287c2d
+      - 019b1ce1-10c5-7b94-a5fa-36ea903ba031
       Server:
       - cloudflare
       Strict-Transport-Security:
-      - max-age=15552000; includeSubDomains
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
       X-Envoy-Upstream-Service-Time:
-      - "63"
+      - "119"
       X-Kong-Proxy-Latency:
       - "7"
       X-Kong-Request-Id:
-      - 01990282-3d8c-735b-bee9-417640287c2d
+      - 019b1ce1-10c5-7b94-a5fa-36ea903ba031
       X-Kong-Upstream-Latency:
-      - "64"
+      - "120"
     status: 200 OK
     code: 200
-    duration: 208ms
+    duration: 252ms

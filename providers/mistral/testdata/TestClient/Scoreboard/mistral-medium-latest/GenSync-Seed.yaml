@@ -20,7 +20,7 @@ interactions:
     proto_minor: 0
     content_length: -1
     uncompressed: true
-    body: "{\"id\":\"c716cbb679804beaa71adc5b60fc1476\",\"created\":1756683697,\"model\":\"mistral-medium-latest\",\"usage\":{\"prompt_tokens\":11,\"total_tokens\":14,\"completion_tokens\":3},\"object\":\"chat.completion\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"tool_calls\":null,\"content\":\"Hi!\"}}]}"
+    body: "{\"id\":\"d3accc35e29f4a82b1e10e76ac1f01fa\",\"created\":1765716053,\"model\":\"mistral-medium-latest\",\"usage\":{\"prompt_tokens\":11,\"total_tokens\":14,\"completion_tokens\":3},\"object\":\"chat.completion\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"tool_calls\":null,\"content\":\"Hi!\"}}]}"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -29,37 +29,39 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 97806132b885a2b8-YUL
+      - 9addc5b8596ba2e2-YUL
       Content-Type:
       - application/json
       Mistral-Correlation-Id:
-      - 01990281-fc07-7c69-94b6-1efbe0b894c3
+      - 019b1ce0-cf79-7632-937c-3dbab7e28293
       Server:
       - cloudflare
       Strict-Transport-Security:
-      - max-age=15552000; includeSubDomains
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
       X-Envoy-Upstream-Service-Time:
-      - "120"
+      - "109"
       X-Kong-Proxy-Latency:
-      - "7"
+      - "8"
       X-Kong-Request-Id:
-      - 01990281-fc07-7c69-94b6-1efbe0b894c3
+      - 019b1ce0-cf79-7632-937c-3dbab7e28293
       X-Kong-Upstream-Latency:
-      - "121"
-      X-Ratelimit-Limit-Req-10-Second:
-      - "60"
-      X-Ratelimit-Limit-Tokens-Minute:
-      - "2000000"
+      - "110"
+      X-Ratelimit-Limit-Req-60-Second:
+      - "360"
+      X-Ratelimit-Limit-Tokens-5-Minute:
+      - "600000"
       X-Ratelimit-Limit-Tokens-Month:
-      - "10000000000"
-      X-Ratelimit-Remaining-Req-10-Second:
-      - "6"
-      X-Ratelimit-Remaining-Tokens-Minute:
-      - "1995650"
+      - "200000000000"
+      X-Ratelimit-Remaining-Req-60-Second:
+      - "356"
+      X-Ratelimit-Remaining-Tokens-5-Minute:
+      - "595447"
       X-Ratelimit-Remaining-Tokens-Month:
-      - "9999984872"
+      - "199999987105"
       X-Ratelimit-Tokens-Query-Cost:
       - "14"
     status: 200 OK
     code: 200
-    duration: 279ms
+    duration: 242ms

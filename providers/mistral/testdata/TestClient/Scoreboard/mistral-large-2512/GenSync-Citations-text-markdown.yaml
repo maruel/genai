@@ -1,0 +1,67 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 267
+    host: api.mistral.ai
+    body: "{\"model\":\"mistral-large-2512\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"# Quackiland\\n\\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.mistral.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"af90ede5ad794ee9a1235a9cf8020b8b\",\"created\":1765716903,\"model\":\"mistral-large-2512\",\"usage\":{\"prompt_tokens\":38,\"total_tokens\":76,\"completion_tokens\":38},\"object\":\"chat.completion\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"tool_calls\":null,\"content\":\"The capital of Quackiland is **Quack**, as stated in the information provided.\\n\\nThe Big Canard Statue is also located in Quack, confirming it as the capital city.\"}}]}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9addda761ddca286-YUL
+      Content-Type:
+      - application/json
+      Mistral-Correlation-Id:
+      - 019b1ced-c618-73a9-a21f-412d19dd7145
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "896"
+      X-Kong-Proxy-Latency:
+      - "7"
+      X-Kong-Request-Id:
+      - 019b1ced-c618-73a9-a21f-412d19dd7145
+      X-Kong-Upstream-Latency:
+      - "897"
+      X-Ratelimit-Limit-Req-60-Second:
+      - "360"
+      X-Ratelimit-Limit-Tokens-Minute:
+      - "2000000"
+      X-Ratelimit-Limit-Tokens-Month:
+      - "10000000000"
+      X-Ratelimit-Remaining-Req-60-Second:
+      - "290"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "1992241"
+      X-Ratelimit-Remaining-Tokens-Month:
+      - "9999845622"
+      X-Ratelimit-Tokens-Query-Cost:
+      - "76"
+    status: 200 OK
+    code: 200
+    duration: 1.041s

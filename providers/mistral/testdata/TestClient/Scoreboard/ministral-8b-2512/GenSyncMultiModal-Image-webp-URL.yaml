@@ -1,0 +1,67 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 292
+    host: api.mistral.ai
+    body: "{\"model\":\"ministral-8b-2512\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What fruit is it? Reply with only one word.\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.webp\"}}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.mistral.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"a3d009c36c2e4a38be6705e931e64363\",\"created\":1765716932,\"model\":\"ministral-8b-2512\",\"usage\":{\"prompt_tokens\":157,\"total_tokens\":160,\"completion_tokens\":3},\"object\":\"chat.completion\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"tool_calls\":null,\"content\":\"Banana\"}}]}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9adddb28ad9ea286-YUL
+      Content-Type:
+      - application/json
+      Mistral-Correlation-Id:
+      - 019b1cee-35a7-7b9e-87bb-cd59e4d3231e
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "164"
+      X-Kong-Proxy-Latency:
+      - "11"
+      X-Kong-Request-Id:
+      - 019b1cee-35a7-7b9e-87bb-cd59e4d3231e
+      X-Kong-Upstream-Latency:
+      - "166"
+      X-Ratelimit-Limit-Req-60-Second:
+      - "360"
+      X-Ratelimit-Limit-Tokens-Minute:
+      - "2000000"
+      X-Ratelimit-Limit-Tokens-Month:
+      - "10000000000"
+      X-Ratelimit-Remaining-Req-60-Second:
+      - "178"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "1980760"
+      X-Ratelimit-Remaining-Tokens-Month:
+      - "9999834141"
+      X-Ratelimit-Tokens-Query-Cost:
+      - "160"
+    status: 200 OK
+    code: 200
+    duration: 319ms

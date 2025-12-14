@@ -20,7 +20,7 @@ interactions:
     proto_minor: 0
     content_length: -1
     uncompressed: true
-    body: "{\"id\":\"168ae13f721a4f109aa6621ad29c8d00\",\"created\":1756683713,\"model\":\"mistral-tiny-latest\",\"usage\":{\"prompt_tokens\":129,\"total_tokens\":166,\"completion_tokens\":37},\"object\":\"chat.completion\",\"choices\":[{\"index\":0,\"finish_reason\":\"tool_calls\",\"message\":{\"role\":\"assistant\",\"tool_calls\":[{\"id\":\"wxiDOMf6e\",\"function\":{\"name\":\"best_country\",\"arguments\":\"{\\\"country\\\": \\\"Canada\\\"}\"},\"index\":0},{\"id\":\"nvTdbkCY7\",\"function\":{\"name\":\"best_country\",\"arguments\":\"{\\\"country\\\": \\\"USA\\\"}\"},\"index\":1}],\"content\":\"\"}}]}"
+    body: "{\"id\":\"4fe1bd649ac2404fb2c395a5847d1a23\",\"created\":1765716069,\"model\":\"mistral-tiny-latest\",\"usage\":{\"prompt_tokens\":129,\"total_tokens\":149,\"completion_tokens\":20},\"object\":\"chat.completion\",\"choices\":[{\"index\":0,\"finish_reason\":\"tool_calls\",\"message\":{\"role\":\"assistant\",\"tool_calls\":[{\"id\":\"9voU1ELkm\",\"function\":{\"name\":\"best_country\",\"arguments\":\"{\\\"country\\\": \\\"Canada\\\"}\"},\"index\":0}],\"content\":\"\"}}]}"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -29,37 +29,39 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 978061989e67a2b8-YUL
+      - 9addc61acc47a2bc-YUL
       Content-Type:
       - application/json
       Mistral-Correlation-Id:
-      - 01990282-3ba2-78c2-83e9-2e8686dfe688
+      - 019b1ce1-0d13-7426-9122-14468b6aa813
       Server:
       - cloudflare
       Strict-Transport-Security:
-      - max-age=15552000; includeSubDomains
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
       X-Envoy-Upstream-Service-Time:
-      - "286"
+      - "194"
       X-Kong-Proxy-Latency:
-      - "6"
+      - "7"
       X-Kong-Request-Id:
-      - 01990282-3ba2-78c2-83e9-2e8686dfe688
+      - 019b1ce1-0d13-7426-9122-14468b6aa813
       X-Kong-Upstream-Latency:
-      - "287"
-      X-Ratelimit-Limit-Req-10-Second:
-      - "60"
+      - "196"
+      X-Ratelimit-Limit-Req-60-Second:
+      - "360"
       X-Ratelimit-Limit-Tokens-Minute:
       - "2000000"
       X-Ratelimit-Limit-Tokens-Month:
       - "10000000000"
-      X-Ratelimit-Remaining-Req-10-Second:
-      - "12"
+      X-Ratelimit-Remaining-Req-60-Second:
+      - "266"
       X-Ratelimit-Remaining-Tokens-Minute:
-      - "1990083"
+      - "1996884"
       X-Ratelimit-Remaining-Tokens-Month:
-      - "9999979305"
+      - "9999880350"
       X-Ratelimit-Tokens-Query-Cost:
-      - "166"
+      - "149"
     status: 200 OK
     code: 200
-    duration: 423ms
+    duration: 355ms

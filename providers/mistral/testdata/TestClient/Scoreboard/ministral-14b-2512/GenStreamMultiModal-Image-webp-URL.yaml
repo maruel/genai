@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 292
+    host: api.mistral.ai
+    body: "{\"model\":\"ministral-14b-2512\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What fruit is it? Reply with only one word.\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.webp\"}}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.mistral.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"2c57a9d997f846f6b4d216e1879de846\",\"object\":\"chat.completion.chunk\",\"created\":1765716939,\"model\":\"ministral-14b-2512\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"2c57a9d997f846f6b4d216e1879de846\",\"object\":\"chat.completion.chunk\",\"created\":1765716939,\"model\":\"ministral-14b-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Ban\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwxyz0123456\"}\n\ndata: {\"id\":\"2c57a9d997f846f6b4d216e1879de846\",\"object\":\"chat.completion.chunk\",\"created\":1765716939,\"model\":\"ministral-14b-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"ana\"},\"finish_reason\":null}],\"p\":\"a\"}\n\ndata: {\"id\":\"2c57a9d997f846f6b4d216e1879de846\",\"object\":\"chat.completion.chunk\",\"created\":1765716939,\"model\":\"ministral-14b-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\".\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmn\"}\n\ndata: {\"id\":\"2c57a9d997f846f6b4d216e1879de846\",\"object\":\"chat.completion.chunk\",\"created\":1765716939,\"model\":\"ministral-14b-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":157,\"total_tokens\":161,\"completion_tokens\":4},\"p\":\"abcdefghijklmnopqrstuvwxyz0123\"}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9adddb5659e6a286-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Mistral-Correlation-Id:
+      - 019b1cee-5241-7e75-8547-720dc3d255a6
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "176"
+      X-Kong-Proxy-Latency:
+      - "5"
+      X-Kong-Request-Id:
+      - 019b1cee-5241-7e75-8547-720dc3d255a6
+      X-Kong-Upstream-Latency:
+      - "177"
+    status: 200 OK
+    code: 200
+    duration: 325ms

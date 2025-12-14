@@ -19,7 +19,7 @@ interactions:
     proto_major: 2
     proto_minor: 0
     content_length: -1
-    body: "data: {\"id\":\"c7613130794447c68378021d415d9c9d\",\"object\":\"chat.completion.chunk\",\"created\":1756683703,\"model\":\"mistral-medium-latest\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"c7613130794447c68378021d415d9c9d\",\"object\":\"chat.completion.chunk\",\"created\":1756683703,\"model\":\"mistral-medium-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"The\"},\"finish_reason\":null}],\"p\":\"abcdefghijklm\"}\n\ndata: {\"id\":\"c7613130794447c68378021d415d9c9d\",\"object\":\"chat.completion.chunk\",\"created\":1756683703,\"model\":\"mistral-medium-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" capital\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwxyz\"}\n\ndata: {\"id\":\"c7613130794447c68378021d415d9c9d\",\"object\":\"chat.completion.chunk\",\"created\":1756683703,\"model\":\"mistral-medium-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" of Qu\"},\"finish_reason\":null}],\"p\":\"abcdefghij\"}\n\ndata: {\"id\":\"c7613130794447c68378021d415d9c9d\",\"object\":\"chat.completion.chunk\",\"created\":1756683703,\"model\":\"mistral-medium-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"ackiland is **\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstu\"}\n\ndata: {\"id\":\"c7613130794447c68378021d415d9c9d\",\"object\":\"chat.completion.chunk\",\"created\":1756683703,\"model\":\"mistral-medium-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Quack**.\"},\"finish_reason\":null}],\"p\":\"abcdefghijk\"}\n\ndata: {\"id\":\"c7613130794447c68378021d415d9c9d\",\"object\":\"chat.completion.chunk\",\"created\":1756683703,\"model\":\"mistral-medium-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":38,\"total_tokens\":50,\"completion_tokens\":12},\"p\":\"abcdefghijklmnopqrstuvwxy\"}\n\ndata: [DONE]\n\n"
+    body: "data: {\"id\":\"4f36dd068d424f5a8ca1ddebfb60647a\",\"object\":\"chat.completion.chunk\",\"created\":1765716059,\"model\":\"mistral-medium-latest\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"4f36dd068d424f5a8ca1ddebfb60647a\",\"object\":\"chat.completion.chunk\",\"created\":1765716059,\"model\":\"mistral-medium-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"The\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwxyz0123\"}\n\ndata: {\"id\":\"4f36dd068d424f5a8ca1ddebfb60647a\",\"object\":\"chat.completion.chunk\",\"created\":1765716059,\"model\":\"mistral-medium-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" capital\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwxyz01\"}\n\ndata: {\"id\":\"4f36dd068d424f5a8ca1ddebfb60647a\",\"object\":\"chat.completion.chunk\",\"created\":1765716059,\"model\":\"mistral-medium-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" of Qu\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwxyz01\"}\n\ndata: {\"id\":\"4f36dd068d424f5a8ca1ddebfb60647a\",\"object\":\"chat.completion.chunk\",\"created\":1765716059,\"model\":\"mistral-medium-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"ackiland is **\"},\"finish_reason\":null}],\"p\":\"abcdefghijk\"}\n\ndata: {\"id\":\"4f36dd068d424f5a8ca1ddebfb60647a\",\"object\":\"chat.completion.chunk\",\"created\":1765716059,\"model\":\"mistral-medium-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Quack**.\"},\"finish_reason\":null}],\"p\":\"abcdefghij\"}\n\ndata: {\"id\":\"4f36dd068d424f5a8ca1ddebfb60647a\",\"object\":\"chat.completion.chunk\",\"created\":1765716059,\"model\":\"mistral-medium-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":38,\"total_tokens\":50,\"completion_tokens\":12},\"p\":\"abcdefghijkl\"}\n\ndata: [DONE]\n\n"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -28,23 +28,25 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9780615bfdeea2b8-YUL
+      - 9addc5d82e82a2e2-YUL
       Content-Type:
       - text/event-stream; charset=utf-8
       Mistral-Correlation-Id:
-      - 01990282-15c4-7e1f-9f4a-9e5e1f668073
+      - 019b1ce0-e362-7908-984f-d2223b322b58
       Server:
       - cloudflare
       Strict-Transport-Security:
-      - max-age=15552000; includeSubDomains
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
       X-Envoy-Upstream-Service-Time:
-      - "73"
+      - "110"
       X-Kong-Proxy-Latency:
-      - "8"
+      - "11"
       X-Kong-Request-Id:
-      - 01990282-15c4-7e1f-9f4a-9e5e1f668073
+      - 019b1ce0-e362-7908-984f-d2223b322b58
       X-Kong-Upstream-Latency:
-      - "73"
+      - "111"
     status: 200 OK
     code: 200
-    duration: 224ms
+    duration: 252ms

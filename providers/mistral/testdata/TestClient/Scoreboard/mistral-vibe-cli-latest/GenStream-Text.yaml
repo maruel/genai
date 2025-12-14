@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 146
+    host: api.mistral.ai
+    body: "{\"model\":\"mistral-vibe-cli-latest\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Say hello. Use only one word.\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.mistral.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"b393ff13566846f09f245634ab34e7c8\",\"object\":\"chat.completion.chunk\",\"created\":1765716877,\"model\":\"mistral-vibe-cli-latest\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"b393ff13566846f09f245634ab34e7c8\",\"object\":\"chat.completion.chunk\",\"created\":1765716877,\"model\":\"mistral-vibe-cli-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Hello\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqr\"}\n\ndata: {\"id\":\"b393ff13566846f09f245634ab34e7c8\",\"object\":\"chat.completion.chunk\",\"created\":1765716877,\"model\":\"mistral-vibe-cli-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"!\"},\"finish_reason\":null}],\"p\":\"abcdefg\"}\n\ndata: {\"id\":\"b393ff13566846f09f245634ab34e7c8\",\"object\":\"chat.completion.chunk\",\"created\":1765716877,\"model\":\"mistral-vibe-cli-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":11,\"total_tokens\":14,\"completion_tokens\":3},\"p\":\"abcdefghijklmnopqr\"}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9addd9d0985aa286-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Mistral-Correlation-Id:
+      - 019b1ced-5ea4-7c74-a2e4-7ee5b2633eb3
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "943"
+      X-Kong-Proxy-Latency:
+      - "7"
+      X-Kong-Request-Id:
+      - 019b1ced-5ea4-7c74-a2e4-7ee5b2633eb3
+      X-Kong-Upstream-Latency:
+      - "943"
+    status: 200 OK
+    code: 200
+    duration: 1.11s

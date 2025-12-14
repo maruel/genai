@@ -1,59 +1,52 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 292
-        host: api.mistral.ai
-        body: |
-            {"model":"pixtral-12b-latest","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"What is the word? Reply with only the word."},{"type":"document_url","document_url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/document.pdf"}]}]}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.mistral.ai/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        body: |+
-            data: {"id":"3e690b15ce3540f58692ad93d79dafad","object":"chat.completion.chunk","created":1753215949,"model":"pixtral-12b-latest","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
-
-            data: {"id":"3e690b15ce3540f58692ad93d79dafad","object":"chat.completion.chunk","created":1753215949,"model":"pixtral-12b-latest","choices":[{"index":0,"delta":{"content":"orange"},"finish_reason":null}]}
-
-            data: {"id":"3e690b15ce3540f58692ad93d79dafad","object":"chat.completion.chunk","created":1753215949,"model":"pixtral-12b-latest","choices":[{"index":0,"delta":{"content":""},"finish_reason":"stop"}],"usage":{"prompt_tokens":28,"total_tokens":30,"completion_tokens":2}}
-
-            data: [DONE]
-
-        headers:
-            Access-Control-Allow-Origin:
-                - '*'
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 9635ab658d80a1de-YYZ
-            Content-Type:
-                - text/event-stream; charset=utf-8
-            Mistral-Correlation-Id:
-                - 019833d0-5bba-74c4-9652-c6bafb4e2caa
-            Server:
-                - cloudflare
-            Strict-Transport-Security:
-                - max-age=15552000; includeSubDomains
-            X-Envoy-Upstream-Service-Time:
-                - "940"
-            X-Kong-Proxy-Latency:
-                - "6"
-            X-Kong-Request-Id:
-                - 019833d0-5bba-74c4-9652-c6bafb4e2caa
-            X-Kong-Upstream-Latency:
-                - "940"
-        status: 200 OK
-        code: 200
-        duration: 1.129s
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 292
+    host: api.mistral.ai
+    body: "{\"model\":\"pixtral-12b-latest\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What is the word? Reply with only the word.\"},{\"type\":\"document_url\",\"document_url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/document.pdf\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.mistral.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"13ba59d0afc24d4b8a51ef03100f97a9\",\"object\":\"chat.completion.chunk\",\"created\":1765716122,\"model\":\"pixtral-12b-latest\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"13ba59d0afc24d4b8a51ef03100f97a9\",\"object\":\"chat.completion.chunk\",\"created\":1765716122,\"model\":\"pixtral-12b-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"orange\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnop\"}\n\ndata: {\"id\":\"13ba59d0afc24d4b8a51ef03100f97a9\",\"object\":\"chat.completion.chunk\",\"created\":1765716122,\"model\":\"pixtral-12b-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":28,\"total_tokens\":30,\"completion_tokens\":2},\"p\":\"abcdefghijklmnopqrstuvwxyz0\"}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9addc7648c0ba2bc-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Mistral-Correlation-Id:
+      - 019b1ce1-db1a-74db-9178-37128e1b8e6b
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "535"
+      X-Kong-Proxy-Latency:
+      - "8"
+      X-Kong-Request-Id:
+      - 019b1ce1-db1a-74db-9178-37128e1b8e6b
+      X-Kong-Upstream-Latency:
+      - "536"
+    status: 200 OK
+    code: 200
+    duration: 670ms

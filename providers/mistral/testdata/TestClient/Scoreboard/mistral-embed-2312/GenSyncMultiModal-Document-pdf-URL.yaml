@@ -1,0 +1,54 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 293
+    host: api.mistral.ai
+    body: "{\"model\":\"mistral-embed-2312\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What is the word? Reply with only the word.\"},{\"type\":\"document_url\",\"document_url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/document.pdf\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.mistral.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 114
+    body: "{\"object\":\"error\",\"message\":\"Invalid model: mistral-embed-2312\",\"type\":\"invalid_model\",\"param\":null,\"code\":\"1500\"}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9adddb93bc49a286-YUL
+      Content-Length:
+      - "114"
+      Content-Type:
+      - application/json
+      Mistral-Correlation-Id:
+      - 019b1cee-788f-7735-846b-50d4059bab30
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "56"
+      X-Kong-Proxy-Latency:
+      - "16"
+      X-Kong-Request-Id:
+      - 019b1cee-788f-7735-846b-50d4059bab30
+      X-Kong-Upstream-Latency:
+      - "58"
+    status: 400 Bad Request
+    code: 400
+    duration: 193ms

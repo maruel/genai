@@ -20,7 +20,7 @@ interactions:
     proto_minor: 0
     content_length: -1
     uncompressed: true
-    body: "{\"id\":\"0a6f8ddfd9134defa34bb5457b0a83c9\",\"created\":1756683688,\"model\":\"mistral-large-latest\",\"usage\":{\"prompt_tokens\":15,\"total_tokens\":18,\"completion_tokens\":3},\"object\":\"chat.completion\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"tool_calls\":null,\"content\":\"**Canada \"}}]}"
+    body: "{\"id\":\"862214e84dc8418d8a9c7440e724adc1\",\"created\":1765716096,\"model\":\"mistral-large-latest\",\"usage\":{\"prompt_tokens\":15,\"total_tokens\":32,\"completion_tokens\":17},\"object\":\"chat.completion\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"tool_calls\":null,\"content\":\"**Canada: A Land of Vast Beauty, Diversity, and Opportunity**\\n\\nCanada \"}}]}"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -29,37 +29,39 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 978060fb9c3ba2b8-YUL
+      - 9addc6c56c2ca2bc-YUL
       Content-Type:
       - application/json
       Mistral-Correlation-Id:
-      - 01990281-d98c-77b2-8d98-d1cb0d111dd9
+      - 019b1ce1-77b2-7261-b0d3-0ac2719e007a
       Server:
       - cloudflare
       Strict-Transport-Security:
-      - max-age=15552000; includeSubDomains
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
       X-Envoy-Upstream-Service-Time:
-      - "105"
+      - "480"
       X-Kong-Proxy-Latency:
-      - "6"
+      - "8"
       X-Kong-Request-Id:
-      - 01990281-d98c-77b2-8d98-d1cb0d111dd9
+      - 019b1ce1-77b2-7261-b0d3-0ac2719e007a
       X-Kong-Upstream-Latency:
-      - "106"
-      X-Ratelimit-Limit-Req-10-Second:
-      - "60"
+      - "481"
+      X-Ratelimit-Limit-Req-60-Second:
+      - "360"
       X-Ratelimit-Limit-Tokens-Minute:
       - "2000000"
       X-Ratelimit-Limit-Tokens-Month:
       - "10000000000"
-      X-Ratelimit-Remaining-Req-10-Second:
-      - "48"
+      X-Ratelimit-Remaining-Req-60-Second:
+      - "153"
       X-Ratelimit-Remaining-Tokens-Minute:
-      - "1999782"
+      - "1987509"
       X-Ratelimit-Remaining-Tokens-Month:
-      - "9999989004"
+      - "9999870975"
       X-Ratelimit-Tokens-Query-Cost:
-      - "18"
+      - "32"
     status: 200 OK
     code: 200
-    duration: 252ms
+    duration: 641ms

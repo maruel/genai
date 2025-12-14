@@ -1,69 +1,52 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 832
-        host: api.mistral.ai
-        body: |
-            {"model":"ministral-3b-latest","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"assistant","tool_calls":[{"id":"1mtI1JBzA","type":"function","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}]},{"role":"tool","content":[{"type":"text","text":"363.89"}],"tool_call_id":"1mtI1JBzA","name":"square_root"}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","strict":true,"parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none"}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.mistral.ai/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        body: |+
-            data: {"id":"00257a71ba244527a9dcf261852ad295","object":"chat.completion.chunk","created":1753544432,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
-
-            data: {"id":"00257a71ba244527a9dcf261852ad295","object":"chat.completion.chunk","created":1753544432,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"content":"The"},"finish_reason":null}]}
-
-            data: {"id":"00257a71ba244527a9dcf261852ad295","object":"chat.completion.chunk","created":1753544432,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"content":" square root of "},"finish_reason":null}]}
-
-            data: {"id":"00257a71ba244527a9dcf261852ad295","object":"chat.completion.chunk","created":1753544432,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"content":"1324"},"finish_reason":null}]}
-
-            data: {"id":"00257a71ba244527a9dcf261852ad295","object":"chat.completion.chunk","created":1753544432,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"content":"13 is "},"finish_reason":null}]}
-
-            data: {"id":"00257a71ba244527a9dcf261852ad295","object":"chat.completion.chunk","created":1753544432,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"content":"363."},"finish_reason":null}]}
-
-            data: {"id":"00257a71ba244527a9dcf261852ad295","object":"chat.completion.chunk","created":1753544432,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"content":"8"},"finish_reason":null}]}
-
-            data: {"id":"00257a71ba244527a9dcf261852ad295","object":"chat.completion.chunk","created":1753544432,"model":"ministral-3b-latest","choices":[{"index":0,"delta":{"content":"9."},"finish_reason":"stop"}],"usage":{"prompt_tokens":191,"total_tokens":212,"completion_tokens":21}}
-
-            data: [DONE]
-
-        headers:
-            Access-Control-Allow-Origin:
-                - '*'
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 9654fefccf587148-YUL
-            Content-Type:
-                - text/event-stream; charset=utf-8
-            Mistral-Correlation-Id:
-                - 01984764-9a3e-7e19-a073-3f6084bdcef3
-            Server:
-                - cloudflare
-            Strict-Transport-Security:
-                - max-age=15552000; includeSubDomains
-            X-Envoy-Upstream-Service-Time:
-                - "67"
-            X-Kong-Proxy-Latency:
-                - "6"
-            X-Kong-Request-Id:
-                - 01984764-9a3e-7e19-a073-3f6084bdcef3
-            X-Kong-Upstream-Latency:
-                - "69"
-        status: 200 OK
-        code: 200
-        duration: 200ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 832
+    host: api.mistral.ai
+    body: "{\"model\":\"ministral-3b-latest\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"}]},{\"role\":\"assistant\",\"tool_calls\":[{\"id\":\"ErbvLTGDY\",\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\": 132413}\"}}]},{\"role\":\"tool\",\"content\":[{\"type\":\"text\",\"text\":\"363.89\"}],\"tool_call_id\":\"ErbvLTGDY\",\"name\":\"square_root\"}],\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"strict\":true,\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"tool_choice\":\"none\"}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.mistral.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"3f7a6e83c0394d2eacab43f24e11e28e\",\"object\":\"chat.completion.chunk\",\"created\":1765716112,\"model\":\"ministral-3b-latest\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"3f7a6e83c0394d2eacab43f24e11e28e\",\"object\":\"chat.completion.chunk\",\"created\":1765716112,\"model\":\"ministral-3b-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"3\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwxyz0123456\"}\n\ndata: {\"id\":\"3f7a6e83c0394d2eacab43f24e11e28e\",\"object\":\"chat.completion.chunk\",\"created\":1765716112,\"model\":\"ministral-3b-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"6\"},\"finish_reason\":null}],\"p\":\"abcdefghi\"}\n\ndata: {\"id\":\"3f7a6e83c0394d2eacab43f24e11e28e\",\"object\":\"chat.completion.chunk\",\"created\":1765716112,\"model\":\"ministral-3b-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"3\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopq\"}\n\ndata: {\"id\":\"3f7a6e83c0394d2eacab43f24e11e28e\",\"object\":\"chat.completion.chunk\",\"created\":1765716112,\"model\":\"ministral-3b-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\".\"},\"finish_reason\":null}],\"p\":\"abcdefghij\"}\n\ndata: {\"id\":\"3f7a6e83c0394d2eacab43f24e11e28e\",\"object\":\"chat.completion.chunk\",\"created\":1765716112,\"model\":\"ministral-3b-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"8\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwxyz01\"}\n\ndata: {\"id\":\"3f7a6e83c0394d2eacab43f24e11e28e\",\"object\":\"chat.completion.chunk\",\"created\":1765716112,\"model\":\"ministral-3b-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"9\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwxyz0123456789\"}\n\ndata: {\"id\":\"3f7a6e83c0394d2eacab43f24e11e28e\",\"object\":\"chat.completion.chunk\",\"created\":1765716112,\"model\":\"ministral-3b-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":152,\"total_tokens\":159,\"completion_tokens\":7},\"p\":\"abcdefghijklmnopqrstuvwxyz0123456789\"}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9addc7256b5ba2bc-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Mistral-Correlation-Id:
+      - 019b1ce1-b3a1-730f-aba2-6d3cbb5de054
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "115"
+      X-Kong-Proxy-Latency:
+      - "8"
+      X-Kong-Request-Id:
+      - 019b1ce1-b3a1-730f-aba2-6d3cbb5de054
+      X-Kong-Upstream-Latency:
+      - "117"
+    status: 200 OK
+    code: 200
+    duration: 244ms

@@ -1,59 +1,52 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 158
-        host: api.mistral.ai
-        body: |
-            {"model":"pixtral-12b-latest","stream":true,"random_seed":42,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}]}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.mistral.ai/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        body: |+
-            data: {"id":"0f8e58a68dcc49d08b60730aa14ea528","object":"chat.completion.chunk","created":1753188024,"model":"pixtral-12b-latest","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
-
-            data: {"id":"0f8e58a68dcc49d08b60730aa14ea528","object":"chat.completion.chunk","created":1753188024,"model":"pixtral-12b-latest","choices":[{"index":0,"delta":{"content":"Hello"},"finish_reason":null}]}
-
-            data: {"id":"0f8e58a68dcc49d08b60730aa14ea528","object":"chat.completion.chunk","created":1753188024,"model":"pixtral-12b-latest","choices":[{"index":0,"delta":{"content":""},"finish_reason":"stop"}],"usage":{"prompt_tokens":11,"total_tokens":13,"completion_tokens":2}}
-
-            data: [DONE]
-
-        headers:
-            Access-Control-Allow-Origin:
-                - '*'
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 963301a2cbaea290-YUL
-            Content-Type:
-                - text/event-stream; charset=utf-8
-            Mistral-Correlation-Id:
-                - 01983226-4207-7ab3-82dd-e8b9916af798
-            Server:
-                - cloudflare
-            Strict-Transport-Security:
-                - max-age=15552000; includeSubDomains
-            X-Envoy-Upstream-Service-Time:
-                - "106"
-            X-Kong-Proxy-Latency:
-                - "10"
-            X-Kong-Request-Id:
-                - 01983226-4207-7ab3-82dd-e8b9916af798
-            X-Kong-Upstream-Latency:
-                - "107"
-        status: 200 OK
-        code: 200
-        duration: 269ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 158
+    host: api.mistral.ai
+    body: "{\"model\":\"pixtral-12b-latest\",\"stream\":true,\"random_seed\":42,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Say hello. Use only one word.\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.mistral.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"d9b1362d399c4ff8a486e62f2f09406e\",\"object\":\"chat.completion.chunk\",\"created\":1765716118,\"model\":\"pixtral-12b-latest\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"d9b1362d399c4ff8a486e62f2f09406e\",\"object\":\"chat.completion.chunk\",\"created\":1765716118,\"model\":\"pixtral-12b-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Hello\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstu\"}\n\ndata: {\"id\":\"d9b1362d399c4ff8a486e62f2f09406e\",\"object\":\"chat.completion.chunk\",\"created\":1765716118,\"model\":\"pixtral-12b-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":11,\"total_tokens\":13,\"completion_tokens\":2},\"p\":\"abcdefghijklmnopqrstuvwxyz01234\"}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9addc74bdd85a2bc-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Mistral-Correlation-Id:
+      - 019b1ce1-cbc2-7164-99c2-b4082a30e424
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "133"
+      X-Kong-Proxy-Latency:
+      - "16"
+      X-Kong-Request-Id:
+      - 019b1ce1-cbc2-7164-99c2-b4082a30e424
+      X-Kong-Upstream-Latency:
+      - "134"
+    status: 200 OK
+    code: 200
+    duration: 294ms

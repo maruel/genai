@@ -8,7 +8,7 @@ interactions:
     proto_minor: 1
     content_length: 833
     host: api.mistral.ai
-    body: "{\"model\":\"mistral-tiny-latest\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"}]},{\"role\":\"assistant\",\"tool_calls\":[{\"id\":\"s4lWNwS0Q\",\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\": 132413}\"}}]},{\"role\":\"tool\",\"content\":[{\"type\":\"text\",\"text\":\"363.89\"}],\"tool_call_id\":\"s4lWNwS0Q\",\"name\":\"square_root\"}],\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"strict\":true,\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"tool_choice\":\"none\"}\n"
+    body: "{\"model\":\"mistral-tiny-latest\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"}]},{\"role\":\"assistant\",\"tool_calls\":[{\"id\":\"n9ZoIbfuG\",\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\": 132413}\"}}]},{\"role\":\"tool\",\"content\":[{\"type\":\"text\",\"text\":\"363.89\"}],\"tool_call_id\":\"n9ZoIbfuG\",\"name\":\"square_root\"}],\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"strict\":true,\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"tool_choice\":\"none\"}\n"
     headers:
       Content-Type:
       - application/json; charset=utf-8
@@ -20,7 +20,7 @@ interactions:
     proto_minor: 0
     content_length: -1
     uncompressed: true
-    body: "{\"id\":\"b66bd7ff0d9c46cba613c2251bda84b0\",\"created\":1756683713,\"model\":\"mistral-tiny-latest\",\"usage\":{\"prompt_tokens\":195,\"total_tokens\":202,\"completion_tokens\":7},\"object\":\"chat.completion\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"tool_calls\":null,\"content\":\"363.89\"}}]}"
+    body: "{\"id\":\"eb7cfd18e37f4d519ae0fe2de9610eab\",\"created\":1765716069,\"model\":\"mistral-tiny-latest\",\"usage\":{\"prompt_tokens\":193,\"total_tokens\":200,\"completion_tokens\":7},\"object\":\"chat.completion\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"tool_calls\":null,\"content\":\"363.89\"}}]}"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -29,37 +29,39 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 97806196ac01a2b8-YUL
+      - 9addc6189951a2bc-YUL
       Content-Type:
       - application/json
       Mistral-Correlation-Id:
-      - 01990282-3a74-796a-8b98-c5785fcf27f9
+      - 019b1ce1-0ba9-7523-8d8c-16092ed1413a
       Server:
       - cloudflare
       Strict-Transport-Security:
-      - max-age=15552000; includeSubDomains
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
       X-Envoy-Upstream-Service-Time:
-      - "156"
+      - "203"
       X-Kong-Proxy-Latency:
-      - "7"
+      - "14"
       X-Kong-Request-Id:
-      - 01990282-3a74-796a-8b98-c5785fcf27f9
+      - 019b1ce1-0ba9-7523-8d8c-16092ed1413a
       X-Kong-Upstream-Latency:
-      - "157"
-      X-Ratelimit-Limit-Req-10-Second:
-      - "60"
+      - "204"
+      X-Ratelimit-Limit-Req-60-Second:
+      - "360"
       X-Ratelimit-Limit-Tokens-Minute:
       - "2000000"
       X-Ratelimit-Limit-Tokens-Month:
       - "10000000000"
-      X-Ratelimit-Remaining-Req-10-Second:
-      - "12"
+      X-Ratelimit-Remaining-Req-60-Second:
+      - "267"
       X-Ratelimit-Remaining-Tokens-Minute:
-      - "1990398"
+      - "1997182"
       X-Ratelimit-Remaining-Tokens-Month:
-      - "9999979620"
+      - "9999880648"
       X-Ratelimit-Tokens-Query-Cost:
-      - "202"
+      - "200"
     status: 200 OK
     code: 200
-    duration: 308ms
+    duration: 348ms

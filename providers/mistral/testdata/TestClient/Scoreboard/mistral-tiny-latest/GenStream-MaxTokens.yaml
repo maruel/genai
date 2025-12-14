@@ -19,7 +19,7 @@ interactions:
     proto_major: 2
     proto_minor: 0
     content_length: -1
-    body: "data: {\"id\":\"c29b98dfd71642d99c5c6db96b10ce7f\",\"object\":\"chat.completion.chunk\",\"created\":1756683711,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"c29b98dfd71642d99c5c6db96b10ce7f\",\"object\":\"chat.completion.chunk\",\"created\":1756683711,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"The\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwxyz0123456\"}\n\ndata: {\"id\":\"c29b98dfd71642d99c5c6db96b10ce7f\",\"object\":\"chat.completion.chunk\",\"created\":1756683711,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" theory of relativity is\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopq\"}\n\ndata: {\"id\":\"c29b98dfd71642d99c5c6db96b10ce7f\",\"object\":\"chat.completion.chunk\",\"created\":1756683711,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" a fundamental concept in\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwxyz0\"}\n\ndata: {\"id\":\"c29b98dfd71642d99c5c6db96b10ce7f\",\"object\":\"chat.completion.chunk\",\"created\":1756683711,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" physics,\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvw\"}\n\ndata: {\"id\":\"c29b98dfd71642d99c5c6db96b10ce7f\",\"object\":\"chat.completion.chunk\",\"created\":1756683711,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" developed\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuv\"}\n\ndata: {\"id\":\"c29b98dfd71642d99c5c6db96b10ce7f\",\"object\":\"chat.completion.chunk\",\"created\":1756683711,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" by Albert Einstein,\"},\"finish_reason\":\"length\"}],\"usage\":{\"prompt_tokens\":13,\"total_tokens\":29,\"completion_tokens\":16},\"p\":\"abcdefghijklmnopqrstuvwxyz01\"}\n\ndata: [DONE]\n\n"
+    body: "data: {\"id\":\"75e33c9a57464b44b5be2a8b6a1e3b8f\",\"object\":\"chat.completion.chunk\",\"created\":1765716067,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"75e33c9a57464b44b5be2a8b6a1e3b8f\",\"object\":\"chat.completion.chunk\",\"created\":1765716067,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"The\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwxyz01\"}\n\ndata: {\"id\":\"75e33c9a57464b44b5be2a8b6a1e3b8f\",\"object\":\"chat.completion.chunk\",\"created\":1765716067,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" theory of relativity is\"},\"finish_reason\":null}],\"p\":\"ab\"}\n\ndata: {\"id\":\"75e33c9a57464b44b5be2a8b6a1e3b8f\",\"object\":\"chat.completion.chunk\",\"created\":1765716067,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" a fundamental concept in\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwxyz0123456\"}\n\ndata: {\"id\":\"75e33c9a57464b44b5be2a8b6a1e3b8f\",\"object\":\"chat.completion.chunk\",\"created\":1765716067,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" physics,\"},\"finish_reason\":null}],\"p\":\"abcdefgh\"}\n\ndata: {\"id\":\"75e33c9a57464b44b5be2a8b6a1e3b8f\",\"object\":\"chat.completion.chunk\",\"created\":1765716067,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" developed\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwxyz01234567\"}\n\ndata: {\"id\":\"75e33c9a57464b44b5be2a8b6a1e3b8f\",\"object\":\"chat.completion.chunk\",\"created\":1765716067,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" by Albert Einstein,\"},\"finish_reason\":\"length\"}],\"usage\":{\"prompt_tokens\":13,\"total_tokens\":29,\"completion_tokens\":16},\"p\":\"abcde\"}\n\ndata: [DONE]\n\n"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -28,23 +28,25 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9780618b5d11a2b8-YUL
+      - 9addc60c9a04a2bc-YUL
       Content-Type:
       - text/event-stream; charset=utf-8
       Mistral-Correlation-Id:
-      - 01990282-3440-73d4-b720-6820a1b12530
+      - 019b1ce1-0421-76b0-815d-70dfc150e27f
       Server:
       - cloudflare
       Strict-Transport-Security:
-      - max-age=15552000; includeSubDomains
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
       X-Envoy-Upstream-Service-Time:
-      - "128"
+      - "170"
       X-Kong-Proxy-Latency:
-      - "6"
+      - "8"
       X-Kong-Request-Id:
-      - 01990282-3440-73d4-b720-6820a1b12530
+      - 019b1ce1-0421-76b0-815d-70dfc150e27f
       X-Kong-Upstream-Latency:
-      - "129"
+      - "170"
     status: 200 OK
     code: 200
-    duration: 499ms
+    duration: 305ms

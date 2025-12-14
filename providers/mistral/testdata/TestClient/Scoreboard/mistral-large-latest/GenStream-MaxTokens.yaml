@@ -19,7 +19,7 @@ interactions:
     proto_major: 2
     proto_minor: 0
     content_length: -1
-    body: "data: {\"id\":\"844a122fa5a54d3e8d80becff6b2839d\",\"object\":\"chat.completion.chunk\",\"created\":1756683687,\"model\":\"mistral-large-latest\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"844a122fa5a54d3e8d80becff6b2839d\",\"object\":\"chat.completion.chunk\",\"created\":1756683687,\"model\":\"mistral-large-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Albert\"},\"finish_reason\":null}],\"p\":\"ab\"}\n\ndata: {\"id\":\"844a122fa5a54d3e8d80becff6b2839d\",\"object\":\"chat.completion.chunk\",\"created\":1756683687,\"model\":\"mistral-large-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" Einstein\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwxyz0123456\"}\n\ndata: {\"id\":\"844a122fa5a54d3e8d80becff6b2839d\",\"object\":\"chat.completion.chunk\",\"created\":1756683687,\"model\":\"mistral-large-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"'s\"},\"finish_reason\":null}],\"p\":\"abcdefghijk\"}\n\ndata: {\"id\":\"844a122fa5a54d3e8d80becff6b2839d\",\"object\":\"chat.completion.chunk\",\"created\":1756683687,\"model\":\"mistral-large-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" **Theory\"},\"finish_reason\":null}],\"p\":\"abcde\"}\n\ndata: {\"id\":\"844a122fa5a54d3e8d80becff6b2839d\",\"object\":\"chat.completion.chunk\",\"created\":1756683687,\"model\":\"mistral-large-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" of Rel\"},\"finish_reason\":null}],\"p\":\"abcde\"}\n\ndata: {\"id\":\"844a122fa5a54d3e8d80becff6b2839d\",\"object\":\"chat.completion.chunk\",\"created\":1756683687,\"model\":\"mistral-large-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"ativity** is one\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrs\"}\n\ndata: {\"id\":\"844a122fa5a54d3e8d80becff6b2839d\",\"object\":\"chat.completion.chunk\",\"created\":1756683687,\"model\":\"mistral-large-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" of the most\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwxyz012\"}\n\ndata: {\"id\":\"844a122fa5a54d3e8d80becff6b2839d\",\"object\":\"chat.completion.chunk\",\"created\":1756683687,\"model\":\"mistral-large-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" profound\"},\"finish_reason\":\"length\"}],\"usage\":{\"prompt_tokens\":13,\"total_tokens\":29,\"completion_tokens\":16},\"p\":\"abc\"}\n\ndata: [DONE]\n\n"
+    body: "data: {\"id\":\"6d7f51aaab5246b19a5cfc3e25b0a429\",\"object\":\"chat.completion.chunk\",\"created\":1765716096,\"model\":\"mistral-large-latest\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"6d7f51aaab5246b19a5cfc3e25b0a429\",\"object\":\"chat.completion.chunk\",\"created\":1765716096,\"model\":\"mistral-large-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"The\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"6d7f51aaab5246b19a5cfc3e25b0a429\",\"object\":\"chat.completion.chunk\",\"created\":1765716096,\"model\":\"mistral-large-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" **The\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"6d7f51aaab5246b19a5cfc3e25b0a429\",\"object\":\"chat.completion.chunk\",\"created\":1765716096,\"model\":\"mistral-large-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"ory of Relativity\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"6d7f51aaab5246b19a5cfc3e25b0a429\",\"object\":\"chat.completion.chunk\",\"created\":1765716096,\"model\":\"mistral-large-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"** is\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"6d7f51aaab5246b19a5cfc3e25b0a429\",\"object\":\"chat.completion.chunk\",\"created\":1765716096,\"model\":\"mistral-large-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" one of the most\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"6d7f51aaab5246b19a5cfc3e25b0a429\",\"object\":\"chat.completion.chunk\",\"created\":1765716096,\"model\":\"mistral-large-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" profound and revolutionary\"},\"finish_reason\":\"length\"}],\"usage\":{\"prompt_tokens\":13,\"total_tokens\":29,\"completion_tokens\":16}}\n\ndata: [DONE]\n\n"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -28,23 +28,25 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 978060f62ce8a2b8-YUL
+      - 9addc6c54bf9a2bc-YUL
       Content-Type:
       - text/event-stream; charset=utf-8
       Mistral-Correlation-Id:
-      - 01990281-d621-749b-8982-26e68d816195
+      - 019b1ce1-77a5-7f46-81f2-d2011addfb6f
       Server:
       - cloudflare
       Strict-Transport-Security:
-      - max-age=15552000; includeSubDomains
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
       X-Envoy-Upstream-Service-Time:
-      - "80"
+      - "202"
       X-Kong-Proxy-Latency:
-      - "7"
+      - "8"
       X-Kong-Request-Id:
-      - 01990281-d621-749b-8982-26e68d816195
+      - 019b1ce1-77a5-7f46-81f2-d2011addfb6f
       X-Kong-Upstream-Latency:
-      - "81"
+      - "203"
     status: 200 OK
     code: 200
-    duration: 220ms
+    duration: 361ms

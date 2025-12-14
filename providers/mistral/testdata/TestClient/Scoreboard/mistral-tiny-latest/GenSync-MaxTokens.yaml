@@ -20,7 +20,7 @@ interactions:
     proto_minor: 0
     content_length: -1
     uncompressed: true
-    body: "{\"id\":\"9ab9f6bffddc4e6298b31a0680e1111c\",\"created\":1756683711,\"model\":\"mistral-tiny-latest\",\"usage\":{\"prompt_tokens\":13,\"total_tokens\":29,\"completion_tokens\":16},\"object\":\"chat.completion\",\"choices\":[{\"index\":0,\"finish_reason\":\"length\",\"message\":{\"role\":\"assistant\",\"tool_calls\":null,\"content\":\"The theory of relativity is a fundamental concept in physics developed by Albert Einstein in the\"}}]}"
+    body: "{\"id\":\"24404dcb44324d9598915418ee52ba04\",\"created\":1765716067,\"model\":\"mistral-tiny-latest\",\"usage\":{\"prompt_tokens\":13,\"total_tokens\":29,\"completion_tokens\":16},\"object\":\"chat.completion\",\"choices\":[{\"index\":0,\"finish_reason\":\"length\",\"message\":{\"role\":\"assistant\",\"tool_calls\":null,\"content\":\"The theory of relativity is a fundamental concept in physics developed by Albert Einstein in the\"}}]}"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -29,37 +29,39 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9780618b9d74a2b8-YUL
+      - 9addc60cda70a2bc-YUL
       Content-Type:
       - application/json
       Mistral-Correlation-Id:
-      - 01990282-3388-7c2a-9021-4392cc93b269
+      - 019b1ce1-044b-7d10-bae3-6d646ef51d37
       Server:
       - cloudflare
       Strict-Transport-Security:
-      - max-age=15552000; includeSubDomains
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
       X-Envoy-Upstream-Service-Time:
-      - "153"
+      - "186"
       X-Kong-Proxy-Latency:
-      - "8"
+      - "18"
       X-Kong-Request-Id:
-      - 01990282-3388-7c2a-9021-4392cc93b269
+      - 019b1ce1-044b-7d10-bae3-6d646ef51d37
       X-Kong-Upstream-Latency:
-      - "154"
-      X-Ratelimit-Limit-Req-10-Second:
-      - "60"
+      - "186"
+      X-Ratelimit-Limit-Req-60-Second:
+      - "360"
       X-Ratelimit-Limit-Tokens-Minute:
       - "2000000"
       X-Ratelimit-Limit-Tokens-Month:
       - "10000000000"
-      X-Ratelimit-Remaining-Req-10-Second:
-      - "17"
+      X-Ratelimit-Remaining-Req-60-Second:
+      - "286"
       X-Ratelimit-Remaining-Tokens-Minute:
-      - "1991306"
+      - "1998261"
       X-Ratelimit-Remaining-Tokens-Month:
-      - "9999980528"
+      - "9999881727"
       X-Ratelimit-Tokens-Query-Cost:
       - "29"
     status: 200 OK
     code: 200
-    duration: 290ms
+    duration: 340ms

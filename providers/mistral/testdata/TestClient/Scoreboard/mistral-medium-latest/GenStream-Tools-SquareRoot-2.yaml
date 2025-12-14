@@ -8,7 +8,7 @@ interactions:
     proto_minor: 1
     content_length: 834
     host: api.mistral.ai
-    body: "{\"model\":\"mistral-medium-latest\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"}]},{\"role\":\"assistant\",\"tool_calls\":[{\"id\":\"TtmlFcmiY\",\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\": 132413}\"}}]},{\"role\":\"tool\",\"content\":[{\"type\":\"text\",\"text\":\"363.89\"}],\"tool_call_id\":\"TtmlFcmiY\",\"name\":\"square_root\"}],\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"strict\":true,\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"tool_choice\":\"none\"}\n"
+    body: "{\"model\":\"mistral-medium-latest\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"}]},{\"role\":\"assistant\",\"tool_calls\":[{\"id\":\"vce2nldCl\",\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\": 132413}\"}}]},{\"role\":\"tool\",\"content\":[{\"type\":\"text\",\"text\":\"363.89\"}],\"tool_call_id\":\"vce2nldCl\",\"name\":\"square_root\"}],\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"strict\":true,\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"tool_choice\":\"none\"}\n"
     headers:
       Content-Type:
       - application/json; charset=utf-8
@@ -19,7 +19,7 @@ interactions:
     proto_major: 2
     proto_minor: 0
     content_length: -1
-    body: "data: {\"id\":\"5278748c336249d1bd75907512380d4a\",\"object\":\"chat.completion.chunk\",\"created\":1756683701,\"model\":\"mistral-medium-latest\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"5278748c336249d1bd75907512380d4a\",\"object\":\"chat.completion.chunk\",\"created\":1756683701,\"model\":\"mistral-medium-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"3\"},\"finish_reason\":null}],\"p\":\"abcdefgh\"}\n\ndata: {\"id\":\"5278748c336249d1bd75907512380d4a\",\"object\":\"chat.completion.chunk\",\"created\":1756683701,\"model\":\"mistral-medium-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"63.8\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqr\"}\n\ndata: {\"id\":\"5278748c336249d1bd75907512380d4a\",\"object\":\"chat.completion.chunk\",\"created\":1756683701,\"model\":\"mistral-medium-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"9\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":152,\"total_tokens\":159,\"completion_tokens\":7},\"p\":\"abcde\"}\n\ndata: [DONE]\n\n"
+    body: "data: {\"id\":\"db4046b890b94a8786a037e4f23732c0\",\"object\":\"chat.completion.chunk\",\"created\":1765716056,\"model\":\"mistral-medium-latest\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"db4046b890b94a8786a037e4f23732c0\",\"object\":\"chat.completion.chunk\",\"created\":1765716056,\"model\":\"mistral-medium-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"3\"},\"finish_reason\":null}],\"p\":\"abcdefghij\"}\n\ndata: {\"id\":\"db4046b890b94a8786a037e4f23732c0\",\"object\":\"chat.completion.chunk\",\"created\":1765716056,\"model\":\"mistral-medium-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"63.8\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwxyz0123\"}\n\ndata: {\"id\":\"db4046b890b94a8786a037e4f23732c0\",\"object\":\"chat.completion.chunk\",\"created\":1765716056,\"model\":\"mistral-medium-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"9\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuv\"}\n\ndata: {\"id\":\"db4046b890b94a8786a037e4f23732c0\",\"object\":\"chat.completion.chunk\",\"created\":1765716056,\"model\":\"mistral-medium-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":152,\"total_tokens\":159,\"completion_tokens\":7},\"p\":\"abcdefghijklmnopqrstuvwxyz01234567\"}\n\ndata: [DONE]\n\n"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -28,23 +28,25 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 978061506f59a2b8-YUL
+      - 9addc5c7ff15a2e2-YUL
       Content-Type:
       - text/event-stream; charset=utf-8
       Mistral-Correlation-Id:
-      - 01990282-0e8a-7dab-b88b-7d9a30532566
+      - 019b1ce0-d93e-7f9c-9337-7bbd92fa9336
       Server:
       - cloudflare
       Strict-Transport-Security:
-      - max-age=15552000; includeSubDomains
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
       X-Envoy-Upstream-Service-Time:
-      - "122"
+      - "160"
       X-Kong-Proxy-Latency:
-      - "7"
+      - "10"
       X-Kong-Request-Id:
-      - 01990282-0e8a-7dab-b88b-7d9a30532566
+      - 019b1ce0-d93e-7f9c-9337-7bbd92fa9336
       X-Kong-Upstream-Latency:
-      - "123"
+      - "160"
     status: 200 OK
     code: 200
-    duration: 267ms
+    duration: 295ms

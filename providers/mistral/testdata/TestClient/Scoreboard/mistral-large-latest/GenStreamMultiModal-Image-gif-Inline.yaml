@@ -19,7 +19,7 @@ interactions:
     proto_major: 2
     proto_minor: 0
     content_length: -1
-    body: "data: {\"id\":\"189dc31542f24a4587f95868cf8a30c0\",\"object\":\"chat.completion.chunk\",\"created\":1756683691,\"model\":\"mistral-large-latest\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"189dc31542f24a4587f95868cf8a30c0\",\"object\":\"chat.completion.chunk\",\"created\":1756683691,\"model\":\"mistral-large-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Ban\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwxyz012345678\"}\n\ndata: {\"id\":\"189dc31542f24a4587f95868cf8a30c0\",\"object\":\"chat.completion.chunk\",\"created\":1756683691,\"model\":\"mistral-large-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"ana\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":157,\"total_tokens\":160,\"completion_tokens\":3},\"p\":\"abcdefghijklmno\"}\n\ndata: [DONE]\n\n"
+    body: "data: {\"id\":\"d087c2e68a734049ba3281f002ff2bed\",\"object\":\"chat.completion.chunk\",\"created\":1765716106,\"model\":\"mistral-large-latest\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"d087c2e68a734049ba3281f002ff2bed\",\"object\":\"chat.completion.chunk\",\"created\":1765716106,\"model\":\"mistral-large-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Ban\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"d087c2e68a734049ba3281f002ff2bed\",\"object\":\"chat.completion.chunk\",\"created\":1765716106,\"model\":\"mistral-large-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"ana.\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":157,\"total_tokens\":161,\"completion_tokens\":4}}\n\ndata: [DONE]\n\n"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -28,23 +28,25 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 978061115fd4a2b8-YUL
+      - 9addc6fe5d47a2bc-YUL
       Content-Type:
       - text/event-stream; charset=utf-8
       Mistral-Correlation-Id:
-      - 01990281-e730-79a1-b7fa-331cac5d834b
+      - 019b1ce1-9b4d-719e-a8a4-b9283fbe8be9
       Server:
       - cloudflare
       Strict-Transport-Security:
-      - max-age=15552000; includeSubDomains
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
       X-Envoy-Upstream-Service-Time:
-      - "210"
+      - "413"
       X-Kong-Proxy-Latency:
-      - "33"
+      - "64"
       X-Kong-Request-Id:
-      - 01990281-e730-79a1-b7fa-331cac5d834b
+      - 019b1ce1-9b4d-719e-a8a4-b9283fbe8be9
       X-Kong-Upstream-Latency:
-      - "210"
+      - "414"
     status: 200 OK
     code: 200
-    duration: 399ms
+    duration: 620ms

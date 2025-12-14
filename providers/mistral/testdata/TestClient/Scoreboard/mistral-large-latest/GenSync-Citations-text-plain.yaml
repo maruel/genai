@@ -20,7 +20,7 @@ interactions:
     proto_minor: 0
     content_length: -1
     uncompressed: true
-    body: "{\"id\":\"200eadcae4894a1c90a0ba9a6b5f309d\",\"created\":1756683690,\"model\":\"mistral-large-latest\",\"usage\":{\"prompt_tokens\":33,\"total_tokens\":45,\"completion_tokens\":12},\"object\":\"chat.completion\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"tool_calls\":null,\"content\":\"The capital of Quackiland is **Quack**.\"}}]}"
+    body: "{\"id\":\"904e51de65ee4c51a02ec701117380a7\",\"created\":1765716101,\"model\":\"mistral-large-latest\",\"usage\":{\"prompt_tokens\":33,\"total_tokens\":45,\"completion_tokens\":12},\"object\":\"chat.completion\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"tool_calls\":null,\"content\":\"The capital of Quackiland is **Quack**.\"}}]}"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -29,37 +29,39 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9780610b9838a2b8-YUL
+      - 9addc6e02847a2bc-YUL
       Content-Type:
       - application/json
       Mistral-Correlation-Id:
-      - 01990281-e384-7499-8325-49091d0dcd94
+      - 019b1ce1-8855-7883-b2e6-e99aa3267676
       Server:
       - cloudflare
       Strict-Transport-Security:
-      - max-age=15552000; includeSubDomains
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
       X-Envoy-Upstream-Service-Time:
-      - "186"
+      - "350"
       X-Kong-Proxy-Latency:
-      - "8"
+      - "6"
       X-Kong-Request-Id:
-      - 01990281-e384-7499-8325-49091d0dcd94
+      - 019b1ce1-8855-7883-b2e6-e99aa3267676
       X-Kong-Upstream-Latency:
-      - "187"
-      X-Ratelimit-Limit-Req-10-Second:
-      - "60"
+      - "351"
+      X-Ratelimit-Limit-Req-60-Second:
+      - "360"
       X-Ratelimit-Limit-Tokens-Minute:
       - "2000000"
       X-Ratelimit-Limit-Tokens-Month:
       - "10000000000"
-      X-Ratelimit-Remaining-Req-10-Second:
-      - "34"
+      X-Ratelimit-Remaining-Req-60-Second:
+      - "138"
       X-Ratelimit-Remaining-Tokens-Minute:
-      - "1998380"
+      - "1986087"
       X-Ratelimit-Remaining-Tokens-Month:
-      - "9999987602"
+      - "9999869553"
       X-Ratelimit-Tokens-Query-Cost:
       - "45"
     status: 200 OK
     code: 200
-    duration: 348ms
+    duration: 484ms

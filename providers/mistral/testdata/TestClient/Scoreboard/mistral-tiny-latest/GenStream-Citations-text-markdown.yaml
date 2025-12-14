@@ -19,7 +19,7 @@ interactions:
     proto_major: 2
     proto_minor: 0
     content_length: -1
-    body: "data: {\"id\":\"69bdb1cb83624fc5a1e8558f86c33b81\",\"object\":\"chat.completion.chunk\",\"created\":1756683714,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"69bdb1cb83624fc5a1e8558f86c33b81\",\"object\":\"chat.completion.chunk\",\"created\":1756683714,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"The\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwxyz012345678\"}\n\ndata: {\"id\":\"69bdb1cb83624fc5a1e8558f86c33b81\",\"object\":\"chat.completion.chunk\",\"created\":1756683714,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" capital of Quack\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwxyz012345678\"}\n\ndata: {\"id\":\"69bdb1cb83624fc5a1e8558f86c33b81\",\"object\":\"chat.completion.chunk\",\"created\":1756683714,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"iland is Quack\"},\"finish_reason\":null}],\"p\":\"abcd\"}\n\ndata: {\"id\":\"69bdb1cb83624fc5a1e8558f86c33b81\",\"object\":\"chat.completion.chunk\",\"created\":1756683714,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\".\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":38,\"total_tokens\":49,\"completion_tokens\":11},\"p\":\"abcdefghijklmno\"}\n\ndata: [DONE]\n\n"
+    body: "data: {\"id\":\"a6444e4af69b4882acb24aef194b96f7\",\"object\":\"chat.completion.chunk\",\"created\":1765716070,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"a6444e4af69b4882acb24aef194b96f7\",\"object\":\"chat.completion.chunk\",\"created\":1765716070,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"The\"},\"finish_reason\":null}],\"p\":\"abcdefghijklm\"}\n\ndata: {\"id\":\"a6444e4af69b4882acb24aef194b96f7\",\"object\":\"chat.completion.chunk\",\"created\":1765716070,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" capital of Quack\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwxyz0123\"}\n\ndata: {\"id\":\"a6444e4af69b4882acb24aef194b96f7\",\"object\":\"chat.completion.chunk\",\"created\":1765716070,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"iland is Quack\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwxyz01234567\"}\n\ndata: {\"id\":\"a6444e4af69b4882acb24aef194b96f7\",\"object\":\"chat.completion.chunk\",\"created\":1765716070,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\".\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":38,\"total_tokens\":49,\"completion_tokens\":11},\"p\":\"abcdefghijklmnopq\"}\n\ndata: [DONE]\n\n"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -28,23 +28,25 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9780619d2c47a2b8-YUL
+      - 9addc6228fa7a2bc-YUL
       Content-Type:
       - text/event-stream; charset=utf-8
       Mistral-Correlation-Id:
-      - 01990282-3e78-7a9a-a8b7-92b212c79cac
+      - 019b1ce1-11d8-7b1a-a5c1-0e7cbd4f9092
       Server:
       - cloudflare
       Strict-Transport-Security:
-      - max-age=15552000; includeSubDomains
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
       X-Envoy-Upstream-Service-Time:
-      - "60"
+      - "117"
       X-Kong-Proxy-Latency:
-      - "6"
+      - "7"
       X-Kong-Request-Id:
-      - 01990282-3e78-7a9a-a8b7-92b212c79cac
+      - 019b1ce1-11d8-7b1a-a5c1-0e7cbd4f9092
       X-Kong-Upstream-Latency:
-      - "61"
+      - "118"
     status: 200 OK
     code: 200
-    duration: 196ms
+    duration: 255ms

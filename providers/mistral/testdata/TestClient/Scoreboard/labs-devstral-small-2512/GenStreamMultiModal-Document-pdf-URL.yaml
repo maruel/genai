@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 298
+    host: api.mistral.ai
+    body: "{\"model\":\"labs-devstral-small-2512\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What is the word? Reply with only the word.\"},{\"type\":\"document_url\",\"document_url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/document.pdf\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.mistral.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"9ec001c35d3a4113a2c5e67118a81b19\",\"object\":\"chat.completion.chunk\",\"created\":1765716892,\"model\":\"labs-devstral-small-2512\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"9ec001c35d3a4113a2c5e67118a81b19\",\"object\":\"chat.completion.chunk\",\"created\":1765716892,\"model\":\"labs-devstral-small-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"orange\"},\"finish_reason\":null}],\"p\":\"abcde\"}\n\ndata: {\"id\":\"9ec001c35d3a4113a2c5e67118a81b19\",\"object\":\"chat.completion.chunk\",\"created\":1765716892,\"model\":\"labs-devstral-small-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":28,\"total_tokens\":30,\"completion_tokens\":2},\"p\":\"abcdefghijklmnopqrstuvwxyz01234567\"}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9addda316971a286-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Mistral-Correlation-Id:
+      - 019b1ced-9b25-7c25-b952-6ca8f0590eaa
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "663"
+      X-Kong-Proxy-Latency:
+      - "9"
+      X-Kong-Request-Id:
+      - 019b1ced-9b25-7c25-b952-6ca8f0590eaa
+      X-Kong-Upstream-Latency:
+      - "663"
+    status: 200 OK
+    code: 200
+    duration: 794ms

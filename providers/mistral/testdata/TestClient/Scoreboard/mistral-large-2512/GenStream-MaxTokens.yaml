@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 178
+    host: api.mistral.ai
+    body: "{\"model\":\"mistral-large-2512\",\"max_tokens\":16,\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Explain the theory of relativity in great details.\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.mistral.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"b5f15b9879eb4efeb9248a27d5be2165\",\"object\":\"chat.completion.chunk\",\"created\":1765716898,\"model\":\"mistral-large-2512\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"b5f15b9879eb4efeb9248a27d5be2165\",\"object\":\"chat.completion.chunk\",\"created\":1765716898,\"model\":\"mistral-large-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"The\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"b5f15b9879eb4efeb9248a27d5be2165\",\"object\":\"chat.completion.chunk\",\"created\":1765716898,\"model\":\"mistral-large-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" **The\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"b5f15b9879eb4efeb9248a27d5be2165\",\"object\":\"chat.completion.chunk\",\"created\":1765716898,\"model\":\"mistral-large-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"ory of Relativity\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"b5f15b9879eb4efeb9248a27d5be2165\",\"object\":\"chat.completion.chunk\",\"created\":1765716898,\"model\":\"mistral-large-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"** is\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"b5f15b9879eb4efeb9248a27d5be2165\",\"object\":\"chat.completion.chunk\",\"created\":1765716898,\"model\":\"mistral-large-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" one of the most\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"b5f15b9879eb4efeb9248a27d5be2165\",\"object\":\"chat.completion.chunk\",\"created\":1765716898,\"model\":\"mistral-large-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" profound and revolutionary\"},\"finish_reason\":\"length\"}],\"usage\":{\"prompt_tokens\":13,\"total_tokens\":29,\"completion_tokens\":16}}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9addda5479aca286-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Mistral-Correlation-Id:
+      - 019b1ced-b107-7b28-a4d9-895a8ec98d6e
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "209"
+      X-Kong-Proxy-Latency:
+      - "9"
+      X-Kong-Request-Id:
+      - 019b1ced-b107-7b28-a4d9-895a8ec98d6e
+      X-Kong-Upstream-Latency:
+      - "210"
+    status: 200 OK
+    code: 200
+    duration: 338ms

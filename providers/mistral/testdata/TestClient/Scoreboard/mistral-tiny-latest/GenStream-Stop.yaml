@@ -19,7 +19,7 @@ interactions:
     proto_major: 2
     proto_minor: 0
     content_length: -1
-    body: "data: {\"id\":\"7cc81d91e8a5448480d2728abc38883f\",\"object\":\"chat.completion.chunk\",\"created\":1756683711,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"7cc81d91e8a5448480d2728abc38883f\",\"object\":\"chat.completion.chunk\",\"created\":1756683711,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"**\"},\"finish_reason\":null}],\"p\":\"ab\"}\n\ndata: {\"id\":\"7cc81d91e8a5448480d2728abc38883f\",\"object\":\"chat.completion.chunk\",\"created\":1756683711,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Canada \"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":15,\"total_tokens\":18,\"completion_tokens\":3},\"p\":\"abcdefghijklmnopqrs\"}\n\ndata: [DONE]\n\n"
+    body: "data: {\"id\":\"bb68f77292b04df9af1bc288b272746c\",\"object\":\"chat.completion.chunk\",\"created\":1765716067,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"bb68f77292b04df9af1bc288b272746c\",\"object\":\"chat.completion.chunk\",\"created\":1765716067,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"**\"},\"finish_reason\":null}],\"p\":\"abcdefghijkl\"}\n\ndata: {\"id\":\"bb68f77292b04df9af1bc288b272746c\",\"object\":\"chat.completion.chunk\",\"created\":1765716067,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Canada**\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwxy\"}\n\ndata: {\"id\":\"bb68f77292b04df9af1bc288b272746c\",\"object\":\"chat.completion.chunk\",\"created\":1765716067,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" \"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":15,\"total_tokens\":19,\"completion_tokens\":4},\"p\":\"abcdefghijklmnopqrst\"}\n\ndata: [DONE]\n\n"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -28,23 +28,25 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9780618ef9fea2b8-YUL
+      - 9addc60edc78a2bc-YUL
       Content-Type:
       - text/event-stream; charset=utf-8
       Mistral-Correlation-Id:
-      - 01990282-3596-7443-8bbe-895cb213f511
+      - 019b1ce1-059d-7bf1-9f1d-6f588e5734fc
       Server:
       - cloudflare
       Strict-Transport-Security:
-      - max-age=15552000; includeSubDomains
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
       X-Envoy-Upstream-Service-Time:
-      - "65"
+      - "122"
       X-Kong-Proxy-Latency:
-      - "7"
+      - "11"
       X-Kong-Request-Id:
-      - 01990282-3596-7443-8bbe-895cb213f511
+      - 019b1ce1-059d-7bf1-9f1d-6f588e5734fc
       X-Kong-Upstream-Latency:
-      - "66"
+      - "123"
     status: 200 OK
     code: 200
-    duration: 200ms
+    duration: 281ms

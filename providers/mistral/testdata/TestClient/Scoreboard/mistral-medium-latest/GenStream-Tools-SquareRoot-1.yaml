@@ -19,7 +19,7 @@ interactions:
     proto_major: 2
     proto_minor: 0
     content_length: -1
-    body: "data: {\"id\":\"b81c4f1691a94d999ea557771353aeaa\",\"object\":\"chat.completion.chunk\",\"created\":1756683701,\"model\":\"mistral-medium-latest\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"b81c4f1691a94d999ea557771353aeaa\",\"object\":\"chat.completion.chunk\",\"created\":1756683701,\"model\":\"mistral-medium-latest\",\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[{\"id\":\"TtmlFcmiY\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\": 132413}\"},\"index\":0}]},\"finish_reason\":\"tool_calls\"}],\"usage\":{\"prompt_tokens\":128,\"total_tokens\":144,\"completion_tokens\":16},\"p\":\"abcdefg\"}\n\ndata: [DONE]\n\n"
+    body: "data: {\"id\":\"dad74e09d2cd4f62b143016ccf33f131\",\"object\":\"chat.completion.chunk\",\"created\":1765716055,\"model\":\"mistral-medium-latest\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"dad74e09d2cd4f62b143016ccf33f131\",\"object\":\"chat.completion.chunk\",\"created\":1765716055,\"model\":\"mistral-medium-latest\",\"choices\":[{\"index\":0,\"delta\":{\"tool_calls\":[{\"id\":\"vce2nldCl\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\": 132413}\"},\"index\":0}]},\"finish_reason\":\"tool_calls\"}],\"usage\":{\"prompt_tokens\":128,\"total_tokens\":144,\"completion_tokens\":16},\"p\":\"abcdefghijklmnopqrstuvwxyz0123456789\"}\n\ndata: [DONE]\n\n"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -28,23 +28,25 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9780614d6ae6a2b8-YUL
+      - 9addc5c29fdca2e2-YUL
       Content-Type:
       - text/event-stream; charset=utf-8
       Mistral-Correlation-Id:
-      - 01990282-0cc6-73c3-957d-68ef9ff03ab6
+      - 019b1ce0-d5dc-7cc4-85e0-45830bf3c03b
       Server:
       - cloudflare
       Strict-Transport-Security:
-      - max-age=15552000; includeSubDomains
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
       X-Envoy-Upstream-Service-Time:
-      - "294"
+      - "732"
       X-Kong-Proxy-Latency:
-      - "9"
+      - "7"
       X-Kong-Request-Id:
-      - 01990282-0cc6-73c3-957d-68ef9ff03ab6
+      - 019b1ce0-d5dc-7cc4-85e0-45830bf3c03b
       X-Kong-Upstream-Latency:
-      - "294"
+      - "733"
     status: 200 OK
     code: 200
-    duration: 474ms
+    duration: 862ms

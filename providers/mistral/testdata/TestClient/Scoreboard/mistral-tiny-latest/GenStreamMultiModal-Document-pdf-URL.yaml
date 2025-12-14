@@ -19,7 +19,7 @@ interactions:
     proto_major: 2
     proto_minor: 0
     content_length: -1
-    body: "data: {\"id\":\"20851e04502746779e3719a68f028e06\",\"object\":\"chat.completion.chunk\",\"created\":1756683714,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"20851e04502746779e3719a68f028e06\",\"object\":\"chat.completion.chunk\",\"created\":1756683714,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"orange\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwxyz012345\"}\n\ndata: {\"id\":\"20851e04502746779e3719a68f028e06\",\"object\":\"chat.completion.chunk\",\"created\":1756683714,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":28,\"total_tokens\":30,\"completion_tokens\":2},\"p\":\"abcdefghijklmnopqrstuvwxyz012345678\"}\n\ndata: [DONE]\n\n"
+    body: "data: {\"id\":\"064723fc5caa4635bad37c5d940cd1de\",\"object\":\"chat.completion.chunk\",\"created\":1765716071,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"064723fc5caa4635bad37c5d940cd1de\",\"object\":\"chat.completion.chunk\",\"created\":1765716071,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"orange\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstu\"}\n\ndata: {\"id\":\"064723fc5caa4635bad37c5d940cd1de\",\"object\":\"chat.completion.chunk\",\"created\":1765716071,\"model\":\"mistral-tiny-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":28,\"total_tokens\":30,\"completion_tokens\":2},\"p\":\"ab\"}\n\ndata: [DONE]\n\n"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -28,23 +28,25 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9780619ebe5ea2b8-YUL
+      - 9addc624fb24a2bc-YUL
       Content-Type:
       - text/event-stream; charset=utf-8
       Mistral-Correlation-Id:
-      - 01990282-3f73-77d6-855f-8b6f4993de13
+      - 019b1ce1-137d-72bd-bb2f-eb8cb3cd5ebc
       Server:
       - cloudflare
       Strict-Transport-Security:
-      - max-age=15552000; includeSubDomains
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
       X-Envoy-Upstream-Service-Time:
-      - "450"
+      - "311"
       X-Kong-Proxy-Latency:
-      - "7"
+      - "6"
       X-Kong-Request-Id:
-      - 01990282-3f73-77d6-855f-8b6f4993de13
+      - 019b1ce1-137d-72bd-bb2f-eb8cb3cd5ebc
       X-Kong-Upstream-Latency:
-      - "450"
+      - "312"
     status: 200 OK
     code: 200
-    duration: 590ms
+    duration: 498ms

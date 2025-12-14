@@ -20,7 +20,7 @@ interactions:
     proto_minor: 0
     content_length: -1
     uncompressed: true
-    body: "{\"id\":\"c4ec690c9b3a49eea08cc78095d3494d\",\"created\":1756683701,\"model\":\"mistral-medium-latest\",\"usage\":{\"prompt_tokens\":128,\"total_tokens\":144,\"completion_tokens\":16},\"object\":\"chat.completion\",\"choices\":[{\"index\":0,\"finish_reason\":\"tool_calls\",\"message\":{\"role\":\"assistant\",\"tool_calls\":[{\"id\":\"F5cu458Bg\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\": 132413}\"},\"index\":0}],\"content\":\"\"}}]}"
+    body: "{\"id\":\"efa745ed80104c43be25880717ad61ed\",\"created\":1765716056,\"model\":\"mistral-medium-latest\",\"usage\":{\"prompt_tokens\":128,\"total_tokens\":144,\"completion_tokens\":16},\"object\":\"chat.completion\",\"choices\":[{\"index\":0,\"finish_reason\":\"tool_calls\",\"message\":{\"role\":\"assistant\",\"tool_calls\":[{\"id\":\"hTv18nair\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\": 132413}\"},\"index\":0}],\"content\":\"\"}}]}"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -29,37 +29,39 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9780614d4ab9a2b8-YUL
+      - 9addc5c83f76a2e2-YUL
       Content-Type:
       - application/json
       Mistral-Correlation-Id:
-      - 01990282-0ca6-7ffd-ba81-3f728338a330
+      - 019b1ce0-d965-7bbc-a9a1-e5411e9550f9
       Server:
       - cloudflare
       Strict-Transport-Security:
-      - max-age=15552000; includeSubDomains
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
       X-Envoy-Upstream-Service-Time:
-      - "268"
+      - "333"
       X-Kong-Proxy-Latency:
-      - "6"
+      - "10"
       X-Kong-Request-Id:
-      - 01990282-0ca6-7ffd-ba81-3f728338a330
+      - 019b1ce0-d965-7bbc-a9a1-e5411e9550f9
       X-Kong-Upstream-Latency:
-      - "269"
-      X-Ratelimit-Limit-Req-10-Second:
-      - "60"
-      X-Ratelimit-Limit-Tokens-Minute:
-      - "2000000"
+      - "334"
+      X-Ratelimit-Limit-Req-60-Second:
+      - "360"
+      X-Ratelimit-Limit-Tokens-5-Minute:
+      - "600000"
       X-Ratelimit-Limit-Tokens-Month:
-      - "10000000000"
-      X-Ratelimit-Remaining-Req-10-Second:
-      - "17"
-      X-Ratelimit-Remaining-Tokens-Minute:
-      - "1995248"
+      - "200000000000"
+      X-Ratelimit-Remaining-Req-60-Second:
+      - "345"
+      X-Ratelimit-Remaining-Tokens-5-Minute:
+      - "594835"
       X-Ratelimit-Remaining-Tokens-Month:
-      - "9999984470"
+      - "199999986414"
       X-Ratelimit-Tokens-Query-Cost:
       - "144"
     status: 200 OK
     code: 200
-    duration: 424ms
+    duration: 468ms

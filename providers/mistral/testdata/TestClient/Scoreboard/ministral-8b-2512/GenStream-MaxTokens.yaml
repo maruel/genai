@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 177
+    host: api.mistral.ai
+    body: "{\"model\":\"ministral-8b-2512\",\"max_tokens\":16,\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Explain the theory of relativity in great details.\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.mistral.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"ad028921d5704e77a6ee5c994bd5bef4\",\"object\":\"chat.completion.chunk\",\"created\":1765716923,\"model\":\"ministral-8b-2512\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"ad028921d5704e77a6ee5c994bd5bef4\",\"object\":\"chat.completion.chunk\",\"created\":1765716923,\"model\":\"ministral-8b-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Albert\"},\"finish_reason\":null}],\"p\":\"abc\"}\n\ndata: {\"id\":\"ad028921d5704e77a6ee5c994bd5bef4\",\"object\":\"chat.completion.chunk\",\"created\":1765716923,\"model\":\"ministral-8b-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" Einstein\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwxyz0123456\"}\n\ndata: {\"id\":\"ad028921d5704e77a6ee5c994bd5bef4\",\"object\":\"chat.completion.chunk\",\"created\":1765716923,\"model\":\"ministral-8b-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"'s\"},\"finish_reason\":null}],\"p\":\"abcdefg\"}\n\ndata: {\"id\":\"ad028921d5704e77a6ee5c994bd5bef4\",\"object\":\"chat.completion.chunk\",\"created\":1765716923,\"model\":\"ministral-8b-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" **\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwxyz0123456789\"}\n\ndata: {\"id\":\"ad028921d5704e77a6ee5c994bd5bef4\",\"object\":\"chat.completion.chunk\",\"created\":1765716923,\"model\":\"ministral-8b-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"The\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwxyz0123456789\"}\n\ndata: {\"id\":\"ad028921d5704e77a6ee5c994bd5bef4\",\"object\":\"chat.completion.chunk\",\"created\":1765716923,\"model\":\"ministral-8b-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"ory\"},\"finish_reason\":null}],\"p\":\"abcdefg\"}\n\ndata: {\"id\":\"ad028921d5704e77a6ee5c994bd5bef4\",\"object\":\"chat.completion.chunk\",\"created\":1765716923,\"model\":\"ministral-8b-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" of\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwx\"}\n\ndata: {\"id\":\"ad028921d5704e77a6ee5c994bd5bef4\",\"object\":\"chat.completion.chunk\",\"created\":1765716923,\"model\":\"ministral-8b-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" Rel\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnop\"}\n\ndata: {\"id\":\"ad028921d5704e77a6ee5c994bd5bef4\",\"object\":\"chat.completion.chunk\",\"created\":1765716923,\"model\":\"ministral-8b-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"ativity\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwxyz0123456\"}\n\ndata: {\"id\":\"ad028921d5704e77a6ee5c994bd5bef4\",\"object\":\"chat.completion.chunk\",\"created\":1765716923,\"model\":\"ministral-8b-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"**\"},\"finish_reason\":null}],\"p\":\"a\"}\n\ndata: {\"id\":\"ad028921d5704e77a6ee5c994bd5bef4\",\"object\":\"chat.completion.chunk\",\"created\":1765716923,\"model\":\"ministral-8b-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" consists\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwxyz012345\"}\n\ndata: {\"id\":\"ad028921d5704e77a6ee5c994bd5bef4\",\"object\":\"chat.completion.chunk\",\"created\":1765716923,\"model\":\"ministral-8b-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" of\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvw\"}\n\ndata: {\"id\":\"ad028921d5704e77a6ee5c994bd5bef4\",\"object\":\"chat.completion.chunk\",\"created\":1765716923,\"model\":\"ministral-8b-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" two\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwxyz01234567\"}\n\ndata: {\"id\":\"ad028921d5704e77a6ee5c994bd5bef4\",\"object\":\"chat.completion.chunk\",\"created\":1765716923,\"model\":\"ministral-8b-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" major\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstu\"}\n\ndata: {\"id\":\"ad028921d5704e77a6ee5c994bd5bef4\",\"object\":\"chat.completion.chunk\",\"created\":1765716923,\"model\":\"ministral-8b-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" parts\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmn\"}\n\ndata: {\"id\":\"ad028921d5704e77a6ee5c994bd5bef4\",\"object\":\"chat.completion.chunk\",\"created\":1765716923,\"model\":\"ministral-8b-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\":\\n\\n\"},\"finish_reason\":\"length\"}],\"usage\":{\"prompt_tokens\":13,\"total_tokens\":29,\"completion_tokens\":16},\"p\":\"abcdefghijklm\"}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9adddaf53f66a286-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Mistral-Correlation-Id:
+      - 019b1cee-1585-775f-95c4-881000ae9319
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "46"
+      X-Kong-Proxy-Latency:
+      - "10"
+      X-Kong-Request-Id:
+      - 019b1cee-1585-775f-95c4-881000ae9319
+      X-Kong-Upstream-Latency:
+      - "47"
+    status: 200 OK
+    code: 200
+    duration: 181ms

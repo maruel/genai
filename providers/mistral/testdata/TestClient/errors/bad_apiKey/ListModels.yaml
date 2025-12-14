@@ -27,21 +27,23 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 97442c356ef739f6-YYZ
+      - 9addc3a38ae9a2ae-YUL
       Content-Length:
       - "25"
       Content-Type:
       - application/json; charset=utf-8
       Mistral-Correlation-Id:
-      - 0198dce0-ddbb-78a6-818a-cfb38b575d49
+      - 019b1cdf-8274-7441-a65f-567020b7db1c
       Server:
       - cloudflare
       Strict-Transport-Security:
-      - max-age=15552000; includeSubDomains
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
       X-Kong-Request-Id:
-      - 0198dce0-ddbb-78a6-818a-cfb38b575d49
+      - 019b1cdf-8274-7441-a65f-567020b7db1c
       X-Kong-Response-Latency:
-      - "7"
+      - "6"
     status: 401 Unauthorized
     code: 401
-    duration: 161ms
+    duration: 158ms

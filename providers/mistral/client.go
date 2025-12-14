@@ -563,7 +563,7 @@ type Model struct {
 	MaxContextLength            int64    `json:"max_context_length"`
 	Aliases                     []string `json:"aliases"`
 	Deprecation                 string   `json:"deprecation"`
-	DeprecationReplacementModel struct{} `json:"deprecation_replacement_model"`
+	DeprecationReplacementModel string   `json:"deprecation_replacement_model,omitzero"`
 	DefaultModelTemperature     float64  `json:"default_model_temperature"`
 	Type                        string   `json:"type"` // "base"
 }

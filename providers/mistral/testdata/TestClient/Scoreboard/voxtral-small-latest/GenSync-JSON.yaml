@@ -1,66 +1,67 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 282
-        host: api.mistral.ai
-        body: |
-            {"model":"voxtral-small-latest","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}]}],"response_format":{"type":"json_object"}}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.mistral.ai/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        uncompressed: true
-        body: '{"id":"b4c104606f1447f1b71654bb2211e10e","created":1753216777,"model":"voxtral-small-latest","usage":{"prompt_tokens":32,"total_tokens":40,"completion_tokens":8},"object":"chat.completion","choices":[{"index":0,"finish_reason":"stop","message":{"role":"assistant","tool_calls":null,"content":"{\"is_fruit\": true}"}}]}'
-        headers:
-            Access-Control-Allow-Origin:
-                - '*'
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 9635bf981b56a294-YUL
-            Content-Type:
-                - application/json
-            Mistral-Correlation-Id:
-                - 019833dc-fc42-790e-b337-578e5ed6c8bf
-            Server:
-                - cloudflare
-            Strict-Transport-Security:
-                - max-age=15552000; includeSubDomains
-            X-Envoy-Upstream-Service-Time:
-                - "103"
-            X-Kong-Proxy-Latency:
-                - "6"
-            X-Kong-Request-Id:
-                - 019833dc-fc42-790e-b337-578e5ed6c8bf
-            X-Kong-Upstream-Latency:
-                - "104"
-            X-Ratelimit-Limit-Req-10-Second:
-                - "60"
-            X-Ratelimit-Limit-Tokens-Minute:
-                - "2000000"
-            X-Ratelimit-Limit-Tokens-Month:
-                - "10000000000"
-            X-Ratelimit-Remaining-Req-10-Second:
-                - "49"
-            X-Ratelimit-Remaining-Tokens-Minute:
-                - "1999744"
-            X-Ratelimit-Remaining-Tokens-Month:
-                - "9999961594"
-            X-Ratelimit-Tokens-Query-Cost:
-                - "40"
-        status: 200 OK
-        code: 200
-        duration: 478ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 282
+    host: api.mistral.ai
+    body: "{\"model\":\"voxtral-small-latest\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\\\"is_fruit\\\": bool}.\"}]}],\"response_format\":{\"type\":\"json_object\"}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.mistral.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"e096b0cb56f84ae59ab03c62bfe374d6\",\"created\":1765716090,\"model\":\"voxtral-small-latest\",\"usage\":{\"prompt_tokens\":32,\"total_tokens\":40,\"completion_tokens\":8},\"object\":\"chat.completion\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"tool_calls\":null,\"content\":\"{\\\"is_fruit\\\": true}\"}}]}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9addc69f284ba2bc-YUL
+      Content-Type:
+      - application/json
+      Mistral-Correlation-Id:
+      - 019b1ce1-5fbf-714e-8d8c-ac780c9b6ee8
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "103"
+      X-Kong-Proxy-Latency:
+      - "6"
+      X-Kong-Request-Id:
+      - 019b1ce1-5fbf-714e-8d8c-ac780c9b6ee8
+      X-Kong-Upstream-Latency:
+      - "104"
+      X-Ratelimit-Limit-Req-60-Second:
+      - "360"
+      X-Ratelimit-Limit-Tokens-Minute:
+      - "2000000"
+      X-Ratelimit-Limit-Tokens-Month:
+      - "10000000000"
+      X-Ratelimit-Remaining-Req-60-Second:
+      - "190"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "1989387"
+      X-Ratelimit-Remaining-Tokens-Month:
+      - "9999872853"
+      X-Ratelimit-Tokens-Query-Cost:
+      - "40"
+    status: 200 OK
+    code: 200
+    duration: 266ms

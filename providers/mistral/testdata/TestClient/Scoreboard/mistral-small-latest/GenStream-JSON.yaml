@@ -1,61 +1,52 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 281
-        host: api.mistral.ai
-        body: |
-            {"model":"mistral-small-latest","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}]}],"response_format":{"type":"json_object"}}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.mistral.ai/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        body: |+
-            data: {"id":"9a95789bdfb047359049efcc65150870","object":"chat.completion.chunk","created":1753147554,"model":"mistral-small-latest","choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null}]}
-
-            data: {"id":"9a95789bdfb047359049efcc65150870","object":"chat.completion.chunk","created":1753147554,"model":"mistral-small-latest","choices":[{"index":0,"delta":{"content":"{\""},"finish_reason":null}]}
-
-            data: {"id":"9a95789bdfb047359049efcc65150870","object":"chat.completion.chunk","created":1753147554,"model":"mistral-small-latest","choices":[{"index":0,"delta":{"content":"is_fruit\":"},"finish_reason":null}]}
-
-            data: {"id":"9a95789bdfb047359049efcc65150870","object":"chat.completion.chunk","created":1753147554,"model":"mistral-small-latest","choices":[{"index":0,"delta":{"content":" true}"},"finish_reason":"stop"}],"usage":{"prompt_tokens":32,"total_tokens":40,"completion_tokens":8}}
-
-            data: [DONE]
-
-        headers:
-            Access-Control-Allow-Origin:
-                - '*'
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 962f2597af1c33f1-YUL
-            Content-Type:
-                - text/event-stream; charset=utf-8
-            Mistral-Correlation-Id:
-                - 01982fbc-bb14-7cdf-8853-4073ab0bb7a4
-            Server:
-                - cloudflare
-            Strict-Transport-Security:
-                - max-age=15552000; includeSubDomains
-            X-Envoy-Upstream-Service-Time:
-                - "205"
-            X-Kong-Proxy-Latency:
-                - "8"
-            X-Kong-Request-Id:
-                - 01982fbc-bb14-7cdf-8853-4073ab0bb7a4
-            X-Kong-Upstream-Latency:
-                - "205"
-        status: 200 OK
-        code: 200
-        duration: 364ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 281
+    host: api.mistral.ai
+    body: "{\"model\":\"mistral-small-latest\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\\\"is_fruit\\\": bool}.\"}]}],\"response_format\":{\"type\":\"json_object\"}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.mistral.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"0decc78529094db7a6714d80d34dde81\",\"object\":\"chat.completion.chunk\",\"created\":1765716073,\"model\":\"mistral-small-latest\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"0decc78529094db7a6714d80d34dde81\",\"object\":\"chat.completion.chunk\",\"created\":1765716073,\"model\":\"mistral-small-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"{\\\"\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnop\"}\n\ndata: {\"id\":\"0decc78529094db7a6714d80d34dde81\",\"object\":\"chat.completion.chunk\",\"created\":1765716073,\"model\":\"mistral-small-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"is\"},\"finish_reason\":null}],\"p\":\"abcdefghijk\"}\n\ndata: {\"id\":\"0decc78529094db7a6714d80d34dde81\",\"object\":\"chat.completion.chunk\",\"created\":1765716073,\"model\":\"mistral-small-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"_f\"},\"finish_reason\":null}],\"p\":\"abcdefghijkl\"}\n\ndata: {\"id\":\"0decc78529094db7a6714d80d34dde81\",\"object\":\"chat.completion.chunk\",\"created\":1765716073,\"model\":\"mistral-small-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"ruit\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmno\"}\n\ndata: {\"id\":\"0decc78529094db7a6714d80d34dde81\",\"object\":\"chat.completion.chunk\",\"created\":1765716073,\"model\":\"mistral-small-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"\\\":\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmn\"}\n\ndata: {\"id\":\"0decc78529094db7a6714d80d34dde81\",\"object\":\"chat.completion.chunk\",\"created\":1765716073,\"model\":\"mistral-small-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" true\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmn\"}\n\ndata: {\"id\":\"0decc78529094db7a6714d80d34dde81\",\"object\":\"chat.completion.chunk\",\"created\":1765716073,\"model\":\"mistral-small-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"}\"},\"finish_reason\":null}],\"p\":\"abcde\"}\n\ndata: {\"id\":\"0decc78529094db7a6714d80d34dde81\",\"object\":\"chat.completion.chunk\",\"created\":1765716073,\"model\":\"mistral-small-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":32,\"total_tokens\":40,\"completion_tokens\":8},\"p\":\"abcdefghi\"}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9addc6350875a2bc-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Mistral-Correlation-Id:
+      - 019b1ce1-1d6a-7dcc-8e46-1f660bcc53a8
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "55"
+      X-Kong-Proxy-Latency:
+      - "9"
+      X-Kong-Request-Id:
+      - 019b1ce1-1d6a-7dcc-8e46-1f660bcc53a8
+      X-Kong-Upstream-Latency:
+      - "55"
+    status: 200 OK
+    code: 200
+    duration: 191ms

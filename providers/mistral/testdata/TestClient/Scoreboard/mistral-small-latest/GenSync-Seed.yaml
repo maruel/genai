@@ -1,66 +1,67 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 161
-        host: api.mistral.ai
-        body: |
-            {"model":"mistral-small-latest","stream":false,"random_seed":42,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}]}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.mistral.ai/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        uncompressed: true
-        body: '{"id":"d7164653b13743d2a4afe6374e5bfe44","object":"chat.completion","created":1753147553,"model":"mistral-small-latest","choices":[{"index":0,"message":{"role":"assistant","tool_calls":null,"content":"Hello."},"finish_reason":"stop"}],"usage":{"prompt_tokens":11,"total_tokens":14,"completion_tokens":3}}'
-        headers:
-            Access-Control-Allow-Origin:
-                - '*'
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 962f2592084e33f1-YUL
-            Content-Type:
-                - application/json
-            Mistral-Correlation-Id:
-                - 01982fbc-b798-710d-8171-6e177b907199
-            Server:
-                - cloudflare
-            Strict-Transport-Security:
-                - max-age=15552000; includeSubDomains
-            X-Envoy-Upstream-Service-Time:
-                - "123"
-            X-Kong-Proxy-Latency:
-                - "7"
-            X-Kong-Request-Id:
-                - 01982fbc-b798-710d-8171-6e177b907199
-            X-Kong-Upstream-Latency:
-                - "124"
-            X-Ratelimit-Limit-Req-10-Second:
-                - "60"
-            X-Ratelimit-Limit-Tokens-Minute:
-                - "2000000"
-            X-Ratelimit-Limit-Tokens-Month:
-                - "10000000000"
-            X-Ratelimit-Remaining-Req-10-Second:
-                - "30"
-            X-Ratelimit-Remaining-Tokens-Minute:
-                - "1998618"
-            X-Ratelimit-Remaining-Tokens-Month:
-                - "9999998302"
-            X-Ratelimit-Tokens-Query-Cost:
-                - "14"
-        status: 200 OK
-        code: 200
-        duration: 281ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 161
+    host: api.mistral.ai
+    body: "{\"model\":\"mistral-small-latest\",\"stream\":false,\"random_seed\":42,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Say hello. Use only one word.\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.mistral.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"50663dbf6fa84fb0b6de9537cf3f4424\",\"created\":1765716073,\"model\":\"mistral-small-latest\",\"usage\":{\"prompt_tokens\":11,\"total_tokens\":14,\"completion_tokens\":3},\"object\":\"chat.completion\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"tool_calls\":null,\"content\":\"Hello.\"}}]}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9addc633df23a2bc-YUL
+      Content-Type:
+      - application/json
+      Mistral-Correlation-Id:
+      - 019b1ce1-1cac-70f2-b374-f8a2188e6be9
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "60"
+      X-Kong-Proxy-Latency:
+      - "13"
+      X-Kong-Request-Id:
+      - 019b1ce1-1cac-70f2-b374-f8a2188e6be9
+      X-Kong-Upstream-Latency:
+      - "60"
+      X-Ratelimit-Limit-Req-60-Second:
+      - "360"
+      X-Ratelimit-Limit-Tokens-Minute:
+      - "2000000"
+      X-Ratelimit-Limit-Tokens-Month:
+      - "10000000000"
+      X-Ratelimit-Remaining-Req-60-Second:
+      - "240"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "1996225"
+      X-Ratelimit-Remaining-Tokens-Month:
+      - "9999879691"
+      X-Ratelimit-Tokens-Query-Cost:
+      - "14"
+    status: 200 OK
+    code: 200
+    duration: 202ms

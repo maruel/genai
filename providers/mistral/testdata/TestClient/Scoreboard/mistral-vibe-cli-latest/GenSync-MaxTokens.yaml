@@ -1,0 +1,67 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 184
+    host: api.mistral.ai
+    body: "{\"model\":\"mistral-vibe-cli-latest\",\"max_tokens\":16,\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Explain the theory of relativity in great details.\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.mistral.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"5af9ec0c96f54c238ca1d669491be52c\",\"created\":1765716880,\"model\":\"mistral-vibe-cli-latest\",\"usage\":{\"prompt_tokens\":13,\"total_tokens\":29,\"completion_tokens\":16},\"object\":\"chat.completion\",\"choices\":[{\"index\":0,\"finish_reason\":\"length\",\"message\":{\"role\":\"assistant\",\"tool_calls\":null,\"content\":\"Albert Einstein's **Theory of Relativity** is one of the most profound\"}}]}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9addd9e48a7ea286-YUL
+      Content-Type:
+      - application/json
+      Mistral-Correlation-Id:
+      - 019b1ced-6b18-7da9-b76d-d7f106ec93b3
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "364"
+      X-Kong-Proxy-Latency:
+      - "6"
+      X-Kong-Request-Id:
+      - 019b1ced-6b18-7da9-b76d-d7f106ec93b3
+      X-Kong-Upstream-Latency:
+      - "365"
+      X-Ratelimit-Limit-Req-60-Second:
+      - "1200"
+      X-Ratelimit-Limit-Tokens-Minute:
+      - "2000000"
+      X-Ratelimit-Limit-Tokens-Month:
+      - "10000000000"
+      X-Ratelimit-Remaining-Req-60-Second:
+      - "1191"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "1999811"
+      X-Ratelimit-Remaining-Tokens-Month:
+      - "9999853192"
+      X-Ratelimit-Tokens-Query-Cost:
+      - "29"
+    status: 200 OK
+    code: 200
+    duration: 498ms

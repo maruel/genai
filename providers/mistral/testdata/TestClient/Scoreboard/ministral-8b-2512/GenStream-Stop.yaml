@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 182
+    host: api.mistral.ai
+    body: "{\"model\":\"ministral-8b-2512\",\"stream\":true,\"stop\":[\"is\"],\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Talk about Canada in great details. Start with: Canada is\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.mistral.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"63cf262e17e146728071f8a41d226e95\",\"object\":\"chat.completion.chunk\",\"created\":1765716924,\"model\":\"ministral-8b-2512\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"63cf262e17e146728071f8a41d226e95\",\"object\":\"chat.completion.chunk\",\"created\":1765716924,\"model\":\"ministral-8b-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Canada\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvw\"}\n\ndata: {\"id\":\"63cf262e17e146728071f8a41d226e95\",\"object\":\"chat.completion.chunk\",\"created\":1765716924,\"model\":\"ministral-8b-2512\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" \"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":15,\"total_tokens\":17,\"completion_tokens\":2},\"p\":\"abcdefghijklmnopqrstuvwxyz01234567\"}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9adddaf6d9b1a286-YUL
+      Content-Type:
+      - text/event-stream; charset=utf-8
+      Mistral-Correlation-Id:
+      - 019b1cee-1684-7167-9afe-c489aa55de20
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "46"
+      X-Kong-Proxy-Latency:
+      - "10"
+      X-Kong-Request-Id:
+      - 019b1cee-1684-7167-9afe-c489aa55de20
+      X-Kong-Upstream-Latency:
+      - "47"
+    status: 200 OK
+    code: 200
+    duration: 185ms

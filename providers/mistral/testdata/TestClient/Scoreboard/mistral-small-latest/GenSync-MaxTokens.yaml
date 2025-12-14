@@ -1,66 +1,67 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 181
-        host: api.mistral.ai
-        body: |
-            {"model":"mistral-small-latest","max_tokens":16,"stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Explain the theory of relativity in great details."}]}]}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.mistral.ai/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        uncompressed: true
-        body: '{"id":"5093ec2c48154ff59c33db2f10296f7f","object":"chat.completion","created":1753147553,"model":"mistral-small-latest","choices":[{"index":0,"message":{"role":"assistant","tool_calls":null,"content":"The **Theory of Relativity** is one of the most profound and revolutionary"},"finish_reason":"length"}],"usage":{"prompt_tokens":13,"total_tokens":29,"completion_tokens":16}}'
-        headers:
-            Access-Control-Allow-Origin:
-                - '*'
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 962f2593ca7633f1-YUL
-            Content-Type:
-                - application/json
-            Mistral-Correlation-Id:
-                - 01982fbc-b8b3-74aa-ba25-67ef6fcb81cd
-            Server:
-                - cloudflare
-            Strict-Transport-Security:
-                - max-age=15552000; includeSubDomains
-            X-Envoy-Upstream-Service-Time:
-                - "213"
-            X-Kong-Proxy-Latency:
-                - "8"
-            X-Kong-Request-Id:
-                - 01982fbc-b8b3-74aa-ba25-67ef6fcb81cd
-            X-Kong-Upstream-Latency:
-                - "214"
-            X-Ratelimit-Limit-Req-10-Second:
-                - "60"
-            X-Ratelimit-Limit-Tokens-Minute:
-                - "2000000"
-            X-Ratelimit-Limit-Tokens-Month:
-                - "10000000000"
-            X-Ratelimit-Remaining-Req-10-Second:
-                - "28"
-            X-Ratelimit-Remaining-Tokens-Minute:
-                - "1998589"
-            X-Ratelimit-Remaining-Tokens-Month:
-                - "9999998273"
-            X-Ratelimit-Tokens-Query-Cost:
-                - "29"
-        status: 200 OK
-        code: 200
-        duration: 379ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 181
+    host: api.mistral.ai
+    body: "{\"model\":\"mistral-small-latest\",\"max_tokens\":16,\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Explain the theory of relativity in great details.\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.mistral.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"994bc9e954fd4b339c80f315dc09c2ba\",\"created\":1765716073,\"model\":\"mistral-small-latest\",\"usage\":{\"prompt_tokens\":13,\"total_tokens\":29,\"completion_tokens\":16},\"object\":\"chat.completion\",\"choices\":[{\"index\":0,\"finish_reason\":\"length\",\"message\":{\"role\":\"assistant\",\"tool_calls\":null,\"content\":\"The **Theory of Relativity** is one of the most profound and revolutionary\"}}]}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9addc6351887a2bc-YUL
+      Content-Type:
+      - application/json
+      Mistral-Correlation-Id:
+      - 019b1ce1-1d70-7fe5-810e-94254d77ed44
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "147"
+      X-Kong-Proxy-Latency:
+      - "7"
+      X-Kong-Request-Id:
+      - 019b1ce1-1d70-7fe5-810e-94254d77ed44
+      X-Kong-Upstream-Latency:
+      - "148"
+      X-Ratelimit-Limit-Req-60-Second:
+      - "360"
+      X-Ratelimit-Limit-Tokens-Minute:
+      - "2000000"
+      X-Ratelimit-Limit-Tokens-Month:
+      - "10000000000"
+      X-Ratelimit-Remaining-Req-60-Second:
+      - "238"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "1996139"
+      X-Ratelimit-Remaining-Tokens-Month:
+      - "9999879605"
+      X-Ratelimit-Tokens-Query-Cost:
+      - "29"
+    status: 200 OK
+    code: 200
+    duration: 277ms

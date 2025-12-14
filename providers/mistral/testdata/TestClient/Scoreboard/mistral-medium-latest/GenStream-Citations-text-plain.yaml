@@ -19,7 +19,7 @@ interactions:
     proto_major: 2
     proto_minor: 0
     content_length: -1
-    body: "data: {\"id\":\"924f38a8a8794eb0ba65cf80b5dfd4cb\",\"object\":\"chat.completion.chunk\",\"created\":1756683703,\"model\":\"mistral-medium-latest\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"924f38a8a8794eb0ba65cf80b5dfd4cb\",\"object\":\"chat.completion.chunk\",\"created\":1756683703,\"model\":\"mistral-medium-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"The\"},\"finish_reason\":null}],\"p\":\"abcdefg\"}\n\ndata: {\"id\":\"924f38a8a8794eb0ba65cf80b5dfd4cb\",\"object\":\"chat.completion.chunk\",\"created\":1756683703,\"model\":\"mistral-medium-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" capital\"},\"finish_reason\":null}],\"p\":\"abc\"}\n\ndata: {\"id\":\"924f38a8a8794eb0ba65cf80b5dfd4cb\",\"object\":\"chat.completion.chunk\",\"created\":1756683703,\"model\":\"mistral-medium-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" of Qu\"},\"finish_reason\":null}],\"p\":\"abcde\"}\n\ndata: {\"id\":\"924f38a8a8794eb0ba65cf80b5dfd4cb\",\"object\":\"chat.completion.chunk\",\"created\":1756683703,\"model\":\"mistral-medium-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"ackiland is **\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwxyz0\"}\n\ndata: {\"id\":\"924f38a8a8794eb0ba65cf80b5dfd4cb\",\"object\":\"chat.completion.chunk\",\"created\":1756683703,\"model\":\"mistral-medium-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Quack**.\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":33,\"total_tokens\":45,\"completion_tokens\":12},\"p\":\"abcdefghijklmnopqrstuv\"}\n\ndata: [DONE]\n\n"
+    body: "data: {\"id\":\"f8cbaf82a71c4aaba0b1e6ef38348a93\",\"object\":\"chat.completion.chunk\",\"created\":1765716057,\"model\":\"mistral-medium-latest\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":null}]}\n\ndata: {\"id\":\"f8cbaf82a71c4aaba0b1e6ef38348a93\",\"object\":\"chat.completion.chunk\",\"created\":1765716057,\"model\":\"mistral-medium-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"The\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrstuvwxyz01\"}\n\ndata: {\"id\":\"f8cbaf82a71c4aaba0b1e6ef38348a93\",\"object\":\"chat.completion.chunk\",\"created\":1765716057,\"model\":\"mistral-medium-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" capital\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrs\"}\n\ndata: {\"id\":\"f8cbaf82a71c4aaba0b1e6ef38348a93\",\"object\":\"chat.completion.chunk\",\"created\":1765716057,\"model\":\"mistral-medium-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" of Qu\"},\"finish_reason\":null}],\"p\":\"abcdefghijklmnopqrst\"}\n\ndata: {\"id\":\"f8cbaf82a71c4aaba0b1e6ef38348a93\",\"object\":\"chat.completion.chunk\",\"created\":1765716057,\"model\":\"mistral-medium-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"ackiland is **\"},\"finish_reason\":null}],\"p\":\"abcdefghi\"}\n\ndata: {\"id\":\"f8cbaf82a71c4aaba0b1e6ef38348a93\",\"object\":\"chat.completion.chunk\",\"created\":1765716057,\"model\":\"mistral-medium-latest\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Quack**.\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":33,\"total_tokens\":45,\"completion_tokens\":12},\"p\":\"abcdefghijklmnopq\"}\n\ndata: [DONE]\n\n"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -28,23 +28,25 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 97806157b894a2b8-YUL
+      - 9addc5cf79c1a2e2-YUL
       Content-Type:
       - text/event-stream; charset=utf-8
       Mistral-Correlation-Id:
-      - 01990282-1327-74d3-9ff1-fe839f3952f0
+      - 019b1ce0-de71-7383-a120-164568e81a29
       Server:
       - cloudflare
       Strict-Transport-Security:
-      - max-age=15552000; includeSubDomains
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
       X-Envoy-Upstream-Service-Time:
-      - "87"
+      - "111"
       X-Kong-Proxy-Latency:
-      - "8"
+      - "13"
       X-Kong-Request-Id:
-      - 01990282-1327-74d3-9ff1-fe839f3952f0
+      - 019b1ce0-de71-7383-a120-164568e81a29
       X-Kong-Upstream-Latency:
-      - "88"
+      - "112"
     status: 200 OK
     code: 200
-    duration: 276ms
+    duration: 375ms

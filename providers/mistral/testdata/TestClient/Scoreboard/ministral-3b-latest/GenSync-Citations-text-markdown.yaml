@@ -20,7 +20,7 @@ interactions:
     proto_minor: 0
     content_length: -1
     uncompressed: true
-    body: "{\"id\":\"70468549b6954679839a8f6d064b04b2\",\"created\":1756559811,\"model\":\"ministral-3b-latest\",\"usage\":{\"prompt_tokens\":38,\"total_tokens\":49,\"completion_tokens\":11},\"object\":\"chat.completion\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"tool_calls\":null,\"content\":\"The capital of Quackiland is Quack.\"}}]}"
+    body: "{\"id\":\"3ff2c41bcec34e1fa4aa90e6aaed35fb\",\"created\":1765716113,\"model\":\"ministral-3b-latest\",\"usage\":{\"prompt_tokens\":38,\"total_tokens\":96,\"completion_tokens\":58},\"object\":\"chat.completion\",\"choices\":[{\"index\":0,\"finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"tool_calls\":null,\"content\":\"The capital of Quackiland is **Quack**. This is a classic example of a **self-referential or paradoxical question** where the answer is embedded in the question itself. The Big Canard Statue being located in Quack reinforces that Quack is the capital.\"}}]}"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -29,37 +29,39 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 977490a438772706-YYZ
+      - 9addc72af99ea2bc-YUL
       Content-Type:
       - application/json
       Mistral-Correlation-Id:
-      - 0198fb1f-a3fa-7217-bdec-24705c9b3076
+      - 019b1ce1-b717-7add-9c95-3d3b6d024fff
       Server:
       - cloudflare
       Strict-Transport-Security:
-      - max-age=15552000; includeSubDomains
+      - max-age=15552000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
       X-Envoy-Upstream-Service-Time:
-      - "85"
+      - "221"
       X-Kong-Proxy-Latency:
-      - "7"
+      - "8"
       X-Kong-Request-Id:
-      - 0198fb1f-a3fa-7217-bdec-24705c9b3076
+      - 019b1ce1-b717-7add-9c95-3d3b6d024fff
       X-Kong-Upstream-Latency:
-      - "86"
-      X-Ratelimit-Limit-Req-10-Second:
-      - "60"
+      - "222"
+      X-Ratelimit-Limit-Req-60-Second:
+      - "360"
       X-Ratelimit-Limit-Tokens-Minute:
       - "2000000"
       X-Ratelimit-Limit-Tokens-Month:
       - "10000000000"
-      X-Ratelimit-Remaining-Req-10-Second:
-      - "58"
+      X-Ratelimit-Remaining-Req-60-Second:
+      - "91"
       X-Ratelimit-Remaining-Tokens-Minute:
-      - "1999902"
+      - "1981435"
       X-Ratelimit-Remaining-Tokens-Month:
-      - "9999990895"
+      - "9999864901"
       X-Ratelimit-Tokens-Query-Cost:
-      - "49"
+      - "96"
     status: 200 OK
     code: 200
-    duration: 586ms
+    duration: 350ms

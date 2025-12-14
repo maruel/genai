@@ -604,15 +604,15 @@ type ChatResponse struct {
 		Message      Message      `json:"message"`
 		Logprobs     struct{}     `json:"logprobs"`
 	} `json:"choices"`
-	Created        base.Time      `json:"created"`
-	ID             string         `json:"id"`
-	Model          string         `json:"model"`
-	Object         string         `json:"object"` // "chat.completion"
-	Usage          Usage          `json:"usage"`
-	UsageBreakdown UsageBreakdown `json:"usage_breakdown"`
-	SystemFingerprint string      `json:"system_fingerprint"`
-	ServiceTier       ServiceTier `json:"service_tier"`
-	Xgroq struct {
+	Created           base.Time      `json:"created"`
+	ID                string         `json:"id"`
+	Model             string         `json:"model"`
+	Object            string         `json:"object"` // "chat.completion"
+	Usage             Usage          `json:"usage"`
+	UsageBreakdown    UsageBreakdown `json:"usage_breakdown"`
+	SystemFingerprint string         `json:"system_fingerprint"`
+	ServiceTier       ServiceTier    `json:"service_tier"`
+	Xgroq             struct {
 		ID             string         `json:"id"`
 		Seed           json.Number    `json:"seed,omitzero"`
 		UsageBreakdown UsageBreakdown `json:"usage_breakdown,omitzero"`

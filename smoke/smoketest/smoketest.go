@@ -92,7 +92,7 @@ func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Recor
 	}
 
 	modelsToTest := map[Model]struct{}{}
-	allScoreboardModels := map[string]struct{}{} // Track all models in scoreboard for stale detection
+	allScoreboardModels := map[string]struct{}{}  // Track all models in scoreboard for stale detection
 	staleModels := map[string]map[bool]struct{}{} // Track stale models by name and reason
 	for _, sc := range sb.Scenarios {
 		if len(sc.Models) == 0 {

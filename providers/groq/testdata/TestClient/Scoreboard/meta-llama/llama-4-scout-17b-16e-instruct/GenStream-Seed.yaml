@@ -1,69 +1,56 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 149
-        host: api.groq.com
-        body: |
-            {"messages":[{"role":"user","content":"Say hello. Use only one word."}],"model":"meta-llama/llama-4-scout-17b-16e-instruct","seed":42,"stream":true}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.groq.com/openai/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        body: |+
-            data: {"id":"chatcmpl-ac81be1d-7de0-498e-a2ae-02ede565fe89","object":"chat.completion.chunk","created":1753142025,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_38b31b7025","choices":[{"index":0,"delta":{"role":"assistant"},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"chatcmpl-ac81be1d-7de0-498e-a2ae-02ede565fe89","object":"chat.completion.chunk","created":1753142025,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_38b31b7025","choices":[{"index":0,"delta":{"content":"Hello"},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"chatcmpl-ac81be1d-7de0-498e-a2ae-02ede565fe89","object":"chat.completion.chunk","created":1753142025,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_38b31b7025","choices":[{"index":0,"delta":{"content":"!"},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"chatcmpl-ac81be1d-7de0-498e-a2ae-02ede565fe89","object":"chat.completion.chunk","created":1753142025,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_38b31b7025","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}],"x_groq":{"id":"req_01k0qpgpw0ebza6kk63sg4bwpw","usage":{"queue_time":0.213776275,"prompt_tokens":18,"prompt_time":0.002966786,"completion_tokens":3,"completion_time":0.007679463,"total_tokens":21,"total_time":0.010646249}}}
-
-            data: [DONE]
-
-        headers:
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cache-Control:
-                - no-cache
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 962e9e989a96a2a8-YUL
-            Content-Type:
-                - text/event-stream
-            Server:
-                - cloudflare
-            Vary:
-                - Origin
-            Via:
-                - 1.1 google
-            X-Groq-Region:
-                - msp
-            X-Ratelimit-Limit-Requests:
-                - "500000"
-            X-Ratelimit-Limit-Tokens:
-                - "300000"
-            X-Ratelimit-Remaining-Requests:
-                - "499999"
-            X-Ratelimit-Remaining-Tokens:
-                - "299987"
-            X-Ratelimit-Reset-Requests:
-                - 172.799999ms
-            X-Ratelimit-Reset-Tokens:
-                - 2.6ms
-            X-Request-Id:
-                - req_01k0qpgpw0ebza6kk63sg4bwpw
-        status: 200 OK
-        code: 200
-        duration: 298ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 149
+    host: api.groq.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"}],\"model\":\"meta-llama/llama-4-scout-17b-16e-instruct\",\"seed\":42,\"stream\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.groq.com/openai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"chatcmpl-7e649369-ea11-4633-a97c-184008b44399\",\"object\":\"chat.completion.chunk\",\"created\":1765638585,\"model\":\"meta-llama/llama-4-scout-17b-16e-instruct\",\"system_fingerprint\":\"fp_130a0cd72d\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"logprobs\":null,\"finish_reason\":null}],\"x_groq\":{\"id\":\"req_01kcc45ehxe6fa2464f4mb4nbh\",\"seed\":42}}\n\ndata: {\"id\":\"chatcmpl-7e649369-ea11-4633-a97c-184008b44399\",\"object\":\"chat.completion.chunk\",\"created\":1765638585,\"model\":\"meta-llama/llama-4-scout-17b-16e-instruct\",\"system_fingerprint\":\"fp_130a0cd72d\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Hello\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-7e649369-ea11-4633-a97c-184008b44399\",\"object\":\"chat.completion.chunk\",\"created\":1765638585,\"model\":\"meta-llama/llama-4-scout-17b-16e-instruct\",\"system_fingerprint\":\"fp_130a0cd72d\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"!\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-7e649369-ea11-4633-a97c-184008b44399\",\"object\":\"chat.completion.chunk\",\"created\":1765638585,\"model\":\"meta-llama/llama-4-scout-17b-16e-instruct\",\"system_fingerprint\":\"fp_130a0cd72d\",\"choices\":[{\"index\":0,\"delta\":{},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"x_groq\":{\"id\":\"req_01kcc45ehxe6fa2464f4mb4nbh\",\"usage\":{\"queue_time\":0.119472166,\"prompt_tokens\":18,\"prompt_time\":0.001287027,\"completion_tokens\":3,\"completion_time\":0.007690704,\"total_tokens\":21,\"total_time\":0.008977731}},\"usage\":{\"queue_time\":0.119472166,\"prompt_tokens\":18,\"prompt_time\":0.001287027,\"completion_tokens\":3,\"completion_time\":0.007690704,\"total_tokens\":21,\"total_time\":0.008977731}}\n\ndata: [DONE]\n\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - no-cache
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad662638c79a316-YUL
+      Content-Type:
+      - text/event-stream
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
+      Vary:
+      - Origin
+      X-Groq-Region:
+      - yul
+      X-Ratelimit-Limit-Requests:
+      - "500000"
+      X-Ratelimit-Limit-Tokens:
+      - "300000"
+      X-Ratelimit-Remaining-Requests:
+      - "499997"
+      X-Ratelimit-Remaining-Tokens:
+      - "299978"
+      X-Ratelimit-Reset-Requests:
+      - 518ms
+      X-Ratelimit-Reset-Tokens:
+      - 4ms
+    status: 200 OK
+    code: 200
+    duration: 139ms

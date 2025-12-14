@@ -1,0 +1,57 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 122
+    host: api.groq.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"}],\"model\":\"groq/compound\",\"seed\":42,\"stream\":false}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.groq.com/openai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"stub\",\"object\":\"chat.completion\",\"created\":1765640139,\"model\":\"groq/compound\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"**Reasoning**\\n\\n- The task is to say “hello” using **only one word**.  \\n- The simplest, most direct way to fulfill this is to use the word **“Hello”** itself.  \\n- No additional context, punctuation, or extra words are needed, and no external tools are required.\\n\\n**Answer**\\n\\n```\\nHello\\n```\",\"reasoning\":\"\\nTo say hello using one word, I will simply use the word \\\"Hello\\\".\\n\\nNo tool is required for this task.\\n\\n\\nHello\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":0.225023,\"prompt_tokens\":911,\"prompt_time\":0.020029,\"completion_tokens\":216,\"completion_time\":0.563195,\"total_tokens\":1127,\"total_time\":0.583223},\"usage_breakdown\":{\"models\":[{\"model\":\"meta-llama/llama-4-scout-17b-16e-instruct\",\"usage\":{\"queue_time\":0.137088303,\"prompt_tokens\":116,\"prompt_time\":0.004268894,\"completion_tokens\":3,\"completion_time\":0.010075301,\"total_tokens\":119,\"total_time\":0.014344195}},{\"model\":\"meta-llama/llama-4-scout-17b-16e-instruct\",\"usage\":{\"queue_time\":0.08109496,\"prompt_tokens\":519,\"prompt_time\":0.01554173,\"completion_tokens\":32,\"completion_time\":0.083684574,\"total_tokens\":551,\"total_time\":0.099226304}},{\"model\":\"openai/gpt-oss-120b\",\"usage\":{\"queue_time\":0.006839739,\"prompt_tokens\":276,\"prompt_time\":0.000217976,\"completion_tokens\":181,\"completion_time\":0.469435439,\"total_tokens\":457,\"total_time\":0.469653415,\"prompt_tokens_details\":{\"cached_tokens\":256},\"completion_tokens_details\":{\"reasoning_tokens\":100}}}]},\"x_groq\":{\"id\":\"stub\"},\"service_tier\":\"on_demand\"}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - private, max-age=0, no-store, no-cache, must-revalidate
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad68851fcbaa291-YUL
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
+      Vary:
+      - Origin
+      X-Groq-Region:
+      - yul
+      X-Ratelimit-Limit-Requests:
+      - "20000"
+      X-Ratelimit-Limit-Tokens:
+      - "200000"
+      X-Ratelimit-Remaining-Requests:
+      - "19997"
+      X-Ratelimit-Remaining-Tokens:
+      - "199987"
+      X-Ratelimit-Reset-Requests:
+      - 12.96s
+      X-Ratelimit-Reset-Tokens:
+      - 3ms
+    status: 200 OK
+    code: 200
+    duration: 823ms

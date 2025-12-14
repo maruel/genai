@@ -1,0 +1,57 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 250
+    host: api.groq.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\\\"is_fruit\\\": bool}.\"}],\"model\":\"groq/compound\",\"response_format\":{\"type\":\"json_object\"},\"stream\":false}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.groq.com/openai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"stub\",\"object\":\"chat.completion\",\"created\":1765640171,\"model\":\"groq/compound\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"**Reasoning and Information**\\n\\nA banana is botanically classified as a fruit. It develops from the ovary of a flower and contains seeds (though they are tiny and often not noticeable in cultivated varieties). Therefore, according to standard botanical definitions, a banana qualifies as a fruit.\\n\\n**Answer in the Requested JSON Schema**\\n\\n```json\\n{\\n  \\\"is_fruit\\\": true\\n}\\n```\",\"reasoning\":\"\\nTo answer whether a banana is a fruit, I will simply confirm that it is indeed classified as a fruit.\\n\\n\\u003ctool\\u003epython(print({\\\"is_fruit\\\": True}))\\u003c/tool\\u003e\\n\\u003coutput\\u003e{'is_fruit': True}\\n\\u003c/output\\u003e\\n\\n\\n{\\\"is_fruit\\\": true}\",\"executed_tools\":[{\"index\":0,\"type\":\"python\",\"arguments\":\"{\\\"code\\\": \\\"print({\\\"is_fruit\\\": True})\\\"}\",\"output\":\"{'is_fruit': True}\\n\",\"search_results\":{\"results\":[]}}]},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":0.25321,\"prompt_tokens\":1620,\"prompt_time\":0.061034,\"completion_tokens\":381,\"completion_time\":0.919136,\"total_tokens\":2001,\"total_time\":0.980171},\"usage_breakdown\":{\"models\":[{\"model\":\"meta-llama/llama-4-scout-17b-16e-instruct\",\"usage\":{\"queue_time\":0.093455652,\"prompt_tokens\":137,\"prompt_time\":0.005562289,\"completion_tokens\":8,\"completion_time\":0.019738066,\"total_tokens\":145,\"total_time\":0.025300355}},{\"model\":\"meta-llama/llama-4-scout-17b-16e-instruct\",\"usage\":{\"queue_time\":0.082910734,\"prompt_tokens\":540,\"prompt_time\":0.020349288,\"completion_tokens\":51,\"completion_time\":0.124233572,\"total_tokens\":591,\"total_time\":0.14458286}},{\"model\":\"meta-llama/llama-4-scout-17b-16e-instruct\",\"usage\":{\"queue_time\":0.07295634,\"prompt_tokens\":593,\"prompt_time\":0.016229463,\"completion_tokens\":11,\"completion_time\":0.027303106,\"total_tokens\":604,\"total_time\":0.043532569}},{\"model\":\"openai/gpt-oss-120b\",\"usage\":{\"queue_time\":0.003886575,\"prompt_tokens\":350,\"prompt_time\":0.018894275,\"completion_tokens\":311,\"completion_time\":0.747861024,\"total_tokens\":661,\"total_time\":0.766755299,\"completion_tokens_details\":{\"reasoning_tokens\":224}}}]},\"x_groq\":{\"id\":\"stub\"},\"service_tier\":\"on_demand\"}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - private, max-age=0, no-store, no-cache, must-revalidate
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad6890c9d10a291-YUL
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
+      Vary:
+      - Origin
+      X-Groq-Region:
+      - yul
+      X-Ratelimit-Limit-Requests:
+      - "20000"
+      X-Ratelimit-Limit-Tokens:
+      - "200000"
+      X-Ratelimit-Remaining-Requests:
+      - "19996"
+      X-Ratelimit-Remaining-Tokens:
+      - "199963"
+      X-Ratelimit-Reset-Requests:
+      - 17.28s
+      X-Ratelimit-Reset-Tokens:
+      - 11ms
+    status: 200 OK
+    code: 200
+    duration: 2.912s

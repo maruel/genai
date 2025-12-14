@@ -1,0 +1,56 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 261
+    host: api.groq.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"# Quackiland\\n\\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}],\"model\":\"groq/compound\",\"stream\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.groq.com/openai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"chatcmpl-d56d0503-f581-4cda-8976-5e5dcb8dba3d\",\"object\":\"chat.completion.chunk\",\"created\":1765640188,\"model\":\"groq/compound\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{\"content\":\"The\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-6c8f08b3-cd6d-4b77-80e6-b6bdbd1829ff\",\"object\":\"chat.completion.chunk\",\"created\":1765640188,\"model\":\"groq/compound\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{\"content\":\" capital\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-95466dcb-60be-40a5-a69f-f2b149d3026a\",\"object\":\"chat.completion.chunk\",\"created\":1765640188,\"model\":\"groq/compound\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{\"content\":\" of\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-c3a8a164-a323-40c3-9dd4-049311bc31b6\",\"object\":\"chat.completion.chunk\",\"created\":1765640188,\"model\":\"groq/compound\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{\"content\":\" Qu\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-d3bacaab-cecb-4e0c-9d93-dfb4de1a3b40\",\"object\":\"chat.completion.chunk\",\"created\":1765640188,\"model\":\"groq/compound\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{\"content\":\"ack\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-9f7bb91f-9ad9-45b6-b9a8-74897d09645b\",\"object\":\"chat.completion.chunk\",\"created\":1765640188,\"model\":\"groq/compound\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{\"content\":\"iland\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-f230e08d-026b-4581-b418-4f54d0faf7ab\",\"object\":\"chat.completion.chunk\",\"created\":1765640188,\"model\":\"groq/compound\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{\"content\":\" is\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-bed3f1c1-cec3-4a71-bffd-886c104218a3\",\"object\":\"chat.completion.chunk\",\"created\":1765640188,\"model\":\"groq/compound\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{\"content\":\" **\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-d2af5dc1-3357-4d16-871b-96c7209ea58b\",\"object\":\"chat.completion.chunk\",\"created\":1765640188,\"model\":\"groq/compound\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Qu\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-ce4cc04a-489f-4006-9c60-af0f5d38d70a\",\"object\":\"chat.completion.chunk\",\"created\":1765640188,\"model\":\"groq/compound\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{\"content\":\"ack\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-b3cd935d-2e59-451f-b2ed-ad3f3112fb6a\",\"object\":\"chat.completion.chunk\",\"created\":1765640188,\"model\":\"groq/compound\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{\"content\":\"**\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-21b534de-5d96-41d2-a874-7324ec7f33a1\",\"object\":\"chat.completion.chunk\",\"created\":1765640188,\"model\":\"groq/compound\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{\"content\":\".\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"stub\",\"object\":\"chat.completion.chunk\",\"created\":1765640188,\"model\":\"groq/compound\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"x_groq\":{\"usage\":{\"queue_time\":0.077616,\"prompt_tokens\":299,\"prompt_time\":0.011521,\"completion_tokens\":89,\"completion_time\":0.271448,\"total_tokens\":388,\"total_time\":0.282969},\"usage_breakdown\":{\"models\":[{\"model\":\"meta-llama/llama-4-scout-17b-16e-instruct\",\"usage\":{\"queue_time\":0.072452694,\"prompt_tokens\":143,\"prompt_time\":0.00449035,\"completion_tokens\":4,\"completion_time\":0.009746258,\"total_tokens\":147,\"total_time\":0.014236608}},{\"model\":\"openai/gpt-oss-120b\",\"usage\":{\"queue_time\":0.005162933,\"prompt_tokens\":156,\"prompt_time\":0.007030516,\"completion_tokens\":85,\"completion_time\":0.261701903,\"total_tokens\":241,\"total_time\":0.268732419,\"completion_tokens_details\":{\"reasoning_tokens\":64}}}]}}}\n\ndata: [DONE]\n\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - no-cache
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad6898acbeea291-YUL
+      Content-Type:
+      - text/event-stream
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
+      Vary:
+      - Origin
+      X-Groq-Region:
+      - yul
+      X-Ratelimit-Limit-Requests:
+      - "20000"
+      X-Ratelimit-Limit-Tokens:
+      - "200000"
+      X-Ratelimit-Remaining-Requests:
+      - "19994"
+      X-Ratelimit-Remaining-Tokens:
+      - "199963"
+      X-Ratelimit-Reset-Requests:
+      - 25.92s
+      X-Ratelimit-Reset-Tokens:
+      - 11ms
+    status: 200 OK
+    code: 200
+    duration: 352ms

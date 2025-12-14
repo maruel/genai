@@ -20,7 +20,7 @@ interactions:
     proto_minor: 0
     content_length: -1
     uncompressed: true
-    body: "{\"id\":\"chatcmpl-a323d21e-4c17-4b98-bb48-3a14a2975f9b\",\"object\":\"chat.completion\",\"created\":1756415312,\"model\":\"openai/gpt-oss-20b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"reasoning\":\"We need to respond to user question: \\\"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one.\\\"\\n\\nWe have a tool best_country which takes {country:\\\"Canada\\\" | \\\"USA\\\"} -\\u003e any. Likely we need to call this tool? But the tool expects a country. But we need to choose the best? The tool likely returns a ranking? It might compare? But we can choose to call the tool with one country and get some result? But the user wants to know which is better. We should ask the tool to evaluate? The tool takes country argument. But we only can pass one. We might call it twice? But the tool might accept only one. We could interpret: call best_country with a country argument. But we need to produce output. But the tool likely returns some best country? But the tool signature: best_country accepts country param and returns any. But we need to specify which country we think is best? The tool might just return something. But the instruction: \\\"Call the tool best_country to tell me which country is the best one.\\\" So we should call the tool, but we need to decide which country to pass? We should pass the best? That seems circular.\\n\\nMaybe the tool will accept country and return something like \\\"Canada\\\" or \\\"USA\\\". But we don't know what it returns. The tool likely is a function that chooses the best country between Canada and USA. The param might be optional? But signature requires country: \\\"Canada\\\" | \\\"USA\\\". So we need to pass one. But we need to get the best. Perhaps we call the tool with \\\"Canada\\\" and it will return some evaluation? But that doesn't give us best.\\n\\nMaybe we call with \\\"USA\\\" and it will return \\\"USA\\\"? Not helpful.\\n\\nI think the tool is maybe misnamed; maybe it returns best country given the argument? But it's unclear. Could be we pass either and get a response indicating which is better. But the tool signature is unclear.\\n\\nAlternatively, we should ask clarifying question? But the user explicitly wants a call. We need to decide which to pass. Since the user wonders if Canada is better than USA, we might call the tool with \\\"Canada\\\" to ask if Canada is best. But the tool will maybe return a boolean? But we cannot guarantee.\\n\\nWe might try to call the tool with both? But no.\\n\\nBetter approach: Use the tool once, maybe pass \\\"Canada\\\" or \\\"USA\\\" whichever we suspect. The tool likely returns some ranking. But maybe we should pass \\\"Canada\\\" to ask if Canada is best. But user wants answer. I'd call tool with \\\"Canada\\\" and let it decide.\\n\\nThus: we call best_country with {country:\\\"Canada\\\"}.\\n\\nReturn result.\",\"tool_calls\":[{\"id\":\"fc_c6c44db0-a78f-4d02-a116-39698ba37b8d\",\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"arguments\":\"{\\\"country\\\":\\\"Canada\\\"}\"}}]},\"logprobs\":null,\"finish_reason\":\"tool_calls\"}],\"usage\":{\"queue_time\":0.068280011,\"prompt_tokens\":153,\"prompt_time\":0.01543528,\"completion_tokens\":596,\"completion_time\":0.531700689,\"total_tokens\":749,\"total_time\":0.547135969},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_0ca5007ac7\",\"x_groq\":{\"id\":\"req_01k3s85gehez6acyk03zvqybz1\"},\"service_tier\":\"on_demand\"}\n"
+    body: "{\"id\":\"chatcmpl-5f01634d-9cf4-4605-8d47-75770b747de5\",\"object\":\"chat.completion\",\"created\":1765638734,\"model\":\"openai/gpt-oss-20b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"reasoning\":\"The user asks: \\\"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one.\\\" So we should call best_country function with the parameter country: probably choose one of \\\"Canada\\\" or \\\"USA\\\" as the best. The prompt says to use tool best_country. The tool signature: best_country takes an object with property country: \\\"Canada\\\" | \\\"USA\\\". So we need to pick one. The user wants to know which is better. The function presumably returns something, but we don't know. We just need to call it.\\n\\nWe should call with the best. The user asked \\\"tell me which country is the best one.\\\" So we need to decide. Let's say Canada. We'll call best_country with country: \\\"Canada\\\".\",\"tool_calls\":[{\"id\":\"fc_17f051e0-2854-4a55-b112-865d932b27ec\",\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"arguments\":\"{\\\"country\\\":\\\"Canada\\\"}\"}}]},\"logprobs\":null,\"finish_reason\":\"tool_calls\"}],\"usage\":{\"queue_time\":0.002962623,\"prompt_tokens\":159,\"prompt_time\":0.007631089,\"completion_tokens\":186,\"completion_time\":0.188546095,\"total_tokens\":345,\"total_time\":0.196177184,\"completion_tokens_details\":{\"reasoning_tokens\":163}},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_3d50e63726\",\"x_groq\":{\"id\":\"req_01kcc4a03ve878age77zqbnaeq\",\"seed\":476014611},\"service_tier\":\"on_demand\"}\n"
     headers:
       Alt-Svc:
       - h3=":443"; ma=86400
@@ -29,31 +29,29 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9766c8d5ea84a2eb-YUL
+      - 9ad666071a21a316-YUL
       Content-Type:
       - application/json
       Server:
       - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
       Vary:
       - Origin
-      Via:
-      - 1.1 google
       X-Groq-Region:
-      - msp
+      - yul
       X-Ratelimit-Limit-Requests:
       - "500000"
       X-Ratelimit-Limit-Tokens:
       - "250000"
       X-Ratelimit-Remaining-Requests:
-      - "499995"
+      - "499992"
       X-Ratelimit-Remaining-Tokens:
-      - "248580"
+      - "246141"
       X-Ratelimit-Reset-Requests:
-      - 853.999999ms
+      - 1.382s
       X-Ratelimit-Reset-Tokens:
-      - 340.64ms
-      X-Request-Id:
-      - req_01k3s85gehez6acyk03zvqybz1
+      - 926ms
     status: 200 OK
     code: 200
-    duration: 681ms
+    duration: 217ms

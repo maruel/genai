@@ -1,0 +1,57 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 277
+    host: api.groq.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"# Quackiland\\n\\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}],\"model\":\"openai/gpt-oss-safeguard-20b\",\"stream\":false}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.groq.com/openai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-9e28089e-80e5-4442-acaf-705b9decbd57\",\"object\":\"chat.completion\",\"created\":1765638644,\"model\":\"openai/gpt-oss-safeguard-20b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"Quack.\",\"reasoning\":\"We have a question: \\\"The capital of Quackiland is Quack. The Big\u00a0Canard Statue is located in Quack.What is the capital of Quackiland?\\\"\\n\\nThus it's a straightforward answer: Quack. But maybe they want explanation? The question is a trick? The prompt states: The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\\n\\nThus answer: Quack. So output that. Probably no extra text? We can answer in plain.\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":0.033103717,\"prompt_tokens\":105,\"prompt_time\":0.005708165,\"completion_tokens\":125,\"completion_time\":0.125753691,\"total_tokens\":230,\"total_time\":0.131461856,\"completion_tokens_details\":{\"reasoning_tokens\":113}},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_e3febdc4be\",\"x_groq\":{\"id\":\"req_01kcc4784cenmvq7erb8v1gghw\",\"seed\":876578341},\"service_tier\":\"on_demand\"}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - private, max-age=0, no-store, no-cache, must-revalidate
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad663d40f03a316-YUL
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
+      Vary:
+      - Origin
+      X-Groq-Region:
+      - yul
+      X-Ratelimit-Limit-Requests:
+      - "500000"
+      X-Ratelimit-Limit-Tokens:
+      - "150000"
+      X-Ratelimit-Remaining-Requests:
+      - "499998"
+      X-Ratelimit-Remaining-Tokens:
+      - "127976"
+      X-Ratelimit-Reset-Requests:
+      - 345ms
+      X-Ratelimit-Reset-Tokens:
+      - 8.809s
+    status: 200 OK
+    code: 200
+    duration: 186ms

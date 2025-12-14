@@ -1,61 +1,57 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 283
-        host: api.groq.com
-        body: |
-            {"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"},{"type":"text","text":"\n\n/think"}]}],"model":"qwen/qwen3-32b","stream":false}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.groq.com/openai/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"id":"chatcmpl-e837483d-8a20-46a0-aa8f-03222526b798","object":"chat.completion","created":1755194904,"model":"qwen/qwen3-32b","choices":[{"index":0,"message":{"role":"assistant","content":"\u003cthink\u003e\nAlright, let's see. The problem states that the capital of Quackiland is Quack, and the Big Canard Statue is located in Quack. Then it asks, \"What is the capital of Quackiland?\" \n\nHmm, this seems straightforward, but maybe there's a trick here. Let me parse the information again carefully. The first sentence says, \"The capital of Quackiland is Quack.\" The second sentence adds that the Big Canard Statue is in Quack. The question repeats the first part: What is the capital of Quackiland? \n\nWait, maybe the mention of the Big Canard Statue is a distraction, but the question is just asking for the capital of Quackiland again, which is stated as Quack. So the answer should just be Quack. But let me check if there's any wordplay here. The word \"Quack\" is associated with ducks, and \"Canard\" is French for \"duck.\" Maybe there's a play on words here where \"Canard\" is part of the country's name. Let me think.\n\nQuackiland's capital is Quack. The Big Canard Statue is in Quack. The question is the same as the first statement. Unless \"Big Canard\" is a place or another name for Quack, but the problem doesn't state that. It just says the statue is located there. Since the question is the same as the first statement, the answer must be Quack. Maybe trying to trick the user into overthinking, but the answer is straightforward from the first sentence given.\n\nI think the answer is Quack because the first sentence explicitly states it, and the rest is just redundant information. So the capital is Quack.\n\u003c/think\u003e\n\nThe question asks: \"What is the capital of Quackiland?\" The first part of the statement clearly answers it: **Quack** is the capital of Quackiland. The additional information about the Big Canard Statue is provided for context but does not affect the answer.\n\n**Answer:** The capital of Quackiland is **Quack**."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.002090071,"prompt_tokens":39,"prompt_time":0.010464248,"completion_tokens":429,"completion_time":1.019775599,"total_tokens":468,"total_time":1.030239847},"usage_breakdown":null,"system_fingerprint":"fp_78ac7f3229","x_groq":{"id":"req_01k2mw9jzqemx8r343y44byjgk"},"service_tier":"on_demand"}
-        headers:
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cache-Control:
-                - private, max-age=0, no-store, no-cache, must-revalidate
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 96f265b2eac7a2ce-YUL
-            Content-Type:
-                - application/json
-            Server:
-                - cloudflare
-            Vary:
-                - Origin
-            Via:
-                - 1.1 google
-            X-Groq-Region:
-                - msp
-            X-Ratelimit-Limit-Requests:
-                - "500000"
-            X-Ratelimit-Limit-Tokens:
-                - "300000"
-            X-Ratelimit-Remaining-Requests:
-                - "499999"
-            X-Ratelimit-Remaining-Tokens:
-                - "299724"
-            X-Ratelimit-Reset-Requests:
-                - 172.799999ms
-            X-Ratelimit-Reset-Tokens:
-                - 55.2ms
-            X-Request-Id:
-                - req_01k2mw9jzqemx8r343y44byjgk
-        status: 200 OK
-        code: 200
-        duration: 1.129s
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 283
+    host: api.groq.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"},{\"type\":\"text\",\"text\":\"\\n\\n/think\"}]}],\"model\":\"qwen/qwen3-32b\",\"stream\":false}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.groq.com/openai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-c9288542-8ae7-44ad-9b6f-de40c8e26d36\",\"object\":\"chat.completion\",\"created\":1765638663,\"model\":\"qwen/qwen3-32b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"\\u003cthink\\u003e\\nOkay, let me try to figure out this question. The user is asking, \\\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\\\" Hmm, wait a second, the first part already states that the capital is Quack. Then they mention the Big Canard Statue being in Quack. But the question asks again about the capital.\\n\\nSo maybe this is a trick question where they try to make you read carefully. The key here is that the question is asking for the capital of Quackiland, which is already given in the first sentence as Quack. The second sentence about the statue is probably a distraction or red herring. Even though the statue's name includes \\\"Canard,\\\" which might sound like \\\"duck\\\" in French, but in the context of Quackiland, maybe \\\"Quack\\\" and \\\"Canard\\\" are related as the same word? Like \\\"canard\\\" means duck in French, and Quack is a duck sound. So maybe it's a play on words.\\n\\nWait, the problem states that Quack is the capital, and the statue is in Quack. The question is still asking for the capital again. The answer is right there in the first sentence. The mention of the Big Canard Statue is just additional info but doesn't change the capital. So the answer must be Quack. But let me make sure there's no trick here. Sometimes questions use similar-sounding words to confuse. Here, \\\"Canard\\\" and \\\"Quack\\\" might be related because canard is duck in French, and quack is a duck's sound. So maybe Quackiland is a country themed around ducks. Therefore, the capital remains Quack as stated. Yep, I think the answer is straightforward. The user just needs to recognize that the question is repeating the setup and the answer is already provided.\\n\\u003c/think\\u003e\\n\\nThe question provides that the capital of Quackiland is **Quack** at the outset. The mention of the Big Canard Statue located in Quack is additional context and does not affect the answer. \\n\\n**Answer:** The capital of Quackiland is **Quack**.\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":0.074944235,\"prompt_tokens\":39,\"prompt_time\":0.001437354,\"completion_tokens\":453,\"completion_time\":1.093316386,\"total_tokens\":492,\"total_time\":1.09475374},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_d58dbe76cd\",\"x_groq\":{\"id\":\"req_01kcc47tmfe71apd20c7gz5ds2\",\"seed\":769979395},\"service_tier\":\"on_demand\"}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - private, max-age=0, no-store, no-cache, must-revalidate
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad6644a6bf8a316-YUL
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
+      Vary:
+      - Origin
+      X-Groq-Region:
+      - yul
+      X-Ratelimit-Limit-Requests:
+      - "500000"
+      X-Ratelimit-Limit-Tokens:
+      - "300000"
+      X-Ratelimit-Remaining-Requests:
+      - "499999"
+      X-Ratelimit-Remaining-Tokens:
+      - "298897"
+      X-Ratelimit-Reset-Requests:
+      - 172ms
+      X-Ratelimit-Reset-Tokens:
+      - 220ms
+    status: 200 OK
+    code: 200
+    duration: 1.187s

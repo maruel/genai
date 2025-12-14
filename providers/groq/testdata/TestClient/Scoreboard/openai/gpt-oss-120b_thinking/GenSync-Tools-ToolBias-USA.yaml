@@ -20,7 +20,7 @@ interactions:
     proto_minor: 0
     content_length: -1
     uncompressed: true
-    body: "{\"id\":\"chatcmpl-62305703-a935-4c48-8ee7-9b1e1b6e581c\",\"object\":\"chat.completion\",\"created\":1756415362,\"model\":\"openai/gpt-oss-120b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"reasoning\":\"User wants to compare USA vs Canada and asks to call tool best_country to tell which country is best. So we need to invoke the tool with a country? The tool signature: best_country takes {country: \\\"USA\\\" | \\\"Canada\\\"} and returns any. It seems the tool likely tells if it's the best? Not sure. But we can call it twice? The prompt: \\\"Call the tool best_country to tell me which country is the best one.\\\" Possibly we should call with one argument? Might be expecting the tool to decide? It only takes a country param; maybe it returns something like \\\"true\\\" if best. But we need to decide which to pass. Since we don't know which is best, maybe we need to call for each? Or maybe we just pass one and it returns which is best. The instruction: \\\"Call the tool best_country to tell me which country is the best one.\\\" So we should call with a country? Actually tool expects a country param, maybe returns if it's the best. Could try both and compare. Let's call for USA.\",\"tool_calls\":[{\"id\":\"fc_c8c9dcc2-b8f9-49cd-ad2e-8a4c46bf656e\",\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"arguments\":\"{\\\"country\\\":\\\"USA\\\"}\"}}]},\"logprobs\":null,\"finish_reason\":\"tool_calls\"}],\"usage\":{\"queue_time\":0.003726347,\"prompt_tokens\":153,\"prompt_time\":0.007621237,\"completion_tokens\":245,\"completion_time\":0.498144626,\"total_tokens\":398,\"total_time\":0.505765863},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_f9eef9d030\",\"x_groq\":{\"id\":\"req_01k3s870eqfeybwxwd3100wdar\"},\"service_tier\":\"on_demand\"}\n"
+    body: "{\"id\":\"chatcmpl-6b71d241-a08a-472e-95a7-ea2029895561\",\"object\":\"chat.completion\",\"created\":1765638719,\"model\":\"openai/gpt-oss-120b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"reasoning\":\"The user wants a comparison: \\\"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one.\\\"\\n\\nThe tool best_country expects a single argument: country: \\\"USA\\\" | \\\"Canada\\\". It returns something, presumably indicates best. But how to interpret? The tool seems to decide best country given input? Might need to call it with a country? The prompt says \\\"Call the tool best_country to tell me which country is the best one.\\\" Perhaps they want to pass both? But the spec only allows one country argument. Perhaps you call it twice? Or perhaps the tool returns best of the two given? But spec only allows a single country argument. Maybe the intended usage: you pass the country you think is best, and the tool returns something like a verdict. But ambiguous.\\n\\nWe could interpret that the tool will return some response indicating whether the given country is best. So to answer the question, we could call the tool with USA, expecting it to say if USA is best, or with Canada. But the user wants which country is best. So maybe we need to call the tool twice? Or perhaps we pick one? The tool spec says \\\"A tool to specify the best country\\\". It probably returns some output indicating if the country is best.\\n\\nGiven the user asks \\\"Call the tool best_country to tell me which country is the best one.\\\" I'd call it with USA? But that doesn't compare. Maybe we can call it with both? Not allowed. Could we call it with \\\"USA\\\" and then \\\"Canada\\\"? Possibly we can call it twice and compare results.\\n\\nBetter: call tool with USA and Canada separately, see which returns a positive. But we don't know output format. Might be something like {\\\"result\\\": \\\"USA is best\\\"}.\\n\\nWe'll attempt to call tool with USA first.\",\"tool_calls\":[{\"id\":\"fc_f3d65a47-f052-4dcc-8359-7cba1f01a5fb\",\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"arguments\":\"{\\\"country\\\":\\\"USA\\\"}\"}}]},\"logprobs\":null,\"finish_reason\":\"tool_calls\"}],\"usage\":{\"queue_time\":0.02053596,\"prompt_tokens\":159,\"prompt_time\":0.009376721,\"completion_tokens\":404,\"completion_time\":0.981581033,\"total_tokens\":563,\"total_time\":0.990957754,\"completion_tokens_details\":{\"reasoning_tokens\":377}},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_c5da83ab22\",\"x_groq\":{\"id\":\"req_01kcc49gwsepnvmaarc2xbak4t\",\"seed\":2083801242},\"service_tier\":\"on_demand\"}\n"
     headers:
       Alt-Svc:
       - h3=":443"; ma=86400
@@ -29,31 +29,29 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9766ca092a60a2e6-YUL
+      - 9ad665a5bb83a316-YUL
       Content-Type:
       - application/json
       Server:
       - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
       Vary:
       - Origin
-      Via:
-      - 1.1 google
       X-Groq-Region:
-      - msp
+      - yul
       X-Ratelimit-Limit-Requests:
       - "500000"
       X-Ratelimit-Limit-Tokens:
       - "250000"
       X-Ratelimit-Remaining-Requests:
-      - "499998"
+      - "499999"
       X-Ratelimit-Remaining-Tokens:
-      - "249846"
+      - "249605"
       X-Ratelimit-Reset-Requests:
-      - 219.2ms
+      - 172ms
       X-Ratelimit-Reset-Tokens:
-      - 36.96ms
-      X-Request-Id:
-      - req_01k3s870eqfeybwxwd3100wdar
+      - 94ms
     status: 200 OK
     code: 200
-    duration: 568ms
+    duration: 1.029s

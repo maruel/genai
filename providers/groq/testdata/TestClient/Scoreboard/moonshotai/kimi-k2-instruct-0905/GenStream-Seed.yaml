@@ -1,0 +1,56 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 140
+    host: api.groq.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"}],\"model\":\"moonshotai/kimi-k2-instruct-0905\",\"seed\":42,\"stream\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.groq.com/openai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"chatcmpl-3e173f95-5ce7-4106-87be-16b93f9f34fc\",\"object\":\"chat.completion.chunk\",\"created\":1765638591,\"model\":\"moonshotai/kimi-k2-instruct-0905\",\"system_fingerprint\":\"fp_5fe129dff6\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"logprobs\":null,\"finish_reason\":null}],\"x_groq\":{\"id\":\"req_01kcc45mg2efqtj7d6m96nc57b\",\"seed\":42}}\n\ndata: {\"id\":\"chatcmpl-3e173f95-5ce7-4106-87be-16b93f9f34fc\",\"object\":\"chat.completion.chunk\",\"created\":1765638591,\"model\":\"moonshotai/kimi-k2-instruct-0905\",\"system_fingerprint\":\"fp_5fe129dff6\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Hello\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-3e173f95-5ce7-4106-87be-16b93f9f34fc\",\"object\":\"chat.completion.chunk\",\"created\":1765638591,\"model\":\"moonshotai/kimi-k2-instruct-0905\",\"system_fingerprint\":\"fp_5fe129dff6\",\"choices\":[{\"index\":0,\"delta\":{},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"x_groq\":{\"id\":\"req_01kcc45mg2efqtj7d6m96nc57b\",\"usage\":{\"queue_time\":0.069988635,\"prompt_tokens\":34,\"prompt_time\":0.012401273,\"completion_tokens\":2,\"completion_time\":9e-8,\"total_tokens\":36,\"total_time\":0.012401363}},\"usage\":{\"queue_time\":0.069988635,\"prompt_tokens\":34,\"prompt_time\":0.012401273,\"completion_tokens\":2,\"completion_time\":9e-8,\"total_tokens\":36,\"total_time\":0.012401363}}\n\ndata: [DONE]\n\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - no-cache
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad662898a71a316-YUL
+      Content-Type:
+      - text/event-stream
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
+      Vary:
+      - Origin
+      X-Groq-Region:
+      - yul
+      X-Ratelimit-Limit-Requests:
+      - "500000"
+      X-Ratelimit-Limit-Tokens:
+      - "250000"
+      X-Ratelimit-Remaining-Requests:
+      - "499997"
+      X-Ratelimit-Remaining-Tokens:
+      - "249931"
+      X-Ratelimit-Reset-Requests:
+      - 518ms
+      X-Ratelimit-Reset-Tokens:
+      - 16ms
+    status: 200 OK
+    code: 200
+    duration: 93ms

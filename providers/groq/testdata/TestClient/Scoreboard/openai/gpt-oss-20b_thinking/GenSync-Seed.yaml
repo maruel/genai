@@ -20,7 +20,7 @@ interactions:
     proto_minor: 0
     content_length: -1
     uncompressed: true
-    body: "{\"id\":\"chatcmpl-603809d9-23bb-4506-a79c-a7cd9c5abbac\",\"object\":\"chat.completion\",\"created\":1756415308,\"model\":\"openai/gpt-oss-20b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"Hello\",\"reasoning\":\"The user: \\\"Say hello. Use only one word.\\\" They want just one word, presumably \\\"Hello\\\". So answer: \\\"Hello\\\". No extra. Ensure it's only one word. Should be just \\\"Hello\\\".\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":0.063483682,\"prompt_tokens\":79,\"prompt_time\":0.00515203,\"completion_tokens\":54,\"completion_time\":0.048286248,\"total_tokens\":133,\"total_time\":0.053438278},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_1cbf41f468\",\"x_groq\":{\"id\":\"req_01k3s85cqee4abcxzy0y5t41fp\"},\"service_tier\":\"on_demand\"}\n"
+    body: "{\"id\":\"chatcmpl-296fc566-28e3-49d6-b9bf-48f93e1882a0\",\"object\":\"chat.completion\",\"created\":1765638730,\"model\":\"openai/gpt-oss-20b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"Hello\",\"reasoning\":\"The user: \\\"Say hello. Use only one word.\\\" The user wants a single word. So output: \\\"Hello\\\" or \\\"Hi\\\" but one word. Probably \\\"Hello\\\" as the greeting. Must respond in one word only. So reply: \\\"Hello\\\".\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":0.002914847,\"prompt_tokens\":79,\"prompt_time\":0.003798375,\"completion_tokens\":65,\"completion_time\":0.065382032,\"total_tokens\":144,\"total_time\":0.069180407,\"completion_tokens_details\":{\"reasoning_tokens\":55}},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_3d50e63726\",\"x_groq\":{\"id\":\"req_01kcc49wjte84vd0mr3hqp3qmx\",\"seed\":42},\"service_tier\":\"on_demand\"}\n"
     headers:
       Alt-Svc:
       - h3=":443"; ma=86400
@@ -29,31 +29,29 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9766c8be0a4ca2eb-YUL
+      - 9ad665f07f50a316-YUL
       Content-Type:
       - application/json
       Server:
       - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
       Vary:
       - Origin
-      Via:
-      - 1.1 google
       X-Groq-Region:
-      - msp
+      - yul
       X-Ratelimit-Limit-Requests:
       - "500000"
       X-Ratelimit-Limit-Tokens:
       - "250000"
       X-Ratelimit-Remaining-Requests:
-      - "499999"
+      - "499996"
       X-Ratelimit-Remaining-Tokens:
-      - "249920"
+      - "249840"
       X-Ratelimit-Reset-Requests:
-      - 172.799999ms
+      - 691ms
       X-Ratelimit-Reset-Tokens:
-      - 19.2ms
-      X-Request-Id:
-      - req_01k3s85cqee4abcxzy0y5t41fp
+      - 38ms
     status: 200 OK
     code: 200
-    duration: 256ms
+    duration: 93ms

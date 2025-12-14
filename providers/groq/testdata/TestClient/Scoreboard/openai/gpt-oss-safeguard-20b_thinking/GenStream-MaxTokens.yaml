@@ -1,0 +1,56 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 174
+    host: api.groq.com
+    body: "{\"max_completion_tokens\":16,\"messages\":[{\"role\":\"user\",\"content\":\"Explain the theory of relativity in great details.\"}],\"model\":\"openai/gpt-oss-safeguard-20b\",\"stream\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.groq.com/openai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"chatcmpl-b1589bb7-3bcf-4f2f-8984-ae4a7c06d845\",\"object\":\"chat.completion.chunk\",\"created\":1765638635,\"model\":\"openai/gpt-oss-safeguard-20b\",\"system_fingerprint\":\"fp_e3febdc4be\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"logprobs\":null,\"finish_reason\":null}],\"x_groq\":{\"id\":\"req_01kcc46zkveg1bk0e4e0cmfy17\",\"seed\":1335563300}}\n\ndata: {\"id\":\"chatcmpl-b1589bb7-3bcf-4f2f-8984-ae4a7c06d845\",\"object\":\"chat.completion.chunk\",\"created\":1765638635,\"model\":\"openai/gpt-oss-safeguard-20b\",\"system_fingerprint\":\"fp_e3febdc4be\",\"choices\":[{\"index\":0,\"delta\":{\"reasoning\":\"The\",\"channel\":\"analysis\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-b1589bb7-3bcf-4f2f-8984-ae4a7c06d845\",\"object\":\"chat.completion.chunk\",\"created\":1765638635,\"model\":\"openai/gpt-oss-safeguard-20b\",\"system_fingerprint\":\"fp_e3febdc4be\",\"choices\":[{\"index\":0,\"delta\":{\"reasoning\":\" user\",\"channel\":\"analysis\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-b1589bb7-3bcf-4f2f-8984-ae4a7c06d845\",\"object\":\"chat.completion.chunk\",\"created\":1765638635,\"model\":\"openai/gpt-oss-safeguard-20b\",\"system_fingerprint\":\"fp_e3febdc4be\",\"choices\":[{\"index\":0,\"delta\":{\"reasoning\":\" wants\",\"channel\":\"analysis\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-b1589bb7-3bcf-4f2f-8984-ae4a7c06d845\",\"object\":\"chat.completion.chunk\",\"created\":1765638635,\"model\":\"openai/gpt-oss-safeguard-20b\",\"system_fingerprint\":\"fp_e3febdc4be\",\"choices\":[{\"index\":0,\"delta\":{\"reasoning\":\" an\",\"channel\":\"analysis\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-b1589bb7-3bcf-4f2f-8984-ae4a7c06d845\",\"object\":\"chat.completion.chunk\",\"created\":1765638635,\"model\":\"openai/gpt-oss-safeguard-20b\",\"system_fingerprint\":\"fp_e3febdc4be\",\"choices\":[{\"index\":0,\"delta\":{\"reasoning\":\" explanation\",\"channel\":\"analysis\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-b1589bb7-3bcf-4f2f-8984-ae4a7c06d845\",\"object\":\"chat.completion.chunk\",\"created\":1765638635,\"model\":\"openai/gpt-oss-safeguard-20b\",\"system_fingerprint\":\"fp_e3febdc4be\",\"choices\":[{\"index\":0,\"delta\":{\"reasoning\":\" of\",\"channel\":\"analysis\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-b1589bb7-3bcf-4f2f-8984-ae4a7c06d845\",\"object\":\"chat.completion.chunk\",\"created\":1765638635,\"model\":\"openai/gpt-oss-safeguard-20b\",\"system_fingerprint\":\"fp_e3febdc4be\",\"choices\":[{\"index\":0,\"delta\":{\"reasoning\":\" the\",\"channel\":\"analysis\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-b1589bb7-3bcf-4f2f-8984-ae4a7c06d845\",\"object\":\"chat.completion.chunk\",\"created\":1765638635,\"model\":\"openai/gpt-oss-safeguard-20b\",\"system_fingerprint\":\"fp_e3febdc4be\",\"choices\":[{\"index\":0,\"delta\":{\"reasoning\":\" theory\",\"channel\":\"analysis\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-b1589bb7-3bcf-4f2f-8984-ae4a7c06d845\",\"object\":\"chat.completion.chunk\",\"created\":1765638635,\"model\":\"openai/gpt-oss-safeguard-20b\",\"system_fingerprint\":\"fp_e3febdc4be\",\"choices\":[{\"index\":0,\"delta\":{\"reasoning\":\" of\",\"channel\":\"analysis\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-b1589bb7-3bcf-4f2f-8984-ae4a7c06d845\",\"object\":\"chat.completion.chunk\",\"created\":1765638635,\"model\":\"openai/gpt-oss-safeguard-20b\",\"system_fingerprint\":\"fp_e3febdc4be\",\"choices\":[{\"index\":0,\"delta\":{\"reasoning\":\" relat\",\"channel\":\"analysis\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-b1589bb7-3bcf-4f2f-8984-ae4a7c06d845\",\"object\":\"chat.completion.chunk\",\"created\":1765638635,\"model\":\"openai/gpt-oss-safeguard-20b\",\"system_fingerprint\":\"fp_e3febdc4be\",\"choices\":[{\"index\":0,\"delta\":{\"reasoning\":\"ivity\",\"channel\":\"analysis\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-b1589bb7-3bcf-4f2f-8984-ae4a7c06d845\",\"object\":\"chat.completion.chunk\",\"created\":1765638635,\"model\":\"openai/gpt-oss-safeguard-20b\",\"system_fingerprint\":\"fp_e3febdc4be\",\"choices\":[{\"index\":0,\"delta\":{\"reasoning\":\" in\",\"channel\":\"analysis\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-b1589bb7-3bcf-4f2f-8984-ae4a7c06d845\",\"object\":\"chat.completion.chunk\",\"created\":1765638635,\"model\":\"openai/gpt-oss-safeguard-20b\",\"system_fingerprint\":\"fp_e3febdc4be\",\"choices\":[{\"index\":0,\"delta\":{\"reasoning\":\" great\",\"channel\":\"analysis\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-b1589bb7-3bcf-4f2f-8984-ae4a7c06d845\",\"object\":\"chat.completion.chunk\",\"created\":1765638635,\"model\":\"openai/gpt-oss-safeguard-20b\",\"system_fingerprint\":\"fp_e3febdc4be\",\"choices\":[{\"index\":0,\"delta\":{},\"logprobs\":null,\"finish_reason\":\"length\"}],\"x_groq\":{\"id\":\"req_01kcc46zkveg1bk0e4e0cmfy17\",\"usage\":{\"queue_time\":0.033457951,\"prompt_tokens\":81,\"prompt_time\":0.003835293,\"completion_tokens\":16,\"completion_time\":0.01640033,\"total_tokens\":97,\"total_time\":0.020235623,\"completion_tokens_details\":{\"reasoning_tokens\":14}}},\"usage\":{\"queue_time\":0.033457951,\"prompt_tokens\":81,\"prompt_time\":0.003835293,\"completion_tokens\":16,\"completion_time\":0.01640033,\"total_tokens\":97,\"total_time\":0.020235623,\"completion_tokens_details\":{\"reasoning_tokens\":14}}}\n\ndata: [DONE]\n\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - no-cache
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad6639d8b53a316-YUL
+      Content-Type:
+      - text/event-stream
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
+      Vary:
+      - Origin
+      X-Groq-Region:
+      - yul
+      X-Ratelimit-Limit-Requests:
+      - "500000"
+      X-Ratelimit-Limit-Tokens:
+      - "150000"
+      X-Ratelimit-Remaining-Requests:
+      - "499995"
+      X-Ratelimit-Remaining-Tokens:
+      - "149854"
+      X-Ratelimit-Reset-Requests:
+      - 864ms
+      X-Ratelimit-Reset-Tokens:
+      - 58ms
+    status: 200 OK
+    code: 200
+    duration: 53ms

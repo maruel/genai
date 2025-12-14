@@ -1,0 +1,56 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 126
+    host: api.groq.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"}],\"model\":\"groq/compound-mini\",\"seed\":42,\"stream\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.groq.com/openai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"chatcmpl-c5b93324-863f-4121-9b0a-37d26a833015\",\"object\":\"chat.completion.chunk\",\"created\":1765640189,\"model\":\"groq/compound-mini\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{\"reasoning\":\"Hello\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-39362536-d852-49be-82ca-ce6d79522660\",\"object\":\"chat.completion.chunk\",\"created\":1765640190,\"model\":\"groq/compound-mini\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Hello\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"stub\",\"object\":\"chat.completion.chunk\",\"created\":1765640190,\"model\":\"groq/compound-mini\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"x_groq\":{\"usage\":{\"queue_time\":0.505027,\"prompt_tokens\":451,\"prompt_time\":0.02424,\"completion_tokens\":59,\"completion_time\":0.150851,\"total_tokens\":510,\"total_time\":0.175093},\"usage_breakdown\":{\"models\":[{\"model\":\"llama-3.3-70b-versatile\",\"usage\":{\"queue_time\":0.008428632,\"prompt_tokens\":296,\"prompt_time\":0.015160382,\"completion_tokens\":2,\"completion_time\":0.014779388,\"total_tokens\":298,\"total_time\":0.02993977}},{\"model\":\"openai/gpt-oss-120b\",\"usage\":{\"queue_time\":0.4965975,\"prompt_tokens\":155,\"prompt_time\":0.009080347,\"completion_tokens\":57,\"completion_time\":0.136072212,\"total_tokens\":212,\"total_time\":0.145152559,\"completion_tokens_details\":{\"reasoning_tokens\":47}}}]}}}\n\ndata: [DONE]\n\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - no-cache
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad68990cc18a291-YUL
+      Content-Type:
+      - text/event-stream
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
+      Vary:
+      - Origin
+      X-Groq-Region:
+      - yul
+      X-Ratelimit-Limit-Requests:
+      - "20000"
+      X-Ratelimit-Limit-Tokens:
+      - "200000"
+      X-Ratelimit-Remaining-Requests:
+      - "19996"
+      X-Ratelimit-Remaining-Tokens:
+      - "199987"
+      X-Ratelimit-Reset-Requests:
+      - 17.28s
+      X-Ratelimit-Reset-Tokens:
+      - 3ms
+    status: 200 OK
+    code: 200
+    duration: 54ms

@@ -1,0 +1,57 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 179
+    host: api.groq.com
+    body: "{\"max_completion_tokens\":16,\"messages\":[{\"role\":\"user\",\"content\":\"Explain the theory of relativity in great details.\"}],\"model\":\"moonshotai/kimi-k2-instruct-0905\",\"stream\":false}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.groq.com/openai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-ebde1648-f50d-471c-8fdd-7578a0510a5c\",\"object\":\"chat.completion\",\"created\":1765638591,\"model\":\"moonshotai/kimi-k2-instruct-0905\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"The theory of relativity is not one idea but two inter-locking theories written\"},\"logprobs\":null,\"finish_reason\":\"length\"}],\"usage\":{\"queue_time\":0.069367955,\"prompt_tokens\":36,\"prompt_time\":0.010006976,\"completion_tokens\":16,\"completion_time\":0.050499836,\"total_tokens\":52,\"total_time\":0.060506812},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_5fe129dff6\",\"x_groq\":{\"id\":\"req_01kcc45mk6efqt39r6840nbcdg\",\"seed\":927859810},\"service_tier\":\"on_demand\"}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - private, max-age=0, no-store, no-cache, must-revalidate
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad6628a2b6da316-YUL
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
+      Vary:
+      - Origin
+      X-Groq-Region:
+      - yul
+      X-Ratelimit-Limit-Requests:
+      - "500000"
+      X-Ratelimit-Limit-Tokens:
+      - "250000"
+      X-Ratelimit-Remaining-Requests:
+      - "499994"
+      X-Ratelimit-Remaining-Tokens:
+      - "249931"
+      X-Ratelimit-Reset-Requests:
+      - 1.036s
+      X-Ratelimit-Reset-Tokens:
+      - 16ms
+    status: 200 OK
+    code: 200
+    duration: 149ms

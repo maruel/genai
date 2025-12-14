@@ -1,0 +1,57 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 567
+    host: api.groq.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one.\"}],\"model\":\"openai/gpt-oss-safeguard-20b\",\"stream\":false,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"description\":\"A tool to specify the best country\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"country\":{\"type\":\"string\",\"enum\":[\"Canada\",\"USA\"]}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"country\"]}}}],\"tool_choice\":\"required\"}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.groq.com/openai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-39f5bf1e-04bc-4ebe-8b6f-2289738ab685\",\"object\":\"chat.completion\",\"created\":1765638639,\"model\":\"openai/gpt-oss-safeguard-20b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"reasoning\":\"The user asks: \\\"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one.\\\"\\n\\nWe need to use the tool best_country to indicate which one is better. But the tool signature expects a country argument, either \\\"Canada\\\" or \\\"USA\\\". The tool probably returns some answer. But we can call the tool to ask for the best country? Actually the tool name is best_country, it takes a country: \\\"Canada\\\" | \\\"USA\\\". Maybe the function is to specify the best country given a country parameter? But the question: \\\"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one.\\\"\\n\\nThus we need to call best_country with something? The tool likely chooses the best country? But it requires a parameter. Maybe we should call it with \\\"Canada\\\" or \\\"USA\\\". But we want to know which is better. Might call best_country with \\\"Canada\\\" to get something? Or maybe we need to pick one: maybe \\\"Canada\\\"? But the question wants to know which is better. According to tool design, maybe best_country returns a verdict of which country is best. But it requires a country input: unclear.\\n\\nThe tool signature: best_country({_ : { country: \\\"Canada\\\" | \\\"USA\\\" }}). So we must specify a country. Perhaps we should call it with \\\"Canada\\\" to get that Canada is the best? Or maybe the tool will respond \\\"Canada\\\" or \\\"USA\\\" based on internal logic. But we can't decide; we must call the tool to produce best country.\\n\\nThus we call best_country with one of the options. The function should return the best? But which do we pick? We can call with \\\"Canada\\\" or \\\"USA\\\". But we might need to ask to compute best. The question: \\\"Which is better? Call tool best_country to tell me which country is the best one.\\\" So maybe we call best_country with \\\"Canada\\\"? But we might need to choose one? Alternatively, we could call it twice? But maybe the tool only returns one of the given? The function signature: type best_country = (_: { country: \\\"Canada\\\" | \\\"USA\\\" }, ...) =\\u003e any; So we need to provide a country argument. But we want to know which is best, so perhaps we choose \\\"Canada\\\"? But maybe we can call with \\\"Canada\\\" and expect output like \\\"Canada is best\\\"? Or we should call with \\\"USA\\\"? The tool might return a string indicating best? Hard to know. But the instruction says \\\"Call the tool best_country to tell me which country is the best one.\\\"\\n\\nThus we should call best_country with a country? Might just call with \\\"Canada\\\" because we want to see if Canada is better? But I think we want to get the tool to decide which one is best. But the tool signature doesn't allow us to ask for the better of the two. However, maybe the tool's semantics: you supply a country, and it returns a ranking or a statement? But the name best_country suggests that given a country, it returns some evaluation. But maybe it's ambiguous.\\n\\nGiven typical usage, I'd call the tool with \\\"Canada\\\" or \\\"USA\\\". But which to pick? The question is \\\"Which is better? Call best_country to tell me which country is the best one.\\\" So we might want to call it with \\\"Canada\\\" or \\\"USA\\\" to get the answer? Maybe we call it with \\\"Canada\\\" expecting the tool to say \\\"Canada is best\\\"? But could also call it with \\\"USA\\\" expecting \\\"USA is best\\\". We need to decide.\\n\\nBetter to ask the tool to evaluate both? But tool only takes one. So we might need to call twice, but that might be redundant. Alternatively, we might provide a default: ask best_country with \\\"Canada\\\" to see if it's the best? But not sure.\\n\\nGiven the user likely expects a straightforward answer that says \\\"Canada is better than the USA\\\" or something. But we must call the tool. Probably the tool returns the best country given the argument? Hmm.\\n\\nPerhaps the tool is used to specify the best country. We might call it with \\\"Canada\\\" or \\\"USA\\\" to specify which one is best. Maybe the tool expects us to provide the candidate to evaluate? Actually, maybe the tool just returns which country is better based on internal data. But it needs one argument? But maybe it's a simple function that takes a country and returns the best? That is weird. But we can use the tool by specifying \\\"Canada\\\" to see if it is best, maybe it returns a string.\\n\\nLet's assume the tool returns a string like \\\"Canada\\\" if Canada is best. But we can call it with no argument? It expects country: \\\"Canada\\\" | \\\"USA\\\". So we need to pass a country.\\n\\nI think we should call it with \\\"Canada\\\" to get the result that Canada is better. But maybe the function returns a boolean? The description: \\\"type best_country = (_: { country: 'Canada' | 'USA'}, ...)\\\" but no description.\\n\\nThus I'd call best_country with \\\"Canada\\\" and hope it returns something. But if the tool chooses the better based on the input? Could be that it returns the best between the two based on internal knowledge. But if you pass \\\"Canada\\\", maybe it returns \\\"Canada\\\" if Canada is best. If you pass \\\"USA\\\", maybe it returns \\\"USA\\\" if USA is best.\\n\\nGiven that we want to know which is better, maybe we should ask \\\"best_country\\\" with \\\"Canada\\\" and \\\"USA\\\" and see which returns something. But that is not typical.\\n\\nAlternatively, we can ask it for \\\"Canada\\\" and ask what result. But the user asked: \\\"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one.\\\"\\n\\nThus I'd call best_country with \\\"Canada\\\" first. But maybe the tool expects a single argument. The function will return something.\\n\\nThus proceed: call best_country with country \\\"Canada\\\".\",\"tool_calls\":[{\"id\":\"fc_db86a1bf-76e1-4aec-9fea-56217c45d2e1\",\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"arguments\":\"{\\\"country\\\":\\\"Canada\\\"}\"}}]},\"logprobs\":null,\"finish_reason\":\"tool_calls\"}],\"usage\":{\"queue_time\":0.033033323,\"prompt_tokens\":159,\"prompt_time\":0.00894395,\"completion_tokens\":1272,\"completion_time\":1.308135411,\"total_tokens\":1431,\"total_time\":1.317079361,\"completion_tokens_details\":{\"reasoning_tokens\":1249}},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_e3febdc4be\",\"x_groq\":{\"id\":\"req_01kcc472x1enktb02tfk9axtjn\",\"seed\":336456716},\"service_tier\":\"on_demand\"}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - private, max-age=0, no-store, no-cache, must-revalidate
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad663b28fe3a316-YUL
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
+      Vary:
+      - Origin
+      X-Groq-Region:
+      - yul
+      X-Ratelimit-Limit-Requests:
+      - "500000"
+      X-Ratelimit-Limit-Tokens:
+      - "150000"
+      X-Ratelimit-Remaining-Requests:
+      - "499994"
+      X-Ratelimit-Remaining-Tokens:
+      - "145434"
+      X-Ratelimit-Reset-Requests:
+      - 1.036s
+      X-Ratelimit-Reset-Tokens:
+      - 1.826s
+    status: 200 OK
+    code: 200
+    duration: 1.369s

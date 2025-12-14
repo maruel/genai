@@ -1,0 +1,57 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 117
+    host: api.groq.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"}],\"model\":\"groq/compound-mini\",\"stream\":false}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.groq.com/openai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"stub\",\"object\":\"chat.completion\",\"created\":1765640189,\"model\":\"groq/compound-mini\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"Hello\",\"reasoning\":\"\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":0.012375,\"prompt_tokens\":451,\"prompt_time\":0.023264,\"completion_tokens\":44,\"completion_time\":0.118662,\"total_tokens\":495,\"total_time\":0.141926},\"usage_breakdown\":{\"models\":[{\"model\":\"llama-3.3-70b-versatile\",\"usage\":{\"queue_time\":0.008406079,\"prompt_tokens\":296,\"prompt_time\":0.014975865,\"completion_tokens\":2,\"completion_time\":0.014562401,\"total_tokens\":298,\"total_time\":0.029538266}},{\"model\":\"openai/gpt-oss-120b\",\"usage\":{\"queue_time\":0.003969105,\"prompt_tokens\":155,\"prompt_time\":0.008287855,\"completion_tokens\":42,\"completion_time\":0.104100281,\"total_tokens\":197,\"total_time\":0.112388136,\"completion_tokens_details\":{\"reasoning_tokens\":32}}}]},\"x_groq\":{\"id\":\"stub\"},\"service_tier\":\"on_demand\"}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - private, max-age=0, no-store, no-cache, must-revalidate
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad6898e690ba291-YUL
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
+      Vary:
+      - Origin
+      X-Groq-Region:
+      - yul
+      X-Ratelimit-Limit-Requests:
+      - "20000"
+      X-Ratelimit-Limit-Tokens:
+      - "200000"
+      X-Ratelimit-Remaining-Requests:
+      - "19999"
+      X-Ratelimit-Remaining-Tokens:
+      - "199987"
+      X-Ratelimit-Reset-Requests:
+      - 4.32s
+      X-Ratelimit-Reset-Tokens:
+      - 3ms
+    status: 200 OK
+    code: 200
+    duration: 173ms

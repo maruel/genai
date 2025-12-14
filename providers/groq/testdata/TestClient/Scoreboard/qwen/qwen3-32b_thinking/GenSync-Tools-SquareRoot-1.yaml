@@ -1,61 +1,57 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 632
-        host: api.groq.com
-        body: |
-            {"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"type":"text","text":"\n\n/think"}]}],"model":"qwen/qwen3-32b","reasoning_format":"parsed","stream":false,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required"}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.groq.com/openai/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"id":"chatcmpl-278361cf-9504-4204-b0c8-ce0c1bb47073","object":"chat.completion","created":1755194901,"model":"qwen/qwen3-32b","choices":[{"index":0,"message":{"role":"assistant","reasoning":"Okay, let's see. The user wants me to use the square_root function to calculate the square root of 132413 and just return the result without any explanation. Alright, first I need to check if the function is available.\n\nLooking at the tools provided, there's a function called square_root that takes a number as a parameter. The parameters require a \"number\" of type number. So, 132413 is a valid input. I just need to call that function with 132413 as the argument. \n\nWait, the user said to reply with only the result. So after getting the square root, I should output it directly. Let me make sure I don't add any extra text. The function will return the square root, so I just need to pass that number back in the response. \n\nLet me test the calculation quickly. The square of 364 is 132,496, which is a bit higher than 132,413. The square of 363 is 131,769. So the square root of 132,413 should be between 363 and 364. Maybe around 363.8? But the exact value would depend on the function's calculation. \n\nBut I don't need to compute it manually; the function will handle that. So I'll call the function with 132413 and then output the result as instructed. No need for any additional steps or explanations. Let me structure the tool call correctly. The name is \"square_root\" and the arguments should be {\"number\": 132413}. \n\nDouble-checking the parameters: the function requires an object with \"number\" property. Yep, that's there. Alright, that's all. Just make sure the response is the result from the function, no extra words.\n","tool_calls":[{"id":"12gz7gh3r","type":"function","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.003180741,"prompt_tokens":211,"prompt_time":0.01896327,"completion_tokens":433,"completion_time":1.267999811,"total_tokens":644,"total_time":1.2869630810000001},"usage_breakdown":null,"system_fingerprint":"fp_78ac7f3229","x_groq":{"id":"req_01k2mw9fa5emev47ahcgxa5xmx"},"service_tier":"on_demand"}
-        headers:
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cache-Control:
-                - private, max-age=0, no-store, no-cache, must-revalidate
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 96f2659b69b1a2ce-YUL
-            Content-Type:
-                - application/json
-            Server:
-                - cloudflare
-            Vary:
-                - Origin
-            Via:
-                - 1.1 google
-            X-Groq-Region:
-                - msp
-            X-Ratelimit-Limit-Requests:
-                - "500000"
-            X-Ratelimit-Limit-Tokens:
-                - "300000"
-            X-Ratelimit-Remaining-Requests:
-                - "499999"
-            X-Ratelimit-Remaining-Tokens:
-                - "299962"
-            X-Ratelimit-Reset-Requests:
-                - 172.799999ms
-            X-Ratelimit-Reset-Tokens:
-                - 7.6ms
-            X-Request-Id:
-                - req_01k2mw9fa5emev47ahcgxa5xmx
-        status: 200 OK
-        code: 200
-        duration: 1.359s
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 632
+    host: api.groq.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"},{\"type\":\"text\",\"text\":\"\\n\\n/think\"}]}],\"model\":\"qwen/qwen3-32b\",\"reasoning_format\":\"parsed\",\"stream\":false,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"tool_choice\":\"required\"}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.groq.com/openai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-0039279f-d147-427e-a33a-d1a91d68c85a\",\"object\":\"chat.completion\",\"created\":1765638657,\"model\":\"qwen/qwen3-32b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"reasoning\":\"Okay, I need to calculate the square root of 132413. Let me check the available tools. There's a square_root function that takes a number parameter. I'll call that function with the number 132413. Just need to make sure the input is correctly formatted as a JSON object within the tool_call tags. No explanation needed, just the result.\\n\",\"tool_calls\":[{\"id\":\"v9yvr4kxe\",\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\":132413}\"}}]},\"logprobs\":null,\"finish_reason\":\"tool_calls\"}],\"usage\":{\"queue_time\":0.075329607,\"prompt_tokens\":211,\"prompt_time\":0.009736705,\"completion_tokens\":110,\"completion_time\":0.179928367,\"total_tokens\":321,\"total_time\":0.189665072,\"completion_tokens_details\":{\"reasoning_tokens\":81}},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_d58dbe76cd\",\"x_groq\":{\"id\":\"req_01kcc47myjeg8tsz9vkwyxa9se\",\"seed\":869762788},\"service_tier\":\"on_demand\"}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - private, max-age=0, no-store, no-cache, must-revalidate
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad66425fff2a316-YUL
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
+      Vary:
+      - Origin
+      X-Groq-Region:
+      - yul
+      X-Ratelimit-Limit-Requests:
+      - "500000"
+      X-Ratelimit-Limit-Tokens:
+      - "300000"
+      X-Ratelimit-Remaining-Requests:
+      - "499999"
+      X-Ratelimit-Remaining-Tokens:
+      - "299788"
+      X-Ratelimit-Reset-Requests:
+      - 172ms
+      X-Ratelimit-Reset-Tokens:
+      - 42ms
+    status: 200 OK
+    code: 200
+    duration: 300ms

@@ -18,8 +18,8 @@ interactions:
     proto: HTTP/2.0
     proto_major: 2
     proto_minor: 0
-    content_length: 125
-    body: "{\"error\":{\"message\":\"code=400, message=json schema is required, type=invalid_request_error\",\"type\":\"invalid_request_error\"}}\n"
+    content_length: 151
+    body: "{\"error\":{\"message\":\"code=400, message=json schema is required, type=invalid_request_error\",\"type\":\"invalid_request_error\",\"param\":\"response_format\"}}\n"
     headers:
       Alt-Svc:
       - h3=":443"; ma=86400
@@ -28,21 +28,19 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9766c8d32f05a2eb-YUL
+      - 9ad666038c56a316-YUL
       Content-Length:
-      - "125"
+      - "151"
       Content-Type:
       - application/json
       Server:
       - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
       Vary:
       - Origin
-      Via:
-      - 1.1 google
       X-Groq-Region:
-      - msp
-      X-Request-Id:
-      - req_01k3s85g14ez6aj41t79qpmz5z
+      - yul
     status: 400 Bad Request
     code: 400
-    duration: 69ms
+    duration: 22ms

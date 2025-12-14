@@ -1,61 +1,57 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 222
-        host: api.groq.com
-        body: |
-            {"max_completion_tokens":16,"messages":[{"role":"user","content":[{"type":"text","text":"Explain the theory of relativity in great details."},{"type":"text","text":"\n\n/think"}]}],"model":"qwen/qwen3-32b","stream":false}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.groq.com/openai/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"id":"chatcmpl-b642d81b-8dbd-4cf0-b655-2d590389e259","object":"chat.completion","created":1755194890,"model":"qwen/qwen3-32b","choices":[{"index":0,"message":{"role":"assistant","content":"\u003cthink\u003e\nOkay, so I need to explain the theory of relativity in great"},"logprobs":null,"finish_reason":"length"}],"usage":{"queue_time":0.001656953,"prompt_tokens":21,"prompt_time":0.010084007,"completion_tokens":16,"completion_time":0.016771037,"total_tokens":37,"total_time":0.026855044},"usage_breakdown":null,"system_fingerprint":"fp_78ac7f3229","x_groq":{"id":"req_01k2mw96edfj9rk3pd047qbywj"},"service_tier":"on_demand"}
-        headers:
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cache-Control:
-                - private, max-age=0, no-store, no-cache, must-revalidate
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 96f26562abeda2ce-YUL
-            Content-Type:
-                - application/json
-            Server:
-                - cloudflare
-            Vary:
-                - Origin
-            Via:
-                - 1.1 google
-            X-Groq-Region:
-                - msp
-            X-Ratelimit-Limit-Requests:
-                - "500000"
-            X-Ratelimit-Limit-Tokens:
-                - "300000"
-            X-Ratelimit-Remaining-Requests:
-                - "499995"
-            X-Ratelimit-Remaining-Tokens:
-                - "299980"
-            X-Ratelimit-Reset-Requests:
-                - 735ms
-            X-Ratelimit-Reset-Tokens:
-                - 4ms
-            X-Request-Id:
-                - req_01k2mw96edfj9rk3pd047qbywj
-        status: 200 OK
-        code: 200
-        duration: 92ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 222
+    host: api.groq.com
+    body: "{\"max_completion_tokens\":16,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Explain the theory of relativity in great details.\"},{\"type\":\"text\",\"text\":\"\\n\\n/think\"}]}],\"model\":\"qwen/qwen3-32b\",\"stream\":false}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.groq.com/openai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-c286e0ee-354f-4841-9fea-92ded4ca65ca\",\"object\":\"chat.completion\",\"created\":1765638649,\"model\":\"qwen/qwen3-32b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"\\u003cthink\\u003e\\nOkay, so I need to explain the theory of relativity in great\"},\"logprobs\":null,\"finish_reason\":\"length\"}],\"usage\":{\"queue_time\":0.225687628,\"prompt_tokens\":21,\"prompt_time\":0.00066242,\"completion_tokens\":16,\"completion_time\":0.026248095,\"total_tokens\":37,\"total_time\":0.026910515},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_2bfcc54d36\",\"x_groq\":{\"id\":\"req_01kcc47d72eg5vzfbb5hv5psvd\",\"seed\":1802755416},\"service_tier\":\"on_demand\"}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - private, max-age=0, no-store, no-cache, must-revalidate
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad663f48f08a316-YUL
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
+      Vary:
+      - Origin
+      X-Groq-Region:
+      - yul
+      X-Ratelimit-Limit-Requests:
+      - "500000"
+      X-Ratelimit-Limit-Tokens:
+      - "300000"
+      X-Ratelimit-Remaining-Requests:
+      - "499998"
+      X-Ratelimit-Remaining-Tokens:
+      - "299962"
+      X-Ratelimit-Reset-Requests:
+      - 345ms
+      X-Ratelimit-Reset-Tokens:
+      - 7ms
+    status: 200 OK
+    code: 200
+    duration: 271ms

@@ -1,0 +1,57 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 265
+    host: api.groq.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\\\"is_fruit\\\": bool}.\"}],\"model\":\"openai/gpt-oss-safeguard-20b\",\"response_format\":{\"type\":\"json_object\"},\"stream\":false}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.groq.com/openai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-e3fd9be3-5ef2-414b-b361-cb1514866352\",\"object\":\"chat.completion\",\"created\":1765638638,\"model\":\"openai/gpt-oss-safeguard-20b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"is_fruit\\\":true}\",\"reasoning\":\"We need to produce a JSON with key is_fruit bool. Should answer yes: true. Use compact formatting: {\\\"is_fruit\\\":true}. Also no explanation. Also ensure JSON is valid. Let's output that.\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":0.033303205,\"prompt_tokens\":124,\"prompt_time\":0.006883461,\"completion_tokens\":61,\"completion_time\":0.062130231,\"total_tokens\":185,\"total_time\":0.069013692,\"completion_tokens_details\":{\"reasoning_tokens\":45}},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_e3febdc4be\",\"x_groq\":{\"id\":\"req_01kcc472ecenktwphfm8cj8cf2\",\"seed\":1677157031},\"service_tier\":\"on_demand\"}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - private, max-age=0, no-store, no-cache, must-revalidate
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad663af9bb2a316-YUL
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
+      Vary:
+      - Origin
+      X-Groq-Region:
+      - yul
+      X-Ratelimit-Limit-Requests:
+      - "500000"
+      X-Ratelimit-Limit-Tokens:
+      - "150000"
+      X-Ratelimit-Remaining-Requests:
+      - "499997"
+      X-Ratelimit-Remaining-Tokens:
+      - "145258"
+      X-Ratelimit-Reset-Requests:
+      - 518ms
+      X-Ratelimit-Reset-Tokens:
+      - 1.896s
+    status: 200 OK
+    code: 200
+    duration: 123ms

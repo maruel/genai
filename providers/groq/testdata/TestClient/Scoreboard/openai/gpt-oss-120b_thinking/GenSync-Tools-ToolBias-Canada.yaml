@@ -20,7 +20,7 @@ interactions:
     proto_minor: 0
     content_length: -1
     uncompressed: true
-    body: "{\"id\":\"chatcmpl-1a21901a-df04-4a81-8532-713f4e1fadd6\",\"object\":\"chat.completion\",\"created\":1756415361,\"model\":\"openai/gpt-oss-120b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"reasoning\":\"We need to call the provided function best_country with a country parameter? The function expects a country field with either \\\"Canada\\\" or \\\"USA\\\". The description: \\\"A tool to specify the best country\\\". Likely we need to pass something and it returns something. We need to call the tool to get answer. The user asks: \\\"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one.\\\" So we need to call the function. Probably we should pass a country? The function likely returns something indicating which is best. Perhaps we need to call with \\\"Canada\\\" to see if it's best? Actually maybe we pass a candidate and it returns true/false? Not sure. Might be designed to return the best country overall, regardless of input. Could just pass \\\"Canada\\\". Let's try.\",\"tool_calls\":[{\"id\":\"fc_6a6c8faa-8d4c-4ba7-babf-4beceafa18c4\",\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"arguments\":\"{\\\"country\\\":\\\"Canada\\\"}\"}}]},\"logprobs\":null,\"finish_reason\":\"tool_calls\"}],\"usage\":{\"queue_time\":0.00352548,\"prompt_tokens\":153,\"prompt_time\":0.007070198,\"completion_tokens\":202,\"completion_time\":0.402258999,\"total_tokens\":355,\"total_time\":0.409329197},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_f9eef9d030\",\"x_groq\":{\"id\":\"req_01k3s86zzze8ar93v1cq3408b1\"},\"service_tier\":\"on_demand\"}\n"
+    body: "{\"id\":\"chatcmpl-d967371b-150c-42fa-b60b-2baf63985421\",\"object\":\"chat.completion\",\"created\":1765638718,\"model\":\"openai/gpt-oss-120b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"reasoning\":\"The user wants us to call the tool best_country with either Canada or USA. The tool expects a country property with value \\\"Canada\\\" or \\\"USA\\\". We need to decide which is better. The user asks \\\"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one.\\\" So we should call the tool. Which one to choose? The tool returns something; we don't know what. Likely it's a deterministic function that says which is best. Probably we need to pass \\\"Canada\\\" or \\\"USA\\\". Since the user is asking if Canada is better than USA, we might choose Canada to see if it says it's best. But the instruction says \\\"Call the tool best_country to tell me which country is the best one.\\\" So we should call it with a country value? Actually the tool takes a country, maybe it returns whether it's best? It might just echo something. We need to decide which argument to use. Possibly we pass \\\"Canada\\\" to see if it's best, but the tool might return a boolean? Not sure.\\n\\nGiven the request: \\\"Call the tool best_country to tell me which country is the best one.\\\" So maybe we call it with a placeholder? The tool expects a country property; we must provide one. Could pass \\\"Canada\\\". Then the tool will respond with something indicating Canada is the best? That matches the request. Let's do that.\",\"tool_calls\":[{\"id\":\"fc_35d53174-07fe-4c10-b24b-c1f8b4a5b934\",\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"arguments\":\"{\\\"country\\\":\\\"Canada\\\"}\"}}]},\"logprobs\":null,\"finish_reason\":\"tool_calls\"}],\"usage\":{\"queue_time\":0.111372699,\"prompt_tokens\":159,\"prompt_time\":0.034203155,\"completion_tokens\":318,\"completion_time\":0.736262287,\"total_tokens\":477,\"total_time\":0.770465442,\"completion_tokens_details\":{\"reasoning_tokens\":291}},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_8c2cca97f9\",\"x_groq\":{\"id\":\"req_01kcc49g0nepn9y21bsc7r849r\",\"seed\":736219692},\"service_tier\":\"on_demand\"}\n"
     headers:
       Alt-Svc:
       - h3=":443"; ma=86400
@@ -29,17 +29,17 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9766ca062e05a2e6-YUL
+      - 9ad665a00beba316-YUL
       Content-Type:
       - application/json
       Server:
       - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
       Vary:
       - Origin
-      Via:
-      - 1.1 google
       X-Groq-Region:
-      - msp
+      - yul
       X-Ratelimit-Limit-Requests:
       - "500000"
       X-Ratelimit-Limit-Tokens:
@@ -47,13 +47,11 @@ interactions:
       X-Ratelimit-Remaining-Requests:
       - "499997"
       X-Ratelimit-Remaining-Tokens:
-      - "249846"
+      - "248050"
       X-Ratelimit-Reset-Requests:
-      - 423.399999ms
+      - 518ms
       X-Ratelimit-Reset-Tokens:
-      - 36.96ms
-      X-Request-Id:
-      - req_01k3s86zzze8ar93v1cq3408b1
+      - 468ms
     status: 200 OK
     code: 200
-    duration: 480ms
+    duration: 904ms

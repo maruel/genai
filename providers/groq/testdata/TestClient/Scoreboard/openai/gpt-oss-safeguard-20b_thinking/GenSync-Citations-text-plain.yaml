@@ -1,0 +1,57 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 261
+    host: api.groq.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}],\"model\":\"openai/gpt-oss-safeguard-20b\",\"stream\":false}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.groq.com/openai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-044c5c02-15ac-41d4-b720-a8c79b85ff2d\",\"object\":\"chat.completion\",\"created\":1765638643,\"model\":\"openai/gpt-oss-safeguard-20b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"The capital of Quackiland is **Quack**.\",\"reasoning\":\"We have a user question: \\\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.What is the capital of Quackiland?\\\" The user states that the capital is Quack, presumably. They ask \\\"What is the capital of Quackiland?\\\" So answer: Quack.\\n\\nBut must check style guidelines. Provide answer. Probably just answer: Quack. Let's respond succinctly.\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":0.033606805,\"prompt_tokens\":100,\"prompt_time\":0.005565558,\"completion_tokens\":109,\"completion_time\":0.110541947,\"total_tokens\":209,\"total_time\":0.116107505,\"completion_tokens_details\":{\"reasoning_tokens\":88}},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_e3febdc4be\",\"x_groq\":{\"id\":\"req_01kcc477z1enmtw93andbn7ytm\",\"seed\":1124131691},\"service_tier\":\"on_demand\"}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - private, max-age=0, no-store, no-cache, must-revalidate
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad663d2fdcfa316-YUL
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
+      Vary:
+      - Origin
+      X-Groq-Region:
+      - yul
+      X-Ratelimit-Limit-Requests:
+      - "500000"
+      X-Ratelimit-Limit-Tokens:
+      - "150000"
+      X-Ratelimit-Remaining-Requests:
+      - "499999"
+      X-Ratelimit-Remaining-Tokens:
+      - "127766"
+      X-Ratelimit-Reset-Requests:
+      - 172ms
+      X-Ratelimit-Reset-Tokens:
+      - 8.893s
+    status: 200 OK
+    code: 200
+    duration: 169ms

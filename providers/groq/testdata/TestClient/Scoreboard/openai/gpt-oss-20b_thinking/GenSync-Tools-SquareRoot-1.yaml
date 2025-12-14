@@ -20,7 +20,7 @@ interactions:
     proto_minor: 0
     content_length: -1
     uncompressed: true
-    body: "{\"id\":\"chatcmpl-3bd0fa2c-005a-4779-b2c9-182b1a8b1fda\",\"object\":\"chat.completion\",\"created\":1756415312,\"model\":\"openai/gpt-oss-20b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"reasoning\":\"User wants square_root of 132413. Use the function.\",\"tool_calls\":[{\"id\":\"fc_603d8374-dcc1-4aba-a085-29e5167a5e9b\",\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\":132413}\"}}]},\"logprobs\":null,\"finish_reason\":\"tool_calls\"}],\"usage\":{\"queue_time\":0.068704868,\"prompt_tokens\":150,\"prompt_time\":0.009663475,\"completion_tokens\":38,\"completion_time\":0.033787968,\"total_tokens\":188,\"total_time\":0.043451443},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_d103c612ad\",\"x_groq\":{\"id\":\"req_01k3s85g33ez69n4t3zasf1kj5\"},\"service_tier\":\"on_demand\"}\n"
+    body: "{\"id\":\"chatcmpl-2770a432-102f-49c0-b914-1e74523d6de0\",\"object\":\"chat.completion\",\"created\":1765638733,\"model\":\"openai/gpt-oss-20b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"reasoning\":\"We need to call the square_root function.\",\"tool_calls\":[{\"id\":\"fc_3c66028e-5ad6-457b-950f-e255a990346b\",\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\":132413}\"}}]},\"logprobs\":null,\"finish_reason\":\"tool_calls\"}],\"usage\":{\"queue_time\":0.003134591,\"prompt_tokens\":156,\"prompt_time\":0.008634166,\"completion_tokens\":34,\"completion_time\":0.034330746,\"total_tokens\":190,\"total_time\":0.042964912,\"completion_tokens_details\":{\"reasoning_tokens\":10}},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_34cb00738d\",\"x_groq\":{\"id\":\"req_01kcc49zn7e8790hnch4shakyj\",\"seed\":241953328},\"service_tier\":\"on_demand\"}\n"
     headers:
       Alt-Svc:
       - h3=":443"; ma=86400
@@ -29,31 +29,29 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9766c8d39f9aa2eb-YUL
+      - 9ad66603bc9ba316-YUL
       Content-Type:
       - application/json
       Server:
       - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
       Vary:
       - Origin
-      Via:
-      - 1.1 google
       X-Groq-Region:
-      - msp
+      - yul
       X-Ratelimit-Limit-Requests:
       - "500000"
       X-Ratelimit-Limit-Tokens:
       - "250000"
       X-Ratelimit-Remaining-Requests:
-      - "499998"
+      - "499994"
       X-Ratelimit-Remaining-Tokens:
-      - "248109"
+      - "245386"
       X-Ratelimit-Reset-Requests:
-      - 249.399999ms
+      - 1.036s
       X-Ratelimit-Reset-Tokens:
-      - 453.8ms
-      X-Request-Id:
-      - req_01k3s85g33ez69n4t3zasf1kj5
+      - 1.107s
     status: 200 OK
     code: 200
-    duration: 176ms
+    duration: 143ms

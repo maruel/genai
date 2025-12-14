@@ -8,7 +8,7 @@ interactions:
     proto_minor: 1
     content_length: 806
     host: api.groq.com
-    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"},{\"role\":\"assistant\",\"tool_calls\":[{\"type\":\"function\",\"id\":\"fc_603d8374-dcc1-4aba-a085-29e5167a5e9b\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\":132413}\"}}]},{\"role\":\"tool\",\"content\":\"363.89\",\"tool_call_id\":\"fc_603d8374-dcc1-4aba-a085-29e5167a5e9b\"}],\"model\":\"openai/gpt-oss-20b\",\"stream\":false,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"tool_choice\":\"none\"}\n"
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"},{\"role\":\"assistant\",\"tool_calls\":[{\"type\":\"function\",\"id\":\"fc_3c66028e-5ad6-457b-950f-e255a990346b\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\":132413}\"}}]},{\"role\":\"tool\",\"content\":\"363.89\",\"tool_call_id\":\"fc_3c66028e-5ad6-457b-950f-e255a990346b\"}],\"model\":\"openai/gpt-oss-20b\",\"stream\":false,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"tool_choice\":\"none\"}\n"
     headers:
       Content-Type:
       - application/json; charset=utf-8
@@ -20,7 +20,7 @@ interactions:
     proto_minor: 0
     content_length: -1
     uncompressed: true
-    body: "{\"id\":\"chatcmpl-b5fb7ae8-a69b-49fa-8c40-f06995498cdc\",\"object\":\"chat.completion\",\"created\":1756415312,\"model\":\"openai/gpt-oss-20b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"363.89\",\"reasoning\":\"The user wants only the result of the square root of 132413. The tool gave 363.89. We should reply with only the result. Ensure no explanation. Just output the number.\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":0.068977729,\"prompt_tokens\":179,\"prompt_time\":0.013443046,\"completion_tokens\":53,\"completion_time\":0.047114897,\"total_tokens\":232,\"total_time\":0.060557943},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_d103c612ad\",\"x_groq\":{\"id\":\"req_01k3s85g8ee4qbnqjesqc06ey8\"},\"service_tier\":\"on_demand\"}\n"
+    body: "{\"id\":\"chatcmpl-21d80457-aede-47af-8802-333f166e1ea5\",\"object\":\"chat.completion\",\"created\":1765638733,\"model\":\"openai/gpt-oss-20b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"363.89\",\"reasoning\":\"We have the user asking: \\\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\\\"\\n\\nWe need to produce only the result. The tool returned 363.89. But we need to check if it's accurate. Let's compute sqrt(132,413). Let's quickly approximate. 360^2=129,600; 364^2=132,496; 363^2=131,769; 364^2=132,496. So sqrt is between 363 and 364. Closer to 363.89? 363.89^2 ≈ 132,413? Let's compute: 363.89^2 = (363 + 0.89)^2 ≈ 363^2 + 2*363*0.89 + 0.89^2 ≈ 131,769 + 646.74 + 0.7921 ≈ 132,416.5321. Slightly high. Let's try 363.88: 131,769 + 2*363*0.88 + 0.88^2 = 131,769 + 639. 2*363*0.88 = 2*363*0.88 = 726*0.88 = 639. 0.88^2=0.7744. Sum=131,769+639+0.7744=132,408.7744. Slightly low. So sqrt ≈ 363.883? The tool returned 363.89. That's fine. But we should provide only the result.\\n\\nThus answer: \\\"363.89\\\".\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":0.002954632,\"prompt_tokens\":185,\"prompt_time\":0.009088666,\"completion_tokens\":359,\"completion_time\":0.371340564,\"total_tokens\":544,\"total_time\":0.38042923,\"completion_tokens_details\":{\"reasoning_tokens\":347}},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_99996fee8e\",\"x_groq\":{\"id\":\"req_01kcc49zqae87bnzm80wx3wcv3\",\"seed\":1823745966},\"service_tier\":\"on_demand\"}\n"
     headers:
       Alt-Svc:
       - h3=":443"; ma=86400
@@ -29,31 +29,29 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9766c8d4b8e8a2eb-YUL
+      - 9ad666049e50a316-YUL
       Content-Type:
       - application/json
       Server:
       - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
       Vary:
       - Origin
-      Via:
-      - 1.1 google
       X-Groq-Region:
-      - msp
+      - yul
       X-Ratelimit-Limit-Requests:
       - "500000"
       X-Ratelimit-Limit-Tokens:
       - "250000"
       X-Ratelimit-Remaining-Requests:
-      - "499996"
+      - "499993"
       X-Ratelimit-Remaining-Tokens:
-      - "248152"
+      - "245445"
       X-Ratelimit-Reset-Requests:
-      - 651.2ms
+      - 1.209s
       X-Ratelimit-Reset-Tokens:
-      - 443.36ms
-      X-Request-Id:
-      - req_01k3s85g8ee4qbnqjesqc06ey8
+      - 1.093s
     status: 200 OK
     code: 200
-    duration: 189ms
+    duration: 403ms

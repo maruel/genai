@@ -1,97 +1,56 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 221
-        host: api.groq.com
-        body: |
-            {"max_completion_tokens":16,"messages":[{"role":"user","content":[{"type":"text","text":"Explain the theory of relativity in great details."},{"type":"text","text":"\n\n/think"}]}],"model":"qwen/qwen3-32b","stream":true}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.groq.com/openai/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        body: |+
-            data: {"id":"chatcmpl-c348bc27-b53d-4621-84c2-78c8c46a2ba0","object":"chat.completion.chunk","created":1755194891,"model":"qwen/qwen3-32b","system_fingerprint":"fp_78ac7f3229","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}],"x_groq":{"id":"req_01k2mw96v1eknbmb4x5ej8rcex"}}
-
-            data: {"id":"chatcmpl-c348bc27-b53d-4621-84c2-78c8c46a2ba0","object":"chat.completion.chunk","created":1755194891,"model":"qwen/qwen3-32b","system_fingerprint":"fp_78ac7f3229","choices":[{"index":0,"delta":{"content":"\u003cthink\u003e"},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"chatcmpl-c348bc27-b53d-4621-84c2-78c8c46a2ba0","object":"chat.completion.chunk","created":1755194891,"model":"qwen/qwen3-32b","system_fingerprint":"fp_78ac7f3229","choices":[{"index":0,"delta":{"content":"\n"},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"chatcmpl-c348bc27-b53d-4621-84c2-78c8c46a2ba0","object":"chat.completion.chunk","created":1755194891,"model":"qwen/qwen3-32b","system_fingerprint":"fp_78ac7f3229","choices":[{"index":0,"delta":{"content":"Okay"},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"chatcmpl-c348bc27-b53d-4621-84c2-78c8c46a2ba0","object":"chat.completion.chunk","created":1755194891,"model":"qwen/qwen3-32b","system_fingerprint":"fp_78ac7f3229","choices":[{"index":0,"delta":{"content":","},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"chatcmpl-c348bc27-b53d-4621-84c2-78c8c46a2ba0","object":"chat.completion.chunk","created":1755194891,"model":"qwen/qwen3-32b","system_fingerprint":"fp_78ac7f3229","choices":[{"index":0,"delta":{"content":" I"},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"chatcmpl-c348bc27-b53d-4621-84c2-78c8c46a2ba0","object":"chat.completion.chunk","created":1755194891,"model":"qwen/qwen3-32b","system_fingerprint":"fp_78ac7f3229","choices":[{"index":0,"delta":{"content":" need"},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"chatcmpl-c348bc27-b53d-4621-84c2-78c8c46a2ba0","object":"chat.completion.chunk","created":1755194891,"model":"qwen/qwen3-32b","system_fingerprint":"fp_78ac7f3229","choices":[{"index":0,"delta":{"content":" to"},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"chatcmpl-c348bc27-b53d-4621-84c2-78c8c46a2ba0","object":"chat.completion.chunk","created":1755194891,"model":"qwen/qwen3-32b","system_fingerprint":"fp_78ac7f3229","choices":[{"index":0,"delta":{"content":" explain"},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"chatcmpl-c348bc27-b53d-4621-84c2-78c8c46a2ba0","object":"chat.completion.chunk","created":1755194891,"model":"qwen/qwen3-32b","system_fingerprint":"fp_78ac7f3229","choices":[{"index":0,"delta":{"content":" the"},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"chatcmpl-c348bc27-b53d-4621-84c2-78c8c46a2ba0","object":"chat.completion.chunk","created":1755194891,"model":"qwen/qwen3-32b","system_fingerprint":"fp_78ac7f3229","choices":[{"index":0,"delta":{"content":" Theory"},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"chatcmpl-c348bc27-b53d-4621-84c2-78c8c46a2ba0","object":"chat.completion.chunk","created":1755194891,"model":"qwen/qwen3-32b","system_fingerprint":"fp_78ac7f3229","choices":[{"index":0,"delta":{"content":" of"},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"chatcmpl-c348bc27-b53d-4621-84c2-78c8c46a2ba0","object":"chat.completion.chunk","created":1755194891,"model":"qwen/qwen3-32b","system_fingerprint":"fp_78ac7f3229","choices":[{"index":0,"delta":{"content":" Rel"},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"chatcmpl-c348bc27-b53d-4621-84c2-78c8c46a2ba0","object":"chat.completion.chunk","created":1755194891,"model":"qwen/qwen3-32b","system_fingerprint":"fp_78ac7f3229","choices":[{"index":0,"delta":{"content":"ativity"},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"chatcmpl-c348bc27-b53d-4621-84c2-78c8c46a2ba0","object":"chat.completion.chunk","created":1755194891,"model":"qwen/qwen3-32b","system_fingerprint":"fp_78ac7f3229","choices":[{"index":0,"delta":{"content":" in"},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"chatcmpl-c348bc27-b53d-4621-84c2-78c8c46a2ba0","object":"chat.completion.chunk","created":1755194891,"model":"qwen/qwen3-32b","system_fingerprint":"fp_78ac7f3229","choices":[{"index":0,"delta":{"content":" great"},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"chatcmpl-c348bc27-b53d-4621-84c2-78c8c46a2ba0","object":"chat.completion.chunk","created":1755194891,"model":"qwen/qwen3-32b","system_fingerprint":"fp_78ac7f3229","choices":[{"index":0,"delta":{"content":" detail"},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"chatcmpl-c348bc27-b53d-4621-84c2-78c8c46a2ba0","object":"chat.completion.chunk","created":1755194891,"model":"qwen/qwen3-32b","system_fingerprint":"fp_78ac7f3229","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"length"}],"x_groq":{"id":"req_01k2mw96v1eknbmb4x5ej8rcex","usage":{"queue_time":0.002351419,"prompt_tokens":21,"prompt_time":0.076826795,"completion_tokens":16,"completion_time":0.01622106,"total_tokens":37,"total_time":0.093047855}}}
-
-            data: [DONE]
-
-        headers:
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cache-Control:
-                - no-cache
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 96f265653ee3a2ce-YUL
-            Content-Type:
-                - text/event-stream
-            Server:
-                - cloudflare
-            Vary:
-                - Origin
-            Via:
-                - 1.1 google
-            X-Groq-Region:
-                - msp
-            X-Ratelimit-Limit-Requests:
-                - "500000"
-            X-Ratelimit-Limit-Tokens:
-                - "300000"
-            X-Ratelimit-Remaining-Requests:
-                - "499994"
-            X-Ratelimit-Remaining-Tokens:
-                - "299980"
-            X-Ratelimit-Reset-Requests:
-                - 897.599999ms
-            X-Ratelimit-Reset-Tokens:
-                - 4ms
-            X-Request-Id:
-                - req_01k2mw96v1eknbmb4x5ej8rcex
-        status: 200 OK
-        code: 200
-        duration: 85ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 221
+    host: api.groq.com
+    body: "{\"max_completion_tokens\":16,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Explain the theory of relativity in great details.\"},{\"type\":\"text\",\"text\":\"\\n\\n/think\"}]}],\"model\":\"qwen/qwen3-32b\",\"stream\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.groq.com/openai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"chatcmpl-ba368369-02ec-4162-ace2-12a0afbf8b0a\",\"object\":\"chat.completion.chunk\",\"created\":1765638649,\"model\":\"qwen/qwen3-32b\",\"system_fingerprint\":\"fp_2bfcc54d36\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"logprobs\":null,\"finish_reason\":null}],\"x_groq\":{\"id\":\"req_01kcc47d5ke6xrbbqjr3jmpdxm\",\"seed\":839642318}}\n\ndata: {\"id\":\"chatcmpl-ba368369-02ec-4162-ace2-12a0afbf8b0a\",\"object\":\"chat.completion.chunk\",\"created\":1765638649,\"model\":\"qwen/qwen3-32b\",\"system_fingerprint\":\"fp_2bfcc54d36\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"\\u003cthink\\u003e\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-ba368369-02ec-4162-ace2-12a0afbf8b0a\",\"object\":\"chat.completion.chunk\",\"created\":1765638649,\"model\":\"qwen/qwen3-32b\",\"system_fingerprint\":\"fp_2bfcc54d36\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"\\n\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-ba368369-02ec-4162-ace2-12a0afbf8b0a\",\"object\":\"chat.completion.chunk\",\"created\":1765638649,\"model\":\"qwen/qwen3-32b\",\"system_fingerprint\":\"fp_2bfcc54d36\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Okay\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-ba368369-02ec-4162-ace2-12a0afbf8b0a\",\"object\":\"chat.completion.chunk\",\"created\":1765638649,\"model\":\"qwen/qwen3-32b\",\"system_fingerprint\":\"fp_2bfcc54d36\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\",\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-ba368369-02ec-4162-ace2-12a0afbf8b0a\",\"object\":\"chat.completion.chunk\",\"created\":1765638649,\"model\":\"qwen/qwen3-32b\",\"system_fingerprint\":\"fp_2bfcc54d36\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" so\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-ba368369-02ec-4162-ace2-12a0afbf8b0a\",\"object\":\"chat.completion.chunk\",\"created\":1765638649,\"model\":\"qwen/qwen3-32b\",\"system_fingerprint\":\"fp_2bfcc54d36\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" I\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-ba368369-02ec-4162-ace2-12a0afbf8b0a\",\"object\":\"chat.completion.chunk\",\"created\":1765638649,\"model\":\"qwen/qwen3-32b\",\"system_fingerprint\":\"fp_2bfcc54d36\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" need\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-ba368369-02ec-4162-ace2-12a0afbf8b0a\",\"object\":\"chat.completion.chunk\",\"created\":1765638649,\"model\":\"qwen/qwen3-32b\",\"system_fingerprint\":\"fp_2bfcc54d36\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" to\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-ba368369-02ec-4162-ace2-12a0afbf8b0a\",\"object\":\"chat.completion.chunk\",\"created\":1765638649,\"model\":\"qwen/qwen3-32b\",\"system_fingerprint\":\"fp_2bfcc54d36\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" explain\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-ba368369-02ec-4162-ace2-12a0afbf8b0a\",\"object\":\"chat.completion.chunk\",\"created\":1765638649,\"model\":\"qwen/qwen3-32b\",\"system_fingerprint\":\"fp_2bfcc54d36\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" the\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-ba368369-02ec-4162-ace2-12a0afbf8b0a\",\"object\":\"chat.completion.chunk\",\"created\":1765638649,\"model\":\"qwen/qwen3-32b\",\"system_fingerprint\":\"fp_2bfcc54d36\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" theory\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-ba368369-02ec-4162-ace2-12a0afbf8b0a\",\"object\":\"chat.completion.chunk\",\"created\":1765638649,\"model\":\"qwen/qwen3-32b\",\"system_fingerprint\":\"fp_2bfcc54d36\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" of\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-ba368369-02ec-4162-ace2-12a0afbf8b0a\",\"object\":\"chat.completion.chunk\",\"created\":1765638649,\"model\":\"qwen/qwen3-32b\",\"system_fingerprint\":\"fp_2bfcc54d36\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" rel\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-ba368369-02ec-4162-ace2-12a0afbf8b0a\",\"object\":\"chat.completion.chunk\",\"created\":1765638649,\"model\":\"qwen/qwen3-32b\",\"system_fingerprint\":\"fp_2bfcc54d36\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"ativity\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-ba368369-02ec-4162-ace2-12a0afbf8b0a\",\"object\":\"chat.completion.chunk\",\"created\":1765638649,\"model\":\"qwen/qwen3-32b\",\"system_fingerprint\":\"fp_2bfcc54d36\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" in\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-ba368369-02ec-4162-ace2-12a0afbf8b0a\",\"object\":\"chat.completion.chunk\",\"created\":1765638649,\"model\":\"qwen/qwen3-32b\",\"system_fingerprint\":\"fp_2bfcc54d36\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" great\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-ba368369-02ec-4162-ace2-12a0afbf8b0a\",\"object\":\"chat.completion.chunk\",\"created\":1765638649,\"model\":\"qwen/qwen3-32b\",\"system_fingerprint\":\"fp_2bfcc54d36\",\"choices\":[{\"index\":0,\"delta\":{},\"logprobs\":null,\"finish_reason\":\"length\"}],\"x_groq\":{\"id\":\"req_01kcc47d5ke6xrbbqjr3jmpdxm\",\"usage\":{\"queue_time\":0.226642232,\"prompt_tokens\":21,\"prompt_time\":0.000879547,\"completion_tokens\":16,\"completion_time\":0.025312728,\"total_tokens\":37,\"total_time\":0.026192275}},\"usage\":{\"queue_time\":0.226642232,\"prompt_tokens\":21,\"prompt_time\":0.000879547,\"completion_tokens\":16,\"completion_time\":0.025312728,\"total_tokens\":37,\"total_time\":0.026192275}}\n\ndata: [DONE]\n\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - no-cache
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad663f43e97a316-YUL
+      Content-Type:
+      - text/event-stream
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
+      Vary:
+      - Origin
+      X-Groq-Region:
+      - yul
+      X-Ratelimit-Limit-Requests:
+      - "500000"
+      X-Ratelimit-Limit-Tokens:
+      - "300000"
+      X-Ratelimit-Remaining-Requests:
+      - "499999"
+      X-Ratelimit-Remaining-Tokens:
+      - "299949"
+      X-Ratelimit-Reset-Requests:
+      - 172ms
+      X-Ratelimit-Reset-Tokens:
+      - 10ms
+    status: 200 OK
+    code: 200
+    duration: 249ms

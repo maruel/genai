@@ -1,61 +1,57 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 168
-        host: api.groq.com
-        body: |
-            {"messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"model":"moonshotai/kimi-k2-instruct","stop":["is"],"stream":false}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.groq.com/openai/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"id":"chatcmpl-c50793e4-c7f0-427b-94dd-03f96447aff5","object":"chat.completion","created":1753141989,"model":"moonshotai/kimi-k2-instruct","choices":[{"index":0,"message":{"role":"assistant","content":"Canada "},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.194672413,"prompt_tokens":37,"prompt_time":0.001518144,"completion_tokens":2066,"completion_time":6.602062522,"total_tokens":2103,"total_time":6.603580666},"usage_breakdown":null,"system_fingerprint":"fp_6e6ff3688b","x_groq":{"id":"req_01k0qpfm6vftpr6rjyc0g9eevd"},"service_tier":"on_demand"}
-        headers:
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cache-Control:
-                - private, max-age=0, no-store, no-cache, must-revalidate
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 962e9dbaac7fa2a8-YUL
-            Content-Type:
-                - application/json
-            Server:
-                - cloudflare
-            Vary:
-                - Origin
-            Via:
-                - 1.1 google
-            X-Groq-Region:
-                - us-west-1
-            X-Ratelimit-Limit-Requests:
-                - "500000"
-            X-Ratelimit-Limit-Tokens:
-                - "250000"
-            X-Ratelimit-Remaining-Requests:
-                - "499995"
-            X-Ratelimit-Remaining-Tokens:
-                - "249980"
-            X-Ratelimit-Reset-Requests:
-                - 751ms
-            X-Ratelimit-Reset-Tokens:
-                - 4.8ms
-            X-Request-Id:
-                - req_01k0qpfm6vftpr6rjyc0g9eevd
-        status: 200 OK
-        code: 200
-        duration: 6.892s
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 168
+    host: api.groq.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"Talk about Canada in great details. Start with: Canada is\"}],\"model\":\"moonshotai/kimi-k2-instruct\",\"stop\":[\"is\"],\"stream\":false}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.groq.com/openai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-2d19604f-6861-424d-a976-ea366a81076d\",\"object\":\"chat.completion\",\"created\":1765638698,\"model\":\"moonshotai/kimi-k2-instruct\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"Canada \"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":0.073800086,\"prompt_tokens\":38,\"prompt_time\":0.010189619,\"completion_tokens\":3175,\"completion_time\":12.642984532,\"total_tokens\":3213,\"total_time\":12.653174151},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_3312304636\",\"x_groq\":{\"id\":\"req_01kcc48h1kep5ankgnhvm0fywv\",\"seed\":1699462903},\"service_tier\":\"on_demand\"}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - private, max-age=0, no-store, no-cache, must-revalidate
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad664d9cfd2a316-YUL
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
+      Vary:
+      - Origin
+      X-Groq-Region:
+      - yul
+      X-Ratelimit-Limit-Requests:
+      - "500000"
+      X-Ratelimit-Limit-Tokens:
+      - "250000"
+      X-Ratelimit-Remaining-Requests:
+      - "499994"
+      X-Ratelimit-Remaining-Tokens:
+      - "249961"
+      X-Ratelimit-Reset-Requests:
+      - 1.036s
+      X-Ratelimit-Reset-Tokens:
+      - 9ms
+    status: 200 OK
+    code: 200
+    duration: 12.76s

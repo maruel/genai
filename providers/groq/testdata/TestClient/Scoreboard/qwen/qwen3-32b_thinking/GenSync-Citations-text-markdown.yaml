@@ -20,7 +20,7 @@ interactions:
     proto_minor: 0
     content_length: -1
     uncompressed: true
-    body: "{\"id\":\"chatcmpl-535fa521-634e-4acd-bd2c-4cace8189007\",\"object\":\"chat.completion\",\"created\":1756559569,\"model\":\"qwen/qwen3-32b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"\\u003cthink\\u003e\\nOkay, let's try to figure out the answer to this question. The question is asking for the capital of Quackiland. The first sentence says, \\\"The capital of Quackiland is Quack.\\\" Then it mentions that the Big Canard Statue is located in Quack. So the question is, what is the capital of Quackiland?\\n\\nHmm, so the first part of the question gives the information that Quack is the capital. But maybe this is a tricky question? Sometimes riddles use similar-sounding words or names to confuse you. Let me read it again carefully.\\n\\nThe first part says the capital is Quack, and the second part says the Big Canard Statue is in Quack. Canard is a French word meaning duck, and Quack is a sound a duck makes. So maybe there's a play on words here. But the question is straightforward: What is the capital of Quackiland?\\n\\nWait, the first sentence already states that the capital is Quack. So the answer would just be Quack? But maybe the mention of the Big Canard Statue in Quack is a clue to confirm that Quack is indeed the capital. However, the question is phrased in a way that seems to ask for the capital, even though it's already provided. Sometimes these questions test if you can just regurgitate the given information or if you need to infer something else.\\n\\nLet me think again. The structure of the question is similar to some other riddles where the answer is in the question itself. For example, \\\"What is the capital of Duckland? The capital of Duckland is Paris.\\\" So the answer here would be Paris, even though the second part might provide another detail. So in this case, the first part states the capital is Quack, so the answer is Quack.\\n\\nBut maybe the mention of Canard is a trick. Canard is French for duck, and Quack is the sound. So Quackiland could be a country named after the duck's sound, and Quack is the capital. There's no real-world parallels here, so it's a fictional country. The problem is just testing comprehension of the given information. Since the first sentence says the capital is Quack, the answer is straightforward.\\n\\nI don't see any lateral thinking required here. The question states the capital and then adds a piece of information about a statue located in that capital. Unless there's a hidden meaning or another layer, the answer should be Quack. I think the question is designed to check if the reader can extract the direct answer from the provided text without overcomplicating it.\\n\\u003c/think\\u003e\\n\\nThe capital of Quackiland, as explicitly stated in the first sentence, is **Quack**. The additional detail about the Big Canard Statue serves to reinforce the fictional context but does not alter the answer. \\n\\n**Answer:** Quack.\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":0.07204194,\"prompt_tokens\":44,\"prompt_time\":0.021830105,\"completion_tokens\":590,\"completion_time\":1.95121702,\"total_tokens\":634,\"total_time\":1.973047125},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_d58dbe76cd\",\"x_groq\":{\"id\":\"req_01k3xhqtgye6ya6c1wbdzm7ntn\"},\"service_tier\":\"on_demand\"}\n"
+    body: "{\"id\":\"chatcmpl-1bec4719-20e4-462e-a0c8-d7799e9a6df1\",\"object\":\"chat.completion\",\"created\":1765638664,\"model\":\"qwen/qwen3-32b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"\\u003cthink\\u003e\\nOkay, let's see. The user is asking about the capital of Quackiland. The question mentions that the capital is Quack and that there's a Big Canard Statue located there. Wait, the information provided states both pieces of information, but maybe the user is just confirming the capital.\\n\\nFirst, I need to parse the given information. The question provides a statement: \\\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\\\" Then the user asks, \\\"What is the capital of Quackiland?\\\" So, is this a trick question? Maybe the user is testing if I can extract the correct answer from the given data. The answer is right there in the first sentence. The capital is Quack. The second sentence adds extra information that might be a distractor, but it's just additional context. The Big Canard Statue's location in Quack supports the fact that Quack is indeed the capital. So the answer should be straightforward. There's no need to overcomplicate it. The user might be expecting me to read the question carefully and recognize that the answer is explicitly provided in the prompt. No need to search elsewhere for the answer. Just restate the given information accurately.\\n\\u003c/think\\u003e\\n\\nThe capital of Quackiland is **Quack**.\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":0.125926889,\"prompt_tokens\":44,\"prompt_time\":0.002065539,\"completion_tokens\":269,\"completion_time\":0.627692573,\"total_tokens\":313,\"total_time\":0.629758112},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_efa9879028\",\"x_groq\":{\"id\":\"req_01kcc47vsje71801zwvmxrp1af\",\"seed\":868449198},\"service_tier\":\"on_demand\"}\n"
     headers:
       Alt-Svc:
       - h3=":443"; ma=86400
@@ -29,17 +29,17 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 97748aaffb80a2d0-YUL
+      - 9ad66451de62a316-YUL
       Content-Type:
       - application/json
       Server:
       - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
       Vary:
       - Origin
-      Via:
-      - 1.1 google
       X-Groq-Region:
-      - msp
+      - yul
       X-Ratelimit-Limit-Requests:
       - "500000"
       X-Ratelimit-Limit-Tokens:
@@ -47,13 +47,11 @@ interactions:
       X-Ratelimit-Remaining-Requests:
       - "499999"
       X-Ratelimit-Remaining-Tokens:
-      - "299961"
+      - "299607"
       X-Ratelimit-Reset-Requests:
-      - 172.799999ms
+      - 172ms
       X-Ratelimit-Reset-Tokens:
-      - 7.8ms
-      X-Request-Id:
-      - req_01k3xhqtgye6ya6c1wbdzm7ntn
+      - 78ms
     status: 200 OK
     code: 200
-    duration: 2.111s
+    duration: 773ms

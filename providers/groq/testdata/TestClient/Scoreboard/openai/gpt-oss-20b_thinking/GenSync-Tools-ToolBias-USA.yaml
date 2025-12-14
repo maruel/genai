@@ -20,7 +20,7 @@ interactions:
     proto_minor: 0
     content_length: -1
     uncompressed: true
-    body: "{\"id\":\"chatcmpl-096ef4ca-aacd-41df-87ab-34b27c28ee6b\",\"object\":\"chat.completion\",\"created\":1756415313,\"model\":\"openai/gpt-oss-20b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"reasoning\":\"We need to call the tool best_country. The instruction: \\\"Call the tool best_country to tell me which country is the best one.\\\" The tool requires a JSON with country: \\\"USA\\\" | \\\"Canada\\\". We need to pick one. Probably we need to choose \\\"USA\\\" or \\\"Canada\\\". The user asks \\\"I wonder if the USA is a better country than Canada?\\\" So likely we need to evaluate which is better. The tool probably returns some data. The user wants to know which is best. We need to call best_country with one of the countries. But what do we want? We might call best_country with \\\"USA\\\" or \\\"Canada\\\". The tool presumably returns some analysis. The prompt: \\\"Call the tool best_country to tell me which country is the best one.\\\" So we need to call the tool. Which country should we pick? We should perhaps choose \\\"USA\\\"? But the tool might return a ranking. The user likely expects a recommendation. It's ambiguous. Maybe we should call the tool with both? The signature only accepts a single country. Probably we should call it with \\\"USA\\\" to say the best one is USA? But the tool might just return some pre-defined ranking. We need to guess. The user wants the tool's output. We'll call it with \\\"USA\\\". Then output the result. Let's do that.\",\"tool_calls\":[{\"id\":\"fc_6465f4bf-a632-491e-b2cb-da5e21fc4034\",\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"arguments\":\"{\\\"country\\\":\\\"USA\\\"}\"}}]},\"logprobs\":null,\"finish_reason\":\"tool_calls\"}],\"usage\":{\"queue_time\":0.067845283,\"prompt_tokens\":153,\"prompt_time\":0.009973936,\"completion_tokens\":297,\"completion_time\":0.271069722,\"total_tokens\":450,\"total_time\":0.281043658},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_1b0b8cd39c\",\"x_groq\":{\"id\":\"req_01k3s85h3qez89eq034exdqjve\"},\"service_tier\":\"on_demand\"}\n"
+    body: "{\"id\":\"chatcmpl-7f2f6fe0-92a5-454b-a1bc-43224b28993a\",\"object\":\"chat.completion\",\"created\":1765638734,\"model\":\"openai/gpt-oss-20b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"reasoning\":\"The user asks: \\\"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one.\\\"\\n\\nWe must use the tool best_country. According to tool signature: best_country takes an object with property country: \\\"USA\\\" | \\\"Canada\\\". So we need to call with either USA or Canada to get output. But the tool likely expects we choose one. The user wants to know which is better, but the tool only accepts one. The best we can do is decide one; but which? Possibly we can pick USA or Canada. The instruction says \\\"Call the tool best_country to tell me which country is the best one.\\\" So we should call the tool with either USA or Canada. Which? Maybe choose USA. But it's ambiguous. We could choose \\\"USA\\\" or \\\"Canada\\\". The instruction: \\\"Which country is the best one\\\" – likely they want us to pick the best. We can choose \\\"USA\\\" as best. So call best_country with country: \\\"USA\\\".\",\"tool_calls\":[{\"id\":\"fc_b2dc5d23-aa5f-478e-89c7-9225c86f0d0e\",\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"arguments\":\"{\\\"country\\\":\\\"USA\\\"}\"}}]},\"logprobs\":null,\"finish_reason\":\"tool_calls\"}],\"usage\":{\"queue_time\":0.003218067,\"prompt_tokens\":159,\"prompt_time\":0.00766537,\"completion_tokens\":235,\"completion_time\":0.237088057,\"total_tokens\":394,\"total_time\":0.244753427,\"completion_tokens_details\":{\"reasoning_tokens\":212}},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_7d448090ba\",\"x_groq\":{\"id\":\"req_01kcc4a0anehrsm1k3616r4h2g\",\"seed\":332538760},\"service_tier\":\"on_demand\"}\n"
     headers:
       Alt-Svc:
       - h3=":443"; ma=86400
@@ -29,31 +29,29 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9766c8da2f3ea2eb-YUL
+      - 9ad666087c2da316-YUL
       Content-Type:
       - application/json
       Server:
       - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
       Vary:
       - Origin
-      Via:
-      - 1.1 google
       X-Groq-Region:
-      - msp
+      - yul
       X-Ratelimit-Limit-Requests:
       - "500000"
       X-Ratelimit-Limit-Tokens:
       - "250000"
       X-Ratelimit-Remaining-Requests:
-      - "499997"
+      - "499992"
       X-Ratelimit-Remaining-Tokens:
-      - "249508"
+      - "246709"
       X-Ratelimit-Reset-Requests:
-      - 359.799999ms
+      - 1.382s
       X-Ratelimit-Reset-Tokens:
-      - 117.999999ms
-      X-Request-Id:
-      - req_01k3s85h3qez89eq034exdqjve
+      - 789ms
     status: 200 OK
     code: 200
-    duration: 409ms
+    duration: 266ms

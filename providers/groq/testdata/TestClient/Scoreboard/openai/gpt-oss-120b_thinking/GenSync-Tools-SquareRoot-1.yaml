@@ -20,7 +20,7 @@ interactions:
     proto_minor: 0
     content_length: -1
     uncompressed: true
-    body: "{\"id\":\"chatcmpl-cb0aeaeb-75de-4650-8461-56d93243a563\",\"object\":\"chat.completion\",\"created\":1756415360,\"model\":\"openai/gpt-oss-120b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"reasoning\":\"We need to call the tool.\",\"tool_calls\":[{\"id\":\"fc_92b17e55-18fe-4527-bb4b-70d0c229b14d\",\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\":132413}\"}}]},\"logprobs\":null,\"finish_reason\":\"tool_calls\"}],\"usage\":{\"queue_time\":0.003547583,\"prompt_tokens\":150,\"prompt_time\":0.006736495,\"completion_tokens\":36,\"completion_time\":0.074546554,\"total_tokens\":186,\"total_time\":0.081283049},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_f9eef9d030\",\"x_groq\":{\"id\":\"req_01k3s86zqvfewvya235pnq24a1\"},\"service_tier\":\"on_demand\"}\n"
+    body: "{\"id\":\"chatcmpl-b7959af6-d0c8-4124-a694-54ad64b7bdb7\",\"object\":\"chat.completion\",\"created\":1765638717,\"model\":\"openai/gpt-oss-120b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"reasoning\":\"User wants result of sqrt(132413) using tool. Use function.\",\"tool_calls\":[{\"id\":\"fc_49a9f731-cf37-4f59-a47b-97172cbffaba\",\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\":132413}\"}}]},\"logprobs\":null,\"finish_reason\":\"tool_calls\"}],\"usage\":{\"queue_time\":0.004163473,\"prompt_tokens\":156,\"prompt_time\":0.008009999,\"completion_tokens\":44,\"completion_time\":0.107430569,\"total_tokens\":200,\"total_time\":0.115440568,\"completion_tokens_details\":{\"reasoning_tokens\":16}},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_0060895c89\",\"x_groq\":{\"id\":\"req_01kcc49fsqepn9wh8p4e8fpsm7\",\"seed\":729272180},\"service_tier\":\"on_demand\"}\n"
     headers:
       Alt-Svc:
       - h3=":443"; ma=86400
@@ -29,17 +29,17 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9766ca047b3aa2e6-YUL
+      - 9ad6659ea9bba316-YUL
       Content-Type:
       - application/json
       Server:
       - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
       Vary:
       - Origin
-      Via:
-      - 1.1 google
       X-Groq-Region:
-      - msp
+      - yul
       X-Ratelimit-Limit-Requests:
       - "500000"
       X-Ratelimit-Limit-Tokens:
@@ -47,13 +47,11 @@ interactions:
       X-Ratelimit-Remaining-Requests:
       - "499999"
       X-Ratelimit-Remaining-Tokens:
-      - "249162"
+      - "247522"
       X-Ratelimit-Reset-Requests:
-      - 172.799999ms
+      - 172ms
       X-Ratelimit-Reset-Tokens:
-      - 200.999999ms
-      X-Request-Id:
-      - req_01k3s86zqvfewvya235pnq24a1
+      - 594ms
     status: 200 OK
     code: 200
-    duration: 171ms
+    duration: 141ms

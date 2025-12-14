@@ -1,61 +1,57 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 315
-        host: api.groq.com
-        body: |
-            {"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg"}}]}],"model":"meta-llama/llama-4-scout-17b-16e-instruct","stream":false}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.groq.com/openai/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"id":"chatcmpl-7f3e29ea-e837-471a-a69d-34ec48718ed2","object":"chat.completion","created":1753232199,"model":"meta-llama/llama-4-scout-17b-16e-instruct","choices":[{"index":0,"message":{"role":"assistant","content":"Banana."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.019475097,"prompt_tokens":172,"prompt_time":0.008390035,"completion_tokens":4,"completion_time":0.010890006,"total_tokens":176,"total_time":0.019280041},"usage_breakdown":null,"system_fingerprint":"fp_cb546bdbdf","x_groq":{"id":"req_01k0tcgm2afcbt23nm3632hmdt"},"service_tier":"on_demand"}
-        headers:
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cache-Control:
-                - private, max-age=0, no-store, no-cache, must-revalidate
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 963738204c35a299-YUL
-            Content-Type:
-                - application/json
-            Server:
-                - cloudflare
-            Vary:
-                - Origin
-            Via:
-                - 1.1 google
-            X-Groq-Region:
-                - msp
-            X-Ratelimit-Limit-Requests:
-                - "500000"
-            X-Ratelimit-Limit-Tokens:
-                - "300000"
-            X-Ratelimit-Remaining-Requests:
-                - "499993"
-            X-Ratelimit-Remaining-Tokens:
-                - "299984"
-            X-Ratelimit-Reset-Requests:
-                - 1.1656s
-            X-Ratelimit-Reset-Tokens:
-                - 3.2ms
-            X-Request-Id:
-                - req_01k0tcgm2afcbt23nm3632hmdt
-        status: 200 OK
-        code: 200
-        duration: 198ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 315
+    host: api.groq.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What fruit is it? Reply with only one word.\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg\"}}]}],\"model\":\"meta-llama/llama-4-scout-17b-16e-instruct\",\"stream\":false}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.groq.com/openai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-c82dda44-0232-4af7-9cc2-3d36485f6c88\",\"object\":\"chat.completion\",\"created\":1765638589,\"model\":\"meta-llama/llama-4-scout-17b-16e-instruct\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"Banana.\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":0.086724347,\"prompt_tokens\":170,\"prompt_time\":0.004806935,\"completion_tokens\":4,\"completion_time\":0.009931094,\"total_tokens\":174,\"total_time\":0.014738029},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_130a0cd72d\",\"x_groq\":{\"id\":\"req_01kcc45k9fe6gtn495xs39y0tr\",\"seed\":1007776727},\"service_tier\":\"on_demand\"}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - private, max-age=0, no-store, no-cache, must-revalidate
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad66281ddf7a316-YUL
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
+      Vary:
+      - Origin
+      X-Groq-Region:
+      - yul
+      X-Ratelimit-Limit-Requests:
+      - "500000"
+      X-Ratelimit-Limit-Tokens:
+      - "300000"
+      X-Ratelimit-Remaining-Requests:
+      - "499986"
+      X-Ratelimit-Remaining-Tokens:
+      - "299680"
+      X-Ratelimit-Reset-Requests:
+      - 2.419s
+      X-Ratelimit-Reset-Tokens:
+      - 64ms
+    status: 200 OK
+    code: 200
+    duration: 163ms

@@ -1,0 +1,57 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 169
+    host: api.groq.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"Talk about Canada in great details. Start with: Canada is\"}],\"model\":\"openai/gpt-oss-safeguard-20b\",\"stop\":[\"is\"],\"stream\":false}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.groq.com/openai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-d4598c0c-7119-4bc4-a07e-d1b10529b947\",\"object\":\"chat.completion\",\"created\":1765638638,\"model\":\"openai/gpt-oss-safeguard-20b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\"The user requests: \\\"Talk about Canada in great details. Start with: Canada \"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":0.032919309,\"prompt_tokens\":83,\"prompt_time\":0.004552388,\"completion_tokens\":2648,\"completion_time\":2.7269880410000003,\"total_tokens\":2731,\"total_time\":2.731540429,\"completion_tokens_details\":{\"reasoning_tokens\":18}},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_e3febdc4be\",\"x_groq\":{\"id\":\"req_01kcc46zqaenksxwv1azm1z24x\",\"seed\":3813597},\"service_tier\":\"on_demand\"}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - private, max-age=0, no-store, no-cache, must-revalidate
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad6639e3c4ca316-YUL
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
+      Vary:
+      - Origin
+      X-Groq-Region:
+      - yul
+      X-Ratelimit-Limit-Requests:
+      - "500000"
+      X-Ratelimit-Limit-Tokens:
+      - "150000"
+      X-Ratelimit-Remaining-Requests:
+      - "499992"
+      X-Ratelimit-Remaining-Tokens:
+      - "149740"
+      X-Ratelimit-Reset-Requests:
+      - 1.382s
+      X-Ratelimit-Reset-Tokens:
+      - 104ms
+    status: 200 OK
+    code: 200
+    duration: 2.784s

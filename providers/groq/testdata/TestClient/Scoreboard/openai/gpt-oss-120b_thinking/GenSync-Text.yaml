@@ -20,7 +20,7 @@ interactions:
     proto_minor: 0
     content_length: -1
     uncompressed: true
-    body: "{\"id\":\"chatcmpl-3f99d3e9-45fd-48d3-883c-eb59fc0092f0\",\"object\":\"chat.completion\",\"created\":1756415354,\"model\":\"openai/gpt-oss-120b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"Hello\",\"reasoning\":\"User wants: \\\"Say hello. Use only one word.\\\" So we must respond with a single word greeting, like \\\"Hello\\\". Must be one word. Should be \\\"Hello\\\".\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":0.092016742,\"prompt_tokens\":79,\"prompt_time\":0.002765374,\"completion_tokens\":47,\"completion_time\":0.09386199,\"total_tokens\":126,\"total_time\":0.096627364},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_3c8b9931aa\",\"x_groq\":{\"id\":\"req_01k3s86s75e7x8zy3mqasavtq3\"},\"service_tier\":\"on_demand\"}\n"
+    body: "{\"id\":\"chatcmpl-b5f8ccc0-1713-4164-a9cb-818c101cca19\",\"object\":\"chat.completion\",\"created\":1765638707,\"model\":\"openai/gpt-oss-120b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"Hello\",\"reasoning\":\"User wants: \\\"Say hello. Use only one word.\\\" So respond with a single word greeting, like \\\"Hello\\\". Must be one word. So output \\\"Hello\\\".\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":0.00400475,\"prompt_tokens\":79,\"prompt_time\":0.003908881,\"completion_tokens\":45,\"completion_time\":0.098495856,\"total_tokens\":124,\"total_time\":0.102404737,\"completion_tokens_details\":{\"reasoning_tokens\":35}},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_c5da83ab22\",\"x_groq\":{\"id\":\"req_01kcc495taeh8t7yvxayvaqe9g\",\"seed\":342393701},\"service_tier\":\"on_demand\"}\n"
     headers:
       Alt-Svc:
       - h3=":443"; ma=86400
@@ -29,17 +29,17 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9766c9dacae2a2e6-YUL
+      - 9ad6655ecdf6a316-YUL
       Content-Type:
       - application/json
       Server:
       - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
       Vary:
       - Origin
-      Via:
-      - 1.1 google
       X-Groq-Region:
-      - msp
+      - yul
       X-Ratelimit-Limit-Requests:
       - "500000"
       X-Ratelimit-Limit-Tokens:
@@ -49,11 +49,9 @@ interactions:
       X-Ratelimit-Remaining-Tokens:
       - "249920"
       X-Ratelimit-Reset-Requests:
-      - 172.799999ms
+      - 172ms
       X-Ratelimit-Reset-Tokens:
-      - 19.2ms
-      X-Request-Id:
-      - req_01k3s86s75e7x8zy3mqasavtq3
+      - 19ms
     status: 200 OK
     code: 200
-    duration: 321ms
+    duration: 125ms

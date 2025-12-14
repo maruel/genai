@@ -1,71 +1,56 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 772
-        host: api.groq.com
-        body: |
-            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"type":"function","id":"ynta6xpax","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"ynta6xpax"}],"model":"meta-llama/llama-4-maverick-17b-128e-instruct","stream":true,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none"}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.groq.com/openai/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        body: |+
-            data: {"id":"chatcmpl-5f0fdbe0-4213-4dbf-982c-9dbfb6f33fac","object":"chat.completion.chunk","created":1753544416,"model":"meta-llama/llama-4-maverick-17b-128e-instruct","system_fingerprint":"fp_7c27472e1f","choices":[{"index":0,"delta":{"role":"assistant"},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"chatcmpl-5f0fdbe0-4213-4dbf-982c-9dbfb6f33fac","object":"chat.completion.chunk","created":1753544416,"model":"meta-llama/llama-4-maverick-17b-128e-instruct","system_fingerprint":"fp_7c27472e1f","choices":[{"index":0,"delta":{"content":"363"},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"chatcmpl-5f0fdbe0-4213-4dbf-982c-9dbfb6f33fac","object":"chat.completion.chunk","created":1753544416,"model":"meta-llama/llama-4-maverick-17b-128e-instruct","system_fingerprint":"fp_7c27472e1f","choices":[{"index":0,"delta":{"content":"."},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"chatcmpl-5f0fdbe0-4213-4dbf-982c-9dbfb6f33fac","object":"chat.completion.chunk","created":1753544416,"model":"meta-llama/llama-4-maverick-17b-128e-instruct","system_fingerprint":"fp_7c27472e1f","choices":[{"index":0,"delta":{"content":"89"},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"chatcmpl-5f0fdbe0-4213-4dbf-982c-9dbfb6f33fac","object":"chat.completion.chunk","created":1753544416,"model":"meta-llama/llama-4-maverick-17b-128e-instruct","system_fingerprint":"fp_7c27472e1f","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}],"x_groq":{"id":"req_01k13p8qh3ft8v0v026db77sga","usage":{"queue_time":0.0054050750000000005,"prompt_tokens":80,"prompt_time":0.00567,"completion_tokens":4,"completion_time":0.008411068,"total_tokens":84,"total_time":0.014081068}}}
-
-            data: [DONE]
-
-        headers:
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cache-Control:
-                - no-cache
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 9654fe9cca98a290-YUL
-            Content-Type:
-                - text/event-stream
-            Server:
-                - cloudflare
-            Vary:
-                - Origin
-            Via:
-                - 1.1 google
-            X-Groq-Region:
-                - msp
-            X-Ratelimit-Limit-Requests:
-                - "500000"
-            X-Ratelimit-Limit-Tokens:
-                - "300000"
-            X-Ratelimit-Remaining-Requests:
-                - "499997"
-            X-Ratelimit-Remaining-Tokens:
-                - "298844"
-            X-Ratelimit-Reset-Requests:
-                - 378.4ms
-            X-Ratelimit-Reset-Tokens:
-                - 231.2ms
-            X-Request-Id:
-                - req_01k13p8qh3ft8v0v026db77sga
-        status: 200 OK
-        code: 200
-        duration: 72ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 772
+    host: api.groq.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"},{\"role\":\"assistant\",\"tool_calls\":[{\"type\":\"function\",\"id\":\"mdf7g4e12\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\":132413}\"}}]},{\"role\":\"tool\",\"content\":\"363.89\",\"tool_call_id\":\"mdf7g4e12\"}],\"model\":\"meta-llama/llama-4-maverick-17b-128e-instruct\",\"stream\":true,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"tool_choice\":\"none\"}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.groq.com/openai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"chatcmpl-a661995c-46cf-486c-b55a-6f63f390004f\",\"object\":\"chat.completion.chunk\",\"created\":1765638614,\"model\":\"meta-llama/llama-4-maverick-17b-128e-instruct\",\"system_fingerprint\":\"fp_d2c1f7e199\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"logprobs\":null,\"finish_reason\":null}],\"x_groq\":{\"id\":\"req_01kcc469nee6rrcrgeknr8xsxr\",\"seed\":440324291}}\n\ndata: {\"id\":\"chatcmpl-a661995c-46cf-486c-b55a-6f63f390004f\",\"object\":\"chat.completion.chunk\",\"created\":1765638614,\"model\":\"meta-llama/llama-4-maverick-17b-128e-instruct\",\"system_fingerprint\":\"fp_d2c1f7e199\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"363\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-a661995c-46cf-486c-b55a-6f63f390004f\",\"object\":\"chat.completion.chunk\",\"created\":1765638614,\"model\":\"meta-llama/llama-4-maverick-17b-128e-instruct\",\"system_fingerprint\":\"fp_d2c1f7e199\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\".\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-a661995c-46cf-486c-b55a-6f63f390004f\",\"object\":\"chat.completion.chunk\",\"created\":1765638614,\"model\":\"meta-llama/llama-4-maverick-17b-128e-instruct\",\"system_fingerprint\":\"fp_d2c1f7e199\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"89\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-a661995c-46cf-486c-b55a-6f63f390004f\",\"object\":\"chat.completion.chunk\",\"created\":1765638614,\"model\":\"meta-llama/llama-4-maverick-17b-128e-instruct\",\"system_fingerprint\":\"fp_d2c1f7e199\",\"choices\":[{\"index\":0,\"delta\":{},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"x_groq\":{\"id\":\"req_01kcc469nee6rrcrgeknr8xsxr\",\"usage\":{\"queue_time\":1.445239986,\"prompt_tokens\":92,\"prompt_time\":0.032243264,\"completion_tokens\":4,\"completion_time\":0.008447691,\"total_tokens\":96,\"total_time\":0.040690955}},\"usage\":{\"queue_time\":1.445239986,\"prompt_tokens\":92,\"prompt_time\":0.032243264,\"completion_tokens\":4,\"completion_time\":0.008447691,\"total_tokens\":96,\"total_time\":0.040690955}}\n\ndata: [DONE]\n\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - no-cache
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad663110fc5a316-YUL
+      Content-Type:
+      - text/event-stream
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
+      Vary:
+      - Origin
+      X-Groq-Region:
+      - yul
+      X-Ratelimit-Limit-Requests:
+      - "500000"
+      X-Ratelimit-Limit-Tokens:
+      - "300000"
+      X-Ratelimit-Remaining-Requests:
+      - "499998"
+      X-Ratelimit-Remaining-Tokens:
+      - "299503"
+      X-Ratelimit-Reset-Requests:
+      - 345ms
+      X-Ratelimit-Reset-Tokens:
+      - 99ms
+    status: 200 OK
+    code: 200
+    duration: 1.464s

@@ -1,61 +1,57 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 278
-        host: api.groq.com
-        body: |
-            {"messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"model":"meta-llama/llama-4-scout-17b-16e-instruct","response_format":{"type":"json_object"},"stream":false}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.groq.com/openai/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"id":"chatcmpl-1b0fd96f-02b3-4377-8295-e42135233f66","object":"chat.completion","created":1753142028,"model":"meta-llama/llama-4-scout-17b-16e-instruct","choices":[{"index":0,"message":{"role":"assistant","content":"{\n  \"is_fruit\": true\n}"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.0017221890000000003,"prompt_tokens":57,"prompt_time":0.003761829,"completion_tokens":11,"completion_time":0.025427058,"total_tokens":68,"total_time":0.029188887},"usage_breakdown":null,"system_fingerprint":"fp_cb546bdbdf","x_groq":{"id":"req_01k0qpgt8eefevw07j6qfnp9q6"},"service_tier":"on_demand"}
-        headers:
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cache-Control:
-                - private, max-age=0, no-store, no-cache, must-revalidate
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 962e9eae4af8a2a8-YUL
-            Content-Type:
-                - application/json
-            Server:
-                - cloudflare
-            Vary:
-                - Origin
-            Via:
-                - 1.1 google
-            X-Groq-Region:
-                - msp
-            X-Ratelimit-Limit-Requests:
-                - "500000"
-            X-Ratelimit-Limit-Tokens:
-                - "300000"
-            X-Ratelimit-Remaining-Requests:
-                - "499999"
-            X-Ratelimit-Remaining-Tokens:
-                - "297796"
-            X-Ratelimit-Reset-Requests:
-                - 172.799999ms
-            X-Ratelimit-Reset-Tokens:
-                - 440.8ms
-            X-Request-Id:
-                - req_01k0qpgt8eefevw07j6qfnp9q6
-        status: 200 OK
-        code: 200
-        duration: 97ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 278
+    host: api.groq.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\\\"is_fruit\\\": bool}.\"}],\"model\":\"meta-llama/llama-4-scout-17b-16e-instruct\",\"response_format\":{\"type\":\"json_object\"},\"stream\":false}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.groq.com/openai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-43e2feca-cbe9-4241-9286-437d0f0f6531\",\"object\":\"chat.completion\",\"created\":1765638588,\"model\":\"meta-llama/llama-4-scout-17b-16e-instruct\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n\\\"is_fruit\\\": true\\n}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":0.07277473,\"prompt_tokens\":57,\"prompt_time\":0.00168805,\"completion_tokens\":11,\"completion_time\":0.029193513,\"total_tokens\":68,\"total_time\":0.030881563},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_130a0cd72d\",\"x_groq\":{\"id\":\"req_01kcc45hs6e6fstzq59p70mjnn\",\"seed\":1577371499},\"service_tier\":\"on_demand\"}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - private, max-age=0, no-store, no-cache, must-revalidate
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad662782d8ea316-YUL
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
+      Vary:
+      - Origin
+      X-Groq-Region:
+      - yul
+      X-Ratelimit-Limit-Requests:
+      - "500000"
+      X-Ratelimit-Limit-Tokens:
+      - "300000"
+      X-Ratelimit-Remaining-Requests:
+      - "499998"
+      X-Ratelimit-Remaining-Tokens:
+      - "297769"
+      X-Ratelimit-Reset-Requests:
+      - 345ms
+      X-Ratelimit-Reset-Tokens:
+      - 446ms
+    status: 200 OK
+    code: 200
+    duration: 120ms

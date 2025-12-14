@@ -1,61 +1,57 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 570
-        host: api.groq.com
-        body: |
-            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"model":"meta-llama/llama-4-scout-17b-16e-instruct","stream":false,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required"}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.groq.com/openai/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"id":"chatcmpl-414b9ced-507e-442a-91db-a65ee27e9ddb","object":"chat.completion","created":1753544416,"model":"meta-llama/llama-4-scout-17b-16e-instruct","choices":[{"index":0,"message":{"role":"assistant","tool_calls":[{"id":"gnt0kk3a2","type":"function","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.021116238000000002,"prompt_tokens":733,"prompt_time":0.028291194,"completion_tokens":24,"completion_time":0.054743163,"total_tokens":757,"total_time":0.083034357},"usage_breakdown":null,"system_fingerprint":"fp_cb546bdbdf","x_groq":{"id":"req_01k13p8q2qfhprdekbwn3ntt21"},"service_tier":"on_demand"}
-        headers:
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cache-Control:
-                - private, max-age=0, no-store, no-cache, must-revalidate
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 9654fe99ee2ca290-YUL
-            Content-Type:
-                - application/json
-            Server:
-                - cloudflare
-            Vary:
-                - Origin
-            Via:
-                - 1.1 google
-            X-Groq-Region:
-                - msp
-            X-Ratelimit-Limit-Requests:
-                - "500000"
-            X-Ratelimit-Limit-Tokens:
-                - "300000"
-            X-Ratelimit-Remaining-Requests:
-                - "499998"
-            X-Ratelimit-Remaining-Tokens:
-                - "299964"
-            X-Ratelimit-Reset-Requests:
-                - 342.599999ms
-            X-Ratelimit-Reset-Tokens:
-                - 7.2ms
-            X-Request-Id:
-                - req_01k13p8q2qfhprdekbwn3ntt21
-        status: 200 OK
-        code: 200
-        duration: 185ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 570
+    host: api.groq.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"}],\"model\":\"meta-llama/llama-4-scout-17b-16e-instruct\",\"stream\":false,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"tool_choice\":\"required\"}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.groq.com/openai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-17aa60fd-ab36-4641-81e8-816555bc18d0\",\"object\":\"chat.completion\",\"created\":1765638588,\"model\":\"meta-llama/llama-4-scout-17b-16e-instruct\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"tool_calls\":[{\"id\":\"6ypbd22dn\",\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\":132413}\"}}]},\"logprobs\":null,\"finish_reason\":\"tool_calls\"}],\"usage\":{\"queue_time\":0.085913428,\"prompt_tokens\":771,\"prompt_time\":0.023635581,\"completion_tokens\":30,\"completion_time\":0.081890929,\"total_tokens\":801,\"total_time\":0.10552651},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_130a0cd72d\",\"x_groq\":{\"id\":\"req_01kcc45hxhe6frmf8v71cyyg57\",\"seed\":370201113},\"service_tier\":\"on_demand\"}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - private, max-age=0, no-store, no-cache, must-revalidate
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad662790f0da316-YUL
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
+      Vary:
+      - Origin
+      X-Groq-Region:
+      - yul
+      X-Ratelimit-Limit-Requests:
+      - "500000"
+      X-Ratelimit-Limit-Tokens:
+      - "300000"
+      X-Ratelimit-Remaining-Requests:
+      - "499996"
+      X-Ratelimit-Remaining-Tokens:
+      - "296900"
+      X-Ratelimit-Reset-Requests:
+      - 691ms
+      X-Ratelimit-Reset-Tokens:
+      - 620ms
+    status: 200 OK
+    code: 200
+    duration: 209ms

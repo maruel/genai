@@ -1,61 +1,57 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 174
-        host: api.groq.com
-        body: |
-            {"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."},{"type":"text","text":"\n\n/think"}]}],"model":"qwen/qwen3-32b","stream":false}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.groq.com/openai/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"id":"chatcmpl-892c089d-d9a2-4082-aba1-5a60b3fe1f8c","object":"chat.completion","created":1755194889,"model":"qwen/qwen3-32b","choices":[{"index":0,"message":{"role":"assistant","content":"\u003cthink\u003e\nOkay, the user asked me to say hello using only one word. Let me think about the best way to respond. The word \"hello\" itself is the most straightforward and appropriate here. I need to make sure it's exactly one word. Let me check if there's any hidden characters or spaces. Nope, just \"hello\". That should work. I'll go with that.\n\u003c/think\u003e\n\nHello."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.001831728,"prompt_tokens":18,"prompt_time":0.00719352,"completion_tokens":84,"completion_time":0.206398331,"total_tokens":102,"total_time":0.213591851},"usage_breakdown":null,"system_fingerprint":"fp_78ac7f3229","x_groq":{"id":"req_01k2mw95f6e5dvz7qpxx2a1zpj"},"service_tier":"on_demand"}
-        headers:
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cache-Control:
-                - private, max-age=0, no-store, no-cache, must-revalidate
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 96f2655c4b3ea2ce-YUL
-            Content-Type:
-                - application/json
-            Server:
-                - cloudflare
-            Vary:
-                - Origin
-            Via:
-                - 1.1 google
-            X-Groq-Region:
-                - msp
-            X-Ratelimit-Limit-Requests:
-                - "500000"
-            X-Ratelimit-Limit-Tokens:
-                - "300000"
-            X-Ratelimit-Remaining-Requests:
-                - "499999"
-            X-Ratelimit-Remaining-Tokens:
-                - "299985"
-            X-Ratelimit-Reset-Requests:
-                - 172.799999ms
-            X-Ratelimit-Reset-Tokens:
-                - 3ms
-            X-Request-Id:
-                - req_01k2mw95f6e5dvz7qpxx2a1zpj
-        status: 200 OK
-        code: 200
-        duration: 325ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 174
+    host: api.groq.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Say hello. Use only one word.\"},{\"type\":\"text\",\"text\":\"\\n\\n/think\"}]}],\"model\":\"qwen/qwen3-32b\",\"stream\":false}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.groq.com/openai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-8646b56c-5a1f-4fe5-989e-f56836c0a492\",\"object\":\"chat.completion\",\"created\":1765638648,\"model\":\"qwen/qwen3-32b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"\\u003cthink\\u003e\\nOkay, the user wants me to say hello using only one word. Let me think. The most straightforward one-word greeting is \\\"Hello\\\" itself. Are there other options? Maybe \\\"Hi\\\" or \\\"Hey,\\\" but those are still common. The user specified one word, so I need to make sure it's just that. Let me check if \\\"Hello\\\" counts as one word. Yes, it's a single word. Should I consider other languages? The user didn't specify, so probably stick to English. Maybe \\\"Bonjour\\\" if they wanted French, but again, the instruction is in English. The safest bet is \\\"Hello.\\\" No need to complicate it. Let me confirm there's no trick here. The user just wants a one-word hello. Yep, \\\"Hello\\\" is correct.\\n\\u003c/think\\u003e\\n\\nHello\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":0.226286875,\"prompt_tokens\":18,\"prompt_time\":0.000745219,\"completion_tokens\":168,\"completion_time\":0.349684139,\"total_tokens\":186,\"total_time\":0.350429358},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_2bfcc54d36\",\"x_groq\":{\"id\":\"req_01kcc47c4deg5sknw2xmy3wa48\",\"seed\":2010981200},\"service_tier\":\"on_demand\"}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - private, max-age=0, no-store, no-cache, must-revalidate
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad663edabcfa316-YUL
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
+      Vary:
+      - Origin
+      X-Groq-Region:
+      - yul
+      X-Ratelimit-Limit-Requests:
+      - "500000"
+      X-Ratelimit-Limit-Tokens:
+      - "300000"
+      X-Ratelimit-Remaining-Requests:
+      - "499999"
+      X-Ratelimit-Remaining-Tokens:
+      - "299981"
+      X-Ratelimit-Reset-Requests:
+      - 172ms
+      X-Ratelimit-Reset-Tokens:
+      - 3ms
+    status: 200 OK
+    code: 200
+    duration: 592ms

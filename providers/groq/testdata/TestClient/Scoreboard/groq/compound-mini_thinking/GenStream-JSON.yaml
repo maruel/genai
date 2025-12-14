@@ -1,0 +1,56 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 254
+    host: api.groq.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\\\"is_fruit\\\": bool}.\"}],\"model\":\"groq/compound-mini\",\"response_format\":{\"type\":\"json_object\"},\"stream\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.groq.com/openai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"chatcmpl-f6d8d5a0-42bf-45fb-b318-39312b662994\",\"object\":\"chat.completion.chunk\",\"created\":1765640207,\"model\":\"groq/compound-mini\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{\"reasoning\":\"{\\\"\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-a7cffb5a-1e6e-4104-850a-623d54acf905\",\"object\":\"chat.completion.chunk\",\"created\":1765640207,\"model\":\"groq/compound-mini\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{\"reasoning\":\"is\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-a77571b0-cc07-441a-a7c8-d14f457112d8\",\"object\":\"chat.completion.chunk\",\"created\":1765640207,\"model\":\"groq/compound-mini\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{\"reasoning\":\"_f\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-c2a57256-8cbe-4d0c-bb89-3b199825e50e\",\"object\":\"chat.completion.chunk\",\"created\":1765640207,\"model\":\"groq/compound-mini\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{\"reasoning\":\"ruit\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-e7f135c2-46e3-4eb7-97da-cbcf1f876c25\",\"object\":\"chat.completion.chunk\",\"created\":1765640207,\"model\":\"groq/compound-mini\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{\"reasoning\":\"\\\":\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-b2408c19-1227-491f-aa96-45ca333fafaf\",\"object\":\"chat.completion.chunk\",\"created\":1765640207,\"model\":\"groq/compound-mini\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{\"reasoning\":\" true\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-cccb2f7f-06d5-43ef-855f-2f839e1293f4\",\"object\":\"chat.completion.chunk\",\"created\":1765640207,\"model\":\"groq/compound-mini\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{\"reasoning\":\"}\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-aae51b56-a802-41c3-8319-484a0278c676\",\"object\":\"chat.completion.chunk\",\"created\":1765640207,\"model\":\"groq/compound-mini\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{\"content\":\"{\\\"\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-75cf3927-a8ff-4e86-85a3-77efaf6da835\",\"object\":\"chat.completion.chunk\",\"created\":1765640207,\"model\":\"groq/compound-mini\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{\"content\":\"is\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-642d09e2-397e-4241-874d-ef2b223c6f48\",\"object\":\"chat.completion.chunk\",\"created\":1765640207,\"model\":\"groq/compound-mini\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{\"content\":\"_f\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-dd560617-1f0e-4d10-9dc7-dd61ad52fa60\",\"object\":\"chat.completion.chunk\",\"created\":1765640207,\"model\":\"groq/compound-mini\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{\"content\":\"ruit\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-1566c1e1-261c-4093-bec1-b05f23632377\",\"object\":\"chat.completion.chunk\",\"created\":1765640207,\"model\":\"groq/compound-mini\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{\"content\":\"\\\":\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-ac0f5aa4-402c-4cd4-9763-b23d93702620\",\"object\":\"chat.completion.chunk\",\"created\":1765640207,\"model\":\"groq/compound-mini\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{\"content\":\" true\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-009c02c5-d56c-4b3a-a2d5-f40d8e878b03\",\"object\":\"chat.completion.chunk\",\"created\":1765640207,\"model\":\"groq/compound-mini\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{\"content\":\"}\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"stub\",\"object\":\"chat.completion.chunk\",\"created\":1765640207,\"model\":\"groq/compound-mini\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"delta\":{},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"x_groq\":{\"usage\":{\"queue_time\":0.042743,\"prompt_tokens\":493,\"prompt_time\":0.027893,\"completion_tokens\":105,\"completion_time\":0.244175,\"total_tokens\":598,\"total_time\":0.272068},\"usage_breakdown\":{\"models\":[{\"model\":\"llama-3.3-70b-versatile\",\"usage\":{\"queue_time\":0.00823297,\"prompt_tokens\":317,\"prompt_time\":0.017178552,\"completion_tokens\":8,\"completion_time\":0.014919166,\"total_tokens\":325,\"total_time\":0.032097718}},{\"model\":\"openai/gpt-oss-120b\",\"usage\":{\"queue_time\":0.034510409,\"prompt_tokens\":176,\"prompt_time\":0.010713794,\"completion_tokens\":97,\"completion_time\":0.229256111,\"total_tokens\":273,\"total_time\":0.239969905,\"completion_tokens_details\":{\"reasoning_tokens\":81}}}]}}}\n\ndata: [DONE]\n\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - no-cache
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad68a004b9fa291-YUL
+      Content-Type:
+      - text/event-stream
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
+      Vary:
+      - Origin
+      X-Groq-Region:
+      - yul
+      X-Ratelimit-Limit-Requests:
+      - "20000"
+      X-Ratelimit-Limit-Tokens:
+      - "200000"
+      X-Ratelimit-Remaining-Requests:
+      - "19993"
+      X-Ratelimit-Remaining-Tokens:
+      - "199963"
+      X-Ratelimit-Reset-Requests:
+      - 30.24s
+      X-Ratelimit-Reset-Tokens:
+      - 11ms
+    status: 200 OK
+    code: 200
+    duration: 45ms

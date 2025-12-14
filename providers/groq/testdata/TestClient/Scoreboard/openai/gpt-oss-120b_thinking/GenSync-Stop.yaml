@@ -20,7 +20,7 @@ interactions:
     proto_minor: 0
     content_length: -1
     uncompressed: true
-    body: "{\"id\":\"chatcmpl-b1509d5a-c3fe-46e3-acde-c485aef0836d\",\"object\":\"chat.completion\",\"created\":1756415360,\"model\":\"openai/gpt-oss-120b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\"The user wants \\\"Talk about Canada in great details. Start with: Canada \"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":0.07533524,\"prompt_tokens\":83,\"prompt_time\":0.003310176,\"completion_tokens\":2488,\"completion_time\":5.015891397,\"total_tokens\":2571,\"total_time\":5.019201573},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_cc94b54a04\",\"x_groq\":{\"id\":\"req_01k3s86t9pe7yvgb9w173mtzhx\"},\"service_tier\":\"on_demand\"}\n"
+    body: "{\"id\":\"chatcmpl-d51c0bd4-61a6-4552-acc0-8fb320f81c67\",\"object\":\"chat.completion\",\"created\":1765638716,\"model\":\"openai/gpt-oss-120b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\"User wants \\\"Talk about Canada in great details. Start with: Canada \"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":0.004185379,\"prompt_tokens\":83,\"prompt_time\":0.003344217,\"completion_tokens\":3913,\"completion_time\":9.404346339,\"total_tokens\":3996,\"total_time\":9.407690556,\"completion_tokens_details\":{\"reasoning_tokens\":16}},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_0060895c89\",\"x_groq\":{\"id\":\"req_01kcc4965qepct6g9dpr62sfed\",\"seed\":1416030048},\"service_tier\":\"on_demand\"}\n"
     headers:
       Alt-Svc:
       - h3=":443"; ma=86400
@@ -29,31 +29,29 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9766c9e1bcd9a2e6-YUL
+      - 9ad6656108f1a316-YUL
       Content-Type:
       - application/json
       Server:
       - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
       Vary:
       - Origin
-      Via:
-      - 1.1 google
       X-Groq-Region:
-      - msp
+      - yul
       X-Ratelimit-Limit-Requests:
       - "500000"
       X-Ratelimit-Limit-Tokens:
       - "250000"
       X-Ratelimit-Remaining-Requests:
-      - "499995"
+      - "499993"
       X-Ratelimit-Remaining-Tokens:
       - "249916"
       X-Ratelimit-Reset-Requests:
-      - 815.8ms
+      - 1.209s
       X-Ratelimit-Reset-Tokens:
-      - 20.159999ms
-      X-Request-Id:
-      - req_01k3s86t9pe7yvgb9w173mtzhx
+      - 20ms
     status: 200 OK
     code: 200
-    duration: 5.182s
+    duration: 9.448s

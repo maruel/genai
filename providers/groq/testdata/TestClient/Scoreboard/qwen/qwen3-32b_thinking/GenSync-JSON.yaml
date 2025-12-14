@@ -1,61 +1,57 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 340
-        host: api.groq.com
-        body: |
-            {"messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."},{"type":"text","text":"\n\n/think"}]}],"model":"qwen/qwen3-32b","reasoning_format":"parsed","response_format":{"type":"json_object"},"stream":false}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.groq.com/openai/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"id":"chatcmpl-36a00fd4-a326-4d38-a853-cabfb2a4c56c","object":"chat.completion","created":1755194899,"model":"qwen/qwen3-32b","choices":[{"index":0,"message":{"role":"assistant","content":"{\"is_fruit\": true}","reasoning":"Okay, the user is asking if a banana is a fruit. They want a JSON response with a boolean value for \"is_fruit\". Let me recall my knowledge about plant biology. A fruit, in botanical terms, is the mature ovary of a flowering plant, usually containing seeds. Bananas grow from the flower of the banana plant, and the part we eat is the fleshy part of the fruit. Even though some people might not think of it as a fruit in the culinary sense, botanically it's a fruit. So the answer should be true. The user also specified not to include an explanation, just the JSON. I need to make sure the JSON matches the schema exactly. No extra fields, just \"is_fruit\": true. Let me double-check that. Yeah, that's correct.\n"},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.001911277,"prompt_tokens":49,"prompt_time":0.012890404,"completion_tokens":178,"completion_time":0.417705494,"total_tokens":227,"total_time":0.430595898},"usage_breakdown":null,"system_fingerprint":"fp_78ac7f3229","x_groq":{"id":"req_01k2mw9erae63r3d876fqzf8fj"},"service_tier":"on_demand"}
-        headers:
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cache-Control:
-                - private, max-age=0, no-store, no-cache, must-revalidate
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 96f26597ccfda2ce-YUL
-            Content-Type:
-                - application/json
-            Server:
-                - cloudflare
-            Vary:
-                - Origin
-            Via:
-                - 1.1 google
-            X-Groq-Region:
-                - msp
-            X-Ratelimit-Limit-Requests:
-                - "500000"
-            X-Ratelimit-Limit-Tokens:
-                - "300000"
-            X-Ratelimit-Remaining-Requests:
-                - "499999"
-            X-Ratelimit-Remaining-Tokens:
-                - "297841"
-            X-Ratelimit-Reset-Requests:
-                - 172.799999ms
-            X-Ratelimit-Reset-Tokens:
-                - 431.8ms
-            X-Request-Id:
-                - req_01k2mw9erae63r3d876fqzf8fj
-        status: 200 OK
-        code: 200
-        duration: 504ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 340
+    host: api.groq.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\\\"is_fruit\\\": bool}.\"},{\"type\":\"text\",\"text\":\"\\n\\n/think\"}]}],\"model\":\"qwen/qwen3-32b\",\"reasoning_format\":\"parsed\",\"response_format\":{\"type\":\"json_object\"},\"stream\":false}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.groq.com/openai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-509f462a-ee53-4c42-8143-d0e52a83eb6d\",\"object\":\"chat.completion\",\"created\":1765638656,\"model\":\"qwen/qwen3-32b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"is_fruit\\\": true}\",\"reasoning\":\"Okay, let's see. The user is asking if a banana is a fruit. They want a JSON response without an explanation. The schema provided is {\\\"is_fruit\\\": bool}, so I need to make sure the answer is just a boolean.\\n\\nFirst, I need to confirm whether a banana is classified as a fruit. From a botanical standpoint, fruits are the mature ovary of a flowering plant, usually containing seeds. Bananas do fit this definition because they develop from the flower and contain seeds (even though they're often seedless in cultivated varieties).\\n\\nBut wait, in common usage, people might refer to the sweet, fleshy part as the fruit. However, technically, the fruit is the part that comes from the plant's reproduction. So, bananas are indeed fruits. There's no need for an explanation here, just a yes or no in JSON. So the answer should be {\\\"is_fruit\\\": true}.\\n\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":0.125665644,\"prompt_tokens\":49,\"prompt_time\":0.001994849,\"completion_tokens\":199,\"completion_time\":0.457728666,\"total_tokens\":248,\"total_time\":0.459723515,\"completion_tokens_details\":{\"reasoning_tokens\":187}},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_efa9879028\",\"x_groq\":{\"id\":\"req_01kcc47matenrsg0wzsscnraz2\",\"seed\":975453040},\"service_tier\":\"on_demand\"}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - private, max-age=0, no-store, no-cache, must-revalidate
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad664221ac9a316-YUL
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
+      Vary:
+      - Origin
+      X-Groq-Region:
+      - yul
+      X-Ratelimit-Limit-Requests:
+      - "500000"
+      X-Ratelimit-Limit-Tokens:
+      - "300000"
+      X-Ratelimit-Remaining-Requests:
+      - "499999"
+      X-Ratelimit-Remaining-Tokens:
+      - "297654"
+      X-Ratelimit-Reset-Requests:
+      - 172ms
+      X-Ratelimit-Reset-Tokens:
+      - 469ms
+    status: 200 OK
+    code: 200
+    duration: 600ms

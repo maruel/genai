@@ -1,69 +1,56 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 181
-        host: api.groq.com
-        body: |
-            {"messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"model":"meta-llama/llama-4-scout-17b-16e-instruct","stop":["is"],"stream":true}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.groq.com/openai/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        body: |+
-            data: {"id":"chatcmpl-84b7aea8-875c-4348-8f36-a89d31b26d8d","object":"chat.completion.chunk","created":1753142025,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_cb546bdbdf","choices":[{"index":0,"delta":{"role":"assistant"},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"chatcmpl-84b7aea8-875c-4348-8f36-a89d31b26d8d","object":"chat.completion.chunk","created":1753142025,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_cb546bdbdf","choices":[{"index":0,"delta":{"content":"Canada"},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"chatcmpl-84b7aea8-875c-4348-8f36-a89d31b26d8d","object":"chat.completion.chunk","created":1753142025,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_cb546bdbdf","choices":[{"index":0,"delta":{"content":" "},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"chatcmpl-84b7aea8-875c-4348-8f36-a89d31b26d8d","object":"chat.completion.chunk","created":1753142028,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_cb546bdbdf","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}],"x_groq":{"id":"req_01k0qpgqaxef7skxr0qsnchh54","usage":{"queue_time":0.0015167429999999997,"prompt_tokens":22,"prompt_time":0.002786937,"completion_tokens":1242,"completion_time":2.971794675,"total_tokens":1264,"total_time":2.974581612}}}
-
-            data: [DONE]
-
-        headers:
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cache-Control:
-                - no-cache
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 962e9e9b9f22a2a8-YUL
-            Content-Type:
-                - text/event-stream
-            Server:
-                - cloudflare
-            Vary:
-                - Origin
-            Via:
-                - 1.1 google
-            X-Groq-Region:
-                - msp
-            X-Ratelimit-Limit-Requests:
-                - "500000"
-            X-Ratelimit-Limit-Tokens:
-                - "300000"
-            X-Ratelimit-Remaining-Requests:
-                - "499996"
-            X-Ratelimit-Remaining-Tokens:
-                - "299980"
-            X-Ratelimit-Reset-Requests:
-                - 526.199999ms
-            X-Ratelimit-Reset-Tokens:
-                - 4ms
-            X-Request-Id:
-                - req_01k0qpgqaxef7skxr0qsnchh54
-        status: 200 OK
-        code: 200
-        duration: 71ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 181
+    host: api.groq.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"Talk about Canada in great details. Start with: Canada is\"}],\"model\":\"meta-llama/llama-4-scout-17b-16e-instruct\",\"stop\":[\"is\"],\"stream\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.groq.com/openai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"chatcmpl-0fc0d6dc-f20f-4b9b-a7cf-f1d9e21ade9e\",\"object\":\"chat.completion.chunk\",\"created\":1765638585,\"model\":\"meta-llama/llama-4-scout-17b-16e-instruct\",\"system_fingerprint\":\"fp_5436ed2ebe\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"logprobs\":null,\"finish_reason\":null}],\"x_groq\":{\"id\":\"req_01kcc45etke6fb2jfnh0n6y3pw\",\"seed\":819569599}}\n\ndata: {\"id\":\"chatcmpl-0fc0d6dc-f20f-4b9b-a7cf-f1d9e21ade9e\",\"object\":\"chat.completion.chunk\",\"created\":1765638588,\"model\":\"meta-llama/llama-4-scout-17b-16e-instruct\",\"system_fingerprint\":\"fp_5436ed2ebe\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Canada\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-0fc0d6dc-f20f-4b9b-a7cf-f1d9e21ade9e\",\"object\":\"chat.completion.chunk\",\"created\":1765638588,\"model\":\"meta-llama/llama-4-scout-17b-16e-instruct\",\"system_fingerprint\":\"fp_5436ed2ebe\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" \"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-0fc0d6dc-f20f-4b9b-a7cf-f1d9e21ade9e\",\"object\":\"chat.completion.chunk\",\"created\":1765638588,\"model\":\"meta-llama/llama-4-scout-17b-16e-instruct\",\"system_fingerprint\":\"fp_5436ed2ebe\",\"choices\":[{\"index\":0,\"delta\":{},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"x_groq\":{\"id\":\"req_01kcc45etke6fb2jfnh0n6y3pw\",\"usage\":{\"queue_time\":0.084319591,\"prompt_tokens\":22,\"prompt_time\":0.000857099,\"completion_tokens\":1144,\"completion_time\":2.907152435,\"total_tokens\":1166,\"total_time\":2.908009534}},\"usage\":{\"queue_time\":0.084319591,\"prompt_tokens\":22,\"prompt_time\":0.000857099,\"completion_tokens\":1144,\"completion_time\":2.907152435,\"total_tokens\":1166,\"total_time\":2.908009534}}\n\ndata: [DONE]\n\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - no-cache
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad662654f34a316-YUL
+      Content-Type:
+      - text/event-stream
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
+      Vary:
+      - Origin
+      X-Groq-Region:
+      - yul
+      X-Ratelimit-Limit-Requests:
+      - "500000"
+      X-Ratelimit-Limit-Tokens:
+      - "300000"
+      X-Ratelimit-Remaining-Requests:
+      - "499993"
+      X-Ratelimit-Remaining-Tokens:
+      - "299977"
+      X-Ratelimit-Reset-Requests:
+      - 1.209s
+      X-Ratelimit-Reset-Tokens:
+      - 4ms
+    status: 200 OK
+    code: 200
+    duration: 105ms

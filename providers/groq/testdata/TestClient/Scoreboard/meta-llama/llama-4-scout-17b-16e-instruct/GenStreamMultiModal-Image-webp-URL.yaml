@@ -1,71 +1,56 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 315
-        host: api.groq.com
-        body: |
-            {"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.webp"}}]}],"model":"meta-llama/llama-4-scout-17b-16e-instruct","stream":true}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.groq.com/openai/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        body: |+
-            data: {"id":"chatcmpl-678e982d-8b06-493c-983c-fbe34aca3105","object":"chat.completion.chunk","created":1753232200,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_cb546bdbdf","choices":[{"index":0,"delta":{"role":"assistant"},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"chatcmpl-678e982d-8b06-493c-983c-fbe34aca3105","object":"chat.completion.chunk","created":1753232200,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_cb546bdbdf","choices":[{"index":0,"delta":{"content":"Ban"},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"chatcmpl-678e982d-8b06-493c-983c-fbe34aca3105","object":"chat.completion.chunk","created":1753232200,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_cb546bdbdf","choices":[{"index":0,"delta":{"content":"ana"},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"chatcmpl-678e982d-8b06-493c-983c-fbe34aca3105","object":"chat.completion.chunk","created":1753232200,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_cb546bdbdf","choices":[{"index":0,"delta":{"content":"."},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"chatcmpl-678e982d-8b06-493c-983c-fbe34aca3105","object":"chat.completion.chunk","created":1753232200,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_cb546bdbdf","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}],"x_groq":{"id":"req_01k0tcgmrkfcctezgnr0309pfa","usage":{"queue_time":0.018141716,"prompt_tokens":172,"prompt_time":0.007694689,"completion_tokens":4,"completion_time":0.010835737,"total_tokens":176,"total_time":0.018530426}}}
-
-            data: [DONE]
-
-        headers:
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cache-Control:
-                - no-cache
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 96373824ba99a299-YUL
-            Content-Type:
-                - text/event-stream
-            Server:
-                - cloudflare
-            Vary:
-                - Origin
-            Via:
-                - 1.1 google
-            X-Groq-Region:
-                - msp
-            X-Ratelimit-Limit-Requests:
-                - "500000"
-            X-Ratelimit-Limit-Tokens:
-                - "300000"
-            X-Ratelimit-Remaining-Requests:
-                - "499988"
-            X-Ratelimit-Remaining-Tokens:
-                - "299947"
-            X-Ratelimit-Reset-Requests:
-                - 1.951599999s
-            X-Ratelimit-Reset-Tokens:
-                - 10.6ms
-            X-Request-Id:
-                - req_01k0tcgmrkfcctezgnr0309pfa
-        status: 200 OK
-        code: 200
-        duration: 181ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 315
+    host: api.groq.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What fruit is it? Reply with only one word.\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.webp\"}}]}],\"model\":\"meta-llama/llama-4-scout-17b-16e-instruct\",\"stream\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.groq.com/openai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"chatcmpl-e2f24a1c-9105-4aba-ac7e-2e9467fdb273\",\"object\":\"chat.completion.chunk\",\"created\":1765638590,\"model\":\"meta-llama/llama-4-scout-17b-16e-instruct\",\"system_fingerprint\":\"fp_130a0cd72d\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"logprobs\":null,\"finish_reason\":null}],\"x_groq\":{\"id\":\"req_01kcc45m7aefq8yqyscyc7nnmk\",\"seed\":1704574329}}\n\ndata: {\"id\":\"chatcmpl-e2f24a1c-9105-4aba-ac7e-2e9467fdb273\",\"object\":\"chat.completion.chunk\",\"created\":1765638590,\"model\":\"meta-llama/llama-4-scout-17b-16e-instruct\",\"system_fingerprint\":\"fp_130a0cd72d\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Ban\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-e2f24a1c-9105-4aba-ac7e-2e9467fdb273\",\"object\":\"chat.completion.chunk\",\"created\":1765638590,\"model\":\"meta-llama/llama-4-scout-17b-16e-instruct\",\"system_fingerprint\":\"fp_130a0cd72d\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"ana\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-e2f24a1c-9105-4aba-ac7e-2e9467fdb273\",\"object\":\"chat.completion.chunk\",\"created\":1765638590,\"model\":\"meta-llama/llama-4-scout-17b-16e-instruct\",\"system_fingerprint\":\"fp_130a0cd72d\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\".\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-e2f24a1c-9105-4aba-ac7e-2e9467fdb273\",\"object\":\"chat.completion.chunk\",\"created\":1765638590,\"model\":\"meta-llama/llama-4-scout-17b-16e-instruct\",\"system_fingerprint\":\"fp_130a0cd72d\",\"choices\":[{\"index\":0,\"delta\":{},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"x_groq\":{\"id\":\"req_01kcc45m7aefq8yqyscyc7nnmk\",\"usage\":{\"queue_time\":0.086663134,\"prompt_tokens\":170,\"prompt_time\":0.004381462,\"completion_tokens\":4,\"completion_time\":0.010379377,\"total_tokens\":174,\"total_time\":0.014760839}},\"usage\":{\"queue_time\":0.086663134,\"prompt_tokens\":170,\"prompt_time\":0.004381462,\"completion_tokens\":4,\"completion_time\":0.010379377,\"total_tokens\":174,\"total_time\":0.014760839}}\n\ndata: [DONE]\n\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - no-cache
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad66287cf9aa316-YUL
+      Content-Type:
+      - text/event-stream
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
+      Vary:
+      - Origin
+      X-Groq-Region:
+      - yul
+      X-Ratelimit-Limit-Requests:
+      - "500000"
+      X-Ratelimit-Limit-Tokens:
+      - "300000"
+      X-Ratelimit-Remaining-Requests:
+      - "499977"
+      X-Ratelimit-Remaining-Tokens:
+      - "299925"
+      X-Ratelimit-Reset-Requests:
+      - 3.974s
+      X-Ratelimit-Reset-Tokens:
+      - 15ms
+    status: 200 OK
+    code: 200
+    duration: 150ms

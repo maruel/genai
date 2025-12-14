@@ -20,7 +20,7 @@ interactions:
     proto_minor: 0
     content_length: -1
     uncompressed: true
-    body: "{\"id\":\"chatcmpl-5ef6c355-f7ee-47ab-b46e-4a38c0f4fc14\",\"object\":\"chat.completion\",\"created\":1756559570,\"model\":\"meta-llama/llama-4-maverick-17b-128e-instruct\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"The capital of Quackiland is Quack.\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":0.069900828,\"prompt_tokens\":45,\"prompt_time\":0.000774486,\"completion_tokens\":11,\"completion_time\":0.015052843,\"total_tokens\":56,\"total_time\":0.015827329},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_565109a0df\",\"x_groq\":{\"id\":\"req_01k3xhqxnmf82rw9v89gdys36x\"},\"service_tier\":\"on_demand\"}\n"
+    body: "{\"id\":\"chatcmpl-c225da8b-2e32-40c0-bea7-82bc6086184b\",\"object\":\"chat.completion\",\"created\":1765638619,\"model\":\"meta-llama/llama-4-maverick-17b-128e-instruct\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"The capital of Quackiland is Quack.\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":1.241748339,\"prompt_tokens\":45,\"prompt_time\":0.024837218,\"completion_tokens\":11,\"completion_time\":0.016115883,\"total_tokens\":56,\"total_time\":0.040953101},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_d2c1f7e199\",\"x_groq\":{\"id\":\"req_01kcc46fa8enh8tbtz2cbnhp7r\",\"seed\":1797379233},\"service_tier\":\"on_demand\"}\n"
     headers:
       Alt-Svc:
       - h3=":443"; ma=86400
@@ -29,17 +29,17 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 97748ac41f20a2d0-YUL
+      - 9ad6633528bea316-YUL
       Content-Type:
       - application/json
       Server:
       - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
       Vary:
       - Origin
-      Via:
-      - 1.1 google
       X-Groq-Region:
-      - msp
+      - yul
       X-Ratelimit-Limit-Requests:
       - "500000"
       X-Ratelimit-Limit-Tokens:
@@ -47,13 +47,11 @@ interactions:
       X-Ratelimit-Remaining-Requests:
       - "499999"
       X-Ratelimit-Remaining-Tokens:
-      - "299963"
+      - "299954"
       X-Ratelimit-Reset-Requests:
-      - 172.799999ms
+      - 172ms
       X-Ratelimit-Reset-Tokens:
-      - 7.4ms
-      X-Request-Id:
-      - req_01k3xhqxnmf82rw9v89gdys36x
+      - 9ms
     status: 200 OK
     code: 200
-    duration: 147ms
+    duration: 1.302s

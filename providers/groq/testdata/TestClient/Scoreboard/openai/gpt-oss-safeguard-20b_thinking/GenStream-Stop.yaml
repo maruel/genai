@@ -1,0 +1,56 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 168
+    host: api.groq.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"Talk about Canada in great details. Start with: Canada is\"}],\"model\":\"openai/gpt-oss-safeguard-20b\",\"stop\":[\"is\"],\"stream\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.groq.com/openai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"chatcmpl-99712343-fa12-44e1-b062-4a103304a9f8\",\"object\":\"chat.completion.chunk\",\"created\":1765638635,\"model\":\"openai/gpt-oss-safeguard-20b\",\"system_fingerprint\":\"fp_e3febdc4be\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"logprobs\":null,\"finish_reason\":null}],\"x_groq\":{\"id\":\"req_01kcc46zp3eg1ar3q67jddz7fh\",\"seed\":1934278486}}\n\ndata: {\"id\":\"chatcmpl-99712343-fa12-44e1-b062-4a103304a9f8\",\"object\":\"chat.completion.chunk\",\"created\":1765638635,\"model\":\"openai/gpt-oss-safeguard-20b\",\"system_fingerprint\":\"fp_e3febdc4be\",\"choices\":[{\"index\":0,\"delta\":{\"reasoning\":\"We\",\"channel\":\"analysis\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-99712343-fa12-44e1-b062-4a103304a9f8\",\"object\":\"chat.completion.chunk\",\"created\":1765638635,\"model\":\"openai/gpt-oss-safeguard-20b\",\"system_fingerprint\":\"fp_e3febdc4be\",\"choices\":[{\"index\":0,\"delta\":{\"reasoning\":\" need\",\"channel\":\"analysis\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-99712343-fa12-44e1-b062-4a103304a9f8\",\"object\":\"chat.completion.chunk\",\"created\":1765638635,\"model\":\"openai/gpt-oss-safeguard-20b\",\"system_fingerprint\":\"fp_e3febdc4be\",\"choices\":[{\"index\":0,\"delta\":{\"reasoning\":\" to\",\"channel\":\"analysis\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-99712343-fa12-44e1-b062-4a103304a9f8\",\"object\":\"chat.completion.chunk\",\"created\":1765638635,\"model\":\"openai/gpt-oss-safeguard-20b\",\"system_fingerprint\":\"fp_e3febdc4be\",\"choices\":[{\"index\":0,\"delta\":{\"reasoning\":\" talk\",\"channel\":\"analysis\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-99712343-fa12-44e1-b062-4a103304a9f8\",\"object\":\"chat.completion.chunk\",\"created\":1765638635,\"model\":\"openai/gpt-oss-safeguard-20b\",\"system_fingerprint\":\"fp_e3febdc4be\",\"choices\":[{\"index\":0,\"delta\":{\"reasoning\":\" about\",\"channel\":\"analysis\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-99712343-fa12-44e1-b062-4a103304a9f8\",\"object\":\"chat.completion.chunk\",\"created\":1765638635,\"model\":\"openai/gpt-oss-safeguard-20b\",\"system_fingerprint\":\"fp_e3febdc4be\",\"choices\":[{\"index\":0,\"delta\":{\"reasoning\":\" Canada\",\"channel\":\"analysis\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-99712343-fa12-44e1-b062-4a103304a9f8\",\"object\":\"chat.completion.chunk\",\"created\":1765638635,\"model\":\"openai/gpt-oss-safeguard-20b\",\"system_fingerprint\":\"fp_e3febdc4be\",\"choices\":[{\"index\":0,\"delta\":{\"reasoning\":\" in\",\"channel\":\"analysis\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-99712343-fa12-44e1-b062-4a103304a9f8\",\"object\":\"chat.completion.chunk\",\"created\":1765638635,\"model\":\"openai/gpt-oss-safeguard-20b\",\"system_fingerprint\":\"fp_e3febdc4be\",\"choices\":[{\"index\":0,\"delta\":{\"reasoning\":\" great\",\"channel\":\"analysis\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-99712343-fa12-44e1-b062-4a103304a9f8\",\"object\":\"chat.completion.chunk\",\"created\":1765638635,\"model\":\"openai/gpt-oss-safeguard-20b\",\"system_fingerprint\":\"fp_e3febdc4be\",\"choices\":[{\"index\":0,\"delta\":{\"reasoning\":\" detail\",\"channel\":\"analysis\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-99712343-fa12-44e1-b062-4a103304a9f8\",\"object\":\"chat.completion.chunk\",\"created\":1765638635,\"model\":\"openai/gpt-oss-safeguard-20b\",\"system_fingerprint\":\"fp_e3febdc4be\",\"choices\":[{\"index\":0,\"delta\":{\"reasoning\":\",\",\"channel\":\"analysis\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-99712343-fa12-44e1-b062-4a103304a9f8\",\"object\":\"chat.completion.chunk\",\"created\":1765638635,\"model\":\"openai/gpt-oss-safeguard-20b\",\"system_fingerprint\":\"fp_e3febdc4be\",\"choices\":[{\"index\":0,\"delta\":{\"reasoning\":\" starting\",\"channel\":\"analysis\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-99712343-fa12-44e1-b062-4a103304a9f8\",\"object\":\"chat.completion.chunk\",\"created\":1765638635,\"model\":\"openai/gpt-oss-safeguard-20b\",\"system_fingerprint\":\"fp_e3febdc4be\",\"choices\":[{\"index\":0,\"delta\":{\"reasoning\":\" with\",\"channel\":\"analysis\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-99712343-fa12-44e1-b062-4a103304a9f8\",\"object\":\"chat.completion.chunk\",\"created\":1765638635,\"model\":\"openai/gpt-oss-safeguard-20b\",\"system_fingerprint\":\"fp_e3febdc4be\",\"choices\":[{\"index\":0,\"delta\":{\"reasoning\":\" \\\"\",\"channel\":\"analysis\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-99712343-fa12-44e1-b062-4a103304a9f8\",\"object\":\"chat.completion.chunk\",\"created\":1765638635,\"model\":\"openai/gpt-oss-safeguard-20b\",\"system_fingerprint\":\"fp_e3febdc4be\",\"choices\":[{\"index\":0,\"delta\":{\"reasoning\":\"Canada\",\"channel\":\"analysis\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-99712343-fa12-44e1-b062-4a103304a9f8\",\"object\":\"chat.completion.chunk\",\"created\":1765638635,\"model\":\"openai/gpt-oss-safeguard-20b\",\"system_fingerprint\":\"fp_e3febdc4be\",\"choices\":[{\"index\":0,\"delta\":{\"reasoning\":\" \",\"channel\":\"analysis\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-99712343-fa12-44e1-b062-4a103304a9f8\",\"object\":\"chat.completion.chunk\",\"created\":1765638637,\"model\":\"openai/gpt-oss-safeguard-20b\",\"system_fingerprint\":\"fp_e3febdc4be\",\"choices\":[{\"index\":0,\"delta\":{},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"x_groq\":{\"id\":\"req_01kcc46zp3eg1ar3q67jddz7fh\",\"usage\":{\"queue_time\":0.033090542,\"prompt_tokens\":83,\"prompt_time\":0.00396602,\"completion_tokens\":2327,\"completion_time\":2.393690948,\"total_tokens\":2410,\"total_time\":2.397656968,\"completion_tokens_details\":{\"reasoning_tokens\":16}}},\"usage\":{\"queue_time\":0.033090542,\"prompt_tokens\":83,\"prompt_time\":0.00396602,\"completion_tokens\":2327,\"completion_time\":2.393690948,\"total_tokens\":2410,\"total_time\":2.397656968,\"completion_tokens_details\":{\"reasoning_tokens\":16}}}\n\ndata: [DONE]\n\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - no-cache
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad6639dfbf7a316-YUL
+      Content-Type:
+      - text/event-stream
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
+      Vary:
+      - Origin
+      X-Groq-Region:
+      - yul
+      X-Ratelimit-Limit-Requests:
+      - "500000"
+      X-Ratelimit-Limit-Tokens:
+      - "150000"
+      X-Ratelimit-Remaining-Requests:
+      - "499993"
+      X-Ratelimit-Remaining-Tokens:
+      - "149744"
+      X-Ratelimit-Reset-Requests:
+      - 1.209s
+      X-Ratelimit-Reset-Tokens:
+      - 102ms
+    status: 200 OK
+    code: 200
+    duration: 52ms

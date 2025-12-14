@@ -1,85 +1,56 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 277
-        host: api.groq.com
-        body: |
-            {"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"model":"meta-llama/llama-4-maverick-17b-128e-instruct","stream":true}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.groq.com/openai/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        body: |+
-            data: {"id":"chatcmpl-d5d91f3e-2586-490f-968a-96f64565f5fd","object":"chat.completion.chunk","created":1753142038,"model":"meta-llama/llama-4-maverick-17b-128e-instruct","system_fingerprint":"fp_565109a0df","choices":[{"index":0,"delta":{"role":"assistant"},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"chatcmpl-d5d91f3e-2586-490f-968a-96f64565f5fd","object":"chat.completion.chunk","created":1753142038,"model":"meta-llama/llama-4-maverick-17b-128e-instruct","system_fingerprint":"fp_565109a0df","choices":[{"index":0,"delta":{"content":"The"},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"chatcmpl-d5d91f3e-2586-490f-968a-96f64565f5fd","object":"chat.completion.chunk","created":1753142038,"model":"meta-llama/llama-4-maverick-17b-128e-instruct","system_fingerprint":"fp_565109a0df","choices":[{"index":0,"delta":{"content":" capital"},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"chatcmpl-d5d91f3e-2586-490f-968a-96f64565f5fd","object":"chat.completion.chunk","created":1753142038,"model":"meta-llama/llama-4-maverick-17b-128e-instruct","system_fingerprint":"fp_565109a0df","choices":[{"index":0,"delta":{"content":" of"},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"chatcmpl-d5d91f3e-2586-490f-968a-96f64565f5fd","object":"chat.completion.chunk","created":1753142038,"model":"meta-llama/llama-4-maverick-17b-128e-instruct","system_fingerprint":"fp_565109a0df","choices":[{"index":0,"delta":{"content":" Qu"},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"chatcmpl-d5d91f3e-2586-490f-968a-96f64565f5fd","object":"chat.completion.chunk","created":1753142038,"model":"meta-llama/llama-4-maverick-17b-128e-instruct","system_fingerprint":"fp_565109a0df","choices":[{"index":0,"delta":{"content":"ack"},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"chatcmpl-d5d91f3e-2586-490f-968a-96f64565f5fd","object":"chat.completion.chunk","created":1753142038,"model":"meta-llama/llama-4-maverick-17b-128e-instruct","system_fingerprint":"fp_565109a0df","choices":[{"index":0,"delta":{"content":"iland"},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"chatcmpl-d5d91f3e-2586-490f-968a-96f64565f5fd","object":"chat.completion.chunk","created":1753142038,"model":"meta-llama/llama-4-maverick-17b-128e-instruct","system_fingerprint":"fp_565109a0df","choices":[{"index":0,"delta":{"content":" is"},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"chatcmpl-d5d91f3e-2586-490f-968a-96f64565f5fd","object":"chat.completion.chunk","created":1753142038,"model":"meta-llama/llama-4-maverick-17b-128e-instruct","system_fingerprint":"fp_565109a0df","choices":[{"index":0,"delta":{"content":" Qu"},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"chatcmpl-d5d91f3e-2586-490f-968a-96f64565f5fd","object":"chat.completion.chunk","created":1753142038,"model":"meta-llama/llama-4-maverick-17b-128e-instruct","system_fingerprint":"fp_565109a0df","choices":[{"index":0,"delta":{"content":"ack"},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"chatcmpl-d5d91f3e-2586-490f-968a-96f64565f5fd","object":"chat.completion.chunk","created":1753142038,"model":"meta-llama/llama-4-maverick-17b-128e-instruct","system_fingerprint":"fp_565109a0df","choices":[{"index":0,"delta":{"content":"."},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"chatcmpl-d5d91f3e-2586-490f-968a-96f64565f5fd","object":"chat.completion.chunk","created":1753142038,"model":"meta-llama/llama-4-maverick-17b-128e-instruct","system_fingerprint":"fp_565109a0df","choices":[{"index":0,"delta":{},"logprobs":null,"finish_reason":"stop"}],"x_groq":{"id":"req_01k0qph3ewedervgd3edkddgmt","usage":{"queue_time":0.071357562,"prompt_tokens":40,"prompt_time":0.000755687,"completion_tokens":11,"completion_time":0.015596654,"total_tokens":51,"total_time":0.016352341}}}
-
-            data: [DONE]
-
-        headers:
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cache-Control:
-                - no-cache
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 962e9ee91e60a2a8-YUL
-            Content-Type:
-                - text/event-stream
-            Server:
-                - cloudflare
-            Vary:
-                - Origin
-            Via:
-                - 1.1 google
-            X-Groq-Region:
-                - msp
-            X-Ratelimit-Limit-Requests:
-                - "500000"
-            X-Ratelimit-Limit-Tokens:
-                - "300000"
-            X-Ratelimit-Remaining-Requests:
-                - "499994"
-            X-Ratelimit-Remaining-Tokens:
-                - "298211"
-            X-Ratelimit-Reset-Requests:
-                - 997.8ms
-            X-Ratelimit-Reset-Tokens:
-                - 357.8ms
-            X-Request-Id:
-                - req_01k0qph3ewedervgd3edkddgmt
-        status: 200 OK
-        code: 200
-        duration: 150ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 277
+    host: api.groq.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}],\"model\":\"meta-llama/llama-4-maverick-17b-128e-instruct\",\"stream\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.groq.com/openai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"chatcmpl-a9ac6370-11df-4261-8477-f116e609a514\",\"object\":\"chat.completion.chunk\",\"created\":1765638619,\"model\":\"meta-llama/llama-4-maverick-17b-128e-instruct\",\"system_fingerprint\":\"fp_d2c1f7e199\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"logprobs\":null,\"finish_reason\":null}],\"x_groq\":{\"id\":\"req_01kcc46fgxe6s870gda7a1aztx\",\"seed\":1156178088}}\n\ndata: {\"id\":\"chatcmpl-a9ac6370-11df-4261-8477-f116e609a514\",\"object\":\"chat.completion.chunk\",\"created\":1765638619,\"model\":\"meta-llama/llama-4-maverick-17b-128e-instruct\",\"system_fingerprint\":\"fp_d2c1f7e199\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"The\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-a9ac6370-11df-4261-8477-f116e609a514\",\"object\":\"chat.completion.chunk\",\"created\":1765638619,\"model\":\"meta-llama/llama-4-maverick-17b-128e-instruct\",\"system_fingerprint\":\"fp_d2c1f7e199\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" capital\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-a9ac6370-11df-4261-8477-f116e609a514\",\"object\":\"chat.completion.chunk\",\"created\":1765638619,\"model\":\"meta-llama/llama-4-maverick-17b-128e-instruct\",\"system_fingerprint\":\"fp_d2c1f7e199\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" of\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-a9ac6370-11df-4261-8477-f116e609a514\",\"object\":\"chat.completion.chunk\",\"created\":1765638619,\"model\":\"meta-llama/llama-4-maverick-17b-128e-instruct\",\"system_fingerprint\":\"fp_d2c1f7e199\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" Qu\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-a9ac6370-11df-4261-8477-f116e609a514\",\"object\":\"chat.completion.chunk\",\"created\":1765638619,\"model\":\"meta-llama/llama-4-maverick-17b-128e-instruct\",\"system_fingerprint\":\"fp_d2c1f7e199\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"ack\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-a9ac6370-11df-4261-8477-f116e609a514\",\"object\":\"chat.completion.chunk\",\"created\":1765638619,\"model\":\"meta-llama/llama-4-maverick-17b-128e-instruct\",\"system_fingerprint\":\"fp_d2c1f7e199\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"iland\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-a9ac6370-11df-4261-8477-f116e609a514\",\"object\":\"chat.completion.chunk\",\"created\":1765638619,\"model\":\"meta-llama/llama-4-maverick-17b-128e-instruct\",\"system_fingerprint\":\"fp_d2c1f7e199\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" is\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-a9ac6370-11df-4261-8477-f116e609a514\",\"object\":\"chat.completion.chunk\",\"created\":1765638619,\"model\":\"meta-llama/llama-4-maverick-17b-128e-instruct\",\"system_fingerprint\":\"fp_d2c1f7e199\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" Qu\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-a9ac6370-11df-4261-8477-f116e609a514\",\"object\":\"chat.completion.chunk\",\"created\":1765638619,\"model\":\"meta-llama/llama-4-maverick-17b-128e-instruct\",\"system_fingerprint\":\"fp_d2c1f7e199\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"ack\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-a9ac6370-11df-4261-8477-f116e609a514\",\"object\":\"chat.completion.chunk\",\"created\":1765638619,\"model\":\"meta-llama/llama-4-maverick-17b-128e-instruct\",\"system_fingerprint\":\"fp_d2c1f7e199\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\".\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-a9ac6370-11df-4261-8477-f116e609a514\",\"object\":\"chat.completion.chunk\",\"created\":1765638619,\"model\":\"meta-llama/llama-4-maverick-17b-128e-instruct\",\"system_fingerprint\":\"fp_d2c1f7e199\",\"choices\":[{\"index\":0,\"delta\":{},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"x_groq\":{\"id\":\"req_01kcc46fgxe6s870gda7a1aztx\",\"usage\":{\"queue_time\":1.026287099,\"prompt_tokens\":40,\"prompt_time\":0.020362822,\"completion_tokens\":11,\"completion_time\":0.016055363,\"total_tokens\":51,\"total_time\":0.036418185}},\"usage\":{\"queue_time\":1.026287099,\"prompt_tokens\":40,\"prompt_time\":0.020362822,\"completion_tokens\":11,\"completion_time\":0.016055363,\"total_tokens\":51,\"total_time\":0.036418185}}\n\ndata: [DONE]\n\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - no-cache
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad663365ae2a316-YUL
+      Content-Type:
+      - text/event-stream
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
+      Vary:
+      - Origin
+      X-Groq-Region:
+      - yul
+      X-Ratelimit-Limit-Requests:
+      - "500000"
+      X-Ratelimit-Limit-Tokens:
+      - "300000"
+      X-Ratelimit-Remaining-Requests:
+      - "499999"
+      X-Ratelimit-Remaining-Tokens:
+      - "299959"
+      X-Ratelimit-Reset-Requests:
+      - 172ms
+      X-Ratelimit-Reset-Tokens:
+      - 8ms
+    status: 200 OK
+    code: 200
+    duration: 1.081s

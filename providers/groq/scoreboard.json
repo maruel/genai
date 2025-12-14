@@ -107,6 +107,7 @@
         "tools": "true",
         "toolsBiased": "true",
         "toolCallRequired": true,
+        "webSearch": true,
         "json": true,
         "maxTokens": true,
         "stopSequence": true
@@ -208,49 +209,6 @@
       }
     },
     {
-      "comments": "JSON only works when using ReasoningFormat: ReasoningFormatParsed",
-      "models": [
-        "deepseek-r1-distill-llama-70b"
-      ],
-      "reason": true,
-      "reasoningTokenStart": "\u003cthink\u003e",
-      "reasoningTokenEnd": "\n\u003c/think\u003e\n",
-      "in": {
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "tools": "true",
-        "toolsBiased": "true",
-        "toolCallRequired": true,
-        "json": true,
-        "maxTokens": true,
-        "stopSequence": true
-      },
-      "GenStream": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "tools": "true",
-        "toolsBiased": "true",
-        "toolCallRequired": true,
-        "json": true,
-        "maxTokens": true,
-        "stopSequence": true
-      }
-    },
-    {
       "comments": "Sometimes tool calling fails",
       "models": [
         "meta-llama/llama-4-scout-17b-16e-instruct"
@@ -333,8 +291,7 @@
         "reportFinishReason": "true",
         "seed": true,
         "tools": "true",
-        "toolsBiased": "flaky",
-        "toolsIndecisive": "true",
+        "toolsBiased": "true",
         "toolCallRequired": true,
         "json": true,
         "maxTokens": true,
@@ -390,21 +347,12 @@
         "reportFinishReason": "true",
         "seed": true,
         "tools": "true",
-        "toolsBiased": "flaky",
         "toolsIndecisive": "true",
         "toolCallRequired": true,
         "json": true,
         "maxTokens": true,
         "stopSequence": true
       }
-    },
-    {
-      "comments": "Deprecated models.",
-      "models": [
-        "gemma2-9b-it",
-        "llama3-70b-8192",
-        "llama3-8b-8192"
-      ]
     },
     {
       "comments": "Unsupported models.",
@@ -420,6 +368,144 @@
         "whisper-large-v3",
         "whisper-large-v3-turbo"
       ]
+    },
+    {
+      "models": [
+        "moonshotai/kimi-k2-instruct-0905"
+      ],
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "json": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "json": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
+    },
+    {
+      "models": [
+        "openai/gpt-oss-safeguard-20b"
+      ],
+      "reason": true,
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
+        "webSearch": true,
+        "json": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
+        "webSearch": true,
+        "json": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
+    },
+    {
+      "models": [
+        "groq/compound"
+      ],
+      "reason": true,
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "webSearch": true
+      },
+      "GenStream": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "webSearch": true,
+        "json": true
+      }
+    },
+    {
+      "models": [
+        "groq/compound-mini"
+      ],
+      "reason": true,
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "webSearch": true,
+        "json": true
+      },
+      "GenStream": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "webSearch": true,
+        "json": true
+      }
     }
   ]
 }

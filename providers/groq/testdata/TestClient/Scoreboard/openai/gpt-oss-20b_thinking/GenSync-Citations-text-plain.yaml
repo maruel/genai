@@ -20,7 +20,7 @@ interactions:
     proto_minor: 0
     content_length: -1
     uncompressed: true
-    body: "{\"id\":\"chatcmpl-068b301d-0693-4003-a20c-b3116fbc9554\",\"object\":\"chat.completion\",\"created\":1756415313,\"model\":\"openai/gpt-oss-20b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"Quack.\",\"reasoning\":\"The user is repeating the same question: The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland? So answer: Quack. The user gave the answer in the question but wants to confirm. So respond: Quack. Probably short.\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":0.06793832,\"prompt_tokens\":100,\"prompt_time\":0.00646372,\"completion_tokens\":79,\"completion_time\":0.07065137,\"total_tokens\":179,\"total_time\":0.07711509},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_ab31407964\",\"x_groq\":{\"id\":\"req_01k3s85hgmfb28pzf9e5fyxqyt\"},\"service_tier\":\"on_demand\"}\n"
+    body: "{\"id\":\"chatcmpl-8a69d3f7-99ad-4f0b-910f-baaba9ac9b23\",\"object\":\"chat.completion\",\"created\":1765638737,\"model\":\"openai/gpt-oss-20b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"The capital of Quackiland is **Quack**.\",\"reasoning\":\"User says: \\\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.What is the capital of Quackiland?\\\" This is straightforward: answer is Quack. According to policy, we can repeat. No problem. There's no policy issue. So respond: Quack.\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":0.003076279,\"prompt_tokens\":100,\"prompt_time\":0.004931163,\"completion_tokens\":86,\"completion_time\":0.089753591,\"total_tokens\":186,\"total_time\":0.094684754,\"completion_tokens_details\":{\"reasoning_tokens\":65}},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_99996fee8e\",\"x_groq\":{\"id\":\"req_01kcc4a34nehvr5mb4f25ajj2r\",\"seed\":415023652},\"service_tier\":\"on_demand\"}\n"
     headers:
       Alt-Svc:
       - h3=":443"; ma=86400
@@ -29,31 +29,29 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9766c8dcbaf1a2eb-YUL
+      - 9ad6661a7d79a316-YUL
       Content-Type:
       - application/json
       Server:
       - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
       Vary:
       - Origin
-      Via:
-      - 1.1 google
       X-Groq-Region:
-      - msp
+      - yul
       X-Ratelimit-Limit-Requests:
       - "500000"
       X-Ratelimit-Limit-Tokens:
       - "250000"
       X-Ratelimit-Remaining-Requests:
-      - "499998"
+      - "499999"
       X-Ratelimit-Remaining-Tokens:
-      - "249872"
+      - "227179"
       X-Ratelimit-Reset-Requests:
-      - 278.2ms
+      - 172ms
       X-Ratelimit-Reset-Tokens:
-      - 30.519999ms
-      X-Request-Id:
-      - req_01k3s85hgmfb28pzf9e5fyxqyt
+      - 5.477s
     status: 200 OK
     code: 200
-    duration: 209ms
+    duration: 118ms

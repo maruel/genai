@@ -20,7 +20,7 @@ interactions:
     proto_minor: 0
     content_length: -1
     uncompressed: true
-    body: "{\"id\":\"chatcmpl-bde8f43b-186b-47e1-8139-68718ee3f18b\",\"object\":\"chat.completion\",\"created\":1756415354,\"model\":\"openai/gpt-oss-120b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"Hello\",\"reasoning\":\"The user says: \\\"Say hello. Use only one word.\\\" So we must respond with a single word that says hello. Probably \\\"Hello\\\". That's one word. Must not include extra punctuation? Probably okay. Just \\\"Hello\\\".\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":0.06903805,\"prompt_tokens\":79,\"prompt_time\":0.003092182,\"completion_tokens\":57,\"completion_time\":0.113748726,\"total_tokens\":136,\"total_time\":0.116840908},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_68dd9f1c8e\",\"x_groq\":{\"id\":\"req_01k3s86sf3fe2vcg1s4035k8jc\"},\"service_tier\":\"on_demand\"}\n"
+    body: "{\"id\":\"chatcmpl-77d48833-3edd-47d5-aa7e-66ae68814dc0\",\"object\":\"chat.completion\",\"created\":1765638707,\"model\":\"openai/gpt-oss-120b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"Hello\",\"reasoning\":\"The user says: \\\"Say hello. Use only one word.\\\"\\n\\nWe need to respond with a single word that says hello, like \\\"Hello\\\". That's one word.\\n\\nWe must follow instruction. So answer: Hello.\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":0.004041046,\"prompt_tokens\":79,\"prompt_time\":0.00333306,\"completion_tokens\":54,\"completion_time\":0.119400725,\"total_tokens\":133,\"total_time\":0.122733785,\"completion_tokens_details\":{\"reasoning_tokens\":44}},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_c5da83ab22\",\"x_groq\":{\"id\":\"req_01kcc495y9eh8rgjrjbenadcyk\",\"seed\":42},\"service_tier\":\"on_demand\"}\n"
     headers:
       Alt-Svc:
       - h3=":443"; ma=86400
@@ -29,31 +29,29 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9766c9dc6d44a2e6-YUL
+      - 9ad6655f9efca316-YUL
       Content-Type:
       - application/json
       Server:
       - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
       Vary:
       - Origin
-      Via:
-      - 1.1 google
       X-Groq-Region:
-      - msp
+      - yul
       X-Ratelimit-Limit-Requests:
       - "500000"
       X-Ratelimit-Limit-Tokens:
       - "250000"
       X-Ratelimit-Remaining-Requests:
-      - "499998"
+      - "499997"
       X-Ratelimit-Remaining-Tokens:
-      - "249916"
+      - "249920"
       X-Ratelimit-Reset-Requests:
-      - 276.399999ms
+      - 518ms
       X-Ratelimit-Reset-Tokens:
-      - 20.04ms
-      X-Request-Id:
-      - req_01k3s86sf3fe2vcg1s4035k8jc
+      - 19ms
     status: 200 OK
     code: 200
-    duration: 249ms
+    duration: 148ms

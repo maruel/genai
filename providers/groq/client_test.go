@@ -90,8 +90,10 @@ func TestClient(t *testing.T) {
 			if strings.HasPrefix(model.Model, "qwen/") && model.Reason {
 				c = &adapters.ProviderAppend{Provider: c, Append: genai.Request{Text: "\n\n/think"}}
 			}
-			// OpenAI must not enable the ReasoningFormat flag.
-			if model.Reason && !strings.HasPrefix(model.Model, "openai/") {
+			// Groq models with native reasoning support (groq/compound, etc.) already return reasoning in a
+			// separate field. Don't wrap with ProviderReasoning which expects reasoning embedded in text.
+			// Only apply ProviderReasoning to models that need text-based reasoning extraction.
+			if model.Reason && strings.HasPrefix(model.Model, "qwen/") {
 				return &handleGroqReasoning{Provider: c}
 			}
 			return c

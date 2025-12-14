@@ -20,7 +20,7 @@ interactions:
     proto_minor: 0
     content_length: -1
     uncompressed: true
-    body: "{\"id\":\"chatcmpl-c0e325de-81f5-4d6b-923e-1c714fa9da1d\",\"object\":\"chat.completion\",\"created\":1756415311,\"model\":\"openai/gpt-oss-20b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\"We need to produce a comprehensive detailed talk about Canada. The user says \\\"Talk about Canada in great details. Start with: Canada \"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":0.067954423,\"prompt_tokens\":83,\"prompt_time\":0.005349044,\"completion_tokens\":2781,\"completion_time\":2.467158362,\"total_tokens\":2864,\"total_time\":2.472507406},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_0ca5007ac7\",\"x_groq\":{\"id\":\"req_01k3s85d9ae4etdc33f4tqm8n2\"},\"service_tier\":\"on_demand\"}\n"
+    body: "{\"id\":\"chatcmpl-3e0fb198-ee2c-407f-98fa-99f2625bf3bf\",\"object\":\"chat.completion\",\"created\":1765638733,\"model\":\"openai/gpt-oss-20b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\"We need to produce a detailed talk about Canada, starting with \\\"Canada \"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":0.003026304,\"prompt_tokens\":83,\"prompt_time\":0.00395956,\"completion_tokens\":2657,\"completion_time\":2.71849295,\"total_tokens\":2740,\"total_time\":2.72245251,\"completion_tokens_details\":{\"reasoning_tokens\":16}},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_34cb00738d\",\"x_groq\":{\"id\":\"req_01kcc49wq2e85rkttas3nea0dg\",\"seed\":1726004570},\"service_tier\":\"on_demand\"}\n"
     headers:
       Alt-Svc:
       - h3=":443"; ma=86400
@@ -29,31 +29,29 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9766c8c19f97a2eb-YUL
+      - 9ad665f15892a316-YUL
       Content-Type:
       - application/json
       Server:
       - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
       Vary:
       - Origin
-      Via:
-      - 1.1 google
       X-Groq-Region:
-      - msp
+      - yul
       X-Ratelimit-Limit-Requests:
       - "500000"
       X-Ratelimit-Limit-Tokens:
       - "250000"
       X-Ratelimit-Remaining-Requests:
-      - "499993"
+      - "499992"
       X-Ratelimit-Remaining-Tokens:
-      - "249916"
+      - "249794"
       X-Ratelimit-Reset-Requests:
-      - 1.1886s
+      - 1.382s
       X-Ratelimit-Reset-Tokens:
-      - 20.159999ms
-      X-Request-Id:
-      - req_01k3s85d9ae4etdc33f4tqm8n2
+      - 49ms
     status: 200 OK
     code: 200
-    duration: 2.607s
+    duration: 2.746s

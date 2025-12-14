@@ -20,7 +20,7 @@ interactions:
     proto_minor: 0
     content_length: -1
     uncompressed: true
-    body: "{\"id\":\"chatcmpl-9cc316eb-e221-44ca-bf61-f48596372aa7\",\"object\":\"chat.completion\",\"created\":1756415311,\"model\":\"openai/gpt-oss-20b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"is_fruit\\\": true}\",\"reasoning\":\"We need to respond in JSON: {\\\"is_fruit\\\": bool}. Banana is a fruit. So bool true. Ensure JSON format. No explanation.\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":0.086495267,\"prompt_tokens\":107,\"prompt_time\":0.007976417,\"completion_tokens\":47,\"completion_time\":0.041680657,\"total_tokens\":154,\"total_time\":0.049657074},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_0ca5007ac7\",\"x_groq\":{\"id\":\"req_01k3s85ftne4pbsc0t4gmv3htm\"},\"service_tier\":\"on_demand\"}\n"
+    body: "{\"id\":\"chatcmpl-8819a365-6fbf-47e6-aa29-cfc24b056f34\",\"object\":\"chat.completion\",\"created\":1765638733,\"model\":\"openai/gpt-oss-20b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"is_fruit\\\":true}\",\"reasoning\":\"The user wants: \\\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\\\"is_fruit\\\": bool}.\\\"\\n\\nWe need to output JSON, compact, no explanation. So: {\\\"is_fruit\\\": true}. Ensure valid JSON. Probably no spaces. Use compact: {\\\"is_fruit\\\":true} is compact. Should we include quotes? They gave schema: {\\\"is_fruit\\\": bool}. So output as {\\\"is_fruit\\\": true}. That is compact JSON. Ensure it's just that line. No explanation.\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":0.003039919,\"prompt_tokens\":124,\"prompt_time\":0.006983849,\"completion_tokens\":133,\"completion_time\":0.134550517,\"total_tokens\":257,\"total_time\":0.141534366,\"completion_tokens_details\":{\"reasoning_tokens\":117}},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_d8063b0a5c\",\"x_groq\":{\"id\":\"req_01kcc49zcze878bxfq9ernkvck\",\"seed\":1350782954},\"service_tier\":\"on_demand\"}\n"
     headers:
       Alt-Svc:
       - h3=":443"; ma=86400
@@ -29,31 +29,29 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9766c8d1ed5da2eb-YUL
+      - 9ad666028aa9a316-YUL
       Content-Type:
       - application/json
       Server:
       - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
       Vary:
       - Origin
-      Via:
-      - 1.1 google
       X-Groq-Region:
-      - msp
+      - yul
       X-Ratelimit-Limit-Requests:
       - "500000"
       X-Ratelimit-Limit-Tokens:
       - "250000"
       X-Ratelimit-Remaining-Requests:
-      - "499998"
+      - "499997"
       X-Ratelimit-Remaining-Tokens:
-      - "247186"
+      - "245011"
       X-Ratelimit-Reset-Requests:
-      - 313.6ms
+      - 518ms
       X-Ratelimit-Reset-Tokens:
-      - 675.279999ms
-      X-Request-Id:
-      - req_01k3s85ftne4pbsc0t4gmv3htm
+      - 1.197s
     status: 200 OK
     code: 200
-    duration: 198ms
+    duration: 168ms

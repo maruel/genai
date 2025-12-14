@@ -1,61 +1,57 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 642
-        host: api.groq.com
-        body: |
-            {"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."},{"type":"text","text":"\n\n/think"}]}],"model":"qwen/qwen3-32b","reasoning_format":"parsed","stream":false,"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.groq.com/openai/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"id":"chatcmpl-6acdf265-250d-4899-b0f5-3cd4f6a94d30","object":"chat.completion","created":1755194903,"model":"qwen/qwen3-32b","choices":[{"index":0,"message":{"role":"assistant","reasoning":"Okay, the user is asking if the USA is better than Canada and wants me to use the best_country tool to determine which is the best. Let me check the tool's parameters. The tool allows specifying either USA or Canada. Since the user mentioned the USA first, but the tool requires choosing one, I need to call the function with one of the countries. However, the tool's description says it specifies the best country, but it's a bit subjective. The function's parameters are an enum of USA and Canada. Maybe I should call the function with both options and see? Wait, no, each function call can only take one country. The user wants to know which is best, so perhaps the tool is designed to return the best based on some criteria. Since the tool's actual logic isn't provided, I have to assume it's a simple choice. The user is asking for a comparison, but the tool might just return the one passed as the best. Hmm, maybe the tool is set up to return that the USA is the best. Let me call the function with USA and Canada and see. Wait, no, in the parameters, only one country can be selected. The user is expecting a comparison, but the tool might only take one country. Maybe I need to call the tool twice, once for each country, but the example shows only one country in the parameters. Alternatively, the function might have a predefined answer. Since the user suggested the USA first, but the tool is neutral, maybe the function will return the USA as the best. I'll proceed to call the function with USA as the argument.\n","tool_calls":[{"id":"kk7xacajb","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.003282657,"prompt_tokens":213,"prompt_time":0.02436258,"completion_tokens":352,"completion_time":1.002881673,"total_tokens":565,"total_time":1.027244253},"usage_breakdown":null,"system_fingerprint":"fp_78ac7f3229","x_groq":{"id":"req_01k2mw9hxfe6dvtmgxtsvwek36"},"service_tier":"on_demand"}
-        headers:
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cache-Control:
-                - private, max-age=0, no-store, no-cache, must-revalidate
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 96f265ac08dea2ce-YUL
-            Content-Type:
-                - application/json
-            Server:
-                - cloudflare
-            Vary:
-                - Origin
-            Via:
-                - 1.1 google
-            X-Groq-Region:
-                - msp
-            X-Ratelimit-Limit-Requests:
-                - "500000"
-            X-Ratelimit-Limit-Tokens:
-                - "300000"
-            X-Ratelimit-Remaining-Requests:
-                - "499999"
-            X-Ratelimit-Remaining-Tokens:
-                - "299962"
-            X-Ratelimit-Reset-Requests:
-                - 172.799999ms
-            X-Ratelimit-Reset-Tokens:
-                - 7.6ms
-            X-Request-Id:
-                - req_01k2mw9hxfe6dvtmgxtsvwek36
-        status: 200 OK
-        code: 200
-        duration: 1.097s
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 642
+    host: api.groq.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one.\"},{\"type\":\"text\",\"text\":\"\\n\\n/think\"}]}],\"model\":\"qwen/qwen3-32b\",\"reasoning_format\":\"parsed\",\"stream\":false,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"description\":\"A tool to specify the best country\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"country\":{\"type\":\"string\",\"enum\":[\"USA\",\"Canada\"]}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"country\"]}}}],\"tool_choice\":\"required\"}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.groq.com/openai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-5fbf4f1d-81ff-4fe1-ad45-df02cd3c13e7\",\"object\":\"chat.completion\",\"created\":1765638662,\"model\":\"qwen/qwen3-32b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"reasoning\":\"Okay, the user is asking if the USA is better than Canada and wants me to use the best_country tool to determine which is the best. Let me check the tool's parameters. The tool allows specifying either USA or Canada. Since the user mentioned the USA first, but the tool requires a single choice, I need to decide which one to pick. However, the tool's purpose is to declare the best, so maybe I should call the function for each country and see which one returns as best. Wait, but the tool might be designed to take a country as input and return if it's the best. Wait, looking back, the function's description says \\\"specify the best country,\\\" and the parameters are to choose between USA or Canada. So perhaps the function will return whether the specified country is the best. So if I call best_country with USA, it might return true or false. Similarly for Canada. But the user wants to know which is the best. Maybe the function's logic is that only one can be the best. Since the user is asking to call the tool, perhaps I need to call it once with each country and compare. But the tool's parameters only allow one country at a time. So I should make two separate tool calls: one for USA and one for Canada, then compare the results. However, the assistant is supposed to call the tool once. Wait, the user's instruction says to call the tool best_country to tell which is best. Maybe the tool is designed to return the best country when given a choice. Wait, looking at the function definition again: the function is called best_country, and it takes a country parameter (USA or Canada). So when you call it with a country, it might return whether that country is the best. But how does it determine that? Maybe the tool's logic is that the function checks some criteria and returns which is better. Since the user is asking to use the tool, I need to call it once for each country to see which one is deemed best. But the assistant can only make one tool call? Wait, the user said \\\"Call the tool best_country to tell me which country is the best one.\\\" So the tool is supposed to return the best country. Wait, maybe the function is designed to take a country as input and return if it's the best, but the actual implementation (which I can't see) would compare them. However, since the parameters are an enum of USA and Canada, perhaps the function's internal logic might consider the USA as the best. Alternatively, maybe the function is designed to return the input country as the best. Wait, but I don't know the actual function's logic. The assistant's job is to call the tool with the possible parameters. Since the user is asking to determine which is best, the assistant might need to call the tool for both countries and compare the results. However, the assistant can only make one tool call per turn. Wait, the user is asking to call the tool once to tell which is best. Maybe the tool is supposed to return the best country when given the two options. But the tool's parameters only take one country. So perhaps the correct approach is to call the tool twice, once with each country. But the assistant can only make one tool call. Hmm, this is confusing. Since the user is asking to use the tool to determine which is better, and the tool is called best_country, perhaps the assistant should call the tool with each country in turn and see which one returns as best. But since the tool's parameters require a single country, maybe the assistant should first call best_country with USA and check the result, then if it's not the best, call it again with Canada. However, in this scenario, the assistant can only make one tool call per response. So the user might need to go through multiple interactions. Alternatively, the tool's function might be designed to take a country and return whether it's the best, allowing the assistant to infer the best country based on the response. For example, if calling best_country with USA returns that it's the best, then that's the answer. If not, then Canada. But since the assistant can't call the tool twice in a single response, perhaps the user's initial instruction expects a single tool call. Given that the user is asking to call the tool, the assistant should make the tool call. But the tool requires a country parameter. The user's message says \\\"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one.\\\" So the user wants to use the tool to get the answer. The assistant should call the tool with one of the options. Since the user is considering USA vs Canada, and the tool can take either, the assistant might need to call the tool with both to determine which is best. But the tool can't take both at once. Therefore, the assistant should make two tool calls: first check USA, then Canada. But given that each response can only make one tool call, perhaps the assistant needs to do it step by step. However, the user's instruction says \\\"Call the tool best_country to tell me which country is the best one,\\\" so the assistant needs to call the tool once, but the tool's parameters require a single country. That doesn't make sense because the tool would need to have internal logic to compare the two. Wait, maybe the function's purpose is to return the best country given the two options, but the parameter is a country. That doesn't align. Alternatively, the tool's function might be designed to take a country and return some attributes, and the assistant would compare the two. But without knowing the tool's internal logic, the assistant can't know. Since the user is asking for the best between USA and Canada, and the tool's enum includes those, the correct approach is to call the tool with the possible parameters. However, since the assistant can only call the tool once, and the user is asking to determine which is best, perhaps the assistant should call the tool with each country and compare the results in subsequent steps. But in the first step, the assistant can call the tool with one country. Let me proceed by calling the tool for the USA first.\\n\",\"tool_calls\":[{\"id\":\"wq7rzzz07\",\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"arguments\":\"{\\\"country\\\":\\\"USA\\\"}\"}}]},\"logprobs\":null,\"finish_reason\":\"tool_calls\"}],\"usage\":{\"queue_time\":0.126464622,\"prompt_tokens\":213,\"prompt_time\":0.008610906,\"completion_tokens\":1303,\"completion_time\":3.8890097470000002,\"total_tokens\":1516,\"total_time\":3.897620653,\"completion_tokens_details\":{\"reasoning_tokens\":1279}},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_efa9879028\",\"x_groq\":{\"id\":\"req_01kcc47pn9ensv4akh9nbc7p8e\",\"seed\":1936189663},\"service_tier\":\"on_demand\"}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - private, max-age=0, no-store, no-cache, must-revalidate
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad66431083fa316-YUL
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
+      Vary:
+      - Origin
+      X-Groq-Region:
+      - yul
+      X-Ratelimit-Limit-Requests:
+      - "500000"
+      X-Ratelimit-Limit-Tokens:
+      - "300000"
+      X-Ratelimit-Remaining-Requests:
+      - "499999"
+      X-Ratelimit-Remaining-Tokens:
+      - "299701"
+      X-Ratelimit-Reset-Requests:
+      - 172ms
+      X-Ratelimit-Reset-Tokens:
+      - 59ms
+    status: 200 OK
+    code: 200
+    duration: 4.042s

@@ -18,8 +18,8 @@ interactions:
     proto: HTTP/2.0
     proto_major: 2
     proto_minor: 0
-    content_length: 92
-    body: "{\"error\":{\"message\":\"messages[0].content must be a string\",\"type\":\"invalid_request_error\"}}\n"
+    content_length: 122
+    body: "{\"error\":{\"message\":\"messages[0].content must be a string\",\"type\":\"invalid_request_error\",\"param\":\"messages[0].content\"}}\n"
     headers:
       Alt-Svc:
       - h3=":443"; ma=86400
@@ -28,21 +28,19 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9766ca10dec6a2e6-YUL
+      - 9ad665d50f90a316-YUL
       Content-Length:
-      - "92"
+      - "122"
       Content-Type:
       - application/json
       Server:
       - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
       Vary:
       - Origin
-      Via:
-      - 1.1 google
       X-Groq-Region:
-      - msp
-      X-Request-Id:
-      - req_01k3s871nhfezv2eb1ce314y4j
+      - yul
     status: 400 Bad Request
     code: 400
-    duration: 69ms
+    duration: 19ms

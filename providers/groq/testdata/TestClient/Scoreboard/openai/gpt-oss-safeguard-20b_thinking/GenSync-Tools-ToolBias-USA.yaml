@@ -1,0 +1,57 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 567
+    host: api.groq.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one.\"}],\"model\":\"openai/gpt-oss-safeguard-20b\",\"stream\":false,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"description\":\"A tool to specify the best country\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"country\":{\"type\":\"string\",\"enum\":[\"USA\",\"Canada\"]}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"country\"]}}}],\"tool_choice\":\"required\"}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.groq.com/openai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-527c71ab-8989-4dfd-af91-c28bef06b7d8\",\"object\":\"chat.completion\",\"created\":1765638640,\"model\":\"openai/gpt-oss-safeguard-20b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"reasoning\":\"The user asks: \\\"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one.\\\"\\n\\nWe have a tool best_country which takes an object with property \\\"country\\\" either \\\"USA\\\" or \\\"Canada\\\". But it doesn't specify what the tool does. It probably returns some result indicating which is best. We need to call it. But the user didn't specify which to choose? They want to know which is better. Maybe we need to call with either? But tool requires one. Might be ambiguous. The tool seems to only take a country parameter. Maybe we call for each? But the prompt says \\\"Call the tool best_country to tell me which country is the best one.\\\" Maybe we can call the tool twice, once for USA, once for Canada, but that doesn't make sense. Maybe the tool returns something about that country? But the name best_country suggests it's to identify the best country between these two? But the function signature is just country: \\\"USA\\\" | \\\"Canada\\\". That might be a misdirection; maybe we need to ask it which is best? But the tool requires a param.\\n\\nPossibly we should call the tool twice? Or maybe call with some logic: ask to determine best? The tool might return something like \\\"USA\\\" or \\\"Canada\\\".\\n\\nGiven the conversation, the user wants to know which is better. We might use the tool to get the best one. But we have to pick a parameter. Maybe we can choose \\\"USA\\\" and get its evaluation? But that's not helpful.\\n\\nAlternatively, maybe we interpret that the tool returns a ranking given a country? Actually we may need to call it with \\\"USA\\\" or \\\"Canada\\\" to get a statement. But it's ambiguous.\\n\\nThe user says \\\"Call the tool best_country to tell me which country is the best one.\\\" We could call it with \\\"USA\\\" and \\\"Canada\\\". But we can't produce two results.\\n\\nBetter: We can ask: \\\"Which one do you want me to evaluate?\\\" But we can guess they want the tool to pick.\\n\\nAlternatively maybe the tool returns a best country between the options based on internal logic. But it requires a param; maybe it's mis-specified: the param might be the country you want to evaluate? Then you call tool to get its ranking? But we cannot ask user.\\n\\nWe can produce a response: \\\"I'll call the tool best_country for each country to see its evaluation, but it's unclear.\\\" But the instruction says to call the tool best_country to tell me which is the best. So we should call it. But which argument? Let's call it with \\\"USA\\\" maybe. Or we could call it twice: first \\\"USA\\\" to see rating, second \\\"Canada\\\".\\n\\nBut the tool might only produce a single output per call. Let's call it once with \\\"USA\\\" and assume it returns a ranking or best? But not sure.\\n\\nAlternatively we can ask a clarifying question. However we might just respond with a call: choose \\\"USA\\\". But then we say: \\\"USA is better.\\\" But we don't have actual data.\\n\\nGiven we have no external knowledge, maybe we can use tool to get ranking. We'll call it with \\\"USA\\\". But the user asked which is better, maybe we need to call with each and compare? But not necessary.\\n\\nI'll call the tool twice with each country and provide comparison. But the tool might only support one param at a time. But we can call it sequentially.\\n\\nLet's do that. We'll first call best_country with \\\"USA\\\". Then with \\\"Canada\\\". We'll interpret results to determine best. But we can't rely on tool content.\\n\\nAlternatively, we might call best_country with \\\"USA\\\" and then \\\"Canada\\\", but output accordingly.\\n\\nI think better: ask clarifying: \\\"Which aspect to evaluate?\\\" But given instruction to call tool, maybe just call it with one param? Let's choose \\\"USA\\\" as user asked if USA is better than Canada. Maybe the tool will return which is best? Not clear.\\n\\nI'll assume best_country returns a string of the better of the two? But param is just one country.\\n\\nGiven this confusion, we can ask: \\\"Which country do you want to evaluate?\\\" But we might produce a statement like \\\"According to best_country, the better country is X.\\\"\\n\\nI'll choose to call with \\\"USA\\\".\",\"tool_calls\":[{\"id\":\"fc_2c5ee070-5ac9-47e7-bdd0-a07f4b48f4e2\",\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"arguments\":\"{\\\"country\\\":\\\"USA\\\"}\"}}]},\"logprobs\":null,\"finish_reason\":\"tool_calls\"}],\"usage\":{\"queue_time\":0.033428234,\"prompt_tokens\":159,\"prompt_time\":0.00895054,\"completion_tokens\":905,\"completion_time\":0.969963446,\"total_tokens\":1064,\"total_time\":0.978913986,\"completion_tokens_details\":{\"reasoning_tokens\":882}},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_e3febdc4be\",\"x_groq\":{\"id\":\"req_01kcc4747venkvpyfbgqp2ezjb\",\"seed\":500816360},\"service_tier\":\"on_demand\"}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - private, max-age=0, no-store, no-cache, must-revalidate
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad663bb1ba3a316-YUL
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
+      Vary:
+      - Origin
+      X-Groq-Region:
+      - yul
+      X-Ratelimit-Limit-Requests:
+      - "500000"
+      X-Ratelimit-Limit-Tokens:
+      - "150000"
+      X-Ratelimit-Remaining-Requests:
+      - "499997"
+      X-Ratelimit-Remaining-Tokens:
+      - "145869"
+      X-Ratelimit-Reset-Requests:
+      - 518ms
+      X-Ratelimit-Reset-Tokens:
+      - 1.652s
+    status: 200 OK
+    code: 200
+    duration: 1.032s

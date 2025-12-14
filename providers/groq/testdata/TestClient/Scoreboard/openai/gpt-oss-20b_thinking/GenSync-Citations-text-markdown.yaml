@@ -20,7 +20,7 @@ interactions:
     proto_minor: 0
     content_length: -1
     uncompressed: true
-    body: "{\"id\":\"chatcmpl-d97a9fe1-2a36-4a70-b408-76b3ed8408a5\",\"object\":\"chat.completion\",\"created\":1756559570,\"model\":\"openai/gpt-oss-20b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"The capital of Quackiland is **Quack**.\",\"reasoning\":\"User asks: \\\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.What is the capital of Quackiland?\\\" It's a simple question. The answer: Quack.\\n\\nWe should respond with a short answer.\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":0.002756571,\"prompt_tokens\":105,\"prompt_time\":0.006758412,\"completion_tokens\":74,\"completion_time\":0.065896883,\"total_tokens\":179,\"total_time\":0.072655295},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_5f2b8b1d41\",\"x_groq\":{\"id\":\"req_01k3xhqxwxec1bdewwcg13qhpb\"},\"service_tier\":\"on_demand\"}\n"
+    body: "{\"id\":\"chatcmpl-c48da69c-1242-4362-94f4-eaebe7cb3cc0\",\"object\":\"chat.completion\",\"created\":1765638737,\"model\":\"openai/gpt-oss-20b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"The capital of Quackiland is **Quack**.\",\"reasoning\":\"We need to answer the question. The user gives: \\\"# Quackiland The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.What is the capital of Quackiland?\\\" The answer: Quack.\\n\\nWe need to respond in a style consistent with policy. It's straightforward factual. Just answer.\\n\\nWe must not provide any extraneous commentary. Just answer the question.\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":0.002923179,\"prompt_tokens\":105,\"prompt_time\":0.005078142,\"completion_tokens\":104,\"completion_time\":0.110177347,\"total_tokens\":209,\"total_time\":0.115255489,\"completion_tokens_details\":{\"reasoning_tokens\":83}},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_99996fee8e\",\"x_groq\":{\"id\":\"req_01kcc4a38behvr7zwkrd2ny9ye\",\"seed\":2145621498},\"service_tier\":\"on_demand\"}\n"
     headers:
       Alt-Svc:
       - h3=":443"; ma=86400
@@ -29,31 +29,29 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 97748ac5992da2d0-YUL
+      - 9ad6661b3e99a316-YUL
       Content-Type:
       - application/json
       Server:
       - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
       Vary:
       - Origin
-      Via:
-      - 1.1 google
       X-Groq-Region:
-      - msp
+      - yul
       X-Ratelimit-Limit-Requests:
       - "500000"
       X-Ratelimit-Limit-Tokens:
       - "250000"
       X-Ratelimit-Remaining-Requests:
-      - "499999"
+      - "499998"
       X-Ratelimit-Remaining-Tokens:
-      - "249894"
+      - "227479"
       X-Ratelimit-Reset-Requests:
-      - 172.799999ms
+      - 345ms
       X-Ratelimit-Reset-Tokens:
-      - 25.439999ms
-      X-Request-Id:
-      - req_01k3xhqxwxec1bdewwcg13qhpb
+      - 5.405s
     status: 200 OK
     code: 200
-    duration: 139ms
+    duration: 140ms

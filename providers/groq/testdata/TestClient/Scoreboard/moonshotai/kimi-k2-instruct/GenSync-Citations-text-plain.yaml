@@ -1,61 +1,57 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 260
-        host: api.groq.com
-        body: |
-            {"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"model":"moonshotai/kimi-k2-instruct","stream":false}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.groq.com/openai/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"id":"chatcmpl-3e16e49b-804a-4402-97d0-2fc353d53804","object":"chat.completion","created":1753141997,"model":"moonshotai/kimi-k2-instruct","choices":[{"index":0,"message":{"role":"assistant","content":"The capital of Quackiland is **Quack**."},"logprobs":null,"finish_reason":"stop"}],"usage":{"queue_time":0.085776199,"prompt_tokens":56,"prompt_time":0.002135844,"completion_tokens":12,"completion_time":0.021911772,"total_tokens":68,"total_time":0.024047616},"usage_breakdown":null,"system_fingerprint":"fp_c5bd0a648b","x_groq":{"id":"req_01k0qpfvwhe92sr4mhzfy0e2py"},"service_tier":"on_demand"}
-        headers:
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cache-Control:
-                - private, max-age=0, no-store, no-cache, must-revalidate
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 962e9debec78a2a8-YUL
-            Content-Type:
-                - application/json
-            Server:
-                - cloudflare
-            Vary:
-                - Origin
-            Via:
-                - 1.1 google
-            X-Groq-Region:
-                - msp
-            X-Ratelimit-Limit-Requests:
-                - "500000"
-            X-Ratelimit-Limit-Tokens:
-                - "250000"
-            X-Ratelimit-Remaining-Requests:
-                - "499995"
-            X-Ratelimit-Remaining-Tokens:
-                - "249890"
-            X-Ratelimit-Reset-Requests:
-                - 797.799999ms
-            X-Ratelimit-Reset-Tokens:
-                - 26.36ms
-            X-Request-Id:
-                - req_01k0qpfvwhe92sr4mhzfy0e2py
-        status: 200 OK
-        code: 200
-        duration: 172ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 260
+    host: api.groq.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}],\"model\":\"moonshotai/kimi-k2-instruct\",\"stream\":false}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.groq.com/openai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-f51d94f5-4ad2-43af-91fa-034db6a9faa7\",\"object\":\"chat.completion\",\"created\":1765638699,\"model\":\"moonshotai/kimi-k2-instruct\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"The capital of Quackiland is **Quack**.\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":0.069719895,\"prompt_tokens\":57,\"prompt_time\":0.01140604,\"completion_tokens\":12,\"completion_time\":0.015006835,\"total_tokens\":69,\"total_time\":0.026412875},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_5fe129dff6\",\"x_groq\":{\"id\":\"req_01kcc48xy6epb9ppty9e829f80\",\"seed\":189566286},\"service_tier\":\"on_demand\"}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - private, max-age=0, no-store, no-cache, must-revalidate
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad6652c4cb7a316-YUL
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
+      Vary:
+      - Origin
+      X-Groq-Region:
+      - yul
+      X-Ratelimit-Limit-Requests:
+      - "500000"
+      X-Ratelimit-Limit-Tokens:
+      - "250000"
+      X-Ratelimit-Remaining-Requests:
+      - "499996"
+      X-Ratelimit-Remaining-Tokens:
+      - "248399"
+      X-Ratelimit-Reset-Requests:
+      - 691ms
+      X-Ratelimit-Reset-Tokens:
+      - 384ms
+    status: 200 OK
+    code: 200
+    duration: 134ms

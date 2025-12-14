@@ -280,16 +280,19 @@ type Message struct {
 		//  - "browser.open" uses BrowserOpenArguments.
 		Arguments     string `json:"arguments,omitzero"`
 		Index         int64  `json:"index,omitzero"`
-		Type          string `json:"type,omitzero"` // "function"
+		Type          string `json:"type,omitzero"` // "function", "python", etc.
 		Output        string `json:"output,omitzero"`
 		SearchResults struct {
 			Results []struct {
-				Title   string `json:"title,omitzero"`
-				URL     string `json:"url,omitzero"`
-				Content string `json:"content,omitzero"`
-				Score   int64  `json:"score,omitzero"` // Always 0?
+				Title   string  `json:"title,omitzero"`
+				URL     string  `json:"url,omitzero"`
+				Content string  `json:"content,omitzero"`
+				Score   float64 `json:"score,omitzero"`
 			} `json:"results,omitzero"`
 		} `json:"search_results,omitzero"`
+		CodeResults []struct {
+			Text string `json:"text,omitzero"`
+		} `json:"code_results,omitzero"`
 	} `json:"executed_tools,omitzero"`
 }
 
@@ -366,13 +369,18 @@ func (m *Message) To(out *genai.Message) error {
 		m.ToolCalls[i].To(&out.Replies[len(out.Replies)-1].ToolCall)
 	}
 	for _, t := range m.ExecutedTools {
-		switch t.Name {
-		case "browser.search":
+		// If Name is empty, use Type instead
+		toolName := t.Name
+		if toolName == "" {
+			toolName = t.Type
+		}
+		switch toolName {
+		case "browser.search", "search":
 			d := json.NewDecoder(strings.NewReader(t.Arguments))
 			d.DisallowUnknownFields()
 			args := BrowserSearchArguments{}
 			if err := d.Decode(&args); err != nil {
-				return &internal.BadError{Err: fmt.Errorf("failed to unmarshal arguments for executed tool %q: %w", t.Name, err)}
+				return &internal.BadError{Err: fmt.Errorf("failed to unmarshal arguments for executed tool %q: %w", toolName, err)}
 			}
 			c := genai.Citation{
 				Sources: make([]genai.CitationSource, 0, len(t.SearchResults.Results)+1),
@@ -387,10 +395,12 @@ func (m *Message) To(out *genai.Message) error {
 				})
 			}
 			out.Replies = append(out.Replies, genai.Reply{Citation: c})
-		case "browser.open", "browser.find":
+		case "browser.open", "browser.find", "visit":
 			// Ignore, it's really useless.
+		case "python":
+			// Ignore python execution tool results from model reasoning
 		default:
-			return &internal.BadError{Err: fmt.Errorf("implement executed tool %q", t.Name)}
+			return &internal.BadError{Err: fmt.Errorf("implement executed tool %q", toolName)}
 		}
 	}
 	return nil
@@ -576,6 +586,17 @@ func (t *ToolCall) To(out *genai.ToolCall) {
 	out.Arguments = t.Function.Arguments
 }
 
+// UsageBreakdownModel represents per-model usage information in a breakdown.
+type UsageBreakdownModel struct {
+	Model string `json:"model"`
+	Usage Usage  `json:"usage"`
+}
+
+// UsageBreakdown contains per-model usage information.
+type UsageBreakdown struct {
+	Models []UsageBreakdownModel `json:"models"`
+}
+
 type ChatResponse struct {
 	Choices []struct {
 		FinishReason FinishReason `json:"finish_reason"`
@@ -583,29 +604,18 @@ type ChatResponse struct {
 		Message      Message      `json:"message"`
 		Logprobs     struct{}     `json:"logprobs"`
 	} `json:"choices"`
-	Created        base.Time `json:"created"`
-	ID             string    `json:"id"`
-	Model          string    `json:"model"`
-	Object         string    `json:"object"` // "chat.completion"
-	Usage          Usage     `json:"usage"`
-	UsageBreakdown struct {
-		Models []struct {
-			Model string `json:"model"`
-			Usage struct {
-				QueueTime        float64 `json:"queue_time"`
-				PromptTokens     int64   `json:"prompt_tokens"`
-				PromptTime       float64 `json:"prompt_time"`
-				CompletionTokens int64   `json:"completion_tokens"`
-				CompletionTime   float64 `json:"completion_time"`
-				TotalTokens      int64   `json:"total_tokens"`
-				TotalTime        float64 `json:"total_time"`
-			} `json:"usage"`
-		} `json:"models"`
-	} `json:"usage_breakdown"`
+	Created        base.Time      `json:"created"`
+	ID             string         `json:"id"`
+	Model          string         `json:"model"`
+	Object         string         `json:"object"` // "chat.completion"
+	Usage          Usage          `json:"usage"`
+	UsageBreakdown UsageBreakdown `json:"usage_breakdown"`
 	SystemFingerprint string      `json:"system_fingerprint"`
 	ServiceTier       ServiceTier `json:"service_tier"`
-	Xgroq             struct {
-		ID string `json:"id"`
+	Xgroq struct {
+		ID             string         `json:"id"`
+		Seed           json.Number    `json:"seed,omitzero"`
+		UsageBreakdown UsageBreakdown `json:"usage_breakdown,omitzero"`
 	} `json:"x_groq"`
 }
 
@@ -654,13 +664,15 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 }
 
 type Usage struct {
-	QueueTime        float64 `json:"queue_time"`
-	PromptTokens     int64   `json:"prompt_tokens"`
-	PromptTime       float64 `json:"prompt_time"`
-	CompletionTokens int64   `json:"completion_tokens"`
-	CompletionTime   float64 `json:"completion_time"`
-	TotalTokens      int64   `json:"total_tokens"`
-	TotalTime        float64 `json:"total_time"`
+	QueueTime               float64        `json:"queue_time"`
+	PromptTokens            int64          `json:"prompt_tokens"`
+	PromptTime              float64        `json:"prompt_time"`
+	CompletionTokens        int64          `json:"completion_tokens"`
+	CompletionTime          float64        `json:"completion_time"`
+	TotalTokens             int64          `json:"total_tokens"`
+	TotalTime               float64        `json:"total_time"`
+	PromptTokensDetails     map[string]any `json:"prompt_tokens_details,omitzero"`
+	CompletionTokensDetails map[string]any `json:"completion_tokens_details,omitzero"`
 }
 
 // BrowserSearchArguments is the Argument for the "browser.search" tool.
@@ -693,9 +705,12 @@ type ChatStreamChunkResponse struct {
 		Logprobs     struct{}     `json:"logprobs"` // Groq doesn't support logprobs but still sent a null item.
 		FinishReason FinishReason `json:"finish_reason"`
 	} `json:"choices"`
+	Usage Usage `json:"usage,omitzero"`
 	Xgroq struct {
-		ID    string `json:"id"`
-		Usage Usage  `json:"usage"`
+		ID             string         `json:"id"`
+		Seed           json.Number    `json:"seed,omitzero"`
+		Usage          Usage          `json:"usage"`
+		UsageBreakdown UsageBreakdown `json:"usage_breakdown,omitzero"`
 	} `json:"x_groq"`
 }
 
@@ -1016,14 +1031,19 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 				}
 				for _, t := range pkt.Choices[0].Delta.ExecutedTools {
 					// Investigate merging with Message.To.
-					switch t.Name {
-					case "browser.search":
+					// If Name is empty, use Type instead
+					toolName := t.Name
+					if toolName == "" {
+						toolName = t.Type
+					}
+					switch toolName {
+					case "browser.search", "search":
 						d := json.NewDecoder(strings.NewReader(t.Arguments))
 						d.DisallowUnknownFields()
 						args := BrowserSearchArguments{}
 						if err := d.Decode(&args); err != nil {
 							finalErr = &internal.BadError{
-								Err: fmt.Errorf("failed to unmarshal arguments for executed tool %q: %w", t.Name, err),
+								Err: fmt.Errorf("failed to unmarshal arguments for executed tool %q: %w", toolName, err),
 							}
 							return
 						}
@@ -1041,10 +1061,12 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 						if !yield(f) {
 							return
 						}
-					case "browser.open", "browser.find":
+					case "browser.open", "browser.find", "visit":
 						// Ignore, it's really useless.
+					case "python":
+						// Ignore python execution tool results from model reasoning
 					default:
-						finalErr = &internal.BadError{Err: fmt.Errorf("implement executed tool %q", t.Name)}
+						finalErr = &internal.BadError{Err: fmt.Errorf("implement executed tool %q", toolName)}
 						return
 					}
 				}

@@ -20,7 +20,7 @@ interactions:
     proto_minor: 0
     content_length: -1
     uncompressed: true
-    body: "{\"id\":\"chatcmpl-94c45651-aa5d-46c1-8191-c184302dc333\",\"object\":\"chat.completion\",\"created\":1756415309,\"model\":\"openai/gpt-oss-20b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\"The user requests a detailed explanation of the theory of relativity.\"},\"logprobs\":null,\"finish_reason\":\"length\"}],\"usage\":{\"queue_time\":0.068857978,\"prompt_tokens\":81,\"prompt_time\":0.005233925,\"completion_tokens\":16,\"completion_time\":0.014292951,\"total_tokens\":97,\"total_time\":0.019526876},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_d103c612ad\",\"x_groq\":{\"id\":\"req_01k3s85d4aeyy9pwbcwpnw87ab\"},\"service_tier\":\"on_demand\"}\n"
+    body: "{\"id\":\"chatcmpl-1d3faaf3-0dd4-49bd-a4ad-383887b9dd1b\",\"object\":\"chat.completion\",\"created\":1765638730,\"model\":\"openai/gpt-oss-20b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\"The user asks: \\\"Explain the theory of relativity in great\"},\"logprobs\":null,\"finish_reason\":\"length\"}],\"usage\":{\"queue_time\":0.003023988,\"prompt_tokens\":81,\"prompt_time\":0.003795265,\"completion_tokens\":16,\"completion_time\":0.016097922,\"total_tokens\":97,\"total_time\":0.019893187,\"completion_tokens_details\":{\"reasoning_tokens\":14}},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_3d50e63726\",\"x_groq\":{\"id\":\"req_01kcc49wnqe84vx1358bxhjk0m\",\"seed\":2124240771},\"service_tier\":\"on_demand\"}\n"
     headers:
       Alt-Svc:
       - h3=":443"; ma=86400
@@ -29,31 +29,29 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9766c8c0ae25a2eb-YUL
+      - 9ad665f11824a316-YUL
       Content-Type:
       - application/json
       Server:
       - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
       Vary:
       - Origin
-      Via:
-      - 1.1 google
       X-Groq-Region:
-      - msp
+      - yul
       X-Ratelimit-Limit-Requests:
       - "500000"
       X-Ratelimit-Limit-Tokens:
       - "250000"
       X-Ratelimit-Remaining-Requests:
-      - "499995"
+      - "499994"
       X-Ratelimit-Remaining-Tokens:
-      - "249899"
+      - "249814"
       X-Ratelimit-Reset-Requests:
-      - 848.999999ms
+      - 1.036s
       X-Ratelimit-Reset-Tokens:
-      - 24.12ms
-      X-Request-Id:
-      - req_01k3s85d4aeyy9pwbcwpnw87ab
+      - 44ms
     status: 200 OK
     code: 200
-    duration: 155ms
+    duration: 43ms

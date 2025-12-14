@@ -1,0 +1,57 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 251
+    host: api.groq.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}],\"model\":\"groq/compound-mini\",\"stream\":false}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.groq.com/openai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"stub\",\"object\":\"chat.completion\",\"created\":1765640211,\"model\":\"groq/compound-mini\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"The capital of Quackiland is **Quack**.\",\"reasoning\":\"\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":0.012267,\"prompt_tokens\":493,\"prompt_time\":0.02316,\"completion_tokens\":102,\"completion_time\":0.246105,\"total_tokens\":595,\"total_time\":0.269266},\"usage_breakdown\":{\"models\":[{\"model\":\"llama-3.3-70b-versatile\",\"usage\":{\"queue_time\":0.008217275,\"prompt_tokens\":317,\"prompt_time\":0.016142326,\"completion_tokens\":34,\"completion_time\":0.097286246,\"total_tokens\":351,\"total_time\":0.113428572}},{\"model\":\"openai/gpt-oss-120b\",\"usage\":{\"queue_time\":0.004049607,\"prompt_tokens\":176,\"prompt_time\":0.007017794,\"completion_tokens\":68,\"completion_time\":0.148818808,\"total_tokens\":244,\"total_time\":0.155836602,\"completion_tokens_details\":{\"reasoning_tokens\":47}}}]},\"x_groq\":{\"id\":\"stub\"},\"service_tier\":\"on_demand\"}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - private, max-age=0, no-store, no-cache, must-revalidate
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad68a19ecc0a291-YUL
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
+      Vary:
+      - Origin
+      X-Groq-Region:
+      - yul
+      X-Ratelimit-Limit-Requests:
+      - "20000"
+      X-Ratelimit-Limit-Tokens:
+      - "200000"
+      X-Ratelimit-Remaining-Requests:
+      - "19989"
+      X-Ratelimit-Remaining-Tokens:
+      - "199967"
+      X-Ratelimit-Reset-Requests:
+      - 47.52s
+      X-Ratelimit-Reset-Tokens:
+      - 9ms
+    status: 200 OK
+    code: 200
+    duration: 297ms

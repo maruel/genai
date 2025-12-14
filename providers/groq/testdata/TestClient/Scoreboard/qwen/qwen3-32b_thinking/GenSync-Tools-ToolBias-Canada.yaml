@@ -1,61 +1,57 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 642
-        host: api.groq.com
-        body: |
-            {"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."},{"type":"text","text":"\n\n/think"}]}],"model":"qwen/qwen3-32b","reasoning_format":"parsed","stream":false,"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.groq.com/openai/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        uncompressed: true
-        body: |
-            {"id":"chatcmpl-a3a244a8-e167-4ad8-b456-3c99689cfffe","object":"chat.completion","created":1755194902,"model":"qwen/qwen3-32b","choices":[{"index":0,"message":{"role":"assistant","reasoning":"Okay, the user is asking if Canada is better than the USA and wants me to use the best_country tool to determine which is the best. Let me check the available functions. The tool has an enum with Canada and USA. I need to call the function for each country and compare the results. Wait, but the function's description says it specifies the best country. Maybe the function returns a score or a reason. Since I can only call the function once per country, I should call both and then decide. But the user might expect a single answer. Hmm, the tool might return a value that indicates which is better. Let me call the function for both countries and then compare the outputs. That way, I can present the better one based on the tool's response.\n","tool_calls":[{"id":"x4am9sqqr","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"}},{"id":"01575snq1","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"queue_time":0.00364802,"prompt_tokens":213,"prompt_time":0.023380322,"completion_tokens":200,"completion_time":0.440562637,"total_tokens":413,"total_time":0.463942959},"usage_breakdown":null,"system_fingerprint":"fp_78ac7f3229","x_groq":{"id":"req_01k2mw9hc8emt9hsrhkdrz33xz"},"service_tier":"on_demand"}
-        headers:
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cache-Control:
-                - private, max-age=0, no-store, no-cache, must-revalidate
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 96f265a89bb1a2ce-YUL
-            Content-Type:
-                - application/json
-            Server:
-                - cloudflare
-            Vary:
-                - Origin
-            Via:
-                - 1.1 google
-            X-Groq-Region:
-                - msp
-            X-Ratelimit-Limit-Requests:
-                - "500000"
-            X-Ratelimit-Limit-Tokens:
-                - "300000"
-            X-Ratelimit-Remaining-Requests:
-                - "499999"
-            X-Ratelimit-Remaining-Tokens:
-                - "299840"
-            X-Ratelimit-Reset-Requests:
-                - 172.799999ms
-            X-Ratelimit-Reset-Tokens:
-                - 32ms
-            X-Request-Id:
-                - req_01k2mw9hc8emt9hsrhkdrz33xz
-        status: 200 OK
-        code: 200
-        duration: 550ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 642
+    host: api.groq.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one.\"},{\"type\":\"text\",\"text\":\"\\n\\n/think\"}]}],\"model\":\"qwen/qwen3-32b\",\"reasoning_format\":\"parsed\",\"stream\":false,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"description\":\"A tool to specify the best country\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"country\":{\"type\":\"string\",\"enum\":[\"Canada\",\"USA\"]}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"country\"]}}}],\"tool_choice\":\"required\"}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.groq.com/openai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-6c90b683-45fa-4603-93c1-4940264dbf5a\",\"object\":\"chat.completion\",\"created\":1765638658,\"model\":\"qwen/qwen3-32b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"reasoning\":\"Okay, the user is asking if Canada is better than the USA and wants me to use the best_country tool to determine which is the best. Let me check the available functions.\\n\\nThe tool provided is best_country, which takes a country parameter with enum values of Canada or USA. So I need to call this function for each country and compare the results.\\n\\nFirst, I'll call best_country with Canada as the argument. Then, call it again with the USA. Once I have both responses, I can compare the scores or reasons provided to determine which is considered better according to the tool's output.\\n\\nWait, but the tool's description says it specifies the best country. Maybe each call returns a score or a set of criteria. The user wants to know which is the best, so I need to invoke the function for both countries and then analyze the results.\\n\\nI should structure the tool calls one after another. Let me generate the first call for Canada.\\n\",\"tool_calls\":[{\"id\":\"wyyx3rmae\",\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"arguments\":\"{\\\"country\\\":\\\"Canada\\\"}\"}},{\"id\":\"91q3ys8vs\",\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"arguments\":\"{\\\"country\\\":\\\"USA\\\"}\"}}]},\"logprobs\":null,\"finish_reason\":\"tool_calls\"}],\"usage\":{\"queue_time\":0.125434651,\"prompt_tokens\":213,\"prompt_time\":0.008653566,\"completion_tokens\":235,\"completion_time\":0.438362893,\"total_tokens\":448,\"total_time\":0.447016459,\"completion_tokens_details\":{\"reasoning_tokens\":191}},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_efa9879028\",\"x_groq\":{\"id\":\"req_01kcc47p2ke70tpkc37yw6yn7m\",\"seed\":2040307425},\"service_tier\":\"on_demand\"}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - private, max-age=0, no-store, no-cache, must-revalidate
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad6642d3aeea316-YUL
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
+      Vary:
+      - Origin
+      X-Groq-Region:
+      - yul
+      X-Ratelimit-Limit-Requests:
+      - "500000"
+      X-Ratelimit-Limit-Tokens:
+      - "300000"
+      X-Ratelimit-Remaining-Requests:
+      - "499999"
+      X-Ratelimit-Remaining-Tokens:
+      - "299593"
+      X-Ratelimit-Reset-Requests:
+      - 172ms
+      X-Ratelimit-Reset-Tokens:
+      - 81ms
+    status: 200 OK
+    code: 200
+    duration: 607ms

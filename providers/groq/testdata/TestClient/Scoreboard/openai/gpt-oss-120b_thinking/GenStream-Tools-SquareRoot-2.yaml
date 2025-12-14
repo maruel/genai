@@ -8,7 +8,7 @@ interactions:
     proto_minor: 1
     content_length: 806
     host: api.groq.com
-    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"},{\"role\":\"assistant\",\"tool_calls\":[{\"type\":\"function\",\"id\":\"fc_a5c96904-c86e-4669-8e1c-daf16f7ea414\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\":132413}\"}}]},{\"role\":\"tool\",\"content\":\"363.89\",\"tool_call_id\":\"fc_a5c96904-c86e-4669-8e1c-daf16f7ea414\"}],\"model\":\"openai/gpt-oss-120b\",\"stream\":true,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"tool_choice\":\"none\"}\n"
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"},{\"role\":\"assistant\",\"tool_calls\":[{\"type\":\"function\",\"id\":\"fc_ff25387d-614a-4fbe-b606-b10051015236\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\":132413}\"}}]},{\"role\":\"tool\",\"content\":\"363.89\",\"tool_call_id\":\"fc_ff25387d-614a-4fbe-b606-b10051015236\"}],\"model\":\"openai/gpt-oss-120b\",\"stream\":true,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"tool_choice\":\"none\"}\n"
     headers:
       Content-Type:
       - application/json; charset=utf-8
@@ -19,7 +19,7 @@ interactions:
     proto_major: 2
     proto_minor: 0
     content_length: -1
-    body: "data: {\"id\":\"chatcmpl-d84cf66a-b4da-48ef-8265-b0b0d299e9fd\",\"object\":\"chat.completion.chunk\",\"created\":1756415366,\"model\":\"openai/gpt-oss-120b\",\"system_fingerprint\":\"fp_dee443f41b\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"logprobs\":null,\"finish_reason\":null}],\"x_groq\":{\"id\":\"req_01k3s874k6f3ebmr49461vh9wf\"}}\n\ndata: {\"id\":\"chatcmpl-d84cf66a-b4da-48ef-8265-b0b0d299e9fd\",\"object\":\"chat.completion.chunk\",\"created\":1756415366,\"model\":\"openai/gpt-oss-120b\",\"system_fingerprint\":\"fp_dee443f41b\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"363\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-d84cf66a-b4da-48ef-8265-b0b0d299e9fd\",\"object\":\"chat.completion.chunk\",\"created\":1756415366,\"model\":\"openai/gpt-oss-120b\",\"system_fingerprint\":\"fp_dee443f41b\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\".\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-d84cf66a-b4da-48ef-8265-b0b0d299e9fd\",\"object\":\"chat.completion.chunk\",\"created\":1756415366,\"model\":\"openai/gpt-oss-120b\",\"system_fingerprint\":\"fp_dee443f41b\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"89\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-d84cf66a-b4da-48ef-8265-b0b0d299e9fd\",\"object\":\"chat.completion.chunk\",\"created\":1756415366,\"model\":\"openai/gpt-oss-120b\",\"system_fingerprint\":\"fp_dee443f41b\",\"choices\":[{\"index\":0,\"delta\":{},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"x_groq\":{\"id\":\"req_01k3s874k6f3ebmr49461vh9wf\",\"usage\":{\"queue_time\":0.273359617,\"prompt_tokens\":179,\"prompt_time\":0.00730034,\"completion_tokens\":7,\"completion_time\":0.014695388,\"total_tokens\":186,\"total_time\":0.021995728}}}\n\ndata: [DONE]\n\n"
+    body: "data: {\"id\":\"chatcmpl-575d9131-dc74-4a80-bd06-28cd41343170\",\"object\":\"chat.completion.chunk\",\"created\":1765638712,\"model\":\"openai/gpt-oss-120b\",\"system_fingerprint\":\"fp_6d92cd46cb\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"logprobs\":null,\"finish_reason\":null}],\"x_groq\":{\"id\":\"req_01kcc49b5ye7mr4n9rq4pb75ae\",\"seed\":411014540}}\n\ndata: {\"id\":\"chatcmpl-575d9131-dc74-4a80-bd06-28cd41343170\",\"object\":\"chat.completion.chunk\",\"created\":1765638712,\"model\":\"openai/gpt-oss-120b\",\"system_fingerprint\":\"fp_6d92cd46cb\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"363\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-575d9131-dc74-4a80-bd06-28cd41343170\",\"object\":\"chat.completion.chunk\",\"created\":1765638712,\"model\":\"openai/gpt-oss-120b\",\"system_fingerprint\":\"fp_6d92cd46cb\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\".\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-575d9131-dc74-4a80-bd06-28cd41343170\",\"object\":\"chat.completion.chunk\",\"created\":1765638712,\"model\":\"openai/gpt-oss-120b\",\"system_fingerprint\":\"fp_6d92cd46cb\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"89\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-575d9131-dc74-4a80-bd06-28cd41343170\",\"object\":\"chat.completion.chunk\",\"created\":1765638712,\"model\":\"openai/gpt-oss-120b\",\"system_fingerprint\":\"fp_6d92cd46cb\",\"choices\":[{\"index\":0,\"delta\":{},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"x_groq\":{\"id\":\"req_01kcc49b5ye7mr4n9rq4pb75ae\",\"usage\":{\"queue_time\":0.034768499,\"prompt_tokens\":185,\"prompt_time\":0.010430969,\"completion_tokens\":7,\"completion_time\":0.01455291,\"total_tokens\":192,\"total_time\":0.024983879}},\"usage\":{\"queue_time\":0.034768499,\"prompt_tokens\":185,\"prompt_time\":0.010430969,\"completion_tokens\":7,\"completion_time\":0.01455291,\"total_tokens\":192,\"total_time\":0.024983879}}\n\ndata: [DONE]\n\n"
     headers:
       Alt-Svc:
       - h3=":443"; ma=86400
@@ -28,31 +28,29 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9766ca239b10a2e6-YUL
+      - 9ad665811f84a316-YUL
       Content-Type:
       - text/event-stream
       Server:
       - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
       Vary:
       - Origin
-      Via:
-      - 1.1 google
       X-Groq-Region:
-      - msp
+      - yul
       X-Ratelimit-Limit-Requests:
       - "500000"
       X-Ratelimit-Limit-Tokens:
       - "250000"
       X-Ratelimit-Remaining-Requests:
-      - "499999"
+      - "499998"
       X-Ratelimit-Remaining-Tokens:
-      - "249820"
+      - "248871"
       X-Ratelimit-Reset-Requests:
-      - 172.799999ms
+      - 345ms
       X-Ratelimit-Reset-Tokens:
-      - 43.199999ms
-      X-Request-Id:
-      - req_01k3s874k6f3ebmr49461vh9wf
+      - 270ms
     status: 200 OK
     code: 200
-    duration: 339ms
+    duration: 56ms

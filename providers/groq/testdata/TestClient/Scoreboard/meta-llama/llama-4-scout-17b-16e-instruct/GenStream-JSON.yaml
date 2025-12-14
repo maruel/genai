@@ -1,65 +1,56 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 277
-        host: api.groq.com
-        body: |
-            {"messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"model":"meta-llama/llama-4-scout-17b-16e-instruct","response_format":{"type":"json_object"},"stream":true}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.groq.com/openai/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        body: |+
-            data: {"id":"chatcmpl-a85bc61c-cb15-43a7-af06-434b15c899ae","object":"chat.completion.chunk","created":1753142028,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_cb546bdbdf","choices":[{"index":0,"delta":{"role":"assistant"},"logprobs":null,"finish_reason":null}]}
-
-            data: {"id":"chatcmpl-a85bc61c-cb15-43a7-af06-434b15c899ae","object":"chat.completion.chunk","created":1753142028,"model":"meta-llama/llama-4-scout-17b-16e-instruct","system_fingerprint":"fp_cb546bdbdf","choices":[{"index":0,"delta":{"content":"{\n  \"is_fruit\": true\n}"},"logprobs":null,"finish_reason":"stop"}],"x_groq":{"id":"req_01k0qpgta2efes0ngwvhz98ee6","usage":{"queue_time":0.0016328540000000004,"prompt_tokens":57,"prompt_time":0.003953625,"completion_tokens":11,"completion_time":0.0253222,"total_tokens":68,"total_time":0.029275825}}}
-
-            data: [DONE]
-
-        headers:
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cache-Control:
-                - no-cache
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 962e9eae9b88a2a8-YUL
-            Content-Type:
-                - text/event-stream
-            Server:
-                - cloudflare
-            Vary:
-                - Origin
-            Via:
-                - 1.1 google
-            X-Groq-Region:
-                - msp
-            X-Ratelimit-Limit-Requests:
-                - "500000"
-            X-Ratelimit-Limit-Tokens:
-                - "300000"
-            X-Ratelimit-Remaining-Requests:
-                - "499998"
-            X-Ratelimit-Remaining-Tokens:
-                - "297983"
-            X-Ratelimit-Reset-Requests:
-                - 294.6ms
-            X-Ratelimit-Reset-Tokens:
-                - 403.4ms
-            X-Request-Id:
-                - req_01k0qpgta2efes0ngwvhz98ee6
-        status: 200 OK
-        code: 200
-        duration: 75ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 277
+    host: api.groq.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\\\"is_fruit\\\": bool}.\"}],\"model\":\"meta-llama/llama-4-scout-17b-16e-instruct\",\"response_format\":{\"type\":\"json_object\"},\"stream\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.groq.com/openai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"chatcmpl-6ac40265-91c7-410e-9a9d-fad508284495\",\"object\":\"chat.completion.chunk\",\"created\":1765638588,\"model\":\"meta-llama/llama-4-scout-17b-16e-instruct\",\"system_fingerprint\":\"fp_130a0cd72d\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"logprobs\":null,\"finish_reason\":null}],\"x_groq\":{\"id\":\"req_01kcc45hrse6ftmscj3j79pjxa\",\"seed\":1201584235}}\n\ndata: {\"id\":\"chatcmpl-6ac40265-91c7-410e-9a9d-fad508284495\",\"object\":\"chat.completion.chunk\",\"created\":1765638588,\"model\":\"meta-llama/llama-4-scout-17b-16e-instruct\",\"system_fingerprint\":\"fp_130a0cd72d\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"{\\n\\\"is_fruit\\\": true\\n}\"},\"logprobs\":null,\"finish_reason\":null}]}\n\ndata: {\"id\":\"chatcmpl-6ac40265-91c7-410e-9a9d-fad508284495\",\"object\":\"chat.completion.chunk\",\"created\":1765638588,\"model\":\"meta-llama/llama-4-scout-17b-16e-instruct\",\"system_fingerprint\":\"fp_130a0cd72d\",\"choices\":[{\"index\":0,\"delta\":{},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"x_groq\":{\"id\":\"req_01kcc45hrse6ftmscj3j79pjxa\",\"usage\":{\"queue_time\":0.072758278,\"prompt_tokens\":57,\"prompt_time\":0.001193369,\"completion_tokens\":11,\"completion_time\":0.025191044,\"total_tokens\":68,\"total_time\":0.026384413}},\"usage\":{\"queue_time\":0.072758278,\"prompt_tokens\":57,\"prompt_time\":0.001193369,\"completion_tokens\":11,\"completion_time\":0.025191044,\"total_tokens\":68,\"total_time\":0.026384413}}\n\ndata: [DONE]\n\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - no-cache
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ad662781d63a316-YUL
+      Content-Type:
+      - text/event-stream
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
+      Vary:
+      - Origin
+      X-Groq-Region:
+      - yul
+      X-Ratelimit-Limit-Requests:
+      - "500000"
+      X-Ratelimit-Limit-Tokens:
+      - "300000"
+      X-Ratelimit-Remaining-Requests:
+      - "499999"
+      X-Ratelimit-Remaining-Tokens:
+      - "297761"
+      X-Ratelimit-Reset-Requests:
+      - 172ms
+      X-Ratelimit-Reset-Tokens:
+      - 447ms
+    status: 200 OK
+    code: 200
+    duration: 95ms

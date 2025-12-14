@@ -20,7 +20,7 @@ interactions:
     proto_minor: 0
     content_length: -1
     uncompressed: true
-    body: "{\"id\":\"chatcmpl-012ae7f3-b229-4368-b741-477b1bda11be\",\"object\":\"chat.completion\",\"created\":1756415360,\"model\":\"openai/gpt-oss-120b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"is_fruit\\\": true}\",\"reasoning\":\"User asks: \\\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\\\"is_fruit\\\": bool}.\\\"\\n\\nWe need to answer with JSON: {\\\"is_fruit\\\": true} (since banana is a fruit). Must not include any explanation, only JSON. Ensure proper JSON formatting.\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":0.020431736,\"prompt_tokens\":107,\"prompt_time\":0.00496972,\"completion_tokens\":90,\"completion_time\":0.179541338,\"total_tokens\":197,\"total_time\":0.184511058},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_f9eef9d030\",\"x_groq\":{\"id\":\"req_01k3s86zbtf379dt79q1d6r91b\"},\"service_tier\":\"on_demand\"}\n"
+    body: "{\"id\":\"chatcmpl-e2a5fc3d-12a7-4941-8429-e7475a18010d\",\"object\":\"chat.completion\",\"created\":1765638717,\"model\":\"openai/gpt-oss-120b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"is_fruit\\\":true}\",\"reasoning\":\"The user asks: \\\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\\\"is_fruit\\\": bool}.\\\"\\n\\nWe need to respond with JSON: {\\\"is_fruit\\\": true} (or false). Banana is a fruit, so true.\\n\\nWe must ensure JSON is compact, valid, no extra whitespace? Compact means no unnecessary spaces, but it's okay to have spaces after colon? Typically compact means minimal whitespace, e.g., {\\\"is_fruit\\\":true}. Let's do that.\\n\\nWe should not include any extra text. Only JSON.\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":0.073266257,\"prompt_tokens\":124,\"prompt_time\":0.004950219,\"completion_tokens\":141,\"completion_time\":0.291550625,\"total_tokens\":265,\"total_time\":0.296500844,\"completion_tokens_details\":{\"reasoning_tokens\":121}},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_029931c09b\",\"x_groq\":{\"id\":\"req_01kcc49fcmepkrcn3n4evqvh7v\",\"seed\":512468548},\"service_tier\":\"on_demand\"}\n"
     headers:
       Alt-Svc:
       - h3=":443"; ma=86400
@@ -29,17 +29,17 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9766ca021e4da2e6-YUL
+      - 9ad6659c1dd1a316-YUL
       Content-Type:
       - application/json
       Server:
       - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
       Vary:
       - Origin
-      Via:
-      - 1.1 google
       X-Groq-Region:
-      - msp
+      - yul
       X-Ratelimit-Limit-Requests:
       - "500000"
       X-Ratelimit-Limit-Tokens:
@@ -47,13 +47,11 @@ interactions:
       X-Ratelimit-Remaining-Requests:
       - "499999"
       X-Ratelimit-Remaining-Tokens:
-      - "247795"
+      - "246074"
       X-Ratelimit-Reset-Requests:
-      - 172.799999ms
+      - 172ms
       X-Ratelimit-Reset-Tokens:
-      - 529.04ms
-      X-Request-Id:
-      - req_01k3s86zbtf379dt79q1d6r91b
+      - 942ms
     status: 200 OK
     code: 200
-    duration: 289ms
+    duration: 388ms

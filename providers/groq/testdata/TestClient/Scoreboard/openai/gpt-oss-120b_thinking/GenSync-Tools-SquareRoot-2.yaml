@@ -8,7 +8,7 @@ interactions:
     proto_minor: 1
     content_length: 807
     host: api.groq.com
-    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"},{\"role\":\"assistant\",\"tool_calls\":[{\"type\":\"function\",\"id\":\"fc_92b17e55-18fe-4527-bb4b-70d0c229b14d\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\":132413}\"}}]},{\"role\":\"tool\",\"content\":\"363.89\",\"tool_call_id\":\"fc_92b17e55-18fe-4527-bb4b-70d0c229b14d\"}],\"model\":\"openai/gpt-oss-120b\",\"stream\":false,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"tool_choice\":\"none\"}\n"
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"},{\"role\":\"assistant\",\"tool_calls\":[{\"type\":\"function\",\"id\":\"fc_49a9f731-cf37-4f59-a47b-97172cbffaba\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\":132413}\"}}]},{\"role\":\"tool\",\"content\":\"363.89\",\"tool_call_id\":\"fc_49a9f731-cf37-4f59-a47b-97172cbffaba\"}],\"model\":\"openai/gpt-oss-120b\",\"stream\":false,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"tool_choice\":\"none\"}\n"
     headers:
       Content-Type:
       - application/json; charset=utf-8
@@ -20,7 +20,7 @@ interactions:
     proto_minor: 0
     content_length: -1
     uncompressed: true
-    body: "{\"id\":\"chatcmpl-b8e4ac9f-f496-4255-a64a-9b915fc1a48f\",\"object\":\"chat.completion\",\"created\":1756415360,\"model\":\"openai/gpt-oss-120b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"363.89\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":0.003567585,\"prompt_tokens\":179,\"prompt_time\":0.008671217,\"completion_tokens\":7,\"completion_time\":0.014009828,\"total_tokens\":186,\"total_time\":0.022681045},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_f9eef9d030\",\"x_groq\":{\"id\":\"req_01k3s86zwze89tbnetn1xsydqd\"},\"service_tier\":\"on_demand\"}\n"
+    body: "{\"id\":\"chatcmpl-17ced19f-9030-494c-b71c-ef1dd8b32e7b\",\"object\":\"chat.completion\",\"created\":1765638717,\"model\":\"openai/gpt-oss-120b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"363.89\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":0.016068703,\"prompt_tokens\":185,\"prompt_time\":0.02010892,\"completion_tokens\":7,\"completion_time\":0.02221794,\"total_tokens\":192,\"total_time\":0.04232686},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_0060895c89\",\"x_groq\":{\"id\":\"req_01kcc49fy4epn98vkapkapnqmz\",\"seed\":43072709},\"service_tier\":\"on_demand\"}\n"
     headers:
       Alt-Svc:
       - h3=":443"; ma=86400
@@ -29,17 +29,17 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9766ca058cfba2e6-YUL
+      - 9ad6659f8b21a316-YUL
       Content-Type:
       - application/json
       Server:
       - cloudflare
+      Strict-Transport-Security:
+      - max-age=2592000
       Vary:
       - Origin
-      Via:
-      - 1.1 google
       X-Groq-Region:
-      - msp
+      - yul
       X-Ratelimit-Limit-Requests:
       - "500000"
       X-Ratelimit-Limit-Tokens:
@@ -47,13 +47,11 @@ interactions:
       X-Ratelimit-Remaining-Requests:
       - "499998"
       X-Ratelimit-Remaining-Tokens:
-      - "249629"
+      - "247879"
       X-Ratelimit-Reset-Requests:
-      - 181.599999ms
+      - 345ms
       X-Ratelimit-Reset-Tokens:
-      - 88.92ms
-      X-Request-Id:
-      - req_01k3s86zwze89tbnetn1xsydqd
+      - 509ms
     status: 200 OK
     code: 200
-    duration: 97ms
+    duration: 79ms

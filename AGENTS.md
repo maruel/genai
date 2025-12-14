@@ -131,6 +131,7 @@ When implementing a new provider:
 - Add Validate() method for complex types so it implements the `genai.Validatable` interface
 - Use enums (constants) for fixed value sets
 - Document field constraints in comments
+- Prefer typed structs over `any`: Always extract nested structures into named types if possible.
 
 ### Testing Strategy
 

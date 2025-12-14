@@ -51,7 +51,7 @@ genai is _intentional_. Curious why it was created? See the release announcement
 | ------------------------------------------ | ---- | ------------- | ---------- | ------ | ------ | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
 | [anthropic](docs/anthropic.md)             | 🇺🇸   | Sync, Stream🧠 | 💬📄📸     | 💬     | ✅🪨🕸️ | ❌   | ✅    | ❌   | ✅   | 📏🛑   | ❌    | ✅     | ✅    | ✅     |
 | [bfl](docs/bfl.md)                         | 🇩🇪   | Sync          | 💬         | 📸     | ❌     | ❌   | ✅    | ❌   | ❌   | 🌱   | ❌    | ✅     | ❌    | ❌     |
-| [cerebras](docs/cerebras.md)               | 🇺🇸   | Sync, Stream🧠 | 💬         | 💬     | ✅🪨   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
+| [cerebras](docs/cerebras.md)               | 🇺🇸   | Sync, Stream🧠 | 💬         | 💬     | ✅🪨   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
 | [cloudflare](docs/cloudflare.md)           | 🇺🇸   | Sync, Stream  | 💬         | 💬     | 💨     | ✅   | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | 💨     |
 | [cohere](docs/cohere.md)                   | 🇨🇦   | Sync, Stream🧠 | 💬📸       | 💬     | ✅🪨   | ✅   | ❌    | ❌   | ✅   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
 | [deepseek](docs/deepseek.md)               | 🇨🇳   | Sync, Stream🧠 | 💬         | 💬     | ✅🪨   | ☁️   | ❌    | ❌   | ❌   | 📏🛑   | ✅    | ❌     | ✅    | ✅     |
@@ -65,7 +65,7 @@ genai is _intentional_. Curious why it was created? See the release announcement
 | [openairesponses](docs/openairesponses.md) | 🇺🇸   | Sync, Stream🧠 | 💬📄📸     | 💬📸   | ✅🪨🕸️ | ✅   | ❌    | ❌   | ❌   | 📏🌱  | ❌    | ✅     | ✅    | ✅     |
 | [perplexity](docs/perplexity.md)           | 🇺🇸   | Sync, Stream🧠 | 💬📸       | 💬     | 🕸️     | 📐    | ❌    | ❌   | ✅   | 📏    | ❌    | ❌     | ✅    | ✅     |
 | [pollinations](docs/pollinations.md)       | 🇩🇪   | Sync, Stream  | 💬📸       | 💬📸   | ✅🪨   | ☁️   | ❌    | ❌   | ❌   | 🌱   | ❌    | ❌     | ✅    | ✅     |
-| [togetherai](docs/togetherai.md)           | 🇺🇸   | Sync, Stream🧠 | 💬📸       | 💬📸   | ✅🪨   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
+| [togetherai](docs/togetherai.md)           | 🇺🇸   | Sync, Stream🧠 | 💬         | 💬📸   | ✅🪨   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
 | openaicompatible                           | N/A  | Sync, Stream  | 💬         | 💬     | ❌     | ❌   | ❌    | ❌   | ❌   | 📏🛑   | ❌    | ❌     | ✅    | ✅     |
 <details>
 <summary>‼️ Click here for the legend of columns and symbols</summary>

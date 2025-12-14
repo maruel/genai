@@ -18,9 +18,8 @@ interactions:
     proto: HTTP/2.0
     proto_major: 2
     proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\n  \"id\": \"o9RLNkz-31r7CA-97809b8dbc5ea2f4\",\n  \"object\": \"chat.completion\",\n  \"created\": 1756686087,\n  \"model\": \"openai/gpt-oss-120b\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"Apple\",\n        \"tool_calls\": [],\n        \"reasoning\": \"We need to answer with only one word. The user asks \\\"What fruit is it?\\\" No context. Probably expecting a fruit name. Could be \\\"apple\\\". Just one word.\"\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 78,\n    \"total_tokens\": 125,\n    \"completion_tokens\": 47\n  }\n}"
+    content_length: 265
+    body: "{\n  \"id\": \"oPBShi6-2j9zxn-9addf26f5dc2a320\",\n  \"error\": {\n    \"message\": \"Invalid API key provided. You can find your API key at https://api.together.ai/settings/api-keys.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": \"invalid_api_key\"\n  }\n}"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -29,13 +28,13 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 97809b8dbc5ea2f4-YUL
+      - 9addf26f5dc2a320-YUL
+      Content-Length:
+      - "265"
       Content-Type:
       - application/json; charset=utf-8
       Etag:
-      - W/"2c8-brpB2T+sKXLpuhuJNj/PeUk2AoQ"
-      Retry-After:
-      - "2"
+      - W/"109-UXKQI8ffslDmxu7MNMD2oyoW+4w"
       Server:
       - cloudflare
       Strict-Transport-Security:
@@ -43,29 +42,9 @@ interactions:
       Vary:
       - Accept-Encoding
       X-Amzn-Trace-Id:
-      - 44872a66-c7b9-4455-977d-264fddbe6279-noamzn
-      X-Api-Call-End:
-      - "2025-09-01T00:21:27.817Z"
-      X-Api-Call-Start:
-      - "2025-09-01T00:21:27.623Z"
+      - 40f8fc0c-733c-4f68-9693-2e15a1816b08-noamzn
       X-Api-Received:
-      - "2025-09-01T00:21:27.401Z"
-      X-Inference-Version:
-      - v2
-      X-Ratelimit:
-      - "false"
-      X-Ratelimit-Limit:
-      - "10"
-      X-Ratelimit-Limit-Tokens:
-      - "3000"
-      X-Ratelimit-Remaining:
-      - "19"
-      X-Ratelimit-Remaining-Tokens:
-      - "2585"
-      X-Ratelimit-Reset:
-      - "2"
-      X-Request-Id:
-      - o9RLNkz-31r7CA-97809b8dbc5ea2f4
-    status: 200 OK
-    code: 200
-    duration: 582ms
+      - "2025-12-14T13:11:25.627Z"
+    status: 401 Unauthorized
+    code: 401
+    duration: 333ms

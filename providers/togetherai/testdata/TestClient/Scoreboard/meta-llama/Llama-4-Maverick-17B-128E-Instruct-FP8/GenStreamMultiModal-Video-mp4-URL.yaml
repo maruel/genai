@@ -1,78 +1,50 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 327
-        host: api.together.xyz
-        body: |
-            {"model":"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8","stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"What is the word said? Reply with only the word."},{"type":"video_url","video_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/video.mp4"}}]}]}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.together.xyz/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: 177
-        body: |-
-            {
-              "id": "o496ZUn-28Eivz-96361b8e0b9aa2ee",
-              "error": {
-                "message": "Input validation error",
-                "type": "invalid_request_error",
-                "param": null,
-                "code": null
-              }
-            }
-        headers:
-            Access-Control-Allow-Origin:
-                - '*'
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 96361b8e0b9aa2ee-YUL
-            Content-Length:
-                - "177"
-            Content-Type:
-                - application/json; charset=utf-8
-            Etag:
-                - W/"b1-iP2JkTsKfqj3rJF9NLpYgESB9gY"
-            Retry-After:
-                - "2"
-            Server:
-                - cloudflare
-            Strict-Transport-Security:
-                - max-age=15552000; includeSubDomains
-            Vary:
-                - Accept-Encoding
-            X-Amzn-Trace-Id:
-                - ba00dafa-ab55-4e3f-aa93-c0af8397fd41-noamzn
-            X-Api-Received:
-                - "2025-07-22T21:42:24.115Z"
-            X-Inference-Version:
-                - v2
-            X-Ratelimit:
-                - "false"
-            X-Ratelimit-Limit:
-                - "1"
-            X-Ratelimit-Limit-Tokens:
-                - "1000"
-            X-Ratelimit-Remaining:
-                - "1"
-            X-Ratelimit-Remaining-Tokens:
-                - "1000"
-            X-Ratelimit-Reset:
-                - "2"
-            X-Request-Id:
-                - o496ZUn-28Eivz-96361b8e0b9aa2ee
-        status: 400 Bad Request
-        code: 400
-        duration: 2.604s
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 327
+    host: api.together.xyz
+    body: "{\"model\":\"meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What is the word said? Reply with only the word.\"},{\"type\":\"video_url\",\"video_url\":{\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/video.mp4\"}}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 264
+    body: "{\n  \"id\": \"oPBSguT-zqrih-9addf25fea3ea320\",\n  \"error\": {\n    \"message\": \"Invalid API key provided. You can find your API key at https://api.together.ai/settings/api-keys.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": \"invalid_api_key\"\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9addf25fea3ea320-YUL
+      Content-Length:
+      - "264"
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"108-GvVnC9QUh83Qm/Gv75XwdYd00Ig"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 644d9ef5-3437-43ea-9305-b16ee632d8bd-noamzn
+      X-Api-Received:
+      - "2025-12-14T13:11:22.919Z"
+    status: 401 Unauthorized
+    code: 401
+    duration: 98ms

@@ -18,9 +18,8 @@ interactions:
     proto: HTTP/2.0
     proto_major: 2
     proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\n  \"id\": \"o9RH5fA-4YNCb4-97808bdbfc8953dd\",\n  \"object\": \"chat.completion\",\n  \"created\": 1756685446,\n  \"model\": \"openai/gpt-oss-20b\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"silence\",\n        \"tool_calls\": [],\n        \"reasoning\": \"The user says: \\\"What is the word said? Reply with only the word.\\\" There's no context. Might be a riddle? The prompt is ambiguous. The instruction: \\\"Reply with only the word.\\\" We need to guess the word. Possibly the answer to a previous puzzle? No context. Could be a trick: \\\"Word\\\" as in \\\"the word said\\\". Maybe answer is \\\"word\\\". Or maybe the answer is \\\"silence\\\"? Or maybe the user wants a single word: \\\"silence\\\"? The phrase \\\"What is the word said?\\\" Could be a trick: The word said is \\\"said\\\". Or maybe \\\"speech\\\". However, there's no context. The instruction: \\\"Reply with only the word.\\\" So we should just output a single word. But which? Without context, maybe \\\"silence\\\" because if you say nothing the word is \\\"silence\\\"? Or \\\"hush\\\"? Could be \\\"hush\\\". Alternatively \\\"answer\\\". The phrase \\\"What is the word said?\\\" Could be referencing a common riddle: The word said is \\\"silence\\\". In the riddle: \\\"What is the word that is always wrong in the dictionary\\\" answer is \\\"wrong\\\". But not that.\\n\\nMaybe it's a lateral thinking puzzle: \\\"What is the word said?\\\" The answer might be \\\"said\\\". Because the word \\\"said\\\" is always said. Or the word \\\"word\\\" itself. Or \\\"the word said\\\" is a phrase. Hmm.\\n\\nThe user might expect a single word. Without context, maybe they want \\\"silence\\\". But I'm uncertain. Another possibility: The answer might be \\\"word\\\". Because the question: \\\"What is the word said?\\\" The answer: \\\"Word\\\" (the word that is said). But that doesn't make sense.\\n\\nCould be a trick: The only word that is said is \\\"silence\\\" (as in \\\"say nothing\\\"). Or \\\"hush\\\".\\n\\nI think the safe answer is \\\"silence\\\", because if you say nothing, the word is silence. And the instruction: reply with only the word. So maybe the answer is \\\"silence\\\". I'll output that.\"\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 79,\n    \"total_tokens\": 520,\n    \"completion_tokens\": 441\n  }\n}"
+    content_length: 265
+    body: "{\n  \"id\": \"oPBSiac-4Yz4kd-9addf2830f99a320\",\n  \"error\": {\n    \"message\": \"Invalid API key provided. You can find your API key at https://api.together.ai/settings/api-keys.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": \"invalid_api_key\"\n  }\n}"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -29,13 +28,13 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 97808bdbfc8953dd-YYZ
+      - 9addf2830f99a320-YUL
+      Content-Length:
+      - "265"
       Content-Type:
       - application/json; charset=utf-8
       Etag:
-      - W/"938-wFi+s55LykufMDFSRriJhg4WfZc"
-      Retry-After:
-      - "1"
+      - W/"109-ALN6n72e3JPFnT2uOuoCldH3tTE"
       Server:
       - cloudflare
       Strict-Transport-Security:
@@ -43,29 +42,9 @@ interactions:
       Vary:
       - Accept-Encoding
       X-Amzn-Trace-Id:
-      - c41604cf-7832-412d-a6ab-631ca1106f5e-noamzn
-      X-Api-Call-End:
-      - "2025-09-01T00:10:46.811Z"
-      X-Api-Call-Start:
-      - "2025-09-01T00:10:44.553Z"
+      - 4697a451-f3cc-4abd-a766-357f21aa1b81-noamzn
       X-Api-Received:
-      - "2025-09-01T00:10:44.534Z"
-      X-Inference-Version:
-      - v2
-      X-Ratelimit:
-      - "false"
-      X-Ratelimit-Limit:
-      - "10"
-      X-Ratelimit-Limit-Tokens:
-      - "3000"
-      X-Ratelimit-Remaining:
-      - "18"
-      X-Ratelimit-Remaining-Tokens:
-      - "2630"
-      X-Ratelimit-Reset:
-      - "1"
-      X-Request-Id:
-      - o9RH5fA-4YNCb4-97808bdbfc8953dd
-    status: 200 OK
-    code: 200
-    duration: 2.361s
+      - "2025-12-14T13:11:28.553Z"
+    status: 401 Unauthorized
+    code: 401
+    duration: 139ms

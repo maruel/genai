@@ -1,0 +1,64 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 146
+    host: api.together.xyz
+    body: "{\"model\":\"meta-llama/Meta-Llama-3.1-8B-Instruct-Reference\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 410
+    body: "{\n  \"id\": \"oPBXj6K-2kFHot-9ade0a5e9e4fa275\",\n  \"error\": {\n    \"message\": \"Unable to access non-serverless model meta-llama/Meta-Llama-3.1-8B-Instruct-Reference. Please visit https://api.together.ai/models/meta-llama/Meta-Llama-3.1-8B-Instruct-Reference to create and start a new dedicated endpoint for the model.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": \"model_not_available\"\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ade0a5e9e4fa275-YUL
+      Content-Length:
+      - "410"
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"19a-/kKmuLz9iT4GVxU641xSSOplYCs"
+      Retry-After:
+      - "1"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Api-Received:
+      - "2025-12-14T13:27:45.836Z"
+      X-Content-Type-Options:
+      - nosniff
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "17"
+      X-Ratelimit-Remaining-Tokens:
+      - "3000"
+      X-Ratelimit-Reset:
+      - "1"
+    status: 400 Bad Request
+    code: 400
+    duration: 1.404s

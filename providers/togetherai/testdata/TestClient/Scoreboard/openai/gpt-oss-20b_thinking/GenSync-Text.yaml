@@ -18,9 +18,8 @@ interactions:
     proto: HTTP/2.0
     proto_major: 2
     proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\n  \"id\": \"o9RFd3n-62bZhn-978084e88e4ba2a0\",\n  \"object\": \"chat.completion\",\n  \"created\": 1756685161,\n  \"model\": \"openai/gpt-oss-20b\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"Hello\",\n        \"tool_calls\": [],\n        \"reasoning\": \"User: \\\"Say hello. Use only one word.\\\" They want a greeting, one word. Should respond with \\\"Hello\\\" or \\\"Hi\\\". The instruction: \\\"Say hello. Use only one word.\\\" So we respond with \\\"Hello\\\". That is within one word. Ensure no other words. Just \\\"Hello\\\".\"\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 75,\n    \"total_tokens\": 149,\n    \"completion_tokens\": 74\n  }\n}"
+    content_length: 265
+    body: "{\n  \"id\": \"oPBSiTs-62bZhn-9addf27ffb7ea320\",\n  \"error\": {\n    \"message\": \"Invalid API key provided. You can find your API key at https://api.together.ai/settings/api-keys.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": \"invalid_api_key\"\n  }\n}"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -29,13 +28,13 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 978084e88e4ba2a0-YUL
+      - 9addf27ffb7ea320-YUL
+      Content-Length:
+      - "265"
       Content-Type:
       - application/json; charset=utf-8
       Etag:
-      - W/"32f-VWMLXRpMxUMi7napEXqErXYtchM"
-      Retry-After:
-      - "2"
+      - W/"109-ShXtd0jFbrqQR7LHC3pRkZ2aMIk"
       Server:
       - cloudflare
       Strict-Transport-Security:
@@ -43,29 +42,9 @@ interactions:
       Vary:
       - Accept-Encoding
       X-Amzn-Trace-Id:
-      - 5afd101a-ec28-41ab-b905-00339568ff70-noamzn
-      X-Api-Call-End:
-      - "2025-09-01T00:06:01.125Z"
-      X-Api-Call-Start:
-      - "2025-09-01T00:05:59.912Z"
+      - 3d5a6bc0-4dc2-4add-b4ef-62423e14550f-noamzn
       X-Api-Received:
-      - "2025-09-01T00:05:59.906Z"
-      X-Inference-Version:
-      - v2
-      X-Ratelimit:
-      - "false"
-      X-Ratelimit-Limit:
-      - "10"
-      X-Ratelimit-Limit-Tokens:
-      - "3000"
-      X-Ratelimit-Remaining:
-      - "18"
-      X-Ratelimit-Remaining-Tokens:
-      - "3000"
-      X-Ratelimit-Reset:
-      - "2"
-      X-Request-Id:
-      - o9RFd3n-62bZhn-978084e88e4ba2a0
-    status: 200 OK
-    code: 200
-    duration: 1.428s
+      - "2025-12-14T13:11:28.162Z"
+    status: 401 Unauthorized
+    code: 401
+    duration: 203ms

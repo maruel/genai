@@ -1,0 +1,66 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 556
+    host: api.together.xyz
+    body: "{\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"}],\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"tool_choice\":\"auto\"}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"oPBXGQ1-3pDw3Z-9ade082d9de2a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718776,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPBXGQ1-3pDw3Z-9ade082d9de2a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718776,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"id\":\"call_0dac1b3321ab4d3ca87e7628\",\"index\":0,\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"arguments\":\"\"}}],\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPBXGQ1-3pDw3Z-9ade082d9de2a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718776,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"id\":null,\"index\":0,\"type\":\"function\",\"function\":{\"name\":null,\"arguments\":\"{\\\"number\\\": 1\"}}],\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPBXGQ1-3pDw3Z-9ade082d9de2a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718776,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"id\":null,\"index\":0,\"type\":\"function\",\"function\":{\"name\":null,\"arguments\":\"3\"}}],\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPBXGQ1-3pDw3Z-9ade082d9de2a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718776,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"id\":null,\"index\":0,\"type\":\"function\",\"function\":{\"name\":null,\"arguments\":\"2\"}}],\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPBXGQ1-3pDw3Z-9ade082d9de2a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718776,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"id\":null,\"index\":0,\"type\":\"function\",\"function\":{\"name\":null,\"arguments\":\"4\"}}],\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPBXGQ1-3pDw3Z-9ade082d9de2a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718776,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"id\":null,\"index\":0,\"type\":\"function\",\"function\":{\"name\":null,\"arguments\":\"1\"}}],\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPBXGQ1-3pDw3Z-9ade082d9de2a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718776,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"id\":null,\"index\":0,\"type\":\"function\",\"function\":{\"name\":null,\"arguments\":\"3}\"}}],\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPBXGQ1-3pDw3Z-9ade082d9de2a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718776,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":\"tool_calls\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPBXGQ1-3pDw3Z-9ade082d9de2a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718776,\"choices\":[],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":{\"prompt_tokens\":205,\"total_tokens\":230,\"completion_tokens\":25,\"prompt_tokens_details\":null,\"reasoning_tokens\":0}}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - no-cache, no-transform
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ade082d9de2a275-YUL
+      Content-Type:
+      - text/event-stream;charset=utf-8
+      Retry-After:
+      - "2"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 2fe36784-c50a-4cd1-8649-84c3c8647930-noamzn
+      X-Api-Call-Start:
+      - "2025-12-14T13:26:16.043Z"
+      X-Api-Received:
+      - "2025-12-14T13:26:16.034Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "19"
+      X-Ratelimit-Remaining-Tokens:
+      - "2964"
+      X-Ratelimit-Reset:
+      - "2"
+    status: 200 OK
+    code: 200
+    duration: 375ms

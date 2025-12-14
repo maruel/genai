@@ -1,97 +1,50 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 140
-        host: api.together.xyz
-        body: |
-            {"model":"mistralai/Mistral-Small-24B-Instruct-2501","stream":false,"messages":[{"role":"user","content":"Say hello. Use only one word."}]}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.together.xyz/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        uncompressed: true
-        body: |-
-            {
-              "id": "o48r7sA-4YNCb4-9635d6c49f3ea2eb",
-              "object": "chat.completion",
-              "created": 1753217726,
-              "model": "mistralai/Mistral-Small-24B-Instruct-2501",
-              "prompt": [],
-              "choices": [
-                {
-                  "index": 0,
-                  "message": {
-                    "role": "assistant",
-                    "content": "Hello.",
-                    "tool_calls": []
-                  },
-                  "logprobs": null,
-                  "finish_reason": "stop",
-                  "seed": null
-                }
-              ],
-              "usage": {
-                "prompt_tokens": 11,
-                "total_tokens": 14,
-                "completion_tokens": 3
-              }
-            }
-        headers:
-            Access-Control-Allow-Origin:
-                - '*'
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 9635d6c49f3ea2eb-YUL
-            Content-Type:
-                - application/json; charset=utf-8
-            Etag:
-                - W/"1f6-7qY6vzOJtJoCKoPkfsi5kRdBYEc"
-            Retry-After:
-                - "2"
-            Server:
-                - cloudflare
-            Strict-Transport-Security:
-                - max-age=15552000; includeSubDomains
-            Vary:
-                - Accept-Encoding
-            X-Amzn-Trace-Id:
-                - eb1b8b0e-316c-4957-ae5a-d277c5bf9afb-noamzn
-            X-Api-Call-End:
-                - "2025-07-22T20:55:26.438Z"
-            X-Api-Call-Start:
-                - "2025-07-22T20:55:26.386Z"
-            X-Api-Received:
-                - "2025-07-22T20:55:26.381Z"
-            X-Inference-Version:
-                - v2
-            X-Ratelimit:
-                - "false"
-            X-Ratelimit-Limit:
-                - "1"
-            X-Ratelimit-Limit-Tokens:
-                - "1000"
-            X-Ratelimit-Remaining:
-                - "1"
-            X-Ratelimit-Remaining-Tokens:
-                - "1000"
-            X-Ratelimit-Reset:
-                - "2"
-            X-Request-Id:
-                - o48r7sA-4YNCb4-9635d6c49f3ea2eb
-        status: 200 OK
-        code: 200
-        duration: 281ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 140
+    host: api.together.xyz
+    body: "{\"model\":\"mistralai/Mistral-Small-24B-Instruct-2501\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 265
+    body: "{\n  \"id\": \"oPBSgNs-6Ng1vN-9addf256ae32a320\",\n  \"error\": {\n    \"message\": \"Invalid API key provided. You can find your API key at https://api.together.ai/settings/api-keys.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": \"invalid_api_key\"\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9addf256ae32a320-YUL
+      Content-Length:
+      - "265"
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"109-MZvbOzUzC6smcbRXfdmEYNoCmdQ"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 607f74c9-60c4-442b-a4dc-0415bf14adfe-noamzn
+      X-Api-Received:
+      - "2025-12-14T13:11:21.144Z"
+    status: 401 Unauthorized
+    code: 401
+    duration: 218ms

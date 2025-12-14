@@ -1,0 +1,66 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 155
+    host: api.together.xyz
+    body: "{\"model\":\"zai-org/GLM-4.6\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":\"Talk about Canada in great details. Start with: Canada is\"}],\"stop\":[\"is\"]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"oPBWuGo-3pDw3Z-9ade06714af9a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718704,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPBWuGo-3pDw3Z-9ade06714af9a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718704,\"choices\":[{\"index\":0,\"text\":\"\\n\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\\n\",\"reasoning\":null}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPBWuGo-3pDw3Z-9ade06714af9a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718704,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\"**\"}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPBWuGo-3pDw3Z-9ade06714af9a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718704,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\"1. Deconstruct the User\"}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPBWuGo-3pDw3Z-9ade06714af9a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718704,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\"'s Request:**\\n\\n*  \"}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPBWuGo-3pDw3Z-9ade06714af9a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718704,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\" **Topic\"}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPBWuGo-3pDw3Z-9ade06714af9a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718704,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\":** Canada\"}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPBWuGo-3pDw3Z-9ade06714af9a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718704,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\"\\n\"}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPBWuGo-3pDw3Z-9ade06714af9a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718704,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\"*   **Level\"}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPBWuGo-3pDw3Z-9ade06714af9a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718704,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\" of Detail:** \\\"in\"}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPBWuGo-3pDw3Z-9ade06714af9a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718704,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\" great details\\\"\"}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPBWuGo-3pDw3Z-9ade06714af9a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718704,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\" - Th\"}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPBWuGo-3pDw3Z-9ade06714af9a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718704,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":\"stop\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPBWuGo-3pDw3Z-9ade06714af9a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718704,\"choices\":[],\"model\":\"zai-org/GLM-4.6\",\"usage\":{\"prompt_tokens\":17,\"total_tokens\":51,\"completion_tokens\":34,\"prompt_tokens_details\":null,\"reasoning_tokens\":0}}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - no-cache, no-transform
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ade06714af9a275-YUL
+      Content-Type:
+      - text/event-stream;charset=utf-8
+      Retry-After:
+      - "2"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 97c01e12-6a06-497d-a69b-ce25d4d1a19a-noamzn
+      X-Api-Call-Start:
+      - "2025-12-14T13:25:04.982Z"
+      X-Api-Received:
+      - "2025-12-14T13:25:04.972Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "18"
+      X-Ratelimit-Remaining-Tokens:
+      - "2387"
+      X-Ratelimit-Reset:
+      - "2"
+    status: 200 OK
+    code: 200
+    duration: 346ms

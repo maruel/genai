@@ -1,0 +1,66 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 798
+    host: api.together.xyz
+    body: "{\"model\":\"moonshotai/Kimi-K2-Instruct-0905\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"},{\"role\":\"assistant\",\"tool_calls\":[{\"index\":0,\"id\":\"functions.square_root:0\",\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\": 132413}\"}}]},{\"role\":\"tool\",\"content\":\"363.89\",\"tool_call_id\":\"functions.square_root:0\"}],\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"tool_choice\":\"none\"}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"oPBXJP5-zqrih-9ade08579e28a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718782,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"moonshotai/Kimi-K2-Instruct-0905\",\"usage\":null}\n\ndata: {\"id\":\"oPBXJP5-zqrih-9ade08579e28a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718782,\"choices\":[{\"index\":0,\"text\":\"363\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"363\",\"reasoning\":null}}],\"model\":\"moonshotai/Kimi-K2-Instruct-0905\",\"usage\":null}\n\ndata: {\"id\":\"oPBXJP5-zqrih-9ade08579e28a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718782,\"choices\":[{\"index\":0,\"text\":\".\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\".\",\"reasoning\":null}}],\"model\":\"moonshotai/Kimi-K2-Instruct-0905\",\"usage\":null}\n\ndata: {\"id\":\"oPBXJP5-zqrih-9ade08579e28a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718782,\"choices\":[{\"index\":0,\"text\":\"89\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"89\",\"reasoning\":null}}],\"model\":\"moonshotai/Kimi-K2-Instruct-0905\",\"usage\":null}\n\ndata: {\"id\":\"oPBXJP5-zqrih-9ade08579e28a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718782,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":\"stop\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"moonshotai/Kimi-K2-Instruct-0905\",\"usage\":null}\n\ndata: {\"id\":\"oPBXJP5-zqrih-9ade08579e28a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718782,\"choices\":[],\"model\":\"moonshotai/Kimi-K2-Instruct-0905\",\"usage\":{\"prompt_tokens\":92,\"total_tokens\":96,\"completion_tokens\":4,\"prompt_tokens_details\":null,\"reasoning_tokens\":0}}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - no-cache, no-transform
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ade08579e28a275-YUL
+      Content-Type:
+      - text/event-stream;charset=utf-8
+      Retry-After:
+      - "1"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 811859bd-d03c-452b-925d-ecb594f81a9d-noamzn
+      X-Api-Call-Start:
+      - "2025-12-14T13:26:22.725Z"
+      X-Api-Received:
+      - "2025-12-14T13:26:22.709Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "17"
+      X-Ratelimit-Remaining-Tokens:
+      - "2888"
+      X-Ratelimit-Reset:
+      - "1"
+    status: 200 OK
+    code: 200
+    duration: 290ms

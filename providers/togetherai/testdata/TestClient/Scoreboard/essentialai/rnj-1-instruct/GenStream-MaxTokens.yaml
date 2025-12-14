@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 161
+    host: api.together.xyz
+    body: "{\"model\":\"essentialai/rnj-1-instruct\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":\"Explain the theory of relativity in great details.\"}],\"max_tokens\":16}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"oPBXM7Q-z1gNr-9ade08911965a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718791,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\"}}],\"model\":\"essentialai/rnj-1-instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPBXM7Q-z1gNr-9ade08911965a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718791,\"choices\":[{\"index\":0,\"text\":\"It\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"It\"}}],\"model\":\"essentialai/rnj-1-instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPBXM7Q-z1gNr-9ade08911965a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718791,\"choices\":[{\"index\":0,\"text\":\" seems\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" seems\"}}],\"model\":\"essentialai/rnj-1-instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPBXM7Q-z1gNr-9ade08911965a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718791,\"choices\":[{\"index\":0,\"text\":\" there\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" there\"}}],\"model\":\"essentialai/rnj-1-instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPBXM7Q-z1gNr-9ade08911965a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718791,\"choices\":[{\"index\":0,\"text\":\" is\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" is\"}}],\"model\":\"essentialai/rnj-1-instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPBXM7Q-z1gNr-9ade08911965a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718791,\"choices\":[{\"index\":0,\"text\":\" a\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" a\"}}],\"model\":\"essentialai/rnj-1-instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPBXM7Q-z1gNr-9ade08911965a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718791,\"choices\":[{\"index\":0,\"text\":\" bit\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" bit\"}}],\"model\":\"essentialai/rnj-1-instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPBXM7Q-z1gNr-9ade08911965a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718791,\"choices\":[{\"index\":0,\"text\":\" of\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" of\"}}],\"model\":\"essentialai/rnj-1-instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPBXM7Q-z1gNr-9ade08911965a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718791,\"choices\":[{\"index\":0,\"text\":\" confusion\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" confusion\"}}],\"model\":\"essentialai/rnj-1-instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPBXM7Q-z1gNr-9ade08911965a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718791,\"choices\":[{\"index\":0,\"text\":\" in\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" in\"}}],\"model\":\"essentialai/rnj-1-instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPBXM7Q-z1gNr-9ade08911965a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718791,\"choices\":[{\"index\":0,\"text\":\" your\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" your\"}}],\"model\":\"essentialai/rnj-1-instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPBXM7Q-z1gNr-9ade08911965a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718791,\"choices\":[{\"index\":0,\"text\":\" question\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" question\"}}],\"model\":\"essentialai/rnj-1-instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPBXM7Q-z1gNr-9ade08911965a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718791,\"choices\":[{\"index\":0,\"text\":\".\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\".\"}}],\"model\":\"essentialai/rnj-1-instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPBXM7Q-z1gNr-9ade08911965a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718791,\"choices\":[{\"index\":0,\"text\":\" Your\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" Your\"}}],\"model\":\"essentialai/rnj-1-instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPBXM7Q-z1gNr-9ade08911965a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718791,\"choices\":[{\"index\":0,\"text\":\" request\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" request\"}}],\"model\":\"essentialai/rnj-1-instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPBXM7Q-z1gNr-9ade08911965a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718791,\"choices\":[{\"index\":0,\"text\":\" is\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" is\"}}],\"model\":\"essentialai/rnj-1-instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPBXM7Q-z1gNr-9ade08911965a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718791,\"choices\":[{\"index\":0,\"text\":\" for\",\"logprobs\":null,\"finish_reason\":\"length\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" for\"}}],\"model\":\"essentialai/rnj-1-instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPBXM7Q-z1gNr-9ade08911965a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718791,\"choices\":[],\"model\":\"essentialai/rnj-1-instruct\",\"usage\":{\"prompt_tokens\":41,\"total_tokens\":57,\"completion_tokens\":16}}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - no-cache, no-transform
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ade08911965a275-YUL
+      Content-Type:
+      - text/event-stream;charset=utf-8
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 2aca7ef1-ec41-4626-a176-ee41f08f7630-noamzn
+      X-Api-Call-Start:
+      - "2025-12-14T13:26:31.921Z"
+      X-Api-Received:
+      - "2025-12-14T13:26:31.892Z"
+      X-Inference-Version:
+      - v2
+    status: 200 OK
+    code: 200
+    duration: 99ms

@@ -1,80 +1,50 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 320
-        host: api.together.xyz
-        body: |
-            {"model":"mistralai/Mistral-Small-24B-Instruct-2501","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"What is the word said? Reply with only the word."},{"type":"video_url","video_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/video.mp4"}}]}]}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.together.xyz/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: 167
-        body: |-
-            {
-              "id": "o495nn8-62bZhn-963617e3e88aa2c2",
-              "error": {
-                "message": "Internal server error",
-                "type": "server_error",
-                "param": null,
-                "code": null
-              }
-            }
-        headers:
-            Access-Control-Allow-Origin:
-                - '*'
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 963617e3e88aa2c2-YUL
-            Content-Length:
-                - "167"
-            Content-Type:
-                - application/json; charset=utf-8
-            Etag:
-                - W/"a7-+OzKH1BLa01AiwUkN+Cqyx8obSg"
-            Retry-After:
-                - "2"
-            Server:
-                - cloudflare
-            Strict-Transport-Security:
-                - max-age=15552000; includeSubDomains
-            Vary:
-                - Accept-Encoding
-            X-Amzn-Trace-Id:
-                - 4322ca7c-7535-49e0-b6ae-25858b219e6d-noamzn
-            X-Api-Call-Start:
-                - "2025-07-22T21:39:53.745Z"
-            X-Api-Received:
-                - "2025-07-22T21:39:53.741Z"
-            X-Inference-Version:
-                - v2
-            X-Ratelimit:
-                - "false"
-            X-Ratelimit-Limit:
-                - "1"
-            X-Ratelimit-Limit-Tokens:
-                - "1000"
-            X-Ratelimit-Remaining:
-                - "1"
-            X-Ratelimit-Remaining-Tokens:
-                - "1000"
-            X-Ratelimit-Reset:
-                - "2"
-            X-Request-Id:
-                - o495nn8-62bZhn-963617e3e88aa2c2
-        status: 500 Internal Server Error
-        code: 500
-        duration: 2.295s
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 320
+    host: api.together.xyz
+    body: "{\"model\":\"mistralai/Mistral-Small-24B-Instruct-2501\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What is the word said? Reply with only the word.\"},{\"type\":\"video_url\",\"video_url\":{\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/video.mp4\"}}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 265
+    body: "{\n  \"id\": \"oPBSggr-4YNCb4-9addf25b7c85a320\",\n  \"error\": {\n    \"message\": \"Invalid API key provided. You can find your API key at https://api.together.ai/settings/api-keys.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": \"invalid_api_key\"\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9addf25b7c85a320-YUL
+      Content-Length:
+      - "265"
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"109-f4GjSNJ2dP4AHiL9BmS6KM35q9U"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - acfffa2a-e30d-41e9-8253-9f36a9f8f181-noamzn
+      X-Api-Received:
+      - "2025-12-14T13:11:22.188Z"
+    status: 401 Unauthorized
+    code: 401
+    duration: 56ms

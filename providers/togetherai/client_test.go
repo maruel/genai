@@ -102,11 +102,11 @@ func TestClient(t *testing.T) {
 			want     string
 		}{
 			{genai.ModalityText, genai.ModelCheap, "openai/gpt-oss-20b"},
-			{genai.ModalityText, genai.ModelGood, "Qwen/Qwen3-235B-A22B-Instruct-2507-tput"},
+			{genai.ModalityText, genai.ModelGood, "Qwen/Qwen3-235B-A22B-fp8-tput"},
 			{genai.ModalityText, genai.ModelSOTA, "Qwen/Qwen3-235B-A22B-Thinking-2507"},
 			{genai.ModalityImage, genai.ModelCheap, "black-forest-labs/FLUX.1-schnell"},
-			{genai.ModalityImage, genai.ModelGood, "black-forest-labs/FLUX.1-krea-dev"},
-			{genai.ModalityImage, genai.ModelSOTA, "black-forest-labs/FLUX.1.1-pro"},
+			{genai.ModalityImage, genai.ModelGood, "black-forest-labs/FLUX.2-dev"},
+			{genai.ModalityImage, genai.ModelSOTA, "black-forest-labs/FLUX.2-pro"},
 		}
 		for _, line := range data {
 			t.Run(fmt.Sprintf("%s-%s", line.modality, line.name), func(t *testing.T) {

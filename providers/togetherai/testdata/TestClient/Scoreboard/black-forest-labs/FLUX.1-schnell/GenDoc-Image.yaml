@@ -1,294 +1,46 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 1202
-        host: api.together.xyz
-        body: |
-            {"prompt":"Generate one square, white-background doodle with smooth, vibrantly colored image depicting A doodle animation on a white background of Cartoonish shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves..\n\n*Mandatory Requirements (Compacted):**\n\n**Style:** Simple, vibrant, varied-colored doodle/hand-drawn sketch.\n**Background:** Plain solid white (no background colors/elements). Absolutely no black background.\n**Content & Motion:** Clearly depict **A doodle animation on a white background of Cartoonish shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves.** action with colored, moving subject (no static images). If there's an action specified, it should be the main difference between frames.\n**Format:** Square image (1:1 aspect ratio).\n**Cropping:** Absolutely no black bars/letterboxing; colorful doodle fully visible against white.\n**Output:** Actual image file for a smooth, colorful doodle-style image on a white background.","model":"black-forest-labs/FLUX.1-schnell","seed":42,"height":256,"width":256}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.together.xyz/v1/images/generations
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        uncompressed: true
-        body: |-
-            {
-              "id": "o4QCxip-2kFHot-96466a472a2ba2de-PDX",
-              "model": "black-forest-labs/FLUX.1-schnell",
-              "object": "list",
-              "data": [
-                {
-                  "index": 0,
-                  "url": "https://api.together.ai/shrt/J78t2AUPpYcr32XH",
-                  "timings": {
-                    "inference": 0.09494294109754264
-                  }
-                }
-              ]
-            }
-        headers:
-            Access-Control-Allow-Origin:
-                - '*'
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 96466a472a2ba2de-YUL
-            Content-Type:
-                - application/json; charset=utf-8
-            Etag:
-                - W/"125-W2Nc9kl28bgAJlbeClPeVapejIQ"
-            Retry-After:
-                - "2"
-            Server:
-                - cloudflare
-            Strict-Transport-Security:
-                - max-age=15552000; includeSubDomains
-            X-Api-Call-End:
-                - "2025-07-24T21:12:22.439Z"
-            X-Api-Call-Start:
-                - "2025-07-24T21:12:22.081Z"
-            X-Api-Received:
-                - "2025-07-24T21:12:20.413Z"
-            X-Image-Version:
-                - v2
-            X-Ratelimit:
-                - "false"
-            X-Ratelimit-Limit:
-                - "1"
-            X-Ratelimit-Limit-Tokens:
-                - "0"
-            X-Ratelimit-Remaining:
-                - "1"
-            X-Ratelimit-Remaining-Tokens:
-                - "0"
-            X-Ratelimit-Reset:
-                - "2"
-            X-Request-Id:
-                - o4QCxip-2kFHot-96466a472a2ba2de-PDX
-        status: 200 OK
-        code: 200
-        duration: 2.311s
-    - id: 1
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        host: api.together.ai
-        url: https://api.together.ai/shrt/J78t2AUPpYcr32XH
-        method: GET
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: 8765
-        body: !!binary |
-            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
-        headers:
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cache-Control:
-                - max-age=31536000, public
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 96466a559ff3a27e-YUL
-            Content-Disposition:
-                - inline; filename="77da13c9760c7407631061a7f8498d860027ae1b1a43a11737e95cb499820a4d.jpg"
-            Content-Length:
-                - "8765"
-            Content-Security-Policy:
-                - script-src 'none'
-            Content-Type:
-                - image/jpeg
-            Expires:
-                - Fri, 24 Jul 2026 21:12:22 GMT
-            Server:
-                - cloudflare
-            Strict-Transport-Security:
-                - max-age=2592000; includeSubDomains
-            X-Content-Type-Options:
-                - nosniff
-            X-Request-Id:
-                - CCqpx4SMyRrtmxRdTU31n
-        status: 200 OK
-        code: 200
-        duration: 216ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 1202
+    host: api.together.xyz
+    body: "{\"prompt\":\"Generate one square, white-background doodle with smooth, vibrantly colored image depicting A doodle animation on a white background of Cartoonish shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves..\\n\\n*Mandatory Requirements (Compacted):**\\n\\n**Style:** Simple, vibrant, varied-colored doodle/hand-drawn sketch.\\n**Background:** Plain solid white (no background colors/elements). Absolutely no black background.\\n**Content & Motion:** Clearly depict **A doodle animation on a white background of Cartoonish shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves.** action with colored, moving subject (no static images). If there's an action specified, it should be the main difference between frames.\\n**Format:** Square image (1:1 aspect ratio).\\n**Cropping:** Absolutely no black bars/letterboxing; colorful doodle fully visible against white.\\n**Output:** Actual image file for a smooth, colorful doodle-style image on a white background.\",\"model\":\"black-forest-labs/FLUX.1-schnell\",\"seed\":42,\"height\":256,\"width\":256}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/images/generations
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 269
+    body: "{\n  \"id\": \"oPBSiD4-2kFHot-9addf27b4d34a320-PDX\",\n  \"error\": {\n    \"message\": \"Invalid API key provided. You can find your API key at https://api.together.ai/settings/api-keys.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": \"invalid_api_key\"\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9addf27b4d34a320-YUL
+      Content-Length:
+      - "269"
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"10d-QsmvLP206XDXbzVTw6pRpR/bB1E"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      X-Api-Received:
+      - "2025-12-14T13:11:27.303Z"
+    status: 401 Unauthorized
+    code: 401
+    duration: 104ms

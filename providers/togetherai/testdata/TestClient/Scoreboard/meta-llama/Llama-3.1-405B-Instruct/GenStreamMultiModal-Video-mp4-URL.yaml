@@ -1,0 +1,64 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 312
+    host: api.together.xyz
+    body: "{\"model\":\"meta-llama/Llama-3.1-405B-Instruct\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What is the word said? Reply with only the word.\"},{\"type\":\"video_url\",\"video_url\":{\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/video.mp4\"}}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 384
+    body: "{\n  \"id\": \"oPBXeg1-2kFHot-9ade0a021cffa275\",\n  \"error\": {\n    \"message\": \"Unable to access non-serverless model meta-llama/Llama-3.1-405B-Instruct. Please visit https://api.together.ai/models/meta-llama/Llama-3.1-405B-Instruct to create and start a new dedicated endpoint for the model.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": \"model_not_available\"\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ade0a021cffa275-YUL
+      Content-Length:
+      - "384"
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"180-4YByuvZuJwG5Ysg23iCiQLKw/TI"
+      Retry-After:
+      - "1"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Api-Received:
+      - "2025-12-14T13:27:30.971Z"
+      X-Content-Type-Options:
+      - nosniff
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "17"
+      X-Ratelimit-Remaining-Tokens:
+      - "3000"
+      X-Ratelimit-Reset:
+      - "1"
+    status: 400 Bad Request
+    code: 400
+    duration: 1.944s

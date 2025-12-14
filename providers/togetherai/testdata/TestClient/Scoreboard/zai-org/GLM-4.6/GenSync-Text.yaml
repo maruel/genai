@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 114
+    host: api.together.xyz
+    body: "{\"model\":\"zai-org/GLM-4.6\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"oPBWovu-6Ng1vN-9ade05ffae27a275\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765718692,\n  \"model\": \"zai-org/GLM-4.6\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"Hello\",\n        \"tool_calls\": [],\n        \"reasoning\": \"1.  **Analyze the user's request:**\\n    *   **Core instruction:** \\\"Say hello.\\\"\\n    *   **Constraint:** \\\"Use only one word.\\\"\\n\\n2.  **Brainstorm possible one-word greetings:**\\n    *   \\\"Hello!\\\"\\n    *   \\\"Hi!\\\"\\n    *   \\\"Hey!\\\"\\n    *   \\\"Greetings!\\\" (This is technically one word, but it's a bit formal and long. Still, it fits the prompt.)\\n    *   \\\"Salutations!\\\" (Even more formal, also fits.)\\n    *   \\\"Yo!\\\" (Informal, fits.)\\n    *   \\\"Howdy!\\\" (Informal/regional, fits.)\\n    *   \\\"Alright?\\\" (In some UK dialects, this is a greeting. It's technically one word or a contraction. Fits.)\\n    *   \\\"Sup?\\\" (Slang, contraction, fits.)\\n\\n3.  **Evaluate the options based on the user's tone and intent:**\\n    *   The user's request is very direct and simple: \\\"Say hello.\\\" It's not formal, not informal, not slang. It's neutral.\\n    *   Therefore, the most direct, neutral, and universally understood response is the best choice.\\n    *   \\\"Hello\\\" is the word the user explicitly used in their prompt. Using it back is a direct and faithful fulfillment of the request.\\n    *   \\\"Hi\\\" is also a very strong candidate. It's simple, one word, and a common greeting.\\n    *   \\\"Hey\\\" is a bit more informal than \\\"Hi.\\\"\\n    *   \\\"Greetings,\\\" \\\"Salutations,\\\" etc., are too formal for this simple request.\\n    *   \\\"Yo,\\\" \\\"Sup,\\\" \\\"Howdy\\\" are too informal or regional for a neutral first interaction.\\n\\n4.  **Select the best option:**\\n    *   \\\"Hello\\\" is perfect because it *exactly* matches the user's command (\\\"Say hello\\\"). It's the most literal and direct answer.\\n    *   \\\"Hi\\\" is also excellent. It's slightly more casual but still perfectly acceptable.\\n    *   Between \\\"Hello\\\" and \\\"Hi,\\\" \\\"Hello\\\" feels like the most precise and \\\"correct\\\" answer to the specific phrasing of the prompt. It shows I've read carefully.\\n\\n5.  **Final check against the constraints:**\\n    *   Is it a greeting? Yes.\\n    *   Is it one word? Yes.\\n    *   Does it fulfill the user's request? Yes, perfectly.\\n\\n6.  **Construct the final response:**\\n    *   The final output should be just the single word, no extra punctuation, no explanation, no apology, no \\\"Here is your one-word response:\\\". Just the word itself. The user's constraint is absolute (\\\"Use only one word\\\").\\n\\nThis leads me to the final answer: \\\"Hello\\\". It's the most direct, literal, and compliant response.\"\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 13,\n    \"total_tokens\": 611,\n    \"completion_tokens\": 598\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ade05ffae27a275-YUL
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"b8b-xl0DGP4yUQYruh+2dxJGsg1JDO8"
+      Retry-After:
+      - "2"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - a1ab2f14-5097-470f-8d05-5c5b31a4ea5e-noamzn
+      X-Api-Call-End:
+      - "2025-12-14T13:24:52.354Z"
+      X-Api-Call-Start:
+      - "2025-12-14T13:24:47.005Z"
+      X-Api-Received:
+      - "2025-12-14T13:24:46.998Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "19"
+      X-Ratelimit-Remaining-Tokens:
+      - "2166"
+      X-Ratelimit-Reset:
+      - "2"
+    status: 200 OK
+    code: 200
+    duration: 5.495s

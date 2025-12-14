@@ -18,9 +18,8 @@ interactions:
     proto: HTTP/2.0
     proto_major: 2
     proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\n  \"id\": \"o9RCqHg-28Eivz-9780779e7d1fa2a3\",\n  \"object\": \"chat.completion\",\n  \"created\": 1756684615,\n  \"model\": \"Qwen/Qwen3-235B-A22B-Thinking-2507\",\n  \"kv_transfer_params\": null,\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"<think>\\nWe are constrained to use only one word. The instruction is to say hello.\\n The most common one-word hello is \\\"Hello\\\".\\n However, note that sometimes people use \\\"Hi\\\" as a one-word greeting.\\n But the instruction says \\\"say hello\\\", so \\\"Hello\\\" is the direct match.\\n We must use exactly one word and nothing else.\\n Therefore, the response should be: Hello\\n</think>\\n\\nHello\",\n        \"tool_calls\": [],\n        \"reasoning\": null\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 18,\n    \"total_tokens\": 100,\n    \"completion_tokens\": 82\n  }\n}"
+    content_length: 264
+    body: "{\n  \"id\": \"oPBSiFu-zqrih-9addf27bee29a320\",\n  \"error\": {\n    \"message\": \"Invalid API key provided. You can find your API key at https://api.together.ai/settings/api-keys.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": \"invalid_api_key\"\n  }\n}"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -29,13 +28,13 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9780779e7d1fa2a3-YUL
+      - 9addf27bee29a320-YUL
+      Content-Length:
+      - "264"
       Content-Type:
       - application/json; charset=utf-8
       Etag:
-      - W/"3a9-FWc8hZaOzb/CELc5AjoCWUrxQFQ"
-      Retry-After:
-      - "2"
+      - W/"108-DRLDRWLiczoA12hl5MGgEMpMEy8"
       Server:
       - cloudflare
       Strict-Transport-Security:
@@ -43,29 +42,9 @@ interactions:
       Vary:
       - Accept-Encoding
       X-Amzn-Trace-Id:
-      - 94d6474a-5a70-4993-97c3-7e75f1796dd4-noamzn
-      X-Api-Call-End:
-      - "2025-08-31T23:56:58.154Z"
-      X-Api-Call-Start:
-      - "2025-08-31T23:56:55.753Z"
+      - 74355bcf-02a0-4389-8b6c-b2d66dc670a2-noamzn
       X-Api-Received:
-      - "2025-08-31T23:56:55.744Z"
-      X-Inference-Version:
-      - v2
-      X-Ratelimit:
-      - "false"
-      X-Ratelimit-Limit:
-      - "10"
-      X-Ratelimit-Limit-Tokens:
-      - "3000"
-      X-Ratelimit-Remaining:
-      - "19"
-      X-Ratelimit-Remaining-Tokens:
-      - "3000"
-      X-Ratelimit-Reset:
-      - "2"
-      X-Request-Id:
-      - o9RCqHg-28Eivz-9780779e7d1fa2a3
-    status: 200 OK
-    code: 200
-    duration: 2.779s
+      - "2025-12-14T13:11:27.469Z"
+    status: 401 Unauthorized
+    code: 401
+    duration: 172ms

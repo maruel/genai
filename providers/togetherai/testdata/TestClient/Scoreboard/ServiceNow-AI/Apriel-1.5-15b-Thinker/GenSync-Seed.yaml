@@ -1,0 +1,55 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 145
+    host: api.together.xyz
+    body: "{\"model\":\"ServiceNow-AI/Apriel-1.5-15b-Thinker\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"}],\"seed\":42}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"oPBWmKY-6Ng1vN-9ade05c92dc3a275\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765718678,\n  \"model\": \"ServiceNow-AI/Apriel-1.5-15b-Thinker\",\n  \"service_tier\": null,\n  \"system_fingerprint\": null,\n  \"kv_transfer_params\": null,\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"Hello\",\n        \"tool_calls\": [],\n        \"reasoning\": \"The user says: \\\"Say hello. Use only one word.\\\"\\n\\nWe need to produce a single word that says hello. Could be \\\"Hello\\\". That's one word. So answer: \\\"Hello\\\". No extra punctuation? Punctuation is okay but perhaps just \\\"Hello\\\". The user wants one word. So respond with \\\"Hello\\\".\"\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 102,\n    \"total_tokens\": 198,\n    \"completion_tokens\": 96\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ade05c92dc3a275-YUL
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"37a-KH+N4yEKkNyS7Z1vclkQS4W4E94"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - d692af75-d8e2-4415-9cce-96d9ccab6f78-noamzn
+      X-Api-Call-End:
+      - "2025-12-14T13:24:38.826Z"
+      X-Api-Call-Start:
+      - "2025-12-14T13:24:38.224Z"
+      X-Api-Received:
+      - "2025-12-14T13:24:38.219Z"
+      X-Inference-Version:
+      - v2
+    status: 200 OK
+    code: 200
+    duration: 683ms

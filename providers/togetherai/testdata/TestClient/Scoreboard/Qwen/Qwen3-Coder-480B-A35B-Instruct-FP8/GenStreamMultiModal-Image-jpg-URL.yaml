@@ -18,23 +18,23 @@ interactions:
     proto: HTTP/2.0
     proto_major: 2
     proto_minor: 0
-    content_length: -1
-    body: "data: {\"id\":\"o9RRHNi-zqrih-9780b2edde52a2c6\",\"object\":\"chat.completion.chunk\",\"created\":1756687044,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"o9RRHNi-zqrih-9780b2edde52a2c6\",\"object\":\"chat.completion.chunk\",\"created\":1756687044,\"choices\":[{\"index\":0,\"text\":\"Apple\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"Apple\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"o9RRHNi-zqrih-9780b2edde52a2c6\",\"object\":\"chat.completion.chunk\",\"created\":1756687044,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":\"stop\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"o9RRHNi-zqrih-9780b2edde52a2c6\",\"object\":\"chat.completion.chunk\",\"created\":1756687044,\"choices\":[],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":{\"prompt_tokens\":19,\"total_tokens\":21,\"completion_tokens\":2,\"prompt_tokens_details\":null}}\n\ndata: [DONE]\n\n"
+    content_length: 264
+    body: "{\n  \"id\": \"oPBShWe-zqrih-9addf26c99e6a320\",\n  \"error\": {\n    \"message\": \"Invalid API key provided. You can find your API key at https://api.together.ai/settings/api-keys.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": \"invalid_api_key\"\n  }\n}"
     headers:
       Access-Control-Allow-Origin:
       - "*"
       Alt-Svc:
       - h3=":443"; ma=86400
-      Cache-Control:
-      - no-cache, no-transform
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9780b2edde52a2c6-YUL
+      - 9addf26c99e6a320-YUL
+      Content-Length:
+      - "264"
       Content-Type:
-      - text/event-stream;charset=utf-8
-      Retry-After:
-      - "1"
+      - application/json; charset=utf-8
+      Etag:
+      - W/"108-zIuhv5vT9pdN6ruo41bznPkV1Js"
       Server:
       - cloudflare
       Strict-Transport-Security:
@@ -42,27 +42,9 @@ interactions:
       Vary:
       - Accept-Encoding
       X-Amzn-Trace-Id:
-      - 9fd6c644-c02d-4dbf-93bc-7a4b99dcc94a-noamzn
-      X-Api-Call-Start:
-      - "2025-09-01T00:37:25.026Z"
+      - 7cb002a2-1adc-47ee-ad29-ee76770c7cc6-noamzn
       X-Api-Received:
-      - "2025-09-01T00:37:24.844Z"
-      X-Inference-Version:
-      - v2
-      X-Ratelimit:
-      - "false"
-      X-Ratelimit-Limit:
-      - "10"
-      X-Ratelimit-Limit-Tokens:
-      - "3000"
-      X-Ratelimit-Remaining:
-      - "17"
-      X-Ratelimit-Remaining-Tokens:
-      - "2930"
-      X-Ratelimit-Reset:
-      - "1"
-      X-Request-Id:
-      - o9RRHNi-zqrih-9780b2edde52a2c6
-    status: 200 OK
-    code: 200
-    duration: 464ms
+      - "2025-12-14T13:11:24.960Z"
+    status: 401 Unauthorized
+    code: 401
+    duration: 111ms

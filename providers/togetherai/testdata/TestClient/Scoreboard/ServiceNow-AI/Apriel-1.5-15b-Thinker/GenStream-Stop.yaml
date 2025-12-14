@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 176
+    host: api.together.xyz
+    body: "{\"model\":\"ServiceNow-AI/Apriel-1.5-15b-Thinker\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":\"Talk about Canada in great details. Start with: Canada is\"}],\"stop\":[\"is\"]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"oPBWn2T-6Ng1vN-9ade05d96a19a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718680,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\"}}],\"model\":\"ServiceNow-AI/Apriel-1.5-15b-Thinker\",\"usage\":null}\n\ndata: {\"id\":\"oPBWn2T-6Ng1vN-9ade05d96a19a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718680,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\"Her\"}}],\"model\":\"ServiceNow-AI/Apriel-1.5-15b-Thinker\",\"usage\":null}\n\ndata: {\"id\":\"oPBWn2T-6Ng1vN-9ade05d96a19a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718680,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\"e ar\"}}],\"model\":\"ServiceNow-AI/Apriel-1.5-15b-Thinker\",\"usage\":null}\n\ndata: {\"id\":\"oPBWn2T-6Ng1vN-9ade05d96a19a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718680,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\"e m\"}}],\"model\":\"ServiceNow-AI/Apriel-1.5-15b-Thinker\",\"usage\":null}\n\ndata: {\"id\":\"oPBWn2T-6Ng1vN-9ade05d96a19a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718680,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\"y reasonin\"}}],\"model\":\"ServiceNow-AI/Apriel-1.5-15b-Thinker\",\"usage\":null}\n\ndata: {\"id\":\"oPBWn2T-6Ng1vN-9ade05d96a19a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718680,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\"g step\"}}],\"model\":\"ServiceNow-AI/Apriel-1.5-15b-Thinker\",\"usage\":null}\n\ndata: {\"id\":\"oPBWn2T-6Ng1vN-9ade05d96a19a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718680,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\"s:\"}}],\"model\":\"ServiceNow-AI/Apriel-1.5-15b-Thinker\",\"usage\":null}\n\ndata: {\"id\":\"oPBWn2T-6Ng1vN-9ade05d96a19a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718680,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\"\\nTh\"}}],\"model\":\"ServiceNow-AI/Apriel-1.5-15b-Thinker\",\"usage\":null}\n\ndata: {\"id\":\"oPBWn2T-6Ng1vN-9ade05d96a19a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718680,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\"e use\"}}],\"model\":\"ServiceNow-AI/Apriel-1.5-15b-Thinker\",\"usage\":null}\n\ndata: {\"id\":\"oPBWn2T-6Ng1vN-9ade05d96a19a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718680,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\"r ask\"}}],\"model\":\"ServiceNow-AI/Apriel-1.5-15b-Thinker\",\"usage\":null}\n\ndata: {\"id\":\"oPBWn2T-6Ng1vN-9ade05d96a19a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718680,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\"s\"}}],\"model\":\"ServiceNow-AI/Apriel-1.5-15b-Thinker\",\"usage\":null}\n\ndata: {\"id\":\"oPBWn2T-6Ng1vN-9ade05d96a19a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718680,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\": \"}}],\"model\":\"ServiceNow-AI/Apriel-1.5-15b-Thinker\",\"usage\":null}\n\ndata: {\"id\":\"oPBWn2T-6Ng1vN-9ade05d96a19a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718680,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\"\\\"Tal\"}}],\"model\":\"ServiceNow-AI/Apriel-1.5-15b-Thinker\",\"usage\":null}\n\ndata: {\"id\":\"oPBWn2T-6Ng1vN-9ade05d96a19a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718680,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\"k abou\"}}],\"model\":\"ServiceNow-AI/Apriel-1.5-15b-Thinker\",\"usage\":null}\n\ndata: {\"id\":\"oPBWn2T-6Ng1vN-9ade05d96a19a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718680,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\"t Canad\"}}],\"model\":\"ServiceNow-AI/Apriel-1.5-15b-Thinker\",\"usage\":null}\n\ndata: {\"id\":\"oPBWn2T-6Ng1vN-9ade05d96a19a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718680,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\"a i\"}}],\"model\":\"ServiceNow-AI/Apriel-1.5-15b-Thinker\",\"usage\":null}\n\ndata: {\"id\":\"oPBWn2T-6Ng1vN-9ade05d96a19a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718680,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\"n grea\"}}],\"model\":\"ServiceNow-AI/Apriel-1.5-15b-Thinker\",\"usage\":null}\n\ndata: {\"id\":\"oPBWn2T-6Ng1vN-9ade05d96a19a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718680,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\"t detail\"}}],\"model\":\"ServiceNow-AI/Apriel-1.5-15b-Thinker\",\"usage\":null}\n\ndata: {\"id\":\"oPBWn2T-6Ng1vN-9ade05d96a19a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718680,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\"s\"}}],\"model\":\"ServiceNow-AI/Apriel-1.5-15b-Thinker\",\"usage\":null}\n\ndata: {\"id\":\"oPBWn2T-6Ng1vN-9ade05d96a19a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718680,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\". Star\"}}],\"model\":\"ServiceNow-AI/Apriel-1.5-15b-Thinker\",\"usage\":null}\n\ndata: {\"id\":\"oPBWn2T-6Ng1vN-9ade05d96a19a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718680,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\"t wit\"}}],\"model\":\"ServiceNow-AI/Apriel-1.5-15b-Thinker\",\"usage\":null}\n\ndata: {\"id\":\"oPBWn2T-6Ng1vN-9ade05d96a19a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718680,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\"h\"}}],\"model\":\"ServiceNow-AI/Apriel-1.5-15b-Thinker\",\"usage\":null}\n\ndata: {\"id\":\"oPBWn2T-6Ng1vN-9ade05d96a19a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718680,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\": Canad\"}}],\"model\":\"ServiceNow-AI/Apriel-1.5-15b-Thinker\",\"usage\":null}\n\ndata: {\"id\":\"oPBWn2T-6Ng1vN-9ade05d96a19a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718680,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":\"stop\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\"a \"}}],\"model\":\"ServiceNow-AI/Apriel-1.5-15b-Thinker\",\"usage\":null}\n\ndata: {\"id\":\"oPBWn2T-6Ng1vN-9ade05d96a19a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718680,\"choices\":[],\"model\":\"ServiceNow-AI/Apriel-1.5-15b-Thinker\",\"usage\":{\"prompt_tokens\":107,\"total_tokens\":130,\"completion_tokens\":23}}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - no-cache, no-transform
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ade05d96a19a275-YUL
+      Content-Type:
+      - text/event-stream;charset=utf-8
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - a0b5e42e-36ba-4105-bebd-3370ceec0287-noamzn
+      X-Api-Call-Start:
+      - "2025-12-14T13:24:40.603Z"
+      X-Api-Received:
+      - "2025-12-14T13:24:40.592Z"
+      X-Inference-Version:
+      - v2
+    status: 200 OK
+    code: 200
+    duration: 121ms

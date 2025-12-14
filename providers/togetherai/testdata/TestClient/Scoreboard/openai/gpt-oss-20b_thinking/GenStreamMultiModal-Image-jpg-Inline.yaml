@@ -18,23 +18,23 @@ interactions:
     proto: HTTP/2.0
     proto_major: 2
     proto_minor: 0
-    content_length: -1
-    body: "data: {\"id\":\"o9RFeLk-4YNCb4-978085033d16a2a0\",\"object\":\"chat.completion.chunk\",\"created\":1756685164,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"openai/gpt-oss-20b\",\"usage\":null}\n\ndata: {\"id\":\"o9RFeLk-4YNCb4-978085033d16a2a0\",\"object\":\"chat.completion.chunk\",\"created\":1756685164,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":null,\"reasoning\":\"We need to answer a riddle: \\\"What fruit is it? Reply with only one word.\\\" We are not given any description. The user just asks \\\"What fruit is it?\\\" We need to reply with only one word. There's no additional context. This is ambiguous. Possibly it's a trick or a riddle that expects \\\"apple\\\" or something. But we have no context. Could be a meta puzzle: maybe the answer is \\\"orange\\\" because it's a fruit that is a color. Or maybe it's \\\"banana\\\" because it's the only fruit that is also a slang for something. But no context.\\n\\nBut maybe the user expects the AI to guess a fruit based on some hidden pattern. Wait, maybe the user is using a hidden context: there is no description, so the answer might be \\\"apple\\\" because it's the default, or \\\"fruit\\\" might be the answer. But the user says \\\"Reply with only one word.\\\" So we must reply with one word. We need to choose a fruit. But which fruit? We don't have enough info. Could be a trick: the only word that is a fruit is \\\"fruit\\\" itself. But fruit is not a fruit. But maybe \\\"apple\\\" is the simplest.\\n\\nAlternatively, maybe the user wants the AI to respond with \\\"It\\\" as the fruit: \\\"It\\\" is a fruit? No. There's a fruit called \\\"It\\\" no.\\n\\nAlternatively, maybe the user wants the AI to answer \\\"fruit\\\" as the answer. But the instructions say \\\"What fruit is it?\\\" So the answer must be a fruit.\\n\\nGiven no context, the safe answer is \\\"apple\\\". It's a common fruit. But maybe they want \\\"banana\\\". But apple is more typical.\\n\\nAlternatively, maybe we should respond \\\"unsure\\\" but it's not a fruit. But we must give a fruit.\\n\\nPerhaps we should say \\\"apple\\\" because it's the default.\\n\\nThus answer: apple.\"}}],\"model\":\"openai/gpt-oss-20b\",\"usage\":null}\n\ndata: {\"id\":\"o9RFeLk-4YNCb4-978085033d16a2a0\",\"object\":\"chat.completion.chunk\",\"created\":1756685164,\"choices\":[{\"index\":0,\"text\":\"Apple\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"Apple\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"openai/gpt-oss-20b\",\"usage\":null}\n\ndata: {\"id\":\"o9RFeLk-4YNCb4-978085033d16a2a0\",\"object\":\"chat.completion.chunk\",\"created\":1756685164,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":\"stop\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"openai/gpt-oss-20b\",\"usage\":null}\n\ndata: {\"id\":\"o9RFeLk-4YNCb4-978085033d16a2a0\",\"object\":\"chat.completion.chunk\",\"created\":1756685164,\"choices\":[],\"model\":\"openai/gpt-oss-20b\",\"usage\":{\"prompt_tokens\":78,\"total_tokens\":476,\"completion_tokens\":398,\"prompt_tokens_details\":null,\"reasoning_tokens\":0}}\n\ndata: [DONE]\n\n"
+    content_length: 265
+    body: "{\n  \"id\": \"oPBSiMu-6Ng1vN-9addf280bc74a320\",\n  \"error\": {\n    \"message\": \"Invalid API key provided. You can find your API key at https://api.together.ai/settings/api-keys.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": \"invalid_api_key\"\n  }\n}"
     headers:
       Access-Control-Allow-Origin:
       - "*"
       Alt-Svc:
       - h3=":443"; ma=86400
-      Cache-Control:
-      - no-cache, no-transform
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 978085033d16a2a0-YUL
+      - 9addf280bc74a320-YUL
+      Content-Length:
+      - "265"
       Content-Type:
-      - text/event-stream;charset=utf-8
-      Retry-After:
-      - "2"
+      - application/json; charset=utf-8
+      Etag:
+      - W/"109-ySEicymStQ3EENrL9XxbGTKppnU"
       Server:
       - cloudflare
       Strict-Transport-Security:
@@ -42,27 +42,9 @@ interactions:
       Vary:
       - Accept-Encoding
       X-Amzn-Trace-Id:
-      - f2666dee-f0e8-4b0f-b757-20b612792919-noamzn
-      X-Api-Call-Start:
-      - "2025-09-01T00:06:04.303Z"
+      - b7f2847e-a6e6-4c35-8718-7e4643d6b1d2-noamzn
       X-Api-Received:
-      - "2025-09-01T00:06:04.254Z"
-      X-Inference-Version:
-      - v2
-      X-Ratelimit:
-      - "false"
-      X-Ratelimit-Limit:
-      - "10"
-      X-Ratelimit-Limit-Tokens:
-      - "3000"
-      X-Ratelimit-Remaining:
-      - "19"
-      X-Ratelimit-Remaining-Tokens:
-      - "3000"
-      X-Ratelimit-Reset:
-      - "2"
-      X-Request-Id:
-      - o9RFeLk-4YNCb4-978085033d16a2a0
-    status: 200 OK
-    code: 200
-    duration: 327ms
+      - "2025-12-14T13:11:27.817Z"
+    status: 401 Unauthorized
+    code: 401
+    duration: 81ms

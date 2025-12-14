@@ -18,9 +18,8 @@ interactions:
     proto: HTTP/2.0
     proto_major: 2
     proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\n  \"id\": \"o9RH5HA-4YNCb4-97808bd3ec1853dd\",\n  \"object\": \"chat.completion\",\n  \"created\": 1756685444,\n  \"model\": \"openai/gpt-oss-20b\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"said\",\n        \"tool_calls\": [],\n        \"reasoning\": \"The user says: \\\"What is the word said? Reply with only the word.\\\" There's no context. It seems like a trick: possibly referencing a conversation or previous context not provided. The instruction: reply with only the word. But what word? Could be \\\"Answer\\\"? The puzzle might expect \\\"word\\\". But maybe it's \\\"Word\\\". Or \\\"the word said\\\" might refer to a common phrase: \\\"I love you\\\"? Hmm.\\n\\nGiven no context, maybe it's a meta puzzle: The question \\\"What is the word said?\\\" The answer likely \\\"said\\\". But they want only the word. So reply \\\"said\\\". But could be \\\"word\\\". Hmm. If I answer \\\"said\\\", they get a single word. That matches \\\"What is the word said?\\\" The word is \\\"said\\\". So answer: said. I'll respond with \\\"said\\\".\"\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 79,\n    \"total_tokens\": 261,\n    \"completion_tokens\": 182\n  }\n}"
+    content_length: 265
+    body: "{\n  \"id\": \"oPBSiYJ-4Yz4kd-9addf2822e16a320\",\n  \"error\": {\n    \"message\": \"Invalid API key provided. You can find your API key at https://api.together.ai/settings/api-keys.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": \"invalid_api_key\"\n  }\n}"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -29,13 +28,13 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 97808bd3ec1853dd-YYZ
+      - 9addf2822e16a320-YUL
+      Content-Length:
+      - "265"
       Content-Type:
       - application/json; charset=utf-8
       Etag:
-      - W/"50e-QRCMVnf3YAhR7oxotQSWQlxoJcs"
-      Retry-After:
-      - "2"
+      - W/"109-Hy0hh/6WN/2OGJVRA+BpC+Z72uY"
       Server:
       - cloudflare
       Strict-Transport-Security:
@@ -43,29 +42,9 @@ interactions:
       Vary:
       - Accept-Encoding
       X-Amzn-Trace-Id:
-      - b6de5725-49fa-4db5-ac83-042d9267b4d5-noamzn
-      X-Api-Call-End:
-      - "2025-09-01T00:10:44.432Z"
-      X-Api-Call-Start:
-      - "2025-09-01T00:10:43.282Z"
+      - 68031df9-3775-4bba-aeae-66e5afd3e78b-noamzn
       X-Api-Received:
-      - "2025-09-01T00:10:43.260Z"
-      X-Inference-Version:
-      - v2
-      X-Ratelimit:
-      - "false"
-      X-Ratelimit-Limit:
-      - "10"
-      X-Ratelimit-Limit-Tokens:
-      - "3000"
-      X-Ratelimit-Remaining:
-      - "19"
-      X-Ratelimit-Remaining-Tokens:
-      - "2630"
-      X-Ratelimit-Reset:
-      - "2"
-      X-Request-Id:
-      - o9RH5HA-4YNCb4-97808bd3ec1853dd
-    status: 200 OK
-    code: 200
-    duration: 1.291s
+      - "2025-12-14T13:11:28.431Z"
+    status: 401 Unauthorized
+    code: 401
+    duration: 143ms

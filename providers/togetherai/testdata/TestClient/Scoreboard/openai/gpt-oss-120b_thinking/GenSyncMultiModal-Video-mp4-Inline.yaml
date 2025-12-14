@@ -18,9 +18,8 @@ interactions:
     proto: HTTP/2.0
     proto_major: 2
     proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\n  \"id\": \"o9RLQ1r-31r7CA-97809ba81b84a2f4\",\n  \"object\": \"chat.completion\",\n  \"created\": 1756686092,\n  \"model\": \"openai/gpt-oss-120b\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"said\",\n        \"tool_calls\": [],\n        \"reasoning\": \"The user asks: \\\"What is the word said? Reply with only the word.\\\" This is ambiguous. They likely want the word that was said? There's no context. Possibly they want the word \\\"said\\\". The phrase \\\"What is the word said?\\\" Could be they ask: \\\"What is the word said?\\\" Answer: \\\"said\\\". Or maybe they want to know the word that was said in a previous statement, but there is none. So I'd respond with \\\"said\\\". The instruction: reply with only the word. So output \\\"said\\\".\"\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 79,\n    \"total_tokens\": 200,\n    \"completion_tokens\": 121\n  }\n}"
+    content_length: 265
+    body: "{\n  \"id\": \"oPBShmU-6Ng1vN-9addf274accfa320\",\n  \"error\": {\n    \"message\": \"Invalid API key provided. You can find your API key at https://api.together.ai/settings/api-keys.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": \"invalid_api_key\"\n  }\n}"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -29,13 +28,13 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 97809ba81b84a2f4-YUL
+      - 9addf274accfa320-YUL
+      Content-Length:
+      - "265"
       Content-Type:
       - application/json; charset=utf-8
       Etag:
-      - W/"409-jbfEK7TzXd+QBaUHGiuKP5Ci0C8"
-      Retry-After:
-      - "2"
+      - W/"109-OE0dlmnjaSNtiXnjNoT3RnB/J38"
       Server:
       - cloudflare
       Strict-Transport-Security:
@@ -43,29 +42,9 @@ interactions:
       Vary:
       - Accept-Encoding
       X-Amzn-Trace-Id:
-      - fb0db125-8f04-468e-bf3c-4746130c3dbb-noamzn
-      X-Api-Call-End:
-      - "2025-09-01T00:21:32.276Z"
-      X-Api-Call-Start:
-      - "2025-09-01T00:21:31.850Z"
+      - b0530366-b31e-43c1-be45-d2c9c3a6bb17-noamzn
       X-Api-Received:
-      - "2025-09-01T00:21:31.623Z"
-      X-Inference-Version:
-      - v2
-      X-Ratelimit:
-      - "false"
-      X-Ratelimit-Limit:
-      - "10"
-      X-Ratelimit-Limit-Tokens:
-      - "3000"
-      X-Ratelimit-Remaining:
-      - "18"
-      X-Ratelimit-Remaining-Tokens:
-      - "3000"
-      X-Ratelimit-Reset:
-      - "2"
-      X-Request-Id:
-      - o9RLQ1r-31r7CA-97809ba81b84a2f4
-    status: 200 OK
-    code: 200
-    duration: 820ms
+      - "2025-12-14T13:11:25.822Z"
+    status: 401 Unauthorized
+    code: 401
+    duration: 100ms

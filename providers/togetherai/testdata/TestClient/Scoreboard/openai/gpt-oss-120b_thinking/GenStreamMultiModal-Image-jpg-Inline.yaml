@@ -18,23 +18,23 @@ interactions:
     proto: HTTP/2.0
     proto_major: 2
     proto_minor: 0
-    content_length: -1
-    body: "data: {\"id\":\"o9RLNQv-31r7CA-97809b864ae1a2f4\",\"object\":\"chat.completion.chunk\",\"created\":1756686086,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"openai/gpt-oss-120b\",\"usage\":null}\n\ndata: {\"id\":\"o9RLNQv-31r7CA-97809b864ae1a2f4\",\"object\":\"chat.completion.chunk\",\"created\":1756686086,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":null,\"reasoning\":\"The user asks: \\\"What fruit is it? Reply with only one word.\\\"\\n\\nWe need to infer context: There's no prior conversation. The user asks \\\"What fruit is it?\\\" Likely they refer to some image or description not provided. Might be a trick: They want a fruit name. But we have no context. Could respond with a generic fruit? But instruction: \\\"Reply with only one word.\\\" So we must give a single word fruit name.\\n\\nBut we need to consider: Might be ambiguous; perhaps answer \\\"Apple\\\". Choose a fruit. Could be \\\"Apple\\\". Return just \\\"Apple\\\".\"}}],\"model\":\"openai/gpt-oss-120b\",\"usage\":null}\n\ndata: {\"id\":\"o9RLNQv-31r7CA-97809b864ae1a2f4\",\"object\":\"chat.completion.chunk\",\"created\":1756686086,\"choices\":[{\"index\":0,\"text\":\"Apple\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"Apple\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"openai/gpt-oss-120b\",\"usage\":null}\n\ndata: {\"id\":\"o9RLNQv-31r7CA-97809b864ae1a2f4\",\"object\":\"chat.completion.chunk\",\"created\":1756686086,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":\"stop\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"openai/gpt-oss-120b\",\"usage\":null}\n\ndata: {\"id\":\"o9RLNQv-31r7CA-97809b864ae1a2f4\",\"object\":\"chat.completion.chunk\",\"created\":1756686086,\"choices\":[],\"model\":\"openai/gpt-oss-120b\",\"usage\":{\"prompt_tokens\":78,\"total_tokens\":210,\"completion_tokens\":132,\"prompt_tokens_details\":null,\"reasoning_tokens\":0}}\n\ndata: [DONE]\n\n"
+    content_length: 265
+    body: "{\n  \"id\": \"oPBShc5-6Ng1vN-9addf2714829a320\",\n  \"error\": {\n    \"message\": \"Invalid API key provided. You can find your API key at https://api.together.ai/settings/api-keys.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": \"invalid_api_key\"\n  }\n}"
     headers:
       Access-Control-Allow-Origin:
       - "*"
       Alt-Svc:
       - h3=":443"; ma=86400
-      Cache-Control:
-      - no-cache, no-transform
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 97809b864ae1a2f4-YUL
+      - 9addf2714829a320-YUL
+      Content-Length:
+      - "265"
       Content-Type:
-      - text/event-stream;charset=utf-8
-      Retry-After:
-      - "1"
+      - application/json; charset=utf-8
+      Etag:
+      - W/"109-EoxIuS5n0YYwKbUL2y2rdMJNxrI"
       Server:
       - cloudflare
       Strict-Transport-Security:
@@ -42,27 +42,9 @@ interactions:
       Vary:
       - Accept-Encoding
       X-Amzn-Trace-Id:
-      - 9144944b-4b19-4dc1-90b2-62d047c9b049-noamzn
-      X-Api-Call-Start:
-      - "2025-09-01T00:21:26.457Z"
+      - de27870a-d0be-4ffd-8629-2a4ced562edc-noamzn
       X-Api-Received:
-      - "2025-09-01T00:21:26.232Z"
-      X-Inference-Version:
-      - v2
-      X-Ratelimit:
-      - "false"
-      X-Ratelimit-Limit:
-      - "10"
-      X-Ratelimit-Limit-Tokens:
-      - "3000"
-      X-Ratelimit-Remaining:
-      - "16"
-      X-Ratelimit-Remaining-Tokens:
-      - "2444"
-      X-Ratelimit-Reset:
-      - "1"
-      X-Request-Id:
-      - o9RLNQv-31r7CA-97809b864ae1a2f4
-    status: 200 OK
-    code: 200
-    duration: 420ms
+      - "2025-12-14T13:11:25.274Z"
+    status: 401 Unauthorized
+    code: 401
+    duration: 71ms

@@ -1,0 +1,66 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 280
+    host: api.together.xyz
+    body: "{\"model\":\"moonshotai/Kimi-K2-Instruct-0905\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"# Quackiland\\n\\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"oPBXK9R-zqrih-9ade08673e29a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718785,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"moonshotai/Kimi-K2-Instruct-0905\",\"usage\":null}\n\ndata: {\"id\":\"oPBXK9R-zqrih-9ade08673e29a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718785,\"choices\":[{\"index\":0,\"text\":\"The\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"The\",\"reasoning\":null}}],\"model\":\"moonshotai/Kimi-K2-Instruct-0905\",\"usage\":null}\n\ndata: {\"id\":\"oPBXK9R-zqrih-9ade08673e29a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718785,\"choices\":[{\"index\":0,\"text\":\" capital\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" capital\",\"reasoning\":null}}],\"model\":\"moonshotai/Kimi-K2-Instruct-0905\",\"usage\":null}\n\ndata: {\"id\":\"oPBXK9R-zqrih-9ade08673e29a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718785,\"choices\":[{\"index\":0,\"text\":\" of\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" of\",\"reasoning\":null}}],\"model\":\"moonshotai/Kimi-K2-Instruct-0905\",\"usage\":null}\n\ndata: {\"id\":\"oPBXK9R-zqrih-9ade08673e29a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718785,\"choices\":[{\"index\":0,\"text\":\" Qu\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" Qu\",\"reasoning\":null}}],\"model\":\"moonshotai/Kimi-K2-Instruct-0905\",\"usage\":null}\n\ndata: {\"id\":\"oPBXK9R-zqrih-9ade08673e29a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718785,\"choices\":[{\"index\":0,\"text\":\"ack\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"ack\",\"reasoning\":null}}],\"model\":\"moonshotai/Kimi-K2-Instruct-0905\",\"usage\":null}\n\ndata: {\"id\":\"oPBXK9R-zqrih-9ade08673e29a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718785,\"choices\":[{\"index\":0,\"text\":\"iland\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"iland\",\"reasoning\":null}}],\"model\":\"moonshotai/Kimi-K2-Instruct-0905\",\"usage\":null}\n\ndata: {\"id\":\"oPBXK9R-zqrih-9ade08673e29a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718785,\"choices\":[{\"index\":0,\"text\":\" is\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" is\",\"reasoning\":null}}],\"model\":\"moonshotai/Kimi-K2-Instruct-0905\",\"usage\":null}\n\ndata: {\"id\":\"oPBXK9R-zqrih-9ade08673e29a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718785,\"choices\":[{\"index\":0,\"text\":\" **\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" **\",\"reasoning\":null}}],\"model\":\"moonshotai/Kimi-K2-Instruct-0905\",\"usage\":null}\n\ndata: {\"id\":\"oPBXK9R-zqrih-9ade08673e29a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718785,\"choices\":[{\"index\":0,\"text\":\"Qu\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"Qu\",\"reasoning\":null}}],\"model\":\"moonshotai/Kimi-K2-Instruct-0905\",\"usage\":null}\n\ndata: {\"id\":\"oPBXK9R-zqrih-9ade08673e29a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718785,\"choices\":[{\"index\":0,\"text\":\"ack\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"ack\",\"reasoning\":null}}],\"model\":\"moonshotai/Kimi-K2-Instruct-0905\",\"usage\":null}\n\ndata: {\"id\":\"oPBXK9R-zqrih-9ade08673e29a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718785,\"choices\":[{\"index\":0,\"text\":\"**.\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"**.\",\"reasoning\":null}}],\"model\":\"moonshotai/Kimi-K2-Instruct-0905\",\"usage\":null}\n\ndata: {\"id\":\"oPBXK9R-zqrih-9ade08673e29a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718785,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":\"stop\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"moonshotai/Kimi-K2-Instruct-0905\",\"usage\":null}\n\ndata: {\"id\":\"oPBXK9R-zqrih-9ade08673e29a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718785,\"choices\":[],\"model\":\"moonshotai/Kimi-K2-Instruct-0905\",\"usage\":{\"prompt_tokens\":61,\"total_tokens\":73,\"completion_tokens\":12,\"prompt_tokens_details\":null,\"reasoning_tokens\":0}}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - no-cache, no-transform
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ade08673e29a275-YUL
+      Content-Type:
+      - text/event-stream;charset=utf-8
+      Retry-After:
+      - "0"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 8f2f4799-224d-435b-a6ac-c9bc1a7eecb7-noamzn
+      X-Api-Call-Start:
+      - "2025-12-14T13:26:25.297Z"
+      X-Api-Received:
+      - "2025-12-14T13:26:25.280Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "17"
+      X-Ratelimit-Remaining-Tokens:
+      - "2767"
+      X-Ratelimit-Reset:
+      - "0"
+    status: 200 OK
+    code: 200
+    duration: 374ms

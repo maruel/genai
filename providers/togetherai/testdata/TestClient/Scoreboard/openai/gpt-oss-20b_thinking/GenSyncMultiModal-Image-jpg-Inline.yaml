@@ -18,9 +18,8 @@ interactions:
     proto: HTTP/2.0
     proto_major: 2
     proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\n  \"id\": \"o9RH1XS-4Yz4kd-97808b85affd53dd\",\n  \"object\": \"chat.completion\",\n  \"created\": 1756685433,\n  \"model\": \"openai/gpt-oss-20b\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"Apple\",\n        \"tool_calls\": [],\n        \"reasoning\": \"The user asks: \\\"What fruit is it? Reply with only one word.\\\" But we don't have context. There's no image. Maybe there's a hidden context. But the instruction is to respond with only one word. Since we don't know the fruit, we must guess? But maybe the user expects us to guess the fruit based on typical test? But no context. Might be a trick: \\\"fruit\\\" could be \\\"fruit\\\", but they want a single word. Could be \\\"apple\\\". But we need something else.\\n\\nThe user might refer to a previous conversation? But no. Could be a riddle: \\\"What fruit is it?\\\" The answer could be \\\"date\\\" or \\\"lime\\\"? But the user says reply with only one word. We must reply with one word that is a fruit. Without context, I can pick a fruit like \\\"apple\\\".\\n\\nBut maybe it's a puzzle: \\\"What fruit is it?\\\" The answer might be \\\"orange\\\". But we don't know.\\n\\nGiven no context, we can respond generically: \\\"apple\\\". It's safe. Let's do that.\"\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 78,\n    \"total_tokens\": 305,\n    \"completion_tokens\": 227\n  }\n}"
+    content_length: 265
+    body: "{\n  \"id\": \"oPBSiVR-4YNCb4-9addf2814d1ea320\",\n  \"error\": {\n    \"message\": \"Invalid API key provided. You can find your API key at https://api.together.ai/settings/api-keys.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": \"invalid_api_key\"\n  }\n}"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -29,13 +28,13 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 97808b85affd53dd-YYZ
+      - 9addf2814d1ea320-YUL
+      Content-Length:
+      - "265"
       Content-Type:
       - application/json; charset=utf-8
       Etag:
-      - W/"5ca-1QoQ/kcQvAYmkB8ofBB21goR6Ao"
-      Retry-After:
-      - "1"
+      - W/"109-/2b0h2rZxJoGDTMMB1U3pgW61bk"
       Server:
       - cloudflare
       Strict-Transport-Security:
@@ -43,29 +42,9 @@ interactions:
       Vary:
       - Accept-Encoding
       X-Amzn-Trace-Id:
-      - 39b4e6a1-22b7-41a8-b083-4165edf6e349-noamzn
-      X-Api-Call-End:
-      - "2025-09-01T00:10:33.021Z"
-      X-Api-Call-Start:
-      - "2025-09-01T00:10:30.641Z"
+      - 0a8dc5b7-15a0-4f21-897d-873b662a4a9d-noamzn
       X-Api-Received:
-      - "2025-09-01T00:10:30.630Z"
-      X-Inference-Version:
-      - v2
-      X-Ratelimit:
-      - "false"
-      X-Ratelimit-Limit:
-      - "10"
-      X-Ratelimit-Limit-Tokens:
-      - "3000"
-      X-Ratelimit-Remaining:
-      - "18"
-      X-Ratelimit-Remaining-Tokens:
-      - "2536"
-      X-Ratelimit-Reset:
-      - "1"
-      X-Request-Id:
-      - o9RH1XS-4Yz4kd-97808b85affd53dd
-    status: 200 OK
-    code: 200
-    duration: 2.52s
+      - "2025-12-14T13:11:28.253Z"
+    status: 401 Unauthorized
+    code: 401
+    duration: 69ms

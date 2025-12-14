@@ -19,7 +19,7 @@ interactions:
     proto_major: 2
     proto_minor: 0
     content_length: -1
-    body: "data: {\"id\":\"o9RDm6P-28Eivz-97807c0a3c44a30b\",\"object\":\"chat.completion.chunk\",\"created\":1756684796,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"usage\":null}\n\ndata: {\"id\":\"o9RDm6P-28Eivz-97807c0a3c44a30b\",\"object\":\"chat.completion.chunk\",\"created\":1756684796,\"choices\":[{\"index\":0,\"text\":\"Hello\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"Hello\",\"tool_calls\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"usage\":null}\n\ndata: {\"id\":\"o9RDm6P-28Eivz-97807c0a3c44a30b\",\"object\":\"chat.completion.chunk\",\"created\":1756684796,\"choices\":[{\"index\":0,\"text\":\".\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\".\",\"tool_calls\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"usage\":null}\n\ndata: {\"id\":\"o9RDm6P-28Eivz-97807c0a3c44a30b\",\"object\":\"chat.completion.chunk\",\"created\":1756684796,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":\"stop\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"usage\":null}\n\ndata: {\"id\":\"o9RDm6P-28Eivz-97807c0a3c44a30b\",\"object\":\"chat.completion.chunk\",\"created\":1756684796,\"choices\":[],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"usage\":{\"prompt_tokens\":16,\"total_tokens\":19,\"completion_tokens\":3}}\n\ndata: [DONE]\n\n"
+    body: "data: {\"id\":\"oPBXTMR-6Ng1vN-9ade09154f1ba275\",\"object\":\"chat.completion.chunk\",\"created\":1765718812,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"usage\":null}\n\ndata: {\"id\":\"oPBXTMR-6Ng1vN-9ade09154f1ba275\",\"object\":\"chat.completion.chunk\",\"created\":1765718812,\"choices\":[{\"index\":0,\"text\":\"Hello\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"Hello\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"usage\":null}\n\ndata: {\"id\":\"oPBXTMR-6Ng1vN-9ade09154f1ba275\",\"object\":\"chat.completion.chunk\",\"created\":1765718812,\"choices\":[{\"index\":0,\"text\":\".\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\".\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"usage\":null}\n\ndata: {\"id\":\"oPBXTMR-6Ng1vN-9ade09154f1ba275\",\"object\":\"chat.completion.chunk\",\"created\":1765718812,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":\"stop\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"usage\":null}\n\ndata: {\"id\":\"oPBXTMR-6Ng1vN-9ade09154f1ba275\",\"object\":\"chat.completion.chunk\",\"created\":1765718812,\"choices\":[],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"usage\":{\"prompt_tokens\":16,\"total_tokens\":19,\"completion_tokens\":3,\"prompt_tokens_details\":null,\"reasoning_tokens\":0}}\n\ndata: [DONE]\n\n"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -30,7 +30,7 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 97807c0a3c44a30b-YUL
+      - 9ade09154f1ba275-YUL
       Content-Type:
       - text/event-stream;charset=utf-8
       Retry-After:
@@ -42,11 +42,11 @@ interactions:
       Vary:
       - Accept-Encoding
       X-Amzn-Trace-Id:
-      - 5d7c2c1a-6c3e-4e07-8a61-a663eca1cc93-noamzn
+      - 4de3c196-8afb-4e87-aef3-a0a9f65bcee3-noamzn
       X-Api-Call-Start:
-      - "2025-08-31T23:59:56.760Z"
+      - "2025-12-14T13:26:52.911Z"
       X-Api-Received:
-      - "2025-08-31T23:59:56.745Z"
+      - "2025-12-14T13:26:52.889Z"
       X-Inference-Version:
       - v2
       X-Ratelimit:
@@ -56,13 +56,11 @@ interactions:
       X-Ratelimit-Limit-Tokens:
       - "3000"
       X-Ratelimit-Remaining:
-      - "18"
+      - "19"
       X-Ratelimit-Remaining-Tokens:
       - "3000"
       X-Ratelimit-Reset:
       - "2"
-      X-Request-Id:
-      - o9RDm6P-28Eivz-97807c0a3c44a30b
     status: 200 OK
     code: 200
-    duration: 344ms
+    duration: 288ms

@@ -18,9 +18,8 @@ interactions:
     proto: HTTP/2.0
     proto_major: 2
     proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\n  \"id\": \"o9RRFEi-28Eivz-9780b2bf3acda2c6\",\n  \"object\": \"chat.completion\",\n  \"created\": 1756687037,\n  \"model\": \"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"Hello!\",\n        \"tool_calls\": [],\n        \"reasoning\": null\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 16,\n    \"total_tokens\": 19,\n    \"completion_tokens\": 3\n  }\n}"
+    content_length: 265
+    body: "{\n  \"id\": \"oPBShSh-28Eivz-9addf26aefe3a320\",\n  \"error\": {\n    \"message\": \"Invalid API key provided. You can find your API key at https://api.together.ai/settings/api-keys.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": \"invalid_api_key\"\n  }\n}"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -29,13 +28,13 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9780b2bf3acda2c6-YUL
+      - 9addf26aefe3a320-YUL
+      Content-Length:
+      - "265"
       Content-Type:
       - application/json; charset=utf-8
       Etag:
-      - W/"20f-oyhqHd1NKr5y3eXs4H/DFqELf58"
-      Retry-After:
-      - "2"
+      - W/"109-6Y3SFq7MaWrmqmRGN4hd9KHkj4I"
       Server:
       - cloudflare
       Strict-Transport-Security:
@@ -43,29 +42,9 @@ interactions:
       Vary:
       - Accept-Encoding
       X-Amzn-Trace-Id:
-      - b173cc69-c8ad-4157-86e5-6ea7a7532ba2-noamzn
-      X-Api-Call-End:
-      - "2025-09-01T00:37:17.971Z"
-      X-Api-Call-Start:
-      - "2025-09-01T00:37:17.658Z"
+      - 9a3eff47-5fa8-4c20-a681-f2f8bac49135-noamzn
       X-Api-Received:
-      - "2025-09-01T00:37:17.651Z"
-      X-Inference-Version:
-      - v2
-      X-Ratelimit:
-      - "false"
-      X-Ratelimit-Limit:
-      - "10"
-      X-Ratelimit-Limit-Tokens:
-      - "3000"
-      X-Ratelimit-Remaining:
-      - "19"
-      X-Ratelimit-Remaining-Tokens:
-      - "3000"
-      X-Ratelimit-Reset:
-      - "2"
-      X-Request-Id:
-      - o9RRFEi-28Eivz-9780b2bf3acda2c6
-    status: 200 OK
-    code: 200
-    duration: 743ms
+      - "2025-12-14T13:11:24.730Z"
+    status: 401 Unauthorized
+    code: 401
+    duration: 126ms

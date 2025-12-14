@@ -18,9 +18,8 @@ interactions:
     proto: HTTP/2.0
     proto_major: 2
     proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\n  \"id\": \"o9RH2JJ-4YNCb4-97808b956b1d53dd\",\n  \"object\": \"chat.completion\",\n  \"created\": 1756685435,\n  \"model\": \"openai/gpt-oss-20b\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"Apple\",\n        \"tool_calls\": [],\n        \"reasoning\": \"We have a conversation: The user says \\\"What fruit is it? Reply with only one word.\\\" There's no context. Possibly a quiz or a puzzle with an image? But no image given. So maybe it's a riddle or a known riddle. But the instruction: \\\"Reply with only one word.\\\" That suggests we need to guess a fruit from a description or a picture. But we have no description. So maybe it's a trick: The answer is \\\"Fruit\\\"? But that's not a fruit. Or \\\"Apple\\\"? But need a fruit. Without context, we cannot guess. Maybe the answer is \\\"Apple\\\" as a default. But we need to consider if there's a hidden context: The user is asking \\\"What fruit is it?\\\" Could be a known riddle like \\\"I am red, but I am also green; I can be sweet or sour. What am I?\\\" The answer: \\\"Apple.\\\" But no?\\n\\nPossibly the user omitted some info. But maybe the assignment is to respond with a fruit that matches the question. The simplest fruit: \\\"Apple\\\". The user said reply with only one word. So \\\"Apple\\\" is one word. That might be acceptable. Or \\\"Banana\\\". But we need to choose one. Let's choose \\\"Apple\\\".\"\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 78,\n    \"total_tokens\": 345,\n    \"completion_tokens\": 267\n  }\n}"
+    content_length: 265
+    body: "{\n  \"id\": \"oPBSiWW-4YNCb4-9addf281bd8ca320\",\n  \"error\": {\n    \"message\": \"Invalid API key provided. You can find your API key at https://api.together.ai/settings/api-keys.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": \"invalid_api_key\"\n  }\n}"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -29,13 +28,13 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 97808b956b1d53dd-YYZ
+      - 9addf281bd8ca320-YUL
+      Content-Length:
+      - "265"
       Content-Type:
       - application/json; charset=utf-8
       Etag:
-      - W/"662-mXS4i22CWH4FI5lraloaNZxYNp8"
-      Retry-After:
-      - "2"
+      - W/"109-kO+y/GVeenX0a5dB/PrU4916mKo"
       Server:
       - cloudflare
       Strict-Transport-Security:
@@ -43,29 +42,9 @@ interactions:
       Vary:
       - Accept-Encoding
       X-Amzn-Trace-Id:
-      - de2e182d-1dd9-4311-a3b1-394b82c5cd60-noamzn
-      X-Api-Call-End:
-      - "2025-09-01T00:10:35.091Z"
-      X-Api-Call-Start:
-      - "2025-09-01T00:10:33.244Z"
+      - 79981430-bdaa-4d16-b066-0482e64c28f4-noamzn
       X-Api-Received:
-      - "2025-09-01T00:10:33.231Z"
-      X-Inference-Version:
-      - v2
-      X-Ratelimit:
-      - "false"
-      X-Ratelimit-Limit:
-      - "10"
-      X-Ratelimit-Limit-Tokens:
-      - "3000"
-      X-Ratelimit-Remaining:
-      - "19"
-      X-Ratelimit-Remaining-Tokens:
-      - "3000"
-      X-Ratelimit-Reset:
-      - "2"
-      X-Request-Id:
-      - o9RH2JJ-4YNCb4-97808b956b1d53dd
-    status: 200 OK
-    code: 200
-    duration: 1.951s
+      - "2025-12-14T13:11:28.315Z"
+    status: 401 Unauthorized
+    code: 401
+    duration: 70ms

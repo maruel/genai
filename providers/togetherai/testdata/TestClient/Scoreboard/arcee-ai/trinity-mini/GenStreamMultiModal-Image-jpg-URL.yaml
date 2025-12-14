@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 294
+    host: api.together.xyz
+    body: "{\"model\":\"arcee-ai/trinity-mini\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What fruit is it? Reply with only one word.\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg\"}}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 413
+    body: "{\n  \"id\": \"oPBWSeo-62bZhn-9ade0440da53a275\",\n  \"error\": {\n    \"message\": {\n      \"message\": \"/data/modelpreload/huggingface/models--togethercomputer--arcee-trinity-mini-rc/snapshots/90d595b31a9a0846830b98e96ebeef72739014dc is not a multimodal model None\",\n      \"type\": \"BadRequestError\",\n      \"param\": null,\n      \"code\": 400\n    },\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": null\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ade0440da53a275-YUL
+      Content-Length:
+      - "413"
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"19d-CM8eyiEje71J0x81j8q6s4q3j90"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - ec3c7fbe-8b08-459e-b83c-cae07345a40b-noamzn
+      X-Api-Received:
+      - "2025-12-14T13:23:35.420Z"
+      X-Inference-Version:
+      - v2
+    status: 400 Bad Request
+    code: 400
+    duration: 530ms

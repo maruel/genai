@@ -58,47 +58,18 @@
     },
     {
       "models": [
-        "Qwen/Qwen3-235B-A22B-Instruct-2507-tput"
+        "Qwen/Qwen3-235B-A22B-Thinking-2507"
+      ],
+      "in": {},
+      "out": {}
+    },
+    {
+      "models": [
+        "Qwen/Qwen3-235B-A22B-fp8-tput"
       ],
       "good": true,
-      "in": {
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "tools": "true",
-        "toolsBiased": "true",
-        "toolCallRequired": true,
-        "json": true,
-        "jsonSchema": true,
-        "topLogprobs": true,
-        "maxTokens": true,
-        "stopSequence": true
-      },
-      "GenStream": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "tools": "true",
-        "toolsBiased": "true",
-        "toolCallRequired": true,
-        "json": true,
-        "jsonSchema": true,
-        "topLogprobs": true,
-        "maxTokens": true,
-        "stopSequence": true
-      }
+      "in": {},
+      "out": {}
     },
     {
       "comments": "TogetherAI has broken reasoning parsing during tool call and JSON output",
@@ -140,394 +111,61 @@
     },
     {
       "models": [
-        "Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8"
+        "openai/gpt-oss-20b"
       ],
-      "in": {
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "json": true,
-        "jsonSchema": true,
-        "topLogprobs": true,
-        "maxTokens": true,
-        "stopSequence": true
-      },
-      "GenStream": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "tools": "true",
-        "toolsBiased": "true",
-        "json": true,
-        "jsonSchema": true,
-        "topLogprobs": true,
-        "maxTokens": true,
-        "stopSequence": true
-      }
+      "in": {},
+      "out": {}
     },
     {
       "models": [
-        "moonshotai/Kimi-K2-Instruct"
+        "google/imagen-4.0-ultra"
       ],
-      "in": {
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "json": true,
-        "jsonSchema": true,
-        "topLogprobs": true,
-        "maxTokens": true,
-        "stopSequence": true
-      },
-      "GenStream": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "json": true,
-        "jsonSchema": true,
-        "topLogprobs": true,
-        "maxTokens": true,
-        "stopSequence": true
-      }
+      "in": {},
+      "out": {}
     },
     {
       "models": [
-        "deepseek-ai/DeepSeek-V3.1"
+        "ByteDance-Seed/Seedream-3.0"
       ],
-      "in": {
-        "image": {
-          "url": true,
-          "supportedFormats": [
-            "image/jpeg"
-          ]
-        },
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "topLogprobs": true,
-        "maxTokens": true,
-        "stopSequence": true
-      },
-      "GenStream": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "topLogprobs": true,
-        "maxTokens": true,
-        "stopSequence": true
-      }
-    },
-    {
-      "comments": "TogetherAI has broken reasoning parsing during tool call and JSON output",
-      "models": [
-        "openai/gpt-oss-120b"
-      ],
-      "reason": true,
-      "in": {
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "topLogprobs": true,
-        "maxTokens": true,
-        "stopSequence": true
-      },
-      "GenStream": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "topLogprobs": true
-      }
-    },
-    {
-      "comments": "Tool calling is flaky because Together.AI only supports tool_choice auto, not required.",
-      "models": [
-        "meta-llama/Llama-4-Scout-17B-16E-Instruct"
-      ],
-      "in": {
-        "image": {
-          "inline": true,
-          "url": true,
-          "supportedFormats": [
-            "image/gif",
-            "image/jpeg",
-            "image/png",
-            "image/webp"
-          ]
-        },
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "tools": "true",
-        "toolsIndecisive": "true",
-        "json": true,
-        "jsonSchema": true,
-        "topLogprobs": true,
-        "maxTokens": true,
-        "stopSequence": true
-      },
-      "GenStream": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "tools": "true",
-        "toolsIndecisive": "true",
-        "json": true,
-        "jsonSchema": true,
-        "topLogprobs": true,
-        "maxTokens": true,
-        "stopSequence": true
-      }
+      "in": {},
+      "out": {}
     },
     {
       "comments": "Tool calling is flaky because Together.AI only supports tool_choice auto, not required.",
       "models": [
         "meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8"
       ],
-      "in": {
-        "image": {
-          "inline": true,
-          "url": true,
-          "supportedFormats": [
-            "image/gif",
-            "image/jpeg",
-            "image/png",
-            "image/webp"
-          ]
-        },
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "tools": "true",
-        "toolsBiased": "true",
-        "json": true,
-        "jsonSchema": true,
-        "topLogprobs": true,
-        "stopSequence": true
-      },
-      "GenStream": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "tools": "true",
-        "toolsBiased": "true",
-        "json": true,
-        "jsonSchema": true,
-        "topLogprobs": true,
-        "stopSequence": true
-      }
+      "in": {},
+      "out": {}
     },
     {
       "comments": "FinishReason is only broken with JSON.",
       "models": [
         "mistralai/Mistral-Small-24B-Instruct-2501"
       ],
-      "in": {
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "flaky",
-        "seed": true,
-        "tools": "flaky",
-        "toolsIndecisive": "true",
-        "json": true,
-        "topLogprobs": true,
-        "maxTokens": true,
-        "stopSequence": true
-      },
-      "GenStream": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "flaky",
-        "seed": true,
-        "json": true,
-        "topLogprobs": true,
-        "maxTokens": true,
-        "stopSequence": true
-      }
-    },
-    {
-      "models": [
-        "google/gemma-3-27b-it"
-      ],
-      "in": {
-        "image": {
-          "inline": true,
-          "url": true,
-          "supportedFormats": [
-            "image/gif",
-            "image/jpeg",
-            "image/png",
-            "image/webp"
-          ]
-        },
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "flaky",
-        "seed": true,
-        "json": true,
-        "maxTokens": true,
-        "stopSequence": true
-      },
-      "GenStream": {
-        "reportRateLimits": true,
-        "reportFinishReason": "true",
-        "seed": true,
-        "maxTokens": true,
-        "stopSequence": true
-      }
+      "in": {},
+      "out": {}
     },
     {
       "models": [
         "black-forest-labs/FLUX.1-schnell-Free"
       ],
-      "in": {
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "image": {
-          "url": true,
-          "supportedFormats": [
-            "image/jpeg"
-          ]
-        }
-      },
-      "GenSync": {
-        "seed": true
-      }
+      "in": {},
+      "out": {}
     },
     {
       "models": [
         "black-forest-labs/FLUX.1-schnell"
       ],
-      "in": {
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "image": {
-          "url": true,
-          "supportedFormats": [
-            "image/jpeg"
-          ]
-        }
-      },
-      "GenSync": {
-        "seed": true
-      }
+      "in": {},
+      "out": {}
     },
     {
       "models": [
         "black-forest-labs/FLUX.1-dev"
       ],
-      "in": {
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "image": {
-          "url": true,
-          "supportedFormats": [
-            "image/jpeg"
-          ]
-        }
-      },
-      "GenSync": {
-        "seed": true
-      }
+      "in": {},
+      "out": {}
     },
     {
       "comments": "Untested",
@@ -538,7 +176,6 @@
         "Qwen/Qwen2.5-7B-Instruct-Turbo",
         "Qwen/Qwen2.5-Coder-32B-Instruct",
         "Qwen/Qwen2.5-VL-72B-Instruct",
-        "Qwen/Qwen3-235B-A22B-fp8-tput",
         "Salesforce/Llama-Rank-V1",
         "Virtue-AI/VirtueGuard-Text-Lite",
         "arcee-ai/AFM-4.5B",
@@ -599,6 +236,271 @@
         "togethercomputer/m2-bert-80M-32k-retrieval",
         "zai-org/GLM-4.5-Air-FP8"
       ]
+    },
+    {
+      "models": [
+        "black-forest-labs/FLUX.2-flex"
+      ],
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "image": {
+          "url": true,
+          "supportedFormats": [
+            "image/jpeg"
+          ]
+        }
+      },
+      "GenSync": {
+        "seed": true
+      }
+    },
+    {
+      "models": [
+        "HiDream-ai/HiDream-I1-Full"
+      ],
+      "in": {},
+      "out": {}
+    },
+    {
+      "models": [
+        "Lykon/DreamShaper"
+      ],
+      "in": {},
+      "out": {}
+    },
+    {
+      "models": [
+        "HiDream-ai/HiDream-I1-Dev"
+      ],
+      "in": {},
+      "out": {}
+    },
+    {
+      "models": [
+        "Qwen/Qwen-Image"
+      ],
+      "in": {},
+      "out": {}
+    },
+    {
+      "models": [
+        "RunDiffusion/Juggernaut-pro-flux"
+      ],
+      "in": {},
+      "out": {}
+    },
+    {
+      "models": [
+        "google/imagen-4.0-preview"
+      ],
+      "in": {},
+      "out": {}
+    },
+    {
+      "comments": "TogetherAI has broken reasoning parsing during tool call and JSON output",
+      "models": [
+        "openai/gpt-oss-120b"
+      ],
+      "reason": true,
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "topLogprobs": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "topLogprobs": true
+      }
+    },
+    {
+      "models": [
+        "stabilityai/stable-diffusion-3-medium"
+      ],
+      "in": {},
+      "out": {}
+    },
+    {
+      "models": [
+        "google/flash-image-2.5"
+      ],
+      "in": {},
+      "out": {}
+    },
+    {
+      "models": [
+        "HiDream-ai/HiDream-I1-Fast"
+      ],
+      "in": {},
+      "out": {}
+    },
+    {
+      "comments": "Tool calling is flaky because Together.AI only supports tool_choice auto, not required.",
+      "models": [
+        "meta-llama/Llama-4-Scout-17B-16E-Instruct"
+      ],
+      "in": {},
+      "out": {}
+    },
+    {
+      "models": [
+        "ByteDance-Seed/Seedream-4.0"
+      ],
+      "in": {},
+      "out": {}
+    },
+    {
+      "models": [
+        "ideogram/ideogram-3.0"
+      ],
+      "in": {},
+      "out": {}
+    },
+    {
+      "models": [
+        "openai/gpt-oss-120b"
+      ],
+      "in": {},
+      "out": {}
+    },
+    {
+      "models": [
+        "google/imagen-4.0-fast"
+      ],
+      "in": {},
+      "out": {}
+    },
+    {
+      "models": [
+        "Rundiffusion/Juggernaut-Lightning-Flux"
+      ],
+      "in": {},
+      "out": {}
+    },
+    {
+      "models": [
+        "stabilityai/stable-diffusion-xl-base-1.0"
+      ],
+      "in": {},
+      "out": {}
+    },
+    {
+      "models": [
+        "google/gemini-3-pro-image"
+      ],
+      "in": {},
+      "out": {}
+    },
+    {
+      "models": [
+        "black-forest-labs/FLUX.2-pro"
+      ],
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "image": {
+          "url": true,
+          "supportedFormats": [
+            "image/jpeg"
+          ]
+        }
+      },
+      "GenSync": {
+        "seed": true
+      }
+    },
+    {
+      "models": [
+        "black-forest-labs/FLUX.2-dev"
+      ],
+      "in": {},
+      "out": {}
+    },
+    {
+      "models": [
+        "meta-llama/Llama-3.1-405B-Instruct"
+      ],
+      "in": {},
+      "out": {}
+    },
+    {
+      "models": [
+        "deepseek-ai/DeepSeek-V3.1"
+      ],
+      "in": {},
+      "out": {}
+    },
+    {
+      "models": [
+        "meta-llama/Meta-Llama-3.1-70B-Instruct-Reference"
+      ],
+      "in": {},
+      "out": {}
+    },
+    {
+      "models": [
+        "meta-llama/Llama-3.2-1B-Instruct"
+      ],
+      "in": {},
+      "out": {}
+    },
+    {
+      "models": [
+        "Qwen/Qwen2.5-14B-Instruct"
+      ],
+      "in": {},
+      "out": {}
+    },
+    {
+      "models": [
+        "meta-llama/Meta-Llama-3.1-8B-Instruct-Reference"
+      ],
+      "in": {},
+      "out": {}
+    },
+    {
+      "models": [
+        "meta-llama/Meta-Llama-3-8B-Instruct"
+      ],
+      "in": {},
+      "out": {}
+    },
+    {
+      "models": [
+        "Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8"
+      ],
+      "in": {},
+      "out": {}
+    },
+    {
+      "models": [
+        "Qwen/Qwen2.5-72B-Instruct"
+      ],
+      "in": {},
+      "out": {}
     }
   ]
 }

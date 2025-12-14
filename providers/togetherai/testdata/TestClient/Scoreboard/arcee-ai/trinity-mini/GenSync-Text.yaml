@@ -1,0 +1,55 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 120
+    host: api.together.xyz
+    body: "{\"model\":\"arcee-ai/trinity-mini\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"oPBWKvA-2j9zxn-9ade03b1aeb5a275\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765718593,\n  \"model\": \"arcee-ai/trinity-mini\",\n  \"service_tier\": null,\n  \"system_fingerprint\": null,\n  \"prompt_token_ids\": null,\n  \"kv_transfer_params\": null,\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"\\n\\nHello\",\n        \"tool_calls\": [],\n        \"reasoning\": \"Okay, the user asked me to say hello using only one word. Let me think about this. The instruction is straightforward: respond with a single word. The most common greeting is \\\"Hello,\\\" which fits perfectly. \\n\\nI wonder if the user is testing my ability to follow simple instructions precisely. Maybe they want a quick, no-frills response. Since they specified \\\"only one word,\\\" I should avoid adding anything extra like \\\"Hello there\\\" or \\\"Hi!\\\" to stay within the limit. \\n\\n\\\"Hello\\\" is the simplest and most universally recognized greeting. It's polite and meets the requirement without any fluff. I'll go with that.\\n\"\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"token_ids\": null,\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 18,\n    \"total_tokens\": 149,\n    \"completion_tokens\": 131\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ade03b1aeb5a275-YUL
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"4fb-RgeE2I6vByp2Ncy+2KnF3WgM02s"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - dc973fd7-8978-42b7-ae49-0ffee747e4c3-noamzn
+      X-Api-Call-End:
+      - "2025-12-14T13:23:13.638Z"
+      X-Api-Call-Start:
+      - "2025-12-14T13:23:12.994Z"
+      X-Api-Received:
+      - "2025-12-14T13:23:12.764Z"
+      X-Inference-Version:
+      - v2
+    status: 200 OK
+    code: 200
+    duration: 1.479s

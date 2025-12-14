@@ -18,8 +18,8 @@ interactions:
     proto: HTTP/2.0
     proto_major: 2
     proto_minor: 0
-    content_length: 224
-    body: "{\n  \"id\": \"o9RD5vj-28Eivz-978078d3dd92a2a3\",\n  \"error\": {\n    \"message\": \"Qwen/Qwen3-235B-A22B-Thinking-2507-FP8 is not a multimodal model None\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": null\n  }\n}"
+    content_length: 264
+    body: "{\n  \"id\": \"oPBSiKu-zqrih-9addf27dc89da320\",\n  \"error\": {\n    \"message\": \"Invalid API key provided. You can find your API key at https://api.together.ai/settings/api-keys.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": \"invalid_api_key\"\n  }\n}"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -28,15 +28,13 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 978078d3dd92a2a3-YUL
+      - 9addf27dc89da320-YUL
       Content-Length:
-      - "224"
+      - "264"
       Content-Type:
       - application/json; charset=utf-8
       Etag:
-      - W/"e0-hitDDk0cSeoww+yP0DznbCCjQ6k"
-      Retry-After:
-      - "1"
+      - W/"108-44vjRGdz0LiEN0ezoQCK3Pl/QzQ"
       Server:
       - cloudflare
       Strict-Transport-Security:
@@ -44,27 +42,9 @@ interactions:
       Vary:
       - Accept-Encoding
       X-Amzn-Trace-Id:
-      - cf88b795-acfa-4280-8dc0-747482ac6a58-noamzn
-      X-Api-Call-Start:
-      - "2025-08-31T23:57:45.013Z"
+      - 0afb333a-dba7-4e06-b47e-ff129ceb52cf-noamzn
       X-Api-Received:
-      - "2025-08-31T23:57:44.989Z"
-      X-Inference-Version:
-      - v2
-      X-Ratelimit:
-      - "false"
-      X-Ratelimit-Limit:
-      - "10"
-      X-Ratelimit-Limit-Tokens:
-      - "3000"
-      X-Ratelimit-Remaining:
-      - "17"
-      X-Ratelimit-Remaining-Tokens:
-      - "2666"
-      X-Ratelimit-Reset:
-      - "1"
-      X-Request-Id:
-      - o9RD5vj-28Eivz-978078d3dd92a2a3
-    status: 400 Bad Request
-    code: 400
-    duration: 225ms
+      - "2025-12-14T13:11:27.701Z"
+    status: 401 Unauthorized
+    code: 401
+    duration: 106ms

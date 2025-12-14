@@ -18,23 +18,23 @@ interactions:
     proto: HTTP/2.0
     proto_major: 2
     proto_minor: 0
-    content_length: -1
-    body: "data: {\"id\":\"o9RNr4y-31r7CA-9780a752e8c2a2d6\",\"object\":\"chat.completion.chunk\",\"created\":1756686569,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"deepseek-ai/DeepSeek-V3.1\",\"usage\":null}\n\ndata: {\"id\":\"o9RNr4y-31r7CA-9780a752e8c2a2d6\",\"object\":\"chat.completion.chunk\",\"created\":1756686569,\"choices\":[{\"index\":0,\"text\":\"Apple\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"Apple\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"deepseek-ai/DeepSeek-V3.1\",\"usage\":null}\n\ndata: {\"id\":\"o9RNr4y-31r7CA-9780a752e8c2a2d6\",\"object\":\"chat.completion.chunk\",\"created\":1756686569,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":\"stop\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"deepseek-ai/DeepSeek-V3.1\",\"usage\":null}\n\ndata: {\"id\":\"o9RNr4y-31r7CA-9780a752e8c2a2d6\",\"object\":\"chat.completion.chunk\",\"created\":1756686569,\"choices\":[],\"model\":\"deepseek-ai/DeepSeek-V3.1\",\"usage\":{\"prompt_tokens\":15,\"total_tokens\":17,\"completion_tokens\":2,\"prompt_tokens_details\":null,\"reasoning_tokens\":0}}\n\ndata: [DONE]\n\n"
+    content_length: 264
+    body: "{\n  \"id\": \"oPBSif7-zqrih-9addf284a9d6a320\",\n  \"error\": {\n    \"message\": \"Invalid API key provided. You can find your API key at https://api.together.ai/settings/api-keys.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": \"invalid_api_key\"\n  }\n}"
     headers:
       Access-Control-Allow-Origin:
       - "*"
       Alt-Svc:
       - h3=":443"; ma=86400
-      Cache-Control:
-      - no-cache, no-transform
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9780a752e8c2a2d6-YUL
+      - 9addf284a9d6a320-YUL
+      Content-Length:
+      - "264"
       Content-Type:
-      - text/event-stream;charset=utf-8
-      Retry-After:
-      - "2"
+      - application/json; charset=utf-8
+      Etag:
+      - W/"108-JNK6ZR7pI+LKd6xa7EkeqIz3R5I"
       Server:
       - cloudflare
       Strict-Transport-Security:
@@ -42,27 +42,9 @@ interactions:
       Vary:
       - Accept-Encoding
       X-Amzn-Trace-Id:
-      - d13264b2-baa1-41b0-b091-9895ee0f4bba-noamzn
-      X-Api-Call-Start:
-      - "2025-09-01T00:29:29.666Z"
+      - 0256e1c6-e387-4da6-951b-bb9f268a2323-noamzn
       X-Api-Received:
-      - "2025-09-01T00:29:29.492Z"
-      X-Inference-Version:
-      - v2
-      X-Ratelimit:
-      - "false"
-      X-Ratelimit-Limit:
-      - "10"
-      X-Ratelimit-Limit-Tokens:
-      - "3000"
-      X-Ratelimit-Remaining:
-      - "19"
-      X-Ratelimit-Remaining-Tokens:
-      - "3000"
-      X-Ratelimit-Reset:
-      - "2"
-      X-Request-Id:
-      - o9RNr4y-31r7CA-9780a752e8c2a2d6
-    status: 200 OK
-    code: 200
-    duration: 1.04s
+      - "2025-12-14T13:11:28.820Z"
+    status: 401 Unauthorized
+    code: 401
+    duration: 123ms

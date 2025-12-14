@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 162
+    host: api.together.xyz
+    body: "{\"model\":\"deepcogito/cogito-v2-1-671b\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":\"Explain the theory of relativity in great details.\"}],\"max_tokens\":16}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"oPBXbZD-zqrih-9ade09c09edea275\",\"object\":\"chat.completion.chunk\",\"created\":1765718840,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"deepcogito/cogito-v2-1-671b\",\"usage\":null}\n\ndata: {\"id\":\"oPBXbZD-zqrih-9ade09c09edea275\",\"object\":\"chat.completion.chunk\",\"created\":1765718840,\"choices\":[{\"index\":0,\"text\":\"I\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"I\",\"reasoning\":null}}],\"model\":\"deepcogito/cogito-v2-1-671b\",\"usage\":null}\n\ndata: {\"id\":\"oPBXbZD-zqrih-9ade09c09edea275\",\"object\":\"chat.completion.chunk\",\"created\":1765718840,\"choices\":[{\"index\":0,\"text\":\"'ll\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"'ll\",\"reasoning\":null}}],\"model\":\"deepcogito/cogito-v2-1-671b\",\"usage\":null}\n\ndata: {\"id\":\"oPBXbZD-zqrih-9ade09c09edea275\",\"object\":\"chat.completion.chunk\",\"created\":1765718840,\"choices\":[{\"index\":0,\"text\":\" explain\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" explain\",\"reasoning\":null}}],\"model\":\"deepcogito/cogito-v2-1-671b\",\"usage\":null}\n\ndata: {\"id\":\"oPBXbZD-zqrih-9ade09c09edea275\",\"object\":\"chat.completion.chunk\",\"created\":1765718840,\"choices\":[{\"index\":0,\"text\":\" Einstein\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" Einstein\",\"reasoning\":null}}],\"model\":\"deepcogito/cogito-v2-1-671b\",\"usage\":null}\n\ndata: {\"id\":\"oPBXbZD-zqrih-9ade09c09edea275\",\"object\":\"chat.completion.chunk\",\"created\":1765718840,\"choices\":[{\"index\":0,\"text\":\"'s\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"'s\",\"reasoning\":null}}],\"model\":\"deepcogito/cogito-v2-1-671b\",\"usage\":null}\n\ndata: {\"id\":\"oPBXbZD-zqrih-9ade09c09edea275\",\"object\":\"chat.completion.chunk\",\"created\":1765718840,\"choices\":[{\"index\":0,\"text\":\" Theory\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" Theory\",\"reasoning\":null}}],\"model\":\"deepcogito/cogito-v2-1-671b\",\"usage\":null}\n\ndata: {\"id\":\"oPBXbZD-zqrih-9ade09c09edea275\",\"object\":\"chat.completion.chunk\",\"created\":1765718840,\"choices\":[{\"index\":0,\"text\":\" of\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" of\",\"reasoning\":null}}],\"model\":\"deepcogito/cogito-v2-1-671b\",\"usage\":null}\n\ndata: {\"id\":\"oPBXbZD-zqrih-9ade09c09edea275\",\"object\":\"chat.completion.chunk\",\"created\":1765718840,\"choices\":[{\"index\":0,\"text\":\" Rel\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" Rel\",\"reasoning\":null}}],\"model\":\"deepcogito/cogito-v2-1-671b\",\"usage\":null}\n\ndata: {\"id\":\"oPBXbZD-zqrih-9ade09c09edea275\",\"object\":\"chat.completion.chunk\",\"created\":1765718840,\"choices\":[{\"index\":0,\"text\":\"ativity\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"ativity\",\"reasoning\":null}}],\"model\":\"deepcogito/cogito-v2-1-671b\",\"usage\":null}\n\ndata: {\"id\":\"oPBXbZD-zqrih-9ade09c09edea275\",\"object\":\"chat.completion.chunk\",\"created\":1765718840,\"choices\":[{\"index\":0,\"text\":\" in\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" in\",\"reasoning\":null}}],\"model\":\"deepcogito/cogito-v2-1-671b\",\"usage\":null}\n\ndata: {\"id\":\"oPBXbZD-zqrih-9ade09c09edea275\",\"object\":\"chat.completion.chunk\",\"created\":1765718840,\"choices\":[{\"index\":0,\"text\":\" detail\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" detail\",\"reasoning\":null}}],\"model\":\"deepcogito/cogito-v2-1-671b\",\"usage\":null}\n\ndata: {\"id\":\"oPBXbZD-zqrih-9ade09c09edea275\",\"object\":\"chat.completion.chunk\",\"created\":1765718840,\"choices\":[{\"index\":0,\"text\":\".\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\".\",\"reasoning\":null}}],\"model\":\"deepcogito/cogito-v2-1-671b\",\"usage\":null}\n\ndata: {\"id\":\"oPBXbZD-zqrih-9ade09c09edea275\",\"object\":\"chat.completion.chunk\",\"created\":1765718840,\"choices\":[{\"index\":0,\"text\":\" The\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" The\",\"reasoning\":null}}],\"model\":\"deepcogito/cogito-v2-1-671b\",\"usage\":null}\n\ndata: {\"id\":\"oPBXbZD-zqrih-9ade09c09edea275\",\"object\":\"chat.completion.chunk\",\"created\":1765718840,\"choices\":[{\"index\":0,\"text\":\" theory\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" theory\",\"reasoning\":null}}],\"model\":\"deepcogito/cogito-v2-1-671b\",\"usage\":null}\n\ndata: {\"id\":\"oPBXbZD-zqrih-9ade09c09edea275\",\"object\":\"chat.completion.chunk\",\"created\":1765718840,\"choices\":[{\"index\":0,\"text\":\" actually\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" actually\",\"reasoning\":null}}],\"model\":\"deepcogito/cogito-v2-1-671b\",\"usage\":null}\n\ndata: {\"id\":\"oPBXbZD-zqrih-9ade09c09edea275\",\"object\":\"chat.completion.chunk\",\"created\":1765718840,\"choices\":[{\"index\":0,\"text\":\" consists\",\"logprobs\":null,\"finish_reason\":\"length\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" consists\",\"reasoning\":null}}],\"model\":\"deepcogito/cogito-v2-1-671b\",\"usage\":null}\n\ndata: {\"id\":\"oPBXbZD-zqrih-9ade09c09edea275\",\"object\":\"chat.completion.chunk\",\"created\":1765718840,\"choices\":[],\"model\":\"deepcogito/cogito-v2-1-671b\",\"usage\":{\"prompt_tokens\":37,\"total_tokens\":53,\"completion_tokens\":16}}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - no-cache, no-transform
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ade09c09edea275-YUL
+      Content-Type:
+      - text/event-stream;charset=utf-8
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 8581b74b-9359-472f-8a0b-350c062dac46-noamzn
+      X-Api-Call-Start:
+      - "2025-12-14T13:27:20.496Z"
+      X-Api-Received:
+      - "2025-12-14T13:27:20.485Z"
+      X-Inference-Version:
+      - v2
+    status: 200 OK
+    code: 200
+    duration: 149ms

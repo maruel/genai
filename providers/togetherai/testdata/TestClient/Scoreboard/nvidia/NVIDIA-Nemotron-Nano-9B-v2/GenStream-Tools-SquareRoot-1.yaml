@@ -1,0 +1,66 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 561
+    host: api.together.xyz
+    body: "{\"model\":\"nvidia/NVIDIA-Nemotron-Nano-9B-v2\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"}],\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"tool_choice\":\"required\"}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"oPBXe1y-z1gNr-9ade09f49ce9a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718848,\"choices\":[{\"index\":0,\"role\":\"assistant\",\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\"}}],\"model\":\"nvidia/NVIDIA-Nemotron-Nano-9B-v2\"}\n\ndata: {\"id\":\"oPBXe1y-z1gNr-9ade09f49ce9a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718848,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"index\":0,\"id\":\"call_kmd297d5rtpjj8270xobeiqy\",\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"arguments\":\"\"}}]}}],\"model\":\"nvidia/NVIDIA-Nemotron-Nano-9B-v2\"}\n\ndata: {\"id\":\"oPBXe1y-z1gNr-9ade09f49ce9a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718848,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":\"tool_calls\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"index\":0,\"function\":{\"arguments\":\"{\\\"number\\\":132413}\"}}]}}],\"model\":\"nvidia/NVIDIA-Nemotron-Nano-9B-v2\"}\n\ndata: {\"id\":\"oPBXe1y-z1gNr-9ade09f49ce9a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718848,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":\"tool_calls\",\"stop_reason\":null,\"prompt_token_ids\":null,\"token_ids\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\"}}],\"model\":\"nvidia/NVIDIA-Nemotron-Nano-9B-v2\",\"usage\":null}\n\ndata: {\"id\":\"oPBXe1y-z1gNr-9ade09f49ce9a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718848,\"choices\":[{\"index\":0,\"text\":\"\",\"finish_reason\":\"stop\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\"}}],\"model\":\"nvidia/NVIDIA-Nemotron-Nano-9B-v2\",\"usage\":{\"prompt_tokens\":289,\"total_tokens\":315,\"completion_tokens\":26}}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - no-cache, no-transform
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ade09f49ce9a275-YUL
+      Content-Type:
+      - text/event-stream;charset=utf-8
+      Retry-After:
+      - "1"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - d24f58c3-205b-4ae8-8ef9-aad265e3a2d5-noamzn
+      X-Api-Call-Start:
+      - "2025-12-14T13:27:28.780Z"
+      X-Api-Received:
+      - "2025-12-14T13:27:28.764Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "18"
+      X-Ratelimit-Remaining-Tokens:
+      - "2950"
+      X-Ratelimit-Reset:
+      - "1"
+    status: 200 OK
+    code: 200
+    duration: 359ms

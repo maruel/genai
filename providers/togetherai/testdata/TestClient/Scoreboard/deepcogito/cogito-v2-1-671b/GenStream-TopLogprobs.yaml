@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 138
+    host: api.together.xyz
+    body: "{\"model\":\"deepcogito/cogito-v2-1-671b\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"}],\"logprobs\":2}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"oPBXbVh-zqrih-9ade09bf6c78a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718840,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"deepcogito/cogito-v2-1-671b\",\"usage\":null}\n\ndata: {\"id\":\"oPBXbVh-zqrih-9ade09bf6c78a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718840,\"choices\":[{\"index\":0,\"text\":\"Hello\",\"logprobs\":{\"tokens\":[\"Hello\"],\"token_logprobs\":[-0.19720953702926636],\"top_logprobs\":[[{\"token\":\"Hello\",\"logprob\":-0.19720953702926636},{\"token\":\"Hi\",\"logprob\":-2.697209596633911}]]},\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"Hello\",\"reasoning\":null}}],\"model\":\"deepcogito/cogito-v2-1-671b\",\"usage\":null}\n\ndata: {\"id\":\"oPBXbVh-zqrih-9ade09bf6c78a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718840,\"choices\":[{\"index\":0,\"text\":\".\",\"logprobs\":{\"tokens\":[\".\"],\"token_logprobs\":[-0.3167952299118042],\"top_logprobs\":[[{\"token\":\".\",\"logprob\":-0.3167952299118042},{\"token\":\"<｜end▁of▁sentence｜>\",\"logprob\":-1.5667952299118042}]]},\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\".\",\"reasoning\":null}}],\"model\":\"deepcogito/cogito-v2-1-671b\",\"usage\":null}\n\ndata: {\"id\":\"oPBXbVh-zqrih-9ade09bf6c78a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718840,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":{\"tokens\":[\"<｜end▁of▁sentence｜>\"],\"token_logprobs\":[-0.0011609011562541127],\"top_logprobs\":[[{\"token\":\"<｜end▁of▁sentence｜>\",\"logprob\":-0.0011609011562541127},{\"token\":\" (\",\"logprob\":-7.251161098480225}]]},\"finish_reason\":\"stop\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"deepcogito/cogito-v2-1-671b\",\"usage\":null}\n\ndata: {\"id\":\"oPBXbVh-zqrih-9ade09bf6c78a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718840,\"choices\":[],\"model\":\"deepcogito/cogito-v2-1-671b\",\"usage\":{\"prompt_tokens\":36,\"total_tokens\":39,\"completion_tokens\":3}}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - no-cache, no-transform
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ade09bf6c78a275-YUL
+      Content-Type:
+      - text/event-stream;charset=utf-8
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - d654c5e7-cded-44dc-bdfd-8d451a7132b7-noamzn
+      X-Api-Call-Start:
+      - "2025-12-14T13:27:20.291Z"
+      X-Api-Received:
+      - "2025-12-14T13:27:20.280Z"
+      X-Inference-Version:
+      - v2
+    status: 200 OK
+    code: 200
+    duration: 197ms

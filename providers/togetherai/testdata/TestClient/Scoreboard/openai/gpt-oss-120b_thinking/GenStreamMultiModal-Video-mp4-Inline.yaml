@@ -18,23 +18,23 @@ interactions:
     proto: HTTP/2.0
     proto_major: 2
     proto_minor: 0
-    content_length: -1
-    body: "data: {\"id\":\"o9RLPp8-3QRW2y-97809ba3fcc6a2f4\",\"object\":\"chat.completion.chunk\",\"created\":1756686090,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"openai/gpt-oss-120b\",\"usage\":null}\n\ndata: {\"id\":\"o9RLPp8-3QRW2y-97809ba3fcc6a2f4\",\"object\":\"chat.completion.chunk\",\"created\":1756686090,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":null,\"reasoning\":\"The user: \\\"What is the word said? Reply with only the word.\\\"\\n\\nWe need to interpret the request. The user asks \\\"What is the word said? Reply with only the word.\\\" It seems ambiguous. Possibly they are asking to guess a word? Could be a riddle? No context. Possibly they want the answer \\\"said\\\"? The phrase \\\"What is the word said?\\\" Could be meta: The word is \\\"said\\\". So reply with only the word \\\"said\\\". Or maybe they ask \\\"What is the word said?\\\" The answer is \\\"said\\\". So respond with \\\"said\\\". The instruction: reply with only the word. So output just \\\"said\\\".\"}}],\"model\":\"openai/gpt-oss-120b\",\"usage\":null}\n\ndata: {\"id\":\"o9RLPp8-3QRW2y-97809ba3fcc6a2f4\",\"object\":\"chat.completion.chunk\",\"created\":1756686090,\"choices\":[{\"index\":0,\"text\":\"said\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"said\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"openai/gpt-oss-120b\",\"usage\":null}\n\ndata: {\"id\":\"o9RLPp8-3QRW2y-97809ba3fcc6a2f4\",\"object\":\"chat.completion.chunk\",\"created\":1756686090,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":\"stop\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":null,\"reasoning\":null}}],\"model\":\"openai/gpt-oss-120b\",\"usage\":null}\n\ndata: {\"id\":\"o9RLPp8-3QRW2y-97809ba3fcc6a2f4\",\"object\":\"chat.completion.chunk\",\"created\":1756686090,\"choices\":[],\"model\":\"openai/gpt-oss-120b\",\"usage\":{\"prompt_tokens\":79,\"total_tokens\":225,\"completion_tokens\":146,\"prompt_tokens_details\":null,\"reasoning_tokens\":0}}\n\ndata: [DONE]\n\n"
+    content_length: 265
+    body: "{\n  \"id\": \"oPBShgR-6Ng1vN-9addf272ca1aa320\",\n  \"error\": {\n    \"message\": \"Invalid API key provided. You can find your API key at https://api.together.ai/settings/api-keys.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": \"invalid_api_key\"\n  }\n}"
     headers:
       Access-Control-Allow-Origin:
       - "*"
       Alt-Svc:
       - h3=":443"; ma=86400
-      Cache-Control:
-      - no-cache, no-transform
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 97809ba3fcc6a2f4-YUL
+      - 9addf272ca1aa320-YUL
+      Content-Length:
+      - "265"
       Content-Type:
-      - text/event-stream;charset=utf-8
-      Retry-After:
-      - "1"
+      - application/json; charset=utf-8
+      Etag:
+      - W/"109-WVJAYVpe1491AuAiwXl32ckp2nw"
       Server:
       - cloudflare
       Strict-Transport-Security:
@@ -42,27 +42,9 @@ interactions:
       Vary:
       - Accept-Encoding
       X-Amzn-Trace-Id:
-      - 917c119b-9698-40bb-b3e7-1f476be8ef96-noamzn
-      X-Api-Call-Start:
-      - "2025-09-01T00:21:30.973Z"
+      - 7bcf297a-d08a-46c8-8876-0f3772c87d9d-noamzn
       X-Api-Received:
-      - "2025-09-01T00:21:30.941Z"
-      X-Inference-Version:
-      - v2
-      X-Ratelimit:
-      - "false"
-      X-Ratelimit-Limit:
-      - "10"
-      X-Ratelimit-Limit-Tokens:
-      - "3000"
-      X-Ratelimit-Remaining:
-      - "16"
-      X-Ratelimit-Remaining-Tokens:
-      - "2312"
-      X-Ratelimit-Reset:
-      - "1"
-      X-Request-Id:
-      - o9RLPp8-3QRW2y-97809ba3fcc6a2f4
-    status: 200 OK
-    code: 200
-    duration: 187ms
+      - "2025-12-14T13:11:25.529Z"
+    status: 401 Unauthorized
+    code: 401
+    duration: 92ms

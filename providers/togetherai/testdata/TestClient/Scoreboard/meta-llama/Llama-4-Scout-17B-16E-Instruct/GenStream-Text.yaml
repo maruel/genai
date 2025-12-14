@@ -1,81 +1,50 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 139
-        host: api.together.xyz
-        body: |
-            {"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","stream":true,"messages":[{"role":"user","content":"Say hello. Use only one word."}]}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://api.together.xyz/v1/chat/completions
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        body: |+
-            data: {"id":"o498oh1-4Yz4kd-963626400b70a2f3","object":"chat.completion.chunk","created":1753220982,"choices":[{"index":0,"text":"","logprobs":null,"tool_calls":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"","tool_calls":null}}],"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","usage":null}
-
-            data: {"id":"o498oh1-4Yz4kd-963626400b70a2f3","object":"chat.completion.chunk","created":1753220982,"choices":[{"index":0,"text":"Hello","logprobs":null,"tool_calls":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"Hello","tool_calls":null}}],"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","usage":null}
-
-            data: {"id":"o498oh1-4Yz4kd-963626400b70a2f3","object":"chat.completion.chunk","created":1753220982,"choices":[{"index":0,"text":"!","logprobs":null,"tool_calls":null,"finish_reason":null,"delta":{"token_id":null,"role":"assistant","content":"!","tool_calls":null}}],"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","usage":null}
-
-            data: {"id":"o498oh1-4Yz4kd-963626400b70a2f3","object":"chat.completion.chunk","created":1753220982,"choices":[{"index":0,"text":"","logprobs":null,"tool_calls":null,"finish_reason":"stop","delta":{"token_id":null,"role":"assistant","content":"","tool_calls":null}}],"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","usage":null}
-
-            data: {"id":"o498oh1-4Yz4kd-963626400b70a2f3","object":"chat.completion.chunk","created":1753220982,"choices":[],"model":"meta-llama/Llama-4-Scout-17B-16E-Instruct","usage":{"prompt_tokens":18,"total_tokens":21,"completion_tokens":3}}
-
-            data: [DONE]
-
-        headers:
-            Access-Control-Allow-Origin:
-                - '*'
-            Alt-Svc:
-                - h3=":443"; ma=86400
-            Cache-Control:
-                - no-cache, no-transform
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 963626400b70a2f3-YUL
-            Content-Type:
-                - text/event-stream;charset=utf-8
-            Retry-After:
-                - "2"
-            Server:
-                - cloudflare
-            Strict-Transport-Security:
-                - max-age=15552000; includeSubDomains
-            Vary:
-                - Accept-Encoding
-            X-Amzn-Trace-Id:
-                - 6dfa8204-5a3b-4458-acea-56d3495b2663-noamzn
-            X-Api-Call-Start:
-                - "2025-07-22T21:49:42.162Z"
-            X-Api-Received:
-                - "2025-07-22T21:49:42.144Z"
-            X-Inference-Version:
-                - v2
-            X-Ratelimit:
-                - "false"
-            X-Ratelimit-Limit:
-                - "1"
-            X-Ratelimit-Limit-Tokens:
-                - "1000"
-            X-Ratelimit-Remaining:
-                - "1"
-            X-Ratelimit-Remaining-Tokens:
-                - "1000"
-            X-Ratelimit-Reset:
-                - "2"
-            X-Request-Id:
-                - o498oh1-4Yz4kd-963626400b70a2f3
-        status: 200 OK
-        code: 200
-        duration: 489ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 139
+    host: api.together.xyz
+    body: "{\"model\":\"meta-llama/Llama-4-Scout-17B-16E-Instruct\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 264
+    body: "{\n  \"id\": \"oPBSh5W-z1gNr-9addf2613beaa320\",\n  \"error\": {\n    \"message\": \"Invalid API key provided. You can find your API key at https://api.together.ai/settings/api-keys.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": \"invalid_api_key\"\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9addf2613beaa320-YUL
+      Content-Length:
+      - "264"
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"108-Q1bCbR2nIGRN3Eu29NZsuGIULbI"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 5ff6ff3d-0d34-4df8-b6a5-810a477d0fba-noamzn
+      X-Api-Received:
+      - "2025-12-14T13:11:23.501Z"
+    status: 401 Unauthorized
+    code: 401
+    duration: 447ms

@@ -19,7 +19,7 @@ interactions:
     proto_major: 2
     proto_minor: 0
     content_length: -1
-    body: "data: {\"id\":\"o9RDmLT-zqrih-97807c102c3aa30b\",\"object\":\"chat.completion.chunk\",\"created\":1756684797,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"usage\":null}\n\ndata: {\"id\":\"o9RDmLT-zqrih-97807c102c3aa30b\",\"object\":\"chat.completion.chunk\",\"created\":1756684797,\"choices\":[{\"index\":0,\"text\":\"Hello\",\"logprobs\":{\"tokens\":[\"Hello\"],\"token_logprobs\":[-0.0006048041977919638],\"top_logprobs\":[[{\"token\":\"Hello\",\"logprob\":-0.0006048041977919638},{\"token\":\"Hi\",\"logprob\":-7.750604629516602}]]},\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"Hello\",\"tool_calls\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"usage\":null}\n\ndata: {\"id\":\"o9RDmLT-zqrih-97807c102c3aa30b\",\"object\":\"chat.completion.chunk\",\"created\":1756684797,\"choices\":[{\"index\":0,\"text\":\".\",\"logprobs\":{\"tokens\":[\".\"],\"token_logprobs\":[-0.5182144641876221],\"top_logprobs\":[[{\"token\":\".\",\"logprob\":-0.5182144641876221},{\"token\":\"<|im_end|>\",\"logprob\":-1.018214464187622}]]},\"tool_calls\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\".\",\"tool_calls\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"usage\":null}\n\ndata: {\"id\":\"o9RDmLT-zqrih-97807c102c3aa30b\",\"object\":\"chat.completion.chunk\",\"created\":1756684797,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":{\"tokens\":[\"<|im_end|>\"],\"token_logprobs\":[-1.1920928244535389e-7],\"top_logprobs\":[[{\"token\":\"<|im_end|>\",\"logprob\":-1.1920928244535389e-7},{\"token\":\" �\",\"logprob\":-16.75}]]},\"tool_calls\":null,\"finish_reason\":\"stop\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"usage\":null}\n\ndata: {\"id\":\"o9RDmLT-zqrih-97807c102c3aa30b\",\"object\":\"chat.completion.chunk\",\"created\":1756684797,\"choices\":[],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"usage\":{\"prompt_tokens\":16,\"total_tokens\":19,\"completion_tokens\":3}}\n\ndata: [DONE]\n\n"
+    body: "data: {\"id\":\"oPBXTwp-4YNCb4-9ade0920baaca275\",\"object\":\"chat.completion.chunk\",\"created\":1765718814,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"usage\":null}\n\ndata: {\"id\":\"oPBXTwp-4YNCb4-9ade0920baaca275\",\"object\":\"chat.completion.chunk\",\"created\":1765718814,\"choices\":[{\"index\":0,\"text\":\"Hello\",\"logprobs\":{\"tokens\":[\"Hello\"],\"token_logprobs\":[-0.000018239186829305254],\"top_logprobs\":[[{\"token\":\"Hello\",\"logprob\":-0.000018239186829305254},{\"token\":\"Hi\",\"logprob\":-11.07144832611084}]]},\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"Hello\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"usage\":null}\n\ndata: {\"id\":\"oPBXTwp-4YNCb4-9ade0920baaca275\",\"object\":\"chat.completion.chunk\",\"created\":1765718814,\"choices\":[{\"index\":0,\"text\":\".\",\"logprobs\":{\"tokens\":[\".\"],\"token_logprobs\":[-0.1009206622838974],\"top_logprobs\":[[{\"token\":\".\",\"logprob\":-0.1009206622838974},{\"token\":\"<|im_end|>\",\"logprob\":-2.422347068786621}]]},\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\".\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"usage\":null}\n\ndata: {\"id\":\"oPBXTwp-4YNCb4-9ade0920baaca275\",\"object\":\"chat.completion.chunk\",\"created\":1765718814,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":\"stop\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"usage\":null}\n\ndata: {\"id\":\"oPBXTwp-4YNCb4-9ade0920baaca275\",\"object\":\"chat.completion.chunk\",\"created\":1765718814,\"choices\":[],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"usage\":{\"prompt_tokens\":16,\"total_tokens\":19,\"completion_tokens\":3,\"prompt_tokens_details\":null,\"reasoning_tokens\":0}}\n\ndata: [DONE]\n\n"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -30,11 +30,11 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 97807c102c3aa30b-YUL
+      - 9ade0920baaca275-YUL
       Content-Type:
       - text/event-stream;charset=utf-8
       Retry-After:
-      - "2"
+      - "0"
       Server:
       - cloudflare
       Strict-Transport-Security:
@@ -42,11 +42,11 @@ interactions:
       Vary:
       - Accept-Encoding
       X-Amzn-Trace-Id:
-      - 6c4d22df-5f81-4139-9478-ec030b9a6b4d-noamzn
+      - 07c9a60c-078f-49a7-8bfb-9f6e6467ed2b-noamzn
       X-Api-Call-Start:
-      - "2025-08-31T23:59:57.575Z"
+      - "2025-12-14T13:26:54.903Z"
       X-Api-Received:
-      - "2025-08-31T23:59:57.560Z"
+      - "2025-12-14T13:26:54.883Z"
       X-Inference-Version:
       - v2
       X-Ratelimit:
@@ -58,11 +58,9 @@ interactions:
       X-Ratelimit-Remaining:
       - "18"
       X-Ratelimit-Remaining-Tokens:
-      - "2981"
+      - "3000"
       X-Ratelimit-Reset:
-      - "2"
-      X-Request-Id:
-      - o9RDmLT-zqrih-97807c102c3aa30b
+      - "0"
     status: 200 OK
     code: 200
-    duration: 192ms
+    duration: 415ms

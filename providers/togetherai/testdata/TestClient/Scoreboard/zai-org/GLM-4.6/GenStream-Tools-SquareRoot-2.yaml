@@ -1,0 +1,66 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 1079
+    host: api.together.xyz
+    body: "{\"model\":\"zai-org/GLM-4.6\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"},{\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"\\n\"},{\"type\":\"text\",\"text\":\"\\n\"}],\"tool_calls\":[{\"index\":0,\"id\":\"call_edfdd4cdcc90426082675a94\",\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\": 132413}\"}},{\"index\":0,\"id\":\"call_edfdd4cdcc90426082675a94\",\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\": 132413}\"}}]},{\"role\":\"tool\",\"content\":\"363.89\",\"tool_call_id\":\"call_edfdd4cdcc90426082675a94\"},{\"role\":\"tool\",\"content\":\"363.89\",\"tool_call_id\":\"call_edfdd4cdcc90426082675a94\"}],\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"tool_choice\":\"none\"}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"oPBWxZ2-3pDw3Z-9ade06b67dd9a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718716,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPBWxZ2-3pDw3Z-9ade06b67dd9a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718716,\"choices\":[{\"index\":0,\"text\":\"\\n\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\\n\",\"reasoning\":null}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPBWxZ2-3pDw3Z-9ade06b67dd9a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718716,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\"I\"}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPBWxZ2-3pDw3Z-9ade06b67dd9a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718716,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\" have\"}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPBWxZ2-3pDw3Z-9ade06b67dd9a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718716,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\" the\"}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPBWxZ2-3pDw3Z-9ade06b67dd9a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718716,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\" result from the square_root tool\"}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPBWxZ2-3pDw3Z-9ade06b67dd9a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718716,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\":\"}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPBWxZ2-3pDw3Z-9ade06b67dd9a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718716,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\" 363.89.\"}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPBWxZ2-3pDw3Z-9ade06b67dd9a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718716,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\" The user explicitly\"}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPBWxZ2-3pDw3Z-9ade06b67dd9a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718716,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\" requested \\\"\"}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPBWxZ2-3pDw3Z-9ade06b67dd9a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718716,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\"only the result\\\" and \\\"\"}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPBWxZ2-3pDw3Z-9ade06b67dd9a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718716,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\"Do not give an explanation\\\".\"}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPBWxZ2-3pDw3Z-9ade06b67dd9a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718716,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\" So I need\"}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPBWxZ2-3pDw3Z-9ade06b67dd9a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718716,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\" to provide\"}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPBWxZ2-3pDw3Z-9ade06b67dd9a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718716,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\" just this\"}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPBWxZ2-3pDw3Z-9ade06b67dd9a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718716,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\" number and\"}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPBWxZ2-3pDw3Z-9ade06b67dd9a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718716,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\" nothing else.\"}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPBWxZ2-3pDw3Z-9ade06b67dd9a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718716,\"choices\":[{\"index\":0,\"text\":\"\\n36\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\\n36\",\"reasoning\":null}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPBWxZ2-3pDw3Z-9ade06b67dd9a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718716,\"choices\":[{\"index\":0,\"text\":\"3.89\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"3.89\",\"reasoning\":null}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPBWxZ2-3pDw3Z-9ade06b67dd9a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718716,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":\"stop\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPBWxZ2-3pDw3Z-9ade06b67dd9a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718716,\"choices\":[],\"model\":\"zai-org/GLM-4.6\",\"usage\":{\"prompt_tokens\":88,\"total_tokens\":142,\"completion_tokens\":54,\"prompt_tokens_details\":null,\"reasoning_tokens\":0}}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - no-cache, no-transform
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ade06b67dd9a275-YUL
+      Content-Type:
+      - text/event-stream;charset=utf-8
+      Retry-After:
+      - "2"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 45989a92-7111-4d33-b1ab-df319980e00d-noamzn
+      X-Api-Call-Start:
+      - "2025-12-14T13:25:16.022Z"
+      X-Api-Received:
+      - "2025-12-14T13:25:16.006Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "19"
+      X-Ratelimit-Remaining-Tokens:
+      - "2525"
+      X-Ratelimit-Reset:
+      - "2"
+    status: 200 OK
+    code: 200
+    duration: 331ms

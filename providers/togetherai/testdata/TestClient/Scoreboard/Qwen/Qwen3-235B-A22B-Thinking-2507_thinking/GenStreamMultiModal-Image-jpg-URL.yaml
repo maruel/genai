@@ -18,8 +18,8 @@ interactions:
     proto: HTTP/2.0
     proto_major: 2
     proto_minor: 0
-    content_length: 177
-    body: "{\n  \"id\": \"o9RD8wK-28Eivz-978079133848a2a3\",\n  \"error\": {\n    \"message\": \"Input validation error\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": null\n  }\n}"
+    content_length: 264
+    body: "{\n  \"id\": \"oPBSiKk-zqrih-9addf27d783ca320\",\n  \"error\": {\n    \"message\": \"Invalid API key provided. You can find your API key at https://api.together.ai/settings/api-keys.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": \"invalid_api_key\"\n  }\n}"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -28,15 +28,13 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 978079133848a2a3-YUL
+      - 9addf27d783ca320-YUL
       Content-Length:
-      - "177"
+      - "264"
       Content-Type:
       - application/json; charset=utf-8
       Etag:
-      - W/"b1-mSnDtyab23MUXv54EFoRczvm9Nk"
-      Retry-After:
-      - "2"
+      - W/"108-X6aqGENhvxrNg4GDPSrZ6rmrrHU"
       Server:
       - cloudflare
       Strict-Transport-Security:
@@ -44,25 +42,9 @@ interactions:
       Vary:
       - Accept-Encoding
       X-Amzn-Trace-Id:
-      - 009d0378-69be-4412-96cc-1f8a969d75ca-noamzn
+      - 3fa0211c-da84-45ba-9685-81373e95707c-noamzn
       X-Api-Received:
-      - "2025-08-31T23:57:55.115Z"
-      X-Inference-Version:
-      - v2
-      X-Ratelimit:
-      - "false"
-      X-Ratelimit-Limit:
-      - "10"
-      X-Ratelimit-Limit-Tokens:
-      - "3000"
-      X-Ratelimit-Remaining:
-      - "17"
-      X-Ratelimit-Remaining-Tokens:
-      - "3000"
-      X-Ratelimit-Reset:
-      - "2"
-      X-Request-Id:
-      - o9RD8wK-28Eivz-978079133848a2a3
-    status: 400 Bad Request
-    code: 400
-    duration: 131ms
+      - "2025-12-14T13:11:27.691Z"
+    status: 401 Unauthorized
+    code: 401
+    duration: 141ms

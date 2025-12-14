@@ -1,0 +1,55 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 125
+    host: api.together.xyz
+    body: "{\"model\":\"essentialai/rnj-1-instruct\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"oPBXLaV-z1gNr-9ade08845bd0a275\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765718790,\n  \"model\": \"essentialai/rnj-1-instruct\",\n  \"service_tier\": null,\n  \"system_fingerprint\": null,\n  \"prompt_token_ids\": null,\n  \"kv_transfer_params\": null,\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"Hello.\",\n        \"tool_calls\": [],\n        \"reasoning\": null\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"token_ids\": null,\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 38,\n    \"total_tokens\": 41,\n    \"completion_tokens\": 3\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ade08845bd0a275-YUL
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"28a-fK+p6Ks4e8BwmI4hxU6VfnBHEyU"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 11a3d2a0-0ac6-4350-859c-a66f548df614-noamzn
+      X-Api-Call-End:
+      - "2025-12-14T13:26:30.688Z"
+      X-Api-Call-Start:
+      - "2025-12-14T13:26:30.640Z"
+      X-Api-Received:
+      - "2025-12-14T13:26:30.099Z"
+      X-Inference-Version:
+      - v2
+    status: 200 OK
+    code: 200
+    duration: 896ms

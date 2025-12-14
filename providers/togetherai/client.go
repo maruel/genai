@@ -463,11 +463,13 @@ func (t *ToolCall) To(out *genai.ToolCall) {
 }
 
 type ChatResponse struct {
-	ID      string   `json:"id"`
-	Prompt  []string `json:"prompt"`
-	Choices []struct {
+	ID             string   `json:"id"`
+	Prompt         []string `json:"prompt"`
+	PromptTokenIDs []any    `json:"prompt_token_ids,omitzero"`
+	Choices        []struct {
 		// Text  string `json:"text"`
-		Index int64 `json:"index"`
+		Index    int64 `json:"index"`
+		TokenIDs []any `json:"token_ids,omitzero"`
 		// The seed is returned as a int128.
 		Seed         big.Int      `json:"seed"`
 		FinishReason FinishReason `json:"finish_reason"`
@@ -548,9 +550,10 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 }
 
 type Logprobs struct {
-	Tokens        []string   `json:"tokens"`
-	TokenLogprobs []float64  `json:"token_logprobs"`
-	TokenIDs      []struct{} `json:"token_ids"` // Not set.
+	Tokens        []string  `json:"tokens"`
+	TokenLogprobs []float64 `json:"token_logprobs"`
+	TokenIDs      []any     `json:"token_ids,omitzero"` // Not set.
+	Content       []any     `json:"content,omitzero"`   // Complex structure with logprobs data.
 }
 
 func (l *Logprobs) To() [][]genai.Logprob {
@@ -572,6 +575,7 @@ type LogprobsChunk struct {
 		Token   string  `json:"token"`
 		Logprob float64 `json:"logprob"`
 	} `json:"top_logprobs"`
+	Content any `json:"content,omitzero"` // Complex structure sometimes returned.
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
@@ -588,7 +592,11 @@ func (l *LogprobsChunk) UnmarshalJSON(b []byte) error {
 	type Alias LogprobsChunk
 	a := struct{ *Alias }{Alias: (*Alias)(l)}
 	d := json.NewDecoder(bytes.NewReader(b))
-	d.DisallowUnknownFields()
+	if internal.BeLenient {
+		// Allow unknown fields when lenient mode is on
+	} else {
+		d.DisallowUnknownFields()
+	}
 	return d.Decode(&a)
 }
 
@@ -623,21 +631,24 @@ type ChatStreamChunkResponse struct {
 	Created base.Time `json:"created"`
 	Model   string    `json:"model"`
 	Choices []struct {
-		Index int64   `json:"index"`
-		Text  string  `json:"text"` // Duplicated to Delta.Text
-		Seed  big.Int `json:"seed"`
-		Delta struct {
+		Index       int64         `json:"index"`
+		Text        string        `json:"text"` // Duplicated to Delta.Text
+		Seed        big.Int       `json:"seed"`
+		Error       any           `json:"error,omitzero"`
+		Role        string        `json:"role,omitzero"` // Sometimes appears in streaming
+		Logprobs    LogprobsChunk `json:"logprobs"`
+		TopLogprobs any           `json:"top_logprobs,omitzero"`
+		Delta       struct {
 			TokenID   int64      `json:"token_id"`
 			Role      string     `json:"role"`
 			Content   string     `json:"content"`
 			ToolCalls []ToolCall `json:"tool_calls"`
 			Reasoning string     `json:"reasoning"`
 		} `json:"delta"`
-		Logprobs     LogprobsChunk `json:"logprobs"`
-		FinishReason FinishReason  `json:"finish_reason"`
-		MatchedStop  int64         `json:"matched_stop"`
-		StopReason   StopReason    `json:"stop_reason"`
-		ToolCalls    []ToolCall    `json:"tool_calls"`
+		FinishReason FinishReason `json:"finish_reason"`
+		MatchedStop  int64        `json:"matched_stop"`
+		StopReason   StopReason   `json:"stop_reason"`
+		ToolCalls    []ToolCall   `json:"tool_calls"`
 	} `json:"choices"`
 	// SystemFingerprint string `json:"system_fingerprint"`
 	Usage    Usage `json:"usage"`
@@ -1176,6 +1187,11 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 				}
 				if len(pkt.Choices) != 1 {
 					continue
+				}
+				// Check for streaming errors.
+				if pkt.Choices[0].Error != nil {
+					finalErr = fmt.Errorf("streaming error: %v", pkt.Choices[0].Error)
+					return
 				}
 				if pkt.Choices[0].FinishReason != "" {
 					u.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()

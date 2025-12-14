@@ -1,0 +1,66 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 269
+    host: api.together.xyz
+    body: "{\"model\":\"nvidia/NVIDIA-Nemotron-Nano-9B-v2\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\\\"is_fruit\\\": bool}.\"}],\"response_format\":{\"type\":\"json_object\"}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"oPBXdsF-z1gNr-9ade09f13f0ca275\",\"object\":\"chat.completion.chunk\",\"created\":1765718848,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\"}}],\"model\":\"nvidia/NVIDIA-Nemotron-Nano-9B-v2\",\"usage\":null}\n\ndata: {\"id\":\"oPBXdsF-z1gNr-9ade09f13f0ca275\",\"object\":\"chat.completion.chunk\",\"created\":1765718848,\"choices\":[{\"index\":0,\"text\":\"{\\\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"{\\\"\"}}],\"model\":\"nvidia/NVIDIA-Nemotron-Nano-9B-v2\",\"usage\":null}\n\ndata: {\"id\":\"oPBXdsF-z1gNr-9ade09f13f0ca275\",\"object\":\"chat.completion.chunk\",\"created\":1765718848,\"choices\":[{\"index\":0,\"text\":\"is\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"is\"}}],\"model\":\"nvidia/NVIDIA-Nemotron-Nano-9B-v2\",\"usage\":null}\n\ndata: {\"id\":\"oPBXdsF-z1gNr-9ade09f13f0ca275\",\"object\":\"chat.completion.chunk\",\"created\":1765718848,\"choices\":[{\"index\":0,\"text\":\"_f\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"_f\"}}],\"model\":\"nvidia/NVIDIA-Nemotron-Nano-9B-v2\",\"usage\":null}\n\ndata: {\"id\":\"oPBXdsF-z1gNr-9ade09f13f0ca275\",\"object\":\"chat.completion.chunk\",\"created\":1765718848,\"choices\":[{\"index\":0,\"text\":\"ruit\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"ruit\"}}],\"model\":\"nvidia/NVIDIA-Nemotron-Nano-9B-v2\",\"usage\":null}\n\ndata: {\"id\":\"oPBXdsF-z1gNr-9ade09f13f0ca275\",\"object\":\"chat.completion.chunk\",\"created\":1765718848,\"choices\":[{\"index\":0,\"text\":\"\\\":\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\\\":\"}}],\"model\":\"nvidia/NVIDIA-Nemotron-Nano-9B-v2\",\"usage\":null}\n\ndata: {\"id\":\"oPBXdsF-z1gNr-9ade09f13f0ca275\",\"object\":\"chat.completion.chunk\",\"created\":1765718848,\"choices\":[{\"index\":0,\"text\":\" true\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" true\"}}],\"model\":\"nvidia/NVIDIA-Nemotron-Nano-9B-v2\",\"usage\":null}\n\ndata: {\"id\":\"oPBXdsF-z1gNr-9ade09f13f0ca275\",\"object\":\"chat.completion.chunk\",\"created\":1765718848,\"choices\":[{\"index\":0,\"text\":\"\\n\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\\n\"}}],\"model\":\"nvidia/NVIDIA-Nemotron-Nano-9B-v2\",\"usage\":null}\n\ndata: {\"id\":\"oPBXdsF-z1gNr-9ade09f13f0ca275\",\"object\":\"chat.completion.chunk\",\"created\":1765718848,\"choices\":[{\"index\":0,\"text\":\"}\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"}\"}}],\"model\":\"nvidia/NVIDIA-Nemotron-Nano-9B-v2\",\"usage\":null}\n\ndata: {\"id\":\"oPBXdsF-z1gNr-9ade09f13f0ca275\",\"object\":\"chat.completion.chunk\",\"created\":1765718848,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":\"stop\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\"}}],\"model\":\"nvidia/NVIDIA-Nemotron-Nano-9B-v2\",\"usage\":null}\n\ndata: {\"id\":\"oPBXdsF-z1gNr-9ade09f13f0ca275\",\"object\":\"chat.completion.chunk\",\"created\":1765718848,\"choices\":[],\"model\":\"nvidia/NVIDIA-Nemotron-Nano-9B-v2\",\"usage\":{\"prompt_tokens\":41,\"total_tokens\":50,\"completion_tokens\":9}}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - no-cache, no-transform
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ade09f13f0ca275-YUL
+      Content-Type:
+      - text/event-stream;charset=utf-8
+      Retry-After:
+      - "2"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 97dbf05c-2865-4b39-a437-a80cf17fa8c0-noamzn
+      X-Api-Call-Start:
+      - "2025-12-14T13:27:28.273Z"
+      X-Api-Received:
+      - "2025-12-14T13:27:28.259Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "19"
+      X-Ratelimit-Remaining-Tokens:
+      - "3000"
+      X-Ratelimit-Reset:
+      - "2"
+    status: 200 OK
+    code: 200
+    duration: 158ms

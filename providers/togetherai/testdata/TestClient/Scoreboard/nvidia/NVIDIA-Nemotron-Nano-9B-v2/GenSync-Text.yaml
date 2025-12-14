@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 132
+    host: api.together.xyz
+    body: "{\"model\":\"nvidia/NVIDIA-Nemotron-Nano-9B-v2\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"oPBXcbL-6Ng1vN-9ade09d508dea275\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765718843,\n  \"model\": \"nvidia/NVIDIA-Nemotron-Nano-9B-v2\",\n  \"service_tier\": null,\n  \"system_fingerprint\": null,\n  \"prompt_token_ids\": null,\n  \"kv_transfer_params\": null,\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"Okay, the user wants me to say hello using only one word. Let me think. The most common one-word greeting is \\\"Hello\\\". That should work. I need to make sure I don't add any other words. Just \\\"Hello\\\" in bold maybe? Wait, the instructions say to use only one word. So the response should be exactly \\\"Hello\\\". No exclamation marks or anything else. Yeah, that's it. Just a simple \\\"Hello\\\".\\n</think>\\n\\nHello\\n\",\n        \"tool_calls\": [],\n        \"reasoning\": null\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"token_ids\": null,\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 20,\n    \"total_tokens\": 119,\n    \"completion_tokens\": 99\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ade09d508dea275-YUL
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"42a-khL+50i/TF4Ovi3X6BJPH9DKads"
+      Retry-After:
+      - "2"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 42e98916-44d9-4fab-9e1a-40a15a16d6cd-noamzn
+      X-Api-Call-End:
+      - "2025-12-14T13:27:24.905Z"
+      X-Api-Call-Start:
+      - "2025-12-14T13:27:23.978Z"
+      X-Api-Received:
+      - "2025-12-14T13:27:23.971Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "18"
+      X-Ratelimit-Remaining-Tokens:
+      - "3000"
+      X-Ratelimit-Reset:
+      - "2"
+    status: 200 OK
+    code: 200
+    duration: 1.202s

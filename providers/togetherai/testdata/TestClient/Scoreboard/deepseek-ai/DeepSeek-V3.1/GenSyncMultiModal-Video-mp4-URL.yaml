@@ -18,9 +18,8 @@ interactions:
     proto: HTTP/2.0
     proto_major: 2
     proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\n  \"id\": \"o9RNrkB-3QRW2y-9780a7611d03a2d6\",\n  \"object\": \"chat.completion\",\n  \"created\": 1756686571,\n  \"model\": \"deepseek-ai/DeepSeek-V3.1\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"summer\",\n        \"tool_calls\": [],\n        \"reasoning\": null\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 16,\n    \"total_tokens\": 19,\n    \"completion_tokens\": 3\n  }\n}"
+    content_length: 265
+    body: "{\n  \"id\": \"oPBSiox-28Eivz-9addf287ee11a320\",\n  \"error\": {\n    \"message\": \"Invalid API key provided. You can find your API key at https://api.together.ai/settings/api-keys.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": \"invalid_api_key\"\n  }\n}"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -29,13 +28,13 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9780a7611d03a2d6-YUL
+      - 9addf287ee11a320-YUL
+      Content-Length:
+      - "265"
       Content-Type:
       - application/json; charset=utf-8
       Etag:
-      - W/"236-uvex4DWi2/AGqviW6F+R3sz+s7g"
-      Retry-After:
-      - "2"
+      - W/"109-HNfJ3tG9QEeK/KUrPp3CAZ0dMW4"
       Server:
       - cloudflare
       Strict-Transport-Security:
@@ -43,29 +42,9 @@ interactions:
       Vary:
       - Accept-Encoding
       X-Amzn-Trace-Id:
-      - dec8b01f-8780-4121-8545-595f98d523c4-noamzn
-      X-Api-Call-End:
-      - "2025-09-01T00:29:31.941Z"
-      X-Api-Call-Start:
-      - "2025-09-01T00:29:31.802Z"
+      - 4674cf5b-5e3c-40da-980e-d22cf3663da3-noamzn
       X-Api-Received:
-      - "2025-09-01T00:29:31.764Z"
-      X-Inference-Version:
-      - v2
-      X-Ratelimit:
-      - "false"
-      X-Ratelimit-Limit:
-      - "10"
-      X-Ratelimit-Limit-Tokens:
-      - "3000"
-      X-Ratelimit-Remaining:
-      - "18"
-      X-Ratelimit-Remaining-Tokens:
-      - "2963"
-      X-Ratelimit-Reset:
-      - "2"
-      X-Request-Id:
-      - o9RNrkB-3QRW2y-9780a7611d03a2d6
-    status: 200 OK
-    code: 200
-    duration: 295ms
+      - "2025-12-14T13:11:29.327Z"
+    status: 401 Unauthorized
+    code: 401
+    duration: 84ms

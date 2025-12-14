@@ -1,0 +1,66 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 313
+    host: api.together.xyz
+    body: "{\"model\":\"mistralai/Ministral-3-14B-Instruct-2512\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What fruit is it? Reply with only one word.\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.webp\"}}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"oPBXT9o-62bZhn-9ade090ffe43a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718812,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"mistralai/Ministral-3-14B-Instruct-2512\",\"usage\":null}\n\ndata: {\"id\":\"oPBXT9o-62bZhn-9ade090ffe43a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718812,\"choices\":[{\"index\":0,\"text\":\"Ban\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"Ban\",\"reasoning\":null}}],\"model\":\"mistralai/Ministral-3-14B-Instruct-2512\",\"usage\":null}\n\ndata: {\"id\":\"oPBXT9o-62bZhn-9ade090ffe43a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718812,\"choices\":[{\"index\":0,\"text\":\"ana\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"ana\",\"reasoning\":null}}],\"model\":\"mistralai/Ministral-3-14B-Instruct-2512\",\"usage\":null}\n\ndata: {\"id\":\"oPBXT9o-62bZhn-9ade090ffe43a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718812,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":\"stop\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"mistralai/Ministral-3-14B-Instruct-2512\",\"usage\":null}\n\ndata: {\"id\":\"oPBXT9o-62bZhn-9ade090ffe43a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718812,\"choices\":[],\"model\":\"mistralai/Ministral-3-14B-Instruct-2512\",\"usage\":{\"prompt_tokens\":691,\"total_tokens\":694,\"completion_tokens\":3,\"prompt_tokens_details\":null,\"reasoning_tokens\":0}}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - no-cache, no-transform
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ade090ffe43a275-YUL
+      Content-Type:
+      - text/event-stream;charset=utf-8
+      Retry-After:
+      - "0"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 003eb0d3-d78f-4488-9f20-ef8707b145d2-noamzn
+      X-Api-Call-Start:
+      - "2025-12-14T13:26:52.349Z"
+      X-Api-Received:
+      - "2025-12-14T13:26:52.215Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "14"
+      X-Ratelimit-Remaining-Tokens:
+      - "0"
+      X-Ratelimit-Reset:
+      - "0"
+    status: 200 OK
+    code: 200
+    duration: 272ms

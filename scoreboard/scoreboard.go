@@ -10,6 +10,7 @@ package scoreboard
 import (
 	"embed"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"strconv"
 )
@@ -250,7 +251,7 @@ type Scenario struct {
 	// expensive, etc.
 	Comments string `json:"comments,omitzero"`
 	// Models is a *non exhaustive* list of models that support this scenario. It can't be exhaustive since
-	// providers continuouly release new models. It is still valuable to use the first value
+	// providers continuouly release new models. It is still valuable to use the first value. Required.
 	Models []string `json:"models"`
 
 	// These mean that the model is automatically selected. There can be multiple SOTA models, one per
@@ -268,8 +269,8 @@ type Scenario struct {
 	ReasoningTokenStart string `json:"reasoningTokenStart,omitzero"`
 	ReasoningTokenEnd   string `json:"reasoningTokenEnd,omitzero"`
 
-	In  map[Modality]ModalCapability `json:"in,omitzero"`
-	Out map[Modality]ModalCapability `json:"out,omitzero"`
+	In  map[Modality]ModalCapability `json:"in,omitzero,omitempty"`
+	Out map[Modality]ModalCapability `json:"out,omitzero,omitempty"`
 
 	// GenSync declares features supported when using Provider.GenSync
 	GenSync *Functionality `json:"GenSync,omitzero,omitempty"`
@@ -280,15 +281,24 @@ type Scenario struct {
 }
 
 func (s *Scenario) Validate() error {
-	for k := range s.In {
-		if err := k.Validate(); err != nil {
-			return err
-		}
+	if len(s.Models) == 0 {
+		return errors.New("scenario must have at least one model")
 	}
 	for k := range s.In {
 		if err := k.Validate(); err != nil {
 			return err
 		}
+	}
+	for k := range s.Out {
+		if err := k.Validate(); err != nil {
+			return err
+		}
+	}
+	if (len(s.In) == 0) != (len(s.Out) == 0) {
+		return errors.New("scenario must have either both or none of In or Out")
+	}
+	if len(s.In) == 0 && (s.GenSync != nil || s.GenStream != nil) {
+		return errors.New("scenario must have be defined to have either GenSync or GenStream")
 	}
 	if s.GenSync == nil {
 		if err := s.GenSync.Validate(); err != nil {

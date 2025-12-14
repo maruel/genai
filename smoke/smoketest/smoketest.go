@@ -620,13 +620,22 @@ func defaultUpdateScoreboard(t testing.TB, providerDir string, scenarios []score
 		existingScore.Scenarios = filtered
 	}
 
-	// Consolidate models with the same comments and reason into a single scenario
+	// Consolidate models with the same comments and reason into a single scenario,
+	// but only if they're not currently tested.
 	consolidatedScenarios := make([]scoreboard.Scenario, 0, len(existingScore.Scenarios))
-	scenariosByKey := make(map[string]*scoreboard.Scenario) // key is "comments|reason|cheap|good|sota"
+	scenariosByKey := make(map[string]*scoreboard.Scenario) // key is "comments|reason"
 
 	for _, sc := range existingScore.Scenarios {
-		// Create a key based on comments, reason, and category flags
-		key := fmt.Sprintf("%s|%v|%v|%v|%v", sc.Comments, sc.Reason, sc.Cheap, sc.Good, sc.SOTA)
+		// Only merge scenarios that are not yet tested
+		isUntested := sc.GenSync == nil && sc.GenStream == nil && len(sc.In) == 0 && len(sc.Out) == 0
+		if !isUntested {
+			// Already tested - don't merge, add as-is
+			consolidatedScenarios = append(consolidatedScenarios, sc)
+			continue
+		}
+
+		// Create a key based on comments and reason for untested scenarios
+		key := fmt.Sprintf("%s|%v", sc.Comments, sc.Reason)
 
 		if existing, found := scenariosByKey[key]; found {
 			// Merge models, avoiding duplicates
@@ -653,7 +662,7 @@ func defaultUpdateScoreboard(t testing.TB, providerDir string, scenarios []score
 			}
 			existing.Models = mergedModels
 		} else {
-			// New scenario - add to consolidatedScenarios and track it
+			// New untested scenario - add to consolidatedScenarios and track it
 			consolidatedScenarios = append(consolidatedScenarios, sc)
 			scenariosByKey[key] = &consolidatedScenarios[len(consolidatedScenarios)-1]
 		}

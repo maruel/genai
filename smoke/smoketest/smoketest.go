@@ -31,6 +31,7 @@ import (
 	"os"
 	"path/filepath"
 	"slices"
+	"strings"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -315,6 +316,7 @@ func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Recor
 			if _, ok := discoveredModels[sbModel]; !ok {
 				// This model is in scoreboard but not in API
 				// Find which scenario it's in to determine the reason
+				isToEnableLater := false
 				for _, sc := range sb.Scenarios {
 					for _, m := range sc.Models {
 						if m == sbModel {
@@ -322,6 +324,7 @@ func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Recor
 							// (indicated by having no In/Out modalities defined)
 							if (sc.In == nil || len(sc.In) == 0) && (sc.Out == nil || len(sc.Out) == 0) {
 								// This is a "To enable later" model, don't mark as stale
+								isToEnableLater = true
 								break
 							}
 							// Mark this specific model as stale
@@ -332,8 +335,11 @@ func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Recor
 							break
 						}
 					}
+					if isToEnableLater {
+						break
+					}
 				}
-				if !*updateScoreboard {
+				if !*updateScoreboard && !isToEnableLater {
 					t.Errorf("stale model in scoreboard: %v", sbModel)
 				}
 			}
@@ -437,12 +443,17 @@ func deleteStaleRecordings(t testing.TB, staleScenarios []scoreboard.Scenario) e
 // deleteOrphanedRecordings removes HTTP recording directories that don't correspond to any tested model.
 func deleteOrphanedRecordings(t testing.TB, seen map[Model]struct{}) error {
 	scoreBoardDir := filepath.Join("testdata", "TestClient", "Scoreboard")
-	entries, err := os.ReadDir(scoreBoardDir)
+	return deleteOrphanedRecordingsRec(t, scoreBoardDir, "", seen)
+}
+
+// deleteOrphanedRecordingsRec recursively checks and deletes orphaned recordings.
+func deleteOrphanedRecordingsRec(t testing.TB, dir, prefix string, seen map[Model]struct{}) error {
+	entries, err := os.ReadDir(dir)
 	if err != nil {
 		if os.IsNotExist(err) {
 			return nil // No recordings directory yet, nothing to clean
 		}
-		return fmt.Errorf("failed to read scoreboard directory: %w", err)
+		return fmt.Errorf("failed to read directory %s: %w", dir, err)
 	}
 
 	for _, entry := range entries {
@@ -450,22 +461,37 @@ func deleteOrphanedRecordings(t testing.TB, seen map[Model]struct{}) error {
 			continue
 		}
 		dirName := entry.Name()
+		fullPath := dirName
+		if prefix != "" {
+			fullPath = prefix + "/" + dirName
+		}
 
 		// Check if this directory corresponds to a tested model
 		found := false
 		for model := range seen {
 			expected := model.String()
-			if dirName == expected {
+			// Exact match
+			if fullPath == expected {
+				found = true
+				break
+			}
+			// Check if this directory is a parent of a tested model
+			if strings.HasPrefix(expected, fullPath+"/") {
 				found = true
 				break
 			}
 		}
 
+		path := filepath.Join("testdata", "TestClient", "Scoreboard", fullPath)
 		if !found {
-			path := filepath.Join(scoreBoardDir, dirName)
-			t.Logf("Deleting orphaned model recordings for %s", dirName)
+			t.Logf("Deleting orphaned model recordings for %s", fullPath)
 			if err := os.RemoveAll(path); err != nil {
-				return fmt.Errorf("failed to delete orphaned recordings for %s: %w", dirName, err)
+				return fmt.Errorf("failed to delete orphaned recordings for %s: %w", fullPath, err)
+			}
+		} else {
+			// Recursively check subdirectories for partially matched paths
+			if err := deleteOrphanedRecordingsRec(t, path, fullPath, seen); err != nil {
+				return err
 			}
 		}
 	}

@@ -143,13 +143,16 @@ When implementing a new provider:
 
 The smoke test framework supports automatic updating of `scoreboard.json` files when test results change. This is particularly useful when provider capabilities evolve.
 
-#### Running Smoke Tests with Scoreboard Updates
+#### CRITICAL: Never Manually Edit scoreboard.json
 
-To automatically update the scoreboard for a provider with the latest test results:
+**DO NOT manually edit `scoreboard.json` or use `jq` to update it.** Always use `go test -update-scoreboard`
+instead:
 
 ```bash
 go test ./providers/<provider> -update-scoreboard
 ```
+
+The test framework automatically discovers models, records interactions, and updates the scoreboard correctly.
 
 ## Common Patterns
 

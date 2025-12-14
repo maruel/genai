@@ -620,6 +620,47 @@ func defaultUpdateScoreboard(t testing.TB, providerDir string, scenarios []score
 		existingScore.Scenarios = filtered
 	}
 
+	// Consolidate models with the same comments and reason into a single scenario
+	consolidatedScenarios := make([]scoreboard.Scenario, 0, len(existingScore.Scenarios))
+	scenariosByKey := make(map[string]*scoreboard.Scenario) // key is "comments|reason|cheap|good|sota"
+
+	for _, sc := range existingScore.Scenarios {
+		// Create a key based on comments, reason, and category flags
+		key := fmt.Sprintf("%s|%v|%v|%v|%v", sc.Comments, sc.Reason, sc.Cheap, sc.Good, sc.SOTA)
+
+		if existing, found := scenariosByKey[key]; found {
+			// Merge models, avoiding duplicates
+			modelSet := make(map[string]struct{})
+			for _, m := range existing.Models {
+				modelSet[m] = struct{}{}
+			}
+			for _, m := range sc.Models {
+				modelSet[m] = struct{}{}
+			}
+			// Rebuild models list preserving order
+			mergedModels := make([]string, 0, len(modelSet))
+			for _, m := range existing.Models {
+				if _, ok := modelSet[m]; ok {
+					mergedModels = append(mergedModels, m)
+					delete(modelSet, m)
+				}
+			}
+			for _, m := range sc.Models {
+				if _, ok := modelSet[m]; ok {
+					mergedModels = append(mergedModels, m)
+					delete(modelSet, m)
+				}
+			}
+			existing.Models = mergedModels
+		} else {
+			// New scenario - add to consolidatedScenarios and track it
+			consolidatedScenarios = append(consolidatedScenarios, sc)
+			scenariosByKey[key] = &consolidatedScenarios[len(consolidatedScenarios)-1]
+		}
+	}
+
+	existingScore.Scenarios = consolidatedScenarios
+
 	// Sort scenarios so SOTA, Good, Cheap appear first in the expected order
 	// Build a priority map for sorting
 	priority := make(map[string]map[bool]int)

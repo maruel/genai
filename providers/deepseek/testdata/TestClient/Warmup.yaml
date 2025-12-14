@@ -17,28 +17,31 @@ interactions:
     proto: HTTP/2.0
     proto_major: 2
     proto_minor: 0
-    content_length: -1
-    uncompressed: true
+    content_length: 154
     body: "{\"object\":\"list\",\"data\":[{\"id\":\"deepseek-chat\",\"object\":\"model\",\"owned_by\":\"deepseek\"},{\"id\":\"deepseek-reasoner\",\"object\":\"model\",\"owned_by\":\"deepseek\"}]}"
     headers:
       Access-Control-Allow-Credentials:
       - "true"
-      Cf-Cache-Status:
-      - DYNAMIC
-      Cf-Ray:
-      - 97769f79deed5437-YYZ
+      Content-Length:
+      - "154"
       Content-Type:
       - application/json
       Server:
-      - cloudflare
+      - elb
       Strict-Transport-Security:
       - max-age=31536000; includeSubDomains; preload
       Vary:
-      - origin, access-control-request-method, access-control-request-headers
+      - origin
+      Via:
+      - 1.1 05b4905f6074a994b5e52b7e0ee5c01a.cloudfront.net (CloudFront)
+      X-Amz-Cf-Id:
+      - Z5hfHRg7Z-sGimRFo45OG5t6sPY_oFt-8nFjdAYr8fVNgoiv9e_KkQ==
+      X-Amz-Cf-Pop:
+      - YUL62-P2
+      X-Cache:
+      - Miss from cloudfront
       X-Content-Type-Options:
       - nosniff
-      X-Ds-Trace-Id:
-      - 15444f11f5f98d684f00c0c19b8bd51c
     status: 200 OK
     code: 200
-    duration: 399ms
+    duration: 353ms

@@ -79,6 +79,11 @@ func TestClient(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
+			// This will lead to spurious HTTP 500 but it is 25% of the cost.
+			tier := openaichat.ServiceTierFlex
+			if strings.Contains(model.Model, "-chat-latest") {
+				tier = openaichat.ServiceTierDefault
+			}
 			if model.Reason {
 				return &injectReasoning{
 					Provider: &internaltest.InjectOptions{
@@ -86,8 +91,7 @@ func TestClient(t *testing.T) {
 						Opts: []genai.Options{
 							&openaichat.OptionsText{
 								ReasoningEffort: openaichat.ReasoningEffortLow,
-								// This will lead to spurious HTTP 500 but it is 25% of the cost.
-								ServiceTier: openaichat.ServiceTierFlex,
+								ServiceTier:     tier,
 							},
 						},
 					},
@@ -98,12 +102,7 @@ func TestClient(t *testing.T) {
 				if id := c.ModelID(); id == "o3" || id == "o4-mini" || strings.HasPrefix(id, "gpt-5") {
 					return &internaltest.InjectOptions{
 						Provider: c,
-						Opts: []genai.Options{
-							&openaichat.OptionsText{
-								// This will lead to spurious HTTP 500 but it is 25% of the cost.
-								ServiceTier: openaichat.ServiceTierFlex,
-							},
-						},
+						Opts:     []genai.Options{&openaichat.OptionsText{ServiceTier: tier}},
 					}
 				}
 			}
@@ -158,9 +157,9 @@ func TestClient(t *testing.T) {
 		}{
 			{genai.ModalityText, genai.ModelCheap, "gpt-5-nano"},
 			{genai.ModalityText, genai.ModelGood, "gpt-5-mini"},
-			{genai.ModalityText, genai.ModelSOTA, "gpt-5"},
+			{genai.ModalityText, genai.ModelSOTA, "gpt-5.2-chat-latest"},
 			{genai.ModalityImage, genai.ModelCheap, "dall-e-3"},
-			{genai.ModalityImage, genai.ModelGood, "gpt-image-1"},
+			{genai.ModalityImage, genai.ModelGood, "gpt-image-1-mini"},
 			{genai.ModalityImage, genai.ModelSOTA, "gpt-image-1"},
 		}
 		for _, line := range data {

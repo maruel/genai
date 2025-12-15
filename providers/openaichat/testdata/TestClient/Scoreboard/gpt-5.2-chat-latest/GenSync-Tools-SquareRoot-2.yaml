@@ -1,0 +1,63 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 889
+    host: api.openai.com
+    body: "{\"model\":\"gpt-5.2-chat-latest\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"}]},{\"role\":\"assistant\",\"tool_calls\":[{\"id\":\"call_4Y5mDJCX9dEQVOj6fCv8P7Gu\",\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\":132413}\"}}]},{\"role\":\"tool\",\"content\":[{\"type\":\"text\",\"text\":\"363.89\"}],\"tool_call_id\":\"call_4Y5mDJCX9dEQVOj6fCv8P7Gu\"}],\"service_tier\":\"default\",\"tools\":[{\"type\":\"function\",\"function\":{\"description\":\"Calculates and return the square root of a number\",\"name\":\"square_root\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"tool_choice\":\"none\",\"parallel_tool_calls\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.openai.com/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"chatcmpl-Cn9GmQMsMUSTPkKDjQHHAw7WoLEoQ\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765829740,\n  \"model\": \"gpt-5.2-chat-latest\",\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"363.89\",\n        \"refusal\": null,\n        \"annotations\": []\n      },\n      \"finish_reason\": \"stop\"\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 187,\n    \"completion_tokens\": 12,\n    \"total_tokens\": 199,\n    \"prompt_tokens_details\": {\n      \"cached_tokens\": 0,\n      \"audio_tokens\": 0\n    },\n    \"completion_tokens_details\": {\n      \"reasoning_tokens\": 0,\n      \"audio_tokens\": 0,\n      \"accepted_prediction_tokens\": 0,\n      \"rejected_prediction_tokens\": 0\n    }\n  },\n  \"service_tier\": \"default\",\n  \"system_fingerprint\": null\n}\n"
+    headers:
+      Access-Control-Expose-Headers:
+      - X-Request-ID
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ae89d44dd30a2af-YUL
+      Content-Type:
+      - application/json
+      Openai-Processing-Ms:
+      - "1587"
+      Openai-Version:
+      - "2020-10-01"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "1606"
+      X-Openai-Proxy-Wasm:
+      - v0.1
+      X-Ratelimit-Limit-Requests:
+      - "500"
+      X-Ratelimit-Limit-Tokens:
+      - "500000"
+      X-Ratelimit-Remaining-Requests:
+      - "499"
+      X-Ratelimit-Remaining-Tokens:
+      - "499963"
+      X-Ratelimit-Reset-Requests:
+      - 120ms
+      X-Ratelimit-Reset-Tokens:
+      - 4ms
+    status: 200 OK
+    code: 200
+    duration: 1.664s

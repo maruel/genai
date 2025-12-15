@@ -408,10 +408,15 @@ func doUpdateScoreboard(t testing.TB, providerDir string, scenarios []scoreboard
 	// Regenerate scenarios in a single pass
 	result := make([]scoreboard.Scenario, 0, len(scenarios)+len(oldScore.Scenarios))
 	seenPairs := make(map[scoreboard.Model]struct{})
+	usedOldScenarios := make(map[*scoreboard.Scenario]struct{})
 
 	// First pass: add tested scenarios, preserving metadata from old scenarios
 	for _, newSc := range scenarios {
 		if len(newSc.Models) == 0 {
+			continue
+		}
+		// Skip untested scenarios - they'll be handled in the third pass
+		if newSc.Untested() {
 			continue
 		}
 		model := newSc.Models[0]
@@ -430,7 +435,17 @@ func doUpdateScoreboard(t testing.TB, providerDir string, scenarios []scoreboard
 			sc.Comments = oldSc.Comments
 			sc.ReasoningTokenStart = oldSc.ReasoningTokenStart
 			sc.ReasoningTokenEnd = oldSc.ReasoningTokenEnd
-			sc.Models = oldSc.Models
+			// Only reuse the Models list if we haven't already processed this old scenario
+			if _, used := usedOldScenarios[oldSc]; !used {
+				sc.Models = oldSc.Models
+				usedOldScenarios[oldSc] = struct{}{}
+				// Mark all models in this old scenario as seen to avoid processing them again
+				for _, m := range oldSc.Models {
+					seenPairs[scoreboard.Model{m, oldSc.Reason}] = struct{}{}
+				}
+			} else {
+				sc.Models = []string{model}
+			}
 		} else {
 			sc.Models = []string{model}
 		}

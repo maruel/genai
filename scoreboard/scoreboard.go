@@ -303,21 +303,6 @@ func (s *Scenario) Untested() bool {
 	return s.GenSync == nil && s.GenStream == nil && len(s.In) == 0 && len(s.Out) == 0
 }
 
-// priority returns the sorting priority based on preference flags.
-// SOTA is priority 0, Good is 1, Cheap is 2, others are 999.
-func (s *Scenario) priority() int {
-	if s.SOTA {
-		return 0
-	}
-	if s.Good {
-		return 1
-	}
-	if s.Cheap {
-		return 2
-	}
-	return 999
-}
-
 func (s *Scenario) Validate() error {
 	if len(s.Models) == 0 {
 		return errors.New("scenario must have at least one model")
@@ -535,10 +520,24 @@ func CompareScenarios(a, b Scenario) int {
 	}
 
 	// Both untested or both tested: sort by priority
-	aPrio := a.priority()
-	bPrio := b.priority()
-	if aPrio != bPrio {
-		return aPrio - bPrio
+	// SOTA (0) < Good (1) < Cheap (2) < others (999)
+	if a.SOTA != b.SOTA {
+		if a.SOTA {
+			return -1
+		}
+		return 1
+	}
+	if a.Good != b.Good {
+		if a.Good {
+			return -1
+		}
+		return 1
+	}
+	if a.Cheap != b.Cheap {
+		if a.Cheap {
+			return -1
+		}
+		return 1
 	}
 
 	// Same priority: reasoning comes before non-reasoning

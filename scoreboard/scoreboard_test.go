@@ -670,6 +670,41 @@ func TestScore(t *testing.T) {
 			t.Fatalf("valid score with Reason should pass: %v", err)
 		}
 	})
+
+	t.Run("Validate same model with and without reasoning", func(t *testing.T) {
+		s := &Score{
+			Country: "US",
+			Scenarios: []Scenario{
+				{
+					Models:  []string{"gpt-4"},
+					SOTA:    true,
+					Reason:  true,
+					In:      map[Modality]ModalCapability{ModalityText: {}},
+					Out:     map[Modality]ModalCapability{ModalityText: {}},
+					GenSync: &Functionality{},
+				},
+				{
+					Models:  []string{"gpt-4"},
+					Good:    true,
+					Reason:  false,
+					In:      map[Modality]ModalCapability{ModalityText: {}},
+					Out:     map[Modality]ModalCapability{ModalityText: {}},
+					GenSync: &Functionality{},
+				},
+				{
+					Models:  []string{"gpt-2"},
+					Cheap:   true,
+					Reason:  false,
+					In:      map[Modality]ModalCapability{ModalityText: {}},
+					Out:     map[Modality]ModalCapability{ModalityText: {}},
+					GenSync: &Functionality{},
+				},
+			},
+		}
+		if err := s.Validate(); err != nil {
+			t.Fatalf("same model with different reasoning flags should pass: %v", err)
+		}
+	})
 }
 
 func TestReason(t *testing.T) {

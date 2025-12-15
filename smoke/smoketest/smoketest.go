@@ -54,11 +54,11 @@ type Model struct {
 }
 
 func (m *Model) String() string {
+	normalized := strings.ReplaceAll(m.Model, ":", "-")
 	if m.Reason {
-		// I may change this later.
-		return m.Model + "_thinking"
+		normalized += "_thinking"
 	}
-	return m.Model
+	return normalized
 }
 
 // ProviderFactory is the client to assert the scoreboard. It will have the HTTP requests recorded.
@@ -81,14 +81,16 @@ func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Recor
 		}
 		seen[m] = struct{}{}
 	}
+	t.Run("Stale Recordings", func(t *testing.T) {
+		// Delete orphaned recordings that don't correspond to any model in the list of models to test.
+		deleteOrphanedRecordings(t, filepath.Join("testdata", "TestClient", "Scoreboard"), seen)
+	})
 
-	// Find the reference.
 	cc := pf(t, Model{Model: genai.ModelNone}, nil)
 	sb := cc.Scoreboard()
 	if err := sb.Validate(); err != nil {
 		t.Fatal(err)
 	}
-
 	modelsToTest := map[Model]struct{}{}
 	allScoreboardModels := map[Model]struct{}{}
 	for i, sc := range sb.Scenarios {
@@ -102,7 +104,6 @@ func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Recor
 		// Only mark first model as expected to be tested (others skipped for cost savings)
 		modelsToTest[Model{Model: sc.Models[0], Reason: sc.Reason}] = struct{}{}
 	}
-
 	usage := genai.Usage{}
 	updatedScenarios := []scoreboard.Scenario{}
 	for _, m := range models {
@@ -287,17 +288,6 @@ func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Recor
 		if len(updatedScenarios) > 0 || len(staleModels) > 0 {
 			doUpdateScoreboard(t, ".", updatedScenarios, preferredModels, stale)
 		}
-		if len(staleModels) > 0 {
-			if err := deleteStaleRecordings(t, stale); err != nil {
-				t.Errorf("failed to delete stale recordings: %v", err)
-			}
-		}
-		if false {
-			// Delete orphaned recordings that don't correspond to any model in the scoreboard.
-			// Use allScoreboardModels instead of seen to avoid deleting secondary models
-			// that are in the scoreboard but weren't tested in this run (skipped for cost savings).
-			deleteOrphanedRecordingsRecForModels(t, filepath.Join("testdata", "TestClient", "Scoreboard"), "", allScoreboardModels)
-		}
 	}
 }
 
@@ -343,75 +333,35 @@ func runOneModel(t testing.TB, gc getClientOneModel, want scoreboard.Scenario) (
 
 var optScenario = cmpopts.IgnoreFields(scoreboard.Scenario{}, "Comments", "SOTA", "Good", "Cheap", "ReasoningTokenStart", "ReasoningTokenEnd")
 
-// deleteStaleRecordings removes HTTP recordings for models that are no longer being tested.
-func deleteStaleRecordings(t testing.TB, staleModels []Model) error {
-	scoreBoardDir := filepath.Join("testdata", "TestClient", "Scoreboard")
-	for _, sc := range staleModels {
-		modelDir := strings.ReplaceAll(sc.Model, ":", "-")
-		if sc.Reason {
-			modelDir += "_thinking"
-		}
-		path := filepath.Join(scoreBoardDir, modelDir)
-		if _, err := os.Stat(path); err == nil {
-			t.Logf("Deleting stale model recordings for %s", modelDir)
-			if err := os.RemoveAll(path); err != nil {
-				return fmt.Errorf("failed to delete stale recordings for %s: %w", modelDir, err)
-			}
-		}
-	}
-	return nil
-}
-
-// deleteOrphanedRecordingsRecForModels recursively checks and deletes recordings that don't correspond to any
+// deleteOrphanedRecordings recursively checks and deletes recordings that don't correspond to any
 // scoreboard model.
-func deleteOrphanedRecordingsRecForModels(t testing.TB, dir, prefix string, scoreboardModels map[Model]struct{}) {
-	entries, err := os.ReadDir(dir)
-	if err != nil {
-		if os.IsNotExist(err) {
-			return // No recordings directory yet, nothing to clean
+func deleteOrphanedRecordings(t testing.TB, dir string, scoreboardModels map[Model]struct{}) {
+	// 1. Gather all the directories in the recordings directory.
+	var modelDirs []string
+	if err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
+		if err == nil && info.IsDir() && path != dir {
+			relPath, _ := filepath.Rel(dir, path)
+			modelDirs = append(modelDirs, relPath)
 		}
-		t.Fatalf("failed to read directory %s: %v", dir, err)
+		return err
+	}); err != nil {
+		t.Fatalf("failed to walk directory %s: %v", dir, err)
 	}
 
-	// TODO(maruel): Rewrite to list all the directories, and use that as the list of models.
-	for _, entry := range entries {
-		if !entry.IsDir() {
-			continue
-		}
-		dirName := entry.Name()
-		fullPath := dirName
-		if prefix != "" {
-			fullPath = prefix + "/" + dirName
-		}
+	// 2. Convert all the models into directory names, with the _thinking suffix.
+	expectedDirs := make(map[string]struct{})
+	for m := range scoreboardModels {
+		expectedDirs[m.String()] = struct{}{}
+	}
 
-		// Check if this directory corresponds to any model in the scoreboard
-		// Normalize model names by converting colons to dashes (filesystem convention)
-		found := false
-		for m := range scoreboardModels {
-			normalizedModel := strings.ReplaceAll(m.Model, ":", "-")
-			if m.Reason {
-				normalizedModel += "_thinking"
-			}
-			// Exact match
-			if fullPath == normalizedModel {
-				found = true
-				break
-			}
-			// Check if this directory is a parent of a scoreboard model
-			if strings.HasPrefix(normalizedModel, fullPath+"/") {
-				found = true
-				break
-			}
-		}
-		path := filepath.Join("testdata", "TestClient", "Scoreboard", fullPath)
+	// 3. Find the ones that are not expected and delete them.
+	for _, dirName := range modelDirs {
+		_, found := expectedDirs[dirName]
 		if !found {
-			t.Logf("Deleting orphaned model recordings for %s", fullPath)
-			if err := os.RemoveAll(path); err != nil {
-				t.Fatalf("failed to delete orphaned recordings for %s: %v", fullPath, err)
+			t.Logf("Deleting orphaned model recordings for %s", dirName)
+			if err := os.RemoveAll(filepath.Join(dir, dirName)); err != nil {
+				t.Fatalf("failed to delete orphaned recordings for %s: %v", dirName, err)
 			}
-		} else {
-			// Recursively check subdirectories for partially matched paths
-			deleteOrphanedRecordingsRecForModels(t, path, fullPath, scoreboardModels)
 		}
 	}
 }
@@ -618,15 +568,3 @@ func doUpdateScoreboard(t testing.TB, providerDir string, scenarios []scoreboard
 		t.Logf("No changes to %s", scoreboardPath)
 	}
 }
-
-/*
-var optTriState = cmp.Comparer(func(x, y scoreboard.TriState) bool {
-	// TODO: Make this more solid. This requires a better assessment of what "Flaky" is.
-	if x == scoreboard.Flaky || y == scoreboard.Flaky {
-		return true
-	}
-	return x == y
-})
-*/
-
-// var optFunctionalityText = cmpopts.IgnoreFields(scoreboard.FunctionalityText{}, "Tools", "IndecisiveTool", "BiasedTool")

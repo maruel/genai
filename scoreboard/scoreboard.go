@@ -444,31 +444,50 @@ func (s *Score) Validate() error {
 		return nil
 	}
 
-	// Find first occurrence of SOTA, Good, Cheap models and verify order
+	// Find first and count occurrences of SOTA, Good, Cheap models
+	countSOTA, countGood, countCheap := 0, 0, 0
 	firstSOTA, firstGood, firstCheap := -1, -1, -1
 	for i, sc := range s.Scenarios {
 		if len(sc.Models) == 0 {
 			continue
 		}
-		if sc.SOTA && firstSOTA < 0 {
-			firstSOTA = i
+		if sc.SOTA {
+			countSOTA++
+			if firstSOTA < 0 {
+				firstSOTA = i
+			}
 		}
-		if sc.Good && firstGood < 0 {
-			firstGood = i
+		if sc.Good {
+			countGood++
+			if firstGood < 0 {
+				firstGood = i
+			}
 		}
-		if sc.Cheap && firstCheap < 0 {
-			firstCheap = i
+		if sc.Cheap {
+			countCheap++
+			if firstCheap < 0 {
+				firstCheap = i
+			}
 		}
 	}
 
 	if firstSOTA < 0 {
 		return errors.New("no SOTA model marked")
 	}
+	if countSOTA > 1 {
+		return fmt.Errorf("multiple SOTA models marked (count: %d)", countSOTA)
+	}
 	if firstGood < 0 {
 		return errors.New("no Good model marked")
 	}
+	if countGood > 1 {
+		return fmt.Errorf("multiple Good models marked (count: %d)", countGood)
+	}
 	if firstCheap < 0 {
 		return errors.New("no Cheap model marked")
+	}
+	if countCheap > 1 {
+		return fmt.Errorf("multiple Cheap models marked (count: %d)", countCheap)
 	}
 
 	// SOTA must be first
@@ -476,7 +495,7 @@ func (s *Score) Validate() error {
 		return fmt.Errorf("SOTA model %q should be first (at position %d)", s.Scenarios[firstSOTA].Models[0], firstSOTA)
 	}
 
-	// Good should come before Cheap (accounting for possible reasoning duplicates of SOTA)
+	// Good should come before Cheap
 	if firstGood > firstCheap {
 		return fmt.Errorf("Good model comes after Cheap model (good at %d, cheap at %d)", firstGood, firstCheap)
 	}

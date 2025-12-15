@@ -334,6 +334,66 @@
       }
     },
     {
+      "comments": "When reasoning is enabled, ToolCallRequired is not supported",
+      "models": [
+        "claude-sonnet-4-20250514"
+      ],
+      "reason": true,
+      "in": {
+        "document": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "application/pdf"
+          ]
+        },
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "tools": "flaky",
+        "toolsBiased": "flaky",
+        "webSearch": true,
+        "citations": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "tools": "flaky",
+        "webSearch": true,
+        "citations": true,
+        "stopSequence": true
+      }
+    },
+    {
+      "comments": "Old models",
+      "models": [
+        "claude-opus-4-20250514"
+      ],
+      "reason": true
+    },
+    {
       "comments": "It cost a lot.",
       "models": [
         "claude-opus-4-1-20250805"
@@ -447,59 +507,6 @@
       }
     },
     {
-      "comments": "When reasoning is enabled, ToolCallRequired is not supported",
-      "models": [
-        "claude-sonnet-4-20250514"
-      ],
-      "reason": true,
-      "in": {
-        "document": {
-          "inline": true,
-          "url": true,
-          "supportedFormats": [
-            "application/pdf"
-          ]
-        },
-        "image": {
-          "inline": true,
-          "url": true,
-          "supportedFormats": [
-            "image/gif",
-            "image/jpeg",
-            "image/png",
-            "image/webp"
-          ]
-        },
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "tools": "flaky",
-        "toolsBiased": "flaky",
-        "webSearch": true,
-        "citations": true,
-        "stopSequence": true
-      },
-      "GenStream": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "tools": "flaky",
-        "webSearch": true,
-        "citations": true,
-        "stopSequence": true
-      }
-    },
-    {
       "models": [
         "claude-3-5-haiku-20241022"
       ],
@@ -563,13 +570,6 @@
         "claude-3-opus-20240229",
         "claude-opus-4-20250514"
       ]
-    },
-    {
-      "comments": "Old models",
-      "models": [
-        "claude-opus-4-20250514"
-      ],
-      "reason": true
     }
   ]
 }

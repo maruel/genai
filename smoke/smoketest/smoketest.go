@@ -543,8 +543,31 @@ func doUpdateScoreboard(t testing.TB, providerDir string, scenarios []scoreboard
 		if aPrio != bPrio {
 			return aPrio - bPrio
 		}
+		// Secondary sort: scenarios with Reason come before those without Reason
+		if a.Reason != b.Reason {
+			if a.Reason {
+				return -1
+			}
+			return 1
+		}
 		return 0
 	})
+
+	// Clear flags and only set them on the first occurrence of each preferred model
+	flaggedModels := make(map[string]struct{})
+	for i := range result {
+		if len(result[i].Models) == 0 {
+			continue
+		}
+		model := result[i].Models[0]
+		if _, seen := flaggedModels[model]; seen {
+			result[i].SOTA = false
+			result[i].Good = false
+			result[i].Cheap = false
+		} else {
+			flaggedModels[model] = struct{}{}
+		}
+	}
 
 	// Validate and write
 	newScore := oldScore

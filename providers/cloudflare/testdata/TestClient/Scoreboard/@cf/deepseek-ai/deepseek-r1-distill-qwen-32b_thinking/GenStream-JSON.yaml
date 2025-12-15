@@ -1,0 +1,42 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 225
+    host: api.cloudflare.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\\\"is_fruit\\\": bool}.\"}],\"response_format\":{\"type\":\"json_object\"},\"stream\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/deepseek-ai/deepseek-r1-distill-qwen-32b
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"response\":\"<think>\"}\n\ndata: {\"response\":\"\\n\"}\n\ndata: {\"response\":\"Okay\"}\n\ndata: {\"response\":\",\"}\n\ndata: {\"response\":\" so\"}\n\ndata: {\"response\":\" the\"}\n\ndata: {\"response\":\" user\"}\n\ndata: {\"response\":\" is\"}\n\ndata: {\"response\":\" asking\"}\n\ndata: {\"response\":\" if\"}\n\ndata: {\"response\":\" a\"}\n\ndata: {\"response\":\" banana\"}\n\ndata: {\"response\":\" is\"}\n\ndata: {\"response\":\" a\"}\n\ndata: {\"response\":\" fruit\"}\n\ndata: {\"response\":\".\"}\n\ndata: {\"response\":\" I\"}\n\ndata: {\"response\":\" need\"}\n\ndata: {\"response\":\" to\"}\n\ndata: {\"response\":\" figure\"}\n\ndata: {\"response\":\" out\"}\n\ndata: {\"response\":\" the\"}\n\ndata: {\"response\":\" answer\"}\n\ndata: {\"response\":\" without\"}\n\ndata: {\"response\":\" giving\"}\n\ndata: {\"response\":\" any\"}\n\ndata: {\"response\":\" explanation\"}\n\ndata: {\"response\":\",\"}\n\ndata: {\"response\":\" just\"}\n\ndata: {\"response\":\" a\"}\n\ndata: {\"response\":\" JSON\"}\n\ndata: {\"response\":\" response\"}\n\ndata: {\"response\":\".\"}\n\ndata: {\"response\":\" Let\"}\n\ndata: {\"response\":\" me\"}\n\ndata: {\"response\":\" think\"}\n\ndata: {\"response\":\" about\"}\n\ndata: {\"response\":\" this\"}\n\ndata: {\"response\":\".\\n\\n\"}\n\ndata: {\"response\":\"First\"}\n\ndata: {\"response\":\",\"}\n\ndata: {\"response\":\" I\"}\n\ndata: {\"response\":\" know\"}\n\ndata: {\"response\":\" that\"}\n\ndata: {\"response\":\" bananas\"}\n\ndata: {\"response\":\" are\"}\n\ndata: {\"response\":\" commonly\"}\n\ndata: {\"response\":\" eaten\"}\n\ndata: {\"response\":\" as\"}\n\ndata: {\"response\":\" fruits\"}\n\ndata: {\"response\":\".\"}\n\ndata: {\"response\":\" They\"}\n\ndata: {\"response\":\" come\"}\n\ndata: {\"response\":\" from\"}\n\ndata: {\"response\":\" plants\"}\n\ndata: {\"response\":\",\"}\n\ndata: {\"response\":\" specifically\"}\n\ndata: {\"response\":\" from\"}\n\ndata: {\"response\":\" the\"}\n\ndata: {\"response\":\" Mus\"}\n\ndata: {\"response\":\"a\"}\n\ndata: {\"response\":\" genus\"}\n\ndata: {\"response\":\".\"}\n\ndata: {\"response\":\" But\"}\n\ndata: {\"response\":\" wait\"}\n\ndata: {\"response\":\",\"}\n\ndata: {\"response\":\" isn\"}\n\ndata: {\"response\":\"'t\"}\n\ndata: {\"response\":\" the\"}\n\ndata: {\"response\":\" banana\"}\n\ndata: {\"response\":\" plant\"}\n\ndata: {\"response\":\" technically\"}\n\ndata: {\"response\":\" a\"}\n\ndata: {\"response\":\" herb\"}\n\ndata: {\"response\":\"aceous\"}\n\ndata: {\"response\":\" plant\"}\n\ndata: {\"response\":\",\"}\n\ndata: {\"response\":\" not\"}\n\ndata: {\"response\":\" a\"}\n\ndata: {\"response\":\" tree\"}\n\ndata: {\"response\":\"?\"}\n\ndata: {\"response\":\" So\"}\n\ndata: {\"response\":\",\"}\n\ndata: {\"response\":\" does\"}\n\ndata: {\"response\":\" that\"}\n\ndata: {\"response\":\" affect\"}\n\ndata: {\"response\":\" whether\"}\n\ndata: {\"response\":\" the\"}\n\ndata: {\"response\":\" banana\"}\n\ndata: {\"response\":\" is\"}\n\ndata: {\"response\":\" a\"}\n\ndata: {\"response\":\" fruit\"}\n\ndata: {\"response\":\"?\\n\\n\"}\n\ndata: {\"response\":\"From\"}\n\ndata: {\"response\":\" what\"}\n\ndata: {\"response\":\" I\"}\n\ndata: {\"response\":\" remember\"}\n\ndata: {\"response\":\",\"}\n\ndata: {\"response\":\" a\"}\n\ndata: {\"response\":\" fruit\"}\n\ndata: {\"response\":\" is\"}\n\ndata: {\"response\":\" the\"}\n\ndata: {\"response\":\" mature\"}\n\ndata: {\"response\":\" ov\"}\n\ndata: {\"response\":\"ary\"}\n\ndata: {\"response\":\" of\"}\n\ndata: {\"response\":\" a\"}\n\ndata: {\"response\":\" flowering\"}\n\ndata: {\"response\":\" plant\"}\n\ndata: {\"response\":\",\"}\n\ndata: {\"response\":\" usually\"}\n\ndata: {\"response\":\" containing\"}\n\ndata: {\"response\":\" seeds\"}\n\ndata: {\"response\":\".\"}\n\ndata: {\"response\":\" Ban\"}\n\ndata: {\"response\":\"anas\"}\n\ndata: {\"response\":\" do\"}\n\ndata: {\"response\":\" have\"}\n\ndata: {\"response\":\" seeds\"}\n\ndata: {\"response\":\",\"}\n\ndata: {\"response\":\" although\"}\n\ndata: {\"response\":\" they\"}\n\ndata: {\"response\":\"'re\"}\n\ndata: {\"response\":\" very\"}\n\ndata: {\"response\":\" small\"}\n\ndata: {\"response\":\" and\"}\n\ndata: {\"response\":\" not\"}\n\ndata: {\"response\":\" always\"}\n\ndata: {\"response\":\" noticeable\"}\n\ndata: {\"response\":\" in\"}\n\ndata: {\"response\":\" the\"}\n\ndata: {\"response\":\" ones\"}\n\ndata: {\"response\":\" we\"}\n\ndata: {\"response\":\" eat\"}\n\ndata: {\"response\":\".\"}\n\ndata: {\"response\":\" So\"}\n\ndata: {\"response\":\",\"}\n\ndata: {\"response\":\" that\"}\n\ndata: {\"response\":\" should\"}\n\ndata: {\"response\":\" make\"}\n\ndata: {\"response\":\" it\"}\n\ndata: {\"response\":\" a\"}\n\ndata: {\"response\":\" fruit\"}\n\ndata: {\"response\":\".\\n\\n\"}\n\ndata: {\"response\":\"I\"}\n\ndata: {\"response\":\" should\"}\n\ndata: {\"response\":\" also\"}\n\ndata: {\"response\":\" consider\"}\n\ndata: {\"response\":\" if\"}\n\ndata: {\"response\":\" there\"}\n\ndata: {\"response\":\"'s\"}\n\ndata: {\"response\":\" any\"}\n\ndata: {\"response\":\" controversy\"}\n\ndata: {\"response\":\" or\"}\n\ndata: {\"response\":\" alternative\"}\n\ndata: {\"response\":\" opinions\"}\n\ndata: {\"response\":\".\"}\n\ndata: {\"response\":\" Sometimes\"}\n\ndata: {\"response\":\" people\"}\n\ndata: {\"response\":\" confuse\"}\n\ndata: {\"response\":\" fruits\"}\n\ndata: {\"response\":\" with\"}\n\ndata: {\"response\":\" vegetables\"}\n\ndata: {\"response\":\" based\"}\n\ndata: {\"response\":\" on\"}\n\ndata: {\"response\":\" culinary\"}\n\ndata: {\"response\":\" use\"}\n\ndata: {\"response\":\",\"}\n\ndata: {\"response\":\" but\"}\n\ndata: {\"response\":\" bot\"}\n\ndata: {\"response\":\"an\"}\n\ndata: {\"response\":\"ically\"}\n\ndata: {\"response\":\",\"}\n\ndata: {\"response\":\" bananas\"}\n\ndata: {\"response\":\" are\"}\n\ndata: {\"response\":\" fruits\"}\n\ndata: {\"response\":\".\"}\n\ndata: {\"response\":\" So\"}\n\ndata: {\"response\":\",\"}\n\ndata: {\"response\":\" in\"}\n\ndata: {\"response\":\" a\"}\n\ndata: {\"response\":\" botanical\"}\n\ndata: {\"response\":\" sense\"}\n\ndata: {\"response\":\",\"}\n\ndata: {\"response\":\" the\"}\n\ndata: {\"response\":\" answer\"}\n\ndata: {\"response\":\" is\"}\n\ndata: {\"response\":\" yes\"}\n\ndata: {\"response\":\".\\n\\n\"}\n\ndata: {\"response\":\"Therefore\"}\n\ndata: {\"response\":\",\"}\n\ndata: {\"response\":\" the\"}\n\ndata: {\"response\":\" JSON\"}\n\ndata: {\"response\":\" response\"}\n\ndata: {\"response\":\" should\"}\n\ndata: {\"response\":\" be\"}\n\ndata: {\"response\":\" {\\\"\"}\n\ndata: {\"response\":\"is\"}\n\ndata: {\"response\":\"_f\"}\n\ndata: {\"response\":\"ruit\"}\n\ndata: {\"response\":\"\\\":\"}\n\ndata: {\"response\":\" true\"}\n\ndata: {\"response\":\"}.\\n\"}\n\ndata: {\"response\":\"</think>\"}\n\ndata: {\"response\":\"\\n\\n\"}\n\ndata: {\"response\":\"{\\\"\"}\n\ndata: {\"response\":\"is\"}\n\ndata: {\"response\":\"_f\"}\n\ndata: {\"response\":\"ruit\"}\n\ndata: {\"response\":\"\\\":\"}\n\ndata: {\"response\":\" true\"}\n\ndata: {\"response\":\"}\"}\n\ndata: {}\n\ndata: {}\n\ndata: {\"response\":\"\",\"usage\":{\"prompt_tokens\":36,\"completion_tokens\":213,\"total_tokens\":249}}\n\ndata: [DONE]\n\n"
+    headers:
+      Api-Version:
+      - "2025-12-15"
+      Cf-Ai-Neurons:
+      - "0"
+      Cf-Ai-Req-Id:
+      - a03421a1-d4b0-490a-a390-fe76046e5813
+      Cf-Auditlog-Id:
+      - 019b2347-b547-7fc4-b0fb-c15fe2fcd79c
+      Cf-Ray:
+      - 9ae803f52e82a2fa-YUL
+      Content-Type:
+      - text/event-stream
+      Server:
+      - cloudflare
+      Vary:
+      - Accept-Encoding
+    status: 200 OK
+    code: 200
+    duration: 160ms

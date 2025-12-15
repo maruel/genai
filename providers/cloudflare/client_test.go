@@ -7,9 +7,12 @@ package cloudflare_test
 import (
 	"net/http"
 	"os"
+	"slices"
+	"strings"
 	"testing"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/adapters"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/cloudflare"
@@ -57,13 +60,14 @@ func TestClient(t *testing.T) {
 	}
 
 	t.Run("Scoreboard", func(t *testing.T) {
-		// Cloudflare hosts a ton of useless models, so just get the ones already in the scoreboard.
-		sb := getClient(t, genai.ModelNone).Scoreboard()
+		genaiModels, err := getClient(t, genai.ModelNone).ListModels(t.Context())
+		if err != nil {
+			t.Fatal(err)
+		}
 		var models []scoreboard.Model
-		for _, sc := range sb.Scenarios {
-			for _, model := range sc.Models {
-				models = append(models, scoreboard.Model{Model: model})
-			}
+		for _, m := range genaiModels {
+			id := m.GetID()
+			models = append(models, scoreboard.Model{Model: id, Reason: strings.Contains(id, "deepseek-r1")})
 		}
 		getClientRT := func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 			opts := genai.ProviderOptions{Model: model.Model, PreloadedModels: cachedModels}
@@ -78,7 +82,19 @@ func TestClient(t *testing.T) {
 				t.Fatal(err)
 			}
 			if model.Reason {
-				t.Fatal("implement me")
+				// Check if it has predefined thinking tokens.
+				for _, sc := range c.Scoreboard().Scenarios {
+					if sc.Reason && slices.Contains(sc.Models, model.Model) {
+						if sc.ReasoningTokenEnd != "" {
+							return &adapters.ProviderReasoning{
+								Provider:            c,
+								ReasoningTokenStart: sc.ReasoningTokenStart,
+								ReasoningTokenEnd:   sc.ReasoningTokenEnd,
+							}
+						}
+						break
+					}
+				}
 			}
 			return c
 		}

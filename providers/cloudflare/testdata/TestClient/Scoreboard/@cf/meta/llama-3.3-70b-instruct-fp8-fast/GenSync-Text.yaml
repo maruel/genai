@@ -1,0 +1,43 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 73
+    host: api.cloudflare.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/meta/llama-3.3-70b-instruct-fp8-fast
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"result\":{\"response\":\"Hello.\",\"tool_calls\":[],\"usage\":{\"prompt_tokens\":43,\"completion_tokens\":3,\"total_tokens\":46}},\"success\":true,\"errors\":[],\"messages\":[]}"
+    headers:
+      Api-Version:
+      - "2025-12-15"
+      Cf-Ai-Neurons:
+      - "1.76"
+      Cf-Ai-Req-Id:
+      - 46edaffd-6116-4eb6-9baa-3d4bc866d7ad
+      Cf-Auditlog-Id:
+      - 019b232f-d05a-7775-91f7-44eabe96958b
+      Cf-Ray:
+      - 9ae7ddb98f06a273-YUL
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Vary:
+      - Accept-Encoding
+    status: 200 OK
+    code: 200
+    duration: 405ms

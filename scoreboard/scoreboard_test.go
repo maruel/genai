@@ -216,11 +216,11 @@ func TestTriState(t *testing.T) {
 func TestFunctionality(t *testing.T) {
 	t.Run("Validate valid functionality", func(t *testing.T) {
 		f := &Functionality{
-			ReportTokenUsage:  True,
+			ReportTokenUsage:   True,
 			ReportFinishReason: True,
-			Tools:             True,
-			ToolsBiased:       False,
-			ToolsIndecisive:   False,
+			Tools:              True,
+			ToolsBiased:        False,
+			ToolsIndecisive:    False,
 		}
 		if err := f.Validate(); err != nil {
 			t.Fatalf("valid functionality failed validation: %v", err)
@@ -365,7 +365,7 @@ func TestScenario(t *testing.T) {
 
 	t.Run("Tested scenario with GenSync", func(t *testing.T) {
 		s := &Scenario{
-			Models: []string{"gpt-4"},
+			Models:  []string{"gpt-4"},
 			GenSync: &Functionality{},
 		}
 		if s.Untested() {
@@ -375,7 +375,7 @@ func TestScenario(t *testing.T) {
 
 	t.Run("Tested scenario with GenStream", func(t *testing.T) {
 		s := &Scenario{
-			Models: []string{"gpt-4"},
+			Models:    []string{"gpt-4"},
 			GenStream: &Functionality{},
 		}
 		if s.Untested() {
@@ -404,7 +404,7 @@ func TestScenario(t *testing.T) {
 	t.Run("Validate invalid modality in In", func(t *testing.T) {
 		s := &Scenario{
 			Models: []string{"gpt-4"},
-			In: map[Modality]ModalCapability{Modality("invalid"): {}},
+			In:     map[Modality]ModalCapability{Modality("invalid"): {}},
 		}
 		if err := s.Validate(); err == nil {
 			t.Fatal("should fail with invalid modality in In")
@@ -414,7 +414,7 @@ func TestScenario(t *testing.T) {
 	t.Run("Validate invalid modality in Out", func(t *testing.T) {
 		s := &Scenario{
 			Models: []string{"gpt-4"},
-			Out: map[Modality]ModalCapability{Modality("invalid"): {}},
+			Out:    map[Modality]ModalCapability{Modality("invalid"): {}},
 		}
 		if err := s.Validate(); err == nil {
 			t.Fatal("should fail with invalid modality in Out")
@@ -424,7 +424,7 @@ func TestScenario(t *testing.T) {
 	t.Run("Validate In without Out", func(t *testing.T) {
 		s := &Scenario{
 			Models: []string{"gpt-4"},
-			In: map[Modality]ModalCapability{ModalityText: {}},
+			In:     map[Modality]ModalCapability{ModalityText: {}},
 		}
 		if err := s.Validate(); err == nil {
 			t.Fatal("should fail with In but no Out")
@@ -434,7 +434,7 @@ func TestScenario(t *testing.T) {
 	t.Run("Validate Out without In", func(t *testing.T) {
 		s := &Scenario{
 			Models: []string{"gpt-4"},
-			Out: map[Modality]ModalCapability{ModalityText: {}},
+			Out:    map[Modality]ModalCapability{ModalityText: {}},
 		}
 		if err := s.Validate(); err == nil {
 			t.Fatal("should fail with Out but no In")
@@ -443,7 +443,7 @@ func TestScenario(t *testing.T) {
 
 	t.Run("Validate GenSync without In/Out", func(t *testing.T) {
 		s := &Scenario{
-			Models: []string{"gpt-4"},
+			Models:  []string{"gpt-4"},
 			GenSync: &Functionality{},
 		}
 		if err := s.Validate(); err == nil {
@@ -453,9 +453,9 @@ func TestScenario(t *testing.T) {
 
 	t.Run("Validate valid with In/Out and GenSync", func(t *testing.T) {
 		s := &Scenario{
-			Models: []string{"gpt-4"},
-			In: map[Modality]ModalCapability{ModalityText: {}},
-			Out: map[Modality]ModalCapability{ModalityText: {}},
+			Models:  []string{"gpt-4"},
+			In:      map[Modality]ModalCapability{ModalityText: {}},
+			Out:     map[Modality]ModalCapability{ModalityText: {}},
 			GenSync: &Functionality{},
 		}
 		if err := s.Validate(); err != nil {
@@ -470,24 +470,24 @@ func TestScore(t *testing.T) {
 			Country: "US",
 			Scenarios: []Scenario{
 				{
-					Models: []string{"gpt-4"},
-					SOTA:   true,
-					In:     map[Modality]ModalCapability{ModalityText: {}},
-					Out:    map[Modality]ModalCapability{ModalityText: {}},
+					Models:  []string{"gpt-4"},
+					SOTA:    true,
+					In:      map[Modality]ModalCapability{ModalityText: {}},
+					Out:     map[Modality]ModalCapability{ModalityText: {}},
 					GenSync: &Functionality{},
 				},
 				{
-					Models: []string{"gpt-3.5"},
-					Good:   true,
-					In:     map[Modality]ModalCapability{ModalityText: {}},
-					Out:    map[Modality]ModalCapability{ModalityText: {}},
+					Models:  []string{"gpt-3.5"},
+					Good:    true,
+					In:      map[Modality]ModalCapability{ModalityText: {}},
+					Out:     map[Modality]ModalCapability{ModalityText: {}},
 					GenSync: &Functionality{},
 				},
 				{
-					Models: []string{"gpt-2"},
-					Cheap:  true,
-					In:     map[Modality]ModalCapability{ModalityText: {}},
-					Out:    map[Modality]ModalCapability{ModalityText: {}},
+					Models:  []string{"gpt-2"},
+					Cheap:   true,
+					In:      map[Modality]ModalCapability{ModalityText: {}},
+					Out:     map[Modality]ModalCapability{ModalityText: {}},
 					GenSync: &Functionality{},
 				},
 			},
@@ -513,19 +513,19 @@ func TestScore(t *testing.T) {
 		s := &Score{
 			Scenarios: []Scenario{
 				{
-					Models: []string{"gpt-3.5"},
-					SOTA:   false,
+					Models:  []string{"gpt-3.5"},
+					SOTA:    false,
 					GenSync: &Functionality{},
 				},
 				{
-					Models: []string{"gpt-4"},
-					SOTA:   true,
+					Models:  []string{"gpt-4"},
+					SOTA:    true,
 					GenSync: &Functionality{},
 				},
 				{
-					Models: []string{"gpt-2"},
-					Good:   true,
-					Cheap:  true,
+					Models:  []string{"gpt-2"},
+					Good:    true,
+					Cheap:   true,
 					GenSync: &Functionality{},
 				},
 			},
@@ -641,27 +641,27 @@ func TestScore(t *testing.T) {
 			Country: "US",
 			Scenarios: []Scenario{
 				{
-					Models: []string{"gpt-4"},
-					SOTA:   true,
-					Reason: true,
-					In:     map[Modality]ModalCapability{ModalityText: {}},
-					Out:    map[Modality]ModalCapability{ModalityText: {}},
+					Models:  []string{"gpt-4"},
+					SOTA:    true,
+					Reason:  true,
+					In:      map[Modality]ModalCapability{ModalityText: {}},
+					Out:     map[Modality]ModalCapability{ModalityText: {}},
 					GenSync: &Functionality{},
 				},
 				{
-					Models: []string{"gpt-3.5"},
-					Good:   true,
-					Reason: false,
-					In:     map[Modality]ModalCapability{ModalityText: {}},
-					Out:    map[Modality]ModalCapability{ModalityText: {}},
+					Models:  []string{"gpt-3.5"},
+					Good:    true,
+					Reason:  false,
+					In:      map[Modality]ModalCapability{ModalityText: {}},
+					Out:     map[Modality]ModalCapability{ModalityText: {}},
 					GenSync: &Functionality{},
 				},
 				{
-					Models: []string{"gpt-2"},
-					Cheap:  true,
-					Reason: false,
-					In:     map[Modality]ModalCapability{ModalityText: {}},
-					Out:    map[Modality]ModalCapability{ModalityText: {}},
+					Models:  []string{"gpt-2"},
+					Cheap:   true,
+					Reason:  false,
+					In:      map[Modality]ModalCapability{ModalityText: {}},
+					Out:     map[Modality]ModalCapability{ModalityText: {}},
 					GenSync: &Functionality{},
 				},
 			},
@@ -817,10 +817,10 @@ func TestCompareScenarios(t *testing.T) {
 	t.Run("Untested scenarios come last", func(t *testing.T) {
 		// Create a properly tested scenario
 		a_tested := Scenario{
-			Models: []string{"gpt-4"},
+			Models:  []string{"gpt-4"},
 			GenSync: &Functionality{},
-			In:     map[Modality]ModalCapability{ModalityText: {}},
-			Out:    map[Modality]ModalCapability{ModalityText: {}},
+			In:      map[Modality]ModalCapability{ModalityText: {}},
+			Out:     map[Modality]ModalCapability{ModalityText: {}},
 		}
 		// Create an untested scenario
 		b_untested := Scenario{Models: []string{"zzz-model"}}

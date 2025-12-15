@@ -1,0 +1,42 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 124
+    host: api.cloudflare.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"Explain the theory of relativity in great details.\"}],\"max_tokens\":16,\"stream\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/meta/llama-3.3-70b-instruct-fp8-fast
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"response\":\"\",\"tool_calls\":[],\"p\":\"abdefghijklmnoprstuvxyz1234567890abdefghijkl\"}\n\ndata: {\"response\":\"The\",\"tool_calls\":[],\"p\":\"abdefgh\"}\n\ndata: {\"response\":\" theory of rel\",\"tool_calls\":[],\"p\":\"abdefghijklmnoprstuvxyz1234567890abdefghijk\"}\n\ndata: {\"response\":\"ativity, developed\",\"tool_calls\":[],\"p\":\"abdefghijklmnoprstuvxyz123\"}\n\ndata: {\"response\":\" by Albert Einstein\",\"tool_calls\":[],\"p\":\"abdefghijklmnoprstuvxyz1234567890\"}\n\ndata: {\"response\":\", is a\",\"tool_calls\":[],\"p\":\"abdefghi\"}\n\ndata: {\"response\":\" fundamental concept in\",\"tool_calls\":[],\"p\":\"abdefghijklmnopr\"}\n\ndata: {\"tool_calls\":[],\"p\":\"abdefghijklmnoprstuvxyz1234\"}\n\ndata: {\"response\":\"\",\"usage\":{\"prompt_tokens\":46,\"completion_tokens\":16,\"total_tokens\":62}}\n\ndata: [DONE]\n\n"
+    headers:
+      Api-Version:
+      - "2025-12-15"
+      Cf-Ai-Neurons:
+      - "0"
+      Cf-Ai-Req-Id:
+      - ff1a44a1-b3c3-41cd-9aec-30d2d3ab898a
+      Cf-Auditlog-Id:
+      - 019b232f-d2f5-799b-b5af-4c2c7f1891ac
+      Cf-Ray:
+      - 9ae7ddbe0ed8a273-YUL
+      Content-Type:
+      - text/event-stream
+      Server:
+      - cloudflare
+      Vary:
+      - Accept-Encoding
+    status: 200 OK
+    code: 200
+    duration: 329ms

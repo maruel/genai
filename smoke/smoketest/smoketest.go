@@ -128,6 +128,10 @@ func Run(t *testing.T, pf ProviderFactory, models []scoreboard.Model, rec *myrec
 				}
 			}
 			if want.Untested() {
+				// If updating scoreboard, collect the untested scenario to be added
+				if *updateScoreboard {
+					updatedScenarios = append(updatedScenarios, want)
+				}
 				t.Skip("Explicitly unsupported model")
 			}
 			// Run one model at a time otherwise we can't collect the total usage.
@@ -477,46 +481,58 @@ func doUpdateScoreboard(t testing.TB, providerDir string, scenarios []scoreboard
 		result = append(result, oldSc)
 	}
 
-	// Third pass: add untested scenarios from old scoreboard, consolidating by comments/reason
+	// Third pass: consolidate untested scenarios by comments/reason
+	// Include both newly added untested scenarios and old ones
 	untestedByKey := make(map[string]*scoreboard.Scenario)
+	allUntested := make([]scoreboard.Scenario, 0)
+
+	// First, collect all untested scenarios from both new and old
+	for _, sc := range scenarios {
+		if len(sc.Models) > 0 && sc.Untested() {
+			allUntested = append(allUntested, sc)
+		}
+	}
 	for _, oldSc := range oldScore.Scenarios {
 		// Skip if this scenario was already processed
 		if _, seen := seenPairs[scoreboard.Model{oldSc.Models[0], oldSc.Reason}]; seen {
 			continue
 		}
-
 		// Only process untested scenarios
 		if !oldSc.Untested() {
 			continue
 		}
+		allUntested = append(allUntested, oldSc)
+	}
 
+	// Now consolidate by comments/reason
+	for _, sc := range allUntested {
 		// Consolidate with others of same comments/reason
-		key := fmt.Sprintf("%s|%v", oldSc.Comments, oldSc.Reason)
+		key := fmt.Sprintf("%s|%v", sc.Comments, sc.Reason)
 		if existing, found := untestedByKey[key]; found {
 			// Merge models, avoiding duplicates and stale models
 			modelSet := make(map[string]struct{})
 			for _, m := range existing.Models {
-				if _, isStale := staleSet[scoreboard.Model{m, oldSc.Reason}]; !isStale {
+				if _, isStale := staleSet[scoreboard.Model{m, sc.Reason}]; !isStale {
 					modelSet[m] = struct{}{}
 				}
 			}
-			for _, m := range oldSc.Models {
-				if _, isStale := staleSet[scoreboard.Model{m, oldSc.Reason}]; !isStale {
+			for _, m := range sc.Models {
+				if _, isStale := staleSet[scoreboard.Model{m, sc.Reason}]; !isStale {
 					modelSet[m] = struct{}{}
 				}
 			}
 			existing.Models = slices.Sorted(maps.Keys(modelSet))
 		} else {
 			// New untested scenario: remove stale models
-			remainingModels := make([]string, 0, len(oldSc.Models))
-			for _, m := range oldSc.Models {
-				if _, isStale := staleSet[scoreboard.Model{m, oldSc.Reason}]; !isStale {
+			remainingModels := make([]string, 0, len(sc.Models))
+			for _, m := range sc.Models {
+				if _, isStale := staleSet[scoreboard.Model{m, sc.Reason}]; !isStale {
 					remainingModels = append(remainingModels, m)
 				}
 			}
 			if len(remainingModels) > 0 {
-				oldSc.Models = remainingModels
-				result = append(result, oldSc)
+				sc.Models = remainingModels
+				result = append(result, sc)
 				untestedByKey[key] = &result[len(result)-1]
 			}
 		}

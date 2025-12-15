@@ -1,0 +1,43 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 211
+    host: api.cloudflare.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\\\"is_fruit\\\": bool}.\"}],\"response_format\":{\"type\":\"json_object\"}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/deepseek-ai/deepseek-r1-distill-qwen-32b
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"result\":{\"response\":\"<think>\\nOkay, so I need to figure out whether a banana is a fruit. Let me start by recalling what I know about bananas. I know that bananas are yellow, they grow in bunches, and they're commonly eaten as a snack or used in various recipes like smoothies and desserts. But is that enough to classify them as a fruit?\\n\\nWell, I remember that in botany, a fruit is the mature ovary of a flowering plant, usually containing seeds. So, does a banana fit that definition? I think bananas do have seeds, but they're very small and often not noticeable in the common varieties we eat. Maybe they come from the ovaries of banana plants, which are flowering plants, so that would make them fruits.\\n\\nWait, but sometimes people confuse fruits with vegetables. I think vegetables are parts of plants like leaves, stems, or roots, whereas fruits are the seed-bearing structures. So bananas, being the seed-bearing part, should be fruits. \\n\\nI also recall that in culinary terms, some things that are botanically fruits are used as vegetables, like tomatoes. But bananas are definitely used as fruits in cooking and eating. So both botanically and culinarily, bananas are considered fruits.\\n\\nI don't think I've heard\",\"usage\":{\"prompt_tokens\":36,\"completion_tokens\":256,\"total_tokens\":292}},\"success\":true,\"errors\":[],\"messages\":[]}"
+    headers:
+      Api-Version:
+      - "2025-12-15"
+      Cf-Ai-Neurons:
+      - "115.23"
+      Cf-Ai-Req-Id:
+      - 054dae96-1abf-455e-91c3-ed2c2cfa8e73
+      Cf-Auditlog-Id:
+      - 019b2347-b541-7de1-84ef-afcbb03de7cc
+      Cf-Ray:
+      - 9ae803f51e76a2fa-YUL
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Vary:
+      - Accept-Encoding
+    status: 200 OK
+    code: 200
+    duration: 6.569s

@@ -1,0 +1,42 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 199
+    host: api.cloudflare.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"role\":\"user\",\"content\":\"What is the capital of Quackiland?\"}],\"stream\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/deepseek-ai/deepseek-r1-distill-qwen-32b
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"response\":\"<think>\"}\n\ndata: {\"response\":\"\\n\"}\n\ndata: {\"response\":\"Okay\"}\n\ndata: {\"response\":\",\"}\n\ndata: {\"response\":\" so\"}\n\ndata: {\"response\":\" the\"}\n\ndata: {\"response\":\" user\"}\n\ndata: {\"response\":\" is\"}\n\ndata: {\"response\":\" asking\"}\n\ndata: {\"response\":\" for\"}\n\ndata: {\"response\":\" the\"}\n\ndata: {\"response\":\" capital\"}\n\ndata: {\"response\":\" of\"}\n\ndata: {\"response\":\" Qu\"}\n\ndata: {\"response\":\"ack\"}\n\ndata: {\"response\":\"iland\"}\n\ndata: {\"response\":\".\"}\n\ndata: {\"response\":\" I\"}\n\ndata: {\"response\":\" remember\"}\n\ndata: {\"response\":\" from\"}\n\ndata: {\"response\":\" the\"}\n\ndata: {\"response\":\" conversation\"}\n\ndata: {\"response\":\" history\"}\n\ndata: {\"response\":\" that\"}\n\ndata: {\"response\":\" the\"}\n\ndata: {\"response\":\" user\"}\n\ndata: {\"response\":\" mentioned\"}\n\ndata: {\"response\":\" the\"}\n\ndata: {\"response\":\" capital\"}\n\ndata: {\"response\":\" is\"}\n\ndata: {\"response\":\" Qu\"}\n\ndata: {\"response\":\"ack\"}\n\ndata: {\"response\":\" and\"}\n\ndata: {\"response\":\" that\"}\n\ndata: {\"response\":\" there\"}\n\ndata: {\"response\":\"'s\"}\n\ndata: {\"response\":\" a\"}\n\ndata: {\"response\":\" Big\"}\n\ndata: {\"response\":\" Can\"}\n\ndata: {\"response\":\"ard\"}\n\ndata: {\"response\":\" Statue\"}\n\ndata: {\"response\":\" there\"}\n\ndata: {\"response\":\".\"}\n\ndata: {\"response\":\" So\"}\n\ndata: {\"response\":\",\"}\n\ndata: {\"response\":\" I\"}\n\ndata: {\"response\":\" should\"}\n\ndata: {\"response\":\" respond\"}\n\ndata: {\"response\":\" by\"}\n\ndata: {\"response\":\" stating\"}\n\ndata: {\"response\":\" that\"}\n\ndata: {\"response\":\" the\"}\n\ndata: {\"response\":\" capital\"}\n\ndata: {\"response\":\" is\"}\n\ndata: {\"response\":\" Qu\"}\n\ndata: {\"response\":\"ack\"}\n\ndata: {\"response\":\".\"}\n\ndata: {\"response\":\" I\"}\n\ndata: {\"response\":\" need\"}\n\ndata: {\"response\":\" to\"}\n\ndata: {\"response\":\" make\"}\n\ndata: {\"response\":\" sure\"}\n\ndata: {\"response\":\" my\"}\n\ndata: {\"response\":\" answer\"}\n\ndata: {\"response\":\" is\"}\n\ndata: {\"response\":\" clear\"}\n\ndata: {\"response\":\" and\"}\n\ndata: {\"response\":\" straightforward\"}\n\ndata: {\"response\":\",\"}\n\ndata: {\"response\":\" just\"}\n\ndata: {\"response\":\" providing\"}\n\ndata: {\"response\":\" the\"}\n\ndata: {\"response\":\" name\"}\n\ndata: {\"response\":\" without\"}\n\ndata: {\"response\":\" any\"}\n\ndata: {\"response\":\" extra\"}\n\ndata: {\"response\":\" information\"}\n\ndata: {\"response\":\" unless\"}\n\ndata: {\"response\":\" the\"}\n\ndata: {\"response\":\" user\"}\n\ndata: {\"response\":\" asks\"}\n\ndata: {\"response\":\" for\"}\n\ndata: {\"response\":\" more\"}\n\ndata: {\"response\":\".\"}\n\ndata: {\"response\":\" I\"}\n\ndata: {\"response\":\" should\"}\n\ndata: {\"response\":\" keep\"}\n\ndata: {\"response\":\" it\"}\n\ndata: {\"response\":\" concise\"}\n\ndata: {\"response\":\" and\"}\n\ndata: {\"response\":\" helpful\"}\n\ndata: {\"response\":\".\\n\"}\n\ndata: {\"response\":\"</think>\"}\n\ndata: {\"response\":\"\\n\\n\"}\n\ndata: {\"response\":\"The\"}\n\ndata: {\"response\":\" capital\"}\n\ndata: {\"response\":\" of\"}\n\ndata: {\"response\":\" Qu\"}\n\ndata: {\"response\":\"ack\"}\n\ndata: {\"response\":\"iland\"}\n\ndata: {\"response\":\" is\"}\n\ndata: {\"response\":\" Qu\"}\n\ndata: {\"response\":\"ack\"}\n\ndata: {\"response\":\".\"}\n\ndata: {}\n\ndata: {}\n\ndata: {\"response\":\"\",\"usage\":{\"prompt_tokens\":38,\"completion_tokens\":105,\"total_tokens\":143}}\n\ndata: [DONE]\n\n"
+    headers:
+      Api-Version:
+      - "2025-12-15"
+      Cf-Ai-Neurons:
+      - "0"
+      Cf-Ai-Req-Id:
+      - 7ab8234e-77a9-496e-a75f-1bf8c7f1315d
+      Cf-Auditlog-Id:
+      - 019b2347-d383-768b-a759-4b019fad30a0
+      Cf-Ray:
+      - 9ae804257a72a2fa-YUL
+      Content-Type:
+      - text/event-stream
+      Server:
+      - cloudflare
+      Vary:
+      - Accept-Encoding
+    status: 200 OK
+    code: 200
+    duration: 157ms

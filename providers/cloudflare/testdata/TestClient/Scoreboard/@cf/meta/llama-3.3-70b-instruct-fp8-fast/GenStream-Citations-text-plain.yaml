@@ -1,0 +1,42 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 199
+    host: api.cloudflare.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"role\":\"user\",\"content\":\"What is the capital of Quackiland?\"}],\"stream\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/meta/llama-3.3-70b-instruct-fp8-fast
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"response\":\"\",\"tool_calls\":[],\"p\":\"abdefghi\"}\n\ndata: {\"response\":\"The\",\"tool_calls\":[],\"p\":\"abdefghijklmnop\"}\n\ndata: {\"response\":\" capital\",\"tool_calls\":[],\"p\":\"abdefghijklmnoprstuvxyz1234567890abdefghi\"}\n\ndata: {\"response\":\" of Quack\",\"tool_calls\":[],\"p\":\"abdefgh\"}\n\ndata: {\"response\":\"iland is Qu\",\"tool_calls\":[],\"p\":\"abdefghijklmnoprstuvxyz1234567890abdefghi\"}\n\ndata: {\"response\":\"ack.\",\"tool_calls\":[],\"p\":\"abdef\"}\n\ndata: {\"tool_calls\":[],\"p\":\"abdefghijklmnoprstuvxyz1234567890abdefghij\"}\n\ndata: {\"response\":\"\",\"usage\":{\"prompt_tokens\":70,\"completion_tokens\":11,\"total_tokens\":81}}\n\ndata: [DONE]\n\n"
+    headers:
+      Api-Version:
+      - "2025-12-15"
+      Cf-Ai-Neurons:
+      - "0"
+      Cf-Ai-Req-Id:
+      - 3b2c8e3b-7521-4606-9de9-a84422dbfba8
+      Cf-Auditlog-Id:
+      - 019b232f-dce6-776f-9f9d-74167b34fc62
+      Cf-Ray:
+      - 9ae7ddce2e8ea273-YUL
+      Content-Type:
+      - text/event-stream
+      Server:
+      - cloudflare
+      Vary:
+      - Accept-Encoding
+    status: 200 OK
+    code: 200
+    duration: 166ms

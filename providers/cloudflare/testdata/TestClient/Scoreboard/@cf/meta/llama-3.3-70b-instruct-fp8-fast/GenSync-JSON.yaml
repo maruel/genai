@@ -1,0 +1,43 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 211
+    host: api.cloudflare.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\\\"is_fruit\\\": bool}.\"}],\"response_format\":{\"type\":\"json_object\"}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/meta/llama-3.3-70b-instruct-fp8-fast
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"result\":{\"response\":\"{\\\"is_fruit\\\": true}\",\"usage\":{\"prompt_tokens\":41,\"completion_tokens\":8,\"total_tokens\":49}},\"success\":true,\"errors\":[],\"messages\":[]}"
+    headers:
+      Api-Version:
+      - "2025-12-15"
+      Cf-Ai-Neurons:
+      - "2.73"
+      Cf-Ai-Req-Id:
+      - f8db90f6-dd1c-459b-ae69-1f5baf4ab4bc
+      Cf-Auditlog-Id:
+      - 019b232f-d8e8-7d21-b2c3-7fb9af195440
+      Cf-Ray:
+      - 9ae7ddc7bd13a273-YUL
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Vary:
+      - Accept-Encoding
+    status: 200 OK
+    code: 200
+    duration: 498ms

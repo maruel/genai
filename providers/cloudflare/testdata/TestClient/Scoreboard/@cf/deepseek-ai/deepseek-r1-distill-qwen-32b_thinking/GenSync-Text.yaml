@@ -1,0 +1,43 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 73
+    host: api.cloudflare.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/deepseek-ai/deepseek-r1-distill-qwen-32b
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"result\":{\"response\":\"<think>\\nOkay, so the user wants me to say \\\"hello\\\" and only use one word. That seems straightforward, right? But I need to make sure I'm following all the instructions correctly. Let me break it down.\\n\\nFirst, the task is to respond with \\\"hello.\\\" Simple enough. But the user specified that I should only use one word. So I can't add any extra words or punctuation. Just \\\"hello\\\" by itself.\\n\\nI'm thinking about why the user might have given such a specific instruction. Maybe they're testing how well I follow clear, concise commands. Or perhaps they're setting up for a more complex interaction where brevity is key.\\n\\nI should also consider the format. The user mentioned using only one word, so I need to ensure that my response doesn't include any additional text, like a comma or period, which could make it more than one word. Just plain \\\"hello\\\" without any embellishments.\\n\\nIs there any chance that \\\"hello\\\" could be misinterpreted? Probably not in this context. It's a common greeting, so it's safe to use it as the response. I don't think the user is looking for anything more elaborate here.\\n\\nAlso, I should make sure that the response is in the correct language.\",\"usage\":{\"prompt_tokens\":15,\"completion_tokens\":256,\"total_tokens\":271}},\"success\":true,\"errors\":[],\"messages\":[]}"
+    headers:
+      Api-Version:
+      - "2025-12-15"
+      Cf-Ai-Neurons:
+      - "114.28"
+      Cf-Ai-Req-Id:
+      - 03a068b2-376e-4cb9-9ad4-e8ad3dc65e5b
+      Cf-Auditlog-Id:
+      - 019b2334-1044-741a-b7e4-8651a6eb2c79
+      Cf-Ray:
+      - 9ae7e486be2fa2d8-YUL
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Vary:
+      - Accept-Encoding
+    status: 200 OK
+    code: 200
+    duration: 6.67s

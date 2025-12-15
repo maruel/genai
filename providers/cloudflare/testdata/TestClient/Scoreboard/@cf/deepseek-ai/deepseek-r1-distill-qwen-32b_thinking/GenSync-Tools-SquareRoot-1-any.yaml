@@ -1,0 +1,43 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 478
+    host: api.cloudflare.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"}],\"tools\":[{\"type\":\"function\",\"function\":{\"description\":\"Calculates and return the square root of a number\",\"name\":\"square_root\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/deepseek-ai/deepseek-r1-distill-qwen-32b
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"result\":{\"response\":\"<think>\\nOkay, so I need to find the square root of 132413 using the square_root tool. Hmm, I'm not exactly sure how this tool works, but I guess it's some kind of calculator or function that can compute square roots. Let me think about how to approach this.\\n\\nFirst, I know that the square root of a number is a value that, when multiplied by itself, gives the original number. So, if I can find a number that when squared equals 132413, that would be the square root. But doing this manually would take a lot of time, especially since 132413 is a pretty large number.\\n\\nLet me try to estimate the square root first. I know that 300 squared is 90,000 and 400 squared is 160,000. Since 132,413 falls between these two, the square root must be between 300 and 400. To narrow it down, let's see: 360 squared is 129,600, and 370 squared is 136,900. So\",\"usage\":{\"prompt_tokens\":38,\"completion_tokens\":256,\"total_tokens\":294}},\"success\":true,\"errors\":[],\"messages\":[]}"
+    headers:
+      Api-Version:
+      - "2025-12-15"
+      Cf-Ai-Neurons:
+      - "115.32"
+      Cf-Ai-Req-Id:
+      - f8328b6a-f469-4110-8ec4-90d6515deef2
+      Cf-Auditlog-Id:
+      - 019b2347-e7a3-78dc-9dff-f31c35e75805
+      Cf-Ray:
+      - 9ae80445bbcca2fa-YUL
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Vary:
+      - Accept-Encoding
+    status: 200 OK
+    code: 200
+    duration: 6.505s

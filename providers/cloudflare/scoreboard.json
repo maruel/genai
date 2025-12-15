@@ -11,25 +11,100 @@
   "dashboardURL": "https://dash.cloudflare.com",
   "scenarios": [
     {
-      "comments": "Untested",
       "models": [
         "@cf/deepseek-ai/deepseek-r1-distill-qwen-32b"
       ],
-      "sota": true
+      "sota": true,
+      "reason": true,
+      "reasoningTokenStart": "\u003cthink\u003e",
+      "reasoningTokenEnd": "\u003c/think\u003e",
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "flaky",
+        "reportFinishReason": "flaky",
+        "seed": true,
+        "jsonSchema": true,
+        "maxTokens": true
+      },
+      "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "flaky",
+        "seed": true,
+        "json": true,
+        "maxTokens": true
+      }
     },
     {
-      "comments": "Untested",
       "models": [
         "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
       ],
-      "good": true
+      "good": true,
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "flaky",
+        "reportFinishReason": "flaky",
+        "seed": true,
+        "tools": "flaky",
+        "json": true,
+        "jsonSchema": true,
+        "maxTokens": true
+      },
+      "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "flaky",
+        "seed": true,
+        "json": true,
+        "maxTokens": true
+      }
     },
     {
-      "comments": "Untested",
       "models": [
-        "@cf/meta/llama-3.2-1b-instruct"
+        "@cf/meta/llama-3.2-3b-instruct"
       ],
-      "cheap": true
+      "cheap": true,
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "flaky",
+        "seed": true,
+        "tools": "flaky",
+        "json": true,
+        "maxTokens": true
+      },
+      "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "flaky",
+        "seed": true,
+        "json": true,
+        "maxTokens": true
+      }
     },
     {
       "comments": "Llama-4 scout supports genai.ModalityImage but I'm not sure if cloudflare supports this modality. This may change in the future.",
@@ -66,33 +141,359 @@
     },
     {
       "models": [
-        "@cf/meta/llama-3.2-3b-instruct"
-      ],
-      "in": {
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportTokenUsage": "true",
-        "reportFinishReason": "flaky",
-        "seed": true,
-        "tools": "flaky",
-        "json": true,
-        "maxTokens": true
-      },
-      "GenStream": {
-        "reportTokenUsage": "true",
-        "reportFinishReason": "flaky",
-        "seed": true,
-        "json": true,
-        "maxTokens": true
-      }
+        "@cf/baai/bge-base-en-v1.5"
+      ]
+    },
+    {
+      "models": [
+        "@cf/baai/bge-large-en-v1.5"
+      ]
+    },
+    {
+      "models": [
+        "@cf/baai/bge-m3"
+      ]
+    },
+    {
+      "models": [
+        "@cf/baai/bge-reranker-base"
+      ]
+    },
+    {
+      "models": [
+        "@cf/baai/bge-small-en-v1.5"
+      ]
+    },
+    {
+      "models": [
+        "@cf/black-forest-labs/flux-1-schnell"
+      ]
+    },
+    {
+      "models": [
+        "@cf/bytedance/stable-diffusion-xl-lightning"
+      ]
+    },
+    {
+      "models": [
+        "@cf/deepgram/aura-1"
+      ]
+    },
+    {
+      "models": [
+        "@cf/deepgram/nova-3"
+      ]
+    },
+    {
+      "models": [
+        "@cf/deepseek-ai/deepseek-math-7b-instruct"
+      ]
+    },
+    {
+      "models": [
+        "@cf/defog/sqlcoder-7b-2"
+      ]
+    },
+    {
+      "models": [
+        "@cf/facebook/bart-large-cnn"
+      ]
+    },
+    {
+      "models": [
+        "@cf/fblgit/una-cybertron-7b-v2-bf16"
+      ]
+    },
+    {
+      "models": [
+        "@cf/google/gemma-2b-it-lora"
+      ]
+    },
+    {
+      "models": [
+        "@cf/google/gemma-3-12b-it"
+      ]
+    },
+    {
+      "models": [
+        "@cf/google/gemma-7b-it-lora"
+      ]
+    },
+    {
+      "models": [
+        "@cf/huggingface/distilbert-sst-2-int8"
+      ]
+    },
+    {
+      "models": [
+        "@cf/leonardo/lucid-origin"
+      ]
+    },
+    {
+      "models": [
+        "@cf/leonardo/phoenix-1.0"
+      ]
+    },
+    {
+      "models": [
+        "@cf/llava-hf/llava-1.5-7b-hf"
+      ]
+    },
+    {
+      "models": [
+        "@cf/lykon/dreamshaper-8-lcm"
+      ]
+    },
+    {
+      "models": [
+        "@cf/meta-llama/llama-2-7b-chat-hf-lora"
+      ]
+    },
+    {
+      "models": [
+        "@cf/meta/llama-2-7b-chat-fp16"
+      ]
+    },
+    {
+      "models": [
+        "@cf/meta/llama-2-7b-chat-int8"
+      ]
+    },
+    {
+      "models": [
+        "@cf/meta/llama-3-8b-instruct"
+      ]
+    },
+    {
+      "models": [
+        "@cf/meta/llama-3-8b-instruct-awq"
+      ]
+    },
+    {
+      "models": [
+        "@cf/meta/llama-3.1-8b-instruct-awq"
+      ]
+    },
+    {
+      "models": [
+        "@cf/meta/llama-3.1-8b-instruct-fp8"
+      ]
+    },
+    {
+      "models": [
+        "@cf/meta/llama-3.2-11b-vision-instruct"
+      ]
+    },
+    {
+      "comments": "Untested",
+      "models": [
+        "@cf/meta/llama-3.2-1b-instruct"
+      ]
+    },
+    {
+      "models": [
+        "@cf/meta/llama-guard-3-8b"
+      ]
+    },
+    {
+      "models": [
+        "@cf/meta/m2m100-1.2b"
+      ]
+    },
+    {
+      "models": [
+        "@cf/microsoft/phi-2"
+      ]
+    },
+    {
+      "models": [
+        "@cf/microsoft/resnet-50"
+      ]
+    },
+    {
+      "models": [
+        "@cf/mistral/mistral-7b-instruct-v0.1"
+      ]
+    },
+    {
+      "models": [
+        "@cf/mistral/mistral-7b-instruct-v0.2-lora"
+      ]
+    },
+    {
+      "models": [
+        "@cf/mistralai/mistral-small-3.1-24b-instruct"
+      ]
+    },
+    {
+      "models": [
+        "@cf/myshell-ai/melotts"
+      ]
+    },
+    {
+      "models": [
+        "@cf/openai/gpt-oss-120b"
+      ]
+    },
+    {
+      "models": [
+        "@cf/openai/gpt-oss-20b"
+      ]
+    },
+    {
+      "models": [
+        "@cf/openai/whisper"
+      ]
+    },
+    {
+      "models": [
+        "@cf/openai/whisper-large-v3-turbo"
+      ]
+    },
+    {
+      "models": [
+        "@cf/openai/whisper-tiny-en"
+      ]
+    },
+    {
+      "models": [
+        "@cf/openchat/openchat-3.5-0106"
+      ]
+    },
+    {
+      "models": [
+        "@cf/pipecat-ai/smart-turn-v2"
+      ]
+    },
+    {
+      "models": [
+        "@cf/qwen/qwen1.5-0.5b-chat"
+      ]
+    },
+    {
+      "models": [
+        "@cf/qwen/qwen1.5-1.8b-chat"
+      ]
+    },
+    {
+      "models": [
+        "@cf/qwen/qwen1.5-14b-chat-awq"
+      ]
+    },
+    {
+      "models": [
+        "@cf/qwen/qwen1.5-7b-chat-awq"
+      ]
+    },
+    {
+      "models": [
+        "@cf/qwen/qwen2.5-coder-32b-instruct"
+      ]
+    },
+    {
+      "models": [
+        "@cf/qwen/qwq-32b"
+      ]
+    },
+    {
+      "models": [
+        "@cf/runwayml/stable-diffusion-v1-5-img2img"
+      ]
+    },
+    {
+      "models": [
+        "@cf/runwayml/stable-diffusion-v1-5-inpainting"
+      ]
+    },
+    {
+      "models": [
+        "@cf/stabilityai/stable-diffusion-xl-base-1.0"
+      ]
+    },
+    {
+      "models": [
+        "@cf/thebloke/discolm-german-7b-v1-awq"
+      ]
+    },
+    {
+      "models": [
+        "@cf/tiiuae/falcon-7b-instruct"
+      ]
+    },
+    {
+      "models": [
+        "@cf/tinyllama/tinyllama-1.1b-chat-v1.0"
+      ]
+    },
+    {
+      "models": [
+        "@cf/unum/uform-gen2-qwen-500m"
+      ]
+    },
+    {
+      "models": [
+        "@hf/google/gemma-7b-it"
+      ]
+    },
+    {
+      "models": [
+        "@hf/meta-llama/meta-llama-3-8b-instruct"
+      ]
+    },
+    {
+      "models": [
+        "@hf/mistral/mistral-7b-instruct-v0.2"
+      ]
+    },
+    {
+      "models": [
+        "@hf/nexusflow/starling-lm-7b-beta"
+      ]
+    },
+    {
+      "models": [
+        "@hf/nousresearch/hermes-2-pro-mistral-7b"
+      ]
+    },
+    {
+      "models": [
+        "@hf/thebloke/deepseek-coder-6.7b-base-awq"
+      ]
+    },
+    {
+      "models": [
+        "@hf/thebloke/deepseek-coder-6.7b-instruct-awq"
+      ]
+    },
+    {
+      "models": [
+        "@hf/thebloke/llama-2-13b-chat-awq"
+      ]
+    },
+    {
+      "models": [
+        "@hf/thebloke/llamaguard-7b-awq"
+      ]
+    },
+    {
+      "models": [
+        "@hf/thebloke/mistral-7b-instruct-v0.1-awq"
+      ]
+    },
+    {
+      "models": [
+        "@hf/thebloke/neural-chat-7b-v3-1-awq"
+      ]
+    },
+    {
+      "models": [
+        "@hf/thebloke/openhermes-2.5-mistral-7b-awq"
+      ]
+    },
+    {
+      "models": [
+        "@hf/thebloke/zephyr-7b-beta-awq"
+      ]
     }
   ]
 }

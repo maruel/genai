@@ -1,0 +1,42 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 87
+    host: api.cloudflare.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"}],\"stream\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/meta/llama-3.3-70b-instruct-fp8-fast
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"response\":\"\",\"tool_calls\":[],\"p\":\"abdefghijklmnoprstuvxyz1234567890abdefghijklmno\"}\n\ndata: {\"response\":\"Hello\",\"tool_calls\":[],\"p\":\"abdefghijklmnoprstuvxyz1234567890abd\"}\n\ndata: {\"response\":\".\",\"tool_calls\":[],\"p\":\"abdefghijklmnoprstuvxyz123456789\"}\n\ndata: {\"tool_calls\":[],\"p\":\"abdefghijk\"}\n\ndata: {\"response\":\"\",\"usage\":{\"prompt_tokens\":43,\"completion_tokens\":3,\"total_tokens\":46}}\n\ndata: [DONE]\n\n"
+    headers:
+      Api-Version:
+      - "2025-12-15"
+      Cf-Ai-Neurons:
+      - "0"
+      Cf-Ai-Req-Id:
+      - bb0fea4f-adc1-4739-ad92-821d176aa036
+      Cf-Auditlog-Id:
+      - 019b232f-d051-79f0-a870-47732a7ced57
+      Cf-Ray:
+      - 9ae7ddb98f03a273-YUL
+      Content-Type:
+      - text/event-stream
+      Server:
+      - cloudflare
+      Vary:
+      - Accept-Encoding
+    status: 200 OK
+    code: 200
+    duration: 327ms

@@ -1,0 +1,42 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 492
+    host: api.cloudflare.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"}],\"stream\":true,\"tools\":[{\"type\":\"function\",\"function\":{\"description\":\"Calculates and return the square root of a number\",\"name\":\"square_root\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/meta/llama-3.3-70b-instruct-fp8-fast
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"response\":\"{\\\"\",\"p\":\"abcdefghijklmnopqrstuvwxyz012\"}\n\ndata: {\"response\":\"type\",\"p\":\"abcdefghi\"}\n\ndata: {\"response\":\"\\\":\",\"p\":\"abcdefghijklmnopqrstuvwxyz01\"}\n\ndata: {\"response\":\" \\\"\",\"p\":\"ab\"}\n\ndata: {\"response\":\"function\",\"p\":\"abcdefghijklmnopqrstuvwxyz01234\"}\n\ndata: {\"response\":\"\\\",\",\"p\":\"abcdefghijklmnopqrstuv\"}\n\ndata: {\"response\":\" \\\"\",\"p\":\"abcdefghijklmnopqrstuvwxyz0123456789abcd\"}\n\ndata: {\"response\":\"name\",\"p\":\"abcdefghijklmnopqrstuvw\"}\n\ndata: {\"response\":\"\\\":\",\"p\":\"abcdefghijklmnopqrstuvwxyz0123456789a\"}\n\ndata: {\"response\":\" \\\"\",\"p\":\"abcdefghijklmnopqrstuvw\"}\n\ndata: {\"response\":\"square\",\"p\":\"abcdefghijklmnopqrstuvwx\"}\n\ndata: {\"response\":\"_root\",\"p\":\"abcdefghijklmnopqrstuvwxyz0123456789abcdef\"}\n\ndata: {\"response\":\"\\\",\",\"p\":\"abcdefghijklmnopqrstuvwxyz0123456789abc\"}\n\ndata: {\"response\":\" \\\"\",\"p\":\"abcdefghijklmnopqrstu\"}\n\ndata: {\"response\":\"parameters\",\"p\":\"abcdefghijklmnopqrstuvwxyz012345678\"}\n\ndata: {\"response\":\"\\\":\",\"p\":\"abcde\"}\n\ndata: {\"response\":\" {\\\"\",\"p\":\"abcdefghijklmnopqrstuvwxyz0123456789a\"}\n\ndata: {\"response\":\"number\",\"p\":\"abcdefghijklmnopqrstuvwxyz\"}\n\ndata: {\"response\":\"\\\":\",\"p\":\"abcdefghijklmnopqrstuvwxyz0123456789a\"}\n\ndata: {\"response\":\" \\\"\",\"p\":\"abcdefghijklmnopqrstuvwxyz01234\"}\n\ndata: {\"response\":\"132\",\"p\":\"abcdefghijklmno\"}\n\ndata: {\"response\":\"413\",\"p\":\"abcdefghi\"}\n\ndata: {\"response\":\"\\\"}}\",\"p\":\"abcdefghijklmnopqrstuvwxyz012345\"}\n\ndata: {\"response\":\"\",\"p\":\"abcdefghijklmnopqr\"}\n\ndata: {\"response\":\"\",\"usage\":{\"prompt_tokens\":200,\"completion_tokens\":24,\"total_tokens\":224}}\n\ndata: [DONE]\n\n"
+    headers:
+      Api-Version:
+      - "2025-12-15"
+      Cf-Ai-Neurons:
+      - "0"
+      Cf-Ai-Req-Id:
+      - ab80e26e-2367-417e-9989-a57e08557b4e
+      Cf-Auditlog-Id:
+      - 019b232f-d951-796a-90c5-266267b9e69f
+      Cf-Ray:
+      - 9ae7ddc86df6a273-YUL
+      Content-Type:
+      - text/event-stream
+      Server:
+      - cloudflare
+      Vary:
+      - Accept-Encoding
+    status: 200 OK
+    code: 200
+    duration: 188ms

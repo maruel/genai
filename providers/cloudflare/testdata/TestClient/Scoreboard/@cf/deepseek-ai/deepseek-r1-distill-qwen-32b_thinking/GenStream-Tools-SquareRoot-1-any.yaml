@@ -1,0 +1,42 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 492
+    host: api.cloudflare.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"}],\"stream\":true,\"tools\":[{\"type\":\"function\",\"function\":{\"description\":\"Calculates and return the square root of a number\",\"name\":\"square_root\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/deepseek-ai/deepseek-r1-distill-qwen-32b
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"response\":\"<think>\"}\n\ndata: {\"response\":\"\\n\"}\n\ndata: {\"response\":\"To\"}\n\ndata: {\"response\":\" calculate\"}\n\ndata: {\"response\":\" the\"}\n\ndata: {\"response\":\" square\"}\n\ndata: {\"response\":\" root\"}\n\ndata: {\"response\":\" of\"}\n\ndata: {\"response\":\" \"}\n\ndata: {\"response\":\"1\"}\n\ndata: {\"response\":\"3\"}\n\ndata: {\"response\":\"2\"}\n\ndata: {\"response\":\"4\"}\n\ndata: {\"response\":\"1\"}\n\ndata: {\"response\":\"3\"}\n\ndata: {\"response\":\",\"}\n\ndata: {\"response\":\" I\"}\n\ndata: {\"response\":\" can\"}\n\ndata: {\"response\":\" use\"}\n\ndata: {\"response\":\" the\"}\n\ndata: {\"response\":\" square\"}\n\ndata: {\"response\":\"_root\"}\n\ndata: {\"response\":\" tool\"}\n\ndata: {\"response\":\".\"}\n\ndata: {\"response\":\" I\"}\n\ndata: {\"response\":\"'ll\"}\n\ndata: {\"response\":\" input\"}\n\ndata: {\"response\":\" the\"}\n\ndata: {\"response\":\" number\"}\n\ndata: {\"response\":\" into\"}\n\ndata: {\"response\":\" the\"}\n\ndata: {\"response\":\" tool\"}\n\ndata: {\"response\":\" and\"}\n\ndata: {\"response\":\" execute\"}\n\ndata: {\"response\":\" the\"}\n\ndata: {\"response\":\" calculation\"}\n\ndata: {\"response\":\".\"}\n\ndata: {\"response\":\" The\"}\n\ndata: {\"response\":\" result\"}\n\ndata: {\"response\":\" should\"}\n\ndata: {\"response\":\" be\"}\n\ndata: {\"response\":\" the\"}\n\ndata: {\"response\":\" square\"}\n\ndata: {\"response\":\" root\"}\n\ndata: {\"response\":\" of\"}\n\ndata: {\"response\":\" \"}\n\ndata: {\"response\":\"1\"}\n\ndata: {\"response\":\"3\"}\n\ndata: {\"response\":\"2\"}\n\ndata: {\"response\":\"4\"}\n\ndata: {\"response\":\"1\"}\n\ndata: {\"response\":\"3\"}\n\ndata: {\"response\":\".\\n\"}\n\ndata: {\"response\":\"</think>\"}\n\ndata: {\"response\":\"\\n\\n\"}\n\ndata: {\"response\":\"The\"}\n\ndata: {\"response\":\" square\"}\n\ndata: {\"response\":\" root\"}\n\ndata: {\"response\":\" of\"}\n\ndata: {\"response\":\" \"}\n\ndata: {\"response\":\"1\"}\n\ndata: {\"response\":\"3\"}\n\ndata: {\"response\":\"2\"}\n\ndata: {\"response\":\"4\"}\n\ndata: {\"response\":\"1\"}\n\ndata: {\"response\":\"3\"}\n\ndata: {\"response\":\" is\"}\n\ndata: {\"response\":\" \\\\\"}\n\ndata: {\"response\":\"boxed\"}\n\ndata: {\"response\":\"{\"}\n\ndata: {\"response\":\"3\"}\n\ndata: {\"response\":\"6\"}\n\ndata: {\"response\":\"4\"}\n\ndata: {\"response\":\"}.\"}\n\ndata: {}\n\ndata: {}\n\ndata: {\"response\":\"\",\"usage\":{\"prompt_tokens\":38,\"completion_tokens\":75,\"total_tokens\":113}}\n\ndata: [DONE]\n\n"
+    headers:
+      Api-Version:
+      - "2025-12-15"
+      Cf-Ai-Neurons:
+      - "0"
+      Cf-Ai-Req-Id:
+      - 561c2ffd-0ff5-483e-9f90-7ad6666f0697
+      Cf-Auditlog-Id:
+      - 019b2347-cbb4-764a-9dc3-2a30f47008fb
+      Cf-Ray:
+      - 9ae80418fee7a2fa-YUL
+      Content-Type:
+      - text/event-stream
+      Server:
+      - cloudflare
+      Vary:
+      - Accept-Encoding
+    status: 200 OK
+    code: 200
+    duration: 123ms

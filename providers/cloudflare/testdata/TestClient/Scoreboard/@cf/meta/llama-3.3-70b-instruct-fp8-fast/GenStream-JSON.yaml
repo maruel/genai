@@ -1,0 +1,42 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 225
+    host: api.cloudflare.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\\\"is_fruit\\\": bool}.\"}],\"response_format\":{\"type\":\"json_object\"},\"stream\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/meta/llama-3.3-70b-instruct-fp8-fast
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"response\":\"{\\\"\",\"p\":\"abcdefghijklmnopqrstuvwxyz0123456789abcdefghijkl\"}\n\ndata: {\"response\":\"is\",\"p\":\"abcdefghijklmnopqrstuvwxyz0\"}\n\ndata: {\"response\":\"_f\",\"p\":\"abcdefghijklmnopqrstuvwxyz0123456\"}\n\ndata: {\"response\":\"ruit\",\"p\":\"abcdefghijklmnopqrstuvwxyz012345678\"}\n\ndata: {\"response\":\"\\\":\",\"p\":\"abcdefghijklmnopqrstuvwxyz0123456789ab\"}\n\ndata: {\"response\":\" true\",\"p\":\"abcdefghijklmnopqrstuvwx\"}\n\ndata: {\"response\":\"}\",\"p\":\"abcdefghijklmnopqrstuvwxyz0123456789abcdefghijk\"}\n\ndata: {\"response\":\"\",\"p\":\"abcdefghijklmnop\"}\n\ndata: {\"response\":\"\",\"usage\":{\"prompt_tokens\":41,\"completion_tokens\":8,\"total_tokens\":49}}\n\ndata: [DONE]\n\n"
+    headers:
+      Api-Version:
+      - "2025-12-15"
+      Cf-Ai-Neurons:
+      - "0"
+      Cf-Ai-Req-Id:
+      - 715b18d4-5b1a-4bdf-b410-aed2041f991e
+      Cf-Auditlog-Id:
+      - 019b232f-d568-755c-aa60-7e1e67ac1a46
+      Cf-Ray:
+      - 9ae7ddc22ccca273-YUL
+      Content-Type:
+      - text/event-stream
+      Server:
+      - cloudflare
+      Vary:
+      - Accept-Encoding
+    status: 200 OK
+    code: 200
+    duration: 223ms

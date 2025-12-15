@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 301
+    host: api.together.xyz
+    body: "{\"model\":\"moonshotai/Kimi-K2-Thinking\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What fruit is it? Reply with only one word.\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg\"}}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"oPMwMH5-28Eivz-9ae945b85823a305\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765836643,\n  \"model\": \"moonshotai/Kimi-K2-Thinking\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"Papaya\",\n        \"tool_calls\": [],\n        \"reasoning\": \"The user is asking me to identify a fruit from an image and reply with only one word.\\n \\n Looking at the image, I can see what appears to be a sliced fruit. Let me analyze the visual characteristics:\\n - The fruit is cut in half, showing the interior\\n - The flesh is yellow/orange in color\\n - There are small black seeds throughout the flesh\\n - The exterior seems to have a textured, slightly bumpy skin that's greenish/brownish\\n - The overall shape and appearance suggests this is a papaya\\n \\n Papayas are typically oval-shaped fruits with green/yellow skin when ripe, and have bright orange flesh with numerous black seeds in the center cavity. The image matches these characteristics.\\n \\n I need to respond with only one word. The correct answer is \\\"Papaya\\\".\\n \\n Let me double-check: Could it be any other fruit? \\n - Cantaloupe? No, cantaloupe seeds are concentrated in the center, not spread throughout like this, and the flesh pattern is different.\\n - Passion fruit? No, passion fruit is much smaller with different seed distribution.\\n - Watermelon? No, the seeds and flesh color are wrong.\\n \\n Yes, this is definitely a papaya. \"\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 58,\n    \"total_tokens\": 310,\n    \"completion_tokens\": 252\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ae945b85823a305-YUL
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"6b5-WDVkkwrjf5WyHPnsh55i6GfZ+bk"
+      Retry-After:
+      - "2"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 99212caf-4cfb-4956-9b2c-48adbaf502f6-noamzn
+      X-Api-Call-End:
+      - "2025-12-15T22:10:43.611Z"
+      X-Api-Call-Start:
+      - "2025-12-15T22:10:40.107Z"
+      X-Api-Received:
+      - "2025-12-15T22:10:40.101Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "19"
+      X-Ratelimit-Remaining-Tokens:
+      - "2694"
+      X-Ratelimit-Reset:
+      - "2"
+    status: 200 OK
+    code: 200
+    duration: 3.584s

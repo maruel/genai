@@ -1,0 +1,66 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 808
+    host: api.together.xyz
+    body: "{\"model\":\"zai-org/GLM-4.6\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"},{\"role\":\"assistant\",\"content\":\"\\n\",\"tool_calls\":[{\"index\":0,\"id\":\"call_31247619abd94a588b8e088d\",\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\": 132413}\"}}]},{\"role\":\"tool\",\"content\":\"363.89\",\"tool_call_id\":\"call_31247619abd94a588b8e088d\"}],\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"tool_choice\":\"none\"}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"oPN6XTs-z1gNr-9ae9716daf74a266\",\"object\":\"chat.completion.chunk\",\"created\":1765838430,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPN6XTs-z1gNr-9ae9716daf74a266\",\"object\":\"chat.completion.chunk\",\"created\":1765838430,\"choices\":[{\"index\":0,\"text\":\"\\n\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\\n\",\"reasoning\":null}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPN6XTs-z1gNr-9ae9716daf74a266\",\"object\":\"chat.completion.chunk\",\"created\":1765838430,\"choices\":[{\"index\":0,\"text\":\"\\n363.89\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\\n363.89\",\"reasoning\":null}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPN6XTs-z1gNr-9ae9716daf74a266\",\"object\":\"chat.completion.chunk\",\"created\":1765838430,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":\"stop\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPN6XTs-z1gNr-9ae9716daf74a266\",\"object\":\"chat.completion.chunk\",\"created\":1765838430,\"choices\":[],\"model\":\"zai-org/GLM-4.6\",\"usage\":{\"prompt_tokens\":63,\"total_tokens\":72,\"completion_tokens\":9,\"prompt_tokens_details\":null,\"reasoning_tokens\":0}}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - no-cache, no-transform
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ae9716daf74a266-YUL
+      Content-Type:
+      - text/event-stream;charset=utf-8
+      Retry-After:
+      - "1"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 75f53fd2-1f03-4830-ae30-23ba06999932-noamzn
+      X-Api-Call-Start:
+      - "2025-12-15T22:40:30.391Z"
+      X-Api-Received:
+      - "2025-12-15T22:40:30.375Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "18"
+      X-Ratelimit-Remaining-Tokens:
+      - "2559"
+      X-Ratelimit-Reset:
+      - "1"
+    status: 200 OK
+    code: 200
+    duration: 198ms

@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 248
+    host: api.together.xyz
+    body: "{\"model\":\"zai-org/GLM-4.6\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"oPN6Yp1-z1gNr-9ae971896815a266\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765838440,\n  \"model\": \"zai-org/GLM-4.6\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"The capital of Quackiland is Quack.\",\n        \"tool_calls\": [],\n        \"reasoning\": \"1.  **Analyze the User's Query:**\\n    *   The user provides three statements of \\\"fact\\\" within a fictional context.\\n    *   Statement 1: \\\"The capital of Quackiland is Quack.\\\"\\n    *   Statement 2: \\\"The Big Canard Statue is located in Quack.\\\"\\n    *   Statement 3 (The question): \\\"What is the capital of Quackiland?\\\"\\n\\n2.  **Identify the Core Task:**\\n    *   The user is asking for the capital of Quackiland.\\n    *   This is a simple information retrieval task, but the information is provided *within the prompt itself*. It's not a general knowledge question.\\n\\n3.  **Scan the Provided Information for the Answer:**\\n    *   I'll read the first sentence again: \\\"The capital of Quackiland is Quack.\\\"\\n    *   This sentence directly answers the question.\\n\\n4.  **Analyze the Other Information:**\\n    *   The second sentence, \\\"The Big Canard Statue is located in Quack,\\\" is extra information.\\n    *   It reinforces that Quack is a significant place *within Quackiland*.\\n    *   It's a distractor, but a simple one. It doesn't contradict the first sentence.\\n    *   My job is to not get distracted by it. The core answer is in the first sentence.\\n\\n5.  **Formulate the Answer:**\\n    *   **Direct Answer First:** Start with the most direct, concise answer. The capital of Quackiland is Quack.\\n    *   **Explain the Reasoning (Optional but helpful):** Briefly state *how* I know the answer. I can say that the answer was provided in the first sentence of the user's prompt. This shows I've understood the structure of the query.\\n    *   **Address the Extra Information (Also optional but good for completeness):** I could acknowledge the other fact, but it's not strictly necessary. In this case, it's so simple that just answering the question is best. Adding too much about the statue might seem like I'm overthinking it or trying to pad the answer. Keep it clean and direct.\\n\\n6.  **Drafting the Final Response (Internal Monologue):**\\n    *   *Initial thought:* \\\"Quack.\\\" (Too short, maybe a bit abrupt).\\n    *   *Second thought:* \\\"The capital of Quackiland is Quack.\\\" (Better, a complete sentence).\\n    *   *Third thought (adding context):* \\\"The capital of Quackiland is Quack. This was stated in the first sentence of your question.\\\" (Good, clear, shows the source).\\n    *   *Fourth thought (refining for natural language):* \\\"The capital of Quackiland is Quack.\\\" This is the most important part. I'll make that bold or the primary sentence. I don't need to add a full explanation unless the user seems confused (e.g., asks \\\"How do you know?\\\"). For a simple question like this, a simple, direct answer is the most effective and least likely to be misinterpreted. It's a test of direct information extraction, not a conversational prompt.\\n\\n7.  **Final Polish:**\\n    *   The best version is the most direct one.\\n    *   \\\"The capital of Quackiland is Quack.\\\"\\n    *   It's accurate, follows directly from the provided text, and is easy to understand. No need to complicate it. I will just state the fact clearly.\"\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 35,\n    \"total_tokens\": 778,\n    \"completion_tokens\": 743\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ae971896815a266-YUL
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"e36-cTCrxgGgM81+odFSwfCERJ7CyMI"
+      Retry-After:
+      - "2"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 3b46d686-39f0-44ed-8047-d3fb138aa50b-noamzn
+      X-Api-Call-End:
+      - "2025-12-15T22:40:40.071Z"
+      X-Api-Call-Start:
+      - "2025-12-15T22:40:34.910Z"
+      X-Api-Received:
+      - "2025-12-15T22:40:34.906Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "19"
+      X-Ratelimit-Remaining-Tokens:
+      - "3000"
+      X-Ratelimit-Reset:
+      - "2"
+    status: 200 OK
+    code: 200
+    duration: 5.302s

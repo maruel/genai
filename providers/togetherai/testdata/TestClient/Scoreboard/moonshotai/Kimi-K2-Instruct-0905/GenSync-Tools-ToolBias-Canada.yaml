@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 571
+    host: api.together.xyz
+    body: "{\"model\":\"moonshotai/Kimi-K2-Instruct-0905\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":\"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one.\"}],\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"description\":\"A tool to specify the best country\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"country\":{\"type\":\"string\",\"enum\":[\"Canada\",\"USA\"]}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"country\"]}}}],\"tool_choice\":\"required\"}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"oPMpSi4-zqrih-9ae924d25932a2cf\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765835292,\n  \"model\": \"moonshotai/Kimi-K2-Instruct-0905\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"\",\n        \"tool_calls\": [\n          {\n            \"id\": \"functions.best_country:0\",\n            \"index\": 0,\n            \"type\": \"function\",\n            \"function\": {\n              \"name\": \"best_country\",\n              \"arguments\": \"{\\\"country\\\": \\\"Canada\\\"}\"\n            }\n          }\n        ],\n        \"reasoning\": null\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"tool_calls\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 150,\n    \"total_tokens\": 164,\n    \"completion_tokens\": 14\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ae924d25932a2cf-YUL
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"34b-qMll7RoiAAxbRkc+xcygeu+FiIQ"
+      Retry-After:
+      - "2"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 10dce7a7-08da-436e-b24c-8089814b6270-noamzn
+      X-Api-Call-End:
+      - "2025-12-15T21:48:12.941Z"
+      X-Api-Call-Start:
+      - "2025-12-15T21:48:12.594Z"
+      X-Api-Received:
+      - "2025-12-15T21:48:12.585Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "18"
+      X-Ratelimit-Remaining-Tokens:
+      - "2904"
+      X-Ratelimit-Reset:
+      - "2"
+    status: 200 OK
+    code: 200
+    duration: 453ms

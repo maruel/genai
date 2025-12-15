@@ -18,8 +18,9 @@ interactions:
     proto: HTTP/2.0
     proto_major: 2
     proto_minor: 0
-    content_length: 265
-    body: "{\n  \"id\": \"oPBSiac-4Yz4kd-9addf2830f99a320\",\n  \"error\": {\n    \"message\": \"Invalid API key provided. You can find your API key at https://api.together.ai/settings/api-keys.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": \"invalid_api_key\"\n  }\n}"
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"oPMq5rP-6Ng1vN-9ae927e0aaf4a2cf\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765835425,\n  \"model\": \"openai/gpt-oss-20b\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"said\",\n        \"tool_calls\": [],\n        \"reasoning\": \"We need to interpret: \\\"What is the word said? Reply with only the word.\\\" This seems ambiguous. Possibly they want a word that was spoken? It might refer to a conversation or something. Could be a riddle: \\\"What is the word said?\\\" Might be in the context of a previous phrase. But we don't have context. It's a minimal instruction: reply with only the word. The assistant must guess the word. In the absence of context, maybe the expected answer is \\\"Hello\\\"? Or maybe \\\"Yes\\\"? It might refer to the puzzle on a site: \\\"What is the word said?\\\" Could be a known riddle: \\\"What word is said when you ask the question 'What word is said?'\\\" Might be meta: The word \\\"said\\\" itself. Or \\\"what\\\"? The phrase \\\"What is the word said?\\\" could refer to \\\"say what?\\\".\\n\\nAlternatively maybe this is a trick: The user wants the assistant to reply with \\\"word\\\". But the instruction says \\\"Reply with only the word.\\\" So perhaps the answer: \\\"Word\\\". So the word said is \\\"Word\\\". But that's weird.\\n\\nMaybe they want the word \\\"word\\\". Because \\\"word said\\\" phrase: \\\"What is the word said? Reply with only the word.\\\" So the answer could be \\\"saw\\\"? I'm not certain. The riddle: There's a phrase \\\"What is the word that ends with a letter 'd'?\\\" Actually \\\"What is the word that starts with 's' and ends with 'd'?\\\" The answer is 'said'. So \\\"the word said\\\" could be \\\"said\\\". The question: \\\"What is the word said? Reply with only the word.\\\" So answer: \\\"said\\\".\\n\\nYes! That is a known riddle: \\\"What word begins with 's', ends with 'd', and contains 'ai' in the middle?\\\" Answer: \\\"said\\\". So what is the word said? The answer would be \\\"said.\\\" So reply with only the word: \\\"said\\\". Let's respond with: said.\"\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 79,\n    \"total_tokens\": 504,\n    \"completion_tokens\": 425\n  }\n}"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -28,13 +29,13 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9addf2830f99a320-YUL
-      Content-Length:
-      - "265"
+      - 9ae927e0aaf4a2cf-YUL
       Content-Type:
       - application/json; charset=utf-8
       Etag:
-      - W/"109-ALN6n72e3JPFnT2uOuoCldH3tTE"
+      - W/"8dc-XBDlOD7+LXOyfmTBbwcgcfGiQEQ"
+      Retry-After:
+      - "2"
       Server:
       - cloudflare
       Strict-Transport-Security:
@@ -42,9 +43,27 @@ interactions:
       Vary:
       - Accept-Encoding
       X-Amzn-Trace-Id:
-      - 4697a451-f3cc-4abd-a766-357f21aa1b81-noamzn
+      - e0e03296-abbd-4847-a624-286babea01d2-noamzn
+      X-Api-Call-End:
+      - "2025-12-15T21:50:25.602Z"
+      X-Api-Call-Start:
+      - "2025-12-15T21:50:17.570Z"
       X-Api-Received:
-      - "2025-12-14T13:11:28.553Z"
-    status: 401 Unauthorized
-    code: 401
-    duration: 139ms
+      - "2025-12-15T21:50:17.537Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "19"
+      X-Ratelimit-Remaining-Tokens:
+      - "3000"
+      X-Ratelimit-Reset:
+      - "2"
+    status: 200 OK
+    code: 200
+    duration: 8.27s

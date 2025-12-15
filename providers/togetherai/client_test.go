@@ -67,7 +67,11 @@ func TestClient(t *testing.T) {
 		var models []scoreboard.Model
 		for _, m := range genaiModels {
 			// TODO: This is weak.
-			reason := strings.Contains(m.GetID(), "-Thinking-") || strings.HasPrefix(m.GetID(), "openai/gpt")
+			id := m.GetID()
+			reason := (strings.Contains(id, "-Thinking") ||
+				strings.HasPrefix(id, "openai/gpt") ||
+				(strings.HasPrefix(id, "Qwen/Qwen3") && !strings.Contains(id, "Instruct")) ||
+				strings.HasPrefix(id, "zai-org/GLM"))
 			models = append(models, scoreboard.Model{Model: m.GetID(), Reason: reason})
 		}
 		getClientRT := func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {

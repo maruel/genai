@@ -18,8 +18,9 @@ interactions:
     proto: HTTP/2.0
     proto_major: 2
     proto_minor: 0
-    content_length: 265
-    body: "{\n  \"id\": \"oPBSiWW-4YNCb4-9addf281bd8ca320\",\n  \"error\": {\n    \"message\": \"Invalid API key provided. You can find your API key at https://api.together.ai/settings/api-keys.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": \"invalid_api_key\"\n  }\n}"
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"oPMq27x-6Ng1vN-9ae92792fa0ea2cf\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765835412,\n  \"model\": \"openai/gpt-oss-20b\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"apple\",\n        \"tool_calls\": [],\n        \"reasoning\": \"The user says: \\\"What fruit is it? Reply with only one word.\\\" There is no context or image. That seems incomplete; maybe earlier context? In the conversation, there's no prior content about a fruit. The user asks in a short form. The question: what fruit is it? There's no context. Usually in these prompts, they provide an image. We can't see. We have to respond... But the instruction: \\\"Reply with only one word.\\\" We must output a fruit name. But we don't know which fruit. Maybe it's default to a generic fruit like \\\"apple.\\\" But maybe they'd want \\\"apple\\\" as a placeholder. Or \\\"banana.\\\" But they didn't give me any clue. We might think they forgot to include a picture. But we have to respond. The safest is to respond with \\\"apple.\\\" But we can consider \\\"apple\\\" is a fruit. But maybe they expect \\\"apple\\\" as typical. There's risk that they might be thinking about a known fruit. Without context, I choose \\\"apple.\\\" Or maybe \\\"banana\\\" because many Q/A uses banana? Let's think: The user ask \\\"What fruit is it?\\\" Without context, we might say \\\"unknown.\\\" But \\\"unknown\\\" is not a fruit. The instructions require only one word. We could say \\\"fruit.\\\" But also not a fruit. The instruction: only a one word response. They want the name of a fruit. So I think \\\"apple\\\". Usually in such ambiguous tasks, \\\"apple\\\" is safe. I'll choose \\\"apple\\\".\\n\\nAlternatively, some may be \\\"peach,\\\" \\\"mango\\\"? Because common fruit pictures? Many puzzles show an image of a fruit. But no context.\\n\\nThus answer: apple.\"\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 78,\n    \"total_tokens\": 433,\n    \"completion_tokens\": 355\n  }\n}"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -28,13 +29,13 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9addf281bd8ca320-YUL
-      Content-Length:
-      - "265"
+      - 9ae92792fa0ea2cf-YUL
       Content-Type:
       - application/json; charset=utf-8
       Etag:
-      - W/"109-kO+y/GVeenX0a5dB/PrU4916mKo"
+      - W/"820-lVHTSHhFP0E007SVUsw14VZTQOg"
+      Retry-After:
+      - "2"
       Server:
       - cloudflare
       Strict-Transport-Security:
@@ -42,9 +43,27 @@ interactions:
       Vary:
       - Accept-Encoding
       X-Amzn-Trace-Id:
-      - 79981430-bdaa-4d16-b066-0482e64c28f4-noamzn
+      - e38c3acc-2c24-4e78-9824-2f1b2d49ea99-noamzn
+      X-Api-Call-End:
+      - "2025-12-15T21:50:12.130Z"
+      X-Api-Call-Start:
+      - "2025-12-15T21:50:04.993Z"
       X-Api-Received:
-      - "2025-12-14T13:11:28.315Z"
-    status: 401 Unauthorized
-    code: 401
-    duration: 70ms
+      - "2025-12-15T21:50:04.984Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "19"
+      X-Ratelimit-Remaining-Tokens:
+      - "3000"
+      X-Ratelimit-Reset:
+      - "2"
+    status: 200 OK
+    code: 200
+    duration: 7.23s

@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 131
+    host: api.together.xyz
+    body: "{\"model\":\"Qwen/Qwen3-Next-80B-A3B-Thinking\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"oPN5Ftx-3pDw3Z-9ae96b608805a2ce\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765838184,\n  \"model\": \"Qwen/Qwen3-Next-80B-A3B-Thinking\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"<think>\\nOkay, the user said \\\"Say hello. Use only one word.\\\" So I need to respond with just one word. The simplest and most direct response to \\\"say hello\\\" is \\\"Hello.\\\" But maybe they want a different greeting? Let me check. The instruction is clear: only one word. \\\"Hello\\\" is one word. \\\"Hi\\\" is also one word, but \\\"Hello\\\" is more formal. But maybe \\\"Hi\\\" is acceptable. Wait, the user didn't specify the context. But the standard response to \\\"say hello\\\" is \\\"Hello.\\\" But sometimes people say \\\"Hi\\\" but \\\"Hello\\\" is the direct answer. Let me think. If someone says \\\"Say hello,\\\" the correct single-word reply is \\\"Hello.\\\" Alternatively, \\\"Hi\\\" is also possible. But maybe the user wants \\\"Hello\\\" specifically. Let's see. The user might be testing if I follow instructions. So the safest answer is \\\"Hello.\\\" But I need to make sure it's exactly one word. Yes, \\\"Hello\\\" is one word. So the response should be just \\\"Hello.\\\" No punctuation? Well, sometimes it's written with an exclamation mark, but the instruction says \\\"use only one word,\\\" so maybe without punctuation. But usually, \\\"Hello\\\" as a word is written without punctuation in such cases. Wait, but in the response, maybe they just want the word \\\"Hello\\\" as the entire message. So the correct answer is \\\"Hello.\\\" Let me confirm. Yes, that's the standard single-word greeting. So I should respond with \\\"Hello.\\\"\\n</think>\\n\\nHello\",\n        \"tool_calls\": [],\n        \"reasoning\": null\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 18,\n    \"total_tokens\": 341,\n    \"completion_tokens\": 323\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ae96b608805a2ce-YUL
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"7be-hlQ9kd+7NbZ8BupkXs6GJ3FZVWg"
+      Retry-After:
+      - "2"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - a659f7a8-8192-420c-bb36-59b059e77252-noamzn
+      X-Api-Call-End:
+      - "2025-12-15T22:36:24.290Z"
+      X-Api-Call-Start:
+      - "2025-12-15T22:36:22.901Z"
+      X-Api-Received:
+      - "2025-12-15T22:36:22.893Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "18"
+      X-Ratelimit-Remaining-Tokens:
+      - "3000"
+      X-Ratelimit-Reset:
+      - "2"
+    status: 200 OK
+    code: 200
+    duration: 1.908s

@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 281
+    host: api.together.xyz
+    body: "{\"model\":\"Qwen/Qwen3-Next-80B-A3B-Thinking\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"# Quackiland\\n\\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"oPN5LfU-3pDw3Z-9ae96bc6bc0ea2ce\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765838203,\n  \"model\": \"Qwen/Qwen3-Next-80B-A3B-Thinking\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"<think>\\nOkay, let's see. The question is asking for the capital of Quackiland. The information given is that the capital of Quackiland is Quack, and the Big Canard Statue is located in Quack. So, the question is kind of straightforward, but maybe there's a trick here.\\n\\nWait, the user says \\\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\\\" So they're stating the capital is Quack, then asking what the capital is. That seems redundant. Maybe it's a trick question where the answer is right there in the question. Let me read it again.\\n\\n\\\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\\\"\\n\\nSo the first sentence directly states the capital is Quack. Then the second sentence gives more info about the statue being in Quack. But the question is just asking for the capital again. So maybe the answer is just \\\"Quack\\\". But why would they include the part about the statue? Maybe to test if the reader gets distracted by extra information.\\n\\nBut sometimes in these kinds of questions, there's a pun or wordplay. \\\"Quack\\\" is the name of the capital, and \\\"Quackiland\\\" sounds like a play on \\\"quack\\\" which is the sound ducks make. So maybe Quack is a duck-related name. The Big Canard Statue: \\\"Canard\\\" is French for duck, so that's another duck reference. But the question is straightforward.\\n\\nWait, maybe the trick is that the answer is in the question. The first sentence says \\\"The capital of Quackiland is Quack\\\" so the answer is Quack. The rest is just extra info. So the answer is Quack.\\n\\nBut maybe the user is expecting a different answer? Let me check again. The question is phrased as: \\\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\\\"\\n\\nSo the answer is Quack. But perhaps the joke is that since the capital is named Quack, and the statue is in Quack, but the question is just repeating it. Maybe it's a trick to see if you overthink it. Because sometimes people might think that \\\"Quack\\\" is the name of the statue or something else, but no—it clearly states the capital is Quack. So the answer should be Quack.\\n\\nAlternatively, maybe \\\"Quack\\\" is the name of the capital city, so the answer is Quack. Yes. So even though the question seems to state it already, the answer is Quack. Maybe it's a simple question to confirm understanding. Like, \\\"What's the capital of Quackiland? It's Quack.\\\" So the answer is Quack.\\n\\nBut to be thorough, maybe there's a different angle. For example, sometimes people confuse the country name with the capital. But here Quackiland is the country, and Quack is the capital. So the answer is Quack. The Big Canard Statue being in Quack is just additional info that doesn't affect the answer.\\n\\nSo the answer should be Quack. Maybe the question is testing if you can ignore irrelevant details. The statue part is a red herring. So the correct answer is Quack.\\n</think>\\n\\nThe capital of Quackiland is explicitly stated in the question: **\\\"The capital of Quackiland is Quack.\\\"** The additional detail about the Big Canard Statue being located in Quack serves as contextual information but does not alter the fact that the capital is **Quack**.\\n\\nThis question is designed to test whether the reader overcomplicates the answer by focusing on extraneous details. The key lies in directly identifying the information provided in the first sentence.\\n\\n**Answer:** Quack\",\n        \"tool_calls\": [],\n        \"reasoning\": null\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 45,\n    \"total_tokens\": 850,\n    \"completion_tokens\": 805\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ae96bc6bc0ea2ce-YUL
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"1007-FhipkVioZh2SlyOA+GPeSjKhRm0"
+      Retry-After:
+      - "1"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 1ef97d01-f45f-46f1-bc14-70cb68738520-noamzn
+      X-Api-Call-End:
+      - "2025-12-15T22:36:43.688Z"
+      X-Api-Call-Start:
+      - "2025-12-15T22:36:38.937Z"
+      X-Api-Received:
+      - "2025-12-15T22:36:38.931Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "18"
+      X-Ratelimit-Remaining-Tokens:
+      - "3000"
+      X-Ratelimit-Reset:
+      - "1"
+    status: 200 OK
+    code: 200
+    duration: 4.948s

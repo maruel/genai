@@ -18,8 +18,9 @@ interactions:
     proto: HTTP/2.0
     proto_major: 2
     proto_minor: 0
-    content_length: 264
-    body: "{\n  \"id\": \"oPBSiFu-zqrih-9addf27bee29a320\",\n  \"error\": {\n    \"message\": \"Invalid API key provided. You can find your API key at https://api.together.ai/settings/api-keys.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": \"invalid_api_key\"\n  }\n}"
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"oPMfHah-zqrih-9ae8f931c932a2f0\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765833510,\n  \"model\": \"Qwen/Qwen3-235B-A22B-Thinking-2507\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"Hmm, the user just said \\\"Say hello. Use only one word.\\\" That's straightforward but tricky. They want a greeting, but with a strict limit—just one word. \\n\\nOkay, first, I need to figure out what they're really after. Maybe they're testing if I follow instructions precisely? Or perhaps they're in a hurry and want a quick response. Could also be they're checking how literal I am with constraints. \\n\\n\\\"Hello\\\" is the obvious choice—it's the standard greeting, fits the one-word rule, and matches \\\"say hello.\\\" But wait, could \\\"Hi\\\" work too? It's shorter, but \\\"hello\\\" feels more complete. The user didn't specify formality, so neutral is safe. \\n\\nGotta avoid overcomplicating. No \\\"Hey\\\" or slang—might seem unprofessional. \\\"Greetings\\\" is too long. Yep, \\\"Hello\\\" is perfect. One word, clear, polite. \\n\\n...Did they expect something playful? Nah, the instruction was barebones. Stick to the brief. \\n\\n*Types \\\"Hello\\\"* Done.\\n</think>\\n\\nHello\",\n        \"tool_calls\": [],\n        \"reasoning\": null\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 18,\n    \"total_tokens\": 243,\n    \"completion_tokens\": 225\n  }\n}"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -28,13 +29,13 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9addf27bee29a320-YUL
-      Content-Length:
-      - "264"
+      - 9ae8f931c932a2f0-YUL
       Content-Type:
       - application/json; charset=utf-8
       Etag:
-      - W/"108-DRLDRWLiczoA12hl5MGgEMpMEy8"
+      - W/"5fd-Bn4bLq4FWpOhg7BC8Rk/T06ztMw"
+      Retry-After:
+      - "2"
       Server:
       - cloudflare
       Strict-Transport-Security:
@@ -42,9 +43,27 @@ interactions:
       Vary:
       - Accept-Encoding
       X-Amzn-Trace-Id:
-      - 74355bcf-02a0-4389-8b6c-b2d66dc670a2-noamzn
+      - 989df7a3-d8d3-4ed9-83bd-efd857a14852-noamzn
+      X-Api-Call-End:
+      - "2025-12-15T21:18:30.451Z"
+      X-Api-Call-Start:
+      - "2025-12-15T21:18:25.883Z"
       X-Api-Received:
-      - "2025-12-14T13:11:27.469Z"
-    status: 401 Unauthorized
-    code: 401
-    duration: 172ms
+      - "2025-12-15T21:18:25.874Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "18"
+      X-Ratelimit-Remaining-Tokens:
+      - "3000"
+      X-Ratelimit-Reset:
+      - "2"
+    status: 200 OK
+    code: 200
+    duration: 4.986s

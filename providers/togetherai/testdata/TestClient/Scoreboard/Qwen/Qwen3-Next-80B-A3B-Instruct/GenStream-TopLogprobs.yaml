@@ -19,7 +19,7 @@ interactions:
     proto_major: 2
     proto_minor: 0
     content_length: -1
-    body: "data: {\"id\":\"oPBXFgE-3pDw3Z-9ade081e7d69a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718773,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPBXFgE-3pDw3Z-9ade081e7d69a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718773,\"choices\":[{\"index\":0,\"text\":\"Hello\",\"logprobs\":{\"tokens\":[\"Hello\"],\"token_logprobs\":[-0.000056268367188749835],\"top_logprobs\":[[{\"token\":\"Hello\",\"logprob\":-0.000056268367188749835},{\"token\":\"Hi\",\"logprob\":-9.785181999206543}]]},\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"Hello\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPBXFgE-3pDw3Z-9ade081e7d69a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718773,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":\"stop\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPBXFgE-3pDw3Z-9ade081e7d69a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718773,\"choices\":[],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":{\"prompt_tokens\":16,\"total_tokens\":18,\"completion_tokens\":2,\"prompt_tokens_details\":null,\"reasoning_tokens\":0}}\n\ndata: [DONE]\n\n"
+    body: "data: {\"id\":\"oPN5TcG-4YNCb4-9ae96c58e9a2a2ce\",\"object\":\"chat.completion.chunk\",\"created\":1765838222,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPN5TcG-4YNCb4-9ae96c58e9a2a2ce\",\"object\":\"chat.completion.chunk\",\"created\":1765838222,\"choices\":[{\"index\":0,\"text\":\"Hello\",\"logprobs\":{\"tokens\":[\"Hello\"],\"token_logprobs\":[-0.00009561041952110827],\"top_logprobs\":[[{\"token\":\"Hello\",\"logprob\":-0.00009561041952110827},{\"token\":\"Hi\",\"logprob\":-9.255970001220703}]]},\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"Hello\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPN5TcG-4YNCb4-9ae96c58e9a2a2ce\",\"object\":\"chat.completion.chunk\",\"created\":1765838222,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":\"stop\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPN5TcG-4YNCb4-9ae96c58e9a2a2ce\",\"object\":\"chat.completion.chunk\",\"created\":1765838222,\"choices\":[],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":{\"prompt_tokens\":16,\"total_tokens\":18,\"completion_tokens\":2,\"prompt_tokens_details\":null,\"reasoning_tokens\":0}}\n\ndata: [DONE]\n\n"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -30,7 +30,7 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9ade081e7d69a275-YUL
+      - 9ae96c58e9a2a2ce-YUL
       Content-Type:
       - text/event-stream;charset=utf-8
       Retry-After:
@@ -42,11 +42,11 @@ interactions:
       Vary:
       - Accept-Encoding
       X-Amzn-Trace-Id:
-      - 8a4170e3-e5d1-4ec7-8ab9-2242832b34a8-noamzn
+      - a7c58d6f-186a-4dc3-a2c0-991fa6b2241f-noamzn
       X-Api-Call-Start:
-      - "2025-12-14T13:26:13.621Z"
+      - "2025-12-15T22:37:02.306Z"
       X-Api-Received:
-      - "2025-12-14T13:26:13.611Z"
+      - "2025-12-15T22:37:02.293Z"
       X-Inference-Version:
       - v2
       X-Ratelimit:
@@ -63,4 +63,4 @@ interactions:
       - "2"
     status: 200 OK
     code: 200
-    duration: 330ms
+    duration: 485ms

@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 265
+    host: api.together.xyz
+    body: "{\"model\":\"Qwen/Qwen3-Next-80B-A3B-Thinking\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"oPN5KdF-3pDw3Z-9ae96bb0fa9da2ce\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765838198,\n  \"model\": \"Qwen/Qwen3-Next-80B-A3B-Thinking\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"<think>\\nFirst, the user says: \\\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\\\"\\n\\nThis seems straightforward. It directly states that the capital of Quackiland is Quack. Then it mentions that the Big Canard Statue is in Quack, which is probably just additional information but not relevant to the question.\\n\\nThe question is: \\\"What is the capital of Quackiland?\\\" And from the first sentence, it's clearly stated as \\\"Quack.\\\"\\n\\nI should check if there's any trick here. The name \\\"Quack\\\" might be a play on words, like a duck sound, but that doesn't change the fact that it's given as the capital.\\n\\nAlso, \\\"Quackiland\\\" sounds fictional, and \\\"Quack\\\" is likely the name of the capital city. The Big Canard Statue— \\\"canard\\\" means duck in French, so that might be related, but again, it doesn't affect the capital.\\n\\nSo, the direct answer should be \\\"Quack.\\\"\\n\\nThe user might be testing if I overcomplicate it. But logically, the capital is stated explicitly.\\n\\nLet me read the input again: \\\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\\\"\\n\\nYes, it's redundant but clear. The capital is Quack.\\n\\nI should answer directly: The capital of Quackiland is Quack.\\n\\nSince the question is \\\"What is the capital of Quackiland?\\\", I can simply say \\\"Quack.\\\"\\n\\nBut to be precise, I'll state it clearly.\\n\\nNo need for additional explanation unless it's a trick question. But this doesn't seem like a trick; it's very straightforward.\\n\\nPerhaps \\\"Quack\\\" is meant to be the answer, and the statue part is just context.\\n\\nMaybe \\\"Quack\\\" could be misinterpreted, but in this context, it's the name of the city.\\n\\nFor example, in some puzzles, the word \\\"quack\\\" might refer to something else, but here it's specified as the capital.\\n\\nThe sentence says \\\"the capital of Quackiland is Quack,\\\" so Quack is the name.\\n\\nSimilarly, \\\"located in Quack\\\" confirms that Quack is a place.\\n\\nSo, no issue.\\n\\nTherefore, the answer is Quack.\\n\\nI think I should respond with: The capital of Quackiland is Quack.\\n\\nSince the question is asked, I can just say \\\"Quack.\\\"\\n\\nBut to be complete, I'll phrase it as a sentence.\\n\\nFinal answer: Quack\\n</think>\\n\\nThe capital of Quackiland is Quack, as stated directly in the query. The mention of the Big Canard Statue being located in Quack is additional context but does not change the capital city. Therefore, the answer is **Quack**.\",\n        \"tool_calls\": [],\n        \"reasoning\": null\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 40,\n    \"total_tokens\": 632,\n    \"completion_tokens\": 592\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ae96bb0fa9da2ce-YUL
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"c18-52pzRsbgrVHEl673KIqhxmdY1Uo"
+      Retry-After:
+      - "2"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 5cb43700-f933-4f55-abd0-bf108282417e-noamzn
+      X-Api-Call-End:
+      - "2025-12-15T22:36:38.762Z"
+      X-Api-Call-Start:
+      - "2025-12-15T22:36:35.444Z"
+      X-Api-Received:
+      - "2025-12-15T22:36:35.438Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "19"
+      X-Ratelimit-Remaining-Tokens:
+      - "3000"
+      X-Ratelimit-Reset:
+      - "2"
+    status: 200 OK
+    code: 200
+    duration: 3.479s

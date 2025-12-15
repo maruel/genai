@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 143
+    host: api.together.xyz
+    body: "{\"model\":\"Qwen/Qwen3-235B-A22B-Thinking-2507\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"}],\"seed\":42}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"oPMfK1C-zqrih-9ae8f950efaca2f0\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765833515,\n  \"model\": \"Qwen/Qwen3-235B-A22B-Thinking-2507\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"Hmm, the user just said \\\"Say hello. Use only one word.\\\" Okay, that's straightforward. They want a greeting but with a strict constraint: only one word. \\n\\nI wonder why they're asking for such a minimal response. Maybe they're testing if I follow instructions precisely, or perhaps they're in a hurry and want something quick. Could also be a language exercise—like seeing how AI handles constraints. \\n\\nThe user seems direct, no extra fluff in their query. Probably values efficiency. I should respect that by keeping it ultra-simple. \\\"Hello\\\" is the obvious choice—it's the standard greeting, polite, and fits the one-word rule perfectly. \\n\\n...Though part of me wants to say \\\"Hi\\\" since it's shorter, but \\\"hello\\\" feels more neutral and universally appropriate. Yeah, \\\"hello\\\" it is. No overthinking—just obey the command.\\n</think>\\n\\nHello\",\n        \"tool_calls\": [],\n        \"reasoning\": null\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 18,\n    \"total_tokens\": 202,\n    \"completion_tokens\": 184\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ae8f950efaca2f0-YUL
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"595-liIlxWmgh5hp138HfLGwKf434OM"
+      Retry-After:
+      - "2"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 522e4705-6d54-43b1-8a94-6c96c344287a-noamzn
+      X-Api-Call-End:
+      - "2025-12-15T21:18:35.452Z"
+      X-Api-Call-Start:
+      - "2025-12-15T21:18:30.668Z"
+      X-Api-Received:
+      - "2025-12-15T21:18:30.659Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "19"
+      X-Ratelimit-Remaining-Tokens:
+      - "3000"
+      X-Ratelimit-Reset:
+      - "2"
+    status: 200 OK
+    code: 200
+    duration: 4.958s

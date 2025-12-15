@@ -20,7 +20,7 @@ interactions:
     proto_minor: 0
     content_length: -1
     uncompressed: true
-    body: "{\n  \"id\": \"oPBXTWM-6Ng1vN-9ade0918fdaea275\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765718813,\n  \"model\": \"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"Hello.\",\n        \"tool_calls\": [],\n        \"reasoning\": null\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 16,\n    \"total_tokens\": 19,\n    \"completion_tokens\": 3\n  }\n}"
+    body: "{\n  \"id\": \"oPN9QBq-3pDw3Z-9ae97f1e9ac1a29f\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765838991,\n  \"model\": \"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"Hello\",\n        \"tool_calls\": [],\n        \"reasoning\": null\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 16,\n    \"total_tokens\": 18,\n    \"completion_tokens\": 2\n  }\n}"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -29,13 +29,13 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9ade0918fdaea275-YUL
+      - 9ae97f1e9ac1a29f-YUL
       Content-Type:
       - application/json; charset=utf-8
       Etag:
-      - W/"244-j5a5sF1DxoBzDZE0E0OBThKaDwI"
+      - W/"243-b2id2GPvRZouomzXupN62z9UNNs"
       Retry-After:
-      - "1"
+      - "2"
       Server:
       - cloudflare
       Strict-Transport-Security:
@@ -43,13 +43,13 @@ interactions:
       Vary:
       - Accept-Encoding
       X-Amzn-Trace-Id:
-      - 5bba4520-2e03-411e-8a80-365d5885a53b-noamzn
+      - f98d5b91-6f8a-482d-8cda-7809fdd734d9-noamzn
       X-Api-Call-End:
-      - "2025-12-14T13:26:53.603Z"
+      - "2025-12-15T22:49:51.404Z"
       X-Api-Call-Start:
-      - "2025-12-14T13:26:53.415Z"
+      - "2025-12-15T22:49:51.241Z"
       X-Api-Received:
-      - "2025-12-14T13:26:53.406Z"
+      - "2025-12-15T22:49:51.233Z"
       X-Inference-Version:
       - v2
       X-Ratelimit:
@@ -59,11 +59,11 @@ interactions:
       X-Ratelimit-Limit-Tokens:
       - "3000"
       X-Ratelimit-Remaining:
-      - "17"
+      - "18"
       X-Ratelimit-Remaining-Tokens:
       - "3000"
       X-Ratelimit-Reset:
-      - "1"
+      - "2"
     status: 200 OK
     code: 200
-    duration: 279ms
+    duration: 373ms

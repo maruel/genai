@@ -19,7 +19,7 @@ interactions:
     proto_major: 2
     proto_minor: 0
     content_length: -1
-    body: "data: {\"id\":\"oPBXHNS-6Ng1vN-9ade08423e29a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718779,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPBXHNS-6Ng1vN-9ade08423e29a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718779,\"choices\":[{\"index\":0,\"text\":\"said\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"said\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPBXHNS-6Ng1vN-9ade08423e29a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718779,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":\"stop\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPBXHNS-6Ng1vN-9ade08423e29a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718779,\"choices\":[],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":{\"prompt_tokens\":20,\"total_tokens\":22,\"completion_tokens\":2,\"prompt_tokens_details\":null,\"reasoning_tokens\":0}}\n\ndata: [DONE]\n\n"
+    body: "data: {\"id\":\"oPN5Vhq-6Ng1vN-9ae96c84c89aa2ce\",\"object\":\"chat.completion.chunk\",\"created\":1765838229,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPN5Vhq-6Ng1vN-9ae96c84c89aa2ce\",\"object\":\"chat.completion.chunk\",\"created\":1765838229,\"choices\":[{\"index\":0,\"text\":\"said\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"said\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPN5Vhq-6Ng1vN-9ae96c84c89aa2ce\",\"object\":\"chat.completion.chunk\",\"created\":1765838229,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":\"stop\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPN5Vhq-6Ng1vN-9ae96c84c89aa2ce\",\"object\":\"chat.completion.chunk\",\"created\":1765838229,\"choices\":[],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":{\"prompt_tokens\":20,\"total_tokens\":22,\"completion_tokens\":2,\"prompt_tokens_details\":null,\"reasoning_tokens\":0}}\n\ndata: [DONE]\n\n"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -30,11 +30,11 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9ade08423e29a275-YUL
+      - 9ae96c84c89aa2ce-YUL
       Content-Type:
       - text/event-stream;charset=utf-8
       Retry-After:
-      - "1"
+      - "0"
       Server:
       - cloudflare
       Strict-Transport-Security:
@@ -42,11 +42,11 @@ interactions:
       Vary:
       - Accept-Encoding
       X-Amzn-Trace-Id:
-      - 63a88aec-c80e-4584-98c9-2ec792516fd3-noamzn
+      - 7e10b444-0ef3-49ad-a35e-c2a4eb0c1dee-noamzn
       X-Api-Call-Start:
-      - "2025-12-14T13:26:19.320Z"
+      - "2025-12-15T22:37:09.355Z"
       X-Api-Received:
-      - "2025-12-14T13:26:19.307Z"
+      - "2025-12-15T22:37:09.344Z"
       X-Inference-Version:
       - v2
       X-Ratelimit:
@@ -56,11 +56,11 @@ interactions:
       X-Ratelimit-Limit-Tokens:
       - "3000"
       X-Ratelimit-Remaining:
-      - "17"
+      - "15"
       X-Ratelimit-Remaining-Tokens:
-      - "2958"
+      - "2701"
       X-Ratelimit-Reset:
-      - "1"
+      - "0"
     status: 200 OK
     code: 200
-    duration: 197ms
+    duration: 189ms

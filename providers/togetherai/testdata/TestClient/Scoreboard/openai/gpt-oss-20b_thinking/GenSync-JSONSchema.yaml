@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 382
+    host: api.together.xyz
+    body: "{\"model\":\"openai/gpt-oss-20b\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON.\"}],\"response_format\":{\"type\":\"json_schema\",\"schema\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"is_fruit\":{\"type\":\"boolean\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"is_fruit\"]}}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"oPMpvQS-6Ng1vN-9ae9271a69eca2cf\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765835387,\n  \"model\": \"openai/gpt-oss-20b\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"{\\\"is_fruit\\\": true}\",\n        \"tool_calls\": [],\n        \"reasoning\": \"User: \\\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON.\\\" So answer must be JSON, presumably a key-value. Probably {\\\"banana\\\":\\\"fruit\\\"} or {\\\"is_fruit\\\": true}. Just JSON. No explanation. So output JSON only. E.g.:\\n\\n{\\n  \\\"banana_is_fruit\\\": true\\n}\\n\\nMake sure strict JSON. No extra text.\"\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 84,\n    \"total_tokens\": 175,\n    \"completion_tokens\": 91\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ae9271a69eca2cf-YUL
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"37b-ACBbvyksq0aDm0/OoL3B/DOlKv0"
+      Retry-After:
+      - "1"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - fb8a2749-aef1-4aae-99e1-f7edb5bc64c8-noamzn
+      X-Api-Call-End:
+      - "2025-12-15T21:49:47.531Z"
+      X-Api-Call-Start:
+      - "2025-12-15T21:49:45.782Z"
+      X-Api-Received:
+      - "2025-12-15T21:49:45.755Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "17"
+      X-Ratelimit-Remaining-Tokens:
+      - "3000"
+      X-Ratelimit-Reset:
+      - "1"
+    status: 200 OK
+    code: 200
+    duration: 1.968s

@@ -1,0 +1,55 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 275
+    host: api.together.xyz
+    body: "{\"model\":\"essentialai/rnj-1-instruct\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"# Quackiland\\n\\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"oPBePD1-4YNCb4-9ade2a15595da28c\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765720164,\n  \"model\": \"essentialai/rnj-1-instruct\",\n  \"service_tier\": null,\n  \"system_fingerprint\": null,\n  \"prompt_token_ids\": null,\n  \"kv_transfer_params\": null,\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"**Answer:** The capital of Quackiland is Quack.\\n\\n**Explanation:**\\n\\nThe question directly states that the capital of Quackiland is Quack. Therefore, the answer is simply Quack.\\n\\n**Code:**\\n\\n```python\\ndef get_capital():\\n    return \\\"Quack\\\"\\n\\nprint(get_capital())\\n```\\n\\nThis code defines a function `get_capital()` that returns the string \\\"Quack\\\", and then prints the result of calling this function.\",\n        \"tool_calls\": [],\n        \"reasoning\": null\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"token_ids\": null,\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 65,\n    \"total_tokens\": 160,\n    \"completion_tokens\": 95\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ade2a15595da28c-YUL
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"423-jLyyEz9B+cO/Hj/jIJb5Iy3o1i4"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 332194f1-e32f-48d6-b2a1-e5f4cfda222c-noamzn
+      X-Api-Call-End:
+      - "2025-12-14T13:49:25.508Z"
+      X-Api-Call-Start:
+      - "2025-12-14T13:49:24.738Z"
+      X-Api-Received:
+      - "2025-12-14T13:49:24.729Z"
+      X-Inference-Version:
+      - v2
+    status: 200 OK
+    code: 200
+    duration: 845ms

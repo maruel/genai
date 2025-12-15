@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 262
+    host: api.together.xyz
+    body: "{\"model\":\"Qwen/Qwen3-235B-A22B-fp8-tput\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"oPN3MMD-zqrih-9ae9624e5ab2a27f\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765837819,\n  \"model\": \"Qwen/Qwen3-235B-A22B-fp8-tput\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"<think>\\nOkay, let's see. The question is asking for the capital of Quackiland. The user provided two statements: first, that the capital of Quackiland is Quack, and second, that the Big Canard Statue is located in Quack.\\n\\nWait, so the first statement directly answers the question. The capital is Quack. The second statement gives additional information about a statue in Quack, but that's probably just extra details to maybe distract or test if I'm paying attention. \\n\\nBut let me make sure I'm not missing something. Sometimes questions can be tricky, like if there's a play on words or if the answer isn't straightforward. For example, maybe \\\"Quack\\\" is a play on \\\"duck\\\" or something else. But the question seems straightforward here. The first sentence states that the capital of Quackiland is Quack. So unless there's some hidden trick or later information that contradicts this, the answer should be Quack.\\n\\nI should check if there's any possible confusion between the statue and the capital. The Big Canard Statue being in Quack might lead someone to think that the statue is in the capital city, which is also Quack. But that doesn't change the fact that the capital is named Quack. The presence of the statue doesn't affect the capital's name. So even with that extra information, the answer remains the same.\\n\\nAnother angle: sometimes in questions, especially in exams, they repeat information to test if you can extract the answer despite distractions. So here, the key info is the first sentence. The second sentence is just extra, possibly relevant to another question but not this one. Therefore, the answer is Quack.\\n</think>\\n\\nThe capital of Quackiland is explicitly stated in the first sentence: **Quack**. The mention of the Big Canard Statue serves as additional context but does not alter the answer. \\n\\n**Answer:** Quack.\",\n        \"tool_calls\": [],\n        \"reasoning\": null\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 38,\n    \"total_tokens\": 432,\n    \"completion_tokens\": 394\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ae9624e5ab2a27f-YUL
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"977-R/tAI72vkdmcdhAoAncRpRyfk+0"
+      Retry-After:
+      - "2"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 43c47c85-449e-4934-b80a-7b692052d4d4-noamzn
+      X-Api-Call-End:
+      - "2025-12-15T22:30:19.999Z"
+      X-Api-Call-Start:
+      - "2025-12-15T22:30:11.023Z"
+      X-Api-Received:
+      - "2025-12-15T22:30:11.012Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "18"
+      X-Ratelimit-Remaining-Tokens:
+      - "2518"
+      X-Ratelimit-Reset:
+      - "2"
+    status: 200 OK
+    code: 200
+    duration: 9.152s

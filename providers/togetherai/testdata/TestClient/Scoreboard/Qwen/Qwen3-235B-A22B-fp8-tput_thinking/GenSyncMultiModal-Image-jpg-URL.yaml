@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 303
+    host: api.together.xyz
+    body: "{\"model\":\"Qwen/Qwen3-235B-A22B-fp8-tput\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What fruit is it? Reply with only one word.\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg\"}}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"oPN3Xkr-28Eivz-9ae96328ba38a27f\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765837861,\n  \"model\": \"Qwen/Qwen3-235B-A22B-fp8-tput\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"<think>\\nOkay, the user is asking \\\"What fruit is it? Reply with only one word.\\\" Hmm, they want a single word answer. But wait, the question is a bit ambiguous. Which fruit are they referring to? Maybe there's an image or some context they didn't provide. Since I can't see images or access external content, I should consider that they might be testing me with a riddle or a common fruit.\\n\\nIf they didn't specify any details, the safest approach is to pick a common fruit. But which one? Maybe they expect a specific answer. Wait, sometimes in such cases, people use \\\"fruit\\\" as a trick question where the answer is \\\"fruit\\\" itself. But that seems too simple. Alternatively, maybe there's a standard answer for this. Let me think. In some contexts, like a classic riddle, the answer might be \\\"banana\\\" or \\\"apple,\\\" but without clues, it's hard. However, the user might have a specific fruit in mind that's commonly used in examples. Wait, the instruction says to reply with only one word. So the user might be testing the ability to answer concisely. But without any context, the best I can do is to give a general example. However, since they might have a particular fruit in mind, perhaps the answer is \\\"apple.\\\" Apple is a common fruit. But maybe it's a trick question. Alternatively, if they are testing the ability to recognize that the question lacks context, but the user wants an answer anyway. Maybe the answer is \\\"banana\\\" or \\\"apple.\\\" Alternatively, \\\"mango\\\" or \\\"orange.\\\" Wait, but how to choose. Since I can't ask for clarification, and need to answer one word, perhaps the safest answer is \\\"apple.\\\" But why? Because it's one of the most commonly known fruits. Alternatively, maybe the user intended to test the model's assumption when context is missing. But the instruction says to reply with only one word. So I shouldn't overcomplicate. But if the user expects a specific answer and I give a wrong one, they might point it out. Alternatively, maybe the answer is \\\"fruit\\\" itself. Wait, the question is \\\"What fruit is it?\\\" If it's a riddle, maybe the answer is \\\"fruit,\\\" but that seems unlikely. Alternatively, if there was an image of a fruit, but since I can't see it, the user might have forgotten to include details. But the user wants a one-word answer. So perhaps the intended answer is a specific fruit, but without context, any answer is a guess. In that case, maybe the most neutral common fruit is \\\"apple.\\\" Alternatively, \\\"banana.\\\" Hmm. Alternatively, if the user is using a standard example, maybe in their mind the answer is \\\"pear\\\" or \\\"kiwi.\\\" But I can't know. Alternatively, maybe they want the assistant to state that more information is needed, but the user's instruction says to reply with only one word. So the assistant can't say that. Therefore, the assistant has to guess. In such cases, perhaps the most common answer would be \\\"apple.\\\" But I'm not sure. Alternatively, maybe \\\"orange\\\" is more common. Wait, in some contexts, \\\"fruit\\\" questions default to banana. Hmm. Alternatively, maybe the answer is \\\"mango,\\\" but again, no clue. Since the user wants just one word, and there's no context, the best approach is to pick a common fruit. Let's go with apple.\\n</think>\\n\\napple\",\n        \"tool_calls\": [],\n        \"reasoning\": null\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 19,\n    \"total_tokens\": 742,\n    \"completion_tokens\": 723\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ae96328ba38a27f-YUL
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"ee5-xbmpGEywBpcLX7OW7A/KcDIVrVc"
+      Retry-After:
+      - "2"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - a69226a0-7963-4f47-b46b-55a94a5f3797-noamzn
+      X-Api-Call-End:
+      - "2025-12-15T22:31:01.986Z"
+      X-Api-Call-Start:
+      - "2025-12-15T22:30:46.041Z"
+      X-Api-Received:
+      - "2025-12-15T22:30:46.023Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "19"
+      X-Ratelimit-Remaining-Tokens:
+      - "2351"
+      X-Ratelimit-Reset:
+      - "2"
+    status: 200 OK
+    code: 200
+    duration: 16.151s

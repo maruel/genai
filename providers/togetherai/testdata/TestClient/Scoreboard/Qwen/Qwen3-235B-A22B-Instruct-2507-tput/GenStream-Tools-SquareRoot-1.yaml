@@ -19,7 +19,7 @@ interactions:
     proto_major: 2
     proto_minor: 0
     content_length: -1
-    body: "data: {\"id\":\"oPBXUjk-62bZhn-9ade093138e1a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718817,\"choices\":[{\"index\":0,\"role\":\"assistant\",\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\"}}],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\"}\n\ndata: {\"id\":\"oPBXUjk-62bZhn-9ade093138e1a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718817,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"index\":0,\"id\":\"call_36eua7ea6hksgit13o7i9wzy\",\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"arguments\":\"\"}}]}}],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\"}\n\ndata: {\"id\":\"oPBXUjk-62bZhn-9ade093138e1a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718817,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":\"tool_calls\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"index\":0,\"function\":{\"arguments\":\"{\\\"number\\\":132413}\"}}]}}],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\"}\n\ndata: {\"id\":\"oPBXUjk-62bZhn-9ade093138e1a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718817,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":\"tool_calls\",\"matched_stop\":151645,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\"}}],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"usage\":null}\n\ndata: {\"id\":\"oPBXUjk-62bZhn-9ade093138e1a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718817,\"choices\":[{\"index\":0,\"text\":\"\",\"finish_reason\":\"stop\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\"}}],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"usage\":{\"prompt_tokens\":210,\"total_tokens\":235,\"completion_tokens\":25,\"reasoning_tokens\":0}}\n\ndata: [DONE]\n\n"
+    body: "data: {\"id\":\"oPN9RAs-2j9zxn-9ae97f338de0a29f\",\"object\":\"chat.completion.chunk\",\"created\":1765838994,\"choices\":[{\"index\":0,\"role\":\"assistant\",\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\"}}],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\"}\n\ndata: {\"id\":\"oPN9RAs-2j9zxn-9ae97f338de0a29f\",\"object\":\"chat.completion.chunk\",\"created\":1765838994,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"index\":0,\"id\":\"call_ouqrnqlg7bum0r32ip4nw66d\",\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"arguments\":\"\"}}]}}],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\"}\n\ndata: {\"id\":\"oPN9RAs-2j9zxn-9ae97f338de0a29f\",\"object\":\"chat.completion.chunk\",\"created\":1765838994,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":\"tool_calls\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"index\":0,\"function\":{\"arguments\":\"{\\\"number\\\":132413}\"}}]}}],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\"}\n\ndata: {\"id\":\"oPN9RAs-2j9zxn-9ae97f338de0a29f\",\"object\":\"chat.completion.chunk\",\"created\":1765838994,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":\"tool_calls\",\"matched_stop\":151645,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\"}}],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"usage\":null}\n\ndata: {\"id\":\"oPN9RAs-2j9zxn-9ae97f338de0a29f\",\"object\":\"chat.completion.chunk\",\"created\":1765838994,\"choices\":[{\"index\":0,\"text\":\"\",\"finish_reason\":\"stop\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\"}}],\"model\":\"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\"usage\":{\"prompt_tokens\":210,\"total_tokens\":235,\"completion_tokens\":25,\"reasoning_tokens\":0}}\n\ndata: [DONE]\n\n"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -30,11 +30,11 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9ade093138e1a275-YUL
+      - 9ae97f338de0a29f-YUL
       Content-Type:
       - text/event-stream;charset=utf-8
       Retry-After:
-      - "2"
+      - "1"
       Server:
       - cloudflare
       Strict-Transport-Security:
@@ -42,11 +42,11 @@ interactions:
       Vary:
       - Accept-Encoding
       X-Amzn-Trace-Id:
-      - 5c16f42c-0508-4f51-8124-c6bcbb4d4b34-noamzn
+      - 1bb67db6-4fab-4f2d-b689-dc42db495e8d-noamzn
       X-Api-Call-Start:
-      - "2025-12-14T13:26:57.558Z"
+      - "2025-12-15T22:49:54.552Z"
       X-Api-Received:
-      - "2025-12-14T13:26:57.547Z"
+      - "2025-12-15T22:49:54.540Z"
       X-Inference-Version:
       - v2
       X-Ratelimit:
@@ -56,11 +56,11 @@ interactions:
       X-Ratelimit-Limit-Tokens:
       - "3000"
       X-Ratelimit-Remaining:
-      - "19"
+      - "17"
       X-Ratelimit-Remaining-Tokens:
       - "3000"
       X-Ratelimit-Reset:
-      - "2"
+      - "1"
     status: 200 OK
     code: 200
-    duration: 552ms
+    duration: 964ms

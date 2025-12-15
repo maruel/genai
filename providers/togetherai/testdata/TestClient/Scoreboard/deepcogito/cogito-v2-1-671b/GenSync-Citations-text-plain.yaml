@@ -1,0 +1,55 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 260
+    host: api.together.xyz
+    body: "{\"model\":\"deepcogito/cogito-v2-1-671b\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"oPBecVZ-zqrih-9ade2b2c792ba28c\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765720209,\n  \"model\": \"deepcogito/cogito-v2-1-671b\",\n  \"service_tier\": null,\n  \"system_fingerprint\": null,\n  \"prompt_token_ids\": null,\n  \"kv_transfer_params\": null,\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"The capital of Quackiland is Quack.\",\n        \"tool_calls\": [],\n        \"reasoning\": null\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"token_ids\": null,\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 59,\n    \"total_tokens\": 70,\n    \"completion_tokens\": 11\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ade2b2c792ba28c-YUL
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"2a9-dWNs9BOLz3pW/2Njve1USwtDbYo"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - ffc8ffab-8e39-44eb-8b45-a215ecc607bd-noamzn
+      X-Api-Call-End:
+      - "2025-12-14T13:50:09.583Z"
+      X-Api-Call-Start:
+      - "2025-12-14T13:50:09.424Z"
+      X-Api-Received:
+      - "2025-12-14T13:50:09.420Z"
+      X-Inference-Version:
+      - v2
+    status: 200 OK
+    code: 200
+    duration: 275ms

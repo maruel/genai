@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 278
+    host: api.together.xyz
+    body: "{\"model\":\"Qwen/Qwen3-235B-A22B-fp8-tput\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"# Quackiland\\n\\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"oPN3Q5G-28Eivz-9ae96287888da27f\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765837831,\n  \"model\": \"Qwen/Qwen3-235B-A22B-fp8-tput\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"<think>\\nOkay, let's see. The user is asking about the capital of Quackiland. The question seems straightforward, but I need to make sure I understand the context correctly.\\n\\nFirst, the problem states: \\\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\\\" \\n\\nWait, so the first sentence already tells me that the capital is Quack. Then the second part mentions the Big Canard Statue being in Quack. Then the question is repeated: What is the capital of Quackiland? \\n\\nHmm, maybe the user is testing if I can recognize that the answer is directly given in the question itself. Sometimes people include the answer in the problem statement, expecting the responder to pick it up. So in this case, the first sentence explicitly states that the capital is Quack. Therefore, the answer should be Quack. \\n\\nBut wait, is there any trick here? The name Quackiland and the capital Quack—could there be a play on words? Quack refers to a duck-like sound, and Canard in French means duck. The Big Canard Statue might be a pun on the word 'canard,' which also means a hoax in French. But maybe that's overcomplicating it. The problem might just be straightforward. \\n\\nThe user might be checking if I can extract the answer directly from the given sentences. Since the capital is stated upfront, the answer is Quack. The mention of the statue is probably a distractor to see if I get sidetracked. \\n\\nAlternatively, maybe there's an alternative interpretation. For instance, sometimes in riddles, the answer isn't literal. But given the way the question is phrased, especially starting with \\\"The capital of Quackiland is Quack,\\\" it's likely that the answer is indeed Quack. \\n\\nAnother angle: the user might have made a typo or mistake in the problem. But according to the problem statement, it's clearly stated that the capital is Quack. So unless there's a hidden detail I'm missing, Quack should be the correct answer. \\n\\nIn summary, the answer is straightforwardly given in the question. The capital of Quackiland is Quack.\\n</think>\\n\\nThe capital of Quackiland is **Quack**. \\n\\nThe question explicitly states this in the first sentence: \\\"The capital of Quackiland is Quack.\\\" The mention of the Big Canard Statue serves as additional context but does not alter the answer, which is directly provided in the problem statement.\",\n        \"tool_calls\": [],\n        \"reasoning\": null\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 43,\n    \"total_tokens\": 571,\n    \"completion_tokens\": 528\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ae96287888da27f-YUL
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"b91-FtVmcxv+PIE5Ney8Xv0kfU+wfZM"
+      Retry-After:
+      - "2"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 6691be9a-058b-4021-8b42-225432c0ec1f-noamzn
+      X-Api-Call-End:
+      - "2025-12-15T22:30:31.936Z"
+      X-Api-Call-Start:
+      - "2025-12-15T22:30:20.190Z"
+      X-Api-Received:
+      - "2025-12-15T22:30:20.179Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "19"
+      X-Ratelimit-Remaining-Tokens:
+      - "3000"
+      X-Ratelimit-Reset:
+      - "2"
+    status: 200 OK
+    code: 200
+    duration: 11.878s

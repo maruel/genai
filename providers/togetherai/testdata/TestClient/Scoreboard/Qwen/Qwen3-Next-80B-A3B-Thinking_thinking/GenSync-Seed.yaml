@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 141
+    host: api.together.xyz
+    body: "{\"model\":\"Qwen/Qwen3-Next-80B-A3B-Thinking\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"}],\"seed\":42}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"oPN5GMk-3pDw3Z-9ae96b6c4a10a2ce\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765838185,\n  \"model\": \"Qwen/Qwen3-Next-80B-A3B-Thinking\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"<think>\\nOkay, the user said \\\"Say hello. Use only one word.\\\" So I need to respond with just one word. The simplest greeting is \\\"Hello,\\\" but maybe they want something even shorter? Wait, \\\"Hello\\\" is one word. Or maybe \\\"Hi\\\"? Both are single words. The instruction says \\\"use only one word,\\\" so either is acceptable. Let me check: \\\"Hello\\\" is one word, \\\"Hi\\\" is one word. The most standard would be \\\"Hello,\\\" but sometimes people use \\\"Hi\\\" for brevity. But the user didn't specify any particular greeting, so the safest is \\\"Hello.\\\" Alternatively, maybe just \\\"Hi\\\" since it's shorter. But the user said \\\"say hello,\\\" so the exact word would be \\\"Hello.\\\" But sometimes people use \\\"Hi\\\" as a casual hello. However, the exact command is \\\"say hello,\\\" so the response should be \\\"Hello.\\\" Let me confirm: the first word after \\\"say hello\\\" is \\\"Hello.\\\" So the correct response is \\\"Hello.\\\" Yes. So I should respond with \\\"Hello.\\\" No other words. Just \\\"Hello.\\\"\\n</think>\\n\\nHello\",\n        \"tool_calls\": [],\n        \"reasoning\": null\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 18,\n    \"total_tokens\": 250,\n    \"completion_tokens\": 232\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ae96b6c4a10a2ce-YUL
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"61c-+1oaKwAjKv7+4JkpS5P2yicef4o"
+      Retry-After:
+      - "0"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 8f1dbe77-0b4b-4c35-8eca-cf3cb7fbc512-noamzn
+      X-Api-Call-End:
+      - "2025-12-15T22:36:25.382Z"
+      X-Api-Call-Start:
+      - "2025-12-15T22:36:24.453Z"
+      X-Api-Received:
+      - "2025-12-15T22:36:24.447Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "17"
+      X-Ratelimit-Remaining-Tokens:
+      - "3000"
+      X-Ratelimit-Reset:
+      - "0"
+    status: 200 OK
+    code: 200
+    duration: 1.088s

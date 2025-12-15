@@ -18,8 +18,9 @@ interactions:
     proto: HTTP/2.0
     proto_major: 2
     proto_minor: 0
-    content_length: 265
-    body: "{\n  \"id\": \"oPBSiTs-62bZhn-9addf27ffb7ea320\",\n  \"error\": {\n    \"message\": \"Invalid API key provided. You can find your API key at https://api.together.ai/settings/api-keys.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": \"invalid_api_key\"\n  }\n}"
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"oPMgL7B-4Yz4kd-9ae8fe2acfdca2f0\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765833710,\n  \"model\": \"openai/gpt-oss-20b\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"Hello\",\n        \"tool_calls\": [],\n        \"reasoning\": \"The user says: \\\"Say hello. Use only one word.\\\" So we must respond with a single word. The words that say hello? \\\"Hello\\\". But the instruction: \\\"Say hello. Use only one word.\\\" So we presumably should say \\\"Hello\\\". That is one word. There's no requirement for other restrictions. So answer: \\\"Hello\\\".\"\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 75,\n    \"total_tokens\": 156,\n    \"completion_tokens\": 81\n  }\n}"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -28,13 +29,13 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9addf27ffb7ea320-YUL
-      Content-Length:
-      - "265"
+      - 9ae8fe2acfdca2f0-YUL
       Content-Type:
       - application/json; charset=utf-8
       Etag:
-      - W/"109-ShXtd0jFbrqQR7LHC3pRkZ2aMIk"
+      - W/"35f-oYEiOD5X97Ssbhy30xaZR23OvtE"
+      Retry-After:
+      - "2"
       Server:
       - cloudflare
       Strict-Transport-Security:
@@ -42,9 +43,27 @@ interactions:
       Vary:
       - Accept-Encoding
       X-Amzn-Trace-Id:
-      - 3d5a6bc0-4dc2-4add-b4ef-62423e14550f-noamzn
+      - 56d4543d-ab38-442f-94bd-ad0837b15997-noamzn
+      X-Api-Call-End:
+      - "2025-12-15T21:21:50.068Z"
+      X-Api-Call-Start:
+      - "2025-12-15T21:21:49.492Z"
       X-Api-Received:
-      - "2025-12-14T13:11:28.162Z"
-    status: 401 Unauthorized
-    code: 401
-    duration: 203ms
+      - "2025-12-15T21:21:49.483Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "19"
+      X-Ratelimit-Remaining-Tokens:
+      - "3000"
+      X-Ratelimit-Reset:
+      - "2"
+    status: 200 OK
+    code: 200
+    duration: 872ms

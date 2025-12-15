@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 566
+    host: api.together.xyz
+    body: "{\"model\":\"moonshotai/Kimi-K2-Thinking\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":\"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one.\"}],\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"description\":\"A tool to specify the best country\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"country\":{\"type\":\"string\",\"enum\":[\"Canada\",\"USA\"]}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"country\"]}}}],\"tool_choice\":\"required\"}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"oPMwFgH-zqrih-9ae945427c29a305\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765836629,\n  \"model\": \"moonshotai/Kimi-K2-Thinking\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"\",\n        \"tool_calls\": [\n          {\n            \"id\": \"functions.best_country:0\",\n            \"index\": 0,\n            \"type\": \"function\",\n            \"function\": {\n              \"name\": \"best_country\",\n              \"arguments\": \"{\\\"country\\\": \\\"Canada\\\"}\"\n            }\n          }\n        ],\n        \"reasoning\": \"The user is asking me to compare Canada and USA, specifically asking \\\"if Canada is a better country than the USA?\\\" and wants me to call the tool to determine which is \\\"best.\\\"\\n\\nHowever, I need to reconsider this. The tool `best_country` has one parameter `country` that takes an enum of either \\\"Canada\\\" or \\\"USA\\\". But looking at the parameter name \\\"country\\\" and the function name \\\"best_country\\\", this seems like the tool might be designed to validate or check one specific country as \\\"best\\\". \\n\\nLet me reconsider: The user is asking me to compare Canada vs USA and tell them which is best. The tool seems to require me to INPUT a country, not to get an answer about which is best. \\n\\nActually, looking more carefully: The parameter is \\\"country\\\" with enum [\\\"Canada\\\", \\\"USA\\\"], meaning I must provide one of these two values to the tool. But what would that accomplish? The tool is called \\\"best_country\\\" so maybe by providing a country, it confirms if that's the best one?\\n\\nWait, but the user wants me to tell them which country is best. The tool doesn't have an option to ask \\\"which is best\\\" - it only accepts a country name as input. This is odd.\\n\\nLet me think about this differently. Maybe the tool's signature is misleading. Perhaps I should just call it with one of the countries and see what it says? But that wouldn't answer the user's question about which is better.\\n\\nActually, I think I might need to reconsider the entire approach. The function is called \\\"best_country\\\" and takes a \\\"country\\\" parameter. It might be that the tool is asking me to specify which country I think is best, and then it will provide confirmation or details.\\n\\nBut the user's question is \\\"which country is the best one?\\\" - they want me to make a determination, not assert one as best.\\n\\nHmm, this is tricky. Let me think about what the user actually wants. They want a comparison. They want to know if Canada is better than USA.\\n\\nGiven the tool's limited functionality, I might need to call it with one country and interpret the results. But that seems arbitrary.\\n\\nActually, wait. Let me re-read the tool description more carefully. \\\"A tool to specify the best country\\\". And the parameter is \\\"country\\\" with enum [\\\"Canada\\\", \\\"USA\\\"]. \\n\\nI think the most likely interpretation is that this tool is asking me to DECLARE which country is the best by providing it as input, and then it will provide some validation or response.\\n\\nSince the user is asking which is best, and the tool requires me to specify one, I should probably either:\\n1. Call the tool with \\\"Canada\\\" (as they specifically mentioned it first)\\n2. Call the tool with both options separately\\n3. Explain that I cannot directly compare them with this tool\\n\\nBut the user explicitly says \\\"Call the tool best_country to tell me which country is the best one.\\\" This is a direct instruction to invoke the tool.\\n\\nGiven the constraints, I think I should call it with \\\"Canada\\\" first, as that's the one they mentioned in their question. \"\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"tool_calls\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 125,\n    \"total_tokens\": 779,\n    \"completion_tokens\": 654\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ae945427c29a305-YUL
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"f1c-Hz/JvKQluSdOWpcsbp3rKb9H7w0"
+      Retry-After:
+      - "2"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - ac2d8295-bab2-4304-9546-ad9dad625317-noamzn
+      X-Api-Call-End:
+      - "2025-12-15T22:10:29.795Z"
+      X-Api-Call-Start:
+      - "2025-12-15T22:10:21.267Z"
+      X-Api-Received:
+      - "2025-12-15T22:10:21.262Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "19"
+      X-Ratelimit-Remaining-Tokens:
+      - "2194"
+      X-Ratelimit-Reset:
+      - "2"
+    status: 200 OK
+    code: 200
+    duration: 8.644s

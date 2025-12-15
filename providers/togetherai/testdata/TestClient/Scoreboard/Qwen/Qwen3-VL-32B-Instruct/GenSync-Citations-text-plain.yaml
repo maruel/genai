@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 259
+    host: api.together.xyz
+    body: "{\"model\":\"Qwen/Qwen3-VL-32B-Instruct\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"oPBeQ8e-3pDw3Z-9ade2a286bdea28c\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765720168,\n  \"model\": \"Qwen/Qwen3-VL-32B-Instruct\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"The capital of Quackiland is **Quack**.\\n\\nThis is directly stated in the first sentence: *\\\"The capital of Quackiland is Quack.\\\"* The additional information about the Big Canard Statue being located in Quack does not change this fact — it merely provides extra context.\\n\\n✅ Final Answer: **Quack**\",\n        \"tool_calls\": [],\n        \"reasoning\": null\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 38,\n    \"total_tokens\": 106,\n    \"completion_tokens\": 68\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ade2a286bdea28c-YUL
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"363-pgQVweja63fBQR1X5MYemXLaiBk"
+      Retry-After:
+      - "1"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - adbd34bf-90ab-45c6-a895-43a44c137d33-noamzn
+      X-Api-Call-End:
+      - "2025-12-14T13:49:28.911Z"
+      X-Api-Call-Start:
+      - "2025-12-14T13:49:27.845Z"
+      X-Api-Received:
+      - "2025-12-14T13:49:27.839Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "17"
+      X-Ratelimit-Remaining-Tokens:
+      - "2893"
+      X-Ratelimit-Reset:
+      - "1"
+    status: 200 OK
+    code: 200
+    duration: 1.248s

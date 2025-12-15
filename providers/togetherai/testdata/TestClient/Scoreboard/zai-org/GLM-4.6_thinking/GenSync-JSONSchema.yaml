@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 379
+    host: api.together.xyz
+    body: "{\"model\":\"zai-org/GLM-4.6\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON.\"}],\"response_format\":{\"type\":\"json_schema\",\"schema\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"is_fruit\":{\"type\":\"boolean\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"is_fruit\"]}}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"oPN6UUe-z1gNr-9ae9712e9fc7a266\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765838424,\n  \"model\": \"zai-org/GLM-4.6\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"{\\\"is_fruit\\\": true}\",\n        \"tool_calls\": [],\n        \"reasoning\": \"1.  **Analyze the user's request:**\\n    *   **Question:** \\\"Is a banana a fruit?\\\" This is a simple factual question.\\n    *   **Constraint 1:** \\\"Do not include an explanation.\\\" This is a negative constraint. I must not add any extra text, reasoning, or context.\\n    *   **Constraint 2:** \\\"Reply ONLY as JSON.\\\" This is a strict formatting constraint. The entire output must be a valid JSON object.\\n\\n2.  **Determine the answer to the question:**\\n    *   Is a banana a fruit? Yes, botanically and culinarily, a banana is classified as a fruit. It develops from the flower of the banana plant and contains the seeds.\\n\\n3.  **Structure the JSON response:**\\n    *   The request is a \\\"yes/no\\\" question. A good JSON structure for this would be a key-value pair.\\n    *   What should the key be? Something descriptive like \\\"answer\\\", \\\"is_fruit\\\", or \\\"question\\\". \\\"is_fruit\\\" is very specific and clear. \\\"answer\\\" is more generic. \\\"question\\\" doesn't make sense because the value would be the answer. Let's go with `is_fruit`. It's concise and directly maps to the user's question.\\n    *   What should the value be? It should be the answer to the question. The answer is \\\"yes\\\". In JSON, boolean values (`true`/`false`) are often preferred for yes/no questions. This is more semantically correct than a string \\\"yes\\\". So, the value should be `true`.\\n\\n4.  **Assemble the final JSON object:**\\n    *   Key: `is_fruit`\\n    *   Value: `true`\\n    *   Combining these: `{\\\"is_fruit\\\": true}`\\n\\n5.  **Review against constraints:**\\n    *   **Is a banana a fruit?** Yes. The JSON value `true` affirms this.\\n    *   **Do not include an explanation?** The JSON `{\\\"is_fruit\\\": true}` has no explanation. It's just the data. This constraint is met.\\n    *   **Reply ONLY as JSON?** The entire response is a single, valid JSON object. There's no preceding text, no \\\"Here is the JSON:\\\", just the JSON itself. This constraint is met.\\n\\n6.  **Final check:** The user's instructions are very strict. \\\"ONLY as JSON\\\". This means my output should be exactly `{\\\"is_fruit\\\": true}` and nothing else. No markdown formatting (like ```json ... ```), no introductory sentences.\\n\\n7.  **Construct the final output:** The final output will be the JSON object itself.\"\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 22,\n    \"total_tokens\": 593,\n    \"completion_tokens\": 571\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ae9712e9fc7a266-YUL
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"b13-5CdgF3QwX4/ppEosPMVrZ74mp3I"
+      Retry-After:
+      - "2"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - c441556f-0380-4d81-877d-389d8959a23d-noamzn
+      X-Api-Call-End:
+      - "2025-12-15T22:40:24.851Z"
+      X-Api-Call-Start:
+      - "2025-12-15T22:40:20.332Z"
+      X-Api-Received:
+      - "2025-12-15T22:40:20.327Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "19"
+      X-Ratelimit-Remaining-Tokens:
+      - "3000"
+      X-Ratelimit-Reset:
+      - "2"
+    status: 200 OK
+    code: 200
+    duration: 4.627s

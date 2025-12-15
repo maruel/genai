@@ -1,0 +1,66 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 557
+    host: api.together.xyz
+    body: "{\"model\":\"Qwen/Qwen3-235B-A22B-fp8-tput\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"}],\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"tool_choice\":\"required\"}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"oPN3Lxe-zqrih-9ae962462c16a27f\",\"object\":\"chat.completion.chunk\",\"created\":1765837809,\"choices\":[{\"index\":0,\"role\":\"assistant\",\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\"}}],\"model\":\"Qwen/Qwen3-235B-A22B-fp8-tput\"}\n\ndata: {\"id\":\"oPN3Lxe-zqrih-9ae962462c16a27f\",\"object\":\"chat.completion.chunk\",\"created\":1765837809,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"index\":0,\"id\":\"call_3nr0fyv2crfqyakwyk312ze8\",\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"arguments\":\"\"}}]}}],\"model\":\"Qwen/Qwen3-235B-A22B-fp8-tput\"}\n\ndata: {\"id\":\"oPN3Lxe-zqrih-9ae962462c16a27f\",\"object\":\"chat.completion.chunk\",\"created\":1765837809,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":\"tool_calls\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"index\":0,\"function\":{\"arguments\":\"{\\\"number\\\":132413}\"}}]}}],\"model\":\"Qwen/Qwen3-235B-A22B-fp8-tput\"}\n\ndata: {\"id\":\"oPN3Lxe-zqrih-9ae962462c16a27f\",\"object\":\"chat.completion.chunk\",\"created\":1765837809,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":\"tool_calls\",\"matched_stop\":151645,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\"}}],\"model\":\"Qwen/Qwen3-235B-A22B-fp8-tput\",\"usage\":null}\n\ndata: {\"id\":\"oPN3Lxe-zqrih-9ae962462c16a27f\",\"object\":\"chat.completion.chunk\",\"created\":1765837809,\"choices\":[{\"index\":0,\"text\":\"\",\"finish_reason\":\"stop\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\"}}],\"model\":\"Qwen/Qwen3-235B-A22B-fp8-tput\",\"usage\":{\"prompt_tokens\":210,\"total_tokens\":240,\"completion_tokens\":30,\"reasoning_tokens\":0}}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - no-cache, no-transform
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ae962462c16a27f-YUL
+      Content-Type:
+      - text/event-stream;charset=utf-8
+      Retry-After:
+      - "0"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - fe2d7f1d-1b4c-4868-ab17-97fcdd36404f-noamzn
+      X-Api-Call-Start:
+      - "2025-12-15T22:30:09.720Z"
+      X-Api-Received:
+      - "2025-12-15T22:30:09.704Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "16"
+      X-Ratelimit-Remaining-Tokens:
+      - "2233"
+      X-Ratelimit-Reset:
+      - "0"
+    status: 200 OK
+    code: 200
+    duration: 1.037s

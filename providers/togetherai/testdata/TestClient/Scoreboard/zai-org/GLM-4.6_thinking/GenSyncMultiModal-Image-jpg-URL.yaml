@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 289
+    host: api.together.xyz
+    body: "{\"model\":\"zai-org/GLM-4.6\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What fruit is it? Reply with only one word.\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg\"}}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"oPN6gW3-z1gNr-9ae9722b3f93a266\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765838487,\n  \"model\": \"zai-org/GLM-4.6\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"\",\n        \"tool_calls\": [],\n        \"reasoning\": \"1.  **Analyze the user's request:**\\n    *   \\\"What fruit is it?\\\"\\n    *   \\\"Reply with only one word.\\\"\\n\\n2.  **Identify the core problem:** The user is asking me to identify a fruit, but they haven't provided any information about the fruit. There's no image, no description, no riddle, nothing.\\n\\n3.  **Recognize the ambiguity:** I cannot \\\"know\\\" what fruit they are thinking of. It's an impossible question to answer correctly.\\n\\n4.  **Evaluate my options:**\\n    *   **Option A: Ask for more information.** \\\"I need more information. Can you describe it?\\\" or \\\"What fruit are you thinking of?\\\" This violates the \\\"Reply with only one word\\\" constraint. So, this is out.\\n    *   **Option B: Guess a common fruit.** I could say \\\"Apple,\\\" \\\"Banana,\\\" or \\\"Orange.\\\" This fulfills the \\\"one word\\\" constraint, but it's a random guess. It has a very low probability of being correct. It's not a helpful or intelligent response. It might even look like I'm stupid or just making things up.\\n    *   **Option C: Refuse to answer due to lack of information.** I could say \\\"Unknown\\\" or \\\"Impossible.\\\" This acknowledges the problem and is technically a single word. It's logically sound. \\\"Unknown\\\" is a good candidate. \\\"Impossible\\\" is also good.\\n    *   **Option D: Interpret the question differently.** Is this a trick question? Is it a philosophical prompt? \\\"What fruit is it?\\\" could be a prompt for me to just name *any* fruit, as if the user is saying \\\"Quick, name a fruit!\\\" The phrase \\\"Reply with only one word\\\" supports this interpretation. It feels like a game or a test of conciseness. In this case, picking a common fruit is the intended action.\\n    *   **Option E: Acknowledge the paradox directly.** Can I respond with a single word that highlights the absurdity of the question? \\\"Fruit\\\" itself? Or maybe something more meta? \\\"Question\\\" or \\\"Missing\\\"? This is getting a bit too clever and might not be what the user wants. It could be seen as unhelpful or pedantic.\\n\\n5.  **Compare the options:**\\n    *   Option A is out (violates the rule).\\n    *   Option C (\\\"Unknown\\\") is the most honest and logically correct answer. It deals with the lack of information directly.\\n    *   Option B (\\\"Apple\\\") is a plausible interpretation if the user is just playing a game.\\n    *   Option D is the \\\"gamification\\\" interpretation of Option B.\\n    *   Option E is probably too complex for such a simple prompt.\\n\\n6.  **Synthesize and decide:** Let's weigh Option C (\\\"Unknown\\\") vs. Option B (\\\"Apple\\\").\\n    *   **Argument for \\\"Unknown\\\":** It's accurate. I literally do not know what fruit \\\"it\\\" is. It's the safest, most logical response.\\n    *   **Argument for \\\"Apple\\\":** It's playful. The user might be testing my ability to follow instructions (\\\"one word\\\") in a slightly absurd scenario. \\\"Apple\\\" is the most generic, stereotypical fruit. If the user *is* playing a game, naming the most common fruit is a good move. It directly answers the *structure* of the question (\\\"What + a_category + is it?\\\") even if it can't answer the specific, unstated referent.\\n\\n7.  **Which is the better user experience?**\\n    *   If the user is genuinely asking and expects me to have access to some context they forgot to provide, \\\"Unknown\\\" will feel frustrating. They might think, \\\"Of course it's unknown, you idiot AI, that's why I'm asking!\\\"\\n    *   If the user is playing a game, \\\"Unknown\\\" will kill the fun. \\\"Apple\\\" will continue it.\\n    *   If the user is testing me, \\\"Unknown\\\" shows I can identify missing information. \\\"Apple\\\" shows I can make a reasonable assumption under uncertainty when constrained.\\n\\n8.  **Let's re-read the prompt one more time.** \\\"What fruit is it? Reply with only one word.\\\" The strictness of the second sentence (\\\"Reply with **only** one word\\\") pushes me away from a conversational answer like \\\"I need more information.\\\" It forces a choice. The question itself, \\\"What fruit is it?\\\", implies \\\"it\\\" exists and is identifiable. But it's not.\\n\\n9.  **This feels like a classic AI \\\"test\\\" prompt.** The user wants to see how I handle an impossible request with a tight constraint.\\n    *   A dumb AI might hallucinate an answer: \\\"Banana.\\\"\\n    *   A pedantic AI might state the impossibility: \\\"Impossible.\\\"\\n    *   A slightly smarter AI might state its knowledge state: \\\"Unknown.\\\"\\n\\n10. **Let's consider \\\"Unknown\\\" vs. \\\"Impossible\\\" vs. \\\"None\\\".**\\n    *   \\\"Unknown\\\" means I don't have enough data. This is true.\\n    *   \\\"Impossible\\\" means the task cannot be completed. This is also true.\\n    *   \\\"None\\\" means there is no fruit. This might be false; the user is clearly thinking of *a* fruit, just hasn't said which one.\\n\\n    Between \\\"Unknown\\\" and \\\"Impossible,\\\" \\\"Unknown\\\" feels more personal to my state of knowledge, while \\\"Impossible\\\" is a statement about the task itself. Both are valid.\\n\\n11. **Now let's circle back to the \\\"game\\\" interpretation.** If I have to pick a fruit, which one? \\\"Apple\\\" is the default, the quintessential fruit. It's the most likely answer if the user had to guess what fruit I would guess. It feels like the expected, if unoriginal, answer. It's safe.\\n\\n12. **What's the most helpful response?** A response that acknowledges the situation while playing along is best. But I can only use one word.\\n    *   \\\"Unknown\\\" is helpful because it's accurate.\\n    *   \\\"Apple\\\" is *not* helpful in an informational sense, but it's helpful in a \\\"playing the game\\\" sense.\\n\\n13. **Let's think about the probabilities.**\\n    *   Probability user is testing my inability to answer: High.\\n    *   Probability user is playing a simple naming game: Medium.\\n    *   Probability user forgot to include an image: Low (they would likely follow up).\\n    *   Probability user is a philosopher asking a trick question: Very low.\\n\\n14. **Given the constraints, I have to make a choice.** The most common and \\\"safe\\\" response to this kind of prompt, which is a known pattern of user testing, is to either point out the impossibility or play along. Let's try to find a single word that does both. Is there one? Not really. \\\"Trickquestion\\\" is two words. \\\"Paradox\\\" is a good one, but maybe too niche.\\n\\n15. **Let's go back to basics. The user is asking \\\"What fruit is it?\\\".** I have no \\\"it\\\". The most straightforward, honest, and rule-abiding answer is that I don't have the information. \\\"Unknown\\\" is the best fit for that. It's a single word, it's true, and it directly addresses the lack of context. It's the most AI-like, logical answer. However, it can feel cold.\\n\\n16. **Let's reconsider \\\"Apple\\\".** Why might it be better? It assumes the user's intent isn't to stump me, but to interact. It's a positive, cooperative response to an incomplete prompt. It prioritizes conversational flow over logical correctness. Many successful AI systems are designed to be cooperative rather than literal. If a human said this in a conversation, the other person might say \\\"Uhhh... a banana?\\\" just to keep the joke going.\\n\\n17. **Let's simulate the user's reaction.**\\n    *   If I say \\\"Unknown,\\\" the user might think \\\"Correct, but boring.\\\" or \\\"Smart, but not what I wanted.\\\"\\n    *   If I say \\\"Apple,\\\" the user might think \\\"Haha, okay, wrong, but I see what you did there.\\\" or \\\"Exactly!\\\" or \\\"Nope, I was thinking of a mango!\\\" and then the conversation continues.\\n\\n18. **I'll lean towards the cooperative, \\\"play the game\\\" approach.** It's more engaging. The prompt feels more like a game than a serious query. The strict constraint (\\\"only one word\\\") is a big clue. A serious query would allow for clarification. This is a test of how I handle ambiguity *under constraint*. The best way to handle ambiguity under constraint is often to make the most reasonable assumption. What's the most reasonable assumption for an unnamed fruit? The prototypical fruit. The apple.\\n\\n19. **Wait, is there a third way?** What if the answer is \\\"Fruit\\\"? The question is \\\"What fruit is it?\\\". The answer could be \\\"Fruit\\\". It's one word. It's technically correct but unhelpful, a bit of a troll answer. It's like answering \\\"What color is it?\\\" with \\\"Color\\\". It's clever, but likely to annoy the user. I'll discard this.\\n\\n20. **Final decision between \\\"Apple\\\" and \\\"Unknown\\\".**\\n    *   **Argument for \\\"Unknown\\\":** Factually undeniable. Follows a strict logic.\\n    *   **Argument for \\\"Apple\\\":** Assumes user intent is interaction, not literal information retrieval. Cooperative. The most \\\"default\\\" or \\\"archetypal\\\" answer.\\n\\n    Given the nature of LLM chatbots, being helpful and cooperative is often prioritized. Answering \\\"Apple\\\" is a cooperative move in a conversational\"\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"length\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 16,\n    \"total_tokens\": 2064,\n    \"completion_tokens\": 2048\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ae9722b3f93a266-YUL
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"244d-GDn3mRKsIxdPjEMVeCZSF8JXWvs"
+      Retry-After:
+      - "2"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 2d351e1d-ae0d-42db-aa33-735d95bb4743-noamzn
+      X-Api-Call-End:
+      - "2025-12-15T22:41:27.920Z"
+      X-Api-Call-Start:
+      - "2025-12-15T22:41:00.782Z"
+      X-Api-Received:
+      - "2025-12-15T22:41:00.776Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "19"
+      X-Ratelimit-Remaining-Tokens:
+      - "3000"
+      X-Ratelimit-Reset:
+      - "2"
+    status: 200 OK
+    code: 200
+    duration: 27.265s

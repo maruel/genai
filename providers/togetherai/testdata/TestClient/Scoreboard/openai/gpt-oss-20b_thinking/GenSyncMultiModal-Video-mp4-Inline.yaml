@@ -18,8 +18,9 @@ interactions:
     proto: HTTP/2.0
     proto_major: 2
     proto_minor: 0
-    content_length: 265
-    body: "{\n  \"id\": \"oPBSiYJ-4Yz4kd-9addf2822e16a320\",\n  \"error\": {\n    \"message\": \"Invalid API key provided. You can find your API key at https://api.together.ai/settings/api-keys.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": \"invalid_api_key\"\n  }\n}"
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"oPMq4Gy-6Ng1vN-9ae927c02deaa2cf\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765835417,\n  \"model\": \"openai/gpt-oss-20b\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"said\",\n        \"tool_calls\": [],\n        \"reasoning\": \"The user says: \\\"What is the word said? Reply with only the word.\\\" So they want us to respond with only a word. But we have no prior context. There's likely a specific phrase or context in a previous conversation. They ask: \\\"What is the word said?\\\" That implies there was a word said earlier. They want just that word. But we don't have context. We need to interpret. Possibly there's an instruction: \\\"What is the word said?\\\" It might mean what word had been spoken earlier in the conversation? I only have this one line. There's no other context. Perhaps they want the word \\\"Word\\\"? Or \\\"Answer\\\"? But the instruction says reply with only the word. This seems ambiguous. Could be a trick: \\\"word said\\\" the phrase \\\"What is the word said?\\\" The word said could be \\\"said\\\"? The question maybe expects \\\"says\\\"? No. The context is a riddle: \\\"What is the word said?\\\" Could be \\\"said\\\" is the word. So reply with \\\"said\\\". Probably answer is \\\"said\\\". But that seems unsatisfying.\\n\\nWait, maybe the phrase \\\"What is the word said?\\\" refers to \\\"the missing word\\\" in the sentence \\\"What is the word ____?\\\" The blank after \\\"word\\\" could be \\\"said\\\" to complete the phrase \\\"What is the word said?\\\" but that's odd. The question might prompt: It's a pun: the question is \\\"What is the word said?\\\" The answer could be \\\"said\\\". The whole phrase \\\"What is the word 'said'?\\\" So reply \\\"said\\\". That could be the only word they want: \\\"said\\\". Probably they want just that word. So we output \\\"said\\\".\"\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 79,\n    \"total_tokens\": 437,\n    \"completion_tokens\": 358\n  }\n}"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -28,13 +29,13 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9addf2822e16a320-YUL
-      Content-Length:
-      - "265"
+      - 9ae927c02deaa2cf-YUL
       Content-Type:
       - application/json; charset=utf-8
       Etag:
-      - W/"109-Hy0hh/6WN/2OGJVRA+BpC+Z72uY"
+      - W/"810-GNhvjJUrOScASjdZBy8xd/OXbqI"
+      Retry-After:
+      - "2"
       Server:
       - cloudflare
       Strict-Transport-Security:
@@ -42,9 +43,27 @@ interactions:
       Vary:
       - Accept-Encoding
       X-Amzn-Trace-Id:
-      - 68031df9-3775-4bba-aeae-66e5afd3e78b-noamzn
+      - b808307a-b4b7-48fa-b89a-72b683553f22-noamzn
+      X-Api-Call-End:
+      - "2025-12-15T21:50:17.219Z"
+      X-Api-Call-Start:
+      - "2025-12-15T21:50:12.250Z"
       X-Api-Received:
-      - "2025-12-14T13:11:28.431Z"
-    status: 401 Unauthorized
-    code: 401
-    duration: 143ms
+      - "2025-12-15T21:50:12.239Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "19"
+      X-Ratelimit-Remaining-Tokens:
+      - "3000"
+      X-Ratelimit-Reset:
+      - "2"
+    status: 200 OK
+    code: 200
+    duration: 5.193s

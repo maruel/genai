@@ -1,0 +1,66 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 1541
+    host: api.together.xyz
+    body: "{\"model\":\"openai/gpt-oss-20b\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"},{\"role\":\"assistant\",\"content\":\"analysisThe user wants the square root of 132413. So we need to call the tool functions.square_root with number 132413. Then output the result only. The tool returns presumably a number, maybe decimal. Let's compute approximate sqrt: sqrt(132,413). 363^2 = 131,769. 364^2 = 132,496. So it's slightly less than 364. Probably 363.8? Let's compute: 364^2=132,496. Difference 83. So sqrt = 364 - 83/(2*364) ≈ 364 - 0.114 = 363.886. So answer ~363.886. But maybe the tool gives exact sqrt. We should just call the tool.\",\"tool_calls\":[{\"index\":0,\"id\":\"call_3k7p3boa53ofao02ag12m4ra\",\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\":132413}\"}},{\"index\":0,\"id\":\"call_3k7p3boa53ofao02ag12m4ra\",\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\":132413}\"}}]},{\"role\":\"tool\",\"content\":\"363.89\",\"tool_call_id\":\"call_3k7p3boa53ofao02ag12m4ra\"},{\"role\":\"tool\",\"content\":\"363.89\",\"tool_call_id\":\"call_3k7p3boa53ofao02ag12m4ra\"}],\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"tool_choice\":\"none\"}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"oPMgMdZ-62bZhn-9ae8fe4bef74a2f0\",\"object\":\"chat.completion.chunk\",\"created\":1765833714,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"matched_stop\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\"}}],\"model\":\"openai/gpt-oss-20b\",\"usage\":null}\n\ndata: {\"id\":\"oPMgMdZ-62bZhn-9ae8fe4bef74a2f0\",\"object\":\"chat.completion.chunk\",\"created\":1765833714,\"choices\":[{\"index\":0,\"text\":\"final\",\"logprobs\":null,\"finish_reason\":null,\"matched_stop\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"final\"}}],\"model\":\"openai/gpt-oss-20b\",\"usage\":null}\n\ndata: {\"id\":\"oPMgMdZ-62bZhn-9ae8fe4bef74a2f0\",\"object\":\"chat.completion.chunk\",\"created\":1765833714,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"matched_stop\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\"}}],\"model\":\"openai/gpt-oss-20b\",\"usage\":null}\n\ndata: {\"id\":\"oPMgMdZ-62bZhn-9ae8fe4bef74a2f0\",\"object\":\"chat.completion.chunk\",\"created\":1765833714,\"choices\":[{\"index\":0,\"text\":\"363\",\"logprobs\":null,\"finish_reason\":null,\"matched_stop\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"363\"}}],\"model\":\"openai/gpt-oss-20b\",\"usage\":null}\n\ndata: {\"id\":\"oPMgMdZ-62bZhn-9ae8fe4bef74a2f0\",\"object\":\"chat.completion.chunk\",\"created\":1765833714,\"choices\":[{\"index\":0,\"text\":\".\",\"logprobs\":null,\"finish_reason\":null,\"matched_stop\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\".\"}}],\"model\":\"openai/gpt-oss-20b\",\"usage\":null}\n\ndata: {\"id\":\"oPMgMdZ-62bZhn-9ae8fe4bef74a2f0\",\"object\":\"chat.completion.chunk\",\"created\":1765833714,\"choices\":[{\"index\":0,\"text\":\"89\",\"logprobs\":null,\"finish_reason\":null,\"matched_stop\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"89\"}}],\"model\":\"openai/gpt-oss-20b\",\"usage\":null}\n\ndata: {\"id\":\"oPMgMdZ-62bZhn-9ae8fe4bef74a2f0\",\"object\":\"chat.completion.chunk\",\"created\":1765833714,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":\"stop\",\"matched_stop\":200002,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\"}}],\"model\":\"openai/gpt-oss-20b\",\"usage\":null}\n\ndata: {\"id\":\"oPMgMdZ-62bZhn-9ae8fe4bef74a2f0\",\"object\":\"chat.completion.chunk\",\"created\":1765833714,\"choices\":[{\"index\":0,\"text\":\"\",\"finish_reason\":\"stop\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\"}}],\"model\":\"openai/gpt-oss-20b\",\"usage\":{\"prompt_tokens\":368,\"total_tokens\":375,\"completion_tokens\":7,\"reasoning_tokens\":0}}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - no-cache, no-transform
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ae8fe4bef74a2f0-YUL
+      Content-Type:
+      - text/event-stream;charset=utf-8
+      Retry-After:
+      - "2"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - b4b64830-57bf-4040-b256-9b70c3ce809e-noamzn
+      X-Api-Call-Start:
+      - "2025-12-15T21:21:54.629Z"
+      X-Api-Received:
+      - "2025-12-15T21:21:54.608Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "19"
+      X-Ratelimit-Remaining-Tokens:
+      - "3000"
+      X-Ratelimit-Reset:
+      - "2"
+    status: 200 OK
+    code: 200
+    duration: 206ms

@@ -19,7 +19,7 @@ interactions:
     proto_major: 2
     proto_minor: 0
     content_length: -1
-    body: "data: {\"id\":\"oPBXH4X-6Ng1vN-9ade083b9c85a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718778,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPBXH4X-6Ng1vN-9ade083b9c85a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718778,\"choices\":[{\"index\":0,\"text\":\"Apple\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"Apple\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPBXH4X-6Ng1vN-9ade083b9c85a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718778,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":\"stop\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPBXH4X-6Ng1vN-9ade083b9c85a275\",\"object\":\"chat.completion.chunk\",\"created\":1765718778,\"choices\":[],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":{\"prompt_tokens\":19,\"total_tokens\":21,\"completion_tokens\":2,\"prompt_tokens_details\":null,\"reasoning_tokens\":0}}\n\ndata: [DONE]\n\n"
+    body: "data: {\"id\":\"oPN5VQB-6Ng1vN-9ae96c7dfc69a2ce\",\"object\":\"chat.completion.chunk\",\"created\":1765838228,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPN5VQB-6Ng1vN-9ae96c7dfc69a2ce\",\"object\":\"chat.completion.chunk\",\"created\":1765838228,\"choices\":[{\"index\":0,\"text\":\"Apple\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"Apple\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPN5VQB-6Ng1vN-9ae96c7dfc69a2ce\",\"object\":\"chat.completion.chunk\",\"created\":1765838228,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":\"stop\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPN5VQB-6Ng1vN-9ae96c7dfc69a2ce\",\"object\":\"chat.completion.chunk\",\"created\":1765838228,\"choices\":[],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":{\"prompt_tokens\":19,\"total_tokens\":21,\"completion_tokens\":2,\"prompt_tokens_details\":null,\"reasoning_tokens\":0}}\n\ndata: [DONE]\n\n"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -30,11 +30,11 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9ade083b9c85a275-YUL
+      - 9ae96c7dfc69a2ce-YUL
       Content-Type:
       - text/event-stream;charset=utf-8
       Retry-After:
-      - "2"
+      - "1"
       Server:
       - cloudflare
       Strict-Transport-Security:
@@ -42,11 +42,11 @@ interactions:
       Vary:
       - Accept-Encoding
       X-Amzn-Trace-Id:
-      - d4ab0861-4cea-4898-b417-d72f33784ef4-noamzn
+      - 83b44f8b-9acb-452d-b4c0-e2beaaddb788-noamzn
       X-Api-Call-Start:
-      - "2025-12-14T13:26:18.304Z"
+      - "2025-12-15T22:37:08.343Z"
       X-Api-Received:
-      - "2025-12-14T13:26:18.270Z"
+      - "2025-12-15T22:37:08.320Z"
       X-Inference-Version:
       - v2
       X-Ratelimit:
@@ -56,11 +56,11 @@ interactions:
       X-Ratelimit-Limit-Tokens:
       - "3000"
       X-Ratelimit-Remaining:
-      - "19"
+      - "17"
       X-Ratelimit-Remaining-Tokens:
-      - "3000"
+      - "2773"
       X-Ratelimit-Reset:
-      - "2"
+      - "1"
     status: 200 OK
     code: 200
-    duration: 242ms
+    duration: 323ms

@@ -19,7 +19,7 @@ interactions:
     proto_major: 2
     proto_minor: 0
     content_length: -1
-    body: "data: {\"id\":\"oPBXGm2-4YNCb4-9ade08358aeaa275\",\"object\":\"chat.completion.chunk\",\"created\":1765718777,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPBXGm2-4YNCb4-9ade08358aeaa275\",\"object\":\"chat.completion.chunk\",\"created\":1765718777,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"id\":\"call_95d8e567bcac4dbf9317b7c1\",\"index\":0,\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"arguments\":\"\"}}],\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPBXGm2-4YNCb4-9ade08358aeaa275\",\"object\":\"chat.completion.chunk\",\"created\":1765718777,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"id\":null,\"index\":0,\"type\":\"function\",\"function\":{\"name\":null,\"arguments\":\"{\\\"country\\\": \\\"\"}}],\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPBXGm2-4YNCb4-9ade08358aeaa275\",\"object\":\"chat.completion.chunk\",\"created\":1765718777,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"id\":null,\"index\":0,\"type\":\"function\",\"function\":{\"name\":null,\"arguments\":\"USA\\\"}\"}}],\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPBXGm2-4YNCb4-9ade08358aeaa275\",\"object\":\"chat.completion.chunk\",\"created\":1765718777,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":\"tool_calls\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPBXGm2-4YNCb4-9ade08358aeaa275\",\"object\":\"chat.completion.chunk\",\"created\":1765718777,\"choices\":[],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":{\"prompt_tokens\":207,\"total_tokens\":227,\"completion_tokens\":20,\"prompt_tokens_details\":null,\"reasoning_tokens\":0}}\n\ndata: [DONE]\n\n"
+    body: "data: {\"id\":\"oPN5UyK-3pDw3Z-9ae96c756beaa2ce\",\"object\":\"chat.completion.chunk\",\"created\":1765838226,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPN5UyK-3pDw3Z-9ae96c756beaa2ce\",\"object\":\"chat.completion.chunk\",\"created\":1765838226,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"id\":\"call_7de1094e2be2462892834cf2\",\"index\":0,\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"arguments\":\"\"}}],\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPN5UyK-3pDw3Z-9ae96c756beaa2ce\",\"object\":\"chat.completion.chunk\",\"created\":1765838226,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"id\":null,\"index\":0,\"type\":\"function\",\"function\":{\"name\":null,\"arguments\":\"{\\\"country\\\": \\\"\"}}],\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPN5UyK-3pDw3Z-9ae96c756beaa2ce\",\"object\":\"chat.completion.chunk\",\"created\":1765838226,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"id\":null,\"index\":0,\"type\":\"function\",\"function\":{\"name\":null,\"arguments\":\"USA\\\"}\"}}],\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPN5UyK-3pDw3Z-9ae96c756beaa2ce\",\"object\":\"chat.completion.chunk\",\"created\":1765838226,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":\"tool_calls\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPN5UyK-3pDw3Z-9ae96c756beaa2ce\",\"object\":\"chat.completion.chunk\",\"created\":1765838226,\"choices\":[],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":{\"prompt_tokens\":207,\"total_tokens\":227,\"completion_tokens\":20,\"prompt_tokens_details\":null,\"reasoning_tokens\":0}}\n\ndata: [DONE]\n\n"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -30,11 +30,11 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9ade08358aeaa275-YUL
+      - 9ae96c756beaa2ce-YUL
       Content-Type:
       - text/event-stream;charset=utf-8
       Retry-After:
-      - "0"
+      - "1"
       Server:
       - cloudflare
       Strict-Transport-Security:
@@ -42,11 +42,11 @@ interactions:
       Vary:
       - Accept-Encoding
       X-Amzn-Trace-Id:
-      - f8aa77e4-0a35-4aa7-a773-c8acdc3bada8-noamzn
+      - 97633d09-6968-4a1b-8761-a916c04802de-noamzn
       X-Api-Call-Start:
-      - "2025-12-14T13:26:17.268Z"
+      - "2025-12-15T22:37:06.891Z"
       X-Api-Received:
-      - "2025-12-14T13:26:17.253Z"
+      - "2025-12-15T22:37:06.879Z"
       X-Inference-Version:
       - v2
       X-Ratelimit:
@@ -56,11 +56,11 @@ interactions:
       X-Ratelimit-Limit-Tokens:
       - "3000"
       X-Ratelimit-Remaining:
-      - "17"
+      - "16"
       X-Ratelimit-Remaining-Tokens:
-      - "2771"
+      - "2680"
       X-Ratelimit-Reset:
-      - "0"
+      - "1"
     status: 200 OK
     code: 200
-    duration: 212ms
+    duration: 352ms

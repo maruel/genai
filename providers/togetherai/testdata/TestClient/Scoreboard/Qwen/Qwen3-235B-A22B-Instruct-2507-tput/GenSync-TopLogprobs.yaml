@@ -20,7 +20,7 @@ interactions:
     proto_minor: 0
     content_length: -1
     uncompressed: true
-    body: "{\n  \"id\": \"oPBXTbH-6Ng1vN-9ade091ab84ca275\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765718813,\n  \"model\": \"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"Hello.\",\n        \"tool_calls\": [],\n        \"reasoning\": null\n      },\n      \"logprobs\": {\n        \"content\": [\n          {\n            \"token\": \"Hello\",\n            \"bytes\": [\n              72,\n              101,\n              108,\n              108,\n              111\n            ],\n            \"logprob\": -0.000024915052563301288,\n            \"top_logprobs\": [\n              {\n                \"token\": \"Hello\",\n                \"bytes\": [\n                  72,\n                  101,\n                  108,\n                  108,\n                  111\n                ],\n                \"logprob\": -0.000024915052563301288\n              },\n              {\n                \"token\": \"Hi\",\n                \"bytes\": [\n                  72,\n                  105\n                ],\n                \"logprob\": -10.714311599731445\n              }\n            ]\n          },\n          {\n            \"token\": \".\",\n            \"bytes\": [\n              46\n            ],\n            \"logprob\": -0.6205676794052124,\n            \"top_logprobs\": [\n              {\n                \"token\": \".\",\n                \"bytes\": [\n                  46\n                ],\n                \"logprob\": -0.6205676794052124\n              },\n              {\n                \"token\": \"<|im_end|>\",\n                \"bytes\": [\n                  60,\n                  124,\n                  105,\n                  109,\n                  95,\n                  101,\n                  110,\n                  100,\n                  124,\n                  62\n                ],\n                \"logprob\": -0.7991374135017395\n              }\n            ]\n          },\n          {\n            \"token\": \"<|im_end|>\",\n            \"bytes\": [\n              60,\n              124,\n              105,\n              109,\n              95,\n              101,\n              110,\n              100,\n              124,\n              62\n            ],\n            \"logprob\": 0,\n            \"top_logprobs\": [\n              {\n                \"token\": \"<|im_end|>\",\n                \"bytes\": [\n                  60,\n                  124,\n                  105,\n                  109,\n                  95,\n                  101,\n                  110,\n                  100,\n                  124,\n                  62\n                ],\n                \"logprob\": 0\n              },\n              {\n                \"token\": \" �\",\n                \"bytes\": [\n                  32,\n                  239,\n                  191,\n                  189\n                ],\n                \"logprob\": -24.464284896850586\n              }\n            ]\n          }\n        ]\n      },\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 16,\n    \"total_tokens\": 19,\n    \"completion_tokens\": 3\n  }\n}"
+    body: "{\n  \"id\": \"oPN9QJ7-3pDw3Z-9ae97f20ee85a29f\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765838991,\n  \"model\": \"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"Hello.\",\n        \"tool_calls\": [],\n        \"reasoning\": null\n      },\n      \"logprobs\": {\n        \"content\": [\n          {\n            \"token\": \"Hello\",\n            \"bytes\": [\n              72,\n              101,\n              108,\n              108,\n              111\n            ],\n            \"logprob\": -0.000011444157280493528,\n            \"top_logprobs\": [\n              {\n                \"token\": \"Hello\",\n                \"bytes\": [\n                  72,\n                  101,\n                  108,\n                  108,\n                  111\n                ],\n                \"logprob\": -0.000011444157280493528\n              },\n              {\n                \"token\": \"Hi\",\n                \"bytes\": [\n                  72,\n                  105\n                ],\n                \"logprob\": -11.785728454589844\n              }\n            ]\n          },\n          {\n            \"token\": \".\",\n            \"bytes\": [\n              46\n            ],\n            \"logprob\": -0.5419427156448364,\n            \"top_logprobs\": [\n              {\n                \"token\": \".\",\n                \"bytes\": [\n                  46\n                ],\n                \"logprob\": -0.5419427156448364\n              },\n              {\n                \"token\": \"<|im_end|>\",\n                \"bytes\": [\n                  60,\n                  124,\n                  105,\n                  109,\n                  95,\n                  101,\n                  110,\n                  100,\n                  124,\n                  62\n                ],\n                \"logprob\": -0.8990861177444458\n              }\n            ]\n          },\n          {\n            \"token\": \"<|im_end|>\",\n            \"bytes\": [\n              60,\n              124,\n              105,\n              109,\n              95,\n              101,\n              110,\n              100,\n              124,\n              62\n            ],\n            \"logprob\": 0,\n            \"top_logprobs\": [\n              {\n                \"token\": \"<|im_end|>\",\n                \"bytes\": [\n                  60,\n                  124,\n                  105,\n                  109,\n                  95,\n                  101,\n                  110,\n                  100,\n                  124,\n                  62\n                ],\n                \"logprob\": 0\n              },\n              {\n                \"token\": \" �\",\n                \"bytes\": [\n                  32,\n                  239,\n                  191,\n                  189\n                ],\n                \"logprob\": -24.285715103149414\n              }\n            ]\n          }\n        ]\n      },\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 16,\n    \"total_tokens\": 19,\n    \"completion_tokens\": 3\n  }\n}"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -29,11 +29,11 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9ade091ab84ca275-YUL
+      - 9ae97f20ee85a29f-YUL
       Content-Type:
       - application/json; charset=utf-8
       Etag:
-      - W/"c24-OEUsQ7O/nEXmhF95M/3c1Mc41lE"
+      - W/"c24-qeN1yScKZP7C8yoplvEnPWcpXh0"
       Retry-After:
       - "1"
       Server:
@@ -43,13 +43,13 @@ interactions:
       Vary:
       - Accept-Encoding
       X-Amzn-Trace-Id:
-      - 89b844e6-45bd-44d1-8164-6de5e0842d89-noamzn
+      - f3d8354f-5c4a-4eab-8c67-f299da93a425-noamzn
       X-Api-Call-End:
-      - "2025-12-14T13:26:53.890Z"
+      - "2025-12-15T22:49:51.828Z"
       X-Api-Call-Start:
-      - "2025-12-14T13:26:53.700Z"
+      - "2025-12-15T22:49:51.604Z"
       X-Api-Received:
-      - "2025-12-14T13:26:53.692Z"
+      - "2025-12-15T22:49:51.596Z"
       X-Inference-Version:
       - v2
       X-Ratelimit:
@@ -66,4 +66,4 @@ interactions:
       - "1"
     status: 200 OK
     code: 200
-    duration: 296ms
+    duration: 395ms

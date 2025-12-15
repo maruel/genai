@@ -1,0 +1,54 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 305
+    host: api.together.xyz
+    body: "{\"model\":\"essentialai/rnj-1-instruct\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What is the word said? Reply with only the word.\"},{\"type\":\"video_url\",\"video_url\":{\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/video.mp4\"}}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 418
+    body: "{\n  \"id\": \"oPBePcf-4nba6j-9ade2a1d8c88a28c\",\n  \"error\": {\n    \"message\": {\n      \"message\": \"/data/modelpreload/huggingface/models--togethercomputer--EssentialAI-RNJ-1-Instruct/snapshots/c10f241794e4a11175a61c52a053488462c5b25e is not a multimodal model None\",\n      \"type\": \"BadRequestError\",\n      \"param\": null,\n      \"code\": 400\n    },\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": null\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ade2a1d8c88a28c-YUL
+      Content-Length:
+      - "418"
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"1a2-13VFPNHksykttFLvBbCDVnBJIm8"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 9e8395f7-c638-44cd-b8ab-89efbced3e9d-noamzn
+      X-Api-Call-Start:
+      - "2025-12-14T13:49:26.151Z"
+      X-Api-Received:
+      - "2025-12-14T13:49:26.101Z"
+      X-Inference-Version:
+      - v2
+    status: 400 Bad Request
+    code: 400
+    duration: 200ms

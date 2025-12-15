@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 283
+    host: api.together.xyz
+    body: "{\"model\":\"Qwen/Qwen3-235B-A22B-Thinking-2507\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"# Quackiland\\n\\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"oPMfmB3-zqrih-9ae8fb753fb4a2f0\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765833607,\n  \"model\": \"Qwen/Qwen3-235B-A22B-Thinking-2507\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"Okay, let's tackle this question. So, the problem says: \\\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\\\"\\n\\nHmm, first, I need to figure out what's being asked here. The question is asking for the capital of Quackiland. But wait, the first sentence already states that the capital of Quackiland is Quack. Then it mentions the Big Canard Statue is in Quack. Maybe the statue part is a red herring?\\n\\nLet me read it again. \\\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\\\"\\n\\nSo the first sentence directly answers the question. The second sentence provides additional information about a statue, but that's probably just extra detail to test if I get distracted. The key point is that the capital is stated upfront.\\n\\nWait, maybe there's a trick here. Sometimes these riddles play on wordplay. Let's see: Quackiland's capital is Quack. \\\"Quack\\\" sounds like \\\"duck\\\" in English, and \\\"Canard\\\" is French for duck. So the Big Canard Statue is a duck statue. But does that affect the capital? Probably not. The question is straightforward: given that the capital is Quack, what is the capital? So the answer should be Quack.\\n\\nBut maybe the question is testing if you overcomplicate it. Like, even though there's a statue mentioned, the answer is still Quack. Let me confirm. The problem states the capital is Quack, then asks for the capital. So regardless of the statue, the answer is Quack. Yeah, that makes sense. The statue part is just extra info to throw you off.\\n</think>\\n\\nThe capital of Quackiland is **Quack**. \\n\\nThe question explicitly states this in the first sentence: *\\\"The capital of Quackiland is Quack.\\\"* The mention of the Big Canard Statue (where \\\"canard\\\" means \\\"duck\\\" in French, tying into the \\\"quack\\\" theme) is additional context but does not alter the stated fact. Therefore, the answer remains **Quack**, as directly provided in the premise. \\n\\n**Answer:** Quack.\",\n        \"tool_calls\": [],\n        \"reasoning\": null\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 45,\n    \"total_tokens\": 521,\n    \"completion_tokens\": 476\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ae8fb753fb4a2f0-YUL
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"a30-Nmq1Cmps9Hjly9b68xJUjQDSX4g"
+      Retry-After:
+      - "2"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 5860e709-24a1-4416-bc16-de8f60cbaa93-noamzn
+      X-Api-Call-End:
+      - "2025-12-15T21:20:07.391Z"
+      X-Api-Call-Start:
+      - "2025-12-15T21:19:58.701Z"
+      X-Api-Received:
+      - "2025-12-15T21:19:58.694Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "19"
+      X-Ratelimit-Remaining-Tokens:
+      - "3000"
+      X-Ratelimit-Reset:
+      - "2"
+    status: 200 OK
+    code: 200
+    duration: 9.163s

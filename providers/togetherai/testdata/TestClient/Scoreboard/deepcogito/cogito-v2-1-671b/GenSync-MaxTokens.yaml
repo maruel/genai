@@ -1,0 +1,55 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 163
+    host: api.together.xyz
+    body: "{\"model\":\"deepcogito/cogito-v2-1-671b\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":\"Explain the theory of relativity in great details.\"}],\"max_tokens\":16}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"oPBec4c-zqrih-9ade2b236bcda28c\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765720207,\n  \"model\": \"deepcogito/cogito-v2-1-671b\",\n  \"service_tier\": null,\n  \"system_fingerprint\": null,\n  \"prompt_token_ids\": null,\n  \"kv_transfer_params\": null,\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"I'll explain Einstein's theory of relativity, which consists of two parts: special\",\n        \"tool_calls\": [],\n        \"reasoning\": null\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"length\",\n      \"token_ids\": null,\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 37,\n    \"total_tokens\": 53,\n    \"completion_tokens\": 16\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ade2b236bcda28c-YUL
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"2da-6prG9aVPf/ZuzncYXhOTC7kMyRs"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 951e9cc3-171a-4cc2-a6d6-688c6aa1d243-noamzn
+      X-Api-Call-End:
+      - "2025-12-14T13:50:08.197Z"
+      X-Api-Call-Start:
+      - "2025-12-14T13:50:07.979Z"
+      X-Api-Received:
+      - "2025-12-14T13:50:07.974Z"
+      X-Inference-Version:
+      - v2
+    status: 200 OK
+    code: 200
+    duration: 354ms

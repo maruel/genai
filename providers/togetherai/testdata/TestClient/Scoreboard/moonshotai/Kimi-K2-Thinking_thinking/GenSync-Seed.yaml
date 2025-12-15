@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 136
+    host: api.together.xyz
+    body: "{\"model\":\"moonshotai/Kimi-K2-Thinking\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"}],\"seed\":42}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"oPMwAE7-zqrih-9ae944cfdb39a305\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765836604,\n  \"model\": \"moonshotai/Kimi-K2-Thinking\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"Hello\",\n        \"tool_calls\": [],\n        \"reasoning\": \"The user wants me to say hello using only one word.\\nThe word \\\"Hello\\\" is itself one word.\\nSo I should just respond with \\\"Hello\\\".\\n\\nLet me check the constraints:\\n- Say hello: Yes, \\\"Hello\\\" is a greeting.\\n- Use only one word: Yes, \\\"Hello\\\" is one word.\\n\\nThis is simple. I will just respond with \\\"Hello\\\". \"\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 33,\n    \"total_tokens\": 114,\n    \"completion_tokens\": 81\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ae944cfdb39a305-YUL
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"372-4w9kCT0Zp6v5z0yCkiPvoe0CiZc"
+      Retry-After:
+      - "2"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 9218dd5e-8840-4339-8689-6ee8f697e481-noamzn
+      X-Api-Call-End:
+      - "2025-12-15T22:10:04.151Z"
+      X-Api-Call-Start:
+      - "2025-12-15T22:10:02.930Z"
+      X-Api-Received:
+      - "2025-12-15T22:10:02.925Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "19"
+      X-Ratelimit-Remaining-Tokens:
+      - "2840"
+      X-Ratelimit-Reset:
+      - "2"
+    status: 200 OK
+    code: 200
+    duration: 1.342s

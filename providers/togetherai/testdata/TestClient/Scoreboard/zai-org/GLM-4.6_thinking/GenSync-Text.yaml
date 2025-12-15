@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 114
+    host: api.together.xyz
+    body: "{\"model\":\"zai-org/GLM-4.6\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"oPN6NZv-3pDw3Z-9ae970b12c8fa266\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765838408,\n  \"model\": \"zai-org/GLM-4.6\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"Hello\",\n        \"tool_calls\": [],\n        \"reasoning\": \"1.  **Analyze the User's Request:**\\n    *   **Core command:** \\\"Say hello.\\\" This is the primary action requested.\\n    *   **Constraint:** \\\"Use only one word.\\\" This is a strict, non-negotiable rule.\\n\\n2.  **Brainstorm potential words:**\\n    *   The most direct, literal interpretation of \\\"say hello\\\" is the word \\\"Hello\\\". It's a greeting, it's one word, it perfectly fulfills the request.\\n    *   What are other one-word greetings?\\n        *   \\\"Hi\\\" - Also one word, also a greeting. It's a synonym for \\\"hello\\\" in this context.\\n        *   \\\"Hey\\\" - Another synonym, also one word.\\n        *   \\\"Greetings\\\" - This is one word, technically. It's a bit more formal than \\\"hello\\\".\\n        *   \\\"Salutations\\\" - Also one word, very formal.\\n        *   \\\"Yo\\\" - Very informal, but still a one-word greeting.\\n        *   \\\"Howdy\\\" - Regional, informal, but one word.\\n\\n3.  **Evaluate the candidates against the user's request:**\\n    *   The request is \\\"Say hello.\\\" The most faithful and direct answer is \\\"Hello\\\". It explicitly uses the word from the prompt.\\n    *   \\\"Hi\\\" is also excellent. It's extremely common and fulfills the spirit of the request perfectly. It's a safe, standard alternative.\\n    *   \\\"Hey\\\" is good, but can sometimes be used to get attention (\\\"Hey, you!\\\") rather than as a pure greeting. Still a very strong contender.\\n    *   \\\"Greetings\\\" and \\\"Salutations\\\" feel a bit stilted or overly formal for a simple request like this. They *work*, but they aren't the most natural choice.\\n    *   \\\"Howdy\\\" is regional. While correct, it might feel a bit out of place unless the user has indicated a preference for that dialect.\\n    *   \\\"Yo\\\" is very informal. It might come across as too casual or even slightly flippant, depending on the perceived tone.\\n\\n4.  **Select the best option:**\\n    *   \\\"Hello\\\" is the *most* correct answer because it directly uses the word requested. It's unambiguous, polite, and neutral.\\n    *   \\\"Hi\\\" is a close second. It's equally valid as a one-word greeting and probably just as common in conversational AI.\\n    *   The user's prompt is simple and direct: \\\"Say hello.\\\" A simple and direct response is best. \\\"Hello\\\" is the epitome of that.\\n\\n5.  **Final Decision:** I will go with \\\"Hello\\\". It is the most direct, literal, and universally understood response that perfectly adheres to the single-word constraint. There is no ambiguity.\\n\\n6.  **Self-Correction/Refinement:**\\n    *   Could I add anything else? No, the user said \\\"Use *only* one word.\\\" Punctuation? A period or exclamation point? No, those are not words. The request is very strict. Just the word itself.\\n    *   Is there any hidden meaning? Could \\\"hello\\\" be a trick question? Unlikely. It's a very straightforward test of an AI's ability to follow simple, constrained instructions. The best way to pass is to follow the instructions as literally as possible.\\n    *   Therefore, the final, final answer is simply the single word \\\"Hello\\\". No extra fluff, no explanation, just the required word.\"\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 13,\n    \"total_tokens\": 748,\n    \"completion_tokens\": 735\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ae970b12c8fa266-YUL
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"e23-X2S7W2kAV8MBYHYhln2DPCSilV0"
+      Retry-After:
+      - "2"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - b4dea435-9436-429c-a780-79a748933051-noamzn
+      X-Api-Call-End:
+      - "2025-12-15T22:40:08.959Z"
+      X-Api-Call-Start:
+      - "2025-12-15T22:40:00.456Z"
+      X-Api-Received:
+      - "2025-12-15T22:40:00.450Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "19"
+      X-Ratelimit-Remaining-Tokens:
+      - "2297"
+      X-Ratelimit-Reset:
+      - "2"
+    status: 200 OK
+    code: 200
+    duration: 16.097s

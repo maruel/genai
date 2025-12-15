@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 807
+    host: api.together.xyz
+    body: "{\"model\":\"Qwen/Qwen3-235B-A22B-fp8-tput\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"},{\"role\":\"assistant\",\"tool_calls\":[{\"index\":0,\"id\":\"call_n1fdl20ljr7xcz1q2t0paplx\",\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\":132413}\"}}]},{\"role\":\"tool\",\"content\":\"363.89\",\"tool_call_id\":\"call_n1fdl20ljr7xcz1q2t0paplx\"}],\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"tool_choice\":\"none\"}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"oPN3KvQ-zqrih-9ae962305f6fa27f\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765837809,\n  \"model\": \"Qwen/Qwen3-235B-A22B-fp8-tput\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"<think>\\nOkay, the user asked for the square root of 132413 using the square_root tool. I called the function with that number, and the response was 363.89. Now I need to present that result. Since they specified to reply only with the result and no explanation, I should just state the number. Let me check if there's any formatting needed. The answer is already in a numerical format, so I'll just put it as is. Make sure there's no extra text or explanation. Just the number 363.89. Alright, that's straightforward.\\n</think>\\n\\n363.89\",\n        \"tool_calls\": []\n      }\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 254,\n    \"total_tokens\": 391,\n    \"completion_tokens\": 137\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ae962305f6fa27f-YUL
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"436-TrEeJT79EIzb9KdCxrpa6wuK9nc"
+      Retry-After:
+      - "1"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 83d392d6-4e1f-47df-8bae-68499ac92988-noamzn
+      X-Api-Call-End:
+      - "2025-12-15T22:30:09.101Z"
+      X-Api-Call-Start:
+      - "2025-12-15T22:30:06.222Z"
+      X-Api-Received:
+      - "2025-12-15T22:30:06.210Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "18"
+      X-Ratelimit-Remaining-Tokens:
+      - "2636"
+      X-Ratelimit-Reset:
+      - "1"
+    status: 200 OK
+    code: 200
+    duration: 3.017s

@@ -1,0 +1,54 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 301
+    host: api.together.xyz
+    body: "{\"model\":\"deepcogito/cogito-v2-1-671b\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What fruit is it? Reply with only one word.\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg\"}}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 418
+    body: "{\n  \"id\": \"oPBecmw-zqrih-9ade2b3278cda28c\",\n  \"error\": {\n    \"message\": {\n      \"message\": \"/data/modelpreload/huggingface/models--togethercomputer--cogito-671b-v2.1-chkp-2-FP8/snapshots/c67c567ee89efcea0b6d28bd5f45b4fe5f38de6b is not a multimodal model None\",\n      \"type\": \"BadRequestError\",\n      \"param\": null,\n      \"code\": 400\n    },\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": null\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ade2b3278cda28c-YUL
+      Content-Length:
+      - "418"
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"1a2-0jPvgWDHUDhE2IeguV0DTlsiUws"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - cf56cc47-0d85-429b-abc3-edf4e12ab378-noamzn
+      X-Api-Call-Start:
+      - "2025-12-14T13:50:10.375Z"
+      X-Api-Received:
+      - "2025-12-14T13:50:10.371Z"
+      X-Inference-Version:
+      - v2
+    status: 400 Bad Request
+    code: 400
+    duration: 289ms

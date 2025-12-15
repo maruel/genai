@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 128
+    host: api.together.xyz
+    body: "{\"model\":\"Qwen/Qwen3-235B-A22B-fp8-tput\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"oPN3H3W-28Eivz-9ae961f1d876a27f\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765837798,\n  \"model\": \"Qwen/Qwen3-235B-A22B-fp8-tput\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"<think>\\nOkay, the user wants me to say hello using only one word. Let me think. The most straightforward greeting is \\\"Hello.\\\" That's exactly one word. I should check if there are any other possible one-word greetings, but \\\"hello\\\" is the obvious choice. No need to complicate it. Just respond with \\\"Hello.\\\"\\n</think>\\n\\nHello.\",\n        \"tool_calls\": [],\n        \"reasoning\": null\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 16,\n    \"total_tokens\": 90,\n    \"completion_tokens\": 74\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ae961f1d876a27f-YUL
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"381-NzXeMx//jmM0Whs+vXTuxQ/558Q"
+      Retry-After:
+      - "2"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - c159e399-5864-4905-9141-217c4942797c-noamzn
+      X-Api-Call-End:
+      - "2025-12-15T22:29:58.520Z"
+      X-Api-Call-Start:
+      - "2025-12-15T22:29:56.541Z"
+      X-Api-Received:
+      - "2025-12-15T22:29:56.529Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "19"
+      X-Ratelimit-Remaining-Tokens:
+      - "3000"
+      X-Ratelimit-Reset:
+      - "2"
+    status: 200 OK
+    code: 200
+    duration: 2.467s

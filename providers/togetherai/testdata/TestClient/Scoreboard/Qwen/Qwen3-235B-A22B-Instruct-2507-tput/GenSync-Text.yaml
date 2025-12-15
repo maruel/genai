@@ -20,7 +20,7 @@ interactions:
     proto_minor: 0
     content_length: -1
     uncompressed: true
-    body: "{\n  \"id\": \"oPBXTQt-4YNCb4-9ade09154f20a275\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765718813,\n  \"model\": \"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"Hello.\",\n        \"tool_calls\": [],\n        \"reasoning\": null\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 16,\n    \"total_tokens\": 19,\n    \"completion_tokens\": 3\n  }\n}"
+    body: "{\n  \"id\": \"oPN9Q5P-3pDw3Z-9ae97f1aac5fa29f\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765838991,\n  \"model\": \"Qwen/Qwen3-235B-A22B-Instruct-2507-tput\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"Hello.\",\n        \"tool_calls\": [],\n        \"reasoning\": null\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 16,\n    \"total_tokens\": 19,\n    \"completion_tokens\": 3\n  }\n}"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -29,11 +29,11 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9ade09154f20a275-YUL
+      - 9ae97f1aac5fa29f-YUL
       Content-Type:
       - application/json; charset=utf-8
       Etag:
-      - W/"244-Dv8I2xWaIX69qVLmI2UW62/6Dmw"
+      - W/"244-mkRZjOWkivhCvKErJCZe8jO3OxQ"
       Retry-After:
       - "2"
       Server:
@@ -43,13 +43,13 @@ interactions:
       Vary:
       - Accept-Encoding
       X-Amzn-Trace-Id:
-      - a60dd95f-ce57-46fb-8a8e-3386db22548f-noamzn
+      - 4e89448f-ec76-4c1a-95ed-4fbfe187567d-noamzn
       X-Api-Call-End:
-      - "2025-12-14T13:26:53.561Z"
+      - "2025-12-15T22:49:51.048Z"
       X-Api-Call-Start:
-      - "2025-12-14T13:26:53.103Z"
+      - "2025-12-15T22:49:50.869Z"
       X-Api-Received:
-      - "2025-12-14T13:26:53.089Z"
+      - "2025-12-15T22:49:50.858Z"
       X-Inference-Version:
       - v2
       X-Ratelimit:
@@ -66,4 +66,4 @@ interactions:
       - "2"
     status: 200 OK
     code: 200
-    duration: 596ms
+    duration: 659ms

@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 311
+    host: api.together.xyz
+    body: "{\"model\":\"Qwen/Qwen3-Next-80B-A3B-Thinking\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What is the word said? Reply with only the word.\"},{\"type\":\"video_url\",\"video_url\":{\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/video.mp4\"}}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"oPN5RWG-3pDw3Z-9ae96c2c9d5ea2ce\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765838221,\n  \"model\": \"Qwen/Qwen3-Next-80B-A3B-Thinking\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"<think>\\nOkay, the user asked \\\"What is the word said? Reply with only the word.\\\" Hmm, that's a bit confusing. Let me read it again. They want me to reply with only the word, but what word? The question is asking \\\"What is the word said?\\\" but there's no context given. Maybe they're referring to a previous message or a specific word that was said in a conversation. Wait, but in this current interaction, there's no prior message. The user just sent this query.\\n\\nWait, maybe it's a trick question. Like, the phrase \\\"the word said\\\" – but what word is being referred to here? The user might be testing me. Let me check the exact wording: \\\"What is the word said? Reply with only the word.\\\" So they want me to say the word that was said. But there's no word given in the question. Unless \\\"the word said\\\" is part of a common phrase or something. Wait, maybe they're asking for the word \\\"said\\\" itself? But that doesn't make sense. Or perhaps it's a miscommunication. Let's see.\\n\\nAlternatively, maybe this is a reference to a previous interaction where a word was said, but in this case, this is the first message. So maybe the user made a mistake. But the instruction says to reply with only the word. So perhaps the answer is \\\"said\\\"? Because the question is \\\"What is the word said?\\\" So the word is \\\"said\\\". But that seems odd. Or maybe the user is asking for the word that's being referred to as \\\"said\\\", but without context, it's unclear.\\n\\nWait, maybe the user is quoting something. Like, sometimes in puzzles, they say \\\"What is the word said?\\\" and the answer is \\\"said\\\" itself. But that's a bit of a riddle. Let me think. If someone says \\\"What is the word said?\\\" then the answer would be \\\"said\\\", because that's the word they're asking about. But that's a bit meta. Alternatively, maybe they're referring to a specific context where a word was spoken, but there's no context here.\\n\\nAlternatively, maybe the user is confused and the correct answer is to just say \\\"said\\\" as per the question. Since the question is \\\"What is the word said?\\\" and they want the reply to be only the word. So the word in question is \\\"said\\\". So the answer is \\\"said\\\". But that seems too straightforward. Let me check again.\\n\\nThe user says: \\\"What is the word said? Reply with only the word.\\\" So the question is asking for the word that is \\\"said\\\". So the answer would be the word \\\"said\\\". So I should just reply with \\\"said\\\". But maybe that's it. Because the question is phrased as \\\"What is the word said?\\\" which might be a way of asking \\\"What is the word 'said'?\\\" but that doesn't make sense. Alternatively, perhaps the user is asking for the word that was spoken in a particular context, but there's no context provided.\\n\\nAlternatively, maybe it's a typo. Like, perhaps they meant \\\"What is the word?\\\" and then \\\"said\\\" is part of the instruction. But the way it's written is \\\"What is the word said? Reply with only the word.\\\" So the first part is the question, then the instruction. So the question is \\\"What is the word said?\\\" which is confusing. Maybe they meant \\\"What is the word [that was] said?\\\" but without any prior context, there's no word said here. So perhaps the intended answer is \\\"said\\\" as the word in question. Because if someone asks \\\"What is the word said?\\\" then the answer is \\\"said\\\", since that's the word they're referring to. For example, if you say \\\"The word 'said' is...\\\", then the word is 'said'.\\n\\nAlternatively, maybe the user is thinking of a different phrase, like \\\"What is the word?\\\" and then the answer is supposed to be a specific word, but they included \\\"said\\\" in the question. Wait, maybe it's a mistake. Let's see. Common riddles: sometimes people ask \\\"What word becomes shorter when you add two letters to it?\\\" but that's different. Or \\\"What is the word that is spelled incorrectly in every dictionary?\\\" but that's \\\"incorrectly\\\", but that's not relevant here.\\n\\nWait, maybe the user is referring to the word \\\"said\\\" itself. Like, in the English language, the word \\\"said\\\" is pronounced as /sɛd/, but that's not helpful. Alternatively, maybe the question is \\\"What is the word 'said'?\\\" but the answer would just be \\\"said\\\". But that's redundant. Alternatively, perhaps the user is trying to get me to say the word that's spoken in a specific context, but there's none given.\\n\\nGiven that the instruction is to reply with only the word, and the question is \\\"What is the word said?\\\", perhaps the intended answer is \\\"said\\\". Because the question is phrased as asking for the word that is \\\"said\\\", so the answer is the word \\\"said\\\". So I should just reply with \\\"said\\\". Even though it's a bit meta, that's probably what they want.\\n\\nAlternatively, maybe they made a typo and meant \\\"What is the word? Said.\\\" But no, the way it's written is \\\"What is the word said? Reply with only the word.\\\" So the sentence is \\\"What is the word said?\\\" which is grammatically a bit odd. Normally, you'd say \\\"What word was said?\\\" or \\\"What is the word that was said?\\\" but the way it's phrased, \\\"What is the word said?\\\" is not standard. But perhaps in the context of the question, the word they're referring to is \\\"said\\\", so the answer is \\\"said\\\".\\n\\nYes, I think that's it. So the answer is \\\"said\\\".\\n</think>\\n\\nsaid\",\n        \"tool_calls\": [],\n        \"reasoning\": null\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 22,\n    \"total_tokens\": 1247,\n    \"completion_tokens\": 1225\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ae96c2c9d5ea2ce-YUL
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"16f6-X/Z1VBfvKlyEi1Kxps4mTQ4E8sk"
+      Retry-After:
+      - "1"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 38dc4f6f-2d2e-48db-9fb0-d7e7a7e4b2ab-noamzn
+      X-Api-Call-End:
+      - "2025-12-15T22:37:01.368Z"
+      X-Api-Call-Start:
+      - "2025-12-15T22:36:55.226Z"
+      X-Api-Received:
+      - "2025-12-15T22:36:55.217Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "18"
+      X-Ratelimit-Remaining-Tokens:
+      - "2469"
+      X-Ratelimit-Reset:
+      - "1"
+    status: 200 OK
+    code: 200
+    duration: 6.304s

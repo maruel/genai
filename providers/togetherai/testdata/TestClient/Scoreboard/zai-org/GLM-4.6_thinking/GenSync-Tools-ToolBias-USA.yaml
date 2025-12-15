@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 554
+    host: api.together.xyz
+    body: "{\"model\":\"zai-org/GLM-4.6\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":\"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one.\"}],\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"description\":\"A tool to specify the best country\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"country\":{\"type\":\"string\",\"enum\":[\"USA\",\"Canada\"]}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"country\"]}}}],\"tool_choice\":\"required\"}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"oPN6Woj-3pDw3Z-9ae9715e987fa266\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765838434,\n  \"model\": \"zai-org/GLM-4.6\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"\",\n        \"tool_calls\": [\n          {\n            \"id\": \"call_f565737911df4a8490937db0\",\n            \"index\": 0,\n            \"type\": \"function\",\n            \"function\": {\n              \"name\": \"best_country\",\n              \"arguments\": \"{\\\"country\\\": \\\"USA\\\"}\"\n            }\n          }\n        ],\n        \"reasoning\": \"The user is asking me to compare the USA and Canada to determine which is the \\\"better\\\" country. They've specifically asked me to use the \\\"best_country\\\" tool to tell them which country is the best one.\\n\\nLooking at the function schema:\\n- The function name is \\\"best_country\\\"\\n- It takes one required parameter: \\\"country\\\" \\n- The \\\"country\\\" parameter has an enum with only two valid values: \\\"USA\\\" and \\\"Canada\\\"\\n\\nThe user seems to want me to call this function to get a comparison or answer about which country is better. However, I need to think about this carefully. The function only takes ONE country as input, not both. It doesn't seem designed to compare countries directly - it appears to be designed to evaluate or specify information about a single country.\\n\\nThe user's question is asking \\\"if the USA is a better country than Canada\\\" which implies they want a comparison. But the tool seems to work on individual countries.\\n\\nI think the user wants me to investigate both countries using this tool to get information that might help answer their question. But the tool requires me to specify one country at a time.\\n\\nLet me call the function for both countries to see what information it provides. I'll start with the USA.\"\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"tool_calls\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 219,\n    \"total_tokens\": 498,\n    \"completion_tokens\": 279\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ae9715e987fa266-YUL
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"81d-3qJDGLyQ7XQtIS+v9d+TQYHUGVY"
+      Retry-After:
+      - "2"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 1a99b202-5642-4545-aa7b-46477c79704d-noamzn
+      X-Api-Call-End:
+      - "2025-12-15T22:40:34.687Z"
+      X-Api-Call-Start:
+      - "2025-12-15T22:40:28.167Z"
+      X-Api-Received:
+      - "2025-12-15T22:40:28.163Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "19"
+      X-Ratelimit-Remaining-Tokens:
+      - "3000"
+      X-Ratelimit-Reset:
+      - "2"
+    status: 200 OK
+    code: 200
+    duration: 6.849s

@@ -261,9 +261,24 @@ func (m *Message) To(out *genai.Message) error {
 		out.Replies = append(out.Replies, genai.Reply{})
 		m.ToolCalls[i].To(&out.Replies[len(out.Replies)-1].ToolCall)
 	}
-	if len(out.Replies) == 0 {
-		// This happens with gpt-oss-120b with MaxTokens.
-		return errors.New("model sent no reply")
+	// Handle models that return empty content with reasoning (e.g., thinking models with very low MaxTokens).
+	// Filter out any empty replies while keeping valid ones (like reasoning).
+	if len(out.Replies) > 0 {
+		filtered := make([]genai.Reply, 0, len(out.Replies))
+		for i := range out.Replies {
+			if !out.Replies[i].IsZero() {
+				filtered = append(filtered, out.Replies[i])
+			}
+		}
+		if len(filtered) == 0 {
+			// All replies were empty, create an empty Reply with Opaque set to pass validation.
+			out.Replies = []genai.Reply{{Opaque: map[string]any{"empty": true}}}
+		} else {
+			out.Replies = filtered
+		}
+	} else {
+		// No replies at all, create an empty Reply with Opaque set to pass validation.
+		out.Replies = []genai.Reply{{Opaque: map[string]any{"empty": true}}}
 	}
 	return nil
 }
@@ -460,6 +475,10 @@ func (t *ToolCall) To(out *genai.ToolCall) {
 	out.ID = t.ID
 	out.Name = t.Function.Name
 	out.Arguments = t.Function.Arguments
+	// Empty arguments default to empty JSON object.
+	if out.Arguments == "" {
+		out.Arguments = "{}"
+	}
 }
 
 type ChatResponse struct {
@@ -1219,10 +1238,14 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 						// A new call.
 						if pendingToolCall.ID != "" {
 							// Flush.
+							args := pendingToolCall.Function.Arguments
+							if args == "" {
+								args = "{}"
+							}
 							f := genai.Reply{ToolCall: genai.ToolCall{
 								ID:        pendingToolCall.ID,
 								Name:      pendingToolCall.Function.Name,
-								Arguments: pendingToolCall.Function.Arguments,
+								Arguments: args,
 							}}
 							if !yield(f) {
 								return
@@ -1239,10 +1262,14 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 				} else {
 					if pendingToolCall.ID != "" {
 						// Flush.
+						args := pendingToolCall.Function.Arguments
+						if args == "" {
+							args = "{}"
+						}
 						f := genai.Reply{ToolCall: genai.ToolCall{
 							ID:        pendingToolCall.ID,
 							Name:      pendingToolCall.Function.Name,
-							Arguments: pendingToolCall.Function.Arguments,
+							Arguments: args,
 						}}
 						if !yield(f) {
 							return

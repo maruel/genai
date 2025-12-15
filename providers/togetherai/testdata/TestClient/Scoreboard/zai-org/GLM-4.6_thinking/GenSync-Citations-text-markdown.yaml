@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 264
+    host: api.together.xyz
+    body: "{\"model\":\"zai-org/GLM-4.6\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"# Quackiland\\n\\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"oPN6aMp-z1gNr-9ae971aa8faea266\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765838445,\n  \"model\": \"zai-org/GLM-4.6\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"Based on the information you provided, the capital of Quackiland is **Quack**.\\n\\nThe first sentence states it directly: \\\"The capital of Quackiland is Quack.\\\"\",\n        \"tool_calls\": [],\n        \"reasoning\": \"1.  **Analyze the User's Query:**\\n    *   The user has provided a short text about a fictional place called \\\"Quackiland\\\".\\n    *   The text contains two statements:\\n        *   \\\"The capital of Quackiland is Quack.\\\"\\n        *   \\\"The Big Canard Statue is located in Quack.\\\"\\n    *   The user then asks a direct question: \\\"What is the capital of Quackiland?\\\"\\n\\n2.  **Identify the Core Task:**\\n    *   The task is to answer the question based *only* on the information provided.\\n    *   This is a reading comprehension and information extraction task.\\n    *   It's a very simple, direct question.\\n\\n3.  **Scan the Provided Text for the Answer:**\\n    *   I'll read the first sentence again: \\\"The capital of Quackiland is Quack.\\\"\\n    *   This sentence explicitly states the answer to the user's question.\\n\\n4.  **Formulate the Answer:**\\n    *   The most direct and accurate answer is \\\"Quack\\\".\\n    *   I should state the answer clearly and concisely.\\n    *   I can also show *how* I found the answer by quoting or referencing the source text. This builds trust and demonstrates my reasoning process.\\n\\n5.  **Drafting the Answer (Internal Monologue):**\\n    *   **Initial thought:** Just say \\\"Quack.\\\" This is correct, but a bit abrupt. It's better to be slightly more conversational and helpful.\\n    *   **Second thought:** Say \\\"The capital of Quackiland is Quack.\\\" This is good because it directly answers the question in a full sentence.\\n    *   **Third thought (Better):** Start with the direct answer, then explain *why* it's the answer by citing the provided text. This is the most complete and helpful approach.\\n        *   Start with the direct answer: \\\"The capital of Quackiland is Quack.\\\"\\n        *   Follow up with the evidence: \\\"Based on the information you provided, the first sentence states, 'The capital of Quackiland is Quack.'\\\"\\n        *   This structure is clear, accurate, and shows the reasoning.\\n\\n6.  **Consider Potential Ambiguities or Tricks:**\\n    *   Is this a trick question? Is there some hidden meaning?\\n    *   \\\"Quack\\\" is a sound a duck makes. \\\"Canard\\\" is French for duck. The name is \\\"Quackiland\\\". It's all very playful and duck-themed.\\n    *   However, the question is *not* about the etymology or the theme. It's a factual question within the context of the provided (fictional) world.\\n    *   The first sentence is a declarative statement of fact *within the world of Quackiland*. There's no reason to doubt it.\\n    *   The second sentence (\\\"The Big Canard Statue is located in Quack.\\\") is a distractor. It provides extra information about the city of Quack, but it doesn't change the fact that Quack is the capital. It actually reinforces the idea that Quack is an important city, which is consistent with it being the capital.\\n    *   Therefore, there are no tricks. The answer is straightforward.\\n\\n7.  **Final Polish:**\\n    *   The drafted answer from step 5 is solid.\\n    *   \\\"The capital of Quackiland is Quack.\\\"\\n    *   \\\"The first sentence you provided states this directly: 'The capital of Quackiland is Quack.'\\\"\\n    *   This is perfect. It's concise, accurate, and explains the source of the information. It avoids any unnecessary fluff or speculation about the duck theme, which isn't relevant to the question asked.\"\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 40,\n    \"total_tokens\": 859,\n    \"completion_tokens\": 819\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ae971aa8faea266-YUL
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"fba-ib80EG9onc9F/k00NoCHB698+EM"
+      Retry-After:
+      - "2"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 333fca73-8253-4de5-90f8-2ce71ebade6c-noamzn
+      X-Api-Call-End:
+      - "2025-12-15T22:40:45.169Z"
+      X-Api-Call-Start:
+      - "2025-12-15T22:40:40.121Z"
+      X-Api-Received:
+      - "2025-12-15T22:40:40.115Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "19"
+      X-Ratelimit-Remaining-Tokens:
+      - "3000"
+      X-Ratelimit-Reset:
+      - "2"
+    status: 200 OK
+    code: 200
+    duration: 5.111s

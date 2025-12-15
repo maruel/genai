@@ -1,0 +1,66 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 169
+    host: api.together.xyz
+    body: "{\"model\":\"Qwen/Qwen3-235B-A22B-fp8-tput\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":\"Talk about Canada in great details. Start with: Canada is\"}],\"stop\":[\"is\"]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"oPN3LT5-zqrih-9ae9623b6abda27f\",\"object\":\"chat.completion.chunk\",\"created\":1765837807,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-fp8-tput\",\"usage\":null}\n\ndata: {\"id\":\"oPN3LT5-zqrih-9ae9623b6abda27f\",\"object\":\"chat.completion.chunk\",\"created\":1765837807,\"choices\":[{\"index\":0,\"text\":\"<think>\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"<think>\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-fp8-tput\",\"usage\":null}\n\ndata: {\"id\":\"oPN3LT5-zqrih-9ae9623b6abda27f\",\"object\":\"chat.completion.chunk\",\"created\":1765837807,\"choices\":[{\"index\":0,\"text\":\"\\n\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\\n\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-fp8-tput\",\"usage\":null}\n\ndata: {\"id\":\"oPN3LT5-zqrih-9ae9623b6abda27f\",\"object\":\"chat.completion.chunk\",\"created\":1765837807,\"choices\":[{\"index\":0,\"text\":\"Okay\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"Okay\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-fp8-tput\",\"usage\":null}\n\ndata: {\"id\":\"oPN3LT5-zqrih-9ae9623b6abda27f\",\"object\":\"chat.completion.chunk\",\"created\":1765837807,\"choices\":[{\"index\":0,\"text\":\",\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\",\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-fp8-tput\",\"usage\":null}\n\ndata: {\"id\":\"oPN3LT5-zqrih-9ae9623b6abda27f\",\"object\":\"chat.completion.chunk\",\"created\":1765837807,\"choices\":[{\"index\":0,\"text\":\" I\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" I\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-fp8-tput\",\"usage\":null}\n\ndata: {\"id\":\"oPN3LT5-zqrih-9ae9623b6abda27f\",\"object\":\"chat.completion.chunk\",\"created\":1765837807,\"choices\":[{\"index\":0,\"text\":\" need\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" need\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-fp8-tput\",\"usage\":null}\n\ndata: {\"id\":\"oPN3LT5-zqrih-9ae9623b6abda27f\",\"object\":\"chat.completion.chunk\",\"created\":1765837807,\"choices\":[{\"index\":0,\"text\":\" to\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" to\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-fp8-tput\",\"usage\":null}\n\ndata: {\"id\":\"oPN3LT5-zqrih-9ae9623b6abda27f\",\"object\":\"chat.completion.chunk\",\"created\":1765837807,\"choices\":[{\"index\":0,\"text\":\" talk\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" talk\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-fp8-tput\",\"usage\":null}\n\ndata: {\"id\":\"oPN3LT5-zqrih-9ae9623b6abda27f\",\"object\":\"chat.completion.chunk\",\"created\":1765837807,\"choices\":[{\"index\":0,\"text\":\" about\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" about\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-fp8-tput\",\"usage\":null}\n\ndata: {\"id\":\"oPN3LT5-zqrih-9ae9623b6abda27f\",\"object\":\"chat.completion.chunk\",\"created\":1765837807,\"choices\":[{\"index\":0,\"text\":\" Canada\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" Canada\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-fp8-tput\",\"usage\":null}\n\ndata: {\"id\":\"oPN3LT5-zqrih-9ae9623b6abda27f\",\"object\":\"chat.completion.chunk\",\"created\":1765837807,\"choices\":[{\"index\":0,\"text\":\" in\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" in\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-fp8-tput\",\"usage\":null}\n\ndata: {\"id\":\"oPN3LT5-zqrih-9ae9623b6abda27f\",\"object\":\"chat.completion.chunk\",\"created\":1765837807,\"choices\":[{\"index\":0,\"text\":\" great\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" great\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-fp8-tput\",\"usage\":null}\n\ndata: {\"id\":\"oPN3LT5-zqrih-9ae9623b6abda27f\",\"object\":\"chat.completion.chunk\",\"created\":1765837807,\"choices\":[{\"index\":0,\"text\":\" detail\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" detail\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-fp8-tput\",\"usage\":null}\n\ndata: {\"id\":\"oPN3LT5-zqrih-9ae9623b6abda27f\",\"object\":\"chat.completion.chunk\",\"created\":1765837807,\"choices\":[{\"index\":0,\"text\":\",\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\",\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-fp8-tput\",\"usage\":null}\n\ndata: {\"id\":\"oPN3LT5-zqrih-9ae9623b6abda27f\",\"object\":\"chat.completion.chunk\",\"created\":1765837807,\"choices\":[{\"index\":0,\"text\":\" starting\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" starting\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-fp8-tput\",\"usage\":null}\n\ndata: {\"id\":\"oPN3LT5-zqrih-9ae9623b6abda27f\",\"object\":\"chat.completion.chunk\",\"created\":1765837807,\"choices\":[{\"index\":0,\"text\":\" with\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" with\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-fp8-tput\",\"usage\":null}\n\ndata: {\"id\":\"oPN3LT5-zqrih-9ae9623b6abda27f\",\"object\":\"chat.completion.chunk\",\"created\":1765837807,\"choices\":[{\"index\":0,\"text\":\" \\\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" \\\"\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-fp8-tput\",\"usage\":null}\n\ndata: {\"id\":\"oPN3LT5-zqrih-9ae9623b6abda27f\",\"object\":\"chat.completion.chunk\",\"created\":1765837807,\"choices\":[{\"index\":0,\"text\":\"Canada\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"Canada\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-fp8-tput\",\"usage\":null}\n\ndata: {\"id\":\"oPN3LT5-zqrih-9ae9623b6abda27f\",\"object\":\"chat.completion.chunk\",\"created\":1765837807,\"choices\":[{\"index\":0,\"text\":\" \",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\" \",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-fp8-tput\",\"usage\":null}\n\ndata: {\"id\":\"oPN3LT5-zqrih-9ae9623b6abda27f\",\"object\":\"chat.completion.chunk\",\"created\":1765837807,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":\"stop\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-235B-A22B-fp8-tput\",\"usage\":null}\n\ndata: {\"id\":\"oPN3LT5-zqrih-9ae9623b6abda27f\",\"object\":\"chat.completion.chunk\",\"created\":1765837807,\"choices\":[],\"model\":\"Qwen/Qwen3-235B-A22B-fp8-tput\",\"usage\":{\"prompt_tokens\":20,\"total_tokens\":39,\"completion_tokens\":19,\"prompt_tokens_details\":null,\"reasoning_tokens\":0}}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - no-cache, no-transform
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ae9623b6abda27f-YUL
+      Content-Type:
+      - text/event-stream;charset=utf-8
+      Retry-After:
+      - "2"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - ed783bb3-b598-4007-8a9e-369372fb8043-noamzn
+      X-Api-Call-Start:
+      - "2025-12-15T22:30:08.007Z"
+      X-Api-Received:
+      - "2025-12-15T22:30:07.988Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "19"
+      X-Ratelimit-Remaining-Tokens:
+      - "2711"
+      X-Ratelimit-Reset:
+      - "2"
+    status: 200 OK
+    code: 200
+    duration: 314ms

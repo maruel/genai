@@ -19,7 +19,7 @@ interactions:
     proto_major: 2
     proto_minor: 0
     content_length: -1
-    body: "data: {\"id\":\"oPBXGdz-4YNCb4-9ade0832cdeca275\",\"object\":\"chat.completion.chunk\",\"created\":1765718776,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPBXGdz-4YNCb4-9ade0832cdeca275\",\"object\":\"chat.completion.chunk\",\"created\":1765718776,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"id\":\"call_56ce5829e0134c68814c2d91\",\"index\":0,\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"arguments\":\"\"}}],\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPBXGdz-4YNCb4-9ade0832cdeca275\",\"object\":\"chat.completion.chunk\",\"created\":1765718776,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"id\":null,\"index\":0,\"type\":\"function\",\"function\":{\"name\":null,\"arguments\":\"{\\\"country\\\": \\\"\"}}],\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPBXGdz-4YNCb4-9ade0832cdeca275\",\"object\":\"chat.completion.chunk\",\"created\":1765718776,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"id\":null,\"index\":0,\"type\":\"function\",\"function\":{\"name\":null,\"arguments\":\"Canada\\\"}\"}}],\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPBXGdz-4YNCb4-9ade0832cdeca275\",\"object\":\"chat.completion.chunk\",\"created\":1765718776,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":\"tool_calls\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPBXGdz-4YNCb4-9ade0832cdeca275\",\"object\":\"chat.completion.chunk\",\"created\":1765718776,\"choices\":[],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":{\"prompt_tokens\":207,\"total_tokens\":227,\"completion_tokens\":20,\"prompt_tokens_details\":null,\"reasoning_tokens\":0}}\n\ndata: [DONE]\n\n"
+    body: "data: {\"id\":\"oPN5UqE-3pDw3Z-9ae96c720c92a2ce\",\"object\":\"chat.completion.chunk\",\"created\":1765838226,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPN5UqE-3pDw3Z-9ae96c720c92a2ce\",\"object\":\"chat.completion.chunk\",\"created\":1765838226,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"id\":\"call_1c805d18f9594088b1f44568\",\"index\":0,\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"arguments\":\"\"}}],\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPN5UqE-3pDw3Z-9ae96c720c92a2ce\",\"object\":\"chat.completion.chunk\",\"created\":1765838226,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"id\":null,\"index\":0,\"type\":\"function\",\"function\":{\"name\":null,\"arguments\":\"{\\\"country\\\": \\\"\"}}],\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPN5UqE-3pDw3Z-9ae96c720c92a2ce\",\"object\":\"chat.completion.chunk\",\"created\":1765838226,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"id\":null,\"index\":0,\"type\":\"function\",\"function\":{\"name\":null,\"arguments\":\"Canada\\\"}\"}}],\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPN5UqE-3pDw3Z-9ae96c720c92a2ce\",\"object\":\"chat.completion.chunk\",\"created\":1765838226,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":\"tool_calls\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":null}\n\ndata: {\"id\":\"oPN5UqE-3pDw3Z-9ae96c720c92a2ce\",\"object\":\"chat.completion.chunk\",\"created\":1765838226,\"choices\":[],\"model\":\"Qwen/Qwen3-Next-80B-A3B-Instruct\",\"usage\":{\"prompt_tokens\":207,\"total_tokens\":227,\"completion_tokens\":20,\"prompt_tokens_details\":null,\"reasoning_tokens\":0}}\n\ndata: [DONE]\n\n"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -30,11 +30,11 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9ade0832cdeca275-YUL
+      - 9ae96c720c92a2ce-YUL
       Content-Type:
       - text/event-stream;charset=utf-8
       Retry-After:
-      - "1"
+      - "2"
       Server:
       - cloudflare
       Strict-Transport-Security:
@@ -42,11 +42,11 @@ interactions:
       Vary:
       - Accept-Encoding
       X-Amzn-Trace-Id:
-      - e7ab04cb-74e3-4100-acfc-2bfa92be1f4b-noamzn
+      - 212c1c25-f7c6-4b8d-bd5f-1a57669c0e2e-noamzn
       X-Api-Call-Start:
-      - "2025-12-14T13:26:16.859Z"
+      - "2025-12-15T22:37:06.420Z"
       X-Api-Received:
-      - "2025-12-14T13:26:16.845Z"
+      - "2025-12-15T22:37:06.410Z"
       X-Inference-Version:
       - v2
       X-Ratelimit:
@@ -58,9 +58,9 @@ interactions:
       X-Ratelimit-Remaining:
       - "18"
       X-Ratelimit-Remaining-Tokens:
-      - "2771"
+      - "2770"
       X-Ratelimit-Reset:
-      - "1"
+      - "2"
     status: 200 OK
     code: 200
-    duration: 318ms
+    duration: 479ms

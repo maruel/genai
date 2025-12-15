@@ -19,7 +19,7 @@ interactions:
     proto_major: 2
     proto_minor: 0
     content_length: 265
-    body: "{\n  \"id\": \"o8TLTzM-57nCBj-97442c35ea3ba322\",\n  \"error\": {\n    \"message\": \"Invalid API key provided. You can find your API key at https://api.together.ai/settings/api-keys.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": \"invalid_api_key\"\n  }\n}"
+    body: "{\n  \"id\": \"oPMey9e-57nCBj-9ae8f7afeb2da2e8\",\n  \"error\": {\n    \"message\": \"Invalid API key provided. You can find your API key at https://api.together.ai/settings/api-keys.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": \"invalid_api_key\"\n  }\n}"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -28,13 +28,13 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 97442c35ea3ba322-YUL
+      - 9ae8f7afeb2da2e8-YUL
       Content-Length:
       - "265"
       Content-Type:
       - application/json; charset=utf-8
       Etag:
-      - W/"109-cEkDJIwwagPFa017HEycNahKCLk"
+      - W/"109-4iKuBO5D8X7P2VV4qKK52ZKNhtM"
       Server:
       - cloudflare
       Strict-Transport-Security:
@@ -42,11 +42,9 @@ interactions:
       Vary:
       - Accept-Encoding
       X-Amzn-Trace-Id:
-      - cc27e20c-9370-4902-b3e3-8d91ce433bf0-noamzn
+      - ee028152-ee46-4872-92f4-864adc69f1a1-noamzn
       X-Api-Received:
-      - "2025-08-24T16:19:41.215Z"
-      X-Request-Id:
-      - o8TLTzM-57nCBj-97442c35ea3ba322
+      - "2025-12-15T21:17:23.869Z"
     status: 401 Unauthorized
     code: 401
-    duration: 129ms
+    duration: 68ms

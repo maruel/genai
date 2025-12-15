@@ -1,0 +1,55 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 1213
+    host: api.together.xyz
+    body: "{\"model\":\"essentialai/rnj-1-instruct\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"},{\"role\":\"assistant\",\"content\":\"THOUGHT: I need to find the square root of 132413 using the square_root tool, so I verify that the tool is available and confirm it requires a number input. Since 132413 is a valid number, I prepare to call the tool with this value, ensuring the JSON format is correct and no additional parameters are needed. I then execute the tool call to compute the result.\",\"tool_calls\":[{\"index\":0,\"id\":\"chatcmpl-tool-d926bb30babb43c1a8df10bb2ad9b0ad\",\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\": 132413}\"}}]},{\"role\":\"tool\",\"content\":\"363.89\",\"tool_call_id\":\"chatcmpl-tool-d926bb30babb43c1a8df10bb2ad9b0ad\"}],\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"tool_choice\":\"none\"}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"oPBeN6a-z1gNr-9ade29fde83fa28c\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765720161,\n  \"model\": \"essentialai/rnj-1-instruct\",\n  \"service_tier\": null,\n  \"system_fingerprint\": null,\n  \"prompt_token_ids\": null,\n  \"kv_transfer_params\": null,\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"THOUGHT: I need to find the square root of 132413 using the square_root tool, so I call it with the number 132413 as input. The tool returns 363.89, which I recognize as the approximate value of the square root. Since the result is already provided and no further calculations are needed, I conclude that the answer is 363.89.\\n\\nRESPONSE: 363.89\",\n        \"tool_calls\": [],\n        \"reasoning\": null\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"token_ids\": null,\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 179,\n    \"total_tokens\": 265,\n    \"completion_tokens\": 86\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ade29fde83fa28c-YUL
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"3e1-xO8QbtQAjfdbBDr5VuplVO36dAY"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - c359ecdb-c947-4e7b-9c78-76ae5b33b947-noamzn
+      X-Api-Call-End:
+      - "2025-12-14T13:49:22.216Z"
+      X-Api-Call-Start:
+      - "2025-12-14T13:49:21.529Z"
+      X-Api-Received:
+      - "2025-12-14T13:49:20.991Z"
+      X-Inference-Version:
+      - v2
+    status: 200 OK
+    code: 200
+    duration: 1.308s

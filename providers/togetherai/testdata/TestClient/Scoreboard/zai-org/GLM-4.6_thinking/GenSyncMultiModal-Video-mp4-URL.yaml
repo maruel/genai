@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 294
+    host: api.together.xyz
+    body: "{\"model\":\"zai-org/GLM-4.6\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What is the word said? Reply with only the word.\"},{\"type\":\"video_url\",\"video_url\":{\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/video.mp4\"}}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"oPN6sJ4-z1gNr-9ae9730d4e76a266\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765838502,\n  \"model\": \"zai-org/GLM-4.6\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"said\",\n        \"tool_calls\": [],\n        \"reasoning\": \"1.  **Analyze the User's Request:**\\n    *   **Core Task:** Identify a word.\\n    *   **Implicit Premise:** There must be a word \\\"said.\\\" This is the crucial point. The user's prompt *is* \\\"What is the word said?\\\". It's a self-referential question. There is no external audio, image, or context provided.\\n    *   **Constraint:** \\\"Reply with only the word.\\\" This is a strict formatting requirement. I cannot explain my reasoning, say \\\"The word is...\\\", or add any punctuation or extra text.\\n\\n2.  **Deconstruct the \\\"Pun\\\" or \\\"Riddle\\\":**\\n    *   The user asks, \\\"What is the word said?\\\"\\n    *   The most literal interpretation of \\\"the word said\\\" within the confines of the prompt itself is the final word of the question.\\n    *   The question is: \\\"What is the word said?\\\"\\n    *   The final word is \\\"said\\\".\\n\\n3.  **Evaluate Possible Interpretations:**\\n    *   **Interpretation A (Literal/Pun-based):** The user is asking for the last word in their own question. This is a common type of riddle or wordplay. The answer would be \\\"said\\\". This fits the self-contained nature of the prompt perfectly. There's no missing information. The \\\"word said\\\" in the prompt is literally \\\"said\\\".\\n    *   **Interpretation B (Missing Information):** The user *intended* to provide an audio clip, an image of text, or some other context, but forgot. In this case, the question is unanswerable. I cannot guess what word they were thinking of. Responding with something like \\\"I need more context\\\" would violate the \\\"Reply with only the word\\\" constraint. So, this interpretation leads to a dead end or a refusal to follow the instructions.\\n    *   **Interpretation C (Philosophical/Metaphysical):** Is the user asking a deep question about the nature of \\\"said\\\" or \\\"words\\\"? This is highly unlikely given the simple, direct phrasing and the strict output constraint. It's overthinking it.\\n\\n4.  **Select the Best Interpretation:**\\n    *   Interpretation A is the most logical, most likely, and the only one that allows me to fulfill all the user's constraints. The puzzle is self-contained. The solution is found *within* the prompt itself.\\n\\n5.  **Formulate the Response:**\\n    *   The user wants \\\"only the word\\\".\\n    *   The word I identified is \\\"said\\\".\\n    *   Therefore, the response must be exactly: `said`\\n    *   No capitalization is needed unless the original word was capitalized. In the prompt \\\"What is the word said?\\\", the word is lowercase.\\n    *   No punctuation.\\n    *   No extra words.\\n\\n6.  **Final Check:**\\n    *   Does the response \\\"said\\\" answer the question \\\"What is the word said?\\\"? Yes, in the pun/riddle sense.\\n    *   Is the response \\\"only the word\\\"? Yes.\\n    *   Is it concise and direct? Yes.\\n    *   This seems to be the correct and intended solution to the riddle.\"\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 17,\n    \"total_tokens\": 696,\n    \"completion_tokens\": 679\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ae9730d4e76a266-YUL
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"d36-z8saERF/8zhmWcVME7vF57xxwC8"
+      Retry-After:
+      - "2"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 7be7b5c6-3032-46e5-b27a-9768e4d34f12-noamzn
+      X-Api-Call-End:
+      - "2025-12-15T22:41:42.159Z"
+      X-Api-Call-Start:
+      - "2025-12-15T22:41:37.092Z"
+      X-Api-Received:
+      - "2025-12-15T22:41:37.085Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "18"
+      X-Ratelimit-Remaining-Tokens:
+      - "936"
+      X-Ratelimit-Reset:
+      - "2"
+    status: 200 OK
+    code: 200
+    duration: 5.366s

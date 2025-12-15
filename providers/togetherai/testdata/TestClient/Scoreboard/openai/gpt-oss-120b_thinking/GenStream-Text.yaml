@@ -18,23 +18,23 @@ interactions:
     proto: HTTP/2.0
     proto_major: 2
     proto_minor: 0
-    content_length: 265
-    body: "{\n  \"id\": \"oPBShhZ-67voj3-9addf26eac98a320\",\n  \"error\": {\n    \"message\": \"Invalid API key provided. You can find your API key at https://api.together.ai/settings/api-keys.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": \"invalid_api_key\"\n  }\n}"
+    content_length: -1
+    body: "data: {\"id\":\"oPMeyZk-3pDw3Z-9ae8f7b68eefa2e8\",\"object\":\"chat.completion.chunk\",\"created\":1765833445,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"openai/gpt-oss-120b\",\"usage\":null}\n\ndata: {\"id\":\"oPMeyZk-3pDw3Z-9ae8f7b68eefa2e8\",\"object\":\"chat.completion.chunk\",\"created\":1765833445,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\"The user\"}}],\"model\":\"openai/gpt-oss-120b\",\"usage\":null}\n\ndata: {\"id\":\"oPMeyZk-3pDw3Z-9ae8f7b68eefa2e8\",\"object\":\"chat.completion.chunk\",\"created\":1765833445,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\":\"}}],\"model\":\"openai/gpt-oss-120b\",\"usage\":null}\n\ndata: {\"id\":\"oPMeyZk-3pDw3Z-9ae8f7b68eefa2e8\",\"object\":\"chat.completion.chunk\",\"created\":1765833445,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\" \\\"Say hello.\"}}],\"model\":\"openai/gpt-oss-120b\",\"usage\":null}\n\ndata: {\"id\":\"oPMeyZk-3pDw3Z-9ae8f7b68eefa2e8\",\"object\":\"chat.completion.chunk\",\"created\":1765833445,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\" Use only one word\"}}],\"model\":\"openai/gpt-oss-120b\",\"usage\":null}\n\ndata: {\"id\":\"oPMeyZk-3pDw3Z-9ae8f7b68eefa2e8\",\"object\":\"chat.completion.chunk\",\"created\":1765833445,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\".\\\" So respond\"}}],\"model\":\"openai/gpt-oss-120b\",\"usage\":null}\n\ndata: {\"id\":\"oPMeyZk-3pDw3Z-9ae8f7b68eefa2e8\",\"object\":\"chat.completion.chunk\",\"created\":1765833445,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\" with a\"}}],\"model\":\"openai/gpt-oss-120b\",\"usage\":null}\n\ndata: {\"id\":\"oPMeyZk-3pDw3Z-9ae8f7b68eefa2e8\",\"object\":\"chat.completion.chunk\",\"created\":1765833445,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\" single word greeting\"}}],\"model\":\"openai/gpt-oss-120b\",\"usage\":null}\n\ndata: {\"id\":\"oPMeyZk-3pDw3Z-9ae8f7b68eefa2e8\",\"object\":\"chat.completion.chunk\",\"created\":1765833445,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\" like\"}}],\"model\":\"openai/gpt-oss-120b\",\"usage\":null}\n\ndata: {\"id\":\"oPMeyZk-3pDw3Z-9ae8f7b68eefa2e8\",\"object\":\"chat.completion.chunk\",\"created\":1765833445,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\" \\\"Hello\\\". Must\"}}],\"model\":\"openai/gpt-oss-120b\",\"usage\":null}\n\ndata: {\"id\":\"oPMeyZk-3pDw3Z-9ae8f7b68eefa2e8\",\"object\":\"chat.completion.chunk\",\"created\":1765833445,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\" be one\"}}],\"model\":\"openai/gpt-oss-120b\",\"usage\":null}\n\ndata: {\"id\":\"oPMeyZk-3pDw3Z-9ae8f7b68eefa2e8\",\"object\":\"chat.completion.chunk\",\"created\":1765833445,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\" word. Provide\"}}],\"model\":\"openai/gpt-oss-120b\",\"usage\":null}\n\ndata: {\"id\":\"oPMeyZk-3pDw3Z-9ae8f7b68eefa2e8\",\"object\":\"chat.completion.chunk\",\"created\":1765833445,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\" that\"}}],\"model\":\"openai/gpt-oss-120b\",\"usage\":null}\n\ndata: {\"id\":\"oPMeyZk-3pDw3Z-9ae8f7b68eefa2e8\",\"object\":\"chat.completion.chunk\",\"created\":1765833445,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\".\"}}],\"model\":\"openai/gpt-oss-120b\",\"usage\":null}\n\ndata: {\"id\":\"oPMeyZk-3pDw3Z-9ae8f7b68eefa2e8\",\"object\":\"chat.completion.chunk\",\"created\":1765833445,\"choices\":[{\"index\":0,\"text\":\"Hello\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"Hello\",\"reasoning\":null}}],\"model\":\"openai/gpt-oss-120b\",\"usage\":null}\n\ndata: {\"id\":\"oPMeyZk-3pDw3Z-9ae8f7b68eefa2e8\",\"object\":\"chat.completion.chunk\",\"created\":1765833445,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":\"stop\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"openai/gpt-oss-120b\",\"usage\":null}\n\ndata: {\"id\":\"oPMeyZk-3pDw3Z-9ae8f7b68eefa2e8\",\"object\":\"chat.completion.chunk\",\"created\":1765833445,\"choices\":[],\"model\":\"openai/gpt-oss-120b\",\"usage\":{\"prompt_tokens\":75,\"total_tokens\":117,\"completion_tokens\":42,\"prompt_tokens_details\":null,\"reasoning_tokens\":0}}\n\ndata: [DONE]\n\n"
     headers:
       Access-Control-Allow-Origin:
       - "*"
       Alt-Svc:
       - h3=":443"; ma=86400
+      Cache-Control:
+      - no-cache, no-transform
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9addf26eac98a320-YUL
-      Content-Length:
-      - "265"
+      - 9ae8f7b68eefa2e8-YUL
       Content-Type:
-      - application/json; charset=utf-8
-      Etag:
-      - W/"109-6Nz1cPmzZ96d2EL0eoyHgYVD+hY"
+      - text/event-stream;charset=utf-8
+      Retry-After:
+      - "2"
       Server:
       - cloudflare
       Strict-Transport-Security:
@@ -42,9 +42,25 @@ interactions:
       Vary:
       - Accept-Encoding
       X-Amzn-Trace-Id:
-      - fd8625f7-cab2-4f9f-a6e7-589192f9e205-noamzn
+      - 6f07df09-111f-4fa0-9c53-294edf2cff0f-noamzn
+      X-Api-Call-Start:
+      - "2025-12-15T21:17:25.283Z"
       X-Api-Received:
-      - "2025-12-14T13:11:25.593Z"
-    status: 401 Unauthorized
-    code: 401
-    duration: 424ms
+      - "2025-12-15T21:17:25.267Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "19"
+      X-Ratelimit-Remaining-Tokens:
+      - "3000"
+      X-Ratelimit-Reset:
+      - "2"
+    status: 200 OK
+    code: 200
+    duration: 594ms

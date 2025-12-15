@@ -18,8 +18,9 @@ interactions:
     proto: HTTP/2.0
     proto_major: 2
     proto_minor: 0
-    content_length: 265
-    body: "{\n  \"id\": \"oPBShi6-2j9zxn-9addf26f5dc2a320\",\n  \"error\": {\n    \"message\": \"Invalid API key provided. You can find your API key at https://api.together.ai/settings/api-keys.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": \"invalid_api_key\"\n  }\n}"
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"oPMpPjB-6Ng1vN-9ae924929ca3a2cf\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765835284,\n  \"model\": \"openai/gpt-oss-120b\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"Apple\",\n        \"tool_calls\": [],\n        \"reasoning\": \"User asks: \\\"What fruit is it? Reply with only one word.\\\" No context. Likely a riddle? Might be ambiguous. Could be \\\"apple\\\"? But no context. The instruction: reply with only one word. Maybe they expect \\\"apple\\\". Could be random fruit? Might be \\\"banana\\\". Hard to know. Perhaps they want the answer \\\"apple\\\". I will answer with a single word: \\\"Apple\\\".\"\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 78,\n    \"total_tokens\": 174,\n    \"completion_tokens\": 96\n  }\n}"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -28,13 +29,13 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9addf26f5dc2a320-YUL
-      Content-Length:
-      - "265"
+      - 9ae924929ca3a2cf-YUL
       Content-Type:
       - application/json; charset=utf-8
       Etag:
-      - W/"109-UXKQI8ffslDmxu7MNMD2oyoW+4w"
+      - W/"395-KvHfgMn3k9cWxtGoYdoZW9FnJ4w"
+      Retry-After:
+      - "2"
       Server:
       - cloudflare
       Strict-Transport-Security:
@@ -42,9 +43,27 @@ interactions:
       Vary:
       - Accept-Encoding
       X-Amzn-Trace-Id:
-      - 40f8fc0c-733c-4f68-9693-2e15a1816b08-noamzn
+      - 75db29e8-dac7-4be4-971f-3f49b5a9f47b-noamzn
+      X-Api-Call-End:
+      - "2025-12-15T21:48:04.793Z"
+      X-Api-Call-Start:
+      - "2025-12-15T21:48:02.570Z"
       X-Api-Received:
-      - "2025-12-14T13:11:25.627Z"
-    status: 401 Unauthorized
-    code: 401
-    duration: 333ms
+      - "2025-12-15T21:48:02.559Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "19"
+      X-Ratelimit-Remaining-Tokens:
+      - "3000"
+      X-Ratelimit-Reset:
+      - "2"
+    status: 200 OK
+    code: 200
+    duration: 2.455s

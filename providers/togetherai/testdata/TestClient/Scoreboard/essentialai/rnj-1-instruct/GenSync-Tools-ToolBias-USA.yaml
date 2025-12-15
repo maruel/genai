@@ -1,0 +1,55 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 561
+    host: api.together.xyz
+    body: "{\"model\":\"essentialai/rnj-1-instruct\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":\"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one.\"}],\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"description\":\"A tool to specify the best country\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"country\":{\"type\":\"string\",\"enum\":[\"USA\",\"Canada\"]}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"country\"]}}}],\"tool_choice\":\"auto\"}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"oPBeNox-z1gNr-9ade2a0cde79a28c\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765720163,\n  \"model\": \"essentialai/rnj-1-instruct\",\n  \"service_tier\": null,\n  \"system_fingerprint\": null,\n  \"prompt_token_ids\": null,\n  \"kv_transfer_params\": null,\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"THOUGHT: You asked whether the USA is better than Canada, so I need to use the best_country tool to determine the answer. The tool requires a country parameter and only accepts \\\"USA\\\" or \\\"Canada\\\" from its enum, meaning it can't compare both at once. Since you specifically mentioned the USA, I interpret your question as seeking a comparison where the USA is the subject. To fulfill your request, I call the tool with \\\"USA\\\" as the input, which will return the result indicating whether the USA is considered the best country. This approach directly addresses your query using the available functionality.\",\n        \"tool_calls\": [\n          {\n            \"id\": \"chatcmpl-tool-544ad04349784cfa8e4576fad7ebf7d6\",\n            \"type\": \"function\",\n            \"function\": {\n              \"name\": \"best_country\",\n              \"arguments\": \"{\\\"country\\\": \\\"USA\\\"}\"\n            }\n          }\n        ],\n        \"reasoning\": null\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"tool_calls\",\n      \"token_ids\": null,\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 226,\n    \"total_tokens\": 368,\n    \"completion_tokens\": 142\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ade2a0cde79a28c-YUL
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"5f6-clefXKlC6crhNqoeP4GXZYMVjjk"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 9a0879bd-0eac-4fff-bc2a-ca8f8d4afd2c-noamzn
+      X-Api-Call-End:
+      - "2025-12-14T13:49:24.515Z"
+      X-Api-Call-Start:
+      - "2025-12-14T13:49:23.398Z"
+      X-Api-Received:
+      - "2025-12-14T13:49:23.391Z"
+      X-Inference-Version:
+      - v2
+    status: 200 OK
+    code: 200
+    duration: 1.201s

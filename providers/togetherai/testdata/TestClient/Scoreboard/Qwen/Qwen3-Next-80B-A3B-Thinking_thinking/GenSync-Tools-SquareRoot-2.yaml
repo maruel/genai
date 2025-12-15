@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 810
+    host: api.together.xyz
+    body: "{\"model\":\"Qwen/Qwen3-Next-80B-A3B-Thinking\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"},{\"role\":\"assistant\",\"tool_calls\":[{\"index\":0,\"id\":\"call_8tt3kykxk7ok4iu9td3euw71\",\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\":132413}\"}}]},{\"role\":\"tool\",\"content\":\"363.89\",\"tool_call_id\":\"call_8tt3kykxk7ok4iu9td3euw71\"}],\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"tool_choice\":\"none\"}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"oPN5Hpu-3pDw3Z-9ae96b8aedeba2ce\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765838191,\n  \"model\": \"Qwen/Qwen3-Next-80B-A3B-Thinking\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"<think>\\nOkay, the user asked me to calculate the square root of 132413 using the square_root tool. I called the function with the number 132413. The response from the tool was 363.89. Now I need to just give that result without any explanation.\\n\\nWait, let me check the actual square root. Let me verify. Maybe the tool returned a rounded value. Let me calculate sqrt(132413). Hmm, 363 squared is 131769, 364 squared is 132496. So 132413 is between those. 363.89 squared is approximately (363 + 0.89)^2 = 363^2 + 2*363*0.89 + 0.89^2 = 131769 + 646.74 + 0.7921 = 132416.53. But the actual value is 132413, so maybe 363.88... Let me see. Maybe the tool's answer is correct as 363.89 when rounded to two decimal places. But the user just wants the result from the tool. The tool returned 363.89, so I should just present that. Since the instructions say to reply with only the result, no explanation. So the answer is 363.89.\\n\\nWait, but maybe it's more precise. Let me check. Let's compute sqrt(132413). Let me do a better calculation. Let me use the fact that 363.89^2 = (363 + 0.89)^2 = 363^2 + 2*363*0.89 + 0.89^2. 363^2 is 131769. 2*363*0.89 = 726*0.89 = let's see, 700*0.89 = 623, 26*0.89=23.14, total 623+23.14=646.14. Then 0.89^2 is 0.7921. So total is 131769 + 646.14 = 132415.14 +0.7921=132415.9321. But the actual number is 132413, so 363.89 squared is higher. So the actual square root is slightly less than 363.89. Maybe the tool rounded it to two decimal places. But the problem is that the tool returned 363.89, so as per the tool's response, I just need to output that. The user said to reply with only the result, so first I get the tool response as 363.89, so the answer is 363.89. Even if it's approximate, that's the result from the tool. So I should just write 363.89.\\n</think>\\n\\n363.89\",\n        \"tool_calls\": []\n      }\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 255,\n    \"total_tokens\": 987,\n    \"completion_tokens\": 732\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ae96b8aedeba2ce-YUL
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"931-QiLNgNCuBKd5inOVWnqB+u6kmsE"
+      Retry-After:
+      - "0"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - 2c057735-712b-4f84-942c-39806b0f3aa2-noamzn
+      X-Api-Call-End:
+      - "2025-12-15T22:36:31.672Z"
+      X-Api-Call-Start:
+      - "2025-12-15T22:36:29.398Z"
+      X-Api-Received:
+      - "2025-12-15T22:36:29.387Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "11"
+      X-Ratelimit-Remaining-Tokens:
+      - "2520"
+      X-Ratelimit-Reset:
+      - "0"
+    status: 200 OK
+    code: 200
+    duration: 2.478s

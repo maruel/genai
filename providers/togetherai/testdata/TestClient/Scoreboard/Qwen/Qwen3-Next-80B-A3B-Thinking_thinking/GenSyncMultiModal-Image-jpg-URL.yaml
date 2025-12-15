@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 306
+    host: api.together.xyz
+    body: "{\"model\":\"Qwen/Qwen3-Next-80B-A3B-Thinking\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What fruit is it? Reply with only one word.\"},{\"type\":\"image_url\",\"image_url\":{\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg\"}}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"oPN5P3i-3pDw3Z-9ae96bf8ac34a2ce\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765838211,\n  \"model\": \"Qwen/Qwen3-Next-80B-A3B-Thinking\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"<think>\\nOkay, the user asked \\\"What fruit is it? Reply with only one word.\\\" Hmm, but they didn't provide any description or context about the fruit. That's confusing. How am I supposed to know which fruit they're referring to? Maybe they forgot to include details, or perhaps there's a mistake in the question.\\n\\nI need to check the instructions again. The user says to reply with only one word. But without any information about the fruit, I can't possibly guess correctly. There are thousands of fruits. If I just pick one randomly, like \\\"apple,\\\" that might be wrong. But the instruction is to reply with only one word. However, if I don't have enough info, the correct response might be to ask for more details, but the user said \\\"reply with only one word,\\\" so maybe I should just say \\\"unknown\\\" or \\\"what?\\\" but that might not be right.\\n\\nWait, maybe this is a trick question. Sometimes in tests, if the question is incomplete, the answer is to point that out. But the user specified to reply with only one word. So perhaps the best single word response is \\\"unknown\\\" or \\\"undefined.\\\" But I'm not sure. Alternatively, maybe the user expects me to realize the question is missing context and respond with something like \\\"Which?\\\" but that's two words. Or maybe \\\"help\\\" but that's not a fruit.\\n\\nWait, the question is \\\"What fruit is it?\\\" but there's no \\\"it\\\" described. So the correct answer is that the question is incomplete. But since I have to reply with one word, maybe \\\"undefined\\\" or \\\"context\\\". But the user might expect a specific fruit. But that's impossible. Alternatively, maybe this is a test to see if I follow instructions strictly. If the question lacks info, but I have to answer with one word, perhaps I should say \\\"apple\\\" as a default, but that's not accurate.\\n\\nAlternatively, maybe the user made a mistake and intended to provide a description but forgot. But since they didn't, the proper response is to note that the question is incomplete. However, the instruction says to reply with only one word. So perhaps the answer is \\\"missing\\\" or \\\"unknown\\\". Let me check standard practices. In some cases, when a question lacks necessary info, the answer is \\\"unknown\\\". So maybe \\\"unknown\\\" is the one-word reply. Alternatively, maybe \\\"what\\\" but that's not a fruit. The user is asking \\\"What fruit is it?\\\" so if I have to reply with one word, but no context is given, the correct answer is that it's impossible to determine. So \\\"unknown\\\" is a possible single word. Or perhaps \\\"undefined\\\". But \\\"unknown\\\" is more common in such contexts.\\n\\nAlternatively, maybe the user is testing if I'll make up an answer. But the best practice is to not guess. So the right response is to say \\\"unknown\\\". Since I can't know which fruit they're referring to without more info. So the one-word reply should be \\\"unknown\\\".\\n</think>\\n\\nunknown\",\n        \"tool_calls\": [],\n        \"reasoning\": null\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 21,\n    \"total_tokens\": 646,\n    \"completion_tokens\": 625\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ae96bf8ac34a2ce-YUL
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"d79-LiU26IgY4zNzWid9NXtVXT3hnpc"
+      Retry-After:
+      - "2"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - b42b0675-805a-4851-b0e9-d567f37d3ef6-noamzn
+      X-Api-Call-End:
+      - "2025-12-15T22:36:51.527Z"
+      X-Api-Call-Start:
+      - "2025-12-15T22:36:46.961Z"
+      X-Api-Received:
+      - "2025-12-15T22:36:46.949Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "19"
+      X-Ratelimit-Remaining-Tokens:
+      - "3000"
+      X-Ratelimit-Reset:
+      - "2"
+    status: 200 OK
+    code: 200
+    duration: 4.777s

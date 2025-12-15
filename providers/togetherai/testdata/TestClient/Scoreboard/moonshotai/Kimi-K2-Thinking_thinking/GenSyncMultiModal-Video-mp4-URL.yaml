@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 306
+    host: api.together.xyz
+    body: "{\"model\":\"moonshotai/Kimi-K2-Thinking\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What is the word said? Reply with only the word.\"},{\"type\":\"video_url\",\"video_url\":{\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/video.mp4\"}}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"oPMwPNA-zqrih-9ae945e42d39a305\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765836653,\n  \"model\": \"moonshotai/Kimi-K2-Thinking\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"said\",\n        \"tool_calls\": [],\n        \"reasoning\": \"The user asks \\\"What is the word said? Reply with only the word.\\\"\\n\\nThis is ambiguous. There is no audio or context provided. The user might be:\\n1. Asking about a specific word they have in mind (but I cannot read minds).\\n2. Referring to a previous conversation (but this is a new session).\\n3. Testing the AI's ability to follow instructions with a trick question.\\n4. Expecting me to ask for clarification, but then they said \\\"Reply with only the word,\\\" which is a strict constraint.\\n\\nThe most literal interpretation is that there is no word said, so I cannot answer. However, the instruction \\\"Reply with only the word\\\" is very specific. If I cannot determine the word, I cannot comply truthfully.\\n\\nLet me consider possible scenarios:\\n- If this is a riddle or a reference to something common, I might be missing context.\\n- Could it be a meta-question about the word \\\"said\\\"? The word \\\"said\\\" is literally \\\"said\\\". But that seems too simple and potentially misinterpreting the grammar. The phrase \\\"the word said\\\" could be asking \\\"what word was spoken?\\\" but no word was spoken.\\n- Could it be asking for the word \\\"said\\\" itself? Like asking \\\"What is the word 'said'?\\\" The answer would be \\\"said\\\". But the phrasing is \\\"the word said\\\", which is more like \\\"the word that was said\\\".\\n\\nGiven the absolute lack of context and the strict instruction to reply with ONLY the word, I have several options:\\n1. State that I don't have enough information (but this violates \\\"only the word\\\")\\n2. Make a guess (which would be random and likely wrong)\\n3. Interpret it as a philosophical/semantic question where the answer is that no word was provided, so I cannot answer. But again, I must reply with only a word.\\n4. Interpret \\\"the word said\\\" as referring to the word \\\"said\\\" itself. This is a possible linguistic interpretation. In English, you can ask \\\"What is the word [X]?\\\" meaning \\\"Tell me what the word [X] is.\\\" Here X = \\\"said\\\". So the answer would be \\\"said\\\".\\n\\nOption 4 seems like the most plausible way to comply with the literal instruction while providing a non-random answer. The phrase \\\"the word said\\\" can be parsed as \\\"the word 'said'\\\". This is similar to asking \\\"What is the word 'cat'?\\\" The answer would be \\\"cat\\\".\\n\\nIf I must reply with only one word, and the question is \\\"What is the word said?\\\", the most logical single-word answer that fits the constraints is \\\"said\\\".\\n\\nLet me reconsider: Is there any other interpretation?\\n- Could it be from a famous puzzle? \\\"What is the word said?\\\" doesn't ring a bell as a famous riddle.\\n- Could it be a command disguised as a question? Like \\\"Say the word\\\" but in past tense? No, that doesn't make sense.\\n\\nThe grammatical structure is: \\\"What is [noun phrase]?\\\" where the noun phrase is \\\"the word said\\\".\\n\\\"the word said\\\" can mean:\\n1. The word that was spoken (but none was)\\n2. The word \\\"said\\\" (the literal word itself)\\n\\nGiven that interpretation #2 yields a clear, single-word answer that fulfills the user's constraints, I should go with that. It's the only way to provide a deterministic answer without violating the \\\"only the word\\\" rule.\\n\\nTherefore, the answer is \\\"said\\\". \"\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 37,\n    \"total_tokens\": 760,\n    \"completion_tokens\": 723\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ae945e42d39a305-YUL
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"eb6-m/toPXbnU6L4yrcvGVCKLjk3alI"
+      Retry-After:
+      - "2"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - e5cdc0f4-9ce1-4f64-8191-99e09189e7b6-noamzn
+      X-Api-Call-End:
+      - "2025-12-15T22:10:53.259Z"
+      X-Api-Call-Start:
+      - "2025-12-15T22:10:47.130Z"
+      X-Api-Received:
+      - "2025-12-15T22:10:47.123Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "18"
+      X-Ratelimit-Remaining-Tokens:
+      - "2356"
+      X-Ratelimit-Reset:
+      - "2"
+    status: 200 OK
+    code: 200
+    duration: 6.24s

@@ -1,0 +1,66 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 543
+    host: api.together.xyz
+    body: "{\"model\":\"zai-org/GLM-4.6\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"}],\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"tool_choice\":\"required\"}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"oPN6XF8-z1gNr-9ae97168d8a9a266\",\"object\":\"chat.completion.chunk\",\"created\":1765838429,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPN6XF8-z1gNr-9ae97168d8a9a266\",\"object\":\"chat.completion.chunk\",\"created\":1765838429,\"choices\":[{\"index\":0,\"text\":\"\\n\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\\n\",\"reasoning\":null}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPN6XF8-z1gNr-9ae97168d8a9a266\",\"object\":\"chat.completion.chunk\",\"created\":1765838429,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\"The user wants me to\"}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPN6XF8-z1gNr-9ae97168d8a9a266\",\"object\":\"chat.completion.chunk\",\"created\":1765838429,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\" calculate\"}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPN6XF8-z1gNr-9ae97168d8a9a266\",\"object\":\"chat.completion.chunk\",\"created\":1765838429,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\" the square root of 132\"}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPN6XF8-z1gNr-9ae97168d8a9a266\",\"object\":\"chat.completion.chunk\",\"created\":1765838429,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\"413 using the square_root\"}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPN6XF8-z1gNr-9ae97168d8a9a266\",\"object\":\"chat.completion.chunk\",\"created\":1765838429,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\" tool, and they\"}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPN6XF8-z1gNr-9ae97168d8a9a266\",\"object\":\"chat.completion.chunk\",\"created\":1765838429,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\" specifically\"}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPN6XF8-z1gNr-9ae97168d8a9a266\",\"object\":\"chat.completion.chunk\",\"created\":1765838429,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\" asked\"}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPN6XF8-z1gNr-9ae97168d8a9a266\",\"object\":\"chat.completion.chunk\",\"created\":1765838429,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\" me to reply with only the\"}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPN6XF8-z1gNr-9ae97168d8a9a266\",\"object\":\"chat.completion.chunk\",\"created\":1765838429,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\" result and not give\"}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPN6XF8-z1gNr-9ae97168d8a9a266\",\"object\":\"chat.completion.chunk\",\"created\":1765838429,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\" an explanation.\\n\\n\"}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPN6XF8-z1gNr-9ae97168d8a9a266\",\"object\":\"chat.completion.chunk\",\"created\":1765838429,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\"I need to call\"}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPN6XF8-z1gNr-9ae97168d8a9a266\",\"object\":\"chat.completion.chunk\",\"created\":1765838429,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\" the square_root function with the\"}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPN6XF8-z1gNr-9ae97168d8a9a266\",\"object\":\"chat.completion.chunk\",\"created\":1765838429,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\" parameter number\"}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPN6XF8-z1gNr-9ae97168d8a9a266\",\"object\":\"chat.completion.chunk\",\"created\":1765838429,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\"=\"}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPN6XF8-z1gNr-9ae97168d8a9a266\",\"object\":\"chat.completion.chunk\",\"created\":1765838429,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":\"132413.\"}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPN6XF8-z1gNr-9ae97168d8a9a266\",\"object\":\"chat.completion.chunk\",\"created\":1765838429,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"id\":\"call_31247619abd94a588b8e088d\",\"index\":0,\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"arguments\":\"\"}}],\"reasoning\":null}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPN6XF8-z1gNr-9ae97168d8a9a266\",\"object\":\"chat.completion.chunk\",\"created\":1765838429,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"id\":null,\"index\":0,\"type\":\"function\",\"function\":{\"name\":null,\"arguments\":\"{\\\"number\\\": 132413}\"}}],\"reasoning\":null}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPN6XF8-z1gNr-9ae97168d8a9a266\",\"object\":\"chat.completion.chunk\",\"created\":1765838429,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":\"tool_calls\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"zai-org/GLM-4.6\",\"usage\":null}\n\ndata: {\"id\":\"oPN6XF8-z1gNr-9ae97168d8a9a266\",\"object\":\"chat.completion.chunk\",\"created\":1765838429,\"choices\":[],\"model\":\"zai-org/GLM-4.6\",\"usage\":{\"prompt_tokens\":214,\"total_tokens\":302,\"completion_tokens\":88,\"prompt_tokens_details\":null,\"reasoning_tokens\":0}}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - no-cache, no-transform
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ae97168d8a9a266-YUL
+      Content-Type:
+      - text/event-stream;charset=utf-8
+      Retry-After:
+      - "2"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - df8d250b-df46-4934-92c2-44f221d4f1c5-noamzn
+      X-Api-Call-Start:
+      - "2025-12-15T22:40:29.647Z"
+      X-Api-Received:
+      - "2025-12-15T22:40:29.635Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "19"
+      X-Ratelimit-Remaining-Tokens:
+      - "2559"
+      X-Ratelimit-Reset:
+      - "2"
+    status: 200 OK
+    code: 200
+    duration: 3.656s

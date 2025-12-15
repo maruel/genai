@@ -127,19 +127,10 @@ func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Recor
 				if !*updateScoreboard {
 					t.Fatalf("no scenario for model %v", m)
 				}
-				// When updating scoreboard, create a new scenario for this model
-				// TODO(maruel): Maybe not test new models by default?
+				// When updating scoreboard, create a new untested scenario for this model
 				want = scoreboard.Scenario{
 					Models: []string{m.Model},
 					Reason: m.Reason,
-					In: map[scoreboard.Modality]scoreboard.ModalCapability{
-						scoreboard.ModalityText: {Inline: true},
-					},
-					Out: map[scoreboard.Modality]scoreboard.ModalCapability{
-						scoreboard.ModalityText: {Inline: true},
-					},
-					GenSync:   &scoreboard.Functionality{},
-					GenStream: &scoreboard.Functionality{},
 				}
 			}
 			if want.In == nil && want.Out == nil {

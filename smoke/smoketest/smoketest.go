@@ -168,9 +168,9 @@ func Run(t *testing.T, pf ProviderFactory, models []scoreboard.Model, rec *myrec
 		// It'd be nicer to use PreloadedModels. In practice most do already.
 		name := "sota"
 		fn := func(h http.RoundTripper) http.RoundTripper {
-			r, err2 := rec.Record(name, h)
-			if err2 != nil {
-				t.Fatal(err2)
+			r, err3 := rec.Record(name, h)
+			if err3 != nil {
+				t.Fatal(err3)
 			}
 			t.Cleanup(func() {
 				if err3 := r.Stop(); err3 != nil {
@@ -395,7 +395,7 @@ func doUpdateScoreboard(t testing.TB, providerDir string, scenarios []scoreboard
 	for i := range oldScore.Scenarios {
 		sc := &oldScore.Scenarios[i]
 		for _, m := range sc.Models {
-			oldScenarios[scoreboard.Model{m, sc.Reason}] = sc
+			oldScenarios[scoreboard.Model{Model: m, Reason: sc.Reason}] = sc
 		}
 	}
 
@@ -420,7 +420,7 @@ func doUpdateScoreboard(t testing.TB, providerDir string, scenarios []scoreboard
 			continue
 		}
 		model := newSc.Models[0]
-		key := scoreboard.Model{model, newSc.Reason}
+		key := scoreboard.Model{Model: model, Reason: newSc.Reason}
 
 		// Skip if already seen
 		if _, seen := seenPairs[key]; seen {
@@ -441,7 +441,7 @@ func doUpdateScoreboard(t testing.TB, providerDir string, scenarios []scoreboard
 				usedOldScenarios[oldSc] = struct{}{}
 				// Mark all models in this old scenario as seen to avoid processing them again
 				for _, m := range oldSc.Models {
-					seenPairs[scoreboard.Model{m, oldSc.Reason}] = struct{}{}
+					seenPairs[scoreboard.Model{Model: m, Reason: oldSc.Reason}] = struct{}{}
 				}
 			} else {
 				sc.Models = []string{model}
@@ -453,7 +453,7 @@ func doUpdateScoreboard(t testing.TB, providerDir string, scenarios []scoreboard
 		// Remove stale models from the model list
 		remainingModels := make([]string, 0, len(sc.Models))
 		for _, m := range sc.Models {
-			if _, isStale := staleSet[scoreboard.Model{m, sc.Reason}]; !isStale {
+			if _, isStale := staleSet[scoreboard.Model{Model: m, Reason: sc.Reason}]; !isStale {
 				remainingModels = append(remainingModels, m)
 			} else {
 				t.Logf("Removing stale model %q with reason=%v", m, sc.Reason)
@@ -480,7 +480,7 @@ func doUpdateScoreboard(t testing.TB, providerDir string, scenarios []scoreboard
 	// Second pass: add tested but non-preferred scenarios from old scoreboard
 	for _, oldSc := range oldScore.Scenarios {
 		// Skip if this scenario was already processed as tested
-		if _, seen := seenPairs[scoreboard.Model{oldSc.Models[0], oldSc.Reason}]; seen {
+		if _, seen := seenPairs[scoreboard.Model{Model: oldSc.Models[0], Reason: oldSc.Reason}]; seen {
 			continue
 		}
 
@@ -509,7 +509,7 @@ func doUpdateScoreboard(t testing.TB, providerDir string, scenarios []scoreboard
 	}
 	for _, oldSc := range oldScore.Scenarios {
 		// Skip if this scenario was already processed
-		if _, seen := seenPairs[scoreboard.Model{oldSc.Models[0], oldSc.Reason}]; seen {
+		if _, seen := seenPairs[scoreboard.Model{Model: oldSc.Models[0], Reason: oldSc.Reason}]; seen {
 			continue
 		}
 		// Only process untested scenarios
@@ -527,12 +527,12 @@ func doUpdateScoreboard(t testing.TB, providerDir string, scenarios []scoreboard
 			// Merge models, avoiding duplicates and stale models
 			modelSet := make(map[string]struct{})
 			for _, m := range existing.Models {
-				if _, isStale := staleSet[scoreboard.Model{m, sc.Reason}]; !isStale {
+				if _, isStale := staleSet[scoreboard.Model{Model: m, Reason: sc.Reason}]; !isStale {
 					modelSet[m] = struct{}{}
 				}
 			}
 			for _, m := range sc.Models {
-				if _, isStale := staleSet[scoreboard.Model{m, sc.Reason}]; !isStale {
+				if _, isStale := staleSet[scoreboard.Model{Model: m, Reason: sc.Reason}]; !isStale {
 					modelSet[m] = struct{}{}
 				}
 			}
@@ -541,7 +541,7 @@ func doUpdateScoreboard(t testing.TB, providerDir string, scenarios []scoreboard
 			// New untested scenario: remove stale models
 			remainingModels := make([]string, 0, len(sc.Models))
 			for _, m := range sc.Models {
-				if _, isStale := staleSet[scoreboard.Model{m, sc.Reason}]; !isStale {
+				if _, isStale := staleSet[scoreboard.Model{Model: m, Reason: sc.Reason}]; !isStale {
 					remainingModels = append(remainingModels, m)
 				}
 			}
@@ -559,7 +559,7 @@ func doUpdateScoreboard(t testing.TB, providerDir string, scenarios []scoreboard
 	// Validate and write
 	newScore := oldScore
 	newScore.Scenarios = result
-	if err := newScore.Validate(); err != nil {
+	if err = newScore.Validate(); err != nil {
 		t.Fatalf("failed to validate scoreboard: %v", err)
 	}
 

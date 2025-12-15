@@ -51,22 +51,22 @@ func Scoreboard() scoreboard.Score {
 //
 // https://platform.openai.com/docs/api-reference/responses/object
 type Response struct {
-	Model              string            `json:"model"`
-	Background         bool              `json:"background"`
-	Instructions       string            `json:"instructions,omitzero"`
-	MaxOutputTokens    int64             `json:"max_output_tokens,omitzero"`
-	MaxToolCalls       int64             `json:"max_tool_calls,omitzero"`
-	Metadata           map[string]string `json:"metadata,omitzero"`
-	ParallelToolCalls  bool              `json:"parallel_tool_calls,omitzero"`
-	PreviousResponseID string            `json:"previous_response_id,omitzero"`
-	PromptCacheKey     struct{}          `json:"prompt_cache_key,omitzero"`
-	PromptCacheRetention struct{}        `json:"prompt_cache_retention,omitzero"`
-	Reasoning          ReasoningConfig   `json:"reasoning,omitzero"`
-	SafetyIdentifier   struct{}          `json:"safety_identifier,omitzero"`
-	ServiceTier        ServiceTier       `json:"service_tier,omitzero"`
-	Store              bool              `json:"store"`
-	Temperature        float64           `json:"temperature,omitzero"`
-	Text               struct {
+	Model                string            `json:"model"`
+	Background           bool              `json:"background"`
+	Instructions         string            `json:"instructions,omitzero"`
+	MaxOutputTokens      int64             `json:"max_output_tokens,omitzero"`
+	MaxToolCalls         int64             `json:"max_tool_calls,omitzero"`
+	Metadata             map[string]string `json:"metadata,omitzero"`
+	ParallelToolCalls    bool              `json:"parallel_tool_calls,omitzero"`
+	PreviousResponseID   string            `json:"previous_response_id,omitzero"`
+	PromptCacheKey       struct{}          `json:"prompt_cache_key,omitzero"`
+	PromptCacheRetention struct{}          `json:"prompt_cache_retention,omitzero"`
+	Reasoning            ReasoningConfig   `json:"reasoning,omitzero"`
+	SafetyIdentifier     struct{}          `json:"safety_identifier,omitzero"`
+	ServiceTier          ServiceTier       `json:"service_tier,omitzero"`
+	Store                bool              `json:"store"`
+	Temperature          float64           `json:"temperature,omitzero"`
+	Text                 struct {
 		Format struct {
 			Type        string             `json:"type"` // "text", "json_schema", "json_object"
 			Name        string             `json:"name,omitzero"`

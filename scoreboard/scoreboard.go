@@ -497,7 +497,7 @@ func (s *Score) Validate() error {
 
 	// Good should come before Cheap
 	if firstGood > firstCheap {
-		return fmt.Errorf("Good model comes after Cheap model (good at %d, cheap at %d)", firstGood, firstCheap)
+		return fmt.Errorf("good model comes after cheap model (good at %d, cheap at %d)", firstGood, firstCheap)
 	}
 
 	return nil

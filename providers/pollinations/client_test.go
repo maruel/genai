@@ -16,6 +16,7 @@ import (
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/pollinations"
+	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/genai/smoke/smoketest"
 )
 
@@ -56,12 +57,12 @@ func TestClient(t *testing.T) {
 	}
 
 	t.Run("Scoreboard", func(t *testing.T) {
-		var sbModels []smoketest.Model
+		var sbModels []scoreboard.Model
 		for _, m := range cachedModels {
 			id := m.GetID()
-			sbModels = append(sbModels, smoketest.Model{Model: id, Reason: id == "deepseek-reasoning"})
+			sbModels = append(sbModels, scoreboard.Model{Model: id, Reason: id == "deepseek-reasoning"})
 		}
-		getClientRT := func(t testing.TB, model smoketest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+		getClientRT := func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 			opts := genai.ProviderOptions{APIKey: "genai-unittests", Model: model.Model, PreloadedModels: cachedModels}
 			c, err := pollinations.New(t.Context(), &opts, fn)
 			if err != nil {

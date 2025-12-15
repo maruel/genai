@@ -15,6 +15,7 @@ import (
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/huggingface"
+	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/genai/smoke/smoketest"
 )
 
@@ -57,13 +58,13 @@ func TestClient(t *testing.T) {
 	t.Run("Scoreboard", func(t *testing.T) {
 		// We do not want to test thousands of models, so get the ones already in the scoreboard.
 		sb := getClient(t, genai.ModelNone).Scoreboard()
-		var models []smoketest.Model
+		var models []scoreboard.Model
 		for _, sc := range sb.Scenarios {
 			for _, model := range sc.Models {
-				models = append(models, smoketest.Model{Model: model, Reason: sc.Reason})
+				models = append(models, scoreboard.Model{Model: model, Reason: sc.Reason})
 			}
 		}
-		getClientRT := func(t testing.TB, model smoketest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+		getClientRT := func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 			opts := genai.ProviderOptions{APIKey: getAPIKeyTest(t), Model: model.Model, PreloadedModels: cachedModels}
 			c, err := huggingface.New(t.Context(), &opts, fn)
 			if err != nil {

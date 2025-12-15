@@ -13,7 +13,25 @@ import (
 	"errors"
 	"fmt"
 	"strconv"
+	"strings"
 )
+
+// Model specifies a model to test and whether it should run in reasoning mode.
+//
+// Most models only support one or the other, but some support both.
+// Functionality often differs depending on whether reasoning is enabled.
+type Model struct {
+	Model  string
+	Reason bool
+}
+
+func (m *Model) String() string {
+	normalized := strings.ReplaceAll(m.Model, ":", "-")
+	if m.Reason {
+		normalized += "_thinking"
+	}
+	return normalized
+}
 
 // Modality is one of the supported modalities.
 type Modality string
@@ -280,6 +298,11 @@ type Scenario struct {
 	_ struct{}
 }
 
+// Untested returns true if the scenario has no test results.
+func (s *Scenario) Untested() bool {
+	return s.GenSync == nil && s.GenStream == nil && len(s.In) == 0 && len(s.Out) == 0
+}
+
 func (s *Scenario) Validate() error {
 	if len(s.Models) == 0 {
 		return errors.New("scenario must have at least one model")
@@ -401,58 +424,63 @@ type Score struct {
 }
 
 func (s *Score) Validate() error {
-	type pair struct {
-		name   string
-		reason bool
-	}
-	seen := map[pair]struct{}{}
+	// Check for duplicate model/reason pairs
+	seen := make(map[Model]struct{})
 	for _, sc := range s.Scenarios {
-		for _, model := range sc.Models {
-			k := pair{name: model, reason: sc.Reason}
-			if _, ok := seen[k]; ok {
-				return fmt.Errorf("duplicate model in scoreboard: %v", k)
-			}
-			seen[k] = struct{}{}
-		}
 		if err := sc.Validate(); err != nil {
 			return err
 		}
-	}
-	// Don't test if there's only one scenario.
-	if len(s.Scenarios) > 1 {
-		i := 0
-		if !s.Scenarios[i].SOTA {
-			return fmt.Errorf("first should be SOTA: %q", s.Scenarios[i].Models[0])
-		}
-		// There's two options, the SOTA model is also Good, or there's a duplicate of the first row for
-		// reasoning/non-reasoning.
-		if !s.Scenarios[i].Good {
-			if i++; len(s.Scenarios) == i {
-				return errors.New("no Good model")
+		for _, model := range sc.Models {
+			key := Model{model, sc.Reason}
+			if _, ok := seen[key]; ok {
+				return fmt.Errorf("duplicate model in scoreboard: %q (reason=%v)", model, sc.Reason)
 			}
-			if s.Scenarios[i].Models[0] == s.Scenarios[i-1].Models[0] {
-				if i++; len(s.Scenarios) == i {
-					return errors.New("no Good model")
-				}
-			}
-		}
-		if !s.Scenarios[i].Good {
-			return fmt.Errorf("second should be Good: %q", s.Scenarios[i].Models[0])
-		}
-		if !s.Scenarios[i].Cheap {
-			if i++; len(s.Scenarios) == i {
-				return errors.New("no Cheap model")
-			}
-			if s.Scenarios[i].Models[0] == s.Scenarios[i-1].Models[0] {
-				if i++; len(s.Scenarios) == i {
-					return errors.New("no Cheap model")
-				}
-			}
-		}
-		if !s.Scenarios[i].Cheap {
-			return fmt.Errorf("third should be Cheap: %q", s.Scenarios[i].Models[0])
+			seen[key] = struct{}{}
 		}
 	}
+
+	// Only validate ordering if there are multiple scenarios
+	if len(s.Scenarios) <= 1 {
+		return nil
+	}
+
+	// Find first occurrence of SOTA, Good, Cheap models and verify order
+	firstSOTA, firstGood, firstCheap := -1, -1, -1
+	for i, sc := range s.Scenarios {
+		if len(sc.Models) == 0 {
+			continue
+		}
+		if sc.SOTA && firstSOTA < 0 {
+			firstSOTA = i
+		}
+		if sc.Good && firstGood < 0 {
+			firstGood = i
+		}
+		if sc.Cheap && firstCheap < 0 {
+			firstCheap = i
+		}
+	}
+
+	if firstSOTA < 0 {
+		return errors.New("no SOTA model marked")
+	}
+	if firstGood < 0 {
+		return errors.New("no Good model marked")
+	}
+	if firstCheap < 0 {
+		return errors.New("no Cheap model marked")
+	}
+
+	// SOTA must be first
+	if firstSOTA != 0 {
+		return fmt.Errorf("SOTA model %q should be first (at position %d)", s.Scenarios[firstSOTA].Models[0], firstSOTA)
+	}
+
+	// Good should come before Cheap (accounting for possible reasoning duplicates of SOTA)
+	if firstGood > firstCheap {
+		return fmt.Errorf("Good model comes after Cheap model (good at %d, cheap at %d)", firstGood, firstCheap)
+	}
+
 	return nil
 }
 

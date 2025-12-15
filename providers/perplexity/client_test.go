@@ -18,6 +18,7 @@ import (
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/perplexity"
+	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/genai/smoke/smoketest"
 	"github.com/maruel/roundtrippers"
 )
@@ -51,13 +52,13 @@ func TestClient(t *testing.T) {
 	t.Run("Scoreboard", func(t *testing.T) {
 		// Perplexity doesn't support listing models. See https://docs.perplexity.ai/api-reference
 		sb := getClient(t, genai.ModelNone).Scoreboard()
-		var models []smoketest.Model
+		var models []scoreboard.Model
 		for _, sc := range sb.Scenarios {
 			for _, model := range sc.Models {
-				models = append(models, smoketest.Model{Model: model, Reason: sc.Reason})
+				models = append(models, scoreboard.Model{Model: model, Reason: sc.Reason})
 			}
 		}
-		getClientRT := func(t testing.TB, model smoketest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+		getClientRT := func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 			opts := genai.ProviderOptions{Model: model.Model}
 			if os.Getenv("PERPLEXITY_API_KEY") == "" {
 				opts.APIKey = "<insert_api_key_here>"

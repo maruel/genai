@@ -20,6 +20,7 @@ import (
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/gemini"
+	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/genai/smoke/smoketest"
 )
 
@@ -64,18 +65,18 @@ func TestClient(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		var models []smoketest.Model
+		var models []scoreboard.Model
 		for _, m := range mdls {
 			id := m.GetID()
 			if id != "gemini-2.5-pro" {
 				// According to https://ai.google.dev/gemini-api/docs/thinking?hl=en, thinking cannot be disabled.
-				models = append(models, smoketest.Model{Model: id})
+				models = append(models, scoreboard.Model{Model: id})
 			}
 			if strings.HasPrefix(id, "gemini-2.5-") && !strings.Contains(id, "preview") {
-				models = append(models, smoketest.Model{Model: id, Reason: true})
+				models = append(models, scoreboard.Model{Model: id, Reason: true})
 			}
 		}
-		getClientRT := func(t testing.TB, model smoketest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+		getClientRT := func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 			opts := genai.ProviderOptions{Model: model.Model, PreloadedModels: cachedModels}
 			if os.Getenv("GEMINI_API_KEY") == "" {
 				opts.APIKey = "<insert_api_key_here>"

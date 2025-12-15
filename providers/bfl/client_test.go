@@ -16,6 +16,7 @@ import (
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/bfl"
+	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/genai/smoke/smoketest"
 )
 
@@ -48,13 +49,13 @@ func TestClient(t *testing.T) {
 	t.Run("Scoreboard", func(t *testing.T) {
 		// bfl does not have a public API to list models.
 		sb := getClient(t, genai.ModelNone).Scoreboard()
-		var models []smoketest.Model
+		var models []scoreboard.Model
 		for _, sc := range sb.Scenarios {
 			for _, model := range sc.Models {
-				models = append(models, smoketest.Model{Model: model})
+				models = append(models, scoreboard.Model{Model: model})
 			}
 		}
-		getClientRT := func(t testing.TB, model smoketest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+		getClientRT := func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 			opts := genai.ProviderOptions{Model: model.Model}
 			if os.Getenv("BFL_API_KEY") == "" {
 				opts.APIKey = "<insert_api_key_here>"

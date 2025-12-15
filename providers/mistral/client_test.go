@@ -15,6 +15,7 @@ import (
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/mistral"
+	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/genai/smoke/smoketest"
 )
 
@@ -59,11 +60,11 @@ func TestClient(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		var models []smoketest.Model
+		var models []scoreboard.Model
 		for _, m := range genaiModels {
-			models = append(models, smoketest.Model{Model: m.GetID()})
+			models = append(models, scoreboard.Model{Model: m.GetID()})
 		}
-		getClientRT := func(t testing.TB, model smoketest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+		getClientRT := func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 			opts := genai.ProviderOptions{Model: model.Model, PreloadedModels: cachedModels}
 			if os.Getenv("MISTRAL_API_KEY") == "" {
 				opts.APIKey = "<insert_api_key_here>"

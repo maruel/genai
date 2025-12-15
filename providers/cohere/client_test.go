@@ -15,6 +15,7 @@ import (
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/cohere"
+	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/genai/smoke/smoketest"
 )
 
@@ -59,7 +60,7 @@ func TestClient(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		var models []smoketest.Model
+		var models []scoreboard.Model
 		for _, m := range genaiModels {
 			mdl := m.(*cohere.Model)
 			if !slices.Contains(mdl.Endpoints, "chat") || strings.Contains(mdl.Name, "nightly") {
@@ -67,12 +68,12 @@ func TestClient(t *testing.T) {
 			}
 			// All models "reason" when tool calling except light because it doesn't support tool calling.
 			if !strings.Contains(mdl.Name, "light") {
-				models = append(models, smoketest.Model{Model: mdl.Name, Reason: true})
+				models = append(models, scoreboard.Model{Model: mdl.Name, Reason: true})
 			} else {
-				models = append(models, smoketest.Model{Model: mdl.Name})
+				models = append(models, scoreboard.Model{Model: mdl.Name})
 			}
 		}
-		getClientRT := func(t testing.TB, model smoketest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+		getClientRT := func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 			opts := genai.ProviderOptions{Model: model.Model, PreloadedModels: cachedModels}
 			if os.Getenv("COHERE_API_KEY") == "" {
 				opts.APIKey = "<insert_api_key_here>"

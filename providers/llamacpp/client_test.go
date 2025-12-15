@@ -21,6 +21,7 @@ import (
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/llamacpp"
 	"github.com/maruel/genai/providers/llamacpp/llamacppsrv"
+	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/genai/smoke/smoketest"
 	"github.com/maruel/huggingface"
 )
@@ -49,13 +50,13 @@ func TestClient(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		var models []smoketest.Model
+		var models []scoreboard.Model
 		for _, sc := range c.Scoreboard().Scenarios {
 			for _, id := range sc.Models {
-				models = append(models, smoketest.Model{Model: id})
+				models = append(models, scoreboard.Model{Model: id})
 			}
 		}
-		smoketest.Run(t, func(t testing.TB, model smoketest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+		smoketest.Run(t, func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 			c2, err2 := llamacpp.New(ctx, &genai.ProviderOptions{APIKey: apiKey, Remote: serverURL, Model: model.Model}, fn)
 			if err2 != nil {
 				t.Fatal(err2)

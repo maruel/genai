@@ -19,6 +19,7 @@ import (
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/ollama"
+	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/genai/smoke/smoketest"
 	"github.com/maruel/roundtrippers"
 )
@@ -36,13 +37,13 @@ func TestClient(t *testing.T) {
 	s := lazyServer{t: t}
 
 	t.Run("Scoreboard", func(t *testing.T) {
-		var models []smoketest.Model
+		var models []scoreboard.Model
 		for _, sc := range ollama.Scoreboard().Scenarios {
 			for _, m := range sc.Models {
-				models = append(models, smoketest.Model{Model: m, Reason: sc.Reason})
+				models = append(models, scoreboard.Model{Model: m, Reason: sc.Reason})
 			}
 		}
-		smoketest.Run(t, func(t testing.TB, model smoketest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+		smoketest.Run(t, func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 			serverURL := s.lazyStart(t)
 			ctx, l := internaltest.Log(t)
 			fnWithLog := func(h http.RoundTripper) http.RoundTripper {

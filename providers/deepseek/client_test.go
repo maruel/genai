@@ -14,6 +14,7 @@ import (
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/deepseek"
+	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/genai/smoke/smoketest"
 )
 
@@ -58,12 +59,12 @@ func TestClient(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		var models []smoketest.Model
+		var models []scoreboard.Model
 		for _, m := range genaiModels {
 			id := m.GetID()
-			models = append(models, smoketest.Model{Model: id, Reason: strings.Contains(id, "reasoner")})
+			models = append(models, scoreboard.Model{Model: id, Reason: strings.Contains(id, "reasoner")})
 		}
-		getClientRT := func(t testing.TB, model smoketest.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+		getClientRT := func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 			opts := genai.ProviderOptions{Model: model.Model, PreloadedModels: cachedModels}
 			if os.Getenv("DEEPSEEK_API_KEY") == "" {
 				opts.APIKey = "<insert_api_key_here>"

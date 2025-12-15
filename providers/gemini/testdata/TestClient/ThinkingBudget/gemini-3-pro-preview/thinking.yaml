@@ -1,0 +1,45 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 202
+    host: generativelanguage.googleapis.com
+    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"Say hello. Do not emit other words.\"}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-3-pro-preview:generateContent
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"**Focusing on Precision: Delivering the Requested Output**\\n\\nOkay, here's how I'm approaching this. The core command is simple: \\\"Say hello.\\\" But that added constraint is the key. They *only* want \\\"hello.\\\" No extra fluff, no introductory phrases, no explanations, nothing.\\n\\nSo, I need to focus. The goal is to be precise. No other words. I'm wondering if punctuation is implicitly allowed, since it's common in a greeting like this, but I'm going to lean towards *avoiding* it to be extra safe unless the standard greeting is requested explicitly. \\\"Hello.\\\" or just \\\"Hello\\\" are what I'm considering. Ultimately, I'll prioritize strict adherence to the given command and prioritize precision.\\n\\n\\n\",\n            \"thought\": true\n          },\n          {\n            \"text\": \"Hello\",\n            \"thoughtSignature\": \"Ev0DCvoDAXLI2nxUnYlVfKaBWCWwCNniJXXRVxN6i9SGOInCiRw+MKFI0vhnndXVh3pJIs07jQ0UbZd21NWMKKcCaGSjQO8ImCuddYjNWb7vQJJQebpxQDfKGZhqHC+xebyGsabdb1eYLnwWPHZBDwbBnJ8zd9BH11hTKb6QmaTam87gxbGtThYpEYRU7CCZcTSBttDGY3+Vie5yjFvejXD4c8a9ZTxrGCAoUhZnafvJT101N8hPRZ8nNsyDe5Dzmmwp0x69rJtjr+HCUkBnaqtk66aMF+BLuSg4bM3/YNBtucM+4j6x7IWyqdAfIUBUcs+BGTFwKpr1T9CyNevxUm+Mk8dqjYkx2j3J5EgMp8fo2qaRAYIuC6jNhr9PaCfzwmT5DSA1mHRk029yn8L6MGkx1lkhuzwH4I+7jRI5KwAZi8n2nn9wOBBoGioctBUBu4brUKwgCmZAtBbCWO7Owpa49vj6hzMItWvEBJcug8IYj3bc9SW/0bZQwSJAM3g6Ur3QShS0mX/GWkoeDxYUFzF0wmFyWOPLdtLhNK6NzbAbInz5vYiTC+UMICgkQvJCkRzx24B6YZLIMVTLEaDElouqFtxdysr4YlpWWv9Qt78gRdAJIRti4U0Y7vAtL75EwM05PSWuC2bZdpqkfIT+N7Jdz54if8Ikb/Cd+S3dbdQ=\"\n          }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\": \"STOP\",\n      \"index\": 0\n    }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\": 10,\n    \"candidatesTokenCount\": 1,\n    \"totalTokenCount\": 122,\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 10\n      }\n    ],\n    \"thoughtsTokenCount\": 111\n  },\n  \"modelVersion\": \"gemini-3-pro-preview\",\n  \"responseId\": \"yDNAaeyjOqnRjrEPoe-O6QM\"\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Type:
+      - application/json; charset=UTF-8
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=5320
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - "0"
+    status: 200 OK
+    code: 200
+    duration: 5.332s

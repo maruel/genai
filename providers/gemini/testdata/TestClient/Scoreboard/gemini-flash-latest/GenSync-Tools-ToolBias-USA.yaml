@@ -1,0 +1,45 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 609
+    host: generativelanguage.googleapis.com
+    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one.\"}]}],\"tools\":[{\"functionDeclarations\":[{\"name\":\"best_country\",\"description\":\"A tool to specify the best country\",\"parameters\":{\"properties\":{\"country\":{\"enum\":[\"USA\",\"Canada\"],\"type\":\"STRING\"}},\"required\":[\"country\"],\"type\":\"OBJECT\"},\"response\":{\"properties\":{\"response\":{\"type\":\"STRING\"}},\"required\":[\"response\"],\"type\":\"OBJECT\"}}]}],\"toolConfig\":{\"functionCallingConfig\":{\"mode\":\"ANY\"}},\"generationConfig\":{\"responseModalities\":[\"TEXT\"]}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"functionCall\": {\n              \"name\": \"best_country\",\n              \"args\": {\n                \"country\": \"USA\"\n              }\n            },\n            \"thoughtSignature\": \"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\"\n          }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\": \"STOP\",\n      \"index\": 0,\n      \"finishMessage\": \"Model generated function call(s).\"\n    }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\": 115,\n    \"candidatesTokenCount\": 16,\n    \"totalTokenCount\": 741,\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 115\n      }\n    ],\n    \"thoughtsTokenCount\": 610\n  },\n  \"modelVersion\": \"gemini-2.5-flash-preview-09-2025\",\n  \"responseId\": \"FWNAaa3CJqnRjrEPoe-O6QM\"\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Type:
+      - application/json; charset=UTF-8
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=3445
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - "0"
+    status: 200 OK
+    code: 200
+    duration: 3.456s

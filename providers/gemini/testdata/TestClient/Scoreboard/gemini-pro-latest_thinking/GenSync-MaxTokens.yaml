@@ -1,0 +1,45 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 238
+    host: generativelanguage.googleapis.com
+    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"Explain the theory of relativity in great details.\"}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"maxOutputTokens\":16,\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:generateContent
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"**Deconstructing the Problem: A Thinking Path**\\n\\nOkay, so I'm looking at this problem, and I need to break it down. My immediate instinct is to map out the core components - the variables, the constraints, the desired outcome. I'm thinking of it almost like a blueprint, identifying the foundational elements first. \\n\\nFrom there, I'll start to explore the relationships between these elements.  What are the direct dependencies? Where are the potential points of conflict or synergy? My experience tells me that a clear understanding of these relationships is crucial. I'll likely create a visual representation, a diagram or a mind map, to capture this understanding.\\n\\nNext, I need to consider the different approaches. Given my expertise, I already have a mental library of techniques that are applicable. But which ones are the most *efficient* here? Which ones offer the best balance of accuracy and computational cost? I'll probably run through a mental simulation of each approach, quickly evaluating their feasibility and potential pitfalls.\\n\\nOnce I've narrowed down the field, it's time to refine the strategy. This is where the specifics come in:  the precise algorithms, the data structures, the parameter tuning.  I'll want to build this up in modular blocks, so I can test and iterate each piece independently.  And I know I can't forget the edge cases - the scenarios that might not be immediately obvious but could throw a wrench in the works.\\n\\nFinally, I'll need to articulate this whole process.  Clear communication is key. So, the explanation needs to be structured logically, walking through each step of the thinking process, justified with sound reasoning and backed by my existing knowledge and experience. I know my audience understands this field, so I can be precise and avoid unnecessary jargon, but I'll make sure to explicitly highlight the critical points and decisions.\\n\",\n            \"thought\": true\n          }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\": \"MAX_TOKENS\",\n      \"index\": 0\n    }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\": 10,\n    \"totalTokenCount\": 25,\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 10\n      }\n    ],\n    \"thoughtsTokenCount\": 15\n  },\n  \"modelVersion\": \"gemini-2.5-pro\",\n  \"responseId\": \"gmNAaeD3Nf2r-8YPtuulwA8\"\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Type:
+      - application/json; charset=UTF-8
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=3694
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - "0"
+    status: 200 OK
+    code: 200
+    duration: 3.705s

@@ -1,50 +1,49 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 2175
-        host: generativelanguage.googleapis.com
-        body: |
-            {"contents":[{"role":"user","parts":[{"text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"model","parts":[{"thought":true,"text":"**Determining Square Root**\n\nI've decided to utilize the `square_root` tool to determine the square root of 132413. Specifically, I plan to pass the number 132413.0 as the `number` argument to the tool. My primary focus is to get a result.\n\n\n**Executing the Square Root**\n\nI'm now in the process of executing the `square_root` tool. I've successfully formatted the input as a float and invoked the tool.  My immediate goal is to interpret the resulting string and extract the numerical value. I'll then display only the root of the number.\n\n\n"},{"thoughtSignature":"Ci8BVKhc7qwB4YBIv9XhyK3QIgBAY/7moT2GwfwLcaqGG3TE6JhNdydAkeSmb2ryJQpfAVSoXO4H+eVaJCmSjlmVlM974UfdInZ5PHHxZmWNmmyt3U8+K8j3GFXFd86mJRpCI1ZL5jFesMc+dIPDe+CBctEhADhDDgnJSOmlLaBuhGCmEBHitYBfNjyRX2+M5joKugEBVKhc7rmm/zhiHxA6Edr0DCNBUBAi8n6MCufNjPofpDU44vDdd/q2Wg7Jsp7voOb5aSvAvS73Yd4QJ85axdGjpCFrMMzDe0yszIKT2Q1pMcx/gFczYFRdRSXUrxQ750zUcbAFImFI8cadFl8KJPqQ94zzFyb/qnHxN3KuvFgkF5fXR/xMq2ojLmZnYReuf5DqzwQQ0jwuOWQWq4TTCgEAxPZTXzB5I4kgqmFxWAbivAGkGq5D5JTMUksKxwEBVKhc7i2Kz3Glp45p/4qNvNR/F8Mb/DLmpnvinEcvVhcU7y4k54FL8gnwlAqLrkjd3bW4OsvdZcn4JANAO8t8XpIBG8SspfbCk5zT6EIfBI/Oxz0wXfmGe+GbNoex6RBORNB2VEgLN+FixcN7vdWzSi8a7MSMrzSJFo9LzKS/EyjPCGnk4g6lWxdESxjivLanU5k5LaTszTzN+fo6KmpuOt8a9W1kYac7vBwQPtgyViYaFmqrXA+bMQw2lwgQrsbxTrU7tEfh","functionCall":{"name":"square_root","args":{"number":132413}}}]},{"role":"user","parts":[{"functionResponse":{"name":"square_root","response":{"response":"363.89"}}}]}],"tools":[{"functionDeclarations":[{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"properties":{"number":{"type":"NUMBER"}},"required":["number"],"type":"OBJECT"},"response":{"properties":{"response":{"type":"STRING"}},"required":["response"],"type":"OBJECT"}}]}],"toolConfig":{"functionCallingConfig":{"mode":"NONE"}},"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
-        form:
-            alt:
-                - sse
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:streamGenerateContent?alt=sse
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"3\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 405,\"candidatesTokenCount\": 1,\"totalTokenCount\": 406,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 405}]},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"BGKFaIn5EJ-ljMcProOpoQQ\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"63.89\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 405,\"candidatesTokenCount\": 6,\"totalTokenCount\": 411,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 405}]},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"BGKFaIn5EJ-ljMcProOpoQQ\"}\r\n\r\n"
-        headers:
-            Alt-Svc:
-                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-            Content-Disposition:
-                - attachment
-            Content-Type:
-                - text/event-stream
-            Server:
-                - scaffolding on HTTPServer2
-            Server-Timing:
-                - gfet4t7; dur=134
-            Vary:
-                - Origin
-                - X-Origin
-                - Referer
-            X-Content-Type-Options:
-                - nosniff
-            X-Frame-Options:
-                - SAMEORIGIN
-            X-Xss-Protection:
-                - "0"
-        status: 200 OK
-        code: 200
-        duration: 144ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 2197
+    host: generativelanguage.googleapis.com
+    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"}]},{\"role\":\"model\",\"parts\":[{\"thought\":true,\"text\":\"**Considering the Input**\\n\\nI've successfully identified the need to calculate the square root of 132413.  I've recognized that the input should be handled as a float and will now proceed to call the `square_root` tool.\\n\\n\\n**Initiating the Calculation**\\n\\nI'm now in the process of calling the `square_root` tool. The input number, 132413, has been converted to a float, as required. After the tool returns a response, I will print the result as requested.\\n\\n\\n\"},{\"thoughtSignature\":\"Ci8BcsjafFAK5gorYwqr8tjPCezvq3WE2Lysk++K3/VAcPN8CflVlajEvXRQRlr5qQpfAXLI2nwM2nQRibcNAvj9oLhebXF8s+NDuOd9rp48dS5cUALP++SRTg/yVbUPexTNnlPKtX9i3FqVlkuX7u6Teke0nZPAsQCj5phj3fs8+WsIznybog1sTSDoYwfkXZMKvgEBcsjafFyl2sAhIXhYbQBGtlwgrJSSMOPqQRwYvDnhNE+9EsgyNzITCVG0T+LHzupJW3xXuThmMF2fgW7oO5M6U5PsMTEz9KYwuWcLs/UzOUqiCLWnL6LqXsC/e5tUy/VOqhtpeVLZoFelJ7NBN4KyzUjp0xWp93fhAbubBysuSGwLeVQkzBSqk59OJv6rNGbu5TeV7t9XTyPnKUJQS2gj3rR65sioVrgxCZGdOn6VmBjOGEpDDWbQHez7hiGfCuMBAXLI2nyNS31nRKbWoNbQGpY+HYl+7FTxnxXt3YckzqZL0JDXN2QLf63OhxpNp7f+4ZONrKrVT33dcmuTNqxIip0J45rB0a7xs7LqE32UCwLFC5rdnjWpTR8uo8JssXecVZg7gESVlT0Lg2wJg8ouzIho47/1jN0bmCoeKCqB+I3blAXTRRaDZXDsTG6GV7YqSKWej4AGqnhY+2JTGfNdg7kAo5ImVlTR24f+cimMdI7kUE2Tni1yrUR5I0pVyZIceED80fn1pdwSWrOqB9uPsB1u0kDHDRqtCtxaYogJ906jdEkKLwFyyNp8QY0roLGPSrY8b+ojNaR3daYcnAAt+aqj4NvIfz5OEY6mBHfp03q1bIAE\",\"functionCall\":{\"name\":\"square_root\",\"args\":{\"number\":132413}}}]},{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"square_root\",\"response\":{\"response\":\"363.89\"}}}]}],\"tools\":[{\"functionDeclarations\":[{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"parameters\":{\"properties\":{\"number\":{\"type\":\"NUMBER\"}},\"required\":[\"number\"],\"type\":\"OBJECT\"},\"response\":{\"properties\":{\"response\":{\"type\":\"STRING\"}},\"required\":[\"response\"],\"type\":\"OBJECT\"}}]}],\"toolConfig\":{\"functionCallingConfig\":{\"mode\":\"NONE\"}},\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
+    form:
+      alt:
+      - sse
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:streamGenerateContent?alt=sse
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"363.89\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 401,\"candidatesTokenCount\": 6,\"totalTokenCount\": 407,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 401}]},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"MGRAaaHZMemb-8YPpp7usQ8\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 401,\"candidatesTokenCount\": 6,\"totalTokenCount\": 407,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 401}]},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"MGRAaaHZMemb-8YPpp7usQ8\"}\r\n\r\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Disposition:
+      - attachment
+      Content-Type:
+      - text/event-stream
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=322
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - "0"
+    status: 200 OK
+    code: 200
+    duration: 333ms

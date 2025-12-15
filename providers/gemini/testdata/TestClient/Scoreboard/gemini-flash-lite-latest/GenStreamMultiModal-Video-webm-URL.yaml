@@ -1,0 +1,49 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 297
+    host: generativelanguage.googleapis.com
+    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"What is the word said? Reply with only the word.\"},{\"fileData\":{\"mimeType\":\"video/webm\",\"fileUri\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/video.webm\"}}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"]}}\n"
+    form:
+      alt:
+      - sse
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:streamGenerateContent?alt=sse
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 200
+    body: "{\n  \"error\": {\n    \"code\": 500,\n    \"message\": \"An internal error has occurred. Please retry or report in https://developers.generativeai.google/guide/troubleshooting\",\n    \"status\": \"INTERNAL\"\n  }\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Length:
+      - "200"
+      Content-Type:
+      - text/event-stream
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=2761
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - "0"
+    status: 500 Internal Server Error
+    code: 500
+    duration: 2.772s

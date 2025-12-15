@@ -1,92 +1,45 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 233
-        host: generativelanguage.googleapis.com
-        body: |
-            {"contents":[{"role":"user","parts":[{"text":"Say hello. Use only one word."}]}],"generationConfig":{"responseModalities":["TEXT"],"responseLogprobs":true,"logprobs":2,"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        uncompressed: true
-        body: |
-            {
-              "candidates": [
-                {
-                  "content": {
-                    "parts": [
-                      {
-                        "text": "**My One-Word Greeting**\n\nThe user's prompt is clear: they want a greeting. My programming limits me to a single word.  Given that constraint, the most straightforward and universally understood option, the one that immediately comes to mind, is \"Hello\". Therefore, \"Hello\" is the optimal solution.\n",
-                        "thought": true
-                      },
-                      {
-                        "text": "Hello"
-                      }
-                    ],
-                    "role": "model"
-                  },
-                  "finishReason": "STOP",
-                  "index": 0,
-                  "logprobsResult": {
-                    "topCandidates": [
-                      {}
-                    ],
-                    "chosenCandidates": [
-                      {
-                        "token": "Hello",
-                        "logProbability": 0,
-                        "tokenId": 9259
-                      }
-                    ]
-                  }
-                }
-              ],
-              "usageMetadata": {
-                "promptTokenCount": 9,
-                "candidatesTokenCount": 1,
-                "totalTokenCount": 54,
-                "promptTokensDetails": [
-                  {
-                    "modality": "TEXT",
-                    "tokenCount": 9
-                  }
-                ],
-                "thoughtsTokenCount": 44
-              },
-              "modelVersion": "gemini-2.5-flash-lite",
-              "responseId": "e9OXaP7vBsCd1MkP1YitmAY"
-            }
-        headers:
-            Alt-Svc:
-                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-            Content-Type:
-                - application/json; charset=UTF-8
-            Server:
-                - scaffolding on HTTPServer2
-            Server-Timing:
-                - gfet4t7; dur=1252
-            Vary:
-                - Origin
-                - X-Origin
-                - Referer
-            X-Content-Type-Options:
-                - nosniff
-            X-Frame-Options:
-                - SAMEORIGIN
-            X-Xss-Protection:
-                - "0"
-        status: 200 OK
-        code: 200
-        duration: 1.264s
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 233
+    host: generativelanguage.googleapis.com
+    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"Say hello. Use only one word.\"}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"responseLogprobs\":true,\"logprobs\":2,\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"Logprobs is not enabled for models/gemini-2.5-flash-lite\",\n    \"status\": \"INVALID_ARGUMENT\"\n  }\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Type:
+      - application/json; charset=UTF-8
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=83
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - "0"
+    status: 400 Bad Request
+    code: 400
+    duration: 94ms

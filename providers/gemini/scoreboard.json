@@ -12,13 +12,14 @@
     {
       "comments": "It supports inputs via URL but only when uploaded to its own storage.",
       "models": [
-        "gemini-2.5-pro"
+        "gemini-pro-latest"
       ],
       "sota": true,
       "reason": true,
       "in": {
         "audio": {
           "inline": true,
+          "url": true,
           "supportedFormats": [
             "audio/aac",
             "audio/flac",
@@ -27,12 +28,14 @@
         },
         "document": {
           "inline": true,
+          "url": true,
           "supportedFormats": [
             "application/pdf"
           ]
         },
         "image": {
           "inline": true,
+          "url": true,
           "supportedFormats": [
             "image/jpeg",
             "image/png",
@@ -60,12 +63,12 @@
         "reportFinishReason": "true",
         "seed": true,
         "tools": "true",
+        "toolsBiased": "flaky",
         "toolsIndecisive": "true",
         "toolCallRequired": true,
         "webSearch": true,
         "json": true,
         "jsonSchema": true,
-        "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
       },
@@ -74,7 +77,6 @@
         "reportFinishReason": "true",
         "seed": true,
         "tools": "true",
-        "toolsBiased": "flaky",
         "toolsIndecisive": "true",
         "toolCallRequired": true,
         "webSearch": true,
@@ -87,29 +89,29 @@
     {
       "comments": "It supports inputs via URL but only when uploaded to its own storage.",
       "models": [
-        "gemini-2.5-flash"
+        "gemini-flash-latest"
       ],
       "good": true,
-      "reason": true,
       "in": {
         "audio": {
           "inline": true,
+          "url": true,
           "supportedFormats": [
             "audio/aac",
             "audio/flac",
-            "audio/mp3",
-            "audio/ogg",
             "audio/wav"
           ]
         },
         "document": {
           "inline": true,
+          "url": true,
           "supportedFormats": [
             "application/pdf"
           ]
         },
         "image": {
           "inline": true,
+          "url": true,
           "supportedFormats": [
             "image/jpeg",
             "image/png",
@@ -142,7 +144,6 @@
         "webSearch": true,
         "json": true,
         "jsonSchema": true,
-        "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
       },
@@ -152,78 +153,7 @@
         "seed": true,
         "tools": "true",
         "toolsBiased": "flaky",
-        "toolCallRequired": true,
-        "webSearch": true,
-        "json": true,
-        "jsonSchema": true,
-        "maxTokens": true,
-        "stopSequence": true
-      }
-    },
-    {
-      "comments": "It supports inputs via URL but only when uploaded to its own storage.",
-      "models": [
-        "gemini-2.5-flash"
-      ],
-      "in": {
-        "audio": {
-          "inline": true,
-          "supportedFormats": [
-            "audio/aac",
-            "audio/ogg",
-            "audio/wav"
-          ]
-        },
-        "document": {
-          "inline": true,
-          "supportedFormats": [
-            "application/pdf"
-          ]
-        },
-        "image": {
-          "inline": true,
-          "supportedFormats": [
-            "image/jpeg",
-            "image/png",
-            "image/webp"
-          ]
-        },
-        "text": {
-          "inline": true
-        },
-        "video": {
-          "inline": true,
-          "supportedFormats": [
-            "video/mp4",
-            "video/webm"
-          ]
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "tools": "true",
-        "toolsBiased": "true",
-        "toolCallRequired": true,
-        "webSearch": true,
-        "json": true,
-        "jsonSchema": true,
-        "topLogprobs": true,
-        "maxTokens": true,
-        "stopSequence": true
-      },
-      "GenStream": {
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "tools": "true",
-        "toolsBiased": "true",
+        "toolsIndecisive": "true",
         "toolCallRequired": true,
         "webSearch": true,
         "json": true,
@@ -234,18 +164,29 @@
     },
     {
       "models": [
-        "gemini-2.5-flash-lite"
+        "gemini-flash-lite-latest"
       ],
       "cheap": true,
       "in": {
+        "audio": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "audio/aac",
+            "audio/flac",
+            "audio/wav"
+          ]
+        },
         "document": {
           "inline": true,
+          "url": true,
           "supportedFormats": [
             "application/pdf"
           ]
         },
         "image": {
           "inline": true,
+          "url": true,
           "supportedFormats": [
             "image/jpeg",
             "image/png",
@@ -273,12 +214,11 @@
         "reportFinishReason": "true",
         "seed": true,
         "tools": "true",
-        "toolsIndecisive": "true",
+        "toolsBiased": "true",
         "toolCallRequired": true,
         "webSearch": true,
         "json": true,
         "jsonSchema": true,
-        "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
       },
@@ -287,6 +227,8 @@
         "reportFinishReason": "true",
         "seed": true,
         "tools": "true",
+        "toolsBiased": "flaky",
+        "toolsIndecisive": "true",
         "toolCallRequired": true,
         "webSearch": true,
         "json": true,
@@ -303,12 +245,14 @@
       "in": {
         "document": {
           "inline": true,
+          "url": true,
           "supportedFormats": [
             "application/pdf"
           ]
         },
         "image": {
           "inline": true,
+          "url": true,
           "supportedFormats": [
             "image/jpeg",
             "image/png",
@@ -341,7 +285,6 @@
         "webSearch": true,
         "json": true,
         "jsonSchema": true,
-        "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
       },
@@ -360,12 +303,7 @@
     },
     {
       "models": [
-        "imagen-4.0-fast-generate-001",
-        "imagen-3.0-generate-002",
-        "imagen-4.0-generate-001",
-        "imagen-4.0-generate-preview-06-06",
-        "imagen-4.0-ultra-generate-001",
-        "imagen-4.0-ultra-generate-preview-06-06"
+        "imagen-4.0-fast-generate-001"
       ],
       "in": {
         "text": {
@@ -384,60 +322,6 @@
     },
     {
       "models": [
-        "gemini-2.5-flash-exp-native-audio-thinking-dialog"
-      ],
-      "reason": true
-    },
-    {
-      "comments": "Open source models",
-      "models": [
-        "gemma-3-12b-it",
-        "gemma-3-1b-it",
-        "gemma-3-27b-it",
-        "gemma-3-4b-it",
-        "gemma-3n-e2b-it",
-        "gemma-3n-e4b-it"
-      ]
-    },
-    {
-      "comments": "Video models; to enable",
-      "models": [
-        "veo-2.0-generate-001",
-        "veo-3.0-fast-generate-preview",
-        "veo-3.0-generate-preview"
-      ]
-    },
-    {
-      "models": [
-        "aqa",
-        "embedding-001",
-        "embedding-gecko-001",
-        "gemini-2.5-flash-exp-native-audio-thinking-dialog",
-        "gemini-2.5-flash-live-preview",
-        "gemini-2.5-flash-preview-native-audio-dialog",
-        "gemini-2.5-flash-preview-tts",
-        "gemini-2.5-pro-preview-tts",
-        "gemini-embedding-001",
-        "gemini-embedding-exp",
-        "gemini-embedding-exp-03-07",
-        "gemini-exp-1206",
-        "gemini-live-2.5-flash-preview",
-        "learnlm-2.0-flash-experimental",
-        "text-embedding-004"
-      ]
-    },
-    {
-      "comments": "Old models; do not use",
-      "models": [
-        "gemini-1.5-flash",
-        "gemini-1.5-flash-002",
-        "gemini-1.5-flash-8b",
-        "gemini-1.5-flash-8b-001",
-        "gemini-1.5-flash-8b-latest",
-        "gemini-1.5-flash-latest",
-        "gemini-1.5-pro",
-        "gemini-1.5-pro-002",
-        "gemini-1.5-pro-latest",
         "gemini-2.0-flash",
         "gemini-2.0-flash-001",
         "gemini-2.0-flash-exp",
@@ -446,19 +330,75 @@
         "gemini-2.0-flash-lite-001",
         "gemini-2.0-flash-lite-preview",
         "gemini-2.0-flash-lite-preview-02-05",
-        "gemini-2.0-flash-live-001",
-        "gemini-2.0-flash-preview-image-generation",
-        "gemini-2.0-flash-thinking-exp",
-        "gemini-2.0-flash-thinking-exp-01-21",
-        "gemini-2.0-flash-thinking-exp-1219",
-        "gemini-2.0-pro-exp",
-        "gemini-2.0-pro-exp-02-05",
+        "gemini-2.5-computer-use-preview-10-2025",
+        "gemini-2.5-flash",
+        "gemini-2.5-flash-image",
         "gemini-2.5-flash-image-preview",
-        "gemini-2.5-flash-lite-preview-06-17",
-        "gemini-2.5-flash-preview-05-20",
-        "gemini-2.5-pro-preview-03-25",
-        "gemini-2.5-pro-preview-05-06",
-        "gemini-2.5-pro-preview-06-05"
+        "gemini-2.5-flash-lite-preview-09-2025",
+        "gemini-2.5-flash-native-audio-latest",
+        "gemini-2.5-flash-native-audio-preview-09-2025",
+        "gemini-2.5-flash-native-audio-preview-12-2025",
+        "gemini-2.5-flash-preview-09-2025",
+        "gemini-2.5-flash-preview-tts",
+        "gemini-2.5-pro",
+        "gemini-2.5-pro-preview-tts",
+        "gemini-3-pro-image-preview",
+        "gemini-3-pro-preview",
+        "gemini-embedding-001",
+        "gemini-embedding-exp",
+        "gemini-embedding-exp-03-07",
+        "gemini-exp-1206",
+        "gemini-flash-latest",
+        "gemini-flash-lite-latest",
+        "gemini-robotics-er-1.5-preview"
+      ],
+      "reason": true
+    },
+    {
+      "models": [
+        "aqa",
+        "embedding-001",
+        "embedding-gecko-001",
+        "gemini-2.0-flash",
+        "gemini-2.0-flash-001",
+        "gemini-2.0-flash-exp",
+        "gemini-2.0-flash-exp-image-generation",
+        "gemini-2.0-flash-lite",
+        "gemini-2.0-flash-lite-001",
+        "gemini-2.0-flash-lite-preview",
+        "gemini-2.0-flash-lite-preview-02-05",
+        "gemini-2.5-computer-use-preview-10-2025",
+        "gemini-2.5-flash",
+        "gemini-2.5-flash-image",
+        "gemini-2.5-flash-image-preview",
+        "gemini-2.5-flash-lite",
+        "gemini-2.5-flash-lite-preview-09-2025",
+        "gemini-2.5-flash-native-audio-latest",
+        "gemini-2.5-flash-native-audio-preview-09-2025",
+        "gemini-2.5-flash-native-audio-preview-12-2025",
+        "gemini-2.5-flash-preview-09-2025",
+        "gemini-2.5-flash-preview-tts",
+        "gemini-embedding-001",
+        "gemini-embedding-exp",
+        "gemini-embedding-exp-03-07",
+        "gemini-exp-1206",
+        "gemini-robotics-er-1.5-preview",
+        "gemma-3-12b-it",
+        "gemma-3-1b-it",
+        "gemma-3-27b-it",
+        "gemma-3-4b-it",
+        "gemma-3n-e2b-it",
+        "gemma-3n-e4b-it",
+        "imagen-4.0-generate-001",
+        "imagen-4.0-generate-preview-06-06",
+        "imagen-4.0-ultra-generate-001",
+        "imagen-4.0-ultra-generate-preview-06-06",
+        "text-embedding-004",
+        "veo-2.0-generate-001",
+        "veo-3.0-fast-generate-001",
+        "veo-3.0-generate-001",
+        "veo-3.1-fast-generate-preview",
+        "veo-3.1-generate-preview"
       ]
     }
   ]

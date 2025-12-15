@@ -1,57 +1,49 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 359
-        host: generativelanguage.googleapis.com
-        body: |
-            {"contents":[{"role":"user","parts":[{"text":"What is the word said? Reply with only the word."},{"fileData":{"mimeType":"audio/mpeg","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/audio.mp3"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
-        form:
-            alt:
-                - sse
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:streamGenerateContent?alt=sse
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: 204
-        body: |
-            {
-              "error": {
-                "code": 400,
-                "message": "Unsupported file uri: https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/audio.mp3",
-                "status": "INVALID_ARGUMENT"
-              }
-            }
-        headers:
-            Alt-Svc:
-                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-            Content-Length:
-                - "204"
-            Content-Type:
-                - text/event-stream
-            Server:
-                - scaffolding on HTTPServer2
-            Server-Timing:
-                - gfet4t7; dur=64
-            Vary:
-                - Origin
-                - X-Origin
-                - Referer
-            X-Content-Type-Options:
-                - nosniff
-            X-Frame-Options:
-                - SAMEORIGIN
-            X-Xss-Protection:
-                - "0"
-        status: 400 Bad Request
-        code: 400
-        duration: 74ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 359
+    host: generativelanguage.googleapis.com
+    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"What is the word said? Reply with only the word.\"},{\"fileData\":{\"mimeType\":\"audio/mpeg\",\"fileUri\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/audio.mp3\"}}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
+    form:
+      alt:
+      - sse
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:streamGenerateContent?alt=sse
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Decoding the Audio**\\n\\nI've got a short audio clip. My immediate task is to process it and figure out the spoken word. The clip's duration is incredibly brief, so accuracy is key to isolating the speech. I'll need to use my analytical skills to identify the sound.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"thoughtsTokenCount\": 74},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"T2RAaeS5L5XqjrEPgpzgyAQ\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Extracting the Spoken Word**\\n\\nI've successfully identified the spoken word as \\\"said\\\" from the short audio clip. The brevity of the clip necessitated a precise approach, but the clarity of the recording made the task straightforward. I'm now certain of the extracted word.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"thoughtsTokenCount\": 107},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"T2RAaeS5L5XqjrEPgpzgyAQ\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"said\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"thoughtsTokenCount\": 107},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"T2RAaeS5L5XqjrEPgpzgyAQ\"}\r\n\r\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Disposition:
+      - attachment
+      Content-Type:
+      - text/event-stream
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=2681
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - "0"
+    status: 200 OK
+    code: 200
+    duration: 2.692s

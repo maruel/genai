@@ -1,50 +1,49 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 3249
-        host: generativelanguage.googleapis.com
-        body: |
-            {"contents":[{"role":"user","parts":[{"text":"What is the word said? Reply with only the word."},{"inlineData":{"mimeType":"audio/aac","data":"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"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
-        form:
-            alt:
-                - sse
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:streamGenerateContent?alt=sse
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Detecting the Audio**\\n\\nI'm focusing on the input audio, which is extremely brief. Currently, I'm interpreting \\\"0 0:00 ... 00:00\\\" as a placeholder or indicator of silence. The prompt's \\\"Reply with only\\\" suggests that I should identify a word, despite the apparent lack of audible content. I'm exploring the implications of an empty segment and the user's instructions to pinpoint the intended response.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 40,\"totalTokenCount\": 112,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13},{\"modality\": \"AUDIO\",\"tokenCount\": 27}],\"thoughtsTokenCount\": 72},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"DWKFaIC2DLmcjMcPyZDJmAQ\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Deciphering the Intent**\\n\\nMy analysis now focuses on the \\\"00:00\\\" timestamp and the prompt's structure. It's becoming clearer that I'm supposed to find a *word*, but the input, \\\"0 0:00 ... 00:00\\\" followed by  \\\"Reply with only the word\\\" doesn't contain audio. I'm trying to deduce the user's intent. Did they forget the audio? Is \\\"00:00\\\" the word? Or is it a timestamp asking me to guess what word *should* be at that time? I'm now leaning towards a likely misunderstanding of input requirements.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 40,\"totalTokenCount\": 406,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13},{\"modality\": \"AUDIO\",\"tokenCount\": 27}],\"thoughtsTokenCount\": 366},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"DWKFaIC2DLmcjMcPyZDJmAQ\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Clarifying the Ambiguity**\\n\\nThe \\\"00:00\\\" timestamp now complicates matters. My understanding has shifted to the user providing a timestamp and requesting the word present at that time. I've re-examined the input format, trying to dissect the user's intent. The absence of actual audio data is the main point of confusion. I'm currently unable to discern a word from just a timestamp and  an instructional prompt. Considering several user possibilities. The timestamp alone provides limited insight.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 40,\"totalTokenCount\": 432,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13},{\"modality\": \"AUDIO\",\"tokenCount\": 27}],\"thoughtsTokenCount\": 392},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"DWKFaIC2DLmcjMcPyZDJmAQ\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"00:00\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 40,\"candidatesTokenCount\": 2,\"totalTokenCount\": 434,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13},{\"modality\": \"AUDIO\",\"tokenCount\": 27}],\"thoughtsTokenCount\": 392},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"DWKFaIC2DLmcjMcPyZDJmAQ\"}\r\n\r\n"
-        headers:
-            Alt-Svc:
-                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-            Content-Disposition:
-                - attachment
-            Content-Type:
-                - text/event-stream
-            Server:
-                - scaffolding on HTTPServer2
-            Server-Timing:
-                - gfet4t7; dur=1417
-            Vary:
-                - Origin
-                - X-Origin
-                - Referer
-            X-Content-Type-Options:
-                - nosniff
-            X-Frame-Options:
-                - SAMEORIGIN
-            X-Xss-Protection:
-                - "0"
-        status: 200 OK
-        code: 200
-        duration: 1.427s
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 3249
+    host: generativelanguage.googleapis.com
+    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"What is the word said? Reply with only the word.\"},{\"inlineData\":{\"mimeType\":\"audio/aac\",\"data\":\"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\"}}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
+    form:
+      alt:
+      - sse
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:streamGenerateContent?alt=sse
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Detecting the Spoken Word**\\n\\nI've successfully identified the spoken word within the specified audio snippet. It's clear the audio segment corresponds to \\\"zero zero.\\\" The analysis was straightforward given the directness of the provided data.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 40,\"totalTokenCount\": 114,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13},{\"modality\": \"AUDIO\",\"tokenCount\": 27}],\"thoughtsTokenCount\": 74},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"UmRAaZ-vI7-KjrEPy7fEmAM\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Analyzing Audio Content**\\n\\nI've completed the initial analysis of the audio data. The key phrase \\\"zero zero\\\" has been successfully pinpointed, aligning precisely with the time frame provided. Based on the data, the analysis yielded a single unambiguous result.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 40,\"totalTokenCount\": 145,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13},{\"modality\": \"AUDIO\",\"tokenCount\": 27}],\"thoughtsTokenCount\": 105},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"UmRAaZ-vI7-KjrEPy7fEmAM\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"zero zero\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 40,\"totalTokenCount\": 145,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13},{\"modality\": \"AUDIO\",\"tokenCount\": 27}],\"thoughtsTokenCount\": 105},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"UmRAaZ-vI7-KjrEPy7fEmAM\"}\r\n\r\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Disposition:
+      - attachment
+      Content-Type:
+      - text/event-stream
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=2351
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - "0"
+    status: 200 OK
+    code: 200
+    duration: 2.363s

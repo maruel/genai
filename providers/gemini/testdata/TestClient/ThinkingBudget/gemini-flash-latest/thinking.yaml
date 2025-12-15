@@ -1,0 +1,45 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 202
+    host: generativelanguage.googleapis.com
+    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"Say hello. Do not emit other words.\"}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"**Analyzing the Utterly Simple Request**\\n\\nOkay, so I'm presented with a seemingly straightforward task: the user, bless their heart, wants me to utter the word \\\"hello.\\\" It's almost comical in its simplicity, isn't it? As an expert in my field, I could delve into the nuances of greeting customs across cultures, discuss the subtle power dynamics embedded in a simple salutation, or even analyze the linguistic structure of \\\"hello\\\" itself. But the request is clear. They simply want a greeting.  No hidden agendas here, just a direct need for acknowledgement.  This is a refreshingly uncomplicated start to the interaction.\\n\",\n            \"thought\": true\n          },\n          {\n            \"text\": \"hello\"\n          }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\": \"STOP\",\n      \"index\": 0\n    }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\": 10,\n    \"candidatesTokenCount\": 1,\n    \"totalTokenCount\": 30,\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 10\n      }\n    ],\n    \"thoughtsTokenCount\": 19\n  },\n  \"modelVersion\": \"gemini-2.5-flash-preview-09-2025\",\n  \"responseId\": \"tzNAabaFO-uV_uMPsc2x6QM\"\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Type:
+      - application/json; charset=UTF-8
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=1653
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - "0"
+    status: 200 OK
+    code: 200
+    duration: 1.717s

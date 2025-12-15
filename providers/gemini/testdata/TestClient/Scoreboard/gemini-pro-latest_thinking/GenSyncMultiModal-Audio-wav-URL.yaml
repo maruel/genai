@@ -1,0 +1,45 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 358
+    host: generativelanguage.googleapis.com
+    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"What is the word said? Reply with only the word.\"},{\"fileData\":{\"mimeType\":\"audio/wav\",\"fileUri\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/audio.wav\"}}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:generateContent
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"**The Simple Task at Hand**\\n\\nOkay, so I've got this audio file and the user wants to know a single word from it.  The prompt is crystal clear: \\\"Reply with only the word.\\\" Alright, that's straightforward. Let's listen to the audio and get this done.  *Hears sound* Yup, it's pretty short, just one word. Definitely an American accent, too.  Got it. Sounds like... \\\"orange\\\".  Now, just to be sure, I should stick exactly to the instructions. No extra fluff, no introductions, no closing remarks. The user wants the word, and nothing but the word. So the answer is, simply... \\\"orange.\\\"\\n\",\n            \"thought\": true\n          },\n          {\n            \"text\": \"orange\"\n          }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\": \"STOP\",\n      \"index\": 0\n    }\n  ],\n  \"usageMetadata\": {\n    \"candidatesTokenCount\": 1,\n    \"thoughtsTokenCount\": 154\n  },\n  \"modelVersion\": \"gemini-2.5-pro\",\n  \"responseId\": \"EmRAabCzLdiQ-8YPnouGWQ\"\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Type:
+      - application/json; charset=UTF-8
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=6032
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - "0"
+    status: 200 OK
+    code: 200
+    duration: 6.043s

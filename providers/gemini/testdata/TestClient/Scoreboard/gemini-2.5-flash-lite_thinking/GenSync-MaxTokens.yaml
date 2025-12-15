@@ -1,76 +1,45 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 238
-        host: generativelanguage.googleapis.com
-        body: |
-            {"contents":[{"role":"user","parts":[{"text":"Explain the theory of relativity in great details."}]}],"generationConfig":{"responseModalities":["TEXT"],"maxOutputTokens":16,"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        uncompressed: true
-        body: |
-            {
-              "candidates": [
-                {
-                  "content": {
-                    "parts": [
-                      {
-                        "text": "**Deconstructing the Cognitive Process**\n\nOkay, so I'm tackling this task of explaining a complex concept - likely something nuanced given the potential need for a \"fulsome summary.\"  The initial hurdle is always structuring the explanation. My mental model here is to break it down. I need to consider what *I* understand about the subject first. What are the core components? What are the inherent difficulties in conveying them clearly?\n\nSince this is geared toward an expert, I can assume a level of prior knowledge, which means I can afford to get more technical and dive into the intricacies earlier than I might with a lay audience.  My approach will involve building from the fundamentals, then layering on complexities in a logical and coherent manner. I need to identify the key assumptions the target audience *will* have. This allows me to then identify the key unknowns that need clarification.\n\nThe next critical step is anticipating questions. What are the predictable inquiries that will arise during the explanation? By preemptively addressing potential objections or points of confusion, I can ensure a more streamlined and effective understanding for the reader. I should be as clear and concise as possible, while not sacrificing any key information. I'll need to use examples, metaphors, or analogies if necessary.\n",
-                        "thought": true
-                      }
-                    ],
-                    "role": "model"
-                  },
-                  "finishReason": "MAX_TOKENS",
-                  "index": 0
-                }
-              ],
-              "usageMetadata": {
-                "promptTokenCount": 10,
-                "totalTokenCount": 25,
-                "promptTokensDetails": [
-                  {
-                    "modality": "TEXT",
-                    "tokenCount": 10
-                  }
-                ],
-                "thoughtsTokenCount": 15
-              },
-              "modelVersion": "gemini-2.5-flash-lite",
-              "responseId": "_2GFaLiOHf-2jMcPyIPQ2Ak"
-            }
-        headers:
-            Alt-Svc:
-                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-            Content-Type:
-                - application/json; charset=UTF-8
-            Server:
-                - scaffolding on HTTPServer2
-            Server-Timing:
-                - gfet4t7; dur=1652
-            Vary:
-                - Origin
-                - X-Origin
-                - Referer
-            X-Content-Type-Options:
-                - nosniff
-            X-Frame-Options:
-                - SAMEORIGIN
-            X-Xss-Protection:
-                - "0"
-        status: 200 OK
-        code: 200
-        duration: 1.662s
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 238
+    host: generativelanguage.googleapis.com
+    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"Explain the theory of relativity in great details.\"}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"maxOutputTokens\":16,\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"**Deconstructing a Complex Problem**\\n\\nAlright, let's break this down. My initial instinct is to go straight for a solution, but that's a recipe for overlooking crucial nuances. Instead, I need to methodically dissect this problem, understand its components, and then formulate a strategy. First, I need to identify the core challenge. What's the *real* problem we're trying to solve here? Is it a symptom of a larger issue, or is it a standalone obstacle?\\n\\nNext, I need to map out the contributing factors. What elements are influencing this situation? Are they internal or external? Are they controllable or beyond our reach? Identifying these variables is crucial for understanding the landscape we're operating in.\\n\\nThen, I'll need to consider the constraints. What limitations do we have in terms of resources, time, or expertise? Understanding these limitations will help me prioritize and tailor my approach accordingly. I also need to think about the stakeholders involved. Who are the key players, and what are their perspectives? Considering their needs and expectations will be vital for developing a successful and sustainable solution.\\n\\nFinally, with all this information, I can start exploring potential solutions. I won't just leap at the first idea that comes to mind, though. I'll need to weigh the pros and cons of each option, considering their feasibility, effectiveness, and long-term impact. This analytical process is the only way to come up with a truly robust answer.\\n\",\n            \"thought\": true\n          },\n          {\n            \"text\": \"The\"\n          }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\": \"MAX_TOKENS\",\n      \"index\": 0\n    }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\": 10,\n    \"candidatesTokenCount\": 1,\n    \"totalTokenCount\": 24,\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 10\n      }\n    ],\n    \"thoughtsTokenCount\": 13\n  },\n  \"modelVersion\": \"gemini-2.5-flash-lite\",\n  \"responseId\": \"KmRAaZ84tMb7xg_h_5OAAw\"\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Type:
+      - application/json; charset=UTF-8
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=2218
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - "0"
+    status: 200 OK
+    code: 200
+    duration: 2.229s

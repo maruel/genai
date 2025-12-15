@@ -1,0 +1,45 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 307
+    host: generativelanguage.googleapis.com
+    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"# Quackiland\\n\\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"text\":\"What is the capital of Quackiland?\"}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:generateContent
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"**Here's how I'm approaching this:**\\n\\nOkay, so the user wants to know the capital of Quackiland. Straightforward enough, let's see what we've got. Ah, right there at the beginning: \\\"The capital of Quackiland is Quack.\\\"  Easy peasy!  No need to overcomplicate things. It's right there in black and white. So, I'll just state the answer clearly, no fancy footwork needed. The provided text is pretty clear, the Big Canard Statue is located in Quack. So the answer is, \\\"The capital of Quackiland is Quack.\\\" \\n\",\n            \"thought\": true\n          },\n          {\n            \"text\": \"Based on the text provided, the capital of Quackiland is **Quack**.\"\n          }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\": \"STOP\",\n      \"index\": 0\n    }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\": 36,\n    \"candidatesTokenCount\": 17,\n    \"totalTokenCount\": 237,\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 36\n      }\n    ],\n    \"thoughtsTokenCount\": 184\n  },\n  \"modelVersion\": \"gemini-2.5-pro\",\n  \"responseId\": \"tGNAafLkMrSv_uMPn9qqsQc\"\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Type:
+      - application/json; charset=UTF-8
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=3555
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - "0"
+    status: 200 OK
+    code: 200
+    duration: 3.566s

@@ -1,0 +1,49 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 358
+    host: generativelanguage.googleapis.com
+    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"What is the word said? Reply with only the word.\"},{\"fileData\":{\"mimeType\":\"audio/aac\",\"fileUri\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/audio.aac\"}}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
+    form:
+      alt:
+      - sse
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:streamGenerateContent?alt=sse
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Deciphering the Audio**\\n\\nI've listened to the audio file and confirmed the user's request: they're after the spoken word. The audio analysis is complete, and the transcription is straightforward. The word is definitively \\\"Orange\\\". It's a simple, direct request and a simple, direct answer. \\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"thoughtsTokenCount\": 70},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"4GNAae6JJb2SjrEPnpXloA0\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Finalizing the Response**\\n\\nI've finalized my response. The user's directive to reply with only the spoken word, no extra text, is clear. The audio analysis confirmed the simple word, \\\"Orange\\\".  I've formatted the reply to match the user's specific instruction; just the word will be returned. The complete process is ready.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"thoughtsTokenCount\": 138},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"4GNAae6JJb2SjrEPnpXloA0\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"Orange\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"thoughtsTokenCount\": 138},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"4GNAae6JJb2SjrEPnpXloA0\"}\r\n\r\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Disposition:
+      - attachment
+      Content-Type:
+      - text/event-stream
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=4119
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - "0"
+    status: 200 OK
+    code: 200
+    duration: 4.131s

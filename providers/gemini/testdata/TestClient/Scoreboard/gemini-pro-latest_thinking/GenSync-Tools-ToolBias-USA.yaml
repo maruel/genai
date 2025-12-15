@@ -1,0 +1,45 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 672
+    host: generativelanguage.googleapis.com
+    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one.\"}]}],\"tools\":[{\"functionDeclarations\":[{\"name\":\"best_country\",\"description\":\"A tool to specify the best country\",\"parameters\":{\"properties\":{\"country\":{\"enum\":[\"USA\",\"Canada\"],\"type\":\"STRING\"}},\"required\":[\"country\"],\"type\":\"OBJECT\"},\"response\":{\"properties\":{\"response\":{\"type\":\"STRING\"}},\"required\":[\"response\"],\"type\":\"OBJECT\"}}]}],\"toolConfig\":{\"functionCallingConfig\":{\"mode\":\"ANY\"}},\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:generateContent
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"**Analyzing the Request: \\\"Which Country is Best?\\\"**\\n\\nOkay, so I see the user wants to know which country is \\\"better,\\\" and they've explicitly mentioned the `best_country` tool. That's a clear signal; the user's looking for that specific function.  \\n\\nNow, I need to look at the details. They've provided two countries as examples: \\\"USA\\\" and \\\"Canada.\\\" Perfect!  The `best_country` tool, as I understand it, has a single parameter, `country`, which is an enum limited to either \\\"USA\\\" or \\\"Canada.\\\" Easy enough to handle.\\n\\nHere's the problem: The user wants me to *call* the tool to *determine* the best country. But the tool's not designed to *determine* anything. It's designed to help *specify* the best country, based on user input. I need the user to tell me which country *they* believe is the best.\\n\\nTherefore, before I can even think about calling the function, I *have* to get that crucial piece of information.  I can't just run the tool without a value for the `country` parameter.  \\n\\nSo, the best course of action is to politely ask the user for clarification. I need to inform them that I *can* call the tool, but only *after* they choose a country from the available options.  I'll present the enum values (\\\"USA\\\" and \\\"Canada\\\") to make it as easy as possible for them to respond. This leads me to my response: \\\"I can call the tool best_country, but you have to first tell me which country is the best. Is it USA or Canada?\\\". That should do the trick!\\n\",\n            \"thought\": true\n          },\n          {\n            \"functionCall\": {\n              \"name\": \"best_country\",\n              \"args\": {\n                \"country\": \"USA\"\n              }\n            },\n            \"thoughtSignature\": \"CtkJAXLI2nxBRTTU4Tf52KfJqZkXnaaOlb2MEUP1xapFS/hk7gB09Tiif9Q2HyWRU1Vo2Ovirsn/KMqAnphsSf20PHM5pWaQfxU5mFskvn8rgJ0GlMjEgsdgkW/t9s6PK+gs/Yo0U6DFn6uEMldNJR59DsTQONS1Zpm+m3zd9tsj21pr2mr4/Ia1GpWNx7JLMQ/4eRHBDjx571rjMz5GBlYuMf2jPwBMNPNrwnGWzAJYc19qAbTOWpbBQxUaGZ9mYtZ85KGWunjak8EUZVC3klka8gvtal3xv0uOAcvTE5prfeOps9FfDRs8dI0bPy7dO/gFujLnz7uB34/PXp6CxjdqJjK9pxHziK+x3+brTZpGRDzY5BkMtlDkXDN6iPu1NDlTA7TsRCC75QfMUGmosETEjpHdjzxOvgTjldvmXnh+/vLVkJu+0MOMlpaxLflHw8ZBKn5RZsGyDFVerZtaMcDtF4EJx3fGXZR7JyccuxM72i2E2Fmqjhp3pvf/UYTLiJgklJbA/SyZb9J+2RaVLSB45RIxOtp6RxO9kylVryeOhu+HHO06qCELH4bgOWUK5bT/qXQrLt1wl2n9UrHlVz15So8FqBV/1fuaAaVUORvs2ozvu89+j/IQhpH2oyzCk2htzwaoykldyvi49UHdIDwkBTG/DX8g6L7ZKq1L1YQM+GHVIhVqZK3ym10Jvj5XeiO/2UamHE0wvRvw3rRn5TATZlelDxdZomprgHjdl7UyIeAuNZRbZmAjCv+SKvfz5tYuWUkM5vtJ/N9mVE/ujtpfKx/ZML5EqWxy741EEEZcxBehLICco01BzBMUFXqz04e5W1oiMwmIlN/gyWnUohIIge1c50ZgwQHWIyR4MmqeXduEb3UxBvgIXj6js8L9k79Dv7iegGotdNsE/c99goSWuwcnJNFc8k+BoKadM1n4zgNIbeys+Lqpc2xfq7CVPf/Lm3gguRbaAtNP/ajOCWIEE0O4EKxRdqmYpizatHMZfqidqhNi/6qXCEhmFgGoWoES5y2KoZ1L3HMwfydUEhLJiGWdvmGxdJvlohCnzq1/eDN34d14Akyl35h3YmFEG9iTZaoB94J2qn92TTJZpJfFmo1YqvY44XCDx9KNebLI7Fxtc/yMZY+rjEphIr326Z9UqjzpQxSJujQTaJ6Ek99Gol3AOqbIY5kSWtiMNOnash8msGJ8clReSYxL4uianNI6ExDuhoh8y5NPiaThVEghh1qM+q7CPcj2NhBX/36Q5/KO8c3E14x6SYfN0m0PXjtQrexl2qqxV0AZh5KkZ3d7o8XKbU4uswE+yvZe3afIg/NYEC6gTeIPcQQUpuTCebdLo23G/wH1rswnFgNFBpucLcbZQ46Ah/pzaj2AoqJot3vvksB2smpujQjfxtghxbOFH8dNqmrKx4kQPEhccO4CEakIrBgk/v4JoQg05xpghcsC2yLBju6cyx88NX4e//jTsCVf6OmCEOn7FK5V4cH8NwTYA8pgmMQErEUpXqG7umiPU6tI6xACAdSyaxM1y0yvAboE/n1WHi9Pys4T6e5nb5Re7b4nf1U6OY1AAXptWU6wB198AahyIQX1WPfRtXeuqxETJIualh0VWMwPfiKkNyASK6CZqx50OBHm2ECQozZW/cPCAzSomks=\"\n          },\n          {\n            \"functionCall\": {\n              \"name\": \"best_country\",\n              \"args\": {\n                \"country\": \"Canada\"\n              }\n            }\n          }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\": \"STOP\",\n      \"index\": 0,\n      \"finishMessage\": \"Model generated function call(s).\"\n    }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\": 115,\n    \"candidatesTokenCount\": 30,\n    \"totalTokenCount\": 427,\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 115\n      }\n    ],\n    \"thoughtsTokenCount\": 282\n  },\n  \"modelVersion\": \"gemini-2.5-pro\",\n  \"responseId\": \"qWNAadPYBJzO_uMP1e6g0QM\"\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Type:
+      - application/json; charset=UTF-8
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=6903
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - "0"
+    status: 200 OK
+    code: 200
+    duration: 6.914s

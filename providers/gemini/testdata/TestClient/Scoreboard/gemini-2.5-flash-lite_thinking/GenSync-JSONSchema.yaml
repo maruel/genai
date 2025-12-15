@@ -1,80 +1,45 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 380
-        host: generativelanguage.googleapis.com
-        body: |
-            {"contents":[{"role":"user","parts":[{"text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}],"generationConfig":{"responseMimeType":"application/json","responseSchema":{"properties":{"is_fruit":{"type":"BOOLEAN"}},"required":["is_fruit"],"type":"OBJECT"},"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        uncompressed: true
-        body: |
-            {
-              "candidates": [
-                {
-                  "content": {
-                    "parts": [
-                      {
-                        "text": "**Banana Botany & JSON Formatting**\n\nOkay, so I'm presented with a straightforward task: determine if a banana is a fruit and then deliver the answer strictly in JSON format, as per the provided schema. The user's explicit request for *only* JSON, without any fluff, is noted.\n\nKnowing my botany, this is simple. A banana, botanically, is a berry. And berries are, definitively, fruits. Therefore, my `is_fruit` value needs to be `true`.\n\nThe final output, adhering strictly to the provided JSON structure, will be:\n\n```json\n{\n  \"is_fruit\": true\n}\n```\n\nThat's it. Concise and compliant.\n",
-                        "thought": true
-                      },
-                      {
-                        "text": "{\n  \"is_fruit\": true\n}"
-                      }
-                    ],
-                    "role": "model"
-                  },
-                  "finishReason": "STOP",
-                  "index": 0
-                }
-              ],
-              "usageMetadata": {
-                "promptTokenCount": 18,
-                "candidatesTokenCount": 11,
-                "totalTokenCount": 163,
-                "promptTokensDetails": [
-                  {
-                    "modality": "TEXT",
-                    "tokenCount": 18
-                  }
-                ],
-                "thoughtsTokenCount": 134
-              },
-              "modelVersion": "gemini-2.5-flash-lite",
-              "responseId": "BWKFaODeMPuI-sAP3eHA-Qs"
-            }
-        headers:
-            Alt-Svc:
-                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-            Content-Type:
-                - application/json; charset=UTF-8
-            Server:
-                - scaffolding on HTTPServer2
-            Server-Timing:
-                - gfet4t7; dur=1348
-            Vary:
-                - Origin
-                - X-Origin
-                - Referer
-            X-Content-Type-Options:
-                - nosniff
-            X-Frame-Options:
-                - SAMEORIGIN
-            X-Xss-Protection:
-                - "0"
-        status: 200 OK
-        code: 200
-        duration: 1.359s
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 380
+    host: generativelanguage.googleapis.com
+    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON.\"}]}],\"generationConfig\":{\"responseMimeType\":\"application/json\",\"responseSchema\":{\"properties\":{\"is_fruit\":{\"type\":\"BOOLEAN\"}},\"required\":[\"is_fruit\"],\"type\":\"OBJECT\"},\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"**Processing the Request and Formulating a Concise JSON Response**\\n\\nOkay, so I've got a user asking a seemingly simple question: is a banana a fruit?  They've been very specific; I need to respond ONLY in JSON format, no explanations allowed.  The schema, thankfully, is straightforward: just a boolean field called `is_fruit`.  Knowing the answer, definitively, is \\\"yes\\\" – that a banana *is* indeed a fruit, I can confidently set that `is_fruit` value to `true`.  Now, the critical part: I've got to ensure the JSON is perfectly formatted according to the spec, no extraneous characters or fluff.  The result has to be precisely `{\\\"is_fruit\\\": true}`. I'm double-checking, yes, that's it, and nothing more.\\n\",\n            \"thought\": true\n          },\n          {\n            \"text\": \"{\\n  \\\"is_fruit\\\": true\\n}\"\n          }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\": \"STOP\",\n      \"index\": 0\n    }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\": 18,\n    \"candidatesTokenCount\": 11,\n    \"totalTokenCount\": 151,\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 18\n      }\n    ],\n    \"thoughtsTokenCount\": 122\n  },\n  \"modelVersion\": \"gemini-2.5-flash-lite\",\n  \"responseId\": \"MmRAaaHhCIHbjrEPoe_GsA8\"\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Type:
+      - application/json; charset=UTF-8
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=2339
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - "0"
+    status: 200 OK
+    code: 200
+    duration: 2.35s

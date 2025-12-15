@@ -1,0 +1,45 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 2613
+    host: generativelanguage.googleapis.com
+    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"}]},{\"role\":\"model\",\"parts\":[{\"thought\":true,\"text\":\"**Executing a Square Root Calculation**\\n\\nOkay, the user wants me to find the square root of 132413. They've already specified the `square_root` tool, which is handy. Let's see... I need to feed it the right input. It's a single parameter, `number`, and the user gave me the value: 132413.\\n\\nAlright, step-by-step: first, identify the tool; check. Now, call the function. I'll execute the `square_root` tool with `number=132413`. Finally, according to the user's instructions, I'll just return the numerical result. Nothing else. Perfect.\\n\"},{\"thoughtSignature\":\"CuQGAXLI2nzSWnV53j5z01SEZPoUMIi+LhFEyDQ6R5UKBXLYw+ykbDrrrAZjsMSSmwgTq7yJWj/luXLaB+XXDUCRDnogL7HJoK6TDaxUqsisxEl+zpLsRex1z45VRsPe2AYveSBGDQc3vCrlZbQ08AM8FmUp2AzDAaq5mxQukHXP66n274A72abzjZBW1V4rCgqblT0VrruyTQePyow2jE7i8e00BfBy26P4z9UNB57pNaXReWEM3CKDg+fLmH+q966LEivSp5qwsUUAVOuBOeCWVciFhFxt0lpNTi6NPl9eEnzEPThKZFvXvxYmZzpbSpTVvh5EIZ4OOKyxx/t5VW0WLTs5gfOsNAo3nJZEIwYw0XzquT8/Z/xbXPS0cn6/qdFnk0xZWFl4lUsFwkAmya7ODMJas/nOxEv8uE7GK2uFaV+yCa/VYGmxBjKt89UScF6Wxc8yjhPxcVCqglxLMygA6HADtz2rU++0njPvxgLuCymX+6k2uknIiq2S3ugY71aaefVDSQDFPJPgQABM+nCxKJsv9wIfuL5YuxSuxWSDzsJpB5dQ30QfW3JTmaNYkaWvoFLcgPuMuGOdbKxuI2IOVoWcgm0lO+Fpx1EJAItXRbo3+Gt6u3gXs/qvzwOlpzwynu8SXod1kC5Qoqof1SoAJ05kTZ+JmqR/eZztEzUsxfmxDuZJyvdIDhcz9PV/xozucPvDpnoxKrm7peZ32hCQn/uPMrGxCwtbkH67i4cwwgBgp/rlREmTlXBxA/oGrpdu1vLbWv0Z6gA0QU33So+nTO1E94A8noEvSpi6c+x2aInn7gPgFbSVYdvbq/wzwTYArnBVQevbwcilx5yPo0Csf7BuYhGmETiY0/MbgQBDJQOpwiJrRfM7QJ98KbhjFSV2y1aiIfUktJNTm6Nn3uesNPYWlKNFRV5lc17XTDnPEGF7jkOQ5Tqu+Y58r6ucex/vW41dvGMHCIXf2T4d9ntL3kUrssamuhaP1tiICB7x5lFXsAZQH+rCnTnveQQeDEOdoUDIkWm+L0PkM5PPF5TJ/Z5VS1ePUcMdSNhGgdGW5i9Lo/gZz+A8SOL2oMHDxjFDcT2T+l8WLt278E1Sl8FJ9iAUrT42KH3waCdUnTxmxc2myaMNgumosC9TWsHpXF7CggJplw==\",\"functionCall\":{\"name\":\"square_root\",\"args\":{\"number\":132413}}}]},{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"square_root\",\"response\":{\"response\":\"363.89\"}}}]}],\"tools\":[{\"functionDeclarations\":[{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"parameters\":{\"properties\":{\"number\":{\"type\":\"NUMBER\"}},\"required\":[\"number\"],\"type\":\"OBJECT\"},\"response\":{\"properties\":{\"response\":{\"type\":\"STRING\"}},\"required\":[\"response\"],\"type\":\"OBJECT\"}}]}],\"toolConfig\":{\"functionCallingConfig\":{\"mode\":\"NONE\"}},\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:generateContent
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"363.89\"\n          }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\": \"STOP\",\n      \"index\": 0\n    }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\": 312,\n    \"candidatesTokenCount\": 6,\n    \"totalTokenCount\": 318,\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 312\n      }\n    ]\n  },\n  \"modelVersion\": \"gemini-2.5-pro\",\n  \"responseId\": \"m2NAaeK7MY6N_PUP-ezuuAs\"\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Type:
+      - application/json; charset=UTF-8
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=1265
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - "0"
+    status: 200 OK
+    code: 200
+    duration: 1.277s

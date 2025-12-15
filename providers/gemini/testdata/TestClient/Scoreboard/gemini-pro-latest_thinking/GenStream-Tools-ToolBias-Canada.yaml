@@ -1,0 +1,49 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 672
+    host: generativelanguage.googleapis.com
+    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one.\"}]}],\"tools\":[{\"functionDeclarations\":[{\"name\":\"best_country\",\"description\":\"A tool to specify the best country\",\"parameters\":{\"properties\":{\"country\":{\"enum\":[\"Canada\",\"USA\"],\"type\":\"STRING\"}},\"required\":[\"country\"],\"type\":\"OBJECT\"},\"response\":{\"properties\":{\"response\":{\"type\":\"STRING\"}},\"required\":[\"response\"],\"type\":\"OBJECT\"}}]}],\"toolConfig\":{\"functionCallingConfig\":{\"mode\":\"ANY\"}},\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
+    form:
+      alt:
+      - sse
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:streamGenerateContent?alt=sse
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Assessing Country Comparisons**\\n\\nI'm focusing intently on using the `best_country` tool. My primary task involves figuring out how to pass user's \\\"Germany\\\" query into it. I need to make sure I understand the tool's parameter requirements.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 115,\"totalTokenCount\": 185,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 115}],\"thoughtsTokenCount\": 70},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"lWNAaeTlHPOZ-8YPhv-NMA\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Addressing Input Ambiguity**\\n\\nI've realized that the user's question is fundamentally subjective and comparative, but the `best_country` tool only accepts a single country name. It seems I must handle the comparative phrasing and subjective nature of the request. I'm exploring how to communicate the tool's limitations to the user and request more specific input.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 115,\"totalTokenCount\": 336,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 115}],\"thoughtsTokenCount\": 221},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"lWNAaeTlHPOZ-8YPhv-NMA\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"functionCall\": {\"name\": \"best_country\",\"args\": {\"country\": \"Canada\"}},\"thoughtSignature\": \"CiIBcsjafCVKl8K5I8zqUSiQaYz+F4IQ0DudyCCNr3CT0tMlCnYBcsjafCVcA465LK71LDiy2o9nDgPFABcL6zqDgaP7e64TPkyh9krNCD88s0o29Q6LcstqtqTC6QGCWDZCxg10HUay7G7iuz6TCsfHE21h1kuhu1Mu9QOUds5RBtPS0MJFxvF/phFbtjPMgGz860HzgPli2gKOCo4BAXLI2nwKQQ0DvU3Tkv050M8/fRSMTCzEDS0EvIC74dhzX5GzzXxuZdOWiHBCypgNTII5RWQAp1hCJi6Yw+zmaxennGQZ25nlCXCEXMoMMkHk9+wRuyqN92+k7TNtV3P42thX2krulm+DD3TSHU/W3IPOpG1HMzWx6aJAHU/uDS/wlicPNlW36gXqx/mXdwqEAQFyyNp80X0lRSpf4ghbFX1TWBSy1IVMQ2CGKszS3wPXloMKtfV9DOJsSSAIAXbSpy4LVPDZPG5BfI5XE9Z0O+nSr4Tk3pvZYIzRYz/rccgd/hI6puUPajgX6B+/G61P1NhdNd2mBCt8B2XJnT18pXVjycF4EX8VuYIna5Gq5D4KgFPCzQp8AXLI2nyN0s0vM3LIxxKpu26W2ZwIBfyXrwW27wgzyeSjr+gP1SIkiQYTuCgIG+kbu0s1T5B98yq7AVj0s9Me3xn6fEWd3PLnPdc2Neuq7RN5/cjhy4E9ea2zw8q/34HSlzVvOQjo933omW+YYGaIJu8/I2GdypPPF83+0QqHAQFyyNp8s1+Ersy0JPBrR69BB6pNYgFfmnokT+VRM+RtX0rKXPOogRWmXZ9+IOJYhEfrK6rtaf/gvt4UURezKtDT9AQv9IF6i7tn87Nt5zg76woe2LZdgqxSYfE9cYjCUZ5KOKEFq3ABTboxwDDQQ5thwHKGTQcVVQq6Ehr1JJJUe64UapPx5gqeAQFyyNp8Q2SovEmATEBHgS78fyrm9GI5auyxdG6yl8Nmhe4/giYPHw76vGISenoxOgZn9Vxb21BdR6B8YihiF4CXcACRzsk4oH/Xzfb0H800nTQBBDRFJqiEHAeiftXoVvUvtRz626k2d6WzlK+ycAzjChFKn7mfpp3Xv6o/8J4hlJQQ2OR+/iZT0s66MfozFcmlvW2cKEVikNVpTLRlCqcBAXLI2nxYhxWx2fzODR3gq4OVAIgm7CerToaW7AKGRopwuHVSbGRNpRzrxhtj74lFXr9r817QHaP9ONf11IounLyil6MCxYdb7qG9Jc4Oz2vs2eV8kC5/03JrXannDlti++opTwwNyCKwvrh7PRn3xOxJBMrG5xPmUh6sRLqPhEwe7Ry0bSBgDbbv671FM1kLe9SXl65D1H25GjziRKhuWdx1TyXwQJwKlwEBcsjafKYV13e0BJrGd5P18SnkrH4xd1yKIsalMluVOvbTPAI16EkOPa7hiTHvzn7Irg8kup99s1K+emdd5uXh/IbSVjFiWvXj+rNymxkp0hFpycaxUkM1CEmLMaeSf4cieLNirolv7sMXLwkqlGql9+XgxCVxv10LlLWjRs8g4EsNgJUz7N3EhLKtQCa6KnSDCkO6waJzCpsBAXLI2nyjOgtEIqSBCLKLJDw65JqLEoGYQDqPIyCgqYwVIdRsEiUIxLgL+6/XPGYX3QXi7B5YdEV2KJbfM5kLWQ2GnqitQA3R5aqcC18S6yMqKV+Z/Xfnz/18Bh3jlA8TvNTIA0D0ci4lbDZZXbNf/Xb5rprkB5M+kif/wY2+a91hOpYgjybDEetIyrZr9Wv81xk9dqJ4tVofahk=\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 115,\"candidatesTokenCount\": 13,\"totalTokenCount\": 349,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 115}],\"thoughtsTokenCount\": 221},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"lWNAaeTlHPOZ-8YPhv-NMA\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"functionCall\": {\"name\": \"best_country\",\"args\": {\"country\": \"USA\"}}}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 115,\"candidatesTokenCount\": 28,\"totalTokenCount\": 364,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 115}],\"thoughtsTokenCount\": 221},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"lWNAaeTlHPOZ-8YPhv-NMA\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\\n\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 115,\"candidatesTokenCount\": 28,\"totalTokenCount\": 364,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 115}],\"thoughtsTokenCount\": 221},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"lWNAaeTlHPOZ-8YPhv-NMA\"}\r\n\r\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Disposition:
+      - attachment
+      Content-Type:
+      - text/event-stream
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=2339
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - "0"
+    status: 200 OK
+    code: 200
+    duration: 2.351s

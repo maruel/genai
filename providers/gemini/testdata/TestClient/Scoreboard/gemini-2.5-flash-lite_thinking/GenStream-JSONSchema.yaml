@@ -1,50 +1,49 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 380
-        host: generativelanguage.googleapis.com
-        body: |
-            {"contents":[{"role":"user","parts":[{"text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}],"generationConfig":{"responseMimeType":"application/json","responseSchema":{"properties":{"is_fruit":{"type":"BOOLEAN"}},"required":["is_fruit"],"type":"OBJECT"},"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
-        form:
-            alt:
-                - sse
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:streamGenerateContent?alt=sse
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Answering the Inquiry**\\n\\nI've formulated the JSON response to the user's query about bananas. I've confirmed that a banana is indeed botanically a fruit.  Therefore, I'm confident the output should be `{\\\"is_fruit\\\": true}`. I'm ready to proceed with similar queries.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 18,\"totalTokenCount\": 87,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 18}],\"thoughtsTokenCount\": 69},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"AmKFaOKFBbHUjMcPjdGO8Ao\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"{\\\"is_fruit\\\":true}\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 18,\"candidatesTokenCount\": 6,\"totalTokenCount\": 93,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 18}],\"thoughtsTokenCount\": 69},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"AmKFaOKFBbHUjMcPjdGO8Ao\"}\r\n\r\n"
-        headers:
-            Alt-Svc:
-                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-            Content-Disposition:
-                - attachment
-            Content-Type:
-                - text/event-stream
-            Server:
-                - scaffolding on HTTPServer2
-            Server-Timing:
-                - gfet4t7; dur=828
-            Vary:
-                - Origin
-                - X-Origin
-                - Referer
-            X-Content-Type-Options:
-                - nosniff
-            X-Frame-Options:
-                - SAMEORIGIN
-            X-Xss-Protection:
-                - "0"
-        status: 200 OK
-        code: 200
-        duration: 840ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 380
+    host: generativelanguage.googleapis.com
+    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON.\"}]}],\"generationConfig\":{\"responseMimeType\":\"application/json\",\"responseSchema\":{\"properties\":{\"is_fruit\":{\"type\":\"BOOLEAN\"}},\"required\":[\"is_fruit\"],\"type\":\"OBJECT\"},\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
+    form:
+      alt:
+      - sse
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:streamGenerateContent?alt=sse
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Considering Fruit Status**\\n\\nI've determined the answer to the user's inquiry: the response must be JSON, and the schema dictates either \\\"true\\\" or \\\"false\\\". Considering the definition and classification, I've concluded on the appropriate boolean value. I'm now structuring the output accordingly.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 18,\"totalTokenCount\": 90,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 18}],\"thoughtsTokenCount\": 72},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"LWRAaf3LIoDL-8YP4cawYQ\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Finalizing the JSON Output**\\n\\nI've confirmed the banana's botanical status and, as a result, the required \\\"true\\\" value for `is_fruit`. Now, I'm generating the precise JSON object to mirror the provided schema, thus completing the requested response.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 18,\"totalTokenCount\": 124,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 18}],\"thoughtsTokenCount\": 106},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"LWRAaf3LIoDL-8YP4cawYQ\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"{\\n  \\\"is_fruit\\\": true\\n}\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 18,\"candidatesTokenCount\": 9,\"totalTokenCount\": 133,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 18}],\"thoughtsTokenCount\": 106},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"LWRAaf3LIoDL-8YP4cawYQ\"}\r\n\r\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Disposition:
+      - attachment
+      Content-Type:
+      - text/event-stream
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=1444
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - "0"
+    status: 200 OK
+    code: 200
+    duration: 1.455s

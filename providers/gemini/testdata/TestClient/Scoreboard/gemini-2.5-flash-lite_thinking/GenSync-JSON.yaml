@@ -1,80 +1,45 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 331
-        host: generativelanguage.googleapis.com
-        body: |
-            {"contents":[{"role":"user","parts":[{"text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}]}],"generationConfig":{"responseMimeType":"application/json","responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        uncompressed: true
-        body: |
-            {
-              "candidates": [
-                {
-                  "content": {
-                    "parts": [
-                      {
-                        "text": "**Determining the Fruit Status of a Banana**\n\nOkay, so I need to construct a JSON object to answer the question: is a banana a fruit?  Simple enough.  The output needs to be a JSON object, so I'll need a key-value pair. The key will be \"is_fruit\" and the value will be a boolean.  Now, the botany... I recall that a banana *is* botanically classified as a fruit, specifically a berry. This means the value for \"is_fruit\" has to be true.  Alright, let's craft the output, it should be exactly `{\"is_fruit\": true}`.  Got it.\n",
-                        "thought": true
-                      },
-                      {
-                        "text": "{\"is_fruit\": true}"
-                      }
-                    ],
-                    "role": "model"
-                  },
-                  "finishReason": "STOP",
-                  "index": 0
-                }
-              ],
-              "usageMetadata": {
-                "promptTokenCount": 30,
-                "candidatesTokenCount": 7,
-                "totalTokenCount": 122,
-                "promptTokensDetails": [
-                  {
-                    "modality": "TEXT",
-                    "tokenCount": 30
-                  }
-                ],
-                "thoughtsTokenCount": 85
-              },
-              "modelVersion": "gemini-2.5-flash-lite",
-              "responseId": "BGKFaOmKG4HZjMcP4tqb6AM"
-            }
-        headers:
-            Alt-Svc:
-                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-            Content-Type:
-                - application/json; charset=UTF-8
-            Server:
-                - scaffolding on HTTPServer2
-            Server-Timing:
-                - gfet4t7; dur=1160
-            Vary:
-                - Origin
-                - X-Origin
-                - Referer
-            X-Content-Type-Options:
-                - nosniff
-            X-Frame-Options:
-                - SAMEORIGIN
-            X-Xss-Protection:
-                - "0"
-        status: 200 OK
-        code: 200
-        duration: 1.17s
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 331
+    host: generativelanguage.googleapis.com
+    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\\\"is_fruit\\\": bool}.\"}]}],\"generationConfig\":{\"responseMimeType\":\"application/json\",\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"**The Banana Question - My Response**\\n\\nOkay, so the user wants to know if a banana qualifies as a fruit. Easy enough. Let's get them the JSON they need. From a botanical standpoint, absolutely, a banana *is* a fruit. It's even a specific type – a berry.  Therefore, the most accurate response is a simple JSON object: `{\\\"is_fruit\\\": true}`.  That should do the trick. Done.\\n\",\n            \"thought\": true\n          },\n          {\n            \"text\": \"{\\\"is_fruit\\\": true}\"\n          }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\": \"STOP\",\n      \"index\": 0\n    }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\": 30,\n    \"candidatesTokenCount\": 7,\n    \"totalTokenCount\": 119,\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 30\n      }\n    ],\n    \"thoughtsTokenCount\": 82\n  },\n  \"modelVersion\": \"gemini-2.5-flash-lite\",\n  \"responseId\": \"L2RAafOeMITfjrEP1qvC0QE\"\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Type:
+      - application/json; charset=UTF-8
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=1645
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - "0"
+    status: 200 OK
+    code: 200
+    duration: 1.657s

@@ -1,0 +1,45 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 202
+    host: generativelanguage.googleapis.com
+    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"Say hello. Do not emit other words.\"}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:generateContent
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"**The Algorithm of a Simple Greeting**\\n\\nOkay, so the user wants me to say \\\"hello.\\\" That's the core directive.  Easy enough, right?  But it's never *just* that simple, is it?  I need to be absolutely precise.  I know the user is a sophisticated individual, so I can't be flippant.\\n\\nI've got a single primary instruction: \\\"Say hello.\\\" But, there's a crucial negative constraint: *no other words*.  This means I need to strip it down to the absolute essence. No embellishments, no pleasantries, no variations. Just pure, unadulterated \\\"hello.\\\"\\n\\nMy formulation process is pretty straightforward here.  The fundamental concept is the word \\\"Hello\\\".  The constraint forces me to keep it simple, so there is nothing more.  No punctuation, nothing else, *just* \\\"Hello.\\\"\\n\\nBefore I fire off my response, I need to double-check.  Does \\\"Hello\\\" actually fulfill the core requirement of saying hello? Yup. Does it violate the constraint of emitting only that word? Nope. Perfect. The output is, therefore, \\\"Hello.\\\"\\n\",\n            \"thought\": true\n          },\n          {\n            \"text\": \"Hello\"\n          }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\": \"STOP\",\n      \"index\": 0\n    }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\": 10,\n    \"candidatesTokenCount\": 1,\n    \"totalTokenCount\": 183,\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 10\n      }\n    ],\n    \"thoughtsTokenCount\": 172\n  },\n  \"modelVersion\": \"gemini-2.5-pro\",\n  \"responseId\": \"vzNAadvsF_eD-8YPsOHqsA8\"\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Type:
+      - application/json; charset=UTF-8
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=5347
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - "0"
+    status: 200 OK
+    code: 200
+    duration: 5.358s

@@ -1,0 +1,45 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 295
+    host: generativelanguage.googleapis.com
+    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"What is the word said? Reply with only the word.\"},{\"fileData\":{\"mimeType\":\"audio/wav\",\"fileUri\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/audio.wav\"}}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"]}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"Orange\",\n            \"thoughtSignature\": \"CqIEAXLI2nx0mXKkx1KMQdcLYvc4hvT6yaX1WdVjYA4rMmydzAzLfCbjx2NB2JH2c3R/0lnpaYsQIegPGMZVdDsiFezdGUYus0EJ+q20h/z/9nz2WT5F810BmsJJfeocDdkxrSwvNDPSwW1Q+xhhu0rtdl1h4t9ZeQ9FHLQRsrcT5bgXv1gOw7kf24LQvfX7fg2NyW1akcbuZxlYX78DLfNtOHj1L5wsHSTzMIb38uXG/hDH+SimwWBn2bZcM1TMpISA+S48GqEG8+742ibgE8hpyD2csD/JOgubG/A6/O0mHbquJGBOxgYbFn72XEyzJ6+9bO5jn0Z91T2ixkH/WmwJhSHv0Bz1nM9xye3SNeTFDe/y384WOWxLoD13gd9jqOAINuTU+e//jjBohsXjRpyRQ0riWqA6OEDgPPunrYJEL+oR2uYR4hg9EzQW3yzmbHOT2kundl0az5j31ye7+vT6tumPSPnBvbrFxVTCnIm6Q7kKmwfpjdnPH/7pnGYHEKlALRO//MFOIDbd6mBEWx+VCUmnDnqg4XZitgnqw2pkjg4ohBvyd/mwDIksXdST36kOH6t9P1i69sy2y+rAh2H3qaSu/kvJ57C6z2l0/7A18xnEu+u6bVBy6/3B/RoPG2Qr8/mOmWObR/HXgf2lDhq/k6kedCk89hvaf4dl9DHQBVSp+lBfCcIU7OEfjyp52Pbh+UmaRBHyRDVAIXgj9VE4YVwU\"\n          }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\": \"STOP\",\n      \"index\": 0\n    }\n  ],\n  \"usageMetadata\": {\n    \"candidatesTokenCount\": 1,\n    \"totalTokenCount\": 121,\n    \"thoughtsTokenCount\": 120\n  },\n  \"modelVersion\": \"gemini-2.5-flash-preview-09-2025\",\n  \"responseId\": \"P2NAadTBEcG7jrEP5bnhYQ\"\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Type:
+      - application/json; charset=UTF-8
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=3309
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - "0"
+    status: 200 OK
+    code: 200
+    duration: 3.32s

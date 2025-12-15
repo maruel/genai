@@ -1,50 +1,49 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 196
-        host: generativelanguage.googleapis.com
-        body: |
-            {"contents":[{"role":"user","parts":[{"text":"Say hello. Use only one word."}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
-        form:
-            alt:
-                - sse
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:streamGenerateContent?alt=sse
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Formulating the Greeting**\\n\\nI've successfully identified the one-word requirement. The obvious solution, \\\"Hello,\\\" directly addresses the user's initial desire. I see no need for further refinement given the simple constraints. The objective is met!\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 9,\"totalTokenCount\": 50,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 9}],\"thoughtsTokenCount\": 41},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"_GGFaIOAEfuI-sAP5OHA-Qs\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"Hello.\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 9,\"candidatesTokenCount\": 1,\"totalTokenCount\": 51,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 9}],\"thoughtsTokenCount\": 41},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"_GGFaIOAEfuI-sAP5OHA-Qs\"}\r\n\r\n"
-        headers:
-            Alt-Svc:
-                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-            Content-Disposition:
-                - attachment
-            Content-Type:
-                - text/event-stream
-            Server:
-                - scaffolding on HTTPServer2
-            Server-Timing:
-                - gfet4t7; dur=690
-            Vary:
-                - Origin
-                - X-Origin
-                - Referer
-            X-Content-Type-Options:
-                - nosniff
-            X-Frame-Options:
-                - SAMEORIGIN
-            X-Xss-Protection:
-                - "0"
-        status: 200 OK
-        code: 200
-        duration: 759ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 196
+    host: generativelanguage.googleapis.com
+    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"Say hello. Use only one word.\"}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
+    form:
+      alt:
+      - sse
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:streamGenerateContent?alt=sse
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Deciding a Greeting**\\n\\nI've been thinking about the task at hand. Initially, I needed to choose a single-word greeting. After considering several options, like \\\"Hi\\\" and \\\"Greetings,\\\" I ultimately selected \\\"Hello\\\" as the most direct and standard choice.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 9,\"totalTokenCount\": 78,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 9}],\"thoughtsTokenCount\": 69},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"JWRAab2jIOigjrEPvIPtKQ\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"Hello\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 9,\"totalTokenCount\": 78,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 9}],\"thoughtsTokenCount\": 69},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"JWRAab2jIOigjrEPvIPtKQ\"}\r\n\r\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Disposition:
+      - attachment
+      Content-Type:
+      - text/event-stream
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=1079
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - "0"
+    status: 200 OK
+    code: 200
+    duration: 1.09s

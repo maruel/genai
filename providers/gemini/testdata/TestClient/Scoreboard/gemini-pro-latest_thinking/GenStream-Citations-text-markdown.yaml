@@ -1,0 +1,49 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 307
+    host: generativelanguage.googleapis.com
+    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"# Quackiland\\n\\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"text\":\"What is the capital of Quackiland?\"}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
+    form:
+      alt:
+      - sse
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:streamGenerateContent?alt=sse
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Defining the Core Question**\\n\\nI've homed in on the user's explicit query: the capital of Quackiland. I'm now actively searching the context for \\\"capital\\\" and \\\"Quackiland\\\". The initial sentence appears to hold the answer, so I'm focusing my attention there.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 36,\"totalTokenCount\": 109,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 36}],\"thoughtsTokenCount\": 73},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"qGNAabySA_yW_uMP78HPmQg\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Answering the User's Query**\\n\\nI've identified the specific user question and successfully extracted the capital of Quackiland, which is \\\"Quack\\\". I then formulated a concise response, ensuring it directly answers the query using only the provided text. My next step involves confirming the solution adheres to all the constraints.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 36,\"totalTokenCount\": 242,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 36}],\"thoughtsTokenCount\": 206},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"qGNAabySA_yW_uMP78HPmQg\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"Based on the text provided, the capital of Quackiland is **Quack**.\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 36,\"candidatesTokenCount\": 15,\"totalTokenCount\": 257,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 36}],\"thoughtsTokenCount\": 206},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"qGNAabySA_yW_uMP78HPmQg\"}\r\n\r\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Disposition:
+      - attachment
+      Content-Type:
+      - text/event-stream
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=2180
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - "0"
+    status: 200 OK
+    code: 200
+    duration: 2.191s

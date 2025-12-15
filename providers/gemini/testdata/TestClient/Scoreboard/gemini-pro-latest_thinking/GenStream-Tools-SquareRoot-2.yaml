@@ -1,0 +1,49 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 2611
+    host: generativelanguage.googleapis.com
+    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"}]},{\"role\":\"model\",\"parts\":[{\"thought\":true,\"text\":\"**Computing a Square Root**\\n\\nI'm focusing on calculating the square root of 132413. I've determined that the `square_root` tool is the appropriate resource. My next step involves calling this tool with the specified number, and I will then provide the computed result.\\n\\n\\n**Evaluating the Tool's Usage**\\n\\nI'm verifying that the `square_root` tool is suitable for the calculation. Having confirmed its capabilities, my plan is now to execute the tool with the input number and provide the sole result to the user.\\n\\n\\n\"},{\"thoughtSignature\":\"CiQBcsjafGUp5YaXhEx8MMemOLilaF+kqjcfkw/QVJ7OQRYlGY4KVAFyyNp8FF9agrim+HOtI7xtEITyA7RzbSQ+clt1ygJBPwtzCpv8PqtpqO9vbhAMGUMOAmz4JGRx3eBOST/2f3ZSPzZau/ztn0fT0PfhhJStHaLnyQqQAQFyyNp8Kc39p8XT06R+Uj64TPpB2v0PrJWMKwDGSJoTZcpbOa4arQEgVYVM739KOnRrppemYL24kmko0xYQTAjitFT17DN/OvSTBZCM3f/WevCSDO7rHTzUNFd8dul6jvatS6Z/NofWaK66gN1pbiIJdMhEdVS3hfxys8BzEsaKOC/oiS44Qc6k0+4FYmpCBwqGAQFyyNp8nWn/TBnz4c6mX/Dxc3epDVT9AA0JyzMqnlkLbtMarg10cNOL36K+CULMGaOfEj/DcAOVtTJNm58Djq6mWhsHMjTvNsc/j/miVraA8sgC6rA7eYVlRkzhVnq0Yqihd4pR+yzZvBEtmAKRhOPiX7tgBpUrmj+lwbgSoO91tDR0o+MCCncBcsjafDBvIR33UAPMtdY8MpEcNv9j4oppjx+ZAhCgEoOQ7qdwc/4sZgCtOz0JQVebxExpHGVnoJ02ZTbjrsBvKy6McC4jBM4aSzlOQK3NlVoTmoHYhRw3xUauOmTpjlOJI4QbWlU+z6NKKcy2qiqzGXE5guZCbQqGAQFyyNp8h712Oo2qHdtM+GfIKU4/WxAFFbBNNex65o/aSpV17oauv7BX6Kw8YfMJWoo6sHzppr+7IF3NVA5PenvEYsoJq/f/Gbn0wDqigDzRjorepkL/t4nk3LfN8GRJCend2xdtkov1K6gBXzfLSOFKNau/CiLUgQWEIJaG9TeDv+OI5CmACncBcsjafCbl5hx9kTVKPOBTIrL54onspM1w15fHKtqP6fkECOO7d/DBAfB40IaHwcXLyt3I19oyhKNLg8L61Qgr5v8yPLByI4/ZXxQY+4Cwl5vnhDg5eI5QbScL2yZtvypQccgg4s5Hn6Atc3HGB5lGPY4kW1D/jgpgAXLI2nxpr5j8PhOTDRvj4MCFXB8SpqnfqL0NRmtjn3T1L71K29OQuLd3Ur79RcLPSX6+8lkNR7S3oFlF+N1ptnnLHa0rONU8qK+RxivVzGErB/7zs8f9q2pVNS2wa4G4\",\"functionCall\":{\"name\":\"square_root\",\"args\":{\"number\":132413}}}]},{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"square_root\",\"response\":{\"response\":\"363.89\"}}}]}],\"tools\":[{\"functionDeclarations\":[{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"parameters\":{\"properties\":{\"number\":{\"type\":\"NUMBER\"}},\"required\":[\"number\"],\"type\":\"OBJECT\"},\"response\":{\"properties\":{\"response\":{\"type\":\"STRING\"}},\"required\":[\"response\"],\"type\":\"OBJECT\"}}]}],\"toolConfig\":{\"functionCallingConfig\":{\"mode\":\"NONE\"}},\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
+    form:
+      alt:
+      - sse
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:streamGenerateContent?alt=sse
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"363.\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 434,\"candidatesTokenCount\": 4,\"totalTokenCount\": 438,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 434}]},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"lGNAaf3jGL-KjrEPy7fEmAM\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"89\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 434,\"candidatesTokenCount\": 6,\"totalTokenCount\": 440,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 434}]},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"lGNAaf3jGL-KjrEPy7fEmAM\"}\r\n\r\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Disposition:
+      - attachment
+      Content-Type:
+      - text/event-stream
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=1034
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - "0"
+    status: 200 OK
+    code: 200
+    duration: 1.044s

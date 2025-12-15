@@ -1,0 +1,45 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 247
+    host: generativelanguage.googleapis.com
+    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"Talk about Canada in great details. Start with: Canada is\"}]}],\"generationConfig\":{\"stopSequences\":[\"is\"],\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:generateContent
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"**Thinking Through the Canadian Overview**\\n\\nOkay, here's what I'm thinking as I prepare to tackle this request about Canada.  The user wants \\\"great details,\\\" so this is going to be more than just a quick surface-level rundown. First, I need to break down the request itself.\\n\\nThe core is obviously Canada, but the instruction to start with \\\"Canada is\\\" is important; it shapes my opening. The phrase \\\"in great details\\\" means I'll need to hit the key aspects: geography, history, government, culture, the economy, demographics, and so on.\\n\\nNow, let's brainstorm. I need to structure this.\\n\\n*   **Introduction/Identity:** I need to nail down the core identity of Canada right away. Vast, diverse, bilingual, multicultural, constitutional monarchy, and known for its nature all feel right.\\n*   **Geography:** This is a big one. Its sheer size as the second-largest country is a crucial starting point. Mentioning the U.S. border (the longest non-militarized one), and the three oceans that border Canada is important. I'll need to break it down into regions: The Atlantic Provinces, Central Canada (Quebec and Ontario), the Prairies, the West Coast (BC), and the North. A quick description of each region should be included. Then there are those essential natural features: the Rocky Mountains, the Great Lakes, the Canadian Shield, the St. Lawrence River, all those forests, the tundra, and, of course, the thousands of lakes and rivers. I should definitely mention Niagara Falls.\\n*   **History:** A timeline approach seems logical. I'll need to start with the Indigenous Peoples: First Nations, Inuit, and Métis, and their long history before any European contact. Then the European influence, from the Vikings (brief mention) to the French (New France, Quebec City, Montreal) and the British (Hudson's Bay Company, impact of the 13 colonies). The Seven Years' War, the Battle of the Plains of Abraham, and the British conquest of New France. I must mention the Treaty of Paris, and the formation of Canada with Confederation in 1867.\\n\",\n            \"thought\": true\n          },\n          {\n            \"text\": \"Canada \"\n          }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\": \"STOP\",\n      \"index\": 0\n    }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\": 13,\n    \"candidatesTokenCount\": 1,\n    \"totalTokenCount\": 447,\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 13\n      }\n    ],\n    \"thoughtsTokenCount\": 433\n  },\n  \"modelVersion\": \"gemini-2.5-pro\",\n  \"responseId\": \"imNAaa2fB4_h_uMPgJPH4Qw\"\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Type:
+      - application/json; charset=UTF-8
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=7227
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - "0"
+    status: 200 OK
+    code: 200
+    duration: 7.238s

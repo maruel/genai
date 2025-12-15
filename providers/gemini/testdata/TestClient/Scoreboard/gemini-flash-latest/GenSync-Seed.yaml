@@ -1,0 +1,45 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 143
+    host: generativelanguage.googleapis.com
+    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"Say hello. Use only one word.\"}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"seed\":42}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"Hello.\",\n            \"thoughtSignature\": \"CqMEAXLI2nzgu9EYoHmn9+n3eOD/idN2IDMm72bXuXpgBxETAgBNivsEQNpGRn/+YmKx7MX1TcOad3t7YEcUBhpYHVvimNyGeC7UGS6bFolEkSJmKdUChlidIweiQ/zTiktC32hTHOPVAqRtZLV8WYZSkiu6JM6skQbXZu2HpBOMw1tvKj99bBXByouBYjjFe/EYHkHqfb1nbE3c+8EWyvzAcegLC5iQO3Ze6xFl0DEpmR4CqHrsZ+ICbdaOd5eBd5EHUr7501djoWrRTYN2t20BF16NuMvD7cjgqVoOwVIlfNCD7XiZxE0yJEDKafjOeWimvUpHciADj0A5FgmAC1KPrbd6MWIgI4o1RN6CIRVs+mfH2IlNhK2a4dAB5YpwSbIknja6DNtsZ6cmEIFjEgS1/Kczj5441jRnRiiTvXF39nDnx3pckzxEGEQg4Ore6GGBmLQcCOe/goN2zSBNiVLmGOm82KkQ4J1qLBA4cjIKY6ZkI5ZW04tA++15VSI6KUANppMC4/GkNy3XfrIM6GIphalMhN66H+eMqurIXVOnAhVeT7QIb+bG4Pd+iDmZZeaa9VBygHxlOZYGuYgMH77gTqmuWk9C3IBDuzMz6W1sLL/cflDAtANLPMiDdsBTrYHRzev23HdqE6TuEkgtn6sh5Nq7Fl0ZENjQeVCqoSEYQwzBka6CuRiUjw3QzcWc35ywZsJMPcAAG4I9jiqE5K8MT59eEQ==\"\n          }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\": \"STOP\",\n      \"index\": 0\n    }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\": 9,\n    \"candidatesTokenCount\": 2,\n    \"totalTokenCount\": 145,\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 9\n      }\n    ],\n    \"thoughtsTokenCount\": 134\n  },\n  \"modelVersion\": \"gemini-2.5-flash-preview-09-2025\",\n  \"responseId\": \"-GJAaeq4NLTTjrEP6NeBsAM\"\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Type:
+      - application/json; charset=UTF-8
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=1175
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - "0"
+    status: 200 OK
+    code: 200
+    duration: 1.186s

@@ -1,80 +1,45 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 247
-        host: generativelanguage.googleapis.com
-        body: |
-            {"contents":[{"role":"user","parts":[{"text":"Talk about Canada in great details. Start with: Canada is"}]}],"generationConfig":{"stopSequences":["is"],"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        uncompressed: true
-        body: |
-            {
-              "candidates": [
-                {
-                  "content": {
-                    "parts": [
-                      {
-                        "text": "**My Comprehensive View of Canada**\n\nOkay, so I'm being asked to delve into a full description of Canada, starting with \"Canada is.\" Alright, let's craft a comprehensive overview.  My initial thought is that **Canada is** a vast, diverse, and predominantly northern nation.  It's officially the second-largest country in the world, a parliamentary democracy, and a constitutional monarchy.\n\nMy next step would be to delve into its geographical structure. Its immense size is immediately apparent, with a long border shared with the United States and coastlines touching three oceans. I'll need to include details about its diverse geography: the towering Rocky Mountains, the expansive plains, the iconic Great Lakes, and the immense, challenging Arctic.  I should not forget the wide range of climates, from temperate to arctic, and its impressive natural resource wealth.\n\nShifting gears, I'd move onto its politics and governance.  I'd discuss its parliamentary democracy, with the British monarch as head of state, represented by the Governor General. Of course, the Prime Minister is the head of government. I'll need to explain its federal system, outlining the provinces and territories, and the significance of the key political institutions like Parliament and the Supreme Court. I might add a brief mention of the electoral system for context.\n\nNext, demographics and population will be crucial. I'll focus on the population size and its uneven distribution, with the majority concentrated near the US border. The major cities, Toronto, Montreal, Vancouver, Calgary, etc., are essential.  I'll want to highlight Canada's embrace of multiculturalism and immigration policies. I must not overlook the fundamental role of Indigenous peoples (First Nations, Métis, and Inuit), their history and their contemporary role in the Canadian landscape. Finally, the country’s bilingual nature, English and French being official languages, is vital, as is its linguistic diversity.\n\nFinally, I'll need to cover the economy. I’ll make sure to note that Canada has a developed economy and is a member of the G7.  I’ll discuss its key industries, highlighting the significance of natural resources like oil, gas, minerals, forestry, and agriculture, as well as manufacturing, services, and the growing technology sector.  This outline gives me a great start.\n",
-                        "thought": true
-                      },
-                      {
-                        "text": "Canada "
-                      }
-                    ],
-                    "role": "model"
-                  },
-                  "finishReason": "STOP",
-                  "index": 0
-                }
-              ],
-              "usageMetadata": {
-                "promptTokenCount": 13,
-                "candidatesTokenCount": 1,
-                "totalTokenCount": 381,
-                "promptTokensDetails": [
-                  {
-                    "modality": "TEXT",
-                    "tokenCount": 13
-                  }
-                ],
-                "thoughtsTokenCount": 367
-              },
-              "modelVersion": "gemini-2.5-flash-lite",
-              "responseId": "A2KFaIXCEK7VjMcP2KSA-Qo"
-            }
-        headers:
-            Alt-Svc:
-                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-            Content-Type:
-                - application/json; charset=UTF-8
-            Server:
-                - scaffolding on HTTPServer2
-            Server-Timing:
-                - gfet4t7; dur=3783
-            Vary:
-                - Origin
-                - X-Origin
-                - Referer
-            X-Content-Type-Options:
-                - nosniff
-            X-Frame-Options:
-                - SAMEORIGIN
-            X-Xss-Protection:
-                - "0"
-        status: 200 OK
-        code: 200
-        duration: 3.793s
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 247
+    host: generativelanguage.googleapis.com
+    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"Talk about Canada in great details. Start with: Canada is\"}]}],\"generationConfig\":{\"stopSequences\":[\"is\"],\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"**Thinking About a Comprehensive Overview of Canada**\\n\\nOkay, so I'm being asked to delve into Canada, and the request specifies starting with \\\"Canada is.\\\" Alright, no problem. I need to paint a really complete picture, touching on a wide range of aspects. I'm thinking I'll structure it like this:\\n\\nFirst, a quick introduction - location, size, who lives there, official languages, and its political setup as a constitutional monarchy with a parliamentary democracy. That's the baseline.\\n\\nThen, a deep dive into the geography and environment. I really need to highlight just how vast and diverse Canada is, from the Rockies to the Arctic, the prairies to the coasts. Climate diversity is a huge factor too. And of course, the natural resources – minerals, forests, water, and those increasingly important fossil fuels. I'll also have to address the environmental issues they face and any conservation efforts underway.\\n\\nNext, the history. This is vital. I'll start with the Indigenous peoples - First Nations, Inuit, and Métis - and their long history before European contact. Then, the European exploration and colonization by the French and British, leading to Confederation in 1867 and the creation of Canada. I'll need to cover westward expansion, Canada's involvement in both World Wars, and key social and political developments like the Charter of Rights and Freedoms and the multiculturalism policy. Finishing with how they got to the modern day.\\n\\nFinally, the government and politics. It's a parliamentary democracy, a constitutional monarchy. How do they work? The Head of State (the Monarch, represented by the Governor General) versus the Head of Government (the Prime Minister). Then the federal structure with federal, provincial, and territorial governments. And the legislative branch: Parliament (House of Commons and Senate). I want to explain how all of that functions.\\n\\nYeah, that's it. It will give a complete perspective.\\n\",\n            \"thought\": true\n          },\n          {\n            \"text\": \"Canada \"\n          }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\": \"STOP\",\n      \"index\": 0\n    }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\": 13,\n    \"candidatesTokenCount\": 1,\n    \"totalTokenCount\": 390,\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 13\n      }\n    ],\n    \"thoughtsTokenCount\": 376\n  },\n  \"modelVersion\": \"gemini-2.5-flash-lite\",\n  \"responseId\": \"LmRAabrpB8LvjrEPo6auoQM\"\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Type:
+      - application/json; charset=UTF-8
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=4114
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - "0"
+    status: 200 OK
+    code: 200
+    duration: 4.125s

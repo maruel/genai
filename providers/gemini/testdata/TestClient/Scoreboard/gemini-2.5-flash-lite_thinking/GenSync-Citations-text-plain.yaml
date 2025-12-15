@@ -20,7 +20,7 @@ interactions:
     proto_minor: 0
     content_length: -1
     uncompressed: true
-    body: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"**Analyzing the Query and Extraction of the Capital**\\n\\nOkay, I see the user wants the capital of \\\"Quackiland\\\" based on the text provided. My process is pretty straightforward here. First, I'll quickly scan the text looking for the key terms: \\\"capital\\\" and \\\"Quackiland.\\\" My expertise allows me to immediately zero in on the relevant sentence. It's the first one, actually: \\\"The capital of Quackiland is Quack.\\\"  Perfect.\\n\\nNow, it's a matter of extracting the answer: \\\"Quack.\\\"  To be thorough – and this is a good habit – I'll quickly glance at the second sentence, \\\"The Big Canard Statue is located in Quack.\\\" While it doesn't offer additional information on the capital itself, it reinforces \\\"Quack\\\" as a place, solidifying the answer from the first sentence. So, the capital of Quackiland, without a doubt, is \\\"Quack.\\\" I'm confident in this answer given the clear and direct nature of the provided text.\\n\",\n            \"thought\": true\n          },\n          {\n            \"text\": \"The capital of Quackiland is **Quack**.\"\n          }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\": \"STOP\",\n      \"index\": 0\n    }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\": 31,\n    \"candidatesTokenCount\": 11,\n    \"totalTokenCount\": 214,\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 31\n      }\n    ],\n    \"thoughtsTokenCount\": 172\n  },\n  \"modelVersion\": \"gemini-2.5-flash-lite\",\n  \"responseId\": \"hPiyaLu5M-_g_uMPs6GP-Ag\"\n}\n"
+    body: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"**Solving for Quackiland's Capital**\\n\\nOkay, so the user needs to know the capital of Quackiland. Straightforward enough. My first instinct, as always, is to pinpoint the core query: \\\"capital of Quackiland\\\". Now, I'll quickly scan the provided text for those keywords. Ah, there it is! \\\"The capital of Quackiland is Quack.\\\" Simple and direct. The answer is staring me in the face: \\\"Quack.\\\" No need to overthink it. That's the solution. Now, to formulate the response clearly and concisely for the user.\\n\",\n            \"thought\": true\n          },\n          {\n            \"text\": \"The capital of Quackiland is **Quack**.\"\n          }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\": \"STOP\",\n      \"index\": 0\n    }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\": 31,\n    \"candidatesTokenCount\": 11,\n    \"totalTokenCount\": 143,\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 31\n      }\n    ],\n    \"thoughtsTokenCount\": 101\n  },\n  \"modelVersion\": \"gemini-2.5-flash-lite\",\n  \"responseId\": \"QWRAadzBDO35jrEPl5-TYA\"\n}\n"
     headers:
       Alt-Svc:
       - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
@@ -29,7 +29,7 @@ interactions:
       Server:
       - scaffolding on HTTPServer2
       Server-Timing:
-      - gfet4t7; dur=1777
+      - gfet4t7; dur=1911
       Vary:
       - Origin
       - X-Origin
@@ -42,4 +42,4 @@ interactions:
       - "0"
     status: 200 OK
     code: 200
-    duration: 1.785s
+    duration: 1.923s

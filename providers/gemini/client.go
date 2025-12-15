@@ -939,6 +939,7 @@ type ChatStreamChunkResponse struct {
 	Candidates []struct {
 		Content           Content           `json:"content"`
 		FinishReason      FinishReason      `json:"finishReason"`
+		FinishMessage     string            `json:"finishMessage"`
 		Index             int64             `json:"index"`
 		GroundingMetadata GroundingMetadata `json:"groundingMetadata"`
 	} `json:"candidates"`

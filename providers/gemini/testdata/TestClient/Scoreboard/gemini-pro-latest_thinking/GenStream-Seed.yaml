@@ -1,0 +1,49 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 206
+    host: generativelanguage.googleapis.com
+    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"Say hello. Use only one word.\"}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"seed\":42,\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
+    form:
+      alt:
+      - sse
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:streamGenerateContent?alt=sse
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Focusing on Constraints**\\n\\nI'm now zeroing in on the \\\"single word\\\" constraint. My analysis of \\\"say hello\\\" revealed \\\"hello\\\" is a greeting. I'm actively assessing if that context opens other one-word options that fulfill the request. The one-word constraint is the focus of the thought process now. I'm exploring all options to satisfy it.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 9,\"totalTokenCount\": 79,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 9}],\"thoughtsTokenCount\": 70},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"e2NAabulB5Ob-8YPzPzloQE\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Determining the best response**\\n\\nI've determined that \\\"hello\\\" is the ideal response, considering its directness and accuracy in fulfilling the \\\"say hello\\\" request while adhering to the single-word constraint. I evaluated other one-word greetings, like \\\"hi,\\\" \\\"hey,\\\" and even \\\"yo,\\\" but none were as perfectly suited. The task is straightforward: the user specified \\\"say hello,\\\" and \\\"hello\\\" is the optimal way to satisfy that request with one word.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 9,\"totalTokenCount\": 380,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 9}],\"thoughtsTokenCount\": 371},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"e2NAabulB5Ob-8YPzPzloQE\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Analyzing the Options**\\n\\nI've examined various one-word greetings (\\\"Hello,\\\" \\\"Hi,\\\" \\\"Hey,\\\" etc.), evaluating each for suitability. While options like \\\"Hi\\\" or \\\"Hey\\\" are valid, \\\"Hello\\\" aligns perfectly with the user's explicit request. Using the exact word is the most direct and accurate fulfillment of the prompt. Considering the single-word constraint, this seems the optimal approach. I'm satisfied with this conclusion.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 9,\"totalTokenCount\": 385,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 9}],\"thoughtsTokenCount\": 376},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"e2NAabulB5Ob-8YPzPzloQE\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"Hello\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 9,\"totalTokenCount\": 385,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 9}],\"thoughtsTokenCount\": 376},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"e2NAabulB5Ob-8YPzPzloQE\"}\r\n\r\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Disposition:
+      - attachment
+      Content-Type:
+      - text/event-stream
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=2226
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - "0"
+    status: 200 OK
+    code: 200
+    duration: 2.237s

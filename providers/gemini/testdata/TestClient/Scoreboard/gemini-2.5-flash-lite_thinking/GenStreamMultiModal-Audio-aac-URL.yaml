@@ -1,57 +1,49 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 358
-        host: generativelanguage.googleapis.com
-        body: |
-            {"contents":[{"role":"user","parts":[{"text":"What is the word said? Reply with only the word."},{"fileData":{"mimeType":"audio/aac","fileUri":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/audio.aac"}}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
-        form:
-            alt:
-                - sse
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:streamGenerateContent?alt=sse
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: 204
-        body: |
-            {
-              "error": {
-                "code": 400,
-                "message": "Unsupported file uri: https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/audio.aac",
-                "status": "INVALID_ARGUMENT"
-              }
-            }
-        headers:
-            Alt-Svc:
-                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-            Content-Length:
-                - "204"
-            Content-Type:
-                - text/event-stream
-            Server:
-                - scaffolding on HTTPServer2
-            Server-Timing:
-                - gfet4t7; dur=53
-            Vary:
-                - Origin
-                - X-Origin
-                - Referer
-            X-Content-Type-Options:
-                - nosniff
-            X-Frame-Options:
-                - SAMEORIGIN
-            X-Xss-Protection:
-                - "0"
-        status: 400 Bad Request
-        code: 400
-        duration: 63ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 358
+    host: generativelanguage.googleapis.com
+    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"What is the word said? Reply with only the word.\"},{\"fileData\":{\"mimeType\":\"audio/aac\",\"fileUri\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/audio.aac\"}}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
+    form:
+      alt:
+      - sse
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:streamGenerateContent?alt=sse
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Detecting Missing Data**\\n\\nI'm now grappling with the discrepancy between the user's explicit request and the data I've received. The timestamp \\\"00:00 00:00\\\" strongly suggests a lack of audio, yet the question implies otherwise. This raises immediate questions: Is the audio genuinely missing, or is there a communication issue?\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"thoughtsTokenCount\": 73},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"VmRAadKBFL_-jrEPjemaMQ\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Interpreting Ambiguity**\\n\\nI'm now deep-diving into the \\\"00:00 00:00\\\" data. Initially, it seemed like a timestamp, but the directive \\\"reply with only the word\\\" throws a wrench in the works. My thought process is circling around the conflict: is this placeholder text for missing audio, or a deliberate obfuscation? I'm now exploring the possibility that the zero-values have some encoded meaning, even though it seems like a stretch. It's a real head-scratcher.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"thoughtsTokenCount\": 359},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"VmRAadKBFL_-jrEPjemaMQ\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"said\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"thoughtsTokenCount\": 359},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"VmRAadKBFL_-jrEPjemaMQ\"}\r\n\r\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Disposition:
+      - attachment
+      Content-Type:
+      - text/event-stream
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=3029
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - "0"
+    status: 200 OK
+    code: 200
+    duration: 3.04s

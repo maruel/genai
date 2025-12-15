@@ -22,7 +22,7 @@ interactions:
     proto_major: 2
     proto_minor: 0
     content_length: -1
-    body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Defining the Query Scope**\\n\\nI've determined the user's focus is straightforward: they want the capital of Quackiland. The provided text offers a clear answer: Quack is the capital. Now, I will analyze how to best present that.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 31,\"totalTokenCount\": 106,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 31}],\"thoughtsTokenCount\": 75},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"g_iyaKLxDZ3i_uMP7K7goQM\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Refining the Response**\\n\\nI've homed in on the core answer: \\\"Quack.\\\" Now, I'm exploring the best way to deliver this concise information. My analysis has led me to a simple, direct presentation. I might also consider the secondary piece of data about the statue to enhance my response.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 31,\"totalTokenCount\": 151,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 31}],\"thoughtsTokenCount\": 120},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"g_iyaKLxDZ3i_uMP7K7goQM\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"The capital of Quackiland is **Quack**.\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 31,\"candidatesTokenCount\": 9,\"totalTokenCount\": 160,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 31}],\"thoughtsTokenCount\": 120},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"g_iyaKLxDZ3i_uMP7K7goQM\"}\r\n\r\n"
+    body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Discovering Quack's Capital**\\n\\nI've just finished pinpointing the user's specific query. It's a straightforward question, seeking Quackiland's capital. I've now sifted through the text, successfully extracting the key facts: \\\"Quack\\\" is the capital, and the Big Canard Statue resides there. Moving forward, I am going to organize this into an easy to understand format.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 31,\"totalTokenCount\": 106,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 31}],\"thoughtsTokenCount\": 75},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"OGRAadTzL6-v-8YPvLez6AE\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Pinpointing Key Data**\\n\\nI have isolated the key elements from the provided information. The text clearly states \\\"Quack\\\" is the capital, and the statue is located there. My aim is to extract and deliver a streamlined answer, addressing the query directly and concisely. Now I'm focusing on the best way to structure this to make it easily understandable.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 31,\"totalTokenCount\": 152,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 31}],\"thoughtsTokenCount\": 121},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"OGRAadTzL6-v-8YPvLez6AE\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"The capital of Quackiland is **Quack**.\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 31,\"candidatesTokenCount\": 9,\"totalTokenCount\": 161,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 31}],\"thoughtsTokenCount\": 121},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"OGRAadTzL6-v-8YPvLez6AE\"}\r\n\r\n"
     headers:
       Alt-Svc:
       - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
@@ -33,7 +33,7 @@ interactions:
       Server:
       - scaffolding on HTTPServer2
       Server-Timing:
-      - gfet4t7; dur=642
+      - gfet4t7; dur=1318
       Vary:
       - Origin
       - X-Origin
@@ -46,4 +46,4 @@ interactions:
       - "0"
     status: 200 OK
     code: 200
-    duration: 650ms
+    duration: 1.329s

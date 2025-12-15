@@ -1,0 +1,45 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 362
+    host: generativelanguage.googleapis.com
+    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"What is the word? Reply with only the word.\"},{\"fileData\":{\"mimeType\":\"application/pdf\",\"fileUri\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/document.pdf\"}}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:generateContent
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"**Analyzing the Request and Image**\\n\\nOkay, so the user wants me to identify \\\"the word\\\" in the image. They've also given me specific instructions: just give the word, nothing else. Alright, easy enough. Let's see... the image is pretty straightforward. It looks like it's got \\\"orange\\\" typed out clearly in the upper left, and a \\\"1\\\" down at the bottom.\\n\\n**Deconstructing the Clues**\\n\\nOCR tells me the text is indeed \\\"orange\\\" and \\\"1\\\". Now, the crucial part. They're asking about \\\"the word\\\". Considering the layout, the clarity of \\\"orange\\\", and the \\\"1\\\" possibly being a page number, I'm fairly certain \\\"orange\\\" is the intended \\\"word\\\". The \\\"1\\\" doesn't seem to be the focus; it's likely just incidental to the image.\\n\\n**Formulating the Response**\\n\\nNow, I need to stay within the user's specific guidelines: \\\"Reply with only the word.\\\" No extra punctuation, no commentary, just the word. That's the key. So, based on the image and the prompt, the word is clearly \\\"orange\\\". And according to the instructions, that's my answer.\\n\",\n            \"thought\": true\n          },\n          {\n            \"text\": \"orange\"\n          }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\": \"STOP\",\n      \"index\": 0\n    }\n  ],\n  \"usageMetadata\": {\n    \"candidatesTokenCount\": 1,\n    \"thoughtsTokenCount\": 248\n  },\n  \"modelVersion\": \"gemini-2.5-pro\",\n  \"responseId\": \"wmNAaYXPGKGY_uMP-JiVyQg\"\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Type:
+      - application/json; charset=UTF-8
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=7501
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - "0"
+    status: 200 OK
+    code: 200
+    duration: 7.513s

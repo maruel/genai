@@ -1,0 +1,49 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 247
+    host: generativelanguage.googleapis.com
+    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"Talk about Canada in great details. Start with: Canada is\"}]}],\"generationConfig\":{\"stopSequences\":[\"is\"],\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
+    form:
+      alt:
+      - sse
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:streamGenerateContent?alt=sse
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Examining Canada's Nuances**\\n\\nI'm currently breaking down the request to truly grasp what constitutes \\\"great detail\\\" about Canada. I've pinpointed \\\"Canada\\\" as the core topic, but the directive for high detail necessitates a broad, multi-faceted response. My focus \",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"totalTokenCount\": 81,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 68},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"hGNAabc1hNX-4w_pqYXQAw\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Analyzing Content Structure**\\n\\nI've establ\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"totalTokenCount\": 333,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 320},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"hGNAabc1hNX-4w_pqYXQAw\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Formulating a Response Framework**\\n\\nI've establ\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"totalTokenCount\": 388,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 375},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"hGNAabc1hNX-4w_pqYXQAw\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"Canada \"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"totalTokenCount\": 388,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 375},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"hGNAabc1hNX-4w_pqYXQAw\"}\r\n\r\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Disposition:
+      - attachment
+      Content-Type:
+      - text/event-stream
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=2183
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - "0"
+    status: 200 OK
+    code: 200
+    duration: 2.194s

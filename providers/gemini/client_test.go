@@ -298,7 +298,8 @@ func TestClient(t *testing.T) {
 				strings.HasPrefix(id, "gemini-exp-") ||
 				strings.HasPrefix(id, "gemini-1") ||
 				strings.HasPrefix(id, "gemini-2.0-") ||
-				strings.Contains(id, "-image-") ||
+				strings.Contains(id, "image") ||
+				strings.Contains(id, "computer-use") ||
 				strings.HasSuffix(id, "-tts") {
 				continue
 			}
@@ -328,8 +329,8 @@ func TestClient(t *testing.T) {
 					if err != nil {
 						t.Fatal(err)
 					}
-					if strings.Contains(id, "pro") {
-						// Pro always think.
+					if strings.Contains(id, "pro") || strings.Contains(id, "robotics") {
+						// Pro and robotics models always think.
 						if res.Usage.ReasoningTokens == 0 {
 							t.Fatal("Expected reasoning tokens")
 						}

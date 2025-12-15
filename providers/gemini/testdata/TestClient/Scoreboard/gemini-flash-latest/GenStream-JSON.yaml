@@ -1,0 +1,49 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 268
+    host: generativelanguage.googleapis.com
+    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\\\"is_fruit\\\": bool}.\"}]}],\"generationConfig\":{\"responseMimeType\":\"application/json\",\"responseModalities\":[\"TEXT\"]}}\n"
+    form:
+      alt:
+      - sse
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:streamGenerateContent?alt=sse
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"{\\n\\\"is_fruit\\\": true\\n}\",\"thoughtSignature\": \"Cr4CAXLI2nw0p9l5Fwzs1vLHi0TPBtqLjEyNzCIIF1O7FTr/Soa9TUxP48OedO6VqQFx/914EO+VgbnDDvom54HSHoZGhRspHHaGjpWR1Cfd2mZFTKf8i0+sIbgRVSugKBmKeq6FneGajYB/Lq1SvAWzyiBjw7yF6eGwE1nDsGB8lMRot7bu+2SYvbHSo2JP62NTAHgn0gyIfQc3ENDFufPPO2VVyB8wbiDBisvZUftdbFhygDHp9Ta4ewpIVC51q8faVI5xSIAQMSYSXa25fiHPyL9VKCWqIzCFu4DdTX+JRNlFGd5gG1j7L9VmrS24N+euFhp3Z4/v9skOLWNmAEKzhKBF2p1DaKGaxgpsJHR2qHdwDGEmQVJXsHdESpUTTmf9GPLtr/epwFzBt4bn/6ZAUvjZK3WHNWZbJ4K1Wfep\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 30,\"candidatesTokenCount\": 10,\"totalTokenCount\": 102,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 30}],\"thoughtsTokenCount\": 62},\"modelVersion\": \"gemini-2.5-flash-preview-09-2025\",\"responseId\": \"AGNAaa6CHoiH-8YP9ZDZ-AU\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 30,\"candidatesTokenCount\": 10,\"totalTokenCount\": 102,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 30}],\"thoughtsTokenCount\": 62},\"modelVersion\": \"gemini-2.5-flash-preview-09-2025\",\"responseId\": \"AGNAaa6CHoiH-8YP9ZDZ-AU\"}\r\n\r\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Disposition:
+      - attachment
+      Content-Type:
+      - text/event-stream
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=766
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - "0"
+    status: 200 OK
+    code: 200
+    duration: 777ms

@@ -1,0 +1,45 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 139
+    host: generativelanguage.googleapis.com
+    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"Say hello. Do not emit other words.\"}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"]}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-3-pro-preview:generateContent
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"Hello\",\n            \"thoughtSignature\": \"Eq8KCqwKAXLI2nziHzk8d0i1bP0khU2ZmwessK2XZWb713CpEOa4LczrdR8UdTHiXpB5V4rn07QDnaLh0gRt7+mxJ2XzjjVvJLpuDoN4L3dY7AeizlIfn4rfRPX1lMD1RA56026SrTUy6or8rUkKLtolVf3GKOE0LIMhaM7PZdWzO9MLiMQyokRYPNNr/4qM8CS5j4hkk4eYPsfIx4B4z3glHja/0Ko6RMwpu/hvLjC6qxNlCAWwUyERPIDHy+qD2A5KhxQTq1Wvt/C0HS6VSGZeA+C2EZx87lbc9O990LT4OPQN+XvACqEMzfDkkZ24CjHxvjcZFJnvDKDIdwCJmqqwcHPHull1F7YoSPeikOFf8k1aeMI7YgE60AZX1mXYnPBH/tUnj52YKaSRcT56PXCT5Ps46lyVA7LGrbL0rRd6+G30UFMZze71wOvR9qOCGMhoc7S4k1vC77YrZIgv4xErM8qOhPS1tC4XHGPqhrDnfLnCZvNPCDr8lI96X0uczGst13AZ3r6LacE/1iGnypz8RBcN1N6LluAOexqD6BNKhGayW5iDoJSgKwc3GywWY11KtIrCUbUi8VJpbcYHWB7yaC62mDXNqitiO1RAX8+63Rd4p8OItDQXr5QMlfGodTmFECJLgomWI0+IBTBO+mv3bsiZu6HxHUtlmKLgRWA/rJY2jzVVMMmJIJE6YNvG/iIav+sAiOAag2gYBiko92f8kMMt7TzKTbd3QtfIuGlQHoxI9c/NoHr3MlE7hhFyKodzeSmtaAwFjonAqE/+MvTUOACxWC1KeHXN0k2IlNgMkwUY5rwJWQJyNDaHmPhWj099JY3NBYYREf1VkB8BV6vJ+ZG+auIF7v/wCULI6RyOVj/lBKVlz5u0ousm+GNIloXEEUEvyXcapoQjdSSVIjjzDU15/Ld4nIlaWs9rP9qHjHj58aKvbyKLiBKmIi0J6RrUDZkKrek5LMQoLhOuEH0uryHvSx3l4koMaH3pUOO9XvZ6LBPQRsHUAh+qQxTGh4CH1SzIa/QTXknQ3JjV/hhcj7AvBV4E6tpC2EtMrqGgE8BcKl+YIeQPxbW5BsZW732WyhqCvhZiLNH3nb4MjRBIgdqvaxIltBtPTiIXoVZwUIgkFrg1o0dKp9S1UaoMqC4qg1UrI/KgelbdkFv4LaTs4MFBNhZM4mCaEJenqJ5hOmhYj30qmlXyE8QmCscHrBRqStuzLteB2gul6wWVogWYaoBKmzFOlD0j940CS61QDa/HbSKzkA0N94Q4BZzyN1pihsx4iBSU2h515m4YmgsI+PEEZpUL0HfHOWpAuMIvRotDUA4lTvHfzavJl/drMb+AyFVVjW5gLSJ6z2zNpAxvIBp9d5F7Ms5DafrEfJEHbAttVJ68dtK1nXcSL6GT4hUutXgI6oZ9oaPfBzuZHsJwV67oZGz55n41ATSMPMgK5odGWO7XDbO2ro2VeU7UjGrWFi1PGH3PBu3E/8ahAy+JVRTxNiarMQA9qZ37wxlXIv0v4/I5ctwq+jJ9exLPZfRNIYv0ZiGyrJHwtcO98PgK6Z89hC0R+1CP2+VihS83hWhthjv1wgqLw7okyZ1IYJIvCwG8dN3gc4sMiQ5ycbwVvXgOaqujmojdlAfnCFM3Ml/FnW96q336tcTWrNIZ4/HlXqFFOIKCgdov6iouUlxHyiXIbQ7MjgBzyMk3qQXjpXVl/2KoLpzDiO5SjWbd0bLAbtqkGrmdWZC0iahqOJNvbVv61t0MtKJxlL9s5CPycQ==\"\n          }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\": \"STOP\",\n      \"index\": 0\n    }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\": 10,\n    \"candidatesTokenCount\": 1,\n    \"totalTokenCount\": 330,\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 10\n      }\n    ],\n    \"thoughtsTokenCount\": 319\n  },\n  \"modelVersion\": \"gemini-3-pro-preview\",\n  \"responseId\": \"yTNAaYavOOms-8YPrI3FqQ8\"\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Type:
+      - application/json; charset=UTF-8
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=6287
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - "0"
+    status: 200 OK
+    code: 200
+    duration: 6.299s

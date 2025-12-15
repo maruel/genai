@@ -1,0 +1,45 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 359
+    host: generativelanguage.googleapis.com
+    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"What is the word said? Reply with only the word.\"},{\"fileData\":{\"mimeType\":\"audio/mpeg\",\"fileUri\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/audio.mp3\"}}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:generateContent
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"**Analyzing and Responding to the User's Query**\\n\\nOkay, first things first, the user wants me to identify a single word from an audio file. They've been very clear: \\\"Reply with only the word.\\\" Alright, got it. Let's listen to this audio clip.\\n\\nHmm, sounds like they're saying... \\\"horizons.\\\" Let me rewind that and double-check, just to be absolutely certain. Yep, definitely \\\"horizons.\\\" The pronunciation is very distinct.\\n\\nNow, according to the instructions, the response should consist *only* of the identified word. No extra fluff, no introductions, no punctuation – just the word itself. So, that means my response will be simply \\\"horizons\\\". \\n\\nLet's do a quick final check: Did I identify the correct word? Yes. Did I adhere to the formatting constraints? Yes.\\n\\nOkay, I'm confident. The answer is:\\nhorizons\\n\",\n            \"thought\": true\n          },\n          {\n            \"text\": \"horizons\"\n          }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\": \"STOP\",\n      \"index\": 0\n    }\n  ],\n  \"usageMetadata\": {\n    \"candidatesTokenCount\": 1,\n    \"thoughtsTokenCount\": 209\n  },\n  \"modelVersion\": \"gemini-2.5-pro\",\n  \"responseId\": \"5WNAaeH_Me-a-8YPiPfEkQE\"\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Type:
+      - application/json; charset=UTF-8
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=5458
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - "0"
+    status: 200 OK
+    code: 200
+    duration: 5.469s

@@ -1,0 +1,45 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 139
+    host: generativelanguage.googleapis.com
+    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"Say hello. Do not emit other words.\"}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"]}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-3-pro-preview:generateContent
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"Hello.\",\n            \"thoughtSignature\": \"EvEHCu4HAXLI2nyB3eHH/wfOpTy+2L0B1ZNvAabHTBr35wOPEWsMiISPAlaBGAE7AQ53ltJrhPqQERJAqtbQZ3CIid+4WqQ4vcHA8NN3k3hITmWa+KOo2PZ9d1Nm247M6UcApcbo6Mr8cwlSMZihZqMASjjY59KAUPetGXeahAHigur4m42JNHbtm7dy69wyruTogw4G/+Pn5Ba5+e+JRJZvOjm3AnEO+0KQQehmQKN4u+8IOMXRwfHhj8VwGp1jSlXumSKiUnwcAeaihuzL5sUoKhZFluxQinARnQadCXlwi8I7UQFM5YGZ9ZYnqqxREAReQKL2y5xv5PelFhScPw60aX/6cJabYDcruL6LFuS1w4NLRmXcIonJcdeVxESkXtv9UIT7lHmhbmCVvKdVNQb5S+f672f6F2zUX2jD8tB3tsCatxGCvO3E+mQZW7YjCrR3XVn50I1AGU0uAy/WNK9sS7C56Dg8i3Xom3TliRD5IQCGj3f1jjlrQJvuAZe1zsen6PWC8brFLsRlHrvqgNknpAdbQzcmTOWGsLEJ2/d41e2cpgW4UF6H42434kG0AiyUgPrQ38iEm2fn6ZSkkEIf+oYAxHB8DUdOq0HufdH/VtBtx1Yr0c55kYkFAFCV70FleEUAOWh+gmc28DIterVVw89THTjjrLKVLa/Jn9gbf2XPGVPa/FR39SV2WgebOstTniyuMWrg15IK6998ZH8pLLZqAMjcan1NblbSDNR9PbgShTOfsHyeVEEc3w5tUcBXU3a/bK1160qIIi1em9ehjbpfZI7nP2UMrJllzeONoA2dDONsDbKkmnAm9DWJnOdLZ52OwmuKZTe7dNim0L6wmsNYx9vi2JGvKWxLMqYG4sB5vsXuCvCe0Gy9j8MsbKVY4T495X4YskQjJTjhjL4wUSTs0Bxk/XCynVrMkj2xLrDH0GkbvWK0MoorL+F6B/UxQc6TuA09UDbBZARi2VAFBZaTyQFPiQgTT7uj86UivNKQ9ycxndqUG4YoLB6LrVH/ANTZWRaTMOZIgaCcgWl1WGGdBFYY/XgbM9vwqr/Jaug/+m3VblnXRYrcp+sFxAkgRtZ3F43IN+RGeSeR5yWUkkOonvVAfK5eTru6LzoYsPl3ieBk+1MeKezkK4R9gpDeDP98b7xxHBkKTjukshSzUglOKcJe3Zb/H6UmA5sOiOSl9MWZ0MUY9651kQj8Q5YgesAiW6bU9avu1GBTcUywrExmVD5+DA47AKXusMS4jffj/M8rYZ/7RlnG2XzmJlQKO/VQRo4loIYkpQQbrQu7vA9FozP1mH+hfAknXIAFQ3juVfvy+XWOLNg7iPVrcp3hTg==\"\n          }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\": \"STOP\",\n      \"index\": 0\n    }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\": 10,\n    \"candidatesTokenCount\": 2,\n    \"totalTokenCount\": 258,\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 10\n      }\n    ],\n    \"thoughtsTokenCount\": 246\n  },\n  \"modelVersion\": \"gemini-3-pro-preview\",\n  \"responseId\": \"yDNAabX_GuigjrEPvIPtKQ\"\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Type:
+      - application/json; charset=UTF-8
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=4825
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - "0"
+    status: 200 OK
+    code: 200
+    duration: 4.836s

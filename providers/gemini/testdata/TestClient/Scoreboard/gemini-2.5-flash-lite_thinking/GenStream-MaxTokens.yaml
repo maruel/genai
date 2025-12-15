@@ -1,50 +1,49 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 238
-        host: generativelanguage.googleapis.com
-        body: |
-            {"contents":[{"role":"user","parts":[{"text":"Explain the theory of relativity in great details."}]}],"generationConfig":{"responseModalities":["TEXT"],"maxOutputTokens":16,"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
-        form:
-            alt:
-                - sse
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:streamGenerateContent?alt=sse
-        method: POST
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Developing an Outline**\\n\\nI've been mapping out the structure, and it seems like a clear framework will emerge. Initial ideas for the detailed explanation are taking shape, which focuses on the core components. I am developing the first draft now.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"finishReason\": \"MAX_TOKENS\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 10,\"totalTokenCount\": 25,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 10}],\"thoughtsTokenCount\": 15},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"_WGFaMK7LP7VjMcPgam_4AM\"}\r\n\r\n"
-        headers:
-            Alt-Svc:
-                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
-            Content-Disposition:
-                - attachment
-            Content-Type:
-                - text/event-stream
-            Server:
-                - scaffolding on HTTPServer2
-            Server-Timing:
-                - gfet4t7; dur=633
-            Vary:
-                - Origin
-                - X-Origin
-                - Referer
-            X-Content-Type-Options:
-                - nosniff
-            X-Frame-Options:
-                - SAMEORIGIN
-            X-Xss-Protection:
-                - "0"
-        status: 200 OK
-        code: 200
-        duration: 644ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 238
+    host: generativelanguage.googleapis.com
+    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"Explain the theory of relativity in great details.\"}]}],\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"maxOutputTokens\":16,\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
+    form:
+      alt:
+      - sse
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:streamGenerateContent?alt=sse
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Analyzing Potential Paths**\\n\\nI've been exploring a few potential paths to start this process. The initial thought was very broad, so I've been narrowing it down by considering different approaches to the problem. I'm focusing on the key aspects that need to be addressed at the outset. I am evaluating different potential ways to start solving this.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 10,\"totalTokenCount\": 23,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 10}],\"thoughtsTokenCount\": 13},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"J2RAabrHIpLPjrEPudfo2Ao\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"The\"}],\"role\": \"model\"},\"finishReason\": \"MAX_TOKENS\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 10,\"totalTokenCount\": 23,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 10}],\"thoughtsTokenCount\": 13},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"J2RAabrHIpLPjrEPudfo2Ao\"}\r\n\r\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Disposition:
+      - attachment
+      Content-Type:
+      - text/event-stream
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=904
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - "0"
+    status: 200 OK
+    code: 200
+    duration: 915ms

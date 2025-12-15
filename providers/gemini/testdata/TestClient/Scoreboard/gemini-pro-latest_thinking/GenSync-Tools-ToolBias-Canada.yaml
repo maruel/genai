@@ -1,0 +1,45 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 672
+    host: generativelanguage.googleapis.com
+    body: "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one.\"}]}],\"tools\":[{\"functionDeclarations\":[{\"name\":\"best_country\",\"description\":\"A tool to specify the best country\",\"parameters\":{\"properties\":{\"country\":{\"enum\":[\"Canada\",\"USA\"],\"type\":\"STRING\"}},\"required\":[\"country\"],\"type\":\"OBJECT\"},\"response\":{\"properties\":{\"response\":{\"type\":\"STRING\"}},\"required\":[\"response\"],\"type\":\"OBJECT\"}}]}],\"toolConfig\":{\"functionCallingConfig\":{\"mode\":\"ANY\"}},\"generationConfig\":{\"responseModalities\":[\"TEXT\"],\"thinkingConfig\":{\"includeThoughts\":true,\"thinkingBudget\":512}}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:generateContent
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"**Processing a Comparative Country Query**\\n\\nOkay, here's what's going through my circuits. I see a direct match with the `best_country` tool – that's a good start. The user's question, \\\"I wonder if Canada is a better country than the USA?\\\" is pretty straightforward. It's all about a comparison, and the tool's description lines up perfectly: \\\"specify the best country.\\\"\\n\\nThe user's query gives me the two options, \\\"Canada\\\" and \\\"USA\\\", right there.  I need to use the `best_country` tool and the `country` parameter. The user's phrased the query as a comparison which means a choice needs to be made. I need to figure out how to call the tool with *one* of those countries. I think I need to just pick one of the options.\\n\\nThe user's phrasing, \\\"I wonder if...\\\" is basically asking me to make a choice. If I were to ask for clarification, it would basically negate the purpose of the initial prompt. I don't think it would make sense to ask \\\"which country do you want?\\\" as the prompt is explicitly asking me to decide on the *best* country. So, the question is how to interpret their query. It doesn't matter which country I choose as long as I can pick one and use the tool. I will use Canada since it came first.\\n\",\n            \"thought\": true\n          },\n          {\n            \"functionCall\": {\n              \"name\": \"best_country\",\n              \"args\": {\n                \"country\": \"Canada\"\n              }\n            },\n            \"thoughtSignature\": \"Cq4LAXLI2nyoauxhmbnvPJfkTr7x8AJgs+rVXW/HveqG5frmwKpCkx5T/2soDnyuJvQhqab6gZ/R3afm9cqsYzYO4tLXCeLj72rNzgpzB8aIQZ7GlafQZhNIyHT0qn8plQzuY3Rvt+EC8xmxvmiEADyuRTRreku+fyB9mlBk0cYHjQysQt506JX/EfqxDYuGY1kb9tuE9j5QypIWzqcxOl6VItd2t0slxadfSByBXm30nZ3QBDNFLVkCHDG3USw7J43pSZUcqZSskqY4y1Uki4NP+xX2qONYKjL+7X2m8WgCsBvKuve7ELazGxCKsnzHZ6uFz5dktUXQdnIdA7j8bWEsLiWtd9WyvozYcZIE6QTjBKMhyY+ZvrHKALXdv4hNFc8B5kn9LqE116SmQTLqcUmPvB2ZcoL3u3crkv0bMBogYPfJxlcOb/ck/orfP4zlmQpC07Yp6+OVhx2LEu55r/C4h71PJZVfKmYJd63WpDqoiGc6f18vv8X12/39Z2IphSciNgwV/8k/fBZG4X1VC7JQ79680iHxTJfz4EGFhbzbv/0VeDy6ukDreRxpuMVbWX56nV97VwhhRoqwkf5eLP0skcupJZ7bH1zTCrIbDfScKNR8IEZLW7U040OMZahE1bCbbwnxgPkMwRqUd551mlDbFOSVQ+6X0rZDcEwFRK8pAdSC1LzUGDIKvPvNXya5EJNL0fUlCLDZo7LUKyuRxmHEAJe/ZtGJZWkzkQ+puyLhSSnxRESpxCnRToZdSvCPYxe4tbKlSVPNLKysqvsB3AUdh5+PFNbjjA8r14xzlGprYUW//BNNk9k2JXNi/Rs/oC8jYOpDIkUyJ8mMTcc3O0KdyB3QpFc37tEOxRO4EoX28ZoRBPjFyqQYIRgfDbgsqmkKIUUBaKSEK12sEz8oG9Aldz+SJ1tXSv2J1a/Ld1aCQtUcZSiYJeFCsEBVG/AvADRORz53vgxvV97ITzJFCxFZRSPenZ+iMbRaN8sMtvLhRdYALIyvhnYEv+ueSw1qmp15T2wUe35tuFvVhMYEi/yBOrLURyS8Y2kiUtxT7mprTW7bvLSVwnNOr5HWRCD89/vaEx5H/QIYqqNtVPcs5BkoBU0g9S0K87VrCmC7z2HbJ4ctgFTPM4T/8B/VpqdBfvqx38QjnIiuvVzBTZlo9+6BLccd7Zv1vRHY2/3Z1DHMjmw8muN54BltrYc4KZichnX0e7006Km2N/lykXZvPej1FnErgxB+HP+0yHEHVnz8YJlah7ebJKH3seuywrugNziVjUu3TGKK+Q86RaqGKyn3GE0R70VWyA6go3nA9WMu1AKZ2prKa2Y5Hs/R7RorOdL7p11sMWNhF2sJpMzcd7AckSRdl+8zTPFnD5uEd0QebHQ7T8IXSYFx83KgwuCAMp19UuAk/Budkpwj1j8toWXJngSUfqsS/HXovSPi/hzdK/7ZWOo/Gu6vA+IPBZZDC9afqmFDSTj5PY/C+XjRNNhcUl4Ju6uX9vPy/s70/1IdrWWG787zaZD1yD2jABxPNG7FWHLgdfjaJaSmn7cfne0J6eBwdzfG1KyWQUHzVfwJFjLZGh1N2hfVNtLiMTylHtX+lCoPy17xZOnlRdPMdzSLiVdE4DRgor+YLGsHOwgv1bslEXpkJz7oiYwfgebTKc+bPSRtu6xUDNWeBTWpq7oDG/t7zWg1iwTySH/669jGdxEFZL7y6XPD46TgNJ7f1ZWyAm32eiGP5LzfHHvRUy7XqseetAERzmCegG//I1hDGAoJ+t0+2QTXTbIm2fxtirU49rEZv4XkdkYYZ6NV6xmDe62PBbd/C9ZjFBwaTfABJ6x+B5CVw/JDJjBrk0tf1NGq87bbONQxvizJX2Oyjn9Vg2DNSwpTJWUH7M42IoT35Ifn039CFNWXHg0SXUm8n/PjLfaH2iS4J/BNFKV71DE=\"\n          }\n        ],\n        \"role\": \"model\"\n      },\n      \"finishReason\": \"STOP\",\n      \"index\": 0,\n      \"finishMessage\": \"Model generated function call(s).\"\n    }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\": 115,\n    \"candidatesTokenCount\": 15,\n    \"totalTokenCount\": 460,\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 115\n      }\n    ],\n    \"thoughtsTokenCount\": 330\n  },\n  \"modelVersion\": \"gemini-2.5-pro\",\n  \"responseId\": \"omNAabL5CZqJ_uMP5vakiQ0\"\n}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+      Content-Type:
+      - application/json; charset=UTF-8
+      Server:
+      - scaffolding on HTTPServer2
+      Server-Timing:
+      - gfet4t7; dur=6345
+      Vary:
+      - Origin
+      - X-Origin
+      - Referer
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Xss-Protection:
+      - "0"
+    status: 200 OK
+    code: 200
+    duration: 6.356s

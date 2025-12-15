@@ -337,6 +337,7 @@ var optScenario = cmpopts.IgnoreFields(scoreboard.Scenario{}, "Comments", "SOTA"
 // scoreboard model.
 func deleteOrphanedRecordings(t testing.TB, dir string, scoreboardModels map[Model]struct{}) {
 	// 1. Gather all the directories in the recordings directory.
+	// TODO: Only keep leaf directories. If a directory contains subdirectories, do not record it.
 	var modelDirs []string
 	if err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
 		if err == nil && info.IsDir() && path != dir {

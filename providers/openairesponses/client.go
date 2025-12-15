@@ -60,6 +60,7 @@ type Response struct {
 	ParallelToolCalls  bool              `json:"parallel_tool_calls,omitzero"`
 	PreviousResponseID string            `json:"previous_response_id,omitzero"`
 	PromptCacheKey     struct{}          `json:"prompt_cache_key,omitzero"`
+	PromptCacheRetention struct{}        `json:"prompt_cache_retention,omitzero"`
 	Reasoning          ReasoningConfig   `json:"reasoning,omitzero"`
 	SafetyIdentifier   struct{}          `json:"safety_identifier,omitzero"`
 	ServiceTier        ServiceTier       `json:"service_tier,omitzero"`
@@ -96,6 +97,7 @@ type Response struct {
 	Error             APIError          `json:"error,omitzero"`
 	Output            []Message         `json:"output,omitzero"`
 	Usage             Usage             `json:"usage,omitzero"`
+	Billing           map[string]string `json:"billing,omitzero"` // e.g. {"payer": "openai"}
 }
 
 // Init implements base.InitializableRequest.

@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 709
+    host: api.openai.com
+    body: "{\"model\":\"gpt-5.2-chat-latest\",\"background\":false,\"parallel_tool_calls\":true,\"reasoning\":{\"effort\":\"medium\",\"summary\":\"auto\"},\"service_tier\":\"default\",\"store\":false,\"tool_choice\":\"required\",\"tools\":[{\"type\":\"function\",\"name\":\"best_country\",\"description\":\"A tool to specify the best country\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"country\":{\"type\":\"string\",\"enum\":[\"USA\",\"Canada\"]}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"country\"]}}],\"input\":[{\"type\":\"message\",\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one.\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.openai.com/v1/responses
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"resp_0ea5d3642ec8b70c0169406fe617188194a52bd8396a27fcfc\",\n  \"object\": \"response\",\n  \"created_at\": 1765830630,\n  \"status\": \"completed\",\n  \"background\": false,\n  \"billing\": {\n    \"payer\": \"openai\"\n  },\n  \"error\": null,\n  \"incomplete_details\": null,\n  \"instructions\": null,\n  \"max_output_tokens\": null,\n  \"max_tool_calls\": null,\n  \"model\": \"gpt-5.2-chat-latest\",\n  \"output\": [\n    {\n      \"id\": \"rs_0ea5d3642ec8b70c0169406fe67f808194a5ff6fc205dd8207\",\n      \"type\": \"reasoning\",\n      \"summary\": []\n    },\n    {\n      \"id\": \"fc_0ea5d3642ec8b70c0169406fe76dd481949101438528023f52\",\n      \"type\": \"function_call\",\n      \"status\": \"completed\",\n      \"arguments\": \"{\\\"country\\\":\\\"Canada\\\"}\",\n      \"call_id\": \"call_4juQxi9oWntkVWY6VWGnpyFY\",\n      \"name\": \"best_country\"\n    }\n  ],\n  \"parallel_tool_calls\": true,\n  \"previous_response_id\": null,\n  \"prompt_cache_key\": null,\n  \"prompt_cache_retention\": null,\n  \"reasoning\": {\n    \"effort\": \"medium\",\n    \"summary\": \"detailed\"\n  },\n  \"safety_identifier\": null,\n  \"service_tier\": \"default\",\n  \"store\": false,\n  \"temperature\": 1.0,\n  \"text\": {\n    \"format\": {\n      \"type\": \"text\"\n    },\n    \"verbosity\": \"medium\"\n  },\n  \"tool_choice\": \"required\",\n  \"tools\": [\n    {\n      \"type\": \"function\",\n      \"description\": \"A tool to specify the best country\",\n      \"name\": \"best_country\",\n      \"parameters\": {\n        \"properties\": {\n          \"country\": {\n            \"type\": \"string\",\n            \"enum\": [\n              \"USA\",\n              \"Canada\"\n            ]\n          }\n        },\n        \"additionalProperties\": false,\n        \"type\": \"object\",\n        \"required\": [\n          \"country\"\n        ]\n      },\n      \"strict\": true\n    }\n  ],\n  \"top_logprobs\": 0,\n  \"top_p\": 0.85,\n  \"truncation\": \"disabled\",\n  \"usage\": {\n    \"input_tokens\": 77,\n    \"input_tokens_details\": {\n      \"cached_tokens\": 0\n    },\n    \"output_tokens\": 20,\n    \"output_tokens_details\": {\n      \"reasoning_tokens\": 0\n    },\n    \"total_tokens\": 97\n  },\n  \"user\": null,\n  \"metadata\": {}\n}"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ae8b2fd7f83a2ae-YUL
+      Content-Type:
+      - application/json
+      Openai-Processing-Ms:
+      - "1605"
+      Openai-Version:
+      - "2020-10-01"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "1612"
+      X-Ratelimit-Limit-Requests:
+      - "500"
+      X-Ratelimit-Limit-Tokens:
+      - "500000"
+      X-Ratelimit-Remaining-Requests:
+      - "499"
+      X-Ratelimit-Remaining-Tokens:
+      - "500000"
+      X-Ratelimit-Reset-Requests:
+      - 120ms
+      X-Ratelimit-Reset-Tokens:
+      - 0s
+    status: 200 OK
+    code: 200
+    duration: 1.724s

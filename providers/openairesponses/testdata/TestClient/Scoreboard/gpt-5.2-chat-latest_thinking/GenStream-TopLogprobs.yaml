@@ -1,0 +1,48 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 286
+    host: api.openai.com
+    body: "{\"model\":\"gpt-5.2-chat-latest\",\"background\":false,\"reasoning\":{\"effort\":\"medium\",\"summary\":\"auto\"},\"service_tier\":\"default\",\"store\":false,\"top_logprobs\":2,\"input\":[{\"type\":\"message\",\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"Say hello. Use only one word.\"}]}],\"stream\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.openai.com/v1/responses
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 190
+    body: "{\n  \"error\": {\n    \"message\": \"logprobs are not supported with reasoning models.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": \"top_logprobs\",\n    \"code\": \"unsupported_parameter\"\n  }\n}"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ae8b2928a98a2ae-YUL
+      Content-Length:
+      - "190"
+      Content-Type:
+      - application/json
+      Openai-Processing-Ms:
+      - "66"
+      Openai-Version:
+      - "2020-10-01"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "68"
+    status: 400 Bad Request
+    code: 400
+    duration: 188ms

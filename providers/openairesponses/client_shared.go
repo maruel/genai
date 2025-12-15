@@ -302,7 +302,7 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 	for _, mdl := range mdls {
 		m := mdl.(*Model)
 		// Do not select the specialized models automatically.
-		if strings.Contains(m.ID, "audio") || strings.Contains(m.ID, "deep") || strings.Contains(m.ID, "realtime") || strings.Contains(m.ID, "search") {
+		if strings.Contains(m.ID, "audio") || strings.Contains(m.ID, "codex") || strings.Contains(m.ID, "deep") || strings.Contains(m.ID, "image") || strings.Contains(m.ID, "realtime") || strings.Contains(m.ID, "search") {
 			continue
 		}
 		// The o family of models is not usable with completion API.
@@ -342,11 +342,13 @@ func (c *Client) selectBestImageModel(ctx context.Context, preference string) (s
 		return "", fmt.Errorf("failed to automatically select the model: %w", err)
 	}
 	cheap := preference == genai.ModelCheap
+	good := preference == genai.ModelGood
 	selectedModel := ""
 	for _, mdl := range mdls {
 		m := mdl.(*Model)
 		// OpenAI doesn't report much for each model. :(
 		isCheap := strings.HasPrefix(m.ID, "dall")
+		isGood := strings.HasSuffix(m.ID, "-mini")
 		isSOTA := strings.Contains(m.ID, "image")
 		if !isCheap && !isSOTA {
 			continue
@@ -357,8 +359,14 @@ func (c *Client) selectBestImageModel(ctx context.Context, preference string) (s
 					selectedModel = m.ID
 				}
 			}
-		} else if !cheap {
-			if isSOTA {
+		} else if good {
+			if isGood {
+				if selectedModel == "" || m.ID > selectedModel {
+					selectedModel = m.ID
+				}
+			}
+		} else {
+			if isSOTA && !isGood {
 				selectedModel = m.ID
 			}
 		}

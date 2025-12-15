@@ -1,0 +1,48 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 5073
+    host: api.openai.com
+    body: "{\"model\":\"gpt-5.2-chat-latest\",\"background\":false,\"reasoning\":{\"effort\":\"medium\",\"summary\":\"auto\"},\"service_tier\":\"default\",\"store\":false,\"input\":[{\"type\":\"message\",\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"What is the word said? Reply with only the word.\"},{\"type\":\"input_file\",\"file_data\":\"data:audio/mpeg;base64,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\",\"filename\":\"audio.mp3\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.openai.com/v1/responses
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 477
+    body: "{\n  \"error\": {\n    \"message\": \"Invalid file data: 'input[0].content[1].file_data'. Expected a base64-encoded data URL with a valid file MIME type (e.g. 'data:text/plain;base64,SGVsbG8sIFdvcmxkIQ=='), but got unsupported MIME type 'audio/mpeg'. Please see https://platform.openai.com/docs/assistants/tools/file-search#supported-files for supported file types.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": \"input[0].content[1].file_data\",\n    \"code\": \"invalid_value\"\n  }\n}"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ae8b451e893a2ae-YUL
+      Content-Length:
+      - "477"
+      Content-Type:
+      - application/json
+      Openai-Processing-Ms:
+      - "12"
+      Openai-Version:
+      - "2020-10-01"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "14"
+    status: 400 Bad Request
+    code: 400
+    duration: 97ms

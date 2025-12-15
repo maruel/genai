@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 440
+    host: api.openai.com
+    body: "{\"model\":\"gpt-5.2-chat-latest\",\"background\":false,\"reasoning\":{\"effort\":\"medium\",\"summary\":\"auto\"},\"service_tier\":\"default\",\"store\":false,\"tools\":[{\"type\":\"web_search\"}],\"include\":[\"web_search_call.action.sources\"],\"input\":[{\"type\":\"message\",\"role\":\"user\",\"content\":[{\"type\":\"input_text\",\"text\":\"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation.\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.openai.com/v1/responses
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"resp_081ae0c3a20a490b0169406fe7cb50819693ed6e306c0cbfea\",\n  \"object\": \"response\",\n  \"created_at\": 1765830631,\n  \"status\": \"completed\",\n  \"background\": false,\n  \"billing\": {\n    \"payer\": \"openai\"\n  },\n  \"error\": null,\n  \"incomplete_details\": null,\n  \"instructions\": null,\n  \"max_output_tokens\": null,\n  \"max_tool_calls\": null,\n  \"model\": \"gpt-5.2-chat-latest\",\n  \"output\": [\n    {\n      \"id\": \"rs_081ae0c3a20a490b0169406fe82dac8196a49d8dc054f59c52\",\n      \"type\": \"reasoning\",\n      \"summary\": []\n    },\n    {\n      \"id\": \"ws_081ae0c3a20a490b0169406fed13a481969d09678dcdaf04ae\",\n      \"type\": \"web_search_call\",\n      \"status\": \"completed\",\n      \"action\": {\n        \"type\": \"search\",\n        \"query\": \"current Prime Minister of Canada\",\n        \"sources\": [\n          {\n            \"type\": \"url\",\n            \"url\": \"https://www.reuters.com/world/conservative-party-mp-canada-joins-carneys-liberal-party-2025-12-11/\"\n          },\n          {\n            \"type\": \"url\",\n            \"url\": \"https://www.politico.com/news/2025/12/11/carney-short-liberal-majority-00688193\"\n          },\n          {\n            \"type\": \"url\",\n            \"url\": \"https://www.washingtonpost.com/world/2025/12/13/canada-carney-climate-oil-pipeline/\"\n          },\n          {\n            \"type\": \"url\",\n            \"url\": \"https://en.wikipedia.org/wiki/Mark_Carney\"\n          },\n          {\n            \"type\": \"url\",\n            \"url\": \"https://www.pm.gc.ca/eng/prime-minister-justin-trudeau\"\n          },\n          {\n            \"type\": \"url\",\n            \"url\": \"https://en.wikipedia.org/wiki/Justin_Trudeau\"\n          },\n          {\n            \"type\": \"url\",\n            \"url\": \"https://en.wikipedia.org/wiki/Premiership_of_Mark_Carney\"\n          },\n          {\n            \"type\": \"url\",\n            \"url\": \"https://www.aljazeera.com/news/2025/3/14/mark-carney-sworn-in-as-canadas-new-prime-minister-replacing-trudeau\"\n          },\n          {\n            \"type\": \"url\",\n            \"url\": \"https://en.wikipedia.org/wiki/Fran%C3%A7ois-Philippe_Champagne\"\n          },\n          {\n            \"type\": \"url\",\n            \"url\": \"https://en.wikipedia.org/wiki/Kamal_Khera\"\n          },\n          {\n            \"type\": \"url\",\n            \"url\": \"https://en.wikipedia.org/wiki/Premiership_of_Justin_Trudeau\"\n          }\n        ]\n      }\n    },\n    {\n      \"id\": \"rs_081ae0c3a20a490b0169406ff3bcf8819696083811ede1ccfd\",\n      \"type\": \"reasoning\",\n      \"summary\": []\n    },\n    {\n      \"id\": \"msg_081ae0c3a20a490b0169406ff46ee48196a05e117cff0d629f\",\n      \"type\": \"message\",\n      \"status\": \"completed\",\n      \"content\": [\n        {\n          \"type\": \"output_text\",\n          \"annotations\": [\n            {\n              \"type\": \"url_citation\",\n              \"end_index\": 145,\n              \"start_index\": 12,\n              \"title\": \"Canada lawmaker swaps parties to Carney's Liberals, now on cusp of majority rule\",\n              \"url\": \"https://www.reuters.com/world/conservative-party-mp-canada-joins-carneys-liberal-party-2025-12-11/?utm_source=openai\"\n            }\n          ],\n          \"logprobs\": [],\n          \"text\": \"Mark Carney ([reuters.com](https://www.reuters.com/world/conservative-party-mp-canada-joins-carneys-liberal-party-2025-12-11/?utm_source=openai))\"\n        }\n      ],\n      \"role\": \"assistant\"\n    }\n  ],\n  \"parallel_tool_calls\": true,\n  \"previous_response_id\": null,\n  \"prompt_cache_key\": null,\n  \"prompt_cache_retention\": null,\n  \"reasoning\": {\n    \"effort\": \"medium\",\n    \"summary\": \"detailed\"\n  },\n  \"safety_identifier\": null,\n  \"service_tier\": \"default\",\n  \"store\": false,\n  \"temperature\": 1.0,\n  \"text\": {\n    \"format\": {\n      \"type\": \"text\"\n    },\n    \"verbosity\": \"medium\"\n  },\n  \"tool_choice\": \"auto\",\n  \"tools\": [\n    {\n      \"type\": \"web_search\",\n      \"filters\": null,\n      \"search_context_size\": \"medium\",\n      \"user_location\": {\n        \"type\": \"approximate\",\n        \"city\": null,\n        \"country\": \"US\",\n        \"region\": null,\n        \"timezone\": null\n      }\n    }\n  ],\n  \"top_logprobs\": 0,\n  \"top_p\": 0.85,\n  \"truncation\": \"disabled\",\n  \"usage\": {\n    \"input_tokens\": 8412,\n    \"input_tokens_details\": {\n      \"cached_tokens\": 0\n    },\n    \"output_tokens\": 279,\n    \"output_tokens_details\": {\n      \"reasoning_tokens\": 256\n    },\n    \"total_tokens\": 8691\n  },\n  \"user\": null,\n  \"metadata\": {}\n}"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ae8b30849f3a2ae-YUL
+      Content-Type:
+      - application/json
+      Openai-Processing-Ms:
+      - "12869"
+      Openai-Version:
+      - "2020-10-01"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "12872"
+      X-Ratelimit-Limit-Requests:
+      - "500"
+      X-Ratelimit-Limit-Tokens:
+      - "500000"
+      X-Ratelimit-Remaining-Requests:
+      - "499"
+      X-Ratelimit-Remaining-Tokens:
+      - "496032"
+      X-Ratelimit-Reset-Requests:
+      - 120ms
+      X-Ratelimit-Reset-Tokens:
+      - 476ms
+    status: 200 OK
+    code: 200
+    duration: 12.996s

@@ -9,7 +9,7 @@
   "scenarios": [
     {
       "models": [
-        "gpt-5"
+        "gpt-5.2-chat-latest"
       ],
       "sota": true,
       "reason": true,
@@ -40,21 +40,21 @@
         }
       },
       "GenSync": {
+        "reportRateLimits": true,
         "reportTokenUsage": "true",
-        "reportFinishReason": "flaky",
+        "reportFinishReason": "true",
         "tools": "true",
         "toolsBiased": "flaky",
         "toolCallRequired": true,
         "webSearch": true,
         "json": true,
-        "jsonSchema": true,
-        "maxTokens": true
+        "jsonSchema": true
       },
       "GenStream": {
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "tools": "true",
-        "toolsBiased": "true",
+        "toolsBiased": "flaky",
         "toolCallRequired": true,
         "webSearch": true,
         "json": true,
@@ -163,6 +163,54 @@
       }
     },
     {
+      "comments": "The model is completely misbehaving with PDFs. This is weird. Token usage is broken only when using MaxTokens.",
+      "models": [
+        "o4-mini"
+      ],
+      "reason": true,
+      "in": {
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportRateLimits": true,
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
+        "webSearch": true,
+        "json": true,
+        "jsonSchema": true
+      },
+      "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "tools": "true",
+        "toolsBiased": "flaky",
+        "toolCallRequired": true,
+        "webSearch": true,
+        "json": true,
+        "jsonSchema": true
+      }
+    },
+    {
       "comments": "Token usage is broken only when using MaxTokens.",
       "models": [
         "gpt-4.1"
@@ -216,54 +264,6 @@
       }
     },
     {
-      "comments": "The model is completely misbehaving with PDFs. This is weird. Token usage is broken only when using MaxTokens.",
-      "models": [
-        "o4-mini"
-      ],
-      "reason": true,
-      "in": {
-        "image": {
-          "inline": true,
-          "url": true,
-          "supportedFormats": [
-            "image/gif",
-            "image/jpeg",
-            "image/png",
-            "image/webp"
-          ]
-        },
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "tools": "true",
-        "toolsBiased": "true",
-        "toolCallRequired": true,
-        "webSearch": true,
-        "json": true,
-        "jsonSchema": true
-      },
-      "GenStream": {
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "tools": "true",
-        "toolsBiased": "flaky",
-        "toolCallRequired": true,
-        "webSearch": true,
-        "json": true,
-        "jsonSchema": true
-      }
-    },
-    {
       "comments": "TODO: More output image format are supported by the API",
       "models": [
         "gpt-image-1"
@@ -286,10 +286,25 @@
       }
     },
     {
-      "comments": "As of 2025-08, audio is not yet supported in the Responses API. See https://platform.openai.com/docs/guides/audio",
       "models": [
-        "gpt-4o-audio-preview"
-      ]
+        "gpt-5",
+        "gpt-5-codex",
+        "gpt-5-pro",
+        "gpt-5-pro-2025-10-06",
+        "gpt-5-search-api",
+        "gpt-5-search-api-2025-10-14",
+        "gpt-5.1",
+        "gpt-5.1-2025-11-13",
+        "gpt-5.1-chat-latest",
+        "gpt-5.1-codex",
+        "gpt-5.1-codex-max",
+        "gpt-5.1-codex-mini",
+        "gpt-5.2",
+        "gpt-5.2-2025-12-11",
+        "gpt-5.2-pro",
+        "gpt-5.2-pro-2025-12-11"
+      ],
+      "reason": true
     },
     {
       "comments": "Untested",
@@ -300,8 +315,6 @@
         "gpt-5-nano-2025-08-07",
         "o1",
         "o1-2024-12-17",
-        "o1-mini",
-        "o1-mini-2024-09-12",
         "o1-pro",
         "o1-pro-2025-03-19",
         "o3",
@@ -348,7 +361,6 @@
         "gpt-4o-2024-05-13",
         "gpt-4o-2024-08-06",
         "gpt-4o-2024-11-20",
-        "gpt-4o-audio-preview-2024-10-01",
         "gpt-4o-audio-preview-2024-12-17",
         "gpt-4o-audio-preview-2025-06-03",
         "gpt-4o-mini",
@@ -362,7 +374,6 @@
         "gpt-4o-mini-transcribe",
         "gpt-4o-mini-tts",
         "gpt-4o-realtime-preview",
-        "gpt-4o-realtime-preview-2024-10-01",
         "gpt-4o-realtime-preview-2024-12-17",
         "gpt-4o-realtime-preview-2025-06-03",
         "gpt-4o-search-preview",
@@ -382,6 +393,24 @@
         "tts-1-hd",
         "tts-1-hd-1106",
         "whisper-1"
+      ]
+    },
+    {
+      "comments": "As of 2025-08, audio is not yet supported in the Responses API. See https://platform.openai.com/docs/guides/audio",
+      "models": [
+        "gpt-4o-audio-preview"
+      ]
+    },
+    {
+      "models": [
+        "gpt-4o-transcribe-diarize",
+        "gpt-audio-mini",
+        "gpt-audio-mini-2025-10-06",
+        "gpt-image-1-mini",
+        "gpt-realtime-mini",
+        "gpt-realtime-mini-2025-10-06",
+        "sora-2",
+        "sora-2-pro"
       ]
     }
   ]

@@ -443,10 +443,17 @@ func doUpdateScoreboard(t testing.TB, providerDir string, scenarios []scoreboard
 
 		if len(remainingModels) > 0 {
 			sc.Models = remainingModels
-			// Set SOTA/Good/Cheap flags
-			sc.SOTA = preferredModels["sota"] == model
-			sc.Good = preferredModels["good"] == model
-			sc.Cheap = preferredModels["cheap"] == model
+			// Preserve SOTA/Good/Cheap flags from old scenario only
+			var wasSOTA, wasGood, wasCheap bool
+			if oldSc, found := oldScenarios[key]; found {
+				wasSOTA = oldSc.SOTA
+				wasGood = oldSc.Good
+				wasCheap = oldSc.Cheap
+			}
+			// Only preserve flags from old scenario, don't set new ones
+			sc.SOTA = wasSOTA
+			sc.Good = wasGood
+			sc.Cheap = wasCheap
 			result = append(result, sc)
 		}
 	}
@@ -463,7 +470,10 @@ func doUpdateScoreboard(t testing.TB, providerDir string, scenarios []scoreboard
 			continue
 		}
 
-		// Include tested scenarios as-is
+		// Include tested scenarios but clear preference flags since they weren't re-tested
+		oldSc.SOTA = false
+		oldSc.Good = false
+		oldSc.Cheap = false
 		result = append(result, oldSc)
 	}
 
@@ -512,62 +522,8 @@ func doUpdateScoreboard(t testing.TB, providerDir string, scenarios []scoreboard
 		}
 	}
 
-	// Sort so SOTA, Good, Cheap appear first in order
-	priority := map[string]map[bool]int{}
-	if sota := preferredModels["sota"]; sota != "" {
-		priority[sota] = map[bool]int{false: 0, true: 0}
-	}
-	if good := preferredModels["good"]; good != "" && good != preferredModels["sota"] {
-		priority[good] = map[bool]int{false: 1, true: 1}
-	}
-	if cheap := preferredModels["cheap"]; cheap != "" && cheap != preferredModels["sota"] && cheap != preferredModels["good"] {
-		priority[cheap] = map[bool]int{false: 2, true: 2}
-	}
-
-	slices.SortFunc(result, func(a, b scoreboard.Scenario) int {
-		getPriority := func(sc scoreboard.Scenario) int {
-			if len(sc.Models) == 0 {
-				return 999
-			}
-			model := sc.Models[0]
-			if p, ok := priority[model]; ok {
-				if pval, ok := p[sc.Reason]; ok {
-					return pval
-				}
-				return 100
-			}
-			return 999
-		}
-		aPrio := getPriority(a)
-		bPrio := getPriority(b)
-		if aPrio != bPrio {
-			return aPrio - bPrio
-		}
-		// Secondary sort: scenarios with Reason come before those without Reason
-		if a.Reason != b.Reason {
-			if a.Reason {
-				return -1
-			}
-			return 1
-		}
-		return 0
-	})
-
-	// Clear flags and only set them on the first occurrence of each preferred model
-	flaggedModels := make(map[string]struct{})
-	for i := range result {
-		if len(result[i].Models) == 0 {
-			continue
-		}
-		model := result[i].Models[0]
-		if _, seen := flaggedModels[model]; seen {
-			result[i].SOTA = false
-			result[i].Good = false
-			result[i].Cheap = false
-		} else {
-			flaggedModels[model] = struct{}{}
-		}
-	}
+	// Sort scenarios by preference flags
+	slices.SortFunc(result, scoreboard.CompareScenarios)
 
 	// Validate and write
 	newScore := oldScore

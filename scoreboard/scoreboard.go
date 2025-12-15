@@ -303,6 +303,21 @@ func (s *Scenario) Untested() bool {
 	return s.GenSync == nil && s.GenStream == nil && len(s.In) == 0 && len(s.Out) == 0
 }
 
+// priority returns the sorting priority based on preference flags.
+// SOTA is priority 0, Good is 1, Cheap is 2, others are 999.
+func (s *Scenario) priority() int {
+	if s.SOTA {
+		return 0
+	}
+	if s.Good {
+		return 1
+	}
+	if s.Cheap {
+		return 2
+	}
+	return 999
+}
+
 func (s *Scenario) Validate() error {
 	if len(s.Models) == 0 {
 		return errors.New("scenario must have at least one model")
@@ -501,6 +516,56 @@ func (s *Score) Validate() error {
 	}
 
 	return nil
+}
+
+// CompareScenarios compares two scenarios for sorting.
+// Untested scenarios are sorted last.
+// Tested scenarios are sorted by preference flags: SOTA (0), Good (1), Cheap (2), then others.
+// Within the same priority, reasoning scenarios come before non-reasoning.
+// Within the same priority and reasoning status, scenarios are sorted alphabetically by first model name.
+func CompareScenarios(a, b Scenario) int {
+	// Untested scenarios come last
+	aUntested := a.Untested()
+	bUntested := b.Untested()
+	if aUntested != bUntested {
+		if aUntested {
+			return 1
+		}
+		return -1
+	}
+
+	// Both untested or both tested: sort by priority
+	aPrio := a.priority()
+	bPrio := b.priority()
+	if aPrio != bPrio {
+		return aPrio - bPrio
+	}
+
+	// Same priority: reasoning comes before non-reasoning
+	if a.Reason != b.Reason {
+		if a.Reason {
+			return -1
+		}
+		return 1
+	}
+
+	// Same priority and reasoning: sort alphabetically by first model name
+	aModel := ""
+	bModel := ""
+	if len(a.Models) > 0 {
+		aModel = a.Models[0]
+	}
+	if len(b.Models) > 0 {
+		bModel = b.Models[0]
+	}
+	if aModel != bModel {
+		if aModel < bModel {
+			return -1
+		}
+		return 1
+	}
+
+	return 0
 }
 
 // TestdataFiles embeds the testdata/ directory for use in smoke tests.

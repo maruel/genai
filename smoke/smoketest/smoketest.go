@@ -371,8 +371,7 @@ func deleteOrphanedRecordings(t testing.TB, dir string, scoreboardModels map[Mod
 
 	// 3. Find the ones that are not expected and delete them.
 	for _, dirName := range modelDirs {
-		_, found := expectedDirs[dirName]
-		if !found {
+		if _, found := expectedDirs[dirName]; !found {
 			t.Logf("Deleting orphaned model recordings for %s", dirName)
 			if err := os.RemoveAll(filepath.Join(dir, dirName)); err != nil {
 				t.Fatalf("failed to delete orphaned recordings for %s: %v", dirName, err)

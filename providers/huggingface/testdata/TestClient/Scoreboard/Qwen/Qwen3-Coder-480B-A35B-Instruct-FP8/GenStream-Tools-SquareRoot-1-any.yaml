@@ -1,0 +1,82 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 666
+    host: router.huggingface.co
+    body: "{\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"},{\"type\":\"text\",\"text\":\"\\n\\n/no_think\"}]}],\"stream_options\":{\"include_usage\":true},\"tool_choice\":\"auto\",\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"arguments\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://router.huggingface.co/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"oPNHb8N-zqrih-9ae9a61fae5f878b\",\"object\":\"chat.completion.chunk\",\"created\":1765840588,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"oPNHb8N-zqrih-9ae9a61fae5f878b\",\"object\":\"chat.completion.chunk\",\"created\":1765840588,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"id\":\"call_bb5271fcd0f84596ab6e6619\",\"index\":-1,\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{}\"}}],\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"oPNHb8N-zqrih-9ae9a61fae5f878b\",\"object\":\"chat.completion.chunk\",\"created\":1765840588,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":\"tool_calls\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"oPNHb8N-zqrih-9ae9a61fae5f878b\",\"object\":\"chat.completion.chunk\",\"created\":1765840588,\"choices\":[],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":{\"prompt_tokens\":284,\"total_tokens\":297,\"completion_tokens\":13,\"prompt_tokens_details\":null}}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Expose-Headers:
+      - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+      Cache-Control:
+      - no-cache, no-transform
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ae9a61fae5f878b-IAD
+      Content-Type:
+      - text/event-stream;charset=utf-8
+      Cross-Origin-Opener-Policy:
+      - same-origin
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Retry-After:
+      - "1"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      Via:
+      - 1.1 c5670948bece41c6bb9df947cb650b7e.cloudfront.net (CloudFront)
+      X-Amz-Cf-Id:
+      - kLo8BtZJk_shrYSXmcqK7sxWRMUSSHW_gc7WPH3REu7tlSM3dQhNdg==
+      X-Amz-Cf-Pop:
+      - YTO50-P1
+      X-Api-Call-Start:
+      - "2025-12-15T23:16:28.949Z"
+      X-Api-Received:
+      - "2025-12-15T23:16:28.932Z"
+      X-Cache:
+      - Miss from cloudfront
+      X-Inference-Provider:
+      - together
+      X-Inference-Version:
+      - v2
+      X-Powered-By:
+      - huggingface-moon
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "100"
+      X-Ratelimit-Limit-Tokens:
+      - "33333.333333333336"
+      X-Ratelimit-Remaining:
+      - "197"
+      X-Ratelimit-Remaining-Tokens:
+      - "33333.333333333336"
+      X-Ratelimit-Reset:
+      - "1"
+      X-Robots-Tag:
+      - none
+    status: 200 OK
+    code: 200
+    duration: 554ms

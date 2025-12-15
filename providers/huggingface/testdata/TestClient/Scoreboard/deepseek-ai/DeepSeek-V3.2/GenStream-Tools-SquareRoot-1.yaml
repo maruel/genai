@@ -1,0 +1,56 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 592
+    host: router.huggingface.co
+    body: "{\"model\":\"deepseek-ai/DeepSeek-V3.2\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"}],\"stream_options\":{\"include_usage\":true},\"tool_choice\":\"required\",\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"arguments\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://router.huggingface.co/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"e25c78836957b0c8d137a84163b3f9b4\",\"object\":\"chat.completion.chunk\",\"created\":1765841528,\"model\":\"deepseek/deepseek-v3.2\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\"},\"finish_reason\":null}],\"system_fingerprint\":\"\",\"sla_metrics\":{\"ttft_ms\":695,\"ts_us\":1765841528474822}}\n\ndata: {\"id\":\"e25c78836957b0c8d137a84163b3f9b4\",\"object\":\"chat.completion.chunk\",\"created\":1765841528,\"model\":\"deepseek/deepseek-v3.2\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"364\"},\"finish_reason\":null}],\"system_fingerprint\":\"\",\"usage\":{\"prompt_tokens\":31,\"completion_tokens\":1,\"total_tokens\":32,\"prompt_tokens_details\":null,\"completion_tokens_details\":null},\"sla_metrics\":{\"ttft_ms\":695,\"ts_us\":1765841528474880}}\n\ndata: {\"id\":\"e25c78836957b0c8d137a84163b3f9b4\",\"object\":\"chat.completion.chunk\",\"created\":1765841528,\"model\":\"deepseek/deepseek-v3.2\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\".0\"},\"finish_reason\":null}],\"system_fingerprint\":\"\",\"usage\":{\"prompt_tokens\":31,\"completion_tokens\":3,\"total_tokens\":34,\"prompt_tokens_details\":null,\"completion_tokens_details\":null},\"sla_metrics\":{\"ttft_ms\":695,\"ts_us\":1765841528489244}}\n\ndata: {\"id\":\"e25c78836957b0c8d137a84163b3f9b4\",\"object\":\"chat.completion.chunk\",\"created\":1765841528,\"model\":\"deepseek/deepseek-v3.2\",\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"stop\"}],\"system_fingerprint\":\"\",\"sla_metrics\":{\"ttft_ms\":695,\"ts_us\":1765841528503053}}\n\ndata: {\"id\":\"e25c78836957b0c8d137a84163b3f9b4\",\"object\":\"chat.completion.chunk\",\"created\":1765841528,\"model\":\"deepseek/deepseek-v3.2\",\"choices\":[],\"system_fingerprint\":\"\",\"usage\":{\"prompt_tokens\":31,\"completion_tokens\":4,\"total_tokens\":35,\"prompt_tokens_details\":null,\"completion_tokens_details\":null},\"sla_metrics\":{\"ttft_ms\":695,\"ts_us\":1765841528503081}}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Expose-Headers:
+      - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+      Cache-Control:
+      - no-cache
+      Content-Type:
+      - text/event-stream
+      Cross-Origin-Opener-Policy:
+      - same-origin
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Vary:
+      - Origin
+      Via:
+      - 1.1 b17b94cbc6db5cb82e8f8d6e55e1e85a.cloudfront.net (CloudFront)
+      X-Amz-Cf-Id:
+      - 6KAMHNK-EpJFBBAgnzIyaEOq4IBctHrh-NYHDZNexcwFqRfbY8GI4w==
+      X-Amz-Cf-Pop:
+      - YTO50-P1
+      X-Cache:
+      - Miss from cloudfront
+      X-Inference-Provider:
+      - novita
+      X-Powered-By:
+      - huggingface-moon
+      X-Robots-Tag:
+      - none
+      X-Trace-Id:
+      - e25c78836957b0c8d137a84163b3f9b4
+    status: 200 OK
+    code: 200
+    duration: 1.011s

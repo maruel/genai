@@ -1,0 +1,56 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 163
+    host: router.huggingface.co
+    body: "{\"model\":\"deepseek-ai/DeepSeek-V3.2\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"}],\"stream_options\":{\"include_usage\":true}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://router.huggingface.co/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"6484a21a28d45b56634e38dba29162b8\",\"object\":\"chat.completion.chunk\",\"created\":1765841521,\"model\":\"deepseek/deepseek-v3.2\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Hello\",\"role\":\"assistant\"},\"finish_reason\":null}],\"system_fingerprint\":\"\",\"sla_metrics\":{\"ttft_ms\":846,\"ts_us\":1765841521596856}}\n\ndata: {\"id\":\"6484a21a28d45b56634e38dba29162b8\",\"object\":\"chat.completion.chunk\",\"created\":1765841521,\"model\":\"deepseek/deepseek-v3.2\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\".\"},\"finish_reason\":null}],\"system_fingerprint\":\"\",\"sla_metrics\":{\"ttft_ms\":846,\"ts_us\":1765841521742206}}\n\ndata: {\"id\":\"6484a21a28d45b56634e38dba29162b8\",\"object\":\"chat.completion.chunk\",\"created\":1765841521,\"model\":\"deepseek/deepseek-v3.2\",\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"stop\"}],\"system_fingerprint\":\"\",\"usage\":{\"prompt_tokens\":12,\"completion_tokens\":3,\"total_tokens\":15,\"prompt_tokens_details\":null,\"completion_tokens_details\":null},\"sla_metrics\":{\"ttft_ms\":846,\"ts_us\":1765841521749122}}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Expose-Headers:
+      - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+      Cache-Control:
+      - no-cache
+      Content-Type:
+      - text/event-stream
+      Cross-Origin-Opener-Policy:
+      - same-origin
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Vary:
+      - Origin
+      Via:
+      - 1.1 b17b94cbc6db5cb82e8f8d6e55e1e85a.cloudfront.net (CloudFront)
+      X-Amz-Cf-Id:
+      - Cif80y1NAdUzxobONWJLDoW4daRxAhv9KvIIVyLE8Y9cA8AFGPGEjg==
+      X-Amz-Cf-Pop:
+      - YTO50-P1
+      X-Cache:
+      - Miss from cloudfront
+      X-Inference-Provider:
+      - novita
+      X-Powered-By:
+      - huggingface-moon
+      X-Robots-Tag:
+      - none
+      X-Trace-Id:
+      - 6484a21a28d45b56634e38dba29162b8
+    status: 200 OK
+    code: 200
+    duration: 1.146s

@@ -1,0 +1,56 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 200
+    host: router.huggingface.co
+    body: "{\"model\":\"deepseek-ai/DeepSeek-V3.2\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":\"Explain the theory of relativity in great details.\"}],\"max_tokens\":16,\"stream_options\":{\"include_usage\":true}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://router.huggingface.co/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"b8f68029809f73ff78a88886d440ce27\",\"object\":\"chat.completion.chunk\",\"created\":1765841524,\"model\":\"deepseek/deepseek-v3.2\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\"},\"finish_reason\":null}],\"system_fingerprint\":\"\",\"sla_metrics\":{\"ttft_ms\":494,\"ts_us\":1765841524520373}}\n\ndata: {\"id\":\"b8f68029809f73ff78a88886d440ce27\",\"object\":\"chat.completion.chunk\",\"created\":1765841524,\"model\":\"deepseek/deepseek-v3.2\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Of\"},\"finish_reason\":null}],\"system_fingerprint\":\"\",\"usage\":{\"prompt_tokens\":13,\"completion_tokens\":1,\"total_tokens\":14,\"prompt_tokens_details\":null,\"completion_tokens_details\":null},\"sla_metrics\":{\"ttft_ms\":494,\"ts_us\":1765841524520419}}\n\ndata: {\"id\":\"b8f68029809f73ff78a88886d440ce27\",\"object\":\"chat.completion.chunk\",\"created\":1765841524,\"model\":\"deepseek/deepseek-v3.2\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" course.\"},\"finish_reason\":null}],\"system_fingerprint\":\"\",\"usage\":{\"prompt_tokens\":13,\"completion_tokens\":3,\"total_tokens\":16,\"prompt_tokens_details\":null,\"completion_tokens_details\":null},\"sla_metrics\":{\"ttft_ms\":494,\"ts_us\":1765841524534630}}\n\ndata: {\"id\":\"b8f68029809f73ff78a88886d440ce27\",\"object\":\"chat.completion.chunk\",\"created\":1765841524,\"model\":\"deepseek/deepseek-v3.2\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" Explaining\"},\"finish_reason\":null}],\"system_fingerprint\":\"\",\"usage\":{\"prompt_tokens\":13,\"completion_tokens\":5,\"total_tokens\":18,\"prompt_tokens_details\":null,\"completion_tokens_details\":null},\"sla_metrics\":{\"ttft_ms\":494,\"ts_us\":1765841524549138}}\n\ndata: {\"id\":\"b8f68029809f73ff78a88886d440ce27\",\"object\":\"chat.completion.chunk\",\"created\":1765841524,\"model\":\"deepseek/deepseek-v3.2\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" the theory\"},\"finish_reason\":null}],\"system_fingerprint\":\"\",\"usage\":{\"prompt_tokens\":13,\"completion_tokens\":7,\"total_tokens\":20,\"prompt_tokens_details\":null,\"completion_tokens_details\":null},\"sla_metrics\":{\"ttft_ms\":494,\"ts_us\":1765841524563980}}\n\ndata: {\"id\":\"b8f68029809f73ff78a88886d440ce27\",\"object\":\"chat.completion.chunk\",\"created\":1765841524,\"model\":\"deepseek/deepseek-v3.2\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" of relativity\"},\"finish_reason\":null}],\"system_fingerprint\":\"\",\"usage\":{\"prompt_tokens\":13,\"completion_tokens\":9,\"total_tokens\":22,\"prompt_tokens_details\":null,\"completion_tokens_details\":null},\"sla_metrics\":{\"ttft_ms\":494,\"ts_us\":1765841524578143}}\n\ndata: {\"id\":\"b8f68029809f73ff78a88886d440ce27\",\"object\":\"chat.completion.chunk\",\"created\":1765841524,\"model\":\"deepseek/deepseek-v3.2\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" \\\"\"},\"finish_reason\":null}],\"system_fingerprint\":\"\",\"usage\":{\"prompt_tokens\":13,\"completion_tokens\":10,\"total_tokens\":23,\"prompt_tokens_details\":null,\"completion_tokens_details\":null},\"sla_metrics\":{\"ttft_ms\":494,\"ts_us\":1765841524595245}}\n\ndata: {\"id\":\"b8f68029809f73ff78a88886d440ce27\",\"object\":\"chat.completion.chunk\",\"created\":1765841524,\"model\":\"deepseek/deepseek-v3.2\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"in great\"},\"finish_reason\":null}],\"system_fingerprint\":\"\",\"usage\":{\"prompt_tokens\":13,\"completion_tokens\":12,\"total_tokens\":25,\"prompt_tokens_details\":null,\"completion_tokens_details\":null},\"sla_metrics\":{\"ttft_ms\":494,\"ts_us\":1765841524609477}}\n\ndata: {\"id\":\"b8f68029809f73ff78a88886d440ce27\",\"object\":\"chat.completion.chunk\",\"created\":1765841524,\"model\":\"deepseek/deepseek-v3.2\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" detail\\\"\"},\"finish_reason\":null}],\"system_fingerprint\":\"\",\"usage\":{\"prompt_tokens\":13,\"completion_tokens\":14,\"total_tokens\":27,\"prompt_tokens_details\":null,\"completion_tokens_details\":null},\"sla_metrics\":{\"ttft_ms\":494,\"ts_us\":1765841524623591}}\n\ndata: {\"id\":\"b8f68029809f73ff78a88886d440ce27\",\"object\":\"chat.completion.chunk\",\"created\":1765841524,\"model\":\"deepseek/deepseek-v3.2\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" requires breaking\"},\"finish_reason\":null}],\"system_fingerprint\":\"\",\"usage\":{\"prompt_tokens\":13,\"completion_tokens\":16,\"total_tokens\":29,\"prompt_tokens_details\":null,\"completion_tokens_details\":null},\"sla_metrics\":{\"ttft_ms\":494,\"ts_us\":1765841524637549}}\n\ndata: {\"id\":\"b8f68029809f73ff78a88886d440ce27\",\"object\":\"chat.completion.chunk\",\"created\":1765841524,\"model\":\"deepseek/deepseek-v3.2\",\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"length\"}],\"system_fingerprint\":\"\",\"sla_metrics\":{\"ttft_ms\":494,\"ts_us\":1765841524637657}}\n\ndata: {\"id\":\"b8f68029809f73ff78a88886d440ce27\",\"object\":\"chat.completion.chunk\",\"created\":1765841524,\"model\":\"deepseek/deepseek-v3.2\",\"choices\":[],\"system_fingerprint\":\"\",\"usage\":{\"prompt_tokens\":13,\"completion_tokens\":16,\"total_tokens\":29,\"prompt_tokens_details\":null,\"completion_tokens_details\":null},\"sla_metrics\":{\"ttft_ms\":494,\"ts_us\":1765841524707996}}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Expose-Headers:
+      - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+      Cache-Control:
+      - no-cache
+      Content-Type:
+      - text/event-stream
+      Cross-Origin-Opener-Policy:
+      - same-origin
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Vary:
+      - Origin
+      Via:
+      - 1.1 b17b94cbc6db5cb82e8f8d6e55e1e85a.cloudfront.net (CloudFront)
+      X-Amz-Cf-Id:
+      - XK1S_6guEd-SxrmKAJMsoKo1ziOrcCoJCDseYEGebTXprHkaYZqbZw==
+      X-Amz-Cf-Pop:
+      - YTO50-P1
+      X-Cache:
+      - Miss from cloudfront
+      X-Inference-Provider:
+      - novita
+      X-Powered-By:
+      - huggingface-moon
+      X-Robots-Tag:
+      - none
+      X-Trace-Id:
+      - b8f68029809f73ff78a88886d440ce27
+    status: 200 OK
+    code: 200
+    duration: 612ms

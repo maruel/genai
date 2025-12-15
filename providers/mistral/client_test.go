@@ -78,7 +78,7 @@ func TestClient(t *testing.T) {
 			}
 			if strings.HasPrefix(model.Model, "voxtral") {
 				// If anyone at Mistral reads this, please get your shit together.
-				return &internaltest.HideHTTP500{Provider: c}
+				return &internaltest.HideHTTPCode{Provider: c, StatusCode: 500}
 			}
 			return c
 		}

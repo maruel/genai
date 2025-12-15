@@ -1,0 +1,56 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 297
+    host: router.huggingface.co
+    body: "{\"model\":\"deepseek-ai/DeepSeek-V3.2\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}],\"stream_options\":{\"include_usage\":true}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://router.huggingface.co/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"863d00c7b40efbc67a9400fef4308382\",\"object\":\"chat.completion.chunk\",\"created\":1765841530,\"model\":\"deepseek/deepseek-v3.2\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\"},\"finish_reason\":null}],\"system_fingerprint\":\"\",\"sla_metrics\":{\"ttft_ms\":934,\"ts_us\":1765841530394847}}\n\ndata: {\"id\":\"863d00c7b40efbc67a9400fef4308382\",\"object\":\"chat.completion.chunk\",\"created\":1765841530,\"model\":\"deepseek/deepseek-v3.2\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"The\"},\"finish_reason\":null}],\"system_fingerprint\":\"\",\"usage\":{\"prompt_tokens\":58,\"completion_tokens\":1,\"total_tokens\":59,\"prompt_tokens_details\":null,\"completion_tokens_details\":null},\"sla_metrics\":{\"ttft_ms\":934,\"ts_us\":1765841530394890}}\n\ndata: {\"id\":\"863d00c7b40efbc67a9400fef4308382\",\"object\":\"chat.completion.chunk\",\"created\":1765841530,\"model\":\"deepseek/deepseek-v3.2\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" capital of\"},\"finish_reason\":null}],\"system_fingerprint\":\"\",\"usage\":{\"prompt_tokens\":58,\"completion_tokens\":3,\"total_tokens\":61,\"prompt_tokens_details\":null,\"completion_tokens_details\":null},\"sla_metrics\":{\"ttft_ms\":934,\"ts_us\":1765841530413104}}\n\ndata: {\"id\":\"863d00c7b40efbc67a9400fef4308382\",\"object\":\"chat.completion.chunk\",\"created\":1765841530,\"model\":\"deepseek/deepseek-v3.2\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" Quack\"},\"finish_reason\":null}],\"system_fingerprint\":\"\",\"usage\":{\"prompt_tokens\":58,\"completion_tokens\":5,\"total_tokens\":63,\"prompt_tokens_details\":null,\"completion_tokens_details\":null},\"sla_metrics\":{\"ttft_ms\":934,\"ts_us\":1765841530431658}}\n\ndata: {\"id\":\"863d00c7b40efbc67a9400fef4308382\",\"object\":\"chat.completion.chunk\",\"created\":1765841530,\"model\":\"deepseek/deepseek-v3.2\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"iland is\"},\"finish_reason\":null}],\"system_fingerprint\":\"\",\"usage\":{\"prompt_tokens\":58,\"completion_tokens\":7,\"total_tokens\":65,\"prompt_tokens_details\":null,\"completion_tokens_details\":null},\"sla_metrics\":{\"ttft_ms\":934,\"ts_us\":1765841530449844}}\n\ndata: {\"id\":\"863d00c7b40efbc67a9400fef4308382\",\"object\":\"chat.completion.chunk\",\"created\":1765841530,\"model\":\"deepseek/deepseek-v3.2\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" **Qu\"},\"finish_reason\":null}],\"system_fingerprint\":\"\",\"usage\":{\"prompt_tokens\":58,\"completion_tokens\":9,\"total_tokens\":67,\"prompt_tokens_details\":null,\"completion_tokens_details\":null},\"sla_metrics\":{\"ttft_ms\":934,\"ts_us\":1765841530467919}}\n\ndata: {\"id\":\"863d00c7b40efbc67a9400fef4308382\",\"object\":\"chat.completion.chunk\",\"created\":1765841530,\"model\":\"deepseek/deepseek-v3.2\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"ack**.\"},\"finish_reason\":null}],\"system_fingerprint\":\"\",\"usage\":{\"prompt_tokens\":58,\"completion_tokens\":11,\"total_tokens\":69,\"prompt_tokens_details\":null,\"completion_tokens_details\":null},\"sla_metrics\":{\"ttft_ms\":934,\"ts_us\":1765841530485849}}\n\ndata: {\"id\":\"863d00c7b40efbc67a9400fef4308382\",\"object\":\"chat.completion.chunk\",\"created\":1765841530,\"model\":\"deepseek/deepseek-v3.2\",\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"stop\"}],\"system_fingerprint\":\"\",\"sla_metrics\":{\"ttft_ms\":934,\"ts_us\":1765841530504568}}\n\ndata: {\"id\":\"863d00c7b40efbc67a9400fef4308382\",\"object\":\"chat.completion.chunk\",\"created\":1765841530,\"model\":\"deepseek/deepseek-v3.2\",\"choices\":[],\"system_fingerprint\":\"\",\"usage\":{\"prompt_tokens\":58,\"completion_tokens\":12,\"total_tokens\":70,\"prompt_tokens_details\":null,\"completion_tokens_details\":null},\"sla_metrics\":{\"ttft_ms\":934,\"ts_us\":1765841530504960}}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Expose-Headers:
+      - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+      Cache-Control:
+      - no-cache
+      Content-Type:
+      - text/event-stream
+      Cross-Origin-Opener-Policy:
+      - same-origin
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Vary:
+      - Origin
+      Via:
+      - 1.1 b17b94cbc6db5cb82e8f8d6e55e1e85a.cloudfront.net (CloudFront)
+      X-Amz-Cf-Id:
+      - oUgNS1xIGRGMflfPO1OpzSNAotchCXTjcXL7jlAFY1x4Rfos5UCZcQ==
+      X-Amz-Cf-Pop:
+      - YTO50-P1
+      X-Cache:
+      - Miss from cloudfront
+      X-Inference-Provider:
+      - novita
+      X-Powered-By:
+      - huggingface-moon
+      X-Robots-Tag:
+      - none
+      X-Trace-Id:
+      - 863d00c7b40efbc67a9400fef4308382
+    status: 200 OK
+    code: 200
+    duration: 1.064s

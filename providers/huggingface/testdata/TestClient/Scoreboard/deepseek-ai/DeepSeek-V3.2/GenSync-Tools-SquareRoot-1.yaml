@@ -1,0 +1,56 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 553
+    host: router.huggingface.co
+    body: "{\"model\":\"deepseek-ai/DeepSeek-V3.2\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"}],\"tool_choice\":\"required\",\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"arguments\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://router.huggingface.co/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 640
+    body: "{\"id\":\"bf26ab53f3074ffbeea6c2a073b34990\",\"object\":\"chat.completion\",\"created\":1765841530,\"model\":\"deepseek/deepseek-v3.2\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"index\":0,\"id\":\"call_00_ov8y2dYNe278YRwjsY4nF0Zy\",\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{}\"}}]},\"finish_reason\":\"tool_calls\"}],\"usage\":{\"prompt_tokens\":311,\"completion_tokens\":20,\"total_tokens\":331,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0},\"completion_tokens_details\":null},\"system_fingerprint\":\"fp_eaab8d114b_prod0820_fp8_kvcache\"}\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Expose-Headers:
+      - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+      Content-Length:
+      - "640"
+      Content-Type:
+      - application/json
+      Cross-Origin-Opener-Policy:
+      - same-origin
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Vary:
+      - Origin
+      Via:
+      - 1.1 b17b94cbc6db5cb82e8f8d6e55e1e85a.cloudfront.net (CloudFront)
+      X-Amz-Cf-Id:
+      - uEoBz9NakBQa_BieJQUjPoOwjVn3F53i_MssUaRbKez3QSV_uO64xQ==
+      X-Amz-Cf-Pop:
+      - YTO50-P1
+      X-Cache:
+      - Miss from cloudfront
+      X-Inference-Provider:
+      - novita
+      X-Powered-By:
+      - huggingface-moon
+      X-Robots-Tag:
+      - none
+      X-Trace-Id:
+      - bf26ab53f3074ffbeea6c2a073b34990
+    status: 200 OK
+    code: 200
+    duration: 4.74s

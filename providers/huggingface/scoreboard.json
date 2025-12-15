@@ -14,26 +14,40 @@
       "models": [
         "deepseek-ai/DeepSeek-V3.2"
       ],
-      "sota": true
+      "sota": true,
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "json": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "json": true,
+        "topLogprobs": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
     },
     {
-      "comments": "Untested",
       "models": [
         "Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8"
       ],
-      "good": true
-    },
-    {
-      "comments": "Untested",
-      "models": [
-        "meta-llama/Llama-3.2-1B-Instruct"
-      ],
-      "cheap": true
-    },
-    {
-      "models": [
-        "meta-llama/Llama-3.3-70B-Instruct"
-      ],
+      "good": true,
       "in": {
         "text": {
           "inline": true
@@ -58,6 +72,37 @@
         "reportFinishReason": "true",
         "seed": true,
         "json": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
+    },
+    {
+      "models": [
+        "meta-llama/Llama-3.2-1B-Instruct"
+      ],
+      "cheap": true,
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "topLogprobs": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
         "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
@@ -98,6 +143,39 @@
         "seed": true,
         "json": true,
         "jsonSchema": true,
+        "topLogprobs": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
+    },
+    {
+      "models": [
+        "meta-llama/Llama-3.3-70B-Instruct"
+      ],
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "json": true,
+        "topLogprobs": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "json": true,
         "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true

@@ -68,7 +68,7 @@ func TestClient(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			c2 := &smallImage{Provider: &internaltest.HideHTTP500{Provider: c}}
+			c2 := &smallImage{Provider: &internaltest.HideHTTPCode{Provider: c, StatusCode: 500}}
 			if model.Reason {
 				for _, sc := range c.Scoreboard().Scenarios {
 					if sc.Reason && slices.Contains(sc.Models, model.Model) {

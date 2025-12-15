@@ -161,34 +161,35 @@ func (i *InjectOptions) Unwrap() genai.Provider {
 	return i.Provider
 }
 
-// HideHTTP500 is hides HTTP 500 errors from the reply.
-type HideHTTP500 struct {
+// HideHTTPCode hides specific HTTP error codes from the reply.
+type HideHTTPCode struct {
 	genai.Provider
+	StatusCode int
 }
 
-func (h *HideHTTP500) Unwrap() genai.Provider {
+func (h *HideHTTPCode) Unwrap() genai.Provider {
 	return h.Provider
 }
 
-func (h *HideHTTP500) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
+func (h *HideHTTPCode) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
 	resp, err := h.Provider.GenSync(ctx, msgs, opts...)
 	if err != nil {
 		var herr *httpjson.Error
-		if errors.As(err, &herr) && herr.StatusCode == 500 {
-			err = errors.New("hiding a HTTP 500 error")
+		if errors.As(err, &herr) && herr.StatusCode == h.StatusCode {
+			err = errors.New("hiding a HTTP error")
 		}
 	}
 	return resp, err
 }
 
-func (h *HideHTTP500) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
+func (h *HideHTTPCode) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	fragments, finish := h.Provider.GenStream(ctx, msgs, opts...)
 	return fragments, func() (genai.Result, error) {
 		res, err := finish()
 		if err != nil {
 			var herr *httpjson.Error
-			if errors.As(err, &herr) && herr.StatusCode == 500 {
-				err = errors.New("hiding a HTTP 500 error")
+			if errors.As(err, &herr) && herr.StatusCode == h.StatusCode {
+				err = errors.New("hiding a HTTP error")
 			}
 		}
 		return res, err

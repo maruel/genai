@@ -95,7 +95,7 @@ func TestClient(t *testing.T) {
 				}
 			}
 			// If anyone at Together.AI reads this, please get your shit together.
-			return &smallImage{Provider: &internaltest.HideHTTP500{Provider: c}}
+			return &smallImage{Provider: &internaltest.HideHTTPCode{Provider: c, StatusCode: 500}}
 		}
 
 		smoketest.Run(t, getClientRT, models, testRecorder.Records)

@@ -1,0 +1,84 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 239
+    host: router.huggingface.co
+    body: "{\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Explain the theory of relativity in great details.\"},{\"type\":\"text\",\"text\":\"\\n\\n/no_think\"}]}],\"max_tokens\":16}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://router.huggingface.co/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "{\n  \"id\": \"oPNHaJz-28Eivz-9ae9a60f5db607ef\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765840586,\n  \"model\": \"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"# The Theory of Relativity: A Comprehensive Explanation\\n\\nThe theory of relativity\",\n        \"tool_calls\": [],\n        \"reasoning\": null\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"length\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 23,\n    \"total_tokens\": 39,\n    \"completion_tokens\": 16\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Expose-Headers:
+      - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ae9a60f5db607ef-IAD
+      Content-Type:
+      - application/json; charset=utf-8
+      Cross-Origin-Opener-Policy:
+      - same-origin
+      Etag:
+      - W/"25f-ygGPatQaMvRPga6IPHL7DoUaJlM"
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Retry-After:
+      - "1"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      Via:
+      - 1.1 c5670948bece41c6bb9df947cb650b7e.cloudfront.net (CloudFront)
+      X-Amz-Cf-Id:
+      - KpoFSU_pftImTIL086_AAz0BePC8ug_a1ZpRl-YxrdBiKzzx0KTZ2A==
+      X-Amz-Cf-Pop:
+      - YTO50-P1
+      X-Api-Call-End:
+      - "2025-12-15T23:16:26.722Z"
+      X-Api-Call-Start:
+      - "2025-12-15T23:16:26.204Z"
+      X-Api-Received:
+      - "2025-12-15T23:16:26.184Z"
+      X-Cache:
+      - Miss from cloudfront
+      X-Inference-Provider:
+      - together
+      X-Inference-Version:
+      - v2
+      X-Powered-By:
+      - huggingface-moon
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "100"
+      X-Ratelimit-Limit-Tokens:
+      - "33333.333333333336"
+      X-Ratelimit-Remaining:
+      - "194"
+      X-Ratelimit-Remaining-Tokens:
+      - "33241.333333333336"
+      X-Ratelimit-Reset:
+      - "1"
+      X-Robots-Tag:
+      - none
+    status: 200 OK
+    code: 200
+    duration: 673ms

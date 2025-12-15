@@ -1,0 +1,56 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 451
+    host: router.huggingface.co
+    body: "{\"model\":\"deepseek-ai/DeepSeek-V3.2\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON.\"}],\"response_format\":{\"type\":\"json_schema\",\"json_schema\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"is_fruit\":{\"type\":\"boolean\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"is_fruit\"],\"name\":\"response\"}},\"stream_options\":{\"include_usage\":true}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://router.huggingface.co/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"d28545009907d25f4cb2081616f20c71\",\"object\":\"chat.completion.chunk\",\"created\":1765841526,\"model\":\"deepseek/deepseek-v3.2\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"{\\\"\",\"role\":\"assistant\"},\"finish_reason\":null}],\"system_fingerprint\":\"\",\"sla_metrics\":{\"ttft_ms\":703,\"ts_us\":1765841527212270}}\n\ndata: {\"id\":\"d28545009907d25f4cb2081616f20c71\",\"object\":\"chat.completion.chunk\",\"created\":1765841526,\"model\":\"deepseek/deepseek-v3.2\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"answer\"},\"finish_reason\":null}],\"system_fingerprint\":\"\",\"sla_metrics\":{\"ttft_ms\":703,\"ts_us\":1765841527338348}}\n\ndata: {\"id\":\"d28545009907d25f4cb2081616f20c71\",\"object\":\"chat.completion.chunk\",\"created\":1765841526,\"model\":\"deepseek/deepseek-v3.2\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"\\\": true\"},\"finish_reason\":null}],\"system_fingerprint\":\"\",\"sla_metrics\":{\"ttft_ms\":703,\"ts_us\":1765841527394509}}\n\ndata: {\"id\":\"d28545009907d25f4cb2081616f20c71\",\"object\":\"chat.completion.chunk\",\"created\":1765841526,\"model\":\"deepseek/deepseek-v3.2\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"}\"},\"finish_reason\":null}],\"system_fingerprint\":\"\",\"sla_metrics\":{\"ttft_ms\":703,\"ts_us\":1765841527426228}}\n\ndata: {\"id\":\"d28545009907d25f4cb2081616f20c71\",\"object\":\"chat.completion.chunk\",\"created\":1765841526,\"model\":\"deepseek/deepseek-v3.2\",\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"stop\"}],\"system_fingerprint\":\"\",\"usage\":{\"prompt_tokens\":170,\"completion_tokens\":6,\"total_tokens\":176,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":128,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0},\"completion_tokens_details\":null},\"sla_metrics\":{\"ttft_ms\":703,\"ts_us\":1765841527427356}}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Expose-Headers:
+      - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+      Cache-Control:
+      - no-cache
+      Content-Type:
+      - text/event-stream
+      Cross-Origin-Opener-Policy:
+      - same-origin
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Vary:
+      - Origin
+      Via:
+      - 1.1 b17b94cbc6db5cb82e8f8d6e55e1e85a.cloudfront.net (CloudFront)
+      X-Amz-Cf-Id:
+      - psf6i1qEh7nNGrz3si5ROb1xa2SVjIrrnqIXPoW7NokYq_JMdiWfZg==
+      X-Amz-Cf-Pop:
+      - YTO50-P1
+      X-Cache:
+      - Miss from cloudfront
+      X-Inference-Provider:
+      - novita
+      X-Powered-By:
+      - huggingface-moon
+      X-Robots-Tag:
+      - none
+      X-Trace-Id:
+      - d28545009907d25f4cb2081616f20c71
+    status: 200 OK
+    code: 200
+    duration: 826ms

@@ -1,0 +1,82 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 241
+    host: router.huggingface.co
+    body: "{\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Say hello. Use only one word.\"},{\"type\":\"text\",\"text\":\"\\n\\n/no_think\"}]}],\"stream_options\":{\"include_usage\":true}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://router.huggingface.co/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"oPNHZvd-28Eivz-9ae9a606fc201b59\",\"object\":\"chat.completion.chunk\",\"created\":1765840584,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"oPNHZvd-28Eivz-9ae9a606fc201b59\",\"object\":\"chat.completion.chunk\",\"created\":1765840584,\"choices\":[{\"index\":0,\"text\":\"Hello\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"Hello\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"oPNHZvd-28Eivz-9ae9a606fc201b59\",\"object\":\"chat.completion.chunk\",\"created\":1765840584,\"choices\":[{\"index\":0,\"text\":\"!\",\"logprobs\":null,\"finish_reason\":null,\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"!\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"oPNHZvd-28Eivz-9ae9a606fc201b59\",\"object\":\"chat.completion.chunk\",\"created\":1765840584,\"choices\":[{\"index\":0,\"text\":\"\",\"logprobs\":null,\"finish_reason\":\"stop\",\"delta\":{\"token_id\":null,\"role\":\"assistant\",\"content\":\"\",\"reasoning\":null}}],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":null}\n\ndata: {\"id\":\"oPNHZvd-28Eivz-9ae9a606fc201b59\",\"object\":\"chat.completion.chunk\",\"created\":1765840584,\"choices\":[],\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"usage\":{\"prompt_tokens\":20,\"total_tokens\":23,\"completion_tokens\":3,\"prompt_tokens_details\":null}}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Expose-Headers:
+      - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+      Cache-Control:
+      - no-cache, no-transform
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ae9a606fc201b59-IAD
+      Content-Type:
+      - text/event-stream;charset=utf-8
+      Cross-Origin-Opener-Policy:
+      - same-origin
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Retry-After:
+      - "2"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      Via:
+      - 1.1 c5670948bece41c6bb9df947cb650b7e.cloudfront.net (CloudFront)
+      X-Amz-Cf-Id:
+      - duZ80mxZefYObn7Fz93IpVAbbnCo7p_4Ue3Nm42vYLHNoQulhM1XCQ==
+      X-Amz-Cf-Pop:
+      - YTO50-P1
+      X-Api-Call-Start:
+      - "2025-12-15T23:16:24.903Z"
+      X-Api-Received:
+      - "2025-12-15T23:16:24.887Z"
+      X-Cache:
+      - Miss from cloudfront
+      X-Inference-Provider:
+      - together
+      X-Inference-Version:
+      - v2
+      X-Powered-By:
+      - huggingface-moon
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "100"
+      X-Ratelimit-Limit-Tokens:
+      - "33333.333333333336"
+      X-Ratelimit-Remaining:
+      - "199"
+      X-Ratelimit-Remaining-Tokens:
+      - "33333.333333333336"
+      X-Ratelimit-Reset:
+      - "2"
+      X-Robots-Tag:
+      - none
+    status: 200 OK
+    code: 200
+    duration: 498ms

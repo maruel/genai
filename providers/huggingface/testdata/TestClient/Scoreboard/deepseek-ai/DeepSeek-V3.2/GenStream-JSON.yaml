@@ -1,0 +1,56 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 301
+    host: router.huggingface.co
+    body: "{\"model\":\"deepseek-ai/DeepSeek-V3.2\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\\\"is_fruit\\\": bool}.\"}],\"response_format\":{\"type\":\"json_object\"},\"stream_options\":{\"include_usage\":true}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://router.huggingface.co/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"4fac5138c0c2355fefc96319d7b84d3e\",\"object\":\"chat.completion.chunk\",\"created\":1765841526,\"model\":\"deepseek/deepseek-v3.2\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\"},\"finish_reason\":null}],\"system_fingerprint\":\"\",\"sla_metrics\":{\"ttft_ms\":498,\"ts_us\":1765841526325518}}\n\ndata: {\"id\":\"4fac5138c0c2355fefc96319d7b84d3e\",\"object\":\"chat.completion.chunk\",\"created\":1765841526,\"model\":\"deepseek/deepseek-v3.2\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"{\\\"\"},\"finish_reason\":null}],\"system_fingerprint\":\"\",\"usage\":{\"prompt_tokens\":33,\"completion_tokens\":1,\"total_tokens\":34,\"prompt_tokens_details\":null,\"completion_tokens_details\":null},\"sla_metrics\":{\"ttft_ms\":498,\"ts_us\":1765841526325645}}\n\ndata: {\"id\":\"4fac5138c0c2355fefc96319d7b84d3e\",\"object\":\"chat.completion.chunk\",\"created\":1765841526,\"model\":\"deepseek/deepseek-v3.2\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"is_f\"},\"finish_reason\":null}],\"system_fingerprint\":\"\",\"usage\":{\"prompt_tokens\":33,\"completion_tokens\":3,\"total_tokens\":36,\"prompt_tokens_details\":null,\"completion_tokens_details\":null},\"sla_metrics\":{\"ttft_ms\":498,\"ts_us\":1765841526339948}}\n\ndata: {\"id\":\"4fac5138c0c2355fefc96319d7b84d3e\",\"object\":\"chat.completion.chunk\",\"created\":1765841526,\"model\":\"deepseek/deepseek-v3.2\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"ruit\\\":\"},\"finish_reason\":null}],\"system_fingerprint\":\"\",\"usage\":{\"prompt_tokens\":33,\"completion_tokens\":5,\"total_tokens\":38,\"prompt_tokens_details\":null,\"completion_tokens_details\":null},\"sla_metrics\":{\"ttft_ms\":498,\"ts_us\":1765841526354592}}\n\ndata: {\"id\":\"4fac5138c0c2355fefc96319d7b84d3e\",\"object\":\"chat.completion.chunk\",\"created\":1765841526,\"model\":\"deepseek/deepseek-v3.2\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" true}\"},\"finish_reason\":null}],\"system_fingerprint\":\"\",\"usage\":{\"prompt_tokens\":33,\"completion_tokens\":7,\"total_tokens\":40,\"prompt_tokens_details\":null,\"completion_tokens_details\":null},\"sla_metrics\":{\"ttft_ms\":498,\"ts_us\":1765841526368915}}\n\ndata: {\"id\":\"4fac5138c0c2355fefc96319d7b84d3e\",\"object\":\"chat.completion.chunk\",\"created\":1765841526,\"model\":\"deepseek/deepseek-v3.2\",\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"stop\"}],\"system_fingerprint\":\"\",\"sla_metrics\":{\"ttft_ms\":498,\"ts_us\":1765841526383001}}\n\ndata: {\"id\":\"4fac5138c0c2355fefc96319d7b84d3e\",\"object\":\"chat.completion.chunk\",\"created\":1765841526,\"model\":\"deepseek/deepseek-v3.2\",\"choices\":[],\"system_fingerprint\":\"\",\"usage\":{\"prompt_tokens\":33,\"completion_tokens\":8,\"total_tokens\":41,\"prompt_tokens_details\":null,\"completion_tokens_details\":null},\"sla_metrics\":{\"ttft_ms\":498,\"ts_us\":1765841526383252}}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Expose-Headers:
+      - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+      Cache-Control:
+      - no-cache
+      Content-Type:
+      - text/event-stream
+      Cross-Origin-Opener-Policy:
+      - same-origin
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Vary:
+      - Origin
+      Via:
+      - 1.1 b17b94cbc6db5cb82e8f8d6e55e1e85a.cloudfront.net (CloudFront)
+      X-Amz-Cf-Id:
+      - y3CW5Da8aubhAz_N9C8Dp_V6lravMQ20CIQrBT5IsryAHiUq4cBjEQ==
+      X-Amz-Cf-Pop:
+      - YTO50-P1
+      X-Cache:
+      - Miss from cloudfront
+      X-Inference-Provider:
+      - novita
+      X-Powered-By:
+      - huggingface-moon
+      X-Robots-Tag:
+      - none
+      X-Trace-Id:
+      - 4fac5138c0c2355fefc96319d7b84d3e
+    status: 200 OK
+    code: 200
+    duration: 748ms

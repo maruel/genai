@@ -1,0 +1,56 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 196
+    host: router.huggingface.co
+    body: "{\"model\":\"deepseek-ai/DeepSeek-V3.2\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"}],\"logprobs\":true,\"stream_options\":{\"include_usage\":true},\"top_logprobs\":2}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://router.huggingface.co/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"id\":\"191979f0e4d3e9083120d83ada0cf85f\",\"object\":\"chat.completion.chunk\",\"created\":1765841523,\"model\":\"deepseek/deepseek-v3.2\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Hello\",\"role\":\"assistant\"},\"logprobs\":{\"content\":[{\"token\":\"Hello\",\"bytes\":[72,101,108,108,111],\"logprob\":-0.19379498064517975,\"top_logprobs\":[]}]},\"finish_reason\":null}],\"system_fingerprint\":\"\",\"sla_metrics\":{\"ttft_ms\":1071,\"ts_us\":1765841523675553}}\n\ndata: {\"id\":\"191979f0e4d3e9083120d83ada0cf85f\",\"object\":\"chat.completion.chunk\",\"created\":1765841523,\"model\":\"deepseek/deepseek-v3.2\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\".\",\"role\":\"assistant\"},\"logprobs\":{\"content\":[{\"token\":\".\",\"bytes\":[46],\"logprob\":-0.16257724165916443,\"top_logprobs\":[]},{\"token\":\"<｜end▁of▁sentence｜>\",\"bytes\":[60,239,189,156,101,110,100,226,150,129,111,102,226,150,129,115,101,110,116,101,110,99,101,239,189,156,62],\"logprob\":-0.00010574422776699066,\"top_logprobs\":[]}]},\"finish_reason\":null}],\"system_fingerprint\":\"\",\"sla_metrics\":{\"ttft_ms\":1071,\"ts_us\":1765841523905038}}\n\ndata: {\"id\":\"191979f0e4d3e9083120d83ada0cf85f\",\"object\":\"chat.completion.chunk\",\"created\":1765841523,\"model\":\"deepseek/deepseek-v3.2\",\"choices\":[{\"index\":0,\"delta\":{\"role\":\"assistant\"},\"logprobs\":{\"content\":[{\"token\":\".\",\"bytes\":[46],\"logprob\":-0.16257724165916443,\"top_logprobs\":[]},{\"token\":\"<｜end▁of▁sentence｜>\",\"bytes\":[60,239,189,156,101,110,100,226,150,129,111,102,226,150,129,115,101,110,116,101,110,99,101,239,189,156,62],\"logprob\":-0.00010574422776699066,\"top_logprobs\":[]}]},\"finish_reason\":\"stop\"}],\"system_fingerprint\":\"\",\"sla_metrics\":{\"ttft_ms\":1071,\"ts_us\":1765841523905201}}\n\ndata: {\"id\":\"191979f0e4d3e9083120d83ada0cf85f\",\"object\":\"chat.completion.chunk\",\"created\":1765841523,\"model\":\"deepseek/deepseek-v3.2\",\"choices\":[],\"system_fingerprint\":\"\",\"usage\":{\"prompt_tokens\":12,\"completion_tokens\":3,\"total_tokens\":15,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0},\"completion_tokens_details\":{\"audio_tokens\":0,\"reasoning_tokens\":0,\"accepted_prediction_tokens\":0,\"rejected_prediction_tokens\":0}},\"sla_metrics\":{\"ttft_ms\":1071,\"ts_us\":1765841523905460}}\n\ndata: [DONE]\n\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Expose-Headers:
+      - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+      Cache-Control:
+      - no-cache
+      Content-Type:
+      - text/event-stream
+      Cross-Origin-Opener-Policy:
+      - same-origin
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Vary:
+      - Origin
+      Via:
+      - 1.1 b17b94cbc6db5cb82e8f8d6e55e1e85a.cloudfront.net (CloudFront)
+      X-Amz-Cf-Id:
+      - Msi8fqy1pZHHHriFLw7lcHi60LYomKBP_6nMuLruv3Oxtj1vDhAGbg==
+      X-Amz-Cf-Pop:
+      - YTO50-P1
+      X-Cache:
+      - Miss from cloudfront
+      X-Inference-Provider:
+      - novita
+      X-Powered-By:
+      - huggingface-moon
+      X-Robots-Tag:
+      - none
+      X-Trace-Id:
+      - 191979f0e4d3e9083120d83ada0cf85f
+    status: 200 OK
+    code: 200
+    duration: 1.334s

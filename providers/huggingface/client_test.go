@@ -88,6 +88,10 @@ func TestClient(t *testing.T) {
 					}
 				}
 			}
+			if strings.Contains(model.Model, "-1B-") {
+				// It returns 502 on JSON
+				return &internaltest.HideHTTPCode{Provider: c, StatusCode: 502}
+			}
 			return c
 		}
 		smoketest.Run(t, getClientRT, models, testRecorder.Records)

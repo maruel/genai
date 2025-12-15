@@ -1,0 +1,84 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 212
+    host: router.huggingface.co
+    body: "{\"model\":\"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Say hello. Use only one word.\"},{\"type\":\"text\",\"text\":\"\\n\\n/no_think\"}]}],\"seed\":42}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://router.huggingface.co/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "{\n  \"id\": \"oPNHa5G-zqrih-9ae9a60a2de61757\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765840585,\n  \"model\": \"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"Hello!\",\n        \"tool_calls\": [],\n        \"reasoning\": null\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 20,\n    \"total_tokens\": 23,\n    \"completion_tokens\": 3\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Expose-Headers:
+      - X-Repo-Commit,X-Request-Id,X-Error-Code,X-Error-Message,X-Total-Count,ETag,Link,Accept-Ranges,Content-Range,X-Linked-Size,X-Linked-ETag,X-Xet-Hash
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9ae9a60a2de61757-IAD
+      Content-Type:
+      - application/json; charset=utf-8
+      Cross-Origin-Opener-Policy:
+      - same-origin
+      Etag:
+      - W/"20e-IYL7PZL9jCoMaRs7LSUHMZmJ000"
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Retry-After:
+      - "2"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      Via:
+      - 1.1 c5670948bece41c6bb9df947cb650b7e.cloudfront.net (CloudFront)
+      X-Amz-Cf-Id:
+      - 8Z5vBBhNKVFKsTgfPnBv-Y-lIH8_D7xTG4pIv2IqMlq7YlyFLllbpA==
+      X-Amz-Cf-Pop:
+      - YTO50-P1
+      X-Api-Call-End:
+      - "2025-12-15T23:16:25.601Z"
+      X-Api-Call-Start:
+      - "2025-12-15T23:16:25.396Z"
+      X-Api-Received:
+      - "2025-12-15T23:16:25.387Z"
+      X-Cache:
+      - Miss from cloudfront
+      X-Inference-Provider:
+      - together
+      X-Inference-Version:
+      - v2
+      X-Powered-By:
+      - huggingface-moon
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "100"
+      X-Ratelimit-Limit-Tokens:
+      - "33333.333333333336"
+      X-Ratelimit-Remaining:
+      - "199"
+      X-Ratelimit-Remaining-Tokens:
+      - "33333.333333333336"
+      X-Ratelimit-Reset:
+      - "2"
+      X-Robots-Tag:
+      - none
+    status: 200 OK
+    code: 200
+    duration: 406ms

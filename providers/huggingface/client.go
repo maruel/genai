@@ -392,6 +392,7 @@ type ChatResponse struct {
 	Created           base.Time `json:"created"`
 	Model             string    `json:"model"`
 	SystemFingerprint string    `json:"system_fingerprint"`
+	Prompt            []any     `json:"prompt,omitzero"` // Some models return empty prompt field
 
 	Choices []struct {
 		FinishReason         FinishReason         `json:"finish_reason"`
@@ -399,7 +400,8 @@ type ChatResponse struct {
 		Message              MessageResponse      `json:"message"`
 		ContentFilterResults ContentFilterResults `json:"content_filter_results"`
 		StopReason           string               `json:"stop_reason"`
-		Logprobs             Logprobs             `json:"logprobs"`
+		Logprobs             Logprobs             `json:"logprobs,omitzero"`
+		Seed                 int64                `json:"seed,omitzero"`
 	} `json:"choices"`
 	Usage          Usage    `json:"usage"`
 	PromptLogprobs struct{} `json:"prompt_logprobs"`
@@ -417,13 +419,18 @@ type Logprobs struct {
 			Logprob float64 `json:"logprob"`
 		} `json:"top_logprobs"`
 	} `json:"content"`
-	Refusal struct{} `json:"refusal"`
+	// Alternative format used by some models
+	Tokens         []any    `json:"tokens,omitzero"`
+	TokenLogprobs  []any    `json:"token_logprobs,omitzero"`
+	TopLogprobsAlt []any    `json:"top_logprobs,omitzero"`
+	Refusal        struct{} `json:"refusal,omitzero"`
+}
+
+func (l *Logprobs) IsZero() bool {
+	return len(l.Content) == 0
 }
 
 func (l *Logprobs) To() [][]genai.Logprob {
-	if len(l.Content) == 0 {
-		return nil
-	}
 	out := make([][]genai.Logprob, 0, len(l.Content))
 	for _, p := range l.Content {
 		lp := make([]genai.Logprob, 0, len(p.TopLogprobs))
@@ -516,6 +523,7 @@ type MessageResponse struct {
 	ReasoningContent struct{}   `json:"reasoning_content"`
 	Annotations      struct{}   `json:"annotations"`
 	Audio            struct{}   `json:"audio"`
+	Reasoning        any        `json:"reasoning,omitzero"`
 }
 
 func (m *MessageResponse) To(out *genai.Message) error {
@@ -560,22 +568,25 @@ type ChatStreamChunkResponse struct {
 	Model             string    `json:"model"`
 	SystemFingerprint string    `json:"system_fingerprint"`
 	Choices           []struct {
-		Index        int64        `json:"index"`
+		Index        int64        `json:"index,omitzero"`
 		FinishReason FinishReason `json:"finish_reason"`
+		Text         string       `json:"text,omitzero"`
+		Logprobs     Logprobs     `json:"logprobs,omitzero"`
 		Delta        struct {
 			Role      string     `json:"role"`
 			Content   string     `json:"content"`
 			ToolCalls []ToolCall `json:"tool_calls"`
+			TokenID   int64      `json:"token_id,omitzero"`
+			Reasoning any        `json:"reasoning,omitzero"`
 		} `json:"delta"`
-		ContentFilterResults ContentFilterResults `json:"content_filter_results"`
-		StopReason           string               `json:"stop_reason"`
-		Logprobs             Logprobs             `json:"logprobs"`
+		ContentFilterResults ContentFilterResults `json:"content_filter_results,omitzero"`
+		StopReason           string               `json:"stop_reason,omitzero"`
 	} `json:"choices"`
 	Usage      Usage `json:"usage"`
 	SLAMetrics struct {
 		TSUs   int64 `json:"ts_us"`
 		TTFTMs int64 `json:"ttft_ms"`
-	} `json:"sla_metrics"`
+	} `json:"sla_metrics,omitzero"`
 }
 
 type Model struct {
@@ -634,8 +645,9 @@ type ErrorResponse struct {
 	Code      int64      `json:"code"`
 	Reason    string     `json:"reason"`
 	Message   string     `json:"message"`
-	Metadata  struct{}   `json:"metadata"`
-	Type      string     `json:"type"` // "server_error"
+	Metadata  struct{}   `json:"metadata,omitzero"`
+	Type      string     `json:"type"`        // "server_error"
+	ID        string     `json:"id,omitzero"` // Some models include request ID in error response
 }
 
 func (er *ErrorResponse) Error() string {
@@ -935,7 +947,9 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 				if pkt.Choices[0].FinishReason != "" {
 					u.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
 				}
-				l = append(l, pkt.Choices[0].Logprobs.To()...)
+				if !pkt.Choices[0].Logprobs.IsZero() {
+					l = append(l, pkt.Choices[0].Logprobs.To()...)
+				}
 				switch role := pkt.Choices[0].Delta.Role; role {
 				case "assistant", "":
 				default:

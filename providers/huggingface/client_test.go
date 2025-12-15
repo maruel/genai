@@ -100,8 +100,8 @@ func TestClient(t *testing.T) {
 		}{
 			// It oscillates between models.
 			{genai.ModelCheap, "meta-llama/Llama-3.2-1B-Instruct"},
-			{genai.ModelGood, "Qwen/Qwen3-Coder-480B-A35B-Instruct"},
-			{genai.ModelSOTA, "deepseek-ai/DeepSeek-V3.1"},
+			{genai.ModelGood, "Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8"},
+			{genai.ModelSOTA, "deepseek-ai/DeepSeek-V3.2"},
 		}
 		for _, line := range data {
 			t.Run(line.name, func(t *testing.T) {

@@ -175,6 +175,46 @@
       }
     },
     {
+      "models": [
+        "llama-3.3-70b"
+      ],
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "tools": "flaky",
+        "toolCallRequired": true,
+        "json": true,
+        "jsonSchema": true,
+        "topLogprobs": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "tools": "true",
+        "toolsIndecisive": "true",
+        "toolCallRequired": true,
+        "json": true,
+        "jsonSchema": true,
+        "topLogprobs": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
+    },
+    {
       "comments": "llama-3.1-8b works too but the ListModels() API returns the malformed string.",
       "models": [
         "llama3.1-8b"
@@ -208,46 +248,6 @@
         "seed": true,
         "tools": "true",
         "toolsBiased": "true",
-        "toolCallRequired": true,
-        "json": true,
-        "jsonSchema": true,
-        "topLogprobs": true,
-        "maxTokens": true,
-        "stopSequence": true
-      }
-    },
-    {
-      "models": [
-        "llama-3.3-70b"
-      ],
-      "in": {
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "tools": "flaky",
-        "toolCallRequired": true,
-        "json": true,
-        "jsonSchema": true,
-        "topLogprobs": true,
-        "maxTokens": true,
-        "stopSequence": true
-      },
-      "GenStream": {
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "tools": "true",
-        "toolsIndecisive": "true",
         "toolCallRequired": true,
         "json": true,
         "jsonSchema": true,

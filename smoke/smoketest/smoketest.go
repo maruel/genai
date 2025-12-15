@@ -295,21 +295,7 @@ func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Recor
 		}
 	})
 	if !filtered {
-		// Check for models that should have been tested but weren't
-		for model := range modelsToTest {
-			if _, ok := seen[model]; !ok {
-				// Track stale models when updating scoreboard
-				for _, sc := range sb.Scenarios {
-					if len(sc.Models) > 0 && sc.Models[0] == model.Model && sc.Reason == model.Reason {
-						staleScenarios = append(staleScenarios, sc)
-					}
-				}
-				if !*updateScoreboard {
-					t.Errorf("stale model in scoreboard: %v", model)
-				}
-			}
-		}
-
+		// Only mark models as truly stale on complete test runs (no filtering)
 		// Check for models in scoreboard that are not in discovered models
 		// These are truly stale (removed from the API)
 		for sbModel := range allScoreboardModels {
@@ -368,8 +354,10 @@ func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Recor
 				t.Errorf("failed to delete stale recordings: %v", err)
 			}
 		}
-		// Also delete any orphaned recording directories that aren't being tested
-		if err := deleteOrphanedRecordings(t, seen); err != nil {
+		// Delete orphaned recordings that don't correspond to any model in the scoreboard.
+		// Use allScoreboardModels instead of seen to avoid deleting secondary models
+		// that are in the scoreboard but weren't tested in this run (skipped for cost savings).
+		if err := deleteOrphanedRecordingsForModels(t, allScoreboardModels); err != nil {
 			t.Errorf("failed to delete orphaned recordings: %v", err)
 		}
 	}
@@ -440,14 +428,16 @@ func deleteStaleRecordings(t testing.TB, staleScenarios []scoreboard.Scenario) e
 	return nil
 }
 
-// deleteOrphanedRecordings removes HTTP recording directories that don't correspond to any tested model.
-func deleteOrphanedRecordings(t testing.TB, seen map[Model]struct{}) error {
+// deleteOrphanedRecordingsForModels removes HTTP recording directories that don't correspond to any model in the scoreboard.
+// This prevents deletion of secondary models that are in the scoreboard but weren't tested in this run
+// (they were skipped for cost savings).
+func deleteOrphanedRecordingsForModels(t testing.TB, scoreboardModels map[string]struct{}) error {
 	scoreBoardDir := filepath.Join("testdata", "TestClient", "Scoreboard")
-	return deleteOrphanedRecordingsRec(t, scoreBoardDir, "", seen)
+	return deleteOrphanedRecordingsRecForModels(t, scoreBoardDir, "", scoreboardModels)
 }
 
-// deleteOrphanedRecordingsRec recursively checks and deletes orphaned recordings.
-func deleteOrphanedRecordingsRec(t testing.TB, dir, prefix string, seen map[Model]struct{}) error {
+// deleteOrphanedRecordingsRecForModels recursively checks and deletes recordings that don't correspond to any scoreboard model.
+func deleteOrphanedRecordingsRecForModels(t testing.TB, dir, prefix string, scoreboardModels map[string]struct{}) error {
 	entries, err := os.ReadDir(dir)
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -466,17 +456,24 @@ func deleteOrphanedRecordingsRec(t testing.TB, dir, prefix string, seen map[Mode
 			fullPath = prefix + "/" + dirName
 		}
 
-		// Check if this directory corresponds to a tested model
+		// Check if this directory corresponds to any model in the scoreboard
+		// Also check for "_thinking" suffix for reasoning models
+		// Normalize model names by converting colons to dashes (filesystem convention)
 		found := false
-		for model := range seen {
-			expected := model.String()
+		for model := range scoreboardModels {
+			normalizedModel := strings.ReplaceAll(model, ":", "-")
 			// Exact match
-			if fullPath == expected {
+			if fullPath == normalizedModel {
 				found = true
 				break
 			}
-			// Check if this directory is a parent of a tested model
-			if strings.HasPrefix(expected, fullPath+"/") {
+			// Check with _thinking suffix for reasoning models
+			if fullPath == normalizedModel+"_thinking" {
+				found = true
+				break
+			}
+			// Check if this directory is a parent of a scoreboard model
+			if strings.HasPrefix(normalizedModel, fullPath+"/") {
 				found = true
 				break
 			}
@@ -490,7 +487,7 @@ func deleteOrphanedRecordingsRec(t testing.TB, dir, prefix string, seen map[Mode
 			}
 		} else {
 			// Recursively check subdirectories for partially matched paths
-			if err := deleteOrphanedRecordingsRec(t, path, fullPath, seen); err != nil {
+			if err := deleteOrphanedRecordingsRecForModels(t, path, fullPath, scoreboardModels); err != nil {
 				return err
 			}
 		}

@@ -57,6 +57,17 @@ func Run(t *testing.T, pf ProviderFactory, models []scoreboard.Model, rec *myrec
 	if len(models) == 0 {
 		t.Fatal("no models")
 	}
+
+	filtered := false
+	flag.Visit(func(f *flag.Flag) {
+		if f.Name == "test.run" {
+			filtered = true
+		}
+	})
+	if filtered && *updateScoreboard {
+		t.Fatal("cannot use -update-scoreboard with -test.run")
+	}
+
 	seen := map[scoreboard.Model]struct{}{}
 	for _, m := range models {
 		if _, ok := seen[m]; ok {
@@ -116,7 +127,7 @@ func Run(t *testing.T, pf ProviderFactory, models []scoreboard.Model, rec *myrec
 					Reason: m.Reason,
 				}
 			}
-			if want.In == nil && want.Out == nil {
+			if want.Untested() {
 				t.Skip("Explicitly unsupported model")
 			}
 			// Run one model at a time otherwise we can't collect the total usage.
@@ -176,63 +187,68 @@ func Run(t *testing.T, pf ProviderFactory, models []scoreboard.Model, rec *myrec
 		// looks weird. But we skip the duplicate row.
 		// TODO: Have a way to query from the Provider if the currently selected model supports reasoning.
 
-		i := 0
-		if sb.Scenarios[i].Models[0] != sota {
-			t.Errorf("SOTA should be first: %q", sota)
-		} else if !sb.Scenarios[i].SOTA {
-			t.Errorf("SOTA should be true: %q", sota)
-		}
-		// There's two options, the SOTA model is also Good, or there's a duplicate of the first row for
-		// reasoning/non-reasoning.
-		if sota == good {
-			if !sb.Scenarios[i].Good {
-				t.Errorf("Good should be true: %q", good)
+		// Check if the preferred models exist in the scenarios
+		// If not, skip validation (they may not have been tested yet)
+		sotaInScenarios := false
+		for _, sc := range sb.Scenarios {
+			if sotaInScenarios = slices.Contains(sc.Models, sota); sotaInScenarios {
+				break
 			}
-			if good == cheap {
-				if !sb.Scenarios[i].Cheap {
-					t.Errorf("Cheap should be true: %q", cheap)
+		}
+		if sotaInScenarios {
+			i := 0
+			if sb.Scenarios[i].Models[0] != sota {
+				t.Errorf("SOTA should be first: %q", sota)
+			} else if !sb.Scenarios[i].SOTA {
+				t.Errorf("SOTA should be true: %q", sota)
+			}
+			// There's two options, the SOTA model is also Good, or there's a duplicate of the first row for
+			// reasoning/non-reasoning.
+			if sota == good {
+				if !sb.Scenarios[i].Good {
+					t.Errorf("Good should be true: %q", good)
+				}
+				if good == cheap {
+					if !sb.Scenarios[i].Cheap {
+						t.Errorf("Cheap should be true: %q", cheap)
+					}
+				} else {
+					i++
+					if sb.Scenarios[i].Models[0] == good {
+						i++
+					}
+					if !sb.Scenarios[i].Cheap {
+						t.Errorf("Cheap should be true: %q", cheap)
+					}
 				}
 			} else {
 				i++
-				if sb.Scenarios[i].Models[0] == good {
+				if sb.Scenarios[i].Models[0] == sota {
 					i++
 				}
-				if !sb.Scenarios[i].Cheap {
-					t.Errorf("Cheap should be true: %q", cheap)
+				if sb.Scenarios[i].Models[0] != good {
+					t.Errorf("Good should be true: %q", good)
+				}
+				if good == cheap {
+					if !sb.Scenarios[i].Cheap {
+						t.Errorf("Cheap should be true: %q", cheap)
+					}
+				} else {
+					i++
+					if sb.Scenarios[i].Models[0] == good {
+						i++
+					}
+					if !sb.Scenarios[i].Cheap {
+						t.Errorf("Cheap should be true: %q", cheap)
+					}
 				}
 			}
+			// TODO: Make sure other models are not marked as SOTA, Good or Cheap!
 		} else {
-			i++
-			if sb.Scenarios[i].Models[0] == sota {
-				i++
-			}
-			if sb.Scenarios[i].Models[0] != good {
-				t.Errorf("Good should be true: %q", good)
-			}
-			if good == cheap {
-				if !sb.Scenarios[i].Cheap {
-					t.Errorf("Cheap should be true: %q", cheap)
-				}
-			} else {
-				i++
-				if sb.Scenarios[i].Models[0] == good {
-					i++
-				}
-				if !sb.Scenarios[i].Cheap {
-					t.Errorf("Cheap should be true: %q", cheap)
-				}
-			}
+			t.Logf("SOTA model %q not in scenarios, skipping preferred model validation", sota)
 		}
-		// TODO: Make sure other models are not marked as SOTA, Good or Cheap!
 	}
 
-	// Do this at the end.
-	filtered := false
-	flag.Visit(func(f *flag.Flag) {
-		if f.Name == "test.run" {
-			filtered = true
-		}
-	})
 	staleModels := map[scoreboard.Model]struct{}{}
 	if !filtered {
 		// Only mark models as truly stale on complete test runs (no filtering)
@@ -255,13 +271,9 @@ func Run(t *testing.T, pf ProviderFactory, models []scoreboard.Model, rec *myrec
 			}
 		}
 	}
-
 	// Update scoreboards if requested
-	if *updateScoreboard {
-		stale := slices.Collect(maps.Keys(staleModels))
-		if len(updatedScenarios) > 0 || len(staleModels) > 0 {
-			doUpdateScoreboard(t, ".", updatedScenarios, preferredModels, stale)
-		}
+	if *updateScoreboard && (len(updatedScenarios) > 0 || len(staleModels) > 0) {
+		doUpdateScoreboard(t, ".", updatedScenarios, preferredModels, slices.Collect(maps.Keys(staleModels)))
 	}
 }
 

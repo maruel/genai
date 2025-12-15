@@ -68,11 +68,11 @@ func TestClient(t *testing.T) {
 		var models []scoreboard.Model
 		for _, m := range mdls {
 			id := m.GetID()
-			if id != "gemini-2.5-pro" {
+			if !strings.Contains(id, "-pro") {
 				// According to https://ai.google.dev/gemini-api/docs/thinking?hl=en, thinking cannot be disabled.
 				models = append(models, scoreboard.Model{Model: id})
 			}
-			if strings.HasPrefix(id, "gemini-2.5-") && !strings.Contains(id, "preview") {
+			if strings.HasPrefix(id, "gemini-") {
 				models = append(models, scoreboard.Model{Model: id, Reason: true})
 			}
 		}
@@ -111,9 +111,9 @@ func TestClient(t *testing.T) {
 			name     string
 			want     string
 		}{
-			{genai.ModalityText, genai.ModelCheap, "gemini-2.5-flash-lite"},
-			{genai.ModalityText, genai.ModelGood, "gemini-2.5-flash"},
-			{genai.ModalityText, genai.ModelSOTA, "gemini-2.5-pro"},
+			{genai.ModalityText, genai.ModelCheap, "gemini-flash-lite-latest"},
+			{genai.ModalityText, genai.ModelGood, "gemini-flash-latest"},
+			{genai.ModalityText, genai.ModelSOTA, "gemini-pro-latest"},
 			{genai.ModalityImage, genai.ModelCheap, "imagen-4.0-fast-generate-001"},
 			{genai.ModalityImage, genai.ModelGood, "imagen-4.0-generate-preview-06-06"},
 			{genai.ModalityImage, genai.ModelSOTA, "imagen-4.0-ultra-generate-preview-06-06"},

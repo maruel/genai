@@ -26,6 +26,7 @@ import (
 	"path"
 	"reflect"
 	"slices"
+	"strconv"
 	"strings"
 	"time"
 
@@ -594,9 +595,10 @@ func (p *Part) FromReply(in *genai.Reply) error {
 
 // FunctionCall is documented at https://ai.google.dev/api/caching?hl=en#FunctionCall
 type FunctionCall struct {
-	ID   string      `json:"id,omitzero"`
-	Name string      `json:"name,omitzero"`
-	Args StructValue `json:"args,omitzero"`
+	ID               string      `json:"id,omitzero"`
+	Name             string      `json:"name,omitzero"`
+	Args             StructValue `json:"args,omitzero"`
+	ThoughtSignature []byte      `json:"thoughtSignature,omitzero"` // Returned by some models with thinking
 }
 
 func (f *FunctionCall) From(in *genai.ToolCall) error {
@@ -702,8 +704,9 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 //
 // It is essentially a "Message".
 type ResponseCandidate struct {
-	Content      Content      `json:"content"`
-	FinishReason FinishReason `json:"finishReason"`
+	Content       Content      `json:"content"`
+	FinishReason  FinishReason `json:"finishReason"`
+	FinishMessage string       `json:"finishMessage,omitzero"` // Newer models with thinking return this
 	// https://ai.google.dev/api/generate-content?hl=en#v1beta.SafetyRating
 	SafetyRatings []struct {
 		// https://ai.google.dev/api/generate-content?hl=en#v1beta.HarmCategory
@@ -1520,40 +1523,134 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 	if err != nil {
 		return "", fmt.Errorf("failed to automatically select the model: %w", err)
 	}
+
+	// Build a map of available models for quick lookup.
+	availableModels := map[string]struct{}{}
+	for _, mdl := range mdls {
+		availableModels[strings.TrimPrefix(mdl.(*Model).Name, "models/")] = struct{}{}
+	}
 	cheap := preference == genai.ModelCheap
 	good := preference == genai.ModelGood || preference == ""
+	if cheap {
+		if _, ok := availableModels["gemini-flash-lite-latest"]; ok {
+			return "gemini-flash-lite-latest", nil
+		}
+	} else if good {
+		if _, ok := availableModels["gemini-flash-latest"]; ok {
+			return "gemini-flash-latest", nil
+		}
+	} else {
+		if _, ok := availableModels["gemini-pro-latest"]; ok {
+			return "gemini-pro-latest", nil
+		}
+	}
+
+	// If the preferred "-latest" model is not available, find the best from the list.
 	selectedModel := ""
 	var tokens int64
+	selectedPinned := false
 	for _, mdl := range mdls {
 		m := mdl.(*Model)
-		if !slices.Contains(m.SupportedGenerationMethods, "generateContent") || strings.Contains(m.Name, "tts") || (tokens != 0 && tokens > m.OutputTokenLimit) {
+		// Skip experimental models
+		if !slices.Contains(m.SupportedGenerationMethods, "generateContent") || strings.Contains(m.Name, "tts") || (tokens != 0 && tokens > m.OutputTokenLimit) || strings.Contains(m.Name, "-exp") {
 			continue
 		}
-		// TODO: Do numerical comparison? For now, we select the the unpinned model, without the "-NNN" suffix.
-		if name := strings.TrimPrefix(m.Name, "models/"); selectedModel == "" || name > selectedModel {
-			if cheap {
-				if strings.HasPrefix(name, "gemini") && strings.HasSuffix(name, "flash-lite") {
-					tokens = m.OutputTokenLimit
-					selectedModel = name
-				}
-			} else if good {
-				// We want flash and not flash-lite.
-				if strings.HasPrefix(name, "gemini") && strings.HasSuffix(name, "flash") {
-					tokens = m.OutputTokenLimit
-					selectedModel = name
-				}
-			} else {
-				if strings.HasPrefix(name, "gemini") && strings.HasSuffix(name, "pro") {
-					tokens = m.OutputTokenLimit
-					selectedModel = name
-				}
+		name := strings.TrimPrefix(m.Name, "models/")
+		matches := false
+		if cheap {
+			matches = strings.HasPrefix(name, "gemini") && strings.Contains(name, "-flash-lite")
+		} else if good {
+			matches = strings.HasPrefix(name, "gemini") && strings.Contains(name, "-flash") && !strings.Contains(name, "-lite")
+		} else {
+			matches = strings.HasPrefix(name, "gemini") && strings.Contains(name, "-pro")
+		}
+		if !matches {
+			continue
+		}
+		// Check if this model is better than the current selection.
+		isCandidatePinned := isPinnedModel(name)
+		shouldUpdate := false
+		if selectedModel == "" {
+			shouldUpdate = true
+		} else if isCandidatePinned && !selectedPinned {
+			// Prefer pinned models (with -NNN suffix) over unpinned ones
+			shouldUpdate = true
+		} else if isCandidatePinned == selectedPinned {
+			// Both pinned or both unpinned; compare versions
+			if compareVersions(name, selectedModel) > 0 {
+				shouldUpdate = true
 			}
+		}
+		if shouldUpdate {
+			selectedModel = name
+			selectedPinned = isCandidatePinned
+			tokens = m.OutputTokenLimit
 		}
 	}
 	if selectedModel == "" {
 		return "", errors.New("failed to find a model automatically")
 	}
 	return selectedModel, nil
+}
+
+// isPinnedModel returns true if the model name ends with a version number (e.g., -001, -002).
+func isPinnedModel(name string) bool {
+	parts := strings.Split(name, "-")
+	if len(parts) == 0 {
+		return false
+	}
+	lastPart := parts[len(parts)-1]
+	// A pinned model ends with 3 digits and is not "-latest"
+	if lastPart == "latest" {
+		return false
+	}
+	return len(lastPart) == 3 && lastPart[0] >= '0' && lastPart[0] <= '9'
+}
+
+// compareVersions compares two model names by their version numbers.
+// Returns >0 if a > b, <0 if a < b, 0 if equal or incomparable.
+// Example: "gemini-3-flash" > "gemini-2.5-flash"
+func compareVersions(a, b string) int {
+	// Extract version parts (e.g., "2.5" from "gemini-2.5-flash")
+	getVersionParts := func(name string) (major, minor int) {
+		parts := strings.Split(name, "-")
+		for i, part := range parts {
+			if part == "gemini" && i+1 < len(parts) {
+				versionStr := parts[i+1]
+				// Check if the next meaningful part is a type (flash, pro, etc)
+				var isVersionNumber bool
+				for j := i + 2; j < len(parts); j++ {
+					if parts[j] == "flash" || parts[j] == "pro" || parts[j] == "lite" {
+						isVersionNumber = true
+						break
+					}
+				}
+				if isVersionNumber {
+					// Parse major.minor version
+					versionParts := strings.Split(versionStr, ".")
+					if len(versionParts) >= 1 {
+						if v, err := strconv.Atoi(versionParts[0]); err == nil {
+							major = v
+						}
+					}
+					if len(versionParts) >= 2 {
+						if v, err := strconv.Atoi(versionParts[1]); err == nil {
+							minor = v
+						}
+					}
+					return
+				}
+			}
+		}
+		return
+	}
+
+	aMajor, aMinor := getVersionParts(a)
+	bMajor, bMinor := getVersionParts(b)
+	if aMajor != bMajor {
+		return aMajor - bMajor
+	}
+	return aMinor - bMinor
 }
 
 // selectBestImageModel selects the most appropriate model based on the preference (cheap, good, or SOTA).

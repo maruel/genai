@@ -337,16 +337,30 @@ var optScenario = cmpopts.IgnoreFields(scoreboard.Scenario{}, "Comments", "SOTA"
 // scoreboard model.
 func deleteOrphanedRecordings(t testing.TB, dir string, scoreboardModels map[Model]struct{}) {
 	// 1. Gather all the directories in the recordings directory.
-	// TODO: Only keep leaf directories. If a directory contains subdirectories, do not record it.
-	var modelDirs []string
+	var allDirs []string
 	if err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
 		if err == nil && info.IsDir() && path != dir {
 			relPath, _ := filepath.Rel(dir, path)
-			modelDirs = append(modelDirs, relPath)
+			allDirs = append(allDirs, relPath)
 		}
 		return err
 	}); err != nil {
 		t.Fatalf("failed to walk directory %s: %v", dir, err)
+	}
+
+	// Only keep leaf directories (directories with no subdirectories).
+	modelDirs := make([]string, 0, len(allDirs))
+	for _, d := range allDirs {
+		isLeaf := true
+		for _, other := range allDirs {
+			if other != d && strings.HasPrefix(other, d+string(filepath.Separator)) {
+				isLeaf = false
+				break
+			}
+		}
+		if isLeaf {
+			modelDirs = append(modelDirs, d)
+		}
 	}
 
 	// 2. Convert all the models into directory names, with the _thinking suffix.

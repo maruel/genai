@@ -300,12 +300,12 @@ func (s *Scenario) Validate() error {
 	if len(s.In) == 0 && (s.GenSync != nil || s.GenStream != nil) {
 		return errors.New("scenario must have be defined to have either GenSync or GenStream")
 	}
-	if s.GenSync == nil {
+	if s.GenSync != nil {
 		if err := s.GenSync.Validate(); err != nil {
 			return err
 		}
 	}
-	if s.GenStream == nil {
+	if s.GenStream != nil {
 		if err := s.GenStream.Validate(); err != nil {
 			return err
 		}
@@ -413,6 +413,44 @@ func (s *Score) Validate() error {
 				return fmt.Errorf("duplicate model in scoreboard: %v", k)
 			}
 			seen[k] = struct{}{}
+		}
+		if err := sc.Validate(); err != nil {
+			return err
+		}
+	}
+	// Don't test if there's only one scenario.
+	if len(s.Scenarios) > 1 {
+		i := 0
+		if !s.Scenarios[i].SOTA {
+			return fmt.Errorf("first should be SOTA: %q", s.Scenarios[i].Models[0])
+		}
+		// There's two options, the SOTA model is also Good, or there's a duplicate of the first row for
+		// reasoning/non-reasoning.
+		if !s.Scenarios[i].Good {
+			if i++; len(s.Scenarios) == i {
+				return errors.New("no Good model")
+			}
+			if s.Scenarios[i].Models[0] == s.Scenarios[i-1].Models[0] {
+				if i++; len(s.Scenarios) == i {
+					return errors.New("no Good model")
+				}
+			}
+		}
+		if !s.Scenarios[i].Good {
+			return fmt.Errorf("second should be Good: %q", s.Scenarios[i].Models[0])
+		}
+		if !s.Scenarios[i].Cheap {
+			if i++; len(s.Scenarios) == i {
+				return errors.New("no Cheap model")
+			}
+			if s.Scenarios[i].Models[0] == s.Scenarios[i-1].Models[0] {
+				if i++; len(s.Scenarios) == i {
+					return errors.New("no Cheap model")
+				}
+			}
+		}
+		if !s.Scenarios[i].Cheap {
+			return fmt.Errorf("third should be Cheap: %q", s.Scenarios[i].Models[0])
 		}
 	}
 	return nil

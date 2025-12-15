@@ -27,6 +27,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"maps"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -43,9 +44,10 @@ import (
 	"github.com/maruel/genai/smoke"
 )
 
-// Model is a model to test. It specifies if the model should run in "reasoning mode" or not. Most models only
-// support one or the other but a few support both. Often their functionality is different depending if
-// reasoning is enabled or not.
+// Model is a model to test.
+//
+// It specifies if the model should run in "reasoning mode" or not. Most models only support one or the other
+// but a few support both. Often their functionality is different depending if reasoning is enabled or not.
 type Model struct {
 	Model  string
 	Reason bool
@@ -65,6 +67,7 @@ type ProviderFactory func(t testing.TB, m Model, fn func(http.RoundTripper) http
 var updateScoreboard = flag.Bool("update-scoreboard", false, "Update scoreboard.json for each provider with current test results")
 
 // Run regenerates the scoreboard and asserts it is up to date.
+//
 // If the -update-scoreboard flag is set, it will update the scoreboard files
 // and automatically delete stale recordings for models that are no longer available.
 func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Records) {
@@ -79,11 +82,6 @@ func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Recor
 		seen[m] = struct{}{}
 	}
 
-	usage := genai.Usage{}
-	updatedScenarios := []scoreboard.Scenario{}
-	var staleScenarios []scoreboard.Scenario
-	preferredModels := map[string]string{} // maps genai.ModelXXX to actual model ID
-
 	// Find the reference.
 	cc := pf(t, Model{Model: genai.ModelNone}, nil)
 	sb := cc.Scoreboard()
@@ -92,40 +90,27 @@ func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Recor
 	}
 
 	modelsToTest := map[Model]struct{}{}
-	allScoreboardModels := map[string]struct{}{}  // Track all models in scoreboard for stale detection
-	staleModels := map[string]map[bool]struct{}{} // Track stale models by name and reason
-	for _, sc := range sb.Scenarios {
+	allScoreboardModels := map[Model]struct{}{}
+	for i, sc := range sb.Scenarios {
 		if len(sc.Models) == 0 {
-			continue
+			t.Fatalf("scenario #%d has no models", i)
 		}
 		// Track all models from scenarios for stale detection
-		for _, modelName := range sc.Models {
-			allScoreboardModels[modelName] = struct{}{}
-			// Only mark first model as expected to be tested (others skipped for cost savings)
-			if modelName == sc.Models[0] {
-				modelsToTest[Model{Model: modelName, Reason: sc.Reason}] = struct{}{}
-			}
+		for _, m := range sc.Models {
+			allScoreboardModels[Model{Model: m, Reason: sc.Reason}] = struct{}{}
 		}
+		// Only mark first model as expected to be tested (others skipped for cost savings)
+		modelsToTest[Model{Model: sc.Models[0], Reason: sc.Reason}] = struct{}{}
 	}
 
-	// Build a set of discovered models from the filtered test list
-	discoveredModels := map[string]struct{}{}
-	for _, m := range models {
-		discoveredModels[m.Model] = struct{}{}
-	}
-
+	usage := genai.Usage{}
+	updatedScenarios := []scoreboard.Scenario{}
 	for _, m := range models {
 		t.Run(m.String(), func(t *testing.T) {
-			// Find the reference.
-			var want scoreboard.Scenario
-			found := false
-
 			// First try to find exact match with the requested Reason value
+			var want scoreboard.Scenario
 			for _, sc := range sb.Scenarios {
-				if m.Reason != sc.Reason {
-					continue
-				}
-				if slices.Contains(sc.Models, m.Model) {
+				if m.Reason == sc.Reason && slices.Contains(sc.Models, m.Model) {
 					if sc.Models[0] != m.Model {
 						// We only run the first model in the scenario for cost savings purposes. Create one scenario per
 						// model to smoke test.
@@ -133,36 +118,16 @@ func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Recor
 					}
 					want = sc
 					want.Models = []string{m.Model}
-					found = true
 					break
 				}
 			}
-
-			// If not found and we're not updating, try to find the model with any Reason value
-			if !found && !*updateScoreboard {
-				for _, sc := range sb.Scenarios {
-					if slices.Contains(sc.Models, m.Model) {
-						if sc.Models[0] != m.Model {
-							t.Skip("Only run first model in scenario for cost savings")
-						}
-						// Model exists but with different Reason value
-						// Use the actual Reason value from the scoreboard
-						want = sc
-						want.Models = []string{m.Model}
-						found = true
-						// Mark this as seen using the actual reason value
-						seen[Model{Model: m.Model, Reason: sc.Reason}] = struct{}{}
-						break
-					}
-				}
-			}
-
-			if !found {
+			if len(want.Models) == 0 {
 				// Model not in scoreboard yet
 				if !*updateScoreboard {
 					t.Fatalf("no scenario for model %v", m)
 				}
 				// When updating scoreboard, create a new scenario for this model
+				// TODO(maruel): Maybe not test new models by default?
 				want = scoreboard.Scenario{
 					Models: []string{m.Model},
 					Reason: m.Reason,
@@ -179,7 +144,6 @@ func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Recor
 			if want.In == nil && want.Out == nil {
 				t.Skip("Explicitly unsupported model")
 			}
-
 			// Run one model at a time otherwise we can't collect the total usage.
 			u, got := runOneModel(t, func(t testing.TB, sn string) genai.Provider {
 				fn := func(h http.RoundTripper) http.RoundTripper {
@@ -209,6 +173,7 @@ func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Recor
 
 	// Check if the order is SOTA, Good, Cheap then the rest.
 	// HACK FOR llamacpp; there's only one model and the reported ID and the scoreboard name do not match.
+	preferredModels := map[string]string{} // maps genai.ModelXXX to actual model ID
 	if len(sb.Scenarios) > 1 {
 		// It'd be nicer to use PreloadedModels. In practice most do already.
 		name := "sota"
@@ -283,7 +248,6 @@ func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Recor
 				}
 			}
 		}
-
 		// TODO: Make sure other models are not marked as SOTA, Good or Cheap!
 	}
 
@@ -294,71 +258,45 @@ func Run(t *testing.T, pf ProviderFactory, models []Model, rec *myrecorder.Recor
 			filtered = true
 		}
 	})
+	staleModels := map[Model]struct{}{}
 	if !filtered {
 		// Only mark models as truly stale on complete test runs (no filtering)
 		// Check for models in scoreboard that are not in discovered models
-		// These are truly stale (removed from the API)
+		// These are truly stale (removed from the API).
 		for sbModel := range allScoreboardModels {
-			if _, ok := discoveredModels[sbModel]; !ok {
-				// This model is in scoreboard but not in API
-				// Find which scenario it's in to determine the reason
-				isToEnableLater := false
+			if _, ok := seen[sbModel]; !ok {
 				for _, sc := range sb.Scenarios {
 					for _, m := range sc.Models {
-						if m == sbModel {
-							// Skip marking as stale if this is a "To enable later" scenario
-							// (indicated by having no In/Out modalities defined)
-							if (sc.In == nil || len(sc.In) == 0) && (sc.Out == nil || len(sc.Out) == 0) {
-								// This is a "To enable later" model, don't mark as stale
-								isToEnableLater = true
-								break
-							}
-							// Mark this specific model as stale
-							if staleModels[sbModel] == nil {
-								staleModels[sbModel] = make(map[bool]struct{})
-							}
-							staleModels[sbModel][sc.Reason] = struct{}{}
+						if m == sbModel.Model && sc.Reason == sbModel.Reason {
+							// This model is in scoreboard but not in API
+							staleModels[sbModel] = struct{}{}
 							break
 						}
 					}
-					if isToEnableLater {
-						break
-					}
 				}
-				if !*updateScoreboard && !isToEnableLater {
+				if !*updateScoreboard {
 					t.Errorf("stale model in scoreboard: %v", sbModel)
 				}
-			}
-		}
-
-		// Convert stale models to scenario format for defaultUpdateScoreboard
-		for sbModel := range staleModels {
-			for reason := range staleModels[sbModel] {
-				staleScenarios = append(staleScenarios, scoreboard.Scenario{
-					Models: []string{sbModel},
-					Reason: reason,
-				})
 			}
 		}
 	}
 
 	// Update scoreboards if requested
 	if *updateScoreboard {
-		if len(updatedScenarios) > 0 || len(staleScenarios) > 0 {
-			if err := defaultUpdateScoreboard(t, ".", updatedScenarios, preferredModels, staleScenarios); err != nil {
-				t.Errorf("failed to update scoreboard: %v", err)
-			}
+		stale := slices.Collect(maps.Keys(staleModels))
+		if len(updatedScenarios) > 0 || len(staleModels) > 0 {
+			doUpdateScoreboard(t, ".", updatedScenarios, preferredModels, stale)
 		}
-		if len(staleScenarios) > 0 {
-			if err := deleteStaleRecordings(t, staleScenarios); err != nil {
+		if len(staleModels) > 0 {
+			if err := deleteStaleRecordings(t, stale); err != nil {
 				t.Errorf("failed to delete stale recordings: %v", err)
 			}
 		}
-		// Delete orphaned recordings that don't correspond to any model in the scoreboard.
-		// Use allScoreboardModels instead of seen to avoid deleting secondary models
-		// that are in the scoreboard but weren't tested in this run (skipped for cost savings).
-		if err := deleteOrphanedRecordingsForModels(t, allScoreboardModels); err != nil {
-			t.Errorf("failed to delete orphaned recordings: %v", err)
+		if false {
+			// Delete orphaned recordings that don't correspond to any model in the scoreboard.
+			// Use allScoreboardModels instead of seen to avoid deleting secondary models
+			// that are in the scoreboard but weren't tested in this run (skipped for cost savings).
+			deleteOrphanedRecordingsRecForModels(t, filepath.Join("testdata", "TestClient", "Scoreboard"), "", allScoreboardModels)
 		}
 	}
 }
@@ -406,14 +344,10 @@ func runOneModel(t testing.TB, gc getClientOneModel, want scoreboard.Scenario) (
 var optScenario = cmpopts.IgnoreFields(scoreboard.Scenario{}, "Comments", "SOTA", "Good", "Cheap", "ReasoningTokenStart", "ReasoningTokenEnd")
 
 // deleteStaleRecordings removes HTTP recordings for models that are no longer being tested.
-func deleteStaleRecordings(t testing.TB, staleScenarios []scoreboard.Scenario) error {
+func deleteStaleRecordings(t testing.TB, staleModels []Model) error {
 	scoreBoardDir := filepath.Join("testdata", "TestClient", "Scoreboard")
-	for _, sc := range staleScenarios {
-		if len(sc.Models) == 0 {
-			continue
-		}
-		model := sc.Models[0]
-		modelDir := model
+	for _, sc := range staleModels {
+		modelDir := strings.ReplaceAll(sc.Model, ":", "-")
 		if sc.Reason {
 			modelDir += "_thinking"
 		}
@@ -428,24 +362,18 @@ func deleteStaleRecordings(t testing.TB, staleScenarios []scoreboard.Scenario) e
 	return nil
 }
 
-// deleteOrphanedRecordingsForModels removes HTTP recording directories that don't correspond to any model in the scoreboard.
-// This prevents deletion of secondary models that are in the scoreboard but weren't tested in this run
-// (they were skipped for cost savings).
-func deleteOrphanedRecordingsForModels(t testing.TB, scoreboardModels map[string]struct{}) error {
-	scoreBoardDir := filepath.Join("testdata", "TestClient", "Scoreboard")
-	return deleteOrphanedRecordingsRecForModels(t, scoreBoardDir, "", scoreboardModels)
-}
-
-// deleteOrphanedRecordingsRecForModels recursively checks and deletes recordings that don't correspond to any scoreboard model.
-func deleteOrphanedRecordingsRecForModels(t testing.TB, dir, prefix string, scoreboardModels map[string]struct{}) error {
+// deleteOrphanedRecordingsRecForModels recursively checks and deletes recordings that don't correspond to any
+// scoreboard model.
+func deleteOrphanedRecordingsRecForModels(t testing.TB, dir, prefix string, scoreboardModels map[Model]struct{}) {
 	entries, err := os.ReadDir(dir)
 	if err != nil {
 		if os.IsNotExist(err) {
-			return nil // No recordings directory yet, nothing to clean
+			return // No recordings directory yet, nothing to clean
 		}
-		return fmt.Errorf("failed to read directory %s: %w", dir, err)
+		t.Fatalf("failed to read directory %s: %v", dir, err)
 	}
 
+	// TODO(maruel): Rewrite to list all the directories, and use that as the list of models.
 	for _, entry := range entries {
 		if !entry.IsDir() {
 			continue
@@ -457,18 +385,15 @@ func deleteOrphanedRecordingsRecForModels(t testing.TB, dir, prefix string, scor
 		}
 
 		// Check if this directory corresponds to any model in the scoreboard
-		// Also check for "_thinking" suffix for reasoning models
 		// Normalize model names by converting colons to dashes (filesystem convention)
 		found := false
-		for model := range scoreboardModels {
-			normalizedModel := strings.ReplaceAll(model, ":", "-")
+		for m := range scoreboardModels {
+			normalizedModel := strings.ReplaceAll(m.Model, ":", "-")
+			if m.Reason {
+				normalizedModel += "_thinking"
+			}
 			// Exact match
 			if fullPath == normalizedModel {
-				found = true
-				break
-			}
-			// Check with _thinking suffix for reasoning models
-			if fullPath == normalizedModel+"_thinking" {
 				found = true
 				break
 			}
@@ -478,77 +403,69 @@ func deleteOrphanedRecordingsRecForModels(t testing.TB, dir, prefix string, scor
 				break
 			}
 		}
-
 		path := filepath.Join("testdata", "TestClient", "Scoreboard", fullPath)
 		if !found {
 			t.Logf("Deleting orphaned model recordings for %s", fullPath)
 			if err := os.RemoveAll(path); err != nil {
-				return fmt.Errorf("failed to delete orphaned recordings for %s: %w", fullPath, err)
+				t.Fatalf("failed to delete orphaned recordings for %s: %v", fullPath, err)
 			}
 		} else {
 			// Recursively check subdirectories for partially matched paths
-			if err := deleteOrphanedRecordingsRecForModels(t, path, fullPath, scoreboardModels); err != nil {
-				return err
-			}
+			deleteOrphanedRecordingsRecForModels(t, path, fullPath, scoreboardModels)
 		}
 	}
-	return nil
 }
 
-// defaultUpdateScoreboard is the default implementation for updating scoreboards.
-// It merges the updated scenarios with the existing scoreboard while preserving metadata like comments and reasoning tokens.
+// doUpdateScoreboard update a scoreboard.
+//
+// It merges the updated scenarios with the existing scoreboard while preserving metadata like comments and
+// reasoning tokens.
+//
 // It also updates the SOTA, Good, Cheap flags based on the preferred models.
 // Stale scenarios (models no longer being tested) are removed from the scoreboard.
-func defaultUpdateScoreboard(t testing.TB, providerDir string, scenarios []scoreboard.Scenario, preferredModels map[string]string, staleScenarios []scoreboard.Scenario) error {
-	scoreboardPath := filepath.Join(providerDir, "scoreboard.json")
-
-	// Read the existing scoreboard
-	rawOld, err := os.ReadFile(scoreboardPath)
-	if err != nil {
-		return fmt.Errorf("failed to read scoreboard.json: %w", err)
+func doUpdateScoreboard(t testing.TB, providerDir string, scenarios []scoreboard.Scenario, preferredModels map[string]string, staleModels []Model) {
+	newScenarioMap := map[Model]*scoreboard.Scenario{}
+	for i := range scenarios {
+		s := scenarios[i]
+		for _, m := range s.Models {
+			newScenarioMap[Model{m, s.Reason}] = &scenarios[i]
+		}
 	}
 
+	scoreboardPath := filepath.Join(providerDir, "scoreboard.json")
+	rawOld, err := os.ReadFile(scoreboardPath)
+	if err != nil {
+		t.Fatalf("failed to read scoreboard.json: %v", err)
+	}
 	d := json.NewDecoder(bytes.NewReader(rawOld))
 	d.DisallowUnknownFields()
 	existingScore := scoreboard.Score{}
-	if err := d.Decode(&existingScore); err != nil {
-		return fmt.Errorf("failed to decode scoreboard.json: %w", err)
+	if err = d.Decode(&existingScore); err != nil {
+		t.Fatalf("failed to decode scoreboard.json: %v", err)
+	}
+	if err = existingScore.Validate(); err != nil {
+		t.Fatalf("failed to validate scoreboard.json: %v", err)
 	}
 
-	// Create a map of new scenarios by model and reason for quick lookup
-	newScenarioMap := make(map[string]map[bool]*scoreboard.Scenario)
-	for i := range scenarios {
-		s := scenarios[i]
-		if len(s.Models) == 0 {
-			continue
-		}
-		model := s.Models[0]
-		if newScenarioMap[model] == nil {
-			newScenarioMap[model] = make(map[bool]*scoreboard.Scenario)
-		}
-		newScenarioMap[model][s.Reason] = &scenarios[i]
-	}
-
-	// Update existing scenarios with new results, preserving metadata
+	// Update existing scenarios with new results, preserving metadata and model lists
+	seenModels := make(map[Model]struct{})
 	for i := range existingScore.Scenarios {
 		sc := &existingScore.Scenarios[i]
-		if len(sc.Models) == 0 {
-			continue
-		}
+		seenModels[Model{sc.Models[0], sc.Reason}] = struct{}{}
 		model := sc.Models[0]
-		if updated, ok := newScenarioMap[model][sc.Reason]; ok {
-			// Preserve metadata from existing scenario
+		if updated, ok := newScenarioMap[Model{model, sc.Reason}]; ok {
+			// Preserve metadata and original model list from existing scenario
 			comments := sc.Comments
 			reasoningTokenStart := sc.ReasoningTokenStart
 			reasoningTokenEnd := sc.ReasoningTokenEnd
-
-			// Replace with updated scenario
+			originalModels := sc.Models
+			// Replace with updated scenario (which only has the tested model)
 			*sc = *updated
-
-			// Restore metadata
+			// Restore metadata and original model list
 			sc.Comments = comments
 			sc.ReasoningTokenStart = reasoningTokenStart
 			sc.ReasoningTokenEnd = reasoningTokenEnd
+			sc.Models = originalModels
 		}
 		// Always update SOTA, Good, Cheap flags based on preferred models, even for untested scenarios.
 		// This ensures old flags are cleared when preferred models change.
@@ -557,41 +474,20 @@ func defaultUpdateScoreboard(t testing.TB, providerDir string, scenarios []score
 		sc.Cheap = preferredModels["cheap"] == model
 	}
 
-	// Add new scenarios for models that weren't in the original scoreboard
-	seenModels := make(map[string]map[bool]struct{})
-	for _, sc := range existingScore.Scenarios {
-		if len(sc.Models) == 0 {
-			continue
-		}
-		if seenModels[sc.Models[0]] == nil {
-			seenModels[sc.Models[0]] = make(map[bool]struct{})
-		}
-		seenModels[sc.Models[0]][sc.Reason] = struct{}{}
-	}
-
 	for _, newScenario := range scenarios {
-		if len(newScenario.Models) == 0 {
-			continue
-		}
 		model := newScenario.Models[0]
-		if _, exists := seenModels[model][newScenario.Reason]; !exists {
+		if _, exists := seenModels[Model{model, newScenario.Reason}]; !exists {
 			// This is a new model/reason combination, add it to the scoreboard
 			existingScore.Scenarios = append(existingScore.Scenarios, newScenario)
 		}
 	}
 
 	// Remove stale models from scenarios
-	if len(staleScenarios) > 0 {
-		staleSet := make(map[string]map[bool]struct{})
-		for _, sc := range staleScenarios {
-			for _, model := range sc.Models {
-				if staleSet[model] == nil {
-					staleSet[model] = make(map[bool]struct{})
-				}
-				staleSet[model][sc.Reason] = struct{}{}
-			}
+	if len(staleModels) > 0 {
+		staleSet := map[Model]struct{}{}
+		for _, sc := range staleModels {
+			staleSet[sc] = struct{}{}
 		}
-
 		// Filter out stale models from scenarios
 		filtered := make([]scoreboard.Scenario, 0, len(existingScore.Scenarios))
 		for _, sc := range existingScore.Scenarios {
@@ -602,7 +498,7 @@ func defaultUpdateScoreboard(t testing.TB, providerDir string, scenarios []score
 			// Remove stale models from this scenario
 			remainingModels := []string{}
 			for _, model := range sc.Models {
-				if _, isStale := staleSet[model][sc.Reason]; !isStale {
+				if _, isStale := staleSet[Model{model, sc.Reason}]; !isStale {
 					remainingModels = append(remainingModels, model)
 				} else {
 					t.Logf("Removing stale model %q with reason=%v from scenario", model, sc.Reason)
@@ -621,7 +517,6 @@ func defaultUpdateScoreboard(t testing.TB, providerDir string, scenarios []score
 	// but only if they're not currently tested.
 	consolidatedScenarios := make([]scoreboard.Scenario, 0, len(existingScore.Scenarios))
 	scenariosByKey := make(map[string]*scoreboard.Scenario) // key is "comments|reason"
-
 	for _, sc := range existingScore.Scenarios {
 		// Only merge scenarios that are not yet tested
 		isUntested := sc.GenSync == nil && sc.GenStream == nil && len(sc.In) == 0 && len(sc.Out) == 0
@@ -633,7 +528,6 @@ func defaultUpdateScoreboard(t testing.TB, providerDir string, scenarios []score
 
 		// Create a key based on comments and reason for untested scenarios
 		key := fmt.Sprintf("%s|%v", sc.Comments, sc.Reason)
-
 		if existing, found := scenariosByKey[key]; found {
 			// Merge models, avoiding duplicates
 			modelSet := make(map[string]struct{})
@@ -643,21 +537,7 @@ func defaultUpdateScoreboard(t testing.TB, providerDir string, scenarios []score
 			for _, m := range sc.Models {
 				modelSet[m] = struct{}{}
 			}
-			// Rebuild models list preserving order
-			mergedModels := make([]string, 0, len(modelSet))
-			for _, m := range existing.Models {
-				if _, ok := modelSet[m]; ok {
-					mergedModels = append(mergedModels, m)
-					delete(modelSet, m)
-				}
-			}
-			for _, m := range sc.Models {
-				if _, ok := modelSet[m]; ok {
-					mergedModels = append(mergedModels, m)
-					delete(modelSet, m)
-				}
-			}
-			existing.Models = mergedModels
+			existing.Models = slices.Sorted(maps.Keys(modelSet))
 		} else {
 			// New untested scenario - add to consolidatedScenarios and track it
 			consolidatedScenarios = append(consolidatedScenarios, sc)
@@ -717,10 +597,14 @@ func defaultUpdateScoreboard(t testing.TB, providerDir string, scenarios []score
 		return 0
 	})
 
+	if err := existingScore.Validate(); err != nil {
+		t.Fatalf("failed to validate scoreboard: %v", err)
+	}
+
 	// Encode the updated scoreboard
 	rawNew, err := json.MarshalIndent(existingScore, "", "  ")
 	if err != nil {
-		return fmt.Errorf("failed to encode scoreboard: %w", err)
+		t.Fatalf("failed to encode scoreboard: %v", err)
 	}
 	rawNew = append(rawNew, '\n')
 
@@ -728,13 +612,11 @@ func defaultUpdateScoreboard(t testing.TB, providerDir string, scenarios []score
 	if !bytes.Equal(rawNew, rawOld) {
 		t.Logf("Updating %s", scoreboardPath)
 		if err = os.WriteFile(scoreboardPath, rawNew, 0o644); err != nil {
-			return fmt.Errorf("failed to write scoreboard.json: %w", err)
+			t.Fatalf("failed to write scoreboard.json: %v", err)
 		}
 	} else {
 		t.Logf("No changes to %s", scoreboardPath)
 	}
-
-	return nil
 }
 
 /*

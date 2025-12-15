@@ -13,6 +13,7 @@
         "claude-opus-4-5-20251101"
       ],
       "sota": true,
+      "reason": true,
       "in": {
         "document": {
           "inline": true,
@@ -44,24 +45,18 @@
         "reportRateLimits": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
-        "tools": "true",
-        "toolsBiased": "true",
-        "toolCallRequired": true,
+        "tools": "flaky",
         "webSearch": true,
         "citations": true,
-        "maxTokens": true,
         "stopSequence": true
       },
       "GenStream": {
         "reportRateLimits": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
-        "tools": "true",
-        "toolsBiased": "true",
-        "toolCallRequired": true,
+        "tools": "flaky",
         "webSearch": true,
         "citations": true,
-        "maxTokens": true,
         "stopSequence": true
       }
     },
@@ -69,8 +64,6 @@
       "models": [
         "claude-opus-4-5-20251101"
       ],
-      "sota": true,
-      "reason": true,
       "in": {
         "document": {
           "inline": true,
@@ -102,18 +95,24 @@
         "reportRateLimits": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
-        "tools": "flaky",
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
         "webSearch": true,
         "citations": true,
+        "maxTokens": true,
         "stopSequence": true
       },
       "GenStream": {
         "reportRateLimits": true,
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
-        "tools": "flaky",
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
         "webSearch": true,
         "citations": true,
+        "maxTokens": true,
         "stopSequence": true
       }
     },
@@ -173,7 +172,6 @@
       "models": [
         "claude-sonnet-4-5-20250929"
       ],
-      "good": true,
       "in": {
         "document": {
           "inline": true,

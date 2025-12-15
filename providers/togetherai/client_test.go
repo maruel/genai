@@ -65,6 +65,7 @@ func TestClient(t *testing.T) {
 		}
 		var models []smoketest.Model
 		for _, m := range genaiModels {
+			// TODO: This is weak.
 			reason := strings.Contains(m.GetID(), "-Thinking-") || strings.HasPrefix(m.GetID(), "openai/gpt")
 			models = append(models, smoketest.Model{Model: m.GetID(), Reason: reason})
 		}

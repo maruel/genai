@@ -343,7 +343,9 @@ func deleteOrphanedRecordings(t testing.TB, dir string, scoreboardModels map[sco
 	for _, d := range allDirs {
 		isLeaf := true
 		for _, other := range allDirs {
-			if other != d && strings.HasPrefix(other, d+string(filepath.Separator)) {
+			// allDirs entries were normalized to use '/' separators above, so
+			// compare with '/' to be platform independent.
+			if other != d && strings.HasPrefix(other, d+"/") {
 				isLeaf = false
 				break
 			}
@@ -363,7 +365,9 @@ func deleteOrphanedRecordings(t testing.TB, dir string, scoreboardModels map[sco
 	for _, dirName := range modelDirs {
 		if _, found := expectedDirs[dirName]; !found {
 			t.Logf("Deleting orphaned model recordings for %s", dirName)
-			if err := os.RemoveAll(filepath.Join(dir, dirName)); err != nil {
+			// dirName uses '/' separators; convert to OS-specific before joining.
+			target := filepath.Join(dir, filepath.FromSlash(dirName))
+			if err := os.RemoveAll(target); err != nil {
 				t.Fatalf("failed to delete orphaned recordings for %s: %v", dirName, err)
 			}
 		}

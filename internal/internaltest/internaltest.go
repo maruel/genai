@@ -9,6 +9,7 @@ import (
 	"context"
 	"errors"
 	"flag"
+	"io"
 	"iter"
 	"log/slog"
 	"net/http"
@@ -135,8 +136,32 @@ func LogFile(tb testing.TB, cache, name string) *os.File {
 			tb.Error(err2)
 		}
 		if tb.Failed() {
-			if err2 := os.Rename(p, filepath.Join(cache, name)); err2 != nil {
-				tb.Error(err2)
+			dst := filepath.Join(cache, name)
+			if err2 := os.Rename(p, dst); err2 != nil {
+				// Fallback for cross-device rename (Windows "different disk drive"). Copy then delete.
+				srcF, err3 := os.Open(p)
+				if err3 != nil {
+					tb.Error(err2)
+				} else {
+					defer srcF.Close()
+					if err4 := os.MkdirAll(filepath.Dir(dst), 0o755); err4 != nil {
+						tb.Error(err4)
+					} else {
+						dstF, err5 := os.Create(dst)
+						if err5 != nil {
+							tb.Error(err5)
+						} else {
+							if _, err6 := io.Copy(dstF, srcF); err6 != nil {
+								dstF.Close()
+								tb.Error(err6)
+							} else if err7 := dstF.Close(); err7 != nil {
+								tb.Error(err7)
+							} else if err8 := os.Remove(p); err8 != nil {
+								tb.Error(err8)
+							}
+						}
+					}
+				}
 			}
 		}
 	})

@@ -135,7 +135,7 @@ func New(ctx context.Context, exe, modelPath string, logOutput io.Writer, hostPo
 			if runtime.GOOS == "windows" {
 				// We need to figure out how to differentiate between normal quitting
 				// and an error.
-				err2 = nil
+				//err2 = nil
 			}
 		}
 		done <- err2
@@ -235,7 +235,7 @@ func DownloadRelease(ctx context.Context, cache string, version int) (string, er
 			// run on the CPU instead.
 			// TODO: We'll have to list the files on GH to determine the cuda version to get the exact filename. :(
 			// TODO: Vulkan, HIP, OpenCL, sycl.
-			zipname = "llama-" + build + "-bin-win-cuda12.4-x64.zip"
+			zipname = "llama-" + build + "-bin-win-cuda-12.4-x64.zip"
 		} else if runtime.GOARCH == "arm64" {
 			zipname = "llama-" + build + "-bin-win-cpu-arm64.zip"
 		} else if runtime.GOARCH == "amd64" {

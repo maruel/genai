@@ -640,6 +640,10 @@ func (er *ErrorResponse) Error() string {
 	if er.FailedGeneration != "" {
 		return fmt.Sprintf("%s/%s/%s: %s while generating %q", er.Type, er.Param, er.Code, er.Message, er.FailedGeneration)
 	}
+	// Check if this is actually an empty error response (all fields are empty)
+	if er.Type == "" && er.Param == "" && er.Code == "" && er.Message == "" {
+		return "unknown error (empty error response from API)"
+	}
 	return fmt.Sprintf("%s/%s/%s: %s", er.Type, er.Param, er.Code, er.Message)
 }
 

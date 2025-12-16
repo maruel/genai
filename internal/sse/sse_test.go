@@ -75,12 +75,12 @@ func TestProcess(t *testing.T) {
 			{
 				name:  "invalid json",
 				input: "data: {invalid json}\n\n",
-				want:  "failed to decode server response \"data: {invalid json}\": invalid character 'i' looking for beginning of object key string",
+				want:  "sse: failed to decode server response \"data: {invalid json}\": invalid character 'i' looking for beginning of object key string",
 			},
 			{
 				name:  "unexpected format",
 				input: "unexpected: {\"text\":\"message\"}\n\n",
-				want:  "unexpected line. expected \"data: \", got \"unexpected: {\\\"text\\\":\\\"message\\\"}\"",
+				want:  "sse: unexpected line. expected \"data: \", got \"unexpected: {\\\"text\\\":\\\"message\\\"}\"",
 			},
 		}
 		for _, tt := range tests {

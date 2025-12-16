@@ -36,7 +36,7 @@ func Process[T any](body io.Reader, er error, lenient bool) (iter.Seq[T], func()
 					return
 				}
 			} else if err != nil {
-				finalErr = &internal.BadError{Err: fmt.Errorf("failed to get server response: %w", err)}
+				finalErr = &internal.BadError{Err: fmt.Errorf("sse: failed to get server response: %w", err)}
 				return
 			}
 			if len(line) == 0 {
@@ -68,14 +68,14 @@ func Process[T any](body io.Reader, er error, lenient bool) (iter.Seq[T], func()
 				}
 				if er == nil {
 					if err == nil {
-						finalErr = &internal.BadError{Err: fmt.Errorf("failed to decode server response %q", string(line))}
+						finalErr = &internal.BadError{Err: fmt.Errorf("sse: failed to decode server response %q", string(line))}
 						return
 					}
-					finalErr = &internal.BadError{Err: fmt.Errorf("failed to decode server response %q: %w", string(line), err)}
+					finalErr = &internal.BadError{Err: fmt.Errorf("sse: failed to decode server response %q: %w", string(line), err)}
 					return
 				}
 				if _, err2 := r.Seek(0, 0); err2 != nil {
-					finalErr = err2
+					finalErr = &internal.BadError{Err: fmt.Errorf("sse: failed to seek: %w", err2)}
 					return
 				}
 				d = json.NewDecoder(r)
@@ -83,11 +83,12 @@ func Process[T any](body io.Reader, er error, lenient bool) (iter.Seq[T], func()
 					d.DisallowUnknownFields()
 				}
 				if _, err2 := internal.DecodeJSON(d, er, r2); err2 == nil {
+					// Do not wrap the error here since we decoded the error from the server.
 					finalErr = er
 					return
 				}
 				// Falling back or when in strict mode, return the decoding error instead.
-				finalErr = &internal.BadError{Err: fmt.Errorf("failed to decode server response %q: %w", string(line), err)}
+				finalErr = &internal.BadError{Err: fmt.Errorf("sse: failed to decode server response %q: %w", string(line), err)}
 				return
 			case bytes.Equal(line, keepAlive):
 				// Ignore keep-alive messages. Very few send this.
@@ -96,7 +97,7 @@ func Process[T any](body io.Reader, er error, lenient bool) (iter.Seq[T], func()
 			case bytes.HasPrefix(line, eventPrefix):
 				// Ignore event headers. Very few send this.
 			default:
-				finalErr = &internal.BadError{Err: fmt.Errorf("unexpected line. expected \"data: \", got %q", line)}
+				finalErr = &internal.BadError{Err: fmt.Errorf("sse: unexpected line. expected \"data: \", got %q", line)}
 				return
 			}
 		}

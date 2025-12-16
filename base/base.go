@@ -477,7 +477,6 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 			return &internal.BadError{Err: fmt.Errorf("failed to get server response: %w", err)}
 		}
 	}
-	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
 		return yieldNothing[GenStreamChunkResponse], func() error {
 			// Generally happens when the request is something the server doesn't support, e.g. logprobs.
@@ -493,6 +492,7 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 	out := make(chan GenStreamChunkResponse, 16)
 	ch := make(chan error)
 	go func() {
+		defer resp.Body.Close()
 		er := reflect.New(c.errorResponse).Interface().(PErrorResponse)
 		it, finish := sse.Process[GenStreamChunkResponse](resp.Body, er, c.Lenient)
 		for pkt := range it {

@@ -152,7 +152,7 @@ func LogFile(tb testing.TB, cache, name string) *os.File {
 							tb.Error(err5)
 						} else {
 							if _, err6 := io.Copy(dstF, srcF); err6 != nil {
-								dstF.Close()
+								_ = dstF.Close()
 								tb.Error(err6)
 							} else if err7 := dstF.Close(); err7 != nil {
 								tb.Error(err7)

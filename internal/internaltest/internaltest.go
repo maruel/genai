@@ -322,3 +322,73 @@ func TestCapabilitiesCaching(t *testing.T, c genai.Provider, msgs ...genai.Messa
 }
 
 var superVerbose = flag.Bool("superv", false, "super verbose; enables internaltest.Log() to log more")
+
+// PreferredModelTest defines a test case for preferred model selection.
+type PreferredModelTest struct {
+	Modality genai.Modality
+	Tier     string // genai.ModelSOTA, genai.ModelGood, or genai.ModelCheap
+	Want     string // Expected model ID
+}
+
+// loadPreferredModelsFromScoreboard extracts the preferred model test data
+// (SOTA/Good/Cheap per output modality) from the provider's scoreboard.
+func loadPreferredModelsFromScoreboard(t testing.TB, provider genai.Provider) []PreferredModelTest {
+	score := provider.Scoreboard()
+	var tests []PreferredModelTest
+	for _, sc := range score.Scenarios {
+		if sc.SOTA {
+			for modality := range sc.Out {
+				tests = append(tests, PreferredModelTest{
+					Modality: genai.Modality(modality),
+					Tier:     genai.ModelSOTA,
+					Want:     sc.Models[0],
+				})
+			}
+		}
+		if sc.Good {
+			for modality := range sc.Out {
+				tests = append(tests, PreferredModelTest{
+					Modality: genai.Modality(modality),
+					Tier:     genai.ModelGood,
+					Want:     sc.Models[0],
+				})
+			}
+		}
+		if sc.Cheap {
+			for modality := range sc.Out {
+				tests = append(tests, PreferredModelTest{
+					Modality: genai.Modality(modality),
+					Tier:     genai.ModelCheap,
+					Want:     sc.Models[0],
+				})
+			}
+		}
+	}
+	if len(tests) == 0 {
+		t.Fatal("no preferred models found in scoreboard")
+	}
+	return tests
+}
+
+// TestPreferredModels tests that the provider returns the expected model ID
+// for each tier (SOTA/Good/Cheap) per output modality.
+//
+// The test data is automatically extracted from the provider's scoreboard.
+// The newProvider function should create a provider instance with the given
+// model tier and output modality.
+func TestPreferredModels(t *testing.T, provider genai.Provider, newProvider func(model string, modality genai.Modality) (genai.Provider, error)) {
+	data := loadPreferredModelsFromScoreboard(t, provider)
+	for _, tc := range data {
+		t.Run(tc.Tier, func(t *testing.T) {
+			t.Run(string(tc.Modality)+"-"+tc.Tier, func(t *testing.T) {
+				c, err := newProvider(tc.Tier, tc.Modality)
+				if err != nil {
+					t.Fatal(err)
+				}
+				if got := c.ModelID(); got != tc.Want {
+					t.Fatalf("got model %q, want %q", got, tc.Want)
+				}
+			})
+		})
+	}
+}

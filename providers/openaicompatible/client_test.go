@@ -47,6 +47,10 @@ func TestClient(t *testing.T) {
 		return c
 	}
 
+	t.Run("Capabilities", func(t *testing.T) {
+		internaltest.TestCapabilities(t, getClient(t, "openai"))
+	})
+
 	t.Run("Preferred", func(t *testing.T) {
 		for _, line := range []string{genai.ModelCheap, genai.ModelGood, genai.ModelSOTA} {
 			t.Run(line, func(t *testing.T) {

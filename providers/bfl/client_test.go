@@ -46,6 +46,14 @@ func TestClient(t *testing.T) {
 		return ci
 	}
 
+	t.Run("Capabilities", func(t *testing.T) {
+		internaltest.TestCapabilities(t, getClient(t, genai.ModelNone))
+	})
+
+	t.Run("GenAsync-Image", func(t *testing.T) {
+		internaltest.TestCapabilitiesGenAsync(t, getClient(t, genai.ModelCheap))
+	})
+
 	t.Run("Scoreboard", func(t *testing.T) {
 		// bfl does not have a public API to list models.
 		sb := getClient(t, genai.ModelNone).Scoreboard()

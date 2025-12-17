@@ -23,7 +23,7 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-func listCache(ctx context.Context, c genai.ProviderCache) error {
+func listCache(ctx context.Context, c genai.Provider) error {
 	entries, err := c.CacheList(ctx)
 	if err != nil {
 		return err
@@ -42,9 +42,7 @@ func mainImpl() error {
 	names := make([]string, 0, len(providers.All))
 	for name := range providers.All {
 		if c, _ := providers.All[name].Factory(ctx, &genai.ProviderOptions{Model: genai.ModelNone}, nil); c != nil {
-			if _, ok := c.(genai.ProviderCache); ok {
-				names = append(names, name)
-			}
+			names = append(names, name)
 		}
 	}
 	sort.Strings(names)
@@ -64,10 +62,9 @@ func mainImpl() error {
 	if err != nil {
 		return err
 	}
-	l := c.(genai.ProviderCache)
 
 	if flag.NArg() == 0 {
-		return listCache(ctx, l)
+		return listCache(ctx, c)
 	}
 
 	switch flag.Arg(0) {
@@ -79,7 +76,7 @@ func mainImpl() error {
 		eg, ctx2 := errgroup.WithContext(ctx)
 		for _, id := range files {
 			eg.Go(func() error {
-				return l.CacheDelete(ctx2, id)
+				return c.CacheDelete(ctx2, id)
 			})
 		}
 		return eg.Wait()

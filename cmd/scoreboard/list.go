@@ -29,7 +29,7 @@ func printList(ctx context.Context, w io.Writer) error {
 			continue
 		}
 		async := ""
-		if _, isAsync := c.(genai.ProviderGenAsync); isAsync {
+		if c.Capabilities().GenAsync {
 			async = "✅batch "
 		}
 		for _, scenario := range c.Scoreboard().Scenarios {

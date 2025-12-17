@@ -82,7 +82,7 @@ func (e *ErrNotSupported) Error() string {
 	return fmt.Sprintf("not supported: %s", strings.Join(e.Options, ", "))
 }
 
-// NotImplemented implements most genai.Provider methods all returning ErrNotSupported.
+// NotImplemented implements remote genai.Provider methods, all returning ErrNotSupported.
 type NotImplemented struct{}
 
 func (*NotImplemented) GenSync(context.Context, genai.Messages, ...genai.Options) (genai.Result, error) {
@@ -97,6 +97,30 @@ func (*NotImplemented) GenStream(ctx context.Context, msgs genai.Messages, opts 
 
 func (*NotImplemented) ListModels(context.Context) ([]genai.Model, error) {
 	return nil, &ErrNotSupported{}
+}
+
+func (*NotImplemented) GenAsync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Job, error) {
+	return "", &ErrNotSupported{}
+}
+
+func (*NotImplemented) PokeResult(ctx context.Context, job genai.Job) (genai.Result, error) {
+	return genai.Result{}, &ErrNotSupported{}
+}
+
+func (*NotImplemented) CacheAddRequest(ctx context.Context, msgs genai.Messages, name, displayName string, ttl time.Duration, opts ...genai.Options) (string, error) {
+	return "", &ErrNotSupported{}
+}
+
+func (*NotImplemented) CacheList(ctx context.Context) ([]genai.CacheEntry, error) {
+	return nil, &ErrNotSupported{}
+}
+
+func (*NotImplemented) CacheDelete(ctx context.Context, name string) error {
+	return &ErrNotSupported{}
+}
+
+func (*NotImplemented) Capabilities() genai.ProviderCapabilities {
+	return genai.ProviderCapabilities{}
 }
 
 // ProviderBase implements the basse functionality to help implementing a base.Provider.

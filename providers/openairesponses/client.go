@@ -1010,6 +1010,7 @@ func (e *ErrorResponse) IsAPIError() bool {
 
 // Client is a client for the OpenAI Responses API.
 type Client struct {
+	base.NotImplemented
 	impl base.Provider[*ErrorResponse, *Response, *Response, ResponseStreamChunkResponse]
 }
 

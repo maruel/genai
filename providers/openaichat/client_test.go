@@ -60,6 +60,18 @@ func TestClient(t *testing.T) {
 		return ci
 	}
 
+	t.Run("Capabilities", func(t *testing.T) {
+		internaltest.TestCapabilities(t, getClient(t, "gpt-4.1"))
+	})
+
+	t.Run("GenAsync-Text", func(t *testing.T) {
+		internaltest.TestCapabilitiesGenAsync(t, getClient(t, genai.ModelCheap))
+	})
+
+	t.Run("Caching-Text", func(t *testing.T) {
+		internaltest.TestCapabilitiesCaching(t, getClient(t, genai.ModelCheap))
+	})
+
 	t.Run("Scoreboard", func(t *testing.T) {
 		genaiModels, err := getClient(t, genai.ModelNone).ListModels(t.Context())
 		if err != nil {
@@ -114,7 +126,7 @@ func TestClient(t *testing.T) {
 	t.Run("Batch", func(t *testing.T) {
 		// This is a tricky test since batch operations can take up to 24h to complete.
 		ctx := t.Context()
-		c := getClient(t, "gpt-3.5-turbo").(genai.ProviderGenAsync)
+		c := getClient(t, "gpt-3.5-turbo")
 		// Using an extremely old cheap model that nobody uses helps a lot on reducing the latency, I got it to work
 		// within a few minutes.
 		msgs := genai.Messages{genai.NewTextMessage("Tell a joke in 10 words")}

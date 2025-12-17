@@ -1,0 +1,145 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 541
+    host: api.openai.com
+    body: "--80309819a837f26826233a299e185d0ccf3f559362092bd3278b8a045ee1\r\nContent-Disposition: form-data; name=\"purpose\"\r\n\r\nbatch\r\n--80309819a837f26826233a299e185d0ccf3f559362092bd3278b8a045ee1\r\nContent-Disposition: form-data; name=\"file\"; filename=\"batch.json\"\r\nContent-Type: application/octet-stream\r\n\r\n{\"custom_id\":\"TODO\",\"method\":\"POST\",\"url\":\"/v1/chat/completions\",\"body\":{\"model\":\"gpt-4.1\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"test\"}]}]}}\r\n--80309819a837f26826233a299e185d0ccf3f559362092bd3278b8a045ee1--\r\n"
+    headers:
+      Content-Type:
+      - multipart/form-data; boundary=80309819a837f26826233a299e185d0ccf3f559362092bd3278b8a045ee1
+    url: https://api.openai.com/v1/files
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"object\": \"file\",\n  \"id\": \"file-Lq9jyvRKAcCgj8gatubkpS\",\n  \"purpose\": \"batch\",\n  \"filename\": \"batch.json\",\n  \"bytes\": 178,\n  \"created_at\": 1765934850,\n  \"expires_at\": 1768526850,\n  \"status\": \"processed\",\n  \"status_details\": null\n}\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9af2a3699afca2bb-YUL
+      Content-Type:
+      - application/json
+      Openai-Processing-Ms:
+      - "740"
+      Openai-Version:
+      - "2020-10-01"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "1839"
+      X-Openai-Proxy-Wasm:
+      - v0.1
+    status: 200 OK
+    code: 200
+    duration: 2.854s
+- id: 1
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 108
+    host: api.openai.com
+    body: "{\"completion_window\":\"24h\",\"endpoint\":\"/v1/chat/completions\",\"input_file_id\":\"file-Lq9jyvRKAcCgj8gatubkpS\"}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.openai.com/v1/batches
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"batch_69420704cf2c8190bd7d53011b244c2c\",\n  \"object\": \"batch\",\n  \"endpoint\": \"/v1/chat/completions\",\n  \"model\": null,\n  \"errors\": null,\n  \"input_file_id\": \"file-Lq9jyvRKAcCgj8gatubkpS\",\n  \"completion_window\": \"24h\",\n  \"status\": \"validating\",\n  \"output_file_id\": null,\n  \"error_file_id\": null,\n  \"created_at\": 1765934852,\n  \"in_progress_at\": null,\n  \"expires_at\": 1766021252,\n  \"finalizing_at\": null,\n  \"completed_at\": null,\n  \"failed_at\": null,\n  \"expired_at\": null,\n  \"cancelling_at\": null,\n  \"cancelled_at\": null,\n  \"request_counts\": {\n    \"total\": 0,\n    \"completed\": 0,\n    \"failed\": 0\n  },\n  \"usage\": {\n    \"input_tokens\": 0,\n    \"output_tokens\": 0,\n    \"total_tokens\": 0,\n    \"input_tokens_details\": {\n      \"cached_tokens\": 0\n    },\n    \"output_tokens_details\": {\n      \"reasoning_tokens\": 0\n    }\n  },\n  \"metadata\": null\n}"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9af2a37b1cb5a2bb-YUL
+      Content-Type:
+      - application/json
+      Openai-Processing-Ms:
+      - "414"
+      Openai-Version:
+      - "2020-10-01"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "416"
+      X-Openai-Proxy-Wasm:
+      - v0.1
+    status: 200 OK
+    code: 200
+    duration: 782ms
+- id: 2
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 535
+    host: api.openai.com
+    body: "--80309819a837f26826233a299e185d0ccf3f559362092bd3278b8a045ee1\r\nContent-Disposition: form-data; name=\"purpose\"\r\n\r\nbatch\r\n--80309819a837f26826233a299e185d0ccf3f559362092bd3278b8a045ee1\r\nContent-Disposition: form-data; name=\"file\"; filename=\"test\"\r\nContent-Type: application/octet-stream\r\n\r\n{\"custom_id\":\"test\",\"method\":\"POST\",\"url\":\"/v1/chat/completions\",\"body\":{\"model\":\"gpt-4.1\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"test\"}]}]}}\r\n--80309819a837f26826233a299e185d0ccf3f559362092bd3278b8a045ee1--\r\n"
+    headers:
+      Content-Type:
+      - multipart/form-data; boundary=80309819a837f26826233a299e185d0ccf3f559362092bd3278b8a045ee1
+    url: https://api.openai.com/v1/files
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"object\": \"file\",\n  \"id\": \"file-P3p5JD6tLELFW2FoScKvmB\",\n  \"purpose\": \"batch\",\n  \"filename\": \"test\",\n  \"bytes\": 178,\n  \"created_at\": 1765934853,\n  \"expires_at\": 1768526853,\n  \"status\": \"processed\",\n  \"status_details\": null\n}\n"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9af2a37ffca2a2bb-YUL
+      Content-Type:
+      - application/json
+      Openai-Processing-Ms:
+      - "284"
+      Openai-Version:
+      - "2020-10-01"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      X-Content-Type-Options:
+      - nosniff
+      X-Envoy-Upstream-Service-Time:
+      - "352"
+      X-Openai-Proxy-Wasm:
+      - v0.1
+    status: 200 OK
+    code: 200
+    duration: 983ms

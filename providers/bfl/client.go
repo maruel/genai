@@ -173,6 +173,10 @@ type ImageRequestResponse struct {
 	// PollingURL is the URL to poll for the result. Generated images expire after 10 minutes and become
 	// inaccessible.
 	PollingURL string `json:"polling_url"`
+	// Cost, InputMP, and OutputMP are optional fields returned by the API.
+	Cost     any `json:"cost,omitempty"`
+	InputMP  any `json:"input_mp,omitempty"`
+	OutputMP any `json:"output_mp,omitempty"`
 }
 
 type ImageResult struct {
@@ -449,7 +453,10 @@ func (c *Client) PokeResultRaw(ctx context.Context, id genai.Job) (ImageResult, 
 	return res, err
 }
 
-var (
-	_ genai.Provider         = &Client{}
-	_ genai.ProviderGenAsync = &Client{}
-)
+func (c *Client) Capabilities() genai.ProviderCapabilities {
+	return genai.ProviderCapabilities{
+		GenAsync: true,
+	}
+}
+
+var _ genai.Provider = &Client{}

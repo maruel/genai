@@ -835,6 +835,7 @@ type Batch struct {
 	InProgressAt  base.Time         `json:"in_progress_at"`
 	InputFileID   string            `json:"input_file_id"` // Input data
 	Metadata      map[string]string `json:"metadata"`
+	Model         string            `json:"model,omitzero"`
 	Object        string            `json:"object"`         // "batch"
 	OutputFileID  string            `json:"output_file_id"` // Output data
 	RequestCounts struct {
@@ -842,7 +843,21 @@ type Batch struct {
 		Failed    int64 `json:"failed"`
 		Total     int64 `json:"total"`
 	} `json:"request_counts"`
-	Status string `json:"status"` // "completed", "in_progress", "validating", "finalizing"
+	Status string     `json:"status"`         // "completed", "in_progress", "validating", "finalizing"
+	Usage  BatchUsage `json:"usage,omitzero"` // Token usage for the batch
+}
+
+// BatchUsage represents token usage information for a batch.
+type BatchUsage struct {
+	InputTokens        int64 `json:"input_tokens"`
+	OutputTokens       int64 `json:"output_tokens"`
+	TotalTokens        int64 `json:"total_tokens"`
+	InputTokensDetails struct {
+		CachedTokens int64 `json:"cached_tokens"`
+	} `json:"input_tokens_details"`
+	OutputTokensDetails struct {
+		ReasoningTokens int64 `json:"reasoning_tokens"`
+	} `json:"output_tokens_details"`
 }
 
 //
@@ -902,6 +917,7 @@ type ErrorResponseError struct {
 
 // Client implements genai.Provider.
 type Client struct {
+	base.NotImplemented
 	impl base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
@@ -1318,7 +1334,11 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 		}
 }
 
-var (
-	_ genai.Provider      = &Client{}
-	_ genai.ProviderCache = &Client{}
-)
+func (c *Client) Capabilities() genai.ProviderCapabilities {
+	return genai.ProviderCapabilities{
+		GenAsync: true,
+		Caching:  true,
+	}
+}
+
+var _ genai.Provider = &Client{}

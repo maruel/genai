@@ -1,0 +1,38 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 39
+    host: api.bfl.ai
+    body: "{\"prompt\":\"test\",\"safety_tolerance\":0}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.bfl.ai/v1/flux-dev
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: 183
+    body: "{\"id\":\"ea688cc7-2959-4c32-acdf-e66194a95c2c\",\"polling_url\":\"https://api.eu2.bfl.ai/v1/get_result?id=ea688cc7-2959-4c32-acdf-e66194a95c2c\",\"cost\":null,\"input_mp\":null,\"output_mp\":null}"
+    headers:
+      Accept-Ranges:
+      - bytes
+      Content-Length:
+      - "183"
+      Content-Type:
+      - application/json
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains
+      X-Azure-Ref:
+      - 20251217T020218Z-159749fd9fd29jjnhC1YTO3y7400000008c000000000187w
+      X-Cache:
+      - CONFIG_NOCACHE
+    status: 200 OK
+    code: 200
+    duration: 560ms

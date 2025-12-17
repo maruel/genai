@@ -18,8 +18,10 @@ import (
 	"slices"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/myrecorder"
 	"github.com/maruel/httpjson"
@@ -232,6 +234,91 @@ func (tw *WriterToLog) Write(p []byte) (n int, err error) {
 	// Sadly the log output is attributed to this line.
 	tw.T.Log(strings.TrimSpace(string(p)))
 	return len(p), nil
+}
+
+//
+
+// TestCapabilities tests that declared provider capabilities match actual behavior.
+//
+// For each capability (GenAsync, Caching):
+// - If declared as true, calling the method should not return ErrNotSupported
+// - If declared as false, calling the method should return ErrNotSupported
+func TestCapabilities(t *testing.T, c genai.Provider) {
+	caps := c.Capabilities()
+	msgs := genai.Messages{genai.NewTextMessage("test")}
+	t.Run("GenAsync", func(t *testing.T) {
+		var notSupported *base.ErrNotSupported
+		if _, err := c.GenAsync(t.Context(), msgs); caps.GenAsync {
+			if errors.As(err, &notSupported) {
+				t.Error("GenAsync capability declared but returned ErrNotSupported")
+			}
+		} else {
+			if !errors.As(err, &notSupported) {
+				t.Errorf("GenAsync should return ErrNotSupported, got %T: %v", err, err)
+			}
+		}
+	})
+
+	t.Run("Caching", func(t *testing.T) {
+		var notSupported *base.ErrNotSupported
+		if _, err := c.CacheAddRequest(t.Context(), msgs, "test", "test", time.Hour); caps.Caching {
+			if errors.As(err, &notSupported) {
+				t.Error("Caching capability declared but CacheAddRequest returned ErrNotSupported")
+			}
+		} else {
+			if !errors.As(err, &notSupported) {
+				t.Errorf("CacheAddRequest should return ErrNotSupported, got %T: %v", err, err)
+			}
+		}
+	})
+}
+
+// TestCapabilitiesGenAsync tests GenAsync capability with HTTP recording enabled.
+//
+// Exercises GenAsync with HTTP request/response recording for reproducibility.
+// It's useful for smoke testing that async operations work with real API interactions
+// and recording HTTP interactions for later playback in CI environments.
+//
+// Optionally accepts custom messages to use instead of the default "test" message.
+// This is useful for expensive operations (e.g., video generation) where you want
+// to reuse the job ID instead of making multiple calls.
+//
+// Returns the job ID from GenAsync, which can be used for polling or ignored.
+func TestCapabilitiesGenAsync(t *testing.T, c genai.Provider, msgs ...genai.Message) genai.Job {
+	if caps := c.Capabilities(); !caps.GenAsync {
+		t.Fatal("GenAsync capability not declared")
+	}
+	if len(msgs) == 0 {
+		msgs = genai.Messages{genai.NewTextMessage("test")}
+	}
+	id, err := c.GenAsync(t.Context(), msgs)
+	var notSupported *base.ErrNotSupported
+	if errors.As(err, &notSupported) {
+		t.Error("GenAsync capability declared but returned ErrNotSupported")
+	} else if err != nil {
+		t.Errorf("GenAsync returned error: %v", err)
+	}
+	return id
+}
+
+// TestCapabilitiesCaching tests Caching capability with HTTP recording enabled.
+//
+// Exercises Caching with HTTP request/response recording for reproducibility.
+// It's useful for smoke testing that cache operations work with real API interactions
+// and recording HTTP interactions for later playback in CI environments.
+func TestCapabilitiesCaching(t *testing.T, c genai.Provider, msgs ...genai.Message) {
+	if caps := c.Capabilities(); !caps.Caching {
+		t.Fatal("Caching capability not declared")
+	}
+	if len(msgs) == 0 {
+		msgs = genai.Messages{genai.NewTextMessage("test")}
+	}
+	var notSupported *base.ErrNotSupported
+	if _, err := c.CacheAddRequest(t.Context(), msgs, "", "test", time.Hour); errors.As(err, &notSupported) {
+		t.Error("Caching capability declared but CacheAddRequest returned ErrNotSupported")
+	} else if err != nil {
+		t.Errorf("CacheAddRequest returned error: %v", err)
+	}
 }
 
 var superVerbose = flag.Bool("superv", false, "super verbose; enables internaltest.Log() to log more")

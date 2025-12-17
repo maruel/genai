@@ -55,6 +55,10 @@ func TestClient(t *testing.T) {
 		return ci
 	}
 
+	t.Run("Capabilities", func(t *testing.T) {
+		internaltest.TestCapabilities(t, getClient(t, genai.ModelNone))
+	})
+
 	t.Run("Scoreboard", func(t *testing.T) {
 		// We do not want to test thousands of models, so get the ones already in the scoreboard.
 		sb := getClient(t, genai.ModelNone).Scoreboard()

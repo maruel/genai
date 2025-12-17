@@ -86,10 +86,10 @@ func (t *tableSummaryRow) initFromScoreboard(p genai.Provider) {
 			t.Country = "N/A"
 		}
 	}
-	if _, isAsync := p.(genai.ProviderGenAsync); isAsync {
+	if p.Capabilities().GenAsync {
 		t.Batch = "✅"
 	}
-	if _, isFiles := p.(genai.ProviderCache); isFiles {
+	if p.Capabilities().Caching {
 		t.Files = "✅"
 	}
 	for i := range sb.Scenarios {
@@ -309,10 +309,10 @@ func printProviderTable(p genai.Provider, w io.Writer) error {
 			}
 			row := tableModelRow{}
 			row.initFromScenario(&sc, f)
-			if _, isAsync := p.(genai.ProviderGenAsync); isAsync {
+			if p.Capabilities().GenAsync {
 				row.Batch = "✅"
 			}
-			if _, isFiles := p.(genai.ProviderCache); isFiles {
+			if p.Capabilities().Caching {
 				row.Files = "✅"
 			}
 			fillEmptyFields(&row, "❌")

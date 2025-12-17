@@ -49,6 +49,10 @@ func TestClient(t *testing.T) {
 		return ci
 	}
 
+	t.Run("Capabilities", func(t *testing.T) {
+		internaltest.TestCapabilities(t, getClient(t, genai.ModelNone))
+	})
+
 	t.Run("Scoreboard", func(t *testing.T) {
 		// Perplexity doesn't support listing models. See https://docs.perplexity.ai/api-reference
 		sb := getClient(t, genai.ModelNone).Scoreboard()

@@ -36,6 +36,15 @@ func TestClient(t *testing.T) {
 
 	s := lazyServer{t: t}
 
+	t.Run("Capabilities", func(t *testing.T) {
+		serverURL := s.lazyStart(t)
+		c, err := ollama.New(t.Context(), &genai.ProviderOptions{Remote: serverURL, Model: genai.ModelNone}, nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+		internaltest.TestCapabilities(t, c)
+	})
+
 	t.Run("Scoreboard", func(t *testing.T) {
 		var models []scoreboard.Model
 		for _, sc := range ollama.Scoreboard().Scenarios {

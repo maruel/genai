@@ -1406,6 +1406,7 @@ func (er *ErrorResponse) IsAPIError() bool {
 
 // Client implements genai.Provider.
 type Client struct {
+	base.NotImplemented
 	impl base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
@@ -1868,6 +1869,12 @@ func processHeaders(h http.Header) []genai.RateLimit {
 		})
 	}
 	return limits
+}
+
+func (c *Client) Capabilities() genai.ProviderCapabilities {
+	return genai.ProviderCapabilities{
+		GenAsync: true,
+	}
 }
 
 var (

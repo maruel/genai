@@ -58,6 +58,14 @@ func TestClient(t *testing.T) {
 		return ci
 	}
 
+	t.Run("Capabilities", func(t *testing.T) {
+		internaltest.TestCapabilities(t, getClient(t, genai.ModelNone))
+	})
+
+	t.Run("GenAsync-Text", func(t *testing.T) {
+		internaltest.TestCapabilitiesGenAsync(t, getClient(t, genai.ModelCheap))
+	})
+
 	t.Run("Scoreboard", func(t *testing.T) {
 		genaiModels, err := getClient(t, genai.ModelNone).ListModels(t.Context())
 		if err != nil {

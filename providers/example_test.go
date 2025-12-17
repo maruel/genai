@@ -155,39 +155,3 @@ func Example_available() {
 	}
 	fmt.Printf("%s\n", resp.String())
 }
-
-func Example_all_GetProvidersGenAsync() {
-	for _, name := range GetProvidersGenAsync(context.Background()) {
-		fmt.Printf("%s\n", name)
-	}
-	// Output:
-	// anthropic
-	// bfl
-	// gemini
-	// openaichat
-}
-
-// GetProvidersGenAsync returns all the providers that support asynchronous (batch) operations.
-//
-// It's really just a simple loop that iterates over each item in All and checks if it implements
-// genai.ProviderGenAsync.
-//
-// Test:
-//   - `c` if you want to determine if the functionality is potentially available, even if there's no known
-//     API key available at the moment.
-//   - `err` if you want to determine if the functionality is available in the current context, i.e.
-//     environment variables FOO_API_KEY are set.
-func GetProvidersGenAsync(ctx context.Context) []string {
-	var names []string
-	for _, cfg := range providers.All {
-		c, _ := cfg.Factory(ctx, &genai.ProviderOptions{Model: genai.ModelNone}, nil)
-		if c == nil {
-			continue
-		}
-		if _, ok := c.(genai.ProviderGenAsync); ok {
-			names = append(names, c.Name())
-		}
-	}
-	sort.Strings(names)
-	return names
-}

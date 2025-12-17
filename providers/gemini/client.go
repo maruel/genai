@@ -1171,9 +1171,8 @@ func (c *CachedContent) Init(msgs genai.Messages, model, name, displayName strin
 	}
 	c.Model = "models/" + model
 	c.DisplayName = displayName
-	if name != "" {
-		c.Name = "cachedContents/" + name
-	}
+	// Note: Do not set c.Name here. The API auto-generates the name and returns it in the response.
+	// Setting it causes "INVALID_ARGUMENT (400): Do not set 'name' in a request to create cached content."
 	if ttl > 0 {
 		c.TTL = Duration(ttl)
 	}
@@ -1340,6 +1339,7 @@ type ErrorResponseError struct {
 
 // Client implements genai.Provider.
 type Client struct {
+	base.NotImplemented
 	impl base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
@@ -2063,6 +2063,11 @@ func (c *Client) genDoc(ctx context.Context, msg genai.Message, opts ...genai.Op
 // The resulting file is available for 48 hours. It requires the API key in the HTTP header to be fetched, so
 // use the client's HTTP client.
 func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Job, error) {
+	// GenAsync only works with video generation models (predictLongRunning endpoint).
+	// Text models use generateContent which doesn't support async operations.
+	if !slices.Contains(c.impl.OutputModalities, genai.ModalityVideo) {
+		return "", &base.ErrNotSupported{}
+	}
 	if err := c.impl.Validate(); err != nil {
 		return "", err
 	}
@@ -2261,7 +2266,13 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 func yieldNothing[T any](yield func(T) bool) {
 }
 
-var (
-	_ genai.Provider      = &Client{}
-	_ genai.ProviderCache = &Client{}
-)
+func (c *Client) Capabilities() genai.ProviderCapabilities {
+	// GenAsync (predictLongRunning) is only supported for video generation models.
+	// Text models use generateContent, which doesn't support async operations.
+	return genai.ProviderCapabilities{
+		GenAsync: slices.Contains(c.impl.OutputModalities, genai.ModalityVideo),
+		Caching:  true,
+	}
+}
+
+var _ genai.Provider = &Client{}

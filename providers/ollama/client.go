@@ -529,6 +529,7 @@ func (er *ErrorResponse) IsAPIError() bool {
 
 // Client implements genai.Provider.
 type Client struct {
+	base.NotImplemented
 	impl            base.ProviderBase[*ErrorResponse]
 	preloadedModels []genai.Model
 	baseURL         string

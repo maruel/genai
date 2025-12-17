@@ -106,6 +106,12 @@ const (
 )
 
 // Provider is the base interface that all provider interfaces embed.
+//
+// The first group contains local methods. Calling these methods will not make an HTTP request.
+//
+// The second group is supported by the majority of providers.
+//
+// The rest is supported by a limited number of providers.
 type Provider interface {
 	// Name returns the name of the provider.
 	Name() string
@@ -117,23 +123,8 @@ type Provider interface {
 	// provider and models. The vast majority of providers and models support only output modality like
 	// text-only, image-only, etc.
 	OutputModalities() Modalities
-	// ListModels returns the list of models the provider supports. Not all providers support it, some will
-	// return an ErrorNotSupported. For local providers like llamacpp and ollama, they may return only the
-	// model currently loaded.
-	ListModels(ctx context.Context) ([]Model, error)
-	// GenSync runs generation synchronously.
-	//
-	// Multiple options can be mixed together, both standard ones like *OptionsImage, *OptionsText,
-	// *OptionsTools and provider-specialized options struct, e.g. *anthropic.Options, *gemini.Options.
-	GenSync(ctx context.Context, msgs Messages, opts ...Options) (Result, error)
-	// GenStream runs generation synchronously, yielding the fragments of replies as the server sends them.
-	//
-	// No need to accumulate the fragments into a Message since the Result contains the accumulated message.
-	GenStream(ctx context.Context, msgs Messages, opts ...Options) (iter.Seq[Reply], func() (Result, error))
-	// HTTPClient returns the underlying http client. It may be necessary to use it to fetch the results from
-	// the provider. An example is retrieving Veo 3 generated videos from Gemini requires the authentication
-	// headers to be set.
-	HTTPClient() *http.Client
+	// Capabilities returns the optional capabilities this provider supports.
+	Capabilities() ProviderCapabilities
 	// Scoreboard returns what the provider supports.
 	//
 	// Some models have more features than others, e.g. some models may be text-only while others have vision or
@@ -143,6 +134,69 @@ type Provider interface {
 	//
 	// The values returned here should have gone through a smoke test to make sure they are valid.
 	Scoreboard() scoreboard.Score
+	// HTTPClient returns the underlying http client. It may be necessary to use it to fetch the results from
+	// the provider. An example is retrieving Veo 3 generated videos from Gemini requires the authentication
+	// headers to be set.
+	HTTPClient() *http.Client
+
+	// GenSync runs generation synchronously.
+	//
+	// Multiple options can be mixed together, both standard ones like *OptionsImage, *OptionsText,
+	// *OptionsTools and provider-specialized options struct, e.g. *anthropic.Options, *gemini.Options.
+	GenSync(ctx context.Context, msgs Messages, opts ...Options) (Result, error)
+	// GenStream runs generation synchronously, yielding the fragments of replies as the server sends them.
+	//
+	// No need to accumulate the fragments into a Message since the Result contains the accumulated message.
+	GenStream(ctx context.Context, msgs Messages, opts ...Options) (iter.Seq[Reply], func() (Result, error))
+	// ListModels returns the list of models the provider supports. Not all providers support it, some will
+	// return an ErrorNotSupported. For local providers like llamacpp and ollama, they may return only the
+	// model currently loaded.
+	ListModels(ctx context.Context) ([]Model, error)
+
+	// GenAsync requests a generation and returns a pending job that can be polled.
+	//
+	// Requires ProviderCapabilities.GenAsync to be set. Returns base.ErrNotSupported otherwise.
+	GenAsync(ctx context.Context, msgs Messages, opts ...Options) (Job, error)
+	// PokeResult requests the state of the job.
+	//
+	// When the job is still pending, Result.Usage.FinishReason is Pending.
+	//
+	// Requires ProviderCapabilities.GenAsync to be set. Returns base.ErrNotSupported otherwise.
+	PokeResult(ctx context.Context, job Job) (Result, error)
+	// CacheAddRequest caches a request.
+	//
+	// Requires ProviderCapabilities.Caching to be set. Returns base.ErrNotSupported otherwise.
+	//
+	// # Warning
+	//
+	// May be changed in the future.
+	CacheAddRequest(ctx context.Context, msgs Messages, name, displayName string, ttl time.Duration, opts ...Options) (string, error)
+	// CacheList lists the caches entries.
+	//
+	// Requires ProviderCapabilities.Caching to be set. Returns base.ErrNotSupported otherwise.
+	//
+	// # Warning
+	//
+	// May be changed in the future.
+	CacheList(ctx context.Context) ([]CacheEntry, error)
+	// CacheDelete deletes a cache entry.
+	//
+	// Requires ProviderCapabilities.Caching to be set. Returns base.ErrNotSupported otherwise.
+	//
+	// # Warning
+	//
+	// May be changed in the future.
+	CacheDelete(ctx context.Context, name string) error
+}
+
+// ProviderCapabilities describes optional capabilities a provider supports.
+type ProviderCapabilities struct {
+	// GenAsync indicates the provider supports GenAsync and PokeResult for batch operations.
+	GenAsync bool
+	// Caching indicates the provider supports CacheAddRequest, CacheList, and CacheDelete.
+	Caching bool
+
+	_ struct{}
 }
 
 // ProviderUnwrap is exposed when the Provider is actually a wrapper around another one, like
@@ -1127,37 +1181,14 @@ func (cs *CitationSource) IsZero() bool {
 		cs.Snippet == "" && cs.Date == "" && len(cs.Metadata) == 0
 }
 
-//
-
-// ProviderGenAsync is the interface to interact with a batch generator.
-type ProviderGenAsync interface {
-	Provider
-	// GenAsync requests a generation and returns a pending job that can be polled.
-	GenAsync(ctx context.Context, msgs Messages, opts ...Options) (Job, error)
-	// PokeResult requests the state of the job.
-	//
-	// When the job is still pending, Result.Usage.FinishReason is Pending.
-	PokeResult(ctx context.Context, job Job) (Result, error)
-}
-
 // Job is a pending job.
 type Job string
-
-//
 
 // CacheEntry is one file (or GenSync request) cached on the provider for reuse.
 type CacheEntry interface {
 	GetID() string
 	GetDisplayName() string
 	GetExpiry() time.Time
-}
-
-// ProviderCache provides a high level way to manage files cached on the provider.
-type ProviderCache interface {
-	Provider
-	CacheAddRequest(ctx context.Context, msgs Messages, name, displayName string, ttl time.Duration, opts ...Options) (string, error)
-	CacheList(ctx context.Context) ([]CacheEntry, error)
-	CacheDelete(ctx context.Context, name string) error
 }
 
 // Models

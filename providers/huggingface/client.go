@@ -699,6 +699,7 @@ func (ee *ErrorError) UnmarshalJSON(b []byte) error {
 
 // Client implements genai.Provider.
 type Client struct {
+	base.NotImplemented
 	impl base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 

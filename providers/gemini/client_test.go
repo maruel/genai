@@ -60,6 +60,21 @@ func TestClient(t *testing.T) {
 		return ci
 	}
 
+	t.Run("Capabilities", func(t *testing.T) {
+		internaltest.TestCapabilities(t, getClient(t, genai.ModelNone))
+	})
+
+	// Note: GenAsync is not supported for text models in Gemini.
+	// Only video generation models support predictLongRunning (async operations).
+	// See GenAsync-Video test below for async video generation testing.
+
+	t.Run("Caching-Text", func(t *testing.T) {
+		// Use a message with sufficient tokens (minimum 1024 tokens required).
+		// This generates approximately 1500+ tokens.
+		longText := "This is a test message for caching. " + strings.Repeat("The quick brown fox jumps over the lazy dog. ", 200)
+		internaltest.TestCapabilitiesCaching(t, getClient(t, genai.ModelCheap), genai.NewTextMessage(longText))
+	})
+
 	t.Run("Scoreboard", func(t *testing.T) {
 		mdls, err := getClient(t, genai.ModelNone).ListModels(t.Context())
 		if err != nil {
@@ -138,26 +153,23 @@ func TestClient(t *testing.T) {
 		}
 	})
 
-	t.Run("GenAsync", func(t *testing.T) {
+	t.Run("GenAsync-Video", func(t *testing.T) {
 		// TODO: "veo-3.0-fast-generate-preview" is cheaper: 25¢/s; 2$/request vs 5$/request for veo 2 when not
 		// requesting audio.
 		// https://cloud.google.com/vertex-ai/generative-ai/pricing#veo
-		c := getClient(t, "veo-2.0-generate-001").(genai.ProviderGenAsync)
-		ctx := t.Context()
 		const prompt = `Carton video of a shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves.`
-		msgs := genai.Messages{{Requests: []genai.Request{{Text: prompt}}}}
-		id, err := c.GenAsync(ctx, msgs, &genai.OptionsImage{})
-		if err != nil {
-			t.Fatalf("%v", err)
-		}
-		t.Log(id)
+		c := getClient(t, "veo-2.0-generate-001")
+		jobID := internaltest.TestCapabilitiesGenAsync(t, c, genai.Message{Requests: []genai.Request{{Text: prompt}}})
+		ctx := t.Context()
+		// Poll for completion using the job ID from the Capability test
 		res := genai.Result{Usage: genai.Usage{FinishReason: genai.Pending}}
+		var err error
 		for res.Usage.FinishReason == genai.Pending {
 			select {
 			case <-ctx.Done():
 				t.Fatal(ctx.Err())
 			case <-time.After(500 * time.Millisecond):
-				if res, err = c.PokeResult(ctx, id); err != nil {
+				if res, err = c.PokeResult(ctx, jobID); err != nil {
 					t.Fatal(err)
 				}
 			}

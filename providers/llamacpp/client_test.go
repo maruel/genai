@@ -41,6 +41,18 @@ func TestClient(t *testing.T) {
 	apiKey := base64.RawURLEncoding.EncodeToString(b[:])
 	s := lazyServer{t: t, apiKey: apiKey}
 
+	t.Run("Capabilities", func(t *testing.T) {
+		serverURL := s.lazyStart(t)
+		ctx := t.Context()
+		c, err := llamacpp.New(ctx, &genai.ProviderOptions{APIKey: apiKey, Remote: serverURL, Model: genai.ModelNone}, func(h http.RoundTripper) http.RoundTripper {
+			return testRecorder.Record(t, h)
+		})
+		if err != nil {
+			t.Fatal(err)
+		}
+		internaltest.TestCapabilities(t, c)
+	})
+
 	t.Run("Scoreboard", func(t *testing.T) {
 		serverURL := s.lazyStart(t)
 		ctx := t.Context()

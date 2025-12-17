@@ -786,6 +786,7 @@ func (er *ErrorResponse) IsAPIError() bool {
 
 // Client implements genai.Provider.
 type Client struct {
+	base.NotImplemented
 	impl base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 

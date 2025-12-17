@@ -439,65 +439,103 @@ func (s *Score) Validate() error {
 		}
 	}
 
-	// Only validate ordering if there are multiple scenarios
+	// Only validate tier constraints if there are multiple scenarios
 	if len(s.Scenarios) <= 1 {
 		return nil
 	}
 
-	// Find first and count occurrences of SOTA, Good, Cheap models
-	countSOTA, countGood, countCheap := 0, 0, 0
-	firstSOTA, firstGood, firstCheap := -1, -1, -1
+	// Group scenarios by output modality to validate tiers per modality.
+	// Key is the modality (empty string for text-only scenarios).
+	// Value is list of scenario indices in that modality group.
+	modalityGroups := make(map[Modality][]int)
+
 	for i, sc := range s.Scenarios {
-		if len(sc.Models) == 0 {
-			continue
-		}
-		if sc.SOTA {
-			countSOTA++
-			if firstSOTA < 0 {
-				firstSOTA = i
-			}
-		}
-		if sc.Good {
-			countGood++
-			if firstGood < 0 {
-				firstGood = i
-			}
-		}
-		if sc.Cheap {
-			countCheap++
-			if firstCheap < 0 {
-				firstCheap = i
+		if len(sc.Out) == 0 {
+			// Text-only scenario (no output modalities explicitly defined)
+			modalityGroups[""] = append(modalityGroups[""], i)
+		} else {
+			// Multi-modal scenario - add to group for each output modality
+			for modality := range sc.Out {
+				modalityGroups[modality] = append(modalityGroups[modality], i)
 			}
 		}
 	}
 
-	if firstSOTA < 0 {
-		return errors.New("no SOTA model marked")
-	}
-	if countSOTA > 1 {
-		return fmt.Errorf("multiple SOTA models marked (count: %d)", countSOTA)
-	}
-	if firstGood < 0 {
-		return errors.New("no Good model marked")
-	}
-	if countGood > 1 {
-		return fmt.Errorf("multiple Good models marked (count: %d)", countGood)
-	}
-	if firstCheap < 0 {
-		return errors.New("no Cheap model marked")
-	}
-	if countCheap > 1 {
-		return fmt.Errorf("multiple Cheap models marked (count: %d)", countCheap)
-	}
+	// Validate tiers per modality group
+	for modality, indices := range modalityGroups {
+		countSOTA, countGood, countCheap := 0, 0, 0
+		firstSOTA, firstGood, firstCheap := -1, -1, -1
 
-	// SOTA must be first
-	if firstSOTA != 0 {
-		return fmt.Errorf("SOTA model %q should be first (at position %d)", s.Scenarios[firstSOTA].Models[0], firstSOTA)
-	}
+		for _, i := range indices {
+			sc := s.Scenarios[i]
+			if len(sc.Models) == 0 {
+				continue
+			}
+			if sc.SOTA {
+				countSOTA++
+				if firstSOTA < 0 {
+					firstSOTA = i
+				}
+			}
+			if sc.Good {
+				countGood++
+				if firstGood < 0 {
+					firstGood = i
+				}
+			}
+			if sc.Cheap {
+				countCheap++
+				if firstCheap < 0 {
+					firstCheap = i
+				}
+			}
+		}
 
-	// Good should come before Cheap
-	if firstGood > firstCheap {
-		return fmt.Errorf("good model comes after cheap model (good at %d, cheap at %d)", firstGood, firstCheap)
+		// Uniqueness constraint: at most one of each tier per modality
+		if countSOTA > 1 {
+			modalityName := string(modality)
+			if modalityName == "" {
+				modalityName = "text"
+			}
+			return fmt.Errorf("multiple SOTA models marked for modality %q (count: %d)", modalityName, countSOTA)
+		}
+		if countGood > 1 {
+			modalityName := string(modality)
+			if modalityName == "" {
+				modalityName = "text"
+			}
+			return fmt.Errorf("multiple Good models marked for modality %q (count: %d)", modalityName, countGood)
+		}
+		if countCheap > 1 {
+			modalityName := string(modality)
+			if modalityName == "" {
+				modalityName = "text"
+			}
+			return fmt.Errorf("multiple Cheap models marked for modality %q (count: %d)", modalityName, countCheap)
+		}
+
+		// If there are tier markers for this modality, enforce ordering constraints
+		if countSOTA > 0 || countGood > 0 || countCheap > 0 {
+			// SOTA must come first (lowest index in this modality group)
+			if firstSOTA >= 0 && firstSOTA != indices[0] {
+				modalityName := string(modality)
+				if modalityName == "" {
+					modalityName = "text"
+				}
+				return fmt.Errorf("SOTA model %q for modality %q should be first in that modality's scenarios (at position %d)",
+					s.Scenarios[firstSOTA].Models[0], modalityName, firstSOTA)
+			}
+
+			// Good should come before Cheap
+			if firstGood >= 0 && firstCheap >= 0 && firstGood > firstCheap {
+				modalityName := string(modality)
+				if modalityName == "" {
+					modalityName = "text"
+				}
+				return fmt.Errorf("good model comes after cheap model for modality %q (good at %d, cheap at %d)",
+					modalityName, firstGood, firstCheap)
+			}
+		}
 	}
 
 	return nil

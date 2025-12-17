@@ -10,48 +10,51 @@ import (
 )
 
 func TestModel(t *testing.T) {
-	t.Run("String without reasoning", func(t *testing.T) {
-		m := Model{Model: "gpt-4", Reason: false}
-		if got := m.String(); got != "gpt-4" {
-			t.Fatalf("got %q, want %q", got, "gpt-4")
-		}
-	})
+	tests := []struct {
+		m    Model
+		want string
+	}{
+		{
+			m:    Model{Model: "gpt-4", Reason: false},
+			want: "gpt-4",
+		},
+		{
+			m:    Model{Model: "gpt-4", Reason: true},
+			want: "gpt-4_thinking",
+		},
+		{
+			m:    Model{Model: "claude-3:opus", Reason: false},
+			want: "claude-3-opus",
+		},
+		{
+			m:    Model{Model: "claude-3:opus", Reason: true},
+			want: "claude-3-opus_thinking",
+		},
+	}
 
-	t.Run("String with reasoning", func(t *testing.T) {
-		m := Model{Model: "gpt-4", Reason: true}
-		if got := m.String(); got != "gpt-4_thinking" {
-			t.Fatalf("got %q, want %q", got, "gpt-4_thinking")
+	for _, tt := range tests {
+		if got := tt.m.String(); got != tt.want {
+			t.Fatalf("got %q, want %q", got, tt.want)
 		}
-	})
-
-	t.Run("String with colons in model name", func(t *testing.T) {
-		m := Model{Model: "claude-3:opus", Reason: false}
-		if got := m.String(); got != "claude-3-opus" {
-			t.Fatalf("got %q, want %q", got, "claude-3-opus")
-		}
-	})
-
-	t.Run("String with colons and reasoning", func(t *testing.T) {
-		m := Model{Model: "claude-3:opus", Reason: true}
-		if got := m.String(); got != "claude-3-opus_thinking" {
-			t.Fatalf("got %q, want %q", got, "claude-3-opus_thinking")
-		}
-	})
+	}
 }
 
 func TestModality(t *testing.T) {
-	t.Run("Valid modalities", func(t *testing.T) {
-		for _, m := range []Modality{ModalityAudio, ModalityDocument, ModalityImage, ModalityText, ModalityVideo} {
+	t.Run("Validate", func(t *testing.T) {
+		tests := []Modality{ModalityAudio, ModalityDocument, ModalityImage, ModalityText, ModalityVideo}
+		for _, m := range tests {
 			if err := m.Validate(); err != nil {
-				t.Fatalf("valid modality %q failed validation: %v", m, err)
+				t.Fatalf("Modality %q: got err=%v", m, err)
 			}
 		}
 	})
 
-	t.Run("Invalid modality", func(t *testing.T) {
-		m := Modality("invalid")
-		if err := m.Validate(); err == nil {
-			t.Fatal("invalid modality should fail validation")
+	t.Run("Error", func(t *testing.T) {
+		tests := []Modality{Modality("invalid")}
+		for _, m := range tests {
+			if err := m.Validate(); err == nil {
+				t.Fatalf("Modality %q: want error", m)
+			}
 		}
 	})
 }
@@ -59,795 +62,1006 @@ func TestModality(t *testing.T) {
 func TestTriState(t *testing.T) {
 	t.Run("String", func(t *testing.T) {
 		tests := []struct {
-			name string
 			in   TriState
 			want string
 		}{
-			{
-				name: "False",
-				in:   False,
-				want: "false",
-			},
-			{
-				name: "True",
-				in:   True,
-				want: "true",
-			},
-			{
-				name: "Flaky",
-				in:   Flaky,
-				want: "flaky",
-			},
-			{
-				name: "Unknown value",
-				in:   TriState(99),
-				want: "TriState(99)",
-			},
+			{False, "false"},
+			{True, "true"},
+			{Flaky, "flaky"},
+			{TriState(99), "TriState(99)"},
 		}
 
 		for _, tt := range tests {
-			t.Run(tt.name, func(t *testing.T) {
-				if got := tt.in.String(); got != tt.want {
-					t.Fatalf("TriState.String() got = %q, want %q", got, tt.want)
-				}
-			})
+			if got := tt.in.String(); got != tt.want {
+				t.Fatalf("got %q, want %q", got, tt.want)
+			}
 		}
 	})
 
 	t.Run("GoString", func(t *testing.T) {
 		tests := []struct {
-			name string
 			in   TriState
 			want string
 		}{
-			{
-				name: "False",
-				in:   False,
-				want: "false",
-			},
-			{
-				name: "True",
-				in:   True,
-				want: "true",
-			},
-			{
-				name: "Flaky",
-				in:   Flaky,
-				want: "flaky",
-			},
+			{False, "false"},
+			{True, "true"},
+			{Flaky, "flaky"},
 		}
 
 		for _, tt := range tests {
-			t.Run(tt.name, func(t *testing.T) {
-				if got := tt.in.GoString(); got != tt.want {
-					t.Fatalf("TriState.GoString() got = %q, want %q", got, tt.want)
-				}
-			})
+			if got := tt.in.GoString(); got != tt.want {
+				t.Fatalf("got %q, want %q", got, tt.want)
+			}
 		}
 	})
 
 	t.Run("Validate", func(t *testing.T) {
-		t.Run("Valid values", func(t *testing.T) {
-			for _, v := range []TriState{False, True, Flaky} {
-				if err := v.Validate(); err != nil {
-					t.Fatalf("valid value %v failed validation: %v", v, err)
-				}
+		tests := []TriState{False, True, Flaky}
+		for _, ts := range tests {
+			if err := ts.Validate(); err != nil {
+				t.Fatalf("TriState %v: got err=%v", ts, err)
 			}
-		})
+		}
+	})
 
-		t.Run("Invalid value", func(t *testing.T) {
-			if err := TriState(99).Validate(); err == nil {
-				t.Fatal("invalid TriState should fail validation")
+	t.Run("Validate Error", func(t *testing.T) {
+		tests := []TriState{TriState(99)}
+		for _, ts := range tests {
+			if err := ts.Validate(); err == nil {
+				t.Fatalf("TriState %v: want error", ts)
 			}
-		})
+		}
 	})
 
 	t.Run("MarshalJSON", func(t *testing.T) {
 		tests := []struct {
-			name string
-			in   TriState
+			ts   TriState
 			want []byte
 		}{
-			{name: "False", in: False, want: []byte(`"false"`)},
-			{name: "True", in: True, want: []byte(`"true"`)},
-			{name: "Flaky", in: Flaky, want: []byte(`"flaky"`)},
+			{False, []byte(`"false"`)},
+			{True, []byte(`"true"`)},
+			{Flaky, []byte(`"flaky"`)},
 		}
 
 		for _, tt := range tests {
-			t.Run(tt.name, func(t *testing.T) {
-				got, err := tt.in.MarshalJSON()
-				if err != nil {
-					t.Fatalf("MarshalJSON failed: %v", err)
-				}
-				if string(got) != string(tt.want) {
-					t.Fatalf("got %s, want %s", got, tt.want)
-				}
-			})
-		}
-
-		t.Run("Invalid value", func(t *testing.T) {
-			_, err := TriState(99).MarshalJSON()
-			if err == nil {
-				t.Fatal("invalid TriState should fail")
+			got, err := tt.ts.MarshalJSON()
+			if err != nil {
+				t.Fatalf("TriState %v: got err=%v", tt.ts, err)
 			}
-		})
+			if string(got) != string(tt.want) {
+				t.Fatalf("got %s, want %s", got, tt.want)
+			}
+		}
+	})
+
+	t.Run("MarshalJSON Error", func(t *testing.T) {
+		tests := []TriState{TriState(99)}
+		for _, ts := range tests {
+			_, err := ts.MarshalJSON()
+			if err == nil {
+				t.Fatalf("TriState %v: want error", ts)
+			}
+		}
 	})
 
 	t.Run("UnmarshalJSON", func(t *testing.T) {
 		tests := []struct {
-			name string
 			in   []byte
 			want TriState
 		}{
-			{name: "false", in: []byte(`"false"`), want: False},
-			{name: "true", in: []byte(`"true"`), want: True},
-			{name: "flaky", in: []byte(`"flaky"`), want: Flaky},
+			{[]byte(`"false"`), False},
+			{[]byte(`"true"`), True},
+			{[]byte(`"flaky"`), Flaky},
 		}
 
 		for _, tt := range tests {
-			t.Run(tt.name, func(t *testing.T) {
-				var got TriState
-				err := got.UnmarshalJSON(tt.in)
-				if err != nil {
-					t.Fatalf("UnmarshalJSON failed: %v", err)
-				}
-				if got != tt.want {
-					t.Fatalf("got %v, want %v", got, tt.want)
-				}
-			})
+			var got TriState
+			err := got.UnmarshalJSON(tt.in)
+			if err != nil {
+				t.Fatalf("input %s: got err=%v", tt.in, err)
+			}
+			if got != tt.want {
+				t.Fatalf("got %v, want %v", got, tt.want)
+			}
+		}
+	})
+
+	t.Run("UnmarshalJSON Error", func(t *testing.T) {
+		tests := [][]byte{
+			[]byte(`"invalid"`),
+			[]byte(`not valid json`),
 		}
 
-		t.Run("Invalid value", func(t *testing.T) {
+		for _, in := range tests {
 			var got TriState
-			if err := got.UnmarshalJSON([]byte(`"invalid"`)); err == nil {
-				t.Fatal("should fail on invalid value")
+			if err := got.UnmarshalJSON(in); err == nil {
+				t.Fatalf("input %s: want error", in)
 			}
-		})
-
-		t.Run("Invalid JSON", func(t *testing.T) {
-			var got TriState
-			if err := got.UnmarshalJSON([]byte(`not valid json`)); err == nil {
-				t.Fatal("should fail on invalid JSON")
-			}
-		})
+		}
 	})
 }
 
 func TestFunctionality(t *testing.T) {
-	t.Run("Validate valid functionality", func(t *testing.T) {
-		f := &Functionality{
-			ReportTokenUsage:   True,
-			ReportFinishReason: True,
-			Tools:              True,
-			ToolsBiased:        False,
-			ToolsIndecisive:    False,
+	t.Run("Validate", func(t *testing.T) {
+		tests := []*Functionality{
+			{
+				ReportTokenUsage:   True,
+				ReportFinishReason: True,
+				Tools:              True,
+				ToolsBiased:        False,
+				ToolsIndecisive:    False,
+			},
 		}
-		if err := f.Validate(); err != nil {
-			t.Fatalf("valid functionality failed validation: %v", err)
+
+		for _, f := range tests {
+			if err := f.Validate(); err != nil {
+				t.Fatalf("got err=%v", err)
+			}
 		}
 	})
 
-	t.Run("Validate invalid ReportTokenUsage", func(t *testing.T) {
-		f := &Functionality{ReportTokenUsage: TriState(99)}
-		if err := f.Validate(); err == nil {
-			t.Fatal("should fail on invalid ReportTokenUsage")
+	t.Run("Validate Error", func(t *testing.T) {
+		tests := []*Functionality{
+			{ReportTokenUsage: TriState(99)},
+			{Tools: False, ToolsBiased: True},
+			{Tools: False, ToolsIndecisive: True},
+			{Tools: False, ToolCallRequired: true},
+		}
+
+		for _, f := range tests {
+			if err := f.Validate(); err == nil {
+				t.Fatalf("got err=nil, want error")
+			}
 		}
 	})
 
-	t.Run("Validate ToolsBiased when Tools is false", func(t *testing.T) {
-		f := &Functionality{Tools: False, ToolsBiased: True}
-		if err := f.Validate(); err == nil {
-			t.Fatal("should fail when ToolsBiased is set but Tools is false")
+	t.Run("Less", func(t *testing.T) {
+		tests := []struct {
+			f1, f2 *Functionality
+			want   bool
+		}{
+			{&Functionality{ReportRateLimits: false}, &Functionality{ReportRateLimits: true}, true},
+			{&Functionality{ReportRateLimits: true}, &Functionality{ReportRateLimits: false}, false},
+			{&Functionality{ReportTokenUsage: False}, &Functionality{ReportTokenUsage: True}, true},
+			{&Functionality{ReportFinishReason: False}, &Functionality{ReportFinishReason: True}, true},
+			{&Functionality{Seed: false}, &Functionality{Seed: true}, true},
+			{&Functionality{Tools: False}, &Functionality{Tools: True}, true},
+			{&Functionality{ToolCallRequired: false}, &Functionality{ToolCallRequired: true}, true},
+			{&Functionality{JSON: false}, &Functionality{JSON: true}, true},
+			{&Functionality{JSONSchema: false}, &Functionality{JSONSchema: true}, true},
+			{&Functionality{Citations: false}, &Functionality{Citations: true}, true},
+			{&Functionality{MaxTokens: false}, &Functionality{MaxTokens: true}, true},
+			{&Functionality{StopSequence: false}, &Functionality{StopSequence: true}, true},
+			{&Functionality{ReportRateLimits: true}, &Functionality{ReportRateLimits: true}, false},
 		}
-	})
 
-	t.Run("Validate ToolsIndecisive when Tools is false", func(t *testing.T) {
-		f := &Functionality{Tools: False, ToolsIndecisive: True}
-		if err := f.Validate(); err == nil {
-			t.Fatal("should fail when ToolsIndecisive is set but Tools is false")
-		}
-	})
-
-	t.Run("Validate ToolCallRequired when Tools is false", func(t *testing.T) {
-		f := &Functionality{Tools: False, ToolCallRequired: true}
-		if err := f.Validate(); err == nil {
-			t.Fatal("should fail when ToolCallRequired is set but Tools is false")
-		}
-	})
-
-	t.Run("Less comparison - ReportRateLimits", func(t *testing.T) {
-		f1 := &Functionality{ReportRateLimits: false}
-		f2 := &Functionality{ReportRateLimits: true}
-		if !f1.Less(f2) {
-			t.Fatal("f1 should be less than f2")
-		}
-		if f2.Less(f1) {
-			t.Fatal("f2 should not be less than f1")
-		}
-	})
-
-	t.Run("Less comparison - ReportTokenUsage", func(t *testing.T) {
-		f1 := &Functionality{ReportTokenUsage: False}
-		f2 := &Functionality{ReportTokenUsage: True}
-		if !f1.Less(f2) {
-			t.Fatal("f1 should be less than f2")
-		}
-	})
-
-	t.Run("Less comparison - ReportFinishReason", func(t *testing.T) {
-		f1 := &Functionality{ReportFinishReason: False}
-		f2 := &Functionality{ReportFinishReason: True}
-		if !f1.Less(f2) {
-			t.Fatal("f1 should be less than f2")
-		}
-	})
-
-	t.Run("Less comparison - Seed", func(t *testing.T) {
-		f1 := &Functionality{Seed: false}
-		f2 := &Functionality{Seed: true}
-		if !f1.Less(f2) {
-			t.Fatal("f1 should be less than f2")
-		}
-	})
-
-	t.Run("Less comparison - Tools", func(t *testing.T) {
-		f1 := &Functionality{Tools: False}
-		f2 := &Functionality{Tools: True}
-		if !f1.Less(f2) {
-			t.Fatal("f1 should be less than f2")
-		}
-	})
-
-	t.Run("Less comparison - ToolCallRequired", func(t *testing.T) {
-		f1 := &Functionality{ToolCallRequired: false}
-		f2 := &Functionality{ToolCallRequired: true}
-		if !f1.Less(f2) {
-			t.Fatal("f1 should be less than f2")
-		}
-	})
-
-	t.Run("Less comparison - JSON", func(t *testing.T) {
-		f1 := &Functionality{JSON: false}
-		f2 := &Functionality{JSON: true}
-		if !f1.Less(f2) {
-			t.Fatal("f1 should be less than f2")
-		}
-	})
-
-	t.Run("Less comparison - JSONSchema", func(t *testing.T) {
-		f1 := &Functionality{JSONSchema: false}
-		f2 := &Functionality{JSONSchema: true}
-		if !f1.Less(f2) {
-			t.Fatal("f1 should be less than f2")
-		}
-	})
-
-	t.Run("Less comparison - Citations", func(t *testing.T) {
-		f1 := &Functionality{Citations: false}
-		f2 := &Functionality{Citations: true}
-		if !f1.Less(f2) {
-			t.Fatal("f1 should be less than f2")
-		}
-	})
-
-	t.Run("Less comparison - MaxTokens", func(t *testing.T) {
-		f1 := &Functionality{MaxTokens: false}
-		f2 := &Functionality{MaxTokens: true}
-		if !f1.Less(f2) {
-			t.Fatal("f1 should be less than f2")
-		}
-	})
-
-	t.Run("Less comparison - StopSequence", func(t *testing.T) {
-		f1 := &Functionality{StopSequence: false}
-		f2 := &Functionality{StopSequence: true}
-		if !f1.Less(f2) {
-			t.Fatal("f1 should be less than f2")
-		}
-	})
-
-	t.Run("Less comparison - not less", func(t *testing.T) {
-		f1 := &Functionality{ReportRateLimits: true}
-		f2 := &Functionality{ReportRateLimits: true}
-		if f1.Less(f2) {
-			t.Fatal("f1 should not be less than f2 when equal")
+		for _, tt := range tests {
+			if got := tt.f1.Less(tt.f2); got != tt.want {
+				t.Fatalf("f1.Less(f2) = %v, want %v", got, tt.want)
+			}
 		}
 	})
 }
 
 func TestScenario(t *testing.T) {
-	t.Run("Untested scenario", func(t *testing.T) {
-		s := &Scenario{Models: []string{"gpt-4"}}
-		if !s.Untested() {
-			t.Fatal("empty scenario should be untested")
+	t.Run("Untested", func(t *testing.T) {
+		tests := []struct {
+			s       *Scenario
+			untested bool
+		}{
+			{&Scenario{Models: []string{"gpt-4"}}, true},
+			{&Scenario{Models: []string{"gpt-4"}, GenSync: &Functionality{}}, false},
+			{&Scenario{Models: []string{"gpt-4"}, GenStream: &Functionality{}}, false},
+			{&Scenario{Models: []string{"gpt-4"}, In: map[Modality]ModalCapability{ModalityText: {}}, Out: map[Modality]ModalCapability{ModalityText: {}}}, false},
+		}
+
+		for _, tt := range tests {
+			if got := tt.s.Untested(); got != tt.untested {
+				t.Fatalf("Untested() = %v, want %v", got, tt.untested)
+			}
 		}
 	})
 
-	t.Run("Tested scenario with GenSync", func(t *testing.T) {
-		s := &Scenario{
-			Models:  []string{"gpt-4"},
-			GenSync: &Functionality{},
+	t.Run("Validate", func(t *testing.T) {
+		tests := []*Scenario{
+			{
+				Models:  []string{"gpt-4"},
+				In:      map[Modality]ModalCapability{ModalityText: {}},
+				Out:     map[Modality]ModalCapability{ModalityText: {}},
+				GenSync: &Functionality{},
+			},
 		}
-		if s.Untested() {
-			t.Fatal("scenario with GenSync should not be untested")
+
+		for _, s := range tests {
+			if err := s.Validate(); err != nil {
+				t.Fatalf("got err=%v", err)
+			}
 		}
 	})
 
-	t.Run("Tested scenario with GenStream", func(t *testing.T) {
-		s := &Scenario{
-			Models:    []string{"gpt-4"},
-			GenStream: &Functionality{},
+	t.Run("Validate Error", func(t *testing.T) {
+		tests := []*Scenario{
+			{Models: []string{}},
+			{Models: []string{"gpt-4"}, In: map[Modality]ModalCapability{Modality("invalid"): {}}},
+			{Models: []string{"gpt-4"}, Out: map[Modality]ModalCapability{Modality("invalid"): {}}},
+			{Models: []string{"gpt-4"}, In: map[Modality]ModalCapability{ModalityText: {}}},
+			{Models: []string{"gpt-4"}, Out: map[Modality]ModalCapability{ModalityText: {}}},
+			{Models: []string{"gpt-4"}, GenSync: &Functionality{}},
 		}
-		if s.Untested() {
-			t.Fatal("scenario with GenStream should not be untested")
-		}
-	})
 
-	t.Run("Tested scenario with In/Out", func(t *testing.T) {
-		s := &Scenario{
-			Models: []string{"gpt-4"},
-			In:     map[Modality]ModalCapability{ModalityText: {}},
-			Out:    map[Modality]ModalCapability{ModalityText: {}},
-		}
-		if s.Untested() {
-			t.Fatal("scenario with In/Out should not be untested")
-		}
-	})
-
-	t.Run("Validate no models", func(t *testing.T) {
-		s := &Scenario{Models: []string{}}
-		if err := s.Validate(); err == nil {
-			t.Fatal("should fail with no models")
-		}
-	})
-
-	t.Run("Validate invalid modality in In", func(t *testing.T) {
-		s := &Scenario{
-			Models: []string{"gpt-4"},
-			In:     map[Modality]ModalCapability{Modality("invalid"): {}},
-		}
-		if err := s.Validate(); err == nil {
-			t.Fatal("should fail with invalid modality in In")
-		}
-	})
-
-	t.Run("Validate invalid modality in Out", func(t *testing.T) {
-		s := &Scenario{
-			Models: []string{"gpt-4"},
-			Out:    map[Modality]ModalCapability{Modality("invalid"): {}},
-		}
-		if err := s.Validate(); err == nil {
-			t.Fatal("should fail with invalid modality in Out")
-		}
-	})
-
-	t.Run("Validate In without Out", func(t *testing.T) {
-		s := &Scenario{
-			Models: []string{"gpt-4"},
-			In:     map[Modality]ModalCapability{ModalityText: {}},
-		}
-		if err := s.Validate(); err == nil {
-			t.Fatal("should fail with In but no Out")
-		}
-	})
-
-	t.Run("Validate Out without In", func(t *testing.T) {
-		s := &Scenario{
-			Models: []string{"gpt-4"},
-			Out:    map[Modality]ModalCapability{ModalityText: {}},
-		}
-		if err := s.Validate(); err == nil {
-			t.Fatal("should fail with Out but no In")
-		}
-	})
-
-	t.Run("Validate GenSync without In/Out", func(t *testing.T) {
-		s := &Scenario{
-			Models:  []string{"gpt-4"},
-			GenSync: &Functionality{},
-		}
-		if err := s.Validate(); err == nil {
-			t.Fatal("should fail with GenSync but no In/Out")
-		}
-	})
-
-	t.Run("Validate valid with In/Out and GenSync", func(t *testing.T) {
-		s := &Scenario{
-			Models:  []string{"gpt-4"},
-			In:      map[Modality]ModalCapability{ModalityText: {}},
-			Out:     map[Modality]ModalCapability{ModalityText: {}},
-			GenSync: &Functionality{},
-		}
-		if err := s.Validate(); err != nil {
-			t.Fatalf("valid scenario failed: %v", err)
+		for _, s := range tests {
+			if err := s.Validate(); err == nil {
+				t.Fatalf("got err=nil, want error")
+			}
 		}
 	})
 }
 
 func TestScore(t *testing.T) {
-	t.Run("Validate valid score", func(t *testing.T) {
+	t.Run("Validate", func(t *testing.T) {
+		tests := []*Score{
+			{
+				Country: "US",
+				Scenarios: []Scenario{
+					{
+						Models:  []string{"gpt-4"},
+						SOTA:    true,
+						In:      map[Modality]ModalCapability{ModalityText: {}},
+						Out:     map[Modality]ModalCapability{ModalityText: {}},
+						GenSync: &Functionality{},
+					},
+					{
+						Models:  []string{"gpt-3.5"},
+						Good:    true,
+						In:      map[Modality]ModalCapability{ModalityText: {}},
+						Out:     map[Modality]ModalCapability{ModalityText: {}},
+						GenSync: &Functionality{},
+					},
+					{
+						Models:  []string{"gpt-2"},
+						Cheap:   true,
+						In:      map[Modality]ModalCapability{ModalityText: {}},
+						Out:     map[Modality]ModalCapability{ModalityText: {}},
+						GenSync: &Functionality{},
+					},
+				},
+			},
+		}
+
+		for _, s := range tests {
+			if err := s.Validate(); err != nil {
+				t.Fatalf("got err=%v", err)
+			}
+		}
+	})
+
+	t.Run("Validate Error", func(t *testing.T) {
+		tests := []*Score{
+			{
+				Scenarios: []Scenario{
+					{Models: []string{"gpt-4"}, Reason: false, GenSync: &Functionality{}},
+					{Models: []string{"gpt-4"}, Reason: false, GenSync: &Functionality{}},
+				},
+			},
+			{
+				Scenarios: []Scenario{
+					{Models: []string{"gpt-3.5"}, SOTA: false, GenSync: &Functionality{}},
+					{Models: []string{"gpt-4"}, SOTA: true, GenSync: &Functionality{}},
+					{Models: []string{"gpt-2"}, Good: true, Cheap: true, GenSync: &Functionality{}},
+				},
+			},
+			{
+				Scenarios: []Scenario{
+					{Models: []string{"gpt-4"}, GenSync: &Functionality{}},
+					{Models: []string{"gpt-3.5"}, GenSync: &Functionality{}},
+				},
+			},
+			{
+				Scenarios: []Scenario{
+					{Models: []string{"gpt-4"}, SOTA: true, GenSync: &Functionality{}},
+					{Models: []string{"gpt-3.5"}, SOTA: true, GenSync: &Functionality{}},
+				},
+			},
+			{
+				Scenarios: []Scenario{
+					{Models: []string{"gpt-4"}, SOTA: true, GenSync: &Functionality{}},
+					{Models: []string{"gpt-3.5"}, GenSync: &Functionality{}},
+					{Models: []string{"gpt-2"}, Cheap: true, GenSync: &Functionality{}},
+				},
+			},
+			{
+				Scenarios: []Scenario{
+					{Models: []string{"gpt-4"}, SOTA: true, GenSync: &Functionality{}},
+					{Models: []string{"gpt-2"}, Cheap: true, GenSync: &Functionality{}},
+					{Models: []string{"gpt-3.5"}, Good: true, GenSync: &Functionality{}},
+				},
+			},
+			{
+				Scenarios: []Scenario{
+					{Models: []string{"gpt-4"}, SOTA: true, GenSync: &Functionality{}},
+				},
+			},
+			{
+				Scenarios: []Scenario{
+					{Models: []string{"gpt-4"}, SOTA: true, GenSync: &Functionality{}},
+					{Models: []string{"gpt-3.5"}, Good: true, GenSync: &Functionality{}},
+					{Models: []string{"gpt-2"}, Cheap: true, GenSync: &Functionality{}},
+					{Models: []string{"gpt-1"}, Cheap: true, GenSync: &Functionality{}},
+				},
+			},
+			{
+				Scenarios: []Scenario{
+					{Models: []string{}, SOTA: true, GenSync: &Functionality{}},
+					{Models: []string{"gpt-3.5"}, Good: true, GenSync: &Functionality{}},
+					{Models: []string{"gpt-2"}, Cheap: true, GenSync: &Functionality{}},
+				},
+			},
+		}
+
+		for _, s := range tests {
+			if err := s.Validate(); err == nil {
+				t.Fatalf("got err=nil, want error")
+			}
+		}
+	})
+
+	t.Run("Validate no Cheap Error", func(t *testing.T) {
+		tests := []*Score{
+			{
+				Scenarios: []Scenario{
+					{Models: []string{"gpt-4"}, SOTA: true, GenSync: &Functionality{}},
+					{Models: []string{"gpt-3.5"}, Good: true, GenSync: &Functionality{}},
+					{Models: []string{"gpt-2"}, GenSync: &Functionality{}},
+				},
+			},
+		}
+
+		for _, s := range tests {
+			if err := s.Validate(); err == nil {
+				t.Fatalf("got err=nil, want error")
+			}
+		}
+	})
+
+	t.Run("Validate with reason", func(t *testing.T) {
+		tests := []*Score{
+			{
+				Country: "US",
+				Scenarios: []Scenario{
+					{
+						Models:  []string{"gpt-4"},
+						SOTA:    true,
+						Reason:  true,
+						In:      map[Modality]ModalCapability{ModalityText: {}},
+						Out:     map[Modality]ModalCapability{ModalityText: {}},
+						GenSync: &Functionality{},
+					},
+					{
+						Models:  []string{"gpt-3.5"},
+						Good:    true,
+						Reason:  false,
+						In:      map[Modality]ModalCapability{ModalityText: {}},
+						Out:     map[Modality]ModalCapability{ModalityText: {}},
+						GenSync: &Functionality{},
+					},
+					{
+						Models:  []string{"gpt-2"},
+						Cheap:   true,
+						Reason:  false,
+						In:      map[Modality]ModalCapability{ModalityText: {}},
+						Out:     map[Modality]ModalCapability{ModalityText: {}},
+						GenSync: &Functionality{},
+					},
+				},
+			},
+			{
+				Country: "US",
+				Scenarios: []Scenario{
+					{
+						Models:  []string{"gpt-4"},
+						SOTA:    true,
+						Reason:  true,
+						In:      map[Modality]ModalCapability{ModalityText: {}},
+						Out:     map[Modality]ModalCapability{ModalityText: {}},
+						GenSync: &Functionality{},
+					},
+					{
+						Models:  []string{"gpt-4"},
+						Good:    true,
+						Reason:  false,
+						In:      map[Modality]ModalCapability{ModalityText: {}},
+						Out:     map[Modality]ModalCapability{ModalityText: {}},
+						GenSync: &Functionality{},
+					},
+					{
+						Models:  []string{"gpt-2"},
+						Cheap:   true,
+						Reason:  false,
+						In:      map[Modality]ModalCapability{ModalityText: {}},
+						Out:     map[Modality]ModalCapability{ModalityText: {}},
+						GenSync: &Functionality{},
+					},
+				},
+			},
+		}
+
+		for _, s := range tests {
+			if err := s.Validate(); err != nil {
+				t.Fatalf("got err=%v", err)
+			}
+		}
+	})
+
+	t.Run("Validate per-modality SOTA/Good/Cheap", func(t *testing.T) {
+		tests := []*Score{
+			{
+				Country: "US",
+				Scenarios: []Scenario{
+					{
+						Models:  []string{"gpt-4"},
+						SOTA:    true,
+						In:      map[Modality]ModalCapability{ModalityText: {}},
+						Out:     map[Modality]ModalCapability{ModalityText: {}},
+						GenSync: &Functionality{},
+					},
+					{
+						Models:  []string{"gpt-4-vision"},
+						SOTA:    true,
+						In:      map[Modality]ModalCapability{ModalityImage: {}},
+						Out:     map[Modality]ModalCapability{ModalityImage: {}},
+						GenSync: &Functionality{},
+					},
+					{
+						Models:  []string{"gpt-3.5"},
+						Good:    true,
+						In:      map[Modality]ModalCapability{ModalityText: {}},
+						Out:     map[Modality]ModalCapability{ModalityText: {}},
+						GenSync: &Functionality{},
+					},
+					{
+						Models:  []string{"gpt-3.5-vision"},
+						Good:    true,
+						In:      map[Modality]ModalCapability{ModalityImage: {}},
+						Out:     map[Modality]ModalCapability{ModalityImage: {}},
+						GenSync: &Functionality{},
+					},
+					{
+						Models:  []string{"gpt-2"},
+						Cheap:   true,
+						In:      map[Modality]ModalCapability{ModalityText: {}},
+						Out:     map[Modality]ModalCapability{ModalityText: {}},
+						GenSync: &Functionality{},
+					},
+					{
+						Models:  []string{"gpt-2-vision"},
+						Cheap:   true,
+						In:      map[Modality]ModalCapability{ModalityImage: {}},
+						Out:     map[Modality]ModalCapability{ModalityImage: {}},
+						GenSync: &Functionality{},
+					},
+				},
+			},
+		}
+
+		for _, s := range tests {
+			if err := s.Validate(); err != nil {
+				t.Fatalf("got err=%v", err)
+			}
+		}
+	})
+
+	t.Run("Validate per-modality Error", func(t *testing.T) {
+		tests := []*Score{
+			{
+				Country: "US",
+				Scenarios: []Scenario{
+					{
+						Models:  []string{"gpt-4"},
+						SOTA:    true,
+						In:      map[Modality]ModalCapability{ModalityText: {}},
+						Out:     map[Modality]ModalCapability{ModalityText: {}},
+						GenSync: &Functionality{},
+					},
+					{
+						Models:  []string{"claude-3-opus"},
+						SOTA:    true,
+						In:      map[Modality]ModalCapability{ModalityText: {}},
+						Out:     map[Modality]ModalCapability{ModalityText: {}},
+						GenSync: &Functionality{},
+					},
+					{
+						Models:  []string{"gpt-3.5"},
+						Good:    true,
+						In:      map[Modality]ModalCapability{ModalityText: {}},
+						Out:     map[Modality]ModalCapability{ModalityText: {}},
+						GenSync: &Functionality{},
+					},
+					{
+						Models:  []string{"gpt-2"},
+						Cheap:   true,
+						In:      map[Modality]ModalCapability{ModalityText: {}},
+						Out:     map[Modality]ModalCapability{ModalityText: {}},
+						GenSync: &Functionality{},
+					},
+				},
+			},
+			{
+				Country: "US",
+				Scenarios: []Scenario{
+					{
+						Models:  []string{"gpt-4"},
+						SOTA:    true,
+						In:      map[Modality]ModalCapability{ModalityText: {}},
+						Out:     map[Modality]ModalCapability{ModalityText: {}},
+						GenSync: &Functionality{},
+					},
+					{
+						Models:  []string{"gpt-3.5"},
+						Good:    true,
+						In:      map[Modality]ModalCapability{ModalityText: {}},
+						Out:     map[Modality]ModalCapability{ModalityText: {}},
+						GenSync: &Functionality{},
+					},
+					{
+						Models:  []string{"claude-3-sonnet"},
+						Good:    true,
+						In:      map[Modality]ModalCapability{ModalityText: {}},
+						Out:     map[Modality]ModalCapability{ModalityText: {}},
+						GenSync: &Functionality{},
+					},
+					{
+						Models:  []string{"gpt-2"},
+						Cheap:   true,
+						In:      map[Modality]ModalCapability{ModalityText: {}},
+						Out:     map[Modality]ModalCapability{ModalityText: {}},
+						GenSync: &Functionality{},
+					},
+				},
+			},
+			{
+				Country: "US",
+				Scenarios: []Scenario{
+					{
+						Models:  []string{"gpt-4"},
+						SOTA:    true,
+						In:      map[Modality]ModalCapability{ModalityText: {}},
+						Out:     map[Modality]ModalCapability{ModalityText: {}},
+						GenSync: &Functionality{},
+					},
+					{
+						Models:  []string{"gpt-3.5"},
+						Good:    true,
+						In:      map[Modality]ModalCapability{ModalityText: {}},
+						Out:     map[Modality]ModalCapability{ModalityText: {}},
+						GenSync: &Functionality{},
+					},
+					{
+						Models:  []string{"gpt-2"},
+						Cheap:   true,
+						In:      map[Modality]ModalCapability{ModalityText: {}},
+						Out:     map[Modality]ModalCapability{ModalityText: {}},
+						GenSync: &Functionality{},
+					},
+					{
+						Models:  []string{"gemini-1.5-flash"},
+						Cheap:   true,
+						In:      map[Modality]ModalCapability{ModalityText: {}},
+						Out:     map[Modality]ModalCapability{ModalityText: {}},
+						GenSync: &Functionality{},
+					},
+				},
+			},
+		}
+
+		for _, s := range tests {
+			if err := s.Validate(); err == nil {
+				t.Fatalf("got err=nil, want error")
+			}
+		}
+	})
+
+	t.Run("Validate modality scenarios success", func(t *testing.T) {
+		tests := []*Score{
+			{
+				Country: "US",
+				Scenarios: []Scenario{
+					{
+						Models:  []string{"gpt-4-text"},
+						SOTA:    true,
+						In:      map[Modality]ModalCapability{ModalityText: {}},
+						Out:     map[Modality]ModalCapability{ModalityText: {}},
+						GenSync: &Functionality{},
+					},
+					{
+						Models:  []string{"gpt-3.5-text"},
+						Good:    true,
+						In:      map[Modality]ModalCapability{ModalityText: {}},
+						Out:     map[Modality]ModalCapability{ModalityText: {}},
+						GenSync: &Functionality{},
+					},
+					{
+						Models:  []string{"gpt-2-text"},
+						Cheap:   true,
+						In:      map[Modality]ModalCapability{ModalityText: {}},
+						Out:     map[Modality]ModalCapability{ModalityText: {}},
+						GenSync: &Functionality{},
+					},
+					{
+						Models:  []string{"gpt-4-vision"},
+						SOTA:    true,
+						In:      map[Modality]ModalCapability{ModalityImage: {}},
+						Out:     map[Modality]ModalCapability{ModalityImage: {}},
+						GenSync: &Functionality{},
+					},
+					{
+						Models:  []string{"claude-vision"},
+						Good:    true,
+						In:      map[Modality]ModalCapability{ModalityImage: {}},
+						Out:     map[Modality]ModalCapability{ModalityImage: {}},
+						GenSync: &Functionality{},
+					},
+					{
+						Models:  []string{"llava"},
+						Cheap:   true,
+						In:      map[Modality]ModalCapability{ModalityImage: {}},
+						Out:     map[Modality]ModalCapability{ModalityImage: {}},
+						GenSync: &Functionality{},
+					},
+				},
+			},
+			{
+				Country: "US",
+				Scenarios: []Scenario{
+					{
+						Models:  []string{"gpt-4"},
+						SOTA:    true,
+						In:      map[Modality]ModalCapability{ModalityText: {}},
+						Out:     map[Modality]ModalCapability{ModalityText: {}},
+						GenSync: &Functionality{},
+					},
+					{
+						Models:  []string{"gpt-3.5"},
+						Good:    true,
+						In:      map[Modality]ModalCapability{ModalityText: {}},
+						Out:     map[Modality]ModalCapability{ModalityText: {}},
+						GenSync: &Functionality{},
+					},
+					{
+						Models:  []string{"gpt-2"},
+						Cheap:   true,
+						In:      map[Modality]ModalCapability{ModalityText: {}},
+						Out:     map[Modality]ModalCapability{ModalityText: {}},
+						GenSync: &Functionality{},
+					},
+					{
+						Models:  []string{"gpt-4-vision"},
+						SOTA:    true,
+						In:      map[Modality]ModalCapability{ModalityImage: {}},
+						Out:     map[Modality]ModalCapability{ModalityImage: {}},
+						GenSync: &Functionality{},
+					},
+					{
+						Models:  []string{"gpt-3.5-vision"},
+						Good:    true,
+						In:      map[Modality]ModalCapability{ModalityImage: {}},
+						Out:     map[Modality]ModalCapability{ModalityImage: {}},
+						GenSync: &Functionality{},
+					},
+					{
+						Models:  []string{"gpt-2-vision"},
+						Cheap:   true,
+						In:      map[Modality]ModalCapability{ModalityImage: {}},
+						Out:     map[Modality]ModalCapability{ModalityImage: {}},
+						GenSync: &Functionality{},
+					},
+				},
+			},
+		}
+
+		for _, s := range tests {
+			if err := s.Validate(); err != nil {
+				t.Fatalf("got err=%v", err)
+			}
+		}
+	})
+
+	t.Run("Validate modality scenarios error", func(t *testing.T) {
+		tests := []*Score{
+			{
+				Country: "US",
+				Scenarios: []Scenario{
+					{
+						Models:  []string{"gpt-4-vision"},
+						SOTA:    true,
+						In:      map[Modality]ModalCapability{ModalityImage: {}},
+						Out:     map[Modality]ModalCapability{ModalityImage: {}},
+						GenSync: &Functionality{},
+					},
+					{
+						Models:  []string{"claude-3-5-sonnet"},
+						SOTA:    true,
+						In:      map[Modality]ModalCapability{ModalityImage: {}},
+						Out:     map[Modality]ModalCapability{ModalityImage: {}},
+						GenSync: &Functionality{},
+					},
+					{
+						Models:  []string{"gpt-4-standard"},
+						Good:    true,
+						In:      map[Modality]ModalCapability{ModalityImage: {}},
+						Out:     map[Modality]ModalCapability{ModalityImage: {}},
+						GenSync: &Functionality{},
+					},
+					{
+						Models:  []string{"gpt-3.5-vision"},
+						Cheap:   true,
+						In:      map[Modality]ModalCapability{ModalityImage: {}},
+						Out:     map[Modality]ModalCapability{ModalityImage: {}},
+						GenSync: &Functionality{},
+					},
+				},
+			},
+			{
+				Country: "US",
+				Scenarios: []Scenario{
+					{
+						Models:  []string{"gpt-4"},
+						SOTA:    true,
+						GenSync: &Functionality{},
+					},
+					{
+						Models:  []string{"claude-3-opus"},
+						SOTA:    true,
+						GenSync: &Functionality{},
+					},
+					{
+						Models:  []string{"gpt-3.5"},
+						Good:    true,
+						GenSync: &Functionality{},
+					},
+					{
+						Models:  []string{"gpt-2"},
+						Cheap:   true,
+						GenSync: &Functionality{},
+					},
+				},
+			},
+			{
+				Country: "US",
+				Scenarios: []Scenario{
+					{
+						Models:  []string{"gpt-4-vision"},
+						SOTA:    true,
+						In:      map[Modality]ModalCapability{ModalityImage: {}},
+						Out:     map[Modality]ModalCapability{ModalityImage: {}},
+						GenSync: &Functionality{},
+					},
+					{
+						Models:  []string{"gpt-2-vision"},
+						Cheap:   true,
+						In:      map[Modality]ModalCapability{ModalityImage: {}},
+						Out:     map[Modality]ModalCapability{ModalityImage: {}},
+						GenSync: &Functionality{},
+					},
+					{
+						Models:  []string{"gpt-3.5-vision"},
+						Good:    true,
+						In:      map[Modality]ModalCapability{ModalityImage: {}},
+						Out:     map[Modality]ModalCapability{ModalityImage: {}},
+						GenSync: &Functionality{},
+					},
+					{
+						Models:  []string{"gpt-3.5"},
+						Good:    true,
+						In:      map[Modality]ModalCapability{ModalityText: {}},
+						Out:     map[Modality]ModalCapability{ModalityText: {}},
+						GenSync: &Functionality{},
+					},
+					{
+						Models:  []string{"gpt-2"},
+						Cheap:   true,
+						In:      map[Modality]ModalCapability{ModalityText: {}},
+						Out:     map[Modality]ModalCapability{ModalityText: {}},
+						GenSync: &Functionality{},
+					},
+					{
+						Models:  []string{"gpt-4"},
+						SOTA:    true,
+						In:      map[Modality]ModalCapability{ModalityText: {}},
+						Out:     map[Modality]ModalCapability{ModalityText: {}},
+						GenSync: &Functionality{},
+					},
+				},
+			},
+		}
+
+		for _, s := range tests {
+			if err := s.Validate(); err == nil {
+				t.Fatalf("got err=nil, want error")
+			}
+		}
+	})
+
+	t.Run("Validate SOTA not first in modality group", func(t *testing.T) {
+		// SOTA should be first within its modality group
 		s := &Score{
 			Country: "US",
 			Scenarios: []Scenario{
 				{
-					Models:  []string{"gpt-4"},
-					SOTA:    true,
-					In:      map[Modality]ModalCapability{ModalityText: {}},
-					Out:     map[Modality]ModalCapability{ModalityText: {}},
-					GenSync: &Functionality{},
-				},
-				{
-					Models:  []string{"gpt-3.5"},
+					Models:  []string{"gpt-3.5-vision"},
 					Good:    true,
-					In:      map[Modality]ModalCapability{ModalityText: {}},
-					Out:     map[Modality]ModalCapability{ModalityText: {}},
+					In:      map[Modality]ModalCapability{ModalityImage: {}},
+					Out:     map[Modality]ModalCapability{ModalityImage: {}},
 					GenSync: &Functionality{},
 				},
 				{
-					Models:  []string{"gpt-2"},
-					Cheap:   true,
-					In:      map[Modality]ModalCapability{ModalityText: {}},
-					Out:     map[Modality]ModalCapability{ModalityText: {}},
-					GenSync: &Functionality{},
-				},
-			},
-		}
-		if err := s.Validate(); err != nil {
-			t.Fatalf("valid score failed: %v", err)
-		}
-	})
-
-	t.Run("Validate duplicate model", func(t *testing.T) {
-		s := &Score{
-			Scenarios: []Scenario{
-				{Models: []string{"gpt-4"}, Reason: false, GenSync: &Functionality{}},
-				{Models: []string{"gpt-4"}, Reason: false, GenSync: &Functionality{}},
-			},
-		}
-		if err := s.Validate(); err == nil {
-			t.Fatal("should fail with duplicate model")
-		}
-	})
-
-	t.Run("Validate SOTA not first", func(t *testing.T) {
-		s := &Score{
-			Scenarios: []Scenario{
-				{
-					Models:  []string{"gpt-3.5"},
-					SOTA:    false,
-					GenSync: &Functionality{},
-				},
-				{
-					Models:  []string{"gpt-4"},
+					Models:  []string{"gpt-4-vision"},
 					SOTA:    true,
+					In:      map[Modality]ModalCapability{ModalityImage: {}},
+					Out:     map[Modality]ModalCapability{ModalityImage: {}},
 					GenSync: &Functionality{},
 				},
 				{
-					Models:  []string{"gpt-2"},
-					Good:    true,
+					Models:  []string{"gpt-2-vision"},
 					Cheap:   true,
+					In:      map[Modality]ModalCapability{ModalityImage: {}},
+					Out:     map[Modality]ModalCapability{ModalityImage: {}},
 					GenSync: &Functionality{},
 				},
 			},
 		}
 		if err := s.Validate(); err == nil {
-			t.Fatal("should fail when SOTA is not first")
+			t.Fatal("should fail when SOTA is not first in image modality group")
 		}
 	})
 
-	t.Run("Validate no SOTA", func(t *testing.T) {
-		s := &Score{
-			Scenarios: []Scenario{
-				{Models: []string{"gpt-4"}, GenSync: &Functionality{}},
-				{Models: []string{"gpt-3.5"}, GenSync: &Functionality{}},
-			},
-		}
-		if err := s.Validate(); err == nil {
-			t.Fatal("should fail with no SOTA")
-		}
-	})
-
-	t.Run("Validate multiple SOTA", func(t *testing.T) {
-		s := &Score{
-			Scenarios: []Scenario{
-				{Models: []string{"gpt-4"}, SOTA: true, GenSync: &Functionality{}},
-				{Models: []string{"gpt-3.5"}, SOTA: true, GenSync: &Functionality{}},
-			},
-		}
-		if err := s.Validate(); err == nil {
-			t.Fatal("should fail with multiple SOTA")
-		}
-	})
-
-	t.Run("Validate no Good", func(t *testing.T) {
-		s := &Score{
-			Scenarios: []Scenario{
-				{Models: []string{"gpt-4"}, SOTA: true, GenSync: &Functionality{}},
-				{Models: []string{"gpt-3.5"}, GenSync: &Functionality{}},
-				{Models: []string{"gpt-2"}, Cheap: true, GenSync: &Functionality{}},
-			},
-		}
-		if err := s.Validate(); err == nil {
-			t.Fatal("should fail with no Good")
-		}
-	})
-
-	t.Run("Validate Good after Cheap", func(t *testing.T) {
-		s := &Score{
-			Scenarios: []Scenario{
-				{Models: []string{"gpt-4"}, SOTA: true, GenSync: &Functionality{}},
-				{Models: []string{"gpt-2"}, Cheap: true, GenSync: &Functionality{}},
-				{Models: []string{"gpt-3.5"}, Good: true, GenSync: &Functionality{}},
-			},
-		}
-		if err := s.Validate(); err == nil {
-			t.Fatal("should fail when Good comes after Cheap")
-		}
-	})
-
-	t.Run("Validate single scenario", func(t *testing.T) {
-		s := &Score{
-			Scenarios: []Scenario{
-				{Models: []string{"gpt-4"}, SOTA: true, GenSync: &Functionality{}},
-			},
-		}
-		if err := s.Validate(); err == nil {
-			t.Fatal("should fail with single scenario missing Good/Cheap")
-		}
-	})
-
-	t.Run("Validate multiple Cheap models", func(t *testing.T) {
-		s := &Score{
-			Scenarios: []Scenario{
-				{Models: []string{"gpt-4"}, SOTA: true, GenSync: &Functionality{}},
-				{Models: []string{"gpt-3.5"}, Good: true, GenSync: &Functionality{}},
-				{Models: []string{"gpt-2"}, Cheap: true, GenSync: &Functionality{}},
-				{Models: []string{"gpt-1"}, Cheap: true, GenSync: &Functionality{}},
-			},
-		}
-		if err := s.Validate(); err == nil {
-			t.Fatal("should fail with multiple Cheap models")
-		}
-	})
-
-	t.Run("Validate SOTA with empty models list", func(t *testing.T) {
-		s := &Score{
-			Scenarios: []Scenario{
-				{Models: []string{}, SOTA: true, GenSync: &Functionality{}},
-				{Models: []string{"gpt-3.5"}, Good: true, GenSync: &Functionality{}},
-				{Models: []string{"gpt-2"}, Cheap: true, GenSync: &Functionality{}},
-			},
-		}
-		if err := s.Validate(); err == nil {
-			t.Fatal("should fail with empty models list")
-		}
-	})
-
-	t.Run("Validate no Cheap", func(t *testing.T) {
-		s := &Score{
-			Scenarios: []Scenario{
-				{Models: []string{"gpt-4"}, SOTA: true, GenSync: &Functionality{}},
-				{Models: []string{"gpt-3.5"}, Good: true, GenSync: &Functionality{}},
-				{Models: []string{"gpt-2"}, GenSync: &Functionality{}},
-			},
-		}
-		if err := s.Validate(); err == nil {
-			t.Fatal("should fail with no Cheap")
-		}
-	})
-
-	t.Run("Validate valid scenario with reason", func(t *testing.T) {
+	t.Run("Validate Good before SOTA per modality", func(t *testing.T) {
+		// Good should not come before SOTA even across different modalities
 		s := &Score{
 			Country: "US",
 			Scenarios: []Scenario{
 				{
-					Models:  []string{"gpt-4"},
-					SOTA:    true,
-					Reason:  true,
-					In:      map[Modality]ModalCapability{ModalityText: {}},
-					Out:     map[Modality]ModalCapability{ModalityText: {}},
-					GenSync: &Functionality{},
-				},
-				{
-					Models:  []string{"gpt-3.5"},
+					Models:  []string{"gpt-3.5-text"},
 					Good:    true,
-					Reason:  false,
 					In:      map[Modality]ModalCapability{ModalityText: {}},
 					Out:     map[Modality]ModalCapability{ModalityText: {}},
 					GenSync: &Functionality{},
 				},
 				{
-					Models:  []string{"gpt-2"},
+					Models:  []string{"gpt-4-text"},
+					SOTA:    true,
+					In:      map[Modality]ModalCapability{ModalityText: {}},
+					Out:     map[Modality]ModalCapability{ModalityText: {}},
+					GenSync: &Functionality{},
+				},
+				{
+					Models:  []string{"gpt-2-text"},
 					Cheap:   true,
-					Reason:  false,
 					In:      map[Modality]ModalCapability{ModalityText: {}},
 					Out:     map[Modality]ModalCapability{ModalityText: {}},
 					GenSync: &Functionality{},
 				},
 			},
 		}
-		if err := s.Validate(); err != nil {
-			t.Fatalf("valid score with Reason should pass: %v", err)
-		}
-	})
-
-	t.Run("Validate same model with and without reasoning", func(t *testing.T) {
-		s := &Score{
-			Country: "US",
-			Scenarios: []Scenario{
-				{
-					Models:  []string{"gpt-4"},
-					SOTA:    true,
-					Reason:  true,
-					In:      map[Modality]ModalCapability{ModalityText: {}},
-					Out:     map[Modality]ModalCapability{ModalityText: {}},
-					GenSync: &Functionality{},
-				},
-				{
-					Models:  []string{"gpt-4"},
-					Good:    true,
-					Reason:  false,
-					In:      map[Modality]ModalCapability{ModalityText: {}},
-					Out:     map[Modality]ModalCapability{ModalityText: {}},
-					GenSync: &Functionality{},
-				},
-				{
-					Models:  []string{"gpt-2"},
-					Cheap:   true,
-					Reason:  false,
-					In:      map[Modality]ModalCapability{ModalityText: {}},
-					Out:     map[Modality]ModalCapability{ModalityText: {}},
-					GenSync: &Functionality{},
-				},
-			},
-		}
-		if err := s.Validate(); err != nil {
-			t.Fatalf("same model with different reasoning flags should pass: %v", err)
+		if err := s.Validate(); err == nil {
+			t.Fatal("should fail when Good comes before SOTA in text modality")
 		}
 	})
 }
 
 func TestReason(t *testing.T) {
-	t.Run("Validate valid values", func(t *testing.T) {
-		for _, r := range []Reason{ReasonNone, ReasonInline, ReasonAuto} {
+	t.Run("Validate", func(t *testing.T) {
+		tests := []Reason{ReasonNone, ReasonInline, ReasonAuto}
+		for _, r := range tests {
 			if err := r.Validate(); err != nil {
-				t.Fatalf("valid Reason %v failed: %v", r, err)
+				t.Fatalf("Reason %v: got err=%v", r, err)
 			}
 		}
 	})
 
-	t.Run("Validate invalid value", func(t *testing.T) {
-		if err := Reason(99).Validate(); err == nil {
-			t.Fatal("invalid Reason should fail")
+	t.Run("Validate Error", func(t *testing.T) {
+		tests := []Reason{Reason(99)}
+		for _, r := range tests {
+			if err := r.Validate(); err == nil {
+				t.Fatalf("Reason %v: want error", r)
+			}
 		}
 	})
 
 	t.Run("MarshalJSON", func(t *testing.T) {
 		tests := []struct {
-			name string
 			in   Reason
 			want []byte
 		}{
-			{name: "none", in: ReasonNone, want: []byte(`"none"`)},
-			{name: "inline", in: ReasonInline, want: []byte(`"inline"`)},
-			{name: "auto", in: ReasonAuto, want: []byte(`"auto"`)},
+			{ReasonNone, []byte(`"none"`)},
+			{ReasonInline, []byte(`"inline"`)},
+			{ReasonAuto, []byte(`"auto"`)},
 		}
 
 		for _, tt := range tests {
-			t.Run(tt.name, func(t *testing.T) {
-				got, err := tt.in.MarshalJSON()
-				if err != nil {
-					t.Fatalf("MarshalJSON failed: %v", err)
-				}
-				if string(got) != string(tt.want) {
-					t.Fatalf("got %s, want %s", got, tt.want)
-				}
-			})
-		}
-
-		t.Run("Invalid value", func(t *testing.T) {
-			_, err := Reason(99).MarshalJSON()
-			if err == nil {
-				t.Fatal("should fail on invalid Reason")
+			got, err := tt.in.MarshalJSON()
+			if err != nil {
+				t.Fatalf("Reason %v: got err=%v", tt.in, err)
 			}
-		})
+			if string(got) != string(tt.want) {
+				t.Fatalf("got %s, want %s", got, tt.want)
+			}
+		}
+	})
+
+	t.Run("MarshalJSON Error", func(t *testing.T) {
+		tests := []Reason{Reason(99)}
+		for _, r := range tests {
+			_, err := r.MarshalJSON()
+			if err == nil {
+				t.Fatalf("Reason %v: want error", r)
+			}
+		}
 	})
 
 	t.Run("UnmarshalJSON", func(t *testing.T) {
 		tests := []struct {
-			name string
 			in   []byte
 			want Reason
 		}{
-			{name: "none", in: []byte(`"none"`), want: ReasonNone},
-			{name: "inline", in: []byte(`"inline"`), want: ReasonInline},
-			{name: "auto", in: []byte(`"auto"`), want: ReasonAuto},
+			{[]byte(`"none"`), ReasonNone},
+			{[]byte(`"inline"`), ReasonInline},
+			{[]byte(`"auto"`), ReasonAuto},
 		}
 
 		for _, tt := range tests {
-			t.Run(tt.name, func(t *testing.T) {
-				var got Reason
-				if err := got.UnmarshalJSON(tt.in); err != nil {
-					t.Fatalf("UnmarshalJSON failed: %v", err)
-				}
-				if got != tt.want {
-					t.Fatalf("got %v, want %v", got, tt.want)
-				}
-			})
+			var got Reason
+			if err := got.UnmarshalJSON(tt.in); err != nil {
+				t.Fatalf("input %s: got err=%v", tt.in, err)
+			}
+			if got != tt.want {
+				t.Fatalf("got %v, want %v", got, tt.want)
+			}
+		}
+	})
+
+	t.Run("UnmarshalJSON Error", func(t *testing.T) {
+		tests := [][]byte{
+			[]byte(`"invalid"`),
+			[]byte(`not json`),
 		}
 
-		t.Run("Invalid value", func(t *testing.T) {
+		for _, in := range tests {
 			var got Reason
-			if err := got.UnmarshalJSON([]byte(`"invalid"`)); err == nil {
-				t.Fatal("should fail on invalid Reason")
+			if err := got.UnmarshalJSON(in); err == nil {
+				t.Fatalf("input %s: want error", in)
 			}
-		})
-
-		t.Run("Invalid JSON", func(t *testing.T) {
-			var got Reason
-			if err := got.UnmarshalJSON([]byte(`not json`)); err == nil {
-				t.Fatal("should fail on invalid JSON")
-			}
-		})
+		}
 	})
 }
 
 func TestCompareScenarios(t *testing.T) {
-	t.Run("SOTA comes first", func(t *testing.T) {
-		a := Scenario{Models: []string{"gpt-4"}, SOTA: true, Reason: false}
-		b := Scenario{Models: []string{"gpt-3"}, Good: true, Reason: false}
-		if CompareScenarios(a, b) >= 0 {
-			t.Fatal("SOTA should come before Good")
-		}
-	})
+	tests := []struct {
+		a, b Scenario
+		want int
+	}{
+		{Scenario{Models: []string{"gpt-4"}, SOTA: true, Reason: false}, Scenario{Models: []string{"gpt-3"}, Good: true, Reason: false}, -1},
+		{Scenario{Models: []string{"gpt-3"}, Good: true, Reason: false}, Scenario{Models: []string{"gpt-2"}, Cheap: true, Reason: false}, -1},
+		{Scenario{Models: []string{"gpt-4"}, SOTA: true, Reason: false}, Scenario{Models: []string{"gpt-2"}, Cheap: true, Reason: false}, -1},
+		{Scenario{Models: []string{"gpt-4"}, SOTA: true, Reason: true}, Scenario{Models: []string{"gpt-4"}, SOTA: true, Reason: false}, -1},
+		{Scenario{Models: []string{"gpt-4"}, SOTA: true, Reason: false}, Scenario{Models: []string{"gpt-3"}, Reason: false}, -1},
+		{Scenario{Models: []string{"gpt-unknown-b"}, Reason: false}, Scenario{Models: []string{"gpt-unknown-a"}, Reason: false}, 1},
+		{Scenario{Models: []string{"gpt-3"}, Good: true, Reason: true}, Scenario{Models: []string{"gpt-2"}, Cheap: true, Reason: false}, -1},
+	}
 
-	t.Run("Good comes after SOTA", func(t *testing.T) {
-		a := Scenario{Models: []string{"gpt-3"}, Good: true, Reason: false}
-		b := Scenario{Models: []string{"gpt-2"}, Cheap: true, Reason: false}
-		if CompareScenarios(a, b) >= 0 {
-			t.Fatal("Good should come before Cheap")
+	for _, tt := range tests {
+		cmp := CompareScenarios(tt.a, tt.b)
+		// Normalize comparison result to -1, 0, or 1
+		var got int
+		if cmp < 0 {
+			got = -1
+		} else if cmp > 0 {
+			got = 1
 		}
-	})
 
-	t.Run("Cheap comes after Good", func(t *testing.T) {
-		a := Scenario{Models: []string{"gpt-4"}, SOTA: true, Reason: false}
-		b := Scenario{Models: []string{"gpt-2"}, Cheap: true, Reason: false}
-		if CompareScenarios(a, b) >= 0 {
-			t.Fatal("SOTA should come before Cheap")
+		if got != tt.want {
+			t.Fatalf("CompareScenarios got %v, want %v", got, tt.want)
 		}
-	})
-
-	t.Run("Reasoning comes before non-reasoning with same priority", func(t *testing.T) {
-		a := Scenario{Models: []string{"gpt-4"}, SOTA: true, Reason: true}
-		b := Scenario{Models: []string{"gpt-4"}, SOTA: true, Reason: false}
-		if CompareScenarios(a, b) >= 0 {
-			t.Fatal("reasoning should come before non-reasoning")
-		}
-	})
-
-	t.Run("Unflagged scenarios get low priority", func(t *testing.T) {
-		a := Scenario{Models: []string{"gpt-4"}, SOTA: true, Reason: false}
-		b := Scenario{Models: []string{"gpt-3"}, Reason: false}
-		if CompareScenarios(a, b) >= 0 {
-			t.Fatal("SOTA should come before unflagged")
-		}
-	})
-
-	t.Run("Alphabetical order for same priority and reasoning", func(t *testing.T) {
-		a := Scenario{Models: []string{"gpt-unknown-b"}, Reason: false}
-		b := Scenario{Models: []string{"gpt-unknown-a"}, Reason: false}
-		if CompareScenarios(a, b) <= 0 {
-			t.Fatal("gpt-unknown-a should come before gpt-unknown-b alphabetically")
-		}
-	})
-
-	t.Run("Non-reasoning before reasoning when different priority", func(t *testing.T) {
-		a := Scenario{Models: []string{"gpt-3"}, Good: true, Reason: true}
-		b := Scenario{Models: []string{"gpt-2"}, Cheap: true, Reason: false}
-		if CompareScenarios(a, b) >= 0 {
-			t.Fatal("Good should come before Cheap regardless of reasoning")
-		}
-	})
+	}
 
 	t.Run("Untested scenarios come last", func(t *testing.T) {
 		// Create a properly tested scenario

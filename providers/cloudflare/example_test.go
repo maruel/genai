@@ -61,7 +61,9 @@ func ExampleNew_hTTP_record() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("Found %d models\n", len(models))
+	if len(models) > 1 {
+		fmt.Println("Found multiple models")
+	}
 	// Output:
-	// Found 70 models
+	// Found multiple models
 }

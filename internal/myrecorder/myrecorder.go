@@ -113,6 +113,8 @@ func (e *orphanedError) Error() string {
 //
 
 // Recorder wraps the POST body in the error message.
+//
+// It is a http.RoundTripper.
 type Recorder struct {
 	*recorder.Recorder
 	name string
@@ -128,4 +130,8 @@ func (r *Recorder) RoundTrip(req *http.Request) (*http.Response, error) {
 		}
 	}
 	return resp, err
+}
+
+func (r *Recorder) Unwrap() http.RoundTripper {
+	return r.Recorder
 }

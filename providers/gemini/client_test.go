@@ -22,6 +22,8 @@ import (
 	"github.com/maruel/genai/providers/gemini"
 	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/genai/smoke/smoketest"
+	"github.com/maruel/roundtrippers"
+	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
 
 func getClientInner(t *testing.T, opts genai.ProviderOptions, fn func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
@@ -160,15 +162,15 @@ func TestClient(t *testing.T) {
 		const prompt = `Carton video of a shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves.`
 		c := getClient(t, "veo-2.0-generate-001")
 		jobID := internaltest.TestCapabilitiesGenAsync(t, c, genai.Message{Requests: []genai.Request{{Text: prompt}}})
-		ctx := t.Context()
-		// Poll for completion using the job ID from the Capability test.
-		// Use a minimal sleep during tests (recorded playback), 500ms during real API calls.
-		pollInterval := 1 * time.Millisecond
-		if os.Getenv("GEMINI_API_KEY") != "" && os.Getenv("RECORD") == "" {
+		pollInterval := time.Millisecond
+		// Detect if recording. Should probably be moved to a utility.
+		if roundtrippers.Unwrap(c.HTTPClient().Transport).(*recorder.Recorder).IsRecording() {
 			pollInterval = 500 * time.Millisecond
 		}
+		// Poll for completion using the job ID from the Capability test.
 		res := genai.Result{Usage: genai.Usage{FinishReason: genai.Pending}}
 		var err error
+		ctx := t.Context()
 		for res.Usage.FinishReason == genai.Pending {
 			select {
 			case <-ctx.Done():

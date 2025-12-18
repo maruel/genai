@@ -26,7 +26,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"flag"
-	"fmt"
 	"maps"
 	"net/http"
 	"os"
@@ -117,21 +116,21 @@ func Run(t *testing.T, pf ProviderFactory, models []scoreboard.Model, rec *myrec
 				}
 			}
 			if len(want.Models) == 0 {
-				// Model not in scoreboard yet
-				if !*updateScoreboard {
-					t.Fatalf("no scenario for model %v", m)
+				// Model not in scoreboard yet.
+				// Look for an existing untested scenario with the same reason to preserve Comments
+				// TODO(maruel): I don't believe this can happen.
+				var foundComments string
+				for _, sc := range sb.Scenarios {
+					if sc.Untested() && sc.Reason == m.Reason && (foundComments == "" || foundComments == sc.Comments) {
+						foundComments = sc.Comments
+						break
+					}
 				}
-				// When updating scoreboard, create a new untested scenario for this model
-				want = scoreboard.Scenario{
-					Models: []string{m.Model},
-					Reason: m.Reason,
-				}
+				want = scoreboard.Scenario{Models: []string{m.Model}, Reason: m.Reason, Comments: foundComments}
 			}
 			if want.Untested() {
-				// If updating scoreboard, collect the untested scenario to be added
-				if *updateScoreboard {
-					updatedScenarios = append(updatedScenarios, want)
-				}
+				// Collect the untested scenario for validation
+				updatedScenarios = append(updatedScenarios, want)
 				t.Skip("Explicitly unsupported model")
 			}
 			// Run one model at a time otherwise we can't collect the total usage.
@@ -154,130 +153,61 @@ func Run(t *testing.T, pf ProviderFactory, models []scoreboard.Model, rec *myrec
 				return pf(t, m, fn)
 			}, want)
 			usage.Add(u)
-			if *updateScoreboard && got != nil {
+			if got != nil {
 				updatedScenarios = append(updatedScenarios, *got)
 			}
 		})
 	}
 	t.Logf("Usage: %#v", usage)
 
-	// Check if the order is SOTA, Good, Cheap then the rest.
-	// HACK FOR llamacpp; there's only one model and the reported ID and the scoreboard name do not match.
-	preferredModels := map[string]string{} // maps genai.ModelXXX to actual model ID
-	if len(sb.Scenarios) > 1 {
-		// It'd be nicer to use PreloadedModels. In practice most do already.
-		name := "sota"
-		fn := func(h http.RoundTripper) http.RoundTripper {
-			r, err3 := rec.Record(name, h)
-			if err3 != nil {
-				t.Fatal(err3)
-			}
-			t.Cleanup(func() {
-				if err3 := r.Stop(); err3 != nil {
-					t.Error(err3)
-				}
-			})
-			return r
-		}
-		sota := pf(t, scoreboard.Model{Model: genai.ModelSOTA}, fn).ModelID()
-		preferredModels["sota"] = sota
-		name = "good"
-		good := pf(t, scoreboard.Model{Model: genai.ModelGood}, fn).ModelID()
-		preferredModels["good"] = good
-		name = "cheap"
-		cheap := pf(t, scoreboard.Model{Model: genai.ModelCheap}, fn).ModelID()
-		preferredModels["cheap"] = cheap
-		// Some models support both reasoning and non-reasoning. We want to keep them aside, otherwise the table
-		// looks weird. But we skip the duplicate row.
-		// TODO: Have a way to query from the Provider if the currently selected model supports reasoning.
-
-		// Check if the preferred models exist in the scenarios
-		// If not, skip validation (they may not have been tested yet)
-		sotaInScenarios := false
-		for _, sc := range sb.Scenarios {
-			if sotaInScenarios = slices.Contains(sc.Models, sota); sotaInScenarios {
-				break
-			}
-		}
-		if sotaInScenarios {
-			i := 0
-			if sb.Scenarios[i].Models[0] != sota {
-				t.Errorf("SOTA should be first: %q", sota)
-			} else if !sb.Scenarios[i].SOTA {
-				t.Errorf("SOTA should be true: %q", sota)
-			}
-			// There's two options, the SOTA model is also Good, or there's a duplicate of the first row for
-			// reasoning/non-reasoning.
-			if sota == good {
-				if !sb.Scenarios[i].Good {
-					t.Errorf("Good should be true: %q", good)
-				}
-				if good == cheap {
-					if !sb.Scenarios[i].Cheap {
-						t.Errorf("Cheap should be true: %q", cheap)
-					}
-				} else {
-					i++
-					if sb.Scenarios[i].Models[0] == good {
-						i++
-					}
-					if !sb.Scenarios[i].Cheap {
-						t.Errorf("Cheap should be true: %q", cheap)
-					}
-				}
-			} else {
-				i++
-				if sb.Scenarios[i].Models[0] == sota {
-					i++
-				}
-				if sb.Scenarios[i].Models[0] != good {
-					t.Errorf("Good should be true: %q", good)
-				}
-				if good == cheap {
-					if !sb.Scenarios[i].Cheap {
-						t.Errorf("Cheap should be true: %q", cheap)
-					}
-				} else {
-					i++
-					if sb.Scenarios[i].Models[0] == good {
-						i++
-					}
-					if !sb.Scenarios[i].Cheap {
-						t.Errorf("Cheap should be true: %q", cheap)
-					}
-				}
-			}
-			// TODO: Make sure other models are not marked as SOTA, Good or Cheap!
-		} else {
-			t.Logf("SOTA model %q not in scenarios, skipping preferred model validation", sota)
-		}
-	}
-
 	staleModels := map[scoreboard.Model]struct{}{}
 	if !filtered {
 		// Only mark models as truly stale on complete test runs (no filtering)
 		// Check for models in scoreboard that are not in discovered models
 		// These are truly stale (removed from the API).
+		// Untested scenarios are skipped since they intentionally have no test results.
 		for sbModel := range allScoreboardModels {
 			if _, ok := seen[sbModel]; !ok {
+				// Check if this model is in an untested scenario - if so, don't mark it as stale
+				isUntested := false
 				for _, sc := range sb.Scenarios {
 					for _, m := range sc.Models {
 						if m == sbModel.Model && sc.Reason == sbModel.Reason {
-							// This model is in scoreboard but not in API
-							staleModels[sbModel] = struct{}{}
+							if sc.Untested() {
+								isUntested = true
+							}
 							break
 						}
 					}
+					if isUntested {
+						break
+					}
 				}
-				if !*updateScoreboard {
+				if !isUntested {
+					// This model is in scoreboard but not in API and is tested
+					staleModels[sbModel] = struct{}{}
+				}
+				if !*updateScoreboard && !isUntested {
 					t.Errorf("stale model in scoreboard: %v", sbModel)
 				}
 			}
 		}
 	}
-	// Update scoreboards if requested
-	if *updateScoreboard && (len(updatedScenarios) > 0 || len(staleModels) > 0) {
-		doUpdateScoreboard(t, ".", updatedScenarios, preferredModels, slices.Collect(maps.Keys(staleModels)))
+	// Check scoreboard and update if requested
+	if len(updatedScenarios) > 0 || len(staleModels) > 0 {
+		scoreboardPath := filepath.Join(".", "scoreboard.json")
+		rawOld, rawNew := generateUpdatedScoreboard(t, scoreboardPath, updatedScenarios, slices.Collect(maps.Keys(staleModels)))
+		if !bytes.Equal(rawNew, rawOld) {
+			if !*updateScoreboard {
+				t.Fatalf("scoreboard.json is out of date, run with -update-scoreboard to update it")
+			}
+			t.Logf("Updating %s", scoreboardPath)
+			if err := os.WriteFile(scoreboardPath, rawNew, 0o644); err != nil {
+				t.Fatalf("failed to write scoreboard.json: %v", err)
+			}
+		} else {
+			t.Logf("No changes to %s", scoreboardPath)
+		}
 	}
 }
 
@@ -316,6 +246,8 @@ func runOneModel(t testing.TB, gc getClientOneModel, want scoreboard.Scenario) (
 	if diff := cmp.Diff(want, got, optScenario); diff != "" {
 		t.Errorf("mismatch (-want +got):\n%s", diff)
 	}
+	// Preserve Comments from the original scenario
+	got.Comments = want.Comments
 	return usage, &got
 }
 
@@ -374,12 +306,12 @@ func deleteOrphanedRecordings(t testing.TB, dir string, scoreboardModels map[sco
 	}
 }
 
-// doUpdateScoreboard regenerates the scoreboard from scratch in one pass.
+// generateUpdatedScoreboard regenerates the scoreboard from scratch in one pass.
 //
 // It merges tested scenarios with the existing scoreboard to preserve metadata,
 // removes stale models, and sorts scenarios so SOTA/Good/Cheap appear first.
-func doUpdateScoreboard(t testing.TB, providerDir string, scenarios []scoreboard.Scenario, preferredModels map[string]string, staleModels []scoreboard.Model) {
-	scoreboardPath := filepath.Join(providerDir, "scoreboard.json")
+// Returns the old and new scoreboard JSON bytes.
+func generateUpdatedScoreboard(t testing.TB, scoreboardPath string, scenarios []scoreboard.Scenario, staleModels []scoreboard.Model) ([]byte, []byte) {
 	rawOld, err := os.ReadFile(scoreboardPath)
 	if err != nil {
 		t.Fatalf("failed to read scoreboard.json: %v", err)
@@ -502,67 +434,67 @@ func doUpdateScoreboard(t testing.TB, providerDir string, scenarios []scoreboard
 
 	// Third pass: consolidate untested scenarios by comments/reason
 	// Include both newly added untested scenarios and old ones
-	untestedByKey := make(map[string]*scoreboard.Scenario)
 	allUntested := make([]scoreboard.Scenario, 0)
 
-	// First, collect all untested scenarios from both new and old
+	// Track which old scenarios have models represented in the new scenarios
+	// to avoid adding the same scenario twice
+	newScenarioModels := make(map[scoreboard.Model]struct{})
+
+	// First, collect all untested scenarios from new results, removing stale models
 	for _, sc := range scenarios {
 		if len(sc.Models) > 0 && sc.Untested() {
-			allUntested = append(allUntested, sc)
-		}
-	}
-	for _, oldSc := range oldScore.Scenarios {
-		// Skip if this scenario was already processed
-		if _, seen := seenPairs[scoreboard.Model{Model: oldSc.Models[0], Reason: oldSc.Reason}]; seen {
-			continue
-		}
-		// Only process untested scenarios
-		if !oldSc.Untested() {
-			continue
-		}
-		allUntested = append(allUntested, oldSc)
-	}
-
-	// Now consolidate by comments/reason
-	for _, sc := range allUntested {
-		// Consolidate with others of same comments/reason
-		key := fmt.Sprintf("%s|%v", sc.Comments, sc.Reason)
-		if existing, found := untestedByKey[key]; found {
-			// Merge models, avoiding duplicates and stale models
-			modelSet := make(map[string]struct{})
-			for _, m := range existing.Models {
-				if _, isStale := staleSet[scoreboard.Model{Model: m, Reason: sc.Reason}]; !isStale {
-					modelSet[m] = struct{}{}
-				}
-			}
-			for _, m := range sc.Models {
-				if _, isStale := staleSet[scoreboard.Model{Model: m, Reason: sc.Reason}]; !isStale {
-					modelSet[m] = struct{}{}
-				}
-			}
-			existing.Models = slices.Sorted(maps.Keys(modelSet))
-		} else {
-			// New untested scenario: remove stale models
+			// Remove stale models
 			remainingModels := make([]string, 0, len(sc.Models))
 			for _, m := range sc.Models {
-				if _, isStale := staleSet[scoreboard.Model{Model: m, Reason: sc.Reason}]; !isStale {
+				modelKey := scoreboard.Model{Model: m, Reason: sc.Reason}
+				if _, isStale := staleSet[modelKey]; !isStale {
 					remainingModels = append(remainingModels, m)
+					newScenarioModels[modelKey] = struct{}{}
 				}
 			}
 			if len(remainingModels) > 0 {
 				sc.Models = remainingModels
-				result = append(result, sc)
-				untestedByKey[key] = &result[len(result)-1]
+				allUntested = append(allUntested, sc)
 			}
 		}
 	}
 
-	// Sort scenarios by preference flags
-	slices.SortFunc(result, scoreboard.CompareScenarios)
+	// Then, collect untested scenarios from old scoreboard, but skip any models
+	// that were already added from new scenarios to avoid duplicates
+	for i := range oldScore.Scenarios {
+		oldSc := &oldScore.Scenarios[i]
+		// Only process untested scenarios
+		if !oldSc.Untested() {
+			continue
+		}
+
+		// Remove stale models and models already in new scenarios
+		remainingModels := make([]string, 0, len(oldSc.Models))
+		for _, m := range oldSc.Models {
+			modelKey := scoreboard.Model{Model: m, Reason: oldSc.Reason}
+			if _, isStale := staleSet[modelKey]; !isStale {
+				if _, inNew := newScenarioModels[modelKey]; !inNew {
+					remainingModels = append(remainingModels, m)
+				}
+			}
+		}
+
+		if len(remainingModels) > 0 {
+			// Create a copy with non-stale models for consolidation
+			scCopy := *oldSc
+			scCopy.Models = remainingModels
+			allUntested = append(allUntested, scCopy)
+		}
+	}
+
+	// Consolidate untested by comments/reason
+	untestedConsolidated := scoreboard.ConsolidateUntestedScenarios(allUntested)
+	result = append(result, untestedConsolidated...)
 
 	// Validate and write
 	newScore := oldScore
 	newScore.Scenarios = result
+	newScore.SortScenarios()
 	if err = newScore.Validate(); err != nil {
 		t.Fatalf("failed to validate scoreboard: %v", err)
 	}
@@ -572,13 +504,5 @@ func doUpdateScoreboard(t testing.TB, providerDir string, scenarios []scoreboard
 		t.Fatalf("failed to encode scoreboard: %v", err)
 	}
 	rawNew = append(rawNew, '\n')
-
-	if !bytes.Equal(rawNew, rawOld) {
-		t.Logf("Updating %s", scoreboardPath)
-		if err = os.WriteFile(scoreboardPath, rawNew, 0o644); err != nil {
-			t.Fatalf("failed to write scoreboard.json: %v", err)
-		}
-	} else {
-		t.Logf("No changes to %s", scoreboardPath)
-	}
+	return rawOld, rawNew
 }

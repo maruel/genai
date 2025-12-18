@@ -6,6 +6,8 @@ package scoreboard
 
 import (
 	"encoding/json"
+	"slices"
+	"strings"
 	"testing"
 )
 
@@ -1124,4 +1126,435 @@ func TestReasonJSON(t *testing.T) {
 			}
 		}
 	})
+}
+
+func TestConsolidateUntestedScenarios(t *testing.T) {
+	tests := []struct {
+		name      string
+		scenarios []Scenario
+		wantCount int
+		wantCheck func(*testing.T, []Scenario)
+	}{
+		{
+			name: "Basic consolidation",
+			scenarios: []Scenario{
+				{Models: []string{"model-a"}, Comments: "reason"},
+				{Models: []string{"model-b"}, Comments: "reason"},
+			},
+			wantCount: 1,
+			wantCheck: func(t *testing.T, result []Scenario) {
+				if len(result[0].Models) != 2 {
+					t.Fatalf("expected 2 models, got %d", len(result[0].Models))
+				}
+				if result[0].Models[0] != "model-a" || result[0].Models[1] != "model-b" {
+					t.Fatalf("expected [model-a, model-b], got %v", result[0].Models)
+				}
+			},
+		},
+		{
+			name: "Do not merge with different reasons",
+			scenarios: []Scenario{
+				{Models: []string{"model-a"}, Comments: "reason1"},
+				{Models: []string{"model-b"}, Comments: "reason2"},
+			},
+			wantCount: 2,
+		},
+		{
+			name: "Do not merge scenarios with SOTA flag",
+			scenarios: []Scenario{
+				{Models: []string{"model-a"}, Comments: "reason", SOTA: true},
+				{Models: []string{"model-b"}, Comments: "reason"},
+			},
+			wantCount: 2,
+		},
+		{
+			name: "Do not merge scenarios with Good flag",
+			scenarios: []Scenario{
+				{Models: []string{"model-a"}, Comments: "reason", Good: true},
+				{Models: []string{"model-b"}, Comments: "reason"},
+			},
+			wantCount: 2,
+		},
+		{
+			name: "Do not merge scenarios with Cheap flag",
+			scenarios: []Scenario{
+				{Models: []string{"model-a"}, Comments: "reason", Cheap: true},
+				{Models: []string{"model-b"}, Comments: "reason"},
+			},
+			wantCount: 2,
+		},
+		{
+			name: "Avoid duplicate models",
+			scenarios: []Scenario{
+				{Models: []string{"model-a", "model-b"}, Comments: "reason"},
+				{Models: []string{"model-b", "model-c"}, Comments: "reason"},
+			},
+			wantCount: 1,
+			wantCheck: func(t *testing.T, result []Scenario) {
+				if len(result[0].Models) != 3 {
+					t.Fatalf("expected 3 models, got %d", len(result[0].Models))
+				}
+				expected := []string{"model-a", "model-b", "model-c"}
+				for i, m := range result[0].Models {
+					if m != expected[i] {
+						t.Fatalf("expected %q at position %d, got %q", expected[i], i, m)
+					}
+				}
+			},
+		},
+		{
+			name: "Skip tested scenarios",
+			scenarios: []Scenario{
+				{Models: []string{"model-a"}, Comments: "reason", GenSync: &Functionality{}},
+				{Models: []string{"model-b"}, Comments: "reason"},
+			},
+			wantCount: 1,
+			wantCheck: func(t *testing.T, result []Scenario) {
+				if result[0].Models[0] != "model-b" {
+					t.Fatalf("expected model-b, got %v", result[0].Models)
+				}
+			},
+		},
+		{
+			name: "Multiple consolidation groups",
+			scenarios: []Scenario{
+				{Models: []string{"model-a"}, Comments: "reason1"},
+				{Models: []string{"model-b"}, Comments: "reason1"},
+				{Models: []string{"model-c"}, Comments: "reason2"},
+				{Models: []string{"model-d"}, Comments: "reason2"},
+			},
+			wantCount: 2,
+			wantCheck: func(t *testing.T, result []Scenario) {
+				if len(result[0].Models) != 2 || len(result[1].Models) != 2 {
+					t.Fatalf("expected 2 models in each group")
+				}
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := ConsolidateUntestedScenarios(tt.scenarios)
+			if len(result) != tt.wantCount {
+				t.Fatalf("expected %d scenarios, got %d", tt.wantCount, len(result))
+			}
+			if tt.wantCheck != nil {
+				tt.wantCheck(t, result)
+			}
+		})
+	}
+}
+
+func TestBFLScoreboardValidation(t *testing.T) {
+	// This test reproduces the bug where consolidation + sorting creates invalid scenarios
+	// The issue is that when consolidating untested scenarios with preference flags,
+	// the resulting score fails validation due to duplicate models.
+	s := &Score{
+		Country: "DE",
+		Scenarios: []Scenario{
+			{
+				Comments: "Untested",
+				Models:   []string{"flux-pro-1.1-ultra"},
+				SOTA:     true,
+				Reason:   false,
+			},
+			{
+				Comments: "Untested",
+				Models:   []string{"flux-pro-1.1"},
+				Good:     true,
+				Reason:   false,
+			},
+			{
+				Comments: "Has In/Out",
+				Models:   []string{"flux-dev"},
+				Cheap:    true,
+				Reason:   false,
+				In: map[Modality]ModalCapability{
+					ModalityText: {Inline: true},
+				},
+				Out: map[Modality]ModalCapability{
+					ModalityImage: {URL: true},
+				},
+				GenSync: &Functionality{
+					ReportRateLimits: true,
+					Seed:             true,
+				},
+			},
+			{
+				Comments: "Multiple models",
+				Models:   []string{"flux-tools", "flux-pro-1.0-depth"},
+				Reason:   false,
+			},
+		},
+	}
+
+	// First, validate the original score
+	if err := s.Validate(); err != nil {
+		t.Fatalf("original score validation failed: %v", err)
+	}
+
+	// Now simulate what happens during consolidation
+	// Separate tested and untested scenarios
+	testedScenarios := []Scenario{}
+	untestedScenarios := []Scenario{}
+
+	for _, sc := range s.Scenarios {
+		if sc.Untested() {
+			untestedScenarios = append(untestedScenarios, sc)
+		} else {
+			testedScenarios = append(testedScenarios, sc)
+		}
+	}
+
+	t.Logf("Tested scenarios: %d, Untested scenarios: %d", len(testedScenarios), len(untestedScenarios))
+	for i, sc := range untestedScenarios {
+		t.Logf("  Untested[%d]: Comments=%q, Models=%v, SOTA=%v, Good=%v, Cheap=%v", i, sc.Comments, sc.Models, sc.SOTA, sc.Good, sc.Cheap)
+	}
+
+	// Consolidate untested scenarios
+	consolidated := ConsolidateUntestedScenarios(untestedScenarios)
+	t.Logf("After consolidation: %d scenarios", len(consolidated))
+	for i, sc := range consolidated {
+		t.Logf("  Consolidated[%d]: Comments=%q, Models=%v", i, sc.Comments, sc.Models)
+	}
+
+	// Rebuild the score with consolidated scenarios
+	s.Scenarios = testedScenarios
+	s.Scenarios = append(s.Scenarios, consolidated...)
+	s.SortScenarios()
+
+	t.Logf("After sorting: %d total scenarios", len(s.Scenarios))
+	for i, sc := range s.Scenarios {
+		t.Logf("  Sorted[%d]: Comments=%q, Models=%v, SOTA=%v, Good=%v, Cheap=%v", i, sc.Comments, sc.Models, sc.SOTA, sc.Good, sc.Cheap)
+	}
+
+	// This should not fail
+	if err := s.Validate(); err != nil {
+		t.Fatalf("validation failed after consolidation and sorting: %v", err)
+	}
+}
+
+func TestUntestedScenariosWithPreferenceFlagsMustNotMerge(t *testing.T) {
+	// Test case that reproduces the actual bug: when consolidating,
+	// scenarios with the same Comments but different preference flags (SOTA, Good, Cheap)
+	// should NOT be merged together, even if they're untested.
+	scenarios := []Scenario{
+		{
+			Comments: "Untested",
+			Models:   []string{"model-a"},
+			SOTA:     true,
+			Reason:   false,
+		},
+		{
+			Comments: "Untested",
+			Models:   []string{"model-b"},
+			Good:     true,
+			Reason:   false,
+		},
+		{
+			Comments: "Untested",
+			Models:   []string{"model-c"},
+			Reason:   false,
+		},
+	}
+
+	result := ConsolidateUntestedScenarios(scenarios)
+
+	// Should have 3 scenarios: model-a (SOTA), model-b (Good), and model-c (no preference)
+	if len(result) != 3 {
+		t.Fatalf("expected 3 scenarios after consolidation, got %d", len(result))
+	}
+
+	// Verify each scenario has only its model
+	if len(result[0].Models) != 1 || result[0].Models[0] != "model-a" {
+		t.Fatalf("expected scenario 0 to have [model-a], got %v", result[0].Models)
+	}
+	if len(result[1].Models) != 1 || result[1].Models[0] != "model-b" {
+		t.Fatalf("expected scenario 1 to have [model-b], got %v", result[1].Models)
+	}
+	if len(result[2].Models) != 1 || result[2].Models[0] != "model-c" {
+		t.Fatalf("expected scenario 2 to have [model-c], got %v", result[2].Models)
+	}
+
+	// Now validate a score with these scenarios
+	s := &Score{
+		Country:   "US",
+		Scenarios: result,
+	}
+
+	if err := s.Validate(); err != nil {
+		t.Fatalf("validation failed: %v", err)
+	}
+}
+
+func TestDuplicateModelWithDifferentModalitiesAllowed(t *testing.T) {
+	// The bug seems to be that models with the same name but in different output modality groups
+	// are being treated as duplicates. They should NOT be - each modality group is independent.
+	// For example, a model can be Good for text output and a different model can be Good for image output.
+	s := &Score{
+		Country: "US",
+		Scenarios: []Scenario{
+			{
+				Comments: "Text SOTA",
+				Models:   []string{"model-text-sota"},
+				SOTA:     true,
+				Reason:   false,
+				In: map[Modality]ModalCapability{
+					ModalityText: {Inline: true},
+				},
+				Out: map[Modality]ModalCapability{
+					ModalityText: {Inline: true},
+				},
+				GenSync: &Functionality{},
+			},
+			{
+				Comments: "Image SOTA",
+				Models:   []string{"model-image-sota"},
+				SOTA:     true,
+				Reason:   false,
+				In: map[Modality]ModalCapability{
+					ModalityImage: {Inline: true},
+				},
+				Out: map[Modality]ModalCapability{
+					ModalityImage: {Inline: true},
+				},
+				GenSync: &Functionality{},
+			},
+			{
+				Comments: "Text Good",
+				Models:   []string{"model-text-good"},
+				Good:     true,
+				Reason:   false,
+				In: map[Modality]ModalCapability{
+					ModalityText: {Inline: true},
+				},
+				Out: map[Modality]ModalCapability{
+					ModalityText: {Inline: true},
+				},
+				GenSync: &Functionality{},
+			},
+			{
+				Comments: "Image Good",
+				Models:   []string{"model-image-good"},
+				Good:     true,
+				Reason:   false,
+				In: map[Modality]ModalCapability{
+					ModalityImage: {Inline: true},
+				},
+				Out: map[Modality]ModalCapability{
+					ModalityImage: {Inline: true},
+				},
+				GenSync: &Functionality{},
+			},
+			{
+				Comments: "Text Cheap",
+				Models:   []string{"model-text-cheap"},
+				Cheap:    true,
+				Reason:   false,
+				In: map[Modality]ModalCapability{
+					ModalityText: {Inline: true},
+				},
+				Out: map[Modality]ModalCapability{
+					ModalityText: {Inline: true},
+				},
+				GenSync: &Functionality{},
+			},
+			{
+				Comments: "Image Cheap",
+				Models:   []string{"model-image-cheap"},
+				Cheap:    true,
+				Reason:   false,
+				In: map[Modality]ModalCapability{
+					ModalityImage: {Inline: true},
+				},
+				Out: map[Modality]ModalCapability{
+					ModalityImage: {Inline: true},
+				},
+				GenSync: &Functionality{},
+			},
+		},
+	}
+
+	if err := s.Validate(); err != nil {
+		t.Fatalf("validation failed: %v", err)
+	}
+}
+
+func TestMergeUntestedScenariosWithSameCommentsAndNoPreferenceFlags(t *testing.T) {
+	// When consolidating, scenarios with the same Comments and Reason but WITHOUT preference flags
+	// should BE merged (models combined and sorted).
+	scenarios := []Scenario{
+		{
+			Comments: "Expensive to test",
+			Models:   []string{"model-c", "model-a"},
+			Reason:   false,
+		},
+		{
+			Comments: "Expensive to test",
+			Models:   []string{"model-b", "model-d"},
+			Reason:   false,
+		},
+	}
+
+	result := ConsolidateUntestedScenarios(scenarios)
+
+	// Should have 1 scenario with all models merged
+	if len(result) != 1 {
+		t.Fatalf("expected 1 scenario after consolidation, got %d", len(result))
+	}
+
+	// Verify models are merged and sorted
+	expected := []string{"model-a", "model-b", "model-c", "model-d"}
+	if !slices.Equal(result[0].Models, expected) {
+		t.Fatalf("expected models %v, got %v", expected, result[0].Models)
+	}
+}
+
+func TestDuplicateUntestedScenariosWithPreferenceFlagsDoNotValidate(t *testing.T) {
+	// This test reproduces the bug that was happening in smoketest:
+	// When duplicate untested scenarios with preference flags are passed to Score.Validate(),
+	// it would fail with a "duplicate model" error because the same model appears in two different scenarios.
+	//
+	// The scenario happened when:
+	// 1. The smoketest collected untested scenarios from both new results and old scoreboard
+	// 2. Without deduplication, the same scenario (e.g. flux-pro-1.1-ultra) appeared twice
+	// 3. Each had sota=true (untested scenario with preference flag)
+	// 4. ConsolidateUntestedScenarios didn't merge them (correctly, since they have preference flags)
+	// 5. Score.Validate() then failed on seeing flux-pro-1.1-ultra twice
+	//
+	// The fix is to deduplicate in smoketest before calling ConsolidateUntestedScenarios.
+	duplicateScenarios := []Scenario{
+		{
+			Comments: "Untested",
+			Models:   []string{"flux-pro-1.1-ultra"},
+			SOTA:     true,
+			Reason:   false,
+		},
+		{
+			Comments: "Untested",
+			Models:   []string{"flux-pro-1.1-ultra"}, // Same model!
+			SOTA:     true,
+			Reason:   false,
+		},
+	}
+
+	// ConsolidateUntestedScenarios should NOT merge these (they have preference flags)
+	result := ConsolidateUntestedScenarios(duplicateScenarios)
+	if len(result) != 2 {
+		t.Fatalf("expected 2 scenarios (not merged due to preference flag), got %d", len(result))
+	}
+
+	// But Score.Validate() should fail because flux-pro-1.1-ultra appears twice
+	s := &Score{
+		Country:   "US",
+		Scenarios: result,
+	}
+
+	validationErr := s.Validate()
+	if validationErr == nil {
+		t.Fatal("expected validation to fail on duplicate models")
+	}
+	if !strings.Contains(validationErr.Error(), "duplicate model") {
+		t.Fatalf("expected 'duplicate model' error, got: %v", validationErr)
+	}
 }

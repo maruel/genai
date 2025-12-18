@@ -12,6 +12,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"maps"
+	"slices"
 	"strconv"
 	"strings"
 )
@@ -541,13 +543,84 @@ func (s *Score) Validate() error {
 	return nil
 }
 
-// CompareScenarios compares two scenarios for sorting.
+// ConsolidateUntestedScenarios merges untested scenarios by comments/reason.
+//
+// Scenarios with matching Comments and Reason are merged, with their models
+// combined and sorted. Untested scenarios with preference flags (SOTA, Good, Cheap)
+// are not merged with others.
+func ConsolidateUntestedScenarios(scenarios []Scenario) []Scenario {
+	untestedByKey := map[string]int{} // Maps key to index in result
+	var result []Scenario
+	for _, sc := range scenarios {
+		if !sc.Untested() {
+			continue
+		}
+		// Untested scenarios with preference flags should not be merged
+		if sc.SOTA || sc.Good || sc.Cheap {
+			result = append(result, sc)
+			continue
+		}
+		key := fmt.Sprintf("%s|%v", sc.Comments, sc.Reason)
+		if idx, found := untestedByKey[key]; found {
+			// Merge models, avoiding duplicates
+			existing := &result[idx]
+			modelSet := make(map[string]struct{}, len(existing.Models)+len(sc.Models))
+			for _, m := range existing.Models {
+				modelSet[m] = struct{}{}
+			}
+			for _, m := range sc.Models {
+				modelSet[m] = struct{}{}
+			}
+			existing.Models = slices.Sorted(maps.Keys(modelSet))
+		} else {
+			result = append(result, sc)
+			untestedByKey[key] = len(result) - 1
+		}
+	}
+	return result
+}
+
+// SortScenarios sorts the scenarios in place by preference flags.
 // Untested scenarios are sorted last.
 // Tested scenarios are sorted by preference flags: SOTA (0), Good (1), Cheap (2), then others.
 // Within the same priority, reasoning scenarios come before non-reasoning.
 // Within the same priority and reasoning status, scenarios are sorted alphabetically by first model name.
+func (s *Score) SortScenarios() {
+	slices.SortFunc(s.Scenarios, CompareScenarios)
+}
+
+// CompareScenarios compares two scenarios for sorting.
+// Scenarios are sorted by preference flags: SOTA (0), Good (1), Cheap (2), then others.
+// Within the same preference, untested scenarios are sorted last.
+// Within the same priority and tested status, reasoning scenarios come before non-reasoning.
+// Within the same priority, tested status, and reasoning, scenarios are sorted alphabetically by first model name.
 func CompareScenarios(a, b Scenario) int {
-	// Untested scenarios come last
+	// Sort by preference flags first: SOTA (0) < Good (1) < Cheap (2) < others (999)
+	aPreference := 999
+	bPreference := 999
+	if a.SOTA {
+		aPreference = 0
+	} else if a.Good {
+		aPreference = 1
+	} else if a.Cheap {
+		aPreference = 2
+	}
+	if b.SOTA {
+		bPreference = 0
+	} else if b.Good {
+		bPreference = 1
+	} else if b.Cheap {
+		bPreference = 2
+	}
+
+	if aPreference != bPreference {
+		if aPreference < bPreference {
+			return -1
+		}
+		return 1
+	}
+
+	// Same preference: untested scenarios come last
 	aUntested := a.Untested()
 	bUntested := b.Untested()
 	if aUntested != bUntested {
@@ -557,28 +630,7 @@ func CompareScenarios(a, b Scenario) int {
 		return -1
 	}
 
-	// Both untested or both tested: sort by priority
-	// SOTA (0) < Good (1) < Cheap (2) < others (999)
-	if a.SOTA != b.SOTA {
-		if a.SOTA {
-			return -1
-		}
-		return 1
-	}
-	if a.Good != b.Good {
-		if a.Good {
-			return -1
-		}
-		return 1
-	}
-	if a.Cheap != b.Cheap {
-		if a.Cheap {
-			return -1
-		}
-		return 1
-	}
-
-	// Same priority: reasoning comes before non-reasoning
+	// Same preference and tested status: reasoning comes before non-reasoning
 	if a.Reason != b.Reason {
 		if a.Reason {
 			return -1
@@ -586,7 +638,7 @@ func CompareScenarios(a, b Scenario) int {
 		return 1
 	}
 
-	// Same priority and reasoning: sort alphabetically by first model name
+	// Same preference, tested status, and reasoning: sort alphabetically by first model name
 	aModel := ""
 	bModel := ""
 	if len(a.Models) > 0 {

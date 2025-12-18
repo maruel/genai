@@ -141,358 +141,82 @@
     },
     {
       "models": [
-        "@cf/baai/bge-base-en-v1.5"
-      ]
-    },
-    {
-      "models": [
-        "@cf/baai/bge-large-en-v1.5"
-      ]
-    },
-    {
-      "models": [
-        "@cf/baai/bge-m3"
-      ]
-    },
-    {
-      "models": [
-        "@cf/baai/bge-reranker-base"
-      ]
-    },
-    {
-      "models": [
-        "@cf/baai/bge-small-en-v1.5"
-      ]
-    },
-    {
-      "models": [
-        "@cf/black-forest-labs/flux-1-schnell"
-      ]
-    },
-    {
-      "models": [
-        "@cf/bytedance/stable-diffusion-xl-lightning"
-      ]
-    },
-    {
-      "models": [
-        "@cf/deepgram/aura-1"
-      ]
-    },
-    {
-      "models": [
-        "@cf/deepgram/nova-3"
-      ]
-    },
-    {
-      "models": [
-        "@cf/deepseek-ai/deepseek-math-7b-instruct"
-      ]
-    },
-    {
-      "models": [
-        "@cf/defog/sqlcoder-7b-2"
-      ]
-    },
-    {
-      "models": [
-        "@cf/facebook/bart-large-cnn"
-      ]
-    },
-    {
-      "models": [
-        "@cf/fblgit/una-cybertron-7b-v2-bf16"
-      ]
-    },
-    {
-      "models": [
-        "@cf/google/gemma-2b-it-lora"
-      ]
-    },
-    {
-      "models": [
-        "@cf/google/gemma-3-12b-it"
-      ]
-    },
-    {
-      "models": [
-        "@cf/google/gemma-7b-it-lora"
-      ]
-    },
-    {
-      "models": [
-        "@cf/huggingface/distilbert-sst-2-int8"
-      ]
-    },
-    {
-      "models": [
-        "@cf/leonardo/lucid-origin"
-      ]
-    },
-    {
-      "models": [
-        "@cf/leonardo/phoenix-1.0"
-      ]
-    },
-    {
-      "models": [
-        "@cf/llava-hf/llava-1.5-7b-hf"
-      ]
-    },
-    {
-      "models": [
-        "@cf/lykon/dreamshaper-8-lcm"
-      ]
-    },
-    {
-      "models": [
-        "@cf/meta-llama/llama-2-7b-chat-hf-lora"
-      ]
-    },
-    {
-      "models": [
-        "@cf/meta/llama-2-7b-chat-fp16"
-      ]
-    },
-    {
-      "models": [
-        "@cf/meta/llama-2-7b-chat-int8"
-      ]
-    },
-    {
-      "models": [
-        "@cf/meta/llama-3-8b-instruct"
-      ]
-    },
-    {
-      "models": [
-        "@cf/meta/llama-3-8b-instruct-awq"
-      ]
-    },
-    {
-      "models": [
-        "@cf/meta/llama-3.1-8b-instruct-awq"
-      ]
-    },
-    {
-      "models": [
-        "@cf/meta/llama-3.1-8b-instruct-fp8"
-      ]
-    },
-    {
-      "models": [
-        "@cf/meta/llama-3.2-11b-vision-instruct"
+        "@cf/baai/bge-base-en-v1.5",
+        "@cf/baai/bge-large-en-v1.5",
+        "@cf/baai/bge-m3",
+        "@cf/baai/bge-reranker-base",
+        "@cf/baai/bge-small-en-v1.5",
+        "@cf/black-forest-labs/flux-1-schnell",
+        "@cf/bytedance/stable-diffusion-xl-lightning",
+        "@cf/deepgram/aura-1",
+        "@cf/deepgram/nova-3",
+        "@cf/deepseek-ai/deepseek-math-7b-instruct",
+        "@cf/defog/sqlcoder-7b-2",
+        "@cf/facebook/bart-large-cnn",
+        "@cf/fblgit/una-cybertron-7b-v2-bf16",
+        "@cf/google/gemma-2b-it-lora",
+        "@cf/google/gemma-3-12b-it",
+        "@cf/google/gemma-7b-it-lora",
+        "@cf/huggingface/distilbert-sst-2-int8",
+        "@cf/leonardo/lucid-origin",
+        "@cf/leonardo/phoenix-1.0",
+        "@cf/llava-hf/llava-1.5-7b-hf",
+        "@cf/lykon/dreamshaper-8-lcm",
+        "@cf/meta-llama/llama-2-7b-chat-hf-lora",
+        "@cf/meta/llama-2-7b-chat-fp16",
+        "@cf/meta/llama-2-7b-chat-int8",
+        "@cf/meta/llama-3-8b-instruct",
+        "@cf/meta/llama-3-8b-instruct-awq",
+        "@cf/meta/llama-3.1-8b-instruct-awq",
+        "@cf/meta/llama-3.1-8b-instruct-fp8",
+        "@cf/meta/llama-3.2-11b-vision-instruct",
+        "@cf/meta/llama-guard-3-8b",
+        "@cf/meta/m2m100-1.2b",
+        "@cf/microsoft/phi-2",
+        "@cf/microsoft/resnet-50",
+        "@cf/mistral/mistral-7b-instruct-v0.1",
+        "@cf/mistral/mistral-7b-instruct-v0.2-lora",
+        "@cf/mistralai/mistral-small-3.1-24b-instruct",
+        "@cf/myshell-ai/melotts",
+        "@cf/openai/gpt-oss-120b",
+        "@cf/openai/gpt-oss-20b",
+        "@cf/openai/whisper",
+        "@cf/openai/whisper-large-v3-turbo",
+        "@cf/openai/whisper-tiny-en",
+        "@cf/openchat/openchat-3.5-0106",
+        "@cf/pipecat-ai/smart-turn-v2",
+        "@cf/qwen/qwen1.5-0.5b-chat",
+        "@cf/qwen/qwen1.5-1.8b-chat",
+        "@cf/qwen/qwen1.5-14b-chat-awq",
+        "@cf/qwen/qwen1.5-7b-chat-awq",
+        "@cf/qwen/qwen2.5-coder-32b-instruct",
+        "@cf/qwen/qwq-32b",
+        "@cf/runwayml/stable-diffusion-v1-5-img2img",
+        "@cf/runwayml/stable-diffusion-v1-5-inpainting",
+        "@cf/stabilityai/stable-diffusion-xl-base-1.0",
+        "@cf/thebloke/discolm-german-7b-v1-awq",
+        "@cf/tiiuae/falcon-7b-instruct",
+        "@cf/tinyllama/tinyllama-1.1b-chat-v1.0",
+        "@cf/unum/uform-gen2-qwen-500m",
+        "@hf/google/gemma-7b-it",
+        "@hf/meta-llama/meta-llama-3-8b-instruct",
+        "@hf/mistral/mistral-7b-instruct-v0.2",
+        "@hf/nexusflow/starling-lm-7b-beta",
+        "@hf/nousresearch/hermes-2-pro-mistral-7b",
+        "@hf/thebloke/deepseek-coder-6.7b-base-awq",
+        "@hf/thebloke/deepseek-coder-6.7b-instruct-awq",
+        "@hf/thebloke/llama-2-13b-chat-awq",
+        "@hf/thebloke/llamaguard-7b-awq",
+        "@hf/thebloke/mistral-7b-instruct-v0.1-awq",
+        "@hf/thebloke/neural-chat-7b-v3-1-awq",
+        "@hf/thebloke/openhermes-2.5-mistral-7b-awq",
+        "@hf/thebloke/zephyr-7b-beta-awq"
       ]
     },
     {
       "comments": "Untested",
       "models": [
         "@cf/meta/llama-3.2-1b-instruct"
-      ]
-    },
-    {
-      "models": [
-        "@cf/meta/llama-guard-3-8b"
-      ]
-    },
-    {
-      "models": [
-        "@cf/meta/m2m100-1.2b"
-      ]
-    },
-    {
-      "models": [
-        "@cf/microsoft/phi-2"
-      ]
-    },
-    {
-      "models": [
-        "@cf/microsoft/resnet-50"
-      ]
-    },
-    {
-      "models": [
-        "@cf/mistral/mistral-7b-instruct-v0.1"
-      ]
-    },
-    {
-      "models": [
-        "@cf/mistral/mistral-7b-instruct-v0.2-lora"
-      ]
-    },
-    {
-      "models": [
-        "@cf/mistralai/mistral-small-3.1-24b-instruct"
-      ]
-    },
-    {
-      "models": [
-        "@cf/myshell-ai/melotts"
-      ]
-    },
-    {
-      "models": [
-        "@cf/openai/gpt-oss-120b"
-      ]
-    },
-    {
-      "models": [
-        "@cf/openai/gpt-oss-20b"
-      ]
-    },
-    {
-      "models": [
-        "@cf/openai/whisper"
-      ]
-    },
-    {
-      "models": [
-        "@cf/openai/whisper-large-v3-turbo"
-      ]
-    },
-    {
-      "models": [
-        "@cf/openai/whisper-tiny-en"
-      ]
-    },
-    {
-      "models": [
-        "@cf/openchat/openchat-3.5-0106"
-      ]
-    },
-    {
-      "models": [
-        "@cf/pipecat-ai/smart-turn-v2"
-      ]
-    },
-    {
-      "models": [
-        "@cf/qwen/qwen1.5-0.5b-chat"
-      ]
-    },
-    {
-      "models": [
-        "@cf/qwen/qwen1.5-1.8b-chat"
-      ]
-    },
-    {
-      "models": [
-        "@cf/qwen/qwen1.5-14b-chat-awq"
-      ]
-    },
-    {
-      "models": [
-        "@cf/qwen/qwen1.5-7b-chat-awq"
-      ]
-    },
-    {
-      "models": [
-        "@cf/qwen/qwen2.5-coder-32b-instruct"
-      ]
-    },
-    {
-      "models": [
-        "@cf/qwen/qwq-32b"
-      ]
-    },
-    {
-      "models": [
-        "@cf/runwayml/stable-diffusion-v1-5-img2img"
-      ]
-    },
-    {
-      "models": [
-        "@cf/runwayml/stable-diffusion-v1-5-inpainting"
-      ]
-    },
-    {
-      "models": [
-        "@cf/stabilityai/stable-diffusion-xl-base-1.0"
-      ]
-    },
-    {
-      "models": [
-        "@cf/thebloke/discolm-german-7b-v1-awq"
-      ]
-    },
-    {
-      "models": [
-        "@cf/tiiuae/falcon-7b-instruct"
-      ]
-    },
-    {
-      "models": [
-        "@cf/tinyllama/tinyllama-1.1b-chat-v1.0"
-      ]
-    },
-    {
-      "models": [
-        "@cf/unum/uform-gen2-qwen-500m"
-      ]
-    },
-    {
-      "models": [
-        "@hf/google/gemma-7b-it"
-      ]
-    },
-    {
-      "models": [
-        "@hf/meta-llama/meta-llama-3-8b-instruct"
-      ]
-    },
-    {
-      "models": [
-        "@hf/mistral/mistral-7b-instruct-v0.2"
-      ]
-    },
-    {
-      "models": [
-        "@hf/nexusflow/starling-lm-7b-beta"
-      ]
-    },
-    {
-      "models": [
-        "@hf/nousresearch/hermes-2-pro-mistral-7b"
-      ]
-    },
-    {
-      "models": [
-        "@hf/thebloke/deepseek-coder-6.7b-base-awq"
-      ]
-    },
-    {
-      "models": [
-        "@hf/thebloke/deepseek-coder-6.7b-instruct-awq"
-      ]
-    },
-    {
-      "models": [
-        "@hf/thebloke/llama-2-13b-chat-awq"
-      ]
-    },
-    {
-      "models": [
-        "@hf/thebloke/llamaguard-7b-awq"
-      ]
-    },
-    {
-      "models": [
-        "@hf/thebloke/mistral-7b-instruct-v0.1-awq"
-      ]
-    },
-    {
-      "models": [
-        "@hf/thebloke/neural-chat-7b-v3-1-awq"
-      ]
-    },
-    {
-      "models": [
-        "@hf/thebloke/openhermes-2.5-mistral-7b-awq"
-      ]
-    },
-    {
-      "models": [
-        "@hf/thebloke/zephyr-7b-beta-awq"
       ]
     }
   ]

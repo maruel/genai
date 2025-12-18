@@ -118,12 +118,6 @@
       }
     },
     {
-      "comments": "The scoreboard is currently broken for this use case as the model requires audio input.",
-      "models": [
-        "openai-audio"
-      ]
-    },
-    {
       "comments": "Ignored",
       "models": [
         "bidara",
@@ -140,6 +134,12 @@
         "rtist",
         "turbo",
         "unity"
+      ]
+    },
+    {
+      "comments": "The scoreboard is currently broken for this use case as the model requires audio input.",
+      "models": [
+        "openai-audio"
       ]
     }
   ]

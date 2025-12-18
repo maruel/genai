@@ -190,7 +190,7 @@ func (c *ChatRequest) initOptionsText(v *genai.OptionsText) ([]string, []error) 
 // Message is documented at https://docs.perplexity.ai/api-reference/chat-completions
 type Message struct {
 	Role    string   `json:"role"` // "system", "assistant", "user"
-	Content Contents `json:"content"`
+	Content Contents `json:"content,omitzero"`
 }
 
 // From converts from a genai.Message to a Message.
@@ -387,6 +387,7 @@ type Images struct {
 	ImageURL  string `json:"image_url"`  // URL to the image
 	OriginURL string `json:"origin_url"` // URL to the page that contains the image
 	Width     int64  `json:"width"`      // in pixels
+	Title     string `json:"title,omitzero"`
 }
 
 type SearchResult struct {
@@ -395,6 +396,7 @@ type SearchResult struct {
 	URL         string `json:"url"`          // URL to the search result
 	LastUpdated string `json:"last_updated"` // YYYY-MM-DD
 	Snippet     string `json:"snippet"`      // TODO: Add!
+	Source      string `json:"source,omitzero"`
 }
 
 type FinishReason string

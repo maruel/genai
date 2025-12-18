@@ -166,6 +166,12 @@ func TestClient(t *testing.T) {
 		})
 	})
 
+	t.Run("TextOutputDocInput", func(t *testing.T) {
+		internaltest.TestTextOutputDocInput(t, func(t *testing.T) genai.Provider {
+			return getClient(t, genai.ModelCheap)
+		})
+	})
+
 	t.Run("errors", func(t *testing.T) {
 		data := []internaltest.ProviderError{
 			{

@@ -1,0 +1,47 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 224
+    host: api.deepseek.com
+    body: "{\"model\":\"deepseek-chat\",\"messages\":[{\"role\":\"user\",\"content\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"role\":\"user\",\"content\":\"What is the capital of Quackiland?\"}],\"stream\":false}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.deepseek.com/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"c624f314-e68d-4b52-9c31-0faea5f9d596\",\"object\":\"chat.completion\",\"created\":1766094742,\"model\":\"deepseek-chat\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"The capital of Quackiland is **Quack**.\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":35,\"completion_tokens\":11,\"total_tokens\":46,\"prompt_tokens_details\":{\"cached_tokens\":0},\"prompt_cache_hit_tokens\":0,\"prompt_cache_miss_tokens\":35},\"system_fingerprint\":\"fp_eaab8d114b_prod0820_fp8_kvcache\"}"
+    headers:
+      Access-Control-Allow-Credentials:
+      - "true"
+      Content-Type:
+      - application/json
+      Server:
+      - elb
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Vary:
+      - origin, access-control-request-method, access-control-request-headers
+      Via:
+      - 1.1 764453ad26f42978656c5c159a3b32ce.cloudfront.net (CloudFront)
+      X-Amz-Cf-Id:
+      - 4cqe8QFRR4UtxBOLEtlf3lG-7oUb_6iXJHbky0Q34Zq1o8YqO_Olnw==
+      X-Amz-Cf-Pop:
+      - YUL62-P2
+      X-Cache:
+      - Miss from cloudfront
+      X-Content-Type-Options:
+      - nosniff
+    status: 200 OK
+    code: 200
+    duration: 380ms

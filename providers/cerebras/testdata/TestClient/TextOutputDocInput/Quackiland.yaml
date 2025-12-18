@@ -1,0 +1,58 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 208
+    host: api.cerebras.ai
+    body: "{\"model\":\"gpt-oss-120b\",\"messages\":[{\"role\":\"user\",\"content\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"role\":\"user\",\"content\":\"What is the capital of Quackiland?\"}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cerebras.ai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-0d917779-cc34-4c2b-b113-72a96f49eb52\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"The capital of Quackiland is **Quack**.\",\"reasoning\":\"The user asks: \\\"What is the capital of Quackiland?\\\" The previous statements say: \\\"The capital of Quarkiland is Quack. The Big Canard Statue is located in Quack.\\\" So answer: Quack. Provide confirmation. Probably respond succinctly.\",\"role\":\"assistant\"}}],\"created\":1766094739,\"model\":\"gpt-oss-120b\",\"system_fingerprint\":\"fp_b39cfdb1b0484bd984f9\",\"object\":\"chat.completion\",\"usage\":{\"total_tokens\":178,\"completion_tokens\":77,\"prompt_tokens\":101,\"prompt_tokens_details\":{\"cached_tokens\":0}},\"time_info\":{\"queue_time\":0.004256266,\"prompt_time\":0.005078351,\"completion_time\":0.032990131,\"total_time\":0.043462514877319336,\"created\":1766094739.5939474}}"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9b01e30b9bcc7114-YYZ
+      Content-Type:
+      - application/json
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Server:
+      - cloudflare
+      Server-Timing:
+      - cfCacheStatus;desc="DYNAMIC"
+      - cfEdge;dur=6,cfOrigin;dur=185
+      Strict-Transport-Security:
+      - max-age=3600; includeSubDomains
+      X-Content-Type-Options:
+      - nosniff
+      X-Ratelimit-Remaining-Requests-Day:
+      - "14399"
+      X-Ratelimit-Remaining-Requests-Hour:
+      - "899"
+      X-Ratelimit-Remaining-Requests-Minute:
+      - "29"
+      X-Ratelimit-Remaining-Tokens-Day:
+      - "967204"
+      X-Ratelimit-Remaining-Tokens-Hour:
+      - "967204"
+      X-Ratelimit-Remaining-Tokens-Minute:
+      - "31204"
+    status: 200 OK
+    code: 200
+    duration: 265ms

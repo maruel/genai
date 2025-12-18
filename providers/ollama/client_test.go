@@ -37,8 +37,7 @@ func TestClient(t *testing.T) {
 	s := lazyServer{t: t}
 
 	t.Run("Capabilities", func(t *testing.T) {
-		serverURL := s.lazyStart(t)
-		c, err := ollama.New(t.Context(), &genai.ProviderOptions{Remote: serverURL, Model: genai.ModelNone}, nil)
+		c, err := ollama.New(t.Context(), &genai.ProviderOptions{Remote: s.lazyStart(t), Model: genai.ModelNone}, nil)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -53,7 +52,6 @@ func TestClient(t *testing.T) {
 			}
 		}
 		smoketest.Run(t, func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
-			serverURL := s.lazyStart(t)
 			ctx, l := internaltest.Log(t)
 			fnWithLog := func(h http.RoundTripper) http.RoundTripper {
 				if fn != nil {
@@ -65,7 +63,7 @@ func TestClient(t *testing.T) {
 					Level:     slog.LevelDebug,
 				}
 			}
-			c, err := ollama.New(ctx, &genai.ProviderOptions{Remote: serverURL, Model: model.Model}, fnWithLog)
+			c, err := ollama.New(ctx, &genai.ProviderOptions{Remote: s.lazyStart(t), Model: model.Model}, fnWithLog)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -102,6 +100,16 @@ func TestClient(t *testing.T) {
 			return ollama.New(st.Context(), &opts, func(h http.RoundTripper) http.RoundTripper {
 				return testRecorder.Record(st, h)
 			})
+		})
+	})
+
+	t.Run("TextOutputDocInput", func(t *testing.T) {
+		internaltest.TestTextOutputDocInput(t, func(t *testing.T) genai.Provider {
+			c, err := ollama.New(t.Context(), &genai.ProviderOptions{Remote: s.lazyStart(t), Model: genai.ModelCheap}, nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+			return c
 		})
 	})
 

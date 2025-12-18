@@ -985,16 +985,19 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 		}
 		// This is meh.
 		if cheap {
-			if strings.HasPrefix(m.Name, "gemini") {
+			if m.Name == "gemini" {
 				selectedModel = m.Name
+				break
 			}
 		} else if good {
 			if strings.HasPrefix(m.Name, "openai") && !m.Reasoning {
 				selectedModel = m.Name
+				break
 			}
 		} else {
 			if !strings.HasPrefix(m.Name, "openai") && m.Reasoning {
 				selectedModel = m.Name
+				break
 			}
 		}
 	}

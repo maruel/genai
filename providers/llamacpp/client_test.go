@@ -42,9 +42,7 @@ func TestClient(t *testing.T) {
 	s := lazyServer{t: t, apiKey: apiKey}
 
 	t.Run("Capabilities", func(t *testing.T) {
-		serverURL := s.lazyStart(t)
-		ctx := t.Context()
-		c, err := llamacpp.New(ctx, &genai.ProviderOptions{APIKey: apiKey, Remote: serverURL, Model: genai.ModelNone}, func(h http.RoundTripper) http.RoundTripper {
+		c, err := llamacpp.New(t.Context(), &genai.ProviderOptions{APIKey: apiKey, Remote: s.lazyStart(t), Model: genai.ModelNone}, func(h http.RoundTripper) http.RoundTripper {
 			return testRecorder.Record(t, h)
 		})
 		if err != nil {
@@ -81,6 +79,18 @@ func TestClient(t *testing.T) {
 	// preferred models (SOTA/Good/Cheap). Model selection is handled by
 	// querying the running llama-server instance.
 
+	t.Run("TextOutputDocInput", func(t *testing.T) {
+		internaltest.TestTextOutputDocInput(t, func(t *testing.T) genai.Provider {
+			c, err := llamacpp.New(t.Context(), &genai.ProviderOptions{APIKey: apiKey, Remote: s.lazyStart(t), Model: genai.ModelCheap}, func(h http.RoundTripper) http.RoundTripper {
+				return testRecorder.Record(t, h)
+			})
+			if err != nil {
+				t.Fatal(err)
+			}
+			return c
+		})
+	})
+
 	t.Run("ListModels", func(t *testing.T) {
 		ctx := t.Context()
 		c, err := llamacpp.New(ctx, &genai.ProviderOptions{APIKey: apiKey, Remote: s.lazyStart(t), Model: genai.ModelNone}, func(h http.RoundTripper) http.RoundTripper {
@@ -100,9 +110,8 @@ func TestClient(t *testing.T) {
 
 	// Run this at the end so there would be non-zero values.
 	t.Run("Metrics", func(t *testing.T) {
-		serverURL := s.lazyStart(t)
 		ctx := t.Context()
-		c, err := llamacpp.New(ctx, &genai.ProviderOptions{APIKey: apiKey, Remote: serverURL, Model: genai.ModelNone}, func(h http.RoundTripper) http.RoundTripper {
+		c, err := llamacpp.New(ctx, &genai.ProviderOptions{APIKey: apiKey, Remote: s.lazyStart(t), Model: genai.ModelNone}, func(h http.RoundTripper) http.RoundTripper {
 			return testRecorder.Record(t, h)
 		})
 		if err != nil {

@@ -6,7 +6,9 @@ package internaltest
 
 import (
 	"errors"
+	"regexp"
 	"slices"
+	"strings"
 	"testing"
 	"time"
 
@@ -269,4 +271,40 @@ func loadPreferredModelsFromScoreboard(t *testing.T, newProvider func(t *testing
 		t.Fatal("no preferred models found in scoreboard")
 	}
 	return tests
+}
+
+// TestTextOutputDocInput tests that text output models correctly support Doc as input.
+//
+// It verifies that the model can find and reference text from an attached document.
+// This test does not check for citations, just that the document was correctly passed to the model.
+func TestTextOutputDocInput(t *testing.T, newProvider func(t *testing.T) genai.Provider) {
+	if !slices.Contains(newProvider(t).OutputModalities(), genai.ModalityText) {
+		t.Skip("skipping test for non-text output model")
+	}
+	t.Run("Quackiland", func(t *testing.T) {
+		// Create a test similar to the Quakiland question in smoke.go
+		msgs := genai.Messages{
+			genai.Message{
+				Requests: []genai.Request{
+					{
+						Doc: genai.Doc{
+							Src:      strings.NewReader("The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."),
+							Filename: "quackiland.txt",
+						},
+					},
+					{Text: "What is the capital of Quackiland?"},
+				},
+			},
+		}
+		c := newProvider(t)
+		resp, err := c.GenSync(t.Context(), msgs)
+		if err != nil {
+			t.Fatalf("GenSync with Doc input failed: %v", err)
+		}
+		// Verify that the response mentions the correct city. Lower case then split into words.
+		got := resp.String()
+		if !regexp.MustCompile(`(?i)\bquack\b`).MatchString(got) {
+			t.Errorf("expected response to contain 'Quack' (case-insensitive), got: %q", got)
+		}
+	})
 }

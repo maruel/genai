@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 0
+    host: text.pollinations.ai
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://text.pollinations.ai/models
+    method: GET
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "[{\"name\":\"deepseek\",\"description\":\"DeepSeek V3.1\",\"maxInputChars\":10000,\"reasoning\":true,\"tier\":\"seed\",\"community\":false,\"input_modalities\":[\"text\"],\"output_modalities\":[\"text\"],\"tools\":true,\"aliases\":[\"deepseek-v3\",\"deepseek-v3.1\",\"deepseek-reasoning\",\"deepseek-r1-0528\"],\"vision\":false,\"audio\":false},{\"name\":\"gemini\",\"description\":\"Gemini 2.5 Flash Lite\",\"tier\":\"seed\",\"community\":false,\"input_modalities\":[\"text\",\"image\"],\"output_modalities\":[\"text\"],\"tools\":true,\"aliases\":[\"gemini-2.5-flash-lite\"],\"vision\":true,\"audio\":false},{\"name\":\"gemini-search\",\"description\":\"Gemini 2.5 Flash Lite with Google Search\",\"tier\":\"seed\",\"community\":false,\"input_modalities\":[\"text\",\"image\"],\"output_modalities\":[\"text\"],\"tools\":true,\"aliases\":[\"searchgpt\",\"geminisearch\"],\"vision\":true,\"audio\":false},{\"name\":\"mistral\",\"description\":\"Mistral Small 3.2 24B\",\"tier\":\"seed\",\"community\":false,\"input_modalities\":[\"text\"],\"output_modalities\":[\"text\"],\"tools\":true,\"aliases\":[\"mistral-small-3.1-24b-instruct\",\"mistral-small-3.1-24b-instruct-2503\",\"mistral-small-3.2-24b-instruct-2506\"],\"vision\":false,\"audio\":false},{\"name\":\"openai\",\"description\":\"OpenAI GPT-5 Nano\",\"tier\":\"anonymous\",\"community\":false,\"input_modalities\":[\"text\",\"image\"],\"output_modalities\":[\"text\"],\"tools\":true,\"maxInputChars\":7000,\"aliases\":[\"gpt-5-mini\"],\"vision\":true,\"audio\":false},{\"name\":\"openai-fast\",\"description\":\"OpenAI GPT-4.1 Nano\",\"tier\":\"anonymous\",\"community\":false,\"input_modalities\":[\"text\",\"image\"],\"output_modalities\":[\"text\"],\"tools\":true,\"maxInputChars\":5000,\"aliases\":[\"gpt-5-nano\"],\"vision\":true,\"audio\":false},{\"name\":\"qwen-coder\",\"description\":\"Qwen 2.5 Coder 32B\",\"tier\":\"flower\",\"community\":false,\"input_modalities\":[\"text\"],\"output_modalities\":[\"text\"],\"tools\":true,\"aliases\":[\"qwen2.5-coder-32b-instruct\"],\"vision\":false,\"audio\":false},{\"name\":\"roblox-rp\",\"description\":\"Llama 3.1 8B Instruct\",\"tier\":\"seed\",\"community\":false,\"input_modalities\":[\"text\"],\"output_modalities\":[\"text\"],\"tools\":true,\"aliases\":[\"llama-roblox\",\"llama-fast-roblox\"],\"vision\":false,\"audio\":false},{\"name\":\"bidara\",\"description\":\"BIDARA (Biomimetic Designer and Research Assistant by NASA)\",\"tier\":\"anonymous\",\"community\":true,\"input_modalities\":[\"text\",\"image\"],\"output_modalities\":[\"text\"],\"tools\":true,\"aliases\":[],\"vision\":true,\"audio\":false},{\"name\":\"chickytutor\",\"description\":\"ChickyTutor AI Language Tutor - (chickytutor.com)\",\"tier\":\"anonymous\",\"community\":true,\"input_modalities\":[\"text\"],\"output_modalities\":[\"text\"],\"tools\":true,\"aliases\":[],\"vision\":false,\"audio\":false},{\"name\":\"evil\",\"description\":\"Evil\",\"uncensored\":true,\"tier\":\"seed\",\"community\":true,\"input_modalities\":[\"text\",\"image\"],\"output_modalities\":[\"text\"],\"tools\":true,\"aliases\":[],\"vision\":true,\"audio\":false},{\"name\":\"midijourney\",\"description\":\"MIDIjourney\",\"tier\":\"anonymous\",\"community\":true,\"input_modalities\":[\"text\"],\"output_modalities\":[\"text\"],\"tools\":true,\"aliases\":[],\"vision\":false,\"audio\":false},{\"name\":\"rtist\",\"description\":\"Rtist\",\"tier\":\"seed\",\"community\":true,\"input_modalities\":[\"text\"],\"output_modalities\":[\"text\"],\"tools\":true,\"aliases\":[],\"vision\":false,\"audio\":false},{\"name\":\"unity\",\"description\":\"Unity Unrestricted Agent\",\"uncensored\":true,\"tier\":\"seed\",\"community\":true,\"input_modalities\":[\"text\",\"image\"],\"output_modalities\":[\"text\"],\"tools\":true,\"aliases\":[],\"vision\":true,\"audio\":false}]"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9b0211689b3aab3b-YYZ
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"d1c-38pxKAO6PvX52DuSzT0Gdog9weE"
+      Server:
+      - cloudflare
+      Server-Timing:
+      - cfCacheStatus;desc="DYNAMIC"
+      - cfEdge;dur=291,cfOrigin;dur=0
+      Speculation-Rules:
+      - "\"/cdn-cgi/speculation\""
+      Strict-Transport-Security:
+      - max-age=0; includeSubDomains; preload
+      Vary:
+      - accept-encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Powered-By:
+      - Express
+    status: 200 OK
+    code: 200
+    duration: 13.447s

@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 251
+    host: api.together.xyz
+    body: "{\"model\":\"openai/gpt-oss-20b\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.together.xyz/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\n  \"id\": \"oPkkC61-6Ng1vN-9b01e30d2b33a2c9\",\n  \"object\": \"chat.completion\",\n  \"created\": 1766094743,\n  \"model\": \"openai/gpt-oss-20b\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"The capital of Quackiland is **Quack**.\",\n        \"tool_calls\": [],\n        \"reasoning\": \"The user asked: \\\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\\\" So likely answer: Quack. This is straightforward. But perhaps they want us to answer \\\"Quack\\\"? They might want to respond with the information. The user might be testing consistency. There's no trick. So answer: Quack. Provide maybe a short explanation.\"\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 97,\n    \"total_tokens\": 208,\n    \"completion_tokens\": 111\n  }\n}"
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9b01e30d2b33a2c9-YUL
+      Content-Type:
+      - application/json; charset=utf-8
+      Etag:
+      - W/"3d5-ZF47xDh1Qp3TvfuG2lCJbW6u8Rg"
+      Retry-After:
+      - "2"
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains
+      Vary:
+      - Accept-Encoding
+      X-Amzn-Trace-Id:
+      - e13ce51e-3e8e-47c0-b786-7df60d4bf22e-noamzn
+      X-Api-Call-End:
+      - "2025-12-18T21:52:23.191Z"
+      X-Api-Call-Start:
+      - "2025-12-18T21:52:22.376Z"
+      X-Api-Received:
+      - "2025-12-18T21:52:22.359Z"
+      X-Inference-Version:
+      - v2
+      X-Ratelimit:
+      - "false"
+      X-Ratelimit-Limit:
+      - "10"
+      X-Ratelimit-Limit-Tokens:
+      - "3000"
+      X-Ratelimit-Remaining:
+      - "19"
+      X-Ratelimit-Remaining-Tokens:
+      - "3000"
+      X-Ratelimit-Reset:
+      - "2"
+    status: 200 OK
+    code: 200
+    duration: 1.213s

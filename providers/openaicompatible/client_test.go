@@ -54,6 +54,12 @@ func TestClient(t *testing.T) {
 	// Note: Skipping Preferred test as openaicompatible is a generic provider
 	// without its own preferred models in the scoreboard.
 
+	t.Run("TextOutputDocInput", func(t *testing.T) {
+		internaltest.TestTextOutputDocInput(t, func(t *testing.T) genai.Provider {
+			return getClient(t, "openai")
+		})
+	})
+
 	t.Run("GenSync_simple", func(t *testing.T) {
 		for name := range providers {
 			t.Run(name, func(t *testing.T) {

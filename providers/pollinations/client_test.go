@@ -96,6 +96,12 @@ func TestClient(t *testing.T) {
 	// and preferred model selection is handled dynamically by the provider's
 	// selectBestTextModel/selectBestImageModel logic rather than static scoreboard entries.
 
+	t.Run("TextOutputDocInput", func(t *testing.T) {
+		internaltest.TestTextOutputDocInput(t, func(t *testing.T) genai.Provider {
+			return getClient(t, genai.ModelCheap)
+		})
+	})
+
 	t.Run("errors", func(t *testing.T) {
 		data := []internaltest.ProviderError{
 			{

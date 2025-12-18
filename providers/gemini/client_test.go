@@ -134,6 +134,12 @@ func TestClient(t *testing.T) {
 		})
 	})
 
+	t.Run("TextOutputDocInput", func(t *testing.T) {
+		internaltest.TestTextOutputDocInput(t, func(t *testing.T) genai.Provider {
+			return getClient(t, genai.ModelCheap)
+		})
+	})
+
 	t.Run("GenAsync-Video", func(t *testing.T) {
 		// TODO: "veo-3.0-fast-generate-preview" is cheaper: 25¢/s; 2$/request vs 5$/request for veo 2 when not
 		// requesting audio.

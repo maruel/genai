@@ -1674,8 +1674,7 @@ func TestDoc(t *testing.T) {
 }
 
 func TestStdin(t *testing.T) {
-	name := os.Stdin.Name()
-	if name != "/dev/stdin" {
+	if name := os.Stdin.Name(); name != "/dev/stdin" {
 		t.Fatal(name)
 	}
 }

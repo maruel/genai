@@ -248,7 +248,7 @@ func TestFunctionality(t *testing.T) {
 func TestScenario(t *testing.T) {
 	t.Run("Untested", func(t *testing.T) {
 		tests := []struct {
-			s       *Scenario
+			s        *Scenario
 			untested bool
 		}{
 			{&Scenario{Models: []string{"gpt-4"}}, true},

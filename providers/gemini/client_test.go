@@ -137,6 +137,9 @@ func TestClient(t *testing.T) {
 			{genai.ModalityVideo, genai.ModelCheap, "veo-3.1-fast-generate-preview"},
 			{genai.ModalityVideo, genai.ModelGood, "veo-3.1-fast-generate-preview"},
 			{genai.ModalityVideo, genai.ModelSOTA, "veo-3.1-generate-preview"},
+			{genai.ModalityAudio, genai.ModelCheap, "gemini-2.5-flash-native-audio-preview-12-2025"},
+			{genai.ModalityAudio, genai.ModelGood, "gemini-2.5-flash-native-audio-preview-12-2025"},
+			{genai.ModalityAudio, genai.ModelSOTA, "gemini-2.5-flash-native-audio-preview-12-2025"},
 		}
 		for _, line := range data {
 			t.Run(fmt.Sprintf("%s-%s", line.modality, line.name), func(t *testing.T) {

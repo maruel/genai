@@ -445,7 +445,10 @@ func (c *Client) HTTPClient() *http.Client {
 
 // GenSync implements genai.Provider.
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
-	if c.isAudio() || c.isImage() || c.isVideo() {
+	if c.isAudio() {
+		return genai.Result{}, errors.New("OpenAI Responses API does not support audio output as of December 2025; see https://platform.openai.com/docs/guides/audio")
+	}
+	if c.isImage() || c.isVideo() {
 		if len(msgs) != 1 {
 			return genai.Result{}, errors.New("must pass exactly one Message")
 		}
@@ -456,7 +459,12 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 
 // GenStream implements genai.Provider.
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
-	if c.isAudio() || c.isImage() || c.isVideo() {
+	if c.isAudio() {
+		return func(yield func(genai.Reply) bool) {}, func() (genai.Result, error) {
+			return genai.Result{}, errors.New("OpenAI Responses API does not support audio output as of December 2025; see https://platform.openai.com/docs/guides/audio")
+		}
+	}
+	if c.isImage() || c.isVideo() {
 		return base.SimulateStream(ctx, c, msgs, opts...)
 	}
 	return c.impl.GenStream(ctx, msgs, opts...)

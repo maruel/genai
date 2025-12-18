@@ -1462,7 +1462,10 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 				}
 				c.impl.OutputModalities = genai.Modalities{mod}
 			case genai.ModalityAudio:
-				fallthrough
+				if c.impl.Model, err = c.selectBestAudioModel(ctx, opts.Model); err != nil {
+					return nil, err
+				}
+				c.impl.OutputModalities = genai.Modalities{mod}
 			case genai.ModalityDocument:
 				fallthrough
 			default:
@@ -1732,6 +1735,33 @@ func (c *Client) selectBestVideoModel(ctx context.Context, preference string) (s
 	}
 	if selectedModel == "" {
 		return "", errors.New("failed to find a video model automatically")
+	}
+	return selectedModel, nil
+}
+
+// selectBestAudioModel selects the most appropriate audio model based on the preference (cheap, good, or SOTA).
+//
+// Audio models are identified by the "native-audio" suffix in their names.
+func (c *Client) selectBestAudioModel(ctx context.Context, preference string) (string, error) {
+	mdls, err := c.ListModels(ctx)
+	if err != nil {
+		return "", fmt.Errorf("failed to automatically select the model: %w", err)
+	}
+	selectedModel := ""
+	for _, mdl := range mdls {
+		m := mdl.(*Model)
+		name := strings.TrimPrefix(m.Name, "models/")
+		// Only consider models with "native-audio" in their name
+		if !strings.Contains(name, "native-audio") {
+			continue
+		}
+		// Select the best available model, preferring newer versions lexicographically
+		if selectedModel == "" || name > selectedModel {
+			selectedModel = name
+		}
+	}
+	if selectedModel == "" {
+		return "", errors.New("failed to find an audio model automatically")
 	}
 	return selectedModel, nil
 }

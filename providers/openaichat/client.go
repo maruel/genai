@@ -1022,7 +1022,12 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 					return nil, err
 				}
 				c.impl.OutputModalities = genai.Modalities{mod}
-			case genai.ModalityAudio, genai.ModalityDocument:
+			case genai.ModalityAudio:
+				if c.impl.Model, err = c.selectBestAudioModel(ctx, opts.Model); err != nil {
+					return nil, err
+				}
+				c.impl.OutputModalities = genai.Modalities{mod}
+			case genai.ModalityDocument:
 				fallthrough
 			default:
 				// TODO: Soon, because it's cool.
@@ -1042,6 +1047,51 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 		}
 	}
 	return c, err
+}
+
+// selectBestAudioModel selects the most appropriate audio model based on the preference (cheap, good, or SOTA).
+//
+// Audio models are identified by the "audio" in their name.
+func (c *Client) selectBestAudioModel(ctx context.Context, preference string) (string, error) {
+	mdls, err := c.ListModels(ctx)
+	if err != nil {
+		return "", fmt.Errorf("failed to automatically select the model: %w", err)
+	}
+	cheap := preference == genai.ModelCheap
+	good := preference == genai.ModelGood || preference == ""
+	sota := preference == genai.ModelSOTA
+	selectedModel := ""
+	for _, mdl := range mdls {
+		m := mdl.(*Model)
+		// Only consider models with "audio" in their name
+		if !strings.Contains(m.ID, "audio") {
+			continue
+		}
+		// Categorize based on model characteristics
+		isGPT4O := strings.HasPrefix(m.ID, "gpt-4o-") && strings.Contains(m.ID, "audio")
+		isGPT4OMini := isGPT4O && strings.Contains(m.ID, "mini")
+		isMini := strings.Contains(m.ID, "mini")
+		matches := false
+		if cheap {
+			matches = isMini
+		} else if good {
+			matches = !isMini && !isGPT4O
+		} else if sota {
+			// SOTA: prefer gpt-4o-audio models (but not mini)
+			matches = isGPT4O && !isGPT4OMini
+		}
+		if !matches {
+			continue
+		}
+		// Select the best available model, preferring newer versions lexicographically
+		if selectedModel == "" || m.ID > selectedModel {
+			selectedModel = m.ID
+		}
+	}
+	if selectedModel == "" {
+		return "", errors.New("failed to find an audio model automatically")
+	}
+	return selectedModel, nil
 }
 
 // Name implements genai.Provider.

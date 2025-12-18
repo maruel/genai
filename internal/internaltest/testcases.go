@@ -27,11 +27,11 @@ func TestClient_Provider_errors(t *testing.T, getClient func(t *testing.T, opts 
 				if err != nil {
 					// It failed but it was not expected.
 					if line.ErrGenSync != "" {
-						t.Fatalf("want %q, got %q", line.ErrGenSync, err)
+						t.Fatalf("ErrGenSync: want %q, got %q", line.ErrGenSync, err)
 					} else if line.ErrGenStream != "" {
-						t.Fatalf("want %q, got %q", line.ErrGenStream, err)
+						t.Fatalf("ErrGenStream: want %q, got %q", line.ErrGenStream, err)
 					} else if line.ErrListModel != "" {
-						t.Fatalf("want %q, got %q", line.ErrListModel, err)
+						t.Fatalf("ErrListModel: want %q, got %q", line.ErrListModel, err)
 					}
 				}
 			} else if err != nil {

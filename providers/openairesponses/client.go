@@ -1115,7 +1115,9 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 					return nil, err
 				}
 				c.impl.OutputModalities = genai.Modalities{mod}
-			case genai.ModalityAudio, genai.ModalityDocument:
+			case genai.ModalityAudio:
+				return nil, errors.New("OpenAI Responses API does not support audio output as of December 2025; see https://platform.openai.com/docs/guides/audio")
+			case genai.ModalityDocument:
 				fallthrough
 			default:
 				// TODO: Soon, because it's cool.
@@ -1146,11 +1148,21 @@ func (c *Client) Name() string {
 
 // GenSyncRaw provides access to the raw API.
 func (c *Client) GenSyncRaw(ctx context.Context, in *Response, out *Response) error {
+	// Check if audio output was requested
+	if len(c.impl.OutputModalities) > 0 && c.impl.OutputModalities[0] == genai.ModalityAudio {
+		return errors.New("OpenAI Responses API does not support audio output as of December 2025; see https://platform.openai.com/docs/guides/audio")
+	}
 	return c.impl.GenSyncRaw(ctx, in, out)
 }
 
 // GenStreamRaw provides access to the raw API.
 func (c *Client) GenStreamRaw(ctx context.Context, in *Response) (iter.Seq[ResponseStreamChunkResponse], func() error) {
+	// Check if audio output was requested
+	if len(c.impl.OutputModalities) > 0 && c.impl.OutputModalities[0] == genai.ModalityAudio {
+		return func(yield func(ResponseStreamChunkResponse) bool) {}, func() error {
+			return errors.New("OpenAI Responses API does not support audio output as of December 2025; see https://platform.openai.com/docs/guides/audio")
+		}
+	}
 	return c.impl.GenStreamRaw(ctx, in)
 }
 

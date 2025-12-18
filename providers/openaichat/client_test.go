@@ -176,6 +176,9 @@ func TestClient(t *testing.T) {
 			{genai.ModalityVideo, genai.ModelCheap, "sora-2"},
 			{genai.ModalityVideo, genai.ModelGood, "sora-2"},
 			{genai.ModalityVideo, genai.ModelSOTA, "sora-2-pro"},
+			{genai.ModalityAudio, genai.ModelCheap, "gpt-audio-mini-2025-10-06"},
+			{genai.ModalityAudio, genai.ModelGood, "gpt-audio-2025-08-28"},
+			{genai.ModalityAudio, genai.ModelSOTA, "gpt-4o-audio-preview-2025-06-03"},
 		}
 		for _, line := range data {
 			t.Run(line.name, func(t *testing.T) {

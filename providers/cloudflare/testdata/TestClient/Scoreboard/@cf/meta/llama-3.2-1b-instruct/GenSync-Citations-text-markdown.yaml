@@ -1,0 +1,43 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 201
+    host: api.cloudflare.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"# Quackiland\\n\\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"role\":\"user\",\"content\":\"What is the capital of Quackiland?\"}]}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/meta/llama-3.2-1b-instruct
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"result\":{\"response\":\"I think there may be a problem here...\\n\\nThere is no such place as Quackiland. Quack is actually a type of bird, commonly known as a duck or a quack, so it's not a country or a state. It's a type of bird that lives in many parts of the world, but it's not a country or a city.\\n\\nTherefore, there is no capital of Quackiland, as it doesn't exist.\",\"usage\":{\"prompt_tokens\":51,\"completion_tokens\":91,\"total_tokens\":142}},\"success\":true,\"errors\":[],\"messages\":[]}"
+    headers:
+      Api-Version:
+      - "2025-12-18"
+      Cf-Ai-Neurons:
+      - "1.79"
+      Cf-Ai-Req-Id:
+      - 56084d2b-9595-4d3c-b924-15787c339953
+      Cf-Auditlog-Id:
+      - 019b3336-166f-7a57-a5d4-98a24f388730
+      Cf-Ray:
+      - 9b01815d6b31a299-YUL
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Vary:
+      - Accept-Encoding
+    status: 200 OK
+    code: 200
+    duration: 536ms

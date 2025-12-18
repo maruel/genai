@@ -1,0 +1,42 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 124
+    host: api.cloudflare.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"Explain the theory of relativity in great details.\"}],\"max_tokens\":16,\"stream\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/meta/llama-3.2-1b-instruct
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"response\":\"The\",\"p\":\"abcdefghijklmnopqrstuvwxyz0123456789abc\"}\n\ndata: {\"response\":\" theory\",\"p\":\"abcdefghijklmno\"}\n\ndata: {\"response\":\" of\",\"p\":\"abcdefghijklmnopqrstuvwxyz0123456789abc\"}\n\ndata: {\"response\":\" rel\",\"p\":\"abcdef\"}\n\ndata: {\"response\":\"ativity\",\"p\":\"abcdefghijklmnopqrstuvwxyz0123456789abcdefghijkl\"}\n\ndata: {\"response\":\",\",\"p\":\"abcdefghijklmnopqrstuvwxyz0123456\"}\n\ndata: {\"response\":\" developed\",\"p\":\"abcdefghijklmnopqrstuvwxyz0123456789abcdefghi\"}\n\ndata: {\"response\":\" by\",\"p\":\"a\"}\n\ndata: {\"response\":\" Albert\",\"p\":\"abcdefghijklmnopqrstuvwx\"}\n\ndata: {\"response\":\" Einstein\",\"p\":\"abcdefghijklmnopqrstuvwxyz0123456789abcdefg\"}\n\ndata: {\"response\":\",\",\"p\":\"abcdefghijkl\"}\n\ndata: {\"response\":\" is\",\"p\":\"abcdefghijklmnopqrstuvwxyz01234\"}\n\ndata: {\"response\":\" a\",\"p\":\"abcdefghijklmnopqrstuvwxyz0123456789ab\"}\n\ndata: {\"response\":\" fundamental\",\"p\":\"abcdefghijklmnopq\"}\n\ndata: {\"response\":\" concept\",\"p\":\"abcdefghijklmnopqrstuvwxyz0123456789abcdefghijk\"}\n\ndata: {\"response\":\" in\",\"p\":\"abcdefghijklmnopqrstu\"}\n\ndata: {\"response\":\"\",\"usage\":{\"prompt_tokens\":22,\"completion_tokens\":16,\"total_tokens\":38}}\n\ndata: [DONE]\n\n"
+    headers:
+      Api-Version:
+      - "2025-12-18"
+      Cf-Ai-Neurons:
+      - "0"
+      Cf-Ai-Req-Id:
+      - 1cebe337-660f-444d-bd71-c89e6e418a64
+      Cf-Auditlog-Id:
+      - 019b3336-117b-7f7b-905d-f14e38552a59
+      Cf-Ray:
+      - 9b0181556d78a299-YUL
+      Content-Type:
+      - text/event-stream
+      Server:
+      - cloudflare
+      Vary:
+      - Accept-Encoding
+    status: 200 OK
+    code: 200
+    duration: 267ms

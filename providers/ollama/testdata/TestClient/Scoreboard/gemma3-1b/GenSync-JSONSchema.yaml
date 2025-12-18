@@ -1,0 +1,30 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 332
+    host: localhost
+    body: "{\"model\":\"gemma3:1b\",\"messages\":[{\"role\":\"user\",\"content\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON.\"}],\"stream\":false,\"format\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"is_fruit\":{\"type\":\"boolean\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"is_fruit\"]}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: http://localhost/api/chat
+    method: POST
+  response:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 314
+    body: "{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:56.263797873Z\",\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"is_fruit\\\": true}\\n\"},\"done_reason\":\"stop\",\"done\":true,\"total_duration\":702481486,\"load_duration\":90275267,\"prompt_eval_count\":26,\"prompt_eval_duration\":20637015,\"eval_count\":9,\"eval_duration\":214862248}"
+    headers:
+      Content-Length:
+      - "314"
+      Content-Type:
+      - application/json; charset=utf-8
+    status: 200 OK
+    code: 200
+    duration: 703ms

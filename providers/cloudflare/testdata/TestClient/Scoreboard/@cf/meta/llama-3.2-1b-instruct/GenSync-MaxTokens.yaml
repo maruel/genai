@@ -1,0 +1,43 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 110
+    host: api.cloudflare.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"Explain the theory of relativity in great details.\"}],\"max_tokens\":16}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/meta/llama-3.2-1b-instruct
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"result\":{\"response\":\"The theory of relativity! One of the most influential and complex theories in modern\",\"usage\":{\"prompt_tokens\":22,\"completion_tokens\":16,\"total_tokens\":38}},\"success\":true,\"errors\":[],\"messages\":[]}"
+    headers:
+      Api-Version:
+      - "2025-12-18"
+      Cf-Ai-Neurons:
+      - "0.35"
+      Cf-Ai-Req-Id:
+      - 9fb27f7a-e604-492e-82f3-e4b624b42e99
+      Cf-Auditlog-Id:
+      - 019b3336-10f7-77d8-ab8d-a1357fb0df8c
+      Cf-Ray:
+      - 9b018154abffa299-YUL
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Vary:
+      - Accept-Encoding
+    status: 200 OK
+    code: 200
+    duration: 266ms

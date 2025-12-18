@@ -5,7 +5,6 @@
 package openairesponses_test
 
 import (
-	"fmt"
 	"net/http"
 	"os"
 	"slices"
@@ -155,43 +154,16 @@ func TestClient(t *testing.T) {
 	})
 
 	t.Run("Preferred", func(t *testing.T) {
-		data := []struct {
-			modality genai.Modality
-			name     string
-			want     string
-		}{
-			{genai.ModalityText, genai.ModelCheap, "gpt-5-nano"},
-			{genai.ModalityText, genai.ModelGood, "gpt-5-mini"},
-			{genai.ModalityText, genai.ModelSOTA, "gpt-5.2-chat-latest"},
-			{genai.ModalityImage, genai.ModelCheap, "dall-e-3"},
-			{genai.ModalityImage, genai.ModelGood, "gpt-image-1-mini"},
-			{genai.ModalityImage, genai.ModelSOTA, "gpt-image-1"},
-			{genai.ModalityVideo, genai.ModelCheap, "sora-2"},
-			{genai.ModalityVideo, genai.ModelGood, "sora-2"},
-			{genai.ModalityVideo, genai.ModelSOTA, "sora-2-pro"},
-		}
-		// Note: Audio test is in errors section since OpenAI Responses API doesn't support it
-
-		for _, line := range data {
-			t.Run(line.name, func(t *testing.T) {
-				t.Run(fmt.Sprintf("%s-%s", line.modality, line.name), func(t *testing.T) {
-					opts := genai.ProviderOptions{
-						Model:            line.name,
-						OutputModalities: genai.Modalities{line.modality},
-						PreloadedModels:  cachedModels,
-					}
-					c, err := getClientInner(t, opts, func(h http.RoundTripper) http.RoundTripper {
-						return testRecorder.Record(t, h)
-					})
-					if err != nil {
-						t.Fatal(err)
-					}
-					if got := c.ModelID(); got != line.want {
-						t.Fatalf("got model %q, want %q", got, line.want)
-					}
-				})
+		internaltest.TestPreferredModels(t, func(st *testing.T, model string, modality genai.Modality) (genai.Provider, error) {
+			opts := genai.ProviderOptions{
+				Model:            model,
+				OutputModalities: genai.Modalities{modality},
+				PreloadedModels:  cachedModels,
+			}
+			return getClientInner(st, opts, func(h http.RoundTripper) http.RoundTripper {
+				return testRecorder.Record(st, h)
 			})
-		}
+		})
 	})
 
 	t.Run("errors", func(t *testing.T) {

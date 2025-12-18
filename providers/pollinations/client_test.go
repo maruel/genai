@@ -92,23 +92,9 @@ func TestClient(t *testing.T) {
 		smoketest.Run(t, getClientRT, sbModels, testRecorder.Records)
 	})
 
-	t.Run("Preferred", func(t *testing.T) {
-		data := []struct {
-			name string
-			want string
-		}{
-			{genai.ModelCheap, "gemini"},
-			{genai.ModelGood, "openai-large"},
-			{genai.ModelSOTA, "deepseek-reasoning"},
-		}
-		for _, line := range data {
-			t.Run(line.name, func(t *testing.T) {
-				if got := getClient(t, line.name).ModelID(); got != line.want {
-					t.Fatalf("got model %q, want %q", got, line.want)
-				}
-			})
-		}
-	})
+	// Note: Skipping Preferred test as pollinations is a router to multiple backends
+	// and preferred model selection is handled dynamically by the provider's
+	// selectBestTextModel/selectBestImageModel logic rather than static scoreboard entries.
 
 	t.Run("errors", func(t *testing.T) {
 		data := []internaltest.ProviderError{

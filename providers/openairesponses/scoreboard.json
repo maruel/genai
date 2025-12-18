@@ -62,6 +62,29 @@
       }
     },
     {
+      "comments": "TODO: More output image format are supported by the API",
+      "models": [
+        "gpt-image-1"
+      ],
+      "sota": true,
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "image": {
+          "inline": true,
+          "supportedFormats": [
+            "image/jpeg"
+          ]
+        }
+      },
+      "GenSync": {
+        "seed": true
+      }
+    },
+    {
       "models": [
         "gpt-5-mini"
       ],
@@ -107,6 +130,28 @@
         "webSearch": true,
         "json": true,
         "jsonSchema": true
+      }
+    },
+    {
+      "models": [
+        "gpt-image-1-mini"
+      ],
+      "good": true,
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "image": {
+          "inline": true,
+          "supportedFormats": [
+            "image/jpeg"
+          ]
+        }
+      },
+      "GenSync": {
+        "seed": true
       }
     },
     {
@@ -160,6 +205,28 @@
         "webSearch": true,
         "json": true,
         "jsonSchema": true
+      }
+    },
+    {
+      "models": [
+        "dall-e-3"
+      ],
+      "cheap": true,
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "image": {
+          "inline": true,
+          "supportedFormats": [
+            "image/jpeg"
+          ]
+        }
+      },
+      "GenSync": {
+        "seed": true
       }
     },
     {
@@ -264,28 +331,6 @@
       }
     },
     {
-      "comments": "TODO: More output image format are supported by the API",
-      "models": [
-        "gpt-image-1"
-      ],
-      "in": {
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "image": {
-          "inline": true,
-          "supportedFormats": [
-            "image/jpeg"
-          ]
-        }
-      },
-      "GenSync": {
-        "seed": true
-      }
-    },
-    {
       "models": [
         "gpt-5",
         "gpt-5-codex",
@@ -337,7 +382,6 @@
         "chatgpt-4o-latest",
         "codex-mini-latest",
         "dall-e-2",
-        "dall-e-3",
         "davinci-002",
         "gpt-3.5-turbo",
         "gpt-3.5-turbo-0125",
@@ -406,7 +450,6 @@
         "gpt-4o-transcribe-diarize",
         "gpt-audio-mini",
         "gpt-audio-mini-2025-10-06",
-        "gpt-image-1-mini",
         "gpt-realtime-mini",
         "gpt-realtime-mini-2025-10-06",
         "sora-2",

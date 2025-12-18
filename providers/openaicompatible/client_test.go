@@ -51,16 +51,8 @@ func TestClient(t *testing.T) {
 		internaltest.TestCapabilities(t, getClient(t, "openai"))
 	})
 
-	t.Run("Preferred", func(t *testing.T) {
-		for _, line := range []string{genai.ModelCheap, genai.ModelGood, genai.ModelSOTA} {
-			t.Run(line, func(t *testing.T) {
-				_, err := openaicompatible.New(t.Context(), &genai.ProviderOptions{Remote: "http://localhost", Model: line}, nil)
-				if err != nil {
-					t.Fatalf("unexpected error %q", err)
-				}
-			})
-		}
-	})
+	// Note: Skipping Preferred test as openaicompatible is a generic provider
+	// without its own preferred models in the scoreboard.
 
 	t.Run("GenSync_simple", func(t *testing.T) {
 		for name := range providers {

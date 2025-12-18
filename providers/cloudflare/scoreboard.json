@@ -76,10 +76,41 @@
       }
     },
     {
+      "comments": "Untested",
+      "models": [
+        "@cf/meta/llama-3.2-1b-instruct"
+      ],
+      "cheap": true,
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "flaky",
+        "seed": true,
+        "tools": "flaky",
+        "json": true,
+        "maxTokens": true
+      },
+      "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "flaky",
+        "seed": true,
+        "json": true,
+        "maxTokens": true
+      }
+    },
+    {
       "models": [
         "@cf/meta/llama-3.2-3b-instruct"
       ],
-      "cheap": true,
       "in": {
         "text": {
           "inline": true
@@ -211,12 +242,6 @@
         "@hf/thebloke/neural-chat-7b-v3-1-awq",
         "@hf/thebloke/openhermes-2.5-mistral-7b-awq",
         "@hf/thebloke/zephyr-7b-beta-awq"
-      ]
-    },
-    {
-      "comments": "Untested",
-      "models": [
-        "@cf/meta/llama-3.2-1b-instruct"
       ]
     }
   ]

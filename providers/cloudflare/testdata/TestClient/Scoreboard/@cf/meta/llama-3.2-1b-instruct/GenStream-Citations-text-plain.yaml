@@ -1,0 +1,42 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 199
+    host: api.cloudflare.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"role\":\"user\",\"content\":\"What is the capital of Quackiland?\"}],\"stream\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/meta/llama-3.2-1b-instruct
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"response\":\"There\",\"p\":\"abcdefghijklmnopqrstuvwxyz012345678\"}\n\ndata: {\"response\":\" is\",\"p\":\"abcdefghi\"}\n\ndata: {\"response\":\" no\",\"p\":\"abcdefg\"}\n\ndata: {\"response\":\" such\",\"p\":\"abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklm\"}\n\ndata: {\"response\":\" place\",\"p\":\"abcdefghijklmnopqrstuvwxyz0123456789abc\"}\n\ndata: {\"response\":\" as\",\"p\":\"abcdefghijklmnopqrstuvwxyz0123456789a\"}\n\ndata: {\"response\":\" Qu\",\"p\":\"abcdefghijklmnopqrstuvwxyz0123456789abcdefghijk\"}\n\ndata: {\"response\":\"ack\",\"p\":\"abcdefghijklmnopqrstuvwxyz0123456789\"}\n\ndata: {\"response\":\"iland\",\"p\":\"abcdefghijklmnopqrstuvwxyz0123456789abcde\"}\n\ndata: {\"response\":\".\",\"p\":\"abcdefghijklmnopqrstuvwxyz\"}\n\ndata: {\"response\":\" You\",\"p\":\"abcdefghijklmnopqrstuvwxyz0123456789abcde\"}\n\ndata: {\"response\":\" just\",\"p\":\"abcdefghijklmnopqrstuvwxyz0123\"}\n\ndata: {\"response\":\" made\",\"p\":\"abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklm\"}\n\ndata: {\"response\":\" that\",\"p\":\"ab\"}\n\ndata: {\"response\":\" up\",\"p\":\"abcdefghijklmnopqrstuvwxyz0123456789abcdefghijkl\"}\n\ndata: {\"response\":\"!\",\"p\":\"abcdefghijklmnopqrstuvwxyz0123456789a\"}\n\ndata: {\"response\":\" Qu\",\"p\":\"abcdefghij\"}\n\ndata: {\"response\":\"ack\",\"p\":\"abcd\"}\n\ndata: {\"response\":\" is\",\"p\":\"abcdefghijklmno\"}\n\ndata: {\"response\":\" actually\",\"p\":\"abcdefghij\"}\n\ndata: {\"response\":\" the\",\"p\":\"abcdefghijklmn\"}\n\ndata: {\"response\":\" national\",\"p\":\"abcdefghijklmn\"}\n\ndata: {\"response\":\" bird\",\"p\":\"abcdefghijklmnopqrstuvwxyz012345678\"}\n\ndata: {\"response\":\" of\",\"p\":\"abcdefghijklmn\"}\n\ndata: {\"response\":\" Canada\",\"p\":\"abcdefghijklmnopqrstu\"}\n\ndata: {\"response\":\",\",\"p\":\"ab\"}\n\ndata: {\"response\":\" and\",\"p\":\"abcdefghijklmnopqr\"}\n\ndata: {\"response\":\" it\",\"p\":\"abcdefghijklmnopqrstuvwxyz01234567\"}\n\ndata: {\"response\":\"'s\",\"p\":\"abcdefghijklmno\"}\n\ndata: {\"response\":\" also\",\"p\":\"abcdefghijklmnopqrstuvwxyz0123456789a\"}\n\ndata: {\"response\":\" a\",\"p\":\"abcdefghijklmnop\"}\n\ndata: {\"response\":\" common\",\"p\":\"abcdefghijklmnopqrstuvwxyz012345678\"}\n\ndata: {\"response\":\" word\",\"p\":\"abcde\"}\n\ndata: {\"response\":\" for\",\"p\":\"abcdefghijklmnopqrstuvwxyz012345678\"}\n\ndata: {\"response\":\" a\",\"p\":\"abcdefghijklmno\"}\n\ndata: {\"response\":\" type\",\"p\":\"abcdefghijklmnopqrstuvwxyz0123456789abcdef\"}\n\ndata: {\"response\":\" of\",\"p\":\"abcdefghijklmnopqrstuvwxyz0123456789abcd\"}\n\ndata: {\"response\":\" duck\",\"p\":\"abcdefghijklmnopqrstuvwxyz012345\"}\n\ndata: {\"response\":\".\",\"p\":\"abcdefghijklmnopqrstuvwxyz01234567\"}\n\ndata: {\"response\":\"\",\"p\":\"abcdefghijklmn\"}\n\ndata: {\"response\":\"\",\"usage\":{\"prompt_tokens\":46,\"completion_tokens\":40,\"total_tokens\":86}}\n\ndata: [DONE]\n\n"
+    headers:
+      Api-Version:
+      - "2025-12-18"
+      Cf-Ai-Neurons:
+      - "0"
+      Cf-Ai-Req-Id:
+      - 8a606fd6-e104-4268-bf3d-b44d3bf8e387
+      Cf-Auditlog-Id:
+      - 019b3336-158a-7cf1-ba14-eb2747c45766
+      Cf-Ray:
+      - 9b01815be8a8a299-YUL
+      Content-Type:
+      - text/event-stream
+      Server:
+      - cloudflare
+      Vary:
+      - Accept-Encoding
+    status: 200 OK
+    code: 200
+    duration: 241ms

@@ -7,25 +7,30 @@
   "dashboardURL": "https://auth.pollinations.ai/",
   "scenarios": [
     {
-      "comments": "It was fairly broken at the time of testing.",
       "models": [
-        "deepseek-reasoning"
+        "flux"
       ],
-      "sota": true,
-      "reason": true
-    },
-    {
-      "comments": "It was fairly broken at the time of testing.",
-      "models": [
-        "openai-large"
-      ],
-      "good": true
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "image": {
+          "inline": true,
+          "supportedFormats": [
+            "image/jpeg"
+          ]
+        }
+      },
+      "GenSync": {
+        "seed": true
+      }
     },
     {
       "models": [
         "gemini"
       ],
-      "cheap": true,
       "in": {
         "image": {
           "inline": true,
@@ -51,27 +56,6 @@
       },
       "GenStream": {
         "reportFinishReason": "true",
-        "seed": true
-      }
-    },
-    {
-      "models": [
-        "flux"
-      ],
-      "in": {
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "image": {
-          "inline": true,
-          "supportedFormats": [
-            "image/jpeg"
-          ]
-        }
-      },
-      "GenSync": {
         "seed": true
       }
     },
@@ -118,6 +102,12 @@
       }
     },
     {
+      "models": [
+        "deepseek-reasoning"
+      ],
+      "reason": true
+    },
+    {
       "comments": "Ignored",
       "models": [
         "bidara",
@@ -128,6 +118,7 @@
         "mistral",
         "nova-fast",
         "openai-fast",
+        "openai-large",
         "openai-reasoning",
         "qwen-coder",
         "roblox-rp",

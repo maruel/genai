@@ -106,21 +106,16 @@ func TestClient(t *testing.T) {
 	})
 
 	t.Run("Preferred", func(t *testing.T) {
-		data := []struct {
-			name string
-			want string
-		}{
-			{genai.ModelCheap, "@cf/meta/llama-3.2-1b-instruct"},
-			{genai.ModelGood, "@cf/meta/llama-3.3-70b-instruct-fp8-fast"},
-			{genai.ModelSOTA, "@cf/deepseek-ai/deepseek-r1-distill-qwen-32b"},
-		}
-		for _, line := range data {
-			t.Run(line.name, func(t *testing.T) {
-				if got := getClient(t, line.name).ModelID(); got != line.want {
-					t.Fatalf("got model %q, want %q", got, line.want)
-				}
+		internaltest.TestPreferredModels(t, func(st *testing.T, model string, modality genai.Modality) (genai.Provider, error) {
+			opts := genai.ProviderOptions{
+				Model:            model,
+				OutputModalities: genai.Modalities{modality},
+				PreloadedModels:  cachedModels,
+			}
+			return getClientInner(st, opts, func(h http.RoundTripper) http.RoundTripper {
+				return testRecorder.Record(st, h)
 			})
-		}
+		})
 	})
 
 	t.Run("errors", func(t *testing.T) {

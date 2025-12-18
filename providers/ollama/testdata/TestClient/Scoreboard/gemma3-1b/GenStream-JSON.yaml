@@ -1,0 +1,30 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 220
+    host: localhost
+    body: "{\"model\":\"gemma3:1b\",\"messages\":[{\"role\":\"user\",\"content\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\\\"is_fruit\\\": bool}.\"}],\"stream\":true,\"format\":\"json\"}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: http://localhost/api/chat
+    method: POST
+  response:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    transfer_encoding:
+    - chunked
+    content_length: -1
+    body: "{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:55.182426127Z\",\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:55.198886111Z\",\"message\":{\"role\":\"assistant\",\"content\":\"is\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:55.218283645Z\",\"message\":{\"role\":\"assistant\",\"content\":\"_\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:55.23967544Z\",\"message\":{\"role\":\"assistant\",\"content\":\"fruit\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:55.257957565Z\",\"message\":{\"role\":\"assistant\",\"content\":\"\\\":\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:55.277235536Z\",\"message\":{\"role\":\"assistant\",\"content\":\" true\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:55.29558059Z\",\"message\":{\"role\":\"assistant\",\"content\":\"}\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:55.318880815Z\",\"message\":{\"role\":\"assistant\",\"content\":\"\"},\"done_reason\":\"stop\",\"done\":true,\"total_duration\":606257696,\"load_duration\":100183174,\"prompt_eval_count\":38,\"prompt_eval_duration\":118874107,\"eval_count\":8,\"eval_duration\":132046622}\n"
+    headers:
+      Content-Type:
+      - application/x-ndjson
+    status: 200 OK
+    code: 200
+    duration: 470ms

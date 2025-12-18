@@ -325,7 +325,16 @@ type PreferredModelTest struct {
 
 // loadPreferredModelsFromScoreboard extracts the preferred model test data
 // (SOTA/Good/Cheap per output modality) from the provider's scoreboard.
-func loadPreferredModelsFromScoreboard(t testing.TB, provider genai.Provider) []PreferredModelTest {
+func loadPreferredModelsFromScoreboard(t *testing.T, newProvider func(t *testing.T, model string, modality genai.Modality) (genai.Provider, error)) []PreferredModelTest {
+	// Create a provider instance with ModelNone just to read the scoreboard.
+	// Try text modality first, if that fails try image modality.
+	provider, err := newProvider(t, genai.ModelNone, genai.ModalityText)
+	if err != nil {
+		provider, err = newProvider(t, genai.ModelNone, genai.ModalityImage)
+		if err != nil {
+			t.Fatalf("failed to create provider for scoreboard reading: %v", err)
+		}
+	}
 	score := provider.Scoreboard()
 	var tests []PreferredModelTest
 	for _, sc := range score.Scenarios {
@@ -369,8 +378,8 @@ func loadPreferredModelsFromScoreboard(t testing.TB, provider genai.Provider) []
 // The test data is automatically extracted from the provider's scoreboard.
 // The newProvider function should create a provider instance with the given
 // model tier and output modality.
-func TestPreferredModels(t *testing.T, provider genai.Provider, newProvider func(t *testing.T, model string, modality genai.Modality) (genai.Provider, error)) {
-	data := loadPreferredModelsFromScoreboard(t, provider)
+func TestPreferredModels(t *testing.T, newProvider func(t *testing.T, model string, modality genai.Modality) (genai.Provider, error)) {
+	data := loadPreferredModelsFromScoreboard(t, newProvider)
 	for _, tc := range data {
 		t.Run(tc.Tier, func(t *testing.T) {
 			t.Run(string(tc.Modality)+"-"+tc.Tier, func(t *testing.T) {

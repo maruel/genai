@@ -81,21 +81,15 @@ func TestClient(t *testing.T) {
 	})
 
 	t.Run("Preferred", func(t *testing.T) {
-		data := []struct {
-			name string
-			want string
-		}{
-			{genai.ModelCheap, "flux-dev"},
-			{genai.ModelGood, "flux-2-pro"},
-			{genai.ModelSOTA, "flux-2-max"},
-		}
-		for _, line := range data {
-			t.Run(line.name, func(t *testing.T) {
-				if got := getClient(t, line.name).ModelID(); got != line.want {
-					t.Fatalf("got model %q, want %q", got, line.want)
-				}
+		internaltest.TestPreferredModels(t, func(st *testing.T, model string, modality genai.Modality) (genai.Provider, error) {
+			opts := genai.ProviderOptions{
+				Model:            model,
+				OutputModalities: genai.Modalities{modality},
+			}
+			return getClientInner(st, opts, func(h http.RoundTripper) http.RoundTripper {
+				return testRecorder.Record(st, h)
 			})
-		}
+		})
 	})
 
 	t.Run("errors", func(t *testing.T) {

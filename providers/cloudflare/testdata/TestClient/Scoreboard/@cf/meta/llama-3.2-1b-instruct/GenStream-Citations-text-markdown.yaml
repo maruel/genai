@@ -1,0 +1,42 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 215
+    host: api.cloudflare.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":\"# Quackiland\\n\\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"role\":\"user\",\"content\":\"What is the capital of Quackiland?\"}],\"stream\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/meta/llama-3.2-1b-instruct
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    body: "data: {\"response\":\"Unfortunately\",\"p\":\"abcdefghijklmnopqrstuvwxyz0123456789abcdefgh\"}\n\ndata: {\"response\":\",\",\"p\":\"abcdefghijklmnopqrstuvwxyz0123456789ab\"}\n\ndata: {\"response\":\" I\",\"p\":\"abcd\"}\n\ndata: {\"response\":\" don\",\"p\":\"abcdefghijklm\"}\n\ndata: {\"response\":\"'t\",\"p\":\"abcdefghijk\"}\n\ndata: {\"response\":\" have\",\"p\":\"abcdefghijklmnopqrstuvwxyz012\"}\n\ndata: {\"response\":\" any\",\"p\":\"abcdefghijklmnopqrstuvwxyz01234567\"}\n\ndata: {\"response\":\" information\",\"p\":\"abcdefghijklmnopqrst\"}\n\ndata: {\"response\":\" about\",\"p\":\"a\"}\n\ndata: {\"response\":\" a\",\"p\":\"abcdefghijklmnopqrstuvwxyz0123456789abcdef\"}\n\ndata: {\"response\":\" country\",\"p\":\"abcdefghijklmnopqrstuvwxyz0123456789abcde\"}\n\ndata: {\"response\":\" called\",\"p\":\"abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklm\"}\n\ndata: {\"response\":\" Qu\",\"p\":\"abcdefghijklmnopqrst\"}\n\ndata: {\"response\":\"ack\",\"p\":\"abcdefghijklmnopqrstuvwxyz0123456789ab\"}\n\ndata: {\"response\":\"iland\",\"p\":\"abcdefghijklmnopqrstu\"}\n\ndata: {\"response\":\".\",\"p\":\"abcdefghijklmnopqrst\"}\n\ndata: {\"response\":\" It\",\"p\":\"abcdefghijklmnopqrstuvwx\"}\n\ndata: {\"response\":\" seems\",\"p\":\"abcdefghijklmnopqrst\"}\n\ndata: {\"response\":\" I\",\"p\":\"abcdefghij\"}\n\ndata: {\"response\":\" made\",\"p\":\"abcdefghijklmnopqrstuvwxyz0123456789abcdefghijklm\"}\n\ndata: {\"response\":\" an\",\"p\":\"abcdefghijklmnopqrstuvwxyz012\"}\n\ndata: {\"response\":\" incorrect\",\"p\":\"abcdefghijklmnopqrstuvwxyz01\"}\n\ndata: {\"response\":\" assumption\",\"p\":\"abcdefghijklmnopqrstuvwxyz0123456\"}\n\ndata: {\"response\":\" earlier\",\"p\":\"abcdefghijklmnopqrstuvwxyz0123456789abcdefghij\"}\n\ndata: {\"response\":\".\",\"p\":\"abcdefghijklmnopqrstuvwxyz0123456789\"}\n\ndata: {\"response\":\" Can\",\"p\":\"abcdefghijklmnopqrstuvwxyz01\"}\n\ndata: {\"response\":\" you\",\"p\":\"abcdefghijklmnopqrstuv\"}\n\ndata: {\"response\":\" please\",\"p\":\"a\"}\n\ndata: {\"response\":\" provide\",\"p\":\"abcdefghijklmnopqrstuvwxyz0123456789ab\"}\n\ndata: {\"response\":\" more\",\"p\":\"abcdefghijklmnopqrstuvwxy\"}\n\ndata: {\"response\":\" context\",\"p\":\"abcdefghijklmnop\"}\n\ndata: {\"response\":\" or\",\"p\":\"abcdefghi\"}\n\ndata: {\"response\":\" information\",\"p\":\"abcdefghijklmnopqrstuvwxyz0\"}\n\ndata: {\"response\":\" about\",\"p\":\"abcdefghijklmnopqrstuvwxyz\"}\n\ndata: {\"response\":\" Qu\",\"p\":\"abc\"}\n\ndata: {\"response\":\"ack\",\"p\":\"abc\"}\n\ndata: {\"response\":\"iland\",\"p\":\"abcdefghijklmnopqrstuvwxyz012345678\"}\n\ndata: {\"response\":\"?\",\"p\":\"abcdefghijklmnopqrstuvwxyz01234\"}\n\ndata: {\"response\":\"\",\"p\":\"abcdefghijklmnopqrstuvwx\"}\n\ndata: {\"response\":\"\",\"usage\":{\"prompt_tokens\":51,\"completion_tokens\":39,\"total_tokens\":90}}\n\ndata: [DONE]\n\n"
+    headers:
+      Api-Version:
+      - "2025-12-18"
+      Cf-Ai-Neurons:
+      - "0"
+      Cf-Ai-Req-Id:
+      - 4578062e-602f-4761-a482-21a30e7ec9de
+      Cf-Auditlog-Id:
+      - 019b3336-16fe-71f2-90d8-1bb1cc46052a
+      Cf-Ray:
+      - 9b01815e3ca4a299-YUL
+      Content-Type:
+      - text/event-stream
+      Server:
+      - cloudflare
+      Vary:
+      - Accept-Encoding
+    status: 200 OK
+    code: 200
+    duration: 235ms

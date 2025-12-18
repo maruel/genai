@@ -1,0 +1,30 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 235
+    host: localhost
+    body: "{\"model\":\"gemma3:1b\",\"messages\":[{\"role\":\"user\",\"content\":\"# Quackiland\\n\\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"role\":\"user\",\"content\":\"What is the capital of Quackiland?\"}],\"stream\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: http://localhost/api/chat
+    method: POST
+  response:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    transfer_encoding:
+    - chunked
+    content_length: -1
+    body: "{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:57.263698797Z\",\"message\":{\"role\":\"assistant\",\"content\":\"Qu\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:57.281897757Z\",\"message\":{\"role\":\"assistant\",\"content\":\"ack\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:57.300025584Z\",\"message\":{\"role\":\"assistant\",\"content\":\".\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:57.320014253Z\",\"message\":{\"role\":\"assistant\",\"content\":\" \"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:57.338106064Z\",\"message\":{\"role\":\"assistant\",\"content\":\"\\n\\n\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:57.355911839Z\",\"message\":{\"role\":\"assistant\",\"content\":\"The\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:57.37341783Z\",\"message\":{\"role\":\"assistant\",\"content\":\" text\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:57.391314667Z\",\"message\":{\"role\":\"assistant\",\"content\":\" states\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:57.409705072Z\",\"message\":{\"role\":\"assistant\",\"content\":\" \\\"\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:57.427330168Z\",\"message\":{\"role\":\"assistant\",\"content\":\"The\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:57.445190111Z\",\"message\":{\"role\":\"assistant\",\"content\":\" capital\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:57.463068733Z\",\"message\":{\"role\":\"assistant\",\"content\":\" of\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:57.480947365Z\",\"message\":{\"role\":\"assistant\",\"content\":\" Qu\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:57.498907511Z\",\"message\":{\"role\":\"assistant\",\"content\":\"ack\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:57.516942491Z\",\"message\":{\"role\":\"assistant\",\"content\":\"iland\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:57.534654296Z\",\"message\":{\"role\":\"assistant\",\"content\":\" is\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:57.554057434Z\",\"message\":{\"role\":\"assistant\",\"content\":\" Qu\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:57.572046279Z\",\"message\":{\"role\":\"assistant\",\"content\":\"ack\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:57.589984976Z\",\"message\":{\"role\":\"assistant\",\"content\":\".\\\"\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:57.608039889Z\",\"message\":{\"role\":\"assistant\",\"content\":\"\\n\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:57.625858356Z\",\"message\":{\"role\":\"assistant\",\"content\":\"\"},\"done_reason\":\"stop\",\"done\":true,\"total_duration\":857379723,\"load_duration\":87071338,\"prompt_eval_count\":45,\"prompt_eval_duration\":170555008,\"eval_count\":21,\"eval_duration\":362578633}\n"
+    headers:
+      Content-Type:
+      - application/x-ndjson
+    status: 200 OK
+    code: 200
+    duration: 496ms

@@ -1,0 +1,30 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 331
+    host: localhost
+    body: "{\"model\":\"gemma3:1b\",\"messages\":[{\"role\":\"user\",\"content\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON.\"}],\"stream\":true,\"format\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"is_fruit\":{\"type\":\"boolean\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"is_fruit\"]}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: http://localhost/api/chat
+    method: POST
+  response:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    transfer_encoding:
+    - chunked
+    content_length: -1
+    body: "{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:55.744031621Z\",\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:55.797584036Z\",\"message\":{\"role\":\"assistant\",\"content\":\"is\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:55.816256568Z\",\"message\":{\"role\":\"assistant\",\"content\":\"_\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:55.83423618Z\",\"message\":{\"role\":\"assistant\",\"content\":\"fruit\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:55.853323338Z\",\"message\":{\"role\":\"assistant\",\"content\":\"\\\":\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:55.872123335Z\",\"message\":{\"role\":\"assistant\",\"content\":\" true\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:55.890739395Z\",\"message\":{\"role\":\"assistant\",\"content\":\"}\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:55.909093697Z\",\"message\":{\"role\":\"assistant\",\"content\":\"\\n\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:55.932677659Z\",\"message\":{\"role\":\"assistant\",\"content\":\"\"},\"done_reason\":\"stop\",\"done\":true,\"total_duration\":613272023,\"load_duration\":84915159,\"prompt_eval_count\":26,\"prompt_eval_duration\":44991332,\"eval_count\":9,\"eval_duration\":222013789}\n"
+    headers:
+      Content-Type:
+      - application/x-ndjson
+    status: 200 OK
+    code: 200
+    duration: 425ms

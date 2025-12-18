@@ -8,11 +8,15 @@
   "scenarios": [
     {
       "models": [
+        "qwen3:32b"
+      ],
+      "sota": true
+    },
+    {
+      "models": [
         "qwen3:4b"
       ],
-      "sota": true,
       "good": true,
-      "cheap": true,
       "reason": true,
       "reasoningTokenStart": "\u003cthink\u003e",
       "reasoningTokenEnd": "\n\u003c/think\u003e\n",
@@ -41,6 +45,40 @@
         "reportFinishReason": "true",
         "seed": true,
         "tools": "flaky",
+        "json": true,
+        "jsonSchema": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
+    },
+    {
+      "models": [
+        "gemma3:1b"
+      ],
+      "cheap": true,
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "json": true,
+        "jsonSchema": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
         "json": true,
         "jsonSchema": true,
         "maxTokens": true,

@@ -1,0 +1,30 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 162
+    host: localhost
+    body: "{\"model\":\"gemma3:1b\",\"messages\":[{\"role\":\"user\",\"content\":\"Talk about Canada in great details. Start with: Canada is\"}],\"stream\":false,\"options\":{\"stop\":[\"is\"]}}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: http://localhost/api/chat
+    method: POST
+  response:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 353
+    body: "{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:54.962704238Z\",\"message\":{\"role\":\"assistant\",\"content\":\"Okay, let’s dive into Canada – a country brimming with h\"},\"done_reason\":\"stop\",\"done\":true,\"total_duration\":656076201,\"load_duration\":89177157,\"prompt_eval_count\":21,\"prompt_eval_duration\":18271792,\"eval_count\":14,\"eval_duration\":231944786}"
+    headers:
+      Content-Length:
+      - "353"
+      Content-Type:
+      - application/json; charset=utf-8
+    status: 200 OK
+    code: 200
+    duration: 656ms

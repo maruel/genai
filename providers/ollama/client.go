@@ -617,7 +617,7 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) str
 	default:
 		fallthrough
 	case genai.ModelGood, "":
-		return "qwen3:30b"
+		return "qwen3:4b"
 	case genai.ModelSOTA:
 		return "qwen3:32b"
 	}

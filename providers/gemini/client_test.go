@@ -8,7 +8,6 @@ import (
 	"context"
 	_ "embed"
 	"errors"
-	"fmt"
 	"net/http"
 	"os"
 	"slices"
@@ -123,42 +122,16 @@ func TestClient(t *testing.T) {
 	})
 
 	t.Run("Preferred", func(t *testing.T) {
-		data := []struct {
-			modality genai.Modality
-			name     string
-			want     string
-		}{
-			{genai.ModalityText, genai.ModelCheap, "gemini-flash-lite-latest"},
-			{genai.ModalityText, genai.ModelGood, "gemini-flash-latest"},
-			{genai.ModalityText, genai.ModelSOTA, "gemini-pro-latest"},
-			{genai.ModalityImage, genai.ModelCheap, "imagen-4.0-fast-generate-001"},
-			{genai.ModalityImage, genai.ModelGood, "imagen-4.0-generate-preview-06-06"},
-			{genai.ModalityImage, genai.ModelSOTA, "imagen-4.0-ultra-generate-preview-06-06"},
-			{genai.ModalityVideo, genai.ModelCheap, "veo-3.1-fast-generate-preview"},
-			{genai.ModalityVideo, genai.ModelGood, "veo-3.1-fast-generate-preview"},
-			{genai.ModalityVideo, genai.ModelSOTA, "veo-3.1-generate-preview"},
-			{genai.ModalityAudio, genai.ModelCheap, "gemini-2.5-flash-native-audio-preview-12-2025"},
-			{genai.ModalityAudio, genai.ModelGood, "gemini-2.5-flash-native-audio-preview-12-2025"},
-			{genai.ModalityAudio, genai.ModelSOTA, "gemini-2.5-flash-native-audio-preview-12-2025"},
-		}
-		for _, line := range data {
-			t.Run(fmt.Sprintf("%s-%s", line.modality, line.name), func(t *testing.T) {
-				opts := genai.ProviderOptions{
-					Model:            line.name,
-					OutputModalities: genai.Modalities{line.modality},
-					PreloadedModels:  cachedModels,
-				}
-				c, err := getClientInner(t, opts, func(h http.RoundTripper) http.RoundTripper {
-					return testRecorder.Record(t, h)
-				})
-				if err != nil {
-					t.Fatal(err)
-				}
-				if got := c.ModelID(); got != line.want {
-					t.Fatalf("got model %q, want %q", got, line.want)
-				}
+		internaltest.TestPreferredModels(t, func(st *testing.T, model string, modality genai.Modality) (genai.Provider, error) {
+			opts := genai.ProviderOptions{
+				Model:            model,
+				OutputModalities: genai.Modalities{modality},
+				PreloadedModels:  cachedModels,
+			}
+			return getClientInner(st, opts, func(h http.RoundTripper) http.RoundTripper {
+				return testRecorder.Record(st, h)
 			})
-		}
+		})
 	})
 
 	t.Run("GenAsync-Video", func(t *testing.T) {

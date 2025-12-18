@@ -166,6 +166,9 @@ func TestClient(t *testing.T) {
 			{genai.ModalityImage, genai.ModelCheap, "dall-e-3"},
 			{genai.ModalityImage, genai.ModelGood, "gpt-image-1-mini"},
 			{genai.ModalityImage, genai.ModelSOTA, "gpt-image-1"},
+			{genai.ModalityVideo, genai.ModelCheap, "sora-2"},
+			{genai.ModalityVideo, genai.ModelGood, "sora-2"},
+			{genai.ModalityVideo, genai.ModelSOTA, "sora-2-pro"},
 		}
 		for _, line := range data {
 			t.Run(line.name, func(t *testing.T) {

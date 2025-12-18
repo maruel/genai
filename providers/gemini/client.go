@@ -1456,11 +1456,14 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 					return nil, err
 				}
 				c.impl.OutputModalities = genai.Modalities{mod}
+			case genai.ModalityVideo:
+				if c.impl.Model, err = c.selectBestVideoModel(ctx, opts.Model); err != nil {
+					return nil, err
+				}
+				c.impl.OutputModalities = genai.Modalities{mod}
 			case genai.ModalityAudio:
 				fallthrough
 			case genai.ModalityDocument:
-				fallthrough
-			case genai.ModalityVideo:
 				fallthrough
 			default:
 				// TODO: Soon, because it's cool.
@@ -1692,6 +1695,43 @@ func (c *Client) selectBestImageModel(ctx context.Context, preference string) (s
 	}
 	if selectedModel == "" {
 		return "", errors.New("failed to find a model automatically")
+	}
+	return selectedModel, nil
+}
+
+// selectBestVideoModel selects the most appropriate video model based on the preference (cheap, good, or SOTA).
+//
+// Video models are identified by the "veo-" prefix.
+func (c *Client) selectBestVideoModel(ctx context.Context, preference string) (string, error) {
+	mdls, err := c.ListModels(ctx)
+	if err != nil {
+		return "", fmt.Errorf("failed to automatically select the model: %w", err)
+	}
+	cheap := preference == genai.ModelCheap
+	good := preference == genai.ModelGood || preference == ""
+	selectedModel := ""
+	for _, mdl := range mdls {
+		m := mdl.(*Model)
+		name := strings.TrimPrefix(m.Name, "models/")
+		// Only consider models starting with "veo-"
+		if !strings.HasPrefix(name, "veo-") {
+			continue
+		}
+		isFast := strings.Contains(name, "fast")
+		matches := isFast
+		if !cheap && !good {
+			matches = !matches
+		}
+		if !matches {
+			continue
+		}
+		// Select the best available model, preferring newer versions lexicographically
+		if selectedModel == "" || name > selectedModel {
+			selectedModel = name
+		}
+	}
+	if selectedModel == "" {
+		return "", errors.New("failed to find a video model automatically")
 	}
 	return selectedModel, nil
 }

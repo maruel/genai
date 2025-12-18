@@ -1110,7 +1110,12 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 					return nil, err
 				}
 				c.impl.OutputModalities = genai.Modalities{mod}
-			case genai.ModalityAudio, genai.ModalityDocument, genai.ModalityVideo:
+			case genai.ModalityVideo:
+				if c.impl.Model, err = c.selectBestVideoModel(ctx, opts.Model); err != nil {
+					return nil, err
+				}
+				c.impl.OutputModalities = genai.Modalities{mod}
+			case genai.ModalityAudio, genai.ModalityDocument:
 				fallthrough
 			default:
 				// TODO: Soon, because it's cool.

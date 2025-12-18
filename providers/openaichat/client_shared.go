@@ -377,6 +377,47 @@ func (c *Client) selectBestImageModel(ctx context.Context, preference string) (s
 	return selectedModel, nil
 }
 
+// selectBestVideoModel selects the most appropriate video model based on the preference (cheap, good, or SOTA).
+//
+// Video models are identified by the "sora-" prefix.
+func (c *Client) selectBestVideoModel(ctx context.Context, preference string) (string, error) {
+	mdls, err := c.ListModels(ctx)
+	if err != nil {
+		return "", fmt.Errorf("failed to automatically select the model: %w", err)
+	}
+	cheap := preference == genai.ModelCheap
+	good := preference == genai.ModelGood || preference == ""
+	selectedModel := ""
+	for _, mdl := range mdls {
+		m := mdl.(*Model)
+		// Only consider models starting with "sora-"
+		if !strings.HasPrefix(m.ID, "sora-") {
+			continue
+		}
+		// Determine if model is pro based on name
+		isPro := strings.Contains(m.ID, "pro")
+		matches := false
+		if cheap {
+			matches = !isPro
+		} else if good {
+			matches = !isPro
+		} else {
+			matches = isPro
+		}
+		if !matches {
+			continue
+		}
+		// Select the best available model, preferring newer versions lexicographically
+		if selectedModel == "" || m.ID > selectedModel {
+			selectedModel = m.ID
+		}
+	}
+	if selectedModel == "" {
+		return "", errors.New("failed to find a video model automatically")
+	}
+	return selectedModel, nil
+}
+
 // ModelID implements genai.Provider.
 //
 // It returns the selected model ID.

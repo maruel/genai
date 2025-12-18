@@ -134,6 +134,9 @@ func TestClient(t *testing.T) {
 			{genai.ModalityImage, genai.ModelCheap, "imagen-4.0-fast-generate-001"},
 			{genai.ModalityImage, genai.ModelGood, "imagen-4.0-generate-preview-06-06"},
 			{genai.ModalityImage, genai.ModelSOTA, "imagen-4.0-ultra-generate-preview-06-06"},
+			{genai.ModalityVideo, genai.ModelCheap, "veo-3.1-fast-generate-preview"},
+			{genai.ModalityVideo, genai.ModelGood, "veo-3.1-fast-generate-preview"},
+			{genai.ModalityVideo, genai.ModelSOTA, "veo-3.1-generate-preview"},
 		}
 		for _, line := range data {
 			t.Run(fmt.Sprintf("%s-%s", line.modality, line.name), func(t *testing.T) {

@@ -20,7 +20,7 @@ type ProviderError struct {
 	ErrListModel string
 }
 
-func TestClient_Provider_errors(t *testing.T, getClient func(t *testing.T, opts genai.ProviderOptions) (genai.Provider, error), lines []ProviderError) {
+func TestClientProviderErrors(t *testing.T, getClient func(t *testing.T, opts genai.ProviderOptions) (genai.Provider, error), lines []ProviderError) {
 	for _, line := range lines {
 		t.Run(line.Name, func(t *testing.T) {
 			if _, err := getClient(t, line.Opts); line.ErrGenSync != "" || line.ErrGenStream != "" || line.ErrListModel != "" {

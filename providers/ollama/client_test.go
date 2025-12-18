@@ -135,7 +135,7 @@ func TestClient(t *testing.T) {
 			opts.Remote = serverURL
 			return ollama.New(t.Context(), &opts, wrapper)
 		}
-		internaltest.TestClient_Provider_errors(t, f, data)
+		internaltest.TestClientProviderErrors(t, f, data)
 	})
 }
 

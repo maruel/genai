@@ -130,7 +130,7 @@ func TestClient(t *testing.T) {
 				return testRecorder.Record(t, h)
 			})
 		}
-		internaltest.TestClient_Provider_errors(t, f, data)
+		internaltest.TestClientProviderErrors(t, f, data)
 	})
 }
 

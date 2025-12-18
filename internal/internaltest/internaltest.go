@@ -369,12 +369,12 @@ func loadPreferredModelsFromScoreboard(t testing.TB, provider genai.Provider) []
 // The test data is automatically extracted from the provider's scoreboard.
 // The newProvider function should create a provider instance with the given
 // model tier and output modality.
-func TestPreferredModels(t *testing.T, provider genai.Provider, newProvider func(model string, modality genai.Modality) (genai.Provider, error)) {
+func TestPreferredModels(t *testing.T, provider genai.Provider, newProvider func(t *testing.T, model string, modality genai.Modality) (genai.Provider, error)) {
 	data := loadPreferredModelsFromScoreboard(t, provider)
 	for _, tc := range data {
 		t.Run(tc.Tier, func(t *testing.T) {
 			t.Run(string(tc.Modality)+"-"+tc.Tier, func(t *testing.T) {
-				c, err := newProvider(tc.Tier, tc.Modality)
+				c, err := newProvider(t, tc.Tier, tc.Modality)
 				if err != nil {
 					t.Fatal(err)
 				}

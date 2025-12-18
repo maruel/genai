@@ -6,6 +6,8 @@ package internaltest
 
 import (
 	"errors"
+	"os"
+	"path/filepath"
 	"regexp"
 	"slices"
 	"strings"
@@ -296,15 +298,35 @@ func TestTextOutputDocInput(t *testing.T, newProvider func(t *testing.T) genai.P
 				},
 			},
 		}
-		c := newProvider(t)
-		resp, err := c.GenSync(t.Context(), msgs)
+		resp, err := newProvider(t).GenSync(t.Context(), msgs)
 		if err != nil {
 			t.Fatalf("GenSync with Doc input failed: %v", err)
 		}
-		// Verify that the response mentions the correct city. Lower case then split into words.
-		got := resp.String()
-		if !regexp.MustCompile(`(?i)\bquack\b`).MatchString(got) {
-			t.Errorf("expected response to contain 'Quack' (case-insensitive), got: %q", got)
+		if got := resp.String(); !regexp.MustCompile(`(?i)\bquack\b`).MatchString(got) {
+			t.Errorf("expected response to contain 'Quack', got: %q", got)
+		}
+	})
+	t.Run("Stdin", func(t *testing.T) {
+		// Test piping from stdin with a file that has no extension
+		msgs := genai.Messages{
+			genai.Message{
+				Requests: []genai.Request{
+					{
+						Doc: genai.Doc{
+							Src:      strings.NewReader("The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."),
+							Filename: filepath.Base(os.Stdin.Name()),
+						},
+					},
+					{Text: "What is the capital of Quackiland?"},
+				},
+			},
+		}
+		resp, err := newProvider(t).GenSync(t.Context(), msgs)
+		if err != nil {
+			t.Fatalf("GenSync with Doc input failed: %v", err)
+		}
+		if got := resp.String(); !regexp.MustCompile(`(?i)\bquack\b`).MatchString(got) {
+			t.Errorf("expected response to contain 'Quack', got: %q", got)
 		}
 	})
 }

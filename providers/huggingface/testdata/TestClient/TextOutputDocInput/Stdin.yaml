@@ -19,7 +19,7 @@ interactions:
     proto_major: 2
     proto_minor: 0
     content_length: -1
-    body: "{\n  \"id\": \"oPmDUy8-zqrih-9b02650b5b41207b\",\n  \"object\": \"chat.completion\",\n  \"created\": 1766100067,\n  \"model\": \"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"The capital of Quackiland is Quack.\",\n        \"tool_calls\": [],\n        \"reasoning\": null\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 38,\n    \"total_tokens\": 49,\n    \"completion_tokens\": 11\n  }\n}"
+    body: "{\n  \"id\": \"oPmDUxw-zqrih-9b02650b5da4e5be\",\n  \"object\": \"chat.completion\",\n  \"created\": 1766100067,\n  \"model\": \"Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8\",\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"The capital of Quackiland is Quack.\",\n        \"tool_calls\": [],\n        \"reasoning\": null\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 38,\n    \"total_tokens\": 49,\n    \"completion_tokens\": 11\n  }\n}"
     headers:
       Access-Control-Allow-Origin:
       - "*"
@@ -28,13 +28,13 @@ interactions:
       Cf-Cache-Status:
       - DYNAMIC
       Cf-Ray:
-      - 9b02650b5b41207b-IAD
+      - 9b02650b5da4e5be-IAD
       Content-Type:
       - application/json; charset=utf-8
       Cross-Origin-Opener-Policy:
       - same-origin
       Etag:
-      - W/"22c-g8F9JyN4xajjKntrI01m1/0vWFM"
+      - W/"22c-jHjBGzaXmUtrLHr+S7L7uTMk5CM"
       Referrer-Policy:
       - strict-origin-when-cross-origin
       Retry-After:
@@ -48,15 +48,15 @@ interactions:
       Via:
       - 1.1 a44cf9ed8a499212c53e0b8f57aa31f4.cloudfront.net (CloudFront)
       X-Amz-Cf-Id:
-      - e_TOhLkcaoGrI3-8TgxmLRsYS_RSW245Bbh0XX8gz7ccWYnPokmeJA==
+      - 2w2ZDWVjcm3gXaHZyjCGIuP45RhckV_QPrlw_tDBgiPIgqekpYRlqg==
       X-Amz-Cf-Pop:
       - YTO50-P1
       X-Api-Call-End:
-      - "2025-12-18T23:21:07.734Z"
+      - "2025-12-18T23:21:07.736Z"
       X-Api-Call-Start:
-      - "2025-12-18T23:21:07.182Z"
+      - "2025-12-18T23:21:07.169Z"
       X-Api-Received:
-      - "2025-12-18T23:21:07.172Z"
+      - "2025-12-18T23:21:07.160Z"
       X-Cache:
       - Miss from cloudfront
       X-Inference-Provider:
@@ -72,7 +72,7 @@ interactions:
       X-Ratelimit-Limit-Tokens:
       - "33333.333333333336"
       X-Ratelimit-Remaining:
-      - "198"
+      - "199"
       X-Ratelimit-Remaining-Tokens:
       - "33333.333333333336"
       X-Ratelimit-Reset:

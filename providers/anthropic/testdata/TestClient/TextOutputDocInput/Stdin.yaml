@@ -1,0 +1,69 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 414
+    host: api.anthropic.com
+    body: "{\"model\":\"claude-haiku-4-5-20251001\",\"max_tokens\":32000,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"document\",\"cache_control\":{\"type\":\"ephemeral\"},\"citations\":{\"enabled\":true},\"source\":{\"type\":\"text\",\"media_type\":\"text/plain\",\"data\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"}},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}],\"thinking\":{\"type\":\"disabled\"}}\n"
+    headers:
+      Anthropic-Version:
+      - "2023-06-01"
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.anthropic.com/v1/messages
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"model\":\"claude-haiku-4-5-20251001\",\"id\":\"msg_01Fcg52AS8VFuvukkUBtrLp5\",\"type\":\"message\",\"role\":\"assistant\",\"content\":[{\"citations\":[{\"type\":\"char_location\",\"cited_text\":\"The capital of Quackiland is Quack. \",\"document_index\":0,\"document_title\":null,\"start_char_index\":0,\"end_char_index\":36}],\"type\":\"text\",\"text\":\"The capital of Quackiland is Quack.\"}],\"stop_reason\":\"end_turn\",\"stop_sequence\":null,\"usage\":{\"input_tokens\":595,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"cache_creation\":{\"ephemeral_5m_input_tokens\":0,\"ephemeral_1h_input_tokens\":0},\"output_tokens\":32,\"service_tier\":\"standard\"}}"
+    headers:
+      Anthropic-Ratelimit-Input-Tokens-Limit:
+      - "4000000"
+      Anthropic-Ratelimit-Input-Tokens-Remaining:
+      - "4000000"
+      Anthropic-Ratelimit-Input-Tokens-Reset:
+      - "2025-12-18T22:48:38Z"
+      Anthropic-Ratelimit-Output-Tokens-Limit:
+      - "800000"
+      Anthropic-Ratelimit-Output-Tokens-Remaining:
+      - "800000"
+      Anthropic-Ratelimit-Output-Tokens-Reset:
+      - "2025-12-18T22:48:38Z"
+      Anthropic-Ratelimit-Requests-Limit:
+      - "4000"
+      Anthropic-Ratelimit-Requests-Remaining:
+      - "3999"
+      Anthropic-Ratelimit-Requests-Reset:
+      - "2025-12-18T22:48:37Z"
+      Anthropic-Ratelimit-Tokens-Limit:
+      - "4800000"
+      Anthropic-Ratelimit-Tokens-Remaining:
+      - "4800000"
+      Anthropic-Ratelimit-Tokens-Reset:
+      - "2025-12-18T22:48:38Z"
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9b0235724abba25a-YUL
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Vary:
+      - accept-encoding
+      X-Envoy-Upstream-Service-Time:
+      - "689"
+      X-Robots-Tag:
+      - none
+    status: 200 OK
+    code: 200
+    duration: 811ms

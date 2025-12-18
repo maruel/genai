@@ -1,0 +1,57 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 251
+    host: api.groq.com
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}],\"model\":\"openai/gpt-oss-20b\",\"stream\":false}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.groq.com/openai/v1/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"chatcmpl-25b668e1-5133-4626-b42a-c135e148752a\",\"object\":\"chat.completion\",\"created\":1766098117,\"model\":\"openai/gpt-oss-20b\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"Quack\",\"reasoning\":\"User is asking: \\\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.What is the capital of Quackiland?\\\" This is a simple question. We answer: Quack.\\n\\nWe need to output a single line: \\\"Quack\\\" and no markdown.\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"queue_time\":0.002977365,\"prompt_tokens\":100,\"prompt_time\":0.004860205,\"completion_tokens\":74,\"completion_time\":0.074219075,\"total_tokens\":174,\"total_time\":0.07907928,\"completion_tokens_details\":{\"reasoning_tokens\":63}},\"usage_breakdown\":null,\"system_fingerprint\":\"fp_d6de37e6be\",\"x_groq\":{\"id\":\"req_01kcstd90tfd8sbg8dz450ps3h\",\"seed\":1547390840},\"service_tier\":\"on_demand\"}\n"
+    headers:
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cache-Control:
+      - private, max-age=0, no-store, no-cache, must-revalidate
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9b0235731d37a273-YUL
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000
+      Vary:
+      - Origin
+      X-Groq-Region:
+      - yul
+      X-Ratelimit-Limit-Requests:
+      - "500000"
+      X-Ratelimit-Limit-Tokens:
+      - "250000"
+      X-Ratelimit-Remaining-Requests:
+      - "499999"
+      X-Ratelimit-Remaining-Tokens:
+      - "249899"
+      X-Ratelimit-Reset-Requests:
+      - 172ms
+      X-Ratelimit-Reset-Tokens:
+      - 24ms
+    status: 200 OK
+    code: 200
+    duration: 200ms

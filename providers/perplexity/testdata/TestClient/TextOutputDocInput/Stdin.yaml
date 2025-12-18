@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 291
+    host: api.perplexity.ai
+    body: "{\"model\":\"sonar\",\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}],\"return_images\":true,\"return_related_questions\":true,\"stream\":false}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://api.perplexity.ai/chat/completions
+    method: POST
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "{\"id\":\"ced432db-19b9-43f0-868c-25de5b74eed0\",\"model\":\"sonar\",\"created\":1766098120,\"usage\":{\"prompt_tokens\":29,\"completion_tokens\":32,\"total_tokens\":61,\"search_context_size\":\"low\"},\"citations\":[\"https://en.wikipedia.org/wiki/List_of_fictional_towns_in_animation\",\"https://comicro.fandom.com/wiki/Capital_city\",\"http://quackcity.com/about.html\",\"https://www.imdb.com/title/tt0987551/\",\"https://zack-and-quack.fandom.com/wiki/Quack\",\"https://kaeloo.fandom.com/wiki/The_Origin_of_Quack-Quack\"],\"search_results\":[{\"title\":\"List of fictional towns in animation - Wikipedia\",\"url\":\"https://en.wikipedia.org/wiki/List_of_fictional_towns_in_animation\",\"date\":\"2011-12-02\",\"last_updated\":\"2025-10-16\",\"snippet\":\"This is a **list of animated fictional towns, villages, settlements and cities**. This list should include only well-referenced, notable examples of fictional settlements that are integral to a work of fiction and substantively depicted therein. Fictionalized versions of actual towns (such as Raytow...\",\"source\":\"web\"},{\"title\":\"Capital city\",\"url\":\"https://comicro.fandom.com/wiki/Capital_city\",\"date\":\"2008-01-01\",\"last_updated\":\"2025-11-17\",\"snippet\":\"Sign In\\n\\nRegister\\n\\nCommunity of Micronations Wiki\\n\\nExplore\\n\\nMain Page\\n\\nDiscuss\\n\\nAll Pages\\n\\nCommunity\\n\\nInteractive Maps\\n\\nRecent Blog Posts\\n\\nWiki Content\\n\\nRecently Changed Pages\\n\\nList of Micronations\\n\\nClassification of micronations\\n\\nList of micronations by population\\n\\nConstitutional Monarch of Azuland...\",\"source\":\"web\"},{\"title\":\"Welcome To Quack City! :: About Quack City\",\"url\":\"http://quackcity.com/about.html\",\"snippet\":\"\",\"source\":\"web\"},{\"title\":\"\\\"Quack Pack\\\" Leader of the Quack (TV Episode 1996) ⭐ 6.4 | Animation, Adventure, Comedy\",\"url\":\"https://www.imdb.com/title/tt0987551/\",\"date\":\"1996-11-18\",\"snippet\":\"\",\"source\":\"web\"},{\"title\":\"Quack\",\"url\":\"https://zack-and-quack.fandom.com/wiki/Quack\",\"snippet\":\"\",\"source\":\"web\"},{\"title\":\"The Origin of Quack-Quack\",\"url\":\"https://kaeloo.fandom.com/wiki/The_Origin_of_Quack-Quack\",\"date\":\"2025-08-08\",\"snippet\":\"\",\"source\":\"web\"}],\"images\":[{\"image_url\":\"https://static.wikia.nocookie.net/banz/images/0/00/Quack.png/revision/latest?cb=20211110220106\",\"origin_url\":\"https://banz.fandom.com/wiki/Quack\",\"height\":1080,\"width\":930,\"title\":\"Quack | Banz Wiki | Fandom\"},{\"image_url\":\"https://assets.coingecko.com/coin_social_images/coin_social_image/crypto_symbol_image/36174/original/coin_social_image_crypto_symbol_3749320250417-7-8du1da.webp?1744915133\",\"origin_url\":\"https://www.coingecko.com/en/coins/quack-capital\",\"height\":630,\"width\":1200,\"title\":\"Quack Capital Price: QUACK Live Price Chart, Market Cap ...\"},{\"image_url\":\"https://www.shutterstock.com/image-photo/white-pekin-ducking-quacking-on-260nw-1663647766.jpg\",\"origin_url\":\"https://www.shutterstock.com/search/quack-quack\",\"height\":280,\"width\":391,\"title\":\"35+ Thousand Quack Quack Royalty-Free Images, Stock Photos ...\"},{\"image_url\":\"https://www.shutterstock.com/image-vector/quack-cuack-t-shirt-design-260nw-2576083897.jpg\",\"origin_url\":\"https://www.shutterstock.com/search/quack-quack-quack\",\"height\":280,\"width\":260,\"title\":\"35+ Thousand Quack Quack Quack Royalty-Free Images, Stock ...\"},{\"image_url\":\"https://www.shutterstock.com/image-vector/animal-doodle-illustration-duck-600w-2509606657.jpg\",\"origin_url\":\"https://www.shutterstock.com/search/duck-quack\",\"height\":619,\"width\":600,\"title\":\"31+ Thousand Duck Quack Royalty-Free Images, Stock ...\"}],\"related_questions\":[\"What other famous landmarks are in Quackiland\",\"Is Quackiland a real place or fictional\",\"Who created Quackiland and its characters\",\"Are there any popular TV shows or movies set in Quackiland\",\"What is the history behind the Big Canard Statue\"],\"object\":\"chat.completion\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"The capital of Quackiland is **Quack**. \\n\\nThis follows directly from your statement that *\\\"The capital of Quackiland is Quack.\\\"*\"},\"delta\":{\"role\":\"assistant\",\"content\":\"\"},\"finish_reason\":\"stop\"}]}"
+    headers:
+      Cf-Cache-Status:
+      - DYNAMIC
+      Cf-Ray:
+      - 9b0235733f0bb687-YYZ
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Strict-Transport-Security:
+      - max-age=15552000; includeSubDomains; preload
+    status: 200 OK
+    code: 200
+    duration: 3.172s

@@ -1,0 +1,68 @@
+---
+version: 2
+interactions:
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 0
+    host: localhost
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: http://localhost/v1/models
+    method: GET
+  response:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 953
+    body: "{\"models\":[{\"name\":\"/home/maruel/.cache/huggingface/hub/models--ggml-org--gemma-3-4b-it-GGUF/snapshots/d0976223747697cb51e056d85c532013931fe52e/gemma-3-4b-it-Q4_K_M.gguf\",\"model\":\"/home/maruel/.cache/huggingface/hub/models--ggml-org--gemma-3-4b-it-GGUF/snapshots/d0976223747697cb51e056d85c532013931fe52e/gemma-3-4b-it-Q4_K_M.gguf\",\"modified_at\":\"\",\"size\":\"\",\"digest\":\"\",\"type\":\"model\",\"description\":\"\",\"tags\":[\"\"],\"capabilities\":[\"completion\",\"multimodal\"],\"parameters\":\"\",\"details\":{\"parent_model\":\"\",\"format\":\"gguf\",\"family\":\"\",\"families\":[\"\"],\"parameter_size\":\"\",\"quantization_level\":\"\"}}],\"object\":\"list\",\"data\":[{\"id\":\"/home/maruel/.cache/huggingface/hub/models--ggml-org--gemma-3-4b-it-GGUF/snapshots/d0976223747697cb51e056d85c532013931fe52e/gemma-3-4b-it-Q4_K_M.gguf\",\"object\":\"model\",\"created\":1766098126,\"owned_by\":\"llamacpp\",\"meta\":{\"vocab_type\":1,\"n_vocab\":262144,\"n_ctx_train\":131072,\"n_embd\":2560,\"n_params\":3880099328,\"size\":2483218432}}]}"
+    headers:
+      Access-Control-Allow-Origin:
+      - ""
+      Content-Length:
+      - "953"
+      Content-Type:
+      - application/json; charset=utf-8
+      Keep-Alive:
+      - timeout=5, max=100
+      Server:
+      - llama.cpp
+    status: 200 OK
+    code: 200
+    duration: 0s
+- id: 1
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 227
+    host: localhost
+    body: "{\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}],\"cache_prompt\":true}\n"
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: http://localhost/chat/completions
+    method: POST
+  response:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 665
+    body: "{\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"The capital of Quackiland is Quack. \\n\\nThe question is just confirming what you already stated! 😊\\n\"}}],\"created\":1766098226,\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":25,\"prompt_tokens\":40,\"total_tokens\":65},\"id\":\"chatcmpl-jDyciicT16qsAzJ95Q3d7yKs6D8rqoaR\",\"timings\":{\"prompt_n\":40,\"prompt_ms\":6813.472,\"prompt_per_token_ms\":170.33679999999998,\"prompt_per_second\":5.870722004875048,\"predicted_n\":25,\"predicted_ms\":93591.0,\"predicted_per_token_ms\":3743.64,\"predicted_per_second\":0.2671197016807172}}"
+    headers:
+      Access-Control-Allow-Origin:
+      - ""
+      Content-Length:
+      - "665"
+      Content-Type:
+      - application/json; charset=utf-8
+      Keep-Alive:
+      - timeout=5, max=100
+      Server:
+      - llama.cpp
+    status: 200 OK
+    code: 200
+    duration: 1m40.406s

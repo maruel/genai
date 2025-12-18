@@ -161,14 +161,19 @@ func TestClient(t *testing.T) {
 		c := getClient(t, "veo-2.0-generate-001")
 		jobID := internaltest.TestCapabilitiesGenAsync(t, c, genai.Message{Requests: []genai.Request{{Text: prompt}}})
 		ctx := t.Context()
-		// Poll for completion using the job ID from the Capability test
+		// Poll for completion using the job ID from the Capability test.
+		// Use a minimal sleep during tests (recorded playback), 500ms during real API calls.
+		pollInterval := 1 * time.Millisecond
+		if os.Getenv("GEMINI_API_KEY") != "" && os.Getenv("RECORD") == "" {
+			pollInterval = 500 * time.Millisecond
+		}
 		res := genai.Result{Usage: genai.Usage{FinishReason: genai.Pending}}
 		var err error
 		for res.Usage.FinishReason == genai.Pending {
 			select {
 			case <-ctx.Done():
 				t.Fatal(ctx.Err())
-			case <-time.After(500 * time.Millisecond):
+			case <-time.After(pollInterval):
 				if res, err = c.PokeResult(ctx, jobID); err != nil {
 					t.Fatal(err)
 				}

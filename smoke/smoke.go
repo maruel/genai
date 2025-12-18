@@ -861,23 +861,24 @@ func exerciseGenNonText(ctx context.Context, pf ProviderFactory) (scoreboard.Sce
 	return out, usage, nil
 }
 
-func exerciseGenImage(ctx context.Context, pf ProviderFactory, name string, out *scoreboard.Scenario, usage *genai.Usage) error {
-	c := pf(name)
-	if !slices.Contains(c.OutputModalities(), genai.ModalityImage) {
-		return nil
-	}
-	promptImage := `A doodle animation on a white background of Cartoonish shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves.`
-	contentsImage := `Generate one square, white-background doodle with smooth, vibrantly colored image depicting ` + promptImage + `.
+// ContentsImage is the prompt for image generation.
+const ContentsImage = `Generate one square, white-background doodle with smooth, vibrantly colored image depicting A doodle animation on a white background of Cartoonish shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves..
 
 *Mandatory Requirements (Compacted):**
 
 **Style:** Simple, vibrant, varied-colored doodle/hand-drawn sketch.
 **Background:** Plain solid white (no background colors/elements). Absolutely no black background.
-**Content & Motion:** Clearly depict **` + promptImage + `** action with colored, moving subject (no static images). If there's an action specified, it should be the main difference between frames.
+**Content & Motion:** Clearly depict **A doodle animation on a white background of Cartoonish shiba inu with brown fur and a white belly, happily eating a pink ice-cream cone, subtle tail wag. Subtle motion but nothing else moves.** action with colored, moving subject (no static images). If there's an action specified, it should be the main difference between frames.
 **Format:** Square image (1:1 aspect ratio).
 **Cropping:** Absolutely no black bars/letterboxing; colorful doodle fully visible against white.
 **Output:** Actual image file for a smooth, colorful doodle-style image on a white background.`
-	msgs := genai.Messages{genai.NewTextMessage(contentsImage)}
+
+func exerciseGenImage(ctx context.Context, pf ProviderFactory, name string, out *scoreboard.Scenario, usage *genai.Usage) error {
+	c := pf(name)
+	if !slices.Contains(c.OutputModalities(), genai.ModalityImage) {
+		return nil
+	}
+	msgs := genai.Messages{genai.NewTextMessage(ContentsImage)}
 	resp, err := c.GenSync(ctx, msgs, &genai.OptionsImage{Seed: 42})
 	usage.InputTokens += resp.Usage.InputTokens
 	usage.InputCachedTokens += resp.Usage.InputCachedTokens

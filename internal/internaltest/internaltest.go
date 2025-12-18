@@ -24,6 +24,7 @@ import (
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/myrecorder"
+	"github.com/maruel/genai/smoke"
 	"github.com/maruel/httpjson"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
@@ -273,23 +274,19 @@ func TestCapabilities(t *testing.T, c genai.Provider) {
 	})
 }
 
-// TestCapabilitiesGenAsync tests GenAsync capability with HTTP recording enabled.
+// TestCapabilitiesGenAsync tests GenAsync capability.
 //
-// Exercises GenAsync with HTTP request/response recording for reproducibility.
-// It's useful for smoke testing that async operations work with real API interactions
-// and recording HTTP interactions for later playback in CI environments.
-//
-// Optionally accepts custom messages to use instead of the default "test" message.
-// This is useful for expensive operations (e.g., video generation) where you want
-// to reuse the job ID instead of making multiple calls.
-//
-// Returns the job ID from GenAsync, which can be used for polling or ignored.
+// Returns the job ID from GenAsync, which can be used to poll for the result.
 func TestCapabilitiesGenAsync(t *testing.T, c genai.Provider, msgs ...genai.Message) genai.Job {
 	if caps := c.Capabilities(); !caps.GenAsync {
 		t.Fatal("GenAsync capability not declared")
 	}
 	if len(msgs) == 0 {
-		msgs = genai.Messages{genai.NewTextMessage("test")}
+		if slices.Contains(c.OutputModalities(), genai.ModalityImage) {
+			msgs = genai.Messages{genai.NewTextMessage(smoke.ContentsImage)}
+		} else {
+			msgs = genai.Messages{genai.NewTextMessage("test")}
+		}
 	}
 	id, err := c.GenAsync(t.Context(), msgs)
 	var notSupported *base.ErrNotSupported
@@ -301,11 +298,7 @@ func TestCapabilitiesGenAsync(t *testing.T, c genai.Provider, msgs ...genai.Mess
 	return id
 }
 
-// TestCapabilitiesCaching tests Caching capability with HTTP recording enabled.
-//
-// Exercises Caching with HTTP request/response recording for reproducibility.
-// It's useful for smoke testing that cache operations work with real API interactions
-// and recording HTTP interactions for later playback in CI environments.
+// TestCapabilitiesCaching tests Caching capability.
 func TestCapabilitiesCaching(t *testing.T, c genai.Provider, msgs ...genai.Message) {
 	if caps := c.Capabilities(); !caps.Caching {
 		t.Fatal("Caching capability not declared")

@@ -869,8 +869,13 @@ func (d *Doc) Validate() error {
 	if d.Src != nil && d.URL != "" {
 		return errors.New("field Document and URL are mutually exclusive")
 	}
-	if d.Filename != "" && d.Src == nil && d.URL == "" {
-		return errors.New("field Document or URL is required when using Filename")
+	if d.Filename != "" {
+		if filepath.Base(d.Filename) != d.Filename {
+			return errors.New("field Filename must be a valid filename with no path")
+		}
+		if d.Src == nil && d.URL == "" {
+			return errors.New("field Document or URL is required when using Filename")
+		}
 	}
 	if d.Filename == "" && d.Src != nil {
 		if _, ok := d.Src.(interface{ Name() string }); !ok {
@@ -883,12 +888,16 @@ func (d *Doc) Validate() error {
 // GetFilename returns the filename to use for the document, querying the
 // Document's name if available.
 func (d *Doc) GetFilename() string {
-	if d.Filename == "" {
+	base := d.Filename
+	if base == "" {
 		if namer, ok := d.Src.(interface{ Name() string }); ok {
-			return filepath.Base(namer.Name())
+			base = filepath.Base(namer.Name())
 		}
 	}
-	return d.Filename
+	if base == "stdin" {
+		base = "stdin.txt"
+	}
+	return base
 }
 
 type serializedDoc struct {

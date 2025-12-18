@@ -10,6 +10,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"os"
 	"strconv"
 	"strings"
 	"testing"
@@ -1589,4 +1590,92 @@ func TestRateLimit(t *testing.T) {
 			})
 		}
 	})
+}
+
+func TestDoc(t *testing.T) {
+	t.Run("Validate", func(t *testing.T) {
+		t.Run("valid", func(t *testing.T) {
+			tests := []struct {
+				name string
+				in   Doc
+			}{
+				{
+					name: "with filename and src",
+					in: Doc{
+						Filename: "document.txt",
+						Src:      strings.NewReader("content"),
+					},
+				},
+				{
+					name: "with filename and URL",
+					in: Doc{
+						Filename: "document.txt",
+						URL:      "https://example.com/doc.txt",
+					},
+				},
+				{
+					name: "with URL only",
+					in: Doc{
+						URL: "https://example.com/document.txt",
+					},
+				},
+				{
+					name: "with filename and src (BytesBuffer)",
+					in: Doc{
+						Filename: "document.txt",
+						Src:      &bb.BytesBuffer{D: []byte("content")},
+					},
+				},
+			}
+			for _, tt := range tests {
+				t.Run(tt.name, func(t *testing.T) {
+					if err := tt.in.Validate(); err != nil {
+						t.Fatalf("unexpected error: %q", err)
+					}
+				})
+			}
+		})
+		t.Run("error", func(t *testing.T) {
+			tests := []struct {
+				name   string
+				in     Doc
+				errMsg string
+			}{
+				{
+					name:   "both src and URL set",
+					in:     Doc{Src: strings.NewReader("content"), URL: "https://example.com"},
+					errMsg: "field Document and URL are mutually exclusive",
+				},
+				{
+					name:   "filename with path",
+					in:     Doc{Filename: "path/to/file.txt", Src: strings.NewReader("content")},
+					errMsg: "field Filename must be a valid filename with no path",
+				},
+				{
+					name:   "filename without src or URL",
+					in:     Doc{Filename: "document.txt"},
+					errMsg: "field Document or URL is required when using Filename",
+				},
+				{
+					name:   "src without filename and not implementing Name",
+					in:     Doc{Src: strings.NewReader("content")},
+					errMsg: "field Filename is required with Document when not implementing Name()",
+				},
+			}
+			for _, tt := range tests {
+				t.Run(tt.name, func(t *testing.T) {
+					if err := tt.in.Validate(); err == nil || err.Error() != tt.errMsg {
+						t.Fatalf("error mismatch\nwant %q\ngot  %q", tt.errMsg, err)
+					}
+				})
+			}
+		})
+	})
+}
+
+func TestStdin(t *testing.T) {
+	name := os.Stdin.Name()
+	if name != "/dev/stdin" {
+		t.Fatal(name)
+	}
 }

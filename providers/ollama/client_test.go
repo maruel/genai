@@ -104,9 +104,10 @@ func TestClient(t *testing.T) {
 	})
 
 	t.Run("TextOutputDocInput", func(t *testing.T) {
-		serverURL := s.lazyStart(t)
 		internaltest.TestTextOutputDocInput(t, func(t *testing.T) genai.Provider {
-			c, err := ollama.New(t.Context(), &genai.ProviderOptions{Remote: serverURL, Model: genai.ModelCheap}, nil)
+			c, err := ollama.New(t.Context(), &genai.ProviderOptions{Remote: s.lazyStart(t), Model: genai.ModelCheap}, func(h http.RoundTripper) http.RoundTripper {
+				return testRecorder.Record(t, h)
+			})
 			if err != nil {
 				t.Fatal(err)
 			}

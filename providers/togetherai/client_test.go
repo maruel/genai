@@ -98,8 +98,12 @@ func TestClient(t *testing.T) {
 					}
 				}
 			}
+			size := 256
+			if strings.Contains(model.Model, "FLUX.2-dev") || strings.Contains(model.Model, "FLUX.2-max") {
+				size = 512
+			}
 			// If anyone at Together.AI reads this, please get your shit together.
-			return &smallImage{Provider: &internaltest.HideHTTPCode{Provider: c, StatusCode: 500}}
+			return &smallImage{Provider: &internaltest.HideHTTPCode{Provider: c, StatusCode: 500}, size: size}
 		}
 
 		smoketest.Run(t, getClientRT, models, testRecorder.Records)
@@ -191,6 +195,7 @@ func TestClient(t *testing.T) {
 // smallImage speeds up image generation.
 type smallImage struct {
 	genai.Provider
+	size int
 }
 
 func (h *smallImage) Unwrap() genai.Provider {
@@ -202,8 +207,8 @@ func (h *smallImage) GenSync(ctx context.Context, msgs genai.Messages, opts ...g
 		if v, ok := opts[i].(*genai.OptionsImage); ok {
 			// Ask for a smaller size.
 			n := *v
-			n.Width = 256
-			n.Height = 256
+			n.Width = h.size
+			n.Height = h.size
 			opts[i] = &n
 		}
 	}

@@ -59,6 +59,28 @@
     },
     {
       "models": [
+        "black-forest-labs/FLUX.2-pro"
+      ],
+      "sota": true,
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "image": {
+          "url": true,
+          "supportedFormats": [
+            "image/jpeg"
+          ]
+        }
+      },
+      "GenSync": {
+        "seed": true
+      }
+    },
+    {
+      "models": [
         "Qwen/Qwen3-235B-A22B-fp8-tput"
       ],
       "good": true,
@@ -104,6 +126,28 @@
       }
     },
     {
+      "models": [
+        "black-forest-labs/FLUX.2-dev"
+      ],
+      "good": true,
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "image": {
+          "url": true,
+          "supportedFormats": [
+            "image/jpeg"
+          ]
+        }
+      },
+      "GenSync": {
+        "seed": true
+      }
+    },
+    {
       "comments": "TogetherAI has broken reasoning parsing during tool call and JSON output",
       "models": [
         "openai/gpt-oss-20b"
@@ -145,6 +189,28 @@
         "jsonSchema": true,
         "topLogprobs": true,
         "maxTokens": true
+      }
+    },
+    {
+      "models": [
+        "black-forest-labs/FLUX.1-schnell"
+      ],
+      "cheap": true,
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "image": {
+          "url": true,
+          "supportedFormats": [
+            "image/jpeg"
+          ]
+        }
+      },
+      "GenSync": {
+        "seed": true
       }
     },
     {
@@ -482,27 +548,6 @@
     },
     {
       "models": [
-        "black-forest-labs/FLUX.2-pro"
-      ],
-      "in": {
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "image": {
-          "url": true,
-          "supportedFormats": [
-            "image/jpeg"
-          ]
-        }
-      },
-      "GenSync": {
-        "seed": true
-      }
-    },
-    {
-      "models": [
         "deepcogito/cogito-v2-1-671b"
       ],
       "in": {
@@ -735,9 +780,7 @@
         "RunDiffusion/Juggernaut-pro-flux",
         "Rundiffusion/Juggernaut-Lightning-Flux",
         "black-forest-labs/FLUX.1-dev",
-        "black-forest-labs/FLUX.1-schnell",
         "black-forest-labs/FLUX.1-schnell-Free",
-        "black-forest-labs/FLUX.2-dev",
         "deepseek-ai/DeepSeek-V3.1",
         "google/flash-image-2.5",
         "google/gemini-3-pro-image",

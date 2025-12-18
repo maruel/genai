@@ -86,8 +86,8 @@ func TestClient(t *testing.T) {
 			want string
 		}{
 			{genai.ModelCheap, "flux-dev"},
-			{genai.ModelGood, "flux-pro-1.1"},
-			{genai.ModelSOTA, "flux-pro-1.1-ultra"},
+			{genai.ModelGood, "flux-2-pro"},
+			{genai.ModelSOTA, "flux-2-max"},
 		}
 		for _, line := range data {
 			t.Run(line.name, func(t *testing.T) {

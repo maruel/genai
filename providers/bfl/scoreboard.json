@@ -9,16 +9,50 @@
     {
       "comments": "Untested",
       "models": [
-        "flux-pro-1.1-ultra"
+        "flux-2-max"
       ],
-      "sota": true
+      "sota": true,
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "image": {
+          "url": true,
+          "supportedFormats": [
+            "image/jpeg"
+          ]
+        }
+      },
+      "GenSync": {
+        "reportRateLimits": true,
+        "seed": true
+      }
     },
     {
       "comments": "Untested",
       "models": [
-        "flux-pro-1.1"
+        "flux-2-pro"
       ],
-      "good": true
+      "good": true,
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "image": {
+          "url": true,
+          "supportedFormats": [
+            "image/jpeg"
+          ]
+        }
+      },
+      "GenSync": {
+        "reportRateLimits": true,
+        "seed": true
+      }
     },
     {
       "comments": "See https://docs.bfl.ai/api-reference/tasks/generate-an-image-with-flux1-[dev]",

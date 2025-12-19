@@ -54,7 +54,7 @@ jobs:
           token: ${{secrets.CODECOV_TOKEN}}
       - name: "Cleanup"
         if: always()
-        run: rm coverage.txt
+        run: rm coverage.txt codecov codecov.*
       - name: "Check: tree is clean"
         if: always()
         run: |

@@ -645,20 +645,20 @@ type ContentFilterResult struct {
 }
 
 type ImageModel struct {
-	Aliases          Strings `json:"aliases"`
-	Description      string  `json:"description"`
+	Aliases          Strings  `json:"aliases"`
+	Description      string   `json:"description"`
 	InputModalities  []string `json:"input_modalities"`
-	Name             string  `json:"name"`
+	Name             string   `json:"name"`
 	OutputModalities []string `json:"output_modalities"`
 	Pricing          struct {
-		ImagePrice           float64 `json:"image_price"`
-		InputTokenPrice      float64 `json:"input_token_price,omitzero"`
-		CachedTokenPrice     float64 `json:"cached_token_price,omitzero"`
-		OutputTokenPrice     float64 `json:"output_token_price,omitzero"`
-		AudioInputPrice      float64 `json:"audio_input_price,omitzero"`
-		AudioOutputPrice     float64 `json:"audio_output_price,omitzero"`
-		AudioTokenPrice      float64 `json:"audio_token_price,omitzero"`
-		Currency             string  `json:"currency"`
+		ImagePrice       float64 `json:"image_price"`
+		InputTokenPrice  float64 `json:"input_token_price,omitzero"`
+		CachedTokenPrice float64 `json:"cached_token_price,omitzero"`
+		OutputTokenPrice float64 `json:"output_token_price,omitzero"`
+		AudioInputPrice  float64 `json:"audio_input_price,omitzero"`
+		AudioOutputPrice float64 `json:"audio_output_price,omitzero"`
+		AudioTokenPrice  float64 `json:"audio_token_price,omitzero"`
+		Currency         string  `json:"currency"`
 	} `json:"pricing,omitzero"`
 }
 

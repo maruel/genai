@@ -907,18 +907,23 @@ type serializedDoc struct {
 }
 
 func (d *Doc) MarshalJSON() ([]byte, error) {
-	dd := serializedDoc{Filename: d.Filename, URL: d.URL}
+	dd := serializedDoc{Filename: d.GetFilename(), URL: d.URL}
 	if d.Src != nil {
+		// Try to seek to the beginning; if that fails (e.g., os.Stdin), buffer the whole input.
 		if _, err := d.Src.Seek(0, io.SeekStart); err != nil {
-			return nil, err
-		}
-		var err error
-		if dd.Bytes, err = io.ReadAll(d.Src); err != nil {
-			return nil, err
-		}
-		if d.Filename == "" {
-			if namer, ok := d.Src.(interface{ Name() string }); ok {
-				dd.Filename = filepath.Base(namer.Name())
+			// Unseekable input: buffer it all into a BytesBuffer.
+			buf := &bytes.Buffer{}
+			if _, err := io.Copy(buf, d.Src); err != nil {
+				return nil, err
+			}
+			dd.Bytes = buf.Bytes()
+			// Update d.Src to the buffered version for potential future reads.
+			d.Src = &bb.BytesBuffer{D: dd.Bytes}
+		} else {
+			// Seekable: read from the beginning.
+			var err error
+			if dd.Bytes, err = io.ReadAll(d.Src); err != nil {
+				return nil, err
 			}
 		}
 	}
@@ -956,19 +961,28 @@ func (d *Doc) Read(maxSize int64) (string, []byte, error) {
 	if mimeType == "" {
 		return "", nil, errors.New("failed to determine mime-type, pass a filename with an extension")
 	}
-	size, err := d.Src.Seek(0, io.SeekEnd)
-	if err != nil {
-		return "", nil, fmt.Errorf("failed to seek data: %w", err)
-	}
-	if size > maxSize {
-		return "", nil, fmt.Errorf("large files are not yet supported, max %dMiB", maxSize/1024/1024)
-	}
-	if _, err = d.Src.Seek(0, io.SeekStart); err != nil {
-		return "", nil, fmt.Errorf("failed to seek data: %w", err)
-	}
 	var data []byte
-	if data, err = io.ReadAll(d.Src); err != nil {
-		return "", nil, fmt.Errorf("failed to read data: %w", err)
+	// Try to seek to end to check size; if that fails (e.g., os.Stdin), buffer the whole input.
+	if size, err := d.Src.Seek(0, io.SeekEnd); err != nil {
+		// Unseekable input: buffer it all into a BytesBuffer.
+		buf := &bytes.Buffer{}
+		if _, err := io.Copy(buf, io.LimitReader(d.Src, maxSize)); err != nil {
+			return "", nil, fmt.Errorf("failed to copy data into temporary buffer: %w", err)
+		}
+		data = buf.Bytes()
+		// Update d.Src to the buffered version for potential future reads.
+		d.Src = &bb.BytesBuffer{D: data}
+	} else {
+		// Seekable: check size and read.
+		if size > maxSize {
+			return "", nil, fmt.Errorf("large files are not yet supported, max %dMiB", maxSize/1024/1024)
+		}
+		if _, err = d.Src.Seek(0, io.SeekStart); err != nil {
+			return "", nil, fmt.Errorf("failed to seek data at beginning: %w", err)
+		}
+		if data, err = io.ReadAll(d.Src); err != nil {
+			return "", nil, fmt.Errorf("failed to read data: %w", err)
+		}
 	}
 	if len(data) == 0 {
 		return "", nil, errors.New("empty data")

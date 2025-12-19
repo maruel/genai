@@ -6,6 +6,7 @@ package internaltest
 
 import (
 	"errors"
+	"io"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -307,13 +308,14 @@ func TestTextOutputDocInput(t *testing.T, newProvider func(t *testing.T) genai.P
 		}
 	})
 	t.Run("Stdin", func(t *testing.T) {
-		// Test piping from stdin with a file that has no extension
+		// Test piping from stdin with a file that has no extension and unseekable reader
+		// (simulating os.Stdin's behavior)
 		msgs := genai.Messages{
 			genai.Message{
 				Requests: []genai.Request{
 					{
 						Doc: genai.Doc{
-							Src:      strings.NewReader("The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."),
+							Src:      unseekableReader("The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."),
 							Filename: filepath.Base(os.Stdin.Name()),
 						},
 					},
@@ -329,4 +331,21 @@ func TestTextOutputDocInput(t *testing.T, newProvider func(t *testing.T) genai.P
 			t.Errorf("expected response to contain 'Quack', got: %q", got)
 		}
 	})
+}
+
+// unseekableReaderType wraps a reader to prevent seeking operations, simulating os.Stdin behavior.
+type unseekableReaderType struct {
+	r io.Reader
+}
+
+func (u *unseekableReaderType) Read(p []byte) (int, error) {
+	return u.r.Read(p)
+}
+
+func (u *unseekableReaderType) Seek(offset int64, whence int) (int64, error) {
+	return 0, errors.New("seek not supported")
+}
+
+func unseekableReader(data string) io.ReadSeeker {
+	return &unseekableReaderType{r: strings.NewReader(data)}
 }

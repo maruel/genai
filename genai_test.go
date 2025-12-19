@@ -1678,3 +1678,89 @@ func TestStdin(t *testing.T) {
 		t.Fatal(name)
 	}
 }
+
+// nonSeekableReader is a reader that doesn't support seeking
+type nonSeekableReader struct {
+	reader io.Reader
+}
+
+func (nsr *nonSeekableReader) Read(p []byte) (int, error) {
+	return nsr.reader.Read(p)
+}
+
+func (nsr *nonSeekableReader) Seek(offset int64, whence int) (int64, error) {
+	return 0, errors.New("seek not supported")
+}
+
+func TestDocUnseekable(t *testing.T) {
+	unseekableReader := func(data string) io.ReadSeeker {
+		return &nonSeekableReader{reader: strings.NewReader(data)}
+	}
+
+	t.Run("MarshalJSON with unseekable input", func(t *testing.T) {
+		doc := Doc{
+			Filename: "stdin.txt",
+			Src:      unseekableReader("test data"),
+		}
+		data, err := json.Marshal(&doc)
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+
+		var dd struct {
+			Filename string `json:"filename,omitzero"`
+			Bytes    []byte `json:"bytes,omitzero"`
+			URL      string `json:"url,omitzero"`
+		}
+		if err := json.Unmarshal(data, &dd); err != nil {
+			t.Fatalf("failed to unmarshal: %v", err)
+		}
+
+		if dd.Filename != "stdin.txt" {
+			t.Errorf("filename mismatch: want stdin.txt, got %q", dd.Filename)
+		}
+		if string(dd.Bytes) != "test data" {
+			t.Errorf("bytes mismatch: want \"test data\", got %q", string(dd.Bytes))
+		}
+	})
+
+	t.Run("Read with unseekable input", func(t *testing.T) {
+		doc := Doc{
+			Filename: "stdin.txt",
+			Src:      unseekableReader("test content"),
+		}
+		mime, data, err := doc.Read(1024 * 1024)
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+
+		if mime != "text/plain; charset=utf-8" {
+			t.Errorf("mime type mismatch: want text/plain; charset=utf-8, got %q", mime)
+		}
+		if string(data) != "test content" {
+			t.Errorf("data mismatch: want \"test content\", got %q", string(data))
+		}
+	})
+
+	t.Run("Multiple Read calls with unseekable input", func(t *testing.T) {
+		doc := Doc{
+			Filename: "stdin.txt",
+			Src:      unseekableReader("test data"),
+		}
+		// First read
+		_, data1, err := doc.Read(1024 * 1024)
+		if err != nil {
+			t.Fatalf("first read: unexpected error: %v", err)
+		}
+
+		// Second read should work because we buffered the data
+		_, data2, err := doc.Read(1024 * 1024)
+		if err != nil {
+			t.Fatalf("second read: unexpected error: %v", err)
+		}
+
+		if string(data1) != string(data2) {
+			t.Errorf("data mismatch between reads: %q vs %q", string(data1), string(data2))
+		}
+	})
+}

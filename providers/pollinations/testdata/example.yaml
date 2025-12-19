@@ -1,135 +1,97 @@
 ---
 version: 2
 interactions:
-    - id: 0
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        host: text.pollinations.ai
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://text.pollinations.ai/models
-        method: GET
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        uncompressed: true
-        body: '[{"name":"deepseek-reasoning","description":"DeepSeek R1 0528 (Vertex AI)","maxInputChars":10000,"reasoning":true,"provider":"vertex-ai","tier":"seed","community":false,"aliases":"deepseek-r1-0528","input_modalities":["text"],"output_modalities":["text"],"tools":false,"vision":false,"audio":false},{"name":"gemini","description":"Gemini 2.5 Flash Lite","provider":"vertex-ai","tier":"anonymous","community":false,"aliases":"gemini-2.5-flash-lite","input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"geminisearch","description":"Gemini 2.5 Flash Lite Search","provider":"vertex-ai","tier":"seed","community":false,"aliases":"searchgpt","input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"glm","description":"GLM-4 9B Chat (Intelligence.io)","provider":"intelligence","tier":"anonymous","community":false,"aliases":"glm-4-9b-chat","input_modalities":["text"],"output_modalities":["text"],"tools":true,"vision":false,"audio":false},{"name":"gpt-5-nano","description":"OpenAI GPT-5 Nano","provider":"azure","tier":"anonymous","community":false,"aliases":"gpt-5-nano","input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"llama-fast-roblox","description":"Llama 3.2 1B","provider":"cloudflare","tier":"anonymous","community":false,"aliases":"llama-3.2-1b-instruct","input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"llama-roblox","description":"Llama 3.1 8B Instruct (Nebius)","provider":"nebius","tier":"anonymous","community":false,"aliases":"llama-3.1-8b-instruct","input_modalities":["text"],"output_modalities":["text"],"tools":true,"vision":false,"audio":false},{"name":"llamascout","description":"Llama 4 Scout 17B","provider":"cloudflare","tier":"anonymous","community":false,"aliases":"llama-4-scout-17b-16e-instruct","input_modalities":["text"],"output_modalities":["text"],"tools":false,"vision":false,"audio":false},{"name":"mistral","description":"Mistral Small 3.1 24B","provider":"scaleway","tier":"anonymous","community":false,"aliases":"mistral-small-3.1-24b-instruct","input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"mistral-nemo-roblox","description":"Mistral Nemo Instruct 2407 (Nebius)","provider":"nebius","tier":"anonymous","community":false,"aliases":"mistral-nemo-instruct-2407","input_modalities":["text"],"output_modalities":["text"],"tools":true,"vision":false,"audio":false},{"name":"mistral-roblox","description":"Mistral Small 3.1 24B","provider":"cloudflare","tier":"anonymous","community":false,"aliases":"mistral-small-cloudflare","input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"nova-fast","description":"Amazon Nova Micro (Bedrock)","provider":"bedrock","community":false,"tier":"anonymous","aliases":"nova-micro-v1","input_modalities":["text"],"output_modalities":["text"],"tools":true,"vision":false,"audio":false},{"name":"openai","description":"OpenAI GPT-4.1 Nano","provider":"azure","tier":"anonymous","community":false,"aliases":"gpt-4.1-nano","input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"openai-audio","description":"OpenAI GPT-4o Mini Audio Preview","maxInputChars":10000,"voices":["alloy","echo","fable","onyx","nova","shimmer","coral","verse","ballad","ash","sage","amuch","dan"],"provider":"azure","tier":"seed","community":false,"aliases":"gpt-4o-mini-audio-preview","input_modalities":["text","image","audio"],"output_modalities":["audio","text"],"tools":true,"vision":true,"audio":true},{"name":"openai-fast","description":"OpenAI GPT-4.1 Nano","provider":"azure","tier":"anonymous","community":false,"aliases":"gpt-4.1-nano","input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"openai-large","description":"OpenAI GPT-4.1","maxInputChars":5000,"provider":"azure","tier":"seed","community":false,"aliases":"gpt-4.1","input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"openai-roblox","description":"OpenAI GPT-4.1 Nano","provider":"azure","tier":"anonymous","community":false,"aliases":"gpt-4.1-nano","input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"qwen-coder","description":"Qwen 2.5 Coder 32B","provider":"scaleway","tier":"anonymous","community":false,"aliases":"qwen2.5-coder-32b-instruct","input_modalities":["text"],"output_modalities":["text"],"tools":true,"vision":false,"audio":false},{"name":"bidara","description":"BIDARA (Biomimetic Designer and Research Assistant by NASA)","provider":"azure","tier":"anonymous","community":true,"input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"evil","description":"Evil","provider":"scaleway","uncensored":true,"tier":"seed","community":true,"input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"hypnosis-tracy","description":"Hypnosis Tracy","provider":"azure","tier":"seed","community":true,"input_modalities":["text","audio"],"output_modalities":["audio","text"],"tools":true,"vision":false,"audio":true},{"name":"midijourney","description":"MIDIjourney","provider":"azure","tier":"anonymous","community":true,"input_modalities":["text"],"output_modalities":["text"],"tools":true,"vision":false,"audio":false},{"name":"mirexa","description":"Mirexa AI Companion","provider":"azure","tier":"seed","community":true,"input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"rtist","description":"Rtist","provider":"azure","tier":"seed","community":true,"input_modalities":["text"],"output_modalities":["text"],"tools":true,"vision":false,"audio":false},{"name":"sur","description":"Sur AI Assistant","provider":"scaleway","tier":"seed","community":true,"input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"unity","description":"Unity Unrestricted Agent","provider":"scaleway","uncensored":true,"tier":"seed","community":true,"input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false}]'
-        headers:
-            Access-Control-Allow-Origin:
-                - '*'
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 96befec2ce32a2fe-YUL
-            Content-Type:
-                - application/json; charset=utf-8
-            Etag:
-                - W/"1982-xAZ0mBr+AxD5GVmDnT6no9J0AFQ"
-            Server:
-                - cloudflare
-            Vary:
-                - Accept-Encoding
-            X-Powered-By:
-                - Express
-        status: 200 OK
-        code: 200
-        duration: 215ms
-    - id: 1
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        host: image.pollinations.ai
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://image.pollinations.ai/models
-        method: GET
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        uncompressed: true
-        body: '["flux","kontext","turbo"]'
-        headers:
-            Access-Control-Allow-Headers:
-                - Content-Type
-            Access-Control-Allow-Methods:
-                - GET, POST, OPTIONS
-            Access-Control-Allow-Origin:
-                - '*'
-            Access-Control-Expose-Headers:
-                - X-Auth-Status
-                - X-Auth-Reason
-                - X-Debug-Token
-                - X-Debug-Token-Source
-                - X-Debug-Referrer
-                - X-Debug-Legacy-Token-Match
-                - X-Debug-Allowlist-Match
-                - X-Debug-User-Id
-            Cache-Control:
-                - no-store, no-cache, must-revalidate, proxy-revalidate
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 96befec47b69a28d-YUL
-            Content-Type:
-                - application/json
-            Expires:
-                - "0"
-            Pragma:
-                - no-cache
-            Server:
-                - cloudflare
-            Vary:
-                - Accept-Encoding
-        status: 200 OK
-        code: 200
-        duration: 568ms
-    - id: 2
-      request:
-        proto: HTTP/1.1
-        proto_major: 1
-        proto_minor: 1
-        content_length: 0
-        host: text.pollinations.ai
-        headers:
-            Content-Type:
-                - application/json; charset=utf-8
-        url: https://text.pollinations.ai/models
-        method: GET
-      response:
-        proto: HTTP/2.0
-        proto_major: 2
-        proto_minor: 0
-        content_length: -1
-        uncompressed: true
-        body: '[{"name":"deepseek-reasoning","description":"DeepSeek R1 0528 (Vertex AI)","maxInputChars":10000,"reasoning":true,"provider":"vertex-ai","tier":"seed","community":false,"aliases":"deepseek-r1-0528","input_modalities":["text"],"output_modalities":["text"],"tools":false,"vision":false,"audio":false},{"name":"gemini","description":"Gemini 2.5 Flash Lite","provider":"vertex-ai","tier":"anonymous","community":false,"aliases":"gemini-2.5-flash-lite","input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"geminisearch","description":"Gemini 2.5 Flash Lite Search","provider":"vertex-ai","tier":"seed","community":false,"aliases":"searchgpt","input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"glm","description":"GLM-4 9B Chat (Intelligence.io)","provider":"intelligence","tier":"anonymous","community":false,"aliases":"glm-4-9b-chat","input_modalities":["text"],"output_modalities":["text"],"tools":true,"vision":false,"audio":false},{"name":"gpt-5-nano","description":"OpenAI GPT-5 Nano","provider":"azure","tier":"anonymous","community":false,"aliases":"gpt-5-nano","input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"llama-fast-roblox","description":"Llama 3.2 1B","provider":"cloudflare","tier":"anonymous","community":false,"aliases":"llama-3.2-1b-instruct","input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"llama-roblox","description":"Llama 3.1 8B Instruct (Nebius)","provider":"nebius","tier":"anonymous","community":false,"aliases":"llama-3.1-8b-instruct","input_modalities":["text"],"output_modalities":["text"],"tools":true,"vision":false,"audio":false},{"name":"llamascout","description":"Llama 4 Scout 17B","provider":"cloudflare","tier":"anonymous","community":false,"aliases":"llama-4-scout-17b-16e-instruct","input_modalities":["text"],"output_modalities":["text"],"tools":false,"vision":false,"audio":false},{"name":"mistral","description":"Mistral Small 3.1 24B","provider":"scaleway","tier":"anonymous","community":false,"aliases":"mistral-small-3.1-24b-instruct","input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"mistral-nemo-roblox","description":"Mistral Nemo Instruct 2407 (Nebius)","provider":"nebius","tier":"anonymous","community":false,"aliases":"mistral-nemo-instruct-2407","input_modalities":["text"],"output_modalities":["text"],"tools":true,"vision":false,"audio":false},{"name":"mistral-roblox","description":"Mistral Small 3.1 24B","provider":"cloudflare","tier":"anonymous","community":false,"aliases":"mistral-small-cloudflare","input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"nova-fast","description":"Amazon Nova Micro (Bedrock)","provider":"bedrock","community":false,"tier":"anonymous","aliases":"nova-micro-v1","input_modalities":["text"],"output_modalities":["text"],"tools":true,"vision":false,"audio":false},{"name":"openai","description":"OpenAI GPT-4.1 Nano","provider":"azure","tier":"anonymous","community":false,"aliases":"gpt-4.1-nano","input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"openai-audio","description":"OpenAI GPT-4o Mini Audio Preview","maxInputChars":10000,"voices":["alloy","echo","fable","onyx","nova","shimmer","coral","verse","ballad","ash","sage","amuch","dan"],"provider":"azure","tier":"seed","community":false,"aliases":"gpt-4o-mini-audio-preview","input_modalities":["text","image","audio"],"output_modalities":["audio","text"],"tools":true,"vision":true,"audio":true},{"name":"openai-fast","description":"OpenAI GPT-4.1 Nano","provider":"azure","tier":"anonymous","community":false,"aliases":"gpt-4.1-nano","input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"openai-large","description":"OpenAI GPT-4.1","maxInputChars":5000,"provider":"azure","tier":"seed","community":false,"aliases":"gpt-4.1","input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"openai-roblox","description":"OpenAI GPT-4.1 Nano","provider":"azure","tier":"anonymous","community":false,"aliases":"gpt-4.1-nano","input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"qwen-coder","description":"Qwen 2.5 Coder 32B","provider":"scaleway","tier":"anonymous","community":false,"aliases":"qwen2.5-coder-32b-instruct","input_modalities":["text"],"output_modalities":["text"],"tools":true,"vision":false,"audio":false},{"name":"bidara","description":"BIDARA (Biomimetic Designer and Research Assistant by NASA)","provider":"azure","tier":"anonymous","community":true,"input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"evil","description":"Evil","provider":"scaleway","uncensored":true,"tier":"seed","community":true,"input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"hypnosis-tracy","description":"Hypnosis Tracy","provider":"azure","tier":"seed","community":true,"input_modalities":["text","audio"],"output_modalities":["audio","text"],"tools":true,"vision":false,"audio":true},{"name":"midijourney","description":"MIDIjourney","provider":"azure","tier":"anonymous","community":true,"input_modalities":["text"],"output_modalities":["text"],"tools":true,"vision":false,"audio":false},{"name":"mirexa","description":"Mirexa AI Companion","provider":"azure","tier":"seed","community":true,"input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"rtist","description":"Rtist","provider":"azure","tier":"seed","community":true,"input_modalities":["text"],"output_modalities":["text"],"tools":true,"vision":false,"audio":false},{"name":"sur","description":"Sur AI Assistant","provider":"scaleway","tier":"seed","community":true,"input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false},{"name":"unity","description":"Unity Unrestricted Agent","provider":"scaleway","uncensored":true,"tier":"seed","community":true,"input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"vision":true,"audio":false}]'
-        headers:
-            Access-Control-Allow-Origin:
-                - '*'
-            Cf-Cache-Status:
-                - DYNAMIC
-            Cf-Ray:
-                - 96befec7cd8ba2fe-YUL
-            Content-Type:
-                - application/json; charset=utf-8
-            Etag:
-                - W/"1982-xAZ0mBr+AxD5GVmDnT6no9J0AFQ"
-            Server:
-                - cloudflare
-            Vary:
-                - Accept-Encoding
-            X-Powered-By:
-                - Express
-        status: 200 OK
-        code: 200
-        duration: 152ms
+- id: 0
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 0
+    host: enter.pollinations.ai
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://enter.pollinations.ai/api/generate/image/models
+    method: GET
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "[{\"name\":\"flux\",\"aliases\":[],\"pricing\":{\"image_price\":0.00012,\"currency\":\"pollen\"},\"description\":\"Flux - Fast and high-quality image generation\",\"input_modalities\":[\"text\"],\"output_modalities\":[\"image\"]},{\"name\":\"kontext\",\"aliases\":[],\"pricing\":{\"image_price\":0.04,\"currency\":\"pollen\"},\"description\":\"Kontext - Context-aware image generation\",\"input_modalities\":[\"text\",\"image\"],\"output_modalities\":[\"image\"]},{\"name\":\"turbo\",\"aliases\":[],\"pricing\":{\"image_price\":0.0003,\"currency\":\"pollen\"},\"description\":\"Turbo - Ultra-fast image generation\",\"input_modalities\":[\"text\"],\"output_modalities\":[\"image\"]},{\"name\":\"nanobanana\",\"aliases\":[],\"pricing\":{\"input_token_price\":3e-7,\"image_price\":0.00003,\"currency\":\"pollen\"},\"description\":\"NanoBanana - Gemini 2.5 Flash Image\",\"input_modalities\":[\"text\",\"image\"],\"output_modalities\":[\"image\"]},{\"name\":\"nanobanana-pro\",\"aliases\":[],\"pricing\":{\"input_token_price\":0.00000125,\"image_price\":0.00012,\"currency\":\"pollen\"},\"description\":\"NanoBanana Pro - Gemini 3 Pro Image (4K, Thinking)\",\"input_modalities\":[\"text\",\"image\"],\"output_modalities\":[\"image\"]},{\"name\":\"seedream\",\"aliases\":[],\"pricing\":{\"image_price\":0.03,\"currency\":\"pollen\"},\"description\":\"Seedream 4.0 - ByteDance ARK (better quality)\",\"input_modalities\":[\"text\",\"image\"],\"output_modalities\":[\"image\"]},{\"name\":\"seedream-pro\",\"aliases\":[],\"pricing\":{\"image_price\":0.04,\"currency\":\"pollen\"},\"description\":\"Seedream 4.5 Pro - ByteDance ARK (4K, Multi-Image)\",\"input_modalities\":[\"text\",\"image\"],\"output_modalities\":[\"image\"]},{\"name\":\"gptimage\",\"aliases\":[\"gpt-image\",\"gpt-image-1-mini\"],\"pricing\":{\"input_token_price\":0.000002,\"cached_token_price\":2.0000000000000002e-7,\"image_price\":0.000008,\"currency\":\"pollen\"},\"description\":\"GPT Image 1 Mini - OpenAI's image generation model\",\"input_modalities\":[\"text\",\"image\"],\"output_modalities\":[\"image\"]},{\"name\":\"zimage\",\"aliases\":[\"z-image\",\"z-image-turbo\"],\"pricing\":{\"image_price\":0.0002,\"currency\":\"pollen\"},\"description\":\"Z-Image-Turbo - Fast 6B parameter image generation (alpha)\",\"input_modalities\":[\"text\"],\"output_modalities\":[\"image\"]},{\"name\":\"veo\",\"aliases\":[\"veo-3.1-fast\",\"video\"],\"pricing\":{\"currency\":\"pollen\"},\"description\":\"Veo 3.1 Fast - Google's video generation model (preview)\",\"input_modalities\":[\"text\"],\"output_modalities\":[\"video\"]},{\"name\":\"seedance\",\"aliases\":[],\"pricing\":{\"currency\":\"pollen\"},\"description\":\"Seedance Lite - BytePlus video generation (better quality)\",\"input_modalities\":[\"text\",\"image\"],\"output_modalities\":[\"video\"]},{\"name\":\"seedance-pro\",\"aliases\":[],\"pricing\":{\"currency\":\"pollen\"},\"description\":\"Seedance Pro-Fast - BytePlus video generation (better prompt adherence)\",\"input_modalities\":[\"text\",\"image\"],\"output_modalities\":[\"video\"]}]"
+    headers:
+      Access-Control-Allow-Credentials:
+      - "true"
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Expose-Headers:
+      - Content-Length
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Ray:
+      - 9b0308f16de1a2e0-YUL
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Server-Timing:
+      - cfEdge;dur=13,cfOrigin;dur=0
+      Speculation-Rules:
+      - "\"/cdn-cgi/speculation\""
+      Strict-Transport-Security:
+      - max-age=0; includeSubDomains; preload
+      Vary:
+      - Origin, accept-encoding
+      X-Content-Type-Options:
+      - nosniff
+    status: 200 OK
+    code: 200
+    duration: 56ms
+- id: 1
+  request:
+    proto: HTTP/1.1
+    proto_major: 1
+    proto_minor: 1
+    content_length: 0
+    host: enter.pollinations.ai
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    url: https://enter.pollinations.ai/api/generate/text/models
+    method: GET
+  response:
+    proto: HTTP/2.0
+    proto_major: 2
+    proto_minor: 0
+    content_length: -1
+    uncompressed: true
+    body: "[{\"name\":\"openai\",\"aliases\":[],\"pricing\":{\"input_token_price\":1.5e-7,\"output_token_price\":6e-7,\"cached_token_price\":4e-8,\"currency\":\"pollen\"},\"description\":\"OpenAI GPT-5 Mini - Fast & Balanced\",\"input_modalities\":[\"text\",\"image\"],\"output_modalities\":[\"text\"],\"tools\":true,\"is_specialized\":false},{\"name\":\"openai-fast\",\"aliases\":[\"gpt-5-nano\",\"gpt-5-nano-2025-08-07\"],\"pricing\":{\"input_token_price\":6e-8,\"output_token_price\":4.4e-7,\"cached_token_price\":1e-8,\"currency\":\"pollen\"},\"description\":\"OpenAI GPT-5 Nano - Ultra Fast & Affordable\",\"input_modalities\":[\"text\",\"image\"],\"output_modalities\":[\"text\"],\"tools\":true,\"is_specialized\":false},{\"name\":\"openai-large\",\"aliases\":[\"gpt-5.2\",\"openai-reasoning\",\"gpt-5.2-reasoning\"],\"pricing\":{\"input_token_price\":0.00000175,\"output_token_price\":0.000014,\"cached_token_price\":1.75e-7,\"currency\":\"pollen\"},\"description\":\"OpenAI GPT-5.2 - Most Powerful & Intelligent\",\"input_modalities\":[\"text\",\"image\"],\"output_modalities\":[\"text\"],\"tools\":true,\"reasoning\":true,\"is_specialized\":false},{\"name\":\"qwen-coder\",\"aliases\":[\"qwen2.5-coder-32b-instruct\"],\"pricing\":{\"input_token_price\":9.000000000000001e-7,\"output_token_price\":9.000000000000001e-7,\"currency\":\"pollen\"},\"description\":\"Qwen 2.5 Coder 32B - Specialized for Code Generation\",\"input_modalities\":[\"text\"],\"output_modalities\":[\"text\"],\"tools\":true,\"is_specialized\":false},{\"name\":\"mistral\",\"aliases\":[\"mistral-small\",\"mistral-small-3.2\",\"mistral-small-3.2-24b-instruct-2506\"],\"pricing\":{\"input_token_price\":1.5e-7,\"output_token_price\":3.5e-7,\"currency\":\"pollen\"},\"description\":\"Mistral Small 3.2 24B - Efficient & Cost-Effective\",\"input_modalities\":[\"text\"],\"output_modalities\":[\"text\"],\"tools\":true,\"is_specialized\":false},{\"name\":\"openai-audio\",\"aliases\":[\"gpt-4o-mini-audio-preview\",\"gpt-4o-mini-audio-preview-2024-12-17\"],\"pricing\":{\"input_token_price\":1.65e-7,\"output_token_price\":6.6e-7,\"audio_input_price\":0.000011,\"audio_output_price\":0.000022,\"currency\":\"pollen\"},\"description\":\"OpenAI GPT-4o Mini Audio - Voice Input & Output\",\"input_modalities\":[\"text\",\"image\",\"audio\"],\"output_modalities\":[\"audio\",\"text\"],\"tools\":true,\"voices\":[\"alloy\",\"echo\",\"fable\",\"onyx\",\"nova\",\"shimmer\",\"coral\",\"verse\",\"ballad\",\"ash\",\"sage\",\"amuch\",\"dan\"],\"is_specialized\":false},{\"name\":\"gemini\",\"aliases\":[\"gemini-3-flash\",\"gemini-3-flash-preview\"],\"pricing\":{\"input_token_price\":5e-7,\"output_token_price\":0.000003,\"cached_token_price\":5.0000000000000004e-8,\"currency\":\"pollen\"},\"description\":\"Google Gemini 3 Flash - Pro-Grade Reasoning at Flash Speed\",\"input_modalities\":[\"text\",\"image\",\"audio\",\"video\"],\"output_modalities\":[\"text\"],\"tools\":true,\"is_specialized\":false},{\"name\":\"gemini-fast\",\"aliases\":[\"gemini-2.5-flash-lite\"],\"pricing\":{\"input_token_price\":1.0000000000000001e-7,\"output_token_price\":4.0000000000000003e-7,\"cached_token_price\":1e-8,\"currency\":\"pollen\"},\"description\":\"Google Gemini 2.5 Flash Lite - Ultra Fast & Cost-Effective\",\"input_modalities\":[\"text\",\"image\"],\"output_modalities\":[\"text\"],\"tools\":true,\"is_specialized\":false},{\"name\":\"deepseek\",\"aliases\":[\"deepseek-v3\",\"deepseek-v3.1\",\"deepseek-reasoning\",\"deepseek-r1-0528\"],\"pricing\":{\"input_token_price\":0.00000125,\"output_token_price\":0.000005,\"currency\":\"pollen\"},\"description\":\"DeepSeek V3.1 - Advanced Reasoning & Coding\",\"input_modalities\":[\"text\"],\"output_modalities\":[\"text\"],\"tools\":true,\"reasoning\":true,\"is_specialized\":false},{\"name\":\"grok\",\"aliases\":[\"grok-fast\",\"grok-4\",\"grok-4-fast\"],\"pricing\":{\"input_token_price\":2.0000000000000002e-7,\"output_token_price\":5e-7,\"cached_token_price\":2.0000000000000002e-7,\"currency\":\"pollen\"},\"description\":\"xAI Grok 4 Fast - High Speed & Real-Time\",\"input_modalities\":[\"text\"],\"output_modalities\":[\"text\"],\"tools\":true,\"is_specialized\":false},{\"name\":\"gemini-search\",\"aliases\":[\"gemini-3-flash-search\"],\"pricing\":{\"input_token_price\":5e-7,\"output_token_price\":0.000003,\"cached_token_price\":5.0000000000000004e-8,\"currency\":\"pollen\"},\"description\":\"Google Gemini 3 Flash - With Google Search\",\"input_modalities\":[\"text\",\"image\"],\"output_modalities\":[\"text\"],\"tools\":false,\"is_specialized\":false},{\"name\":\"chickytutor\",\"aliases\":[],\"pricing\":{\"input_token_price\":8.000000000000001e-7,\"output_token_price\":0.000004,\"currency\":\"pollen\"},\"description\":\"ChickyTutor AI Language Tutor - (chickytutor.com)\",\"input_modalities\":[\"text\"],\"output_modalities\":[\"text\"],\"tools\":true,\"is_specialized\":true},{\"name\":\"midijourney\",\"aliases\":[],\"pricing\":{\"input_token_price\":0.0000022,\"output_token_price\":0.0000088,\"cached_token_price\":5.5e-7,\"currency\":\"pollen\"},\"description\":\"MIDIjourney - AI Music Composition Assistant\",\"input_modalities\":[\"text\"],\"output_modalities\":[\"text\"],\"tools\":true,\"is_specialized\":true},{\"name\":\"claude-fast\",\"aliases\":[\"claude-haiku-4.5\",\"claude-haiku\"],\"pricing\":{\"input_token_price\":0.000001,\"output_token_price\":0.000005,\"currency\":\"pollen\"},\"description\":\"Anthropic Claude Haiku 4.5 - Fast & Intelligent\",\"input_modalities\":[\"text\",\"image\"],\"output_modalities\":[\"text\"],\"tools\":true,\"is_specialized\":false},{\"name\":\"claude\",\"aliases\":[\"claude-sonnet-4.5\",\"claude-sonnet\"],\"pricing\":{\"input_token_price\":0.000003,\"output_token_price\":0.000015,\"currency\":\"pollen\"},\"description\":\"Anthropic Claude Sonnet 4.5 - Most Capable & Balanced\",\"input_modalities\":[\"text\",\"image\"],\"output_modalities\":[\"text\"],\"tools\":true,\"is_specialized\":false},{\"name\":\"claude-large\",\"aliases\":[\"claude-opus-4.5\",\"claude-opus\"],\"pricing\":{\"input_token_price\":0.000005,\"output_token_price\":0.000025,\"currency\":\"pollen\"},\"description\":\"Anthropic Claude Opus 4.5 - Most Intelligent Model\",\"input_modalities\":[\"text\",\"image\"],\"output_modalities\":[\"text\"],\"tools\":true,\"is_specialized\":false},{\"name\":\"perplexity-fast\",\"aliases\":[\"sonar\"],\"pricing\":{\"input_token_price\":0.000001,\"output_token_price\":0.000001,\"currency\":\"pollen\"},\"description\":\"Perplexity Sonar - Fast & Affordable with Web Search\",\"input_modalities\":[\"text\"],\"output_modalities\":[\"text\"],\"tools\":false,\"is_specialized\":false},{\"name\":\"perplexity-reasoning\",\"aliases\":[\"sonar-reasoning\"],\"pricing\":{\"input_token_price\":0.000001,\"output_token_price\":0.000005,\"currency\":\"pollen\"},\"description\":\"Perplexity Sonar Reasoning - Advanced Reasoning with Web Search\",\"input_modalities\":[\"text\"],\"output_modalities\":[\"text\"],\"tools\":false,\"reasoning\":true,\"is_specialized\":false},{\"name\":\"kimi-k2-thinking\",\"aliases\":[\"kimi-k2\",\"kimi-thinking\"],\"pricing\":{\"input_token_price\":6e-7,\"output_token_price\":0.0000025,\"currency\":\"pollen\"},\"description\":\"Moonshot Kimi K2 Thinking - Deep Reasoning & Tool Orchestration\",\"input_modalities\":[\"text\"],\"output_modalities\":[\"text\"],\"tools\":true,\"reasoning\":true,\"is_specialized\":false},{\"name\":\"gemini-large\",\"aliases\":[\"gemini-3-pro\",\"gemini-3\",\"gemini-3-pro-preview\"],\"pricing\":{\"input_token_price\":0.000002,\"output_token_price\":0.000012,\"cached_token_price\":2.0000000000000002e-7,\"currency\":\"pollen\"},\"description\":\"Google Gemini 3 Pro - Most Intelligent Model with 1M Context (Preview)\",\"input_modalities\":[\"text\",\"image\",\"audio\",\"video\"],\"output_modalities\":[\"text\"],\"tools\":true,\"reasoning\":true,\"is_specialized\":false},{\"name\":\"nova-micro\",\"aliases\":[\"amazon-nova-micro\",\"nova\"],\"pricing\":{\"input_token_price\":3.5e-8,\"output_token_price\":1.4e-7,\"currency\":\"pollen\"},\"description\":\"Amazon Nova Micro - Ultra Fast & Ultra Cheap\",\"input_modalities\":[\"text\"],\"output_modalities\":[\"text\"],\"tools\":true,\"is_specialized\":false}]"
+    headers:
+      Access-Control-Allow-Credentials:
+      - "true"
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Expose-Headers:
+      - Content-Length
+      Alt-Svc:
+      - h3=":443"; ma=86400
+      Cf-Ray:
+      - 9b0308f18e21a2e0-YUL
+      Content-Type:
+      - application/json
+      Server:
+      - cloudflare
+      Server-Timing:
+      - cfEdge;dur=7,cfOrigin;dur=0
+      Speculation-Rules:
+      - "\"/cdn-cgi/speculation\""
+      Strict-Transport-Security:
+      - max-age=0; includeSubDomains; preload
+      Vary:
+      - Origin, accept-encoding
+      X-Content-Type-Options:
+      - nosniff
+    status: 200 OK
+    code: 200
+    duration: 15ms

@@ -644,25 +644,47 @@ type ContentFilterResult struct {
 	} `json:"violence"`
 }
 
-type ImageModel string
-
-func (i ImageModel) GetID() string {
-	return string(i)
+type ImageModel struct {
+	Aliases          Strings `json:"aliases"`
+	Description      string  `json:"description"`
+	InputModalities  []string `json:"input_modalities"`
+	Name             string  `json:"name"`
+	OutputModalities []string `json:"output_modalities"`
+	Pricing          struct {
+		ImagePrice           float64 `json:"image_price"`
+		InputTokenPrice      float64 `json:"input_token_price,omitzero"`
+		CachedTokenPrice     float64 `json:"cached_token_price,omitzero"`
+		OutputTokenPrice     float64 `json:"output_token_price,omitzero"`
+		AudioInputPrice      float64 `json:"audio_input_price,omitzero"`
+		AudioOutputPrice     float64 `json:"audio_output_price,omitzero"`
+		AudioTokenPrice      float64 `json:"audio_token_price,omitzero"`
+		Currency             string  `json:"currency"`
+	} `json:"pricing,omitzero"`
 }
 
-func (i ImageModel) String() string {
-	return fmt.Sprintf("%s in:text out:image", string(i))
+func (i *ImageModel) GetID() string {
+	return i.Name
 }
 
-func (i ImageModel) Context() int64 {
+func (i *ImageModel) String() string {
+	return fmt.Sprintf("%s in:text out:image", i.Name)
+}
+
+func (i *ImageModel) Context() int64 {
 	return 0
 }
 
-func (i ImageModel) Inputs() []string {
+func (i *ImageModel) Inputs() []string {
+	if len(i.InputModalities) != 0 {
+		return i.InputModalities
+	}
 	return []string{"text"}
 }
 
-func (i ImageModel) Outputs() []string {
+func (i *ImageModel) Outputs() []string {
+	if len(i.OutputModalities) != 0 {
+		return i.OutputModalities
+	}
 	return []string{"image"}
 }
 
@@ -671,7 +693,7 @@ type ImageModelsResponse []ImageModel
 func (r *ImageModelsResponse) ToModels() []genai.Model {
 	models := make([]genai.Model, len(*r))
 	for i := range *r {
-		models[i] = (*r)[i]
+		models[i] = &(*r)[i]
 	}
 	return models
 }
@@ -682,13 +704,21 @@ type TextModel struct {
 	Community        bool     `json:"community"`
 	Description      string   `json:"description"`
 	InputModalities  []string `json:"input_modalities"` // "text", "image", "audio"
+	IsSpecialized    bool     `json:"is_specialized,omitzero"`
 	MaxInputChars    int64    `json:"maxInputChars"`
 	Name             string   `json:"name"`
 	OriginalName     string   `json:"original_name"`
 	OutputModalities []string `json:"output_modalities"` // "text", "image", "audio"
 	Pricing          struct {
-		PromptTokens     float64 `json:"prompt_tokens"`
-		CompletionTokens float64 `json:"completion_tokens"`
+		PromptTokens     float64 `json:"prompt_tokens,omitzero"`
+		CompletionTokens float64 `json:"completion_tokens,omitzero"`
+		InputTokenPrice  float64 `json:"input_token_price,omitzero"`
+		OutputTokenPrice float64 `json:"output_token_price,omitzero"`
+		CachedTokenPrice float64 `json:"cached_token_price,omitzero"`
+		AudioInputPrice  float64 `json:"audio_input_price,omitzero"`
+		AudioOutputPrice float64 `json:"audio_output_price,omitzero"`
+		AudioTokenPrice  float64 `json:"audio_token_price,omitzero"`
+		Currency         string  `json:"currency,omitzero"`
 	} `json:"pricing,omitzero"`
 	Provider               string   `json:"provider"` // "api.navy", "azure", "bedrock", "scaleway"
 	Reasoning              bool     `json:"reasoning"`
@@ -762,6 +792,7 @@ func (s *Strings) UnmarshalJSON(b []byte) error {
 //
 
 type ErrorResponse struct {
+	Success  bool   `json:"success,omitzero"`
 	ErrorVal string `json:"error"`
 	Status   int64  `json:"status"`
 	Details  struct {
@@ -782,14 +813,17 @@ type ErrorResponse struct {
 			Code        string       `json:"code"`
 			UnionErrors []UnionError `json:"unionErrors"`
 		} `json:"errors"`
-		Success  bool       `json:"success"`
+		Success  bool       `json:"success,omitzero"`
 		Result   struct{}   `json:"result"`
 		Messages []struct{} `json:"messages"`
 	} `json:"details"`
 
-	Message    string   `json:"message"`
-	Debug      struct{} `json:"debug"`
-	TimingInfo []struct {
+	Message            string   `json:"message"`
+	Debug              struct{} `json:"debug"`
+	DeprecatedEndpoint string   `json:"deprecated_endpoint,omitzero"`
+	NewEndpoint        string   `json:"new_endpoint,omitzero"`
+	Documentation      string   `json:"documentation,omitzero"`
+	TimingInfo         []struct {
 		Step      string `json:"step"`
 		Timestamp int64  `json:"timestamp"`
 	} `json:"timingInfo"`
@@ -1204,7 +1238,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 
 func (c *Client) ListImageGenModels(ctx context.Context) ([]genai.Model, error) {
 	var resp ImageModelsResponse
-	if err := c.impl.DoRequest(ctx, "GET", "https://image.pollinations.ai/models", nil, &resp); err != nil {
+	if err := c.impl.DoRequest(ctx, "GET", "https://enter.pollinations.ai/api/generate/image/models", nil, &resp); err != nil {
 		return nil, err
 	}
 	return resp.ToModels(), nil
@@ -1212,7 +1246,7 @@ func (c *Client) ListImageGenModels(ctx context.Context) ([]genai.Model, error) 
 
 func (c *Client) ListTextModels(ctx context.Context) ([]genai.Model, error) {
 	var resp TextModelsResponse
-	if err := c.impl.DoRequest(ctx, "GET", "https://text.pollinations.ai/models", nil, &resp); err != nil {
+	if err := c.impl.DoRequest(ctx, "GET", "https://enter.pollinations.ai/api/generate/text/models", nil, &resp); err != nil {
 		return nil, err
 	}
 	return resp.ToModels(), nil
@@ -1237,7 +1271,7 @@ func (c *Client) modelModality(ctx context.Context, model string) (genai.Modalit
 			if _, ok := mdl.(*TextModel); ok {
 				return genai.ModalityText, nil
 			}
-			if _, ok := mdl.(ImageModel); ok {
+			if _, ok := mdl.(*ImageModel); ok {
 				return genai.ModalityImage, nil
 			}
 			break

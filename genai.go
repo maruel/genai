@@ -966,7 +966,7 @@ func (d *Doc) Read(maxSize int64) (string, []byte, error) {
 	if size, err := d.Src.Seek(0, io.SeekEnd); err != nil {
 		// Unseekable input: buffer it all into a BytesBuffer.
 		buf := &bytes.Buffer{}
-		if _, err := io.Copy(buf, io.LimitReader(d.Src, maxSize)); err != nil {
+		if _, err = io.Copy(buf, io.LimitReader(d.Src, maxSize)); err != nil {
 			return "", nil, fmt.Errorf("failed to copy data into temporary buffer: %w", err)
 		}
 		data = buf.Bytes()

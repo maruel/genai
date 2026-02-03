@@ -650,15 +650,23 @@ type ImageModel struct {
 	InputModalities  []string `json:"input_modalities"`
 	Name             string   `json:"name"`
 	OutputModalities []string `json:"output_modalities"`
+	PaidOnly         bool     `json:"paid_only"`
 	Pricing          struct {
-		ImagePrice       float64 `json:"image_price"`
-		InputTokenPrice  float64 `json:"input_token_price,omitzero"`
-		CachedTokenPrice float64 `json:"cached_token_price,omitzero"`
-		OutputTokenPrice float64 `json:"output_token_price,omitzero"`
-		AudioInputPrice  float64 `json:"audio_input_price,omitzero"`
-		AudioOutputPrice float64 `json:"audio_output_price,omitzero"`
-		AudioTokenPrice  float64 `json:"audio_token_price,omitzero"`
-		Currency         string  `json:"currency"`
+		AudioInputPrice        float64 `json:"audio_input_price,omitzero"`
+		AudioOutputPrice       float64 `json:"audio_output_price,omitzero"`
+		AudioTokenPrice        float64 `json:"audio_token_price,omitzero"`
+		CachedTokenPrice       float64 `json:"cached_token_price,omitzero"`
+		CompletionAudioSeconds float64 `json:"completionAudioSeconds,omitzero"`
+		CompletionImageTokens  float64 `json:"completionImageTokens,omitzero"`
+		CompletionVideoSeconds float64 `json:"completionVideoSeconds,omitzero"`
+		CompletionVideoTokens  float64 `json:"completionVideoTokens,omitzero"`
+		Currency               string  `json:"currency"`
+		ImagePrice             float64 `json:"image_price"`
+		InputTokenPrice        float64 `json:"input_token_price,omitzero"`
+		OutputTokenPrice       float64 `json:"output_token_price,omitzero"`
+		PromptCachedTokens     float64 `json:"promptCachedTokens,omitzero"`
+		PromptImageTokens      float64 `json:"promptImageTokens,omitzero"`
+		PromptTextTokens       float64 `json:"promptTextTokens,omitzero"`
 	} `json:"pricing,omitzero"`
 }
 
@@ -699,9 +707,10 @@ func (r *ImageModelsResponse) ToModels() []genai.Model {
 }
 
 type TextModel struct {
-	Audio            bool     `json:"audio"`
 	Aliases          Strings  `json:"aliases"`
+	Audio            bool     `json:"audio"`
 	Community        bool     `json:"community"`
+	ContextWindow    int64    `json:"context_window"`
 	Description      string   `json:"description"`
 	InputModalities  []string `json:"input_modalities"` // "text", "image", "audio"
 	IsSpecialized    bool     `json:"is_specialized,omitzero"`
@@ -709,16 +718,22 @@ type TextModel struct {
 	Name             string   `json:"name"`
 	OriginalName     string   `json:"original_name"`
 	OutputModalities []string `json:"output_modalities"` // "text", "image", "audio"
+	PaidOnly         bool     `json:"paid_only"`
 	Pricing          struct {
-		PromptTokens     float64 `json:"prompt_tokens,omitzero"`
-		CompletionTokens float64 `json:"completion_tokens,omitzero"`
-		InputTokenPrice  float64 `json:"input_token_price,omitzero"`
-		OutputTokenPrice float64 `json:"output_token_price,omitzero"`
-		CachedTokenPrice float64 `json:"cached_token_price,omitzero"`
-		AudioInputPrice  float64 `json:"audio_input_price,omitzero"`
-		AudioOutputPrice float64 `json:"audio_output_price,omitzero"`
-		AudioTokenPrice  float64 `json:"audio_token_price,omitzero"`
-		Currency         string  `json:"currency,omitzero"`
+		AudioInputPrice       float64 `json:"audio_input_price,omitzero"`
+		AudioOutputPrice      float64 `json:"audio_output_price,omitzero"`
+		AudioTokenPrice       float64 `json:"audio_token_price,omitzero"`
+		CachedTokenPrice      float64 `json:"cached_token_price,omitzero"`
+		CompletionAudioTokens float64 `json:"completionAudioTokens,omitzero"`
+		CompletionTextTokens  float64 `json:"completionTextTokens,omitzero"`
+		CompletionTokens      float64 `json:"completion_tokens,omitzero"`
+		Currency              string  `json:"currency,omitzero"`
+		InputTokenPrice       float64 `json:"input_token_price,omitzero"`
+		OutputTokenPrice      float64 `json:"output_token_price,omitzero"`
+		PromptAudioTokens     float64 `json:"promptAudioTokens,omitzero"`
+		PromptCachedTokens    float64 `json:"promptCachedTokens,omitzero"`
+		PromptTextTokens      float64 `json:"promptTextTokens,omitzero"`
+		PromptTokens          float64 `json:"prompt_tokens,omitzero"`
 	} `json:"pricing,omitzero"`
 	Provider               string   `json:"provider"` // "api.navy", "azure", "bedrock", "scaleway"
 	Reasoning              bool     `json:"reasoning"`
@@ -727,8 +742,8 @@ type TextModel struct {
 	Tier                   string   `json:"tier"` // "anonymous", "seed", "flower"
 	Tools                  bool     `json:"tools"`
 	Uncensored             bool     `json:"uncensored"`
-	Voices                 []string `json:"voices"`
 	Vision                 bool     `json:"vision"`
+	Voices                 []string `json:"voices"`
 }
 
 func (t *TextModel) GetID() string {
@@ -756,7 +771,7 @@ func (t *TextModel) String() string {
 }
 
 func (t *TextModel) Context() int64 {
-	return 0
+	return t.ContextWindow
 }
 
 func (t *TextModel) Inputs() []string {
@@ -792,9 +807,9 @@ func (s *Strings) UnmarshalJSON(b []byte) error {
 //
 
 type ErrorResponse struct {
-	Success  bool   `json:"success,omitzero"`
-	ErrorVal string `json:"error"`
-	Status   int64  `json:"status"`
+	Success  bool       `json:"success,omitzero"`
+	ErrorVal ErrorValue `json:"error"`
+	Status   int64      `json:"status"`
 	Details  struct {
 		Detail string `json:"detail"`
 		Error  struct {
@@ -850,9 +865,12 @@ func (er *ErrorResponse) Error() string {
 		return fmt.Sprintf("%s%s", er.Details.Detail, suffix)
 	}
 	if er.Message != "" {
-		return fmt.Sprintf("%s %s%s", er.ErrorVal, er.Message, suffix)
+		return fmt.Sprintf("%s %s%s", er.ErrorVal.String(), er.Message, suffix)
 	}
-	return fmt.Sprintf("%s%s", er.ErrorVal, suffix)
+	if er.ErrorVal.Message != "" {
+		return fmt.Sprintf("%s%s", er.ErrorVal.String(), suffix)
+	}
+	return ""
 }
 
 func (er *ErrorResponse) IsAPIError() bool {
@@ -869,6 +887,32 @@ type UnionError struct {
 		UnionErrors []UnionError `json:"unionErrors"`
 	} `json:"issues"`
 	Name string `json:"name"`
+}
+
+// ErrorValue handles the "error" field which can be either a string or an object.
+type ErrorValue struct {
+	Message   string `json:"message"`
+	Code      string `json:"code"`
+	Timestamp string `json:"timestamp"`
+}
+
+func (e *ErrorValue) UnmarshalJSON(b []byte) error {
+	// Try as a string first.
+	var s string
+	if err := json.Unmarshal(b, &s); err == nil {
+		e.Message = s
+		return nil
+	}
+	// Otherwise, try as an object.
+	type ev ErrorValue
+	return json.Unmarshal(b, (*ev)(e))
+}
+
+func (e *ErrorValue) String() string {
+	if e.Code != "" {
+		return e.Code + ": " + e.Message
+	}
+	return e.Message
 }
 
 // Client implements genai.Provider.

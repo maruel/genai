@@ -813,10 +813,10 @@ type ErrorResponse struct {
 	Details  struct {
 		Detail string `json:"detail"`
 		Error  struct {
-			Message string `json:"message"`
-			Type    string `json:"type"`
-			Param   string `json:"param"`
-			Code    string `json:"code"`
+			Message string    `json:"message"`
+			Type    string    `json:"type"`
+			Param   string    `json:"param"`
+			Code    CodeValue `json:"code"`
 		} `json:"error"`
 		Message   string            `json:"message"`
 		QueueInfo map[string]string `json:"queueInfo"`
@@ -891,9 +891,28 @@ type UnionError struct {
 
 // ErrorValue handles the "error" field which can be either a string or an object.
 type ErrorValue struct {
-	Message   string `json:"message"`
-	Code      string `json:"code"`
-	Timestamp string `json:"timestamp"`
+	Message   string    `json:"message"`
+	Code      CodeValue `json:"code"`
+	Timestamp string    `json:"timestamp"`
+}
+
+// CodeValue handles fields that can be either a string or a number.
+type CodeValue string
+
+func (c *CodeValue) UnmarshalJSON(b []byte) error {
+	// Try as a string first.
+	var s string
+	if err := json.Unmarshal(b, &s); err == nil {
+		*c = CodeValue(s)
+		return nil
+	}
+	// Otherwise, try as a number.
+	var n json.Number
+	if err := json.Unmarshal(b, &n); err == nil {
+		*c = CodeValue(n.String())
+		return nil
+	}
+	return fmt.Errorf("code must be string or number, got: %s", string(b))
 }
 
 func (e *ErrorValue) UnmarshalJSON(b []byte) error {
@@ -910,7 +929,7 @@ func (e *ErrorValue) UnmarshalJSON(b []byte) error {
 
 func (e *ErrorValue) String() string {
 	if e.Code != "" {
-		return e.Code + ": " + e.Message
+		return string(e.Code) + ": " + e.Message
 	}
 	return e.Message
 }

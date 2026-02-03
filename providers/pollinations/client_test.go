@@ -21,9 +21,8 @@ import (
 )
 
 func getClientInner(t *testing.T, opts genai.ProviderOptions, fn func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-	if opts.APIKey == "" {
-		opts.APIKey = "genai-unittests"
-	}
+	// Pollinations API rejects invalid keys but works without auth.
+	// Don't use a placeholder key for playback - leave empty to skip auth header.
 	return pollinations.New(t.Context(), &opts, fn)
 }
 
@@ -67,7 +66,7 @@ func TestClient(t *testing.T) {
 			sbModels = append(sbModels, scoreboard.Model{Model: id, Reason: id == "deepseek-reasoning"})
 		}
 		getClientRT := func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
-			opts := genai.ProviderOptions{APIKey: "genai-unittests", Model: model.Model, PreloadedModels: cachedModels}
+			opts := genai.ProviderOptions{Model: model.Model, PreloadedModels: cachedModels}
 			c, err := pollinations.New(t.Context(), &opts, fn)
 			if err != nil {
 				t.Fatal(err)
@@ -123,7 +122,6 @@ func TestClient(t *testing.T) {
 			},
 		}
 		f := func(t *testing.T, opts genai.ProviderOptions) (genai.Provider, error) {
-			opts.APIKey = "genai-unittests"
 			opts.OutputModalities = genai.Modalities{genai.ModalityText}
 			return getClientInner(t, opts, func(h http.RoundTripper) http.RoundTripper {
 				return testRecorder.Record(t, h)

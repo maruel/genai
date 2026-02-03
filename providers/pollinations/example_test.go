@@ -43,13 +43,10 @@ func ExampleNew_hTTP_record() {
 		}
 		return rr
 	}
-	// When playing back the smoke test, no API key is needed. Insert a fake API key.
-	apiKey := ""
-	if os.Getenv("POLLINATIONS_API_KEY") == "" {
-		apiKey = "<insert_api_key_here>"
-	}
+	// Pollinations API works without auth but rejects invalid keys.
+	// Don't set a placeholder key for playback - leave empty to skip auth header.
 	ctx := context.Background()
-	c, err := pollinations.New(ctx, &genai.ProviderOptions{APIKey: apiKey, Model: genai.ModelNone}, wrapper)
+	c, err := pollinations.New(ctx, &genai.ProviderOptions{Model: genai.ModelNone}, wrapper)
 	if err != nil {
 		log.Fatal(err)
 	}

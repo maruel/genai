@@ -34,7 +34,7 @@ func Example() {
 	msgs := genai.Messages{
 		genai.NewTextMessage("Say hello. Reply with only one word."),
 	}
-	opts := genai.OptionsText{
+	opts := genai.GenOptionsText{
 		Seed:        1,
 		Temperature: 0.01,
 		MaxTokens:   50,

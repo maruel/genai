@@ -74,7 +74,7 @@ type ChatRequest struct {
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
-func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Options) error {
+func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenOptions) error {
 	c.Model = model
 	if err := msgs.Validate(); err != nil {
 		return err
@@ -88,7 +88,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 		}
 		// https://api-docs.deepseek.com/guides/reasoning_model Soon "reasoning_effort"
 		switch v := opt.(type) {
-		case *genai.OptionsText:
+		case *genai.GenOptionsText:
 			c.MaxToks = v.MaxTokens
 			c.Temperature = v.Temperature
 			c.TopP = v.TopP
@@ -98,10 +98,10 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 				c.Logprobs = true
 			}
 			if v.Seed != 0 {
-				unsupported = append(unsupported, "OptionsText.Seed")
+				unsupported = append(unsupported, "GenOptionsText.Seed")
 			}
 			if v.TopK != 0 {
-				unsupported = append(unsupported, "OptionsText.TopK")
+				unsupported = append(unsupported, "GenOptionsText.TopK")
 			}
 			c.Stop = v.Stop
 			if v.ReplyAsJSON {
@@ -110,7 +110,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 			if v.DecodeAs != nil {
 				errs = append(errs, errors.New("unsupported option DecodeAs"))
 			}
-		case *genai.OptionsTools:
+		case *genai.GenOptionsTools:
 			if len(v.Tools) != 0 {
 				switch v.Force {
 				case genai.ToolCallAny:
@@ -118,7 +118,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 				case genai.ToolCallRequired:
 					if strings.Contains(model, "reasoner") {
 						// "deepseek-reasoner does not support this tool_choice"
-						unsupported = append(unsupported, "OptionsTools.Force")
+						unsupported = append(unsupported, "GenOptionsTools.Force")
 					} else {
 						c.ToolChoice = "required"
 					}
@@ -640,7 +640,7 @@ func (c *Client) HTTPClient() *http.Client {
 }
 
 // GenSync implements genai.Provider.
-func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
+func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (genai.Result, error) {
 	return c.impl.GenSync(ctx, msgs, opts...)
 }
 
@@ -650,7 +650,7 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 }
 
 // GenStream implements genai.Provider.
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	return c.impl.GenStream(ctx, msgs, opts...)
 }
 

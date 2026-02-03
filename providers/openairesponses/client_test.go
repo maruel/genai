@@ -90,8 +90,8 @@ func TestClient(t *testing.T) {
 			if model.Reason {
 				return &internaltest.InjectOptions{
 					Provider: c,
-					Opts: []genai.Options{
-						&openairesponses.OptionsText{
+					Opts: []genai.GenOptions{
+						&openairesponses.GenOptionsText{
 							ReasoningEffort: res,
 							ServiceTier:     tier,
 						},
@@ -103,7 +103,7 @@ func TestClient(t *testing.T) {
 				if id := c.ModelID(); id == "o3" || id == "o4-mini" || strings.HasPrefix(id, "gpt-5") {
 					return &internaltest.InjectOptions{
 						Provider: c,
-						Opts:     []genai.Options{&openairesponses.OptionsText{ServiceTier: tier}},
+						Opts:     []genai.GenOptions{&openairesponses.GenOptionsText{ServiceTier: tier}},
 					}
 				}
 			}

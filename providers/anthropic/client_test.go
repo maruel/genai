@@ -92,12 +92,12 @@ func TestClient(t *testing.T) {
 			if model.Reason {
 				return &internaltest.InjectOptions{
 					Provider: c,
-					Opts:     []genai.Options{&anthropic.OptionsText{ThinkingBudget: 1024}},
+					Opts:     []genai.GenOptions{&anthropic.GenOptionsText{ThinkingBudget: 1024}},
 				}
 			}
 			return &internaltest.InjectOptions{
 				Provider: c,
-				Opts:     []genai.Options{&anthropic.OptionsText{ThinkingBudget: 0}},
+				Opts:     []genai.GenOptions{&anthropic.GenOptionsText{ThinkingBudget: 0}},
 			}
 		}
 

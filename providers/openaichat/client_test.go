@@ -99,8 +99,8 @@ func TestClient(t *testing.T) {
 				return &injectReasoning{
 					Provider: &internaltest.InjectOptions{
 						Provider: c,
-						Opts: []genai.Options{
-							&openaichat.OptionsText{
+						Opts: []genai.GenOptions{
+							&openaichat.GenOptionsText{
 								ReasoningEffort: openaichat.ReasoningEffortLow,
 								ServiceTier:     tier,
 							},
@@ -113,7 +113,7 @@ func TestClient(t *testing.T) {
 				if id := c.ModelID(); id == "o3" || id == "o4-mini" || strings.HasPrefix(id, "gpt-5") {
 					return &internaltest.InjectOptions{
 						Provider: c,
-						Opts:     []genai.Options{&openaichat.OptionsText{ServiceTier: tier}},
+						Opts:     []genai.GenOptions{&openaichat.GenOptionsText{ServiceTier: tier}},
 					}
 				}
 			}
@@ -234,7 +234,7 @@ type injectReasoning struct {
 	genai.Provider
 }
 
-func (i *injectReasoning) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
+func (i *injectReasoning) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (genai.Result, error) {
 	res, err := i.Provider.GenSync(ctx, msgs, opts...)
 	if res.Usage.ReasoningTokens > 0 {
 		res.Replies = append(res.Replies, genai.Reply{Reasoning: "\n"})
@@ -242,7 +242,7 @@ func (i *injectReasoning) GenSync(ctx context.Context, msgs genai.Messages, opts
 	return res, err
 }
 
-func (i *injectReasoning) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
+func (i *injectReasoning) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	res, err := i.Provider.GenStream(ctx, msgs, opts...)
 	return res, err
 }

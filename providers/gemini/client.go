@@ -59,8 +59,8 @@ func Scoreboard() scoreboard.Score {
 	return s
 }
 
-// Options defines Gemini specific options.
-type Options struct {
+// GenOptions defines Gemini specific options.
+type GenOptions struct {
 	// ThinkingBudget is the maximum number of tokens the LLM can use to reason about the answer.
 	//
 	// From https://ai.google.dev/gemini-api/docs/thinking#set-budget
@@ -88,7 +88,7 @@ type Options struct {
 	ThinkingBudget int64
 }
 
-func (o *Options) Validate() error {
+func (o *GenOptions) Validate() error {
 	return nil
 }
 
@@ -244,7 +244,7 @@ type ChatRequest struct {
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
-func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Options) error {
+func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenOptions) error {
 	// Validate messages
 	if err := msgs.Validate(); err != nil {
 		return err
@@ -254,7 +254,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 
 	for _, opt := range opts {
 		switch v := opt.(type) {
-		case *Options:
+		case *GenOptions:
 			// Accept both positive numbers and -1 (dynamic thinking)
 			if v.ThinkingBudget != 0 {
 				// https://ai.google.dev/gemini-api/docs/thinking
@@ -274,19 +274,19 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Opti
 					c.GenerationConfig.ThinkingConfig = &ThinkingConfig{}
 				}
 			}
-		case *genai.OptionsText:
+		case *genai.GenOptionsText:
 			u, e := c.initOptionsText(v)
 			unsupported = append(unsupported, u...)
 			errs = append(errs, e...)
-		case *genai.OptionsTools:
+		case *genai.GenOptionsTools:
 			u, e := c.initOptionsTools(v)
 			unsupported = append(unsupported, u...)
 			errs = append(errs, e...)
-		case *genai.OptionsAudio:
+		case *genai.GenOptionsAudio:
 			errs = append(errs, fmt.Errorf("todo: implement options type %T", opt))
-		case *genai.OptionsImage:
+		case *genai.GenOptionsImage:
 			errs = append(errs, fmt.Errorf("todo: implement options type %T", opt))
-		case *genai.OptionsVideo:
+		case *genai.GenOptionsVideo:
 			errs = append(errs, fmt.Errorf("todo: implement options type %T", opt))
 		default:
 			errs = append(errs, fmt.Errorf("unsupported options type %T", opt))
@@ -310,7 +310,7 @@ func (c *ChatRequest) SetStream(stream bool) {
 	// There's no field to set, the URL is different.
 }
 
-func (c *ChatRequest) initOptionsText(v *genai.OptionsText) ([]string, []error) {
+func (c *ChatRequest) initOptionsText(v *genai.GenOptionsText) ([]string, []error) {
 	var unsupported []string
 	var errs []error
 	c.GenerationConfig.MaxOutputTokens = v.MaxTokens
@@ -339,7 +339,7 @@ func (c *ChatRequest) initOptionsText(v *genai.OptionsText) ([]string, []error) 
 	return unsupported, errs
 }
 
-func (c *ChatRequest) initOptionsTools(v *genai.OptionsTools) ([]string, []error) {
+func (c *ChatRequest) initOptionsTools(v *genai.GenOptionsTools) ([]string, []error) {
 	var unsupported []string
 	var errs []error
 	if len(v.Tools) != 0 {
@@ -971,7 +971,7 @@ type ImageRequest struct {
 	Parameters ImageParameters `json:"parameters"`
 }
 
-func (i *ImageRequest) Init(msg genai.Message, model string, mod genai.Modalities, opts ...genai.Options) error {
+func (i *ImageRequest) Init(msg genai.Message, model string, mod genai.Modalities, opts ...genai.GenOptions) error {
 	if err := msg.Validate(); err != nil {
 		return err
 	}
@@ -1017,14 +1017,14 @@ func (i *ImageRequest) Init(msg genai.Message, model string, mod genai.Modalitie
 			return err
 		}
 		switch v := opt.(type) {
-		case *Options:
-		case *genai.OptionsImage:
+		case *GenOptions:
+		case *genai.GenOptionsImage:
 			if v.Seed != 0 {
 				// Seed is only supported with Vertex AI API.
-				uce = &base.ErrNotSupported{Options: []string{"OptionsText.Seed"}}
+				uce = &base.ErrNotSupported{Options: []string{"GenOptionsImage.Seed"}}
 			}
 			// TODO: Width and Height
-		case *genai.OptionsVideo:
+		case *genai.GenOptionsVideo:
 			if v.Duration != 0 {
 				i.Parameters.DurationSeconds = int64(v.Duration.Round(time.Second) / time.Second)
 			}
@@ -1150,7 +1150,7 @@ type CachedContent struct {
 	UsageMetadata CachingUsageMetadata `json:"usageMetadata,omitzero"`
 }
 
-func (c *CachedContent) Init(msgs genai.Messages, model, name, displayName string, ttl time.Duration, opts ...genai.Options) error {
+func (c *CachedContent) Init(msgs genai.Messages, model, name, displayName string, ttl time.Duration, opts ...genai.GenOptions) error {
 	if err := msgs.Validate(); err != nil {
 		return err
 	}
@@ -1158,7 +1158,7 @@ func (c *CachedContent) Init(msgs genai.Messages, model, name, displayName strin
 		if err := opt.Validate(); err != nil {
 			return err
 		}
-		if o, ok := opt.(*genai.OptionsText); ok && o.SystemPrompt != "" {
+		if o, ok := opt.(*genai.GenOptionsText); ok && o.SystemPrompt != "" {
 			c.SystemInstruction.Parts = []Part{{Text: o.SystemPrompt}}
 		}
 	}
@@ -1799,7 +1799,7 @@ func (c *Client) HTTPClient() *http.Client {
 }
 
 // GenSync implements genai.Provider.
-func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
+func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (genai.Result, error) {
 	if !slices.Contains(c.impl.OutputModalities, genai.ModalityText) {
 		if len(msgs) != 1 {
 			return genai.Result{}, errors.New("must pass exactly one Message")
@@ -1857,7 +1857,7 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 }
 
 // GenStream implements genai.Provider.
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	if !slices.Contains(c.impl.OutputModalities, genai.ModalityText) {
 		return base.SimulateStream(ctx, c, msgs, opts...)
 	}
@@ -1967,7 +1967,7 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest) (iter.Seq[Ch
 //
 // At certain volumes, using cached tokens is lower cost than passing in the same corpus of tokens repeatedly.
 // The cost for caching depends on the input token size and how long you want the tokens to persist.
-func (c *Client) CacheAddRequest(ctx context.Context, msgs genai.Messages, name, displayName string, ttl time.Duration, opts ...genai.Options) (string, error) {
+func (c *Client) CacheAddRequest(ctx context.Context, msgs genai.Messages, name, displayName string, ttl time.Duration, opts ...genai.GenOptions) (string, error) {
 	// See https://ai.google.dev/gemini-api/docs/caching?hl=en&lang=rest#considerations
 	// Useful when reusing the same large data multiple times to reduce token usage.
 	// This requires a pinned model, with trailing -001.
@@ -2063,7 +2063,7 @@ func (c *Client) CacheDelete(ctx context.Context, name string) error {
 // Use it to generate images.
 //
 // genDoc is only supported for models that have "predict" reported in their Model.SupportedGenerationMethods.
-func (c *Client) genDoc(ctx context.Context, msg genai.Message, opts ...genai.Options) (genai.Result, error) {
+func (c *Client) genDoc(ctx context.Context, msg genai.Message, opts ...genai.GenOptions) (genai.Result, error) {
 	// TODO: Smartly decide the method to use instead of hardcoding on the modality.
 	if slices.Contains(c.impl.OutputModalities, genai.ModalityVideo) {
 		id, err := c.GenAsync(ctx, genai.Messages{msg}, opts...)
@@ -2073,7 +2073,7 @@ func (c *Client) genDoc(ctx context.Context, msg genai.Message, opts ...genai.Op
 		// Loop until the image is available.
 		waitForPoll := time.Second
 		for _, opt := range opts {
-			if v, ok := (opt).(*genai.OptionsVideo); ok && v.PollInterval != 0 {
+			if v, ok := (opt).(*genai.GenOptionsVideo); ok && v.PollInterval != 0 {
 				waitForPoll = v.PollInterval
 			}
 		}
@@ -2132,7 +2132,7 @@ func (c *Client) genDoc(ctx context.Context, msg genai.Message, opts ...genai.Op
 //
 // The resulting file is available for 48 hours. It requires the API key in the HTTP header to be fetched, so
 // use the client's HTTP client.
-func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Job, error) {
+func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (genai.Job, error) {
 	// GenAsync only works with video generation models (predictLongRunning endpoint).
 	// Text models use generateContent which doesn't support async operations.
 	if !slices.Contains(c.impl.OutputModalities, genai.ModalityVideo) {

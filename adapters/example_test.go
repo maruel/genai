@@ -28,7 +28,7 @@ func ExampleGenSyncWithToolCallLoop() {
 		log.Fatal(err)
 	}
 	msgs := genai.Messages{genai.NewTextMessage("What season are we in?")}
-	opts := genai.OptionsTools{
+	opts := genai.GenOptionsTools{
 		// GetTodayClockTime returns the current time and day in a format that the LLM
 		// can understand. It includes the weekend.
 		Tools: []genai.ToolDef{GetTodayClockTime},
@@ -54,7 +54,7 @@ func ExampleGenStreamWithToolCallLoop() {
 		log.Fatal(err)
 	}
 	msgs := genai.Messages{genai.NewTextMessage("What season are we in?")}
-	opts := genai.OptionsTools{
+	opts := genai.GenOptionsTools{
 		// GetTodayClockTime returns the current time and day in a format that the LLM
 		// can understand. It includes the weekend.
 		Tools: []genai.ToolDef{GetTodayClockTime},

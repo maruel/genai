@@ -31,7 +31,7 @@ func main() {
 	var circle struct {
 		Round bool `json:"round"`
 	}
-	opts := genai.OptionsText{DecodeAs: &circle}
+	opts := genai.GenOptionsText{DecodeAs: &circle}
 	res, err := c.GenSync(ctx, msgs, &opts)
 	if err != nil {
 		log.Fatal(err)

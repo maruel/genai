@@ -26,15 +26,15 @@ import (
 // tool call.
 //
 // It returns the messages to accumulate to the thread. The last message is the LLM's response.
-func GenSyncWithToolCallLoop(ctx context.Context, p genai.Provider, msgs genai.Messages, opts ...genai.Options) (genai.Messages, genai.Usage, error) {
+func GenSyncWithToolCallLoop(ctx context.Context, p genai.Provider, msgs genai.Messages, opts ...genai.GenOptions) (genai.Messages, genai.Usage, error) {
 	usage := genai.Usage{}
 	var out genai.Messages
 	workMsgs := make(genai.Messages, len(msgs))
 	copy(workMsgs, msgs)
-	var toolsOpts *genai.OptionsTools
+	var toolsOpts *genai.GenOptionsTools
 	for _, opt := range opts {
 		ok := false
-		if toolsOpts, ok = opt.(*genai.OptionsTools); ok {
+		if toolsOpts, ok = opt.(*genai.GenOptionsTools); ok {
 			break
 		}
 	}
@@ -85,17 +85,17 @@ func GenSyncWithToolCallLoop(ctx context.Context, p genai.Provider, msgs genai.M
 // tool call.
 //
 // No need to process the tool calls or accumulate the Reply fragments.
-func GenStreamWithToolCallLoop(ctx context.Context, p genai.Provider, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.Reply], func() (genai.Messages, genai.Usage, error)) {
+func GenStreamWithToolCallLoop(ctx context.Context, p genai.Provider, msgs genai.Messages, opts ...genai.GenOptions) (iter.Seq[genai.Reply], func() (genai.Messages, genai.Usage, error)) {
 	var out genai.Messages
 	usage := genai.Usage{}
 	var finalErr error
 
 	fnFragments := func(yield func(genai.Reply) bool) {
 		workMsgs := slices.Clone(msgs)
-		var toolsOpts *genai.OptionsTools
+		var toolsOpts *genai.GenOptionsTools
 		for _, opt := range opts {
 			ok := false
-			if toolsOpts, ok = opt.(*genai.OptionsTools); ok {
+			if toolsOpts, ok = opt.(*genai.GenOptionsTools); ok {
 				break
 			}
 		}
@@ -165,7 +165,7 @@ type ProviderUsage struct {
 }
 
 // GenSync implements the Provider interface and accumulates usage statistics.
-func (c *ProviderUsage) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
+func (c *ProviderUsage) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (genai.Result, error) {
 	res, err := c.Provider.GenSync(ctx, msgs, opts...)
 	c.mu.Lock()
 	c.accumUsage.InputTokens += res.Usage.InputTokens
@@ -177,7 +177,7 @@ func (c *ProviderUsage) GenSync(ctx context.Context, msgs genai.Messages, opts .
 }
 
 // GenStream implements the Provider interface and accumulates usage statistics.
-func (c *ProviderUsage) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
+func (c *ProviderUsage) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	// Call the wrapped provider and accumulate usage statistics
 	fragments, finish := c.Provider.GenStream(ctx, msgs, opts...)
 	return fragments, func() (genai.Result, error) {
@@ -215,7 +215,7 @@ type ProviderAppend struct {
 	Append genai.Request
 }
 
-func (c *ProviderAppend) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
+func (c *ProviderAppend) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (genai.Result, error) {
 	if len(msgs[len(msgs)-1].Requests) != 0 {
 		msgs = slices.Clone(msgs)
 		msgs[len(msgs)-1].Requests = slices.Clone(msgs[len(msgs)-1].Requests)
@@ -224,7 +224,7 @@ func (c *ProviderAppend) GenSync(ctx context.Context, msgs genai.Messages, opts 
 	return c.Provider.GenSync(ctx, msgs, opts...)
 }
 
-func (c *ProviderAppend) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
+func (c *ProviderAppend) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	if i := len(msgs) - 1; len(msgs[i].Requests) != 0 {
 		msgs = slices.Clone(msgs)
 		msgs[i].Requests = append(slices.Clone(msgs[i].Requests), c.Append)

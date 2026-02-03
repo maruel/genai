@@ -141,13 +141,13 @@ type Provider interface {
 
 	// GenSync runs generation synchronously.
 	//
-	// Multiple options can be mixed together, both standard ones like *OptionsImage, *OptionsText,
-	// *OptionsTools and provider-specialized options struct, e.g. *anthropic.Options, *gemini.Options.
-	GenSync(ctx context.Context, msgs Messages, opts ...Options) (Result, error)
+	// Multiple options can be mixed together, both standard ones like *GenOptionsImage, *GenOptionsText,
+	// *GenOptionsTools and provider-specialized options struct, e.g. *anthropic.GenOptionsText, *gemini.GenOptions.
+	GenSync(ctx context.Context, msgs Messages, opts ...GenOptions) (Result, error)
 	// GenStream runs generation synchronously, yielding the fragments of replies as the server sends them.
 	//
 	// No need to accumulate the fragments into a Message since the Result contains the accumulated message.
-	GenStream(ctx context.Context, msgs Messages, opts ...Options) (iter.Seq[Reply], func() (Result, error))
+	GenStream(ctx context.Context, msgs Messages, opts ...GenOptions) (iter.Seq[Reply], func() (Result, error))
 	// ListModels returns the list of models the provider supports. Not all providers support it, some will
 	// return an ErrorNotSupported. For local providers like llamacpp and ollama, they may return only the
 	// model currently loaded.
@@ -156,7 +156,7 @@ type Provider interface {
 	// GenAsync requests a generation and returns a pending job that can be polled.
 	//
 	// Requires ProviderCapabilities.GenAsync to be set. Returns base.ErrNotSupported otherwise.
-	GenAsync(ctx context.Context, msgs Messages, opts ...Options) (Job, error)
+	GenAsync(ctx context.Context, msgs Messages, opts ...GenOptions) (Job, error)
 	// PokeResult requests the state of the job.
 	//
 	// When the job is still pending, Result.Usage.FinishReason is Pending.
@@ -170,7 +170,7 @@ type Provider interface {
 	// # Warning
 	//
 	// May be changed in the future.
-	CacheAddRequest(ctx context.Context, msgs Messages, name, displayName string, ttl time.Duration, opts ...Options) (string, error)
+	CacheAddRequest(ctx context.Context, msgs Messages, name, displayName string, ttl time.Duration, opts ...GenOptions) (string, error)
 	// CacheList lists the caches entries.
 	//
 	// Requires ProviderCapabilities.Caching to be set. Returns base.ErrNotSupported otherwise.
@@ -355,11 +355,11 @@ const (
 	// FinishedStopSequence.
 	FinishedStop FinishReason = "stop"
 	// FinishedLength means the model reached the maximum number of tokens allowed as set in
-	// OptionsText.MaxTokens or as limited by the provider.
+	// GenOptionsText.MaxTokens or as limited by the provider.
 	FinishedLength FinishReason = "length"
 	// FinishedToolCalls means the model called one or multiple tools and needs the replies to continue the turn.
 	FinishedToolCalls FinishReason = "tool_calls"
-	// FinishedStopSequence means the model stopped because it saw a stop word as listed in OptionsText.Stop.
+	// FinishedStopSequence means the model stopped because it saw a stop word as listed in GenOptionsText.Stop.
 	FinishedStopSequence FinishReason = "stop"
 	// FinishedContentFilter means the model stopped because the reply got caught by a content filter.
 	FinishedContentFilter FinishReason = "content_filter"
@@ -515,10 +515,10 @@ func (m *Message) Reasoning() string {
 
 // Decode decodes the JSON message into the struct.
 //
-// Requires using either ReplyAsJSON or DecodeAs in the OptionsText.
+// Requires using either ReplyAsJSON or DecodeAs in the GenOptionsText.
 //
 // Note: this doesn't verify the type is the same as specified in
-// OptionsText.DecodeAs.
+// GenOptionsText.DecodeAs.
 func (m *Message) Decode(x any) error {
 	s := m.String()
 	if s == "" {

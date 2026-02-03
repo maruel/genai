@@ -23,8 +23,8 @@ import (
 	"github.com/maruel/genai/scoreboard"
 )
 
-// OptionsText defines OpenAI specific options.
-type OptionsText struct {
+// GenOptionsText defines OpenAI specific options.
+type GenOptionsText struct {
 	// ReasoningEffort is the amount of effort (number of tokens) the LLM can use to think about the answer.
 	//
 	// When unspecified, defaults to medium.
@@ -33,17 +33,17 @@ type OptionsText struct {
 	ServiceTier ServiceTier
 }
 
-func (o *OptionsText) Validate() error {
+func (o *GenOptionsText) Validate() error {
 	return nil
 }
 
-// OptionsImage defines OpenAI specific options.
-type OptionsImage struct {
+// GenOptionsImage defines OpenAI specific options.
+type GenOptionsImage struct {
 	// Background is only supported on gpt-image-1.
 	Background Background
 }
 
-func (o *OptionsImage) Validate() error {
+func (o *GenOptionsImage) Validate() error {
 	return nil
 }
 
@@ -98,7 +98,7 @@ type ImageRequest struct {
 	User              string     `json:"user,omitzero"`               // End-user to help monitor and detect abuse
 }
 
-func (i *ImageRequest) Init(msg genai.Message, model string, opts ...genai.Options) error {
+func (i *ImageRequest) Init(msg genai.Message, model string, opts ...genai.GenOptions) error {
 	if err := msg.Validate(); err != nil {
 		return err
 	}
@@ -139,9 +139,9 @@ func (i *ImageRequest) Init(msg genai.Message, model string, opts ...genai.Optio
 			return err
 		}
 		switch v := opt.(type) {
-		case *OptionsImage:
+		case *GenOptionsImage:
 			i.Background = v.Background
-		case *genai.OptionsImage:
+		case *genai.GenOptionsImage:
 			if v.Height != 0 && v.Width != 0 {
 				i.Size = fmt.Sprintf("%dx%d", v.Width, v.Height)
 			}
@@ -444,7 +444,7 @@ func (c *Client) HTTPClient() *http.Client {
 }
 
 // GenSync implements genai.Provider.
-func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
+func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (genai.Result, error) {
 	if c.isAudio() {
 		return genai.Result{}, errors.New("OpenAI Responses API does not support audio output as of December 2025; see https://platform.openai.com/docs/guides/audio")
 	}
@@ -458,7 +458,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 }
 
 // GenStream implements genai.Provider.
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	if c.isAudio() {
 		return func(yield func(genai.Reply) bool) {}, func() (genai.Result, error) {
 			return genai.Result{}, errors.New("OpenAI Responses API does not support audio output as of December 2025; see https://platform.openai.com/docs/guides/audio")
@@ -471,7 +471,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 }
 
 // genDoc is a simplified version of GenSync.
-func (c *Client) genDoc(ctx context.Context, msg genai.Message, opts ...genai.Options) (genai.Result, error) {
+func (c *Client) genDoc(ctx context.Context, msg genai.Message, opts ...genai.GenOptions) (genai.Result, error) {
 	// https://platform.openai.com/docs/api-reference/images/create
 	res := genai.Result{}
 	if err := c.impl.Validate(); err != nil {

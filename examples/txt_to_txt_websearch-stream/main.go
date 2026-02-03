@@ -35,7 +35,7 @@ func main() {
 	}}
 	// perplexity has websearch enabled by default so this is a no-op. It is needed to enable websearch for
 	// anthropic, gemini and openai.
-	opts := genai.OptionsTools{WebSearch: true}
+	opts := genai.GenOptionsTools{WebSearch: true}
 	fragments, finish := c.GenStream(ctx, msgs, &opts)
 	firstText := true
 	for f := range fragments {

@@ -24,7 +24,7 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 	type got struct {
 		Number json.Number `json:"number" jsonschema:"type=number"`
 	}
-	optsTools := genai.OptionsTools{
+	optsTools := genai.GenOptionsTools{
 		Tools: []genai.ToolDef{
 			{
 				Name:        "square_root",
@@ -59,7 +59,7 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 	f.ToolCallRequired = true
 	var uerr *base.ErrNotSupported
 	if errors.As(err, &uerr) {
-		if slices.Contains(uerr.Options, "OptionsTools.Force") {
+		if slices.Contains(uerr.Options, "GenOptionsTools.Force") {
 			// Do not mark the test as flaky since it worked. Remember about ToolCallRequired not being supported
 			// though.
 			f.ToolCallRequired = false
@@ -171,7 +171,7 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 	var biasedResults [len(data)]bool
 	indecisiveOccurred := false
 	for i, line := range data {
-		opts := genai.OptionsTools{
+		opts := genai.GenOptionsTools{
 			Tools: []genai.ToolDef{
 				{
 					Name:        "best_country",
@@ -284,7 +284,7 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 func exerciseWebSearch(ctx context.Context, cs *callState, f *scoreboard.Functionality, prefix string) error {
 	// Test the WebSearch tool. It's a costly test.
 	msgs := genai.Messages{genai.NewTextMessage("Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation.")}
-	optsTools := genai.OptionsTools{WebSearch: true}
+	optsTools := genai.GenOptionsTools{WebSearch: true}
 	res, err := cs.callGen(ctx, prefix+"WebSearch", msgs, &optsTools)
 	if isBadError(ctx, err) {
 		internal.Logger(ctx).DebugContext(ctx, "WebSearch", "err", err)

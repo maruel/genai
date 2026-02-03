@@ -42,7 +42,7 @@ func main() {
 			{Doc: genai.Doc{Src: f}},
 		}},
 	}
-	res, err := c.GenSync(ctx, msgs, &gemini.Options{ThinkingBudget: 0})
+	res, err := c.GenSync(ctx, msgs, &gemini.GenOptions{ThinkingBudget: 0})
 	if err != nil {
 		log.Fatal(err)
 	}

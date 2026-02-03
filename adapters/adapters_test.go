@@ -44,7 +44,7 @@ func TestGenSyncWithToolCallLoop(t *testing.T) {
 		B         int    `json:"b"`
 		Operation string `json:"operation"`
 	}
-	opts := &genai.OptionsTools{
+	opts := &genai.GenOptionsTools{
 		Tools: []genai.ToolDef{
 			{
 				Name:        "calculator",
@@ -100,7 +100,7 @@ func TestGenStreamWithToolCallLoop(t *testing.T) {
 		B         int    `json:"b"`
 		Operation string `json:"operation"`
 	}
-	opts := &genai.OptionsTools{
+	opts := &genai.GenOptionsTools{
 		Tools: []genai.ToolDef{
 			{
 				Name:        "calculator",

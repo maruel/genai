@@ -18,8 +18,8 @@ import (
 	"github.com/maruel/genai/scoreboard"
 )
 
-// Options is options that can be provided to a Provider interface.
-type Options interface {
+// GenOptions is options that can be provided to Provider.GenSync and Provider.GenStream.
+type GenOptions interface {
 	// Validate ensures the options object is valid.
 	Validate() error
 }
@@ -79,7 +79,7 @@ func (m Modalities) Validate() error {
 	return nil
 }
 
-// OptionsText is a list of frequent options supported by most Provider with text output modality.
+// GenOptionsText is a list of frequent options supported by most Provider with text output modality.
 // Each provider is free to support more options through a specialized struct.
 //
 // The first group are options supported by (nearly) all providers.
@@ -89,7 +89,7 @@ func (m Modalities) Validate() error {
 //
 // The third group are options supported by a few providers and a few models on each, that will slow down
 // generation (increase latency) and will increase token use (cost).
-type OptionsText struct {
+type GenOptionsText struct {
 	// Temperature adjust the creativity of the sampling. Generally between 0 and 2.
 	Temperature float64
 	// TopP adjusts correctness sampling between 0 and 1. The higher the more diverse the output.
@@ -132,7 +132,7 @@ type OptionsText struct {
 }
 
 // Validate ensures the completion options are valid.
-func (o *OptionsText) Validate() error {
+func (o *GenOptionsText) Validate() error {
 	if o.Seed < 0 {
 		return errors.New("field Seed: must be non-negative")
 	}
@@ -158,7 +158,7 @@ func (o *OptionsText) Validate() error {
 
 // Tools
 
-type OptionsTools struct {
+type GenOptionsTools struct {
 	// Tools is the list of tools that the LLM can request to call.
 	Tools []ToolDef
 	// Force tells the LLM a tool call must be done, or not.
@@ -174,7 +174,7 @@ type OptionsTools struct {
 }
 
 // Validate ensures the completion options are valid.
-func (o *OptionsTools) Validate() error {
+func (o *GenOptionsTools) Validate() error {
 	names := map[string]int{}
 	for i, t := range o.Tools {
 		if err := t.Validate(); err != nil {
@@ -284,7 +284,7 @@ const (
 
 // Other modalities
 
-type OptionsAudio struct {
+type GenOptionsAudio struct {
 	// Seed for the random number generator. Default is 0 which means
 	// non-deterministic.
 	Seed int64
@@ -292,16 +292,16 @@ type OptionsAudio struct {
 	_ struct{}
 }
 
-func (o *OptionsAudio) Validate() error {
+func (o *GenOptionsAudio) Validate() error {
 	if o.Seed < 0 {
 		return errors.New("field Seed: must be non-negative")
 	}
 	return nil
 }
 
-// OptionsImage is a list of frequent options supported by most ProviderDoc.
+// GenOptionsImage is a list of frequent options supported by most ProviderDoc.
 // Each provider is free to support more options through a specialized struct.
-type OptionsImage struct {
+type GenOptionsImage struct {
 	// Seed for the random number generator. Default is 0 which means
 	// non-deterministic.
 	Seed   int64
@@ -315,7 +315,7 @@ type OptionsImage struct {
 }
 
 // Validate ensures the completion options are valid.
-func (o *OptionsImage) Validate() error {
+func (o *GenOptionsImage) Validate() error {
 	if o.Seed < 0 {
 		return errors.New("field Seed: must be non-negative")
 	}
@@ -328,7 +328,7 @@ func (o *OptionsImage) Validate() error {
 	return nil
 }
 
-type OptionsVideo struct {
+type GenOptionsVideo struct {
 	// Duration of the video to generate, if supported.
 	//
 	// Veo 2 supports only between 5 and 8 seconds and Veo 3 only supports 8 seconds.
@@ -340,7 +340,7 @@ type OptionsVideo struct {
 	_ struct{}
 }
 
-func (o *OptionsVideo) Validate() error {
+func (o *GenOptionsVideo) Validate() error {
 	return nil
 }
 
@@ -366,11 +366,11 @@ func isErrorType(t reflect.Type) bool {
 }
 
 var (
-	_ Options              = (*OptionsAudio)(nil)
-	_ Options              = (*OptionsImage)(nil)
-	_ Options              = (*OptionsVideo)(nil)
-	_ Options              = (*OptionsText)(nil)
-	_ Options              = (*OptionsTools)(nil)
+	_ GenOptions           = (*GenOptionsAudio)(nil)
+	_ GenOptions           = (*GenOptionsImage)(nil)
+	_ GenOptions           = (*GenOptionsVideo)(nil)
+	_ GenOptions           = (*GenOptionsText)(nil)
+	_ GenOptions           = (*GenOptionsTools)(nil)
 	_ internal.Validatable = (*Modality)(nil)
 	_ internal.Validatable = (*Modalities)(nil)
 	_ internal.Validatable = (*ToolDef)(nil)

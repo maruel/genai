@@ -160,14 +160,14 @@ type handleGroqReasoning struct {
 	genai.Provider
 }
 
-func (h *handleGroqReasoning) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
+func (h *handleGroqReasoning) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (genai.Result, error) {
 	for _, opt := range opts {
-		if o, ok := opt.(*genai.OptionsTools); ok && len(o.Tools) != 0 {
-			opts = append(opts, &groq.Options{ReasoningFormat: groq.ReasoningFormatParsed})
+		if o, ok := opt.(*genai.GenOptionsTools); ok && len(o.Tools) != 0 {
+			opts = append(opts, &groq.GenOptions{ReasoningFormat: groq.ReasoningFormatParsed})
 			return h.Provider.GenSync(ctx, msgs, opts...)
 		}
-		if o, ok := opt.(*genai.OptionsText); ok && (o.DecodeAs != nil || o.ReplyAsJSON) {
-			opts = append(opts, &groq.Options{ReasoningFormat: groq.ReasoningFormatParsed})
+		if o, ok := opt.(*genai.GenOptionsText); ok && (o.DecodeAs != nil || o.ReplyAsJSON) {
+			opts = append(opts, &groq.GenOptions{ReasoningFormat: groq.ReasoningFormatParsed})
 			return h.Provider.GenSync(ctx, msgs, opts...)
 		}
 	}
@@ -175,14 +175,14 @@ func (h *handleGroqReasoning) GenSync(ctx context.Context, msgs genai.Messages, 
 	return c.GenSync(ctx, msgs, opts...)
 }
 
-func (h *handleGroqReasoning) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
+func (h *handleGroqReasoning) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	for _, opt := range opts {
-		if o, ok := opt.(*genai.OptionsTools); ok && len(o.Tools) != 0 {
-			opts = append(opts, &groq.Options{ReasoningFormat: groq.ReasoningFormatParsed})
+		if o, ok := opt.(*genai.GenOptionsTools); ok && len(o.Tools) != 0 {
+			opts = append(opts, &groq.GenOptions{ReasoningFormat: groq.ReasoningFormatParsed})
 			return h.Provider.GenStream(ctx, msgs, opts...)
 		}
-		if o, ok := opt.(*genai.OptionsText); ok && (o.DecodeAs != nil || o.ReplyAsJSON) {
-			opts = append(opts, &groq.Options{ReasoningFormat: groq.ReasoningFormatParsed})
+		if o, ok := opt.(*genai.GenOptionsText); ok && (o.DecodeAs != nil || o.ReplyAsJSON) {
+			opts = append(opts, &groq.GenOptions{ReasoningFormat: groq.ReasoningFormatParsed})
 			return h.Provider.GenStream(ctx, msgs, opts...)
 		}
 	}

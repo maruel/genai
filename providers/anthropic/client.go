@@ -50,8 +50,8 @@ func Scoreboard() scoreboard.Score {
 	return s
 }
 
-// OptionsText defines Anthropic specific options.
-type OptionsText struct {
+// GenOptionsText defines Anthropic specific options.
+type GenOptionsText struct {
 	// ThinkingBudget is the maximum number of tokens the LLM can use to reason about the answer. When 0,
 	// reasoning is disabled. It generally must be above 1024 and below MaxTokens.
 	ThinkingBudget int64
@@ -63,7 +63,7 @@ type OptionsText struct {
 	MessagesToCache int
 }
 
-func (o *OptionsText) Validate() error {
+func (o *GenOptionsText) Validate() error {
 	return nil
 }
 
@@ -90,11 +90,11 @@ type ChatRequest struct {
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
-func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.Options) error {
+func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenOptions) error {
 	return c.initImpl(msgs, model, true, opts...)
 }
 
-func (c *ChatRequest) initImpl(msgs genai.Messages, model string, cache bool, opts ...genai.Options) error {
+func (c *ChatRequest) initImpl(msgs genai.Messages, model string, cache bool, opts ...genai.GenOptions) error {
 	c.Model = model
 	if err := msgs.Validate(); err != nil {
 		return err
@@ -111,11 +111,11 @@ func (c *ChatRequest) initImpl(msgs genai.Messages, model string, cache bool, op
 			return err
 		}
 		switch v := opt.(type) {
-		case *OptionsText:
+		case *GenOptionsText:
 			if cache {
 				msgToCache = v.MessagesToCache
 			} else if v.MessagesToCache != 0 {
-				unsupported = append(unsupported, "OptionsText.MessagesToCache")
+				unsupported = append(unsupported, "GenOptionsText.MessagesToCache")
 			}
 			if v.ThinkingBudget > 0 {
 				if v.ThinkingBudget >= c.MaxTokens {
@@ -126,11 +126,11 @@ func (c *ChatRequest) initImpl(msgs genai.Messages, model string, cache bool, op
 				c.Thinking.BudgetTokens = v.ThinkingBudget
 				c.Thinking.Type = "enabled"
 			}
-		case *genai.OptionsText:
+		case *genai.GenOptionsText:
 			u, e := c.initOptionsText(v)
 			unsupported = append(unsupported, u...)
 			errs = append(errs, e...)
-		case *genai.OptionsTools:
+		case *genai.GenOptionsTools:
 			u, e := c.initOptionsTools(v)
 			unsupported = append(unsupported, u...)
 			errs = append(errs, e...)
@@ -141,7 +141,7 @@ func (c *ChatRequest) initImpl(msgs genai.Messages, model string, cache bool, op
 
 	// Post process to take into account limitations by the provider.
 	if c.Model == "claude-sonnet-4-20250514" && c.Thinking.Type == "enabled" && c.ToolChoice.Type == ToolChoiceAny {
-		unsupported = append(unsupported, "OptionsTools.Force")
+		unsupported = append(unsupported, "GenOptionsTools.Force")
 		c.ToolChoice.Type = ToolChoiceAuto
 	}
 
@@ -171,11 +171,11 @@ func (c *ChatRequest) SetStream(stream bool) {
 	c.Stream = stream
 }
 
-func (c *ChatRequest) initOptionsText(v *genai.OptionsText) ([]string, []error) {
+func (c *ChatRequest) initOptionsText(v *genai.GenOptionsText) ([]string, []error) {
 	var unsupported []string
 	var errs []error
 	if v.TopLogprobs > 0 {
-		unsupported = append(unsupported, "OptionsText.TopLogprobs")
+		unsupported = append(unsupported, "GenOptionsText.TopLogprobs")
 	}
 	if v.MaxTokens != 0 {
 		c.MaxTokens = v.MaxTokens
@@ -188,7 +188,7 @@ func (c *ChatRequest) initOptionsText(v *genai.OptionsText) ([]string, []error) 
 	}
 	c.TopP = v.TopP
 	if v.Seed != 0 {
-		unsupported = append(unsupported, "OptionsText.Seed")
+		unsupported = append(unsupported, "GenOptionsText.Seed")
 	}
 	c.TopK = v.TopK
 	c.StopSequences = v.Stop
@@ -201,7 +201,7 @@ func (c *ChatRequest) initOptionsText(v *genai.OptionsText) ([]string, []error) 
 	return unsupported, errs
 }
 
-func (c *ChatRequest) initOptionsTools(v *genai.OptionsTools) ([]string, []error) {
+func (c *ChatRequest) initOptionsTools(v *genai.GenOptionsTools) ([]string, []error) {
 	var unsupported []string
 	var errs []error
 	if len(v.Tools) != 0 {
@@ -1271,7 +1271,7 @@ type BatchRequestItem struct {
 	Params   ChatRequest `json:"params"`
 }
 
-func (b *BatchRequestItem) Init(msgs genai.Messages, model string, opts ...genai.Options) error {
+func (b *BatchRequestItem) Init(msgs genai.Messages, model string, opts ...genai.GenOptions) error {
 	// TODO: We need to make this unique, the field is required. The problem is that this breaks HTTP recording.
 	// var bytes [12]byte
 	// _, _ = rand.Read(bytes[:])
@@ -1527,7 +1527,7 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 // GenAsync implements genai.ProviderGenAsync.
 //
 // It requests the providers' batch API and returns the job ID. It can take up to 24 hours to complete.
-func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Job, error) {
+func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (genai.Job, error) {
 	if err := c.impl.Validate(); err != nil {
 		return "", err
 	}
@@ -1643,7 +1643,7 @@ func (c *Client) HTTPClient() *http.Client {
 }
 
 // GenSync implements genai.Provider.
-func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
+func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (genai.Result, error) {
 	return c.impl.GenSync(ctx, msgs, opts...)
 }
 
@@ -1653,7 +1653,7 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 }
 
 // GenStream implements genai.Provider.
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	return c.impl.GenStream(ctx, msgs, opts...)
 }
 

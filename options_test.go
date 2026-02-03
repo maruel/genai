@@ -44,16 +44,16 @@ func TestModalities(t *testing.T) {
 	})
 }
 
-func TestOptionsText(t *testing.T) {
+func TestGenOptionsText(t *testing.T) {
 	t.Run("Validate", func(t *testing.T) {
 		t.Run("valid", func(t *testing.T) {
 			tests := []struct {
 				name string
-				in   OptionsText
+				in   GenOptionsText
 			}{
 				{
 					name: "Valid options with all fields set",
-					in: OptionsText{
+					in: GenOptionsText{
 						Seed:        1,
 						Temperature: 0.5,
 						TopP:        0.5,
@@ -66,7 +66,7 @@ func TestOptionsText(t *testing.T) {
 				},
 				{
 					name: "Valid options with only DecodeAs pointer",
-					in:   OptionsText{DecodeAs: &struct{}{}},
+					in:   GenOptionsText{DecodeAs: &struct{}{}},
 				},
 			}
 			for _, tt := range tests {
@@ -80,42 +80,42 @@ func TestOptionsText(t *testing.T) {
 		t.Run("error", func(t *testing.T) {
 			tests := []struct {
 				name   string
-				in     OptionsText
+				in     GenOptionsText
 				errMsg string
 			}{
 				{
 					name:   "Invalid Seed",
-					in:     OptionsText{Seed: -1},
+					in:     GenOptionsText{Seed: -1},
 					errMsg: "field Seed: must be non-negative",
 				},
 				{
 					name:   "Invalid Temperature",
-					in:     OptionsText{Temperature: -1},
+					in:     GenOptionsText{Temperature: -1},
 					errMsg: "field Temperature: must be [0, 100]",
 				},
 				{
 					name:   "Invalid MaxTokens",
-					in:     OptionsText{MaxTokens: 1024*1024*1024 + 1},
+					in:     GenOptionsText{MaxTokens: 1024*1024*1024 + 1},
 					errMsg: "field MaxTokens: must be [0, 1 GiB]",
 				},
 				{
 					name:   "Invalid TopP",
-					in:     OptionsText{TopP: -1},
+					in:     GenOptionsText{TopP: -1},
 					errMsg: "field TopP: must be [0, 1]",
 				},
 				{
 					name:   "Invalid TopK",
-					in:     OptionsText{TopK: 1025},
+					in:     GenOptionsText{TopK: 1025},
 					errMsg: "field TopK: must be [0, 1024]",
 				},
 				{
 					name:   "Invalid DecodeAs jsonschema.Schema",
-					in:     OptionsText{DecodeAs: &jsonschema.Schema{}},
+					in:     GenOptionsText{DecodeAs: &jsonschema.Schema{}},
 					errMsg: "field DecodeAs: must be an actual struct serializable as JSON, not a *jsonschema.Schema",
 				},
 				{
 					name:   "Invalid DecodeAs string",
-					in:     OptionsText{DecodeAs: "string"},
+					in:     GenOptionsText{DecodeAs: "string"},
 					errMsg: "field DecodeAs: must be a struct, not string",
 				},
 			}
@@ -130,16 +130,16 @@ func TestOptionsText(t *testing.T) {
 	})
 }
 
-func TestOptionsTools(t *testing.T) {
+func TestGenOptionsTools(t *testing.T) {
 	t.Run("Validate", func(t *testing.T) {
 		t.Run("valid", func(t *testing.T) {
 			tests := []struct {
 				name string
-				in   OptionsTools
+				in   GenOptionsTools
 			}{
 				{
 					name: "Valid options with all fields set",
-					in: OptionsTools{
+					in: GenOptionsTools{
 						Tools: []ToolDef{
 							{
 								Name:        "tool",
@@ -161,19 +161,19 @@ func TestOptionsTools(t *testing.T) {
 		t.Run("error", func(t *testing.T) {
 			tests := []struct {
 				name   string
-				in     OptionsTools
+				in     GenOptionsTools
 				errMsg string
 			}{
 				{
 					name: "ToolCallRequired without Tools",
-					in: OptionsTools{
+					in: GenOptionsTools{
 						Force: ToolCallRequired,
 					},
 					errMsg: "field Force is ToolCallRequired: Tools are required",
 				},
 				{
 					name: "Duplicate tool names",
-					in: OptionsTools{
+					in: GenOptionsTools{
 						Tools: []ToolDef{
 							{Name: "tool1", Description: "desc1"},
 							{Name: "tool1", Description: "desc2"},
@@ -183,7 +183,7 @@ func TestOptionsTools(t *testing.T) {
 				},
 				{
 					name: "Tool validation error",
-					in: OptionsTools{
+					in: GenOptionsTools{
 						Tools: []ToolDef{
 							{Name: "tool1"},
 						},
@@ -347,19 +347,19 @@ func TestToolDef(t *testing.T) {
 	})
 }
 
-func TestOptionsAudio(t *testing.T) {
+func TestGenOptionsAudio(t *testing.T) {
 	t.Run("Validate", func(t *testing.T) {
-		o := &OptionsAudio{}
+		o := &GenOptionsAudio{}
 		if err := o.Validate(); err != nil {
 			t.Errorf("Validate() got unexpected error: %v", err)
 		}
 	})
 }
 
-func TestOptionsImage(t *testing.T) {
+func TestGenOptionsImage(t *testing.T) {
 	t.Run("Validate", func(t *testing.T) {
 		t.Run("valid", func(t *testing.T) {
-			o := &OptionsImage{Seed: 1, Width: 100, Height: 200}
+			o := &GenOptionsImage{Seed: 1, Width: 100, Height: 200}
 			if err := o.Validate(); err != nil {
 				t.Errorf("Validate() got unexpected error: %v", err)
 			}
@@ -367,22 +367,22 @@ func TestOptionsImage(t *testing.T) {
 		t.Run("error", func(t *testing.T) {
 			tests := []struct {
 				name   string
-				in     OptionsImage
+				in     GenOptionsImage
 				errMsg string
 			}{
 				{
 					name:   "Invalid Seed",
-					in:     OptionsImage{Seed: -1},
+					in:     GenOptionsImage{Seed: -1},
 					errMsg: "field Seed: must be non-negative",
 				},
 				{
 					name:   "Invalid Height",
-					in:     OptionsImage{Height: -1},
+					in:     GenOptionsImage{Height: -1},
 					errMsg: "field Height: must be non-negative",
 				},
 				{
 					name:   "Invalid Width",
-					in:     OptionsImage{Width: -1},
+					in:     GenOptionsImage{Width: -1},
 					errMsg: "field Width: must be non-negative",
 				},
 			}
@@ -397,9 +397,9 @@ func TestOptionsImage(t *testing.T) {
 	})
 }
 
-func TestOptionsVideo(t *testing.T) {
+func TestGenOptionsVideo(t *testing.T) {
 	t.Run("Validate", func(t *testing.T) {
-		o := &OptionsVideo{}
+		o := &GenOptionsVideo{}
 		if err := o.Validate(); err != nil {
 			t.Errorf("Validate() got unexpected error: %v", err)
 		}

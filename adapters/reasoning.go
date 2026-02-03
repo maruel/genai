@@ -54,7 +54,7 @@ type ProviderReasoning struct {
 
 // GenSync implements the Provider interface by delegating to the wrapped provider
 // and processing the result to extract reasoning blocks.
-func (c *ProviderReasoning) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (genai.Result, error) {
+func (c *ProviderReasoning) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (genai.Result, error) {
 	result, err := c.Provider.GenSync(ctx, msgs, opts...)
 	if err2 := c.processReasoningMessage(&result.Message); err == nil {
 		err = err2
@@ -65,7 +65,7 @@ func (c *ProviderReasoning) GenSync(ctx context.Context, msgs genai.Messages, op
 // GenStream implements the Provider interface for streaming by delegating to the wrapped provider
 // and processing each fragment to extract reasoning blocks.
 // If no reasoning tags are present, the first part of the message is assumed to be reasoning.
-func (c *ProviderReasoning) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.Options) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
+func (c *ProviderReasoning) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	accumulated := genai.Message{}
 	var finalErr error
 	fragments, finish := c.Provider.GenStream(ctx, msgs, opts...)

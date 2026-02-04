@@ -356,34 +356,49 @@ type Client struct {
 //
 // It only support text exchanges (no multi-modal) and no tool calls.
 //
-// Option Remote must be set.
+// Option ProviderRemote must be set.
 //
 // Automatic model selection via ModelCheap, ModelGood, ModelSOTA is not supported and it will specify no
 // model in this case.
 //
 // Exceptionally it will interpret Model set to "" as no model to specify since there is no automatic model
 // selection.
-//
-// wrapper optionally wraps the HTTP transport. Useful for HTTP recording and playback, or to tweak HTTP
-// retries, or to throttle outgoing requests.
-func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
-	if err := opts.Validate(); err != nil {
-		return nil, err
+func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
+	var apiKey, model, remote string
+	var modalities genai.Modalities
+	var preloadedModels []genai.Model
+	var wrapper func(http.RoundTripper) http.RoundTripper
+	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
+			return nil, err
+		}
+		switch v := opt.(type) {
+		case genai.ProviderOptionAPIKey:
+			apiKey = string(v)
+		case genai.ProviderOptionModel:
+			model = string(v)
+		case genai.ProviderOptionModalities:
+			modalities = genai.Modalities(v)
+		case genai.ProviderOptionPreloadedModels:
+			preloadedModels = []genai.Model(v)
+		case genai.ProviderOptionTransportWrapper:
+			wrapper = v
+		case genai.ProviderOptionRemote:
+			remote = string(v)
+		default:
+			return nil, fmt.Errorf("unsupported option type %T", opt)
+		}
 	}
-	if opts.APIKey != "" {
-		return nil, errors.New("unexpected option APIKey")
+	if apiKey != "" {
+		return nil, errors.New("unexpected option ProviderAPIKey")
 	}
-	if opts.AccountID != "" {
-		return nil, errors.New("unexpected option AccountID")
-	}
-	if opts.Remote == "" {
-		return nil, errors.New("option Remote is required")
+	if remote == "" {
+		return nil, errors.New("option ProviderRemote is required")
 	}
 	mod := genai.Modalities{genai.ModalityText}
-	if len(opts.OutputModalities) != 0 && !slices.Equal(opts.OutputModalities, mod) {
+	if len(modalities) != 0 && !slices.Equal(modalities, mod) {
 		return nil, fmt.Errorf("unexpected option Modalities %s, only text is supported", mod)
 	}
-	model := opts.Model
 	switch model {
 	case "", genai.ModelNone, genai.ModelCheap, genai.ModelGood, genai.ModelSOTA:
 		model = ""
@@ -394,9 +409,9 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 	}
 	return &Client{
 		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
-			GenSyncURL:      opts.Remote,
+			GenSyncURL:      remote,
 			ProcessStream:   ProcessStream,
-			PreloadedModels: opts.PreloadedModels,
+			PreloadedModels: preloadedModels,
 			ProviderBase: base.ProviderBase[*ErrorResponse]{
 				Model:            model,
 				ModelOptional:    true,

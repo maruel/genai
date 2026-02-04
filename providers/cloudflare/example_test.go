@@ -44,16 +44,16 @@ func ExampleNew_hTTP_record() {
 		return rr
 	}
 	// When playing back the smoke test, no API key is needed. Insert a fake API key.
-	accountID := ""
+	var opts []genai.ProviderOption
 	if os.Getenv("CLOUDFLARE_ACCOUNT_ID") == "" {
-		accountID = "ACCOUNT_ID"
+		opts = append(opts, cloudflare.AccountID("ACCOUNT_ID"))
 	}
-	apiKey := ""
 	if os.Getenv("CLOUDFLARE_API_KEY") == "" {
-		apiKey = "<insert_api_key_here>"
+		opts = append(opts, genai.ProviderOptionAPIKey("<insert_api_key_here>"))
 	}
+	opts = append(opts, genai.ProviderOptionModel(genai.ModelNone))
 	ctx := context.Background()
-	c, err := cloudflare.New(ctx, &genai.ProviderOptions{APIKey: apiKey, AccountID: accountID, Model: genai.ModelNone}, wrapper)
+	c, err := cloudflare.New(ctx, append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(wrapper)}, opts...)...)
 	if err != nil {
 		log.Fatal(err)
 	}

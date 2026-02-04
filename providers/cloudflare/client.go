@@ -38,6 +38,18 @@ import (
 //go:embed scoreboard.json
 var scoreboardJSON []byte
 
+// AccountID provides an account ID for Cloudflare Workers AI.
+//
+// Get your account ID at https://dash.cloudflare.com/profile/api-tokens
+type AccountID string
+
+func (a AccountID) Validate() error {
+	if a == "" {
+		return errors.New("cloudflare.AccountID cannot be empty")
+	}
+	return nil
+}
+
 // Scoreboard for Cloudflare.
 func Scoreboard() scoreboard.Score {
 	var s scoreboard.Score
@@ -666,27 +678,43 @@ type Client struct {
 
 // New creates a new client to talk to the Cloudflare Workers AI platform API.
 //
-// If opts.AccountID is not provided, it tries to load it from the CLOUDFLARE_ACCOUNT_ID environment variable.
-// If opts.APIKey is not provided, it tries to load it from the CLOUDFLARE_API_KEY environment variable.
+// If AccountID is not provided, it tries to load it from the CLOUDFLARE_ACCOUNT_ID environment variable.
+// If ProviderAPIKey is not provided, it tries to load it from the CLOUDFLARE_API_KEY environment variable.
 // If none is found, it will still return a client coupled with an base.ErrAPIKeyRequired error.
 // Get your account ID and API key at https://dash.cloudflare.com/profile/api-tokens
 //
 // To use multiple models, create multiple clients.
 // Use one of the model from https://developers.cloudflare.com/workers-ai/models/
-//
-// wrapper optionally wraps the HTTP transport. Useful for HTTP recording and playback, or to tweak HTTP
-// retries, or to throttle outgoing requests.
-func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
-	if err := opts.Validate(); err != nil {
-		return nil, err
+func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
+	var apiKey, accountID, model string
+	var modalities genai.Modalities
+	var preloadedModels []genai.Model
+	var wrapper func(http.RoundTripper) http.RoundTripper
+	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
+			return nil, err
+		}
+		switch v := opt.(type) {
+		case genai.ProviderOptionAPIKey:
+			apiKey = string(v)
+		case AccountID:
+			accountID = string(v)
+		case genai.ProviderOptionModel:
+			model = string(v)
+		case genai.ProviderOptionModalities:
+			modalities = genai.Modalities(v)
+		case genai.ProviderOptionPreloadedModels:
+			preloadedModels = []genai.Model(v)
+		case genai.ProviderOptionTransportWrapper:
+			wrapper = v
+		case genai.ProviderOptionRemote:
+			return nil, errors.New("unexpected option ProviderRemote")
+		default:
+			return nil, fmt.Errorf("unsupported option type %T", opt)
+		}
 	}
-	if opts.Remote != "" {
-		return nil, errors.New("unexpected option Remote")
-	}
-	apiKey := opts.APIKey
 	const apiKeyURL = "https://dash.cloudflare.com/profile/api-tokens"
 	var err error
-	accountID := opts.AccountID
 	if accountID == "" {
 		if accountID = os.Getenv("CLOUDFLARE_ACCOUNT_ID"); accountID == "" {
 			err = &base.ErrAPIKeyRequired{EnvVar: "CLOUDFLARE_ACCOUNT_ID", URL: apiKeyURL}
@@ -698,7 +726,7 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 		}
 	}
 	mod := genai.Modalities{genai.ModalityText}
-	if len(opts.OutputModalities) != 0 && !slices.Equal(opts.OutputModalities, mod) {
+	if len(modalities) != 0 && !slices.Equal(modalities, mod) {
 		// TODO: Cloudflare supports non-text modalities but it is not currently implemented.
 		// https://developers.cloudflare.com/workers-ai/models/?tasks=Text-to-Image
 		return nil, fmt.Errorf("unexpected option Modalities %s, only text is implemented (send PR to add support)", mod)
@@ -713,7 +741,7 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 	c := &Client{
 		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			ProcessStream:   ProcessStream,
-			PreloadedModels: opts.PreloadedModels,
+			PreloadedModels: preloadedModels,
 			ProviderBase: base.ProviderBase[*ErrorResponse]{
 				APIKeyURL: apiKeyURL,
 				Lenient:   internal.BeLenient,
@@ -728,17 +756,17 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 		accountID: accountID,
 	}
 	if err == nil {
-		switch opts.Model {
+		switch model {
 		case genai.ModelNone:
 		case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA, "":
-			if c.impl.Model, err = c.selectBestTextModel(ctx, opts.Model); err != nil {
+			if c.impl.Model, err = c.selectBestTextModel(ctx, model); err != nil {
 				return nil, err
 			}
 			// Important: the model must not be path escaped!
 			c.impl.GenSyncURL = "https://api.cloudflare.com/client/v4/accounts/" + url.PathEscape(accountID) + "/ai/run/" + c.impl.Model
 			c.impl.OutputModalities = mod
 		default:
-			c.impl.Model = opts.Model
+			c.impl.Model = model
 			c.impl.GenSyncURL = "https://api.cloudflare.com/client/v4/accounts/" + url.PathEscape(accountID) + "/ai/run/" + c.impl.Model
 			c.impl.OutputModalities = mod
 		}

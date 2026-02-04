@@ -29,7 +29,7 @@ func ExampleClient_GenSync() {
 	}
 	defer srv.Close()
 	// Connect the provider.
-	c, err := llamacpp.New(ctx, &genai.ProviderOptions{Remote: srv.URL(), Model: genai.ModelNone}, nil)
+	c, err := llamacpp.New(ctx, genai.ProviderOptionRemote(srv.URL()), genai.ProviderOptionModel(genai.ModelNone))
 	if err != nil {
 		log.Print(err)
 		return

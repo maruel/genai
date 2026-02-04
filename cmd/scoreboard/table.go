@@ -254,7 +254,7 @@ func printTable(ctx context.Context, w io.Writer, provider string) error {
 	if cfg.Factory == nil {
 		return fmt.Errorf("provider %s: not found", provider)
 	}
-	c, err := cfg.Factory(ctx, &genai.ProviderOptions{Model: genai.ModelNone}, nil)
+	c, err := cfg.Factory(ctx, genai.ProviderOptionModel(genai.ModelNone))
 	if c == nil {
 		return fmt.Errorf("provider %s: %w", provider, err)
 	}
@@ -269,12 +269,12 @@ func printSummaryTable(ctx context.Context, w io.Writer, all map[string]provider
 		if cfg.Alias != "" {
 			continue
 		}
-		opts := &genai.ProviderOptions{Model: genai.ModelNone}
+		opts := []genai.ProviderOption{genai.ProviderOptionModel(genai.ModelNone)}
 		if name == "openaicompatible" {
 			// Make sure the remote it set for this one.
-			opts.Remote = "http://localhost:0"
+			opts = append(opts, genai.ProviderOptionRemote("http://localhost:0"))
 		}
-		p, err := cfg.Factory(ctx, opts, nil)
+		p, err := cfg.Factory(ctx, opts...)
 		// The function can return an error and still return a client when no API key was found. It's okay here
 		// because we won't use the service provider.
 		if p == nil {

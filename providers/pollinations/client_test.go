@@ -20,10 +20,39 @@ import (
 	"github.com/maruel/genai/smoke/smoketest"
 )
 
-func getClientInner(t *testing.T, opts genai.ProviderOptions, fn func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
+// providerOptions is a convenience struct used only in tests to group provider options.
+type providerOptions struct {
+	APIKey           string
+	Model            string
+	OutputModalities genai.Modalities
+	PreloadedModels  []genai.Model
+}
+
+func (o *providerOptions) toOptions() []genai.ProviderOption {
+	var opts []genai.ProviderOption
+	if o.Model != "" {
+		opts = append(opts, genai.ProviderOptionModel(o.Model))
+	}
+	if o.APIKey != "" {
+		opts = append(opts, genai.ProviderOptionAPIKey(o.APIKey))
+	}
+	if len(o.OutputModalities) > 0 {
+		opts = append(opts, genai.ProviderOptionModalities(o.OutputModalities))
+	}
+	if len(o.PreloadedModels) > 0 {
+		opts = append(opts, genai.ProviderOptionPreloadedModels(o.PreloadedModels))
+	}
+	return opts
+}
+
+func getClientInner(t *testing.T, opts providerOptions, fn func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
 	// Pollinations API rejects invalid keys but works without auth.
 	// Don't use a placeholder key for playback - leave empty to skip auth header.
-	return pollinations.New(t.Context(), &opts, fn)
+	provOpts := opts.toOptions()
+	if fn != nil {
+		provOpts = append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(fn)}, provOpts...)
+	}
+	return pollinations.New(t.Context(), provOpts...)
 }
 
 func TestClient(t *testing.T) {
@@ -33,7 +62,7 @@ func TestClient(t *testing.T) {
 			t.Error(err)
 		}
 	})
-	cl, err2 := getClientInner(t, genai.ProviderOptions{Model: genai.ModelNone}, func(h http.RoundTripper) http.RoundTripper {
+	cl, err2 := getClientInner(t, providerOptions{Model: genai.ModelNone}, func(h http.RoundTripper) http.RoundTripper {
 		return testRecorder.RecordWithName(t, t.Name()+"/Warmup", h)
 	})
 	if err2 != nil {
@@ -45,7 +74,7 @@ func TestClient(t *testing.T) {
 	}
 	getClient := func(t *testing.T, m string) genai.Provider {
 		t.Parallel()
-		opts := genai.ProviderOptions{Model: m, PreloadedModels: cachedModels}
+		opts := providerOptions{Model: m, PreloadedModels: cachedModels}
 		ci, err := getClientInner(t, opts, func(h http.RoundTripper) http.RoundTripper {
 			return testRecorder.Record(t, h)
 		})
@@ -66,8 +95,14 @@ func TestClient(t *testing.T) {
 			sbModels = append(sbModels, scoreboard.Model{Model: id, Reason: id == "deepseek-reasoning"})
 		}
 		getClientRT := func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
-			opts := genai.ProviderOptions{Model: model.Model, PreloadedModels: cachedModels}
-			c, err := pollinations.New(t.Context(), &opts, fn)
+			opts := []genai.ProviderOption{
+				genai.ProviderOptionModel(model.Model),
+				genai.ProviderOptionPreloadedModels(cachedModels),
+			}
+			if fn != nil {
+				opts = append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(fn)}, opts...)
+			}
+			c, err := pollinations.New(t.Context(), opts...)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -105,27 +140,28 @@ func TestClient(t *testing.T) {
 		data := []internaltest.ProviderError{
 			{
 				Name: "bad model",
-				Opts: genai.ProviderOptions{
-					Model: "bad model",
+				Opts: []genai.ProviderOption{
+					genai.ProviderOptionModel("bad model"),
 				},
 				ErrGenSync:   "model \"bad model\" not supported by pollinations",
 				ErrGenStream: "model \"bad model\" not supported by pollinations",
 			},
 			{
 				Name: "bad model image",
-				Opts: genai.ProviderOptions{
-					Model:            "bad model",
-					OutputModalities: genai.Modalities{genai.ModalityImage},
+				Opts: []genai.ProviderOption{
+					genai.ProviderOptionModel("bad model"),
+					genai.ProviderOptionModalities(genai.Modalities{genai.ModalityImage}),
 				},
 				ErrGenSync:   "model \"bad model\" not supported by pollinations",
 				ErrGenStream: "model \"bad model\" not supported by pollinations",
 			},
 		}
-		f := func(t *testing.T, opts genai.ProviderOptions) (genai.Provider, error) {
-			opts.OutputModalities = genai.Modalities{genai.ModalityText}
-			return getClientInner(t, opts, func(h http.RoundTripper) http.RoundTripper {
+		f := func(t *testing.T, opts ...genai.ProviderOption) (genai.Provider, error) {
+			// Always add text modality for these error tests
+			opts = append(opts, genai.ProviderOptionModalities(genai.Modalities{genai.ModalityText}))
+			return pollinations.New(t.Context(), append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(func(h http.RoundTripper) http.RoundTripper {
 				return testRecorder.Record(t, h)
-			})
+			})}, opts...)...)
 		}
 		internaltest.TestClientProviderErrors(t, f, data)
 	})

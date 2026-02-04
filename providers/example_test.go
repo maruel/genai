@@ -25,7 +25,7 @@ import (
 func Example_all_ListModel() {
 	ctx := context.Background()
 	for name, cfg := range providers.All {
-		c, err := cfg.Factory(ctx, &genai.ProviderOptions{Model: genai.ModelNone}, nil)
+		c, err := cfg.Factory(ctx, genai.ProviderOptionModel(genai.ModelNone))
 		if err != nil {
 			continue
 		}
@@ -47,7 +47,7 @@ func Example_all_ListModel() {
 func Example_all_Provider() {
 	ctx := context.Background()
 	for name, cfg := range providers.All {
-		c, err := cfg.Factory(ctx, &genai.ProviderOptions{Model: genai.ModelCheap}, nil)
+		c, err := cfg.Factory(ctx, genai.ProviderOptionModel(genai.ModelCheap))
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -90,7 +90,14 @@ func Example_all_Full() {
 	if query == "" {
 		log.Fatal("provide a query")
 	}
-	p, err := LoadProvider(ctx, *provider, &genai.ProviderOptions{Model: *model, Remote: *remote})
+	var opts []genai.ProviderOption
+	if *model != "" {
+		opts = append(opts, genai.ProviderOptionModel(*model))
+	}
+	if *remote != "" {
+		opts = append(opts, genai.ProviderOptionRemote(*remote))
+	}
+	p, err := LoadProvider(ctx, *provider, opts...)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -102,7 +109,7 @@ func Example_all_Full() {
 }
 
 // LoadProvider loads a provider.
-func LoadProvider(ctx context.Context, provider string, opts *genai.ProviderOptions) (genai.Provider, error) {
+func LoadProvider(ctx context.Context, provider string, opts ...genai.ProviderOption) (genai.Provider, error) {
 	if provider == "" {
 		return nil, fmt.Errorf("no provider specified")
 	}
@@ -110,7 +117,7 @@ func LoadProvider(ctx context.Context, provider string, opts *genai.ProviderOpti
 	if cfg.Factory == nil {
 		return nil, fmt.Errorf("unknown provider %q", provider)
 	}
-	c, err := cfg.Factory(ctx, opts, nil)
+	c, err := cfg.Factory(ctx, opts...)
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to provider %q: %w", provider, err)
 	}
@@ -123,7 +130,7 @@ func LoadDefaultProvider(ctx context.Context) (genai.Provider, error) {
 	avail := providers.Available(ctx)
 	if len(avail) == 1 {
 		for _, cfg := range avail {
-			return cfg.Factory(ctx, &genai.ProviderOptions{Model: genai.ModelNone}, nil)
+			return cfg.Factory(ctx, genai.ProviderOptionModel(genai.ModelNone))
 		}
 	}
 	if len(avail) == 0 {

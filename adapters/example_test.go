@@ -23,7 +23,7 @@ func ExampleGenSyncWithToolCallLoop() {
 	// Using a free small model for testing.
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
 	ctx := context.Background()
-	c, err := gemini.New(ctx, &genai.ProviderOptions{Model: "gemini-2.5-flash"}, nil)
+	c, err := gemini.New(ctx, genai.ProviderOptionModel("gemini-2.5-flash"))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -49,7 +49,7 @@ func ExampleGenStreamWithToolCallLoop() {
 	// Using a free small model for testing.
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
 	ctx := context.Background()
-	c, err := gemini.New(ctx, &genai.ProviderOptions{Model: "gemini-2.5-flash"}, nil)
+	c, err := gemini.New(ctx, genai.ProviderOptionModel("gemini-2.5-flash"))
 	if err != nil {
 		log.Fatal(err)
 	}

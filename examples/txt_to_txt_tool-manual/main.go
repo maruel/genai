@@ -23,7 +23,7 @@ func main() {
 	// While most provider support tool calling in theory, most fail reliability smoke tests.
 	// See ../../docs/MODELS.md for the scoreboard and each provider's Scoreboard().
 	// This is continuously improving.
-	c, err := cerebras.New(ctx, &genai.ProviderOptions{Model: "qwen-3-235b-a22b-instruct-2507"}, nil)
+	c, err := cerebras.New(ctx, genai.ProviderOptionModel("qwen-3-235b-a22b-instruct-2507"))
 	if err != nil {
 		log.Fatal(err)
 	}

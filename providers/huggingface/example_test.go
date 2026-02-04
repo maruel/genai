@@ -49,7 +49,7 @@ func ExampleNew_hTTP_record() {
 		log.Fatal(err)
 	}
 	ctx := context.Background()
-	c, err := huggingface.New(ctx, &genai.ProviderOptions{APIKey: apiKey, Model: genai.ModelNone}, wrapper)
+	c, err := huggingface.New(ctx, genai.ProviderOptionTransportWrapper(wrapper), genai.ProviderOptionAPIKey(apiKey), genai.ProviderOptionModel(genai.ModelNone))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -65,15 +65,17 @@ func ExampleNew_hTTP_record() {
 }
 
 func getAPIKey() (string, error) {
-	if os.Getenv("HUGGINGFACE_API_KEY") == "" {
-		// Fallback to loading from the python client's cache.
-		h, err := os.UserHomeDir()
-		if err != nil {
-			return "", fmt.Errorf("can't find home directory: %w", err)
-		}
-		if _, err := os.Stat(filepath.Join(h, ".cache", "huggingface", "token")); err != nil {
-			return "<insert_api_key_here>", nil
-		}
+	if v := os.Getenv("HUGGINGFACE_API_KEY"); v != "" {
+		return v, nil
 	}
-	return "", nil
+	// Fallback to loading from the python client's cache.
+	h, err := os.UserHomeDir()
+	if err != nil {
+		return "", fmt.Errorf("can't find home directory: %w", err)
+	}
+	tokenPath := filepath.Join(h, ".cache", "huggingface", "token")
+	if data, err := os.ReadFile(tokenPath); err == nil {
+		return string(data), nil
+	}
+	return "<insert_api_key_here>", nil
 }

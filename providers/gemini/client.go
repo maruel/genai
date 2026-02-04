@@ -1345,15 +1345,12 @@ type Client struct {
 
 // New creates a new client to talk to Google's Gemini platform API.
 //
-// If opts.APIKey is not provided, it tries to load it from the GEMINI_API_KEY environment variable.
+// If ProviderAPIKey is not provided, it tries to load it from the GEMINI_API_KEY environment variable.
 // If none is found, it will still return a client coupled with an base.ErrAPIKeyRequired error.
 // Get your API key at https://ai.google.dev/gemini-api/docs/getting-started
 //
 // To use multiple models, create multiple clients.
 // Use one of the model from https://ai.google.dev/gemini-api/docs/models/gemini
-//
-// wrapper optionally wraps the HTTP transport. Useful for HTTP recording and playback, or to tweak HTTP
-// retries, or to throttle outgoing requests.
 //
 // See https://ai.google.dev/gemini-api/docs/file-prompting-strategies?hl=en
 // for good ideas on how to prompt with images.
@@ -1364,17 +1361,32 @@ type Client struct {
 //
 // As of May 2025, price on Pro model increases when more than 200k input tokens are used.
 // Cached input tokens are 25% of the price of new tokens.
-func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
-	if err := opts.Validate(); err != nil {
-		return nil, err
+func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
+	var apiKey, model string
+	var modalities genai.Modalities
+	var preloadedModels []genai.Model
+	var wrapper func(http.RoundTripper) http.RoundTripper
+	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
+			return nil, err
+		}
+		switch v := opt.(type) {
+		case genai.ProviderOptionAPIKey:
+			apiKey = string(v)
+		case genai.ProviderOptionModel:
+			model = string(v)
+		case genai.ProviderOptionModalities:
+			modalities = genai.Modalities(v)
+		case genai.ProviderOptionPreloadedModels:
+			preloadedModels = []genai.Model(v)
+		case genai.ProviderOptionTransportWrapper:
+			wrapper = v
+		case genai.ProviderOptionRemote:
+			return nil, errors.New("unexpected option ProviderRemote")
+		default:
+			return nil, fmt.Errorf("unsupported option type %T", opt)
+		}
 	}
-	if opts.AccountID != "" {
-		return nil, errors.New("unexpected option AccountID")
-	}
-	if opts.Remote != "" {
-		return nil, errors.New("unexpected option Remote")
-	}
-	apiKey := opts.APIKey
 	const apiKeyURL = "https://aistudio.google.com/apikey"
 	var err error
 	if apiKey == "" {
@@ -1382,26 +1394,26 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 			err = &base.ErrAPIKeyRequired{EnvVar: "GEMINI_API_KEY", URL: apiKeyURL}
 		}
 	}
-	switch len(opts.OutputModalities) {
+	switch len(modalities) {
 	case 0:
 		// Auto-detect below.
 	case 1:
-		switch opts.OutputModalities[0] {
+		switch modalities[0] {
 		case genai.ModalityAudio, genai.ModalityImage, genai.ModalityText, genai.ModalityVideo:
 		case genai.ModalityDocument:
 			fallthrough
 		default:
-			return nil, fmt.Errorf("unexpected option Modalities %s, only audio, image, text, or video are supported", opts.OutputModalities)
+			return nil, fmt.Errorf("unexpected option Modalities %s, only audio, image, text, or video are supported", modalities)
 		}
 	case 2:
 		// The only combination supported is image + text.
-		mods := slices.Clone(opts.OutputModalities)
+		mods := slices.Clone(modalities)
 		slices.Sort(mods)
 		if !slices.Equal(mods, []genai.Modality{genai.ModalityImage, genai.ModalityText}) {
 			return nil, fmt.Errorf("unexpected option Modalities %s, only image+text are supported when grouped together", mods)
 		}
 	default:
-		return nil, fmt.Errorf("unexpected option Modalities %s, only audio, image, text, video, or image+text are supported", opts.OutputModalities)
+		return nil, fmt.Errorf("unexpected option Modalities %s, only audio, image, text, video, or image+text are supported", modalities)
 	}
 	// Google supports HTTP POST gzip compression!
 	var t http.RoundTripper = &roundtrippers.PostCompressed{
@@ -1415,7 +1427,7 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 	c := &Client{
 		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			ProcessStream:   ProcessStream,
-			PreloadedModels: opts.PreloadedModels,
+			PreloadedModels: preloadedModels,
 			LieToolCalls:    true,
 			ProviderBase: base.ProviderBase[*ErrorResponse]{
 				APIKeyURL: apiKeyURL,
@@ -1430,39 +1442,39 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 		},
 	}
 	if err == nil {
-		switch opts.Model {
+		switch model {
 		case genai.ModelNone:
 		case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA, "":
 			var mod genai.Modality
-			switch len(opts.OutputModalities) {
+			switch len(modalities) {
 			case 0:
 				mod = genai.ModalityText
 			case 1:
-				mod = opts.OutputModalities[0]
+				mod = modalities[0]
 			default:
 				// TODO: Maybe it's possible, need to double check.
-				return nil, fmt.Errorf("can't use model %s with option Modalities %s", opts.Model, opts.OutputModalities)
+				return nil, fmt.Errorf("can't use model %s with option Modalities %s", model, modalities)
 			}
 			switch mod {
 			case genai.ModalityText:
-				if c.impl.Model, err = c.selectBestTextModel(ctx, opts.Model); err != nil {
+				if c.impl.Model, err = c.selectBestTextModel(ctx, model); err != nil {
 					return nil, err
 				}
 				c.impl.GenSyncURL = "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(c.impl.Model) + ":generateContent"
 				c.impl.GenStreamURL = "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(c.impl.Model) + ":streamGenerateContent?alt=sse"
 				c.impl.OutputModalities = genai.Modalities{mod}
 			case genai.ModalityImage:
-				if c.impl.Model, err = c.selectBestImageModel(ctx, opts.Model); err != nil {
+				if c.impl.Model, err = c.selectBestImageModel(ctx, model); err != nil {
 					return nil, err
 				}
 				c.impl.OutputModalities = genai.Modalities{mod}
 			case genai.ModalityVideo:
-				if c.impl.Model, err = c.selectBestVideoModel(ctx, opts.Model); err != nil {
+				if c.impl.Model, err = c.selectBestVideoModel(ctx, model); err != nil {
 					return nil, err
 				}
 				c.impl.OutputModalities = genai.Modalities{mod}
 			case genai.ModalityAudio:
-				if c.impl.Model, err = c.selectBestAudioModel(ctx, opts.Model); err != nil {
+				if c.impl.Model, err = c.selectBestAudioModel(ctx, model); err != nil {
 					return nil, err
 				}
 				c.impl.OutputModalities = genai.Modalities{mod}
@@ -1470,14 +1482,14 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 				fallthrough
 			default:
 				// TODO: Soon, because it's cool.
-				return nil, fmt.Errorf("automatic model selection is not implemented yet for modality %s (send PR to add support)", opts.OutputModalities)
+				return nil, fmt.Errorf("automatic model selection is not implemented yet for modality %s (send PR to add support)", modalities)
 			}
 		default:
-			c.impl.Model = opts.Model
-			if len(opts.OutputModalities) == 0 {
+			c.impl.Model = model
+			if len(modalities) == 0 {
 				c.impl.OutputModalities, err = c.detectModelModalities(ctx, c.impl.Model)
 			} else {
-				c.impl.OutputModalities = opts.OutputModalities
+				c.impl.OutputModalities = modalities
 			}
 			c.impl.GenSyncURL = "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(c.impl.Model) + ":generateContent"
 			c.impl.GenStreamURL = "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(c.impl.Model) + ":streamGenerateContent?alt=sse"

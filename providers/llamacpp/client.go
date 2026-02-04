@@ -23,7 +23,6 @@ import (
 	"iter"
 	"math"
 	"net/http"
-	"os"
 	"path/filepath"
 	"reflect"
 	"slices"
@@ -1077,40 +1076,46 @@ type Client struct {
 
 // New creates a new client to talk to a llama-server instance.
 //
-// Options Remote defaults to "http://localhost:8080".
+// ProviderRemote defaults to "http://localhost:8080".
+//
+// llama-server doesn't have any mean of authentication so ProviderAPIKey is not supported.
 //
 // Automatic model selection via ModelCheap, ModelGood, ModelSOTA is not supported. It will ask llama-server
 // to determine which model is already loaded.
-//
-// wrapper optionally wraps the HTTP transport. Useful for HTTP recording and playback, or to tweak HTTP
-// retries, or to throttle outgoing requests.
-func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
-	if err := opts.Validate(); err != nil {
-		return nil, err
+func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
+	var baseURL, model string
+	var modalities genai.Modalities
+	var preloadedModels []genai.Model
+	var wrapper func(http.RoundTripper) http.RoundTripper
+	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
+			return nil, err
+		}
+		switch v := opt.(type) {
+		case genai.ProviderOptionRemote:
+			baseURL = string(v)
+		case genai.ProviderOptionModel:
+			model = string(v)
+		case genai.ProviderOptionModalities:
+			modalities = genai.Modalities(v)
+		case genai.ProviderOptionPreloadedModels:
+			preloadedModels = []genai.Model(v)
+		case genai.ProviderOptionTransportWrapper:
+			wrapper = v
+		case genai.ProviderOptionAPIKey:
+			return nil, errors.New("unexpected option ProviderAPIKey")
+		default:
+			return nil, fmt.Errorf("unsupported option type %T", opt)
+		}
 	}
-	var encoding *PromptEncoding
-	apiKey := opts.APIKey
-	if apiKey == "" {
-		apiKey = os.Getenv("LLAMA_API_KEY")
-	}
-	if opts.AccountID != "" {
-		return nil, errors.New("unexpected option AccountID")
-	}
-	baseURL := opts.Remote
 	if baseURL == "" {
 		baseURL = "http://localhost:8080"
 	}
 	mod := genai.Modalities{genai.ModalityText}
-	if len(opts.OutputModalities) != 0 && !slices.Equal(opts.OutputModalities, mod) {
+	if len(modalities) != 0 && !slices.Equal(modalities, mod) {
 		return nil, fmt.Errorf("unexpected option Modalities %s, only text is supported", mod)
 	}
 	t := base.DefaultTransport
-	if apiKey != "" {
-		t = &roundtrippers.Header{
-			Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
-			Transport: t,
-		}
-	}
 	if wrapper != nil {
 		t = wrapper(t)
 	}
@@ -1118,7 +1123,7 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			GenSyncURL:      baseURL + "/chat/completions",
 			ProcessStream:   ProcessStream,
-			PreloadedModels: opts.PreloadedModels,
+			PreloadedModels: preloadedModels,
 			ProviderBase: base.ProviderBase[*ErrorResponse]{
 				ModelOptional: true,
 				Lenient:       internal.BeLenient,
@@ -1130,17 +1135,16 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 		baseURL:        baseURL,
 		completionsURL: baseURL + "/completions",
 		modelsURL:      baseURL + "/v1/models",
-		encoding:       encoding,
 	}
 	var err error
-	switch opts.Model {
+	switch model {
 	case genai.ModelNone:
 	case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA, "":
 		if c.impl.Model, err = c.selectBestTextModel(ctx); err == nil {
 			c.impl.OutputModalities = mod
 		}
 	default:
-		c.impl.Model = opts.Model
+		c.impl.Model = model
 		c.impl.OutputModalities = mod
 	}
 	return c, err

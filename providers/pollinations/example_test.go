@@ -46,7 +46,7 @@ func ExampleNew_hTTP_record() {
 	// Pollinations API works without auth but rejects invalid keys.
 	// Don't set a placeholder key for playback - leave empty to skip auth header.
 	ctx := context.Background()
-	c, err := pollinations.New(ctx, &genai.ProviderOptions{Model: genai.ModelNone}, wrapper)
+	c, err := pollinations.New(ctx, genai.ProviderOptionTransportWrapper(wrapper), genai.ProviderOptionModel(genai.ModelNone))
 	if err != nil {
 		log.Fatal(err)
 	}

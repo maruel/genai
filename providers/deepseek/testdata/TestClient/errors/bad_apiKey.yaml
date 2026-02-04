@@ -1,0 +1,49 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 101
+        host: api.deepseek.com
+        body: |
+            {"model":"deepseek-chat","messages":[{"role":"user","content":"Tell a short joke."}],"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.deepseek.com/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 153
+        body: '{"error":{"message":"Authentication Fails, Your api key: ****iKey is invalid","type":"authentication_error","param":null,"code":"invalid_request_error"}}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Content-Length:
+                - "153"
+            Content-Type:
+                - application/json
+            Server:
+                - elb
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers
+            Via:
+                - 1.1 d0a9a04ccf341764b8c0b3cf84033e56.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - Vo-69fUitVu9nOzAUNeGVtSlA7Ii7TIFTvJg563HM08ru_G-QI5XPw==
+            X-Amz-Cf-Pop:
+                - YUL62-P4
+            X-Cache:
+                - Error from cloudfront
+            X-Content-Type-Options:
+                - nosniff
+        status: 401 Unauthorized
+        code: 401
+        duration: 342ms

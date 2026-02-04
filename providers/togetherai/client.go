@@ -853,31 +853,43 @@ type Client struct {
 
 // New creates a new client to talk to the Together.AI platform API.
 //
-// If apiKey is not provided, it tries to load it from the TOGETHER_API_KEY environment variable.
+// If ProviderAPIKey is not provided, it tries to load it from the TOGETHER_API_KEY environment variable.
 // If none is found, it will still return a client coupled with an base.ErrAPIKeyRequired error.
 // Get your API key at https://api.together.ai/settings/api-keys
 //
 // To use multiple models, create multiple clients.
 // Use one of the model from https://docs.together.ai/docs/serverless-models
 //
-// wrapper optionally wraps the HTTP transport. Useful for HTTP recording and playback, or to tweak HTTP
-// retries, or to throttle outgoing requests.
-//
 // # Vision
 //
 // We must select a model that supports video.
 // https://docs.together.ai/docs/serverless-models#vision-models
-func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
-	if err := opts.Validate(); err != nil {
-		return nil, err
+func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
+	var apiKey, model string
+	var modalities genai.Modalities
+	var preloadedModels []genai.Model
+	var wrapper func(http.RoundTripper) http.RoundTripper
+	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
+			return nil, err
+		}
+		switch v := opt.(type) {
+		case genai.ProviderOptionAPIKey:
+			apiKey = string(v)
+		case genai.ProviderOptionModel:
+			model = string(v)
+		case genai.ProviderOptionModalities:
+			modalities = genai.Modalities(v)
+		case genai.ProviderOptionPreloadedModels:
+			preloadedModels = []genai.Model(v)
+		case genai.ProviderOptionTransportWrapper:
+			wrapper = v
+		case genai.ProviderOptionRemote:
+			return nil, errors.New("unexpected option ProviderRemote")
+		default:
+			return nil, fmt.Errorf("unsupported option type %T", opt)
+		}
 	}
-	if opts.AccountID != "" {
-		return nil, errors.New("unexpected option AccountID")
-	}
-	if opts.Remote != "" {
-		return nil, errors.New("unexpected option Remote")
-	}
-	apiKey := opts.APIKey
 	const apiKeyURL = "https://api.together.ai/settings/api-keys"
 	var err error
 	if apiKey == "" {
@@ -885,21 +897,21 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 			err = &base.ErrAPIKeyRequired{EnvVar: "TOGETHER_API_KEY", URL: apiKeyURL}
 		}
 	}
-	switch len(opts.OutputModalities) {
+	switch len(modalities) {
 	case 0:
 	case 1:
-		switch opts.OutputModalities[0] {
+		switch modalities[0] {
 		case genai.ModalityImage, genai.ModalityText:
 		case genai.ModalityAudio:
 			// TODO: Add support for audio.
-			return nil, fmt.Errorf("unexpected option Modalities %s, only image or text are implemented (send PR to add support)", opts.OutputModalities)
+			return nil, fmt.Errorf("unexpected option Modalities %s, only image or text are implemented (send PR to add support)", modalities)
 		case genai.ModalityDocument, genai.ModalityVideo:
 			fallthrough
 		default:
-			return nil, fmt.Errorf("unexpected option Modalities %s, only image or text are implemented", opts.OutputModalities)
+			return nil, fmt.Errorf("unexpected option Modalities %s, only image or text are implemented", modalities)
 		}
 	default:
-		return nil, fmt.Errorf("unexpected option Modalities %s, only image or text are implemented (send PR to add support)", opts.OutputModalities)
+		return nil, fmt.Errorf("unexpected option Modalities %s, only image or text are implemented (send PR to add support)", modalities)
 	}
 	t := base.DefaultTransport
 	if wrapper != nil {
@@ -909,7 +921,7 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			GenSyncURL:      "https://api.together.xyz/v1/chat/completions",
 			ProcessStream:   ProcessStream,
-			PreloadedModels: opts.PreloadedModels,
+			PreloadedModels: preloadedModels,
 			ProcessHeaders:  processHeaders,
 			ProviderBase: base.ProviderBase[*ErrorResponse]{
 				APIKeyURL: apiKeyURL,
@@ -924,26 +936,26 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 		},
 	}
 	if err == nil {
-		switch opts.Model {
+		switch model {
 		case genai.ModelNone:
 		case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA, "":
-			if len(opts.OutputModalities) == 0 || opts.OutputModalities[0] == genai.ModalityText {
-				if c.impl.Model, err = c.selectBestTextModel(ctx, opts.Model); err != nil {
+			if len(modalities) == 0 || modalities[0] == genai.ModalityText {
+				if c.impl.Model, err = c.selectBestTextModel(ctx, model); err != nil {
 					return nil, err
 				}
 				c.impl.OutputModalities = genai.Modalities{genai.ModalityText}
 			} else {
-				if c.impl.Model, err = c.selectBestImageModel(ctx, opts.Model); err != nil {
+				if c.impl.Model, err = c.selectBestImageModel(ctx, model); err != nil {
 					return nil, err
 				}
 				c.impl.OutputModalities = genai.Modalities{genai.ModalityImage}
 			}
 		default:
-			c.impl.Model = opts.Model
-			if len(opts.OutputModalities) == 0 {
-				c.impl.OutputModalities, err = c.detectModelModalities(ctx, opts.Model)
+			c.impl.Model = model
+			if len(modalities) == 0 {
+				c.impl.OutputModalities, err = c.detectModelModalities(ctx, model)
 			} else {
-				c.impl.OutputModalities = opts.OutputModalities
+				c.impl.OutputModalities = modalities
 			}
 		}
 	}

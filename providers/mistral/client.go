@@ -752,15 +752,12 @@ type Client struct {
 
 // New creates a new client to talk to the Mistral platform API.
 //
-// If opts.APIKey is not provided, it tries to load it from the MISTRAL_API_KEY environment variable.
+// If ProviderAPIKey is not provided, it tries to load it from the MISTRAL_API_KEY environment variable.
 // If none is found, it will still return a client coupled with an base.ErrAPIKeyRequired error.
 // Get your API key at https://console.mistral.ai/api-keys or https://console.mistral.ai/codestral
 //
 // To use multiple models, create multiple clients.
 // Use one of the model from https://docs.mistral.ai/getting-started/models/models_overview/
-//
-// wrapper optionally wraps the HTTP transport. Useful for HTTP recording and playback, or to tweak HTTP
-// retries, or to throttle outgoing requests.
 //
 // # PDF understanding
 //
@@ -775,17 +772,32 @@ type Client struct {
 //
 // Tool use requires a model which has the tool capability. See
 // https://docs.mistral.ai/capabilities/function_calling/
-func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
-	if err := opts.Validate(); err != nil {
-		return nil, err
+func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
+	var apiKey, model string
+	var modalities genai.Modalities
+	var preloadedModels []genai.Model
+	var wrapper func(http.RoundTripper) http.RoundTripper
+	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
+			return nil, err
+		}
+		switch v := opt.(type) {
+		case genai.ProviderOptionAPIKey:
+			apiKey = string(v)
+		case genai.ProviderOptionModel:
+			model = string(v)
+		case genai.ProviderOptionModalities:
+			modalities = genai.Modalities(v)
+		case genai.ProviderOptionPreloadedModels:
+			preloadedModels = []genai.Model(v)
+		case genai.ProviderOptionTransportWrapper:
+			wrapper = v
+		case genai.ProviderOptionRemote:
+			return nil, errors.New("unexpected option ProviderRemote")
+		default:
+			return nil, fmt.Errorf("unsupported option type %T", opt)
+		}
 	}
-	if opts.AccountID != "" {
-		return nil, errors.New("unexpected option AccountID")
-	}
-	if opts.Remote != "" {
-		return nil, errors.New("unexpected option Remote")
-	}
-	apiKey := opts.APIKey
 	const apiKeyURL = "https://console.mistral.ai/api-keys"
 	var err error
 	if apiKey == "" {
@@ -794,7 +806,7 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 		}
 	}
 	mod := genai.Modalities{genai.ModalityText}
-	if len(opts.OutputModalities) != 0 && !slices.Equal(opts.OutputModalities, mod) {
+	if len(modalities) != 0 && !slices.Equal(modalities, mod) {
 		// https://docs.mistral.ai/agents/connectors/image_generation/
 		return nil, fmt.Errorf("unexpected option Modalities %s, only text is implemented (send PR to add support)", mod)
 	}
@@ -806,7 +818,7 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			GenSyncURL:      "https://api.mistral.ai/v1/chat/completions",
 			ProcessStream:   ProcessStream,
-			PreloadedModels: opts.PreloadedModels,
+			PreloadedModels: preloadedModels,
 			ProcessHeaders:  processHeaders,
 			ProviderBase: base.ProviderBase[*ErrorResponse]{
 				APIKeyURL: apiKeyURL,
@@ -821,15 +833,15 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 		},
 	}
 	if err == nil {
-		switch opts.Model {
+		switch model {
 		case genai.ModelNone:
 		case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA, "":
-			if c.impl.Model, err = c.selectBestTextModel(ctx, opts.Model); err != nil {
+			if c.impl.Model, err = c.selectBestTextModel(ctx, model); err != nil {
 				return nil, err
 			}
 			c.impl.OutputModalities = mod
 		default:
-			c.impl.Model = opts.Model
+			c.impl.Model = model
 			c.impl.OutputModalities = mod
 		}
 	}

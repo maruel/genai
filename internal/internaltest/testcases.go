@@ -23,17 +23,17 @@ import (
 // ProviderError defines a test case for provider errors.
 type ProviderError struct {
 	Name         string
-	Opts         genai.ProviderOptions
+	Opts         []genai.ProviderOption
 	ErrGenSync   string
 	ErrGenStream string
 	ErrListModel string
 }
 
 // TestClientProviderErrors tests that the provider returns the expected error.
-func TestClientProviderErrors(t *testing.T, getClient func(t *testing.T, opts genai.ProviderOptions) (genai.Provider, error), lines []ProviderError) {
+func TestClientProviderErrors(t *testing.T, getClient func(t *testing.T, opts ...genai.ProviderOption) (genai.Provider, error), lines []ProviderError) {
 	for _, line := range lines {
 		t.Run(line.Name, func(t *testing.T) {
-			if _, err := getClient(t, line.Opts); line.ErrGenSync != "" || line.ErrGenStream != "" || line.ErrListModel != "" {
+			if _, err := getClient(t, line.Opts...); line.ErrGenSync != "" || line.ErrGenStream != "" || line.ErrListModel != "" {
 				if err != nil {
 					// It failed but it was not expected.
 					if line.ErrGenSync != "" {
@@ -50,7 +50,7 @@ func TestClientProviderErrors(t *testing.T, getClient func(t *testing.T, opts ge
 
 			msgs := genai.Messages{genai.NewTextMessage("Tell a short joke.")}
 			t.Run("GenSync", func(t *testing.T) {
-				c, err := getClient(t, line.Opts)
+				c, err := getClient(t, line.Opts...)
 				if err != nil {
 					if err.Error() == line.ErrGenSync {
 						return
@@ -73,7 +73,7 @@ func TestClientProviderErrors(t *testing.T, getClient func(t *testing.T, opts ge
 				}
 			})
 			t.Run("GenStream", func(t *testing.T) {
-				c, err := getClient(t, line.Opts)
+				c, err := getClient(t, line.Opts...)
 				if err != nil {
 					if err.Error() == line.ErrGenStream {
 						return
@@ -101,7 +101,7 @@ func TestClientProviderErrors(t *testing.T, getClient func(t *testing.T, opts ge
 			})
 			if line.ErrListModel != "" {
 				t.Run("ListModels", func(t *testing.T) {
-					c, err := getClient(t, line.Opts)
+					c, err := getClient(t, line.Opts...)
 					if err != nil {
 						if err.Error() == line.ErrListModel {
 							return

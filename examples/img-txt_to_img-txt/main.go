@@ -22,11 +22,9 @@ import (
 func main() {
 	ctx := context.Background()
 	// Warning: This is a bit expensive.
-	opts := genai.ProviderOptions{
-		Model:            "gemini-2.5-flash-image-preview",
-		OutputModalities: genai.Modalities{genai.ModalityImage, genai.ModalityText},
-	}
-	c, err := gemini.New(ctx, &opts, nil)
+	c, err := gemini.New(ctx,
+		genai.ProviderOptionModel("gemini-2.5-flash-image-preview"),
+		genai.ProviderOptionModalities(genai.Modalities{genai.ModalityImage, genai.ModalityText}))
 	if err != nil {
 		log.Fatal(err)
 	}

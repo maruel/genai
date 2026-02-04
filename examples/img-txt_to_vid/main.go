@@ -21,7 +21,7 @@ import (
 func main() {
 	ctx := context.Background()
 	// Warning: this is expensive.
-	c, err := gemini.New(ctx, &genai.ProviderOptions{Model: "veo-3.0-fast-generate-preview"}, nil)
+	c, err := gemini.New(ctx, genai.ProviderOptionModel("veo-3.0-fast-generate-preview"))
 	if err != nil {
 		log.Fatal(err)
 	}

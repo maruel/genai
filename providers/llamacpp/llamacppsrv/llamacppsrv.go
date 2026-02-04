@@ -135,7 +135,7 @@ func New(ctx context.Context, exe, modelPath string, logOutput io.Writer, hostPo
 			if runtime.GOOS == "windows" {
 				// We need to figure out how to differentiate between normal quitting
 				// and an error.
-				//err2 = nil
+				// err2 = nil
 			}
 		}
 		done <- err2
@@ -143,7 +143,7 @@ func New(ctx context.Context, exe, modelPath string, logOutput io.Writer, hostPo
 	}()
 
 	// Wait for the server to be ready.
-	c, err := llamacpp.New(ctx, &genai.ProviderOptions{Remote: u, Model: genai.ModelNone}, nil)
+	c, err := llamacpp.New(ctx, genai.ProviderOptionRemote(u), genai.ProviderOptionModel(genai.ModelNone))
 	if err != nil {
 		_ = cmd.Cancel()
 		<-done

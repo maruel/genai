@@ -40,7 +40,14 @@ func main() {
 	if query == "" {
 		log.Fatal("provide a query")
 	}
-	p, err := LoadProvider(ctx, *provider, &genai.ProviderOptions{Model: *model, Remote: *remote})
+	var opts []genai.ProviderOption
+	if *model != "" {
+		opts = append(opts, genai.ProviderOptionModel(*model))
+	}
+	if *remote != "" {
+		opts = append(opts, genai.ProviderOptionRemote(*remote))
+	}
+	p, err := LoadProvider(ctx, *provider, opts...)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -52,7 +59,7 @@ func main() {
 }
 
 // LoadProvider loads a provider.
-func LoadProvider(ctx context.Context, provider string, opts *genai.ProviderOptions) (genai.Provider, error) {
+func LoadProvider(ctx context.Context, provider string, opts ...genai.ProviderOption) (genai.Provider, error) {
 	if provider == "" {
 		return nil, fmt.Errorf("no provider specified")
 	}
@@ -60,7 +67,7 @@ func LoadProvider(ctx context.Context, provider string, opts *genai.ProviderOpti
 	if cfg.Factory == nil {
 		return nil, fmt.Errorf("unknown provider %q", provider)
 	}
-	c, err := cfg.Factory(ctx, opts, nil)
+	c, err := cfg.Factory(ctx, opts...)
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to provider %q: %w", provider, err)
 	}

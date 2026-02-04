@@ -538,9 +538,9 @@ type Client struct {
 
 // New creates a new client to talk to the Ollama API.
 //
-// Options Remote defaults to "http://localhost:11434".
+// ProviderRemote defaults to "http://localhost:11434".
 //
-// Ollama doesn't have any mean of authentication so options APIKey is not supported.
+// Ollama doesn't have any mean of authentication so ProviderAPIKey is not supported.
 //
 // To use multiple models, create multiple clients.
 // Use one of the model from https://ollama.com/library
@@ -548,25 +548,37 @@ type Client struct {
 // Automatic model selection via ModelCheap, ModelGood, ModelSOTA is using hardcoded models. Before using an
 // hardcoded model ID, it will ask ollama to determine if a model is already loaded and it will use that
 // instead.
-//
-// wrapper optionally wraps the HTTP transport. Useful for HTTP recording and playback, or to tweak HTTP
-// retries, or to throttle outgoing requests.
-func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
-	if err := opts.Validate(); err != nil {
-		return nil, err
+func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
+	var baseURL, model string
+	var modalities genai.Modalities
+	var preloadedModels []genai.Model
+	var wrapper func(http.RoundTripper) http.RoundTripper
+	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
+			return nil, err
+		}
+		switch v := opt.(type) {
+		case genai.ProviderOptionRemote:
+			baseURL = string(v)
+		case genai.ProviderOptionModel:
+			model = string(v)
+		case genai.ProviderOptionModalities:
+			modalities = genai.Modalities(v)
+		case genai.ProviderOptionPreloadedModels:
+			preloadedModels = []genai.Model(v)
+		case genai.ProviderOptionTransportWrapper:
+			wrapper = v
+		case genai.ProviderOptionAPIKey:
+			return nil, errors.New("unexpected option ProviderAPIKey")
+		default:
+			return nil, fmt.Errorf("unsupported option type %T", opt)
+		}
 	}
-	if opts.APIKey != "" {
-		return nil, errors.New("unexpected option APIKey")
-	}
-	if opts.AccountID != "" {
-		return nil, errors.New("unexpected option AccountID")
-	}
-	baseURL := opts.Remote
 	if baseURL == "" {
 		baseURL = "http://localhost:11434"
 	}
 	mod := genai.Modalities{genai.ModalityText}
-	if len(opts.OutputModalities) != 0 && !slices.Equal(opts.OutputModalities, mod) {
+	if len(modalities) != 0 && !slices.Equal(modalities, mod) {
 		return nil, fmt.Errorf("unexpected option Modalities %s, only text is supported", mod)
 	}
 	t := base.DefaultTransport
@@ -580,17 +592,17 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 				Transport: &roundtrippers.RequestID{Transport: t},
 			},
 		},
-		preloadedModels: opts.PreloadedModels,
+		preloadedModels: preloadedModels,
 		baseURL:         baseURL,
 		chatURL:         baseURL + "/api/chat",
 	}
-	switch opts.Model {
+	switch model {
 	case genai.ModelNone:
 	case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA, "":
-		c.impl.Model = c.selectBestTextModel(ctx, opts.Model)
+		c.impl.Model = c.selectBestTextModel(ctx, model)
 		c.impl.OutputModalities = mod
 	default:
-		c.impl.Model = opts.Model
+		c.impl.Model = model
 		c.impl.OutputModalities = mod
 	}
 	return c, nil

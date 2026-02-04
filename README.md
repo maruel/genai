@@ -265,7 +265,7 @@ to answer your question.
 Snippet:
 
 ```go
-	c, _ := perplexity.New(ctx, &genai.ProviderOptions{Model: genai.ModelCheap}, nil)
+	c, _ := perplexity.New(ctx, genai.ProviderModel(genai.ModelCheap))
 	msgs := genai.Messages{{
 		Requests: []genai.Request{
 			{Text: "Who holds ultimate power of Canada? Answer succinctly."},

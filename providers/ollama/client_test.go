@@ -37,7 +37,7 @@ func TestClient(t *testing.T) {
 	s := lazyServer{t: t}
 
 	t.Run("Capabilities", func(t *testing.T) {
-		c, err := ollama.New(t.Context(), &genai.ProviderOptions{Remote: s.lazyStart(t), Model: genai.ModelNone}, nil)
+		c, err := ollama.New(t.Context(), genai.ProviderOptionRemote(s.lazyStart(t)), genai.ProviderOptionModel(genai.ModelNone))
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -63,7 +63,8 @@ func TestClient(t *testing.T) {
 					Level:     slog.LevelDebug,
 				}
 			}
-			c, err := ollama.New(ctx, &genai.ProviderOptions{Remote: s.lazyStart(t), Model: model.Model}, fnWithLog)
+			opts := []genai.ProviderOption{genai.ProviderOptionRemote(s.lazyStart(t)), genai.ProviderOptionModel(model.Model), genai.ProviderOptionTransportWrapper(fnWithLog)}
+			c, err := ollama.New(ctx, opts...)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -92,22 +93,28 @@ func TestClient(t *testing.T) {
 	// This test doesn't require the server to start.
 	t.Run("Preferred", func(t *testing.T) {
 		internaltest.TestPreferredModels(t, func(st *testing.T, model string, modality genai.Modality) (genai.Provider, error) {
-			opts := genai.ProviderOptions{
-				Model:            model,
-				OutputModalities: genai.Modalities{modality},
-				Remote:           "http://localhost:66666",
+			opts := []genai.ProviderOption{
+				genai.ProviderOptionModel(model),
+				genai.ProviderOptionModalities(genai.Modalities{modality}),
+				genai.ProviderOptionRemote("http://localhost:66666"),
+				genai.ProviderOptionTransportWrapper(func(h http.RoundTripper) http.RoundTripper {
+					return testRecorder.Record(st, h)
+				}),
 			}
-			return ollama.New(st.Context(), &opts, func(h http.RoundTripper) http.RoundTripper {
-				return testRecorder.Record(st, h)
-			})
+			return ollama.New(st.Context(), opts...)
 		})
 	})
 
 	t.Run("TextOutputDocInput", func(t *testing.T) {
 		internaltest.TestTextOutputDocInput(t, func(t *testing.T) genai.Provider {
-			c, err := ollama.New(t.Context(), &genai.ProviderOptions{Remote: s.lazyStart(t), Model: genai.ModelCheap}, func(h http.RoundTripper) http.RoundTripper {
-				return testRecorder.Record(t, h)
-			})
+			opts := []genai.ProviderOption{
+				genai.ProviderOptionRemote(s.lazyStart(t)),
+				genai.ProviderOptionModel(genai.ModelCheap),
+				genai.ProviderOptionTransportWrapper(func(h http.RoundTripper) http.RoundTripper {
+					return testRecorder.Record(t, h)
+				}),
+			}
+			c, err := ollama.New(t.Context(), opts...)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -119,14 +126,14 @@ func TestClient(t *testing.T) {
 		data := []internaltest.ProviderError{
 			{
 				Name: "bad model",
-				Opts: genai.ProviderOptions{
-					Model: "bad_model",
+				Opts: []genai.ProviderOption{
+					genai.ProviderOptionModel("bad_model"),
 				},
 				ErrGenSync:   "pull failed: http 500\npull model manifest: file does not exist",
 				ErrGenStream: "pull failed: http 500\npull model manifest: file does not exist",
 			},
 		}
-		f := func(t *testing.T, opts genai.ProviderOptions) (genai.Provider, error) {
+		f := func(t *testing.T, opts ...genai.ProviderOption) (genai.Provider, error) {
 			serverURL := ""
 			transport := testRecorder.Record(t, http.DefaultTransport)
 			wrapper := func(h http.RoundTripper) http.RoundTripper { return transport }
@@ -142,8 +149,8 @@ func TestClient(t *testing.T) {
 				})
 				serverURL = s.lazyStart(t)
 			}
-			opts.Remote = serverURL
-			return ollama.New(t.Context(), &opts, wrapper)
+			opts = append(opts, genai.ProviderOptionRemote(serverURL), genai.ProviderOptionTransportWrapper(wrapper))
+			return ollama.New(t.Context(), opts...)
 		}
 		internaltest.TestClientProviderErrors(t, f, data)
 	})

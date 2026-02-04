@@ -40,7 +40,7 @@ func TestClient(t *testing.T) {
 				Transport: testRecorder.Record(t, h),
 			}
 		}
-		c, err := openaicompatible.New(t.Context(), &genai.ProviderOptions{Remote: p.chatURL, Model: p.model}, wrapper)
+		c, err := openaicompatible.New(t.Context(), genai.ProviderOptionTransportWrapper(wrapper), genai.ProviderOptionRemote(p.chatURL), genai.ProviderOptionModel(p.model))
 		if err != nil {
 			t.Fatal(err)
 		}

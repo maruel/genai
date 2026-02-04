@@ -25,11 +25,21 @@ import (
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
 
-func getClientInner(t *testing.T, opts genai.ProviderOptions, fn func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-	if opts.APIKey == "" && os.Getenv("GEMINI_API_KEY") == "" {
-		opts.APIKey = "<insert_api_key_here>"
+func getClientInner(t *testing.T, model string, modalities genai.Modalities, preloadedModels []genai.Model, fn func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
+	opts := []genai.ProviderOption{genai.ProviderOptionModel(model)}
+	if os.Getenv("GEMINI_API_KEY") == "" {
+		opts = append(opts, genai.ProviderOptionAPIKey("<insert_api_key_here>"))
 	}
-	return gemini.New(t.Context(), &opts, fn)
+	if len(modalities) > 0 {
+		opts = append(opts, genai.ProviderOptionModalities(modalities))
+	}
+	if len(preloadedModels) > 0 {
+		opts = append(opts, genai.ProviderOptionPreloadedModels(preloadedModels))
+	}
+	if fn != nil {
+		opts = append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(fn)}, opts...)
+	}
+	return gemini.New(t.Context(), opts...)
 }
 
 func TestClient(t *testing.T) {
@@ -39,7 +49,7 @@ func TestClient(t *testing.T) {
 			t.Error(err)
 		}
 	})
-	cl, err2 := getClientInner(t, genai.ProviderOptions{Model: genai.ModelNone}, func(h http.RoundTripper) http.RoundTripper {
+	cl, err2 := getClientInner(t, genai.ModelNone, nil, nil, func(h http.RoundTripper) http.RoundTripper {
 		return testRecorder.RecordWithName(t, t.Name()+"/Warmup", h)
 	})
 	if err2 != nil {
@@ -51,8 +61,7 @@ func TestClient(t *testing.T) {
 	}
 	getClient := func(t *testing.T, m string) genai.Provider {
 		t.Parallel()
-		opts := genai.ProviderOptions{Model: m, PreloadedModels: cachedModels}
-		ci, err := getClientInner(t, opts, func(h http.RoundTripper) http.RoundTripper {
+		ci, err := getClientInner(t, m, nil, cachedModels, func(h http.RoundTripper) http.RoundTripper {
 			return testRecorder.Record(t, h)
 		})
 		if err != nil {
@@ -93,11 +102,17 @@ func TestClient(t *testing.T) {
 			}
 		}
 		getClientRT := func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
-			opts := genai.ProviderOptions{Model: model.Model, PreloadedModels: cachedModels}
-			if os.Getenv("GEMINI_API_KEY") == "" {
-				opts.APIKey = "<insert_api_key_here>"
+			opts := []genai.ProviderOption{
+				genai.ProviderOptionModel(model.Model),
+				genai.ProviderOptionPreloadedModels(cachedModels),
 			}
-			c, err := gemini.New(t.Context(), &opts, fn)
+			if os.Getenv("GEMINI_API_KEY") == "" {
+				opts = append(opts, genai.ProviderOptionAPIKey("<insert_api_key_here>"))
+			}
+			if fn != nil {
+				opts = append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(fn)}, opts...)
+			}
+			c, err := gemini.New(t.Context(), opts...)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -123,12 +138,7 @@ func TestClient(t *testing.T) {
 
 	t.Run("Preferred", func(t *testing.T) {
 		internaltest.TestPreferredModels(t, func(st *testing.T, model string, modality genai.Modality) (genai.Provider, error) {
-			opts := genai.ProviderOptions{
-				Model:            model,
-				OutputModalities: genai.Modalities{modality},
-				PreloadedModels:  cachedModels,
-			}
-			return getClientInner(st, opts, func(h http.RoundTripper) http.RoundTripper {
+			return getClientInner(st, model, genai.Modalities{modality}, cachedModels, func(h http.RoundTripper) http.RoundTripper {
 				return testRecorder.Record(st, h)
 			})
 		})
@@ -352,9 +362,9 @@ func TestClient(t *testing.T) {
 		data := []internaltest.ProviderError{
 			{
 				Name: "bad apiKey",
-				Opts: genai.ProviderOptions{
-					APIKey: "badApiKey",
-					Model:  "gemini-2.0-flash-lite",
+				Opts: []genai.ProviderOption{
+					genai.ProviderOptionAPIKey("badApiKey"),
+					genai.ProviderOptionModel("gemini-2.0-flash-lite"),
 				},
 				ErrGenSync:   "http 400\nINVALID_ARGUMENT (400): API key not valid. Please pass a valid API key.",
 				ErrGenStream: "http 400\nINVALID_ARGUMENT (400): API key not valid. Please pass a valid API key.",
@@ -362,28 +372,28 @@ func TestClient(t *testing.T) {
 			},
 			{
 				Name: "bad apiKey image",
-				Opts: genai.ProviderOptions{
-					APIKey:           "badApiKey",
-					Model:            "imagen-4.0-fast-generate-001",
-					OutputModalities: genai.Modalities{genai.ModalityImage},
+				Opts: []genai.ProviderOption{
+					genai.ProviderOptionAPIKey("badApiKey"),
+					genai.ProviderOptionModel("imagen-4.0-fast-generate-001"),
+					genai.ProviderOptionModalities(genai.Modalities{genai.ModalityImage}),
 				},
 				ErrGenSync:   "http 400\nINVALID_ARGUMENT (400): API key not valid. Please pass a valid API key.",
 				ErrGenStream: "http 400\nINVALID_ARGUMENT (400): API key not valid. Please pass a valid API key.",
 			},
 			{
 				Name: "bad model",
-				Opts: genai.ProviderOptions{
-					Model: "bad model",
+				Opts: []genai.ProviderOption{
+					genai.ProviderOptionModel("bad model"),
 				},
 				ErrGenSync:   "http 400\nINVALID_ARGUMENT (400): * GenerateContentRequest.model: unexpected model name format",
 				ErrGenStream: "http 400\nINVALID_ARGUMENT (400): * GenerateContentRequest.model: unexpected model name format",
 			},
 		}
-		f := func(t *testing.T, opts genai.ProviderOptions) (genai.Provider, error) {
-			opts.OutputModalities = genai.Modalities{genai.ModalityText}
-			return getClientInner(t, opts, func(h http.RoundTripper) http.RoundTripper {
+		f := func(t *testing.T, opts ...genai.ProviderOption) (genai.Provider, error) {
+			opts = append(opts, genai.ProviderOptionModalities(genai.Modalities{genai.ModalityText}))
+			return gemini.New(t.Context(), append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(func(h http.RoundTripper) http.RoundTripper {
 				return testRecorder.Record(t, h)
-			})
+			})}, opts...)...)
 		}
 		internaltest.TestClientProviderErrors(t, f, data)
 	})

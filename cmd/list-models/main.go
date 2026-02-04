@@ -81,7 +81,7 @@ func printStructDense(v any, indent string) string {
 
 func getModels(ctx context.Context, provider string) ([]string, map[string]genai.Model, error) {
 	cfg := providers.All[provider]
-	c, err := cfg.Factory(ctx, &genai.ProviderOptions{Model: genai.ModelNone}, nil)
+	c, err := cfg.Factory(ctx, genai.ProviderOptionModel(genai.ModelNone))
 	if err != nil {
 		return nil, nil, err
 	}
@@ -90,15 +90,15 @@ func getModels(ctx context.Context, provider string) ([]string, map[string]genai
 		return nil, nil, err
 	}
 
-	if c, err = cfg.Factory(ctx, &genai.ProviderOptions{Model: genai.ModelCheap}, nil); err != nil {
+	if c, err = cfg.Factory(ctx, genai.ProviderOptionModel(genai.ModelCheap)); err != nil {
 		return nil, nil, err
 	}
 	cheap := c.ModelID()
-	if c, err = cfg.Factory(ctx, &genai.ProviderOptions{Model: genai.ModelGood}, nil); err != nil {
+	if c, err = cfg.Factory(ctx, genai.ProviderOptionModel(genai.ModelGood)); err != nil {
 		return nil, nil, err
 	}
 	good := c.ModelID()
-	if c, err = cfg.Factory(ctx, &genai.ProviderOptions{Model: genai.ModelSOTA}, nil); err != nil {
+	if c, err = cfg.Factory(ctx, genai.ProviderOptionModel(genai.ModelSOTA)); err != nil {
 		return nil, nil, err
 	}
 	sota := c.ModelID()

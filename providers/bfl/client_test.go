@@ -20,11 +20,14 @@ import (
 	"github.com/maruel/genai/smoke/smoketest"
 )
 
-func getClientInner(t *testing.T, opts genai.ProviderOptions, fn func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-	if opts.APIKey == "" && os.Getenv("BFL_API_KEY") == "" {
-		opts.APIKey = "<insert_api_key_here>"
+func getClientInner(t *testing.T, fn func(http.RoundTripper) http.RoundTripper, opts ...genai.ProviderOption) (genai.Provider, error) {
+	if os.Getenv("BFL_API_KEY") == "" {
+		opts = append(opts, genai.ProviderOptionAPIKey("<insert_api_key_here>"))
 	}
-	return bfl.New(t.Context(), &opts, fn)
+	if fn != nil {
+		opts = append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(fn)}, opts...)
+	}
+	return bfl.New(t.Context(), opts...)
 }
 
 func TestClient(t *testing.T) {
@@ -37,9 +40,9 @@ func TestClient(t *testing.T) {
 
 	getClient := func(t *testing.T, m string) genai.Provider {
 		t.Parallel()
-		ci, err := getClientInner(t, genai.ProviderOptions{Model: m}, func(h http.RoundTripper) http.RoundTripper {
+		ci, err := getClientInner(t, func(h http.RoundTripper) http.RoundTripper {
 			return testRecorder.Record(t, h)
-		})
+		}, genai.ProviderOptionModel(m))
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -64,11 +67,14 @@ func TestClient(t *testing.T) {
 			}
 		}
 		getClientRT := func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
-			opts := genai.ProviderOptions{Model: model.Model}
+			opts := []genai.ProviderOption{genai.ProviderOptionModel(model.Model)}
 			if os.Getenv("BFL_API_KEY") == "" {
-				opts.APIKey = "<insert_api_key_here>"
+				opts = append(opts, genai.ProviderOptionAPIKey("<insert_api_key_here>"))
 			}
-			c, err := bfl.New(t.Context(), &opts, fn)
+			if fn != nil {
+				opts = append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(fn)}, opts...)
+			}
+			c, err := bfl.New(t.Context(), opts...)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -82,13 +88,9 @@ func TestClient(t *testing.T) {
 
 	t.Run("Preferred", func(t *testing.T) {
 		internaltest.TestPreferredModels(t, func(st *testing.T, model string, modality genai.Modality) (genai.Provider, error) {
-			opts := genai.ProviderOptions{
-				Model:            model,
-				OutputModalities: genai.Modalities{modality},
-			}
-			return getClientInner(st, opts, func(h http.RoundTripper) http.RoundTripper {
+			return getClientInner(st, func(h http.RoundTripper) http.RoundTripper {
 				return testRecorder.Record(st, h)
-			})
+			}, genai.ProviderOptionModel(model), genai.ProviderOptionModalities(genai.Modalities{modality}))
 		})
 	})
 
@@ -102,27 +104,27 @@ func TestClient(t *testing.T) {
 		data := []internaltest.ProviderError{
 			{
 				Name: "bad apiKey",
-				Opts: genai.ProviderOptions{
-					APIKey: "bad apiKey",
-					Model:  "flux-dev",
+				Opts: []genai.ProviderOption{
+					genai.ProviderOptionAPIKey("bad apiKey"),
+					genai.ProviderOptionModel("flux-dev"),
 				},
 				ErrGenSync:   "http 403\nNot authenticated - Invalid Authentication",
 				ErrGenStream: "http 403\nNot authenticated - Invalid Authentication",
 			},
 			{
 				Name: "bad model",
-				Opts: genai.ProviderOptions{
-					Model: "bad model",
+				Opts: []genai.ProviderOption{
+					genai.ProviderOptionModel("bad model"),
 				},
 				ErrGenSync:   "http 404\nNot Found",
 				ErrGenStream: "http 404\nNot Found",
 			},
 		}
-		f := func(t *testing.T, opts genai.ProviderOptions) (genai.Provider, error) {
-			opts.OutputModalities = genai.Modalities{genai.ModalityImage}
-			return getClientInner(t, opts, func(h http.RoundTripper) http.RoundTripper {
+		f := func(t *testing.T, opts ...genai.ProviderOption) (genai.Provider, error) {
+			opts = append(opts, genai.ProviderOptionModalities(genai.Modalities{genai.ModalityImage}))
+			return getClientInner(t, func(h http.RoundTripper) http.RoundTripper {
 				return testRecorder.Record(t, h)
-			})
+			}, opts...)
 		}
 		internaltest.TestClientProviderErrors(t, f, data)
 	})

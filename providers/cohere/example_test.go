@@ -44,12 +44,13 @@ func ExampleNew_hTTP_record() {
 		return rr
 	}
 	// When playing back the smoke test, no API key is needed. Insert a fake API key.
-	apiKey := ""
+	var opts []genai.ProviderOption
 	if os.Getenv("COHERE_API_KEY") == "" {
-		apiKey = "<insert_api_key_here>"
+		opts = append(opts, genai.ProviderOptionAPIKey("<insert_api_key_here>"))
 	}
+	opts = append(opts, genai.ProviderOptionModel(genai.ModelNone))
 	ctx := context.Background()
-	c, err := cohere.New(ctx, &genai.ProviderOptions{APIKey: apiKey, Model: genai.ModelNone}, wrapper)
+	c, err := cohere.New(ctx, append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(wrapper)}, opts...)...)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -18,7 +18,7 @@ func main() {
 	ctx := context.Background()
 	// Most SOTA providers support thinking but do not provide the full tokens.
 	// As of 2025-08, qwen-3-235b-a22b-instruct-2507 is quite solid.
-	c, err := deepseek.New(ctx, &genai.ProviderOptions{Model: "deepseek-reasoner"}, nil)
+	c, err := deepseek.New(ctx, genai.ProviderOptionModel("deepseek-reasoner"))
 	if err != nil {
 		log.Fatal(err)
 	}

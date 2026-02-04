@@ -26,7 +26,7 @@ func main() {
 	// - "gpt-image-1" from openai
 	// - "imagen-4.0-*" from gemini
 	// - pollinations
-	c, err := togetherai.New(ctx, &genai.ProviderOptions{Model: "black-forest-labs/FLUX.1-schnell-Free"}, nil)
+	c, err := togetherai.New(ctx, genai.ProviderOptionModel("black-forest-labs/FLUX.1-schnell-Free"))
 	if err != nil {
 		log.Fatal(err)
 	}

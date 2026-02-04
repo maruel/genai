@@ -22,7 +22,7 @@ func main() {
 	// Other options (as of 2025-08):
 	// - "voxtral-*-latest" from mistral
 	// - any "gemini-2-5-*" model from gemini
-	c, err := openaichat.New(ctx, &genai.ProviderOptions{Model: "gpt-4o-audio-preview"}, nil)
+	c, err := openaichat.New(ctx, genai.ProviderOptionModel("gpt-4o-audio-preview"))
 	if err != nil {
 		log.Fatal(err)
 	}

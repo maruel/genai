@@ -41,7 +41,7 @@ func mainImpl() error {
 
 	names := make([]string, 0, len(providers.All))
 	for name := range providers.All {
-		if c, _ := providers.All[name].Factory(ctx, &genai.ProviderOptions{Model: genai.ModelNone}, nil); c != nil {
+		if c, _ := providers.All[name].Factory(ctx, genai.ProviderOptionModel(genai.ModelNone)); c != nil {
 			names = append(names, name)
 		}
 	}
@@ -58,7 +58,7 @@ func mainImpl() error {
 	if !slices.Contains(names, *provider) {
 		return fmt.Errorf("unknown backend %q", *provider)
 	}
-	c, err := providers.All[*provider].Factory(ctx, &genai.ProviderOptions{Model: genai.ModelNone}, nil)
+	c, err := providers.All[*provider].Factory(ctx, genai.ProviderOptionModel(genai.ModelNone))
 	if err != nil {
 		return err
 	}

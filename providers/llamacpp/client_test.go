@@ -24,6 +24,7 @@ import (
 	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/genai/smoke/smoketest"
 	"github.com/maruel/huggingface"
+	"github.com/maruel/roundtrippers"
 )
 
 func TestClient(t *testing.T) {
@@ -42,9 +43,12 @@ func TestClient(t *testing.T) {
 	s := lazyServer{t: t, apiKey: apiKey}
 
 	t.Run("Capabilities", func(t *testing.T) {
-		c, err := llamacpp.New(t.Context(), &genai.ProviderOptions{APIKey: apiKey, Remote: s.lazyStart(t), Model: genai.ModelNone}, func(h http.RoundTripper) http.RoundTripper {
-			return testRecorder.Record(t, h)
-		})
+		c, err := llamacpp.New(t.Context(), genai.ProviderOptionTransportWrapper(func(h http.RoundTripper) http.RoundTripper {
+			return testRecorder.Record(t, &roundtrippers.Header{
+				Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
+				Transport: h,
+			})
+		}), genai.ProviderOptionRemote(s.lazyStart(t)), genai.ProviderOptionModel(genai.ModelNone))
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -54,9 +58,12 @@ func TestClient(t *testing.T) {
 	t.Run("Scoreboard", func(t *testing.T) {
 		serverURL := s.lazyStart(t)
 		ctx := t.Context()
-		c, err := llamacpp.New(ctx, &genai.ProviderOptions{APIKey: apiKey, Remote: serverURL, Model: genai.ModelNone}, func(h http.RoundTripper) http.RoundTripper {
-			return testRecorder.Record(t, h)
-		})
+		c, err := llamacpp.New(ctx, genai.ProviderOptionTransportWrapper(func(h http.RoundTripper) http.RoundTripper {
+			return testRecorder.Record(t, &roundtrippers.Header{
+				Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
+				Transport: h,
+			})
+		}), genai.ProviderOptionRemote(serverURL), genai.ProviderOptionModel(genai.ModelNone))
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -67,7 +74,16 @@ func TestClient(t *testing.T) {
 			}
 		}
 		smoketest.Run(t, func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
-			c2, err2 := llamacpp.New(ctx, &genai.ProviderOptions{APIKey: apiKey, Remote: serverURL, Model: model.Model}, fn)
+			opts := []genai.ProviderOption{genai.ProviderOptionRemote(serverURL), genai.ProviderOptionModel(model.Model)}
+			if fn != nil {
+				opts = append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(func(h http.RoundTripper) http.RoundTripper {
+					return fn(&roundtrippers.Header{
+						Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
+						Transport: h,
+					})
+				})}, opts...)
+			}
+			c2, err2 := llamacpp.New(ctx, opts...)
 			if err2 != nil {
 				t.Fatal(err2)
 			}
@@ -81,9 +97,12 @@ func TestClient(t *testing.T) {
 
 	t.Run("TextOutputDocInput", func(t *testing.T) {
 		internaltest.TestTextOutputDocInput(t, func(t *testing.T) genai.Provider {
-			c, err := llamacpp.New(t.Context(), &genai.ProviderOptions{APIKey: apiKey, Remote: s.lazyStart(t), Model: genai.ModelCheap}, func(h http.RoundTripper) http.RoundTripper {
-				return testRecorder.Record(t, h)
-			})
+			c, err := llamacpp.New(t.Context(), genai.ProviderOptionTransportWrapper(func(h http.RoundTripper) http.RoundTripper {
+				return testRecorder.Record(t, &roundtrippers.Header{
+					Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
+					Transport: h,
+				})
+			}), genai.ProviderOptionRemote(s.lazyStart(t)), genai.ProviderOptionModel(genai.ModelCheap))
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -93,9 +112,12 @@ func TestClient(t *testing.T) {
 
 	t.Run("ListModels", func(t *testing.T) {
 		ctx := t.Context()
-		c, err := llamacpp.New(ctx, &genai.ProviderOptions{APIKey: apiKey, Remote: s.lazyStart(t), Model: genai.ModelNone}, func(h http.RoundTripper) http.RoundTripper {
-			return testRecorder.Record(t, h)
-		})
+		c, err := llamacpp.New(ctx, genai.ProviderOptionTransportWrapper(func(h http.RoundTripper) http.RoundTripper {
+			return testRecorder.Record(t, &roundtrippers.Header{
+				Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
+				Transport: h,
+			})
+		}), genai.ProviderOptionRemote(s.lazyStart(t)), genai.ProviderOptionModel(genai.ModelNone))
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -111,9 +133,12 @@ func TestClient(t *testing.T) {
 	// Run this at the end so there would be non-zero values.
 	t.Run("Metrics", func(t *testing.T) {
 		ctx := t.Context()
-		c, err := llamacpp.New(ctx, &genai.ProviderOptions{APIKey: apiKey, Remote: s.lazyStart(t), Model: genai.ModelNone}, func(h http.RoundTripper) http.RoundTripper {
-			return testRecorder.Record(t, h)
-		})
+		c, err := llamacpp.New(ctx, genai.ProviderOptionTransportWrapper(func(h http.RoundTripper) http.RoundTripper {
+			return testRecorder.Record(t, &roundtrippers.Header{
+				Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
+				Transport: h,
+			})
+		}), genai.ProviderOptionRemote(s.lazyStart(t)), genai.ProviderOptionModel(genai.ModelNone))
 		if err != nil {
 			t.Fatal(err)
 		}

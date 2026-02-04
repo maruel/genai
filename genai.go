@@ -33,61 +33,104 @@ import (
 
 // Provider
 
-// ProviderOptions contains all the options to connect to a model provider.
-//
-// All fields are optional, but some provider do require some of the fields.
-type ProviderOptions struct {
-	// APIKey provides an API key to authenticate to the server.
-	//
-	// Most providers require an API key, and the client will look at an environment variable
-	// "<PROVIDER>_API_KEY" to use as a default value if unspecified.
-	APIKey string `json:"apikey,omitzero" yaml:"apikey,omitzero"`
-	// AccountID provides an account ID key. Rarely used (only Cloudflare).
-	AccountID string `json:"accountid,omitzero" yaml:"accountid,omitzero"`
-	// Remote is the remote address to access the service.
-	//
-	// It is mostly used by locally hosted services (llamacpp, ollama) or for generic client (openaicompatible).
-	Remote string `json:"remote,omitzero" yaml:"remote,omitzero"`
-	// Model either specifies an exact the model ID to use, request the provider to select a model on your
-	// behalf or explicitly ask for no model.
-	//
-	// To use automatic model selection, pass ModelCheap to use a cheap model, ModelGood for a good
-	// everyday model or ModelSOTA to use its state of the art (SOTA) model. In this case, the provider
-	// internally call ListModels() to discover models and select the right one based on its heuristics.
-	// Provider that do not support ListModels, e.g. bfl or perplexity, will use an hardcoded list.
-	//
-	// When unspecified, i.e. with "", it defaults to automatic model selection with ModelGood.
-	//
-	// There are two ways to disable automatic model discovery and selection: specify a model ID or use
-	// ModelNone.
-	//
-	// Keep in mind that as providers cycle through new models, it's possible a specific model ID is not
-	// available anymore or that the default model changes.
-	Model string `json:"model,omitzero" yaml:"model,omitzero"`
-	// OutputModalities is the list of output modalities you request the model to support.
-	//
-	// Most provider support text output only. Most models support output of only one modality, either text,
-	// image, audio or video. But a few models do support both text and images.
-	//
-	// When unspecified, it defaults to all modalities supported by the provider and the selected model.
-	//
-	// Even when Model is set to a specific model ID, a ListModels call may be made to discover its supported
-	// output modalities for providers that support multiple output modalities.
-	//
-	// OutputModalities can be set when Model is set to ModelNone to test if a provider support this modality without
-	// causing a ListModels call.
-	OutputModalities Modalities `json:"modalities,omitzero" yaml:"modalities,omitzero"`
-	// PreloadedModels is a list of models that are preloaded into the provider, to replace the call to
-	// ListModels, for example with automatic model selection and modality detection.
-	//
-	// This is mostly used for unit tests or repeated client creation to save on HTTP requests.
-	PreloadedModels []Model
-
-	_ struct{}
+// ProviderOption is an option for provider constructors.
+type ProviderOption interface {
+	Validate() error
 }
 
-func (p *ProviderOptions) Validate() error {
-	return p.OutputModalities.Validate()
+// ProviderOptionAPIKey provides an API key to authenticate to the server.
+//
+// Most providers require an API key, and the client will look at an environment variable
+// "<PROVIDER>_API_KEY" to use as a default value if unspecified.
+type ProviderOptionAPIKey string
+
+func (p ProviderOptionAPIKey) Validate() error {
+	if p == "" {
+		return errors.New("ProviderAPIKey cannot be empty")
+	}
+	return nil
+}
+
+// ProviderOptionRemote is the remote address to access the service.
+//
+// It is mostly used by locally hosted services (llamacpp, ollama) or for generic client (openaicompatible).
+type ProviderOptionRemote string
+
+func (p ProviderOptionRemote) Validate() error {
+	if p == "" {
+		return errors.New("ProviderRemote cannot be empty")
+	}
+	return nil
+}
+
+// ProviderOptionModel either specifies an exact the model ID to use, request the provider to select a model on your
+// behalf or explicitly ask for no model.
+//
+// To use automatic model selection, pass ModelCheap to use a cheap model, ModelGood for a good
+// everyday model or ModelSOTA to use its state of the art (SOTA) model. In this case, the provider
+// internally call ListModels() to discover models and select the right one based on its heuristics.
+// Provider that do not support ListModels, e.g. bfl or perplexity, will use an hardcoded list.
+//
+// When unspecified, the provider defaults to automatic model selection with ModelGood.
+//
+// There are two ways to disable automatic model discovery and selection: specify a model ID or use
+// ModelNone.
+//
+// Keep in mind that as providers cycle through new models, it's possible a specific model ID is not
+// available anymore or that the default model changes.
+type ProviderOptionModel string
+
+func (p ProviderOptionModel) Validate() error {
+	if p == "" {
+		return errors.New("ProviderModel cannot be empty")
+	}
+	return nil
+}
+
+// ProviderOptionModalities is the list of output modalities you request the model to support.
+//
+// Most provider support text output only. Most models support output of only one modality, either text,
+// image, audio or video. But a few models do support both text and images.
+//
+// When unspecified, the provider defaults to all modalities supported by the provider and the selected model.
+//
+// Even when Model is set to a specific model ID, a ListModels call may be made to discover its supported
+// output modalities for providers that support multiple output modalities.
+//
+// ProviderOptionModalities can be set when Model is set to ModelNone to test if a provider support this modality without
+// causing a ListModels call.
+type ProviderOptionModalities Modalities
+
+func (p ProviderOptionModalities) Validate() error {
+	if len(p) == 0 {
+		return errors.New("ProviderModalities cannot be empty")
+	}
+	return Modalities(p).Validate()
+}
+
+// ProviderOptionPreloadedModels is a list of models that are preloaded into the provider, to replace the call to
+// ListModels, for example with automatic model selection and modality detection.
+//
+// This is mostly used for unit tests or repeated client creation to save on HTTP requests.
+type ProviderOptionPreloadedModels []Model
+
+func (p ProviderOptionPreloadedModels) Validate() error {
+	if len(p) == 0 {
+		return errors.New("ProviderPreloadedModels cannot be empty")
+	}
+	return nil
+}
+
+// ProviderOptionTransportWrapper wraps the HTTP transport used by the provider.
+//
+// This is useful for adding middleware like logging, tracing, or HTTP recording for tests.
+type ProviderOptionTransportWrapper func(http.RoundTripper) http.RoundTripper
+
+func (p ProviderOptionTransportWrapper) Validate() error {
+	if p == nil {
+		return errors.New("ProviderTransportWrapper cannot be nil")
+	}
+	return nil
 }
 
 // Model markers to pass to ProviderOptions.Model.

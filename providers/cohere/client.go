@@ -847,31 +847,43 @@ type Client struct {
 
 // New creates a new client to talk to the Cohere platform API.
 //
-// If opts.APIKey is not provided, it tries to load it from the COHERE_API_KEY environment variable.
+// If ProviderAPIKey is not provided, it tries to load it from the COHERE_API_KEY environment variable.
 // If none is found, it will still return a client coupled with an base.ErrAPIKeyRequired error.
 // Get your API key at https://dashboard.cohere.com/api-keys
 //
 // Use one of the model from https://cohere.com/pricing and https://docs.cohere.com/v2/docs/models
 // To use multiple models, create multiple clients.
 //
-// wrapper optionally wraps the HTTP transport. Useful for HTTP recording and playback, or to tweak HTTP
-// retries, or to throttle outgoing requests.
-//
 // # Tool use
 //
 // Tool use requires the use a model that supports structured output.
 // https://docs.cohere.com/v2/docs/structured-outputs
-func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
-	if err := opts.Validate(); err != nil {
-		return nil, err
+func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
+	var apiKey, model string
+	var modalities genai.Modalities
+	var preloadedModels []genai.Model
+	var wrapper func(http.RoundTripper) http.RoundTripper
+	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
+			return nil, err
+		}
+		switch v := opt.(type) {
+		case genai.ProviderOptionAPIKey:
+			apiKey = string(v)
+		case genai.ProviderOptionModel:
+			model = string(v)
+		case genai.ProviderOptionModalities:
+			modalities = genai.Modalities(v)
+		case genai.ProviderOptionPreloadedModels:
+			preloadedModels = []genai.Model(v)
+		case genai.ProviderOptionTransportWrapper:
+			wrapper = v
+		case genai.ProviderOptionRemote:
+			return nil, errors.New("unexpected option ProviderRemote")
+		default:
+			return nil, fmt.Errorf("unsupported option type %T", opt)
+		}
 	}
-	if opts.AccountID != "" {
-		return nil, errors.New("unexpected option AccountID")
-	}
-	if opts.Remote != "" {
-		return nil, errors.New("unexpected option Remote")
-	}
-	apiKey := opts.APIKey
 	const apiKeyURL = "https://dashboard.cohere.com/api-keys"
 	var err error
 	if apiKey == "" {
@@ -880,7 +892,7 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 		}
 	}
 	mod := genai.Modalities{genai.ModalityText}
-	if len(opts.OutputModalities) != 0 && !slices.Equal(opts.OutputModalities, mod) {
+	if len(modalities) != 0 && !slices.Equal(modalities, mod) {
 		return nil, fmt.Errorf("unexpected option Modalities %s, only text is supported", mod)
 	}
 	t := base.DefaultTransport
@@ -891,7 +903,7 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			GenSyncURL:      "https://api.cohere.com/v2/chat",
 			ProcessStream:   ProcessStream,
-			PreloadedModels: opts.PreloadedModels,
+			PreloadedModels: preloadedModels,
 			ProviderBase: base.ProviderBase[*ErrorResponse]{
 				APIKeyURL: apiKeyURL,
 				Lenient:   internal.BeLenient,
@@ -905,15 +917,15 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 		},
 	}
 	if err == nil {
-		switch opts.Model {
+		switch model {
 		case genai.ModelNone:
 		case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA, "":
-			if c.impl.Model, err = c.selectBestTextModel(ctx, opts.Model); err != nil {
+			if c.impl.Model, err = c.selectBestTextModel(ctx, model); err != nil {
 				return nil, err
 			}
 			c.impl.OutputModalities = mod
 		default:
-			c.impl.Model = opts.Model
+			c.impl.Model = model
 			c.impl.OutputModalities = mod
 		}
 	}

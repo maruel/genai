@@ -27,7 +27,7 @@ func ExampleProvider_genSync_vision() {
 	// Using a free small model for testing.
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
 	ctx := context.Background()
-	c, err := gemini.New(ctx, &genai.ProviderOptions{Model: "gemini-2.5-flash-lite"}, nil)
+	c, err := gemini.New(ctx, genai.ProviderOptionModel("gemini-2.5-flash-lite"))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -57,7 +57,7 @@ func ExampleClient_GenSync_jSON() {
 	// Using a free small model for testing.
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
 	ctx := context.Background()
-	c, err := gemini.New(ctx, &genai.ProviderOptions{Model: "gemini-2.5-flash-lite"}, nil)
+	c, err := gemini.New(ctx, genai.ProviderOptionModel("gemini-2.5-flash-lite"))
 	if err == nil {
 		log.Fatal(err)
 	}
@@ -83,7 +83,7 @@ func ExampleClient_GenSync_jSON_schema() {
 	// Using a free small model for testing.
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
 	ctx := context.Background()
-	c, err := gemini.New(ctx, &genai.ProviderOptions{Model: "gemini-2.5-flash-lite"}, nil)
+	c, err := gemini.New(ctx, genai.ProviderOptionModel("gemini-2.5-flash-lite"))
 	if err == nil {
 		log.Fatal(err)
 	}
@@ -111,7 +111,7 @@ func ExampleProvider_genSync_pdf() {
 	// Using a free small model for testing.
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
 	ctx := context.Background()
-	c, err := gemini.New(ctx, &genai.ProviderOptions{Model: "gemini-2.5-flash-lite"}, nil)
+	c, err := gemini.New(ctx, genai.ProviderOptionModel("gemini-2.5-flash-lite"))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -142,7 +142,7 @@ func ExampleProvider_genSync_audio() {
 	// Using a free small model for testing.
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
 	ctx := context.Background()
-	c, err := gemini.New(ctx, &genai.ProviderOptions{Model: "gemini-2.5-flash-lite"}, nil)
+	c, err := gemini.New(ctx, genai.ProviderOptionModel("gemini-2.5-flash-lite"))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -173,7 +173,7 @@ func ExampleProvider_genSync_video() {
 	// Using a free small model for testing.
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
 	ctx := context.Background()
-	c, err := gemini.New(ctx, &genai.ProviderOptions{Model: "gemini-2.5-flash"}, nil)
+	c, err := gemini.New(ctx, genai.ProviderOptionModel("gemini-2.5-flash"))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -201,7 +201,7 @@ func ExampleProvider_GenStream() {
 	// Using a free small model for testing.
 	// See https://ai.google.dev/gemini-api/docs/models/gemini?hl=en
 	ctx := context.Background()
-	c, err := gemini.New(ctx, &genai.ProviderOptions{Model: "gemini-2.5-flash-lite"}, nil)
+	c, err := gemini.New(ctx, genai.ProviderOptionModel("gemini-2.5-flash-lite"))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -234,7 +234,7 @@ func Example_genSyncWithToolCallLoop_with_custom_HTTP_Header() {
 		}
 	}
 	ctx := context.Background()
-	c, err := anthropic.New(ctx, &genai.ProviderOptions{Model: "claude-sonnet-4-20250514"}, wrapper)
+	c, err := anthropic.New(ctx, genai.ProviderOptionModel("claude-sonnet-4-20250514"), genai.ProviderOptionTransportWrapper(wrapper))
 	if err != nil {
 		log.Fatal(err)
 	}

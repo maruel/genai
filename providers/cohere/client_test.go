@@ -19,11 +19,21 @@ import (
 	"github.com/maruel/genai/smoke/smoketest"
 )
 
-func getClientInner(t *testing.T, opts genai.ProviderOptions, fn func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-	if opts.APIKey == "" && os.Getenv("COHERE_API_KEY") == "" {
-		opts.APIKey = "<insert_api_key_here>"
+func getClientInner(t *testing.T, fn func(http.RoundTripper) http.RoundTripper, opts ...genai.ProviderOption) (genai.Provider, error) {
+	hasAPIKey := false
+	for _, opt := range opts {
+		if _, ok := opt.(genai.ProviderOptionAPIKey); ok {
+			hasAPIKey = true
+			break
+		}
 	}
-	return cohere.New(t.Context(), &opts, fn)
+	if !hasAPIKey && os.Getenv("COHERE_API_KEY") == "" {
+		opts = append(opts, genai.ProviderOptionAPIKey("<insert_api_key_here>"))
+	}
+	if fn != nil {
+		opts = append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(fn)}, opts...)
+	}
+	return cohere.New(t.Context(), opts...)
 }
 
 func TestClient(t *testing.T) {
@@ -33,9 +43,9 @@ func TestClient(t *testing.T) {
 			t.Error(err)
 		}
 	})
-	cl, err2 := getClientInner(t, genai.ProviderOptions{Model: genai.ModelNone}, func(h http.RoundTripper) http.RoundTripper {
+	cl, err2 := getClientInner(t, func(h http.RoundTripper) http.RoundTripper {
 		return testRecorder.RecordWithName(t, t.Name()+"/Warmup", h)
-	})
+	}, genai.ProviderOptionModel(genai.ModelNone))
 	if err2 != nil {
 		t.Fatal(err2)
 	}
@@ -45,10 +55,9 @@ func TestClient(t *testing.T) {
 	}
 	getClient := func(t *testing.T, m string) genai.Provider {
 		t.Parallel()
-		opts := genai.ProviderOptions{Model: m, PreloadedModels: cachedModels}
-		ci, err := getClientInner(t, opts, func(h http.RoundTripper) http.RoundTripper {
+		ci, err := getClientInner(t, func(h http.RoundTripper) http.RoundTripper {
 			return testRecorder.Record(t, h)
-		})
+		}, genai.ProviderOptionModel(m), genai.ProviderOptionPreloadedModels(cachedModels))
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -78,11 +87,17 @@ func TestClient(t *testing.T) {
 			}
 		}
 		getClientRT := func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
-			opts := genai.ProviderOptions{Model: model.Model, PreloadedModels: cachedModels}
-			if os.Getenv("COHERE_API_KEY") == "" {
-				opts.APIKey = "<insert_api_key_here>"
+			provOpts := []genai.ProviderOption{
+				genai.ProviderOptionModel(model.Model),
+				genai.ProviderOptionPreloadedModels(cachedModels),
 			}
-			c, err := cohere.New(t.Context(), &opts, fn)
+			if os.Getenv("COHERE_API_KEY") == "" {
+				provOpts = append(provOpts, genai.ProviderOptionAPIKey("<insert_api_key_here>"))
+			}
+			if fn != nil {
+				provOpts = append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(fn)}, provOpts...)
+			}
+			c, err := cohere.New(t.Context(), provOpts...)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -93,14 +108,13 @@ func TestClient(t *testing.T) {
 
 	t.Run("Preferred", func(t *testing.T) {
 		internaltest.TestPreferredModels(t, func(st *testing.T, model string, modality genai.Modality) (genai.Provider, error) {
-			opts := genai.ProviderOptions{
-				Model:            model,
-				OutputModalities: genai.Modalities{modality},
-				PreloadedModels:  cachedModels,
-			}
-			return getClientInner(st, opts, func(h http.RoundTripper) http.RoundTripper {
+			return getClientInner(st, func(h http.RoundTripper) http.RoundTripper {
 				return testRecorder.Record(st, h)
-			})
+			},
+				genai.ProviderOptionModel(model),
+				genai.ProviderOptionModalities(genai.Modalities{modality}),
+				genai.ProviderOptionPreloadedModels(cachedModels),
+			)
 		})
 	})
 
@@ -114,9 +128,9 @@ func TestClient(t *testing.T) {
 		data := []internaltest.ProviderError{
 			{
 				Name: "bad apiKey",
-				Opts: genai.ProviderOptions{
-					APIKey: "bad apiKey",
-					Model:  "command-r7b-12-2024",
+				Opts: []genai.ProviderOption{
+					genai.ProviderOptionAPIKey("bad apiKey"),
+					genai.ProviderOptionModel("command-r7b-12-2024"),
 				},
 				ErrGenSync:   "http 401\ninvalid api token\nget a new API key at https://dashboard.cohere.com/api-keys",
 				ErrGenStream: "http 401\ninvalid api token\nget a new API key at https://dashboard.cohere.com/api-keys",
@@ -124,18 +138,18 @@ func TestClient(t *testing.T) {
 			},
 			{
 				Name: "bad model",
-				Opts: genai.ProviderOptions{
-					Model: "bad model",
+				Opts: []genai.ProviderOption{
+					genai.ProviderOptionModel("bad model"),
 				},
 				ErrGenSync:   "http 404\nmodel 'bad model' not found, make sure the correct model ID was used and that you have access to the model.",
 				ErrGenStream: "http 404\nmodel 'bad model' not found, make sure the correct model ID was used and that you have access to the model.",
 			},
 		}
-		f := func(t *testing.T, opts genai.ProviderOptions) (genai.Provider, error) {
-			opts.OutputModalities = genai.Modalities{genai.ModalityText}
-			return getClientInner(t, opts, func(h http.RoundTripper) http.RoundTripper {
+		f := func(t *testing.T, opts ...genai.ProviderOption) (genai.Provider, error) {
+			opts = append(opts, genai.ProviderOptionModalities(genai.Modalities{genai.ModalityText}))
+			return getClientInner(t, func(h http.RoundTripper) http.RoundTripper {
 				return testRecorder.Record(t, h)
-			})
+			}, opts...)
 		}
 		internaltest.TestClientProviderErrors(t, f, data)
 	})

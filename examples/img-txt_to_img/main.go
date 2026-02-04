@@ -24,7 +24,7 @@ func main() {
 	// Other options (as of 2025-08):
 	// - "gpt-image-1" from openai
 	// - "black-forest-labs/FLUX.1-kontext-dev", "-pro", "-max" from togetherai
-	c, err := bfl.New(ctx, &genai.ProviderOptions{Model: "flux-kontext-pro"}, nil)
+	c, err := bfl.New(ctx, genai.ProviderOptionModel("flux-kontext-pro"))
 	if err != nil {
 		log.Fatal(err)
 	}

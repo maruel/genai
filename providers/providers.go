@@ -9,7 +9,6 @@ package providers
 
 import (
 	"context"
-	"net/http"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/providers/anthropic"
@@ -36,7 +35,7 @@ import (
 type Config struct {
 	APIKeyEnvVar string
 	Alias        string
-	Factory      func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error)
+	Factory      func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error)
 }
 
 // All is a easy way to propose the user to load any of the supported provider.
@@ -46,8 +45,8 @@ type Config struct {
 var All = map[string]Config{
 	"anthropic": {
 		APIKeyEnvVar: "ANTHROPIC_API_KEY",
-		Factory: func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-			p, err := anthropic.New(ctx, opts, wrapper)
+		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
+			p, err := anthropic.New(ctx, opts...)
 			if p == nil {
 				return nil, err
 			}
@@ -56,8 +55,8 @@ var All = map[string]Config{
 	},
 	"bfl": {
 		APIKeyEnvVar: "BFL_API_KEY",
-		Factory: func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-			p, err := bfl.New(ctx, opts, wrapper)
+		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
+			p, err := bfl.New(ctx, opts...)
 			if p == nil {
 				return nil, err
 			}
@@ -66,8 +65,8 @@ var All = map[string]Config{
 	},
 	"cerebras": {
 		APIKeyEnvVar: "CEREBRAS_API_KEY",
-		Factory: func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-			p, err := cerebras.New(ctx, opts, wrapper)
+		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
+			p, err := cerebras.New(ctx, opts...)
 			if p == nil {
 				return nil, err
 			}
@@ -76,8 +75,8 @@ var All = map[string]Config{
 	},
 	"cloudflare": {
 		APIKeyEnvVar: "CLOUDFLARE_API_KEY",
-		Factory: func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-			p, err := cloudflare.New(ctx, opts, wrapper)
+		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
+			p, err := cloudflare.New(ctx, opts...)
 			if p == nil {
 				return nil, err
 			}
@@ -86,8 +85,8 @@ var All = map[string]Config{
 	},
 	"cohere": {
 		APIKeyEnvVar: "COHERE_API_KEY",
-		Factory: func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-			p, err := cohere.New(ctx, opts, wrapper)
+		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
+			p, err := cohere.New(ctx, opts...)
 			if p == nil {
 				return nil, err
 			}
@@ -96,8 +95,8 @@ var All = map[string]Config{
 	},
 	"deepseek": {
 		APIKeyEnvVar: "DEEPSEEK_API_KEY",
-		Factory: func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-			p, err := deepseek.New(ctx, opts, wrapper)
+		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
+			p, err := deepseek.New(ctx, opts...)
 			if p == nil {
 				return nil, err
 			}
@@ -106,8 +105,8 @@ var All = map[string]Config{
 	},
 	"gemini": {
 		APIKeyEnvVar: "GEMINI_API_KEY",
-		Factory: func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-			p, err := gemini.New(ctx, opts, wrapper)
+		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
+			p, err := gemini.New(ctx, opts...)
 			if p == nil {
 				return nil, err
 			}
@@ -116,8 +115,8 @@ var All = map[string]Config{
 	},
 	"groq": {
 		APIKeyEnvVar: "GROQ_API_KEY",
-		Factory: func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-			p, err := groq.New(ctx, opts, wrapper)
+		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
+			p, err := groq.New(ctx, opts...)
 			if p == nil {
 				return nil, err
 			}
@@ -126,8 +125,8 @@ var All = map[string]Config{
 	},
 	"huggingface": {
 		APIKeyEnvVar: "HUGGINGFACE_API_KEY",
-		Factory: func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-			p, err := huggingface.New(ctx, opts, wrapper)
+		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
+			p, err := huggingface.New(ctx, opts...)
 			if p == nil {
 				return nil, err
 			}
@@ -136,8 +135,8 @@ var All = map[string]Config{
 	},
 	"llamacpp": {
 		APIKeyEnvVar: "",
-		Factory: func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-			p, err := llamacpp.New(ctx, opts, wrapper)
+		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
+			p, err := llamacpp.New(ctx, opts...)
 			if p == nil {
 				return nil, err
 			}
@@ -146,8 +145,8 @@ var All = map[string]Config{
 	},
 	"mistral": {
 		APIKeyEnvVar: "MISTRAL_API_KEY",
-		Factory: func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-			p, err := mistral.New(ctx, opts, wrapper)
+		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
+			p, err := mistral.New(ctx, opts...)
 			if p == nil {
 				return nil, err
 			}
@@ -156,8 +155,8 @@ var All = map[string]Config{
 	},
 	"ollama": {
 		APIKeyEnvVar: "",
-		Factory: func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-			p, err := ollama.New(ctx, opts, wrapper)
+		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
+			p, err := ollama.New(ctx, opts...)
 			if p == nil {
 				return nil, err
 			}
@@ -167,8 +166,8 @@ var All = map[string]Config{
 	"openai": {
 		APIKeyEnvVar: "OPENAI_API_KEY",
 		Alias:        "openairesponses",
-		Factory: func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-			p, err := openairesponses.New(ctx, opts, wrapper)
+		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
+			p, err := openairesponses.New(ctx, opts...)
 			if p == nil {
 				return nil, err
 			}
@@ -177,8 +176,8 @@ var All = map[string]Config{
 	},
 	"openaichat": {
 		APIKeyEnvVar: "OPENAI_API_KEY",
-		Factory: func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-			p, err := openaichat.New(ctx, opts, wrapper)
+		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
+			p, err := openaichat.New(ctx, opts...)
 			if p == nil {
 				return nil, err
 			}
@@ -187,8 +186,8 @@ var All = map[string]Config{
 	},
 	"openairesponses": {
 		APIKeyEnvVar: "OPENAI_API_KEY",
-		Factory: func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-			p, err := openairesponses.New(ctx, opts, wrapper)
+		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
+			p, err := openairesponses.New(ctx, opts...)
 			if p == nil {
 				return nil, err
 			}
@@ -196,8 +195,8 @@ var All = map[string]Config{
 		},
 	},
 	"openaicompatible": {
-		Factory: func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-			p, err := openaicompatible.New(ctx, opts, wrapper)
+		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
+			p, err := openaicompatible.New(ctx, opts...)
 			if p == nil {
 				return nil, err
 			}
@@ -206,8 +205,8 @@ var All = map[string]Config{
 	},
 	"perplexity": {
 		APIKeyEnvVar: "PERPLEXITY_API_KEY",
-		Factory: func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-			p, err := perplexity.New(ctx, opts, wrapper)
+		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
+			p, err := perplexity.New(ctx, opts...)
 			if p == nil {
 				return nil, err
 			}
@@ -216,8 +215,8 @@ var All = map[string]Config{
 	},
 	"pollinations": {
 		APIKeyEnvVar: "POLLINATIONS_API_KEY",
-		Factory: func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-			p, err := pollinations.New(ctx, opts, wrapper)
+		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
+			p, err := pollinations.New(ctx, opts...)
 			if p == nil {
 				return nil, err
 			}
@@ -226,8 +225,8 @@ var All = map[string]Config{
 	},
 	"togetherai": {
 		APIKeyEnvVar: "TOGETHER_API_KEY",
-		Factory: func(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-			p, err := togetherai.New(ctx, opts, wrapper)
+		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
+			p, err := togetherai.New(ctx, opts...)
 			if p == nil {
 				return nil, err
 			}
@@ -240,7 +239,7 @@ var All = map[string]Config{
 func Available(ctx context.Context) map[string]Config {
 	avail := map[string]Config{}
 	for name, cfg := range All {
-		if c, err := cfg.Factory(ctx, &genai.ProviderOptions{Model: genai.ModelNone}, nil); err == nil {
+		if c, err := cfg.Factory(ctx, genai.ProviderOptionModel(genai.ModelNone)); err == nil {
 			if p, ok := c.(genai.ProviderPing); ok {
 				if err = p.Ping(ctx); err != nil {
 					continue

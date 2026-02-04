@@ -941,27 +941,40 @@ type Client struct {
 }
 
 // New creates a new client to talk to the Pollinations platform API.
-// The value for options APIKey can be either an API key retrieved from https://auth.pollinations.ai/ or a referrer.
+//
+// The value for ProviderAPIKey can be either an API key retrieved from https://auth.pollinations.ai/ or a referrer.
 // https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#referrer-
 //
-// options APIKey is optional. Providing one, either via environment variable POLLINATIONS_API_KEY, will increase quota.
+// ProviderAPIKey is optional. Providing one, either via environment variable POLLINATIONS_API_KEY, will increase quota.
 //
 // To use multiple models, create multiple clients.
 // Models are listed at https://docs.perplexity.ai/guides/model-cards
-//
-// wrapper optionally wraps the HTTP transport. Useful for HTTP recording and playback, or to tweak HTTP
-// retries, or to throttle outgoing requests.
-func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.RoundTripper) http.RoundTripper) (*Client, error) {
-	if err := opts.Validate(); err != nil {
-		return nil, err
+func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
+	var apiKey, model string
+	var modalities genai.Modalities
+	var preloadedModels []genai.Model
+	var wrapper func(http.RoundTripper) http.RoundTripper
+	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
+			return nil, err
+		}
+		switch v := opt.(type) {
+		case genai.ProviderOptionAPIKey:
+			apiKey = string(v)
+		case genai.ProviderOptionModel:
+			model = string(v)
+		case genai.ProviderOptionModalities:
+			modalities = genai.Modalities(v)
+		case genai.ProviderOptionPreloadedModels:
+			preloadedModels = []genai.Model(v)
+		case genai.ProviderOptionTransportWrapper:
+			wrapper = v
+		case genai.ProviderOptionRemote:
+			return nil, errors.New("unexpected option ProviderRemote")
+		default:
+			return nil, fmt.Errorf("unsupported option type %T", opt)
+		}
 	}
-	if opts.AccountID != "" {
-		return nil, errors.New("unexpected option AccountID")
-	}
-	if opts.Remote != "" {
-		return nil, errors.New("unexpected option Remote")
-	}
-	apiKey := opts.APIKey
 	var h http.Header
 	if apiKey == "" {
 		apiKey = os.Getenv("POLLINATIONS_API_KEY")
@@ -975,23 +988,23 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 	}
 	// Default to text generation.
 	preferText := true
-	switch len(opts.OutputModalities) {
+	switch len(modalities) {
 	case 0:
 		// Auto-detect below.
 	case 1:
-		switch opts.OutputModalities[0] {
+		switch modalities[0] {
 		case genai.ModalityAudio:
-			return nil, fmt.Errorf("unexpected option Modalities %s, only image or text is implemented (send PR to add support)", opts.OutputModalities)
+			return nil, fmt.Errorf("unexpected option Modalities %s, only image or text is implemented (send PR to add support)", modalities)
 		case genai.ModalityImage:
 			preferText = false
 		case genai.ModalityText:
 		case genai.ModalityDocument, genai.ModalityVideo:
 			fallthrough
 		default:
-			return nil, fmt.Errorf("unexpected option Modalities %s, only image or text are supported", opts.OutputModalities)
+			return nil, fmt.Errorf("unexpected option Modalities %s, only image or text are supported", modalities)
 		}
 	default:
-		return nil, fmt.Errorf("unexpected option Modalities %s, only image or text are supported", opts.OutputModalities)
+		return nil, fmt.Errorf("unexpected option Modalities %s, only image or text are supported", modalities)
 	}
 	t := base.DefaultTransport
 	if r, ok := t.(*roundtrippers.Retry); ok {
@@ -1014,7 +1027,7 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			GenSyncURL:      "https://text.pollinations.ai/openai",
 			ProcessStream:   ProcessStream,
-			PreloadedModels: opts.PreloadedModels,
+			PreloadedModels: preloadedModels,
 			LieToolCalls:    true,
 			ProviderBase: base.ProviderBase[*ErrorResponse]{
 				Lenient: internal.BeLenient,
@@ -1028,26 +1041,26 @@ func New(ctx context.Context, opts *genai.ProviderOptions, wrapper func(http.Rou
 		},
 	}
 	var err error
-	switch opts.Model {
+	switch model {
 	case genai.ModelNone:
 	case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA, "":
 		if preferText {
-			if c.impl.Model, err = c.selectBestTextModel(ctx, opts.Model); err != nil {
+			if c.impl.Model, err = c.selectBestTextModel(ctx, model); err != nil {
 				return nil, err
 			}
 			c.impl.OutputModalities = genai.Modalities{genai.ModalityText}
 		} else {
-			if c.impl.Model, err = c.selectBestImageModel(ctx, opts.Model); err != nil {
+			if c.impl.Model, err = c.selectBestImageModel(ctx, model); err != nil {
 				return nil, err
 			}
 			c.impl.OutputModalities = genai.Modalities{genai.ModalityImage}
 		}
 	default:
-		c.impl.Model = opts.Model
-		if len(opts.OutputModalities) == 0 {
-			c.impl.OutputModalities, err = c.detectModelModalities(ctx, opts.Model)
+		c.impl.Model = model
+		if len(modalities) == 0 {
+			c.impl.OutputModalities, err = c.detectModelModalities(ctx, model)
 		} else {
-			c.impl.OutputModalities = opts.OutputModalities
+			c.impl.OutputModalities = modalities
 		}
 	}
 	return c, err

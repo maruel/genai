@@ -17,7 +17,7 @@ import (
 
 func main() {
 	ctx := context.Background()
-	c, err := groq.New(ctx, &genai.ProviderOptions{Model: "openai/gpt-oss-120b"}, nil)
+	c, err := groq.New(ctx, genai.ProviderOptionModel("openai/gpt-oss-120b"))
 	if err != nil {
 		log.Fatal(err)
 	}

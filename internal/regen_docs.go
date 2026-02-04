@@ -17,7 +17,6 @@ import (
 	"path/filepath"
 	"slices"
 
-	"github.com/maruel/genai"
 	"github.com/maruel/genai/providers"
 )
 

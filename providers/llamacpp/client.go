@@ -1076,9 +1076,9 @@ type Client struct {
 
 // New creates a new client to talk to a llama-server instance.
 //
-// ProviderRemote defaults to "http://localhost:8080".
+// ProviderOptionRemote defaults to "http://localhost:8080".
 //
-// llama-server doesn't have any mean of authentication so ProviderAPIKey is not supported.
+// llama-server doesn't have any mean of authentication so ProviderOptionAPIKey is not supported.
 //
 // Automatic model selection via ModelCheap, ModelGood, ModelSOTA is not supported. It will ask llama-server
 // to determine which model is already loaded.
@@ -1136,8 +1136,8 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	}
 	var err error
 	switch model {
-	case genai.ModelNone:
-	case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA, "":
+	case "":
+	case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA:
 		if c.impl.Model, err = c.selectBestTextModel(ctx); err == nil {
 			c.impl.OutputModalities = mod
 		}

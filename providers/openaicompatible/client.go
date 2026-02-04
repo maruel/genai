@@ -356,7 +356,7 @@ type Client struct {
 //
 // It only support text exchanges (no multi-modal) and no tool calls.
 //
-// Option ProviderRemote must be set.
+// Option ProviderOptionRemote must be set.
 //
 // Automatic model selection via ModelCheap, ModelGood, ModelSOTA is not supported and it will specify no
 // model in this case.
@@ -390,17 +390,17 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 		}
 	}
 	if apiKey != "" {
-		return nil, errors.New("unexpected option ProviderAPIKey")
+		return nil, errors.New("unexpected option ProviderOptionAPIKey")
 	}
 	if remote == "" {
-		return nil, errors.New("option ProviderRemote is required")
+		return nil, errors.New("option ProviderOptionRemote is required")
 	}
 	mod := genai.Modalities{genai.ModalityText}
 	if len(modalities) != 0 && !slices.Equal(modalities, mod) {
 		return nil, fmt.Errorf("unexpected option Modalities %s, only text is supported", mod)
 	}
 	switch model {
-	case "", genai.ModelNone, genai.ModelCheap, genai.ModelGood, genai.ModelSOTA:
+	case "", genai.ModelCheap, genai.ModelGood, genai.ModelSOTA:
 		model = ""
 	}
 	t := base.DefaultTransport

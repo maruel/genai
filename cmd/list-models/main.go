@@ -81,7 +81,7 @@ func printStructDense(v any, indent string) string {
 
 func getModels(ctx context.Context, provider string) ([]string, map[string]genai.Model, error) {
 	cfg := providers.All[provider]
-	c, err := cfg.Factory(ctx, genai.ProviderOptionModel(genai.ModelNone))
+	c, err := cfg.Factory(ctx)
 	if err != nil {
 		return nil, nil, err
 	}

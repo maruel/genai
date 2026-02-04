@@ -43,7 +43,7 @@ func TestClient(t *testing.T) {
 			t.Error(err)
 		}
 	})
-	cl, err2 := getClientInner(t, "", []genai.ProviderOption{genai.ProviderOptionModel(genai.ModelNone)}, func(h http.RoundTripper) http.RoundTripper {
+	cl, err2 := getClientInner(t, "", nil, func(h http.RoundTripper) http.RoundTripper {
 		return testRecorder.RecordWithName(t, t.Name()+"/Warmup", h)
 	})
 	if err2 != nil {
@@ -55,7 +55,10 @@ func TestClient(t *testing.T) {
 	}
 	getClient := func(t *testing.T, m string) genai.Provider {
 		t.Parallel()
-		opts := []genai.ProviderOption{genai.ProviderOptionModel(m), genai.ProviderOptionPreloadedModels(cachedModels)}
+		opts := []genai.ProviderOption{genai.ProviderOptionPreloadedModels(cachedModels)}
+		if m != "" {
+			opts = append(opts, genai.ProviderOptionModel(m))
+		}
 		ci, err := getClientInner(t, "", opts, func(h http.RoundTripper) http.RoundTripper {
 			return testRecorder.Record(t, h)
 		})
@@ -66,11 +69,11 @@ func TestClient(t *testing.T) {
 	}
 
 	t.Run("Capabilities", func(t *testing.T) {
-		internaltest.TestCapabilities(t, getClient(t, genai.ModelNone))
+		internaltest.TestCapabilities(t, getClient(t, ""))
 	})
 
 	t.Run("Scoreboard", func(t *testing.T) {
-		c := getClient(t, genai.ModelNone)
+		c := getClient(t, "")
 		genaiModels, err := c.ListModels(t.Context())
 		if err != nil {
 			t.Fatal(err)
@@ -89,7 +92,10 @@ func TestClient(t *testing.T) {
 			models = append(models, scoreboard.Model{Model: id, Reason: reason})
 		}
 		getClientRT := func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
-			opts := []genai.ProviderOption{genai.ProviderOptionModel(model.Model), genai.ProviderOptionPreloadedModels(cachedModels)}
+			opts := []genai.ProviderOption{genai.ProviderOptionPreloadedModels(cachedModels)}
+			if model.Model != "" {
+				opts = append(opts, genai.ProviderOptionModel(model.Model))
+			}
 			if os.Getenv("GROQ_API_KEY") == "" {
 				opts = append(opts, genai.ProviderOptionAPIKey("<insert_api_key_here>"))
 			}
@@ -118,9 +124,11 @@ func TestClient(t *testing.T) {
 	t.Run("Preferred", func(t *testing.T) {
 		internaltest.TestPreferredModels(t, func(st *testing.T, model string, modality genai.Modality) (genai.Provider, error) {
 			opts := []genai.ProviderOption{
-				genai.ProviderOptionModel(model),
 				genai.ProviderOptionModalities(genai.Modalities{modality}),
 				genai.ProviderOptionPreloadedModels(cachedModels),
+			}
+			if model != "" {
+				opts = append(opts, genai.ProviderOptionModel(model))
 			}
 			return getClientInner(st, "", opts, func(h http.RoundTripper) http.RoundTripper {
 				return testRecorder.Record(st, h)

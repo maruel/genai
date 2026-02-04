@@ -230,11 +230,11 @@ type preferredModelTest struct {
 // loadPreferredModelsFromScoreboard extracts the preferred model test data
 // (SOTA/Good/Cheap per output modality) from the provider's scoreboard.
 func loadPreferredModelsFromScoreboard(t *testing.T, newProvider func(t *testing.T, model string, modality genai.Modality) (genai.Provider, error)) []preferredModelTest {
-	// Create a provider instance with ModelNone just to read the scoreboard.
+	// Create a provider instance without a model just to read the scoreboard.
 	// Try text modality first, if that fails try image modality.
-	provider, err := newProvider(t, genai.ModelNone, genai.ModalityText)
+	provider, err := newProvider(t, "", genai.ModalityText)
 	if err != nil {
-		provider, err = newProvider(t, genai.ModelNone, genai.ModalityImage)
+		provider, err = newProvider(t, "", genai.ModalityImage)
 		if err != nil {
 			t.Fatalf("failed to create provider for scoreboard reading: %v", err)
 		}

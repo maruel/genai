@@ -46,7 +46,7 @@ type ProviderOptionAPIKey string
 
 func (p ProviderOptionAPIKey) Validate() error {
 	if p == "" {
-		return errors.New("ProviderAPIKey cannot be empty")
+		return errors.New("ProviderOptionAPIKey cannot be empty")
 	}
 	return nil
 }
@@ -58,23 +58,20 @@ type ProviderOptionRemote string
 
 func (p ProviderOptionRemote) Validate() error {
 	if p == "" {
-		return errors.New("ProviderRemote cannot be empty")
+		return errors.New("ProviderOptionRemote cannot be empty")
 	}
 	return nil
 }
 
-// ProviderOptionModel either specifies an exact the model ID to use, request the provider to select a model on your
-// behalf or explicitly ask for no model.
+// ProviderOptionModel specifies which model to use.
 //
-// To use automatic model selection, pass ModelCheap to use a cheap model, ModelGood for a good
-// everyday model or ModelSOTA to use its state of the art (SOTA) model. In this case, the provider
-// internally call ListModels() to discover models and select the right one based on its heuristics.
-// Provider that do not support ListModels, e.g. bfl or perplexity, will use an hardcoded list.
+// For automatic model selection, pass ModelCheap for a cheap model, ModelGood for a good
+// everyday model, or ModelSOTA for the state of the art model. The provider
+// internally calls ListModels() to discover models and select based on its heuristics.
+// Providers that do not support ListModels (e.g. bfl or perplexity) use a hardcoded list.
 //
-// When unspecified, the provider defaults to automatic model selection with ModelGood.
-//
-// There are two ways to disable automatic model discovery and selection: specify a model ID or use
-// ModelNone.
+// When unspecified, no model is selected. This is useful when only calling ListModels().
+// Generation calls will fail.
 //
 // Keep in mind that as providers cycle through new models, it's possible a specific model ID is not
 // available anymore or that the default model changes.
@@ -82,7 +79,7 @@ type ProviderOptionModel string
 
 func (p ProviderOptionModel) Validate() error {
 	if p == "" {
-		return errors.New("ProviderModel cannot be empty")
+		return errors.New("ProviderOptionModel cannot be empty")
 	}
 	return nil
 }
@@ -97,13 +94,13 @@ func (p ProviderOptionModel) Validate() error {
 // Even when Model is set to a specific model ID, a ListModels call may be made to discover its supported
 // output modalities for providers that support multiple output modalities.
 //
-// ProviderOptionModalities can be set when Model is set to ModelNone to test if a provider support this modality without
+// ProviderOptionModalities can be set without a Model to test if a provider supports a modality without
 // causing a ListModels call.
 type ProviderOptionModalities Modalities
 
 func (p ProviderOptionModalities) Validate() error {
 	if len(p) == 0 {
-		return errors.New("ProviderModalities cannot be empty")
+		return errors.New("ProviderOptionModalities cannot be empty")
 	}
 	return Modalities(p).Validate()
 }
@@ -116,7 +113,7 @@ type ProviderOptionPreloadedModels []Model
 
 func (p ProviderOptionPreloadedModels) Validate() error {
 	if len(p) == 0 {
-		return errors.New("ProviderPreloadedModels cannot be empty")
+		return errors.New("ProviderOptionPreloadedModels cannot be empty")
 	}
 	return nil
 }
@@ -128,16 +125,13 @@ type ProviderOptionTransportWrapper func(http.RoundTripper) http.RoundTripper
 
 func (p ProviderOptionTransportWrapper) Validate() error {
 	if p == nil {
-		return errors.New("ProviderTransportWrapper cannot be nil")
+		return errors.New("ProviderOptionTransportWrapper cannot be nil")
 	}
 	return nil
 }
 
-// Model markers to pass to ProviderOptions.Model.
+// Model markers to pass to ProviderOptionModel for automatic model selection.
 const (
-	// ModelNone explicitly tells the provider to not automatically select a model. The use case is when the
-	// only intended call is ListModel(), thus there's no point into selecting a model automatically.
-	ModelNone = "NONE"
 	// ModelCheap requests the provider to automatically select the cheapest model it can find.
 	ModelCheap = "CHEAP"
 	// ModelGood requests the provider to automatically select a good every day model that has a good

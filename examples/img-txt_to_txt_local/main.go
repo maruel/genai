@@ -20,7 +20,7 @@ func main() {
 	// - Gemma-3 and medgemma
 	// - Qwen2.5-VL
 	// - Mistral-Small-3.2 and Pixtral
-	c, err := llamacpp.New(ctx, nil)
+	c, err := llamacpp.New(ctx, genai.ProviderOptionModel(genai.ModelGood))
 	if err != nil {
 		log.Fatal(err)
 	}

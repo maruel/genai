@@ -50,7 +50,7 @@ func mainImpl() error {
 		if cfg.Alias != "" {
 			continue
 		}
-		c, _ := cfg.Factory(context.Background(), genai.ProviderOptionModel(genai.ModelNone))
+		c, _ := cfg.Factory(context.Background())
 		if c == nil {
 			continue
 		}

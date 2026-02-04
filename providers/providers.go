@@ -239,7 +239,7 @@ var All = map[string]Config{
 func Available(ctx context.Context) map[string]Config {
 	avail := map[string]Config{}
 	for name, cfg := range All {
-		if c, err := cfg.Factory(ctx, genai.ProviderOptionModel(genai.ModelNone)); err == nil {
+		if c, err := cfg.Factory(ctx); err == nil {
 			if p, ok := c.(genai.ProviderPing); ok {
 				if err = p.Ping(ctx); err != nil {
 					continue

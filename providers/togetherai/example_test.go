@@ -45,7 +45,7 @@ func ExampleNew_hTTP_record() {
 	}
 	// When playing back the smoke test, no API key is needed. Insert a fake API key.
 	ctx := context.Background()
-	opts := []genai.ProviderOption{genai.ProviderOptionModel(genai.ModelNone)}
+	var opts []genai.ProviderOption
 	if os.Getenv("TOGETHER_API_KEY") == "" {
 		opts = append(opts, genai.ProviderOptionAPIKey("<insert_api_key_here>"))
 	}

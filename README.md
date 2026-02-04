@@ -120,7 +120,7 @@ on Anthropic's currently published models, sends a prompt and prints the respons
 ```go
 func main() {
 	ctx := context.Background()
-	c, err := anthropic.New(ctx, &genai.ProviderOptions{}, nil)
+	c, err := anthropic.New(ctx, genai.ProviderOptionModel(genai.ModelGood))
 	msgs := genai.Messages{
 		genai.NewTextMessage("Give me a life advice that sounds good but is a bad idea in practice. Answer succinctly."),
 	}
@@ -145,7 +145,7 @@ round trips adding additional follow-up messages from users. Set [`OPENAI_API_KE
 ```go
 func main() {
 	ctx := context.Background()
-	c, err := anthropic.New(ctx, &genai.ProviderOptions{}, nil)
+	c, err := anthropic.New(ctx, genai.ProviderOptionModel(genai.ModelGood))
 	msgs := genai.Messages{
 		genai.NewTextMessage("Let's play a word association game. You pick a single word, then I pick the first word I think of, then you respond with a word, and so on.")
 	}
@@ -174,7 +174,7 @@ iterators](https://go.dev/blog/range-functions). Notice how little difference th
 ```go
 func main() {
 	ctx := context.Background()
-	c, err := anthropic.New(ctx, &genai.ProviderOptions{}, nil)
+	c, err := anthropic.New(ctx, genai.ProviderOptionModel(genai.ModelGood))
 	msgs := genai.Messages{
 		genai.NewTextMessage("Give me a life advice that sounds good but is a bad idea in practice."),
 	}
@@ -197,7 +197,7 @@ automatically handle explicit Chain-of-Thoughts models, generally using `<think>
 Snippet:
 
 ```go
-	c, _ := deepseek.New(ctx, &genai.ProviderOptions{Model: "deepseek-reasoner"}, nil)
+	c, _ := deepseek.New(ctx, genai.ProviderOptionModel("deepseek-reasoner"))
 	msgs := genai.Messages{
 		genai.NewTextMessage("Give me a life advice that sounds good but is a bad idea in practice."),
 	}
@@ -265,7 +265,7 @@ to answer your question.
 Snippet:
 
 ```go
-	c, _ := perplexity.New(ctx, genai.ProviderModel(genai.ModelCheap))
+	c, _ := perplexity.New(ctx, genai.ProviderOptionModel(genai.ModelCheap))
 	msgs := genai.Messages{{
 		Requests: []genai.Request{
 			{Text: "Who holds ultimate power of Canada? Answer succinctly."},
@@ -580,7 +580,7 @@ Snippet:
 
 ```go
 	// Warning: this is expensive.
-	c, _ := gemini.New(ctx, &genai.ProviderOptions{Model: "veo-3.0-fast-generate-preview"}, nil)
+	c, _ := gemini.New(ctx, genai.ProviderOptionModel("veo-3.0-fast-generate-preview"))
 	f, _ := os.Open("content.jpg")
 	defer f.Close()
 	msgs := genai.Messages{
@@ -637,11 +637,10 @@ Snippet:
 
 ```go
 	// Warning: This is a bit expensive.
-	opts := genai.ProviderOptions{
-		Model:            "gemini-2.5-flash-image-preview",
-		OutputModalities: genai.Modalities{genai.ModalityImage, genai.ModalityText},
-	}
-	c, _ := gemini.New(ctx, &opts, nil)
+	c, _ := gemini.New(ctx,
+		genai.ProviderOptionModel("gemini-2.5-flash-image-preview"),
+		genai.ProviderOptionModalities(genai.Modalities{genai.ModalityImage, genai.ModalityText}),
+	)
 	// ...
 	res, _ := c.GenSync(ctx, msgs, &gemini.GenOptions{ReasoningBudget: 0})
 ```
@@ -794,7 +793,7 @@ Snippet:
 	flag.Parse()
 
 	cfg := providers.All[*provider]
-	c, _ := cfg.Factory(ctx, &genai.ProviderOptions{}, nil)
+	c, _ := cfg.Factory(ctx, genai.ProviderOptionModel(genai.ModelGood))
 	p := adapters.WrapReasoning(c)
 	res, _ := p.GenSync(...)
 ```

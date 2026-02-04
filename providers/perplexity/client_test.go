@@ -46,7 +46,10 @@ func TestClient(t *testing.T) {
 	// Perplexity doesn't support listing models. See https://docs.perplexity.ai/api-reference
 	getClient := func(t *testing.T, m string) genai.Provider {
 		t.Parallel()
-		opts := []genai.ProviderOption{genai.ProviderOptionModel(m)}
+		var opts []genai.ProviderOption
+		if m != "" {
+			opts = append(opts, genai.ProviderOptionModel(m))
+		}
 		ci, err := getClientInner(t, "", opts, func(h http.RoundTripper) http.RoundTripper {
 			return testRecorder.Record(t, h)
 		})
@@ -57,12 +60,12 @@ func TestClient(t *testing.T) {
 	}
 
 	t.Run("Capabilities", func(t *testing.T) {
-		internaltest.TestCapabilities(t, getClient(t, genai.ModelNone))
+		internaltest.TestCapabilities(t, getClient(t, ""))
 	})
 
 	t.Run("Scoreboard", func(t *testing.T) {
 		// Perplexity doesn't support listing models. See https://docs.perplexity.ai/api-reference
-		sb := getClient(t, genai.ModelNone).Scoreboard()
+		sb := getClient(t, "").Scoreboard()
 		var models []scoreboard.Model
 		for _, sc := range sb.Scenarios {
 			for _, model := range sc.Models {
@@ -71,7 +74,9 @@ func TestClient(t *testing.T) {
 		}
 		getClientRT := func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 			var o []genai.ProviderOption
-			o = append(o, genai.ProviderOptionModel(model.Model))
+			if model.Model != "" {
+				o = append(o, genai.ProviderOptionModel(model.Model))
+			}
 			if os.Getenv("PERPLEXITY_API_KEY") == "" {
 				o = append(o, genai.ProviderOptionAPIKey("<insert_api_key_here>"))
 			}
@@ -123,8 +128,10 @@ func TestClient(t *testing.T) {
 	t.Run("Preferred", func(t *testing.T) {
 		internaltest.TestPreferredModels(t, func(st *testing.T, model string, modality genai.Modality) (genai.Provider, error) {
 			opts := []genai.ProviderOption{
-				genai.ProviderOptionModel(model),
 				genai.ProviderOptionModalities(genai.Modalities{modality}),
+			}
+			if model != "" {
+				opts = append(opts, genai.ProviderOptionModel(model))
 			}
 			return getClientInner(st, "", opts, func(h http.RoundTripper) http.RoundTripper {
 				return testRecorder.Record(st, h)

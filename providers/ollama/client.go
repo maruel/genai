@@ -538,9 +538,9 @@ type Client struct {
 
 // New creates a new client to talk to the Ollama API.
 //
-// ProviderRemote defaults to "http://localhost:11434".
+// ProviderOptionRemote defaults to "http://localhost:11434".
 //
-// Ollama doesn't have any mean of authentication so ProviderAPIKey is not supported.
+// Ollama doesn't have any mean of authentication so ProviderOptionAPIKey is not supported.
 //
 // To use multiple models, create multiple clients.
 // Use one of the model from https://ollama.com/library
@@ -595,8 +595,8 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 		chatURL:         baseURL + "/api/chat",
 	}
 	switch model {
-	case genai.ModelNone:
-	case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA, "":
+	case "":
+	case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA:
 		c.impl.Model = c.selectBestTextModel(ctx, model)
 		c.impl.OutputModalities = mod
 	default:

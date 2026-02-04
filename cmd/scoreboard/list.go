@@ -21,7 +21,7 @@ func printList(ctx context.Context, w io.Writer) error {
 	all := maps.Clone(providers.All)
 	for _, name := range slices.Sorted(maps.Keys(all)) {
 		fmt.Fprintf(w, "- %s\n", name)
-		c, err := all[name].Factory(ctx, genai.ProviderOptionModel(genai.ModelNone))
+		c, err := all[name].Factory(ctx)
 		// The function can return an error and still return a client when no API key was found. It's okay here
 		// because we won't use the service provider.
 		if c == nil {

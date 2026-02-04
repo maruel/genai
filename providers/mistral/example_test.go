@@ -48,7 +48,7 @@ func ExampleNew_hTTP_record() {
 	if os.Getenv("MISTRAL_API_KEY") == "" {
 		opts = append(opts, genai.ProviderOptionAPIKey("<insert_api_key_here>"))
 	}
-	opts = append(opts, genai.ProviderOptionModel(genai.ModelNone), genai.ProviderOptionTransportWrapper(wrapper))
+	opts = append(opts, genai.ProviderOptionTransportWrapper(wrapper))
 	ctx := context.Background()
 	c, err := mistral.New(ctx, opts...)
 	if err != nil {

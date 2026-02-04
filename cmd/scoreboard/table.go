@@ -254,7 +254,7 @@ func printTable(ctx context.Context, w io.Writer, provider string) error {
 	if cfg.Factory == nil {
 		return fmt.Errorf("provider %s: not found", provider)
 	}
-	c, err := cfg.Factory(ctx, genai.ProviderOptionModel(genai.ModelNone))
+	c, err := cfg.Factory(ctx)
 	if c == nil {
 		return fmt.Errorf("provider %s: %w", provider, err)
 	}
@@ -269,7 +269,7 @@ func printSummaryTable(ctx context.Context, w io.Writer, all map[string]provider
 		if cfg.Alias != "" {
 			continue
 		}
-		opts := []genai.ProviderOption{genai.ProviderOptionModel(genai.ModelNone)}
+		var opts []genai.ProviderOption
 		if name == "openaicompatible" {
 			// Make sure the remote it set for this one.
 			opts = append(opts, genai.ProviderOptionRemote("http://localhost:0"))

@@ -860,8 +860,8 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	}
 	if err == nil {
 		switch model {
-		case genai.ModelNone:
-		case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA, "":
+		case "":
+		case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA:
 			if c.impl.Model, err = c.selectBestTextModel(ctx, model); err != nil {
 				return nil, err
 			}

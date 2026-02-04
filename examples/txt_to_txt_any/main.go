@@ -41,7 +41,9 @@ func main() {
 		log.Fatal("provide a query")
 	}
 	var opts []genai.ProviderOption
-	if *model != "" {
+	if *model == "" {
+		opts = append(opts, genai.ProviderOptionModel(genai.ModelGood))
+	} else {
 		opts = append(opts, genai.ProviderOptionModel(*model))
 	}
 	if *remote != "" {

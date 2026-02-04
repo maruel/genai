@@ -40,9 +40,13 @@ func TestClient(t *testing.T) {
 
 	getClient := func(t *testing.T, m string) genai.Provider {
 		t.Parallel()
+		var opts []genai.ProviderOption
+		if m != "" {
+			opts = append(opts, genai.ProviderOptionModel(m))
+		}
 		ci, err := getClientInner(t, func(h http.RoundTripper) http.RoundTripper {
 			return testRecorder.Record(t, h)
-		}, genai.ProviderOptionModel(m))
+		}, opts...)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -50,7 +54,7 @@ func TestClient(t *testing.T) {
 	}
 
 	t.Run("Capabilities", func(t *testing.T) {
-		internaltest.TestCapabilities(t, getClient(t, genai.ModelNone))
+		internaltest.TestCapabilities(t, getClient(t, ""))
 	})
 
 	t.Run("GenAsync-Image", func(t *testing.T) {
@@ -59,7 +63,7 @@ func TestClient(t *testing.T) {
 
 	t.Run("Scoreboard", func(t *testing.T) {
 		// bfl does not have a public API to list models.
-		sb := getClient(t, genai.ModelNone).Scoreboard()
+		sb := getClient(t, "").Scoreboard()
 		var models []scoreboard.Model
 		for _, sc := range sb.Scenarios {
 			for _, model := range sc.Models {
@@ -67,7 +71,10 @@ func TestClient(t *testing.T) {
 			}
 		}
 		getClientRT := func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
-			opts := []genai.ProviderOption{genai.ProviderOptionModel(model.Model)}
+			var opts []genai.ProviderOption
+			if model.Model != "" {
+				opts = append(opts, genai.ProviderOptionModel(model.Model))
+			}
 			if os.Getenv("BFL_API_KEY") == "" {
 				opts = append(opts, genai.ProviderOptionAPIKey("<insert_api_key_here>"))
 			}
@@ -88,9 +95,13 @@ func TestClient(t *testing.T) {
 
 	t.Run("Preferred", func(t *testing.T) {
 		internaltest.TestPreferredModels(t, func(st *testing.T, model string, modality genai.Modality) (genai.Provider, error) {
+			opts := []genai.ProviderOption{genai.ProviderOptionModalities(genai.Modalities{modality})}
+			if model != "" {
+				opts = append(opts, genai.ProviderOptionModel(model))
+			}
 			return getClientInner(st, func(h http.RoundTripper) http.RoundTripper {
 				return testRecorder.Record(st, h)
-			}, genai.ProviderOptionModel(model), genai.ProviderOptionModalities(genai.Modalities{modality}))
+			}, opts...)
 		})
 	})
 

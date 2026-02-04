@@ -26,7 +26,10 @@ import (
 )
 
 func getClientInner(t *testing.T, model string, modalities genai.Modalities, preloadedModels []genai.Model, fn func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-	opts := []genai.ProviderOption{genai.ProviderOptionModel(model)}
+	var opts []genai.ProviderOption
+	if model != "" {
+		opts = append(opts, genai.ProviderOptionModel(model))
+	}
 	if os.Getenv("GEMINI_API_KEY") == "" {
 		opts = append(opts, genai.ProviderOptionAPIKey("<insert_api_key_here>"))
 	}
@@ -49,7 +52,7 @@ func TestClient(t *testing.T) {
 			t.Error(err)
 		}
 	})
-	cl, err2 := getClientInner(t, genai.ModelNone, nil, nil, func(h http.RoundTripper) http.RoundTripper {
+	cl, err2 := getClientInner(t, "", nil, nil, func(h http.RoundTripper) http.RoundTripper {
 		return testRecorder.RecordWithName(t, t.Name()+"/Warmup", h)
 	})
 	if err2 != nil {
@@ -71,7 +74,7 @@ func TestClient(t *testing.T) {
 	}
 
 	t.Run("Capabilities", func(t *testing.T) {
-		internaltest.TestCapabilities(t, getClient(t, genai.ModelNone))
+		internaltest.TestCapabilities(t, getClient(t, ""))
 	})
 
 	// Note: GenAsync is not supported for text models in Gemini.
@@ -86,7 +89,7 @@ func TestClient(t *testing.T) {
 	})
 
 	t.Run("Scoreboard", func(t *testing.T) {
-		mdls, err := getClient(t, genai.ModelNone).ListModels(t.Context())
+		mdls, err := getClient(t, "").ListModels(t.Context())
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -103,8 +106,10 @@ func TestClient(t *testing.T) {
 		}
 		getClientRT := func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 			opts := []genai.ProviderOption{
-				genai.ProviderOptionModel(model.Model),
 				genai.ProviderOptionPreloadedModels(cachedModels),
+			}
+			if model.Model != "" {
+				opts = append(opts, genai.ProviderOptionModel(model.Model))
 			}
 			if os.Getenv("GEMINI_API_KEY") == "" {
 				opts = append(opts, genai.ProviderOptionAPIKey("<insert_api_key_here>"))
@@ -294,7 +299,7 @@ func TestClient(t *testing.T) {
 	// Models have really different behavior. Some require a thought, some cannot.
 	t.Run("ThinkingBudget", func(t *testing.T) {
 		// Similar to Scoreboard but run only a very small test on all gemini 2.5+ models.
-		allMdls, err := getClient(t, genai.ModelNone).ListModels(t.Context())
+		allMdls, err := getClient(t, "").ListModels(t.Context())
 		if err != nil {
 			t.Fatal(err)
 		}

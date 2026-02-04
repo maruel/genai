@@ -25,7 +25,7 @@ import (
 func Example_all_ListModel() {
 	ctx := context.Background()
 	for name, cfg := range providers.All {
-		c, err := cfg.Factory(ctx, genai.ProviderOptionModel(genai.ModelNone))
+		c, err := cfg.Factory(ctx)
 		if err != nil {
 			continue
 		}
@@ -130,7 +130,7 @@ func LoadDefaultProvider(ctx context.Context) (genai.Provider, error) {
 	avail := providers.Available(ctx)
 	if len(avail) == 1 {
 		for _, cfg := range avail {
-			return cfg.Factory(ctx, genai.ProviderOptionModel(genai.ModelNone))
+			return cfg.Factory(ctx)
 		}
 	}
 	if len(avail) == 0 {

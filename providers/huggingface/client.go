@@ -707,7 +707,7 @@ type Client struct {
 
 // New creates a new client to talk to the HuggingFace serverless inference API.
 //
-// If ProviderAPIKey is not provided, it tries to load it from the HUGGINGFACE_API_KEY environment variable.
+// If ProviderOptionAPIKey is not provided, it tries to load it from the HUGGINGFACE_API_KEY environment variable.
 // Otherwise, it tries to load it from the huggingface python client's cache.
 // If none is found, it will still return a client coupled with an base.ErrAPIKeyRequired error.
 // Get your API key at https://huggingface.co/settings/tokens
@@ -715,7 +715,7 @@ type Client struct {
 // To use multiple models, create multiple clients.
 // Use one of the tens of thousands of models to chose from at https://huggingface.co/models?inference=warm&sort=trending
 //
-// ProviderTransportWrapper can be used to add the HTTP header "X-HF-Bill-To" via roundtrippers.Header. See
+// ProviderOptionTransportWrapper can be used to add the HTTP header "X-HF-Bill-To" via roundtrippers.Header. See
 // https://huggingface.co/docs/inference-providers/pricing#organization-billing
 func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	var apiKey, model string
@@ -791,8 +791,8 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	}
 	if err == nil {
 		switch model {
-		case genai.ModelNone:
-		case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA, "":
+		case "":
+		case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA:
 			if c.impl.Model, err = c.selectBestTextModel(ctx, model); err != nil {
 				return nil, err
 			}

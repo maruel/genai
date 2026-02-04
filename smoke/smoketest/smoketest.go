@@ -79,7 +79,7 @@ func Run(t *testing.T, pf ProviderFactory, models []scoreboard.Model, rec *myrec
 		deleteOrphanedRecordings(t, filepath.Join("testdata", "TestClient", "Scoreboard"), seen)
 	})
 
-	cc := pf(t, scoreboard.Model{Model: genai.ModelNone}, nil)
+	cc := pf(t, scoreboard.Model{}, nil)
 	sb := cc.Scoreboard()
 	if err := sb.Validate(); err != nil {
 		t.Fatal(err)

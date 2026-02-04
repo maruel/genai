@@ -49,7 +49,7 @@ func ExampleNew_hTTP_record() {
 		log.Fatal(err)
 	}
 	ctx := context.Background()
-	c, err := huggingface.New(ctx, genai.ProviderOptionTransportWrapper(wrapper), genai.ProviderOptionAPIKey(apiKey), genai.ProviderOptionModel(genai.ModelNone))
+	c, err := huggingface.New(ctx, genai.ProviderOptionTransportWrapper(wrapper), genai.ProviderOptionAPIKey(apiKey))
 	if err != nil {
 		log.Fatal(err)
 	}

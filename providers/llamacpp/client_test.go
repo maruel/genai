@@ -48,7 +48,7 @@ func TestClient(t *testing.T) {
 				Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
 				Transport: h,
 			})
-		}), genai.ProviderOptionRemote(s.lazyStart(t)), genai.ProviderOptionModel(genai.ModelNone))
+		}), genai.ProviderOptionRemote(s.lazyStart(t)))
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -63,7 +63,7 @@ func TestClient(t *testing.T) {
 				Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
 				Transport: h,
 			})
-		}), genai.ProviderOptionRemote(serverURL), genai.ProviderOptionModel(genai.ModelNone))
+		}), genai.ProviderOptionRemote(serverURL))
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -74,7 +74,10 @@ func TestClient(t *testing.T) {
 			}
 		}
 		smoketest.Run(t, func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
-			opts := []genai.ProviderOption{genai.ProviderOptionRemote(serverURL), genai.ProviderOptionModel(model.Model)}
+			opts := []genai.ProviderOption{genai.ProviderOptionRemote(serverURL)}
+			if model.Model != "" {
+				opts = append(opts, genai.ProviderOptionModel(model.Model))
+			}
 			if fn != nil {
 				opts = append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(func(h http.RoundTripper) http.RoundTripper {
 					return fn(&roundtrippers.Header{
@@ -117,7 +120,7 @@ func TestClient(t *testing.T) {
 				Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
 				Transport: h,
 			})
-		}), genai.ProviderOptionRemote(s.lazyStart(t)), genai.ProviderOptionModel(genai.ModelNone))
+		}), genai.ProviderOptionRemote(s.lazyStart(t)))
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -138,7 +141,7 @@ func TestClient(t *testing.T) {
 				Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
 				Transport: h,
 			})
-		}), genai.ProviderOptionRemote(s.lazyStart(t)), genai.ProviderOptionModel(genai.ModelNone))
+		}), genai.ProviderOptionRemote(s.lazyStart(t)))
 		if err != nil {
 			t.Fatal(err)
 		}

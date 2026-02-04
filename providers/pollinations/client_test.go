@@ -62,7 +62,7 @@ func TestClient(t *testing.T) {
 			t.Error(err)
 		}
 	})
-	cl, err2 := getClientInner(t, providerOptions{Model: genai.ModelNone}, func(h http.RoundTripper) http.RoundTripper {
+	cl, err2 := getClientInner(t, providerOptions{}, func(h http.RoundTripper) http.RoundTripper {
 		return testRecorder.RecordWithName(t, t.Name()+"/Warmup", h)
 	})
 	if err2 != nil {
@@ -85,7 +85,7 @@ func TestClient(t *testing.T) {
 	}
 
 	t.Run("Capabilities", func(t *testing.T) {
-		internaltest.TestCapabilities(t, getClient(t, genai.ModelNone))
+		internaltest.TestCapabilities(t, getClient(t, ""))
 	})
 
 	t.Run("Scoreboard", func(t *testing.T) {
@@ -96,8 +96,10 @@ func TestClient(t *testing.T) {
 		}
 		getClientRT := func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 			opts := []genai.ProviderOption{
-				genai.ProviderOptionModel(model.Model),
 				genai.ProviderOptionPreloadedModels(cachedModels),
+			}
+			if model.Model != "" {
+				opts = append(opts, genai.ProviderOptionModel(model.Model))
 			}
 			if fn != nil {
 				opts = append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(fn)}, opts...)

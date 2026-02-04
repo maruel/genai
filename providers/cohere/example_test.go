@@ -48,7 +48,6 @@ func ExampleNew_hTTP_record() {
 	if os.Getenv("COHERE_API_KEY") == "" {
 		opts = append(opts, genai.ProviderOptionAPIKey("<insert_api_key_here>"))
 	}
-	opts = append(opts, genai.ProviderOptionModel(genai.ModelNone))
 	ctx := context.Background()
 	c, err := cohere.New(ctx, append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(wrapper)}, opts...)...)
 	if err != nil {

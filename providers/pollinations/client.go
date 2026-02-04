@@ -942,10 +942,10 @@ type Client struct {
 
 // New creates a new client to talk to the Pollinations platform API.
 //
-// The value for ProviderAPIKey can be either an API key retrieved from https://auth.pollinations.ai/ or a referrer.
+// The value for ProviderOptionAPIKey can be either an API key retrieved from https://auth.pollinations.ai/ or a referrer.
 // https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#referrer-
 //
-// ProviderAPIKey is optional. Providing one, either via environment variable POLLINATIONS_API_KEY, will increase quota.
+// ProviderOptionAPIKey is optional. Providing one, either via environment variable POLLINATIONS_API_KEY, will increase quota.
 //
 // To use multiple models, create multiple clients.
 // Models are listed at https://docs.perplexity.ai/guides/model-cards
@@ -1040,8 +1040,8 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	}
 	var err error
 	switch model {
-	case genai.ModelNone:
-	case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA, "":
+	case "":
+	case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA:
 		if preferText {
 			if c.impl.Model, err = c.selectBestTextModel(ctx, model); err != nil {
 				return nil, err

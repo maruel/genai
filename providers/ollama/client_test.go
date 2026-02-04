@@ -37,7 +37,7 @@ func TestClient(t *testing.T) {
 	s := lazyServer{t: t}
 
 	t.Run("Capabilities", func(t *testing.T) {
-		c, err := ollama.New(t.Context(), genai.ProviderOptionRemote(s.lazyStart(t)), genai.ProviderOptionModel(genai.ModelNone))
+		c, err := ollama.New(t.Context(), genai.ProviderOptionRemote(s.lazyStart(t)))
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -63,7 +63,10 @@ func TestClient(t *testing.T) {
 					Level:     slog.LevelDebug,
 				}
 			}
-			opts := []genai.ProviderOption{genai.ProviderOptionRemote(s.lazyStart(t)), genai.ProviderOptionModel(model.Model), genai.ProviderOptionTransportWrapper(fnWithLog)}
+			opts := []genai.ProviderOption{genai.ProviderOptionRemote(s.lazyStart(t)), genai.ProviderOptionTransportWrapper(fnWithLog)}
+			if model.Model != "" {
+				opts = append(opts, genai.ProviderOptionModel(model.Model))
+			}
 			c, err := ollama.New(ctx, opts...)
 			if err != nil {
 				t.Fatal(err)
@@ -94,12 +97,14 @@ func TestClient(t *testing.T) {
 	t.Run("Preferred", func(t *testing.T) {
 		internaltest.TestPreferredModels(t, func(st *testing.T, model string, modality genai.Modality) (genai.Provider, error) {
 			opts := []genai.ProviderOption{
-				genai.ProviderOptionModel(model),
 				genai.ProviderOptionModalities(genai.Modalities{modality}),
 				genai.ProviderOptionRemote("http://localhost:66666"),
 				genai.ProviderOptionTransportWrapper(func(h http.RoundTripper) http.RoundTripper {
 					return testRecorder.Record(st, h)
 				}),
+			}
+			if model != "" {
+				opts = append(opts, genai.ProviderOptionModel(model))
 			}
 			return ollama.New(st.Context(), opts...)
 		})

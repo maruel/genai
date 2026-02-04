@@ -1345,7 +1345,7 @@ type Client struct {
 
 // New creates a new client to talk to Google's Gemini platform API.
 //
-// If ProviderAPIKey is not provided, it tries to load it from the GEMINI_API_KEY environment variable.
+// If ProviderOptionAPIKey is not provided, it tries to load it from the GEMINI_API_KEY environment variable.
 // If none is found, it will still return a client coupled with an base.ErrAPIKeyRequired error.
 // Get your API key at https://ai.google.dev/gemini-api/docs/getting-started
 //
@@ -1441,8 +1441,8 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	}
 	if err == nil {
 		switch model {
-		case genai.ModelNone:
-		case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA, "":
+		case "":
+		case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA:
 			var mod genai.Modality
 			switch len(modalities) {
 			case 0:

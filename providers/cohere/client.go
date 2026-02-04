@@ -847,7 +847,7 @@ type Client struct {
 
 // New creates a new client to talk to the Cohere platform API.
 //
-// If ProviderAPIKey is not provided, it tries to load it from the COHERE_API_KEY environment variable.
+// If ProviderOptionAPIKey is not provided, it tries to load it from the COHERE_API_KEY environment variable.
 // If none is found, it will still return a client coupled with an base.ErrAPIKeyRequired error.
 // Get your API key at https://dashboard.cohere.com/api-keys
 //
@@ -916,8 +916,8 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	}
 	if err == nil {
 		switch model {
-		case genai.ModelNone:
-		case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA, "":
+		case "":
+		case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA:
 			if c.impl.Model, err = c.selectBestTextModel(ctx, model); err != nil {
 				return nil, err
 			}

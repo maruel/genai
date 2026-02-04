@@ -1439,7 +1439,7 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	if err == nil {
 		switch model {
 		case "":
-		case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA:
+		case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
 			var mod genai.Modality
 			switch len(modalities) {
 			case 0:
@@ -1543,8 +1543,8 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 	for _, mdl := range mdls {
 		availableModels[strings.TrimPrefix(mdl.(*Model).Name, "models/")] = struct{}{}
 	}
-	cheap := preference == genai.ModelCheap
-	good := preference == genai.ModelGood || preference == ""
+	cheap := preference == string(genai.ModelCheap)
+	good := preference == string(genai.ModelGood) || preference == ""
 	if cheap {
 		if _, ok := availableModels["gemini-flash-lite-latest"]; ok {
 			return "gemini-flash-lite-latest", nil
@@ -1676,8 +1676,8 @@ func (c *Client) selectBestImageModel(ctx context.Context, preference string) (s
 	if err != nil {
 		return "", fmt.Errorf("failed to automatically select the model: %w", err)
 	}
-	cheap := preference == genai.ModelCheap
-	good := preference == genai.ModelGood || preference == ""
+	cheap := preference == string(genai.ModelCheap)
+	good := preference == string(genai.ModelGood) || preference == ""
 	selectedModel := ""
 	for _, mdl := range mdls {
 		m := mdl.(*Model)
@@ -1717,8 +1717,8 @@ func (c *Client) selectBestVideoModel(ctx context.Context, preference string) (s
 	if err != nil {
 		return "", fmt.Errorf("failed to automatically select the model: %w", err)
 	}
-	cheap := preference == genai.ModelCheap
-	good := preference == genai.ModelGood || preference == ""
+	cheap := preference == string(genai.ModelCheap)
+	good := preference == string(genai.ModelGood) || preference == ""
 	selectedModel := ""
 	for _, mdl := range mdls {
 		m := mdl.(*Model)

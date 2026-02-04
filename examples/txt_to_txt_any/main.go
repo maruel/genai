@@ -32,7 +32,7 @@ func main() {
 		names = "set environment variables, e.g. `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, etc"
 	}
 	provider := flag.String("provider", "", "provider to use, "+names)
-	model := flag.String("model", "", "model to use; "+genai.ModelCheap+", "+genai.ModelGood+" (default) or "+genai.ModelSOTA+" for automatic model selection")
+	model := flag.String("model", "", "model to use; "+string(genai.ModelCheap)+", "+string(genai.ModelGood)+" (default) or "+string(genai.ModelSOTA)+" for automatic model selection")
 	remote := flag.String("remote", "", "url to use, e.g. when using ollama or llama-server on another host")
 	flag.Parse()
 
@@ -42,7 +42,7 @@ func main() {
 	}
 	var opts []genai.ProviderOption
 	if *model == "" {
-		opts = append(opts, genai.ProviderOptionModel(genai.ModelGood))
+		opts = append(opts, genai.ModelGood)
 	} else {
 		opts = append(opts, genai.ProviderOptionModel(*model))
 	}

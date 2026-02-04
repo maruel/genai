@@ -292,7 +292,7 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	if err == nil {
 		switch model {
 		case "":
-		case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA:
+		case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
 			c.impl.Model = c.selectBestImageModel(model)
 			c.impl.OutputModalities = mod
 		default:
@@ -310,13 +310,13 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 func (c *Client) selectBestImageModel(preference string) string {
 	// If Black Forest Labs ever implement model listing, start using it!
 	switch preference {
-	case genai.ModelCheap:
+	case string(genai.ModelCheap):
 		// flex-2-dev consistently returns 403 / Forbidden; I don't believe they serve it yet.
 		// https://docs.bfl.ml/api-reference/models/generate-an-image-with-flux1-[dev]
 		return "flux-dev"
-	case genai.ModelGood, "":
+	case string(genai.ModelGood), "":
 		return "flux-2-pro"
-	case genai.ModelSOTA:
+	case string(genai.ModelSOTA):
 		return "flux-2-max"
 	default:
 		return ""

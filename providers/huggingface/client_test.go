@@ -142,7 +142,7 @@ func TestClient(t *testing.T) {
 	t.Run("TextOutputDocInput", func(t *testing.T) {
 		internaltest.TestTextOutputDocInput(t, func(t *testing.T) genai.Provider {
 			// Cheap is too cheap.
-			return getClient(t, genai.ModelGood)
+			return getClient(t, string(genai.ModelGood))
 		})
 	})
 

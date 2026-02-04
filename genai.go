@@ -65,10 +65,10 @@ func (p ProviderOptionRemote) Validate() error {
 
 // ProviderOptionModel specifies which model to use.
 //
-// For automatic model selection, pass ModelCheap for a cheap model, ModelGood for a good
-// everyday model, or ModelSOTA for the state of the art model. The provider
-// internally calls ListModels() to discover models and select based on its heuristics.
-// Providers that do not support ListModels (e.g. bfl or perplexity) use a hardcoded list.
+// For automatic model selection, use the predefined constants ModelCheap, ModelGood, or ModelSOTA
+// directly as provider options. The provider internally calls ListModels() to discover models
+// and select based on its heuristics. Providers that do not support ListModels (e.g. bfl or
+// perplexity) use a hardcoded list.
 //
 // When unspecified, no model is selected. This is useful when only calling ListModels().
 // Generation calls will fail.
@@ -130,16 +130,17 @@ func (p ProviderOptionTransportWrapper) Validate() error {
 	return nil
 }
 
-// Model markers to pass to ProviderOptionModel for automatic model selection.
+// Model markers for automatic model selection. These are ProviderOptionModel values
+// that can be passed directly to provider constructors.
 const (
 	// ModelCheap requests the provider to automatically select the cheapest model it can find.
-	ModelCheap = "CHEAP"
+	ModelCheap ProviderOptionModel = "CHEAP"
 	// ModelGood requests the provider to automatically select a good every day model that has a good
 	// performance/cost trade-off.
-	ModelGood = "GOOD"
+	ModelGood ProviderOptionModel = "GOOD"
 	// ModelSOTA requests the provider to automatically select the best state-of-the-art model
 	// it can find.
-	ModelSOTA = "SOTA"
+	ModelSOTA ProviderOptionModel = "SOTA"
 )
 
 // Provider is the base interface that all provider interfaces embed.

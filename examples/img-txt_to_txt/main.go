@@ -18,7 +18,7 @@ import (
 func main() {
 	ctx := context.Background()
 	// Most SOTA providers support vision. Notable exceptions (as of 2025-08) are cerebras and groq.
-	c, err := mistral.New(ctx, genai.ProviderOptionModel(genai.ModelGood))
+	c, err := mistral.New(ctx, genai.ModelGood)
 	if err != nil {
 		log.Fatal(err)
 	}

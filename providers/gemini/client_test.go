@@ -85,7 +85,7 @@ func TestClient(t *testing.T) {
 		// Use a message with sufficient tokens (minimum 1024 tokens required).
 		// This generates approximately 1500+ tokens.
 		longText := "This is a test message for caching. " + strings.Repeat("The quick brown fox jumps over the lazy dog. ", 200)
-		internaltest.TestCapabilitiesCaching(t, getClient(t, genai.ModelCheap), genai.NewTextMessage(longText))
+		internaltest.TestCapabilitiesCaching(t, getClient(t, string(genai.ModelCheap)), genai.NewTextMessage(longText))
 	})
 
 	t.Run("Scoreboard", func(t *testing.T) {
@@ -151,7 +151,7 @@ func TestClient(t *testing.T) {
 
 	t.Run("TextOutputDocInput", func(t *testing.T) {
 		internaltest.TestTextOutputDocInput(t, func(t *testing.T) genai.Provider {
-			return getClient(t, genai.ModelCheap)
+			return getClient(t, string(genai.ModelCheap))
 		})
 	})
 

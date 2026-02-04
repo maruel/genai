@@ -536,7 +536,7 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	if err == nil {
 		switch model {
 		case "":
-		case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA:
+		case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
 			c.impl.Model = c.selectBestTextModel(model)
 			c.impl.OutputModalities = mod
 		default:
@@ -554,11 +554,11 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 func (c *Client) selectBestTextModel(preference string) string {
 	// Perplexity doesn't have a list model API.
 	switch preference {
-	case genai.ModelCheap:
+	case string(genai.ModelCheap):
 		return "sonar"
-	case genai.ModelGood, "":
+	case string(genai.ModelGood), "":
 		return "sonar-pro"
-	case genai.ModelSOTA:
+	case string(genai.ModelSOTA):
 		return "sonar-reasoning-pro"
 	default:
 		return ""

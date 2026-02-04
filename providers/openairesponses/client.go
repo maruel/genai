@@ -1096,7 +1096,7 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	if err == nil {
 		switch model {
 		case "":
-		case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA:
+		case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
 			var mod genai.Modality
 			switch len(modalities) {
 			case 0:

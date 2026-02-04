@@ -76,7 +76,7 @@ func TestClient(t *testing.T) {
 	})
 
 	t.Run("GenAsync-Text", func(t *testing.T) {
-		internaltest.TestCapabilitiesGenAsync(t, getClient(t, genai.ModelCheap))
+		internaltest.TestCapabilitiesGenAsync(t, getClient(t, string(genai.ModelCheap)))
 	})
 
 	t.Run("Scoreboard", func(t *testing.T) {
@@ -183,7 +183,7 @@ func TestClient(t *testing.T) {
 		t.Run("GenSyncRaw", func(t *testing.T) {
 			cc, err := getClientInner(t, func(h http.RoundTripper) http.RoundTripper {
 				return wrapper(testRecorder.Record(t, h))
-			}, genai.ProviderOptionModel(genai.ModelGood))
+			}, genai.ModelGood)
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -208,7 +208,7 @@ func TestClient(t *testing.T) {
 		t.Run("GenStreamRaw", func(t *testing.T) {
 			cc, err := getClientInner(t, func(h http.RoundTripper) http.RoundTripper {
 				return wrapper(testRecorder.Record(t, h))
-			}, genai.ProviderOptionModel(genai.ModelGood))
+			}, genai.ModelGood)
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -261,7 +261,7 @@ func TestClient(t *testing.T) {
 
 	t.Run("TextOutputDocInput", func(t *testing.T) {
 		internaltest.TestTextOutputDocInput(t, func(t *testing.T) genai.Provider {
-			return getClient(t, genai.ModelCheap)
+			return getClient(t, string(genai.ModelCheap))
 		})
 	})
 

@@ -114,7 +114,7 @@ func TestClient(t *testing.T) {
 		internaltest.TestTextOutputDocInput(t, func(t *testing.T) genai.Provider {
 			opts := []genai.ProviderOption{
 				genai.ProviderOptionRemote(s.lazyStart(t)),
-				genai.ProviderOptionModel(genai.ModelCheap),
+				genai.ModelCheap,
 				genai.ProviderOptionTransportWrapper(func(h http.RoundTripper) http.RoundTripper {
 					return testRecorder.Record(t, h)
 				}),

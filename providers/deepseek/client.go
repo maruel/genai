@@ -572,7 +572,7 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	if err == nil {
 		switch model {
 		case "":
-		case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA:
+		case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
 			if c.impl.Model, err = c.selectBestTextModel(ctx, model); err != nil {
 				return nil, err
 			}
@@ -594,7 +594,7 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 	if err != nil {
 		return "", fmt.Errorf("failed to automatically select the model: %w", err)
 	}
-	cheap := preference == genai.ModelCheap
+	cheap := preference == string(genai.ModelCheap)
 	selectedModel := ""
 	for _, mdl := range mdls {
 		m := mdl.(*Model)

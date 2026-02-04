@@ -597,7 +597,7 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	}
 	switch model {
 	case "":
-	case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA:
+	case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
 		c.impl.Model = c.selectBestTextModel(ctx, model)
 		c.impl.OutputModalities = mod
 	default:
@@ -623,13 +623,13 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) str
 	// Hard code some popular models, it's more useful than failing hard. The model is not immediately pulled,
 	// it will be pulled upon first use.
 	switch preference {
-	case genai.ModelCheap:
+	case string(genai.ModelCheap):
 		return "gemma3:1b"
 	default:
 		fallthrough
-	case genai.ModelGood, "":
+	case string(genai.ModelGood), "":
 		return "qwen3:4b"
-	case genai.ModelSOTA:
+	case string(genai.ModelSOTA):
 		return "qwen3:32b"
 	}
 }

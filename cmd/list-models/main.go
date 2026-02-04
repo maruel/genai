@@ -90,15 +90,15 @@ func getModels(ctx context.Context, provider string) ([]string, map[string]genai
 		return nil, nil, err
 	}
 
-	if c, err = cfg.Factory(ctx, genai.ProviderOptionModel(genai.ModelCheap)); err != nil {
+	if c, err = cfg.Factory(ctx, genai.ModelCheap); err != nil {
 		return nil, nil, err
 	}
 	cheap := c.ModelID()
-	if c, err = cfg.Factory(ctx, genai.ProviderOptionModel(genai.ModelGood)); err != nil {
+	if c, err = cfg.Factory(ctx, genai.ModelGood); err != nil {
 		return nil, nil, err
 	}
 	good := c.ModelID()
-	if c, err = cfg.Factory(ctx, genai.ProviderOptionModel(genai.ModelSOTA)); err != nil {
+	if c, err = cfg.Factory(ctx, genai.ModelSOTA); err != nil {
 		return nil, nil, err
 	}
 	sota := c.ModelID()

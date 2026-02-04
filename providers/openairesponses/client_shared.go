@@ -296,8 +296,8 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 	if err != nil {
 		return "", fmt.Errorf("failed to automatically select the model: %w", err)
 	}
-	cheap := preference == genai.ModelCheap
-	good := preference == genai.ModelGood || preference == ""
+	cheap := preference == string(genai.ModelCheap)
+	good := preference == string(genai.ModelGood) || preference == ""
 	selectedModel := ""
 	var created base.Time
 	for _, mdl := range mdls {
@@ -342,8 +342,8 @@ func (c *Client) selectBestImageModel(ctx context.Context, preference string) (s
 	if err != nil {
 		return "", fmt.Errorf("failed to automatically select the model: %w", err)
 	}
-	cheap := preference == genai.ModelCheap
-	good := preference == genai.ModelGood
+	cheap := preference == string(genai.ModelCheap)
+	good := preference == string(genai.ModelGood)
 	selectedModel := ""
 	for _, mdl := range mdls {
 		m := mdl.(*Model)
@@ -386,8 +386,8 @@ func (c *Client) selectBestVideoModel(ctx context.Context, preference string) (s
 	if err != nil {
 		return "", fmt.Errorf("failed to automatically select the model: %w", err)
 	}
-	cheap := preference == genai.ModelCheap
-	good := preference == genai.ModelGood || preference == ""
+	cheap := preference == string(genai.ModelCheap)
+	good := preference == string(genai.ModelGood) || preference == ""
 	selectedModel := ""
 	for _, mdl := range mdls {
 		m := mdl.(*Model)

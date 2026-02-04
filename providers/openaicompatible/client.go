@@ -397,7 +397,7 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 		return nil, fmt.Errorf("unexpected option Modalities %s, only text is supported", mod)
 	}
 	switch model {
-	case "", genai.ModelCheap, genai.ModelGood, genai.ModelSOTA:
+	case "", string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
 		model = ""
 	}
 	t := base.DefaultTransport

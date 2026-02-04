@@ -17,7 +17,7 @@ import (
 
 func main() {
 	ctx := context.Background()
-	c, err := anthropic.New(ctx, genai.ProviderOptionModel(genai.ModelGood))
+	c, err := anthropic.New(ctx, genai.ModelGood)
 	if err != nil {
 		log.Fatal(err)
 	}

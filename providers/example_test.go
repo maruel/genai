@@ -47,7 +47,7 @@ func Example_all_ListModel() {
 func Example_all_Provider() {
 	ctx := context.Background()
 	for name, cfg := range providers.All {
-		c, err := cfg.Factory(ctx, genai.ProviderOptionModel(genai.ModelCheap))
+		c, err := cfg.Factory(ctx, genai.ModelCheap)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -82,7 +82,7 @@ func Example_all_Full() {
 		s = "set environment variables, e.g. `OPENAI_API_KEY`"
 	}
 	provider := flag.String("provider", "", "provider to use, "+s)
-	model := flag.String("model", "", "model to use; "+genai.ModelCheap+", "+genai.ModelGood+" (default) or "+genai.ModelSOTA+" for automatic model selection")
+	model := flag.String("model", "", "model to use; "+string(genai.ModelCheap)+", "+string(genai.ModelGood)+" (default) or "+string(genai.ModelSOTA)+" for automatic model selection")
 	remote := flag.String("remote", "", "url to use, e.g. when using ollama or llama-server on another host")
 	flag.Parse()
 

@@ -189,7 +189,7 @@ func TestClient(t *testing.T) {
 
 	t.Run("TextOutputDocInput", func(t *testing.T) {
 		internaltest.TestTextOutputDocInput(t, func(t *testing.T) genai.Provider {
-			return getClient(t, genai.ModelCheap)
+			return getClient(t, string(genai.ModelCheap))
 		})
 	})
 
@@ -236,7 +236,7 @@ func TestClient(t *testing.T) {
 			{
 				Name: "audio not supported",
 				Opts: []genai.ProviderOption{
-					genai.ProviderOptionModel(genai.ModelGood),
+					genai.ModelGood,
 					genai.ProviderOptionModalities{genai.ModalityAudio},
 				},
 				ErrGenSync:   "OpenAI Responses API does not support audio output as of December 2025; see https://platform.openai.com/docs/guides/audio",

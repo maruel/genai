@@ -1004,7 +1004,7 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	if err == nil {
 		switch model {
 		case "":
-		case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA:
+		case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
 			var mod genai.Modality
 			switch len(modalities) {
 			case 0:
@@ -1066,9 +1066,9 @@ func (c *Client) selectBestAudioModel(ctx context.Context, preference string) (s
 	if err != nil {
 		return "", fmt.Errorf("failed to automatically select the model: %w", err)
 	}
-	cheap := preference == genai.ModelCheap
-	good := preference == genai.ModelGood || preference == ""
-	sota := preference == genai.ModelSOTA
+	cheap := preference == string(genai.ModelCheap)
+	good := preference == string(genai.ModelGood) || preference == ""
+	sota := preference == string(genai.ModelSOTA)
 	selectedModel := ""
 	for _, mdl := range mdls {
 		m := mdl.(*Model)

@@ -120,7 +120,7 @@ on Anthropic's currently published models, sends a prompt and prints the respons
 ```go
 func main() {
 	ctx := context.Background()
-	c, err := anthropic.New(ctx, genai.ProviderOptionModel(genai.ModelGood))
+	c, err := anthropic.New(ctx, genai.ModelGood)
 	msgs := genai.Messages{
 		genai.NewTextMessage("Give me a life advice that sounds good but is a bad idea in practice. Answer succinctly."),
 	}
@@ -145,7 +145,7 @@ round trips adding additional follow-up messages from users. Set [`OPENAI_API_KE
 ```go
 func main() {
 	ctx := context.Background()
-	c, err := anthropic.New(ctx, genai.ProviderOptionModel(genai.ModelGood))
+	c, err := anthropic.New(ctx, genai.ModelGood)
 	msgs := genai.Messages{
 		genai.NewTextMessage("Let's play a word association game. You pick a single word, then I pick the first word I think of, then you respond with a word, and so on.")
 	}
@@ -174,7 +174,7 @@ iterators](https://go.dev/blog/range-functions). Notice how little difference th
 ```go
 func main() {
 	ctx := context.Background()
-	c, err := anthropic.New(ctx, genai.ProviderOptionModel(genai.ModelGood))
+	c, err := anthropic.New(ctx, genai.ModelGood)
 	msgs := genai.Messages{
 		genai.NewTextMessage("Give me a life advice that sounds good but is a bad idea in practice."),
 	}
@@ -265,7 +265,7 @@ to answer your question.
 Snippet:
 
 ```go
-	c, _ := perplexity.New(ctx, genai.ProviderOptionModel(genai.ModelCheap))
+	c, _ := perplexity.New(ctx, genai.ModelCheap)
 	msgs := genai.Messages{{
 		Requests: []genai.Request{
 			{Text: "Who holds ultimate power of Canada? Answer succinctly."},
@@ -793,7 +793,7 @@ Snippet:
 	flag.Parse()
 
 	cfg := providers.All[*provider]
-	c, _ := cfg.Factory(ctx, genai.ProviderOptionModel(genai.ModelGood))
+	c, _ := cfg.Factory(ctx, genai.ModelGood)
 	p := adapters.WrapReasoning(c)
 	res, _ := p.GenSync(...)
 ```
@@ -804,6 +804,26 @@ Try it locally:
 go run github.com/maruel/genai/examples/txt_to_txt_any@latest \
     -provider cerebras \
     "Tell a good sounding advice that is a bad idea in practice."
+```
+
+
+## Model Selection
+
+For automatic model selection, pass one of the marker constants directly:
+
+```go
+// Automatic selection - the provider picks the best model for the tier
+c, _ := anthropic.New(ctx, genai.ModelCheap) // Cheapest model
+c, _ := anthropic.New(ctx, genai.ModelGood)  // Good everyday model (recommended)
+c, _ := anthropic.New(ctx, genai.ModelSOTA)  // State-of-the-art model
+```
+
+For a specific model, wrap the model ID with `ProviderOptionModel`:
+
+```go
+// Specific model selection
+c, _ := anthropic.New(ctx, genai.ProviderOptionModel("claude-sonnet-4-20250514"))
+c, _ := gemini.New(ctx, genai.ProviderOptionModel("gemini-2.5-flash"))
 ```
 
 

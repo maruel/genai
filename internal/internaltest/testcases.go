@@ -206,9 +206,9 @@ func TestCapabilitiesCaching(t *testing.T, c genai.Provider, msgs ...genai.Messa
 func TestPreferredModels(t *testing.T, newProvider func(t *testing.T, model string, modality genai.Modality) (genai.Provider, error)) {
 	data := loadPreferredModelsFromScoreboard(t, newProvider)
 	for _, tc := range data {
-		t.Run(tc.Tier, func(t *testing.T) {
-			t.Run(string(tc.Modality)+"-"+tc.Tier, func(t *testing.T) {
-				c, err := newProvider(t, tc.Tier, tc.Modality)
+		t.Run(string(tc.Tier), func(t *testing.T) {
+			t.Run(string(tc.Modality)+"-"+string(tc.Tier), func(t *testing.T) {
+				c, err := newProvider(t, string(tc.Tier), tc.Modality)
 				if err != nil {
 					t.Fatal(err)
 				}
@@ -223,8 +223,8 @@ func TestPreferredModels(t *testing.T, newProvider func(t *testing.T, model stri
 // preferredModelTest defines a test case for preferred model selection.
 type preferredModelTest struct {
 	Modality genai.Modality
-	Tier     string // genai.ModelSOTA, genai.ModelGood, or genai.ModelCheap
-	Want     string // Expected model ID
+	Tier     genai.ProviderOptionModel // genai.ModelSOTA, genai.ModelGood, or genai.ModelCheap
+	Want     string                    // Expected model ID
 }
 
 // loadPreferredModelsFromScoreboard extracts the preferred model test data

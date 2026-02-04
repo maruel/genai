@@ -60,7 +60,7 @@ func main() {
 	seen := false
 	for _, name := range supported {
 		cfg := providers.All[name]
-		if c, err := cfg.Factory(ctx, genai.ProviderOptionModel(genai.ModelGood)); err == nil {
+		if c, err := cfg.Factory(ctx, genai.ModelGood); err == nil {
 			if seen {
 				fmt.Printf("\n")
 			}

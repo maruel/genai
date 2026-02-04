@@ -23,7 +23,7 @@ func main() {
 	// - gemini
 	// - groq
 	// - openai
-	c, err := perplexity.New(ctx, genai.ProviderOptionModel(genai.ModelCheap))
+	c, err := perplexity.New(ctx, genai.ModelCheap)
 	if err != nil {
 		log.Fatal(err)
 	}

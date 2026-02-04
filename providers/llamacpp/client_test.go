@@ -105,7 +105,7 @@ func TestClient(t *testing.T) {
 					Header:    http.Header{"Authorization": {"Bearer " + apiKey}},
 					Transport: h,
 				})
-			}), genai.ProviderOptionRemote(s.lazyStart(t)), genai.ProviderOptionModel(genai.ModelCheap))
+			}), genai.ProviderOptionRemote(s.lazyStart(t)), genai.ModelCheap)
 			if err != nil {
 				t.Fatal(err)
 			}

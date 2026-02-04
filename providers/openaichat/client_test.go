@@ -78,11 +78,11 @@ func TestClient(t *testing.T) {
 	})
 
 	t.Run("GenAsync-Text", func(t *testing.T) {
-		internaltest.TestCapabilitiesGenAsync(t, getClient(t, genai.ModelCheap))
+		internaltest.TestCapabilitiesGenAsync(t, getClient(t, string(genai.ModelCheap)))
 	})
 
 	t.Run("Caching-Text", func(t *testing.T) {
-		internaltest.TestCapabilitiesCaching(t, getClient(t, genai.ModelCheap))
+		internaltest.TestCapabilitiesCaching(t, getClient(t, string(genai.ModelCheap)))
 	})
 
 	t.Run("Scoreboard", func(t *testing.T) {
@@ -199,7 +199,7 @@ func TestClient(t *testing.T) {
 
 	t.Run("TextOutputDocInput", func(t *testing.T) {
 		internaltest.TestTextOutputDocInput(t, func(t *testing.T) genai.Provider {
-			return getClient(t, genai.ModelCheap)
+			return getClient(t, string(genai.ModelCheap))
 		})
 	})
 

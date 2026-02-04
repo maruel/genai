@@ -1139,7 +1139,7 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	var err error
 	switch model {
 	case "":
-	case genai.ModelCheap, genai.ModelGood, genai.ModelSOTA:
+	case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
 		if c.impl.Model, err = c.selectBestTextModel(ctx); err == nil {
 			c.impl.OutputModalities = mod
 		}

@@ -21,7 +21,7 @@ func main() {
 	ctx := context.Background()
 	// Other options (as of 2025-08):
 	// - None!
-	c, err := gemini.New(ctx, genai.ProviderOptionModel(genai.ModelCheap))
+	c, err := gemini.New(ctx, genai.ModelCheap)
 	if err != nil {
 		log.Fatal(err)
 	}

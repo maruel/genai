@@ -20,7 +20,7 @@ func main() {
 	ctx := context.Background()
 	// Other options (as of 2025-08):
 	// - anthropic
-	c, err := cohere.New(ctx, genai.ProviderOptionModel(genai.ModelGood))
+	c, err := cohere.New(ctx, genai.ModelGood)
 	if err != nil {
 		log.Fatal(err)
 	}

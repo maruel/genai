@@ -20,7 +20,7 @@ import (
 func main() {
 	// Set up the OpenAI client
 	ctx := context.Background()
-	c, err := openaichat.New(ctx, genai.ProviderOptionModel(genai.ModelCheap))
+	c, err := openaichat.New(ctx, genai.ModelCheap)
 	if err != nil {
 		log.Fatal(err)
 	}

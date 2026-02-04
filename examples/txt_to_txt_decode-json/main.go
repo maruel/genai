@@ -21,7 +21,7 @@ import (
 func main() {
 	ctx := context.Background()
 	// See ../../docs/MODELS.md to see which providers support this.
-	c, err := openaichat.New(ctx, genai.ProviderOptionModel(genai.ModelGood))
+	c, err := openaichat.New(ctx, genai.ModelGood)
 	if err != nil {
 		log.Fatal(err)
 	}

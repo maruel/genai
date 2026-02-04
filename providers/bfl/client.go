@@ -253,8 +253,6 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 			remote = string(v)
 		case genai.ProviderOptionTransportWrapper:
 			wrapper = v
-		case genai.ProviderOptionPreloadedModels:
-			return nil, errors.New("unexpected option ProviderPreloadedModels")
 		default:
 			return nil, fmt.Errorf("unsupported option type %T", opt)
 		}

@@ -383,6 +383,7 @@ func TestClient(t *testing.T) {
 			{
 				Name: "bad model",
 				Opts: []genai.ProviderOption{
+					genai.ProviderOptionAPIKey("<insert_api_key_here>"),
 					genai.ProviderOptionModel("bad model"),
 				},
 				ErrGenSync:   "http 400\nINVALID_ARGUMENT (400): * GenerateContentRequest.model: unexpected model name format",

@@ -159,7 +159,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 		case genai.GenOptionsSeed:
 			c.RandomSeed = int64(v)
 		default:
-			unsupported = append(unsupported, reflect.TypeOf(opt).Name())
+			unsupported = append(unsupported, internal.TypeName(opt))
 		}
 	}
 

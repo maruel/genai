@@ -152,10 +152,10 @@ func (i *imageModelClient) GenSync(ctx context.Context, msgs genai.Messages, opt
 			n := *v
 			n.Width = 256
 			n.Height = 256
-			n.PollInterval = time.Millisecond
 			opts[i] = &n
 		}
 	}
+	opts = append(opts, genai.GenOptionPollInterval(time.Millisecond))
 	return i.Client.GenSync(ctx, msgs, opts...)
 }
 

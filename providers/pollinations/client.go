@@ -20,7 +20,6 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"reflect"
 	"slices"
 	"sort"
 	"strconv"
@@ -110,7 +109,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 		case genai.GenOptionsSeed:
 			c.Seed = int64(v)
 		default:
-			unsupported = append(unsupported, reflect.TypeOf(opt).Name())
+			unsupported = append(unsupported, internal.TypeName(opt))
 		}
 	}
 
@@ -1243,7 +1242,7 @@ func (c *Client) genImage(ctx context.Context, msg genai.Message, opts ...genai.
 			// Defaults to 42 otherwise.
 			qp.Add("seed", strconv.FormatInt(int64(v), 10))
 		default:
-			return genai.Result{}, &base.ErrNotSupported{Options: []string{reflect.TypeOf(opt).Name()}}
+			return genai.Result{}, &base.ErrNotSupported{Options: []string{internal.TypeName(opt)}}
 		}
 	}
 

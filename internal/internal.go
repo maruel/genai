@@ -130,3 +130,12 @@ func (b *BadError) Unwrap() error {
 //
 
 type contextKey struct{}
+
+// TypeName returns the unqualified type name, dereferencing pointers as needed.
+func TypeName(v any) string {
+	t := reflect.TypeOf(v)
+	for t.Kind() == reflect.Pointer {
+		t = t.Elem()
+	}
+	return t.Name()
+}

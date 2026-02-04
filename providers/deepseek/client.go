@@ -17,7 +17,6 @@ import (
 	"iter"
 	"net/http"
 	"os"
-	"reflect"
 	"slices"
 	"strings"
 
@@ -137,7 +136,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 				errs = append(errs, errors.New("unsupported OptionsTools.WebSearch"))
 			}
 		default:
-			unsupported = append(unsupported, reflect.TypeOf(opt).Name())
+			unsupported = append(unsupported, internal.TypeName(opt))
 		}
 	}
 

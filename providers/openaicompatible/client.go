@@ -16,7 +16,6 @@ import (
 	"fmt"
 	"iter"
 	"net/http"
-	"reflect"
 	"slices"
 	"strings"
 
@@ -86,7 +85,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 				errs = append(errs, errors.New("unsupported option DecodeAs"))
 			}
 		default:
-			unsupported = append(unsupported, reflect.TypeOf(opt).Name())
+			unsupported = append(unsupported, internal.TypeName(opt))
 		}
 	}
 

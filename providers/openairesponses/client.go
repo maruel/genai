@@ -124,7 +124,7 @@ func (r *Response) Init(msgs genai.Messages, model string, opts ...genai.GenOpti
 			unsupported = append(unsupported, u...)
 			errs = append(errs, e...)
 		default:
-			return &base.ErrNotSupported{Options: []string{reflect.TypeOf(opt).Name()}}
+			return &base.ErrNotSupported{Options: []string{internal.TypeName(opt)}}
 		}
 	}
 	if len(msgs) == 0 {

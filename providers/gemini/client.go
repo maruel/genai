@@ -291,7 +291,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 		case genai.GenOptionsSeed:
 			c.GenerationConfig.Seed = int64(v)
 		default:
-			unsupported = append(unsupported, reflect.TypeOf(opt).Name())
+			unsupported = append(unsupported, internal.TypeName(opt))
 		}
 	}
 
@@ -1026,7 +1026,7 @@ func (i *ImageRequest) Init(msg genai.Message, model string, mod genai.Modalitie
 				i.Parameters.DurationSeconds = int64(v.Duration.Round(time.Second) / time.Second)
 			}
 		default:
-			return &base.ErrNotSupported{Options: []string{reflect.TypeOf(opt).Name()}}
+			return &base.ErrNotSupported{Options: []string{internal.TypeName(opt)}}
 		}
 	}
 	return uce
@@ -2073,17 +2073,20 @@ func (c *Client) CacheDelete(ctx context.Context, name string) error {
 func (c *Client) genDoc(ctx context.Context, msg genai.Message, opts ...genai.GenOptions) (genai.Result, error) {
 	// TODO: Smartly decide the method to use instead of hardcoding on the modality.
 	if slices.Contains(c.impl.OutputModalities, genai.ModalityVideo) {
-		id, err := c.GenAsync(ctx, genai.Messages{msg}, opts...)
+		waitForPoll := time.Second
+		filtered := make([]genai.GenOptions, 0, len(opts))
+		for _, opt := range opts {
+			if v, ok := opt.(genai.GenOptionPollInterval); ok {
+				waitForPoll = time.Duration(v)
+			} else {
+				filtered = append(filtered, opt)
+			}
+		}
+		id, err := c.GenAsync(ctx, genai.Messages{msg}, filtered...)
 		if err != nil {
 			return genai.Result{}, err
 		}
-		// Loop until the image is available.
-		waitForPoll := time.Second
-		for _, opt := range opts {
-			if v, ok := (opt).(*genai.GenOptionsVideo); ok && v.PollInterval != 0 {
-				waitForPoll = v.PollInterval
-			}
-		}
+		// Loop until the result is available.
 		for {
 			select {
 			case <-ctx.Done():

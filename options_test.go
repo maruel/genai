@@ -7,6 +7,7 @@ package genai
 import (
 	"context"
 	"testing"
+	"time"
 
 	"github.com/invopop/jsonschema"
 )
@@ -57,6 +58,28 @@ func TestGenOptionsSeed(t *testing.T) {
 			for _, v := range []GenOptionsSeed{0, -1, -100} {
 				if err := v.Validate(); err == nil || err.Error() != "must be >= 1" {
 					t.Errorf("Validate(%d) want error %q, got %q", v, "must be >= 1", err)
+				}
+			}
+		})
+	})
+}
+
+func TestGenOptionPollInterval(t *testing.T) {
+	t.Run("Validate", func(t *testing.T) {
+		t.Run("valid", func(t *testing.T) {
+			for _, v := range []GenOptionPollInterval{
+				GenOptionPollInterval(time.Millisecond),
+				GenOptionPollInterval(time.Second),
+			} {
+				if err := v.Validate(); err != nil {
+					t.Errorf("Validate(%d) got unexpected error: %v", v, err)
+				}
+			}
+		})
+		t.Run("error", func(t *testing.T) {
+			for _, v := range []GenOptionPollInterval{-1, 0} {
+				if err := v.Validate(); err == nil || err.Error() != "must be >= 1ms" {
+					t.Errorf("Validate(%d) want error %q, got %q", v, "must be >= 1ms", err)
 				}
 			}
 		})

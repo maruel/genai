@@ -19,7 +19,6 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"reflect"
 	"slices"
 	"strconv"
 	"strings"
@@ -159,7 +158,7 @@ func (i *ImageRequest) Init(msgs genai.Messages, model string, opts ...genai.Gen
 		case genai.GenOptionsSeed:
 			i.Seed = int64(v)
 		default:
-			return &base.ErrNotSupported{Options: []string{reflect.TypeOf(opt).Name()}}
+			return &base.ErrNotSupported{Options: []string{internal.TypeName(opt)}}
 		}
 	}
 
@@ -377,18 +376,22 @@ func processHeaders(h http.Header) []genai.RateLimit {
 
 // GenSync implements genai.Provider.
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (genai.Result, error) {
-	id, err := c.GenAsync(ctx, msgs, opts...)
+	// They recommend in their documentation to poll every 0.5s.
+	waitForPoll := 500 * time.Millisecond
+	filtered := make([]genai.GenOptions, 0, len(opts))
+	for _, opt := range opts {
+		if v, ok := opt.(genai.GenOptionPollInterval); ok {
+			waitForPoll = time.Duration(v)
+		} else {
+			filtered = append(filtered, opt)
+		}
+	}
+	id, err := c.GenAsync(ctx, msgs, filtered...)
 	if err != nil {
 		return genai.Result{}, err
 	}
-	// They recommend in their documentation to poll every 0.5s.
-	waitForPoll := 500 * time.Millisecond
-	for _, opt := range opts {
-		if v, ok := (opt).(*genai.GenOptionsImage); ok && v.PollInterval != 0 {
-			waitForPoll = v.PollInterval
-		}
-	}
 	// TODO: Expose a webhook with a custom OptionsImage.
+	// Loop until the result is available.
 	for {
 		select {
 		case <-ctx.Done():

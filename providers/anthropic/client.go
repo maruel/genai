@@ -22,7 +22,6 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"reflect"
 	"slices"
 	"strconv"
 	"strings"
@@ -136,7 +135,7 @@ func (c *ChatRequest) initImpl(msgs genai.Messages, model string, cache bool, op
 			unsupported = append(unsupported, u...)
 			errs = append(errs, e...)
 		default:
-			unsupported = append(unsupported, reflect.TypeOf(opt).Name())
+			unsupported = append(unsupported, internal.TypeName(opt))
 		}
 	}
 

@@ -12,7 +12,6 @@ import (
 	"fmt"
 	"iter"
 	"net/http"
-	"reflect"
 	"slices"
 	"strconv"
 	"strings"
@@ -20,6 +19,7 @@ import (
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
+	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/bb"
 	"github.com/maruel/genai/scoreboard"
 )
@@ -147,7 +147,7 @@ func (i *ImageRequest) Init(msg genai.Message, model string, opts ...genai.GenOp
 				i.Size = fmt.Sprintf("%dx%d", v.Width, v.Height)
 			}
 		default:
-			return &base.ErrNotSupported{Options: []string{reflect.TypeOf(opt).Name()}}
+			return &base.ErrNotSupported{Options: []string{internal.TypeName(opt)}}
 		}
 	}
 	return nil

@@ -146,7 +146,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 		case genai.GenOptionsSeed:
 			c.Seed = int64(v)
 		default:
-			unsupported = append(unsupported, reflect.TypeOf(opt).Name())
+			unsupported = append(unsupported, internal.TypeName(opt))
 		}
 	}
 
@@ -793,7 +793,7 @@ func (i *ImageRequest) Init(msg genai.Message, model string, opts ...genai.GenOp
 		case genai.GenOptionsSeed:
 			i.Seed = int64(v)
 		default:
-			return &base.ErrNotSupported{Options: []string{reflect.TypeOf(opt).Name()}}
+			return &base.ErrNotSupported{Options: []string{internal.TypeName(opt)}}
 		}
 	}
 	return nil

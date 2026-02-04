@@ -90,6 +90,17 @@ func (s GenOptionsSeed) Validate() error {
 	return nil
 }
 
+// GenOptionPollInterval is the time interval to poll generation progress when using GenSync.
+type GenOptionPollInterval time.Duration
+
+// Validate ensures the poll interval is valid.
+func (p GenOptionPollInterval) Validate() error {
+	if p < GenOptionPollInterval(time.Millisecond) {
+		return errors.New("must be >= 1ms")
+	}
+	return nil
+}
+
 // GenOptionsText is a list of frequent options supported by most Provider with text output modality.
 // Each provider is free to support more options through a specialized struct.
 //
@@ -303,9 +314,6 @@ type GenOptionsImage struct {
 	Width  int
 	Height int
 
-	// PollInterval is the time interval to poll the image generation progress when using GenSync.
-	PollInterval time.Duration
-
 	_ struct{}
 }
 
@@ -325,9 +333,6 @@ type GenOptionsVideo struct {
 	//
 	// Veo 2 supports only between 5 and 8 seconds and Veo 3 only supports 8 seconds.
 	Duration time.Duration
-
-	// PollInterval is the time interval to poll the image generation progress when using GenSync.
-	PollInterval time.Duration
 
 	_ struct{}
 }
@@ -354,10 +359,11 @@ func validateReflectedToJSON(r any) error {
 
 // isErrorType returns true if the type is of error type.
 func isErrorType(t reflect.Type) bool {
-	return t == reflect.TypeOf((*error)(nil)).Elem()
+	return t == reflect.TypeFor[error]()
 }
 
 var (
+	_ GenOptions           = GenOptionPollInterval(time.Second)
 	_ GenOptions           = GenOptionsSeed(1)
 	_ GenOptions           = (*GenOptionsAudio)(nil)
 	_ GenOptions           = (*GenOptionsImage)(nil)

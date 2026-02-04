@@ -175,7 +175,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 		case genai.GenOptionsSeed:
 			c.Seed = int64(v)
 		default:
-			unsupported = append(unsupported, reflect.TypeOf(opt).Name())
+			unsupported = append(unsupported, internal.TypeName(opt))
 		}
 	}
 
@@ -440,7 +440,7 @@ func (c *CompletionRequest) Init(msgs genai.Messages, model string, opts ...gena
 		case genai.GenOptionsSeed:
 			c.Seed = int64(v)
 		default:
-			unsupported = append(unsupported, reflect.TypeOf(opt).Name())
+			unsupported = append(unsupported, internal.TypeName(opt))
 		}
 	}
 	// If we have unsupported features but no other errors, return a structured error.

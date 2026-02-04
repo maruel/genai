@@ -148,12 +148,11 @@ func Example_available() {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 	}
 	msgs := genai.Messages{genai.NewTextMessage("Provide a life tip that sounds good but is actually a bad idea.")}
-	opts := genai.GenOptionsText{Seed: 42}
-	resp, err := c.GenSync(ctx, msgs, &opts)
+	opts := genai.GenOptionsText{}
+	resp, err := c.GenSync(ctx, msgs, &opts, genai.GenOptionsSeed(42))
 	if err != nil {
 		var ent *base.ErrNotSupported
-		if errors.As(err, &ent) && slices.Contains(ent.Options, "GenOptionsText.Seed") {
-			opts.Seed = 0
+		if errors.As(err, &ent) && slices.Contains(ent.Options, "GenOptionsSeed") {
 			if resp, err = c.GenSync(ctx, msgs, &opts); err != nil {
 				fmt.Fprintf(os.Stderr, "error: %v\n", err)
 				return

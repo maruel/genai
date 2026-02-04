@@ -16,6 +16,7 @@ import (
 	"fmt"
 	"iter"
 	"net/http"
+	"reflect"
 	"slices"
 	"strings"
 
@@ -71,9 +72,6 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			c.Temperature = v.Temperature
 			c.TopP = v.TopP
 			sp = v.SystemPrompt
-			if v.Seed != 0 {
-				unsupported = append(unsupported, "GenOptionsText.Seed")
-			}
 			if v.TopK != 0 {
 				unsupported = append(unsupported, "GenOptionsText.TopK")
 			}
@@ -88,7 +86,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 				errs = append(errs, errors.New("unsupported option DecodeAs"))
 			}
 		default:
-			errs = append(errs, fmt.Errorf("unsupported options type %T", opt))
+			unsupported = append(unsupported, reflect.TypeOf(opt).Name())
 		}
 	}
 

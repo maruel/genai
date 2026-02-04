@@ -44,6 +44,25 @@ func TestModalities(t *testing.T) {
 	})
 }
 
+func TestGenOptionsSeed(t *testing.T) {
+	t.Run("Validate", func(t *testing.T) {
+		t.Run("valid", func(t *testing.T) {
+			for _, v := range []GenOptionsSeed{1, 42, 1000} {
+				if err := v.Validate(); err != nil {
+					t.Errorf("Validate(%d) got unexpected error: %v", v, err)
+				}
+			}
+		})
+		t.Run("error", func(t *testing.T) {
+			for _, v := range []GenOptionsSeed{0, -1, -100} {
+				if err := v.Validate(); err == nil || err.Error() != "must be >= 1" {
+					t.Errorf("Validate(%d) want error %q, got %q", v, "must be >= 1", err)
+				}
+			}
+		})
+	})
+}
+
 func TestGenOptionsText(t *testing.T) {
 	t.Run("Validate", func(t *testing.T) {
 		t.Run("valid", func(t *testing.T) {
@@ -54,7 +73,6 @@ func TestGenOptionsText(t *testing.T) {
 				{
 					name: "Valid options with all fields set",
 					in: GenOptionsText{
-						Seed:        1,
 						Temperature: 0.5,
 						TopP:        0.5,
 						TopK:        10,
@@ -83,11 +101,6 @@ func TestGenOptionsText(t *testing.T) {
 				in     GenOptionsText
 				errMsg string
 			}{
-				{
-					name:   "Invalid Seed",
-					in:     GenOptionsText{Seed: -1},
-					errMsg: "field Seed: must be non-negative",
-				},
 				{
 					name:   "Invalid Temperature",
 					in:     GenOptionsText{Temperature: -1},
@@ -359,7 +372,7 @@ func TestGenOptionsAudio(t *testing.T) {
 func TestGenOptionsImage(t *testing.T) {
 	t.Run("Validate", func(t *testing.T) {
 		t.Run("valid", func(t *testing.T) {
-			o := &GenOptionsImage{Seed: 1, Width: 100, Height: 200}
+			o := &GenOptionsImage{Width: 100, Height: 200}
 			if err := o.Validate(); err != nil {
 				t.Errorf("Validate() got unexpected error: %v", err)
 			}
@@ -370,11 +383,6 @@ func TestGenOptionsImage(t *testing.T) {
 				in     GenOptionsImage
 				errMsg string
 			}{
-				{
-					name:   "Invalid Seed",
-					in:     GenOptionsImage{Seed: -1},
-					errMsg: "field Seed: must be non-negative",
-				},
 				{
 					name:   "Invalid Height",
 					in:     GenOptionsImage{Height: -1},

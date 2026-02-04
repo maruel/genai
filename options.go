@@ -79,6 +79,17 @@ func (m Modalities) Validate() error {
 	return nil
 }
 
+// GenOptionsSeed is the seed for the random number generator.
+type GenOptionsSeed int64
+
+// Validate ensures the seed is valid.
+func (s GenOptionsSeed) Validate() error {
+	if s < 1 {
+		return errors.New("must be >= 1")
+	}
+	return nil
+}
+
 // GenOptionsText is a list of frequent options supported by most Provider with text output modality.
 // Each provider is free to support more options through a specialized struct.
 //
@@ -102,9 +113,6 @@ type GenOptionsText struct {
 	// SystemPrompt is the prompt to use for the system role.
 	SystemPrompt string
 
-	// Seed for the random number generator. Default is 0 which means
-	// non-deterministic.
-	Seed int64
 	// TopK adjusts sampling where only the N first candidates are considered.
 	TopK int64
 	// Stop is the list of tokens to stop generation.
@@ -133,9 +141,6 @@ type GenOptionsText struct {
 
 // Validate ensures the completion options are valid.
 func (o *GenOptionsText) Validate() error {
-	if o.Seed < 0 {
-		return errors.New("field Seed: must be non-negative")
-	}
 	if o.Temperature < 0 || o.Temperature > 100 {
 		return errors.New("field Temperature: must be [0, 100]")
 	}
@@ -285,26 +290,16 @@ const (
 // Other modalities
 
 type GenOptionsAudio struct {
-	// Seed for the random number generator. Default is 0 which means
-	// non-deterministic.
-	Seed int64
-
 	_ struct{}
 }
 
 func (o *GenOptionsAudio) Validate() error {
-	if o.Seed < 0 {
-		return errors.New("field Seed: must be non-negative")
-	}
 	return nil
 }
 
 // GenOptionsImage is a list of frequent options supported by most ProviderDoc.
 // Each provider is free to support more options through a specialized struct.
 type GenOptionsImage struct {
-	// Seed for the random number generator. Default is 0 which means
-	// non-deterministic.
-	Seed   int64
 	Width  int
 	Height int
 
@@ -316,9 +311,6 @@ type GenOptionsImage struct {
 
 // Validate ensures the completion options are valid.
 func (o *GenOptionsImage) Validate() error {
-	if o.Seed < 0 {
-		return errors.New("field Seed: must be non-negative")
-	}
 	if o.Height < 0 {
 		return errors.New("field Height: must be non-negative")
 	}
@@ -366,6 +358,7 @@ func isErrorType(t reflect.Type) bool {
 }
 
 var (
+	_ GenOptions           = GenOptionsSeed(1)
 	_ GenOptions           = (*GenOptionsAudio)(nil)
 	_ GenOptions           = (*GenOptionsImage)(nil)
 	_ GenOptions           = (*GenOptionsVideo)(nil)

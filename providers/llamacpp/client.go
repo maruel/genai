@@ -140,7 +140,6 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 		switch v := opt.(type) {
 		case *genai.GenOptionsText:
 			c.NPredict = v.MaxTokens
-			c.Seed = v.Seed
 			if v.TopLogprobs > 0 {
 				c.TopLogprobs = v.TopLogprobs
 				c.Logprobs = true
@@ -173,8 +172,10 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			if v.WebSearch {
 				errs = append(errs, errors.New("unsupported OptionsTools.WebSearch"))
 			}
+		case genai.GenOptionsSeed:
+			c.Seed = int64(v)
 		default:
-			errs = append(errs, fmt.Errorf("unsupported options type %T", opt))
+			unsupported = append(unsupported, reflect.TypeOf(opt).Name())
 		}
 	}
 
@@ -422,7 +423,6 @@ func (c *CompletionRequest) Init(msgs genai.Messages, model string, opts ...gena
 		switch v := opt.(type) {
 		case *genai.GenOptionsText:
 			c.NPredict = v.MaxTokens
-			c.Seed = v.Seed
 			if v.TopLogprobs > 0 {
 				// TODO: This should be supported.
 				unsupported = append(unsupported, "GenOptionsText.TopLogprobs")
@@ -437,8 +437,10 @@ func (c *CompletionRequest) Init(msgs genai.Messages, model string, opts ...gena
 			if v.DecodeAs != nil {
 				errs = append(errs, errors.New("implement option DecodeAs"))
 			}
+		case genai.GenOptionsSeed:
+			c.Seed = int64(v)
 		default:
-			errs = append(errs, fmt.Errorf("unsupported options type %T", opt))
+			unsupported = append(unsupported, reflect.TypeOf(opt).Name())
 		}
 	}
 	// If we have unsupported features but no other errors, return a structured error.

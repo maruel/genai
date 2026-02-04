@@ -115,7 +115,6 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			c.Temperature = v.Temperature
 			c.TopP = v.TopP
 			sp = v.SystemPrompt
-			c.RandomSeed = v.Seed
 			if v.TopK != 0 {
 				unsupported = append(unsupported, "GenOptionsText.TopK")
 			}
@@ -157,8 +156,10 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			if v.WebSearch {
 				errs = append(errs, errors.New("unsupported OptionsTools.WebSearch"))
 			}
+		case genai.GenOptionsSeed:
+			c.RandomSeed = int64(v)
 		default:
-			errs = append(errs, fmt.Errorf("unsupported options type %T", opt))
+			unsupported = append(unsupported, reflect.TypeOf(opt).Name())
 		}
 	}
 

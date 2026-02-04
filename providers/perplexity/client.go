@@ -133,7 +133,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 		case *GenOptions:
 			c.ReturnRelatedQuestions = !v.DisableRelatedQuestions
 		default:
-			errs = append(errs, fmt.Errorf("unsupported options type %T", opt))
+			unsupported = append(unsupported, reflect.TypeOf(opt).Name())
 		}
 	}
 
@@ -167,9 +167,6 @@ func (c *ChatRequest) initOptionsText(v *genai.GenOptionsText) ([]string, []erro
 	c.MaxTokens = v.MaxTokens
 	c.Temperature = v.Temperature
 	c.TopP = v.TopP
-	if v.Seed != 0 {
-		unsupported = append(unsupported, "GenOptionsText.Seed")
-	}
 	c.TopK = v.TopK
 	if v.TopLogprobs > 0 {
 		unsupported = append(unsupported, "GenOptionsText.TopLogprobs")

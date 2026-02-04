@@ -288,8 +288,10 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			errs = append(errs, fmt.Errorf("todo: implement options type %T", opt))
 		case *genai.GenOptionsVideo:
 			errs = append(errs, fmt.Errorf("todo: implement options type %T", opt))
+		case genai.GenOptionsSeed:
+			c.GenerationConfig.Seed = int64(v)
 		default:
-			errs = append(errs, fmt.Errorf("unsupported options type %T", opt))
+			unsupported = append(unsupported, reflect.TypeOf(opt).Name())
 		}
 	}
 
@@ -320,7 +322,6 @@ func (c *ChatRequest) initOptionsText(v *genai.GenOptionsText) ([]string, []erro
 	if v.SystemPrompt != "" {
 		c.SystemInstruction.Parts = []Part{{Text: v.SystemPrompt}}
 	}
-	c.GenerationConfig.Seed = v.Seed
 	if v.TopLogprobs > 0 {
 		// TODO: It is unsupported when streaming, but we don't know here if streaming is enabled.
 		c.GenerationConfig.Logprobs = v.TopLogprobs
@@ -1019,17 +1020,13 @@ func (i *ImageRequest) Init(msg genai.Message, model string, mod genai.Modalitie
 		switch v := opt.(type) {
 		case *GenOptions:
 		case *genai.GenOptionsImage:
-			if v.Seed != 0 {
-				// Seed is only supported with Vertex AI API.
-				uce = &base.ErrNotSupported{Options: []string{"GenOptionsImage.Seed"}}
-			}
 			// TODO: Width and Height
 		case *genai.GenOptionsVideo:
 			if v.Duration != 0 {
 				i.Parameters.DurationSeconds = int64(v.Duration.Round(time.Second) / time.Second)
 			}
 		default:
-			return fmt.Errorf("unsupported options type %T", opt)
+			return &base.ErrNotSupported{Options: []string{reflect.TypeOf(opt).Name()}}
 		}
 	}
 	return uce

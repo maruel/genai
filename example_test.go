@@ -209,10 +209,9 @@ func ExampleProvider_GenStream() {
 		genai.NewTextMessage("Say hello. Use only one word."),
 	}
 	opts := genai.GenOptionsText{
-		Seed:      1,
 		MaxTokens: 50,
 	}
-	fragments, finish := c.GenStream(ctx, msgs, &opts)
+	fragments, finish := c.GenStream(ctx, msgs, &opts, genai.GenOptionsSeed(1))
 	for f := range fragments {
 		os.Stdout.WriteString(f.Text)
 	}

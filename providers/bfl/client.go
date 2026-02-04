@@ -19,6 +19,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"reflect"
 	"slices"
 	"strconv"
 	"strings"
@@ -155,9 +156,10 @@ func (i *ImageRequest) Init(msgs genai.Messages, model string, opts ...genai.Gen
 		case *genai.GenOptionsImage:
 			i.Height = int64(v.Height)
 			i.Width = int64(v.Width)
-			i.Seed = v.Seed
+		case genai.GenOptionsSeed:
+			i.Seed = int64(v)
 		default:
-			return fmt.Errorf("unsupported options type %T", opt)
+			return &base.ErrNotSupported{Options: []string{reflect.TypeOf(opt).Name()}}
 		}
 	}
 

@@ -245,13 +245,13 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 	// Seed
 	ctxCheck = internal.WithLogger(ctx, internal.Logger(ctx).With("check", "Seed"))
 	msgs = genai.Messages{genai.NewTextMessage("Say hello. Use only one word.")}
-	resp, err = cs.callGen(ctxCheck, prefix+"Seed", msgs, &genai.GenOptionsText{Seed: 42})
+	resp, err = cs.callGen(ctxCheck, prefix+"Seed", msgs, &genai.GenOptionsText{}, genai.GenOptionsSeed(42))
 	if isBadError(ctxCheck, err) {
 		return f, err
 	}
 	var uerr *base.ErrNotSupported
 	if errors.As(err, &uerr) {
-		f.Seed = !slices.Contains(uerr.Options, "GenOptionsText.Seed")
+		f.Seed = !slices.Contains(uerr.Options, "GenOptionsSeed")
 	} else if err == nil {
 		f.Seed = true
 	}
@@ -879,14 +879,14 @@ func exerciseGenImage(ctx context.Context, pf ProviderFactory, name string, out 
 		return nil
 	}
 	msgs := genai.Messages{genai.NewTextMessage(ContentsImage)}
-	resp, err := c.GenSync(ctx, msgs, &genai.GenOptionsImage{Seed: 42})
+	resp, err := c.GenSync(ctx, msgs, &genai.GenOptionsImage{}, genai.GenOptionsSeed(42))
 	usage.InputTokens += resp.Usage.InputTokens
 	usage.InputCachedTokens += resp.Usage.InputCachedTokens
 	usage.OutputTokens += resp.Usage.OutputTokens
 	out.GenSync.Seed = true
 	var uerr *base.ErrNotSupported
 	if errors.As(err, &uerr) {
-		if slices.Contains(uerr.Options, "GenOptionsImage.Seed") {
+		if slices.Contains(uerr.Options, "GenOptionsSeed") {
 			out.GenSync.Seed = false
 			resp, err = c.GenSync(ctx, msgs, &genai.GenOptionsImage{})
 			usage.InputTokens += resp.Usage.InputTokens
@@ -968,14 +968,14 @@ func exerciseGenAudio(ctx context.Context, pf ProviderFactory, name string, out 
 		return nil
 	}
 	msgs := genai.Messages{genai.NewTextMessage("Say hi. Just say this word, nothing else.")}
-	resp, err := c.GenSync(ctx, msgs, &genai.GenOptionsAudio{Seed: 42})
+	resp, err := c.GenSync(ctx, msgs, &genai.GenOptionsAudio{}, genai.GenOptionsSeed(42))
 	usage.InputTokens += resp.Usage.InputTokens
 	usage.InputCachedTokens += resp.Usage.InputCachedTokens
 	usage.OutputTokens += resp.Usage.OutputTokens
 	out.GenSync.Seed = true
 	var uerr *base.ErrNotSupported
 	if errors.As(err, &uerr) {
-		if slices.Contains(uerr.Options, "GenOptionsAudio.Seed") {
+		if slices.Contains(uerr.Options, "GenOptionsSeed") {
 			out.GenSync.Seed = false
 			resp, err = c.GenSync(ctx, msgs, &genai.GenOptionsAudio{})
 			usage.InputTokens += resp.Usage.InputTokens

@@ -124,7 +124,7 @@ func (r *Response) Init(msgs genai.Messages, model string, opts ...genai.GenOpti
 			unsupported = append(unsupported, u...)
 			errs = append(errs, e...)
 		default:
-			return fmt.Errorf("unsupported options type %T", opt)
+			return &base.ErrNotSupported{Options: []string{reflect.TypeOf(opt).Name()}}
 		}
 	}
 	if len(msgs) == 0 {
@@ -239,9 +239,6 @@ func (r *Response) initOptionsText(v *genai.GenOptionsText) ([]string, []error) 
 	r.TopP = v.TopP
 	if v.SystemPrompt != "" {
 		r.Instructions = v.SystemPrompt
-	}
-	if v.Seed != 0 {
-		unsupported = append(unsupported, "GenOptionsText.Seed")
 	}
 	if v.TopK != 0 {
 		unsupported = append(unsupported, "GenOptionsText.TopK")

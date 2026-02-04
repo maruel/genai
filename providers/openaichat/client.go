@@ -135,8 +135,14 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			sp = v.SystemPrompt
 		case *genai.GenOptionsTools:
 			unsupported = append(unsupported, c.initOptionsTools(v, model)...)
+		case genai.GenOptionsSeed:
+			if strings.HasPrefix(model, "gpt-4o-") && strings.Contains(model, "-search") {
+				unsupported = append(unsupported, "GenOptionsSeed")
+			} else {
+				c.Seed = int64(v)
+			}
 		default:
-			errs = append(errs, fmt.Errorf("unsupported options type %T", opt))
+			unsupported = append(unsupported, reflect.TypeOf(opt).Name())
 		}
 	}
 
@@ -198,13 +204,6 @@ func (c *ChatRequest) initOptionsText(v *genai.GenOptionsText, model string) []s
 		c.Temperature = v.Temperature
 	}
 	c.TopP = v.TopP
-	if strings.HasPrefix(model, "gpt-4o-") && strings.Contains(model, "-search") {
-		if v.Seed != 0 {
-			unsupported = append(unsupported, "GenOptionsText.Seed")
-		}
-	} else {
-		c.Seed = v.Seed
-	}
 	if v.TopLogprobs > 0 {
 		c.TopLogprobs = v.TopLogprobs
 		c.Logprobs = true

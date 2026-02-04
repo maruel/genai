@@ -102,7 +102,6 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			c.Temperature = v.Temperature
 			c.TopP = v.TopP
 			sp = v.SystemPrompt
-			c.Seed = v.Seed
 			c.Logprobs = v.TopLogprobs
 			// TODO: Toplogprobs are not returned unless streaming. lol. Sadly we do not know yet here if streaming
 			// is enabled.
@@ -144,8 +143,10 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			if v.WebSearch {
 				errs = append(errs, errors.New("unsupported OptionsTools.WebSearch"))
 			}
+		case genai.GenOptionsSeed:
+			c.Seed = int64(v)
 		default:
-			errs = append(errs, fmt.Errorf("unsupported options type %T", opt))
+			unsupported = append(unsupported, reflect.TypeOf(opt).Name())
 		}
 	}
 
@@ -789,11 +790,10 @@ func (i *ImageRequest) Init(msg genai.Message, model string, opts ...genai.GenOp
 		case *genai.GenOptionsImage:
 			i.Height = int64(v.Height)
 			i.Width = int64(v.Width)
-			i.Seed = v.Seed
-		case *genai.GenOptionsText:
-			i.Seed = v.Seed
+		case genai.GenOptionsSeed:
+			i.Seed = int64(v)
 		default:
-			return fmt.Errorf("unsupported options type %T", opt)
+			return &base.ErrNotSupported{Options: []string{reflect.TypeOf(opt).Name()}}
 		}
 	}
 	return nil

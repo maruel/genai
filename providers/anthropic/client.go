@@ -22,6 +22,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"reflect"
 	"slices"
 	"strconv"
 	"strings"
@@ -135,7 +136,7 @@ func (c *ChatRequest) initImpl(msgs genai.Messages, model string, cache bool, op
 			unsupported = append(unsupported, u...)
 			errs = append(errs, e...)
 		default:
-			errs = append(errs, fmt.Errorf("unsupported options type %T", opt))
+			unsupported = append(unsupported, reflect.TypeOf(opt).Name())
 		}
 	}
 
@@ -187,9 +188,6 @@ func (c *ChatRequest) initOptionsText(v *genai.GenOptionsText) ([]string, []erro
 		// c.System[0].CacheControl.Type = "ephemeral"
 	}
 	c.TopP = v.TopP
-	if v.Seed != 0 {
-		unsupported = append(unsupported, "GenOptionsText.Seed")
-	}
 	c.TopK = v.TopK
 	c.StopSequences = v.Stop
 	if v.ReplyAsJSON {

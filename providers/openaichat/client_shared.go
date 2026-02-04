@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"iter"
 	"net/http"
+	"reflect"
 	"slices"
 	"strconv"
 	"strings"
@@ -146,7 +147,7 @@ func (i *ImageRequest) Init(msg genai.Message, model string, opts ...genai.GenOp
 				i.Size = fmt.Sprintf("%dx%d", v.Width, v.Height)
 			}
 		default:
-			return fmt.Errorf("unsupported options type %T", opt)
+			return &base.ErrNotSupported{Options: []string{reflect.TypeOf(opt).Name()}}
 		}
 	}
 	return nil

@@ -20,6 +20,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"reflect"
 	"slices"
 	"sort"
 	"strconv"
@@ -106,8 +107,10 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			u, e := c.initOptionsTools(v)
 			unsupported = append(unsupported, u...)
 			errs = append(errs, e...)
+		case genai.GenOptionsSeed:
+			c.Seed = int64(v)
 		default:
-			errs = append(errs, fmt.Errorf("unsupported options type %T", opt))
+			unsupported = append(unsupported, reflect.TypeOf(opt).Name())
 		}
 	}
 
@@ -155,7 +158,6 @@ func (c *ChatRequest) initOptionsText(v *genai.GenOptionsText) ([]string, []erro
 	c.MaxTokens = v.MaxTokens
 	c.Temperature = v.Temperature
 	c.TopP = v.TopP
-	c.Seed = v.Seed
 	if v.TopK != 0 {
 		unsupported = append(unsupported, "GenOptionsText.TopK")
 	}
@@ -1229,10 +1231,6 @@ func (c *Client) genImage(ctx context.Context, msg genai.Message, opts ...genai.
 		}
 		switch v := opt.(type) {
 		case *genai.GenOptionsImage:
-			if v.Seed != 0 {
-				// Defaults to 42 otherwise.
-				qp.Add("seed", strconv.FormatInt(v.Seed, 10))
-			}
 			if v.Width != 0 {
 				qp.Add("width", strconv.Itoa(v.Width))
 			}
@@ -1241,12 +1239,11 @@ func (c *Client) genImage(ctx context.Context, msg genai.Message, opts ...genai.
 			}
 		case *genai.GenOptionsText:
 			// TODO: Deny most flags.
-			if v.Seed != 0 {
-				// Defaults to 42 otherwise.
-				qp.Add("seed", strconv.FormatInt(v.Seed, 10))
-			}
+		case genai.GenOptionsSeed:
+			// Defaults to 42 otherwise.
+			qp.Add("seed", strconv.FormatInt(int64(v), 10))
 		default:
-			return genai.Result{}, fmt.Errorf("unsupported options type %T", opt)
+			return genai.Result{}, &base.ErrNotSupported{Options: []string{reflect.TypeOf(opt).Name()}}
 		}
 	}
 

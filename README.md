@@ -639,7 +639,7 @@ Snippet:
 	// Warning: This is a bit expensive.
 	c, _ := gemini.New(ctx,
 		genai.ProviderOptionModel("gemini-2.5-flash-image-preview"),
-		genai.ProviderOptionModalities(genai.Modalities{genai.ModalityImage, genai.ModalityText}),
+		genai.ProviderOptionModalities{genai.ModalityImage, genai.ModalityText},
 	)
 	// ...
 	res, _ := c.GenSync(ctx, msgs, &gemini.GenOptions{ReasoningBudget: 0})

@@ -144,7 +144,7 @@ func TestClient(t *testing.T) {
 			},
 		}
 		f := func(t *testing.T, opts ...genai.ProviderOption) (genai.Provider, error) {
-			opts = append(opts, genai.ProviderOptionModalities(genai.Modalities{genai.ModalityText}))
+			opts = append(opts, genai.ProviderOptionModalities{genai.ModalityText})
 			return getClientInner(t, func(h http.RoundTripper) http.RoundTripper {
 				return testRecorder.Record(t, h)
 			}, opts...)

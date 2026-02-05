@@ -152,7 +152,7 @@ func TestClient(t *testing.T) {
 				Name: "bad model image",
 				Opts: []genai.ProviderOption{
 					genai.ProviderOptionModel("bad model"),
-					genai.ProviderOptionModalities(genai.Modalities{genai.ModalityImage}),
+					genai.ProviderOptionModalities{genai.ModalityImage},
 				},
 				ErrGenSync:   "model \"bad model\" not supported by pollinations",
 				ErrGenStream: "model \"bad model\" not supported by pollinations",
@@ -160,7 +160,7 @@ func TestClient(t *testing.T) {
 		}
 		f := func(t *testing.T, opts ...genai.ProviderOption) (genai.Provider, error) {
 			// Always add text modality for these error tests
-			opts = append(opts, genai.ProviderOptionModalities(genai.Modalities{genai.ModalityText}))
+			opts = append(opts, genai.ProviderOptionModalities{genai.ModalityText})
 			return pollinations.New(t.Context(), append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(func(h http.RoundTripper) http.RoundTripper {
 				return testRecorder.Record(t, h)
 			})}, opts...)...)

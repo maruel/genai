@@ -380,7 +380,7 @@ func TestClient(t *testing.T) {
 				Opts: []genai.ProviderOption{
 					genai.ProviderOptionAPIKey("badApiKey"),
 					genai.ProviderOptionModel("imagen-4.0-fast-generate-001"),
-					genai.ProviderOptionModalities(genai.Modalities{genai.ModalityImage}),
+					genai.ProviderOptionModalities{genai.ModalityImage},
 				},
 				ErrGenSync:   "http 400\nINVALID_ARGUMENT (400): API key not valid. Please pass a valid API key.",
 				ErrGenStream: "http 400\nINVALID_ARGUMENT (400): API key not valid. Please pass a valid API key.",
@@ -396,7 +396,7 @@ func TestClient(t *testing.T) {
 			},
 		}
 		f := func(t *testing.T, opts ...genai.ProviderOption) (genai.Provider, error) {
-			opts = append(opts, genai.ProviderOptionModalities(genai.Modalities{genai.ModalityText}))
+			opts = append(opts, genai.ProviderOptionModalities{genai.ModalityText})
 			return gemini.New(t.Context(), append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(func(h http.RoundTripper) http.RoundTripper {
 				return testRecorder.Record(t, h)
 			})}, opts...)...)

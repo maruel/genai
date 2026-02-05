@@ -97,7 +97,7 @@ func TestClient(t *testing.T) {
 	t.Run("Preferred", func(t *testing.T) {
 		internaltest.TestPreferredModels(t, func(st *testing.T, model string, modality genai.Modality) (genai.Provider, error) {
 			opts := []genai.ProviderOption{
-				genai.ProviderOptionModalities(genai.Modalities{modality}),
+				genai.ProviderOptionModalities{modality},
 				genai.ProviderOptionRemote("http://localhost:66666"),
 				genai.ProviderOptionTransportWrapper(func(h http.RoundTripper) http.RoundTripper {
 					return testRecorder.Record(st, h)

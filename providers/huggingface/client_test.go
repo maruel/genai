@@ -127,7 +127,7 @@ func TestClient(t *testing.T) {
 	t.Run("Preferred", func(t *testing.T) {
 		internaltest.TestPreferredModels(t, func(st *testing.T, model string, modality genai.Modality) (genai.Provider, error) {
 			opts := []genai.ProviderOption{
-				genai.ProviderOptionModalities(genai.Modalities{modality}),
+				genai.ProviderOptionModalities{modality},
 				genai.ProviderOptionPreloadedModels(cachedModels),
 			}
 			if model != "" {
@@ -168,7 +168,7 @@ func TestClient(t *testing.T) {
 			},
 		}
 		f := func(t *testing.T, opts ...genai.ProviderOption) (genai.Provider, error) {
-			opts = append(opts, genai.ProviderOptionModalities(genai.Modalities{genai.ModalityText}))
+			opts = append(opts, genai.ProviderOptionModalities{genai.ModalityText})
 			return getClientInner(t, func(h http.RoundTripper) http.RoundTripper {
 				return testRecorder.Record(t, h)
 			}, opts...)

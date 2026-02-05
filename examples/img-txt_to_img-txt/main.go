@@ -24,7 +24,7 @@ func main() {
 	// Warning: This is a bit expensive.
 	c, err := gemini.New(ctx,
 		genai.ProviderOptionModel("gemini-2.5-flash-image-preview"),
-		genai.ProviderOptionModalities(genai.Modalities{genai.ModalityImage, genai.ModalityText}))
+		genai.ProviderOptionModalities{genai.ModalityImage, genai.ModalityText})
 	if err != nil {
 		log.Fatal(err)
 	}

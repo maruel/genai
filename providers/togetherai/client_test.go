@@ -132,7 +132,7 @@ func TestClient(t *testing.T) {
 	t.Run("Preferred", func(t *testing.T) {
 		internaltest.TestPreferredModels(t, func(st *testing.T, model string, modality genai.Modality) (genai.Provider, error) {
 			opts := []genai.ProviderOption{
-				genai.ProviderOptionModalities(genai.Modalities{modality}),
+				genai.ProviderOptionModalities{modality},
 				genai.ProviderOptionPreloadedModels(cachedModels),
 			}
 			if model != "" {
@@ -167,7 +167,7 @@ func TestClient(t *testing.T) {
 				Opts: []genai.ProviderOption{
 					genai.ProviderOptionAPIKey("bad apiKey"),
 					genai.ProviderOptionModel("black-forest-labs/FLUX.1-schnell"),
-					genai.ProviderOptionModalities(genai.Modalities{genai.ModalityImage}),
+					genai.ProviderOptionModalities{genai.ModalityImage},
 				},
 				ErrGenSync:   "http 401\ninvalid_api_key (invalid_request_error): Invalid API key provided. You can find your API key at https://api.together.ai/settings/api-keys.",
 				ErrGenStream: "http 401\ninvalid_api_key (invalid_request_error): Invalid API key provided. You can find your API key at https://api.together.ai/settings/api-keys.",
@@ -184,14 +184,14 @@ func TestClient(t *testing.T) {
 				Name: "bad model image",
 				Opts: []genai.ProviderOption{
 					genai.ProviderOptionModel("bad model"),
-					genai.ProviderOptionModalities(genai.Modalities{genai.ModalityImage}),
+					genai.ProviderOptionModalities{genai.ModalityImage},
 				},
 				ErrGenSync:   "http 404\nmodel_not_available (invalid_request_error): Unable to access model bad model. Please visit https://api.together.ai/models to view the list of supported models.",
 				ErrGenStream: "http 404\nmodel_not_available (invalid_request_error): Unable to access model bad model. Please visit https://api.together.ai/models to view the list of supported models.",
 			},
 		}
 		f := func(t *testing.T, opts ...genai.ProviderOption) (genai.Provider, error) {
-			opts = append(opts, genai.ProviderOptionModalities(genai.Modalities{genai.ModalityText}))
+			opts = append(opts, genai.ProviderOptionModalities{genai.ModalityText})
 			return getClientInner(t, func(h http.RoundTripper) http.RoundTripper {
 				return testRecorder.Record(t, h)
 			}, opts...)

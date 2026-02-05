@@ -128,7 +128,7 @@ func TestClient(t *testing.T) {
 	t.Run("Preferred", func(t *testing.T) {
 		internaltest.TestPreferredModels(t, func(st *testing.T, model string, modality genai.Modality) (genai.Provider, error) {
 			opts := []genai.ProviderOption{
-				genai.ProviderOptionModalities(genai.Modalities{modality}),
+				genai.ProviderOptionModalities{modality},
 			}
 			if model != "" {
 				opts = append(opts, genai.ProviderOptionModel(model))

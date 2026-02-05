@@ -185,7 +185,7 @@ func TestClient(t *testing.T) {
 	t.Run("Preferred", func(t *testing.T) {
 		internaltest.TestPreferredModels(t, func(st *testing.T, model string, modality genai.Modality) (genai.Provider, error) {
 			opts := []genai.ProviderOption{
-				genai.ProviderOptionModalities(genai.Modalities{modality}),
+				genai.ProviderOptionModalities{modality},
 				genai.ProviderOptionPreloadedModels(cachedModels),
 			}
 			if model != "" {
@@ -220,7 +220,7 @@ func TestClient(t *testing.T) {
 				Opts: []genai.ProviderOption{
 					genai.ProviderOptionAPIKey("bad apiKey"),
 					genai.ProviderOptionModel("gpt-image-1"),
-					genai.ProviderOptionModalities(genai.Modalities{genai.ModalityImage}),
+					genai.ProviderOptionModalities{genai.ModalityImage},
 				},
 				ErrGenSync:   "http 401\ninvalid_request_error/invalid_api_key: Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
 				ErrGenStream: "http 401\ninvalid_request_error/invalid_api_key: Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
@@ -237,7 +237,7 @@ func TestClient(t *testing.T) {
 				Name: "bad model image",
 				Opts: []genai.ProviderOption{
 					genai.ProviderOptionModel("bad model"),
-					genai.ProviderOptionModalities(genai.Modalities{genai.ModalityImage}),
+					genai.ProviderOptionModalities{genai.ModalityImage},
 				},
 				ErrGenSync:   "http 400\ninvalid_request_error/invalid_value for \"model\": Invalid value: 'bad model'. Supported values are: 'gpt-image-1', 'gpt-image-1-io', 'gpt-image-0721-mini-alpha', 'dall-e-2', and 'dall-e-3'.",
 				ErrGenStream: "http 400\ninvalid_request_error/invalid_value for \"model\": Invalid value: 'bad model'. Supported values are: 'gpt-image-1', 'gpt-image-1-io', 'gpt-image-0721-mini-alpha', 'dall-e-2', and 'dall-e-3'.",

@@ -1293,8 +1293,8 @@ type Usage struct {
 		Ephemeral1hInputTokens int64 `json:"ephemeral_1h_input_tokens"`
 		Ephemeral5mInputTokens int64 `json:"ephemeral_5m_input_tokens"`
 	} `json:"cache_creation"`
-	ServiceTier  string `json:"service_tier"`  // "standard", "batch"
-	InferenceGeo string `json:"inference_geo"` // "not_available", "us", "eu"
+	ServiceTier   string `json:"service_tier"`  // "standard", "batch"
+	InferenceGeo  string `json:"inference_geo"` // "not_available", "us", "eu"
 	ServerToolUse struct {
 		WebSearchRequests int64 `json:"web_search_requests"`
 		WebFetchRequests  int64 `json:"web_fetch_requests"`

@@ -22,7 +22,7 @@ to `output_config.format` with type `"json_schema"` and a full schema via
 `internal.JSONSchemaFor()`. `ReplyAsJSON` uses a permissive `{"type": "object"}` schema.
 Unit tests (`TestStructuredOutput`) and smoke test recordings cover both paths.
 
-`Effort` field is not yet wired (see 1.3 below).
+`Effort` field is wired (see 1.3).
 
 ### 1.2 Token Counting
 
@@ -369,7 +369,7 @@ Some features may require additions to the shared `genai` package:
 |--------------------|----------------------------------------------------------|
 | Structured Outputs | No — `DecodeAs`/`ReplyAsJSON` already exist              |
 | Token Counting     | Maybe — consider `ProviderTokenCount` interface          |
-| Effort Level       | Maybe — consider shared `GenOptionsEffort` type          |
+| Effort Level       | No — provider-specific `Effort` type                     |
 | Adaptive Thinking  | No — provider-specific option                            |
 | File Uploads       | Maybe — consider shared file reference types             |
 | Batch CRUD         | Maybe — consider extending `ProviderCapabilities`        |
@@ -400,5 +400,5 @@ Some features may require additions to the shared `genai` package:
 | 3     | 6     | Medium   | Medium |
 | 4     | 5     | Small    | Low    |
 
-**Recommended start**: Phase 1.5 (Opus 4.6 model) first as a quick win, then 1.1 (Structured
-Outputs) as the highest-impact feature, then 1.2 (Token Counting).
+**Recommended next**: Phase 1.5 (Opus 4.6 model) as a quick win, then 1.4 (Adaptive
+Thinking), then 1.2 (Token Counting). Phases 1.1 and 1.3 are done.

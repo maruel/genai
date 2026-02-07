@@ -84,7 +84,7 @@ it.
 
 **Status**: Implemented. `DecodeAs` maps to `output_config.format` with a full JSON schema
 generated via `internal.JSONSchemaFor()`. `ReplyAsJSON` maps to a permissive
-`{"type": "object"}` schema. The `Effort` field is not yet wired (see gap #3).
+`{"type": "object"}` schema.
 
 ### 2. Token Counting (GA — HIGH IMPACT)
 

@@ -55,7 +55,17 @@ func Scoreboard() scoreboard.Score {
 type GenOptionsText struct {
 	// ThinkingBudget is the maximum number of tokens the LLM can use to reason about the answer. When 0,
 	// reasoning is disabled. It generally must be above 1024 and below MaxTokens.
+	//
+	// Ignored when Thinking is ThinkingAdaptive.
 	ThinkingBudget int64
+	// Thinking controls the thinking mode. When empty, the mode is auto-detected from ThinkingBudget:
+	// ThinkingEnabled if ThinkingBudget > 0, ThinkingDisabled otherwise.
+	//
+	// Set to ThinkingAdaptive for models that support it (e.g. claude-opus-4-6). In adaptive mode, the
+	// model decides autonomously whether and how much to think. ThinkingBudget is ignored.
+	//
+	// https://platform.claude.com/docs/en/build-with-claude/extended-thinking
+	Thinking ThinkingType
 	// MessagesToCache specify the number of messages to cache in the request.
 	//
 	// By default, the system prompt and tools will be cached.
@@ -66,6 +76,31 @@ type GenOptionsText struct {
 	//
 	// https://platform.claude.com/docs/en/api/messages#body-output-config
 	Effort Effort
+}
+
+// ThinkingType controls how the model uses extended thinking.
+//
+// https://platform.claude.com/docs/en/build-with-claude/extended-thinking
+type ThinkingType string
+
+const (
+	// ThinkingEnabled enables extended thinking with an explicit budget set via ThinkingBudget.
+	ThinkingEnabled ThinkingType = "enabled"
+	// ThinkingDisabled disables extended thinking.
+	ThinkingDisabled ThinkingType = "disabled"
+	// ThinkingAdaptive lets the model decide autonomously whether and how much to think.
+	// ThinkingBudget is ignored. Use Effort to control thinking depth.
+	ThinkingAdaptive ThinkingType = "adaptive"
+)
+
+// Validate implements genai.Validatable.
+func (t ThinkingType) Validate() error {
+	switch t {
+	case "", ThinkingEnabled, ThinkingDisabled, ThinkingAdaptive:
+		return nil
+	default:
+		return fmt.Errorf("invalid ThinkingType %q", t)
+	}
 }
 
 // Effort controls the amount of effort the model puts into its response.
@@ -85,6 +120,15 @@ const (
 )
 
 func (o *GenOptionsText) Validate() error {
+	if err := o.Thinking.Validate(); err != nil {
+		return err
+	}
+	if o.Thinking == ThinkingAdaptive && o.ThinkingBudget > 0 {
+		return fmt.Errorf("ThinkingBudget must not be set when Thinking is %q", ThinkingAdaptive)
+	}
+	if o.Thinking == ThinkingEnabled && o.ThinkingBudget == 0 {
+		return fmt.Errorf("ThinkingBudget must be set when Thinking is %q", ThinkingEnabled)
+	}
 	switch o.Effort {
 	case "", EffortLow, EffortMedium, EffortHigh, EffortMax:
 	default:
@@ -157,14 +201,28 @@ func (c *ChatRequest) initImpl(msgs genai.Messages, model string, cache bool, op
 				unsupported = append(unsupported, "GenOptionsText.MessagesToCache")
 			}
 			c.OutputConfig.Effort = v.Effort
-			if v.ThinkingBudget > 0 {
+			switch v.Thinking {
+			case ThinkingAdaptive:
+				c.Thinking.Type = string(ThinkingAdaptive)
+			case ThinkingDisabled:
+				// Already set above.
+			case ThinkingEnabled:
 				if v.ThinkingBudget >= c.MaxTokens {
 					errs = append(errs, fmt.Errorf("invalid ThinkingBudget(%d) >= MaxTokens(%d)", v.ThinkingBudget, c.MaxTokens))
 				}
-				// https://docs.anthropic.com/en/docs/build-with-claude/extended-thinking
-				// Thinking isn’t compatible with temperature, top_p, or top_k modifications as well as forced tool use.
 				c.Thinking.BudgetTokens = v.ThinkingBudget
-				c.Thinking.Type = "enabled"
+				c.Thinking.Type = string(ThinkingEnabled)
+			default:
+				// Auto-detect from ThinkingBudget for backward compatibility.
+				if v.ThinkingBudget > 0 {
+					if v.ThinkingBudget >= c.MaxTokens {
+						errs = append(errs, fmt.Errorf("invalid ThinkingBudget(%d) >= MaxTokens(%d)", v.ThinkingBudget, c.MaxTokens))
+					}
+					// https://docs.anthropic.com/en/docs/build-with-claude/extended-thinking
+					// Thinking isn't compatible with temperature, top_p, or top_k modifications as well as forced tool use.
+					c.Thinking.BudgetTokens = v.ThinkingBudget
+					c.Thinking.Type = string(ThinkingEnabled)
+				}
 			}
 		case *genai.GenOptionsText:
 			u, e := c.initOptionsText(v)
@@ -180,7 +238,7 @@ func (c *ChatRequest) initImpl(msgs genai.Messages, model string, cache bool, op
 	}
 
 	// Post process to take into account limitations by the provider.
-	if c.Model == "claude-sonnet-4-20250514" && c.Thinking.Type == "enabled" && c.ToolChoice.Type == ToolChoiceAny {
+	if c.Model == "claude-sonnet-4-20250514" && c.Thinking.Type != "disabled" && c.ToolChoice.Type == ToolChoiceAny {
 		unsupported = append(unsupported, "GenOptionsTools.Force")
 		c.ToolChoice.Type = ToolChoiceAuto
 	}
@@ -1055,8 +1113,8 @@ func (c *Citation) To(dst *genai.Citation) error {
 }
 
 type Thinking struct {
-	BudgetTokens int64  `json:"budget_tokens,omitzero"` // >1024 and less than max_tokens
-	Type         string `json:"type,omitzero"`          // "enabled", "disabled"
+	BudgetTokens int64  `json:"budget_tokens,omitzero"` // >1024 and less than max_tokens; unused for adaptive
+	Type         string `json:"type,omitzero"`          // "enabled", "disabled", "adaptive"
 }
 
 // ToolChoiceType is documented at https://docs.anthropic.com/en/api/messages#body-tool-choice

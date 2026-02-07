@@ -83,35 +83,14 @@ Implemented. `Effort` typed string with `EffortLow`, `EffortMedium`, `EffortHigh
 constants added to `GenOptionsText`. Wired through `OutputConfig.Effort`. Validation rejects
 unknown values. Unit tests (`TestEffort`) cover all valid values and invalid input.
 
-### 1.4 Adaptive Thinking
+### 1.4 Adaptive Thinking — DONE
 
-**Priority**: P1
-
-**Implementation steps**:
-
-1. Add a `ThinkingMode` field to Anthropic-specific `GenOptionsText`:
-   ```go
-   type GenOptionsText struct {
-       ThinkingBudget  int64
-       ThinkingMode    string // "enabled", "disabled", "adaptive"; empty = auto-detect
-       MessagesToCache int
-       Effort          string
-   }
-   ```
-   When `ThinkingMode` is empty, preserve current behavior (auto-detect from
-   `ThinkingBudget`). When `ThinkingMode` is `"adaptive"`, set `Thinking.Type = "adaptive"`
-   with the budget.
-
-2. Alternatively, keep the current `ThinkingBudget`-based detection and add a sentinel value
-   (e.g. `ThinkingBudget = -1` for adaptive). This is simpler but less explicit.
-
-3. The `Thinking` struct needs to support `type: "adaptive"` as a valid value.
-
-4. Write unit tests.
-
-**Files changed**: `client.go`, `client_test.go`
-
-**Depends on**: Nothing. Self-contained.
+Implemented. `ThinkingType` typed string with `ThinkingEnabled`, `ThinkingDisabled`,
+`ThinkingAdaptive` constants added to `GenOptionsText`. The `Thinking` field controls the
+mode explicitly; when empty, backward-compatible auto-detection from `ThinkingBudget` is
+preserved. Adaptive mode sets `thinking.type = "adaptive"` without `budget_tokens`.
+Validation rejects incompatible combinations (adaptive+budget, enabled-without-budget).
+Unit tests (`TestThinking`) cover all valid modes, auto-detection, and error cases.
 
 ### 1.5 Claude Opus 4.6 Model
 
@@ -400,5 +379,5 @@ Some features may require additions to the shared `genai` package:
 | 3     | 6     | Medium   | Medium |
 | 4     | 5     | Small    | Low    |
 
-**Recommended next**: Phase 1.5 (Opus 4.6 model) as a quick win, then 1.4 (Adaptive
-Thinking), then 1.2 (Token Counting). Phases 1.1 and 1.3 are done.
+**Recommended next**: Phase 1.5 (Opus 4.6 model) as a quick win, then 1.2 (Token Counting).
+Phases 1.1, 1.3, and 1.4 are done.

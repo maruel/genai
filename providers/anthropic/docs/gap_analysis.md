@@ -23,7 +23,7 @@ methods.
 | Token Counting                 | Yes          | No             | **Missing**    |
 | Structured Outputs             | Yes          | Yes            | Complete       |
 | Effort Level                   | Yes          | Yes            | Complete       |
-| Adaptive Thinking              | Yes          | No             | **Missing**    |
+| Adaptive Thinking              | Yes          | Yes            | Complete       |
 | Model Listing (paginated)      | Yes          | Yes            | Complete       |
 | Model Get (single)             | Yes          | No             | **Missing**    |
 | Batch: Create                  | Yes          | Yes            | Complete       |
@@ -109,19 +109,16 @@ Controls quality/latency tradeoff: `"low"`, `"medium"`, `"high"`, `"max"`.
 **Status**: Implemented. `Effort` type with constants added to `GenOptionsText`. Wired
 through `ChatRequest.OutputConfig.Effort`. Validation rejects unknown values.
 
-### 4. Adaptive Thinking (GA — MEDIUM IMPACT)
+### 4. Adaptive Thinking (GA — COMPLETE)
 
 Third thinking mode alongside `"enabled"` and `"disabled"`. Lets the model decide
 autonomously whether to use extended thinking.
 
-**Current behavior**: Only `"enabled"` and `"disabled"` are supported via
-`GenOptionsText.ThinkingBudget`.
-
-**Official SDK**: `ThinkingConfigAdaptiveParam` with `budget_tokens` (since v1.21.0).
-
-**What's needed**:
-- Extend `Thinking` struct or `GenOptionsText` to support adaptive mode.
-- Consider a new field like `ThinkingMode` with `"enabled"`, `"disabled"`, `"adaptive"`.
+**Status**: Implemented. `ThinkingType` typed string with `ThinkingEnabled`,
+`ThinkingDisabled`, `ThinkingAdaptive` constants added to `GenOptionsText.Thinking`.
+Adaptive mode sets `thinking.type = "adaptive"` with no `budget_tokens`. Backward
+compatible: empty `Thinking` field auto-detects from `ThinkingBudget`. Validation rejects
+adaptive+budget and enabled-without-budget combinations.
 
 ### 5. Claude Opus 4.6 Model (GA — TRIVIAL)
 

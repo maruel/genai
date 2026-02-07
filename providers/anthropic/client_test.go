@@ -398,6 +398,98 @@ func TestEffort(t *testing.T) {
 	})
 }
 
+func TestThinking(t *testing.T) {
+	msgs := genai.Messages{genai.NewTextMessage("test")}
+	t.Run("valid", func(t *testing.T) {
+		t.Run("adaptive", func(t *testing.T) {
+			var req anthropic.ChatRequest
+			if err := req.Init(msgs, "claude-sonnet-4-20250514", &anthropic.GenOptionsText{Thinking: anthropic.ThinkingAdaptive}); err != nil {
+				t.Fatal(err)
+			}
+			if req.Thinking.Type != "adaptive" {
+				t.Errorf("Thinking.Type = %q, want %q", req.Thinking.Type, "adaptive")
+			}
+			if req.Thinking.BudgetTokens != 0 {
+				t.Errorf("Thinking.BudgetTokens = %d, want 0", req.Thinking.BudgetTokens)
+			}
+		})
+		t.Run("enabled", func(t *testing.T) {
+			var req anthropic.ChatRequest
+			if err := req.Init(msgs, "claude-sonnet-4-20250514", &anthropic.GenOptionsText{Thinking: anthropic.ThinkingEnabled, ThinkingBudget: 2048}); err != nil {
+				t.Fatal(err)
+			}
+			if req.Thinking.Type != "enabled" {
+				t.Errorf("Thinking.Type = %q, want %q", req.Thinking.Type, "enabled")
+			}
+			if req.Thinking.BudgetTokens != 2048 {
+				t.Errorf("Thinking.BudgetTokens = %d, want 2048", req.Thinking.BudgetTokens)
+			}
+		})
+		t.Run("disabled", func(t *testing.T) {
+			var req anthropic.ChatRequest
+			if err := req.Init(msgs, "claude-sonnet-4-20250514", &anthropic.GenOptionsText{Thinking: anthropic.ThinkingDisabled}); err != nil {
+				t.Fatal(err)
+			}
+			if req.Thinking.Type != "disabled" {
+				t.Errorf("Thinking.Type = %q, want %q", req.Thinking.Type, "disabled")
+			}
+		})
+		t.Run("auto_detect_enabled", func(t *testing.T) {
+			var req anthropic.ChatRequest
+			if err := req.Init(msgs, "claude-sonnet-4-20250514", &anthropic.GenOptionsText{ThinkingBudget: 2048}); err != nil {
+				t.Fatal(err)
+			}
+			if req.Thinking.Type != "enabled" {
+				t.Errorf("Thinking.Type = %q, want %q", req.Thinking.Type, "enabled")
+			}
+			if req.Thinking.BudgetTokens != 2048 {
+				t.Errorf("Thinking.BudgetTokens = %d, want 2048", req.Thinking.BudgetTokens)
+			}
+		})
+		t.Run("auto_detect_disabled", func(t *testing.T) {
+			var req anthropic.ChatRequest
+			if err := req.Init(msgs, "claude-sonnet-4-20250514", &anthropic.GenOptionsText{}); err != nil {
+				t.Fatal(err)
+			}
+			if req.Thinking.Type != "disabled" {
+				t.Errorf("Thinking.Type = %q, want %q", req.Thinking.Type, "disabled")
+			}
+		})
+	})
+	t.Run("invalid", func(t *testing.T) {
+		t.Run("bogus", func(t *testing.T) {
+			var req anthropic.ChatRequest
+			err := req.Init(msgs, "claude-sonnet-4-20250514", &anthropic.GenOptionsText{Thinking: "bogus"})
+			if err == nil {
+				t.Fatal("expected error")
+			}
+			if !strings.Contains(err.Error(), "invalid ThinkingType") {
+				t.Errorf("unexpected error: %v", err)
+			}
+		})
+		t.Run("adaptive_with_budget", func(t *testing.T) {
+			var req anthropic.ChatRequest
+			err := req.Init(msgs, "claude-sonnet-4-20250514", &anthropic.GenOptionsText{Thinking: anthropic.ThinkingAdaptive, ThinkingBudget: 2048})
+			if err == nil {
+				t.Fatal("expected error")
+			}
+			if !strings.Contains(err.Error(), "ThinkingBudget must not be set") {
+				t.Errorf("unexpected error: %v", err)
+			}
+		})
+		t.Run("enabled_without_budget", func(t *testing.T) {
+			var req anthropic.ChatRequest
+			err := req.Init(msgs, "claude-sonnet-4-20250514", &anthropic.GenOptionsText{Thinking: anthropic.ThinkingEnabled})
+			if err == nil {
+				t.Fatal("expected error")
+			}
+			if !strings.Contains(err.Error(), "ThinkingBudget must be set") {
+				t.Errorf("unexpected error: %v", err)
+			}
+		})
+	})
+}
+
 func init() {
 	internal.BeLenient = false
 }

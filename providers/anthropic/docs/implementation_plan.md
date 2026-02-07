@@ -77,30 +77,11 @@ Unit tests (`TestStructuredOutput`) and smoke test recordings cover both paths.
 
 **Depends on**: Nothing. Self-contained.
 
-### 1.3 Effort Level
+### 1.3 Effort Level — DONE
 
-**Priority**: P1
-
-**Implementation steps**:
-
-1. Add `Effort` field to Anthropic-specific `GenOptionsText`:
-   ```go
-   type GenOptionsText struct {
-       ThinkingBudget  int64
-       MessagesToCache int
-       Effort          string // "low", "medium", "high", "max"; empty = default
-   }
-   ```
-
-2. In `initImpl()`, when processing `*GenOptionsText`, set `c.OutputConfig.Effort = v.Effort`.
-
-3. Add validation in `GenOptionsText.Validate()`.
-
-4. Write unit tests.
-
-**Files changed**: `client.go`, `client_test.go`
-
-**Depends on**: 1.1 (OutputConfig struct must exist first).
+Implemented. `Effort` typed string with `EffortLow`, `EffortMedium`, `EffortHigh`, `EffortMax`
+constants added to `GenOptionsText`. Wired through `OutputConfig.Effort`. Validation rejects
+unknown values. Unit tests (`TestEffort`) cover all valid values and invalid input.
 
 ### 1.4 Adaptive Thinking
 

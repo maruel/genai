@@ -62,9 +62,34 @@ type GenOptionsText struct {
 	//
 	// https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching
 	MessagesToCache int
+	// Effort controls the quality/latency tradeoff. When empty, the API default is used.
+	//
+	// https://platform.claude.com/docs/en/api/messages#body-output-config
+	Effort Effort
 }
 
+// Effort controls the amount of effort the model puts into its response.
+//
+// https://platform.claude.com/docs/en/api/messages#body-output-config
+type Effort string
+
+const (
+	// EffortLow minimizes latency at the cost of quality.
+	EffortLow Effort = "low"
+	// EffortMedium balances quality and latency.
+	EffortMedium Effort = "medium"
+	// EffortHigh favors quality over latency.
+	EffortHigh Effort = "high"
+	// EffortMax maximizes quality.
+	EffortMax Effort = "max"
+)
+
 func (o *GenOptionsText) Validate() error {
+	switch o.Effort {
+	case "", EffortLow, EffortMedium, EffortHigh, EffortMax:
+	default:
+		return fmt.Errorf("invalid Effort %q", o.Effort)
+	}
 	return nil
 }
 
@@ -93,6 +118,7 @@ type ChatRequest struct {
 
 // OutputConfig is documented at https://docs.anthropic.com/en/api/messages#body-output-config
 type OutputConfig struct {
+	Effort Effort       `json:"effort,omitzero"`
 	Format OutputFormat `json:"format,omitzero"`
 }
 
@@ -130,6 +156,7 @@ func (c *ChatRequest) initImpl(msgs genai.Messages, model string, cache bool, op
 			} else if v.MessagesToCache != 0 {
 				unsupported = append(unsupported, "GenOptionsText.MessagesToCache")
 			}
+			c.OutputConfig.Effort = v.Effort
 			if v.ThinkingBudget > 0 {
 				if v.ThinkingBudget >= c.MaxTokens {
 					errs = append(errs, fmt.Errorf("invalid ThinkingBudget(%d) >= MaxTokens(%d)", v.ThinkingBudget, c.MaxTokens))

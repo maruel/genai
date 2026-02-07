@@ -371,6 +371,33 @@ func TestStructuredOutput(t *testing.T) {
 	}
 }
 
+func TestEffort(t *testing.T) {
+	msgs := genai.Messages{genai.NewTextMessage("test")}
+	t.Run("valid", func(t *testing.T) {
+		for _, e := range []anthropic.Effort{"", anthropic.EffortLow, anthropic.EffortMedium, anthropic.EffortHigh, anthropic.EffortMax} {
+			t.Run(string(e), func(t *testing.T) {
+				var req anthropic.ChatRequest
+				if err := req.Init(msgs, "claude-sonnet-4-20250514", &anthropic.GenOptionsText{Effort: e}); err != nil {
+					t.Fatal(err)
+				}
+				if req.OutputConfig.Effort != e {
+					t.Errorf("Effort = %q, want %q", req.OutputConfig.Effort, e)
+				}
+			})
+		}
+	})
+	t.Run("invalid", func(t *testing.T) {
+		var req anthropic.ChatRequest
+		err := req.Init(msgs, "claude-sonnet-4-20250514", &anthropic.GenOptionsText{Effort: "bogus"})
+		if err == nil {
+			t.Fatal("expected error for invalid effort")
+		}
+		if !strings.Contains(err.Error(), "invalid Effort") {
+			t.Errorf("unexpected error: %v", err)
+		}
+	})
+}
+
 func init() {
 	internal.BeLenient = false
 }

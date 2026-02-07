@@ -22,7 +22,7 @@ methods.
 | Messages API (stream)          | Yes          | Yes            | Complete       |
 | Token Counting                 | Yes          | No             | **Missing**    |
 | Structured Outputs             | Yes          | Yes            | Complete       |
-| Effort Level                   | Yes          | No             | **Missing**    |
+| Effort Level                   | Yes          | Yes            | Complete       |
 | Adaptive Thinking              | Yes          | No             | **Missing**    |
 | Model Listing (paginated)      | Yes          | Yes            | Complete       |
 | Model Get (single)             | Yes          | No             | **Missing**    |
@@ -102,17 +102,12 @@ message request.
 - Add `CountTokensRequest`/`CountTokensResponse` structs.
 - Add `CountTokens()` and `CountTokensRaw()` methods on `Client`.
 
-### 3. Effort Level (GA — MEDIUM IMPACT)
+### 3. Effort Level (GA — COMPLETE)
 
 Controls quality/latency tradeoff: `"low"`, `"medium"`, `"high"`, `"max"`.
 
-**Current behavior**: Not implemented. No `genai` option exists for this.
-
-**Official SDK**: Part of `OutputConfigParam.Effort` (since v1.19.0).
-
-**What's needed**:
-- Add `Effort` field to provider-specific `GenOptionsText` or to the `OutputConfig` struct.
-- Wire it through `ChatRequest.OutputConfig.Effort`.
+**Status**: Implemented. `Effort` type with constants added to `GenOptionsText`. Wired
+through `ChatRequest.OutputConfig.Effort`. Validation rejects unknown values.
 
 ### 4. Adaptive Thinking (GA — MEDIUM IMPACT)
 

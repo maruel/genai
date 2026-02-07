@@ -47,6 +47,47 @@ func Scoreboard() scoreboard.Score {
 	return s
 }
 
+// GenOptionsText defines OpenAI Responses specific options.
+type GenOptionsText struct {
+	// ReasoningEffort is the amount of effort (number of tokens) the LLM can use to think about the answer.
+	//
+	// When unspecified, defaults to medium.
+	ReasoningEffort ReasoningEffort
+	// ServiceTier specify the priority.
+	ServiceTier ServiceTier
+	// Truncation controls automatic shortening of long conversations.
+	Truncation Truncation
+	// PreviousResponseID enables server-side conversation state, avoiding re-transmitting full history.
+	PreviousResponseID string
+}
+
+func (o *GenOptionsText) Validate() error {
+	if err := o.ReasoningEffort.Validate(); err != nil {
+		return err
+	}
+	return o.ServiceTier.Validate()
+}
+
+// GenOptionsImage defines OpenAI specific options.
+type GenOptionsImage struct {
+	// Background is only supported on gpt-image-1.
+	Background Background
+}
+
+func (o *GenOptionsImage) Validate() error {
+	return nil
+}
+
+// Truncation controls the truncation strategy for long conversations.
+type Truncation string
+
+const (
+	// TruncationDisabled means the request will fail if input exceeds the model's context.
+	TruncationDisabled Truncation = "disabled"
+	// TruncationAuto means the model will automatically truncate input if it exceeds the model's context.
+	TruncationAuto Truncation = "auto"
+)
+
 // Response represents a request to the OpenAI Responses API.
 //
 // https://platform.openai.com/docs/api-reference/responses/object
@@ -115,6 +156,8 @@ func (r *Response) Init(msgs genai.Messages, model string, opts ...genai.GenOpti
 		case *GenOptionsText:
 			r.Reasoning.Effort = v.ReasoningEffort
 			r.ServiceTier = v.ServiceTier
+			r.Truncation = string(v.Truncation)
+			r.PreviousResponseID = v.PreviousResponseID
 		case *genai.GenOptionsText:
 			u, e := r.initOptionsText(v)
 			unsupported = append(unsupported, u...)
@@ -218,11 +261,21 @@ func (r *Response) ToResult() (genai.Result, error) {
 		}
 	}
 	var err error
+	hasRefusal := false
+	for _, output := range r.Output {
+		for i := range output.Content {
+			if output.Content[i].Type == ContentRefusal {
+				hasRefusal = true
+			}
+		}
+	}
 	if r.IncompleteDetails.Reason != "" {
 		if r.IncompleteDetails.Reason == "max_output_tokens" {
 			res.Usage.FinishReason = genai.FinishedLength
 		}
 		err = errors.New(r.IncompleteDetails.Reason)
+	} else if hasRefusal {
+		res.Usage.FinishReason = genai.FinishedContentFilter
 	} else if slices.ContainsFunc(res.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
 		res.Usage.FinishReason = genai.FinishedToolCalls
 	} else {
@@ -503,7 +556,23 @@ func (m *Message) To(out *genai.Message) error {
 			c.Sources[i+1].URL = src.URL
 		}
 		out.Replies = append(out.Replies, genai.Reply{Citation: c})
-	case MessageFileSearchCall, MessageComputerCall, MessageImageGenerationCall, MessageCodeInterpreterCall, MessageLocalShellCall, MessageMcpListTools, MessageMcpApprovalRequest, MessageMcpCall, MessageComputerCallOutput, MessageFunctionCallOutput, MessageLocalShellCallOutput, MessageMcpApprovalResponse, MessageItemReference:
+	case MessageFileSearchCall:
+		for _, q := range m.Queries {
+			out.Replies = append(out.Replies, genai.Reply{Citation: genai.Citation{
+				Sources: []genai.CitationSource{{Type: genai.CitationWebQuery, Snippet: q}},
+			}})
+		}
+		for _, r := range m.Results {
+			out.Replies = append(out.Replies, genai.Reply{Citation: genai.Citation{
+				CitedText: r.Text,
+				Sources: []genai.CitationSource{{
+					Type:  genai.CitationDocument,
+					ID:    r.FileID,
+					Title: r.Filename,
+				}},
+			}})
+		}
+	case MessageComputerCall, MessageImageGenerationCall, MessageCodeInterpreterCall, MessageLocalShellCall, MessageMcpListTools, MessageMcpApprovalRequest, MessageMcpCall, MessageComputerCallOutput, MessageFunctionCallOutput, MessageLocalShellCallOutput, MessageMcpApprovalResponse, MessageItemReference:
 		fallthrough
 	default:
 		return &internal.BadError{Err: fmt.Errorf("unsupported output type %q", m.Type)}
@@ -554,23 +623,36 @@ type Content struct {
 func (c *Content) To() ([]genai.Reply, error) {
 	var out []genai.Reply
 	for _, a := range c.Annotations {
-		if a.Type != "url_citation" {
+		var ci genai.Citation
+		switch a.Type {
+		case "url_citation":
+			ci = genai.Citation{
+				StartIndex: a.StartIndex,
+				EndIndex:   a.EndIndex,
+				Sources:    []genai.CitationSource{{Type: genai.CitationWeb, URL: a.URL, Title: a.Title}},
+			}
+		case "file_citation", "container_file_citation":
+			ci = genai.Citation{
+				StartIndex: a.StartIndex,
+				EndIndex:   a.EndIndex,
+				Sources:    []genai.CitationSource{{Type: genai.CitationDocument, ID: a.FileID}},
+			}
+		case "file_path":
+			ci = genai.Citation{
+				Sources: []genai.CitationSource{{Type: genai.CitationDocument, ID: a.FileID}},
+			}
+		default:
 			return out, &internal.BadError{Err: fmt.Errorf("unsupported annotation type %q", a.Type)}
 		}
-		if a.FileID != "" {
-			return out, &internal.BadError{Err: fmt.Errorf("field Annotation.FileID not supported")}
-		}
-		c := genai.Citation{
-			StartIndex: a.StartIndex,
-			EndIndex:   a.EndIndex,
-			Sources:    []genai.CitationSource{{Type: genai.CitationWeb, URL: a.URL, Title: a.Title}},
-		}
-		out = append(out, genai.Reply{Citation: c})
+		out = append(out, genai.Reply{Citation: ci})
 	}
 	switch c.Type {
 	case ContentOutputText:
 		out = append(out, genai.Reply{Text: c.Text})
-	case ContentInputText, ContentInputImage, ContentInputFile, ContentRefusal:
+	case ContentRefusal:
+		// Surface refusal as text so the caller can see the reason.
+		out = append(out, genai.Reply{Text: c.Refusal})
+	case ContentInputText, ContentInputImage, ContentInputFile:
 		return out, &internal.BadError{Err: fmt.Errorf("implement content type %q", c.Type)}
 	default:
 		return out, &internal.BadError{Err: fmt.Errorf("implement content type %q", c.Type)}
@@ -1174,6 +1256,75 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *Response) (iter.Seq[Respo
 	return c.impl.GenStreamRaw(ctx, in)
 }
 
+// Capabilities implements genai.Provider.
+func (c *Client) Capabilities() genai.ProviderCapabilities {
+	return genai.ProviderCapabilities{GenAsync: true}
+}
+
+// GenAsync implements genai.Provider.
+//
+// It uses the OpenAI Responses API background mode to submit a request that is processed asynchronously.
+// The returned Job is the response ID that can be polled with PokeResult.
+//
+// https://platform.openai.com/docs/api-reference/responses/create
+func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (genai.Job, error) {
+	if err := c.impl.Validate(); err != nil {
+		return "", err
+	}
+	req := Response{}
+	if err := req.Init(msgs, c.impl.Model, opts...); err != nil {
+		return "", err
+	}
+	req.Background = true
+	resp := Response{}
+	if err := c.impl.DoRequest(ctx, "POST", c.impl.GenSyncURL, &req, &resp); err != nil {
+		return "", err
+	}
+	if resp.ID == "" {
+		return "", fmt.Errorf("no response ID returned")
+	}
+	return genai.Job(resp.ID), nil
+}
+
+// PokeResult implements genai.Provider.
+//
+// It polls the status of a background response by its ID.
+//
+// https://platform.openai.com/docs/api-reference/responses/get
+func (c *Client) PokeResult(ctx context.Context, job genai.Job) (genai.Result, error) {
+	resp := Response{}
+	url := c.impl.GenSyncURL + "/" + string(job)
+	if err := c.impl.DoRequest(ctx, "GET", url, nil, &resp); err != nil {
+		return genai.Result{}, err
+	}
+	switch resp.Status {
+	case "queued", "in_progress":
+		return genai.Result{Usage: genai.Usage{FinishReason: genai.Pending}}, nil
+	case "incomplete":
+		res, err := resp.ToResult()
+		if err != nil {
+			return res, err
+		}
+		return res, errors.New(resp.IncompleteDetails.Reason)
+	case "failed":
+		return genai.Result{}, &resp.Error
+	case "completed":
+		return resp.ToResult()
+	default:
+		return genai.Result{}, fmt.Errorf("unexpected response status %q", resp.Status)
+	}
+}
+
+// PokeResultRaw provides raw access to poll a background response.
+func (c *Client) PokeResultRaw(ctx context.Context, job genai.Job) (*Response, error) {
+	resp := &Response{}
+	url := c.impl.GenSyncURL + "/" + string(job)
+	if err := c.impl.DoRequest(ctx, "GET", url, nil, resp); err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
 // ProcessStream converts the raw packets from the streaming API into Reply fragments.
 func ProcessStream(chunks iter.Seq[ResponseStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, [][]genai.Logprob, error)) {
 	var finalErr error
@@ -1181,6 +1332,7 @@ func ProcessStream(chunks iter.Seq[ResponseStreamChunkResponse]) (iter.Seq[genai
 	var l [][]genai.Logprob
 
 	return func(yield func(genai.Reply) bool) {
+			refused := false
 			pendingToolCall := genai.ToolCall{}
 			for pkt := range chunks {
 				f := genai.Reply{}
@@ -1204,7 +1356,6 @@ func ProcessStream(chunks iter.Seq[ResponseStreamChunkResponse]) (iter.Seq[genai
 						finalErr = &internal.BadError{Err: fmt.Errorf("no output: %#v", pkt)}
 						return
 					}
-					// TODO: OpenAI supports "multiple messages" as output.
 					u.FinishReason = genai.FinishedStop
 					for i := range pkt.Response.Output {
 						msg := pkt.Response.Output[i]
@@ -1265,7 +1416,9 @@ func ProcessStream(chunks iter.Seq[ResponseStreamChunkResponse]) (iter.Seq[genai
 					case MessageWebSearchCall:
 						// TODO: Send a fragment to tell the user. It's a server-side tool call, we don't have infrastructure
 						// to surface that to the user yet.
-					case MessageFileSearchCall, MessageComputerCall, MessageImageGenerationCall, MessageCodeInterpreterCall, MessageLocalShellCall, MessageMcpListTools, MessageMcpApprovalRequest, MessageMcpCall, MessageComputerCallOutput, MessageFunctionCallOutput, MessageLocalShellCallOutput, MessageMcpApprovalResponse, MessageItemReference:
+					case MessageFileSearchCall:
+						// Server-side file search; data arrives in ResponseOutputItemDone.
+					case MessageComputerCall, MessageImageGenerationCall, MessageCodeInterpreterCall, MessageLocalShellCall, MessageMcpListTools, MessageMcpApprovalRequest, MessageMcpCall, MessageComputerCallOutput, MessageFunctionCallOutput, MessageLocalShellCallOutput, MessageMcpApprovalResponse, MessageItemReference:
 						fallthrough
 					default:
 						finalErr = &internal.BadError{Err: fmt.Errorf("implement item: %q", pkt.Item.Type)}
@@ -1290,7 +1443,21 @@ func ProcessStream(chunks iter.Seq[ResponseStreamChunkResponse]) (iter.Seq[genai
 							finalErr = &internal.BadError{Err: fmt.Errorf("implement action type %q", pkt.Item.Action.Type)}
 							return
 						}
-					case MessageMessage, MessageFileSearchCall, MessageComputerCall, MessageFunctionCall, MessageReasoning, MessageImageGenerationCall, MessageCodeInterpreterCall, MessageLocalShellCall, MessageMcpListTools, MessageMcpApprovalRequest, MessageMcpCall, MessageComputerCallOutput, MessageFunctionCallOutput, MessageLocalShellCallOutput, MessageMcpApprovalResponse, MessageItemReference:
+					case MessageFileSearchCall:
+						// File search completed; yield results as citations.
+						for _, r := range pkt.Item.Results {
+							if !yield(genai.Reply{Citation: genai.Citation{
+								CitedText: r.Text,
+								Sources: []genai.CitationSource{{
+									Type:  genai.CitationDocument,
+									ID:    r.FileID,
+									Title: r.Filename,
+								}},
+							}}) {
+								return
+							}
+						}
+					case MessageMessage, MessageComputerCall, MessageFunctionCall, MessageReasoning, MessageImageGenerationCall, MessageCodeInterpreterCall, MessageLocalShellCall, MessageMcpListTools, MessageMcpApprovalRequest, MessageMcpCall, MessageComputerCallOutput, MessageFunctionCallOutput, MessageLocalShellCallOutput, MessageMcpApprovalResponse, MessageItemReference:
 					default:
 						// The default stance is to ignore this event since it's generally duplicate information.
 					}
@@ -1306,7 +1473,10 @@ func ProcessStream(chunks iter.Seq[ResponseStreamChunkResponse]) (iter.Seq[genai
 							finalErr = &internal.BadError{Err: fmt.Errorf("unexpected text: %q", pkt.Part.Text)}
 							return
 						}
-					case ContentRefusal, ContentInputText, ContentInputImage, ContentInputFile:
+					case ContentRefusal:
+						// Refusal content part; the actual text arrives via ResponseRefusalDelta.
+						refused = true
+					case ContentInputText, ContentInputImage, ContentInputFile:
 						fallthrough
 					default:
 						finalErr = &internal.BadError{Err: fmt.Errorf("implement part: %q", pkt.Part.Type)}
@@ -1324,14 +1494,12 @@ func ProcessStream(chunks iter.Seq[ResponseStreamChunkResponse]) (iter.Seq[genai
 
 				case ResponseRefusalDelta:
 					// https://platform.openai.com/docs/api-reference/responses_streaming/response/refusal/delta
-					// TODO: It's not an error but catch it in the smoke test in case it happens.
-					finalErr = &internal.BadError{Err: fmt.Errorf("refused: %s", pkt.Delta)}
-					return
+					// Surface refusal text so the caller can see the reason.
+					f.Text = pkt.Delta
+					refused = true
 				case ResponseRefusalDone:
 					// https://platform.openai.com/docs/api-reference/responses_streaming/response/refusal/done
-					// TODO: It's not an error but catch it in the smoke test in case it happens.
-					finalErr = &internal.BadError{Err: fmt.Errorf("refused: %s", pkt.Refusal)}
-					return
+					refused = true
 
 				case ResponseFunctionCallArgumentsDelta:
 					// https://platform.openai.com/docs/api-reference/responses_streaming/response/function_call_arguments/delta
@@ -1342,10 +1510,12 @@ func ProcessStream(chunks iter.Seq[ResponseStreamChunkResponse]) (iter.Seq[genai
 					f.ToolCall = pendingToolCall
 					pendingToolCall = genai.ToolCall{}
 
-				case ResponseFileSearchCallInProgress, ResponseFileSearchCallSearching, ResponseFileSearchCallCompleted:
+				case ResponseFileSearchCallInProgress, ResponseFileSearchCallSearching:
 					// https://platform.openai.com/docs/api-reference/responses_streaming/response/file_search_call/in_progress
-					finalErr = &internal.BadError{Err: fmt.Errorf("implement packet: %q", pkt.Type)}
-					return
+					// Data is sent in ResponseOutputItemDone.
+				case ResponseFileSearchCallCompleted:
+					// https://platform.openai.com/docs/api-reference/responses_streaming/response/file_search_call/completed
+					// Data is sent in ResponseOutputItemDone.
 
 				case ResponseWebSearchCallInProgress:
 					// https://platform.openai.com/docs/api-reference/responses_streaming/response/web_search_call/in_progress
@@ -1390,14 +1560,26 @@ func ProcessStream(chunks iter.Seq[ResponseStreamChunkResponse]) (iter.Seq[genai
 
 				case ResponseOutputTextAnnotationAdded:
 					// https://platform.openai.com/docs/api-reference/responses_streaming/response/output_text/annotation/added
-					if pkt.Annotation.Type != "url_citation" {
+					switch pkt.Annotation.Type {
+					case "url_citation":
+						f.Citation.StartIndex = pkt.Annotation.StartIndex
+						f.Citation.EndIndex = pkt.Annotation.EndIndex
+						f.Citation.Sources = []genai.CitationSource{
+							{Type: genai.CitationWeb, URL: pkt.Annotation.URL, Title: pkt.Annotation.Title},
+						}
+					case "file_citation", "container_file_citation":
+						f.Citation.StartIndex = pkt.Annotation.StartIndex
+						f.Citation.EndIndex = pkt.Annotation.EndIndex
+						f.Citation.Sources = []genai.CitationSource{
+							{Type: genai.CitationDocument, ID: pkt.Annotation.FileID},
+						}
+					case "file_path":
+						f.Citation.Sources = []genai.CitationSource{
+							{Type: genai.CitationDocument, ID: pkt.Annotation.FileID},
+						}
+					default:
 						finalErr = &internal.BadError{Err: fmt.Errorf("implement annotation type: %q", pkt.Annotation.Type)}
 						return
-					}
-					f.Citation.StartIndex = pkt.Annotation.StartIndex
-					f.Citation.EndIndex = pkt.Annotation.EndIndex
-					f.Citation.Sources = []genai.CitationSource{
-						{Type: genai.CitationWeb, URL: pkt.Annotation.URL, Title: pkt.Annotation.Title},
 					}
 				case ResponseQueued:
 					// https://platform.openai.com/docs/api-reference/responses_streaming/response/queued
@@ -1419,6 +1601,9 @@ func ProcessStream(chunks iter.Seq[ResponseStreamChunkResponse]) (iter.Seq[genai
 			if !pendingToolCall.IsZero() {
 				finalErr = &internal.BadError{Err: errors.New("unexpected pending tool call")}
 				return
+			}
+			if refused {
+				u.FinishReason = genai.FinishedContentFilter
 			}
 		}, func() (genai.Usage, [][]genai.Logprob, error) {
 			return u, l, finalErr

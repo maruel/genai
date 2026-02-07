@@ -50,6 +50,33 @@ func Scoreboard() scoreboard.Score {
 	return s
 }
 
+// GenOptionsText defines OpenAI specific options.
+type GenOptionsText struct {
+	// ReasoningEffort is the amount of effort (number of tokens) the LLM can use to think about the answer.
+	//
+	// When unspecified, defaults to medium.
+	ReasoningEffort ReasoningEffort
+	// ServiceTier specify the priority.
+	ServiceTier ServiceTier
+}
+
+func (o *GenOptionsText) Validate() error {
+	if err := o.ReasoningEffort.Validate(); err != nil {
+		return err
+	}
+	return o.ServiceTier.Validate()
+}
+
+// GenOptionsImage defines OpenAI specific options.
+type GenOptionsImage struct {
+	// Background is only supported on gpt-image-1.
+	Background Background
+}
+
+func (o *GenOptionsImage) Validate() error {
+	return nil
+}
+
 // ChatRequest is documented at https://platform.openai.com/docs/api-reference/chat/create
 type ChatRequest struct {
 	Model            string             `json:"model"`

@@ -24,30 +24,6 @@ import (
 	"github.com/maruel/genai/scoreboard"
 )
 
-// GenOptionsText defines OpenAI specific options.
-type GenOptionsText struct {
-	// ReasoningEffort is the amount of effort (number of tokens) the LLM can use to think about the answer.
-	//
-	// When unspecified, defaults to medium.
-	ReasoningEffort ReasoningEffort
-	// ServiceTier specify the priority.
-	ServiceTier ServiceTier
-}
-
-func (o *GenOptionsText) Validate() error {
-	return nil
-}
-
-// GenOptionsImage defines OpenAI specific options.
-type GenOptionsImage struct {
-	// Background is only supported on gpt-image-1.
-	Background Background
-}
-
-func (o *GenOptionsImage) Validate() error {
-	return nil
-}
-
 // ServiceTier is the quality of service to determine the request's priority.
 type ServiceTier string
 
@@ -69,6 +45,16 @@ const (
 	ServiceTierFlex ServiceTier = "flex"
 )
 
+// Validate implements genai.Validatable.
+func (s ServiceTier) Validate() error {
+	switch s {
+	case "", ServiceTierAuto, ServiceTierDefault, ServiceTierFlex:
+		return nil
+	default:
+		return fmt.Errorf("invalid service tier %q", s)
+	}
+}
+
 // ReasoningEffort is the effort the model should put into reasoning. Default is Medium.
 //
 // https://platform.openai.com/docs/api-reference/assistants/createAssistant#assistants-createassistant-reasoning_effort
@@ -76,10 +62,23 @@ const (
 type ReasoningEffort string
 
 const (
-	ReasoningEffortLow    ReasoningEffort = "low"
-	ReasoningEffortMedium ReasoningEffort = "medium"
-	ReasoningEffortHigh   ReasoningEffort = "high"
+	ReasoningEffortNone    ReasoningEffort = "none"
+	ReasoningEffortMinimal ReasoningEffort = "minimal"
+	ReasoningEffortLow     ReasoningEffort = "low"
+	ReasoningEffortMedium  ReasoningEffort = "medium"
+	ReasoningEffortHigh    ReasoningEffort = "high"
+	ReasoningEffortXHigh   ReasoningEffort = "xhigh"
 )
+
+// Validate implements genai.Validatable.
+func (r ReasoningEffort) Validate() error {
+	switch r {
+	case "", ReasoningEffortNone, ReasoningEffortMinimal, ReasoningEffortLow, ReasoningEffortMedium, ReasoningEffortHigh, ReasoningEffortXHigh:
+		return nil
+	default:
+		return fmt.Errorf("invalid reasoning effort %q", r)
+	}
+}
 
 //
 

@@ -296,6 +296,81 @@ func TestClient(t *testing.T) {
 	})
 }
 
+func TestStructuredOutput(t *testing.T) {
+	type myStruct struct {
+		Name string `json:"name"`
+		Age  int    `json:"age"`
+	}
+	msgs := genai.Messages{genai.NewTextMessage("test")}
+	tests := []struct {
+		name       string
+		opts       []genai.GenOptions
+		wantFormat bool
+		wantType   string
+		wantSchema string // "object" or "full"
+	}{
+		{
+			name: "DecodeAs",
+			opts: []genai.GenOptions{&genai.GenOptionsText{
+				DecodeAs: &myStruct{},
+			}},
+			wantFormat: true,
+			wantType:   "json_schema",
+			wantSchema: "full",
+		},
+		{
+			name: "ReplyAsJSON",
+			opts: []genai.GenOptions{&genai.GenOptionsText{
+				ReplyAsJSON: true,
+			}},
+			wantFormat: true,
+			wantType:   "json_schema",
+			wantSchema: "object",
+		},
+		{
+			name:       "Neither",
+			opts:       []genai.GenOptions{&genai.GenOptionsText{}},
+			wantFormat: false,
+		},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			var req anthropic.ChatRequest
+			if err := req.Init(msgs, "claude-sonnet-4-20250514", tc.opts...); err != nil {
+				t.Fatal(err)
+			}
+			if !tc.wantFormat {
+				if req.OutputConfig.Format.Type != "" {
+					t.Fatal("expected OutputConfig.Format to be zero")
+				}
+				return
+			}
+			if req.OutputConfig.Format.Type == "" {
+				t.Fatal("expected OutputConfig.Format to be set")
+			}
+			if got := req.OutputConfig.Format.Type; got != tc.wantType {
+				t.Errorf("Type = %q, want %q", got, tc.wantType)
+			}
+			if req.OutputConfig.Format.Schema == nil {
+				t.Fatal("expected Schema to be set")
+			}
+			switch tc.wantSchema {
+			case "object":
+				if got := req.OutputConfig.Format.Schema.Type; got != "object" {
+					t.Errorf("Schema.Type = %q, want \"object\"", got)
+				}
+			case "full":
+				if got := req.OutputConfig.Format.Schema.Type; got != "object" {
+					t.Errorf("Schema.Type = %q, want \"object\"", got)
+				}
+				if req.OutputConfig.Format.Schema.Properties == nil {
+					t.Error("expected Schema.Properties to be set for DecodeAs")
+				}
+			}
+		})
+	}
+}
+
 func init() {
 	internal.BeLenient = false
 }

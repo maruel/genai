@@ -22,6 +22,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"reflect"
 	"slices"
 	"strconv"
 	"strings"
@@ -87,6 +88,18 @@ type ChatRequest struct {
 	Tools         []Tool          `json:"tools,omitzero"`
 	TopK          int64           `json:"top_k,omitzero"` // [1, ]
 	TopP          float64         `json:"top_p,omitzero"` // [0, 1]
+	OutputConfig  OutputConfig    `json:"output_config,omitzero"`
+}
+
+// OutputConfig is documented at https://docs.anthropic.com/en/api/messages#body-output-config
+type OutputConfig struct {
+	Format OutputFormat `json:"format,omitzero"`
+}
+
+// OutputFormat is documented at https://docs.anthropic.com/en/api/messages#body-output-config-format
+type OutputFormat struct {
+	Type   string             `json:"type,omitzero"`
+	Schema *jsonschema.Schema `json:"schema,omitzero"`
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
@@ -189,11 +202,16 @@ func (c *ChatRequest) initOptionsText(v *genai.GenOptionsText) ([]string, []erro
 	c.TopP = v.TopP
 	c.TopK = v.TopK
 	c.StopSequences = v.Stop
-	if v.ReplyAsJSON {
-		errs = append(errs, errors.New("unsupported option ReplyAsJSON"))
-	}
 	if v.DecodeAs != nil {
-		errs = append(errs, errors.New("unsupported option DecodeAs"))
+		c.OutputConfig.Format = OutputFormat{
+			Type:   "json_schema",
+			Schema: internal.JSONSchemaFor(reflect.TypeOf(v.DecodeAs)),
+		}
+	} else if v.ReplyAsJSON {
+		c.OutputConfig.Format = OutputFormat{
+			Type:   "json_schema",
+			Schema: &jsonschema.Schema{Type: "object"},
+		}
 	}
 	return unsupported, errs
 }
@@ -1248,7 +1266,8 @@ type Usage struct {
 		Ephemeral1hInputTokens int64 `json:"ephemeral_1h_input_tokens"`
 		Ephemeral5mInputTokens int64 `json:"ephemeral_5m_input_tokens"`
 	} `json:"cache_creation"`
-	ServiceTier   string `json:"service_tier"` // "standard", "batch"
+	ServiceTier  string `json:"service_tier"`  // "standard", "batch"
+	InferenceGeo string `json:"inference_geo"` // "not_available", "us", "eu"
 	ServerToolUse struct {
 		WebSearchRequests int64 `json:"web_search_requests"`
 		WebFetchRequests  int64 `json:"web_fetch_requests"`

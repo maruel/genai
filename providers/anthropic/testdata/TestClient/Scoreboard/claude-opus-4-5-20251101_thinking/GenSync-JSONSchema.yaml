@@ -1,0 +1,70 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 477
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-opus-4-5-20251101","max_tokens":32000,"messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}],"thinking":{"budget_tokens":1024,"type":"enabled"},"output_config":{"format":{"type":"json_schema","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}}}}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"model":"claude-opus-4-5-20251101","id":"msg_01BYFqQMnTy3CTrvCqaumNso","type":"message","role":"assistant","content":[{"type":"thinking","thinking":"The user is asking if a banana is a fruit. Yes, a banana is botanically a fruit - it''s specifically a berry that develops from the flower of the banana plant. I need to respond with JSON matching the schema provided.","signature":"EoEDCkYICxgCKkAB+oNdnPj+kj8mvOAGsm9HdqFUFMWHR2HNDmrReCGRd9GyNdnPXeqZ4iHl9MsRhFkJK1Knqa/Qld/KrIbdElReEgzjsHL/UdjTcrZInckaDKmKBsw246rDwodi9SIwv96B/q4PRRsTM6N4PwqNW18K6H2PBcQCYR1N1RiHdut22zegfQF3iP8VSyXsnuXAKugBUxhVYNIawhk8jX9f7aKuYeDcs4CUEi/ZszyARrZrLaLYw6twb7EVOxE56gZh4lvgUUOl6S1Pdc96nNDRdte0untvct4p2670Nv+AXWYjBVx5t7K6vCp9tCe95mGPqR64tRaBQ1UJrrpax0MLiie6KoMVFKNQ0RTaPJCEJrXiAYmjxsu7dd9avmBrGMqpU02bXhjgqOtB2DtDIGiFdUn1Fhns9k7hLP4rYO+uX0dpKYQemf3rGMwK/mPc3A4zlkJZHVLVw0GbTxjRcxuigJWdC/zf2FE2INjU/7xyy11407dniIPBpSWY8RgB"},{"type":"text","text":"{\"is_fruit\":true}"}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":223,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":65,"service_tier":"standard","inference_geo":"not_available"}}'
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "2000000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-02-07T02:53:09Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "400000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "400000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-02-07T02:53:10Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "4000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "3998"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-02-07T02:53:00Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "2400000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "2400000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-02-07T02:53:09Z"
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9c9f982b4b7aa299-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Envoy-Upstream-Service-Time:
+                - "10567"
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 10.607s

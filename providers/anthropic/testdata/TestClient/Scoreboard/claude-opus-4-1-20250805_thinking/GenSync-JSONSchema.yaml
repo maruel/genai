@@ -1,0 +1,70 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 477
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-opus-4-1-20250805","max_tokens":32000,"messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}],"thinking":{"budget_tokens":1024,"type":"enabled"},"output_config":{"format":{"type":"json_schema","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}}}}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"model":"claude-opus-4-1-20250805","id":"msg_01SPZnXkPoiqRVyLBgBUFRgV","type":"message","role":"assistant","content":[{"type":"thinking","thinking":"The user is asking if a banana is a fruit. They want the response in JSON format according to the schema provided. A banana is indeed a fruit, so I should respond with {\"is_fruit\": true}.","signature":"EuQCCkYICxgCKkCC3AJtOw8r/TyKjwvygLr3w6g2JfGbGsrCUNTF1+L3pOa28wwdfkk6iBsw40i/fg74OBcpbfvSpZ9De7HKM2wIEgwOJoGDADBHmQui5d8aDDYshtv5ClxomDNgBiIw/xQ6ZJXDkvOHMS8G0z2o+sMmO5sASj6F3ltlp6opI1nj5xLlIXRsgsG9yN8LgRi7KssBNOcM7f4cdw/wJsN9L6YYBRuC1a1Zq/kg0gKWU2703Bizjil/f/+4dYqYadux1HY6w5q+vudc2uwIqjR6NSPNybqzwqz9f7dmZT+RC9seSUV2AULIi6KPyqW12k+X+keEdcBo7kDjET9fALE6kptnyDh6cb+05nGThx0xvJCG7hyAWaShsrwIR+ozQ5SOk0cGp/Y5TruuDTu78KgujkDddjG709q7YYZ0CmMSdp+mF/1XFcuyd+9byeI48WAUYU5R040sbfiJxyV8BQMYAQ=="},{"type":"text","text":"{\"is_fruit\": true}"}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":223,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":61,"service_tier":"standard","inference_geo":"not_available"}}'
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "2000000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-02-07T02:53:20Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "400000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "400000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-02-07T02:53:21Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "4000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "3999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-02-07T02:53:19Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "2400000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "2400000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-02-07T02:53:20Z"
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9c9f98a65e8fa299-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Envoy-Upstream-Service-Time:
+                - "2214"
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 2.255s

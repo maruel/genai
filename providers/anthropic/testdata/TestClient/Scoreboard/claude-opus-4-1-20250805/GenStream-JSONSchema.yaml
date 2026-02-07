@@ -1,0 +1,92 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 471
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-opus-4-1-20250805","max_tokens":32000,"messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}],"stream":true,"thinking":{"type":"disabled"},"output_config":{"format":{"type":"json_schema","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}}}}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            event: message_start
+            data: {"type":"message_start","message":{"model":"claude-opus-4-1-20250805","id":"msg_01JAtroQSfzczMmRg2tMffBf","type":"message","role":"assistant","content":[],"stop_reason":null,"stop_sequence":null,"usage":{"input_tokens":193,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":8,"service_tier":"standard","inference_geo":"not_available"}} }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":0,"content_block":{"type":"text","text":""} }
+
+            event: ping
+            data: {"type": "ping"}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"{\"is_fruit\": true}"}      }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":0               }
+
+            event: message_delta
+            data: {"type":"message_delta","delta":{"stop_reason":"end_turn","stop_sequence":null},"usage":{"input_tokens":193,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":10}         }
+
+            event: message_stop
+            data: {"type":"message_stop"  }
+
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "2000000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-02-07T02:53:17Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "400000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "400000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-02-07T02:53:17Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "4000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "3999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-02-07T02:53:17Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "2400000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "2400000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-02-07T02:53:17Z"
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9c9f989a78faa299-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Envoy-Upstream-Service-Time:
+                - "1414"
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 1.457s

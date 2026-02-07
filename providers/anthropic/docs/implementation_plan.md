@@ -33,7 +33,7 @@ Reference SDK: `github.com/anthropics/anthropic-sdk-go`
 | Documents/PDFs                 | Yes          | Yes            | Complete       |
 | Inference Geography            | Yes          | Yes            | Complete       |
 | Service Tier (request)         | Yes          | Yes            | Complete       |
-| Service Tier (response/usage)  | Yes          | Partial        | Phase 2.5      |
+| Service Tier (response/usage)  | Yes          | Yes            | Complete       |
 | Container/Session              | Yes          | Yes            | Complete       |
 | Bash Tool (GA 2025-01-24)      | Yes          | Yes            | Complete       |
 | Text Editor v1 (2025-01-24)    | Yes          | Yes            | Complete       |
@@ -115,14 +115,12 @@ Goal: Fill in remaining GA feature gaps. Lower impact but improves completeness.
 
 **Effort**: Small-Medium.
 
-### 2.5 Service Tier in Usage Response
+### 2.5 Service Tier in Usage Response — COMPLETE
 
 **Priority**: P3
 
-**Steps**:
-1. The `Usage` struct already has `ServiceTier string`. Decide whether to expose it in
-   `genai.Usage` or leave it accessible via raw responses only.
-2. If adding to `genai.Usage`, add a `ServiceTier` field there.
+Added `ServiceTier string` to `genai.Usage`. Wired in Anthropic (sync, stream, batch
+poll), OpenAI Chat (sync, stream), OpenAI Responses (sync, stream, poll), and Groq (sync).
 
 **Effort**: Trivial.
 

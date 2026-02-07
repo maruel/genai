@@ -248,6 +248,7 @@ func (r *Response) ToResult() (genai.Result, error) {
 			ReasoningTokens:   r.Usage.OutputTokensDetails.ReasoningTokens,
 			OutputTokens:      r.Usage.OutputTokens,
 			TotalTokens:       r.Usage.TotalTokens,
+			ServiceTier:       string(r.ServiceTier),
 		},
 	}
 	for _, output := range r.Output {
@@ -1351,6 +1352,7 @@ func ProcessStream(chunks iter.Seq[ResponseStreamChunkResponse]) (iter.Seq[genai
 					u.InputCachedTokens = pkt.Response.Usage.InputTokensDetails.CachedTokens
 					u.ReasoningTokens = pkt.Response.Usage.OutputTokensDetails.ReasoningTokens
 					u.OutputTokens = pkt.Response.Usage.OutputTokens
+					u.ServiceTier = string(pkt.Response.ServiceTier)
 					if len(pkt.Response.Output) == 0 {
 						// TODO: Likely failed.
 						finalErr = &internal.BadError{Err: fmt.Errorf("no output: %#v", pkt)}

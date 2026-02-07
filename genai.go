@@ -173,6 +173,10 @@ type Usage struct {
 	TotalTokens       int64
 	// FinishReason indicates why the model stopped generating tokens.
 	FinishReason FinishReason
+	// ServiceTier is the quality of service tier used to process the request,
+	// as reported by the provider. Common values include "standard", "batch",
+	// "flex", "default", "auto", etc. Empty when not reported.
+	ServiceTier string
 	// Limits contains a list of rate limit details from the provider.
 	Limits []RateLimit
 }

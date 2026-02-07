@@ -690,6 +690,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 			ReasoningTokens:   c.Usage.CompletionTokensDetails.ReasoningTokens,
 			OutputTokens:      c.Usage.CompletionTokens,
 			TotalTokens:       c.Usage.TotalTokens,
+			ServiceTier:       c.ServiceTier,
 		},
 	}
 	if len(c.Choices) != 1 {
@@ -1352,6 +1353,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 					u.InputCachedTokens = pkt.Usage.PromptTokensDetails.CachedTokens
 					u.ReasoningTokens = pkt.Usage.CompletionTokensDetails.ReasoningTokens
 					u.OutputTokens = pkt.Usage.CompletionTokens
+					u.ServiceTier = pkt.ServiceTier
 				}
 				if len(pkt.Choices) != 1 {
 					continue

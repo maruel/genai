@@ -627,6 +627,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 			InputTokens:  c.Usage.PromptTokens,
 			OutputTokens: c.Usage.CompletionTokens,
 			TotalTokens:  c.Usage.TotalTokens,
+			ServiceTier:  string(c.ServiceTier),
 		},
 	}
 	if len(c.Choices) != 1 {

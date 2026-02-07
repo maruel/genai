@@ -1221,6 +1221,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 			InputCachedTokens: c.Usage.CacheReadInputTokens,
 			OutputTokens:      c.Usage.OutputTokens,
 			FinishReason:      c.StopReason.ToFinishReason(),
+			ServiceTier:       c.Usage.ServiceTier,
 		},
 	}
 	err := c.To(&out.Message)
@@ -1726,6 +1727,7 @@ func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, er
 	res.Usage.OutputTokens = resp.Result.Message.Usage.OutputTokens
 	res.Usage.TotalTokens = res.Usage.InputTokens + res.Usage.InputCachedTokens + res.Usage.OutputTokens
 	res.Usage.FinishReason = resp.Result.Message.StopReason.ToFinishReason()
+	res.Usage.ServiceTier = resp.Result.Message.Usage.ServiceTier
 	if err == nil {
 		err = res.Validate()
 	}
@@ -1900,6 +1902,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 					// There's some tokens listed there. Still save it in case it breaks midway.
 					u.OutputTokens = pkt.Message.Usage.OutputTokens
 					u.TotalTokens = u.InputTokens + u.InputCachedTokens + u.OutputTokens
+					u.ServiceTier = pkt.Message.Usage.ServiceTier
 					continue
 				case ChunkContentBlockStart:
 					switch pkt.ContentBlock.Type {

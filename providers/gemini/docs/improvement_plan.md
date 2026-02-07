@@ -4,55 +4,34 @@
 
 ### 1.1 Complete Code Execution Tool Support
 
-**Status**: Structs exist, but `ProcessStream` raises errors on
-`ExecutableCode` and `CodeExecutionResult` parts.
+**Status**: **Done.**
 
-**Work**:
-- Map `ExecutableCode` to a genai output type (text with language annotation)
-- Map `CodeExecutionResult` to a genai output type (text with outcome status)
-- Add `CodeExecution` to `Tool` in request building (already present in struct)
-- Add smoke tests with a model that supports code execution
-
-**Endpoint**: Same `generateContent` / `streamGenerateContent`. Enable via:
-```json
-{"tools": [{"codeExecution": {}}]}
-```
-
-**Effort**: Low (~50 lines)
+- `GenOptions.CodeExecution` bool enables via `Tool{CodeExecution: &struct{}{}}`.
+- `ExecutableCode` mapped to `Reply{Text, Opaque: {type, language}}`.
+- `CodeExecutionResult` mapped to `Reply{Text, Opaque: {type, outcome}}`.
+- Handled in both `Content.To()` and `ProcessStream`.
 
 ### 1.2 Add CountTokens
 
-**Status**: Not implemented. Single new endpoint.
+**Status**: **Done.**
 
-**Work**:
-- Add `CountTokens(ctx, msgs, opts) (TokenCount, error)` method
-- Endpoint: `POST models/{model}:countTokens`
-- Request body: same `contents` + `tools` + `systemInstruction` as generation
-- Response: `{ "totalTokens": int32, "cachedContentTokenCount": int32 }`
-- Implement the `ProviderCountTokens` interface (or add to genai if missing)
-
-**Effort**: Low (~40 lines)
+- `Client.CountTokens(ctx, msgs, opts...)` reuses `ChatRequest.Init()`.
+- Endpoint: `POST models/{model}:countTokens`.
+- Returns `CountTokensResponse{TotalTokens, CachedContentTokenCount}`.
 
 ### 1.3 Add Get Model
 
-**Status**: `ListModels` exists, `GetModel` does not.
+**Status**: **Done.**
 
-**Work**:
-- Add `GetModel(ctx, modelID) (Model, error)` method
-- Endpoint: `GET models/{model}`
-- Response: same `Model` struct already defined
-
-**Effort**: Trivial (~15 lines)
+- `Client.GetModel(ctx, id)` fetches a single model via `GET models/{model}`.
+- Returns existing `*Model` struct.
 
 ### 1.4 Handle FileData in Responses
 
-**Status**: `ProcessStream` raises error on `FileData` parts.
+**Status**: **Done.**
 
-**Work**:
-- Map `FileData` (URI + MIME type) to `genai.Reply.Doc` with URL reference
-- Commonly returned for video generation results
-
-**Effort**: Trivial (~10 lines)
+- Fixed bug in `Content.To()` using `InlineData.MimeType` instead of `FileData.MimeType`.
+- `ProcessStream` now maps `FileData` to `Reply.Doc{Filename, URL}`.
 
 ## Phase 2: Important New Features
 

@@ -86,6 +86,11 @@ type GenOptions struct {
 	// - Disable thinking with 0
 	// - Dynamic thinking: -1
 	ThinkingBudget int64
+
+	// CodeExecution enables the code execution tool, allowing the model to generate and run Python code.
+	//
+	// https://ai.google.dev/gemini-api/docs/code-execution
+	CodeExecution bool
 }
 
 func (o *GenOptions) Validate() error {
@@ -135,7 +140,7 @@ type Tool struct {
 			DynamicThreshold float64 `json:"dynamicThreshold,omitzero"`
 		} `json:"dynamicRetrievalConfig,omitzero"`
 	} `json:"googleSearchRetrieval,omitzero"`
-	CodeExecution struct{} `json:"codeExecution,omitzero"`
+	CodeExecution *struct{} `json:"codeExecution,omitzero"`
 	// GoogleSearch presence signifies that it should be enabled,
 	GoogleSearch *GoogleSearch `json:"googleSearch,omitzero"`
 }
@@ -273,6 +278,9 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 					!strings.Contains(model, "tts") {
 					c.GenerationConfig.ThinkingConfig = &ThinkingConfig{}
 				}
+			}
+			if v.CodeExecution {
+				c.Tools = append(c.Tools, Tool{CodeExecution: &struct{}{}})
 			}
 		case *genai.GenOptionsText:
 			u, e := c.initOptionsText(v)
@@ -446,12 +454,12 @@ func (c *Content) To(out *genai.Message) error {
 			continue
 		}
 		if part.FileData.MimeType != "" {
-			exts, err := mime.ExtensionsByType(part.InlineData.MimeType)
+			exts, err := mime.ExtensionsByType(part.FileData.MimeType)
 			if err != nil {
-				return &internal.BadError{Err: fmt.Errorf("failed to get extension for mime type %q: %w", part.InlineData.MimeType, err)}
+				return &internal.BadError{Err: fmt.Errorf("failed to get extension for mime type %q: %w", part.FileData.MimeType, err)}
 			}
 			if len(exts) == 0 {
-				return &internal.BadError{Err: fmt.Errorf("mime type %q has no extension", part.InlineData.MimeType)}
+				return &internal.BadError{Err: fmt.Errorf("mime type %q has no extension", part.FileData.MimeType)}
 			}
 			out.Replies = append(out.Replies, genai.Reply{Doc: genai.Doc{Filename: "content" + exts[0], URL: part.FileData.FileURI}})
 			continue
@@ -465,6 +473,20 @@ func (c *Content) To(out *genai.Message) error {
 				return err
 			}
 			out.Replies = append(out.Replies, r)
+			continue
+		}
+		if part.ExecutableCode.Language != "" || part.ExecutableCode.Code != "" {
+			out.Replies = append(out.Replies, genai.Reply{
+				Text:   part.ExecutableCode.Code,
+				Opaque: map[string]any{"type": "executable_code", "language": part.ExecutableCode.Language},
+			})
+			continue
+		}
+		if part.CodeExecutionResult.Outcome != "" || part.CodeExecutionResult.Output != "" {
+			out.Replies = append(out.Replies, genai.Reply{
+				Text:   part.CodeExecutionResult.Output,
+				Opaque: map[string]any{"type": "code_execution_result", "outcome": part.CodeExecutionResult.Outcome},
+			})
 			continue
 		}
 		if reflect.ValueOf(part).IsZero() {
@@ -1270,6 +1292,14 @@ func (r *ModelsResponse) ToModels() []genai.Model {
 		models[i] = &r.Models[i]
 	}
 	return models
+}
+
+// CountTokensResponse is the response from the countTokens API.
+//
+// https://ai.google.dev/api/tokens#v1beta.CountTokensResponse
+type CountTokensResponse struct {
+	TotalTokens             int64 `json:"totalTokens"`
+	CachedContentTokenCount int64 `json:"cachedContentTokenCount,omitzero"`
 }
 
 //
@@ -2236,6 +2266,34 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	return resp.ToModels(), nil
 }
 
+// GetModel returns the details for a single model.
+//
+// https://ai.google.dev/api/models?hl=en#method:-models.get
+func (c *Client) GetModel(ctx context.Context, id string) (*Model, error) {
+	var resp Model
+	u := "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(id)
+	if err := c.impl.DoRequest(ctx, "GET", u, nil, &resp); err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
+
+// CountTokens counts the number of tokens in the given messages.
+//
+// https://ai.google.dev/api/tokens#method:-models.counttokens
+func (c *Client) CountTokens(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (*CountTokensResponse, error) {
+	var req ChatRequest
+	if err := req.Init(msgs, c.impl.Model, opts...); err != nil {
+		return nil, err
+	}
+	var resp CountTokensResponse
+	u := "https://generativelanguage.googleapis.com/v1beta/models/" + url.PathEscape(c.impl.Model) + ":countTokens"
+	if err := c.impl.DoRequest(ctx, "POST", u, &req, &resp); err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
+
 // TODO: To implement ProviderGenAsync, we need to use the Vertex API, not the API key based Gemini one.
 // https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/batch-prediction-api
 // This may require creating a whole new provider with Vertex AI API surface.
@@ -2320,18 +2378,35 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 						return
 					}
 					if part.FileData.MimeType != "" || part.FileData.FileURI != "" {
-						finalErr = &internal.BadError{Err: fmt.Errorf("implement file data %#v", part)}
-						return
+						exts, err := mime.ExtensionsByType(part.FileData.MimeType)
+						if err != nil {
+							finalErr = &internal.BadError{Err: fmt.Errorf("failed to get extension for mime type %q: %w", part.FileData.MimeType, err)}
+							return
+						}
+						if len(exts) == 0 {
+							finalErr = &internal.BadError{Err: fmt.Errorf("mime type %q has no extension", part.FileData.MimeType)}
+							return
+						}
+						f.Doc.Filename = "content" + exts[0]
+						f.Doc.URL = part.FileData.FileURI
 					}
 					if part.ExecutableCode.Language != "" || part.ExecutableCode.Code != "" {
 						// https://ai.google.dev/api/caching?hl=en#ExecutableCode
-						finalErr = &internal.BadError{Err: fmt.Errorf("implement executable code %#v", part)}
-						return
+						f.Text = part.ExecutableCode.Code
+						f.Opaque = map[string]any{"type": "executable_code", "language": part.ExecutableCode.Language}
+						if !yield(f) {
+							return
+						}
+						f = genai.Reply{}
 					}
 					if part.CodeExecutionResult.Outcome != "" || part.CodeExecutionResult.Output != "" {
 						// https://ai.google.dev/api/caching?hl=en#CodeExecutionResult
-						finalErr = &internal.BadError{Err: fmt.Errorf("implement code execution result %#v", part)}
-						return
+						f.Text = part.CodeExecutionResult.Output
+						f.Opaque = map[string]any{"type": "code_execution_result", "outcome": part.CodeExecutionResult.Outcome}
+						if !yield(f) {
+							return
+						}
+						f = genai.Reply{}
 					}
 				}
 				if !yield(f) {

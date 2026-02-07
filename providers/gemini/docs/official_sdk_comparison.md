@@ -51,7 +51,7 @@ type Client struct {
 | Function declarations | Yes | Yes | - |
 | AUTO/ANY/NONE modes | Yes | Yes | - |
 | Google Search grounding | Yes | Yes | - |
-| Code execution tool | Yes | Placeholder | **Missing** |
+| Code execution tool | Yes | Yes | - |
 | File search tool | Yes | No | **Missing** |
 | URL context tool | Yes | No | **Missing** |
 | **Multi-Modal Input** | | | |
@@ -81,7 +81,7 @@ type Client struct {
 | Get file metadata | Yes | No | **Missing** |
 | Delete files | Yes | No | **Missing** |
 | **Token Counting** | | | |
-| CountTokens | Yes | No | **Missing** |
+| CountTokens | Yes | Yes | - |
 | ComputeTokens | Yes | No | **Missing** |
 | **Embeddings** | | | |
 | EmbedContent | Yes | No | **Missing** |
@@ -100,7 +100,7 @@ type Client struct {
 | List tuning jobs | Yes | No | **Missing** |
 | **Model Management** | | | |
 | List models | Yes | Yes | - |
-| Get model | Yes | No | **Missing** |
+| Get model | Yes | Yes | - |
 | **Auth** | | | |
 | API key | Yes | Yes | - |
 | OAuth2/ADC | Yes | No | **Missing** |
@@ -147,12 +147,9 @@ type Client struct {
    The API supports uploading files and referencing them by URI, avoiding base64
    encoding overhead for large files.
 
-2. **CountTokens** - Essential for prompt engineering and cost estimation. Simple
-   single-endpoint addition (`models/{model}:countTokens`).
+2. ~~**CountTokens**~~ - Done. `Client.CountTokens()` implemented.
 
-3. **Code Execution Tool** - The structs exist (`ExecutableCode`,
-   `CodeExecutionResult`) but processing them in `ProcessStream` raises errors.
-   This is partially implemented and just needs the response handling completed.
+3. ~~**Code Execution Tool**~~ - Done. Full request/response handling implemented.
 
 4. **Vertex AI Backend** - Enables enterprise features, different auth, and
    access to the batch prediction API. See `vertex_ai.md` for full analysis.
@@ -162,8 +159,7 @@ type Client struct {
 5. **Candidate Count** - `GenerateContentConfig.CandidateCount` allows
    requesting multiple response candidates. Low effort to add.
 
-6. **Get Model** - Retrieve details for a specific model. Single endpoint:
-   `GET models/{model}`.
+6. ~~**Get Model**~~ - Done. `Client.GetModel()` implemented.
 
 7. **Embeddings** - `models/{model}:embedContent` endpoint. Different use case
    from text generation but commonly needed.

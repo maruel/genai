@@ -25,6 +25,7 @@ of Go across `client.go` (request/response types, API methods) and `schema.go`
 - Tool modes: AUTO, ANY (required), VALIDATED, NONE
 - Tool call parsing and response handling in streaming
 - Google Search integration (`GoogleSearch` tool)
+- Code execution tool via `GenOptions.CodeExecution`
 - `ToolDef.InputSchemaOverride` NOT yet supported
 
 ### JSON Output
@@ -57,6 +58,13 @@ of Go across `client.go` (request/response types, API methods) and `schema.go`
 - Poll job status via `PokeResult`
 - 48-hour result retention
 
+### Token Counting
+- `CountTokens(ctx, msgs, opts...)` via `models/{model}:countTokens`
+
+### Model Management
+- `ListModels` for all models
+- `GetModel` for a single model by ID
+
 ### Other
 - Log probabilities (`topLogprobs`)
 - Grounding metadata with citations and confidence scores
@@ -75,6 +83,8 @@ Base URL: `https://generativelanguage.googleapis.com/v1beta/`
 | `models/{model}:predictLongRunning` | POST | Video generation (Veo) |
 | `{jobId}` | GET | Poll async job |
 | `models?pageSize=1000` | GET | List models |
+| `models/{model}` | GET | Get model details |
+| `models/{model}:countTokens` | POST | Count tokens |
 | `cachedContents` | POST | Create cache |
 | `cachedContents/{name}` | GET/PATCH/DELETE | Manage cache |
 | `cachedContents?pageSize=100` | GET | List caches |
@@ -96,12 +106,10 @@ API key via `x-goog-api-key` header. Environment variable: `GEMINI_API_KEY`.
 
 1. `ToolDef.InputSchemaOverride` not implemented (line comment)
 2. `GenOptionsAudio`, `GenOptionsImage`, `GenOptionsVideo` partially implemented
-3. `ExecutableCode` and `CodeExecutionResult` parts trigger errors ("implement ...")
-4. `FileData` parts in responses trigger errors
-5. Logprobs in streaming unsupported by Gemini
-6. No File Upload API (uses URLs only)
-7. Batch prediction requires Vertex AI (TODO at line 2239)
-8. VertexAI-only fields commented out in `ImageParameters`
+3. Logprobs in streaming unsupported by Gemini
+4. No File Upload API (uses URLs only)
+5. Batch prediction requires Vertex AI (TODO at line 2239)
+6. VertexAI-only fields commented out in `ImageParameters`
 
 ## Architecture
 

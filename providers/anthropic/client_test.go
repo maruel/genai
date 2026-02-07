@@ -270,6 +270,23 @@ func TestClient(t *testing.T) {
 		}
 	})
 
+	t.Run("GetModel", func(t *testing.T) {
+		c := getClient(t, "").(*anthropic.Client)
+		m, err := c.GetModel(t.Context(), "claude-sonnet-4-20250514")
+		if err != nil {
+			t.Fatal(err)
+		}
+		if m.ID != "claude-sonnet-4-20250514" {
+			t.Errorf("ID = %q, want %q", m.ID, "claude-sonnet-4-20250514")
+		}
+		if m.DisplayName == "" {
+			t.Error("expected DisplayName to be set")
+		}
+		if m.CreatedAt.IsZero() {
+			t.Error("expected CreatedAt to be set")
+		}
+	})
+
 	t.Run("Preferred", func(t *testing.T) {
 		internaltest.TestPreferredModels(t, func(st *testing.T, model string, modality genai.Modality) (genai.Provider, error) {
 			opts := []genai.ProviderOption{

@@ -16,7 +16,7 @@ Reference SDK: `github.com/anthropics/anthropic-sdk-go`
 | Effort Level                   | Yes          | Yes            | Complete       |
 | Adaptive Thinking              | Yes          | Yes            | Complete       |
 | Model Listing (paginated)      | Yes          | Yes            | Complete       |
-| Model Get (single)             | Yes          | No             | Phase 2.3      |
+| Model Get (single)             | Yes          | Yes            | Complete       |
 | Batch: Create                  | Yes          | Yes            | Complete       |
 | Batch: Poll/Results            | Yes          | Yes            | Complete       |
 | Batch: Cancel                  | Yes          | Yes            | Complete       |

@@ -1830,6 +1830,18 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	return resp.ToModels(), nil
 }
 
+// GetModel returns the details for a single model.
+//
+// https://docs.anthropic.com/en/api/models-get
+func (c *Client) GetModel(ctx context.Context, id string) (*Model, error) {
+	var resp Model
+	u := "https://api.anthropic.com/v1/models/" + url.PathEscape(id)
+	if err := c.impl.DoRequest(ctx, "GET", u, nil, &resp); err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
+
 // CountTokens counts the number of tokens in the given messages.
 //
 // https://docs.anthropic.com/en/api/counting-tokens

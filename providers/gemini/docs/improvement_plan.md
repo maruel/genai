@@ -85,7 +85,7 @@ large media.
 
 ### 2.4 URL Context Tool
 
-**Status**: Not implemented. Added in Gemini 3.
+**Status**: Done.
 
 **Work**:
 - Add `URLContext` to `Tool` struct

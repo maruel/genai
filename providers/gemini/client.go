@@ -91,6 +91,11 @@ type GenOptions struct {
 	//
 	// https://ai.google.dev/gemini-api/docs/code-execution
 	CodeExecution bool
+
+	// URLContext enables the URL context tool, allowing the model to fetch and process web pages.
+	//
+	// https://ai.google.dev/gemini-api/docs/url-context
+	URLContext bool
 }
 
 func (o *GenOptions) Validate() error {
@@ -141,6 +146,7 @@ type Tool struct {
 		} `json:"dynamicRetrievalConfig,omitzero"`
 	} `json:"googleSearchRetrieval,omitzero"`
 	CodeExecution *struct{} `json:"codeExecution,omitzero"`
+	URLContext    *struct{} `json:"urlContext,omitzero"`
 	// GoogleSearch presence signifies that it should be enabled,
 	GoogleSearch *GoogleSearch `json:"googleSearch,omitzero"`
 }
@@ -281,6 +287,9 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			}
 			if v.CodeExecution {
 				c.Tools = append(c.Tools, Tool{CodeExecution: &struct{}{}})
+			}
+			if v.URLContext {
+				c.Tools = append(c.Tools, Tool{URLContext: &struct{}{}})
 			}
 		case *genai.GenOptionsText:
 			u, e := c.initOptionsText(v)
@@ -754,10 +763,11 @@ type ResponseCandidate struct {
 		SourceID string  `json:"sourceId"`
 		Countent Content `json:"countent"`
 	} `json:"groundingAttributions"`
-	GroundingMetadata GroundingMetadata `json:"groundingMetadata"`
-	AvgLogprobs       float64           `json:"avgLogprobs"`
-	LogprobsResult    LogprobsResult    `json:"logprobsResult"`
-	Index             int64             `json:"index"`
+	GroundingMetadata  GroundingMetadata  `json:"groundingMetadata"`
+	UrlContextMetadata UrlContextMetadata `json:"urlContextMetadata"`
+	AvgLogprobs        float64            `json:"avgLogprobs"`
+	LogprobsResult     LogprobsResult     `json:"logprobsResult"`
+	Index              int64              `json:"index"`
 }
 
 func (r *ResponseCandidate) To(out *genai.Message) error {
@@ -781,6 +791,9 @@ func (r *ResponseCandidate) To(out *genai.Message) error {
 			return err
 		}
 		out.Replies = append(out.Replies, replies...)
+	}
+	if len(r.UrlContextMetadata.UrlMetadata) > 0 {
+		out.Replies = append(out.Replies, r.UrlContextMetadata.To()...)
 	}
 	return nil
 }
@@ -857,6 +870,29 @@ func (g *GroundingMetadata) To() ([]genai.Reply, error) {
 	}
 	// SearchEntryPoint will contain some HTML.
 	return out, nil
+}
+
+// UrlContextMetadata is documented at https://ai.google.dev/gemini-api/docs/url-context
+type UrlContextMetadata struct {
+	UrlMetadata []UrlMetadataEntry `json:"urlMetadata,omitzero"`
+}
+
+// UrlMetadataEntry is a single URL retrieval result.
+type UrlMetadataEntry struct {
+	RetrievedUrl       string `json:"retrievedUrl,omitzero"`
+	UrlRetrievalStatus string `json:"urlRetrievalStatus,omitzero"`
+}
+
+func (u *UrlContextMetadata) To() []genai.Reply {
+	var out []genai.Reply
+	for _, um := range u.UrlMetadata {
+		out = append(out, genai.Reply{
+			Citation: genai.Citation{
+				Sources: []genai.CitationSource{{Type: genai.CitationWeb, URL: um.RetrievedUrl}},
+			},
+		})
+	}
+	return out
 }
 
 // LogprobsResult is documented at https://ai.google.dev/api/generate-content#LogprobsResult
@@ -960,11 +996,12 @@ type ModalityTokenCount struct {
 
 type ChatStreamChunkResponse struct {
 	Candidates []struct {
-		Content           Content           `json:"content"`
-		FinishReason      FinishReason      `json:"finishReason"`
-		FinishMessage     string            `json:"finishMessage"`
-		Index             int64             `json:"index"`
-		GroundingMetadata GroundingMetadata `json:"groundingMetadata"`
+		Content            Content            `json:"content"`
+		FinishReason       FinishReason       `json:"finishReason"`
+		FinishMessage      string             `json:"finishMessage"`
+		Index              int64              `json:"index"`
+		GroundingMetadata  GroundingMetadata  `json:"groundingMetadata"`
+		UrlContextMetadata UrlContextMetadata `json:"urlContextMetadata"`
 	} `json:"candidates"`
 	UsageMetadata UsageMetadata `json:"usageMetadata"`
 	ModelVersion  string        `json:"modelVersion"`
@@ -2335,6 +2372,16 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 					}
 					// Handle citations as a separate packet.
 					for _, r := range replies {
+						f.Citation = r.Citation
+						if !yield(f) {
+							return
+						}
+					}
+					f = genai.Reply{}
+				}
+
+				if len(pkt.Candidates[0].UrlContextMetadata.UrlMetadata) > 0 {
+					for _, r := range pkt.Candidates[0].UrlContextMetadata.To() {
 						f.Citation = r.Citation
 						if !yield(f) {
 							return

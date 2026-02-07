@@ -24,58 +24,14 @@ Unit tests (`TestStructuredOutput`) and smoke test recordings cover both paths.
 
 `Effort` field is wired (see 1.3).
 
-### 1.2 Token Counting
+### 1.2 Token Counting — DONE
 
-**Priority**: P0 — useful for cost estimation and context window management.
-
-**API endpoint**: `POST /v1/messages/count_tokens`
-
-**Request** (same shape as `ChatRequest` minus `stream`):
-```json
-{
-  "model": "claude-sonnet-4-5-20250929",
-  "messages": [...],
-  "system": [...],
-  "tools": [...],
-  "tool_choice": {...},
-  "thinking": {...}
-}
-```
-
-**Response**:
-```json
-{
-  "input_tokens": 1234
-}
-```
-
-**Implementation steps**:
-
-1. Add response type:
-   ```go
-   type CountTokensResponse struct {
-       InputTokens int64 `json:"input_tokens"`
-   }
-   ```
-
-2. Add methods to `Client`:
-   ```go
-   func (c *Client) CountTokens(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (int64, error)
-   func (c *Client) CountTokensRaw(ctx context.Context, in *ChatRequest) (CountTokensResponse, error)
-   ```
-
-3. `CountTokens` reuses `ChatRequest.Init()` to build the request, then POSTs to
-   `/v1/messages/count_tokens` instead of `/v1/messages`.
-
-4. Consider whether to add a `genai` interface (e.g. `ProviderTokenCount`). If other
-   providers (Gemini, OpenAI) also support token counting, it should be a shared interface.
-   Otherwise, expose as Anthropic-specific only.
-
-5. Write unit tests with HTTP recording.
-
-**Files changed**: `client.go`, `client_test.go`
-
-**Depends on**: Nothing. Self-contained.
+Implemented. `CountTokensRequest` (subset of `ChatRequest` with only the fields accepted by
+the endpoint), `CountTokensResponse`, `CountTokens()`, and `CountTokensRaw()` methods added
+to `Client`. `CountTokens` reuses `ChatRequest.Init()` to build the request, then converts
+to `CountTokensRequest` before POSTing to `/v1/messages/count_tokens`. Exposed as
+provider-specific only (no `genai` interface yet, matching Gemini's approach). HTTP recording
+test covers the happy path.
 
 ### 1.3 Effort Level — DONE
 
@@ -379,5 +335,5 @@ Some features may require additions to the shared `genai` package:
 | 3     | 6     | Medium   | Medium |
 | 4     | 5     | Small    | Low    |
 
-**Recommended next**: Phase 1.5 (Opus 4.6 model) as a quick win, then 1.2 (Token Counting).
-Phases 1.1, 1.3, and 1.4 are done.
+**Recommended next**: Phase 1.5 (Opus 4.6 model) as a quick win, then Phase 2.
+Phases 1.1–1.4 are done.

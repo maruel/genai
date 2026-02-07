@@ -47,8 +47,8 @@ func Scoreboard() scoreboard.Score {
 	return s
 }
 
-// GenOptionsText defines OpenAI Responses specific options.
-type GenOptionsText struct {
+// GenOptionText defines OpenAI Responses specific options.
+type GenOptionText struct {
 	// ReasoningEffort is the amount of effort (number of tokens) the LLM can use to think about the answer.
 	//
 	// When unspecified, defaults to medium.
@@ -61,20 +61,20 @@ type GenOptionsText struct {
 	PreviousResponseID string
 }
 
-func (o *GenOptionsText) Validate() error {
+func (o *GenOptionText) Validate() error {
 	if err := o.ReasoningEffort.Validate(); err != nil {
 		return err
 	}
 	return o.ServiceTier.Validate()
 }
 
-// GenOptionsImage defines OpenAI specific options.
-type GenOptionsImage struct {
+// GenOptionImage defines OpenAI specific options.
+type GenOptionImage struct {
 	// Background is only supported on gpt-image-1.
 	Background Background
 }
 
-func (o *GenOptionsImage) Validate() error {
+func (o *GenOptionImage) Validate() error {
 	return nil
 }
 
@@ -143,7 +143,7 @@ type Response struct {
 }
 
 // Init implements base.InitializableRequest.
-func (r *Response) Init(msgs genai.Messages, model string, opts ...genai.GenOptions) error {
+func (r *Response) Init(msgs genai.Messages, model string, opts ...genai.GenOption) error {
 	var unsupported []string
 	var errs []error
 	r.Model = model
@@ -153,16 +153,16 @@ func (r *Response) Init(msgs genai.Messages, model string, opts ...genai.GenOpti
 			return err
 		}
 		switch v := opt.(type) {
-		case *GenOptionsText:
+		case *GenOptionText:
 			r.Reasoning.Effort = v.ReasoningEffort
 			r.ServiceTier = v.ServiceTier
 			r.Truncation = string(v.Truncation)
 			r.PreviousResponseID = v.PreviousResponseID
-		case *genai.GenOptionsText:
+		case *genai.GenOptionText:
 			u, e := r.initOptionsText(v)
 			unsupported = append(unsupported, u...)
 			errs = append(errs, e...)
-		case *genai.GenOptionsTools:
+		case *genai.GenOptionTools:
 			u, e := r.initOptionsTools(v)
 			unsupported = append(unsupported, u...)
 			errs = append(errs, e...)
@@ -285,7 +285,7 @@ func (r *Response) ToResult() (genai.Result, error) {
 	return res, err
 }
 
-func (r *Response) initOptionsText(v *genai.GenOptionsText) ([]string, []error) {
+func (r *Response) initOptionsText(v *genai.GenOptionText) ([]string, []error) {
 	var unsupported []string
 	var errs []error
 	r.MaxOutputTokens = v.MaxTokens
@@ -295,7 +295,7 @@ func (r *Response) initOptionsText(v *genai.GenOptionsText) ([]string, []error) 
 		r.Instructions = v.SystemPrompt
 	}
 	if v.TopK != 0 {
-		unsupported = append(unsupported, "GenOptionsText.TopK")
+		unsupported = append(unsupported, "GenOptionText.TopK")
 	}
 	if v.TopLogprobs > 0 {
 		r.TopLogprobs = v.TopLogprobs
@@ -315,7 +315,7 @@ func (r *Response) initOptionsText(v *genai.GenOptionsText) ([]string, []error) 
 	return unsupported, errs
 }
 
-func (r *Response) initOptionsTools(v *genai.GenOptionsTools) ([]string, []error) {
+func (r *Response) initOptionsTools(v *genai.GenOptionTools) ([]string, []error) {
 	var unsupported []string
 	var errs []error
 	if len(v.Tools) != 0 {
@@ -1268,7 +1268,7 @@ func (c *Client) Capabilities() genai.ProviderCapabilities {
 // The returned Job is the response ID that can be polled with PokeResult.
 //
 // https://platform.openai.com/docs/api-reference/responses/create
-func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (genai.Job, error) {
+func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Job, error) {
 	if err := c.impl.Validate(); err != nil {
 		return "", err
 	}

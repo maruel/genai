@@ -25,7 +25,7 @@ of Go across `client.go` (request/response types, API methods) and `schema.go`
 - Tool modes: AUTO, ANY (required), VALIDATED, NONE
 - Tool call parsing and response handling in streaming
 - Google Search integration (`GoogleSearch` tool)
-- Code execution tool via `GenOptions.CodeExecution`
+- Code execution tool via `GenOption.CodeExecution`
 - `ToolDef.InputSchemaOverride` NOT yet supported
 
 ### JSON Output
@@ -46,7 +46,7 @@ of Go across `client.go` (request/response types, API methods) and `schema.go`
 ### Thinking / Extended Reasoning
 - Dynamic thinking (model decides when to think)
 - Configurable budget: 0 (disabled), -1 (dynamic), 128-32768 (fixed)
-- Provider-specific `GenOptions.ThinkingBudget`
+- Provider-specific `GenOption.ThinkingBudget`
 
 ### Prompt Caching
 - Create, list, extend TTL, delete cached content
@@ -105,7 +105,7 @@ API key via `x-goog-api-key` header. Environment variable: `GEMINI_API_KEY`.
 ## Known Limitations and TODOs in Code
 
 1. `ToolDef.InputSchemaOverride` not implemented (line comment)
-2. `GenOptionsAudio`, `GenOptionsImage`, `GenOptionsVideo` partially implemented
+2. `GenOptionAudio`, `GenOptionImage`, `GenOptionVideo` partially implemented
 3. Logprobs in streaming unsupported by Gemini
 4. No File Upload API (uses URLs only)
 5. Batch prediction requires Vertex AI (TODO at line 2239)

@@ -65,12 +65,12 @@ func TestClient(t *testing.T) {
 			t.Run(name, func(t *testing.T) {
 				c := getClient(t, name)
 				msgs := genai.Messages{genai.NewTextMessage("Say hello. Use only one word.")}
-				opts := genai.GenOptionsText{Temperature: 0.01, MaxTokens: 2000}
+				opts := genai.GenOptionText{Temperature: 0.01, MaxTokens: 2000}
 				ctx := t.Context()
-				resp, err := c.GenSync(ctx, msgs, &opts, genai.GenOptionsSeed(1))
+				resp, err := c.GenSync(ctx, msgs, &opts, genai.GenOptionSeed(1))
 				if err != nil {
 					var ent *base.ErrNotSupported
-					if !errors.As(err, &ent) || !slices.Contains(ent.Options, "GenOptionsSeed") {
+					if !errors.As(err, &ent) || !slices.Contains(ent.Options, "GenOptionSeed") {
 						t.Fatal(err)
 					}
 					// Try again without seed.
@@ -92,15 +92,15 @@ func TestClient(t *testing.T) {
 			t.Run(name, func(t *testing.T) {
 				c := getClient(t, name)
 				msgs := genai.Messages{genai.NewTextMessage("Say hello. Use only one word.")}
-				opts := genai.GenOptionsText{Temperature: 0.01, MaxTokens: 2000}
-				fragments, finish := c.GenStream(t.Context(), msgs, &opts, genai.GenOptionsSeed(1))
+				opts := genai.GenOptionText{Temperature: 0.01, MaxTokens: 2000}
+				fragments, finish := c.GenStream(t.Context(), msgs, &opts, genai.GenOptionSeed(1))
 				for f := range fragments {
 					t.Logf("Packet: %#v", f)
 				}
 				res, err := finish()
 				if err != nil {
 					var ent *base.ErrNotSupported
-					if !errors.As(err, &ent) || !slices.Contains(ent.Options, "GenOptionsSeed") {
+					if !errors.As(err, &ent) || !slices.Contains(ent.Options, "GenOptionSeed") {
 						t.Fatal(err)
 					}
 					// Try again without seed.

@@ -49,8 +49,8 @@ func Scoreboard() scoreboard.Score {
 
 // TODO: Split in two.
 
-// GenOptions is the Groq-specific options.
-type GenOptions struct {
+// GenOption is the Groq-specific options.
+type GenOption struct {
 	// ReasoningFormat requests Groq to process the stream on our behalf. It must only be used on reasoning
 	// models. It is required for reasoning models to enable JSON structured output or tool calling.
 	ReasoningFormat ReasoningFormat
@@ -58,7 +58,7 @@ type GenOptions struct {
 	ServiceTier ServiceTier
 }
 
-func (o *GenOptions) Validate() error {
+func (o *GenOption) Validate() error {
 	// TODO: validate ReasoningFormat and ServiceTier.
 	return nil
 }
@@ -128,7 +128,7 @@ type ChatRequest struct {
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
-func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenOptions) error {
+func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenOption) error {
 	c.Model = model
 	if err := msgs.Validate(); err != nil {
 		return err
@@ -141,19 +141,19 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			return err
 		}
 		switch v := opt.(type) {
-		case *GenOptions:
+		case *GenOption:
 			c.ServiceTier = v.ServiceTier
 			c.ReasoningFormat = v.ReasoningFormat
-		case *genai.GenOptionsText:
+		case *genai.GenOptionText:
 			u, e := c.initOptionsText(v)
 			unsupported = append(unsupported, u...)
 			errs = append(errs, e...)
 			sp = v.SystemPrompt
-		case *genai.GenOptionsTools:
+		case *genai.GenOptionTools:
 			u, e := c.initOptionsTools(v)
 			unsupported = append(unsupported, u...)
 			errs = append(errs, e...)
-		case genai.GenOptionsSeed:
+		case genai.GenOptionSeed:
 			c.Seed = int64(v)
 		default:
 			unsupported = append(unsupported, internal.TypeName(opt))
@@ -197,17 +197,17 @@ func (c *ChatRequest) SetStream(stream bool) {
 	c.Stream = stream
 }
 
-func (c *ChatRequest) initOptionsText(v *genai.GenOptionsText) ([]string, []error) {
+func (c *ChatRequest) initOptionsText(v *genai.GenOptionText) ([]string, []error) {
 	var errs []error
 	var unsupported []string
 	c.MaxChatTokens = v.MaxTokens
 	c.Temperature = v.Temperature
 	c.TopP = v.TopP
 	if v.TopK != 0 {
-		unsupported = append(unsupported, "GenOptionsText.TopK")
+		unsupported = append(unsupported, "GenOptionText.TopK")
 	}
 	if v.TopLogprobs != 0 {
-		unsupported = append(unsupported, "GenOptionsText.TopLogprobs")
+		unsupported = append(unsupported, "GenOptionText.TopLogprobs")
 	}
 	c.Stop = v.Stop
 	if v.DecodeAs != nil {
@@ -220,7 +220,7 @@ func (c *ChatRequest) initOptionsText(v *genai.GenOptionsText) ([]string, []erro
 	return unsupported, errs
 }
 
-func (c *ChatRequest) initOptionsTools(v *genai.GenOptionsTools) ([]string, []error) {
+func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools) ([]string, []error) {
 	var errs []error
 	var unsupported []string
 	if len(v.Tools) != 0 {
@@ -963,7 +963,7 @@ func (c *Client) HTTPClient() *http.Client {
 }
 
 // GenSync implements genai.Provider.
-func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (genai.Result, error) {
+func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
 	return c.impl.GenSync(ctx, msgs, opts...)
 }
 
@@ -973,7 +973,7 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 }
 
 // GenStream implements genai.Provider.
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	return c.impl.GenStream(ctx, msgs, opts...)
 }
 

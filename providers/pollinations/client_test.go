@@ -178,9 +178,9 @@ func (h *smallImage) Unwrap() genai.Provider {
 	return h.Provider
 }
 
-func (h *smallImage) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (genai.Result, error) {
+func (h *smallImage) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
 	for i := range opts {
-		if v, ok := opts[i].(*genai.GenOptionsImage); ok {
+		if v, ok := opts[i].(*genai.GenOptionImage); ok {
 			// Ask for a smaller size.
 			n := *v
 			n.Width = 256

@@ -86,7 +86,7 @@ type ChatRequest struct {
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
-func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenOptions) error {
+func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenOption) error {
 	c.Model = model
 	c.Private = true // Not sure why we'd want to broadcast?
 	if err := msgs.Validate(); err != nil {
@@ -97,16 +97,16 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 	sp := ""
 	for _, opt := range opts {
 		switch v := opt.(type) {
-		case *genai.GenOptionsText:
+		case *genai.GenOptionText:
 			u, e := c.initOptionsText(v)
 			unsupported = append(unsupported, u...)
 			errs = append(errs, e...)
 			sp = v.SystemPrompt
-		case *genai.GenOptionsTools:
+		case *genai.GenOptionTools:
 			u, e := c.initOptionsTools(v)
 			unsupported = append(unsupported, u...)
 			errs = append(errs, e...)
-		case genai.GenOptionsSeed:
+		case genai.GenOptionSeed:
 			c.Seed = int64(v)
 		default:
 			unsupported = append(unsupported, internal.TypeName(opt))
@@ -151,20 +151,20 @@ func (c *ChatRequest) SetStream(stream bool) {
 	c.StreamOptions.IncludeUsage = true
 }
 
-func (c *ChatRequest) initOptionsText(v *genai.GenOptionsText) ([]string, []error) {
+func (c *ChatRequest) initOptionsText(v *genai.GenOptionText) ([]string, []error) {
 	var errs []error
 	var unsupported []string
 	c.MaxTokens = v.MaxTokens
 	c.Temperature = v.Temperature
 	c.TopP = v.TopP
 	if v.TopK != 0 {
-		unsupported = append(unsupported, "GenOptionsText.TopK")
+		unsupported = append(unsupported, "GenOptionText.TopK")
 	}
 	if v.TopLogprobs > 0 {
 		// Try to request it but it's known to not work, so add it anyway to the unsupported flag.
 		c.TopLogprobs = v.TopLogprobs
 		c.Logprobs = true
-		unsupported = append(unsupported, "GenOptionsText.TopLogprobs")
+		unsupported = append(unsupported, "GenOptionText.TopLogprobs")
 	}
 	c.Stop = v.Stop
 	if v.DecodeAs != nil {
@@ -176,7 +176,7 @@ func (c *ChatRequest) initOptionsText(v *genai.GenOptionsText) ([]string, []erro
 	return unsupported, errs
 }
 
-func (c *ChatRequest) initOptionsTools(v *genai.GenOptionsTools) ([]string, []error) {
+func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools) ([]string, []error) {
 	var errs []error
 	var unsupported []string
 	if len(v.Tools) != 0 {
@@ -1162,7 +1162,7 @@ func (c *Client) HTTPClient() *http.Client {
 }
 
 // GenSync implements genai.Provider.
-func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (genai.Result, error) {
+func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
 	if c.isAudio() || c.isImage() {
 		if len(msgs) != 1 {
 			return genai.Result{}, errors.New("must pass exactly one Message")
@@ -1181,7 +1181,7 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 }
 
 // GenStream implements genai.Provider.
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	if c.isAudio() || c.isImage() {
 		return base.SimulateStream(ctx, c, msgs, opts...)
 	}
@@ -1203,7 +1203,7 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest) (iter.Seq[Ch
 // Use it to generate images.
 //
 // Default rate limit is 0.2 QPS / IP.
-func (c *Client) genImage(ctx context.Context, msg genai.Message, opts ...genai.GenOptions) (genai.Result, error) {
+func (c *Client) genImage(ctx context.Context, msg genai.Message, opts ...genai.GenOption) (genai.Result, error) {
 	// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#1-text-to-image-get-%EF%B8%8F
 	// TODO:
 	// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#4-text-to-speech-get-%EF%B8%8F%EF%B8%8F
@@ -1229,16 +1229,16 @@ func (c *Client) genImage(ctx context.Context, msg genai.Message, opts ...genai.
 			return res, err
 		}
 		switch v := opt.(type) {
-		case *genai.GenOptionsImage:
+		case *genai.GenOptionImage:
 			if v.Width != 0 {
 				qp.Add("width", strconv.Itoa(v.Width))
 			}
 			if v.Height != 0 {
 				qp.Add("height", strconv.Itoa(v.Height))
 			}
-		case *genai.GenOptionsText:
+		case *genai.GenOptionText:
 			// TODO: Deny most flags.
-		case genai.GenOptionsSeed:
+		case genai.GenOptionSeed:
 			// Defaults to 42 otherwise.
 			qp.Add("seed", strconv.FormatInt(int64(v), 10))
 		default:

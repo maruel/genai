@@ -245,13 +245,13 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 	// Seed
 	ctxCheck = internal.WithLogger(ctx, internal.Logger(ctx).With("check", "Seed"))
 	msgs = genai.Messages{genai.NewTextMessage("Say hello. Use only one word.")}
-	resp, err = cs.callGen(ctxCheck, prefix+"Seed", msgs, &genai.GenOptionsText{}, genai.GenOptionsSeed(42))
+	resp, err = cs.callGen(ctxCheck, prefix+"Seed", msgs, &genai.GenOptionText{}, genai.GenOptionSeed(42))
 	if isBadError(ctxCheck, err) {
 		return f, err
 	}
 	var uerr *base.ErrNotSupported
 	if errors.As(err, &uerr) {
-		f.Seed = !slices.Contains(uerr.Options, "GenOptionsSeed")
+		f.Seed = !slices.Contains(uerr.Options, "GenOptionSeed")
 	} else if err == nil {
 		f.Seed = true
 	}
@@ -259,12 +259,12 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 	// TopLogprobs
 	ctxCheck = internal.WithLogger(ctx, internal.Logger(ctx).With("check", "TopLogprobs"))
 	msgs = genai.Messages{genai.NewTextMessage("Say hello. Use only one word.")}
-	resp, err = cs.callGen(ctxCheck, prefix+"TopLogprobs", msgs, &genai.GenOptionsText{TopLogprobs: 2})
+	resp, err = cs.callGen(ctxCheck, prefix+"TopLogprobs", msgs, &genai.GenOptionText{TopLogprobs: 2})
 	if isBadError(ctxCheck, err) {
 		return f, err
 	}
 	if errors.As(err, &uerr) {
-		f.TopLogprobs = !slices.Contains(uerr.Options, "GenOptionsText.TopLogprobs")
+		f.TopLogprobs = !slices.Contains(uerr.Options, "GenOptionText.TopLogprobs")
 	} else if err == nil {
 		// TODO: We'll need to be more detailed than that. Most don't report the ID or bytes, some only report
 		// logprobs, etc.
@@ -277,7 +277,7 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 	// This will trigger citations on providers with search enabled.
 	ctxCheck = internal.WithLogger(ctx, internal.Logger(ctx).With("check", "MaxTokens"))
 	msgs = genai.Messages{genai.NewTextMessage("Explain the theory of relativity in great details.")}
-	resp, err = cs.callGen(ctxCheck, prefix+"MaxTokens", msgs, &genai.GenOptionsText{MaxTokens: 16})
+	resp, err = cs.callGen(ctxCheck, prefix+"MaxTokens", msgs, &genai.GenOptionText{MaxTokens: 16})
 	if isBadError(ctxCheck, err) {
 		return f, err
 	}
@@ -305,7 +305,7 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 	// Stop
 	ctxCheck = internal.WithLogger(ctx, internal.Logger(ctx).With("check", "Stop"))
 	msgs = genai.Messages{genai.NewTextMessage("Talk about Canada in great details. Start with: Canada is")}
-	resp, err = cs.callGen(ctxCheck, prefix+"Stop", msgs, &genai.GenOptionsText{Stop: []string{"is"}})
+	resp, err = cs.callGen(ctxCheck, prefix+"Stop", msgs, &genai.GenOptionText{Stop: []string{"is"}})
 	if isBadError(ctxCheck, err) {
 		return f, err
 	}
@@ -335,7 +335,7 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 	// JSON
 	ctxCheck = internal.WithLogger(ctx, internal.Logger(ctx).With("check", "JSON"))
 	msgs = genai.Messages{genai.NewTextMessage(`Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {"is_fruit": bool}.`)}
-	resp, err = cs.callGen(ctxCheck, prefix+"JSON", msgs, &genai.GenOptionsText{ReplyAsJSON: true})
+	resp, err = cs.callGen(ctxCheck, prefix+"JSON", msgs, &genai.GenOptionText{ReplyAsJSON: true})
 	if isBadError(ctxCheck, err) {
 		return f, err
 	}
@@ -365,7 +365,7 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 	type schema struct {
 		IsFruit bool `json:"is_fruit"`
 	}
-	resp, err = cs.callGen(ctxCheck, prefix+"JSONSchema", msgs, &genai.GenOptionsText{DecodeAs: &schema{}})
+	resp, err = cs.callGen(ctxCheck, prefix+"JSONSchema", msgs, &genai.GenOptionText{DecodeAs: &schema{}})
 	if isBadError(ctxCheck, err) {
 		return f, err
 	}
@@ -796,7 +796,7 @@ type callState struct {
 	hasWebResults bool
 }
 
-func (cs *callState) callGen(ctx context.Context, name string, msgs genai.Messages, opts ...genai.GenOptions) (genai.Result, error) {
+func (cs *callState) callGen(ctx context.Context, name string, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
 	// internal.Logger(ctx).DebugContext(ctx, name, "msgs", msgs)
 	c := cs.pf(name)
 	var err error
@@ -879,16 +879,16 @@ func exerciseGenImage(ctx context.Context, pf ProviderFactory, name string, out 
 		return nil
 	}
 	msgs := genai.Messages{genai.NewTextMessage(ContentsImage)}
-	resp, err := c.GenSync(ctx, msgs, &genai.GenOptionsImage{}, genai.GenOptionsSeed(42))
+	resp, err := c.GenSync(ctx, msgs, &genai.GenOptionImage{}, genai.GenOptionSeed(42))
 	usage.InputTokens += resp.Usage.InputTokens
 	usage.InputCachedTokens += resp.Usage.InputCachedTokens
 	usage.OutputTokens += resp.Usage.OutputTokens
 	out.GenSync.Seed = true
 	var uerr *base.ErrNotSupported
 	if errors.As(err, &uerr) {
-		if slices.Contains(uerr.Options, "GenOptionsSeed") {
+		if slices.Contains(uerr.Options, "GenOptionSeed") {
 			out.GenSync.Seed = false
-			resp, err = c.GenSync(ctx, msgs, &genai.GenOptionsImage{})
+			resp, err = c.GenSync(ctx, msgs, &genai.GenOptionImage{})
 			usage.InputTokens += resp.Usage.InputTokens
 			usage.InputCachedTokens += resp.Usage.InputCachedTokens
 			usage.OutputTokens += resp.Usage.OutputTokens
@@ -968,16 +968,16 @@ func exerciseGenAudio(ctx context.Context, pf ProviderFactory, name string, out 
 		return nil
 	}
 	msgs := genai.Messages{genai.NewTextMessage("Say hi. Just say this word, nothing else.")}
-	resp, err := c.GenSync(ctx, msgs, &genai.GenOptionsAudio{}, genai.GenOptionsSeed(42))
+	resp, err := c.GenSync(ctx, msgs, &genai.GenOptionAudio{}, genai.GenOptionSeed(42))
 	usage.InputTokens += resp.Usage.InputTokens
 	usage.InputCachedTokens += resp.Usage.InputCachedTokens
 	usage.OutputTokens += resp.Usage.OutputTokens
 	out.GenSync.Seed = true
 	var uerr *base.ErrNotSupported
 	if errors.As(err, &uerr) {
-		if slices.Contains(uerr.Options, "GenOptionsSeed") {
+		if slices.Contains(uerr.Options, "GenOptionSeed") {
 			out.GenSync.Seed = false
-			resp, err = c.GenSync(ctx, msgs, &genai.GenOptionsAudio{})
+			resp, err = c.GenSync(ctx, msgs, &genai.GenOptionAudio{})
 			usage.InputTokens += resp.Usage.InputTokens
 			usage.InputCachedTokens += resp.Usage.InputCachedTokens
 			usage.OutputTokens += resp.Usage.OutputTokens

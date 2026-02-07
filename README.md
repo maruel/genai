@@ -274,7 +274,7 @@ Snippet:
 
 	// perplexity has websearch enabled by default so this is a no-op.
 	//  It is needed to enable websearch for anthropic, gemini and openai.
-	opts := genai.GenOptionsTools{WebSearch: true}
+	opts := genai.GenOptionTools{WebSearch: true}
 	res, _ := c.GenSync(ctx, msgs, &opts)
 	for _, r := range res.Replies {
 		if !r.Citation.IsZero() {
@@ -407,7 +407,7 @@ Snippet:
 	msgs := genai.Messages{
 		genai.NewTextMessage("What is 3214 + 5632? Call the tool \"add\" to tell me the answer. Do not explain. Be terse. Include only the answer."),
 	}
-	opts := genai.GenOptionsTools{
+	opts := genai.GenOptionTools{
 		Tools: []genai.ToolDef{
 			{
 				Name:        "add",
@@ -510,7 +510,7 @@ Snippet:
 	var circle struct {
 		Round bool `json:"round"`
 	}
-	opts := genai.GenOptionsText{DecodeAs: &circle}
+	opts := genai.GenOptionText{DecodeAs: &circle}
 	res, _ := c.GenSync(ctx, msgs, &opts)
 	res.Decode(&circle)
 	fmt.Printf("Round: %v\n", circle.Round)
@@ -642,7 +642,7 @@ Snippet:
 		genai.ProviderOptionModalities{genai.ModalityImage, genai.ModalityText},
 	)
 	// ...
-	res, _ := c.GenSync(ctx, msgs, &gemini.GenOptions{ReasoningBudget: 0})
+	res, _ := c.GenSync(ctx, msgs, &gemini.GenOption{ReasoningBudget: 0})
 ```
 
 Try it locally:

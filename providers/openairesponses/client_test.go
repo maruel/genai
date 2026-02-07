@@ -110,8 +110,8 @@ func TestClient(t *testing.T) {
 			if model.Reason {
 				return &internaltest.InjectOptions{
 					Provider: c,
-					Opts: []genai.GenOptions{
-						&openairesponses.GenOptionsText{
+					Opts: []genai.GenOption{
+						&openairesponses.GenOptionText{
 							ReasoningEffort: res,
 							ServiceTier:     tier,
 						},
@@ -123,7 +123,7 @@ func TestClient(t *testing.T) {
 				if id := c.ModelID(); id == "o3" || id == "o4-mini" || strings.HasPrefix(id, "gpt-5") {
 					return &internaltest.InjectOptions{
 						Provider: c,
-						Opts:     []genai.GenOptions{&openairesponses.GenOptionsText{ServiceTier: tier}},
+						Opts:     []genai.GenOption{&openairesponses.GenOptionText{ServiceTier: tier}},
 					}
 				}
 			}
@@ -258,7 +258,7 @@ func TestPreviousResponseID(t *testing.T) {
 	msgs := genai.Messages{genai.NewTextMessage("hello")}
 	t.Run("wired", func(t *testing.T) {
 		var req openairesponses.Response
-		if err := req.Init(msgs, "gpt-4.1-nano", &openairesponses.GenOptionsText{PreviousResponseID: "resp_abc123"}); err != nil {
+		if err := req.Init(msgs, "gpt-4.1-nano", &openairesponses.GenOptionText{PreviousResponseID: "resp_abc123"}); err != nil {
 			t.Fatal(err)
 		}
 		if req.PreviousResponseID != "resp_abc123" {

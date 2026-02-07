@@ -83,7 +83,7 @@ type ChatRequest struct {
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
-func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenOptions) error {
+func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenOption) error {
 	c.Model = model
 	// Validate messages
 	if err := msgs.Validate(); err != nil {
@@ -97,7 +97,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			return err
 		}
 		switch v := opt.(type) {
-		case *genai.GenOptionsText:
+		case *genai.GenOptionText:
 			c.MaxTokens = v.MaxTokens
 			c.Temperature = v.Temperature
 			c.TopP = v.TopP
@@ -106,7 +106,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			// TODO: Toplogprobs are not returned unless streaming. lol. Sadly we do not know yet here if streaming
 			// is enabled.
 			// if v.TopLogprobs > 1 && !Stream {
-			// 	unsupported = append(unsupported, "GenOptionsText.TopLogprobs")
+			// 	unsupported = append(unsupported, "GenOptionText.TopLogprobs")
 			// }
 			c.TopK = v.TopK
 			c.Stop = v.Stop
@@ -117,7 +117,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			} else if v.ReplyAsJSON {
 				c.ResponseFormat.Type = "json_object"
 			}
-		case *genai.GenOptionsTools:
+		case *genai.GenOptionTools:
 			if len(v.Tools) != 0 {
 				switch v.Force {
 				case genai.ToolCallAny:
@@ -143,7 +143,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			if v.WebSearch {
 				errs = append(errs, errors.New("unsupported OptionsTools.WebSearch"))
 			}
-		case genai.GenOptionsSeed:
+		case genai.GenOptionSeed:
 			c.Seed = int64(v)
 		default:
 			unsupported = append(unsupported, internal.TypeName(opt))
@@ -531,7 +531,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 		ent := &base.ErrNotSupported{}
 		for _, w := range c.Warnings {
 			if strings.Contains(w.Message, "tool_choice") {
-				ent.Options = append(ent.Options, "GenOptionsTools.Force")
+				ent.Options = append(ent.Options, "GenOptionTools.Force")
 			} else {
 				ent.Options = append(ent.Options, w.Message)
 			}
@@ -771,7 +771,7 @@ type ImageRequest struct {
 	Image          []byte `json:"image_base64,omitzero"`
 }
 
-func (i *ImageRequest) Init(msg genai.Message, model string, opts ...genai.GenOptions) error {
+func (i *ImageRequest) Init(msg genai.Message, model string, opts ...genai.GenOption) error {
 	if err := msg.Validate(); err != nil {
 		return err
 	}
@@ -787,10 +787,10 @@ func (i *ImageRequest) Init(msg genai.Message, model string, opts ...genai.GenOp
 			return err
 		}
 		switch v := opt.(type) {
-		case *genai.GenOptionsImage:
+		case *genai.GenOptionImage:
 			i.Height = int64(v.Height)
 			i.Width = int64(v.Width)
-		case genai.GenOptionsSeed:
+		case genai.GenOptionSeed:
 			i.Seed = int64(v)
 		default:
 			return &base.ErrNotSupported{Options: []string{internal.TypeName(opt)}}
@@ -1103,7 +1103,7 @@ func (c *Client) HTTPClient() *http.Client {
 }
 
 // GenSync implements genai.Provider.
-func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (genai.Result, error) {
+func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
 	if c.impl.OutputModalities[0] == genai.ModalityText {
 		return c.impl.GenSync(ctx, msgs, opts...)
 	}
@@ -1119,7 +1119,7 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 }
 
 // GenStream implements genai.Provider.
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	if c.impl.OutputModalities[0] == genai.ModalityText {
 		return c.impl.GenStream(ctx, msgs, opts...)
 	}
@@ -1132,7 +1132,7 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest) (iter.Seq[Ch
 }
 
 // genImage generates images.
-func (c *Client) genImage(ctx context.Context, msg genai.Message, opts ...genai.GenOptions) (genai.Result, error) {
+func (c *Client) genImage(ctx context.Context, msg genai.Message, opts ...genai.GenOption) (genai.Result, error) {
 	if c.isAudio() {
 		// https://docs.together.ai/reference/audio-speech
 		return genai.Result{}, errors.New("audio not implemented yet")
@@ -1311,7 +1311,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 				uce := &base.ErrNotSupported{}
 				for _, w := range warnings {
 					if strings.Contains(w, "tool_choice") {
-						uce.Options = append(uce.Options, "GenOptionsTools.Force")
+						uce.Options = append(uce.Options, "GenOptionTools.Force")
 					} else {
 						uce.Options = append(uce.Options, w)
 					}

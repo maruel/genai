@@ -98,7 +98,7 @@ type ImageRequest struct {
 	User              string     `json:"user,omitzero"`               // End-user to help monitor and detect abuse
 }
 
-func (i *ImageRequest) Init(msg genai.Message, model string, opts ...genai.GenOptions) error {
+func (i *ImageRequest) Init(msg genai.Message, model string, opts ...genai.GenOption) error {
 	if err := msg.Validate(); err != nil {
 		return err
 	}
@@ -139,9 +139,9 @@ func (i *ImageRequest) Init(msg genai.Message, model string, opts ...genai.GenOp
 			return err
 		}
 		switch v := opt.(type) {
-		case *GenOptionsImage:
+		case *GenOptionImage:
 			i.Background = v.Background
-		case *genai.GenOptionsImage:
+		case *genai.GenOptionImage:
 			if v.Height != 0 && v.Width != 0 {
 				i.Size = fmt.Sprintf("%dx%d", v.Width, v.Height)
 			}
@@ -444,7 +444,7 @@ func (c *Client) HTTPClient() *http.Client {
 }
 
 // GenSync implements genai.Provider.
-func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (genai.Result, error) {
+func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
 	if c.isAudio() || c.isImage() || c.isVideo() {
 		if len(msgs) != 1 {
 			return genai.Result{}, errors.New("must pass exactly one Message")
@@ -455,7 +455,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 }
 
 // GenStream implements genai.Provider.
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	if c.isAudio() || c.isImage() || c.isVideo() {
 		return base.SimulateStream(ctx, c, msgs, opts...)
 	}
@@ -463,7 +463,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 }
 
 // genDoc is a simplified version of GenSync.
-func (c *Client) genDoc(ctx context.Context, msg genai.Message, opts ...genai.GenOptions) (genai.Result, error) {
+func (c *Client) genDoc(ctx context.Context, msg genai.Message, opts ...genai.GenOption) (genai.Result, error) {
 	// https://platform.openai.com/docs/api-reference/images/create
 	res := genai.Result{}
 	if err := c.impl.Validate(); err != nil {

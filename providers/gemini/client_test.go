@@ -125,7 +125,7 @@ func TestClient(t *testing.T) {
 				// https://ai.google.dev/gemini-api/docs/thinking?hl=en
 				return &internaltest.InjectOptions{
 					Provider: c,
-					Opts:     []genai.GenOptions{&gemini.GenOptions{ThinkingBudget: 512}},
+					Opts:     []genai.GenOption{&gemini.GenOption{ThinkingBudget: 512}},
 				}
 			}
 			if model.Model == "gemini-2.5-flash" {
@@ -133,7 +133,7 @@ func TestClient(t *testing.T) {
 				// subtest.
 				return &internaltest.InjectOptions{
 					Provider: c,
-					Opts:     []genai.GenOptions{&gemini.GenOptions{ThinkingBudget: 0}},
+					Opts:     []genai.GenOption{&gemini.GenOption{ThinkingBudget: 0}},
 				}
 			}
 			return c
@@ -223,12 +223,12 @@ func TestClient(t *testing.T) {
 		type got struct {
 			Word string `json:"word" jsonschema:"enum=Orange,enum=Banana,enum=Apple"`
 		}
-		opts := []genai.GenOptions{
-			&genai.GenOptionsText{
+		opts := []genai.GenOption{
+			&genai.GenOptionText{
 				// Burn tokens to add up to 4k.
 				SystemPrompt: prompt4K,
 			},
-			&genai.GenOptionsTools{
+			&genai.GenOptionTools{
 				Tools: []genai.ToolDef{
 					{
 						Name:        "hidden_word",
@@ -332,7 +332,7 @@ func TestClient(t *testing.T) {
 				})
 				t.Run("thinking", func(t *testing.T) {
 					c := getClient(t, id)
-					opts := gemini.GenOptions{ThinkingBudget: 512}
+					opts := gemini.GenOption{ThinkingBudget: 512}
 					res, err := c.GenSync(t.Context(), msgs, &opts)
 					if err != nil {
 						t.Fatal(err)
@@ -343,7 +343,7 @@ func TestClient(t *testing.T) {
 				})
 				t.Run("nothinking", func(t *testing.T) {
 					c := getClient(t, id)
-					opts := gemini.GenOptions{ThinkingBudget: 0}
+					opts := gemini.GenOption{ThinkingBudget: 0}
 					res, err := c.GenSync(t.Context(), msgs, &opts)
 					if err != nil {
 						t.Fatal(err)

@@ -171,14 +171,14 @@ func LogFile(tb testing.TB, cache, name string) *os.File {
 // InjectOptions injects options into the provider GenSync and GenStream calls.
 type InjectOptions struct {
 	genai.Provider
-	Opts []genai.GenOptions
+	Opts []genai.GenOption
 }
 
-func (i *InjectOptions) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (genai.Result, error) {
+func (i *InjectOptions) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
 	return i.Provider.GenSync(ctx, msgs, append(opts, i.Opts...)...)
 }
 
-func (i *InjectOptions) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
+func (i *InjectOptions) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	return i.Provider.GenStream(ctx, msgs, append(opts, i.Opts...)...)
 }
 
@@ -196,7 +196,7 @@ func (h *HideHTTPCode) Unwrap() genai.Provider {
 	return h.Provider
 }
 
-func (h *HideHTTPCode) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (genai.Result, error) {
+func (h *HideHTTPCode) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
 	resp, err := h.Provider.GenSync(ctx, msgs, opts...)
 	if err != nil {
 		var herr *httpjson.Error
@@ -207,7 +207,7 @@ func (h *HideHTTPCode) GenSync(ctx context.Context, msgs genai.Messages, opts ..
 	return resp, err
 }
 
-func (h *HideHTTPCode) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
+func (h *HideHTTPCode) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	fragments, finish := h.Provider.GenStream(ctx, msgs, opts...)
 	return fragments, func() (genai.Result, error) {
 		res, err := finish()

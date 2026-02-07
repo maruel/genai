@@ -55,7 +55,7 @@ func Example_all_Provider() {
 			genai.NewTextMessage("Tell a story in 10 words."),
 		}
 		// Include options with some unsupported features to demonstrate UnsupportedContinuableError
-		opts := &genai.GenOptionsText{
+		opts := &genai.GenOptionText{
 			TopK:      50, // Not all providers support this
 			MaxTokens: 512,
 		}
@@ -148,11 +148,11 @@ func Example_available() {
 		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 	}
 	msgs := genai.Messages{genai.NewTextMessage("Provide a life tip that sounds good but is actually a bad idea.")}
-	opts := genai.GenOptionsText{}
-	resp, err := c.GenSync(ctx, msgs, &opts, genai.GenOptionsSeed(42))
+	opts := genai.GenOptionText{}
+	resp, err := c.GenSync(ctx, msgs, &opts, genai.GenOptionSeed(42))
 	if err != nil {
 		var ent *base.ErrNotSupported
-		if errors.As(err, &ent) && slices.Contains(ent.Options, "GenOptionsSeed") {
+		if errors.As(err, &ent) && slices.Contains(ent.Options, "GenOptionSeed") {
 			if resp, err = c.GenSync(ctx, msgs, &opts); err != nil {
 				fmt.Fprintf(os.Stderr, "error: %v\n", err)
 				return

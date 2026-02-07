@@ -50,8 +50,8 @@ func Scoreboard() scoreboard.Score {
 	return s
 }
 
-// GenOptionsText defines OpenAI specific options.
-type GenOptionsText struct {
+// GenOptionText defines OpenAI specific options.
+type GenOptionText struct {
 	// ReasoningEffort is the amount of effort (number of tokens) the LLM can use to think about the answer.
 	//
 	// When unspecified, defaults to medium.
@@ -60,20 +60,20 @@ type GenOptionsText struct {
 	ServiceTier ServiceTier
 }
 
-func (o *GenOptionsText) Validate() error {
+func (o *GenOptionText) Validate() error {
 	if err := o.ReasoningEffort.Validate(); err != nil {
 		return err
 	}
 	return o.ServiceTier.Validate()
 }
 
-// GenOptionsImage defines OpenAI specific options.
-type GenOptionsImage struct {
+// GenOptionImage defines OpenAI specific options.
+type GenOptionImage struct {
 	// Background is only supported on gpt-image-1.
 	Background Background
 }
 
-func (o *GenOptionsImage) Validate() error {
+func (o *GenOptionImage) Validate() error {
 	return nil
 }
 
@@ -141,7 +141,7 @@ type ChatRequest struct {
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
-func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenOptions) error {
+func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenOption) error {
 	c.Model = model
 	var errs []error
 	var unsupported []string
@@ -154,17 +154,17 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			return err
 		}
 		switch v := opt.(type) {
-		case *GenOptionsText:
+		case *GenOptionText:
 			c.ReasoningEffort = v.ReasoningEffort
 			c.ServiceTier = v.ServiceTier
-		case *genai.GenOptionsText:
+		case *genai.GenOptionText:
 			unsupported = append(unsupported, c.initOptionsText(v, model)...)
 			sp = v.SystemPrompt
-		case *genai.GenOptionsTools:
+		case *genai.GenOptionTools:
 			unsupported = append(unsupported, c.initOptionsTools(v, model)...)
-		case genai.GenOptionsSeed:
+		case genai.GenOptionSeed:
 			if strings.HasPrefix(model, "gpt-4o-") && strings.Contains(model, "-search") {
-				unsupported = append(unsupported, "GenOptionsSeed")
+				unsupported = append(unsupported, "GenOptionSeed")
 			} else {
 				c.Seed = int64(v)
 			}
@@ -215,7 +215,7 @@ func (c *ChatRequest) SetStream(stream bool) {
 	c.StreamOptions.IncludeUsage = stream
 }
 
-func (c *ChatRequest) initOptionsText(v *genai.GenOptionsText, model string) []string {
+func (c *ChatRequest) initOptionsText(v *genai.GenOptionText, model string) []string {
 	var unsupported []string
 	c.MaxChatTokens = v.MaxTokens
 	// TODO: This is not great.
@@ -225,7 +225,7 @@ func (c *ChatRequest) initOptionsText(v *genai.GenOptionsText, model string) []s
 		strings.HasPrefix(model, "o3-") ||
 		strings.HasPrefix(model, "o4-") {
 		if v.Temperature != 0 {
-			unsupported = append(unsupported, "GenOptionsText.Temperature")
+			unsupported = append(unsupported, "GenOptionText.Temperature")
 		}
 	} else {
 		c.Temperature = v.Temperature
@@ -237,7 +237,7 @@ func (c *ChatRequest) initOptionsText(v *genai.GenOptionsText, model string) []s
 	}
 	if v.TopK != 0 {
 		// Track this as an unsupported feature that can be ignored
-		unsupported = append(unsupported, "GenOptionsText.TopK")
+		unsupported = append(unsupported, "GenOptionText.TopK")
 	}
 	c.Stop = v.Stop
 	if v.DecodeAs != nil {
@@ -252,7 +252,7 @@ func (c *ChatRequest) initOptionsText(v *genai.GenOptionsText, model string) []s
 	return unsupported
 }
 
-func (c *ChatRequest) initOptionsTools(v *genai.GenOptionsTools, model string) []string {
+func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools, model string) []string {
 	var unsupported []string
 	if len(v.Tools) != 0 {
 		// TODO: Determine exactly which models do not support this.
@@ -1151,7 +1151,7 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest) (iter.Seq[Ch
 // GenAsync implements genai.ProviderGenAsync.
 //
 // It requests the providers' batch API and returns the job ID. It can take up to 24 hours to complete.
-func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (genai.Job, error) {
+func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Job, error) {
 	fileID, err := c.CacheAddRequest(ctx, msgs, "TODO", "batch.json", 24*time.Hour, opts...)
 	if err != nil {
 		return "", err
@@ -1241,7 +1241,7 @@ func (c *Client) CancelRaw(ctx context.Context, id genai.Job) (Batch, error) {
 	return resp, err
 }
 
-func (c *Client) CacheAddRequest(ctx context.Context, msgs genai.Messages, name, displayName string, ttl time.Duration, opts ...genai.GenOptions) (string, error) {
+func (c *Client) CacheAddRequest(ctx context.Context, msgs genai.Messages, name, displayName string, ttl time.Duration, opts ...genai.GenOption) (string, error) {
 	if err := c.impl.Validate(); err != nil {
 		return "", err
 	}

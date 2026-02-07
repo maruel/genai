@@ -45,17 +45,17 @@ func TestModalities(t *testing.T) {
 	})
 }
 
-func TestGenOptionsSeed(t *testing.T) {
+func TestGenOptionSeed(t *testing.T) {
 	t.Run("Validate", func(t *testing.T) {
 		t.Run("valid", func(t *testing.T) {
-			for _, v := range []GenOptionsSeed{1, 42, 1000} {
+			for _, v := range []GenOptionSeed{1, 42, 1000} {
 				if err := v.Validate(); err != nil {
 					t.Errorf("Validate(%d) got unexpected error: %v", v, err)
 				}
 			}
 		})
 		t.Run("error", func(t *testing.T) {
-			for _, v := range []GenOptionsSeed{0, -1, -100} {
+			for _, v := range []GenOptionSeed{0, -1, -100} {
 				if err := v.Validate(); err == nil || err.Error() != "must be >= 1" {
 					t.Errorf("Validate(%d) want error %q, got %q", v, "must be >= 1", err)
 				}
@@ -86,16 +86,16 @@ func TestGenOptionPollInterval(t *testing.T) {
 	})
 }
 
-func TestGenOptionsText(t *testing.T) {
+func TestGenOptionText(t *testing.T) {
 	t.Run("Validate", func(t *testing.T) {
 		t.Run("valid", func(t *testing.T) {
 			tests := []struct {
 				name string
-				in   GenOptionsText
+				in   GenOptionText
 			}{
 				{
 					name: "Valid options with all fields set",
-					in: GenOptionsText{
+					in: GenOptionText{
 						Temperature: 0.5,
 						TopP:        0.5,
 						TopK:        10,
@@ -107,7 +107,7 @@ func TestGenOptionsText(t *testing.T) {
 				},
 				{
 					name: "Valid options with only DecodeAs pointer",
-					in:   GenOptionsText{DecodeAs: &struct{}{}},
+					in:   GenOptionText{DecodeAs: &struct{}{}},
 				},
 			}
 			for _, tt := range tests {
@@ -121,37 +121,37 @@ func TestGenOptionsText(t *testing.T) {
 		t.Run("error", func(t *testing.T) {
 			tests := []struct {
 				name   string
-				in     GenOptionsText
+				in     GenOptionText
 				errMsg string
 			}{
 				{
 					name:   "Invalid Temperature",
-					in:     GenOptionsText{Temperature: -1},
+					in:     GenOptionText{Temperature: -1},
 					errMsg: "field Temperature: must be [0, 100]",
 				},
 				{
 					name:   "Invalid MaxTokens",
-					in:     GenOptionsText{MaxTokens: 1024*1024*1024 + 1},
+					in:     GenOptionText{MaxTokens: 1024*1024*1024 + 1},
 					errMsg: "field MaxTokens: must be [0, 1 GiB]",
 				},
 				{
 					name:   "Invalid TopP",
-					in:     GenOptionsText{TopP: -1},
+					in:     GenOptionText{TopP: -1},
 					errMsg: "field TopP: must be [0, 1]",
 				},
 				{
 					name:   "Invalid TopK",
-					in:     GenOptionsText{TopK: 1025},
+					in:     GenOptionText{TopK: 1025},
 					errMsg: "field TopK: must be [0, 1024]",
 				},
 				{
 					name:   "Invalid DecodeAs jsonschema.Schema",
-					in:     GenOptionsText{DecodeAs: &jsonschema.Schema{}},
+					in:     GenOptionText{DecodeAs: &jsonschema.Schema{}},
 					errMsg: "field DecodeAs: must be an actual struct serializable as JSON, not a *jsonschema.Schema",
 				},
 				{
 					name:   "Invalid DecodeAs string",
-					in:     GenOptionsText{DecodeAs: "string"},
+					in:     GenOptionText{DecodeAs: "string"},
 					errMsg: "field DecodeAs: must be a struct, not string",
 				},
 			}
@@ -166,16 +166,16 @@ func TestGenOptionsText(t *testing.T) {
 	})
 }
 
-func TestGenOptionsTools(t *testing.T) {
+func TestGenOptionTools(t *testing.T) {
 	t.Run("Validate", func(t *testing.T) {
 		t.Run("valid", func(t *testing.T) {
 			tests := []struct {
 				name string
-				in   GenOptionsTools
+				in   GenOptionTools
 			}{
 				{
 					name: "Valid options with all fields set",
-					in: GenOptionsTools{
+					in: GenOptionTools{
 						Tools: []ToolDef{
 							{
 								Name:        "tool",
@@ -197,19 +197,19 @@ func TestGenOptionsTools(t *testing.T) {
 		t.Run("error", func(t *testing.T) {
 			tests := []struct {
 				name   string
-				in     GenOptionsTools
+				in     GenOptionTools
 				errMsg string
 			}{
 				{
 					name: "ToolCallRequired without Tools",
-					in: GenOptionsTools{
+					in: GenOptionTools{
 						Force: ToolCallRequired,
 					},
 					errMsg: "field Force is ToolCallRequired: Tools are required",
 				},
 				{
 					name: "Duplicate tool names",
-					in: GenOptionsTools{
+					in: GenOptionTools{
 						Tools: []ToolDef{
 							{Name: "tool1", Description: "desc1"},
 							{Name: "tool1", Description: "desc2"},
@@ -219,7 +219,7 @@ func TestGenOptionsTools(t *testing.T) {
 				},
 				{
 					name: "Tool validation error",
-					in: GenOptionsTools{
+					in: GenOptionTools{
 						Tools: []ToolDef{
 							{Name: "tool1"},
 						},
@@ -383,19 +383,19 @@ func TestToolDef(t *testing.T) {
 	})
 }
 
-func TestGenOptionsAudio(t *testing.T) {
+func TestGenOptionAudio(t *testing.T) {
 	t.Run("Validate", func(t *testing.T) {
-		o := &GenOptionsAudio{}
+		o := &GenOptionAudio{}
 		if err := o.Validate(); err != nil {
 			t.Errorf("Validate() got unexpected error: %v", err)
 		}
 	})
 }
 
-func TestGenOptionsImage(t *testing.T) {
+func TestGenOptionImage(t *testing.T) {
 	t.Run("Validate", func(t *testing.T) {
 		t.Run("valid", func(t *testing.T) {
-			o := &GenOptionsImage{Width: 100, Height: 200}
+			o := &GenOptionImage{Width: 100, Height: 200}
 			if err := o.Validate(); err != nil {
 				t.Errorf("Validate() got unexpected error: %v", err)
 			}
@@ -403,17 +403,17 @@ func TestGenOptionsImage(t *testing.T) {
 		t.Run("error", func(t *testing.T) {
 			tests := []struct {
 				name   string
-				in     GenOptionsImage
+				in     GenOptionImage
 				errMsg string
 			}{
 				{
 					name:   "Invalid Height",
-					in:     GenOptionsImage{Height: -1},
+					in:     GenOptionImage{Height: -1},
 					errMsg: "field Height: must be non-negative",
 				},
 				{
 					name:   "Invalid Width",
-					in:     GenOptionsImage{Width: -1},
+					in:     GenOptionImage{Width: -1},
 					errMsg: "field Width: must be non-negative",
 				},
 			}
@@ -428,9 +428,9 @@ func TestGenOptionsImage(t *testing.T) {
 	})
 }
 
-func TestGenOptionsVideo(t *testing.T) {
+func TestGenOptionVideo(t *testing.T) {
 	t.Run("Validate", func(t *testing.T) {
-		o := &GenOptionsVideo{}
+		o := &GenOptionVideo{}
 		if err := o.Validate(); err != nil {
 			t.Errorf("Validate() got unexpected error: %v", err)
 		}

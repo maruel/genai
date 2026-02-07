@@ -119,7 +119,7 @@ type ChatRequestOptions struct {
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
-func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenOptions) error {
+func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenOption) error {
 	c.Model = model
 	if err := msgs.Validate(); err != nil {
 		return err
@@ -132,7 +132,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			return err
 		}
 		switch v := opt.(type) {
-		case *genai.GenOptionsText:
+		case *genai.GenOptionText:
 			c.Options.NumPredict = v.MaxTokens
 			c.Options.Temperature = v.Temperature
 			c.Options.TopP = v.TopP
@@ -140,20 +140,20 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			c.Options.TopK = v.TopK
 			c.Options.Stop = v.Stop
 			if v.TopLogprobs > 0 {
-				unsupported = append(unsupported, "GenOptionsText.TopLogprobs")
+				unsupported = append(unsupported, "GenOptionText.TopLogprobs")
 			}
 			if v.DecodeAs != nil {
 				c.Format.Schema = internal.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
 			} else if v.ReplyAsJSON {
 				c.Format.Type = "json"
 			}
-		case *genai.GenOptionsTools:
+		case *genai.GenOptionTools:
 			if len(v.Tools) != 0 {
 				switch v.Force {
 				case genai.ToolCallAny:
 				case genai.ToolCallRequired, genai.ToolCallNone:
 					// Don't fail.
-					unsupported = append(unsupported, "GenOptionsTools.Force")
+					unsupported = append(unsupported, "GenOptionTools.Force")
 				}
 				c.Tools = make([]Tool, len(v.Tools))
 				for i, t := range v.Tools {
@@ -168,7 +168,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			if v.WebSearch {
 				errs = append(errs, errors.New("unsupported OptionsTools.WebSearch"))
 			}
-		case genai.GenOptionsSeed:
+		case genai.GenOptionSeed:
 			c.Options.Seed = int64(v)
 		default:
 			unsupported = append(unsupported, internal.TypeName(opt))
@@ -667,7 +667,7 @@ func (c *Client) HTTPClient() *http.Client {
 }
 
 // GenSync implements genai.Provider.
-func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (genai.Result, error) {
+func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
 	res := genai.Result{}
 	in := ChatRequest{}
 	if err := in.Init(msgs, c.impl.Model, opts...); err != nil {
@@ -708,7 +708,7 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 }
 
 // GenStream implements genai.Provider.
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	res := genai.Result{}
 	var finalErr error
 

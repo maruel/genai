@@ -6,7 +6,7 @@
 
 **Status**: **Done.**
 
-- `GenOptions.CodeExecution` bool enables via `Tool{CodeExecution: &struct{}{}}`.
+- `GenOption.CodeExecution` bool enables via `Tool{CodeExecution: &struct{}{}}`.
 - `ExecutableCode` mapped to `Reply{Text, Opaque: {type, language}}`.
 - `CodeExecutionResult` mapped to `Reply{Text, Opaque: {type, outcome}}`.
 - Handled in both `Content.To()` and `ProcessStream`.

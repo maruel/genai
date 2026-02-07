@@ -117,12 +117,12 @@ func TestClient(t *testing.T) {
 			if model.Reason {
 				return &internaltest.InjectOptions{
 					Provider: c,
-					Opts:     []genai.GenOptions{&anthropic.GenOptionsText{ThinkingBudget: 1024}},
+					Opts:     []genai.GenOption{&anthropic.GenOptionText{ThinkingBudget: 1024}},
 				}
 			}
 			return &internaltest.InjectOptions{
 				Provider: c,
-				Opts:     []genai.GenOptions{&anthropic.GenOptionsText{ThinkingBudget: 0}},
+				Opts:     []genai.GenOption{&anthropic.GenOptionText{ThinkingBudget: 0}},
 			}
 		}
 
@@ -347,14 +347,14 @@ func TestStructuredOutput(t *testing.T) {
 	msgs := genai.Messages{genai.NewTextMessage("test")}
 	tests := []struct {
 		name       string
-		opts       []genai.GenOptions
+		opts       []genai.GenOption
 		wantFormat bool
 		wantType   string
 		wantSchema string // "object" or "full"
 	}{
 		{
 			name: "DecodeAs",
-			opts: []genai.GenOptions{&genai.GenOptionsText{
+			opts: []genai.GenOption{&genai.GenOptionText{
 				DecodeAs: &myStruct{},
 			}},
 			wantFormat: true,
@@ -363,7 +363,7 @@ func TestStructuredOutput(t *testing.T) {
 		},
 		{
 			name: "ReplyAsJSON",
-			opts: []genai.GenOptions{&genai.GenOptionsText{
+			opts: []genai.GenOption{&genai.GenOptionText{
 				ReplyAsJSON: true,
 			}},
 			wantFormat: true,
@@ -372,7 +372,7 @@ func TestStructuredOutput(t *testing.T) {
 		},
 		{
 			name:       "Neither",
-			opts:       []genai.GenOptions{&genai.GenOptionsText{}},
+			opts:       []genai.GenOption{&genai.GenOptionText{}},
 			wantFormat: false,
 		},
 	}
@@ -420,7 +420,7 @@ func TestEffort(t *testing.T) {
 		for _, e := range []anthropic.Effort{"", anthropic.EffortLow, anthropic.EffortMedium, anthropic.EffortHigh, anthropic.EffortMax} {
 			t.Run(string(e), func(t *testing.T) {
 				var req anthropic.ChatRequest
-				if err := req.Init(msgs, "claude-sonnet-4-20250514", &anthropic.GenOptionsText{Effort: e}); err != nil {
+				if err := req.Init(msgs, "claude-sonnet-4-20250514", &anthropic.GenOptionText{Effort: e}); err != nil {
 					t.Fatal(err)
 				}
 				if req.OutputConfig.Effort != e {
@@ -431,7 +431,7 @@ func TestEffort(t *testing.T) {
 	})
 	t.Run("invalid", func(t *testing.T) {
 		var req anthropic.ChatRequest
-		err := req.Init(msgs, "claude-sonnet-4-20250514", &anthropic.GenOptionsText{Effort: "bogus"})
+		err := req.Init(msgs, "claude-sonnet-4-20250514", &anthropic.GenOptionText{Effort: "bogus"})
 		if err == nil {
 			t.Fatal("expected error for invalid effort")
 		}
@@ -446,7 +446,7 @@ func TestThinking(t *testing.T) {
 	t.Run("valid", func(t *testing.T) {
 		t.Run("adaptive", func(t *testing.T) {
 			var req anthropic.ChatRequest
-			if err := req.Init(msgs, "claude-sonnet-4-20250514", &anthropic.GenOptionsText{Thinking: anthropic.ThinkingAdaptive}); err != nil {
+			if err := req.Init(msgs, "claude-sonnet-4-20250514", &anthropic.GenOptionText{Thinking: anthropic.ThinkingAdaptive}); err != nil {
 				t.Fatal(err)
 			}
 			if req.Thinking.Type != "adaptive" {
@@ -458,7 +458,7 @@ func TestThinking(t *testing.T) {
 		})
 		t.Run("enabled", func(t *testing.T) {
 			var req anthropic.ChatRequest
-			if err := req.Init(msgs, "claude-sonnet-4-20250514", &anthropic.GenOptionsText{Thinking: anthropic.ThinkingEnabled, ThinkingBudget: 2048}); err != nil {
+			if err := req.Init(msgs, "claude-sonnet-4-20250514", &anthropic.GenOptionText{Thinking: anthropic.ThinkingEnabled, ThinkingBudget: 2048}); err != nil {
 				t.Fatal(err)
 			}
 			if req.Thinking.Type != "enabled" {
@@ -470,7 +470,7 @@ func TestThinking(t *testing.T) {
 		})
 		t.Run("disabled", func(t *testing.T) {
 			var req anthropic.ChatRequest
-			if err := req.Init(msgs, "claude-sonnet-4-20250514", &anthropic.GenOptionsText{Thinking: anthropic.ThinkingDisabled}); err != nil {
+			if err := req.Init(msgs, "claude-sonnet-4-20250514", &anthropic.GenOptionText{Thinking: anthropic.ThinkingDisabled}); err != nil {
 				t.Fatal(err)
 			}
 			if req.Thinking.Type != "disabled" {
@@ -479,7 +479,7 @@ func TestThinking(t *testing.T) {
 		})
 		t.Run("auto_detect_enabled", func(t *testing.T) {
 			var req anthropic.ChatRequest
-			if err := req.Init(msgs, "claude-sonnet-4-20250514", &anthropic.GenOptionsText{ThinkingBudget: 2048}); err != nil {
+			if err := req.Init(msgs, "claude-sonnet-4-20250514", &anthropic.GenOptionText{ThinkingBudget: 2048}); err != nil {
 				t.Fatal(err)
 			}
 			if req.Thinking.Type != "enabled" {
@@ -491,7 +491,7 @@ func TestThinking(t *testing.T) {
 		})
 		t.Run("auto_detect_disabled", func(t *testing.T) {
 			var req anthropic.ChatRequest
-			if err := req.Init(msgs, "claude-sonnet-4-20250514", &anthropic.GenOptionsText{}); err != nil {
+			if err := req.Init(msgs, "claude-sonnet-4-20250514", &anthropic.GenOptionText{}); err != nil {
 				t.Fatal(err)
 			}
 			if req.Thinking.Type != "disabled" {
@@ -502,7 +502,7 @@ func TestThinking(t *testing.T) {
 	t.Run("invalid", func(t *testing.T) {
 		t.Run("bogus", func(t *testing.T) {
 			var req anthropic.ChatRequest
-			err := req.Init(msgs, "claude-sonnet-4-20250514", &anthropic.GenOptionsText{Thinking: "bogus"})
+			err := req.Init(msgs, "claude-sonnet-4-20250514", &anthropic.GenOptionText{Thinking: "bogus"})
 			if err == nil {
 				t.Fatal("expected error")
 			}
@@ -512,7 +512,7 @@ func TestThinking(t *testing.T) {
 		})
 		t.Run("adaptive_with_budget", func(t *testing.T) {
 			var req anthropic.ChatRequest
-			err := req.Init(msgs, "claude-sonnet-4-20250514", &anthropic.GenOptionsText{Thinking: anthropic.ThinkingAdaptive, ThinkingBudget: 2048})
+			err := req.Init(msgs, "claude-sonnet-4-20250514", &anthropic.GenOptionText{Thinking: anthropic.ThinkingAdaptive, ThinkingBudget: 2048})
 			if err == nil {
 				t.Fatal("expected error")
 			}
@@ -522,7 +522,7 @@ func TestThinking(t *testing.T) {
 		})
 		t.Run("enabled_without_budget", func(t *testing.T) {
 			var req anthropic.ChatRequest
-			err := req.Init(msgs, "claude-sonnet-4-20250514", &anthropic.GenOptionsText{Thinking: anthropic.ThinkingEnabled})
+			err := req.Init(msgs, "claude-sonnet-4-20250514", &anthropic.GenOptionText{Thinking: anthropic.ThinkingEnabled})
 			if err == nil {
 				t.Fatal("expected error")
 			}

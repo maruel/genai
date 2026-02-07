@@ -37,11 +37,11 @@ func ExampleClient_GenSync() {
 	msgs := genai.Messages{
 		genai.NewTextMessage("Say hello. Reply with only one word."),
 	}
-	opts := genai.GenOptionsText{
+	opts := genai.GenOptionText{
 		Temperature: 0.01,
 		MaxTokens:   50,
 	}
-	resp, err := c.GenSync(ctx, msgs, &opts, genai.GenOptionsSeed(1))
+	resp, err := c.GenSync(ctx, msgs, &opts, genai.GenOptionSeed(1))
 	if err != nil {
 		log.Print(err)
 		return

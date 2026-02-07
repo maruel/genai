@@ -69,7 +69,7 @@ type ErrAPI interface {
 // If the API doesn't support an option, the option will be added to the Options field.
 //
 // For example:
-//   - Anthropic doesn't support Seed. In this case, Options will contain "GenOptionsText.Seed".
+//   - Anthropic doesn't support Seed. In this case, Options will contain "GenOptionText.Seed".
 //   - Perplexity doesn't have an API to lists its supported models (this may change in the future).
 type ErrNotSupported struct {
 	Options []string
@@ -85,11 +85,11 @@ func (e *ErrNotSupported) Error() string {
 // NotImplemented implements remote genai.Provider methods, all returning ErrNotSupported.
 type NotImplemented struct{}
 
-func (*NotImplemented) GenSync(context.Context, genai.Messages, ...genai.GenOptions) (genai.Result, error) {
+func (*NotImplemented) GenSync(context.Context, genai.Messages, ...genai.GenOption) (genai.Result, error) {
 	return genai.Result{}, &ErrNotSupported{}
 }
 
-func (*NotImplemented) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
+func (*NotImplemented) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	return yieldNothing[genai.Reply], func() (genai.Result, error) {
 		return genai.Result{}, &ErrNotSupported{}
 	}
@@ -99,7 +99,7 @@ func (*NotImplemented) ListModels(context.Context) ([]genai.Model, error) {
 	return nil, &ErrNotSupported{}
 }
 
-func (*NotImplemented) GenAsync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (genai.Job, error) {
+func (*NotImplemented) GenAsync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Job, error) {
 	return "", &ErrNotSupported{}
 }
 
@@ -107,7 +107,7 @@ func (*NotImplemented) PokeResult(ctx context.Context, job genai.Job) (genai.Res
 	return genai.Result{}, &ErrNotSupported{}
 }
 
-func (*NotImplemented) CacheAddRequest(ctx context.Context, msgs genai.Messages, name, displayName string, ttl time.Duration, opts ...genai.GenOptions) (string, error) {
+func (*NotImplemented) CacheAddRequest(ctx context.Context, msgs genai.Messages, name, displayName string, ttl time.Duration, opts ...genai.GenOption) (string, error) {
 	return "", &ErrNotSupported{}
 }
 
@@ -329,7 +329,7 @@ type Obj interface{ any }
 // InitializableRequest is an interface for request types that can be initialized.
 type InitializableRequest interface {
 	// Init initializes the request with messages, options, and model.
-	Init(msgs genai.Messages, model string, opts ...genai.GenOptions) error
+	Init(msgs genai.Messages, model string, opts ...genai.GenOption) error
 	// SetStream set the stream mode.
 	SetStream(bool)
 }
@@ -368,7 +368,7 @@ type Provider[PErrorResponse ErrAPI, PGenRequest InitializableRequest, PGenRespo
 	chatResponse reflect.Type
 }
 
-func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (genai.Result, error) {
+func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
 	res := genai.Result{}
 	c.lateInit()
 	in := reflect.New(c.chatRequest).Interface().(PGenRequest)
@@ -395,7 +395,7 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 	return res, nil
 }
 
-func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
+func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	res := genai.Result{}
 	var finalErr error
 
@@ -580,7 +580,7 @@ func (t *Time) UnmarshalJSON(b []byte) error {
 }
 
 // SimulateStream simulates GenStream for APIs that do not support streaming.
-func SimulateStream(ctx context.Context, c genai.Provider, msgs genai.Messages, opts ...genai.GenOptions) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
+func SimulateStream(ctx context.Context, c genai.Provider, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	res := genai.Result{}
 	var finalErr error
 

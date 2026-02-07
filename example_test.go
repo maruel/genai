@@ -64,7 +64,7 @@ func ExampleClient_GenSync_jSON() {
 	msgs := genai.Messages{
 		genai.NewTextMessage("Is a circle round? Reply as JSON with the form {\"round\": false} or {\"round\": true}."),
 	}
-	opts := genai.GenOptionsText{ReplyAsJSON: true}
+	opts := genai.GenOptionText{ReplyAsJSON: true}
 	resp, err := c.GenSync(ctx, msgs, &opts)
 	if err != nil {
 		log.Fatal(err)
@@ -93,7 +93,7 @@ func ExampleClient_GenSync_jSON_schema() {
 	var got struct {
 		Round bool `json:"round"`
 	}
-	opts := genai.GenOptionsText{DecodeAs: got}
+	opts := genai.GenOptionText{DecodeAs: got}
 	resp, err := c.GenSync(ctx, msgs, &opts)
 	if err != nil {
 		log.Fatal(err)
@@ -208,10 +208,10 @@ func ExampleProvider_GenStream() {
 	msgs := genai.Messages{
 		genai.NewTextMessage("Say hello. Use only one word."),
 	}
-	opts := genai.GenOptionsText{
+	opts := genai.GenOptionText{
 		MaxTokens: 50,
 	}
-	fragments, finish := c.GenStream(ctx, msgs, &opts, genai.GenOptionsSeed(1))
+	fragments, finish := c.GenStream(ctx, msgs, &opts, genai.GenOptionSeed(1))
 	for f := range fragments {
 		os.Stdout.WriteString(f.Text)
 	}
@@ -238,7 +238,7 @@ func Example_genSyncWithToolCallLoop_with_custom_HTTP_Header() {
 		log.Fatal(err)
 	}
 	msgs := genai.Messages{genai.NewTextMessage("What season is Montréal currently in?")}
-	opts := genai.GenOptionsTools{
+	opts := genai.GenOptionTools{
 		Tools: []genai.ToolDef{locationClockTime},
 		// Force the LLM to do a tool call first.
 		Force: genai.ToolCallRequired,

@@ -91,7 +91,7 @@ type ChatRequest struct {
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
-func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenOptions) error {
+func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenOption) error {
 	c.Model = model
 	if err := msgs.Validate(); err != nil {
 		return err
@@ -104,7 +104,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			return err
 		}
 		switch v := opt.(type) {
-		case *genai.GenOptionsText:
+		case *genai.GenOptionText:
 			c.MaxTokens = v.MaxTokens
 			c.Temperature = v.Temperature
 			c.TopP = v.TopP
@@ -114,7 +114,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 				c.Logprobs = true
 			}
 			if v.TopK != 0 {
-				unsupported = append(unsupported, "GenOptionsText.TopK")
+				unsupported = append(unsupported, "GenOptionText.TopK")
 			}
 			c.Stop = v.Stop
 			if v.DecodeAs != nil {
@@ -125,7 +125,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			} else if v.ReplyAsJSON {
 				c.ResponseFormat.Type = "json_object"
 			}
-		case *genai.GenOptionsTools:
+		case *genai.GenOptionTools:
 			if len(v.Tools) != 0 {
 				switch v.Force {
 				case genai.ToolCallAny:
@@ -148,7 +148,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			if v.WebSearch {
 				errs = append(errs, errors.New("unsupported OptionsTools.WebSearch"))
 			}
-		case genai.GenOptionsSeed:
+		case genai.GenOptionSeed:
 			c.Seed = int64(v)
 		default:
 			unsupported = append(unsupported, internal.TypeName(opt))
@@ -903,7 +903,7 @@ func (c *Client) HTTPClient() *http.Client {
 }
 
 // GenSync implements genai.Provider.
-func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (genai.Result, error) {
+func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
 	return c.impl.GenSync(ctx, msgs, opts...)
 }
 
@@ -913,7 +913,7 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 }
 
 // GenStream implements genai.Provider.
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	return c.impl.GenStream(ctx, msgs, opts...)
 }
 

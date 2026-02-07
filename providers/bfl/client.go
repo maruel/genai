@@ -94,7 +94,7 @@ type ImageRequest struct {
 	InputImage4 string `json:"input_image4,omitzero"`
 }
 
-func (i *ImageRequest) Init(msgs genai.Messages, model string, opts ...genai.GenOptions) error {
+func (i *ImageRequest) Init(msgs genai.Messages, model string, opts ...genai.GenOption) error {
 	if err := msgs.Validate(); err != nil {
 		return err
 	}
@@ -152,10 +152,10 @@ func (i *ImageRequest) Init(msgs genai.Messages, model string, opts ...genai.Gen
 			return err
 		}
 		switch v := opt.(type) {
-		case *genai.GenOptionsImage:
+		case *genai.GenOptionImage:
 			i.Height = int64(v.Height)
 			i.Width = int64(v.Width)
-		case genai.GenOptionsSeed:
+		case genai.GenOptionSeed:
 			i.Seed = int64(v)
 		default:
 			return &base.ErrNotSupported{Options: []string{internal.TypeName(opt)}}
@@ -375,10 +375,10 @@ func processHeaders(h http.Header) []genai.RateLimit {
 }
 
 // GenSync implements genai.Provider.
-func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (genai.Result, error) {
+func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
 	// They recommend in their documentation to poll every 0.5s.
 	waitForPoll := 500 * time.Millisecond
-	filtered := make([]genai.GenOptions, 0, len(opts))
+	filtered := make([]genai.GenOption, 0, len(opts))
 	for _, opt := range opts {
 		if v, ok := opt.(genai.GenOptionPollInterval); ok {
 			waitForPoll = time.Duration(v)
@@ -405,14 +405,14 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 }
 
 // GenStream implements genai.Provider.
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	return base.SimulateStream(ctx, c, msgs, opts...)
 }
 
 // GenAsync implements genai.ProviderGenAsync.
 //
 // It requests the providers' asynchronous API and returns the job ID.
-func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (genai.Job, error) {
+func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Job, error) {
 	req := ImageRequest{}
 	if err := req.Init(msgs, c.impl.Model, opts...); err != nil {
 		return "", err

@@ -27,7 +27,7 @@ func TestProviderReasoning(t *testing.T) {
 				startToken string
 				endToken   string
 				in         string
-				opts       genai.GenOptions
+				opts       genai.GenOption
 				want       []genai.Reply
 			}{
 				{
@@ -183,7 +183,7 @@ func TestProviderReasoning(t *testing.T) {
 				startToken string
 				endToken   string
 				in         []string
-				opts       genai.GenOptions
+				opts       genai.GenOption
 				want       []genai.Reply
 			}{
 				{
@@ -440,7 +440,7 @@ func (m *mockProviderGenSync) Scoreboard() scoreboard.Score {
 	return scoreboard.Score{}
 }
 
-func (m *mockProviderGenSync) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (genai.Result, error) {
+func (m *mockProviderGenSync) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
 	// Store messages
 	m.msgs = msgs
 	r := m.responses[0]
@@ -481,7 +481,7 @@ func (m *mockProviderGenStream) Scoreboard() scoreboard.Score {
 	return scoreboard.Score{}
 }
 
-func (m *mockProviderGenStream) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
+func (m *mockProviderGenStream) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	// Store messages
 	m.msgs = msgs
 	res := genai.Result{}

@@ -75,9 +75,9 @@ the batch workflow.
 | `max_tool_calls` | Yes | **Partial** | Field exists but not configurable via options |
 | `metadata` | Yes | **Partial** | Field exists but not exposed |
 | `parallel_tool_calls` | Yes | **Done** | Auto-set when tools present |
-| `previous_response_id` | Yes | **Done** | Via provider-specific `GenOptionsText` |
+| `previous_response_id` | Yes | **Done** | Via provider-specific `GenOptionText` |
 | `reasoning` | Yes | **Done** | Effort + summary = "auto" |
-| `service_tier` | Yes | **Done** | Via provider-specific `GenOptionsText` |
+| `service_tier` | Yes | **Done** | Via provider-specific `GenOptionText` |
 | `store` | Yes | **Partial** | Field exists but not configurable |
 | `temperature` | Yes | **Done** | |
 | `text.format` | Yes | **Done** | `text`, `json_schema`, `json_object` |
@@ -85,7 +85,7 @@ the batch workflow.
 | `tool_choice` | Yes | **Done** | `auto`, `required`, `none` |
 | `top_p` | Yes | **Done** | |
 | `top_logprobs` | Yes | **Done** | |
-| `truncation` | Yes | **Done** | Via provider-specific `GenOptionsText` |
+| `truncation` | Yes | **Done** | Via provider-specific `GenOptionText` |
 | `user` | Yes | **Partial** | Field exists but not configurable |
 | `include` | Yes | **Partial** | Only for web search sources |
 | `prompt_cache_key` | Yes | **Missing** | Stub struct only |
@@ -135,7 +135,7 @@ the batch workflow.
 
 | Feature | API support | Current impl | Notes |
 |---|---|---|---|
-| `truncation` strategy | Yes | **Done** | Via provider-specific `GenOptionsText` |
+| `truncation` strategy | Yes | **Done** | Via provider-specific `GenOptionText` |
 | `/v1/responses/compact` | Yes | **Missing** | Compaction endpoint not implemented |
 
 ### 8. Annotation Types
@@ -152,7 +152,7 @@ the batch workflow.
 | Feature | API support | Current impl | Notes |
 |---|---|---|---|
 | `conversation` parameter | Yes | **Missing** | Thread-like state management, replacement for Assistants API |
-| `previous_response_id` | Yes | **Done** | Via provider-specific `GenOptionsText` |
+| `previous_response_id` | Yes | **Done** | Via provider-specific `GenOptionText` |
 
 ### 10. Other Missing Features
 
@@ -182,11 +182,11 @@ These items improve existing features with minimal structural changes.
 
 1. ~~**Refusal handling in streaming**~~: **Done** — surfaced as `FinishedContentFilter` with refusal text in `Reply.Text`.
 
-2. ~~**Expose `truncation` option**~~: **Done** — wired via `GenOptionsText.Truncation`.
+2. ~~**Expose `truncation` option**~~: **Done** — wired via `GenOptionText.Truncation`.
 
-3. ~~**Expose `previous_response_id`**~~: **Done** — wired via `GenOptionsText.PreviousResponseID`.
+3. ~~**Expose `previous_response_id`**~~: **Done** — wired via `GenOptionText.PreviousResponseID`.
 
-4. **Image detail configurability**: Add a field to `GenOptionsText` or the
+4. **Image detail configurability**: Add a field to `GenOptionText` or the
    content builder so callers can choose `"low"`, `"high"`, or `"auto"` for
    image inputs.
 

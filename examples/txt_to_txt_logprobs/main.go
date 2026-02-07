@@ -22,7 +22,7 @@ func indentString(s string) string {
 
 func run(ctx context.Context, c genai.Provider) {
 	msgs := genai.Messages{genai.NewTextMessage("Tell a short joke")}
-	res, err := c.GenSync(ctx, msgs, &genai.GenOptionsText{TopLogprobs: 5})
+	res, err := c.GenSync(ctx, msgs, &genai.GenOptionText{TopLogprobs: 5})
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error while trying with %s: %s\n", c.Name(), err)
 		return

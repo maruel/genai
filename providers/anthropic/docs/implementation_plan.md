@@ -75,7 +75,7 @@ Goal: Fill in remaining GA feature gaps. Lower impact but improves completeness.
 
 **Steps**:
 1. Add `InferenceGeo string` field to `ChatRequest` with JSON tag `json:"inference_geo,omitzero"`.
-2. Add `InferenceGeo` field to `GenOptionsText`.
+2. Add `InferenceGeo` field to `GenOptionText`.
 3. Wire in `initImpl()`.
 
 **Effort**: Trivial. One field addition.
@@ -225,7 +225,7 @@ Add a provider-specific option to pass arbitrary beta header strings. This futur
 against new betas without code changes.
 
 **Steps**:
-1. Add `BetaHeaders []string` field to `GenOptionsText`.
+1. Add `BetaHeaders []string` field to `GenOptionText`.
 2. Append to the `anthropic-beta` header in request construction.
 
 **Effort**: Trivial.

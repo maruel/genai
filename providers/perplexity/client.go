@@ -44,13 +44,13 @@ func Scoreboard() scoreboard.Score {
 	return s
 }
 
-// GenOptions defines Perplexity specific options.
-type GenOptions struct {
+// GenOption defines Perplexity specific options.
+type GenOption struct {
 	// DisableRelatedQuestions disabled related questions, to save on tokens and latency.
 	DisableRelatedQuestions bool
 }
 
-func (o *GenOptions) Validate() error {
+func (o *GenOption) Validate() error {
 	return nil
 }
 
@@ -102,7 +102,7 @@ type ChatRequest struct {
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
-func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenOptions) error {
+func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenOption) error {
 	c.Model = model
 	if err := msgs.Validate(); err != nil {
 		return err
@@ -119,18 +119,18 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			return err
 		}
 		switch v := opt.(type) {
-		case *genai.GenOptionsText:
+		case *genai.GenOptionText:
 			unsupported, errs = c.initOptionsText(v)
 			sp = v.SystemPrompt
-		case *genai.GenOptionsTools:
+		case *genai.GenOptionTools:
 			c.DisableSearch = !v.WebSearch
 			if len(v.Tools) != 0 {
-				errs = append(errs, errors.New("unsupported options GenOptionsTools.Tools"))
+				errs = append(errs, errors.New("unsupported options GenOptionTools.Tools"))
 			}
 			if v.Force == genai.ToolCallRequired {
-				unsupported = append(unsupported, "GenOptionsTools.Force")
+				unsupported = append(unsupported, "GenOptionTools.Force")
 			}
-		case *GenOptions:
+		case *GenOption:
 			c.ReturnRelatedQuestions = !v.DisableRelatedQuestions
 		default:
 			unsupported = append(unsupported, internal.TypeName(opt))
@@ -161,7 +161,7 @@ func (c *ChatRequest) SetStream(stream bool) {
 	c.Stream = stream
 }
 
-func (c *ChatRequest) initOptionsText(v *genai.GenOptionsText) ([]string, []error) {
+func (c *ChatRequest) initOptionsText(v *genai.GenOptionText) ([]string, []error) {
 	var unsupported []string
 	var errs []error
 	c.MaxTokens = v.MaxTokens
@@ -169,7 +169,7 @@ func (c *ChatRequest) initOptionsText(v *genai.GenOptionsText) ([]string, []erro
 	c.TopP = v.TopP
 	c.TopK = v.TopK
 	if v.TopLogprobs > 0 {
-		unsupported = append(unsupported, "GenOptionsText.TopLogprobs")
+		unsupported = append(unsupported, "GenOptionText.TopLogprobs")
 	}
 	if len(v.Stop) != 0 {
 		errs = append(errs, errors.New("unsupported option Stop"))
@@ -598,7 +598,7 @@ func (c *Client) HTTPClient() *http.Client {
 }
 
 // GenSync implements genai.Provider.
-func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (genai.Result, error) {
+func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
 	return c.impl.GenSync(ctx, msgs, opts...)
 }
 
@@ -608,7 +608,7 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 }
 
 // GenStream implements genai.Provider.
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	return c.impl.GenStream(ctx, msgs, opts...)
 }
 

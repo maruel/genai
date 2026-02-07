@@ -101,9 +101,9 @@ func TestClient(t *testing.T) {
 			// Save on costs when running the smoke test.
 			var p genai.Provider = &injectOptions{
 				Provider: c,
-				Opts: []genai.GenOptions{
-					&genai.GenOptionsTools{WebSearch: false},
-					&perplexity.GenOptions{DisableRelatedQuestions: true},
+				Opts: []genai.GenOption{
+					&genai.GenOptionTools{WebSearch: false},
+					&perplexity.GenOption{DisableRelatedQuestions: true},
 				},
 			}
 			if model.Reason {
@@ -178,16 +178,16 @@ func TestClient(t *testing.T) {
 // injectOptions generally inject the option unless "Quackiland" is in the last message.
 type injectOptions struct {
 	genai.Provider
-	Opts []genai.GenOptions
+	Opts []genai.GenOption
 }
 
 func (i *injectOptions) Unwrap() genai.Provider {
 	return i.Provider
 }
 
-func (i *injectOptions) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (genai.Result, error) {
-	if !slices.ContainsFunc(opts, func(o genai.GenOptions) bool {
-		v, ok := o.(*genai.GenOptionsTools)
+func (i *injectOptions) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
+	if !slices.ContainsFunc(opts, func(o genai.GenOption) bool {
+		v, ok := o.(*genai.GenOptionTools)
 		return ok && v.WebSearch
 	}) {
 		opts = append(opts, i.Opts...)
@@ -195,9 +195,9 @@ func (i *injectOptions) GenSync(ctx context.Context, msgs genai.Messages, opts .
 	return i.Provider.GenSync(ctx, msgs, opts...)
 }
 
-func (i *injectOptions) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
-	if !slices.ContainsFunc(opts, func(o genai.GenOptions) bool {
-		v, ok := o.(*genai.GenOptionsTools)
+func (i *injectOptions) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
+	if !slices.ContainsFunc(opts, func(o genai.GenOption) bool {
+		v, ok := o.(*genai.GenOptionTools)
 		return ok && v.WebSearch
 	}) {
 		opts = append(opts, i.Opts...)

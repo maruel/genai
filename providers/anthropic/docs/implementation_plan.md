@@ -20,9 +20,9 @@ Reference SDK: `github.com/anthropics/anthropic-sdk-go`
 | Batch: Create                  | Yes          | Yes            | Complete       |
 | Batch: Poll/Results            | Yes          | Yes            | Complete       |
 | Batch: Cancel                  | Yes          | Yes            | Complete       |
-| Batch: Get by ID               | Yes          | No             | Phase 2.4      |
-| Batch: List                    | Yes          | No             | Phase 2.4      |
-| Batch: Delete                  | Yes          | No             | Phase 2.4      |
+| Batch: Get by ID               | Yes          | Yes            | Complete       |
+| Batch: List                    | Yes          | Yes            | Complete       |
+| Batch: Delete                  | Yes          | Yes            | Complete       |
 | Tool Calling (custom)          | Yes          | Yes            | Complete       |
 | Tool Choice (auto/any/tool/none) | Yes        | Yes            | Complete       |
 | Web Search Tool                | Yes          | Yes            | Complete       |
@@ -102,18 +102,13 @@ Goal: Fill in remaining GA feature gaps. Lower impact but improves completeness.
 
 **Effort**: Small.
 
-### 2.4 Batch API CRUD
+### 2.4 Batch API CRUD — COMPLETE
 
 **Priority**: P3
 
-**Steps**:
-1. Add `GetBatch(ctx, batchID string) (BatchResponse, error)` — GET
-   `/v1/messages/batches/{id}`.
-2. Add `ListBatches(ctx) ([]BatchResponse, error)` — GET `/v1/messages/batches`.
-3. Add `DeleteBatch(ctx, batchID string) error` — DELETE `/v1/messages/batches/{id}`.
-4. Add pagination support for `ListBatches`.
-
-**Effort**: Small-Medium.
+Added `GetBatch`, `ListBatches`/`ListBatchesRaw`, and `DeleteBatch`. Recorded tests
+for all three operations. `ListBatchesRaw` exposes cursor-based pagination via
+`BatchListResponse`.
 
 ### 2.5 Service Tier in Usage Response — COMPLETE
 

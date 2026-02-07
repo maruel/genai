@@ -167,6 +167,69 @@ func TestClient(t *testing.T) {
 		}
 	})
 
+	t.Run("BatchCRUD", func(t *testing.T) {
+		ctx := t.Context()
+		c := getClient(t, "claude-3-haiku-20240307").(*anthropic.Client)
+		msgs := genai.Messages{genai.NewTextMessage("Say hello")}
+		job, err := c.GenAsync(ctx, msgs)
+		if err != nil {
+			t.Fatal(err)
+		}
+		batchID := string(job)
+
+		// GetBatch works on in-progress batches.
+		t.Run("GetBatch", func(t *testing.T) {
+			b, err := c.GetBatch(ctx, batchID)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if b.ID != batchID {
+				t.Errorf("expected ID %q, got %q", batchID, b.ID)
+			}
+			if b.Type != "message_batch" {
+				t.Errorf("expected type message_batch, got %q", b.Type)
+			}
+		})
+		t.Run("ListBatches", func(t *testing.T) {
+			batches, err := c.ListBatches(ctx)
+			if err != nil {
+				t.Fatal(err)
+			}
+			found := false
+			for _, b := range batches {
+				if b.ID == batchID {
+					found = true
+					break
+				}
+			}
+			if !found {
+				t.Errorf("batch %s not found in list of %d batches", batchID, len(batches))
+			}
+		})
+
+		// DeleteBatch requires the batch to have finished. Find an already-ended
+		// batch from the list instead of waiting for the one we just created.
+		t.Run("DeleteBatch", func(t *testing.T) {
+			batches, err := c.ListBatches(ctx)
+			if err != nil {
+				t.Fatal(err)
+			}
+			var ended string
+			for _, b := range batches {
+				if b.ProcessingStatus == "ended" {
+					ended = b.ID
+					break
+				}
+			}
+			if ended == "" {
+				t.Skip("no ended batch available to delete")
+			}
+			if err := c.DeleteBatch(ctx, ended); err != nil {
+				t.Fatal(err)
+			}
+		})
+	})
+
 	t.Run("MCP", func(t *testing.T) {
 		// TODO: Re-record cassettes from a machine where Anthropic's MCP
 		// connector can reach the Smithery server.

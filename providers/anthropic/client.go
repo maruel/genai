@@ -1469,6 +1469,20 @@ func (b *BatchQueryResponse) To(out *genai.Message) error {
 	return nil
 }
 
+// BatchListResponse is documented at https://docs.anthropic.com/en/api/listing-message-batches
+type BatchListResponse struct {
+	Data    []BatchResponse `json:"data"`
+	FirstID string          `json:"first_id"`
+	HasMore bool            `json:"has_more"`
+	LastID  string          `json:"last_id"`
+}
+
+// BatchDeleteResponse is documented at https://docs.anthropic.com/en/api/deleting-message-batches
+type BatchDeleteResponse struct {
+	ID   string `json:"id"`
+	Type string `json:"type"` // "message_batch_deleted"
+}
+
 //
 
 type Model struct {
@@ -1765,6 +1779,47 @@ func (c *Client) CancelRaw(ctx context.Context, id genai.Job) (BatchResponse, er
 	resp := BatchResponse{}
 	err := c.impl.DoRequest(ctx, "POST", u, &struct{}{}, &resp)
 	return resp, err
+}
+
+// GetBatch retrieves the metadata for a single message batch.
+//
+// https://docs.anthropic.com/en/api/retrieving-message-batches
+func (c *Client) GetBatch(ctx context.Context, id string) (*BatchResponse, error) {
+	u := "https://api.anthropic.com/v1/messages/batches/" + url.PathEscape(id)
+	resp := &BatchResponse{}
+	err := c.impl.DoRequest(ctx, "GET", u, nil, resp)
+	return resp, err
+}
+
+// ListBatches returns all message batches.
+//
+// https://docs.anthropic.com/en/api/listing-message-batches
+func (c *Client) ListBatches(ctx context.Context) ([]BatchResponse, error) {
+	resp, err := c.ListBatchesRaw(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return resp.Data, nil
+}
+
+// ListBatchesRaw returns the raw paginated response for message batches.
+//
+// https://docs.anthropic.com/en/api/listing-message-batches
+func (c *Client) ListBatchesRaw(ctx context.Context) (*BatchListResponse, error) {
+	resp := &BatchListResponse{}
+	err := c.impl.DoRequest(ctx, "GET", "https://api.anthropic.com/v1/messages/batches?limit=1000", nil, resp)
+	return resp, err
+}
+
+// DeleteBatch deletes a message batch that has finished processing.
+//
+// In-progress batches must be canceled before deletion.
+//
+// https://docs.anthropic.com/en/api/deleting-message-batches
+func (c *Client) DeleteBatch(ctx context.Context, id string) error {
+	u := "https://api.anthropic.com/v1/messages/batches/" + url.PathEscape(id)
+	resp := BatchDeleteResponse{}
+	return c.impl.DoRequest(ctx, "DELETE", u, nil, &resp)
 }
 
 // Name implements genai.Provider.

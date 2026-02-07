@@ -1164,7 +1164,7 @@ type ToolChoice struct {
 
 // Tool is documented at https://docs.anthropic.com/en/api/messages#body-tools
 type Tool struct {
-	Type string `json:"type,omitzero"` // "custom", "computer_20241022", "computer_20250124", "bash_20241022", "bash_20250124", "text_editor_20241022", "text_editor_20250124", "web_search_20250305"
+	Type string `json:"type,omitzero"` // "custom", "computer_20241022", "computer_20250124", "bash_20241022", "bash_20250124", "text_editor_20241022", "text_editor_20250124", "text_editor_20250429", "text_editor_20250728", "web_search_20250305"
 	// Type == "custom"
 	Description string             `json:"description,omitzero"`
 	InputSchema *jsonschema.Schema `json:"input_schema,omitzero"`
@@ -1172,13 +1172,16 @@ type Tool struct {
 	// Type == "custom": tool name
 	// Type == "computer_20241022", "computer_20250124": "computer"
 	// Type == "bash_20241022", "bash_20250124": "bash"
-	// Type == "text_editor_20241022", "text_editor_20250124": "str_replace_editor"
+	// Type == "text_editor_20241022", "text_editor_20250124", "text_editor_20250429", "text_editor_20250728": "str_replace_editor"
 	Name string `json:"name,omitzero"`
 
-	// Type == "custom", "computer_20241022", "computer_20250124", "bash_20241022", "bash_20250124", "text_editor_20241022", "text_editor_20250124"
+	// Type == "custom", "computer_20241022", "computer_20250124", "bash_20241022", "bash_20250124", "text_editor_20241022", "text_editor_20250124", "text_editor_20250429", "text_editor_20250728"
 	CacheControl struct {
 		Type string `json:"type,omitzero"` // "ephemeral"
 	} `json:"cache_control,omitzero"`
+
+	// Type == "text_editor_20250728"
+	MaxCharacters int64 `json:"max_characters,omitzero"`
 
 	// Type == "computer_20241022", "computer_20250124"
 	DisplayNumber   int64 `json:"display_number,omitzero"`

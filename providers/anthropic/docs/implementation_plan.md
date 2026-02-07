@@ -37,8 +37,8 @@ Reference SDK: `github.com/anthropics/anthropic-sdk-go`
 | Container/Session              | Yes          | Yes            | Complete       |
 | Bash Tool (GA 2025-01-24)      | Yes          | Yes            | Complete       |
 | Text Editor v1 (2025-01-24)    | Yes          | Yes            | Complete       |
-| Text Editor v2 (2025-04-29)    | Yes          | No             | Phase 2.2      |
-| Text Editor v3 (2025-07-28)    | Yes          | No             | Phase 2.2      |
+| Text Editor v2 (2025-04-29)    | Yes          | Yes            | Complete       |
+| Text Editor v3 (2025-07-28)    | Yes          | Yes            | Complete       |
 | Claude Opus 4.6 model          | Yes          | Yes            | Complete       |
 | **Beta Features**              |              |                |                |
 | MCP v1 (2025-04-04)            | Yes          | Yes            | Complete       |

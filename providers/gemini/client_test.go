@@ -363,6 +363,82 @@ func TestClient(t *testing.T) {
 		}
 	})
 
+	t.Run("FileCRUD", func(t *testing.T) {
+		t.Parallel()
+		ci, err := getClientInner(t, "", nil, cachedModels, func(h http.RoundTripper) http.RoundTripper {
+			return testRecorder.Record(t, h)
+		})
+		if err != nil {
+			t.Fatal(err)
+		}
+		c := ci.(*gemini.Client)
+		ctx := t.Context()
+		const content = "Hello from genai file upload test."
+
+		// Upload.
+		fm, err := c.FileUpload(ctx, "test.txt", "text/plain", strings.NewReader(content))
+		if err != nil {
+			t.Fatal(err)
+		}
+		if fm.Name == "" {
+			t.Fatal("expected file name")
+		}
+		t.Logf("Uploaded file: %s", fm.Name)
+
+		// Wait for ACTIVE state; files may be PROCESSING initially.
+		isRecording := os.Getenv("RECORD") == "1"
+		for fm.State == gemini.FileStateProcessing {
+			if !isRecording {
+				t.Skip("file still processing and not recording")
+			}
+			t.Log("Waiting for file to become ACTIVE...")
+			time.Sleep(time.Second)
+			fm, err = c.FileGetMetadata(ctx, fm.Name)
+			if err != nil {
+				t.Fatal(err)
+			}
+		}
+		if fm.State != gemini.FileStateActive {
+			t.Fatalf("file state = %q, want %q", fm.State, gemini.FileStateActive)
+		}
+
+		// GetMetadata.
+		t.Run("GetMetadata", func(t *testing.T) {
+			m, err := c.FileGetMetadata(ctx, fm.Name)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if m.Name != fm.Name {
+				t.Errorf("Name = %q, want %q", m.Name, fm.Name)
+			}
+		})
+
+		// List.
+		t.Run("List", func(t *testing.T) {
+			files, err := c.FileList(ctx)
+			if err != nil {
+				t.Fatal(err)
+			}
+			found := false
+			for _, f := range files {
+				if f.Name == fm.Name {
+					found = true
+					break
+				}
+			}
+			if !found {
+				t.Errorf("file %s not found in list of %d files", fm.Name, len(files))
+			}
+		})
+
+		// Delete.
+		t.Run("Delete", func(t *testing.T) {
+			if err := c.FileDelete(ctx, fm.Name); err != nil {
+				t.Fatal(err)
+			}
+		})
+	})
+
 	t.Run("errors", func(t *testing.T) {
 		data := []internaltest.ProviderError{
 			{

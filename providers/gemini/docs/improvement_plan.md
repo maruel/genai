@@ -37,8 +37,8 @@
 
 ### 2.1 File Upload API
 
-**Status**: Not implemented. Currently only URL references are supported for
-large media.
+**Status**: Done. FileUpload, FileGetMetadata, FileList, FileListRaw, and
+FileDelete are implemented.
 
 **Work**:
 - Add `Upload(ctx, reader, config) (FileRef, error)` method

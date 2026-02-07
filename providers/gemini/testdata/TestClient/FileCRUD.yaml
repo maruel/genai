@@ -1,0 +1,286 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 35
+        host: generativelanguage.googleapis.com
+        body: '{"file":{"displayName":"test.txt"}}'
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+            X-Goog-Upload-Command:
+                - start
+            X-Goog-Upload-Header-Content-Type:
+                - text/plain
+            X-Goog-Upload-Protocol:
+                - resumable
+        url: https://generativelanguage.googleapis.com/upload/v1beta/files
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 0
+        body: ""
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "0"
+            Content-Type:
+                - text/plain; charset=utf-8
+            Server:
+                - UploadServer
+            X-Goog-Upload-Chunk-Granularity:
+                - "8388608"
+            X-Goog-Upload-Control-Url:
+                - https://generativelanguage.googleapis.com/upload/v1beta/files?upload_id=AJRbA5XdNovVcBSeVLqGNoO-yS1lGR4o8ef7lqE6ghAxXw5Iw859fACqTx_37_mTRRs5NKu8u6buUlaam4Qno2pNz-Cw5ja5wbppihf6MhJNiw&upload_protocol=resumable
+            X-Goog-Upload-Header-Content-Type:
+                - application/json; charset=UTF-8
+            X-Goog-Upload-Header-Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Goog-Upload-Header-X-Google-Backends:
+                - unix:/tmp/esfbackend.1770382237.812167.3972696
+            X-Goog-Upload-Header-X-Google-Esf-Cloud-Client-Params:
+                - 'backend_service_name: "generativelanguage.googleapis.com" backend_fully_qualified_method: "google.ai.generativelanguage.v1beta.FileService.CreateFile"'
+            X-Goog-Upload-Header-X-Google-Gfe-Backend-Request-Cost:
+                - "6.9077"
+            X-Goog-Upload-Header-X-Google-Security-Signals:
+                - FRAMEWORK=ONE_PLATFORM,ENV=borg,ENV_DEBUG=borg_user:genai-api;borg_job:prod.genai-api
+            X-Goog-Upload-Header-X-Google-Session-Info:
+                - GgQYECgLIAE6IxIhZ2VuZXJhdGl2ZWxhbmd1YWdlLmdvb2dsZWFwaXMuY29t
+            X-Goog-Upload-Status:
+                - active
+            X-Goog-Upload-Url:
+                - https://generativelanguage.googleapis.com/upload/v1beta/files?upload_id=AJRbA5XdNovVcBSeVLqGNoO-yS1lGR4o8ef7lqE6ghAxXw5Iw859fACqTx_37_mTRRs5NKu8u6buUlaam4Qno2pNz-Cw5ja5wbppihf6MhJNiw&upload_protocol=resumable
+            X-Guploader-Uploadid:
+                - AJRbA5XdNovVcBSeVLqGNoO-yS1lGR4o8ef7lqE6ghAxXw5Iw859fACqTx_37_mTRRs5NKu8u6buUlaam4Qno2pNz-Cw5ja5wbppihf6MhJNiw
+        status: 200 OK
+        code: 200
+        duration: 249ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 34
+        host: generativelanguage.googleapis.com
+        body: Hello from genai file upload test.
+        form:
+            upload_id:
+                - AJRbA5XdNovVcBSeVLqGNoO-yS1lGR4o8ef7lqE6ghAxXw5Iw859fACqTx_37_mTRRs5NKu8u6buUlaam4Qno2pNz-Cw5ja5wbppihf6MhJNiw
+            upload_protocol:
+                - resumable
+        headers:
+            Content-Length:
+                - "34"
+            X-Goog-Upload-Command:
+                - upload, finalize
+            X-Goog-Upload-Offset:
+                - "0"
+        url: https://generativelanguage.googleapis.com/upload/v1beta/files?upload_id=AJRbA5XdNovVcBSeVLqGNoO-yS1lGR4o8ef7lqE6ghAxXw5Iw859fACqTx_37_mTRRs5NKu8u6buUlaam4Qno2pNz-Cw5ja5wbppihf6MhJNiw&upload_protocol=resumable
+        method: PUT
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 532
+        body: |
+            {
+              "file": {
+                "name": "files/vvxxaeg0c8dw",
+                "displayName": "test.txt",
+                "mimeType": "text/plain",
+                "sizeBytes": "34",
+                "createTime": "2026-02-07T23:17:06.866519Z",
+                "updateTime": "2026-02-07T23:17:06.866519Z",
+                "expirationTime": "2026-02-09T23:17:06.636822926Z",
+                "sha256Hash": "NGE1ODM2N2U1ZDYwODNhMzk5OGU2MzNkYmI5ZmZhZGQ3ODkxM2Q2YWQzNzE4YmNmZDA2ZWFiNDUzYzcwZGRmYQ==",
+                "uri": "https://generativelanguage.googleapis.com/v1beta/files/vvxxaeg0c8dw",
+                "state": "ACTIVE",
+                "source": "UPLOADED"
+              }
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "532"
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - UploadServer
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Goog-Upload-Status:
+                - final
+            X-Guploader-Uploadid:
+                - AJRbA5XdNovVcBSeVLqGNoO-yS1lGR4o8ef7lqE6ghAxXw5Iw859fACqTx_37_mTRRs5NKu8u6buUlaam4Qno2pNz-Cw5ja5wbppihf6MhJNiw
+        status: 200 OK
+        code: 200
+        duration: 500ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        host: generativelanguage.googleapis.com
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/files/vvxxaeg0c8dw
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "name": "files/vvxxaeg0c8dw",
+              "displayName": "test.txt",
+              "mimeType": "text/plain",
+              "sizeBytes": "34",
+              "createTime": "2026-02-07T23:17:06.866519Z",
+              "updateTime": "2026-02-07T23:17:06.866519Z",
+              "expirationTime": "2026-02-09T23:17:06.636822926Z",
+              "sha256Hash": "NGE1ODM2N2U1ZDYwODNhMzk5OGU2MzNkYmI5ZmZhZGQ3ODkxM2Q2YWQzNzE4YmNmZDA2ZWFiNDUzYzcwZGRmYQ==",
+              "uri": "https://generativelanguage.googleapis.com/v1beta/files/vvxxaeg0c8dw",
+              "state": "ACTIVE",
+              "source": "UPLOADED"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=71
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 83ms
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        host: generativelanguage.googleapis.com
+        form:
+            pageSize:
+                - "100"
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/files?pageSize=100
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "files": [
+                {
+                  "name": "files/vvxxaeg0c8dw",
+                  "displayName": "test.txt",
+                  "mimeType": "text/plain",
+                  "sizeBytes": "34",
+                  "createTime": "2026-02-07T23:17:06.866519Z",
+                  "updateTime": "2026-02-07T23:17:06.866519Z",
+                  "expirationTime": "2026-02-09T23:17:06.636822926Z",
+                  "sha256Hash": "NGE1ODM2N2U1ZDYwODNhMzk5OGU2MzNkYmI5ZmZhZGQ3ODkxM2Q2YWQzNzE4YmNmZDA2ZWFiNDUzYzcwZGRmYQ==",
+                  "uri": "https://generativelanguage.googleapis.com/v1beta/files/vvxxaeg0c8dw",
+                  "state": "ACTIVE",
+                  "source": "UPLOADED"
+                }
+              ]
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=78
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 91ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        host: generativelanguage.googleapis.com
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/files/vvxxaeg0c8dw
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=497
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 508ms

@@ -18,6 +18,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"iter"
 	"mime"
 	"net/http"
@@ -1186,6 +1187,47 @@ type Status struct {
 	Details map[string]any `json:"details"`
 }
 
+// Files
+
+// FileState represents the processing state of an uploaded file.
+//
+// https://ai.google.dev/api/files#State
+type FileState string
+
+const (
+	FileStateUnspecified FileState = "STATE_UNSPECIFIED"
+	FileStateProcessing  FileState = "PROCESSING"
+	FileStateActive      FileState = "ACTIVE"
+	FileStateFailed      FileState = "FAILED"
+)
+
+// FileMetadata is the metadata for an uploaded file.
+//
+// https://ai.google.dev/api/files#File
+type FileMetadata struct {
+	Name           string    `json:"name,omitzero"`
+	DisplayName    string    `json:"displayName,omitzero"`
+	MimeType       string    `json:"mimeType,omitzero"`
+	SizeBytes      int64     `json:"sizeBytes,omitzero,string"`
+	CreateTime     time.Time `json:"createTime,omitzero"`
+	UpdateTime     time.Time `json:"updateTime,omitzero"`
+	ExpirationTime time.Time `json:"expirationTime,omitzero"`
+	SHA256Hash     string    `json:"sha256Hash,omitzero"`
+	URI            string    `json:"uri,omitzero"`
+	DownloadURI    string    `json:"downloadUri,omitzero"`
+	State          FileState `json:"state,omitzero"`
+	Source         string    `json:"source,omitzero"`
+	Error          *Status   `json:"error,omitzero"`
+}
+
+// FileListResponse is the response from listing files.
+//
+// https://ai.google.dev/api/files#method:-files.list
+type FileListResponse struct {
+	Files         []FileMetadata `json:"files,omitzero"`
+	NextPageToken string         `json:"nextPageToken,omitzero"`
+}
+
 // Caching
 
 // CachedContent is documented at https://ai.google.dev/api/caching?hl=en#CachedContent
@@ -2329,6 +2371,119 @@ func (c *Client) CountTokens(ctx context.Context, msgs genai.Messages, opts ...g
 		return nil, err
 	}
 	return &resp, nil
+}
+
+// FileUpload uploads a file using the Gemini resumable upload protocol.
+//
+// The file is uploaded in two phases:
+//  1. Initiate a resumable upload session with metadata.
+//  2. Upload the file bytes to the returned upload URL.
+//
+// https://ai.google.dev/api/files#method:-media.upload
+func (c *Client) FileUpload(ctx context.Context, displayName, mimeType string, r io.Reader) (*FileMetadata, error) {
+	// Phase 1: Start the resumable upload.
+	meta := struct {
+		File struct {
+			DisplayName string `json:"displayName"`
+		} `json:"file"`
+	}{}
+	meta.File.DisplayName = displayName
+	body, err := json.Marshal(&meta)
+	if err != nil {
+		return nil, err
+	}
+	startURL := "https://generativelanguage.googleapis.com/upload/v1beta/files"
+	req, err := http.NewRequestWithContext(ctx, "POST", startURL, bytes.NewReader(body))
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("Content-Type", "application/json; charset=utf-8")
+	req.Header.Set("X-Goog-Upload-Protocol", "resumable")
+	req.Header.Set("X-Goog-Upload-Command", "start")
+	req.Header.Set("X-Goog-Upload-Header-Content-Type", mimeType)
+	resp, err := c.impl.Client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	_ = resp.Body.Close()
+	if resp.StatusCode != 200 {
+		return nil, fmt.Errorf("gemini: file upload start failed with status %d", resp.StatusCode)
+	}
+	uploadURL := resp.Header.Get("X-Goog-Upload-Url")
+	if uploadURL == "" {
+		return nil, errors.New("gemini: missing X-Goog-Upload-Url in response")
+	}
+
+	// Phase 2: Upload the file bytes.
+	data, err := io.ReadAll(r)
+	if err != nil {
+		return nil, err
+	}
+	req, err = http.NewRequestWithContext(ctx, "PUT", uploadURL, bytes.NewReader(data))
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("Content-Length", strconv.Itoa(len(data)))
+	req.Header.Set("X-Goog-Upload-Offset", "0")
+	req.Header.Set("X-Goog-Upload-Command", "upload, finalize")
+	resp, err = c.impl.Client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	var result struct {
+		File FileMetadata `json:"file"`
+	}
+	if err := c.impl.DecodeResponse(resp, uploadURL, &result); err != nil {
+		return nil, err
+	}
+	return &result.File, nil
+}
+
+// FileGetMetadata retrieves metadata for a single file.
+//
+// The name parameter should be in the form "files/{id}".
+//
+// https://ai.google.dev/api/files#method:-files.get
+func (c *Client) FileGetMetadata(ctx context.Context, name string) (*FileMetadata, error) {
+	u := "https://generativelanguage.googleapis.com/v1beta/" + name
+	var resp FileMetadata
+	if err := c.impl.DoRequest(ctx, "GET", u, nil, &resp); err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
+
+// FileList returns all files.
+//
+// https://ai.google.dev/api/files#method:-files.list
+func (c *Client) FileList(ctx context.Context) ([]FileMetadata, error) {
+	resp, err := c.FileListRaw(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return resp.Files, nil
+}
+
+// FileListRaw returns the raw paginated response for files.
+//
+// https://ai.google.dev/api/files#method:-files.list
+func (c *Client) FileListRaw(ctx context.Context) (*FileListResponse, error) {
+	u := "https://generativelanguage.googleapis.com/v1beta/files?pageSize=100"
+	resp := &FileListResponse{}
+	if err := c.impl.DoRequest(ctx, "GET", u, nil, resp); err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
+// FileDelete deletes a file.
+//
+// The name parameter should be in the form "files/{id}".
+//
+// https://ai.google.dev/api/files#method:-files.delete
+func (c *Client) FileDelete(ctx context.Context, name string) error {
+	u := "https://generativelanguage.googleapis.com/v1beta/" + name
+	return c.impl.DoRequest(ctx, "DELETE", u, nil, &struct{}{})
 }
 
 // TODO: To implement ProviderGenAsync, we need to use the Vertex API, not the API key based Gemini one.

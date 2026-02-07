@@ -244,6 +244,18 @@ func TestClient(t *testing.T) {
 		})
 	})
 
+	t.Run("CountTokens", func(t *testing.T) {
+		c := getClient(t, string(genai.ModelCheap)).(*anthropic.Client)
+		msgs := genai.Messages{genai.NewTextMessage("Hello, world!")}
+		resp, err := c.CountTokens(t.Context(), msgs)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if resp.InputTokens <= 0 {
+			t.Fatalf("expected positive input tokens, got %d", resp.InputTokens)
+		}
+	})
+
 	t.Run("Preferred", func(t *testing.T) {
 		internaltest.TestPreferredModels(t, func(st *testing.T, model string, modality genai.Modality) (genai.Provider, error) {
 			opts := []genai.ProviderOption{

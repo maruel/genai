@@ -1483,6 +1483,27 @@ func (r *ModelsResponse) ToModels() []genai.Model {
 	return models
 }
 
+// CountTokensRequest is the request to the count_tokens API. It contains only the fields accepted by the
+// endpoint, which is a subset of ChatRequest.
+//
+// https://docs.anthropic.com/en/api/messages-count-tokens
+type CountTokensRequest struct {
+	Model        string          `json:"model,omitzero"`
+	Messages     []Message       `json:"messages"`
+	System       []SystemMessage `json:"system,omitzero"`
+	Thinking     Thinking        `json:"thinking,omitzero"`
+	ToolChoice   ToolChoice      `json:"tool_choice,omitzero"`
+	Tools        []Tool          `json:"tools,omitzero"`
+	OutputConfig OutputConfig    `json:"output_config,omitzero"`
+}
+
+// CountTokensResponse is the response from the count_tokens API.
+//
+// https://docs.anthropic.com/en/api/messages-count-tokens
+type CountTokensResponse struct {
+	InputTokens int64 `json:"input_tokens"`
+}
+
 //
 
 // ErrorResponse is documented at https://docs.anthropic.com/en/api/messages#response-error
@@ -1784,6 +1805,37 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 		return nil, err
 	}
 	return resp.ToModels(), nil
+}
+
+// CountTokens counts the number of tokens in the given messages.
+//
+// https://docs.anthropic.com/en/api/counting-tokens
+func (c *Client) CountTokens(ctx context.Context, msgs genai.Messages, opts ...genai.GenOptions) (*CountTokensResponse, error) {
+	var chat ChatRequest
+	if err := chat.Init(msgs, c.impl.Model, opts...); err != nil {
+		return nil, err
+	}
+	req := CountTokensRequest{
+		Model:        chat.Model,
+		Messages:     chat.Messages,
+		System:       chat.System,
+		Thinking:     chat.Thinking,
+		ToolChoice:   chat.ToolChoice,
+		Tools:        chat.Tools,
+		OutputConfig: chat.OutputConfig,
+	}
+	return c.CountTokensRaw(ctx, &req)
+}
+
+// CountTokensRaw provides raw API access to the count_tokens endpoint.
+//
+// https://docs.anthropic.com/en/api/messages-count-tokens
+func (c *Client) CountTokensRaw(ctx context.Context, in *CountTokensRequest) (*CountTokensResponse, error) {
+	var resp CountTokensResponse
+	if err := c.impl.DoRequest(ctx, "POST", "https://api.anthropic.com/v1/messages/count_tokens", in, &resp); err != nil {
+		return nil, err
+	}
+	return &resp, nil
 }
 
 // ProcessStream converts the raw packets from the streaming API into Reply fragments.

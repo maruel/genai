@@ -18,7 +18,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"iter"
+	"mime/multipart"
 	"net/http"
 	"net/url"
 	"os"
@@ -49,6 +51,17 @@ func Scoreboard() scoreboard.Score {
 		panic(fmt.Errorf("failed to unmarshal scoreboard.json: %w", err))
 	}
 	return s
+}
+
+// ProviderOptionMultipartBoundary sets a fixed multipart boundary for
+// deterministic HTTP recordings in tests. Leave unset for production use.
+type ProviderOptionMultipartBoundary string
+
+func (p ProviderOptionMultipartBoundary) Validate() error {
+	if p == "" {
+		return errors.New("ProviderOptionMultipartBoundary cannot be empty")
+	}
+	return nil
 }
 
 // GenOptionText defines Anthropic specific options.
@@ -947,6 +960,7 @@ const (
 	SourceURL     SourceType = "url"
 	SourceText    SourceType = "text"
 	SourceContent SourceType = "content"
+	SourceFileID  SourceType = "file"
 )
 
 type Source struct {
@@ -1483,6 +1497,35 @@ type BatchDeleteResponse struct {
 	Type string `json:"type"` // "message_batch_deleted"
 }
 
+// FileMetadata is described at https://docs.anthropic.com/en/api/files
+type FileMetadata struct {
+	ID           string    `json:"id"`
+	CreatedAt    time.Time `json:"created_at"`
+	Filename     string    `json:"filename"`
+	MimeType     string    `json:"mime_type"`
+	SizeBytes    int64     `json:"size_bytes"`
+	Type         string    `json:"type"` // "file"
+	Downloadable bool      `json:"downloadable"`
+}
+
+// FileListResponse is the response for listing files.
+//
+// https://docs.anthropic.com/en/api/files
+type FileListResponse struct {
+	Data    []FileMetadata `json:"data"`
+	FirstID string         `json:"first_id"`
+	HasMore bool           `json:"has_more"`
+	LastID  string         `json:"last_id"`
+}
+
+// FileDeleteResponse is the response for deleting a file.
+//
+// https://docs.anthropic.com/en/api/files
+type FileDeleteResponse struct {
+	ID   string `json:"id"`
+	Type string `json:"type"` // "file_deleted"
+}
+
 //
 
 type Model struct {
@@ -1568,6 +1611,9 @@ func (er *ErrorResponse) IsAPIError() bool {
 type Client struct {
 	base.NotImplemented
 	impl base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
+	// multipartBoundary overrides the multipart boundary for deterministic HTTP
+	// recordings. Leave empty for production use.
+	multipartBoundary string
 }
 
 // New creates a new client to talk to the Anthropic platform API.
@@ -1579,7 +1625,7 @@ type Client struct {
 // To use multiple models, create multiple clients.
 // Use one of the model from https://docs.anthropic.com/en/docs/about-claude/models/all-models
 func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
-	var apiKey, model string
+	var apiKey, model, multipartBoundary string
 	var modalities genai.Modalities
 	var preloadedModels []genai.Model
 	var wrapper func(http.RoundTripper) http.RoundTripper
@@ -1598,6 +1644,8 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 			preloadedModels = []genai.Model(v)
 		case genai.ProviderOptionTransportWrapper:
 			wrapper = v
+		case ProviderOptionMultipartBoundary:
+			multipartBoundary = string(v)
 		default:
 			return nil, fmt.Errorf("unsupported option type %T", opt)
 		}
@@ -1619,6 +1667,7 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	}
 	// Anthropic allows Opaque fields for thinking signatures
 	c := &Client{
+		multipartBoundary: multipartBoundary,
 		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			GenSyncURL:      "https://api.anthropic.com/v1/messages",
 			ProcessStream:   ProcessStream,
@@ -1820,6 +1869,115 @@ func (c *Client) DeleteBatch(ctx context.Context, id string) error {
 	u := "https://api.anthropic.com/v1/messages/batches/" + url.PathEscape(id)
 	resp := BatchDeleteResponse{}
 	return c.impl.DoRequest(ctx, "DELETE", u, nil, &resp)
+}
+
+// fileDo executes an HTTP request with the files API beta header.
+func (c *Client) fileDo(ctx context.Context, method, u string, body io.Reader, contentType string) (*http.Response, error) {
+	req, err := http.NewRequestWithContext(ctx, method, u, body)
+	if err != nil {
+		return nil, err
+	}
+	if contentType != "" {
+		req.Header.Set("Content-Type", contentType)
+	}
+	req.Header.Set("anthropic-beta", "files-api-2025-04-14")
+	return c.impl.Client.Do(req)
+}
+
+// fileDoJSON executes a JSON GET/DELETE request with the files API beta header
+// and decodes the response.
+func (c *Client) fileDoJSON(ctx context.Context, method, u string, out any) error {
+	resp, err := c.fileDo(ctx, method, u, nil, "")
+	if err != nil {
+		return err
+	}
+	return c.impl.DecodeResponse(resp, u, out)
+}
+
+// FileUpload uploads a file to the Anthropic files API.
+//
+// https://docs.anthropic.com/en/api/files
+func (c *Client) FileUpload(ctx context.Context, filename string, r io.Reader) (*FileMetadata, error) {
+	buf := bytes.Buffer{}
+	w := multipart.NewWriter(&buf)
+	if c.multipartBoundary != "" {
+		_ = w.SetBoundary(c.multipartBoundary)
+	}
+	part, err := w.CreateFormFile("file", filename)
+	if err != nil {
+		return nil, err
+	}
+	if _, err = io.Copy(part, r); err != nil {
+		return nil, err
+	}
+	if err = w.Close(); err != nil {
+		return nil, err
+	}
+	u := "https://api.anthropic.com/v1/files?beta=true"
+	resp, err := c.fileDo(ctx, "POST", u, &buf, w.FormDataContentType())
+	if err != nil {
+		return nil, err
+	}
+	f := FileMetadata{}
+	err = c.impl.DecodeResponse(resp, u, &f)
+	return &f, err
+}
+
+// FileDownload downloads a file's content from the Anthropic files API.
+//
+// The caller must close the returned io.ReadCloser.
+//
+// https://docs.anthropic.com/en/api/files
+func (c *Client) FileDownload(ctx context.Context, id string) (io.ReadCloser, error) {
+	u := "https://api.anthropic.com/v1/files/" + url.PathEscape(id) + "/content?beta=true"
+	resp, err := c.fileDo(ctx, "GET", u, nil, "")
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode != 200 {
+		return nil, c.impl.DecodeError(u, resp)
+	}
+	return resp.Body, nil
+}
+
+// FileGetMetadata retrieves metadata for a single file.
+//
+// https://docs.anthropic.com/en/api/files
+func (c *Client) FileGetMetadata(ctx context.Context, id string) (*FileMetadata, error) {
+	u := "https://api.anthropic.com/v1/files/" + url.PathEscape(id) + "?beta=true"
+	f := FileMetadata{}
+	err := c.fileDoJSON(ctx, "GET", u, &f)
+	return &f, err
+}
+
+// FileList returns all files.
+//
+// https://docs.anthropic.com/en/api/files
+func (c *Client) FileList(ctx context.Context) ([]FileMetadata, error) {
+	resp, err := c.FileListRaw(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return resp.Data, nil
+}
+
+// FileListRaw returns the raw paginated response for files.
+//
+// https://docs.anthropic.com/en/api/files
+func (c *Client) FileListRaw(ctx context.Context) (*FileListResponse, error) {
+	u := "https://api.anthropic.com/v1/files?beta=true&limit=1000"
+	resp := &FileListResponse{}
+	err := c.fileDoJSON(ctx, "GET", u, resp)
+	return resp, err
+}
+
+// FileDelete deletes a file.
+//
+// https://docs.anthropic.com/en/api/files
+func (c *Client) FileDelete(ctx context.Context, id string) error {
+	u := "https://api.anthropic.com/v1/files/" + url.PathEscape(id) + "?beta=true"
+	resp := FileDeleteResponse{}
+	return c.fileDoJSON(ctx, "DELETE", u, &resp)
 }
 
 // Name implements genai.Provider.

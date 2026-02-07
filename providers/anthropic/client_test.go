@@ -230,6 +230,106 @@ func TestClient(t *testing.T) {
 		})
 	})
 
+	t.Run("FileCRUD", func(t *testing.T) {
+		t.Parallel()
+		opts := []genai.ProviderOption{
+			genai.ProviderOptionPreloadedModels(cachedModels),
+			anthropic.ProviderOptionMultipartBoundary("80309819a837f26826233a299e185d0ccf3f559362092bd3278b8a045ee1"),
+		}
+		ci, err := getClientInner(t, func(h http.RoundTripper) http.RoundTripper {
+			return testRecorder.Record(t, h)
+		}, opts...)
+		if err != nil {
+			t.Fatal(err)
+		}
+		c := ci.(*anthropic.Client)
+		ctx := t.Context()
+		const content = "Hello from genai file upload test."
+
+		// Upload.
+		fm, err := c.FileUpload(ctx, "test.txt", strings.NewReader(content))
+		if err != nil {
+			t.Fatal(err)
+		}
+		if fm.ID == "" {
+			t.Fatal("expected file ID")
+		}
+		if fm.Filename != "test.txt" {
+			t.Errorf("Filename = %q, want %q", fm.Filename, "test.txt")
+		}
+
+		// GetMetadata.
+		t.Run("GetMetadata", func(t *testing.T) {
+			m, err := c.FileGetMetadata(ctx, fm.ID)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if m.ID != fm.ID {
+				t.Errorf("ID = %q, want %q", m.ID, fm.ID)
+			}
+			if m.Filename != "test.txt" {
+				t.Errorf("Filename = %q, want %q", m.Filename, "test.txt")
+			}
+		})
+
+		// List.
+		t.Run("List", func(t *testing.T) {
+			files, err := c.FileList(ctx)
+			if err != nil {
+				t.Fatal(err)
+			}
+			found := false
+			for _, f := range files {
+				if f.ID == fm.ID {
+					found = true
+					break
+				}
+			}
+			if !found {
+				t.Errorf("file %s not found in list of %d files", fm.ID, len(files))
+			}
+		})
+
+		// Download. The file may not be downloadable immediately after upload;
+		// poll until it is ready.
+		t.Run("Download", func(t *testing.T) {
+			isRecording := os.Getenv("RECORD") == "1"
+			for {
+				m, err := c.FileGetMetadata(ctx, fm.ID)
+				if err != nil {
+					t.Fatal(err)
+				}
+				if m.Downloadable {
+					break
+				}
+				if !isRecording {
+					t.Skip("file not yet downloadable and not recording")
+				}
+				t.Log("Waiting for file to become downloadable...")
+				time.Sleep(time.Second)
+			}
+			rc, err := c.FileDownload(ctx, fm.ID)
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer rc.Close()
+			got, err := io.ReadAll(rc)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if string(got) != content {
+				t.Errorf("content = %q, want %q", got, content)
+			}
+		})
+
+		// Delete.
+		t.Run("Delete", func(t *testing.T) {
+			if err := c.FileDelete(ctx, fm.ID); err != nil {
+				t.Fatal(err)
+			}
+		})
+	})
+
 	t.Run("MCP", func(t *testing.T) {
 		// TODO: Re-record cassettes from a machine where Anthropic's MCP
 		// connector can reach the Smithery server.

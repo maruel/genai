@@ -43,7 +43,7 @@ Reference SDK: `github.com/anthropics/anthropic-sdk-go`
 | **Beta Features**              |              |                |                |
 | MCP v1 (2025-04-04)            | Yes          | Yes            | Complete       |
 | MCP v2 (2025-11-20)            | Yes          | No             | Phase 3.6      |
-| File Uploads                   | Yes          | No             | Phase 3.1      |
+| File Uploads                   | Yes          | Yes            | Complete       |
 | Code Execution Tool            | Yes          | No             | Phase 3.2      |
 | Web Fetch Tool                 | Yes          | No             | Phase 3.3      |
 | Context Management             | Yes          | No             | Phase 3.4      |
@@ -125,19 +125,9 @@ poll), OpenAI Chat (sync, stream), OpenAI Responses (sync, stream, poll), and Gr
 
 Goal: Support beta features that are commonly used in agent workflows.
 
-### 3.1 File Uploads
+### 3.1 File Uploads — Complete
 
-**Priority**: P2
-
-**Steps**:
-1. Add file API types: `FileMetadata`, `FileUploadRequest`, `FileListResponse`.
-2. Add methods: `FileUpload()`, `FileDownload()`, `FileList()`, `FileDelete()`,
-   `FileGetMetadata()`.
-3. Add `FileDocumentSource` and `FileImageSource` content source types.
-4. Beta header: `files-api-2025-04-14`.
-5. Write tests with HTTP recording.
-
-**Effort**: Medium. New API surface but straightforward CRUD.
+Full CRUD: `FileUpload`, `FileDownload`, `FileList`, `FileListRaw`, `FileDelete`, `FileGetMetadata`.
 
 ### 3.2 Code Execution Tool
 

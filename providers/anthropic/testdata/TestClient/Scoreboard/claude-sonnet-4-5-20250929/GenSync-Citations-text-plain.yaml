@@ -1,69 +1,70 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 415
-    host: api.anthropic.com
-    body: "{\"model\":\"claude-sonnet-4-5-20250929\",\"max_tokens\":32000,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"document\",\"cache_control\":{\"type\":\"ephemeral\"},\"citations\":{\"enabled\":true},\"source\":{\"type\":\"text\",\"media_type\":\"text/plain\",\"data\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"}},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}],\"thinking\":{\"type\":\"disabled\"}}\n"
-    headers:
-      Anthropic-Version:
-      - "2023-06-01"
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://api.anthropic.com/v1/messages
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\"model\":\"claude-sonnet-4-5-20250929\",\"id\":\"msg_01MeepTh37zfb6wqSoFSwsbh\",\"type\":\"message\",\"role\":\"assistant\",\"content\":[{\"citations\":[{\"type\":\"char_location\",\"cited_text\":\"The capital of Quackiland is Quack. \",\"document_index\":0,\"document_title\":null,\"start_char_index\":0,\"end_char_index\":36}],\"type\":\"text\",\"text\":\"The capital of Quackiland is Quack.\"}],\"stop_reason\":\"end_turn\",\"stop_sequence\":null,\"usage\":{\"input_tokens\":595,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"cache_creation\":{\"ephemeral_5m_input_tokens\":0,\"ephemeral_1h_input_tokens\":0},\"output_tokens\":32,\"service_tier\":\"standard\"}}"
-    headers:
-      Anthropic-Ratelimit-Input-Tokens-Limit:
-      - "2000000"
-      Anthropic-Ratelimit-Input-Tokens-Remaining:
-      - "2000000"
-      Anthropic-Ratelimit-Input-Tokens-Reset:
-      - "2025-11-15T22:17:20Z"
-      Anthropic-Ratelimit-Output-Tokens-Limit:
-      - "400000"
-      Anthropic-Ratelimit-Output-Tokens-Remaining:
-      - "400000"
-      Anthropic-Ratelimit-Output-Tokens-Reset:
-      - "2025-11-15T22:17:21Z"
-      Anthropic-Ratelimit-Requests-Limit:
-      - "4000"
-      Anthropic-Ratelimit-Requests-Remaining:
-      - "3999"
-      Anthropic-Ratelimit-Requests-Reset:
-      - "2025-11-15T22:17:19Z"
-      Anthropic-Ratelimit-Tokens-Limit:
-      - "2400000"
-      Anthropic-Ratelimit-Tokens-Remaining:
-      - "2400000"
-      Anthropic-Ratelimit-Tokens-Reset:
-      - "2025-11-15T22:17:20Z"
-      Cf-Cache-Status:
-      - DYNAMIC
-      Cf-Ray:
-      - 99f21e37cb883d45-YVR
-      Content-Type:
-      - application/json
-      Retry-After:
-      - "41"
-      Server:
-      - cloudflare
-      Strict-Transport-Security:
-      - max-age=31536000; includeSubDomains; preload
-      X-Envoy-Upstream-Service-Time:
-      - "2171"
-      X-Robots-Tag:
-      - none
-    status: 200 OK
-    code: 200
-    duration: 2.265s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 415
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-sonnet-4-5-20250929","max_tokens":64000,"messages":[{"role":"user","content":[{"type":"document","cache_control":{"type":"ephemeral"},"citations":{"enabled":true},"source":{"type":"text","media_type":"text/plain","data":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."}},{"type":"text","text":"What is the capital of Quackiland?"}]}],"thinking":{"type":"disabled"}}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"model":"claude-sonnet-4-5-20250929","id":"msg_01M1uLsAcFKVTpeCwQu6UVRu","type":"message","role":"assistant","content":[{"citations":[{"type":"char_location","cited_text":"The capital of Quackiland is Quack. ","document_index":0,"document_title":null,"start_char_index":0,"end_char_index":36}],"type":"text","text":"The capital of Quackiland is Quack."}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":595,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":32,"service_tier":"standard","inference_geo":"not_available"}}'
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "2000000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-02-07T14:24:14Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "400000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "400000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-02-07T14:24:15Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "4000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "3999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-02-07T14:24:14Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "2400000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "2400000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-02-07T14:24:14Z"
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9ca38cb58d68a30c-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Envoy-Upstream-Service-Time:
+                - "1689"
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 1.728s

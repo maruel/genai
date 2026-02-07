@@ -34,21 +34,21 @@ func ExampleNew_mCP_client() {
 	}
 
 	msgs := genai.Messages{
-		genai.NewTextMessage("Remember that my name is Bob, my mother is Jane and my father is John."),
+		genai.NewTextMessage("Use the echo tool to echo 'hello world'."),
 	}
 	// Use raw calls to use the MCP client. It is not yet generalized in genai.
 	in := anthropic.ChatRequest{}
 	if err = in.Init(msgs, c.ModelID()); err != nil {
 		log.Fatal(err)
 	}
-	// Use your own MCP server. This one runs a modified version of
-	// https://github.com/modelcontextprotocol/go-sdk/tree/main/examples/server/memory for testing purposes.
+	// Use an echo MCP server for testing purposes.
 	in.MCPServers = []anthropic.MCPServer{
 		{
-			Name:              "memory",
-			Type:              "url",
-			URL:               "https://mcp.maruel.ca",
-			ToolConfiguration: anthropic.ToolConfiguration{Enabled: true},
+			Name:               "echo",
+			Type:               "url",
+			URL:                "https://server.smithery.ai/@simonfraserduncan/echo-mcp",
+			AuthorizationToken: os.Getenv("SMITHERY_API_KEY"),
+			ToolConfiguration:  anthropic.ToolConfiguration{Enabled: true},
 		},
 	}
 	out := anthropic.ChatResponse{}

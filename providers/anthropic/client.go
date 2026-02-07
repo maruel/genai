@@ -187,7 +187,7 @@ func (c *ChatRequest) initImpl(msgs genai.Messages, model string, cache bool, op
 	msgToCache := 0
 	// Default to disabled thinking.
 	c.Thinking.Type = "disabled"
-	// Anthropic requires a value! And their models listing API doesn't provide the model's acceptable values! This is quite annoying.
+	// Anthropic requires max_tokens and the models listing API doesn't expose the limit.
 	c.MaxTokens = modelsMaxTokens(model)
 	for _, opt := range opts {
 		if err := opt.Validate(); err != nil {
@@ -337,20 +337,33 @@ func (c *ChatRequest) initOptionsTools(v *genai.GenOptionsTools) ([]string, []er
 }
 
 func modelsMaxTokens(model string) int64 {
-	// Anthropic requires a value! And their models listing API doesn't provide the model's acceptable values! This is quite annoying.
-	if strings.HasPrefix(model, "claude-3-opus-") || strings.HasPrefix(model, "claude-3-haiku-") {
+	// Returns the model's max output tokens. Anthropic requires max_tokens and the
+	// models listing API doesn't expose the limit.
+	// https://platform.claude.com/docs/en/about-claude/models/overview
+	switch {
+	case strings.HasPrefix(model, "claude-3-opus-"),
+		strings.HasPrefix(model, "claude-3-haiku-"):
 		return 4096
-	} else if strings.HasPrefix(model, "claude-3-5-") {
+	case strings.HasPrefix(model, "claude-3-5-"):
 		return 8192
-	} else if strings.HasPrefix(model, "claude-3-7-") {
-		return 64000
-	} else if strings.HasPrefix(model, "claude-4-sonnet-") {
-		return 64000
-	} else if strings.HasPrefix(model, "claude-4-opus-") {
+	case
+		strings.HasPrefix(model, "claude-4-opus-"),
+		strings.HasPrefix(model, "claude-opus-4-0"),
+		strings.HasPrefix(model, "claude-opus-4-2"),
+		strings.HasPrefix(model, "claude-opus-4-1"):
+		// Opus 4 (claude-opus-4-20250514) and Opus 4.1.
 		return 32000
+	case strings.HasPrefix(model, "claude-3-7-"),
+		strings.HasPrefix(model, "claude-sonnet-4-"),
+		strings.HasPrefix(model, "claude-4-sonnet-"),
+		strings.HasPrefix(model, "claude-opus-4-5"),
+		strings.HasPrefix(model, "claude-haiku-4-5"):
+		return 64000
+	case strings.HasPrefix(model, "claude-opus-4-6"):
+		return 128000
 	}
-	// Default value for new models.
-	return 32000
+	// Default for future models.
+	return 64000
 }
 
 // MCPServer is documented at https://docs.anthropic.com/en/api/messages#body-mcp-servers

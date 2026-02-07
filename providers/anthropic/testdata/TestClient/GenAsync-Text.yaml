@@ -1,45 +1,46 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 204
-    host: api.anthropic.com
-    body: "{\"requests\":[{\"custom_id\":\"TODO\",\"params\":{\"model\":\"claude-haiku-4-5-20251001\",\"max_tokens\":32000,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"test\"}]}],\"thinking\":{\"type\":\"disabled\"}}}]}\n"
-    headers:
-      Anthropic-Version:
-      - "2023-06-01"
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://api.anthropic.com/v1/messages/batches
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\"id\":\"msgbatch_01MX4tvx1bFQNHEakki3Vnai\",\"type\":\"message_batch\",\"processing_status\":\"in_progress\",\"request_counts\":{\"processing\":1,\"succeeded\":0,\"errored\":0,\"canceled\":0,\"expired\":0},\"ended_at\":null,\"created_at\":\"2025-12-17T02:00:04.072942+00:00\",\"expires_at\":\"2025-12-18T02:00:04.072942+00:00\",\"archived_at\":null,\"cancel_initiated_at\":null,\"results_url\":null}"
-    headers:
-      Cf-Cache-Status:
-      - DYNAMIC
-      Cf-Ray:
-      - 9af2d320eba3a275-YUL
-      Content-Type:
-      - application/json
-      Server:
-      - cloudflare
-      Strict-Transport-Security:
-      - max-age=31536000; includeSubDomains; preload
-      Vary:
-      - accept-encoding
-      X-Envoy-Upstream-Service-Time:
-      - "155"
-      X-Robots-Tag:
-      - none
-    status: 200 OK
-    code: 200
-    duration: 256ms
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 204
+        host: api.anthropic.com
+        body: |
+            {"requests":[{"custom_id":"TODO","params":{"model":"claude-haiku-4-5-20251001","max_tokens":64000,"messages":[{"role":"user","content":[{"type":"text","text":"test"}]}],"thinking":{"type":"disabled"}}}]}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages/batches
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"msgbatch_01Wpf4uccqjKafHitVdYFjc6","type":"message_batch","processing_status":"in_progress","request_counts":{"processing":1,"succeeded":0,"errored":0,"canceled":0,"expired":0},"ended_at":null,"created_at":"2026-02-07T14:21:44.242118+00:00","expires_at":"2026-02-08T14:21:44.242118+00:00","archived_at":null,"cancel_initiated_at":null,"results_url":null}'
+        headers:
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9ca3890eefdea30c-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Envoy-Upstream-Service-Time:
+                - "171"
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 210ms

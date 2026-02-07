@@ -5,7 +5,11 @@
 package anthropic_test
 
 import (
+	"bytes"
 	_ "embed"
+	"encoding/json"
+	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -164,6 +168,9 @@ func TestClient(t *testing.T) {
 	})
 
 	t.Run("MCP", func(t *testing.T) {
+		// TODO: Re-record cassettes from a machine where Anthropic's MCP
+		// connector can reach the Smithery server.
+		t.Skip("MCP cassettes need re-recording with Smithery service token")
 		// Anthropic requires an HTTP header to enable MCP use. See
 		// https://docs.anthropic.com/en/docs/agents-and-tools/mcp-connector
 		wrapper := func(h http.RoundTripper) http.RoundTripper {
@@ -172,13 +179,20 @@ func TestClient(t *testing.T) {
 				Header:    http.Header{"anthropic-beta": []string{"mcp-client-2025-04-04"}},
 			}
 		}
-		prompt := "Remember that my name is Bob, my mother is Jane and my father is John. If you saved it, reply with 'Done'."
+		// Get a Smithery service token from the API key.
+		// See https://smithery.ai/docs/use/connect#service-tokens
+		token, err := getSmitheryServiceToken(os.Getenv("SMITHERY_API_KEY"), "@simonfraserduncan/echo-mcp")
+		if err != nil {
+			t.Fatal(err)
+		}
+		prompt := "Use the echo tool to echo 'hello world'."
 		msgs := genai.Messages{genai.NewTextMessage(prompt)}
 		mcp := anthropic.MCPServer{
-			Name:              "memory",
-			Type:              "url",
-			URL:               "https://mcp.maruel.ca",
-			ToolConfiguration: anthropic.ToolConfiguration{Enabled: true},
+			Name:               "echo",
+			Type:               "url",
+			URL:                "https://server.smithery.ai/@simonfraserduncan/echo-mcp",
+			AuthorizationToken: token,
+			ToolConfiguration:  anthropic.ToolConfiguration{Enabled: true},
 		}
 		t.Run("GenSyncRaw", func(t *testing.T) {
 			cc, err := getClientInner(t, func(h http.RoundTripper) http.RoundTripper {
@@ -201,7 +215,7 @@ func TestClient(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			if got := res.String(); !strings.Contains(got, "memory") {
+			if got := res.String(); !strings.Contains(got, "echo") {
 				t.Fatal(got)
 			}
 		})
@@ -238,7 +252,7 @@ func TestClient(t *testing.T) {
 			if res.Usage, res.Logprobs, err = finish2(); err != nil {
 				t.Fatal(err)
 			}
-			if got := res.String(); !strings.Contains(got, "memory") {
+			if got := res.String(); !strings.Contains(got, "echo") {
 				t.Fatal(got)
 			}
 		})
@@ -500,6 +514,52 @@ func TestThinking(t *testing.T) {
 			}
 		})
 	})
+}
+
+// getSmitheryServiceToken exchanges a Smithery API key for a scoped service
+// token. See https://smithery.ai/docs/use/connect#service-tokens
+func getSmitheryServiceToken(apiKey, namespace string) (string, error) {
+	type tokenPolicy struct {
+		Namespaces []string `json:"namespaces"`
+		Resources  []string `json:"resources"`
+		Operations []string `json:"operations"`
+		TTL        string   `json:"ttl"`
+	}
+	body, err := json.Marshal(struct {
+		Policy []tokenPolicy `json:"policy"`
+	}{
+		Policy: []tokenPolicy{{
+			Namespaces: []string{namespace},
+			Resources:  []string{"connections"},
+			Operations: []string{"read", "execute"},
+			TTL:        "1h",
+		}},
+	})
+	if err != nil {
+		return "", err
+	}
+	req, err := http.NewRequest("POST", "https://registry.smithery.ai/tokens", bytes.NewReader(body))
+	if err != nil {
+		return "", err
+	}
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "Bearer "+apiKey)
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusCreated {
+		b, _ := io.ReadAll(resp.Body)
+		return "", fmt.Errorf("smithery token API error (status %d): %s", resp.StatusCode, b)
+	}
+	var result struct {
+		Token string `json:"token"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return "", err
+	}
+	return result.Token, nil
 }
 
 func init() {

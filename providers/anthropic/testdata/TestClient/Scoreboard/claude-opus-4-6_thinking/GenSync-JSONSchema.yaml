@@ -1,0 +1,70 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 469
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-opus-4-6","max_tokens":128000,"messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}],"thinking":{"budget_tokens":1024,"type":"enabled"},"output_config":{"format":{"type":"json_schema","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}}}}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"model":"claude-opus-4-6","id":"msg_016JQauK8DnRQ4oeSdx9swLf","type":"message","role":"assistant","content":[{"type":"thinking","thinking":"<thinking>","signature":"ErIBCkYICxgCKkCtP/n/X/Xaq+q6BtI6cPwQ8sfdQDkJCvCyVE2AG7iVWtGpJ2hZOjxeJssZO/sri8FWl8J/eEPzT5WWgbCa3b7UEgwnilSOK6Y3yqU5FvsaDLOkcxs8loRNF/TUnSIwPsixYI2UPlrtoPCNK44uGs6xrfGIqX0w+LnMZk8p4ArvJwof/Tzz/TW6DKJDtH6KKhrDoCaSDub5zxbMAiZjvB9Vck7yAc0Q8POsfxgB"},{"type":"text","text":"{\"is_fruit\": true}"}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":223,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":37,"service_tier":"standard","inference_geo":"global"}}'
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "2000000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-02-07T14:48:01Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "400000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "400000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-02-07T14:48:02Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "4000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "3999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-02-07T14:47:56Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "2400000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "2400000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-02-07T14:48:01Z"
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9ca3af734e0aa2f0-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Envoy-Upstream-Service-Time:
+                - "5395"
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 5.435s

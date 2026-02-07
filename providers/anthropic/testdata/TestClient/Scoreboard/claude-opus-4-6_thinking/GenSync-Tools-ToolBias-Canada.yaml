@@ -1,0 +1,70 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 611
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-opus-4-6","max_tokens":128000,"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"thinking":{"budget_tokens":1024,"type":"enabled"},"tool_choice":{"type":"auto"},"tools":[{"description":"A tool to specify the best country","input_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]},"name":"best_country"}]}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: "{\"model\":\"claude-opus-4-6\",\"id\":\"msg_01B2wicpF4qL6e3z9fAZ55vm\",\"type\":\"message\",\"role\":\"assistant\",\"content\":[{\"type\":\"thinking\",\"thinking\":\"The user is asking me to call the best_country tool, but they haven't specified which country to pass as the parameter. The tool requires a \\\"country\\\" parameter that must be either \\\"Canada\\\" or \\\"USA\\\". \\n\\nThe user is asking me to determine which is the best country, but the tool doesn't actually compare countries - it just takes a single country as input. The user hasn't told me which value to pass. Let me re-read the request.\\n\\nThey say \\\"Call the tool best_country to tell me which country is the best one.\\\" - they want me to use the tool to answer the question. But the tool requires me to specify a country. It doesn't determine the best country; I need to provide one.\\n\\n\\nI need to clarify with the user that the tool requires me to specify which country to evaluate rather than determining the best one on its own. I should ask them which country they'd like me to check, or explain that I can't make an arbitrary choice between the two options.\",\"signature\":\"Es0JCkYICxgCKkCX9/Yb5vvZt4GPvmOwRDVt9kv/xNuBtg3ckHSPmyck5Xl9l0t4BDYJcGstBGAi2+DV+dE1NdOvRrubn5Cq1hxSEgyxukS33hPwHhK+INkaDAPwIRRI4Ftq+oceJiIwTvqkIcMB6OjvjA66poPjYhVpjQUBQB17k0CJC8coIBv3WmJg6FjHSTDfVThxw22KKrQIqY9P+4UBfCHAj5COjPAFQf3R2SFJir8QVHFtfHYFklxRquxbf5M722yX69O8Z/IqbL49BqDLcIR1kRS8PTNrFkJbK+l/W35nYv7UA1At33tF2fRxZqiLwKTobq8wIGRaDjMr9gg8Yrmf0VSWSBQ/aEOJuO0JXS2+j5o071Q6GRb0054+xmW5cbIvlBF9khK34CVq0cTUWx5HhbRdn/yHKNxSb/ZN63JR1Xp/oU5l0ZgVigQaOA+qMb6juA1SoY462/j2aQpyNerg43cj0vLLeUJe9oVLUdmXulFSp84mgEY8+SfAjnvmc2zfmdepP3NZXXHMdofwvQgtgJXulHBbHpB3Nf72B5nQaCni9Ss8g0myuJP4f5lkxog1Oy4NQtvO35+sx8bOj71ZDPOR67HxkBB1j2cwFv5cM9gEsxSbH7wxJiWlRcWGTOsIiHtMJ/Y1+SaeXoSRVMx6KDVKenU6g1wQHJLpVVRaD9blMqy1bjSH4d/DPIT9Uc4SwcotYAL2jVIBghGI4WPNcGt5IIZNxeU9Tk3heqMTJ2x7tDppZj/y30RKYVz42SFOfs8FUShCJVPZ+1Lk084erJVYD4a0B8vAzzGqHb9yqxeSZhxOg4lEW9iOcsULpfsElYaNX0IrwcTxE1q/MP+T+dXLudo8e1s9pconAaEH34AECcknoDzVn6FJcVRk4LvnUQdZXJBp7PyR4u9cMk0/ubEM9yuVG5LrlGlDxiGESYWayPRJuxJysE+DoiJKHpnqCpnGCxosAjKHQX4wee0wm7Qc+BZNl9yBxGXaqvmC10w4d9BQkczkzC+oxFJpL2F5xa8GEOvJA8tWKZ1dNhTnYUTSux+HosnHW+ruNGr+W8DmMqgVdr3cxhFI8gyHwIwK/kzLxqp7jjhDcWpHx9HDN051sHmWeXm8O60IiRP44Il1j5WED0gR9mUyopx8gnACg95UZcwr8D/iR8bzNoNB6+5chedwkvDLknKph0siGTdbe0dAC9xj5p/8sRTu/wYvNuEyYyJhZVDAIlh1g7L1Sk8ixkdBNO3pYHgupi6Cl7dMzcviC1RGwvQPZ3Ijtz1HVEXHJMubhQVvwYSqpccVCRjmAyVaUqWCLr16NaaNw6ghxwDOEyNCi2d9ZIXqY7UrhQmKRw9Pc23Pp4JGQ5gEYv3xiZANMr4aYrTdWFJy8FcL9sfF/SnI+98h7B2Q/+Rknso86+OROkNWoR4KepdD7Lcv4Wor8c7d258v66kpxaAu7R/jqEGGl9+J1B6nLOhWXoeRHyomHF6Qgj7b81aj04O6ePmvRH8Xj2gRXmUGnhvS2r0XOrkPX2Rx3v/3hbAH4ZBaogk42s4DiY8TQITP5JEAnl9TPwPzjt8mTLCbUdW8lts1Z+6R6ne7sccDaHuONQdvcdZUFP12/eDBDekRipKOvz4it8Acn+sYAQ==\"},{\"type\":\"text\",\"text\":\"Great question! However, I want to be transparent with you about how the `best_country` tool works. It requires **me** to specify a country (\\\"Canada\\\" or \\\"USA\\\") as an input — it doesn't actually evaluate or compare the two countries to determine which is \\\"best.\\\"\\n\\nSo if I were to call it, I'd be **choosing** the answer myself rather than the tool making an objective determination. That wouldn't be very helpful or honest!\\n\\nWould you like me to:\\n1. **Call the tool with a specific country you choose** — just tell me \\\"Canada\\\" or \\\"USA\\\" and I'll make the call.\\n2. **Share some general pros and cons** of each country so you can form your own opinion?\\n\\nLet me know how you'd like to proceed! \U0001F60A\"}],\"stop_reason\":\"end_turn\",\"stop_sequence\":null,\"usage\":{\"input_tokens\":654,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"cache_creation\":{\"ephemeral_5m_input_tokens\":0,\"ephemeral_1h_input_tokens\":0},\"output_tokens\":419,\"service_tier\":\"standard\",\"inference_geo\":\"global\"}}"
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "2000000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-02-07T14:48:07Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "400000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "400000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-02-07T14:48:16Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "4000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "3999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-02-07T14:48:06Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "2400000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "2400000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-02-07T14:48:07Z"
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9ca3afaf7ec5a2f0-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Envoy-Upstream-Service-Time:
+                - "9966"
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 10.002s

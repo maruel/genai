@@ -9,7 +9,7 @@ interactions:
         content_length: 479
         host: api.anthropic.com
         body: |
-            {"model":"claude-sonnet-4-5-20250929","max_tokens":32000,"messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}],"thinking":{"budget_tokens":1024,"type":"enabled"},"output_config":{"format":{"type":"json_schema","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}}}}
+            {"model":"claude-sonnet-4-5-20250929","max_tokens":64000,"messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}],"thinking":{"budget_tokens":1024,"type":"enabled"},"output_config":{"format":{"type":"json_schema","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}}}}
         headers:
             Anthropic-Version:
                 - "2023-06-01"
@@ -23,36 +23,36 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"model":"claude-sonnet-4-5-20250929","id":"msg_011LRbQeRADdEQnfNzy6TiL7","type":"message","role":"assistant","content":[{"type":"thinking","thinking":"The user is asking if a banana is a fruit. A banana is indeed a fruit - it''s a berry that grows on a herbaceous plant. \n\nI need to respond with JSON matching the schema provided. The schema requires:\n- An object with a property \"is_fruit\" that is a boolean\n- No additional properties allowed\n- \"is_fruit\" is required\n\nSo I need to respond with:\n{\"is_fruit\": true}\n\nI should not include any explanation, markdown, or anything else - just the JSON object.","signature":"Eu4ECkYICxgCKkDuzBpgkjAXXOoHEI0ylfb5AX3UJCr2AIOTmAw7myWYLAo3MKbGA3jQy+LAI/8mj7rz7x77QviHb6/pvj97mlm2Egxp8UQStrznuj0DEqcaDOwPApET26M4SsqyuiIwZWDQssEMS3Jp9fcTD+VxSQwPVhqOsfmZZ/YgSQgoSBrVjSfyw7kfHQSFfLzEtiw3KtUDBJfbda6NWACTlZAqa19IuPmBy5Mhi/8CKP/om//jLzY8LDYlPzTLi2UP3E5B2RJID29Uj0jZz2CbNWXQP5RCOLudPPPbEQpgOPiMDqAQhIZgAhzigyZPc4/C5r6269Rcu2J1eWP9u0kitA0LX+qHxbD+SqlWJNnKIw3PY2FI+66nZky4rMcQ9yaT7JHM5NeK+CgkfIi9jNiVfDl9ATAiiTm8qe5G4Pdr1nfPdxacPHUEKqmvFRAUPLJilk/pofh3ezKYiNtx5LhspBBXpZ2U/53iBqYCG5DnM/OwfVFUhN8YWhguXDpoRIasZvCzp2Ea/GAsYTJDAmfD53DlM4JI+hgPITAISxljCQ5TWssVgLtdWQlT/6hT/xyJY+prUq/Q0TNd327Jb4c0dOyyo6OmydDZOckc32CFznoMGK9Y70O1Hk7au3aZYhrJVuudYdaGRBXeaZIdar32a/FvTlxm7q3XeMyYaHnXQb0XjpXxItABBR+k9dh/nhRGgo5SBKrBjeykb1ZcIgQ+vQsgYu35Mi1ZuJBDBCC84jxnfMwbKU8iQO2REGRDCv43rYhcOFc+lHp1lz1jc61ODyudYD6sfj4kscgMBHh2z9garRYHlGewp/LNZhgB"},{"type":"text","text":"{\"is_fruit\":true}"}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":223,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":131,"service_tier":"standard","inference_geo":"not_available"}}'
+        body: '{"model":"claude-sonnet-4-5-20250929","id":"msg_0121zFYLagpGrJxjz2LNSkSR","type":"message","role":"assistant","content":[{"type":"thinking","thinking":"The user is asking if a banana is a fruit. Yes, a banana is indeed a fruit. \n\nI need to respond with JSON that matches the schema provided. The schema requires:\n- An object with a property \"is_fruit\" which is a boolean\n- No additional properties\n- \"is_fruit\" is required\n\nSo I need to respond with:\n{\"is_fruit\": true}\n\nI should not include any explanation, markdown, or anything else - just the JSON object.","signature":"EsAECkYICxgCKkCPu+uacLEUvhZsMAmkDXHmWhccrJDFxjj7eCiWViwL3vgAhOAg3cxBId4dZW1BWahzBVBxxrOnGIdY20He84AZEgx20p9t1Y/i5bKYqbUaDFSGTo5sOyC3mUEHICIwHmwYi7UvIaDjCSsJpM+qyOiIXBSIss6mYrzuofrGPhu1j/We2aAd3g6KTfvU4qF4KqcDSA493hq76LZKGy9nRhlZ+7yAzu74/zvKActqirvZhyRd3XoH6d6qMF6rr/6/lJnYC6owEHZViHr4iu+RCt7QIki44ILaLVXTtYaA4AI4iqrYtB5jBexTufXtczx43kEDI9oQoayGjKN8JALgjsuiUb8O1C9NRWROil4d3475aBzEtf+A/jyK+PlW7J5xV244k/0cYSwEMx7VGXIa4qY1OmJ6U/HyC1RBxnNLX7/VttyWBN9d6MnHe5FktDu+NiIj7rOEWHmh/XM7nQEx40K1dhw+HZhgMBHHngyGp92gNsKmgJj33nwN7NGHRxYCe0PvmLymmOkfVok09nUN8V0YnZK+gUve3qpkd9o1Q+5neET+91PjGB/IBvdwd5jV+rOP2JovAqFT+24QoXVaXAJ8QPBhebbv8KOpJmWkNi3E9Qp6GASPznGdSDjrdlFW5P+mJdXkPd5fZiL1R+ihSFkzPaObZWGMHY67XTTYTAVsYIA73SR+YUkxnhDK6mSrGynCsSknFuSThAmGmJ/MrxbKW9vhXjuI2f6TNKx1Bf3siqCgArtTJMmZGAE="},{"type":"text","text":"{\"is_fruit\": true}"}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":223,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":121,"service_tier":"standard","inference_geo":"not_available"}}'
         headers:
             Anthropic-Ratelimit-Input-Tokens-Limit:
                 - "2000000"
             Anthropic-Ratelimit-Input-Tokens-Remaining:
                 - "2000000"
             Anthropic-Ratelimit-Input-Tokens-Reset:
-                - "2026-02-07T02:53:15Z"
+                - "2026-02-07T14:24:36Z"
             Anthropic-Ratelimit-Output-Tokens-Limit:
                 - "400000"
             Anthropic-Ratelimit-Output-Tokens-Remaining:
                 - "400000"
             Anthropic-Ratelimit-Output-Tokens-Reset:
-                - "2026-02-07T02:53:17Z"
+                - "2026-02-07T14:24:38Z"
             Anthropic-Ratelimit-Requests-Limit:
                 - "4000"
             Anthropic-Ratelimit-Requests-Remaining:
                 - "3999"
             Anthropic-Ratelimit-Requests-Reset:
-                - "2026-02-07T02:53:13Z"
+                - "2026-02-07T14:24:34Z"
             Anthropic-Ratelimit-Tokens-Limit:
                 - "2400000"
             Anthropic-Ratelimit-Tokens-Remaining:
                 - "2400000"
             Anthropic-Ratelimit-Tokens-Reset:
-                - "2026-02-07T02:53:15Z"
+                - "2026-02-07T14:24:36Z"
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9c9f987e5f99a299-YUL
+                - 9ca38d39bf4aa30c-YUL
             Content-Security-Policy:
                 - default-src 'none'; frame-ancestors 'none'
             Content-Type:
@@ -62,9 +62,9 @@ interactions:
             Strict-Transport-Security:
                 - max-age=31536000; includeSubDomains; preload
             X-Envoy-Upstream-Service-Time:
-                - "3871"
+                - "3944"
             X-Robots-Tag:
                 - none
         status: 200 OK
         code: 200
-        duration: 3.911s
+        duration: 3.982s

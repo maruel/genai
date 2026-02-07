@@ -1,69 +1,70 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 399
-    host: api.anthropic.com
-    body: "{\"model\":\"claude-sonnet-4-5-20250929\",\"max_tokens\":32000,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What fruit is it? Reply with only one word.\"},{\"type\":\"image\",\"cache_control\":{\"type\":\"ephemeral\"},\"source\":{\"type\":\"url\",\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.webp\"}}]}],\"thinking\":{\"budget_tokens\":1024,\"type\":\"enabled\"}}\n"
-    headers:
-      Anthropic-Version:
-      - "2023-06-01"
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://api.anthropic.com/v1/messages
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\"model\":\"claude-sonnet-4-5-20250929\",\"id\":\"msg_01VTxtUsMYr3KnoRvGeW7Bdf\",\"type\":\"message\",\"role\":\"assistant\",\"content\":[{\"type\":\"thinking\",\"thinking\":\"The image shows a yellow, curved fruit that is clearly a banana. The user is asking me to identify it with only one word.\",\"signature\":\"EqICCkYICRgCKkAYsCFd9ynKfd5cPNlMNkI8mh+4Sc+0Q3rBEeV4Dzh5fqANa1kaFp+6+ab1x6/+2vrX+70qymk7kguvOWT7s2uZEgynWgRDuEsxRYsuvLgaDHaqO01u/rh03qRqASIwq/yqfWudRdP+jSObGabJZX19eDf1ckqUwLh0GGxVkBYEWfoIE5sRbqI1r76XFl4vKokBWCw4/H7mw3jF/B7ih3o8+lQ1KCZXAb94yx8aEZ/RwytYKtIA6qYxaQNAhfUwu4A/sgwIFX53DNlnj4M40bC5sBmBzTO0sa/x5drupUNO7+e13eIFN5DeiOmOHCpGamU+NF9wrKf9bwXMLdKKfs9XgsgrDhN1MY0kNpHA7YMMfYQ60MvvYCGtWz8YAQ==\"},{\"type\":\"text\",\"text\":\"Banana\"}],\"stop_reason\":\"end_turn\",\"stop_sequence\":null,\"usage\":{\"input_tokens\":182,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"cache_creation\":{\"ephemeral_5m_input_tokens\":0,\"ephemeral_1h_input_tokens\":0},\"output_tokens\":40,\"service_tier\":\"standard\"}}"
-    headers:
-      Anthropic-Ratelimit-Input-Tokens-Limit:
-      - "2000000"
-      Anthropic-Ratelimit-Input-Tokens-Remaining:
-      - "2000000"
-      Anthropic-Ratelimit-Input-Tokens-Reset:
-      - "2025-11-15T22:19:07Z"
-      Anthropic-Ratelimit-Output-Tokens-Limit:
-      - "400000"
-      Anthropic-Ratelimit-Output-Tokens-Remaining:
-      - "400000"
-      Anthropic-Ratelimit-Output-Tokens-Reset:
-      - "2025-11-15T22:19:08Z"
-      Anthropic-Ratelimit-Requests-Limit:
-      - "4000"
-      Anthropic-Ratelimit-Requests-Remaining:
-      - "3999"
-      Anthropic-Ratelimit-Requests-Reset:
-      - "2025-11-15T22:19:05Z"
-      Anthropic-Ratelimit-Tokens-Limit:
-      - "2400000"
-      Anthropic-Ratelimit-Tokens-Remaining:
-      - "2400000"
-      Anthropic-Ratelimit-Tokens-Reset:
-      - "2025-11-15T22:19:07Z"
-      Cf-Cache-Status:
-      - DYNAMIC
-      Cf-Ray:
-      - 99f220cee8fb3d45-YVR
-      Content-Type:
-      - application/json
-      Retry-After:
-      - "58"
-      Server:
-      - cloudflare
-      Strict-Transport-Security:
-      - max-age=31536000; includeSubDomains; preload
-      X-Envoy-Upstream-Service-Time:
-      - "3166"
-      X-Robots-Tag:
-      - none
-    status: 200 OK
-    code: 200
-    duration: 3.25s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 399
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-sonnet-4-5-20250929","max_tokens":64000,"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image","cache_control":{"type":"ephemeral"},"source":{"type":"url","url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.webp"}}]}],"thinking":{"budget_tokens":1024,"type":"enabled"}}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"model":"claude-sonnet-4-5-20250929","id":"msg_011dmKHT8Xgrcvu3inGy3tsu","type":"message","role":"assistant","content":[{"type":"thinking","thinking":"The image shows a yellow, curved fruit with a brown stem. This is clearly a banana.","signature":"EvsBCkYICxgCKkCzqw2VOqtHe+HbtyspqUcbib46tkXlcomamCARX2M9kGkVAA3ZXsQ7Btqp7KwWnCROaCORj15Xpq6tGleWqLR6EgzjXP7W4Mmrn8k2wboaDK/lzeoYW9WWFCFY6iIwiyr06IztkJZC/f7+N4dQ92lURNRnvfBlL/ELVnK2pAUT6S6i3vX7vp8arDfdcxjVKmM8soMxq2rkc/TWa8U1Onn6T7ZppoFlQ30CcEIsHU/VK5jzS2EYO3REeAFV6Zs4pqkzzrCujkkNwrEQ8SoEPOu0e2803vk5SfHgjaaNfw0BVL7p2MXjYCY1ToX9UgFXlxHPTzUYAQ=="},{"type":"text","text":"Banana"}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":182,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":32,"service_tier":"standard","inference_geo":"not_available"}}'
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "2000000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-02-07T14:25:37Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "400000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "400000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-02-07T14:25:38Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "4000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "3999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-02-07T14:25:36Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "2400000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "2400000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-02-07T14:25:37Z"
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9ca38ebd7f80a30c-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Envoy-Upstream-Service-Time:
+                - "1809"
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 1.851s

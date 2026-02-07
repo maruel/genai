@@ -1,70 +1,128 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 219
-    host: api.anthropic.com
-    body: "{\"model\":\"claude-sonnet-4-5-20250929\",\"max_tokens\":32000,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Say hello. Use only one word.\"}]}],\"stream\":true,\"thinking\":{\"budget_tokens\":1024,\"type\":\"enabled\"}}\n"
-    headers:
-      Anthropic-Version:
-      - "2023-06-01"
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://api.anthropic.com/v1/messages
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    body: "event: message_start\ndata: {\"type\":\"message_start\",\"message\":{\"model\":\"claude-sonnet-4-5-20250929\",\"id\":\"msg_013PiwPH757Wyds7arhBjegD\",\"type\":\"message\",\"role\":\"assistant\",\"content\":[],\"stop_reason\":null,\"stop_sequence\":null,\"usage\":{\"input_tokens\":44,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"cache_creation\":{\"ephemeral_5m_input_tokens\":0,\"ephemeral_1h_input_tokens\":0},\"output_tokens\":8,\"service_tier\":\"standard\"}}               }\n\nevent: content_block_start\ndata: {\"type\":\"content_block_start\",\"index\":0,\"content_block\":{\"type\":\"thinking\",\"thinking\":\"\",\"signature\":\"\"}              }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"The user wants me to say hello using\"}          }\n\nevent: ping\ndata: {\"type\": \"ping\"}\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" only one word. The\"}    }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" most\"}             }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" straightforward response\"}        }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" is\"}     }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" simply\"}   }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\" \\\"Hello.\\\"\"}          }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"signature_delta\",\"signature\":\"EpACCkYICRgCKkDK+iIZ+fe9sBsR/3UF2eD7tNJbetILw3Iod6f102LUfLbi0Lj8YG91DyZSVr3iauPRx4vOeLdNIG1Ga7FbclIeEgwKOcGpz7Fqttkq5QQaDA5KuSnwYuUiYUcFqyIwpm84/n7+Aue8ujDfTi9BFMsnYsQa9HYwCadzZuRLDyd8ZJ6QJx4FmYAKrdE9GJBUKnhD5/vxkmF2hRdifKtu5fe811g54H6sBgrZBv7x3CqVXGqRGM9fRNcS/RTvItjYEMyWXQdLogfkVFMxuZ3JHBO2OUgOjVpReryRqexqWrN21B/ZWhTm22DDoW+VxsYm0MRYz2EAs1jTvDKIZRakemRdAh+U+F9OEhcYAQ==\"}            }\n\nevent: content_block_stop\ndata: {\"type\":\"content_block_stop\",\"index\":0           }\n\nevent: content_block_start\ndata: {\"type\":\"content_block_start\",\"index\":1,\"content_block\":{\"type\":\"text\",\"text\":\"\"} }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":1,\"delta\":{\"type\":\"text_delta\",\"text\":\"Hello.\"}           }\n\nevent: content_block_stop\ndata: {\"type\":\"content_block_stop\",\"index\":1 }\n\nevent: message_delta\ndata: {\"type\":\"message_delta\",\"delta\":{\"stop_reason\":\"end_turn\",\"stop_sequence\":null},\"usage\":{\"input_tokens\":44,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":35}            }\n\nevent: message_stop\ndata: {\"type\":\"message_stop\"              }\n\n"
-    headers:
-      Anthropic-Ratelimit-Input-Tokens-Limit:
-      - "2000000"
-      Anthropic-Ratelimit-Input-Tokens-Remaining:
-      - "2000000"
-      Anthropic-Ratelimit-Input-Tokens-Reset:
-      - "2025-11-15T22:17:51Z"
-      Anthropic-Ratelimit-Output-Tokens-Limit:
-      - "400000"
-      Anthropic-Ratelimit-Output-Tokens-Remaining:
-      - "400000"
-      Anthropic-Ratelimit-Output-Tokens-Reset:
-      - "2025-11-15T22:17:51Z"
-      Anthropic-Ratelimit-Requests-Limit:
-      - "4000"
-      Anthropic-Ratelimit-Requests-Remaining:
-      - "3998"
-      Anthropic-Ratelimit-Requests-Reset:
-      - "2025-11-15T22:17:51Z"
-      Anthropic-Ratelimit-Tokens-Limit:
-      - "2400000"
-      Anthropic-Ratelimit-Tokens-Remaining:
-      - "2400000"
-      Anthropic-Ratelimit-Tokens-Reset:
-      - "2025-11-15T22:17:51Z"
-      Cache-Control:
-      - no-cache
-      Cf-Cache-Status:
-      - DYNAMIC
-      Cf-Ray:
-      - 99f21f00cf8b3d45-YVR
-      Content-Type:
-      - text/event-stream; charset=utf-8
-      Retry-After:
-      - "9"
-      Server:
-      - cloudflare
-      Strict-Transport-Security:
-      - max-age=31536000; includeSubDomains; preload
-      X-Envoy-Upstream-Service-Time:
-      - "1916"
-      X-Robots-Tag:
-      - none
-    status: 200 OK
-    code: 200
-    duration: 2.012s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 219
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-sonnet-4-5-20250929","max_tokens":64000,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}],"stream":true,"thinking":{"budget_tokens":1024,"type":"enabled"}}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            event: message_start
+            data: {"type":"message_start","message":{"model":"claude-sonnet-4-5-20250929","id":"msg_01VYXKMcPbUgL5NwFwKjKiNV","type":"message","role":"assistant","content":[],"stop_reason":null,"stop_sequence":null,"usage":{"input_tokens":44,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":7,"service_tier":"standard","inference_geo":"not_available"}}       }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":0,"content_block":{"type":"thinking","thinking":"","signature":""} }
+
+            event: ping
+            data: {"type": "ping"}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"The user wants me to say hello"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" using only one word. The"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" simpl"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"est response"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" would be \"Hello\" itself"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":","}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" which"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" is one word."}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":""}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"signature_delta","signature":"Ep4CCkYICxgCKkALNvVwiuQSbGPcJrXMKhqIBQ/xsC5RmLE5TsFi/Rjzzbr8FrP0bOCbHukproKBUIn2bEvc2K/kCObq4GfuHWnhEgzA1f+H8tQ9S7YtLU8aDPnTQcc7gG9yyUqYcSIwjENCciGn93b/Wd2i4k4ue30+sgyJm+wFpUbpdMvRudWZn8o8lYrPMd366aY2cGqtKoUBlH+4dOJM+VFXqnb13NooSp6AflJEFs7sLOHBsbsYcUfHsZiBU5GvN6dTmrPoKrRWtIFAZ4jG8ZTZBZs5sz1Hnn7KCAbs8Tqg9nz97agJQQAejgyyGt06EA7PIQN+uRxvzd9GR93hCzqrEjsTer4AXRocL8CoqhtxNowZpT2JvFa35tH/FRgB"}            }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":0}
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":1,"content_block":{"type":"text","text":""}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"Hello."}         }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":1 }
+
+            event: message_delta
+            data: {"type":"message_delta","delta":{"stop_reason":"end_turn","stop_sequence":null},"usage":{"input_tokens":44,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":41}  }
+
+            event: message_stop
+            data: {"type":"message_stop"          }
+
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "2000000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-02-07T14:24:31Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "400000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "400000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-02-07T14:24:31Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "4000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "3999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-02-07T14:24:31Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "2400000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "2400000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-02-07T14:24:31Z"
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9ca38d240839a30c-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Envoy-Upstream-Service-Time:
+                - "966"
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 1.001s

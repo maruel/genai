@@ -1,47 +1,48 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 171
-    host: api.anthropic.com
-    body: "{\"model\":\"bad model\",\"max_tokens\":32000,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Tell a short joke.\"}]}],\"stream\":true,\"thinking\":{\"type\":\"disabled\"}}\n"
-    headers:
-      Anthropic-Version:
-      - "2023-06-01"
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://api.anthropic.com/v1/messages
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\"type\":\"error\",\"error\":{\"type\":\"not_found_error\",\"message\":\"model: bad model\"},\"request_id\":\"req_011CSSqc6xbgnRE7xXBNhDCy\"}"
-    headers:
-      Cf-Cache-Status:
-      - DYNAMIC
-      Cf-Ray:
-      - 97442c349b94a2c4-YUL
-      Content-Type:
-      - application/json
-      Server:
-      - cloudflare
-      Strict-Transport-Security:
-      - max-age=31536000; includeSubDomains; preload
-      Via:
-      - 1.1 google
-      X-Envoy-Upstream-Service-Time:
-      - "22"
-      X-Robots-Tag:
-      - none
-      X-Should-Retry:
-      - "false"
-    status: 404 Not Found
-    code: 404
-    duration: 65ms
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 171
+        host: api.anthropic.com
+        body: |
+            {"model":"bad model","max_tokens":64000,"messages":[{"role":"user","content":[{"type":"text","text":"Tell a short joke."}]}],"stream":true,"thinking":{"type":"disabled"}}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"type":"error","error":{"type":"not_found_error","message":"model: bad model"},"request_id":"req_011CXtrhMH1yT9mEiyH1nj3A"}'
+        headers:
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9ca3890dce1da30c-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Envoy-Upstream-Service-Time:
+                - "143"
+            X-Robots-Tag:
+                - none
+            X-Should-Retry:
+                - "false"
+        status: 404 Not Found
+        code: 404
+        duration: 182ms

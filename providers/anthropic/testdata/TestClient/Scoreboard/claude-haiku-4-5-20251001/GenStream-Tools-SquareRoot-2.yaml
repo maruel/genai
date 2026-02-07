@@ -1,70 +1,95 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 884
-    host: api.anthropic.com
-    body: "{\"model\":\"claude-haiku-4-5-20251001\",\"max_tokens\":32000,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"}]},{\"role\":\"assistant\",\"content\":[{\"type\":\"tool_use\",\"id\":\"toolu_01LQPdQM4EHu19rAatpTL6mR\",\"input\":{\"number\":132413},\"name\":\"square_root\"}]},{\"role\":\"user\",\"content\":[{\"type\":\"tool_result\",\"tool_use_id\":\"toolu_01LQPdQM4EHu19rAatpTL6mR\",\"content\":[{\"type\":\"text\",\"text\":\"363.89\"}]}]}],\"stream\":true,\"thinking\":{\"type\":\"disabled\"},\"tool_choice\":{\"type\":\"none\"},\"tools\":[{\"description\":\"Calculates and return the square root of a number\",\"input_schema\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]},\"name\":\"square_root\"}]}\n"
-    headers:
-      Anthropic-Version:
-      - "2023-06-01"
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://api.anthropic.com/v1/messages
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    body: "event: message_start\ndata: {\"type\":\"message_start\",\"message\":{\"model\":\"claude-haiku-4-5-20251001\",\"id\":\"msg_01UU5ScE7aWwzCAemvEzV5Qi\",\"type\":\"message\",\"role\":\"assistant\",\"content\":[],\"stop_reason\":null,\"stop_sequence\":null,\"usage\":{\"input_tokens\":690,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"cache_creation\":{\"ephemeral_5m_input_tokens\":0,\"ephemeral_1h_input_tokens\":0},\"output_tokens\":1,\"service_tier\":\"standard\"}} }\n\nevent: content_block_start\ndata: {\"type\":\"content_block_start\",\"index\":0,\"content_block\":{\"type\":\"text\",\"text\":\"\"}        }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"363\"}            }\n\nevent: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\".89\"}            }\n\nevent: content_block_stop\ndata: {\"type\":\"content_block_stop\",\"index\":0   }\n\nevent: message_delta\ndata: {\"type\":\"message_delta\",\"delta\":{\"stop_reason\":\"end_turn\",\"stop_sequence\":null},\"usage\":{\"input_tokens\":690,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":6}}\n\nevent: message_stop\ndata: {\"type\":\"message_stop\"         }\n\n"
-    headers:
-      Anthropic-Ratelimit-Input-Tokens-Limit:
-      - "4000000"
-      Anthropic-Ratelimit-Input-Tokens-Remaining:
-      - "4000000"
-      Anthropic-Ratelimit-Input-Tokens-Reset:
-      - "2025-11-15T22:16:35Z"
-      Anthropic-Ratelimit-Output-Tokens-Limit:
-      - "800000"
-      Anthropic-Ratelimit-Output-Tokens-Remaining:
-      - "800000"
-      Anthropic-Ratelimit-Output-Tokens-Reset:
-      - "2025-11-15T22:16:35Z"
-      Anthropic-Ratelimit-Requests-Limit:
-      - "4000"
-      Anthropic-Ratelimit-Requests-Remaining:
-      - "3999"
-      Anthropic-Ratelimit-Requests-Reset:
-      - "2025-11-15T22:16:35Z"
-      Anthropic-Ratelimit-Tokens-Limit:
-      - "4800000"
-      Anthropic-Ratelimit-Tokens-Remaining:
-      - "4800000"
-      Anthropic-Ratelimit-Tokens-Reset:
-      - "2025-11-15T22:16:35Z"
-      Cache-Control:
-      - no-cache
-      Cf-Cache-Status:
-      - DYNAMIC
-      Cf-Ray:
-      - 99f21d284f573d45-YVR
-      Content-Type:
-      - text/event-stream; charset=utf-8
-      Retry-After:
-      - "27"
-      Server:
-      - cloudflare
-      Strict-Transport-Security:
-      - max-age=31536000; includeSubDomains; preload
-      X-Envoy-Upstream-Service-Time:
-      - "557"
-      X-Robots-Tag:
-      - none
-    status: 200 OK
-    code: 200
-    duration: 742ms
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 884
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-haiku-4-5-20251001","max_tokens":64000,"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"assistant","content":[{"type":"tool_use","id":"toolu_01TUePZFsogRW31xkkV7Ysus","input":{"number":132413},"name":"square_root"}]},{"role":"user","content":[{"type":"tool_result","tool_use_id":"toolu_01TUePZFsogRW31xkkV7Ysus","content":[{"type":"text","text":"363.89"}]}]}],"stream":true,"thinking":{"type":"disabled"},"tool_choice":{"type":"none"},"tools":[{"description":"Calculates and return the square root of a number","input_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]},"name":"square_root"}]}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            event: message_start
+            data: {"type":"message_start","message":{"model":"claude-haiku-4-5-20251001","id":"msg_016pKHVZ9NRWTDuCHkWseoPJ","type":"message","role":"assistant","content":[],"stop_reason":null,"stop_sequence":null,"usage":{"input_tokens":690,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":1,"service_tier":"standard","inference_geo":"not_available"}}       }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":0,"content_block":{"type":"text","text":""}               }
+
+            event: ping
+            data: {"type": "ping"}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"363"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":".89"}              }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":0        }
+
+            event: message_delta
+            data: {"type":"message_delta","delta":{"stop_reason":"end_turn","stop_sequence":null},"usage":{"input_tokens":690,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":6}               }
+
+            event: message_stop
+            data: {"type":"message_stop"       }
+
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "4000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "4000000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-02-07T14:39:12Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "800000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "800000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-02-07T14:39:12Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "4000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "3999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-02-07T14:39:12Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "4800000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "4800000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-02-07T14:39:12Z"
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9ca3a2a5cd0ca26d-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Envoy-Upstream-Service-Time:
+                - "637"
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 683ms

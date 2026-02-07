@@ -28,7 +28,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9ca302ac4cb9a2e8-YUL
+                - 9ca3890eefd7a30c-YUL
             Content-Security-Policy:
                 - default-src 'none'; frame-ancestors 'none'
             Content-Type:
@@ -38,9 +38,9 @@ interactions:
             Strict-Transport-Security:
                 - max-age=31536000; includeSubDomains; preload
             X-Envoy-Upstream-Service-Time:
-                - "106"
+                - "91"
             X-Robots-Tag:
                 - none
         status: 200 OK
         code: 200
-        duration: 147ms
+        duration: 131ms

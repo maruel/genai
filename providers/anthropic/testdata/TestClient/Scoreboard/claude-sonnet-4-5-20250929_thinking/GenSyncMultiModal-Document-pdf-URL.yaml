@@ -1,69 +1,70 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 404
-    host: api.anthropic.com
-    body: "{\"model\":\"claude-sonnet-4-5-20250929\",\"max_tokens\":32000,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What is the word? Reply with only the word.\"},{\"type\":\"document\",\"cache_control\":{\"type\":\"ephemeral\"},\"source\":{\"type\":\"url\",\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/document.pdf\"}}]}],\"thinking\":{\"budget_tokens\":1024,\"type\":\"enabled\"}}\n"
-    headers:
-      Anthropic-Version:
-      - "2023-06-01"
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://api.anthropic.com/v1/messages
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\"model\":\"claude-sonnet-4-5-20250929\",\"id\":\"msg_01RzSouuooMCjy6ZAZg64jro\",\"type\":\"message\",\"role\":\"assistant\",\"content\":[{\"type\":\"thinking\",\"thinking\":\"The user is asking for the word from the document. Looking at the PDF content, I can see the word \\\"orange\\\" appears twice - once at the top of the page and once in the middle. The question asks \\\"What is the word?\\\" and to reply with only the word.\\n\\nThe word is: orange\",\"signature\":\"ErMDCkYICRgCKkCavYxJ9nS+zTf09dpmuLVExYQlKpprz6/Ina8pxl7cKyVynHwhiTfMtSrB9o934AOxXfHBj3LuwO2hXkb6r6o+EgwlEvYk1CiFxabQdYoaDBp0lIEwcVe9Qm3y8SIwVvbpqnNUenaIWXa3pGngHXvWuM993SI8CtIyu2ujNGlC+cMB4PUmJO5LWwr7YJY/KpoCZchjRUAEejS4Du8FYvYSNrwYkKNjBLUMED3xTlHeD1GG6fqXIjLOEASvzulWYls4uwlk8gO0KigS1bxijPkAQo9AbE/5QTG0GhMMzrxAZfFgaOaEPBsvlJcRivliSCQuKY8nNhrlsVz967MlnP012RJfg+y/C3yN0VWesTotn2ufKiPZFkCXn7iAP6LWo3RKZLY55Wc4t6u0ODExy8Kqr/0e9K0aVU7yFp8dCr4hIwYmvxfIOBkcITgho1VBc+z5rYoRhWuYzjYRxNjNu/SjYtC+UfvbAPk2xYRQ3sc/pd0GdrzHk+qQSxvfxO8UcsGI4yrAW3oBOgKnBduoYwRanvlazIwkfaH5NkWZehkZJ7+YWottWCCj0F9VGAE=\"},{\"type\":\"text\",\"text\":\"orange\"}],\"stop_reason\":\"end_turn\",\"stop_sequence\":null,\"usage\":{\"input_tokens\":10,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":1613,\"cache_creation\":{\"ephemeral_5m_input_tokens\":0,\"ephemeral_1h_input_tokens\":0},\"output_tokens\":76,\"service_tier\":\"standard\"}}"
-    headers:
-      Anthropic-Ratelimit-Input-Tokens-Limit:
-      - "2000000"
-      Anthropic-Ratelimit-Input-Tokens-Remaining:
-      - "2000000"
-      Anthropic-Ratelimit-Input-Tokens-Reset:
-      - "2025-11-15T22:18:40Z"
-      Anthropic-Ratelimit-Output-Tokens-Limit:
-      - "400000"
-      Anthropic-Ratelimit-Output-Tokens-Remaining:
-      - "400000"
-      Anthropic-Ratelimit-Output-Tokens-Reset:
-      - "2025-11-15T22:18:42Z"
-      Anthropic-Ratelimit-Requests-Limit:
-      - "4000"
-      Anthropic-Ratelimit-Requests-Remaining:
-      - "3999"
-      Anthropic-Ratelimit-Requests-Reset:
-      - "2025-11-15T22:18:38Z"
-      Anthropic-Ratelimit-Tokens-Limit:
-      - "2400000"
-      Anthropic-Ratelimit-Tokens-Remaining:
-      - "2400000"
-      Anthropic-Ratelimit-Tokens-Reset:
-      - "2025-11-15T22:18:40Z"
-      Cf-Cache-Status:
-      - DYNAMIC
-      Cf-Ray:
-      - 99f22026fc8d3d45-YVR
-      Content-Type:
-      - application/json
-      Retry-After:
-      - "20"
-      Server:
-      - cloudflare
-      Strict-Transport-Security:
-      - max-age=31536000; includeSubDomains; preload
-      X-Envoy-Upstream-Service-Time:
-      - "3847"
-      X-Robots-Tag:
-      - none
-    status: 200 OK
-    code: 200
-    duration: 4.022s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 404
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-sonnet-4-5-20250929","max_tokens":64000,"messages":[{"role":"user","content":[{"type":"text","text":"What is the word? Reply with only the word."},{"type":"document","cache_control":{"type":"ephemeral"},"source":{"type":"url","url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/document.pdf"}}]}],"thinking":{"budget_tokens":1024,"type":"enabled"}}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"model":"claude-sonnet-4-5-20250929","id":"msg_0172JzoAffRBpdAP3sXJCu51","type":"message","role":"assistant","content":[{"type":"thinking","thinking":"The user is asking me to identify \"the word\" from the PDF document. Looking at the document content, I can see the word \"orange\" appears twice - once at the top of the page and once in the middle of the page. The user wants me to reply with only the word, so I should just say \"orange\".","signature":"EscDCkYICxgCKkBPD3B+4WuWGRIyEYBTItvxTwnRAKUTKJTOcBCySgzD79NdGXquKqLjabhXGKclOzcoErqZ+hASamtU3eD8psogEgwHRS1tx15gX7zmQMQaDETmMjLjMa4HnDljxSIwEX4beqk577uHM/N1ySP2+k27zEIjQB5y/vq397Q3C27n03xxyd+yj1gF80HjTpNgKq4CIvxIQAL+/JKYjixR3xj9+wjujl1L405Bj8O0ByytUYFbQffm6mwSct82+kIciID0BAj6wP7SuSpP2w4xmBSrOmsvU5EymzEkGcLfW4Gqmr+RnMnOWqMqBUSCE1Jz+ZNeE66FvF+/NSEydybKU5vTaVdNlo9Gg8iUrIiPfwN6Sb0Z5TZa6SXg+6KsT6t2+j2bnYAosKPF1KFYkWZ14hSd2gi0KhPKAIkAhj8ZBI9SHC0f4zzsvowwknru+eEprYOy9sSpRFZM9qNP4MFMOUfMt//hm2nqVi7sungH8Eq4buBrnCkXZkGDjhGn7heNCXAzweIQUkF742sNBzv8yV/6FfIWPsi0QK9cbSPHaycVPOftrPdB9mS1J4F+AG0MCqhf/Ov1PJLHmKdPTo6/X3UYAQ=="},{"type":"text","text":"orange"}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":10,"cache_creation_input_tokens":0,"cache_read_input_tokens":1613,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":80,"service_tier":"standard","inference_geo":"not_available"}}'
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "2000000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-02-07T14:25:18Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "400000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "400000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-02-07T14:25:20Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "4000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "3999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-02-07T14:25:17Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "2400000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "2400000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-02-07T14:25:18Z"
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9ca38e439bf2a30c-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Envoy-Upstream-Service-Time:
+                - "3234"
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 3.277s

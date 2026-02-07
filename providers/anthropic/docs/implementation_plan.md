@@ -2,68 +2,66 @@
 
 Plan date: 2026-02-07
 
-Reference: [gap_analysis.md](gap_analysis.md)
+Reference SDK: `github.com/anthropics/anthropic-sdk-go`
 
-## Phased Approach
+## Feature Coverage Matrix
 
-Work is organized in four phases by impact and effort. Each phase can be shipped
-independently. Within each phase, items are ordered by recommended implementation sequence.
-
----
-
-## Phase 1: High-Impact GA Features
-
-Goal: Close the most visible functional gaps. These are GA features that users expect.
-
-### 1.1 Structured Outputs (`output_config.format`) — DONE
-
-Implemented. `OutputConfig` and `OutputFormat` types added to `client.go`. `DecodeAs` maps
-to `output_config.format` with type `"json_schema"` and a full schema via
-`internal.JSONSchemaFor()`. `ReplyAsJSON` uses a permissive `{"type": "object"}` schema.
-Unit tests (`TestStructuredOutput`) and smoke test recordings cover both paths.
-
-`Effort` field is wired (see 1.3).
-
-### 1.2 Token Counting — DONE
-
-Implemented. `CountTokensRequest` (subset of `ChatRequest` with only the fields accepted by
-the endpoint), `CountTokensResponse`, `CountTokens()`, and `CountTokensRaw()` methods added
-to `Client`. `CountTokens` reuses `ChatRequest.Init()` to build the request, then converts
-to `CountTokensRequest` before POSTing to `/v1/messages/count_tokens`. Exposed as
-provider-specific only (no `genai` interface yet, matching Gemini's approach). HTTP recording
-test covers the happy path.
-
-### 1.3 Effort Level — DONE
-
-Implemented. `Effort` typed string with `EffortLow`, `EffortMedium`, `EffortHigh`, `EffortMax`
-constants added to `GenOptionsText`. Wired through `OutputConfig.Effort`. Validation rejects
-unknown values. Unit tests (`TestEffort`) cover all valid values and invalid input.
-
-### 1.4 Adaptive Thinking — DONE
-
-Implemented. `ThinkingType` typed string with `ThinkingEnabled`, `ThinkingDisabled`,
-`ThinkingAdaptive` constants added to `GenOptionsText`. The `Thinking` field controls the
-mode explicitly; when empty, backward-compatible auto-detection from `ThinkingBudget` is
-preserved. Adaptive mode sets `thinking.type = "adaptive"` without `budget_tokens`.
-Validation rejects incompatible combinations (adaptive+budget, enabled-without-budget).
-Unit tests (`TestThinking`) cover all valid modes, auto-detection, and error cases.
-
-### 1.5 Claude Opus 4.6 Model
-
-**Priority**: P1 — trivial, do early.
-
-**Implementation steps**:
-
-1. Add `"claude-opus-4-6"` to the `modelsMaxTokens()` switch (check official docs for max
-   tokens — likely 32000 or 64000).
-
-2. Update model alias selection if `ModelSOTA` should resolve to it.
-
-3. Run `go test ./providers/anthropic -update-scoreboard` to update `scoreboard.json`.
-
-**Files changed**: `client.go`, `scoreboard.json`
-
-**Depends on**: Nothing.
+| Feature                        | Official SDK | Local Provider | Status         |
+|--------------------------------|:------------:|:--------------:|----------------|
+| **GA Features**                |              |                |                |
+| Messages API (sync)            | Yes          | Yes            | Complete       |
+| Messages API (stream)          | Yes          | Yes            | Complete       |
+| Token Counting                 | Yes          | Yes            | Complete       |
+| Structured Outputs             | Yes          | Yes            | Complete       |
+| Effort Level                   | Yes          | Yes            | Complete       |
+| Adaptive Thinking              | Yes          | Yes            | Complete       |
+| Model Listing (paginated)      | Yes          | Yes            | Complete       |
+| Model Get (single)             | Yes          | No             | Phase 2.3      |
+| Batch: Create                  | Yes          | Yes            | Complete       |
+| Batch: Poll/Results            | Yes          | Yes            | Complete       |
+| Batch: Cancel                  | Yes          | Yes            | Complete       |
+| Batch: Get by ID               | Yes          | No             | Phase 2.4      |
+| Batch: List                    | Yes          | No             | Phase 2.4      |
+| Batch: Delete                  | Yes          | No             | Phase 2.4      |
+| Tool Calling (custom)          | Yes          | Yes            | Complete       |
+| Tool Choice (auto/any/tool/none) | Yes        | Yes            | Complete       |
+| Web Search Tool                | Yes          | Yes            | Complete       |
+| Extended Thinking (all modes)  | Yes          | Yes            | Complete       |
+| Citations                      | Yes          | Yes            | Complete       |
+| Prompt Caching                 | Yes          | Partial        | TODO #1        |
+| Images (base64 + URL)          | Yes          | Yes            | Complete       |
+| Documents/PDFs                 | Yes          | Yes            | Complete       |
+| Inference Geography            | Yes          | Partial        | Phase 2.1      |
+| Service Tier (request)         | Yes          | Yes            | Complete       |
+| Service Tier (response/usage)  | Yes          | Partial        | Phase 2.5      |
+| Container/Session              | Yes          | Yes            | Complete       |
+| Bash Tool (GA 2025-01-24)      | Yes          | Yes            | Complete       |
+| Text Editor v1 (2025-01-24)    | Yes          | Yes            | Complete       |
+| Text Editor v2 (2025-04-29)    | Yes          | No             | Phase 2.2      |
+| Text Editor v3 (2025-07-28)    | Yes          | No             | Phase 2.2      |
+| Claude Opus 4.6 model          | Yes          | Yes            | Complete       |
+| **Beta Features**              |              |                |                |
+| MCP v1 (2025-04-04)            | Yes          | Yes            | Complete       |
+| MCP v2 (2025-11-20)            | Yes          | No             | Phase 3.6      |
+| File Uploads                   | Yes          | No             | Phase 3.1      |
+| Code Execution Tool            | Yes          | No             | Phase 3.2      |
+| Web Fetch Tool                 | Yes          | No             | Phase 3.3      |
+| Context Management             | Yes          | No             | Phase 3.4      |
+| Computer Use v1 (2024-10-22)   | Yes          | Yes (type)     | Partial        |
+| Computer Use v2 (2025-01-24)   | Yes          | Yes (type)     | Partial        |
+| Computer Use v3 (2025-11-24)   | Yes          | No             | Phase 3.5      |
+| Agent Skills                   | Yes          | No             | Phase 4.2      |
+| Memory Tool                    | Yes          | No             | Phase 4.3      |
+| Search Tools (BM25/Regex)      | Yes          | No             | Phase 4.4      |
+| Interleaved Thinking           | Yes          | No             | Phase 4.5      |
+| Token Efficient Tools          | Yes          | No             | Phase 4.5      |
+| Output 128k                    | Yes          | No             | Phase 4.5      |
+| Extended Cache TTL             | Yes          | No             | Phase 4.5      |
+| Context 1M                     | Yes          | No             | Phase 4.5      |
+| **Intentionally Skipped**      |              |                |                |
+| Legacy Text Completions        | Yes          | No             | Deprecated     |
+| Bedrock adapter                | Yes          | No             | Out of scope   |
+| Vertex AI adapter              | Yes          | No             | Out of scope   |
 
 ---
 
@@ -275,54 +273,25 @@ Lower priority beta headers that can be enabled via the passthrough mechanism (4
 
 ## Existing TODOs in Code
 
-These are pre-existing TODOs found in `client.go` that should be addressed alongside or
-independently of the feature work above:
+Pre-existing TODOs found in `client.go` that should be addressed alongside or independently
+of the feature work above:
 
-1. **Line ~186**: System prompt auto-caching — currently commented out. Enable by default or
+1. **Line ~284**: System prompt auto-caching — currently commented out. Enable by default or
    make configurable.
 
-2. **Line ~715**: Support text citations in tool results and images in tool results.
+2. **Line ~816**: Support text citations in tool results and images in tool results.
 
-3. **Line ~626**: Store MCP tool use input for multi-turn thread continuation.
+3. **Line ~867**: Store MCP tool use input for multi-turn thread continuation (`ContentServerToolUse`
+   value is dropped, making the next request unusable).
 
-4. **Line ~766**: Keep `EncryptedContent` from web search results for session continuation.
+4. **Line ~863**: Keep `EncryptedContent` from web search results for session continuation.
 
-5. **Line ~787**: Support new server tool types in non-lenient mode.
-
-6. **Line ~1272**: Batch `CustomID` is hardcoded to `"TODO"` — must generate unique IDs in
+5. **Line ~1374**: Batch `CustomID` is hardcoded to `"TODO"` — must generate unique IDs in
    production.
 
----
+6. **Line ~1852**: `pkt.Index` matters for simultaneous content blocks but is not handled.
 
-## Cross-Cutting Concerns
-
-### genai Package Changes
-
-Some features may require additions to the shared `genai` package:
-
-| Feature            | genai Change Needed?                                     |
-|--------------------|----------------------------------------------------------|
-| Structured Outputs | No — `DecodeAs`/`ReplyAsJSON` already exist              |
-| Token Counting     | Maybe — consider `ProviderTokenCount` interface          |
-| Effort Level       | No — provider-specific `Effort` type                     |
-| Adaptive Thinking  | No — provider-specific option                            |
-| File Uploads       | Maybe — consider shared file reference types             |
-| Batch CRUD         | Maybe — consider extending `ProviderCapabilities`        |
-
-### Testing Strategy
-
-- **Unit tests**: All new types need validation tests. All new `Init()` paths need coverage.
-- **Smoke tests**: Features that change the API request shape need HTTP recording tests.
-  Run with `-update-scoreboard` for model capability changes.
-- **Negative tests**: Ensure unsupported combinations (e.g. structured output + thinking)
-  return clear errors.
-
-### Backward Compatibility
-
-- `GenOptionsText` struct gains new fields — zero values preserve existing behavior.
-- `ChatRequest` gains new fields — `omitzero` tags ensure no wire format change for
-  existing users.
-- No existing behavior changes unless explicitly opted in.
+7. **Line ~1988**: Stream error decoding is a placeholder (`%+v` formatting).
 
 ---
 
@@ -330,10 +299,8 @@ Some features may require additions to the shared `genai` package:
 
 | Phase | Items | Effort   | Impact |
 |-------|-------|----------|--------|
-| 1     | 5     | Medium   | High   |
 | 2     | 5     | Small    | Medium |
 | 3     | 6     | Medium   | Medium |
 | 4     | 5     | Small    | Low    |
 
-**Recommended next**: Phase 1.5 (Opus 4.6 model) as a quick win, then Phase 2.
-Phases 1.1–1.4 are done.
+**Recommended next**: Phase 2 (GA completeness), starting with 2.1 and 2.2 as trivial wins.

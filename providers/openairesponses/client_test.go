@@ -5,6 +5,7 @@
 package openairesponses_test
 
 import (
+	"encoding/json"
 	"net/http"
 	"os"
 	"slices"
@@ -250,6 +251,44 @@ func TestClient(t *testing.T) {
 			}, opts...)
 		}
 		internaltest.TestClientProviderErrors(t, f, data)
+	})
+}
+
+func TestPreviousResponseID(t *testing.T) {
+	msgs := genai.Messages{genai.NewTextMessage("hello")}
+	t.Run("wired", func(t *testing.T) {
+		var req openairesponses.Response
+		if err := req.Init(msgs, "gpt-4.1-nano", &openairesponses.GenOptionsText{PreviousResponseID: "resp_abc123"}); err != nil {
+			t.Fatal(err)
+		}
+		if req.PreviousResponseID != "resp_abc123" {
+			t.Errorf("PreviousResponseID = %q, want %q", req.PreviousResponseID, "resp_abc123")
+		}
+		b, err := json.Marshal(&req)
+		if err != nil {
+			t.Fatal(err)
+		}
+		got := string(b)
+		if !strings.Contains(got, `"previous_response_id":"resp_abc123"`) {
+			t.Errorf("JSON missing previous_response_id: %s", got)
+		}
+	})
+	t.Run("empty", func(t *testing.T) {
+		var req openairesponses.Response
+		if err := req.Init(msgs, "gpt-4.1-nano"); err != nil {
+			t.Fatal(err)
+		}
+		if req.PreviousResponseID != "" {
+			t.Errorf("PreviousResponseID = %q, want empty", req.PreviousResponseID)
+		}
+		b, err := json.Marshal(&req)
+		if err != nil {
+			t.Fatal(err)
+		}
+		got := string(b)
+		if strings.Contains(got, "previous_response_id") {
+			t.Errorf("JSON should omit empty previous_response_id: %s", got)
+		}
 	})
 }
 

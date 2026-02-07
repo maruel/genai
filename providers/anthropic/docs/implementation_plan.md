@@ -31,7 +31,7 @@ Reference SDK: `github.com/anthropics/anthropic-sdk-go`
 | Prompt Caching                 | Yes          | Partial        | TODO #1        |
 | Images (base64 + URL)          | Yes          | Yes            | Complete       |
 | Documents/PDFs                 | Yes          | Yes            | Complete       |
-| Inference Geography            | Yes          | Partial        | Phase 2.1      |
+| Inference Geography            | Yes          | Yes            | Complete       |
 | Service Tier (request)         | Yes          | Yes            | Complete       |
 | Service Tier (response/usage)  | Yes          | Partial        | Phase 2.5      |
 | Container/Session              | Yes          | Yes            | Complete       |

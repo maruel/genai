@@ -76,6 +76,11 @@ type GenOptionsText struct {
 	//
 	// https://platform.claude.com/docs/en/api/messages#body-output-config
 	Effort Effort
+	// InferenceGeo specifies the geographic region for inference processing. If not specified,
+	// the workspace's default_inference_geo is used.
+	//
+	// https://platform.claude.com/docs/en/api/messages/create
+	InferenceGeo string
 }
 
 // ThinkingType controls how the model uses extended thinking.
@@ -147,6 +152,7 @@ type ChatRequest struct {
 	Metadata   struct {
 		UserID string `json:"user_id,omitzero"` // Should be a hash or UUID, opaque, to detect abuse, no PII
 	} `json:"metadata,omitzero"`
+	InferenceGeo  string          `json:"inference_geo,omitzero"`
 	ServiceTier   string          `json:"service_tier,omitzero"` // "auto", "standard_only"
 	StopSequences []string        `json:"stop_sequences,omitzero"`
 	Stream        bool            `json:"stream,omitzero"`
@@ -201,6 +207,7 @@ func (c *ChatRequest) initImpl(msgs genai.Messages, model string, cache bool, op
 				unsupported = append(unsupported, "GenOptionsText.MessagesToCache")
 			}
 			c.OutputConfig.Effort = v.Effort
+			c.InferenceGeo = v.InferenceGeo
 			switch v.Thinking {
 			case ThinkingAdaptive:
 				c.Thinking.Type = string(ThinkingAdaptive)

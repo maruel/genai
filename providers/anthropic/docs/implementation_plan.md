@@ -15,74 +15,14 @@ independently. Within each phase, items are ordered by recommended implementatio
 
 Goal: Close the most visible functional gaps. These are GA features that users expect.
 
-### 1.1 Structured Outputs (`output_config.format`)
+### 1.1 Structured Outputs (`output_config.format`) — DONE
 
-**Priority**: P0 — this is the single largest gap. Every other text provider supports
-`DecodeAs`/`ReplyAsJSON` through `genai.GenOptionsText`, but Anthropic returns an error.
+Implemented. `OutputConfig` and `OutputFormat` types added to `client.go`. `DecodeAs` maps
+to `output_config.format` with type `"json_schema"` and a full schema via
+`internal.JSONSchemaFor()`. `ReplyAsJSON` uses a permissive `{"type": "object"}` schema.
+Unit tests (`TestStructuredOutput`) and smoke test recordings cover both paths.
 
-**API shape** (from official SDK v1.20.0):
-```json
-{
-  "output_config": {
-    "format": {
-      "type": "json_schema",
-      "json_schema": { ... }
-    }
-  }
-}
-```
-
-**Implementation steps**:
-
-1. Add types to `client.go`:
-   ```go
-   type OutputConfig struct {
-       Format *OutputFormat `json:"format,omitzero"`
-       Effort string        `json:"effort,omitzero"` // "low", "medium", "high", "max"
-   }
-
-   type OutputFormat struct {
-       Type       string             `json:"type"`        // "json_schema"
-       JSONSchema *jsonschema.Schema `json:"json_schema"` // the schema
-   }
-   ```
-
-2. Add `OutputConfig` field to `ChatRequest`:
-   ```go
-   OutputConfig OutputConfig `json:"output_config,omitzero"`
-   ```
-
-3. Modify `initOptionsText()` to handle `DecodeAs` and `ReplyAsJSON`:
-   - `DecodeAs != nil`: Generate JSON schema via `internal.JSONSchemaFor()`, set
-     `output_config.format.type = "json_schema"` and populate the schema. The official SDK
-     applies schema transformations (add `additionalProperties: false`, convert `oneOf` to
-     `anyOf`, filter string formats, limit `minItems`). Replicate these transforms.
-   - `ReplyAsJSON`: Set `output_config.format.type = "json_schema"` with a permissive
-     schema (`{"type": "object"}` or similar), OR check if Anthropic supports a simpler
-     `"json"` format type.
-
-4. Remove the hard errors for `ReplyAsJSON` and `DecodeAs` in `initOptionsText()`.
-
-5. Parse the structured response — the API returns content as a text block containing JSON.
-   The existing `ToResult()` should work unchanged since it already extracts text content.
-
-6. Write unit tests:
-   - Table-driven test: `DecodeAs` with a struct produces correct `output_config`.
-   - Table-driven test: `ReplyAsJSON` produces correct `output_config`.
-   - Negative test: invalid `DecodeAs` type still fails validation.
-
-7. Run smoke tests when possible (HTTP recording).
-
-**Files changed**: `client.go`, `client_test.go`
-
-**Depends on**: Nothing. Self-contained.
-
-**Schema transformation notes**: The official SDK's `transformSchema()` does:
-- Sets `additionalProperties: false` on all objects.
-- Converts `oneOf` to `anyOf`.
-- Filters string formats to only allowed ones.
-- Limits `minItems` to at most 200.
-- These transforms should be ported to ensure schema compatibility.
+`Effort` field is not yet wired (see 1.3 below).
 
 ### 1.2 Token Counting
 

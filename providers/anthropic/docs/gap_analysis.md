@@ -21,7 +21,7 @@ methods.
 | Messages API (sync)            | Yes          | Yes            | Complete       |
 | Messages API (stream)          | Yes          | Yes            | Complete       |
 | Token Counting                 | Yes          | No             | **Missing**    |
-| Structured Outputs             | Yes          | No             | **Missing**    |
+| Structured Outputs             | Yes          | Yes            | Complete       |
 | Effort Level                   | Yes          | No             | **Missing**    |
 | Adaptive Thinking              | Yes          | No             | **Missing**    |
 | Model Listing (paginated)      | Yes          | Yes            | Complete       |
@@ -42,7 +42,7 @@ methods.
 | Prompt Caching                 | Yes          | Partial        | Missing auto system prompt caching |
 | Images (base64 + URL)          | Yes          | Yes            | Complete       |
 | Documents/PDFs                 | Yes          | Yes            | Complete       |
-| Inference Geography            | Yes          | No             | **Missing**    |
+| Inference Geography            | Yes          | Partial        | Response field parsed; request field not wired |
 | Service Tier (request)         | Yes          | Yes            | Complete       |
 | Service Tier (response/usage)  | Yes          | Partial        | Not surfaced in Usage |
 | Container/Session              | Yes          | Yes            | Complete       |
@@ -76,24 +76,15 @@ methods.
 
 ## Detailed Gap Descriptions
 
-### 1. Structured Outputs (GA — HIGH IMPACT)
+### 1. Structured Outputs (GA — COMPLETE)
 
-The Anthropic API now supports native structured output via `output_config.format` (GA since
+The Anthropic API supports native structured output via `output_config.format` (GA since
 SDK v1.20.0, 2026-01-29). This accepts a JSON schema and guarantees the response conforms to
 it.
 
-**Current behavior**: `initOptionsText()` returns a hard error for both `ReplyAsJSON` and
-`DecodeAs`, making it impossible to use structured outputs through the `genai.GenOptionsText`
-interface.
-
-**Official SDK**: `OutputConfigParam` with `Format` field accepting `JSONOutputFormatParam`
-(a JSON schema), plus `Effort` field for quality control.
-
-**What's needed**:
-- Add `OutputConfig` struct to `ChatRequest` with `Format` and `Effort` fields.
-- Map `genai.GenOptionsText.DecodeAs` to `output_config.format` with the JSON schema.
-- Map `genai.GenOptionsText.ReplyAsJSON` to `output_config.format` with a permissive schema.
-- Parse the structured response from the API.
+**Status**: Implemented. `DecodeAs` maps to `output_config.format` with a full JSON schema
+generated via `internal.JSONSchemaFor()`. `ReplyAsJSON` maps to a permissive
+`{"type": "object"}` schema. The `Effort` field is not yet wired (see gap #3).
 
 ### 2. Token Counting (GA — HIGH IMPACT)
 
@@ -157,9 +148,9 @@ Latest SOTA model `claude-opus-4-6` is not in the model constants or `maxTokens`
 
 `inference_geo` request field to control where inference runs.
 
-**What's needed**:
-- Add `InferenceGeo` field to `ChatRequest`.
-- Optionally surface in provider-specific `GenOptionsText`.
+**Status**: The `InferenceGeo` field is parsed from the `Usage` response. The request-side
+field (to control where inference runs) is not yet wired to `ChatRequest` or
+`GenOptionsText`.
 
 ### 8. Batch API Completeness (GA — LOW-MEDIUM IMPACT)
 

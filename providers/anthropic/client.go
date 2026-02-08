@@ -519,6 +519,7 @@ func (m *Message) To(out *genai.Message) error {
 // returns "content": [...] (array).
 type Contents []Content
 
+// UnmarshalJSON handles both single object and array JSON content.
 func (c *Contents) UnmarshalJSON(data []byte) error {
 	data = bytes.TrimSpace(data)
 	if len(data) == 0 {
@@ -1040,7 +1041,8 @@ func (c *Content) To() ([]genai.Reply, error) {
 		}}
 		out = append(out, genai.Reply{Opaque: opaque})
 	case ContentWebFetchToolResult:
-		for _, cc := range c.Content {
+		for i := range c.Content {
+			cc := &c.Content[i]
 			switch cc.Type {
 			case ContentWebFetchResult:
 				title := cc.Title
@@ -2350,7 +2352,8 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 							"server_name": pkt.ContentBlock.ServerName,
 						}}
 					case ContentWebFetchToolResult:
-						for _, cc := range pkt.ContentBlock.Content {
+						for i := range pkt.ContentBlock.Content {
+							cc := &pkt.ContentBlock.Content[i]
 							switch cc.Type {
 							case ContentWebFetchResult:
 								title := cc.Title

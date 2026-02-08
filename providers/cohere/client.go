@@ -60,19 +60,19 @@ type ChatRequest struct {
 		Type       string             `json:"type,omitzero"` // "text", "json_object"
 		JSONSchema *jsonschema.Schema `json:"json_schema,omitzero"`
 	} `json:"response_format,omitzero"`
-	SafetyMode       string      `json:"safety_mode,omitzero"` // "CONTEXTUAL", "STRICT", "OFF"
-	MaxTokens        int64       `json:"max_tokens,omitzero"`
-	StopSequences    []string    `json:"stop_sequences,omitzero"` // Up to 5 words
-	Temperature      float64     `json:"temperature,omitzero"`
-	Seed             int64       `json:"seed,omitzero"`
-	FrequencyPenalty float64     `json:"frequency_penalty,omitzero"` // [0, 1.0]
-	PresencePenalty  float64     `json:"presence_penalty,omitzero"`  // [0, 1.0]
-	K                int64       `json:"k,omitzero"`                 // [0, 500]
-	P                float64     `json:"p,omitzero"`                 // [0.01, 0.99]
-	Logprobs         bool        `json:"logprobs,omitzero"`
-	Tools            []Tool      `json:"tools,omitzero"`
-	ToolChoice       string      `json:"tool_choice,omitzero"` // "required", "none"
-	StrictTools      bool        `json:"strict_tools,omitzero"`
+	SafetyMode       string   `json:"safety_mode,omitzero"` // "CONTEXTUAL", "STRICT", "OFF"
+	MaxTokens        int64    `json:"max_tokens,omitzero"`
+	StopSequences    []string `json:"stop_sequences,omitzero"` // Up to 5 words
+	Temperature      float64  `json:"temperature,omitzero"`
+	Seed             int64    `json:"seed,omitzero"`
+	FrequencyPenalty float64  `json:"frequency_penalty,omitzero"` // [0, 1.0]
+	PresencePenalty  float64  `json:"presence_penalty,omitzero"`  // [0, 1.0]
+	K                int64    `json:"k,omitzero"`                 // [0, 500]
+	P                float64  `json:"p,omitzero"`                 // [0.01, 0.99]
+	Logprobs         bool     `json:"logprobs,omitzero"`
+	Tools            []Tool   `json:"tools,omitzero"`
+	ToolChoice       string   `json:"tool_choice,omitzero"` // "required", "none"
+	StrictTools      bool     `json:"strict_tools,omitzero"`
 }
 
 // Init initializes the provider specific completion request with the generic completion request.

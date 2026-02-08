@@ -103,7 +103,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			errs = append(errs, e...)
 			sp = v.SystemPrompt
 		case *genai.GenOptionTools:
-			errs = append(errs, c.initOptionsTools(v)...)
+			c.initOptionsTools(v)
 		case genai.GenOptionSeed:
 			c.Seed = int64(v)
 		default:
@@ -175,8 +175,7 @@ func (c *ChatRequest) initOptionsText(v *genai.GenOptionText) ([]string, []error
 	return unsupported, errs
 }
 
-func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools) []error {
-	var errs []error
+func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools) {
 	if len(v.Tools) != 0 {
 		switch v.Force {
 		case genai.ToolCallAny:
@@ -196,7 +195,6 @@ func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools) []error {
 			}
 		}
 	}
-	return errs
 }
 
 // ReasoningEffort is the effort the model should put into reasoning. Default is Medium.

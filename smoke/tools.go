@@ -292,14 +292,14 @@ func exerciseWebFetch(ctx context.Context, cs *callState, f *scoreboard.Function
 	}
 	if err == nil {
 		f.WebFetch = slices.ContainsFunc(res.Replies, func(r genai.Reply) bool { return !r.Citation.IsZero() })
-		for _, r := range res.Replies {
-			if r.Citation.IsZero() {
+		for i := range res.Replies {
+			if res.Replies[i].Citation.IsZero() {
 				continue
 			}
-			if len(r.Citation.Sources) == 0 {
+			if len(res.Replies[i].Citation.Sources) == 0 {
 				return fmt.Errorf("citation has no sources: %#v", res)
 			}
-			slog.DebugContext(ctx, "WebFetch", "citation", r.Citation)
+			slog.DebugContext(ctx, "WebFetch", "citation", res.Replies[i].Citation)
 		}
 	}
 	return nil

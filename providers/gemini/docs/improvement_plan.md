@@ -70,18 +70,14 @@ FileDelete are implemented.
 
 ### 2.3 File Search Tool
 
-**Status**: Not implemented.
+**Status**: Complete.
 
-**Work**:
-- Add `FileSearchTool` type to tool definitions
-- Requires File Search Stores service (create store, upload documents, index)
-- The tool is passed in `tools` alongside function declarations:
-  ```json
-  {"tools": [{"fileSearch": {"storeId": "..."}}]}
-  ```
-- Responses include `fileSearchResults` with document chunks and scores
-
-**Effort**: High (~200 lines, includes store management)
+**Implemented**:
+- `FileSearch` struct with `FileSearchStoreNames`, `TopK`, `MetadataFilter`
+- Wired into `GenOption.FileSearch` and `ChatRequest.Init()`
+- `GroundingChunkRetrievedContext` maps to `CitationDocument` citations
+- Full File Search Store CRUD: `FileSearchStoreCreate`, `Get`, `List`, `ListRaw`, `Delete`
+- Document management: `FileSearchStoreUploadDocument` (resumable), `ImportFile`, `DocumentGet`, `DocumentList`, `DocumentListRaw`, `DocumentDelete`
 
 ### 2.4 URL Context Tool
 
@@ -241,10 +237,10 @@ Recommended implementation sequence based on impact/effort ratio:
 
 ```
 Phase 1 (Quick Wins)     Phase 2 (Features)      Phase 3 (Vertex AI)
-  1.1 Code Execution       2.1 File Upload         3.1 vertexai package
-  1.2 CountTokens           2.4 URL Context         3.2 Batch Prediction
-  1.3 Get Model             2.2 Embeddings
-  1.4 FileData handling     2.3 File Search
+  1.1 Code Execution ✓     2.1 File Upload ✓       3.1 vertexai package
+  1.2 CountTokens ✓         2.4 URL Context ✓       3.2 Batch Prediction
+  1.3 Get Model ✓           2.2 Embeddings
+  1.4 FileData handling ✓   2.3 File Search ✓
 
 Phase 4 (Advanced)       Phase 5 (SDK Parity)
   4.4 Maps Grounding       5.3 Config additions

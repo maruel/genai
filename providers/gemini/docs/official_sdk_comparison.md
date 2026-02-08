@@ -52,8 +52,8 @@ type Client struct {
 | AUTO/ANY/NONE modes | Yes | Yes | - |
 | Google Search grounding | Yes | Yes | - |
 | Code execution tool | Yes | Yes | - |
-| File search tool | Yes | No | **Missing** |
-| URL context tool | Yes | No | **Missing** |
+| File search tool | Yes | Yes | - |
+| URL context tool | Yes | Yes | - |
 | **Multi-Modal Input** | | | |
 | Text | Yes | Yes | - |
 | Images (inline/URL) | Yes | Yes | - |
@@ -110,8 +110,8 @@ type Client struct {
 | Backend selector | Yes | No | **Missing** |
 | Project/Location config | Yes | No | **Missing** |
 | **Advanced Features** | | | |
-| File search stores | Yes | No | **Missing** |
-| Documents service | Yes | No | **Missing** |
+| File search stores | Yes | Yes | - |
+| Documents service | Yes | Yes | - |
 | Interactions API | Beta | No | **Missing** |
 | Deep Research agent | Beta | No | **Missing** |
 | Safety settings | Yes | Yes | - |
@@ -164,11 +164,10 @@ type Client struct {
 7. **Embeddings** - `models/{model}:embedContent` endpoint. Different use case
    from text generation but commonly needed.
 
-8. **File Search Tool** - Server-side RAG. Google hosts the vector store and
-   performs retrieval. Requires `FileSearchStores` service support.
+8. ~~**File Search Tool**~~ - Done. `FileSearch` tool in generation requests,
+   full `FileSearchStore` CRUD, document upload/import/list/delete.
 
-9. **URL Context Tool** - Allows the model to fetch and process web pages during
-   generation. Added in Gemini 3.
+9. ~~**URL Context Tool**~~ - Done. `GenOption.URLContext` and `UrlContextMetadata` handling.
 
 ### P2 - Nice to Have
 

@@ -97,6 +97,11 @@ type GenOption struct {
 	//
 	// https://ai.google.dev/gemini-api/docs/url-context
 	URLContext bool
+
+	// FileSearch enables the file search tool with the specified configuration.
+	//
+	// https://ai.google.dev/gemini-api/docs/file-search
+	FileSearch *FileSearch
 }
 
 func (o *GenOption) Validate() error {
@@ -150,10 +155,19 @@ type Tool struct {
 	URLContext    *struct{} `json:"urlContext,omitzero"`
 	// GoogleSearch presence signifies that it should be enabled,
 	GoogleSearch *GoogleSearch `json:"googleSearch,omitzero"`
+	// FileSearch enables file search tool.
+	FileSearch *FileSearch `json:"fileSearch,omitzero"`
 }
 
 // GoogleSearch is "documented" at https://ai.google.dev/gemini-api/docs/google-search
 type GoogleSearch struct{}
+
+// FileSearch is documented at https://ai.google.dev/gemini-api/docs/file-search
+type FileSearch struct {
+	FileSearchStoreNames []string `json:"fileSearchStoreNames,omitzero"`
+	TopK                 int32    `json:"topK,omitzero"`
+	MetadataFilter       string   `json:"metadataFilter,omitzero"`
+}
 
 // FunctionDeclaration is documented at https://ai.google.dev/api/caching?hl=en#FunctionDeclaration
 type FunctionDeclaration struct {
@@ -291,6 +305,9 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			}
 			if v.URLContext {
 				c.Tools = append(c.Tools, Tool{URLContext: &struct{}{}})
+			}
+			if v.FileSearch != nil {
+				c.Tools = append(c.Tools, Tool{FileSearch: v.FileSearch})
 			}
 		case *genai.GenOptionText:
 			u, e := c.initOptionsText(v)
@@ -799,38 +816,61 @@ func (r *ResponseCandidate) To(out *genai.Message) error {
 	return nil
 }
 
+// GroundingChunkWeb is documented at https://ai.google.dev/api/generate-content?hl=en#Web
+type GroundingChunkWeb struct {
+	URI   string `json:"uri,omitzero"`
+	Title string `json:"title,omitzero"`
+}
+
+// GroundingChunkRetrievedContext is documented at https://ai.google.dev/api/generate-content?hl=en#RetrievedContext
+type GroundingChunkRetrievedContext struct {
+	URI          string `json:"uri,omitzero"`
+	Title        string `json:"title,omitzero"`
+	Text         string `json:"text,omitzero"`
+	DocumentName string `json:"documentName,omitzero"`
+	// FileSearchStore is the store name that sourced this chunk. Not in the official Go SDK but returned by the API.
+	FileSearchStore string `json:"fileSearchStore,omitzero"`
+}
+
+// GroundingChunk is documented at https://ai.google.dev/api/generate-content?hl=en#GroundingChunk
+type GroundingChunk struct {
+	Web              GroundingChunkWeb              `json:"web,omitzero"`
+	RetrievedContext GroundingChunkRetrievedContext `json:"retrievedContext,omitzero"`
+}
+
+// Segment is documented at https://ai.google.dev/api/generate-content?hl=en#Segment
+type Segment struct {
+	PartIndex  int64  `json:"partIndex,omitzero"`
+	StartIndex int64  `json:"startIndex,omitzero"`
+	EndIndex   int64  `json:"endIndex,omitzero"`
+	Text       string `json:"text,omitzero"`
+}
+
+// GroundingSupport is documented at https://ai.google.dev/api/generate-content?hl=en#GroundingSupport
+type GroundingSupport struct {
+	GroundingChunkIndices []int64   `json:"groundingChunkIndices,omitzero"`
+	ConfidenceScores      []float64 `json:"confidenceScores,omitzero"`
+	Segment               Segment   `json:"segment,omitzero"`
+}
+
+// SearchEntryPoint is documented at https://ai.google.dev/api/generate-content?hl=en#SearchEntryPoint
+type SearchEntryPoint struct {
+	RenderedContent string `json:"renderedContent,omitzero"`
+	SDKBlob         []byte `json:"sdkBlob,omitzero"` // JSON encoded list of (search term,search url) results
+}
+
+// RetrievalMetadata is documented at https://ai.google.dev/api/generate-content?hl=en#RetrievalMetadata
+type RetrievalMetadata struct {
+	GoogleSearchDynamicRetrievalScore float64 `json:"googleSearchDynamicRetrievalScore,omitzero"`
+}
+
 // GroundingMetadata is documented at https://ai.google.dev/api/generate-content?hl=en#GroundingMetadata
 type GroundingMetadata struct {
-	// https://ai.google.dev/api/generate-content?hl=en#GroundingChunk
-	GroundingChunks []struct {
-		// https://ai.google.dev/api/generate-content?hl=en#Web
-		Web struct {
-			URI   string `json:"uri,omitzero"`
-			Title string `json:"title,omitzero"`
-		} `json:"web,omitzero"`
-	} `json:"groundingChunks,omitzero"`
-	// https://ai.google.dev/api/generate-content?hl=en#GroundingSupport
-	GroundingSupports []struct {
-		GroundingChunkIndices []int64   `json:"groundingChunkIndices,omitzero"`
-		ConfidenceScores      []float64 `json:"confidenceScores,omitzero"`
-		// https://ai.google.dev/api/generate-content?hl=en#Segment
-		Segment struct {
-			PartIndex  int64  `json:"partIndex,omitzero"`
-			StartIndex int64  `json:"startIndex,omitzero"`
-			EndIndex   int64  `json:"endIndex,omitzero"`
-			Text       string `json:"text,omitzero"`
-		} `json:"segment,omitzero"`
-	} `json:"groundingSupports,omitzero"`
-	WebSearchQueries []string `json:"webSearchQueries,omitzero"`
-	// https://ai.google.dev/api/generate-content?hl=en#SearchEntryPoint
-	SearchEntryPoint struct {
-		RenderedContent string `json:"renderedContent,omitzero"`
-		SDKBlob         []byte `json:"sdkBlob,omitzero"` // JSON encoded list of (search term,search url) results
-	} `json:"searchEntryPoint,omitzero"`
-	// https://ai.google.dev/api/generate-content?hl=en#RetrievalMetadata
-	RetrievalMetadata struct {
-		GoogleSearchDynamicRetrievalScore float64 `json:"googleSearchDynamicRetrievalScore,omitzero"`
-	} `json:"retrievalMetadata,omitzero"`
+	GroundingChunks   []GroundingChunk   `json:"groundingChunks,omitzero"`
+	GroundingSupports []GroundingSupport `json:"groundingSupports,omitzero"`
+	WebSearchQueries  []string           `json:"webSearchQueries,omitzero"`
+	SearchEntryPoint  SearchEntryPoint   `json:"searchEntryPoint,omitzero"`
+	RetrievalMetadata RetrievalMetadata  `json:"retrievalMetadata,omitzero"`
 }
 
 func (g *GroundingMetadata) IsZero() bool {
@@ -854,14 +894,29 @@ func (g *GroundingMetadata) To() ([]genai.Reply, error) {
 			if idx < 0 || idx > int64(len(g.GroundingChunks)) {
 				return out, &internal.BadError{Err: fmt.Errorf("invalid grounding chunk index: %v", idx)}
 			}
-			// TODO: The URL points to https://vertexaisearch.cloud.google.com/grounding-api-redirect/... which is
-			// not good. We should to a HEAD request to get the actual URL.
 			gc := g.GroundingChunks[idx]
-			c.Sources = append(c.Sources, genai.CitationSource{
-				Type:  genai.CitationWeb,
-				URL:   gc.Web.URI,
-				Title: gc.Web.Title,
-			})
+			rc := gc.RetrievedContext
+			if rc.DocumentName != "" || rc.URI != "" || rc.FileSearchStore != "" {
+				id := rc.DocumentName
+				if id == "" {
+					id = rc.FileSearchStore
+				}
+				c.Sources = append(c.Sources, genai.CitationSource{
+					Type:    genai.CitationDocument,
+					ID:      id,
+					Title:   rc.Title,
+					URL:     rc.URI,
+					Snippet: rc.Text,
+				})
+			} else {
+				// TODO: The URL points to https://vertexaisearch.cloud.google.com/grounding-api-redirect/... which is
+				// not good. We should to a HEAD request to get the actual URL.
+				c.Sources = append(c.Sources, genai.CitationSource{
+					Type:  genai.CitationWeb,
+					URL:   gc.Web.URI,
+					Title: gc.Web.Title,
+				})
+			}
 		}
 		out = append(out, genai.Reply{Citation: c})
 	}
@@ -1165,7 +1220,8 @@ type Operation struct {
 	// One of the following:
 	Error    Status `json:"error"`
 	Response struct {
-		Type                  string `json:"@type"` // "type.googleapis.com/google.ai.generativelanguage.v1beta.PredictLongRunningResponse"
+		Type string `json:"@type"`
+		// Video generation response.
 		GenerateVideoResponse struct {
 			GeneratedSamples []struct {
 				Video struct {
@@ -1177,6 +1233,11 @@ type Operation struct {
 				RAIMediaFilteredReasons []string `json:"raiMediaFilteredReasons"`
 			} `json:"generatedSamples"`
 		} `json:"generateVideoResponse"`
+		// File search store document upload response.
+		DocumentName string `json:"documentName,omitzero"`
+		Parent       string `json:"parent,omitzero"`
+		MimeType     string `json:"mimeType,omitzero"`
+		SizeBytes    string `json:"sizeBytes,omitzero"`
 	} `json:"response"`
 }
 
@@ -1226,6 +1287,65 @@ type FileMetadata struct {
 type FileListResponse struct {
 	Files         []FileMetadata `json:"files,omitzero"`
 	NextPageToken string         `json:"nextPageToken,omitzero"`
+}
+
+// File Search Stores
+
+// FileSearchStoreState represents the state of a file search store.
+type FileSearchStoreState string
+
+const (
+	FileSearchStoreStateUnspecified FileSearchStoreState = "STATE_UNSPECIFIED"
+	FileSearchStoreStateActive      FileSearchStoreState = "STATE_ACTIVE"
+)
+
+// FileSearchStore represents a file search store resource.
+//
+// https://ai.google.dev/gemini-api/docs/file-search
+type FileSearchStore struct {
+	Name                 string               `json:"name,omitzero"`
+	DisplayName          string               `json:"displayName,omitzero"`
+	CreateTime           time.Time            `json:"createTime,omitzero"`
+	UpdateTime           time.Time            `json:"updateTime,omitzero"`
+	State                FileSearchStoreState `json:"state,omitzero"`
+	ActiveDocumentsCount int64                `json:"activeDocumentsCount,omitzero,string"`
+	SizeBytes            int64                `json:"sizeBytes,omitzero,string"`
+}
+
+// FileSearchStoreListResponse is the response from listing file search stores.
+type FileSearchStoreListResponse struct {
+	FileSearchStores []FileSearchStore `json:"fileSearchStores,omitzero"`
+	NextPageToken    string            `json:"nextPageToken,omitzero"`
+}
+
+// FileSearchStoreDocumentState represents the state of a document in a file search store.
+type FileSearchStoreDocumentState string
+
+const (
+	FileSearchStoreDocumentStateUnspecified FileSearchStoreDocumentState = "STATE_UNSPECIFIED"
+	FileSearchStoreDocumentStateProcessing  FileSearchStoreDocumentState = "STATE_PROCESSING"
+	FileSearchStoreDocumentStateActive      FileSearchStoreDocumentState = "STATE_ACTIVE"
+	FileSearchStoreDocumentStateFailed      FileSearchStoreDocumentState = "STATE_FAILED"
+)
+
+// FileSearchStoreDocument represents a document within a file search store.
+//
+// https://ai.google.dev/gemini-api/docs/file-search
+type FileSearchStoreDocument struct {
+	Name        string                       `json:"name,omitzero"`
+	DisplayName string                       `json:"displayName,omitzero"`
+	State       FileSearchStoreDocumentState `json:"state,omitzero"`
+	CreateTime  time.Time                    `json:"createTime,omitzero"`
+	UpdateTime  time.Time                    `json:"updateTime,omitzero"`
+	SizeBytes   int64                        `json:"sizeBytes,omitzero,string"`
+	MimeType    string                       `json:"mimeType,omitzero"`
+	Error       *Status                      `json:"error,omitzero"`
+}
+
+// FileSearchStoreDocumentListResponse is the response from listing documents in a file search store.
+type FileSearchStoreDocumentListResponse struct {
+	Documents     []FileSearchStoreDocument `json:"documents,omitzero"`
+	NextPageToken string                    `json:"nextPageToken,omitzero"`
 }
 
 // Caching
@@ -2483,6 +2603,201 @@ func (c *Client) FileListRaw(ctx context.Context) (*FileListResponse, error) {
 // https://ai.google.dev/api/files#method:-files.delete
 func (c *Client) FileDelete(ctx context.Context, name string) error {
 	u := "https://generativelanguage.googleapis.com/v1beta/" + name
+	return c.impl.DoRequest(ctx, "DELETE", u, nil, &struct{}{})
+}
+
+// FileSearchStoreCreate creates a new file search store.
+//
+// https://ai.google.dev/gemini-api/docs/file-search
+func (c *Client) FileSearchStoreCreate(ctx context.Context, displayName string) (*FileSearchStore, error) {
+	req := struct {
+		DisplayName string `json:"displayName"`
+	}{DisplayName: displayName}
+	var resp FileSearchStore
+	u := "https://generativelanguage.googleapis.com/v1beta/fileSearchStores"
+	if err := c.impl.DoRequest(ctx, "POST", u, &req, &resp); err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
+
+// FileSearchStoreGet retrieves a file search store.
+//
+// The name parameter should be in the form "fileSearchStores/{id}".
+//
+// https://ai.google.dev/gemini-api/docs/file-search
+func (c *Client) FileSearchStoreGet(ctx context.Context, name string) (*FileSearchStore, error) {
+	u := "https://generativelanguage.googleapis.com/v1beta/" + name
+	var resp FileSearchStore
+	if err := c.impl.DoRequest(ctx, "GET", u, nil, &resp); err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
+
+// FileSearchStoreList returns all file search stores.
+//
+// https://ai.google.dev/gemini-api/docs/file-search
+func (c *Client) FileSearchStoreList(ctx context.Context) ([]FileSearchStore, error) {
+	resp, err := c.FileSearchStoreListRaw(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return resp.FileSearchStores, nil
+}
+
+// FileSearchStoreListRaw returns the raw paginated response for file search stores.
+//
+// https://ai.google.dev/gemini-api/docs/file-search
+func (c *Client) FileSearchStoreListRaw(ctx context.Context) (*FileSearchStoreListResponse, error) {
+	u := "https://generativelanguage.googleapis.com/v1beta/fileSearchStores?pageSize=20"
+	resp := &FileSearchStoreListResponse{}
+	if err := c.impl.DoRequest(ctx, "GET", u, nil, resp); err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
+// FileSearchStoreDelete deletes a file search store.
+//
+// The name parameter should be in the form "fileSearchStores/{id}".
+// Set force to true to delete the store even if it contains documents.
+//
+// https://ai.google.dev/gemini-api/docs/file-search
+func (c *Client) FileSearchStoreDelete(ctx context.Context, name string, force bool) error {
+	u := "https://generativelanguage.googleapis.com/v1beta/" + name + "?force=" + strconv.FormatBool(force)
+	return c.impl.DoRequest(ctx, "DELETE", u, nil, &struct{}{})
+}
+
+// FileSearchStoreUploadDocument uploads a document to a file search store using the resumable upload protocol.
+//
+// The store parameter should be in the form "fileSearchStores/{id}".
+// Returns an Operation since document processing is asynchronous.
+//
+// https://ai.google.dev/gemini-api/docs/file-search
+func (c *Client) FileSearchStoreUploadDocument(ctx context.Context, store, displayName, mimeType string, r io.Reader) (*Operation, error) {
+	// Phase 1: Start the resumable upload.
+	meta := struct {
+		DisplayName string `json:"displayName,omitzero"`
+	}{DisplayName: displayName}
+	body, err := json.Marshal(&meta)
+	if err != nil {
+		return nil, err
+	}
+	startURL := "https://generativelanguage.googleapis.com/upload/v1beta/" + store + ":uploadToFileSearchStore"
+	req, err := http.NewRequestWithContext(ctx, "POST", startURL, bytes.NewReader(body))
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("Content-Type", "application/json; charset=utf-8")
+	req.Header.Set("X-Goog-Upload-Protocol", "resumable")
+	req.Header.Set("X-Goog-Upload-Command", "start")
+	req.Header.Set("X-Goog-Upload-Header-Content-Type", mimeType)
+	resp, err := c.impl.Client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode != 200 {
+		b, _ := io.ReadAll(resp.Body)
+		resp.Body.Close()
+		return nil, fmt.Errorf("gemini: file search store upload start failed with status %d: %s", resp.StatusCode, b)
+	}
+	_ = resp.Body.Close()
+	uploadURL := resp.Header.Get("X-Goog-Upload-Url")
+	if uploadURL == "" {
+		return nil, errors.New("gemini: missing X-Goog-Upload-Url in response")
+	}
+
+	// Phase 2: Upload the file bytes.
+	data, err := io.ReadAll(r)
+	if err != nil {
+		return nil, err
+	}
+	req, err = http.NewRequestWithContext(ctx, "PUT", uploadURL, bytes.NewReader(data))
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("Content-Length", strconv.Itoa(len(data)))
+	req.Header.Set("X-Goog-Upload-Offset", "0")
+	req.Header.Set("X-Goog-Upload-Command", "upload, finalize")
+	resp, err = c.impl.Client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	var result Operation
+	if err := c.impl.DecodeResponse(resp, uploadURL, &result); err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
+// FileSearchStoreImportFile imports an already-uploaded file into a file search store.
+//
+// The store parameter should be in the form "fileSearchStores/{id}".
+// The fileName parameter should be in the form "files/{id}".
+//
+// https://ai.google.dev/gemini-api/docs/file-search
+func (c *Client) FileSearchStoreImportFile(ctx context.Context, store, fileName string) (*Operation, error) {
+	req := struct {
+		FileName string `json:"fileName"`
+	}{FileName: fileName}
+	var resp Operation
+	u := "https://generativelanguage.googleapis.com/v1beta/" + store + ":importFile"
+	if err := c.impl.DoRequest(ctx, "POST", u, &req, &resp); err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
+
+// FileSearchStoreDocumentGet retrieves a document from a file search store.
+//
+// The name parameter should be in the form "fileSearchStores/{storeId}/documents/{docId}".
+//
+// https://ai.google.dev/gemini-api/docs/file-search
+func (c *Client) FileSearchStoreDocumentGet(ctx context.Context, name string) (*FileSearchStoreDocument, error) {
+	u := "https://generativelanguage.googleapis.com/v1beta/" + name
+	var resp FileSearchStoreDocument
+	if err := c.impl.DoRequest(ctx, "GET", u, nil, &resp); err != nil {
+		return nil, err
+	}
+	return &resp, nil
+}
+
+// FileSearchStoreDocumentList returns all documents in a file search store.
+//
+// The store parameter should be in the form "fileSearchStores/{id}".
+//
+// https://ai.google.dev/gemini-api/docs/file-search
+func (c *Client) FileSearchStoreDocumentList(ctx context.Context, store string) ([]FileSearchStoreDocument, error) {
+	resp, err := c.FileSearchStoreDocumentListRaw(ctx, store)
+	if err != nil {
+		return nil, err
+	}
+	return resp.Documents, nil
+}
+
+// FileSearchStoreDocumentListRaw returns the raw paginated response for documents in a file search store.
+//
+// The store parameter should be in the form "fileSearchStores/{id}".
+//
+// https://ai.google.dev/gemini-api/docs/file-search
+func (c *Client) FileSearchStoreDocumentListRaw(ctx context.Context, store string) (*FileSearchStoreDocumentListResponse, error) {
+	u := "https://generativelanguage.googleapis.com/v1beta/" + store + "/documents?pageSize=20"
+	resp := &FileSearchStoreDocumentListResponse{}
+	if err := c.impl.DoRequest(ctx, "GET", u, nil, resp); err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
+// FileSearchStoreDocumentDelete deletes a document from a file search store.
+//
+// The name parameter should be in the form "fileSearchStores/{storeId}/documents/{docId}".
+// Set force to true to force deletion even if the document is still being processed.
+//
+// https://ai.google.dev/gemini-api/docs/file-search
+func (c *Client) FileSearchStoreDocumentDelete(ctx context.Context, name string, force bool) error {
+	u := "https://generativelanguage.googleapis.com/v1beta/" + name + "?force=" + strconv.FormatBool(force)
 	return c.impl.DoRequest(ctx, "DELETE", u, nil, &struct{}{})
 }
 

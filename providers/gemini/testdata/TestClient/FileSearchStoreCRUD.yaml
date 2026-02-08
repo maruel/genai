@@ -1,0 +1,527 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 35
+        host: generativelanguage.googleapis.com
+        body: |
+            {"displayName":"genai-test-store"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/fileSearchStores
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "name": "fileSearchStores/genaiteststore-60ekj8dn3xy2",
+              "displayName": "genai-test-store",
+              "createTime": "2026-02-08T00:59:01.936872Z",
+              "updateTime": "2026-02-08T00:59:01.936872Z"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=143
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 209ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 30
+        host: generativelanguage.googleapis.com
+        body: '{"displayName":"test-doc.txt"}'
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+            X-Goog-Upload-Command:
+                - start
+            X-Goog-Upload-Header-Content-Type:
+                - text/plain
+            X-Goog-Upload-Protocol:
+                - resumable
+        url: https://generativelanguage.googleapis.com/upload/v1beta/fileSearchStores/genaiteststore-60ekj8dn3xy2:uploadToFileSearchStore
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 0
+        body: ""
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "0"
+            Content-Type:
+                - text/plain; charset=utf-8
+            Server:
+                - UploadServer
+            X-Goog-Upload-Chunk-Granularity:
+                - "8388608"
+            X-Goog-Upload-Control-Url:
+                - https://generativelanguage.googleapis.com/upload/v1beta/fileSearchStores/genaiteststore-60ekj8dn3xy2:uploadToFileSearchStore?upload_id=AJRbA5UNccKTJ4u8pIRF3VdkypnJnEiTL6sPU9gV-riyX7-sNAZQ1TMLgTf7XsqOG75byLAcv8DGU2EtzhYPRsqlJ_wCfeaUsfSWb_kRJ2Ezjg&upload_protocol=resumable
+            X-Goog-Upload-Header-Content-Type:
+                - application/json; charset=UTF-8
+            X-Goog-Upload-Header-Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Goog-Upload-Header-X-Google-Backends:
+                - unix:/tmp/esfbackend.1770399678.807120.3837630
+            X-Goog-Upload-Header-X-Google-Esf-Cloud-Client-Params:
+                - 'backend_service_name: "generativelanguage.googleapis.com" backend_fully_qualified_method: "google.ai.generativelanguage.v1beta.RetrieverService.UploadToFileSearchStore"'
+            X-Goog-Upload-Header-X-Google-Gfe-Backend-Request-Cost:
+                - "6.1280"
+            X-Goog-Upload-Header-X-Google-Security-Signals:
+                - FRAMEWORK=ONE_PLATFORM,ENV=borg,ENV_DEBUG=borg_user:genai-api;borg_job:prod.genai-api
+            X-Goog-Upload-Header-X-Google-Session-Info:
+                - GgQYECgLIAE6IxIhZ2VuZXJhdGl2ZWxhbmd1YWdlLmdvb2dsZWFwaXMuY29t
+            X-Goog-Upload-Status:
+                - active
+            X-Goog-Upload-Url:
+                - https://generativelanguage.googleapis.com/upload/v1beta/fileSearchStores/genaiteststore-60ekj8dn3xy2:uploadToFileSearchStore?upload_id=AJRbA5UNccKTJ4u8pIRF3VdkypnJnEiTL6sPU9gV-riyX7-sNAZQ1TMLgTf7XsqOG75byLAcv8DGU2EtzhYPRsqlJ_wCfeaUsfSWb_kRJ2Ezjg&upload_protocol=resumable
+            X-Guploader-Uploadid:
+                - AJRbA5UNccKTJ4u8pIRF3VdkypnJnEiTL6sPU9gV-riyX7-sNAZQ1TMLgTf7XsqOG75byLAcv8DGU2EtzhYPRsqlJ_wCfeaUsfSWb_kRJ2Ezjg
+        status: 200 OK
+        code: 200
+        duration: 269ms
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 96
+        host: generativelanguage.googleapis.com
+        body: The secret project codename is Chimera. It was started in 2024 and involves distributed caching.
+        form:
+            upload_id:
+                - AJRbA5UNccKTJ4u8pIRF3VdkypnJnEiTL6sPU9gV-riyX7-sNAZQ1TMLgTf7XsqOG75byLAcv8DGU2EtzhYPRsqlJ_wCfeaUsfSWb_kRJ2Ezjg
+            upload_protocol:
+                - resumable
+        headers:
+            Content-Length:
+                - "96"
+            X-Goog-Upload-Command:
+                - upload, finalize
+            X-Goog-Upload-Offset:
+                - "0"
+        url: https://generativelanguage.googleapis.com/upload/v1beta/fileSearchStores/genaiteststore-60ekj8dn3xy2:uploadToFileSearchStore?upload_id=AJRbA5UNccKTJ4u8pIRF3VdkypnJnEiTL6sPU9gV-riyX7-sNAZQ1TMLgTf7XsqOG75byLAcv8DGU2EtzhYPRsqlJ_wCfeaUsfSWb_kRJ2Ezjg&upload_protocol=resumable
+        method: PUT
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 444
+        body: |
+            {
+              "name": "fileSearchStores/genaiteststore-60ekj8dn3xy2/upload/operations/testdoctxt-cisa680vvfvo",
+              "response": {
+                "@type": "type.googleapis.com/google.ai.generativelanguage.v1main.UploadToFileSearchStoreResponse",
+                "parent": "fileSearchStores/genaiteststore-60ekj8dn3xy2",
+                "documentName": "fileSearchStores/genaiteststore-60ekj8dn3xy2/documents/testdoctxt-cisa680vvfvo",
+                "mimeType": "text/plain",
+                "sizeBytes": "96"
+              }
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "444"
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - UploadServer
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Goog-Upload-Status:
+                - final
+            X-Guploader-Uploadid:
+                - AJRbA5UNccKTJ4u8pIRF3VdkypnJnEiTL6sPU9gV-riyX7-sNAZQ1TMLgTf7XsqOG75byLAcv8DGU2EtzhYPRsqlJ_wCfeaUsfSWb_kRJ2Ezjg
+        status: 200 OK
+        code: 200
+        duration: 1.492s
+    - id: 3
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        host: generativelanguage.googleapis.com
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/fileSearchStores/genaiteststore-60ekj8dn3xy2
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "name": "fileSearchStores/genaiteststore-60ekj8dn3xy2",
+              "displayName": "genai-test-store",
+              "createTime": "2026-02-08T00:59:01.936872Z",
+              "updateTime": "2026-02-08T00:59:01.936872Z",
+              "activeDocumentsCount": "1",
+              "sizeBytes": "96"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=94
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 105ms
+    - id: 4
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        host: generativelanguage.googleapis.com
+        form:
+            pageSize:
+                - "20"
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/fileSearchStores?pageSize=20
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "fileSearchStores": [
+                {
+                  "name": "fileSearchStores/genaiteststore-60ekj8dn3xy2",
+                  "displayName": "genai-test-store",
+                  "createTime": "2026-02-08T00:59:01.936872Z",
+                  "updateTime": "2026-02-08T00:59:01.936872Z",
+                  "activeDocumentsCount": "1",
+                  "sizeBytes": "96"
+                }
+              ]
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=129
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 141ms
+    - id: 5
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        host: generativelanguage.googleapis.com
+        form:
+            pageSize:
+                - "20"
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/fileSearchStores/genaiteststore-60ekj8dn3xy2/documents?pageSize=20
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "documents": [
+                {
+                  "name": "fileSearchStores/genaiteststore-60ekj8dn3xy2/documents/testdoctxt-cisa680vvfvo",
+                  "displayName": "test-doc.txt",
+                  "updateTime": "2026-02-08T00:59:03.683128Z",
+                  "createTime": "2026-02-08T00:59:02.913249Z",
+                  "state": "STATE_ACTIVE",
+                  "sizeBytes": "96",
+                  "mimeType": "text/plain"
+                }
+              ]
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=94
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 106ms
+    - id: 6
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 301
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"What is the secret project codename?"}]}],"tools":[{"fileSearch":{"fileSearchStoreNames":["fileSearchStores/genaiteststore-60ekj8dn3xy2"]}}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":false,"thinkingBudget":0}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "The secret project is codenamed Chimera. It was initiated in 2024 and focuses on distributed caching."
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0,
+                  "groundingMetadata": {
+                    "groundingChunks": [
+                      {
+                        "retrievedContext": {
+                          "title": "test-doc.txt",
+                          "text": "The secret project codename is Chimera. It was started in 2024 and involves distributed caching.",
+                          "fileSearchStore": "fileSearchStores/genaiteststore-60ekj8dn3xy2"
+                        }
+                      }
+                    ],
+                    "groundingSupports": [
+                      {
+                        "segment": {
+                          "startIndex": 41,
+                          "endIndex": 100,
+                          "text": "It was initiated in 2024 and focuses on distributed caching"
+                        },
+                        "groundingChunkIndices": [
+                          0
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 9,
+                "candidatesTokenCount": 40,
+                "totalTokenCount": 73,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 9
+                  }
+                ],
+                "toolUsePromptTokenCount": 24,
+                "toolUsePromptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 24
+                  }
+                ]
+              },
+              "modelVersion": "gemini-2.5-flash",
+              "responseId": "2d-HafjkBZWj_uMP4d7VuAo"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=1062
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 1.074s
+    - id: 7
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        host: generativelanguage.googleapis.com
+        form:
+            force:
+                - "true"
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/fileSearchStores/genaiteststore-60ekj8dn3xy2/documents/testdoctxt-cisa680vvfvo?force=true
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=392
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 404ms
+    - id: 8
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        host: generativelanguage.googleapis.com
+        form:
+            force:
+                - "true"
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/fileSearchStores/genaiteststore-60ekj8dn3xy2?force=true
+        method: DELETE
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {}
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=201
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 213ms

@@ -15,6 +15,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/google/go-cmp/cmp"
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
@@ -437,6 +438,225 @@ func TestClient(t *testing.T) {
 				t.Fatal(err)
 			}
 		})
+	})
+
+	t.Run("FileSearchStoreCRUD", func(t *testing.T) {
+		t.Parallel()
+		ci, err := getClientInner(t, "gemini-2.5-flash", nil, cachedModels, func(h http.RoundTripper) http.RoundTripper {
+			return testRecorder.Record(t, h)
+		})
+		if err != nil {
+			t.Fatal(err)
+		}
+		c := ci.(*gemini.Client)
+		ctx := t.Context()
+		isRecording := os.Getenv("RECORD") == "1"
+
+		// Create store.
+		store, err := c.FileSearchStoreCreate(ctx, "genai-test-store")
+		if err != nil {
+			t.Fatal(err)
+		}
+		if store.Name == "" {
+			t.Fatal("expected store name")
+		}
+		t.Logf("Created store: %s", store.Name)
+		t.Cleanup(func() {
+			if err := c.FileSearchStoreDelete(context.Background(), store.Name, true); err != nil {
+				t.Errorf("cleanup: delete store: %v", err)
+			}
+		})
+
+		// Upload a document.
+		const docContent = "The secret project codename is Chimera. It was started in 2024 and involves distributed caching."
+		op, err := c.FileSearchStoreUploadDocument(ctx, store.Name, "test-doc.txt", "text/plain", strings.NewReader(docContent))
+		if err != nil {
+			t.Fatal(err)
+		}
+		t.Logf("Upload operation: %s (done=%v)", op.Name, op.Done)
+
+		// Get store.
+		t.Run("GetStore", func(t *testing.T) {
+			got, err := c.FileSearchStoreGet(ctx, store.Name)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got.Name != store.Name {
+				t.Errorf("Name = %q, want %q", got.Name, store.Name)
+			}
+		})
+
+		// List stores.
+		t.Run("ListStores", func(t *testing.T) {
+			stores, err := c.FileSearchStoreList(ctx)
+			if err != nil {
+				t.Fatal(err)
+			}
+			found := false
+			for _, s := range stores {
+				if s.Name == store.Name {
+					found = true
+					break
+				}
+			}
+			if !found {
+				t.Errorf("store %s not found in list of %d stores", store.Name, len(stores))
+			}
+		})
+
+		// Wait for document to become ACTIVE.
+		t.Run("Documents", func(t *testing.T) {
+			docs, err := c.FileSearchStoreDocumentList(ctx, store.Name)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if len(docs) == 0 {
+				t.Fatal("expected at least one document")
+			}
+			doc := docs[0]
+			t.Logf("Document: %s state=%s", doc.Name, doc.State)
+			for doc.State == gemini.FileSearchStoreDocumentStateProcessing {
+				if !isRecording {
+					t.Skip("document still processing and not recording")
+				}
+				t.Log("Waiting for document to become ACTIVE...")
+				time.Sleep(2 * time.Second)
+				doc2, err := c.FileSearchStoreDocumentGet(ctx, doc.Name)
+				if err != nil {
+					t.Fatal(err)
+				}
+				doc = *doc2
+			}
+			if doc.State != gemini.FileSearchStoreDocumentStateActive {
+				t.Fatalf("document state = %q, want %q", doc.State, gemini.FileSearchStoreDocumentStateActive)
+			}
+
+			// Query via generation with FileSearch tool.
+			t.Run("GenWithFileSearch", func(t *testing.T) {
+				msgs := genai.Messages{
+					genai.NewTextMessage("What is the secret project codename?"),
+				}
+				res, err := c.GenSync(ctx, msgs,
+					&gemini.GenOption{
+						ThinkingBudget: 0,
+						FileSearch:     &gemini.FileSearch{FileSearchStoreNames: []string{store.Name}},
+					},
+				)
+				if err != nil {
+					t.Fatal(err)
+				}
+				var text string
+				for _, r := range res.Replies {
+					text += r.Text
+				}
+				if !strings.Contains(strings.ToLower(text), "chimera") {
+					t.Errorf("expected response to mention Chimera, got: %s", text)
+				}
+				t.Logf("Response: %s", text)
+				// Check for document citations.
+				for _, r := range res.Replies {
+					for _, s := range r.Citation.Sources {
+						t.Logf("Citation: type=%d id=%s title=%s", s.Type, s.ID, s.Title)
+					}
+				}
+			})
+
+			// Delete document.
+			t.Run("DeleteDocument", func(t *testing.T) {
+				if err := c.FileSearchStoreDocumentDelete(ctx, doc.Name, true); err != nil {
+					t.Fatal(err)
+				}
+			})
+		})
+	})
+
+	t.Run("GroundingMetadata_RetrievedContext", func(t *testing.T) {
+		data := []struct {
+			name string
+			in   gemini.GroundingMetadata
+			want []genai.Reply
+		}{
+			{
+				name: "retrievedContext_only",
+				in: gemini.GroundingMetadata{
+					GroundingChunks: []gemini.GroundingChunk{
+						{RetrievedContext: gemini.GroundingChunkRetrievedContext{
+							URI: "gs://bucket/doc.pdf", Title: "Test Doc",
+							Text: "relevant snippet", DocumentName: "fileSearchStores/123/documents/456",
+						}},
+					},
+					GroundingSupports: []gemini.GroundingSupport{
+						{GroundingChunkIndices: []int64{0}, Segment: gemini.Segment{EndIndex: 10}},
+					},
+				},
+				want: []genai.Reply{
+					{Citation: genai.Citation{
+						EndIndex: 10,
+						Sources: []genai.CitationSource{{
+							Type: genai.CitationDocument, ID: "fileSearchStores/123/documents/456",
+							Title: "Test Doc", URL: "gs://bucket/doc.pdf", Snippet: "relevant snippet",
+						}},
+					}},
+				},
+			},
+			{
+				name: "fileSearchStore_only",
+				in: gemini.GroundingMetadata{
+					GroundingChunks: []gemini.GroundingChunk{
+						{RetrievedContext: gemini.GroundingChunkRetrievedContext{
+							FileSearchStore: "fileSearchStores/store-123",
+							Title:           "Store Doc", Text: "snippet from store",
+						}},
+					},
+					GroundingSupports: []gemini.GroundingSupport{
+						{GroundingChunkIndices: []int64{0}, Segment: gemini.Segment{EndIndex: 15}},
+					},
+				},
+				want: []genai.Reply{
+					{Citation: genai.Citation{
+						EndIndex: 15,
+						Sources: []genai.CitationSource{{
+							Type: genai.CitationDocument, ID: "fileSearchStores/store-123",
+							Title: "Store Doc", Snippet: "snippet from store",
+						}},
+					}},
+				},
+			},
+			{
+				name: "mixed_web_and_retrievedContext",
+				in: gemini.GroundingMetadata{
+					GroundingChunks: []gemini.GroundingChunk{
+						{Web: gemini.GroundingChunkWeb{URI: "https://example.com", Title: "Web Result"}},
+						{RetrievedContext: gemini.GroundingChunkRetrievedContext{
+							DocumentName: "fileSearchStores/abc/documents/def", Title: "Doc Result", Text: "doc snippet",
+						}},
+					},
+					GroundingSupports: []gemini.GroundingSupport{
+						{GroundingChunkIndices: []int64{0, 1}, Segment: gemini.Segment{StartIndex: 5, EndIndex: 20}},
+					},
+				},
+				want: []genai.Reply{
+					{Citation: genai.Citation{
+						StartIndex: 5, EndIndex: 20,
+						Sources: []genai.CitationSource{
+							{Type: genai.CitationWeb, URL: "https://example.com", Title: "Web Result"},
+							{Type: genai.CitationDocument, ID: "fileSearchStores/abc/documents/def", Title: "Doc Result", Snippet: "doc snippet"},
+						},
+					}},
+				},
+			},
+		}
+		for _, tc := range data {
+			t.Run(tc.name, func(t *testing.T) {
+				got, err := tc.in.To()
+				if err != nil {
+					t.Fatal(err)
+				}
+				if diff := cmp.Diff(tc.want, got); diff != "" {
+					t.Fatalf("mismatch (-want +got):\n%s", diff)
+				}
+			})
+		}
 	})
 
 	t.Run("errors", func(t *testing.T) {

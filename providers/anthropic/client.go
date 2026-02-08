@@ -349,6 +349,13 @@ func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools) {
 			// MaxUses: 10,
 		})
 	}
+	if v.WebFetch {
+		// https://docs.anthropic.com/en/docs/agents-and-tools/tool-use/web-fetch-tool
+		c.Tools = append(c.Tools, Tool{
+			Type: "web_fetch_20250910",
+			Name: "web_fetch",
+		})
+	}
 }
 
 func modelsMaxTokens(model string) int64 {
@@ -501,6 +508,28 @@ func (m *Message) To(out *genai.Message) error {
 	return nil
 }
 
+// Contents is a []Content with custom JSON unmarshaling that accepts both a single object and an array.
+//
+// The web_fetch_tool_result API returns "content": {...} (single object) unlike web_search_tool_result which
+// returns "content": [...] (array).
+type Contents []Content
+
+func (c *Contents) UnmarshalJSON(data []byte) error {
+	data = bytes.TrimSpace(data)
+	if len(data) == 0 {
+		return nil
+	}
+	if data[0] == '[' {
+		return json.Unmarshal(data, (*[]Content)(c))
+	}
+	var single Content
+	if err := json.Unmarshal(data, &single); err != nil {
+		return err
+	}
+	*c = []Content{single}
+	return nil
+}
+
 // Content is a recursive data type of content.
 type Content struct {
 	// Type is what this content is, which defines which fields are valid. Some types are only valid at the root
@@ -539,10 +568,11 @@ type Content struct {
 	ToolUseID string `json:"tool_use_id,omitzero"`
 	IsError   bool   `json:"is_error,omitzero"`
 
-	// Type == ContentToolResult, ContentWebSearchToolResult, ContentMCPToolResult
+	// Type == ContentToolResult, ContentWebSearchToolResult, ContentWebFetchToolResult, ContentMCPToolResult
 	// - ContentToolResult: Only ContentText and ContentImage are allowed.
 	// - ContentWebSearchToolResult: Only ContentWebSearchResult is allowed.
-	Content []Content `json:"content,omitzero"`
+	// - ContentWebFetchToolResult: Only ContentWebFetchResult and ContentWebFetchToolError are allowed.
+	Content Contents `json:"content,omitzero"`
 
 	// Type == ContentMCPToolUse
 	ServerName string `json:"server_name,omitzero"`
@@ -555,7 +585,13 @@ type Content struct {
 	EncryptedContent string `json:"encrypted_content,omitzero"`
 	PageAge          string `json:"page_age,omitzero"` // "12 hours ago", "4 days ago", "1 week ago", "April 29, 2025", null
 
-	// Type == ContentDocument, ContentWebSearchResult
+	// Type == ContentWebFetchResult
+	RetrievedAt string `json:"retrieved_at,omitzero"`
+
+	// Type == ContentWebFetchToolError
+	ErrorCode string `json:"error_code,omitzero"`
+
+	// Type == ContentDocument, ContentWebSearchResult, ContentWebFetchResult
 	Title string `json:"title,omitzero"` // Document title when using Source, web page title
 }
 
@@ -577,7 +613,8 @@ func (c *Content) validate(strict bool) error {
 			}
 		}
 		if c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || !c.Source.IsZero() || c.ID != "" || c.Name != "" || c.Input != nil ||
-			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.ServerName != "" || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" {
+			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.ServerName != "" || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" ||
+			c.RetrievedAt != "" || c.ErrorCode != "" {
 			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
 		}
 	case ContentThinking:
@@ -586,7 +623,8 @@ func (c *Content) validate(strict bool) error {
 			return &internal.BadError{Err: fmt.Errorf("%s: fields Thinking must be set", c.Type)}
 		}
 		if c.Text != "" || c.Data != "" || len(c.Citations.Citations) > 0 || !c.Source.IsZero() || c.ID != "" || c.Name != "" || c.Input != nil ||
-			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.ServerName != "" || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" {
+			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.ServerName != "" || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" ||
+			c.RetrievedAt != "" || c.ErrorCode != "" {
 			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
 		}
 	case ContentRedactedThinking:
@@ -594,7 +632,8 @@ func (c *Content) validate(strict bool) error {
 			return &internal.BadError{Err: fmt.Errorf("%s: fields Data must be set", c.Type)}
 		}
 		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || len(c.Citations.Citations) > 0 || !c.Source.IsZero() || c.ID != "" || c.Name != "" || c.Input != nil ||
-			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.ServerName != "" || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" {
+			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.ServerName != "" || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" ||
+			c.RetrievedAt != "" || c.ErrorCode != "" {
 			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
 		}
 	case ContentImage, ContentDocument:
@@ -602,7 +641,8 @@ func (c *Content) validate(strict bool) error {
 			return &internal.BadError{Err: fmt.Errorf("%s: fields Source must be set", c.Type)}
 		}
 		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || len(c.Citations.Citations) > 0 || c.ID != "" || c.Name != "" || c.Input != nil ||
-			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.ServerName != "" || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" {
+			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.ServerName != "" || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" ||
+			c.RetrievedAt != "" || c.ErrorCode != "" {
 			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
 		}
 	case ContentToolUse:
@@ -610,7 +650,8 @@ func (c *Content) validate(strict bool) error {
 			return &internal.BadError{Err: fmt.Errorf("%s: fields ID, Name, Input must be set", c.Type)}
 		}
 		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || len(c.Citations.Citations) > 0 || !c.Source.IsZero() ||
-			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.ServerName != "" || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" {
+			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.ServerName != "" || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" ||
+			c.RetrievedAt != "" || c.ErrorCode != "" {
 			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
 		}
 	case ContentToolResult:
@@ -618,7 +659,8 @@ func (c *Content) validate(strict bool) error {
 			return &internal.BadError{Err: fmt.Errorf("%s: fields ToolUseID, Content, must be set", c.Type)}
 		}
 		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || len(c.Citations.Citations) > 0 || !c.Source.IsZero() || c.ID != "" || c.Name != "" || c.Input != nil ||
-			c.IsError || c.ServerName != "" || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" {
+			c.IsError || c.ServerName != "" || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" ||
+			c.RetrievedAt != "" || c.ErrorCode != "" {
 			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
 		}
 	case ContentMCPToolUse:
@@ -626,7 +668,8 @@ func (c *Content) validate(strict bool) error {
 			return &internal.BadError{Err: fmt.Errorf("%s: fields ID, Name, Input, ServerName must be set", c.Type)}
 		}
 		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || len(c.Citations.Citations) > 0 || !c.Source.IsZero() ||
-			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" {
+			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" ||
+			c.RetrievedAt != "" || c.ErrorCode != "" {
 			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
 		}
 	case ContentMCPToolResult:
@@ -634,7 +677,8 @@ func (c *Content) validate(strict bool) error {
 			return &internal.BadError{Err: fmt.Errorf("%s: fields ToolUseID, Content must be set", c.Type)}
 		}
 		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || len(c.Citations.Citations) > 0 || !c.Source.IsZero() || c.ID != "" || c.Name != "" || c.Input != nil ||
-			c.ServerName != "" || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" {
+			c.ServerName != "" || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" ||
+			c.RetrievedAt != "" || c.ErrorCode != "" {
 			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
 		}
 	case ContentServerToolUse:
@@ -642,7 +686,8 @@ func (c *Content) validate(strict bool) error {
 			return &internal.BadError{Err: fmt.Errorf("%s: fields ID, Name, Input must be set", c.Type)}
 		}
 		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || len(c.Citations.Citations) > 0 || !c.Source.IsZero() ||
-			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.ServerName != "" || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" {
+			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.ServerName != "" || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" ||
+			c.RetrievedAt != "" || c.ErrorCode != "" {
 			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
 		}
 	case ContentWebSearchToolResult:
@@ -650,7 +695,8 @@ func (c *Content) validate(strict bool) error {
 			return &internal.BadError{Err: fmt.Errorf("%s: fields ToolUseID, Content must be set", c.Type)}
 		}
 		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || len(c.Citations.Citations) > 0 || !c.Source.IsZero() || c.ID != "" || c.Name != "" || c.Input != nil ||
-			c.ServerName != "" || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" {
+			c.ServerName != "" || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" ||
+			c.RetrievedAt != "" || c.ErrorCode != "" {
 			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
 		}
 	case ContentWebSearchResult:
@@ -658,7 +704,36 @@ func (c *Content) validate(strict bool) error {
 			return &internal.BadError{Err: fmt.Errorf("%s: fields URL must be set", c.Type)}
 		}
 		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || len(c.Citations.Citations) > 0 || !c.Source.IsZero() || c.ID != "" || c.Name != "" || c.Input != nil ||
-			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.ServerName != "" || c.Context != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" {
+			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.ServerName != "" || c.Context != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" ||
+			c.RetrievedAt != "" || c.ErrorCode != "" {
+			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
+		}
+	case ContentWebFetchToolResult:
+		if c.ToolUseID == "" || len(c.Content) == 0 {
+			return &internal.BadError{Err: fmt.Errorf("%s: fields ToolUseID, Content must be set", c.Type)}
+		}
+		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || len(c.Citations.Citations) > 0 || !c.Source.IsZero() || c.ID != "" || c.Name != "" || c.Input != nil ||
+			c.ServerName != "" || c.Context != "" || c.URL != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" ||
+			c.RetrievedAt != "" || c.ErrorCode != "" {
+			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
+		}
+	case ContentWebFetchResult:
+		if c.URL == "" {
+			return &internal.BadError{Err: fmt.Errorf("%s: fields URL must be set", c.Type)}
+		}
+		// web_fetch_result has: url, content (nested document), retrieved_at, title (optional).
+		if c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || len(c.Citations.Citations) > 0 || !c.Source.IsZero() || c.ID != "" || c.Name != "" || c.Input != nil ||
+			c.ToolUseID != "" || c.IsError || c.ServerName != "" || c.Context != "" || c.EncryptedContent != "" || c.PageAge != "" ||
+			c.ErrorCode != "" {
+			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
+		}
+	case ContentWebFetchToolError:
+		if c.ErrorCode == "" {
+			return &internal.BadError{Err: fmt.Errorf("%s: fields ErrorCode must be set", c.Type)}
+		}
+		if c.Text != "" || c.Thinking != "" || len(c.Signature) > 0 || c.Data != "" || len(c.Citations.Citations) > 0 || !c.Source.IsZero() || c.ID != "" || c.Name != "" || c.Input != nil ||
+			c.ToolUseID != "" || c.IsError || len(c.Content) > 0 || c.ServerName != "" || c.Context != "" || c.EncryptedContent != "" || c.PageAge != "" || c.Title != "" ||
+			c.RetrievedAt != "" || c.URL != "" {
 			return &internal.BadError{Err: fmt.Errorf("%s: unexpected fields set", c.Type)}
 		}
 	default:
@@ -922,6 +997,22 @@ func (c *Content) To() ([]genai.Reply, error) {
 			out = append(out, genai.Reply{
 				Citation: genai.Citation{Sources: []genai.CitationSource{{Type: genai.CitationWebQuery, Snippet: q.Query}}},
 			})
+		case "web_fetch":
+			q := WebFetch{}
+			b, err := json.Marshal(c.Input)
+			if err != nil {
+				return out, &internal.BadError{Err: fmt.Errorf("failed to marshal server tool call %s: %w", c.Name, err)}
+			}
+			d := json.NewDecoder(bytes.NewReader(b))
+			if !internal.BeLenient {
+				d.DisallowUnknownFields()
+			}
+			if err := d.Decode(&q); err != nil {
+				return out, &internal.BadError{Err: fmt.Errorf("failed to decode server tool call %s: %w", c.Name, err)}
+			}
+			out = append(out, genai.Reply{
+				Citation: genai.Citation{Sources: []genai.CitationSource{{Type: genai.CitationWeb, URL: q.URL}}},
+			})
 		default:
 			// Oops, more work to do!
 			if !internal.BeLenient {
@@ -943,7 +1034,30 @@ func (c *Content) To() ([]genai.Reply, error) {
 			"server_name": c.ServerName,
 		}}
 		out = append(out, genai.Reply{Opaque: opaque})
-	case ContentWebSearchResult, ContentImage, ContentDocument, ContentToolResult:
+	case ContentWebFetchToolResult:
+		for _, cc := range c.Content {
+			switch cc.Type {
+			case ContentWebFetchResult:
+				title := cc.Title
+				if title == "" && len(cc.Content) > 0 {
+					title = cc.Content[0].Title
+				}
+				out = append(out, genai.Reply{
+					Citation: genai.Citation{Sources: []genai.CitationSource{{
+						Type:  genai.CitationWeb,
+						URL:   cc.URL,
+						Title: title,
+					}}},
+				})
+			case ContentWebFetchToolError:
+				out = append(out, genai.Reply{
+					Opaque: map[string]any{"web_fetch_error": cc.ErrorCode},
+				})
+			default:
+				return out, &internal.BadError{Err: fmt.Errorf("implement content type %q while processing %q", cc.Type, c.Type)}
+			}
+		}
+	case ContentWebSearchResult, ContentWebFetchResult, ContentWebFetchToolError, ContentImage, ContentDocument, ContentToolResult:
 		return out, &internal.BadError{Err: fmt.Errorf("implement content type %q", c.Type)}
 	default:
 		return out, &internal.BadError{Err: fmt.Errorf("implement content type %q", c.Type)}
@@ -951,9 +1065,14 @@ func (c *Content) To() ([]genai.Reply, error) {
 	return out, nil
 }
 
-// WebSearch is the server tool use.
+// WebSearch is the server tool use input for web_search.
 type WebSearch struct {
 	Query string `json:"query"`
+}
+
+// WebFetch is the server tool use input for web_fetch.
+type WebFetch struct {
+	URL string `json:"url"`
 }
 
 // SourceType is described at https://docs.anthropic.com/en/api/messages#body-messages-content-source
@@ -1074,9 +1193,12 @@ const (
 	ContentDocument            ContentType = "document"
 	ContentThinking            ContentType = "thinking"
 	ContentRedactedThinking    ContentType = "redacted_thinking"
-	ContentServerToolUse       ContentType = "server_tool_use"
-	ContentWebSearchResult     ContentType = "web_search_result"
-	ContentWebSearchToolResult ContentType = "web_search_tool_result"
+	ContentServerToolUse              ContentType = "server_tool_use"
+	ContentWebSearchResult            ContentType = "web_search_result"
+	ContentWebSearchToolResult        ContentType = "web_search_tool_result"
+	ContentWebFetchResult             ContentType = "web_fetch_result"
+	ContentWebFetchToolResult         ContentType = "web_fetch_tool_result"
+	ContentWebFetchToolError    ContentType = "web_fetch_tool_error"
 )
 
 // CitationType is a provider-specific citation type.
@@ -1192,7 +1314,7 @@ type ToolChoice struct {
 
 // Tool is documented at https://docs.anthropic.com/en/api/messages#body-tools
 type Tool struct {
-	Type string `json:"type,omitzero"` // "custom", "computer_20241022", "computer_20250124", "bash_20241022", "bash_20250124", "text_editor_20241022", "text_editor_20250124", "text_editor_20250429", "text_editor_20250728", "web_search_20250305"
+	Type string `json:"type,omitzero"` // "custom", "computer_20241022", "computer_20250124", "bash_20241022", "bash_20250124", "text_editor_20241022", "text_editor_20250124", "text_editor_20250429", "text_editor_20250728", "web_search_20250305", "web_fetch_20250910"
 	// Type == "custom"
 	Description string             `json:"description,omitzero"`
 	InputSchema *jsonschema.Schema `json:"input_schema,omitzero"`
@@ -1216,7 +1338,7 @@ type Tool struct {
 	DisplayHeightPX int64 `json:"display_height_px,omitzero"`
 	DisplayWidthPX  int64 `json:"display_width_px,omitzero"`
 
-	// Type == "web_search_20250305"
+	// Type == "web_search_20250305", "web_fetch_20250910"
 	AllowedDomains []string `json:"allowed_domains,omitzero"`
 	BlockedDomains []string `json:"blocked_domains,omitzero"`
 	UserLocation   struct {
@@ -1226,6 +1348,10 @@ type Tool struct {
 		Country  string `json:"country,omitzero"`  // "US"
 		Timezone string `json:"timezone,omitzero"` // "America/Los_Angeles"; https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 	} `json:"user_location,omitzero"`
+
+	// Type == "web_fetch_20250910"
+	MaxContentTokens int64 `json:"max_content_tokens,omitzero"` // Max tokens of fetched content to return. Default is 10000.
+	MaxUses          int64 `json:"max_uses,omitzero"`            // Max number of fetches per request. Default is 5.
 }
 
 // ChatResponse is the provider-specific chat completion response.
@@ -1340,9 +1466,9 @@ type ChatStreamChunkResponse struct {
 
 		Citations []struct{} `json:"citations"` // Empty, not used in the API.
 
-		// Type == ContentWebSearchToolResult, ContentMCPToolResult
-		ToolUseID string    `json:"tool_use_id"`
-		Content   []Content `json:"content"`
+		// Type == ContentWebSearchToolResult, ContentWebFetchToolResult, ContentMCPToolResult
+		ToolUseID string         `json:"tool_use_id"`
+		Content   Contents `json:"content"`
 
 		// Type == ContentMCPToolResult
 		ServerName string `json:"server_name,omitzero"`
@@ -1708,7 +1834,7 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 				Client: http.Client{
 					Transport: &roundtrippers.Header{
 						Header:    http.Header{"x-api-key": {apiKey}, "anthropic-version": {"2023-06-01"}},
-						Transport: &roundtrippers.RequestID{Transport: t},
+						Transport: &betaHeader{transport: &roundtrippers.RequestID{Transport: t}},
 					},
 				},
 			},
@@ -2052,7 +2178,7 @@ func (c *Client) HTTPClient() *http.Client {
 
 // GenSync implements genai.Provider.
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
-	return c.impl.GenSync(ctx, msgs, opts...)
+	return c.impl.GenSync(ctxWithBeta(ctx, opts), msgs, opts...)
 }
 
 // GenSyncRaw provides access to the raw API.
@@ -2062,7 +2188,17 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 
 // GenStream implements genai.Provider.
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
-	return c.impl.GenStream(ctx, msgs, opts...)
+	return c.impl.GenStream(ctxWithBeta(ctx, opts), msgs, opts...)
+}
+
+// ctxWithBeta adds the web-fetch beta header to the context if WebFetch is enabled.
+func ctxWithBeta(ctx context.Context, opts []genai.GenOption) context.Context {
+	for _, o := range opts {
+		if v, ok := o.(*genai.GenOptionTools); ok && v.WebFetch {
+			return context.WithValue(ctx, ctxBetaKey{}, "web-fetch-2025-09-10")
+		}
+	}
+	return ctx
 }
 
 // GenStreamRaw provides access to the raw API.
@@ -2172,8 +2308,8 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 						// Discard the data for now. It may be necessary in the future to keep in Opaque.
 						pendingServerCall = pkt.ContentBlock.Name
 						switch pendingServerCall {
-						case "web_search":
-							// This is great!
+						case "web_search", "web_fetch":
+							// Supported server tool calls.
 						default:
 							// Oops, more work to do!
 							if !internal.BeLenient {
@@ -2208,8 +2344,29 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 							"content":     pkt.ContentBlock.Content,
 							"server_name": pkt.ContentBlock.ServerName,
 						}}
-					case ContentWebSearchResult, ContentImage, ContentDocument, ContentToolResult:
+					case ContentWebFetchToolResult:
+						for _, cc := range pkt.ContentBlock.Content {
+							switch cc.Type {
+							case ContentWebFetchResult:
+								title := cc.Title
+								if title == "" && len(cc.Content) > 0 {
+									title = cc.Content[0].Title
+								}
+								f.Citation.Sources = append(f.Citation.Sources, genai.CitationSource{
+									Type:  genai.CitationWeb,
+									URL:   cc.URL,
+									Title: title,
+								})
+							case ContentWebFetchToolError:
+								f.Opaque = map[string]any{"web_fetch_error": cc.ErrorCode}
+							default:
+								finalErr = &internal.BadError{Err: fmt.Errorf("implement content type %q while processing %q", cc.Type, pkt.ContentBlock.Type)}
+								return
+							}
+						}
+					case ContentWebSearchResult, ContentWebFetchResult, ContentWebFetchToolError, ContentImage, ContentDocument, ContentToolResult:
 						finalErr = &internal.BadError{Err: fmt.Errorf("implement content block %q", pkt.ContentBlock.Type)}
+						return
 					default:
 						finalErr = &internal.BadError{Err: fmt.Errorf("implement content block %q", pkt.ContentBlock.Type)}
 						return
@@ -2257,6 +2414,21 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 							Snippet: q.Query,
 						}}
 						pendingServerCall = ""
+					case "web_fetch":
+						q := WebFetch{}
+						d := json.NewDecoder(strings.NewReader(pendingJSON))
+						if !internal.BeLenient {
+							d.DisallowUnknownFields()
+						}
+						if err := d.Decode(&q); err != nil {
+							finalErr = &internal.BadError{Err: fmt.Errorf("failed to decode pending server tool call %s: %w", pendingServerCall, err)}
+							return
+						}
+						f.Citation.Sources = []genai.CitationSource{{
+							Type: genai.CitationWeb,
+							URL:  q.URL,
+						}}
+						pendingServerCall = ""
 					case "":
 					default:
 						// Oops, more work to do!
@@ -2291,6 +2463,25 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 		}, func() (genai.Usage, [][]genai.Logprob, error) {
 			return u, nil, finalErr
 		}
+}
+
+type ctxBetaKey struct{}
+
+// betaHeader conditionally adds the anthropic-beta header when ctxBetaKey is set in the request context.
+type betaHeader struct {
+	transport http.RoundTripper
+}
+
+func (b *betaHeader) RoundTrip(req *http.Request) (*http.Response, error) {
+	if v, _ := req.Context().Value(ctxBetaKey{}).(string); v != "" {
+		req = req.Clone(req.Context())
+		req.Header.Set("anthropic-beta", v)
+	}
+	return b.transport.RoundTrip(req)
+}
+
+func (b *betaHeader) Unwrap() http.RoundTripper {
+	return b.transport
 }
 
 func processHeaders(h http.Header) []genai.RateLimit {

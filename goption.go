@@ -189,6 +189,10 @@ type GenOptionTools struct {
 	// This will become a structure to provide information about included and excluded domains, and the user's
 	// location.
 	WebSearch bool
+	// WebFetch specifies if web fetch should be enabled. When enabled, the LLM can fetch content from URLs.
+	//
+	// Currently only supported by Anthropic.
+	WebFetch bool
 }
 
 // Validate ensures the completion options are valid.

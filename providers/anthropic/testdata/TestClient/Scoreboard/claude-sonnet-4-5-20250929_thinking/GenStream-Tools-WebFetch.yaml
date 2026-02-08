@@ -1,0 +1,397 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 293
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-sonnet-4-5-20250929","max_tokens":64000,"messages":[{"role":"user","content":[{"type":"text","text":"Tell me what is written on https://perdu.com"}]}],"stream":true,"thinking":{"budget_tokens":1024,"type":"enabled"},"tools":[{"type":"web_fetch_20250910","name":"web_fetch"}]}
+        headers:
+            Anthropic-Beta:
+                - web-fetch-2025-09-10
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            event: message_start
+            data: {"type":"message_start","message":{"model":"claude-sonnet-4-5-20250929","id":"msg_019ibwJr8GjS8BJAR9EZ6gzo","type":"message","role":"assistant","content":[],"stop_reason":null,"stop_sequence":null,"usage":{"input_tokens":1070,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":5,"service_tier":"standard","inference_geo":"not_available"}}      }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":0,"content_block":{"type":"thinking","thinking":"","signature":""}   }
+
+            event: ping
+            data: {"type": "ping"}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"The user is asking me"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" to fetch"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" and"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" tell"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" them what is"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" written on the"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" website https"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"://perdu.com. This is"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" a straight"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"forward request to"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" fetch"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" content from a URL that"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" the"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" user has provided. I should use the"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" web_fetch tool to"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" retrieve"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" the contents of this webpage"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"."}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"signature_delta","signature":"EqsDCkYICxgCKkB1OTWz1aSIJ7EMD5/6YMzU56prmZ5fb062YAIs75Dwvfw7T09R03l27PWkJ9hPsIOzT/KWUGNQbbq9d/+HOAIkEgw0x/i7SPHqwZ2ZgtsaDHeOy5Nqf1JKjrfkNCIwt4Zp9cI7MWuG2RONHzqpf4J1zH3W5Bn5sPD4M4RnnAGOcOQ1ItC2ZzR8jVy29bGrKpICCa5SNqOzxnoPreSz095HZv2yYZPGuYwf7Dreld39l5JXpVoiF7M+ioIYNNFv8So3JBL4+a12Iwt5P6JmF9R5zZWgr7yRZfJ19Q8L65gjEgZcTVmHQ69s/HUvJItQRRCDL7njwyhxc4Z32kF5OIHUBz9oUTAU/M+cKrPoqVQoXAS4FwWoOr+pINlZlGHNF7TLzAc8YBtPUyXTgKrcatzA/rWfKuyabh6y8jP1J7pIEw9HrGw+jd2iOaPR66MdXhMEpYA4q7TLXbD74xOy6vzwqw+paTr2mifMUoEjYtCHlSWArhsGrX101vmXbUELh6b/QghCUYvbpxvdTyq73Ak0aBbWBtLSATcUHlyNX3EVTGM9rxgB"}           }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":0          }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":1,"content_block":{"type":"server_tool_use","id":"srvtoolu_01E4B1WxW86SQxE44a1swDyw","name":"web_fetch","input":{}}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"input_json_delta","partial_json":""}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"input_json_delta","partial_json":"{\""}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"input_json_delta","partial_json":"url\": "}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"input_json_delta","partial_json":"\"http"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"input_json_delta","partial_json":"s://perdu.co"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"input_json_delta","partial_json":"m\"}"}}
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":1    }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":2,"content_block":{"type":"web_fetch_tool_result","tool_use_id":"srvtoolu_01E4B1WxW86SQxE44a1swDyw","content":{"type":"web_fetch_result","url":"https://perdu.com","retrieved_at":"2026-02-07T23:23:05.230000+00:00","content":{"type":"document","source":{"type":"text","media_type":"text/plain","data":"Vous Etes Perdu ?\n\n# Perdu sur l'Internet ?\n\n## Pas de panique, on va vous aider\n\n**```\n    * <----- vous êtes ici\n```**"},"title":"Perdu sur l'Internet ?"}}}          }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":2           }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":3,"content_block":{"type":"text","text":""}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"The website"}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" https://perdu.com contains a"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" simple,"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" hum"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"orous French"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" page"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" that"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" says:"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"\n\n**"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"\"Vous Etes Per"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"du ?\"**"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" (You Are Lost"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"?)\n\n#"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" **"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"Perdu sur l'Internet ?"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"**"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" ("}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"Lost"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" on the Internet?)\n\n## **"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"Pas de panique, on va vous"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" aider** (Don"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"'t panic, we're"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" going to help you)\n\nAnd"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" then"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" there's an"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" ASCII"}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"-"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"style"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" arrow"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" pointing to text"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" that says:"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"\n```"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"\n    * <----- vous ê"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"tes ici\n```"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"\n("}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"which"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" means \"you"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" are here\")\n\nIt"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"'s a minim"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"alist joke"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" website"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" -"}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" \""}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"per"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"du\" means \"lost\" in French"}     }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":", so"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" it's a play"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"ful page"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" for"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" people"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" who are"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" \""}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"lost on"} }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" the internet.\""}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" The joke is that after"}           }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" telling"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" you"}          }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" not"}  }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" to panic because"}        }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" they"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"'ll"}               }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" help you, they just"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" point"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" out"}      }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" with"}              }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" an"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" arrow that \""}         }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"you are here\" -"}            }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" which isn"}}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":"'t particularly"}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":3,"delta":{"type":"text_delta","text":" helpful!"}          }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":3     }
+
+            event: message_delta
+            data: {"type":"message_delta","delta":{"stop_reason":"end_turn","stop_sequence":null},"usage":{"input_tokens":2382,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":322,"server_tool_use":{"web_search_requests":0,"web_fetch_requests":1}}   }
+
+            event: message_stop
+            data: {"type":"message_stop"             }
+
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "1999000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-02-07T23:23:28Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "400000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "400000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-02-07T23:23:28Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "4000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "3999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-02-07T23:23:28Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "2400000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "2399000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-02-07T23:23:28Z"
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9ca6a29cd81ca29e-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Envoy-Upstream-Service-Time:
+                - "1641"
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 1.681s

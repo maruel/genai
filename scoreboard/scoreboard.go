@@ -105,6 +105,8 @@ type Functionality struct {
 	ToolCallRequired bool `json:"toolCallRequired,omitzero"`
 	// WebSearch is true if the provider supports web search via its own backend.
 	WebSearch bool `json:"webSearch,omitzero"`
+	// WebFetch is true if the provider supports fetching content from URLs via its own backend.
+	WebFetch bool `json:"webFetch,omitzero"`
 
 	// JSON means that the model supports enforcing that the response is valid JSON but not necessarily with a
 	// schema.

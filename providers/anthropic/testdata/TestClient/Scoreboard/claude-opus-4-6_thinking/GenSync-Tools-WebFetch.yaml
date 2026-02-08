@@ -1,0 +1,72 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 269
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-opus-4-6","max_tokens":128000,"messages":[{"role":"user","content":[{"type":"text","text":"Tell me what is written on https://perdu.com"}]}],"thinking":{"budget_tokens":1024,"type":"enabled"},"tools":[{"type":"web_fetch_20250910","name":"web_fetch"}]}
+        headers:
+            Anthropic-Beta:
+                - web-fetch-2025-09-10
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: "{\"model\":\"claude-opus-4-6\",\"id\":\"msg_013A3MYz6Y47QHV2VJZqskig\",\"type\":\"message\",\"role\":\"assistant\",\"content\":[{\"type\":\"thinking\",\"thinking\":\"Let me fetch the content of that URL.\",\"signature\":\"Es0BCkYICxgCKkBJhexFtXpYMZuoVJd31wzSf09/Uh/18x+7EU3wATTx8D8y6Aff0znfm4nRImLBhf16nJE4EnvPqT14I9bZMqd4EgwR5LG6OtCb1n9qANUaDMSepfcjNBhtnOJxkyIwioKppsPanw8RSSQKUxvn19pSIxrV9FhReMiYgAQg705EJv33gTQTh4YI+IVCuWcCKjUY5wvHHHh6kdzP/jEXcsnNpnpL+0PIbc1VDUmad1O7SX0wm0bQuC5N/EVwWsZwbZDlwiRr/xgB\"},{\"type\":\"server_tool_use\",\"id\":\"srvtoolu_01AmzNquNip4wvZghdP6TNik\",\"name\":\"web_fetch\",\"input\":{\"url\":\"https://perdu.com\"}},{\"type\":\"web_fetch_tool_result\",\"tool_use_id\":\"srvtoolu_01AmzNquNip4wvZghdP6TNik\",\"content\":{\"type\":\"web_fetch_result\",\"url\":\"https://perdu.com\",\"retrieved_at\":\"2026-02-07T23:23:05.230000+00:00\",\"content\":{\"type\":\"document\",\"source\":{\"type\":\"text\",\"media_type\":\"text/plain\",\"data\":\"Vous Etes Perdu ?\\n\\n# Perdu sur l'Internet ?\\n\\n## Pas de panique, on va vous aider\\n\\n**```\\n    * <----- vous êtes ici\\n```**\"},\"title\":\"Perdu sur l'Internet ?\"}}},{\"type\":\"text\",\"text\":\"The page at **perdu.com** is a very simple and humorous French webpage. Here's what it says:\\n\\n---\\n\\n**Title:** \\\"Vous Êtes Perdu ?\\\" — *(\\\"Are You Lost?\\\")*\\n\\n**Heading:** \\\"Perdu sur l'Internet ?\\\" — *(\\\"Lost on the Internet?\\\")*\\n\\n**Subheading:** \\\"Pas de panique, on va vous aider\\\" — *(\\\"Don't panic, we'll help you\\\")*\\n\\nAnd then there's a small ASCII-style indicator:\\n\\n**`* <----- vous êtes ici`** — *(\\\"you are here\\\")*\\n\\n---\\n\\nIt's a classic, minimalist joke website — if you've ended up there, you're \\\"lost on the internet,\\\" and the page reassures you not to panic while pointing out \\\"you are here.\\\" \U0001F604\"}],\"stop_reason\":\"end_turn\",\"stop_sequence\":null,\"usage\":{\"input_tokens\":2334,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"cache_creation\":{\"ephemeral_5m_input_tokens\":0,\"ephemeral_1h_input_tokens\":0},\"output_tokens\":267,\"service_tier\":\"standard\",\"inference_geo\":\"global\",\"server_tool_use\":{\"web_search_requests\":0,\"web_fetch_requests\":1}}}"
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "1999000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-02-07T23:23:13Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "400000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "400000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-02-07T23:23:17Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "4000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "3999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-02-07T23:23:10Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "2400000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "2399000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-02-07T23:23:13Z"
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9ca6a22b4b4ca29e-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Envoy-Upstream-Service-Time:
+                - "7416"
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 7.453s

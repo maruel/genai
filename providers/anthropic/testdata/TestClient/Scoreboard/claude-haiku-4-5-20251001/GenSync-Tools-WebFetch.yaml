@@ -1,0 +1,72 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 258
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-haiku-4-5-20251001","max_tokens":64000,"messages":[{"role":"user","content":[{"type":"text","text":"Tell me what is written on https://perdu.com"}]}],"thinking":{"type":"disabled"},"tools":[{"type":"web_fetch_20250910","name":"web_fetch"}]}
+        headers:
+            Anthropic-Beta:
+                - web-fetch-2025-09-10
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"model":"claude-haiku-4-5-20251001","id":"msg_01LVKgat9YejJLL54BvjZKhn","type":"message","role":"assistant","content":[{"type":"server_tool_use","id":"srvtoolu_01LYz72kWYceVw5cLrJrWA2M","name":"web_fetch","input":{"url":"https://perdu.com"}},{"type":"web_fetch_tool_result","tool_use_id":"srvtoolu_01LYz72kWYceVw5cLrJrWA2M","content":{"type":"web_fetch_result","url":"https://perdu.com","retrieved_at":"2026-02-07T23:23:05.230000+00:00","content":{"type":"document","source":{"type":"text","media_type":"text/plain","data":"Vous Etes Perdu ?\n\n# Perdu sur l''Internet ?\n\n## Pas de panique, on va vous aider\n\n**```\n    * <----- vous êtes ici\n```**"},"title":"Perdu sur l''Internet ?"}}},{"type":"text","text":"The website at https://perdu.com is a humorous French page. It displays:\n\n**Title:** \"Perdu sur l''Internet ?\" (Lost on the Internet?)\n\n**Main text:**\n- \"Vous Etes Perdu ?\" (Are you lost?)\n- \"Pas de panique, on va vous aider\" (Don''t panic, we''re going to help you)\n\nAnd includes a simple ASCII diagram with an arrow and the text \"vous êtes ici\" (you are here)\n\nIt''s a minimalist, tongue-in-cheek website that plays on the idea of someone being lost on the internet, written entirely in French."}],"stop_reason":"end_turn","stop_sequence":null,"usage":{"input_tokens":2258,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":208,"service_tier":"standard","inference_geo":"not_available","server_tool_use":{"web_search_requests":0,"web_fetch_requests":1}}}'
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "4000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "3999000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-02-07T23:23:19Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "800000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "800000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-02-07T23:23:21Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "4000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "3999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-02-07T23:23:17Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "4800000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "4799000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-02-07T23:23:19Z"
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9ca6a259e898a29e-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Envoy-Upstream-Service-Time:
+                - "3581"
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 3.623s

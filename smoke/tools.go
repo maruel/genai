@@ -282,6 +282,29 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 	return nil
 }
 
+func exerciseWebFetch(ctx context.Context, cs *callState, f *scoreboard.Functionality, prefix string) error {
+	msgs := genai.Messages{genai.NewTextMessage("Tell me what is written on https://perdu.com")}
+	optsTools := genai.GenOptionTools{WebFetch: true}
+	res, err := cs.callGen(ctx, prefix+"WebFetch", msgs, &optsTools)
+	if isBadError(ctx, err) {
+		internal.Logger(ctx).DebugContext(ctx, "WebFetch", "err", err)
+		return err
+	}
+	if err == nil {
+		f.WebFetch = slices.ContainsFunc(res.Replies, func(r genai.Reply) bool { return !r.Citation.IsZero() })
+		for _, r := range res.Replies {
+			if r.Citation.IsZero() {
+				continue
+			}
+			if len(r.Citation.Sources) == 0 {
+				return fmt.Errorf("citation has no sources: %#v", res)
+			}
+			slog.DebugContext(ctx, "WebFetch", "citation", r.Citation)
+		}
+	}
+	return nil
+}
+
 func exerciseWebSearch(ctx context.Context, cs *callState, f *scoreboard.Functionality, prefix string) error {
 	// Test the WebSearch tool. It's a costly test.
 	msgs := genai.Messages{genai.NewTextMessage("Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation.")}

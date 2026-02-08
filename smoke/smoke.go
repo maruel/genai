@@ -394,6 +394,9 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 	if err := exerciseWebSearch(ctx, cs, f, prefix+"Tools-"); err != nil {
 		return f, err
 	}
+	if err = exerciseWebFetch(ctx, cs, f, prefix+"Tools-"); err != nil {
+		return f, err
+	}
 
 	// Citations
 	// Force triggering citations for a document provided.

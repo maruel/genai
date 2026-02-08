@@ -192,9 +192,7 @@ func (u *Usage) String() string {
 }
 
 // Add accumulates the usage from another result.
-//
-//nolint:gocritic // Public API.
-func (u *Usage) Add(r Usage) {
+func (u *Usage) Add(r *Usage) {
 	u.InputTokens += r.InputTokens
 	u.InputCachedTokens += r.InputCachedTokens
 	u.ReasoningTokens += r.ReasoningTokens
@@ -514,9 +512,7 @@ func (m *Message) GoString() string {
 // Accumulate adds a Reply to the message being streamed.
 //
 // It is used by GenStream. There's generally no need to call it by end users.
-//
-//nolint:gocritic // Public API.
-func (m *Message) Accumulate(mf Reply) error {
+func (m *Message) Accumulate(mf *Reply) error {
 	// Generally the first message fragment.
 	if mf.Reasoning != "" {
 		if len(m.Replies) != 0 {

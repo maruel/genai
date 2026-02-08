@@ -405,7 +405,7 @@ func TestClient(t *testing.T) {
 				if err = f.Validate(); err != nil {
 					t.Fatal(err)
 				}
-				if err = res.Accumulate(f); err != nil {
+				if err = res.Accumulate(&f); err != nil {
 					t.Fatal(err)
 				}
 			}

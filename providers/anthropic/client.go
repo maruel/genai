@@ -247,13 +247,9 @@ func (c *ChatRequest) initImpl(msgs genai.Messages, model string, cache bool, op
 				}
 			}
 		case *genai.GenOptionText:
-			u, e := c.initOptionsText(v)
-			unsupported = append(unsupported, u...)
-			errs = append(errs, e...)
+			unsupported = append(unsupported, c.initOptionsText(v)...)
 		case *genai.GenOptionTools:
-			u, e := c.initOptionsTools(v)
-			unsupported = append(unsupported, u...)
-			errs = append(errs, e...)
+			c.initOptionsTools(v)
 		default:
 			unsupported = append(unsupported, internal.TypeName(opt))
 		}
@@ -292,9 +288,8 @@ func (c *ChatRequest) SetStream(stream bool) {
 	c.Stream = stream
 }
 
-func (c *ChatRequest) initOptionsText(v *genai.GenOptionText) ([]string, []error) { //nolint:unparam // Consistent signature across providers.
+func (c *ChatRequest) initOptionsText(v *genai.GenOptionText) []string {
 	var unsupported []string
-	var errs []error
 	if v.TopLogprobs > 0 {
 		unsupported = append(unsupported, "GenOptionText.TopLogprobs")
 	}
@@ -321,12 +316,10 @@ func (c *ChatRequest) initOptionsText(v *genai.GenOptionText) ([]string, []error
 			Schema: &jsonschema.Schema{Type: "object"},
 		}
 	}
-	return unsupported, errs
+	return unsupported
 }
 
-func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools) ([]string, []error) { //nolint:unparam // Consistent signature across providers.
-	var unsupported []string
-	var errs []error
+func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools) {
 	if len(v.Tools) != 0 {
 		switch v.Force {
 		case genai.ToolCallAny:
@@ -356,7 +349,6 @@ func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools) ([]string, []err
 			// MaxUses: 10,
 		})
 	}
-	return unsupported, errs
 }
 
 func modelsMaxTokens(model string) int64 {

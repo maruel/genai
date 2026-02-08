@@ -78,7 +78,7 @@ func (c *ProviderReasoning) GenStream(ctx context.Context, msgs genai.Messages, 
 		for f := range fragments {
 			var replies []genai.Reply
 			var err2 error
-			replies, state, err2 = c.processPacket(state, &accumulated, f)
+			replies, state, err2 = c.processPacket(state, &accumulated, &f)
 			if finalErr == nil {
 				finalErr = err2
 			}
@@ -108,9 +108,7 @@ func (c *ProviderReasoning) GenStream(ctx context.Context, msgs genai.Messages, 
 }
 
 // processPacket is the streaming version of message fragment processing.
-//
-//nolint:gocritic // hugeParam: f is an internal function called from interface implementations.
-func (c *ProviderReasoning) processPacket(state tagProcessingState, accumulated *genai.Message, f genai.Reply) ([]genai.Reply, tagProcessingState, error) {
+func (c *ProviderReasoning) processPacket(state tagProcessingState, accumulated *genai.Message, f *genai.Reply) ([]genai.Reply, tagProcessingState, error) {
 	var replies []genai.Reply
 	if f.Reasoning != "" {
 		return replies, state, fmt.Errorf("got unexpected reasoning fragment: %q; do not use ProviderReasoning with an explicit reasoning CoT model", f.Reasoning)
@@ -153,7 +151,7 @@ func (c *ProviderReasoning) processPacket(state tagProcessingState, accumulated 
 				// Unlikely case where we need to flush out the remainder.
 				f.Reasoning = f.Reasoning[:tEnd]
 				f.Text = ""
-				replies = append(replies, f)
+				replies = append(replies, *f)
 				if err := accumulated.Accumulate(f); err != nil {
 					return replies, state, err
 				}
@@ -175,7 +173,7 @@ func (c *ProviderReasoning) processPacket(state tagProcessingState, accumulated 
 	default:
 		return replies, state, errors.New("internal error in ProviderReasoning.GenStream()")
 	}
-	replies = append(replies, f)
+	replies = append(replies, *f)
 	err := accumulated.Accumulate(f)
 	return replies, state, err
 }

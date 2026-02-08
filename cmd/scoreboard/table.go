@@ -189,15 +189,6 @@ func (t *tableDataRow) initFromScenario(s *scoreboard.Scenario, f *scoreboard.Fu
 	if f.WebSearch && !strings.Contains(t.Tools, "🕸️") {
 		t.Tools += "🕸️"
 	}
-	//nolint:gocritic // Kept for reference.
-	/*
-		if f.ToolsBiased != scoreboard.False && !strings.Contains(t.Tools, "🧐") {
-			t.Tools += "🧐"
-		}
-		if f.ToolsIndecisive == scoreboard.True && !strings.Contains(t.Tools, "💥") {
-			t.Tools += "💥"
-		}
-	*/
 	if f.Citations {
 		t.Citations = "✅"
 	}

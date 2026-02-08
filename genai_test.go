@@ -71,7 +71,7 @@ func TestUsage(t *testing.T) {
 			OutputTokens:      60,
 			TotalTokens:       150,
 		}
-		u1.Add(u2)
+		u1.Add(&u2)
 		if diff := cmp.Diff(expected, u1); diff != "" {
 			t.Fatalf("Usage.Add() mismatch (-want +got):\n%s", diff)
 		}
@@ -481,7 +481,7 @@ func TestMessage(t *testing.T) {
 		for _, tt := range tests {
 			t.Run(tt.name, func(t *testing.T) {
 				message := tt.message
-				if err := message.Accumulate(tt.fragment); err != nil {
+				if err := message.Accumulate(&tt.fragment); err != nil {
 					t.Fatalf("unexpected error: %v", err)
 				}
 				if diff := cmp.Diff(tt.want, message); diff != "" {

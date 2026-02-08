@@ -83,7 +83,7 @@ func (r *Records) RecordWithName(t testing.TB, name string, h http.RoundTripper,
 }
 
 // ValidateWordResponse validates that the response contains exactly one of the expected words.
-func ValidateWordResponse(t testing.TB, resp genai.Result, want ...string) { //nolint:gocritic // hugeParam: changing to pointer would break callers.
+func ValidateWordResponse(t testing.TB, resp *genai.Result, want ...string) {
 	got := resp.String()
 	cleaned := strings.TrimRight(strings.TrimSpace(strings.ToLower(got)), ".!")
 	if !slices.Contains(want, cleaned) {

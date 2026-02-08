@@ -152,7 +152,7 @@ func Run(t *testing.T, pf ProviderFactory, models []scoreboard.Model, rec *myrec
 				}
 				return pf(t, m, fn)
 			}, &want)
-			usage.Add(u)
+			usage.Add(&u)
 			if got != nil {
 				updatedScenarios = append(updatedScenarios, *got)
 			}

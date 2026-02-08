@@ -103,9 +103,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			errs = append(errs, e...)
 			sp = v.SystemPrompt
 		case *genai.GenOptionTools:
-			u, e := c.initOptionsTools(v)
-			unsupported = append(unsupported, u...)
-			errs = append(errs, e...)
+			errs = append(errs, c.initOptionsTools(v)...)
 		case genai.GenOptionSeed:
 			c.Seed = int64(v)
 		default:
@@ -177,9 +175,8 @@ func (c *ChatRequest) initOptionsText(v *genai.GenOptionText) ([]string, []error
 	return unsupported, errs
 }
 
-func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools) ([]string, []error) { //nolint:unparam // Consistent signature across providers.
+func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools) []error {
 	var errs []error
-	var unsupported []string
 	if len(v.Tools) != 0 {
 		switch v.Force {
 		case genai.ToolCallAny:
@@ -202,7 +199,7 @@ func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools) ([]string, []err
 	if v.WebSearch {
 		errs = append(errs, errors.New("unsupported OptionsTools.WebSearch"))
 	}
-	return unsupported, errs
+	return errs
 }
 
 // ReasoningEffort is the effort the model should put into reasoning. Default is Medium.
@@ -1094,7 +1091,7 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 			}
 			c.impl.OutputModalities = genai.Modalities{genai.ModalityText}
 		} else {
-			if c.impl.Model, err = c.selectBestImageModel(ctx, model); err != nil {
+			if c.impl.Model, err = c.selectBestImageModel(ctx); err != nil {
 				return nil, err
 			}
 			c.impl.OutputModalities = genai.Modalities{genai.ModalityImage}
@@ -1159,11 +1156,11 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 	return selectedModel, nil
 }
 
-// selectBestImageModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
+// selectBestImageModel selects the most appropriate image model.
 //
 // We may want to make this function overridable in the future by the client since this is going to break one
 // day or another.
-func (c *Client) selectBestImageModel(ctx context.Context, preference string) (string, error) { //nolint:unparam // preference for future use.
+func (c *Client) selectBestImageModel(ctx context.Context) (string, error) {
 	mdls, err := c.ListImageGenModels(ctx)
 	if err != nil {
 		return "", fmt.Errorf("failed to automatically detect the model modality: %w", err)

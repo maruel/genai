@@ -423,16 +423,14 @@ func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts ...gena
 	if err := req.Init(msgs, c.impl.Model, opts...); err != nil {
 		return "", err
 	}
-	reqresp, err := c.GenAsyncRaw(ctx, req)
+	reqresp, err := c.GenAsyncRaw(ctx, &req)
 	// We return the polling URL instead of the ID, e.g. genai.Job(reqresp.ID). BFL is very clear that we should
 	// not construct the URL ourselves.
 	return genai.Job(reqresp.PollingURL), err
 }
 
 // GenAsyncRaw runs an asynchronous generation request.
-//
-//nolint:gocritic // hugeParam: public API.
-func (c *Client) GenAsyncRaw(ctx context.Context, req ImageRequest) (ImageRequestResponse, error) {
+func (c *Client) GenAsyncRaw(ctx context.Context, req *ImageRequest) (ImageRequestResponse, error) {
 	// https://docs.bfl.ml/quick_start/generating_images
 	// https://docs.bfl.ai/integration_guidelines#polling-url-usage
 	// TODO: Switch to use PollingURL

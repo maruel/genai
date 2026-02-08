@@ -100,9 +100,7 @@ type ImageRequest struct {
 }
 
 // Init initializes the request from the given parameters.
-//
-//nolint:gocritic // hugeParam: public API.
-func (i *ImageRequest) Init(msg genai.Message, model string, opts ...genai.GenOption) error {
+func (i *ImageRequest) Init(msg *genai.Message, model string, opts ...genai.GenOption) error {
 	if err := msg.Validate(); err != nil {
 		return err
 	}
@@ -481,7 +479,7 @@ func (c *Client) genDoc(ctx context.Context, msg *genai.Message, opts ...genai.G
 		return res, err
 	}
 	req := ImageRequest{}
-	if err := req.Init(*msg, c.impl.Model, opts...); err != nil {
+	if err := req.Init(msg, c.impl.Model, opts...); err != nil {
 		return res, err
 	}
 	url := "https://api.openai.com/v1/images/generations"

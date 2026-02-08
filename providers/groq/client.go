@@ -146,14 +146,10 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			c.ServiceTier = v.ServiceTier
 			c.ReasoningFormat = v.ReasoningFormat
 		case *genai.GenOptionText:
-			u, e := c.initOptionsText(v)
-			unsupported = append(unsupported, u...)
-			errs = append(errs, e...)
+			unsupported = append(unsupported, c.initOptionsText(v)...)
 			sp = v.SystemPrompt
 		case *genai.GenOptionTools:
-			u, e := c.initOptionsTools(v)
-			unsupported = append(unsupported, u...)
-			errs = append(errs, e...)
+			c.initOptionsTools(v)
 		case genai.GenOptionSeed:
 			c.Seed = int64(v)
 		default:
@@ -199,8 +195,7 @@ func (c *ChatRequest) SetStream(stream bool) {
 	c.Stream = stream
 }
 
-func (c *ChatRequest) initOptionsText(v *genai.GenOptionText) ([]string, []error) { //nolint:unparam // Consistent signature across providers.
-	var errs []error
+func (c *ChatRequest) initOptionsText(v *genai.GenOptionText) []string {
 	var unsupported []string
 	c.MaxChatTokens = v.MaxTokens
 	c.Temperature = v.Temperature
@@ -219,12 +214,10 @@ func (c *ChatRequest) initOptionsText(v *genai.GenOptionText) ([]string, []error
 	} else if v.ReplyAsJSON {
 		c.ResponseFormat.Type = "json_object"
 	}
-	return unsupported, errs
+	return unsupported
 }
 
-func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools) ([]string, []error) { //nolint:unparam // Consistent signature across providers.
-	var errs []error
-	var unsupported []string
+func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools) {
 	if len(v.Tools) != 0 {
 		switch v.Force {
 		case genai.ToolCallAny:
@@ -251,7 +244,6 @@ func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools) ([]string, []err
 		c.SearchSettings.IncludeImages = true
 		c.Tools = append(c.Tools, Tool{Type: "browser_search"})
 	}
-	return unsupported, errs
 }
 
 // ReasoningFormat defines the post processing format of the reasoning done by groq for select models.

@@ -1318,7 +1318,7 @@ func (c *Client) CompletionStream(ctx context.Context, msgs genai.Messages, opts
 				finalErr = &internal.BadError{Err: err}
 				break
 			}
-			if err := res.Accumulate(f); err != nil {
+			if err := res.Accumulate(&f); err != nil {
 				finalErr = &internal.BadError{Err: err}
 				return
 			}

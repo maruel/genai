@@ -208,13 +208,10 @@ func (m *Message) From(in *genai.Message) ([]Document, error) {
 	if len(in.Requests) != 0 {
 		for i := range in.Requests {
 			c := Content{}
-			d, err := c.FromRequest(&in.Requests[i])
-			if err != nil {
+			if err := c.FromRequest(&in.Requests[i], &out); err != nil {
 				return nil, fmt.Errorf("request #%d: %w", i, err)
 			}
-			if d != nil {
-				out = append(out, *d)
-			} else {
+			if c.Type != "" {
 				m.Content = append(m.Content, c)
 			}
 		}
@@ -237,13 +234,10 @@ func (m *Message) From(in *genai.Message) ([]Document, error) {
 				continue
 			}
 			c := Content{}
-			d, err := c.FromReply(&in.Replies[i])
-			if err != nil {
+			if err := c.FromReply(&in.Replies[i], &out); err != nil {
 				return nil, fmt.Errorf("reply #%d: %w", i, err)
 			}
-			if d != nil {
-				out = append(out, *d)
-			} else {
+			if c.Type != "" {
 				m.Content = append(m.Content, c)
 			}
 		}
@@ -279,7 +273,9 @@ func (c *Content) IsZero() bool {
 }
 
 // FromRequest converts a genai.Request to a Content.
-func (c *Content) FromRequest(in *genai.Request) (*Document, error) {
+//
+// When a Document is produced, it is appended to docs.
+func (c *Content) FromRequest(in *genai.Request, docs *[]Document) error {
 	switch {
 	case in.Text != "":
 		c.Type = ContentText
@@ -287,7 +283,7 @@ func (c *Content) FromRequest(in *genai.Request) (*Document, error) {
 	case !in.Doc.IsZero():
 		mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
 		if err != nil {
-			return nil, err
+			return err
 		}
 		switch {
 		case (in.Doc.URL != "" && mimeType == "") || strings.HasPrefix(mimeType, "image/"):
@@ -297,30 +293,32 @@ func (c *Content) FromRequest(in *genai.Request) (*Document, error) {
 			} else {
 				c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
 			}
-			return nil, nil //nolint:nilnil // No document to return; Content was populated in-place.
+			return nil
 			// text/plain, text/markdown
 		case strings.HasPrefix(mimeType, "text/"):
 			if in.Doc.URL != "" {
-				return nil, fmt.Errorf("%s documents must be provided inline, not as a URL", mimeType)
+				return fmt.Errorf("%s documents must be provided inline, not as a URL", mimeType)
 			}
 			name := in.Doc.GetFilename()
-			d := &Document{
+			*docs = append(*docs, Document{
 				ID:   name,
 				Data: map[string]any{"title": name, "snippet": string(data)},
-			}
+			})
 			// This is handled as ChatRequest.Documents.
-			return d, nil
+			return nil
 		default:
-			return nil, fmt.Errorf("unsupported mime type %s", mimeType)
+			return fmt.Errorf("unsupported mime type %s", mimeType)
 		}
 	default:
-		return nil, errors.New("unknown Request type")
+		return errors.New("unknown Request type")
 	}
-	return nil, nil //nolint:nilnil // No document to return; Content was populated in-place.
+	return nil
 }
 
 // FromReply converts a genai.Reply to a Content.
-func (c *Content) FromReply(in *genai.Reply) (*Document, error) {
+//
+// When a Document is produced, it is appended to docs.
+func (c *Content) FromReply(in *genai.Reply, docs *[]Document) error {
 	switch {
 	case in.Text != "":
 		c.Type = ContentText
@@ -328,7 +326,7 @@ func (c *Content) FromReply(in *genai.Reply) (*Document, error) {
 	case !in.Doc.IsZero():
 		mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
 		if err != nil {
-			return nil, err
+			return err
 		}
 		switch {
 		case (in.Doc.URL != "" && mimeType == "") || strings.HasPrefix(mimeType, "image/"):
@@ -338,30 +336,30 @@ func (c *Content) FromReply(in *genai.Reply) (*Document, error) {
 			} else {
 				c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
 			}
-			return nil, nil //nolint:nilnil // No document to return; Content was populated in-place.
+			return nil
 			// text/plain, text/markdown
 		case strings.HasPrefix(mimeType, "text/"):
 			if in.Doc.URL != "" {
-				return nil, fmt.Errorf("%s documents must be provided inline, not as a URL", mimeType)
+				return fmt.Errorf("%s documents must be provided inline, not as a URL", mimeType)
 			}
 			name := in.Doc.GetFilename()
-			d := &Document{
+			*docs = append(*docs, Document{
 				ID:   name,
 				Data: map[string]any{"title": name, "snippet": string(data)},
-			}
+			})
 			// This is handled as ChatRequest.Documents.
-			return d, nil
+			return nil
 		default:
-			return nil, &internal.BadError{Err: fmt.Errorf("unsupported mime type %s", mimeType)}
+			return &internal.BadError{Err: fmt.Errorf("unsupported mime type %s", mimeType)}
 		}
 	case in.Reasoning != "":
 		// Unclear if we should send it back.
 		c.Type = ContentThinking
 		c.Thinking = in.Reasoning
 	default:
-		return nil, &internal.BadError{Err: errors.New("unknown Reply type")}
+		return &internal.BadError{Err: errors.New("unknown Reply type")}
 	}
-	return nil, nil //nolint:nilnil // No document to return; Content was populated in-place.
+	return nil
 }
 
 // To converts the Content to a genai.Reply.

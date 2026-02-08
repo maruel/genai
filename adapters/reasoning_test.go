@@ -327,7 +327,7 @@ func TestProviderReasoning(t *testing.T) {
 					accumulated := genai.Message{}
 					fragments, finish := tp.GenStream(t.Context(), genai.Messages{}, tc.opts)
 					for f := range fragments {
-						if err2 := accumulated.Accumulate(f); err2 != nil {
+						if err2 := accumulated.Accumulate(&f); err2 != nil {
 							t.Fatal(err2)
 						}
 					}
@@ -498,7 +498,7 @@ func (m *mockProviderGenStream) GenStream(ctx context.Context, msgs genai.Messag
 		m.callIndex++
 		res.Usage = resp.usage
 		for i := range resp.fragments {
-			if err := res.Accumulate(resp.fragments[i]); err != nil {
+			if err := res.Accumulate(&resp.fragments[i]); err != nil {
 				finalErr = err
 				return
 			}

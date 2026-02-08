@@ -68,7 +68,7 @@ func Run(ctx context.Context, pf ProviderFactory) (scoreboard.Scenario, genai.Us
 				ctx2 := internal.WithLogger(ctx, internal.Logger(ctx).With("fn", "GenSync"))
 				f, err := exerciseGenTextOnly(ctx2, &cs, "GenSync-")
 				mu.Lock()
-				usage.Add(cs.usage)
+				usage.Add(&cs.usage)
 				if f != nil {
 					result.In[genai.ModalityText] = scoreboard.ModalCapability{Inline: true}
 					if cs.isReasoning {
@@ -88,7 +88,7 @@ func Run(ctx context.Context, pf ProviderFactory) (scoreboard.Scenario, genai.Us
 				ctx2 = internal.WithLogger(ctx, internal.Logger(ctx).With("fn", "GenSyncMultiModal"))
 				in, out, f, err := exerciseGenTextMultiModal(ctx2, &cs, "GenSyncMultiModal-")
 				mu.Lock()
-				usage.Add(cs.usage)
+				usage.Add(&cs.usage)
 				if len(in) != 0 {
 					result.In = mergeModalities(result.In, in)
 					result.Out = mergeModalities(result.Out, out)
@@ -121,7 +121,7 @@ func Run(ctx context.Context, pf ProviderFactory) (scoreboard.Scenario, genai.Us
 					ctx2 := internal.WithLogger(ctx, internal.Logger(ctx).With("fn", "GenDoc"))
 					outDoc, usageDoc, err := exerciseGenNonText(ctx2, pf)
 					mu.Lock()
-					usage.Add(usageDoc)
+					usage.Add(&usageDoc)
 					result.In = mergeModalities(result.In, outDoc.In)
 					result.Out = mergeModalities(result.Out, outDoc.Out)
 					if result.GenSync == nil {
@@ -148,7 +148,7 @@ func Run(ctx context.Context, pf ProviderFactory) (scoreboard.Scenario, genai.Us
 			ctx2 := internal.WithLogger(ctx, internal.Logger(ctx).With("fn", "GenStream"))
 			f, err := exerciseGenTextOnly(ctx2, &cs, "GenStream-")
 			mu.Lock()
-			usage.Add(cs.usage)
+			usage.Add(&cs.usage)
 			if f != nil {
 				result.In[genai.ModalityText] = scoreboard.ModalCapability{Inline: true}
 				result.Out[genai.ModalityText] = scoreboard.ModalCapability{Inline: true}
@@ -169,7 +169,7 @@ func Run(ctx context.Context, pf ProviderFactory) (scoreboard.Scenario, genai.Us
 			ctx2 = internal.WithLogger(ctx, internal.Logger(ctx).With("fn", "GenStreamMultiModal"))
 			in, out, f, err := exerciseGenTextMultiModal(ctx2, &cs, "GenStreamMultiModal-")
 			mu.Lock()
-			usage.Add(cs.usage)
+			usage.Add(&cs.usage)
 			if len(in) != 0 {
 				result.In = mergeModalities(result.In, in)
 				result.Out = mergeModalities(result.Out, out)

@@ -165,9 +165,7 @@ func (r *Response) Init(msgs genai.Messages, model string, opts ...genai.GenOpti
 			unsupported = append(unsupported, u...)
 			errs = append(errs, e...)
 		case *genai.GenOptionTools:
-			u, e := r.initOptionsTools(v)
-			unsupported = append(unsupported, u...)
-			errs = append(errs, e...)
+			errs = append(errs, r.initOptionsTools(v)...)
 		default:
 			return &base.ErrNotSupported{Options: []string{internal.TypeName(opt)}}
 		}
@@ -319,8 +317,7 @@ func (r *Response) initOptionsText(v *genai.GenOptionText) ([]string, []error) {
 	return unsupported, errs
 }
 
-func (r *Response) initOptionsTools(v *genai.GenOptionTools) ([]string, []error) { //nolint:unparam // Consistent signature across providers.
-	var unsupported []string
+func (r *Response) initOptionsTools(v *genai.GenOptionTools) []error {
 	var errs []error
 	if len(v.Tools) != 0 {
 		r.ParallelToolCalls = true
@@ -352,7 +349,7 @@ func (r *Response) initOptionsTools(v *genai.GenOptionTools) ([]string, []error)
 		})
 		r.Include = []string{"web_search_call.action.sources"}
 	}
-	return unsupported, errs
+	return errs
 }
 
 // ReasoningConfig represents reasoning configuration for o-series models.

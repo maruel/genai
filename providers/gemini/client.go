@@ -308,13 +308,9 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 				c.Tools = append(c.Tools, Tool{FileSearch: v.FileSearch})
 			}
 		case *genai.GenOptionText:
-			u, e := c.initOptionsText(v)
-			unsupported = append(unsupported, u...)
-			errs = append(errs, e...)
+			errs = append(errs, c.initOptionsText(v)...)
 		case *genai.GenOptionTools:
-			u, e := c.initOptionsTools(v)
-			unsupported = append(unsupported, u...)
-			errs = append(errs, e...)
+			errs = append(errs, c.initOptionsTools(v)...)
 		case *genai.GenOptionAudio:
 			errs = append(errs, fmt.Errorf("todo: implement options type %T", opt))
 		case *genai.GenOptionImage:
@@ -346,8 +342,7 @@ func (c *ChatRequest) SetStream(stream bool) {
 	// There's no field to set, the URL is different.
 }
 
-func (c *ChatRequest) initOptionsText(v *genai.GenOptionText) ([]string, []error) { //nolint:unparam // Consistent signature across providers.
-	var unsupported []string
+func (c *ChatRequest) initOptionsText(v *genai.GenOptionText) []error {
 	var errs []error
 	c.GenerationConfig.MaxOutputTokens = v.MaxTokens
 	c.GenerationConfig.Temperature = v.Temperature
@@ -371,11 +366,10 @@ func (c *ChatRequest) initOptionsText(v *genai.GenOptionText) ([]string, []error
 	} else if v.ReplyAsJSON {
 		c.GenerationConfig.ResponseMimeType = "application/json"
 	}
-	return unsupported, errs
+	return errs
 }
 
-func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools) ([]string, []error) { //nolint:unparam // Consistent signature across providers.
-	var unsupported []string
+func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools) []error {
 	var errs []error
 	if len(v.Tools) != 0 {
 		switch v.Force {
@@ -411,7 +405,7 @@ func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools) ([]string, []err
 		// https://ai.google.dev/gemini-api/docs/google-search
 		c.Tools = append(c.Tools, Tool{GoogleSearch: &GoogleSearch{}})
 	}
-	return unsupported, errs
+	return errs
 }
 
 var functionResponse struct {
@@ -1106,9 +1100,7 @@ type ImageRequest struct {
 }
 
 // Init initializes the request from the given parameters.
-//
-//nolint:gocritic // hugeParam: public API.
-func (i *ImageRequest) Init(msg genai.Message, model string, mod genai.Modalities, opts ...genai.GenOption) error {
+func (i *ImageRequest) Init(msg *genai.Message, model string, mod genai.Modalities, opts ...genai.GenOption) error {
 	if err := msg.Validate(); err != nil {
 		return err
 	}
@@ -1736,7 +1728,7 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 				}
 				c.impl.OutputModalities = genai.Modalities{mod}
 			case genai.ModalityAudio:
-				if c.impl.Model, err = c.selectBestAudioModel(ctx, model); err != nil {
+				if c.impl.Model, err = c.selectBestAudioModel(ctx); err != nil {
 					return nil, err
 				}
 				c.impl.OutputModalities = genai.Modalities{mod}
@@ -2019,10 +2011,10 @@ func (c *Client) selectBestVideoModel(ctx context.Context, preference string) (s
 	return selectedModel, nil
 }
 
-// selectBestAudioModel selects the most appropriate audio model based on the preference (cheap, good, or SOTA).
+// selectBestAudioModel selects the most appropriate audio model.
 //
 // Audio models are identified by the "native-audio" suffix in their names.
-func (c *Client) selectBestAudioModel(ctx context.Context, preference string) (string, error) { //nolint:unparam // preference for future use.
+func (c *Client) selectBestAudioModel(ctx context.Context) (string, error) {
 	mdls, err := c.ListModels(ctx)
 	if err != nil {
 		return "", fmt.Errorf("failed to automatically select the model: %w", err)
@@ -2164,7 +2156,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 				finalErr = &internal.BadError{Err: err}
 				break
 			}
-			if err := res.Accumulate(f); err != nil {
+			if err := res.Accumulate(&f); err != nil {
 				finalErr = &internal.BadError{Err: err}
 				break
 			}
@@ -2377,10 +2369,10 @@ func (c *Client) genDoc(ctx context.Context, msg *genai.Message, opts ...genai.G
 	}
 	res := genai.Result{}
 	req := ImageRequest{}
-	if err := req.Init(*msg, c.impl.Model, c.impl.OutputModalities, opts...); err != nil {
+	if err := req.Init(msg, c.impl.Model, c.impl.OutputModalities, opts...); err != nil {
 		return res, err
 	}
-	resp, err := c.PredictRaw(ctx, req)
+	resp, err := c.PredictRaw(ctx, &req)
 	if err != nil {
 		return res, err
 	}
@@ -2432,10 +2424,10 @@ func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts ...gena
 		return "", errors.New("only one message can be passed as input")
 	}
 	req := ImageRequest{}
-	if err := req.Init(msgs[0], c.impl.Model, c.impl.OutputModalities, opts...); err != nil {
+	if err := req.Init(&msgs[0], c.impl.Model, c.impl.OutputModalities, opts...); err != nil {
 		return "", err
 	}
-	resp, err := c.PredictLongRunningRaw(ctx, req)
+	resp, err := c.PredictLongRunningRaw(ctx, &req)
 	return genai.Job(resp.Name), err
 }
 
@@ -2464,7 +2456,7 @@ func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, er
 //
 // The official documentation https://ai.google.dev/api/models?hl=en#method:-models.predict is not really
 // helpful.
-func (c *Client) PredictRaw(ctx context.Context, req ImageRequest) (ImageResponse, error) { //nolint:gocritic // hugeParam: public API.
+func (c *Client) PredictRaw(ctx context.Context, req *ImageRequest) (ImageResponse, error) {
 	res := ImageResponse{}
 	if err := c.impl.Validate(); err != nil {
 		return res, err
@@ -2479,7 +2471,7 @@ func (c *Client) PredictRaw(ctx context.Context, req ImageRequest) (ImageRespons
 //
 // The official documentation https://ai.google.dev/api/models?hl=en#method:-models.predictlongrunning is not really
 // helpful.
-func (c *Client) PredictLongRunningRaw(ctx context.Context, req ImageRequest) (Operation, error) { //nolint:gocritic // hugeParam: public API.
+func (c *Client) PredictLongRunningRaw(ctx context.Context, req *ImageRequest) (Operation, error) {
 	res := Operation{}
 	if err := c.impl.Validate(); err != nil {
 		return res, err

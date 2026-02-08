@@ -19,12 +19,9 @@ import (
 	"github.com/maruel/genai/smoke/smoketest"
 )
 
-func getClientInner(t *testing.T, apiKey string, opts []genai.ProviderOption, fn func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) { //nolint:unparam // Used for testing with different keys.
-	if apiKey == "" && os.Getenv("MISTRAL_API_KEY") == "" {
-		apiKey = "<insert_api_key_here>"
-	}
-	if apiKey != "" {
-		opts = append(opts, genai.ProviderOptionAPIKey(apiKey))
+func getClientInner(t *testing.T, opts []genai.ProviderOption, fn func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
+	if os.Getenv("MISTRAL_API_KEY") == "" {
+		opts = append(opts, genai.ProviderOptionAPIKey("<insert_api_key_here>"))
 	}
 	if fn != nil {
 		opts = append(opts, genai.ProviderOptionTransportWrapper(fn))
@@ -39,7 +36,7 @@ func TestClient(t *testing.T) {
 			t.Error(err)
 		}
 	})
-	cl, err2 := getClientInner(t, "", nil, func(h http.RoundTripper) http.RoundTripper {
+	cl, err2 := getClientInner(t, nil, func(h http.RoundTripper) http.RoundTripper {
 		return testRecorder.RecordWithName(t, t.Name()+"/Warmup", h)
 	})
 	if err2 != nil {
@@ -55,7 +52,7 @@ func TestClient(t *testing.T) {
 		if m != "" {
 			opts = append(opts, genai.ProviderOptionModel(m))
 		}
-		ci, err := getClientInner(t, "", opts, func(h http.RoundTripper) http.RoundTripper {
+		ci, err := getClientInner(t, opts, func(h http.RoundTripper) http.RoundTripper {
 			return testRecorder.Record(t, h)
 		})
 		if err != nil {
@@ -114,7 +111,7 @@ func TestClient(t *testing.T) {
 			if model != "" {
 				opts = append(opts, genai.ProviderOptionModel(model))
 			}
-			return getClientInner(st, "", opts, func(h http.RoundTripper) http.RoundTripper {
+			return getClientInner(st, opts, func(h http.RoundTripper) http.RoundTripper {
 				return testRecorder.Record(st, h)
 			})
 		})
@@ -149,7 +146,7 @@ func TestClient(t *testing.T) {
 		}
 		f := func(t *testing.T, opts ...genai.ProviderOption) (genai.Provider, error) {
 			opts = append(opts, genai.ProviderOptionModalities{genai.ModalityText})
-			return getClientInner(t, "", opts, func(h http.RoundTripper) http.RoundTripper {
+			return getClientInner(t, opts, func(h http.RoundTripper) http.RoundTripper {
 				return testRecorder.Record(t, h)
 			})
 		}

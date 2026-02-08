@@ -82,7 +82,7 @@ func TestClient(t *testing.T) {
 				if len(resp.Replies) == 0 {
 					t.Fatal("missing response")
 				}
-				internaltest.ValidateWordResponse(t, resp, "hello")
+				internaltest.ValidateWordResponse(t, &resp, "hello")
 			})
 		}
 	})
@@ -116,7 +116,7 @@ func TestClient(t *testing.T) {
 				if len(res.Replies) == 0 {
 					t.Fatal("missing response")
 				}
-				internaltest.ValidateWordResponse(t, res, "hello")
+				internaltest.ValidateWordResponse(t, &res, "hello")
 			})
 		}
 	})

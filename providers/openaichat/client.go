@@ -163,7 +163,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			unsupported = append(unsupported, c.initOptionsText(v, model)...)
 			sp = v.SystemPrompt
 		case *genai.GenOptionTools:
-			unsupported = append(unsupported, c.initOptionsTools(v, model)...)
+			c.initOptionsTools(v, model)
 		case genai.GenOptionSeed:
 			if strings.HasPrefix(model, "gpt-4o-") && strings.Contains(model, "-search") {
 				unsupported = append(unsupported, "GenOptionSeed")
@@ -255,8 +255,7 @@ func (c *ChatRequest) initOptionsText(v *genai.GenOptionText, model string) []st
 	return unsupported
 }
 
-func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools, model string) []string { //nolint:unparam // Consistent signature across providers.
-	var unsupported []string
+func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools, model string) {
 	if len(v.Tools) != 0 {
 		// TODO: Determine exactly which models do not support this.
 		if model != "o4-mini" {
@@ -285,7 +284,6 @@ func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools, model string) []
 			SearchContextSize: "high",
 		}
 	}
-	return unsupported
 }
 
 // WebSearchOptions is "documented" at https://platform.openai.com/docs/guides/tools-web-search

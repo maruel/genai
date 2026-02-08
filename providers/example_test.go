@@ -71,9 +71,10 @@ func Example_all_Provider() {
 func Example_all_Full() {
 	// This example includes:
 	// - Processing <think> tokens for explicit Chain-of-Thoughts models (e.g. Qwen3).
-	var names []string
 	ctx := context.Background()
-	for name := range providers.Available(ctx) {
+	avail := providers.Available(ctx)
+	names := make([]string, 0, len(avail))
+	for name := range avail {
 		names = append(names, name)
 	}
 	sort.Strings(names)
@@ -111,7 +112,7 @@ func Example_all_Full() {
 // LoadProvider loads a provider.
 func LoadProvider(ctx context.Context, provider string, opts ...genai.ProviderOption) (genai.Provider, error) {
 	if provider == "" {
-		return nil, fmt.Errorf("no provider specified")
+		return nil, errors.New("no provider specified")
 	}
 	cfg := providers.All[provider]
 	if cfg.Factory == nil {

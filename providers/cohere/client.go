@@ -173,6 +173,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 	return errors.Join(errs...)
 }
 
+// SetStream sets the streaming mode.
 func (c *ChatRequest) SetStream(stream bool) {
 	c.Stream = stream
 }
@@ -257,6 +258,7 @@ func (m *Message) From(in *genai.Message) ([]Document, error) {
 	return out, nil
 }
 
+// Content represents a content block in a message.
 type Content struct {
 	Type     ContentType `json:"type,omitzero"`
 	Text     string      `json:"text,omitzero"`
@@ -271,15 +273,18 @@ type Content struct {
 	Document Document `json:"document,omitzero"`
 }
 
+// IsZero returns true if the content is empty.
 func (c *Content) IsZero() bool {
 	return c.Type == "" && c.Text == "" && c.ImageURL.URL == "" && len(c.Document.Data) == 0 && c.Document.ID == ""
 }
 
+// FromRequest converts a genai.Request to a Content.
 func (c *Content) FromRequest(in *genai.Request) (*Document, error) {
-	if in.Text != "" {
+	switch {
+	case in.Text != "":
 		c.Type = ContentText
 		c.Text = in.Text
-	} else if !in.Doc.IsZero() {
+	case !in.Doc.IsZero():
 		mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
 		if err != nil {
 			return nil, err
@@ -292,7 +297,7 @@ func (c *Content) FromRequest(in *genai.Request) (*Document, error) {
 			} else {
 				c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
 			}
-			return nil, nil
+			return nil, nil //nolint:nilnil // No document to return; Content was populated in-place.
 			// text/plain, text/markdown
 		case strings.HasPrefix(mimeType, "text/"):
 			if in.Doc.URL != "" {
@@ -308,17 +313,19 @@ func (c *Content) FromRequest(in *genai.Request) (*Document, error) {
 		default:
 			return nil, fmt.Errorf("unsupported mime type %s", mimeType)
 		}
-	} else {
+	default:
 		return nil, errors.New("unknown Request type")
 	}
-	return nil, nil
+	return nil, nil //nolint:nilnil // No document to return; Content was populated in-place.
 }
 
+// FromReply converts a genai.Reply to a Content.
 func (c *Content) FromReply(in *genai.Reply) (*Document, error) {
-	if in.Text != "" {
+	switch {
+	case in.Text != "":
 		c.Type = ContentText
 		c.Text = in.Text
-	} else if !in.Doc.IsZero() {
+	case !in.Doc.IsZero():
 		mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
 		if err != nil {
 			return nil, err
@@ -331,7 +338,7 @@ func (c *Content) FromReply(in *genai.Reply) (*Document, error) {
 			} else {
 				c.ImageURL.URL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
 			}
-			return nil, nil
+			return nil, nil //nolint:nilnil // No document to return; Content was populated in-place.
 			// text/plain, text/markdown
 		case strings.HasPrefix(mimeType, "text/"):
 			if in.Doc.URL != "" {
@@ -347,16 +354,17 @@ func (c *Content) FromReply(in *genai.Reply) (*Document, error) {
 		default:
 			return nil, &internal.BadError{Err: fmt.Errorf("unsupported mime type %s", mimeType)}
 		}
-	} else if in.Reasoning != "" {
+	case in.Reasoning != "":
 		// Unclear if we should send it back.
 		c.Type = ContentThinking
 		c.Thinking = in.Reasoning
-	} else {
+	default:
 		return nil, &internal.BadError{Err: errors.New("unknown Reply type")}
 	}
-	return nil, nil
+	return nil, nil //nolint:nilnil // No document to return; Content was populated in-place.
 }
 
+// To converts the Content to a genai.Reply.
 func (c *Content) To(in *genai.Reply) error {
 	switch c.Type {
 	case ContentText:
@@ -364,7 +372,7 @@ func (c *Content) To(in *genai.Reply) error {
 	case ContentThinking:
 		in.Reasoning = c.Thinking
 	case ContentDocument, ContentImageURL:
-		fallthrough
+		return &internal.BadError{Err: fmt.Errorf("implement %s", c.Type)}
 	default:
 		return &internal.BadError{Err: fmt.Errorf("implement %s", c.Type)}
 	}
@@ -374,6 +382,7 @@ func (c *Content) To(in *genai.Reply) error {
 // ContentType is documented at https://docs.cohere.com/v2/reference/chat
 type ContentType string
 
+// Content type values.
 const (
 	ContentText     ContentType = "text"
 	ContentThinking ContentType = "thinking"
@@ -381,6 +390,7 @@ const (
 	ContentDocument ContentType = "document"
 )
 
+// Citations is a collection of citations.
 type Citations []Citation
 
 // UnmarshalJSON implements custom unmarshalling for Citations type
@@ -410,6 +420,7 @@ func (c *Citations) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
+// To converts Citations to genai.Reply slices.
 func (c Citations) To() ([]genai.Reply, error) {
 	out := make([]genai.Reply, len(c))
 	for i := range c {
@@ -420,8 +431,10 @@ func (c Citations) To() ([]genai.Reply, error) {
 	return out, nil
 }
 
+// CitationType represents the type of a citation.
 type CitationType string
 
+// Citation type values.
 const (
 	CitationTextContent CitationType = "TEXT_CONTENT"
 	CitationPlan        CitationType = "PLAN"
@@ -437,6 +450,7 @@ type Citation struct {
 	ContentIndex int64            `json:"content_index,omitzero"`
 }
 
+// To converts a Citation to a genai.Citation.
 func (c *Citation) To(out *genai.Citation) error {
 	out.Sources = make([]genai.CitationSource, len(c.Sources))
 	for i, source := range c.Sources {
@@ -467,13 +481,16 @@ func (c *Citation) To(out *genai.Citation) error {
 	return nil
 }
 
+// SourceType represents the type of a citation source.
 type SourceType string
 
+// Source type values.
 const (
 	SourceTool     SourceType = "tool"
 	SourceDocument SourceType = "document"
 )
 
+// CitationSource represents a source in a citation.
 type CitationSource struct {
 	Type SourceType `json:"type,omitzero"`
 
@@ -491,6 +508,7 @@ type CitationSource struct {
 	} `json:"document,omitzero"`
 }
 
+// Tool represents a tool definition.
 type Tool struct {
 	Type     string `json:"type,omitzero"` // "function"
 	Function struct {
@@ -508,6 +526,7 @@ type Document struct {
 	Data map[string]any `json:"data,omitzero"`
 }
 
+// ChatResponse is the response from the chat API.
 type ChatResponse struct {
 	ID           string          `json:"id"`
 	FinishReason FinishReason    `json:"finish_reason"`
@@ -516,6 +535,7 @@ type ChatResponse struct {
 	Logprobs     []Logprobs      `json:"logprobs"`
 }
 
+// ToResult converts the ChatResponse to a genai.Result.
 func (c *ChatResponse) ToResult() (genai.Result, error) {
 	out := genai.Result{
 		Usage: genai.Usage{
@@ -537,8 +557,10 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	return out, err
 }
 
+// FinishReason represents the reason a generation finished.
 type FinishReason string
 
+// Finish reason values.
 const (
 	FinishComplete     FinishReason = "COMPLETE"
 	FinishStopSequence FinishReason = "STOP_SEQUENCE"
@@ -547,6 +569,7 @@ const (
 	FinishError        FinishReason = "ERROR"
 )
 
+// ToFinishReason converts to a genai.FinishReason.
 func (f FinishReason) ToFinishReason() genai.FinishReason {
 	switch f {
 	case FinishComplete:
@@ -567,12 +590,14 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 	}
 }
 
+// Logprobs represents log probability information.
 type Logprobs struct {
 	TokenIDs []int64   `json:"token_ids"`
 	Text     string    `json:"text"`
 	Logprobs []float64 `json:"logprobs"`
 }
 
+// To converts Logprobs to genai.Logprob slices.
 func (l *Logprobs) To() []genai.Logprob {
 	out := make([]genai.Logprob, 1, len(l.Logprobs)+1)
 	out[0] = genai.Logprob{Text: l.Text, ID: l.TokenIDs[0], Logprob: l.Logprobs[0]}
@@ -582,6 +607,7 @@ func (l *Logprobs) To() []genai.Logprob {
 	return out
 }
 
+// Usage represents token usage information.
 type Usage struct {
 	BilledUnits struct {
 		InputTokens     int64 `json:"input_tokens"`
@@ -615,9 +641,10 @@ type MessageResponse struct {
 	ToolPlan   string    `json:"tool_plan,omitzero"`
 }
 
+// To converts a MessageResponse to a genai.Message.
 func (m *MessageResponse) To(out *genai.Message) error {
 	if m.ToolCallID != "" && !internal.BeLenient {
-		return fmt.Errorf("implement tool call id")
+		return errors.New("implement tool call id")
 	}
 	if m.ToolPlan != "" {
 		out.Replies = []genai.Reply{{Reasoning: m.ToolPlan}}
@@ -644,8 +671,10 @@ func (m *MessageResponse) To(out *genai.Message) error {
 	return nil
 }
 
+// Contents is a slice of Content with custom unmarshalling.
 type Contents []Content
 
+// UnmarshalJSON implements json.Unmarshaler.
 func (c *Contents) UnmarshalJSON(b []byte) error {
 	if bytes.Equal(b, []byte("null")) {
 		*c = nil
@@ -668,13 +697,14 @@ func (c *Contents) UnmarshalJSON(b []byte) error {
 		return err
 	}
 	if !v.IsZero() {
-		*c = (Contents)([]Content{v})
+		*c = Contents([]Content{v})
 	} else {
 		*c = nil
 	}
 	return nil
 }
 
+// ToolCall represents a tool call.
 type ToolCall struct {
 	ID       string `json:"id"`
 	Type     string `json:"type"` // function
@@ -684,10 +714,12 @@ type ToolCall struct {
 	} `json:"function"`
 }
 
+// IsZero returns true if the tool call is empty.
 func (t *ToolCall) IsZero() bool {
 	return t.ID == "" && t.Type == "" && t.Function.Name == "" && t.Function.Arguments == ""
 }
 
+// From converts a genai.ToolCall to a ToolCall.
 func (t *ToolCall) From(in *genai.ToolCall) error {
 	if len(in.Opaque) != 0 {
 		return errors.New("field ToolCall.Opaque not supported")
@@ -699,14 +731,17 @@ func (t *ToolCall) From(in *genai.ToolCall) error {
 	return nil
 }
 
+// To converts a ToolCall to a genai.ToolCall.
 func (t *ToolCall) To(out *genai.ToolCall) {
 	out.ID = t.ID
 	out.Name = t.Function.Name
 	out.Arguments = t.Function.Arguments
 }
 
+// ToolCalls is a slice of ToolCall with custom unmarshalling.
 type ToolCalls []ToolCall
 
+// UnmarshalJSON implements json.Unmarshaler.
 func (t *ToolCalls) UnmarshalJSON(b []byte) error {
 	if bytes.Equal(b, []byte("null")) {
 		*t = nil
@@ -729,15 +764,17 @@ func (t *ToolCalls) UnmarshalJSON(b []byte) error {
 		return err
 	}
 	if !tc.IsZero() {
-		*t = (ToolCalls)([]ToolCall{tc})
+		*t = ToolCalls([]ToolCall{tc})
 	} else {
 		*t = nil
 	}
 	return nil
 }
 
+// ChunkType represents the type of a streaming chunk.
 type ChunkType string
 
+// Chunk type values.
 const (
 	ChunkMessageStart  ChunkType = "message-start"
 	ChunkMessageEnd    ChunkType = "message-end"
@@ -752,6 +789,7 @@ const (
 	ChunkCitationEnd   ChunkType = "citation-end"
 )
 
+// ChatStreamChunkResponse represents a streaming chunk from the chat API.
 type ChatStreamChunkResponse struct {
 	Type  ChunkType `json:"type"`
 	ID    string    `json:"id"`
@@ -765,6 +803,7 @@ type ChatStreamChunkResponse struct {
 	Logprobs Logprobs `json:"logprobs"`
 }
 
+// Model represents a Cohere model.
 type Model struct {
 	Name             string   `json:"name"`
 	Endpoints        []string `json:"endpoints"` // chat, embed, classify, summarize, rerank, rate, generate
@@ -777,6 +816,7 @@ type Model struct {
 	IsDeprecated     bool     `json:"is_deprecated"`
 }
 
+// GetID returns the model ID.
 func (m *Model) GetID() string {
 	return m.Name
 }
@@ -805,17 +845,18 @@ func (m *Model) String() string {
 	return fmt.Sprintf("%s: %s%s Context: %d%s", m.Name, strings.Join(endpoints, "/"), f, m.ContextLength, suffix)
 }
 
+// Context returns the context window size.
 func (m *Model) Context() int64 {
 	return m.ContextLength
 }
 
-// ModelsResponse represents the response structure for Cohere models listing
+// ModelsResponse represents the response structure for Cohere models listing.
 type ModelsResponse struct {
 	Models        []Model `json:"models"`
 	NextPageToken string  `json:"next_page_token"`
 }
 
-// ToModels converts Cohere models to genai.Model interfaces
+// ToModels converts Cohere models to genai.Model interfaces.
 func (r *ModelsResponse) ToModels() []genai.Model {
 	models := make([]genai.Model, len(r.Models))
 	for i := range r.Models {
@@ -826,6 +867,7 @@ func (r *ModelsResponse) ToModels() []genai.Model {
 
 //
 
+// ErrorResponse represents an API error.
 type ErrorResponse struct {
 	ID        string `json:"id"`
 	Message   string `json:"message"`
@@ -836,6 +878,7 @@ func (er *ErrorResponse) Error() string {
 	return er.Message
 }
 
+// IsAPIError returns true.
 func (er *ErrorResponse) IsAPIError() bool {
 	return true
 }
@@ -943,7 +986,7 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 	cheap := preference == string(genai.ModelCheap)
 	good := preference == string(genai.ModelGood) || preference == ""
 	selectedModel := ""
-	var context int64
+	var ctxLen int64
 
 	for _, mdl := range mdls {
 		m := mdl.(*Model)
@@ -953,21 +996,22 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 		if !slices.Contains(m.Features, "strict_tools") {
 			continue
 		}
-		if cheap {
-			if strings.Contains(m.Name, "r7b") && !strings.Contains(m.Name, "arabic") && (context == 0 || context < m.ContextLength) {
-				context = m.ContextLength
+		switch {
+		case cheap:
+			if strings.Contains(m.Name, "r7b") && !strings.Contains(m.Name, "arabic") && (ctxLen == 0 || ctxLen < m.ContextLength) {
+				ctxLen = m.ContextLength
 				selectedModel = m.Name
 			}
-		} else if good {
-			// Prefer reasoning models as they're more capable
-			if strings.Contains(m.Name, "reasoning") && (context == 0 || context < m.ContextLength) {
-				context = m.ContextLength
+		case good:
+			// Prefer reasoning models as they're more capable.
+			if strings.Contains(m.Name, "reasoning") && (ctxLen == 0 || ctxLen < m.ContextLength) {
+				ctxLen = m.ContextLength
 				selectedModel = m.Name
 			}
-		} else {
-			if strings.Contains(m.Name, "reasoning") && (context == 0 || context < m.ContextLength) {
+		default:
+			if strings.Contains(m.Name, "reasoning") && (ctxLen == 0 || ctxLen < m.ContextLength) {
 				// For the greatest, we want the largest context.
-				context = m.ContextLength
+				ctxLen = m.ContextLength
 				selectedModel = m.Name
 			}
 		}
@@ -1106,7 +1150,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 						f.Reasoning = pkt.Delta.Message.Content[0].Text
 						wasThinking = true
 					case ContentDocument, ContentImageURL:
-						fallthrough
+						finalErr = &internal.BadError{Err: fmt.Errorf("implement content %q", t)}
 					default:
 						finalErr = &internal.BadError{Err: fmt.Errorf("implement content %q", t)}
 						return

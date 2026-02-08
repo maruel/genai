@@ -8,6 +8,7 @@ import (
 	"context"
 	"fmt"
 	"slices"
+	"strconv"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -52,7 +53,7 @@ func TestGenSyncWithToolCallLoop(t *testing.T) {
 				Callback: func(ctx context.Context, args *CalculatorArgs) (string, error) {
 					switch args.Operation {
 					case "add":
-						return fmt.Sprintf("%d", args.A+args.B), nil
+						return strconv.Itoa(args.A + args.B), nil
 					default:
 						return "", fmt.Errorf("unsupported operation: %s", args.Operation)
 					}
@@ -108,7 +109,7 @@ func TestGenStreamWithToolCallLoop(t *testing.T) {
 				Callback: func(ctx context.Context, args *CalculatorArgs) (string, error) {
 					switch args.Operation {
 					case "add":
-						return fmt.Sprintf("%d", args.A+args.B), nil
+						return strconv.Itoa(args.A + args.B), nil
 					default:
 						return "", fmt.Errorf("unsupported operation: %s", args.Operation)
 					}
@@ -146,8 +147,8 @@ func TestProviderUsage(t *testing.T) {
 			},
 		}
 		wrapped := &adapters.ProviderUsage{Provider: provider}
-		wrapped.GenSync(t.Context(), nil)
-		wrapped.GenSync(t.Context(), nil)
+		_, _ = wrapped.GenSync(t.Context(), nil)
+		_, _ = wrapped.GenSync(t.Context(), nil)
 		expected := genai.Usage{InputTokens: 25, OutputTokens: 45}
 		if diff := cmp.Diff(expected, wrapped.GetAccumulatedUsage()); diff != "" {
 			t.Fatalf("unexpected usage: %s", diff)
@@ -164,11 +165,11 @@ func TestProviderUsage(t *testing.T) {
 		fragments, finish := wrapped.GenStream(t.Context(), nil)
 		for range fragments {
 		}
-		finish()
+		_, _ = finish()
 		fragments, finish = wrapped.GenStream(t.Context(), nil)
 		for range fragments {
 		}
-		finish()
+		_, _ = finish()
 		expected := genai.Usage{InputTokens: 25, OutputTokens: 45}
 		if diff := cmp.Diff(expected, wrapped.GetAccumulatedUsage()); diff != "" {
 			t.Fatalf("unexpected usage: %s", diff)
@@ -193,7 +194,7 @@ func TestProviderAppend(t *testing.T) {
 			Append:   genai.Request{Text: "appended"},
 		}
 		msgs := genai.Messages{{Requests: []genai.Request{{Text: "original"}}}}
-		wrapped.GenSync(t.Context(), msgs)
+		_, _ = wrapped.GenSync(t.Context(), msgs)
 		expected := genai.Messages{{Requests: []genai.Request{{Text: "original"}, {Text: "appended"}}}}
 		if diff := cmp.Diff(expected, provider.msgs); diff != "" {
 			t.Fatalf("unexpected messages: %s", diff)
@@ -208,7 +209,7 @@ func TestProviderAppend(t *testing.T) {
 			Append:   genai.Request{Text: "appended"},
 		}
 		msgs := genai.Messages{{Requests: []genai.Request{{Text: "original"}}}}
-		wrapped.GenStream(t.Context(), msgs)
+		_, _ = wrapped.GenStream(t.Context(), msgs)
 		expected := genai.Messages{{Requests: []genai.Request{{Text: "original"}, {Text: "appended"}}}}
 		if diff := cmp.Diff(expected, provider.msgs); diff != "" {
 			t.Fatalf("unexpected messages: %s", diff)

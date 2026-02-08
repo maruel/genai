@@ -61,6 +61,7 @@ type GenOptionText struct {
 	PreviousResponseID string
 }
 
+// Validate implements genai.Validatable.
 func (o *GenOptionText) Validate() error {
 	if err := o.ReasoningEffort.Validate(); err != nil {
 		return err
@@ -74,6 +75,7 @@ type GenOptionImage struct {
 	Background Background
 }
 
+// Validate implements genai.Validatable.
 func (o *GenOptionImage) Validate() error {
 	return nil
 }
@@ -171,12 +173,13 @@ func (r *Response) Init(msgs genai.Messages, model string, opts ...genai.GenOpti
 		}
 	}
 	if len(msgs) == 0 {
-		return fmt.Errorf("no messages provided")
+		return errors.New("no messages provided")
 	}
 
 	for i := range msgs {
 		// Each "Message" in OpenAI responses API is a content.
-		if len(msgs[i].ToolCallResults) > 1 {
+		switch {
+		case len(msgs[i].ToolCallResults) > 1:
 			// Handle messages with multiple tool call results by creating multiple messages
 			for j := range msgs[i].ToolCallResults {
 				// Create a copy of the message with only one tool call result
@@ -189,7 +192,7 @@ func (r *Response) Init(msgs genai.Messages, model string, opts ...genai.GenOpti
 					r.Input = append(r.Input, newMsg)
 				}
 			}
-		} else if len(msgs[i].Replies) > 1 {
+		case len(msgs[i].Replies) > 1:
 			// Goddam OpenAI. Handle messages with multiple tool calls by creating multiple messages.
 			var txt []genai.Reply
 			for j := range msgs[i].Replies {
@@ -217,7 +220,7 @@ func (r *Response) Init(msgs genai.Messages, model string, opts ...genai.GenOpti
 					r.Input = append(r.Input, newMsg)
 				}
 			}
-		} else {
+		default:
 			// It's a Request, send it as-is.
 			var newMsg Message
 			if skip, err := newMsg.From(&msgs[i]); err != nil {
@@ -251,35 +254,36 @@ func (r *Response) ToResult() (genai.Result, error) {
 			ServiceTier:       string(r.ServiceTier),
 		},
 	}
-	for _, output := range r.Output {
-		if err := output.To(&res.Message); err != nil {
+	for oi := range r.Output {
+		if err := r.Output[oi].To(&res.Message); err != nil {
 			return res, err
 		}
-		for i := range output.Content {
-			for j := range output.Content[i].Logprobs {
-				res.Logprobs = append(res.Logprobs, output.Content[i].Logprobs[j].To())
+		for i := range r.Output[oi].Content {
+			for j := range r.Output[oi].Content[i].Logprobs {
+				res.Logprobs = append(res.Logprobs, r.Output[oi].Content[i].Logprobs[j].To())
 			}
 		}
 	}
 	var err error
 	hasRefusal := false
-	for _, output := range r.Output {
-		for i := range output.Content {
-			if output.Content[i].Type == ContentRefusal {
+	for oi := range r.Output {
+		for i := range r.Output[oi].Content {
+			if r.Output[oi].Content[i].Type == ContentRefusal {
 				hasRefusal = true
 			}
 		}
 	}
-	if r.IncompleteDetails.Reason != "" {
+	switch {
+	case r.IncompleteDetails.Reason != "":
 		if r.IncompleteDetails.Reason == "max_output_tokens" {
 			res.Usage.FinishReason = genai.FinishedLength
 		}
 		err = errors.New(r.IncompleteDetails.Reason)
-	} else if hasRefusal {
+	case hasRefusal:
 		res.Usage.FinishReason = genai.FinishedContentFilter
-	} else if slices.ContainsFunc(res.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
+	case slices.ContainsFunc(res.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }):
 		res.Usage.FinishReason = genai.FinishedToolCalls
-	} else {
+	default:
 		res.Usage.FinishReason = genai.FinishedStop
 	}
 	return res, err
@@ -315,7 +319,7 @@ func (r *Response) initOptionsText(v *genai.GenOptionText) ([]string, []error) {
 	return unsupported, errs
 }
 
-func (r *Response) initOptionsTools(v *genai.GenOptionTools) ([]string, []error) {
+func (r *Response) initOptionsTools(v *genai.GenOptionTools) ([]string, []error) { //nolint:unparam // Consistent signature across providers.
 	var unsupported []string
 	var errs []error
 	if len(v.Tools) != 0 {
@@ -392,10 +396,11 @@ type Tool struct {
 // why they did this especially that they have parallel tool calling support.
 type MessageType string
 
+// Message type values for inputs and outputs.
 const (
-	// Inputs and Outputs
+	// MessageMessage represents inputs and outputs.
 	MessageMessage MessageType = "message"
-	// Outputs
+	// MessageFileSearchCall represents outputs.
 	MessageFileSearchCall      MessageType = "file_search_call"
 	MessageComputerCall        MessageType = "computer_call"
 	MessageWebSearchCall       MessageType = "web_search_call"
@@ -407,7 +412,7 @@ const (
 	MessageMcpListTools        MessageType = "mcp_list_tools"
 	MessageMcpApprovalRequest  MessageType = "mcp_approval_request"
 	MessageMcpCall             MessageType = "mcp_call"
-	// Inputs
+	// MessageComputerCallOutput represents inputs.
 	MessageComputerCallOutput   MessageType = "computer_call_output"
 	MessageFunctionCallOutput   MessageType = "function_call_output"
 	MessageLocalShellCallOutput MessageType = "local_shell_call_output"
@@ -574,7 +579,7 @@ func (m *Message) To(out *genai.Message) error {
 			}})
 		}
 	case MessageComputerCall, MessageImageGenerationCall, MessageCodeInterpreterCall, MessageLocalShellCall, MessageMcpListTools, MessageMcpApprovalRequest, MessageMcpCall, MessageComputerCallOutput, MessageFunctionCallOutput, MessageLocalShellCallOutput, MessageMcpApprovalResponse, MessageItemReference:
-		fallthrough
+		return &internal.BadError{Err: fmt.Errorf("unsupported output type %q", m.Type)}
 	default:
 		return &internal.BadError{Err: fmt.Errorf("unsupported output type %q", m.Type)}
 	}
@@ -584,13 +589,14 @@ func (m *Message) To(out *genai.Message) error {
 // ContentType defines the data being transported. It only includes actual data (text, files), no tool call nor result.
 type ContentType string
 
+// Content type values.
 const (
-	// Inputs
+	// ContentInputText is an input text content type.
 	ContentInputText  ContentType = "input_text"
 	ContentInputImage ContentType = "input_image"
 	ContentInputFile  ContentType = "input_file"
 
-	// Outputs
+	// ContentOutputText is an output text content type.
 	ContentOutputText ContentType = "output_text"
 	ContentRefusal    ContentType = "refusal"
 )
@@ -621,6 +627,7 @@ type Content struct {
 	Refusal string `json:"refusal,omitzero"`
 }
 
+// To converts to the genai equivalent.
 func (c *Content) To() ([]genai.Reply, error) {
 	var out []genai.Reply
 	for _, a := range c.Annotations {
@@ -661,6 +668,7 @@ func (c *Content) To() ([]genai.Reply, error) {
 	return out, nil
 }
 
+// FromRequest converts from a genai request.
 func (c *Content) FromRequest(in *genai.Request) error {
 	if in.Text != "" {
 		c.Type = ContentInputText
@@ -718,6 +726,7 @@ func (c *Content) FromRequest(in *genai.Request) error {
 	return errors.New("unknown Request type")
 }
 
+// FromReply converts from a genai reply.
 func (c *Content) FromReply(in *genai.Reply) error {
 	if len(in.Opaque) != 0 {
 		return &internal.BadError{Err: errors.New("field Reply.Opaque not supported")}
@@ -813,6 +822,7 @@ type Annotation struct {
 	EndIndex   int64 `json:"end_index,omitzero"`
 }
 
+// Logprobs is the provider-specific log probabilities.
 type Logprobs struct {
 	Token       string  `json:"token,omitzero"`
 	Bytes       []byte  `json:"bytes,omitzero"`
@@ -824,6 +834,7 @@ type Logprobs struct {
 	} `json:"top_logprobs,omitzero"`
 }
 
+// To converts to the genai equivalent.
 func (l *Logprobs) To() []genai.Logprob {
 	out := make([]genai.Logprob, 1, len(l.TopLogprobs)+1)
 	// Intentionally discard Bytes.
@@ -863,6 +874,7 @@ type TokenDetails struct {
 // ResponseType is one of the event at https://platform.openai.com/docs/api-reference/responses-streaming
 type ResponseType string
 
+// Response event type values.
 const (
 	ResponseCompleted                       ResponseType = "response.completed"
 	ResponseContentPartAdded                ResponseType = "response.content_part.added"
@@ -1083,6 +1095,7 @@ func (e *ErrorResponse) Error() string {
 	return fmt.Sprintf("%s (type: %s, code: %s)", e.ErrorVal.Message, e.ErrorVal.Type, e.ErrorVal.Code)
 }
 
+// IsAPIError implements base.ErrorResponseI.
 func (e *ErrorResponse) IsAPIError() bool {
 	return true
 }
@@ -1146,7 +1159,7 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 		switch modalities[0] {
 		case genai.ModalityAudio, genai.ModalityImage, genai.ModalityText, genai.ModalityVideo:
 		case genai.ModalityDocument:
-			fallthrough
+			return nil, fmt.Errorf("unexpected option Modalities %s, only audio, image or text are supported", modalities)
 		default:
 			return nil, fmt.Errorf("unexpected option Modalities %s, only audio, image or text are supported", modalities)
 		}
@@ -1209,9 +1222,9 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 			case genai.ModalityAudio:
 				return nil, errors.New("OpenAI Responses API does not support audio output as of December 2025; see https://platform.openai.com/docs/guides/audio")
 			case genai.ModalityDocument:
-				fallthrough
+				// TODO: Implement document modality model selection.
+				return nil, fmt.Errorf("automatic model selection is not implemented yet for modality %s (send PR to add support)", modalities)
 			default:
-				// TODO: Soon, because it's cool.
 				return nil, fmt.Errorf("automatic model selection is not implemented yet for modality %s (send PR to add support)", modalities)
 			}
 		default:
@@ -1238,7 +1251,7 @@ func (c *Client) Name() string {
 }
 
 // GenSyncRaw provides access to the raw API.
-func (c *Client) GenSyncRaw(ctx context.Context, in *Response, out *Response) error {
+func (c *Client) GenSyncRaw(ctx context.Context, in, out *Response) error {
 	// Check if audio output was requested
 	if len(c.impl.OutputModalities) > 0 && c.impl.OutputModalities[0] == genai.ModalityAudio {
 		return errors.New("OpenAI Responses API does not support audio output as of December 2025; see https://platform.openai.com/docs/guides/audio")
@@ -1282,7 +1295,7 @@ func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts ...gena
 		return "", err
 	}
 	if resp.ID == "" {
-		return "", fmt.Errorf("no response ID returned")
+		return "", errors.New("no response ID returned")
 	}
 	return genai.Job(resp.ID), nil
 }
@@ -1421,7 +1434,8 @@ func ProcessStream(chunks iter.Seq[ResponseStreamChunkResponse]) (iter.Seq[genai
 					case MessageFileSearchCall:
 						// Server-side file search; data arrives in ResponseOutputItemDone.
 					case MessageComputerCall, MessageImageGenerationCall, MessageCodeInterpreterCall, MessageLocalShellCall, MessageMcpListTools, MessageMcpApprovalRequest, MessageMcpCall, MessageComputerCallOutput, MessageFunctionCallOutput, MessageLocalShellCallOutput, MessageMcpApprovalResponse, MessageItemReference:
-						fallthrough
+						finalErr = &internal.BadError{Err: fmt.Errorf("implement item: %q", pkt.Item.Type)}
+						return
 					default:
 						finalErr = &internal.BadError{Err: fmt.Errorf("implement item: %q", pkt.Item.Type)}
 						return
@@ -1471,7 +1485,7 @@ func ProcessStream(chunks iter.Seq[ResponseStreamChunkResponse]) (iter.Seq[genai
 							finalErr = &internal.BadError{Err: fmt.Errorf("implement citations: %#v", pkt.Part.Annotations)}
 							return
 						}
-						if len(pkt.Part.Text) > 0 {
+						if pkt.Part.Text != "" {
 							finalErr = &internal.BadError{Err: fmt.Errorf("unexpected text: %q", pkt.Part.Text)}
 							return
 						}
@@ -1479,7 +1493,8 @@ func ProcessStream(chunks iter.Seq[ResponseStreamChunkResponse]) (iter.Seq[genai
 						// Refusal content part; the actual text arrives via ResponseRefusalDelta.
 						refused = true
 					case ContentInputText, ContentInputImage, ContentInputFile:
-						fallthrough
+						finalErr = &internal.BadError{Err: fmt.Errorf("implement part: %q", pkt.Part.Type)}
+						return
 					default:
 						finalErr = &internal.BadError{Err: fmt.Errorf("implement part: %q", pkt.Part.Type)}
 						return

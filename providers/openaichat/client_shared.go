@@ -61,6 +61,7 @@ func (s ServiceTier) Validate() error {
 // https://platform.openai.com/docs/guides/reasoning
 type ReasoningEffort string
 
+// Reasoning effort values.
 const (
 	ReasoningEffortNone    ReasoningEffort = "none"
 	ReasoningEffortMinimal ReasoningEffort = "minimal"
@@ -98,6 +99,9 @@ type ImageRequest struct {
 	User              string     `json:"user,omitzero"`               // End-user to help monitor and detect abuse
 }
 
+// Init initializes the request from the given parameters.
+//
+//nolint:gocritic // hugeParam: public API.
 func (i *ImageRequest) Init(msg genai.Message, model string, opts ...genai.GenOption) error {
 	if err := msg.Validate(); err != nil {
 		return err
@@ -114,13 +118,9 @@ func (i *ImageRequest) Init(msg genai.Message, model string, opts ...genai.GenOp
 	switch model {
 	case "gpt-image-1":
 		i.Moderation = "low"
-		// req.Background = "transparent"
-		// req.OutputFormat = "webp"
-		// req.OutputCompression = 90
-		// req.Quality = "high"
-		// req.Size = "1536x1024"
+		// Other supported options: Background, OutputFormat, OutputCompression, Quality, Size.
 	case "dall-e-3":
-		// req.Size = "1792x1024"
+		// Other supported options: Size (e.g. 1792x1024).
 		i.ResponseFormat = "b64_json"
 	case "dall-e-2":
 		// We assume dall-e-2 is only used for smoke testing, so use the smallest image.
@@ -155,12 +155,14 @@ func (i *ImageRequest) Init(msg genai.Message, model string, opts ...genai.GenOp
 // Background is only supported on gpt-image-1.
 type Background string
 
+// Background mode values.
 const (
 	BackgroundAuto        Background = "auto"
 	BackgroundTransparent Background = "transparent"
 	BackgroundOpaque      Background = "opaque"
 )
 
+// ImageResponse is the provider-specific image generation response.
 type ImageResponse struct {
 	Created base.Time         `json:"created"`
 	Data    []ImageChoiceData `json:"data"`
@@ -179,6 +181,7 @@ type ImageResponse struct {
 	OutputFormat string `json:"output_format"` // e.g. "png"
 }
 
+// ImageChoiceData is the data for one image generation choice.
 type ImageChoiceData struct {
 	B64JSON       []byte `json:"b64_json"`
 	RevisedPrompt string `json:"revised_prompt"` // dall-e-3 only
@@ -191,7 +194,7 @@ type ImageChoiceData struct {
 //
 // Sadly the modalities aren't reported. The only way I can think of to find it at run time is to fetch
 // https://platform.openai.com/docs/models/gpt-4o-mini-realtime-preview, find the div containing
-// "Modalities:", then extract the modalities from the text
+// "Modalities:", then extract the modalities from the text.
 type Model struct {
 	ID      string    `json:"id"`
 	Object  string    `json:"object"`
@@ -199,6 +202,7 @@ type Model struct {
 	OwnedBy string    `json:"owned_by"`
 }
 
+// GetID implements genai.Model.
 func (m *Model) GetID() string {
 	return m.ID
 }
@@ -207,17 +211,18 @@ func (m *Model) String() string {
 	return fmt.Sprintf("%s (%s)", m.ID, m.Created.AsTime().Format("2006-01-02"))
 }
 
+// Context implements genai.Model.
 func (m *Model) Context() int64 {
 	return 0
 }
 
-// ModelsResponse represents the response structure for OpenAI models listing
+// ModelsResponse represents the response structure for OpenAI models listing.
 type ModelsResponse struct {
 	Object string  `json:"object"` // list
 	Data   []Model `json:"data"`
 }
 
-// ToModels converts OpenAI models to genai.Model interfaces
+// ToModels converts OpenAI models to genai.Model interfaces.
 func (r *ModelsResponse) ToModels() []genai.Model {
 	models := make([]genai.Model, len(r.Data))
 	for i := range r.Data {
@@ -241,14 +246,17 @@ type File struct {
 	StatusDetails string    `json:"status_details"` // Deprecated
 }
 
+// GetID implements genai.Model.
 func (f *File) GetID() string {
 	return f.ID
 }
 
+// GetDisplayName implements genai.CacheItem.
 func (f *File) GetDisplayName() string {
 	return f.Filename
 }
 
+// GetExpiry implements genai.CacheItem.
 func (f *File) GetExpiry() time.Time {
 	return f.ExpiresAt.AsTime()
 }
@@ -272,7 +280,7 @@ type FileListResponse struct {
 //
 // We may want to make this function overridable in the future by the client since this is going to break one
 // day or another.
-func (c *Client) detectModelModalities(ctx context.Context, model string) (genai.Modalities, error) {
+func (c *Client) detectModelModalities(ctx context.Context, model string) (genai.Modalities, error) { //nolint:unparam // ctx for future use.
 	// Damn you OpenAI! This is super fragile.
 	// TODO: Fill out the scoreboard from https://platform.openai.com/docs/models then use that. This is sad
 	// because ListModels is useless. See
@@ -309,17 +317,18 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 		if strings.HasPrefix(m.ID, "o") {
 			continue
 		}
-		if cheap {
+		switch {
+		case cheap:
 			if strings.HasPrefix(m.ID, "gpt") && strings.HasSuffix(m.ID, "-nano") && (created == 0 || m.Created > created) {
 				created = m.Created
 				selectedModel = m.ID
 			}
-		} else if good {
+		case good:
 			if strings.HasPrefix(m.ID, "gpt") && strings.HasSuffix(m.ID, "-mini") && (created == 0 || m.Created > created) {
 				created = m.Created
 				selectedModel = m.ID
 			}
-		} else {
+		default:
 			if strings.HasPrefix(m.ID, "gpt") && !strings.Contains(m.ID, "-nano") && !strings.Contains(m.ID, "-mini") && (created == 0 || m.Created > created) {
 				created = m.Created
 				selectedModel = m.ID
@@ -353,19 +362,20 @@ func (c *Client) selectBestImageModel(ctx context.Context, preference string) (s
 		if !isCheap && !isSOTA {
 			continue
 		}
-		if cheap {
+		switch {
+		case cheap:
 			if isCheap {
 				if selectedModel == "" || m.ID > selectedModel {
 					selectedModel = m.ID
 				}
 			}
-		} else if good {
+		case good:
 			if isGood {
 				if selectedModel == "" || m.ID > selectedModel {
 					selectedModel = m.ID
 				}
 			}
-		} else {
+		default:
 			if isSOTA && !isGood {
 				selectedModel = m.ID
 			}
@@ -397,11 +407,12 @@ func (c *Client) selectBestVideoModel(ctx context.Context, preference string) (s
 		// Determine if model is pro based on name
 		isPro := strings.Contains(m.ID, "pro")
 		matches := false
-		if cheap {
+		switch {
+		case cheap:
 			matches = !isPro
-		} else if good {
+		case good:
 			matches = !isPro
-		} else {
+		default:
 			matches = isPro
 		}
 		if !matches {
@@ -449,7 +460,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 		if len(msgs) != 1 {
 			return genai.Result{}, errors.New("must pass exactly one Message")
 		}
-		return c.genDoc(ctx, msgs[0], opts...)
+		return c.genDoc(ctx, &msgs[0], opts...)
 	}
 	return c.impl.GenSync(ctx, msgs, opts...)
 }
@@ -463,14 +474,14 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 }
 
 // genDoc is a simplified version of GenSync.
-func (c *Client) genDoc(ctx context.Context, msg genai.Message, opts ...genai.GenOption) (genai.Result, error) {
+func (c *Client) genDoc(ctx context.Context, msg *genai.Message, opts ...genai.GenOption) (genai.Result, error) {
 	// https://platform.openai.com/docs/api-reference/images/create
 	res := genai.Result{}
 	if err := c.impl.Validate(); err != nil {
 		return res, err
 	}
 	req := ImageRequest{}
-	if err := req.Init(msg, c.impl.Model, opts...); err != nil {
+	if err := req.Init(*msg, c.impl.Model, opts...); err != nil {
 		return res, err
 	}
 	url := "https://api.openai.com/v1/images/generations"
@@ -497,7 +508,10 @@ func (c *Client) genDoc(ctx context.Context, msg genai.Message, opts ...genai.Ge
 			return res, errors.New("internal error")
 		}
 	}
-	return res, res.Validate()
+	if err := res.Validate(); err != nil {
+		return res, err
+	}
+	return res, nil
 }
 
 // ListModels implements genai.Provider.

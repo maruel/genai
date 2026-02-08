@@ -11,6 +11,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"strconv"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/adapters"
@@ -36,7 +37,7 @@ func main() {
 				Name:        "add",
 				Description: "Add two numbers together and provides the result",
 				Callback: func(ctx context.Context, input *numbers) (string, error) {
-					return fmt.Sprintf("%d", input.A+input.B), nil
+					return strconv.Itoa(input.A + input.B), nil
 				},
 			},
 		},

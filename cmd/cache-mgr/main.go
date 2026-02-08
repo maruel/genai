@@ -30,7 +30,6 @@ func listCache(ctx context.Context, c genai.Provider) error {
 	}
 	for _, f := range entries {
 		fmt.Printf("%s %s expires: %s\n", f.GetID(), f.GetDisplayName(), f.GetExpiry().Format("2006-01-02 15:04 MST"))
-		// fmt.Printf("%s %s %d bytes purpose:%s created:%s expires:%s\n", f.ID, f.Filename, f.Bytes, f.Purpose, f.CreatedAt.AsTime().Format("2006-01-02 15:04:05"), f.ExpiresAt.AsTime().Format("2006-01-02 15:04 MST"))
 	}
 	return nil
 }
@@ -87,7 +86,7 @@ func mainImpl() error {
 
 func main() {
 	if err := mainImpl(); err != nil {
-		if err != context.Canceled {
+		if !errors.Is(err, context.Canceled) {
 			fmt.Fprintf(os.Stderr, "cache-mgr: %s\n", err)
 		}
 		os.Exit(1)

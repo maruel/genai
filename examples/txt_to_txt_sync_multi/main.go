@@ -53,10 +53,9 @@ func main() {
 			log.Fatal(err)
 			os.Exit(1)
 		}
-		fmt.Printf("ChatGPT: %s\n> ", res.Message.String())
+		fmt.Printf("ChatGPT: %s\n> ", res.String())
 		// Add the response from the LLM to the set of messages so that the context continues
 		// to grow as the user continues to engage.
 		msgs = append(msgs, res.Message)
-
 	}
 }

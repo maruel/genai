@@ -108,7 +108,7 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 		f.ToolsBiased = scoreboard.False
 		f.ToolsIndecisive = scoreboard.False
 		f.ToolCallRequired = false
-		return fmt.Errorf("expected tool call to return a result or an error")
+		return errors.New("expected tool call to return a result or an error")
 	}
 	msgs = append(msgs, tr)
 	optsTools.Force = genai.ToolCallNone
@@ -131,7 +131,7 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 	} else {
 		f.Tools = scoreboard.True
 	}
-	if isZeroUsage(res.Usage) {
+	if isZeroUsage(&res.Usage) {
 		if f.ReportTokenUsage != scoreboard.False {
 			internal.Logger(ctx).DebugContext(ctx, "SquareRoot", "issue", "token usage")
 			f.ReportTokenUsage = scoreboard.Flaky
@@ -186,7 +186,7 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 			opts.Force = genai.ToolCallRequired
 		}
 
-		check := prefix + fmt.Sprintf("ToolBias-%s", line.countrySelected)
+		check := prefix + "ToolBias-" + line.countrySelected
 		res, err = cs.callGen(ctx, check, genai.Messages{genai.NewTextMessage(line.prompt)}, &opts)
 		if isBadError(ctx, err) {
 			return err
@@ -203,7 +203,7 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 			f.Tools = scoreboard.Flaky
 			continue
 		}
-		if isZeroUsage(res.Usage) {
+		if isZeroUsage(&res.Usage) {
 			if f.ReportTokenUsage != scoreboard.False {
 				internal.Logger(ctx).DebugContext(ctx, check, "issue", "token usage")
 				f.ReportTokenUsage = scoreboard.Flaky
@@ -216,12 +216,13 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 			}
 		}
 		toolCalls := 0
-		for _, r := range res.Replies {
-			if !r.ToolCall.IsZero() {
+		for j := range res.Replies {
+			if !res.Replies[j].ToolCall.IsZero() {
 				toolCalls++
 			}
 		}
-		if toolCalls == 1 {
+		switch toolCalls {
+		case 1:
 			for j := range res.Replies {
 				if res.Replies[j].ToolCall.IsZero() {
 					continue
@@ -236,7 +237,7 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 				}
 				biasedResults[i] = res2 == line.countrySelected
 			}
-		} else if toolCalls == 2 {
+		case 2:
 			indecisiveOccurred = true
 			var countries []string
 			for j := range res.Replies {
@@ -256,7 +257,7 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 				// This is an unexpected result for indecisive.
 				f.Tools = scoreboard.Flaky // Mark overall tools as flaky if indecisive result is not as expected
 			}
-		} else {
+		default:
 			// More than 2 tool calls, unexpected.
 			f.Tools = scoreboard.Flaky
 			continue
@@ -293,7 +294,8 @@ func exerciseWebSearch(ctx context.Context, cs *callState, f *scoreboard.Functio
 	// It must contains citations.
 	if err == nil {
 		f.WebSearch = slices.ContainsFunc(res.Replies, func(r genai.Reply) bool { return !r.Citation.IsZero() })
-		for _, r := range res.Replies {
+		for i := range res.Replies {
+			r := &res.Replies[i]
 			if r.Citation.IsZero() {
 				continue
 			}

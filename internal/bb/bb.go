@@ -12,8 +12,7 @@ import (
 	"io"
 )
 
-//
-
+// BytesBuffer wraps bytes.Buffer with io.Seeker support.
 type BytesBuffer struct {
 	D   []byte
 	Pos int
@@ -28,6 +27,7 @@ func (b *BytesBuffer) Read(p []byte) (int, error) {
 	return n, nil
 }
 
+// Seek implements io.Seeker.
 func (b *BytesBuffer) Seek(offset int64, whence int) (int64, error) {
 	var p int64
 	if whence == io.SeekCurrent {

@@ -47,7 +47,7 @@ func TestProcess(t *testing.T) {
 		for _, tt := range tests {
 			t.Run(tt.name, func(t *testing.T) {
 				it, finish := Process[testResponse](strings.NewReader(tt.input), nil, false)
-				var got []testResponse
+				got := make([]testResponse, 0, len(tt.want))
 				for msg := range it {
 					got = append(got, msg)
 				}
@@ -111,7 +111,7 @@ func TestProcess(t *testing.T) {
 	})
 }
 
-// Mock implementation of io.Reader that returns an error
+// Mock implementation of io.Reader that returns an error.
 type errorReaderMock struct {
 	err error
 }

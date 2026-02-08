@@ -25,7 +25,7 @@ func Example() {
 		log.Print(err)
 		return
 	}
-	defer srv.Close()
+	defer func() { _ = srv.Close() }()
 	c, err := llamacpp.New(ctx, genai.ProviderOptionRemote(srv.URL()))
 	if err != nil {
 		log.Print(err)
@@ -61,7 +61,7 @@ func startServer(ctx context.Context, author, repo, modelfile, multimodal string
 	if err != nil {
 		return nil, err
 	}
-	if err = os.MkdirAll(cache, 0o755); err != nil {
+	if err := os.MkdirAll(cache, 0o755); err != nil {
 		return nil, err
 	}
 	// It's a bit inefficient to download from github every single time.
@@ -91,6 +91,6 @@ func startServer(ctx context.Context, author, repo, modelfile, multimodal string
 	if err != nil {
 		return nil, err
 	}
-	defer l.Close()
+	defer func() { _ = l.Close() }()
 	return llamacppsrv.New(ctx, exe, modelPath, l, "", 0, extraArgs)
 }

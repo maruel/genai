@@ -36,11 +36,12 @@ func TestClientProviderErrors(t *testing.T, getClient func(t *testing.T, opts ..
 			if _, err := getClient(t, line.Opts...); line.ErrGenSync != "" || line.ErrGenStream != "" || line.ErrListModel != "" {
 				if err != nil {
 					// It failed but it was not expected.
-					if line.ErrGenSync != "" {
+					switch {
+					case line.ErrGenSync != "":
 						t.Fatalf("ErrGenSync: want %q, got %q", line.ErrGenSync, err)
-					} else if line.ErrGenStream != "" {
+					case line.ErrGenStream != "":
 						t.Fatalf("ErrGenStream: want %q, got %q", line.ErrGenStream, err)
-					} else if line.ErrListModel != "" {
+					case line.ErrListModel != "":
 						t.Fatalf("ErrListModel: want %q, got %q", line.ErrListModel, err)
 					}
 				}
@@ -126,7 +127,7 @@ func TestClientProviderErrors(t *testing.T, getClient func(t *testing.T, opts ..
 //
 // For each capability (GenAsync, Caching):
 // - If declared as true, calling the method should not return ErrNotSupported
-// - If declared as false, calling the method should return ErrNotSupported
+// - If declared as false, calling the method should return ErrNotSupported.
 func TestCapabilities(t *testing.T, c genai.Provider) {
 	caps := c.Capabilities()
 	msgs := genai.Messages{genai.NewTextMessage("test")}
@@ -245,7 +246,7 @@ func loadPreferredModelsFromScoreboard(t *testing.T, newProvider func(t *testing
 		if sc.SOTA {
 			for modality := range sc.Out {
 				tests = append(tests, preferredModelTest{
-					Modality: genai.Modality(modality),
+					Modality: modality,
 					Tier:     genai.ModelSOTA,
 					Want:     sc.Models[0],
 				})
@@ -254,7 +255,7 @@ func loadPreferredModelsFromScoreboard(t *testing.T, newProvider func(t *testing
 		if sc.Good {
 			for modality := range sc.Out {
 				tests = append(tests, preferredModelTest{
-					Modality: genai.Modality(modality),
+					Modality: modality,
 					Tier:     genai.ModelGood,
 					Want:     sc.Models[0],
 				})
@@ -263,7 +264,7 @@ func loadPreferredModelsFromScoreboard(t *testing.T, newProvider func(t *testing
 		if sc.Cheap {
 			for modality := range sc.Out {
 				tests = append(tests, preferredModelTest{
-					Modality: genai.Modality(modality),
+					Modality: modality,
 					Tier:     genai.ModelCheap,
 					Want:     sc.Models[0],
 				})

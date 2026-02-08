@@ -82,8 +82,8 @@ func (c *ProviderReasoning) GenStream(ctx context.Context, msgs genai.Messages, 
 			if finalErr == nil {
 				finalErr = err2
 			}
-			for _, r := range replies {
-				if !yield(r) {
+			for i := range replies {
+				if !yield(replies[i]) {
 					return
 				}
 			}
@@ -108,6 +108,8 @@ func (c *ProviderReasoning) GenStream(ctx context.Context, msgs genai.Messages, 
 }
 
 // processPacket is the streaming version of message fragment processing.
+//
+//nolint:gocritic // hugeParam: f is an internal function called from interface implementations.
 func (c *ProviderReasoning) processPacket(state tagProcessingState, accumulated *genai.Message, f genai.Reply) ([]genai.Reply, tagProcessingState, error) {
 	var replies []genai.Reply
 	if f.Reasoning != "" {
@@ -187,9 +189,9 @@ func (c *ProviderReasoning) processReasoningMessage(m *genai.Message) error {
 	}
 
 	// Check if one of the contents is already a Reasoning block
-	for _, c := range m.Replies {
-		if c.Reasoning != "" {
-			return fmt.Errorf("got unexpected reasoning content: %q; do not use ProviderReasoning with an explicit reasoning CoT model", c.Reasoning)
+	for i := range m.Replies {
+		if m.Replies[i].Reasoning != "" {
+			return fmt.Errorf("got unexpected reasoning content: %q; do not use ProviderReasoning with an explicit reasoning CoT model", m.Replies[i].Reasoning)
 		}
 	}
 
@@ -209,11 +211,9 @@ func (c *ProviderReasoning) processReasoningMessage(m *genai.Message) error {
 		if prefix := text[:tStart]; strings.TrimSpace(prefix) != "" {
 			return fmt.Errorf("unexpected prefix before reasoning tag: %q", prefix)
 		}
-	} else {
-		// Check if there's an end tag. Otherwise it was not reasoning at all.
-		if !strings.Contains(text, c.ReasoningTokenEnd) {
-			return nil
-		}
+	} else if !strings.Contains(text, c.ReasoningTokenEnd) {
+		// No end tag means it was not reasoning at all.
+		return nil
 	}
 	// Zap the text.
 	for i := range m.Replies {

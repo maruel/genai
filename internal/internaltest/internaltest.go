@@ -26,10 +26,12 @@ import (
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
 
+// Records manages HTTP recording/playback for tests.
 type Records struct {
 	Records *myrecorder.Records
 }
 
+// NewRecords creates a new Records instance.
 func NewRecords() *Records {
 	rr, err := myrecorder.NewRecords("testdata")
 	if err != nil {
@@ -41,6 +43,7 @@ func NewRecords() *Records {
 	return &Records{Records: rr}
 }
 
+// Close finalizes all recordings.
 func (r *Records) Close() error {
 	filtered := false
 	flag.Visit(func(f *flag.Flag) {
@@ -65,6 +68,7 @@ func (r *Records) Record(t testing.TB, h http.RoundTripper, opts ...recorder.Opt
 	return r.RecordWithName(t, t.Name(), h, opts...)
 }
 
+// RecordWithName starts a named recording session.
 func (r *Records) RecordWithName(t testing.TB, name string, h http.RoundTripper, opts ...recorder.Option) *myrecorder.Recorder {
 	rr, err := r.Records.Record(name, h, opts...)
 	if err != nil {
@@ -79,7 +83,7 @@ func (r *Records) RecordWithName(t testing.TB, name string, h http.RoundTripper,
 }
 
 // ValidateWordResponse validates that the response contains exactly one of the expected words.
-func ValidateWordResponse(t testing.TB, resp genai.Result, want ...string) {
+func ValidateWordResponse(t testing.TB, resp genai.Result, want ...string) { //nolint:gocritic // hugeParam: changing to pointer would break callers.
 	got := resp.String()
 	cleaned := strings.TrimRight(strings.TrimSpace(strings.ToLower(got)), ".!")
 	if !slices.Contains(want, cleaned) {
@@ -143,7 +147,7 @@ func LogFile(tb testing.TB, cache, name string) *os.File {
 				if err3 != nil {
 					tb.Error(err2)
 				} else {
-					defer srcF.Close()
+					defer func() { _ = srcF.Close() }()
 					if err4 := os.MkdirAll(filepath.Dir(dst), 0o755); err4 != nil {
 						tb.Error(err4)
 					} else {
@@ -174,10 +178,12 @@ type InjectOptions struct {
 	Opts []genai.GenOption
 }
 
+// GenSync implements genai.Provider.
 func (i *InjectOptions) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
 	return i.Provider.GenSync(ctx, msgs, append(opts, i.Opts...)...)
 }
 
+// GenStream implements genai.Provider.
 func (i *InjectOptions) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	return i.Provider.GenStream(ctx, msgs, append(opts, i.Opts...)...)
 }
@@ -196,6 +202,7 @@ func (h *HideHTTPCode) Unwrap() genai.Provider {
 	return h.Provider
 }
 
+// GenSync implements genai.Provider.
 func (h *HideHTTPCode) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
 	resp, err := h.Provider.GenSync(ctx, msgs, opts...)
 	if err != nil {
@@ -207,6 +214,7 @@ func (h *HideHTTPCode) GenSync(ctx context.Context, msgs genai.Messages, opts ..
 	return resp, err
 }
 
+// GenStream implements genai.Provider.
 func (h *HideHTTPCode) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	fragments, finish := h.Provider.GenStream(ctx, msgs, opts...)
 	return fragments, func() (genai.Result, error) {
@@ -223,7 +231,7 @@ func (h *HideHTTPCode) GenStream(ctx context.Context, msgs genai.Messages, opts 
 
 //
 
-// WriterToLog wraps t.Log() to implement io.Writer
+// WriterToLog wraps t.Log() to implement io.Writer.
 type WriterToLog struct {
 	T testing.TB
 }

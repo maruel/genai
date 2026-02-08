@@ -104,6 +104,7 @@ type GenOption struct {
 	FileSearch *FileSearch
 }
 
+// Validate implements genai.Validatable.
 func (o *GenOption) Validate() error {
 	return nil
 }
@@ -181,18 +182,15 @@ type FunctionDeclaration struct {
 type ToolMode string
 
 const (
-	// Unspecified function calling mode. This value should not be used.
+	// ToolModeUnspecified is an unspecified function calling mode. This value should not be used.
 	ToolModeUnspecified ToolMode = "" // "MODE_UNSPECIFIED"
-	// Default model behavior, model decides to predict either a function call or a natural language response.
+	// ToolModeAuto is the default model behavior, model decides to predict either a function call or a natural language response.
 	ToolModeAuto ToolMode = "AUTO"
-	// Model is constrained to always predicting a function call only. If "allowedFunctionNames" are set, the
-	// predicted function call will be limited to any one of "allowedFunctionNames", else the predicted function
-	// call will be any one of the provided "functionDeclarations".
+	// ToolModeAny means the model is constrained to always predicting a function call only.
 	ToolModeAny ToolMode = "ANY"
-	// Model will not predict any function call. Model behavior is same as when not passing any function
-	// declarations.
+	// ToolModeNone means the model will not predict any function call.
 	ToolModeNone ToolMode = "NONE"
-	// Model decides to predict either a function call or a natural language response, but will validate
+	// ToolModeValidated means the model decides to predict either a function call or a natural language response, but will validate
 	// function calls with constrained decoding.
 	ToolModeValidated ToolMode = "VALIDATED"
 )
@@ -209,6 +207,7 @@ type ToolConfig struct {
 // Modality is documented at https://ai.google.dev/api/generate-content#Modality
 type Modality string
 
+// Modality values.
 const (
 	ModalityUnspecified Modality = "" // "MODALITY_UNSPECIFIED"
 	ModalityAudio       Modality = "AUDIO"
@@ -219,6 +218,7 @@ const (
 // MediaResolution is documented at https://ai.google.dev/api/generate-content#MediaResolution
 type MediaResolution string
 
+// Media resolution values.
 const (
 	MediaResolutionUnspecified MediaResolution = ""       // "MEDIA_RESOLUTION_UNSPECIFIED"
 	MediaResolutionLow         MediaResolution = "LOW"    // 64 tokens
@@ -288,17 +288,15 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 					IncludeThoughts: true,
 					ThinkingBudget:  v.ThinkingBudget,
 				}
-			} else {
+			} else if strings.HasPrefix(model, "gemini-2.5-flash") &&
+				!strings.Contains(model, "image") &&
+				!strings.Contains(model, "live") &&
+				!strings.Contains(model, "tts") {
 				// We need to set it to disable thinking on gemini-2.5-flash.
 				//
 				// Most models really do not want the struct at all, e.g. gemini-2-5-flash-image-preview. Setting the
 				// struct to empty will fail the RPC. :(
-				if strings.HasPrefix(model, "gemini-2.5-flash") &&
-					!strings.Contains(model, "image") &&
-					!strings.Contains(model, "live") &&
-					!strings.Contains(model, "tts") {
-					c.GenerationConfig.ThinkingConfig = &ThinkingConfig{}
-				}
+				c.GenerationConfig.ThinkingConfig = &ThinkingConfig{}
 			}
 			if v.CodeExecution {
 				c.Tools = append(c.Tools, Tool{CodeExecution: &struct{}{}})
@@ -343,11 +341,12 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 	return errors.Join(errs...)
 }
 
+// SetStream sets the streaming mode.
 func (c *ChatRequest) SetStream(stream bool) {
 	// There's no field to set, the URL is different.
 }
 
-func (c *ChatRequest) initOptionsText(v *genai.GenOptionText) ([]string, []error) {
+func (c *ChatRequest) initOptionsText(v *genai.GenOptionText) ([]string, []error) { //nolint:unparam // Consistent signature across providers.
 	var unsupported []string
 	var errs []error
 	c.GenerationConfig.MaxOutputTokens = v.MaxTokens
@@ -375,7 +374,7 @@ func (c *ChatRequest) initOptionsText(v *genai.GenOptionText) ([]string, []error
 	return unsupported, errs
 }
 
-func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools) ([]string, []error) {
+func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools) ([]string, []error) { //nolint:unparam // Consistent signature across providers.
 	var unsupported []string
 	var errs []error
 	if len(v.Tools) != 0 {
@@ -427,6 +426,7 @@ type Content struct {
 	Parts []Part `json:"parts"`
 }
 
+// From converts from the genai equivalent.
 func (c *Content) From(in *genai.Message) error {
 	switch r := in.Role(); r {
 	case "user", "computer":
@@ -455,8 +455,10 @@ func (c *Content) From(in *genai.Message) error {
 	return nil
 }
 
+// To converts to the genai equivalent.
 func (c *Content) To(out *genai.Message) error {
-	for _, part := range c.Parts {
+	for i := range c.Parts {
+		part := &c.Parts[i]
 		if part.Thought {
 			out.Replies = append(out.Replies, genai.Reply{Reasoning: part.Text})
 			continue
@@ -538,13 +540,14 @@ type Part struct {
 	FunctionCall        FunctionCall        `json:"functionCall,omitzero"`
 	FunctionResponse    FunctionResponse    `json:"functionResponse,omitzero"`
 	FileData            FileData            `json:"fileData,omitzero"`            // Uploaded with /upload/v1beta/files. Files are deleted after 2 days.
-	ExecutableCode      ExecutableCode      `json:"executableCode,omitzero"`      // TODO
-	CodeExecutionResult CodeExecutionResult `json:"codeExecutionResult,omitzero"` // TODO
+	ExecutableCode      ExecutableCode      `json:"executableCode,omitzero"`      // TODO: Map to genai types.
+	CodeExecutionResult CodeExecutionResult `json:"codeExecutionResult,omitzero"` // TODO: Map to genai types.
 
 	// Union:
 	VideoMetadata VideoMetadata `json:"videoMetadata,omitzero"`
 }
 
+// FromRequest converts from a genai request.
 func (p *Part) FromRequest(in *genai.Request) error {
 	if in.Text != "" {
 		p.Text = in.Text
@@ -585,6 +588,7 @@ func (p *Part) FromRequest(in *genai.Request) error {
 	return errors.New("unknown Request type")
 }
 
+// FromReply converts from a genai reply.
 func (p *Part) FromReply(in *genai.Reply) error {
 	if len(in.Opaque) != 0 {
 		return &internal.BadError{Err: errors.New("field Reply.Opaque not supported")}
@@ -651,6 +655,7 @@ type FunctionCall struct {
 	ThoughtSignature []byte      `json:"thoughtSignature,omitzero"` // Returned by some models with thinking
 }
 
+// From converts from the genai equivalent.
 func (f *FunctionCall) From(in *genai.ToolCall) error {
 	f.ID = in.ID
 	f.Name = in.Name
@@ -660,6 +665,7 @@ func (f *FunctionCall) From(in *genai.ToolCall) error {
 	return nil
 }
 
+// To converts to the genai equivalent.
 func (f *FunctionCall) To(out *genai.ToolCall) error {
 	out.ID = f.ID
 	out.Name = f.Name
@@ -678,6 +684,7 @@ type FunctionResponse struct {
 	Response StructValue `json:"response,omitzero"`
 }
 
+// From converts from the genai equivalent.
 func (f *FunctionResponse) From(in *genai.ToolCallResult) {
 	f.ID = in.ID
 	f.Name = in.Name
@@ -722,6 +729,7 @@ type ChatResponse struct {
 	ResponseID     string              `json:"responseId"`
 }
 
+// ToResult converts the response to a genai.Result.
 func (c *ChatResponse) ToResult() (genai.Result, error) {
 	out := genai.Result{
 		Usage: genai.Usage{
@@ -788,6 +796,7 @@ type ResponseCandidate struct {
 	Index              int64              `json:"index"`
 }
 
+// To converts to the genai equivalent.
 func (r *ResponseCandidate) To(out *genai.Message) error {
 	if err := r.Content.To(out); err != nil {
 		return err
@@ -873,13 +882,15 @@ type GroundingMetadata struct {
 	RetrievalMetadata RetrievalMetadata  `json:"retrievalMetadata,omitzero"`
 }
 
+// IsZero reports whether the value is zero.
 func (g *GroundingMetadata) IsZero() bool {
 	return len(g.GroundingChunks) == 0 && len(g.GroundingSupports) == 0 && len(g.WebSearchQueries) == 0 && len(g.SearchEntryPoint.SDKBlob) == 0 && g.RetrievalMetadata.GoogleSearchDynamicRetrievalScore == 0
 }
 
+// To converts to the genai equivalent.
 func (g *GroundingMetadata) To() ([]genai.Reply, error) {
 	var out []genai.Reply
-	var src []genai.CitationSource
+	src := make([]genai.CitationSource, 0, len(g.WebSearchQueries))
 	for _, q := range g.WebSearchQueries {
 		src = append(src, genai.CitationSource{Type: genai.CitationWebQuery, Snippet: q})
 	}
@@ -939,8 +950,9 @@ type UrlMetadataEntry struct {
 	UrlRetrievalStatus string `json:"urlRetrievalStatus,omitzero"`
 }
 
+// To converts to the genai equivalent.
 func (u *UrlContextMetadata) To() []genai.Reply {
-	var out []genai.Reply
+	out := make([]genai.Reply, 0, len(u.UrlMetadata))
 	for _, um := range u.UrlMetadata {
 		out = append(out, genai.Reply{
 			Citation: genai.Citation{
@@ -957,8 +969,9 @@ type LogprobsResult struct {
 	ChosenCandidates []TokenCandidate `json:"chosenCandidates"`
 }
 
+// To converts to the genai equivalent.
 func (l *LogprobsResult) To() [][]genai.Logprob {
-	var out [][]genai.Logprob
+	out := make([][]genai.Logprob, 0, len(l.ChosenCandidates))
 	for i, chosen := range l.ChosenCandidates {
 		lp := make([]genai.Logprob, 1, len(l.TopCandidates[i].Candidates)+1)
 		lp[0] = genai.Logprob{ID: chosen.TokenID, Text: chosen.Token, Logprob: chosen.LogProbability}
@@ -986,30 +999,31 @@ type TokenCandidate struct {
 type FinishReason string
 
 const (
-	// Natural stop point of the model or provided stop sequence.
+	// FinishStop is the natural stop point of the model or provided stop sequence.
 	FinishStop FinishReason = "STOP"
-	// The maximum number of tokens as specified in the request was reached.
+	// FinishMaxTokens means the maximum number of tokens as specified in the request was reached.
 	FinishMaxTokens FinishReason = "MAX_TOKENS"
-	// The response candidate content was flagged for safety reasons.
+	// FinishSafety means the response candidate content was flagged for safety reasons.
 	FinishSafety FinishReason = "SAFETY"
-	// The response candidate content was flagged for recitation reasons.
+	// FinishRecitation means the response candidate content was flagged for recitation reasons.
 	FinishRecitation FinishReason = "RECITATION"
-	// The response candidate content was flagged for using an unsupported language.
+	// FinishLanguage means the response candidate content was flagged for using an unsupported language.
 	FinishLanguage FinishReason = "LANGUAGE"
-	// 	Unknown reason.
+	// FinishOther is an unknown reason.
 	FinishOther FinishReason = "OTHER"
-	// Token generation stopped because the content contains forbidden terms.
+	// FinishBlocklist means token generation stopped because the content contains forbidden terms.
 	FinishBlocklist FinishReason = "BLOCKLIST"
-	// Token generation stopped for potentially containing prohibited content.
+	// FinishProhibitedContent means token generation stopped for potentially containing prohibited content.
 	FinishProhibitedContent FinishReason = "PROHIBITED_CONTENT"
-	// Token generation stopped because the content potentially contains Sensitive Personally Identifiable Information (SPII).
+	// FinishSPII means token generation stopped because the content potentially contains Sensitive Personally Identifiable Information.
 	FinishSPII FinishReason = "SPII"
-	// The function call generated by the model is invalid.
+	// FinishMalformed means the function call generated by the model is invalid.
 	FinishMalformed FinishReason = "MALFORMED_FUNCTION_CALL"
-	// Token generation stopped because generated images contain safety violations.
+	// FinishImageSafety means token generation stopped because generated images contain safety violations.
 	FinishImageSafety FinishReason = "IMAGE_SAFETY"
 )
 
+// ToFinishReason converts to a genai.FinishReason.
 func (f FinishReason) ToFinishReason() genai.FinishReason {
 	switch f {
 	case FinishStop:
@@ -1020,7 +1034,10 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 		// TODO: Confirm. We lose on nuance here but does it matter?
 		return genai.FinishedContentFilter
 	case FinishRecitation, FinishLanguage, FinishOther, FinishMalformed:
-		fallthrough
+		if !internal.BeLenient {
+			panic(f)
+		}
+		return genai.FinishReason(strings.ToLower(string(f)))
 	default:
 		if !internal.BeLenient {
 			panic(f)
@@ -1050,6 +1067,7 @@ type ModalityTokenCount struct {
 	TokenCount int64    `json:"tokenCount"`
 }
 
+// ChatStreamChunkResponse is the provider-specific streaming chat chunk.
 type ChatStreamChunkResponse struct {
 	Candidates []struct {
 		Content            Content            `json:"content"`
@@ -1087,11 +1105,14 @@ type ImageRequest struct {
 	Parameters ImageParameters `json:"parameters"`
 }
 
+// Init initializes the request from the given parameters.
+//
+//nolint:gocritic // hugeParam: public API.
 func (i *ImageRequest) Init(msg genai.Message, model string, mod genai.Modalities, opts ...genai.GenOption) error {
 	if err := msg.Validate(); err != nil {
 		return err
 	}
-	var mime string
+	var mimeStr string
 	var img []byte
 	for i := range msg.Requests {
 		if msg.Requests[i].Text != "" {
@@ -1104,7 +1125,7 @@ func (i *ImageRequest) Init(msg genai.Message, model string, mod genai.Modalitie
 			return errors.New("only one image can be passed as input")
 		}
 		var err error
-		if mime, img, err = msg.Requests[i].Doc.Read(10 * 1024 * 1024); err != nil {
+		if mimeStr, img, err = msg.Requests[i].Doc.Read(10 * 1024 * 1024); err != nil {
 			return err
 		}
 	}
@@ -1118,7 +1139,7 @@ func (i *ImageRequest) Init(msg genai.Message, model string, mod genai.Modalitie
 	i.Instances = []ImageInstance{{Prompt: msg.String()}}
 	if len(img) != 0 {
 		i.Instances[0].Image.BytesBase64Encoded = img
-		i.Instances[0].Image.MimeType = mime
+		i.Instances[0].Image.MimeType = mimeStr
 	}
 	// This is important otherwise it can return 2 images.
 	// TODO: Expose it in OptionsImage.
@@ -1193,11 +1214,13 @@ type ImageParameters struct {
 	// CompressionQuality string `json:"compressionQuality,omitzero"`
 }
 
+// ImageOutput is the provider-specific image output configuration.
 type ImageOutput struct {
 	MimeType           string  `json:"mimeType,omitzero"` // "image/jpeg"
 	CompressionQuality float64 `json:"compressionQuality,omitzero"`
 }
 
+// ImageResponse is the provider-specific image generation response.
 type ImageResponse struct {
 	Predictions []struct {
 		MimeType         string `json:"mimeType"`
@@ -1255,6 +1278,7 @@ type Status struct {
 // https://ai.google.dev/api/files#State
 type FileState string
 
+// File state values.
 const (
 	FileStateUnspecified FileState = "STATE_UNSPECIFIED"
 	FileStateProcessing  FileState = "PROCESSING"
@@ -1294,6 +1318,7 @@ type FileListResponse struct {
 // FileSearchStoreState represents the state of a file search store.
 type FileSearchStoreState string
 
+// File search store state values.
 const (
 	FileSearchStoreStateUnspecified FileSearchStoreState = "STATE_UNSPECIFIED"
 	FileSearchStoreStateActive      FileSearchStoreState = "STATE_ACTIVE"
@@ -1321,6 +1346,7 @@ type FileSearchStoreListResponse struct {
 // FileSearchStoreDocumentState represents the state of a document in a file search store.
 type FileSearchStoreDocumentState string
 
+// File search store document state values.
 const (
 	FileSearchStoreDocumentStateUnspecified FileSearchStoreDocumentState = "STATE_UNSPECIFIED"
 	FileSearchStoreDocumentStateProcessing  FileSearchStoreDocumentState = "STATE_PROCESSING"
@@ -1368,6 +1394,7 @@ type CachedContent struct {
 	UsageMetadata CachingUsageMetadata `json:"usageMetadata,omitzero"`
 }
 
+// Init initializes the request from the given parameters.
 func (c *CachedContent) Init(msgs genai.Messages, model, name, displayName string, ttl time.Duration, opts ...genai.GenOption) error {
 	if err := msgs.Validate(); err != nil {
 		return err
@@ -1398,14 +1425,17 @@ func (c *CachedContent) Init(msgs genai.Messages, model, name, displayName strin
 	return nil
 }
 
+// GetID implements genai.Model.
 func (c *CachedContent) GetID() string {
 	return c.Name
 }
 
+// GetDisplayName implements genai.CacheItem.
 func (c *CachedContent) GetDisplayName() string {
 	return c.DisplayName
 }
 
+// GetExpiry implements genai.CacheItem.
 func (c *CachedContent) GetExpiry() time.Time {
 	return c.ExpireTime
 }
@@ -1416,17 +1446,21 @@ type Expiration struct {
 	TTL        Duration  `json:"ttl,omitzero"`        // Duration; input only
 }
 
+// Duration is a JSON-serializable time.Duration.
 type Duration time.Duration
 
+// IsZero reports whether the value is zero.
 func (d *Duration) IsZero() bool {
 	return *d == 0
 }
 
+// MarshalJSON implements json.Marshaler.
 func (d *Duration) MarshalJSON() ([]byte, error) {
 	v := time.Duration(*d)
 	return json.Marshal(fmt.Sprintf("%1.fs", v.Seconds()))
 }
 
+// UnmarshalJSON implements json.Unmarshaler.
 func (d *Duration) UnmarshalJSON(b []byte) error {
 	s := ""
 	if err := json.Unmarshal(b, &s); err != nil {
@@ -1462,6 +1496,7 @@ type Model struct {
 	Thinking                   bool     `json:"thinking"`
 }
 
+// GetID implements genai.Model.
 func (m *Model) GetID() string {
 	return strings.TrimPrefix(m.Name, "models/")
 }
@@ -1474,17 +1509,18 @@ func (m *Model) String() string {
 	return fmt.Sprintf("%s: %s (%s) Context: %d/%d", m.GetID(), m.DisplayName, d, m.InputTokenLimit, m.OutputTokenLimit)
 }
 
+// Context implements genai.Model.
 func (m *Model) Context() int64 {
 	return m.InputTokenLimit
 }
 
-// ModelsResponse represents the response structure for Gemini models listing
+// ModelsResponse represents the response structure for Gemini models listing.
 type ModelsResponse struct {
 	Models        []Model `json:"models"`
 	NextPageToken string  `json:"nextPageToken"`
 }
 
-// ToModels converts Gemini models to genai.Model interfaces
+// ToModels converts Gemini models to genai.Model interfaces.
 func (r *ModelsResponse) ToModels() []genai.Model {
 	models := make([]genai.Model, len(r.Models))
 	for i := range r.Models {
@@ -1514,10 +1550,12 @@ func (e *ErrorResponse) Error() string {
 	return fmt.Sprintf("%s (%d): %s", e.ErrorVal.Status, e.ErrorVal.Code, strings.TrimSpace(e.ErrorVal.Message))
 }
 
+// IsAPIError implements base.ErrorResponseI.
 func (e *ErrorResponse) IsAPIError() bool {
 	return true
 }
 
+// ErrorResponseError is the nested error in an error response.
 type ErrorResponseError struct {
 	Code    int64  `json:"code"` // 429
 	Message string `json:"message"`
@@ -1625,7 +1663,7 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 		switch modalities[0] {
 		case genai.ModalityAudio, genai.ModalityImage, genai.ModalityText, genai.ModalityVideo:
 		case genai.ModalityDocument:
-			fallthrough
+			return nil, fmt.Errorf("unexpected option Modalities %s, only audio, image, text, or video are supported", modalities)
 		default:
 			return nil, fmt.Errorf("unexpected option Modalities %s, only audio, image, text, or video are supported", modalities)
 		}
@@ -1703,9 +1741,9 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 				}
 				c.impl.OutputModalities = genai.Modalities{mod}
 			case genai.ModalityDocument:
-				fallthrough
+				// TODO: Implement document modality model selection.
+				return nil, fmt.Errorf("automatic model selection is not implemented yet for modality %s (send PR to add support)", modalities)
 			default:
-				// TODO: Soon, because it's cool.
 				return nil, fmt.Errorf("automatic model selection is not implemented yet for modality %s (send PR to add support)", modalities)
 			}
 		default:
@@ -1728,11 +1766,12 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 // day or another.
 func (c *Client) detectModelModalities(ctx context.Context, model string) (genai.Modalities, error) {
 	// It's tricky because modalities are not directly returned by ListModels.
-	if strings.HasPrefix(model, "gem") {
+	switch {
+	case strings.HasPrefix(model, "gem"):
 		return genai.Modalities{genai.ModalityText}, nil
-	} else if strings.HasPrefix(model, "ima") {
+	case strings.HasPrefix(model, "ima"):
 		return genai.Modalities{genai.ModalityImage}, nil
-	} else if strings.HasPrefix(model, "veo") {
+	case strings.HasPrefix(model, "veo"):
 		return genai.Modalities{genai.ModalityVideo}, nil
 	}
 	// We probably want to fetch SupportedGenerationMethods from the model anyway to make sure the right
@@ -1744,11 +1783,12 @@ func (c *Client) detectModelModalities(ctx context.Context, model string) (genai
 	}
 	for _, mdl := range mdls {
 		if m := mdl.(*Model); m.GetID() == model {
-			if slices.Contains(m.SupportedGenerationMethods, "generateContent") {
+			switch {
+			case slices.Contains(m.SupportedGenerationMethods, "generateContent"):
 				return genai.Modalities{genai.ModalityText}, nil
-			} else if slices.Contains(m.SupportedGenerationMethods, "predict") {
+			case slices.Contains(m.SupportedGenerationMethods, "predict"):
 				return genai.Modalities{genai.ModalityImage}, nil
-			} else if slices.Contains(m.SupportedGenerationMethods, "predictLongRunning") {
+			case slices.Contains(m.SupportedGenerationMethods, "predictLongRunning"):
 				return genai.Modalities{genai.ModalityVideo}, nil
 			}
 			return nil, fmt.Errorf("failed to automatically detect the model modality with methods: %s", m.SupportedGenerationMethods)
@@ -1774,15 +1814,16 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 	}
 	cheap := preference == string(genai.ModelCheap)
 	good := preference == string(genai.ModelGood) || preference == ""
-	if cheap {
+	switch {
+	case cheap:
 		if _, ok := availableModels["gemini-flash-lite-latest"]; ok {
 			return "gemini-flash-lite-latest", nil
 		}
-	} else if good {
+	case good:
 		if _, ok := availableModels["gemini-flash-latest"]; ok {
 			return "gemini-flash-latest", nil
 		}
-	} else {
+	default:
 		if _, ok := availableModels["gemini-pro-latest"]; ok {
 			return "gemini-pro-latest", nil
 		}
@@ -1800,11 +1841,12 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 		}
 		name := strings.TrimPrefix(m.Name, "models/")
 		matches := false
-		if cheap {
+		switch {
+		case cheap:
 			matches = strings.HasPrefix(name, "gemini") && strings.Contains(name, "-flash-lite")
-		} else if good {
+		case good:
 			matches = strings.HasPrefix(name, "gemini") && strings.Contains(name, "-flash") && !strings.Contains(name, "-lite")
-		} else {
+		default:
 			matches = strings.HasPrefix(name, "gemini") && strings.Contains(name, "-pro")
 		}
 		if !matches {
@@ -1813,12 +1855,13 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 		// Check if this model is better than the current selection.
 		isCandidatePinned := isPinnedModel(name)
 		shouldUpdate := false
-		if selectedModel == "" {
+		switch {
+		case selectedModel == "":
 			shouldUpdate = true
-		} else if isCandidatePinned && !selectedPinned {
+		case isCandidatePinned && !selectedPinned:
 			// Prefer pinned models (with -NNN suffix) over unpinned ones
 			shouldUpdate = true
-		} else if isCandidatePinned == selectedPinned {
+		case isCandidatePinned == selectedPinned:
 			// Both pinned or both unpinned; compare versions
 			if compareVersions(name, selectedModel) > 0 {
 				shouldUpdate = true
@@ -1852,7 +1895,7 @@ func isPinnedModel(name string) bool {
 
 // compareVersions compares two model names by their version numbers.
 // Returns >0 if a > b, <0 if a < b, 0 if equal or incomparable.
-// Example: "gemini-3-flash" > "gemini-2.5-flash"
+// Example: "gemini-3-flash" > "gemini-2.5-flash".
 func compareVersions(a, b string) int {
 	// Extract version parts (e.g., "2.5" from "gemini-2.5-flash")
 	getVersionParts := func(name string) (major, minor int) {
@@ -1917,15 +1960,16 @@ func (c *Client) selectBestImageModel(ctx context.Context, preference string) (s
 		if name := strings.TrimPrefix(m.Name, "models/"); selectedModel == "" || name > selectedModel {
 			isFast := strings.Contains(name, "fast")
 			isUltra := strings.Contains(name, "ultra")
-			if cheap {
+			switch {
+			case cheap:
 				if isFast {
 					selectedModel = name
 				}
-			} else if good {
+			case good:
 				if !isFast && !isUltra {
 					selectedModel = name
 				}
-			} else {
+			default:
 				if isUltra {
 					selectedModel = name
 				}
@@ -1978,7 +2022,7 @@ func (c *Client) selectBestVideoModel(ctx context.Context, preference string) (s
 // selectBestAudioModel selects the most appropriate audio model based on the preference (cheap, good, or SOTA).
 //
 // Audio models are identified by the "native-audio" suffix in their names.
-func (c *Client) selectBestAudioModel(ctx context.Context, preference string) (string, error) {
+func (c *Client) selectBestAudioModel(ctx context.Context, preference string) (string, error) { //nolint:unparam // preference for future use.
 	mdls, err := c.ListModels(ctx)
 	if err != nil {
 		return "", fmt.Errorf("failed to automatically select the model: %w", err)
@@ -2040,7 +2084,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 		if len(msgs) != 1 {
 			return genai.Result{}, errors.New("must pass exactly one Message")
 		}
-		return c.genDoc(ctx, msgs[0], opts...)
+		return c.genDoc(ctx, &msgs[0], opts...)
 	}
 	// GenSync must be inlined because we need to call our GenSyncRaw.
 	res := genai.Result{}
@@ -2083,7 +2127,7 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 			case genai.ModalityText:
 				in.GenerationConfig.ResponseModalities[i] = ModalityText
 			case genai.ModalityDocument, genai.ModalityVideo:
-				fallthrough
+				return fmt.Errorf("unsupported modality %s", m)
 			default:
 				return fmt.Errorf("unsupported modality %s", m)
 			}
@@ -2178,7 +2222,9 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest) (iter.Seq[Ch
 			case genai.ModalityText:
 				in.GenerationConfig.ResponseModalities[i] = ModalityText
 			case genai.ModalityDocument, genai.ModalityVideo:
-				fallthrough
+				return yieldNothing[ChatStreamChunkResponse], func() error {
+					return &internal.BadError{Err: fmt.Errorf("unsupported modality %s", m)}
+				}
 			default:
 				return yieldNothing[ChatStreamChunkResponse], func() error {
 					return &internal.BadError{Err: fmt.Errorf("unsupported modality %s", m)}
@@ -2215,24 +2261,25 @@ func (c *Client) CacheAddRequest(ctx context.Context, msgs genai.Messages, name,
 		return "", err
 	}
 	out := CachedContent{}
-	url := "https://generativelanguage.googleapis.com/v1beta/cachedContents"
-	if err := c.impl.DoRequest(ctx, "POST", url, &in, &out); err != nil {
+	u := "https://generativelanguage.googleapis.com/v1beta/cachedContents"
+	if err := c.impl.DoRequest(ctx, "POST", u, &in, &out); err != nil {
 		return "", err
 	}
 	name = strings.TrimPrefix(out.Name, "cachedContents/")
-	// slog.InfoContext(ctx, "gemini", "cached", name, "tokens", out.UsageMetadata.TotalTokenCount)
 	return name, nil
 }
 
+// CacheExtend extends the TTL of a cached content entry.
 func (c *Client) CacheExtend(ctx context.Context, name string, ttl time.Duration) error {
 	// https://ai.google.dev/api/caching#method:-cachedcontents.patch
-	url := "https://generativelanguage.googleapis.com/v1beta/cachedContents/" + url.PathEscape(name)
+	u := "https://generativelanguage.googleapis.com/v1beta/cachedContents/" + url.PathEscape(name)
 	// Model is required.
 	in := CachedContent{Model: "models/" + c.impl.Model, Expiration: Expiration{TTL: Duration(ttl)}}
 	out := CachedContent{}
-	return c.impl.DoRequest(ctx, "PATCH", url, &in, &out)
+	return c.impl.DoRequest(ctx, "PATCH", u, &in, &out)
 }
 
+// CacheList lists cache entries.
 func (c *Client) CacheList(ctx context.Context) ([]genai.CacheEntry, error) {
 	l, err := c.CacheListRaw(ctx)
 	if err != nil {
@@ -2256,15 +2303,15 @@ func (c *Client) CacheListRaw(ctx context.Context) ([]CachedContent, error) {
 	baseURL := "https://generativelanguage.googleapis.com/v1beta/cachedContents?pageSize=100"
 	var out []CachedContent
 	for ctx.Err() == nil {
-		url := baseURL
+		u := baseURL
 		if data.NextPageToken != "" {
-			url += "&pageToken=" + data.NextPageToken
+			u += "&pageToken=" + data.NextPageToken
 		}
 		if data.CachedContents != nil {
 			data.CachedContents = data.CachedContents[:0]
 		}
 		data.NextPageToken = ""
-		if err := c.impl.DoRequest(ctx, "GET", url, nil, &data); err != nil {
+		if err := c.impl.DoRequest(ctx, "GET", u, nil, &data); err != nil {
 			return nil, err
 		}
 		for i := range data.CachedContents {
@@ -2278,20 +2325,21 @@ func (c *Client) CacheListRaw(ctx context.Context) ([]CachedContent, error) {
 	return out, nil
 }
 
+// CacheGetRaw retrieves a cached content entry.
 func (c *Client) CacheGetRaw(ctx context.Context, name string) (CachedContent, error) {
 	// https://ai.google.dev/api/caching#method:-cachedcontents.get
-	url := "https://generativelanguage.googleapis.com/v1beta/cachedContents/" + url.PathEscape(name)
+	u := "https://generativelanguage.googleapis.com/v1beta/cachedContents/" + url.PathEscape(name)
 	out := CachedContent{}
-	err := c.impl.DoRequest(ctx, "GET", url, nil, &out)
+	err := c.impl.DoRequest(ctx, "GET", u, nil, &out)
 	return out, err
 }
 
 // CacheDelete deletes a cached file.
 func (c *Client) CacheDelete(ctx context.Context, name string) error {
 	// https://ai.google.dev/api/caching#method:-cachedcontents.delete
-	url := "https://generativelanguage.googleapis.com/v1beta/cachedContents/" + url.PathEscape(name)
+	u := "https://generativelanguage.googleapis.com/v1beta/cachedContents/" + url.PathEscape(name)
 	var out struct{}
-	return c.impl.DoRequest(ctx, "DELETE", url, nil, &out)
+	return c.impl.DoRequest(ctx, "DELETE", u, nil, &out)
 }
 
 // genDoc is a simplified version of GenSync.
@@ -2299,7 +2347,7 @@ func (c *Client) CacheDelete(ctx context.Context, name string) error {
 // Use it to generate images.
 //
 // genDoc is only supported for models that have "predict" reported in their Model.SupportedGenerationMethods.
-func (c *Client) genDoc(ctx context.Context, msg genai.Message, opts ...genai.GenOption) (genai.Result, error) {
+func (c *Client) genDoc(ctx context.Context, msg *genai.Message, opts ...genai.GenOption) (genai.Result, error) {
 	// TODO: Smartly decide the method to use instead of hardcoding on the modality.
 	if slices.Contains(c.impl.OutputModalities, genai.ModalityVideo) {
 		waitForPoll := time.Second
@@ -2311,7 +2359,7 @@ func (c *Client) genDoc(ctx context.Context, msg genai.Message, opts ...genai.Ge
 				filtered = append(filtered, opt)
 			}
 		}
-		id, err := c.GenAsync(ctx, genai.Messages{msg}, filtered...)
+		id, err := c.GenAsync(ctx, genai.Messages{*msg}, filtered...)
 		if err != nil {
 			return genai.Result{}, err
 		}
@@ -2329,7 +2377,7 @@ func (c *Client) genDoc(ctx context.Context, msg genai.Message, opts ...genai.Ge
 	}
 	res := genai.Result{}
 	req := ImageRequest{}
-	if err := req.Init(msg, c.impl.Model, c.impl.OutputModalities, opts...); err != nil {
+	if err := req.Init(*msg, c.impl.Model, c.impl.OutputModalities, opts...); err != nil {
 		return res, err
 	}
 	resp, err := c.PredictRaw(ctx, req)
@@ -2356,7 +2404,7 @@ func (c *Client) genDoc(ctx context.Context, msg genai.Message, opts ...genai.Ge
 		}
 		res.Replies = append(res.Replies, genai.Reply{Doc: genai.Doc{Filename: n, Src: &bb.BytesBuffer{D: resp.Predictions[i].BytesBase64Encoded}}})
 	}
-	if err = res.Validate(); err != nil {
+	if err := res.Validate(); err != nil {
 		return res, err
 	}
 	return res, nil
@@ -2416,7 +2464,7 @@ func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, er
 //
 // The official documentation https://ai.google.dev/api/models?hl=en#method:-models.predict is not really
 // helpful.
-func (c *Client) PredictRaw(ctx context.Context, req ImageRequest) (ImageResponse, error) {
+func (c *Client) PredictRaw(ctx context.Context, req ImageRequest) (ImageResponse, error) { //nolint:gocritic // hugeParam: public API.
 	res := ImageResponse{}
 	if err := c.impl.Validate(); err != nil {
 		return res, err
@@ -2431,7 +2479,7 @@ func (c *Client) PredictRaw(ctx context.Context, req ImageRequest) (ImageRespons
 //
 // The official documentation https://ai.google.dev/api/models?hl=en#method:-models.predictlongrunning is not really
 // helpful.
-func (c *Client) PredictLongRunningRaw(ctx context.Context, req ImageRequest) (Operation, error) {
+func (c *Client) PredictLongRunningRaw(ctx context.Context, req ImageRequest) (Operation, error) { //nolint:gocritic // hugeParam: public API.
 	res := Operation{}
 	if err := c.impl.Validate(); err != nil {
 		return res, err
@@ -2513,7 +2561,7 @@ func (c *Client) FileUpload(ctx context.Context, displayName, mimeType string, r
 		return nil, err
 	}
 	startURL := "https://generativelanguage.googleapis.com/upload/v1beta/files"
-	req, err := http.NewRequestWithContext(ctx, "POST", startURL, bytes.NewReader(body))
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, startURL, bytes.NewReader(body))
 	if err != nil {
 		return nil, err
 	}
@@ -2526,7 +2574,7 @@ func (c *Client) FileUpload(ctx context.Context, displayName, mimeType string, r
 		return nil, err
 	}
 	_ = resp.Body.Close()
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("gemini: file upload start failed with status %d", resp.StatusCode)
 	}
 	uploadURL := resp.Header.Get("X-Goog-Upload-Url")
@@ -2539,7 +2587,7 @@ func (c *Client) FileUpload(ctx context.Context, displayName, mimeType string, r
 	if err != nil {
 		return nil, err
 	}
-	req, err = http.NewRequestWithContext(ctx, "PUT", uploadURL, bytes.NewReader(data))
+	req, err = http.NewRequestWithContext(ctx, http.MethodPut, uploadURL, bytes.NewReader(data))
 	if err != nil {
 		return nil, err
 	}
@@ -2548,6 +2596,9 @@ func (c *Client) FileUpload(ctx context.Context, displayName, mimeType string, r
 	req.Header.Set("X-Goog-Upload-Command", "upload, finalize")
 	resp, err = c.impl.Client.Do(req)
 	if err != nil {
+		if resp != nil {
+			_ = resp.Body.Close()
+		}
 		return nil, err
 	}
 	var result struct {
@@ -2685,7 +2736,7 @@ func (c *Client) FileSearchStoreUploadDocument(ctx context.Context, store, displ
 		return nil, err
 	}
 	startURL := "https://generativelanguage.googleapis.com/upload/v1beta/" + store + ":uploadToFileSearchStore"
-	req, err := http.NewRequestWithContext(ctx, "POST", startURL, bytes.NewReader(body))
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, startURL, bytes.NewReader(body))
 	if err != nil {
 		return nil, err
 	}
@@ -2697,9 +2748,9 @@ func (c *Client) FileSearchStoreUploadDocument(ctx context.Context, store, displ
 	if err != nil {
 		return nil, err
 	}
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
 		b, _ := io.ReadAll(resp.Body)
-		resp.Body.Close()
+		_ = resp.Body.Close()
 		return nil, fmt.Errorf("gemini: file search store upload start failed with status %d: %s", resp.StatusCode, b)
 	}
 	_ = resp.Body.Close()
@@ -2713,7 +2764,7 @@ func (c *Client) FileSearchStoreUploadDocument(ctx context.Context, store, displ
 	if err != nil {
 		return nil, err
 	}
-	req, err = http.NewRequestWithContext(ctx, "PUT", uploadURL, bytes.NewReader(data))
+	req, err = http.NewRequestWithContext(ctx, http.MethodPut, uploadURL, bytes.NewReader(data))
 	if err != nil {
 		return nil, err
 	}
@@ -2722,6 +2773,9 @@ func (c *Client) FileSearchStoreUploadDocument(ctx context.Context, store, displ
 	req.Header.Set("X-Goog-Upload-Command", "upload, finalize")
 	resp, err = c.impl.Client.Do(req)
 	if err != nil {
+		if resp != nil {
+			_ = resp.Body.Close()
+		}
 		return nil, err
 	}
 	var result Operation
@@ -2841,8 +2895,8 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 						return
 					}
 					// Handle citations as a separate packet.
-					for _, r := range replies {
-						f.Citation = r.Citation
+					for i := range replies {
+						f.Citation = replies[i].Citation
 						if !yield(f) {
 							return
 						}
@@ -2851,8 +2905,9 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 				}
 
 				if len(pkt.Candidates[0].UrlContextMetadata.UrlMetadata) > 0 {
-					for _, r := range pkt.Candidates[0].UrlContextMetadata.To() {
-						f.Citation = r.Citation
+					urlReplies := pkt.Candidates[0].UrlContextMetadata.To()
+					for i := range urlReplies {
+						f.Citation = urlReplies[i].Citation
 						if !yield(f) {
 							return
 						}
@@ -2860,7 +2915,8 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 					f = genai.Reply{}
 				}
 
-				for _, part := range pkt.Candidates[0].Content.Parts {
+				for i := range pkt.Candidates[0].Content.Parts {
+					part := &pkt.Candidates[0].Content.Parts[i]
 					if part.Thought {
 						f.Reasoning += part.Text
 					} else {
@@ -2938,6 +2994,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 func yieldNothing[T any](yield func(T) bool) {
 }
 
+// Capabilities implements genai.Provider.
 func (c *Client) Capabilities() genai.ProviderCapabilities {
 	// GenAsync (predictLongRunning) is only supported for video generation models.
 	// Text models use generateContent, which doesn't support async operations.

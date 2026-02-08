@@ -192,6 +192,8 @@ func (u *Usage) String() string {
 }
 
 // Add accumulates the usage from another result.
+//
+//nolint:gocritic // Public API.
 func (u *Usage) Add(r Usage) {
 	u.InputTokens += r.InputTokens
 	u.InputCachedTokens += r.InputCachedTokens
@@ -203,6 +205,7 @@ func (u *Usage) Add(r Usage) {
 // RateLimitType defines the type of rate limit.
 type RateLimitType int32
 
+// RateLimitType values.
 const (
 	Requests RateLimitType = iota + 1
 	Tokens
@@ -211,6 +214,7 @@ const (
 // RateLimitPeriod defines the time period for a rate limit.
 type RateLimitPeriod int32
 
+// RateLimitPeriod values.
 const (
 	PerOther RateLimitPeriod = iota // For non-standard periods
 	PerMinute
@@ -238,7 +242,7 @@ func (r *RateLimit) String() string {
 		return "invalid RateLimit"
 	}
 	if !r.Reset.IsZero() {
-		out += fmt.Sprintf("/%s", r.Reset.Format(time.DateTime))
+		out += "/" + r.Reset.Format(time.DateTime)
 	}
 	switch r.Period {
 	case PerMinute:
@@ -254,6 +258,7 @@ func (r *RateLimit) String() string {
 	return out + fmt.Sprintf(": %d/%d", r.Remaining, r.Limit)
 }
 
+// Validate ensures the rate limit is valid.
 func (r *RateLimit) Validate() error {
 	switch r.Type {
 	case Requests, Tokens:
@@ -355,6 +360,7 @@ func NewTextMessage(text string) Message {
 	return Message{Requests: []Request{{Text: text}}}
 }
 
+// IsZero returns true if the message is empty.
 func (m *Message) IsZero() bool {
 	return m.User == "" && len(m.Requests) == 0 && len(m.Replies) == 0 && len(m.ToolCallResults) == 0
 }
@@ -508,6 +514,8 @@ func (m *Message) GoString() string {
 // Accumulate adds a Reply to the message being streamed.
 //
 // It is used by GenStream. There's generally no need to call it by end users.
+//
+//nolint:gocritic // Public API.
 func (m *Message) Accumulate(mf Reply) error {
 	// Generally the first message fragment.
 	if mf.Reasoning != "" {
@@ -515,7 +523,7 @@ func (m *Message) Accumulate(mf Reply) error {
 			if lastBlock := &m.Replies[len(m.Replies)-1]; lastBlock.Reasoning != "" {
 				lastBlock.Reasoning += mf.Reasoning
 				if len(mf.Opaque) != 0 {
-					return &internal.BadError{Err: fmt.Errorf("cannot add Opaque to a Reasoning block")}
+					return &internal.BadError{Err: errors.New("cannot add Opaque to a Reasoning block")}
 				}
 				return nil
 			}
@@ -622,20 +630,22 @@ type Request struct {
 
 // Validate ensures the block is valid.
 func (r *Request) Validate() error {
-	if r.Text != "" {
+	switch {
+	case r.Text != "":
 		if !r.Doc.IsZero() {
 			return errors.New("field Doc can't be used along Text")
 		}
-	} else if !r.Doc.IsZero() {
+	case !r.Doc.IsZero():
 		if err := r.Doc.Validate(); err != nil {
 			return err
 		}
-	} else {
+	default:
 		return errors.New("an empty Request is invalid")
 	}
 	return nil
 }
 
+// UnmarshalJSON implements the json.Unmarshaler interface.
 func (r *Request) UnmarshalJSON(b []byte) error {
 	type Alias Request
 	a := struct{ *Alias }{Alias: (*Alias)(r)}
@@ -697,7 +707,8 @@ func (r *Reply) GoString() string {
 
 // Validate ensures the block is valid.
 func (r *Reply) Validate() error {
-	if r.Text != "" {
+	switch {
+	case r.Text != "":
 		if !r.Doc.IsZero() {
 			return errors.New("field Doc can't be used along Text")
 		}
@@ -726,7 +737,7 @@ func (r *Reply) Validate() error {
 		// See
 		// providers/deepseek/testdata/TestClient/Scoreboard/deepseek-reasoner_thinking/GenStream-Tools-SquareRoot-1.yaml
 		// for an example.
-	} else if !r.Doc.IsZero() {
+	case !r.Doc.IsZero():
 		if err := r.Doc.Validate(); err != nil {
 			return err
 		}
@@ -739,7 +750,7 @@ func (r *Reply) Validate() error {
 		if !r.ToolCall.IsZero() {
 			return errors.New("field ToolCall can't be used along Doc")
 		}
-	} else if !r.Citation.IsZero() {
+	case !r.Citation.IsZero():
 		if err := r.Citation.Validate(); err != nil {
 			return err
 		}
@@ -749,20 +760,21 @@ func (r *Reply) Validate() error {
 		if !r.ToolCall.IsZero() {
 			return errors.New("field ToolCall can't be used along Citation")
 		}
-	} else if r.Reasoning != "" {
+	case r.Reasoning != "":
 		if !r.ToolCall.IsZero() {
 			return errors.New("field ToolCall can't be used along Reasoning")
 		}
-	} else if !r.ToolCall.IsZero() {
+	case !r.ToolCall.IsZero():
 		if err := r.ToolCall.Validate(); err != nil {
 			return err
 		}
-	} else if len(r.Opaque) == 0 {
+	case len(r.Opaque) == 0:
 		return errors.New("an empty Reply is invalid")
 	}
 	return nil
 }
 
+// UnmarshalJSON implements the json.Unmarshaler interface.
 func (r *Reply) UnmarshalJSON(b []byte) error {
 	type Alias Reply
 	a := struct{ *Alias }{Alias: (*Alias)(r)}
@@ -790,6 +802,7 @@ type Doc struct {
 	_ struct{}
 }
 
+// IsZero returns true if the document is empty.
 func (d *Doc) IsZero() bool {
 	return d.Filename == "" && d.Src == nil && d.URL == ""
 }
@@ -836,6 +849,7 @@ type serializedDoc struct {
 	URL      string `json:"url,omitzero"`
 }
 
+// MarshalJSON implements the json.Marshaler interface.
 func (d *Doc) MarshalJSON() ([]byte, error) {
 	dd := serializedDoc{Filename: d.GetFilename(), URL: d.URL}
 	if d.Src != nil {
@@ -860,6 +874,7 @@ func (d *Doc) MarshalJSON() ([]byte, error) {
 	return json.Marshal(&dd)
 }
 
+// UnmarshalJSON implements the json.Unmarshaler interface.
 func (d *Doc) UnmarshalJSON(b []byte) error {
 	dd := serializedDoc{}
 	de := json.NewDecoder(bytes.NewReader(b))
@@ -935,6 +950,7 @@ type ToolCall struct {
 	_ struct{}
 }
 
+// IsZero returns true if the tool call is empty.
 func (t *ToolCall) IsZero() bool {
 	return t.ID == "" && t.Name == "" && t.Arguments == ""
 }
@@ -986,6 +1002,7 @@ func (t *ToolCall) Call(ctx context.Context, tools []ToolDef) (string, error) {
 	return s, nil
 }
 
+// UnmarshalJSON implements the json.Unmarshaler interface.
 func (t *ToolCall) UnmarshalJSON(b []byte) error {
 	type Alias ToolCall
 	a := struct{ *Alias }{Alias: (*Alias)(t)}
@@ -1018,6 +1035,7 @@ func (t *ToolCallResult) Validate() error {
 	return nil
 }
 
+// UnmarshalJSON implements the json.Unmarshaler interface.
 func (t *ToolCallResult) UnmarshalJSON(b []byte) error {
 	type Alias ToolCallResult
 	a := struct{ *Alias }{Alias: (*Alias)(t)}
@@ -1059,14 +1077,15 @@ func (c *Citation) Validate() error {
 	if c.EndIndex > 0 && c.EndIndex <= c.StartIndex {
 		return fmt.Errorf("end index (%d) must be greater than start index (%d)", c.EndIndex, c.StartIndex)
 	}
-	for i, source := range c.Sources {
-		if err := source.Validate(); err != nil {
+	for i := range c.Sources {
+		if err := c.Sources[i].Validate(); err != nil {
 			return fmt.Errorf("source %d: %w", i, err)
 		}
 	}
 	return nil
 }
 
+// IsZero returns true if the citation is empty.
 func (c *Citation) IsZero() bool {
 	return c.CitedText == "" && c.StartIndex == 0 && c.EndIndex == 0 && len(c.Sources) == 0
 }
@@ -1101,7 +1120,7 @@ type CitationSource struct {
 	Snippet string `json:"snippet,omitzero"`
 	// StartCharIndex is the starting character position of the citation in the sourced document (0-based).
 	StartCharIndex int64 `json:"start_index,omitzero"`
-	// EndCharIndex is the ending character position of the citation in the the sourced document (0-based, exclusive).
+	// EndCharIndex is the ending character position of the citation in the sourced document (0-based, exclusive).
 	EndCharIndex int64 `json:"end_index,omitzero"`
 	// StartPageNumber is the starting page number of the citation in the sourced document (1-based).
 	StartPageNumber int64 `json:"start_page_number,omitzero"`
@@ -1124,11 +1143,12 @@ type CitationSource struct {
 // Validate ensures the citation source is valid.
 func (cs *CitationSource) Validate() error {
 	if cs.ID == "" && cs.URL == "" && cs.Type != CitationWebQuery {
-		return fmt.Errorf("citation source must have either ID or URL")
+		return errors.New("citation source must have either ID or URL")
 	}
 	return nil
 }
 
+// IsZero returns true if the citation source is empty.
 func (cs *CitationSource) IsZero() bool {
 	return cs.Type == 0 && cs.ID == "" && cs.Title == "" && cs.URL == "" &&
 		cs.Snippet == "" && cs.Date == "" && len(cs.Metadata) == 0

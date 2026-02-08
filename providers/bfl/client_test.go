@@ -64,7 +64,11 @@ func TestClient(t *testing.T) {
 	t.Run("Scoreboard", func(t *testing.T) {
 		// bfl does not have a public API to list models.
 		sb := getClient(t, "").Scoreboard()
-		var models []scoreboard.Model
+		n := 0
+		for _, sc := range sb.Scenarios {
+			n += len(sc.Models)
+		}
+		models := make([]scoreboard.Model, 0, n)
 		for _, sc := range sb.Scenarios {
 			for _, model := range sc.Models {
 				models = append(models, scoreboard.Model{Model: model})

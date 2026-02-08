@@ -12,12 +12,12 @@ import (
 
 func TestPrintList(t *testing.T) {
 	t.Parallel()
-	printList(t.Context(), &internaltest.WriterToLog{T: t})
+	_ = printList(t.Context(), &internaltest.WriterToLog{T: t})
 }
 
 func TestPrintTable(t *testing.T) {
 	t.Parallel()
 	ctx := t.Context()
-	printTable(ctx, &internaltest.WriterToLog{T: t}, "")
-	printTable(ctx, &internaltest.WriterToLog{T: t}, "openaicompatible")
+	_ = printTable(ctx, &internaltest.WriterToLog{T: t}, "")
+	_ = printTable(ctx, &internaltest.WriterToLog{T: t}, "openaicompatible")
 }

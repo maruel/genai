@@ -13,6 +13,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"flag"
 	"fmt"
 	"log"
@@ -63,7 +64,7 @@ func main() {
 // LoadProvider loads a provider.
 func LoadProvider(ctx context.Context, provider string, opts ...genai.ProviderOption) (genai.Provider, error) {
 	if provider == "" {
-		return nil, fmt.Errorf("no provider specified")
+		return nil, errors.New("no provider specified")
 	}
 	cfg := providers.All[provider]
 	if cfg.Factory == nil {

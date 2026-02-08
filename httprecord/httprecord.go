@@ -143,14 +143,14 @@ func trimRecordingHostPort(i *cassette.Interaction) error {
 
 // matchIgnorePort is a recorder.MatcherFunc that ignore the host port number. This is useful for locally
 // hosted LLM providers like llamacpp and ollama.
-func matchIgnorePort(r *http.Request, i cassette.Request) bool {
+func matchIgnorePort(r *http.Request, i cassette.Request) bool { //nolint:gocritic // hugeParam: signature imposed by cassette matcher.
 	r = r.Clone(r.Context())
 	r.URL.Host = strings.Split(r.URL.Host, ":")[0]
 	r.Host = strings.Split(r.Host, ":")[0]
 	return matchCassetteCloudflare(r, i)
 }
 
-func matchCassetteCloudflare(r *http.Request, i cassette.Request) bool {
+func matchCassetteCloudflare(r *http.Request, i cassette.Request) bool { //nolint:gocritic // hugeParam: signature imposed by cassette matcher.
 	r = r.Clone(r.Context())
 	// When matching, ignore the account ID from the URL path.
 	r.URL.Path = reCloudflareAccount.ReplaceAllString(r.URL.Path, "/accounts/ACCOUNT_ID/")

@@ -31,6 +31,7 @@ type Records struct {
 	recorded    map[string]struct{}
 }
 
+// NewRecords creates a new recorder.
 func NewRecords(root string) (*Records, error) {
 	r := &Records{root: root, preexisting: make(map[string]struct{}), recorded: make(map[string]struct{})}
 	err := filepath.WalkDir(root, func(path string, d fs.DirEntry, err error) error {
@@ -45,6 +46,7 @@ func NewRecords(root string) (*Records, error) {
 	return r, err
 }
 
+// Close finalizes all recordings.
 func (r *Records) Close() error {
 	r.mu.Lock()
 	defer r.mu.Unlock()
@@ -57,6 +59,7 @@ func (r *Records) Close() error {
 	return nil
 }
 
+// Signal writes a signal marker to the recording.
 func (r *Records) Signal(name string) error {
 	if name == "" {
 		return nil
@@ -120,11 +123,12 @@ type Recorder struct {
 	name string
 }
 
+// RoundTrip implements http.RoundTripper.
 func (r *Recorder) RoundTrip(req *http.Request) (*http.Response, error) {
 	resp, err := r.Recorder.RoundTrip(req)
 	if err != nil && req.GetBody != nil {
 		if body, _ := req.GetBody(); body != nil {
-			defer body.Close()
+			defer func() { _ = body.Close() }()
 			b, _ := io.ReadAll(body)
 			err = fmt.Errorf("%w; cassette %q; body:\n %s", err, r.name, string(b))
 		}

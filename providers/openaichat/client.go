@@ -60,6 +60,7 @@ type GenOptionText struct {
 	ServiceTier ServiceTier
 }
 
+// Validate implements genai.Validatable.
 func (o *GenOptionText) Validate() error {
 	if err := o.ReasoningEffort.Validate(); err != nil {
 		return err
@@ -73,6 +74,7 @@ type GenOptionImage struct {
 	Background Background
 }
 
+// Validate implements genai.Validatable.
 func (o *GenOptionImage) Validate() error {
 	return nil
 }
@@ -210,6 +212,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 	return errors.Join(errs...)
 }
 
+// SetStream sets the streaming mode.
 func (c *ChatRequest) SetStream(stream bool) {
 	c.Stream = stream
 	c.StreamOptions.IncludeUsage = stream
@@ -252,7 +255,7 @@ func (c *ChatRequest) initOptionsText(v *genai.GenOptionText, model string) []st
 	return unsupported
 }
 
-func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools, model string) []string {
+func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools, model string) []string { //nolint:unparam // Consistent signature across providers.
 	var unsupported []string
 	if len(v.Tools) != 0 {
 		// TODO: Determine exactly which models do not support this.
@@ -308,7 +311,7 @@ type Message struct {
 		ID string `json:"id,omitzero"`
 	} `json:"audio,omitzero"`
 	ToolCalls   []ToolCall   `json:"tool_calls,omitzero"`
-	ToolCallID  string       `json:"tool_call_id,omitzero"` // TODO
+	ToolCallID  string       `json:"tool_call_id,omitzero"` // TODO: Document the role of this field.
 	Annotations []Annotation `json:"annotations,omitzero"`
 }
 
@@ -363,6 +366,7 @@ func (m *Message) From(in *genai.Message) error {
 	return nil
 }
 
+// To converts to the genai equivalent.
 func (m *Message) To(out *genai.Message) error {
 	if len(m.Content) != 0 {
 		out.Replies = make([]genai.Reply, len(m.Content))
@@ -394,6 +398,7 @@ func (m *Message) To(out *genai.Message) error {
 	return nil
 }
 
+// Annotation is a provider-specific annotation.
 type Annotation struct {
 	Type        string `json:"type,omitzero"` // "url_citation"
 	URLCitation struct {
@@ -404,6 +409,7 @@ type Annotation struct {
 	} `json:"url_citation,omitzero"`
 }
 
+// Contents is a collection of content blocks.
 type Contents []Content
 
 // UnmarshalJSON implements json.Unmarshaler.
@@ -430,6 +436,7 @@ func (c *Contents) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
+// Content is a provider-specific content block.
 type Content struct {
 	Type ContentType `json:"type,omitzero"`
 
@@ -458,6 +465,7 @@ type Content struct {
 	} `json:"file,omitzero"`
 }
 
+// FromRequest converts from a genai request.
 func (c *Content) FromRequest(in *genai.Request) error {
 	if in.Text != "" {
 		c.Type = ContentText
@@ -528,6 +536,7 @@ func (c *Content) FromRequest(in *genai.Request) error {
 	return errors.New("unknown Request type")
 }
 
+// FromReply converts from a genai reply.
 func (c *Content) FromReply(in *genai.Reply) error {
 	if len(in.Opaque) != 0 {
 		return &internal.BadError{Err: errors.New("field Reply.Opaque not supported")}
@@ -601,23 +610,26 @@ func (c *Content) FromReply(in *genai.Reply) error {
 	return &internal.BadError{Err: errors.New("unknown Reply type")}
 }
 
+// To converts to the genai equivalent.
 func (c *Content) To(out *genai.Reply) error {
 	switch c.Type {
 	case ContentText:
 		out.Text = c.Text
-		if len(c.Text) == 0 {
+		if c.Text == "" {
 			return errors.New("received empty text")
 		}
 	case ContentImageURL, ContentInputAudio, ContentRefusal, ContentAudio, ContentFile:
-		fallthrough
+		return fmt.Errorf("unsupported content type %q", c.Type)
 	default:
 		return fmt.Errorf("unsupported content type %q", c.Type)
 	}
 	return nil
 }
 
+// ContentType is a provider-specific content type.
 type ContentType string
 
+// Content type values.
 const (
 	ContentText       ContentType = "text"
 	ContentImageURL   ContentType = "image_url"
@@ -627,6 +639,7 @@ const (
 	ContentFile       ContentType = "file"
 )
 
+// ToolCall is a provider-specific tool call.
 type ToolCall struct {
 	Index    int64  `json:"index,omitzero"`
 	ID       string `json:"id,omitzero"`
@@ -637,6 +650,7 @@ type ToolCall struct {
 	} `json:"function,omitzero"`
 }
 
+// From converts from the genai equivalent.
 func (t *ToolCall) From(in *genai.ToolCall) error {
 	if len(in.Opaque) != 0 {
 		return errors.New("field ToolCall.Opaque not supported")
@@ -648,12 +662,14 @@ func (t *ToolCall) From(in *genai.ToolCall) error {
 	return nil
 }
 
+// To converts to the genai equivalent.
 func (t *ToolCall) To(out *genai.ToolCall) {
 	out.ID = t.ID
 	out.Name = t.Function.Name
 	out.Arguments = t.Function.Arguments
 }
 
+// Tool is a provider-specific tool definition.
 type Tool struct {
 	Type     string `json:"type,omitzero"` // "function"
 	Function struct {
@@ -682,6 +698,7 @@ type ChatResponse struct {
 	SystemFingerprint string    `json:"system_fingerprint"`
 }
 
+// ToResult converts the response to a genai.Result.
 func (c *ChatResponse) ToResult() (genai.Result, error) {
 	out := genai.Result{
 		Usage: genai.Usage{
@@ -702,8 +719,10 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	return out, err
 }
 
+// FinishReason is a provider-specific finish reason.
 type FinishReason string
 
+// Finish reason values.
 const (
 	FinishStop          FinishReason = "stop"
 	FinishLength        FinishReason = "length"
@@ -711,6 +730,7 @@ const (
 	FinishContentFilter FinishReason = "content_filter"
 )
 
+// ToFinishReason converts to a genai.FinishReason.
 func (f FinishReason) ToFinishReason() genai.FinishReason {
 	switch f {
 	case FinishStop:
@@ -729,6 +749,7 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 	}
 }
 
+// Usage is the provider-specific token usage.
 type Usage struct {
 	PromptTokens        int64 `json:"prompt_tokens"`
 	CompletionTokens    int64 `json:"completion_tokens"`
@@ -748,6 +769,7 @@ type Usage struct {
 	} `json:"completion_tokens_details"`
 }
 
+// Logprobs is the provider-specific log probabilities.
 type Logprobs struct {
 	Content []struct {
 		Token       string  `json:"token"`
@@ -762,6 +784,7 @@ type Logprobs struct {
 	Refusal string `json:"refusal"`
 }
 
+// To converts to the genai equivalent.
 func (l *Logprobs) To() [][]genai.Logprob {
 	if len(l.Content) == 0 {
 		return nil
@@ -889,6 +912,7 @@ type BatchUsage struct {
 
 //
 
+// ErrorResponse is the provider-specific error response.
 type ErrorResponse struct {
 	ErrorVal ErrorResponseError `json:"error"`
 }
@@ -922,10 +946,12 @@ func (er *ErrorResponse) Error() string {
 	return out
 }
 
+// IsAPIError implements base.ErrorResponseI.
 func (er *ErrorResponse) IsAPIError() bool {
 	return true
 }
 
+// ErrorResponseError is the nested error in an error response.
 type ErrorResponseError struct {
 	Code    string `json:"code"`
 	Message string `json:"message"`
@@ -999,7 +1025,7 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 		switch modalities[0] {
 		case genai.ModalityAudio, genai.ModalityImage, genai.ModalityText, genai.ModalityVideo:
 		case genai.ModalityDocument:
-			fallthrough
+			return nil, fmt.Errorf("unexpected option Modalities %s, only audio, image or text are supported", modalities)
 		default:
 			return nil, fmt.Errorf("unexpected option Modalities %s, only audio, image or text are supported", modalities)
 		}
@@ -1065,7 +1091,8 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 				}
 				c.impl.OutputModalities = genai.Modalities{mod}
 			case genai.ModalityDocument:
-				fallthrough
+				// TODO: Soon, because it's cool.
+				return nil, fmt.Errorf("automatic model selection is not implemented yet for modality %s (send PR to add support)", modalities)
 			default:
 				// TODO: Soon, because it's cool.
 				return nil, fmt.Errorf("automatic model selection is not implemented yet for modality %s (send PR to add support)", modalities)
@@ -1109,11 +1136,12 @@ func (c *Client) selectBestAudioModel(ctx context.Context, preference string) (s
 		isGPT4OMini := isGPT4O && strings.Contains(m.ID, "mini")
 		isMini := strings.Contains(m.ID, "mini")
 		matches := false
-		if cheap {
+		switch {
+		case cheap:
 			matches = isMini
-		} else if good {
+		case good:
 			matches = !isMini && !isGPT4O
-		} else if sota {
+		case sota:
 			// SOTA: prefer gpt-4o-audio models (but not mini)
 			matches = isGPT4O && !isGPT4OMini
 		}
@@ -1159,7 +1187,8 @@ func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts ...gena
 	b := BatchRequest{CompletionWindow: "24h", Endpoint: "/v1/chat/completions", InputFileID: fileID}
 	resp, err := c.GenAsyncRaw(ctx, b)
 	if len(resp.Errors.Data) != 0 {
-		errs := []error{err}
+		errs := make([]error, 1, 1+len(resp.Errors.Data))
+		errs[0] = err
 		for _, d := range resp.Errors.Data {
 			errs = append(errs, fmt.Errorf("batch error on line %d: %s (%s)", d.Line, d.Message, d.Code))
 		}
@@ -1168,6 +1197,7 @@ func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts ...gena
 	return genai.Job(resp.ID), err
 }
 
+// GenAsyncRaw runs an asynchronous generation request.
 func (c *Client) GenAsyncRaw(ctx context.Context, b BatchRequest) (Batch, error) {
 	resp := Batch{}
 	err := c.impl.DoRequest(ctx, "POST", "https://api.openai.com/v1/batches", &b, &resp)
@@ -1181,7 +1211,8 @@ func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, er
 	res := genai.Result{}
 	resp, err := c.PokeResultRaw(ctx, id)
 	if len(resp.Errors.Data) != 0 {
-		errs := []error{err}
+		errs := make([]error, 1, 1+len(resp.Errors.Data))
+		errs[0] = err
 		for _, d := range resp.Errors.Data {
 			errs = append(errs, fmt.Errorf("batch error on line %d: %s (%s)", d.Line, d.Message, d.Code))
 		}
@@ -1196,14 +1227,14 @@ func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, er
 			err = err2
 		}
 		if f != nil {
-			defer f.Close()
+			defer func() { _ = f.Close() }()
 			out := BatchRequestOutput{}
 			d := json.NewDecoder(f)
 			d.UseNumber()
 			if !c.impl.Lenient {
 				d.DisallowUnknownFields()
 			}
-			if err = d.Decode(&out); err != nil {
+			if err := d.Decode(&out); err != nil {
 				return res, err
 			}
 			res, err2 = out.Response.Body.ToResult()
@@ -1219,6 +1250,7 @@ func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, er
 	return res, err
 }
 
+// PokeResultRaw polls an asynchronous generation request.
 func (c *Client) PokeResultRaw(ctx context.Context, id genai.Job) (Batch, error) {
 	out := Batch{}
 	u := "https://api.openai.com/v1/batches/" + url.PathEscape(string(id))
@@ -1233,6 +1265,7 @@ func (c *Client) Cancel(ctx context.Context, id genai.Job) error {
 	return err
 }
 
+// CancelRaw cancels a batch request.
 func (c *Client) CancelRaw(ctx context.Context, id genai.Job) (Batch, error) {
 	u := "https://api.openai.com/v1/batches/" + url.PathEscape(string(id)) + "/cancel"
 	resp := Batch{}
@@ -1241,6 +1274,7 @@ func (c *Client) CancelRaw(ctx context.Context, id genai.Job) (Batch, error) {
 	return resp, err
 }
 
+// CacheAddRequest adds a cache entry.
 func (c *Client) CacheAddRequest(ctx context.Context, msgs genai.Messages, name, displayName string, ttl time.Duration, opts ...genai.GenOption) (string, error) {
 	if err := c.impl.Validate(); err != nil {
 		return "", err
@@ -1257,6 +1291,7 @@ func (c *Client) CacheAddRequest(ctx context.Context, msgs genai.Messages, name,
 	return c.FileAdd(ctx, displayName, bytes.NewReader(raw))
 }
 
+// CacheList lists cache entries.
 func (c *Client) CacheList(ctx context.Context) ([]genai.CacheEntry, error) {
 	l, err := c.FilesListRaw(ctx)
 	if err != nil {
@@ -1269,6 +1304,7 @@ func (c *Client) CacheList(ctx context.Context) ([]genai.CacheEntry, error) {
 	return out, nil
 }
 
+// CacheDelete deletes a cache entry.
 func (c *Client) CacheDelete(ctx context.Context, name string) error {
 	return c.FileDel(ctx, name)
 }
@@ -1290,17 +1326,20 @@ func (c *Client) FileAdd(ctx context.Context, filename string, r io.ReadSeeker) 
 	if _, err = io.Copy(part, r); err != nil {
 		return "", err
 	}
-	if err = w.Close(); err != nil {
+	if err := w.Close(); err != nil {
 		return "", err
 	}
 	u := "https://api.openai.com/v1/files"
-	req, err := http.NewRequestWithContext(ctx, "POST", u, &buf)
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, u, &buf)
 	if err != nil {
 		return "", err
 	}
 	req.Header.Set("Content-Type", w.FormDataContentType())
 	resp, err := c.impl.Client.Do(req)
 	if err != nil {
+		if resp != nil {
+			_ = resp.Body.Close()
+		}
 		return "", err
 	}
 	f := File{}
@@ -1308,10 +1347,11 @@ func (c *Client) FileAdd(ctx context.Context, filename string, r io.ReadSeeker) 
 	return f.ID, err
 }
 
+// FileGet retrieves a file.
 func (c *Client) FileGet(ctx context.Context, id string) (io.ReadCloser, error) {
 	// https://platform.openai.com/docs/api-reference/files/retrieve-contents
-	u := "https://api.openai.com/v1/files/" + url.PathEscape(string(id)) + "/content"
-	req, err := http.NewRequestWithContext(ctx, "GET", u, nil)
+	u := "https://api.openai.com/v1/files/" + url.PathEscape(id) + "/content"
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u, http.NoBody)
 	if err != nil {
 		return nil, err
 	}
@@ -1319,19 +1359,21 @@ func (c *Client) FileGet(ctx context.Context, id string) (io.ReadCloser, error) 
 	if err != nil {
 		return nil, err
 	}
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
 		return nil, c.impl.DecodeError(u, resp)
 	}
 	return resp.Body, nil
 }
 
+// FileDel deletes a file.
 func (c *Client) FileDel(ctx context.Context, id string) error {
 	// https://platform.openai.com/docs/api-reference/files/delete
-	url := "https://api.openai.com/v1/files/" + url.PathEscape(string(id))
+	u := "https://api.openai.com/v1/files/" + url.PathEscape(id)
 	out := FileDeleteResponse{}
-	return c.impl.DoRequest(ctx, "DELETE", url, nil, &out)
+	return c.impl.DoRequest(ctx, "DELETE", u, nil, &out)
 }
 
+// FilesListRaw lists files.
 func (c *Client) FilesListRaw(ctx context.Context) ([]File, error) {
 	// TODO: Pagination. It defaults at 10000 items per page.
 	resp := FileListResponse{}
@@ -1427,6 +1469,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 		}
 }
 
+// Capabilities implements genai.Provider.
 func (c *Client) Capabilities() genai.ProviderCapabilities {
 	return genai.ProviderCapabilities{
 		GenAsync: true,

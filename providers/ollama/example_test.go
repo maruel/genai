@@ -27,7 +27,7 @@ func ExampleClient_GenSync() {
 		log.Print(err)
 		return
 	}
-	defer srv.Close()
+	defer func() { _ = srv.Close() }()
 	// Connect the provider.
 	c, err := ollama.New(ctx, genai.ProviderOptionRemote(srv.URL()), genai.ProviderOptionModel("gemma3:1b"))
 	if err != nil {
@@ -60,7 +60,7 @@ func startServer(ctx context.Context) (*ollamasrv.Server, error) {
 	if err != nil {
 		return nil, err
 	}
-	if err = os.MkdirAll(cache, 0o755); err != nil {
+	if err := os.MkdirAll(cache, 0o755); err != nil {
 		return nil, err
 	}
 	// It's a bit inefficient to download from github every single time.

@@ -5,6 +5,7 @@
 package scoreboard
 
 import (
+	"bytes"
 	"encoding/json"
 	"slices"
 	"strings"
@@ -130,7 +131,7 @@ func TestTriState(t *testing.T) {
 			if err != nil {
 				t.Fatalf("TriState %v: got err=%v", tt.ts, err)
 			}
-			if string(got) != string(tt.want) {
+			if !bytes.Equal(got, tt.want) {
 				t.Fatalf("got %s, want %s", got, tt.want)
 			}
 		}
@@ -984,7 +985,7 @@ func TestReason(t *testing.T) {
 			if err != nil {
 				t.Fatalf("Reason %v: got err=%v", tt.in, err)
 			}
-			if string(got) != string(tt.want) {
+			if !bytes.Equal(got, tt.want) {
 				t.Fatalf("got %s, want %s", got, tt.want)
 			}
 		}

@@ -29,7 +29,7 @@ func main() {
 	// Gemini only allows URL references from files uploaded with its file API. Otherwise we need to send it
 	// inline.
 	resp, err := http.Get("https://github.com/maruel/genai/raw/refs/heads/main/scoreboard/testdata/video.mp4")
-	if err != nil || resp.StatusCode != 200 {
+	if err != nil || resp.StatusCode != http.StatusOK {
 		log.Fatal(err)
 	}
 	b, err := io.ReadAll(resp.Body)

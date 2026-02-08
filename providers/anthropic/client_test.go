@@ -312,7 +312,7 @@ func TestClient(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			defer rc.Close()
+			defer func() { _ = rc.Close() }()
 			got, err := io.ReadAll(rc)
 			if err != nil {
 				t.Fatal(err)
@@ -718,7 +718,7 @@ func getSmitheryServiceToken(apiKey, namespace string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	req, err := http.NewRequest("POST", "https://registry.smithery.ai/tokens", bytes.NewReader(body))
+	req, err := http.NewRequest(http.MethodPost, "https://registry.smithery.ai/tokens", bytes.NewReader(body))
 	if err != nil {
 		return "", err
 	}
@@ -728,7 +728,7 @@ func getSmitheryServiceToken(apiKey, namespace string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusCreated {
 		b, _ := io.ReadAll(resp.Body)
 		return "", fmt.Errorf("smithery token API error (status %d): %s", resp.StatusCode, b)

@@ -220,7 +220,7 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 	// Optimistically assume it works.
 	f.ReportTokenUsage = scoreboard.True
 	f.ReportFinishReason = scoreboard.True
-	if isZeroUsage(resp.Usage) {
+	if isZeroUsage(&resp.Usage) {
 		// If it fails at this one, it's never going to succeed.
 		internal.Logger(ctxCheck).DebugContext(ctxCheck, "no usage")
 		f.ReportTokenUsage = scoreboard.False
@@ -230,14 +230,14 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 		f.ReportFinishReason = scoreboard.False
 	}
 	if strings.Contains(resp.String(), "<think") {
-		return nil, fmt.Errorf("response contains <think: use adapters.ProviderReasoning")
+		return nil, errors.New("response contains <think: use adapters.ProviderReasoning")
 	}
 	if len(resp.Logprobs) != 0 {
-		return nil, fmt.Errorf("received Logprobs when not supported")
+		return nil, errors.New("received Logprobs when not supported")
 	}
 	f.ReportRateLimits = len(resp.Usage.Limits) != 0
 	for _, l := range resp.Usage.Limits {
-		if err = l.Validate(); err != nil {
+		if err := l.Validate(); err != nil {
 			return nil, err
 		}
 	}
@@ -282,9 +282,9 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 		return f, err
 	}
 	// MaxTokens is reported as false if there's no returned output.
-	f.MaxTokens = err == nil && strings.Count(resp.String(), " ")+1 <= 20 && (len(resp.String()) > 0 || len(resp.Reasoning()) > 0)
+	f.MaxTokens = err == nil && strings.Count(resp.String(), " ") < 20 && (resp.String() != "" || resp.Reasoning() != "")
 	if err == nil {
-		if f.MaxTokens && isZeroUsage(resp.Usage) {
+		if f.MaxTokens && isZeroUsage(&resp.Usage) {
 			if f.ReportTokenUsage != scoreboard.False {
 				internal.Logger(ctxCheck).DebugContext(ctxCheck, "no usage")
 				f.ReportTokenUsage = scoreboard.Flaky
@@ -311,8 +311,8 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 	}
 	// Some model (in particular Gemma3 4B in Q4_K_M) will not start with "Canada is". They will still stop but
 	// only after a while.
-	f.StopSequence = err == nil && strings.Count(resp.String(), " ")+1 <= 30 && !strings.Contains(resp.String(), " is ")
-	if f.StopSequence && isZeroUsage(resp.Usage) {
+	f.StopSequence = err == nil && strings.Count(resp.String(), " ") < 30 && !strings.Contains(resp.String(), " is ")
+	if f.StopSequence && isZeroUsage(&resp.Usage) {
 		if f.ReportTokenUsage != scoreboard.False {
 			internal.Logger(ctxCheck).DebugContext(ctxCheck, "no usage")
 			f.ReportTokenUsage = scoreboard.Flaky
@@ -344,7 +344,7 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 		// We could check for "is_fruit". In practice the fact that it's JSON is good enough to have the flag set.
 		f.JSON = resp.Decode(&data) == nil
 		if f.JSON {
-			if isZeroUsage(resp.Usage) {
+			if isZeroUsage(&resp.Usage) {
 				if f.ReportTokenUsage != scoreboard.False {
 					internal.Logger(ctxCheck).DebugContext(ctxCheck, "no usage")
 					f.ReportTokenUsage = scoreboard.Flaky
@@ -373,7 +373,7 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 		data := schema{}
 		f.JSONSchema = resp.Decode(&data) == nil && data.IsFruit
 		if f.JSONSchema {
-			if isZeroUsage(resp.Usage) {
+			if isZeroUsage(&resp.Usage) {
 				if f.ReportTokenUsage != scoreboard.False {
 					internal.Logger(ctxCheck).DebugContext(ctxCheck, "no usage")
 					f.ReportTokenUsage = scoreboard.Flaky
@@ -388,10 +388,10 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 		}
 	}
 
-	if err = exerciseGenTools(ctx, cs, f, prefix+"Tools-"); err != nil {
+	if err := exerciseGenTools(ctx, cs, f, prefix+"Tools-"); err != nil {
 		return f, err
 	}
-	if err = exerciseWebSearch(ctx, cs, f, prefix+"Tools-"); err != nil {
+	if err := exerciseWebSearch(ctx, cs, f, prefix+"Tools-"); err != nil {
 		return f, err
 	}
 
@@ -423,7 +423,7 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 	}
 	if err == nil {
 		f.Citations = slices.ContainsFunc(resp.Replies, func(r genai.Reply) bool { return !r.Citation.IsZero() })
-		if isZeroUsage(resp.Usage) {
+		if isZeroUsage(&resp.Usage) {
 			if f.ReportTokenUsage != scoreboard.False {
 				internal.Logger(ctxCheck).DebugContext(ctxCheck, "no usage")
 				f.ReportTokenUsage = scoreboard.Flaky
@@ -435,7 +435,8 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 				f.ReportFinishReason = scoreboard.Flaky
 			}
 		}
-		for _, r := range resp.Replies {
+		for i := range resp.Replies {
+			r := &resp.Replies[i]
 			if r.Citation.IsZero() {
 				continue
 			}
@@ -475,7 +476,7 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 		}
 	}
 	if err == nil {
-		if isZeroUsage(resp.Usage) {
+		if isZeroUsage(&resp.Usage) {
 			if f.ReportTokenUsage != scoreboard.False {
 				internal.Logger(ctxCheck).DebugContext(ctxCheck, "no usage")
 				f.ReportTokenUsage = scoreboard.Flaky
@@ -494,10 +495,10 @@ func exerciseGenTextOnly(ctx context.Context, cs *callState, prefix string) (*sc
 	return f, nil
 }
 
-func exerciseGenTextMultiModal(ctx context.Context, cs *callState, prefix string) (map[genai.Modality]scoreboard.ModalCapability, map[genai.Modality]scoreboard.ModalCapability, *scoreboard.Functionality, error) {
-	in := map[genai.Modality]scoreboard.ModalCapability{}
-	out := map[genai.Modality]scoreboard.ModalCapability{}
-	f := &scoreboard.Functionality{}
+func exerciseGenTextMultiModal(ctx context.Context, cs *callState, prefix string) (in, out map[genai.Modality]scoreboard.ModalCapability, f *scoreboard.Functionality, retErr error) {
+	in = map[genai.Modality]scoreboard.ModalCapability{}
+	out = map[genai.Modality]scoreboard.ModalCapability{}
+	f = &scoreboard.Functionality{}
 	m, err := exerciseGenInputDocument(ctx, cs, f, prefix+"Document-")
 	if m != nil {
 		in[genai.ModalityDocument] = *m
@@ -764,7 +765,7 @@ func exerciseModal(ctx context.Context, cs *callState, f *scoreboard.Functionali
 		if want != nil && !want.MatchString(got) {
 			return res.Message, fmt.Errorf("got %q, want %q", got, want)
 		}
-		if isZeroUsage(res.Usage) {
+		if isZeroUsage(&res.Usage) {
 			if f.ReportTokenUsage != scoreboard.False {
 				internal.Logger(ctx).DebugContext(ctx, name, "issue", "token usage")
 				f.ReportTokenUsage = scoreboard.Flaky
@@ -778,7 +779,7 @@ func exerciseModal(ctx context.Context, cs *callState, f *scoreboard.Functionali
 		}
 		f.ReportRateLimits = len(res.Usage.Limits) != 0
 		for _, l := range res.Usage.Limits {
-			if err = l.Validate(); err != nil {
+			if err := l.Validate(); err != nil {
 				return res.Message, err
 			}
 		}
@@ -797,7 +798,6 @@ type callState struct {
 }
 
 func (cs *callState) callGen(ctx context.Context, name string, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
-	// internal.Logger(ctx).DebugContext(ctx, name, "msgs", msgs)
 	c := cs.pf(name)
 	var err error
 	res := genai.Result{}
@@ -809,7 +809,8 @@ func (cs *callState) callGen(ctx context.Context, name string, msgs genai.Messag
 	} else {
 		res, err = c.GenSync(ctx, msgs, opts...)
 	}
-	for _, rep := range res.Replies {
+	for i := range res.Replies {
+		rep := &res.Replies[i]
 		if rep.Reasoning != "" {
 			cs.isReasoning = true
 		}
@@ -920,7 +921,7 @@ func exerciseGenImage(ctx context.Context, pf ProviderFactory, name string, out 
 			if err2 != nil {
 				return fmt.Errorf("failed to download generated result: %w", err2)
 			}
-			defer resp2.Body.Close()
+			defer func() { _ = resp2.Body.Close() }()
 			if resp2.StatusCode != http.StatusOK {
 				return fmt.Errorf("failed to download generated result: %s", resp2.Status)
 			}
@@ -1010,7 +1011,7 @@ func exerciseGenAudio(ctx context.Context, pf ProviderFactory, name string, out 
 			if err2 != nil {
 				return fmt.Errorf("failed to download generated result: %w", err2)
 			}
-			defer resp2.Body.Close()
+			defer func() { _ = resp2.Body.Close() }()
 			if resp2.StatusCode != http.StatusOK {
 				return fmt.Errorf("failed to download generated result: %s", resp2.Status)
 			}
@@ -1107,12 +1108,17 @@ func mergeModalities(m1, m2 map[genai.Modality]scoreboard.ModalCapability) map[g
 }
 
 func mergeSortedUnique(s1, s2 []string) []string {
-	combined := append(s1, s2...)
+	if len(s1) == 0 && len(s2) == 0 {
+		return nil
+	}
+	combined := make([]string, 0, len(s1)+len(s2))
+	combined = append(combined, s1...)
+	combined = append(combined, s2...)
 	slices.Sort(combined)
 	return slices.Compact(combined)
 }
 
-func isZeroUsage(u genai.Usage) bool {
+func isZeroUsage(u *genai.Usage) bool {
 	// Tolerate cases like OpenAI Responses API with gpt-5 in thinking mode with MaxTokens will only return
 	// TotalTokens being set. Good enough.
 	return u.InputTokens == 0 &&

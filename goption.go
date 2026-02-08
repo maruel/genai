@@ -70,6 +70,7 @@ func (m Modalities) String() string {
 	}
 }
 
+// Validate implements Validatable.
 func (m Modalities) Validate() error {
 	for _, mod := range m {
 		if err := mod.Validate(); err != nil {
@@ -174,6 +175,7 @@ func (o *GenOptionText) Validate() error {
 
 // Tools
 
+// GenOptionTools specifies tool calling options.
 type GenOptionTools struct {
 	// Tools is the list of tools that the LLM can request to call.
 	Tools []ToolDef
@@ -202,7 +204,7 @@ func (o *GenOptionTools) Validate() error {
 		names[t.Name] = i
 	}
 	if len(o.Tools) == 0 && !o.WebSearch && o.Force == ToolCallRequired {
-		return fmt.Errorf("field Force is ToolCallRequired: Tools are required")
+		return errors.New("field Force is ToolCallRequired: Tools are required")
 	}
 	return nil
 }
@@ -300,10 +302,12 @@ const (
 
 // Other modalities
 
+// GenOptionAudio specifies audio generation options.
 type GenOptionAudio struct {
 	_ struct{}
 }
 
+// Validate implements Validatable.
 func (o *GenOptionAudio) Validate() error {
 	return nil
 }
@@ -328,6 +332,7 @@ func (o *GenOptionImage) Validate() error {
 	return nil
 }
 
+// GenOptionVideo specifies video generation options.
 type GenOptionVideo struct {
 	// Duration of the video to generate, if supported.
 	//
@@ -337,6 +342,7 @@ type GenOptionVideo struct {
 	_ struct{}
 }
 
+// Validate implements Validatable.
 func (o *GenOptionVideo) Validate() error {
 	return nil
 }

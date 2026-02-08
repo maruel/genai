@@ -81,7 +81,7 @@ func New(ctx context.Context, exe string, logOutput io.Writer, hostPort string, 
 			}
 		}
 		port = l.Addr().(*net.TCPAddr).Port
-		if err = l.Close(); err != nil {
+		if err := l.Close(); err != nil {
 			return nil, err
 		}
 	}
@@ -156,6 +156,7 @@ func New(ctx context.Context, exe string, logOutput io.Writer, hostPort string, 
 	return &Server{url: u, done: done, cmd: cmd}, nil
 }
 
+// Close stops the Ollama server and waits for it to exit.
 func (s *Server) Close() error {
 	_ = s.cmd.Cancel()
 	err := <-s.done
@@ -177,7 +178,7 @@ func (s *Server) Done() <-chan error {
 // directory and returns the file path to ollama executable.
 //
 // When unspecified, the latest release is downloaded.
-func DownloadRelease(ctx context.Context, cache string, version string) (string, error) {
+func DownloadRelease(ctx context.Context, cache, version string) (string, error) {
 	execSuffix := ""
 	if runtime.GOOS == "windows" {
 		execSuffix = ".exe"
@@ -208,7 +209,7 @@ func DownloadRelease(ctx context.Context, cache string, version string) (string,
 		}
 	}
 
-	url := "https://github.com/ollama/ollama/releases/download/" + url.PathEscape(version) + "/"
+	dlURL := "https://github.com/ollama/ollama/releases/download/" + url.PathEscape(version) + "/"
 	archiveName := ""
 	wantedFiles := []string{filepath.Base(ollamaexe)}
 	switch runtime.GOOS {
@@ -241,12 +242,12 @@ func DownloadRelease(ctx context.Context, cache string, version string) (string,
 	default:
 		return "", fmt.Errorf("unsupported OS %q", runtime.GOOS)
 	}
-	url += archiveName
+	dlURL += archiveName
 	// Tag the archive with the version name otherwise it's annoying.
 	ext := filepath.Ext(archiveName)
 	archiveName = archiveName[:len(archiveName)-len(ext)] + "-" + version + ext
 	archivePath := filepath.Join(cache, archiveName)
-	if err = downloadFile(ctx, url, archivePath); err != nil {
+	if err = downloadFile(ctx, dlURL, archivePath); err != nil {
 		return "", fmt.Errorf("failed to download %s from github: %w", archiveName, err)
 	}
 
@@ -266,29 +267,30 @@ func extractZip(archivePath, dstDir string, wantedFiles []string) error {
 	if err != nil {
 		return err
 	}
-	defer z.Close()
+	defer func() { _ = z.Close() }()
 	for _, f := range z.File {
 		// Files are under build/bin/; ignore path.
 		n := filepath.Base(f.Name)
 		for _, desired := range wantedFiles {
-			if ok, _ := filepath.Match(desired, n); ok {
-				var src io.ReadCloser
-				if src, err = f.Open(); err != nil {
-					return err
-				}
-				var dst io.WriteCloser
-				if dst, err = os.OpenFile(filepath.Join(dstDir, n), os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0o755); err == nil {
-					_, err = io.CopyN(dst, src, int64(f.UncompressedSize64))
-				}
-				if err2 := src.Close(); err == nil {
-					err = err2
-				}
-				if err2 := dst.Close(); err == nil {
-					err = err2
-				}
-				if err != nil {
-					return fmt.Errorf("failed to write %q: %w", n, err)
-				}
+			if ok, _ := filepath.Match(desired, n); !ok {
+				continue
+			}
+			var src io.ReadCloser
+			if src, err = f.Open(); err != nil {
+				return err
+			}
+			var dst io.WriteCloser
+			if dst, err = os.OpenFile(filepath.Join(dstDir, n), os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0o755); err == nil {
+				_, err = io.CopyN(dst, src, int64(f.UncompressedSize64))
+			}
+			if err2 := src.Close(); err == nil {
+				err = err2
+			}
+			if err2 := dst.Close(); err == nil {
+				err = err2
+			}
+			if err != nil {
+				return fmt.Errorf("failed to write %q: %w", n, err)
 			}
 		}
 	}
@@ -300,12 +302,12 @@ func extractTarGz(archivePath, dstDir string, wantedFiles []string) error {
 	if err != nil {
 		return err
 	}
-	defer f.Close()
+	defer func() { _ = f.Close() }()
 	gzipReader, err := gzip.NewReader(f)
 	if err != nil {
 		return err
 	}
-	defer gzipReader.Close()
+	defer func() { _ = gzipReader.Close() }()
 	tarReader := tar.NewReader(gzipReader)
 	for {
 		header, err := tarReader.Next()
@@ -321,26 +323,27 @@ func extractTarGz(archivePath, dstDir string, wantedFiles []string) error {
 		// Ignore path.
 		n := filepath.Base(header.Name)
 		for _, desired := range wantedFiles {
-			if ok, _ := filepath.Match(desired, n); ok {
-				outFile, err := os.OpenFile(filepath.Join(dstDir, n), os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0o755)
-				if err != nil {
-					return err
-				}
-				_, err = io.Copy(outFile, tarReader)
-				if err2 := outFile.Close(); err == nil {
-					err = err2
-				}
-				if err != nil {
-					return fmt.Errorf("failed to write %q: %w", n, err)
-				}
+			if ok, _ := filepath.Match(desired, n); !ok {
+				continue
+			}
+			outFile, err := os.OpenFile(filepath.Join(dstDir, n), os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0o755)
+			if err != nil {
+				return err
+			}
+			_, err = io.Copy(outFile, tarReader)
+			if err2 := outFile.Close(); err == nil {
+				err = err2
+			}
+			if err != nil {
+				return fmt.Errorf("failed to write %q: %w", n, err)
 			}
 		}
 	}
 	return nil
 }
 
-func downloadFile(ctx context.Context, url, dst string) error {
-	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+func downloadFile(ctx context.Context, rawURL, dst string) error {
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, rawURL, http.NoBody)
 	if err != nil {
 		return err
 	}
@@ -351,7 +354,7 @@ func downloadFile(ctx context.Context, url, dst string) error {
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 	// Only then create the file.
 	f, err := os.OpenFile(dst, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0o666)
 	if err != nil {
@@ -365,7 +368,7 @@ func downloadFile(ctx context.Context, url, dst string) error {
 }
 
 func getLatestRelease(ctx context.Context) (string, error) {
-	req, err := http.NewRequestWithContext(ctx, "GET", "https://api.github.com/repos/ollama/ollama/releases/latest", nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, "https://api.github.com/repos/ollama/ollama/releases/latest", http.NoBody)
 	if err != nil {
 		return "", err
 	}

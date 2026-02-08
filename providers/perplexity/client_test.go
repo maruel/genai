@@ -66,7 +66,11 @@ func TestClient(t *testing.T) {
 	t.Run("Scoreboard", func(t *testing.T) {
 		// Perplexity doesn't support listing models. See https://docs.perplexity.ai/api-reference
 		sb := getClient(t, "").Scoreboard()
-		var models []scoreboard.Model
+		n := 0
+		for _, sc := range sb.Scenarios {
+			n += len(sc.Models)
+		}
+		models := make([]scoreboard.Model, 0, n)
 		for _, sc := range sb.Scenarios {
 			for _, model := range sc.Models {
 				models = append(models, scoreboard.Model{Model: model, Reason: sc.Reason})

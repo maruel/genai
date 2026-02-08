@@ -169,16 +169,18 @@ func (t *tableDataRow) initFromScenario(s *scoreboard.Scenario, f *scoreboard.Fu
 		}
 	}
 	t.Outputs = sortString(t.Outputs)
-	if f.JSON && f.JSONSchema {
+	switch {
+	case f.JSON && f.JSONSchema:
 		t.JSON = "✅"
-	} else if f.JSON && !strings.Contains(t.JSON, "✅") {
+	case f.JSON && !strings.Contains(t.JSON, "✅"):
 		t.JSON = "☁️"
-	} else if f.JSONSchema && !strings.Contains(t.JSON, "✅") {
+	case f.JSONSchema && !strings.Contains(t.JSON, "✅"):
 		t.JSON = "📐"
 	}
-	if f.Tools == scoreboard.True && !strings.Contains(t.Tools, "✅") {
+	switch {
+	case f.Tools == scoreboard.True && !strings.Contains(t.Tools, "✅"):
 		t.Tools = "✅"
-	} else if s.GenSync.Tools == scoreboard.Flaky && !strings.Contains(t.Tools, "✅") {
+	case s.GenSync.Tools == scoreboard.Flaky && !strings.Contains(t.Tools, "✅"):
 		t.Tools = "💨"
 	}
 	if f.ToolCallRequired && !strings.Contains(t.Tools, "🪨") {
@@ -187,6 +189,7 @@ func (t *tableDataRow) initFromScenario(s *scoreboard.Scenario, f *scoreboard.Fu
 	if f.WebSearch && !strings.Contains(t.Tools, "🕸️") {
 		t.Tools += "🕸️"
 	}
+	//nolint:gocritic // Kept for reference.
 	/*
 		if f.ToolsBiased != scoreboard.False && !strings.Contains(t.Tools, "🧐") {
 			t.Tools += "🧐"
@@ -299,8 +302,8 @@ func printSummaryTable(ctx context.Context, w io.Writer, all map[string]provider
 
 // printProviderTable prints a table of all the models for a specific provider.
 func printProviderTable(p genai.Provider, w io.Writer) error {
-	var rows []tableModelRow
 	sb := p.Scoreboard()
+	rows := make([]tableModelRow, 0, len(sb.Scenarios))
 	for _, sc := range sb.Scenarios {
 		var tmpRows []tableModelRow
 		for _, f := range []*scoreboard.Functionality{sc.GenSync, sc.GenStream} {
@@ -346,7 +349,7 @@ func printProviderTable(p genai.Provider, w io.Writer) error {
 	if len(sb.Warnings) > 0 {
 		_, _ = io.WriteString(w, "\n## Warnings\n\n")
 		for _, wrn := range sb.Warnings {
-			fmt.Fprintf(w, "- %s\n", wrn)
+			_, _ = fmt.Fprintf(w, "- %s\n", wrn)
 		}
 	}
 	return nil
@@ -431,23 +434,23 @@ func printMarkdownTable[T any](w io.Writer, rows []T) {
 			lengths[i] = len(t)
 		}
 	}
-	fmt.Fprint(w, "|")
+	_, _ = fmt.Fprint(w, "|")
 	for i, t := range titles {
-		fmt.Fprintf(w, " %s |", extendString(t, lengths[i]))
+		_, _ = fmt.Fprintf(w, " %s |", extendString(t, lengths[i]))
 	}
-	fmt.Fprint(w, "\n|")
+	_, _ = fmt.Fprint(w, "\n|")
 	for _, l := range lengths {
-		fmt.Fprintf(w, " %s |", strings.Repeat("-", l))
+		_, _ = fmt.Fprintf(w, " %s |", strings.Repeat("-", l))
 	}
-	fmt.Fprintln(w)
+	_, _ = fmt.Fprintln(w)
 	for i := range rows {
-		fmt.Fprint(w, "|")
+		_, _ = fmt.Fprint(w, "|")
 		j := 0
 		visitFields(reflect.ValueOf(&rows[i]), func(v reflect.Value) {
-			fmt.Fprintf(w, " %s |", extendString(v.Elem().String(), lengths[j]))
+			_, _ = fmt.Fprintf(w, " %s |", extendString(v.Elem().String(), lengths[j]))
 			j++
 		})
-		fmt.Fprintf(w, "\n")
+		_, _ = fmt.Fprintf(w, "\n")
 	}
 }
 

@@ -80,7 +80,7 @@ func TestClient(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		var models []scoreboard.Model
+		models := make([]scoreboard.Model, 0, len(genaiModels))
 		for _, m := range genaiModels {
 			// TODO: This is weak.
 			id := m.GetID()

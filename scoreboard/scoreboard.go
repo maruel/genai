@@ -52,6 +52,7 @@ const (
 	ModalityVideo Modality = "video"
 )
 
+// Validate returns an error if the Modality is not a known value.
 func (m Modality) Validate() error {
 	switch m {
 	case ModalityAudio, ModalityDocument, ModalityImage, ModalityText, ModalityVideo:
@@ -168,6 +169,7 @@ func (f *Functionality) Less(rhs *Functionality) bool {
 	return false
 }
 
+// Validate returns an error if the Functionality contains invalid values.
 func (f *Functionality) Validate() error {
 	if err := f.ReportTokenUsage.Validate(); err != nil {
 		return fmt.Errorf("invalid ReportTokenUsage: %w", err)
@@ -202,9 +204,13 @@ func (f *Functionality) Validate() error {
 // non-determinism.
 type TriState int8
 
+// TriState values for feature support.
 const (
+	// False means the feature is not supported.
 	False TriState = 0
-	True  TriState = 1
+	// True means the feature is supported.
+	True TriState = 1
+	// Flaky means the feature works intermittently.
 	Flaky TriState = -1
 )
 
@@ -220,10 +226,12 @@ func (t TriState) String() string {
 	return triStateName[triStateIndex[t]:triStateIndex[t+1]]
 }
 
+// GoString implements fmt.GoStringer.
 func (t TriState) GoString() string {
 	return t.String()
 }
 
+// Validate returns an error if the TriState is not a known value.
 func (t TriState) Validate() error {
 	switch t {
 	case False, True, Flaky:
@@ -233,6 +241,7 @@ func (t TriState) Validate() error {
 	}
 }
 
+// MarshalJSON implements json.Marshaler.
 func (t TriState) MarshalJSON() ([]byte, error) {
 	switch t {
 	case False:
@@ -247,6 +256,7 @@ func (t TriState) MarshalJSON() ([]byte, error) {
 	}
 }
 
+// UnmarshalJSON implements json.Unmarshaler.
 func (t *TriState) UnmarshalJSON(b []byte) error {
 	s := ""
 	if err := json.Unmarshal(b, &s); err != nil {
@@ -305,6 +315,7 @@ func (s *Scenario) Untested() bool {
 	return s.GenSync == nil && s.GenStream == nil && len(s.In) == 0 && len(s.Out) == 0
 }
 
+// Validate returns an error if the Scenario is not correctly configured.
 func (s *Scenario) Validate() error {
 	if len(s.Models) == 0 {
 		return errors.New("scenario must have at least one model")
@@ -364,6 +375,7 @@ const (
 	ReasonAuto Reason = -1
 )
 
+// Validate returns an error if the Reason is not a known value.
 func (t Reason) Validate() error {
 	switch t {
 	case ReasonNone, ReasonInline, ReasonAuto:
@@ -373,6 +385,7 @@ func (t Reason) Validate() error {
 	}
 }
 
+// MarshalJSON implements json.Marshaler.
 func (t Reason) MarshalJSON() ([]byte, error) {
 	switch t {
 	case ReasonNone:
@@ -387,6 +400,7 @@ func (t Reason) MarshalJSON() ([]byte, error) {
 	}
 }
 
+// UnmarshalJSON implements json.Unmarshaler.
 func (t *Reason) UnmarshalJSON(b []byte) error {
 	s := ""
 	if err := json.Unmarshal(b, &s); err != nil {
@@ -425,6 +439,7 @@ type Score struct {
 	_ struct{}
 }
 
+// Validate returns an error if the Score is not correctly configured.
 func (s *Score) Validate() error {
 	// Check for duplicate model/reason pairs
 	seen := make(map[Model]struct{})
@@ -594,22 +609,24 @@ func (s *Score) SortScenarios() {
 // Within the same preference, untested scenarios are sorted last.
 // Within the same priority and tested status, reasoning scenarios come before non-reasoning.
 // Within the same priority, tested status, and reasoning, scenarios are sorted alphabetically by first model name.
-func CompareScenarios(a, b Scenario) int {
+func CompareScenarios(a, b Scenario) int { //nolint:gocritic // hugeParam: required by sort.Func signature.
 	// Sort by preference flags first: SOTA (0) < Good (1) < Cheap (2) < others (999)
 	aPreference := 999
 	bPreference := 999
-	if a.SOTA {
+	switch {
+	case a.SOTA:
 		aPreference = 0
-	} else if a.Good {
+	case a.Good:
 		aPreference = 1
-	} else if a.Cheap {
+	case a.Cheap:
 		aPreference = 2
 	}
-	if b.SOTA {
+	switch {
+	case b.SOTA:
 		bPreference = 0
-	} else if b.Good {
+	case b.Good:
 		bPreference = 1
-	} else if b.Cheap {
+	case b.Cheap:
 		bPreference = 2
 	}
 

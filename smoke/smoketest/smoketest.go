@@ -151,7 +151,7 @@ func Run(t *testing.T, pf ProviderFactory, models []scoreboard.Model, rec *myrec
 					return r
 				}
 				return pf(t, m, fn)
-			}, want)
+			}, &want)
 			usage.Add(u)
 			if got != nil {
 				updatedScenarios = append(updatedScenarios, *got)
@@ -216,7 +216,7 @@ type getClientOneModel func(t testing.TB, scenarioName string) genai.Provider
 
 // runOneModel runs the scoreboard on one model.
 // Returns the usage and the generated scenario (or nil if not updated).
-func runOneModel(t testing.TB, gc getClientOneModel, want scoreboard.Scenario) (genai.Usage, *scoreboard.Scenario) {
+func runOneModel(t testing.TB, gc getClientOneModel, want *scoreboard.Scenario) (genai.Usage, *scoreboard.Scenario) {
 	// Calculate the scenario.
 	providerFactory := func(name string) genai.Provider {
 		if name == "" {
@@ -243,7 +243,7 @@ func runOneModel(t testing.TB, gc getClientOneModel, want scoreboard.Scenario) (
 	}
 	// Check if valid.
 	// optTriState,
-	if diff := cmp.Diff(want, got, optScenario); diff != "" {
+	if diff := cmp.Diff(*want, got, optScenario); diff != "" {
 		t.Errorf("mismatch (-want +got):\n%s", diff)
 	}
 	// Preserve Comments from the original scenario
@@ -311,7 +311,7 @@ func deleteOrphanedRecordings(t testing.TB, dir string, scoreboardModels map[sco
 // It merges tested scenarios with the existing scoreboard to preserve metadata,
 // removes stale models, and sorts scenarios so SOTA/Good/Cheap appear first.
 // Returns the old and new scoreboard JSON bytes.
-func generateUpdatedScoreboard(t testing.TB, scoreboardPath string, scenarios []scoreboard.Scenario, staleModels []scoreboard.Model) ([]byte, []byte) {
+func generateUpdatedScoreboard(t testing.TB, scoreboardPath string, scenarios []scoreboard.Scenario, staleModels []scoreboard.Model) (rawOld, rawNew []byte) {
 	rawOld, err := os.ReadFile(scoreboardPath)
 	if err != nil {
 		t.Fatalf("failed to read scoreboard.json: %v", err)
@@ -499,9 +499,10 @@ func generateUpdatedScoreboard(t testing.TB, scoreboardPath string, scenarios []
 		t.Fatalf("failed to validate scoreboard: %v", err)
 	}
 
-	rawNew, err := json.MarshalIndent(newScore, "", "  ")
-	if err != nil {
-		t.Fatalf("failed to encode scoreboard: %v", err)
+	var err2 error
+	rawNew, err2 = json.MarshalIndent(newScore, "", "  ")
+	if err2 != nil {
+		t.Fatalf("failed to encode scoreboard: %v", err2)
 	}
 	rawNew = append(rawNew, '\n')
 	return rawOld, rawNew

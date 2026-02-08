@@ -19,7 +19,7 @@ import (
 	"github.com/maruel/genai/smoke/smoketest"
 )
 
-func getClientInner(t *testing.T, apiKey string, opts []genai.ProviderOption, fn func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
+func getClientInner(t *testing.T, apiKey string, opts []genai.ProviderOption, fn func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) { //nolint:unparam // Used for testing with different keys.
 	if apiKey == "" && os.Getenv("MISTRAL_API_KEY") == "" {
 		apiKey = "<insert_api_key_here>"
 	}
@@ -73,7 +73,7 @@ func TestClient(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		var models []scoreboard.Model
+		models := make([]scoreboard.Model, 0, len(genaiModels))
 		for _, m := range genaiModels {
 			models = append(models, scoreboard.Model{Model: m.GetID()})
 		}

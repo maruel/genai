@@ -31,8 +31,7 @@ func getClientInner(t *testing.T, fn func(http.RoundTripper) http.RoundTripper, 
 	if !hasAPIKey && os.Getenv("CEREBRAS_API_KEY") == "" {
 		opts = append(opts, genai.ProviderOptionAPIKey("<insert_api_key_here>"))
 	}
-	// ctx, l := internaltest.Log(t)
-	// return &roundtrippers.Log{Transport: r, Logger: l, Level: slog.LevelWarn}
+	// Use internaltest.Log(t) and roundtrippers.Log{} for debug logging.
 	if fn != nil {
 		opts = append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(fn)}, opts...)
 	}
@@ -82,7 +81,7 @@ func TestClient(t *testing.T) {
 			t.Fatal(err)
 		}
 		scenarios := c.Scoreboard().Scenarios
-		var models []scoreboard.Model
+		models := make([]scoreboard.Model, 0, len(genaiModels))
 		for _, m := range genaiModels {
 			id := m.GetID()
 			thinking := false
@@ -105,13 +104,12 @@ func TestClient(t *testing.T) {
 				provOpts = append(provOpts, genai.ProviderOptionAPIKey("<insert_api_key_here>"))
 			}
 			ctx := t.Context()
-			// ctx, l := internaltest.Log(t)
+			// Use internaltest.Log(t) and roundtrippers.Log{} for debug logging.
 			fnWithLog := func(h http.RoundTripper) http.RoundTripper {
 				if fn != nil {
 					h = fn(h)
 				}
 				return h
-				// return &roundtrippers.Log{Transport: h, Logger: l, Level: slog.LevelDebug}
 			}
 			if fn != nil {
 				provOpts = append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(fnWithLog)}, provOpts...)

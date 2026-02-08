@@ -57,6 +57,7 @@ func Scoreboard() scoreboard.Score {
 // deterministic HTTP recordings in tests. Leave unset for production use.
 type ProviderOptionMultipartBoundary string
 
+// Validate implements genai.Validatable.
 func (p ProviderOptionMultipartBoundary) Validate() error {
 	if p == "" {
 		return errors.New("ProviderOptionMultipartBoundary cannot be empty")
@@ -137,6 +138,7 @@ const (
 	EffortMax Effort = "max"
 )
 
+// Validate implements genai.Validatable.
 func (o *GenOptionText) Validate() error {
 	if err := o.Thinking.Validate(); err != nil {
 		return err
@@ -285,11 +287,12 @@ func (c *ChatRequest) initImpl(msgs genai.Messages, model string, cache bool, op
 	return errors.Join(errs...)
 }
 
+// SetStream sets the streaming mode.
 func (c *ChatRequest) SetStream(stream bool) {
 	c.Stream = stream
 }
 
-func (c *ChatRequest) initOptionsText(v *genai.GenOptionText) ([]string, []error) {
+func (c *ChatRequest) initOptionsText(v *genai.GenOptionText) ([]string, []error) { //nolint:unparam // Consistent signature across providers.
 	var unsupported []string
 	var errs []error
 	if v.TopLogprobs > 0 {
@@ -321,7 +324,7 @@ func (c *ChatRequest) initOptionsText(v *genai.GenOptionText) ([]string, []error
 	return unsupported, errs
 }
 
-func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools) ([]string, []error) {
+func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools) ([]string, []error) { //nolint:unparam // Consistent signature across providers.
 	var unsupported []string
 	var errs []error
 	if len(v.Tools) != 0 {
@@ -399,6 +402,7 @@ type MCPServer struct {
 	ToolConfiguration  ToolConfiguration `json:"tool_configuration,omitzero"`
 }
 
+// ToolConfiguration configures tool calling behavior.
 type ToolConfiguration struct {
 	AllowedTools []string `json:"allowed_tools,omitzero"`
 	Enabled      bool     `json:"enabled,omitzero"`
@@ -426,6 +430,7 @@ type Message struct {
 	} `json:"cache_control,omitzero"`
 }
 
+// Validate implements genai.Validatable.
 func (m *Message) Validate() error {
 	return m.validate(true)
 }
@@ -454,6 +459,7 @@ func (m *Message) validate(strict bool) error {
 	return nil
 }
 
+// From converts from the genai equivalent.
 func (m *Message) From(in *genai.Message) error {
 	switch r := in.Role(); r {
 	case "assistant", "user":
@@ -485,6 +491,7 @@ func (m *Message) From(in *genai.Message) error {
 	return nil
 }
 
+// To converts to the genai equivalent.
 func (m *Message) To(out *genai.Message) error {
 	// Make sure the message was initialized properly before converting.
 	// Ask for a "non-strict" check because sometimes the server replies with an invalid message (!)
@@ -668,6 +675,7 @@ func (c *Content) validate(strict bool) error {
 	return nil
 }
 
+// FromRequest converts from a genai request.
 func (c *Content) FromRequest(in *genai.Request) error {
 	if in.Text != "" {
 		c.Type = ContentText
@@ -725,6 +733,7 @@ func (c *Content) FromRequest(in *genai.Request) error {
 	return errors.New("unknown Request type")
 }
 
+// FromReply converts from a genai reply.
 func (c *Content) FromReply(in *genai.Reply) (bool, error) {
 	if in.Text != "" {
 		c.Type = ContentText
@@ -847,6 +856,7 @@ func (c *Content) FromReply(in *genai.Reply) (bool, error) {
 	return false, &internal.BadError{Err: errors.New("unknown Reply type")}
 }
 
+// FromToolCallResult converts from a genai tool call result.
 func (c *Content) FromToolCallResult(in *genai.ToolCallResult) {
 	// TODO: Support text citation.
 	// TODO: Support image.
@@ -856,6 +866,7 @@ func (c *Content) FromToolCallResult(in *genai.ToolCallResult) {
 	c.Content = []Content{{Type: ContentText, Text: in.Result}}
 }
 
+// To converts to the genai equivalent.
 func (c *Content) To() ([]genai.Reply, error) {
 	var out []genai.Reply
 	switch c.Type {
@@ -887,7 +898,8 @@ func (c *Content) To() ([]genai.Reply, error) {
 		out = append(out, genai.Reply{ToolCall: genai.ToolCall{ID: c.ID, Name: c.Name, Arguments: string(raw)}})
 	case ContentWebSearchToolResult:
 		src := make([]genai.CitationSource, len(c.Content))
-		for i, cc := range c.Content {
+		for i := range c.Content {
+			cc := &c.Content[i]
 			if cc.Type != ContentWebSearchResult {
 				return out, &internal.BadError{Err: fmt.Errorf("implement content type %q while processing %q", cc.Type, c.Type)}
 			}
@@ -940,7 +952,7 @@ func (c *Content) To() ([]genai.Reply, error) {
 		}}
 		out = append(out, genai.Reply{Opaque: opaque})
 	case ContentWebSearchResult, ContentImage, ContentDocument, ContentToolResult:
-		fallthrough
+		return out, &internal.BadError{Err: fmt.Errorf("implement content type %q", c.Type)}
 	default:
 		return out, &internal.BadError{Err: fmt.Errorf("implement content type %q", c.Type)}
 	}
@@ -955,6 +967,7 @@ type WebSearch struct {
 // SourceType is described at https://docs.anthropic.com/en/api/messages#body-messages-content-source
 type SourceType string
 
+// Source type values.
 const (
 	SourceBase64  SourceType = "base64"
 	SourceURL     SourceType = "url"
@@ -963,6 +976,7 @@ const (
 	SourceFileID  SourceType = "file"
 )
 
+// Source is a provider-specific content source.
 type Source struct {
 	Type SourceType `json:"type,omitzero"`
 
@@ -986,6 +1000,7 @@ type Source struct {
 	FileID string `json:"file_id,omitzero"` // File ID for the content, used for file uploads.
 }
 
+// IsZero reports whether the value is zero.
 func (s *Source) IsZero() bool {
 	return s.Type == "" && s.MediaType == "" && s.Data == "" && s.URL == "" && len(s.Content) == 0 && s.FileID == ""
 }
@@ -1053,8 +1068,10 @@ func (c Citations) MarshalJSON() ([]byte, error) {
 	return []byte("null"), nil
 }
 
+// ContentType is a provider-specific content type.
 type ContentType string
 
+// Content type values.
 const (
 	ContentText                ContentType = "text"
 	ContentImage               ContentType = "image"
@@ -1070,8 +1087,10 @@ const (
 	ContentWebSearchToolResult ContentType = "web_search_tool_result"
 )
 
+// CitationType is a provider-specific citation type.
 type CitationType string
 
+// Citation type values.
 const (
 	CitationText                    CitationType = "text"
 	CitationCharLocation            CitationType = "char_location"
@@ -1115,6 +1134,7 @@ type Citation struct {
 	Enabled bool `json:"enabled,omitzero"`
 }
 
+// To converts to the genai equivalent.
 func (c *Citation) To(dst *genai.Citation) error {
 	switch c.Type {
 	case CitationText, CitationCharLocation, CitationPageLocation, CitationContentBlockLocation:
@@ -1146,6 +1166,7 @@ func (c *Citation) To(dst *genai.Citation) error {
 	return nil
 }
 
+// Thinking is a provider-specific thinking block.
 type Thinking struct {
 	BudgetTokens int64  `json:"budget_tokens,omitzero"` // >1024 and less than max_tokens; unused for adaptive
 	Type         string `json:"type,omitzero"`          // "enabled", "disabled", "adaptive"
@@ -1165,6 +1186,7 @@ const (
 	ToolChoiceNone ToolChoiceType = "none"
 )
 
+// ToolChoice configures tool selection behavior.
 type ToolChoice struct {
 	Type ToolChoiceType `json:"type,omitzero"`
 
@@ -1214,6 +1236,7 @@ type Tool struct {
 	} `json:"user_location,omitzero"`
 }
 
+// ChatResponse is the provider-specific chat completion response.
 type ChatResponse struct {
 	Message                 // Role is always "assistant"
 	ID           string     `json:"id"`
@@ -1228,6 +1251,7 @@ type ChatResponse struct {
 	} `json:"container"`
 }
 
+// ToResult converts the response to a genai.Result.
 func (c *ChatResponse) ToResult() (genai.Result, error) {
 	out := genai.Result{
 		Usage: genai.Usage{
@@ -1245,6 +1269,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 // StopReason is documented at https://docs.anthropic.com/en/api/messages#response-stop-reason
 type StopReason string
 
+// Stop reason values.
 const (
 	StopEndTurn   StopReason = "end_turn"
 	StopToolUse   StopReason = "tool_use"
@@ -1254,6 +1279,7 @@ const (
 	StopRefusal   StopReason = "refusal"
 )
 
+// ToFinishReason converts to a genai.FinishReason.
 func (s StopReason) ToFinishReason() genai.FinishReason {
 	switch s {
 	case StopEndTurn:
@@ -1357,8 +1383,10 @@ type ChatStreamChunkResponse struct {
 	Usage Usage `json:"usage"`
 }
 
+// ChunkType is the type of a streaming chunk.
 type ChunkType string
 
+// Chunk type values.
 const (
 	ChunkMessageStart      ChunkType = "message_start"
 	ChunkMessageDelta      ChunkType = "message_delta"
@@ -1370,8 +1398,10 @@ const (
 	ChunkError             ChunkType = "error"
 )
 
+// DeltaType is the type of a streaming delta.
 type DeltaType string
 
+// Delta type values.
 const (
 	DeltaText      DeltaType = "text_delta"
 	DeltaInputJSON DeltaType = "input_json_delta"
@@ -1380,6 +1410,7 @@ const (
 	DeltaCitations DeltaType = "citations_delta"
 )
 
+// Usage is the provider-specific token usage.
 type Usage struct {
 	InputTokens              int64 `json:"input_tokens"`
 	OutputTokens             int64 `json:"output_tokens"`
@@ -1410,6 +1441,7 @@ type BatchRequestItem struct {
 	Params   ChatRequest `json:"params"`
 }
 
+// Init initializes the request from the given parameters.
 func (b *BatchRequestItem) Init(msgs genai.Messages, model string, opts ...genai.GenOption) error {
 	// TODO: We need to make this unique, the field is required. The problem is that this breaks HTTP recording.
 	// var bytes [12]byte
@@ -1471,6 +1503,7 @@ type BatchQueryResponse struct {
 	} `json:"result"`
 }
 
+// To converts to the genai equivalent.
 func (b *BatchQueryResponse) To(out *genai.Message) error {
 	// We need to split actual content and tool calls.
 	for i := range b.Result.Message.Content {
@@ -1528,6 +1561,7 @@ type FileDeleteResponse struct {
 
 //
 
+// Model is the provider-specific model metadata.
 type Model struct {
 	CreatedAt   time.Time `json:"created_at"`
 	DisplayName string    `json:"display_name"`
@@ -1535,6 +1569,7 @@ type Model struct {
 	Type        string    `json:"type"`
 }
 
+// GetID implements genai.Model.
 func (m *Model) GetID() string {
 	return m.ID
 }
@@ -1543,11 +1578,12 @@ func (m *Model) String() string {
 	return fmt.Sprintf("%s: %s (%s)", m.ID, m.DisplayName, m.CreatedAt.Format("2006-01-02"))
 }
 
+// Context implements genai.Model.
 func (m *Model) Context() int64 {
 	return 0
 }
 
-// ModelsResponse represents the response structure for Anthropic models listing
+// ModelsResponse represents the response structure for Anthropic models listing.
 type ModelsResponse struct {
 	Data    []Model `json:"data"`
 	FirstID string  `json:"first_id"`
@@ -1555,7 +1591,7 @@ type ModelsResponse struct {
 	LastID  string  `json:"last_id"`
 }
 
-// ToModels converts Anthropic models to genai.Model interfaces
+// ToModels converts Anthropic models to genai.Model interfaces.
 func (r *ModelsResponse) ToModels() []genai.Model {
 	models := make([]genai.Model, len(r.Data))
 	for i := range r.Data {
@@ -1603,6 +1639,7 @@ func (er *ErrorResponse) Error() string {
 	return fmt.Sprintf("%s: %s", er.ErrorVal.Type, er.ErrorVal.Message)
 }
 
+// IsAPIError implements base.ErrorResponseI.
 func (er *ErrorResponse) IsAPIError() bool {
 	return true
 }
@@ -1720,17 +1757,18 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 		if !date.IsZero() && m.CreatedAt.Before(date) {
 			continue
 		}
-		if cheap {
+		switch {
+		case cheap:
 			if strings.Contains(m.ID, "-haiku-") {
 				date = m.CreatedAt
 				selectedModel = m.ID
 			}
-		} else if good {
+		case good:
 			if strings.Contains(m.ID, "-sonnet-") {
 				date = m.CreatedAt
 				selectedModel = m.ID
 			}
-		} else {
+		default:
 			if strings.Contains(m.ID, "-opus-") {
 				date = m.CreatedAt
 				selectedModel = m.ID
@@ -1806,7 +1844,7 @@ func (c *Client) PokeResultRaw(ctx context.Context, id genai.Job) (BatchQueryRes
 	err := c.impl.DoRequest(ctx, "GET", u, nil, &resp)
 	if err != nil {
 		var herr *httpjson.Error
-		if errors.As(err, &herr) && herr.StatusCode == 404 {
+		if errors.As(err, &herr) && herr.StatusCode == http.StatusNotFound {
 			er := ErrorResponse{}
 			if json.Unmarshal(herr.ResponseBody, &er) == nil {
 				if er.ErrorVal.Type == "not_found_error" {
@@ -1818,11 +1856,13 @@ func (c *Client) PokeResultRaw(ctx context.Context, id genai.Job) (BatchQueryRes
 	return resp, err
 }
 
+// Cancel implements genai.ProviderBatch.
 func (c *Client) Cancel(ctx context.Context, id genai.Job) error {
 	_, err := c.CancelRaw(ctx, id)
 	return err
 }
 
+// CancelRaw cancels a batch request.
 func (c *Client) CancelRaw(ctx context.Context, id genai.Job) (BatchResponse, error) {
 	u := "https://api.anthropic.com/v1/messages/batches/" + url.PathEscape(string(id)) + "/cancel"
 	resp := BatchResponse{}
@@ -1889,6 +1929,9 @@ func (c *Client) fileDo(ctx context.Context, method, u string, body io.Reader, c
 func (c *Client) fileDoJSON(ctx context.Context, method, u string, out any) error {
 	resp, err := c.fileDo(ctx, method, u, nil, "")
 	if err != nil {
+		if resp != nil {
+			_ = resp.Body.Close()
+		}
 		return err
 	}
 	return c.impl.DecodeResponse(resp, u, out)
@@ -1910,12 +1953,15 @@ func (c *Client) FileUpload(ctx context.Context, filename string, r io.Reader) (
 	if _, err = io.Copy(part, r); err != nil {
 		return nil, err
 	}
-	if err = w.Close(); err != nil {
+	if err := w.Close(); err != nil {
 		return nil, err
 	}
 	u := "https://api.anthropic.com/v1/files?beta=true"
 	resp, err := c.fileDo(ctx, "POST", u, &buf, w.FormDataContentType())
 	if err != nil {
+		if resp != nil {
+			_ = resp.Body.Close()
+		}
 		return nil, err
 	}
 	f := FileMetadata{}
@@ -1934,7 +1980,7 @@ func (c *Client) FileDownload(ctx context.Context, id string) (io.ReadCloser, er
 	if err != nil {
 		return nil, err
 	}
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
 		return nil, c.impl.DecodeError(u, resp)
 	}
 	return resp.Body, nil
@@ -2131,7 +2177,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 					case ContentRedactedThinking:
 						f.Opaque = map[string]any{"redacted_thinking": pkt.ContentBlock.Signature}
 					case ContentServerToolUse:
-						// Discard the data for now. It may be necessary in the future to keep in in Opaque.
+						// Discard the data for now. It may be necessary in the future to keep in Opaque.
 						pendingServerCall = pkt.ContentBlock.Name
 						switch pendingServerCall {
 						case "web_search":
@@ -2145,7 +2191,8 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 						}
 					case ContentWebSearchToolResult:
 						f.Citation.Sources = make([]genai.CitationSource, len(pkt.ContentBlock.Content))
-						for i, cc := range pkt.ContentBlock.Content {
+						for i := range pkt.ContentBlock.Content {
+							cc := &pkt.ContentBlock.Content[i]
 							if cc.Type != ContentWebSearchResult {
 								finalErr = &internal.BadError{Err: fmt.Errorf("implement content type %q while processing %q", cc.Type, pkt.ContentBlock.Type)}
 								return
@@ -2165,12 +2212,12 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 					case ContentMCPToolResult:
 						f.Opaque = map[string]any{"mcp_tool_result": map[string]any{
 							"tool_use_id": pkt.ContentBlock.ToolUseID,
-							//"is_error":    pkt.ContentBlock.IsError,
+							// "is_error":    pkt.ContentBlock.IsError,
 							"content":     pkt.ContentBlock.Content,
 							"server_name": pkt.ContentBlock.ServerName,
 						}}
 					case ContentWebSearchResult, ContentImage, ContentDocument, ContentToolResult:
-						fallthrough
+						finalErr = &internal.BadError{Err: fmt.Errorf("implement content block %q", pkt.ContentBlock.Type)}
 					default:
 						finalErr = &internal.BadError{Err: fmt.Errorf("implement content block %q", pkt.ContentBlock.Type)}
 						return
@@ -2285,6 +2332,7 @@ func processHeaders(h http.Header) []genai.RateLimit {
 	return limits
 }
 
+// Capabilities implements genai.Provider.
 func (c *Client) Capabilities() genai.ProviderCapabilities {
 	return genai.ProviderCapabilities{
 		GenAsync: true,

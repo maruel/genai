@@ -33,7 +33,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer f.Close()
+	defer func() { _ = f.Close() }()
 	msgs := genai.Messages{
 		genai.Message{Requests: []genai.Request{
 			{Text: "I'd like you to generate a new image and add more animals in it. Tell me which animals you added and why."},
@@ -44,7 +44,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	for _, r := range res.Replies {
+	for i := range res.Replies {
+		r := &res.Replies[i]
 		if r.Doc.IsZero() {
 			fmt.Println(r.Text)
 			continue
@@ -59,7 +60,7 @@ func main() {
 				log.Fatal(req.StatusCode)
 			}
 			src = req.Body
-			defer req.Body.Close()
+			defer func() { _ = req.Body.Close() }()
 		} else {
 			src = r.Doc.Src
 		}

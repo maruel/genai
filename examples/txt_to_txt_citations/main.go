@@ -27,7 +27,7 @@ func main() {
 
 	// Source: On the Origin of Species by Charles Darwin
 	// https://www.vliz.be/docs/Zeecijfers/Origin_of_Species.pdf
-	const context = `
+	const doc = `
 When on board H.M.S. 'Beagle,' as naturalist, I was much struck with certain facts in the
 distribution of the inhabitants of South America, and in the geological relations of the present to the
 past inhabitants of that continent. These facts seemed to me to throw some light on the origin of
@@ -45,7 +45,7 @@ been hasty in coming to a decision.
 			{
 				Doc: genai.Doc{
 					Filename: "On-the-Origin-of-Species-by-Charles-Darwin.txt",
-					Src:      strings.NewReader(context),
+					Src:      strings.NewReader(doc),
 				},
 			},
 			{Text: "When did Darwin arrive home?"},
@@ -55,11 +55,11 @@ been hasty in coming to a decision.
 	if err != nil {
 		log.Fatal(err)
 	}
-	for _, r := range res.Replies {
-		if !r.Citation.IsZero() {
+	for i := range res.Replies {
+		if !res.Replies[i].Citation.IsZero() {
 			fmt.Printf("Citation:\n")
-			for _, src := range r.Citation.Sources {
-				fmt.Printf("- %q\n", src.Snippet)
+			for j := range res.Replies[i].Citation.Sources {
+				fmt.Printf("- %q\n", res.Replies[i].Citation.Sources[j].Snippet)
 			}
 		}
 	}

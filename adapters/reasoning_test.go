@@ -7,7 +7,6 @@ package adapters_test
 import (
 	"context"
 	"errors"
-	"fmt"
 	"iter"
 	"net/http"
 	"testing"
@@ -492,18 +491,18 @@ func (m *mockProviderGenStream) GenStream(ctx context.Context, msgs genai.Messag
 			return
 		}
 		if m.callIndex >= len(m.streamResponses) {
-			finalErr = fmt.Errorf("no more mock responses")
+			finalErr = errors.New("no more mock responses")
 			return
 		}
 		resp := m.streamResponses[m.callIndex]
 		m.callIndex++
 		res.Usage = resp.usage
-		for _, fragment := range resp.fragments {
-			if err := res.Accumulate(fragment); err != nil {
+		for i := range resp.fragments {
+			if err := res.Accumulate(resp.fragments[i]); err != nil {
 				finalErr = err
 				return
 			}
-			if !yield(fragment) {
+			if !yield(resp.fragments[i]) {
 				return
 			}
 		}

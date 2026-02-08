@@ -29,7 +29,7 @@ func main() {
 	// Use an audio file from the test data suite.
 	// OpenAI only allows inline audio.
 	resp, err := http.Get("https://github.com/maruel/genai/raw/refs/heads/main/scoreboard/testdata/audio.mp3")
-	if err != nil || resp.StatusCode != 200 {
+	if err != nil || resp.StatusCode != http.StatusOK {
 		log.Fatal(err)
 	}
 	b, err := io.ReadAll(resp.Body)

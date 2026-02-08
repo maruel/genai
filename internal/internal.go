@@ -71,7 +71,7 @@ func DecodeJSON(d *json.Decoder, out any, r io.ReadSeeker) (bool, error) {
 						// Only process if we got an object or array (not a bare number/string/bool/null).
 						switch t.(type) {
 						case map[string]any, []any:
-							if err2 = errors.Join(httpjson.FindExtraKeys(reflect.TypeOf(out), t)...); err2 != nil {
+							if err2 := errors.Join(httpjson.FindExtraKeys(reflect.TypeOf(out), t)...); err2 != nil {
 								return true, err2
 							}
 						}

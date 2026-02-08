@@ -43,6 +43,7 @@ var scoreboardJSON []byte
 // Get your account ID at https://dash.cloudflare.com/profile/api-tokens
 type AccountID string
 
+// Validate implements genai.Validatable.
 func (a AccountID) Validate() error {
 	if a == "" {
 		return errors.New("cloudflare.AccountID cannot be empty")
@@ -147,7 +148,8 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 	}
 	for i := range msgs {
 		// Split messages into multiple messages as needed.
-		if len(msgs[i].ToolCallResults) > 1 {
+		switch {
+		case len(msgs[i].ToolCallResults) > 1:
 			// Handle messages with multiple tool call results by creating multiple messages
 			for j := range msgs[i].ToolCallResults {
 				// Create a copy of the message with only one tool call result
@@ -160,7 +162,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 					c.Messages = append(c.Messages, newMsg)
 				}
 			}
-		} else if len(msgs[i].Requests) > 1 {
+		case len(msgs[i].Requests) > 1:
 			for j := range msgs[i].Requests {
 				msgCopy := msgs[i]
 				msgCopy.Requests = []genai.Request{msgs[i].Requests[j]}
@@ -171,7 +173,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 					c.Messages = append(c.Messages, newMsg)
 				}
 			}
-		} else {
+		default:
 			var newMsg Message
 			if err := newMsg.From(&msgs[i]); err != nil {
 				errs = append(errs, fmt.Errorf("message %d: %w", i, err))
@@ -187,6 +189,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 	return errors.Join(errs...)
 }
 
+// SetStream sets the streaming mode.
 func (c *ChatRequest) SetStream(stream bool) {
 	c.Stream = stream
 }
@@ -216,9 +219,10 @@ func (m *Message) From(in *genai.Message) error {
 	if len(in.Requests) == 1 {
 		// Process only the first Request in this method.
 		// The Init method handles multiple Request by creating multiple messages.
-		if in.Requests[0].Text != "" {
+		switch {
+		case in.Requests[0].Text != "":
 			m.Content = in.Requests[0].Text
-		} else if !in.Requests[0].Doc.IsZero() {
+		case !in.Requests[0].Doc.IsZero():
 			// Check if this is a text document
 			mimeType, data, err := in.Requests[0].Doc.Read(10 * 1024 * 1024)
 			if err != nil {
@@ -231,7 +235,7 @@ func (m *Message) From(in *genai.Message) error {
 				return fmt.Errorf("%s documents must be provided inline, not as a URL", mimeType)
 			}
 			m.Content = string(data)
-		} else {
+		default:
 			return fmt.Errorf("unsupported content type %#v", in.Requests[0])
 		}
 		return nil
@@ -240,9 +244,10 @@ func (m *Message) From(in *genai.Message) error {
 		if len(in.Replies[0].Opaque) != 0 {
 			return &internal.BadError{Err: errors.New("field Reply.Opaque not supported")}
 		}
-		if in.Replies[0].Text != "" {
+		switch {
+		case in.Replies[0].Text != "":
 			m.Content = in.Replies[0].Text
-		} else if !in.Replies[0].Doc.IsZero() {
+		case !in.Replies[0].Doc.IsZero():
 			// Check if this is a text/plain document
 			mimeType, data, err := in.Replies[0].Doc.Read(10 * 1024 * 1024)
 			if err != nil {
@@ -255,13 +260,13 @@ func (m *Message) From(in *genai.Message) error {
 				return fmt.Errorf("%s documents must be provided inline, not as a URL", mimeType)
 			}
 			m.Content = string(data)
-		} else if !in.Replies[0].ToolCall.IsZero() {
+		case !in.Replies[0].ToolCall.IsZero():
 			if len(in.Replies[0].ToolCall.Opaque) != 0 {
 				return &internal.BadError{Err: errors.New("field ToolCall.Opaque not supported")}
 			}
 			m.ToolCallID = in.Replies[0].ToolCall.ID
 			m.Content = in.Replies[0].ToolCall.Arguments
-		} else {
+		default:
 			return &internal.BadError{Err: fmt.Errorf("unsupported content type %#v", in.Replies[0])}
 		}
 		return nil
@@ -276,6 +281,7 @@ func (m *Message) From(in *genai.Message) error {
 	return &internal.BadError{Err: errors.New("internal error")}
 }
 
+// Tool is a provider-specific tool definition.
 type Tool struct {
 	Type     string `json:"type"` // "function"
 	Function struct {
@@ -380,7 +386,7 @@ type imageToText struct {
 */
 
 // ChatResponse is somewhat documented at https://developers.cloudflare.com/api/resources/ai/methods/run/
-// See UnionMember7
+// See UnionMember7.
 type ChatResponse struct {
 	Result struct {
 		MessageResponse
@@ -391,12 +397,14 @@ type ChatResponse struct {
 	Messages []struct{} `json:"messages"` // Annoyingly, it's included all the time
 }
 
+// MessageResponse is a message in a provider-specific response.
 type MessageResponse struct {
 	// Normally a string, or an object if response_format.type == "json_schema".
 	Response  any        `json:"response"`
 	ToolCalls []ToolCall `json:"tool_calls"`
 }
 
+// To converts to the genai equivalent.
 func (msg *MessageResponse) To(out *genai.Message) error {
 	if len(msg.ToolCalls) != 0 {
 		out.Replies = make([]genai.Reply, len(msg.ToolCalls))
@@ -411,7 +419,7 @@ func (msg *MessageResponse) To(out *genai.Message) error {
 	case string:
 		// This is just sad.
 		if strings.HasPrefix(v, "<tool_call>") {
-			return fmt.Errorf("hacked up XML tool calls are not supported")
+			return errors.New("hacked up XML tool calls are not supported")
 		} else {
 			out.Replies = []genai.Reply{{Text: v}}
 		}
@@ -426,6 +434,7 @@ func (msg *MessageResponse) To(out *genai.Message) error {
 	return nil
 }
 
+// ToResult converts the response to a genai.Result.
 func (c *ChatResponse) ToResult() (genai.Result, error) {
 	out := genai.Result{
 		// At the moment, Cloudflare doesn't support cached tokens.
@@ -452,6 +461,7 @@ type ChatStreamChunkResponse struct {
 // Response is normally the response but it can be true (bool) sometimes?
 type Response string
 
+// UnmarshalJSON implements json.Unmarshaler.
 func (r *Response) UnmarshalJSON(b []byte) error {
 	v := false
 	if err := json.Unmarshal(b, &v); err == nil {
@@ -461,6 +471,7 @@ func (r *Response) UnmarshalJSON(b []byte) error {
 	return json.Unmarshal(b, (*string)(r))
 }
 
+// Usage is the provider-specific token usage.
 type Usage struct {
 	CompletionTokens int64 `json:"completion_tokens"`
 	PromptTokens     int64 `json:"prompt_tokens"`
@@ -481,6 +492,7 @@ type ToolCall struct {
 	Name      string `json:"name"`
 }
 
+// To converts to the genai equivalent.
 func (c *ToolCall) To(out *genai.ToolCall) error {
 	out.ID = c.ID
 	if out.Name = c.Name; c.Name == "" {
@@ -501,6 +513,7 @@ func (c *ToolCall) To(out *genai.ToolCall) error {
 // Time is a wrapper around time.Time to support unmarshalling for cloudflare non-standard encoding.
 type Time time.Time
 
+// UnmarshalJSON implements json.Unmarshaler.
 func (t *Time) UnmarshalJSON(b []byte) error {
 	s := ""
 	if err := json.Unmarshal(b, &s); err != nil {
@@ -514,6 +527,7 @@ func (t *Time) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
+// Model is the provider-specific model metadata.
 type Model struct {
 	ID          string `json:"id"`
 	Source      int64  `json:"source"`
@@ -532,10 +546,12 @@ type Model struct {
 	} `json:"properties"`
 }
 
+// GetID implements genai.Model.
 func (m *Model) GetID() string {
 	return m.Name
 }
 
+// ModelPricing is the pricing information for a model.
 type ModelPricing struct {
 	Currency string  `json:"currency"`
 	Price    float64 `json:"price"`
@@ -561,7 +577,7 @@ func (m *Model) String() string {
 			d.DisallowUnknownFields()
 			var mp []ModelPricing
 			if err := d.Decode(&mp); err == nil {
-				var s []string
+				s := make([]string, 0, len(mp))
 				for _, l := range mp {
 					// Try to simplify the unit.
 					unit := ""
@@ -593,6 +609,7 @@ func (m *Model) String() string {
 	return fmt.Sprintf("%s%s", m.Name, suffix)
 }
 
+// Context implements genai.Model.
 func (m *Model) Context() int64 {
 	for _, p := range m.Properties {
 		if p.PropertyID == "context_window" || p.PropertyID == "max_input_tokens" {
@@ -606,6 +623,7 @@ func (m *Model) Context() int64 {
 	return 0
 }
 
+// Price returns the input and output price per token.
 func (m *Model) Price() (float64, float64) {
 	var mp []ModelPricing
 	in := 0.
@@ -621,9 +639,10 @@ func (m *Model) Price() (float64, float64) {
 			return in, out
 		}
 		for _, l := range mp {
-			if l.Unit == "per M output tokens" {
+			switch l.Unit {
+			case "per M output tokens":
 				out = l.Price
-			} else if l.Unit == "per M input tokens" {
+			case "per M input tokens":
 				in = l.Price
 			}
 		}
@@ -632,7 +651,7 @@ func (m *Model) Price() (float64, float64) {
 	return in, out
 }
 
-// ModelsResponse represents the response structure for Cloudflare models listing
+// ModelsResponse represents the response structure for Cloudflare models listing.
 type ModelsResponse struct {
 	Result     []Model `json:"result"`
 	ResultInfo struct {
@@ -648,6 +667,7 @@ type ModelsResponse struct {
 
 //
 
+// ErrorResponse is the provider-specific error response.
 type ErrorResponse struct {
 	Errors []struct {
 		Message string `json:"message"`
@@ -666,6 +686,7 @@ func (er *ErrorResponse) Error() string {
 	return er.Errors[0].Message
 }
 
+// IsAPIError implements base.ErrorResponseI.
 func (er *ErrorResponse) IsAPIError() bool {
 	return true
 }
@@ -800,17 +821,18 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 		if out == 0 {
 			continue
 		}
-		if cheap {
+		switch {
+		case cheap:
 			if strings.HasPrefix(m.Name, "@cf/meta/") && out < price {
 				price = out
 				selectedModel = m.Name
 			}
-		} else if good {
+		case good:
 			if strings.HasPrefix(m.Name, "@cf/meta/") && out > price {
 				price = out
 				selectedModel = m.Name
 			}
-		} else {
+		default:
 			if strings.HasPrefix(m.Name, "@cf/deepseek-ai/") && out > price {
 				price = out
 				selectedModel = m.Name
@@ -885,8 +907,8 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	for page := 1; ; page++ {
 		out := ModelsResponse{}
 		// Cloudflare's pagination is surprisingly brittle.
-		url := fmt.Sprintf("https://api.cloudflare.com/client/v4/accounts/%s/ai/models/search?page=%d&per_page=100&hide_experimental=false", url.PathEscape(c.accountID), page)
-		err := c.impl.DoRequest(ctx, "GET", url, nil, &out)
+		u := fmt.Sprintf("https://api.cloudflare.com/client/v4/accounts/%s/ai/models/search?page=%d&per_page=100&hide_experimental=false", url.PathEscape(c.accountID), page)
+		err := c.impl.DoRequest(ctx, "GET", u, nil, &out)
 		if err != nil {
 			return nil, err
 		}

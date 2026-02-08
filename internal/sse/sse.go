@@ -9,6 +9,7 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"iter"
@@ -31,7 +32,7 @@ func Process[T any](body io.Reader, er error, lenient bool) (iter.Seq[T], func()
 	it := func(yield func(T) bool) {
 		for r := bufio.NewReader(body); ; {
 			line, err := r.ReadBytes('\n')
-			if line = bytes.TrimSpace(line); err == io.EOF {
+			if line = bytes.TrimSpace(line); errors.Is(err, io.EOF) {
 				if len(line) == 0 {
 					return
 				}

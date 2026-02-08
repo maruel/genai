@@ -155,7 +155,8 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 		c.Messages = append(c.Messages, Message{Role: "system", Content: []Content{{Type: ContentText, Text: sp}}})
 	}
 	for i := range msgs {
-		if len(msgs[i].ToolCallResults) > 1 {
+		switch {
+		case len(msgs[i].ToolCallResults) > 1:
 			// Handle messages with multiple tool call results by creating multiple messages
 			for j := range msgs[i].ToolCallResults {
 				// Create a copy of the message with only one tool call result
@@ -168,7 +169,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 					c.Messages = append(c.Messages, newMsg)
 				}
 			}
-		} else if len(msgs[i].Requests) > 1 {
+		case len(msgs[i].Requests) > 1:
 			// Handle messages with multiple Request by creating multiple messages
 			for j := range msgs[i].Requests {
 				// Create a copy of the message with only one request
@@ -181,7 +182,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 					c.Messages = append(c.Messages, newMsg)
 				}
 			}
-		} else {
+		default:
 			var newMsg Message
 			if err := newMsg.From(&msgs[i]); err != nil {
 				errs = append(errs, fmt.Errorf("message #%d: %w", i, err))
@@ -197,6 +198,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 	return errors.Join(errs...)
 }
 
+// SetStream sets the streaming mode.
 func (c *ChatRequest) SetStream(stream bool) {
 	c.Stream = stream
 }
@@ -260,6 +262,7 @@ func (m *Message) From(in *genai.Message) error {
 	return nil
 }
 
+// To converts to the genai equivalent.
 func (m *Message) To(out *genai.Message) error {
 	out.Replies = make([]genai.Reply, 0, len(m.Content)+len(m.ToolCalls))
 	if m.Reasoning != "" {
@@ -284,11 +287,13 @@ func (m *Message) To(out *genai.Message) error {
 	return nil
 }
 
+// Content is a provider-specific content block.
 type Content struct {
 	Type ContentType `json:"type,omitzero"`
 	Text string      `json:"text,omitzero"`
 }
 
+// FromRequest converts from a genai request.
 func (c *Content) FromRequest(in *genai.Request) error {
 	if in.Text != "" {
 		c.Type = ContentText
@@ -314,16 +319,18 @@ func (c *Content) FromRequest(in *genai.Request) error {
 	return errors.New("unknown Request type")
 }
 
+// FromReply converts from a genai reply.
 func (c *Content) FromReply(in *genai.Reply) error {
 	if len(in.Opaque) != 0 {
 		return &internal.BadError{Err: errors.New("field Reply.Opaque not supported")}
 	}
-	if in.Text != "" {
+	switch {
+	case in.Text != "":
 		c.Type = ContentText
 		c.Text = in.Text
-	} else if in.Reasoning != "" {
+	case in.Reasoning != "":
 		// Ignore
-	} else if !in.Doc.IsZero() {
+	case !in.Doc.IsZero():
 		// Check if this is a text document
 		mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
 		if err != nil {
@@ -337,15 +344,17 @@ func (c *Content) FromReply(in *genai.Reply) error {
 		}
 		c.Type = ContentText
 		c.Text = string(data)
-	} else {
+	default:
 		// Cerebras doesn't support other document types.
 		return &internal.BadError{Err: errors.New("internal error: unknown Reply type")}
 	}
 	return nil
 }
 
+// ContentType is a provider-specific content type.
 type ContentType string
 
+// Content type values.
 const (
 	ContentText ContentType = "text"
 )
@@ -354,13 +363,14 @@ const (
 // both string and Content struct types.
 type Contents []Content
 
+// MarshalJSON implements json.Marshaler.
 func (c *Contents) MarshalJSON() ([]byte, error) {
 	// If there's only one content and it's a string, marshal as a string.
 	if len(*c) == 1 && (*c)[0].Type == ContentText {
 		return json.Marshal((*c)[0].Text)
 	}
 	// If there's many contents, marshal as an array of Content.
-	return json.Marshal(([]Content)(*c))
+	return json.Marshal([]Content(*c))
 }
 
 // UnmarshalJSON implements custom unmarshalling for Contents type
@@ -396,6 +406,7 @@ func (c *Contents) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
+// Tool is a provider-specific tool definition.
 type Tool struct {
 	Type     string `json:"type"` // "function"
 	Function struct {
@@ -405,6 +416,7 @@ type Tool struct {
 	} `json:"function"`
 }
 
+// ToolCall is a provider-specific tool call.
 type ToolCall struct {
 	Type     string `json:"type,omitzero"` // "function"
 	ID       string `json:"id,omitzero"`
@@ -415,6 +427,7 @@ type ToolCall struct {
 	} `json:"function,omitzero"`
 }
 
+// From converts from the genai equivalent.
 func (t *ToolCall) From(in *genai.ToolCall) error {
 	if len(in.Opaque) != 0 {
 		return errors.New("field ToolCall.Opaque not supported")
@@ -426,12 +439,14 @@ func (t *ToolCall) From(in *genai.ToolCall) error {
 	return nil
 }
 
+// To converts to the genai equivalent.
 func (t *ToolCall) To(out *genai.ToolCall) {
 	out.ID = t.ID
 	out.Name = t.Function.Name
 	out.Arguments = t.Function.Arguments
 }
 
+// ChatResponse is the provider-specific chat completion response.
 type ChatResponse struct {
 	ID                string    `json:"id"`
 	Model             string    `json:"model"`
@@ -454,6 +469,7 @@ type ChatResponse struct {
 	} `json:"time_info"`
 }
 
+// ToResult converts the response to a genai.Result.
 func (c *ChatResponse) ToResult() (genai.Result, error) {
 	out := genai.Result{
 		// At the moment, Cerebras doesn't support cached tokens.
@@ -477,8 +493,10 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	return out, err
 }
 
+// FinishReason is a provider-specific finish reason.
 type FinishReason string
 
+// Finish reason values.
 const (
 	FinishStop          FinishReason = "stop"
 	FinishToolCalls     FinishReason = "tool_calls"
@@ -486,6 +504,7 @@ const (
 	FinishContentFilter FinishReason = "content_filter"
 )
 
+// ToFinishReason converts to a genai.FinishReason.
 func (f FinishReason) ToFinishReason() genai.FinishReason {
 	switch f {
 	case FinishStop:
@@ -504,6 +523,7 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 	}
 }
 
+// ChatStreamChunkResponse is the provider-specific streaming chat chunk.
 type ChatStreamChunkResponse struct {
 	ID                string    `json:"id"`
 	Model             string    `json:"model"`
@@ -531,6 +551,7 @@ type ChatStreamChunkResponse struct {
 	} `json:"time_info"`
 }
 
+// Logprobs is the provider-specific log probabilities.
 type Logprobs struct {
 	Content []struct {
 		Token       string  `json:"token"`
@@ -544,6 +565,7 @@ type Logprobs struct {
 	} `json:"content"`
 }
 
+// To converts to the genai equivalent.
 func (l *Logprobs) To() [][]genai.Logprob {
 	if len(l.Content) == 0 {
 		return nil
@@ -561,6 +583,7 @@ func (l *Logprobs) To() [][]genai.Logprob {
 	return out
 }
 
+// Usage is the provider-specific token usage.
 type Usage struct {
 	PromptTokens        int64 `json:"prompt_tokens"`
 	CompletionTokens    int64 `json:"completion_tokens"`
@@ -570,6 +593,7 @@ type Usage struct {
 	} `json:"prompt_tokens_details"`
 }
 
+// Model is the provider-specific model metadata.
 type Model struct {
 	ID      string    `json:"id"`
 	Object  string    `json:"object"`
@@ -577,6 +601,7 @@ type Model struct {
 	OwnedBy string    `json:"owned_by"`
 }
 
+// GetID implements genai.Model.
 func (m *Model) GetID() string {
 	return m.ID
 }
@@ -588,17 +613,18 @@ func (m *Model) String() string {
 	return fmt.Sprintf("%s (%s)", m.ID, m.Created.AsTime().Format("2006-01-02"))
 }
 
+// Context implements genai.Model.
 func (m *Model) Context() int64 {
 	return 0
 }
 
-// ModelsResponse represents the response structure for Cerebras models listing
+// ModelsResponse represents the response structure for Cerebras models listing.
 type ModelsResponse struct {
 	Object string  `json:"object"`
 	Data   []Model `json:"data"`
 }
 
-// ToModels converts Cerebras models to genai.Model interfaces
+// ToModels converts Cerebras models to genai.Model interfaces.
 func (r *ModelsResponse) ToModels() []genai.Model {
 	models := make([]genai.Model, len(r.Data))
 	for i := range r.Data {
@@ -609,6 +635,7 @@ func (r *ModelsResponse) ToModels() []genai.Model {
 
 //
 
+// ErrorResponse is the provider-specific error response.
 type ErrorResponse struct {
 	// Either this
 	Detail string `json:"detail"`
@@ -648,6 +675,7 @@ func (er *ErrorResponse) Error() string {
 	return fmt.Sprintf("%s/%s/%s: %s", er.Type, er.Param, er.Code, er.Message)
 }
 
+// IsAPIError implements base.ErrorResponseI.
 func (er *ErrorResponse) IsAPIError() bool {
 	return true
 }
@@ -756,20 +784,21 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 	for _, mdl := range mdls {
 		// WARNING: This is fragile and will break in the future.
 		m := mdl.(*Model)
-		if cheap {
+		switch {
+		case cheap:
 			// That's gpt-oss-120b
 			if strings.HasPrefix(m.ID, "gpt") && (created == 0 || m.Created > created) {
 				created = m.Created
 				selectedModel = m.ID
 			}
-		} else if good {
+		case good:
 			// That's qwen-3-235b-a22b-instruct-2507, currently in preview
 			if strings.HasPrefix(m.ID, "qwen-") && strings.Contains(m.ID, "-instruct-") && (created == 0 || m.Created > created) {
 				// For the greatest, we want the newest model as it is generally better.
 				created = m.Created
 				selectedModel = m.ID
 			}
-		} else {
+		default:
 			// That's zai-glm-4.6, currently in preview
 			if strings.HasPrefix(m.ID, "zai-") && (created == 0 || m.Created > created) {
 				// For the greatest, we want the newest model as it is generally better.
@@ -801,6 +830,7 @@ func (c *Client) ModelID() string {
 // OutputModalities implements genai.Provider.
 //
 // It returns the output modalities, i.e. what kind of output the model will generate (text, audio, image,
+//
 // video, etc).
 func (c *Client) OutputModalities() genai.Modalities {
 	return c.impl.OutputModalities

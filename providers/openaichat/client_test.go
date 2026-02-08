@@ -90,7 +90,7 @@ func TestClient(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		var models []scoreboard.Model
+		models := make([]scoreboard.Model, 0, len(genaiModels))
 		for _, m := range genaiModels {
 			id := m.GetID()
 			models = append(models, scoreboard.Model{Model: id, Reason: strings.HasPrefix(id, "o") && !strings.Contains(id, "moderation")})

@@ -215,10 +215,12 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 	return errors.Join(errs...)
 }
 
+// SetStream sets the streaming mode on the request.
 func (c *ChatRequest) SetStream(stream bool) {
 	c.Stream = stream
 }
 
+// ChatResponse is the response from the chat completions endpoint.
 type ChatResponse struct {
 	Created           base.Time `json:"created"`
 	SystemFingerprint string    `json:"system_fingerprint"`
@@ -235,6 +237,7 @@ type ChatResponse struct {
 	Model string `json:"model"` // "gpt-3.5-turbo"
 }
 
+// ToResult converts the chat response to a genai.Result.
 func (c *ChatResponse) ToResult() (genai.Result, error) {
 	out := genai.Result{
 		Usage: genai.Usage{
@@ -253,6 +256,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	return out, nil
 }
 
+// Logprobs contains per-token log-probability information.
 type Logprobs struct {
 	Content []struct {
 		ID          int64   `json:"id"`
@@ -268,6 +272,7 @@ type Logprobs struct {
 	} `json:"content"`
 }
 
+// To converts Logprobs to the genai log-probability format.
 func (l *Logprobs) To() [][]genai.Logprob {
 	if len(l.Content) == 0 {
 		return nil
@@ -298,20 +303,24 @@ type Tool struct {
 	} `json:"function"`
 }
 
+// Usage contains token usage statistics.
 type Usage struct {
 	CompletionTokens int64 `json:"completion_tokens"`
 	PromptTokens     int64 `json:"prompt_tokens"`
 	TotalTokens      int64 `json:"total_tokens"`
 }
 
+// FinishReason describes why the model stopped generating tokens.
 type FinishReason string
 
+// Valid FinishReason values.
 const (
 	FinishedStop      FinishReason = "stop"
 	FinishedLength    FinishReason = "length"
 	FinishedToolCalls FinishReason = "tool_calls"
 )
 
+// ToFinishReason converts to the genai finish reason type.
 func (f FinishReason) ToFinishReason() genai.FinishReason {
 	switch f {
 	case FinishedStop:
@@ -328,6 +337,7 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 	}
 }
 
+// ChatStreamChunkResponse is a single chunk in a streaming chat response.
 type ChatStreamChunkResponse struct {
 	Created           base.Time `json:"created"`
 	ID                string    `json:"id"`
@@ -406,6 +416,7 @@ type CompletionRequest struct {
 	Lora                []Lora             `json:"lora,omitzero"`
 }
 
+// Lora is a LoRA adapter configuration.
 type Lora struct {
 	ID    int64   `json:"id,omitzero"`
 	Scale float64 `json:"scale,omitzero"`
@@ -450,6 +461,7 @@ func (c *CompletionRequest) Init(msgs genai.Messages, model string, opts ...gena
 	return errors.Join(errs...)
 }
 
+// CompletionResponse is the response from the completion endpoint.
 type CompletionResponse struct {
 	Index              int64   `json:"index"`
 	Content            string  `json:"content"`
@@ -518,6 +530,7 @@ type CompletionResponse struct {
 	Timings      Timings  `json:"timings"`
 }
 
+// ToResult converts the completion response to a genai.Result.
 func (c *CompletionResponse) ToResult() (genai.Result, error) {
 	out := genai.Result{
 		Message: genai.Message{Replies: []genai.Reply{{Text: c.Content}}},
@@ -531,14 +544,17 @@ func (c *CompletionResponse) ToResult() (genai.Result, error) {
 	return out, nil
 }
 
+// StopType describes the reason a completion stopped.
 type StopType string
 
+// Valid StopType values.
 const (
 	StopEOS   StopType = "eos"
 	StopLimit StopType = "limit"
 	StopWord  StopType = "word"
 )
 
+// ToFinishReason converts to the genai finish reason type.
 func (s StopType) ToFinishReason() genai.FinishReason {
 	switch s {
 	case StopEOS:
@@ -555,6 +571,7 @@ func (s StopType) ToFinishReason() genai.FinishReason {
 	}
 }
 
+// Timings contains timing information for prompt processing and prediction.
 type Timings struct {
 	PromptN             int64   `json:"prompt_n"`
 	PromptMS            float64 `json:"prompt_ms"`
@@ -566,6 +583,7 @@ type Timings struct {
 	PredictedPerSecond  float64 `json:"predicted_per_second"`
 }
 
+// CompletionStreamChunkResponse is a single chunk in a streaming completion response.
 type CompletionStreamChunkResponse struct {
 	// Always
 	Index           int64   `json:"index"`
@@ -702,13 +720,14 @@ func (m *Message) From(in *genai.Message) error {
 	return nil
 }
 
+// To converts a Message to a genai.Message.
 func (m *Message) To(out *genai.Message) error {
 	for i := range m.Content {
 		out.Replies = make([]genai.Reply, len(m.Content))
 		if err := m.Content[i].To(&out.Replies[i]); err != nil {
 			return fmt.Errorf("reply %d: %w", i, err)
 		}
-		if len(m.ReasoningContent) != 0 {
+		if m.ReasoningContent != "" {
 			out.Replies = append(out.Replies, genai.Reply{Reasoning: m.ReasoningContent})
 		}
 	}
@@ -719,6 +738,7 @@ func (m *Message) To(out *genai.Message) error {
 	return nil
 }
 
+// Contents is a list of Content items that may be unmarshalled from a string or array.
 type Contents []Content
 
 // UnmarshalJSON implements custom unmarshalling for Contents type
@@ -765,6 +785,7 @@ type Content struct {
 	} `json:"input_audio,omitzero"`
 }
 
+// FromRequest populates a Content from a genai.Request.
 func (c *Content) FromRequest(in *genai.Request) (bool, error) {
 	if in.Text != "" {
 		c.Type = "text"
@@ -807,6 +828,7 @@ func (c *Content) FromRequest(in *genai.Request) (bool, error) {
 	return false, errors.New("unknown Request type")
 }
 
+// FromReply populates a Content from a genai.Reply.
 func (c *Content) FromReply(in *genai.Reply) (bool, error) {
 	if !in.Citation.IsZero() {
 		return false, &internal.BadError{Err: errors.New("field Reply.Citation not supported")}
@@ -858,6 +880,7 @@ func (c *Content) FromReply(in *genai.Reply) (bool, error) {
 	return false, &internal.BadError{Err: errors.New("unknown Reply type")}
 }
 
+// To converts a Content to a genai.Reply.
 func (c *Content) To(out *genai.Reply) error {
 	switch c.Type {
 	case "text":
@@ -889,6 +912,7 @@ type ToolCall struct {
 	} `json:"function"`
 }
 
+// From populates a ToolCall from a genai.ToolCall.
 func (t *ToolCall) From(in *genai.ToolCall) error {
 	if len(in.Opaque) != 0 {
 		return errors.New("field ToolCall.Opaque not supported")
@@ -900,14 +924,14 @@ func (t *ToolCall) From(in *genai.ToolCall) error {
 	return nil
 }
 
+// To converts a ToolCall to a genai.ToolCall.
 func (t *ToolCall) To(out *genai.ToolCall) {
 	out.ID = t.ID
 	out.Name = t.Function.Name
 	out.Arguments = t.Function.Arguments
 }
 
-//
-
+// ModelHF is the HuggingFace-style model metadata from the llama-server.
 type ModelHF struct {
 	Name         string   `json:"name"`         // Path to the file
 	Model        string   `json:"model"`        // Path to the file
@@ -929,6 +953,7 @@ type ModelHF struct {
 	} `json:"details"`
 }
 
+// ModelOpenAI is the OpenAI-compatible model metadata from the llama-server.
 type ModelOpenAI struct {
 	ID      string    `json:"id"`       // Path to the file
 	Object  string    `json:"object"`   // "model"
@@ -944,7 +969,7 @@ type ModelOpenAI struct {
 	} `json:"meta"`
 }
 
-// Model is a synthetic struct combining the information from both ModelHF and ModelOpenAI
+// Model is a synthetic struct combining the information from both ModelHF and ModelOpenAI.
 type Model struct {
 	HF     ModelHF
 	OpenAI ModelOpenAI
@@ -961,6 +986,7 @@ func (m *Model) String() string {
 	return m.OpenAI.ID
 }
 
+// Context returns the training context window size.
 func (m *Model) Context() int64 {
 	return m.OpenAI.Meta.NCtxTrain
 }
@@ -975,11 +1001,12 @@ type ModelsResponse struct {
 	Data   []ModelOpenAI `json:"data"`
 }
 
+// ToModels converts the response to a list of genai.Model.
 func (m *ModelsResponse) ToModels() []genai.Model {
-	var out []genai.Model
 	if len(m.Models) != len(m.Data) {
 		panic(fmt.Errorf("unexpected response; got different list sizes for models: %d vs %d", len(m.Models), len(m.Data)).Error())
 	}
+	out := make([]genai.Model, 0, len(m.Models))
 	for i := range m.Models {
 		out = append(out, &Model{HF: m.Models[i], OpenAI: m.Data[i]})
 	}
@@ -1014,7 +1041,7 @@ func (p *PromptEncoding) Validate() error {
 	return nil
 }
 
-// TokenPerformance is the performance for the metrics
+// TokenPerformance is the performance for the metrics.
 type TokenPerformance struct {
 	Count    int
 	Duration time.Duration
@@ -1048,6 +1075,7 @@ type applyTemplateResponse struct {
 	Prompt string `json:"prompt"`
 }
 
+// ErrorResponse is the error response from the llama-server API.
 type ErrorResponse struct {
 	ErrorVal struct {
 		Code    int64  `json:"code"`
@@ -1060,6 +1088,7 @@ func (er *ErrorResponse) Error() string {
 	return fmt.Sprintf("%d (%s): %s", er.ErrorVal.Code, er.ErrorVal.Type, er.ErrorVal.Message)
 }
 
+// IsAPIError implements base.ErrAPI.
 func (er *ErrorResponse) IsAPIError() bool {
 	return true
 }
@@ -1209,12 +1238,12 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 }
 
 // GenStream implements genai.Provider.
-func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (fragments iter.Seq[genai.Reply], finish func() (genai.Result, error)) {
 	return c.impl.GenStream(ctx, msgs, opts...)
 }
 
 // GenStreamRaw provides access to the raw API.
-func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest) (iter.Seq[ChatStreamChunkResponse], func() error) {
+func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest) (chunks iter.Seq[ChatStreamChunkResponse], finish func() error) {
 	return c.impl.GenStreamRaw(ctx, in)
 }
 
@@ -1230,6 +1259,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	return resp.ToModels(), nil
 }
 
+// Completion sends a completion request and returns the result.
 func (c *Client) Completion(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
 	// https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md#post-completion-given-a-prompt-it-returns-the-predicted-completion
 	// Doc mentions Cache:true causes non-determinism even if a non-zero seed is
@@ -1237,9 +1267,9 @@ func (c *Client) Completion(ctx context.Context, msgs genai.Messages, opts ...ge
 	if err := msgs.Validate(); err != nil {
 		return genai.Result{}, err
 	}
-	for i, msg := range msgs {
-		for j, content := range msg.Replies {
-			if len(content.Opaque) != 0 {
+	for i := range msgs {
+		for j := range msgs[i].Replies {
+			if len(msgs[i].Replies[j].Opaque) != 0 {
 				return genai.Result{}, fmt.Errorf("message #%d: reply #%d: field Reply.Opaque not supported", i, j)
 			}
 		}
@@ -1258,12 +1288,14 @@ func (c *Client) Completion(ctx context.Context, msgs genai.Messages, opts ...ge
 	return rpcout.ToResult()
 }
 
+// CompletionRaw provides raw access to the completion API.
 func (c *Client) CompletionRaw(ctx context.Context, in *CompletionRequest, out *CompletionResponse) error {
 	in.Stream = false
 	return c.impl.DoRequest(ctx, "POST", c.completionsURL, in, out)
 }
 
-func (c *Client) CompletionStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
+// CompletionStream sends a streaming completion request.
+func (c *Client) CompletionStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (fragments iter.Seq[genai.Reply], finish func() (genai.Result, error)) {
 	res := genai.Result{}
 	var finalErr error
 
@@ -1316,7 +1348,8 @@ func (c *Client) CompletionStream(ctx context.Context, msgs genai.Messages, opts
 	return fnFragments, fnFinish
 }
 
-func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest) (iter.Seq[CompletionStreamChunkResponse], func() error) {
+// CompletionStreamRaw provides raw access to the streaming completion API.
+func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest) (chunks iter.Seq[CompletionStreamChunkResponse], finish func() error) {
 	in.Stream = true
 	resp, err := c.impl.JSONRequest(ctx, "POST", c.completionsURL, in)
 	if err != nil {
@@ -1324,8 +1357,8 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest)
 			return &internal.BadError{Err: fmt.Errorf("failed to get llama server response: %w", err)}
 		}
 	}
-	defer resp.Body.Close()
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
+		defer func() { _ = resp.Body.Close() }()
 		return yieldNothing[CompletionStreamChunkResponse], func() error {
 			return &internal.BadError{Err: c.impl.DecodeError(c.completionsURL, resp)}
 		}
@@ -1335,6 +1368,7 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest)
 	out := make(chan CompletionStreamChunkResponse, 16)
 	ch := make(chan error)
 	go func() {
+		defer func() { _ = resp.Body.Close() }()
 		er := ErrorResponse{}
 		it, finish := sse.Process[CompletionStreamChunkResponse](resp.Body, &er, c.impl.Lenient)
 		for pkt := range it {
@@ -1356,11 +1390,13 @@ func (c *Client) CompletionStreamRaw(ctx context.Context, in *CompletionRequest)
 		}
 }
 
+// GetHealth returns the health status string from the server.
 func (c *Client) GetHealth(ctx context.Context) (string, error) {
 	msg, err := c.GetHealthRaw(ctx)
 	return msg.Status, err
 }
 
+// GetHealthRaw returns the raw health response from the server.
 func (c *Client) GetHealthRaw(ctx context.Context) (HealthResponse, error) {
 	msg := HealthResponse{}
 	if err := c.impl.DoRequest(ctx, "GET", c.baseURL+"/health", nil, &msg); err != nil {
@@ -1369,6 +1405,7 @@ func (c *Client) GetHealthRaw(ctx context.Context) (HealthResponse, error) {
 	return msg, nil
 }
 
+// Ping verifies the server is healthy and available.
 func (c *Client) Ping(ctx context.Context) error {
 	status, err := c.GetHealth(ctx)
 	if err == nil && status != "ok" {
@@ -1379,7 +1416,7 @@ func (c *Client) Ping(ctx context.Context) error {
 
 // GetMetrics retrieves the performance statistics from the server.
 func (c *Client) GetMetrics(ctx context.Context, m *Metrics) error {
-	req, err := http.NewRequestWithContext(ctx, "GET", c.baseURL+"/metrics", nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, c.baseURL+"/metrics", http.NoBody)
 	if err != nil {
 		return fmt.Errorf("failed to create HTTP request: %w", err)
 	}
@@ -1478,12 +1515,10 @@ func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, msgs gen
 			for _, b := range m.Requests {
 				in.Prompt += c.encoding.UserTokenStart + b.Text + c.encoding.UserTokenEnd
 			}
-			// in.Prompt += c.encoding.ToolCallResultTokenStart + m.Text + c.encoding.ToolCallResultTokenEnd
 		case "assistant":
 			for _, b := range m.Requests {
 				in.Prompt += c.encoding.AssistantTokenStart + b.Text + c.encoding.AssistantTokenEnd
 			}
-			// in.Prompt += c.encoding.ToolCallTokenStart + m.Text + c.encoding.ToolCallTokenEnd
 		default:
 			return fmt.Errorf("unexpected role %q", r)
 		}
@@ -1492,7 +1527,7 @@ func (c *Client) initPrompt(ctx context.Context, in *CompletionRequest, msgs gen
 }
 
 // ProcessStream converts the raw packets from the streaming API into Reply fragments.
-func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, [][]genai.Logprob, error)) {
+func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (fragments iter.Seq[genai.Reply], finish func() (genai.Usage, [][]genai.Logprob, error)) {
 	var finalErr error
 	u := genai.Usage{}
 	var l [][]genai.Logprob
@@ -1564,7 +1599,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 }
 
 // ProcessCompletionStream converts the raw packets from the completion streaming API into Reply fragments.
-func ProcessCompletionStream(chunks iter.Seq[CompletionStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, [][]genai.Logprob, error)) {
+func ProcessCompletionStream(chunks iter.Seq[CompletionStreamChunkResponse]) (fragments iter.Seq[genai.Reply], finish func() (genai.Usage, [][]genai.Logprob, error)) {
 	var finalErr error
 	u := genai.Usage{}
 

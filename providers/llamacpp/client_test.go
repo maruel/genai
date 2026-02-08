@@ -8,6 +8,7 @@ import (
 	"context"
 	"crypto/rand"
 	"encoding/base64"
+	"errors"
 	"io"
 	"net/http"
 	"os"
@@ -67,8 +68,9 @@ func TestClient(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		var models []scoreboard.Model
-		for _, sc := range c.Scoreboard().Scenarios {
+		sb := c.Scoreboard().Scenarios
+		models := make([]scoreboard.Model, 0, len(sb))
+		for _, sc := range sb {
 			for _, id := range sc.Models {
 				models = append(models, scoreboard.Model{Model: id})
 			}
@@ -178,7 +180,7 @@ func (l *lazyServer) lazyStart(t testing.TB) string {
 		srv := startServerTest(l.t, parts[0], parts[1], parts[2], mains[1], l.apiKey)
 		l.url = srv.URL()
 		l.t.Cleanup(func() {
-			if err := srv.Close(); err != nil && err != context.Canceled {
+			if err := srv.Close(); err != nil && !errors.Is(err, context.Canceled) {
 				l.t.Error(err)
 			}
 		})

@@ -196,6 +196,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 	return errors.Join(errs...)
 }
 
+// SetStream sets the streaming mode.
 func (c *ChatRequest) SetStream(stream bool) {
 	c.Stream = stream
 }
@@ -286,6 +287,7 @@ type Content struct {
 	InputAudio []byte `json:"input_audio,omitzero"`
 }
 
+// FromRequest converts a genai.Request to a Content.
 func (c *Content) FromRequest(in *genai.Request) error {
 	if in.Text != "" {
 		c.Type = ContentText
@@ -334,6 +336,7 @@ func (c *Content) FromRequest(in *genai.Request) error {
 	return errors.New("unknown Request type")
 }
 
+// FromReply converts a genai.Reply to a Content.
 func (c *Content) FromReply(in *genai.Reply) error {
 	if len(in.Opaque) != 0 {
 		return &internal.BadError{Err: errors.New("field Reply.Opaque not supported")}
@@ -390,6 +393,7 @@ func (c *Content) FromReply(in *genai.Reply) error {
 // I got the whole list from an error message by sending a bad content type.
 type ContentType string
 
+// Content type values.
 const (
 	ContentText        ContentType = "text"
 	ContentImageURL    ContentType = "image_url"
@@ -403,6 +407,7 @@ const (
 	ContentAudioURL    ContentType = "audio_url"
 )
 
+// Tool represents a tool definition.
 type Tool struct {
 	Type     string `json:"type,omitzero"` // "function"
 	Function struct {
@@ -413,6 +418,7 @@ type Tool struct {
 	} `json:"function,omitzero"`
 }
 
+// ChatResponse is the response from the chat API.
 type ChatResponse struct {
 	ID      string    `json:"id"`
 	Object  string    `json:"object"` // "chat.completion"
@@ -427,8 +433,10 @@ type ChatResponse struct {
 	Usage Usage `json:"usage"`
 }
 
+// FinishReason represents the reason a generation finished.
 type FinishReason string
 
+// Finish reason values.
 const (
 	FinishStop          FinishReason = "stop"
 	FinishLength        FinishReason = "length"
@@ -436,6 +444,7 @@ const (
 	FinishContentFilter FinishReason = "content_filter"
 )
 
+// ToFinishReason converts to a genai.FinishReason.
 func (f FinishReason) ToFinishReason() genai.FinishReason {
 	switch f {
 	case FinishStop:
@@ -454,6 +463,7 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 	}
 }
 
+// Usage represents token usage information.
 type Usage struct {
 	PromptTokens       int64 `json:"prompt_tokens"`
 	CompletionTokens   int64 `json:"completion_tokens"`
@@ -461,6 +471,7 @@ type Usage struct {
 	PromptAudioSeconds int64 `json:"prompt_audio_seconds"`
 }
 
+// MessageResponse represents a message in the API response.
 type MessageResponse struct {
 	Role      string     `json:"role"`
 	Content   string     `json:"content"`
@@ -468,6 +479,7 @@ type MessageResponse struct {
 	ToolCalls []ToolCall `json:"tool_calls"`
 }
 
+// To converts a MessageResponse to a genai.Message.
 func (m *MessageResponse) To(out *genai.Message) error {
 	if m.Content != "" {
 		out.Replies = []genai.Reply{{Text: m.Content}}
@@ -479,6 +491,7 @@ func (m *MessageResponse) To(out *genai.Message) error {
 	return nil
 }
 
+// ToolCall represents a tool call.
 type ToolCall struct {
 	ID       string `json:"id,omitzero"`
 	Type     string `json:"type,omitzero"`
@@ -489,6 +502,7 @@ type ToolCall struct {
 	Index int64 `json:"index,omitzero"`
 }
 
+// From converts a genai.ToolCall to a ToolCall.
 func (t *ToolCall) From(in *genai.ToolCall) error {
 	if len(in.Opaque) != 0 {
 		return errors.New("field ToolCall.Opaque not supported")
@@ -500,12 +514,14 @@ func (t *ToolCall) From(in *genai.ToolCall) error {
 	return nil
 }
 
+// To converts a ToolCall to a genai.ToolCall.
 func (t *ToolCall) To(out *genai.ToolCall) {
 	out.ID = t.ID
 	out.Name = t.Function.Name
 	out.Arguments = t.Function.Arguments
 }
 
+// ToResult converts the ChatResponse to a genai.Result.
 func (c *ChatResponse) ToResult() (genai.Result, error) {
 	out := genai.Result{
 		// At the moment, Mistral doesn't support cached tokens.
@@ -523,6 +539,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	return out, err
 }
 
+// ChatStreamChunkResponse represents a streaming chunk from the chat API.
 type ChatStreamChunkResponse struct {
 	ID      string    `json:"id"`
 	Object  string    `json:"object"` // "chat.completion.chunk"
@@ -570,6 +587,7 @@ type Model struct {
 	Type                        string   `json:"type"` // "base"
 }
 
+// GetID returns the model ID.
 func (m *Model) GetID() string {
 	return m.ID
 }
@@ -603,17 +621,18 @@ func (m *Model) String() string {
 	return fmt.Sprintf("%s: %s Context: %d%s", prefix, strings.Join(caps, "/"), m.MaxContextLength, suffix)
 }
 
+// Context returns the context window size.
 func (m *Model) Context() int64 {
 	return m.MaxContextLength
 }
 
-// ModelsResponse represents the response structure for Mistral models listing
+// ModelsResponse represents the response structure for Mistral models listing.
 type ModelsResponse struct {
 	Object string  `json:"object"` // list
 	Data   []Model `json:"data"`
 }
 
-// ToModels converts Mistral models to genai.Model interfaces
+// ToModels converts Mistral models to genai.Model interfaces.
 func (r *ModelsResponse) ToModels() []genai.Model {
 	// As of 2025-08, Mistral returns duplicate models voxtral-mini-latest and voxtral-mini-2507. Filter them
 	// out so the client is not confused.
@@ -668,6 +687,7 @@ func (er *ErrorResponse) Error() string {
 	return out + er.Message.Detail.String()
 }
 
+// IsAPIError returns true.
 func (er *ErrorResponse) IsAPIError() bool {
 	return true
 }
@@ -691,16 +711,18 @@ func (ed *ErrorDetail) String() string {
 	return fmt.Sprintf("%s: %s at %s", ed.Type, ed.Msg, ed.Loc)
 }
 
+// ErrorDetails represents a collection of error details.
 type ErrorDetails []ErrorDetail
 
 func (ed *ErrorDetails) String() string {
-	out := ""
+	var out strings.Builder
 	for _, e := range *ed {
-		out += e.String()
+		out.WriteString(e.String())
 	}
-	return out
+	return out.String()
 }
 
+// UnmarshalJSON implements json.Unmarshaler.
 func (ed *ErrorDetails) UnmarshalJSON(b []byte) error {
 	d := json.NewDecoder(bytes.NewReader(b))
 	if !internal.BeLenient {
@@ -717,10 +739,12 @@ func (ed *ErrorDetails) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
+// ErrorMessage represents an error message that can be a string or object.
 type ErrorMessage struct {
 	Detail ErrorDetails `json:"detail"`
 }
 
+// UnmarshalJSON implements json.Unmarshaler.
 func (er *ErrorMessage) UnmarshalJSON(b []byte) error {
 	s := ""
 	if err := json.Unmarshal(b, &s); err == nil {
@@ -865,15 +889,16 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 		if !strings.HasSuffix(m.ID, "latest") || strings.HasPrefix(m.ID, "devstral") || strings.HasPrefix(m.ID, "magistral") || strings.HasPrefix(m.ID, "pixtral") || strings.HasPrefix(m.ID, "voxtral") {
 			continue
 		}
-		if cheap {
+		switch {
+		case cheap:
 			if strings.Contains(m.ID, "small") {
 				selectedModel = m.ID
 			}
-		} else if good {
+		case good:
 			if strings.Contains(m.ID, "medium") {
 				selectedModel = m.ID
 			}
-		} else {
+		default:
 			if strings.Contains(m.ID, "large") {
 				selectedModel = m.ID
 			}

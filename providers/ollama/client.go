@@ -83,6 +83,7 @@ type ChatRequestFormat struct {
 	Schema *jsonschema.Schema
 }
 
+// MarshalJSON implements json.Marshaler.
 func (c *ChatRequestFormat) MarshalJSON() ([]byte, error) {
 	if c.Type != "" {
 		return json.Marshal(c.Type)
@@ -179,7 +180,8 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 		c.Messages = append(c.Messages, Message{Role: "system", Content: sp})
 	}
 	for i := range msgs {
-		if len(msgs[i].ToolCallResults) > 1 {
+		switch {
+		case len(msgs[i].ToolCallResults) > 1:
 			// Handle messages with multiple tool call results by creating multiple messages
 			for j := range msgs[i].ToolCallResults {
 				// Create a copy of the message with only one tool call result
@@ -192,7 +194,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 					c.Messages = append(c.Messages, newMsg)
 				}
 			}
-		} else if len(msgs[i].Requests) > 1 {
+		case len(msgs[i].Requests) > 1:
 			// Handle messages with multiple messages by creating multiple messages
 			// TODO: For multi-modal requests we could put them together. It's only a problem for text-only
 			// messages.
@@ -207,7 +209,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 					c.Messages = append(c.Messages, newMsg)
 				}
 			}
-		} else {
+		default:
 			var newMsg Message
 			if err := newMsg.From(&msgs[i]); err != nil {
 				errs = append(errs, fmt.Errorf("message #%d: %w", i, err))
@@ -250,9 +252,10 @@ func (m *Message) From(in *genai.Message) error {
 	// Ollama only supports one text content per message but multiple images. We need to validate first. We may
 	// implement that later.
 	if len(in.Requests) == 1 {
-		if in.Requests[0].Text != "" {
+		switch {
+		case in.Requests[0].Text != "":
 			m.Content = in.Requests[0].Text
-		} else if !in.Requests[0].Doc.IsZero() {
+		case !in.Requests[0].Doc.IsZero():
 			mimeType, data, err := in.Requests[0].Doc.Read(10 * 1024 * 1024)
 			if err != nil {
 				return err
@@ -277,7 +280,7 @@ func (m *Message) From(in *genai.Message) error {
 			default:
 				return fmt.Errorf("ollama unsupported content type %q", mimeType)
 			}
-		} else {
+		default:
 			return errors.New("unknown Request type")
 		}
 	}
@@ -285,9 +288,10 @@ func (m *Message) From(in *genai.Message) error {
 		if len(in.Replies[i].Opaque) != 0 {
 			return &internal.BadError{Err: fmt.Errorf("reply #%d: field Reply.Opaque not supported", i)}
 		}
-		if in.Replies[i].Text != "" {
+		switch {
+		case in.Replies[i].Text != "":
 			m.Content = in.Replies[i].Text
-		} else if !in.Replies[i].Doc.IsZero() {
+		case !in.Replies[i].Doc.IsZero():
 			mimeType, data, err := in.Replies[i].Doc.Read(10 * 1024 * 1024)
 			if err != nil {
 				return err
@@ -312,14 +316,14 @@ func (m *Message) From(in *genai.Message) error {
 			default:
 				return &internal.BadError{Err: fmt.Errorf("reply #%d: ollama unsupported content type %q", i, mimeType)}
 			}
-		} else if !in.Replies[i].ToolCall.IsZero() {
+		case !in.Replies[i].ToolCall.IsZero():
 			m.ToolCalls = append(m.ToolCalls, ToolCall{})
 			if err := m.ToolCalls[len(m.ToolCalls)-1].From(&in.Replies[i].ToolCall); err != nil {
 				return fmt.Errorf("reply #%d: %w", i, err)
 			}
-		} else if in.Replies[i].Reasoning != "" {
+		case in.Replies[i].Reasoning != "":
 			// Don't send reasoning back.
-		} else {
+		default:
 			return &internal.BadError{Err: fmt.Errorf("reply #%d: unknown Reply type: %v", i, in.Replies)}
 		}
 	}
@@ -332,6 +336,7 @@ func (m *Message) From(in *genai.Message) error {
 	return nil
 }
 
+// To converts the provider Message to a genai.Message.
 func (m *Message) To(out *genai.Message) error {
 	if m.Content != "" {
 		out.Replies = []genai.Reply{{Text: m.Content}}
@@ -360,6 +365,7 @@ type ToolCall struct {
 	} `json:"function"`
 }
 
+// From converts a genai.ToolCall to the provider ToolCall.
 func (t *ToolCall) From(in *genai.ToolCall) error {
 	if len(in.Opaque) != 0 {
 		return &internal.BadError{Err: errors.New("field ToolCall.Opaque not supported")}
@@ -368,6 +374,7 @@ func (t *ToolCall) From(in *genai.ToolCall) error {
 	return json.Unmarshal([]byte(in.Arguments), &t.Function.Arguments)
 }
 
+// To converts the provider ToolCall to a genai.ToolCall.
 func (t *ToolCall) To(out *genai.ToolCall) error {
 	out.Name = t.Function.Name
 	b, err := json.Marshal(t.Function.Arguments)
@@ -404,6 +411,7 @@ type ChatResponse struct {
 	EvalDuration       time.Duration `json:"eval_duration"`
 }
 
+// ToResult converts the ChatResponse to a genai.Result.
 func (c *ChatResponse) ToResult() (genai.Result, error) {
 	out := genai.Result{
 		// TODO: llama-server supports caching and we should report it.
@@ -424,14 +432,21 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 // DoneReason is not documented.
 type DoneReason string
 
+// DoneReason values for completion status.
 const (
-	DoneStop   DoneReason = "stop"
+	// DoneStop means the model finished generating normally.
+	DoneStop DoneReason = "stop"
+	// DoneLength means the model hit the token limit.
 	DoneLength DoneReason = "length"
+	// DoneLoad means the model was loaded.
+	//
 	// See https://pkg.go.dev/github.com/ollama/ollama/server#Server.ChatHandler
-	DoneLoad   DoneReason = "load"
+	DoneLoad DoneReason = "load"
+	// DoneUnload means the model was unloaded.
 	DoneUnload DoneReason = "unload"
 )
 
+// ToFinishReason converts the DoneReason to a genai.FinishReason.
 func (d DoneReason) ToFinishReason() genai.FinishReason {
 	switch d {
 	case DoneStop:
@@ -448,6 +463,7 @@ func (d DoneReason) ToFinishReason() genai.FinishReason {
 	}
 }
 
+// ChatStreamChunkResponse is a streaming chunk from the chat API.
 type ChatStreamChunkResponse ChatResponse
 
 // Model is somewhat documented at https://pkg.go.dev/github.com/ollama/ollama/api#ListModelResponse
@@ -468,6 +484,7 @@ type Model struct {
 	} `json:"details"`
 }
 
+// GetID implements genai.Model.
 func (m *Model) GetID() string {
 	return m.Name
 }
@@ -476,14 +493,17 @@ func (m *Model) String() string {
 	return fmt.Sprintf("%s (%s)", m.Name, m.Details.QuantizationLevel)
 }
 
+// Context implements genai.Model.
 func (m *Model) Context() int64 {
 	return 0
 }
 
+// ModelsResponse is the response from the list models API.
 type ModelsResponse struct {
 	Models []Model `json:"models"`
 }
 
+// ToModels converts the ModelsResponse to a slice of genai.Model.
 func (r *ModelsResponse) ToModels() []genai.Model {
 	models := make([]genai.Model, len(r.Models))
 	for i := range r.Models {
@@ -505,12 +525,12 @@ type pullModelResponse struct {
 	Completed int64  `json:"completed"`
 }
 
+// Version is the response from the version API.
 type Version struct {
 	Version string `json:"version"`
 }
 
-//
-
+// ErrorResponse is an error returned by the Ollama API.
 type ErrorResponse struct {
 	ErrorVal string `json:"error"`
 }
@@ -519,6 +539,7 @@ func (er *ErrorResponse) Error() string {
 	return er.ErrorVal
 }
 
+// IsAPIError implements base.APIError.
 func (er *ErrorResponse) IsAPIError() bool {
 	return true
 }
@@ -625,12 +646,12 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) str
 	switch preference {
 	case string(genai.ModelCheap):
 		return "gemma3:1b"
-	default:
-		fallthrough
-	case string(genai.ModelGood), "":
-		return "qwen3:4b"
 	case string(genai.ModelSOTA):
 		return "qwen3:32b"
+	case string(genai.ModelGood), "":
+		return "qwen3:4b"
+	default:
+		return "qwen3:4b"
 	}
 }
 
@@ -697,7 +718,7 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 	if err != nil {
 		// TODO: Cheezy.
 		if strings.Contains(err.Error(), "not found, try pulling it first") {
-			if err = c.PullModel(ctx, c.impl.Model); err != nil {
+			if err := c.PullModel(ctx, c.impl.Model); err != nil {
 				return err
 			}
 			// Retry.
@@ -794,8 +815,8 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest) (iter.Seq[Ch
 		if resp, err2 = c.impl.JSONRequest(ctx, "POST", c.chatURL, in); err2 != nil {
 			return &internal.BadError{Err: fmt.Errorf("failed to get server response: %w", err2)}
 		}
-		defer resp.Body.Close()
-		if resp.StatusCode != 200 {
+		defer func() { _ = resp.Body.Close() }()
+		if resp.StatusCode != http.StatusOK {
 			return c.impl.DecodeError(c.chatURL, resp)
 		}
 		// Ollama doesn't use SSE.
@@ -803,14 +824,12 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest) (iter.Seq[Ch
 	})
 
 	return func(yield func(ChatStreamChunkResponse) bool) {
-			for pkt := range out {
-				if !yield(pkt) {
-					break
-				}
+		for pkt := range out {
+			if !yield(pkt) {
+				break
 			}
-		}, func() error {
-			return eg.Wait()
 		}
+	}, eg.Wait
 }
 
 // ListModels implements genai.Provider.
@@ -828,7 +847,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 
 // PullModel is the equivalent of "ollama pull".
 //
-// Files are cached under $HOME/.ollama/models/manifests/registry.ollama.ai/library/ or $OLLAMA_MODELS
+// Files are cached under $HOME/.ollama/models/manifests/registry.ollama.ai/library/ or $OLLAMA_MODELS.
 func (c *Client) PullModel(ctx context.Context, model string) error {
 	in := pullModelRequest{Model: model}
 	// TODO: Stream updates instead of hanging for several minutes.
@@ -841,6 +860,7 @@ func (c *Client) PullModel(ctx context.Context, model string) error {
 	return nil
 }
 
+// Version returns the Ollama server version.
 func (c *Client) Version(ctx context.Context) (string, error) {
 	v := Version{}
 	if err := c.impl.DoRequest(ctx, "GET", c.baseURL+"/api/version", nil, &v); err != nil {
@@ -849,11 +869,13 @@ func (c *Client) Version(ctx context.Context) (string, error) {
 	return v.Version, nil
 }
 
+// Ping checks that the Ollama server is reachable.
 func (c *Client) Ping(ctx context.Context) error {
 	_, err := c.Version(ctx)
 	return err
 }
 
+// Validate returns an error if the client is not properly configured.
 func (c *Client) Validate() error {
 	if c.impl.Model == "" {
 		return errors.New("a model is required")

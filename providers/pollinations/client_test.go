@@ -45,7 +45,7 @@ func (o *providerOptions) toOptions() []genai.ProviderOption {
 	return opts
 }
 
-func getClientInner(t *testing.T, opts providerOptions, fn func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
+func getClientInner(t *testing.T, opts *providerOptions, fn func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
 	// Pollinations API rejects invalid keys but works without auth.
 	// Don't use a placeholder key for playback - leave empty to skip auth header.
 	provOpts := opts.toOptions()
@@ -62,7 +62,7 @@ func TestClient(t *testing.T) {
 			t.Error(err)
 		}
 	})
-	cl, err2 := getClientInner(t, providerOptions{}, func(h http.RoundTripper) http.RoundTripper {
+	cl, err2 := getClientInner(t, &providerOptions{}, func(h http.RoundTripper) http.RoundTripper {
 		return testRecorder.RecordWithName(t, t.Name()+"/Warmup", h)
 	})
 	if err2 != nil {
@@ -75,7 +75,7 @@ func TestClient(t *testing.T) {
 	getClient := func(t *testing.T, m string) genai.Provider {
 		t.Parallel()
 		opts := providerOptions{Model: m, PreloadedModels: cachedModels}
-		ci, err := getClientInner(t, opts, func(h http.RoundTripper) http.RoundTripper {
+		ci, err := getClientInner(t, &opts, func(h http.RoundTripper) http.RoundTripper {
 			return testRecorder.Record(t, h)
 		})
 		if err != nil {
@@ -89,7 +89,7 @@ func TestClient(t *testing.T) {
 	})
 
 	t.Run("Scoreboard", func(t *testing.T) {
-		var sbModels []scoreboard.Model
+		sbModels := make([]scoreboard.Model, 0, len(cachedModels))
 		for _, m := range cachedModels {
 			id := m.GetID()
 			sbModels = append(sbModels, scoreboard.Model{Model: id, Reason: id == "deepseek-reasoning"})

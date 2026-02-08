@@ -40,7 +40,7 @@ func TestLogTransport(t *testing.T) {
 		// Echo the request body and add some extra data
 		w.Header().Set("Content-Type", "text/plain")
 		w.WriteHeader(http.StatusOK)
-		w.Write(append(body, []byte(" - response")...))
+		_, _ = w.Write(append(body, []byte(" - response")...))
 	}))
 	defer server.Close()
 
@@ -51,7 +51,7 @@ func TestLogTransport(t *testing.T) {
 
 	// Create a request with a body
 	reqBody := "test data"
-	req, err := http.NewRequest("POST", server.URL, strings.NewReader(reqBody))
+	req, err := http.NewRequest(http.MethodPost, server.URL, strings.NewReader(reqBody))
 	if err != nil {
 		t.Fatalf("Failed to create request: %v", err)
 	}
@@ -66,7 +66,7 @@ func TestLogTransport(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Request failed: %v", err)
 	}
-	defer res.Body.Close()
+	defer func() { _ = res.Body.Close() }()
 
 	// Read the response
 	respBody, err := io.ReadAll(res.Body)
@@ -95,7 +95,7 @@ func TestLogTransportWithMockTransport(t *testing.T) {
 	mock := &mockRoundTripper{t: t, responseToSend: mockResp}
 	loggingTransport := LogTransport(mock)
 	reqBody := "test request"
-	req, err := http.NewRequest("POST", "http://example.com", strings.NewReader(reqBody))
+	req, err := http.NewRequest(http.MethodPost, "http://example.com", strings.NewReader(reqBody))
 	if err != nil {
 		t.Fatalf("Failed to create request: %v", err)
 	}
@@ -125,7 +125,7 @@ func TestLogTransportWithMockTransport(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to read response body: %v", err)
 	}
-	res.Body.Close()
+	_ = res.Body.Close()
 	if string(actualRespBody) != respBody {
 		t.Errorf("Expected response body %q, got %q", respBody, string(actualRespBody))
 	}
@@ -143,13 +143,13 @@ func TestLogTransportWithNilResponse(t *testing.T) {
 
 	mock := &mockRoundTripper{t: t, responseToSend: mockResp}
 	loggingTransport := LogTransport(mock)
-	req, err := http.NewRequest("GET", "http://example.com", nil)
+	req, err := http.NewRequest(http.MethodGet, "http://example.com", http.NoBody)
 	if err != nil {
 		t.Fatalf("Failed to create request: %v", err)
 	}
 
 	// Use the transport directly - this should not panic
-	res, err := loggingTransport.RoundTrip(req)
+	res, err := loggingTransport.RoundTrip(req) //nolint:bodyclose // Body is nil in this test.
 	if err != nil {
 		t.Fatalf("RoundTrip failed: %v", err)
 	}
@@ -172,7 +172,7 @@ func TestLogTransportWithEmptyBody(t *testing.T) {
 
 	mock := &mockRoundTripper{t: t, responseToSend: mockResp}
 	loggingTransport := LogTransport(mock)
-	req, err := http.NewRequest("GET", "http://example.com", nil)
+	req, err := http.NewRequest(http.MethodGet, "http://example.com", http.NoBody)
 	if err != nil {
 		t.Fatalf("Failed to create request: %v", err)
 	}
@@ -188,7 +188,7 @@ func TestLogTransportWithEmptyBody(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to read response body: %v", err)
 	}
-	res.Body.Close()
+	_ = res.Body.Close()
 	if len(body) != 0 {
 		t.Errorf("Expected empty body, got %q", string(body))
 	}

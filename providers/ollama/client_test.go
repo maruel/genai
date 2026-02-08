@@ -6,6 +6,7 @@ package ollama_test
 
 import (
 	"context"
+	"errors"
 	"log/slog"
 	"net/http"
 	"os"
@@ -45,8 +46,9 @@ func TestClient(t *testing.T) {
 	})
 
 	t.Run("Scoreboard", func(t *testing.T) {
-		var models []scoreboard.Model
-		for _, sc := range ollama.Scoreboard().Scenarios {
+		scenarios := ollama.Scoreboard().Scenarios
+		models := make([]scoreboard.Model, 0, len(scenarios))
+		for _, sc := range scenarios {
 			for _, m := range sc.Models {
 				models = append(models, scoreboard.Model{Model: m, Reason: sc.Reason})
 			}
@@ -182,7 +184,7 @@ func (l *lazyServer) lazyStart(t testing.TB) string {
 		}
 		l.url = srv.URL()
 		l.t.Cleanup(func() {
-			if err := srv.Close(); err != nil && err != context.Canceled {
+			if err := srv.Close(); err != nil && !errors.Is(err, context.Canceled) {
 				l.t.Error(err)
 			}
 		})

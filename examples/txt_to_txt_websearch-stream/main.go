@@ -41,12 +41,12 @@ func main() {
 	for f := range fragments {
 		if !f.Citation.IsZero() {
 			fmt.Printf("Sources:\n")
-			for _, src := range f.Citation.Sources {
-				switch src.Type {
+			for i := range f.Citation.Sources {
+				switch f.Citation.Sources[i].Type {
 				case genai.CitationWeb:
-					fmt.Printf("- %s / %s\n", src.Title, src.URL)
+					fmt.Printf("- %s / %s\n", f.Citation.Sources[i].Title, f.Citation.Sources[i].URL)
 				case genai.CitationWebImage:
-					fmt.Printf("- image: %s\n", src.URL)
+					fmt.Printf("- image: %s\n", f.Citation.Sources[i].URL)
 				case genai.CitationWebQuery, genai.CitationDocument, genai.CitationTool:
 				}
 			}

@@ -20,12 +20,12 @@ import (
 func printList(ctx context.Context, w io.Writer) error {
 	all := maps.Clone(providers.All)
 	for _, name := range slices.Sorted(maps.Keys(all)) {
-		fmt.Fprintf(w, "- %s\n", name)
+		_, _ = fmt.Fprintf(w, "- %s\n", name)
 		c, err := all[name].Factory(ctx)
 		// The function can return an error and still return a client when no API key was found. It's okay here
 		// because we won't use the service provider.
 		if c == nil {
-			fmt.Fprintf(w, "ignoring provider %s: %v\n", name, err)
+			_, _ = fmt.Fprintf(w, "ignoring provider %s: %v\n", name, err)
 			continue
 		}
 		async := ""
@@ -37,13 +37,13 @@ func printList(ctx context.Context, w io.Writer) error {
 			if len(m) > 3 {
 				m = append(slices.Clone(m[:3]), "...")
 			}
-			fmt.Fprintf(w, "  - %s\n", strings.Join(m, ", "))
+			_, _ = fmt.Fprintf(w, "  - %s\n", strings.Join(m, ", "))
 			if isTextOnly(scenario.In) && isTextOnly(scenario.Out) {
-				fmt.Fprintf(w, "    in/out:   text only\n")
+				_, _ = fmt.Fprintf(w, "    in/out:   text only\n")
 			} else {
 				in := getDeliveryConstraints(scenario.In)
 				out := getDeliveryConstraints(scenario.Out)
-				fmt.Fprintf(w, "    in/out:   ⇒ %s%s / %s%s ⇒\n", modalityMapToString(scenario.In), in, modalityMapToString(scenario.Out), out)
+				_, _ = fmt.Fprintf(w, "    in/out:   ⇒ %s%s / %s%s ⇒\n", modalityMapToString(scenario.In), in, modalityMapToString(scenario.Out), out)
 			}
 			chat := ""
 			stream := ""
@@ -55,14 +55,14 @@ func printList(ctx context.Context, w io.Writer) error {
 			}
 			if chat == stream {
 				if chat != "" {
-					fmt.Fprintf(w, "    features: %s%s\n", async, chat)
+					_, _ = fmt.Fprintf(w, "    features: %s%s\n", async, chat)
 				}
 			} else {
 				if chat != "" {
-					fmt.Fprintf(w, "    buffered: %s%s\n", async, chat)
+					_, _ = fmt.Fprintf(w, "    buffered: %s%s\n", async, chat)
 				}
 				if stream != "" {
-					fmt.Fprintf(w, "    streamed: %s%s\n", async, stream)
+					_, _ = fmt.Fprintf(w, "    streamed: %s%s\n", async, stream)
 				}
 			}
 		}
@@ -70,7 +70,7 @@ func printList(ctx context.Context, w io.Writer) error {
 	return nil
 }
 
-// modalityMapToString converts a modality capability map to a readable string
+// modalityMapToString converts a modality capability map to a readable string.
 func modalityMapToString(m map[genai.Modality]scoreboard.ModalCapability) string {
 	if len(m) == 0 {
 		return ""
@@ -83,7 +83,7 @@ func modalityMapToString(m map[genai.Modality]scoreboard.ModalCapability) string
 	return strings.Join(modalities, ", ")
 }
 
-// isTextOnly checks if a modality map contains only text
+// isTextOnly checks if a modality map contains only text.
 func isTextOnly(m map[genai.Modality]scoreboard.ModalCapability) bool {
 	return len(m) == 1 && m[genai.ModalityText].Inline
 }
@@ -124,7 +124,7 @@ func functionality(f *scoreboard.Functionality) string {
 	return strings.Join(items, " ")
 }
 
-// getDeliveryConstraints analyzes modality capabilities to determine delivery constraints
+// getDeliveryConstraints analyzes modality capabilities to determine delivery constraints.
 func getDeliveryConstraints(capabilities map[genai.Modality]scoreboard.ModalCapability) string {
 	if len(capabilities) == 0 || isTextOnly(capabilities) {
 		return ""
@@ -139,22 +139,24 @@ func getDeliveryConstraints(capabilities map[genai.Modality]scoreboard.ModalCapa
 		if modality == genai.ModalityText {
 			continue
 		}
-		if cap.Inline && cap.URL {
+		switch {
+		case cap.Inline && cap.URL:
 			hasBoth = true
 			allInlineOnly = false
 			allURLOnly = false
-		} else if cap.Inline {
+		case cap.Inline:
 			allURLOnly = false
-		} else if cap.URL {
+		case cap.URL:
 			allInlineOnly = false
 		}
 	}
 
-	if hasBoth {
+	switch {
+	case hasBoth:
 		return ""
-	} else if allInlineOnly {
+	case allInlineOnly:
 		return " (inline only)"
-	} else if allURLOnly {
+	case allURLOnly:
 		return " (url only)"
 	}
 	return ""

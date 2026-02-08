@@ -80,7 +80,7 @@ func New(ctx context.Context, exe, modelPath string, logOutput io.Writer, hostPo
 			}
 		}
 		port = l.Addr().(*net.TCPAddr).Port
-		if err = l.Close(); err != nil {
+		if err := l.Close(); err != nil {
 			return nil, err
 		}
 	}
@@ -119,7 +119,7 @@ func New(ctx context.Context, exe, modelPath string, logOutput io.Writer, hostPo
 		}
 		return cmd.Process.Signal(os.Interrupt)
 	}
-	if err = cmd.Start(); err != nil {
+	if err := cmd.Start(); err != nil {
 		return nil, err
 	}
 	done := make(chan error)
@@ -132,11 +132,7 @@ func New(ctx context.Context, exe, modelPath string, logOutput io.Writer, hostPo
 				// It was simply killed.
 				err2 = nil
 			}
-			if runtime.GOOS == "windows" {
-				// We need to figure out how to differentiate between normal quitting
-				// and an error.
-				// err2 = nil
-			}
+			// TODO: on Windows, figure out how to differentiate between normal quitting and an error.
 		}
 		done <- err2
 		close(done)
@@ -168,6 +164,7 @@ func New(ctx context.Context, exe, modelPath string, logOutput io.Writer, hostPo
 	return &Server{url: u, done: done, cmd: cmd}, nil
 }
 
+// Close stops the server and waits for it to exit.
 func (s *Server) Close() error {
 	_ = s.cmd.Cancel()
 	err := <-s.done
@@ -200,7 +197,7 @@ func DownloadRelease(ctx context.Context, cache string, version int) (string, er
 		// If this fails, starts from scratch.
 		if out, err := exec.CommandContext(ctx, llamaserver, "--version").CombinedOutput(); err == nil {
 			if i := bytes.IndexByte(out, '\n'); i > 1 {
-				re := regexp.MustCompile("^version: ([0-9]+) .+$")
+				re := regexp.MustCompile(`^version: (\d+) .+$`)
 				if m := re.FindStringSubmatch(string(out[0:i])); len(m) == 2 {
 					if v, _ := strconv.Atoi(m[1]); v == version {
 						return llamaserver, nil
@@ -211,7 +208,7 @@ func DownloadRelease(ctx context.Context, cache string, version int) (string, er
 	}
 
 	build := "b" + strconv.Itoa(version)
-	url := "https://github.com/ggml-org/llama.cpp/releases/download/" + url.PathEscape(build) + "/"
+	baseURL := "https://github.com/ggml-org/llama.cpp/releases/download/" + url.PathEscape(build) + "/"
 	zipname := ""
 	wantedFiles := []string{filepath.Base(llamaserver)}
 	switch runtime.GOOS {
@@ -220,35 +217,37 @@ func DownloadRelease(ctx context.Context, cache string, version int) (string, er
 		zipname = "llama-" + build + "-bin-macos-arm64.zip"
 		wantedFiles = append(wantedFiles, "*.dylib", "*.metal")
 	case "linux":
-		if runtime.GOARCH == "arm64" {
+		switch runtime.GOARCH {
+		case "arm64":
 			zipname = "llama-" + build + "-bin-ubuntu-arm64.zip"
-		} else if runtime.GOARCH == "amd64" {
+		case "amd64":
 			zipname = "llama-" + build + "-bin-ubuntu-x64.zip"
-		} else {
-			return "", fmt.Errorf("don't know how to select " + runtime.GOOS + "/" + runtime.GOARCH)
+		default:
+			return "", errors.New("don't know how to select " + runtime.GOOS + "/" + runtime.GOARCH)
 		}
 		wantedFiles = append(wantedFiles, "*.so")
 	case "windows":
 		_, err := exec.Command("nvcc", "--version").CombinedOutput()
-		if err == nil {
+		switch {
+		case err == nil:
 			// This is tricky because in the case of image generation, we may want to
 			// run on the CPU instead.
 			// TODO: We'll have to list the files on GH to determine the cuda version to get the exact filename. :(
 			// TODO: Vulkan, HIP, OpenCL, sycl.
 			zipname = "llama-" + build + "-bin-win-cuda-12.4-x64.zip"
-		} else if runtime.GOARCH == "arm64" {
+		case runtime.GOARCH == "arm64":
 			zipname = "llama-" + build + "-bin-win-cpu-arm64.zip"
-		} else if runtime.GOARCH == "amd64" {
+		case runtime.GOARCH == "amd64":
 			zipname = "llama-" + build + "-bin-win-cpu-x64.zip"
-		} else {
-			return "", fmt.Errorf("don't know how to select " + runtime.GOOS + "/" + runtime.GOARCH)
+		default:
+			return "", errors.New("don't know how to select " + runtime.GOOS + "/" + runtime.GOARCH)
 		}
 		wantedFiles = append(wantedFiles, "*.dll")
 	default:
-		return "", fmt.Errorf("don't know how to select " + runtime.GOOS + "/" + runtime.GOARCH)
+		return "", errors.New("don't know how to select " + runtime.GOOS + "/" + runtime.GOARCH)
 	}
 	zippath := filepath.Join(cache, zipname)
-	if err := downloadFile(ctx, url+zipname, zippath); err != nil {
+	if err := downloadFile(ctx, baseURL+zipname, zippath); err != nil {
 		return "", fmt.Errorf("failed to download %s from github: %w", zipname, err)
 	}
 
@@ -256,37 +255,39 @@ func DownloadRelease(ctx context.Context, cache string, version int) (string, er
 	if err != nil {
 		return "", err
 	}
-	defer z.Close()
+	defer func() { _ = z.Close() }()
 	for _, f := range z.File {
 		// Files are under build/bin/; ignore path.
 		n := filepath.Base(f.Name)
 		for _, desired := range wantedFiles {
-			if ok, _ := filepath.Match(desired, n); ok {
-				var src io.ReadCloser
-				if src, err = f.Open(); err != nil {
-					return "", err
-				}
-				var dst io.WriteCloser
-				if dst, err = os.OpenFile(filepath.Join(cache, n), os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0o755); err == nil {
-					_, err = io.CopyN(dst, src, int64(f.UncompressedSize64))
-				}
-				if err2 := src.Close(); err == nil {
-					err = err2
-				}
-				if err2 := dst.Close(); err == nil {
-					err = err2
-				}
-				if err != nil {
-					return "", fmt.Errorf("failed to write %q: %w", n, err)
-				}
+			ok, _ := filepath.Match(desired, n)
+			if !ok {
+				continue
+			}
+			var src io.ReadCloser
+			if src, err = f.Open(); err != nil {
+				return "", err
+			}
+			var dst io.WriteCloser
+			if dst, err = os.OpenFile(filepath.Join(cache, n), os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0o755); err == nil {
+				_, err = io.CopyN(dst, src, int64(f.UncompressedSize64))
+			}
+			if err2 := src.Close(); err == nil {
+				err = err2
+			}
+			if err2 := dst.Close(); err == nil {
+				err = err2
+			}
+			if err != nil {
+				return "", fmt.Errorf("failed to write %q: %w", n, err)
 			}
 		}
 	}
 	return llamaserver, err
 }
 
-func downloadFile(ctx context.Context, url, dst string) error {
-	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+func downloadFile(ctx context.Context, srcURL, dst string) error {
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, srcURL, http.NoBody)
 	if err != nil {
 		return err
 	}
@@ -297,8 +298,8 @@ func downloadFile(ctx context.Context, url, dst string) error {
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
-	if resp.StatusCode != 200 {
+	defer func() { _ = resp.Body.Close() }()
+	if resp.StatusCode != http.StatusOK {
 		return fmt.Errorf("unexpected http status code %d", resp.StatusCode)
 	}
 	// Only then create the file.

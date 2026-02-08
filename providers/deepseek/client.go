@@ -145,7 +145,8 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 	}
 	for i := range msgs {
 		// Split messages into multiple messages as needed.
-		if len(msgs[i].ToolCallResults) > 1 {
+		switch {
+		case len(msgs[i].ToolCallResults) > 1:
 			// Handle messages with multiple tool call results by creating multiple messages
 			for j := range msgs[i].ToolCallResults {
 				// Create a copy of the message with only one tool call result
@@ -158,7 +159,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 					c.Messages = append(c.Messages, newMsg)
 				}
 			}
-		} else if len(msgs[i].Requests) > 1 {
+		case len(msgs[i].Requests) > 1:
 			// Handle messages with multiple Request by creating multiple messages
 			for j := range msgs[i].Requests {
 				// Create a copy of the message with only one request
@@ -171,7 +172,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 					c.Messages = append(c.Messages, newMsg)
 				}
 			}
-		} else {
+		default:
 			var newMsg Message
 			if err := newMsg.From(&msgs[i]); err != nil {
 				errs = append(errs, fmt.Errorf("message #%d: %w", i, err))
@@ -187,6 +188,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 	return errors.Join(errs...)
 }
 
+// SetStream sets the streaming mode.
 func (c *ChatRequest) SetStream(stream bool) {
 	c.Stream = stream
 }
@@ -217,9 +219,10 @@ func (m *Message) From(in *genai.Message) error {
 	}
 	m.Name = in.User
 	if len(in.Requests) == 1 {
-		if in.Requests[0].Text != "" {
+		switch {
+		case in.Requests[0].Text != "":
 			m.Content += in.Requests[0].Text
-		} else if !in.Requests[0].Doc.IsZero() {
+		case !in.Requests[0].Doc.IsZero():
 			mimeType, data, err := in.Requests[0].Doc.Read(10 * 1024 * 1024)
 			if err != nil {
 				return fmt.Errorf("failed to read document: %w", err)
@@ -231,7 +234,7 @@ func (m *Message) From(in *genai.Message) error {
 				return fmt.Errorf("%s documents must be provided inline, not as a URL", mimeType)
 			}
 			m.Content += string(data)
-		} else {
+		default:
 			return errors.New("unknown Request type")
 		}
 		return nil
@@ -240,9 +243,10 @@ func (m *Message) From(in *genai.Message) error {
 		if len(in.Replies[i].Opaque) != 0 {
 			return fmt.Errorf("reply #%d: field Reply.Opaque not supported", i)
 		}
-		if in.Replies[i].Text != "" {
+		switch {
+		case in.Replies[i].Text != "":
 			m.Content += in.Replies[i].Text
-		} else if !in.Replies[i].Doc.IsZero() {
+		case !in.Replies[i].Doc.IsZero():
 			mimeType, data, err := in.Replies[i].Doc.Read(10 * 1024 * 1024)
 			if err != nil {
 				return fmt.Errorf("reply #%d: failed to read document: %w", i, err)
@@ -254,14 +258,14 @@ func (m *Message) From(in *genai.Message) error {
 				return fmt.Errorf("reply #%d: deepseek only supports text documents, got %s", 0, mimeType)
 			}
 			m.Content += string(data)
-		} else if in.Replies[i].Reasoning != "" {
+		case in.Replies[i].Reasoning != "":
 			// Reasoning content should not be returned to the model.
-		} else if !in.Replies[i].ToolCall.IsZero() {
+		case !in.Replies[i].ToolCall.IsZero():
 			m.ToolCalls = append(m.ToolCalls, ToolCall{})
 			if err := m.ToolCalls[len(m.ToolCalls)-1].From(&in.Replies[i].ToolCall); err != nil {
 				return fmt.Errorf("reply #%d: %w", i, err)
 			}
-		} else {
+		default:
 			return errors.New("unknown Reply type")
 		}
 	}
@@ -274,6 +278,7 @@ func (m *Message) From(in *genai.Message) error {
 	return nil
 }
 
+// To converts to the genai equivalent.
 func (m *Message) To(out *genai.Message) {
 	// Both ReasoningContent and Content can be set on the same reply.
 	if m.ReasoningContent != "" {
@@ -288,6 +293,7 @@ func (m *Message) To(out *genai.Message) {
 	}
 }
 
+// ToolCall is a provider-specific tool call.
 type ToolCall struct {
 	Index    int64  `json:"index,omitzero"`
 	ID       string `json:"id,omitzero"`
@@ -298,6 +304,7 @@ type ToolCall struct {
 	} `json:"function,omitzero"`
 }
 
+// From converts from the genai equivalent.
 func (t *ToolCall) From(in *genai.ToolCall) error {
 	if len(in.Opaque) != 0 {
 		return errors.New("field ToolCall.Opaque not supported")
@@ -309,12 +316,14 @@ func (t *ToolCall) From(in *genai.ToolCall) error {
 	return nil
 }
 
+// To converts to the genai equivalent.
 func (t *ToolCall) To(out *genai.ToolCall) {
 	out.ID = t.ID
 	out.Name = t.Function.Name
 	out.Arguments = t.Function.Arguments
 }
 
+// Tool is a provider-specific tool definition.
 type Tool struct {
 	Type     string `json:"type"` // "function"
 	Function struct {
@@ -324,6 +333,7 @@ type Tool struct {
 	} `json:"function"`
 }
 
+// ChatResponse is the provider-specific chat completion response.
 type ChatResponse struct {
 	ID      string `json:"id"`
 	Choices []struct {
@@ -339,6 +349,7 @@ type ChatResponse struct {
 	Usage             Usage  `json:"usage"`
 }
 
+// ToResult converts the response to a genai.Result.
 func (c *ChatResponse) ToResult() (genai.Result, error) {
 	out := genai.Result{
 		Usage: genai.Usage{
@@ -357,8 +368,10 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	return out, nil
 }
 
+// FinishReason is a provider-specific finish reason.
 type FinishReason string
 
+// Finish reason values.
 const (
 	FinishStop          FinishReason = "stop"
 	FinishToolCalls     FinishReason = "tool_calls"
@@ -367,6 +380,7 @@ const (
 	FinishInsufficient  FinishReason = "insufficient_system_resource"
 )
 
+// ToFinishReason converts to a genai.FinishReason.
 func (f FinishReason) ToFinishReason() genai.FinishReason {
 	switch f {
 	case FinishStop:
@@ -378,7 +392,10 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 	case FinishContentFilter:
 		return genai.FinishedContentFilter
 	case FinishInsufficient:
-		fallthrough
+		if !internal.BeLenient {
+			panic(f)
+		}
+		return genai.FinishReason(f)
 	default:
 		if !internal.BeLenient {
 			panic(f)
@@ -387,6 +404,7 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 	}
 }
 
+// Usage is the provider-specific token usage.
 type Usage struct {
 	CompletionTokens      int64 `json:"completion_tokens"`
 	PromptTokens          int64 `json:"prompt_tokens"`
@@ -401,6 +419,7 @@ type Usage struct {
 	} `json:"completion_tokens_details"`
 }
 
+// Logprobs is the provider-specific log probabilities.
 type Logprobs struct {
 	Content []struct {
 		Token       string  `json:"token"`
@@ -414,6 +433,7 @@ type Logprobs struct {
 	} `json:"content"`
 }
 
+// To converts to the genai equivalent.
 func (l *Logprobs) To() [][]genai.Logprob {
 	if len(l.Content) == 0 {
 		return nil
@@ -431,6 +451,7 @@ func (l *Logprobs) To() [][]genai.Logprob {
 	return out
 }
 
+// ChatStreamChunkResponse is the provider-specific streaming chat chunk.
 type ChatStreamChunkResponse struct {
 	ID                string `json:"id"`
 	Object            string `json:"object"`  // chat.completion.chunk
@@ -446,12 +467,14 @@ type ChatStreamChunkResponse struct {
 	Usage Usage `json:"usage"`
 }
 
+// Model is the provider-specific model metadata.
 type Model struct {
 	ID      string `json:"id"`
 	Object  string `json:"object"` // model
 	OwnedBy string `json:"owned_by"`
 }
 
+// GetID implements genai.Model.
 func (m *Model) GetID() string {
 	return m.ID
 }
@@ -460,17 +483,18 @@ func (m *Model) String() string {
 	return m.ID
 }
 
+// Context implements genai.Model.
 func (m *Model) Context() int64 {
 	return 0
 }
 
-// ModelsResponse represents the response structure for DeepSeek models listing
+// ModelsResponse represents the response structure for DeepSeek models listing.
 type ModelsResponse struct {
 	Object string  `json:"object"` // list
 	Data   []Model `json:"data"`
 }
 
-// ToModels converts DeepSeek models to genai.Model interfaces
+// ToModels converts DeepSeek models to genai.Model interfaces.
 func (r *ModelsResponse) ToModels() []genai.Model {
 	models := make([]genai.Model, len(r.Data))
 	for i := range r.Data {
@@ -481,6 +505,7 @@ func (r *ModelsResponse) ToModels() []genai.Model {
 
 //
 
+// ErrorResponse is the provider-specific error response.
 type ErrorResponse struct {
 	// Type  string `json:"type"`
 	ErrorVal struct {
@@ -495,6 +520,7 @@ func (er *ErrorResponse) Error() string {
 	return fmt.Sprintf("%s: %s", er.ErrorVal.Type, er.ErrorVal.Message)
 }
 
+// IsAPIError implements base.ErrorResponseI.
 func (er *ErrorResponse) IsAPIError() bool {
 	return true
 }

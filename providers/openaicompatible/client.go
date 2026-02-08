@@ -40,6 +40,7 @@ func Scoreboard() scoreboard.Score {
 	return s
 }
 
+// ChatRequest is the provider-specific chat completion request.
 type ChatRequest struct {
 	Model            string    `json:"model,omitzero"`
 	Messages         []Message `json:"messages"`
@@ -109,6 +110,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 	return errors.Join(errs...)
 }
 
+// SetStream sets the streaming mode.
 func (c *ChatRequest) SetStream(stream bool) {
 	c.Stream = stream
 }
@@ -119,17 +121,21 @@ type Message struct {
 	Content Contents `json:"content,omitzero"`
 }
 
+// IsZero reports whether the value is zero.
 func (m *Message) IsZero() bool {
 	return m.Role == "" && len(m.Content) == 0
 }
 
+// Content is a provider-specific content block.
 type Content struct {
 	Type ContentType `json:"type,omitzero"`
 	Text string      `json:"text,omitzero"`
 }
 
+// ContentType is a provider-specific content type.
 type ContentType string
 
+// Content type values.
 const (
 	ContentText ContentType = "text"
 )
@@ -138,11 +144,12 @@ const (
 // both string and Content struct types.
 type Contents []Content
 
+// MarshalJSON implements json.Marshaler.
 func (c *Contents) MarshalJSON() ([]byte, error) {
 	if len(*c) == 1 && (*c)[0].Type == ContentText {
 		return json.Marshal((*c)[0].Text)
 	}
-	return json.Marshal(([]Content)(*c))
+	return json.Marshal([]Content(*c))
 }
 
 // UnmarshalJSON implements custom unmarshalling for Contents type
@@ -181,9 +188,10 @@ func (m *Message) From(in *genai.Message) error {
 	if len(in.Requests) > 0 {
 		m.Content = make([]Content, 0, len(in.Requests))
 		for i := range in.Requests {
-			if in.Requests[i].Text != "" {
+			switch {
+			case in.Requests[i].Text != "":
 				m.Content = append(m.Content, Content{Type: ContentText, Text: in.Requests[i].Text})
-			} else if !in.Requests[i].Doc.IsZero() {
+			case !in.Requests[i].Doc.IsZero():
 				// Check if this is a text document
 				mimeType, data, err := in.Requests[i].Doc.Read(10 * 1024 * 1024)
 				if err != nil {
@@ -197,7 +205,7 @@ func (m *Message) From(in *genai.Message) error {
 					return fmt.Errorf("request #%d: %s documents must be provided inline, not as a URL", i, mimeType)
 				}
 				m.Content = append(m.Content, Content{Type: ContentText, Text: string(data)})
-			} else {
+			default:
 				return fmt.Errorf("request #%d: unknown Request type", 0)
 			}
 		}
@@ -205,11 +213,12 @@ func (m *Message) From(in *genai.Message) error {
 			if len(in.Replies[i].Opaque) != 0 {
 				return &internal.BadError{Err: fmt.Errorf("reply #%d: field Reply.Opaque not supported", i)}
 			}
-			if in.Replies[i].Text != "" {
+			switch {
+			case in.Replies[i].Text != "":
 				m.Content = append(m.Content, Content{Type: ContentText, Text: in.Replies[i].Text})
-			} else if in.Replies[i].Reasoning != "" {
+			case in.Replies[i].Reasoning != "":
 				// Ignore
-			} else if !in.Replies[i].Doc.IsZero() {
+			case !in.Replies[i].Doc.IsZero():
 				// Check if this is a text document
 				mimeType, data, err := in.Replies[i].Doc.Read(10 * 1024 * 1024)
 				if err != nil {
@@ -223,7 +232,7 @@ func (m *Message) From(in *genai.Message) error {
 					return fmt.Errorf("reply #%d: %s documents must be provided inline, not as a URL", i, mimeType)
 				}
 				m.Content = append(m.Content, Content{Type: ContentText, Text: string(data)})
-			} else {
+			default:
 				return &internal.BadError{Err: fmt.Errorf("reply #%d: unknown Reply type", i)}
 			}
 		}
@@ -234,6 +243,7 @@ func (m *Message) From(in *genai.Message) error {
 	return nil
 }
 
+// To converts to the genai equivalent.
 func (m *Message) To(out *genai.Message) error {
 	if len(m.Content) != 0 {
 		out.Replies = make([]genai.Reply, len(m.Content))
@@ -258,6 +268,7 @@ type ChatResponse struct {
 	Usage Usage `json:"usage"`
 }
 
+// ToResult converts the response to a genai.Result.
 func (c *ChatResponse) ToResult() (genai.Result, error) {
 	out := genai.Result{
 		Usage: genai.Usage{
@@ -288,13 +299,16 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	return out, nil
 }
 
+// FinishReason is a provider-specific finish reason.
 type FinishReason string
 
+// Finish reason values.
 const (
 	FinishStop   FinishReason = "stop"
 	FinishLength FinishReason = "length"
 )
 
+// ToFinishReason converts to a genai.FinishReason.
 func (f FinishReason) ToFinishReason() genai.FinishReason {
 	switch f {
 	case FinishStop:
@@ -309,6 +323,7 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 	}
 }
 
+// ChatStreamChunkResponse is the provider-specific streaming chat chunk.
 type ChatStreamChunkResponse struct {
 	Delta struct {
 		Text    string  `json:"text"`
@@ -324,6 +339,7 @@ type ChatStreamChunkResponse struct {
 	Usage Usage `json:"usage"`
 }
 
+// Usage is the provider-specific token usage.
 type Usage struct {
 	PromptTokens     int64 `json:"prompt_tokens"`
 	CompletionTokens int64 `json:"completion_tokens"`
@@ -339,6 +355,7 @@ func (er *ErrorResponse) Error() string {
 	return fmt.Sprintf("%s", *er)
 }
 
+// IsAPIError implements base.ErrorResponseI.
 func (er *ErrorResponse) IsAPIError() bool {
 	return true
 }

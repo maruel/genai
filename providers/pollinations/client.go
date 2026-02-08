@@ -146,6 +146,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 	return errors.Join(errs...)
 }
 
+// SetStream sets the streaming mode.
 func (c *ChatRequest) SetStream(stream bool) {
 	c.Stream = stream
 	c.StreamOptions.IncludeUsage = true
@@ -176,7 +177,7 @@ func (c *ChatRequest) initOptionsText(v *genai.GenOptionText) ([]string, []error
 	return unsupported, errs
 }
 
-func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools) ([]string, []error) {
+func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools) ([]string, []error) { //nolint:unparam // Consistent signature across providers.
 	var errs []error
 	var unsupported []string
 	if len(v.Tools) != 0 {
@@ -207,12 +208,14 @@ func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools) ([]string, []err
 // ReasoningEffort is the effort the model should put into reasoning. Default is Medium.
 type ReasoningEffort string
 
+// Reasoning effort values.
 const (
 	ReasoningEffortLow    ReasoningEffort = "low"
 	ReasoningEffortMedium ReasoningEffort = "medium"
 	ReasoningEffortHigh   ReasoningEffort = "high"
 )
 
+// Message is a provider-specific message.
 type Message struct {
 	Role       string     `json:"role"` // "system", "assistant", "user"
 	Content    Contents   `json:"content,omitzero"`
@@ -269,15 +272,17 @@ func (m *Message) From(in *genai.Message) error {
 // Contents exists to marshal single content text block as a string.
 type Contents []Content
 
+// IsZero reports whether the value is zero.
 func (c *Contents) IsZero() bool {
 	return len(*c) == 0
 }
 
+// MarshalJSON implements json.Marshaler.
 func (c *Contents) MarshalJSON() ([]byte, error) {
 	if len(*c) == 1 && (*c)[0].Type == ContentText {
 		return json.Marshal((*c)[0].Text)
 	}
-	return json.Marshal(([]Content)(*c))
+	return json.Marshal([]Content(*c))
 }
 
 // UnmarshalJSON implements custom unmarshalling for Contents type
@@ -306,6 +311,7 @@ func (c *Contents) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
+// Content is a provider-specific content block.
 type Content struct {
 	Type ContentType `json:"type,omitzero"`
 
@@ -324,6 +330,7 @@ type Content struct {
 	} `json:"input_audio,omitzero"`
 }
 
+// FromRequest converts from a genai request.
 func (c *Content) FromRequest(in *genai.Request) error {
 	if in.Text != "" {
 		c.Type = ContentText
@@ -368,6 +375,7 @@ func (c *Content) FromRequest(in *genai.Request) error {
 	return errors.New("unknown Request type")
 }
 
+// FromReply converts from a genai reply.
 func (c *Content) FromReply(in *genai.Reply) error {
 	if in.Text != "" {
 		c.Type = ContentText
@@ -412,14 +420,17 @@ func (c *Content) FromReply(in *genai.Reply) error {
 	return &internal.BadError{Err: errors.New("unknown Reply type")}
 }
 
+// ContentType is a provider-specific content type.
 type ContentType string
 
+// Content type values.
 const (
 	ContentText     ContentType = "text"
 	ContentImageURL ContentType = "image_url"
 	ContentAudio    ContentType = "input_audio"
 )
 
+// Tool is a provider-specific tool definition.
 type Tool struct {
 	Type     string `json:"type,omitzero"` // "function"
 	Function struct {
@@ -429,6 +440,7 @@ type Tool struct {
 	} `json:"function,omitzero"`
 }
 
+// ToolCall is a provider-specific tool call.
 type ToolCall struct {
 	Type     string `json:"type,omitzero"` // "function"
 	ID       string `json:"id,omitzero"`
@@ -439,6 +451,7 @@ type ToolCall struct {
 	} `json:"function,omitzero"`
 }
 
+// From converts from the genai equivalent.
 func (t *ToolCall) From(in *genai.ToolCall) {
 	t.Type = "function"
 	t.ID = in.ID
@@ -446,12 +459,14 @@ func (t *ToolCall) From(in *genai.ToolCall) {
 	t.Function.Arguments = in.Arguments
 }
 
+// To converts to the genai equivalent.
 func (t *ToolCall) To(out *genai.ToolCall) {
 	out.ID = t.ID
 	out.Name = t.Function.Name
 	out.Arguments = t.Function.Arguments
 }
 
+// ChatResponse is the provider-specific chat completion response.
 type ChatResponse struct {
 	ID      string    `json:"id"`
 	Object  string    `json:"object"` // "chat.completion"
@@ -473,6 +488,7 @@ type ChatResponse struct {
 	UserTier            string               `json:"user_tier"`
 }
 
+// ToResult converts the response to a genai.Result.
 func (c *ChatResponse) ToResult() (genai.Result, error) {
 	// There's a "X-Cache" HTTP response header that says when the whole request was cached.
 	out := genai.Result{
@@ -492,14 +508,17 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	return out, err
 }
 
+// FinishReason is a provider-specific finish reason.
 type FinishReason string
 
+// Finish reason values.
 const (
 	FinishStop      FinishReason = "stop"
 	FinishLength    FinishReason = "length"
 	FinishToolCalls FinishReason = "tool_calls"
 )
 
+// ToFinishReason converts to a genai.FinishReason.
 func (f FinishReason) ToFinishReason() genai.FinishReason {
 	switch f {
 	case FinishStop:
@@ -516,6 +535,7 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 	}
 }
 
+// PromptFilterResult is the result of content filtering on a prompt.
 type PromptFilterResult struct {
 	PromptIndex int64 `json:"prompt_index"`
 	// One of the following is set.
@@ -523,6 +543,7 @@ type PromptFilterResult struct {
 	ContentFilterResult  ContentFilterResult `json:"content_filter_result"`
 }
 
+// Usage is the provider-specific token usage.
 type Usage struct {
 	PromptTokens            int64 `json:"prompt_tokens"`
 	AudioPromptTokens       int64 `json:"audio_prompt_tokens"`
@@ -543,6 +564,7 @@ type Usage struct {
 	} `json:"prompt_tokens_details"`
 }
 
+// MessageResponse is a message in a provider-specific response.
 type MessageResponse struct {
 	Role             string     `json:"role"`
 	ReasoningContent string     `json:"reasoning_content"`
@@ -555,6 +577,7 @@ type MessageResponse struct {
 	} `json:"audio"`
 }
 
+// To converts to the genai equivalent.
 func (m *MessageResponse) To(out *genai.Message) error {
 	for i := range m.Content {
 		if m.Content[i].Text != "" {
@@ -583,6 +606,7 @@ func (m *MessageResponse) To(out *genai.Message) error {
 	return nil
 }
 
+// ChatStreamChunkResponse is the provider-specific streaming chat chunk.
 type ChatStreamChunkResponse struct {
 	ID      string    `json:"id"`      //
 	Object  string    `json:"object"`  // "chat.completion.chunk"
@@ -608,6 +632,7 @@ type ChatStreamChunkResponse struct {
 	Usage               Usage                `json:"usage"`
 }
 
+// ContentFilterResult is the result of content filtering.
 type ContentFilterResult struct {
 	CustomBlocklists struct {
 		Filtered bool `json:"filtered"`
@@ -645,6 +670,7 @@ type ContentFilterResult struct {
 	} `json:"violence"`
 }
 
+// ImageModel is the provider-specific image model metadata.
 type ImageModel struct {
 	Aliases          Strings  `json:"aliases"`
 	Description      string   `json:"description"`
@@ -671,18 +697,21 @@ type ImageModel struct {
 	} `json:"pricing,omitzero"`
 }
 
+// GetID implements genai.Model.
 func (i *ImageModel) GetID() string {
 	return i.Name
 }
 
 func (i *ImageModel) String() string {
-	return fmt.Sprintf("%s in:text out:image", i.Name)
+	return i.Name + " in:text out:image"
 }
 
+// Context implements genai.Model.
 func (i *ImageModel) Context() int64 {
 	return 0
 }
 
+// Inputs returns the supported input modalities.
 func (i *ImageModel) Inputs() []string {
 	if len(i.InputModalities) != 0 {
 		return i.InputModalities
@@ -690,6 +719,7 @@ func (i *ImageModel) Inputs() []string {
 	return []string{"text"}
 }
 
+// Outputs returns the supported output modalities.
 func (i *ImageModel) Outputs() []string {
 	if len(i.OutputModalities) != 0 {
 		return i.OutputModalities
@@ -697,8 +727,10 @@ func (i *ImageModel) Outputs() []string {
 	return []string{"image"}
 }
 
+// ImageModelsResponse is a list of image model metadata.
 type ImageModelsResponse []ImageModel
 
+// ToModels converts to a slice of genai.Model.
 func (r *ImageModelsResponse) ToModels() []genai.Model {
 	models := make([]genai.Model, len(*r))
 	for i := range *r {
@@ -707,6 +739,7 @@ func (r *ImageModelsResponse) ToModels() []genai.Model {
 	return models
 }
 
+// TextModel is the provider-specific text model metadata.
 type TextModel struct {
 	Aliases          Strings  `json:"aliases"`
 	Audio            bool     `json:"audio"`
@@ -747,6 +780,7 @@ type TextModel struct {
 	Voices                 []string `json:"voices"`
 }
 
+// GetID implements genai.Model.
 func (t *TextModel) GetID() string {
 	return t.Name
 }
@@ -771,20 +805,25 @@ func (t *TextModel) String() string {
 		t.Name, strings.Join(in, ","), strings.Join(out, ","), t.Provider, t.Description)
 }
 
+// Context implements genai.Model.
 func (t *TextModel) Context() int64 {
 	return t.ContextWindow
 }
 
+// Inputs returns the supported input modalities.
 func (t *TextModel) Inputs() []string {
 	return t.InputModalities
 }
 
+// Outputs returns the supported output modalities.
 func (t *TextModel) Outputs() []string {
 	return t.OutputModalities
 }
 
+// TextModelsResponse is a list of text model metadata.
 type TextModelsResponse []TextModel
 
+// ToModels converts to a slice of genai.Model.
 func (r *TextModelsResponse) ToModels() []genai.Model {
 	models := make([]genai.Model, len(*r))
 	for i := range *r {
@@ -796,6 +835,7 @@ func (r *TextModelsResponse) ToModels() []genai.Model {
 // Strings is generally a list of strings but can be a single string.
 type Strings []string
 
+// UnmarshalJSON implements json.Unmarshaler.
 func (s *Strings) UnmarshalJSON(b []byte) error {
 	var ss string
 	if err := json.Unmarshal(b, &ss); err == nil {
@@ -807,6 +847,7 @@ func (s *Strings) UnmarshalJSON(b []byte) error {
 
 //
 
+// ErrorResponse is the provider-specific error response.
 type ErrorResponse struct {
 	Success  bool       `json:"success,omitzero"`
 	ErrorVal ErrorValue `json:"error"`
@@ -874,10 +915,12 @@ func (er *ErrorResponse) Error() string {
 	return ""
 }
 
+// IsAPIError implements base.ErrorResponseI.
 func (er *ErrorResponse) IsAPIError() bool {
 	return true
 }
 
+// UnionError represents an error with multiple possible types.
 type UnionError struct {
 	Issues []struct {
 		Code        string       `json:"code"`
@@ -900,6 +943,7 @@ type ErrorValue struct {
 // CodeValue handles fields that can be either a string or a number.
 type CodeValue string
 
+// UnmarshalJSON implements json.Unmarshaler.
 func (c *CodeValue) UnmarshalJSON(b []byte) error {
 	// Try as a string first.
 	var s string
@@ -916,6 +960,7 @@ func (c *CodeValue) UnmarshalJSON(b []byte) error {
 	return fmt.Errorf("code must be string or number, got: %s", string(b))
 }
 
+// UnmarshalJSON implements json.Unmarshaler.
 func (e *ErrorValue) UnmarshalJSON(b []byte) error {
 	// Try as a string first.
 	var s string
@@ -998,7 +1043,7 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 			preferText = false
 		case genai.ModalityText:
 		case genai.ModalityDocument, genai.ModalityVideo:
-			fallthrough
+			return nil, fmt.Errorf("unexpected option Modalities %s, only image or text are supported", modalities)
 		default:
 			return nil, fmt.Errorf("unexpected option Modalities %s, only image or text are supported", modalities)
 		}
@@ -1093,20 +1138,18 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 			continue
 		}
 		// This is meh.
-		if cheap {
+		switch {
+		case cheap:
 			if m.Name == "gemini" {
 				selectedModel = m.Name
-				break
 			}
-		} else if good {
+		case good:
 			if strings.HasPrefix(m.Name, "openai") && !m.Reasoning {
 				selectedModel = m.Name
-				break
 			}
-		} else {
+		default:
 			if !strings.HasPrefix(m.Name, "openai") && m.Reasoning {
 				selectedModel = m.Name
-				break
 			}
 		}
 	}
@@ -1120,7 +1163,7 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 //
 // We may want to make this function overridable in the future by the client since this is going to break one
 // day or another.
-func (c *Client) selectBestImageModel(ctx context.Context, preference string) (string, error) {
+func (c *Client) selectBestImageModel(ctx context.Context, preference string) (string, error) { //nolint:unparam // preference for future use.
 	mdls, err := c.ListImageGenModels(ctx)
 	if err != nil {
 		return "", fmt.Errorf("failed to automatically detect the model modality: %w", err)
@@ -1167,7 +1210,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 		if len(msgs) != 1 {
 			return genai.Result{}, errors.New("must pass exactly one Message")
 		}
-		return c.genImage(ctx, msgs[0], opts...)
+		return c.genImage(ctx, &msgs[0], opts...)
 	}
 	if err := c.validateModality(ctx, genai.ModalityText); err != nil {
 		return genai.Result{}, err
@@ -1203,7 +1246,7 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest) (iter.Seq[Ch
 // Use it to generate images.
 //
 // Default rate limit is 0.2 QPS / IP.
-func (c *Client) genImage(ctx context.Context, msg genai.Message, opts ...genai.GenOption) (genai.Result, error) {
+func (c *Client) genImage(ctx context.Context, msg *genai.Message, opts ...genai.GenOption) (genai.Result, error) {
 	// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#1-text-to-image-get-%EF%B8%8F
 	// TODO:
 	// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#4-text-to-speech-get-%EF%B8%8F%EF%B8%8F
@@ -1250,7 +1293,7 @@ func (c *Client) genImage(ctx context.Context, msg genai.Message, opts ...genai.
 	qp.Add("private", "true") // "nofeed"
 	qp.Add("enhance", "false")
 	qp.Add("safe", "false")
-	// qp.Add("negative_prompt", "worst quality, blurry")
+	// Other supported options: negative_prompt.
 	qp.Add("quality", "medium")
 	for _, mc := range msg.Requests {
 		if mc.Doc.Src != nil {
@@ -1262,8 +1305,8 @@ func (c *Client) genImage(ctx context.Context, msg genai.Message, opts ...genai.
 	}
 
 	prompt := url.QueryEscape(msg.String())
-	url := "https://image.pollinations.ai/prompt/" + url.PathEscape(prompt) + "?" + qp.Encode()
-	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+	u := "https://image.pollinations.ai/prompt/" + url.PathEscape(prompt) + "?" + qp.Encode()
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u, http.NoBody)
 	if err != nil {
 		return res, err
 	}
@@ -1271,9 +1314,9 @@ func (c *Client) genImage(ctx context.Context, msg genai.Message, opts ...genai.
 	if err != nil {
 		return res, err
 	}
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
 		_ = resp.Body.Close()
-		return res, c.impl.DecodeError(url, resp)
+		return res, c.impl.DecodeError(u, resp)
 	}
 	b, err := io.ReadAll(resp.Body)
 	_ = resp.Body.Close()
@@ -1286,7 +1329,10 @@ func (c *Client) genImage(ctx context.Context, msg genai.Message, opts ...genai.
 	} else {
 		return res, fmt.Errorf("unknown Content-Type: %s", ct)
 	}
-	return res, res.Validate()
+	if err := res.Validate(); err != nil {
+		return res, err
+	}
+	return res, nil
 }
 
 // ListModels implements genai.Provider.
@@ -1295,10 +1341,10 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 		return c.impl.PreloadedModels, nil
 	}
 	// https://github.com/pollinations/pollinations/blob/master/APIDOCS.md#list-available-image-models-
-	var out []genai.Model
 	img, err1 := c.ListImageGenModels(ctx)
-	out = append(out, img...)
 	txt, err2 := c.ListTextModels(ctx)
+	out := make([]genai.Model, 0, len(img)+len(txt))
+	out = append(out, img...)
 	out = append(out, txt...)
 	if err1 == nil {
 		err1 = err2
@@ -1306,6 +1352,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	return out, err1
 }
 
+// ListImageGenModels lists available image generation models.
 func (c *Client) ListImageGenModels(ctx context.Context) ([]genai.Model, error) {
 	var resp ImageModelsResponse
 	if err := c.impl.DoRequest(ctx, "GET", "https://enter.pollinations.ai/api/generate/image/models", nil, &resp); err != nil {
@@ -1314,6 +1361,7 @@ func (c *Client) ListImageGenModels(ctx context.Context) ([]genai.Model, error) 
 	return resp.ToModels(), nil
 }
 
+// ListTextModels lists available text models.
 func (c *Client) ListTextModels(ctx context.Context) ([]genai.Model, error) {
 	var resp TextModelsResponse
 	if err := c.impl.DoRequest(ctx, "GET", "https://enter.pollinations.ai/api/generate/text/models", nil, &resp); err != nil {
@@ -1438,7 +1486,7 @@ type exponentialBackoff struct {
 }
 
 func (e *exponentialBackoff) ShouldRetry(ctx context.Context, start time.Time, try int, err error, resp *http.Response) bool {
-	if resp != nil && resp.StatusCode == 402 {
+	if resp != nil && resp.StatusCode == http.StatusPaymentRequired {
 		return true
 	}
 	return e.ExponentialBackoff.ShouldRetry(ctx, start, try, err, resp)

@@ -76,7 +76,11 @@ func TestClient(t *testing.T) {
 	t.Run("Scoreboard", func(t *testing.T) {
 		// We do not want to test thousands of models, so get the ones already in the scoreboard.
 		sb := getClient(t, "").Scoreboard()
-		var models []scoreboard.Model
+		totalModels := 0
+		for _, sc := range sb.Scenarios {
+			totalModels += len(sc.Models)
+		}
+		models := make([]scoreboard.Model, 0, totalModels)
 		for _, sc := range sb.Scenarios {
 			for _, model := range sc.Models {
 				models = append(models, scoreboard.Model{Model: model, Reason: sc.Reason})

@@ -186,7 +186,7 @@ func TestClient(t *testing.T) {
 		if len(res.Replies) != 1 {
 			t.Fatalf("got %d contents, want 1", len(res.Replies))
 		}
-		req, err := http.NewRequestWithContext(ctx, "GET", res.Replies[0].Doc.URL, nil)
+		req, err := http.NewRequestWithContext(ctx, http.MethodGet, res.Replies[0].Doc.URL, http.NoBody)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -194,6 +194,7 @@ func TestClient(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
+		defer func() { _ = resp.Body.Close() }()
 		t.Log(resp)
 	})
 
@@ -205,12 +206,12 @@ func TestClient(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		defer f1.Close()
+		defer func() { _ = f1.Close() }()
 		f2, err := os.Open("../../scoreboard/testdata/audio.ogg")
 		if err != nil {
 			t.Fatal(err)
 		}
-		defer f2.Close()
+		defer func() { _ = f2.Close() }()
 
 		msgs := genai.Messages{
 			{
@@ -545,10 +546,11 @@ func TestClient(t *testing.T) {
 				if err != nil {
 					t.Fatal(err)
 				}
-				var text string
+				var textSb strings.Builder
 				for _, r := range res.Replies {
-					text += r.Text
+					textSb.WriteString(r.Text)
 				}
+				text := textSb.String()
 				if !strings.Contains(strings.ToLower(text), "chimera") {
 					t.Errorf("expected response to mention Chimera, got: %s", text)
 				}
@@ -717,7 +719,7 @@ func TestClient(t *testing.T) {
 //
 
 func init() {
-	// slog.SetDefault(slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: slog.LevelDebug})))
+	// Set slog default to debug level for verbose logging during test development.
 	internal.BeLenient = false
 }
 

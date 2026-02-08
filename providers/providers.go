@@ -31,7 +31,7 @@ import (
 	"github.com/maruel/genai/providers/togetherai"
 )
 
-// Config is a registry entry
+// Config is a registry entry.
 type Config struct {
 	APIKeyEnvVar string
 	Alias        string

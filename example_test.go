@@ -119,7 +119,7 @@ func ExampleProvider_genSync_pdf() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer f.Close()
+	defer func() { _ = f.Close() }()
 	msgs := genai.Messages{
 		{
 			Requests: []genai.Request{
@@ -150,7 +150,7 @@ func ExampleProvider_genSync_audio() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer f.Close()
+	defer func() { _ = f.Close() }()
 	msgs := genai.Messages{
 		{
 			Requests: []genai.Request{
@@ -181,7 +181,7 @@ func ExampleProvider_genSync_video() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer f.Close()
+	defer func() { _ = f.Close() }()
 	// TogetherAI seems to require separate messages for text and images.
 	msgs := genai.Messages{
 		genai.NewTextMessage("What is the word? Reply with exactly and only one word."),
@@ -213,7 +213,7 @@ func ExampleProvider_GenStream() {
 	}
 	fragments, finish := c.GenStream(ctx, msgs, &opts, genai.GenOptionSeed(1))
 	for f := range fragments {
-		os.Stdout.WriteString(f.Text)
+		_, _ = os.Stdout.WriteString(f.Text)
 	}
 	if _, err := finish(); err != nil {
 		log.Fatal(err)

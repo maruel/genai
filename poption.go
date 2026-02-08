@@ -20,6 +20,7 @@ type ProviderOption interface {
 // "<PROVIDER>_API_KEY" to use as a default value if unspecified.
 type ProviderOptionAPIKey string
 
+// Validate implements Validatable.
 func (p ProviderOptionAPIKey) Validate() error {
 	if p == "" {
 		return errors.New("ProviderOptionAPIKey cannot be empty")
@@ -32,6 +33,7 @@ func (p ProviderOptionAPIKey) Validate() error {
 // It is mostly used by locally hosted services (llamacpp, ollama) or for generic client (openaicompatible).
 type ProviderOptionRemote string
 
+// Validate implements Validatable.
 func (p ProviderOptionRemote) Validate() error {
 	if p == "" {
 		return errors.New("ProviderOptionRemote cannot be empty")
@@ -53,6 +55,7 @@ func (p ProviderOptionRemote) Validate() error {
 // available anymore or that the default model changes.
 type ProviderOptionModel string
 
+// Validate implements Validatable.
 func (p ProviderOptionModel) Validate() error {
 	if p == "" {
 		return errors.New("ProviderOptionModel cannot be empty")
@@ -74,6 +77,7 @@ func (p ProviderOptionModel) Validate() error {
 // causing a ListModels call.
 type ProviderOptionModalities Modalities
 
+// Validate implements Validatable.
 func (p ProviderOptionModalities) Validate() error {
 	if len(p) == 0 {
 		return errors.New("ProviderOptionModalities cannot be empty")
@@ -87,6 +91,7 @@ func (p ProviderOptionModalities) Validate() error {
 // This is mostly used for unit tests or repeated client creation to save on HTTP requests.
 type ProviderOptionPreloadedModels []Model
 
+// Validate implements Validatable.
 func (p ProviderOptionPreloadedModels) Validate() error {
 	if len(p) == 0 {
 		return errors.New("ProviderOptionPreloadedModels cannot be empty")
@@ -99,6 +104,7 @@ func (p ProviderOptionPreloadedModels) Validate() error {
 // This is useful for adding middleware like logging, tracing, or HTTP recording for tests.
 type ProviderOptionTransportWrapper func(http.RoundTripper) http.RoundTripper
 
+// Validate implements Validatable.
 func (p ProviderOptionTransportWrapper) Validate() error {
 	if p == nil {
 		return errors.New("ProviderOptionTransportWrapper cannot be nil")

@@ -5,6 +5,7 @@
 package genai
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
@@ -501,7 +502,7 @@ func TestMessage(t *testing.T) {
 				Name:        "calculator",
 				Description: "A calculator tool",
 				Callback: func(ctx context.Context, input *calculateInput) (string, error) {
-					return fmt.Sprintf("%d", input.A+input.B), nil
+					return strconv.Itoa(input.A + input.B), nil
 				},
 			}
 
@@ -537,7 +538,7 @@ func TestMessage(t *testing.T) {
 				Name:        "calculator",
 				Description: "A calculator tool",
 				Callback: func(ctx context.Context, input *calculateInput) (string, error) {
-					return fmt.Sprintf("%d", input.A+input.B), nil
+					return strconv.Itoa(input.A + input.B), nil
 				},
 			}
 
@@ -674,7 +675,7 @@ func TestRequest(t *testing.T) {
 					if tt.want.Doc.Src != nil {
 						wantData, _ := io.ReadAll(tt.want.Doc.Src)
 						gotData, _ := io.ReadAll(got.Doc.Src)
-						if string(wantData) != string(gotData) {
+						if !bytes.Equal(wantData, gotData) {
 							t.Fatalf("Document content mismatch: want %q, got %q", string(wantData), string(gotData))
 						}
 						// Reset Document field for comparison
@@ -867,7 +868,7 @@ func TestReply(t *testing.T) {
 					if tt.want.Doc.Src != nil {
 						wantData, _ := io.ReadAll(tt.want.Doc.Src)
 						gotData, _ := io.ReadAll(got.Doc.Src)
-						if string(wantData) != string(gotData) {
+						if !bytes.Equal(wantData, gotData) {
 							t.Fatalf("Document content mismatch: want %q, got %q", string(wantData), string(gotData))
 						}
 						// Reset Document field for comparison
@@ -1679,7 +1680,7 @@ func TestStdin(t *testing.T) {
 	}
 }
 
-// nonSeekableReader is a reader that doesn't support seeking
+// nonSeekableReader is a reader that doesn't support seeking.
 type nonSeekableReader struct {
 	reader io.Reader
 }
@@ -1759,7 +1760,7 @@ func TestDocUnseekable(t *testing.T) {
 			t.Fatalf("second read: unexpected error: %v", err)
 		}
 
-		if string(data1) != string(data2) {
+		if !bytes.Equal(data1, data2) {
 			t.Errorf("data mismatch between reads: %q vs %q", string(data1), string(data2))
 		}
 	})

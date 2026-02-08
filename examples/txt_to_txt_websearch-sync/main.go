@@ -39,10 +39,12 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	for _, r := range res.Replies {
+	for i := range res.Replies {
+		r := &res.Replies[i]
 		if !r.Citation.IsZero() {
 			fmt.Printf("Sources:\n")
-			for _, src := range r.Citation.Sources {
+			for j := range r.Citation.Sources {
+				src := &r.Citation.Sources[j]
 				switch src.Type {
 				case genai.CitationWeb:
 					fmt.Printf("- %s / %s\n", src.Title, src.URL)

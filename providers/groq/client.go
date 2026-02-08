@@ -58,6 +58,7 @@ type GenOption struct {
 	ServiceTier ServiceTier
 }
 
+// Validate implements genai.Validatable.
 func (o *GenOption) Validate() error {
 	// TODO: validate ReasoningFormat and ServiceTier.
 	return nil
@@ -193,11 +194,12 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 	return errors.Join(errs...)
 }
 
+// SetStream sets the streaming mode.
 func (c *ChatRequest) SetStream(stream bool) {
 	c.Stream = stream
 }
 
-func (c *ChatRequest) initOptionsText(v *genai.GenOptionText) ([]string, []error) {
+func (c *ChatRequest) initOptionsText(v *genai.GenOptionText) ([]string, []error) { //nolint:unparam // Consistent signature across providers.
 	var errs []error
 	var unsupported []string
 	c.MaxChatTokens = v.MaxTokens
@@ -220,7 +222,7 @@ func (c *ChatRequest) initOptionsText(v *genai.GenOptionText) ([]string, []error
 	return unsupported, errs
 }
 
-func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools) ([]string, []error) {
+func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools) ([]string, []error) { //nolint:unparam // Consistent signature across providers.
 	var errs []error
 	var unsupported []string
 	if len(v.Tools) != 0 {
@@ -257,6 +259,7 @@ func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools) ([]string, []err
 // See https://console.groq.com/docs/reasoning
 type ReasoningFormat string
 
+// Reasoning format values.
 const (
 	ReasoningFormatParsed ReasoningFormat = "parsed"
 	ReasoningFormatRaw    ReasoningFormat = "raw"
@@ -348,6 +351,7 @@ func (m *Message) From(in *genai.Message) error {
 	return nil
 }
 
+// To converts to the genai equivalent.
 func (m *Message) To(out *genai.Message) error {
 	if m.Reasoning != "" {
 		out.Replies = append(out.Replies, genai.Reply{Reasoning: m.Reasoning})
@@ -360,7 +364,7 @@ func (m *Message) To(out *genai.Message) error {
 			}
 			out.Replies = append(out.Replies, genai.Reply{Text: c.Text})
 		case ContentImageURL:
-			fallthrough
+			return &internal.BadError{Err: fmt.Errorf("implement content type %q", c.Type)}
 		default:
 			return &internal.BadError{Err: fmt.Errorf("implement content type %q", c.Type)}
 		}
@@ -412,10 +416,12 @@ func (m *Message) To(out *genai.Message) error {
 // Groq requires this for assistant messages.
 type Contents []Content
 
+// IsZero reports whether the value is zero.
 func (c *Contents) IsZero() bool {
 	return len(*c) == 0
 }
 
+// MarshalJSON implements json.Marshaler.
 func (c *Contents) MarshalJSON() ([]byte, error) {
 	if len(*c) == 0 {
 		// It's important otherwise Qwen3 fails with:
@@ -425,9 +431,10 @@ func (c *Contents) MarshalJSON() ([]byte, error) {
 	if len(*c) == 1 && (*c)[0].Type == ContentText {
 		return json.Marshal((*c)[0].Text)
 	}
-	return json.Marshal(([]Content)(*c))
+	return json.Marshal([]Content(*c))
 }
 
+// UnmarshalJSON implements json.Unmarshaler.
 func (c *Contents) UnmarshalJSON(b []byte) error {
 	if bytes.Equal(b, []byte("null")) {
 		// e.g. tool calls.
@@ -457,6 +464,7 @@ func (c *Contents) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
+// Content is a provider-specific content block.
 type Content struct {
 	Type ContentType `json:"type,omitzero"`
 
@@ -470,6 +478,7 @@ type Content struct {
 	} `json:"image_url,omitzero"`
 }
 
+// FromRequest converts from a genai request.
 func (c *Content) FromRequest(in *genai.Request) error {
 	// DeepSeek and Qwen recommend against passing reasoning back to the model.
 	if in.Text != "" {
@@ -505,6 +514,7 @@ func (c *Content) FromRequest(in *genai.Request) error {
 	return errors.New("unknown Request type")
 }
 
+// FromReply converts from a genai reply.
 func (c *Content) FromReply(in *genai.Reply) error {
 	if len(in.Opaque) != 0 {
 		return &internal.BadError{Err: errors.New("field Reply.Opaque not supported")}
@@ -544,13 +554,16 @@ func (c *Content) FromReply(in *genai.Reply) error {
 	return &internal.BadError{Err: errors.New("unknown Reply type")}
 }
 
+// ContentType is a provider-specific content type.
 type ContentType string
 
+// Content type values.
 const (
 	ContentText     ContentType = "text"
 	ContentImageURL ContentType = "image_url"
 )
 
+// Tool is a provider-specific tool definition.
 type Tool struct {
 	Type     string `json:"type,omitzero"` // "function"
 	Function struct {
@@ -560,6 +573,7 @@ type Tool struct {
 	} `json:"function,omitzero"`
 }
 
+// ToolCall is a provider-specific tool call.
 type ToolCall struct {
 	Index    int64  `json:"index,omitzero"`
 	Type     string `json:"type,omitzero"` // "function"
@@ -570,6 +584,7 @@ type ToolCall struct {
 	} `json:"function,omitzero"`
 }
 
+// From converts from the genai equivalent.
 func (t *ToolCall) From(in *genai.ToolCall) error {
 	if len(in.Opaque) != 0 {
 		return errors.New("field ToolCall.Opaque not supported")
@@ -581,6 +596,7 @@ func (t *ToolCall) From(in *genai.ToolCall) error {
 	return nil
 }
 
+// To converts to the genai equivalent.
 func (t *ToolCall) To(out *genai.ToolCall) {
 	out.ID = t.ID
 	out.Name = t.Function.Name
@@ -598,6 +614,7 @@ type UsageBreakdown struct {
 	Models []UsageBreakdownModel `json:"models"`
 }
 
+// ChatResponse is the provider-specific chat completion response.
 type ChatResponse struct {
 	Choices []struct {
 		FinishReason FinishReason `json:"finish_reason"`
@@ -620,6 +637,7 @@ type ChatResponse struct {
 	} `json:"x_groq"`
 }
 
+// ToResult converts the response to a genai.Result.
 func (c *ChatResponse) ToResult() (genai.Result, error) {
 	out := genai.Result{
 		// At the moment, Groq does not support cached tokens.
@@ -638,8 +656,10 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	return out, err
 }
 
+// FinishReason is a provider-specific finish reason.
 type FinishReason string
 
+// Finish reason values.
 const (
 	FinishStop          FinishReason = "stop"
 	FinishLength        FinishReason = "length"
@@ -647,6 +667,7 @@ const (
 	FinishContentFilter FinishReason = "content_filter"
 )
 
+// ToFinishReason converts to a genai.FinishReason.
 func (f FinishReason) ToFinishReason() genai.FinishReason {
 	switch f {
 	case FinishStop:
@@ -665,6 +686,7 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 	}
 }
 
+// Usage is the provider-specific token usage.
 type Usage struct {
 	QueueTime               float64        `json:"queue_time"`
 	PromptTokens            int64          `json:"prompt_tokens"`
@@ -695,6 +717,8 @@ type BrowserFindArguments struct {
 	Cursor  int64  `json:"cursor,omitzero"`
 	Pattern string `json:"pattern,omitzero"`
 }
+
+// ChatStreamChunkResponse is the provider-specific streaming chat chunk.
 type ChatStreamChunkResponse struct {
 	ID                string    `json:"id"`
 	Object            string    `json:"object"`
@@ -716,6 +740,7 @@ type ChatStreamChunkResponse struct {
 	} `json:"x_groq"`
 }
 
+// Model is the provider-specific model metadata.
 type Model struct {
 	ID                  string    `json:"id"`
 	Object              string    `json:"object"`
@@ -727,6 +752,7 @@ type Model struct {
 	MaxCompletionTokens int64     `json:"max_completion_tokens"`
 }
 
+// GetID implements genai.Model.
 func (m *Model) GetID() string {
 	return m.ID
 }
@@ -739,17 +765,18 @@ func (m *Model) String() string {
 	return fmt.Sprintf("%s (%s) Context: %d/%d%s", m.ID, m.Created.AsTime().Format("2006-01-02"), m.ContextWindow, m.MaxCompletionTokens, suffix)
 }
 
+// Context implements genai.Model.
 func (m *Model) Context() int64 {
 	return m.ContextWindow
 }
 
-// ModelsResponse represents the response structure for Groq models listing
+// ModelsResponse represents the response structure for Groq models listing.
 type ModelsResponse struct {
 	Object string  `json:"object"` // list
 	Data   []Model `json:"data"`
 }
 
-// ToModels converts Groq models to genai.Model interfaces
+// ToModels converts Groq models to genai.Model interfaces.
 func (r *ModelsResponse) ToModels() []genai.Model {
 	models := make([]genai.Model, len(r.Data))
 	for i := range r.Data {
@@ -760,6 +787,7 @@ func (r *ModelsResponse) ToModels() []genai.Model {
 
 //
 
+// ErrorResponse is the provider-specific error response.
 type ErrorResponse struct {
 	ErrorVal struct {
 		Message          string `json:"message"`
@@ -782,6 +810,7 @@ func (er *ErrorResponse) Error() string {
 	return fmt.Sprintf("%s (%s): %s%s", er.ErrorVal.Code, er.ErrorVal.Type, er.ErrorVal.Message, suffix)
 }
 
+// IsAPIError implements base.ErrorResponseI.
 func (er *ErrorResponse) IsAPIError() bool {
 	return true
 }
@@ -892,7 +921,8 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 	for _, mdl := range mdls {
 		m := mdl.(*Model)
 		// This is meh.
-		if cheap {
+		switch {
+		case cheap:
 			if strings.HasPrefix(m.ID, "openai/") {
 				if selectedModel != "" {
 					m1 := nb.FindStringSubmatch(m.ID)
@@ -905,7 +935,7 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 				}
 				selectedModel = m.ID
 			}
-		} else if good {
+		case good:
 			if strings.Contains(m.ID, "openai/") {
 				if selectedModel != "" {
 					m1 := nb.FindStringSubmatch(m.ID)
@@ -918,7 +948,7 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 				}
 				selectedModel = m.ID
 			}
-		} else {
+		default:
 			if strings.HasPrefix(m.ID, "moonshotai/") {
 				selectedModel = m.ID
 			}
@@ -1029,7 +1059,8 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 							return
 						}
 					case ContentImageURL:
-						fallthrough
+						finalErr = &internal.BadError{Err: fmt.Errorf("implement content type %q", c.Type)}
+						return
 					default:
 						finalErr = &internal.BadError{Err: fmt.Errorf("implement content type %q", c.Type)}
 						return

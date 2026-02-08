@@ -63,7 +63,7 @@ func ExampleGenStreamWithToolCallLoop() {
 	}
 	fragments, finish := adapters.GenStreamWithToolCallLoop(ctx, c, msgs, &opts)
 	for f := range fragments {
-		os.Stdout.WriteString(f.Text)
+		_, _ = os.Stdout.WriteString(f.Text)
 	}
 	if _, _, err = finish(); err != nil {
 		log.Fatal(err)

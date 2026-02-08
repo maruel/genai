@@ -94,6 +94,7 @@ type ImageRequest struct {
 	InputImage4 string `json:"input_image4,omitzero"`
 }
 
+// Init initializes the request from the given parameters.
 func (i *ImageRequest) Init(msgs genai.Messages, model string, opts ...genai.GenOption) error {
 	if err := msgs.Validate(); err != nil {
 		return err
@@ -128,15 +129,16 @@ func (i *ImageRequest) Init(msgs genai.Messages, model string, opts ...genai.Gen
 				if s == "" {
 					s = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
 				}
-				if i.InputImage == "" {
+				switch {
+				case i.InputImage == "":
 					i.InputImage = s
-				} else if i.InputImage2 == "" {
+				case i.InputImage2 == "":
 					i.InputImage2 = s
-				} else if i.InputImage3 == "" {
+				case i.InputImage3 == "":
 					i.InputImage3 = s
-				} else if i.InputImage4 == "" {
+				case i.InputImage4 == "":
 					i.InputImage4 = s
-				} else {
+				default:
 					return errors.New("too many images")
 				}
 				r.Doc = genai.Doc{}
@@ -180,6 +182,7 @@ type ImageRequestResponse struct {
 	OutputMP any `json:"output_mp,omitempty"`
 }
 
+// ImageResult is the provider-specific image generation result.
 type ImageResult struct {
 	ID     string `json:"id"`
 	Status string `json:"status"` // "ready", "Pending"
@@ -198,6 +201,7 @@ type ImageResult struct {
 	Preview  struct{} `json:"preview"`
 }
 
+// ImageWebhookResponse is the provider-specific image webhook response.
 type ImageWebhookResponse struct {
 	ID         string `json:"id"`
 	Status     string `json:"status"`
@@ -206,6 +210,7 @@ type ImageWebhookResponse struct {
 
 //
 
+// ErrorResponse is the provider-specific error response.
 type ErrorResponse struct {
 	Detail string `json:"detail"`
 }
@@ -214,6 +219,7 @@ func (er *ErrorResponse) Error() string {
 	return er.Detail
 }
 
+// IsAPIError implements base.ErrorResponseI.
 func (er *ErrorResponse) IsAPIError() bool {
 	return true
 }
@@ -423,6 +429,9 @@ func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts ...gena
 	return genai.Job(reqresp.PollingURL), err
 }
 
+// GenAsyncRaw runs an asynchronous generation request.
+//
+//nolint:gocritic // hugeParam: public API.
 func (c *Client) GenAsyncRaw(ctx context.Context, req ImageRequest) (ImageRequestResponse, error) {
 	// https://docs.bfl.ml/quick_start/generating_images
 	// https://docs.bfl.ai/integration_guidelines#polling-url-usage
@@ -450,7 +459,10 @@ func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, er
 		return res, fmt.Errorf("unexpected status: %#v", imgres)
 	}
 	res.Replies = []genai.Reply{{Doc: genai.Doc{Filename: "content.jpg", URL: imgres.Result.Sample}}}
-	return res, res.Validate()
+	if err := res.Validate(); err != nil {
+		return res, err
+	}
+	return res, nil
 }
 
 // PokeResultRaw retrieves the result for a job ID if already available.
@@ -462,12 +474,13 @@ func (c *Client) PokeResultRaw(ctx context.Context, id genai.Job) (ImageResult, 
 		return res, fmt.Errorf("job ID should be the polling URL: %w", err)
 	}
 	if !strings.HasSuffix(p.Hostname(), ".bfl.ai") {
-		return res, fmt.Errorf("job ID should be the polling URL hosted on bfl.ai")
+		return res, errors.New("job ID should be the polling URL hosted on bfl.ai")
 	}
 	err = c.impl.DoRequest(ctx, "GET", string(id), nil, &res)
 	return res, err
 }
 
+// Capabilities implements genai.Provider.
 func (c *Client) Capabilities() genai.ProviderCapabilities {
 	return genai.ProviderCapabilities{
 		GenAsync: true,

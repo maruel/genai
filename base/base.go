@@ -79,46 +79,55 @@ func (e *ErrNotSupported) Error() string {
 	if len(e.Options) == 0 {
 		return "not supported"
 	}
-	return fmt.Sprintf("not supported: %s", strings.Join(e.Options, ", "))
+	return "not supported: " + strings.Join(e.Options, ", ")
 }
 
 // NotImplemented implements remote genai.Provider methods, all returning ErrNotSupported.
 type NotImplemented struct{}
 
+// GenSync implements genai.Provider.
 func (*NotImplemented) GenSync(context.Context, genai.Messages, ...genai.GenOption) (genai.Result, error) {
 	return genai.Result{}, &ErrNotSupported{}
 }
 
+// GenStream implements genai.Provider.
 func (*NotImplemented) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	return yieldNothing[genai.Reply], func() (genai.Result, error) {
 		return genai.Result{}, &ErrNotSupported{}
 	}
 }
 
+// ListModels implements genai.Provider.
 func (*NotImplemented) ListModels(context.Context) ([]genai.Model, error) {
 	return nil, &ErrNotSupported{}
 }
 
+// GenAsync implements genai.Provider.
 func (*NotImplemented) GenAsync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Job, error) {
 	return "", &ErrNotSupported{}
 }
 
+// PokeResult implements genai.Provider.
 func (*NotImplemented) PokeResult(ctx context.Context, job genai.Job) (genai.Result, error) {
 	return genai.Result{}, &ErrNotSupported{}
 }
 
+// CacheAddRequest implements genai.Provider.
 func (*NotImplemented) CacheAddRequest(ctx context.Context, msgs genai.Messages, name, displayName string, ttl time.Duration, opts ...genai.GenOption) (string, error) {
 	return "", &ErrNotSupported{}
 }
 
+// CacheList implements genai.Provider.
 func (*NotImplemented) CacheList(ctx context.Context) ([]genai.CacheEntry, error) {
 	return nil, &ErrNotSupported{}
 }
 
+// CacheDelete implements genai.Provider.
 func (*NotImplemented) CacheDelete(ctx context.Context, name string) error {
 	return &ErrNotSupported{}
 }
 
+// Capabilities implements genai.Provider.
 func (*NotImplemented) Capabilities() genai.ProviderCapabilities {
 	return genai.ProviderCapabilities{}
 }
@@ -179,6 +188,7 @@ func (c *ProviderBase[PErrorResponse]) JSONRequest(ctx context.Context, method, 
 	return resp, err
 }
 
+// Validate checks that the provider is properly configured.
 func (c *ProviderBase[PErrorResponse]) Validate() error {
 	if !c.ModelOptional && c.Model == "" {
 		return errors.New("a model is required")
@@ -201,16 +211,20 @@ func (c *ProviderBase[PErrorResponse]) DoRequest(ctx context.Context, method, ur
 	c.lateInit()
 	resp, err := c.JSONRequest(ctx, method, url, in)
 	if err != nil {
+		if resp != nil {
+			_ = resp.Body.Close()
+		}
 		return err
 	}
 	return c.DecodeResponse(resp, url, out)
 }
 
+// DecodeResponse decodes an HTTP response into the output struct.
 func (c *ProviderBase[PErrorResponse]) DecodeResponse(resp *http.Response, url string, out any) error {
 	c.mu.Lock()
 	c.lastResp = resp.Header
 	c.mu.Unlock()
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
 		return c.DecodeError(url, resp)
 	}
 	b, err := io.ReadAll(resp.Body)
@@ -323,7 +337,7 @@ func (c *ProviderBase[PErrorResponse]) lateInit() {
 
 //
 
-// Obj is a generic interface for chat-related types (both requests and responses)
+// Obj is a generic interface for chat-related types (both requests and responses).
 type Obj interface{ any }
 
 // InitializableRequest is an interface for request types that can be initialized.
@@ -368,6 +382,7 @@ type Provider[PErrorResponse ErrAPI, PGenRequest InitializableRequest, PGenRespo
 	chatResponse reflect.Type
 }
 
+// GenSync implements genai.Provider.
 func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
 	res := genai.Result{}
 	c.lateInit()
@@ -395,6 +410,7 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 	return res, nil
 }
 
+// GenStream implements genai.Provider.
 func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkResponse]) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	res := genai.Result{}
 	var finalErr error
@@ -495,16 +511,20 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 	if url == "" {
 		url = c.GenSyncURL
 	}
-	resp, err := c.JSONRequest(ctx, "POST", url, in)
+	resp, err := c.JSONRequest(ctx, "POST", url, in) //nolint:bodyclose // Body is closed in the goroutine below.
 	if err != nil {
+		if resp != nil {
+			_ = resp.Body.Close()
+		}
 		return yieldNothing[GenStreamChunkResponse], func() error {
 			return &internal.BadError{Err: fmt.Errorf("failed to get server response: %w", err)}
 		}
 	}
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
+		// Generally happens when the request is something the server doesn't support, e.g. logprobs.
+		err := c.DecodeError(url, resp)
 		return yieldNothing[GenStreamChunkResponse], func() error {
-			// Generally happens when the request is something the server doesn't support, e.g. logprobs.
-			return c.DecodeError(url, resp)
+			return err
 		}
 	}
 	c.mu.Lock()
@@ -516,7 +536,7 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 	out := make(chan GenStreamChunkResponse, 16)
 	ch := make(chan error)
 	go func() {
-		defer resp.Body.Close()
+		defer func() { _ = resp.Body.Close() }()
 		er := reflect.New(c.errorResponse).Interface().(PErrorResponse)
 		it, finish := sse.Process[GenStreamChunkResponse](resp.Body, er, c.Lenient)
 		for pkt := range it {
@@ -587,7 +607,8 @@ func SimulateStream(ctx context.Context, c genai.Provider, msgs genai.Messages, 
 	fnFragments := func(yield func(genai.Reply) bool) {
 		res, finalErr = c.GenSync(ctx, msgs, opts...)
 		if finalErr == nil {
-			for _, r := range res.Replies {
+			for i := range res.Replies {
+				r := &res.Replies[i]
 				// Generally we do not expect any not document fragments but this can happen in the future.
 				if r.Text != "" {
 					if !yield(genai.Reply{Text: r.Text}) {

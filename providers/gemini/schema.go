@@ -16,6 +16,7 @@ import (
 // The official Go SDK documentation is at https://pkg.go.dev/google.golang.org/genai#Type
 type Type string
 
+// Type values.
 const (
 	TypeUnspecified Type = "TYPE_UNSPECIFIED"
 	TypeString      Type = "STRING"
@@ -33,22 +34,30 @@ const (
 type Format string
 
 const (
-	// For TypeNumber only:
-	FormatFloat  Format = "float"
+	// FormatFloat is for TypeNumber only.
+	FormatFloat Format = "float"
+	// FormatDouble is for TypeNumber only.
 	FormatDouble Format = "double"
 
-	// For TypeInteger only:
+	// FormatInt32 is for TypeInteger only.
 	FormatInt32 Format = "int32"
+	// FormatInt64 is for TypeInteger only.
 	FormatInt64 Format = "int64"
 
-	// For TypeString only:
-	FormatEnum     Format = "enum"
-	FormatDate     Format = "date"
+	// FormatEnum is for TypeString only.
+	FormatEnum Format = "enum"
+	// FormatDate is for TypeString only.
+	FormatDate Format = "date"
+	// FormatDateTime is for TypeString only.
 	FormatDateTime Format = "date-time"
-	FormatByte     Format = "byte"
+	// FormatByte is for TypeString only.
+	FormatByte Format = "byte"
+	// FormatPassword is for TypeString only.
 	FormatPassword Format = "password"
-	FormatEmail    Format = "email"
-	FormatUUID     Format = "uuid"
+	// FormatEmail is for TypeString only.
+	FormatEmail Format = "email"
+	// FormatUUID is for TypeString only.
+	FormatUUID Format = "uuid"
 )
 
 // Schema is documented at https://ai.google.dev/api/caching#Schema
@@ -119,6 +128,7 @@ func (s *Schema) FromGoObj(v any) error {
 	return s.FromGoType(t, "", t.Name())
 }
 
+// FromGoType converts a Go type to a Schema.
 func (s *Schema) FromGoType(t reflect.Type, tag reflect.StructTag, parent string) error {
 	if strings.HasPrefix(t.String(), "reflect.") {
 		return fmt.Errorf("received a reflect type: %s", t.String())
@@ -284,7 +294,7 @@ func (s *Schema) FromGoType(t reflect.Type, tag reflect.StructTag, parent string
 		s.Nullable = true
 		return s.FromGoType(t.Elem(), tag, parent) // Pass tag to underlying element.
 	case reflect.Invalid, reflect.Complex64, reflect.Complex128, reflect.Chan, reflect.Func, reflect.Interface, reflect.UnsafePointer:
-		fallthrough
+		return fmt.Errorf("unsupported type: %s", t.Kind())
 	default:
 		return fmt.Errorf("unsupported type: %s", t.Kind())
 	}
@@ -320,7 +330,7 @@ func convertValue(s string, kind reflect.Kind) (any, error) {
 	case reflect.String:
 		return s, nil
 	case reflect.Invalid, reflect.Uintptr, reflect.Complex64, reflect.Complex128, reflect.Array, reflect.Chan, reflect.Func, reflect.Interface, reflect.Map, reflect.Pointer, reflect.Slice, reflect.Struct, reflect.UnsafePointer:
-		fallthrough
+		return nil, fmt.Errorf("failed to convert example value %v for type %s", s, kind)
 	default:
 		return nil, fmt.Errorf("failed to convert example value %v for type %s", s, kind)
 	}

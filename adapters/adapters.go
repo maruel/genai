@@ -8,7 +8,6 @@ package adapters
 import (
 	"context"
 	"errors"
-	"fmt"
 	"iter"
 	"slices"
 	"sync"
@@ -62,7 +61,7 @@ func GenSyncWithToolCallLoop(ctx context.Context, p genai.Provider, msgs genai.M
 			return out, usage, err
 		}
 		if tr.IsZero() {
-			return out, usage, fmt.Errorf("expected tool call to return a result or an error")
+			return out, usage, errors.New("expected tool call to return a result or an error")
 		}
 		out = append(out, tr)
 		workMsgs = append(workMsgs, tr)
@@ -137,7 +136,7 @@ func GenStreamWithToolCallLoop(ctx context.Context, p genai.Provider, msgs genai
 				return
 			}
 			if tr.IsZero() {
-				finalErr = fmt.Errorf("expected tool call to return a result or an error")
+				finalErr = errors.New("expected tool call to return a result or an error")
 				return
 			}
 			out = append(out, tr)
@@ -215,6 +214,7 @@ type ProviderAppend struct {
 	Append genai.Request
 }
 
+// GenSync implements genai.Provider.
 func (c *ProviderAppend) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
 	if len(msgs[len(msgs)-1].Requests) != 0 {
 		msgs = slices.Clone(msgs)
@@ -224,6 +224,7 @@ func (c *ProviderAppend) GenSync(ctx context.Context, msgs genai.Messages, opts 
 	return c.Provider.GenSync(ctx, msgs, opts...)
 }
 
+// GenStream implements genai.Provider.
 func (c *ProviderAppend) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	if i := len(msgs) - 1; len(msgs[i].Requests) != 0 {
 		msgs = slices.Clone(msgs)

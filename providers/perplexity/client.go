@@ -50,6 +50,7 @@ type GenOption struct {
 	DisableRelatedQuestions bool
 }
 
+// Validate implements genai.Validatable.
 func (o *GenOption) Validate() error {
 	return nil
 }
@@ -157,6 +158,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 	return errors.Join(errs...)
 }
 
+// SetStream sets the streaming mode.
 func (c *ChatRequest) SetStream(stream bool) {
 	c.Stream = stream
 }
@@ -202,9 +204,10 @@ func (m *Message) From(in *genai.Message) error {
 		return errors.New("perplexity doesn't support tools")
 	}
 	for i := range in.Requests {
-		if in.Requests[i].Text != "" {
+		switch {
+		case in.Requests[i].Text != "":
 			m.Content = append(m.Content, Content{Type: "text", Text: in.Requests[i].Text})
-		} else if !in.Requests[i].Doc.IsZero() {
+		case !in.Requests[i].Doc.IsZero():
 			// Check if this is a text document
 			mimeType, data, err := in.Requests[i].Doc.Read(10 * 1024 * 1024)
 			if err != nil {
@@ -228,7 +231,7 @@ func (m *Message) From(in *genai.Message) error {
 			default:
 				return fmt.Errorf("request #%d: perplexity only supports text documents, got %s", i, mimeType)
 			}
-		} else {
+		default:
 			return fmt.Errorf("request #%d: unknown Request type", i)
 		}
 	}
@@ -236,9 +239,10 @@ func (m *Message) From(in *genai.Message) error {
 		if len(in.Replies[i].Opaque) != 0 {
 			return &internal.BadError{Err: fmt.Errorf("reply #%d: field Reply.Opaque not supported", i)}
 		}
-		if in.Replies[i].Text != "" {
+		switch {
+		case in.Replies[i].Text != "":
 			m.Content = append(m.Content, Content{Type: "text", Text: in.Replies[i].Text})
-		} else if !in.Requests[i].Doc.IsZero() {
+		case !in.Requests[i].Doc.IsZero():
 			// Check if this is a text document
 			mimeType, data, err := in.Replies[i].Doc.Read(10 * 1024 * 1024)
 			if err != nil {
@@ -262,8 +266,10 @@ func (m *Message) From(in *genai.Message) error {
 			default:
 				return &internal.BadError{Err: fmt.Errorf("reply #%d: perplexity only supports text documents, got %s", i, mimeType)}
 			}
-		} else {
-			return &internal.BadError{Err: fmt.Errorf("reply #%d: unknown Reply type", i)}
+		case in.Replies[i].Reasoning != "":
+			// Ignore
+		default:
+			return &internal.BadError{Err: errors.New("unknown Reply type")}
 		}
 	}
 	return nil
@@ -307,6 +313,7 @@ func (m *Message) To(search []SearchResult, images []Images, related []string, o
 	return nil
 }
 
+// Content is a provider-specific content block.
 type Content struct {
 	Type     string `json:"type"` // "text", "image_url"
 	Text     string `json:"text,omitzero"`
@@ -315,8 +322,10 @@ type Content struct {
 	} `json:"image_url,omitzero"`
 }
 
+// Contents is a collection of content blocks.
 type Contents []Content
 
+// UnmarshalJSON implements json.Unmarshaler.
 func (c *Contents) UnmarshalJSON(b []byte) error {
 	if bytes.Equal(b, []byte("null")) {
 		*c = nil
@@ -340,6 +349,7 @@ func (c *Contents) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
+// ChatResponse is the provider-specific chat completion response.
 type ChatResponse struct {
 	ID        string    `json:"id"` // UUID
 	Model     string    `json:"model"`
@@ -361,6 +371,7 @@ type ChatResponse struct {
 	Usage            Usage          `json:"usage"`
 }
 
+// ToResult converts the response to a genai.Result.
 func (c *ChatResponse) ToResult() (genai.Result, error) {
 	out := genai.Result{
 		// At the moment, Perplexity doesn't support cached tokens.
@@ -379,6 +390,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	return out, err
 }
 
+// Images is a provider-specific images container.
 type Images struct {
 	Height    int64  `json:"height"`     // in pixels
 	ImageURL  string `json:"image_url"`  // URL to the image
@@ -387,6 +399,7 @@ type Images struct {
 	Title     string `json:"title,omitzero"`
 }
 
+// SearchResult is a provider-specific search result.
 type SearchResult struct {
 	Date        string `json:"date"` // RFC3339 date, or null
 	Title       string `json:"title"`
@@ -396,13 +409,16 @@ type SearchResult struct {
 	Source      string `json:"source,omitzero"`
 }
 
+// FinishReason is a provider-specific finish reason.
 type FinishReason string
 
+// Finish reason values.
 const (
 	FinishStop   FinishReason = "stop"
 	FinishLength FinishReason = "length"
 )
 
+// ToFinishReason converts to a genai.FinishReason.
 func (f FinishReason) ToFinishReason() genai.FinishReason {
 	switch f {
 	case FinishStop:
@@ -417,6 +433,7 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 	}
 }
 
+// Usage is the provider-specific token usage.
 type Usage struct {
 	PromptTokens      int64  `json:"prompt_tokens"`
 	CompletionTokens  int64  `json:"completion_tokens"`
@@ -436,10 +453,12 @@ type Usage struct {
 	} `json:"cost"`
 }
 
+// ChatStreamChunkResponse is the provider-specific streaming chat chunk.
 type ChatStreamChunkResponse = ChatResponse
 
 //
 
+// ErrorResponse is the provider-specific error response.
 type ErrorResponse struct {
 	Detail   string `json:"detail"`
 	ErrorVal struct {
@@ -459,6 +478,7 @@ func (er *ErrorResponse) Error() string {
 	return er.ErrorVal.Message
 }
 
+// IsAPIError implements base.ErrorResponseI.
 func (er *ErrorResponse) IsAPIError() bool {
 	return true
 }
@@ -687,9 +707,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 						}
 					}
 				}
-				if len(pkt.RelatedQuestions) > 0 {
-					// TODO: Figure out how to return this.
-				}
+				// TODO: Return pkt.RelatedQuestions as part of the result when genai supports related questions.
 				if !yield(genai.Reply{Text: pkt.Choices[0].Delta.Content}) {
 					return
 				}

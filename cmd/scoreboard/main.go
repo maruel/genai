@@ -40,7 +40,7 @@ func mainImpl() error {
 
 func main() {
 	if err := mainImpl(); err != nil {
-		if err != context.Canceled {
+		if !errors.Is(err, context.Canceled) {
 			fmt.Fprintf(os.Stderr, "scoreboard: %s\n", err)
 		}
 		os.Exit(1)

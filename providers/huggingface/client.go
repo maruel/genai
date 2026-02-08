@@ -188,6 +188,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 	return errors.Join(errs...)
 }
 
+// SetStream sets the streaming mode.
 func (c *ChatRequest) SetStream(stream bool) {
 	c.Stream = stream
 	c.StreamOptions.IncludeUsage = stream
@@ -248,6 +249,7 @@ func (m *Message) From(in *genai.Message) error {
 	return nil
 }
 
+// Content is a provider-specific content block.
 type Content struct {
 	Type     ContentType `json:"type"`
 	Text     string      `json:"text,omitzero"`
@@ -256,6 +258,7 @@ type Content struct {
 	} `json:"image_url,omitzero"`
 }
 
+// FromRequest converts from a genai request.
 func (c *Content) FromRequest(in *genai.Request) error {
 	if in.Text != "" {
 		c.Type = ContentText
@@ -290,6 +293,7 @@ func (c *Content) FromRequest(in *genai.Request) error {
 	return errors.New("unknown Request type")
 }
 
+// FromReply converts from a genai reply.
 func (c *Content) FromReply(in *genai.Reply) error {
 	if len(in.Opaque) != 0 {
 		return &internal.BadError{Err: errors.New("field Reply.Opaque not supported")}
@@ -331,20 +335,24 @@ func (c *Content) FromReply(in *genai.Reply) error {
 // both string and Content struct types.
 type Contents []Content
 
+// MarshalJSON implements json.Marshaler.
 func (c *Contents) MarshalJSON() ([]byte, error) {
 	if len(*c) == 1 && (*c)[0].Type == ContentText {
 		return json.Marshal((*c)[0].Text)
 	}
-	return json.Marshal(([]Content)(*c))
+	return json.Marshal([]Content(*c))
 }
 
+// ContentType is a provider-specific content type.
 type ContentType string
 
+// Content type values.
 const (
 	ContentText     ContentType = "text"
 	ContentImageURL ContentType = "image_url"
 )
 
+// ToolCall is a provider-specific tool call.
 type ToolCall struct {
 	Index    int64  `json:"index,omitzero"`
 	ID       string `json:"id,omitzero"`
@@ -356,6 +364,7 @@ type ToolCall struct {
 	} `json:"function,omitzero"`
 }
 
+// From converts from the genai equivalent.
 func (t *ToolCall) From(in *genai.ToolCall) error {
 	if len(in.Opaque) != 0 {
 		return errors.New("field ToolCall.Opaque not supported")
@@ -367,17 +376,15 @@ func (t *ToolCall) From(in *genai.ToolCall) error {
 	return nil
 }
 
+// To converts to the genai equivalent.
 func (t *ToolCall) To(out *genai.ToolCall) {
 	out.ID = t.ID
 	out.Name = t.Function.Name
-	// b, err := json.Marshal(t.Function.Arguments)
-	// if err != nil {
-	//	return fmt.Errorf("failed to marshal arguments: %w", err)
-	// }
-	// out.Arguments = string(b)
+	// Arguments are already a string, no marshaling needed.
 	out.Arguments = t.Function.Arguments
 }
 
+// Tool is a provider-specific tool definition.
 type Tool struct {
 	Type     string `json:"type,omitzero"` // "function"
 	Function struct {
@@ -387,6 +394,7 @@ type Tool struct {
 	} `json:"function,omitzero"`
 }
 
+// ChatResponse is the provider-specific chat completion response.
 type ChatResponse struct {
 	Object            string    `json:"object"` // "chat.completion"
 	ID                string    `json:"id"`
@@ -409,6 +417,7 @@ type ChatResponse struct {
 	ServiceTier    struct{} `json:"service_tier"`
 }
 
+// Logprobs is the provider-specific log probabilities.
 type Logprobs struct {
 	Content []struct {
 		Token       string  `json:"token"`
@@ -427,10 +436,12 @@ type Logprobs struct {
 	Refusal        struct{} `json:"refusal,omitzero"`
 }
 
+// IsZero reports whether the value is zero.
 func (l *Logprobs) IsZero() bool {
 	return len(l.Content) == 0
 }
 
+// To converts to the genai equivalent.
 func (l *Logprobs) To() [][]genai.Logprob {
 	out := make([][]genai.Logprob, 0, len(l.Content))
 	for _, p := range l.Content {
@@ -445,8 +456,10 @@ func (l *Logprobs) To() [][]genai.Logprob {
 	return out
 }
 
+// FinishReason is a provider-specific finish reason.
 type FinishReason string
 
+// Finish reason values.
 const (
 	FinishStop         FinishReason = "stop"
 	FinishLength       FinishReason = "length"
@@ -454,6 +467,7 @@ const (
 	FinishToolCalls    FinishReason = "tool_calls"
 )
 
+// ToFinishReason converts to a genai.FinishReason.
 func (f FinishReason) ToFinishReason() genai.FinishReason {
 	switch f {
 	case FinishStop:
@@ -472,6 +486,7 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 	}
 }
 
+// Usage is the provider-specific token usage.
 type Usage struct {
 	PromptTokens        int64 `json:"prompt_tokens"`
 	CompletionTokens    int64 `json:"completion_tokens"`
@@ -490,6 +505,7 @@ type Usage struct {
 	} `json:"completion_tokens_details"`
 }
 
+// ContentFilterResults contains content filter results.
 type ContentFilterResults struct {
 	Hate struct {
 		Filtered bool `json:"filtered"`
@@ -513,7 +529,7 @@ type ContentFilterResults struct {
 	} `json:"profanity"`
 }
 
-// MessageResponse uses a different structure than the request Message. :(
+// MessageResponse uses a different structure than the request Message. :(.
 type MessageResponse struct {
 	Role             string     `json:"role"`
 	Content          string     `json:"content"`
@@ -527,6 +543,7 @@ type MessageResponse struct {
 	Reasoning        any        `json:"reasoning,omitzero"`
 }
 
+// To converts to the genai equivalent.
 func (m *MessageResponse) To(out *genai.Message) error {
 	if m.Content != "" {
 		out.Replies = []genai.Reply{{Text: m.Content}}
@@ -538,6 +555,7 @@ func (m *MessageResponse) To(out *genai.Message) error {
 	return nil
 }
 
+// ToResult converts the response to a genai.Result.
 func (c *ChatResponse) ToResult() (genai.Result, error) {
 	out := genai.Result{
 		// At the moment, Huggingface doesn't support caching.
@@ -562,6 +580,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	return out, err
 }
 
+// ChatStreamChunkResponse is the provider-specific streaming chat chunk.
 type ChatStreamChunkResponse struct {
 	Object            string    `json:"object"` // "chat.completion.chunk"
 	Created           base.Time `json:"created"`
@@ -590,6 +609,7 @@ type ChatStreamChunkResponse struct {
 	} `json:"sla_metrics,omitzero"`
 }
 
+// Model is the provider-specific model metadata.
 type Model struct {
 	ID            string    `json:"id"`
 	ID2           string    `json:"_id"`
@@ -613,6 +633,7 @@ type Model struct {
 	} `json:"siblings"`
 }
 
+// GetID implements genai.Model.
 func (m *Model) GetID() string {
 	return m.ID
 }
@@ -621,14 +642,15 @@ func (m *Model) String() string {
 	return fmt.Sprintf("%s (%s) %s Trending: %.1f", m.ID, m.CreatedAt.Format("2006-01-02"), m.PipelineTag, m.TrendingScore)
 }
 
+// Context implements genai.Model.
 func (m *Model) Context() int64 {
 	return 0
 }
 
-// ModelsResponse represents the response structure for Huggingface models listing
+// ModelsResponse represents the response structure for Huggingface models listing.
 type ModelsResponse []Model
 
-// ToModels converts Huggingface models to genai.Model interfaces
+// ToModels converts Huggingface models to genai.Model interfaces.
 func (r *ModelsResponse) ToModels() []genai.Model {
 	models := make([]genai.Model, len(*r))
 	for i := range *r {
@@ -639,6 +661,7 @@ func (r *ModelsResponse) ToModels() []genai.Model {
 
 //
 
+// ErrorResponse is the provider-specific error response.
 type ErrorResponse struct {
 	ErrorVal  ErrorError `json:"error"`
 	ErrorType string     `json:"error_type"`
@@ -668,10 +691,12 @@ func (er *ErrorResponse) Error() string {
 	return fmt.Sprintf("http %d (%s): %s", er.Code, er.Reason, er.Message)
 }
 
+// IsAPIError implements base.ErrorResponseI.
 func (er *ErrorResponse) IsAPIError() bool {
 	return true
 }
 
+// ErrorError is the nested error in an error response.
 type ErrorError struct {
 	Message        string `json:"message"`
 	HTTPStatusCode int64  `json:"http_status_code"`
@@ -680,6 +705,7 @@ type ErrorError struct {
 	Code           string `json:"code"`
 }
 
+// UnmarshalJSON implements json.Unmarshaler.
 func (ee *ErrorError) UnmarshalJSON(b []byte) error {
 	s := ""
 	if err := json.Unmarshal(b, &s); err == nil {
@@ -828,7 +854,8 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 			continue
 		}
 		// TODO: This algorithm would gain to be improved.
-		if cheap {
+		switch {
+		case cheap:
 			// HF doesn't report the number of weights in the model. Try to guess it.
 			matches := re.FindAllStringSubmatch(m.ID, 1)
 			if len(matches) != 1 {
@@ -842,7 +869,7 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 				weights = w
 				selectedModel = m.ID
 			}
-		} else if good {
+		case good:
 			// HF doesn't report the number of weights in the model. Try to guess it.
 			matches := re.FindAllStringSubmatch(m.ID, 1)
 			if len(matches) != 1 {
@@ -856,7 +883,7 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 				weights = w
 				selectedModel = m.ID
 			}
-		} else {
+		default:
 			if strings.HasPrefix(m.ID, "deepseek-ai/") && !strings.Contains(m.ID, "Qwen") && !strings.Contains(m.ID, "Prover") && !strings.Contains(m.ID, "Distill") && (trending == 0 || trending < m.TrendingScore) {
 				// Make it a popularity contest.
 				trending = m.TrendingScore

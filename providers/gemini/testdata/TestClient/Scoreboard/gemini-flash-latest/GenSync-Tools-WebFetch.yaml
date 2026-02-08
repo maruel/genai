@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 148
+        content_length: 176
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Tell me what is written on https://perdu.com"}]}],"generationConfig":{"responseModalities":["TEXT"]}}
+            {"contents":[{"role":"user","parts":[{"text":"Tell me what is written on https://perdu.com"}]}],"tools":[{"urlContext":{}}],"generationConfig":{"responseModalities":["TEXT"]}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -28,28 +28,65 @@ interactions:
                   "content": {
                     "parts": [
                       {
-                        "text": "The URL https://perdu.com translates to \"lost.com\" in English.\n\nIf you visit the website, you will find a simple page that generally displays the following text, or very similar content:\n\n**Heading:**\n\n\u003e **Vous êtes perdu sur internet**\n\n*(Translation: You are lost on the internet)*\n\n**Body Text (often displayed in a large, centered font):**\n\n\u003e **Pour vous aider, nous vous proposons un plan :**\n\u003e\n\u003e **repartir de Google.**\n\n*(Translation: To help you, we suggest a plan: start again from Google.)*\n\nThe text \"Google\" is typically a hyperlink leading to the Google search engine's homepage.\n\nThis website is a well-known, humorous French utility site designed solely to catch typos or mistaken navigation (i.e., someone who is \"lost\") and redirect them back to a familiar starting point."
+                        "text": "The website https://perdu.com has very little on it. The text you'll see says:\n\n**Vous Etes Perdu ?**\n**Perdu sur l'Internet ?**\n**Pas de panique, on va vous aider**\n**\u003c----- vous êtes ici**\n\nIn English, this roughly translates to:\n\n**Are You Lost?**\n**Lost on the Internet?**\n**Don't panic, we are going to help you**\n**\u003c----- you are here**"
                       }
                     ],
                     "role": "model"
                   },
                   "finishReason": "STOP",
-                  "index": 0
+                  "index": 0,
+                  "groundingMetadata": {
+                    "groundingChunks": [
+                      {
+                        "web": {
+                          "uri": "https://perdu.com",
+                          "title": "Vous Etes Perdu ?"
+                        }
+                      }
+                    ],
+                    "groundingSupports": [
+                      {
+                        "segment": {
+                          "startIndex": 275,
+                          "endIndex": 343,
+                          "text": "**\n**Don't panic, we are going to help you**\n**\u003c----- you are here**"
+                        },
+                        "groundingChunkIndices": [
+                          0
+                        ]
+                      }
+                    ]
+                  },
+                  "urlContextMetadata": {
+                    "urlMetadata": [
+                      {
+                        "retrievedUrl": "https://perdu.com",
+                        "urlRetrievalStatus": "URL_RETRIEVAL_STATUS_SUCCESS"
+                      }
+                    ]
+                  }
                 }
               ],
               "usageMetadata": {
                 "promptTokenCount": 13,
-                "candidatesTokenCount": 188,
-                "totalTokenCount": 201,
+                "candidatesTokenCount": 115,
+                "totalTokenCount": 318,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
                     "tokenCount": 13
                   }
+                ],
+                "toolUsePromptTokenCount": 190,
+                "toolUsePromptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 190
+                  }
                 ]
               },
               "modelVersion": "gemini-2.5-flash-preview-09-2025",
-              "responseId": "JZSIac6zGf2v_uMPs5q1mQU"
+              "responseId": "BrCIaZuuJJ-Z-8YPsKHUoAY"
             }
         headers:
             Alt-Svc:
@@ -59,7 +96,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=1449
+                - gfet4t7; dur=1059
             Vary:
                 - Origin
                 - X-Origin
@@ -72,4 +109,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 1.525s
+        duration: 1.125s

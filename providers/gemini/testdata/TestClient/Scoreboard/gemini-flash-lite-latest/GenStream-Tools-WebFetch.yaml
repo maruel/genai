@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 148
+        content_length: 176
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Tell me what is written on https://perdu.com"}]}],"generationConfig":{"responseModalities":["TEXT"]}}
+            {"contents":[{"role":"user","parts":[{"text":"Tell me what is written on https://perdu.com"}]}],"tools":[{"urlContext":{}}],"generationConfig":{"responseModalities":["TEXT"]}}
         form:
             alt:
                 - sse
@@ -23,7 +23,7 @@ interactions:
         proto_major: 2
         proto_minor: 0
         content_length: -1
-        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"The\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 1,\"totalTokenCount\": 14,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}]},\"modelVersion\": \"gemini-2.5-flash-lite-preview-09-2025\",\"responseId\": \"JZSIabznLPnO_uMPyvbo0As\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \" website **https://perdu.com/** currently displays a very simple page with a large\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 19,\"totalTokenCount\": 32,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}]},\"modelVersion\": \"gemini-2.5-flash-lite-preview-09-2025\",\"responseId\": \"JZSIabznLPnO_uMPyvbo0As\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \", prominent message in French:\\n\\n**\\\"Perdu\\\"**\\n\\nBelow that, in smaller text, it says:\\n\\n**\\\"Je ne suis pas le bon site.\\\"**\\n\\nThis translates to:\\n\\n* **\\\"Perdu\\\"\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 67,\"totalTokenCount\": 80,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}]},\"modelVersion\": \"gemini-2.5-flash-lite-preview-09-2025\",\"responseId\": \"JZSIabznLPnO_uMPyvbo0As\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"** means **\\\"Lost\\\"**\\n* **\\\"Je ne suis pas le bon site.\\\"** means **\\\"I am not the right site.\\\"**\\n\\nThe site appears to be a placeholder or a domain parked with a self-referential,\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 117,\"totalTokenCount\": 130,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}]},\"modelVersion\": \"gemini-2.5-flash-lite-preview-09-2025\",\"responseId\": \"JZSIabznLPnO_uMPyvbo0As\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \" slightly humorous message indicating it's not what a visitor might be looking for.\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 133,\"totalTokenCount\": 146,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}]},\"modelVersion\": \"gemini-2.5-flash-lite-preview-09-2025\",\"responseId\": \"JZSIabznLPnO_uMPyvbo0As\"}\r\n\r\n"
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"The\"}],\"role\": \"model\"},\"index\": 0,\"groundingMetadata\": {},\"urlContextMetadata\": {\"urlMetadata\": [{\"retrievedUrl\": \"https://perdu.com\",\"urlRetrievalStatus\": \"URL_RETRIEVAL_STATUS_SUCCESS\"}]}}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 21,\"totalTokenCount\": 85,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"toolUsePromptTokenCount\": 51,\"toolUsePromptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 51}]},\"modelVersion\": \"gemini-2.5-flash-lite-preview-09-2025\",\"responseId\": \"CLCIacqFE9GtsOIPvp3q-Qs\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \" website https://perdu.com displays the text: \\\"Vous Etes Perdu\"}],\"role\": \"model\"},\"index\": 0,\"groundingMetadata\": {}}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 38,\"totalTokenCount\": 102,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"toolUsePromptTokenCount\": 51,\"toolUsePromptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 51}]},\"modelVersion\": \"gemini-2.5-flash-lite-preview-09-2025\",\"responseId\": \"CLCIacqFE9GtsOIPvp3q-Qs\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \" ?: Vous Etes Perdu ? Perdu sur l'Internet ? Pas de panique, on va vous aider * \\u003c----- vous êtes ici\\\" which translates to: \\\"Are You Lost?: Are You Lost? Lost on the Internet? Don\"}],\"role\": \"model\"},\"index\": 0,\"groundingMetadata\": {}}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 87,\"totalTokenCount\": 151,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"toolUsePromptTokenCount\": 51,\"toolUsePromptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 51}]},\"modelVersion\": \"gemini-2.5-flash-lite-preview-09-2025\",\"responseId\": \"CLCIacqFE9GtsOIPvp3q-Qs\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"'t panic, we're going to help you * \\u003c----- you are here\\\".\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0,\"groundingMetadata\": {\"groundingChunks\": [{\"web\": {\"uri\": \"https://perdu.com\",\"title\": \"Vous Etes Perdu ?\"}}],\"groundingSupports\": [{\"segment\": {\"startIndex\": 241,\"endIndex\": 300,\"text\": \"Don't panic, we're going to help you * \\u003c----- you are here\\\"\"},\"groundingChunkIndices\": [0]}]}}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 105,\"totalTokenCount\": 169,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"toolUsePromptTokenCount\": 51,\"toolUsePromptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 51}]},\"modelVersion\": \"gemini-2.5-flash-lite-preview-09-2025\",\"responseId\": \"CLCIacqFE9GtsOIPvp3q-Qs\"}\r\n\r\n"
         headers:
             Alt-Svc:
                 - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
@@ -34,7 +34,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=286
+                - gfet4t7; dur=710
             Vary:
                 - Origin
                 - X-Origin
@@ -47,4 +47,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 297ms
+        duration: 723ms

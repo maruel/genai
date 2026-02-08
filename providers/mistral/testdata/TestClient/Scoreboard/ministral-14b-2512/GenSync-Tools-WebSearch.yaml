@@ -1,0 +1,55 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 282
+        host: api.mistral.ai
+        body: |
+            {"model":"ministral-14b-2512","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation."}]}],"tools":[{"type":"web_search"}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.mistral.ai/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 411
+        body: '{"detail":[{"type":"enum","loc":["body","tools","list[Tool]",0,"type"],"msg":"Input should be ''function''","input":"web_search","ctx":{"expected":"''function''"}},{"type":"missing","loc":["body","tools","list[Tool]",0,"function"],"msg":"Field required","input":{"type":"web_search"}},{"type":"string_type","loc":["body","tools","list[str]",0],"msg":"Input should be a valid string","input":{"type":"web_search"}}]}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9caba9668ce3a310-YUL
+            Content-Length:
+                - "411"
+            Content-Type:
+                - application/json
+            Mistral-Correlation-Id:
+                - 019c3d8f-1c5c-7d87-accf-f30459c8b508
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Envoy-Upstream-Service-Time:
+                - "5"
+            X-Kong-Proxy-Latency:
+                - "9"
+            X-Kong-Request-Id:
+                - 019c3d8f-1c5c-7d87-accf-f30459c8b508
+            X-Kong-Upstream-Latency:
+                - "5"
+        status: 422 Unprocessable Entity
+        code: 422
+        duration: 141ms

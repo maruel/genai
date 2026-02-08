@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 211
+        content_length: 239
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Tell me what is written on https://perdu.com"}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"Tell me what is written on https://perdu.com"}]}],"tools":[{"urlContext":{}}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
         form:
             alt:
                 - sse
@@ -23,7 +23,7 @@ interactions:
         proto_major: 2
         proto_minor: 0
         content_length: -1
-        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Initiating Website Analysis**\\n\\nI've initiated the process by accessing perdu.com. My focus is now on meticulously reading and analyzing the content displayed on the homepage. I intend to summarize the information I gather to directly address the user's request. My aim is to be precise in summarizing the website's content.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"totalTokenCount\": 60,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 47},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"LpSIaauBI6yi_uMPtPyqyAo\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"The website https://perdu.com appears to be a very simple, minimalist page with the single\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 19,\"totalTokenCount\": 79,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 47},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"LpSIaauBI6yi_uMPtPyqyAo\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \" word \\\"**Perdu**\\\" prominently displayed in a large, dark font against a white background.\\n\\nBelow this word, there is a very short sentence: \\\"**Ceci est une page d'exemple.**\\\" (This is an example page.)\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 68,\"totalTokenCount\": 128,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 47},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"LpSIaauBI6yi_uMPtPyqyAo\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\\n\\nThere is no other significant content, navigation, or functionality on the page.\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 83,\"totalTokenCount\": 143,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 47},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"LpSIaauBI6yi_uMPtPyqyAo\"}\r\n\r\n"
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Initiating Web Content Retrieval**\\n\\nI've determined the user intends to retrieve content from a URL. The 'browse' tool appears to be the most appropriate. My plan is to invoke this tool with the URL provided and display the resulting content. I'm focusing on ensuring the tool is called correctly and the response is presented clearly.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0,\"groundingMetadata\": {}}],\"usageMetadata\": {\"promptTokenCount\": 13,\"totalTokenCount\": 61,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 48},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"EbCIabDVLsKR-8YP6LmegQ0\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\\n\\nThis\"}],\"role\": \"model\"},\"index\": 0,\"groundingMetadata\": {},\"urlContextMetadata\": {\"urlMetadata\": [{\"retrievedUrl\": \"https://perdu.com\",\"urlRetrievalStatus\": \"URL_RETRIEVAL_STATUS_SUCCESS\"}]}}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 13,\"totalTokenCount\": 186,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"toolUsePromptTokenCount\": 112,\"toolUsePromptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 112}],\"thoughtsTokenCount\": 48},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"EbCIabDVLsKR-8YP6LmegQ0\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \" website, titled \\\"Vous Etes Perdu ?\\\" which translates to \\\"Are You Lost?\\\",\"}],\"role\": \"model\"},\"index\": 0,\"groundingMetadata\": {}}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 31,\"totalTokenCount\": 204,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"toolUsePromptTokenCount\": 112,\"toolUsePromptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 112}],\"thoughtsTokenCount\": 48},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"EbCIabDVLsKR-8YP6LmegQ0\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \" states that if you are lost on the internet, there is no need to panic as they will help you. It humorously indicates \\\"you are here\\\" with an asterisk.\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0,\"groundingMetadata\": {\"groundingChunks\": [{\"web\": {\"uri\": \"https://perdu.com\",\"title\": \"Vous Etes Perdu ?\"}}]}}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 66,\"totalTokenCount\": 239,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"toolUsePromptTokenCount\": 112,\"toolUsePromptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 112}],\"thoughtsTokenCount\": 48},\"modelVersion\": \"gemini-2.5-flash-lite\",\"responseId\": \"EbCIabDVLsKR-8YP6LmegQ0\"}\r\n\r\n"
         headers:
             Alt-Svc:
                 - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
@@ -34,7 +34,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=1350
+                - gfet4t7; dur=1305
             Vary:
                 - Origin
                 - X-Origin
@@ -47,4 +47,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 1.362s
+        duration: 1.317s

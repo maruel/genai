@@ -153,6 +153,8 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 					c.Tools[i].Function.Strict = true
 				}
 			}
+		// GenOptionWeb is not supported. Web search is only available via the Agents API, not chat completions.
+		// https://docs.mistral.ai/agents/tools/built-in/websearch
 		case genai.GenOptionSeed:
 			c.RandomSeed = int64(v)
 		default:

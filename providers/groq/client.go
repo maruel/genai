@@ -157,8 +157,10 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 				c.SearchSettings.IncludeImages = true
 				c.Tools = append(c.Tools, Tool{Type: "browser_search"})
 			}
+			// Fetch (visit_website) is only available on compound models, not chat completions.
+			// https://console.groq.com/docs/agentic-tooling
 			if v.Fetch {
-				errs = append(errs, errors.New("unsupported GenOptionWeb.Fetch"))
+				unsupported = append(unsupported, "GenOptionWeb.Fetch")
 			}
 		case genai.GenOptionSeed:
 			c.Seed = int64(v)

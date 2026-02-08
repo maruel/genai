@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 148
+        content_length: 176
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Tell me what is written on https://perdu.com"}]}],"generationConfig":{"responseModalities":["TEXT"]}}
+            {"contents":[{"role":"user","parts":[{"text":"Tell me what is written on https://perdu.com"}]}],"tools":[{"urlContext":{}}],"generationConfig":{"responseModalities":["TEXT"]}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -28,28 +28,75 @@ interactions:
                   "content": {
                     "parts": [
                       {
-                        "text": "The website **perdu.com** is currently displaying a **404 Not Found** error page.\n\nThis means that the specific web server hosting the domain is running, but it cannot find the requested resource (the webpage) at that address. The page usually shows a generic message like \"404 Not Found\" or something similar, often with a minimalist or slightly customized design depending on the server configuration.\n\n**In summary, there is no readable content or meaningful message currently displayed on that URL.**"
+                        "text": "The website https://perdu.com displays the text: \"Vous Etes Perdu ?:\" followed by \"Vous Etes Perdu ? Perdu sur l'Internet ? Pas de panique, on va vous aider * \u003c----- vous êtes ici\". This translates to \"Are You Lost?: Are You Lost? Lost on the Internet? Don't panic, we'll help you * \u003c----- you are here\"."
                       }
                     ],
                     "role": "model"
                   },
                   "finishReason": "STOP",
-                  "index": 0
+                  "index": 0,
+                  "groundingMetadata": {
+                    "groundingChunks": [
+                      {
+                        "web": {
+                          "uri": "https://perdu.com",
+                          "title": "Vous Etes Perdu ?"
+                        }
+                      }
+                    ],
+                    "groundingSupports": [
+                      {
+                        "segment": {
+                          "startIndex": 124,
+                          "endIndex": 181,
+                          "text": "Pas de panique, on va vous aider * \u003c----- vous êtes ici\""
+                        },
+                        "groundingChunkIndices": [
+                          0
+                        ]
+                      },
+                      {
+                        "segment": {
+                          "startIndex": 254,
+                          "endIndex": 304,
+                          "text": "Don't panic, we'll help you * \u003c----- you are here\""
+                        },
+                        "groundingChunkIndices": [
+                          0
+                        ]
+                      }
+                    ]
+                  },
+                  "urlContextMetadata": {
+                    "urlMetadata": [
+                      {
+                        "retrievedUrl": "https://perdu.com",
+                        "urlRetrievalStatus": "URL_RETRIEVAL_STATUS_SUCCESS"
+                      }
+                    ]
+                  }
                 }
               ],
               "usageMetadata": {
                 "promptTokenCount": 13,
-                "candidatesTokenCount": 103,
-                "totalTokenCount": 116,
+                "candidatesTokenCount": 106,
+                "totalTokenCount": 170,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
                     "tokenCount": 13
                   }
+                ],
+                "toolUsePromptTokenCount": 51,
+                "toolUsePromptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 51
+                  }
                 ]
               },
               "modelVersion": "gemini-2.5-flash-lite-preview-09-2025",
-              "responseId": "JpSIafSwBqG9_uMP2fKBsAo"
+              "responseId": "CLCIaYqdJKCT-8YPx7uhiQQ"
             }
         headers:
             Alt-Svc:
@@ -59,7 +106,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=655
+                - gfet4t7; dur=996
             Vary:
                 - Origin
                 - X-Origin
@@ -72,4 +119,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 667ms
+        duration: 1.009s

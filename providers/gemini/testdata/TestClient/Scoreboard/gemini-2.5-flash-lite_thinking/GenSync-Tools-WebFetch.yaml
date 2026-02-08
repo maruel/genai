@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 211
+        content_length: 239
         host: generativelanguage.googleapis.com
         body: |
-            {"contents":[{"role":"user","parts":[{"text":"Tell me what is written on https://perdu.com"}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+            {"contents":[{"role":"user","parts":[{"text":"Tell me what is written on https://perdu.com"}]}],"tools":[{"urlContext":{}}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -28,33 +28,83 @@ interactions:
                   "content": {
                     "parts": [
                       {
-                        "text": "**My Approach to Analyzing perdu.com**\n\nOkay, so I'm going to grab the content from that URL, `https://perdu.com/`. My first step, as always, is to get a good, clear view of the source material. I need to sift through all the HTML, script, and potential CSS to isolate the *actual* textual content. My expertise allows me to quickly filter out the fluff – the navigation, the styling, the irrelevant code – and pinpoint the core message. I'm looking for the primary textual element. Once I've identified the main text block, I'll pay attention to any emphasized words, formatting variations, or prominent imagery. My goal is to distill the essence of what's *actually* being communicated on that page and articulate it clearly.\n",
+                        "text": "**Initiating Website Retrieval**\n\nI've determined that the `browse` tool is the appropriate choice. My immediate plan is to invoke it with the designated URL. Afterwards, I'll extract and present the fetched content directly to the user.\n\n\n",
                         "thought": true
                       },
                       {
-                        "text": "I visited https://perdu.com/ and it redirects to a page that simply says:\n\n\"**Perdu.com**\"\n\nBelow that, there is a small line of text:\n\n\"This is the domain name of a person who has registered it and is not using it.\"\n\nSo, it's a placeholder page indicating that the domain name is registered but not actively in use for a website."
+                        "text": "\nThis URL appears to be a simple placeholder or a joke website that states \"You Are Lost?\". It provides no substantive information other than that itself.\n\nLet me know if you have any other URLs you'd like me to check!"
+                      },
+                      {
+                        "text": "This website, https://perdu.com, simply states \"Vous Etes Perdu ?\" which translates to \"Are You Lost?\". It appears to be a placeholder or a joke website and does not contain any substantial information."
                       }
                     ],
                     "role": "model"
                   },
                   "finishReason": "STOP",
-                  "index": 0
+                  "index": 0,
+                  "groundingMetadata": {
+                    "groundingChunks": [
+                      {
+                        "web": {
+                          "uri": "https://perdu.com",
+                          "title": "Vous Etes Perdu ?"
+                        }
+                      }
+                    ],
+                    "groundingSupports": [
+                      {
+                        "segment": {
+                          "startIndex": 218,
+                          "endIndex": 320,
+                          "text": "This website, https://perdu.com, simply states \"Vous Etes Perdu ?\" which translates to \"Are You Lost?\""
+                        },
+                        "groundingChunkIndices": [
+                          0
+                        ]
+                      },
+                      {
+                        "segment": {
+                          "startIndex": 322,
+                          "endIndex": 419,
+                          "text": "It appears to be a placeholder or a joke website and does not contain any substantial information"
+                        },
+                        "groundingChunkIndices": [
+                          0
+                        ]
+                      }
+                    ]
+                  },
+                  "urlContextMetadata": {
+                    "urlMetadata": [
+                      {
+                        "retrievedUrl": "https://perdu.com",
+                        "urlRetrievalStatus": "URL_RETRIEVAL_STATUS_SUCCESS"
+                      }
+                    ]
+                  }
                 }
               ],
               "usageMetadata": {
                 "promptTokenCount": 13,
-                "candidatesTokenCount": 85,
-                "totalTokenCount": 150,
+                "candidatesTokenCount": 104,
+                "totalTokenCount": 271,
                 "promptTokensDetails": [
                   {
                     "modality": "TEXT",
                     "tokenCount": 13
                   }
                 ],
-                "thoughtsTokenCount": 52
+                "toolUsePromptTokenCount": 109,
+                "toolUsePromptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 109
+                  }
+                ],
+                "thoughtsTokenCount": 45
               },
               "modelVersion": "gemini-2.5-flash-lite",
-              "responseId": "MJSIaZKgA4TV_uMPu8nF6Ac"
+              "responseId": "ErCIae2KC6K0jrEP9KmZ0AM"
             }
         headers:
             Alt-Svc:
@@ -64,7 +114,7 @@ interactions:
             Server:
                 - scaffolding on HTTPServer2
             Server-Timing:
-                - gfet4t7; dur=1916
+                - gfet4t7; dur=1726
             Vary:
                 - Origin
                 - X-Origin
@@ -77,4 +127,4 @@ interactions:
                 - "0"
         status: 200 OK
         code: 200
-        duration: 1.928s
+        duration: 1.738s

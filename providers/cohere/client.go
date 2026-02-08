@@ -60,19 +60,19 @@ type ChatRequest struct {
 		Type       string             `json:"type,omitzero"` // "text", "json_object"
 		JSONSchema *jsonschema.Schema `json:"json_schema,omitzero"`
 	} `json:"response_format,omitzero"`
-	SafetyMode       string   `json:"safety_mode,omitzero"` // "CONTEXTUAL", "STRICT", "OFF"
-	MaxTokens        int64    `json:"max_tokens,omitzero"`
-	StopSequences    []string `json:"stop_sequences,omitzero"` // Up to 5 words
-	Temperature      float64  `json:"temperature,omitzero"`
-	Seed             int64    `json:"seed,omitzero"`
-	FrequencyPenalty float64  `json:"frequency_penalty,omitzero"` // [0, 1.0]
-	PresencePenalty  float64  `json:"presence_penalty,omitzero"`  // [0, 1.0]
-	K                int64    `json:"k,omitzero"`                 // [0, 500]
-	P                float64  `json:"p,omitzero"`                 // [0.01, 0.99]
-	Logprobs         bool     `json:"logprobs,omitzero"`
-	Tools            []Tool   `json:"tools,omitzero"`
-	ToolChoice       string   `json:"tool_choice,omitzero"` // "required", "none"
-	StrictTools      bool     `json:"strict_tools,omitzero"`
+	SafetyMode       string      `json:"safety_mode,omitzero"` // "CONTEXTUAL", "STRICT", "OFF"
+	MaxTokens        int64       `json:"max_tokens,omitzero"`
+	StopSequences    []string    `json:"stop_sequences,omitzero"` // Up to 5 words
+	Temperature      float64     `json:"temperature,omitzero"`
+	Seed             int64       `json:"seed,omitzero"`
+	FrequencyPenalty float64     `json:"frequency_penalty,omitzero"` // [0, 1.0]
+	PresencePenalty  float64     `json:"presence_penalty,omitzero"`  // [0, 1.0]
+	K                int64       `json:"k,omitzero"`                 // [0, 500]
+	P                float64     `json:"p,omitzero"`                 // [0.01, 0.99]
+	Logprobs         bool        `json:"logprobs,omitzero"`
+	Tools            []Tool      `json:"tools,omitzero"`
+	ToolChoice       string      `json:"tool_choice,omitzero"` // "required", "none"
+	StrictTools      bool        `json:"strict_tools,omitzero"`
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
@@ -469,6 +469,11 @@ func (c *Citation) To(out *genai.Citation) error {
 			// someone take the time to figure it out, please send a PR.
 			cs.StartCharIndex = c.Start
 			cs.EndCharIndex = c.End
+		case SourceWeb:
+			cs.Type = genai.CitationWeb
+			cs.URL = source.URL
+			cs.Title = source.Title
+			cs.Snippet = c.Text
 		default:
 			return &internal.BadError{Err: fmt.Errorf("implement citation source type %q", source.Type)}
 		}
@@ -483,13 +488,14 @@ type SourceType string
 const (
 	SourceTool     SourceType = "tool"
 	SourceDocument SourceType = "document"
+	SourceWeb      SourceType = "web"
 )
 
 // CitationSource represents a source in a citation.
 type CitationSource struct {
 	Type SourceType `json:"type,omitzero"`
 
-	// Type == SourceTool, SourceDocument
+	// Type == SourceTool, SourceDocument, SourceWeb
 	ID string `json:"id,omitzero"`
 
 	// Type == SourceTool
@@ -501,6 +507,10 @@ type CitationSource struct {
 		Snippet string `json:"snippet,omitzero"`
 		Title   string `json:"title,omitzero"`
 	} `json:"document,omitzero"`
+
+	// Type == SourceWeb
+	URL   string `json:"url,omitzero"`
+	Title string `json:"title,omitzero"`
 }
 
 // Tool represents a tool definition.

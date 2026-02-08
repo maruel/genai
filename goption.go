@@ -195,7 +195,7 @@ type GenOptionWeb struct {
 	Search bool
 	// Fetch specifies if web fetch should be enabled. When enabled, the LLM can fetch content from URLs.
 	//
-	// Currently only supported by Anthropic.
+	// Currently supported by Anthropic and Gemini.
 	Fetch bool
 }
 

@@ -250,6 +250,8 @@ func (c *ChatRequest) initImpl(msgs genai.Messages, model string, cache bool, op
 			unsupported = append(unsupported, c.initOptionsText(v)...)
 		case *genai.GenOptionTools:
 			c.initOptionsTools(v)
+		case *genai.GenOptionWeb:
+			c.initOptionsWeb(v)
 		default:
 			unsupported = append(unsupported, internal.TypeName(opt))
 		}
@@ -341,7 +343,10 @@ func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools) {
 			}
 		}
 	}
-	if v.WebSearch {
+}
+
+func (c *ChatRequest) initOptionsWeb(v *genai.GenOptionWeb) {
+	if v.Search {
 		// https://docs.anthropic.com/en/docs/agents-and-tools/tool-use/web-search-tool
 		c.Tools = append(c.Tools, Tool{
 			Type: "web_search_20250305",
@@ -349,7 +354,7 @@ func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools) {
 			// MaxUses: 10,
 		})
 	}
-	if v.WebFetch {
+	if v.Fetch {
 		// https://docs.anthropic.com/en/docs/agents-and-tools/tool-use/web-fetch-tool
 		c.Tools = append(c.Tools, Tool{
 			Type: "web_fetch_20250910",
@@ -1193,12 +1198,12 @@ const (
 	ContentDocument            ContentType = "document"
 	ContentThinking            ContentType = "thinking"
 	ContentRedactedThinking    ContentType = "redacted_thinking"
-	ContentServerToolUse              ContentType = "server_tool_use"
-	ContentWebSearchResult            ContentType = "web_search_result"
-	ContentWebSearchToolResult        ContentType = "web_search_tool_result"
-	ContentWebFetchResult             ContentType = "web_fetch_result"
-	ContentWebFetchToolResult         ContentType = "web_fetch_tool_result"
-	ContentWebFetchToolError    ContentType = "web_fetch_tool_error"
+	ContentServerToolUse       ContentType = "server_tool_use"
+	ContentWebSearchResult     ContentType = "web_search_result"
+	ContentWebSearchToolResult ContentType = "web_search_tool_result"
+	ContentWebFetchResult      ContentType = "web_fetch_result"
+	ContentWebFetchToolResult  ContentType = "web_fetch_tool_result"
+	ContentWebFetchToolError   ContentType = "web_fetch_tool_error"
 )
 
 // CitationType is a provider-specific citation type.
@@ -1351,7 +1356,7 @@ type Tool struct {
 
 	// Type == "web_fetch_20250910"
 	MaxContentTokens int64 `json:"max_content_tokens,omitzero"` // Max tokens of fetched content to return. Default is 10000.
-	MaxUses          int64 `json:"max_uses,omitzero"`            // Max number of fetches per request. Default is 5.
+	MaxUses          int64 `json:"max_uses,omitzero"`           // Max number of fetches per request. Default is 5.
 }
 
 // ChatResponse is the provider-specific chat completion response.
@@ -1467,7 +1472,7 @@ type ChatStreamChunkResponse struct {
 		Citations []struct{} `json:"citations"` // Empty, not used in the API.
 
 		// Type == ContentWebSearchToolResult, ContentWebFetchToolResult, ContentMCPToolResult
-		ToolUseID string         `json:"tool_use_id"`
+		ToolUseID string   `json:"tool_use_id"`
 		Content   Contents `json:"content"`
 
 		// Type == ContentMCPToolResult
@@ -2194,7 +2199,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 // ctxWithBeta adds the web-fetch beta header to the context if WebFetch is enabled.
 func ctxWithBeta(ctx context.Context, opts []genai.GenOption) context.Context {
 	for _, o := range opts {
-		if v, ok := o.(*genai.GenOptionTools); ok && v.WebFetch {
+		if v, ok := o.(*genai.GenOptionWeb); ok && v.Fetch {
 			return context.WithValue(ctx, ctxBetaKey{}, "web-fetch-2025-09-10")
 		}
 	}

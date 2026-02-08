@@ -274,7 +274,7 @@ Snippet:
 
 	// perplexity has websearch enabled by default so this is a no-op.
 	//  It is needed to enable websearch for anthropic, gemini and openai.
-	opts := genai.GenOptionTools{WebSearch: true}
+	opts := genai.GenOptionWeb{Search: true, Fetch: true}
 	res, _ := c.GenSync(ctx, msgs, &opts)
 	for _, r := range res.Replies {
 		if !r.Citation.IsZero() {

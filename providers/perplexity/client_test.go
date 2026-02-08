@@ -106,7 +106,7 @@ func TestClient(t *testing.T) {
 			var p genai.Provider = &injectOptions{
 				Provider: c,
 				Opts: []genai.GenOption{
-					&genai.GenOptionTools{WebSearch: false},
+					&genai.GenOptionWeb{Search: false},
 					&perplexity.GenOption{DisableRelatedQuestions: true},
 				},
 			}
@@ -191,8 +191,8 @@ func (i *injectOptions) Unwrap() genai.Provider {
 
 func (i *injectOptions) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
 	if !slices.ContainsFunc(opts, func(o genai.GenOption) bool {
-		v, ok := o.(*genai.GenOptionTools)
-		return ok && v.WebSearch
+		v, ok := o.(*genai.GenOptionWeb)
+		return ok && v.Search
 	}) {
 		opts = append(opts, i.Opts...)
 	}
@@ -201,8 +201,8 @@ func (i *injectOptions) GenSync(ctx context.Context, msgs genai.Messages, opts .
 
 func (i *injectOptions) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
 	if !slices.ContainsFunc(opts, func(o genai.GenOption) bool {
-		v, ok := o.(*genai.GenOptionTools)
-		return ok && v.WebSearch
+		v, ok := o.(*genai.GenOptionWeb)
+		return ok && v.Search
 	}) {
 		opts = append(opts, i.Opts...)
 	}

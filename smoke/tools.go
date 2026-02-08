@@ -284,7 +284,7 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 
 func exerciseWebFetch(ctx context.Context, cs *callState, f *scoreboard.Functionality, prefix string) error {
 	msgs := genai.Messages{genai.NewTextMessage("Tell me what is written on https://perdu.com")}
-	optsTools := genai.GenOptionTools{WebFetch: true}
+	optsTools := genai.GenOptionWeb{Fetch: true}
 	res, err := cs.callGen(ctx, prefix+"WebFetch", msgs, &optsTools)
 	if isBadError(ctx, err) {
 		internal.Logger(ctx).DebugContext(ctx, "WebFetch", "err", err)
@@ -308,7 +308,7 @@ func exerciseWebFetch(ctx context.Context, cs *callState, f *scoreboard.Function
 func exerciseWebSearch(ctx context.Context, cs *callState, f *scoreboard.Functionality, prefix string) error {
 	// Test the WebSearch tool. It's a costly test.
 	msgs := genai.Messages{genai.NewTextMessage("Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation.")}
-	optsTools := genai.GenOptionTools{WebSearch: true}
+	optsTools := genai.GenOptionWeb{Search: true}
 	res, err := cs.callGen(ctx, prefix+"WebSearch", msgs, &optsTools)
 	if isBadError(ctx, err) {
 		internal.Logger(ctx).DebugContext(ctx, "WebSearch", "err", err)

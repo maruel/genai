@@ -145,9 +145,6 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 					}
 				}
 			}
-			if v.WebSearch {
-				errs = append(errs, errors.New("unsupported OptionsTools.WebSearch"))
-			}
 		case genai.GenOptionSeed:
 			c.Seed = int64(v)
 		default:

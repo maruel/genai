@@ -132,9 +132,6 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 					}
 				}
 			}
-			if v.WebSearch {
-				errs = append(errs, errors.New("unsupported OptionsTools.WebSearch"))
-			}
 		default:
 			unsupported = append(unsupported, internal.TypeName(opt))
 		}

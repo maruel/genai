@@ -383,6 +383,21 @@ func TestToolDef(t *testing.T) {
 	})
 }
 
+func TestGenOptionWeb(t *testing.T) {
+	t.Run("Validate", func(t *testing.T) {
+		for _, o := range []*GenOptionWeb{
+			{},
+			{Search: true},
+			{Fetch: true},
+			{Search: true, Fetch: true},
+		} {
+			if err := o.Validate(); err != nil {
+				t.Errorf("Validate(%+v) got unexpected error: %v", o, err)
+			}
+		}
+	})
+}
+
 func TestGenOptionAudio(t *testing.T) {
 	t.Run("Validate", func(t *testing.T) {
 		o := &GenOptionAudio{}

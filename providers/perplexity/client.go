@@ -124,12 +124,16 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			unsupported, errs = c.initOptionsText(v)
 			sp = v.SystemPrompt
 		case *genai.GenOptionTools:
-			c.DisableSearch = !v.WebSearch
 			if len(v.Tools) != 0 {
 				errs = append(errs, errors.New("unsupported options GenOptionTools.Tools"))
 			}
 			if v.Force == genai.ToolCallRequired {
 				unsupported = append(unsupported, "GenOptionTools.Force")
+			}
+		case *genai.GenOptionWeb:
+			c.DisableSearch = !v.Search
+			if v.Fetch {
+				errs = append(errs, errors.New("unsupported GenOptionWeb.Fetch"))
 			}
 		case *GenOption:
 			c.ReturnRelatedQuestions = !v.DisableRelatedQuestions

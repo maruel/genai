@@ -166,6 +166,17 @@ func (r *Response) Init(msgs genai.Messages, model string, opts ...genai.GenOpti
 			errs = append(errs, e...)
 		case *genai.GenOptionTools:
 			errs = append(errs, r.initOptionsTools(v)...)
+		case *genai.GenOptionWeb:
+			if v.Search {
+				r.Tools = append(r.Tools, Tool{
+					Type: "web_search",
+					// SearchContextSize: "medium",
+				})
+				r.Include = []string{"web_search_call.action.sources"}
+			}
+			if v.Fetch {
+				errs = append(errs, errors.New("unsupported GenOptionWeb.Fetch"))
+			}
 		default:
 			return &base.ErrNotSupported{Options: []string{internal.TypeName(opt)}}
 		}
@@ -341,13 +352,6 @@ func (r *Response) initOptionsTools(v *genai.GenOptionTools) []error {
 				r.Tools[i].Parameters = t.GetInputSchema()
 			}
 		}
-	}
-	if v.WebSearch {
-		r.Tools = append(r.Tools, Tool{
-			Type: "web_search",
-			// SearchContextSize: "medium",
-		})
-		r.Include = []string{"web_search_call.action.sources"}
 	}
 	return errs
 }

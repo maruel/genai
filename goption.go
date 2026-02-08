@@ -181,18 +181,22 @@ type GenOptionTools struct {
 	Tools []ToolDef
 	// Force tells the LLM a tool call must be done, or not.
 	Force ToolCallRequest
-	// WebSearch specifies if websearch should be enabled. It is generally disabled by default except for
+}
+
+// GenOptionWeb specifies web access options.
+type GenOptionWeb struct {
+	// Search specifies if websearch should be enabled. It is generally disabled by default except for
 	// perplexity.
 	//
 	// # Warning
 	//
 	// This will become a structure to provide information about included and excluded domains, and the user's
 	// location.
-	WebSearch bool
-	// WebFetch specifies if web fetch should be enabled. When enabled, the LLM can fetch content from URLs.
+	Search bool
+	// Fetch specifies if web fetch should be enabled. When enabled, the LLM can fetch content from URLs.
 	//
 	// Currently only supported by Anthropic.
-	WebFetch bool
+	Fetch bool
 }
 
 // Validate ensures the completion options are valid.
@@ -207,9 +211,14 @@ func (o *GenOptionTools) Validate() error {
 		}
 		names[t.Name] = i
 	}
-	if len(o.Tools) == 0 && !o.WebSearch && o.Force == ToolCallRequired {
+	if len(o.Tools) == 0 && o.Force == ToolCallRequired {
 		return errors.New("field Force is ToolCallRequired: Tools are required")
 	}
+	return nil
+}
+
+// Validate implements GenOption.
+func (o *GenOptionWeb) Validate() error {
 	return nil
 }
 
@@ -380,6 +389,7 @@ var (
 	_ GenOption            = (*GenOptionVideo)(nil)
 	_ GenOption            = (*GenOptionText)(nil)
 	_ GenOption            = (*GenOptionTools)(nil)
+	_ GenOption            = (*GenOptionWeb)(nil)
 	_ internal.Validatable = (*Modality)(nil)
 	_ internal.Validatable = (*Modalities)(nil)
 	_ internal.Validatable = (*ToolDef)(nil)

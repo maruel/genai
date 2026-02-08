@@ -311,6 +311,11 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			errs = append(errs, c.initOptionsText(v)...)
 		case *genai.GenOptionTools:
 			errs = append(errs, c.initOptionsTools(v)...)
+		case *genai.GenOptionWeb:
+			if v.Search {
+				// https://ai.google.dev/gemini-api/docs/google-search
+				c.Tools = append(c.Tools, Tool{GoogleSearch: &GoogleSearch{}})
+			}
 		case *genai.GenOptionAudio:
 			errs = append(errs, fmt.Errorf("todo: implement options type %T", opt))
 		case *genai.GenOptionImage:
@@ -400,10 +405,6 @@ func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools) []error {
 				errs = append(errs, fmt.Errorf("%s: tool response: %w", t.Name, err))
 			}
 		}
-	}
-	if v.WebSearch {
-		// https://ai.google.dev/gemini-api/docs/google-search
-		c.Tools = append(c.Tools, Tool{GoogleSearch: &GoogleSearch{}})
 	}
 	return errs
 }

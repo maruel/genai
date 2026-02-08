@@ -164,6 +164,15 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			sp = v.SystemPrompt
 		case *genai.GenOptionTools:
 			c.initOptionsTools(v, model)
+		case *genai.GenOptionWeb:
+			if v.Search {
+				c.WebSearchOptions = &WebSearchOptions{
+					SearchContextSize: "high",
+				}
+			}
+			if v.Fetch {
+				errs = append(errs, errors.New("unsupported GenOptionWeb.Fetch"))
+			}
 		case genai.GenOptionSeed:
 			if strings.HasPrefix(model, "gpt-4o-") && strings.Contains(model, "-search") {
 				unsupported = append(unsupported, "GenOptionSeed")
@@ -277,11 +286,6 @@ func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools, model string) {
 			if c.Tools[i].Function.Parameters = t.InputSchemaOverride; c.Tools[i].Function.Parameters == nil {
 				c.Tools[i].Function.Parameters = t.GetInputSchema()
 			}
-		}
-	}
-	if v.WebSearch {
-		c.WebSearchOptions = &WebSearchOptions{
-			SearchContextSize: "high",
 		}
 	}
 }

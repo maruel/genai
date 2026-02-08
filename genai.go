@@ -659,7 +659,7 @@ func (r *Request) UnmarshalJSON(b []byte) error {
 //
 // Reply generally represents content returned by the provider, like a block of text or a document returned by
 // the model. It can be a silent tool call request. It can also be an opaque block. A good example is traces
-// of server side tool calling like WebSearch or MCP tool calling.
+// of server side tool calling like Web search or MCP tool calling.
 type Reply struct {
 	// Text is the content of the text message.
 	Text string `json:"text,omitzero"`

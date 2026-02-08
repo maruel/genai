@@ -1,0 +1,50 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 211
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Tell me what is written on https://perdu.com"}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        form:
+            alt:
+                - sse
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-latest:streamGenerateContent?alt=sse
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Initiating Web Analysis**\\n\\nI'm starting by understanding the user's request. It's a simple task: fetch and describe the content of perdu.com. I'll need to check if I have prior knowledge of the site before diving into fetching the data. The goal is a straightforward content retrieval and summarization.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"totalTokenCount\": 80,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 67},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"J5SIaYnLIpy3_uMPy4SMyA8\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Refining Knowledge Acquisition**\\n\\nI'm now refining my understanding of perdu.com. My prior knowledge of it being a minimalist site with a single French sentence is correct. My current step is to access the site content directly. I'll then grab the visible text, and HTML for additional context, looking for any hidden details or structure that might be relevant. Afterwards, I plan to translate the content and analyze its purpose. Finally, I'll present this to the user.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"totalTokenCount\": 359,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 346},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"J5SIaYnLIpy3_uMPy4SMyA8\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"**Developing Content Analysis**\\n\\nNow, I'm analyzing the user's request, which aims to understand the content of perdu.com. My prior knowledge confirms it's a French minimalist website, the word \\\"perdu\\\" meaning \\\"lost.\\\" I'll access the webpage, extract the text, and examine the HTML source to find hidden details. Then, I will translate the content to English and analyze its meaning for presentation. I'm focusing on the single sentence and link.\\n\\n\\n\",\"thought\": true}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"totalTokenCount\": 543,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 530},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"J5SIaYnLIpy3_uMPy4SMyA8\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"Of course. The website https://perdu.\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 7,\"totalTokenCount\": 550,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 530},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"J5SIaYnLIpy3_uMPy4SMyA8\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"com is a very famous and minimalist French webpage.\\n\\nWhen you visit it, you see the following text:\\n\\n---\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 31,\"totalTokenCount\": 574,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 530},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"J5SIaYnLIpy3_uMPy4SMyA8\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\\n\\n# Vous êtes perdu ?\\n\\nJe suis le lien qui ne mène nulle part\\n\\n... et qui le restera.\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 55,\"totalTokenCount\": 598,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 530},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"J5SIaYnLIpy3_uMPy4SMyA8\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"\\n\\n---\\n\\nHere is the English translation:\\n\\n---\\n\\n# Are you lost?\\n\\nI am the link that leads nowhere\\n\\n...\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 81,\"totalTokenCount\": 624,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 530},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"J5SIaYnLIpy3_uMPy4SMyA8\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \" and will remain so.\\n\\n---\\n\\n**A little more context:**\\n\\n*   **\\\"Perdu\\\"** is the French word\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 108,\"totalTokenCount\": 651,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 530},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"J5SIaYnLIpy3_uMPy4SMyA8\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \" for \\\"lost.\\\"\\n*   The site is a classic internet joke and a piece of web history, created in 19\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 134,\"totalTokenCount\": 677,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 530},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"J5SIaYnLIpy3_uMPy4SMyA8\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \"95.\\n*   It's known for its simplicity and for perfectly matching its URL. It's the\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 158,\"totalTokenCount\": 701,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 530},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"J5SIaYnLIpy3_uMPy4SMyA8\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \" digital equivalent of a \\\"You Are Here\\\" map in the middle of a desert.\\n*   The link \\\"I\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 182,\"totalTokenCount\": 725,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 530},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"J5SIaYnLIpy3_uMPy4SMyA8\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \" am the link that leads nowhere\\\" is, in fact, a link that just reloads the same page (`perdu\"}],\"role\": \"model\"},\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 206,\"totalTokenCount\": 749,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 530},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"J5SIaYnLIpy3_uMPy4SMyA8\"}\r\n\r\ndata: {\"candidates\": [{\"content\": {\"parts\": [{\"text\": \".com`), fulfilling its own prophecy.\"}],\"role\": \"model\"},\"finishReason\": \"STOP\",\"index\": 0}],\"usageMetadata\": {\"promptTokenCount\": 13,\"candidatesTokenCount\": 214,\"totalTokenCount\": 757,\"promptTokensDetails\": [{\"modality\": \"TEXT\",\"tokenCount\": 13}],\"thoughtsTokenCount\": 530},\"modelVersion\": \"gemini-2.5-pro\",\"responseId\": \"J5SIaYnLIpy3_uMPy4SMyA8\"}\r\n\r\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Disposition:
+                - attachment
+            Content-Type:
+                - text/event-stream
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=2758
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 2.769s

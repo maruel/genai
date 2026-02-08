@@ -150,6 +150,16 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			sp = v.SystemPrompt
 		case *genai.GenOptionTools:
 			c.initOptionsTools(v)
+		case *genai.GenOptionWeb:
+			if v.Search {
+				// https://console.groq.com/docs/browser-search
+				// TODO: Country and domains
+				c.SearchSettings.IncludeImages = true
+				c.Tools = append(c.Tools, Tool{Type: "browser_search"})
+			}
+			if v.Fetch {
+				errs = append(errs, errors.New("unsupported GenOptionWeb.Fetch"))
+			}
 		case genai.GenOptionSeed:
 			c.Seed = int64(v)
 		default:
@@ -237,12 +247,6 @@ func (c *ChatRequest) initOptionsTools(v *genai.GenOptionTools) {
 				c.Tools[i].Function.Parameters = t.GetInputSchema()
 			}
 		}
-	}
-	if v.WebSearch {
-		// https://console.groq.com/docs/browser-search
-		// TODO: Country and domains
-		c.SearchSettings.IncludeImages = true
-		c.Tools = append(c.Tools, Tool{Type: "browser_search"})
 	}
 }
 

@@ -42,7 +42,9 @@ func TestClient(t *testing.T) {
 			t.Error(err)
 		}
 	})
-	cl, err2 := getClientInner(t, nil)
+	cl, err2 := getClientInner(t, func(h http.RoundTripper) http.RoundTripper {
+		return testRecorder.RecordWithName(t, t.Name()+"/Warmup", h)
+	})
 	if err2 != nil {
 		t.Fatal(err2)
 	}

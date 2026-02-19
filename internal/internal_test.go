@@ -8,6 +8,24 @@ import "testing"
 
 type testStruct struct{}
 
+func TestMimeByExt(t *testing.T) {
+	tests := []struct {
+		ext  string
+		want string
+	}{
+		{".aac", "audio/aac"},
+		{".flac", "audio/flac"},
+		{".wav", "audio/wav"},
+		{".webm", "video/webm"},
+		{".md", "text/markdown"},
+	}
+	for _, tt := range tests {
+		if got := MimeByExt(tt.ext); got != tt.want {
+			t.Errorf("MimeByExt(%q) = %q, want %q", tt.ext, got, tt.want)
+		}
+	}
+}
+
 func TestTypeName(t *testing.T) {
 	tests := []struct {
 		name string

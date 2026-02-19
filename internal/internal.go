@@ -106,6 +106,10 @@ func MimeByExt(ext string) string {
 		return "audio/flac"
 	case ".wav":
 		return "audio/wav"
+	case ".webm":
+		// Go 1.26 builtin has "audio/webm" which is incorrect for the video
+		// container format. Override to match the IANA registry.
+		return "video/webm"
 	case ".md":
 		// It is the case on linux but it is blank on macOS (!?)
 		return "text/markdown"

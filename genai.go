@@ -317,7 +317,7 @@ func (m Messages) Validate() error {
 		}
 		if i > 0 {
 			r := m[i].Role()
-			lastR := m[i-1].Role()
+			lastR := m[i-1].Role() //nolint:gosec // G602: guarded by i > 0
 			if r == lastR {
 				errs = append(errs, fmt.Errorf("message #%d: role must alternate; got twice %q", i, r))
 			}

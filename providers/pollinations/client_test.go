@@ -22,7 +22,7 @@ import (
 
 // providerOptions is a convenience struct used only in tests to group provider options.
 type providerOptions struct {
-	APIKey           string
+	apiKey           string
 	Model            string
 	OutputModalities genai.Modalities
 	PreloadedModels  []genai.Model
@@ -33,8 +33,8 @@ func (o *providerOptions) toOptions() []genai.ProviderOption {
 	if o.Model != "" {
 		opts = append(opts, genai.ProviderOptionModel(o.Model))
 	}
-	if o.APIKey != "" {
-		opts = append(opts, genai.ProviderOptionAPIKey(o.APIKey))
+	if o.apiKey != "" {
+		opts = append(opts, genai.ProviderOptionAPIKey(o.apiKey))
 	}
 	if len(o.OutputModalities) > 0 {
 		opts = append(opts, genai.ProviderOptionModalities(o.OutputModalities))

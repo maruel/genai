@@ -322,11 +322,14 @@ func extractTarGz(archivePath, dstDir string, wantedFiles []string) error {
 		}
 		// Ignore path.
 		n := filepath.Base(header.Name)
+		if n == ".." || n == "." {
+			continue
+		}
 		for _, desired := range wantedFiles {
 			if ok, _ := filepath.Match(desired, n); !ok {
 				continue
 			}
-			outFile, err := os.OpenFile(filepath.Join(dstDir, n), os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0o755)
+			outFile, err := os.OpenFile(filepath.Join(dstDir, n), os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0o755) //nolint:gosec // G703: n is sanitized via filepath.Base above
 			if err != nil {
 				return err
 			}

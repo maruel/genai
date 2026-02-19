@@ -28,10 +28,11 @@ func mainImpl() error {
 
 	flag.Usage = func() {
 		o := flag.CommandLine.Output()
-		_, _ = fmt.Fprintf(o, "Usage of %s:\n", os.Args[0])
+		exe := filepath.Base(os.Args[0])
+		_, _ = fmt.Fprintf(o, "Usage of %s:\n", exe)
 		flag.PrintDefaults()
 		_, _ = fmt.Fprintf(o, "\nExample use:\n")
-		_, _ = fmt.Fprintf(o, "  %s -model Qwen/Qwen3-30B-A3B-GGUF/Qwen3-30B-A3B-Q4_K_M.gguf -http 0.0.0.0:8080 -- --no-warmup -ngl 99 -fa -sm row --temp 0.6 --top-k 20 --top-p 0.95 --min-p 0 --presence-penalty 1.5 -c 40960 -n 32768 --no-context-shift\n", os.Args[0])
+		_, _ = fmt.Fprintf(o, "  %s -model Qwen/Qwen3-30B-A3B-GGUF/Qwen3-30B-A3B-Q4_K_M.gguf -http 0.0.0.0:8080 -- --no-warmup -ngl 99 -fa -sm row --temp 0.6 --top-k 20 --top-p 0.95 --min-p 0 --presence-penalty 1.5 -c 40960 -n 32768 --no-context-shift\n", exe)
 		_, _ = fmt.Fprintf(o, "  Extended context:\n")
 		_, _ = fmt.Fprintf(o, "    -c 131072 --rope-scaling yarn --rope-scale 4 --yarn-orig-ctx 32768\n")
 		_, _ = fmt.Fprintf(o, "  Use Qwen/Qwen3-30B-A3B-GGUF/Qwen3-30B-A3B-Q6_K.gguf for improved quality.\n")

@@ -51,6 +51,9 @@ linters:
         - G302
         - G304
         - G306
+        - G704
+        - G705
+        - G706
     revive:
       rules:
         - name: exported

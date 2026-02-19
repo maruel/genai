@@ -1,0 +1,39 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 154
+        host: inference.baseten.co
+        body: |
+            {"model":"MiniMaxAI/MiniMax-M2.5","messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"max_completion_tokens":16}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 668
+        body: '{"id":"chatcmpl-622b56dfd6164e1b84d8037ff029cc01","choices":[{"index":0,"message":{"role":"assistant","reasoning_content":"Hmm, the user wants a detailed explanation of the theory of relativity. This is","reasoning":"Hmm, the user wants a detailed explanation of the theory of relativity. This is"},"finish_reason":"length"}],"created":1771458876,"model":"MiniMaxAI/MiniMax-M2.5","object":"chat.completion","usage":{"prompt_tokens":47,"completion_tokens":16,"total_tokens":63,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "668"
+            Content-Type:
+                - application/json
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1771458871551"
+        status: 200 OK
+        code: 200
+        duration: 5.453s

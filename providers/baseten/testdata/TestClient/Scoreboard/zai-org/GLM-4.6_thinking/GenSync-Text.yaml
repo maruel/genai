@@ -1,0 +1,39 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 99
+        host: inference.baseten.co
+        body: |
+            {"model":"zai-org/GLM-4.6","messages":[{"role":"user","content":"Say hello. Use only one word."}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 4877
+        body: '{"id":"chatcmpl-360aca27848747c592ceb329816a9acf","choices":[{"index":0,"message":{"content":"\n\nHello","role":"assistant","reasoning_content":"1.  **Analyze the user''s request:**\n    *   \"Say hello.\" - The core task is to provide a greeting.\n    *   \"Use only one word.\" - This is a strict constraint. The response must be exactly one word long.\n\n2.  **Brainstorm possible one-word greetings:**\n    *   Hello\n    *   Hi\n    *   Hey\n    *   Greetings\n    *   Salutations\n    *   Yo\n    *   Howdy\n    *   Hola\n    *   Bonjour\n    *   G''day\n\n3.  **Evaluate the options against the request:**\n    *   \"Hello\" is the most direct and literal interpretation of \"Say hello.\" It''s perfect.\n    *   \"Hi\" is also a very common and appropriate one-word greeting. It''s a good alternative.\n    *   \"Hey\" is a bit more informal, but still fits.\n    *   \"Greetings\" is a bit more formal, but works.\n    *   \"Salutations\" is even more formal and a bit archaic. It''s technically correct but might sound a little strange or overly formal for a simple AI interaction.\n    *   \"Yo\" is very informal. Might be too casual.\n    *   \"Howdy\" is regional (American South/Southwest). Good, but maybe not as universally understood as \"Hello\".\n    *   \"Hola,\" \"Bonjour,\" etc., are in other languages. The user''s request is in English, so an English response is the most natural choice unless specified otherwise.\n    *   \"G''day\" is regional (Australian). Similar to \"Howdy\".\n\n4.  **Select the best option:**\n    *   \"Hello\" is the most direct, accurate, and universally understood response that perfectly fulfills both parts of the request (\"Say hello\" and \"one word\"). It''s the safest and most correct choice.\n    *   \"Hi\" is a very close second. It''s also excellent.\n    *   Given the simplicity and directness of the prompt, the most direct and simple answer is the best. \"Hello\" is the word the user literally asked me to say.\n\n5.  **Final check:**\n    *   Is the response one word? Yes.\n    *   Does it say hello? Yes.\n    *   Is it appropriate? Yes.\n\n6.  **Construct the final response:** The final response should be just the word itself, with no extra punctuation, explanation, or pleasantries, as that would violate the \"one word\" constraint.\n\n    *   `Hello`","reasoning":"1.  **Analyze the user''s request:**\n    *   \"Say hello.\" - The core task is to provide a greeting.\n    *   \"Use only one word.\" - This is a strict constraint. The response must be exactly one word long.\n\n2.  **Brainstorm possible one-word greetings:**\n    *   Hello\n    *   Hi\n    *   Hey\n    *   Greetings\n    *   Salutations\n    *   Yo\n    *   Howdy\n    *   Hola\n    *   Bonjour\n    *   G''day\n\n3.  **Evaluate the options against the request:**\n    *   \"Hello\" is the most direct and literal interpretation of \"Say hello.\" It''s perfect.\n    *   \"Hi\" is also a very common and appropriate one-word greeting. It''s a good alternative.\n    *   \"Hey\" is a bit more informal, but still fits.\n    *   \"Greetings\" is a bit more formal, but works.\n    *   \"Salutations\" is even more formal and a bit archaic. It''s technically correct but might sound a little strange or overly formal for a simple AI interaction.\n    *   \"Yo\" is very informal. Might be too casual.\n    *   \"Howdy\" is regional (American South/Southwest). Good, but maybe not as universally understood as \"Hello\".\n    *   \"Hola,\" \"Bonjour,\" etc., are in other languages. The user''s request is in English, so an English response is the most natural choice unless specified otherwise.\n    *   \"G''day\" is regional (Australian). Similar to \"Howdy\".\n\n4.  **Select the best option:**\n    *   \"Hello\" is the most direct, accurate, and universally understood response that perfectly fulfills both parts of the request (\"Say hello\" and \"one word\"). It''s the safest and most correct choice.\n    *   \"Hi\" is a very close second. It''s also excellent.\n    *   Given the simplicity and directness of the prompt, the most direct and simple answer is the best. \"Hello\" is the word the user literally asked me to say.\n\n5.  **Final check:**\n    *   Is the response one word? Yes.\n    *   Does it say hello? Yes.\n    *   Is it appropriate? Yes.\n\n6.  **Construct the final response:** The final response should be just the word itself, with no extra punctuation, explanation, or pleasantries, as that would violate the \"one word\" constraint.\n\n    *   `Hello`"},"finish_reason":"stop"}],"created":1771458145,"model":"zai-org/GLM-4.6","object":"chat.completion","usage":{"prompt_tokens":13,"completion_tokens":545,"total_tokens":558,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "4877"
+            Content-Type:
+                - application/json
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1771458141441"
+        status: 200 OK
+        code: 200
+        duration: 3.758s

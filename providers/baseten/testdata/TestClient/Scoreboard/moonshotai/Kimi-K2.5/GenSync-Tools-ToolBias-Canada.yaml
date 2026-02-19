@@ -1,0 +1,39 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 571
+        host: inference.baseten.co
+        body: |
+            {"model":"moonshotai/Kimi-K2.5","messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"parallel_tool_calls":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 619
+        body: '{"id":"chatcmpl-592972188800485fb84145775587489b","choices":[{"index":0,"message":{"tool_calls":[{"id":"functions.best_country:0","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"} "}}],"role":"assistant"},"finish_reason":"tool_calls"}],"created":1771457623,"model":"moonshotai/Kimi-K2.5","object":"chat.completion","usage":{"prompt_tokens":359,"completion_tokens":15,"total_tokens":374,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "619"
+            Content-Type:
+                - application/json
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1771457623763"
+        status: 200 OK
+        code: 200
+        duration: 258ms

@@ -1,0 +1,86 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 213
+        host: inference.baseten.co
+        body: |
+            {"model":"moonshotai/Kimi-K2-Thinking","messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"max_completion_tokens":16,"stream":true,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-72908fb259574d9b9af335af5e4d0b24","choices":[{"index":0,"delta":{"content":"","function_call":null,"tool_calls":[],"role":"assistant","refusal":null,"reasoning_content":"The"}}],"created":1771458172,"model":"moonshotai/Kimi-K2-Thinking","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":35,"completion_tokens":2,"total_tokens":37,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-72908fb259574d9b9af335af5e4d0b24","choices":[{"index":0,"delta":{"content":"","function_call":null,"tool_calls":[],"role":"assistant","refusal":null,"reasoning_content":" user"}}],"created":1771458172,"model":"moonshotai/Kimi-K2-Thinking","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":35,"completion_tokens":3,"total_tokens":38,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-72908fb259574d9b9af335af5e4d0b24","choices":[{"index":0,"delta":{"content":"","function_call":null,"tool_calls":[],"role":"assistant","refusal":null,"reasoning_content":" asks"}}],"created":1771458172,"model":"moonshotai/Kimi-K2-Thinking","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":35,"completion_tokens":4,"total_tokens":39,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-72908fb259574d9b9af335af5e4d0b24","choices":[{"index":0,"delta":{"content":"","function_call":null,"tool_calls":[],"role":"assistant","refusal":null,"reasoning_content":" for"}}],"created":1771458172,"model":"moonshotai/Kimi-K2-Thinking","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":35,"completion_tokens":5,"total_tokens":40,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-72908fb259574d9b9af335af5e4d0b24","choices":[{"index":0,"delta":{"content":"","function_call":null,"tool_calls":[],"role":"assistant","refusal":null,"reasoning_content":" a"}}],"created":1771458172,"model":"moonshotai/Kimi-K2-Thinking","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":35,"completion_tokens":6,"total_tokens":41,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-72908fb259574d9b9af335af5e4d0b24","choices":[{"index":0,"delta":{"content":"","function_call":null,"tool_calls":[],"role":"assistant","refusal":null,"reasoning_content":" detailed"}}],"created":1771458172,"model":"moonshotai/Kimi-K2-Thinking","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":35,"completion_tokens":7,"total_tokens":42,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-72908fb259574d9b9af335af5e4d0b24","choices":[{"index":0,"delta":{"content":"","function_call":null,"tool_calls":[],"role":"assistant","refusal":null,"reasoning_content":" explanation"}}],"created":1771458172,"model":"moonshotai/Kimi-K2-Thinking","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":35,"completion_tokens":8,"total_tokens":43,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-72908fb259574d9b9af335af5e4d0b24","choices":[{"index":0,"delta":{"content":"","function_call":null,"tool_calls":[],"role":"assistant","refusal":null,"reasoning_content":" of"}}],"created":1771458172,"model":"moonshotai/Kimi-K2-Thinking","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":35,"completion_tokens":9,"total_tokens":44,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-72908fb259574d9b9af335af5e4d0b24","choices":[{"index":0,"delta":{"content":"","function_call":null,"tool_calls":[],"role":"assistant","refusal":null,"reasoning_content":" the"}}],"created":1771458172,"model":"moonshotai/Kimi-K2-Thinking","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":35,"completion_tokens":10,"total_tokens":45,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-72908fb259574d9b9af335af5e4d0b24","choices":[{"index":0,"delta":{"content":"","function_call":null,"tool_calls":[],"role":"assistant","refusal":null,"reasoning_content":" theory"}}],"created":1771458172,"model":"moonshotai/Kimi-K2-Thinking","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":35,"completion_tokens":11,"total_tokens":46,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-72908fb259574d9b9af335af5e4d0b24","choices":[{"index":0,"delta":{"content":"","function_call":null,"tool_calls":[],"role":"assistant","refusal":null,"reasoning_content":" of"}}],"created":1771458172,"model":"moonshotai/Kimi-K2-Thinking","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":35,"completion_tokens":12,"total_tokens":47,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-72908fb259574d9b9af335af5e4d0b24","choices":[{"index":0,"delta":{"content":"","function_call":null,"tool_calls":[],"role":"assistant","refusal":null,"reasoning_content":" rel"}}],"created":1771458172,"model":"moonshotai/Kimi-K2-Thinking","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":35,"completion_tokens":13,"total_tokens":48,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-72908fb259574d9b9af335af5e4d0b24","choices":[{"index":0,"delta":{"content":"","function_call":null,"tool_calls":[],"role":"assistant","refusal":null,"reasoning_content":"ativity"}}],"created":1771458172,"model":"moonshotai/Kimi-K2-Thinking","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":35,"completion_tokens":14,"total_tokens":49,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-72908fb259574d9b9af335af5e4d0b24","choices":[{"index":0,"delta":{"content":"","function_call":null,"tool_calls":[],"role":"assistant","refusal":null,"reasoning_content":"."}}],"created":1771458172,"model":"moonshotai/Kimi-K2-Thinking","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":35,"completion_tokens":15,"total_tokens":50,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-72908fb259574d9b9af335af5e4d0b24","choices":[{"index":0,"delta":{"content":"","function_call":null,"tool_calls":[],"role":"assistant","refusal":null,"reasoning_content":" This"},"finish_reason":"length"}],"created":1771458172,"model":"moonshotai/Kimi-K2-Thinking","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":35,"completion_tokens":16,"total_tokens":51,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-72908fb259574d9b9af335af5e4d0b24","choices":[],"created":1771458172,"model":"moonshotai/Kimi-K2-Thinking","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":35,"completion_tokens":16,"total_tokens":51,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1771458172415"
+            X-Baseten-Model-Id:
+                - 7qk1028w
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - w67xpoj
+            X-Baseten-Request-Id:
+                - 3534636137854827ba71863574005117
+            X-Baseten-Session-Id:
+                - 3534636137854827ba71863574005117
+        status: 200 OK
+        code: 200
+        duration: 285ms

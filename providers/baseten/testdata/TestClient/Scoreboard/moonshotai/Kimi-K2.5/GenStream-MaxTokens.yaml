@@ -1,0 +1,57 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 206
+        host: inference.baseten.co
+        body: |
+            {"model":"moonshotai/Kimi-K2.5","messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"max_completion_tokens":16,"stream":true,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-3cd570d8379a439493c45ce2247b5ca7","choices":[{"index":0,"delta":{"content":"I'll","function_call":null,"tool_calls":[],"role":"assistant","refusal":null}}],"created":1771457622,"model":"moonshotai/Kimi-K2.5","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":19,"completion_tokens":1,"total_tokens":20,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-3cd570d8379a439493c45ce2247b5ca7","choices":[{"index":0,"delta":{"content":" explain the theory of","function_call":null,"tool_calls":[],"role":"assistant","refusal":null}}],"created":1771457622,"model":"moonshotai/Kimi-K2.5","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":19,"completion_tokens":5,"total_tokens":24,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-3cd570d8379a439493c45ce2247b5ca7","choices":[{"index":0,"delta":{"content":" relativity in comprehensive","function_call":null,"tool_calls":[],"role":"assistant","refusal":null}}],"created":1771457622,"model":"moonshotai/Kimi-K2.5","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":19,"completion_tokens":9,"total_tokens":28,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-3cd570d8379a439493c45ce2247b5ca7","choices":[{"index":0,"delta":{"content":" detail, covering both","function_call":null,"tool_calls":[],"role":"assistant","refusal":null}}],"created":1771457622,"model":"moonshotai/Kimi-K2.5","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":19,"completion_tokens":13,"total_tokens":32,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-3cd570d8379a439493c45ce2247b5ca7","choices":[{"index":0,"delta":{"content":" Special","function_call":null,"tool_calls":[],"role":"assistant","refusal":null}}],"created":1771457622,"model":"moonshotai/Kimi-K2.5","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":19,"completion_tokens":14,"total_tokens":33,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-3cd570d8379a439493c45ce2247b5ca7","choices":[{"index":0,"delta":{"content":" and","function_call":null,"tool_calls":[],"role":"assistant","refusal":null}}],"created":1771457622,"model":"moonshotai/Kimi-K2.5","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":19,"completion_tokens":15,"total_tokens":34,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-3cd570d8379a439493c45ce2247b5ca7","choices":[{"index":0,"delta":{"content":" General","function_call":null,"tool_calls":[],"role":"assistant","refusal":null},"finish_reason":"length"}],"created":1771457622,"model":"moonshotai/Kimi-K2.5","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":19,"completion_tokens":16,"total_tokens":35,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-3cd570d8379a439493c45ce2247b5ca7","choices":[],"created":1771457622,"model":"moonshotai/Kimi-K2.5","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":19,"completion_tokens":16,"total_tokens":35,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1771457622511"
+        status: 200 OK
+        code: 200
+        duration: 215ms

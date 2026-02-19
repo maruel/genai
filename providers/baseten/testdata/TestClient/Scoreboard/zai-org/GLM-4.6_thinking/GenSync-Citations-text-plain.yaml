@@ -1,0 +1,39 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 211
+        host: inference.baseten.co
+        body: |
+            {"model":"zai-org/GLM-4.6","messages":[{"role":"user","content":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"role":"user","content":"What is the capital of Quackiland?"}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 2837
+        body: '{"id":"chatcmpl-b45d04bb2ed24e1a8cfa599a40a20f4d","choices":[{"index":0,"message":{"content":"\n\nThe capital of Quackiland is Quack.","role":"assistant","reasoning_content":"1.  **Identify the user''s question:** The user wants to know the capital of Quackiland.\n\n2.  **Scan the provided text for keywords:** The keywords are \"capital,\" \"Quackiland,\" and \"Quack.\"\n\n3.  **Locate the relevant sentence:** The first sentence is \"The capital of Quackiland is Quack.\"\n\n4.  **Extract the answer:** The sentence directly states that the capital of Quackiland is Quack.\n\n5.  **Formulate the response:**\n    *   Start with a direct answer. \"The capital of Quackiland is Quack.\"\n    *   Keep it simple and concise. The user asked a straightforward question based on a very short text. There''s no need for extra information or elaboration unless the user asks for it.\n    *   The second sentence (\"The Big Canard Statue is located in Quack.\") is extra information. It confirms that Quack is a place, but it''s not needed to answer the specific question about the capital. I should stick to the most direct answer.\n\n6.  **Final check:** Does my answer directly address the user''s question? Yes. Is it based *only* on the provided text? Yes. Is it clear and easy to understand? Yes. The response is ready.","reasoning":"1.  **Identify the user''s question:** The user wants to know the capital of Quackiland.\n\n2.  **Scan the provided text for keywords:** The keywords are \"capital,\" \"Quackiland,\" and \"Quack.\"\n\n3.  **Locate the relevant sentence:** The first sentence is \"The capital of Quackiland is Quack.\"\n\n4.  **Extract the answer:** The sentence directly states that the capital of Quackiland is Quack.\n\n5.  **Formulate the response:**\n    *   Start with a direct answer. \"The capital of Quackiland is Quack.\"\n    *   Keep it simple and concise. The user asked a straightforward question based on a very short text. There''s no need for extra information or elaboration unless the user asks for it.\n    *   The second sentence (\"The Big Canard Statue is located in Quack.\") is extra information. It confirms that Quack is a place, but it''s not needed to answer the specific question about the capital. I should stick to the most direct answer.\n\n6.  **Final check:** Does my answer directly address the user''s question? Yes. Is it based *only* on the provided text? Yes. Is it clear and easy to understand? Yes. The response is ready."},"finish_reason":"stop"}],"created":1771458159,"model":"zai-org/GLM-4.6","object":"chat.completion","usage":{"prompt_tokens":37,"completion_tokens":282,"total_tokens":319,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "2837"
+            Content-Type:
+                - application/json
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1771458157662"
+        status: 200 OK
+        code: 200
+        duration: 2.012s

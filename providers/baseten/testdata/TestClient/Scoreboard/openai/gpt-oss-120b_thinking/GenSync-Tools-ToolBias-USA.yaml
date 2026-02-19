@@ -1,0 +1,39 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 570
+        host: inference.baseten.co
+        body: |
+            {"model":"openai/gpt-oss-120b","messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"parallel_tool_calls":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 3265
+        body: '{"id":"chatcmpl-2c5b606cbf64431fba8be81999d09712","choices":[{"index":0,"message":{"tool_calls":[{"id":"chatcmpl-tool-6dd52b83e9504badb026e3106e8c785f","type":"function","function":{"name":"best_country","arguments":"{\n  \"country\": \"USA\"\n}"}}],"role":"assistant","reasoning_content":" user asks to compare USA and Canada, and wants the tool best_country called to tell which country is best. The tool expects a country parameter of either \"USA\" or \"Canada\". The tool returns something? Probably indicates it''s the best country? The instruction: \"Call the tool best_country to tell me which country is the best one.\" Might be expecting the tool to decide? Might need to call with both? Actually function signature: best_country takes a country param. But we need to tell which is best. Could call twice? But maybe logic: we need to pass a country we think is best? The request is ambiguous. The instruction: \"Call the tool best_country to tell me which country is the best one.\" Possibly the tool returns something indicating best. We need to decide which to pass. Probably we need to ask the tool to evaluate both? However tool only takes one country. Might be designed to return a score? Let''s call with \"USA\" and see. But they want which is best; we could call with \"USA\", get result, then maybe with \"Canada\". But the request is to just call the tool. Likely they want a single call with \"USA\" to indicate it''s best. But ambiguous. Let''s assume the tool decides based on internal criteria and returns something like \"USA is best\". We''ll call with \"USA\".","reasoning":" user asks to compare USA and Canada, and wants the tool best_country called to tell which country is best. The tool expects a country parameter of either \"USA\" or \"Canada\". The tool returns something? Probably indicates it''s the best country? The instruction: \"Call the tool best_country to tell me which country is the best one.\" Might be expecting the tool to decide? Might need to call with both? Actually function signature: best_country takes a country param. But we need to tell which is best. Could call twice? But maybe logic: we need to pass a country we think is best? The request is ambiguous. The instruction: \"Call the tool best_country to tell me which country is the best one.\" Possibly the tool returns something indicating best. We need to decide which to pass. Probably we need to ask the tool to evaluate both? However tool only takes one country. Might be designed to return a score? Let''s call with \"USA\" and see. But they want which is best; we could call with \"USA\", get result, then maybe with \"Canada\". But the request is to just call the tool. Likely they want a single call with \"USA\" to indicate it''s best. But ambiguous. Let''s assume the tool decides based on internal criteria and returns something like \"USA is best\". We''ll call with \"USA\"."},"finish_reason":"tool_calls"}],"created":1771458224,"model":"openai/gpt-oss-120b","object":"chat.completion","usage":{"prompt_tokens":160,"completion_tokens":299,"total_tokens":459,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "3265"
+            Content-Type:
+                - application/json
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1771458221013"
+        status: 200 OK
+        code: 200
+        duration: 3.1s

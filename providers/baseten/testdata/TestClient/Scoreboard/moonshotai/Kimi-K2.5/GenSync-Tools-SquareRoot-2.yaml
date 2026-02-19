@@ -1,0 +1,39 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 811
+        host: inference.baseten.co
+        body: |
+            {"model":"moonshotai/Kimi-K2.5","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"type":"function","id":"functions.square_root:0","function":{"name":"square_root","arguments":"{\"number\": 132413} "}}]},{"role":"tool","content":"363.89","tool_call_id":"functions.square_root:0","name":"square_root"}],"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"parallel_tool_calls":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 486
+        body: '{"id":"chatcmpl-ce14fa35f6df49fbb6bb7da0321d74bb","choices":[{"index":0,"message":{"content":"363.89","role":"assistant"},"finish_reason":"stop"}],"created":1771457623,"model":"moonshotai/Kimi-K2.5","object":"chat.completion","usage":{"prompt_tokens":76,"completion_tokens":3,"total_tokens":79,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "486"
+            Content-Type:
+                - application/json
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1771457623609"
+        status: 200 OK
+        code: 200
+        duration: 155ms

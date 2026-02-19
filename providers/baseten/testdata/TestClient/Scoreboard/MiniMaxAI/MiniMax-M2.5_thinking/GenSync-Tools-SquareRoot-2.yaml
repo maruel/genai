@@ -1,0 +1,39 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 858
+        host: inference.baseten.co
+        body: |
+            {"model":"MiniMaxAI/MiniMax-M2.5","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"type":"function","id":"chatcmpl-tool-c8db6b9e46b74298a32931054d268502","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"chatcmpl-tool-c8db6b9e46b74298a32931054d268502","name":"square_root"}],"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"parallel_tool_calls":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 1001
+        body: '{"id":"chatcmpl-3a3e92e82637407a97e2ebdc2d9716c0","choices":[{"index":0,"message":{"content":"\n\n363.89","role":"assistant","reasoning_content":"The user wants me to use the square_root tool to calculate the square root of 132413 and reply with only the result, no explanation.\n\nThe tool has already calculated this: 363.89\n\nI should just output this number as my response.\n","reasoning":"The user wants me to use the square_root tool to calculate the square root of 132413 and reply with only the result, no explanation.\n\nThe tool has already calculated this: 363.89\n\nI should just output this number as my response.\n"},"finish_reason":"stop"}],"created":1771458880,"model":"MiniMaxAI/MiniMax-M2.5","object":"chat.completion","usage":{"prompt_tokens":108,"completion_tokens":57,"total_tokens":165,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "1001"
+            Content-Type:
+                - application/json
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1771458879848"
+        status: 200 OK
+        code: 200
+        duration: 1.187s

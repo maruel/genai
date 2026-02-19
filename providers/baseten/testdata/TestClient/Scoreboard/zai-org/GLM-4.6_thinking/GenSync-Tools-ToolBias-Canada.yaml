@@ -1,0 +1,39 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 562
+        host: inference.baseten.co
+        body: |
+            {"model":"zai-org/GLM-4.6","messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"tool_choice":"auto","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"parallel_tool_calls":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 2752
+        body: '{"id":"chatcmpl-4670eca666e24e5f9f6a2fbf67b8386d","choices":[{"index":0,"message":{"content":"\n\nI''ll help you determine which country is better by using the best_country tool. Let me check both Canada and the USA for you.\n","tool_calls":[{"id":"chatcmpl-tool-e8c0dbd908fb4b80a4406b3297a1c10d","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"}}],"role":"assistant","reasoning_content":"The user is asking me to use the best_country tool to determine which country is better between Canada and the USA. Looking at the tool definition, I can see that:\n\n1. The tool is called \"best_country\"\n2. It requires a \"country\" parameter \n3. The country parameter can only be \"Canada\" or \"USA\" (as specified in the enum)\n\nThe user specifically mentions both Canada and USA, and asks me to call the tool to tell them which country is the best one. However, the tool seems to require me to specify which country to evaluate - it doesn''t compare them directly. \n\nLooking more carefully at the tool description: \"A tool to specify the best country\" - this suggests that when I call the tool with a specific country, it will tell me if that country is the best one.\n\nSince the user is asking about both countries and wants to know which is better, I should probably call the tool for both countries to get a comparison. Let me start with Canada first.","reasoning":"The user is asking me to use the best_country tool to determine which country is better between Canada and the USA. Looking at the tool definition, I can see that:\n\n1. The tool is called \"best_country\"\n2. It requires a \"country\" parameter \n3. The country parameter can only be \"Canada\" or \"USA\" (as specified in the enum)\n\nThe user specifically mentions both Canada and USA, and asks me to call the tool to tell them which country is the best one. However, the tool seems to require me to specify which country to evaluate - it doesn''t compare them directly. \n\nLooking more carefully at the tool description: \"A tool to specify the best country\" - this suggests that when I call the tool with a specific country, it will tell me if that country is the best one.\n\nSince the user is asking about both countries and wants to know which is better, I should probably call the tool for both countries to get a comparison. Let me start with Canada first."},"finish_reason":"tool_calls"}],"created":1771458153,"model":"zai-org/GLM-4.6","object":"chat.completion","usage":{"prompt_tokens":228,"completion_tokens":249,"total_tokens":477,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "2752"
+            Content-Type:
+                - application/json
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1771458151820"
+        status: 200 OK
+        code: 200
+        duration: 1.776s

@@ -1,0 +1,39 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 241
+        host: inference.baseten.co
+        body: |
+            {"model":"openai/gpt-oss-120b","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"response_format":{"type":"json_object"}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 1074
+        body: '{"id":"chatcmpl-b4cf349efb124cba9fa63707475f1fa3","choices":[{"index":0,"message":{"content":"{\n  \"is_fruit\": true\n}","role":"assistant","reasoning_content":" user asks: \"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}.\"\n\nWe need to respond with JSON: {\"is_fruit\": true} as banana is a fruit.\n\nMake sure no extra text. Return just JSON.","reasoning":" user asks: \"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}.\"\n\nWe need to respond with JSON: {\"is_fruit\": true} as banana is a fruit.\n\nMake sure no extra text. Return just JSON."},"finish_reason":"stop"}],"created":1771458217,"model":"openai/gpt-oss-120b","object":"chat.completion","usage":{"prompt_tokens":120,"completion_tokens":85,"total_tokens":205,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "1074"
+            Content-Type:
+                - application/json
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1771458216604"
+        status: 200 OK
+        code: 200
+        duration: 555ms

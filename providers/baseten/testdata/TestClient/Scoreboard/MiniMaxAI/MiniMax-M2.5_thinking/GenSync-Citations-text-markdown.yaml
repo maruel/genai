@@ -1,0 +1,39 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 234
+        host: inference.baseten.co
+        body: |
+            {"model":"MiniMaxAI/MiniMax-M2.5","messages":[{"role":"user","content":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"role":"user","content":"What is the capital of Quackiland?"}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 2046
+        body: '{"id":"chatcmpl-d7a54d99fe1243368ca3e6d14c0b5248","choices":[{"index":0,"message":{"content":"\n\nThe capital of Quackiland is **Quack**.","role":"assistant","reasoning_content":"We need to answer the user query: \"Quackiland\" is presumably a made-up or fictitious entity. The user asks: \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\" Possibly they want just the answer: Quack. Might be trivial. The user seems to provide the answer then ask. It''s a trick: they gave it. So answer \"Quack.\"\n\nBut careful: The question is extremely simple: they ask, \"What is the capital of Quackiland?\" I answer \"Quack.\" There''s no violation of policy. There''s no prohibited content. There''s no request for disallowed content. So answer should be appropriate.\n\nThus answer is simply Quack. Possibly with explanation. Provide answer. Let''s do as minimal.\n","reasoning":"We need to answer the user query: \"Quackiland\" is presumably a made-up or fictitious entity. The user asks: \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\" Possibly they want just the answer: Quack. Might be trivial. The user seems to provide the answer then ask. It''s a trick: they gave it. So answer \"Quack.\"\n\nBut careful: The question is extremely simple: they ask, \"What is the capital of Quackiland?\" I answer \"Quack.\" There''s no violation of policy. There''s no prohibited content. There''s no request for disallowed content. So answer should be appropriate.\n\nThus answer is simply Quack. Possibly with explanation. Provide answer. Let''s do as minimal.\n"},"finish_reason":"stop"}],"created":1771458886,"model":"MiniMaxAI/MiniMax-M2.5","object":"chat.completion","usage":{"prompt_tokens":78,"completion_tokens":180,"total_tokens":258,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "2046"
+            Content-Type:
+                - application/json
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1771458883804"
+        status: 200 OK
+        code: 200
+        duration: 2.28s

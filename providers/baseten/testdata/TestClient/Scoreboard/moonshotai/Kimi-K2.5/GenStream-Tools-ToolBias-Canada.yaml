@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 625
+        host: inference.baseten.co
+        body: |
+            {"model":"moonshotai/Kimi-K2.5","messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"stream":true,"stream_options":{"include_usage":true},"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"parallel_tool_calls":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-581ec7e1336347149fd326ba9b4ebd63","choices":[{"index":0,"delta":{"content":"","function_call":null,"tool_calls":[{"index":0,"id":"functions.best_country:0","type":"function","function":{"name":"best_country","arguments":""}}],"role":"assistant","refusal":null}}],"created":1771458444,"model":"moonshotai/Kimi-K2.5","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":359,"completion_tokens":10,"total_tokens":369,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-581ec7e1336347149fd326ba9b4ebd63","choices":[{"index":0,"delta":{"content":"","function_call":null,"tool_calls":[{"index":0,"id":"functions.best_country:0","type":"function","function":{"name":"","arguments":"{\"country\": \"Canada"}}],"role":"assistant","refusal":null}}],"created":1771458444,"model":"moonshotai/Kimi-K2.5","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":359,"completion_tokens":12,"total_tokens":371,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-581ec7e1336347149fd326ba9b4ebd63","choices":[{"index":0,"delta":{"content":"","function_call":null,"tool_calls":[{"index":0,"id":"functions.best_country:0","type":"function","function":{"name":"","arguments":"\"} "}}],"role":"assistant","refusal":null}}],"created":1771458444,"model":"moonshotai/Kimi-K2.5","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":359,"completion_tokens":14,"total_tokens":373,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-581ec7e1336347149fd326ba9b4ebd63","choices":[{"index":0,"delta":{"content":"","function_call":null,"tool_calls":[],"role":"assistant","refusal":null},"finish_reason":"tool_calls"}],"created":1771458444,"model":"moonshotai/Kimi-K2.5","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":359,"completion_tokens":15,"total_tokens":374,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-581ec7e1336347149fd326ba9b4ebd63","choices":[],"created":1771458444,"model":"moonshotai/Kimi-K2.5","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":359,"completion_tokens":15,"total_tokens":374,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1771458444441"
+        status: 200 OK
+        code: 200
+        duration: 212ms

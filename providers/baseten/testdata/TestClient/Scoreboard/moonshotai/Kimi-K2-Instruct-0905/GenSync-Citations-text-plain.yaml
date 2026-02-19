@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 228
+        host: inference.baseten.co
+        body: |
+            {"model":"moonshotai/Kimi-K2-Instruct-0905","messages":[{"role":"user","content":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"role":"user","content":"What is the capital of Quackiland?"}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 528
+        body: '{"id":"chatcmpl-ddf2667b85844b84bb33e6be47931557","choices":[{"index":0,"message":{"content":"The capital of Quackiland is Quack.","role":"assistant"},"finish_reason":"stop"}],"created":1771458171,"model":"moonshotai/Kimi-K2-Instruct-0905","object":"chat.completion","usage":{"prompt_tokens":61,"completion_tokens":11,"total_tokens":72,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "528"
+            Content-Type:
+                - application/json
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1771458170779"
+            X-Baseten-Model-Id:
+                - 5qeop713
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - wd17pzm
+            X-Baseten-Request-Id:
+                - 3534636137374127b3de446187c2ba75
+            X-Baseten-Session-Id:
+                - 3534636137374127b3de446187c2ba75
+        status: 200 OK
+        code: 200
+        duration: 800ms

@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 569
+        host: inference.baseten.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V3-0324","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"tool_choice":"required","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"parallel_tool_calls":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 641
+        body: '{"id":"chatcmpl-70e7abb44ead4e47afd576fabc321854","choices":[{"index":0,"message":{"tool_calls":[{"id":"chatcmpl-tool-b4fb83036a3645b69d8dd70b8d93aa64","type":"function","function":{"name":"square_root","arguments":"{\"number\":132413}"}}],"role":"assistant"},"finish_reason":"tool_calls"}],"created":1771458071,"model":"deepseek-ai/DeepSeek-V3-0324","object":"chat.completion","usage":{"prompt_tokens":214,"completion_tokens":19,"total_tokens":233,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "641"
+            Content-Type:
+                - application/json
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1771458071486"
+            X-Baseten-Model-Id:
+                - jwd5j4gq
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - qzkl4jk
+            X-Baseten-Request-Id:
+                - 3534636137124a1fb9a181effab5c285
+            X-Baseten-Session-Id:
+                - 3534636137124a1fb9a181effab5c285
+        status: 200 OK
+        code: 200
+        duration: 507ms

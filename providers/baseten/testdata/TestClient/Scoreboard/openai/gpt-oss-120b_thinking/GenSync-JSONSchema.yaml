@@ -1,0 +1,39 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 408
+        host: inference.baseten.co
+        body: |
+            {"model":"openai/gpt-oss-120b","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}],"response_format":{"type":"json_schema","json_schema":{"name":"","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]},"strict":true}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 1009
+        body: '{"id":"chatcmpl-179bc1fb025b425aa618e75d73e621ba","choices":[{"index":0,"message":{"content":"{\"is_fruit\":true}","role":"assistant","reasoning_content":" user asks: \"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON.\" The system message says we must respond with JSON matching schema: object with required boolean property is_fruit. So answer: {\"is_fruit\": true}.","reasoning":" user asks: \"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON.\" The system message says we must respond with JSON matching schema: object with required boolean property is_fruit. So answer: {\"is_fruit\": true}."},"finish_reason":"stop"}],"created":1771458217,"model":"openai/gpt-oss-120b","object":"chat.completion","usage":{"prompt_tokens":156,"completion_tokens":69,"total_tokens":225,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "1009"
+            Content-Type:
+                - application/json
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1771458217160"
+        status: 200 OK
+        code: 200
+        duration: 496ms

@@ -1,0 +1,60 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 173
+        host: inference.baseten.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V3.1","messages":[{"role":"user","content":"Say hello. Use only one word."}],"seed":42,"stream":true,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-255875e9c5bf48b7bfd501f390c9aaad","choices":[{"index":0,"delta":{"content":"Hello","function_call":null,"tool_calls":[],"role":"assistant","refusal":null}}],"created":1771457612,"model":"deepseek-ai/DeepSeek-V3.1","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":13,"completion_tokens":1,"total_tokens":14,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-255875e9c5bf48b7bfd501f390c9aaad","choices":[{"index":0,"delta":{"content":".","function_call":null,"tool_calls":[],"role":"assistant","refusal":null},"finish_reason":"stop"}],"created":1771457613,"model":"deepseek-ai/DeepSeek-V3.1","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":13,"completion_tokens":3,"total_tokens":16,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-255875e9c5bf48b7bfd501f390c9aaad","choices":[],"created":1771457613,"model":"deepseek-ai/DeepSeek-V3.1","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":13,"completion_tokens":3,"total_tokens":16,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1771457612788"
+            X-Baseten-Model-Id:
+                - 232dyk2q
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - 3m59z1z
+            X-Baseten-Request-Id:
+                - 35346361377944369fd5bcc05c8e1e4c
+            X-Baseten-Session-Id:
+                - 35346361377944369fd5bcc05c8e1e4c
+        status: 200 OK
+        code: 200
+        duration: 187ms

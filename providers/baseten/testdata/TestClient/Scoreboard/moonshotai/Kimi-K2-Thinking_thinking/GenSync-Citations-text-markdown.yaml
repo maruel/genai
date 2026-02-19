@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 239
+        host: inference.baseten.co
+        body: |
+            {"model":"moonshotai/Kimi-K2-Thinking","messages":[{"role":"user","content":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"role":"user","content":"What is the capital of Quackiland?"}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 1457
+        body: '{"id":"chatcmpl-cd65ba8257904011ac916aebc46584c9","choices":[{"index":0,"message":{"content":"The capital of Quackiland is **Quack**.","role":"assistant","reasoning_content":"The user is asking about the capital of Quackiland. Looking at the provided text, it explicitly states: \"The capital of Quackiland is Quack.\"\n\nThis is a straightforward factual recall question based on the information given. I should provide a direct and concise answer.\n\nThe question is simple and the answer is clearly stated in the text. No complex reasoning or inference is needed.\n\nI will answer: The capital of Quackiland is Quack.","reasoning":"The user is asking about the capital of Quackiland. Looking at the provided text, it explicitly states: \"The capital of Quackiland is Quack.\"\n\nThis is a straightforward factual recall question based on the information given. I should provide a direct and concise answer.\n\nThe question is simple and the answer is clearly stated in the text. No complex reasoning or inference is needed.\n\nI will answer: The capital of Quackiland is Quack."},"finish_reason":"stop"}],"created":1771458209,"model":"moonshotai/Kimi-K2-Thinking","object":"chat.completion","usage":{"prompt_tokens":65,"completion_tokens":105,"total_tokens":170,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "1457"
+            Content-Type:
+                - application/json
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1771458208749"
+            X-Baseten-Model-Id:
+                - 7qk1028w
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - w67xpoj
+            X-Baseten-Request-Id:
+                - 35346361379d4573bff36cd93cb6675b
+            X-Baseten-Session-Id:
+                - 35346361379d4573bff36cd93cb6675b
+        status: 200 OK
+        code: 200
+        duration: 751ms

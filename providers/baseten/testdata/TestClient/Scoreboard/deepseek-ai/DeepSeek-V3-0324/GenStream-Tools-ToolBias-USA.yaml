@@ -1,0 +1,62 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 633
+        host: inference.baseten.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V3-0324","messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"stream":true,"stream_options":{"include_usage":true},"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"parallel_tool_calls":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-f61daac52abe48aaac7bfbb93c5bb0e8","choices":[{"index":0,"delta":{"content":"","function_call":null,"tool_calls":[{"index":0,"id":"chatcmpl-tool-042cbe001e9c43c1b98c6c60ea72e260","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"}}],"role":"assistant","refusal":null}}],"created":1771458073,"model":"deepseek-ai/DeepSeek-V3-0324","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":223,"completion_tokens":17,"total_tokens":240,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-f61daac52abe48aaac7bfbb93c5bb0e8","choices":[{"index":0,"delta":{"content":"","function_call":null,"tool_calls":[{"index":1,"id":"chatcmpl-tool-f3b1c4471c3747b5a292066caaf0be3e","type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"}}],"role":"assistant","refusal":null}}],"created":1771458073,"model":"deepseek-ai/DeepSeek-V3-0324","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":223,"completion_tokens":35,"total_tokens":258,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-f61daac52abe48aaac7bfbb93c5bb0e8","choices":[{"index":0,"delta":{"content":"","function_call":null,"tool_calls":[],"role":"assistant","refusal":null},"finish_reason":"tool_calls"}],"created":1771458073,"model":"deepseek-ai/DeepSeek-V3-0324","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":223,"completion_tokens":37,"total_tokens":260,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-f61daac52abe48aaac7bfbb93c5bb0e8","choices":[],"created":1771458073,"model":"deepseek-ai/DeepSeek-V3-0324","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":223,"completion_tokens":37,"total_tokens":260,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1771458073105"
+            X-Baseten-Model-Id:
+                - jwd5j4gq
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - qzkl4jk
+            X-Baseten-Request-Id:
+                - 3534636137e24672bc354ec3eff0a332
+            X-Baseten-Session-Id:
+                - 3534636137e24672bc354ec3eff0a332
+        status: 200 OK
+        code: 200
+        duration: 299ms

@@ -1,0 +1,47 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        host: inference.baseten.co
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/models
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 5514
+        body: '{"data": [{"id": "deepseek-ai/DeepSeek-V3-0324", "created": 1745892559, "object": "model", "owned_by": "baseten", "name": "DeepSeek V3 0324", "description": "Fast general-purpose LLM with enhanced reasoning capabilities", "context_length": 163840, "max_completion_tokens": 131072, "quantization": "fp8", "pricing": {"prompt": "0.00000077", "completion": "0.00000077", "image": "0", "request": "0"}, "supported_sampling_parameters": ["temperature", "stop"], "supported_features": ["tools", "json_mode", "structured_outputs", "reasoning"]}, {"id": "openai/gpt-oss-120b", "created": 1754410981, "object": "model", "owned_by": "baseten", "name": "OpenAI GPT 120B", "description": "Extremely capable general-purpose LLM with strong, controllable reasoning capabilities", "context_length": 128072, "max_completion_tokens": 128072, "quantization": "fp4", "pricing": {"prompt": "0.0000001", "completion": "0.0000005", "image": "0", "request": "0"}, "supported_sampling_parameters": ["temperature", "stop"], "supported_features": ["tools", "reasoning", "json_mode", "structured_outputs", "reasoning_effort"]}, {"id": "deepseek-ai/DeepSeek-V3.1", "created": 1755822380, "object": "model", "owned_by": "baseten", "name": "DeepSeek V3.1", "description": "Extremely capable general-purpose LLM with hybrid reasoning capabilities and advanced tool calling", "context_length": 163840, "max_completion_tokens": 131072, "quantization": "fp8", "pricing": {"prompt": "0.0000005", "completion": "0.0000015", "image": "0", "request": "0"}, "supported_sampling_parameters": ["temperature", "stop"], "supported_features": ["tools", "reasoning"]}, {"id": "moonshotai/Kimi-K2-Instruct-0905", "created": 1757106562, "object": "model", "owned_by": "baseten", "name": "Kimi K2 0905", "description": "Moonshot''s non-reasoning language model for agentic and coding tasks.", "context_length": 262000, "max_completion_tokens": 163800, "quantization": "fp4", "pricing": {"prompt": "0.0000006", "completion": "0.0000025", "image": "0", "request": "0"}, "supported_sampling_parameters": ["temperature", "stop"], "supported_features": ["tools", "json_mode", "structured_outputs"]}, {"id": "zai-org/GLM-4.6", "created": 1760570627, "object": "model", "owned_by": "baseten", "name": "GLM 4.6", "description": "Fast general-purpose LLM with extended 200K context window, superior coding and reasoning capabilities and enhanced tool use for agentic workflows.", "context_length": 200000, "max_completion_tokens": 200000, "quantization": "fp4", "pricing": {"prompt": "0.0000006", "completion": "0.0000022", "image": "0", "request": "0"}, "supported_sampling_parameters": ["temperature", "stop", "top_p", "top_k"], "supported_features": ["tools", "json_mode", "structured_outputs"]}, {"id": "moonshotai/Kimi-K2-Thinking", "created": 1762812166, "object": "model", "owned_by": "baseten", "name": "Kimi K2 Thinking", "description": "State of the art language model for agentic and coding tasks", "context_length": 262000, "max_completion_tokens": 163800, "quantization": "fp4", "pricing": {"prompt": "0.0000006", "completion": "0.0000025", "image": "0", "request": "0"}, "supported_sampling_parameters": ["temperature", "stop"], "supported_features": ["tools", "json_mode", "structured_outputs"]}, {"id": "zai-org/GLM-4.7", "created": 1766509343, "object": "model", "owned_by": "baseten", "name": "GLM 4.7", "description": "Fast general-purpose LLM with extended 200K context window, superior coding and reasoning capabilities and enhanced tool use for agentic workflows.", "context_length": 200000, "max_completion_tokens": 200000, "quantization": "fp4", "pricing": {"prompt": "0.0000006", "completion": "0.0000022", "image": "0", "request": "0"}, "supported_sampling_parameters": ["temperature", "stop", "top_p", "top_k"], "supported_features": ["tools", "json_mode", "structured_outputs"]}, {"id": "moonshotai/Kimi-K2.5", "created": 1769551067, "object": "model", "owned_by": "baseten", "name": "Kimi K2.5", "description": "State of the art language model for agentic and coding tasks", "context_length": 262000, "max_completion_tokens": 262000, "quantization": "fp4", "pricing": {"prompt": "0.0000006", "completion": "0.000003", "image": "0", "request": "0"}, "supported_sampling_parameters": ["temperature", "stop"], "supported_features": ["tools", "json_mode", "structured_outputs"]}, {"id": "MiniMaxAI/MiniMax-M2.5", "created": 1771086448, "object": "model", "owned_by": "baseten", "name": "Minimax M2.5", "description": "Extremely capable general-purpose LLM with reasoning capabilities and advanced tool calling", "context_length": 204000, "max_completion_tokens": 204000, "quantization": "fp8", "pricing": {"prompt": "0.0000003", "completion": "0.0000012", "image": "0", "request": "0"}, "supported_sampling_parameters": ["temperature", "stop"], "supported_features": ["tools", "json_mode", "structured_outputs", "reasoning"]}, {"id": "zai-org/GLM-5", "created": 1771197112, "object": "model", "owned_by": "baseten", "name": "GLM 5", "description": "Open-source flagship model built for complex systems design, with production-grade coding performance, advanced agentic planning, and autonomous long-horizon task execution.", "context_length": 202800, "max_completion_tokens": 202800, "quantization": "fp4", "pricing": {"prompt": "0.00000095", "completion": "0.00000315", "image": "0", "request": "0"}, "supported_sampling_parameters": ["temperature", "stop", "top_p", "top_k"], "supported_features": ["tools", "json_mode", "structured_outputs"]}]}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "5514"
+            Content-Security-Policy:
+                - 'child-src ''self'' blob: https://www.youtube.com https://player.vimeo.com https://fast.wistia.net; script-src ''self'' ''unsafe-eval'' ''unsafe-inline'' https://www.googletagmanager.com https://www.google-analytics.com http://www.googletagmanager.com/ https://cdn.baseten.co https://bam.nr-data.net https://cdn.jsdelivr.net https://cdn.segment.com https://js.hs-scripts.com https://js.hs-analytics.net https://js.hsadspixel.net https://js.hs-banner.com https://js.hscollectedforms.net https://js.stripe.com https://widget.usepylon.com https://apichatwidget.usepylon.com https://*.pusher.com https://googleads.g.doubleclick.net; worker-src ''self'' blob: data:; default-src ''self'' https://cdn.baseten.co https://bam.nr-data.net; form-action ''self'' https://*.nvidia.com https://nvidia.com; media-src ''self'' * data: blob: http://commondatastorage.googleapis.com https://cdn.baseten.co; style-src ''self'' ''unsafe-inline'' https://fonts.googleapis.com https://cdn.baseten.co https://cdn.jsdelivr.net https://widget.usepylon.com; connect-src ''self'' https://analytics.google.com https://www.googletagmanager.com https://www.google-analytics.com https://cdn.baseten.co https://bam.nr-data.net https://cdn.segment.com https://api.segment.io https://graphql.datocms.com https://*.amazonaws.com https://*.ingest.sentry.io https://cdn.jsdelivr.net https://pypi.org https://files.pythonhosted.org https://js.hs-banner.com https://forms.hscollectedforms.net https://api.hubapi.com https://stats.g.doubleclick.net https://*.usepylon.com https://*.pusher.com wss://*.pusher.com blob: data: https://api.baseten.co https://*.api.baseten.co https://inference.baseten.co; font-src ''self'' https://fonts.gstatic.com https://cdn.baseten.co https://cdn.jsdelivr.net https://widget.usepylon.com; frame-ancestors ''self'' *; frame-src ''self'' *; img-src ''self'' * data: blob: https://www.googletagmanager.com https://www.google-analytics.com http://www.googletagmanager.com/ https://cdn.baseten.co https://*.hubspot.com'
+            Content-Type:
+                - application/json
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Referrer-Policy:
+                - same-origin
+            Server:
+                - gunicorn
+            Vary:
+                - Origin, Cookie
+            Via:
+                - 1.1 google
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - DENY
+        status: 200 OK
+        code: 200
+        duration: 809ms

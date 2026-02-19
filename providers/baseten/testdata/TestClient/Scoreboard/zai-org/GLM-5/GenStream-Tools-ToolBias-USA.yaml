@@ -1,0 +1,55 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 618
+        host: inference.baseten.co
+        body: |
+            {"model":"zai-org/GLM-5","messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"stream":true,"stream_options":{"include_usage":true},"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"parallel_tool_calls":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-013ab67d01e94b9499416f4c3fca0efa","choices":[{"index":0,"delta":{"content":"","function_call":null,"tool_calls":[{"index":0,"id":"chatcmpl-tool-62e52dcefd714b61bfb73b1a5191cd8a","type":"function","function":{"name":"best_country","arguments":""}}],"role":"assistant","refusal":null}}],"created":1771462808,"model":"zai-org/GLM-5","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":225,"completion_tokens":3,"total_tokens":228,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-013ab67d01e94b9499416f4c3fca0efa","choices":[{"index":0,"delta":{"content":"","function_call":null,"tool_calls":[{"index":0,"id":"chatcmpl-tool-ec0b1759c51848cd98320e0cf03683d8","type":"function","function":{"name":"","arguments":"{\"country\":\""}}],"role":"assistant","refusal":null}}],"created":1771462808,"model":"zai-org/GLM-5","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":225,"completion_tokens":6,"total_tokens":231,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-013ab67d01e94b9499416f4c3fca0efa","choices":[{"index":0,"delta":{"content":"","function_call":null,"tool_calls":[{"index":0,"id":"chatcmpl-tool-bc71dfbdf4a54fc7983741f4403b6d15","type":"function","function":{"name":"","arguments":"USA"}}],"role":"assistant","refusal":null}}],"created":1771462808,"model":"zai-org/GLM-5","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":225,"completion_tokens":7,"total_tokens":232,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-013ab67d01e94b9499416f4c3fca0efa","choices":[{"index":0,"delta":{"content":"","function_call":null,"tool_calls":[{"index":0,"id":"chatcmpl-tool-487054469a794285965617bd022a0383","type":"function","function":{"name":"","arguments":"\""}}],"role":"assistant","refusal":null}}],"created":1771462808,"model":"zai-org/GLM-5","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":225,"completion_tokens":8,"total_tokens":233,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-013ab67d01e94b9499416f4c3fca0efa","choices":[{"index":0,"delta":{"content":"","function_call":null,"tool_calls":[{"index":0,"id":"chatcmpl-tool-8213d210b1f14310a61c698ee1a1422a","type":"function","function":{"name":"","arguments":"}"}}],"role":"assistant","refusal":null}}],"created":1771462808,"model":"zai-org/GLM-5","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":225,"completion_tokens":9,"total_tokens":234,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-013ab67d01e94b9499416f4c3fca0efa","choices":[{"index":0,"delta":{"content":"","function_call":null,"tool_calls":[],"role":"assistant","refusal":null},"finish_reason":"tool_calls"}],"created":1771462808,"model":"zai-org/GLM-5","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":225,"completion_tokens":9,"total_tokens":234,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-013ab67d01e94b9499416f4c3fca0efa","choices":[],"created":1771462808,"model":"zai-org/GLM-5","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":225,"completion_tokens":9,"total_tokens":234,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1771462807936"
+        status: 200 OK
+        code: 200
+        duration: 264ms

@@ -1,0 +1,39 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 113
+        host: inference.baseten.co
+        body: |
+            {"model":"openai/gpt-oss-120b","messages":[{"role":"user","content":"Say hello. Use only one word."}],"seed":42}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 1080
+        body: '{"id":"chatcmpl-7c4815d3c57244ceb240c7e909868a62","choices":[{"index":0,"message":{"content":"Hello","role":"assistant","reasoning_content":" need to respond according to policy. The user asks: \"Say hello. Use only one word.\"\n\nWe should respond with a single word that says hello, e.g., \"Hello!\" That''s one word (though exclamation maybe punctuation). Should be fine. No disallowed content. Provide just the word.","reasoning":" need to respond according to policy. The user asks: \"Say hello. Use only one word.\"\n\nWe should respond with a single word that says hello, e.g., \"Hello!\" That''s one word (though exclamation maybe punctuation). Should be fine. No disallowed content. Provide just the word."},"finish_reason":"stop"}],"created":1771458210,"model":"openai/gpt-oss-120b","object":"chat.completion","usage":{"prompt_tokens":86,"completion_tokens":70,"total_tokens":156,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "1080"
+            Content-Type:
+                - application/json
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1771458210329"
+        status: 200 OK
+        code: 200
+        duration: 615ms

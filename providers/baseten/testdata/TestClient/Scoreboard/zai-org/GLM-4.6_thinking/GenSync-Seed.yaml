@@ -1,0 +1,39 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 109
+        host: inference.baseten.co
+        body: |
+            {"model":"zai-org/GLM-4.6","messages":[{"role":"user","content":"Say hello. Use only one word."}],"seed":42}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 3607
+        body: '{"id":"chatcmpl-d740052fcba84cbfaca5df0a1a46910a","choices":[{"index":0,"message":{"content":"\n\nHello","role":"assistant","reasoning_content":"1.  **Analyze the user''s request:**\n    *   \"Say hello.\" - The core task is to provide a greeting.\n    *   \"Use only one word.\" - This is a strict constraint. The response must be exactly one word.\n\n2.  **Brainstorm possible one-word greetings:**\n    *   Hello\n    *   Hi\n    *   Hey\n    *   Greetings (This is technically one word, but a bit formal. \"Hello\" is the most direct response to \"Say hello.\")\n    *   Salutations (Even more formal, less common.)\n    *   Yo (Very informal, might not be appropriate for a general-purpose AI.)\n    *   Howdy (Regional, informal.)\n\n3.  **Evaluate the options against the request:**\n    *   The user literally said \"Say hello.\" The most direct, literal, and universally understood response is the word \"Hello\" itself.\n    *   \"Hi\" and \"Hey\" are also good, but \"Hello\" is the most precise answer to the prompt.\n    *   \"Greetings\" is a bit long and formal. It works, but \"Hello\" is simpler and more common.\n    *   The other options are too informal or specific.\n\n4.  **Select the best option:**\n    *   \"Hello\" is the perfect choice. It directly fulfills the \"Say hello\" part and adheres to the \"only one word\" constraint. It''s neutral, clear, and exactly what was asked for.\n\n5.  **Final check:**\n    *   Is it one word? Yes.\n    *   Does it say hello? Yes.\n    *   Is it a good response? Yes.\n\n6.  **Construct the final output:** Just the single word. No punctuation, no extra text, no \"Here is your one-word response:\". Just the word itself.","reasoning":"1.  **Analyze the user''s request:**\n    *   \"Say hello.\" - The core task is to provide a greeting.\n    *   \"Use only one word.\" - This is a strict constraint. The response must be exactly one word.\n\n2.  **Brainstorm possible one-word greetings:**\n    *   Hello\n    *   Hi\n    *   Hey\n    *   Greetings (This is technically one word, but a bit formal. \"Hello\" is the most direct response to \"Say hello.\")\n    *   Salutations (Even more formal, less common.)\n    *   Yo (Very informal, might not be appropriate for a general-purpose AI.)\n    *   Howdy (Regional, informal.)\n\n3.  **Evaluate the options against the request:**\n    *   The user literally said \"Say hello.\" The most direct, literal, and universally understood response is the word \"Hello\" itself.\n    *   \"Hi\" and \"Hey\" are also good, but \"Hello\" is the most precise answer to the prompt.\n    *   \"Greetings\" is a bit long and formal. It works, but \"Hello\" is simpler and more common.\n    *   The other options are too informal or specific.\n\n4.  **Select the best option:**\n    *   \"Hello\" is the perfect choice. It directly fulfills the \"Say hello\" part and adheres to the \"only one word\" constraint. It''s neutral, clear, and exactly what was asked for.\n\n5.  **Final check:**\n    *   Is it one word? Yes.\n    *   Does it say hello? Yes.\n    *   Is it a good response? Yes.\n\n6.  **Construct the final output:** Just the single word. No punctuation, no extra text, no \"Here is your one-word response:\". Just the word itself."},"finish_reason":"stop"}],"created":1771458147,"model":"zai-org/GLM-4.6","object":"chat.completion","usage":{"prompt_tokens":13,"completion_tokens":392,"total_tokens":405,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "3607"
+            Content-Type:
+                - application/json
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1771458145200"
+        status: 200 OK
+        code: 200
+        duration: 2.699s

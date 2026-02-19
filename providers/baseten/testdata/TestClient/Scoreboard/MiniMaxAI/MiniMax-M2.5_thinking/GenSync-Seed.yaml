@@ -1,0 +1,39 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 116
+        host: inference.baseten.co
+        body: |
+            {"model":"MiniMaxAI/MiniMax-M2.5","messages":[{"role":"user","content":"Say hello. Use only one word."}],"seed":42}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 663
+        body: '{"id":"chatcmpl-1eb575e7c77a4fd8b449a317669ef92c","choices":[{"index":0,"message":{"content":"\n\nHello!","role":"assistant","reasoning_content":"The user wants a greeting in just one word. I''ll keep it simple.\n","reasoning":"The user wants a greeting in just one word. I''ll keep it simple.\n"},"finish_reason":"stop"}],"created":1771458871,"model":"MiniMaxAI/MiniMax-M2.5","object":"chat.completion","usage":{"prompt_tokens":46,"completion_tokens":20,"total_tokens":66,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "663"
+            Content-Type:
+                - application/json
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1771458871041"
+        status: 200 OK
+        code: 200
+        duration: 440ms

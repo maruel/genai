@@ -10,7 +10,7 @@ cd ..
 
 go install ./cmd/list-models ./cmd/scoreboard
 # TODO: get the list automatically. Note that we want "openai", not "openaichat and "openairesponses".
-PROVIDERS=(anthropic cerebras cloudflare cohere deepseek gemini groq huggingface mistral openai pollinations togetherai)
+PROVIDERS=(anthropic baseten cerebras cloudflare cohere deepseek gemini groq huggingface mistral openai pollinations togetherai)
 
 echo "# List of models available on each provider" > docs/MODELS.new.md
 echo "" >> docs/MODELS.new.md

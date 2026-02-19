@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 249
+        host: inference.baseten.co
+        body: |
+            {"model":"moonshotai/Kimi-K2-Thinking","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"response_format":{"type":"json_object"}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 506
+        body: '{"id":"chatcmpl-4768e2dc24ff4bfdb9a09cc3aa411629","choices":[{"index":0,"message":{"content":"{\"is_fruit\":true}","role":"assistant"},"finish_reason":"stop"}],"created":1771458173,"model":"moonshotai/Kimi-K2-Thinking","object":"chat.completion","usage":{"prompt_tokens":54,"completion_tokens":8,"total_tokens":62,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "506"
+            Content-Type:
+                - application/json
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1771458173174"
+            X-Baseten-Model-Id:
+                - 7qk1028w
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - w67xpoj
+            X-Baseten-Request-Id:
+                - 3534636137334b97ae71a5db2131d803
+            X-Baseten-Session-Id:
+                - 3534636137334b97ae71a5db2131d803
+        status: 200 OK
+        code: 200
+        duration: 316ms

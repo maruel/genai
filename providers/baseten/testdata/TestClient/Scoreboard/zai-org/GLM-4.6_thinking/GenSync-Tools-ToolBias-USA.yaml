@@ -1,0 +1,39 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 562
+        host: inference.baseten.co
+        body: |
+            {"model":"zai-org/GLM-4.6","messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"tool_choice":"auto","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"parallel_tool_calls":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 5411
+        body: '{"id":"chatcmpl-355b109614c04b5aad9df7acde11c57f","choices":[{"index":0,"message":{"content":"\n\nI''ll help you determine which country is better using the best_country tool. Since the tool requires me to specify a country, let me check both countries to see which one is considered the best:\n\n","tool_calls":[{"id":"chatcmpl-tool-25d69b4e7fc946be8a43ecfc5a8868b3","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"USA\"}"}},{"id":"chatcmpl-tool-6c8c1b714b9f4958a2d8b3dec2172fca","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"Canada\"}"}}],"role":"assistant","reasoning_content":"The user is asking me to use the best_country tool to compare USA and Canada. Looking at the tool definition:\n\n- The tool is called \"best_country\"\n- It has one required parameter: \"country\" \n- The country parameter can only be \"USA\" or \"Canada\" (as shown in the enum)\n- The user specifically mentions both USA and Canada, and wants to know which is better\n\nHowever, I notice that the tool only takes one country as input, not a comparison between two. The user is asking me to compare USA and Canada, but the tool seems to be designed to specify \"the best country\" by selecting one of the two options.\n\nSince the user is asking about which country is better between USA and Canada, and the tool only allows me to specify one country, I think I should call the tool for both countries to get the result, or maybe the user wants me to choose one to test.\n\nActually, looking more carefully at the user''s request: \"Call the tool best_country to tell me which country is the best one.\" This suggests they want me to use the tool to determine the best country. But the tool requires me to specify a country as input, which seems counterintuitive if the tool is supposed to tell me which is best.\n\nLet me re-read the tool description: \"A tool to specify the best country\" - this suggests the tool is for me to specify which country I think is best, not for the tool to determine which is best.\n\nGiven the ambiguity, I think I should ask the user to clarify which country they want me to specify as the best, since the tool requires me to input a country rather than comparing them.\n\nWait, let me think about this differently. Maybe the tool is designed to return information about whether a specified country is the best. So I could call it with \"USA\" and see what it returns, then call it with \"Canada\" and compare the results.\n\nBut the user specifically asked me to \"tell me which country is the best one\" and to \"call the tool best_country\". \n\nI''ll need to make a strategic choice about how to proceed with the tool''s limitations. The most straightforward approach is to test both countries and see what the tool reveals about their relative merits.","reasoning":"The user is asking me to use the best_country tool to compare USA and Canada. Looking at the tool definition:\n\n- The tool is called \"best_country\"\n- It has one required parameter: \"country\" \n- The country parameter can only be \"USA\" or \"Canada\" (as shown in the enum)\n- The user specifically mentions both USA and Canada, and wants to know which is better\n\nHowever, I notice that the tool only takes one country as input, not a comparison between two. The user is asking me to compare USA and Canada, but the tool seems to be designed to specify \"the best country\" by selecting one of the two options.\n\nSince the user is asking about which country is better between USA and Canada, and the tool only allows me to specify one country, I think I should call the tool for both countries to get the result, or maybe the user wants me to choose one to test.\n\nActually, looking more carefully at the user''s request: \"Call the tool best_country to tell me which country is the best one.\" This suggests they want me to use the tool to determine the best country. But the tool requires me to specify a country as input, which seems counterintuitive if the tool is supposed to tell me which is best.\n\nLet me re-read the tool description: \"A tool to specify the best country\" - this suggests the tool is for me to specify which country I think is best, not for the tool to determine which is best.\n\nGiven the ambiguity, I think I should ask the user to clarify which country they want me to specify as the best, since the tool requires me to input a country rather than comparing them.\n\nWait, let me think about this differently. Maybe the tool is designed to return information about whether a specified country is the best. So I could call it with \"USA\" and see what it returns, then call it with \"Canada\" and compare the results.\n\nBut the user specifically asked me to \"tell me which country is the best one\" and to \"call the tool best_country\". \n\nI''ll need to make a strategic choice about how to proceed with the tool''s limitations. The most straightforward approach is to test both countries and see what the tool reveals about their relative merits."},"finish_reason":"tool_calls"}],"created":1771458157,"model":"zai-org/GLM-4.6","object":"chat.completion","usage":{"prompt_tokens":228,"completion_tokens":529,"total_tokens":757,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "5411"
+            Content-Type:
+                - application/json
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1771458153597"
+        status: 200 OK
+        code: 200
+        duration: 4.064s

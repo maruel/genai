@@ -1,0 +1,39 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 554
+        host: inference.baseten.co
+        body: |
+            {"model":"zai-org/GLM-5","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"tool_choice":"required","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"parallel_tool_calls":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 626
+        body: '{"id":"chatcmpl-bdd6ea9261924db982e377e836486e14","choices":[{"index":0,"message":{"tool_calls":[{"id":"chatcmpl-tool-8fd047fa3b9c4de8bc880cd42b802c3e","type":"function","function":{"name":"square_root","arguments":"{\"number\":132413}"}}],"role":"assistant"},"finish_reason":"tool_calls"}],"created":1771462809,"model":"zai-org/GLM-5","object":"chat.completion","usage":{"prompt_tokens":220,"completion_tokens":11,"total_tokens":231,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "626"
+            Content-Type:
+                - application/json
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1771462808918"
+        status: 200 OK
+        code: 200
+        duration: 393ms

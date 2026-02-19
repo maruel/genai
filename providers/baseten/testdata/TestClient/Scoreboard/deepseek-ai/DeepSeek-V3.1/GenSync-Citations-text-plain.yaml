@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 221
+        host: inference.baseten.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V3.1","messages":[{"role":"user","content":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"role":"user","content":"What is the capital of Quackiland?"}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 564
+        body: '{"id":"chatcmpl-c6900ddcaa8644e2a4086a43e14c75f8","choices":[{"index":0,"message":{"content":"Based on the information you provided, the capital of Quackiland is **Quack**.","role":"assistant"},"finish_reason":"stop"}],"created":1771458105,"model":"deepseek-ai/DeepSeek-V3.1","object":"chat.completion","usage":{"prompt_tokens":37,"completion_tokens":19,"total_tokens":56,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "564"
+            Content-Type:
+                - application/json
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1771458105472"
+            X-Baseten-Model-Id:
+                - 232dyk2q
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - 3m59z1z
+            X-Baseten-Request-Id:
+                - 35346361374a45c49c43dc76c45a1043
+            X-Baseten-Session-Id:
+                - 35346361374a45c49c43dc76c45a1043
+        status: 200 OK
+        code: 200
+        duration: 234ms

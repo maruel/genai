@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 821
+        host: inference.baseten.co
+        body: |
+            {"model":"moonshotai/Kimi-K2-Instruct-0905","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"type":"function","id":"functions.square_root:0","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"functions.square_root:0","name":"square_root"}],"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"parallel_tool_calls":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 498
+        body: '{"id":"chatcmpl-a6be3a93ee124c3fb608f509ef16c78f","choices":[{"index":0,"message":{"content":"363.89","role":"assistant"},"finish_reason":"stop"}],"created":1771458167,"model":"moonshotai/Kimi-K2-Instruct-0905","object":"chat.completion","usage":{"prompt_tokens":89,"completion_tokens":4,"total_tokens":93,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "498"
+            Content-Type:
+                - application/json
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1771458167011"
+            X-Baseten-Model-Id:
+                - 5qeop713
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - wd17pzm
+            X-Baseten-Request-Id:
+                - 3534636137794e66ac8dd854ecc0c13f
+            X-Baseten-Session-Id:
+                - 3534636137794e66ac8dd854ecc0c13f
+        status: 200 OK
+        code: 200
+        duration: 481ms

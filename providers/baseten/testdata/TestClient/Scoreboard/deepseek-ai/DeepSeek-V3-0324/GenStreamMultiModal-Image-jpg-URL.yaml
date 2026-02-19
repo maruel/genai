@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 344
+        host: inference.baseten.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V3-0324","messages":[{"role":"user","content":"What fruit is it? Reply with only one word."},{"role":"user","content":[{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg"}}]}],"stream":true,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 101
+        body: |
+            {
+            	"error": {
+            		"code": 400,
+            		"message": "image_url is not supported",
+            		"type": "Bad Request"
+            	}
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "101"
+            Content-Type:
+                - application/json
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1771458075726"
+            X-Baseten-Model-Id:
+                - jwd5j4gq
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - qzkl4jk
+            X-Baseten-Request-Id:
+                - 3534636137384a0297571d4a4ceb1302
+            X-Baseten-Session-Id:
+                - 3534636137384a0297571d4a4ceb1302
+        status: 400 Bad Request
+        code: 400
+        duration: 68ms

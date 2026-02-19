@@ -1,0 +1,39 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 231
+        host: inference.baseten.co
+        body: |
+            {"model":"openai/gpt-oss-120b","messages":[{"role":"user","content":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"role":"user","content":"What is the capital of Quackiland?"}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 855
+        body: '{"id":"chatcmpl-1b19c6f4135a4b04835378de6d2b864f","choices":[{"index":0,"message":{"content":"The capital of Quackiland is **Quack**.","role":"assistant","reasoning_content":" user asks: \"What is the capital of Quackiland?\" According to the context given earlier: \"The capital of Quackiland is Quack.\" So answer: Quack.","reasoning":" user asks: \"What is the capital of Quackiland?\" According to the context given earlier: \"The capital of Quackiland is Quack.\" So answer: Quack."},"finish_reason":"stop"}],"created":1771458225,"model":"openai/gpt-oss-120b","object":"chat.completion","usage":{"prompt_tokens":117,"completion_tokens":57,"total_tokens":174,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "855"
+            Content-Type:
+                - application/json
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1771458224563"
+        status: 200 OK
+        code: 200
+        duration: 619ms

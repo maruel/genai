@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 112
+        host: inference.baseten.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V3-0324","messages":[{"role":"user","content":"Say hello. Use only one word."}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 494
+        body: '{"id":"chatcmpl-39ced55b6ac1448ba8842df431b63c3b","choices":[{"index":0,"message":{"content":"Hello!","role":"assistant"},"finish_reason":"stop"}],"created":1771456114,"model":"deepseek-ai/DeepSeek-V3-0324","object":"chat.completion","usage":{"prompt_tokens":14,"completion_tokens":3,"total_tokens":17,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "494"
+            Content-Type:
+                - application/json
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1771456113563"
+            X-Baseten-Model-Id:
+                - jwd5j4gq
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - qzkl4jk
+            X-Baseten-Request-Id:
+                - 35346361377142b4aaf29fc77a41e6ac
+            X-Baseten-Session-Id:
+                - 35346361377142b4aaf29fc77a41e6ac
+        status: 200 OK
+        code: 200
+        duration: 964ms

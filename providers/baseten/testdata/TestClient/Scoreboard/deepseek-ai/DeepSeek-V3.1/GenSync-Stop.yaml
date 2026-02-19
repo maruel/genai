@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 151
+        host: inference.baseten.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V3.1","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"stop":["is"]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 492
+        body: '{"id":"chatcmpl-2f67aaf1a6204877956f8d87556b312b","choices":[{"index":0,"message":{"content":"Canada ","role":"assistant"},"finish_reason":"stop"}],"created":1771458076,"model":"deepseek-ai/DeepSeek-V3.1","object":"chat.completion","usage":{"prompt_tokens":17,"completion_tokens":4,"total_tokens":21,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "492"
+            Content-Type:
+                - application/json
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1771458076574"
+            X-Baseten-Model-Id:
+                - 232dyk2q
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - 3m59z1z
+            X-Baseten-Request-Id:
+                - 3534636137f24154a808e8cb4f84b461
+            X-Baseten-Session-Id:
+                - 3534636137f24154a808e8cb4f84b461
+        status: 200 OK
+        code: 200
+        duration: 189ms

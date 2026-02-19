@@ -12,6 +12,7 @@ import (
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/providers/anthropic"
+	"github.com/maruel/genai/providers/baseten"
 	"github.com/maruel/genai/providers/bfl"
 	"github.com/maruel/genai/providers/cerebras"
 	"github.com/maruel/genai/providers/cloudflare"
@@ -47,6 +48,16 @@ var All = map[string]Config{
 		APIKeyEnvVar: "ANTHROPIC_API_KEY",
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
 			p, err := anthropic.New(ctx, opts...)
+			if p == nil {
+				return nil, err
+			}
+			return p, err
+		},
+	},
+	"baseten": {
+		APIKeyEnvVar: "BASETEN_API_KEY",
+		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
+			p, err := baseten.New(ctx, opts...)
 			if p == nil {
 				return nil, err
 			}

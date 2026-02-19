@@ -1,0 +1,72 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 275
+        host: inference.baseten.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V3.1","messages":[{"role":"user","content":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"role":"user","content":"What is the capital of Quackiland?"}],"stream":true,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-3eae278dcf8d4f69a66a7367a0de84d0","choices":[{"index":0,"delta":{"content":"Based","function_call":null,"tool_calls":[],"role":"assistant","refusal":null}}],"created":1771458140,"model":"deepseek-ai/DeepSeek-V3.1","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":37,"completion_tokens":1,"total_tokens":38,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-3eae278dcf8d4f69a66a7367a0de84d0","choices":[{"index":0,"delta":{"content":" on the information","function_call":null,"tool_calls":[],"role":"assistant","refusal":null}}],"created":1771458140,"model":"deepseek-ai/DeepSeek-V3.1","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":37,"completion_tokens":4,"total_tokens":41,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-3eae278dcf8d4f69a66a7367a0de84d0","choices":[{"index":0,"delta":{"content":" you","function_call":null,"tool_calls":[],"role":"assistant","refusal":null}}],"created":1771458140,"model":"deepseek-ai/DeepSeek-V3.1","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":37,"completion_tokens":5,"total_tokens":42,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-3eae278dcf8d4f69a66a7367a0de84d0","choices":[{"index":0,"delta":{"content":" provided:\n\n","function_call":null,"tool_calls":[],"role":"assistant","refusal":null}}],"created":1771458140,"model":"deepseek-ai/DeepSeek-V3.1","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":37,"completion_tokens":7,"total_tokens":44,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-3eae278dcf8d4f69a66a7367a0de84d0","choices":[{"index":0,"delta":{"content":"The capital of Qu","function_call":null,"tool_calls":[],"role":"assistant","refusal":null}}],"created":1771458140,"model":"deepseek-ai/DeepSeek-V3.1","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":37,"completion_tokens":11,"total_tokens":48,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-3eae278dcf8d4f69a66a7367a0de84d0","choices":[{"index":0,"delta":{"content":"ackiland is **","function_call":null,"tool_calls":[],"role":"assistant","refusal":null}}],"created":1771458140,"model":"deepseek-ai/DeepSeek-V3.1","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":37,"completion_tokens":15,"total_tokens":52,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-3eae278dcf8d4f69a66a7367a0de84d0","choices":[{"index":0,"delta":{"content":"Quack**.","function_call":null,"tool_calls":[],"role":"assistant","refusal":null}}],"created":1771458140,"model":"deepseek-ai/DeepSeek-V3.1","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":37,"completion_tokens":18,"total_tokens":55,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-3eae278dcf8d4f69a66a7367a0de84d0","choices":[{"index":0,"delta":{"content":"","function_call":null,"tool_calls":[],"role":"assistant","refusal":null},"finish_reason":"stop"}],"created":1771458140,"model":"deepseek-ai/DeepSeek-V3.1","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":37,"completion_tokens":19,"total_tokens":56,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-3eae278dcf8d4f69a66a7367a0de84d0","choices":[],"created":1771458140,"model":"deepseek-ai/DeepSeek-V3.1","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":37,"completion_tokens":19,"total_tokens":56,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1771458140725"
+            X-Baseten-Model-Id:
+                - 232dyk2q
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - 3m59z1z
+            X-Baseten-Request-Id:
+                - 35346361377545299531a462555fd3fd
+            X-Baseten-Session-Id:
+                - 35346361377545299531a462555fd3fd
+        status: 200 OK
+        code: 200
+        duration: 219ms

@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 421
+        host: inference.baseten.co
+        body: |
+            {"model":"moonshotai/Kimi-K2-Instruct-0905","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}],"response_format":{"type":"json_schema","json_schema":{"name":"","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]},"strict":true}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 511
+        body: '{"id":"chatcmpl-1e29dc5c1ac740e9beb5e8a763fd8594","choices":[{"index":0,"message":{"content":"{\"is_fruit\":true}","role":"assistant"},"finish_reason":"stop"}],"created":1771458166,"model":"moonshotai/Kimi-K2-Instruct-0905","object":"chat.completion","usage":{"prompt_tokens":43,"completion_tokens":8,"total_tokens":51,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "511"
+            Content-Type:
+                - application/json
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1771458165224"
+            X-Baseten-Model-Id:
+                - 5qeop713
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - wd17pzm
+            X-Baseten-Request-Id:
+                - 353463613783453ea057067d5e2582e6
+            X-Baseten-Session-Id:
+                - 353463613783453ea057067d5e2582e6
+        status: 200 OK
+        code: 200
+        duration: 869ms

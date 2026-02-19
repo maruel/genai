@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 111
+        host: inference.baseten.co
+        body: |
+            {"model":"moonshotai/Kimi-K2-Thinking","messages":[{"role":"user","content":"Say hello. Use only one word."}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 791
+        body: '{"id":"chatcmpl-3e2c83a8bcba47399f379157464b286d","choices":[{"index":0,"message":{"content":"Hello","role":"assistant","reasoning_content":"The user asks me to say hello using only one word. The word \"hello\" itself is one word. So I should just respond with \"Hello\".","reasoning":"The user asks me to say hello using only one word. The word \"hello\" itself is one word. So I should just respond with \"Hello\"."},"finish_reason":"stop"}],"created":1771457620,"model":"moonshotai/Kimi-K2-Thinking","object":"chat.completion","usage":{"prompt_tokens":33,"completion_tokens":35,"total_tokens":68,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "791"
+            Content-Type:
+                - application/json
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1771457619692"
+            X-Baseten-Model-Id:
+                - 7qk1028w
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - w67xpoj
+            X-Baseten-Request-Id:
+                - 3534636137504b56b3cfe97c6f49acda
+            X-Baseten-Session-Id:
+                - 3534636137504b56b3cfe97c6f49acda
+        status: 200 OK
+        code: 200
+        duration: 1.197s

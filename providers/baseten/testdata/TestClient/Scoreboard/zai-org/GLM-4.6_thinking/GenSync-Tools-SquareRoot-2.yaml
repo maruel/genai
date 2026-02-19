@@ -1,0 +1,39 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 868
+        host: inference.baseten.co
+        body: |
+            {"model":"zai-org/GLM-4.6","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","content":"\n\n","tool_calls":[{"type":"function","id":"chatcmpl-tool-d303e84a6c304c45ad420c9028509e94","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"chatcmpl-tool-d303e84a6c304c45ad420c9028509e94","name":"square_root"}],"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"parallel_tool_calls":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 1818
+        body: '{"id":"chatcmpl-fcbe07e748d5457097cfac8a62e70ac6","choices":[{"index":0,"message":{"content":"\n\n363.89","role":"assistant","reasoning_content":"The user wants me to use the square_root tool to calculate the square root of 132413.\nThe user has explicitly stated to reply with *only* the result and *not* to give an explanation.\n\n1.  **Identify the tool:** The user specified the `square_root` tool.\n2.  **Identify the input:** The number is 132413.\n3.  **Execute the tool:** I will call the `square_root` tool with the number 132413.\n4.  **Receive the result:** The tool returns 363.89.\n5.  **Format the output:** The user wants *only* the result. No extra text, no \"The square root is...\", no explanation. Just the number itself.\n\nSo, the final output should be exactly `363.89`.","reasoning":"The user wants me to use the square_root tool to calculate the square root of 132413.\nThe user has explicitly stated to reply with *only* the result and *not* to give an explanation.\n\n1.  **Identify the tool:** The user specified the `square_root` tool.\n2.  **Identify the input:** The number is 132413.\n3.  **Execute the tool:** I will call the `square_root` tool with the number 132413.\n4.  **Receive the result:** The tool returns 363.89.\n5.  **Format the output:** The user wants *only* the result. No extra text, no \"The square root is...\", no explanation. Just the number itself.\n\nSo, the final output should be exactly `363.89`."},"finish_reason":"stop"}],"created":1771458151,"model":"zai-org/GLM-4.6","object":"chat.completion","usage":{"prompt_tokens":63,"completion_tokens":179,"total_tokens":242,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "1818"
+            Content-Type:
+                - application/json
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1771458150555"
+        status: 200 OK
+        code: 200
+        duration: 1.265s

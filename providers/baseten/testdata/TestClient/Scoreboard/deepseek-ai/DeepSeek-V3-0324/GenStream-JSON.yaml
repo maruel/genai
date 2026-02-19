@@ -1,0 +1,66 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 304
+        host: inference.baseten.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V3-0324","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"response_format":{"type":"json_object"},"stream":true,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-e2eb855ee7914bc8989843f9054c780b","choices":[{"index":0,"delta":{"content":"{\n","function_call":null,"tool_calls":[],"role":"assistant","refusal":null}}],"created":1771458070,"model":"deepseek-ai/DeepSeek-V3-0324","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":35,"completion_tokens":1,"total_tokens":36,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-e2eb855ee7914bc8989843f9054c780b","choices":[{"index":0,"delta":{"content":"  \"is_f","function_call":null,"tool_calls":[],"role":"assistant","refusal":null}}],"created":1771458071,"model":"deepseek-ai/DeepSeek-V3-0324","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":35,"completion_tokens":5,"total_tokens":40,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-e2eb855ee7914bc8989843f9054c780b","choices":[{"index":0,"delta":{"content":"ruit\":","function_call":null,"tool_calls":[],"role":"assistant","refusal":null}}],"created":1771458071,"model":"deepseek-ai/DeepSeek-V3-0324","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":35,"completion_tokens":7,"total_tokens":42,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-e2eb855ee7914bc8989843f9054c780b","choices":[{"index":0,"delta":{"content":" true\n}","function_call":null,"tool_calls":[],"role":"assistant","refusal":null}}],"created":1771458071,"model":"deepseek-ai/DeepSeek-V3-0324","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":35,"completion_tokens":10,"total_tokens":45,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-e2eb855ee7914bc8989843f9054c780b","choices":[{"index":0,"delta":{"content":"","function_call":null,"tool_calls":[],"role":"assistant","refusal":null},"finish_reason":"stop"}],"created":1771458071,"model":"deepseek-ai/DeepSeek-V3-0324","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":35,"completion_tokens":11,"total_tokens":46,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-e2eb855ee7914bc8989843f9054c780b","choices":[],"created":1771458071,"model":"deepseek-ai/DeepSeek-V3-0324","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":35,"completion_tokens":11,"total_tokens":46,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1771458070692"
+            X-Baseten-Model-Id:
+                - jwd5j4gq
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - qzkl4jk
+            X-Baseten-Request-Id:
+                - 35346361377c4b9d9b759ca19d11d9c5
+            X-Baseten-Session-Id:
+                - 35346361377c4b9d9b759ca19d11d9c5
+        status: 200 OK
+        code: 200
+        duration: 338ms

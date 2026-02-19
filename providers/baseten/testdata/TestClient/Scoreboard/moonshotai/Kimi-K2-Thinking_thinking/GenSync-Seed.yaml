@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 121
+        host: inference.baseten.co
+        body: |
+            {"model":"moonshotai/Kimi-K2-Thinking","messages":[{"role":"user","content":"Say hello. Use only one word."}],"seed":42}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 1330
+        body: '{"id":"chatcmpl-d376f1a63179441fa255c10726af1359","choices":[{"index":0,"message":{"content":"Hello","role":"assistant","reasoning_content":"The user says \"Say hello. Use only one word.\"\n\nI need to respond with a single word that means hello. The most straightforward choice is \"Hello\" itself. Other options could be \"Hi\" or \"Hey\". The prompt says \"Use only one word\", so I can only output a single word.\n\n\"Hello\" is the most direct and standard greeting. It''s one word. It satisfies the requirement.\n\nI will output: Hello","reasoning":"The user says \"Say hello. Use only one word.\"\n\nI need to respond with a single word that means hello. The most straightforward choice is \"Hello\" itself. Other options could be \"Hi\" or \"Hey\". The prompt says \"Use only one word\", so I can only output a single word.\n\n\"Hello\" is the most direct and standard greeting. It''s one word. It satisfies the requirement.\n\nI will output: Hello"},"finish_reason":"stop"}],"created":1771457621,"model":"moonshotai/Kimi-K2-Thinking","object":"chat.completion","usage":{"prompt_tokens":33,"completion_tokens":92,"total_tokens":125,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "1330"
+            Content-Type:
+                - application/json
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1771457620889"
+            X-Baseten-Model-Id:
+                - 7qk1028w
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - w67xpoj
+            X-Baseten-Request-Id:
+                - 3534636137b84742a083b96f250ece75
+            X-Baseten-Session-Id:
+                - 3534636137b84742a083b96f250ece75
+        status: 200 OK
+        code: 200
+        duration: 692ms

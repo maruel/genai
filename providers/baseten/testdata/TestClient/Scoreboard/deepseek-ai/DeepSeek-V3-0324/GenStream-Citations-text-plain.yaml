@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 278
+        host: inference.baseten.co
+        body: |
+            {"model":"deepseek-ai/DeepSeek-V3-0324","messages":[{"role":"user","content":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"role":"user","content":"What is the capital of Quackiland?"}],"stream":true,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: "data: {\"id\":\"chatcmpl-b8c77f1964c046a6b3aab978ae44d134\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"The\",\"function_call\":null,\"tool_calls\":[],\"role\":\"assistant\",\"refusal\":null}}],\"created\":1771458074,\"model\":\"deepseek-ai/DeepSeek-V3-0324\",\"service_tier\":null,\"system_fingerprint\":null,\"object\":\"chat.completion.chunk\",\"usage\":{\"prompt_tokens\":39,\"completion_tokens\":1,\"total_tokens\":40,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0}}}\n\ndata: {\"id\":\"chatcmpl-b8c77f1964c046a6b3aab978ae44d134\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" capital of Quack\",\"function_call\":null,\"tool_calls\":[],\"role\":\"assistant\",\"refusal\":null}}],\"created\":1771458074,\"model\":\"deepseek-ai/DeepSeek-V3-0324\",\"service_tier\":null,\"system_fingerprint\":null,\"object\":\"chat.completion.chunk\",\"usage\":{\"prompt_tokens\":39,\"completion_tokens\":5,\"total_tokens\":44,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0}}}\n\ndata: {\"id\":\"chatcmpl-b8c77f1964c046a6b3aab978ae44d134\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"iland is **Qu\",\"function_call\":null,\"tool_calls\":[],\"role\":\"assistant\",\"refusal\":null}}],\"created\":1771458074,\"model\":\"deepseek-ai/DeepSeek-V3-0324\",\"service_tier\":null,\"system_fingerprint\":null,\"object\":\"chat.completion.chunk\",\"usage\":{\"prompt_tokens\":39,\"completion_tokens\":9,\"total_tokens\":48,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0}}}\n\ndata: {\"id\":\"chatcmpl-b8c77f1964c046a6b3aab978ae44d134\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"ack**.  \\n\\nAdditionally\",\"function_call\":null,\"tool_calls\":[],\"role\":\"assistant\",\"refusal\":null}}],\"created\":1771458074,\"model\":\"deepseek-ai/DeepSeek-V3-0324\",\"service_tier\":null,\"system_fingerprint\":null,\"object\":\"chat.completion.chunk\",\"usage\":{\"prompt_tokens\":39,\"completion_tokens\":13,\"total_tokens\":52,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0}}}\n\ndata: {\"id\":\"chatcmpl-b8c77f1964c046a6b3aab978ae44d134\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\", the **\",\"function_call\":null,\"tool_calls\":[],\"role\":\"assistant\",\"refusal\":null}}],\"created\":1771458074,\"model\":\"deepseek-ai/DeepSeek-V3-0324\",\"service_tier\":null,\"system_fingerprint\":null,\"object\":\"chat.completion.chunk\",\"usage\":{\"prompt_tokens\":39,\"completion_tokens\":16,\"total_tokens\":55,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0}}}\n\ndata: {\"id\":\"chatcmpl-b8c77f1964c046a6b3aab978ae44d134\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Big Canard Stat\",\"function_call\":null,\"tool_calls\":[],\"role\":\"assistant\",\"refusal\":null}}],\"created\":1771458074,\"model\":\"deepseek-ai/DeepSeek-V3-0324\",\"service_tier\":null,\"system_fingerprint\":null,\"object\":\"chat.completion.chunk\",\"usage\":{\"prompt_tokens\":39,\"completion_tokens\":20,\"total_tokens\":59,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0}}}\n\ndata: {\"id\":\"chatcmpl-b8c77f1964c046a6b3aab978ae44d134\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"ue** is located\",\"function_call\":null,\"tool_calls\":[],\"role\":\"assistant\",\"refusal\":null}}],\"created\":1771458074,\"model\":\"deepseek-ai/DeepSeek-V3-0324\",\"service_tier\":null,\"system_fingerprint\":null,\"object\":\"chat.completion.chunk\",\"usage\":{\"prompt_tokens\":39,\"completion_tokens\":24,\"total_tokens\":63,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0}}}\n\ndata: {\"id\":\"chatcmpl-b8c77f1964c046a6b3aab978ae44d134\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" in Quack.\",\"function_call\":null,\"tool_calls\":[],\"role\":\"assistant\",\"refusal\":null}}],\"created\":1771458074,\"model\":\"deepseek-ai/DeepSeek-V3-0324\",\"service_tier\":null,\"system_fingerprint\":null,\"object\":\"chat.completion.chunk\",\"usage\":{\"prompt_tokens\":39,\"completion_tokens\":28,\"total_tokens\":67,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0}}}\n\ndata: {\"id\":\"chatcmpl-b8c77f1964c046a6b3aab978ae44d134\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" \U0001F986\",\"function_call\":null,\"tool_calls\":[],\"role\":\"assistant\",\"refusal\":null},\"finish_reason\":\"stop\"}],\"created\":1771458074,\"model\":\"deepseek-ai/DeepSeek-V3-0324\",\"service_tier\":null,\"system_fingerprint\":null,\"object\":\"chat.completion.chunk\",\"usage\":{\"prompt_tokens\":39,\"completion_tokens\":32,\"total_tokens\":71,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0}}}\n\ndata: {\"id\":\"chatcmpl-b8c77f1964c046a6b3aab978ae44d134\",\"choices\":[],\"created\":1771458074,\"model\":\"deepseek-ai/DeepSeek-V3-0324\",\"service_tier\":null,\"system_fingerprint\":null,\"object\":\"chat.completion.chunk\",\"usage\":{\"prompt_tokens\":39,\"completion_tokens\":32,\"total_tokens\":71,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0}}}\n\ndata: [DONE]\n\n"
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1771458073845"
+            X-Baseten-Model-Id:
+                - jwd5j4gq
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - qzkl4jk
+            X-Baseten-Request-Id:
+                - 3534636137b542deab15a41943f34c43
+            X-Baseten-Session-Id:
+                - 3534636137b542deab15a41943f34c43
+        status: 200 OK
+        code: 200
+        duration: 358ms

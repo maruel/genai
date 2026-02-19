@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 164
+        host: inference.baseten.co
+        body: |
+            {"model":"moonshotai/Kimi-K2-Instruct-0905","messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"max_completion_tokens":16}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 574
+        body: '{"id":"chatcmpl-2caf90cd5cd241b8bbe858c1cbdfe7c3","choices":[{"index":0,"message":{"content":"The theory of relativity is not a single equation or a slogan (“everything is","role":"assistant"},"finish_reason":"length"}],"created":1771458163,"model":"moonshotai/Kimi-K2-Instruct-0905","object":"chat.completion","usage":{"prompt_tokens":36,"completion_tokens":16,"total_tokens":52,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "574"
+            Content-Type:
+                - application/json
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1771458162958"
+            X-Baseten-Model-Id:
+                - 5qeop713
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - wd17pzm
+            X-Baseten-Request-Id:
+                - 3534636137a340f49b07a14f8d36d827
+            X-Baseten-Session-Id:
+                - 3534636137a340f49b07a14f8d36d827
+        status: 200 OK
+        code: 200
+        duration: 897ms

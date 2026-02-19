@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 223
+        host: inference.baseten.co
+        body: |
+            {"model":"moonshotai/Kimi-K2-Thinking","messages":[{"role":"user","content":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"role":"user","content":"What is the capital of Quackiland?"}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 1329
+        body: '{"id":"chatcmpl-dc6e9fcc68204465a01ac2d433dcdda6","choices":[{"index":0,"message":{"content":"The capital of Quackiland is Quack.","role":"assistant","reasoning_content":"The user is asking \"What is the capital of Quackiland?\".\n\nI have this information in my context: \n- \"The capital of Quackiland is Quack.\"\n- \"The Big Canard Statue is located in Quack.\"\n\nThe question is straightforward: What is the capital of Quackiland?\n\nBased on the provided information, the capital of Quackiland is Quack.\n\nI should provide a clear, direct answer.","reasoning":"The user is asking \"What is the capital of Quackiland?\".\n\nI have this information in my context: \n- \"The capital of Quackiland is Quack.\"\n- \"The Big Canard Statue is located in Quack.\"\n\nThe question is straightforward: What is the capital of Quackiland?\n\nBased on the provided information, the capital of Quackiland is Quack.\n\nI should provide a clear, direct answer."},"finish_reason":"stop"}],"created":1771458208,"model":"moonshotai/Kimi-K2-Thinking","object":"chat.completion","usage":{"prompt_tokens":60,"completion_tokens":102,"total_tokens":162,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "1329"
+            Content-Type:
+                - application/json
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1771458207824"
+            X-Baseten-Model-Id:
+                - 7qk1028w
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - w67xpoj
+            X-Baseten-Request-Id:
+                - 3534636137fd47eaa1a5e9c1aea1a0e2
+            X-Baseten-Session-Id:
+                - 3534636137fd47eaa1a5e9c1aea1a0e2
+        status: 200 OK
+        code: 200
+        duration: 924ms

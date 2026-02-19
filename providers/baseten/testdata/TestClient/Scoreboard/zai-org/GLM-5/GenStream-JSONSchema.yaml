@@ -1,0 +1,61 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 456
+        host: inference.baseten.co
+        body: |
+            {"model":"zai-org/GLM-5","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}],"response_format":{"type":"json_schema","json_schema":{"name":"","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]},"strict":true}},"stream":true,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-c48518f957ce4d2f9343b8a374b7d8f9","choices":[{"index":0,"delta":{"content":"{\n","function_call":null,"tool_calls":[],"role":"assistant","refusal":null}}],"created":1771462806,"model":"zai-org/GLM-5","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":22,"completion_tokens":1,"total_tokens":23,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-c48518f957ce4d2f9343b8a374b7d8f9","choices":[{"index":0,"delta":{"content":" ","function_call":null,"tool_calls":[],"role":"assistant","refusal":null}}],"created":1771462806,"model":"zai-org/GLM-5","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":22,"completion_tokens":2,"total_tokens":24,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-c48518f957ce4d2f9343b8a374b7d8f9","choices":[{"index":0,"delta":{"content":" \"","function_call":null,"tool_calls":[],"role":"assistant","refusal":null}}],"created":1771462806,"model":"zai-org/GLM-5","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":22,"completion_tokens":3,"total_tokens":25,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-c48518f957ce4d2f9343b8a374b7d8f9","choices":[{"index":0,"delta":{"content":"is","function_call":null,"tool_calls":[],"role":"assistant","refusal":null}}],"created":1771462806,"model":"zai-org/GLM-5","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":22,"completion_tokens":4,"total_tokens":26,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-c48518f957ce4d2f9343b8a374b7d8f9","choices":[{"index":0,"delta":{"content":"_f","function_call":null,"tool_calls":[],"role":"assistant","refusal":null}}],"created":1771462806,"model":"zai-org/GLM-5","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":22,"completion_tokens":5,"total_tokens":27,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-c48518f957ce4d2f9343b8a374b7d8f9","choices":[{"index":0,"delta":{"content":"ruit","function_call":null,"tool_calls":[],"role":"assistant","refusal":null}}],"created":1771462806,"model":"zai-org/GLM-5","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":22,"completion_tokens":6,"total_tokens":28,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-c48518f957ce4d2f9343b8a374b7d8f9","choices":[{"index":0,"delta":{"content":"\":","function_call":null,"tool_calls":[],"role":"assistant","refusal":null}}],"created":1771462806,"model":"zai-org/GLM-5","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":22,"completion_tokens":7,"total_tokens":29,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-c48518f957ce4d2f9343b8a374b7d8f9","choices":[{"index":0,"delta":{"content":" true","function_call":null,"tool_calls":[],"role":"assistant","refusal":null}}],"created":1771462806,"model":"zai-org/GLM-5","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":22,"completion_tokens":8,"total_tokens":30,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-c48518f957ce4d2f9343b8a374b7d8f9","choices":[{"index":0,"delta":{"content":"\n","function_call":null,"tool_calls":[],"role":"assistant","refusal":null}}],"created":1771462806,"model":"zai-org/GLM-5","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":22,"completion_tokens":9,"total_tokens":31,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-c48518f957ce4d2f9343b8a374b7d8f9","choices":[{"index":0,"delta":{"content":"}","function_call":null,"tool_calls":[],"role":"assistant","refusal":null}}],"created":1771462806,"model":"zai-org/GLM-5","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":22,"completion_tokens":10,"total_tokens":32,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1771462805312"
+        status: 200 OK
+        code: 200
+        duration: 1.347s

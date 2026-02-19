@@ -1,0 +1,39 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 227
+        host: inference.baseten.co
+        body: |
+            {"model":"zai-org/GLM-4.6","messages":[{"role":"user","content":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"role":"user","content":"What is the capital of Quackiland?"}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 3047
+        body: '{"id":"chatcmpl-e88d5e5ae3f34828a8f4ca7711992dfa","choices":[{"index":0,"message":{"content":"\n\nThe capital of Quackiland is Quack.","role":"assistant","reasoning_content":"1.  **Identify the user''s question:** The user wants to know the capital of Quackiland.\n\n2.  **Scan the provided text for keywords:** The keywords are \"capital,\" \"Quackiland,\" and \"Quack.\"\n\n3.  **Locate the relevant sentence:** The first sentence of the provided text is: \"The capital of Quackiland is Quack.\"\n\n4.  **Extract the answer:** The sentence directly states that the capital is Quack.\n\n5.  **Formulate the response:**\n    *   Start with a direct answer. \"The capital of Quackiland is Quack.\"\n    *   Keep it simple and to the point. The user asked a straightforward question based on a very short text. No need for extra fluff or explanation.\n    *   The provided text is the *only* source of truth for this question. I must not introduce any outside information. The question is a test of reading comprehension, not general knowledge.\n\n6.  **Review the final answer:**\n    *   \"The capital of Quackiland is Quack.\"\n    *   Does it directly answer the user''s question? Yes.\n    *   Is it based *only* on the provided text? Yes.\n    *   Is it clear and concise? Yes.\n\nThis process ensures I''m accurately answering the user''s question based *only* on the context they gave me, which is the core of the task.","reasoning":"1.  **Identify the user''s question:** The user wants to know the capital of Quackiland.\n\n2.  **Scan the provided text for keywords:** The keywords are \"capital,\" \"Quackiland,\" and \"Quack.\"\n\n3.  **Locate the relevant sentence:** The first sentence of the provided text is: \"The capital of Quackiland is Quack.\"\n\n4.  **Extract the answer:** The sentence directly states that the capital is Quack.\n\n5.  **Formulate the response:**\n    *   Start with a direct answer. \"The capital of Quackiland is Quack.\"\n    *   Keep it simple and to the point. The user asked a straightforward question based on a very short text. No need for extra fluff or explanation.\n    *   The provided text is the *only* source of truth for this question. I must not introduce any outside information. The question is a test of reading comprehension, not general knowledge.\n\n6.  **Review the final answer:**\n    *   \"The capital of Quackiland is Quack.\"\n    *   Does it directly answer the user''s question? Yes.\n    *   Is it based *only* on the provided text? Yes.\n    *   Is it clear and concise? Yes.\n\nThis process ensures I''m accurately answering the user''s question based *only* on the context they gave me, which is the core of the task."},"finish_reason":"stop"}],"created":1771458161,"model":"zai-org/GLM-4.6","object":"chat.completion","usage":{"prompt_tokens":42,"completion_tokens":310,"total_tokens":352,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "3047"
+            Content-Type:
+                - application/json
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1771458159678"
+        status: 200 OK
+        code: 200
+        duration: 2.143s

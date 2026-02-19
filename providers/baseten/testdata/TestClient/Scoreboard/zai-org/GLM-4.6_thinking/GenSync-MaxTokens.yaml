@@ -1,0 +1,39 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 147
+        host: inference.baseten.co
+        body: |
+            {"model":"zai-org/GLM-4.6","messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"max_completion_tokens":16}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 626
+        body: '{"id":"chatcmpl-fe2555f92d84474ea5588206b1bfedd0","choices":[{"index":0,"message":{"content":"\n","role":"assistant","reasoning_content":"1.  **Deconstruct the User''s Request:** The user wants","reasoning":"1.  **Deconstruct the User''s Request:** The user wants"},"finish_reason":"length"}],"created":1771458148,"model":"zai-org/GLM-4.6","object":"chat.completion","usage":{"prompt_tokens":16,"completion_tokens":16,"total_tokens":32,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "626"
+            Content-Type:
+                - application/json
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1771458147939"
+        status: 200 OK
+        code: 200
+        duration: 357ms

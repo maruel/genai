@@ -1,0 +1,39 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 570
+        host: inference.baseten.co
+        body: |
+            {"model":"openai/gpt-oss-120b","messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"parallel_tool_calls":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 4244
+        body: '{"id":"chatcmpl-4ffcb0a8d3a946998e37be3986607928","choices":[{"index":0,"message":{"tool_calls":[{"id":"chatcmpl-tool-144c307cb0f444e881cab4f27dfdbc06","type":"function","function":{"name":"best_country","arguments":"{\n  \"country\": \"Canada\"\n}"}}],"role":"assistant","reasoning_content":" asks: \"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one.\" So we need to call the function best_country with an argument? The function signature: best_country takes {country: \"Canada\" | \"USA\"} and returns any. So we must specify which country is best? The user asks to compare, we need to call the tool to tell which is best. Likely the tool returns some info. We need to decide what argument to give. The function expects a country; perhaps we give \"Canada\" or \"USA\"? But the user asks which is better, probably expecting the tool to output the best. But the function signature seems to accept a country, not a request. Possibly the tool returns something based on input. We might have to call it twice? Or maybe we interpret: we need to ask the tool which is best by passing a country? Might be ambiguous. However, the instruction: \"Call the tool best_country to tell me which country is the best one.\" So we should call best_country with one of the countries? Actually maybe the tool will output a result indicating whether that country is best. The function probably expects the country we think is best. We could call it with \"Canada\"? But then the response would be something like \"Canada is the best\". But we need to ask the tool to decide. Possibly the correct usage: we pass a candidate, but tool returns some rating. Given the prompt, I''ll call best_country with \"Canada\". Then we can maybe also call with \"USA\"? But tool can only be called once? We can call both maybe.\n\nBetter: We can call with \"Canada\" and see response. Then maybe they want which one is best; maybe the tool returns something like \"Canada\". Honestly, ambiguous. I''ll call best_country with \"Canada\".","reasoning":" asks: \"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one.\" So we need to call the function best_country with an argument? The function signature: best_country takes {country: \"Canada\" | \"USA\"} and returns any. So we must specify which country is best? The user asks to compare, we need to call the tool to tell which is best. Likely the tool returns some info. We need to decide what argument to give. The function expects a country; perhaps we give \"Canada\" or \"USA\"? But the user asks which is better, probably expecting the tool to output the best. But the function signature seems to accept a country, not a request. Possibly the tool returns something based on input. We might have to call it twice? Or maybe we interpret: we need to ask the tool which is best by passing a country? Might be ambiguous. However, the instruction: \"Call the tool best_country to tell me which country is the best one.\" So we should call best_country with one of the countries? Actually maybe the tool will output a result indicating whether that country is best. The function probably expects the country we think is best. We could call it with \"Canada\"? But then the response would be something like \"Canada is the best\". But we need to ask the tool to decide. Possibly the correct usage: we pass a candidate, but tool returns some rating. Given the prompt, I''ll call best_country with \"Canada\". Then we can maybe also call with \"USA\"? But tool can only be called once? We can call both maybe.\n\nBetter: We can call with \"Canada\" and see response. Then maybe they want which one is best; maybe the tool returns something like \"Canada\". Honestly, ambiguous. I''ll call best_country with \"Canada\"."},"finish_reason":"tool_calls"}],"created":1771458220,"model":"openai/gpt-oss-120b","object":"chat.completion","usage":{"prompt_tokens":160,"completion_tokens":407,"total_tokens":567,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "4244"
+            Content-Type:
+                - application/json
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1771458218444"
+        status: 200 OK
+        code: 200
+        duration: 2.568s

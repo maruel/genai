@@ -1,0 +1,39 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 216
+        host: inference.baseten.co
+        body: |
+            {"model":"moonshotai/Kimi-K2.5","messages":[{"role":"user","content":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"role":"user","content":"What is the capital of Quackiland?"}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 520
+        body: '{"id":"chatcmpl-7be67cf944ce4dce8923ceeca7e9fecc","choices":[{"index":0,"message":{"content":"The capital of Quackiland is **Quack**.","role":"assistant"},"finish_reason":"stop"}],"created":1771457624,"model":"moonshotai/Kimi-K2.5","object":"chat.completion","usage":{"prompt_tokens":44,"completion_tokens":11,"total_tokens":55,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "520"
+            Content-Type:
+                - application/json
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1771457624295"
+        status: 200 OK
+        code: 200
+        duration: 354ms

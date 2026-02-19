@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 149
+        host: inference.baseten.co
+        body: |
+            {"model":"moonshotai/Kimi-K2-Instruct-0905","messages":[{"role":"user","content":"Say hello. Use only one word."}],"logprobs":true,"top_logprobs":2}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 111
+        body: |
+            {
+            	"error": {
+            		"code": 400,
+            		"message": "returning log probs is not supported",
+            		"type": "Bad Request"
+            	}
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "111"
+            Content-Type:
+                - application/json
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains
+            Vary:
+                - Origin
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1771457619421"
+            X-Baseten-Model-Id:
+                - 5qeop713
+            X-Baseten-Model-Prediction-Attempts:
+                - "1"
+            X-Baseten-Model-Version-Id:
+                - wd17pzm
+            X-Baseten-Request-Id:
+                - 3534636137be42f88877b06ac5fbf7e7
+            X-Baseten-Session-Id:
+                - 3534636137be42f88877b06ac5fbf7e7
+        status: 400 Bad Request
+        code: 400
+        duration: 45ms

@@ -1,0 +1,39 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 145
+        host: inference.baseten.co
+        body: |
+            {"model":"openai/gpt-oss-120b","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"stop":["is"]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 3490
+        body: '{"id":"chatcmpl-ffcd49745b7b47bdac896a3bc0f6992b","choices":[{"index":0,"message":{"content":"Canada is the world’s second‑largest country by total area, spanning roughly 9.98 million km² (3.85 million mi²) from the Atlantic Ocean in the east to the Pacific Ocean in the west, and northward into the Arctic Circle. Despite its massive size, Canada’s population is about 38 million people (2024 estimate), giving it one of the lowest population densities of any major nation. The country is a constitutional monarchy and a federal parliamentary democracy, with English and French recognized as its two official languages and a rich mosaic of Indigenous, immigrant, and settler cultures.\n\n---\n\n## 1. Geography and Climate  \n\n| Region | Key Features | Climate |\n|--------|--------------|----------|\n| **Atlantic Canada** (Newfoundland & Labrador, Nova Scotia, Prince Edward Island, New Brunswick) | Rugged coastline, the Bay of Fundy (world’s highest tidal range), historic fishing villages. | Cool‑moderate maritime; heavy precipitation, especially in winter. |\n| **Central Canada** (Quebec, Ontario) | Great Lakes basin, Ottawa River, expansive boreal forest; Toronto and Montreal are Canada’s two largest cities. | Humid continental: hot, humid summers; cold, snowy winters. |\n| **Prairie Provinces** (Manitoba, Saskatchewan, Alberta) | Fertile plains, vast wheat fields, oil sands (Alberta), and the Canadian Shield’s edge. | Continental, with very cold winters and hot, dry summers; frequent thunderstorms. |\n| **West Coast** (British Columbia) | Pacific coastline, coastal rainforests, the Rocky Mountains, and the island of Vancouver. | Mild, rainy winter on the coast; interior valleys have more continental climate. |\n| **North** (Yukon, Northwest Territories, Nunavut) | Arctic tundra, permafrost, the Canadian Arctic Archipelago, the Northwest Passage. | Polar climate: long, extreme winters, short cool summers; northern lights (aurora borealis) are spectacular. |\n\nThe country’s physical geography is dominated by the **Canadian Shield**, a Precambrian granite formation covering roughly 50 % of Canada, rich in minerals such as nickel, copper, and gold. The **Rocky Mountains**, **Appalachian** range, and a network of thousands of lakes (including the Great Lakes, which contain about 20 % of the world’s fresh water) contribute to breathtaking scenery and support a thriving outdoor tourism industry.\n\n---\n\n## 2. History  \n\n### Indigenous Foundations  \n- Over 600 First Nations, Inuit, and Métis","role":"assistant","reasoning_content":" need to respond with a detailed description of Canada, starting with \"Canada is\". Should be comprehensive, covering geography, history, politics, economy, culture, etc. Follow OpenAI policy: no disallowed content. It''s fine. Provide detailed info.","reasoning":" need to respond with a detailed description of Canada, starting with \"Canada is\". Should be comprehensive, covering geography, history, politics, economy, culture, etc. Follow OpenAI policy: no disallowed content. It''s fine. Provide detailed info."},"finish_reason":"stop"}],"created":1771458216,"model":"openai/gpt-oss-120b","object":"chat.completion","usage":{"prompt_tokens":90,"completion_tokens":588,"total_tokens":678,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}'
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Length:
+                - "3490"
+            Content-Type:
+                - application/json
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1771458211142"
+        status: 200 OK
+        code: 200
+        duration: 5.462s

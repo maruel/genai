@@ -1,0 +1,55 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 618
+        host: inference.baseten.co
+        body: |
+            {"model":"zai-org/GLM-5","messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"stream":true,"stream_options":{"include_usage":true},"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"parallel_tool_calls":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://inference.baseten.co/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"chatcmpl-b124dbc2cf954463b87be66a426682a7","choices":[{"index":0,"delta":{"content":"","function_call":null,"tool_calls":[{"index":0,"id":"chatcmpl-tool-102c7b6438a14737a21f520b1bfd340f","type":"function","function":{"name":"best_country","arguments":""}}],"role":"assistant","refusal":null}}],"created":1771462807,"model":"zai-org/GLM-5","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":225,"completion_tokens":3,"total_tokens":228,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-b124dbc2cf954463b87be66a426682a7","choices":[{"index":0,"delta":{"content":"","function_call":null,"tool_calls":[{"index":0,"id":"chatcmpl-tool-21fc1a5142e445eb9610cb9aa4c24fb9","type":"function","function":{"name":"","arguments":"{\"country\":\""}}],"role":"assistant","refusal":null}}],"created":1771462807,"model":"zai-org/GLM-5","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":225,"completion_tokens":6,"total_tokens":231,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-b124dbc2cf954463b87be66a426682a7","choices":[{"index":0,"delta":{"content":"","function_call":null,"tool_calls":[{"index":0,"id":"chatcmpl-tool-c23298deeccb4cde9ed6feeb3b5785a9","type":"function","function":{"name":"","arguments":"Canada"}}],"role":"assistant","refusal":null}}],"created":1771462807,"model":"zai-org/GLM-5","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":225,"completion_tokens":7,"total_tokens":232,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-b124dbc2cf954463b87be66a426682a7","choices":[{"index":0,"delta":{"content":"","function_call":null,"tool_calls":[{"index":0,"id":"chatcmpl-tool-aad55065c8df4d9b80ae6bd086983f89","type":"function","function":{"name":"","arguments":"\""}}],"role":"assistant","refusal":null}}],"created":1771462807,"model":"zai-org/GLM-5","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":225,"completion_tokens":8,"total_tokens":233,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-b124dbc2cf954463b87be66a426682a7","choices":[{"index":0,"delta":{"content":"","function_call":null,"tool_calls":[{"index":0,"id":"chatcmpl-tool-a751e268506f4d89a196df95b5dda75d","type":"function","function":{"name":"","arguments":"}"}}],"role":"assistant","refusal":null}}],"created":1771462807,"model":"zai-org/GLM-5","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":225,"completion_tokens":9,"total_tokens":234,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-b124dbc2cf954463b87be66a426682a7","choices":[{"index":0,"delta":{"content":"","function_call":null,"tool_calls":[],"role":"assistant","refusal":null},"finish_reason":"tool_calls"}],"created":1771462807,"model":"zai-org/GLM-5","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":225,"completion_tokens":9,"total_tokens":234,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: {"id":"chatcmpl-b124dbc2cf954463b87be66a426682a7","choices":[],"created":1771462807,"model":"zai-org/GLM-5","service_tier":null,"system_fingerprint":null,"object":"chat.completion.chunk","usage":{"prompt_tokens":225,"completion_tokens":9,"total_tokens":234,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0}}}
+
+            data: [DONE]
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream
+            Vary:
+                - Origin
+            Via:
+                - 1.1 google
+            X-Baseten-Accepted-At:
+                - "1771462807579"
+        status: 200 OK
+        code: 200
+        duration: 274ms

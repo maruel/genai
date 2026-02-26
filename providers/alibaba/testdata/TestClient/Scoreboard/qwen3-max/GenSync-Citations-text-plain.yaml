@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 242
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3-max","messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 384
+        body: '{"choices":[{"message":{"content":"The capital of Quackiland is Quack.","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":38,"completion_tokens":10,"total_tokens":48,"prompt_tokens_details":{"cached_tokens":0}},"created":1772124419,"system_fingerprint":null,"model":"qwen3-max","id":"chatcmpl-jd8pDX3R6iYRaaBr"}'
+        headers:
+            Content-Length:
+                - "384"
+            Content-Type:
+                - application/json
+            Eagleeye-Traceid:
+                - 0bc2425d17721244152506483ee4d8
+            Req-Arrive-Time:
+                - "1772124415252"
+            Req-Cost-Time:
+                - "3774"
+            Resp-Start-Time:
+                - "1772124419027"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "3774"
+        status: 200 OK
+        code: 200
+        duration: 3.799s

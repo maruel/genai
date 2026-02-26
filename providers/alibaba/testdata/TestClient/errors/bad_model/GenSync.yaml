@@ -1,0 +1,43 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 97
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"bad model","messages":[{"role":"user","content":"Tell a short joke."}],"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 194
+        body: '{"error":{"message":"The model `bad model` does not exist or you do not have access to it.","type":"invalid_request_error","param":null,"code":"model_not_found"},"request_id":"xATtXPaJ6QwFBv3A"}'
+        headers:
+            Content-Length:
+                - "194"
+            Content-Type:
+                - application/json
+            Req-Arrive-Time:
+                - "1772125162554"
+            Req-Cost-Time:
+                - "5"
+            Resp-Start-Time:
+                - "1772125162560"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Envoy-Upstream-Service-Time:
+                - "5"
+        status: 404 Not Found
+        code: 404
+        duration: 34ms

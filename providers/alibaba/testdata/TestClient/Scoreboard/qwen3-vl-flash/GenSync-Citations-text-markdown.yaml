@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 263
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3-vl-flash","messages":[{"role":"user","content":[{"type":"text","text":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 1005
+        body: '{"choices":[{"message":{"content":"The capital of Quackiland is **Quack**.\n\nThis is directly stated in the prompt:  \n> *“The capital of Quackiland is Quack.”*\n\nThe mention of the Big Canard Statue in Quack is additional context, but it doesn’t change the fact that Quack is the capital. The name “Quackiland” and its capital “Quack” are likely a playful or whimsical naming convention — perhaps a pun on “quack” (the sound a duck makes) and “duck” or “canard” (French for “duck,” also meaning a falsehood or hoax).\n\nSo, the answer is: **Quack**\n\n✅ Final Answer: **Quack**","reasoning_content":"","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":42,"completion_tokens":144,"total_tokens":186,"prompt_tokens_details":{"text_tokens":42},"completion_tokens_details":{"text_tokens":144}},"created":1772125135,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-XX-Axq_HkeFkGsaC"}'
+        headers:
+            Content-Length:
+                - "1005"
+            Content-Type:
+                - application/json
+            Eagleeye-Traceid:
+                - 0bc2426217721251331343323ed514
+            Req-Arrive-Time:
+                - "1772125133140"
+            Req-Cost-Time:
+                - "2277"
+            Resp-Start-Time:
+                - "1772125135418"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "2276"
+        status: 200 OK
+        code: 200
+        duration: 2.305s

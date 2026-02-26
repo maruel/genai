@@ -1,0 +1,63 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 285
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3-max","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"stream":true,"response_format":{"type":"json_object"},"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"choices":[{"delta":{"content":"","role":"assistant"},"index":0,"logprobs":null,"finish_reason":null}],"object":"chat.completion.chunk","usage":null,"created":1772124409,"system_fingerprint":null,"model":"qwen3-max","id":"chatcmpl-RGQy0bd4HtQlVitv"}
+
+            data: {"choices":[{"finish_reason":null,"logprobs":null,"delta":{"content":"{\""},"index":0}],"object":"chat.completion.chunk","usage":null,"created":1772124409,"system_fingerprint":null,"model":"qwen3-max","id":"chatcmpl-RGQy0bd4HtQlVitv"}
+
+            data: {"choices":[{"delta":{"content":"is_fruit"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772124409,"system_fingerprint":null,"model":"qwen3-max","id":"chatcmpl-RGQy0bd4HtQlVitv"}
+
+            data: {"choices":[{"delta":{"content":"\": true}"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772124409,"system_fingerprint":null,"model":"qwen3-max","id":"chatcmpl-RGQy0bd4HtQlVitv"}
+
+            data: {"choices":[{"finish_reason":"stop","delta":{"content":""},"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772124409,"system_fingerprint":null,"model":"qwen3-max","id":"chatcmpl-RGQy0bd4HtQlVitv"}
+
+            data: {"choices":[],"object":"chat.completion.chunk","usage":{"prompt_tokens":39,"completion_tokens":7,"total_tokens":46,"prompt_tokens_details":{"cached_tokens":0}},"created":1772124409,"system_fingerprint":null,"model":"qwen3-max","id":"chatcmpl-RGQy0bd4HtQlVitv"}
+
+            data: [DONE]
+
+        headers:
+            Content-Type:
+                - text/event-stream;charset=UTF-8
+            Eagleeye-Traceid:
+                - 0bc2425d17721244076236473ee4d8
+            Req-Arrive-Time:
+                - "1772124407625"
+            Req-Cost-Time:
+                - "1284"
+            Resp-Start-Time:
+                - "1772124408909"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Origin
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "1284"
+        status: 200 OK
+        code: 200
+        duration: 1.309s

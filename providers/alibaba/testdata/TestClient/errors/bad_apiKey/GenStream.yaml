@@ -1,0 +1,43 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 140
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3-30b-a3b","messages":[{"role":"user","content":"Tell a short joke."}],"stream":true,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 234
+        body: '{"error":{"message":"Incorrect API key provided. For details, see: https://help.aliyun.com/zh/model-studio/error-code#apikey-error","type":"invalid_request_error","param":null,"code":"invalid_api_key"},"request_id":"CyC4xyKnbDaN1c0B"}'
+        headers:
+            Content-Length:
+                - "234"
+            Content-Type:
+                - application/json
+            Req-Arrive-Time:
+                - "1772125162467"
+            Req-Cost-Time:
+                - "57"
+            Resp-Start-Time:
+                - "1772125162525"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Envoy-Upstream-Service-Time:
+                - "56"
+        status: 401 Unauthorized
+        code: 401
+        duration: 85ms

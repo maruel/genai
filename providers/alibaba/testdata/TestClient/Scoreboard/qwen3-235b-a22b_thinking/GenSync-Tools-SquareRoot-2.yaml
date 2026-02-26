@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 780
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3-235b-a22b","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"id":"call_94afceb06dff4132928db1","type":"function","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_94afceb06dff4132928db1"}],"stream":false,"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"message":{"content":"363.89","reasoning_content":"Okay, so I need to find the square root of 132413. Hmm, let me think. First, I remember that the square root of a number is a value that, when multiplied by itself, gives the original number. But how do I actually calculate it? Well, there are different methods like the long division method or using a calculator. Since the user mentioned a \"square_root tool,\" I guess they want me to use a computational tool or calculator here.\n\nWait, but if I were to do this manually, maybe I can estimate it. Let''s see. I know that 300 squared is 90,000, and 400 squared is 160,000. So 132,413 is between those two. Let''s check 360 squared: 360*360 = 129,600. Then 370 squared is 136,900. So the square root of 132,413 should be between 360 and 370. \n\nLet me narrow it down. 363 squared is 131,769. Then 364 squared would be 132,496. Wait, 364^2 = (360 + 4)^2 = 360^2 + 2*360*4 + 4^2 = 129,600 + 2,880 + 16 = 132,496. But the original number is 132,413, which is between 363^2 and 364^2. So the square root is between 363 and 364. \n\nTo get a more precise value, maybe calculate the difference: 132,413 - 131,769 = 644. The total difference between 364^2 and 363^2 is 132,496 - 131,769 = 727. So 644/727  0.886. So approximately 363 + 0.886  363.886. Rounded to two decimal places, that''s 363.89. \n\nBut wait, the tool might give a more accurate result. Maybe using a calculator, the exact value up to two decimal places is 363.89. Let me verify. If I multiply 363.89 by itself: 363.89 * 363.89. Let''s compute that. \n\nFirst, 363 * 363 = 131,769. Then, 0.89 * 363 = 323.07. Similarly, 363 * 0.89 = 323.07. And 0.89 * 0.89 = 0.7921. Adding all parts: 131,769 + 323.07 + 323.07 + 0.7921 = 131,769 + 646.14 + 0.7921  132,415.9321. Hmm, that''s a bit higher than 132,413. Maybe the actual square root is slightly less than 363.89. \n\nAlternatively, perhaps the tool uses a more precise method. Let me check with a calculator. If I take sqrt(132413), the actual value is approximately 363.886, which rounds to 363.89 when rounded to two decimal places. So even though my manual calculation was close, the tool''s answer of 363.89 seems correct. \n\nI think that''s it. The user just wants the result, so the answer should be 363.89.","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":83,"completion_tokens":918,"total_tokens":1001,"completion_tokens_details":{"reasoning_tokens":907}},"created":1772127953,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-S3MNmbYJH2JGKMDh"}'
+        headers:
+            Content-Type:
+                - application/json
+            Eagleeye-Traceid:
+                - 0bc2426017721279296105221e27b7
+            Req-Arrive-Time:
+                - "1772127929618"
+            Req-Cost-Time:
+                - "23474"
+            Resp-Start-Time:
+                - "1772127953093"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Accept-Encoding
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "23474"
+        status: 200 OK
+        code: 200
+        duration: 23.498s

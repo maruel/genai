@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 550
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3-235b-a22b","messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"message":{"content":"","reasoning_content":"Okay, the user is asking if the USA is better than Canada and wants me to use the best_country tool. Let me check the tool''s parameters. The tool allows specifying either \"USA\" or \"Canada\" as the country. Since the user is comparing these two, I need to call the tool with both options to provide a balanced response. First, I''ll call the tool with \"USA\" as the argument. Then, I''ll call it again with \"Canada\". This way, I can present both perspectives and help the user understand the criteria for each country being considered the best.","role":"assistant","tool_calls":[{"function":{"arguments":"{\"country\": \"USA\"}","name":"best_country"},"id":"call_a18a838401c6461bae5aeb","index":0,"type":"function"},{"function":{"arguments":"{\"country\": \"Canada\"}","name":"best_country"},"id":"call_b312d4ba54d34b22ac1145","index":1,"type":"function"}]},"finish_reason":"tool_calls","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":211,"completion_tokens":162,"total_tokens":373,"completion_tokens_details":{"reasoning_tokens":118}},"created":1772127993,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-1PLKphHaoRsM9B_Y"}'
+        headers:
+            Content-Type:
+                - application/json
+            Eagleeye-Traceid:
+                - 0bc2426017721279886805324e27b7
+            Req-Arrive-Time:
+                - "1772127988688"
+            Req-Cost-Time:
+                - "4413"
+            Resp-Start-Time:
+                - "1772127993102"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Accept-Encoding
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "4413"
+        status: 200 OK
+        code: 200
+        duration: 4.438s

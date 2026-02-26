@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 155
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3-vl-flash","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"stream":false,"stop":["is"]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 428
+        body: '{"choices":[{"message":{"content":"Canada ","reasoning_content":"","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":20,"completion_tokens":2,"total_tokens":22,"prompt_tokens_details":{"text_tokens":20},"completion_tokens_details":{"text_tokens":2}},"created":1772125124,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-bNhzNPaZHu3UamrA"}'
+        headers:
+            Content-Length:
+                - "428"
+            Content-Type:
+                - application/json
+            Eagleeye-Traceid:
+                - 0bc2426217721251230203306ed514
+            Req-Arrive-Time:
+                - "1772125123028"
+            Req-Cost-Time:
+                - "1104"
+            Resp-Start-Time:
+                - "1772125124132"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "1104"
+        status: 200 OK
+        code: 200
+        duration: 1.134s

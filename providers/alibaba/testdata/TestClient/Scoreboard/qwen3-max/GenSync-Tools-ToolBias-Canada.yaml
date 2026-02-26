@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 548
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3-max","messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"stream":false,"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 514
+        body: '{"choices":[{"message":{"content":"","role":"assistant","tool_calls":[{"function":{"arguments":"{\"country\": \"Canada\"}","name":"best_country"},"id":"call_03a787c042574fb2bf888914","index":0,"type":"function"}]},"finish_reason":"tool_calls","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":321,"completion_tokens":19,"total_tokens":340,"prompt_tokens_details":{"cached_tokens":0}},"created":1772124412,"system_fingerprint":null,"model":"qwen3-max","id":"chatcmpl-q-HxeIO9DNlKKx_8"}'
+        headers:
+            Content-Length:
+                - "514"
+            Content-Type:
+                - application/json
+            Eagleeye-Traceid:
+                - 0bc2425d17721244100966477ee4d8
+            Req-Arrive-Time:
+                - "1772124410098"
+            Req-Cost-Time:
+                - "1660"
+            Resp-Start-Time:
+                - "1772124411758"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "1659"
+        status: 200 OK
+        code: 200
+        duration: 1.686s

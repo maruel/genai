@@ -11,6 +11,7 @@ import (
 	"context"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/providers/alibaba"
 	"github.com/maruel/genai/providers/anthropic"
 	"github.com/maruel/genai/providers/baseten"
 	"github.com/maruel/genai/providers/bfl"
@@ -44,6 +45,16 @@ type Config struct {
 // The keys are aliases and there can be duplicate aliases. "openai" links to "openairesponses". Use
 // Provider.Name to get the real provider name.
 var All = map[string]Config{
+	"alibaba": {
+		APIKeyEnvVar: "DASHSCOPE_API_KEY",
+		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
+			p, err := alibaba.New(ctx, opts...)
+			if p == nil {
+				return nil, err
+			}
+			return p, err
+		},
+	},
 	"anthropic": {
 		APIKeyEnvVar: "ANTHROPIC_API_KEY",
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {

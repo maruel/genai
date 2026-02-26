@@ -1,0 +1,47 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        host: dashscope-us.aliyuncs.com
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/models
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"object":"list","data":[{"id":"pre-qwen-mt-lite","object":"model","created":1767596710,"owned_by":"system"},{"id":"qwen3-vl-flash-2025-10-15-us","object":"model","created":1767754659,"owned_by":"system"},{"id":"qwen3-vl-flash-us","object":"model","created":1767754673,"owned_by":"system"},{"id":"qwen3-asr-flash-2025-09-08-us","object":"model","created":1767339962,"owned_by":"system"},{"id":"qwen3-asr-flash-us","object":"model","created":1767339971,"owned_by":"system"},{"id":"qwen-flash-2025-07-28-us","object":"model","created":1767339981,"owned_by":"system"},{"id":"qwen-plus-2025-12-01-us","object":"model","created":1767754850,"owned_by":"system"},{"id":"qwen-plus-us","object":"model","created":1767754881,"owned_by":"system"},{"id":"qwen-flash-us","object":"model","created":1767340008,"owned_by":"system"},{"id":"qwen3-235b-a22b-instruct-2507","object":"model","created":1767074863,"owned_by":"system"},{"id":"qwen3-235b-a22b-thinking-2507","object":"model","created":1767074826,"owned_by":"system"},{"id":"qwen3-235b-a22b","object":"model","created":1767074814,"owned_by":"system"},{"id":"qwen3-coder-480b-a35b-instruct","object":"model","created":1767074801,"owned_by":"system"},{"id":"qwen3-next-80b-a3b-instruct","object":"model","created":1767074791,"owned_by":"system"},{"id":"qwen-plus-2025-12-01","object":"model","created":1767074772,"owned_by":"system"},{"id":"qwen-plus-2025-09-11","object":"model","created":1767074738,"owned_by":"system"},{"id":"qwen-plus-2025-07-28","object":"model","created":1767074716,"owned_by":"system"},{"id":"qwen-mt-plus","object":"model","created":1767074687,"owned_by":"system"},{"id":"qwen-mt-lite","object":"model","created":1767074678,"owned_by":"system"},{"id":"qwen-mt-flash","object":"model","created":1767074668,"owned_by":"system"},{"id":"qwen3-next-80b-a3b-thinking","object":"model","created":1767074658,"owned_by":"system"},{"id":"qwen3-coder-plus","object":"model","created":1767074648,"owned_by":"system"},{"id":"qwen3-coder-plus-2025-07-22","object":"model","created":1767074639,"owned_by":"system"},{"id":"qwen3-coder-plus-2025-09-23","object":"model","created":1767074629,"owned_by":"system"},{"id":"qwen3-max-2025-09-23","object":"model","created":1767074609,"owned_by":"system"},{"id":"qwen3-max-preview","object":"model","created":1767074600,"owned_by":"system"},{"id":"qwen-flash-2025-07-28","object":"model","created":1767074586,"owned_by":"system"},{"id":"qwen3-coder-flash-2025-07-28","object":"model","created":1767074576,"owned_by":"system"},{"id":"qwen3-coder-flash","object":"model","created":1767074565,"owned_by":"system"},{"id":"qwen3-coder-30b-a3b-instruct","object":"model","created":1767074556,"owned_by":"system"},{"id":"qwen3-8b","object":"model","created":1767074546,"owned_by":"system"},{"id":"wan2.6-t2i","object":"model","created":1767074537,"owned_by":"system"},{"id":"wan2.6-image","object":"model","created":1767074527,"owned_by":"system"},{"id":"qwen-vl-ocr","object":"model","created":1767074472,"owned_by":"system"},{"id":"qwen-vl-ocr-2025-11-20","object":"model","created":1767074462,"owned_by":"system"},{"id":"qwen3-vl-plus-2025-09-23","object":"model","created":1767074449,"owned_by":"system"},{"id":"qwen3-vl-plus","object":"model","created":1767074416,"owned_by":"system"},{"id":"qwen3-vl-flash-2025-10-15","object":"model","created":1767074400,"owned_by":"system"},{"id":"qwen3-vl-flash","object":"model","created":1767074389,"owned_by":"system"},{"id":"qwen3-vl-8b-thinking","object":"model","created":1767074378,"owned_by":"system"},{"id":"qwen3-vl-8b-instruct","object":"model","created":1767074365,"owned_by":"system"},{"id":"qwen3-vl-32b-thinking","object":"model","created":1767074346,"owned_by":"system"},{"id":"qwen3-vl-32b-instruct","object":"model","created":1767074336,"owned_by":"system"},{"id":"qwen3-vl-30b-a3b-thinking","object":"model","created":1767074311,"owned_by":"system"},{"id":"qwen3-vl-30b-a3b-instruct","object":"model","created":1767074297,"owned_by":"system"},{"id":"qwen3-vl-235b-a22b-thinking","object":"model","created":1767074284,"owned_by":"system"},{"id":"qwen3-vl-235b-a22b-instruct","object":"model","created":1767074274,"owned_by":"system"},{"id":"qwen3-32b","object":"model","created":1767074257,"owned_by":"system"},{"id":"qwen3-30b-a3b-thinking-2507","object":"model","created":1767074228,"owned_by":"system"},{"id":"qwen3-30b-a3b-instruct-2507","object":"model","created":1767074218,"owned_by":"system"},{"id":"qwen3-30b-a3b","object":"model","created":1767074207,"owned_by":"system"},{"id":"qwen3-14b","object":"model","created":1767074184,"owned_by":"system"},{"id":"qwen-flash","object":"model","created":1767074110,"owned_by":"system"},{"id":"qwen-plus","object":"model","created":1767074099,"owned_by":"system"},{"id":"qwen3-max","object":"model","created":1767074087,"owned_by":"system"}],"first_id":"model-id-0","last_id":"model-id-54","has_more":false}'
+        headers:
+            Content-Type:
+                - application/json
+            Eagleeye-Traceid:
+                - 0bc2426217721250458343168ed514
+            Req-Arrive-Time:
+                - "1772125045841"
+            Req-Cost-Time:
+                - "12"
+            Resp-Start-Time:
+                - "1772125045853"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=31536000
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Accept-Encoding
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Envoy-Upstream-Service-Time:
+                - "12"
+        status: 200 OK
+        code: 200
+        duration: 417ms

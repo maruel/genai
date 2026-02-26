@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 283
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3-max","messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg"}}]}],"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 353
+        body: '{"choices":[{"message":{"content":"Apple","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":19,"completion_tokens":1,"total_tokens":20,"prompt_tokens_details":{"cached_tokens":0}},"created":1772124423,"system_fingerprint":null,"model":"qwen3-max","id":"chatcmpl-pQNzGty_vHd2OZAz"}'
+        headers:
+            Content-Length:
+                - "353"
+            Content-Type:
+                - application/json
+            Eagleeye-Traceid:
+                - 0bc2425d17721244218006490ee4d8
+            Req-Arrive-Time:
+                - "1772124421800"
+            Req-Cost-Time:
+                - "1179"
+            Resp-Start-Time:
+                - "1772124422979"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "1178"
+        status: 200 OK
+        code: 200
+        duration: 1.202s

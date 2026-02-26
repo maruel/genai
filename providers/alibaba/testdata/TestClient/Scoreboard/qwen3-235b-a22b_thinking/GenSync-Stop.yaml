@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 156
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3-235b-a22b","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"stream":false,"stop":["is"]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"message":{"content":"**Canada ","reasoning_content":"Okay, the user wants me to talk about Canada in great detail starting with \"Canada is.\" Let me start by brainstorming the key aspects of Canada. First, geography comes to mind—its size, second only to Russia, and the vast landscapes. I should mention provinces and territories, maybe touch on the different regions like the Rockies, boreal forests, and the Arctic.\n\nThen there''s the multicultural aspect. Canada is known for its diversity, so I need to include immigration and cultural mosaic. History is important too: Indigenous peoples, French and British colonization, Confederation in 1867. Maybe mention key historical events or figures.\n\nGovernment and political system: federal parliamentary democracy, constitutional monarchy, the role of the Prime Minister and Governor General. Also, the Charter of Rights and Freedoms. Economy-wise, natural resources like oil, gas, timber, and tech hubs in cities like Toronto and Vancouver. International relations, especially with the US and multilateral organizations like NATO, UN, G7, G20.\n\nCulture: arts, literature, sports like hockey, bilingualism (English and French), education system with top universities. Social policies—universal healthcare, gun control, same-sex marriage. Environmental efforts, given the vast natural resources and climate change issues.\n\nAlso, some unique aspects like the Royal Canadian Mounted Police, maple syrup, and winter sports. Maybe mention current challenges like Indigenous reconciliation, climate change impacts, immigration policies. I should structure this logically, starting from geography, history, government, economy, culture, society, and current issues. Need to ensure each section flows into the next and covers all major points without getting too verbose. Check for accuracy on stats like population, area, official languages, and key dates. Avoid any errors, like confusing provinces and territories. Maybe include some notable landmarks or cities as examples. Also, highlight Canada''s global standing and contributions. Make sure to emphasize the diversity and inclusivity as a key theme throughout. Alright, let''s put this all together coherently.","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":20,"completion_tokens":550,"total_tokens":570,"completion_tokens_details":{"reasoning_tokens":406}},"created":1772127634,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-jjK9VxeXjguBeWrm"}'
+        headers:
+            Content-Type:
+                - application/json
+            Eagleeye-Traceid:
+                - 0bc2426017721276115054773e27b7
+            Req-Arrive-Time:
+                - "1772127611512"
+            Req-Cost-Time:
+                - "22847"
+            Resp-Start-Time:
+                - "1772127634359"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Accept-Encoding
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "22847"
+        status: 200 OK
+        code: 200
+        duration: 22.87s

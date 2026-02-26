@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 778
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3-30b-a3b","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"id":"call_cbfd920c60f14ebf88031a","type":"function","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_cbfd920c60f14ebf88031a"}],"stream":false,"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"message":{"content":"363.89","reasoning_content":"Okay, the user asked for the square root of 132413 using the square_root tool. I need to make sure I use the correct tool and provide the result accurately.\n\nFirst, I''ll check if the tool is available. The user mentioned the square_root tool, so I should use that. The input number is 132413. Let me calculate the square root.\n\nHmm, 363 squared is 131,769, and 364 squared is 132,496. Wait, 363.89 squared would be... Let me verify. 363.89 * 363.89. Let''s see, 363^2 is 131,769. Then 0.89^2 is about 0.7921. The cross term is 2*363*0.89 = 647.34. Adding them up: 131,769 + 647.34 + 0.7921  132,417.13. But the original number is 132,413, so maybe the exact value is slightly less than 363.89. However, the tool might have given 363.89 as an approximate value. Since the user wants only the result and not an explanation, I should just present the answer provided by the tool. So the result is 363.89.","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":83,"completion_tokens":348,"total_tokens":431,"completion_tokens_details":{"reasoning_tokens":337}},"created":1772128251,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-JwsQuL3r51GB8ta5"}'
+        headers:
+            Content-Type:
+                - application/json
+            Eagleeye-Traceid:
+                - 0bc2426017721282476817093e27bc
+            Req-Arrive-Time:
+                - "1772128247688"
+            Req-Cost-Time:
+                - "3377"
+            Resp-Start-Time:
+                - "1772128251066"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Accept-Encoding
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "3377"
+        status: 200 OK
+        code: 200
+        duration: 3.401s

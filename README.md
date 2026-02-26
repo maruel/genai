@@ -49,6 +49,7 @@ genai is _intentional_. Curious why it was created? See the release announcement
 
 | Provider                                   | 🌐   | Mode          | ➛In        | Out➛   | Tool   | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
 | ------------------------------------------ | ---- | ------------- | ---------- | ------ | ------ | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
+| [alibaba](docs/alibaba.md)                 | 🇨🇳   | Sync, Stream🧠 | 💬📸       | 💬     | ✅🪨   | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
 | [anthropic](docs/anthropic.md)             | 🇺🇸   | Sync, Stream🧠 | 💬📄📸     | 💬     | ✅🪨🕸️ | 📐    | ✅    | ❌   | ✅   | 🛑📏   | ❌    | ✅     | ✅    | ✅     |
 | [baseten](docs/baseten.md)                 | 🇺🇸   | Sync, Stream🧠 | 💬         | 💬     | ✅🪨   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
 | [bfl](docs/bfl.md)                         | 🇩🇪   | Sync          | 💬         | 📸     | ❌     | ❌   | ✅    | ❌   | ❌   | 🌱   | ❌    | ✅     | ❌    | ❌     |

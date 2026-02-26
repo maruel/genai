@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 780
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3-vl-flash","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"id":"call_167820253ab64c9aa40163","type":"function","function":{"name":"square_root","arguments":" {\"number\": 132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_167820253ab64c9aa40163"}],"stream":false,"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 427
+        body: '{"choices":[{"message":{"content":"363.89","reasoning_content":"","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":54,"completion_tokens":7,"total_tokens":61,"prompt_tokens_details":{"text_tokens":54},"completion_tokens_details":{"text_tokens":7}},"created":1772125127,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-33fDIQMoB9DZut71"}'
+        headers:
+            Content-Length:
+                - "427"
+            Content-Type:
+                - application/json
+            Eagleeye-Traceid:
+                - 0bc2426217721251265633313ed514
+            Req-Arrive-Time:
+                - "1772125126569"
+            Req-Cost-Time:
+                - "918"
+            Resp-Start-Time:
+                - "1772125127488"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "917"
+        status: 200 OK
+        code: 200
+        duration: 946ms

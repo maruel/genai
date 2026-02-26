@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 124
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3-235b-a22b","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":false,"seed":42}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 709
+        body: '{"choices":[{"message":{"content":"Hello.","reasoning_content":"Okay, the user wants me to say hello using only one word. Let me think. The most straightforward greeting is \"Hello.\" That''s exactly one word. I should check if there are any other possible one-word greetings, but I think \"Hello\" is the standard one. No need to complicate it further. Just respond with \"Hello.\"","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":16,"completion_tokens":76,"total_tokens":92,"completion_tokens_details":{"reasoning_tokens":69}},"created":1772127570,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-agVYL98HqgA3AOz3"}'
+        headers:
+            Content-Length:
+                - "709"
+            Content-Type:
+                - application/json
+            Eagleeye-Traceid:
+                - 0bc2426017721275671864753e27b7
+            Req-Arrive-Time:
+                - "1772127567194"
+            Req-Cost-Time:
+                - "2811"
+            Resp-Start-Time:
+                - "1772127570006"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "2811"
+        status: 200 OK
+        code: 200
+        duration: 2.835s

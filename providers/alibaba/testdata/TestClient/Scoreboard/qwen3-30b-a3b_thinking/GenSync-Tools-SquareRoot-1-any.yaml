@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 538
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3-30b-a3b","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"message":{"content":"","reasoning_content":"Okay, the user wants me to calculate the square root of 132413 using the square_root tool. Let me check the function provided. The function is called square_root and takes a number as a parameter. So I need to call that function with 132413 as the argument. I should make sure the input is a number, which it is. Then, the function should return the square root. I don''t need to explain anything, just provide the result. Let me structure the tool call correctly in JSON within the specified XML tags.","role":"assistant","tool_calls":[{"function":{"arguments":"{\"number\": 132413}","name":"square_root"},"id":"call_cbfd920c60f14ebf88031a","index":0,"type":"function"}]},"finish_reason":"tool_calls","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":209,"completion_tokens":145,"total_tokens":354,"completion_tokens_details":{"reasoning_tokens":116}},"created":1772128248,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-PpnnIdCM-MQqXwRc"}'
+        headers:
+            Content-Type:
+                - application/json
+            Eagleeye-Traceid:
+                - 0bc2426017721282453317089e27bc
+            Req-Arrive-Time:
+                - "1772128245338"
+            Req-Cost-Time:
+                - "2326"
+            Resp-Start-Time:
+                - "1772128247665"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Accept-Encoding
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "2326"
+        status: 200 OK
+        code: 200
+        duration: 2.35s

@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 246
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3-30b-a3b","messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"message":{"content":"The capital of Quackiland is **Quack**. \n\nThis is explicitly stated in the first sentence of the provided information. The mention of the Big Canard Statue being located in Quack serves as additional context but does not alter the fact that Quack is the capital. \n\n**Answer:** Quack.","reasoning_content":"Okay, so I need to figure out the capital of Quackiland. Let me start by looking at the information given. The user mentioned that the capital of Quackiland is Quack. Then they also said that the Big Canard Statue is located in Quack. \n\nWait, so the first sentence directly states that the capital is Quack. The second sentence adds that the Big Canard Statue is in Quack. But the question is asking again for the capital of Quackiland. Since the first statement already answers that, maybe the second part is just extra information to test if I''m paying attention.\n\nBut let me make sure there''s no trick here. Sometimes questions might have misleading details. However, in this case, the first sentence clearly states the capital. The second sentence about the statue doesn''t provide any conflicting information. So the answer should be Quack. \n\nI don''t see any contradictions or hidden clues. The key point is that the first sentence gives the answer directly. The mention of the statue in Quack is just additional context but doesn''t change the capital''s name. So the answer is definitely Quack.","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":38,"completion_tokens":297,"total_tokens":335,"completion_tokens_details":{"reasoning_tokens":229}},"created":1772125165,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-fl5tvNQQgNCF0I7H"}'
+        headers:
+            Content-Type:
+                - application/json
+            Eagleeye-Traceid:
+                - 0bc2426217721251626163350ed514
+            Req-Arrive-Time:
+                - "1772125162623"
+            Req-Cost-Time:
+                - "2865"
+            Resp-Start-Time:
+                - "1772125165489"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Accept-Encoding
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "2865"
+        status: 200 OK
+        code: 200
+        duration: 2.894s

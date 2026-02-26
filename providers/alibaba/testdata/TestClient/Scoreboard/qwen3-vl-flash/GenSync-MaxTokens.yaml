@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 150
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3-vl-flash","messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"stream":false,"max_tokens":16}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 496
+        body: '{"choices":[{"message":{"content":"Certainly. The **Theory of Relativity** is one of the most profound and","reasoning_content":"","role":"assistant"},"finish_reason":"length","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":19,"completion_tokens":16,"total_tokens":35,"prompt_tokens_details":{"text_tokens":19},"completion_tokens_details":{"text_tokens":16}},"created":1772125123,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-FRcN-DRZ0R_1t_RY"}'
+        headers:
+            Content-Length:
+                - "496"
+            Content-Type:
+                - application/json
+            Eagleeye-Traceid:
+                - 0bc2426217721251217373304ed514
+            Req-Arrive-Time:
+                - "1772125121745"
+            Req-Cost-Time:
+                - "1253"
+            Resp-Start-Time:
+                - "1772125122998"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "1253"
+        status: 200 OK
+        code: 200
+        duration: 1.283s

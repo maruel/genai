@@ -1182,6 +1182,22 @@ type ProviderPing interface {
 	Ping(ctx context.Context) error
 }
 
+// ScoreboardVariant is a named scoreboard for a specific backend or region of a provider.
+type ScoreboardVariant struct {
+	// Name is the display name for this variant, e.g. "Intl", "US".
+	Name string
+	// Score is the scoreboard data for this variant.
+	Score scoreboard.Score
+}
+
+// ProviderScoreboardVariants is optionally implemented by providers that have multiple regional backends
+// with different model catalogs.
+//
+// When implemented, documentation tools generate a separate table per variant instead of a single table.
+type ProviderScoreboardVariants interface {
+	ScoreboardVariants() []ScoreboardVariant
+}
+
 var (
 	_ internal.Validatable = (*Citation)(nil)
 	_ internal.Validatable = (*CitationSource)(nil)

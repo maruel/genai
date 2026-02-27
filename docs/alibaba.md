@@ -1,5 +1,7 @@
 # Scoreboard
 
+## Intl
+
 | Model                                         | Mode    | ➛In   | Out➛   | Tool | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
 | --------------------------------------------- | ------- | ----- | ------ | ---- | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
 | qwen3.5-397b-a17b🥇                            | Sync🧠   | 💬📸  | 💬     | 💨   | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
@@ -166,6 +168,108 @@
 | qwen3-vl-plus-2025-12-19                      | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | text-embedding-v3                             | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 | text-embedding-v4                             | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+<details>
+<summary>‼️ Click here for the legend of columns and symbols</summary>
+
+- 🏠: Runs locally.
+- Sync:   Runs synchronously, the reply is only returned once completely generated
+- Stream: Streams the reply as it is generated. Occasionally less features are supported in this mode
+- 🧠: Has chain-of-thought thinking process
+    - Both redacted (Anthropic, Gemini, OpenAI) and explicit (Deepseek R1, Qwen3, etc)
+    - Many models can be used in both mode. In this case they will have two rows, one with thinking and one
+      without. It is frequent that certain functionalities are limited in thinking mode, like tool calling.
+- ✅: Implemented and works great
+- ❌: Not supported by genai. The provider may support it, but genai does not (yet). Please send a PR to add
+  it!
+- 💬: Text
+- 📄: PDF: process a PDF as input, possibly with OCR
+- 📸: Image: process an image as input; most providers support PNG, JPG, WEBP and non-animated GIF, or generate images
+- 🎤: Audio: process an audio file (e.g. MP3, WAV, Flac, Opus) as input, or generate audio
+- 🎥: Video: process a video (e.g. MP4) as input, or generate a video (e.g. Veo 3)
+- 💨: Feature is flaky (Tool calling) or inconsistent (Usage is not always reported)
+- 🌐: Country where the company is located
+- Tool: Tool calling, using [genai.ToolDef](https://pkg.go.dev/github.com/maruel/genai#ToolDef); best is ✅🪨🕸️
+		- 🪨: Tool calling can be forced; aka you can force the model to call a tool. This is great.
+		- 🕸️: Web search
+- JSON: ability to output JSON in free form, or with a forced schema specified as a Go struct
+    - ✅: Supports both free form and with a schema
+    - ☁️ :Supports only free form
+		- 📐: Supports only a schema
+- Batch: Process asynchronously batches during off peak hours at a discounts
+- Text: Text features
+    - '🌱': Seed option for deterministic output
+    - '📏': MaxTokens option to cap the amount of returned tokens
+    - '🛑': Stop sequence to stop generation when a token is generated
+- File: Upload and store large files via a separate API
+- Cite: Citation generation from a provided document, specially useful for RAG
+- Probs: Return logprobs to analyse each token probabilities
+- Limits: Returns the rate limits, including the remaining quota
+</details>
+
+## US
+
+| Model                          | Mode    | ➛In   | Out➛   | Tool | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
+| ------------------------------ | ------- | ----- | ------ | ---- | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
+| qwen3-max🥇                     | Sync    | 💬    | 💬     | ✅🪨 | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| qwen3-max🥇                     | Stream  | 💬    | 💬     | ✅🪨 | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ❌    | ❌     |
+| qwen3-235b-a22b🥈               | Sync🧠   | 💬    | 💬     | ✅   | ❌   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| qwen3-235b-a22b🥈               | Stream🧠 | 💬    | 💬     | ✅   | ❌   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ❌    | ❌     |
+| qwen3-30b-a3b🥉                 | Sync🧠   | 💬    | 💬     | 💨   | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| qwen3-30b-a3b🥉                 | Stream🧠 | 💬    | 💬     | ✅   | ❌   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ❌    | ❌     |
+| qwen3-vl-flash                 | Sync    | 💬📸  | 💬     | ✅🪨 | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| qwen3-vl-flash                 | Stream  | 💬📸  | 💬     | ✅🪨 | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ❌    | ❌     |
+| qwen3-vl-plus                  | Sync    | 💬📸  | 💬     | ✅🪨 | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| qwen3-vl-plus                  | Stream  | 💬📸  | 💬     | ✅🪨 | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ❌    | ❌     |
+| qwen3-235b-a22b-thinking-2507  | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| qwen3-30b-a3b-thinking-2507    | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| qwen3-next-80b-a3b-thinking    | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| qwen3-vl-235b-a22b-thinking    | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| qwen3-vl-30b-a3b-thinking      | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| qwen3-vl-32b-thinking          | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| qwen3-vl-8b-thinking           | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| pre-qwen-mt-lite               | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| qwen-mt-flash                  | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| qwen-mt-lite                   | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| qwen-mt-plus                   | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| qwen-flash                     | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| qwen-flash-2025-07-28          | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| qwen-flash-2025-07-28-us       | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| qwen-flash-us                  | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| qwen-plus                      | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| qwen-plus-2025-07-28           | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| qwen-plus-2025-09-11           | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| qwen-plus-2025-12-01           | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| qwen-plus-2025-12-01-us        | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| qwen-plus-us                   | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| qwen3-max-2025-09-23           | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| qwen3-max-preview              | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| qwen-vl-ocr                    | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| qwen-vl-ocr-2025-11-20         | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| qwen3-14b                      | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| qwen3-235b-a22b-instruct-2507  | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| qwen3-30b-a3b-instruct-2507    | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| qwen3-32b                      | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| qwen3-8b                       | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| qwen3-next-80b-a3b-instruct    | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| qwen3-asr-flash-2025-09-08-us  | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| qwen3-asr-flash-us             | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| qwen3-coder-30b-a3b-instruct   | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| qwen3-coder-480b-a35b-instruct | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| qwen3-coder-flash              | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| qwen3-coder-flash-2025-07-28   | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| qwen3-coder-plus               | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| qwen3-coder-plus-2025-07-22    | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| qwen3-coder-plus-2025-09-23    | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| qwen3-vl-235b-a22b-instruct    | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| qwen3-vl-30b-a3b-instruct      | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| qwen3-vl-32b-instruct          | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| qwen3-vl-8b-instruct           | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| qwen3-vl-flash-2025-10-15      | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| qwen3-vl-flash-2025-10-15-us   | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| qwen3-vl-flash-us              | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| qwen3-vl-plus-2025-09-23       | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| wan2.6-image                   | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
+| wan2.6-t2i                     | ?       | ?     | ?      | ?    | ?    | ?     | ?    | ?    | ?    | ?     | ?      | ?     | ?      |
 <details>
 <summary>‼️ Click here for the legend of columns and symbols</summary>
 

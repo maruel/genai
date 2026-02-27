@@ -92,22 +92,32 @@ func (t *tableSummaryRow) initFromScoreboard(p genai.Provider) {
 	if p.Capabilities().Caching {
 		t.Files = "✅"
 	}
-	for i := range sb.Scenarios {
-		// Assume GenSync has the best values.
-		f := sb.Scenarios[i].GenSync
-		if f == nil {
-			continue
+	// Merge all variant scoreboards when the provider has multiple backends.
+	scoreboards := []scoreboard.Score{sb}
+	if pv, ok := p.(genai.ProviderScoreboardVariants); ok {
+		scoreboards = nil
+		for _, v := range pv.ScoreboardVariants() {
+			scoreboards = append(scoreboards, v.Score)
 		}
-		t.initFromScenario(&sb.Scenarios[i], f)
-		if sb.Scenarios[i].GenStream != nil && !strings.Contains(t.Mode, "Stream") {
-			if t.Mode != "" {
-				t.Mode += ", "
+	}
+	for _, s := range scoreboards {
+		for i := range s.Scenarios {
+			// Assume GenSync has the best values.
+			f := s.Scenarios[i].GenSync
+			if f == nil {
+				continue
 			}
-			t.Mode += "Stream"
-		}
-		// Do a small hack to put the brain at the end.
-		if strings.Contains(t.Mode, "🧠") {
-			t.Mode = strings.ReplaceAll(t.Mode, "🧠", "") + "🧠"
+			t.initFromScenario(&s.Scenarios[i], f)
+			if s.Scenarios[i].GenStream != nil && !strings.Contains(t.Mode, "Stream") {
+				if t.Mode != "" {
+					t.Mode += ", "
+				}
+				t.Mode += "Stream"
+			}
+			// Do a small hack to put the brain at the end.
+			if strings.Contains(t.Mode, "🧠") {
+				t.Mode = strings.ReplaceAll(t.Mode, "🧠", "") + "🧠"
+			}
 		}
 	}
 	fillEmptyFields(t, "❌")
@@ -293,7 +303,30 @@ func printSummaryTable(ctx context.Context, w io.Writer, all map[string]provider
 
 // printProviderTable prints a table of all the models for a specific provider.
 func printProviderTable(p genai.Provider, w io.Writer) error {
-	sb := p.Scoreboard()
+	if pv, ok := p.(genai.ProviderScoreboardVariants); ok {
+		variants := pv.ScoreboardVariants()
+		if len(variants) > 1 {
+			return printProviderVariantTables(p, w, variants)
+		}
+	}
+	printScoreboardTable(p, w, p.Scoreboard())
+	return nil
+}
+
+// printProviderVariantTables prints a separate table per scoreboard variant.
+func printProviderVariantTables(p genai.Provider, w io.Writer, variants []genai.ScoreboardVariant) error {
+	for i, v := range variants {
+		if i > 0 {
+			_, _ = io.WriteString(w, "\n")
+		}
+		_, _ = fmt.Fprintf(w, "## %s\n\n", v.Name)
+		printScoreboardTable(p, w, v.Score)
+	}
+	return nil
+}
+
+// printScoreboardTable prints a single scoreboard table.
+func printScoreboardTable(p genai.Provider, w io.Writer, sb scoreboard.Score) {
 	rows := make([]tableModelRow, 0, len(sb.Scenarios))
 	for _, sc := range sb.Scenarios {
 		var tmpRows []tableModelRow
@@ -343,7 +376,6 @@ func printProviderTable(p genai.Provider, w io.Writer) error {
 			_, _ = fmt.Fprintf(w, "- %s\n", wrn)
 		}
 	}
-	return nil
 }
 
 // Magical markdown table generator.

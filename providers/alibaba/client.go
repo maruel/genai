@@ -821,6 +821,14 @@ func (c *Client) Scoreboard() scoreboard.Score {
 	return ScoreboardForBackend(c.backend)
 }
 
+// ScoreboardVariants implements genai.ProviderScoreboardVariants.
+func (c *Client) ScoreboardVariants() []genai.ScoreboardVariant {
+	return []genai.ScoreboardVariant{
+		{Name: "Intl", Score: ScoreboardForBackend(BackendIntl)},
+		{Name: "US", Score: ScoreboardForBackend(BackendUS)},
+	}
+}
+
 // HTTPClient returns the HTTP client.
 func (c *Client) HTTPClient() *http.Client {
 	return &c.impl.Client

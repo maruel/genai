@@ -20,4 +20,6 @@ func TestPrintTable(t *testing.T) {
 	ctx := t.Context()
 	_ = printTable(ctx, &internaltest.WriterToLog{T: t}, "")
 	_ = printTable(ctx, &internaltest.WriterToLog{T: t}, "openaicompatible")
+	// Test a provider with scoreboard variants.
+	_ = printTable(ctx, &internaltest.WriterToLog{T: t}, "alibaba")
 }

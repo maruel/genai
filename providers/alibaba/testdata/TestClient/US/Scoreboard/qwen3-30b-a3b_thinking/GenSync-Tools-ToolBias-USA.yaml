@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 548
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3-30b-a3b","messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"message":{"content":"","reasoning_content":"Okay, the user is asking if the USA is better than Canada and wants me to use the best_country tool. Let me check the tool''s functions. The tool has a function called best_country which takes a country parameter, either USA or Canada. The user is specifically asking about the USA versus Canada. So I need to call the best_country function with both countries as arguments. Wait, but the function''s parameters are an enum of USA or Canada. Wait, the function''s parameters are set up to take one country at a time. But the user is asking for a comparison between the two. Hmm, maybe the function is designed to return which one is better when given both? Wait, looking at the function definition again: the parameters are a single country, but the description says \"specify the best country\". But the enum is only USA or Canada. Maybe the function is meant to be called once for each country? Or perhaps the function can take both? Wait, the parameters are a single country, so maybe the function is not designed for direct comparison. But the user wants to know which is better. Maybe the function is intended to be called with both countries, but the schema might not allow that. Wait, the parameters are a single country, so perhaps the function is not suitable for comparison. But the user is asking to call the tool. Maybe the function is supposed to return the best country when given both, but the schema is incorrect. Alternatively, maybe the function is meant to be called once for each country, and the system will compare them. But the user''s question is a direct comparison. Since the function''s parameters only allow one country, perhaps the tool isn''t designed for this. However, the user is instructing to call the tool, so I have to use it. Maybe the function is supposed to return the best country when given both, but the schema is wrong. Alternatively, maybe the function is a placeholder. Since the user wants to know which is better, I need to call the function with both countries. But according to the schema, the parameters are a single country. So perhaps the function can''t handle both. This is a problem. But since the user said to call the tool, maybe I should proceed by calling the function with each country and then compare. But the tool might not support that. Alternatively, maybe the function is designed to return the best country when given both, even though the schema says otherwise. Maybe the schema is incorrect. In that case, I''ll proceed to call the function with both countries. But the parameters are a single country. Wait, the function''s parameters are a single country, so I can''t pass both. Therefore, the tool might not be suitable for this query. However, the user explicitly asked to call the tool. So maybe I should call the function twice, once for each country. But the user''s question is a comparison. Alternatively, maybe the function is designed to return the best country when given both, but the schema is wrong. In that case, I''ll proceed to call the function with both countries. But according to the schema, the parameters are a single country. So I''m confused. Maybe the function is not properly defined. But given the constraints, I have to use the tool as provided. So perhaps the user''s question can''t be fully addressed by the tool. However, the user wants me to call the tool. So maybe I should call the function with both countries, even though the schema doesn''t allow it. Alternatively, maybe the function is intended to be called once, and the response will include the comparison. But the parameters are a single country. This is a bit of a problem. But since the user is asking to call the tool, I''ll proceed to call the function with both countries, even if the schema is incorrect. So I''ll structure the tool call with both USA and Canada as parameters. But according to the schema, the parameters are a single country. So that''s not allowed. Therefore, perhaps the function is not suitable. But the user wants me to use the tool. Maybe the function is supposed to return the best country when given both, but the schema is wrong. In that case, I''ll proceed. Otherwise, I can''t answer the user''s question. So I''ll make a tool call with both countries.","role":"assistant","tool_calls":[{"function":{"arguments":"{\"country\": \"USA\"}","name":"best_country"},"id":"call_ab9cd0112267499bb6519a","index":0,"type":"function"},{"function":{"arguments":"{\"country\": \"Canada\"}","name":"best_country"},"id":"call_f80302d1fa6a44409f590c","index":1,"type":"function"}]},"finish_reason":"tool_calls","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":211,"completion_tokens":922,"total_tokens":1133,"completion_tokens_details":{"reasoning_tokens":878}},"created":1772142758,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-1f3NBf4fY5LU9mVT"}'
+        headers:
+            Content-Type:
+                - application/json
+            Eagleeye-Traceid:
+                - 0bc2425d17721427509326179ee4d7
+            Req-Arrive-Time:
+                - "1772142750933"
+            Req-Cost-Time:
+                - "7018"
+            Resp-Start-Time:
+                - "1772142757951"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Accept-Encoding
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "7017"
+        status: 200 OK
+        code: 200
+        duration: 7.067s

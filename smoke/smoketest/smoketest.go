@@ -48,11 +48,30 @@ type ProviderFactory func(t testing.TB, m scoreboard.Model, fn func(http.RoundTr
 
 var updateScoreboard = flag.Bool("update-scoreboard", false, "Update scoreboard.json for each provider with current test results")
 
+// RunOption configures optional behavior of Run.
+type RunOption func(*runConfig)
+
+type runConfig struct {
+	scoreboardFile string
+}
+
+// WithScoreboardFile overrides the default scoreboard filename ("scoreboard.json").
+func WithScoreboardFile(path string) RunOption {
+	return func(c *runConfig) {
+		c.scoreboardFile = path
+	}
+}
+
 // Run regenerates the scoreboard and asserts it is up to date.
 //
 // If the -update-scoreboard flag is set, it will update the scoreboard files
 // and automatically delete stale recordings for models that are no longer available.
-func Run(t *testing.T, pf ProviderFactory, models []scoreboard.Model, rec *myrecorder.Records) {
+func Run(t *testing.T, pf ProviderFactory, models []scoreboard.Model, rec *myrecorder.Records, opts ...RunOption) {
+	cfg := runConfig{scoreboardFile: "scoreboard.json"}
+	for _, o := range opts {
+		o(&cfg)
+	}
+
 	if len(models) == 0 {
 		t.Fatal("no models")
 	}
@@ -74,9 +93,10 @@ func Run(t *testing.T, pf ProviderFactory, models []scoreboard.Model, rec *myrec
 		}
 		seen[m] = struct{}{}
 	}
+	recordingsDir := filepath.Join("testdata", filepath.FromSlash(t.Name()))
 	t.Run("Stale Recordings", func(t *testing.T) {
 		// Delete orphaned recordings that don't correspond to any model in the list of models to test.
-		deleteOrphanedRecordings(t, filepath.Join("testdata", "TestClient", "Scoreboard"), seen)
+		deleteOrphanedRecordings(t, recordingsDir, seen)
 	})
 
 	cc := pf(t, scoreboard.Model{}, nil)
@@ -195,11 +215,11 @@ func Run(t *testing.T, pf ProviderFactory, models []scoreboard.Model, rec *myrec
 	}
 	// Check scoreboard and update if requested
 	if len(updatedScenarios) > 0 || len(staleModels) > 0 {
-		scoreboardPath := filepath.Join(".", "scoreboard.json")
+		scoreboardPath := filepath.Join(".", cfg.scoreboardFile)
 		rawOld, rawNew := generateUpdatedScoreboard(t, scoreboardPath, updatedScenarios, slices.Collect(maps.Keys(staleModels)))
 		if !bytes.Equal(rawNew, rawOld) {
 			if !*updateScoreboard {
-				t.Fatalf("scoreboard.json is out of date, run with -update-scoreboard to update it")
+				t.Fatalf("%s is out of date, run with -update-scoreboard to update it", cfg.scoreboardFile)
 			}
 			t.Logf("Updating %s", scoreboardPath)
 			if err := os.WriteFile(scoreboardPath, rawNew, 0o644); err != nil {

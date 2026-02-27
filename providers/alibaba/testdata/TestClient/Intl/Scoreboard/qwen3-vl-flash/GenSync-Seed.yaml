@@ -1,0 +1,44 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 123
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3-vl-flash","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":false,"seed":42}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"message":{"content":"Hello.","reasoning_content":"","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":16,"completion_tokens":3,"total_tokens":19,"prompt_tokens_details":{"text_tokens":16},"completion_tokens_details":{"text_tokens":3}},"created":1772139682,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-97e7ff26-9d17-94cd-bd16-1c804a7a2894"}'
+        headers:
+            Content-Type:
+                - application/json
+            Req-Arrive-Time:
+                - "1772139682144"
+            Req-Cost-Time:
+                - "322"
+            Resp-Start-Time:
+                - "1772139682466"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers, Accept-Encoding
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "321"
+        status: 200 OK
+        code: 200
+        duration: 573ms

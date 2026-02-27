@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 124
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3-235b-a22b","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":false,"seed":42}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"message":{"content":"Hello.","reasoning_content":"Okay, the user wants me to say hello using only one word. Let me think. The most straightforward greeting is \"Hello!\" but maybe they want something more casual. \"Hi\" is shorter. Wait, the user specified one word. Both \"Hello\" and \"Hi\" are single words. Which one is better? Maybe \"Hello\" is more formal, but the exclamation mark might count as a character. But the instruction is about words, not characters. So \"Hello\" without the exclamation is still one word. Alternatively, \"Hey\" is another option. It''s friendly and concise. Which one is more appropriate? The user didn''t specify the context. Maybe \"Hello\" is safer as it''s universally recognized. Let me check if there are other one-word greetings. \"Hola\" is Spanish, but unless specified, probably not needed. \"Bonjour\" is French. The user likely expects English. So the best answer is \"Hello.\" But wait, the user said \"Use only one word.\" So just \"Hello\" without any punctuation? Or does the punctuation matter? The example response from the assistant was \"Hello!\" with the exclamation. But the user''s instruction says \"use only one word.\" Since punctuation isn''t a word, maybe just the word itself. Hmm, but sometimes greetings include the exclamation. Maybe the user just wants the word. Let me go with \"Hello\" as the single word. Alternatively, if they want it without the exclamation, but the assistant''s response included it. Maybe the user is testing if I can follow the instruction precisely. Let me confirm: \"Say hello. Use only one word.\" So the main instruction is to greet, using one word. The answer should be a single word. \"Hello\" is correct. But in the example, the assistant responded with \"Hello!\" which includes the exclamation. However, the user''s instruction says \"use only one word,\" so maybe the exclamation is acceptable as part of the word? Or should it be just the word without punctuation? Hmm. In written language, the exclamation is punctuation, not part of the word. So the correct response would be \"Hello\" as the single word. But perhaps the user is okay with the exclamation. To be safe, just follow the example. Wait, the user didn''t provide an example. The initial instruction is to say hello with one word.I think the best approach is to respond with \"Hello\" as the single word. Alternatively, \"Hi\" is even shorter. But \"Hello\" is more standard. Let me stick with \"Hello.\"","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":16,"completion_tokens":535,"total_tokens":551,"completion_tokens_details":{"reasoning_tokens":528}},"created":1772142316,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-fdPj2_C_V-J40yYC"}'
+        headers:
+            Content-Type:
+                - application/json
+            Eagleeye-Traceid:
+                - 0bc2425d17721423034955731ee4d7
+            Req-Arrive-Time:
+                - "1772142303496"
+            Req-Cost-Time:
+                - "12393"
+            Resp-Start-Time:
+                - "1772142315889"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Accept-Encoding
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "12393"
+        status: 200 OK
+        code: 200
+        duration: 12.421s

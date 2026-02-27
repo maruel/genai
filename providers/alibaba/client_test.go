@@ -7,6 +7,8 @@ package alibaba_test
 import (
 	"net/http"
 	"os"
+	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/maruel/genai"
@@ -57,116 +59,154 @@ func TestClient(t *testing.T) {
 			t.Error(err)
 		}
 	})
-	cl, err2 := getClientInner(t, func(h http.RoundTripper) http.RoundTripper {
-		return testRecorder.RecordWithName(t, t.Name()+"/Warmup", h)
-	})
-	if err2 != nil {
-		t.Fatal(err2)
-	}
-	cachedModels, err2 := cl.ListModels(t.Context())
-	if err2 != nil {
-		t.Fatal(err2)
-	}
-	getClient := func(t *testing.T, m string) genai.Provider {
-		t.Parallel()
-		opts := []genai.ProviderOption{genai.ProviderOptionPreloadedModels(cachedModels)}
-		if m != "" {
-			opts = append(opts, genai.ProviderOptionModel(m))
-		}
-		ci, err := getClientInner(t, func(h http.RoundTripper) http.RoundTripper {
-			return testRecorder.Record(t, h)
-		}, opts...)
-		if err != nil {
-			t.Fatal(err)
-		}
-		return ci
-	}
 
-	t.Run("Capabilities", func(t *testing.T) {
-		internaltest.TestCapabilities(t, getClient(t, ""))
-	})
+	backends := []struct {
+		name           string
+		opt            alibaba.ProviderOptionBackend
+		envKey         string
+		sbFile         string
+		docModel       string // model for TextOutputDocInput (must support GenSync)
+		errModel       string // model for error tests
+		errBadAPIKeyRE string // error substring for bad API key (differs per region)
+	}{
+		{"US", alibaba.BackendUS, "DASHSCOPE_API_KEY_US", "scoreboard_us.json", string(genai.ModelCheap), "qwen3-30b-a3b", "help.aliyun.com/zh/"},
+		{"Intl", alibaba.BackendIntl, "DASHSCOPE_API_KEY_INTL", "scoreboard_intl.json", string(genai.ModelSOTA), "qwen3.5-35b-a3b", "www.alibabacloud.com/help/en/"},
+	}
+	for _, b := range backends {
+		t.Run(b.name, func(t *testing.T) {
+			// Skip if no recordings and no API key.
+			warmupPath := filepath.Join("testdata", t.Name(), "Warmup.yaml")
+			hasKey := os.Getenv(b.envKey) != "" || os.Getenv("DASHSCOPE_API_KEY") != ""
+			if _, err := os.Stat(warmupPath); err != nil && !hasKey {
+				t.Skipf("no recordings and no API key for %s", b.name)
+			}
 
-	t.Run("Scoreboard", func(t *testing.T) {
-		var models []scoreboard.Model
-		for _, sc := range alibaba.Scoreboard().Scenarios {
-			for _, m := range sc.Models {
-				models = append(models, scoreboard.Model{Model: m, Reason: sc.Reason})
+			cl, err2 := getClientInner(t, func(h http.RoundTripper) http.RoundTripper {
+				return testRecorder.RecordWithName(t, t.Name()+"/Warmup", h)
+			}, b.opt)
+			if err2 != nil {
+				t.Fatal(err2)
 			}
-		}
-		getClientRT := func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
-			opts := []genai.ProviderOption{genai.ProviderOptionPreloadedModels(cachedModels)}
-			if model.Model != "" {
-				opts = append(opts, genai.ProviderOptionModel(model.Model))
+			cachedModels, err2 := cl.ListModels(t.Context())
+			if err2 != nil {
+				t.Fatal(err2)
 			}
-			if os.Getenv("DASHSCOPE_API_KEY") == "" && !hasRegionKey() {
-				opts = append(opts, genai.ProviderOptionAPIKey("<insert_api_key_here>"))
+			getClient := func(t *testing.T, m string) genai.Provider {
+				t.Parallel()
+				opts := []genai.ProviderOption{
+					genai.ProviderOptionPreloadedModels(cachedModels),
+					b.opt,
+				}
+				if m != "" {
+					opts = append(opts, genai.ProviderOptionModel(m))
+				}
+				ci, err := getClientInner(t, func(h http.RoundTripper) http.RoundTripper {
+					return testRecorder.Record(t, h)
+				}, opts...)
+				if err != nil {
+					t.Fatal(err)
+				}
+				return ci
 			}
-			if u := os.Getenv("DASHSCOPE_BASE_URL"); u != "" {
-				opts = append(opts, genai.ProviderOptionRemote(u))
-			} else if !hasRegionKey() {
-				opts = append(opts, alibaba.BackendUS)
-			}
-			if fn != nil {
-				opts = append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(fn)}, opts...)
-			}
-			c, err := alibaba.New(t.Context(), opts...)
-			if err != nil {
-				t.Fatal(err)
-			}
-			return c
-		}
-		smoketest.Run(t, getClientRT, models, testRecorder.Records)
-	})
 
-	t.Run("Preferred", func(t *testing.T) {
-		internaltest.TestPreferredModels(t, func(st *testing.T, model string, modality genai.Modality) (genai.Provider, error) {
-			opts := []genai.ProviderOption{
-				genai.ProviderOptionModalities{modality},
-				genai.ProviderOptionPreloadedModels(cachedModels),
-			}
-			if model != "" {
-				opts = append(opts, genai.ProviderOptionModel(model))
-			}
-			return getClientInner(st, func(h http.RoundTripper) http.RoundTripper {
-				return testRecorder.Record(st, h)
-			}, opts...)
+			t.Run("Capabilities", func(t *testing.T) {
+				internaltest.TestCapabilities(t, getClient(t, ""))
+			})
+
+			t.Run("Scoreboard", func(t *testing.T) {
+				// Build the Reason lookup from the existing scoreboard.
+				reasonModels := map[string]bool{}
+				for _, sc := range alibaba.ScoreboardForBackend(b.opt).Scenarios {
+					for _, m := range sc.Models {
+						reasonModels[m] = sc.Reason
+					}
+				}
+				// Build model list from ListModels so new models are discovered.
+				models := make([]scoreboard.Model, 0, len(cachedModels))
+				for _, m := range cachedModels {
+					id := m.GetID()
+					reason, ok := reasonModels[id]
+					if !ok {
+						reason = strings.Contains(id, "thinking") || strings.Contains(id, "qwq") || strings.HasPrefix(id, "qwen3.5-")
+					}
+					models = append(models, scoreboard.Model{Model: id, Reason: reason})
+				}
+				getClientRT := func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
+					opts := []genai.ProviderOption{
+						genai.ProviderOptionPreloadedModels(cachedModels),
+						b.opt,
+					}
+					if model.Model != "" {
+						opts = append(opts, genai.ProviderOptionModel(model.Model))
+					}
+					if os.Getenv("DASHSCOPE_API_KEY") == "" && !hasRegionKey() {
+						opts = append(opts, genai.ProviderOptionAPIKey("<insert_api_key_here>"))
+					}
+					if fn != nil {
+						opts = append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(fn)}, opts...)
+					}
+					c, err := alibaba.New(t.Context(), opts...)
+					if err != nil {
+						t.Fatal(err)
+					}
+					return c
+				}
+				smoketest.Run(t, getClientRT, models, testRecorder.Records, smoketest.WithScoreboardFile(b.sbFile))
+			})
+
+			t.Run("Preferred", func(t *testing.T) {
+				internaltest.TestPreferredModels(t, func(st *testing.T, model string, modality genai.Modality) (genai.Provider, error) {
+					opts := []genai.ProviderOption{
+						genai.ProviderOptionModalities{modality},
+						genai.ProviderOptionPreloadedModels(cachedModels),
+						b.opt,
+					}
+					if model != "" {
+						opts = append(opts, genai.ProviderOptionModel(model))
+					}
+					return getClientInner(st, func(h http.RoundTripper) http.RoundTripper {
+						return testRecorder.Record(st, h)
+					}, opts...)
+				})
+			})
+
+			t.Run("TextOutputDocInput", func(t *testing.T) {
+				internaltest.TestTextOutputDocInput(t, func(t *testing.T) genai.Provider {
+					return getClient(t, b.docModel)
+				})
+			})
+
+			t.Run("errors", func(t *testing.T) {
+				errBadAPIKey := "http 401\ninvalid_request_error: Incorrect API key provided. For details, see: https://" + b.errBadAPIKeyRE + "model-studio/error-code#apikey-error\nget a new API key at https://modelstudio.console.alibabacloud.com/"
+				data := []internaltest.ProviderError{
+					{
+						Name: "bad apiKey",
+						Opts: []genai.ProviderOption{
+							genai.ProviderOptionAPIKey("bad apiKey"),
+							genai.ProviderOptionModel(b.errModel),
+						},
+						ErrGenSync:   errBadAPIKey,
+						ErrGenStream: errBadAPIKey,
+					},
+					{
+						Name: "bad model",
+						Opts: []genai.ProviderOption{
+							genai.ProviderOptionModel("bad model"),
+						},
+						ErrGenSync:   "http 404\ninvalid_request_error: The model `bad model` does not exist or you do not have access to it.",
+						ErrGenStream: "http 404\ninvalid_request_error: The model `bad model` does not exist or you do not have access to it.",
+					},
+				}
+				f := func(t *testing.T, opts ...genai.ProviderOption) (genai.Provider, error) {
+					opts = append(opts, genai.ProviderOptionModalities{genai.ModalityText}, b.opt)
+					return getClientInner(t, func(h http.RoundTripper) http.RoundTripper {
+						return testRecorder.Record(t, h)
+					}, opts...)
+				}
+				internaltest.TestClientProviderErrors(t, f, data)
+			})
 		})
-	})
-
-	t.Run("TextOutputDocInput", func(t *testing.T) {
-		internaltest.TestTextOutputDocInput(t, func(t *testing.T) genai.Provider {
-			return getClient(t, string(genai.ModelCheap))
-		})
-	})
-
-	t.Run("errors", func(t *testing.T) {
-		data := []internaltest.ProviderError{
-			{
-				Name: "bad apiKey",
-				Opts: []genai.ProviderOption{
-					genai.ProviderOptionAPIKey("bad apiKey"),
-					genai.ProviderOptionModel("qwen3-30b-a3b"),
-				},
-				ErrGenSync:   "http 401\ninvalid_request_error: Incorrect API key provided. For details, see: https://help.aliyun.com/zh/model-studio/error-code#apikey-error\nget a new API key at https://modelstudio.console.alibabacloud.com/",
-				ErrGenStream: "http 401\ninvalid_request_error: Incorrect API key provided. For details, see: https://help.aliyun.com/zh/model-studio/error-code#apikey-error\nget a new API key at https://modelstudio.console.alibabacloud.com/",
-			},
-			{
-				Name: "bad model",
-				Opts: []genai.ProviderOption{
-					genai.ProviderOptionModel("bad model"),
-				},
-				ErrGenSync:   "http 404\ninvalid_request_error: The model `bad model` does not exist or you do not have access to it.",
-				ErrGenStream: "http 404\ninvalid_request_error: The model `bad model` does not exist or you do not have access to it.",
-			},
-		}
-		f := func(t *testing.T, opts ...genai.ProviderOption) (genai.Provider, error) {
-			opts = append(opts, genai.ProviderOptionModalities{genai.ModalityText})
-			return getClientInner(t, func(h http.RoundTripper) http.RoundTripper {
-				return testRecorder.Record(t, h)
-			}, opts...)
-		}
-		internaltest.TestClientProviderErrors(t, f, data)
-	})
+	}
 }
 
 func init() {

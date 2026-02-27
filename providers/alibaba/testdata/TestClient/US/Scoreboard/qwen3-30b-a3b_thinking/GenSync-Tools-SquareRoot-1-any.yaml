@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 538
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3-30b-a3b","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 1000
+        body: '{"choices":[{"message":{"content":"","reasoning_content":"Okay, the user wants me to calculate the square root of 132413 using the square_root tool. Let me check if I have that function. Yes, there''s a function called square_root that takes a number as a parameter. I need to make sure the input is a number. The user provided 132413, which is a valid number. So I should call the square_root function with number=132413. The response should just be the result, no explanation. Alright, I''ll generate the tool call.","role":"assistant","tool_calls":[{"function":{"arguments":"{\"number\": 132413}","name":"square_root"},"id":"call_3863d2ccc7044a60bbf910","index":0,"type":"function"}]},"finish_reason":"tool_calls","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":209,"completion_tokens":145,"total_tokens":354,"completion_tokens_details":{"reasoning_tokens":116}},"created":1772142734,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-c_EZ2SC8L8Mhy7iX"}'
+        headers:
+            Content-Length:
+                - "1000"
+            Content-Type:
+                - application/json
+            Eagleeye-Traceid:
+                - 0bc2425d17721427318456171ee4d7
+            Req-Arrive-Time:
+                - "1772142731846"
+            Req-Cost-Time:
+                - "1810"
+            Resp-Start-Time:
+                - "1772142733657"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "1809"
+        status: 200 OK
+        code: 200
+        duration: 1.841s

@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 264
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3-235b-a22b","messages":[{"role":"user","content":[{"type":"text","text":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"message":{"content":"The capital of Quackiland is **Quack**. \n\nThis is explicitly stated in the provided information: \"The capital of Quackiland is Quack.\" The mention of the Big Canard Statue serves as additional context but is not required to answer the question.","reasoning_content":"Okay, let''s see. The question is asking for the capital of Quackiland. The user provided a paragraph that says, \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\" Then they ask the same question again: What is the capital of Quackiland?\n\nHmm, so I need to figure this out. Let''s break it down. The first sentence in the paragraph states that the capital is Quack. The second sentence gives additional information about the Big Canard Statue being in Quack. But the key information here is the first sentence. The question is straightforward, just asking for the capital city of Quackiland.\n\nWait, maybe there''s a play on words here. The country is called Quackiland, and its capital is Quack. That seems pretty direct. The second sentence might be a distractor, but I don''t think so. The Big Canard Statue being in Quack probably just adds context but isn''t necessary for answering the question. \n\nSo, the answer should be Quack. The user is testing if I can extract the direct answer from the given text. Let me make sure there''s no trick. Sometimes questions like this might have a pun or a hidden meaning, but in this case, it seems straightforward. The capital is explicitly stated as Quack. \n\nAnother thing to consider: sometimes people might misread the question. For example, if someone reads \"Quackiland\" and \"Quack\" and isn''t careful, they might think there''s a trick. But according to the given information, the answer is right there. No need to overcomplicate it. \n\nI don''t see any other possible answers. The paragraph doesn''t mention any other cities. The second sentence reinforces that Quack is a significant city since it has a statue, but the key fact is the first sentence. \n\nSo, the answer is Quack. That''s the logical conclusion based on the provided information.","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":43,"completion_tokens":460,"total_tokens":503,"completion_tokens_details":{"reasoning_tokens":401}},"created":1772142446,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-j0BckXVQ7CpBy4sk"}'
+        headers:
+            Content-Type:
+                - application/json
+            Eagleeye-Traceid:
+                - 0bc2425d17721424352755829ee4d7
+            Req-Arrive-Time:
+                - "1772142435277"
+            Req-Cost-Time:
+                - "10348"
+            Resp-Start-Time:
+                - "1772142445625"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Accept-Encoding
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "10347"
+        status: 200 OK
+        code: 200
+        duration: 10.376s

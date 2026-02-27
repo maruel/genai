@@ -1,0 +1,44 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 156
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.5-35b-a3b","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"stream":false,"stop":["is"]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"message":{"content":"Canada ","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Topic: Canada.\n    *   Requirement: Talk about it in great detail.\n    *   Starting Phrase: \"Canada is\" (must start with this exact phrase).\n\n2.  **Determine the Scope and Structure:**\n    *   To provide \"great details,\" I need to cover multiple aspects of Canada.\n    *   Key areas to cover:\n        *   Geography & Climate (size, regions, nature).\n        *   History (Indigenous peoples, colonization, Confederation, modern era).\n        *   Demographics & Culture (population, diversity, languages, multiculturalism).\n        *   Economy (resources, industries, trade).\n        *   Politics & Government (Parliamentary system, provinces/territories).\n        *   Culture & Lifestyle (arts, sports, holidays, cuisine).\n        *   International Relations (role in the world).\n    *   Structure should be logical and flowing, not just a list. Use headings or clear paragraph breaks for readability.\n\n3.  **Drafting - Section by Section:**\n\n    *   **Introduction:** Start with \"Canada is\". Define its location, size ranking, and general vibe (diverse, vast).\n    *   **Geography & Nature:** Mention it''s the second-largest country. Coastlines (Pacific, Atlantic, Arctic). Major features (Rockies, Great Lakes, Northern Territories). Climate zones (Arctic, Temperate, etc.).\n    *   **History:** Indigenous roots (First Nations, Inuit, Métis). European exploration (Viking, Cartier, Cook). Colonial periods (New France, British North America). Confederation (1867). Milestones (World Wars, patriation of constitution).\n    *   **Government & Politics:** Federal parliamentary democracy and constitutional monarchy (King Charles III). Governor General. Prime Minister. Provinces and Territories (distinguish them).\n    *   **Demographics & Society:** Population stats (approx. 40 million). Diversity (immigration driven). Official languages (English, French). Multiculturalism policy (1971). Major cities (Toronto, Vancouver, Montreal).\n    *   **Economy:** G7 member. Resource-based (oil, minerals, forestry). Trade (US relationship is huge). Innovation sector.\n    *   **Culture & Way of Life:** Healthcare (universal), education. Sports (hockey is key, but also lacrosse, soccer). Arts (music, film, literature). Cuisine (poutine, maple syrup, regional variations).\n    *   **Challenges & Future:** Climate change impact on north, housing affordability, reconciliation with Indigenous peoples.\n\n4.  **Refining and Polishing:**\n    *   Ensure the tone is informative, engaging, and respectful.\n    *   Check facts (e.g., population ~40M, 1867 confederation, bilingualism).\n    *   Make sure the starting phrase is exact.\n    *   Maintain high level of detail without becoming overwhelming. Use subheadings for clarity.\n\n5.  **Self-Correction/Review during drafting:**\n    *   *Check:* Did I start with \"Canada is\"? Yes.\n    *   *Check:* Is it detailed enough? I need to expand on specific regions (like Quebec''s distinct culture) and economic sectors to ensure depth.\n    *   *Check:* Is the flow logical? Geography -> History -> Politics -> People -> Economy -> Culture seems like a good progression.\n\n6.  **Final Output Generation:** (Proceeding to generate the response based on the above plan).\n    *   *Note:* Keep sentences varied. Use strong descriptive language. Ensure the distinction between English-speaking and French-speaking parts is nuanced. Highlight the Indigenous history prominently as it''s crucial.\n\n7.  **Final Polish:** Check for any accidental biases or outdated info (e.g., acknowledging the Truth and Reconciliation Commission). Ensure the population figure is current (approaching 42 million).\n\n*(Self-Correction on Population)*: As of late 2023/early 2024, Canada''s population crossed the 42 million mark. I should use approximate current figures.\n\n*(Self-Correction on Starting Phrase)*: Must be \"Canada is\". No space before it.\n\nLet''s write.cw","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":22,"completion_tokens":928,"total_tokens":950,"completion_tokens_details":{"reasoning_tokens":921,"text_tokens":928},"prompt_tokens_details":{"text_tokens":22}},"created":1772145406,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-176724db-184c-91de-9d60-f4cbb7aa09af"}'
+        headers:
+            Content-Type:
+                - application/json
+            Req-Arrive-Time:
+                - "1772145399867"
+            Req-Cost-Time:
+                - "6537"
+            Resp-Start-Time:
+                - "1772145406405"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers, Accept-Encoding
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "6537"
+        status: 200 OK
+        code: 200
+        duration: 6.791s

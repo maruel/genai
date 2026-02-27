@@ -1,0 +1,44 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 245
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.5-122b-a10b","messages":[{"role":"user","content":"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation."}],"stream":false,"enable_search":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"message":{"content":"Justin Trudeau","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Task: Identify the current Prime Minister of Canada.\n    *   Constraint 1: Search the web.\n    *   Constraint 2: Only search for one result (this likely means perform a single search query, not multiple rounds).\n    *   Constraint 3: Give only the name with no explanation.\n\n2.  **Determine the Current Prime Minister (Internal Knowledge):**\n    *   As of my last update (and general knowledge up to early 2024), Justin Trudeau is the Prime Minister of Canada. He has been in office since 2015.\n    *   I need to verify if there have been any recent changes (e.g., elections, resignations) that might alter this status *right now*.\n\n3.  **Execute Search Strategy:**\n    *   Query: \"Prime Minister of Canada 2024\" or \"current Prime Minister of Canada\".\n    *   Since I am an AI, I don''t actually browse the live web in real-time unless I have a specific tool enabled. However, based on my training data and typical cutoffs, Justin Trudeau is the correct answer. But the prompt explicitly asks me to \"Search the web\".\n    *   *Self-Correction/Tool Check:* I do not have active internet browsing capabilities in this specific environment unless triggered. However, standard procedure for \"Search the web\" requests when tools aren''t explicitly shown as available is often to rely on internal knowledge if the information is static enough, or use the available search tool if it exists.\n    *   *Wait, looking at the system instructions:* I am a text-based model. I need to check if I have access to a search tool. Usually, in this interface, I don''t have a live search button unless specifically provided by the platform wrapper.\n    *   *Assumption:* If I cannot actually search, I must use my internal knowledge which is highly reliable for this fact. Justin Trudeau is the Prime Minister.\n    *   *Refinement:* The instruction says \"Search the web\". If I can''t actually search, I should state the known fact. But typically, these prompts expect the model to act as if it searched or use its knowledge base if tools aren''t visible. Given the constraint \"Only search for one result\", it implies a search action. Since I cannot execute external HTTP requests directly in this sandbox without a tool, I will rely on my internal knowledge which is effectively a \"search\" of my parameters.\n    *   *Actually, most LLM interfaces with this prompt expectation have a search tool.* Let''s assume I need to provide the answer based on the most current info.\n    *   *Fact Check:* Justin Trudeau became PM on November 4, 2015. There have been federal elections in 2019 and 2021, both resulting in his government (Liberal) remaining. No election has occurred since then to date (early 2024/late 2023 knowledge).\n    *   *Constraint Checklist & Confidence Score:*\n        1. Search web? (Simulated/Internal knowledge used as proxy due to tool limitations, but answer is factual).\n        2. One result? (Yes).\n        3. Only name? (Yes).\n        4. No explanation? (Yes).\n\n    *   *Decision:* The answer is Justin Trudeau.\n\n4.  **Final Output Formulation:**\n    *   Name: Justin Trudeau.\n    *   Format: Plain text, just the name.\n\n5.  **Final Verification:** Does the user want a URL? No, \"Give only the name\". Does the user want \"Justin Trudeau\"? Yes.\n\n    *Wait, one more check:* Is there any breaking news about him resigning in late 2023/early 2024? No major credible reports indicate he is no longer PM as of my current knowledge cutoff.\n\n    *Action:* Output the name.\n\n    *Wait, regarding the \"Search the web\" instruction:* Since I am an AI model without a visible search bar integration in this specific thought-block context, I will answer based on the most accurate information available to me. The instruction \"Search the web\" is a directive for me to find the truth. My internal database confirms Justin Trudeau. I will output the name.\n\n    *Strict Adherence:* \"Give only the name with no explanation.\"\n\n    Result: Justin Trudeau","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":38,"completion_tokens":956,"total_tokens":994,"completion_tokens_details":{"reasoning_tokens":949,"text_tokens":956},"prompt_tokens_details":{"text_tokens":38}},"created":1772145363,"system_fingerprint":null,"model":"qwen3.5-122b-a10b","id":"chatcmpl-3c3aed1c-54d2-9bd6-918b-633ff76a0e1e"}'
+        headers:
+            Content-Type:
+                - application/json
+            Req-Arrive-Time:
+                - "1772145355840"
+            Req-Cost-Time:
+                - "7424"
+            Resp-Start-Time:
+                - "1772145363265"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers, Accept-Encoding
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "7423"
+        status: 200 OK
+        code: 200
+        duration: 7.677s

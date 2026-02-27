@@ -1,0 +1,71 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 823
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.5-35b-a3b","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"id":"call_883100800311441ab5c835d3","type":"function","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_883100800311441ab5c835d3"}],"stream":true,"stream_options":{"include_usage":true},"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"The","role":"assistant"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772145413,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-ca04a0a1-50c7-9143-bd12-e61dcc3e886a"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" user asked"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772145413,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-ca04a0a1-50c7-9143-bd12-e61dcc3e886a"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" for only"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772145413,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-ca04a0a1-50c7-9143-bd12-e61dcc3e886a"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" the result of the"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772145413,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-ca04a0a1-50c7-9143-bd12-e61dcc3e886a"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" square root calculation without"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772145413,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-ca04a0a1-50c7-9143-bd12-e61dcc3e886a"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" explanation.\n\nI"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772145413,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-ca04a0a1-50c7-9143-bd12-e61dcc3e886a"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" will provide just the"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772145413,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-ca04a0a1-50c7-9143-bd12-e61dcc3e886a"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" numerical"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772145413,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-ca04a0a1-50c7-9143-bd12-e61dcc3e886a"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" answer."},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772145413,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-ca04a0a1-50c7-9143-bd12-e61dcc3e886a"}
+
+            data: {"choices":[{"delta":{"content":"363.","reasoning_content":null},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772145413,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-ca04a0a1-50c7-9143-bd12-e61dcc3e886a"}
+
+            data: {"choices":[{"delta":{"content":"89","reasoning_content":null},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772145413,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-ca04a0a1-50c7-9143-bd12-e61dcc3e886a"}
+
+            data: {"choices":[{"finish_reason":"stop","delta":{"content":"","reasoning_content":null},"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772145413,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-ca04a0a1-50c7-9143-bd12-e61dcc3e886a"}
+
+            data: {"choices":[],"object":"chat.completion.chunk","usage":{"prompt_tokens":96,"completion_tokens":35,"total_tokens":131,"completion_tokens_details":{"reasoning_tokens":24,"text_tokens":35},"prompt_tokens_details":{"text_tokens":96}},"created":1772145413,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-ca04a0a1-50c7-9143-bd12-e61dcc3e886a"}
+
+            data: [DONE]
+
+        headers:
+            Content-Type:
+                - text/event-stream;charset=UTF-8
+            Req-Arrive-Time:
+                - "1772145412473"
+            Req-Cost-Time:
+                - "232"
+            Resp-Start-Time:
+                - "1772145412706"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "231"
+        status: 200 OK
+        code: 200
+        duration: 485ms

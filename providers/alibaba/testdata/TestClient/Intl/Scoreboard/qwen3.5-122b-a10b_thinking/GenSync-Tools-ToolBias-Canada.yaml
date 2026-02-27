@@ -1,0 +1,44 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 552
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.5-122b-a10b","messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"message":{"content":"","reasoning_content":"The user is asking me to compare Canada and the USA to determine which country is better, and they want me to use the best_country tool to find out. The tool requires a \"country\" parameter that can be either \"Canada\" or \"USA\".\n\nHowever, this tool seems designed to specify/select the best country rather than compare them. The user is asking me to determine which one is better between Canada and USA, but the tool only accepts one country as input. \n\nLooking at the tool description: \"A tool to specify the best country\" - this suggests it''s meant to set or specify which country should be considered the best, not to compare countries.\n\nSince the user wants me to determine which country is better between Canada and USA, I think they want me to call this tool with one of these countries. But the tool doesn''t seem designed to make comparisons - it just sets/specifies a country as \"best\".\n\nI should probably call the tool with one of the options. Since the user started by asking about Canada vs USA, I could choose either one. Let me pick Canada since it was mentioned first in their question.","role":"assistant","tool_calls":[{"function":{"arguments":"{\"country\": \"Canada\"}","name":"best_country"},"id":"call_71ec682de82b42b8b7af3fdd","index":0,"type":"function"}]},"finish_reason":"tool_calls","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":333,"completion_tokens":262,"total_tokens":595,"completion_tokens_details":{"reasoning_tokens":231,"text_tokens":262},"prompt_tokens_details":{"text_tokens":333}},"created":1772145354,"system_fingerprint":null,"model":"qwen3.5-122b-a10b","id":"chatcmpl-1f1ddae9-61dc-9a6d-b4a8-a785e3eafa0d"}'
+        headers:
+            Content-Type:
+                - application/json
+            Req-Arrive-Time:
+                - "1772145351910"
+            Req-Cost-Time:
+                - "1790"
+            Resp-Start-Time:
+                - "1772145353701"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers, Accept-Encoding
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "1789"
+        status: 200 OK
+        code: 200
+        duration: 2.043s

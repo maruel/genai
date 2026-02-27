@@ -1,0 +1,44 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 784
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.5-35b-a3b","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"id":"call_21334ee1dd7448e29b8a84cb","type":"function","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_21334ee1dd7448e29b8a84cb"}],"stream":false,"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"message":{"content":"363.89","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:** The user wants me to use the `square_root` tool to calculate the square root of 132413 and reply with *only* the result. No explanation is allowed.\n\n2.  **Execute Tool:** I need to invoke the `square_root` function with the input number 132413.\n    *   Input: 132413\n    *   Expected Output: A numerical value representing √132413.\n\n3.  **Review Tool Output:** The tool returned `363.89`.\n\n4.  **Format Output:** The constraint is \"reply with only the result\" and \"Do not give an explanation.\"\n\n5.  **Final Check:** Does the output match the constraint? Yes, just the number.\n\n6.  **Construct Response:** 363.89\n\nWait, let me double-check the precision. Usually, square roots have more decimal places. Let''s see if the tool truncated it or if that''s its standard output format. The tool response shows `363.89`. I should output exactly what the tool gave, as per the instruction to use the tool and reply with the result. However, mathematically √132413 is approximately 363.886... So 363.89 is a rounded version. I must follow the tool''s output as the \"result\".\n\nActually, looking at the tool invocation in my thought block, I see the JSON response from the tool simulation was `363.89`. I will output that string.\n\nRefining the output: Just the number.\n\nResult: 363.89","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":96,"completion_tokens":385,"total_tokens":481,"completion_tokens_details":{"reasoning_tokens":374,"text_tokens":385},"prompt_tokens_details":{"text_tokens":96}},"created":1772145414,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-dc4349fd-d545-94bb-b17f-3080d817fc0e"}'
+        headers:
+            Content-Type:
+                - application/json
+            Req-Arrive-Time:
+                - "1772145410134"
+            Req-Cost-Time:
+                - "3795"
+            Resp-Start-Time:
+                - "1772145413930"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers, Accept-Encoding
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "3794"
+        status: 200 OK
+        code: 200
+        duration: 4.05s

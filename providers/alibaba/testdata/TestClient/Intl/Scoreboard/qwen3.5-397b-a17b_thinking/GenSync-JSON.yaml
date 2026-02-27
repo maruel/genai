@@ -1,0 +1,44 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 254
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.5-397b-a17b","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"stream":false,"response_format":{"type":"json_object"}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"message":{"content":"{\"is_fruit\": true}","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Question: \"Is a banana a fruit?\"\n    *   Constraint 1: \"Do not include an explanation.\"\n    *   Constraint 2: \"Reply ONLY as JSON according to the provided schema.\"\n    *   Schema: `{\"is_fruit\": bool}`\n\n2.  **Determine the Answer:**\n    *   Biologically and culinarily, a banana is classified as a fruit.\n    *   Value for `is_fruit`: `true`.\n\n3.  **Format the Output:**\n    *   Must be valid JSON.\n    *   Must match the schema `{\"is_fruit\": bool}`.\n    *   No extra text, no markdown code blocks (unless implied by \"JSON\", but usually \"ONLY as JSON\" means raw JSON string), no explanations.\n\n4.  **Draft the Response:**\n    *   `{\"is_fruit\": true}`\n\n5.  **Review against Constraints:**\n    *   Is it JSON? Yes.\n    *   Does it match the schema? Yes.\n    *   Is there an explanation? No.\n    *   Is there any extra text? No.\n\n6.  **Final Output Generation:**\n    *   `{\"is_fruit\": true}`","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":41,"completion_tokens":292,"total_tokens":333,"completion_tokens_details":{"reasoning_tokens":281,"text_tokens":292},"prompt_tokens_details":{"text_tokens":41}},"created":1772145486,"system_fingerprint":null,"model":"qwen3.5-397b-a17b","id":"chatcmpl-75980c7d-2e7b-9126-b35b-a3c3dc5cb1ba"}'
+        headers:
+            Content-Type:
+                - application/json
+            Req-Arrive-Time:
+                - "1772145482314"
+            Req-Cost-Time:
+                - "3485"
+            Resp-Start-Time:
+                - "1772145485799"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers, Accept-Encoding
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "3485"
+        status: 200 OK
+        code: 200
+        duration: 3.739s

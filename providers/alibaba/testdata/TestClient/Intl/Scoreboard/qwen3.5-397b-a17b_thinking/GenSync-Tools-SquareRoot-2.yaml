@@ -1,0 +1,44 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 786
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.5-397b-a17b","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"id":"call_cf170e6157a34bfc8eae85c1","type":"function","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_cf170e6157a34bfc8eae85c1"}],"stream":false,"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"message":{"content":"363.89","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Task: Calculate the square root of 132413.\n    *   Tool: Use the `square_root` tool (already done in the previous turn).\n    *   Constraint: Reply with *only* the result. No explanation.\n\n2.  **Review the Tool Output:**\n    *   The tool returned `363.89`.\n\n3.  **Format the Output:**\n    *   The user explicitly requested \"only the result\".\n    *   I need to output just the number provided by the tool.\n\n4.  **Final Check:**\n    *   Does \"363.89\" meet the criteria? Yes.\n    *   Should I add more precision? The tool provided 363.89. I should stick to the tool''s output unless instructed otherwise, but usually, tools provide sufficient precision. The prompt asks to use the tool and reply with the result. The result given is 363.89.\n    *   Wait, looking at the tool response format in the simulation: `363.89`.\n    *   I will output exactly that.\n\n5.  **Construct Final Response:**\n    *   363.89","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":96,"completion_tokens":291,"total_tokens":387,"completion_tokens_details":{"reasoning_tokens":280,"text_tokens":291},"prompt_tokens_details":{"text_tokens":96}},"created":1772145492,"system_fingerprint":null,"model":"qwen3.5-397b-a17b","id":"chatcmpl-62be1852-c631-9e0d-8bb8-bc88bb078619"}'
+        headers:
+            Content-Type:
+                - application/json
+            Req-Arrive-Time:
+                - "1772145488103"
+            Req-Cost-Time:
+                - "3821"
+            Resp-Start-Time:
+                - "1772145491925"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers, Accept-Encoding
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "3821"
+        status: 200 OK
+        code: 200
+        duration: 4.075s

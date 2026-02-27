@@ -35,16 +35,27 @@ import (
 	"github.com/maruel/roundtrippers"
 )
 
-//go:embed scoreboard.json
-var scoreboardJSON []byte
+//go:embed scoreboard_us.json
+var scoreboardUSJSON []byte
 
-// Scoreboard for Alibaba Cloud.
-func Scoreboard() scoreboard.Score {
+//go:embed scoreboard_intl.json
+var scoreboardIntlJSON []byte
+
+// ScoreboardForBackend returns the scoreboard for a specific backend.
+//
+// CN falls back to Intl since the model catalog is shared.
+func ScoreboardForBackend(b ProviderOptionBackend) scoreboard.Score {
+	raw := scoreboardUSJSON
+	name := "scoreboard_us.json"
+	if b == BackendIntl || b == BackendCN {
+		raw = scoreboardIntlJSON
+		name = "scoreboard_intl.json"
+	}
 	var s scoreboard.Score
-	d := json.NewDecoder(bytes.NewReader(scoreboardJSON))
+	d := json.NewDecoder(bytes.NewReader(raw))
 	d.DisallowUnknownFields()
 	if err := d.Decode(&s); err != nil {
-		panic(fmt.Errorf("failed to unmarshal scoreboard.json: %w", err))
+		panic(fmt.Errorf("failed to unmarshal %s: %w", name, err))
 	}
 	return s
 }
@@ -602,6 +613,7 @@ type Client struct {
 	base.NotImplemented
 	impl    base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 	baseURL string
+	backend ProviderOptionBackend
 }
 
 // ProviderOptionBackend selects a DashScope regional endpoint.
@@ -714,6 +726,7 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	}
 	c := &Client{
 		baseURL: remote,
+		backend: backend,
 		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			GenSyncURL:      remote + "/chat/completions",
 			ProcessStream:   ProcessStream,
@@ -733,14 +746,8 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	if err == nil {
 		switch model {
 		case "":
-		case string(genai.ModelCheap):
-			c.impl.Model = "qwen3-30b-a3b"
-			c.impl.OutputModalities = mod
-		case string(genai.ModelGood):
-			c.impl.Model = "qwen3-235b-a22b"
-			c.impl.OutputModalities = mod
-		case string(genai.ModelSOTA):
-			c.impl.Model = "qwen3-max"
+		case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
+			c.impl.Model = selectModel(backend, model)
 			c.impl.OutputModalities = mod
 		default:
 			c.impl.Model = model
@@ -755,6 +762,29 @@ func (c *Client) Name() string {
 	return "alibaba"
 }
 
+// selectModel returns the concrete model ID for a tier (cheap/good/sota) based on backend.
+func selectModel(backend ProviderOptionBackend, tier string) string {
+	if backend == BackendIntl {
+		switch tier {
+		case string(genai.ModelCheap):
+			return "qwen3.5-35b-a3b"
+		case string(genai.ModelGood):
+			return "qwen3.5-122b-a10b"
+		case string(genai.ModelSOTA):
+			return "qwen3.5-397b-a17b"
+		}
+	}
+	switch tier {
+	case string(genai.ModelCheap):
+		return "qwen3-30b-a3b"
+	case string(genai.ModelGood):
+		return "qwen3-235b-a22b"
+	case string(genai.ModelSOTA):
+		return "qwen3-max"
+	}
+	return ""
+}
+
 // ModelID implements genai.Provider.
 func (c *Client) ModelID() string {
 	return c.impl.Model
@@ -767,7 +797,7 @@ func (c *Client) OutputModalities() genai.Modalities {
 
 // Scoreboard implements genai.Provider.
 func (c *Client) Scoreboard() scoreboard.Score {
-	return Scoreboard()
+	return ScoreboardForBackend(c.backend)
 }
 
 // HTTPClient returns the HTTP client.
@@ -813,7 +843,10 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 	u := genai.Usage{}
 
 	return func(yield func(genai.Reply) bool) {
-			pendingToolCall := ToolCall{}
+			// pending tracks in-flight tool calls by their stream Index.
+			pending := map[int64]*ToolCall{}
+			// pendingOrder preserves insertion order so we flush deterministically.
+			pendingOrder := []int64{}
 			for pkt := range chunks {
 				if len(pkt.Choices) != 1 {
 					continue
@@ -823,10 +856,6 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 					u.InputCachedTokens = pkt.Usage.PromptTokensDetails.CachedTokens
 					u.OutputTokens = pkt.Usage.CompletionTokens
 					u.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
-				}
-				if len(pkt.Choices[0].Delta.ToolCalls) > 1 {
-					finalErr = &internal.BadError{Err: fmt.Errorf("implement multiple tool calls: %#v", pkt)}
-					return
 				}
 				switch role := pkt.Choices[0].Delta.Role; role {
 				case "assistant", "":
@@ -847,33 +876,42 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 						return
 					}
 				}
-				// Buffer tool call arguments to send as a whole.
-				if len(pkt.Choices[0].Delta.ToolCalls) == 1 {
-					if t := pkt.Choices[0].Delta.ToolCalls[0]; t.ID != "" {
-						if pendingToolCall.ID == "" {
-							pendingToolCall = t
-							if !f.IsZero() {
-								finalErr = &internal.BadError{Err: fmt.Errorf("implement tool call with metadata: %#v", pkt)}
-								return
-							}
-							continue
-						}
-						// Flush previous.
-						pendingToolCall.To(&f.ToolCall)
-						pendingToolCall = t
-					} else if pendingToolCall.ID != "" {
-						pendingToolCall.Function.Arguments += t.Function.Arguments
-						if !f.IsZero() {
-							finalErr = &internal.BadError{Err: fmt.Errorf("implement tool call with metadata: %#v", pkt)}
+				// Buffer tool call arguments per Index and flush completed calls.
+				for _, tc := range pkt.Choices[0].Delta.ToolCalls {
+					if tc.ID != "" {
+						// New tool call starting.
+						pending[tc.Index] = &tc
+						pendingOrder = append(pendingOrder, tc.Index)
+					} else if p := pending[tc.Index]; p != nil {
+						// Continuation of an existing tool call.
+						p.Function.Arguments += tc.Function.Arguments
+					}
+				}
+				if len(pkt.Choices[0].Delta.ToolCalls) == 0 && len(pending) > 0 {
+					// No more tool call deltas; flush all pending in order.
+					for _, idx := range pendingOrder {
+						p := pending[idx]
+						r := genai.Reply{}
+						p.To(&r.ToolCall)
+						if !yield(r) {
 							return
 						}
-						continue
 					}
-				} else if pendingToolCall.ID != "" {
-					pendingToolCall.To(&f.ToolCall)
-					pendingToolCall = ToolCall{}
+					pending = map[int64]*ToolCall{}
+					pendingOrder = nil
 				}
-				if !yield(f) {
+				if !f.IsZero() {
+					if !yield(f) {
+						return
+					}
+				}
+			}
+			// Flush any remaining pending tool calls at end of stream.
+			for _, idx := range pendingOrder {
+				p := pending[idx]
+				r := genai.Reply{}
+				p.To(&r.ToolCall)
+				if !yield(r) {
 					return
 				}
 			}

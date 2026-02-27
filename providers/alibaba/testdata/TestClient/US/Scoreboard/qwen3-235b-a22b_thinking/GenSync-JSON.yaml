@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 252
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3-235b-a22b","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"stream":false,"response_format":{"type":"json_object"}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"message":{"content":"\"{\"","reasoning_content":"Okay, the user is asking if a banana is a fruit. Let me think. According to botanical definitions, a fruit is the mature ovary of a flowering plant, usually containing seeds. Bananas come from the banana plant, which is a flowering plant. The banana itself develops from the ovary of the banana flower and contains small seeds, though cultivated bananas are often seedless due to selective breeding. So even though they might not have visible seeds, they are still classified as fruits. There''s also the culinary perspective where fruits are sweet and used in desserts, which bananas fit. But the question probably expects the botanical answer. So I should confirm that a banana is indeed a fruit. Now, the response needs to be JSON with \"is_fruit\" as a boolean. No explanation, just the answer. So the answer is true.","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":39,"completion_tokens":174,"total_tokens":213,"completion_tokens_details":{"reasoning_tokens":168}},"created":1772142360,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-4oLmESpIwFrbBM4R"}'
+        headers:
+            Content-Type:
+                - application/json
+            Eagleeye-Traceid:
+                - 0bc2425d17721423547445801ee4d7
+            Req-Arrive-Time:
+                - "1772142354745"
+            Req-Cost-Time:
+                - "4833"
+            Resp-Start-Time:
+                - "1772142359579"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Accept-Encoding
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "4833"
+        status: 200 OK
+        code: 200
+        duration: 4.861s

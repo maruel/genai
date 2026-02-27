@@ -1,0 +1,44 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 116
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.5-397b-a17b","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"message":{"content":"Hello","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Task: Say hello.\n    *   Constraint: Use only one word.\n\n2.  **Identify Potential Responses:**\n    *   \"Hello\"\n    *   \"Hi\"\n    *   \"Greetings\"\n    *   \"Hey\"\n\n3.  **Select the Best Response:**\n    *   \"Hello\" is the most direct and standard response to \"Say hello\".\n    *   It fits the one-word constraint.\n\n4.  **Verify Constraints:**\n    *   Is it one word? Yes.\n    *   Does it say hello? Yes.\n\n5.  **Final Output Generation:**\n    *   Hello\n\n6.  **Final Check:** Ensure no punctuation or extra spaces violate the \"one word\" spirit (though punctuation usually doesn''t count as words, keeping it clean is better). \"Hello\" is perfect.\n\n7.  **Output:** Hello","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":18,"completion_tokens":212,"total_tokens":230,"completion_tokens_details":{"reasoning_tokens":206,"text_tokens":212},"prompt_tokens_details":{"text_tokens":18}},"created":1772145450,"system_fingerprint":null,"model":"qwen3.5-397b-a17b","id":"chatcmpl-6b78a9ce-144d-9cd7-a243-315e366a16ee"}'
+        headers:
+            Content-Type:
+                - application/json
+            Req-Arrive-Time:
+                - "1772145446673"
+            Req-Cost-Time:
+                - "2847"
+            Resp-Start-Time:
+                - "1772145449521"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers, Accept-Encoding
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "2847"
+        status: 200 OK
+        code: 200
+        duration: 3.105s

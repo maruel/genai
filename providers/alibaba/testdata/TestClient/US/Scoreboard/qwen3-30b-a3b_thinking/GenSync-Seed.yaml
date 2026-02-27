@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 122
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3-30b-a3b","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":false,"seed":42}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 950
+        body: '{"choices":[{"message":{"content":"Hello.","reasoning_content":"Okay, the user said \"Say hello. Use only one word.\" So I need to respond with just one word. Let me think... The most common way to say hello is \"Hello\" itself. But maybe they want something more friendly or different. Like \"Hi\" or \"Hey\". But since they specified one word, \"Hello\" is straightforward. I should check if there''s any other possible answer. Maybe \"Greetings\"? But that''s a bit formal. The user might prefer a simple \"Hello\". Let me confirm, the instruction is to use only one word, so \"Hello\" fits perfectly. I''ll go with that.","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":16,"completion_tokens":135,"total_tokens":151,"completion_tokens_details":{"reasoning_tokens":128}},"created":1772142582,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-nh3KPAYBDWpb-vf6"}'
+        headers:
+            Content-Length:
+                - "950"
+            Content-Type:
+                - application/json
+            Eagleeye-Traceid:
+                - 0bc2425d17721425795606013ee4d7
+            Req-Arrive-Time:
+                - "1772142579560"
+            Req-Cost-Time:
+                - "1956"
+            Resp-Start-Time:
+                - "1772142581517"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "1956"
+        status: 200 OK
+        code: 200
+        duration: 1.985s

@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 243
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3-235b-a22b","messages":[{"role":"user","content":"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation."}],"stream":false,"enable_search":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"message":{"content":"Justin Trudeau","reasoning_content":"Okay, the user wants to know the current Prime Minister of Canada and asked to search the web for one result, then provide just the name without any explanation. Let me start by recalling that Canada''s head of government is the Prime Minister. I know that the previous PM was Stephen Harper, but he left office a few years ago. The current one, if I''m not mistaken, is Justin Trudeau. But wait, I should confirm this because political positions can change. Let me think—Trudeau became PM in 2015, right? And he was re-elected in 2019 and 2021. So as of now, in 2023, he''s still serving. However, to be thorough, maybe there was a recent change I''m not aware of. Since the user wants a web search, even though I think I know the answer, I should simulate checking a reliable source. If I were to search, say, a reputable news website or the official Canadian government site, they should list Justin Trudeau as the current PM. I should make sure there''s no recent news about a new election or a change in leadership. As of my last update, no such event has occurred. Therefore, the answer should be Justin Trudeau. Just to be safe, I''ll note that the user might be testing if I follow instructions to only provide the name, so I need to avoid any extra text. Just the name, no explanation.","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":36,"completion_tokens":304,"total_tokens":340,"completion_tokens_details":{"reasoning_tokens":297}},"created":1772142430,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-LRb8bt9yAULeqNqp"}'
+        headers:
+            Content-Type:
+                - application/json
+            Eagleeye-Traceid:
+                - 0bc2425d17721424232895824ee4d7
+            Req-Arrive-Time:
+                - "1772142423290"
+            Req-Cost-Time:
+                - "7047"
+            Resp-Start-Time:
+                - "1772142430338"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Accept-Encoding
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "7047"
+        status: 200 OK
+        code: 200
+        duration: 7.075s

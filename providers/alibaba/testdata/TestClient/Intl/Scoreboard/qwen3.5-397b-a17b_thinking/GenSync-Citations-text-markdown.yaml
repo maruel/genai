@@ -1,0 +1,44 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 266
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.5-397b-a17b","messages":[{"role":"user","content":[{"type":"text","text":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"message":{"content":"The capital of Quackiland is **Quack**.","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:** The user is providing a short text about a fictional place called \"Quackiland\" and asking a specific question based on that text: \"What is the capital of Quackiland?\"\n\n2.  **Scan the Text:** I need to look for the answer within the provided text.\n    *   Sentence 1: \"The capital of Quackiland is Quack.\"\n    *   Sentence 2: \"The Big Canard Statue is located in Quack.\"\n\n3.  **Identify the Answer:** The first sentence explicitly states \"The capital of Quackiland is Quack.\"\n\n4.  **Formulate the Output:** The answer is \"Quack\". I should state this clearly.\n\n5.  **Review for Constraints:** There are no special constraints (like \"answer in one word\" or \"don''t repeat the question\"). A direct answer is best.\n\n6.  **Final Decision:** The capital is Quack.cw","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":44,"completion_tokens":226,"total_tokens":270,"completion_tokens_details":{"reasoning_tokens":210,"text_tokens":226},"prompt_tokens_details":{"text_tokens":44}},"created":1772145523,"system_fingerprint":null,"model":"qwen3.5-397b-a17b","id":"chatcmpl-bf660971-3cdf-9010-b6d5-7429fe9c50ba"}'
+        headers:
+            Content-Type:
+                - application/json
+            Req-Arrive-Time:
+                - "1772145520213"
+            Req-Cost-Time:
+                - "2374"
+            Resp-Start-Time:
+                - "1772145522588"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers, Accept-Encoding
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "2374"
+        status: 200 OK
+        code: 200
+        duration: 2.628s

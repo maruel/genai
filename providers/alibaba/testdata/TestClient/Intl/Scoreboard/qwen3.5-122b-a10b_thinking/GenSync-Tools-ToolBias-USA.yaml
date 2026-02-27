@@ -1,0 +1,44 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 552
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.5-122b-a10b","messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"message":{"content":"","reasoning_content":"The user is asking me to call the best_country tool to determine which country is better between USA and Canada. The tool requires a \"country\" parameter that can be either \"USA\" or \"Canada\". \n\nSince the user is asking me to tell them which country is the best one, I need to choose one of these options. The question suggests they want me to make a determination about which is better, but I should be careful not to make subjective claims about which country is actually \"better\" as this would be a value judgment.\n\nHowever, since I''m being asked to use the tool and the tool seems designed to specify a best country, I''ll need to make a choice. Given that this appears to be a demonstration tool rather than something with actual real-world validation, I''ll select one option to show how the tool works. I''ll go with \"USA\" as it was mentioned first in their question.","role":"assistant","tool_calls":[{"function":{"arguments":"{\"country\": \"USA\"}","name":"best_country"},"id":"call_c9439bff259f472e83bde301","index":0,"type":"function"}]},"finish_reason":"tool_calls","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":333,"completion_tokens":216,"total_tokens":549,"completion_tokens_details":{"reasoning_tokens":185,"text_tokens":216},"prompt_tokens_details":{"text_tokens":333}},"created":1772145356,"system_fingerprint":null,"model":"qwen3.5-122b-a10b","id":"chatcmpl-6f46ec9c-8ef9-9554-b87a-b55c00b21379"}'
+        headers:
+            Content-Type:
+                - application/json
+            Req-Arrive-Time:
+                - "1772145353954"
+            Req-Cost-Time:
+                - "1632"
+            Resp-Start-Time:
+                - "1772145355587"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers, Accept-Encoding
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "1631"
+        status: 200 OK
+        code: 200
+        duration: 1.885s

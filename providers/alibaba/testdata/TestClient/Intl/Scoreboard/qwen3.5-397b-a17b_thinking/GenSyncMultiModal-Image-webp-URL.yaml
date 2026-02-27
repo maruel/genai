@@ -1,0 +1,44 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 292
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.5-397b-a17b","messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.webp"}}]}],"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"message":{"content":"Banana","reasoning_content":"The user wants me to identify the fruit in the image.\n1.  **Analyze the image:** The image shows a long, curved yellow fruit with a stem at one end and a tip at the other. It has some small brown spots on the skin.\n2.  **Identify the object:** This is clearly a banana.\n3.  **Check constraints:** The user requested \"Reply with only one word.\"\n4.  **Formulate the response:** The word is \"Banana\".","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":113,"completion_tokens":113,"total_tokens":226,"completion_tokens_details":{"reasoning_tokens":107,"text_tokens":6},"prompt_tokens_details":{"image_tokens":92,"text_tokens":21}},"created":1772145577,"system_fingerprint":null,"model":"qwen3.5-397b-a17b","id":"chatcmpl-f11fd9d0-82ea-9620-84b2-42112652913f"}'
+        headers:
+            Content-Type:
+                - application/json
+            Req-Arrive-Time:
+                - "1772145567199"
+            Req-Cost-Time:
+                - "9815"
+            Resp-Start-Time:
+                - "1772145577014"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers, Accept-Encoding
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "9814"
+        status: 200 OK
+        code: 200
+        duration: 10.068s

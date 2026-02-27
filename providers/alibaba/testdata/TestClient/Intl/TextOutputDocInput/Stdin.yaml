@@ -1,0 +1,44 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 250
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.5-397b-a17b","messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"message":{"content":"The capital of Quackiland is **Quack**.","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:** The user is providing a set of premises and asking a question based on those premises.\n    *   Premise 1: The capital of Quackiland is Quack.\n    *   Premise 2: The Big Canard Statue is located in Quack.\n    *   Question: What is the capital of Quackiland?\n\n2.  **Evaluate the Premises:**\n    *   Premise 1 explicitly states: \"The capital of Quackiland is Quack.\"\n\n3.  **Answer the Question:**\n    *   The question asks for the capital of Quackiland.\n    *   Based on Premise 1, the answer is \"Quack\".\n\n4.  **Check for Tricks or Ambiguities:**\n    *   Is \"Quackiland\" a real place? No, it sounds fictional (like \"Duck\" related puns).\n    *   Is \"Quack\" a real city? No, likely fictional in this context.\n    *   Does the second premise change anything? No, it just adds extra information about a statue.\n    *   Is this a logic test? Yes, a simple reading comprehension/logic test.\n\n5.  **Formulate the Output:**\n    *   Direct answer: Quack.\n    *   Keep it concise.\n\n6.  **Final Decision:** The answer is clearly stated in the first sentence.\n\n    *   Answer: Quack.cw","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":39,"completion_tokens":335,"total_tokens":374,"completion_tokens_details":{"reasoning_tokens":319,"text_tokens":335},"prompt_tokens_details":{"text_tokens":39}},"created":1772142047,"system_fingerprint":null,"model":"qwen3.5-397b-a17b","id":"chatcmpl-5d6cdcf5-b7d8-9975-9ffa-d56dbcbb9d8e"}'
+        headers:
+            Content-Type:
+                - application/json
+            Req-Arrive-Time:
+                - "1772142043036"
+            Req-Cost-Time:
+                - "4254"
+            Resp-Start-Time:
+                - "1772142047291"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers, Accept-Encoding
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "4254"
+        status: 200 OK
+        code: 200
+        duration: 4.498s

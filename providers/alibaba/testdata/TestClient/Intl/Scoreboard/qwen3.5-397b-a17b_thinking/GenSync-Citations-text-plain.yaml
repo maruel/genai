@@ -1,0 +1,44 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 250
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.5-397b-a17b","messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"message":{"content":"The capital of Quackiland is **Quack**.","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Premise 1: The capital of Quackiland is Quack.\n    *   Premise 2: The Big Canard Statue is located in Quack.\n    *   Question: What is the capital of Quackiland?\n\n2.  **Evaluate the Information:**\n    *   The first sentence explicitly states: \"The capital of Quackiland is Quack.\"\n    *   The second sentence provides additional information about a statue in Quack, which is irrelevant to the specific question asked but confirms the existence of the place \"Quack\".\n    *   The question asks for the capital of Quackiland.\n\n3.  **Formulate the Answer:**\n    *   Directly extract the answer from Premise 1.\n    *   Answer: Quack.\n\n4.  **Review for Constraints/Tricks:**\n    *   Is this a trick question? No, it''s a straightforward reading comprehension task.\n    *   Is the information contradictory? No.\n    *   Does the user want a full sentence or just the name? Usually, a direct answer is best, possibly in a complete sentence for politeness/clarity.\n\n5.  **Final Output Construction:**\n    *   \"The capital of Quackiland is Quack.\"\n\n6.  **Final Check:** Does this answer the prompt accurately based *only* on the provided text? Yes.cw","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":39,"completion_tokens":326,"total_tokens":365,"completion_tokens_details":{"reasoning_tokens":310,"text_tokens":326},"prompt_tokens_details":{"text_tokens":39}},"created":1772145520,"system_fingerprint":null,"model":"qwen3.5-397b-a17b","id":"chatcmpl-88bc0ff7-0861-9609-937d-7468bcb538f6"}'
+        headers:
+            Content-Type:
+                - application/json
+            Req-Arrive-Time:
+                - "1772145516534"
+            Req-Cost-Time:
+                - "3424"
+            Resp-Start-Time:
+                - "1772145519959"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers, Accept-Encoding
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "3423"
+        status: 200 OK
+        code: 200
+        duration: 3.677s

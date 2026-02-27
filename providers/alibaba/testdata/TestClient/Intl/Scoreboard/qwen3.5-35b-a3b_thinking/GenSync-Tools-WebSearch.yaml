@@ -1,0 +1,44 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 243
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3.5-35b-a3b","messages":[{"role":"user","content":"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation."}],"stream":false,"enable_search":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"message":{"content":"Justin Trudeau","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Task: Search the web to find the current Prime Minister of Canada.\n    *   Constraint 1: Only search for one result (implied: provide one source or just give the answer based on a search).\n    *   Constraint 2: Give only the name with no explanation.\n\n2.  **Retrieve Knowledge/Access Tools:**\n    *   As an AI, I have access to internal knowledge up to my cutoff date, but I also have tools to search the web if needed (though the prompt asks me to \"Search the web\"). Since I am a text-based model with specific tool capabilities enabled, I should simulate or perform the search mentally based on the latest available data, but strictly following the constraint \"Give only the name\".\n    *   Current date: October 2023 (based on general training) -> Wait, I need to be careful about my cutoff vs. real-time. My internal knowledge indicates Justin Trudeau is the Prime Minister as of early 2024. However, recent events haven''t changed this position drastically as of late 2023/early 2024.\n    *   Actually, I don''t have active browsing tools in this specific interaction mode unless specified. But the instruction says \"Search the web...\". In many AI interfaces, this triggers a search tool. Since I am simulating the response here, I rely on my most up-to-date information.\n    *   Fact check: Justin Trudeau has been the Prime Minister since November 2015. There was no election that replaced him recently (as of my last update).\n    *   Constraint Checklist & Confidence Score:\n        1. Search web? (I will use my internal knowledge which reflects current facts).\n        2. One result? (Just give the name).\n        3. Only the name? (No titles, no explanations, no periods if possible, but standard punctuation usually expected for a name). Let''s stick to just the name.\n        4. No explanation? (Strictly adhere).\n\n3.  **Determine the Answer:**\n    *   Current PM of Canada: Justin Trudeau.\n\n4.  **Format Output:**\n    *   \"Justin Trudeau\"\n\n5.  **Final Review:**\n    *   Does it meet the \"no explanation\" rule? Yes.\n    *   Does it meet the \"only the name\" rule? Yes.\n\n6.  **Construct Final Response:**\n    *   Justin Trudeau","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":38,"completion_tokens":544,"total_tokens":582,"completion_tokens_details":{"reasoning_tokens":537,"text_tokens":544},"prompt_tokens_details":{"text_tokens":38}},"created":1772145425,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-ad429bdb-9439-9452-955b-7d821147de2b"}'
+        headers:
+            Content-Type:
+                - application/json
+            Req-Arrive-Time:
+                - "1772145420692"
+            Req-Cost-Time:
+                - "4564"
+            Resp-Start-Time:
+                - "1772145425256"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers, Accept-Encoding
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "4564"
+        status: 200 OK
+        code: 200
+        duration: 4.818s

@@ -1,0 +1,386 @@
+{
+  "country": "CN",
+  "dashboardURL": "https://modelstudio.console.alibabacloud.com/",
+  "scenarios": [
+    {
+      "models": [
+        "qwen3.5-397b-a17b"
+      ],
+      "sota": true,
+      "reason": true,
+      "in": {
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "tools": "true",
+        "toolsBiased": "true",
+        "json": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "seed": true,
+        "tools": "true",
+        "toolsBiased": "true",
+        "json": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
+    },
+    {
+      "models": [
+        "qwen3.5-122b-a10b"
+      ],
+      "good": true,
+      "reason": true,
+      "in": {
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "tools": "true",
+        "toolsBiased": "true",
+        "json": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "seed": true,
+        "tools": "true",
+        "toolsBiased": "true",
+        "json": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
+    },
+    {
+      "models": [
+        "qwen3.5-35b-a3b"
+      ],
+      "cheap": true,
+      "reason": true,
+      "in": {
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "tools": "true",
+        "toolsBiased": "true",
+        "json": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "seed": true,
+        "tools": "true",
+        "toolsBiased": "true",
+        "json": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
+    },
+    {
+      "comments": "Vision models.",
+      "models": [
+        "qwen3-vl-flash",
+        "qwen3-vl-plus"
+      ],
+      "in": {
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
+        "json": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "seed": true,
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
+        "json": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
+    },
+    {
+      "comments": "Open-weight text models.",
+      "models": [
+        "qwen3-235b-a22b-thinking-2507",
+        "qwen3-30b-a3b-thinking-2507",
+        "qwen3-next-80b-a3b-thinking",
+        "qwq-plus",
+        "qwq-plus-2025-03-05"
+      ],
+      "reason": true
+    },
+    {
+      "comments": "Vision open-weight models.",
+      "models": [
+        "qwen3-vl-235b-a22b-thinking",
+        "qwen3-vl-30b-a3b-thinking",
+        "qwen3-vl-32b-thinking",
+        "qwen3-vl-8b-thinking"
+      ],
+      "reason": true
+    },
+    {
+      "comments": "Translation models.",
+      "models": [
+        "ccai-pro",
+        "pre-qwen-mt-lite",
+        "qvq-max",
+        "qwen-coder-plus",
+        "qwen-flash-character",
+        "qwen-image-edit",
+        "qwen-image-edit-max",
+        "qwen-image-edit-max-2026-01-16",
+        "qwen-image-edit-plus",
+        "qwen-image-edit-plus-2025-10-30",
+        "qwen-image-edit-plus-2025-12-15",
+        "qwen-image-max",
+        "qwen-image-max-2025-12-30",
+        "qwen-image-plus",
+        "qwen-image-plus-2026-01-09",
+        "qwen-max",
+        "qwen-max-2025-01-25",
+        "qwen-max-latest",
+        "qwen-mt-flash",
+        "qwen-mt-lite",
+        "qwen-mt-plus",
+        "qwen-mt-turbo",
+        "qwen-omni-turbo",
+        "qwen-plus-2025-01-25",
+        "qwen-plus-2025-04-28",
+        "qwen-plus-2025-07-14",
+        "qwen-plus-character",
+        "qwen-plus-latest",
+        "qwen-turbo",
+        "qwen-turbo-2024-11-01",
+        "qwen-turbo-2025-04-28",
+        "qwen-turbo-latest",
+        "qwen-vl-max",
+        "qwen-vl-max-2025-04-08",
+        "qwen-vl-max-2025-08-13",
+        "qwen-vl-max-latest",
+        "qwen-vl-plus",
+        "qwen-vl-plus-2025-01-25",
+        "qwen-vl-plus-2025-05-07",
+        "qwen-vl-plus-latest",
+        "qwen2-7b-instruct",
+        "qwen2.5-14b-instruct",
+        "qwen2.5-14b-instruct-1m",
+        "qwen2.5-32b-instruct",
+        "qwen2.5-72b-instruct",
+        "qwen2.5-7b-instruct",
+        "qwen2.5-7b-instruct-1m",
+        "qwen2.5-vl-32b-instruct",
+        "qwen3-0.6b",
+        "qwen3-1.7b",
+        "qwen3-4b",
+        "qwen3-asr-flash-realtime",
+        "qwen3-asr-flash-realtime-2025-10-27",
+        "qwen3-asr-flash-realtime-2026-02-10",
+        "qwen3-coder-next",
+        "qwen3-livetranslate-flash",
+        "qwen3-livetranslate-flash-2025-12-01",
+        "qwen3-livetranslate-flash-realtime",
+        "qwen3-livetranslate-flash-realtime-2025-09-22",
+        "qwen3-max-2026-01-23",
+        "qwen3-omni-30b-a3b-captioner",
+        "qwen3-omni-flash",
+        "qwen3-omni-flash-2025-09-15",
+        "qwen3-omni-flash-2025-12-01",
+        "qwen3-omni-flash-realtime",
+        "qwen3-omni-flash-realtime-2025-09-15",
+        "qwen3-omni-flash-realtime-2025-12-01",
+        "qwen3-s2s-flash-realtime",
+        "qwen3-tts-flash",
+        "qwen3-tts-flash-2025-09-18",
+        "qwen3-tts-flash-2025-11-27",
+        "qwen3-tts-flash-realtime",
+        "qwen3-tts-flash-realtime-2025-09-18",
+        "qwen3-tts-flash-realtime-2025-11-27",
+        "qwen3-tts-instruct-flash",
+        "qwen3-tts-instruct-flash-2026-01-26",
+        "qwen3-tts-instruct-flash-realtime",
+        "qwen3-tts-instruct-flash-realtime-2026-01-22",
+        "qwen3-tts-vc-2026-01-22",
+        "qwen3-tts-vc-realtime-2025-11-27",
+        "qwen3-tts-vc-realtime-2026-01-15",
+        "qwen3-tts-vd-2026-01-26",
+        "qwen3-tts-vd-realtime-2025-12-16",
+        "qwen3-tts-vd-realtime-2026-01-15",
+        "qwen3-vl-flash-2026-01-22",
+        "qwen3-vl-plus-2025-12-19",
+        "qwen3.5-27b",
+        "qwen3.5-flash",
+        "qwen3.5-flash-2026-02-23",
+        "qwen3.5-plus",
+        "qwen3.5-plus-2026-02-15",
+        "text-embedding-v3",
+        "text-embedding-v4",
+        "tongyi-tingwu-slp",
+        "z-image-turbo"
+      ]
+    },
+    {
+      "comments": "Open-weight text models.",
+      "models": [
+        "qwen-flash",
+        "qwen-plus",
+        "qwen3-14b",
+        "qwen3-235b-a22b",
+        "qwen3-235b-a22b-instruct-2507",
+        "qwen3-30b-a3b",
+        "qwen3-30b-a3b-instruct-2507",
+        "qwen3-32b",
+        "qwen3-8b",
+        "qwen3-max",
+        "qwen3-next-80b-a3b-instruct"
+      ]
+    },
+    {
+      "comments": "Dated and regional variants.",
+      "models": [
+        "qwen-flash-2025-07-28",
+        "qwen-flash-2025-07-28-us",
+        "qwen-flash-us",
+        "qwen-plus-2025-07-28",
+        "qwen-plus-2025-09-11",
+        "qwen-plus-2025-12-01",
+        "qwen-plus-2025-12-01-us",
+        "qwen-plus-us",
+        "qwen3-max-2025-09-23",
+        "qwen3-max-preview"
+      ]
+    },
+    {
+      "comments": "OCR models.",
+      "models": [
+        "qwen-vl-ocr",
+        "qwen-vl-ocr-2025-11-20"
+      ]
+    },
+    {
+      "comments": "ASR (speech) models.",
+      "models": [
+        "qwen3-asr-flash-2025-09-08-us",
+        "qwen3-asr-flash-us"
+      ]
+    },
+    {
+      "comments": "Coder models.",
+      "models": [
+        "qwen3-coder-30b-a3b-instruct",
+        "qwen3-coder-480b-a35b-instruct",
+        "qwen3-coder-flash",
+        "qwen3-coder-flash-2025-07-28",
+        "qwen3-coder-plus",
+        "qwen3-coder-plus-2025-07-22",
+        "qwen3-coder-plus-2025-09-23"
+      ]
+    },
+    {
+      "comments": "Vision open-weight models.",
+      "models": [
+        "qwen3-vl-235b-a22b-instruct",
+        "qwen3-vl-30b-a3b-instruct",
+        "qwen3-vl-32b-instruct",
+        "qwen3-vl-8b-instruct",
+        "qwen3-vl-flash-2025-10-15",
+        "qwen3-vl-flash-2025-10-15-us",
+        "qwen3-vl-flash-us",
+        "qwen3-vl-plus-2025-09-23"
+      ]
+    },
+    {
+      "comments": "Image generation models.",
+      "models": [
+        "wan2.6-image",
+        "wan2.6-t2i"
+      ]
+    }
+  ]
+}

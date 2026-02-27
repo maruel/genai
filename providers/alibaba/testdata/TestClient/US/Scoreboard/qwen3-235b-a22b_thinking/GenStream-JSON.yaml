@@ -1,0 +1,141 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 291
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3-235b-a22b","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"stream":true,"response_format":{"type":"json_object"},"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"choices":[{"delta":{"content":null,"role":"assistant","reasoning_content":""},"index":0,"logprobs":null,"finish_reason":null}],"object":"chat.completion.chunk","usage":null,"created":1772142354,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl--SiFjHs9g6YSJM-j"}
+
+            data: {"choices":[{"finish_reason":null,"logprobs":null,"delta":{"content":null,"reasoning_content":"Okay, so"},"index":0}],"object":"chat.completion.chunk","usage":null,"created":1772142354,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl--SiFjHs9g6YSJM-j"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" the user is"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142354,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl--SiFjHs9g6YSJM-j"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" asking if a"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142354,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl--SiFjHs9g6YSJM-j"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" banana is a fruit. Let"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142354,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl--SiFjHs9g6YSJM-j"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" me think. First"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142354,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl--SiFjHs9g6YSJM-j"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":", I need to recall the"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142354,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl--SiFjHs9g6YSJM-j"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" biological definition of a"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142354,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl--SiFjHs9g6YSJM-j"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" fruit. From what I remember"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142354,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl--SiFjHs9g6YSJM-j"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":", a fruit is the"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142354,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl--SiFjHs9g6YSJM-j"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" mature ovary of a"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142354,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl--SiFjHs9g6YSJM-j"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" flowering plant, usually"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142354,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl--SiFjHs9g6YSJM-j"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" containing seeds. Ban"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142354,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl--SiFjHs9g6YSJM-j"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"anas come from the"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142354,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl--SiFjHs9g6YSJM-j"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" banana plant, which"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142354,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl--SiFjHs9g6YSJM-j"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" is a flowering plant. The"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142354,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl--SiFjHs9g6YSJM-j"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" banana itself develops from"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142354,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl--SiFjHs9g6YSJM-j"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" the flower's ov"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142354,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl--SiFjHs9g6YSJM-j"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"ary, so that fits the"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142354,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl--SiFjHs9g6YSJM-j"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" definition.\n\nWait, but sometimes"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142354,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl--SiFjHs9g6YSJM-j"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" people get confused because"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142354,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl--SiFjHs9g6YSJM-j"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" bananas don't have visible"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142354,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl--SiFjHs9g6YSJM-j"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" seeds like apples or oranges."},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142354,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl--SiFjHs9g6YSJM-j"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" However, botan"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142354,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl--SiFjHs9g6YSJM-j"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"ically, the presence"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142354,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl--SiFjHs9g6YSJM-j"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" of seeds isn't the"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142354,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl--SiFjHs9g6YSJM-j"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" only factor. The structure"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142354,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl--SiFjHs9g6YSJM-j"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"'s origin is more"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142354,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl--SiFjHs9g6YSJM-j"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" important. Since bananas develop"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142354,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl--SiFjHs9g6YSJM-j"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" from the ovary after"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142354,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl--SiFjHs9g6YSJM-j"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" flowering, they are"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142354,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl--SiFjHs9g6YSJM-j"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" classified as fruits. \n\n"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142354,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl--SiFjHs9g6YSJM-j"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"Also, in culinary"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142354,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl--SiFjHs9g6YSJM-j"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" terms, bananas are treated"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142354,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl--SiFjHs9g6YSJM-j"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" as fruits in cooking"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142354,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl--SiFjHs9g6YSJM-j"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" and eating. So"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142354,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl--SiFjHs9g6YSJM-j"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" both botanically and cul"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142354,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl--SiFjHs9g6YSJM-j"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"inarily, they"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142354,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl--SiFjHs9g6YSJM-j"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" fit the category. Therefore"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142354,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl--SiFjHs9g6YSJM-j"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":", the answer should be true"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142354,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl--SiFjHs9g6YSJM-j"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"."},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142354,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl--SiFjHs9g6YSJM-j"}
+
+            data: {"choices":[{"delta":{"content":"{ \"","reasoning_content":null},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142354,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl--SiFjHs9g6YSJM-j"}
+
+            data: {"choices":[{"delta":{"content":"is_fruit\": true }","reasoning_content":null},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142354,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl--SiFjHs9g6YSJM-j"}
+
+            data: {"choices":[{"finish_reason":"stop","delta":{"content":"","reasoning_content":null},"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142354,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl--SiFjHs9g6YSJM-j"}
+
+            data: {"choices":[],"object":"chat.completion.chunk","usage":{"prompt_tokens":39,"completion_tokens":193,"total_tokens":232,"completion_tokens_details":{"reasoning_tokens":181}},"created":1772142354,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl--SiFjHs9g6YSJM-j"}
+
+            data: [DONE]
+
+        headers:
+            Content-Type:
+                - text/event-stream;charset=UTF-8
+            Eagleeye-Traceid:
+                - 0bc2425d17721423533525797ee4d7
+            Req-Arrive-Time:
+                - "1772142353354"
+            Req-Cost-Time:
+                - "912"
+            Resp-Start-Time:
+                - "1772142354267"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Origin
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "912"
+        status: 200 OK
+        code: 200
+        duration: 942ms

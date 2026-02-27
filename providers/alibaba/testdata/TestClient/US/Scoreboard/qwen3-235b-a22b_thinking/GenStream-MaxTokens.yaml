@@ -1,0 +1,777 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 190
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3-235b-a22b","messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"stream":true,"max_tokens":16,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"choices":[{"delta":{"content":null,"role":"assistant","reasoning_content":""},"index":0,"logprobs":null,"finish_reason":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"finish_reason":null,"logprobs":null,"delta":{"content":null,"reasoning_content":"Okay, so"},"index":0}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" I need to"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" explain the theory"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" of relativity in great detail"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":". Hmm, where to"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" start? I remember from school"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" that there's special"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" relativity and general"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" relativity. Einstein"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":", right? But"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" I'm a bit fuzzy"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" on the specifics. Let me"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" think.\n\nFirst,"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" special relativity. I think"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" it's about objects"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" moving at constant speeds,"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" especially those close to the"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" speed of light. There"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"'s something about the speed"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" of light being constant for"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" all observers. But"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" how does that work"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"? Like, if you're"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" moving towards a light source,"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" shouldn't the light appear"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" faster? But Einstein said"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" no, it's always the"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" same speed. So that"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" must mean time and space adjust"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" to keep the speed of"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" light constant. Time"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" dilation and length contraction? Yeah"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":", those terms ring"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" a bell.\n\nWait"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":", time dilation."},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" So if you're moving very"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" fast, time slows"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" down for you relative"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" to someone who's stationary"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"? Like, if"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" I zoom off in"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" a spaceship near the"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" speed of light, when"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" I come back, more"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" time has passed on"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" Earth than for me. That"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"'s the twin paradox,"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" right? But how does that"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" happen? Because from"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" my perspective in the spaceship,"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" it's the Earth that"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"'s moving away, so shouldn"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"'t their time be slower"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"? There must be something"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" about acceleration breaking the symmetry"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":". But I'm"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" not entirely sure.\n\n"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"Then there's length contraction."},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" Objects in motion contract"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" in the direction of"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" motion. But only"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" from the perspective of someone else"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" who's stationary relative"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" to the object?"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" Or vice versa? This"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" is confusing. Maybe it"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"'s all about different"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" reference frames. Also"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":", the equations involve"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" gamma, the Lorent"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"z factor, which depends"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" on velocity. The formula"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" is 1 over the"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" square root of (1 minus"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" v squared over c squared)."},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" So as v approaches c"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":", gamma goes to infinity."},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" That's why you"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" can't reach the"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" speed of light because it"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" would require infinite energy.\n\nMass"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"-energy equivalence. E"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" equals mc squared."},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" That's part of special"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" relativity. So mass"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" and energy are interchangeable. A"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" small amount of mass can"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" be converted into a"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" lot of energy,"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" which is how nuclear"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" reactions work. But how"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" does that come out"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" of relativity? Maybe"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" because as you approach"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" c, the relativ"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"istic mass increases, but rest"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" mass is invariant. Wait"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":", there's a difference"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" between rest mass and relativistic"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" mass? Some people say relativ"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"istic mass isn't really"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" used anymore, and they"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" just stick to rest"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" mass. Hmm,"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" maybe I should clarify"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" that.\n\nNow,"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" general relativity. That"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"'s about gravity,"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" right? Einstein said"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" gravity isn't a"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" force like Newton thought"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":", but the curvature of spac"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"etime caused by mass"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" and energy. Massive"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" objects make spacetime curve"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":", and other objects follow"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" the geodesics"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" in that curved spac"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"etime. So planets"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" orbit the sun because the"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" sun curves spacetime, and"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" the planets are just moving along"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" the straightest possible"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" paths in that curved space."},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" But how does that"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" explain things like t"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"ides or GPS satellites"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" needing to account for time"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" dilation?\n\nAlso, gravitational"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" time dilation. Clock"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"s run slower in stronger"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" gravitational fields. So near"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" a black hole,"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" time would slow down a"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" lot from an outside observer"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"'s perspective. There"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"'s the event horizon"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":", beyond which not"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" even light can escape. And"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" spacetime curvature leads"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" to phenomena like gravitational"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" lensing, where"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" light bends around massive"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" objects. But how exactly"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" does mass curve spac"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"etime? The Einstein field"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" equations? They relate"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" the stress-energy tensor to"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" the curvature of spac"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"etime. But I don't"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" remember the exact form"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" of those equations."},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" Maybe too technical for a basic"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" explanation.\n\nThere's"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" also the equivalence principle"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":". The idea that free"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"-fall is ind"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"istinguishable from inert"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"ial motion, and that gravitational"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" mass is equivalent to inert"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"ial mass. That"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"'s why all objects fall"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" at the same rate in a"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" vacuum. But how does this"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" lead to the idea"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" of curved spacetime?\n\n"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"I should also mention"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" some experimental confirmations."},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" For special relativity,"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" particle accelerators have"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" to account for time"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" dilation because particles live"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" longer when moving at high"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" speeds. The Michelson-M"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"orley experiment failed"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" to detect the a"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"ether, leading to the"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" constancy of the"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" speed of light. For"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" general relativity,"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" the bending of star"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"light during an eclipse, the"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" precession of Mercury"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"'s perihel"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"ion, gravitational waves detected"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" by LIGO, and"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" the recent image of a"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" black hole's event"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" horizon.\n\nWait, but I"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" need to make sure I don"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"'t mix up concepts"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":". Also, maybe"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" touch on the implications"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":". Like, how relativity"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" changed our understanding of"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" space, time,"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" and gravity. It"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" replaced Newton's laws"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" for certain domains, especially"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" at high speeds or"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" strong gravitational fields. But"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" Newton's still works for"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" everyday situations.\n\nI"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" should structure this into sections:"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" special relativity and"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" general relativity,"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" each with their post"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"ulates, key concepts, equations"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":", and experiments. Maybe start"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" with the historical context"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":". Before Einstein,"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" there was the problem"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" of the aether and"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" Maxwell's equations predicting"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" constant light speed."},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" Einstein's two post"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"ulates for special relativity"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":": the laws of physics"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" are the same in all inert"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"ial frames, and the speed"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" of light is constant regardless"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" of the source or"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" observer's motion.\n\nIn"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" general relativity,"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" the equivalence principle and the"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" idea that spacetime is"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" curved by mass-energy"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":". Then talk about consequences"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" like time dilation, black holes"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":", gravitational waves."},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" Also, mention how"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" GPS satellites have to adjust"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" for both special and"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" general relativistic effects.\n\n"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"But wait, how"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" does time dilation work"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" in special vs general"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" relativity? In"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" special, it's due to"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" velocity, in general, due"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" to gravity. So both"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" affect the satellites."},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" Their clocks run slower"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" because of their speed"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" (special) but"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" faster because they're in a"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" weaker gravitational field (general"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"). Which effect is stronger"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"? I think general"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" relativity's effect is"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" more significant for satellites, so"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" the clocks on GPS"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" satellites have to be adjusted"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" to run a bit slower"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" than Earth clocks.\n\nI"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" need to make sure I"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" explain the concepts clearly without"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" getting too bogged down in"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" math. Maybe mention"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" the light clock thought"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" experiment for time dilation."},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" Two mirrors with a light"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" beam bouncing between them."},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" If the clock is moving,"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" from an outside perspective,"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" the light has to travel a"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" longer diagonal path, so"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" more time passes per"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" tick, hence time slows"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" down. But in"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" the clock's frame"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":", it's just moving"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" straight up and down. So"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" each observer sees the"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" other's clock as"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" slower. Which ties"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" into the twin paradox where"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" one has to accelerate to"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" return, breaking the symmetry.\n\n"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"Also, simultaneity is"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" relative. Events that"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" are simultaneous in one frame aren"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"'t in another. So"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" the concept of \""},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"now\" is relative"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" depending on your motion.\n\n"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"For general relativity,"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" maybe use the rubber"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" sheet analogy for spacetime curvature"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":", but note that it's"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" an oversimplification. Real"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" curvature is in four dimensions."},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" Also, geodesics are"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" the equivalent of straight lines in"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" curved space. The"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" Einstein field equations:"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" G(mu nu) = "},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"8 pi G T"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"(mu nu), relating"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" the curvature (G tensor"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":") to the stress"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"-energy tensor T. But again"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":", maybe too technical.\n\n"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"Black holes: when"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" a massive object collapses"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" under gravity, spac"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"etime curvature becomes so"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" strong that the usual"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" concepts break down at the sing"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"ularity. Event horizon radius"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" is the Schwarzs"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"child radius.\n\nGr"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"avitational waves are"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" ripples in spac"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"etime propagating at the"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" speed of light,"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" caused by accelerating massive"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" objects, like merging"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" black holes.\n\nI should also"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" mention that relativity is"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" a classical theory, not incorporating"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" quantum mechanics. So there"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"'s a quest for"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" a quantum gravity theory, which"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" is still ongoing.\n\nWait,"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" did I miss anything? Maybe"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" mention the Michelson-Mor"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"ley experiment, the"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" muon decay experiments"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" as evidence for time"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" dilation. Also, the fact"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" that relativity leads"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" to a new understanding"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" of simultaneity,"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" causality, and"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" the structure of spac"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"etime.\n\nI need to organize"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" all these thoughts into a coherent"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" explanation, starting with definitions"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":", then the two"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" theories, their postulates,"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" consequences, experiments, and implications"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":". Make sure to clarify common"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" misconceptions, like time"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" slowing down in moving"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" frame as observed from"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" another frame, not in"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" its own frame."},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" Also, clarify that relativity"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" doesn't mean everything is relative"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"; the speed of light"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" is absolute.\n\nOkay, let"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" me try to put"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" this all together in"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" a structured way without"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" missing key points."},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":"**The Theory of Rel","reasoning_content":null},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":"ativity: A Comprehensive","reasoning_content":null},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":" Explanation**\n\n**1","reasoning_content":null},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"delta":{"content":". Overview","reasoning_content":null},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[{"finish_reason":"length","delta":{"content":"","reasoning_content":null},"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: {"choices":[],"object":"chat.completion.chunk","usage":{"prompt_tokens":19,"completion_tokens":1706,"total_tokens":1725,"completion_tokens_details":{"reasoning_tokens":1686}},"created":1772142309,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-TAyxvor5EAy1V1MB"}
+
+            data: [DONE]
+
+        headers:
+            Content-Type:
+                - text/event-stream;charset=UTF-8
+            Eagleeye-Traceid:
+                - 0bc2425d17721423077945733ee4d7
+            Req-Arrive-Time:
+                - "1772142307795"
+            Req-Cost-Time:
+                - "945"
+            Resp-Start-Time:
+                - "1772142308740"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Origin
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "945"
+        status: 200 OK
+        code: 200
+        duration: 972ms

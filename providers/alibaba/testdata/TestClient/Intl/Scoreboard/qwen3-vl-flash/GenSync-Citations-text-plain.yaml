@@ -1,0 +1,44 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 247
+        host: dashscope-intl.aliyuncs.com
+        body: |
+            {"model":"qwen3-vl-flash","messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"message":{"content":"The capital of Quackiland is **Quack**.\n\nThis is directly stated in the first sentence:  \n> *“The capital of Quackiland is Quack.”*\n\nThe second sentence — *“The Big Canard Statue is located in Quack.”* — provides additional context but does not contradict or change the capital’s identity. In fact, it reinforces that Quack is a significant location (likely the capital city), since a major statue is situated there.\n\n✅ So, the answer is: **Quack**.","reasoning_content":"","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":37,"completion_tokens":108,"total_tokens":145,"prompt_tokens_details":{"text_tokens":37},"completion_tokens_details":{"text_tokens":108}},"created":1772139690,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-b057dfc7-8f70-9e5b-83a4-cdd62e61c60f"}'
+        headers:
+            Content-Type:
+                - application/json
+            Req-Arrive-Time:
+                - "1772139688671"
+            Req-Cost-Time:
+                - "987"
+            Resp-Start-Time:
+                - "1772139689658"
+            Server:
+                - istio-envoy
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers, Accept-Encoding
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "986"
+        status: 200 OK
+        code: 200
+        duration: 1.237s

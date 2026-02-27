@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 241
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3-30b-a3b","messages":[{"role":"user","content":"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation."}],"stream":false,"enable_search":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"message":{"content":"Justin Trudeau","reasoning_content":"Okay, the user is asking for the current Prime Minister of Canada. Let me think. I remember that Justin Trudeau has been the Prime Minister for a while. But I should verify to make sure there haven''t been any recent changes. Wait, the user said to search the web for one result. Since I can''t actually browse the internet, I have to rely on my existing knowledge. As of my last update in July 2024, Justin Trudeau is still the Prime Minister. There might have been an election in 2023, but I think he''s still in office. I should confirm if there''s any new information. However, since I can''t search, I''ll stick with the latest known information. So the answer should be Justin Trudeau.","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":36,"completion_tokens":162,"total_tokens":198,"completion_tokens_details":{"reasoning_tokens":155}},"created":1772142760,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-0x6kBmDR1fGLY7lO"}'
+        headers:
+            Content-Type:
+                - application/json
+            Eagleeye-Traceid:
+                - 0bc2425d17721427579826181ee4d7
+            Req-Arrive-Time:
+                - "1772142757983"
+            Req-Cost-Time:
+                - "2228"
+            Resp-Start-Time:
+                - "1772142760212"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Accept-Encoding
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "2228"
+        status: 200 OK
+        code: 200
+        duration: 2.258s

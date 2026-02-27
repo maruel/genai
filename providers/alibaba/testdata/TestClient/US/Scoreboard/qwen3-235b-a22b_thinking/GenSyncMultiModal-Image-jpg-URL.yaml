@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 289
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3-235b-a22b","messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg"}}]}],"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"message":{"content":"Unknown","reasoning_content":"Okay, the user is asking \"What fruit is it? Reply with only one word.\" Hmm, but they didn''t provide any image or description. How can I know which fruit they''re referring to? Maybe this is part of a series where they previously mentioned a fruit, but in the current query, there''s no context.\n\nWait, maybe the user is testing if I can recognize a fruit based on a previous interaction, but since each session is independent, I don''t have access to prior messages. So without any information, I can''t accurately answer. But the user might expect a common fruit. However, replying with a guess isn''t helpful. The correct approach is to point out the lack of context. But the user specified to reply with only one word. If I say \"Apple,\" for example, that''s a guess. Alternatively, maybe \"Unknown\" or \"None.\" But does that count as a fruit? The user might be looking for a specific answer. Alternatively, maybe they made a typo and forgot to include an image. But the instructions say to reply with only one word. Since there''s no way to determine the fruit, perhaps the best one-word response is \"Unknown\" even though it''s not a fruit. Alternatively, maybe \"Banana\" as a common example. But that''s risky. Wait, the user might have intended to include an image but forgot. In that case, the correct answer isn''t possible. However, the assistant should adhere to the query''s explicit instructions. Since the user wants only one word, and there''s no data, maybe the appropriate response is to state that there''s insufficient information. But the user said \"only one word.\" If I have to choose, perhaps the answer is \"None,\" but that''s not a fruit. Alternatively, maybe \"Mystery.\" But the user expects a fruit name. Without context, I can''t know. But maybe the user is referring to a standard example, like in some test cases \"apple\" is used. But I''m not sure. However, the user might have a specific fruit in mind that was mentioned earlier, but in the current context, there''s no history. Since the user insists on one word, and I can''t ask for clarification, perhaps the best answer is to state that the query is incomplete. But the user wants only one word. If I must answer, but there''s no information, maybe \"Unknown\" is the only possible answer. Even though it''s not a fruit, it''s the most accurate. Alternatively, maybe the user expects a default. Hmm. I think the correct approach here is to respond with \"Unknown\" because without any context or image, the fruit can''t be identified. So even though \"unknown\" isn''t a fruit, the user''s instruction is to reply with one word, and that''s the only way to indicate the lack of information. Alternatively, maybe \"Apple\" is a common default. But I should avoid making assumptions. Let me check similar scenarios. In some cases, when an image is missing, the response might be \"Unidentifiable.\" But the user wants one word. So \"Unknown\" is the best fit.","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":19,"completion_tokens":648,"total_tokens":667,"completion_tokens_details":{"reasoning_tokens":642}},"created":1772142496,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-KgKRz_bpGpygiU1a"}'
+        headers:
+            Content-Type:
+                - application/json
+            Eagleeye-Traceid:
+                - 0bc2425d17721424831815865ee4d7
+            Req-Arrive-Time:
+                - "1772142483183"
+            Req-Cost-Time:
+                - "12541"
+            Resp-Start-Time:
+                - "1772142495724"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Accept-Encoding
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "12540"
+        status: 200 OK
+        code: 200
+        duration: 12.57s

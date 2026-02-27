@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 262
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3-30b-a3b","messages":[{"role":"user","content":[{"type":"text","text":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"message":{"content":"The capital of Quackiland is **Quack**. \n\nThis is explicitly stated in the first sentence: \"The capital of Quackiland is Quack.\" The additional information about the Big Canard Statue being located in Quack does not alter this fact. The answer is directly provided in the question. \n\n**Answer:** Quack.","reasoning_content":"Okay, so I need to figure out the capital of Quackiland. Let me start by reading the question again carefully. The user says, \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\" Then the question is asking, \"What is the capital of Quackiland?\" \n\nWait, that seems straightforward. The first sentence directly states that the capital is Quack. But maybe there''s a trick here? Sometimes questions might try to mislead or test if you''re paying attention. Let me check again. The first statement is a fact: the capital is Quack. Then another fact about the Big Canard Statue being in Quack. The question is just asking for the capital again. \n\nBut why would the user present this? Maybe they want to confirm if I can extract the answer from the given information. Since the first sentence explicitly says \"The capital of Quackiland is Quack,\" the answer should be Quack. However, I should make sure there''s no hidden detail. For example, sometimes in riddles, the answer might be a play on words. But in this case, \"Quack\" is both the capital and the name of the statue''s location. \n\nIs there any chance that the answer could be something else? Like, maybe the Big Canard Statue is in Quack, but the capital is different? But the first sentence clearly states that the capital is Quack. So unless there''s some contradiction, which there isn''t, the answer must be Quack. \n\nAlternatively, maybe the user is testing if I can recognize that the answer is given directly in the question. Sometimes people might overcomplicate things, but in this case, the answer is straightforward. I don''t see any other possible answer here. The key is to pay attention to the initial statement. So the capital is Quack.","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":43,"completion_tokens":456,"total_tokens":499,"completion_tokens_details":{"reasoning_tokens":382}},"created":1772142767,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-cFYiMLJ7xEtaJPMP"}'
+        headers:
+            Content-Type:
+                - application/json
+            Eagleeye-Traceid:
+                - 0bc2425d17721427630626185ee4d7
+            Req-Arrive-Time:
+                - "1772142763064"
+            Req-Cost-Time:
+                - "3982"
+            Resp-Start-Time:
+                - "1772142767046"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Accept-Encoding
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "3982"
+        status: 200 OK
+        code: 200
+        duration: 4.011s

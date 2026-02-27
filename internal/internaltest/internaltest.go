@@ -121,7 +121,7 @@ func (r *Records) rerun(tests []string) error {
 		escaped[i] = "^" + regexp.QuoteMeta(t) + "$"
 	}
 	pattern := strings.Join(escaped, "|")
-	cmd := exec.Command(os.Args[0], "-test.run", pattern, "-test.count=1")
+	cmd := exec.Command(os.Args[0], "-test.run", pattern, "-test.count=1") //nolint:gosec // os.Args[0] is the test binary itself, not user input
 	for _, e := range os.Environ() {
 		if !strings.HasPrefix(e, "RECORD=") {
 			cmd.Env = append(cmd.Env, e)

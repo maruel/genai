@@ -95,9 +95,10 @@ func (t *tableSummaryRow) initFromScoreboard(p genai.Provider) {
 	// Merge all variant scoreboards when the provider has multiple backends.
 	scoreboards := []scoreboard.Score{sb}
 	if pv, ok := p.(genai.ProviderScoreboardVariants); ok {
-		scoreboards = nil
-		for _, v := range pv.ScoreboardVariants() {
-			scoreboards = append(scoreboards, v.Score)
+		variants := pv.ScoreboardVariants()
+		scoreboards = make([]scoreboard.Score, len(variants))
+		for i, v := range variants {
+			scoreboards[i] = v.Score
 		}
 	}
 	for _, s := range scoreboards {
@@ -309,7 +310,8 @@ func printProviderTable(p genai.Provider, w io.Writer) error {
 			return printProviderVariantTables(p, w, variants)
 		}
 	}
-	printScoreboardTable(p, w, p.Scoreboard())
+	sb := p.Scoreboard()
+	printScoreboardTable(p, w, &sb)
 	return nil
 }
 
@@ -320,13 +322,13 @@ func printProviderVariantTables(p genai.Provider, w io.Writer, variants []genai.
 			_, _ = io.WriteString(w, "\n")
 		}
 		_, _ = fmt.Fprintf(w, "## %s\n\n", v.Name)
-		printScoreboardTable(p, w, v.Score)
+		printScoreboardTable(p, w, &v.Score)
 	}
 	return nil
 }
 
 // printScoreboardTable prints a single scoreboard table.
-func printScoreboardTable(p genai.Provider, w io.Writer, sb scoreboard.Score) {
+func printScoreboardTable(p genai.Provider, w io.Writer, sb *scoreboard.Score) {
 	rows := make([]tableModelRow, 0, len(sb.Scenarios))
 	for _, sc := range sb.Scenarios {
 		var tmpRows []tableModelRow

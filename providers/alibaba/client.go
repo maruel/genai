@@ -109,7 +109,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			c.MaxToks = v.MaxTokens
 			c.Temperature = v.Temperature
 			c.TopP = v.TopP
-			c.TopK = int64(v.TopK)
+			c.TopK = v.TopK
 			sp = v.SystemPrompt
 			if v.TopLogprobs > 0 {
 				unsupported = append(unsupported, "GenOption.TopLogprobs")

@@ -128,8 +128,7 @@ func TestClient(t *testing.T) {
 				for _, m := range cachedModels {
 					id := m.GetID()
 					if strings.HasPrefix(id, "qwen3.5-") {
-						models = append(models, scoreboard.Model{Model: id, Reason: false})
-						models = append(models, scoreboard.Model{Model: id, Reason: true})
+						models = append(models, scoreboard.Model{Model: id, Reason: false}, scoreboard.Model{Model: id, Reason: true})
 					} else {
 						reason, ok := reasonModels[id]
 						if !ok {

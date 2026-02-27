@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 582
+        content_length: 606
         host: dashscope-intl.aliyuncs.com
         body: |
-            {"model":"qwen3-vl-flash","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"stream":true,"stream_options":{"include_usage":true},"tool_choice":"required","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
+            {"model":"qwen3-vl-flash","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"stream":true,"stream_options":{"include_usage":true},"tool_choice":"required","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"enable_thinking":false}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,13 +21,13 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"choices":[{"delta":{"content":null,"tool_calls":[{"index":0,"id":"call_1e8da315c7b54c6b977264","type":"function","function":{"name":"square_root","arguments":""}}],"role":"assistant"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772139685,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-654e61aa-4ada-9440-8942-7c4f262dbfd5"}
+            data: {"choices":[{"delta":{"content":null,"tool_calls":[{"index":0,"id":"call_b862b2dd5f214ae08292fb","type":"function","function":{"name":"square_root","arguments":""}}],"role":"assistant"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221051,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-98175e67-0232-9043-a1ab-24c0ee49562a"}
 
-            data: {"choices":[{"delta":{"content":null,"tool_calls":[{"index":0,"id":"","type":"function","function":{"arguments":" {\"number\": 132413}"}}]},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772139685,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-654e61aa-4ada-9440-8942-7c4f262dbfd5"}
+            data: {"choices":[{"delta":{"content":null,"tool_calls":[{"index":0,"id":"","type":"function","function":{"arguments":" {\"number\": 132413}"}}]},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221051,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-98175e67-0232-9043-a1ab-24c0ee49562a"}
 
-            data: {"choices":[{"finish_reason":"tool_calls","delta":{"content":""},"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772139685,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-654e61aa-4ada-9440-8942-7c4f262dbfd5"}
+            data: {"choices":[{"finish_reason":"tool_calls","delta":{"content":""},"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221051,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-98175e67-0232-9043-a1ab-24c0ee49562a"}
 
-            data: {"choices":[],"object":"chat.completion.chunk","usage":{"prompt_tokens":209,"completion_tokens":25,"total_tokens":234,"completion_tokens_details":{"text_tokens":25},"prompt_tokens_details":{"text_tokens":209}},"created":1772139685,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-654e61aa-4ada-9440-8942-7c4f262dbfd5"}
+            data: {"choices":[],"object":"chat.completion.chunk","usage":{"prompt_tokens":209,"completion_tokens":25,"total_tokens":234,"completion_tokens_details":{"text_tokens":25},"prompt_tokens_details":{"text_tokens":209}},"created":1772221051,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-98175e67-0232-9043-a1ab-24c0ee49562a"}
 
             data: [DONE]
 
@@ -35,11 +35,11 @@ interactions:
             Content-Type:
                 - text/event-stream;charset=UTF-8
             Req-Arrive-Time:
-                - "1772139684677"
+                - "1772221050808"
             Req-Cost-Time:
-                - "560"
+                - "315"
             Resp-Start-Time:
-                - "1772139685237"
+                - "1772221051123"
             Server:
                 - istio-envoy
             Vary:
@@ -47,7 +47,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "559"
+                - "314"
         status: 200 OK
         code: 200
-        duration: 811ms
+        duration: 561ms

@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 289
+        content_length: 313
         host: dashscope-intl.aliyuncs.com
         body: |
-            {"model":"qwen3-vl-flash","messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.webp"}}]}],"stream":false}
+            {"model":"qwen3-vl-flash","messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.webp"}}]}],"stream":false,"enable_thinking":false}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,16 +21,16 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"choices":[{"message":{"content":"Banana","reasoning_content":"","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":111,"completion_tokens":3,"total_tokens":114,"prompt_tokens_details":{"image_tokens":92,"text_tokens":19},"completion_tokens_details":{"text_tokens":3}},"created":1772139699,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-56d890eb-a681-91c4-8193-fe284a3bab69"}'
+        body: '{"choices":[{"message":{"content":"Banana","reasoning_content":"","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":111,"completion_tokens":3,"total_tokens":114,"prompt_tokens_details":{"image_tokens":92,"text_tokens":19},"completion_tokens_details":{"text_tokens":3}},"created":1772221063,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-305c7ea1-636a-915a-a0e2-54334a57ef77"}'
         headers:
             Content-Type:
                 - application/json
             Req-Arrive-Time:
-                - "1772139698664"
+                - "1772221063100"
             Req-Cost-Time:
-                - "668"
+                - "312"
             Resp-Start-Time:
-                - "1772139699333"
+                - "1772221063412"
             Server:
                 - istio-envoy
             Vary:
@@ -38,7 +38,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "667"
+                - "311"
         status: 200 OK
         code: 200
-        duration: 919ms
+        duration: 558ms

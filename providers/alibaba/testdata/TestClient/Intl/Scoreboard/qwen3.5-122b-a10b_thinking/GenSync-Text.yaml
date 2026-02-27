@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 116
+        content_length: 139
         host: dashscope-intl.aliyuncs.com
         body: |
-            {"model":"qwen3.5-122b-a10b","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":false}
+            {"model":"qwen3.5-122b-a10b","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":false,"enable_thinking":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,16 +21,16 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"choices":[{"message":{"content":"Hello","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Action: Say hello.\n    *   Constraint: Use only one word.\n\n2.  **Determine the Output:**\n    *   Common greeting: \"Hello\".\n    *   Check constraint: Is \"Hello\" one word? Yes.\n    *   Alternative: \"Hi\", \"Hey\", \"Greetings\".\n    *   Selection: \"Hello\" is the most direct translation of the command \"Say hello\".\n\n3.  **Final Verification:**\n    *   Does it meet the \"one word\" constraint? Yes.\n    *   Does it fulfill the \"say hello\" command? Yes.\n\n4.  **Construct Output:**\n    *   Hello.cw","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":18,"completion_tokens":166,"total_tokens":184,"completion_tokens_details":{"reasoning_tokens":160,"text_tokens":166},"prompt_tokens_details":{"text_tokens":18}},"created":1772145329,"system_fingerprint":null,"model":"qwen3.5-122b-a10b","id":"chatcmpl-5824cfc5-488b-9eb2-9aae-0328e33a8ca2"}'
+        body: '{"choices":[{"message":{"content":"Hello","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Task: Say hello.\n    *   Constraint: Use only one word.\n\n2.  **Determine the Output:**\n    *   Common greeting words: \"Hello\", \"Hi\", \"Greetings\", \"Hey\".\n    *   Select the most standard and clear one-word greeting: \"Hello\" or \"Hi\".\n    *   Check constraint: Must be exactly one word.\n\n3.  **Select Best Option:** \"Hello\" is the most direct translation of \"Say hello\".\n\n4.  **Final Verification:** Does \"Hello\" contain only one word? Yes. Does it fulfill the request? Yes.\n\n5.  **Draft Output:** Hello.cw","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":18,"completion_tokens":163,"total_tokens":181,"completion_tokens_details":{"reasoning_tokens":157,"text_tokens":163},"prompt_tokens_details":{"text_tokens":18}},"created":1772220834,"system_fingerprint":null,"model":"qwen3.5-122b-a10b","id":"chatcmpl-c4ccaa54-e0b0-9286-b6b5-4bdc6504fa00"}'
         headers:
             Content-Type:
                 - application/json
             Req-Arrive-Time:
-                - "1772145327693"
+                - "1772220832830"
             Req-Cost-Time:
-                - "1195"
+                - "1224"
             Resp-Start-Time:
-                - "1772145328888"
+                - "1772220834054"
             Server:
                 - istio-envoy
             Vary:
@@ -38,7 +38,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "1194"
+                - "1224"
         status: 200 OK
         code: 200
-        duration: 1.448s
+        duration: 2.139s

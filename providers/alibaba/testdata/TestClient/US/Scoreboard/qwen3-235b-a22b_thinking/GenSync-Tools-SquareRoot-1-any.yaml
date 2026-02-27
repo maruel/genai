@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 540
+        content_length: 563
         host: dashscope-us.aliyuncs.com
         body: |
-            {"model":"qwen3-235b-a22b","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
+            {"model":"qwen3-235b-a22b","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"enable_thinking":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -19,20 +19,21 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: -1
-        uncompressed: true
-        body: '{"choices":[{"message":{"content":"","reasoning_content":"Okay, the user wants the square root of 132413 using the square_root tool. Let me check the function parameters. The function requires a \"number\" parameter. I need to pass 132413 as the number. Just make sure that the input is a valid number. Since 132413 is a positive integer, the square root should be calculated. I''ll format the tool call correctly in JSON inside the XML tags. No need for explanations, just the result. Let me structure the JSON properly with the function name and arguments.","role":"assistant","tool_calls":[{"function":{"arguments":"{\"number\": 132413}","name":"square_root"},"id":"call_9f0b61e97f614364bf8ad7","index":0,"type":"function"}]},"finish_reason":"tool_calls","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":209,"completion_tokens":148,"total_tokens":357,"completion_tokens_details":{"reasoning_tokens":119}},"created":1772142364,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-0EneTrYRlhm0Vy2u"}'
+        content_length: 941
+        body: '{"choices":[{"message":{"content":"","reasoning_content":"Okay, the user wants the square root of 132413 using the square_root tool. Let me check the function parameters. The function requires a \"number\" parameter. So I need to call square_root with 132413 as the argument. I''ll format the tool call correctly in JSON inside the XML tags. Just make sure the JSON is valid and the number is correctly specified. No need for explanations, just the result.","role":"assistant","tool_calls":[{"function":{"arguments":"{\"number\": 132413}","name":"square_root"},"id":"call_ddd5cc5e3ac6487cbbc7ee","index":0,"type":"function"}]},"finish_reason":"tool_calls","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":209,"completion_tokens":122,"total_tokens":331,"completion_tokens_details":{"reasoning_tokens":93}},"created":1772220518,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-pheQo4NYZ7oiXI6r"}'
         headers:
+            Content-Length:
+                - "941"
             Content-Type:
                 - application/json
             Eagleeye-Traceid:
-                - 0bc2425d17721423605525805ee4d7
+                - 0bc2425d17722205150226927ee4da
             Req-Arrive-Time:
-                - "1772142360553"
+                - "1772220515024"
             Req-Cost-Time:
-                - "3257"
+                - "2753"
             Resp-Start-Time:
-                - "1772142363811"
+                - "1772220517778"
             Server:
                 - istio-envoy
             Strict-Transport-Security:
@@ -40,12 +41,11 @@ interactions:
             Timing-Allow-Origin:
                 - '*'
             Vary:
-                - Accept-Encoding
                 - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "3257"
+                - "2753"
         status: 200 OK
         code: 200
-        duration: 3.285s
+        duration: 2.779s

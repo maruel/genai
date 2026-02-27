@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 327
+        content_length: 351
         host: dashscope-intl.aliyuncs.com
         body: |
-            {"model":"qwen3-vl-flash","messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg"}}]}],"stream":true,"stream_options":{"include_usage":true}}
+            {"model":"qwen3-vl-flash","messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg"}}]}],"stream":true,"stream_options":{"include_usage":true},"enable_thinking":false}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,15 +21,15 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"choices":[{"delta":{"content":"","role":"assistant"},"index":0,"logprobs":null,"finish_reason":null}],"object":"chat.completion.chunk","usage":null,"created":1772139694,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-e7aecf74-5d67-99b0-957b-1c1aee992b97"}
+            data: {"choices":[{"delta":{"content":"","role":"assistant"},"index":0,"logprobs":null,"finish_reason":null}],"object":"chat.completion.chunk","usage":null,"created":1772221058,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-89e34adb-ff37-9627-99a9-3b3b432f4b58"}
 
-            data: {"choices":[{"finish_reason":null,"logprobs":null,"delta":{"content":"Ban"},"index":0}],"object":"chat.completion.chunk","usage":null,"created":1772139694,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-e7aecf74-5d67-99b0-957b-1c1aee992b97"}
+            data: {"choices":[{"finish_reason":null,"logprobs":null,"delta":{"content":"Ban"},"index":0}],"object":"chat.completion.chunk","usage":null,"created":1772221058,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-89e34adb-ff37-9627-99a9-3b3b432f4b58"}
 
-            data: {"choices":[{"delta":{"content":"ana"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772139694,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-e7aecf74-5d67-99b0-957b-1c1aee992b97"}
+            data: {"choices":[{"delta":{"content":"ana"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221058,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-89e34adb-ff37-9627-99a9-3b3b432f4b58"}
 
-            data: {"choices":[{"finish_reason":"stop","delta":{"content":""},"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772139694,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-e7aecf74-5d67-99b0-957b-1c1aee992b97"}
+            data: {"choices":[{"finish_reason":"stop","delta":{"content":""},"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221058,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-89e34adb-ff37-9627-99a9-3b3b432f4b58"}
 
-            data: {"choices":[],"object":"chat.completion.chunk","usage":{"prompt_tokens":111,"completion_tokens":3,"total_tokens":114,"completion_tokens_details":{"text_tokens":3},"prompt_tokens_details":{"image_tokens":92,"text_tokens":19}},"created":1772139694,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-e7aecf74-5d67-99b0-957b-1c1aee992b97"}
+            data: {"choices":[],"object":"chat.completion.chunk","usage":{"prompt_tokens":111,"completion_tokens":3,"total_tokens":114,"completion_tokens_details":{"text_tokens":3},"prompt_tokens_details":{"image_tokens":92,"text_tokens":19}},"created":1772221058,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-89e34adb-ff37-9627-99a9-3b3b432f4b58"}
 
             data: [DONE]
 
@@ -37,11 +37,11 @@ interactions:
             Content-Type:
                 - text/event-stream;charset=UTF-8
             Req-Arrive-Time:
-                - "1772139693257"
+                - "1772221057526"
             Req-Cost-Time:
-                - "481"
+                - "284"
             Resp-Start-Time:
-                - "1772139693738"
+                - "1772221057810"
             Server:
                 - istio-envoy
             Vary:
@@ -49,7 +49,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "480"
+                - "283"
         status: 200 OK
         code: 200
-        duration: 732ms
+        duration: 530ms

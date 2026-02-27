@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 264
+        content_length: 287
         host: dashscope-intl.aliyuncs.com
         body: |
-            {"model":"qwen3.5-35b-a3b","messages":[{"role":"user","content":[{"type":"text","text":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"stream":false}
+            {"model":"qwen3.5-35b-a3b","messages":[{"role":"user","content":[{"type":"text","text":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"stream":false,"enable_thinking":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,16 +21,16 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"choices":[{"message":{"content":"The capital of Quackiland is **Quack**.","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:** The user is providing a short text (\"Quackiland...\") and asking a question based on it (\"What is the capital of Quackiland?\").\n\n2.  **Analyze the Text:**\n    *   Sentence 1: \"The capital of Quackiland is Quack.\"\n    *   Sentence 2: \"The Big Canard Statue is located in Quack.\"\n    *   Question: \"What is the capital of Quackiland?\"\n\n3.  **Extract Information:** The first sentence explicitly states the answer. \"The capital of Quackiland is Quack.\"\n\n4.  **Formulate Answer:** The capital is Quack.\n\n5.  **Final Review:** Does the answer directly address the question using the provided information? Yes.\n\n6.  **Construct Output:** \"The capital of Quackiland is Quack.\" or simply \"Quack\". I will provide a clear, complete sentence.cw","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":44,"completion_tokens":224,"total_tokens":268,"completion_tokens_details":{"reasoning_tokens":208,"text_tokens":224},"prompt_tokens_details":{"text_tokens":44}},"created":1772145429,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-7bc2383a-fc43-9b8c-92d2-ed573f18e641"}'
+        body: '{"choices":[{"message":{"content":"The capital of Quackiland is **Quack**.","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:** The user is asking a question based on a short text provided (\"Quackiland\"). The text states facts about the country/capital and a statue. The question is \"What is the capital of Quackiland?\"\n\n2.  **Extract Information from Text:**\n    *   Sentence 1: \"The capital of Quackiland is Quack.\"\n    *   Sentence 2: \"The Big Canard Statue is located in Quack.\"\n    *   Question: \"What is the capital of Quackiland?\"\n\n3.  **Identify the Answer:** The first sentence explicitly states that the capital is \"Quack\".\n\n4.  **Formulate Output:** Direct answer based on the text.\n\n5.  **Review for Constraints:** None specific, just answer the question accurately based on the provided context.\n\n6.  **Final Decision:** The capital is Quack.cw","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":44,"completion_tokens":215,"total_tokens":259,"completion_tokens_details":{"reasoning_tokens":199,"text_tokens":215},"prompt_tokens_details":{"text_tokens":44}},"created":1772221379,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-8949d582-509f-9340-816f-de00bb0b50bc"}'
         headers:
             Content-Type:
                 - application/json
             Req-Arrive-Time:
-                - "1772145427704"
+                - "1772221377000"
             Req-Cost-Time:
-                - "1631"
+                - "1681"
             Resp-Start-Time:
-                - "1772145429335"
+                - "1772221378682"
             Server:
                 - istio-envoy
             Vary:
@@ -38,7 +38,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "1631"
+                - "1681"
         status: 200 OK
         code: 200
-        duration: 1.886s
+        duration: 1.935s

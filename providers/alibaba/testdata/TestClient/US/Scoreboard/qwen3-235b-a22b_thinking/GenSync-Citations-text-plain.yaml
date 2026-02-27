@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 248
+        content_length: 271
         host: dashscope-us.aliyuncs.com
         body: |
-            {"model":"qwen3-235b-a22b","messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"stream":false}
+            {"model":"qwen3-235b-a22b","messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"stream":false,"enable_thinking":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,18 +21,18 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"choices":[{"message":{"content":"The capital of Quackiland is **Quack**. \n\nThis is explicitly stated in the provided information. The mention of the Big Canard Statue in Quack adds context about the city but does not affect the answer to the question.","reasoning_content":"Okay, let''s see. The user asked, \"What is the capital of Quackiland?\" and provided two statements: \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\" Then they repeated the question.\n\nHmm, so the first sentence directly answers the question. The capital is Quack. The second sentence mentions that there''s a Big Canard Statue in Quack. Since the question is just asking for the capital, the answer should be straightforward from the first statement. The second part about the statue might be extra information that''s not needed here. But maybe I should check if there''s any trick or if the user expects more. However, given the information provided, there''s no conflicting data. So the answer is Quack. I should make sure not to include any extra details unless necessary. Just confirm the capital as stated.","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":38,"completion_tokens":231,"total_tokens":269,"completion_tokens_details":{"reasoning_tokens":178}},"created":1772142435,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-ly5kgh1Ghm3UdAX_"}'
+        body: '{"choices":[{"message":{"content":"The capital of Quackiland is **Quack**. \n\nThis is explicitly stated in the first sentence of the provided information. The second sentence about the Big Canard Statue serves as additional context about the city but does not affect the answer.","reasoning_content":"Okay, so the user is asking, \"What is the capital of Quackiland?\" Let me check the information provided.\n\nFirst sentence: \"The capital of Quackiland is Quack.\" So that''s a direct answer. The second sentence says, \"The Big Canard Statue is located in Quack.\" That seems like extra info, maybe to test if I can focus on the relevant detail. \n\nWait, sometimes questions might have tricks, like wordplay or hidden details. Let me parse it again. Quackiland''s capital is named Quack. The statue is in Quack, but that''s just another fact about the city. The user is asking for the capital, which is already stated. \n\nIs there any chance that the second sentence could imply something else? Like maybe the statue is in the capital, which would still confirm that Quack is the capital. Or maybe the user is testing attention to detail. But the answer seems straightforward. The capital is Quack. \n\nI should make sure there''s no ambiguity. The country is Quackiland, and its capital is Quack. The statue''s location reinforces that Quack is a significant city, but the answer is given directly in the first sentence. So the answer is Quack.","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":38,"completion_tokens":307,"total_tokens":345,"completion_tokens_details":{"reasoning_tokens":253}},"created":1772220574,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-IBF9ICxXelzLQ6dP"}'
         headers:
             Content-Type:
                 - application/json
             Eagleeye-Traceid:
-                - 0bc2425d17721424303685827ee4d7
+                - 0bc2425d17722205664267014ee4da
             Req-Arrive-Time:
-                - "1772142430370"
+                - "1772220566428"
             Req-Cost-Time:
-                - "4877"
+                - "7649"
             Resp-Start-Time:
-                - "1772142435248"
+                - "1772220574077"
             Server:
                 - istio-envoy
             Strict-Transport-Security:
@@ -45,7 +45,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "4877"
+                - "7649"
         status: 200 OK
         code: 200
-        duration: 4.906s
+        duration: 7.676s

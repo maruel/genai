@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 250
+        content_length: 274
         host: dashscope-intl.aliyuncs.com
         body: |
-            {"model":"qwen3.5-397b-a17b","messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"stream":false}
+            {"model":"qwen3.5-397b-a17b","messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"stream":false,"enable_thinking":false}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,16 +21,16 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"choices":[{"message":{"content":"The capital of Quackiland is **Quack**.","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Premise 1: The capital of Quackiland is Quack.\n    *   Premise 2: The Big Canard Statue is located in Quack.\n    *   Question: What is the capital of Quackiland?\n\n2.  **Evaluate the Premises:**\n    *   Premise 1 directly states the answer to the question.\n    *   Premise 2 is extra information (distractor) about a statue located in the capital.\n\n3.  **Determine the Answer:**\n    *   Based on Premise 1, the capital is Quack.\n\n4.  **Formulate the Output:**\n    *   State the answer clearly based on the provided text.\n\n5.  **Final Check:**\n    *   Does the answer directly address the question? Yes.\n    *   Is it accurate according to the provided text? Yes.\n\n6.  **Construct Final Response:** \"The capital of Quackiland is Quack.\" or simply \"Quack\". I will provide a complete sentence for clarity.cw","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":39,"completion_tokens":257,"total_tokens":296,"completion_tokens_details":{"reasoning_tokens":241,"text_tokens":257},"prompt_tokens_details":{"text_tokens":39}},"created":1772142046,"system_fingerprint":null,"model":"qwen3.5-397b-a17b","id":"chatcmpl-5e7bc237-71fc-9f96-8877-04117ea15044"}'
+        body: '{"choices":[{"message":{"content":"Based on the text you provided, the first sentence explicitly states: \"The capital of Quackiland is Quack.\"\n\nTherefore, the capital of Quackiland is **Quack**.","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":41,"completion_tokens":38,"total_tokens":79,"completion_tokens_details":{"text_tokens":38},"prompt_tokens_details":{"text_tokens":41}},"created":1772219112,"system_fingerprint":null,"model":"qwen3.5-397b-a17b","id":"chatcmpl-e7890b99-afb9-9ff2-b875-0f47f8bc3fcc"}'
         headers:
             Content-Type:
                 - application/json
             Req-Arrive-Time:
-                - "1772142043036"
+                - "1772219110902"
             Req-Cost-Time:
-                - "2835"
+                - "1229"
             Resp-Start-Time:
-                - "1772142045872"
+                - "1772219112131"
             Server:
                 - istio-envoy
             Vary:
@@ -38,7 +38,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "2835"
+                - "1228"
         status: 200 OK
         code: 200
-        duration: 3.078s
+        duration: 1.48s

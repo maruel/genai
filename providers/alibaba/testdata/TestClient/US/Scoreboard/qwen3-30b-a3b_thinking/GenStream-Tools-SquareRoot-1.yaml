@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 581
+        content_length: 604
         host: dashscope-us.aliyuncs.com
         body: |
-            {"model":"qwen3-30b-a3b","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"stream":true,"stream_options":{"include_usage":true},"tool_choice":"required","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
+            {"model":"qwen3-30b-a3b","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"stream":true,"stream_options":{"include_usage":true},"tool_choice":"required","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"enable_thinking":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,19 +21,19 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"error":{"code":"invalid_parameter_error","param":null,"message":"<400> InternalError.Algo.InvalidParameter: The tool_choice parameter does not support being set to required or object in thinking mode","type":"invalid_request_error"},"id":"chatcmpl-8jbtzL1R-T1LBmF-"}
+            data: {"error":{"code":"invalid_parameter_error","param":null,"message":"<400> InternalError.Algo.InvalidParameter: The tool_choice parameter does not support being set to required or object in thinking mode","type":"invalid_request_error"},"id":"chatcmpl-NE49_aVKwumKE1i1"}
 
         headers:
             Content-Type:
                 - text/event-stream;charset=UTF-8
             Eagleeye-Traceid:
-                - 0bc2425d17721425995116054ee4d7
+                - 0bc2425d17722211067372468ee4d9
             Req-Arrive-Time:
-                - "1772142599513"
+                - "1772221106738"
             Req-Cost-Time:
-                - "949"
+                - "766"
             Resp-Start-Time:
-                - "1772142600463"
+                - "1772221107505"
             Server:
                 - istio-envoy
             Strict-Transport-Security:
@@ -45,7 +45,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "949"
+                - "766"
         status: 200 OK
         code: 200
-        duration: 979ms
+        duration: 792ms

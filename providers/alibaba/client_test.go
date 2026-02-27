@@ -5,6 +5,7 @@
 package alibaba_test
 
 import (
+	"encoding/json"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -122,14 +123,20 @@ func TestClient(t *testing.T) {
 					}
 				}
 				// Build model list from ListModels so new models are discovered.
+				// Qwen3.5 models support hybrid-thinking: test both with and without thinking.
 				models := make([]scoreboard.Model, 0, len(cachedModels))
 				for _, m := range cachedModels {
 					id := m.GetID()
-					reason, ok := reasonModels[id]
-					if !ok {
-						reason = strings.Contains(id, "thinking") || strings.Contains(id, "qwq") || strings.HasPrefix(id, "qwen3.5-")
+					if strings.HasPrefix(id, "qwen3.5-") {
+						models = append(models, scoreboard.Model{Model: id, Reason: false})
+						models = append(models, scoreboard.Model{Model: id, Reason: true})
+					} else {
+						reason, ok := reasonModels[id]
+						if !ok {
+							reason = strings.Contains(id, "thinking") || strings.Contains(id, "qwq") || strings.Contains(id, "qvq")
+						}
+						models = append(models, scoreboard.Model{Model: id, Reason: reason})
 					}
-					models = append(models, scoreboard.Model{Model: id, Reason: reason})
 				}
 				getClientRT := func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 					opts := []genai.ProviderOption{
@@ -149,7 +156,10 @@ func TestClient(t *testing.T) {
 					if err != nil {
 						t.Fatal(err)
 					}
-					return c
+					return &internaltest.InjectOptions{
+						Provider: c,
+						Opts:     []genai.GenOption{&alibaba.GenOption{EnableThinking: model.Reason}},
+					}
 				}
 				smoketest.Run(t, getClientRT, models, testRecorder.Records, smoketest.WithScoreboardFile(b.sbFile))
 			})
@@ -207,6 +217,51 @@ func TestClient(t *testing.T) {
 			})
 		})
 	}
+}
+
+func TestGenOption(t *testing.T) {
+	msgs := genai.Messages{genai.NewTextMessage("test")}
+	t.Run("enabled", func(t *testing.T) {
+		var req alibaba.ChatRequest
+		if err := req.Init(msgs, "qwen3.5-397b-a17b", &alibaba.GenOption{EnableThinking: true}); err != nil {
+			t.Fatal(err)
+		}
+		if !req.EnableThinking {
+			t.Error("EnableThinking = false, want true")
+		}
+	})
+	t.Run("disabled", func(t *testing.T) {
+		var req alibaba.ChatRequest
+		if err := req.Init(msgs, "qwen3.5-397b-a17b", &alibaba.GenOption{EnableThinking: false}); err != nil {
+			t.Fatal(err)
+		}
+		if req.EnableThinking {
+			t.Error("EnableThinking = true, want false")
+		}
+	})
+	t.Run("budget", func(t *testing.T) {
+		var req alibaba.ChatRequest
+		if err := req.Init(msgs, "qwen3.5-397b-a17b", &alibaba.GenOption{EnableThinking: true, ThinkingBudget: 4096}); err != nil {
+			t.Fatal(err)
+		}
+		if req.ThinkingBudget != 4096 {
+			t.Errorf("ThinkingBudget = %d, want 4096", req.ThinkingBudget)
+		}
+	})
+	t.Run("json_false_present", func(t *testing.T) {
+		// Verify enable_thinking:false is serialized (not omitted).
+		var req alibaba.ChatRequest
+		if err := req.Init(msgs, "qwen3.5-397b-a17b", &alibaba.GenOption{}); err != nil {
+			t.Fatal(err)
+		}
+		b, err := json.Marshal(&req)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !strings.Contains(string(b), `"enable_thinking":false`) {
+			t.Errorf("expected enable_thinking:false in JSON, got: %s", b)
+		}
+	})
 }
 
 func init() {

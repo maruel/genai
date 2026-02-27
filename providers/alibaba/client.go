@@ -81,6 +81,11 @@ type ChatRequest struct {
 	Seed       int64  `json:"seed,omitzero"`
 	// DashScope extension: enable web search.
 	EnableSearch bool `json:"enable_search,omitzero"`
+	// DashScope extension: enable thinking mode. Not omitzero so false is sent explicitly,
+	// overriding the default (enabled) on qwen3.5 models.
+	EnableThinking bool `json:"enable_thinking"`
+	// DashScope extension: maximum number of reasoning tokens. 0 means no limit.
+	ThinkingBudget int64 `json:"thinking_budget,omitzero"`
 }
 
 // Init initializes the request from genai types.
@@ -97,6 +102,9 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			return err
 		}
 		switch v := opt.(type) {
+		case *GenOption:
+			c.EnableThinking = v.EnableThinking
+			c.ThinkingBudget = v.ThinkingBudget
 		case *genai.GenOptionText:
 			c.MaxToks = v.MaxTokens
 			c.Temperature = v.Temperature
@@ -104,7 +112,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			c.TopK = int64(v.TopK)
 			sp = v.SystemPrompt
 			if v.TopLogprobs > 0 {
-				unsupported = append(unsupported, "GenOptionText.TopLogprobs")
+				unsupported = append(unsupported, "GenOption.TopLogprobs")
 			}
 			c.Stop = v.Stop
 			if v.ReplyAsJSON {
@@ -627,6 +635,19 @@ const (
 	// BackendCN is the China (Beijing) endpoint.
 	BackendCN ProviderOptionBackend = "dashscope"
 )
+
+// GenOption defines Alibaba DashScope specific generation options.
+type GenOption struct {
+	// EnableThinking controls the thinking mode. Qwen3.5 models default to thinking enabled.
+	EnableThinking bool
+	// ThinkingBudget limits the maximum number of reasoning tokens. 0 means no limit.
+	ThinkingBudget int64
+}
+
+// Validate implements genai.Validatable.
+func (o *GenOption) Validate() error {
+	return nil
+}
 
 // Validate implements genai.ProviderOption.
 func (p ProviderOptionBackend) Validate() error {

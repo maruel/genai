@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 251
+        content_length: 275
         host: dashscope-us.aliyuncs.com
         body: |
-            {"model":"qwen3-vl-flash","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"stream":false,"response_format":{"type":"json_object"}}
+            {"model":"qwen3-vl-flash","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"stream":false,"response_format":{"type":"json_object"},"enable_thinking":false}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -20,20 +20,20 @@ interactions:
         proto_major: 2
         proto_minor: 0
         content_length: 441
-        body: '{"choices":[{"message":{"content":"{\"is_fruit\": true}","reasoning_content":"","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":40,"completion_tokens":8,"total_tokens":48,"prompt_tokens_details":{"text_tokens":40},"completion_tokens_details":{"text_tokens":8}},"created":1772125125,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-14m7mO9MD6YvLIBp"}'
+        body: '{"choices":[{"message":{"content":"{\"is_fruit\": true}","reasoning_content":"","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":40,"completion_tokens":8,"total_tokens":48,"prompt_tokens_details":{"text_tokens":40},"completion_tokens_details":{"text_tokens":8}},"created":1772219968,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-oxSOyxSyMBSahkJC"}'
         headers:
             Content-Length:
                 - "441"
             Content-Type:
                 - application/json
             Eagleeye-Traceid:
-                - 0bc2426217721251241543308ed514
+                - 0bc2426217722199662882732ed50d
             Req-Arrive-Time:
-                - "1772125124161"
+                - "1772219966294"
             Req-Cost-Time:
-                - "989"
+                - "1314"
             Resp-Start-Time:
-                - "1772125125151"
+                - "1772219967608"
             Server:
                 - istio-envoy
             Strict-Transport-Security:
@@ -45,7 +45,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "989"
+                - "1314"
         status: 200 OK
         code: 200
-        duration: 1.018s
+        duration: 1.338s

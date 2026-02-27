@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 123
+        content_length: 147
         host: dashscope-us.aliyuncs.com
         body: |
-            {"model":"qwen3-vl-flash","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":false,"seed":42}
+            {"model":"qwen3-vl-flash","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":false,"seed":42,"enable_thinking":false}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -20,20 +20,20 @@ interactions:
         proto_major: 2
         proto_minor: 0
         content_length: 427
-        body: '{"choices":[{"message":{"content":"Hello.","reasoning_content":"","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":16,"completion_tokens":3,"total_tokens":19,"prompt_tokens_details":{"text_tokens":16},"completion_tokens_details":{"text_tokens":3}},"created":1772125122,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-7O5KexXM06LCNsMP"}'
+        body: '{"choices":[{"message":{"content":"Hello.","reasoning_content":"","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":16,"completion_tokens":3,"total_tokens":19,"prompt_tokens_details":{"text_tokens":16},"completion_tokens_details":{"text_tokens":3}},"created":1772219963,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-T34Fc-y7qJk64brU"}'
         headers:
             Content-Length:
                 - "427"
             Content-Type:
                 - application/json
             Eagleeye-Traceid:
-                - 0bc2426217721251207573302ed514
+                - 0bc2426217722199618012715ed50d
             Req-Arrive-Time:
-                - "1772125120765"
+                - "1772219961806"
             Req-Cost-Time:
-                - "950"
+                - "966"
             Resp-Start-Time:
-                - "1772125121715"
+                - "1772219962772"
             Server:
                 - istio-envoy
             Strict-Transport-Security:
@@ -45,7 +45,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "949"
+                - "966"
         status: 200 OK
         code: 200
-        duration: 979ms
+        duration: 988ms

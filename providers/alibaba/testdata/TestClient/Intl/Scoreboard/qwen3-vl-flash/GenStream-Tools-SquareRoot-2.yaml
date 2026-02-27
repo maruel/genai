@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 819
+        content_length: 843
         host: dashscope-intl.aliyuncs.com
         body: |
-            {"model":"qwen3-vl-flash","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"id":"call_1e8da315c7b54c6b977264","type":"function","function":{"name":"square_root","arguments":" {\"number\": 132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_1e8da315c7b54c6b977264"}],"stream":true,"stream_options":{"include_usage":true},"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
+            {"model":"qwen3-vl-flash","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"id":"call_b862b2dd5f214ae08292fb","type":"function","function":{"name":"square_root","arguments":" {\"number\": 132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_b862b2dd5f214ae08292fb"}],"stream":true,"stream_options":{"include_usage":true},"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"enable_thinking":false}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,21 +21,21 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"choices":[{"delta":{"content":"3","role":"assistant"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772139686,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-3bd5cdf4-0d0a-9610-94ce-af2f8a158d0c"}
+            data: {"choices":[{"delta":{"content":"3","role":"assistant"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221052,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-65091f15-a440-9521-b178-6c0d2f413a53"}
 
-            data: {"choices":[{"delta":{"content":"6"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772139686,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-3bd5cdf4-0d0a-9610-94ce-af2f8a158d0c"}
+            data: {"choices":[{"delta":{"content":"6"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221052,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-65091f15-a440-9521-b178-6c0d2f413a53"}
 
-            data: {"choices":[{"delta":{"content":"3"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772139686,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-3bd5cdf4-0d0a-9610-94ce-af2f8a158d0c"}
+            data: {"choices":[{"delta":{"content":"3"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221052,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-65091f15-a440-9521-b178-6c0d2f413a53"}
 
-            data: {"choices":[{"delta":{"content":"."},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772139686,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-3bd5cdf4-0d0a-9610-94ce-af2f8a158d0c"}
+            data: {"choices":[{"delta":{"content":"."},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221052,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-65091f15-a440-9521-b178-6c0d2f413a53"}
 
-            data: {"choices":[{"delta":{"content":"8"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772139686,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-3bd5cdf4-0d0a-9610-94ce-af2f8a158d0c"}
+            data: {"choices":[{"delta":{"content":"8"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221052,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-65091f15-a440-9521-b178-6c0d2f413a53"}
 
-            data: {"choices":[{"delta":{"content":"9"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772139686,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-3bd5cdf4-0d0a-9610-94ce-af2f8a158d0c"}
+            data: {"choices":[{"delta":{"content":"9"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221052,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-65091f15-a440-9521-b178-6c0d2f413a53"}
 
-            data: {"choices":[{"finish_reason":"stop","delta":{"content":""},"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772139686,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-3bd5cdf4-0d0a-9610-94ce-af2f8a158d0c"}
+            data: {"choices":[{"finish_reason":"stop","delta":{"content":""},"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221052,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-65091f15-a440-9521-b178-6c0d2f413a53"}
 
-            data: {"choices":[],"object":"chat.completion.chunk","usage":{"prompt_tokens":54,"completion_tokens":7,"total_tokens":61,"completion_tokens_details":{"text_tokens":7},"prompt_tokens_details":{"text_tokens":54}},"created":1772139686,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-3bd5cdf4-0d0a-9610-94ce-af2f8a158d0c"}
+            data: {"choices":[],"object":"chat.completion.chunk","usage":{"prompt_tokens":54,"completion_tokens":7,"total_tokens":61,"completion_tokens_details":{"text_tokens":7},"prompt_tokens_details":{"text_tokens":54}},"created":1772221052,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-65091f15-a440-9521-b178-6c0d2f413a53"}
 
             data: [DONE]
 
@@ -43,11 +43,11 @@ interactions:
             Content-Type:
                 - text/event-stream;charset=UTF-8
             Req-Arrive-Time:
-                - "1772139685620"
+                - "1772221051460"
             Req-Cost-Time:
-                - "363"
+                - "288"
             Resp-Start-Time:
-                - "1772139685983"
+                - "1772221051748"
             Server:
                 - istio-envoy
             Vary:
@@ -55,7 +55,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "362"
+                - "287"
         status: 200 OK
         code: 200
-        duration: 613ms
+        duration: 534ms

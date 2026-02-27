@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 266
+        content_length: 289
         host: dashscope-intl.aliyuncs.com
         body: |
-            {"model":"qwen3.5-397b-a17b","messages":[{"role":"user","content":[{"type":"text","text":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"stream":false}
+            {"model":"qwen3.5-397b-a17b","messages":[{"role":"user","content":[{"type":"text","text":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"stream":false,"enable_thinking":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,16 +21,16 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"choices":[{"message":{"content":"The capital of Quackiland is **Quack**.","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:** The user is providing a short text about a fictional place called \"Quackiland\" and asking a specific question based on that text: \"What is the capital of Quackiland?\"\n\n2.  **Scan the Text:** I need to look for the answer within the provided text.\n    *   Sentence 1: \"The capital of Quackiland is Quack.\"\n    *   Sentence 2: \"The Big Canard Statue is located in Quack.\"\n\n3.  **Identify the Answer:** The first sentence explicitly states \"The capital of Quackiland is Quack.\"\n\n4.  **Formulate the Output:** The answer is \"Quack\". I should state this clearly.\n\n5.  **Review for Constraints:** There are no special constraints (like \"answer in one word\" or \"don''t repeat the question\"). A direct answer is best.\n\n6.  **Final Decision:** The capital is Quack.cw","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":44,"completion_tokens":226,"total_tokens":270,"completion_tokens_details":{"reasoning_tokens":210,"text_tokens":226},"prompt_tokens_details":{"text_tokens":44}},"created":1772145523,"system_fingerprint":null,"model":"qwen3.5-397b-a17b","id":"chatcmpl-bf660971-3cdf-9010-b6d5-7429fe9c50ba"}'
+        body: '{"choices":[{"message":{"content":"The capital of Quackiland is **Quack**.","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Input text: \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"\n    *   Question: \"What is the capital of Quackiland?\"\n    *   Task: Answer the question based on the provided text.\n\n2.  **Extract Information:**\n    *   Sentence 1: \"The capital of Quackiland is Quack.\"\n    *   Sentence 2: \"The Big Canard Statue is located in Quack.\" (Irrelevant to the specific question, but confirms \"Quack\" is a place).\n\n3.  **Identify the Answer:**\n    *   The text explicitly states: \"The capital of Quackiland is Quack.\"\n    *   Therefore, the capital is \"Quack\".\n\n4.  **Formulate the Output:**\n    *   Direct answer: Quack.\n    *   Complete sentence (optional but polite): The capital of Quackiland is Quack.\n\n5.  **Final Review:** Does the answer directly address the prompt using the provided information? Yes.\n\n6.  **Construct Final Response:** \"The capital of Quackiland is Quack.\" or simply \"Quack\". I''ll provide a clear, direct answer.cw","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":44,"completion_tokens":296,"total_tokens":340,"completion_tokens_details":{"reasoning_tokens":280,"text_tokens":296},"prompt_tokens_details":{"text_tokens":44}},"created":1772220992,"system_fingerprint":null,"model":"qwen3.5-397b-a17b","id":"chatcmpl-b87bb560-5512-9d95-a58b-5b697d5310ff"}'
         headers:
             Content-Type:
                 - application/json
             Req-Arrive-Time:
-                - "1772145520213"
+                - "1772220989113"
             Req-Cost-Time:
-                - "2374"
+                - "3148"
             Resp-Start-Time:
-                - "1772145522588"
+                - "1772220992261"
             Server:
                 - istio-envoy
             Vary:
@@ -38,7 +38,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "2374"
+                - "3147"
         status: 200 OK
         code: 200
-        duration: 2.628s
+        duration: 3.398s

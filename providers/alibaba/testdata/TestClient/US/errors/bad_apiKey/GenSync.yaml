@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 101
+        content_length: 125
         host: dashscope-us.aliyuncs.com
         body: |
-            {"model":"qwen3-30b-a3b","messages":[{"role":"user","content":"Tell a short joke."}],"stream":false}
+            {"model":"qwen3-30b-a3b","messages":[{"role":"user","content":"Tell a short joke."}],"stream":false,"enable_thinking":false}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -20,18 +20,18 @@ interactions:
         proto_major: 2
         proto_minor: 0
         content_length: 234
-        body: '{"error":{"message":"Incorrect API key provided. For details, see: https://help.aliyun.com/zh/model-studio/error-code#apikey-error","type":"invalid_request_error","param":null,"code":"invalid_api_key"},"request_id":"lDvcR4bnU7XM9iGB"}'
+        body: '{"error":{"message":"Incorrect API key provided. For details, see: https://help.aliyun.com/zh/model-studio/error-code#apikey-error","type":"invalid_request_error","param":null,"code":"invalid_api_key"},"request_id":"LNr-lVSSiNsZr0Rc"}'
         headers:
             Content-Length:
                 - "234"
             Content-Type:
                 - application/json
             Req-Arrive-Time:
-                - "1772125162380"
+                - "1772219107574"
             Req-Cost-Time:
-                - "57"
+                - "56"
             Resp-Start-Time:
-                - "1772125162437"
+                - "1772219107630"
             Server:
                 - istio-envoy
             Vary:
@@ -40,4 +40,4 @@ interactions:
                 - "56"
         status: 401 Unauthorized
         code: 401
-        duration: 86ms
+        duration: 83ms

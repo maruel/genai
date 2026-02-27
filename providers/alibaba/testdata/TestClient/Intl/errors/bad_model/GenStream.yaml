@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 136
+        content_length: 160
         host: dashscope-intl.aliyuncs.com
         body: |
-            {"model":"bad model","messages":[{"role":"user","content":"Tell a short joke."}],"stream":true,"stream_options":{"include_usage":true}}
+            {"model":"bad model","messages":[{"role":"user","content":"Tell a short joke."}],"stream":true,"stream_options":{"include_usage":true},"enable_thinking":false}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,22 +21,22 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"error":{"message":"The model `bad model` does not exist or you do not have access to it.","type":"invalid_request_error","param":null,"code":"model_not_found"},"request_id":"cd666077-e440-9357-891e-81a9c9a6cbf1"}'
+        body: '{"error":{"message":"The model `bad model` does not exist or you do not have access to it.","type":"invalid_request_error","param":null,"code":"model_not_found"},"request_id":"eef74a94-6ef9-97e0-8b94-bcd8228d759d"}'
         headers:
             Content-Type:
                 - application/json
             Req-Arrive-Time:
-                - "1772140053733"
+                - "1772219110640"
             Req-Cost-Time:
-                - "7"
+                - "9"
             Resp-Start-Time:
-                - "1772140053740"
+                - "1772219110649"
             Server:
                 - istio-envoy
             Vary:
                 - Origin,Access-Control-Request-Method,Access-Control-Request-Headers, Accept-Encoding
             X-Envoy-Upstream-Service-Time:
-                - "6"
+                - "8"
         status: 404 Not Found
         code: 404
-        duration: 258ms
+        duration: 259ms

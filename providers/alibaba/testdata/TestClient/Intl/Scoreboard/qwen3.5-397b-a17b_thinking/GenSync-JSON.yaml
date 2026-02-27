@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 254
+        content_length: 277
         host: dashscope-intl.aliyuncs.com
         body: |
-            {"model":"qwen3.5-397b-a17b","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"stream":false,"response_format":{"type":"json_object"}}
+            {"model":"qwen3.5-397b-a17b","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"stream":false,"response_format":{"type":"json_object"},"enable_thinking":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,16 +21,16 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"choices":[{"message":{"content":"{\"is_fruit\": true}","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Question: \"Is a banana a fruit?\"\n    *   Constraint 1: \"Do not include an explanation.\"\n    *   Constraint 2: \"Reply ONLY as JSON according to the provided schema.\"\n    *   Schema: `{\"is_fruit\": bool}`\n\n2.  **Determine the Answer:**\n    *   Biologically and culinarily, a banana is classified as a fruit.\n    *   Value for `is_fruit`: `true`.\n\n3.  **Format the Output:**\n    *   Must be valid JSON.\n    *   Must match the schema `{\"is_fruit\": bool}`.\n    *   No extra text, no markdown code blocks (unless implied by \"JSON\", but usually \"ONLY as JSON\" means raw JSON string), no explanations.\n\n4.  **Draft the Response:**\n    *   `{\"is_fruit\": true}`\n\n5.  **Review against Constraints:**\n    *   Is it JSON? Yes.\n    *   Does it match the schema? Yes.\n    *   Is there an explanation? No.\n    *   Is there any extra text? No.\n\n6.  **Final Output Generation:**\n    *   `{\"is_fruit\": true}`","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":41,"completion_tokens":292,"total_tokens":333,"completion_tokens_details":{"reasoning_tokens":281,"text_tokens":292},"prompt_tokens_details":{"text_tokens":41}},"created":1772145486,"system_fingerprint":null,"model":"qwen3.5-397b-a17b","id":"chatcmpl-75980c7d-2e7b-9126-b35b-a3c3dc5cb1ba"}'
+        body: '{"choices":[{"message":{"content":"{\"is_fruit\": true}","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Question: \"Is a banana a fruit?\"\n    *   Constraint 1: \"Do not include an explanation.\"\n    *   Constraint 2: \"Reply ONLY as JSON according to the provided schema.\"\n    *   Schema: `{\"is_fruit\": bool}`\n\n2.  **Determine the Answer:**\n    *   Biologically and culinarily, a banana is considered a fruit.\n    *   Value for `is_fruit`: `true`.\n\n3.  **Format the Output:**\n    *   Must be valid JSON.\n    *   Must match the schema `{\"is_fruit\": bool}`.\n    *   No extra text, no markdown code blocks (unless implied by \"JSON\", but usually \"ONLY as JSON\" means raw JSON string), no explanations.\n\n4.  **Draft the JSON:**\n    *   `{\"is_fruit\": true}`\n\n5.  **Review against Constraints:**\n    *   Is it JSON? Yes.\n    *   Does it match the schema? Yes.\n    *   Is there an explanation? No.\n    *   Is there any other text? No.\n\n6.  **Final Output Generation:**\n    *   `{\"is_fruit\": true}`\n\n    *Self-Correction on Markdown:* Sometimes users expect code blocks for JSON. However, \"Reply ONLY as JSON\" usually implies raw text. I will output raw JSON to be safe adhering strictly to \"ONLY\".\n\n    *Wait, checking typical behavior:* Often, when users ask for JSON, they accept it within a code block or as raw text. The prompt says \"Reply ONLY as JSON\". Adding markdown ticks (```) might violate \"ONLY as JSON\" if interpreted strictly as the data format itself. However, many systems render JSON inside blocks. To be safest with \"ONLY\", I will provide the raw JSON string without markdown formatting.\n\n    *Re-evaluating:* Actually, most LLM interfaces treat markdown code blocks as part of the text response. If I say \"Reply ONLY as JSON\", adding ```json ... ``` adds non-JSON characters. I should output just the raw JSON object.\n\n    *Final Decision:* `{\"is_fruit\": true}`.\n\n7.  **Final Check:**\n    *   Schema: `{\"is_fruit\": bool}` -> `{\"is_fruit\": true}` matches.\n    *   No explanation.\n    *   Only JSON.\n\n    Let''s produce the output.cw","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":41,"completion_tokens":549,"total_tokens":590,"completion_tokens_details":{"reasoning_tokens":538,"text_tokens":549},"prompt_tokens_details":{"text_tokens":41}},"created":1772220951,"system_fingerprint":null,"model":"qwen3.5-397b-a17b","id":"chatcmpl-8361e2a5-ec98-9541-b5cb-bac6ab75ce81"}'
         headers:
             Content-Type:
                 - application/json
             Req-Arrive-Time:
-                - "1772145482314"
+                - "1772220944617"
             Req-Cost-Time:
-                - "3485"
+                - "6359"
             Resp-Start-Time:
-                - "1772145485799"
+                - "1772220950977"
             Server:
                 - istio-envoy
             Vary:
@@ -38,7 +38,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "3485"
+                - "6359"
         status: 200 OK
         code: 200
-        duration: 3.739s
+        duration: 6.609s

@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 113
+        content_length: 137
         host: dashscope-intl.aliyuncs.com
         body: |
-            {"model":"qwen3-vl-flash","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":false}
+            {"model":"qwen3-vl-flash","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":false,"enable_thinking":false}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,16 +21,16 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"choices":[{"message":{"content":"Hello.","reasoning_content":"","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":16,"completion_tokens":3,"total_tokens":19,"prompt_tokens_details":{"text_tokens":16},"completion_tokens_details":{"text_tokens":3}},"created":1772139682,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-2f4748d4-9b5c-9047-86f2-c34833126231"}'
+        body: '{"choices":[{"message":{"content":"Hello.","reasoning_content":"","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":16,"completion_tokens":3,"total_tokens":19,"prompt_tokens_details":{"text_tokens":16},"completion_tokens_details":{"text_tokens":3}},"created":1772221048,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-89c5c3f0-264e-9a86-85b1-6f1e5b1400da"}'
         headers:
             Content-Type:
                 - application/json
             Req-Arrive-Time:
-                - "1772139681434"
+                - "1772221047471"
             Req-Cost-Time:
-                - "458"
+                - "369"
             Resp-Start-Time:
-                - "1772139681893"
+                - "1772221047841"
             Server:
                 - istio-envoy
             Vary:
@@ -38,7 +38,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "458"
+                - "369"
         status: 200 OK
         code: 200
-        duration: 709ms
+        duration: 1.163s

@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 152
+        content_length: 176
         host: dashscope-us.aliyuncs.com
         body: |
-            {"model":"qwen3-vl-flash","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":true,"stream_options":{"include_usage":true}}
+            {"model":"qwen3-vl-flash","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":true,"stream_options":{"include_usage":true},"enable_thinking":false}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,15 +21,15 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"choices":[{"delta":{"content":"","role":"assistant"},"index":0,"logprobs":null,"finish_reason":null}],"object":"chat.completion.chunk","usage":null,"created":1772125121,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-wv7YiGc--QYmIRjQ"}
+            data: {"choices":[{"delta":{"content":"","role":"assistant"},"index":0,"logprobs":null,"finish_reason":null}],"object":"chat.completion.chunk","usage":null,"created":1772219962,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-UXIsPm7u7wuE-Mmq"}
 
-            data: {"choices":[{"finish_reason":null,"logprobs":null,"delta":{"content":"Hello"},"index":0}],"object":"chat.completion.chunk","usage":null,"created":1772125121,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-wv7YiGc--QYmIRjQ"}
+            data: {"choices":[{"finish_reason":null,"logprobs":null,"delta":{"content":"Hello"},"index":0}],"object":"chat.completion.chunk","usage":null,"created":1772219962,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-UXIsPm7u7wuE-Mmq"}
 
-            data: {"choices":[{"delta":{"content":"."},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772125121,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-wv7YiGc--QYmIRjQ"}
+            data: {"choices":[{"delta":{"content":"."},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772219962,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-UXIsPm7u7wuE-Mmq"}
 
-            data: {"choices":[{"finish_reason":"stop","delta":{"content":""},"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772125121,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-wv7YiGc--QYmIRjQ"}
+            data: {"choices":[{"finish_reason":"stop","delta":{"content":""},"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772219962,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-UXIsPm7u7wuE-Mmq"}
 
-            data: {"choices":[],"object":"chat.completion.chunk","usage":{"prompt_tokens":16,"completion_tokens":3,"total_tokens":19,"completion_tokens_details":{"text_tokens":3},"prompt_tokens_details":{"text_tokens":16}},"created":1772125121,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-wv7YiGc--QYmIRjQ"}
+            data: {"choices":[],"object":"chat.completion.chunk","usage":{"prompt_tokens":16,"completion_tokens":3,"total_tokens":19,"completion_tokens_details":{"text_tokens":3},"prompt_tokens_details":{"text_tokens":16}},"created":1772219962,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-UXIsPm7u7wuE-Mmq"}
 
             data: [DONE]
 
@@ -37,13 +37,13 @@ interactions:
             Content-Type:
                 - text/event-stream;charset=UTF-8
             Eagleeye-Traceid:
-                - 0bc2426217721251198103299ed514
+                - 0bc2426217722199608492711ed50d
             Req-Arrive-Time:
-                - "1772125119816"
+                - "1772219960854"
             Req-Cost-Time:
-                - "875"
+                - "947"
             Resp-Start-Time:
-                - "1772125120691"
+                - "1772219961801"
             Server:
                 - istio-envoy
             Strict-Transport-Security:
@@ -55,7 +55,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "874"
+                - "947"
         status: 200 OK
         code: 200
-        duration: 902ms
+        duration: 970ms

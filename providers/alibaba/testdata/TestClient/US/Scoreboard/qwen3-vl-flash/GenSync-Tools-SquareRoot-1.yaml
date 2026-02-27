@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 543
+        content_length: 567
         host: dashscope-us.aliyuncs.com
         body: |
-            {"model":"qwen3-vl-flash","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"stream":false,"tool_choice":"required","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
+            {"model":"qwen3-vl-flash","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"stream":false,"tool_choice":"required","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"enable_thinking":false}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -20,20 +20,20 @@ interactions:
         proto_major: 2
         proto_minor: 0
         content_length: 582
-        body: '{"choices":[{"message":{"content":"","reasoning_content":"","role":"assistant","tool_calls":[{"function":{"arguments":" {\"number\": 132413}","name":"square_root"},"id":"call_167820253ab64c9aa40163","index":0,"type":"function"}]},"finish_reason":"tool_calls","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":209,"completion_tokens":25,"total_tokens":234,"prompt_tokens_details":{"text_tokens":209},"completion_tokens_details":{"text_tokens":25}},"created":1772125127,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-AsktRfBUzhbs6JfX"}'
+        body: '{"choices":[{"message":{"content":"","reasoning_content":"","role":"assistant","tool_calls":[{"function":{"arguments":" {\"number\": 132413}","name":"square_root"},"id":"call_0d0d2fd9ef1a4bd5823d34","index":0,"type":"function"}]},"finish_reason":"tool_calls","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":209,"completion_tokens":25,"total_tokens":234,"prompt_tokens_details":{"text_tokens":209},"completion_tokens_details":{"text_tokens":25}},"created":1772219969,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-aZA4Hd82k5ynsfPm"}'
         headers:
             Content-Length:
                 - "582"
             Content-Type:
                 - application/json
             Eagleeye-Traceid:
-                - 0bc2426217721251251733310ed514
+                - 0bc2426217722199676262734ed50d
             Req-Arrive-Time:
-                - "1772125125181"
+                - "1772219967631"
             Req-Cost-Time:
-                - "1360"
+                - "1091"
             Resp-Start-Time:
-                - "1772125126541"
+                - "1772219968723"
             Server:
                 - istio-envoy
             Strict-Transport-Security:
@@ -45,7 +45,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "1360"
+                - "1091"
         status: 200 OK
         code: 200
-        duration: 1.389s
+        duration: 1.114s

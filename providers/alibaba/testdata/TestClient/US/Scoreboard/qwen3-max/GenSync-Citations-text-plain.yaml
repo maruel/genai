@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 242
+        content_length: 266
         host: dashscope-us.aliyuncs.com
         body: |
-            {"model":"qwen3-max","messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"stream":false}
+            {"model":"qwen3-max","messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"stream":false,"enable_thinking":false}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -20,20 +20,20 @@ interactions:
         proto_major: 2
         proto_minor: 0
         content_length: 384
-        body: '{"choices":[{"message":{"content":"The capital of Quackiland is Quack.","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":38,"completion_tokens":10,"total_tokens":48,"prompt_tokens_details":{"cached_tokens":0}},"created":1772124419,"system_fingerprint":null,"model":"qwen3-max","id":"chatcmpl-jd8pDX3R6iYRaaBr"}'
+        body: '{"choices":[{"message":{"content":"The capital of Quackiland is Quack.","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":38,"completion_tokens":10,"total_tokens":48,"prompt_tokens_details":{"cached_tokens":0}},"created":1772221191,"system_fingerprint":null,"model":"qwen3-max","id":"chatcmpl-O5xrKAODgpVmpNIQ"}'
         headers:
             Content-Length:
                 - "384"
             Content-Type:
                 - application/json
             Eagleeye-Traceid:
-                - 0bc2425d17721244152506483ee4d8
+                - 0bc2425e17722211900153530ebf56
             Req-Arrive-Time:
-                - "1772124415252"
+                - "1772221190022"
             Req-Cost-Time:
-                - "3774"
+                - "1438"
             Resp-Start-Time:
-                - "1772124419027"
+                - "1772221191461"
             Server:
                 - istio-envoy
             Strict-Transport-Security:
@@ -45,7 +45,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "3774"
+                - "1438"
         status: 200 OK
         code: 200
-        duration: 3.799s
+        duration: 1.466s

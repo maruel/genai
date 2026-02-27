@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 150
+        content_length: 174
         host: dashscope-intl.aliyuncs.com
         body: |
-            {"model":"qwen3-vl-flash","messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"stream":false,"max_tokens":16}
+            {"model":"qwen3-vl-flash","messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"stream":false,"max_tokens":16,"enable_thinking":false}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,16 +21,16 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"choices":[{"message":{"content":"Certainly. The **Theory of Relativity** is one of the most profound and","reasoning_content":"","role":"assistant"},"finish_reason":"length","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":19,"completion_tokens":16,"total_tokens":35,"prompt_tokens_details":{"text_tokens":19},"completion_tokens_details":{"text_tokens":16}},"created":1772139683,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-32528439-18b3-9bb5-a212-99bfec08d0e3"}'
+        body: '{"choices":[{"message":{"content":"Certainly. The **Theory of Relativity** is one of the most profound and","reasoning_content":"","role":"assistant"},"finish_reason":"length","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":19,"completion_tokens":16,"total_tokens":35,"prompt_tokens_details":{"text_tokens":19},"completion_tokens_details":{"text_tokens":16}},"created":1772221050,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-e574d65f-0ecb-93dd-957a-9828971de875"}'
         headers:
             Content-Type:
                 - application/json
             Req-Arrive-Time:
-                - "1772139682717"
+                - "1772221049535"
             Req-Cost-Time:
-                - "419"
+                - "428"
             Resp-Start-Time:
-                - "1772139683137"
+                - "1772221049963"
             Server:
                 - istio-envoy
             Vary:
@@ -38,7 +38,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "419"
+                - "427"
         status: 200 OK
         code: 200
-        duration: 670ms
+        duration: 675ms

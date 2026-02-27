@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 258
+        content_length: 282
         host: dashscope-us.aliyuncs.com
         body: |
-            {"model":"qwen3-max","messages":[{"role":"user","content":[{"type":"text","text":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"stream":false}
+            {"model":"qwen3-max","messages":[{"role":"user","content":[{"type":"text","text":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"stream":false,"enable_thinking":false}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -20,20 +20,20 @@ interactions:
         proto_major: 2
         proto_minor: 0
         content_length: 384
-        body: '{"choices":[{"message":{"content":"The capital of Quackiland is Quack.","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":43,"completion_tokens":10,"total_tokens":53,"prompt_tokens_details":{"cached_tokens":0}},"created":1772124420,"system_fingerprint":null,"model":"qwen3-max","id":"chatcmpl-bl5l2CRl5fZmNXGF"}'
+        body: '{"choices":[{"message":{"content":"The capital of Quackiland is Quack.","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":43,"completion_tokens":10,"total_tokens":53,"prompt_tokens_details":{"cached_tokens":0}},"created":1772221193,"system_fingerprint":null,"model":"qwen3-max","id":"chatcmpl-Bk-jsrVRgdPUjd7x"}'
         headers:
             Content-Length:
                 - "384"
             Content-Type:
                 - application/json
             Eagleeye-Traceid:
-                - 0bc2425d17721244190506486ee4d8
+                - 0bc2425e17722211914823532ebf56
             Req-Arrive-Time:
-                - "1772124419051"
+                - "1772221191489"
             Req-Cost-Time:
-                - "1433"
+                - "1606"
             Resp-Start-Time:
-                - "1772124420484"
+                - "1772221193096"
             Server:
                 - istio-envoy
             Strict-Transport-Security:
@@ -45,7 +45,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "1433"
+                - "1606"
         status: 200 OK
         code: 200
-        duration: 1.457s
+        duration: 1.634s

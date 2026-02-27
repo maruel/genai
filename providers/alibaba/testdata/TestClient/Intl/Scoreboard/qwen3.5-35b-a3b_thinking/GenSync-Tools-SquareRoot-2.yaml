@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 784
+        content_length: 807
         host: dashscope-intl.aliyuncs.com
         body: |
-            {"model":"qwen3.5-35b-a3b","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"id":"call_21334ee1dd7448e29b8a84cb","type":"function","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_21334ee1dd7448e29b8a84cb"}],"stream":false,"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
+            {"model":"qwen3.5-35b-a3b","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"id":"call_6c5ce2f8190d407aaf4bc12e","type":"function","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_6c5ce2f8190d407aaf4bc12e"}],"stream":false,"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"enable_thinking":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,16 +21,16 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"choices":[{"message":{"content":"363.89","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:** The user wants me to use the `square_root` tool to calculate the square root of 132413 and reply with *only* the result. No explanation is allowed.\n\n2.  **Execute Tool:** I need to invoke the `square_root` function with the input number 132413.\n    *   Input: 132413\n    *   Expected Output: A numerical value representing √132413.\n\n3.  **Review Tool Output:** The tool returned `363.89`.\n\n4.  **Format Output:** The constraint is \"reply with only the result\" and \"Do not give an explanation.\"\n\n5.  **Final Check:** Does the output match the constraint? Yes, just the number.\n\n6.  **Construct Response:** 363.89\n\nWait, let me double-check the precision. Usually, square roots have more decimal places. Let''s see if the tool truncated it or if that''s its standard output format. The tool response shows `363.89`. I should output exactly what the tool gave, as per the instruction to use the tool and reply with the result. However, mathematically √132413 is approximately 363.886... So 363.89 is a rounded version. I must follow the tool''s output as the \"result\".\n\nActually, looking at the tool invocation in my thought block, I see the JSON response from the tool simulation was `363.89`. I will output that string.\n\nRefining the output: Just the number.\n\nResult: 363.89","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":96,"completion_tokens":385,"total_tokens":481,"completion_tokens_details":{"reasoning_tokens":374,"text_tokens":385},"prompt_tokens_details":{"text_tokens":96}},"created":1772145414,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-dc4349fd-d545-94bb-b17f-3080d817fc0e"}'
+        body: '{"choices":[{"message":{"content":"363.89","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Task: Calculate the square root of 132413.\n    *   Tool: `square_root` tool.\n    *   Output Constraint: Reply with *only* the result. No explanation.\n\n2.  **Execute Tool:**\n    *   I need to use the `square_root` function provided in the context (though I am an AI, I simulate or invoke the tool based on the available interface). The previous turn shows I already invoked it and got a result.\n    *   Input: 132413\n    *   Result from tool invocation: 363.89 (approximately).\n\n3.  **Verify the Calculation (Mental Check):**\n    *   $360^2 = 129600$\n    *   $370^2 = 136900$\n    *   132413 is between 129600 and 136900.\n    *   $363^2 = 131769$\n    *   $364^2 = 132496$\n    *   So $\\sqrt{132413}$ is very close to 364, slightly less.\n    *   The tool output says 363.89. Let''s check $363.89^2 \\approx 132415.9$. Close enough for typical tool precision.\n    *   Wait, the tool output in the \"thought\" trace above shows `363.89`. I should use that exact value.\n\n4.  **Format Output:**\n    *   Constraint: \"reply with only the result\".\n    *   Constraint: \"Do not give an explanation\".\n    *   Current Tool Output: `363.89`\n\n5.  **Final Decision:**\n    *   Output just the number returned by the tool.\n\n    *Self-Correction/Refinement:* In the simulated environment, I see the tool call and response already happened in the few-shot or previous step context within this specific prompt interaction structure. The user asked me to use the tool now. I have performed the action in my internal simulation (represented by the thought block `<function=square_root>...`). The result is `363.89`. I must output *only* this result.\n\n    Wait, looking at the raw input, I am supposed to act as the model that *has* the tool. The previous block shows the tool execution. I need to output the final answer based on that tool execution.\n\n    Result: 363.89\n\n    Double-checking precision. Usually, sqrt(132413) = 363.888706...\n    Rounding to two decimal places gives 363.89.\n    The tool returned 363.89.\n    I will output exactly what the tool gave.\n\n    Wait, I need to make sure I don''t include markdown like ```json ... ```. Just the text.\n\n    Actually, looking at the tool response format in the prompt example:\n    It shows `Output: 363.89`.\n    But the instruction says \"reply with only the result\".\n    So I should write `363.89`.\n\n    Let''s re-read the tool response provided in the conversation history (the `<function_calls>` part).\n    The tool returned `363.89`.\n    My task is to reply to the user with only the result.\n\n    Final string: 363.89","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":96,"completion_tokens":823,"total_tokens":919,"completion_tokens_details":{"reasoning_tokens":812,"text_tokens":823},"prompt_tokens_details":{"text_tokens":96}},"created":1772221366,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-ee1f0a7a-4c07-9df2-ba48-6d8993a97305"}'
         headers:
             Content-Type:
                 - application/json
             Req-Arrive-Time:
-                - "1772145410134"
+                - "1772221361104"
             Req-Cost-Time:
-                - "3795"
+                - "4521"
             Resp-Start-Time:
-                - "1772145413930"
+                - "1772221365625"
             Server:
                 - istio-envoy
             Vary:
@@ -38,7 +38,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "3794"
+                - "4520"
         status: 200 OK
         code: 200
-        duration: 4.05s
+        duration: 4.774s

@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 283
+        content_length: 307
         host: dashscope-us.aliyuncs.com
         body: |
-            {"model":"qwen3-max","messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg"}}]}],"stream":false}
+            {"model":"qwen3-max","messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg"}}]}],"stream":false,"enable_thinking":false}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -20,20 +20,20 @@ interactions:
         proto_major: 2
         proto_minor: 0
         content_length: 353
-        body: '{"choices":[{"message":{"content":"Apple","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":19,"completion_tokens":1,"total_tokens":20,"prompt_tokens_details":{"cached_tokens":0}},"created":1772124423,"system_fingerprint":null,"model":"qwen3-max","id":"chatcmpl-pQNzGty_vHd2OZAz"}'
+        body: '{"choices":[{"message":{"content":"Apple","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":19,"completion_tokens":1,"total_tokens":20,"prompt_tokens_details":{"cached_tokens":0}},"created":1772221196,"system_fingerprint":null,"model":"qwen3-max","id":"chatcmpl-TagpXtZifVpbQ1sz"}'
         headers:
             Content-Length:
                 - "353"
             Content-Type:
                 - application/json
             Eagleeye-Traceid:
-                - 0bc2425d17721244218006490ee4d8
+                - 0bc2425e17722211944773537ebf56
             Req-Arrive-Time:
-                - "1772124421800"
+                - "1772221194483"
             Req-Cost-Time:
-                - "1179"
+                - "1236"
             Resp-Start-Time:
-                - "1772124422979"
+                - "1772221195720"
             Server:
                 - istio-envoy
             Strict-Transport-Security:
@@ -45,7 +45,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "1178"
+                - "1236"
         status: 200 OK
         code: 200
-        duration: 1.202s
+        duration: 1.263s

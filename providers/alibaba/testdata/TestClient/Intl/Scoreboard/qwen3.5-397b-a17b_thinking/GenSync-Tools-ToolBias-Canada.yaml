@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 552
+        content_length: 575
         host: dashscope-intl.aliyuncs.com
         body: |
-            {"model":"qwen3.5-397b-a17b","messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}]}
+            {"model":"qwen3.5-397b-a17b","messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"enable_thinking":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,16 +21,16 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"choices":[{"message":{"content":"","reasoning_content":"The user is asking me to compare Canada and the USA to determine which is better, and they want me to call the best_country tool. Looking at the tool definition, it has a required parameter \"country\" that accepts either \"Canada\" or \"USA\" as enum values.\n\nHowever, there''s a logical issue here - the tool is designed to specify the best country, but it requires me to input a country as a parameter. This seems like it''s meant to validate or confirm a country choice rather than actually determine which is best between two options.\n\nSince the user is asking me to determine which is better between Canada and USA, and the tool requires me to specify a country, I think the user wants me to make a choice and call the tool with that choice. But I should be careful here - this is a subjective question and I shouldn''t make definitive claims about which country is \"better\" as that depends on many factors and personal preferences.\n\nHowever, since the user specifically asked me to call the tool, and the tool requires a country parameter, I need to choose one. I''ll choose Canada since the user mentioned it first in their question, but I should note that this is subjective.\n\nActually, looking more carefully at the tool, it seems like it''s designed to \"specify the best country\" but requires a country input. This is a bit confusing - it might be that the tool is meant to validate or confirm a country choice rather than actually determine which is best. But since the user asked me to call it to tell them which is best, I''ll proceed with calling it with one of the countries.\n\nI''ll call it with \"Canada\" since that was mentioned first in the user''s question.","role":"assistant","tool_calls":[{"function":{"arguments":"{\"country\": \"Canada\"}","name":"best_country"},"id":"call_c8930b50161e4e12930f7182","index":0,"type":"function"}]},"finish_reason":"tool_calls","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":333,"completion_tokens":382,"total_tokens":715,"completion_tokens_details":{"reasoning_tokens":351,"text_tokens":382},"prompt_tokens_details":{"text_tokens":333}},"created":1772145497,"system_fingerprint":null,"model":"qwen3.5-397b-a17b","id":"chatcmpl-2c42e478-ea1c-9fac-8d09-57ba1a6b289a"}'
+        body: '{"choices":[{"message":{"content":"","reasoning_content":"The user is asking me to compare Canada and the USA to determine which is the \"better\" country. They want me to use the best_country tool to tell them which country is the best.\n\nLooking at the tool definition, I can see that:\n- The tool is called \"best_country\"\n- It has one required parameter: \"country\"\n- The country parameter must be one of two values: \"Canada\" or \"USA\"\n- The description says \"A tool to specify the best country\"\n\nHowever, I notice that this tool seems to be designed to specify a country as the best, not to compare countries or determine which is better. The user is asking me to determine which country is better, but the tool appears to be for specifying/declaring which country is best.\n\nSince the user is asking me to call this tool to tell them which country is the best, I should call it. But I need to choose one of the two countries. The tool doesn''t seem to have logic to determine which is better - it just accepts a country name.\n\nGiven that the user is asking me to determine which is better, and I need to call the tool with one of the two countries, I should make a choice. However, I should be careful not to make subjective claims about which country is objectively \"better\" as this is a matter of personal preference and depends on many factors.\n\nSince the tool requires me to specify a country, and the user is asking me to use it to tell them which is best, I''ll call the tool. But I should note that this is a subjective matter and the tool appears to be for specification rather than objective comparison.\n\nLet me call the tool with one of the countries. I''ll choose Canada since the user mentioned it first in their question.","role":"assistant","tool_calls":[{"function":{"arguments":"{\"country\": \"Canada\"}","name":"best_country"},"id":"call_de899d5d9d49432c8608911c","index":0,"type":"function"}]},"finish_reason":"tool_calls","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":333,"completion_tokens":399,"total_tokens":732,"completion_tokens_details":{"reasoning_tokens":368,"text_tokens":399},"prompt_tokens_details":{"text_tokens":333}},"created":1772220962,"system_fingerprint":null,"model":"qwen3.5-397b-a17b","id":"chatcmpl-ff7183a2-6906-92e9-9d86-85ea474d10d6"}'
         headers:
             Content-Type:
                 - application/json
             Req-Arrive-Time:
-                - "1772145492178"
+                - "1772220957106"
             Req-Cost-Time:
-                - "5269"
+                - "4831"
             Resp-Start-Time:
-                - "1772145497448"
+                - "1772220961937"
             Server:
                 - istio-envoy
             Vary:
@@ -38,7 +38,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "5268"
+                - "4830"
         status: 200 OK
         code: 200
-        duration: 5.522s
+        duration: 5.081s

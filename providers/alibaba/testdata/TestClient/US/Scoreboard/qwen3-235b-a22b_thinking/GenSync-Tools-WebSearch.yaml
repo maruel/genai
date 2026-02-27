@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 243
+        content_length: 266
         host: dashscope-us.aliyuncs.com
         body: |
-            {"model":"qwen3-235b-a22b","messages":[{"role":"user","content":"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation."}],"stream":false,"enable_search":true}
+            {"model":"qwen3-235b-a22b","messages":[{"role":"user","content":"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation."}],"stream":false,"enable_search":true,"enable_thinking":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,18 +21,18 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"choices":[{"message":{"content":"Justin Trudeau","reasoning_content":"Okay, the user wants to know the current Prime Minister of Canada and asked to search the web for one result, then provide just the name without any explanation. Let me start by recalling that Canada''s head of government is the Prime Minister. I know that the previous PM was Stephen Harper, but he left office a few years ago. The current one, if I''m not mistaken, is Justin Trudeau. But wait, I should confirm this because political positions can change. Let me think—Trudeau became PM in 2015, right? And he was re-elected in 2019 and 2021. So as of now, in 2023, he''s still serving. However, to be thorough, maybe there was a recent change I''m not aware of. Since the user wants a web search, even though I think I know the answer, I should simulate checking a reliable source. If I were to search, say, a reputable news website or the official Canadian government site, they should list Justin Trudeau as the current PM. I should make sure there''s no recent news about a new election or a change in leadership. As of my last update, no such event has occurred. Therefore, the answer should be Justin Trudeau. Just to be safe, I''ll note that the user might be testing if I follow instructions to only provide the name, so I need to avoid any extra text. Just the name, no explanation.","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":36,"completion_tokens":304,"total_tokens":340,"completion_tokens_details":{"reasoning_tokens":297}},"created":1772142430,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-LRb8bt9yAULeqNqp"}'
+        body: '{"choices":[{"message":{"content":"Justin Trudeau","reasoning_content":"Okay, the user is asking for the current Prime Minister of Canada. I need to make sure I get the most up-to-date information. Let me think about the best way to approach this.\n\nFirst, I know that the Prime Minister of Canada is the head of government, and the position is usually held by the leader of the majority party in the House of Commons. As of my last update, Justin Trudeau was the Prime Minister, but I need to confirm if that''s still the case. Since the user wants me to search the web for one result, I should check a reliable source.\n\nI''ll start by recalling recent events. The latest Canadian federal election was in 2021, where Justin Trudeau''s Liberal Party won a minority government. Since then, there hasn''t been a vote of no confidence or a new election that I''m aware of. So, he should still be in office. However, to be thorough, I should verify this with a current source.\n\nPossible reliable sources include official government websites, news outlets like CBC News, BBC, or Reuters. Let me check the official Canadian government website first. The homepage for the Government of Canada (canada.ca) should have the Prime Minister''s information. Alternatively, the official Prime Minister''s Office (pmo.gc.ca) website would list the current PM.\n\nIf I can''t access those, a reputable news site would work. Let me think: a quick search on Google for \"current Prime Minister of Canada\" would show the answer in the knowledge panel. The top result is usually from Wikipedia, which is updated regularly. Checking Wikipedia''s page for the Prime Minister of Canada would list the current office holder.\n\nAlternatively, using a search engine''s featured snippet: searching \"who is the prime minister of canada 2023\" would bring up the latest info. The result should mention Justin Trudeau as the current PM. Since the user wants only the name with no explanation, I need to confirm that there hasn''t been any recent change.\n\nWait, has there been any resignation or transition recently? I don''t recall any news in 2023 about a new Prime Minister in Canada. Justin Trudeau has been PM since 2015. Unless there''s a recent event I''m not aware of, he''s still the PM. \n\nTo ensure accuracy, checking a recent source is essential. If I can''t perform a live search, relying on the latest known information is necessary. Given that the last election was in 2021 and no major political upheaval has occurred, the answer remains Justin Trudeau. \n\nTherefore, after verifying through available knowledge and logical deduction based on recent events, the current Prime Minister of Canada is Justin Trudeau.","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":36,"completion_tokens":554,"total_tokens":590,"completion_tokens_details":{"reasoning_tokens":547}},"created":1772220566,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-NomTQM8LUdWiPL5n"}'
         headers:
             Content-Type:
                 - application/json
             Eagleeye-Traceid:
-                - 0bc2425d17721424232895824ee4d7
+                - 0bc2425d17722205528267001ee4da
             Req-Arrive-Time:
-                - "1772142423290"
+                - "1772220552828"
             Req-Cost-Time:
-                - "7047"
+                - "13570"
             Resp-Start-Time:
-                - "1772142430338"
+                - "1772220566398"
             Server:
                 - istio-envoy
             Strict-Transport-Security:
@@ -45,7 +45,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "7047"
+                - "13570"
         status: 200 OK
         code: 200
-        duration: 7.075s
+        duration: 13.596s

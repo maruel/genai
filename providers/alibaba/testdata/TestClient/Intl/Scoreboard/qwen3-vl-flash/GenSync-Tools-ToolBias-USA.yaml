@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 553
+        content_length: 577
         host: dashscope-intl.aliyuncs.com
         body: |
-            {"model":"qwen3-vl-flash","messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"stream":false,"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}]}
+            {"model":"qwen3-vl-flash","messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"stream":false,"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"enable_thinking":false}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,16 +21,16 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"choices":[{"message":{"content":"","reasoning_content":"","role":"assistant","tool_calls":[{"function":{"arguments":" {\"country\": \"USA\"}","name":"best_country"},"id":"call_5c7e7b5a027545ad8fc975","index":0,"type":"function"}]},"finish_reason":"tool_calls","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":211,"completion_tokens":20,"total_tokens":231,"prompt_tokens_details":{"text_tokens":211},"completion_tokens_details":{"text_tokens":20}},"created":1772139688,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-5f79357f-be73-9ec7-aa48-43e6041585e0"}'
+        body: '{"choices":[{"message":{"content":"","reasoning_content":"","role":"assistant","tool_calls":[{"function":{"arguments":" {\"country\": \"USA\"}","name":"best_country"},"id":"call_ae161cba318c44db80a9e7","index":0,"type":"function"}]},"finish_reason":"tool_calls","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":211,"completion_tokens":20,"total_tokens":231,"prompt_tokens_details":{"text_tokens":211},"completion_tokens_details":{"text_tokens":20}},"created":1772221054,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-ce113ff2-1412-9cb1-81a4-d684fc3f247f"}'
         headers:
             Content-Type:
                 - application/json
             Req-Arrive-Time:
-                - "1772139687162"
+                - "1772221053400"
             Req-Cost-Time:
-                - "600"
+                - "509"
             Resp-Start-Time:
-                - "1772139687763"
+                - "1772221053910"
             Server:
                 - istio-envoy
             Vary:
@@ -38,7 +38,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "600"
+                - "509"
         status: 200 OK
         code: 200
-        duration: 851ms
+        duration: 756ms

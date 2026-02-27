@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 124
+        content_length: 147
         host: dashscope-intl.aliyuncs.com
         body: |
-            {"model":"qwen3.5-35b-a3b","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":false,"seed":42}
+            {"model":"qwen3.5-35b-a3b","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":false,"seed":42,"enable_thinking":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,16 +21,16 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"choices":[{"message":{"content":"Hello","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Task: Say hello.\n    *   Constraint: Use only one word.\n\n2.  **Identify Suitable Responses:**\n    *   \"Hello\"\n    *   \"Hi\"\n    *   \"Hey\"\n    *   \"Greetings\" (too long? No, one word)\n    *   \"Hola\" (one word)\n\n3.  **Select the Best Option:**\n    *   \"Hello\" is the most standard and direct greeting.\n    *   \"Hi\" is also very common.\n    *   Given the strict constraint (\"only one word\"), simplicity is key.\n\n4.  **Final Decision:** \"Hello\"\n\n5.  **Check Constraints:**\n    *   Does it say hello? Yes.\n    *   Is it only one word? Yes.\n\n6.  **Output:** Hello.cw","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":18,"completion_tokens":203,"total_tokens":221,"completion_tokens_details":{"reasoning_tokens":197,"text_tokens":203},"prompt_tokens_details":{"text_tokens":18}},"created":1772145390,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-77141ac9-b3bc-90f1-bbd8-e7d0190659f7"}'
+        body: '{"choices":[{"message":{"content":"Hello","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Task: Say hello.\n    *   Constraint: Use only one word.\n\n2.  **Identify Suitable Responses:**\n    *   \"Hello\"\n    *   \"Hi\"\n    *   \"Hey\"\n    *   \"Greetings\" (too long? No, one word)\n    *   \"Hola\" (if multilingual allowed, but English is default)\n\n3.  **Select the Best Option:**\n    *   \"Hello\" is the most direct and polite.\n    *   \"Hi\" is slightly more casual.\n    *   Given the strict constraint (\"only one word\"), simplicity is key.\n\n4.  **Final Decision:** \"Hello\" or \"Hi\". Let''s go with \"Hello\".\n\n5.  **Check Constraints:** Does \"Hello\" count as one word? Yes. Is it a greeting? Yes.\n\n6.  **Output Generation:** Hello.cw","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":18,"completion_tokens":216,"total_tokens":234,"completion_tokens_details":{"reasoning_tokens":210,"text_tokens":216},"prompt_tokens_details":{"text_tokens":18}},"created":1772221343,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-f3e35f31-8eff-9aa0-ac10-7ad547939843"}'
         headers:
             Content-Type:
                 - application/json
             Req-Arrive-Time:
-                - "1772145388900"
+                - "1772221342069"
             Req-Cost-Time:
-                - "1505"
+                - "1179"
             Resp-Start-Time:
-                - "1772145390405"
+                - "1772221343249"
             Server:
                 - istio-envoy
             Vary:
@@ -38,7 +38,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "1504"
+                - "1179"
         status: 200 OK
         code: 200
-        duration: 1.758s
+        duration: 1.432s

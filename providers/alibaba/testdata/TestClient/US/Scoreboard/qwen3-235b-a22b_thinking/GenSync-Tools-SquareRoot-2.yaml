@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 780
+        content_length: 803
         host: dashscope-us.aliyuncs.com
         body: |
-            {"model":"qwen3-235b-a22b","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"id":"call_9f0b61e97f614364bf8ad7","type":"function","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_9f0b61e97f614364bf8ad7"}],"stream":false,"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
+            {"model":"qwen3-235b-a22b","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"id":"call_ddd5cc5e3ac6487cbbc7ee","type":"function","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_ddd5cc5e3ac6487cbbc7ee"}],"stream":false,"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"enable_thinking":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,18 +21,18 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"choices":[{"message":{"content":"363.89","reasoning_content":"Okay, let''s see. The user asked for the square root of 132413 using the square_root tool. I called the tool with that number, and the response was 363.89. Now I need to present this result. The user specified to reply only with the result and not include any explanation.\n\nFirst, I should verify if 363.89 squared is approximately 132413. Let me check that. 363.89 multiplied by 363.89. Hmm, 360 squared is 129600. Then, 3.89 squared is about 15.13. The cross term would be 2*360*3.89 = 2*360*3 + 2*360*0.89 = 2160 + 640.8 = 2800.8. Adding them up: 129600 + 2800.8 + 15.13  132415.93. That''s very close to 132413, considering rounding. So the answer seems accurate to two decimal places.\n\nSince the user wants only the result, I should just state 363.89 without any additional text. But wait, maybe the square_root tool''s output is already precise enough. The user might be expecting a more exact value, but the tool returned 363.89. Perhaps that''s the rounded value. I should confirm if the tool truncates or rounds, but since the response was 363.89, I''ll stick with that. So the final answer is 363.89.","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":83,"completion_tokens":394,"total_tokens":477,"completion_tokens_details":{"reasoning_tokens":383}},"created":1772142371,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-WRc7R-vmnTTICM60"}'
+        body: '{"choices":[{"message":{"content":"363.89","reasoning_content":"Okay, the user asked for the square root of 132413 using the square_root tool. I called the tool with that number, and the response was 363.89. I need to make sure that''s accurate. Let me check by squaring 363.89. \n\n363.89 squared is approximately 363.89 * 363.89. Let''s calculate that:\n\nFirst, 360^2 = 129,600. Then, 3.89^2 is about 15.13. The cross terms would be 2*360*3.89 = 2*360*3 + 2*360*0.89 = 2160 + 640.8 = 2800.8. Adding all together: 129,600 + 2800.8 + 15.13  132,415.93. That''s very close to 132,413, considering rounding. So the square root is correct to two decimal places. The user probably wants the answer as is, so I''ll present 363.89 as the result.","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":83,"completion_tokens":295,"total_tokens":378,"completion_tokens_details":{"reasoning_tokens":284}},"created":1772220524,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-aTVPEgnh-ajGctlE"}'
         headers:
             Content-Type:
                 - application/json
             Eagleeye-Traceid:
-                - 0bc2425d17721423638385806ee4d7
+                - 0bc2425d17722205178026933ee4da
             Req-Arrive-Time:
-                - "1772142363840"
+                - "1772220517804"
             Req-Cost-Time:
-                - "7582"
+                - "5820"
             Resp-Start-Time:
-                - "1772142371423"
+                - "1772220523624"
             Server:
                 - istio-envoy
             Strict-Transport-Security:
@@ -45,7 +45,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "7582"
+                - "5820"
         status: 200 OK
         code: 200
-        duration: 7.612s
+        duration: 5.846s

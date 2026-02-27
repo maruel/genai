@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 108
+        content_length: 132
         host: dashscope-us.aliyuncs.com
         body: |
-            {"model":"qwen3-max","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":false}
+            {"model":"qwen3-max","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":false,"enable_thinking":false}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -20,20 +20,20 @@ interactions:
         proto_major: 2
         proto_minor: 0
         content_length: 354
-        body: '{"choices":[{"message":{"content":"Hello!","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":16,"completion_tokens":2,"total_tokens":18,"prompt_tokens_details":{"cached_tokens":0}},"created":1772124401,"system_fingerprint":null,"model":"qwen3-max","id":"chatcmpl-m2YtEc9ZIb4pcPU_"}'
+        body: '{"choices":[{"message":{"content":"Hello!","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":16,"completion_tokens":2,"total_tokens":18,"prompt_tokens_details":{"cached_tokens":0}},"created":1772221175,"system_fingerprint":null,"model":"qwen3-max","id":"chatcmpl-iFxj9A79e0T-wDBQ"}'
         headers:
             Content-Length:
                 - "354"
             Content-Type:
                 - application/json
             Eagleeye-Traceid:
-                - 0bc2425d17721244000796457ee4d8
+                - 0bc2425e17722211740913510ebf56
             Req-Arrive-Time:
-                - "1772124400081"
+                - "1772221174097"
             Req-Cost-Time:
-                - "1299"
+                - "1166"
             Resp-Start-Time:
-                - "1772124401380"
+                - "1772221175264"
             Server:
                 - istio-envoy
             Strict-Transport-Security:
@@ -45,7 +45,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "1299"
+                - "1166"
         status: 200 OK
         code: 200
-        duration: 1.323s
+        duration: 1.509s

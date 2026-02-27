@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 289
+        content_length: 312
         host: dashscope-intl.aliyuncs.com
         body: |
-            {"model":"qwen3.5-35b-a3b","messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg"}}]}],"stream":false}
+            {"model":"qwen3.5-35b-a3b","messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg"}}]}],"stream":false,"enable_thinking":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,16 +21,16 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"choices":[{"message":{"content":"Banana","reasoning_content":"The user wants me to identify the fruit in the image.\n1.  **Analyze the image:** The image shows a yellow, curved fruit with a stem at one end and a pointed tip at the other. It has small brown spots characteristic of ripening.\n2.  **Identify the object:** This is clearly a banana.\n3.  **Formulate the response:** The user requested \"only one word\".\n4.  **Final Answer:** Banana.","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":113,"completion_tokens":106,"total_tokens":219,"completion_tokens_details":{"reasoning_tokens":99,"text_tokens":7},"prompt_tokens_details":{"image_tokens":92,"text_tokens":21}},"created":1772145432,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-299587f1-7473-9430-b26b-cb57f2ceeba0"}'
+        body: '{"choices":[{"message":{"content":"Banana","reasoning_content":"The user wants me to identify the fruit in the image.\n1.  **Analyze the image:** The image shows a long, curved, yellow object with a stem at one end and a slightly darker tip at the other. It has the classic shape of a banana.\n2.  **Identify the fruit:** It is clearly a banana.\n3.  **Formulate the response:** The user requested \"Reply with only one word.\"\n4.  **Final Answer:** \"Banana\".","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":113,"completion_tokens":112,"total_tokens":225,"completion_tokens_details":{"reasoning_tokens":106,"text_tokens":6},"prompt_tokens_details":{"image_tokens":92,"text_tokens":21}},"created":1772221382,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-7df8cd61-7548-93b2-8438-0668c865f3ac"}'
         headers:
             Content-Type:
                 - application/json
             Req-Arrive-Time:
-                - "1772145430871"
+                - "1772221380269"
             Req-Cost-Time:
-                - "780"
+                - "1275"
             Resp-Start-Time:
-                - "1772145431651"
+                - "1772221381544"
             Server:
                 - istio-envoy
             Vary:
@@ -38,7 +38,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "779"
+                - "1274"
         status: 200 OK
         code: 200
-        duration: 1.033s
+        duration: 1.528s

@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 242
+        content_length: 266
         host: dashscope-us.aliyuncs.com
         body: |
-            {"model":"qwen3-vl-flash","messages":[{"role":"user","content":"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation."}],"stream":false,"enable_search":true}
+            {"model":"qwen3-vl-flash","messages":[{"role":"user","content":"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation."}],"stream":false,"enable_search":true,"enable_thinking":false}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -20,20 +20,20 @@ interactions:
         proto_major: 2
         proto_minor: 0
         content_length: 435
-        body: '{"choices":[{"message":{"content":"Justin Trudeau","reasoning_content":"","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":36,"completion_tokens":3,"total_tokens":39,"prompt_tokens_details":{"text_tokens":36},"completion_tokens_details":{"text_tokens":3}},"created":1772125131,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-L4rAig5fimcTOtym"}'
+        body: '{"choices":[{"message":{"content":"Justin Trudeau","reasoning_content":"","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":36,"completion_tokens":3,"total_tokens":39,"prompt_tokens_details":{"text_tokens":36},"completion_tokens_details":{"text_tokens":3}},"created":1772219973,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-dNjf5e_BcNP5oCNq"}'
         headers:
             Content-Length:
                 - "435"
             Content-Type:
                 - application/json
             Eagleeye-Traceid:
-                - 0bc2426217721251297223319ed514
+                - 0bc2426217722199721062742ed50d
             Req-Arrive-Time:
-                - "1772125129729"
+                - "1772219972111"
             Req-Cost-Time:
-                - "1057"
+                - "963"
             Resp-Start-Time:
-                - "1772125130787"
+                - "1772219973075"
             Server:
                 - istio-envoy
             Strict-Transport-Security:
@@ -45,7 +45,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "1057"
+                - "963"
         status: 200 OK
         code: 200
-        duration: 1.085s
+        duration: 986ms

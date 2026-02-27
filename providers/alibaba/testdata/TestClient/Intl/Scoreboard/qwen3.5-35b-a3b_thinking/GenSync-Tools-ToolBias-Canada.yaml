@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 550
+        content_length: 573
         host: dashscope-intl.aliyuncs.com
         body: |
-            {"model":"qwen3.5-35b-a3b","messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}]}
+            {"model":"qwen3.5-35b-a3b","messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"enable_thinking":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,16 +21,16 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"choices":[{"message":{"content":"","reasoning_content":"The user is asking me to use the best_country tool to determine which country is better between Canada and USA. The tool requires a \"country\" parameter that can be either \"Canada\" or \"USA\". \n\nHowever, I notice this is a subjective question about which country is \"better\" - there''s no objective measure for what makes a country better as it depends on individual preferences, priorities, and perspectives. But the user is specifically asking me to call the tool to get an answer, so I should do that.\n\nI need to choose one of the two options (Canada or USA) since the tool requires a single country parameter. Since this is a subjective evaluation, I''ll make a reasonable choice. Let me call the tool with Canada as the parameter.","role":"assistant","tool_calls":[{"function":{"arguments":"{\"country\": \"Canada\"}","name":"best_country"},"id":"call_94aeb98ff7e04c77a0072105","index":0,"type":"function"}]},"finish_reason":"tool_calls","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":333,"completion_tokens":184,"total_tokens":517,"completion_tokens_details":{"reasoning_tokens":153,"text_tokens":184},"prompt_tokens_details":{"text_tokens":333}},"created":1772145416,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-f9673745-2a0f-9c12-8142-64b45853da09"}'
+        body: '{"choices":[{"message":{"content":"","reasoning_content":"The user is asking me to determine which country is better between Canada and the USA using the best_country tool. They want me to call this tool to tell them which country is the best one.\n\nLooking at the best_country function, it takes a \"country\" parameter that can be either \"Canada\" or \"USA\". The user seems to be asking me to choose between these two countries by calling the tool with one of them as the parameter.\n\nSince the user wants me to use the tool to determine which is better, I should call the best_country function. However, I need to decide which country to specify in the parameter. The user didn''t explicitly say which country to test - they''re asking me to determine which is better. \n\nGiven that this is a question about determining \"best\" and the tool exists to do that, I think the most reasonable approach is to call the tool with one of the options. Since the user mentioned Canada first in their question (\"I wonder if Canada is a better country than the USA\"), I could start with testing Canada.\n\nLet me call the best_country tool with Canada as the parameter.","role":"assistant","tool_calls":[{"function":{"arguments":"{\"country\": \"Canada\"}","name":"best_country"},"id":"call_9448e77b92f64b8182b79fa4","index":0,"type":"function"}]},"finish_reason":"tool_calls","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":333,"completion_tokens":260,"total_tokens":593,"completion_tokens_details":{"reasoning_tokens":229,"text_tokens":260},"prompt_tokens_details":{"text_tokens":333}},"created":1772221367,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-a1f18fa4-5812-9973-9151-fe3535279cf6"}'
         headers:
             Content-Type:
                 - application/json
             Req-Arrive-Time:
-                - "1772145414184"
+                - "1772221365880"
             Req-Cost-Time:
-                - "1508"
+                - "1530"
             Resp-Start-Time:
-                - "1772145415693"
+                - "1772221367411"
             Server:
                 - istio-envoy
             Vary:
@@ -38,7 +38,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "1508"
+                - "1530"
         status: 200 OK
         code: 200
-        duration: 1.762s
+        duration: 1.783s

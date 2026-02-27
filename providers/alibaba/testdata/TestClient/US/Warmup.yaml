@@ -24,13 +24,13 @@ interactions:
             Content-Type:
                 - application/json
             Eagleeye-Traceid:
-                - 0bc2426217721250458343168ed514
+                - 0bc2425e17722199753344684ebf5a
             Req-Arrive-Time:
-                - "1772125045841"
+                - "1772219975340"
             Req-Cost-Time:
-                - "12"
+                - "13"
             Resp-Start-Time:
-                - "1772125045853"
+                - "1772219975354"
             Server:
                 - istio-envoy
             Strict-Transport-Security:
@@ -41,7 +41,7 @@ interactions:
                 - Accept-Encoding
                 - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
             X-Envoy-Upstream-Service-Time:
-                - "12"
+                - "13"
         status: 200 OK
         code: 200
-        duration: 417ms
+        duration: 127ms

@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 287
+        content_length: 310
         host: dashscope-us.aliyuncs.com
         body: |
-            {"model":"qwen3-30b-a3b","messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg"}}]}],"stream":false}
+            {"model":"qwen3-30b-a3b","messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg"}}]}],"stream":false,"enable_thinking":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,18 +21,18 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"choices":[{"message":{"content":"Unknown","reasoning_content":"Okay, the user asked, \"What fruit is it? Reply with only one word.\" But there''s no image or description provided. I need to figure out how to respond. Since there''s no context, maybe they forgot to include an image or a description. But the instructions say to reply with only one word. If I can''t determine the fruit without more info, should I say \"Unknown\" or something? Wait, the user might be testing if I follow instructions. They said \"Reply with only one word,\" so maybe \"Unknown\" is acceptable. Alternatively, if they expect me to ask for more info, but the rules say to reply with one word. Hmm. I think \"Unknown\" is the safest answer here because there''s no data to go on. Let me check if there''s any other possibility. No, I can''t assume anything. So \"Unknown\" it is.","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":19,"completion_tokens":186,"total_tokens":205,"completion_tokens_details":{"reasoning_tokens":180}},"created":1772142772,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-f0XR5YYaYp8RybT9"}'
+        body: '{"choices":[{"message":{"content":"Unknown","reasoning_content":"Okay, the user asked, \"What fruit is it? Reply with only one word.\" But there''s no image or description provided. I need to figure out how to respond. Since there''s no context, maybe they forgot to include an image or a description. But the instructions say to reply with only one word. If I can''t determine the fruit without more info, should I ask for clarification? However, the user might expect me to guess. Wait, maybe they''re testing if I follow instructions. If I can''t answer, maybe the correct response is to say \"Unknown\" or \"Not specified.\" But the user wants only one word. Let me check if there''s any standard answer. Alternatively, maybe the question is part of a previous conversation where the fruit was mentioned. But since I don''t have memory of past interactions, I should state that there''s not enough information. But the user said to reply with only one word. So \"Unknown\" is one word. Alternatively, \"None\" or \"Not provided.\" But \"Unknown\" seems more accurate. I''ll go with that.","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":19,"completion_tokens":227,"total_tokens":246,"completion_tokens_details":{"reasoning_tokens":221}},"created":1772221137,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-p5PsgffAFLUBzyMA"}'
         headers:
             Content-Type:
                 - application/json
             Eagleeye-Traceid:
-                - 0bc2425d17721427699346189ee4d7
+                - 0bc2425d17722211340912523ee4d9
             Req-Arrive-Time:
-                - "1772142769936"
+                - "1772221134092"
             Req-Cost-Time:
-                - "2209"
+                - "2525"
             Resp-Start-Time:
-                - "1772142772146"
+                - "1772221136618"
             Server:
                 - istio-envoy
             Strict-Transport-Security:
@@ -45,7 +45,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "2209"
+                - "2525"
         status: 200 OK
         code: 200
-        duration: 2.27s
+        duration: 2.551s

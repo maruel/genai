@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 246
+        content_length: 270
         host: dashscope-us.aliyuncs.com
         body: |
-            {"model":"qwen3-30b-a3b","messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"stream":false}
+            {"model":"qwen3-30b-a3b","messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"stream":false,"enable_thinking":false}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -19,20 +19,21 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: -1
-        uncompressed: true
-        body: '{"choices":[{"message":{"content":"The capital of Quackiland is **Quack**. \n\nThis is explicitly stated in the first sentence of the provided information. The mention of the Big Canard Statue being located in Quack serves as additional context but does not alter the answer.","reasoning_content":"Okay, let''s see. The user is asking, \"What is the capital of Quackiland?\" And they provided some context: \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\" \n\nHmm, so the first sentence directly states that the capital is Quack. Then the second sentence mentions that the Big Canard Statue is in Quack. But the question is just asking for the capital again. Since the first statement already gives the answer, maybe the second sentence is just additional info but not necessary for answering the question.\n\nWait, but maybe there''s a trick here. Sometimes questions might try to mislead with extra information. But in this case, the answer is straightforward. The capital is explicitly mentioned as Quack. The Big Canard Statue being in Quack doesn''t change that. Unless there''s some hidden detail, like maybe the statue is in another city, but the user says it''s in Quack. So the answer should be Quack. \n\nI should check if there''s any possible confusion. Maybe the user is testing if I pay attention to the given information. Since the first sentence says the capital is Quack, that''s the answer. The rest is just extra. So the answer is Quack.","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":38,"completion_tokens":313,"total_tokens":351,"completion_tokens_details":{"reasoning_tokens":258}},"created":1772125166,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-i-6C8Xi18eJEKh-a"}'
+        content_length: 371
+        body: '{"choices":[{"message":{"content":"The capital of Quackiland is **Quack**.","reasoning_content":"","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":42,"completion_tokens":12,"total_tokens":54},"created":1772219109,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-I70jmEcNWY1YqQ7-"}'
         headers:
+            Content-Length:
+                - "371"
             Content-Type:
                 - application/json
             Eagleeye-Traceid:
-                - 0bc2426217721251626163349ed514
+                - 0bc2425d17722191078051546ee4db
             Req-Arrive-Time:
-                - "1772125162622"
+                - "1772219107806"
             Req-Cost-Time:
-                - "3540"
+                - "951"
             Resp-Start-Time:
-                - "1772125166163"
+                - "1772219108758"
             Server:
                 - istio-envoy
             Strict-Transport-Security:
@@ -40,12 +41,11 @@ interactions:
             Timing-Allow-Origin:
                 - '*'
             Vary:
-                - Accept-Encoding
                 - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "3540"
+                - "951"
         status: 200 OK
         code: 200
-        duration: 3.568s
+        duration: 977ms

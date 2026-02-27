@@ -24,17 +24,17 @@ interactions:
             Content-Type:
                 - application/json
             Req-Arrive-Time:
-                - "1772145327416"
+                - "1772221340567"
             Req-Cost-Time:
-                - "19"
+                - "15"
             Resp-Start-Time:
-                - "1772145327436"
+                - "1772221340582"
             Server:
                 - istio-envoy
             Vary:
                 - Origin,Access-Control-Request-Method,Access-Control-Request-Headers, Accept-Encoding
             X-Envoy-Upstream-Service-Time:
-                - "19"
+                - "14"
         status: 200 OK
         code: 200
-        duration: 801ms
+        duration: 919ms

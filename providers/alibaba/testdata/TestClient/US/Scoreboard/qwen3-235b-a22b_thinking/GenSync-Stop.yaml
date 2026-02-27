@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 156
+        content_length: 179
         host: dashscope-us.aliyuncs.com
         body: |
-            {"model":"qwen3-235b-a22b","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"stream":false,"stop":["is"]}
+            {"model":"qwen3-235b-a22b","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"stream":false,"stop":["is"],"enable_thinking":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,18 +21,18 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"choices":[{"message":{"content":"Canada ","reasoning_content":"Okay, the user wants me to talk about Canada in great detail starting with \"Canada is\". Let me start by brainstorming all the key points about Canada. First, its geography. Canada is the second-largest country in the world, so I should mention that. Also, it''s known for natural beauty—like lakes, forests, mountains. Provinces and territories: 10 provinces and 3 territories. Maybe mention the capital, Ottawa. Then the people: multicultural society, official bilingualism with English and French. History: indigenous peoples, French and British colonization, independence from Britain. Economy: natural resources like oil and timber, tech industry too. Culture: arts, sports like hockey. Social policies: universal healthcare, progressive stance on immigration and LGBTQ+ rights. Current issues: climate change, indigenous reconciliation. Also, maybe touch on the symbolism like the maple leaf, national anthem, and the Crown. I need to organize all this information coherently. Start with the basic facts, then move into history, government, economy, culture, and current challenges. Make sure to highlight the diversity and natural aspects. Check for any inaccuracies—like the number of provinces and territories, correct capital city. Also, mention the multiculturalism policy and its significance. Maybe include some statistics like population size, major cities. Need to ensure the flow is logical, moving from geography to society to modern issues. Avoid making it too textbook; keep it engaging but informative. Let me structure each paragraph with a clear topic. Start with the opening sentence as specified. Then go into geography, population, history, government, economy, culture, and challenges. Wrap up with a conclusion that ties it all together. Double-check facts like the year of Confederation (1867), official languages, and any recent developments. Make sure to mention the importance of the Canadian Charter of Rights and Freedoms. Also, note the role of the monarchy. Maybe include some examples of famous Canadians or cultural exports. Avoid any biases, present information objectively. Alright, time to put it all together in a detailed, comprehensive way.","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":20,"completion_tokens":539,"total_tokens":559,"completion_tokens_details":{"reasoning_tokens":422}},"created":1772142355,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-NjDeT76RKUiVhW9W"}'
+        body: '{"choices":[{"message":{"content":"**Canada ","reasoning_content":"Okay, the user wants a detailed talk about Canada starting with \"Canada is\". Let me start by brainstorming the key aspects of Canada. First, geography: it''s the second-largest country, so mention the vast landscapes, mountains, forests, lakes. Then the population, maybe around 40 million, diverse and multicultural. History-wise, indigenous peoples first, then French and British colonization, Confederation in 1867, and becoming independent.\n\nPolitical system: federal parliamentary democracy, constitutional monarchy with the Queen as head of state and the Prime Minister as head of government. Provinces and territories, maybe mention the ten provinces and three territories. Economy: natural resources like oil, minerals, timber; strong service sector, tech industry in cities like Toronto and Vancouver. Also, international trade, especially with the US and through agreements like USMCA.\n\nCulture: multiculturalism as official policy, bilingual in English and French, festivals like Canada Day, Thanksgiving. National symbols like the maple leaf, beaver, national anthem. Social aspects: universal healthcare, education system, emphasis on diversity and inclusion. International relations: peacekeeping, NATO, G7 membership, welcoming immigrants and refugees.\n\nChallenges: climate change, especially in the Arctic, indigenous reconciliation, healthcare system strains, housing affordability. Recent issues like immigration policies, environmental concerns. Also, maybe touch on the arts, sports (hockey!), and innovation. Need to structure all this coherently, starting with the given sentence. Make sure to cover all areas without getting too verbose. Check for accuracy on population, dates, and policies. Avoid any inaccuracies, like saying it''s the largest country if it''s second. Highlight the key points that make Canada unique. Maybe end with a positive note about its future.","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":20,"completion_tokens":454,"total_tokens":474,"completion_tokens_details":{"reasoning_tokens":356}},"created":1772220275,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-acobLuoyl7vowIaK"}'
         headers:
             Content-Type:
                 - application/json
             Eagleeye-Traceid:
-                - 0bc2425d17721423418285791ee4d7
+                - 0bc2425d17722202639316693ee4da
             Req-Arrive-Time:
-                - "1772142341830"
+                - "1772220263933"
             Req-Cost-Time:
-                - "12887"
+                - "11447"
             Resp-Start-Time:
-                - "1772142354717"
+                - "1772220275381"
             Server:
                 - istio-envoy
             Strict-Transport-Security:
@@ -45,7 +45,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "12886"
+                - "11447"
         status: 200 OK
         code: 200
-        duration: 12.916s
+        duration: 11.475s

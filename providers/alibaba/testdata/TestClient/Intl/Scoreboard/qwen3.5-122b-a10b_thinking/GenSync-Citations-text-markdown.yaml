@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 266
+        content_length: 289
         host: dashscope-intl.aliyuncs.com
         body: |
-            {"model":"qwen3.5-122b-a10b","messages":[{"role":"user","content":[{"type":"text","text":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"stream":false}
+            {"model":"qwen3.5-122b-a10b","messages":[{"role":"user","content":[{"type":"text","text":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"stream":false,"enable_thinking":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,16 +21,16 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"choices":[{"message":{"content":"The capital of Quackiland is **Quack**.","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Input text: \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"\n    *   Question: \"What is the capital of Quackiland?\"\n    *   Task: Answer the question based on the provided text.\n\n2.  **Extract Information:**\n    *   Sentence 1: \"The capital of Quackiland is Quack.\"\n    *   Sentence 2: \"The Big Canard Statue is located in Quack.\" (Irrelevant to the specific question, but confirms the name \"Quack\").\n\n3.  **Identify the Answer:**\n    *   The first sentence explicitly states: \"The capital of Quackiland is Quack.\"\n    *   Target answer: \"Quack\".\n\n4.  **Formulate Output:**\n    *   Direct answer: Quack.\n    *   Complete sentence answer: The capital of Quackiland is Quack.\n\n5.  **Review against Constraints:**\n    *   Keep it simple and direct.\n    *   Ensure accuracy based *only* on the provided text (though common sense aligns here).\n\n6.  **Final Decision:**\n    *   \"Quack\" is the correct answer. I will provide a clear, concise response.\n\n7.  **Drafting Response:**\n    *   \"The capital of Quackiland is Quack.\"\n\n8.  **Final Polish:** Just stating \"Quack\" is sufficient, but a full sentence is often more polite/clear in this context. Let''s go with the direct fact.\n\n    *   Answer: Quack.\n\n    *(Self-Correction)*: Wait, let me check if there''s any trick. \"Quackiland\" -> Capital \"Quack\". Seems straightforward reading comprehension. No hidden wordplay detected.\n\n    *   Final Answer: Quack.cw","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":44,"completion_tokens":427,"total_tokens":471,"completion_tokens_details":{"reasoning_tokens":411,"text_tokens":427},"prompt_tokens_details":{"text_tokens":44}},"created":1772145369,"system_fingerprint":null,"model":"qwen3.5-122b-a10b","id":"chatcmpl-71b9ec95-b363-92cb-becd-48cf354db5d5"}'
+        body: '{"choices":[{"message":{"content":"The capital of Quackiland is **Quack**.","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:** The user is presenting a riddle-like scenario about a fictional place called \"Quackiland\".\n2.  **Extract Information:**\n    *   Statement 1: \"The capital of Quackiland is Quack.\"\n    *   Statement 2: \"The Big Canard Statue is located in Quack.\"\n    *   Question: \"What is the capital of Quackiland?\"\n3.  **Identify the Answer:** The first sentence explicitly states the answer (\"The capital of Quackiland is Quack\").\n4.  **Verify for Trickery:** Sometimes these prompts contain misdirection, but here the information is straightforward. The second sentence adds flavor but doesn''t contradict the first.\n5.  **Formulate Output:** State the answer clearly based on the provided text.\n\nAnswer: Quack.cw","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":44,"completion_tokens":201,"total_tokens":245,"completion_tokens_details":{"reasoning_tokens":185,"text_tokens":201},"prompt_tokens_details":{"text_tokens":44}},"created":1772220886,"system_fingerprint":null,"model":"qwen3.5-122b-a10b","id":"chatcmpl-beb349f7-c48e-94f2-aad4-dcfcc1b6d973"}'
         headers:
             Content-Type:
                 - application/json
             Req-Arrive-Time:
-                - "1772145365758"
+                - "1772220883641"
             Req-Cost-Time:
-                - "2765"
+                - "2428"
             Resp-Start-Time:
-                - "1772145368524"
+                - "1772220886069"
             Server:
                 - istio-envoy
             Vary:
@@ -38,7 +38,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "2765"
+                - "2428"
         status: 200 OK
         code: 200
-        duration: 3.019s
+        duration: 2.683s

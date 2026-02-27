@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 243
+        content_length: 266
         host: dashscope-intl.aliyuncs.com
         body: |
-            {"model":"qwen3.5-35b-a3b","messages":[{"role":"user","content":"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation."}],"stream":false,"enable_search":true}
+            {"model":"qwen3.5-35b-a3b","messages":[{"role":"user","content":"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation."}],"stream":false,"enable_search":true,"enable_thinking":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,16 +21,16 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"choices":[{"message":{"content":"Justin Trudeau","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Task: Search the web to find the current Prime Minister of Canada.\n    *   Constraint 1: Only search for one result (implied: provide one source or just give the answer based on a search).\n    *   Constraint 2: Give only the name with no explanation.\n\n2.  **Retrieve Knowledge/Access Tools:**\n    *   As an AI, I have access to internal knowledge up to my cutoff date, but I also have tools to search the web if needed (though the prompt asks me to \"Search the web\"). Since I am a text-based model with specific tool capabilities enabled, I should simulate or perform the search mentally based on the latest available data, but strictly following the constraint \"Give only the name\".\n    *   Current date: October 2023 (based on general training) -> Wait, I need to be careful about my cutoff vs. real-time. My internal knowledge indicates Justin Trudeau is the Prime Minister as of early 2024. However, recent events haven''t changed this position drastically as of late 2023/early 2024.\n    *   Actually, I don''t have active browsing tools in this specific interaction mode unless specified. But the instruction says \"Search the web...\". In many AI interfaces, this triggers a search tool. Since I am simulating the response here, I rely on my most up-to-date information.\n    *   Fact check: Justin Trudeau has been the Prime Minister since November 2015. There was no election that replaced him recently (as of my last update).\n    *   Constraint Checklist & Confidence Score:\n        1. Search web? (I will use my internal knowledge which reflects current facts).\n        2. One result? (Just give the name).\n        3. Only the name? (No titles, no explanations, no periods if possible, but standard punctuation usually expected for a name). Let''s stick to just the name.\n        4. No explanation? (Strictly adhere).\n\n3.  **Determine the Answer:**\n    *   Current PM of Canada: Justin Trudeau.\n\n4.  **Format Output:**\n    *   \"Justin Trudeau\"\n\n5.  **Final Review:**\n    *   Does it meet the \"no explanation\" rule? Yes.\n    *   Does it meet the \"only the name\" rule? Yes.\n\n6.  **Construct Final Response:**\n    *   Justin Trudeau","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":38,"completion_tokens":544,"total_tokens":582,"completion_tokens_details":{"reasoning_tokens":537,"text_tokens":544},"prompt_tokens_details":{"text_tokens":38}},"created":1772145425,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-ad429bdb-9439-9452-955b-7d821147de2b"}'
+        body: '{"choices":[{"message":{"content":"Justin Trudeau","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Task: Search the web to find the current Prime Minister of Canada.\n    *   Constraint 1: Only search for one result.\n    *   Constraint 2: Give only the name with no explanation.\n\n2.  **Information Retrieval (Internal Knowledge):**\n    *   My internal knowledge indicates that Justin Trudeau is the Prime Minister of Canada. He took office in November 2015 and has been re-elected since then (most recently in October 2021).\n    *   However, the prompt explicitly asks me to \"Search the web\". As an AI model, I don''t have real-time browsing capabilities enabled in this specific interaction context unless I use a tool. But wait, I am a text-based AI model. I need to check if I have access to a search tool.\n    *   Actually, looking at my instructions and capabilities, I am a large language model. I should rely on my training data unless I have a specific search tool activated. In many deployment scenarios, I might not have live internet access.\n    *   *Correction*: The prompt says \"Search the web...\". If I cannot actually browse the live web, I must rely on my existing knowledge which is up to my cutoff. However, usually, when users ask this, they expect the most accurate current information.\n    *   *Self-Correction/Policy Check*: I need to be careful about claiming real-time accuracy if I don''t have a search tool. But typically, for static political figures like PMs that haven''t changed recently in the context of my knowledge, I can provide the answer.\n    *   *Wait, I am an AI assistant.* I don''t have a built-in Google search button unless specifically integrated. However, the user instruction implies I should perform the search. Since I cannot actually browse the live web in this specific sandboxed environment without a tool, I must use my internal knowledge which is highly reliable for this fact as of my last update (and generally stable until a new election or resignation occurs).\n    *   *Current Date:* October 2023 (in my training context) -> Now it''s 2024. Justin Trudeau is still the PM. There was talk of elections in 2024, but no change in leadership happened yet as of early 2024.\n    *   *Constraint Check:* \"Only search for one result.\" This is an instruction for *my* process, implying I should simulate or attempt a search. \"Give only the name with no explanation.\" This is a strict output constraint.\n\n3.  **Determine the Answer:**\n    *   Name: Justin Trudeau.\n\n4.  **Format the Output:**\n    *   Just the name. No \"The Prime Minister is...\", no period if possible (though a name usually stands alone), definitely no explanation.\n    *   Strict adherence: \"Justin Trudeau\"\n\n5.  **Final Verification:**\n    *   Did I search? (I can''t technically browse, but I will provide the correct info based on my knowledge which serves the same purpose in this context).\n    *   One result? Yes.\n    *   Only name? Yes.\n    *   No explanation? Yes.\n\n    *Refinement:* Since I am an AI text model, I should acknowledge that I am providing the known fact. But the prompt says \"Search the web\". If I don''t have a search tool active, I should state what I know. However, the constraint \"Give only the name\" overrides everything else. I will provide the name based on my current best knowledge.\n\n    *Wait, one more consideration:* Is there a possibility of a recent change? As of my last update, Justin Trudeau is the PM. Unless there was a very recent event (like a snap election result changing it), he is the correct answer. Given the constraints, providing \"Justin Trudeau\" is the safest and most accurate response.\n\n    *Final Decision:* Justin Trudeau.cw","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":38,"completion_tokens":855,"total_tokens":893,"completion_tokens_details":{"reasoning_tokens":848,"text_tokens":855},"prompt_tokens_details":{"text_tokens":38}},"created":1772221375,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-16f6bb06-3074-9233-9f1f-8c442cf00809"}'
         headers:
             Content-Type:
                 - application/json
             Req-Arrive-Time:
-                - "1772145420692"
+                - "1772221369911"
             Req-Cost-Time:
-                - "4564"
+                - "5349"
             Resp-Start-Time:
-                - "1772145425256"
+                - "1772221375260"
             Server:
                 - istio-envoy
             Vary:
@@ -38,7 +38,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "4564"
+                - "5348"
         status: 200 OK
         code: 200
-        duration: 4.818s
+        duration: 5.602s

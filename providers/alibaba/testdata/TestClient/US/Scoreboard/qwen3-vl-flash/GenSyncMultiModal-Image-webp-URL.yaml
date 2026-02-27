@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 289
+        content_length: 313
         host: dashscope-us.aliyuncs.com
         body: |
-            {"model":"qwen3-vl-flash","messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.webp"}}]}],"stream":false}
+            {"model":"qwen3-vl-flash","messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.webp"}}]}],"stream":false,"enable_thinking":false}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -20,20 +20,20 @@ interactions:
         proto_major: 2
         proto_minor: 0
         content_length: 447
-        body: '{"choices":[{"message":{"content":"Banana","reasoning_content":"","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":111,"completion_tokens":3,"total_tokens":114,"prompt_tokens_details":{"image_tokens":92,"text_tokens":19},"completion_tokens_details":{"text_tokens":3}},"created":1772125162,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-m3gkDsV365JW_o-B"}'
+        body: '{"choices":[{"message":{"content":"Banana","reasoning_content":"","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":111,"completion_tokens":3,"total_tokens":114,"prompt_tokens_details":{"image_tokens":92,"text_tokens":19},"completion_tokens_details":{"text_tokens":3}},"created":1772220110,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-d4ovJoeiguh8CcC6"}'
         headers:
             Content-Length:
                 - "447"
             Content-Type:
                 - application/json
             Eagleeye-Traceid:
-                - 0bc2426217721251604313338ed514
+                - 0bc2426217722201088932763ed50d
             Req-Arrive-Time:
-                - "1772125160438"
+                - "1772220108899"
             Req-Cost-Time:
-                - "1884"
+                - "1536"
             Resp-Start-Time:
-                - "1772125162323"
+                - "1772220110436"
             Server:
                 - istio-envoy
             Strict-Transport-Security:
@@ -45,7 +45,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "1884"
+                - "1536"
         status: 200 OK
         code: 200
-        duration: 1.913s
+        duration: 1.561s

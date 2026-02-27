@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 786
+        content_length: 809
         host: dashscope-intl.aliyuncs.com
         body: |
-            {"model":"qwen3.5-397b-a17b","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"id":"call_cf170e6157a34bfc8eae85c1","type":"function","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_cf170e6157a34bfc8eae85c1"}],"stream":false,"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
+            {"model":"qwen3.5-397b-a17b","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"id":"call_f56ed65c382341a698c340df","type":"function","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_f56ed65c382341a698c340df"}],"stream":false,"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"enable_thinking":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,16 +21,16 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"choices":[{"message":{"content":"363.89","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Task: Calculate the square root of 132413.\n    *   Tool: Use the `square_root` tool (already done in the previous turn).\n    *   Constraint: Reply with *only* the result. No explanation.\n\n2.  **Review the Tool Output:**\n    *   The tool returned `363.89`.\n\n3.  **Format the Output:**\n    *   The user explicitly requested \"only the result\".\n    *   I need to output just the number provided by the tool.\n\n4.  **Final Check:**\n    *   Does \"363.89\" meet the criteria? Yes.\n    *   Should I add more precision? The tool provided 363.89. I should stick to the tool''s output unless instructed otherwise, but usually, tools provide sufficient precision. The prompt asks to use the tool and reply with the result. The result given is 363.89.\n    *   Wait, looking at the tool response format in the simulation: `363.89`.\n    *   I will output exactly that.\n\n5.  **Construct Final Response:**\n    *   363.89","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":96,"completion_tokens":291,"total_tokens":387,"completion_tokens_details":{"reasoning_tokens":280,"text_tokens":291},"prompt_tokens_details":{"text_tokens":96}},"created":1772145492,"system_fingerprint":null,"model":"qwen3.5-397b-a17b","id":"chatcmpl-62be1852-c631-9e0d-8bb8-bc88bb078619"}'
+        body: '{"choices":[{"message":{"content":"363.89","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Task: Calculate the square root of 132413 using the `square_root` tool.\n    *   Constraint 1: Reply with *only* the result.\n    *   Constraint 2: Do not give an explanation.\n\n2.  **Review Tool Output:**\n    *   The tool `square_root` was called with `number: 132413`.\n    *   The tool returned `363.89`.\n\n3.  **Format the Output:**\n    *   The user requested *only* the result.\n    *   The result is `363.89`.\n    *   I need to ensure no extra text, markdown (unless part of the number representation, but usually plain text is safer for \"only the result\"), or explanations are included.\n\n4.  **Final Decision:**\n    *   Output: `363.89`\n\n5.  **Double Check:**\n    *   Did I use the tool? Yes.\n    *   Is it the correct number? Yes (132413).\n    *   Is there any explanation? No.\n    *   Is it only the result? Yes.\n\n6.  **Construct Final Response:**\n    363.89","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":96,"completion_tokens":305,"total_tokens":401,"completion_tokens_details":{"reasoning_tokens":294,"text_tokens":305},"prompt_tokens_details":{"text_tokens":96}},"created":1772220957,"system_fingerprint":null,"model":"qwen3.5-397b-a17b","id":"chatcmpl-53b6df14-7ead-9dc7-9b9c-a9e861fb534b"}'
         headers:
             Content-Type:
                 - application/json
             Req-Arrive-Time:
-                - "1772145488103"
+                - "1772220953338"
             Req-Cost-Time:
-                - "3821"
+                - "3517"
             Resp-Start-Time:
-                - "1772145491925"
+                - "1772220956855"
             Server:
                 - istio-envoy
             Vary:
@@ -38,7 +38,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "3821"
+                - "3517"
         status: 200 OK
         code: 200
-        duration: 4.075s
+        duration: 3.767s

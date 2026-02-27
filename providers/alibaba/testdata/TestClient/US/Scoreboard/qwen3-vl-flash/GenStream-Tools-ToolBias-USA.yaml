@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 592
+        content_length: 616
         host: dashscope-us.aliyuncs.com
         body: |
-            {"model":"qwen3-vl-flash","messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"stream":true,"stream_options":{"include_usage":true},"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}]}
+            {"model":"qwen3-vl-flash","messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"stream":true,"stream_options":{"include_usage":true},"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"enable_thinking":false}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,13 +21,13 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"choices":[{"delta":{"content":null,"tool_calls":[{"index":0,"id":"call_2d30ea507e604d89b151c9","type":"function","function":{"name":"best_country","arguments":""}}],"role":"assistant"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772125129,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-GoFgCgI5qGqC7KQ_"}
+            data: {"choices":[{"delta":{"content":null,"tool_calls":[{"index":0,"id":"call_5222cb7324d84bcbbde712","type":"function","function":{"name":"best_country","arguments":""}}],"role":"assistant"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772219970,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-L84H5ehr77B4N4ZN"}
 
-            data: {"choices":[{"delta":{"content":null,"tool_calls":[{"index":0,"id":"","type":"function","function":{"arguments":" {\"country\": \"USA\"}"}}]},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772125129,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-GoFgCgI5qGqC7KQ_"}
+            data: {"choices":[{"delta":{"content":null,"tool_calls":[{"index":0,"id":"","type":"function","function":{"arguments":" {\"country\": \"USA\"}"}}]},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772219970,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-L84H5ehr77B4N4ZN"}
 
-            data: {"choices":[{"finish_reason":"tool_calls","delta":{"content":""},"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772125129,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-GoFgCgI5qGqC7KQ_"}
+            data: {"choices":[{"finish_reason":"tool_calls","delta":{"content":""},"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772219970,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-L84H5ehr77B4N4ZN"}
 
-            data: {"choices":[],"object":"chat.completion.chunk","usage":{"prompt_tokens":211,"completion_tokens":20,"total_tokens":231,"completion_tokens_details":{"text_tokens":20},"prompt_tokens_details":{"text_tokens":211}},"created":1772125129,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-GoFgCgI5qGqC7KQ_"}
+            data: {"choices":[],"object":"chat.completion.chunk","usage":{"prompt_tokens":211,"completion_tokens":20,"total_tokens":231,"completion_tokens_details":{"text_tokens":20},"prompt_tokens_details":{"text_tokens":211}},"created":1772219970,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-L84H5ehr77B4N4ZN"}
 
             data: [DONE]
 
@@ -35,13 +35,13 @@ interactions:
             Content-Type:
                 - text/event-stream;charset=UTF-8
             Eagleeye-Traceid:
-                - 0bc2426217721251275733315ed514
+                - 0bc2426217722199688702737ed50d
             Req-Arrive-Time:
-                - "1772125127580"
+                - "1772219968877"
             Req-Cost-Time:
-                - "990"
+                - "1296"
             Resp-Start-Time:
-                - "1772125128570"
+                - "1772219970173"
             Server:
                 - istio-envoy
             Strict-Transport-Security:
@@ -53,7 +53,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "990"
+                - "1296"
         status: 200 OK
         code: 200
-        duration: 1.018s
+        duration: 1.321s

@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 542
+        content_length: 565
         host: dashscope-intl.aliyuncs.com
         body: |
-            {"model":"qwen3.5-122b-a10b","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
+            {"model":"qwen3.5-122b-a10b","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"enable_thinking":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,16 +21,16 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"choices":[{"message":{"content":"","reasoning_content":"The user wants me to use the square_root tool to calculate the square root of 132413 and only reply with the result, without any explanation. I need to call the function with the number parameter set to 132413.","role":"assistant","tool_calls":[{"function":{"arguments":"{\"number\": 132413}","name":"square_root"},"id":"call_64244bb800d8417f8c14a4bf","index":0,"type":"function"}]},"finish_reason":"tool_calls","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":331,"completion_tokens":90,"total_tokens":421,"completion_tokens_details":{"reasoning_tokens":54,"text_tokens":90},"prompt_tokens_details":{"text_tokens":331}},"created":1772145351,"system_fingerprint":null,"model":"qwen3.5-122b-a10b","id":"chatcmpl-e2767999-0edf-9b9c-b7d2-a1eb38a89019"}'
+        body: '{"choices":[{"message":{"content":"","reasoning_content":"The user wants me to calculate the square root of 132413 using the square_root tool and only provide the result without any explanation.\n\nI need to call the square_root function with the number parameter set to 132413.","role":"assistant","tool_calls":[{"function":{"arguments":"{\"number\": 132413}","name":"square_root"},"id":"call_39a605287e204f60beccb2b6","index":0,"type":"function"}]},"finish_reason":"tool_calls","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":331,"completion_tokens":90,"total_tokens":421,"completion_tokens_details":{"reasoning_tokens":54,"text_tokens":90},"prompt_tokens_details":{"text_tokens":331}},"created":1772220862,"system_fingerprint":null,"model":"qwen3.5-122b-a10b","id":"chatcmpl-e6c15f9a-aa76-97fe-9a84-f9a4e4fe45c5"}'
         headers:
             Content-Type:
                 - application/json
             Req-Arrive-Time:
-                - "1772145350094"
+                - "1772220861167"
             Req-Cost-Time:
-                - "692"
+                - "1087"
             Resp-Start-Time:
-                - "1772145350787"
+                - "1772220862254"
             Server:
                 - istio-envoy
             Vary:
@@ -38,7 +38,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "691"
+                - "1086"
         status: 200 OK
         code: 200
-        duration: 945ms
+        duration: 1.341s

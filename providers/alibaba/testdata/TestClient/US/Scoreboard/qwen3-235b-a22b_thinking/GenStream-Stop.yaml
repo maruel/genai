@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 195
+        content_length: 218
         host: dashscope-us.aliyuncs.com
         body: |
-            {"model":"qwen3-235b-a22b","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"stream":true,"stop":["is"],"stream_options":{"include_usage":true}}
+            {"model":"qwen3-235b-a22b","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"stream":true,"stop":["is"],"stream_options":{"include_usage":true},"enable_thinking":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,215 +21,309 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"choices":[{"delta":{"content":null,"role":"assistant","reasoning_content":""},"index":0,"logprobs":null,"finish_reason":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"role":"assistant","reasoning_content":""},"index":0,"logprobs":null,"finish_reason":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"finish_reason":null,"logprobs":null,"delta":{"content":null,"reasoning_content":"Okay, the"},"index":0}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"finish_reason":null,"logprobs":null,"delta":{"content":null,"reasoning_content":"Okay, the"},"index":0}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" user wants me"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" user wants me"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" to talk about"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" to talk about"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" Canada in great detail,"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" Canada in great detail,"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" starting with \"Canada is\"."},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" starting with \"Canada is\"."},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" Let me start by brainstorm"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" Let me start by outlining"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":"ing the key aspects of"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" the main aspects to"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" Canada. First, the basic"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" cover. First, basic"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" facts: it's the"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" facts: it's a country"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" second-largest country by"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" in North America, second"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" area, located in"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" largest in the world, borders"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" North America. I"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" the US. Then maybe"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" should mention its geography"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" geography—diverse landscapes"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":", like the vast"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" like mountains, forests, lakes"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" landscapes, mountains, forests,"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":". Mention provinces and"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" and lakes. Then"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" territories, capital city"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":", maybe touch on the population"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" Ottawa.\n\nNext,"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" distribution—how most"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" history. Indigenous peoples"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" people live near the southern"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" first, then European"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" border.\n\nNext, the multicultural"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" colonization, French and"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" aspect is important. Canada"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" British influences, Confeder"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" is known for its diversity"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"ation in 18"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" and official multiculturalism policy"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"67. Maybe"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":". I should include immigration"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" touch on key historical"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" history and major cities like Toronto"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" events like World Wars"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":", Vancouver, Montreal. Also"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":", independence milestones. Then"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":", the cultural mosaic"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" government structure: federal parliamentary"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" concept compared to a"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" democracy, constitutional monarchy, Prime"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" melting pot.\n\nThe"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" Minister and Governor General"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" government structure: federal"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" roles.\n\nCulture is important."},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" parliamentary democracy, constitutional"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" Multiculturalism, official"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" monarchy. Mention the Prime Minister"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" bilingualism (English"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":", the role of the monarch"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" and French), arts"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":", provinces and territories. Maybe"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":", music, sports"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" touch on healthcare and"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" like hockey. Education"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" education systems.\n\nE"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" system, healthcare—"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":"conomy-wise, natural"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"public healthcare, maybe"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" resources like oil, minerals"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" mention the Canada Health"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":", timber. Also"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" Act. Economy: natural"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":", tech industries in"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" resources, tech industry, trade"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" places like Toronto and"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" with US, NAFTA"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" Vancouver. International trade, especially"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"/USMCA"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" with the US and"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":". Environment: conservation"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" Mexico via USMCA"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" efforts, natural resources,"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":".\n\nHistorical points"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" climate change policies.\n\nSocial"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":": Indigenous peoples first"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" aspects: immigration,"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":", then European colonization by"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" diversity, social welfare"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" French and British."},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" programs. International relations: peace"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" Key dates like Confeder"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"keeping, UN involvement"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":"ation in 18"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":", NATO. Maybe"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":"67, independence"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" mention current issues like climate"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" from Britain in 1"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" change, Indigenous reconciliation"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":"931, Charter"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":", economic challenges. Also"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" of Rights in 1"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":", symbols like the maple"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":"982.\n\nC"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" leaf, national flag, anthem"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":"ultural aspects: bilingual"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":". End with a summary"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":"ism with English and French."},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" of Canada's identity"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" Famous cultural exports like music"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":".\n\nWait, I"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" (Bryan Adams"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" need to make sure each"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":", Drake), film"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" section has enough detail"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" (Christopher Nolan), literature"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":". For geography, specify"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" (Margaret Atwood"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" regions like the Pra"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":"). Sports like hockey"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"iries, Great"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" and curling.\n\n"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" Lakes, Arctic territories"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":"Natural environment: protected"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":". In history, mention"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" areas like Banff"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" key dates like "},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" National Park, Niagara"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"1867,"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" Falls, northern wilderness"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" Statute of Westminster"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":". Climate varies from"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" 193"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" temperate to ar"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"1, patriation"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":"ctic.\n\nCurrent issues"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" of constitution 198"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":": Indigenous reconciliation, climate change"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"2. For government"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" impacts, immigration policies"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":", explain federal vs"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":", healthcare challenges."},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":". provincial divisions. Culture"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" Also, Canada's role in"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" could include notable Canadians"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" international organizations like UN,"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" like authors, musicians, actors"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" NATO, G7"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":". Economy: mention oil"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":".\n\nI need to structure"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" sands, tech hubs"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" this coherently,"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" in Toronto and Vancouver."},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" starting with the definition"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" Environment: boreal forests"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":", then moving through geography"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":", freshwater resources, carbon"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":", people, government"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" pricing.\n\nAlso,"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":", economy, culture,"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" check if there are any"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" history, environment, and current"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" recent developments or policies"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" issues. Make sure"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":", but maybe that"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" each section flows into"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"'s too up-to-date."},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" the next. Avoid j"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" Need to balance depth"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":"argon, keep it informative"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" and breadth without getting too verbose"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" but accessible. Check for"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":". Ensure accuracy on"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" any inaccuracies,"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" population numbers, provinces"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" like exact population numbers or"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" and territories count, official"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" dates. Maybe include"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" languages. Don't forget to"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" some unique facts,"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" mention the Indigenous communities"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" like the number of lakes"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" like First Nations, In"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" or the official sports"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"uit, Métis"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":". Also, highlight Canada"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":". Maybe include some stats"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":"'s reputation for polit"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" on immigration rates, percentage"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":"eness and diversity. Ensure"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" of French speakers."},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" that the response is comprehensive"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" Also, education levels"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" but not too verbose"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" and top universities like"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":", balancing depth with readability.\n"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" Toronto, McGill.\n\n"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"delta":{"content":"**Canada ","reasoning_content":null},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"Make sure to structure"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[{"finish_reason":"stop","delta":{"content":"","reasoning_content":null},"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" each section clearly, starting"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
-            data: {"choices":[],"object":"chat.completion.chunk","usage":{"prompt_tokens":20,"completion_tokens":474,"total_tokens":494,"completion_tokens_details":{"reasoning_tokens":465}},"created":1772142344,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-h-gIot0zZph33eOM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" with the given sentence. Avoid"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" repetition, keep the"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" flow logical. Check"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" for any sensitive topics like"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" historical treatment of Indigenous peoples"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" and current reconciliation efforts. Highlight"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" Canada's reputation for tolerance"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" and diversity. Mention"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" key exports like natural"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" resources, aerospace, cultural"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" products. Also, touch on"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" the tech sector growth"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" and innovation.\n\nI"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" think that's a solid outline"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":". Now, flesh out each"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" section with specific details,"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" ensuring each paragraph transitions"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" smoothly. Use precise"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" data where possible, like"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" exact population numbers, area"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" size, number of provinces"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" (10 provinces and"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" 3 territories as"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" of now). Verify"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" current Prime Minister ("},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"Trudeau) and Governor"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" General (Mary Simon"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"). Maybe include some cultural"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" references like Tim Hort"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"ons, maple syrup"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" production, winter sports"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":".\n\nAlso, ensure"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" that the response is comprehensive"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" but not overwhelming."},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" Break down complex concepts"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" into understandable points. Highlight"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" unique aspects that distinguish"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" Canada, such as universal"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" healthcare, multiculturalism"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" policy, and natural"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" beauty. Conclude with"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" a strong summary that encaps"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"ulates Canada's essence as"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" a nation."},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
+
+            data: {"choices":[{"delta":{"content":"Canada","reasoning_content":null},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
+
+            data: {"choices":[{"delta":{"content":" ","reasoning_content":null},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
+
+            data: {"choices":[{"finish_reason":"stop","delta":{"content":"","reasoning_content":null},"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
+
+            data: {"choices":[],"object":"chat.completion.chunk","usage":{"prompt_tokens":20,"completion_tokens":682,"total_tokens":702,"completion_tokens_details":{"reasoning_tokens":671}},"created":1772220283,"system_fingerprint":null,"model":"qwen3-235b-a22b","id":"chatcmpl-qZmToczlKzvCHyK-"}
 
             data: [DONE]
 
@@ -237,13 +331,13 @@ interactions:
             Content-Type:
                 - text/event-stream;charset=UTF-8
             Eagleeye-Traceid:
-                - 0bc2425d17721423429425792ee4d7
+                - 0bc2425d17722202816846707ee4da
             Req-Arrive-Time:
-                - "1772142342943"
+                - "1772220281686"
             Req-Cost-Time:
-                - "992"
+                - "925"
             Resp-Start-Time:
-                - "1772142343935"
+                - "1772220282611"
             Server:
                 - istio-envoy
             Strict-Transport-Security:
@@ -255,7 +349,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "991"
+                - "925"
         status: 200 OK
         code: 200
-        duration: 1.019s
+        duration: 951ms

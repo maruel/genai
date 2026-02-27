@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 150
+        content_length: 174
         host: dashscope-us.aliyuncs.com
         body: |
-            {"model":"qwen3-vl-flash","messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"stream":false,"max_tokens":16}
+            {"model":"qwen3-vl-flash","messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"stream":false,"max_tokens":16,"enable_thinking":false}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -20,20 +20,20 @@ interactions:
         proto_major: 2
         proto_minor: 0
         content_length: 496
-        body: '{"choices":[{"message":{"content":"Certainly. The **Theory of Relativity** is one of the most profound and","reasoning_content":"","role":"assistant"},"finish_reason":"length","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":19,"completion_tokens":16,"total_tokens":35,"prompt_tokens_details":{"text_tokens":19},"completion_tokens_details":{"text_tokens":16}},"created":1772125123,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-FRcN-DRZ0R_1t_RY"}'
+        body: '{"choices":[{"message":{"content":"Certainly. The **Theory of Relativity** is one of the most profound and","reasoning_content":"","role":"assistant"},"finish_reason":"length","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":19,"completion_tokens":16,"total_tokens":35,"prompt_tokens_details":{"text_tokens":19},"completion_tokens_details":{"text_tokens":16}},"created":1772219965,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-yTKtvyS5uQWA89kl"}'
         headers:
             Content-Length:
                 - "496"
             Content-Type:
                 - application/json
             Eagleeye-Traceid:
-                - 0bc2426217721251217373304ed514
+                - 0bc2426217722199627902721ed50d
             Req-Arrive-Time:
-                - "1772125121745"
+                - "1772219962795"
             Req-Cost-Time:
-                - "1253"
+                - "2517"
             Resp-Start-Time:
-                - "1772125122998"
+                - "1772219965313"
             Server:
                 - istio-envoy
             Strict-Transport-Security:
@@ -45,7 +45,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "1253"
+                - "2517"
         status: 200 OK
         code: 200
-        duration: 1.283s
+        duration: 2.54s

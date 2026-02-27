@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 546
+        content_length: 569
         host: dashscope-intl.aliyuncs.com
         body: |
-            {"model":"qwen3.5-397b-a17b","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"stream":false,"tool_choice":"required","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
+            {"model":"qwen3.5-397b-a17b","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"stream":false,"tool_choice":"required","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"enable_thinking":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,16 +21,16 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"error":{"message":"<400> InternalError.Algo.InvalidParameter: The tool_choice parameter does not support being set to required or object in thinking mode","type":"invalid_request_error","param":null,"code":"invalid_parameter_error"},"id":"chatcmpl-9cf86a30-2ac8-9be3-b9e5-e1b7774076f6","request_id":"9cf86a30-2ac8-9be3-b9e5-e1b7774076f6"}'
+        body: '{"error":{"message":"<400> InternalError.Algo.InvalidParameter: The tool_choice parameter does not support being set to required or object in thinking mode","type":"invalid_request_error","param":null,"code":"invalid_parameter_error"},"id":"chatcmpl-d8c86a2a-899d-9241-b0b0-e4e6e6a33716","request_id":"d8c86a2a-899d-9241-b0b0-e4e6e6a33716"}'
         headers:
             Content-Type:
                 - application/json
             Req-Arrive-Time:
-                - "1772145486052"
+                - "1772220951228"
             Req-Cost-Time:
-                - "180"
+                - "321"
             Resp-Start-Time:
-                - "1772145486233"
+                - "1772220951550"
             Server:
                 - istio-envoy
             Vary:
@@ -38,7 +38,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "180"
+                - "321"
         status: 400 Bad Request
         code: 400
-        duration: 433ms
+        duration: 572ms

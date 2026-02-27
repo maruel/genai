@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 289
+        content_length: 312
         host: dashscope-us.aliyuncs.com
         body: |
-            {"model":"qwen3-30b-a3b","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"stream":true,"response_format":{"type":"json_object"},"stream_options":{"include_usage":true}}
+            {"model":"qwen3-30b-a3b","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"stream":true,"response_format":{"type":"json_object"},"stream_options":{"include_usage":true},"enable_thinking":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,97 +21,91 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"choices":[{"delta":{"content":null,"role":"assistant","reasoning_content":""},"index":0,"logprobs":null,"finish_reason":null}],"object":"chat.completion.chunk","usage":null,"created":1772142598,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-WYJqRDouG6qOXRsM"}
+            data: {"choices":[{"delta":{"content":null,"role":"assistant","reasoning_content":""},"index":0,"logprobs":null,"finish_reason":null}],"object":"chat.completion.chunk","usage":null,"created":1772221106,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-Gk0M-kUvPcCH-uxP"}
 
-            data: {"choices":[{"finish_reason":null,"logprobs":null,"delta":{"content":null,"reasoning_content":"Okay"},"index":0}],"object":"chat.completion.chunk","usage":null,"created":1772142598,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-WYJqRDouG6qOXRsM"}
+            data: {"choices":[{"finish_reason":null,"logprobs":null,"delta":{"content":null,"reasoning_content":"Okay"},"index":0}],"object":"chat.completion.chunk","usage":null,"created":1772221106,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-Gk0M-kUvPcCH-uxP"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":","},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142598,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-WYJqRDouG6qOXRsM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":","},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221106,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-Gk0M-kUvPcCH-uxP"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" the"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142598,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-WYJqRDouG6qOXRsM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" the"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221106,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-Gk0M-kUvPcCH-uxP"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" user is asking if"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142598,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-WYJqRDouG6qOXRsM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" user is asking if"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221106,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-Gk0M-kUvPcCH-uxP"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" a banana is a"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142598,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-WYJqRDouG6qOXRsM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" a banana is a"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221106,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-Gk0M-kUvPcCH-uxP"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" fruit. Let me"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142598,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-WYJqRDouG6qOXRsM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" fruit. Let me"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221106,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-Gk0M-kUvPcCH-uxP"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" think. From a"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142598,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-WYJqRDouG6qOXRsM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" think. From a"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221106,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-Gk0M-kUvPcCH-uxP"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" botanical perspective, a"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142598,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-WYJqRDouG6qOXRsM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" botanical perspective, a"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221106,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-Gk0M-kUvPcCH-uxP"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" fruit is the mature"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142598,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-WYJqRDouG6qOXRsM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" fruit is the mature"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221106,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-Gk0M-kUvPcCH-uxP"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" ovary of a"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142598,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-WYJqRDouG6qOXRsM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" ovary of a"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221106,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-Gk0M-kUvPcCH-uxP"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" flowering plant, usually"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142598,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-WYJqRDouG6qOXRsM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" flowering plant, usually"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221106,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-Gk0M-kUvPcCH-uxP"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" containing seeds. Ban"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142598,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-WYJqRDouG6qOXRsM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" containing seeds. Ban"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221106,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-Gk0M-kUvPcCH-uxP"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":"anas come from the"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142598,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-WYJqRDouG6qOXRsM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"anas come from the"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221106,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-Gk0M-kUvPcCH-uxP"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" banana plant, which"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142598,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-WYJqRDouG6qOXRsM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" banana plant, which"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221106,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-Gk0M-kUvPcCH-uxP"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" is a type of"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142598,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-WYJqRDouG6qOXRsM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" is a type of"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221106,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-Gk0M-kUvPcCH-uxP"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" herb, not a"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142598,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-WYJqRDouG6qOXRsM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" herb, not a"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221106,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-Gk0M-kUvPcCH-uxP"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" tree. The banana"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142598,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-WYJqRDouG6qOXRsM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" tree. The banana"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221106,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-Gk0M-kUvPcCH-uxP"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" itself develops from the"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142598,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-WYJqRDouG6qOXRsM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" itself develops from the"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221106,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-Gk0M-kUvPcCH-uxP"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" flower's ovary"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142598,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-WYJqRDouG6qOXRsM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" flower's ovary"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221106,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-Gk0M-kUvPcCH-uxP"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":", so technically,"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142598,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-WYJqRDouG6qOXRsM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":", so technically,"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221106,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-Gk0M-kUvPcCH-uxP"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" it is a fruit"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142598,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-WYJqRDouG6qOXRsM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" it is a fruit"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221106,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-Gk0M-kUvPcCH-uxP"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":". But wait,"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142598,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-WYJqRDouG6qOXRsM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":". However, sometimes"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221106,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-Gk0M-kUvPcCH-uxP"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" sometimes people confuse fruits"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142598,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-WYJqRDouG6qOXRsM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" people confuse fruits and"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221106,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-Gk0M-kUvPcCH-uxP"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" and vegetables. However"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142598,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-WYJqRDouG6qOXRsM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" vegetables. But according"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221106,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-Gk0M-kUvPcCH-uxP"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":", the question is"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142598,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-WYJqRDouG6qOXRsM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" to the definition,"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221106,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-Gk0M-kUvPcCH-uxP"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" straightforward. The user"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142598,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-WYJqRDouG6qOXRsM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" yes, a banana"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221106,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-Gk0M-kUvPcCH-uxP"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" also specified not to"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142598,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-WYJqRDouG6qOXRsM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" is a fruit."},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221106,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-Gk0M-kUvPcCH-uxP"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" include an explanation and"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142598,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-WYJqRDouG6qOXRsM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" I need to make"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221106,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-Gk0M-kUvPcCH-uxP"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" just reply with JSON"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142598,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-WYJqRDouG6qOXRsM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" sure I'm not"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221106,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-Gk0M-kUvPcCH-uxP"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":". So I need"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142598,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-WYJqRDouG6qOXRsM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" mixing up anything here"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221106,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-Gk0M-kUvPcCH-uxP"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" to make sure the"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142598,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-WYJqRDouG6qOXRsM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":". Also, the"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221106,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-Gk0M-kUvPcCH-uxP"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" answer is correct."},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142598,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-WYJqRDouG6qOXRsM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" user said not to"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221106,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-Gk0M-kUvPcCH-uxP"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" The schema requires a"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142598,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-WYJqRDouG6qOXRsM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" include an explanation,"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221106,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-Gk0M-kUvPcCH-uxP"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" boolean. So the"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142598,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-WYJqRDouG6qOXRsM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" just the JSON."},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221106,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-Gk0M-kUvPcCH-uxP"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" answer should be true"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142598,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-WYJqRDouG6qOXRsM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" So the answer should"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221106,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-Gk0M-kUvPcCH-uxP"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":". Let me confirm"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142598,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-WYJqRDouG6qOXRsM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" be {\"is_f"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221106,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-Gk0M-kUvPcCH-uxP"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" again. Yes,"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142598,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-WYJqRDouG6qOXRsM"}
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"ruit\": true}.\n"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221106,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-Gk0M-kUvPcCH-uxP"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" bananas are fruits."},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142598,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-WYJqRDouG6qOXRsM"}
+            data: {"choices":[{"delta":{"content":"[{\"is","reasoning_content":null},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221106,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-Gk0M-kUvPcCH-uxP"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" So the JSON should"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142598,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-WYJqRDouG6qOXRsM"}
+            data: {"choices":[{"delta":{"content":"_fruit\": true","reasoning_content":null},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221106,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-Gk0M-kUvPcCH-uxP"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":" be {\"is_f"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142598,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-WYJqRDouG6qOXRsM"}
+            data: {"choices":[{"delta":{"content":"}]","reasoning_content":null},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221106,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-Gk0M-kUvPcCH-uxP"}
 
-            data: {"choices":[{"delta":{"content":null,"reasoning_content":"ruit\": true}.\n"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142598,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-WYJqRDouG6qOXRsM"}
+            data: {"choices":[{"finish_reason":"stop","delta":{"content":"","reasoning_content":null},"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221106,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-Gk0M-kUvPcCH-uxP"}
 
-            data: {"choices":[{"delta":{"content":"{\"is_f","reasoning_content":null},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142598,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-WYJqRDouG6qOXRsM"}
-
-            data: {"choices":[{"delta":{"content":"ruit\": true}","reasoning_content":null},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142598,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-WYJqRDouG6qOXRsM"}
-
-            data: {"choices":[{"finish_reason":"stop","delta":{"content":"","reasoning_content":null},"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772142598,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-WYJqRDouG6qOXRsM"}
-
-            data: {"choices":[],"object":"chat.completion.chunk","usage":{"prompt_tokens":39,"completion_tokens":165,"total_tokens":204,"completion_tokens_details":{"reasoning_tokens":154}},"created":1772142598,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-WYJqRDouG6qOXRsM"}
+            data: {"choices":[],"object":"chat.completion.chunk","usage":{"prompt_tokens":39,"completion_tokens":150,"total_tokens":189,"completion_tokens_details":{"reasoning_tokens":138}},"created":1772221106,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-Gk0M-kUvPcCH-uxP"}
 
             data: [DONE]
 
@@ -119,13 +113,13 @@ interactions:
             Content-Type:
                 - text/event-stream;charset=UTF-8
             Eagleeye-Traceid:
-                - 0bc2425d17721425972766051ee4d7
+                - 0bc2425d17722211047072464ee4d9
             Req-Arrive-Time:
-                - "1772142597277"
+                - "1772221104708"
             Req-Cost-Time:
-                - "914"
+                - "970"
             Resp-Start-Time:
-                - "1772142598191"
+                - "1772221105679"
             Server:
                 - istio-envoy
             Strict-Transport-Security:
@@ -137,7 +131,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "913"
+                - "970"
         status: 200 OK
         code: 200
-        duration: 941ms
+        duration: 995ms

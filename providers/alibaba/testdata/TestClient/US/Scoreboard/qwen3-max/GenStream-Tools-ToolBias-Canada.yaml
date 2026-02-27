@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 587
+        content_length: 611
         host: dashscope-us.aliyuncs.com
         body: |
-            {"model":"qwen3-max","messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"stream":true,"stream_options":{"include_usage":true},"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}]}
+            {"model":"qwen3-max","messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"stream":true,"stream_options":{"include_usage":true},"tool_choice":"required","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"enable_thinking":false}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,17 +21,17 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"choices":[{"delta":{"content":null,"tool_calls":[{"index":0,"id":"call_1c058522477d4a128683ca1b","type":"function","function":{"name":"best_country","arguments":""}}],"role":"assistant"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772124415,"system_fingerprint":null,"model":"qwen3-max","id":"chatcmpl-N1Pvs_BRL3WPls_p"}
+            data: {"choices":[{"delta":{"content":null,"tool_calls":[{"index":0,"id":"call_ca22e9c617eb4915babfc18d","type":"function","function":{"name":"best_country","arguments":""}}],"role":"assistant"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221189,"system_fingerprint":null,"model":"qwen3-max","id":"chatcmpl-ZmR8Vr0AkW8jI8YU"}
 
-            data: {"choices":[{"delta":{"content":null,"tool_calls":[{"index":0,"id":"","type":"function","function":{"arguments":"{\"country\": \""}}]},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772124415,"system_fingerprint":null,"model":"qwen3-max","id":"chatcmpl-N1Pvs_BRL3WPls_p"}
+            data: {"choices":[{"delta":{"content":null,"tool_calls":[{"index":0,"id":"","type":"function","function":{"arguments":"{\"country\": \""}}]},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221189,"system_fingerprint":null,"model":"qwen3-max","id":"chatcmpl-ZmR8Vr0AkW8jI8YU"}
 
-            data: {"choices":[{"delta":{"content":null,"tool_calls":[{"index":0,"id":"","type":"function","function":{"arguments":"Canada\""}}]},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772124415,"system_fingerprint":null,"model":"qwen3-max","id":"chatcmpl-N1Pvs_BRL3WPls_p"}
+            data: {"choices":[{"delta":{"content":null,"tool_calls":[{"index":0,"id":"","type":"function","function":{"arguments":"Canada\""}}]},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221189,"system_fingerprint":null,"model":"qwen3-max","id":"chatcmpl-ZmR8Vr0AkW8jI8YU"}
 
-            data: {"choices":[{"delta":{"tool_calls":[{"function":{"arguments":"}"},"index":0,"id":"","type":"function"}]},"index":0}],"object":"chat.completion.chunk","usage":null,"created":1772124415,"system_fingerprint":null,"model":"qwen3-max","id":"chatcmpl-N1Pvs_BRL3WPls_p"}
+            data: {"choices":[{"delta":{"tool_calls":[{"function":{"arguments":"}"},"index":0,"id":"","type":"function"}]},"index":0}],"object":"chat.completion.chunk","usage":null,"created":1772221189,"system_fingerprint":null,"model":"qwen3-max","id":"chatcmpl-ZmR8Vr0AkW8jI8YU"}
 
-            data: {"choices":[{"finish_reason":"tool_calls","delta":{},"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772124415,"system_fingerprint":null,"model":"qwen3-max","id":"chatcmpl-N1Pvs_BRL3WPls_p"}
+            data: {"choices":[{"finish_reason":"tool_calls","delta":{},"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772221189,"system_fingerprint":null,"model":"qwen3-max","id":"chatcmpl-ZmR8Vr0AkW8jI8YU"}
 
-            data: {"choices":[],"object":"chat.completion.chunk","usage":{"prompt_tokens":321,"completion_tokens":19,"total_tokens":340,"prompt_tokens_details":{"cached_tokens":0}},"created":1772124415,"system_fingerprint":null,"model":"qwen3-max","id":"chatcmpl-N1Pvs_BRL3WPls_p"}
+            data: {"choices":[],"object":"chat.completion.chunk","usage":{"prompt_tokens":321,"completion_tokens":19,"total_tokens":340,"prompt_tokens_details":{"cached_tokens":0}},"created":1772221189,"system_fingerprint":null,"model":"qwen3-max","id":"chatcmpl-ZmR8Vr0AkW8jI8YU"}
 
             data: [DONE]
 
@@ -39,13 +39,13 @@ interactions:
             Content-Type:
                 - text/event-stream;charset=UTF-8
             Eagleeye-Traceid:
-                - 0bc2425d17721244134126481ee4d8
+                - 0bc2425e17722211861093526ebf56
             Req-Arrive-Time:
-                - "1772124413414"
+                - "1772221186116"
             Req-Cost-Time:
-                - "1409"
+                - "2661"
             Resp-Start-Time:
-                - "1772124414823"
+                - "1772221188778"
             Server:
                 - istio-envoy
             Strict-Transport-Security:
@@ -57,7 +57,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "1409"
+                - "2661"
         status: 200 OK
         code: 200
-        duration: 1.433s
+        duration: 2.689s

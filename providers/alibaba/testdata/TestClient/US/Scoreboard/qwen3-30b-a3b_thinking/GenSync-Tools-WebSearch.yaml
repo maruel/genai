@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 241
+        content_length: 264
         host: dashscope-us.aliyuncs.com
         body: |
-            {"model":"qwen3-30b-a3b","messages":[{"role":"user","content":"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation."}],"stream":false,"enable_search":true}
+            {"model":"qwen3-30b-a3b","messages":[{"role":"user","content":"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation."}],"stream":false,"enable_search":true,"enable_thinking":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,18 +21,18 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"choices":[{"message":{"content":"Justin Trudeau","reasoning_content":"Okay, the user is asking for the current Prime Minister of Canada. Let me think. I remember that Justin Trudeau has been the Prime Minister for a while. But I should verify to make sure there haven''t been any recent changes. Wait, the user said to search the web for one result. Since I can''t actually browse the internet, I have to rely on my existing knowledge. As of my last update in July 2024, Justin Trudeau is still the Prime Minister. There might have been an election in 2023, but I think he''s still in office. I should confirm if there''s any new information. However, since I can''t search, I''ll stick with the latest known information. So the answer should be Justin Trudeau.","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":36,"completion_tokens":162,"total_tokens":198,"completion_tokens_details":{"reasoning_tokens":155}},"created":1772142760,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-0x6kBmDR1fGLY7lO"}'
+        body: '{"choices":[{"message":{"content":"Justin Trudeau","reasoning_content":"Okay, the user is asking for the current Prime Minister of Canada. They want me to search the web for one result and just provide the name without any explanation.\n\nFirst, I need to recall if I already know this information. As of my last update in July 2024, Justin Trudeau is the Prime Minister. But since the user wants me to search the web, I should verify if there have been any changes since then. However, the user specified to only search for one result, so I can''t check multiple sources. \n\nWait, but I can''t actually perform a web search. My knowledge is based on data up until July 2024. If there''s a recent change, I might not know. However, given that the user wants only one result, maybe they expect me to use my existing knowledge. But the instruction says to search the web. Since I can''t do that, I have to rely on my training data. \n\nIn the absence of real-time data, I should stick with the information I have. So, the answer would be Justin Trudeau. But I need to make sure there''s no recent development. For example, if there was an election or a resignation, but I don''t have that information. \n\nSince the user wants only the name, I should just provide it. However, I must be cautious. If there''s a possibility of an error, maybe I should note that, but the user said no explanation. So, I''ll go with the name I know.","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":36,"completion_tokens":315,"total_tokens":351,"completion_tokens_details":{"reasoning_tokens":308}},"created":1772221125,"system_fingerprint":null,"model":"qwen3-30b-a3b","id":"chatcmpl-v4eOPZxJOGT6R6NA"}'
         headers:
             Content-Type:
                 - application/json
             Eagleeye-Traceid:
-                - 0bc2425d17721427579826181ee4d7
+                - 0bc2425d17722211224972492ee4d9
             Req-Arrive-Time:
-                - "1772142757983"
+                - "1772221122499"
             Req-Cost-Time:
-                - "2228"
+                - "2964"
             Resp-Start-Time:
-                - "1772142760212"
+                - "1772221125464"
             Server:
                 - istio-envoy
             Strict-Transport-Security:
@@ -45,7 +45,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "2228"
+                - "2964"
         status: 200 OK
         code: 200
-        duration: 2.258s
+        duration: 2.991s

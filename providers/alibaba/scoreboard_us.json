@@ -25,6 +25,7 @@
         "toolsBiased": "true",
         "toolCallRequired": true,
         "json": true,
+        "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
       },
@@ -34,6 +35,7 @@
         "toolsBiased": "true",
         "toolCallRequired": true,
         "json": true,
+        "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
       }
@@ -45,12 +47,6 @@
       "good": true,
       "reason": true,
       "in": {
-        "image": {
-          "inline": true,
-          "supportedFormats": [
-            "image/jpeg"
-          ]
-        },
         "text": {
           "inline": true
         }
@@ -65,16 +61,17 @@
         "reportFinishReason": "true",
         "seed": true,
         "tools": "true",
+        "toolsBiased": "flaky",
         "toolsIndecisive": "true",
+        "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
       },
       "GenStream": {
         "seed": true,
         "tools": "true",
-        "toolsBiased": "flaky",
-        "toolsIndecisive": "true",
-        "json": true,
+        "toolsBiased": "true",
+        "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
       }
@@ -99,17 +96,18 @@
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "seed": true,
-        "tools": "true",
-        "toolsIndecisive": "true",
+        "tools": "flaky",
+        "toolsBiased": "flaky",
+        "json": true,
+        "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
       },
       "GenStream": {
         "seed": true,
         "tools": "true",
-        "toolsBiased": "flaky",
         "toolsIndecisive": "true",
-        "json": true,
+        "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
       }
@@ -148,6 +146,7 @@
         "toolsBiased": "true",
         "toolCallRequired": true,
         "json": true,
+        "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
       },
@@ -157,6 +156,7 @@
         "toolsBiased": "true",
         "toolCallRequired": true,
         "json": true,
+        "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
       }
@@ -190,24 +190,13 @@
       ]
     },
     {
-      "comments": "Open-weight text models.",
+      "comments": "Old models.",
       "models": [
         "qwen-flash",
-        "qwen-plus",
-        "qwen3-14b",
-        "qwen3-235b-a22b-instruct-2507",
-        "qwen3-30b-a3b-instruct-2507",
-        "qwen3-32b",
-        "qwen3-8b",
-        "qwen3-next-80b-a3b-instruct"
-      ]
-    },
-    {
-      "comments": "Dated and regional variants.",
-      "models": [
         "qwen-flash-2025-07-28",
         "qwen-flash-2025-07-28-us",
         "qwen-flash-us",
+        "qwen-plus",
         "qwen-plus-2025-07-28",
         "qwen-plus-2025-09-11",
         "qwen-plus-2025-12-01",
@@ -222,6 +211,17 @@
       "models": [
         "qwen-vl-ocr",
         "qwen-vl-ocr-2025-11-20"
+      ]
+    },
+    {
+      "comments": "Open-weight text models.",
+      "models": [
+        "qwen3-14b",
+        "qwen3-235b-a22b-instruct-2507",
+        "qwen3-30b-a3b-instruct-2507",
+        "qwen3-32b",
+        "qwen3-8b",
+        "qwen3-next-80b-a3b-instruct"
       ]
     },
     {

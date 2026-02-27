@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 142
+        content_length: 166
         host: dashscope-intl.aliyuncs.com
         body: |
-            {"model":"qwen3.5-35b-a3b","messages":[{"role":"user","content":"Tell a short joke."}],"stream":true,"stream_options":{"include_usage":true}}
+            {"model":"qwen3.5-35b-a3b","messages":[{"role":"user","content":"Tell a short joke."}],"stream":true,"stream_options":{"include_usage":true},"enable_thinking":false}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,16 +21,16 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"error":{"message":"Incorrect API key provided. For details, see: https://www.alibabacloud.com/help/en/model-studio/error-code#apikey-error","type":"invalid_request_error","param":null,"code":"invalid_api_key"},"request_id":"8b4949f4-632f-9979-adbf-e7242b78e686"}'
+        body: '{"error":{"message":"Incorrect API key provided. For details, see: https://www.alibabacloud.com/help/en/model-studio/error-code#apikey-error","type":"invalid_request_error","param":null,"code":"invalid_api_key"},"request_id":"b2484ec6-c8ed-92fc-be96-39e2350a25d5"}'
         headers:
             Content-Type:
                 - application/json
             Req-Arrive-Time:
-                - "1772142042785"
+                - "1772219110122"
             Req-Cost-Time:
-                - "6"
+                - "7"
             Resp-Start-Time:
-                - "1772142042792"
+                - "1772219110129"
             Server:
                 - istio-envoy
             Vary:
@@ -39,4 +39,4 @@ interactions:
                 - "6"
         status: 401 Unauthorized
         code: 401
-        duration: 249ms
+        duration: 257ms

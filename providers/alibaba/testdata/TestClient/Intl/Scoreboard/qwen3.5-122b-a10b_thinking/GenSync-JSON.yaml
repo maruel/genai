@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 254
+        content_length: 277
         host: dashscope-intl.aliyuncs.com
         body: |
-            {"model":"qwen3.5-122b-a10b","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"stream":false,"response_format":{"type":"json_object"}}
+            {"model":"qwen3.5-122b-a10b","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"stream":false,"response_format":{"type":"json_object"},"enable_thinking":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,16 +21,16 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"choices":[{"message":{"content":"{\"is_fruit\": true}","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Question: \"Is a banana a fruit?\"\n    *   Constraint 1: \"Do not include an explanation.\"\n    *   Constraint 2: \"Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}.\"\n\n2.  **Determine the Fact:**\n    *   Is a banana a fruit? Yes, botanically and culinarily, a banana is classified as a fruit.\n\n3.  **Format the Output:**\n    *   Schema: `{\"is_fruit\": bool}`\n    *   Value: `true` (since it is a fruit).\n    *   Format: JSON string only, no markdown code blocks (unless implied by \"JSON\", but usually \"ONLY as JSON\" means raw text), no extra text.\n\n4.  **Draft the Response:**\n    *   `{\"is_fruit\": true}`\n\n5.  **Review Constraints:**\n    *   No explanation? Check.\n    *   ONLY as JSON? Check.\n    *   Correct schema? Check.\n\n6.  **Final Decision:**\n    *   Output the JSON object directly.cw","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":41,"completion_tokens":267,"total_tokens":308,"completion_tokens_details":{"reasoning_tokens":256,"text_tokens":267},"prompt_tokens_details":{"text_tokens":41}},"created":1772145349,"system_fingerprint":null,"model":"qwen3.5-122b-a10b","id":"chatcmpl-d5241215-76bb-9988-99e2-1bff9799d115"}'
+        body: '{"choices":[{"message":{"content":"{\"is_fruit\": true}","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Question: \"Is a banana a fruit?\"\n    *   Constraint 1: \"Do not include an explanation.\"\n    *   Constraint 2: \"Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}.\"\n\n2.  **Determine the Fact:**\n    *   Is a banana a fruit? Yes, botanically and culinarily, a banana is considered a fruit (specifically a berry).\n    *   Value for `is_fruit`: `true`.\n\n3.  **Format the Output:**\n    *   Must be valid JSON.\n    *   Must match the schema `{\"is_fruit\": bool}`.\n    *   No markdown code blocks (unless implied by \"ONLY as JSON\", but usually raw JSON is safer to avoid extra characters). However, often users accept markdown blocks. The instruction says \"Reply ONLY as JSON\". I will output raw JSON text to be strict.\n    *   No explanations, no introductory text.\n\n4.  **Construct the JSON:**\n    *   `{\"is_fruit\": true}`\n\n5.  **Final Review:**\n    *   Does it answer the question? Yes.\n    *   Is it JSON? Yes.\n    *   Is there any explanation? No.\n    *   Does it match the schema? Yes.\n\n6.  **Generate Output.**\n    {\"is_fruit\": true}","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":41,"completion_tokens":326,"total_tokens":367,"completion_tokens_details":{"reasoning_tokens":315,"text_tokens":326},"prompt_tokens_details":{"text_tokens":41}},"created":1772220861,"system_fingerprint":null,"model":"qwen3.5-122b-a10b","id":"chatcmpl-ae9e14cd-bc0e-9ea6-ae64-618e6c17810d"}'
         headers:
             Content-Type:
                 - application/json
             Req-Arrive-Time:
-                - "1772145347658"
+                - "1772220856891"
             Req-Cost-Time:
-                - "1719"
+                - "3620"
             Resp-Start-Time:
-                - "1772145349377"
+                - "1772220860512"
             Server:
                 - istio-envoy
             Vary:
@@ -38,7 +38,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "1718"
+                - "3620"
         status: 200 OK
         code: 200
-        duration: 1.972s
+        duration: 3.875s

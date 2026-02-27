@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 114
+        content_length: 137
         host: dashscope-intl.aliyuncs.com
         body: |
-            {"model":"qwen3.5-35b-a3b","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":false}
+            {"model":"qwen3.5-35b-a3b","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":false,"enable_thinking":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -21,16 +21,16 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"choices":[{"message":{"content":"Hello","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Task: Say hello.\n    *   Constraint: Use only one word.\n\n2.  **Identify Potential Responses:**\n    *   Hello\n    *   Hi\n    *   Greetings\n    *   Hey\n    *   Howdy\n    *   Yo\n\n3.  **Select the Best Option:**\n    *   \"Hello\" is standard and polite.\n    *   \"Hi\" is friendly and common.\n    *   Both fit the constraint. I''ll choose \"Hello\" as it''s the most direct interpretation of \"Say hello\".\n\n4.  **Verify Constraints:**\n    *   One word? Yes (\"Hello\").\n    *   Says hello? Yes.\n\n5.  **Final Output Generation:**\n    *   Hello\n\n6.  **Double Check:** Does the output contain anything else? No punctuation (though a period might count as a character, not a word, but to be safe, I should avoid extra punctuation if strict). The prompt says \"Use only one word\". Usually, a single word without a period is safer for \"one word\" constraints, but even with a period, it''s one word. However, to be strictly compliant, I will output just the word.\n\n    *   Decision: \"Hello\" or \"Hi\". Let''s go with \"Hello\".\n\n    *   Wait, is there any ambiguity about \"word\"? If I add a period, is it still one word? Grammatically yes, technically in terms of tokenization maybe different. To be safest, just the word.\n\n    *   Final choice: Hello.cw","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":18,"completion_tokens":356,"total_tokens":374,"completion_tokens_details":{"reasoning_tokens":350,"text_tokens":356},"prompt_tokens_details":{"text_tokens":18}},"created":1772145389,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-8b6742d7-239c-937e-a9d9-668f2923a8b6"}'
+        body: '{"choices":[{"message":{"content":"Hello","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Task: Say hello.\n    *   Constraint: Use only one word.\n\n2.  **Determine the appropriate response:**\n    *   Common greetings: \"Hello\", \"Hi\", \"Hey\", \"Greetings\".\n    *   Must be exactly one word.\n    *   \"Hello\" is a standard, polite choice.\n    *   \"Hi\" is also standard and shorter.\n\n3.  **Select the best option:**\n    *   \"Hello\" fits perfectly.\n\n4.  **Verify constraints:**\n    *   One word? Yes.\n    *   Says hello? Yes.\n\n5.  **Final Output Formulation:** Hello.cw","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":18,"completion_tokens":164,"total_tokens":182,"completion_tokens_details":{"reasoning_tokens":159,"text_tokens":164},"prompt_tokens_details":{"text_tokens":18}},"created":1772221342,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-b54b5ad0-24c1-95f0-9ad9-28f496e0d491"}'
         headers:
             Content-Type:
                 - application/json
             Req-Arrive-Time:
-                - "1772145386131"
+                - "1772221340841"
             Req-Cost-Time:
-                - "2514"
+                - "974"
             Resp-Start-Time:
-                - "1772145388646"
+                - "1772221341816"
             Server:
                 - istio-envoy
             Vary:
@@ -38,7 +38,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "2514"
+                - "974"
         status: 200 OK
         code: 200
-        duration: 2.768s
+        duration: 1.228s

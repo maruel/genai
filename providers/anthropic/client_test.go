@@ -141,7 +141,7 @@ func TestClient(t *testing.T) {
 			t.Fatal(err)
 		}
 		// TODO: Detect when recording and sleep only in this case.
-		isRecording := os.Getenv("RECORD") == "1"
+		isRecording := os.Getenv("RECORD") == "all"
 		for {
 			res, err := c.PokeResult(ctx, job)
 			if err != nil {
@@ -293,7 +293,7 @@ func TestClient(t *testing.T) {
 		// Download. The file may not be downloadable immediately after upload;
 		// poll until it is ready.
 		t.Run("Download", func(t *testing.T) {
-			isRecording := os.Getenv("RECORD") == "1"
+			isRecording := os.Getenv("RECORD") == "all"
 			for {
 				m, err := c.FileGetMetadata(ctx, fm.ID)
 				if err != nil {

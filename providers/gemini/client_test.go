@@ -388,7 +388,7 @@ func TestClient(t *testing.T) {
 		t.Logf("Uploaded file: %s", fm.Name)
 
 		// Wait for ACTIVE state; files may be PROCESSING initially.
-		isRecording := os.Getenv("RECORD") == "1"
+		isRecording := os.Getenv("RECORD") == "all"
 		for fm.State == gemini.FileStateProcessing {
 			if !isRecording {
 				t.Skip("file still processing and not recording")
@@ -451,7 +451,7 @@ func TestClient(t *testing.T) {
 		}
 		c := ci.(*gemini.Client)
 		ctx := t.Context()
-		isRecording := os.Getenv("RECORD") == "1"
+		isRecording := os.Getenv("RECORD") == "all"
 
 		// Create store.
 		store, err := c.FileSearchStoreCreate(ctx, "genai-test-store")

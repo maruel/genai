@@ -146,14 +146,14 @@ func TestClient(t *testing.T) {
 				t.Fatal(err)
 			}
 			// TODO: Detect when recording and sleep only in this case.
-			is_recording := os.Getenv("RECORD") == "1"
+			isRecording := os.Getenv("RECORD") == "all"
 			for {
 				res, err := c.PokeResult(ctx, job)
 				if err != nil {
 					t.Fatal(err)
 				}
 				if res.FinishReason == genai.Pending {
-					if is_recording {
+					if isRecording {
 						t.Logf("Waiting...")
 						time.Sleep(time.Second)
 					}

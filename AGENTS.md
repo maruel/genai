@@ -89,9 +89,10 @@ Every package should have comprehensive documentation explaining:
 - Use table-driven tests for multiple scenarios
 - Use subtest to separatetly test valid and errors code paths
 - Use HTTP record/playback for provider integration tests
-- **NEVER** create or manually edit cassette YAML files in `testdata/`. Always record them against the real
-  API with `RECORD=1 go test`. The cassette matcher compares requests byte-for-byte (body, headers,
-  content-length, proto) and hand-crafted files are fragile and unreliable.
+- **NEVER** create or manually edit cassette YAML files in `testdata/`. Record them against the real API
+  with `RECORD=failure_only go test` to replay existing cassettes and automatically re-record only the
+  failed ones. The cassette matcher compares requests byte-for-byte (body, headers, content-length, proto)
+  and hand-crafted files are fragile and unreliable.
 - Store test data in `testdata/` directories
 - Test files are named `*_test.go`
 - Test using HTTP recording often fails when run inside the environment. Ask the user how to continue when

@@ -30,7 +30,7 @@ func ExampleNew_hTTP_record() {
 	}()
 
 	mode := recorder.ModeRecordOnce
-	if os.Getenv("RECORD") == "1" {
+	if os.Getenv("RECORD") == "all" {
 		mode = recorder.ModeRecordOnly
 	}
 	wrapper := func(h http.RoundTripper) http.RoundTripper {

@@ -156,7 +156,7 @@ func TestClient(t *testing.T) {
 			t.Fatal(err)
 		}
 		// TODO: Detect when recording and sleep only in this case.
-		isRecording := os.Getenv("RECORD") == "1"
+		isRecording := os.Getenv("RECORD") == "all"
 		for {
 			res, err := c.PokeResult(ctx, job)
 			if err != nil {

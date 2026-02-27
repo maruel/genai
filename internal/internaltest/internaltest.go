@@ -9,14 +9,19 @@ import (
 	"context"
 	"errors"
 	"flag"
+	"fmt"
 	"io"
 	"iter"
 	"log/slog"
+	"maps"
 	"net/http"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"regexp"
 	"slices"
 	"strings"
+	"sync"
 	"testing"
 
 	"github.com/maruel/genai"
@@ -29,6 +34,9 @@ import (
 // Records manages HTTP recording/playback for tests.
 type Records struct {
 	Records *myrecorder.Records
+
+	mu       sync.Mutex
+	rerecord map[string]struct{} // test names to re-record
 }
 
 // NewRecords creates a new Records instance.
@@ -44,6 +52,9 @@ func NewRecords() *Records {
 }
 
 // Close finalizes all recordings.
+//
+// When RECORD=failure_only is set, it re-runs failed tests to re-record their
+// cassettes.
 func (r *Records) Close() error {
 	filtered := false
 	flag.Visit(func(f *flag.Flag) {
@@ -54,13 +65,24 @@ func (r *Records) Close() error {
 	if filtered {
 		return nil
 	}
-	return r.Records.Close()
+	if err := r.Records.Close(); err != nil {
+		return err
+	}
+	r.mu.Lock()
+	tests := slices.Sorted(maps.Keys(r.rerecord))
+	r.mu.Unlock()
+	if len(tests) == 0 {
+		return nil
+	}
+	return r.rerun(tests)
 }
 
 // Record records and replays HTTP requests for unit testing.
 //
-// When the environment variable RECORD=1 is set, it forcibly re-record the
-// cassettes and save in testdata/<testname>.yaml.
+// When the environment variable RECORD is set, it controls recording behavior:
+//   - "all": forcibly re-record all cassettes into testdata/<testname>.yaml.
+//   - "failure_only": replay existing cassettes; for failed tests, delete the
+//     cassette and re-run the test to re-record it.
 //
 // It ignores the port number in the URL both for recording and playback so it
 // works with local services like ollama and llama-server.
@@ -78,8 +100,41 @@ func (r *Records) RecordWithName(t testing.TB, name string, h http.RoundTripper,
 		if err := rr.Stop(); err != nil {
 			t.Error(err)
 		}
+		if os.Getenv("RECORD") == "failure_only" && t.Failed() {
+			_ = os.Remove(rr.CassettePath())
+			r.mu.Lock()
+			if r.rerecord == nil {
+				r.rerecord = make(map[string]struct{})
+			}
+			r.rerecord[t.Name()] = struct{}{}
+			r.mu.Unlock()
+		}
 	})
 	return rr
+}
+
+// rerun re-executes the test binary for the given test names without the
+// RECORD env var, so ModeRecordOnce re-records the (now deleted) cassettes.
+func (r *Records) rerun(tests []string) error {
+	escaped := make([]string, len(tests))
+	for i, t := range tests {
+		escaped[i] = "^" + regexp.QuoteMeta(t) + "$"
+	}
+	pattern := strings.Join(escaped, "|")
+	cmd := exec.Command(os.Args[0], "-test.run", pattern, "-test.count=1")
+	for _, e := range os.Environ() {
+		if !strings.HasPrefix(e, "RECORD=") {
+			cmd.Env = append(cmd.Env, e)
+		}
+	}
+	fmt.Fprintf(os.Stderr, "Re-recording %d failed test(s)...\n", len(tests))
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "%s\n", out)
+		return fmt.Errorf("re-recording failed: %w", err)
+	}
+	fmt.Fprintf(os.Stderr, "Re-recorded successfully.\n")
+	return nil
 }
 
 // ValidateWordResponse validates that the response contains exactly one of the expected words.

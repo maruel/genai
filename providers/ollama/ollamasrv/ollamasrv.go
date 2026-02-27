@@ -38,7 +38,7 @@ import (
 const Version = "v0.11.7"
 
 // When updating the value above, regenerate the recordings with:
-// RECORD=1 go test ./providers/ollama/...
+// RECORD=all go test ./providers/ollama/...
 
 // Server is an "ollama serve" instance.
 type Server struct {

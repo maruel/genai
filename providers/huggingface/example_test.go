@@ -33,7 +33,7 @@ func ExampleNew_hTTP_record() {
 
 	// Simple trick to force recording via an environment variable.
 	mode := recorder.ModeRecordOnce
-	if os.Getenv("RECORD") == "1" {
+	if os.Getenv("RECORD") == "all" {
 		mode = recorder.ModeRecordOnly
 	}
 	wrapper := func(h http.RoundTripper) http.RoundTripper {

@@ -76,8 +76,11 @@ func (r *Records) Signal(name string) error {
 
 // Record records and replays HTTP requests.
 //
-// When the environment variable RECORD=1 is set, it forcibly re-record the
-// cassettes and save in <root>/<testname>.yaml.
+// When the environment variable RECORD is set, it controls recording behavior:
+//   - "all": forcibly re-record all cassettes into <root>/<testname>.yaml.
+//   - "failure_only": use ModeRecordOnce (same as default); the caller is
+//     expected to delete cassettes for failed tests so the next run re-records
+//     only those.
 //
 // It ignores the port number in the URL both for recording and playback so it
 // works with local services like ollama and llama-server.
@@ -86,10 +89,10 @@ func (r *Records) Signal(name string) error {
 func (r *Records) Record(name string, h http.RoundTripper, opts ...recorder.Option) (*Recorder, error) {
 	name = strings.ReplaceAll(strings.ReplaceAll(name, "/", string(os.PathSeparator)), ":", "-")
 	mode := recorder.ModeRecordOnce
-	if v := os.Getenv("RECORD"); v == "1" {
+	if v := os.Getenv("RECORD"); v == "all" {
 		mode = recorder.ModeRecordOnly
-	} else if v == "2" {
-		mode = recorder.ModeReplayWithNewEpisodes
+	} else if v != "" && v != "failure_only" {
+		return nil, fmt.Errorf("invalid RECORD value %q; expected \"all\" or \"failure_only\"", v)
 	}
 	args := []recorder.Option{
 		recorder.WithMode(mode),
@@ -101,7 +104,7 @@ func (r *Records) Record(name string, h http.RoundTripper, opts ...recorder.Opti
 	if err != nil {
 		return nil, err
 	}
-	return &Recorder{Recorder: rec, name: name + ".yaml"}, nil
+	return &Recorder{Recorder: rec, name: name + ".yaml", root: r.root}, nil
 }
 
 type orphanedError struct {
@@ -121,6 +124,12 @@ func (e *orphanedError) Error() string {
 type Recorder struct {
 	*recorder.Recorder
 	name string
+	root string
+}
+
+// CassettePath returns the absolute path to the cassette file.
+func (r *Recorder) CassettePath() string {
+	return filepath.Join(r.root, r.name)
 }
 
 // RoundTrip implements http.RoundTripper.

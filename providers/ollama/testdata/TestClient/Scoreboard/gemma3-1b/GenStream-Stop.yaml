@@ -1,30 +1,49 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 161
-    host: localhost
-    body: "{\"model\":\"gemma3:1b\",\"messages\":[{\"role\":\"user\",\"content\":\"Talk about Canada in great details. Start with: Canada is\"}],\"stream\":true,\"options\":{\"stop\":[\"is\"]}}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: http://localhost/api/chat
-    method: POST
-  response:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    transfer_encoding:
-    - chunked
-    content_length: -1
-    body: "{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:54.407957635Z\",\"message\":{\"role\":\"assistant\",\"content\":\"Okay\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:54.425599967Z\",\"message\":{\"role\":\"assistant\",\"content\":\",\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:54.443046316Z\",\"message\":{\"role\":\"assistant\",\"content\":\" let\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:54.461052267Z\",\"message\":{\"role\":\"assistant\",\"content\":\"’\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:54.478761437Z\",\"message\":{\"role\":\"assistant\",\"content\":\"s\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:54.496226636Z\",\"message\":{\"role\":\"assistant\",\"content\":\" dive\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:54.514131391Z\",\"message\":{\"role\":\"assistant\",\"content\":\" into\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:54.53129767Z\",\"message\":{\"role\":\"assistant\",\"content\":\" Canada\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:54.549185737Z\",\"message\":{\"role\":\"assistant\",\"content\":\" –\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:54.566829798Z\",\"message\":{\"role\":\"assistant\",\"content\":\" a\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:54.583998694Z\",\"message\":{\"role\":\"assistant\",\"content\":\" country\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:54.601638835Z\",\"message\":{\"role\":\"assistant\",\"content\":\" brimming\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:54.620068999Z\",\"message\":{\"role\":\"assistant\",\"content\":\" with\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:54.640233826Z\",\"message\":{\"role\":\"assistant\",\"content\":\" a\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:54.657573135Z\",\"message\":{\"role\":\"assistant\",\"content\":\" complex\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:54.676558412Z\",\"message\":{\"role\":\"assistant\",\"content\":\" and\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:54.694241959Z\",\"message\":{\"role\":\"assistant\",\"content\":\" fascinating\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:54.71209529Z\",\"message\":{\"role\":\"assistant\",\"content\":\" h\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:54.71209882Z\",\"message\":{\"role\":\"assistant\",\"content\":\"\"},\"done_reason\":\"stop\",\"done\":true,\"total_duration\":711424593,\"load_duration\":89656839,\"prompt_eval_count\":21,\"prompt_eval_duration\":100593143,\"eval_count\":18,\"eval_duration\":304687464}\n"
-    headers:
-      Content-Type:
-      - application/x-ndjson
-    status: 200 OK
-    code: 200
-    duration: 407ms
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 161
+        host: localhost
+        body: |
+            {"model":"gemma3:1b","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"stream":true,"options":{"stop":["is"]}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        content_length: -1
+        body: |
+            {"model":"gemma3:1b","created_at":"2026-02-28T15:41:56.054820366Z","message":{"role":"assistant","content":"Okay"},"done":false}
+            {"model":"gemma3:1b","created_at":"2026-02-28T15:41:56.109286362Z","message":{"role":"assistant","content":","},"done":false}
+            {"model":"gemma3:1b","created_at":"2026-02-28T15:41:56.157518798Z","message":{"role":"assistant","content":" let"},"done":false}
+            {"model":"gemma3:1b","created_at":"2026-02-28T15:41:56.206119059Z","message":{"role":"assistant","content":"’"},"done":false}
+            {"model":"gemma3:1b","created_at":"2026-02-28T15:41:56.253848364Z","message":{"role":"assistant","content":"s"},"done":false}
+            {"model":"gemma3:1b","created_at":"2026-02-28T15:41:56.306528894Z","message":{"role":"assistant","content":" delve"},"done":false}
+            {"model":"gemma3:1b","created_at":"2026-02-28T15:41:56.356835654Z","message":{"role":"assistant","content":" into"},"done":false}
+            {"model":"gemma3:1b","created_at":"2026-02-28T15:41:56.410498589Z","message":{"role":"assistant","content":" Canada"},"done":false}
+            {"model":"gemma3:1b","created_at":"2026-02-28T15:41:56.460874943Z","message":{"role":"assistant","content":" –"},"done":false}
+            {"model":"gemma3:1b","created_at":"2026-02-28T15:41:56.50995932Z","message":{"role":"assistant","content":" a"},"done":false}
+            {"model":"gemma3:1b","created_at":"2026-02-28T15:41:56.555497058Z","message":{"role":"assistant","content":" vast"},"done":false}
+            {"model":"gemma3:1b","created_at":"2026-02-28T15:41:56.608097484Z","message":{"role":"assistant","content":" and"},"done":false}
+            {"model":"gemma3:1b","created_at":"2026-02-28T15:41:56.664618406Z","message":{"role":"assistant","content":" complex"},"done":false}
+            {"model":"gemma3:1b","created_at":"2026-02-28T15:41:56.716806845Z","message":{"role":"assistant","content":" country"},"done":false}
+            {"model":"gemma3:1b","created_at":"2026-02-28T15:41:56.764001918Z","message":{"role":"assistant","content":" brimming"},"done":false}
+            {"model":"gemma3:1b","created_at":"2026-02-28T15:41:56.816288292Z","message":{"role":"assistant","content":" with"},"done":false}
+            {"model":"gemma3:1b","created_at":"2026-02-28T15:41:56.868413833Z","message":{"role":"assistant","content":" h"},"done":false}
+            {"model":"gemma3:1b","created_at":"2026-02-28T15:41:56.86843402Z","message":{"role":"assistant","content":""},"done":true,"done_reason":"stop","total_duration":2413559706,"load_duration":159864111,"prompt_eval_count":21,"prompt_eval_duration":107197706,"eval_count":17,"eval_duration":806593950}
+        headers:
+            Content-Type:
+                - application/x-ndjson
+        status: 200 OK
+        code: 200
+        duration: 1.6s

@@ -61,14 +61,16 @@ func Scoreboard() scoreboard.Score {
 // - It would fetch a ton of junk.
 // - There's two raw JSON fields (completely unnecessary!).
 type ChatRequest struct {
-	Model     string             `json:"model"`
-	Messages  []Message          `json:"messages"`
-	Stream    bool               `json:"stream"`
-	Format    ChatRequestFormat  `json:"format,omitzero"`
-	KeepAlive string             `json:"keep_alive,omitzero"` // Default "5m"
-	Tools     []Tool             `json:"tools,omitzero"`
-	Options   ChatRequestOptions `json:"options,omitzero"`
-	Think     bool               `json:"think,omitzero"`
+	Model       string             `json:"model"`
+	Messages    []Message          `json:"messages"`
+	Stream      bool               `json:"stream"`
+	Format      ChatRequestFormat  `json:"format,omitzero"`
+	KeepAlive   string             `json:"keep_alive,omitzero"` // Default "5m"
+	Tools       []Tool             `json:"tools,omitzero"`
+	Options     ChatRequestOptions `json:"options,omitzero"`
+	Think       ReasoningEffort    `json:"think,omitzero"`
+	Logprobs    bool               `json:"logprobs,omitzero"`
+	TopLogprobs int64              `json:"top_logprobs,omitzero"`
 }
 
 // ChatRequestFormat is not documented.
@@ -89,6 +91,37 @@ func (c *ChatRequestFormat) MarshalJSON() ([]byte, error) {
 		return json.Marshal(c.Type)
 	}
 	return json.Marshal(c.Schema)
+}
+
+// ReasoningEffort controls the amount of thinking effort.
+type ReasoningEffort string
+
+// Reasoning effort values.
+const (
+	ReasoningEffortLow    ReasoningEffort = "low"
+	ReasoningEffortMedium ReasoningEffort = "medium"
+	ReasoningEffortHigh   ReasoningEffort = "high"
+)
+
+// Validate implements genai.Validatable.
+func (r ReasoningEffort) Validate() error {
+	switch r {
+	case "", ReasoningEffortLow, ReasoningEffortMedium, ReasoningEffortHigh:
+		return nil
+	default:
+		return fmt.Errorf("invalid reasoning effort %q", r)
+	}
+}
+
+// GenOptionText defines Ollama specific options.
+type GenOptionText struct {
+	// ReasoningEffort controls the thinking effort level ("low", "medium", "high").
+	ReasoningEffort ReasoningEffort
+}
+
+// Validate implements genai.Validatable.
+func (o *GenOptionText) Validate() error {
+	return o.ReasoningEffort.Validate()
 }
 
 // ChatRequestOptions is named Options in ollama.
@@ -141,7 +174,8 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			c.Options.TopK = v.TopK
 			c.Options.Stop = v.Stop
 			if v.TopLogprobs > 0 {
-				unsupported = append(unsupported, "GenOptionText.TopLogprobs")
+				c.TopLogprobs = v.TopLogprobs
+				c.Logprobs = true
 			}
 			if v.DecodeAs != nil {
 				c.Format.Schema = internal.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
@@ -165,6 +199,10 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 						c.Tools[i].Function.Parameters = t.GetInputSchema()
 					}
 				}
+			}
+		case *GenOptionText:
+			if v.ReasoningEffort != "" {
+				c.Think = v.ReasoningEffort
 			}
 		case genai.GenOptionSeed:
 			c.Options.Seed = int64(v)
@@ -226,11 +264,13 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 //
 // The source of truth is at https://pkg.go.dev/github.com/ollama/ollama/api#Message
 type Message struct {
-	Role      string     `json:"role,omitzero"` // "system", "assistant", "user"
-	Content   string     `json:"content,omitzero"`
-	Thinking  string     `json:"thinking,omitzero"`
-	Images    [][]byte   `json:"images,omitzero"` // List of images as base64 encoded strings.
-	ToolCalls []ToolCall `json:"tool_calls,omitzero"`
+	Role       string     `json:"role,omitzero"` // "system", "assistant", "user"
+	Content    string     `json:"content,omitzero"`
+	Thinking   string     `json:"thinking,omitzero"`
+	Images     [][]byte   `json:"images,omitzero"` // List of images as base64 encoded strings.
+	ToolCalls  []ToolCall `json:"tool_calls,omitzero"`
+	ToolCallID string     `json:"tool_call_id,omitzero"`
+	ToolName   string     `json:"tool_name,omitzero"`
 }
 
 // From must be called with at most one Request or one ToolCallResults.
@@ -325,18 +365,22 @@ func (m *Message) From(in *genai.Message) error {
 		}
 	}
 	if len(in.ToolCallResults) != 0 {
-		// Ollama doesn't use tool ID nor name in the result, hence only one tool can be called at a time.
 		// Process only the first tool call result in this method.
 		// The Init method handles multiple tool call results by creating multiple messages.
 		m.Content = in.ToolCallResults[0].Result
+		m.ToolCallID = in.ToolCallResults[0].ID
+		m.ToolName = in.ToolCallResults[0].Name
 	}
 	return nil
 }
 
 // To converts the provider Message to a genai.Message.
 func (m *Message) To(out *genai.Message) error {
+	if m.Thinking != "" {
+		out.Replies = append(out.Replies, genai.Reply{Reasoning: m.Thinking})
+	}
 	if m.Content != "" {
-		out.Replies = []genai.Reply{{Text: m.Content}}
+		out.Replies = append(out.Replies, genai.Reply{Text: m.Content})
 	}
 	for i := range m.Images {
 		out.Replies = append(out.Replies, genai.Reply{
@@ -355,6 +399,7 @@ func (m *Message) To(out *genai.Message) error {
 // ToolCall is somewhat documented at https://github.com/ollama/ollama/blob/main/docs/api.md#response-16
 // https://pkg.go.dev/github.com/ollama/ollama/api#ToolCall
 type ToolCall struct {
+	ID       string `json:"id,omitzero"`
 	Function struct {
 		Index     int64  `json:"index,omitzero"`
 		Name      string `json:"name"`
@@ -367,12 +412,14 @@ func (t *ToolCall) From(in *genai.ToolCall) error {
 	if len(in.Opaque) != 0 {
 		return &internal.BadError{Err: errors.New("field ToolCall.Opaque not supported")}
 	}
+	t.ID = in.ID
 	t.Function.Name = in.Name
 	return json.Unmarshal([]byte(in.Arguments), &t.Function.Arguments)
 }
 
 // To converts the provider ToolCall to a genai.ToolCall.
 func (t *ToolCall) To(out *genai.ToolCall) error {
+	out.ID = t.ID
 	out.Name = t.Function.Name
 	b, err := json.Marshal(t.Function.Arguments)
 	out.Arguments = string(b)
@@ -390,6 +437,42 @@ type Tool struct {
 	} `json:"function,omitzero"`
 }
 
+// Logprob represents per-token log probability information.
+//
+// See https://pkg.go.dev/github.com/ollama/ollama/api#Logprob
+type Logprob struct {
+	Token       string         `json:"token"`
+	Logprob     float64        `json:"logprob"`
+	Bytes       []byte         `json:"bytes,omitzero"`
+	TopLogprobs []TokenLogprob `json:"top_logprobs"`
+}
+
+// TokenLogprob represents a single token's log probability.
+//
+// See https://pkg.go.dev/github.com/ollama/ollama/api#TokenLogprob
+type TokenLogprob struct {
+	Token   string  `json:"token"`
+	Logprob float64 `json:"logprob"`
+	Bytes   []byte  `json:"bytes,omitzero"`
+}
+
+// ToGenai converts a slice of Logprob to the genai equivalent.
+func ToGenaiLogprobs(logprobs []Logprob) [][]genai.Logprob {
+	if len(logprobs) == 0 {
+		return nil
+	}
+	out := make([][]genai.Logprob, 0, len(logprobs))
+	for _, p := range logprobs {
+		lp := make([]genai.Logprob, 1, len(p.TopLogprobs)+1)
+		lp[0] = genai.Logprob{Text: p.Token, Logprob: p.Logprob}
+		for _, tlp := range p.TopLogprobs {
+			lp = append(lp, genai.Logprob{Text: tlp.Token, Logprob: tlp.Logprob})
+		}
+		out = append(out, lp)
+	}
+	return out
+}
+
 // ChatResponse is somewhat documented at https://github.com/ollama/ollama/blob/main/docs/api.md#response-10
 // https://pkg.go.dev/github.com/ollama/ollama/api#ChatResponse
 type ChatResponse struct {
@@ -398,14 +481,20 @@ type ChatResponse struct {
 	Message    Message    `json:"message"`
 	DoneReason DoneReason `json:"done_reason"`
 	Done       bool       `json:"done"`
+	Logprobs   []Logprob  `json:"logprobs,omitzero"`
 
-	// 	https://pkg.go.dev/github.com/ollama/ollama/api#Metrics
+	// Remote model info, set when using a remote/proxy model.
+	RemoteModel string `json:"remote_model,omitzero"`
+	RemoteHost  string `json:"remote_host,omitzero"`
+
+	// https://pkg.go.dev/github.com/ollama/ollama/api#Metrics
 	TotalDuration      time.Duration `json:"total_duration"`
 	LoadDuration       time.Duration `json:"load_duration"`
 	PromptEvalCount    int64         `json:"prompt_eval_count"`
 	PromptEvalDuration time.Duration `json:"prompt_eval_duration"`
 	EvalCount          int64         `json:"eval_count"`
 	EvalDuration       time.Duration `json:"eval_duration"`
+	PeakMemory         uint64        `json:"peak_memory,omitzero"`
 }
 
 // ToResult converts the ChatResponse to a genai.Result.
@@ -417,6 +506,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 			OutputTokens: c.EvalCount,
 			FinishReason: c.DoneReason.ToFinishReason(),
 		},
+		Logprobs: ToGenaiLogprobs(c.Logprobs),
 	}
 	err := c.Message.To(&out.Message)
 	if out.Usage.FinishReason == genai.FinishedStop && slices.ContainsFunc(out.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
@@ -714,7 +804,7 @@ func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatRespo
 	err := c.impl.DoRequest(ctx, "POST", c.chatURL, in, out)
 	if err != nil {
 		// TODO: Cheezy.
-		if strings.Contains(err.Error(), "not found, try pulling it first") {
+		if strings.Contains(err.Error(), "not found") {
 			if err := c.PullModel(ctx, c.impl.Model); err != nil {
 				return err
 			}
@@ -801,7 +891,7 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest) (iter.Seq[Ch
 		// Ollama doesn't use SSE.
 		err2 := processJSONStream(resp.Body, out, c.impl.Lenient)
 		_ = resp.Body.Close()
-		if err2 == nil || !strings.Contains(err2.Error(), "not found, try pulling it first") {
+		if err2 == nil || !strings.Contains(err2.Error(), "not found") {
 			return err2
 		}
 		// Model was not present. Try to pull then rerun again.
@@ -825,6 +915,10 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest) (iter.Seq[Ch
 			if !yield(pkt) {
 				break
 			}
+		}
+		// Drain remaining messages to unblock the producer goroutine so
+		// eg.Wait() doesn't deadlock.
+		for range out {
 		}
 	}, eg.Wait
 }
@@ -921,6 +1015,7 @@ func processJSONStream(body io.Reader, out chan<- ChatStreamChunkResponse, lenie
 func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, [][]genai.Logprob, error)) {
 	var finalErr error
 	u := genai.Usage{}
+	var l [][]genai.Logprob
 
 	return func(yield func(genai.Reply) bool) {
 			for pkt := range chunks {
@@ -929,11 +1024,17 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 					u.OutputTokens = pkt.EvalCount
 					u.FinishReason = pkt.DoneReason.ToFinishReason()
 				}
+				l = append(l, ToGenaiLogprobs(pkt.Logprobs)...)
 				switch role := pkt.Message.Role; role {
 				case "", "assistant":
 				default:
 					finalErr = &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
 					return
+				}
+				if pkt.Message.Thinking != "" {
+					if !yield(genai.Reply{Reasoning: pkt.Message.Thinking}) {
+						return
+					}
 				}
 				for i := range pkt.Message.ToolCalls {
 					f := genai.Reply{}
@@ -945,12 +1046,14 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 						return
 					}
 				}
-				if !yield(genai.Reply{Text: pkt.Message.Content}) {
-					return
+				if pkt.Message.Content != "" {
+					if !yield(genai.Reply{Text: pkt.Message.Content}) {
+						return
+					}
 				}
 			}
 		}, func() (genai.Usage, [][]genai.Logprob, error) {
-			return u, nil, finalErr
+			return u, l, finalErr
 		}
 }
 

@@ -1,30 +1,31 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 221
-    host: localhost
-    body: "{\"model\":\"gemma3:1b\",\"messages\":[{\"role\":\"user\",\"content\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\\\"is_fruit\\\": bool}.\"}],\"stream\":false,\"format\":\"json\"}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: http://localhost/api/chat
-    method: POST
-  response:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 312
-    body: "{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:55.560630171Z\",\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"is_fruit\\\": true}\"},\"done_reason\":\"stop\",\"done\":true,\"total_duration\":597117666,\"load_duration\":86180875,\"prompt_eval_count\":38,\"prompt_eval_duration\":19203435,\"eval_count\":8,\"eval_duration\":126805502}"
-    headers:
-      Content-Length:
-      - "312"
-      Content-Type:
-      - application/json; charset=utf-8
-    status: 200 OK
-    code: 200
-    duration: 598ms
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 221
+        host: localhost
+        body: |
+            {"model":"gemma3:1b","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"stream":false,"format":"json"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 316
+        body: '{"model":"gemma3:1b","created_at":"2026-02-28T15:41:58.591388838Z","message":{"role":"assistant","content":"{\"is_fruit\": true}"},"done":true,"done_reason":"stop","total_duration":2644487835,"load_duration":148408953,"prompt_eval_count":38,"prompt_eval_duration":1254185124,"eval_count":8,"eval_duration":352038230}'
+        headers:
+            Content-Length:
+                - "316"
+            Content-Type:
+                - application/json; charset=utf-8
+        status: 200 OK
+        code: 200
+        duration: 2.645s

@@ -1,30 +1,31 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 370
-    host: localhost
-    body: "{\"model\":\"qwen3:4b\",\"messages\":[{\"role\":\"user\",\"content\":\"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON.\"},{\"role\":\"user\",\"content\":\"\\n\\n/think\"}],\"stream\":false,\"format\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"is_fruit\":{\"type\":\"boolean\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"is_fruit\"]}}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: http://localhost/api/chat
-    method: POST
-  response:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 315
-    body: "{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:33.543028Z\",\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"is_fruit\\\": true\\n}\"},\"done_reason\":\"stop\",\"done\":true,\"total_duration\":407347042,\"load_duration\":34615417,\"prompt_eval_count\":27,\"prompt_eval_duration\":13133375,\"eval_count\":11,\"eval_duration\":165085250}"
-    headers:
-      Content-Length:
-      - "315"
-      Content-Type:
-      - application/json; charset=utf-8
-    status: 200 OK
-    code: 200
-    duration: 408ms
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 370
+        host: localhost
+        body: |
+            {"model":"qwen3:4b","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."},{"role":"user","content":"\n\n/think"}],"stream":false,"format":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1609
+        body: '{"model":"qwen3:4b","created_at":"2026-02-28T19:27:35.433686485Z","message":{"role":"assistant","content":"{\"is_fruit\": true}","thinking":"Okay, let''s tackle this question. The user is asking if a banana is a fruit. They want a JSON response without any explanation.\n\nFirst, I need to recall the botanical definition of a fruit. In botany, a fruit is the mature ovary of a flowering plant, which contains seeds. Bananas are the fruit of the banana plant (Musa acuminata). But wait, some people might think of bananas as vegetables because they''re often used in savory dishes. However, botanically, they''re fruits.\n\nWait, but there''s a twist here. The common banana we eat is actually a modified fruit. The plant produces a flower that develops into a banana, but the part we eat is the unripe fruit. However, in botanical terms, it''s still classified as a fruit because it''s the mature ovary. So yes, a banana is a fruit.\n\nThe user said not to include an explanation, just the JSON. So I need to output a JSON with a key like \"is_fruit\" set to true or false. Let me confirm: yes, banana is a fruit. So the answer should be true.\n\nWait, but sometimes people confuse it. Let me double-check. For example, strawberries are fruits but we eat the accessory fruits. Bananas are fruits because they develop from the ovary of the flower. So yes, the answer is true.\n\nSo the JSON should be {\"is_fruit\": true}\n"},"done":true,"done_reason":"stop","total_duration":337030098096,"load_duration":65788556,"prompt_eval_count":323,"prompt_eval_duration":69755308193,"eval_count":8,"eval_duration":1981870542}'
+        headers:
+            Content-Length:
+                - "1609"
+            Content-Type:
+                - application/json; charset=utf-8
+        status: 200 OK
+        code: 200
+        duration: 5m37.03s

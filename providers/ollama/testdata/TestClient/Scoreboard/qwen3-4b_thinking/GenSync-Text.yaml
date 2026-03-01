@@ -1,30 +1,31 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 146
-    host: localhost
-    body: "{\"model\":\"qwen3:4b\",\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"},{\"role\":\"user\",\"content\":\"\\n\\n/think\"}],\"stream\":false}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: http://localhost/api/chat
-    method: POST
-  response:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 1011
-    body: "{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:20.840987Z\",\"message\":{\"role\":\"assistant\",\"content\":\"\\u003cthink\\u003e\\nOkay, the user said \\\"Say hello. Use only one word.\\\" So I need to respond with a single word that means hello. The most common one is \\\"Hi,\\\" but maybe \\\"Hello\\\" itself? Wait, the instruction says to use only one word. \\\"Hello\\\" is two words, but maybe it's allowed as a single word? Or maybe they want a single-syllable word. Let me check. \\\"Hi\\\" is one word, one syllable. \\\"Hello\\\" is two syllables but one word. Hmm. The user might be testing if I can recognize that \\\"hello\\\" is a single word even though it's two syllables. Alternatively, maybe they want a different word like \\\"Hey\\\" or \\\"Hi.\\\" But the most straightforward answer is \\\"Hi.\\\" I should go with that.\\n\\u003c/think\\u003e\\n\\nHi.\"},\"done_reason\":\"stop\",\"done\":true,\"total_duration\":5592206000,\"load_duration\":471021000,\"prompt_eval_count\":18,\"prompt_eval_duration\":13098250,\"eval_count\":172,\"eval_duration\":2426075875}"
-    headers:
-      Content-Length:
-      - "1011"
-      Content-Type:
-      - application/json; charset=utf-8
-    status: 200 OK
-    code: 200
-    duration: 5.592s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 146
+        host: localhost
+        body: |
+            {"model":"qwen3:4b","messages":[{"role":"user","content":"Say hello. Use only one word."},{"role":"user","content":"\n\n/think"}],"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1799
+        body: '{"model":"qwen3:4b","created_at":"2026-02-28T19:01:38.657421167Z","message":{"role":"assistant","content":"hello","thinking":"Hmm, the user said \"Say hello. Use only one word.\" and then added \"/think\". \n\nOkay, first I need to understand what they''re asking. They want me to say hello but with only one word. That''s simple - the word \"hello\" itself is one word. \n\nBut wait, they put \"/think\" at the end. That''s interesting. In some contexts, \"/think\" might be a command or a trigger for something. Like in chat interfaces, sometimes people use slash commands. But the user didn''t specify any system here. \n\nI should stick to the instruction: \"Use only one word.\" So the response has to be exactly one word. The simplest thing is to say \"hello\". \n\nThe \"/think\" part is probably just extra. Maybe they''re testing if I follow instructions precisely. Or perhaps they want me to think about it first. But the instruction says \"use only one word\" for the response, so I shouldn''t add anything else. \n\nI recall that in some programming contexts, \"/think\" might be a command to make the AI think before responding. But the user didn''t say that - they just added it after the request. \n\nTo be safe, I''ll respond with just \"hello\" as one word. No extra words, no extra punctuation. That''s the cleanest way to follow their request. \n\nAlso, the user said \"Say hello\" - so it''s literally asking for a greeting. \"Hello\" is the standard greeting word. \n\nI think I''m overcomplicating it. The answer is simply \"hello\". \n\nFinal decision: respond with \"hello\" (one word only).\n"},"done":true,"done_reason":"stop","total_duration":89548605280,"load_duration":797861189,"prompt_eval_count":20,"prompt_eval_duration":3746844063,"eval_count":342,"eval_duration":84857789337}'
+        headers:
+            Content-Length:
+                - "1799"
+            Content-Type:
+                - application/json; charset=utf-8
+        status: 200 OK
+        code: 200
+        duration: 1m29.55s

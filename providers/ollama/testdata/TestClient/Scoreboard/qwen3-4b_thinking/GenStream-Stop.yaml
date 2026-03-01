@@ -1,30 +1,50 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 199
-    host: localhost
-    body: "{\"model\":\"qwen3:4b\",\"messages\":[{\"role\":\"user\",\"content\":\"Talk about Canada in great details. Start with: Canada is\"},{\"role\":\"user\",\"content\":\"\\n\\n/think\"}],\"stream\":true,\"options\":{\"stop\":[\"is\"]}}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: http://localhost/api/chat
-    method: POST
-  response:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    transfer_encoding:
-    - chunked
-    content_length: -1
-    body: "{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:32.156801Z\",\"message\":{\"role\":\"assistant\",\"content\":\"\\u003cthink\\u003e\"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:32.171393Z\",\"message\":{\"role\":\"assistant\",\"content\":\"\\n\"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:32.185678Z\",\"message\":{\"role\":\"assistant\",\"content\":\"Okay\"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:32.19978Z\",\"message\":{\"role\":\"assistant\",\"content\":\",\"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:32.214007Z\",\"message\":{\"role\":\"assistant\",\"content\":\" the\"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:32.22816Z\",\"message\":{\"role\":\"assistant\",\"content\":\" user\"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:32.242419Z\",\"message\":{\"role\":\"assistant\",\"content\":\" wants\"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:32.256493Z\",\"message\":{\"role\":\"assistant\",\"content\":\" me\"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:32.270812Z\",\"message\":{\"role\":\"assistant\",\"content\":\" to\"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:32.285067Z\",\"message\":{\"role\":\"assistant\",\"content\":\" talk\"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:32.299142Z\",\"message\":{\"role\":\"assistant\",\"content\":\" about\"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:32.313419Z\",\"message\":{\"role\":\"assistant\",\"content\":\" Canada\"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:32.327589Z\",\"message\":{\"role\":\"assistant\",\"content\":\" in\"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:32.341662Z\",\"message\":{\"role\":\"assistant\",\"content\":\" great\"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:32.35592Z\",\"message\":{\"role\":\"assistant\",\"content\":\" detail\"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:32.37016Z\",\"message\":{\"role\":\"assistant\",\"content\":\",\"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:32.384512Z\",\"message\":{\"role\":\"assistant\",\"content\":\" starting\"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:32.398627Z\",\"message\":{\"role\":\"assistant\",\"content\":\" with\"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:32.412904Z\",\"message\":{\"role\":\"assistant\",\"content\":\" \\\"\"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:32.427131Z\",\"message\":{\"role\":\"assistant\",\"content\":\"Canada\"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:32.441231Z\",\"message\":{\"role\":\"assistant\",\"content\":\" \"},\"done\":false}\n{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:32.441233Z\",\"message\":{\"role\":\"assistant\",\"content\":\"\"},\"done_reason\":\"stop\",\"done\":true,\"total_duration\":567401250,\"load_duration\":36650083,\"prompt_eval_count\":23,\"prompt_eval_duration\":58136417,\"eval_count\":21,\"eval_duration\":284781375}\n"
-    headers:
-      Content-Type:
-      - application/x-ndjson
-    status: 200 OK
-    code: 200
-    duration: 283ms
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 199
+        host: localhost
+        body: |
+            {"model":"qwen3:4b","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"},{"role":"user","content":"\n\n/think"}],"stream":true,"options":{"stop":["is"]}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        content_length: -1
+        body: |
+            {"model":"qwen3:4b","created_at":"2026-02-28T19:18:42.223795546Z","message":{"role":"assistant","content":"","thinking":"Okay"},"done":false}
+            {"model":"qwen3:4b","created_at":"2026-02-28T19:18:42.501814937Z","message":{"role":"assistant","content":"","thinking":","},"done":false}
+            {"model":"qwen3:4b","created_at":"2026-02-28T19:18:42.780514626Z","message":{"role":"assistant","content":"","thinking":" the"},"done":false}
+            {"model":"qwen3:4b","created_at":"2026-02-28T19:18:43.059306044Z","message":{"role":"assistant","content":"","thinking":" user"},"done":false}
+            {"model":"qwen3:4b","created_at":"2026-02-28T19:18:43.338199807Z","message":{"role":"assistant","content":"","thinking":" wants"},"done":false}
+            {"model":"qwen3:4b","created_at":"2026-02-28T19:18:43.616423549Z","message":{"role":"assistant","content":"","thinking":" me"},"done":false}
+            {"model":"qwen3:4b","created_at":"2026-02-28T19:18:43.897968904Z","message":{"role":"assistant","content":"","thinking":" to"},"done":false}
+            {"model":"qwen3:4b","created_at":"2026-02-28T19:18:44.176321171Z","message":{"role":"assistant","content":"","thinking":" talk"},"done":false}
+            {"model":"qwen3:4b","created_at":"2026-02-28T19:18:44.454565571Z","message":{"role":"assistant","content":"","thinking":" about"},"done":false}
+            {"model":"qwen3:4b","created_at":"2026-02-28T19:18:44.732698949Z","message":{"role":"assistant","content":"","thinking":" Canada"},"done":false}
+            {"model":"qwen3:4b","created_at":"2026-02-28T19:18:45.01105577Z","message":{"role":"assistant","content":"","thinking":" in"},"done":false}
+            {"model":"qwen3:4b","created_at":"2026-02-28T19:18:45.289102207Z","message":{"role":"assistant","content":"","thinking":" great"},"done":false}
+            {"model":"qwen3:4b","created_at":"2026-02-28T19:18:45.56783364Z","message":{"role":"assistant","content":"","thinking":" detail"},"done":false}
+            {"model":"qwen3:4b","created_at":"2026-02-28T19:18:45.845608422Z","message":{"role":"assistant","content":"","thinking":" starting"},"done":false}
+            {"model":"qwen3:4b","created_at":"2026-02-28T19:18:46.124047445Z","message":{"role":"assistant","content":"","thinking":" with"},"done":false}
+            {"model":"qwen3:4b","created_at":"2026-02-28T19:18:46.402389534Z","message":{"role":"assistant","content":"","thinking":" \""},"done":false}
+            {"model":"qwen3:4b","created_at":"2026-02-28T19:18:46.681437838Z","message":{"role":"assistant","content":"","thinking":"Canada"},"done":false}
+            {"model":"qwen3:4b","created_at":"2026-02-28T19:18:46.959704888Z","message":{"role":"assistant","content":"","thinking":" "},"done":false}
+            {"model":"qwen3:4b","created_at":"2026-02-28T19:18:46.959729601Z","message":{"role":"assistant","content":""},"done":true,"done_reason":"stop","total_duration":15496251050,"load_duration":77890040,"prompt_eval_count":25,"prompt_eval_duration":553770545,"eval_count":18,"eval_duration":4731213025}
+        headers:
+            Content-Type:
+                - application/x-ndjson
+        status: 200 OK
+        code: 200
+        duration: 10.761s

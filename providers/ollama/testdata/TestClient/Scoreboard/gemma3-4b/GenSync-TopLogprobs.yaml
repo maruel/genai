@@ -1,30 +1,31 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 108
-    host: localhost
-    body: "{\"model\":\"gemma3:4b\",\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"}],\"stream\":false}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: http://localhost/api/chat
-    method: POST
-  response:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 294
-    body: "{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-27T00:01:24.533926Z\",\"message\":{\"role\":\"assistant\",\"content\":\"Hello.\"},\"done_reason\":\"stop\",\"done\":true,\"total_duration\":129632834,\"load_duration\":88258292,\"prompt_eval_count\":17,\"prompt_eval_duration\":13742458,\"eval_count\":3,\"eval_duration\":27300542}"
-    headers:
-      Content-Length:
-      - "294"
-      Content-Type:
-      - application/json; charset=utf-8
-    status: 200 OK
-    code: 200
-    duration: 130ms
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 141
+        host: localhost
+        body: |
+            {"model":"gemma3:4b","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":false,"logprobs":true,"top_logprobs":2}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 746
+        body: '{"model":"gemma3:4b","created_at":"2026-02-28T15:42:57.080360783Z","message":{"role":"assistant","content":"Hello."},"done":true,"done_reason":"stop","logprobs":[{"token":"Hello","logprob":-0.00017127614410128444,"bytes":[72,101,108,108,111],"top_logprobs":[{"token":"Hello","logprob":-0.00017127614410128444,"bytes":[72,101,108,108,111]},{"token":"Hi","logprob":-8.672649383544922,"bytes":[72,105]}]},{"token":".","logprob":-0.024601979181170464,"bytes":[46],"top_logprobs":[{"token":".","logprob":-0.024601979181170464,"bytes":[46]},{"token":"!","logprob":-3.7172136306762695,"bytes":[33]}]}],"total_duration":1820969357,"load_duration":180585979,"prompt_eval_count":17,"prompt_eval_duration":433624073,"eval_count":3,"eval_duration":435550388}'
+        headers:
+            Content-Length:
+                - "746"
+            Content-Type:
+                - application/json; charset=utf-8
+        status: 200 OK
+        code: 200
+        duration: 1.821s

@@ -1,30 +1,31 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 258
-    host: localhost
-    body: "{\"model\":\"qwen3:4b\",\"messages\":[{\"role\":\"user\",\"content\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"role\":\"user\",\"content\":\"What is the capital of Quackiland?\"},{\"role\":\"user\",\"content\":\"\\n\\n/think\"}],\"stream\":false}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: http://localhost/api/chat
-    method: POST
-  response:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 1630
-    body: "{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:50.93225Z\",\"message\":{\"role\":\"assistant\",\"content\":\"\\u003cthink\\u003e\\nOkay, let's see. The user is asking for the capital of Quackiland. The first sentence says, \\\"The capital of Quackiland is Quack.\\\" Then it mentions that the Big Canard Statue is located in Quack. So, the question is straightforward, right? The answer should be Quack because that's explicitly stated.\\n\\nBut wait, maybe there's a trick here. Sometimes these questions are meant to test if you pay attention to details. The second sentence says the Big Canard Statue is in Quack. But the first sentence already states that Quack is the capital. So, maybe the user is trying to see if I can confirm that the capital is indeed Quack, even though there's a statue mentioned. But the statue's location doesn't change the capital's name. \\n\\nAlternatively, could there be a play on words? Like \\\"Canard\\\" is a type of bird, and maybe \\\"Quack\\\" is a pun on the sound a duck makes. But the question is about the capital, so the answer should be Quack. I think the answer is just Quack. The mention of the statue is just extra information, maybe to throw you off. So, the capital is Quack.\\n\\u003c/think\\u003e\\n\\nThe capital of Quackiland is **Quack**. The mention of the Big Canard Statue being located in Quack is additional context but does not alter the stated capital. The answer is directly provided in the first sentence.\"},\"done_reason\":\"stop\",\"done\":true,\"total_duration\":8195690083,\"load_duration\":40736958,\"prompt_eval_count\":40,\"prompt_eval_duration\":13605875,\"eval_count\":301,\"eval_duration\":4331115584}"
-    headers:
-      Content-Length:
-      - "1630"
-      Content-Type:
-      - application/json; charset=utf-8
-    status: 200 OK
-    code: 200
-    duration: 8.196s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 258
+        host: localhost
+        body: |
+            {"model":"qwen3:4b","messages":[{"role":"user","content":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"role":"user","content":"What is the capital of Quackiland?"},{"role":"user","content":"\n\n/think"}],"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        content_length: -1
+        body: '{"model":"qwen3:4b","created_at":"2026-02-28T19:58:45.583919759Z","message":{"role":"assistant","content":"The capital of Quackiland is explicitly stated as **Quack** in the first sentence: *\"The capital of Quackiland is Quack.\"* The second sentence about the Big Canard Statue being located in Quack is additional context but does not alter the given fact. Therefore, the answer is directly provided and does not require inference.\n\n**Answer:** Quack","thinking":"Okay, let''s see. The question is asking for the capital of Quackiland. The given information says: \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"\n\nHmm, so first, they state directly that the capital of Qu: wait, Quackiland. So the capital is Quack. Then they mention the Big Canard Statue is in Quack. But the question is just asking for the capital. Wait, but maybe there''s a trick here? Like, sometimes these riddles play on words.\n\nWait, the problem says \"The capital of Quackiland is Quack.\" So that''s straightforward. Then it says the Big Canard Statue is in Quack. So the answer should be Quack. But maybe the trick is that \"Quack\" is a play on words? Like, \"Quack\" sounds like a person who''s a fake doctor, but in this context, it''s the capital.\n\nWait, but the problem states it directly: \"The capital of Quackiland is Quack.\" So maybe the answer is just Quack. But why mention the Big Canard Statue? Maybe to confuse? Let me think again.\n\nIn some riddles, they give extra information to mislead you. For example, if the question was \"What''s the capital of Quackiland?\" and the answer is Quack, but maybe the trick is that \"Quack\" is a pun. Wait, but the problem says \"the capital of Quackiland is Quack,\" so it''s stated. So the answer should be Quack.\n\nWait, but the user might be testing if I overcomplicate. Let me check the problem again.\n\nOriginal problem: \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\"\n\nSo the first sentence says the capital is Quack. So regardless of the second sentence, the answer is Quack. The second sentence is probably just extra info to see if I get confused. Like, maybe some people think the capital is where the statue is, but here it''s already given.\n\nSo the answer is Quack.\n"},"done":true,"done_reason":"stop","total_duration":610904948940,"load_duration":70905740,"prompt_eval_count":42,"prompt_eval_duration":9994069748,"eval_count":527,"eval_duration":148656892727}'
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        status: 200 OK
+        code: 200
+        duration: 10m10.905s

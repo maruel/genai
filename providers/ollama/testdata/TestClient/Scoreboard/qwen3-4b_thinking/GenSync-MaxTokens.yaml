@@ -1,30 +1,31 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 196
-    host: localhost
-    body: "{\"model\":\"qwen3:4b\",\"messages\":[{\"role\":\"user\",\"content\":\"Explain the theory of relativity in great details.\"},{\"role\":\"user\",\"content\":\"\\n\\n/think\"}],\"stream\":false,\"options\":{\"num_predict\":16}}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: http://localhost/api/chat
-    method: POST
-  response:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 370
-    body: "{\"model\":\"qwen3:4b\",\"created_at\":\"2025-08-27T00:02:32.098058Z\",\"message\":{\"role\":\"assistant\",\"content\":\"\\u003cthink\\u003e\\nOkay, so I need to explain the theory of relativity in great\"},\"done_reason\":\"length\",\"done\":true,\"total_duration\":496353625,\"load_duration\":34713375,\"prompt_eval_count\":21,\"prompt_eval_duration\":13326584,\"eval_count\":16,\"eval_duration\":210974875}"
-    headers:
-      Content-Length:
-      - "370"
-      Content-Type:
-      - application/json; charset=utf-8
-    status: 200 OK
-    code: 200
-    duration: 497ms
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 196
+        host: localhost
+        body: |
+            {"model":"qwen3:4b","messages":[{"role":"user","content":"Explain the theory of relativity in great details."},{"role":"user","content":"\n\n/think"}],"stream":false,"options":{"num_predict":16}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 389
+        body: '{"model":"qwen3:4b","created_at":"2026-02-28T19:18:26.72971476Z","message":{"role":"assistant","content":"","thinking":"Okay, the user asked for a detailed explanation of the theory of relativity."},"done":true,"done_reason":"length","total_duration":517502554068,"load_duration":82519595,"prompt_eval_count":23,"prompt_eval_duration":5037995041,"eval_count":16,"eval_duration":4169007642}'
+        headers:
+            Content-Length:
+                - "389"
+            Content-Type:
+                - application/json; charset=utf-8
+        status: 200 OK
+        code: 200
+        duration: 8m37.503s

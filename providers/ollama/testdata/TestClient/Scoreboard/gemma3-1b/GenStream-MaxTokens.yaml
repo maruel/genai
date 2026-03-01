@@ -1,30 +1,48 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 157
-    host: localhost
-    body: "{\"model\":\"gemma3:1b\",\"messages\":[{\"role\":\"user\",\"content\":\"Explain the theory of relativity in great details.\"}],\"stream\":true,\"options\":{\"num_predict\":16}}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: http://localhost/api/chat
-    method: POST
-  response:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    transfer_encoding:
-    - chunked
-    content_length: -1
-    body: "{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:53.735244957Z\",\"message\":{\"role\":\"assistant\",\"content\":\"Okay\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:53.752301673Z\",\"message\":{\"role\":\"assistant\",\"content\":\",\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:53.769849447Z\",\"message\":{\"role\":\"assistant\",\"content\":\" let\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:53.78753559Z\",\"message\":{\"role\":\"assistant\",\"content\":\"'\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:53.805084841Z\",\"message\":{\"role\":\"assistant\",\"content\":\"s\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:53.822174838Z\",\"message\":{\"role\":\"assistant\",\"content\":\" dive\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:53.839483082Z\",\"message\":{\"role\":\"assistant\",\"content\":\" into\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:53.856577128Z\",\"message\":{\"role\":\"assistant\",\"content\":\" the\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:53.874251729Z\",\"message\":{\"role\":\"assistant\",\"content\":\" theory\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:53.892048401Z\",\"message\":{\"role\":\"assistant\",\"content\":\" of\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:53.91044431Z\",\"message\":{\"role\":\"assistant\",\"content\":\" relativity\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:53.928472149Z\",\"message\":{\"role\":\"assistant\",\"content\":\",\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:53.946625751Z\",\"message\":{\"role\":\"assistant\",\"content\":\" which\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:53.964365212Z\",\"message\":{\"role\":\"assistant\",\"content\":\" is\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:53.982126605Z\",\"message\":{\"role\":\"assistant\",\"content\":\" arguably\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:54.000208553Z\",\"message\":{\"role\":\"assistant\",\"content\":\" one\"},\"done\":false}\n{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:54.000213779Z\",\"message\":{\"role\":\"assistant\",\"content\":\"\"},\"done_reason\":\"length\",\"done\":true,\"total_duration\":447370112,\"load_duration\":91274928,\"prompt_eval_count\":18,\"prompt_eval_duration\":90129199,\"eval_count\":16,\"eval_duration\":265530984}\n"
-    headers:
-      Content-Type:
-      - application/x-ndjson
-    status: 200 OK
-    code: 200
-    duration: 183ms
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 157
+        host: localhost
+        body: |
+            {"model":"gemma3:1b","messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"stream":true,"options":{"num_predict":16}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        content_length: -1
+        body: |
+            {"model":"gemma3:1b","created_at":"2026-02-28T15:41:53.7045381Z","message":{"role":"assistant","content":"Okay"},"done":false}
+            {"model":"gemma3:1b","created_at":"2026-02-28T15:41:53.756664295Z","message":{"role":"assistant","content":","},"done":false}
+            {"model":"gemma3:1b","created_at":"2026-02-28T15:41:53.804128303Z","message":{"role":"assistant","content":" let"},"done":false}
+            {"model":"gemma3:1b","created_at":"2026-02-28T15:41:53.850259088Z","message":{"role":"assistant","content":"'"},"done":false}
+            {"model":"gemma3:1b","created_at":"2026-02-28T15:41:53.902351801Z","message":{"role":"assistant","content":"s"},"done":false}
+            {"model":"gemma3:1b","created_at":"2026-02-28T15:41:53.953193158Z","message":{"role":"assistant","content":" dive"},"done":false}
+            {"model":"gemma3:1b","created_at":"2026-02-28T15:41:54.002836401Z","message":{"role":"assistant","content":" into"},"done":false}
+            {"model":"gemma3:1b","created_at":"2026-02-28T15:41:54.05691309Z","message":{"role":"assistant","content":" Einstein"},"done":false}
+            {"model":"gemma3:1b","created_at":"2026-02-28T15:41:54.106915719Z","message":{"role":"assistant","content":"'"},"done":false}
+            {"model":"gemma3:1b","created_at":"2026-02-28T15:41:54.154585326Z","message":{"role":"assistant","content":"s"},"done":false}
+            {"model":"gemma3:1b","created_at":"2026-02-28T15:41:54.204231672Z","message":{"role":"assistant","content":" Theory"},"done":false}
+            {"model":"gemma3:1b","created_at":"2026-02-28T15:41:54.254039684Z","message":{"role":"assistant","content":" of"},"done":false}
+            {"model":"gemma3:1b","created_at":"2026-02-28T15:41:54.303228554Z","message":{"role":"assistant","content":" Relativity"},"done":false}
+            {"model":"gemma3:1b","created_at":"2026-02-28T15:41:54.356232471Z","message":{"role":"assistant","content":" –"},"done":false}
+            {"model":"gemma3:1b","created_at":"2026-02-28T15:41:54.404750574Z","message":{"role":"assistant","content":" a"},"done":false}
+            {"model":"gemma3:1b","created_at":"2026-02-28T15:41:54.454297551Z","message":{"role":"assistant","content":" mind"},"done":false}
+            {"model":"gemma3:1b","created_at":"2026-02-28T15:41:54.454303158Z","message":{"role":"assistant","content":""},"done":true,"done_reason":"length","total_duration":2198358025,"load_duration":136842937,"prompt_eval_count":18,"prompt_eval_duration":104938396,"eval_count":16,"eval_duration":743009384}
+        headers:
+            Content-Type:
+                - application/x-ndjson
+        status: 200 OK
+        code: 200
+        duration: 1.449s

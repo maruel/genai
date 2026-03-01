@@ -1,30 +1,34 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 129
-    host: localhost
-    body: "{\"model\":\"gemma3:4b\",\"messages\":[{\"role\":\"user\",\"content\":\"Say hello. Use only one word.\"}],\"stream\":true,\"options\":{\"seed\":42}}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: http://localhost/api/chat
-    method: POST
-  response:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    transfer_encoding:
-    - chunked
-    content_length: -1
-    body: "{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-27T00:01:24.333986Z\",\"message\":{\"role\":\"assistant\",\"content\":\"Hello\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-27T00:01:24.347553Z\",\"message\":{\"role\":\"assistant\",\"content\":\".\"},\"done\":false}\n{\"model\":\"gemma3:4b\",\"created_at\":\"2025-08-27T00:01:24.36238Z\",\"message\":{\"role\":\"assistant\",\"content\":\"\"},\"done_reason\":\"stop\",\"done\":true,\"total_duration\":147803542,\"load_duration\":98042875,\"prompt_eval_count\":17,\"prompt_eval_duration\":20653750,\"eval_count\":3,\"eval_duration\":28756041}\n"
-    headers:
-      Content-Type:
-      - application/x-ndjson
-    status: 200 OK
-    code: 200
-    duration: 120ms
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 129
+        host: localhost
+        body: |
+            {"model":"gemma3:4b","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":true,"options":{"seed":42}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        content_length: -1
+        body: |
+            {"model":"gemma3:4b","created_at":"2026-02-28T15:42:55.693245334Z","message":{"role":"assistant","content":"Hello"},"done":false}
+            {"model":"gemma3:4b","created_at":"2026-02-28T15:42:55.910758262Z","message":{"role":"assistant","content":"."},"done":false}
+            {"model":"gemma3:4b","created_at":"2026-02-28T15:42:56.129768215Z","message":{"role":"assistant","content":""},"done":true,"done_reason":"stop","total_duration":1742815994,"load_duration":126859682,"prompt_eval_count":17,"prompt_eval_duration":432743866,"eval_count":3,"eval_duration":434952566}
+        headers:
+            Content-Type:
+                - application/x-ndjson
+        status: 200 OK
+        code: 200
+        duration: 1.306s

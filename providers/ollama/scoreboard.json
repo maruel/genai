@@ -18,8 +18,6 @@
       ],
       "good": true,
       "reason": true,
-      "reasoningTokenStart": "\u003cthink\u003e",
-      "reasoningTokenEnd": "\n\u003c/think\u003e\n",
       "in": {
         "text": {
           "inline": true
@@ -37,6 +35,7 @@
         "tools": "flaky",
         "json": true,
         "jsonSchema": true,
+        "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
       },
@@ -47,6 +46,7 @@
         "tools": "flaky",
         "json": true,
         "jsonSchema": true,
+        "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
       }
@@ -72,6 +72,7 @@
         "seed": true,
         "json": true,
         "jsonSchema": true,
+        "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
       },
@@ -81,6 +82,7 @@
         "seed": true,
         "json": true,
         "jsonSchema": true,
+        "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
       }
@@ -113,6 +115,7 @@
         "seed": true,
         "json": true,
         "jsonSchema": true,
+        "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
       },
@@ -122,6 +125,7 @@
         "seed": true,
         "json": true,
         "jsonSchema": true,
+        "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
       }

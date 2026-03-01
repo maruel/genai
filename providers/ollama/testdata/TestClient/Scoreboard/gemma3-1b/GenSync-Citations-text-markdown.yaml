@@ -1,30 +1,31 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 236
-    host: localhost
-    body: "{\"model\":\"gemma3:1b\",\"messages\":[{\"role\":\"user\",\"content\":\"# Quackiland\\n\\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"role\":\"user\",\"content\":\"What is the capital of Quackiland?\"}],\"stream\":false}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: http://localhost/api/chat
-    method: POST
-  response:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 360
-    body: "{\"model\":\"gemma3:1b\",\"created_at\":\"2025-12-18T20:47:58.00188812Z\",\"message\":{\"role\":\"assistant\",\"content\":\"Quack. \\n\\nThe text states \\\"The capital of Quackiland is Quack.\\\"\\n\"},\"done_reason\":\"stop\",\"done\":true,\"total_duration\":909073611,\"load_duration\":88743578,\"prompt_eval_count\":45,\"prompt_eval_duration\":17607106,\"eval_count\":21,\"eval_duration\":357970495}"
-    headers:
-      Content-Length:
-      - "360"
-      Content-Type:
-      - application/json; charset=utf-8
-    status: 200 OK
-    code: 200
-    duration: 909ms
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 236
+        host: localhost
+        body: |
+            {"model":"gemma3:1b","messages":[{"role":"user","content":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"role":"user","content":"What is the capital of Quackiland?"}],"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 309
+        body: "{\"model\":\"gemma3:1b\",\"created_at\":\"2026-02-28T15:42:06.453929411Z\",\"message\":{\"role\":\"assistant\",\"content\":\"Quack. \U0001F60A\\n\"},\"done\":true,\"done_reason\":\"stop\",\"total_duration\":3760077057,\"load_duration\":147838103,\"prompt_eval_count\":45,\"prompt_eval_duration\":1554013024,\"eval_count\":6,\"eval_duration\":245676509}"
+        headers:
+            Content-Length:
+                - "309"
+            Content-Type:
+                - application/json; charset=utf-8
+        status: 200 OK
+        code: 200
+        duration: 3.76s

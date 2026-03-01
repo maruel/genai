@@ -62,7 +62,7 @@ genai is _intentional_. Curious why it was created? See the release announcement
 | [huggingface](docs/huggingface.md)         | 🇺🇸   | Sync, Stream🧠 | 💬         | 💬     | ❌     | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
 | [llamacpp](docs/llamacpp.md)               | 🏠   | Sync, Stream  | 💬📸       | 💬     | ✅🪨   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
 | [mistral](docs/mistral.md)                 | 🇫🇷   | Sync, Stream  | 🎤💬📄📸   | 💬     | ✅🪨   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| [ollama](docs/ollama.md)                   | 🏠   | Sync, Stream🧠 | 💬📸       | 💬     | 💨     | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
+| [ollama](docs/ollama.md)                   | 🏠   | Sync, Stream🧠 | 💬📸       | 💬     | 💨     | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
 | [openaichat](docs/openaichat.md)           | 🇺🇸   | Sync, Stream🧠 | 🎤💬📄📸   | 💬📸   | ✅🪨🕸️ | ✅   | ✅    | ✅   | ❌   | 🌱📏🛑 | ✅    | ✅     | ✅    | ✅     |
 | [openairesponses](docs/openairesponses.md) | 🇺🇸   | Sync, Stream🧠 | 💬📄📸     | 💬📸   | ✅🪨🕸️ | ✅   | ✅    | ❌   | ❌   | ❌   | ❌    | ✅     | ✅    | ✅     |
 | [perplexity](docs/perplexity.md)           | 🇺🇸   | Sync, Stream🧠 | 💬📸       | 💬     | 🕸️     | 📐    | ❌    | ❌   | ✅   | 📏    | ❌    | ❌     | ✅    | ✅     |

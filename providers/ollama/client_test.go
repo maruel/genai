@@ -10,7 +10,6 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
-	"slices"
 	"strings"
 	"sync"
 	"testing"
@@ -77,19 +76,10 @@ func TestClient(t *testing.T) {
 				if !model.Reason {
 					t.Fatal("expected thinking")
 				}
-				// Check if it has predefined thinking tokens.
-				for _, sc := range c.Scoreboard().Scenarios {
-					if sc.Reason && slices.Contains(sc.Models, model.Model) {
-						if sc.ReasoningTokenStart != "" && sc.ReasoningTokenEnd != "" {
-							return &adapters.ProviderReasoning{
-								Provider:            &adapters.ProviderAppend{Provider: c, Append: genai.Request{Text: "\n\n/think"}},
-								ReasoningTokenStart: sc.ReasoningTokenStart,
-								ReasoningTokenEnd:   sc.ReasoningTokenEnd,
-							}
-						}
-						break
-					}
-				}
+				// Ollama v0.17.4+ natively returns thinking content in a
+				// dedicated "thinking" field. Only ProviderAppend is needed to
+				// trigger thinking mode.
+				return &adapters.ProviderAppend{Provider: c, Append: genai.Request{Text: "\n\n/think"}}
 			}
 			return c
 		}, models, testRecorder.Records)

@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 158
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}],"reasoning_format":"deepseek","seed":42,"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1244
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Hello","reasoning_content":"Hmm, the user said \"Say hello. Use only one word.\" That''s straightforward. They want a greeting in just one word.\n\nI need to pick the simplest, most universal greeting. \"Hello\" is the classic one, but they specified \"only one word,\" so I can''t add anything else. \n\nThe user might be testing if I follow instructions precisely—no extra words, no explanations. Maybe they''re in a hurry or just want a quick response. \n\nI''ll go with \"Hello\" since it''s direct and matches the request perfectly. No need to overcomplicate it. \n\nAlso, keeping it neutral and friendly fits the context. Alright, response ready."}}],"created":1772371950,"model":"Qwen3-4B-Thinking-2507-Q4_K_M.gguf","system_fingerprint":"b8180-d979f2b17","object":"chat.completion","usage":{"completion_tokens":141,"prompt_tokens":18,"total_tokens":159},"id":"chatcmpl-PFgkIsR4lnUIDBaLPMvDcTIPGJUtvA0j","timings":{"cache_n":17,"prompt_n":1,"prompt_ms":53.621,"prompt_per_token_ms":53.621,"prompt_per_second":18.649409746181533,"predicted_n":141,"predicted_ms":7979.993,"predicted_per_token_ms":56.595695035461,"predicted_per_second":17.669188431618924}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "1244"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 8.092s

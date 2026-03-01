@@ -1,36 +1,35 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 821
-    host: localhost
-    body: "{\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"}]},{\"role\":\"assistant\",\"tool_calls\":[{\"type\":\"function\",\"index\":0,\"id\":\"P3AVxnvcpqFY9kyAw2RY5AqM81ct7vWQ\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\":132413}\"}}]},{\"role\":\"tool\",\"content\":[{\"type\":\"text\",\"text\":\"363.89\"}],\"tool_call_id\":\"P3AVxnvcpqFY9kyAw2RY5AqM81ct7vWQ\"}],\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"cache_prompt\":true}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: http://localhost/chat/completions
-    method: POST
-  response:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    transfer_encoding:
-    - chunked
-    content_length: -1
-    body: "data: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":null}}],\"created\":1756253428,\"id\":\"chatcmpl-myXaot0cVKXRbGCvkOmFZ6KmviQFKzqD\",\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"content\":\"3\"}}],\"created\":1756253428,\"id\":\"chatcmpl-myXaot0cVKXRbGCvkOmFZ6KmviQFKzqD\",\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"content\":\"6\"}}],\"created\":1756253428,\"id\":\"chatcmpl-myXaot0cVKXRbGCvkOmFZ6KmviQFKzqD\",\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"content\":\"3\"}}],\"created\":1756253428,\"id\":\"chatcmpl-myXaot0cVKXRbGCvkOmFZ6KmviQFKzqD\",\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"content\":\".\"}}],\"created\":1756253428,\"id\":\"chatcmpl-myXaot0cVKXRbGCvkOmFZ6KmviQFKzqD\",\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"content\":\"8\"}}],\"created\":1756253428,\"id\":\"chatcmpl-myXaot0cVKXRbGCvkOmFZ6KmviQFKzqD\",\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"content\":\"9\"}}],\"created\":1756253428,\"id\":\"chatcmpl-myXaot0cVKXRbGCvkOmFZ6KmviQFKzqD\",\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"delta\":{}}],\"created\":1756253428,\"id\":\"chatcmpl-myXaot0cVKXRbGCvkOmFZ6KmviQFKzqD\",\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[],\"created\":1756253428,\"id\":\"chatcmpl-myXaot0cVKXRbGCvkOmFZ6KmviQFKzqD\",\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion.chunk\",\"usage\":{\"completion_tokens\":18,\"prompt_tokens\":459,\"total_tokens\":477},\"timings\":{\"prompt_n\":101,\"prompt_ms\":155.776,\"prompt_per_token_ms\":1.5423366336633664,\"prompt_per_second\":648.3668857847165,\"predicted_n\":18,\"predicted_ms\":262.775,\"predicted_per_token_ms\":14.59861111111111,\"predicted_per_second\":68.49966701550757}}\n\ndata: [DONE]\n\n"
-    headers:
-      Access-Control-Allow-Origin:
-      - ""
-      Content-Type:
-      - text/event-stream
-      Keep-Alive:
-      - timeout=5, max=100
-      Server:
-      - llama.cpp
-    status: 200 OK
-    code: 200
-    duration: 2ms
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 869
+        host: 127.0.0.1
+        body: |
+            {"stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"assistant","tool_calls":[{"type":"function","index":0,"id":"K1HskTwp8RXBFPUgoBDoIw40XZZqqvzi","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},{"role":"tool","content":[{"type":"text","text":"363.89"}],"tool_call_id":"K1HskTwp8RXBFPUgoBDoIw40XZZqqvzi"}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none","parallel_tool_calls":true,"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 366
+        body: '{"error":{"code":500,"message":"\n------------\nWhile executing CallExpression at line 19, column 27 in source:\n...% 2 == 0) -%}↵        {{ raise_exception(\"Conversation roles must alternate user...\n                                           ^\nError: Jinja Exception: Conversation roles must alternate user/assistant/user/assistant/...","type":"server_error"}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "366"
+            Content-Type:
+                - application/json; charset=utf-8
+            Server:
+                - llama.cpp
+        status: 500 Internal Server Error
+        code: 500
+        duration: 1ms

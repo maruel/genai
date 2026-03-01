@@ -1,36 +1,37 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 160
-    host: localhost
-    body: "{\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Talk about Canada in great details. Start with: Canada is\"}]}],\"stop\":[\"is\"],\"cache_prompt\":true}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: http://localhost/chat/completions
-    method: POST
-  response:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 625
-    body: "{\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"Okay, let's dive deep into Canada – a country that cons\"}}],\"created\":1756253424,\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":14,\"prompt_tokens\":21,\"total_tokens\":35},\"id\":\"chatcmpl-SJSaPatfsIBkoURdCbuZYnCK0nXuN8u2\",\"timings\":{\"prompt_n\":17,\"prompt_ms\":53.356,\"prompt_per_token_ms\":3.138588235294118,\"prompt_per_second\":318.6145887997601,\"predicted_n\":14,\"predicted_ms\":183.77,\"predicted_per_token_ms\":13.126428571428573,\"predicted_per_second\":76.18218425205418}}"
-    headers:
-      Access-Control-Allow-Origin:
-      - ""
-      Content-Length:
-      - "625"
-      Content-Type:
-      - application/json; charset=utf-8
-      Keep-Alive:
-      - timeout=5, max=100
-      Server:
-      - llama.cpp
-    status: 200 OK
-    code: 200
-    duration: 461ms
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 160
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Talk about Canada in great details. Start with: Canada is"}]}],"stop":["is"],"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 696
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Okay, let''s delve into a detailed exploration of Canada – a truly remarkable nation.\n\n**Canada "}}],"created":1772373123,"model":"gemma-3-4b-it-Q4_K_M.gguf","system_fingerprint":"b8180-d979f2b17","object":"chat.completion","usage":{"completion_tokens":22,"prompt_tokens":21,"total_tokens":43},"id":"chatcmpl-A2YApO0OzZJKxv0m639I6sKmjYGHKFon","timings":{"cache_n":4,"prompt_n":17,"prompt_ms":180.424,"prompt_per_token_ms":10.613176470588236,"prompt_per_second":94.22249811555004,"predicted_n":22,"predicted_ms":1823.335,"predicted_per_token_ms":82.87886363636363,"predicted_per_second":12.065802499266455}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "696"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 2.06s

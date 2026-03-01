@@ -1,36 +1,37 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 523
-    host: localhost
-    body: "{\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation.\"}]}],\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"description\":\"Calculates and return the square root of a number\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"number\":{\"type\":\"number\"}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"number\"]}}}],\"cache_prompt\":true}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: http://localhost/chat/completions
-    method: POST
-  response:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 723
-    body: "{\"choices\":[{\"finish_reason\":\"tool_calls\",\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":null,\"tool_calls\":[{\"type\":\"function\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\":132413}\"},\"id\":\"vZ4jYyh9isXPqURFTn2CBBM5rs4aITUU\"}]}}],\"created\":1756253427,\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":48,\"prompt_tokens\":309,\"total_tokens\":357},\"id\":\"chatcmpl-LaSIfQ4JtglaJBRrkKTb6GpdhKUnZjsg\",\"timings\":{\"prompt_n\":305,\"prompt_ms\":313.074,\"prompt_per_token_ms\":1.026472131147541,\"prompt_per_second\":974.2105700249781,\"predicted_n\":48,\"predicted_ms\":748.926,\"predicted_per_token_ms\":15.602625000000002,\"predicted_per_second\":64.0917794281411}}"
-    headers:
-      Access-Control-Allow-Origin:
-      - ""
-      Content-Length:
-      - "723"
-      Content-Type:
-      - application/json; charset=utf-8
-      Keep-Alive:
-      - timeout=5, max=100
-      Server:
-      - llama.cpp
-    status: 200 OK
-    code: 200
-    duration: 1.215s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 575
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required","parallel_tool_calls":true,"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 746
+        body: '{"choices":[{"finish_reason":"tool_calls","index":0,"message":{"role":"assistant","content":"","tool_calls":[{"type":"function","function":{"name":"square_root","arguments":"{\"number\":132413}"},"id":"rwizN7uoftlEZdyfAikSHHxyGQUlB1c1"}]}}],"created":1772373128,"model":"gemma-3-4b-it-Q4_K_M.gguf","system_fingerprint":"b8180-d979f2b17","object":"chat.completion","usage":{"completion_tokens":29,"prompt_tokens":73,"total_tokens":102},"id":"chatcmpl-1fFyS6tPnv1ZQCERJON4DYhZ2ZH2744U","timings":{"cache_n":0,"prompt_n":73,"prompt_ms":708.289,"prompt_per_token_ms":9.70258904109589,"prompt_per_second":103.06527420304424,"predicted_n":29,"predicted_ms":2100.062,"predicted_per_token_ms":72.41593103448275,"predicted_per_second":13.809116111810033}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "746"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 2.863s

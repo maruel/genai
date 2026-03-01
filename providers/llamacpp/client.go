@@ -71,17 +71,16 @@ type ChatRequest struct {
 	Grammar         string `json:"grammar,omitzero"`
 	TimingsPerToken bool   `json:"timings_per_token,omitzero"`
 
-	Tools               []Tool   `json:"tools,omitzero"`
-	ToolChoice          string   `json:"tool_choice,omitzero"` // Default: "auto"; "none", "required"
-	Stop                []string `json:"stop,omitzero"`
-	ParallelToolCalls   bool     `json:"parallel_tool_calls,omitzero"`
-	AddGenerationPrompt bool     `json:"add_generation_prompt,omitzero"`
-	// ReasoningFormat     struct{}   `json:"reasoning_format,omitzero"`
-	// EnableThinking      bool       `json:"enable_thinking,omitzero"`
-	ChatTemplateKWArgs map[string]string `json:"chat_template_kwargs,omitzero"`
-	N                  int64             `json:"n,omitzero"` // Must be 1 anyway.
-	Logprobs           bool              `json:"logprobs,omitzero"`
-	TopLogprobs        int64             `json:"top_logprobs,omitzero"` // Requires Logprobs:true
+	Tools               []Tool          `json:"tools,omitzero"`
+	ToolChoice          string          `json:"tool_choice,omitzero"` // Default: "auto"; "none", "required"
+	Stop                []string        `json:"stop,omitzero"`
+	ParallelToolCalls   bool            `json:"parallel_tool_calls,omitzero"`
+	AddGenerationPrompt bool            `json:"add_generation_prompt,omitzero"`
+	ReasoningFormat     ReasoningFormat `json:"reasoning_format,omitzero"`
+	ChatTemplateKWArgs  map[string]any  `json:"chat_template_kwargs,omitzero"`
+	N                   int64           `json:"n,omitzero"` // Must be 1 anyway.
+	Logprobs            bool            `json:"logprobs,omitzero"`
+	TopLogprobs         int64           `json:"top_logprobs,omitzero"` // Requires Logprobs:true
 
 	// Prompt              string             `json:"prompt"`
 	Temperature         float64  `json:"temperature,omitzero"`
@@ -158,6 +157,15 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 		case *genai.GenOptionTools:
 			if len(v.Tools) != 0 {
 				c.Tools = make([]Tool, len(v.Tools))
+				c.ParallelToolCalls = true
+				switch v.Force {
+				case genai.ToolCallAny:
+					c.ToolChoice = "auto"
+				case genai.ToolCallRequired:
+					c.ToolChoice = "required"
+				case genai.ToolCallNone:
+					c.ToolChoice = "none"
+				}
 				for i := range c.Tools {
 					c.Tools[i].Type = "function"
 					c.Tools[i].Function.Name = v.Tools[i].Name
@@ -171,6 +179,14 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			}
 		case genai.GenOptionSeed:
 			c.Seed = int64(v)
+		case *GenOption:
+			c.ReasoningFormat = v.ReasoningFormat
+			if v.EnableThinking {
+				if c.ChatTemplateKWArgs == nil {
+					c.ChatTemplateKWArgs = map[string]any{}
+				}
+				c.ChatTemplateKWArgs["enable_thinking"] = true
+			}
 		default:
 			unsupported = append(unsupported, internal.TypeName(opt))
 		}
@@ -334,6 +350,30 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 	}
 }
 
+// ReasoningFormat defines the reasoning format supported by llama.cpp.
+//
+// See https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md
+type ReasoningFormat string
+
+// Valid ReasoningFormat values.
+const (
+	ReasoningFormatNone     ReasoningFormat = "none"
+	ReasoningFormatDeepSeek ReasoningFormat = "deepseek"
+)
+
+// GenOption is the llama.cpp-specific options.
+type GenOption struct {
+	// ReasoningFormat sets the reasoning format for the model.
+	ReasoningFormat ReasoningFormat
+	// EnableThinking enables thinking mode via chat_template_kwargs.
+	EnableThinking bool
+}
+
+// Validate implements genai.Validatable.
+func (o *GenOption) Validate() error {
+	return nil
+}
+
 // ChatStreamChunkResponse is a single chunk in a streaming chat response.
 type ChatStreamChunkResponse struct {
 	Created           base.Time `json:"created"`
@@ -345,9 +385,10 @@ type ChatStreamChunkResponse struct {
 		FinishReason FinishReason `json:"finish_reason"`
 		Index        int64        `json:"index"`
 		Delta        struct {
-			Role      string     `json:"role"`
-			Content   string     `json:"content"`
-			ToolCalls []ToolCall `json:"tool_calls"`
+			Role             string     `json:"role"`
+			Content          string     `json:"content"`
+			ReasoningContent string     `json:"reasoning_content"`
+			ToolCalls        []ToolCall `json:"tool_calls"`
 		} `json:"delta"`
 		Logprobs Logprobs `json:"logprobs"`
 	} `json:"choices"`
@@ -458,6 +499,58 @@ func (c *CompletionRequest) Init(msgs genai.Messages, model string, opts ...gena
 	return errors.Join(errs...)
 }
 
+// GenerationSettings contains the generation settings returned by the server in completion responses.
+type GenerationSettings struct {
+	NPredict            int64    `json:"n_predict"`
+	Seed                int64    `json:"seed"`
+	Temperature         float64  `json:"temperature"`
+	DynaTempRange       float64  `json:"dynatemp_range"`
+	DynaTempExponent    float64  `json:"dynatemp_exponent"`
+	TopK                int64    `json:"top_k"`
+	TopP                float64  `json:"top_p"`
+	MinP                float64  `json:"min_p"`
+	XTCProbability      float64  `json:"xtc_probability"`
+	XTCThreshold        float64  `json:"xtc_threshold"`
+	TypicalP            float64  `json:"typical_p"`
+	RepeatLastN         int64    `json:"repeat_last_n"`
+	RepeatPenalty       float64  `json:"repeat_penalty"`
+	PresencePenalty     float64  `json:"presence_penalty"`
+	FrequencyPenalty    float64  `json:"frequency_penalty"`
+	DryMultiplier       float64  `json:"dry_multiplier"`
+	DryBase             float64  `json:"dry_base"`
+	DryAllowedLength    int64    `json:"dry_allowed_length"`
+	DryPenaltyLastN     int64    `json:"dry_penalty_last_n"`
+	DrySequenceBreakers []string `json:"dry_sequence_breakers"`
+	Mirostat            int32    `json:"mirostat"`
+	MirostatTau         float64  `json:"mirostat_tau"`
+	MirostatEta         float64  `json:"mirostat_eta"`
+	Stop                []string `json:"stop"`
+	MaxTokens           int64    `json:"max_tokens"`
+	NKeep               int64    `json:"n_keep"`
+	NDiscard            int64    `json:"n_discard"`
+	IgnoreEos           bool     `json:"ignore_eos"`
+	Stream              bool     `json:"stream"`
+	LogitBias           []any    `json:"logit_bias"`
+	NProbs              int64    `json:"n_probs"`
+	MinKeep             int64    `json:"min_keep"`
+	Grammar             string   `json:"grammar"`
+	GrammarLazy         bool     `json:"grammar_lazy"`
+	GrammarTriggers     []string `json:"grammar_triggers"`
+	PreservedTokens     []string `json:"preserved_tokens"`
+	ChatFormat          string   `json:"chat_format"`
+	ReasoningFormat     string   `json:"reasoning_format"`
+	ReasoningInContent  bool     `json:"reasoning_in_content"`
+	ThinkingForcedOpen  bool     `json:"thinking_forced_open"`
+	Samplers            []string `json:"samplers"`
+	SpeculativeNMax     int64    `json:"speculative.n_max"`
+	SpeculativeNMin     int64    `json:"speculative.n_min"`
+	SpeculativePMin     float64  `json:"speculative.p_min"`
+	TimingsPerToken     bool     `json:"timings_per_token"`
+	PostSamplingProbs   bool     `json:"post_sampling_probs"`
+	Lora                []Lora   `json:"lora"`
+	TopNSigma           float64  `json:"top_n_sigma"`
+}
+
 // CompletionResponse is the response from the completion endpoint.
 type CompletionResponse struct {
 	Index              int64   `json:"index"`
@@ -468,56 +561,7 @@ type CompletionResponse struct {
 	Model              string  `json:"model"`
 	TokensPredicted    int64   `json:"tokens_predicted"`
 	TokensEvaluated    int64   `json:"tokens_evaluated"`
-	GenerationSettings struct {
-		NPredict            int64    `json:"n_predict"`
-		Seed                int64    `json:"seed"`
-		Temperature         float64  `json:"temperature"`
-		DynaTempRange       float64  `json:"dynatemp_range"`
-		DynaTempExponent    float64  `json:"dynatemp_exponent"`
-		TopK                int64    `json:"top_k"`
-		TopP                float64  `json:"top_p"`
-		MinP                float64  `json:"min_p"`
-		XTCProbability      float64  `json:"xtc_probability"`
-		XTCThreshold        float64  `json:"xtc_threshold"`
-		TypicalP            float64  `json:"typical_p"`
-		RepeatLastN         int64    `json:"repeat_last_n"`
-		RepeatPenalty       float64  `json:"repeat_penalty"`
-		PresencePenalty     float64  `json:"presence_penalty"`
-		FrequencyPenalty    float64  `json:"frequency_penalty"`
-		DryMultiplier       float64  `json:"dry_multiplier"`
-		DryBase             float64  `json:"dry_base"`
-		DryAllowedLength    int64    `json:"dry_allowed_length"`
-		DryPenaltyLastN     int64    `json:"dry_penalty_last_n"`
-		DrySequenceBreakers []string `json:"dry_sequence_breakers"`
-		Mirostat            int32    `json:"mirostat"`
-		MirostatTau         float64  `json:"mirostat_tau"`
-		MirostatEta         float64  `json:"mirostat_eta"`
-		Stop                []string `json:"stop"`
-		MaxTokens           int64    `json:"max_tokens"`
-		NKeep               int64    `json:"n_keep"`
-		NDiscard            int64    `json:"n_discard"`
-		IgnoreEos           bool     `json:"ignore_eos"`
-		Stream              bool     `json:"stream"`
-		LogitBias           []any    `json:"logit_bias"`
-		NProbs              int64    `json:"n_probs"`
-		MinKeep             int64    `json:"min_keep"`
-		Grammar             string   `json:"grammar"`
-		GrammarLazy         bool     `json:"grammar_lazy"`
-		GrammarTriggers     []string `json:"grammar_triggers"`
-		PreservedTokens     []string `json:"preserved_tokens"`
-		ChatFormat          string   `json:"chat_format"`
-		ReasoningFormat     string   `json:"reasoning_format"`
-		ReasoningInContent  bool     `json:"reasoning_in_content"`
-		ThinkingForcedOpen  bool     `json:"thinking_forced_open"`
-		Samplers            []string `json:"samplers"`
-		SpeculativeNMax     int64    `json:"speculative.n_max"`
-		SpeculativeNMin     int64    `json:"speculative.n_min"`
-		SpeculativePMin     float64  `json:"speculative.p_min"`
-		TimingsPerToken     bool     `json:"timings_per_token"`
-		PostSamplingProbs   bool     `json:"post_sampling_probs"`
-		Lora                []Lora   `json:"lora"`
-		TopNSigma           float64  `json:"top_n_sigma"`
-	} `json:"generation_settings"`
+	GenerationSettings GenerationSettings `json:"generation_settings"`
 	Prompt       string   `json:"prompt"`
 	HasNewLine   bool     `json:"has_new_line"`
 	Truncated    bool     `json:"truncated"`
@@ -570,6 +614,7 @@ func (s StopType) ToFinishReason() genai.FinishReason {
 
 // Timings contains timing information for prompt processing and prediction.
 type Timings struct {
+	CacheN              int64   `json:"cache_n"`
 	PromptN             int64   `json:"prompt_n"`
 	PromptMS            float64 `json:"prompt_ms"`
 	PromptPerTokenMS    float64 `json:"prompt_per_token_ms"`
@@ -719,13 +764,14 @@ func (m *Message) From(in *genai.Message) error {
 
 // To converts a Message to a genai.Message.
 func (m *Message) To(out *genai.Message) error {
+	if m.ReasoningContent != "" {
+		out.Replies = append(out.Replies, genai.Reply{Reasoning: m.ReasoningContent})
+	}
+	out.Replies = slices.Grow(out.Replies, len(m.Content))
 	for i := range m.Content {
-		out.Replies = make([]genai.Reply, len(m.Content))
-		if err := m.Content[i].To(&out.Replies[i]); err != nil {
+		out.Replies = append(out.Replies, genai.Reply{})
+		if err := m.Content[i].To(&out.Replies[len(out.Replies)-1]); err != nil {
 			return fmt.Errorf("reply %d: %w", i, err)
-		}
-		if m.ReasoningContent != "" {
-			out.Replies = append(out.Replies, genai.Reply{Reasoning: m.ReasoningContent})
 		}
 	}
 	for i := range m.ToolCalls {
@@ -757,7 +803,9 @@ func (c *Contents) UnmarshalJSON(b []byte) error {
 	if err := json.Unmarshal(b, &s); err != nil {
 		return err
 	}
-	*c = Contents{{Type: "text", Text: s}}
+	if s != "" {
+		*c = Contents{{Type: "text", Text: s}}
+	}
 	return nil
 }
 
@@ -964,6 +1012,8 @@ type ModelOpenAI struct {
 		NParams   int64 `json:"n_params"`
 		Size      int64 `json:"size"`
 	} `json:"meta"`
+	Aliases []string `json:"aliases,omitzero"`
+	Tags    []string `json:"tags,omitzero"`
 }
 
 // Model is a synthetic struct combining the information from both ModelHF and ModelOpenAI.
@@ -1472,6 +1522,7 @@ func (c *Client) GetMetrics(ctx context.Context, m *Metrics) error {
 		case "llamacpp:n_decode_total":
 		case "llamacpp:n_busy_slots_per_decode":
 		case "llamacpp:n_past_max":
+		case "llamacpp:n_tokens_max":
 		default:
 			if !internal.BeLenient {
 				panic(fmt.Sprintf("unknown metric %q", l))
@@ -1551,8 +1602,8 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (fragments iter.Seq
 					return
 				}
 				f := genai.Reply{
-					Text: pkt.Choices[0].Delta.Content,
-					// Reasoning: pkt.Choices[0].Delta.ReasoningContent,
+					Text:      pkt.Choices[0].Delta.Content,
+					Reasoning: pkt.Choices[0].Delta.ReasoningContent,
 				}
 				if len(pkt.Choices[0].Delta.ToolCalls) > 1 {
 					finalErr = &internal.BadError{Err: fmt.Errorf("implement multiple tool calls: %#v", pkt)}

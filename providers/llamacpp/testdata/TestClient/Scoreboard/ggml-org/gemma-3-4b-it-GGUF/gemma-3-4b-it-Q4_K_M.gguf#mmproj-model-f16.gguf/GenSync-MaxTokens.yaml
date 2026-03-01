@@ -1,36 +1,37 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 154
-    host: localhost
-    body: "{\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Explain the theory of relativity in great details.\"}]}],\"n_predict\":16,\"cache_prompt\":true}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: http://localhost/chat/completions
-    method: POST
-  response:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 635
-    body: "{\"choices\":[{\"finish_reason\":\"length\",\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"Okay, let's dive into the theory of relativity, a cornerstone of modern\"}}],\"created\":1756253424,\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":16,\"prompt_tokens\":18,\"total_tokens\":34},\"id\":\"chatcmpl-GUjkFG02he8DnetEwmd1ooAZSeafAD0v\",\"timings\":{\"prompt_n\":14,\"prompt_ms\":53.701,\"prompt_per_token_ms\":3.835785714285714,\"prompt_per_second\":260.70278020893466,\"predicted_n\":16,\"predicted_ms\":211.753,\"predicted_per_token_ms\":13.2345625,\"predicted_per_second\":75.55973232964823}}"
-    headers:
-      Access-Control-Allow-Origin:
-      - ""
-      Content-Length:
-      - "635"
-      Content-Type:
-      - application/json; charset=utf-8
-      Keep-Alive:
-      - timeout=5, max=100
-      Server:
-      - llama.cpp
-    status: 200 OK
-    code: 200
-    duration: 352ms
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 154
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Explain the theory of relativity in great details."}]}],"n_predict":16,"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 662
+        body: '{"choices":[{"finish_reason":"length","index":0,"message":{"role":"assistant","content":"Okay, let''s dive into the theory of relativity, a cornerstone of modern"}}],"created":1772373121,"model":"gemma-3-4b-it-Q4_K_M.gguf","system_fingerprint":"b8180-d979f2b17","object":"chat.completion","usage":{"completion_tokens":16,"prompt_tokens":18,"total_tokens":34},"id":"chatcmpl-gtqOQqniiTjb0q2dsQIc35OBkuG1886c","timings":{"cache_n":4,"prompt_n":14,"prompt_ms":159.079,"prompt_per_token_ms":11.362785714285716,"prompt_per_second":88.00658792172442,"predicted_n":16,"predicted_ms":1068.189,"predicted_per_token_ms":66.7618125,"predicted_per_second":14.97862269691974}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "662"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 1.243s

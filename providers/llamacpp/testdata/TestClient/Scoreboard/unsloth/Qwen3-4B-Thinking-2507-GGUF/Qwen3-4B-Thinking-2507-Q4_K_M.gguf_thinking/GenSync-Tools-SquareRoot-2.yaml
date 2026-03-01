@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 885
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"assistant","tool_calls":[{"type":"function","index":0,"id":"z7Uxi5Nq4skDRZz1CUOmb5GOYjJs09yp","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},{"role":"tool","content":[{"type":"text","text":"363.89"}],"tool_call_id":"z7Uxi5Nq4skDRZz1CUOmb5GOYjJs09yp"}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none","parallel_tool_calls":true,"reasoning_format":"deepseek","cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1876
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"363.89","reasoning_content":"Okay, the user asked for the square root of 132413 using the square_root tool. I called the function with number 132413. The tool response came back as 363.89. Now I need to just reply with the result without any explanation.\n\nWait, the user said \"reply with only the result\". So I should output just the number 363.89. Let me check if that''s correct. The square root of 132413... Hmm, 363 squared is 363*363. Let me verify: 360^2 is 129600, 3^2 is 9, and 2*360*3=2160. So (360+3)^2 = 129600 + 2160 +9 = 131769. Then 364^2 is (363+1)^2 = 363^2 + 2*363 +1 = 131769 +726 +1= 132496. Oh, 132496 is 364 squared. The user''s number is 132413, which is 132496 -83, so the square root should be just a bit less than 364. The tool gave 363.89, which makes sense because 363.89^2 would be approximately 132413. Let me check with calculator steps. 363.89 * 363.89. Let''s see, 363^2 is 131769, 0.89^2 is 0.7921, and cross term 2*363*0.89 = 655.86. So total is 131769 + 655.86 +0.7921 ≈ 132425.65. Wait, that''s a bit higher than 132413. Hmm, maybe the tool''s answer is approximate. But the user just wants the result from the tool, so I should present 363.89 as is.\n\nThe user said \"do not give an explanation\", so I''ll just write 363.89."}}],"created":1772373955,"model":"Qwen3-4B-Thinking-2507-Q4_K_M.gguf","system_fingerprint":"b8180-d979f2b17","object":"chat.completion","usage":{"completion_tokens":554,"prompt_tokens":255,"total_tokens":809},"id":"chatcmpl-L8huC0SrbdvxIPFIU2D2BvDJkOoznr6E","timings":{"cache_n":0,"prompt_n":255,"prompt_ms":1721.526,"prompt_per_token_ms":6.751082352941177,"prompt_per_second":148.12439661091378,"predicted_n":554,"predicted_ms":29443.137,"predicted_per_token_ms":53.14645667870036,"predicted_per_second":18.815929837910954}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "1876"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 31.177s

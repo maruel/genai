@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 184
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Explain the theory of relativity in great details."}]}],"reasoning_format":"deepseek","n_predict":16,"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 699
+        body: '{"choices":[{"finish_reason":"length","index":0,"message":{"role":"assistant","content":"","reasoning_content":"Okay, the user asked for a detailed explanation of the theory of relativity."}}],"created":1772371962,"model":"Qwen3-4B-Thinking-2507-Q4_K_M.gguf","system_fingerprint":"b8180-d979f2b17","object":"chat.completion","usage":{"completion_tokens":16,"prompt_tokens":21,"total_tokens":37},"id":"chatcmpl-K8MTvMgPBETUV6dWVUPDDefk4J9AfKUa","timings":{"cache_n":3,"prompt_n":18,"prompt_ms":198.08,"prompt_per_token_ms":11.004444444444445,"prompt_per_second":90.87237479806137,"predicted_n":16,"predicted_ms":1001.981,"predicted_per_token_ms":62.6238125,"predicted_per_second":15.968366665635376}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "699"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 1.211s

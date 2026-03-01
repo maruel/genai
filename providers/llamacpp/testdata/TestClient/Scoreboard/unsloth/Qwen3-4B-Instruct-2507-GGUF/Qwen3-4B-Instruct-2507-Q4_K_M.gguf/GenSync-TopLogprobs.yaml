@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 151
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}],"logprobs":true,"top_logprobs":2,"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1087
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Hi"},"logprobs":{"content":[{"id":13048,"token":"Hi","bytes":[72,105],"logprob":-0.18287533521652222,"top_logprobs":[{"id":13048,"token":"Hi","bytes":[72,105],"logprob":-0.18287533521652222},{"id":9707,"token":"Hello","bytes":[72,101,108,108,111],"logprob":-1.852593183517456}]},{"id":151645,"token":"","bytes":[],"logprob":-9.704106923891231e-05,"top_logprobs":[{"id":151645,"token":"","bytes":[],"logprob":-9.704106923891231e-05},{"id":11162,"token":" ","bytes":[32,240,159],"logprob":-9.69407844543457}]}]}}],"created":1772373180,"model":"Qwen3-4B-Instruct-2507-Q4_K_M.gguf","system_fingerprint":"b8180-d979f2b17","object":"chat.completion","usage":{"completion_tokens":2,"prompt_tokens":16,"total_tokens":18},"id":"chatcmpl-GpTEIYEvIyxO0LHRSBJddAU2DxbgeInB","timings":{"cache_n":15,"prompt_n":1,"prompt_ms":64.549,"prompt_per_token_ms":64.549,"prompt_per_second":15.492106771599868,"predicted_n":2,"predicted_ms":175.724,"predicted_per_token_ms":87.862,"predicted_per_second":11.381484600851335}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "1087"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 310ms

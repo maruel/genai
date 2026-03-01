@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 148
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}],"reasoning_format":"deepseek","cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1597
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"hello","reasoning_content":"Hmm, the user asked me to \"say hello\" and specifically said to use only one word. That''s straightforward—they want a simple, minimal response. \n\nI wonder why they''re asking for just one word though. Maybe they''re testing my ability to follow precise instructions, or perhaps they''re in a hurry and prefer brevity. Could also be they''re setting up for something else, like a chatbot experiment. \n\nSince they said \"say hello,\" the most natural one-word reply would be \"hello\" itself. But wait—should I use \"hi\"? \"Hey\"? The instruction says \"only one word,\" and \"hello\" is technically one word. In English, \"hello\" is the standard greeting word, so it fits perfectly. \n\nNo need to overcomplicate it. Just go with \"hello.\" Keeping it clean and on point. \n\n... Though part of me is tempted to add a smiley or something, but they said \"only one word,\" so I''ll stick strictly to that. No extras. \n\nAlright, response locked in: hello."}}],"created":1772371942,"model":"Qwen3-4B-Thinking-2507-Q4_K_M.gguf","system_fingerprint":"b8180-d979f2b17","object":"chat.completion","usage":{"completion_tokens":222,"prompt_tokens":18,"total_tokens":240},"id":"chatcmpl-ROIxArlaBDPhFmbeGBLHUBqpyBgp46rM","timings":{"cache_n":0,"prompt_n":18,"prompt_ms":138.693,"prompt_per_token_ms":7.705166666666667,"prompt_per_second":129.7830460080898,"predicted_n":222,"predicted_ms":11998.227,"predicted_per_token_ms":54.04606756756757,"predicted_per_second":18.502733778915832}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "1597"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 12.342s

@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 160
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Talk about Canada in great details. Start with: Canada is"}]}],"stop":["is"],"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 587
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Canada "}}],"created":1772373182,"model":"Qwen3-4B-Instruct-2507-Q4_K_M.gguf","system_fingerprint":"b8180-d979f2b17","object":"chat.completion","usage":{"completion_tokens":2,"prompt_tokens":20,"total_tokens":22},"id":"chatcmpl-ALZTPnt6oiR0LdTLLcd0mHPOUvKp149H","timings":{"cache_n":19,"prompt_n":1,"prompt_ms":54.286,"prompt_per_token_ms":54.286,"prompt_per_second":18.420955679180636,"predicted_n":2,"predicted_ms":408.982,"predicted_per_token_ms":204.491,"predicted_per_second":4.890190766341795}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "587"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 518ms

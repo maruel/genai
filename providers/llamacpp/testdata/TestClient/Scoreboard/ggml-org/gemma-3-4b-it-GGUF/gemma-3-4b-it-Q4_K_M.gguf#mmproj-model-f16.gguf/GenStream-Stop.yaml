@@ -1,36 +1,47 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 174
-    host: localhost
-    body: "{\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"Talk about Canada in great details. Start with: Canada is\"}]}],\"stop\":[\"is\"],\"cache_prompt\":true}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: http://localhost/chat/completions
-    method: POST
-  response:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    transfer_encoding:
-    - chunked
-    content_length: -1
-    body: "data: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"role\":\"assistant\",\"content\":null}}],\"created\":1756253608,\"id\":\"chatcmpl-GaLnOyHXFOeK7jh60G964k3qD3cPvgKe\",\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"content\":\"Okay\"}}],\"created\":1756253608,\"id\":\"chatcmpl-GaLnOyHXFOeK7jh60G964k3qD3cPvgKe\",\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"content\":\",\"}}],\"created\":1756253608,\"id\":\"chatcmpl-GaLnOyHXFOeK7jh60G964k3qD3cPvgKe\",\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"content\":\" let\"}}],\"created\":1756253608,\"id\":\"chatcmpl-GaLnOyHXFOeK7jh60G964k3qD3cPvgKe\",\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"content\":\"'\"}}],\"created\":1756253608,\"id\":\"chatcmpl-GaLnOyHXFOeK7jh60G964k3qD3cPvgKe\",\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"content\":\"s\"}}],\"created\":1756253608,\"id\":\"chatcmpl-GaLnOyHXFOeK7jh60G964k3qD3cPvgKe\",\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"content\":\" dive\"}}],\"created\":1756253608,\"id\":\"chatcmpl-GaLnOyHXFOeK7jh60G964k3qD3cPvgKe\",\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"content\":\" into\"}}],\"created\":1756253608,\"id\":\"chatcmpl-GaLnOyHXFOeK7jh60G964k3qD3cPvgKe\",\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"content\":\" a\"}}],\"created\":1756253608,\"id\":\"chatcmpl-GaLnOyHXFOeK7jh60G964k3qD3cPvgKe\",\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"content\":\" detailed\"}}],\"created\":1756253608,\"id\":\"chatcmpl-GaLnOyHXFOeK7jh60G964k3qD3cPvgKe\",\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"content\":\" exploration\"}}],\"created\":1756253608,\"id\":\"chatcmpl-GaLnOyHXFOeK7jh60G964k3qD3cPvgKe\",\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"content\":\" of\"}}],\"created\":1756253608,\"id\":\"chatcmpl-GaLnOyHXFOeK7jh60G964k3qD3cPvgKe\",\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"content\":\" Canada\"}}],\"created\":1756253608,\"id\":\"chatcmpl-GaLnOyHXFOeK7jh60G964k3qD3cPvgKe\",\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"content\":\" –\"}}],\"created\":1756253608,\"id\":\"chatcmpl-GaLnOyHXFOeK7jh60G964k3qD3cPvgKe\",\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"content\":\" a\"}}],\"created\":1756253608,\"id\":\"chatcmpl-GaLnOyHXFOeK7jh60G964k3qD3cPvgKe\",\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"content\":\" country\"}}],\"created\":1756253608,\"id\":\"chatcmpl-GaLnOyHXFOeK7jh60G964k3qD3cPvgKe\",\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"content\":\" that\"}}],\"created\":1756253608,\"id\":\"chatcmpl-GaLnOyHXFOeK7jh60G964k3qD3cPvgKe\",\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"content\":\"’\"}}],\"created\":1756253608,\"id\":\"chatcmpl-GaLnOyHXFOeK7jh60G964k3qD3cPvgKe\",\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"content\":\"s\"}}],\"created\":1756253608,\"id\":\"chatcmpl-GaLnOyHXFOeK7jh60G964k3qD3cPvgKe\",\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"content\":\" often\"}}],\"created\":1756253608,\"id\":\"chatcmpl-GaLnOyHXFOeK7jh60G964k3qD3cPvgKe\",\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"content\":\" romantic\"}}],\"created\":1756253608,\"id\":\"chatcmpl-GaLnOyHXFOeK7jh60G964k3qD3cPvgKe\",\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"content\":\"ized\"}}],\"created\":1756253608,\"id\":\"chatcmpl-GaLnOyHXFOeK7jh60G964k3qD3cPvgKe\",\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"content\":\",\"}}],\"created\":1756253608,\"id\":\"chatcmpl-GaLnOyHXFOeK7jh60G964k3qD3cPvgKe\",\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[{\"finish_reason\":null,\"index\":0,\"delta\":{\"content\":\" surpr\"}}],\"created\":1756253608,\"id\":\"chatcmpl-GaLnOyHXFOeK7jh60G964k3qD3cPvgKe\",\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion.chunk\",\"timings\":{\"prompt_n\":21,\"prompt_ms\":141.678,\"prompt_per_token_ms\":6.746571428571428,\"prompt_per_second\":148.22343624274765,\"predicted_n\":23,\"predicted_ms\":311.879,\"predicted_per_token_ms\":13.559956521739132,\"predicted_per_second\":73.74654914245588}}\n\ndata: {\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"delta\":{}}],\"created\":1756253608,\"id\":\"chatcmpl-GaLnOyHXFOeK7jh60G964k3qD3cPvgKe\",\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion.chunk\"}\n\ndata: {\"choices\":[],\"created\":1756253608,\"id\":\"chatcmpl-GaLnOyHXFOeK7jh60G964k3qD3cPvgKe\",\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion.chunk\",\"usage\":{\"completion_tokens\":23,\"prompt_tokens\":21,\"total_tokens\":44},\"timings\":{\"prompt_n\":21,\"prompt_ms\":141.678,\"prompt_per_token_ms\":6.746571428571428,\"prompt_per_second\":148.22343624274765,\"predicted_n\":23,\"predicted_ms\":311.885,\"predicted_per_token_ms\":13.560217391304347,\"predicted_per_second\":73.74513041665999}}\n\ndata: [DONE]\n\n"
-    headers:
-      Access-Control-Allow-Origin:
-      - ""
-      Content-Type:
-      - text/event-stream
-      Keep-Alive:
-      - timeout=5, max=100
-      Server:
-      - llama.cpp
-    status: 200 OK
-    code: 200
-    duration: 2ms
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 174
+        host: 127.0.0.1
+        body: |
+            {"stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Talk about Canada in great details. Start with: Canada is"}]}],"stop":["is"],"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        content_length: -1
+        body: |+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"role":"assistant","content":null}}],"created":1772373122,"id":"chatcmpl-3hicCorOLYTn7IXSh4xbr42jiH3l75TS","model":"gemma-3-4b-it-Q4_K_M.gguf","system_fingerprint":"b8180-d979f2b17","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"Canada"}}],"created":1772373122,"id":"chatcmpl-3hicCorOLYTn7IXSh4xbr42jiH3l75TS","model":"gemma-3-4b-it-Q4_K_M.gguf","system_fingerprint":"b8180-d979f2b17","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":" "}}],"created":1772373122,"id":"chatcmpl-3hicCorOLYTn7IXSh4xbr42jiH3l75TS","model":"gemma-3-4b-it-Q4_K_M.gguf","system_fingerprint":"b8180-d979f2b17","object":"chat.completion.chunk","timings":{"cache_n":4,"prompt_n":17,"prompt_ms":185.806,"prompt_per_token_ms":10.929764705882354,"prompt_per_second":91.49327793505053,"predicted_n":2,"predicted_ms":64.452,"predicted_per_token_ms":32.226,"predicted_per_second":31.030844659591637}}
+
+            data: {"choices":[{"finish_reason":"stop","index":0,"delta":{}}],"created":1772373122,"id":"chatcmpl-3hicCorOLYTn7IXSh4xbr42jiH3l75TS","model":"gemma-3-4b-it-Q4_K_M.gguf","system_fingerprint":"b8180-d979f2b17","object":"chat.completion.chunk","timings":{"cache_n":4,"prompt_n":17,"prompt_ms":185.806,"prompt_per_token_ms":10.929764705882354,"prompt_per_second":91.49327793505053,"predicted_n":2,"predicted_ms":64.452,"predicted_per_token_ms":32.226,"predicted_per_second":31.030844659591637}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Type:
+                - text/event-stream
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 243ms

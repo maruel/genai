@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 154
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Explain the theory of relativity in great details."}]}],"n_predict":16,"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 668
+        body: '{"choices":[{"finish_reason":"length","index":0,"message":{"role":"assistant","content":"The **Theory of Relativity** is a cornerstone of modern physics, consisting of"}}],"created":1772373182,"model":"Qwen3-4B-Instruct-2507-Q4_K_M.gguf","system_fingerprint":"b8180-d979f2b17","object":"chat.completion","usage":{"completion_tokens":16,"prompt_tokens":19,"total_tokens":35},"id":"chatcmpl-tGeX6oyQ0mPimLV2GfxOBCb3kU79Rotd","timings":{"cache_n":3,"prompt_n":16,"prompt_ms":179.01,"prompt_per_token_ms":11.188125,"prompt_per_second":89.38048153734428,"predicted_n":16,"predicted_ms":1037.638,"predicted_per_token_ms":64.852375,"predicted_per_second":15.419635749654505}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "668"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 1.27s

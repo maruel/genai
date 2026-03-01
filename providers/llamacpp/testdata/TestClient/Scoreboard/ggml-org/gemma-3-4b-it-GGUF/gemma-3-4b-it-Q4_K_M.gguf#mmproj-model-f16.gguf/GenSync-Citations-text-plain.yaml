@@ -1,36 +1,37 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 227
-    host: localhost
-    body: "{\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}],\"cache_prompt\":true}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: http://localhost/chat/completions
-    method: POST
-  response:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 607
-    body: "{\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"The capital of Quackiland is Quack. \\n\"}}],\"created\":1756253432,\"model\":\"gpt-3.5-turbo\",\"system_fingerprint\":\"b6283-1d8d83de\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":13,\"prompt_tokens\":40,\"total_tokens\":53},\"id\":\"chatcmpl-HhHufTykd1lzEYcbUQg66ghnDE9eRFJj\",\"timings\":{\"prompt_n\":36,\"prompt_ms\":77.533,\"prompt_per_token_ms\":2.1536944444444446,\"prompt_per_second\":464.3184192537371,\"predicted_n\":13,\"predicted_ms\":169.452,\"predicted_per_token_ms\":13.03476923076923,\"predicted_per_second\":76.71789061209074}}"
-    headers:
-      Access-Control-Allow-Origin:
-      - ""
-      Content-Length:
-      - "607"
-      Content-Type:
-      - application/json; charset=utf-8
-      Keep-Alive:
-      - timeout=5, max=100
-      Server:
-      - llama.cpp
-    status: 200 OK
-    code: 200
-    duration: 931ms
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 227
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 670
+        body: "{\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"The capital of Quackiland is Quack. \\n\\nThe question is a bit of a trick! \U0001F60A \\n\"}}],\"created\":1772373145,\"model\":\"gemma-3-4b-it-Q4_K_M.gguf\",\"system_fingerprint\":\"b8180-d979f2b17\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":25,\"prompt_tokens\":40,\"total_tokens\":65},\"id\":\"chatcmpl-so3vMI89ux55aEq63UFuq7DIKZVc39J0\",\"timings\":{\"cache_n\":4,\"prompt_n\":36,\"prompt_ms\":346.492,\"prompt_per_token_ms\":9.624777777777778,\"prompt_per_second\":103.8985027071332,\"predicted_n\":25,\"predicted_ms\":16919.433,\"predicted_per_token_ms\":676.77732,\"predicted_per_second\":1.4775908861721312}}"
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "670"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 17.329s

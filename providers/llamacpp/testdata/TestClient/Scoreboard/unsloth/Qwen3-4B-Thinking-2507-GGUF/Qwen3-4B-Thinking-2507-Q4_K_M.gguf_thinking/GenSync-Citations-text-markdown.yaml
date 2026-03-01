@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 273
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"reasoning_format":"deepseek","cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 3281
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"The question asks: *What is the capital of Quackiland?* \n\nThe problem explicitly states: **\"The capital of Quackiland is Quack.\"** This is a direct and unambiguous statement. The additional detail about the *Big Canard Statue* being located in Quack serves only as context and is not relevant to the answer.\n\nThis is a straightforward question where the answer is clearly provided in the first sentence. The mention of \"Canard\" (a French word for \"lie\") and the name \"Quack\" (which can mean a fake or insincere statement) may seem like a play on words, but the question is designed to test whether you misinterpret the information or get distracted by the extra detail.\n\n---\n\n**Answer:** Quack","reasoning_content":"Okay, let''s see. The question is asking for the capital of Quackiland. The problem states: \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\" Then it asks, \"What is the capital of Quackiland?\"\n\nHmm, so the first sentence directly says \"The capital of Quackiland is Quack.\" That seems straightforward. But maybe there''s a trick here? Sometimes riddles play on words or have a pun.\n\nWait, the name \"Quackiland\" sounds a bit like a made-up country, maybe with a play on words. The capital is named Quack, which is a bit odd because Quack is also a term for a fake or insincere statement, like \"quack\" as in a fake doctor. But here it''s part of the country''s name.\n\nThe problem mentions the Big Canard Statue is located in Quack. \"Canard\" is French for \"lie\" or \"false statement,\" so maybe that''s a clue. But the question is straightforward.\n\nWait, the first sentence says \"The capital of Quackiland is Quack.\" So the answer should be Quack. But maybe the trick is that the capital is Quack, but the question is phrased to make you think it''s something else. Like, sometimes people confuse the country name with the capital.\n\nWait, the country is Quackiland, and the capital is Quack. So the answer is Quack. The mention of the Big Canard Statue in Quack is probably just extra information to test if you get distracted.\n\nLet me check again. If the problem says \"The capital of Quackiland is Quack,\" then regardless of the other info, the answer is Quack. The second sentence is probably a red herring. So the answer is Quack.\n\nBut wait, maybe the trick is that the capital is Quack, but the country name is Quackiland, so the capital''s name is Quack. That seems correct.\n\nAlternatively, maybe the problem is a play on words where \"Quack\" is a pun. But given the problem states directly that the capital is Quack, I think that''s the answer.\n\nSo I think the answer is Quack."}}],"created":1772373119,"model":"Qwen3-4B-Thinking-2507-Q4_K_M.gguf","system_fingerprint":"b8180-d979f2b17","object":"chat.completion","usage":{"completion_tokens":621,"prompt_tokens":45,"total_tokens":666},"id":"chatcmpl-Q9h5zcyp7rNbS8jtqhgibAPcwIenZPnO","timings":{"cache_n":1,"prompt_n":44,"prompt_ms":489.183,"prompt_per_token_ms":11.117795454545455,"prompt_per_second":89.94588937064452,"predicted_n":621,"predicted_ms":35096.942,"predicted_per_token_ms":56.51681481481482,"predicted_per_second":17.693849224812805}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "3281"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 35.685s

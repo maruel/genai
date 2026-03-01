@@ -7,7 +7,6 @@
 package llamacppsrv
 
 import (
-	"archive/zip"
 	"bytes"
 	"context"
 	"errors"
@@ -15,18 +14,18 @@ import (
 	"io"
 	"log"
 	"net"
-	"net/http"
-	"net/url"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"regexp"
 	"runtime"
 	"strconv"
+	"strings"
 	"syscall"
 	"time"
 
 	"github.com/maruel/genai"
+	"github.com/maruel/genai/internal/ghrelease"
 	"github.com/maruel/genai/providers/llamacpp"
 )
 
@@ -34,7 +33,7 @@ import (
 // https://github.com/ggml-org/llama.cpp/releases
 //
 // You are free to use the build number that works best for you.
-const BuildNumber = 6283
+const BuildNumber = 8180
 
 // Server is a llama-server instance.
 type Server struct {
@@ -208,108 +207,61 @@ func DownloadRelease(ctx context.Context, cache string, version int) (string, er
 	}
 
 	build := "b" + strconv.Itoa(version)
-	baseURL := "https://github.com/ggml-org/llama.cpp/releases/download/" + url.PathEscape(build) + "/"
-	zipname := ""
-	wantedFiles := []string{filepath.Base(llamaserver)}
-	switch runtime.GOOS {
-	case "darwin":
-		// There's no point in supporting x64.
-		zipname = "llama-" + build + "-bin-macos-arm64.zip"
-		wantedFiles = append(wantedFiles, "*.dylib", "*.metal")
-	case "linux":
-		switch runtime.GOARCH {
-		case "arm64":
-			zipname = "llama-" + build + "-bin-ubuntu-arm64.zip"
-		case "amd64":
-			zipname = "llama-" + build + "-bin-ubuntu-x64.zip"
-		default:
-			return "", errors.New("don't know how to select " + runtime.GOOS + "/" + runtime.GOARCH)
-		}
-		wantedFiles = append(wantedFiles, "*.so")
-	case "windows":
-		_, err := exec.Command("nvcc", "--version").CombinedOutput()
-		switch {
-		case err == nil:
-			// This is tricky because in the case of image generation, we may want to
-			// run on the CPU instead.
-			// TODO: We'll have to list the files on GH to determine the cuda version to get the exact filename. :(
-			// TODO: Vulkan, HIP, OpenCL, sycl.
-			zipname = "llama-" + build + "-bin-win-cuda-12.4-x64.zip"
-		case runtime.GOARCH == "arm64":
-			zipname = "llama-" + build + "-bin-win-cpu-arm64.zip"
-		case runtime.GOARCH == "amd64":
-			zipname = "llama-" + build + "-bin-win-cpu-x64.zip"
-		default:
-			return "", errors.New("don't know how to select " + runtime.GOOS + "/" + runtime.GOARCH)
-		}
-		wantedFiles = append(wantedFiles, "*.dll")
-	default:
-		return "", errors.New("don't know how to select " + runtime.GOOS + "/" + runtime.GOARCH)
+	rel, err := ghrelease.GetRelease(ctx, "ggml-org", "llama.cpp", build)
+	if err != nil {
+		return "", fmt.Errorf("failed to get llama.cpp release %s: %w", build, err)
 	}
-	zippath := filepath.Join(cache, zipname)
-	if err := downloadFile(ctx, baseURL+zipname, zippath); err != nil {
-		return "", fmt.Errorf("failed to download %s from github: %w", zipname, err)
-	}
-
-	z, err := zip.OpenReader(zippath)
+	suffix, err := assetSuffix()
 	if err != nil {
 		return "", err
 	}
-	defer func() { _ = z.Close() }()
-	for _, f := range z.File {
-		// Files are under build/bin/; ignore path.
-		n := filepath.Base(f.Name)
-		for _, desired := range wantedFiles {
-			ok, _ := filepath.Match(desired, n)
-			if !ok {
-				continue
-			}
-			var src io.ReadCloser
-			if src, err = f.Open(); err != nil {
-				return "", err
-			}
-			var dst io.WriteCloser
-			if dst, err = os.OpenFile(filepath.Join(cache, n), os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0o755); err == nil {
-				_, err = io.CopyN(dst, src, int64(f.UncompressedSize64))
-			}
-			if err2 := src.Close(); err == nil {
-				err = err2
-			}
-			if err2 := dst.Close(); err == nil {
-				err = err2
-			}
-			if err != nil {
-				return "", fmt.Errorf("failed to write %q: %w", n, err)
-			}
+	var asset *ghrelease.Asset
+	for i := range rel.Assets {
+		if strings.Contains(rel.Assets[i].Name, suffix) {
+			asset = &rel.Assets[i]
+			break
 		}
 	}
-	return llamaserver, err
+	if asset == nil {
+		return "", fmt.Errorf("no matching asset with suffix %q in release %s", suffix, build)
+	}
+	if err := ghrelease.DownloadAndExtract(ctx, asset.URL, cache, []string{"*"}); err != nil {
+		return "", fmt.Errorf("failed to download %s from github: %w", asset.Name, err)
+	}
+	return llamaserver, nil
 }
 
-func downloadFile(ctx context.Context, srcURL, dst string) error {
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, srcURL, http.NoBody)
-	if err != nil {
-		return err
+// assetSuffix returns the substring to match in release asset names for the
+// current OS/arch.
+func assetSuffix() (string, error) {
+	switch runtime.GOOS {
+	case "darwin":
+		return "macos-arm64", nil
+	case "linux":
+		if runtime.GOARCH != "amd64" {
+			return "", errors.New("don't know how to select " + runtime.GOOS + "/" + runtime.GOARCH)
+		}
+		return "ubuntu-x64", nil
+	case "windows":
+		if _, err := exec.Command("nvcc", "--version").CombinedOutput(); err == nil {
+			// Use CUDA build. The release API lets us pick the right archive
+			// dynamically regardless of CUDA version.
+			switch runtime.GOARCH {
+			case "amd64":
+				return "win-cuda", nil
+			default:
+				return "", errors.New("don't know how to select " + runtime.GOOS + "/" + runtime.GOARCH + " with cuda")
+			}
+		}
+		switch runtime.GOARCH {
+		case "arm64":
+			return "win-cpu-arm64", nil
+		case "amd64":
+			return "win-cpu-x64", nil
+		default:
+			return "", errors.New("don't know how to select " + runtime.GOOS + "/" + runtime.GOARCH)
+		}
+	default:
+		return "", errors.New("don't know how to select " + runtime.GOOS + "/" + runtime.GOARCH)
 	}
-	if token := os.Getenv("GITHUB_TOKEN"); token != "" {
-		req.Header.Set("Authorization", "Bearer "+token)
-	}
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return err
-	}
-	defer func() { _ = resp.Body.Close() }()
-	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("unexpected http status code %d", resp.StatusCode)
-	}
-	// Only then create the file.
-	f, err := os.OpenFile(dst, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0o666)
-	if err != nil {
-		return err
-	}
-	_, err = io.Copy(f, resp.Body)
-	if err2 := f.Close(); err == nil {
-		err = err2
-	}
-	return err
 }

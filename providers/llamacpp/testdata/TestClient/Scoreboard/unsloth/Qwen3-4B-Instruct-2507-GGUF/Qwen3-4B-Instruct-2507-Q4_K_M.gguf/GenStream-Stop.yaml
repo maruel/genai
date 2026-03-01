@@ -1,0 +1,47 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 174
+        host: 127.0.0.1
+        body: |
+            {"stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Talk about Canada in great details. Start with: Canada is"}]}],"stop":["is"],"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        content_length: -1
+        body: |+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"role":"assistant","content":null}}],"created":1772373182,"id":"chatcmpl-J2OgJMkjitqk4z991uvXGXu9iexIcYyd","model":"Qwen3-4B-Instruct-2507-Q4_K_M.gguf","system_fingerprint":"b8180-d979f2b17","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"Canada"}}],"created":1772373182,"id":"chatcmpl-J2OgJMkjitqk4z991uvXGXu9iexIcYyd","model":"Qwen3-4B-Instruct-2507-Q4_K_M.gguf","system_fingerprint":"b8180-d979f2b17","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":" "}}],"created":1772373182,"id":"chatcmpl-J2OgJMkjitqk4z991uvXGXu9iexIcYyd","model":"Qwen3-4B-Instruct-2507-Q4_K_M.gguf","system_fingerprint":"b8180-d979f2b17","object":"chat.completion.chunk","timings":{"cache_n":3,"prompt_n":17,"prompt_ms":192.277,"prompt_per_token_ms":11.310411764705881,"prompt_per_second":88.41411089209839,"predicted_n":2,"predicted_ms":54.798,"predicted_per_token_ms":27.399,"predicted_per_second":36.49768239716778}}
+
+            data: {"choices":[{"finish_reason":"stop","index":0,"delta":{}}],"created":1772373182,"id":"chatcmpl-J2OgJMkjitqk4z991uvXGXu9iexIcYyd","model":"Qwen3-4B-Instruct-2507-Q4_K_M.gguf","system_fingerprint":"b8180-d979f2b17","object":"chat.completion.chunk","timings":{"cache_n":3,"prompt_n":17,"prompt_ms":192.277,"prompt_per_token_ms":11.310411764705881,"prompt_per_second":88.41411089209839,"predicted_n":2,"predicted_ms":54.798,"predicted_per_token_ms":27.399,"predicted_per_second":36.49768239716778}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Type:
+                - text/event-stream
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 247ms

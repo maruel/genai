@@ -157,7 +157,7 @@ func TestClient(t *testing.T) {
 					}
 					return &internaltest.InjectOptions{
 						Provider: c,
-						Opts:     []genai.GenOption{&alibaba.GenOption{EnableThinking: model.Reason}},
+						Opts:     []genai.GenOption{&alibaba.GenOption{Thinking: model.Reason}},
 					}
 				}
 				smoketest.Run(t, getClientRT, models, testRecorder.Records, smoketest.WithScoreboardFile(b.sbFile))
@@ -222,7 +222,7 @@ func TestGenOption(t *testing.T) {
 	msgs := genai.Messages{genai.NewTextMessage("test")}
 	t.Run("enabled", func(t *testing.T) {
 		var req alibaba.ChatRequest
-		if err := req.Init(msgs, "qwen3.5-397b-a17b", &alibaba.GenOption{EnableThinking: true}); err != nil {
+		if err := req.Init(msgs, "qwen3.5-397b-a17b", &alibaba.GenOption{Thinking: true}); err != nil {
 			t.Fatal(err)
 		}
 		if !req.EnableThinking {
@@ -231,7 +231,7 @@ func TestGenOption(t *testing.T) {
 	})
 	t.Run("disabled", func(t *testing.T) {
 		var req alibaba.ChatRequest
-		if err := req.Init(msgs, "qwen3.5-397b-a17b", &alibaba.GenOption{EnableThinking: false}); err != nil {
+		if err := req.Init(msgs, "qwen3.5-397b-a17b", &alibaba.GenOption{Thinking: false}); err != nil {
 			t.Fatal(err)
 		}
 		if req.EnableThinking {
@@ -240,7 +240,7 @@ func TestGenOption(t *testing.T) {
 	})
 	t.Run("budget", func(t *testing.T) {
 		var req alibaba.ChatRequest
-		if err := req.Init(msgs, "qwen3.5-397b-a17b", &alibaba.GenOption{EnableThinking: true, ThinkingBudget: 4096}); err != nil {
+		if err := req.Init(msgs, "qwen3.5-397b-a17b", &alibaba.GenOption{Thinking: true, ThinkingBudget: 4096}); err != nil {
 			t.Fatal(err)
 		}
 		if req.ThinkingBudget != 4096 {

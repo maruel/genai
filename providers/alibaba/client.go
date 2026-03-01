@@ -103,7 +103,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 		}
 		switch v := opt.(type) {
 		case *GenOption:
-			c.EnableThinking = v.EnableThinking
+			c.EnableThinking = v.Thinking
 			c.ThinkingBudget = v.ThinkingBudget
 		case *genai.GenOptionText:
 			c.MaxToks = v.MaxTokens
@@ -638,8 +638,8 @@ const (
 
 // GenOption defines Alibaba DashScope specific generation options.
 type GenOption struct {
-	// EnableThinking controls the thinking mode. Qwen3.5 models default to thinking enabled.
-	EnableThinking bool
+	// Thinking controls the thinking mode. Qwen3.5 models default to thinking enabled.
+	Thinking bool
 	// ThinkingBudget limits the maximum number of reasoning tokens. 0 means no limit.
 	ThinkingBudget int64
 }

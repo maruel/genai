@@ -297,7 +297,7 @@ func TestGenOption(t *testing.T) {
 	})
 	t.Run("enable_thinking", func(t *testing.T) {
 		var req llamacpp.ChatRequest
-		if err := req.Init(msgs, "model", &llamacpp.GenOption{EnableThinking: true}); err != nil {
+		if err := req.Init(msgs, "model", &llamacpp.GenOption{Thinking: true}); err != nil {
 			t.Fatal(err)
 		}
 		if req.ChatTemplateKWArgs == nil {

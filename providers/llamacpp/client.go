@@ -181,7 +181,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			c.Seed = int64(v)
 		case *GenOption:
 			c.ReasoningFormat = v.ReasoningFormat
-			if v.EnableThinking {
+			if v.Thinking {
 				if c.ChatTemplateKWArgs == nil {
 					c.ChatTemplateKWArgs = map[string]any{}
 				}
@@ -365,8 +365,8 @@ const (
 type GenOption struct {
 	// ReasoningFormat sets the reasoning format for the model.
 	ReasoningFormat ReasoningFormat
-	// EnableThinking enables thinking mode via chat_template_kwargs.
-	EnableThinking bool
+	// Thinking enables thinking mode via chat_template_kwargs.
+	Thinking bool
 }
 
 // Validate implements genai.Validatable.

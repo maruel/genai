@@ -12,6 +12,7 @@ import (
 	"compress/gzip"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -79,13 +80,26 @@ type Release struct {
 	Assets  []Asset `json:"assets"`
 }
 
+// GetRelease returns a specific GitHub release by tag for the given owner/repo,
+// including the tag name and the list of downloadable assets.
+//
+// Uses GITHUB_TOKEN from the environment for Bearer auth if set.
+func GetRelease(ctx context.Context, owner, repo, tag string) (*Release, error) {
+	u := apiBaseURL + "/repos/" + owner + "/" + repo + "/releases/tags/" + tag
+	return getRelease(ctx, u, owner, repo, tag)
+}
+
 // GetLatestRelease returns the latest GitHub release for the given owner/repo,
 // including the tag name and the list of downloadable assets.
 //
 // Uses GITHUB_TOKEN from the environment for Bearer auth if set.
 func GetLatestRelease(ctx context.Context, owner, repo string) (*Release, error) {
-	url := apiBaseURL + "/repos/" + owner + "/" + repo + "/releases/latest"
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, http.NoBody)
+	u := apiBaseURL + "/repos/" + owner + "/" + repo + "/releases/latest"
+	return getRelease(ctx, u, owner, repo, "latest")
+}
+
+func getRelease(ctx context.Context, u, owner, repo, label string) (*Release, error) {
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u, http.NoBody)
 	if err != nil {
 		return nil, err
 	}
@@ -102,17 +116,17 @@ func GetLatestRelease(ctx context.Context, owner, repo string) (*Release, error)
 		err = err2
 	}
 	if err != nil {
-		return nil, fmt.Errorf("failed to get latest %s/%s release: %w", owner, repo, err)
+		return nil, fmt.Errorf("failed to get %s %s/%s release: %w", label, owner, repo, err)
 	}
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("failed to get latest %s/%s release: http %d: %s", owner, repo, resp.StatusCode, string(b))
+		return nil, fmt.Errorf("failed to get %s %s/%s release: http %d: %s", label, owner, repo, resp.StatusCode, string(b))
 	}
 	var release Release
 	if err := json.Unmarshal(b, &release); err != nil {
-		return nil, fmt.Errorf("failed to get latest %s/%s release: %w", owner, repo, err)
+		return nil, fmt.Errorf("failed to get %s %s/%s release: %w", label, owner, repo, err)
 	}
 	if release.TagName == "" {
-		return nil, fmt.Errorf("failed to get latest %s/%s release: got %s", owner, repo, string(b))
+		return nil, fmt.Errorf("failed to get %s %s/%s release: got %s", label, owner, repo, string(b))
 	}
 	return &release, nil
 }
@@ -217,27 +231,25 @@ func extractZip(archivePath, dstDir string, wantedFiles []string) error {
 	for _, f := range z.File {
 		// Ignore path; flatten directory structure.
 		n := filepath.Base(f.Name)
-		for _, desired := range wantedFiles {
-			if ok, _ := filepath.Match(desired, n); !ok {
-				continue
-			}
-			var src io.ReadCloser
-			if src, err = f.Open(); err != nil {
-				return err
-			}
-			var dst io.WriteCloser
-			if dst, err = os.OpenFile(filepath.Join(dstDir, n), os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0o755); err == nil {
-				_, err = io.CopyN(dst, src, int64(f.UncompressedSize64))
-			}
-			if err2 := src.Close(); err == nil {
-				err = err2
-			}
-			if err2 := dst.Close(); err == nil {
-				err = err2
-			}
-			if err != nil {
-				return fmt.Errorf("failed to write %q: %w", n, err)
-			}
+		if !matchAny(n, wantedFiles) {
+			continue
+		}
+		var src io.ReadCloser
+		if src, err = f.Open(); err != nil {
+			return err
+		}
+		var dst io.WriteCloser
+		if dst, err = os.OpenFile(filepath.Join(dstDir, n), os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0o755); err == nil {
+			_, err = io.CopyN(dst, src, int64(f.UncompressedSize64))
+		}
+		if err2 := src.Close(); err == nil {
+			err = err2
+		}
+		if err2 := dst.Close(); err == nil {
+			err = err2
+		}
+		if err != nil {
+			return fmt.Errorf("failed to write %q: %w", n, err)
 		}
 	}
 	return nil
@@ -253,19 +265,32 @@ func extractTar(r io.Reader, dstDir string, wantedFiles []string) error {
 		if err != nil {
 			return err
 		}
-		if header.Size == 0 || strings.HasSuffix(header.Name, "/") {
-			continue
-		}
 		// Ignore path; flatten directory structure.
 		n := filepath.Base(header.Name)
 		if n == ".." || n == "." {
 			continue
 		}
-		for _, desired := range wantedFiles {
-			if ok, _ := filepath.Match(desired, n); !ok {
+		if !matchAny(n, wantedFiles) {
+			continue
+		}
+		dst := filepath.Join(dstDir, n) //nolint:gosec // G305: n is sanitized via filepath.Base above
+		switch header.Typeflag {
+		case tar.TypeSymlink:
+			// Ensure the symlink target doesn't escape the destination directory.
+			if filepath.Base(header.Linkname) != header.Linkname {
 				continue
 			}
-			outFile, err := os.OpenFile(filepath.Join(dstDir, n), os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0o755) //nolint:gosec // G703: n is sanitized via filepath.Base above
+			if err := os.Remove(dst); err != nil && !errors.Is(err, os.ErrNotExist) {
+				return fmt.Errorf("failed to remove existing file %q: %w", n, err)
+			}
+			if err := os.Symlink(header.Linkname, dst); err != nil {
+				return fmt.Errorf("failed to create symlink %q: %w", n, err)
+			}
+		case tar.TypeReg:
+			if header.Size == 0 {
+				continue
+			}
+			outFile, err := os.OpenFile(dst, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0o755)
 			if err != nil {
 				return err
 			}
@@ -279,4 +304,13 @@ func extractTar(r io.Reader, dstDir string, wantedFiles []string) error {
 		}
 	}
 	return nil
+}
+
+func matchAny(name string, patterns []string) bool {
+	for _, p := range patterns {
+		if ok, _ := filepath.Match(p, name); ok {
+			return true
+		}
+	}
+	return false
 }

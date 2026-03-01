@@ -126,6 +126,43 @@ func TestExtractArchive(t *testing.T) {
 			t.Fatal("baz.so should not have been extracted")
 		}
 	})
+	t.Run("Symlink", func(t *testing.T) {
+		dir := t.TempDir()
+		archivePath := filepath.Join(dir, "test.tar.gz")
+		createTarGzWithSymlink(t, archivePath, "lib/libfoo.so.1", "libfoo content", "lib/libfoo.so", "libfoo.so.1")
+		dstDir := filepath.Join(dir, "out")
+		if err := os.Mkdir(dstDir, 0o755); err != nil {
+			t.Fatal(err)
+		}
+		if err := ExtractArchive(archivePath, dstDir, []string{"*"}); err != nil {
+			t.Fatal(err)
+		}
+		assertFileContent(t, filepath.Join(dstDir, "libfoo.so.1"), "libfoo content")
+		target, err := os.Readlink(filepath.Join(dstDir, "libfoo.so"))
+		if err != nil {
+			t.Fatal(err)
+		}
+		if target != "libfoo.so.1" {
+			t.Fatalf("symlink target: got %q, want %q", target, "libfoo.so.1")
+		}
+	})
+	t.Run("SymlinkEscape", func(t *testing.T) {
+		dir := t.TempDir()
+		archivePath := filepath.Join(dir, "test.tar.gz")
+		// Symlink with path traversal in linkname should be skipped.
+		createTarGzWithSymlink(t, archivePath, "lib/real.txt", "data", "lib/evil.txt", "../../../etc/passwd")
+		dstDir := filepath.Join(dir, "out")
+		if err := os.Mkdir(dstDir, 0o755); err != nil {
+			t.Fatal(err)
+		}
+		if err := ExtractArchive(archivePath, dstDir, []string{"*"}); err != nil {
+			t.Fatal(err)
+		}
+		assertFileContent(t, filepath.Join(dstDir, "real.txt"), "data")
+		if _, err := os.Lstat(filepath.Join(dstDir, "evil.txt")); err == nil {
+			t.Fatal("evil.txt symlink should not have been created")
+		}
+	})
 	t.Run("UnsupportedFormat", func(t *testing.T) {
 		if err := ExtractArchive("file.rar", ".", nil); err == nil {
 			t.Fatal("expected error for unsupported format")
@@ -175,6 +212,50 @@ func TestGetLatestRelease(t *testing.T) {
 		t.Cleanup(func() { apiBaseURL = old })
 
 		if _, err := GetLatestRelease(context.Background(), "no", "repo"); err == nil {
+			t.Fatal("expected error for 404")
+		}
+	})
+}
+
+func TestGetRelease(t *testing.T) {
+	t.Run("Valid", func(t *testing.T) {
+		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if r.URL.Path != "/repos/owner/repo/releases/tags/v1.0" {
+				http.NotFound(w, r)
+				return
+			}
+			w.Header().Set("Content-Type", "application/json")
+			_, _ = w.Write([]byte(`{"tag_name":"v1.0","assets":[{"name":"bin.tar.gz","browser_download_url":"https://example.com/bin.tar.gz"}]}`))
+		}))
+		defer srv.Close()
+		old := apiBaseURL
+		apiBaseURL = srv.URL
+		t.Cleanup(func() { apiBaseURL = old })
+
+		rel, err := GetRelease(context.Background(), "owner", "repo", "v1.0")
+		if err != nil {
+			t.Fatal(err)
+		}
+		if rel.TagName != "v1.0" {
+			t.Fatalf("tag: got %q, want %q", rel.TagName, "v1.0")
+		}
+		if len(rel.Assets) != 1 {
+			t.Fatalf("assets: got %d, want 1", len(rel.Assets))
+		}
+		if rel.Assets[0].Name != "bin.tar.gz" {
+			t.Fatalf("asset[0].Name: got %q, want %q", rel.Assets[0].Name, "bin.tar.gz")
+		}
+	})
+	t.Run("NotFound", func(t *testing.T) {
+		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			http.NotFound(w, r)
+		}))
+		defer srv.Close()
+		old := apiBaseURL
+		apiBaseURL = srv.URL
+		t.Cleanup(func() { apiBaseURL = old })
+
+		if _, err := GetRelease(context.Background(), "no", "repo", "v999"); err == nil {
 			t.Fatal("expected error for 404")
 		}
 	})
@@ -354,6 +435,36 @@ func writeTar(t *testing.T, w io.Writer, files map[string]string) {
 		}
 	}
 	if err := tw.Close(); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func createTarGzWithSymlink(t *testing.T, path, fileName, fileContent, symlinkName, symlinkTarget string) {
+	t.Helper()
+	f, err := os.Create(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	gw := gzip.NewWriter(f)
+	tw := tar.NewWriter(gw)
+	// Write regular file.
+	if err := tw.WriteHeader(&tar.Header{Name: fileName, Mode: 0o644, Size: int64(len(fileContent))}); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := tw.Write([]byte(fileContent)); err != nil {
+		t.Fatal(err)
+	}
+	// Write symlink.
+	if err := tw.WriteHeader(&tar.Header{Name: symlinkName, Typeflag: tar.TypeSymlink, Linkname: symlinkTarget}); err != nil {
+		t.Fatal(err)
+	}
+	if err := tw.Close(); err != nil {
+		t.Fatal(err)
+	}
+	if err := gw.Close(); err != nil {
+		t.Fatal(err)
+	}
+	if err := f.Close(); err != nil {
 		t.Fatal(err)
 	}
 }

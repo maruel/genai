@@ -160,7 +160,11 @@ type lazyServer struct {
 }
 
 func (l *lazyServer) lazyStart(t testing.TB) string {
-	if os.Getenv("RECORD") != "all" && os.Getenv("CI") == "true" {
+	// Skip server startup when not recording. The HTTP cassettes in testdata/
+	// are replayed by the recording transport so the URL is never contacted.
+	// Only RECORD=all needs a real server; RECORD=failure_only replays in the
+	// parent and re-runs failures as a subprocess with RECORD=all.
+	if os.Getenv("RECORD") != "all" {
 		return "http://localhost:0"
 	}
 	l.mu.Lock()

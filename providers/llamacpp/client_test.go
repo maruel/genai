@@ -202,7 +202,11 @@ func (l *lazyServer) lazyStartModel(t testing.TB, model scoreboard.Model) string
 	if model.Model == "" {
 		return l.lazyStart(t)
 	}
-	if os.Getenv("RECORD") != "all" && os.Getenv("CI") == "true" {
+	// Skip server startup when not recording. The HTTP cassettes in testdata/
+	// are replayed by the recording transport so the URL is never contacted.
+	// Only RECORD=all needs a real server; RECORD=failure_only replays in the
+	// parent and re-runs failures as a subprocess with RECORD=all.
+	if os.Getenv("RECORD") != "all" {
 		return "http://127.0.0.1:0"
 	}
 	if url := os.Getenv("LLAMA_SERVER"); url != "" {

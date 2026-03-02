@@ -127,6 +127,9 @@ func (r *Records) rerun(tests []string) error {
 			cmd.Env = append(cmd.Env, e)
 		}
 	}
+	// Set RECORD=all so the subprocess starts a real server and records fresh
+	// cassettes for the deleted ones.
+	cmd.Env = append(cmd.Env, "RECORD=all")
 	fmt.Fprintf(os.Stderr, "Re-recording %d failed test(s)...\n", len(tests))
 	out, err := cmd.CombinedOutput()
 	if err != nil {

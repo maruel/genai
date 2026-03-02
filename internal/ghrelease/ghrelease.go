@@ -271,7 +271,7 @@ func extractTar(r io.Reader, dstDir string, wantedFiles []string) error {
 			return err
 		}
 		// Ignore path; flatten directory structure.
-		n := filepath.Base(header.Name)
+		n := filepath.Base(header.Name) //nolint:gosec // Flattened via filepath.Base; dst validated by HasPrefix below
 		if n == ".." || n == "." {
 			continue
 		}
@@ -292,7 +292,7 @@ func extractTar(r io.Reader, dstDir string, wantedFiles []string) error {
 			if err := os.Remove(dst); err != nil && !errors.Is(err, os.ErrNotExist) { //nolint:gosec // dst is validated by HasPrefix check above
 				return fmt.Errorf("failed to remove existing file %q: %w", n, err)
 			}
-			if err := os.Symlink(header.Linkname, dst); err != nil {
+			if err := os.Symlink(header.Linkname, dst); err != nil { //nolint:gosec // Both dst and Linkname target are validated by HasPrefix checks above
 				return fmt.Errorf("failed to create symlink %q: %w", n, err)
 			}
 		case tar.TypeReg:

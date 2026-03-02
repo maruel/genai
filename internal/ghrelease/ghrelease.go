@@ -228,10 +228,15 @@ func extractZip(archivePath, dstDir string, wantedFiles []string) error {
 		return err
 	}
 	defer func() { _ = z.Close() }()
+	prefix := filepath.Clean(dstDir) + string(os.PathSeparator)
 	for _, f := range z.File {
 		// Ignore path; flatten directory structure.
 		n := filepath.Base(f.Name)
 		if !matchAny(n, wantedFiles) {
+			continue
+		}
+		p := filepath.Join(dstDir, n)
+		if !strings.HasPrefix(p, prefix) {
 			continue
 		}
 		var src io.ReadCloser
@@ -239,7 +244,7 @@ func extractZip(archivePath, dstDir string, wantedFiles []string) error {
 			return err
 		}
 		var dst io.WriteCloser
-		if dst, err = os.OpenFile(filepath.Join(dstDir, n), os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0o755); err == nil {
+		if dst, err = os.OpenFile(p, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0o755); err == nil {
 			_, err = io.CopyN(dst, src, int64(f.UncompressedSize64))
 		}
 		if err2 := src.Close(); err == nil {
@@ -273,7 +278,10 @@ func extractTar(r io.Reader, dstDir string, wantedFiles []string) error {
 		if !matchAny(n, wantedFiles) {
 			continue
 		}
-		dst := filepath.Join(dstDir, n) //nolint:gosec // G305: n is sanitized via filepath.Base above
+		dst := filepath.Join(dstDir, n)
+		if !strings.HasPrefix(dst, filepath.Clean(dstDir)+string(os.PathSeparator)) {
+			continue
+		}
 		switch header.Typeflag {
 		case tar.TypeSymlink:
 			// Ensure the symlink target doesn't escape the destination directory.

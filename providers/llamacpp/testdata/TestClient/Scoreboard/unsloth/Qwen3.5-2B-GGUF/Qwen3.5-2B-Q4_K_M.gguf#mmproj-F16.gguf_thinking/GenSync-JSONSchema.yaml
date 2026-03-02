@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 477
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}],"response_format":{"type":"json_schema","json_schema":{"schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}}},"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 5662
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"{\"is_fruit\": true}","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Question: \"Is a banana a fruit?\"\n    *   Constraint 1: \"Do not include an explanation.\"\n    *   Constraint 2: \"Reply ONLY as JSON.\"\n\n2.  **Determine the Answer:**\n    *   Biologically and culinarily, bananas are fruits. They are the fruit of the plant *Musa basjoo* (or more commonly referred to in botanical terms as *Musa acuminata* or *Musa paradisiaca* varieties, often categorized as bananas in common parlance). Botanically, they are berries or berries.\n    *   However, the user is asking for a simple Yes/No answer.\n    *   The correct scientific classification is \"Yes\".\n    *   The constraint says \"Reply ONLY as JSON\".\n\n3.  **Format the Output:**\n    *   Must be valid JSON.\n    *   Must not contain markdown code blocks (unless implied, but usually \"only as JSON\" means raw JSON string).\n    *   Must include no extra text.\n\n4.  **Drafting the JSON:**\n    *   Key: \"answer\" or \"is_a_banana_a_fruit\".\n    *   Value: \"yes\".\n    *   Example: `{\"is_a_banana_a_fruit\": true}` or `{\"answer\": \"yes\"}`.\n\n5.  **Refining for Constraints:**\n    *   The prompt says \"Reply ONLY as JSON\". This usually means the text output should be valid JSON only.\n    *   No markdown formatting like ```json ... ```.\n    *   No explanatory text outside the JSON structure.\n\n6.  **Final Decision:**\n    *   Create a JSON object with the answer.\n    *   Since the question is yes/no, I can use `true` or `true` (boolean) or `yes` (string). \"yes\" is safer for clarity, but boolean is also fine. Let''s use `true` for boolean to be concise, or just the string `\"yes\"`.\n    *   Actually, a simple JSON object with the answer is best.\n    *   `{\"answer\": \"yes\"}`\n\n7.  **Final Check:**\n    *   Does it contain explanation? No.\n    *   Is it JSON? Yes.\n    *   Does it reply only? Yes.\n\n    Let''s go with a boolean true/false value or a string \"yes\". Since it''s a factual question, `\"yes\"` is clear. But `true` is more standard for JSON booleans. Let''s use `\"yes\"`.\n\n    Wait, \"Reply ONLY as JSON\". I should output *just* the JSON string.\n\n    Draft:\n    {\"is_a_banana_a_fruit\": \"yes\"}\n\n    Or just:\n    {\"answer\": \"yes\"}\n\n    Let''s use a simple structure.\n\n    {\"is_a_banana_a_fruit\": true}\n\n    Wait, I need to make sure I don''t add markdown ticks if the user wants \"only as JSON\". Usually, raw JSON is preferred.\n\n    Let''s stick to:\n    {\"is_banana_a_fruit\": true}\n\n    Actually, thinking about the instruction \"Do not include an explanation\", I should ensure no text surrounds the JSON.\n\n    Final plan:\n    {\"is_a_banana_a_fruit\": true}\n\n    Wait, one more check. Is the user asking for a specific format? No, just \"Reply ONLY as JSON\".\n    Okay.\n\n    {\"is_a_banana_a_fruit\": true}\n\n    Wait, I need to make sure the boolean value is correct. Botanically, yes.\n\n    Okay, final check.\n    Output:\n    {\"is_a_banana_a_fruit\": true}\n\n    Wait, I can also use \"yes\".\n    {\"is_a_banana_a_fruit\": \"yes\"}\n\n    Let''s use a string for clarity since \"true\" might be ambiguous if the context were different (though here it''s clear). No, boolean is standard for JSON truth values. But for natural language questions, string is often better.\n    Let''s use `\"yes\"`.\n\n    Okay, I''ll output:\n    {\"is_a_banana_a_fruit\": \"yes\"}\n\n    Wait, I should check if there are any hidden constraints. \"Do not include an explanation.\" \"Reply ONLY as JSON.\"\n    Okay.\n\n    One more thing: Sometimes \"only as JSON\" means the output should be valid JSON.\n    I will output valid JSON on a single line.\n\n    {\"is_a_banana_a_fruit\": true}\n    Or\n    {\"is_a_banana_a_fruit\": \"yes\"}\n\n    I''ll go with \"yes\" as it''s more natural for the answer.\n    {\"is_a_banana_a_fruit\": \"yes\"}\n\n    Wait, actually, in many contexts \"true\" is better for JSON validity.\n    Let''s check typical LLM behavior. Usually, they output JSON.\n    I''ll use the string \"yes\".\n\n    Wait, I should check if I need to escape quotes. No quotes inside the value.\n    Okay.\n\n    Final decision: {\"is_a_banana_a_fruit\": \"yes\"}\n\n    Wait, I''ll just use \"yes\" as the value.\n    {\"is_a_banana_a_fruit\": \"yes\"}\n\n    Wait, I should verify the \"Explanation\" constraint. \"Do not include an explanation.\"\n    Okay.\n\n    Final Output Generation.\n    {\"is_a_banana_a_fruit\": \"yes\"}\n\n    Wait, I''ll use the boolean true to be more technical and concise.\n    {\"is_a_banana_a_fruit\": true}\n\n    Okay, I''ll use \"yes\" string to be safe for general understanding.\n    {\"is_a_banana_a_fruit\": \"yes\"}\n\n    Wait, I''ll just output the JSON.\n\n    One more thought: Is there any ambiguity about the user asking for \"Explanation\"? The instruction says \"Do not include an explanation\". This means the content of the reply should not contain an explanation.\n\n    Okay, ready.\n\n    {\"is_a_banana_a_fruit\": \"yes\"}"}}],"created":1772481540,"model":"Qwen3.5-2B-Q4_K_M.gguf","system_fingerprint":"b8180-d979f2b17","object":"chat.completion","usage":{"completion_tokens":1367,"prompt_tokens":27,"total_tokens":1394},"id":"chatcmpl-oQRI1qJmbB7I1uncw9xMjHc8kZY42ffO","timings":{"cache_n":0,"prompt_n":27,"prompt_ms":243.789,"prompt_per_token_ms":9.029222222222222,"prompt_per_second":110.75151052754637,"predicted_n":1367,"predicted_ms":90166.795,"predicted_per_token_ms":65.95961594732992,"predicted_per_second":15.16079173048127}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "5662"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 1m30.481s

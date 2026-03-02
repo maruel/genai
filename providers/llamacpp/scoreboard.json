@@ -7,10 +7,19 @@
   "scenarios": [
     {
       "models": [
-        "unsloth/Qwen3-4B-Thinking-2507-GGUF/Qwen3-4B-Thinking-2507-Q4_K_M.gguf"
+        "unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-Q4_K_M.gguf#mmproj-F16.gguf"
       ],
       "reason": true,
       "in": {
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png"
+          ]
+        },
         "text": {
           "inline": true
         }
@@ -26,19 +35,18 @@
         "seed": true,
         "tools": "true",
         "toolsBiased": "true",
+        "toolCallRequired": true,
         "json": true,
         "jsonSchema": true,
-        "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
       },
       "GenStream": {
         "reportFinishReason": "true",
-        "seed": true,
-        "tools": "flaky",
-        "toolsBiased": "flaky",
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
         "json": true,
-        "jsonSchema": true,
         "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
@@ -46,7 +54,7 @@
     },
     {
       "models": [
-        "ggml-org/gemma-3-4b-it-GGUF/gemma-3-4b-it-Q4_K_M.gguf#mmproj-model-f16.gguf"
+        "unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-Q4_K_M.gguf#mmproj-F16.gguf"
       ],
       "in": {
         "image": {
@@ -71,8 +79,6 @@
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "seed": true,
-        "tools": "flaky",
-        "toolCallRequired": true,
         "json": true,
         "jsonSchema": true,
         "topLogprobs": true,
@@ -82,48 +88,6 @@
       "GenStream": {
         "reportFinishReason": "true",
         "seed": true,
-        "tools": "flaky",
-        "toolCallRequired": true,
-        "json": true,
-        "jsonSchema": true,
-        "topLogprobs": true,
-        "maxTokens": true,
-        "stopSequence": true
-      }
-    },
-    {
-      "models": [
-        "unsloth/Qwen3-4B-Instruct-2507-GGUF/Qwen3-4B-Instruct-2507-Q4_K_M.gguf"
-      ],
-      "in": {
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "tools": "true",
-        "toolsBiased": "true",
-        "toolCallRequired": true,
-        "json": true,
-        "jsonSchema": true,
-        "topLogprobs": true,
-        "maxTokens": true,
-        "stopSequence": true
-      },
-      "GenStream": {
-        "reportFinishReason": "true",
-        "seed": true,
-        "tools": "true",
-        "toolsBiased": "true",
-        "toolCallRequired": true,
         "json": true,
         "jsonSchema": true,
         "topLogprobs": true,

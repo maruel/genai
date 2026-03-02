@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 206
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}],"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"seed":42,"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1636
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Hello","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Input: \"Say hello. Use only one word.\"\n    *   Constraint: Use only one word.\n    *   Task: Respond to the greeting.\n    *   Language: English.\n\n2.  **Determine the appropriate response:**\n    *   I need to say \"hello\" but strictly adhere to the constraint of using exactly one word.\n    *   Possible options: \"Hello\", \"Hi\", \"Hey\", \"Goodbye\", \"Yes\".\n    *   The most direct response to \"Say hello\" while keeping it as a single word is \"Hello\".\n    *   Even more direct: \"Hello\" is the standard greeting.\n    *   Wait, the instruction says \"Use only one word.\"\n    *   If I just write \"Hello\", that is one word.\n    *   If I write \"Hi\", that is also one word.\n    *   If I write \"Hello\", that fits best.\n\n3.  **Final Selection:** \"Hello\"\n\n4.  **Format:** Just the word. No extra text.\n\n5.  **Constraint Check:**\n    *   One word? Yes.\n    *   Greeting? Yes.\n\n6.  **Final Output Generation:** Hello.cw"}}],"created":1772481131,"model":"Qwen3.5-2B-Q4_K_M.gguf","system_fingerprint":"b8180-d979f2b17","object":"chat.completion","usage":{"completion_tokens":285,"prompt_tokens":18,"total_tokens":303},"id":"chatcmpl-K6GRmTEFI70p57EtUd1dlWTTIjzish1K","timings":{"cache_n":0,"prompt_n":18,"prompt_ms":327.287,"prompt_per_token_ms":18.18261111111111,"prompt_per_second":54.99760149349042,"predicted_n":285,"predicted_ms":22102.237,"predicted_per_token_ms":77.55170877192982,"predicted_per_second":12.894622385960298}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "1636"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 22.512s

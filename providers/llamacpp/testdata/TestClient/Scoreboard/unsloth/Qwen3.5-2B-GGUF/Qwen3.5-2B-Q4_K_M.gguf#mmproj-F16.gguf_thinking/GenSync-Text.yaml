@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 196
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}],"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 5258
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Hello","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Command: \"Say hello.\"\n    *   Constraint: \"Use only one word.\"\n\n2.  **Interpret the Constraint:**\n    *   I need to respond to the instruction \"Say hello.\"\n    *   The output must be exactly one word (or at least, no more than one word is implied, though typically \"only one word\" means exactly one word).\n    *   \"Hello\" is the standard greeting, but the constraint says \"Use only one word.\"\n    *   So, I should say \"Hello\" (one word) or \"Hi\" (one word) or \"Greetings\" (one word) - wait, \"Greetings\" is one word, \"Hi\" is one word.\n    *   The most direct and natural one-word response to \"Say hello\" is \"Hello\" itself.\n    *   Alternatively, I can just say \"Hi\".\n    *   But often \"Say hello\" implies repeating the action or acknowledging the instruction.\n    *   The safest interpretation is to simply output the word \"Hello\" since that is the word that fits the prompt''s intent. However, looking at the constraint \"Use only one word\", does it mean \"Don''t use any punctuation\"? No, it means \"The response should consist of exactly one word\".\n    *   Let''s check if \"Hello\" counts as one word. Yes.\n    *   Does it fit the instruction? Yes.\n    *   Wait, is the instruction asking me to *say* the word \"Hello\"? Or just acknowledge the command?\n    *   Usually, for this type of constraint, the model should output the word \"Hello\".\n    *   Another option: \"Hi\".\n    *   Another option: \"Greeting\".\n    *   Let''s stick with the most standard greeting word. \"Hello\".\n\n    *   Wait, let''s re-read carefully: \"Say hello. Use only one word.\"\n    *   The user is asking me to perform the action of saying \"hello\" but constrained to one word.\n    *   If I output \"Hello\", that is one word.\n    *   If I output \"Hi\", that is one word.\n    *   \"Hello\" is more literal.\n\n3.  **Final Decision:**\n    *   Output: \"Hello\"\n\n4.  **Constraint Check:**\n    *   Is it one word? Yes.\n    *   Does it answer the prompt? Yes.\n\n5.  **Output Generation:**\n    *   Hello\n    *   (Or just \"Hi\")\n    *   \"Hello\" is better.\n\n    Wait, is there any hidden trap?\n    \"Say hello.\" -> The instruction is to say hello.\n    Constraint: \"Use only one word.\"\n    So the output must be \"Hello\".\n\n    Let''s refine. \"Use only one word.\"\n    Response: Hello\n\n    Wait, what if the system interprets \"Use only one word\" as \"Don''t use more than one word\"?\n    Yes, that''s the standard interpretation.\n    So \"Hello\" is the correct response.\n\n    Wait, could I just output \"hi\"?\n    \"Hello\" is more formal and matches the instruction \"hello\".\n    I''ll go with \"Hello\".\n\n    Wait, I need to make sure I don''t add any extra text like \"Sure, I can say...\"\n    Just the word.\n\n    Final check: One word only.\n    \"Hello\"\n\n    Wait, is \"Say hello\" a command or a description of what to do? \"Say hello\" is a command.\n    So I should say the word hello.\n    Okay.\n\n    Wait, I need to make sure I don''t output markdown or anything else. Just the word.\n    Okay.\n\n    Wait, is there a chance the prompt implies \"Say hello\" as the word to output?\n    \"Say hello.\" -> The prompt tells me to say \"hello\".\n    \"Use only one word.\" -> Limit the output to one word.\n    So \"Hello\".\n\n    Okay, ready.\n\n    Wait, I should check if \"Hello\" is considered one word. Yes, it is.\n    Punctuation? Usually, punctuation marks aren''t considered words, but strictly speaking, \"Hello.\" might be seen as one word with a period. However, to be safe and adhere to \"only one word\", I should avoid punctuation if possible.\n    But standard text usually doesn''t include punctuation unless it''s part of the word. \"Hello\" is the word.\n    Okay.\n\n    Wait, I should check if the user wants me to say \"Hello\" or just acknowledge.\n    \"Say hello\" means \"Say the word hello\".\n    So I will say \"Hello\".\n\n    Wait, is there any other interpretation?\n    Maybe \"Hi\" is shorter?\n    No, \"Hello\" matches the prompt''s specific word choice better.\n    Okay.\n\n    Wait, I need to make sure I don''t add a newline or anything.\n    Just the word.\n\n    Okay.\n    Wait, the prompt is \"Say hello. Use only one word.\"\n    So I just output the word.\n\n    Wait, I should consider if \"hello\" (lowercase) is better?\n    Usually, capitalization is fine for greetings. \"Hello\" is standard.\n    Okay.\n\n    Wait, I need to check if there are any other constraints I missed.\n    \"Use only one word.\"\n    Okay.\n\n    Final decision: Hello"}}],"created":1772481108,"model":"Qwen3.5-2B-Q4_K_M.gguf","system_fingerprint":"b8180-d979f2b17","object":"chat.completion","usage":{"completion_tokens":1202,"prompt_tokens":18,"total_tokens":1220},"id":"chatcmpl-LnRR4vGhTfAhLl1WC5BKp5EJL6eaI3v7","timings":{"cache_n":0,"prompt_n":18,"prompt_ms":310.561,"prompt_per_token_ms":17.25338888888889,"prompt_per_second":57.95962789918889,"predicted_n":1202,"predicted_ms":76154.042,"predicted_per_token_ms":63.3561081530782,"predicted_per_second":15.783797792374566}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "5258"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 1m16.757s

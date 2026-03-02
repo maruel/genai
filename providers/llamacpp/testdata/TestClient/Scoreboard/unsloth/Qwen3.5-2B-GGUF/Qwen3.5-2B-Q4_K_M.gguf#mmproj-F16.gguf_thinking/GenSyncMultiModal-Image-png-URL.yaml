@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 346
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.png"}}]}],"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 946
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Banana","reasoning_content":"The user wants me to identify the fruit in the image.\n1.  **Analyze the image:** The image shows a single, curved yellow fruit. It has a distinct stem at the top. The texture and color are characteristic of a ripe banana.\n2.  **Formulate the answer:** The user requested a single word reply.\n3.  **Final Answer:** \"Banana\""}}],"created":1772481743,"model":"Qwen3.5-2B-Q4_K_M.gguf","system_fingerprint":"b8180-d979f2b17","object":"chat.completion","usage":{"completion_tokens":88,"prompt_tokens":113,"total_tokens":201},"id":"chatcmpl-EFKm47lZlXlaWdDPPriGCuj2A6ABMzqn","timings":{"cache_n":0,"prompt_n":113,"prompt_ms":1166.349,"prompt_per_token_ms":10.321672566371682,"prompt_per_second":96.88352285636633,"predicted_n":88,"predicted_ms":8646.099,"predicted_per_token_ms":98.251125,"predicted_per_second":10.178000506355525}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "946"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 9.942s

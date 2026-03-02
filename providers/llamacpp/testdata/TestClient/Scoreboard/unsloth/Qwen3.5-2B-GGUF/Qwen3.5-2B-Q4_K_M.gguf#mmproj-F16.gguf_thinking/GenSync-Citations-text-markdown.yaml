@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 321
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 2291
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Based on the text provided, the capital of Quackiland is **Quack**.","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Input text: \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\"\n    *   Task: Answer the question based on the provided text.\n    *   Constraint: The user is asking a question about the capital of Quackiland based *only* on the provided context (which is a riddle or a simple logic puzzle).\n\n2.  **Evaluate the Provided Information:**\n    *   Sentence 1: \"The capital of Quackiland is Quack.\"\n    *   Sentence 2: \"The Big Canard Statue is located in Quack.\"\n    *   Sentence 3 (Question): \"What is the capital of Quackiland?\"\n\n3.  **Determine the Answer:**\n    *   The text explicitly states \"The capital of Quackiland is Quack.\"\n    *   Therefore, the answer is \"Quack\".\n\n4.  **Formulate the Output:**\n    *   Keep it direct and concise.\n    *   Answer the question asked (\"What is the capital of Quackiland?\").\n\n5.  **Refine for Safety/Policy:**\n    *   Is this a trick question? No, it''s straightforward text retrieval.\n    *   Is there any policy violation? No.\n    *   Is it a \"reasoning\" task? It''s a simple Q&A based on provided information.\n\n6.  **Final Decision:** Just answer the question based on the text provided.\n\n    *   Text: \"The capital of Quackiland is Quack.\"\n    *   Answer: Quack.\n\n    Wait, I should check if there''s any hidden complexity. \"Quackiland\" is a made-up place (like the Quack and the Quack). The text explicitly states the capital. The answer is simply \"Quack\".\n\n    Let''s write the response.cw"}}],"created":1772481658,"model":"Qwen3.5-2B-Q4_K_M.gguf","system_fingerprint":"b8180-d979f2b17","object":"chat.completion","usage":{"completion_tokens":444,"prompt_tokens":46,"total_tokens":490},"id":"chatcmpl-BDNsb30VJox6Bwc07SV4aa0CknOyCPC8","timings":{"cache_n":0,"prompt_n":46,"prompt_ms":327.197,"prompt_per_token_ms":7.112978260869565,"prompt_per_second":140.58808607658383,"predicted_n":444,"predicted_ms":50897.736,"predicted_per_token_ms":114.63454054054053,"predicted_per_second":8.723374257746947}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "2291"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 51.305s

@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 227
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 859
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"The capital of **Quackiland** is **Quack**.\n\nThis is stated directly in your premise: \"The capital of Quackiland is Quack.\" Additionally, the location of the Big Canard Statue in Quack serves as an example of what exists there, but the capital itself remains Quack."}}],"created":1772480986,"model":"Qwen3.5-2B-Q4_K_M.gguf","system_fingerprint":"b8180-d979f2b17","object":"chat.completion","usage":{"completion_tokens":64,"prompt_tokens":43,"total_tokens":107},"id":"chatcmpl-Enc0t5gspXGwHXVPZEzc9ISzZJsdhWVh","timings":{"cache_n":0,"prompt_n":43,"prompt_ms":293.234,"prompt_per_token_ms":6.819395348837209,"prompt_per_second":146.64056691925222,"predicted_n":64,"predicted_ms":4348.661,"predicted_per_token_ms":67.947828125,"predicted_per_second":14.717173861103452}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "859"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 4.694s

@@ -1,13 +1,11 @@
 # Scoreboard
 
-| Model                                                                       | Mode    | ➛In   | Out➛   | Tool | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
-| --------------------------------------------------------------------------- | ------- | ----- | ------ | ---- | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
-| unsloth/Qwen3-4B-Thinking-2507-GGUF/Qwen3-4B-Thinking-2507-Q4_K_M.gguf      | Sync🧠   | 💬    | 💬     | ✅   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| unsloth/Qwen3-4B-Thinking-2507-GGUF/Qwen3-4B-Thinking-2507-Q4_K_M.gguf      | Stream🧠 | 💬    | 💬     | ❌   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ❌    | ✅     |
-| ggml-org/gemma-3-4b-it-GGUF/gemma-3-4b-it-Q4_K_M.gguf#mmproj-model-f16.gguf | Sync    | 💬📸  | 💬     | 💨🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| ggml-org/gemma-3-4b-it-GGUF/gemma-3-4b-it-Q4_K_M.gguf#mmproj-model-f16.gguf | Stream  | 💬📸  | 💬     | 💨🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ❌    | ✅     |
-| unsloth/Qwen3-4B-Instruct-2507-GGUF/Qwen3-4B-Instruct-2507-Q4_K_M.gguf      | Sync    | 💬    | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| unsloth/Qwen3-4B-Instruct-2507-GGUF/Qwen3-4B-Instruct-2507-Q4_K_M.gguf      | Stream  | 💬    | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ❌    | ✅     |
+| Model                                                          | Mode    | ➛In   | Out➛   | Tool | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
+| -------------------------------------------------------------- | ------- | ----- | ------ | ---- | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
+| unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-Q4_K_M.gguf#mmproj-F16.gguf | Sync🧠   | 💬📸  | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
+| unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-Q4_K_M.gguf#mmproj-F16.gguf | Stream🧠 | 💬📸  | 💬     | ✅🪨 | ☁️   | ❌    | ❌   | ❌   | 📏🛑   | ✅    | ❌     | ❌    | ✅     |
+| unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-Q4_K_M.gguf#mmproj-F16.gguf | Sync    | 💬📸  | 💬     | ❌   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-Q4_K_M.gguf#mmproj-F16.gguf | Stream  | 💬📸  | 💬     | ❌   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ❌    | ✅     |
 <details>
 <summary>‼️ Click here for the legend of columns and symbols</summary>
 

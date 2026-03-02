@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 305
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 2364
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Based on the text provided, the capital of Quackiland is **Quack**.","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:** The user is asking a simple factual question based on a provided text. The text states: \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\" The question to answer is \"What is the capital of Quackiland?\".\n\n2.  **Identify the Core Information:** The first sentence explicitly states: \"The capital of Quackiland is Quack.\"\n\n3.  **Evaluate the Second Sentence:** \"The Big Canard Statue is located in Quack.\" This provides additional information about the location of the statue, but it doesn''t change the answer to the question about the capital.\n\n4.  **Formulate the Answer:** The answer is directly contained in the first sentence. I should simply state that \"Quack\" is the capital.\n\n5.  **Check for Traps/Red Herrings:** There is no ambiguity. The prompt is a direct reading comprehension task. The capital is \"Quack\". The statue is in \"Quack\", but the question is about the capital.\n\n6.  **Final Output Construction:** Keep it concise and direct. \"Quack.\" or \"The capital of Quackiland is Quack.\"\n\n    *Self-Correction/Refinement:* The prompt asks \"What is the capital of Quackiland?\". I will answer exactly that based on the provided text.\n\n    *Draft:* The capital of Quackiland is Quack.\n\n    *Final Decision:* Just state the answer clearly.\n\n    Wait, is this a trick question? Sometimes these are generated from datasets where the \"answer\" is just the string provided. But logically, based on the text provided, the answer is \"Quack\".\n\n    Let''s double-check the text: \"The capital of Quackiland is Quack.\" -> Answer: Quack.\n\n    Okay, proceed.cw"}}],"created":1772481607,"model":"Qwen3.5-2B-Q4_K_M.gguf","system_fingerprint":"b8180-d979f2b17","object":"chat.completion","usage":{"completion_tokens":417,"prompt_tokens":41,"total_tokens":458},"id":"chatcmpl-w9aDZkQtzpjNzbjPelTq1uZQGSsufuu8","timings":{"cache_n":0,"prompt_n":41,"prompt_ms":273.677,"prompt_per_token_ms":6.675048780487805,"prompt_per_second":149.8116392681884,"predicted_n":417,"predicted_ms":28966.771,"predicted_per_token_ms":69.46467865707434,"predicted_per_second":14.39580545584456}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "2364"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 29.316s

@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 346
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg"}}]}],"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1035
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"banana","reasoning_content":"The user wants me to identify the fruit in the image.\n1.  **Analyze the image:** The image shows a single yellow fruit curving from left to right. It has a smooth, slightly fuzzy skin with some brown spots near the bottom end. It has a small stem at the top.\n2.  **Identify the fruit:** This is clearly a banana.\n3.  **Formulate the answer:** The user requested \"only one word\".\n4.  **Final Output:** \"banana\""}}],"created":1772481688,"model":"Qwen3.5-2B-Q4_K_M.gguf","system_fingerprint":"b8180-d979f2b17","object":"chat.completion","usage":{"completion_tokens":112,"prompt_tokens":113,"total_tokens":225},"id":"chatcmpl-bOWpnHKJ812ckA7XAPUragp0PXcUMW3f","timings":{"cache_n":0,"prompt_n":113,"prompt_ms":1412.057,"prompt_per_token_ms":12.4960796460177,"prompt_per_second":80.02509813697323,"predicted_n":112,"predicted_ms":12912.116,"predicted_per_token_ms":115.28675,"predicted_per_second":8.67402368442167}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "1035"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 14.45s

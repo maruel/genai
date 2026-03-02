@@ -17,13 +17,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 604
-        body: '{"models":[{"name":"gemma-3-4b-it-Q4_K_M.gguf","model":"gemma-3-4b-it-Q4_K_M.gguf","modified_at":"","size":"","digest":"","type":"model","description":"","tags":[""],"capabilities":["completion","multimodal"],"parameters":"","details":{"parent_model":"","format":"gguf","family":"","families":[""],"parameter_size":"","quantization_level":""}}],"object":"list","data":[{"id":"gemma-3-4b-it-Q4_K_M.gguf","aliases":[],"tags":[],"object":"model","created":1772373207,"owned_by":"llamacpp","meta":{"vocab_type":1,"n_vocab":262144,"n_ctx_train":131072,"n_embd":2560,"n_params":3880099328,"size":2483218432}}]}'
+        content_length: 595
+        body: '{"models":[{"name":"Qwen3.5-2B-Q4_K_M.gguf","model":"Qwen3.5-2B-Q4_K_M.gguf","modified_at":"","size":"","digest":"","type":"model","description":"","tags":[""],"capabilities":["completion","multimodal"],"parameters":"","details":{"parent_model":"","format":"gguf","family":"","families":[""],"parameter_size":"","quantization_level":""}}],"object":"list","data":[{"id":"Qwen3.5-2B-Q4_K_M.gguf","aliases":[],"tags":[],"object":"model","created":1772482259,"owned_by":"llamacpp","meta":{"vocab_type":2,"n_vocab":248320,"n_ctx_train":262144,"n_embd":2048,"n_params":1881825088,"size":1269873920}}]}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "604"
+                - "595"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -51,13 +51,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 693
-        body: "{\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"The capital of Quackiland is Quack. \\n\\nThe information about the Big Canard Statue is just extra detail! \U0001F60A\"}}],\"created\":1772373209,\"model\":\"gemma-3-4b-it-Q4_K_M.gguf\",\"system_fingerprint\":\"b8180-d979f2b17\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":27,\"prompt_tokens\":40,\"total_tokens\":67},\"id\":\"chatcmpl-OyIpeNx4jQeg7Oew1Rb1zVcZC3HkTDPK\",\"timings\":{\"cache_n\":39,\"prompt_n\":1,\"prompt_ms\":88.33,\"prompt_per_token_ms\":88.33,\"prompt_per_second\":11.321181931393637,\"predicted_n\":27,\"predicted_ms\":1419.863,\"predicted_per_token_ms\":52.58751851851852,\"predicted_per_second\":19.015919141494635}}"
+        content_length: 931
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Based on the information provided, the capital of Quackiland is **Quack**.\n\nThis is explicitly stated in the text: \"The capital of Quackiland is Quack.\" The mention of the \"Big Canard Statue\" being located in Quack serves as supporting detail confirming where this specific capital is situated, but the direct answer remains Quack."}}],"created":1772482263,"model":"Qwen3.5-2B-Q4_K_M.gguf","system_fingerprint":"b8180-d979f2b17","object":"chat.completion","usage":{"completion_tokens":73,"prompt_tokens":43,"total_tokens":116},"id":"chatcmpl-wSnE6nJqlNtqNTIpxsSHhTBMgXzyR2kI","timings":{"cache_n":0,"prompt_n":43,"prompt_ms":313.187,"prompt_per_token_ms":7.283418604651163,"prompt_per_second":137.2981637168848,"predicted_n":73,"predicted_ms":3503.371,"predicted_per_token_ms":47.991383561643836,"predicted_per_second":20.83707377836946}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "693"
+                - "931"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -66,4 +66,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 1.511s
+        duration: 3.822s

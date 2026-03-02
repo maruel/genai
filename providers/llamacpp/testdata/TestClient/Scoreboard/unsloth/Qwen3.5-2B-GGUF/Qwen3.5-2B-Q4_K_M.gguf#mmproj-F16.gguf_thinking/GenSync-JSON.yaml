@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 334
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}]}],"response_format":{"type":"json_object"},"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 2322
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"{\"is_fruit\": true}","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Question: \"Is a banana a fruit?\"\n    *   Constraint 1: Do not include an explanation.\n    *   Constraint 2: Reply ONLY as JSON according to the provided schema: `{\"is_fruit\": bool}`.\n\n2.  **Determine the Truth:**\n    *   Botanically, a banana is the fruit of the banana plant (Musa genus), but it is also culinarily classified as a vegetable due to its texture. However, in common usage, it is considered a fruit.\n    *   Scientific classification: Botanically, fruits are the seeds-bearing reproductive structures. Bananas have a specific structure that fits the botanical definition of a fruit (though not a true berry like apples or oranges).\n    *   General consensus: Yes, bananas are fruits.\n\n3.  **Format the Output:**\n    *   Required JSON schema: `{\"is_fruit\": bool}`.\n    *   Value: `true` (since they are botanically/legally considered fruits, though culinarily sometimes debated, the standard answer to \"is a banana a fruit\" is yes).\n    *   Constraint: No explanation, just the JSON object.\n\n4.  **Final Check:**\n    *   Does the output contain an explanation? No.\n    *   Is it valid JSON? Yes.\n    *   Does it match the schema? Yes.\n\n5.  **Construct Output:** `{\"is_fruit\": true}`.\n\nWait, let''s double-check the specific request constraints. \"Reply ONLY as JSON according to the provided schema\".\nSchema: `{\"is_fruit\": bool}`.\n\nSo the output should be exactly: `{\"is_fruit\": true}`.\n\nOne nuance: In common parlance, people often ask this question. Botanically, they are berries/fleshy fruits. So `true` is the correct answer.\n\nFinal decision: `{\"is_fruit\": true}`."}}],"created":1772481450,"model":"Qwen3.5-2B-Q4_K_M.gguf","system_fingerprint":"b8180-d979f2b17","object":"chat.completion","usage":{"completion_tokens":436,"prompt_tokens":39,"total_tokens":475},"id":"chatcmpl-UcIbmrsxG8Ao4t0rfY9SWV7CboL7kAMI","timings":{"cache_n":0,"prompt_n":39,"prompt_ms":315.253,"prompt_per_token_ms":8.083410256410255,"prompt_per_second":123.710162948489,"predicted_n":436,"predicted_ms":41497.482,"predicted_per_token_ms":95.17771100917432,"predicted_per_second":10.50666158491255}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "2322"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 41.867s

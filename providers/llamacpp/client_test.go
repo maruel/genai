@@ -88,7 +88,7 @@ func TestClient(t *testing.T) {
 			if model.Reason {
 				return &internaltest.InjectOptions{
 					Provider: c2,
-					Opts:     []genai.GenOption{&llamacpp.GenOption{ReasoningFormat: llamacpp.ReasoningFormatDeepSeek}},
+					Opts:     []genai.GenOption{&llamacpp.GenOption{ReasoningFormat: llamacpp.ReasoningFormatDeepSeek, Thinking: true}},
 				}
 			}
 			return c2

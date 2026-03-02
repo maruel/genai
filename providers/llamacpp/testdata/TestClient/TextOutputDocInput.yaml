@@ -17,13 +17,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 604
-        body: '{"models":[{"name":"gemma-3-4b-it-Q4_K_M.gguf","model":"gemma-3-4b-it-Q4_K_M.gguf","modified_at":"","size":"","digest":"","type":"model","description":"","tags":[""],"capabilities":["completion","multimodal"],"parameters":"","details":{"parent_model":"","format":"gguf","family":"","families":[""],"parameter_size":"","quantization_level":""}}],"object":"list","data":[{"id":"gemma-3-4b-it-Q4_K_M.gguf","aliases":[],"tags":[],"object":"model","created":1772373207,"owned_by":"llamacpp","meta":{"vocab_type":1,"n_vocab":262144,"n_ctx_train":131072,"n_embd":2560,"n_params":3880099328,"size":2483218432}}]}'
+        content_length: 595
+        body: '{"models":[{"name":"Qwen3.5-2B-Q4_K_M.gguf","model":"Qwen3.5-2B-Q4_K_M.gguf","modified_at":"","size":"","digest":"","type":"model","description":"","tags":[""],"capabilities":["completion","multimodal"],"parameters":"","details":{"parent_model":"","format":"gguf","family":"","families":[""],"parameter_size":"","quantization_level":""}}],"object":"list","data":[{"id":"Qwen3.5-2B-Q4_K_M.gguf","aliases":[],"tags":[],"object":"model","created":1772482259,"owned_by":"llamacpp","meta":{"vocab_type":2,"n_vocab":248320,"n_ctx_train":262144,"n_embd":2048,"n_params":1881825088,"size":1269873920}}]}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "604"
+                - "595"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:

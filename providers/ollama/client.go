@@ -456,7 +456,7 @@ type TokenLogprob struct {
 	Bytes   []byte  `json:"bytes,omitzero"`
 }
 
-// ToGenai converts a slice of Logprob to the genai equivalent.
+// ToGenaiLogprobs converts a slice of Logprob to the genai equivalent.
 func ToGenaiLogprobs(logprobs []Logprob) [][]genai.Logprob {
 	if len(logprobs) == 0 {
 		return nil

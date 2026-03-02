@@ -68,7 +68,7 @@ func TestClient(t *testing.T) {
 		}
 		ctx := t.Context()
 		smoketest.Run(t, func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
-			serverURL := s.lazyStartModel(t, model)
+			serverURL := s.lazyStartModel(t, model) //nolint:contextcheck // uses l.t.Context() for server lifecycle
 			opts := []genai.ProviderOption{genai.ProviderOptionRemote(serverURL)}
 			if model.Model != "" {
 				opts = append(opts, genai.ProviderOptionModel(model.Model))
@@ -275,7 +275,7 @@ func startServerTest(t testing.TB, exe, author, repo, modelfile, multimodal, api
 		t.Fatal(err)
 	}
 	hostPort := ln.Addr().String()
-	ln.Close()
+	_ = ln.Close()
 	l := internaltest.LogFile(t, cache, "llama-server.log")
 	srv, err := llamacppsrv.New(ctx, exe, modelPath, l, hostPort, 0, extraArgs)
 	if err != nil {

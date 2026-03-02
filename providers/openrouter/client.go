@@ -883,9 +883,7 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 		switch model {
 		case "":
 		case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
-			if c.impl.Model, err = c.selectBestTextModel(ctx, model); err != nil {
-				return nil, err
-			}
+			c.impl.Model = c.selectBestTextModel(model)
 			c.impl.OutputModalities = mod
 		default:
 			c.impl.Model = model
@@ -896,15 +894,15 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 }
 
 // selectBestTextModel selects the most appropriate model based on the preference.
-func (c *Client) selectBestTextModel(ctx context.Context, preference string) (string, error) {
+func (c *Client) selectBestTextModel(preference string) string {
 	switch preference {
 	case string(genai.ModelCheap):
-		return "qwen/qwen3.5-35b-a3b", nil
+		return "qwen/qwen3.5-35b-a3b"
 	case string(genai.ModelGood):
-		return "qwen/qwen3.5-122b-a10b", nil
+		return "qwen/qwen3.5-122b-a10b"
 	default:
 		// SOTA
-		return "qwen/qwen3.5-397b-a17b", nil
+		return "qwen/qwen3.5-397b-a17b"
 	}
 }
 

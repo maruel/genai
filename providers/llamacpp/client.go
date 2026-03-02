@@ -553,22 +553,22 @@ type GenerationSettings struct {
 
 // CompletionResponse is the response from the completion endpoint.
 type CompletionResponse struct {
-	Index              int64   `json:"index"`
-	Content            string  `json:"content"`
-	Tokens             []int64 `json:"tokens"`
-	IDSlot             int64   `json:"id_slot"`
-	Stop               bool    `json:"stop"`
-	Model              string  `json:"model"`
-	TokensPredicted    int64   `json:"tokens_predicted"`
-	TokensEvaluated    int64   `json:"tokens_evaluated"`
+	Index              int64              `json:"index"`
+	Content            string             `json:"content"`
+	Tokens             []int64            `json:"tokens"`
+	IDSlot             int64              `json:"id_slot"`
+	Stop               bool               `json:"stop"`
+	Model              string             `json:"model"`
+	TokensPredicted    int64              `json:"tokens_predicted"`
+	TokensEvaluated    int64              `json:"tokens_evaluated"`
 	GenerationSettings GenerationSettings `json:"generation_settings"`
-	Prompt       string   `json:"prompt"`
-	HasNewLine   bool     `json:"has_new_line"`
-	Truncated    bool     `json:"truncated"`
-	StopType     StopType `json:"stop_type"`
-	StoppingWord string   `json:"stopping_word"`
-	TokensCached int64    `json:"tokens_cached"`
-	Timings      Timings  `json:"timings"`
+	Prompt             string             `json:"prompt"`
+	HasNewLine         bool               `json:"has_new_line"`
+	Truncated          bool               `json:"truncated"`
+	StopType           StopType           `json:"stop_type"`
+	StoppingWord       string             `json:"stopping_word"`
+	TokensCached       int64              `json:"tokens_cached"`
+	Timings            Timings            `json:"timings"`
 }
 
 // ToResult converts the completion response to a genai.Result.

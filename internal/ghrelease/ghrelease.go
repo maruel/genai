@@ -208,7 +208,7 @@ func DownloadAndExtract(ctx context.Context, url, dstDir string, wantedFiles []s
 		}
 		defer func() {
 			_ = f.Close()
-			_ = os.Remove(f.Name())
+			_ = os.Remove(f.Name()) //nolint:gosec // f is a temp file we created; no taint
 		}()
 		if _, err := io.Copy(f, resp.Body); err != nil {
 			return err
@@ -244,7 +244,7 @@ func extractZip(archivePath, dstDir string, wantedFiles []string) error {
 			return err
 		}
 		var dst io.WriteCloser
-		if dst, err = os.OpenFile(p, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0o755); err == nil {
+		if dst, err = os.OpenFile(p, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0o755); err == nil { //nolint:gosec // p is validated by HasPrefix check above
 			_, err = io.CopyN(dst, src, int64(f.UncompressedSize64))
 		}
 		if err2 := src.Close(); err == nil {
@@ -289,7 +289,7 @@ func extractTar(r io.Reader, dstDir string, wantedFiles []string) error {
 			if !strings.HasPrefix(target, filepath.Clean(dstDir)+string(os.PathSeparator)) {
 				continue
 			}
-			if err := os.Remove(dst); err != nil && !errors.Is(err, os.ErrNotExist) {
+			if err := os.Remove(dst); err != nil && !errors.Is(err, os.ErrNotExist) { //nolint:gosec // dst is validated by HasPrefix check above
 				return fmt.Errorf("failed to remove existing file %q: %w", n, err)
 			}
 			if err := os.Symlink(header.Linkname, dst); err != nil {
@@ -299,7 +299,7 @@ func extractTar(r io.Reader, dstDir string, wantedFiles []string) error {
 			if header.Size == 0 {
 				continue
 			}
-			outFile, err := os.OpenFile(dst, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0o755)
+			outFile, err := os.OpenFile(dst, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0o755) //nolint:gosec // dst is validated by HasPrefix check above
 			if err != nil {
 				return err
 			}

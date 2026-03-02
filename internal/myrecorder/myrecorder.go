@@ -132,6 +132,11 @@ func (r *Recorder) CassettePath() string {
 	return filepath.Join(r.root, r.name)
 }
 
+// Name returns the recording name (includes .yaml suffix).
+func (r *Recorder) Name() string {
+	return r.name
+}
+
 // RoundTrip implements http.RoundTripper.
 func (r *Recorder) RoundTrip(req *http.Request) (*http.Response, error) {
 	resp, err := r.Recorder.RoundTrip(req)

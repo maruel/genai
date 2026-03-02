@@ -23,9 +23,9 @@ func mainImpl() error {
 	}
 	root := os.Args[1]
 	c := exec.Command("go", "run", filepath.Join(root, "cmd", "scoreboard"), "-table")
-	rawNewTable, err := c.CombinedOutput()
+	rawNewTable, err := c.Output()
 	if err != nil {
-		return fmt.Errorf("go run failed: %w: %s", err, string(rawNewTable))
+		return fmt.Errorf("go run failed: %w", err)
 	}
 	p := filepath.Join(root, "README.md")
 	rawReadmeOld, err := os.ReadFile(p)

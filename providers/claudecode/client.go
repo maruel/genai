@@ -46,6 +46,7 @@ import (
 	"os/exec"
 	"strconv"
 	"strings"
+	"sync"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
@@ -122,12 +123,19 @@ func newScanner(r io.Reader) *bufio.Scanner {
 // Client is a genai provider that delegates to the local `claude` CLI.
 type Client struct {
 	base.NotImplemented
-	exec  executor
-	bin   string // path to claude binary; empty when exec is a test fake
-	model string
+	exec    executor
+	bin     string // resolved lazily by ensureBin; empty when exec is a test fake
+	model   string
+	binOnce sync.Once
+	binErr  error
 }
 
-// New creates a Client by locating the `claude` binary on PATH.
+// New creates a Client for the `claude` CLI.
+//
+// The binary is located lazily on the first call to GenSync, GenStream, or
+// Ping, so New succeeds even when the CLI is not installed. This allows
+// introspection methods (Name, Scoreboard, ListModels, …) to work without
+// requiring the binary.
 //
 // Supported ProviderOptions:
 //   - genai.ProviderOptionModel — model alias ("opus", "sonnet", "haiku") or full ID.
@@ -154,13 +162,26 @@ func New(opts ...genai.ProviderOption) (*Client, error) {
 			return nil, fmt.Errorf("unsupported provider option %T", opt)
 		}
 	}
-	bin, err := exec.LookPath("claude")
-	if err != nil {
-		return nil, fmt.Errorf("claude CLI not found on PATH: %w", err)
-	}
-	c.bin = bin
-	c.exec = &cmdExecutor{bin: bin}
 	return c, nil
+}
+
+// ensureBin locates the claude binary on first call. It is safe for
+// concurrent use. When exec is already set (e.g. by test code), it is a
+// no-op.
+func (c *Client) ensureBin() error {
+	c.binOnce.Do(func() {
+		if c.exec != nil {
+			return
+		}
+		bin, err := exec.LookPath("claude")
+		if err != nil {
+			c.binErr = fmt.Errorf("claude CLI not found on PATH: %w", err)
+			return
+		}
+		c.bin = bin
+		c.exec = &cmdExecutor{bin: bin}
+	})
+	return c.binErr
 }
 
 // Name implements genai.Provider.
@@ -187,8 +208,8 @@ func (c *Client) HTTPClient() *http.Client { return nil }
 
 // Ping implements genai.ProviderPing by running `claude --version`.
 func (c *Client) Ping(ctx context.Context) error {
-	if c.bin == "" {
-		return errors.New("no claude binary: cannot ping")
+	if err := c.ensureBin(); err != nil {
+		return err
 	}
 	cmd := exec.CommandContext(ctx, c.bin, "--version")
 	out, err := cmd.Output()
@@ -214,6 +235,9 @@ func (c *Client) ListModels(_ context.Context) ([]genai.Model, error) {
 
 // GenSync implements genai.Provider.
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (r genai.Result, err error) {
+	if err := c.ensureBin(); err != nil {
+		return genai.Result{}, err
+	}
 	co, optsErr := parseOpts(opts)
 	if optsErr != nil {
 		var uerr *base.ErrNotSupported
@@ -292,6 +316,9 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 
 // GenStream implements genai.Provider.
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
+	if err := c.ensureBin(); err != nil {
+		return yieldNothing, errFinish(err)
+	}
 	co, optsErr := parseOpts(opts)
 	if optsErr != nil {
 		var uerr *base.ErrNotSupported

@@ -203,7 +203,7 @@ func (l *lazyServer) lazyStartModel(t testing.TB, model scoreboard.Model) string
 		return l.lazyStart(t)
 	}
 	if os.Getenv("RECORD") != "all" && os.Getenv("CI") == "true" {
-		return "http://localhost:0"
+		return "http://127.0.0.1:0"
 	}
 	if url := os.Getenv("LLAMA_SERVER"); url != "" {
 		return url

@@ -284,8 +284,9 @@ func extractTar(r io.Reader, dstDir string, wantedFiles []string) error {
 		}
 		switch header.Typeflag {
 		case tar.TypeSymlink:
-			// Ensure the symlink target doesn't escape the destination directory.
-			if filepath.Base(header.Linkname) != header.Linkname {
+			// Ensure the symlink target resolves within the destination directory.
+			target := filepath.Join(dstDir, filepath.Clean(header.Linkname))
+			if !strings.HasPrefix(target, filepath.Clean(dstDir)+string(os.PathSeparator)) {
 				continue
 			}
 			if err := os.Remove(dst); err != nil && !errors.Is(err, os.ErrNotExist) {

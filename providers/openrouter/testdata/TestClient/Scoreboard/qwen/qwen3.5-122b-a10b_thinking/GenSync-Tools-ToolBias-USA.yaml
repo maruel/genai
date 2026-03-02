@@ -1,0 +1,44 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 557
+        host: openrouter.ai
+        body: |
+            {"messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"model":"qwen/qwen3.5-122b-a10b","stream":false,"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"auto"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://openrouter.ai/api/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: "\n         \n\n         \n\n         \n\n         \n{\"id\":\"gen-1772417239-w6oYgnY4x7riF37lrSDn\",\"provider\":\"Alibaba\",\"model\":\"qwen/qwen3.5-122b-a10b\",\"object\":\"chat.completion\",\"created\":1772417239,\"choices\":[{\"logprobs\":null,\"finish_reason\":\"tool_calls\",\"native_finish_reason\":\"tool_calls\",\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"\",\"refusal\":null,\"reasoning\":\"The user is asking me to compare the USA and Canada and determine which one is the \\\"best\\\" country. They specifically want me to call the best_country tool to get this information.\\n\\nLooking at the best_country tool, it requires a \\\"country\\\" parameter that must be either \\\"USA\\\" or \\\"Canada\\\". However, the tool seems to be designed to specify the best country, not to compare them. The user is asking me to determine which is better between the two.\\n\\nSince the tool requires me to choose one country as the \\\"best\\\", I need to make a choice. However, I should note that this is a subjective question and there's no objective \\\"best\\\" country between USA and Canada - it depends on what criteria you're using and what values you prioritize.\\n\\nSince the user is asking me to call the tool and they've presented both options, I'll need to pick one. Let me go with USA since that's what they mentioned first in their question.\\n\",\"tool_calls\":[{\"type\":\"function\",\"index\":0,\"id\":\"call_1fd0ae369b654c24b5c835fe\",\"function\":{\"name\":\"best_country\",\"arguments\":\"{\\\"country\\\": \\\"USA\\\"}\"}}],\"reasoning_details\":[{\"format\":\"unknown\",\"index\":0,\"type\":\"reasoning.text\",\"text\":\"The user is asking me to compare the USA and Canada and determine which one is the \\\"best\\\" country. They specifically want me to call the best_country tool to get this information.\\n\\nLooking at the best_country tool, it requires a \\\"country\\\" parameter that must be either \\\"USA\\\" or \\\"Canada\\\". However, the tool seems to be designed to specify the best country, not to compare them. The user is asking me to determine which is better between the two.\\n\\nSince the tool requires me to choose one country as the \\\"best\\\", I need to make a choice. However, I should note that this is a subjective question and there's no objective \\\"best\\\" country between USA and Canada - it depends on what criteria you're using and what values you prioritize.\\n\\nSince the user is asking me to call the tool and they've presented both options, I'll need to pick one. Let me go with USA since that's what they mentioned first in their question.\\n\"}]}}],\"system_fingerprint\":null,\"usage\":{\"prompt_tokens\":333,\"completion_tokens\":229,\"total_tokens\":562,\"cost\":0.000866,\"is_byok\":false,\"prompt_tokens_details\":{\"cached_tokens\":0},\"cost_details\":{\"upstream_inference_cost\":0.000866,\"upstream_inference_prompt_cost\":0.0001332,\"upstream_inference_completions_cost\":0.0007328},\"completion_tokens_details\":{\"reasoning_tokens\":198}}}"
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Cf-Ray:
+                - 9d5cd8e449dea23b-YYZ
+            Content-Type:
+                - application/json
+            Permissions-Policy:
+                - payment=(self "https://checkout.stripe.com" "https://connect-js.stripe.com" "https://js.stripe.com" "https://*.js.stripe.com" "https://hooks.stripe.com")
+            Referrer-Policy:
+                - no-referrer, strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfEdge;dur=496,cfOrigin;dur=0
+            X-Content-Type-Options:
+                - nosniff
+        status: 200 OK
+        code: 200
+        duration: 508ms

@@ -95,6 +95,8 @@ func Process[T any](body io.Reader, er error, lenient bool) (iter.Seq[T], func()
 				// Ignore keep-alive messages. Very few send this.
 			case bytes.Equal(line, keepAliveHuggingface):
 				// Huggingface...
+			case line[0] == ':':
+				// SSE comment; covers OpenRouter processing hints, etc.
 			case bytes.HasPrefix(line, eventPrefix):
 				// Ignore event headers. Very few send this.
 			default:

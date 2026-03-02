@@ -1,0 +1,44 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 255
+        host: openrouter.ai
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"model":"qwen/qwen3.5-397b-a17b","stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://openrouter.ai/api/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: "\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n{\"id\":\"gen-1772417397-T615WYbsy27OdMSOejAb\",\"provider\":\"AtlasCloud\",\"model\":\"qwen/qwen3.5-397b-a17b\",\"object\":\"chat.completion\",\"created\":1772417397,\"choices\":[{\"logprobs\":null,\"finish_reason\":\"stop\",\"native_finish_reason\":\"stop\",\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"The capital of Quackiland is **Quack**.\",\"refusal\":null,\"reasoning\":\"Thinking Process:\\n\\n1.  **Analyze the Request:**\\n    *   Premise 1: The capital of Quackiland is Quack.\\n    *   Premise 2: The Big Canard Statue is located in Quack.\\n    *   Question: What is the capital of Quackiland?\\n\\n2.  **Evaluate the Information:**\\n    *   The first sentence explicitly states: \\\"The capital of Quackiland is Quack.\\\"\\n    *   The second sentence provides additional information about a statue in Quack, which is irrelevant to the specific question asked but confirms the existence of the place \\\"Quack\\\".\\n    *   The question asks for the capital of Quackiland.\\n\\n3.  **Formulate the Answer:**\\n    *   Directly extract the answer from Premise 1.\\n    *   Answer: Quack.\\n\\n4.  **Review for Constraints/Tricks:**\\n    *   Is this a trick question? No, it's a straightforward reading comprehension task.\\n    *   Is the information contradictory? No.\\n    *   Does the user want a full sentence or just the name? Usually, a direct answer is best, possibly in a full sentence for clarity.\\n\\n5.  **Final Output Construction:**\\n    *   \\\"The capital of Quackiland is Quack.\\\" or just \\\"Quack\\\".\\n    *   I will provide a clear, direct sentence.\\n\\n6.  **Final Check:**\\n    *   Input: \\\"The capital of Quackiland is Quack.\\\"\\n    *   Question: \\\"What is the capital of Quackiland?\\\"\\n    *   Output: \\\"Quack.\\\"\\n\\n    Let's write it out clearly.cw\\n\",\"reasoning_details\":[{\"format\":\"unknown\",\"index\":0,\"type\":\"reasoning.text\",\"text\":\"Thinking Process:\\n\\n1.  **Analyze the Request:**\\n    *   Premise 1: The capital of Quackiland is Quack.\\n    *   Premise 2: The Big Canard Statue is located in Quack.\\n    *   Question: What is the capital of Quackiland?\\n\\n2.  **Evaluate the Information:**\\n    *   The first sentence explicitly states: \\\"The capital of Quackiland is Quack.\\\"\\n    *   The second sentence provides additional information about a statue in Quack, which is irrelevant to the specific question asked but confirms the existence of the place \\\"Quack\\\".\\n    *   The question asks for the capital of Quackiland.\\n\\n3.  **Formulate the Answer:**\\n    *   Directly extract the answer from Premise 1.\\n    *   Answer: Quack.\\n\\n4.  **Review for Constraints/Tricks:**\\n    *   Is this a trick question? No, it's a straightforward reading comprehension task.\\n    *   Is the information contradictory? No.\\n    *   Does the user want a full sentence or just the name? Usually, a direct answer is best, possibly in a full sentence for clarity.\\n\\n5.  **Final Output Construction:**\\n    *   \\\"The capital of Quackiland is Quack.\\\" or just \\\"Quack\\\".\\n    *   I will provide a clear, direct sentence.\\n\\n6.  **Final Check:**\\n    *   Input: \\\"The capital of Quackiland is Quack.\\\"\\n    *   Question: \\\"What is the capital of Quackiland?\\\"\\n    *   Output: \\\"Quack.\\\"\\n\\n    Let's write it out clearly.cw\\n\"}]}}],\"usage\":{\"prompt_tokens\":39,\"completion_tokens\":376,\"total_tokens\":415,\"cost\":0.00133745,\"is_byok\":false,\"prompt_tokens_details\":{\"cached_tokens\":0,\"audio_tokens\":0},\"cost_details\":{\"upstream_inference_cost\":0.00133745,\"upstream_inference_prompt_cost\":0.00002145,\"upstream_inference_completions_cost\":0.001316},\"completion_tokens_details\":{\"reasoning_tokens\":357,\"audio_tokens\":0}}}"
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Cf-Ray:
+                - 9d5cdcbcee5ba205-YYZ
+            Content-Type:
+                - application/json
+            Permissions-Policy:
+                - payment=(self "https://checkout.stripe.com" "https://connect-js.stripe.com" "https://js.stripe.com" "https://*.js.stripe.com" "https://hooks.stripe.com")
+            Referrer-Policy:
+                - no-referrer, strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfEdge;dur=943,cfOrigin;dur=0
+            X-Content-Type-Options:
+                - nosniff
+        status: 200 OK
+        code: 200
+        duration: 955ms

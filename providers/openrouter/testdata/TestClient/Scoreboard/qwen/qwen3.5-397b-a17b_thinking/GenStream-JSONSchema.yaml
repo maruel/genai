@@ -1,0 +1,43 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 448
+        host: openrouter.ai
+        body: |
+            {"messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}],"model":"qwen/qwen3.5-397b-a17b","response_format":{"type":"json_schema","json_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"],"name":"response"}},"stream":true,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://openrouter.ai/api/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: '{"error":{"message":"Provider returned error","code":400,"metadata":{"raw":"{\n  \"id\": \"oZPTH8P-2dTqGa-9d5cdbea872aa205\",\n  \"error\": {\n    \"message\": {\n      \"message\": \"Invalid JSON data: Failed to deserialize the JSON body into the target type: response_format: missing field `json_schema` at line 1 column 419\",\n      \"type\": \"invalid_request_error\",\n      \"code\": \"json_data_error\"\n    },\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": null\n  }\n}","provider_name":"Together","is_byok":false,"retry_after_seconds":2}},"user_id":"user_2u8FOCxPrw1Boc4GOPuI2ZPR4tY"}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Cf-Ray:
+                - 9d5cdbe04e4ba205-YYZ
+            Content-Type:
+                - application/json
+            Permissions-Policy:
+                - payment=(self "https://checkout.stripe.com" "https://connect-js.stripe.com" "https://js.stripe.com" "https://*.js.stripe.com" "https://hooks.stripe.com")
+            Referrer-Policy:
+                - no-referrer, strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfEdge;dur=1861,cfOrigin;dur=0
+            X-Content-Type-Options:
+                - nosniff
+        status: 400 Bad Request
+        code: 400
+        duration: 1.873s

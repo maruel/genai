@@ -1,0 +1,44 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 561
+        host: openrouter.ai
+        body: |
+            {"messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"model":"qwen/qwen3.5-397b-a17b","stream":false,"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://openrouter.ai/api/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: "\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n{\"id\":\"gen-1772417382-XIsDIiriMFclXRmj8iHa\",\"provider\":\"AtlasCloud\",\"model\":\"qwen/qwen3.5-397b-a17b\",\"object\":\"chat.completion\",\"created\":1772417382,\"choices\":[{\"logprobs\":null,\"finish_reason\":\"tool_calls\",\"native_finish_reason\":\"tool_calls\",\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"\",\"refusal\":null,\"reasoning\":\"The user is asking me to call the best_country tool to determine which country is better between USA and Canada. Looking at the tool definition, I can see it has a parameter called \\\"country\\\" that accepts either \\\"USA\\\" or \\\"Canada\\\" as enum values.\\n\\nHowever, I need to think about this carefully. The tool is called \\\"best_country\\\" and it requires me to specify a country parameter. But the user is asking me to tell them which country is the best one between USA and Canada. \\n\\nLooking at the tool more carefully, it seems like this tool might be designed to validate or specify a best country, but it requires me to input a country value. Since the user is asking me to determine which is better, I should call this tool. But I need to choose one of the two countries.\\n\\nActually, looking at this more carefully, this seems like it might be a tool that's meant to help determine the best country, but the parameter structure suggests I need to provide a country. Since the user is asking me to call the tool to tell them which is best, I think I should call it with one of the countries. \\n\\nGiven that this appears to be a tool that's meant to help answer this question, I'll call it with \\\"USA\\\" as that's one of the options the user mentioned. The tool might return information about whether that's the best choice or not.\\n\\nWait, let me reconsider. The tool description says \\\"A tool to specify the best country\\\" and it requires a country parameter with enum values [\\\"USA\\\", \\\"Canada\\\"]. This suggests the tool might be used to validate or confirm which country is best. Since the user is asking me to call it to tell them which is best, I should call it with one of the countries. I'll go with \\\"USA\\\" since that's what they mentioned first.\\n\",\"tool_calls\":[{\"type\":\"function\",\"index\":0,\"id\":\"call_369c96f186584e379ce30a95\",\"function\":{\"name\":\"best_country\",\"arguments\":\"{\\\"country\\\": \\\"USA\\\"}\"}}],\"reasoning_details\":[{\"format\":\"unknown\",\"index\":0,\"type\":\"reasoning.text\",\"text\":\"The user is asking me to call the best_country tool to determine which country is better between USA and Canada. Looking at the tool definition, I can see it has a parameter called \\\"country\\\" that accepts either \\\"USA\\\" or \\\"Canada\\\" as enum values.\\n\\nHowever, I need to think about this carefully. The tool is called \\\"best_country\\\" and it requires me to specify a country parameter. But the user is asking me to tell them which country is the best one between USA and Canada. \\n\\nLooking at the tool more carefully, it seems like this tool might be designed to validate or specify a best country, but it requires me to input a country value. Since the user is asking me to determine which is better, I should call this tool. But I need to choose one of the two countries.\\n\\nActually, looking at this more carefully, this seems like it might be a tool that's meant to help determine the best country, but the parameter structure suggests I need to provide a country. Since the user is asking me to call the tool to tell them which is best, I think I should call it with one of the countries. \\n\\nGiven that this appears to be a tool that's meant to help answer this question, I'll call it with \\\"USA\\\" as that's one of the options the user mentioned. The tool might return information about whether that's the best choice or not.\\n\\nWait, let me reconsider. The tool description says \\\"A tool to specify the best country\\\" and it requires a country parameter with enum values [\\\"USA\\\", \\\"Canada\\\"]. This suggests the tool might be used to validate or confirm which country is best. Since the user is asking me to call it to tell them which is best, I should call it with one of the countries. I'll go with \\\"USA\\\" since that's what they mentioned first.\\n\"}]}}],\"usage\":{\"prompt_tokens\":328,\"completion_tokens\":398,\"total_tokens\":726,\"cost\":0.0015734,\"is_byok\":false,\"prompt_tokens_details\":{\"cached_tokens\":0,\"audio_tokens\":0},\"cost_details\":{\"upstream_inference_cost\":0.0015734,\"upstream_inference_prompt_cost\":0.0001804,\"upstream_inference_completions_cost\":0.001393},\"completion_tokens_details\":{\"reasoning_tokens\":441,\"audio_tokens\":0}}}"
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Cf-Ray:
+                - 9d5cdc613bcca205-YYZ
+            Content-Type:
+                - application/json
+            Permissions-Policy:
+                - payment=(self "https://checkout.stripe.com" "https://connect-js.stripe.com" "https://js.stripe.com" "https://*.js.stripe.com" "https://hooks.stripe.com")
+            Referrer-Policy:
+                - no-referrer, strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfEdge;dur=841,cfOrigin;dur=0
+            X-Content-Type-Options:
+                - nosniff
+        status: 200 OK
+        code: 200
+        duration: 853ms

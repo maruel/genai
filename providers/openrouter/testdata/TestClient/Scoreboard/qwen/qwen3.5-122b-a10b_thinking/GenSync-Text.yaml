@@ -1,0 +1,44 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 121
+        host: openrouter.ai
+        body: |
+            {"messages":[{"role":"user","content":"Say hello. Use only one word."}],"model":"qwen/qwen3.5-122b-a10b","stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://openrouter.ai/api/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: "\n         \n\n         \n\n         \n{\"id\":\"gen-1772417189-jd9X23jsR4V0hFpY6arC\",\"provider\":\"Alibaba\",\"model\":\"qwen/qwen3.5-122b-a10b\",\"object\":\"chat.completion\",\"created\":1772417189,\"choices\":[{\"logprobs\":null,\"finish_reason\":\"stop\",\"native_finish_reason\":\"stop\",\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"Hello\",\"refusal\":null,\"reasoning\":\"Thinking Process:\\n\\n1.  **Analyze the Request:**\\n    *   Task: Say hello.\\n    *   Constraint: Use only one word.\\n\\n2.  **Determine the Output:**\\n    *   Common greetings: \\\"Hello\\\", \\\"Hi\\\", \\\"Hey\\\", \\\"Greetings\\\".\\n    *   Constraint Check: \\\"Hello\\\" is one word. \\\"Hi\\\" is one word.\\n    *   Selection: \\\"Hello\\\" is the most direct translation of the command \\\"Say hello\\\".\\n\\n3.  **Final Verification:**\\n    *   Does it meet the \\\"one word\\\" constraint? Yes.\\n    *   Does it fulfill the \\\"Say hello\\\" instruction? Yes.\\n\\n4.  **Draft Output:** Hello.cw\",\"reasoning_details\":[{\"format\":\"unknown\",\"index\":0,\"type\":\"reasoning.text\",\"text\":\"Thinking Process:\\n\\n1.  **Analyze the Request:**\\n    *   Task: Say hello.\\n    *   Constraint: Use only one word.\\n\\n2.  **Determine the Output:**\\n    *   Common greetings: \\\"Hello\\\", \\\"Hi\\\", \\\"Hey\\\", \\\"Greetings\\\".\\n    *   Constraint Check: \\\"Hello\\\" is one word. \\\"Hi\\\" is one word.\\n    *   Selection: \\\"Hello\\\" is the most direct translation of the command \\\"Say hello\\\".\\n\\n3.  **Final Verification:**\\n    *   Does it meet the \\\"one word\\\" constraint? Yes.\\n    *   Does it fulfill the \\\"Say hello\\\" instruction? Yes.\\n\\n4.  **Draft Output:** Hello.cw\"}]}}],\"system_fingerprint\":null,\"usage\":{\"prompt_tokens\":18,\"completion_tokens\":160,\"total_tokens\":178,\"cost\":0.0005192,\"is_byok\":false,\"prompt_tokens_details\":{\"cached_tokens\":0},\"cost_details\":{\"upstream_inference_cost\":0.0005192,\"upstream_inference_prompt_cost\":0.0000072,\"upstream_inference_completions_cost\":0.000512},\"completion_tokens_details\":{\"reasoning_tokens\":155}}}"
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Cf-Ray:
+                - 9d5cd7ab6e87a23b-YYZ
+            Content-Type:
+                - application/json
+            Permissions-Policy:
+                - payment=(self "https://checkout.stripe.com" "https://connect-js.stripe.com" "https://js.stripe.com" "https://*.js.stripe.com" "https://hooks.stripe.com")
+            Referrer-Policy:
+                - no-referrer, strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfEdge;dur=566,cfOrigin;dur=0
+            X-Content-Type-Options:
+                - nosniff
+        status: 200 OK
+        code: 200
+        duration: 632ms

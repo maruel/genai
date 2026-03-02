@@ -1,0 +1,44 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 269
+        host: openrouter.ai
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"model":"qwen/qwen3.5-35b-a3b","stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://openrouter.ai/api/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: "\n         \n\n         \n\n         \n\n         \n{\"id\":\"gen-1772417096-bMixa7pEOOEmCYLvYsOS\",\"provider\":\"Alibaba\",\"model\":\"qwen/qwen3.5-35b-a3b\",\"object\":\"chat.completion\",\"created\":1772417096,\"choices\":[{\"logprobs\":null,\"finish_reason\":\"stop\",\"native_finish_reason\":\"stop\",\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"The capital of Quackiland is **Quack**.\",\"refusal\":null,\"reasoning\":\"Thinking Process:\\n\\n1.  **Analyze the Request:**\\n    *   Input text: A short description about \\\"Quackiland\\\".\\n    *   Key facts provided:\\n        1.  The capital of Quackiland is Quack.\\n        2.  The Big Canard Statue is located in Quack.\\n    *   Question: What is the capital of Quackiland?\\n\\n2.  **Evaluate the Facts:**\\n    *   Fact 1 explicitly states: \\\"The capital of Quackiland is Quack.\\\"\\n\\n3.  **Formulate the Answer:**\\n    *   The answer is directly provided in the first sentence.\\n    *   Answer: Quack.\\n\\n4.  **Review for Tricky Parts:**\\n    *   Is this a trick question? No, it's a simple reading comprehension task.\\n    *   Is \\\"Quack\\\" the name of the city or the country? The text says \\\"The capital of Quackiland is Quack.\\\"\\n    *   Does the second sentence change anything? No, it just adds extra detail about the location of a statue.\\n\\n5.  **Final Output Construction:**\\n    *   State the answer clearly based on the provided text.\\n\\n    *Draft:* The capital of Quackiland is Quack.\\n    *Refinement:* Keep it direct. \\\"Quack.\\\" or \\\"The capital of Quackiland is Quack.\\\"\\n\\n    *Decision:* Provide a complete sentence for clarity.\\n\\n6.  **Final Check:** Does the answer match the text exactly? Yes.cw\",\"reasoning_details\":[{\"format\":\"unknown\",\"index\":0,\"type\":\"reasoning.text\",\"text\":\"Thinking Process:\\n\\n1.  **Analyze the Request:**\\n    *   Input text: A short description about \\\"Quackiland\\\".\\n    *   Key facts provided:\\n        1.  The capital of Quackiland is Quack.\\n        2.  The Big Canard Statue is located in Quack.\\n    *   Question: What is the capital of Quackiland?\\n\\n2.  **Evaluate the Facts:**\\n    *   Fact 1 explicitly states: \\\"The capital of Quackiland is Quack.\\\"\\n\\n3.  **Formulate the Answer:**\\n    *   The answer is directly provided in the first sentence.\\n    *   Answer: Quack.\\n\\n4.  **Review for Tricky Parts:**\\n    *   Is this a trick question? No, it's a simple reading comprehension task.\\n    *   Is \\\"Quack\\\" the name of the city or the country? The text says \\\"The capital of Quackiland is Quack.\\\"\\n    *   Does the second sentence change anything? No, it just adds extra detail about the location of a statue.\\n\\n5.  **Final Output Construction:**\\n    *   State the answer clearly based on the provided text.\\n\\n    *Draft:* The capital of Quackiland is Quack.\\n    *Refinement:* Keep it direct. \\\"Quack.\\\" or \\\"The capital of Quackiland is Quack.\\\"\\n\\n    *Decision:* Provide a complete sentence for clarity.\\n\\n6.  **Final Check:** Does the answer match the text exactly? Yes.cw\"}]}}],\"system_fingerprint\":null,\"usage\":{\"prompt_tokens\":44,\"completion_tokens\":347,\"total_tokens\":391,\"cost\":0.000705,\"is_byok\":false,\"prompt_tokens_details\":{\"cached_tokens\":0},\"cost_details\":{\"upstream_inference_cost\":0.000705,\"upstream_inference_prompt_cost\":0.000011,\"upstream_inference_completions_cost\":0.000694},\"completion_tokens_details\":{\"reasoning_tokens\":331}}}"
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Cf-Ray:
+                - 9d5cd5663d74a1e6-YYZ
+            Content-Type:
+                - application/json
+            Permissions-Policy:
+                - payment=(self "https://checkout.stripe.com" "https://connect-js.stripe.com" "https://js.stripe.com" "https://*.js.stripe.com" "https://hooks.stripe.com")
+            Referrer-Policy:
+                - no-referrer, strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfEdge;dur=480,cfOrigin;dur=0
+            X-Content-Type-Options:
+                - nosniff
+        status: 200 OK
+        code: 200
+        duration: 493ms

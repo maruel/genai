@@ -1,0 +1,44 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 259
+        host: openrouter.ai
+        body: |
+            {"messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"model":"qwen/qwen3.5-122b-a10b","response_format":{"type":"json_object"},"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://openrouter.ai/api/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: "\n         \n\n         \n\n         \n\n         \n\n         \n{\"id\":\"gen-1772417231-s2DJMDIyspWw4tvcvrSk\",\"provider\":\"Alibaba\",\"model\":\"qwen/qwen3.5-122b-a10b\",\"object\":\"chat.completion\",\"created\":1772417231,\"choices\":[{\"logprobs\":null,\"finish_reason\":\"stop\",\"native_finish_reason\":\"stop\",\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"is_fruit\\\": true}\",\"refusal\":null,\"reasoning\":\"Thinking Process:\\n\\n1.  **Analyze the Request:**\\n    *   Question: \\\"Is a banana a fruit?\\\"\\n    *   Constraint 1: \\\"Do not include an explanation.\\\"\\n    *   Constraint 2: \\\"Reply ONLY as JSON according to the provided schema: {\\\"is_fruit\\\": bool}.\\\"\\n\\n2.  **Determine the Answer:**\\n    *   Fact: A banana is botanically and culinarily considered a fruit.\\n    *   Value for `is_fruit`: `true`.\\n\\n3.  **Format the Output:**\\n    *   Must be valid JSON.\\n    *   Must match the schema `{\\\"is_fruit\\\": bool}`.\\n    *   No extra text, no markdown code blocks (unless implied by \\\"JSON\\\", but usually \\\"ONLY as JSON\\\" means raw JSON string). However, standard practice for LLMs when asked for JSON often accepts markdown code blocks, but strict adherence to \\\"ONLY as JSON\\\" suggests raw text. I will output raw JSON to be safe.\\n    *   Wait, looking at common interpretations: \\\"Reply ONLY as JSON\\\" usually means no markdown fences like ```json ... ```. Just the raw string.\\n\\n4.  **Construct the JSON:**\\n    *   `{\\\"is_fruit\\\": true}`\\n\\n5.  **Final Review:**\\n    *   Does it answer the question? Yes.\\n    *   Is there an explanation? No.\\n    *   Is it valid JSON? Yes.\\n    *   Does it match the schema? Yes.\\n\\n6.  **Final Output Generation:** `{\\\"is_fruit\\\": true}`\\n\",\"reasoning_details\":[{\"format\":\"unknown\",\"index\":0,\"type\":\"reasoning.text\",\"text\":\"Thinking Process:\\n\\n1.  **Analyze the Request:**\\n    *   Question: \\\"Is a banana a fruit?\\\"\\n    *   Constraint 1: \\\"Do not include an explanation.\\\"\\n    *   Constraint 2: \\\"Reply ONLY as JSON according to the provided schema: {\\\"is_fruit\\\": bool}.\\\"\\n\\n2.  **Determine the Answer:**\\n    *   Fact: A banana is botanically and culinarily considered a fruit.\\n    *   Value for `is_fruit`: `true`.\\n\\n3.  **Format the Output:**\\n    *   Must be valid JSON.\\n    *   Must match the schema `{\\\"is_fruit\\\": bool}`.\\n    *   No extra text, no markdown code blocks (unless implied by \\\"JSON\\\", but usually \\\"ONLY as JSON\\\" means raw JSON string). However, standard practice for LLMs when asked for JSON often accepts markdown code blocks, but strict adherence to \\\"ONLY as JSON\\\" suggests raw text. I will output raw JSON to be safe.\\n    *   Wait, looking at common interpretations: \\\"Reply ONLY as JSON\\\" usually means no markdown fences like ```json ... ```. Just the raw string.\\n\\n4.  **Construct the JSON:**\\n    *   `{\\\"is_fruit\\\": true}`\\n\\n5.  **Final Review:**\\n    *   Does it answer the question? Yes.\\n    *   Is there an explanation? No.\\n    *   Is it valid JSON? Yes.\\n    *   Does it match the schema? Yes.\\n\\n6.  **Final Output Generation:** `{\\\"is_fruit\\\": true}`\\n\"}]}}],\"system_fingerprint\":null,\"usage\":{\"prompt_tokens\":41,\"completion_tokens\":353,\"total_tokens\":394,\"cost\":0.001146,\"is_byok\":false,\"prompt_tokens_details\":{\"cached_tokens\":0},\"cost_details\":{\"upstream_inference_cost\":0.001146,\"upstream_inference_prompt_cost\":0.0000164,\"upstream_inference_completions_cost\":0.0011296},\"completion_tokens_details\":{\"reasoning_tokens\":342}}}"
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Cf-Ray:
+                - 9d5cd8ae599aa23b-YYZ
+            Content-Type:
+                - application/json
+            Permissions-Policy:
+                - payment=(self "https://checkout.stripe.com" "https://connect-js.stripe.com" "https://js.stripe.com" "https://*.js.stripe.com" "https://hooks.stripe.com")
+            Referrer-Policy:
+                - no-referrer, strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfEdge;dur=454,cfOrigin;dur=0
+            X-Content-Type-Options:
+                - nosniff
+        status: 200 OK
+        code: 200
+        duration: 466ms

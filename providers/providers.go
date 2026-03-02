@@ -26,6 +26,7 @@ import (
 	"github.com/maruel/genai/providers/mistral"
 	"github.com/maruel/genai/providers/ollama"
 	"github.com/maruel/genai/providers/openaichat"
+	"github.com/maruel/genai/providers/openrouter"
 	"github.com/maruel/genai/providers/openaicompatible"
 	"github.com/maruel/genai/providers/openairesponses"
 	"github.com/maruel/genai/providers/perplexity"
@@ -210,6 +211,16 @@ var All = map[string]Config{
 		APIKeyEnvVar: "OPENAI_API_KEY",
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
 			p, err := openairesponses.New(ctx, opts...)
+			if p == nil {
+				return nil, err
+			}
+			return p, err
+		},
+	},
+	"openrouter": {
+		APIKeyEnvVar: "OPENROUTER_API_KEY",
+		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
+			p, err := openrouter.New(ctx, opts...)
 			if p == nil {
 				return nil, err
 			}

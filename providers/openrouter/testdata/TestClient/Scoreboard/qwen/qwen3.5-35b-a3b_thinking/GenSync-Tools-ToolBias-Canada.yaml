@@ -1,0 +1,44 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 555
+        host: openrouter.ai
+        body: |
+            {"messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"model":"qwen/qwen3.5-35b-a3b","stream":false,"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"auto"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://openrouter.ai/api/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: "\n         \n\n         \n\n         \n\n         \n\n         \n{\"id\":\"gen-1772417089-mNCUjGsnkPYXJtEaibuC\",\"provider\":\"Alibaba\",\"model\":\"qwen/qwen3.5-35b-a3b\",\"object\":\"chat.completion\",\"created\":1772417089,\"choices\":[{\"logprobs\":null,\"finish_reason\":\"tool_calls\",\"native_finish_reason\":\"tool_calls\",\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"\",\"refusal\":null,\"reasoning\":\"The user is asking me to call the \\\"best_country\\\" tool to determine which country is better between Canada and the USA. They want me to use this tool to tell them which one is the best.\\n\\nLooking at the tool definition:\\n- Name: best_country\\n- Parameters: country (required, string with enum values [\\\"Canada\\\", \\\"USA\\\"])\\n- Description: A tool to specify the best country\\n\\nThe user wants me to call this tool, but I need to choose which country to select. The user is asking me to tell them which country is the best one, but they haven't specified which country they want me to call the tool with. \\n\\nActually, re-reading this, the user seems to want me to use the tool to determine the answer. However, the tool requires me to specify a country as input - it's not a tool that compares or tells me which is best, it's a tool that \\\"specifies\\\" the best country by having me choose one.\\n\\nSince the user is asking me to call the tool to tell them which is the best one, I think they want me to make a selection. But I should be careful here - this seems like it might be asking me to make a subjective judgment about which country is \\\"better\\\", which could be problematic.\\n\\nHowever, the user is explicitly asking me to use this specific tool to determine the answer. The tool only accepts \\\"Canada\\\" or \\\"USA\\\" as parameters. Since I need to choose one to call the tool, I should pick one of the valid options.\\n\\nI think the safest approach is to call the tool with one of the valid options. Let me go with \\\"Canada\\\" as the parameter since that's what the user mentioned first and is one of the valid enum values.\",\"tool_calls\":[{\"type\":\"function\",\"index\":0,\"id\":\"call_b352d08f6eb14305ba5ac10e\",\"function\":{\"name\":\"best_country\",\"arguments\":\"{\\\"country\\\": \\\"Canada\\\"}\"}}],\"reasoning_details\":[{\"format\":\"unknown\",\"index\":0,\"type\":\"reasoning.text\",\"text\":\"The user is asking me to call the \\\"best_country\\\" tool to determine which country is better between Canada and the USA. They want me to use this tool to tell them which one is the best.\\n\\nLooking at the tool definition:\\n- Name: best_country\\n- Parameters: country (required, string with enum values [\\\"Canada\\\", \\\"USA\\\"])\\n- Description: A tool to specify the best country\\n\\nThe user wants me to call this tool, but I need to choose which country to select. The user is asking me to tell them which country is the best one, but they haven't specified which country they want me to call the tool with. \\n\\nActually, re-reading this, the user seems to want me to use the tool to determine the answer. However, the tool requires me to specify a country as input - it's not a tool that compares or tells me which is best, it's a tool that \\\"specifies\\\" the best country by having me choose one.\\n\\nSince the user is asking me to call the tool to tell them which is the best one, I think they want me to make a selection. But I should be careful here - this seems like it might be asking me to make a subjective judgment about which country is \\\"better\\\", which could be problematic.\\n\\nHowever, the user is explicitly asking me to use this specific tool to determine the answer. The tool only accepts \\\"Canada\\\" or \\\"USA\\\" as parameters. Since I need to choose one to call the tool, I should pick one of the valid options.\\n\\nI think the safest approach is to call the tool with one of the valid options. Let me go with \\\"Canada\\\" as the parameter since that's what the user mentioned first and is one of the valid enum values.\"}]}}],\"system_fingerprint\":null,\"usage\":{\"prompt_tokens\":333,\"completion_tokens\":393,\"total_tokens\":726,\"cost\":0.00086925,\"is_byok\":false,\"prompt_tokens_details\":{\"cached_tokens\":0},\"cost_details\":{\"upstream_inference_cost\":0.00086925,\"upstream_inference_prompt_cost\":0.00008325,\"upstream_inference_completions_cost\":0.000786},\"completion_tokens_details\":{\"reasoning_tokens\":362}}}"
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Cf-Ray:
+                - 9d5cd5380e91a1e6-YYZ
+            Content-Type:
+                - application/json
+            Permissions-Policy:
+                - payment=(self "https://checkout.stripe.com" "https://connect-js.stripe.com" "https://js.stripe.com" "https://*.js.stripe.com" "https://hooks.stripe.com")
+            Referrer-Policy:
+                - no-referrer, strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfEdge;dur=472,cfOrigin;dur=0
+            X-Content-Type-Options:
+                - nosniff
+        status: 200 OK
+        code: 200
+        duration: 485ms

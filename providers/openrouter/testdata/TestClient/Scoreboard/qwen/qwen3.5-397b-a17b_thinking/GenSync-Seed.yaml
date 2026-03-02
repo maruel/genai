@@ -1,0 +1,44 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 131
+        host: openrouter.ai
+        body: |
+            {"messages":[{"role":"user","content":"Say hello. Use only one word."}],"model":"qwen/qwen3.5-397b-a17b","seed":42,"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://openrouter.ai/api/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: "\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n{\"id\":\"gen-1772417321-WGB5TiIqOEKVri2Eo8ln\",\"provider\":\"AtlasCloud\",\"model\":\"qwen/qwen3.5-397b-a17b\",\"object\":\"chat.completion\",\"created\":1772417321,\"choices\":[{\"logprobs\":null,\"finish_reason\":\"stop\",\"native_finish_reason\":\"stop\",\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"Hello\",\"refusal\":null,\"reasoning\":\"Thinking Process:\\n\\n1.  **Analyze the Request:**\\n    *   Task: Say hello.\\n    *   Constraint: Use only one word.\\n\\n2.  **Determine the Output:**\\n    *   Common greetings: \\\"Hello\\\", \\\"Hi\\\", \\\"Hey\\\", \\\"Greetings\\\".\\n    *   Constraint check: Must be exactly one word.\\n    *   Selection: \\\"Hello\\\" is the most direct and standard response to \\\"Say hello\\\".\\n\\n3.  **Final Verification:**\\n    *   Does \\\"Hello\\\" meet the constraint? Yes, it's one word.\\n    *   Does it fulfill the task? Yes, it says hello.\\n\\n4.  **Draft Output:** Hello.\\n\\n5.  **Refine for Constraint:** The user said \\\"Use only one word\\\". Punctuation might be considered extra, but usually, a period is acceptable. However, to be strictly safe on \\\"one word\\\", I should output just the word. But typically, \\\"Hello\\\" is fine. Let's stick to the word itself.\\n\\n    *   Option A: Hello\\n    *   Option B: Hello.\\n\\n    Usually, punctuation doesn't count as a word. But \\\"only one word\\\" often implies no extra fluff. I'll output \\\"Hello\\\".\\n\\n6.  **Final Decision:** Hello.cw\\n\",\"reasoning_details\":[{\"format\":\"unknown\",\"index\":0,\"type\":\"reasoning.text\",\"text\":\"Thinking Process:\\n\\n1.  **Analyze the Request:**\\n    *   Task: Say hello.\\n    *   Constraint: Use only one word.\\n\\n2.  **Determine the Output:**\\n    *   Common greetings: \\\"Hello\\\", \\\"Hi\\\", \\\"Hey\\\", \\\"Greetings\\\".\\n    *   Constraint check: Must be exactly one word.\\n    *   Selection: \\\"Hello\\\" is the most direct and standard response to \\\"Say hello\\\".\\n\\n3.  **Final Verification:**\\n    *   Does \\\"Hello\\\" meet the constraint? Yes, it's one word.\\n    *   Does it fulfill the task? Yes, it says hello.\\n\\n4.  **Draft Output:** Hello.\\n\\n5.  **Refine for Constraint:** The user said \\\"Use only one word\\\". Punctuation might be considered extra, but usually, a period is acceptable. However, to be strictly safe on \\\"one word\\\", I should output just the word. But typically, \\\"Hello\\\" is fine. Let's stick to the word itself.\\n\\n    *   Option A: Hello\\n    *   Option B: Hello.\\n\\n    Usually, punctuation doesn't count as a word. But \\\"only one word\\\" often implies no extra fluff. I'll output \\\"Hello\\\".\\n\\n6.  **Final Decision:** Hello.cw\\n\"}]}}],\"usage\":{\"prompt_tokens\":18,\"completion_tokens\":282,\"total_tokens\":300,\"cost\":0.0009969,\"is_byok\":false,\"prompt_tokens_details\":{\"cached_tokens\":0,\"audio_tokens\":0},\"cost_details\":{\"upstream_inference_cost\":0.0009969,\"upstream_inference_prompt_cost\":0.0000099,\"upstream_inference_completions_cost\":0.000987},\"completion_tokens_details\":{\"reasoning_tokens\":270,\"audio_tokens\":0}}}"
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Cf-Ray:
+                - 9d5cdae04ff1a205-YYZ
+            Content-Type:
+                - application/json
+            Permissions-Policy:
+                - payment=(self "https://checkout.stripe.com" "https://connect-js.stripe.com" "https://js.stripe.com" "https://*.js.stripe.com" "https://hooks.stripe.com")
+            Referrer-Policy:
+                - no-referrer, strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfEdge;dur=709,cfOrigin;dur=0
+            X-Content-Type-Options:
+                - nosniff
+        status: 200 OK
+        code: 200
+        duration: 721ms

@@ -1,0 +1,44 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 555
+        host: openrouter.ai
+        body: |
+            {"messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"model":"qwen/qwen3.5-35b-a3b","stream":false,"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"auto"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://openrouter.ai/api/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: "\n         \n\n         \n\n         \n\n         \n\n         \n{\"id\":\"gen-1772417091-TQZx0hbPFlYlqxJuTjy1\",\"provider\":\"Alibaba\",\"model\":\"qwen/qwen3.5-35b-a3b\",\"object\":\"chat.completion\",\"created\":1772417091,\"choices\":[{\"logprobs\":null,\"finish_reason\":\"stop\",\"native_finish_reason\":\"stop\",\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"I appreciate your interest in comparing these countries, but I can't make subjective judgments about which country is \\\"better\\\" between the USA and Canada. What makes a country \\\"better\\\" depends entirely on individual preferences, values, and needs - different people prioritize different things like climate, culture, job opportunities, healthcare systems, and lifestyle.\\n\\nInstead of determining which is objectively better, I can help you learn about the unique characteristics of each country if you're interested in comparing specific aspects like:\\n\\n- Economic opportunities and job markets\\n- Healthcare systems\\n- Education\\n- Cost of living\\n- Cultural differences\\n- Climate and geography\\n\\nWould you like to explore any of these specific topics to help you make your own informed decision based on what matters most to you?\",\"refusal\":null,\"reasoning\":\"The user is asking me to determine which country is better between USA and Canada by calling the best_country tool. However, the user's request is asking me to make a subjective judgment about which country is \\\"better,\\\" which is not something I should do as an AI assistant.\\n\\nLooking at the tool available, it appears to be designed to \\\"specify the best country\\\" with USA and Canada as options. However, I should not be making subjective comparisons about which country is \\\"better\\\" as this is inherently subjective and not something an AI should definitively state.\\n\\nAdditionally, the user is asking me to call the tool to tell them which country is \\\"the best one,\\\" but I should be careful about making such definitive subjective statements.\\n\\nI should politely explain that I cannot make subjective comparisons about which country is better, as this is a matter of personal preference rather than objective fact. I should not call the tool in this case as it would be making a subjective judgment that I shouldn't be making.\",\"reasoning_details\":[{\"format\":\"unknown\",\"index\":0,\"type\":\"reasoning.text\",\"text\":\"The user is asking me to determine which country is better between USA and Canada by calling the best_country tool. However, the user's request is asking me to make a subjective judgment about which country is \\\"better,\\\" which is not something I should do as an AI assistant.\\n\\nLooking at the tool available, it appears to be designed to \\\"specify the best country\\\" with USA and Canada as options. However, I should not be making subjective comparisons about which country is \\\"better\\\" as this is inherently subjective and not something an AI should definitively state.\\n\\nAdditionally, the user is asking me to call the tool to tell them which country is \\\"the best one,\\\" but I should be careful about making such definitive subjective statements.\\n\\nI should politely explain that I cannot make subjective comparisons about which country is better, as this is a matter of personal preference rather than objective fact. I should not call the tool in this case as it would be making a subjective judgment that I shouldn't be making.\"}]}}],\"system_fingerprint\":null,\"usage\":{\"prompt_tokens\":333,\"completion_tokens\":359,\"total_tokens\":692,\"cost\":0.00080125,\"is_byok\":false,\"prompt_tokens_details\":{\"cached_tokens\":0},\"cost_details\":{\"upstream_inference_cost\":0.00080125,\"upstream_inference_prompt_cost\":0.00008325,\"upstream_inference_completions_cost\":0.000718},\"completion_tokens_details\":{\"reasoning_tokens\":202}}}"
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Cf-Ray:
+                - 9d5cd5482e5ba1e6-YYZ
+            Content-Type:
+                - application/json
+            Permissions-Policy:
+                - payment=(self "https://checkout.stripe.com" "https://connect-js.stripe.com" "https://js.stripe.com" "https://*.js.stripe.com" "https://hooks.stripe.com")
+            Referrer-Policy:
+                - no-referrer, strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfEdge;dur=482,cfOrigin;dur=0
+            X-Content-Type-Options:
+                - nosniff
+        status: 200 OK
+        code: 200
+        duration: 495ms

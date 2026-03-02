@@ -1,0 +1,44 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 253
+        host: openrouter.ai
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"model":"qwen/qwen3.5-35b-a3b","stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://openrouter.ai/api/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: "\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n{\"id\":\"gen-1772416053-wcVLthb4CWPeykKd0Cbe\",\"provider\":\"Alibaba\",\"model\":\"qwen/qwen3.5-35b-a3b\",\"object\":\"chat.completion\",\"created\":1772416053,\"choices\":[{\"logprobs\":null,\"finish_reason\":\"stop\",\"native_finish_reason\":\"stop\",\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"The capital of Quackiland is **Quack**.\",\"refusal\":null,\"reasoning\":\"Thinking Process:\\n\\n1.  **Analyze the Request:** The user is asking a simple question based on provided premises.\\n    *   Premise 1: The capital of Quackiland is Quack.\\n    *   Premise 2: The Big Canard Statue is located in Quack.\\n    *   Question: What is the capital of Quackiland?\\n\\n2.  **Evaluate the Information:**\\n    *   Premise 1 directly states: \\\"The capital of Quackiland is Quack.\\\"\\n    *   The question asks exactly what is stated in Premise 1.\\n\\n3.  **Formulate the Answer:** The answer is explicitly given in the first sentence.\\n    *   Answer: Quack.\\n\\n4.  **Review for Constraints/Tricks:** Is there any trick? \\\"Quack\\\" sounds like \\\"quack\\\" (duck sound), but it's presented as a proper noun (name of a city/capital). The second sentence about the statue is irrelevant information (distractor). The task is straightforward reading comprehension.\\n\\n5.  **Final Output Construction:** State the answer clearly.\\n\\n    *   \\\"The capital of Quackiland is Quack.\\\"\\n\\n6.  **Refine for Conciseness:** \\\"Quack.\\\" or \\\"The capital is Quack.\\\"\\n\\n    Let's go with a complete sentence for clarity. \\\"The capital of Quackiland is Quack.\\\"\\n\\n    Wait, I should check if this is a riddle or a test of context. It looks like a simple logic/read comprehension check.\\n\\n    Premise: \\\"The capital of Quackiland is Quack.\\\"\\n    Question: \\\"What is the capital of Quackiland?\\\"\\n    Answer: \\\"Quack.\\\"\\n\\n    No further reasoning needed.\\n\\n    *Self-Correction/Double Check:* Is \\\"Quack\\\" a real place? No, it's likely fictional (Quack = Duck). But based *only* on the text provided, the answer is \\\"Quack\\\".\\n\\n    Final decision: Answer directly based on the text.cw\",\"reasoning_details\":[{\"format\":\"unknown\",\"index\":0,\"type\":\"reasoning.text\",\"text\":\"Thinking Process:\\n\\n1.  **Analyze the Request:** The user is asking a simple question based on provided premises.\\n    *   Premise 1: The capital of Quackiland is Quack.\\n    *   Premise 2: The Big Canard Statue is located in Quack.\\n    *   Question: What is the capital of Quackiland?\\n\\n2.  **Evaluate the Information:**\\n    *   Premise 1 directly states: \\\"The capital of Quackiland is Quack.\\\"\\n    *   The question asks exactly what is stated in Premise 1.\\n\\n3.  **Formulate the Answer:** The answer is explicitly given in the first sentence.\\n    *   Answer: Quack.\\n\\n4.  **Review for Constraints/Tricks:** Is there any trick? \\\"Quack\\\" sounds like \\\"quack\\\" (duck sound), but it's presented as a proper noun (name of a city/capital). The second sentence about the statue is irrelevant information (distractor). The task is straightforward reading comprehension.\\n\\n5.  **Final Output Construction:** State the answer clearly.\\n\\n    *   \\\"The capital of Quackiland is Quack.\\\"\\n\\n6.  **Refine for Conciseness:** \\\"Quack.\\\" or \\\"The capital is Quack.\\\"\\n\\n    Let's go with a complete sentence for clarity. \\\"The capital of Quackiland is Quack.\\\"\\n\\n    Wait, I should check if this is a riddle or a test of context. It looks like a simple logic/read comprehension check.\\n\\n    Premise: \\\"The capital of Quackiland is Quack.\\\"\\n    Question: \\\"What is the capital of Quackiland?\\\"\\n    Answer: \\\"Quack.\\\"\\n\\n    No further reasoning needed.\\n\\n    *Self-Correction/Double Check:* Is \\\"Quack\\\" a real place? No, it's likely fictional (Quack = Duck). But based *only* on the text provided, the answer is \\\"Quack\\\".\\n\\n    Final decision: Answer directly based on the text.cw\"}]}}],\"system_fingerprint\":null,\"usage\":{\"prompt_tokens\":39,\"completion_tokens\":453,\"total_tokens\":492,\"cost\":0.00091575,\"is_byok\":false,\"prompt_tokens_details\":{\"cached_tokens\":0},\"cost_details\":{\"upstream_inference_cost\":0.00091575,\"upstream_inference_prompt_cost\":0.00000975,\"upstream_inference_completions_cost\":0.000906},\"completion_tokens_details\":{\"reasoning_tokens\":437}}}"
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Cf-Ray:
+                - 9d5cbbed8ccf36b2-YYZ
+            Content-Type:
+                - application/json
+            Permissions-Policy:
+                - payment=(self "https://checkout.stripe.com" "https://connect-js.stripe.com" "https://js.stripe.com" "https://*.js.stripe.com" "https://hooks.stripe.com")
+            Referrer-Policy:
+                - no-referrer, strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfEdge;dur=930,cfOrigin;dur=0
+            X-Content-Type-Options:
+                - nosniff
+        status: 200 OK
+        code: 200
+        duration: 942ms

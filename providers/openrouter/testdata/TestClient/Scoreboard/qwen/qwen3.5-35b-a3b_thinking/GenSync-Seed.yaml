@@ -1,0 +1,44 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 129
+        host: openrouter.ai
+        body: |
+            {"messages":[{"role":"user","content":"Say hello. Use only one word."}],"model":"qwen/qwen3.5-35b-a3b","seed":42,"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://openrouter.ai/api/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: "\n         \n\n         \n\n         \n\n         \n\n         \n{\"id\":\"gen-1772417041-MkX77GHfcQv5M9EtogZb\",\"provider\":\"Alibaba\",\"model\":\"qwen/qwen3.5-35b-a3b\",\"object\":\"chat.completion\",\"created\":1772417041,\"choices\":[{\"logprobs\":null,\"finish_reason\":\"stop\",\"native_finish_reason\":\"stop\",\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"Hello\",\"refusal\":null,\"reasoning\":\"Thinking Process:\\n\\n1.  **Analyze the Request:**\\n    *   Task: Say hello.\\n    *   Constraint: Use only one word.\\n\\n2.  **Identify the appropriate response:**\\n    *   Common greetings: \\\"Hello\\\", \\\"Hi\\\", \\\"Hey\\\", \\\"Greetings\\\".\\n    *   Constraint check: All must be single words.\\n    *   Selection: \\\"Hello\\\" is the most standard and clear.\\n\\n3.  **Verify constraints:**\\n    *   Is it a greeting? Yes.\\n    *   Is it only one word? Yes.\\n\\n4.  **Final Output Formulation:**\\n    *   \\\"Hello\\\"\\n\\n5.  **Final Check:** Does this violate any safety guidelines? No. Is it helpful? Yes. Does it follow the negative constraint (only one word)? Yes.\\n\\n6.  **Construct Output:** Hello.cw\",\"reasoning_details\":[{\"format\":\"unknown\",\"index\":0,\"type\":\"reasoning.text\",\"text\":\"Thinking Process:\\n\\n1.  **Analyze the Request:**\\n    *   Task: Say hello.\\n    *   Constraint: Use only one word.\\n\\n2.  **Identify the appropriate response:**\\n    *   Common greetings: \\\"Hello\\\", \\\"Hi\\\", \\\"Hey\\\", \\\"Greetings\\\".\\n    *   Constraint check: All must be single words.\\n    *   Selection: \\\"Hello\\\" is the most standard and clear.\\n\\n3.  **Verify constraints:**\\n    *   Is it a greeting? Yes.\\n    *   Is it only one word? Yes.\\n\\n4.  **Final Output Formulation:**\\n    *   \\\"Hello\\\"\\n\\n5.  **Final Check:** Does this violate any safety guidelines? No. Is it helpful? Yes. Does it follow the negative constraint (only one word)? Yes.\\n\\n6.  **Construct Output:** Hello.cw\"}]}}],\"system_fingerprint\":null,\"usage\":{\"prompt_tokens\":18,\"completion_tokens\":192,\"total_tokens\":210,\"cost\":0.0003885,\"is_byok\":false,\"prompt_tokens_details\":{\"cached_tokens\":0},\"cost_details\":{\"upstream_inference_cost\":0.0003885,\"upstream_inference_prompt_cost\":0.0000045,\"upstream_inference_completions_cost\":0.000384},\"completion_tokens_details\":{\"reasoning_tokens\":187}}}"
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Cf-Ray:
+                - 9d5cd40c3f94a1e6-YYZ
+            Content-Type:
+                - application/json
+            Permissions-Policy:
+                - payment=(self "https://checkout.stripe.com" "https://connect-js.stripe.com" "https://js.stripe.com" "https://*.js.stripe.com" "https://hooks.stripe.com")
+            Referrer-Policy:
+                - no-referrer, strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfEdge;dur=967,cfOrigin;dur=0
+            X-Content-Type-Options:
+                - nosniff
+        status: 200 OK
+        code: 200
+        duration: 980ms

@@ -1,0 +1,44 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 791
+        host: openrouter.ai
+        body: |
+            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"type":"function","id":"call_48b9a11b21cb41e0a65040e0","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_48b9a11b21cb41e0a65040e0"}],"model":"qwen/qwen3.5-397b-a17b","stream":false,"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://openrouter.ai/api/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: "\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n{\"id\":\"gen-1772417361-RPQjODMSBPwYuN2OEdwl\",\"provider\":\"AtlasCloud\",\"model\":\"qwen/qwen3.5-397b-a17b\",\"object\":\"chat.completion\",\"created\":1772417361,\"choices\":[{\"logprobs\":null,\"finish_reason\":\"stop\",\"native_finish_reason\":\"stop\",\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"363.89\",\"refusal\":null,\"reasoning\":\"Thinking Process:\\n\\n1.  **Analyze the Request:**\\n    *   Task: Calculate the square root of 132413 using the `square_root` tool.\\n    *   Constraint: Reply with *only* the result.\\n    *   Constraint: Do not give an explanation.\\n\\n2.  **Review the Tool Output:**\\n    *   The tool `square_root` was called with `number: 132413`.\\n    *   The result returned is `363.89`.\\n\\n3.  **Format the Output:**\\n    *   The user explicitly requested \\\"only the result\\\".\\n    *   The result is `363.89`.\\n\\n4.  **Final Check:**\\n    *   Does the output contain any explanations? No.\\n    *   Is it just the number? Yes.\\n\\n5.  **Construct Final Response:** 363.89\\n\",\"reasoning_details\":[{\"format\":\"unknown\",\"index\":0,\"type\":\"reasoning.text\",\"text\":\"Thinking Process:\\n\\n1.  **Analyze the Request:**\\n    *   Task: Calculate the square root of 132413 using the `square_root` tool.\\n    *   Constraint: Reply with *only* the result.\\n    *   Constraint: Do not give an explanation.\\n\\n2.  **Review the Tool Output:**\\n    *   The tool `square_root` was called with `number: 132413`.\\n    *   The result returned is `363.89`.\\n\\n3.  **Format the Output:**\\n    *   The user explicitly requested \\\"only the result\\\".\\n    *   The result is `363.89`.\\n\\n4.  **Final Check:**\\n    *   Does the output contain any explanations? No.\\n    *   Is it just the number? Yes.\\n\\n5.  **Construct Final Response:** 363.89\\n\"}]}}],\"usage\":{\"prompt_tokens\":96,\"completion_tokens\":211,\"total_tokens\":307,\"cost\":0.0007913,\"is_byok\":false,\"prompt_tokens_details\":{\"cached_tokens\":0,\"audio_tokens\":0},\"cost_details\":{\"upstream_inference_cost\":0.0007913,\"upstream_inference_prompt_cost\":0.0000528,\"upstream_inference_completions_cost\":0.0007385},\"completion_tokens_details\":{\"reasoning_tokens\":174,\"audio_tokens\":0}}}"
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Cf-Ray:
+                - 9d5cdbdd3bc2a205-YYZ
+            Content-Type:
+                - application/json
+            Permissions-Policy:
+                - payment=(self "https://checkout.stripe.com" "https://connect-js.stripe.com" "https://js.stripe.com" "https://*.js.stripe.com" "https://hooks.stripe.com")
+            Referrer-Policy:
+                - no-referrer, strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfEdge;dur=922,cfOrigin;dur=0
+            X-Content-Type-Options:
+                - nosniff
+        status: 200 OK
+        code: 200
+        duration: 935ms

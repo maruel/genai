@@ -1,0 +1,179 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 158
+        host: openrouter.ai
+        body: |
+            {"messages":[{"role":"user","content":"Say hello. Use only one word."}],"model":"qwen/qwen3.5-35b-a3b","stream":true,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://openrouter.ai/api/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            : OPENROUTER PROCESSING
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":"","reasoning_details":[]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":"Thinking","reasoning_details":[{"type":"reasoning.text","text":"Thinking","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":" Process:","reasoning_details":[{"type":"reasoning.text","text":" Process:","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":"\n\n1.","reasoning_details":[{"type":"reasoning.text","text":"\n\n1.","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":"  **","reasoning_details":[{"type":"reasoning.text","text":"  **","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":"Analyze the Request","reasoning_details":[{"type":"reasoning.text","text":"Analyze the Request","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":":**\n   ","reasoning_details":[{"type":"reasoning.text","text":":**\n   ","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":" *   Task:","reasoning_details":[{"type":"reasoning.text","text":" *   Task:","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":" Say","reasoning_details":[{"type":"reasoning.text","text":" Say","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":" hello.\n   ","reasoning_details":[{"type":"reasoning.text","text":" hello.\n   ","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":" *","reasoning_details":[{"type":"reasoning.text","text":" *","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":"   Constraint: Use","reasoning_details":[{"type":"reasoning.text","text":"   Constraint: Use","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":" only one word.","reasoning_details":[{"type":"reasoning.text","text":" only one word.","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":"\n\n2.","reasoning_details":[{"type":"reasoning.text","text":"\n\n2.","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":"  **Identify","reasoning_details":[{"type":"reasoning.text","text":"  **Identify","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":" Potential","reasoning_details":[{"type":"reasoning.text","text":" Potential","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":" Answers:**\n   ","reasoning_details":[{"type":"reasoning.text","text":" Answers:**\n   ","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":" *","reasoning_details":[{"type":"reasoning.text","text":" *","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":"   Hello\n   ","reasoning_details":[{"type":"reasoning.text","text":"   Hello\n   ","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":" *  ","reasoning_details":[{"type":"reasoning.text","text":" *  ","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":" Hi\n    *","reasoning_details":[{"type":"reasoning.text","text":" Hi\n    *","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":"   Greetings\n","reasoning_details":[{"type":"reasoning.text","text":"   Greetings\n","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":"    *   Hey","reasoning_details":[{"type":"reasoning.text","text":"    *   Hey","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":"\n    *","reasoning_details":[{"type":"reasoning.text","text":"\n    *","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":"   Hola (maybe","reasoning_details":[{"type":"reasoning.text","text":"   Hola (maybe","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":" too specific?)\n","reasoning_details":[{"type":"reasoning.text","text":" too specific?)\n","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":"    *  ","reasoning_details":[{"type":"reasoning.text","text":"    *  ","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":" Welcome (no)","reasoning_details":[{"type":"reasoning.text","text":" Welcome (no)","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":"\n\n3.","reasoning_details":[{"type":"reasoning.text","text":"\n\n3.","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":"  **Select the","reasoning_details":[{"type":"reasoning.text","text":"  **Select the","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":" Best Option","reasoning_details":[{"type":"reasoning.text","text":" Best Option","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":":**\n    *","reasoning_details":[{"type":"reasoning.text","text":":**\n    *","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":"   \"Hello\"","reasoning_details":[{"type":"reasoning.text","text":"   \"Hello\"","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":" is the most direct","reasoning_details":[{"type":"reasoning.text","text":" is the most direct","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":" and common one-word","reasoning_details":[{"type":"reasoning.text","text":" and common one-word","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":" greeting that","reasoning_details":[{"type":"reasoning.text","text":" greeting that","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":" matches the request \"","reasoning_details":[{"type":"reasoning.text","text":" matches the request \"","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":"Say hello\".","reasoning_details":[{"type":"reasoning.text","text":"Say hello\".","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":"\n    *  ","reasoning_details":[{"type":"reasoning.text","text":"\n    *  ","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":" \"Hi\" is","reasoning_details":[{"type":"reasoning.text","text":" \"Hi\" is","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":" also good","reasoning_details":[{"type":"reasoning.text","text":" also good","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":", but \"Hello","reasoning_details":[{"type":"reasoning.text","text":", but \"Hello","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":"\" is more","reasoning_details":[{"type":"reasoning.text","text":"\" is more","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":" formal and directly ful","reasoning_details":[{"type":"reasoning.text","text":" formal and directly ful","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":"fills the command.","reasoning_details":[{"type":"reasoning.text","text":"fills the command.","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":"\n\n4. ","reasoning_details":[{"type":"reasoning.text","text":"\n\n4. ","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":" **Verify Constraints:**","reasoning_details":[{"type":"reasoning.text","text":" **Verify Constraints:**","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":"\n","reasoning_details":[{"type":"reasoning.text","text":"\n","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":"    *   Does","reasoning_details":[{"type":"reasoning.text","text":"    *   Does","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":" it say hello?","reasoning_details":[{"type":"reasoning.text","text":" it say hello?","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":" Yes","reasoning_details":[{"type":"reasoning.text","text":" Yes","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":".\n    *","reasoning_details":[{"type":"reasoning.text","text":".\n    *","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":"   Is it only","reasoning_details":[{"type":"reasoning.text","text":"   Is it only","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":" one word?","reasoning_details":[{"type":"reasoning.text","text":" one word?","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":" Yes.\n\n5","reasoning_details":[{"type":"reasoning.text","text":" Yes.\n\n5","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":".  **Final","reasoning_details":[{"type":"reasoning.text","text":".  **Final","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":" Decision","reasoning_details":[{"type":"reasoning.text","text":" Decision","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":":** \"Hello\".","reasoning_details":[{"type":"reasoning.text","text":":** \"Hello\".","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":"\n\n6. ","reasoning_details":[{"type":"reasoning.text","text":"\n\n6. ","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":" **","reasoning_details":[{"type":"reasoning.text","text":" **","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":"Output:** Hello.c","reasoning_details":[{"type":"reasoning.text","text":"Output:** Hello.c","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":"w","reasoning_details":[{"type":"reasoning.text","text":"w","format":"unknown","index":0}]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"Hello","reasoning":"","reasoning_details":[]},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":"","reasoning":null,"reasoning_details":[]},"finish_reason":"stop","native_finish_reason":"stop","logprobs":null}],"system_fingerprint":null}
+
+            data: {"id":"gen-1772417038-MZiB7NZvIHjCJ8HiFC5d","provider":"Alibaba","model":"qwen/qwen3.5-35b-a3b","object":"chat.completion.chunk","created":1772417038,"choices":[{"index":0,"delta":{"role":"assistant","content":""},"finish_reason":null,"native_finish_reason":null,"logprobs":null}],"usage":{"prompt_tokens":18,"completion_tokens":198,"total_tokens":216,"cost":0.0004005,"is_byok":false,"prompt_tokens_details":{"cached_tokens":0},"cost_details":{"upstream_inference_cost":0.0004005,"upstream_inference_prompt_cost":0.0000045,"upstream_inference_completions_cost":0.000396},"completion_tokens_details":{"reasoning_tokens":193}}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Cache-Control:
+                - no-cache
+            Cf-Ray:
+                - 9d5cd3fa8eeda1e6-YYZ
+            Content-Type:
+                - text/event-stream
+            Permissions-Policy:
+                - payment=(self "https://checkout.stripe.com" "https://connect-js.stripe.com" "https://js.stripe.com" "https://*.js.stripe.com" "https://hooks.stripe.com")
+            Referrer-Policy:
+                - no-referrer, strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfEdge;dur=569,cfOrigin;dur=0
+            X-Content-Type-Options:
+                - nosniff
+        status: 200 OK
+        code: 200
+        duration: 633ms

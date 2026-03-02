@@ -1,0 +1,44 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 295
+        host: openrouter.ai
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.webp"}}]}],"model":"qwen/qwen3.5-35b-a3b","stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://openrouter.ai/api/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: "\n         \n\n         \n\n         \n{\"id\":\"gen-1772417109-RUyxkybGmo1Ja5DWQxwq\",\"provider\":\"Alibaba\",\"model\":\"qwen/qwen3.5-35b-a3b\",\"object\":\"chat.completion\",\"created\":1772417109,\"choices\":[{\"logprobs\":null,\"finish_reason\":\"stop\",\"native_finish_reason\":\"stop\",\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"Banana\",\"refusal\":null,\"reasoning\":\"The user wants me to identify the fruit in the image.\\n1.  **Analyze the image:** The image shows a long, curved, yellow object with a stem at one end and a slightly darker tip at the other.\\n2.  **Identify the object:** This is clearly a banana.\\n3.  **Formulate the answer:** The user requested \\\"only one word\\\".\\n4.  **Final Answer:** \\\"Banana\\\".\",\"reasoning_details\":[{\"format\":\"unknown\",\"index\":0,\"type\":\"reasoning.text\",\"text\":\"The user wants me to identify the fruit in the image.\\n1.  **Analyze the image:** The image shows a long, curved, yellow object with a stem at one end and a slightly darker tip at the other.\\n2.  **Identify the object:** This is clearly a banana.\\n3.  **Formulate the answer:** The user requested \\\"only one word\\\".\\n4.  **Final Answer:** \\\"Banana\\\".\"}]}}],\"system_fingerprint\":null,\"usage\":{\"prompt_tokens\":113,\"completion_tokens\":101,\"total_tokens\":214,\"cost\":0.00023025,\"is_byok\":false,\"prompt_tokens_details\":{\"cached_tokens\":0},\"cost_details\":{\"upstream_inference_cost\":0.00023025,\"upstream_inference_prompt_cost\":0.00002825,\"upstream_inference_completions_cost\":0.000202},\"completion_tokens_details\":{\"reasoning_tokens\":95}}}"
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Cf-Ray:
+                - 9d5cd5b3ee9da1e6-YYZ
+            Content-Type:
+                - application/json
+            Permissions-Policy:
+                - payment=(self "https://checkout.stripe.com" "https://connect-js.stripe.com" "https://js.stripe.com" "https://*.js.stripe.com" "https://hooks.stripe.com")
+            Referrer-Policy:
+                - no-referrer, strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfEdge;dur=634,cfOrigin;dur=0
+            X-Content-Type-Options:
+                - nosniff
+        status: 200 OK
+        code: 200
+        duration: 646ms

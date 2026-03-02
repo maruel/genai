@@ -208,7 +208,7 @@ func DownloadAndExtract(ctx context.Context, url, dstDir string, wantedFiles []s
 		}
 		defer func() {
 			_ = f.Close()
-			_ = os.Remove(f.Name()) //nolint:gosec // f is a temp file we created; no taint
+			_ = os.Remove(f.Name())
 		}()
 		if _, err := io.Copy(f, resp.Body); err != nil {
 			return err
@@ -231,7 +231,7 @@ func extractZip(archivePath, dstDir string, wantedFiles []string) error {
 	prefix := filepath.Clean(dstDir) + string(os.PathSeparator)
 	for _, f := range z.File {
 		// Ignore path; flatten directory structure.
-		n := filepath.Base(f.Name)
+		n := filepath.Base(filepath.Clean(f.Name))
 		if !matchAny(n, wantedFiles) {
 			continue
 		}
@@ -244,7 +244,7 @@ func extractZip(archivePath, dstDir string, wantedFiles []string) error {
 			return err
 		}
 		var dst io.WriteCloser
-		if dst, err = os.OpenFile(p, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0o755); err == nil { //nolint:gosec // p is validated by HasPrefix check above
+		if dst, err = os.OpenFile(p, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0o755); err == nil {
 			_, err = io.CopyN(dst, src, int64(f.UncompressedSize64))
 		}
 		if err2 := src.Close(); err == nil {
@@ -262,6 +262,7 @@ func extractZip(archivePath, dstDir string, wantedFiles []string) error {
 
 func extractTar(r io.Reader, dstDir string, wantedFiles []string) error {
 	tarReader := tar.NewReader(r)
+	prefix := filepath.Clean(dstDir) + string(os.PathSeparator)
 	for {
 		header, err := tarReader.Next()
 		if err == io.EOF {
@@ -271,7 +272,7 @@ func extractTar(r io.Reader, dstDir string, wantedFiles []string) error {
 			return err
 		}
 		// Ignore path; flatten directory structure.
-		n := filepath.Base(header.Name) //nolint:gosec // Flattened via filepath.Base; dst validated by HasPrefix below
+		n := filepath.Base(filepath.Clean(header.Name))
 		if n == ".." || n == "." {
 			continue
 		}
@@ -279,27 +280,28 @@ func extractTar(r io.Reader, dstDir string, wantedFiles []string) error {
 			continue
 		}
 		dst := filepath.Join(dstDir, n)
-		if !strings.HasPrefix(dst, filepath.Clean(dstDir)+string(os.PathSeparator)) {
+		if !strings.HasPrefix(dst, prefix) {
 			continue
 		}
 		switch header.Typeflag {
 		case tar.TypeSymlink:
 			// Ensure the symlink target resolves within the destination directory.
-			target := filepath.Join(dstDir, filepath.Clean(header.Linkname))
-			if !strings.HasPrefix(target, filepath.Clean(dstDir)+string(os.PathSeparator)) {
+			link := filepath.Clean(header.Linkname)
+			target := filepath.Join(dstDir, link)
+			if !strings.HasPrefix(target, prefix) {
 				continue
 			}
-			if err := os.Remove(dst); err != nil && !errors.Is(err, os.ErrNotExist) { //nolint:gosec // dst is validated by HasPrefix check above
+			if err := os.Remove(dst); err != nil && !errors.Is(err, os.ErrNotExist) {
 				return fmt.Errorf("failed to remove existing file %q: %w", n, err)
 			}
-			if err := os.Symlink(header.Linkname, dst); err != nil { //nolint:gosec // Both dst and Linkname target are validated by HasPrefix checks above
+			if err := os.Symlink(link, dst); err != nil {
 				return fmt.Errorf("failed to create symlink %q: %w", n, err)
 			}
 		case tar.TypeReg:
 			if header.Size == 0 {
 				continue
 			}
-			outFile, err := os.OpenFile(dst, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0o755) //nolint:gosec // dst is validated by HasPrefix check above
+			outFile, err := os.OpenFile(dst, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0o755)
 			if err != nil {
 				return err
 			}

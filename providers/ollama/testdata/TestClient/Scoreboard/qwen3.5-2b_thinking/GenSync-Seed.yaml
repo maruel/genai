@@ -1,0 +1,31 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 131
+        host: localhost
+        body: |
+            {"model":"qwen3.5:2b","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":false,"options":{"seed":42}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1289
+        body: '{"model":"qwen3.5:2b","created_at":"2026-03-03T13:36:27.798511662Z","message":{"role":"assistant","content":"hello","thinking":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Task: Say \"hello\".\n    *   Constraint: Use only one word.\n\n2.  **Evaluate Constraints:**\n    *   The phrase to repeat is \"hello\".\n    *   However, the instruction also says \"Use only one word.\"\n    *   Does this mean I should just output the word \"hello\"? Or does it mean I should construct a greeting but limit the output to one word? Usually, when users say \"Say hello\" and add constraints like that, they expect the actual greeting text.\n    *   \"Say hello\" implies the content of the message.\n    *   The constraint is on the format/count of words.\n    *   The most direct interpretation is to output the word \"hello\".\n\n3.  **Check for Safety/Policy:**\n    *   No safety issues.\n    *   No sensitive topics.\n    *   Just a simple greeting task.\n\n4.  **Final Decision:**\n    *   Output: hello\n    *   Word count check: Exactly one word.\n\n5.  **Output Generation:** hello.cw"},"done":true,"done_reason":"stop","total_duration":27738370796,"load_duration":147304468,"prompt_eval_count":18,"prompt_eval_duration":241458111,"eval_count":250,"eval_duration":13219284055}'
+        headers:
+            Content-Length:
+                - "1289"
+            Content-Type:
+                - application/json; charset=utf-8
+        status: 200 OK
+        code: 200
+        duration: 27.739s

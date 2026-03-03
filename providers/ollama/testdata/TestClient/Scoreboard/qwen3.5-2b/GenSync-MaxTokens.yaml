@@ -1,0 +1,31 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 173
+        host: localhost
+        body: |
+            {"model":"qwen3.5:2b","messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"stream":false,"options":{"num_predict":16},"think":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 366
+        body: '{"model":"qwen3.5:2b","created_at":"2026-03-03T13:47:30.668720361Z","message":{"role":"assistant","content":"**Einstein''s Theory of Relativity** is one of the most profound and"},"done":true,"done_reason":"length","total_duration":2197797828,"load_duration":117457378,"prompt_eval_count":23,"prompt_eval_duration":249502473,"eval_count":16,"eval_duration":834966680}'
+        headers:
+            Content-Length:
+                - "366"
+            Content-Type:
+                - application/json; charset=utf-8
+        status: 200 OK
+        code: 200
+        duration: 2.198s

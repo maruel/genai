@@ -7,6 +7,7 @@ package ollama_test
 import (
 	"context"
 	"errors"
+	"iter"
 	"log/slog"
 	"net/http"
 	"os"
@@ -15,7 +16,6 @@ import (
 	"testing"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/adapters"
 	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/providers/ollama"
@@ -73,13 +73,11 @@ func TestClient(t *testing.T) {
 				t.Fatal(err)
 			}
 			if strings.HasPrefix(model.Model, "qwen") {
+				// Ollama v0.17.4+ auto-enables thinking for thinking-capable
+				// models. Use the "think" API parameter to control it.
 				if !model.Reason {
-					t.Fatal("expected thinking")
+					return &ollamaThinkOff{Provider: c}
 				}
-				// Ollama v0.17.4+ natively returns thinking content in a
-				// dedicated "thinking" field. Only ProviderAppend is needed to
-				// trigger thinking mode.
-				return &adapters.ProviderAppend{Provider: c, Append: genai.Request{Text: "\n\n/think"}}
 			}
 			return c
 		}, models, testRecorder.Records)
@@ -184,6 +182,24 @@ func (l *lazyServer) lazyStart(t testing.TB) string {
 		})
 	}
 	return l.url
+}
+
+// ollamaThinkOff wraps a provider to inject ReasoningEffortOff on every call,
+// disabling thinking for models that default to it.
+type ollamaThinkOff struct {
+	genai.Provider
+}
+
+func (o *ollamaThinkOff) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
+	return o.Provider.GenSync(ctx, msgs, append(opts, &ollama.GenOptionText{ReasoningEffort: ollama.ReasoningEffortOff})...)
+}
+
+func (o *ollamaThinkOff) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
+	return o.Provider.GenStream(ctx, msgs, append(opts, &ollama.GenOptionText{ReasoningEffort: ollama.ReasoningEffortOff})...)
+}
+
+func (o *ollamaThinkOff) Unwrap() genai.Provider {
+	return o.Provider
 }
 
 func init() {

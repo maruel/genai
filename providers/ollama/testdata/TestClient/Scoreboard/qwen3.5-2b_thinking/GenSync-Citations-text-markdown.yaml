@@ -1,0 +1,31 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 237
+        host: localhost
+        body: |
+            {"model":"qwen3.5:2b","messages":[{"role":"user","content":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"role":"user","content":"What is the capital of Quackiland?"}],"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1602
+        body: '{"model":"qwen3.5:2b","created_at":"2026-03-03T13:46:36.866049495Z","message":{"role":"assistant","content":"Based on the information provided, the capital of Quackiland is **Quack**.","thinking":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Input context: A provided snippet describing \"Quackiland\". It states: \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"\n    *   Task: Answer the question \"What is the capital of Quackiland?\" based on the provided context.\n\n2.  **Extract Information:**\n    *   Sentence: \"The capital of Quackiland is Quack.\"\n    *   Entity: Quack.\n    *   Location (implied): The Big Canard Statue is located in Quack, reinforcing that Quack is a place/city within Quackiland.\n\n3.  **Formulate Answer:**\n    *   Direct answer: Quack.\n    *   Confirm consistency with the provided text.\n\n4.  **Final Output Construction:** Keep it concise and direct. \"The capital of Quackiland is Quack.\" or simply \"Quack\".\n\n5.  **Review against constraints:** The user provided a statement as context (likely a logic puzzle or a test of reading comprehension). I should answer based *only* on the provided text, but since the prompt explicitly asks for the answer and the text gives it directly, there''s no external knowledge required to verify. Just need to state the fact found in the text.\n\n6.  **Decision:** State \"Quack\"."},"done":true,"done_reason":"stop","total_duration":39961359716,"load_duration":125464148,"prompt_eval_count":50,"prompt_eval_duration":390913816,"eval_count":318,"eval_duration":18054096336}'
+        headers:
+            Content-Length:
+                - "1602"
+            Content-Type:
+                - application/json; charset=utf-8
+        status: 200 OK
+        code: 200
+        duration: 39.962s

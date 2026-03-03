@@ -8,17 +8,19 @@
   "scenarios": [
     {
       "models": [
-        "qwen3:32b"
+        "qwen3.5:2b"
       ],
-      "sota": true
-    },
-    {
-      "models": [
-        "qwen3:4b"
-      ],
-      "good": true,
+      "sota": true,
       "reason": true,
       "in": {
+        "image": {
+          "inline": true,
+          "supportedFormats": [
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
         "text": {
           "inline": true
         }
@@ -34,7 +36,6 @@
         "seed": true,
         "tools": "flaky",
         "json": true,
-        "jsonSchema": true,
         "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
@@ -46,6 +47,48 @@
         "tools": "flaky",
         "json": true,
         "jsonSchema": true,
+        "topLogprobs": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
+    },
+    {
+      "models": [
+        "qwen3.5:2b"
+      ],
+      "good": true,
+      "in": {
+        "image": {
+          "inline": true,
+          "supportedFormats": [
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "json": true,
+        "topLogprobs": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "json": true,
         "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true

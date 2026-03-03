@@ -1,0 +1,31 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 222
+        host: localhost
+        body: |
+            {"model":"qwen3.5:2b","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"stream":false,"format":"json"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 2042
+        body: '{"model":"qwen3.5:2b","created_at":"2026-03-03T13:39:27.34423024Z","message":{"role":"assistant","content":"{\n}","thinking":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Question: \"Is a banana a fruit?\"\n    *   Constraint 1: Do not include an explanation.\n    *   Constraint 2: Reply ONLY as JSON according to the provided schema: `{\"is_fruit\": bool}`.\n\n2.  **Determine the Answer:**\n    *   Botanically, a banana is a fruit (specifically, it''s a modified flower bud with a seed in its fruit). Even though we commonly treat bananas as vegetables or foods, botanically they are fruits.\n    *   So, `true` (yes) is the correct answer for \"is_fruit\".\n\n3.  **Format the Output:**\n    *   Must be valid JSON.\n    *   Keys: `{\"is_fruit\": true}` (using a boolean value).\n    *   No additional text or markdown explanations outside the JSON structure.\n\n4.  **Final Check:**\n    *   Does it violate \"Do not include an explanation\"? Yes, if I output anything else besides the JSON.\n    *   Does it follow the schema? Yes.\n\n5.  **Construct Output:** `{\"is_fruit\": true}`.\n\n*Self-Correction/Refinement:* Wait, strict adherence to \"Reply ONLY as JSON\". Sometimes users expect markdown code blocks. However, usually, raw JSON is safer for parsing. The instruction says \"according to the provided schema\", and then says \"Reply ONLY as JSON\". I will output raw JSON string without markdown fencing to be safe, or just the text itself. Usually, raw text is best for this type of strict constraint.\n\nLet''s stick to raw JSON text.\n\nWait, one more check: Is there any nuance? Biologically yes. Culinary classification varies (vegetable vs fruit), but scientific classification is fruit. The question asks \"Is a banana a fruit?\", implying biological classification. So true is correct.\n\nFinal Output Generation.cw"},"done":true,"done_reason":"stop","total_duration":44130492736,"load_duration":117385810,"prompt_eval_count":457,"prompt_eval_duration":2272821545,"eval_count":4,"eval_duration":168935112}'
+        headers:
+            Content-Length:
+                - "2042"
+            Content-Type:
+                - application/json; charset=utf-8
+        status: 200 OK
+        code: 200
+        duration: 44.131s

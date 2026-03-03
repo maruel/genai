@@ -94,19 +94,53 @@ func (c *ChatRequestFormat) MarshalJSON() ([]byte, error) {
 }
 
 // ReasoningEffort controls the amount of thinking effort.
+//
+// It maps to the "think" field in the Ollama API, which accepts boolean
+// (true/false) or string ("low", "medium", "high") values.
 type ReasoningEffort string
 
 // Reasoning effort values.
 const (
+	// ReasoningEffortOff disables thinking. Serialized as JSON false.
+	ReasoningEffortOff    ReasoningEffort = "off"
 	ReasoningEffortLow    ReasoningEffort = "low"
 	ReasoningEffortMedium ReasoningEffort = "medium"
 	ReasoningEffortHigh   ReasoningEffort = "high"
 )
 
+// MarshalJSON implements json.Marshaler.
+//
+// "off" is serialized as boolean false to match the Ollama API.
+func (r ReasoningEffort) MarshalJSON() ([]byte, error) {
+	if r == ReasoningEffortOff {
+		return []byte("false"), nil
+	}
+	return json.Marshal(string(r))
+}
+
+// UnmarshalJSON implements json.Unmarshaler.
+func (r *ReasoningEffort) UnmarshalJSON(b []byte) error {
+	if string(b) == "false" {
+		*r = ReasoningEffortOff
+		return nil
+	}
+	if string(b) == "true" {
+		// Boolean true means default thinking; map to empty (server default).
+		*r = ""
+		return nil
+	}
+	var s string
+	if err := json.Unmarshal(b, &s); err != nil {
+		return err
+	}
+	*r = ReasoningEffort(s)
+	return r.Validate()
+}
+
 // Validate implements genai.Validatable.
 func (r ReasoningEffort) Validate() error {
 	switch r {
-	case "", ReasoningEffortLow, ReasoningEffortMedium, ReasoningEffortHigh:
+	case "", ReasoningEffortOff, ReasoningEffortLow, ReasoningEffortMedium, ReasoningEffortHigh:
 		return nil
 	default:
 		return fmt.Errorf("invalid reasoning effort %q", r)
@@ -115,7 +149,7 @@ func (r ReasoningEffort) Validate() error {
 
 // GenOptionText defines Ollama specific options.
 type GenOptionText struct {
-	// ReasoningEffort controls the thinking effort level ("low", "medium", "high").
+	// ReasoningEffort controls the thinking effort level ("off", "low", "medium", "high").
 	ReasoningEffort ReasoningEffort
 }
 
@@ -734,11 +768,11 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) str
 	case string(genai.ModelCheap):
 		return "gemma3:1b"
 	case string(genai.ModelSOTA):
-		return "qwen3:32b"
+		return "qwen3.5:2b"
 	case string(genai.ModelGood), "":
-		return "qwen3:4b"
+		return "qwen3.5:2b"
 	default:
-		return "qwen3:4b"
+		return "qwen3.5:2b"
 	}
 }
 

@@ -1,0 +1,31 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 221
+        host: localhost
+        body: |
+            {"model":"qwen3.5:2b","messages":[{"role":"user","content":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"role":"user","content":"What is the capital of Quackiland?"}],"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        content_length: -1
+        body: '{"model":"qwen3.5:2b","created_at":"2026-03-03T13:45:56.904099611Z","message":{"role":"assistant","content":"The capital of Quackiland is **Quack**.","thinking":"Thinking Process:\n\n1.  **Analyze the Request:** The user provides two statements: \"The capital of Quackiland is Quack.\" and \"The Big Canard Statue is located in Quack.\" Then, the user asks a question: \"What is the capital of Quackiland?\"\n\n2.  **Identify the Core Information:** The first statement explicitly states the fact: \"The capital of Quackiland is Quack.\"\n\n3.  **Determine the Answer:** Based on the provided text, the answer is right there. It''s a simple extraction task or a logic puzzle based on false premises (but I need to treat the user input as the truth for the sake of the dialogue).\n\n4.  **Formulate the Output:** Since the information is already given in the prompt, I should restate it clearly. The capital is Quack.\n\n5.  **Review Constraints/Context:**\n    *   This looks like a Joke/Riddle scenario. \"Quack\" is likely referring to the character from the TV show *The Big Canard Statue*. Wait, actually, let''s check external knowledge.\n    *   *Self-Correction/Knowledge Retrieval:* I don''t have real-world knowledge about \"Quackiland\" or a specific entity named Quack in a way that contradicts the first sentence provided. The prompt explicitly states: \"The capital of Quackiland is Quack.\"\n    *   Wait, is this an instruction for me to answer based on the premise provided, or is it a test of my ability to follow instructions/truthfulness?\n    *   Standard AI behavior for these types of direct queries with contradictory facts (where the fact is given in the prompt): Answer the question based on the information presented. The prompt says \"The capital... is Quack\". Therefore, the answer is Quack.\n    *   Is this a reference to something specific? There is no widely known real-world entity called \"Quackiland\" with a capital named \"Quack\". However, sometimes users use made-up names for riddles or logic puzzles.\n    *   The second sentence (\"The Big Canard Statue is located in Quack\") reinforces the fact that \"Quack\" is a place and has a statue there.\n    *   Conclusion: The answer derived directly from the text provided in the prompt is \"Quack\".\n\n6.  **Final Decision:** Provide the answer clearly.\n\n    *Answer:* Quack.\n\n7.  **Drafting the response:** Keep it direct and helpful.\n\n    \"Based on the information provided, the capital of Quackiland is Quack.\"\n\n    Wait, looking closer at the first sentence: \"The capital of Quackiland is Quack.\"\n    The question is: \"What is the capital of Quackiland?\"\n    The answer is simply \"Quack\".\n\n    Let''s keep it simple.\n\n    \"Quack.\" (Maybe add a sentence to confirm context).\n\n    Actually, looking at the prompt again, it might be testing my ability to identify that I should use the information provided in the prompt rather than external knowledge if none exists, OR it''s just a logic check where the user *gave* me the answer.\n    So, answering \"Quack\" is correct based on the text provided.\n\n    Let''s double-check if there''s a trick. Is this a riddle where \"Quack\" refers to something else? No, usually in these contexts, you take the prompt as ground truth.\n\n    Wait, is this about the game *Baldur''s Gate 3*? No. *The Big Canard Statue* sounds like *Big Blue Man*? No.\n    Actually, searching for \"Big Canard Statue\" + \"Quackiland\"... There is a meme or a specific joke context often associated with \"Quack\".\n    Wait, there''s a potential ambiguity. Is this about the fictional place in some specific franchise (like a Dungeons \u0026 Dragons setting)?\n    However, without external context, I must stick to the provided text. The first sentence *is* the premise.\n\n    Answer: Quack.\n\n    Refining the response: Since the user explicitly states the fact in the same sentence as their question (\"The capital of Quackiland is Quak.\"), the answer is immediately available.\n    I will state it directly.\n\n    One more check: Is there a joke about \"Big Canard\" meaning something? It sounds like French for \"Big Duck\". No, likely just filler text.\n    Okay, straightforward extraction.\n\n    *Response:* Quack.cw"},"done":true,"done_reason":"stop","total_duration":90164638973,"load_duration":177267473,"prompt_eval_count":45,"prompt_eval_duration":621258378,"eval_count":975,"eval_duration":51890324436}'
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        status: 200 OK
+        code: 200
+        duration: 1m30.165s

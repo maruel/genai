@@ -1,0 +1,31 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 156
+        host: localhost
+        body: |
+            {"model":"qwen3.5:2b","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":false,"think":false,"logprobs":true,"top_logprobs":2}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 769
+        body: '{"model":"qwen3.5:2b","created_at":"2026-03-03T13:47:28.470362716Z","message":{"role":"assistant","content":"Hi!"},"done":true,"done_reason":"stop","logprobs":[{"token":"Hi","logprob":-1.865699291229248,"bytes":[72,105],"top_logprobs":[{"token":"Hello","logprob":-0.24193143844604492,"bytes":[72,101,108,108,111]},{"token":"Hi","logprob":-1.865699291229248,"bytes":[72,105]}]},{"token":"!","logprob":-1.8716657161712646,"bytes":[33],"top_logprobs":[{"token":"\u003c|im_end|\u003e","logprob":-0.6309087872505188,"bytes":[60,124,105,109,95,101,110,100,124,62]},{"token":".","logprob":-1.1701219081878662,"bytes":[46]}]}],"total_duration":959084137,"load_duration":124796363,"prompt_eval_count":20,"prompt_eval_duration":331244077,"eval_count":3,"eval_duration":102773749}'
+        headers:
+            Content-Length:
+                - "769"
+            Content-Type:
+                - application/json; charset=utf-8
+        status: 200 OK
+        code: 200
+        duration: 959ms

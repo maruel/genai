@@ -1,0 +1,31 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 109
+        host: localhost
+        body: |
+            {"model":"qwen3.5:2b","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1724
+        body: '{"model":"qwen3.5:2b","created_at":"2026-03-03T13:36:00.059445594Z","message":{"role":"assistant","content":"Hello","thinking":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Command: \"Say hello.\"\n    *   Constraint: \"Use only one word.\"\n    *   Goal: Output a greeting that fulfills both conditions.\n\n2.  **Brainstorm Greetings:**\n    *   Hello\n    *   Hi\n    *   Good day\n    *   Day\n    *   How do you do\n    *   Hey\n\n3.  **Evaluate against Constraints:**\n    *   \"Hello\": Fits the definition of a greeting and is one word.\n    *   \"Hi\": Fits the definition of a greeting (informal) and is one word.\n    *   \"Day\": A bit ambiguous.\n    *   \"Greeting\": One word, but maybe not what''s expected when someone asks to say hello.\n\n4.  **Select Best Option:**\n    *   \"Hello\" is the most direct answer. It literally means the task itself.\n    *   \"Hi\" is also one word and works well in casual contexts.\n\n5.  **Final Decision:** \"Hello\" or \"Hi\". Since \"Say hello\" implies a greeting, \"Hello\" matches perfectly. However, sometimes AI models are expected to be concise. I will choose \"Hello\" for clarity. Actually, \"Hi\" is also acceptable. Let''s go with \"Hello\" as it''s the most common response to \"say hello\".\n\n    Wait, \"Use only one word\" applies to my output too.\n    So I should not add any explanations or extra text.\n\n    Option: Hello\n    Option: Hi\n\n    Let''s pick \"Hello\". It matches the prompt directly.\n\n6.  **Final Output Generation:** Hello.cw"},"done":true,"done_reason":"stop","total_duration":41924925558,"load_duration":1402971407,"prompt_eval_count":18,"prompt_eval_duration":230223312,"eval_count":373,"eval_duration":19341197190}'
+        headers:
+            Content-Length:
+                - "1724"
+            Content-Type:
+                - application/json; charset=utf-8
+        status: 200 OK
+        code: 200
+        duration: 41.926s

@@ -736,7 +736,8 @@ type TextModel struct {
 	Aliases          Strings  `json:"aliases"`
 	Audio            bool     `json:"audio"`
 	Community        bool     `json:"community"`
-	ContextWindow    int64    `json:"context_window"`
+	ContextLength    int64    `json:"context_length,omitzero"`
+	ContextWindow    int64    `json:"context_window,omitzero"`
 	Description      string   `json:"description"`
 	InputModalities  []string `json:"input_modalities"` // "text", "image", "audio"
 	IsSpecialized    bool     `json:"is_specialized,omitzero"`

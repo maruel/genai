@@ -15,12 +15,11 @@ import (
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/providers/llamacpp"
 	"github.com/maruel/genai/providers/llamacpp/llamacppsrv"
-	"github.com/maruel/huggingface"
 )
 
 func Example() {
 	ctx := context.Background()
-	srv, err := startServer(ctx, "Qwen", "Qwen2-0.5B-Instruct-GGUF", "qwen2-0_5b-instruct-q2_k.gguf", "")
+	srv, err := startServer(ctx, "Qwen", "Qwen2-0.5B-Instruct-GGUF", "qwen2-0_5b-instruct-q2_k.gguf")
 	if err != nil {
 		log.Print(err)
 		return
@@ -56,7 +55,7 @@ func Example() {
 
 //
 
-func startServer(ctx context.Context, author, repo, modelfile, multimodal string) (*llamacppsrv.Server, error) {
+func startServer(ctx context.Context, author, repo, modelfile string) (*llamacppsrv.Server, error) {
 	cache, err := filepath.Abs("testdata/tmp")
 	if err != nil {
 		return nil, err
@@ -64,33 +63,15 @@ func startServer(ctx context.Context, author, repo, modelfile, multimodal string
 	if err := os.MkdirAll(cache, 0o755); err != nil {
 		return nil, err
 	}
-	// It's a bit inefficient to download from github every single time.
 	exe, err := llamacppsrv.DownloadRelease(ctx, cache, llamacppsrv.BuildNumber)
 	if err != nil {
 		return nil, err
 	}
-	// llama.cpp now knows how to pull from huggingface but this was not integrated yet, so pull a model
-	// manually.
-	hf, err := huggingface.New("")
-	if err != nil {
-		return nil, err
-	}
-	modelPath, err := hf.EnsureFile(ctx, huggingface.ModelRef{Author: author, Repo: repo}, "HEAD", modelfile)
-	if err != nil {
-		return nil, err
-	}
-	extraArgs := []string{"--no-warmup", "--jinja", "--flash-attn", "on", "--cache-type-k", "q8_0", "--cache-type-v", "q8_0"}
-	mmPath := ""
-	if multimodal != "" {
-		if mmPath, err = hf.EnsureFile(ctx, huggingface.ModelRef{Author: author, Repo: repo}, "HEAD", multimodal); err != nil {
-			return nil, err
-		}
-		extraArgs = append(extraArgs, "--mmproj", mmPath)
-	}
-	l, err := os.Create(filepath.Join(cache, "lllama-server.log"))
+	extraArgs := []string{"-hf", author + "/" + repo, "-hff", modelfile, "--no-warmup", "--jinja", "--flash-attn", "on", "--cache-type-k", "q8_0", "--cache-type-v", "q8_0"}
+	l, err := os.Create(filepath.Join(cache, "llama-server.log"))
 	if err != nil {
 		return nil, err
 	}
 	defer func() { _ = l.Close() }()
-	return llamacppsrv.New(ctx, exe, modelPath, l, "", 0, extraArgs)
+	return llamacppsrv.New(ctx, exe, "", l, "", 0, extraArgs)
 }

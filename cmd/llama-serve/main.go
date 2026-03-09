@@ -19,7 +19,6 @@ import (
 	"syscall"
 
 	"github.com/maruel/genai/providers/llamacpp/llamacppsrv"
-	"github.com/maruel/huggingface"
 )
 
 func mainImpl() error {
@@ -57,20 +56,14 @@ func mainImpl() error {
 		return err
 	}
 
-	parts := strings.Split(*modelFlag, "/")
+	parts := strings.SplitN(*modelFlag, "/", 3)
 	if len(parts) < 2 {
 		return errors.New("invalid model format, use 'Author/Repo' or 'Author/Repo/Filename'")
 	}
-	modelRef := huggingface.ModelRef{Author: parts[0], Repo: parts[1]}
+	hfRepo := parts[0] + "/" + parts[1]
 	filename := ""
-	multimodal := ""
 	if len(parts) > 2 {
 		filename = parts[2]
-		mains := strings.SplitN(filename, "#", 2)
-		if len(mains) == 2 {
-			filename = mains[0]
-			multimodal = mains[1]
-		}
 	}
 
 	log.Printf("Ensuring llama-server (build %d)...", *build)
@@ -79,26 +72,14 @@ func mainImpl() error {
 		return err
 	}
 
-	hf, err := huggingface.New("")
-	if err != nil {
-		return err
-	}
-	log.Printf("Ensuring model %s...", *modelFlag)
-	modelPath, err := hf.EnsureFile(ctx, modelRef, "HEAD", filename)
-	if err != nil {
-		return err
-	}
 	args := slices.Clone(flag.Args())
-	mmPath := ""
-	if multimodal != "" {
-		if mmPath, err = hf.EnsureFile(ctx, modelRef, "HEAD", multimodal); err != nil {
-			return err
-		}
-		args = append(args, "--mmproj", mmPath)
+	args = append(args, "-hf", hfRepo)
+	if filename != "" {
+		args = append(args, "-hff", filename)
 	}
 
 	log.Printf("Starting llama-server on %s...", *hostPort)
-	server, err := llamacppsrv.New(ctx, exe, modelPath, os.Stdout, *hostPort, *threads, args)
+	server, err := llamacppsrv.New(ctx, exe, "", os.Stdout, *hostPort, *threads, args)
 	if err != nil {
 		return err
 	}

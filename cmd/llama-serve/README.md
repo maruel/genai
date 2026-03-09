@@ -4,10 +4,17 @@ A simple wrapper over [llama.cpp's llama-server](https://github.com/ggml-org/lla
 
 ## Examples
 
-Gemma 3 4B with vision. To make it work, it is critical to pass the mmproj file as well, separated by `#`.
+Qwen3.5 2B is a tiny but capable model, great for testing:
 
 ```bash
-llama-serve -model ggml-org/gemma-3-4b-it-GGUF/gemma-3-4b-it-Q8_0.gguf#mmproj-model-f16.gguf -- \
+llama-serve -model unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-Q4_K_M.gguf -- \
+    --jinja -fa -c 0 --no-warmup
+```
+
+Gemma 3 4B with vision. llama-server automatically downloads the mmproj file.
+
+```bash
+llama-serve -model ggml-org/gemma-3-4b-it-GGUF/gemma-3-4b-it-Q8_0.gguf -- \
     --temp 1.0 --top-p 0.95 --top-k 64 \
     --jinja -fa -c 0 --no-warmup
 ```

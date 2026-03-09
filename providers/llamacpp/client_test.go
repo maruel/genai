@@ -26,7 +26,6 @@ import (
 	"github.com/maruel/genai/providers/llamacpp/llamacppsrv"
 	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/genai/smoke/smoketest"
-	"github.com/maruel/huggingface"
 	"github.com/maruel/roundtrippers"
 )
 
@@ -196,8 +195,7 @@ func (l *lazyServer) ensureExe() string {
 	return exe
 }
 
-// lazyStartModel starts a server for the given model key, reusing an existing
-// one if the same base model (without #mmproj suffix) is already running.
+// lazyStartModel starts a server for the given model key, reusing an existing one if already running.
 func (l *lazyServer) lazyStartModel(t testing.TB, model scoreboard.Model) string {
 	if model.Model == "" {
 		return l.lazyStart(t)
@@ -212,29 +210,21 @@ func (l *lazyServer) lazyStartModel(t testing.TB, model scoreboard.Model) string
 	if url := os.Getenv("LLAMA_SERVER"); url != "" {
 		return url
 	}
-	// Use the base model path (before #) as the server key since the same
-	// server serves the same model regardless of mmproj.
-	baseKey := strings.SplitN(model.Model, "#", 2)[0]
 	l.mu.Lock()
 	defer l.mu.Unlock()
 	if l.servers == nil {
 		l.servers = make(map[string]string)
 	}
-	if u, ok := l.servers[baseKey]; ok {
+	if u, ok := l.servers[model.Model]; ok {
 		return u
 	}
 	t.Logf("Starting server for %s", model.Model)
 	exe := l.ensureExe()
-	mains := strings.SplitN(model.Model, "#", 2)
-	parts := strings.Split(mains[0], "/")
-	mmproj := ""
-	if len(mains) > 1 {
-		mmproj = mains[1]
-	}
+	parts := strings.Split(model.Model, "/")
 	// Use the context of the parent for server lifecycle management.
-	srv := startServerTest(l.t, exe, parts[0], parts[1], parts[2], mmproj, l.apiKey)
+	srv := startServerTest(l.t, exe, parts[0], parts[1], parts[2], l.apiKey)
 	u := srv.URL()
-	l.servers[baseKey] = u
+	l.servers[model.Model] = u
 	l.t.Cleanup(func() {
 		if err := srv.Close(); err != nil && !errors.Is(err, context.Canceled) {
 			// llama-server may exit with code 1 on SIGINT; ignore ExitError
@@ -248,30 +238,14 @@ func (l *lazyServer) lazyStartModel(t testing.TB, model scoreboard.Model) string
 	return u
 }
 
-func startServerTest(t testing.TB, exe, author, repo, modelfile, multimodal, apiKey string) *llamacppsrv.Server {
+func startServerTest(t testing.TB, exe, author, repo, modelfile, apiKey string) *llamacppsrv.Server {
 	cache, err := filepath.Abs("testdata/tmp")
 	if err != nil {
 		t.Fatal(err)
 	}
 	ctx := t.Context()
-	// llama.cpp now knows how to pull from huggingface but this was not integrated yet, so pull a model
-	// manually.
-	hf, err := huggingface.New("")
-	if err != nil {
-		t.Fatal(err)
-	}
-	modelPath, err := hf.EnsureFile(ctx, huggingface.ModelRef{Author: author, Repo: repo}, "HEAD", modelfile)
-	if err != nil {
-		t.Fatal(err)
-	}
-	extraArgs := []string{"--jinja", "--flash-attn", "on", "--ctx-size", "8192", "--cache-type-k", "q8_0", "--cache-type-v", "q8_0", "--api-key", apiKey}
-	if multimodal != "" {
-		mmPath, err := hf.EnsureFile(ctx, huggingface.ModelRef{Author: author, Repo: repo}, "HEAD", multimodal)
-		if err != nil {
-			t.Fatal(err)
-		}
-		extraArgs = append(extraArgs, "--mmproj", mmPath)
-	}
+	// Use llama-server's built-in HuggingFace download; mmproj is auto-detected.
+	extraArgs := []string{"-hf", author + "/" + repo, "-hff", modelfile, "--jinja", "--flash-attn", "on", "--ctx-size", "8192", "--cache-type-k", "q8_0", "--cache-type-v", "q8_0", "--api-key", apiKey}
 	// Allocate an ephemeral port to avoid dual-stack conflicts when running
 	// multiple servers (e.g. "localhost:8080" can bind on both IPv4 and IPv6).
 	ln, err := net.Listen("tcp", "127.0.0.1:0")
@@ -281,7 +255,7 @@ func startServerTest(t testing.TB, exe, author, repo, modelfile, multimodal, api
 	hostPort := ln.Addr().String()
 	_ = ln.Close()
 	l := internaltest.LogFile(t, cache, "llama-server.log")
-	srv, err := llamacppsrv.New(ctx, exe, modelPath, l, hostPort, 0, extraArgs)
+	srv, err := llamacppsrv.New(ctx, exe, "", l, hostPort, 0, extraArgs)
 	if err != nil {
 		t.Fatal(err)
 	}

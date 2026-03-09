@@ -33,7 +33,7 @@ import (
 // https://github.com/ggml-org/llama.cpp/releases
 //
 // You are free to use the build number that works best for you.
-const BuildNumber = 8180
+const BuildNumber = 8250
 
 // Server is a llama-server instance.
 type Server struct {
@@ -47,6 +47,9 @@ type Server struct {
 // hostPort can be one of the forms "localhost", "localhost:8080", "localhost:0", ":8080", ":0" or "". "" is effectively
 // "localhost:0", trying with port 8080 first then falling back to an ephemeral port.
 //
+// modelPath must be an absolute path to a local model file, or empty when using -hf/-hff in extraArgs
+// to let llama-server download from HuggingFace directly.
+//
 // Doesn't pass "-ngl", "9999" by default so the user can override it.
 //
 // Output is redirected to logOutput if non-nil.
@@ -54,7 +57,7 @@ func New(ctx context.Context, exe, modelPath string, logOutput io.Writer, hostPo
 	if !filepath.IsAbs(exe) {
 		return nil, errors.New("exe must be an absolute path")
 	}
-	if !filepath.IsAbs(modelPath) {
+	if modelPath != "" && !filepath.IsAbs(modelPath) {
 		return nil, errors.New("modelPath must be an absolute path")
 	}
 	if hostPort == "" {
@@ -91,8 +94,9 @@ func New(ctx context.Context, exe, modelPath string, logOutput io.Writer, hostPo
 			threads = 1
 		}
 	}
-	args := []string{
-		exe, "--model", modelPath, "--metrics", "--threads", strconv.Itoa(threads), "--port", strconv.Itoa(port),
+	args := []string{exe, "--metrics", "--threads", strconv.Itoa(threads), "--port", strconv.Itoa(port)}
+	if modelPath != "" {
+		args = append([]string{exe, "--model", modelPath}, args[1:]...)
 	}
 	if host != "" {
 		args = append(args, "--host", host)

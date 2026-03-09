@@ -1,13 +1,10 @@
 {
-  "warnings": [
-    "The multi-modal file is referred to with \"#\" character."
-  ],
   "country": "Local",
   "dashboardURL": "https://github.com/ggml-org/llama.cpp",
   "scenarios": [
     {
       "models": [
-        "unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-Q4_K_M.gguf#mmproj-F16.gguf"
+        "unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-Q4_K_M.gguf"
       ],
       "reason": true,
       "in": {
@@ -54,7 +51,7 @@
     },
     {
       "models": [
-        "unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-Q4_K_M.gguf#mmproj-F16.gguf"
+        "unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-Q4_K_M.gguf"
       ],
       "in": {
         "image": {

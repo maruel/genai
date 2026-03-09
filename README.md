@@ -697,7 +697,7 @@ Start llama-server locally either by yourself or with this utility:
 
 ```bash
 go run github.com/maruel/genai/cmd/llama-serve@latest \
-  -model ggml-org/gemma-3-4b-it-GGUF/gemma-3-4b-it-Q8_0.gguf#mmproj-model-f16.gguf -- \
+  -model ggml-org/gemma-3-4b-it-GGUF/gemma-3-4b-it-Q8_0.gguf -- \
   --temp 1.0 --top-p 0.95 --top-k 64 \
   --jinja -fa -c 0 --no-warmup
 ```

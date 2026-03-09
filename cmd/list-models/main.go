@@ -88,18 +88,16 @@ func getModels(ctx context.Context, provider string) ([]string, map[string]genai
 		return nil, nil, err
 	}
 
-	if c, err = cfg.Factory(ctx, genai.ModelCheap); err != nil {
-		return nil, nil, err
+	var cheap, good, sota string
+	if c2, err2 := cfg.Factory(ctx, genai.ModelCheap); err2 == nil {
+		cheap = c2.ModelID()
 	}
-	cheap := c.ModelID()
-	if c, err = cfg.Factory(ctx, genai.ModelGood); err != nil {
-		return nil, nil, err
+	if c2, err2 := cfg.Factory(ctx, genai.ModelGood); err2 == nil {
+		good = c2.ModelID()
 	}
-	good := c.ModelID()
-	if c, err = cfg.Factory(ctx, genai.ModelSOTA); err != nil {
-		return nil, nil, err
+	if c2, err2 := cfg.Factory(ctx, genai.ModelSOTA); err2 == nil {
+		sota = c2.ModelID()
 	}
-	sota := c.ModelID()
 
 	m := make(map[string]genai.Model, len(models))
 	names := make([]string, 0, len(models))

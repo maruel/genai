@@ -92,7 +92,8 @@ jobs:
       - uses: actions/setup-go@v6
         with:
           go-version-file: go.mod
-      - uses: golangci/golangci-lint-action@v9
+      - name: "go install golangci-lint"
+        run: go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest
       - name: "go install necessary tools (ubuntu)"
         if: always() && matrix.os == 'ubuntu-latest'
         run: |

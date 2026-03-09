@@ -1,11 +1,11 @@
 # Scoreboard
 
-| Model                                                          | Mode    | ➛In   | Out➛   | Tool | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
-| -------------------------------------------------------------- | ------- | ----- | ------ | ---- | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
-| unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-Q4_K_M.gguf#mmproj-F16.gguf | Sync🧠   | 💬📸  | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
-| unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-Q4_K_M.gguf#mmproj-F16.gguf | Stream🧠 | 💬📸  | 💬     | ✅🪨 | ☁️   | ❌    | ❌   | ❌   | 📏🛑   | ✅    | ❌     | ❌    | ✅     |
-| unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-Q4_K_M.gguf#mmproj-F16.gguf | Sync    | 💬📸  | 💬     | ❌   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
-| unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-Q4_K_M.gguf#mmproj-F16.gguf | Stream  | 💬📸  | 💬     | ❌   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ❌    | ✅     |
+| Model                                          | Mode    | ➛In   | Out➛   | Tool | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
+| ---------------------------------------------- | ------- | ----- | ------ | ---- | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
+| unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-Q4_K_M.gguf | Sync🧠   | 💬📸  | 💬     | ✅🪨 | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
+| unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-Q4_K_M.gguf | Stream🧠 | 💬📸  | 💬     | ✅🪨 | ☁️   | ❌    | ❌   | ❌   | 📏🛑   | ✅    | ❌     | ❌    | ✅     |
+| unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-Q4_K_M.gguf | Sync    | 💬📸  | 💬     | ❌   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-Q4_K_M.gguf | Stream  | 💬📸  | 💬     | ❌   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ✅    | ❌     | ❌    | ✅     |
 <details>
 <summary>‼️ Click here for the legend of columns and symbols</summary>
 
@@ -43,7 +43,3 @@
 - Probs: Return logprobs to analyse each token probabilities
 - Limits: Returns the rate limits, including the remaining quota
 </details>
-
-## Warnings
-
-- The multi-modal file is referred to with "#" character.

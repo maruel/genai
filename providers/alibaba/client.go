@@ -22,9 +22,12 @@ import (
 	"errors"
 	"fmt"
 	"iter"
+	"math"
 	"net/http"
 	"os"
+	"regexp"
 	"slices"
+	"strconv"
 	"strings"
 
 	"github.com/invopop/jsonschema"
@@ -768,7 +771,9 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 		switch model {
 		case "":
 		case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
-			c.impl.Model = selectModel(backend, model)
+			if c.impl.Model, err = c.selectBestTextModel(ctx, model); err != nil {
+				return nil, err
+			}
 			c.impl.OutputModalities = mod
 		default:
 			c.impl.Model = model
@@ -783,27 +788,77 @@ func (c *Client) Name() string {
 	return "alibaba"
 }
 
-// selectModel returns the concrete model ID for a tier (cheap/good/sota) based on backend.
-func selectModel(backend ProviderOptionBackend, tier string) string {
-	if backend == BackendIntl {
-		switch tier {
-		case string(genai.ModelCheap):
-			return "qwen3.5-35b-a3b"
-		case string(genai.ModelGood):
-			return "qwen3.5-122b-a10b"
-		case string(genai.ModelSOTA):
-			return "qwen3.5-397b-a17b"
+// selectBestTextModel selects the most appropriate text model based on the preference (cheap, good, or SOTA).
+//
+// It calls ListModels and analyzes model IDs by string to find the most recent version family,
+// then picks the smallest, middle, or largest model within that family for cheap, good, or SOTA.
+// Only canonical base text models matching `qwen{V}-{N}b-a{M}b` or `qwen{V}-max` are considered.
+//
+// We may want to make this function overridable in the future by the client since this is going to break one
+// day or another.
+func (c *Client) selectBestTextModel(ctx context.Context, preference string) (string, error) {
+	mdls, err := c.ListModels(ctx)
+	if err != nil {
+		return "", fmt.Errorf("failed to automatically select the model: %w", err)
+	}
+	// modelRe matches only canonical base text models, capturing version and param count.
+	// Examples: "qwen3-30b-a3b", "qwen3.5-122b-a10b", "qwen3-max".
+	modelRe := regexp.MustCompile(`^qwen(\d+(?:\.\d+)?)-(?:(\d+)b-a\d+b|max)$`)
+	type candidate struct {
+		id      string
+		version float64
+		params  int // math.MaxInt for "-max" models
+	}
+	var candidates []candidate
+	for _, mdl := range mdls {
+		m := modelRe.FindStringSubmatch(mdl.GetID())
+		if m == nil {
+			continue
+		}
+		ver, _ := strconv.ParseFloat(m[1], 64)
+		var params int
+		if m[2] == "" {
+			params = math.MaxInt // "-max" model
+		} else {
+			params, _ = strconv.Atoi(m[2])
+		}
+		candidates = append(candidates, candidate{mdl.GetID(), ver, params})
+	}
+	if len(candidates) == 0 {
+		return "", errors.New("failed to find a model automatically")
+	}
+	// Find the most recent version family.
+	maxVer := 0.0
+	for _, cand := range candidates {
+		if cand.version > maxVer {
+			maxVer = cand.version
 		}
 	}
-	switch tier {
-	case string(genai.ModelCheap):
-		return "qwen3-30b-a3b"
-	case string(genai.ModelGood):
-		return "qwen3-235b-a22b"
-	case string(genai.ModelSOTA):
-		return "qwen3-max"
+	// Filter to only the most recent version family.
+	latest := candidates[:0]
+	for _, cand := range candidates {
+		if cand.version == maxVer {
+			latest = append(latest, cand)
+		}
 	}
-	return ""
+	// Sort by parameter count ascending.
+	slices.SortFunc(latest, func(a, b candidate) int {
+		if a.params < b.params {
+			return -1
+		}
+		if a.params > b.params {
+			return 1
+		}
+		return 0
+	})
+	switch preference {
+	case string(genai.ModelCheap):
+		return latest[0].id, nil
+	case string(genai.ModelSOTA):
+		return latest[len(latest)-1].id, nil
+	default: // ModelGood
+		return latest[len(latest)/2].id, nil
+	}
 }
 
 // ModelID implements genai.Provider.

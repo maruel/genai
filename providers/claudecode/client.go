@@ -375,9 +375,24 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 				if json.Unmarshal(line, &ev) != nil {
 					continue
 				}
-				if ev.Event.Delta != nil && ev.Event.Delta.Type == "text_delta" && ev.Event.Delta.Text != "" {
-					if !yield(genai.Reply{Text: ev.Event.Delta.Text}) {
-						return
+				if ev.Event.Type == "error" {
+					finalErr = errors.New("claude stream error")
+					return
+				}
+				if ev.Event.Delta != nil {
+					switch ev.Event.Delta.Type {
+					case "text_delta":
+						if ev.Event.Delta.Text != "" {
+							if !yield(genai.Reply{Text: ev.Event.Delta.Text}) {
+								return
+							}
+						}
+					case "thinking_delta":
+						if ev.Event.Delta.Thinking != "" {
+							if !yield(genai.Reply{Reasoning: ev.Event.Delta.Thinking}) {
+								return
+							}
+						}
 					}
 				}
 			case "assistant":
@@ -628,10 +643,26 @@ func buildResult(res *resultMsg, asst *assistantMsg, sessionID string) genai.Res
 		r.Replies = append(r.Replies, genai.Reply{Text: res.Result})
 	}
 
-	// Always store the session ID so the caller can resume the conversation.
+	// Always store session ID and metadata so the caller can resume and inspect.
+	opaque := map[string]any{}
 	if sessionID != "" {
+		opaque[sessionIDKey] = sessionID
+	}
+	if res.TotalCostUSD > 0 {
+		opaque["total_cost_usd"] = res.TotalCostUSD
+	}
+	if res.DurationMs > 0 {
+		opaque["duration_ms"] = res.DurationMs
+	}
+	if res.DurationAPIMs > 0 {
+		opaque["duration_api_ms"] = res.DurationAPIMs
+	}
+	if res.NumTurns > 0 {
+		opaque["num_turns"] = res.NumTurns
+	}
+	if len(opaque) > 0 {
 		r.Replies = append(r.Replies, genai.Reply{
-			Opaque: map[string]any{sessionIDKey: sessionID},
+			Opaque: opaque,
 		})
 	}
 

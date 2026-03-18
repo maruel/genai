@@ -319,6 +319,66 @@ func TestClient(t *testing.T) {
 				t.Errorf("Result text: got %v", res.Replies)
 			}
 		})
+		t.Run("thinking_delta", func(t *testing.T) {
+			c := newTestClient(t, "GenStream_thinking", genai.ProviderOptionModel("claude-opus-4-6"))
+			msgs := genai.Messages{genai.NewTextMessage("say hello")}
+			seq, finish := c.GenStream(t.Context(), msgs)
+
+			var text, reasoning strings.Builder
+			for r := range seq {
+				text.WriteString(r.Text)
+				reasoning.WriteString(r.Reasoning)
+			}
+			res, err := finish()
+			if err != nil {
+				t.Fatalf("finish: %v", err)
+			}
+			if !strings.Contains(text.String(), "Hello") {
+				t.Errorf("streamed text: got %q, want something containing Hello", text.String())
+			}
+			if !strings.Contains(reasoning.String(), "think") {
+				t.Errorf("streamed reasoning: got %q, want something containing think", reasoning.String())
+			}
+			// Verify result includes both text and reasoning from assistant msg.
+			var hasText, hasReasoning bool
+			for _, r := range res.Replies {
+				if strings.Contains(r.Text, "Hello") {
+					hasText = true
+				}
+				if strings.Contains(r.Reasoning, "think") {
+					hasReasoning = true
+				}
+			}
+			if !hasText {
+				t.Error("result missing text reply")
+			}
+			if !hasReasoning {
+				t.Error("result missing reasoning reply")
+			}
+			// Verify duration metadata in opaque.
+			for _, r := range res.Replies {
+				if r.Opaque != nil {
+					if _, ok := r.Opaque["duration_ms"]; ok {
+						return
+					}
+				}
+			}
+			t.Error("result missing duration_ms in opaque")
+		})
+		t.Run("error_event", func(t *testing.T) {
+			c := newTestClient(t, "GenStream_error_event")
+			msgs := genai.Messages{genai.NewTextMessage("hello")}
+			seq, finish := c.GenStream(t.Context(), msgs)
+			for range seq {
+			}
+			_, err := finish()
+			if err == nil {
+				t.Fatal("expected error from stream error event")
+			}
+			if !strings.Contains(err.Error(), "stream error") {
+				t.Errorf("unexpected error: %v", err)
+			}
+		})
 	})
 }
 

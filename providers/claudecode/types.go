@@ -51,6 +51,7 @@ type systemInitMsg struct {
 	Type      string   `json:"type"`
 	Subtype   string   `json:"subtype"`
 	SessionID string   `json:"session_id"`
+	Cwd       string   `json:"cwd,omitzero"`
 	Model     string   `json:"model"`
 	Tools     []string `json:"tools"`
 	Version   string   `json:"claude_code_version"`
@@ -88,15 +89,18 @@ type contentBlock struct {
 
 // resultMsg is the terminal message emitted when the session ends, type="result".
 type resultMsg struct {
-	Type         string   `json:"type"`
-	Subtype      string   `json:"subtype"`
-	IsError      bool     `json:"is_error"`
-	Result       string   `json:"result"`
-	Errors       []string `json:"errors"`
-	StopReason   string   `json:"stop_reason,omitzero"`
-	SessionID    string   `json:"session_id"`
-	Usage        msgUsage `json:"usage"`
-	TotalCostUSD float64  `json:"total_cost_usd"`
+	Type          string   `json:"type"`
+	Subtype       string   `json:"subtype"`
+	IsError       bool     `json:"is_error"`
+	Result        string   `json:"result"`
+	Errors        []string `json:"errors"`
+	StopReason    string   `json:"stop_reason,omitzero"`
+	SessionID     string   `json:"session_id"`
+	Usage         msgUsage `json:"usage"`
+	TotalCostUSD  float64  `json:"total_cost_usd"`
+	DurationMs    int64    `json:"duration_ms,omitzero"`
+	DurationAPIMs int64    `json:"duration_api_ms,omitzero"`
+	NumTurns      int      `json:"num_turns,omitzero"`
 }
 
 // msgUsage holds token counts from the model.
@@ -117,13 +121,16 @@ type streamEventMsg struct {
 
 // streamEvent holds the event data for a single streaming update.
 type streamEvent struct {
-	Type  string       `json:"type"`  // "content_block_start", "content_block_delta", "content_block_stop", "message_start", "message_stop", etc.
-	Index int          `json:"index"` // content block index
-	Delta *streamDelta `json:"delta,omitempty"`
+	Type         string          `json:"type"`                    // "content_block_start", "content_block_delta", "content_block_stop", "message_start", "message_stop", "error", etc.
+	Index        int             `json:"index"`                   // content block index
+	Delta        *streamDelta    `json:"delta,omitempty"`         // present for content_block_delta
+	ContentBlock json.RawMessage `json:"content_block,omitempty"` // present for content_block_start
 }
 
 // streamDelta is the payload inside a content_block_delta event.
 type streamDelta struct {
-	Type string `json:"type"` // "text_delta", "input_json_delta"
-	Text string `json:"text,omitempty"`
+	Type        string `json:"type"` // "text_delta", "thinking_delta", "input_json_delta", "signature_delta"
+	Text        string `json:"text,omitempty"`
+	Thinking    string `json:"thinking,omitempty"`
+	PartialJSON string `json:"partial_json,omitempty"`
 }

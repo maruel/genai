@@ -17,6 +17,7 @@ import (
 	"github.com/maruel/genai/providers/bfl"
 	"github.com/maruel/genai/providers/cerebras"
 	"github.com/maruel/genai/providers/claudecode"
+	"github.com/maruel/genai/providers/codex"
 	"github.com/maruel/genai/providers/cloudflare"
 	"github.com/maruel/genai/providers/cohere"
 	"github.com/maruel/genai/providers/deepseek"
@@ -100,6 +101,15 @@ var All = map[string]Config{
 	"claudecode": {
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
 			p, err := claudecode.New(opts...)
+			if p == nil {
+				return nil, err
+			}
+			return p, err
+		},
+	},
+	"codex": {
+		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
+			p, err := codex.New(opts...)
 			if p == nil {
 				return nil, err
 			}

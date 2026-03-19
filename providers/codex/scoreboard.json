@@ -1,0 +1,44 @@
+{
+  "country": "US",
+  "dashboardURL": "https://platform.openai.com/usage",
+  "scenarios": [
+    {
+      "models": [
+        "gpt-5.4",
+        "gpt-5.1-codex-max",
+        "gpt-5.1-codex-mini",
+        "gpt-5.2",
+        "gpt-5.2-codex",
+        "gpt-5.3-codex"
+      ],
+      "in": {
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true"
+      },
+      "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true"
+      }
+    }
+  ]
+}

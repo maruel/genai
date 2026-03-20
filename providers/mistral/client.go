@@ -565,16 +565,19 @@ type Model struct {
 	Created      base.Time `json:"created"`
 	OwnedBy      string    `json:"owned_by"`
 	Capabilities struct {
-		Audio              bool `json:"audio"`
-		AudioTranscription bool `json:"audio_transcription"`
-		Classification     bool `json:"classification"`
-		CompletionChat     bool `json:"completion_chat"`
-		CompletionFim      bool `json:"completion_fim"`
-		FineTuning         bool `json:"fine_tuning"`
-		FunctionCalling    bool `json:"function_calling"`
-		Moderation         bool `json:"moderation"`
-		OCR                bool `json:"ocr"`
-		Vision             bool `json:"vision"`
+		Audio                        bool `json:"audio"`
+		AudioSpeech                  bool `json:"audio_speech"`
+		AudioTranscription           bool `json:"audio_transcription"`
+		AudioTranscriptionRealtime   bool `json:"audio_transcription_realtime"`
+		Classification               bool `json:"classification"`
+		CompletionChat               bool `json:"completion_chat"`
+		CompletionFim                bool `json:"completion_fim"`
+		FineTuning                   bool `json:"fine_tuning"`
+		FunctionCalling              bool `json:"function_calling"`
+		Moderation                   bool `json:"moderation"`
+		OCR                          bool `json:"ocr"`
+		Reasoning                    bool `json:"reasoning"`
+		Vision                       bool `json:"vision"`
 	} `json:"capabilities"`
 	Name                        string   `json:"name"`
 	Description                 string   `json:"description"`

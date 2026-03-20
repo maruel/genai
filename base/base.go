@@ -17,6 +17,7 @@ import (
 	"iter"
 	"math"
 	"net/http"
+	"strconv"
 	"reflect"
 	"strings"
 	"sync"
@@ -596,6 +597,28 @@ func (t *Time) UnmarshalJSON(b []byte) error {
 		return err
 	}
 	*t = Time(int64(math.Round(f)))
+	return nil
+}
+
+// Float64 is a float64 that can be unmarshalled from both JSON numbers and strings.
+type Float64 float64
+
+// UnmarshalJSON implements json.Unmarshaler.
+func (f *Float64) UnmarshalJSON(b []byte) error {
+	var v float64
+	if err := json.Unmarshal(b, &v); err == nil {
+		*f = Float64(v)
+		return nil
+	}
+	var s string
+	if err := json.Unmarshal(b, &s); err != nil {
+		return err
+	}
+	n, err := strconv.ParseFloat(s, 64)
+	if err != nil {
+		return err
+	}
+	*f = Float64(n)
 	return nil
 }
 

@@ -1686,12 +1686,62 @@ type FileDeleteResponse struct {
 
 //
 
+// CapabilitySupport indicates whether a capability is supported.
+type CapabilitySupport struct {
+	Supported bool `json:"supported"`
+}
+
+// ThinkingTypes describes supported thinking type configurations.
+type ThinkingTypes struct {
+	Adaptive CapabilitySupport `json:"adaptive"`
+	Enabled  CapabilitySupport `json:"enabled"`
+}
+
+// ThinkingCapability describes thinking support and type configurations.
+type ThinkingCapability struct {
+	Supported bool          `json:"supported"`
+	Types     ThinkingTypes `json:"types"`
+}
+
+// ContextManagementCapability describes context management support and available strategies.
+type ContextManagementCapability struct {
+	ClearThinking20251015 CapabilitySupport `json:"clear_thinking_20251015"`
+	ClearToolUses20250919 CapabilitySupport `json:"clear_tool_uses_20250919"`
+	Compact20260112       CapabilitySupport `json:"compact_20260112"`
+	Supported             bool              `json:"supported"`
+}
+
+// EffortCapability describes effort (reasoning_effort) support and available levels.
+type EffortCapability struct {
+	High      CapabilitySupport `json:"high"`
+	Low       CapabilitySupport `json:"low"`
+	Max       CapabilitySupport `json:"max"`
+	Medium    CapabilitySupport `json:"medium"`
+	Supported bool              `json:"supported"`
+}
+
+// ModelCapabilities describes model capability information.
+type ModelCapabilities struct {
+	Batch             CapabilitySupport           `json:"batch"`
+	Citations         CapabilitySupport           `json:"citations"`
+	CodeExecution     CapabilitySupport           `json:"code_execution"`
+	ContextManagement ContextManagementCapability `json:"context_management"`
+	Effort            EffortCapability            `json:"effort"`
+	ImageInput        CapabilitySupport           `json:"image_input"`
+	PDFInput          CapabilitySupport           `json:"pdf_input"`
+	StructuredOutputs CapabilitySupport           `json:"structured_outputs"`
+	Thinking          ThinkingCapability          `json:"thinking"`
+}
+
 // Model is the provider-specific model metadata.
 type Model struct {
-	CreatedAt   time.Time `json:"created_at"`
-	DisplayName string    `json:"display_name"`
-	ID          string    `json:"id"`
-	Type        string    `json:"type"`
+	Capabilities   ModelCapabilities `json:"capabilities"`
+	CreatedAt      time.Time         `json:"created_at"`
+	DisplayName    string            `json:"display_name"`
+	ID             string            `json:"id"`
+	MaxInputTokens int64             `json:"max_input_tokens"`
+	MaxTokens      int64             `json:"max_tokens"`
+	Type           string            `json:"type"`
 }
 
 // GetID implements genai.Model.
@@ -1705,7 +1755,7 @@ func (m *Model) String() string {
 
 // Context implements genai.Model.
 func (m *Model) Context() int64 {
-	return 0
+	return m.MaxInputTokens
 }
 
 // ModelsResponse represents the response structure for Anthropic models listing.

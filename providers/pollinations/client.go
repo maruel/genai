@@ -671,21 +671,21 @@ type ImageModel struct {
 	OutputModalities []string `json:"output_modalities"`
 	PaidOnly         bool     `json:"paid_only"`
 	Pricing          struct {
-		AudioInputPrice        float64 `json:"audio_input_price,omitzero"`
-		AudioOutputPrice       float64 `json:"audio_output_price,omitzero"`
-		AudioTokenPrice        float64 `json:"audio_token_price,omitzero"`
-		CachedTokenPrice       float64 `json:"cached_token_price,omitzero"`
-		CompletionAudioSeconds float64 `json:"completionAudioSeconds,omitzero"`
-		CompletionImageTokens  float64 `json:"completionImageTokens,omitzero"`
-		CompletionVideoSeconds float64 `json:"completionVideoSeconds,omitzero"`
-		CompletionVideoTokens  float64 `json:"completionVideoTokens,omitzero"`
-		Currency               string  `json:"currency"`
-		ImagePrice             float64 `json:"image_price"`
-		InputTokenPrice        float64 `json:"input_token_price,omitzero"`
-		OutputTokenPrice       float64 `json:"output_token_price,omitzero"`
-		PromptCachedTokens     float64 `json:"promptCachedTokens,omitzero"`
-		PromptImageTokens      float64 `json:"promptImageTokens,omitzero"`
-		PromptTextTokens       float64 `json:"promptTextTokens,omitzero"`
+		AudioInputPrice        base.Float64 `json:"audio_input_price,omitzero"`
+		AudioOutputPrice       base.Float64 `json:"audio_output_price,omitzero"`
+		AudioTokenPrice        base.Float64 `json:"audio_token_price,omitzero"`
+		CachedTokenPrice       base.Float64 `json:"cached_token_price,omitzero"`
+		CompletionAudioSeconds base.Float64 `json:"completionAudioSeconds,omitzero"`
+		CompletionImageTokens  base.Float64 `json:"completionImageTokens,omitzero"`
+		CompletionVideoSeconds base.Float64 `json:"completionVideoSeconds,omitzero"`
+		CompletionVideoTokens  base.Float64 `json:"completionVideoTokens,omitzero"`
+		Currency               string      `json:"currency"`
+		ImagePrice             base.Float64 `json:"image_price"`
+		InputTokenPrice        base.Float64 `json:"input_token_price,omitzero"`
+		OutputTokenPrice       base.Float64 `json:"output_token_price,omitzero"`
+		PromptCachedTokens     base.Float64 `json:"promptCachedTokens,omitzero"`
+		PromptImageTokens      base.Float64 `json:"promptImageTokens,omitzero"`
+		PromptTextTokens       base.Float64 `json:"promptTextTokens,omitzero"`
 	} `json:"pricing,omitzero"`
 }
 
@@ -747,20 +747,20 @@ type TextModel struct {
 	OutputModalities []string `json:"output_modalities"` // "text", "image", "audio"
 	PaidOnly         bool     `json:"paid_only"`
 	Pricing          struct {
-		AudioInputPrice       float64 `json:"audio_input_price,omitzero"`
-		AudioOutputPrice      float64 `json:"audio_output_price,omitzero"`
-		AudioTokenPrice       float64 `json:"audio_token_price,omitzero"`
-		CachedTokenPrice      float64 `json:"cached_token_price,omitzero"`
-		CompletionAudioTokens float64 `json:"completionAudioTokens,omitzero"`
-		CompletionTextTokens  float64 `json:"completionTextTokens,omitzero"`
-		CompletionTokens      float64 `json:"completion_tokens,omitzero"`
-		Currency              string  `json:"currency,omitzero"`
-		InputTokenPrice       float64 `json:"input_token_price,omitzero"`
-		OutputTokenPrice      float64 `json:"output_token_price,omitzero"`
-		PromptAudioTokens     float64 `json:"promptAudioTokens,omitzero"`
-		PromptCachedTokens    float64 `json:"promptCachedTokens,omitzero"`
-		PromptTextTokens      float64 `json:"promptTextTokens,omitzero"`
-		PromptTokens          float64 `json:"prompt_tokens,omitzero"`
+		AudioInputPrice       base.Float64 `json:"audio_input_price,omitzero"`
+		AudioOutputPrice      base.Float64 `json:"audio_output_price,omitzero"`
+		AudioTokenPrice       base.Float64 `json:"audio_token_price,omitzero"`
+		CachedTokenPrice      base.Float64 `json:"cached_token_price,omitzero"`
+		CompletionAudioTokens base.Float64 `json:"completionAudioTokens,omitzero"`
+		CompletionTextTokens  base.Float64 `json:"completionTextTokens,omitzero"`
+		CompletionTokens      base.Float64 `json:"completion_tokens,omitzero"`
+		Currency              string      `json:"currency,omitzero"`
+		InputTokenPrice       base.Float64 `json:"input_token_price,omitzero"`
+		OutputTokenPrice      base.Float64 `json:"output_token_price,omitzero"`
+		PromptAudioTokens     base.Float64 `json:"promptAudioTokens,omitzero"`
+		PromptCachedTokens    base.Float64 `json:"promptCachedTokens,omitzero"`
+		PromptTextTokens      base.Float64 `json:"promptTextTokens,omitzero"`
+		PromptTokens          base.Float64 `json:"prompt_tokens,omitzero"`
 	} `json:"pricing,omitzero"`
 	Provider               string   `json:"provider"` // "api.navy", "azure", "bedrock", "scaleway"
 	Reasoning              bool     `json:"reasoning"`

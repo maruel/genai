@@ -722,6 +722,7 @@ type Model struct {
 	Organization  string    `json:"organization"`
 	Link          string    `json:"link"`
 	License       string    `json:"license"`
+	UUID          string    `json:"uuid,omitzero"`
 	ContextLength int64     `json:"context_length"`
 	Config        struct {
 		ChatTemplate    string   `json:"chat_template"`
@@ -731,11 +732,12 @@ type Model struct {
 		MaxOutputLength int64    `json:"max_output_length"`
 	} `json:"config"`
 	Pricing struct {
-		Hourly   float64 `json:"hourly"`
-		Input    float64 `json:"input"`
-		Output   float64 `json:"output"`
-		Base     float64 `json:"base"`
-		Finetune float64 `json:"finetune"`
+		Hourly      float64 `json:"hourly"`
+		Input       float64 `json:"input"`
+		Output      float64 `json:"output"`
+		Base        float64 `json:"base"`
+		Finetune    float64 `json:"finetune"`
+		CachedInput float64 `json:"cached_input,omitzero"`
 	} `json:"pricing"`
 }
 

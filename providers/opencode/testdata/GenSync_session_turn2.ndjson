@@ -1,0 +1,5 @@
+{"jsonrpc":"2.0","id":1,"result":{"protocolVersion":1,"agentCapabilities":{"promptCapabilities":{"image":true}},"agentInfo":{"name":"opencode","version":"0.1.0"}}}
+{"jsonrpc":"2.0","id":2,"result":{"sessionId":"sess_turn1"}}
+{"jsonrpc":"2.0","id":3,"result":{}}
+{"jsonrpc":"2.0","method":"session/update","params":{"sessionId":"sess_turn1","update":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"The secret code you told me was blue-fox-42."}}}}
+{"jsonrpc":"2.0","id":4,"result":{"stopReason":"end_turn","usage":{"totalTokens":130,"inputTokens":90,"outputTokens":40}}}

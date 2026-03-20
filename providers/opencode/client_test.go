@@ -2,7 +2,7 @@
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
-package codex
+package opencode
 
 import (
 	"context"
@@ -26,8 +26,8 @@ import (
 
 // recordingExecutor implements the executor interface for tests.
 //
-// When RECORD is set, it runs the real codex subprocess and tees its stdout to
-// the fixture file. Otherwise it reads the fixture file directly.
+// When RECORD is set, it runs the real opencode subprocess and tees its stdout
+// to the fixture file. Otherwise it reads the fixture file directly.
 type recordingExecutor struct {
 	fixture string
 	real    *cmdExecutor
@@ -39,9 +39,9 @@ func newRecordingExecutor(t testing.TB, name string) *recordingExecutor {
 	e := &recordingExecutor{fixture: fixture}
 	rec := os.Getenv("RECORD")
 	if rec == "all" || rec == "failure_only" {
-		bin, err := findCodex()
+		bin, err := findOpenCode()
 		if err != nil {
-			t.Skipf("RECORD=%s but codex not found: %v", rec, err)
+			t.Skipf("RECORD=%s but opencode not found: %v", rec, err)
 		}
 		if rec == "all" {
 			e.real = &cmdExecutor{bin: bin}
@@ -99,8 +99,8 @@ func (t *teeReadCloser) Close() error {
 	return errors.Join(t.orig.Close(), t.file.Close())
 }
 
-func findCodex() (string, error) {
-	return exec.LookPath("codex")
+func findOpenCode() (string, error) {
+	return exec.LookPath("opencode")
 }
 
 func newTestClient(t *testing.T, name string, opts ...genai.ProviderOption) *Client {
@@ -155,7 +155,7 @@ func TestClient(t *testing.T) {
 			}
 			c, err := New(opts...)
 			if err != nil {
-				t.Skipf("codex: %v", err)
+				t.Skipf("opencode: %v", err)
 			}
 			if fn != nil {
 				wrapped := fn(http.DefaultTransport)
@@ -174,10 +174,10 @@ func TestClient(t *testing.T) {
 			opt  genai.ProviderOptionModel
 			want string
 		}{
-			{genai.ModelCheap, "gpt-5.1-codex-mini"},
-			{genai.ModelGood, "gpt-5.3-codex"},
-			{genai.ModelSOTA, "gpt-5.4"},
-			{"gpt-5.3-codex", "gpt-5.3-codex"},
+			{genai.ModelCheap, "opencode/gpt-5-nano"},
+			{genai.ModelGood, "opencode/big-pickle"},
+			{genai.ModelSOTA, "openai/gpt-5.4/xhigh"},
+			{"opencode/big-pickle", "opencode/big-pickle"},
 		}
 		for _, tc := range cases {
 			t.Run(string(tc.opt), func(t *testing.T) {
@@ -194,7 +194,7 @@ func TestClient(t *testing.T) {
 
 	t.Run("gen_sync", func(t *testing.T) {
 		t.Run("hello", func(t *testing.T) {
-			c := newTestClient(t, "GenSync_hello", genai.ProviderOptionModel("gpt-5.4"))
+			c := newTestClient(t, "GenSync_hello", genai.ProviderOptionModel("opencode/big-pickle"))
 			msgs := genai.Messages{genai.NewTextMessage("say hello")}
 			res, err := c.GenSync(t.Context(), msgs)
 			if err != nil {
@@ -203,9 +203,15 @@ func TestClient(t *testing.T) {
 			if len(res.Replies) == 0 {
 				t.Fatal("expected at least one reply")
 			}
-			got := res.Replies[0].Text
-			if !strings.Contains(strings.ToLower(got), "hello") {
-				t.Errorf("unexpected reply text %q", got)
+			found := false
+			for _, r := range res.Replies {
+				if strings.Contains(strings.ToLower(r.Text), "hello") {
+					found = true
+					break
+				}
+			}
+			if !found {
+				t.Errorf("no reply contains 'hello': %v", res.Replies)
 			}
 			if res.Usage.InputTokens == 0 {
 				t.Error("InputTokens: got 0, want > 0")
@@ -217,8 +223,8 @@ func TestClient(t *testing.T) {
 				t.Errorf("FinishReason: got %q, want %q", res.Usage.FinishReason, genai.FinishedStop)
 			}
 		})
-		t.Run("thread_id_always_in_opaque", func(t *testing.T) {
-			c := newTestClient(t, "GenSync_hello")
+		t.Run("session_id_always_in_opaque", func(t *testing.T) {
+			c := newTestClient(t, "GenSync_hello_nomodel")
 			msgs := genai.Messages{genai.NewTextMessage("hello")}
 			res, err := c.GenSync(t.Context(), msgs)
 			if err != nil {
@@ -226,35 +232,32 @@ func TestClient(t *testing.T) {
 			}
 			var found string
 			for _, r := range res.Replies {
-				if id, ok := r.Opaque[threadIDKey].(string); ok {
+				if id, ok := r.Opaque[sessionIDKey].(string); ok {
 					found = id
 				}
 			}
 			if found == "" {
-				t.Fatal("thread_id not found in Reply.Opaque")
+				t.Fatal("session_id not found in Reply.Opaque")
 			}
 		})
-		t.Run("thread_resumed_from_opaque", func(t *testing.T) {
-			// Turn 1: establish a session with a unique fact.
-			c1 := newTestClient(t, "GenSync_session_turn1", genai.ProviderOptionModel("gpt-5.4"))
+		t.Run("session_resumed_from_opaque", func(t *testing.T) {
+			c1 := newTestClient(t, "GenSync_session_turn1", genai.ProviderOptionModel("opencode/big-pickle"))
 			msgs1 := genai.Messages{genai.NewTextMessage("Remember this secret code: blue-fox-42. Just confirm you noted it.")}
 			res1, err := c1.GenSync(t.Context(), msgs1)
 			if err != nil {
 				t.Fatalf("turn 1: %v", err)
 			}
-			// Extract the thread ID from the first reply.
-			var threadID string
+			var sessionID string
 			for _, r := range res1.Replies {
-				if id, ok := r.Opaque[threadIDKey].(string); ok {
-					threadID = id
+				if id, ok := r.Opaque[sessionIDKey].(string); ok {
+					sessionID = id
 				}
 			}
-			if threadID == "" {
-				t.Fatal("turn 1 did not return a thread_id")
+			if sessionID == "" {
+				t.Fatal("turn 1 did not return a session_id")
 			}
 
-			// Turn 2: resume the session and ask it to recall the fact.
-			c2 := newTestClient(t, "GenSync_session_turn2", genai.ProviderOptionModel("gpt-5.4"))
+			c2 := newTestClient(t, "GenSync_session_turn2", genai.ProviderOptionModel("opencode/big-pickle"))
 			msgs2 := genai.Messages{
 				genai.NewTextMessage("Remember this secret code: blue-fox-42. Just confirm you noted it."),
 				{Replies: res1.Replies},
@@ -267,9 +270,15 @@ func TestClient(t *testing.T) {
 			if len(res2.Replies) == 0 {
 				t.Fatal("turn 2: expected at least one reply")
 			}
-			got := strings.ToLower(res2.Replies[0].Text)
-			if !strings.Contains(got, "blue-fox-42") {
-				t.Errorf("turn 2: expected reply to contain 'blue-fox-42', got %q", res2.Replies[0].Text)
+			found := false
+			for _, r := range res2.Replies {
+				if strings.Contains(strings.ToLower(r.Text), "blue-fox-42") {
+					found = true
+					break
+				}
+			}
+			if !found {
+				t.Errorf("turn 2: expected reply to contain 'blue-fox-42', got %v", res2.Replies)
 			}
 		})
 		t.Run("error_result", func(t *testing.T) {
@@ -287,7 +296,7 @@ func TestClient(t *testing.T) {
 
 	t.Run("gen_stream", func(t *testing.T) {
 		t.Run("hello", func(t *testing.T) {
-			c := newTestClient(t, "GenStream_hello", genai.ProviderOptionModel("gpt-5.4"))
+			c := newTestClient(t, "GenStream_hello", genai.ProviderOptionModel("opencode/big-pickle"))
 			msgs := genai.Messages{genai.NewTextMessage("say hello")}
 			seq, finish := c.GenStream(t.Context(), msgs)
 
@@ -310,12 +319,19 @@ func TestClient(t *testing.T) {
 			if res.Usage.OutputTokens == 0 {
 				t.Error("OutputTokens: got 0, want > 0")
 			}
-			if len(res.Replies) == 0 || !strings.Contains(strings.ToLower(res.Replies[0].Text), "hello") {
+			found := false
+			for _, r := range res.Replies {
+				if strings.Contains(strings.ToLower(r.Text), "hello") {
+					found = true
+					break
+				}
+			}
+			if !found {
 				t.Errorf("Result text: got %v", res.Replies)
 			}
 		})
 		t.Run("thinking_delta", func(t *testing.T) {
-			c := newTestClient(t, "GenStream_thinking", genai.ProviderOptionModel("gpt-5.4"))
+			c := newTestClient(t, "GenStream_thinking", genai.ProviderOptionModel("opencode/big-pickle"))
 			msgs := genai.Messages{genai.NewTextMessage("say hello")}
 			seq, finish := c.GenStream(t.Context(), msgs)
 
@@ -358,7 +374,7 @@ func TestClient(t *testing.T) {
 			}
 			_, err := finish()
 			if err == nil {
-				t.Fatal("expected error from error notification")
+				t.Fatal("expected error from error response")
 			}
 			if !strings.Contains(err.Error(), "internal server error") {
 				t.Errorf("unexpected error: %v", err)
@@ -377,7 +393,7 @@ func TestClient(t *testing.T) {
 		}
 		var found bool
 		for _, m := range models {
-			if m.GetID() == "gpt-5.3-codex" {
+			if m.GetID() == "opencode/big-pickle" {
 				found = true
 			}
 		}
@@ -386,27 +402,27 @@ func TestClient(t *testing.T) {
 			for i, m := range models {
 				ids[i] = m.GetID()
 			}
-			t.Errorf("gpt-5.3-codex not found in models: %v", ids)
+			t.Errorf("opencode/big-pickle not found in models: %v", ids)
 		}
 	})
 }
 
-func TestExtractThreadID(t *testing.T) {
+func TestExtractSessionID(t *testing.T) {
 	t.Run("found", func(t *testing.T) {
 		msgs := genai.Messages{
 			genai.NewTextMessage("hi"),
 			{Replies: []genai.Reply{
 				{Text: "Hello"},
-				{Opaque: map[string]any{threadIDKey: "abc-123"}},
+				{Opaque: map[string]any{sessionIDKey: "sess-123"}},
 			}},
 		}
-		if got := extractThreadID(msgs); got != "abc-123" {
-			t.Errorf("got %q, want %q", got, "abc-123")
+		if got := extractSessionID(msgs); got != "sess-123" {
+			t.Errorf("got %q, want %q", got, "sess-123")
 		}
 	})
 	t.Run("not_found", func(t *testing.T) {
 		msgs := genai.Messages{genai.NewTextMessage("hi")}
-		if got := extractThreadID(msgs); got != "" {
+		if got := extractSessionID(msgs); got != "" {
 			t.Errorf("got %q, want empty", got)
 		}
 	})
@@ -445,68 +461,14 @@ func TestLastUserMsg(t *testing.T) {
 	})
 }
 
-func TestReasoningEffort(t *testing.T) {
-	t.Run("valid", func(t *testing.T) {
-		for _, v := range []ReasoningEffort{
-			ReasoningEffortNone, ReasoningEffortMinimal, ReasoningEffortLow,
-			ReasoningEffortMedium, ReasoningEffortHigh, ReasoningEffortXHigh,
-		} {
-			c, err := New(v)
-			if err != nil {
-				t.Fatalf("New(%q): %v", v, err)
-			}
-			if c.effort != v {
-				t.Errorf("effort: got %q, want %q", c.effort, v)
-			}
-		}
-	})
-	t.Run("invalid", func(t *testing.T) {
-		if _, err := New(ReasoningEffort("turbo")); err == nil {
-			t.Fatal("expected error for invalid effort")
-		}
-	})
-	t.Run("default", func(t *testing.T) {
-		c, err := New()
-		if err != nil {
-			t.Fatal(err)
-		}
-		if c.effort != ReasoningEffortMedium {
-			t.Errorf("default effort: got %q, want %q", c.effort, ReasoningEffortMedium)
-		}
-	})
-}
-
-func TestParseOpts(t *testing.T) {
-	t.Run("system_prompt", func(t *testing.T) {
-		co, err := parseOpts([]genai.GenOption{&genai.GenOptionText{SystemPrompt: "Be helpful"}})
-		if err != nil {
-			t.Fatalf("unexpected error: %v", err)
-		}
-		if co.systemPrompt != "Be helpful" {
-			t.Errorf("systemPrompt: got %q, want %q", co.systemPrompt, "Be helpful")
-		}
-	})
-	t.Run("unsupported", func(t *testing.T) {
-		for _, tc := range []struct {
-			name string
-			opts []genai.GenOption
-			want string
-		}{
-			{"Temperature", []genai.GenOption{&genai.GenOptionText{Temperature: 0.5}}, "GenOptionText.Temperature"},
-			{"Seed", []genai.GenOption{genai.GenOptionSeed(42)}, "GenOptionSeed"},
-		} {
-			t.Run(tc.name, func(t *testing.T) {
-				_, err := parseOpts(tc.opts)
-				var uerr *base.ErrNotSupported
-				if !errors.As(err, &uerr) {
-					t.Fatalf("expected ErrNotSupported, got %v", err)
-				}
-				if !slices.Contains(uerr.Options, tc.want) {
-					t.Errorf("expected %q in unsupported, got %v", tc.want, uerr.Options)
-				}
-			})
-		}
-	})
+func TestGenSyncUnsupportedOpts(t *testing.T) {
+	c := newTestClient(t, "GenSync_hello_nomodel")
+	msgs := genai.Messages{genai.NewTextMessage("hello")}
+	_, err := c.GenSync(t.Context(), msgs, &genai.GenOptionText{SystemPrompt: "Be helpful"})
+	var uerr *base.ErrNotSupported
+	if !errors.As(err, &uerr) {
+		t.Fatalf("expected ErrNotSupported, got %v", err)
+	}
 }
 
 func TestScoreboard(t *testing.T) {

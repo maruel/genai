@@ -1,0 +1,350 @@
+{
+  "country": "US",
+  "dashboardURL": "https://opencode.ai",
+  "scenarios": [
+    {
+      "models": [
+        "openai/gpt-5.4/xhigh"
+      ],
+      "reason": true,
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "topLogprobs": true
+      },
+      "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "topLogprobs": true
+      }
+    },
+    {
+      "models": [
+        "opencode/big-pickle"
+      ],
+      "reason": true,
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "topLogprobs": true
+      },
+      "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "topLogprobs": true
+      }
+    },
+    {
+      "models": [
+        "opencode/mimo-v2-omni-free"
+      ],
+      "reason": true,
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "topLogprobs": true
+      },
+      "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "topLogprobs": true
+      }
+    },
+    {
+      "models": [
+        "opencode/mimo-v2-pro-free"
+      ],
+      "reason": true,
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "topLogprobs": true
+      },
+      "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "topLogprobs": true
+      }
+    },
+    {
+      "models": [
+        "opencode/minimax-m2.5-free"
+      ],
+      "reason": true,
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "topLogprobs": true
+      },
+      "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "topLogprobs": true
+      }
+    },
+    {
+      "models": [
+        "opencode/nemotron-3-super-free"
+      ],
+      "reason": true,
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "topLogprobs": true
+      },
+      "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "topLogprobs": true
+      }
+    },
+    {
+      "models": [
+        "openai/codex-mini-latest",
+        "openai/codex-mini-latest/high",
+        "openai/codex-mini-latest/low",
+        "openai/codex-mini-latest/medium",
+        "openai/gpt-3.5-turbo",
+        "openai/gpt-4",
+        "openai/gpt-4-turbo",
+        "openai/gpt-4.1",
+        "openai/gpt-4.1-mini",
+        "openai/gpt-4.1-nano",
+        "openai/gpt-4o",
+        "openai/gpt-4o-2024-05-13",
+        "openai/gpt-4o-2024-08-06",
+        "openai/gpt-4o-2024-11-20",
+        "openai/gpt-4o-mini",
+        "openai/gpt-5",
+        "openai/gpt-5-codex",
+        "openai/gpt-5-codex/high",
+        "openai/gpt-5-codex/low",
+        "openai/gpt-5-codex/medium",
+        "openai/gpt-5-mini",
+        "openai/gpt-5-mini/high",
+        "openai/gpt-5-mini/low",
+        "openai/gpt-5-mini/medium",
+        "openai/gpt-5-mini/minimal",
+        "openai/gpt-5-nano",
+        "openai/gpt-5-nano/high",
+        "openai/gpt-5-nano/low",
+        "openai/gpt-5-nano/medium",
+        "openai/gpt-5-nano/minimal",
+        "openai/gpt-5-pro",
+        "openai/gpt-5.1",
+        "openai/gpt-5.1-chat-latest",
+        "openai/gpt-5.1-chat-latest/high",
+        "openai/gpt-5.1-chat-latest/low",
+        "openai/gpt-5.1-chat-latest/medium",
+        "openai/gpt-5.1-chat-latest/none",
+        "openai/gpt-5.1-codex",
+        "openai/gpt-5.1-codex-max",
+        "openai/gpt-5.1-codex-max/high",
+        "openai/gpt-5.1-codex-max/low",
+        "openai/gpt-5.1-codex-max/medium",
+        "openai/gpt-5.1-codex-mini",
+        "openai/gpt-5.1-codex-mini/high",
+        "openai/gpt-5.1-codex-mini/low",
+        "openai/gpt-5.1-codex-mini/medium",
+        "openai/gpt-5.1-codex/high",
+        "openai/gpt-5.1-codex/low",
+        "openai/gpt-5.1-codex/medium",
+        "openai/gpt-5.1/high",
+        "openai/gpt-5.1/low",
+        "openai/gpt-5.1/medium",
+        "openai/gpt-5.1/none",
+        "openai/gpt-5.2",
+        "openai/gpt-5.2-chat-latest",
+        "openai/gpt-5.2-chat-latest/high",
+        "openai/gpt-5.2-chat-latest/low",
+        "openai/gpt-5.2-chat-latest/medium",
+        "openai/gpt-5.2-chat-latest/none",
+        "openai/gpt-5.2-chat-latest/xhigh",
+        "openai/gpt-5.2-codex",
+        "openai/gpt-5.2-codex/high",
+        "openai/gpt-5.2-codex/low",
+        "openai/gpt-5.2-codex/medium",
+        "openai/gpt-5.2-codex/xhigh",
+        "openai/gpt-5.2-pro",
+        "openai/gpt-5.2-pro/high",
+        "openai/gpt-5.2-pro/low",
+        "openai/gpt-5.2-pro/medium",
+        "openai/gpt-5.2-pro/none",
+        "openai/gpt-5.2-pro/xhigh",
+        "openai/gpt-5.2/high",
+        "openai/gpt-5.2/low",
+        "openai/gpt-5.2/medium",
+        "openai/gpt-5.2/none",
+        "openai/gpt-5.2/xhigh",
+        "openai/gpt-5.3-codex",
+        "openai/gpt-5.3-codex-spark",
+        "openai/gpt-5.3-codex-spark/high",
+        "openai/gpt-5.3-codex-spark/low",
+        "openai/gpt-5.3-codex-spark/medium",
+        "openai/gpt-5.3-codex-spark/xhigh",
+        "openai/gpt-5.3-codex/high",
+        "openai/gpt-5.3-codex/low",
+        "openai/gpt-5.3-codex/medium",
+        "openai/gpt-5.3-codex/xhigh",
+        "openai/gpt-5.4",
+        "openai/gpt-5.4-mini",
+        "openai/gpt-5.4-mini/high",
+        "openai/gpt-5.4-mini/low",
+        "openai/gpt-5.4-mini/medium",
+        "openai/gpt-5.4-mini/none",
+        "openai/gpt-5.4-mini/xhigh",
+        "openai/gpt-5.4-nano",
+        "openai/gpt-5.4-nano/high",
+        "openai/gpt-5.4-nano/low",
+        "openai/gpt-5.4-nano/medium",
+        "openai/gpt-5.4-nano/none",
+        "openai/gpt-5.4-nano/xhigh",
+        "openai/gpt-5.4-pro",
+        "openai/gpt-5.4-pro/high",
+        "openai/gpt-5.4-pro/low",
+        "openai/gpt-5.4-pro/medium",
+        "openai/gpt-5.4-pro/none",
+        "openai/gpt-5.4-pro/xhigh",
+        "openai/gpt-5.4/high",
+        "openai/gpt-5.4/low",
+        "openai/gpt-5.4/medium",
+        "openai/gpt-5.4/none",
+        "openai/gpt-5/high",
+        "openai/gpt-5/low",
+        "openai/gpt-5/medium",
+        "openai/gpt-5/minimal",
+        "openai/o1",
+        "openai/o1-mini",
+        "openai/o1-mini/high",
+        "openai/o1-mini/low",
+        "openai/o1-mini/medium",
+        "openai/o1-preview",
+        "openai/o1-preview/high",
+        "openai/o1-preview/low",
+        "openai/o1-preview/medium",
+        "openai/o1-pro",
+        "openai/o1-pro/high",
+        "openai/o1-pro/low",
+        "openai/o1-pro/medium",
+        "openai/o1/high",
+        "openai/o1/low",
+        "openai/o1/medium",
+        "openai/o3",
+        "openai/o3-deep-research",
+        "openai/o3-deep-research/high",
+        "openai/o3-deep-research/low",
+        "openai/o3-deep-research/medium",
+        "openai/o3-mini",
+        "openai/o3-mini/high",
+        "openai/o3-mini/low",
+        "openai/o3-mini/medium",
+        "openai/o3-pro",
+        "openai/o3-pro/high",
+        "openai/o3-pro/low",
+        "openai/o3-pro/medium",
+        "openai/o3/high",
+        "openai/o3/low",
+        "openai/o3/medium",
+        "openai/o4-mini",
+        "openai/o4-mini-deep-research",
+        "openai/o4-mini-deep-research/high",
+        "openai/o4-mini-deep-research/low",
+        "openai/o4-mini-deep-research/medium",
+        "openai/o4-mini/high",
+        "openai/o4-mini/low",
+        "openai/o4-mini/medium",
+        "openai/text-embedding-3-large",
+        "openai/text-embedding-3-small",
+        "openai/text-embedding-ada-002",
+        "opencode/big-pickle/high",
+        "opencode/big-pickle/max",
+        "opencode/gpt-5-nano",
+        "opencode/gpt-5-nano/high",
+        "opencode/gpt-5-nano/low",
+        "opencode/gpt-5-nano/medium",
+        "opencode/gpt-5-nano/minimal",
+        "opencode/mimo-v2-omni-free/high",
+        "opencode/mimo-v2-omni-free/low",
+        "opencode/mimo-v2-omni-free/medium",
+        "opencode/mimo-v2-pro-free/high",
+        "opencode/mimo-v2-pro-free/low",
+        "opencode/mimo-v2-pro-free/medium",
+        "opencode/nemotron-3-super-free/high",
+        "opencode/nemotron-3-super-free/low",
+        "opencode/nemotron-3-super-free/medium"
+      ]
+    }
+  ]
+}

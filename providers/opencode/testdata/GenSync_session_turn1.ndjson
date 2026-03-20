@@ -1,0 +1,5 @@
+{"jsonrpc":"2.0","id":1,"result":{"protocolVersion":1,"agentCapabilities":{"promptCapabilities":{"image":true}},"agentInfo":{"name":"opencode","version":"0.1.0"}}}
+{"jsonrpc":"2.0","id":2,"result":{"sessionId":"sess_turn1","models":{"currentModelId":"anthropic/claude-sonnet-4","availableModels":[{"modelId":"anthropic/claude-sonnet-4","name":"Claude Sonnet 4"}]}}}
+{"jsonrpc":"2.0","id":3,"result":{}}
+{"jsonrpc":"2.0","method":"session/update","params":{"sessionId":"sess_turn1","update":{"sessionUpdate":"agent_message_chunk","content":{"type":"text","text":"Got it, I've noted the secret code: blue-fox-42."}}}}
+{"jsonrpc":"2.0","id":4,"result":{"stopReason":"end_turn","usage":{"totalTokens":120,"inputTokens":80,"outputTokens":40}}}

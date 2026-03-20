@@ -380,6 +380,22 @@ func TestClient(t *testing.T) {
 			}
 		})
 	})
+
+	t.Run("ListModels", func(t *testing.T) {
+		c := newTestClient(t, "GenSync_hello")
+		models, err := c.ListModels(t.Context())
+		if err != nil {
+			t.Fatalf("ListModels: %v", err)
+		}
+		if len(models) == 0 {
+			t.Fatal("expected at least one model")
+		}
+		for _, m := range models {
+			if m.GetID() == "" {
+				t.Error("model with empty ID")
+			}
+		}
+	})
 }
 
 func TestBuildArgs(t *testing.T) {
@@ -602,22 +618,6 @@ func TestGenOption(t *testing.T) {
 			})
 		}
 	})
-}
-
-func TestListModels(t *testing.T) {
-	c := newTestClient(t, "GenSync_hello")
-	models, err := c.ListModels(t.Context())
-	if err != nil {
-		t.Fatalf("ListModels: %v", err)
-	}
-	if len(models) == 0 {
-		t.Fatal("expected at least one model")
-	}
-	for _, m := range models {
-		if m.GetID() == "" {
-			t.Error("model with empty ID")
-		}
-	}
 }
 
 func TestScoreboard(t *testing.T) {

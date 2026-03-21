@@ -102,7 +102,7 @@ func TestGenOptionText(t *testing.T) {
 						MaxTokens:   100,
 						Stop:        []string{"stop"},
 						ReplyAsJSON: true,
-						DecodeAs:    struct{}{},
+						DecodeAs:    &struct{}{},
 					},
 				},
 				{
@@ -145,6 +145,11 @@ func TestGenOptionText(t *testing.T) {
 					errMsg: "field TopK: must be [0, 1024]",
 				},
 				{
+					name:   "Invalid DecodeAs non-pointer struct",
+					in:     GenOptionText{DecodeAs: struct{}{}},
+					errMsg: "field DecodeAs: must be a pointer to a struct, got struct {}",
+				},
+				{
 					name:   "Invalid DecodeAs jsonschema.Schema",
 					in:     GenOptionText{DecodeAs: &jsonschema.Schema{}},
 					errMsg: "field DecodeAs: must be an actual struct serializable as JSON, not a *jsonschema.Schema",
@@ -152,7 +157,7 @@ func TestGenOptionText(t *testing.T) {
 				{
 					name:   "Invalid DecodeAs string",
 					in:     GenOptionText{DecodeAs: "string"},
-					errMsg: "field DecodeAs: must be a struct, not string",
+					errMsg: "field DecodeAs: must be a pointer to a struct, got string",
 				},
 			}
 			for _, tt := range tests {
@@ -455,25 +460,8 @@ func TestGenOptionVideo(t *testing.T) {
 func TestValidateReflectedToJSON(t *testing.T) {
 	type testStruct struct{}
 	t.Run("valid", func(t *testing.T) {
-		tests := []struct {
-			name string
-			in   any
-		}{
-			{
-				name: "valid struct",
-				in:   testStruct{},
-			},
-			{
-				name: "valid pointer to struct",
-				in:   &testStruct{},
-			},
-		}
-		for _, tt := range tests {
-			t.Run(tt.name, func(t *testing.T) {
-				if err := validateReflectedToJSON(tt.in); err != nil {
-					t.Fatalf("unexpected error: %v", err)
-				}
-			})
+		if err := validateReflectedToJSON(&testStruct{}); err != nil {
+			t.Fatalf("unexpected error: %v", err)
 		}
 	})
 	t.Run("error", func(t *testing.T) {
@@ -488,14 +476,19 @@ func TestValidateReflectedToJSON(t *testing.T) {
 				errMsg: "must be an actual struct serializable as JSON, not a *jsonschema.Schema",
 			},
 			{
+				name:   "non-pointer struct",
+				in:     testStruct{},
+				errMsg: "must be a pointer to a struct, got genai.testStruct",
+			},
+			{
 				name:   "string type",
 				in:     "hello",
-				errMsg: "must be a struct, not string",
+				errMsg: "must be a pointer to a struct, got string",
 			},
 			{
 				name:   "int type",
 				in:     123,
-				errMsg: "must be a struct, not int",
+				errMsg: "must be a pointer to a struct, got int",
 			},
 		}
 		for _, tt := range tests {

@@ -364,14 +364,11 @@ func (o *GenOptionVideo) Validate() error {
 
 func validateReflectedToJSON(r any) error {
 	tp := reflect.TypeOf(r)
-	if tp.Kind() == reflect.Pointer {
-		tp = tp.Elem()
-		if _, ok := r.(*jsonschema.Schema); ok {
-			return errors.New("must be an actual struct serializable as JSON, not a *jsonschema.Schema")
-		}
+	if tp.Kind() != reflect.Pointer || tp.Elem().Kind() != reflect.Struct {
+		return fmt.Errorf("must be a pointer to a struct, got %T", r)
 	}
-	if tp.Kind() != reflect.Struct {
-		return fmt.Errorf("must be a struct, not %T", r)
+	if _, ok := r.(*jsonschema.Schema); ok {
+		return errors.New("must be an actual struct serializable as JSON, not a *jsonschema.Schema")
 	}
 	return nil
 }

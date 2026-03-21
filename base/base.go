@@ -2,7 +2,7 @@
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
-// Package base is awesome sauce to reduce code duplication across most providers.
+// Package base provides shared infrastructure for implementing genai providers.
 //
 // It is not meant to be used by end users.
 package base
@@ -133,7 +133,7 @@ func (*NotImplemented) Capabilities() genai.ProviderCapabilities {
 	return genai.ProviderCapabilities{}
 }
 
-// ProviderBase implements the basse functionality to help implementing a base.Provider.
+// ProviderBase implements the base functionality to help implementing a base.Provider.
 //
 // It contains the shared HTTP client functionality used across all API clients.
 type ProviderBase[PErrorResponse ErrAPI] struct {
@@ -156,9 +156,12 @@ type ProviderBase[PErrorResponse ErrAPI] struct {
 	// ModelOptional is true if a model name is not required to use the provider.
 	ModelOptional bool
 
+	// mu protects errorResponse and lastResp.
 	mu            sync.Mutex
+	// errorResponse is the reflected type of PErrorResponse, lazily initialized by lateInit.
 	errorResponse reflect.Type
-	lastResp      http.Header
+	// lastResp stores the HTTP headers from the most recent response for rate limit extraction.
+	lastResp http.Header
 }
 
 // JSONRequest simplifies doing an HTTP PATCH/DELETE/PUT in JSON.

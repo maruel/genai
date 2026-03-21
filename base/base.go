@@ -395,6 +395,9 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 	if err := c.GenSyncRaw(ctx, in, out); err != nil {
 		return res, err
 	}
+	// Capture headers immediately after the HTTP call, before any other work that could allow a concurrent
+	// request to overwrite lastResp.
+	lastResp := c.LastResponseHeaders()
 	res, err := out.ToResult()
 	if err != nil {
 		return res, err
@@ -403,8 +406,6 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 		// Catch provider implementation bugs.
 		return res, &internal.BadError{Err: err}
 	}
-
-	lastResp := c.LastResponseHeaders()
 	if c.ProcessHeaders != nil && lastResp != nil {
 		res.Usage.Limits = c.ProcessHeaders(lastResp)
 	}
@@ -426,6 +427,9 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 		// Converts raw chunks into fragments.
 		// Generate parsed chunks from the raw JSON SSE stream.
 		chunks, finish := c.GenStreamRaw(ctx, in)
+		// Capture headers immediately after the HTTP call, before iterating. This prevents a concurrent
+		// request from overwriting lastResp.
+		lastResp := c.LastResponseHeaders()
 		fragments, finish2 := c.ProcessStream(chunks)
 		sent := false
 		for f := range fragments {
@@ -460,7 +464,6 @@ func (c *Provider[PErrorResponse, PGenRequest, PGenResponse, GenStreamChunkRespo
 			// This happens with some internal failures, like gpt-oss-120b with Stop.
 			finalErr = errors.New("model sent no reply")
 		}
-		lastResp := c.LastResponseHeaders()
 		if c.ProcessHeaders != nil && lastResp != nil {
 			res.Usage.Limits = c.ProcessHeaders(lastResp)
 		}

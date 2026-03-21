@@ -148,6 +148,27 @@ type Result struct {
 	Logprobs [][]Logprob
 }
 
+// Validate ensures the result is valid.
+func (r *Result) Validate() error {
+	var errs []error
+	if err := r.Message.Validate(); err != nil {
+		errs = append(errs, err)
+	}
+	for i := range r.Usage.Limits {
+		if err := r.Usage.Limits[i].Validate(); err != nil {
+			errs = append(errs, fmt.Errorf("limit #%d: %w", i, err))
+		}
+	}
+	for i, tokens := range r.Logprobs {
+		for j := range tokens {
+			if err := tokens[j].Validate(); err != nil {
+				errs = append(errs, fmt.Errorf("logprob[%d][%d]: %w", i, j, err))
+			}
+		}
+	}
+	return errors.Join(errs...)
+}
+
 // Logprob represents a single log probability information for a token.
 //
 // One of ID or Text must be set.
@@ -155,6 +176,14 @@ type Logprob struct {
 	ID      int64   `json:"id,omitempty"`   // Input token ID.
 	Text    string  `json:"text,omitempty"` // Text in UTF-8.
 	Logprob float64 `json:"logprob"`        // Log probability of the token. It should normally be non-zero but sometimes it is.
+}
+
+// Validate ensures the logprob is valid.
+func (l *Logprob) Validate() error {
+	if l.ID == 0 && l.Text == "" {
+		return errors.New("one of ID or Text must be set")
+	}
+	return nil
 }
 
 // GoString returns a JSON representation of the reply for debugging purposes.
@@ -1201,11 +1230,13 @@ type ProviderScoreboardVariants interface {
 var (
 	_ internal.Validatable = (*Citation)(nil)
 	_ internal.Validatable = (*CitationSource)(nil)
+	_ internal.Validatable = (*Logprob)(nil)
 	_ internal.Validatable = (*Message)(nil)
 	_ internal.Validatable = (*Messages)(nil)
 	_ internal.Validatable = (*RateLimit)(nil)
 	_ internal.Validatable = (*Reply)(nil)
 	_ internal.Validatable = (*Request)(nil)
+	_ internal.Validatable = (*Result)(nil)
 	_ internal.Validatable = (*ToolCall)(nil)
 	_ internal.Validatable = (*ToolCallResult)(nil)
 )

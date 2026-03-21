@@ -1423,6 +1423,118 @@ func TestCitationSource(t *testing.T) {
 	})
 }
 
+func TestLogprob(t *testing.T) {
+	t.Run("Validate", func(t *testing.T) {
+		t.Run("valid", func(t *testing.T) {
+			tests := []struct {
+				name string
+				in   Logprob
+			}{
+				{name: "with ID", in: Logprob{ID: 42, Logprob: -0.5}},
+				{name: "with Text", in: Logprob{Text: "hello", Logprob: -0.5}},
+				{name: "with both", in: Logprob{ID: 42, Text: "hello", Logprob: -0.5}},
+			}
+			for _, tt := range tests {
+				t.Run(tt.name, func(t *testing.T) {
+					if err := tt.in.Validate(); err != nil {
+						t.Fatalf("unexpected error: %q", err)
+					}
+				})
+			}
+		})
+		t.Run("error", func(t *testing.T) {
+			l := Logprob{Logprob: -0.5}
+			if err := l.Validate(); err == nil || err.Error() != "one of ID or Text must be set" {
+				t.Fatalf("error mismatch\nwant %q\ngot  %q", "one of ID or Text must be set", err)
+			}
+		})
+	})
+}
+
+func TestResult(t *testing.T) {
+	t.Run("Validate", func(t *testing.T) {
+		t.Run("valid", func(t *testing.T) {
+			tests := []struct {
+				name string
+				in   Result
+			}{
+				{
+					name: "simple text reply",
+					in: Result{
+						Message: Message{Replies: []Reply{{Text: "hello"}}},
+						Usage:   Usage{FinishReason: FinishedStop},
+					},
+				},
+				{
+					name: "with logprobs",
+					in: Result{
+						Message: Message{Replies: []Reply{{Text: "hello"}}},
+						Usage:   Usage{FinishReason: FinishedStop},
+						Logprobs: [][]Logprob{
+							{{Text: "hello", Logprob: -0.5}, {Text: "hi", Logprob: -1.2}},
+						},
+					},
+				},
+				{
+					name: "with rate limits",
+					in: Result{
+						Message: Message{Replies: []Reply{{Text: "hello"}}},
+						Usage: Usage{
+							FinishReason: FinishedStop,
+							Limits: []RateLimit{
+								{Type: Requests, Period: PerMinute, Limit: 100, Remaining: 99, Reset: time.Now()},
+							},
+						},
+					},
+				},
+			}
+			for _, tt := range tests {
+				t.Run(tt.name, func(t *testing.T) {
+					if err := tt.in.Validate(); err != nil {
+						t.Fatalf("unexpected error: %q", err)
+					}
+				})
+			}
+		})
+		t.Run("error", func(t *testing.T) {
+			tests := []struct {
+				name   string
+				in     Result
+				errMsg string
+			}{
+				{
+					name:   "empty message",
+					in:     Result{},
+					errMsg: "at least one of fields Request, Reply or ToolCallsResults is required",
+				},
+				{
+					name: "invalid rate limit",
+					in: Result{
+						Message: Message{Replies: []Reply{{Text: "hello"}}},
+						Usage:   Usage{Limits: []RateLimit{{Type: -1}}},
+					},
+					errMsg: "limit #0: invalid limit type -1",
+				},
+				{
+					name: "invalid logprob",
+					in: Result{
+						Message:  Message{Replies: []Reply{{Text: "hello"}}},
+						Logprobs: [][]Logprob{{{Logprob: -0.5}}},
+					},
+					errMsg: "logprob[0][0]: one of ID or Text must be set",
+				},
+			}
+			for _, tt := range tests {
+				t.Run(tt.name, func(t *testing.T) {
+					if err := tt.in.Validate(); err == nil || err.Error() != tt.errMsg {
+						t.Fatalf("error mismatch\nwant %q\ngot  %q", tt.errMsg, err)
+					}
+				})
+			}
+		})
+	})
+}
+
 func TestRateLimit(t *testing.T) {
 	t.Run("Validate", func(t *testing.T) {
 		t.Run("valid", func(t *testing.T) {

@@ -444,11 +444,16 @@ func (l *Logprobs) To() [][]genai.Logprob {
 	for _, p := range l.Content {
 		lp := make([]genai.Logprob, 0, len(p.TopLogprobs))
 		// The first token is the same as the content token.
-		// Intentionally discard Bytes.
+		// Intentionally discard Bytes. Skip entries with empty Token since they can't be represented.
 		for _, tlp := range p.TopLogprobs {
+			if tlp.Token == "" {
+				continue
+			}
 			lp = append(lp, genai.Logprob{Text: tlp.Token, Logprob: tlp.Logprob})
 		}
-		out = append(out, lp)
+		if len(lp) != 0 {
+			out = append(out, lp)
+		}
 	}
 	return out
 }

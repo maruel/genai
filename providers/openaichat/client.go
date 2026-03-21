@@ -1189,12 +1189,11 @@ func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts ...gena
 	b := BatchRequest{CompletionWindow: "24h", Endpoint: "/v1/chat/completions", InputFileID: fileID}
 	resp, err := c.GenAsyncRaw(ctx, b)
 	if len(resp.Errors.Data) != 0 {
-		errs := make([]error, 1, 1+len(resp.Errors.Data))
-		errs[0] = err
+		var errs []error
 		for _, d := range resp.Errors.Data {
 			errs = append(errs, fmt.Errorf("batch error on line %d: %s (%s)", d.Line, d.Message, d.Code))
 		}
-		err = errors.Join(errs...)
+		err = errors.Join(err, errors.Join(errs...))
 	}
 	return genai.Job(resp.ID), err
 }
@@ -1213,21 +1212,17 @@ func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, er
 	res := genai.Result{}
 	resp, err := c.PokeResultRaw(ctx, id)
 	if len(resp.Errors.Data) != 0 {
-		errs := make([]error, 1, 1+len(resp.Errors.Data))
-		errs[0] = err
+		var errs []error
 		for _, d := range resp.Errors.Data {
 			errs = append(errs, fmt.Errorf("batch error on line %d: %s (%s)", d.Line, d.Message, d.Code))
 		}
-		err = errors.Join(errs...)
+		err = errors.Join(err, errors.Join(errs...))
 	}
 	if resp.Status == "validating" || resp.Status == "in_progress" || resp.Status == "finalizing" {
 		res.Usage.FinishReason = genai.Pending
 	}
 	if resp.OutputFileID != "" {
 		f, err2 := c.FileGet(ctx, resp.OutputFileID)
-		if err == nil {
-			err = err2
-		}
 		if f != nil {
 			defer func() { _ = f.Close() }()
 			out := BatchRequestOutput{}
@@ -1236,16 +1231,17 @@ func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, er
 			if !c.impl.Lenient {
 				d.DisallowUnknownFields()
 			}
-			if err := d.Decode(&out); err != nil {
-				return res, err
+			if err3 := d.Decode(&out); err3 != nil {
+				return res, errors.Join(err, err2, err3)
 			}
-			res, err2 = out.Response.Body.ToResult()
-			if err2 == nil && out.Error.Message != "" {
-				err2 = fmt.Errorf("error %s: %s", out.Error.Code, out.Error.Message)
+			var err4 error
+			res, err4 = out.Response.Body.ToResult()
+			if err4 == nil && out.Error.Message != "" {
+				err4 = fmt.Errorf("error %s: %s", out.Error.Code, out.Error.Message)
 			}
-		}
-		if err == nil {
-			err = err2
+			err = errors.Join(err, err2, err4)
+		} else {
+			err = errors.Join(err, err2)
 		}
 	}
 	// TODO: Delete the input and output files.

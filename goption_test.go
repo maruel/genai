@@ -145,6 +145,21 @@ func TestGenOptionText(t *testing.T) {
 					errMsg: "field TopK: must be [0, 1024]",
 				},
 				{
+					name:   "Invalid TopLogprobs negative",
+					in:     GenOptionText{TopLogprobs: -1},
+					errMsg: "field TopLogprobs: must be [0, 20]",
+				},
+				{
+					name:   "Invalid TopLogprobs too high",
+					in:     GenOptionText{TopLogprobs: 21},
+					errMsg: "field TopLogprobs: must be [0, 20]",
+				},
+				{
+					name:   "Invalid Stop empty string",
+					in:     GenOptionText{Stop: []string{"valid", ""}},
+					errMsg: "field Stop[1]: must not be empty",
+				},
+				{
 					name:   "Invalid DecodeAs non-pointer struct",
 					in:     GenOptionText{DecodeAs: struct{}{}},
 					errMsg: "field DecodeAs: must be a pointer to a struct, got struct {}",

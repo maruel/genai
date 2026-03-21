@@ -708,7 +708,7 @@ func TestRequest(t *testing.T) {
 				{
 					name:   "Document without filename",
 					in:     `{"doc":{"bytes": "SGVsbG8="}}`,
-					errMsg: "field Filename is required with Document when not implementing Name()",
+					errMsg: "field Filename is required with Src when not implementing Name()",
 				},
 				{
 					name:   "Empty content",
@@ -906,7 +906,7 @@ func TestReply(t *testing.T) {
 				{
 					name:   "Document without filename",
 					in:     `{"doc":{"bytes": "SGVsbG8="}}`,
-					errMsg: "field Filename is required with Document when not implementing Name()",
+					errMsg: "field Filename is required with Src when not implementing Name()",
 				},
 				{
 					name:   "Empty content",
@@ -1757,7 +1757,7 @@ func TestDoc(t *testing.T) {
 				{
 					name:   "both src and URL set",
 					in:     Doc{Src: strings.NewReader("content"), URL: "https://example.com"},
-					errMsg: "field Document and URL are mutually exclusive",
+					errMsg: "field Src and URL are mutually exclusive",
 				},
 				{
 					name:   "filename with path",
@@ -1767,12 +1767,12 @@ func TestDoc(t *testing.T) {
 				{
 					name:   "filename without src or URL",
 					in:     Doc{Filename: "document.txt"},
-					errMsg: "field Document or URL is required when using Filename",
+					errMsg: "field Src or URL is required when using Filename",
 				},
 				{
 					name:   "src without filename and not implementing Name",
 					in:     Doc{Src: strings.NewReader("content")},
-					errMsg: "field Filename is required with Document when not implementing Name()",
+					errMsg: "field Filename is required with Src when not implementing Name()",
 				},
 			}
 			for _, tt := range tests {

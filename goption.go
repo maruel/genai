@@ -165,6 +165,14 @@ func (o *GenOptionText) Validate() error {
 	if o.TopK < 0 || o.TopK > 1024 {
 		return errors.New("field TopK: must be [0, 1024]")
 	}
+	if o.TopLogprobs < 0 || o.TopLogprobs > 20 {
+		return errors.New("field TopLogprobs: must be [0, 20]")
+	}
+	for i, s := range o.Stop {
+		if s == "" {
+			return fmt.Errorf("field Stop[%d]: must not be empty", i)
+		}
+	}
 	if o.DecodeAs != nil {
 		if err := validateReflectedToJSON(o.DecodeAs); err != nil {
 			return fmt.Errorf("field DecodeAs: %w", err)

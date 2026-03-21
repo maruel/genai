@@ -173,8 +173,8 @@ func (r *Result) Validate() error {
 //
 // One of ID or Text must be set.
 type Logprob struct {
-	ID      int64   `json:"id,omitempty"`   // Input token ID.
-	Text    string  `json:"text,omitempty"` // Text in UTF-8.
+	ID      int64   `json:"id,omitzero"`   // Input token ID.
+	Text    string  `json:"text,omitzero"` // Text in UTF-8.
 	Logprob float64 `json:"logprob"`        // Log probability of the token. It should normally be non-zero but sometimes it is.
 }
 
@@ -835,19 +835,19 @@ func (d *Doc) IsZero() bool {
 // Validate ensures the block is valid.
 func (d *Doc) Validate() error {
 	if d.Src != nil && d.URL != "" {
-		return errors.New("field Document and URL are mutually exclusive")
+		return errors.New("field Src and URL are mutually exclusive")
 	}
 	if d.Filename != "" {
 		if filepath.Base(d.Filename) != d.Filename {
 			return errors.New("field Filename must be a valid filename with no path")
 		}
 		if d.Src == nil && d.URL == "" {
-			return errors.New("field Document or URL is required when using Filename")
+			return errors.New("field Src or URL is required when using Filename")
 		}
 	}
 	if d.Filename == "" && d.Src != nil {
 		if _, ok := d.Src.(interface{ Name() string }); !ok {
-			return errors.New("field Filename is required with Document when not implementing Name()")
+			return errors.New("field Filename is required with Src when not implementing Name()")
 		}
 	}
 	return nil

@@ -569,6 +569,8 @@ type Content struct {
 	Input any `json:"input,omitzero"` // To reorder, I need to redo HTTP recordings.
 	// Type == ContentToolUse, ContentServerToolUse, ContentMCPToolUse
 	Name string `json:"name,omitzero"`
+	// Type == ContentToolUse; indicates what invoked the tool call.
+	Caller Caller `json:"caller,omitzero"`
 
 	// Type == ContentToolResult, ContentMCPToolResult
 	ToolUseID string `json:"tool_use_id,omitzero"`
@@ -599,6 +601,14 @@ type Content struct {
 
 	// Type == ContentDocument, ContentWebSearchResult, ContentWebFetchResult
 	Title string `json:"title,omitzero"` // Document title when using Source, web page title
+}
+
+// Caller indicates what invoked a tool call.
+type Caller struct {
+	// Type is "direct" or "code_execution_20250825" or "code_execution_20260120".
+	Type string `json:"type"`
+	// ToolID is set when the tool was invoked by another tool.
+	ToolID string `json:"tool_id,omitzero"`
 }
 
 // Validate checks that the expected fields are set.
@@ -1467,11 +1477,13 @@ type ChatStreamChunkResponse struct {
 		Signature []byte `json:"signature"` // Never actually filed but present on content_block_start.
 
 		// Type == ContentToolUse, ContentMCPToolUse
-		ID    string `json:"id"`
-		Name  string `json:"name"`
-		Input any    `json:"input"`
+		ID     string         `json:"id"`
+		Name   string         `json:"name"`
+		Input  any            `json:"input"`
+		Caller Caller `json:"caller"`
 
-		Citations []struct{} `json:"citations"` // Empty, not used in the API.
+		// Always empty on content_block_start; actual citations arrive as citations_delta in subsequent deltas.
+		Citations Citations `json:"citations"`
 
 		// Type == ContentWebSearchToolResult, ContentWebFetchToolResult, ContentMCPToolResult
 		ToolUseID string   `json:"tool_use_id"`

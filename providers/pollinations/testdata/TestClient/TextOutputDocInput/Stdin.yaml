@@ -1,103 +1,102 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 0
-    host: enter.pollinations.ai
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://enter.pollinations.ai/api/generate/text/models
-    method: GET
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "[{\"name\":\"openai\",\"aliases\":[],\"pricing\":{\"input_token_price\":1.5e-7,\"output_token_price\":6e-7,\"cached_token_price\":4e-8,\"currency\":\"pollen\"},\"description\":\"OpenAI GPT-5 Mini - Fast & Balanced\",\"input_modalities\":[\"text\",\"image\"],\"output_modalities\":[\"text\"],\"tools\":true,\"is_specialized\":false},{\"name\":\"openai-fast\",\"aliases\":[\"gpt-5-nano\",\"gpt-5-nano-2025-08-07\"],\"pricing\":{\"input_token_price\":6e-8,\"output_token_price\":4.4e-7,\"cached_token_price\":1e-8,\"currency\":\"pollen\"},\"description\":\"OpenAI GPT-5 Nano - Ultra Fast & Affordable\",\"input_modalities\":[\"text\",\"image\"],\"output_modalities\":[\"text\"],\"tools\":true,\"is_specialized\":false},{\"name\":\"openai-large\",\"aliases\":[\"gpt-5.2\",\"openai-reasoning\",\"gpt-5.2-reasoning\"],\"pricing\":{\"input_token_price\":0.00000175,\"output_token_price\":0.000014,\"cached_token_price\":1.75e-7,\"currency\":\"pollen\"},\"description\":\"OpenAI GPT-5.2 - Most Powerful & Intelligent\",\"input_modalities\":[\"text\",\"image\"],\"output_modalities\":[\"text\"],\"tools\":true,\"reasoning\":true,\"is_specialized\":false},{\"name\":\"qwen-coder\",\"aliases\":[\"qwen2.5-coder-32b-instruct\"],\"pricing\":{\"input_token_price\":9.000000000000001e-7,\"output_token_price\":9.000000000000001e-7,\"currency\":\"pollen\"},\"description\":\"Qwen 2.5 Coder 32B - Specialized for Code Generation\",\"input_modalities\":[\"text\"],\"output_modalities\":[\"text\"],\"tools\":true,\"is_specialized\":false},{\"name\":\"mistral\",\"aliases\":[\"mistral-small\",\"mistral-small-3.2\",\"mistral-small-3.2-24b-instruct-2506\"],\"pricing\":{\"input_token_price\":1.5e-7,\"output_token_price\":3.5e-7,\"currency\":\"pollen\"},\"description\":\"Mistral Small 3.2 24B - Efficient & Cost-Effective\",\"input_modalities\":[\"text\"],\"output_modalities\":[\"text\"],\"tools\":true,\"is_specialized\":false},{\"name\":\"openai-audio\",\"aliases\":[\"gpt-4o-mini-audio-preview\",\"gpt-4o-mini-audio-preview-2024-12-17\"],\"pricing\":{\"input_token_price\":1.65e-7,\"output_token_price\":6.6e-7,\"audio_input_price\":0.000011,\"audio_output_price\":0.000022,\"currency\":\"pollen\"},\"description\":\"OpenAI GPT-4o Mini Audio - Voice Input & Output\",\"input_modalities\":[\"text\",\"image\",\"audio\"],\"output_modalities\":[\"audio\",\"text\"],\"tools\":true,\"voices\":[\"alloy\",\"echo\",\"fable\",\"onyx\",\"nova\",\"shimmer\",\"coral\",\"verse\",\"ballad\",\"ash\",\"sage\",\"amuch\",\"dan\"],\"is_specialized\":false},{\"name\":\"gemini\",\"aliases\":[\"gemini-3-flash\",\"gemini-3-flash-preview\"],\"pricing\":{\"input_token_price\":5e-7,\"output_token_price\":0.000003,\"cached_token_price\":5.0000000000000004e-8,\"currency\":\"pollen\"},\"description\":\"Google Gemini 3 Flash - Pro-Grade Reasoning at Flash Speed\",\"input_modalities\":[\"text\",\"image\",\"audio\",\"video\"],\"output_modalities\":[\"text\"],\"tools\":true,\"is_specialized\":false},{\"name\":\"gemini-fast\",\"aliases\":[\"gemini-2.5-flash-lite\"],\"pricing\":{\"input_token_price\":1.0000000000000001e-7,\"output_token_price\":4.0000000000000003e-7,\"cached_token_price\":1e-8,\"currency\":\"pollen\"},\"description\":\"Google Gemini 2.5 Flash Lite - Ultra Fast & Cost-Effective\",\"input_modalities\":[\"text\",\"image\"],\"output_modalities\":[\"text\"],\"tools\":true,\"is_specialized\":false},{\"name\":\"deepseek\",\"aliases\":[\"deepseek-v3\",\"deepseek-v3.1\",\"deepseek-reasoning\",\"deepseek-r1-0528\"],\"pricing\":{\"input_token_price\":0.00000125,\"output_token_price\":0.000005,\"currency\":\"pollen\"},\"description\":\"DeepSeek V3.1 - Advanced Reasoning & Coding\",\"input_modalities\":[\"text\"],\"output_modalities\":[\"text\"],\"tools\":true,\"reasoning\":true,\"is_specialized\":false},{\"name\":\"grok\",\"aliases\":[\"grok-fast\",\"grok-4\",\"grok-4-fast\"],\"pricing\":{\"input_token_price\":2.0000000000000002e-7,\"output_token_price\":5e-7,\"cached_token_price\":2.0000000000000002e-7,\"currency\":\"pollen\"},\"description\":\"xAI Grok 4 Fast - High Speed & Real-Time\",\"input_modalities\":[\"text\"],\"output_modalities\":[\"text\"],\"tools\":true,\"is_specialized\":false},{\"name\":\"gemini-search\",\"aliases\":[\"gemini-3-flash-search\"],\"pricing\":{\"input_token_price\":5e-7,\"output_token_price\":0.000003,\"cached_token_price\":5.0000000000000004e-8,\"currency\":\"pollen\"},\"description\":\"Google Gemini 3 Flash - With Google Search\",\"input_modalities\":[\"text\",\"image\"],\"output_modalities\":[\"text\"],\"tools\":false,\"is_specialized\":false},{\"name\":\"chickytutor\",\"aliases\":[],\"pricing\":{\"input_token_price\":8.000000000000001e-7,\"output_token_price\":0.000004,\"currency\":\"pollen\"},\"description\":\"ChickyTutor AI Language Tutor - (chickytutor.com)\",\"input_modalities\":[\"text\"],\"output_modalities\":[\"text\"],\"tools\":true,\"is_specialized\":true},{\"name\":\"midijourney\",\"aliases\":[],\"pricing\":{\"input_token_price\":0.0000022,\"output_token_price\":0.0000088,\"cached_token_price\":5.5e-7,\"currency\":\"pollen\"},\"description\":\"MIDIjourney - AI Music Composition Assistant\",\"input_modalities\":[\"text\"],\"output_modalities\":[\"text\"],\"tools\":true,\"is_specialized\":true},{\"name\":\"claude-fast\",\"aliases\":[\"claude-haiku-4.5\",\"claude-haiku\"],\"pricing\":{\"input_token_price\":0.000001,\"output_token_price\":0.000005,\"currency\":\"pollen\"},\"description\":\"Anthropic Claude Haiku 4.5 - Fast & Intelligent\",\"input_modalities\":[\"text\",\"image\"],\"output_modalities\":[\"text\"],\"tools\":true,\"is_specialized\":false},{\"name\":\"claude\",\"aliases\":[\"claude-sonnet-4.5\",\"claude-sonnet\"],\"pricing\":{\"input_token_price\":0.000003,\"output_token_price\":0.000015,\"currency\":\"pollen\"},\"description\":\"Anthropic Claude Sonnet 4.5 - Most Capable & Balanced\",\"input_modalities\":[\"text\",\"image\"],\"output_modalities\":[\"text\"],\"tools\":true,\"is_specialized\":false},{\"name\":\"claude-large\",\"aliases\":[\"claude-opus-4.5\",\"claude-opus\"],\"pricing\":{\"input_token_price\":0.000005,\"output_token_price\":0.000025,\"currency\":\"pollen\"},\"description\":\"Anthropic Claude Opus 4.5 - Most Intelligent Model\",\"input_modalities\":[\"text\",\"image\"],\"output_modalities\":[\"text\"],\"tools\":true,\"is_specialized\":false},{\"name\":\"perplexity-fast\",\"aliases\":[\"sonar\"],\"pricing\":{\"input_token_price\":0.000001,\"output_token_price\":0.000001,\"currency\":\"pollen\"},\"description\":\"Perplexity Sonar - Fast & Affordable with Web Search\",\"input_modalities\":[\"text\"],\"output_modalities\":[\"text\"],\"tools\":false,\"is_specialized\":false},{\"name\":\"perplexity-reasoning\",\"aliases\":[\"sonar-reasoning\"],\"pricing\":{\"input_token_price\":0.000001,\"output_token_price\":0.000005,\"currency\":\"pollen\"},\"description\":\"Perplexity Sonar Reasoning - Advanced Reasoning with Web Search\",\"input_modalities\":[\"text\"],\"output_modalities\":[\"text\"],\"tools\":false,\"reasoning\":true,\"is_specialized\":false},{\"name\":\"kimi-k2-thinking\",\"aliases\":[\"kimi-k2\",\"kimi-thinking\"],\"pricing\":{\"input_token_price\":6e-7,\"output_token_price\":0.0000025,\"currency\":\"pollen\"},\"description\":\"Moonshot Kimi K2 Thinking - Deep Reasoning & Tool Orchestration\",\"input_modalities\":[\"text\"],\"output_modalities\":[\"text\"],\"tools\":true,\"reasoning\":true,\"is_specialized\":false},{\"name\":\"gemini-large\",\"aliases\":[\"gemini-3-pro\",\"gemini-3\",\"gemini-3-pro-preview\"],\"pricing\":{\"input_token_price\":0.000002,\"output_token_price\":0.000012,\"cached_token_price\":2.0000000000000002e-7,\"currency\":\"pollen\"},\"description\":\"Google Gemini 3 Pro - Most Intelligent Model with 1M Context (Preview)\",\"input_modalities\":[\"text\",\"image\",\"audio\",\"video\"],\"output_modalities\":[\"text\"],\"tools\":true,\"reasoning\":true,\"is_specialized\":false},{\"name\":\"nova-micro\",\"aliases\":[\"amazon-nova-micro\",\"nova\"],\"pricing\":{\"input_token_price\":3.5e-8,\"output_token_price\":1.4e-7,\"currency\":\"pollen\"},\"description\":\"Amazon Nova Micro - Ultra Fast & Ultra Cheap\",\"input_modalities\":[\"text\"],\"output_modalities\":[\"text\"],\"tools\":true,\"is_specialized\":false}]"
-    headers:
-      Access-Control-Allow-Credentials:
-      - "true"
-      Access-Control-Allow-Origin:
-      - "*"
-      Access-Control-Expose-Headers:
-      - Content-Length
-      Alt-Svc:
-      - h3=":443"; ma=86400
-      Cf-Ray:
-      - 9b030b29abe8a21d-YYZ
-      Content-Type:
-      - application/json
-      Server:
-      - cloudflare
-      Server-Timing:
-      - cfEdge;dur=634,cfOrigin;dur=0
-      Speculation-Rules:
-      - "\"/cdn-cgi/speculation\""
-      Strict-Transport-Security:
-      - max-age=0; includeSubDomains; preload
-      Vary:
-      - Origin, accept-encoding
-      X-Content-Type-Options:
-      - nosniff
-    status: 200 OK
-    code: 200
-    duration: 701ms
-- id: 1
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 294
-    host: text.pollinations.ai
-    body: "{\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}],\"model\":\"gemini\",\"stream\":false,\"private\":true,\"stream_options\":{\"include_usage\":true}}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://text.pollinations.ai/openai
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\"id\":\"pllns_13bb6208385f7daefa74a9ce16bf8f89\",\"object\":\"chat.completion\",\"created\":1756930677,\"model\":\"gemini-2.5-flash-lite\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"The capital of Quackiland is Quack.\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":68,\"completion_tokens\":9,\"total_tokens\":77},\"user_tier\":\"anonymous\"}"
-    headers:
-      Access-Control-Allow-Origin:
-      - "*"
-      Cf-Cache-Status:
-      - DYNAMIC
-      Cf-Ray:
-      - 9b030b2dbd15ea84-YYZ
-      Content-Type:
-      - application/json; charset=utf-8
-      Etag:
-      - W/"15a-kXbtTPA+wylhcaQz/uckgxCGzak"
-      Server:
-      - cloudflare
-      Server-Timing:
-      - cfCacheStatus;desc="DYNAMIC"
-      - cfEdge;dur=180,cfOrigin;dur=0
-      Strict-Transport-Security:
-      - max-age=0; includeSubDomains; preload
-      Vary:
-      - accept-encoding
-      X-Cache:
-      - HIT
-      X-Cache-Date:
-      - "2025-09-03T20:17:58.558Z"
-      X-Cache-Key:
-      - 8c9e5d690877bf82312d584bdfec92243bbb9f67a5ac5fa8fc94753177653096
-      X-Content-Type-Options:
-      - nosniff
-      X-Powered-By:
-      - Express
-    status: 200 OK
-    code: 200
-    duration: 192ms
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        host: enter.pollinations.ai
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://enter.pollinations.ai/api/generate/text/models
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '[{"name":"openai","aliases":[],"pricing":{"currency":"pollen","promptTextTokens":"0.00000015","promptCachedTokens":"0.00000004","completionTextTokens":"0.0000006"},"description":"OpenAI GPT-5 Mini - Fast & Balanced","input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"context_length":400000,"is_specialized":false},{"name":"openai-fast","aliases":["gpt-5-nano","gpt-5-nano-2025-08-07"],"pricing":{"currency":"pollen","promptTextTokens":"0.00000006","promptCachedTokens":"0.00000001","completionTextTokens":"0.00000044"},"description":"OpenAI GPT-5 Nano - Ultra Fast & Affordable","input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"context_length":400000,"is_specialized":false},{"name":"qwen-coder","aliases":["qwen3-coder","qwen3-coder-30b-a3b-instruct"],"pricing":{"currency":"pollen","promptTextTokens":"0.00000006","completionTextTokens":"0.00000022"},"description":"Qwen3 Coder 30B - Specialized for Code Generation","input_modalities":["text"],"output_modalities":["text"],"tools":true,"context_length":262144,"is_specialized":false},{"name":"mistral","aliases":["mistral-small","mistral-small-3.2","mistral-small-3.2-24b-instruct-2506"],"pricing":{"currency":"pollen","promptTextTokens":"0.0000001","completionTextTokens":"0.0000003"},"description":"Mistral Small 3.2 24B - Efficient & Cost-Effective","input_modalities":["text"],"output_modalities":["text"],"tools":true,"context_length":131072,"is_specialized":false},{"name":"openai-audio","aliases":["gpt-4o-mini-audio-preview","gpt-4o-mini-audio-preview-2024-12-17"],"pricing":{"currency":"pollen","promptTextTokens":"0.000000165","completionTextTokens":"0.00000066","promptAudioTokens":"0.000011","completionAudioTokens":"0.000022"},"description":"OpenAI GPT-4o Mini Audio - Voice Input & Output","input_modalities":["text","image","audio"],"output_modalities":["audio","text"],"tools":true,"context_length":128000,"voices":["alloy","echo","fable","onyx","nova","shimmer","coral","verse","ballad","ash","sage","amuch","dan"],"is_specialized":false},{"name":"gemini-fast","aliases":["gemini-2.5-flash-lite"],"pricing":{"currency":"pollen","promptTextTokens":"0.0000001","promptCachedTokens":"0.00000001","promptAudioTokens":"0.0000001","completionTextTokens":"0.0000004"},"description":"Google Gemini 2.5 Flash Lite - Ultra Fast & Cost-Effective","input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"context_length":1048576,"is_specialized":false},{"name":"deepseek","aliases":["deepseek-v3","deepseek-reasoning"],"pricing":{"currency":"pollen","promptTextTokens":"0.00000056","promptCachedTokens":"0.00000028","completionTextTokens":"0.00000168"},"description":"DeepSeek V3.2 - Efficient Reasoning & Agentic AI","input_modalities":["text"],"output_modalities":["text"],"tools":true,"reasoning":true,"context_length":163840,"is_specialized":false},{"name":"gemini-search","aliases":["gemini-2.5-flash-search","gemini-2.5-flash-lite-search"],"pricing":{"currency":"pollen","promptTextTokens":"0.0000001","promptCachedTokens":"0.00000001","promptAudioTokens":"0.0000001","completionTextTokens":"0.0000004"},"description":"Google Gemini 2.5 Flash Lite - With Google Search","input_modalities":["text","image"],"output_modalities":["text"],"tools":false,"context_length":1048576,"is_specialized":false},{"name":"midijourney","aliases":[],"pricing":{"currency":"pollen","promptTextTokens":"0.0000022","promptCachedTokens":"0.00000055","completionTextTokens":"0.0000088"},"description":"MIDIjourney - AI Music Composition Assistant","input_modalities":["text"],"output_modalities":["text"],"tools":true,"is_specialized":true},{"name":"claude-fast","aliases":["claude-haiku-4.5","claude-haiku"],"pricing":{"currency":"pollen","promptTextTokens":"0.000001","promptCachedTokens":"0.0000001","completionTextTokens":"0.000005"},"description":"Anthropic Claude Haiku 4.5 - Fast & Intelligent","input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"context_length":200000,"is_specialized":false},{"name":"perplexity-fast","aliases":["sonar"],"pricing":{"currency":"pollen","promptTextTokens":"0.000001","completionTextTokens":"0.000001"},"description":"Perplexity Sonar - Fast & Affordable with Web Search","input_modalities":["text"],"output_modalities":["text"],"tools":false,"context_length":127072,"is_specialized":false},{"name":"perplexity-reasoning","aliases":["sonar-reasoning","sonar-reasoning-pro"],"pricing":{"currency":"pollen","promptTextTokens":"0.000002","completionTextTokens":"0.000008"},"description":"Perplexity Sonar Reasoning - Advanced Reasoning with Web Search","input_modalities":["text"],"output_modalities":["text"],"tools":false,"reasoning":true,"context_length":128000,"is_specialized":false},{"name":"kimi","aliases":["kimi-k2.5","kimi-k2p5","kimi-reasoning","kimi-large"],"pricing":{"currency":"pollen","promptTextTokens":"0.0000006","promptCachedTokens":"0.0000001","completionTextTokens":"0.000003"},"description":"Moonshot Kimi K2.5 - Flagship Agentic Model with Vision & Multi-Agent","input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"reasoning":true,"context_length":256000,"is_specialized":false},{"name":"nova-fast","aliases":["amazon-nova-micro","nova","nova-micro"],"pricing":{"currency":"pollen","promptTextTokens":"0.000000035","completionTextTokens":"0.00000014"},"description":"Amazon Nova Micro - Ultra Fast & Ultra Cheap","input_modalities":["text"],"output_modalities":["text"],"tools":true,"context_length":128000,"is_specialized":false},{"name":"glm","aliases":["glm-5","glm-4.7","glm-4p7"],"pricing":{"currency":"pollen","promptTextTokens":"0.0000006","promptCachedTokens":"0.0000003","completionTextTokens":"0.0000022"},"description":"Z.ai GLM-5 - 744B MoE, Long Context Reasoning & Agentic Workflows","input_modalities":["text"],"output_modalities":["text"],"tools":true,"reasoning":true,"context_length":198000,"is_specialized":false},{"name":"minimax","aliases":["minimax-m2.5","minimax-m2p5"],"pricing":{"currency":"pollen","promptTextTokens":"0.0000003","promptCachedTokens":"0.00000003","completionTextTokens":"0.0000012"},"description":"MiniMax M2.5 - Coding, Agentic & Multi-Language","input_modalities":["text"],"output_modalities":["text"],"tools":true,"reasoning":true,"context_length":200000,"is_specialized":false},{"name":"nomnom","aliases":["web-scrape","web-research"],"pricing":{"currency":"pollen"},"description":"NomNom by @Itachi-1824 - Web Research with Search, Scrape & Crawl (Alpha)","input_modalities":["text"],"output_modalities":["text"],"tools":true,"reasoning":true,"is_specialized":false},{"name":"polly","aliases":["pollinations-ai","polly-ai"],"pricing":{"currency":"pollen"},"description":"Polly by @Itachi-1824 - Pollinations AI Assistant with GitHub, Code Search & Web Tools (Alpha)","input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"reasoning":true,"is_specialized":false},{"name":"qwen-safety","aliases":["qwen3guard-gen-8b"],"pricing":{"currency":"pollen","promptTextTokens":"0.00000001","completionTextTokens":"0.00000001"},"description":"Qwen3Guard 8B - Content Safety & Moderation (OVH)","input_modalities":["text"],"output_modalities":["text"],"is_specialized":true},{"name":"step-3.5-flash","aliases":["step-flash","step-3.5"],"pricing":{"currency":"pollen","promptTextTokens":"0.00000001","completionTextTokens":"0.00000001"},"description":"Step 3.5 Flash (api.airforce) - Fast reasoning model","input_modalities":["text"],"output_modalities":["text"],"is_specialized":false},{"name":"qwen-character","aliases":[],"pricing":{"currency":"pollen","promptTextTokens":"0.00000001","completionTextTokens":"0.00000001"},"description":"Qwen Character (api.airforce) - roleplay & character chat","input_modalities":["text"],"output_modalities":["text"],"is_specialized":true},{"name":"claude-airforce","aliases":[],"pricing":{"currency":"pollen","promptTextTokens":"0.000001","completionTextTokens":"0.000005"},"description":"Claude Sonnet 4.6 (api.airforce) - Anthropic''s balanced model via community provider","input_modalities":["text","image"],"output_modalities":["text"],"tools":true,"context_length":200000,"is_specialized":false},{"name":"openai-seraphyn","aliases":["gpt-5.4-seraphyn","gpt-5.4"],"pricing":{"currency":"pollen","promptTextTokens":"0.00000125","completionTextTokens":"0.0000075"},"description":"GPT-5.4 (seraphyn.ai) - OpenAI''s latest model via community provider","input_modalities":["text"],"output_modalities":["text"],"tools":true,"is_specialized":false}]'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - Content-Length,Content-Disposition
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Ray:
+                - 9df7f7960b145437-YYZ
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfEdge;dur=4,cfOrigin;dur=0,cfWorker;dur=251
+            Speculation-Rules:
+                - '"/cdn-cgi/speculation"'
+            Strict-Transport-Security:
+                - max-age=0; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Robots-Tag:
+                - noindex, nofollow
+        status: 200 OK
+        code: 200
+        duration: 269ms
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 299
+        host: text.pollinations.ai
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"model":"openai-fast","stream":false,"private":true,"stream_options":{"include_usage":true}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://text.pollinations.ai/openai
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"pllns_37633dfc12fe9070d5769a2e0d982725","choices":[{"index":0,"message":{"role":"assistant","content":"Quack.","reasoning_content":"The user states that \"The capital of Quackiland is Quack.\" They ask: \"What is the capital of Quackiland?\" It''s a straightforward answer: Quack. We want to comply politely. They had a query: \"What is the capital of Quackiland?\" The provided information says it''s Quack. Even though the user asked after stating it, maybe they want to confirm. We respond: Quack. Should be short? We should avoid boilerplate. Just answer.","tool_calls":[]},"finish_reason":"stop"}],"created":1774043821,"model":"gpt-oss-20b","object":"chat.completion","usage":{"prompt_tokens":340,"completion_tokens":112,"total_tokens":452},"user_tier":"anonymous"}'
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9df7f7a52c9aa250-YYZ
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"307-94snxj/7LSB7QS8uuNVQTt7GC9c"
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=5,cfOrigin;dur=0,cfWorker;dur=34141
+            Strict-Transport-Security:
+                - max-age=0; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Model-Used:
+                - gpt-oss-20b
+            X-Powered-By:
+                - Express
+            X-Usage-Completion-Text-Tokens:
+                - "112"
+            X-Usage-Prompt-Text-Tokens:
+                - "340"
+            X-Usage-Total-Tokens:
+                - "452"
+        status: 200 OK
+        code: 200
+        duration: 36.303s

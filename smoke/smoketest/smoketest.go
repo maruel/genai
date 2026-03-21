@@ -445,6 +445,20 @@ func generateUpdatedScoreboard(t testing.TB, scoreboardPath string, scenarios []
 			continue
 		}
 
+		// Remove stale models from the old scenario
+		remainingModels := make([]string, 0, len(oldSc.Models))
+		for _, m := range oldSc.Models {
+			if _, isStale := staleSet[scoreboard.Model{Model: m, Reason: oldSc.Reason}]; !isStale {
+				remainingModels = append(remainingModels, m)
+			} else {
+				t.Logf("Removing stale model %q with reason=%v", m, oldSc.Reason)
+			}
+		}
+		if len(remainingModels) == 0 {
+			continue
+		}
+		oldSc.Models = remainingModels
+
 		// Include tested scenarios but clear preference flags since they weren't re-tested
 		oldSc.SOTA = false
 		oldSc.Good = false

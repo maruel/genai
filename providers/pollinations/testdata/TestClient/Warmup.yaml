@@ -28,13 +28,13 @@ interactions:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Ray:
-                - 9df797838a7d369d-YYZ
+                - 9df7f790ee935437-YYZ
             Content-Type:
                 - application/json
             Server:
                 - cloudflare
             Server-Timing:
-                - cfEdge;dur=7,cfOrigin;dur=0,cfWorker;dur=237
+                - cfEdge;dur=5,cfOrigin;dur=0,cfWorker;dur=308
             Speculation-Rules:
                 - '"/cdn-cgi/speculation"'
             Strict-Transport-Security:
@@ -45,7 +45,7 @@ interactions:
                 - noindex, nofollow
         status: 200 OK
         code: 200
-        duration: 310ms
+        duration: 377ms
     - id: 1
       request:
         proto: HTTP/1.1
@@ -73,13 +73,13 @@ interactions:
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Ray:
-                - 9df797852bc2369d-YYZ
+                - 9df7f792f8755437-YYZ
             Content-Type:
                 - application/json
             Server:
                 - cloudflare
             Server-Timing:
-                - cfEdge;dur=10,cfOrigin;dur=0,cfWorker;dur=215
+                - cfEdge;dur=3,cfOrigin;dur=0,cfWorker;dur=226
             Speculation-Rules:
                 - '"/cdn-cgi/speculation"'
             Strict-Transport-Security:
@@ -90,4 +90,4 @@ interactions:
                 - noindex, nofollow
         status: 200 OK
         code: 200
-        duration: 238ms
+        duration: 243ms

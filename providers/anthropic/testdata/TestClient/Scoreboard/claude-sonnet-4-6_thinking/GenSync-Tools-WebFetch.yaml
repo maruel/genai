@@ -1,0 +1,76 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 270
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-sonnet-4-6","max_tokens":64000,"messages":[{"role":"user","content":[{"type":"text","text":"Tell me what is written on https://perdu.com"}]}],"thinking":{"budget_tokens":1024,"type":"enabled"},"tools":[{"type":"web_fetch_20250910","name":"web_fetch"}]}
+        headers:
+            Anthropic-Beta:
+                - web-fetch-2025-09-10
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: "{\"model\":\"claude-sonnet-4-6\",\"id\":\"msg_01QzthAzfDspWR4DN8awiifN\",\"type\":\"message\",\"role\":\"assistant\",\"content\":[{\"type\":\"thinking\",\"thinking\":\"Let me fetch the content of that URL.\",\"signature\":\"Es0BCkYICxgCKkBJhexFtXpYMZuoVJd31wzSf09/Uh/18x+7EU3wATTx8D8y6Aff0znfm4nRImLBhf16nJE4EnvPqT14I9bZMqd4EgwRPm80K0RBc92szMEaDM+IWF4WFfYs2/aFlCIwrHtQHWwsNaMOXZrS2RED58QsxRM5/iTxG75gt3TfA4jAVNnqGzC+BclLc7ULCy5QKjVtdvH5Pz+YsHWsL8BM/zefkWEVte+UJdOFuP3LgDEmiSVIj0F1vwP3Iu+O86XA7d+BBIV07hgB\"},{\"type\":\"server_tool_use\",\"id\":\"srvtoolu_011Xz1879RqaEN5AWuN3PL9P\",\"name\":\"web_fetch\",\"input\":{\"url\":\"https://perdu.com\"},\"caller\":{\"type\":\"direct\"}},{\"type\":\"web_fetch_tool_result\",\"tool_use_id\":\"srvtoolu_011Xz1879RqaEN5AWuN3PL9P\",\"content\":{\"type\":\"web_fetch_result\",\"url\":\"https://perdu.com\",\"retrieved_at\":\"2026-03-21T00:19:00.298000+00:00\",\"content\":{\"type\":\"document\",\"source\":{\"type\":\"text\",\"media_type\":\"text/plain\",\"data\":\"Vous Etes Perdu ?\\n\\n# Perdu sur l'Internet ?\\n\\n## Pas de panique, on va vous aider\\n\\n**```\\n    * <----- vous êtes ici\\n```**\"},\"title\":\"Perdu sur l'Internet ?\"}},\"caller\":{\"type\":\"direct\"}},{\"type\":\"text\",\"text\":\"Here is what is written on **perdu.com**:\\n\\n> **Vous Etes Perdu ?**\\n> *(Are you lost?)*\\n\\n> # Perdu sur l'Internet ?\\n> *(Lost on the Internet?)*\\n\\n> ## Pas de panique, on va vous aider\\n> *(Don't panic, we'll help you)*\\n\\nAnd there's a small ASCII art pointer:\\n```\\n* <----- vous êtes ici\\n```\\n*(you are here)*\\n\\nIt's a humorous French website with a simple joke: it tells you that you're lost on the Internet, points to a star (`*`) and says \\\"you are here\\\" — a nod to the classic \\\"you are here\\\" markers on maps. \U0001F604\"}],\"stop_reason\":\"end_turn\",\"stop_sequence\":null,\"usage\":{\"input_tokens\":2334,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"cache_creation\":{\"ephemeral_5m_input_tokens\":0,\"ephemeral_1h_input_tokens\":0},\"output_tokens\":248,\"service_tier\":\"standard\",\"inference_geo\":\"global\",\"server_tool_use\":{\"web_search_requests\":0,\"web_fetch_requests\":1}}}"
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "1999000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-03-21T00:19:02Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "400000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "400000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-03-21T00:19:09Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "4000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "3999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-03-21T00:18:54Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "2400000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "2399000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-03-21T00:19:02Z"
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9df8c832cf30a2da-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Server-Timing:
+                - x-originResponse;dur=15036
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - Accept-Encoding
+            X-Envoy-Upstream-Service-Time:
+                - "15036"
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 15.076s

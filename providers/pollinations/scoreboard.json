@@ -29,38 +29,6 @@
     },
     {
       "models": [
-        "gemini"
-      ],
-      "in": {
-        "image": {
-          "inline": true,
-          "supportedFormats": [
-            "image/jpeg",
-            "image/png",
-            "image/webp"
-          ]
-        },
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true
-      },
-      "GenStream": {
-        "reportFinishReason": "true",
-        "seed": true
-      }
-    },
-    {
-      "models": [
         "openai"
       ],
       "in": {
@@ -113,10 +81,14 @@
         "bidara",
         "chickytutor",
         "claude",
+        "claude-airforce",
         "claude-fast",
         "claude-large",
         "deepseek",
+        "dirtberry",
+        "dirtberry-pro",
         "evil",
+        "flux-2-dev",
         "gemini-fast",
         "gemini-large",
         "gemini-legacy",
@@ -125,6 +97,9 @@
         "gptimage",
         "gptimage-large",
         "grok",
+        "grok-imagine",
+        "grok-video",
+        "imagen-4",
         "kimi",
         "kimi-k2-thinking",
         "klein",
@@ -142,15 +117,20 @@
         "openai-fast",
         "openai-large",
         "openai-reasoning",
+        "openai-seraphyn",
         "perplexity-fast",
         "perplexity-reasoning",
+        "polly",
+        "qwen-character",
         "qwen-coder",
+        "qwen-safety",
         "roblox-rp",
         "rtist",
         "seedance",
         "seedance-pro",
         "seedream",
         "seedream-pro",
+        "step-3.5-flash",
         "turbo",
         "unity",
         "veo",

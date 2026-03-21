@@ -1004,7 +1004,8 @@ func (c *Client) detectModelModalities(ctx context.Context, model string) (genai
 	for _, mdl := range mdls {
 		if m := mdl.(*Model); m.ID == model {
 			switch m.Type {
-			case "chat":
+			case "chat", "":
+				// Some models don't have a type set; default to text.
 				return genai.Modalities{genai.ModalityText}, nil
 			case "image":
 				return genai.Modalities{genai.ModalityImage}, nil

@@ -1,0 +1,124 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 616
+        host: api.anthropic.com
+        body: |
+            {"model":"claude-sonnet-4-6","max_tokens":64000,"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"stream":true,"thinking":{"budget_tokens":1024,"type":"enabled"},"tool_choice":{"type":"auto"},"tools":[{"description":"Calculates and return the square root of a number","input_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]},"name":"square_root"}]}
+        headers:
+            Anthropic-Version:
+                - "2023-06-01"
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.anthropic.com/v1/messages
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |+
+            event: message_start
+            data: {"type":"message_start","message":{"model":"claude-sonnet-4-6","id":"msg_01Aw7754CPnd3FESUqoS8QwK","type":"message","role":"assistant","content":[],"stop_reason":null,"stop_sequence":null,"usage":{"input_tokens":650,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":7,"service_tier":"standard","inference_geo":"global"}}       }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":0,"content_block":{"type":"thinking","thinking":"","signature":""}  }
+
+            event: ping
+            data: {"type": "ping"}
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"The user wants me to calculate the"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":" square root of 132413."}       }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":""}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":0,"delta":{"type":"signature_delta","signature":"EuEBCkYICxgCKkDcLc1wxIIKEuPD/WzbmmCRueG73c7uD0GF2NuPflvXrCIiFwXavCDKW1Cr9KiPbHR7tSlRJDR3B/sfmKWT95CTEgxhorDbmMbdKScP/IoaDPNbp8OOrNvx16sM9SIw8Y02Is+EXQdHndyODhv8TE+2LTrcPaSTteYZjhrd3o0ky7UcZGq9OT9wQNKHVwMqKkmbFR1CZTKZUDfACj/ojt32W8jGaln/dGRlMthi8p3EdWcNvBdWWatG+YyaIqrOkdRNT+J33F03diPuqUJOi9JaT0IewKJryp4fGAE="}      }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":0    }
+
+            event: content_block_start
+            data: {"type":"content_block_start","index":1,"content_block":{"type":"tool_use","id":"toolu_01P6b9BxNvVKNsjSypZTz6Y9","name":"square_root","input":{},"caller":{"type":"direct"}}    }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"input_json_delta","partial_json":""}   }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"input_json_delta","partial_json":"{\"num"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"input_json_delta","partial_json":"ber\": 13241"}             }
+
+            event: content_block_delta
+            data: {"type":"content_block_delta","index":1,"delta":{"type":"input_json_delta","partial_json":"3}"}  }
+
+            event: content_block_stop
+            data: {"type":"content_block_stop","index":1      }
+
+            event: message_delta
+            data: {"type":"message_delta","delta":{"stop_reason":"tool_use","stop_sequence":null},"usage":{"input_tokens":650,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":76}              }
+
+            event: message_stop
+            data: {"type":"message_stop"        }
+
+        headers:
+            Anthropic-Ratelimit-Input-Tokens-Limit:
+                - "2000000"
+            Anthropic-Ratelimit-Input-Tokens-Remaining:
+                - "2000000"
+            Anthropic-Ratelimit-Input-Tokens-Reset:
+                - "2026-03-21T00:18:14Z"
+            Anthropic-Ratelimit-Output-Tokens-Limit:
+                - "400000"
+            Anthropic-Ratelimit-Output-Tokens-Remaining:
+                - "400000"
+            Anthropic-Ratelimit-Output-Tokens-Reset:
+                - "2026-03-21T00:18:14Z"
+            Anthropic-Ratelimit-Requests-Limit:
+                - "4000"
+            Anthropic-Ratelimit-Requests-Remaining:
+                - "3999"
+            Anthropic-Ratelimit-Requests-Reset:
+                - "2026-03-21T00:18:14Z"
+            Anthropic-Ratelimit-Tokens-Limit:
+                - "2400000"
+            Anthropic-Ratelimit-Tokens-Remaining:
+                - "2400000"
+            Anthropic-Ratelimit-Tokens-Reset:
+                - "2026-03-21T00:18:14Z"
+            Cache-Control:
+                - no-cache
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9df8c73a4c55a2da-YUL
+            Content-Security-Policy:
+                - default-src 'none'; frame-ancestors 'none'
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Server:
+                - cloudflare
+            Server-Timing:
+                - x-originResponse;dur=537
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - Accept-Encoding
+            X-Envoy-Upstream-Service-Time:
+                - "537"
+            X-Robots-Tag:
+                - none
+        status: 200 OK
+        code: 200
+        duration: 577ms

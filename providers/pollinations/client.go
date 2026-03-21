@@ -1133,7 +1133,7 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 		// This is meh.
 		switch {
 		case cheap:
-			if m.Name == "gemini" {
+			if m.Name == "openai-fast" {
 				selectedModel = m.Name
 			}
 		case good:

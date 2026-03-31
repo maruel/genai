@@ -407,6 +407,7 @@ func TestBuildArgs(t *testing.T) {
 			"--verbose",
 			"--input-format", "stream-json",
 			"--output-format", "stream-json",
+			"--strict-mcp-config",
 			"--tools", "",
 			"--disable-slash-commands",
 			"--setting-sources", "project,local",

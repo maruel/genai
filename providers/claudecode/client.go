@@ -95,7 +95,11 @@ func (e *cmdExecutor) start(ctx context.Context, args []string) (io.WriteCloser,
 	cmd.Dir = dir
 	// Unset CLAUDECODE so that claude can be launched even when the caller is
 	// itself running inside a Claude Code session (nested session guard).
-	cmd.Env = environWithout(os.Environ(), "CLAUDECODE")
+	// Set CLAUDE_CODE_SIMPLE=1 to skip hooks, auto-memory, plugin sync, LSP,
+	// and other auto-discovery that is not relevant for programmatic use.
+	// This is the same env var that --bare sets internally, but without the
+	// --bare auth restriction (which disallows OAuth).
+	cmd.Env = append(environWithout(os.Environ(), "CLAUDECODE"), "CLAUDE_CODE_SIMPLE=1")
 	stdin, err := cmd.StdinPipe()
 	if err != nil {
 		return nil, nil, nil, errors.Join(fmt.Errorf("stdin pipe: %w", err), os.RemoveAll(dir))
@@ -436,6 +440,10 @@ func (c *Client) buildArgs(co callOpts, sessionID string, stream bool) []string 
 		"--verbose",
 		"--input-format", "stream-json",
 		"--output-format", "stream-json",
+		// Ignore user-configured MCP servers; this provider only needs the
+		// built-in tools. Without this flag, MCP servers from the user's
+		// settings would silently load into the subprocess.
+		"--strict-mcp-config",
 	}
 
 	// Tools: disabled by default.

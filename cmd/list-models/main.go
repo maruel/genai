@@ -132,6 +132,7 @@ func mainImpl() error {
 
 	names := slices.Sorted(maps.Keys(providers.Available(ctx)))
 	provider := flag.String("provider", "", "backend to use: "+strings.Join(names, ", "))
+	flag.StringVar(provider, "p", "", "alias for -provider")
 	all := flag.Bool("all", false, "include all details")
 	strict := flag.Bool("strict", false, "assert no unknown fields in the APIs are found")
 	flag.Parse()

@@ -2,6 +2,14 @@
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
+// Wire types for the OpenCode ACP (Agent Client Protocol) JSON-RPC 2.0 protocol.
+//
+// Type names follow the upstream ACP SDK definitions:
+//
+//	packages/opencode/src/acp/agent.ts — session update types and request/response handling
+//
+// Source: https://github.com/anomalyco/opencode
+// Spec:   https://agentclientprotocol.com
 package opencode
 
 import (
@@ -10,28 +18,49 @@ import (
 	"github.com/maruel/genai"
 )
 
-// ACP (Agent Client Protocol) JSON-RPC 2.0 wire types for the OpenCode CLI.
-//
-// Each line on stdin/stdout is a complete JSON object terminated by newline.
-// Requests and responses carry an "id" field; notifications carry "method" only.
-// Requests from the agent (e.g. permission requests) carry both "id" and "method".
-//
-// References:
-//   - https://agentclientprotocol.com
-//   - https://opencode.ai
+// ============================================================
+// Shared types: enums, JSON-RPC envelope, routing probes.
+// ============================================================
 
-// ---------- JSON-RPC notification method constants ----------
+// Method is a JSON-RPC method string for the ACP protocol.
+type Method string
 
+// JSON-RPC method constants for the ACP protocol.
 const (
-	methodSessionUpdate            = "session/update"
-	methodSessionRequestPermission = "session/request_permission"
+	// Request methods (client → agent).
+	MethodInitialize              Method = "initialize"
+	MethodSessionNew              Method = "session/new"
+	MethodSessionLoad             Method = "session/load"
+	MethodSessionPrompt           Method = "session/prompt"
+	MethodSessionCancel           Method = "session/cancel"
+	MethodSessionSetModel         Method = "session/set_model"
+	MethodSessionSetMode          Method = "session/set_mode"
+	MethodUnstableSetSessionModel Method = "unstable_setSessionModel"
+
+	// Notification methods (agent → client).
+	MethodSessionUpdate            Method = "session/update"
+	MethodSessionRequestPermission Method = "session/request_permission"
 )
 
-// Session update type discriminators (sessionUpdate field).
+// UpdateType is the session update discriminator (sessionUpdate field).
+type UpdateType string
+
+// Session update type constants.
 const (
-	updateAgentMessageChunk = "agent_message_chunk"
-	updateAgentThoughtChunk = "agent_thought_chunk"
-	updateUsageUpdate       = "usage_update"
+	UpdateAgentMessageChunk UpdateType = "agent_message_chunk"
+	UpdateAgentThoughtChunk UpdateType = "agent_thought_chunk"
+	UpdateUsageUpdate       UpdateType = "usage_update"
+)
+
+// ContentType is the type discriminator for content blocks and prompt items.
+type ContentType string
+
+// Content type constants.
+const (
+	ContentText         ContentType = "text"
+	ContentImage        ContentType = "image"
+	ContentResource     ContentType = "resource"
+	ContentResourceLink ContentType = "resource_link"
 )
 
 // ---------- JSON-RPC envelope ----------
@@ -40,14 +69,8 @@ const (
 type jsonrpcRequest struct {
 	JSONRPC string `json:"jsonrpc"`
 	ID      int64  `json:"id,omitzero"`
-	Method  string `json:"method"`
+	Method  Method `json:"method"`
 	Params  any    `json:"params,omitzero"`
-}
-
-// jsonrpcNotification is a JSON-RPC 2.0 notification (no id, no response expected).
-type jsonrpcNotification struct {
-	JSONRPC string `json:"jsonrpc"`
-	Method  string `json:"method"`
 }
 
 // jsonrpcResponse is a JSON-RPC 2.0 response sent back to the agent (e.g. for
@@ -60,29 +83,43 @@ type jsonrpcResponse struct {
 
 // jsonrpcMessage is the JSON-RPC 2.0 envelope for all inbound messages.
 type jsonrpcMessage struct {
-	JSONRPC string           `json:"jsonrpc"`
-	Method  string           `json:"method,omitzero"`
-	ID      *json.RawMessage `json:"id,omitzero"`
-	Params  json.RawMessage  `json:"params,omitzero"`
-	Result  json.RawMessage  `json:"result,omitzero"`
-	Error   *jsonrpcError    `json:"error,omitzero"`
+	JSONRPC string          `json:"jsonrpc"`
+	Method  Method          `json:"method,omitzero"`
+	ID      json.RawMessage `json:"id,omitzero"`
+	Params  json.RawMessage `json:"params,omitzero"`
+	Result  json.RawMessage `json:"result,omitzero"`
+	Error   *jsonrpcError   `json:"error,omitzero"`
 }
 
+// isResponse returns true if this is a response (has ID, no method).
 func (m *jsonrpcMessage) isResponse() bool { return m.ID != nil && m.Method == "" }
-func (m *jsonrpcMessage) isRequest() bool  { return m.ID != nil && m.Method != "" }
+
+// isRequest returns true if this is a request from the agent (has both ID and method).
+func (m *jsonrpcMessage) isRequest() bool { return m.ID != nil && m.Method != "" }
 
 type jsonrpcError struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
 }
 
-// lineProbe extracts routing fields for fast dispatch.
+// ---------- Routing probes ----------
+
+// lineProbe extracts routing fields for fast dispatch without full unmarshal.
 type lineProbe struct {
-	Method string           `json:"method,omitzero"`
-	ID     *json.RawMessage `json:"id,omitzero"`
+	Method Method          `json:"method,omitzero"`
+	ID     json.RawMessage `json:"id,omitzero"`
 }
 
-// ---------- Outbound request types ----------
+// updateProbe extracts the discriminator from a session update.
+type updateProbe struct {
+	SessionUpdate UpdateType `json:"sessionUpdate"`
+}
+
+// ============================================================
+// Input types: requests sent to OpenCode (stdin).
+// ============================================================
+
+// ---------- Handshake request params ----------
 
 type initializeParams struct {
 	ProtocolVersion    int                `json:"protocolVersion"`
@@ -100,19 +137,51 @@ type clientInfo struct {
 	Version string `json:"version"`
 }
 
+// ---------- Session management request params ----------
+
 type sessionNewParams struct {
-	Cwd        string `json:"cwd"`
-	McpServers []any  `json:"mcpServers"`
+	Cwd        string      `json:"cwd"`
+	McpServers []mcpServer `json:"mcpServers"`
 }
 
 type sessionLoadParams struct {
-	SessionID  string `json:"sessionId"`
-	Cwd        string `json:"cwd"`
-	McpServers []any  `json:"mcpServers"`
+	SessionID  string      `json:"sessionId"`
+	Cwd        string      `json:"cwd"`
+	McpServers []mcpServer `json:"mcpServers"`
 }
 
+// mcpServer describes an MCP server to register with the session.
+// ACP supports three variants (stdio, http, sse) discriminated by the Type
+// field. Only stdio is used by genai (for testing).
+type mcpServer struct {
+	Type    string        `json:"type,omitzero"` // "http", "sse", or empty for stdio.
+	Name    string        `json:"name"`
+	Command string        `json:"command,omitzero"` // Stdio only.
+	Args    []string      `json:"args,omitzero"`    // Stdio only.
+	Env     []envVariable `json:"env,omitzero"`     // Stdio only.
+	URL     string        `json:"url,omitzero"`     // HTTP/SSE only.
+	Headers []httpHeader  `json:"headers,omitzero"` // HTTP/SSE only.
+}
+
+type envVariable struct {
+	Name  string `json:"name"`
+	Value string `json:"value"`
+}
+
+type httpHeader struct {
+	Name  string `json:"name"`
+	Value string `json:"value"`
+}
+
+// ---------- Prompt request params ----------
+
 // promptContent is a single item in the session/prompt content array.
-// Flat union discriminated by Type: "text" or "image".
+// This is a flat union discriminated by Type:
+//
+//   - ContentText:         Text
+//   - ContentImage:        Data (base64), MimeType
+//   - ContentResource:     Resource (embedded resource)
+//   - ContentResourceLink: URI, Name, MimeType
 //
 // Image handling: the ACP agent receives "image" parts and converts them to
 // internal "file" parts with data URLs. As of OpenCode 1.2.27 (2026-03), the
@@ -127,10 +196,13 @@ type sessionLoadParams struct {
 //   - Model message conversion: packages/opencode/src/session/message-v2.ts toModelMessages() (~line 637)
 //   - Related issue: https://github.com/anomalyco/opencode/issues/9217
 type promptContent struct {
-	Type     string `json:"type"`
-	Text     string `json:"text,omitzero"`
-	Data     string `json:"data,omitzero"`     // Base64 image data.
-	MimeType string `json:"mimeType,omitzero"` // e.g. "image/png".
+	Type     ContentType     `json:"type"`
+	Text     string          `json:"text,omitzero"`
+	Data     string          `json:"data,omitzero"`     // Base64 image data.
+	MimeType string          `json:"mimeType,omitzero"` // e.g. "image/png".
+	URI      string          `json:"uri,omitzero"`
+	Name     string          `json:"name,omitzero"`
+	Resource json.RawMessage `json:"resource,omitzero"` // Embedded resource object.
 }
 
 type sessionPromptParams struct {
@@ -138,22 +210,108 @@ type sessionPromptParams struct {
 	Prompt    []promptContent `json:"prompt"`
 }
 
+// ---------- Model switching ----------
+
 type setSessionModelParams struct {
 	SessionID string `json:"sessionId"`
 	ModelID   string `json:"modelId"`
 }
 
+// ============================================================
+// Output types: notifications and responses received from OpenCode (stdout).
+// ============================================================
+
+// ---------- Session update envelope ----------
+
+// sessionUpdateParams holds the params for session/update notifications.
+type sessionUpdateParams struct {
+	SessionID string          `json:"sessionId"`
+	Update    json.RawMessage `json:"update"`
+}
+
+// ---------- Content types ----------
+
+// contentBlock is a content block in message chunks. This is a flat union:
+// fields are populated depending on Type.
+//
+//   - ContentText:         Text, Annotations
+//   - ContentImage:        Data, MimeType, URI
+//   - ContentResource:     Resource
+//   - ContentResourceLink: URI, Name, MimeType
+type contentBlock struct {
+	Type        ContentType     `json:"type"`
+	Text        string          `json:"text,omitzero"`
+	Data        string          `json:"data,omitzero"` // Base64 image data.
+	MimeType    string          `json:"mimeType,omitzero"`
+	URI         string          `json:"uri,omitzero"`
+	Name        string          `json:"name,omitzero"`
+	Resource    json.RawMessage `json:"resource,omitzero"`
+	Annotations json.RawMessage `json:"annotations,omitzero"`
+}
+
+// ---------- Session update types ----------
+
+// agentMessageChunkUpdate is a streaming text chunk from the agent.
+type agentMessageChunkUpdate struct {
+	SessionUpdate UpdateType   `json:"sessionUpdate"`
+	Content       contentBlock `json:"content"`
+}
+
+// agentThoughtChunkUpdate is a streaming reasoning chunk from the agent.
+type agentThoughtChunkUpdate struct {
+	SessionUpdate UpdateType   `json:"sessionUpdate"`
+	Content       contentBlock `json:"content"`
+}
+
+// usageUpdateUpdate is a context window / cost update.
+type usageUpdateUpdate struct {
+	SessionUpdate UpdateType `json:"sessionUpdate"`
+	Used          int        `json:"used"`
+	Size          int        `json:"size"`
+	Cost          usageCost  `json:"cost,omitzero"`
+}
+
+type usageCost struct {
+	Amount   float64 `json:"amount"`
+	Currency string  `json:"currency"`
+}
+
+// ---------- Permission request ----------
+
+// permissionRequestParams holds params for session/request_permission.
+type permissionRequestParams struct {
+	SessionID string             `json:"sessionId"`
+	ToolCall  json.RawMessage    `json:"toolCall"`
+	Options   []permissionOption `json:"options"`
+}
+
+// permissionOption is a single option in a permission request.
+type permissionOption struct {
+	OptionID string `json:"optionId"`
+	Kind     string `json:"kind"` // "allow_once", "allow_always", "reject_once".
+	Name     string `json:"name"`
+}
+
+// permissionResponseResult is the result sent back for a permission request.
+type permissionResponseResult struct {
+	OptionID string `json:"optionId"`
+}
+
 // ---------- Response types ----------
 
+// initializeResult is the result of an initialize request.
 type initializeResult struct {
 	ProtocolVersion   int               `json:"protocolVersion"`
 	AgentCapabilities agentCapabilities `json:"agentCapabilities,omitzero"`
 	AgentInfo         agentInfo         `json:"agentInfo,omitzero"`
+	AuthMethods       json.RawMessage   `json:"authMethods,omitzero"`
 }
 
 type agentCapabilities struct {
-	PromptCapabilities *promptCapabilities `json:"promptCapabilities,omitzero"`
-	LoadSession        bool                `json:"loadSession,omitzero"`
+	PromptCapabilities  promptCapabilities `json:"promptCapabilities,omitzero"`
+	LoadSession         bool               `json:"loadSession,omitzero"`
+	McpCapabilities     json.RawMessage    `json:"mcpCapabilities,omitzero"`
+	SessionCapabilities json.RawMessage    `json:"sessionCapabilities,omitzero"`
 }
 
 type promptCapabilities struct {
@@ -166,10 +324,12 @@ type agentInfo struct {
 	Version string `json:"version,omitzero"`
 }
 
+// sessionNewResult is the result of a session/new request.
 type sessionNewResult struct {
-	SessionID string      `json:"sessionId"`
-	Models    *modelsInfo `json:"models,omitzero"`
-	Modes     *modesInfo  `json:"modes,omitzero"`
+	SessionID string          `json:"sessionId"`
+	Models    modelsInfo      `json:"models,omitzero"`
+	Modes     modesInfo       `json:"modes,omitzero"`
+	Meta      json.RawMessage `json:"_meta,omitzero"`
 }
 
 type modelsInfo struct {
@@ -215,10 +375,11 @@ func (r stopReason) toFinishReason() genai.FinishReason {
 
 // promptResult is the result of a session/prompt response.
 type promptResult struct {
-	StopReason stopReason   `json:"stopReason,omitzero"`
-	Usage      *promptUsage `json:"usage,omitzero"`
+	StopReason stopReason  `json:"stopReason,omitzero"`
+	Usage      promptUsage `json:"usage,omitzero"`
 }
 
+// promptUsage holds the token usage from a session/prompt response.
 type promptUsage struct {
 	TotalTokens       int64 `json:"totalTokens,omitzero"`
 	InputTokens       int64 `json:"inputTokens,omitzero"`
@@ -226,71 +387,4 @@ type promptUsage struct {
 	ThoughtTokens     int64 `json:"thoughtTokens,omitzero"`
 	CachedReadTokens  int64 `json:"cachedReadTokens,omitzero"`
 	CachedWriteTokens int64 `json:"cachedWriteTokens,omitzero"`
-}
-
-// ---------- Session update types ----------
-
-// sessionUpdateParams holds the params for session/update notifications.
-type sessionUpdateParams struct {
-	SessionID string          `json:"sessionId"`
-	Update    json.RawMessage `json:"update"`
-}
-
-// updateProbe extracts the discriminator from a session update.
-type updateProbe struct {
-	SessionUpdate string `json:"sessionUpdate"`
-}
-
-// agentMessageChunkUpdate is a streaming text chunk from the agent.
-type agentMessageChunkUpdate struct {
-	SessionUpdate string       `json:"sessionUpdate"`
-	Content       contentBlock `json:"content"`
-}
-
-// agentThoughtChunkUpdate is a streaming reasoning chunk from the agent.
-type agentThoughtChunkUpdate struct {
-	SessionUpdate string       `json:"sessionUpdate"`
-	Content       contentBlock `json:"content"`
-}
-
-// contentBlock is a content block in message chunks. Flat union discriminated by Type.
-type contentBlock struct {
-	Type     string `json:"type"`
-	Text     string `json:"text,omitzero"`
-	Data     string `json:"data,omitzero"`
-	MimeType string `json:"mimeType,omitzero"`
-}
-
-// usageUpdateUpdate is a context window / cost update.
-type usageUpdateUpdate struct {
-	SessionUpdate string    `json:"sessionUpdate"`
-	Used          int       `json:"used"`
-	Size          int       `json:"size"`
-	Cost          usageCost `json:"cost,omitzero"`
-}
-
-type usageCost struct {
-	Amount   float64 `json:"amount"`
-	Currency string  `json:"currency"`
-}
-
-// ---------- Permission request ----------
-
-// permissionRequestParams holds params for session/request_permission.
-type permissionRequestParams struct {
-	SessionID string             `json:"sessionId"`
-	ToolCall  json.RawMessage    `json:"toolCall"`
-	Options   []permissionOption `json:"options"`
-}
-
-// permissionOption is a single option in a permission request.
-type permissionOption struct {
-	OptionID string `json:"optionId"`
-	Kind     string `json:"kind"` // "allow_once", "allow_always", "reject_once".
-	Name     string `json:"name"`
-}
-
-// permissionResponseResult is the result sent back for a permission request.
-type permissionResponseResult struct {
-	OptionID string `json:"optionId"`
 }

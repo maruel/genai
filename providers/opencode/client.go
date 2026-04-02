@@ -362,7 +362,7 @@ func handshake(stdin io.Writer, sc *bufio.Scanner, mdl, resumeSessionID string) 
 	if err := writeJSON(stdin, jsonrpcRequest{
 		JSONRPC: "2.0",
 		ID:      hs.nextID,
-		Method:  "initialize",
+		Method:  MethodInitialize,
 		Params: initializeParams{
 			ProtocolVersion:    1,
 			ClientCapabilities: clientCapabilities{Terminal: false},
@@ -377,9 +377,7 @@ func handshake(stdin io.Writer, sc *bufio.Scanner, mdl, resumeSessionID string) 
 	}
 	var initResult initializeResult
 	if json.Unmarshal(initData, &initResult) == nil {
-		if initResult.AgentCapabilities.PromptCapabilities != nil {
-			hs.supportsImage = initResult.AgentCapabilities.PromptCapabilities.Image
-		}
+		hs.supportsImage = initResult.AgentCapabilities.PromptCapabilities.Image
 	}
 
 	// 2. Create or resume session.
@@ -389,15 +387,15 @@ func handshake(stdin io.Writer, sc *bufio.Scanner, mdl, resumeSessionID string) 
 		sessionReq = jsonrpcRequest{
 			JSONRPC: "2.0",
 			ID:      hs.nextID,
-			Method:  "session/load",
-			Params:  sessionLoadParams{SessionID: resumeSessionID, Cwd: os.TempDir(), McpServers: []any{}},
+			Method:  MethodSessionLoad,
+			Params:  sessionLoadParams{SessionID: resumeSessionID, Cwd: os.TempDir()},
 		}
 	} else {
 		sessionReq = jsonrpcRequest{
 			JSONRPC: "2.0",
 			ID:      hs.nextID,
-			Method:  "session/new",
-			Params:  sessionNewParams{Cwd: os.TempDir(), McpServers: []any{}},
+			Method:  MethodSessionNew,
+			Params:  sessionNewParams{Cwd: os.TempDir()},
 		}
 	}
 	if err := writeJSON(stdin, sessionReq); err != nil {
@@ -419,9 +417,7 @@ func handshake(stdin io.Writer, sc *bufio.Scanner, mdl, resumeSessionID string) 
 	if hs.sessionID == "" {
 		return nil, errors.New("session response missing sessionId")
 	}
-	if snResult.Models != nil {
-		hs.availableModels = snResult.Models.AvailableModels
-	}
+	hs.availableModels = snResult.Models.AvailableModels
 
 	// 3. Switch model if requested (best-effort).
 	if mdl != "" {
@@ -429,7 +425,7 @@ func handshake(stdin io.Writer, sc *bufio.Scanner, mdl, resumeSessionID string) 
 		if err := writeJSON(stdin, jsonrpcRequest{
 			JSONRPC: "2.0",
 			ID:      hs.nextID,
-			Method:  "unstable_setSessionModel",
+			Method:  MethodUnstableSetSessionModel,
 			Params:  setSessionModelParams{SessionID: hs.sessionID, ModelID: mdl},
 		}); err != nil {
 			return nil, fmt.Errorf("write setSessionModel: %w", err)
@@ -452,7 +448,7 @@ func sendUserPrompt(stdin io.Writer, hs *handshakeResult, msg *genai.Message) (i
 	return id, writeJSON(stdin, jsonrpcRequest{
 		JSONRPC: "2.0",
 		ID:      id,
-		Method:  "session/prompt",
+		Method:  MethodSessionPrompt,
 		Params:  sessionPromptParams{SessionID: hs.sessionID, Prompt: content},
 	})
 }
@@ -463,7 +459,7 @@ func msgToPromptContent(msg *genai.Message, supportsImage bool) ([]promptContent
 	for i := range msg.Requests {
 		req := &msg.Requests[i]
 		if req.Text != "" {
-			items = append(items, promptContent{Type: "text", Text: req.Text})
+			items = append(items, promptContent{Type: ContentText, Text: req.Text})
 		}
 		if !req.Doc.IsZero() {
 			blk, err := docToPromptContent(req.Doc, supportsImage)
@@ -493,7 +489,7 @@ func docToPromptContent(doc genai.Doc, supportsImage bool) (promptContent, error
 		return promptContent{}, fmt.Errorf("read doc: %w", err)
 	}
 	if strings.HasPrefix(mimeType, "text/") {
-		return promptContent{Type: "text", Text: string(data)}, nil
+		return promptContent{Type: ContentText, Text: string(data)}, nil
 	}
 	if !supportsImage {
 		return promptContent{}, fmt.Errorf("opencode agent does not support image input")
@@ -502,7 +498,7 @@ func docToPromptContent(doc genai.Doc, supportsImage bool) (promptContent, error
 		return promptContent{}, fmt.Errorf("unsupported doc MIME type %q for opencode (text and images only)", mimeType)
 	}
 	return promptContent{
-		Type:     "image",
+		Type:     ContentImage,
 		Data:     base64.StdEncoding.EncodeToString(data),
 		MimeType: mimeType,
 	}, nil
@@ -543,23 +539,23 @@ func readTurn(sc *bufio.Scanner, stdin io.Writer, sessionID string, promptID int
 		}
 
 		// Response to our prompt request → turn complete.
-		if probe.ID != nil && probe.Method == "" {
+		if len(probe.ID) > 0 && probe.Method == "" {
 			var id int64
-			if json.Unmarshal(*probe.ID, &id) == nil && id == promptID {
+			if json.Unmarshal(probe.ID, &id) == nil && id == promptID {
 				return buildPromptResult(line, textBuf.String(), thinkBuf.String(), sessionID)
 			}
 			continue
 		}
 
 		// Request from agent (permission) → auto-approve.
-		if probe.ID != nil && probe.Method != "" {
+		if len(probe.ID) > 0 && probe.Method != "" {
 			if err := handleAgentRequest(stdin, line); err != nil {
 				return genai.Result{}, fmt.Errorf("handle agent request: %w", err)
 			}
 			continue
 		}
 
-		if probe.Method != methodSessionUpdate {
+		if probe.Method != MethodSessionUpdate {
 			continue
 		}
 
@@ -595,13 +591,13 @@ func parseSessionUpdateDelta(params json.RawMessage) (text, reasoning string, er
 		return "", "", fmt.Errorf("unmarshal session/update discriminator: %w", err)
 	}
 	switch probe.SessionUpdate {
-	case updateAgentMessageChunk:
+	case UpdateAgentMessageChunk:
 		var u agentMessageChunkUpdate
 		if err := json.Unmarshal(sup.Update, &u); err != nil {
 			return "", "", fmt.Errorf("unmarshal agent_message_chunk: %w", err)
 		}
 		return u.Content.Text, "", nil
-	case updateAgentThoughtChunk:
+	case UpdateAgentThoughtChunk:
 		var u agentThoughtChunkUpdate
 		if err := json.Unmarshal(sup.Update, &u); err != nil {
 			return "", "", fmt.Errorf("unmarshal agent_thought_chunk: %w", err)
@@ -620,10 +616,10 @@ func handleAgentRequest(stdin io.Writer, line []byte) error {
 		return fmt.Errorf("unmarshal agent request: %w", err)
 	}
 	var id int64
-	if err := json.Unmarshal(*msg.ID, &id); err != nil {
+	if err := json.Unmarshal(msg.ID, &id); err != nil {
 		return fmt.Errorf("unmarshal request id: %w", err)
 	}
-	if msg.Method != methodSessionRequestPermission {
+	if msg.Method != MethodSessionRequestPermission {
 		return writeJSON(stdin, jsonrpcResponse{JSONRPC: "2.0", ID: id, Result: struct{}{}})
 	}
 	var params permissionRequestParams
@@ -662,13 +658,11 @@ func buildPromptResult(line []byte, text, thinking, sessionID string) (genai.Res
 			var pr promptResult
 			if json.Unmarshal(msg.Result, &pr) == nil {
 				r.Usage.FinishReason = pr.StopReason.toFinishReason()
-				if pr.Usage != nil {
-					r.Usage.InputTokens = pr.Usage.InputTokens
-					r.Usage.OutputTokens = pr.Usage.OutputTokens
-					r.Usage.ReasoningTokens = pr.Usage.ThoughtTokens
-					r.Usage.InputCachedTokens = pr.Usage.CachedReadTokens
-					r.Usage.TotalTokens = pr.Usage.InputTokens + pr.Usage.OutputTokens
-				}
+				r.Usage.InputTokens = pr.Usage.InputTokens
+				r.Usage.OutputTokens = pr.Usage.OutputTokens
+				r.Usage.ReasoningTokens = pr.Usage.ThoughtTokens
+				r.Usage.InputCachedTokens = pr.Usage.CachedReadTokens
+				r.Usage.TotalTokens = pr.Usage.InputTokens + pr.Usage.OutputTokens
 			}
 		}
 	}

@@ -13,6 +13,18 @@ import (
 	"github.com/maruel/genai/base"
 )
 
+// ProviderOptionAPIKeyAuth keeps the ANTHROPIC_API_KEY environment variable in
+// the subprocess environment, causing Claude Code to authenticate with the API
+// key instead of OAuth.
+//
+// By default the provider strips ANTHROPIC_API_KEY so that Claude Code uses the
+// user's subscription (OAuth). Set this option when the caller intentionally
+// wants API key billing.
+type ProviderOptionAPIKeyAuth bool
+
+// Validate implements genai.Validatable.
+func (p ProviderOptionAPIKeyAuth) Validate() error { return nil }
+
 // GenOption configures a Claude Code CLI call.
 //
 // All fields are opt-in. By default the subprocess runs with all tools

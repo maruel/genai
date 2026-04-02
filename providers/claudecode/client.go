@@ -44,6 +44,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"sync"
@@ -82,7 +83,10 @@ type executor interface {
 }
 
 // cmdExecutor is the production executor backed by exec.Cmd.
-type cmdExecutor struct{ bin string }
+type cmdExecutor struct {
+	bin        string
+	apiKeyAuth bool // keep ANTHROPIC_API_KEY in subprocess environment
+}
 
 func (e *cmdExecutor) start(ctx context.Context, args []string) (io.WriteCloser, io.ReadCloser, func() error, error) {
 	// Fresh empty dir: claude sees no project files, CLAUDE.md, or history.
@@ -95,11 +99,19 @@ func (e *cmdExecutor) start(ctx context.Context, args []string) (io.WriteCloser,
 	cmd.Dir = dir
 	// Unset CLAUDECODE so that claude can be launched even when the caller is
 	// itself running inside a Claude Code session (nested session guard).
+	// Unset ANTHROPIC_API_KEY so that Claude Code uses OAuth (subscription)
+	// instead of consuming API key credits. The key is typically set in the
+	// parent process for HTTP-based providers (e.g. anthropic), not for the CLI.
+	// Use GenOption.APIKeyAuth = true to keep it.
 	// Set CLAUDE_CODE_SIMPLE=1 to skip hooks, auto-memory, plugin sync, LSP,
 	// and other auto-discovery that is not relevant for programmatic use.
 	// This is the same env var that --bare sets internally, but without the
 	// --bare auth restriction (which disallows OAuth).
-	cmd.Env = append(environWithout(os.Environ(), "CLAUDECODE"), "CLAUDE_CODE_SIMPLE=1")
+	strip := []string{"CLAUDECODE"}
+	if !e.apiKeyAuth && hasOAuth() {
+		strip = append(strip, "ANTHROPIC_API_KEY")
+	}
+	cmd.Env = append(environWithout(os.Environ(), strip...), "CLAUDE_CODE_SIMPLE=1")
 	stdin, err := cmd.StdinPipe()
 	if err != nil {
 		return nil, nil, nil, errors.Join(fmt.Errorf("stdin pipe: %w", err), os.RemoveAll(dir))
@@ -127,9 +139,11 @@ func newScanner(r io.Reader) *bufio.Scanner {
 // Client is a genai provider that delegates to the local `claude` CLI.
 type Client struct {
 	base.NotImplemented
-	exec    executor
-	bin     string // resolved lazily by ensureBin; empty when exec is a test fake
-	model   string
+	exec       executor
+	bin        string // resolved lazily by ensureBin; empty when exec is a test fake
+	model      string
+	apiKeyAuth bool // keep ANTHROPIC_API_KEY in subprocess environment
+
 	binOnce sync.Once
 	binErr  error
 }
@@ -144,6 +158,8 @@ type Client struct {
 // Supported ProviderOptions:
 //   - genai.ProviderOptionModel — model alias ("opus", "sonnet", "haiku") or full ID.
 //     Use genai.ModelCheap, genai.ModelGood, or genai.ModelSOTA for automatic selection.
+//   - ProviderOptionAPIKeyAuth — keep ANTHROPIC_API_KEY in the subprocess
+//     environment. By default the key is stripped so Claude Code uses OAuth.
 func New(opts ...genai.ProviderOption) (*Client, error) {
 	c := &Client{}
 	for _, opt := range opts {
@@ -162,6 +178,8 @@ func New(opts ...genai.ProviderOption) (*Client, error) {
 			default:
 				c.model = string(v)
 			}
+		case ProviderOptionAPIKeyAuth:
+			c.apiKeyAuth = bool(v)
 		default:
 			return nil, fmt.Errorf("unsupported provider option %T", opt)
 		}
@@ -183,7 +201,7 @@ func (c *Client) ensureBin() error {
 			return
 		}
 		c.bin = bin
-		c.exec = &cmdExecutor{bin: bin}
+		c.exec = &cmdExecutor{bin: bin, apiKeyAuth: c.apiKeyAuth}
 	})
 	return c.binErr
 }
@@ -689,13 +707,46 @@ func mapFinishReason(r string) genai.FinishReason {
 	}
 }
 
-// environWithout returns os.Environ() with all entries whose key equals name
-// removed, so the subprocess inherits the full environment minus that variable.
-func environWithout(env []string, name string) []string {
-	prefix := name + "="
+// claudeConfig is the subset of ~/.claude/claude.json we inspect.
+type claudeConfig struct {
+	OAuthAccount *json.RawMessage `json:"oauthAccount"`
+}
+
+// hasOAuth reports whether Claude Code has an OAuth session configured in
+// ~/.claude/claude.json. When true, stripping ANTHROPIC_API_KEY is safe
+// because Claude Code can fall back to OAuth. When false, the API key may be
+// the only auth method available.
+func hasOAuth() bool {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return false
+	}
+	f, err := os.Open(filepath.Join(home, ".claude", "claude.json"))
+	if err != nil {
+		return false
+	}
+	defer f.Close()
+	var cfg claudeConfig
+	if json.NewDecoder(f).Decode(&cfg) != nil {
+		return false
+	}
+	return cfg.OAuthAccount != nil
+}
+
+// environWithout returns env with all entries whose key matches any of the
+// given names removed, so the subprocess inherits the full environment minus
+// those variables.
+func environWithout(env []string, names ...string) []string {
 	out := make([]string, 0, len(env))
 	for _, e := range env {
-		if !strings.HasPrefix(e, prefix) {
+		skip := false
+		for _, name := range names {
+			if strings.HasPrefix(e, name+"=") {
+				skip = true
+				break
+			}
+		}
+		if !skip {
 			out = append(out, e)
 		}
 	}

@@ -467,6 +467,7 @@ type outputUser struct {
 	ParentToolUseID *string         `json:"parent_tool_use_id,omitzero"`
 	ToolUseResult   json.RawMessage `json:"tool_use_result,omitzero"`
 	IsSynthetic     bool            `json:"isSynthetic,omitzero"`
+	IsReplay        bool            `json:"isReplay,omitzero"`
 }
 
 // outputUserText is the user message body when content is a plain string.

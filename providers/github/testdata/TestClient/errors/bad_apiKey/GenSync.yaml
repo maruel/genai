@@ -1,0 +1,46 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 92
+        host: models.github.ai
+        body: |
+            {"model":"openai/gpt-4.1-nano","messages":[{"role":"user","content":"Tell a short joke."}]}
+        headers:
+            Accept:
+                - application/vnd.github+json
+            Content-Type:
+                - application/json; charset=utf-8
+            X-Github-Api-Version:
+                - "2026-03-10"
+        url: https://models.github.ai/inference/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 13
+        body: |
+            Unauthorized
+        headers:
+            Content-Length:
+                - "13"
+            Content-Type:
+                - text/plain; charset=utf-8
+            Server:
+                - github.com
+            Vary:
+                - Origin
+            X-Content-Type-Options:
+                - nosniff
+            X-Github-Backend:
+                - Kubernetes
+            X-Github-Request-Id:
+                - DD10:1A7601:4862D2:521D6D:69CED910
+        status: 401 Unauthorized
+        code: 401
+        duration: 31ms

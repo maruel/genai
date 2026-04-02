@@ -1,0 +1,119 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 302
+        host: models.github.ai
+        body: |
+            {"model":"openai/gpt-4.1","messages":[{"role":"user","content":[{"type":"text","text":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"stream":true,"stream_options":{"include_usage":true}}
+        headers:
+            Accept:
+                - application/vnd.github+json
+            Content-Type:
+                - application/json; charset=utf-8
+            X-Github-Api-Version:
+                - "2026-03-10"
+        url: https://models.github.ai/inference/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"choices":[],"created":0,"id":"","model":"","object":"","prompt_filter_results":[{"prompt_index":0,"content_filter_results":{"hate":{"filtered":false,"severity":"safe"},"jailbreak":{"detected":false,"filtered":false},"self_harm":{"filtered":false,"severity":"safe"},"sexual":{"filtered":false,"severity":"safe"},"violence":{"filtered":false,"severity":"safe"}}}]}
+
+            data: {"choices":[{"content_filter_results":{},"delta":{"content":"","refusal":null,"role":"assistant"},"finish_reason":null,"index":0,"logprobs":null}],"created":1775162738,"id":"chatcmpl-DQJD0c8OXqhiTrxFGHhr7lSkCQKje","model":"gpt-4.1-2025-04-14","obfuscation":"NRUFxg","object":"chat.completion.chunk","system_fingerprint":"fp_e05894342c","usage":null}
+
+            data: {"choices":[{"content_filter_results":{},"delta":{"content":"The"},"finish_reason":null,"index":0,"logprobs":null}],"created":1775162738,"id":"chatcmpl-DQJD0c8OXqhiTrxFGHhr7lSkCQKje","model":"gpt-4.1-2025-04-14","obfuscation":"5uP11","object":"chat.completion.chunk","system_fingerprint":"fp_e05894342c","usage":null}
+
+            data: {"choices":[{"content_filter_results":{},"delta":{"content":" capital"},"finish_reason":null,"index":0,"logprobs":null}],"created":1775162738,"id":"chatcmpl-DQJD0c8OXqhiTrxFGHhr7lSkCQKje","model":"gpt-4.1-2025-04-14","obfuscation":"","object":"chat.completion.chunk","system_fingerprint":"fp_e05894342c","usage":null}
+
+            data: {"choices":[{"content_filter_results":{},"delta":{"content":" of"},"finish_reason":null,"index":0,"logprobs":null}],"created":1775162738,"id":"chatcmpl-DQJD0c8OXqhiTrxFGHhr7lSkCQKje","model":"gpt-4.1-2025-04-14","obfuscation":"W6Qr1","object":"chat.completion.chunk","system_fingerprint":"fp_e05894342c","usage":null}
+
+            data: {"choices":[{"content_filter_results":{},"delta":{"content":" Qu"},"finish_reason":null,"index":0,"logprobs":null}],"created":1775162738,"id":"chatcmpl-DQJD0c8OXqhiTrxFGHhr7lSkCQKje","model":"gpt-4.1-2025-04-14","obfuscation":"FFePa","object":"chat.completion.chunk","system_fingerprint":"fp_e05894342c","usage":null}
+
+            data: {"choices":[{"content_filter_results":{},"delta":{"content":"ack"},"finish_reason":null,"index":0,"logprobs":null}],"created":1775162738,"id":"chatcmpl-DQJD0c8OXqhiTrxFGHhr7lSkCQKje","model":"gpt-4.1-2025-04-14","obfuscation":"La9MZ","object":"chat.completion.chunk","system_fingerprint":"fp_e05894342c","usage":null}
+
+            data: {"choices":[{"content_filter_results":{},"delta":{"content":"iland"},"finish_reason":null,"index":0,"logprobs":null}],"created":1775162738,"id":"chatcmpl-DQJD0c8OXqhiTrxFGHhr7lSkCQKje","model":"gpt-4.1-2025-04-14","obfuscation":"5Xg","object":"chat.completion.chunk","system_fingerprint":"fp_e05894342c","usage":null}
+
+            data: {"choices":[{"content_filter_results":{},"delta":{"content":" is"},"finish_reason":null,"index":0,"logprobs":null}],"created":1775162738,"id":"chatcmpl-DQJD0c8OXqhiTrxFGHhr7lSkCQKje","model":"gpt-4.1-2025-04-14","obfuscation":"UpyV7","object":"chat.completion.chunk","system_fingerprint":"fp_e05894342c","usage":null}
+
+            data: {"choices":[{"content_filter_results":{},"delta":{"content":" **"},"finish_reason":null,"index":0,"logprobs":null}],"created":1775162738,"id":"chatcmpl-DQJD0c8OXqhiTrxFGHhr7lSkCQKje","model":"gpt-4.1-2025-04-14","obfuscation":"fsQc9","object":"chat.completion.chunk","system_fingerprint":"fp_e05894342c","usage":null}
+
+            data: {"choices":[{"content_filter_results":{},"delta":{"content":"Qu"},"finish_reason":null,"index":0,"logprobs":null}],"created":1775162738,"id":"chatcmpl-DQJD0c8OXqhiTrxFGHhr7lSkCQKje","model":"gpt-4.1-2025-04-14","obfuscation":"CBPSXp","object":"chat.completion.chunk","system_fingerprint":"fp_e05894342c","usage":null}
+
+            data: {"choices":[{"content_filter_results":{},"delta":{"content":"ack"},"finish_reason":null,"index":0,"logprobs":null}],"created":1775162738,"id":"chatcmpl-DQJD0c8OXqhiTrxFGHhr7lSkCQKje","model":"gpt-4.1-2025-04-14","obfuscation":"jjo6p","object":"chat.completion.chunk","system_fingerprint":"fp_e05894342c","usage":null}
+
+            data: {"choices":[{"content_filter_results":{},"delta":{"content":"**"},"finish_reason":null,"index":0,"logprobs":null}],"created":1775162738,"id":"chatcmpl-DQJD0c8OXqhiTrxFGHhr7lSkCQKje","model":"gpt-4.1-2025-04-14","obfuscation":"RIaYg9","object":"chat.completion.chunk","system_fingerprint":"fp_e05894342c","usage":null}
+
+            data: {"choices":[{"content_filter_results":{},"delta":{"content":"."},"finish_reason":null,"index":0,"logprobs":null}],"created":1775162738,"id":"chatcmpl-DQJD0c8OXqhiTrxFGHhr7lSkCQKje","model":"gpt-4.1-2025-04-14","obfuscation":"kCEwVxm","object":"chat.completion.chunk","system_fingerprint":"fp_e05894342c","usage":null}
+
+            data: {"choices":[{"content_filter_results":{},"delta":{},"finish_reason":"stop","index":0,"logprobs":null}],"created":1775162738,"id":"chatcmpl-DQJD0c8OXqhiTrxFGHhr7lSkCQKje","model":"gpt-4.1-2025-04-14","obfuscation":"bT","object":"chat.completion.chunk","system_fingerprint":"fp_e05894342c","usage":null}
+
+            data: {"choices":[],"created":1775162738,"id":"chatcmpl-DQJD0c8OXqhiTrxFGHhr7lSkCQKje","model":"gpt-4.1-2025-04-14","obfuscation":"9sBnmcB","object":"chat.completion.chunk","system_fingerprint":"fp_e05894342c","usage":{"completion_tokens":13,"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0},"prompt_tokens":41,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"total_tokens":54}}
+
+            data: [DONE]
+
+        headers:
+            Apim-Request-Id:
+                - 0cf3295a-1467-4136-bc21-2808cf45c59b
+            Azureml-Model-Session:
+                - d20260305231208-bd685413021f
+            Azureml-Served-By-Cluster:
+                - vienna-westus-02
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Request-Context:
+                - appId=
+            Server:
+                - github.com
+            Skip-Error-Remapping:
+                - "true"
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - Origin
+            X-Content-Type-Options:
+                - nosniff
+            X-Github-Backend:
+                - Kubernetes
+            X-Github-Request-Id:
+                - E954:24560:3E0D9C:45FEA8:69CED571
+            X-Ms-Client-Request-Id:
+                - Not-Set
+            X-Ms-Deployment-Name:
+                - gpt-4.1
+            X-Ms-Is-Spilled-Over:
+                - "false"
+            X-Ms-Rai-Invoked:
+                - "true"
+            X-Ms-Region:
+                - East US 2
+            X-Ratelimit-Abusepenalty-Active:
+                - "False"
+            X-Ratelimit-Limit-Requests:
+                - "1000"
+            X-Ratelimit-Limit-Tokens:
+                - "1000000"
+            X-Ratelimit-Remaining-Requests:
+                - "999"
+            X-Ratelimit-Remaining-Tokens:
+                - "999963"
+            X-Ratelimit-Renewalperiod-Requests:
+                - "60"
+            X-Ratelimit-Renewalperiod-Tokens:
+                - "60"
+            X-Ratelimit-Reset-Requests:
+                - "60"
+            X-Ratelimit-Reset-Tokens:
+                - "2"
+            X-Request-Time:
+                - "1.537"
+        status: 200 OK
+        code: 200
+        duration: 1.716s

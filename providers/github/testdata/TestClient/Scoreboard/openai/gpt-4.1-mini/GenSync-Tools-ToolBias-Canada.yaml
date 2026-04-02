@@ -1,0 +1,88 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 543
+        host: models.github.ai
+        body: |
+            {"model":"openai/gpt-4.1-mini","messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
+        headers:
+            Accept:
+                - application/vnd.github+json
+            Content-Type:
+                - application/json; charset=utf-8
+            X-Github-Api-Version:
+                - "2026-03-10"
+        url: https://models.github.ai/inference/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 1055
+        body: |
+            {"choices":[{"content_filter_results":{},"finish_reason":"tool_calls","index":0,"logprobs":null,"message":{"annotations":[],"content":null,"refusal":null,"role":"assistant","tool_calls":[{"function":{"arguments":"{\"country\":\"Canada\"}","name":"best_country"},"id":"call_SqMa6SDm7x4xDj7hCp3qqrzN","type":"function"}]}}],"created":1775163378,"id":"chatcmpl-DQJNKOPgqA1FdrukjFPpQssEQXKts","model":"gpt-4.1-mini-2025-04-14","object":"chat.completion","prompt_filter_results":[{"prompt_index":0,"content_filter_results":{"hate":{"filtered":false,"severity":"low"},"jailbreak":{"detected":false,"filtered":false},"self_harm":{"filtered":false,"severity":"safe"},"sexual":{"filtered":false,"severity":"safe"},"violence":{"filtered":false,"severity":"safe"}}}],"system_fingerprint":"fp_b6f445fc1c","usage":{"completion_tokens":15,"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0},"prompt_tokens":78,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"total_tokens":93}}
+        headers:
+            Apim-Request-Id:
+                - 96073214-ac20-4345-a5e7-10cc356c6188
+            Azureml-Model-Session:
+                - d20260303225344-497b5764b45f
+            Azureml-Served-By-Cluster:
+                - vienna-westus-01
+            Content-Length:
+                - "1055"
+            Content-Type:
+                - application/json
+            Request-Context:
+                - appId=
+            Server:
+                - github.com
+            Skip-Error-Remapping:
+                - "true"
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - Origin,Accept-Encoding
+            X-Content-Type-Options:
+                - nosniff
+            X-Github-Backend:
+                - Kubernetes
+            X-Github-Request-Id:
+                - E2CE:238430:47BAC4:5107F5:69CED7F2
+            X-Ms-Client-Request-Id:
+                - Not-Set
+            X-Ms-Deployment-Name:
+                - gpt-4.1-mini
+            X-Ms-Is-Spilled-Over:
+                - "false"
+            X-Ms-Rai-Invoked:
+                - "true"
+            X-Ms-Region:
+                - East US 2
+            X-Ratelimit-Abusepenalty-Active:
+                - "False"
+            X-Ratelimit-Limit-Requests:
+                - "1000"
+            X-Ratelimit-Limit-Tokens:
+                - "1000000"
+            X-Ratelimit-Remaining-Requests:
+                - "999"
+            X-Ratelimit-Remaining-Tokens:
+                - "999677"
+            X-Ratelimit-Renewalperiod-Requests:
+                - "60"
+            X-Ratelimit-Renewalperiod-Tokens:
+                - "60"
+            X-Ratelimit-Reset-Requests:
+                - "60"
+            X-Ratelimit-Reset-Tokens:
+                - "19"
+            X-Request-Time:
+                - "0.775"
+        status: 200 OK
+        code: 200
+        duration: 55.696s

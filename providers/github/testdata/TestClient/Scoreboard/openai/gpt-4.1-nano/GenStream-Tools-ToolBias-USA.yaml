@@ -1,0 +1,117 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 597
+        host: models.github.ai
+        body: |
+            {"model":"openai/gpt-4.1-nano","messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"stream":true,"stream_options":{"include_usage":true},"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
+        headers:
+            Accept:
+                - application/vnd.github+json
+            Content-Type:
+                - application/json; charset=utf-8
+            X-Github-Api-Version:
+                - "2026-03-10"
+        url: https://models.github.ai/inference/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"choices":[],"created":0,"id":"","model":"","object":"","prompt_filter_results":[{"prompt_index":0,"content_filter_results":{"hate":{"filtered":false,"severity":"safe"},"jailbreak":{"detected":false,"filtered":false},"self_harm":{"filtered":false,"severity":"safe"},"sexual":{"filtered":false,"severity":"safe"},"violence":{"filtered":false,"severity":"safe"}}}]}
+
+            data: {"choices":[{"content_filter_results":{},"delta":{"content":null,"role":"assistant"},"finish_reason":null,"index":0,"logprobs":null}],"created":1775163516,"id":"chatcmpl-DQJPYykernx4djiwdqcHjeScCFV4Q","model":"gpt-4.1-nano-2025-04-14","obfuscation":"lICMOovSFyiQ1C","object":"chat.completion.chunk","system_fingerprint":"fp_490a4ad033","usage":null}
+
+            data: {"choices":[{"content_filter_results":{},"delta":{"tool_calls":[{"function":{"arguments":"","name":"best_country"},"id":"call_gmk4DlzkaXN2BA4U2ozJak09","index":0,"type":"function"}]},"finish_reason":null,"index":0,"logprobs":null}],"created":1775163516,"id":"chatcmpl-DQJPYykernx4djiwdqcHjeScCFV4Q","model":"gpt-4.1-nano-2025-04-14","obfuscation":"EixVG90IItDo","object":"chat.completion.chunk","system_fingerprint":"fp_490a4ad033","usage":null}
+
+            data: {"choices":[{"content_filter_results":{},"delta":{"tool_calls":[{"function":{"arguments":"{\"co"},"index":0}]},"finish_reason":null,"index":0,"logprobs":null}],"created":1775163516,"id":"chatcmpl-DQJPYykernx4djiwdqcHjeScCFV4Q","model":"gpt-4.1-nano-2025-04-14","obfuscation":"yEI3","object":"chat.completion.chunk","system_fingerprint":"fp_490a4ad033","usage":null}
+
+            data: {"choices":[{"content_filter_results":{},"delta":{"tool_calls":[{"function":{"arguments":"untry"},"index":0}]},"finish_reason":null,"index":0,"logprobs":null}],"created":1775163516,"id":"chatcmpl-DQJPYykernx4djiwdqcHjeScCFV4Q","model":"gpt-4.1-nano-2025-04-14","obfuscation":"Cbz9","object":"chat.completion.chunk","system_fingerprint":"fp_490a4ad033","usage":null}
+
+            data: {"choices":[{"content_filter_results":{},"delta":{"tool_calls":[{"function":{"arguments":"\": \"US"},"index":0}]},"finish_reason":null,"index":0,"logprobs":null}],"created":1775163516,"id":"chatcmpl-DQJPYykernx4djiwdqcHjeScCFV4Q","model":"gpt-4.1-nano-2025-04-14","obfuscation":"O","object":"chat.completion.chunk","system_fingerprint":"fp_490a4ad033","usage":null}
+
+            data: {"choices":[{"content_filter_results":{},"delta":{"tool_calls":[{"function":{"arguments":"A\"}"},"index":0}]},"finish_reason":null,"index":0,"logprobs":null}],"created":1775163516,"id":"chatcmpl-DQJPYykernx4djiwdqcHjeScCFV4Q","model":"gpt-4.1-nano-2025-04-14","obfuscation":"kiusq","object":"chat.completion.chunk","system_fingerprint":"fp_490a4ad033","usage":null}
+
+            data: {"choices":[{"content_filter_results":{},"delta":{"tool_calls":[{"function":{"arguments":"","name":"best_country"},"id":"call_Cl9uOxehpkvmI0wWQg3M5oMJ","index":1,"type":"function"}]},"finish_reason":null,"index":0,"logprobs":null}],"created":1775163516,"id":"chatcmpl-DQJPYykernx4djiwdqcHjeScCFV4Q","model":"gpt-4.1-nano-2025-04-14","obfuscation":"brGdfK1u3Jz8","object":"chat.completion.chunk","system_fingerprint":"fp_490a4ad033","usage":null}
+
+            data: {"choices":[{"content_filter_results":{},"delta":{"tool_calls":[{"function":{"arguments":"{\"co"},"index":1}]},"finish_reason":null,"index":0,"logprobs":null}],"created":1775163516,"id":"chatcmpl-DQJPYykernx4djiwdqcHjeScCFV4Q","model":"gpt-4.1-nano-2025-04-14","obfuscation":"8aCo","object":"chat.completion.chunk","system_fingerprint":"fp_490a4ad033","usage":null}
+
+            data: {"choices":[{"content_filter_results":{},"delta":{"tool_calls":[{"function":{"arguments":"untry"},"index":1}]},"finish_reason":null,"index":0,"logprobs":null}],"created":1775163516,"id":"chatcmpl-DQJPYykernx4djiwdqcHjeScCFV4Q","model":"gpt-4.1-nano-2025-04-14","obfuscation":"fKnS","object":"chat.completion.chunk","system_fingerprint":"fp_490a4ad033","usage":null}
+
+            data: {"choices":[{"content_filter_results":{},"delta":{"tool_calls":[{"function":{"arguments":"\": \"Ca"},"index":1}]},"finish_reason":null,"index":0,"logprobs":null}],"created":1775163516,"id":"chatcmpl-DQJPYykernx4djiwdqcHjeScCFV4Q","model":"gpt-4.1-nano-2025-04-14","obfuscation":"H","object":"chat.completion.chunk","system_fingerprint":"fp_490a4ad033","usage":null}
+
+            data: {"choices":[{"content_filter_results":{},"delta":{"tool_calls":[{"function":{"arguments":"nada"},"index":1}]},"finish_reason":null,"index":0,"logprobs":null}],"created":1775163516,"id":"chatcmpl-DQJPYykernx4djiwdqcHjeScCFV4Q","model":"gpt-4.1-nano-2025-04-14","obfuscation":"jkdIz","object":"chat.completion.chunk","system_fingerprint":"fp_490a4ad033","usage":null}
+
+            data: {"choices":[{"content_filter_results":{},"delta":{"tool_calls":[{"function":{"arguments":"\"}"},"index":1}]},"finish_reason":null,"index":0,"logprobs":null}],"created":1775163516,"id":"chatcmpl-DQJPYykernx4djiwdqcHjeScCFV4Q","model":"gpt-4.1-nano-2025-04-14","obfuscation":"2KiIJQ","object":"chat.completion.chunk","system_fingerprint":"fp_490a4ad033","usage":null}
+
+            data: {"choices":[{"content_filter_results":{},"delta":{},"finish_reason":"tool_calls","index":0,"logprobs":null}],"created":1775163516,"id":"chatcmpl-DQJPYykernx4djiwdqcHjeScCFV4Q","model":"gpt-4.1-nano-2025-04-14","obfuscation":"l5zR5Sj","object":"chat.completion.chunk","system_fingerprint":"fp_490a4ad033","usage":null}
+
+            data: {"choices":[],"created":1775163516,"id":"chatcmpl-DQJPYykernx4djiwdqcHjeScCFV4Q","model":"gpt-4.1-nano-2025-04-14","obfuscation":"4","object":"chat.completion.chunk","system_fingerprint":"fp_490a4ad033","usage":{"completion_tokens":46,"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0},"prompt_tokens":78,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"total_tokens":124}}
+
+            data: [DONE]
+
+        headers:
+            Apim-Request-Id:
+                - 9cd14359-f830-43f7-bf8d-33469dc45a74
+            Azureml-Model-Session:
+                - d20260305181535-603f32320d74
+            Azureml-Served-By-Cluster:
+                - vienna-westus-02
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Request-Context:
+                - appId=
+            Server:
+                - github.com
+            Skip-Error-Remapping:
+                - "true"
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - Origin
+            X-Content-Type-Options:
+                - nosniff
+            X-Github-Backend:
+                - Kubernetes
+            X-Github-Request-Id:
+                - 8EDA:69BE:475D9D:50CBC0:69CED87C
+            X-Ms-Client-Request-Id:
+                - Not-Set
+            X-Ms-Deployment-Name:
+                - gpt-4.1-nano
+            X-Ms-Is-Spilled-Over:
+                - "false"
+            X-Ms-Rai-Invoked:
+                - "true"
+            X-Ms-Region:
+                - East US 2
+            X-Ratelimit-Abusepenalty-Active:
+                - "False"
+            X-Ratelimit-Limit-Requests:
+                - "1000"
+            X-Ratelimit-Limit-Tokens:
+                - "1000000"
+            X-Ratelimit-Remaining-Requests:
+                - "999"
+            X-Ratelimit-Remaining-Tokens:
+                - "999650"
+            X-Ratelimit-Renewalperiod-Requests:
+                - "60"
+            X-Ratelimit-Renewalperiod-Tokens:
+                - "60"
+            X-Ratelimit-Reset-Requests:
+                - "60"
+            X-Ratelimit-Reset-Tokens:
+                - "21"
+            X-Request-Time:
+                - "0.642"
+        status: 200 OK
+        code: 200
+        duration: 748ms

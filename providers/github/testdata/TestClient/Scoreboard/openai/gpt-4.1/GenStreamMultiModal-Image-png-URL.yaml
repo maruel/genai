@@ -1,0 +1,99 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 327
+        host: models.github.ai
+        body: |
+            {"model":"openai/gpt-4.1","messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.png"}}]}],"stream":true,"stream_options":{"include_usage":true}}
+        headers:
+            Accept:
+                - application/vnd.github+json
+            Content-Type:
+                - application/json; charset=utf-8
+            X-Github-Api-Version:
+                - "2026-03-10"
+        url: https://models.github.ai/inference/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"choices":[],"created":0,"id":"","model":"","object":"","prompt_filter_results":[{"prompt_index":0,"content_filter_results":{"hate":{"filtered":false,"severity":"safe"},"jailbreak":{"detected":false,"filtered":false},"self_harm":{"filtered":false,"severity":"safe"},"sexual":{"filtered":false,"severity":"safe"},"violence":{"filtered":false,"severity":"safe"}}}]}
+
+            data: {"choices":[{"content_filter_results":{},"delta":{"content":"","refusal":null,"role":"assistant"},"finish_reason":null,"index":0,"logprobs":null}],"created":1775162799,"id":"chatcmpl-DQJDzB8SUQJBZKjn6tQ2FL9qg0eAq","model":"gpt-4.1-2025-04-14","obfuscation":"1WlAV1","object":"chat.completion.chunk","system_fingerprint":"fp_7a7fd0eb44","usage":null}
+
+            data: {"choices":[{"content_filter_results":{"protected_material_code":{"detected":false,"filtered":false}},"delta":{"content":"Ban"},"finish_reason":null,"index":0,"logprobs":null}],"created":1775162799,"id":"chatcmpl-DQJDzB8SUQJBZKjn6tQ2FL9qg0eAq","model":"gpt-4.1-2025-04-14","obfuscation":"8fJP6","object":"chat.completion.chunk","system_fingerprint":"fp_7a7fd0eb44","usage":null}
+
+            data: {"choices":[{"content_filter_results":{"protected_material_code":{"detected":false,"filtered":false}},"delta":{"content":"ana"},"finish_reason":null,"index":0,"logprobs":null}],"created":1775162799,"id":"chatcmpl-DQJDzB8SUQJBZKjn6tQ2FL9qg0eAq","model":"gpt-4.1-2025-04-14","obfuscation":"6mABV","object":"chat.completion.chunk","system_fingerprint":"fp_7a7fd0eb44","usage":null}
+
+            data: {"choices":[{"content_filter_results":{},"delta":{},"finish_reason":"stop","index":0,"logprobs":null}],"created":1775162799,"id":"chatcmpl-DQJDzB8SUQJBZKjn6tQ2FL9qg0eAq","model":"gpt-4.1-2025-04-14","obfuscation":"7G","object":"chat.completion.chunk","system_fingerprint":"fp_7a7fd0eb44","usage":null}
+
+            data: {"choices":[],"created":1775162799,"id":"chatcmpl-DQJDzB8SUQJBZKjn6tQ2FL9qg0eAq","model":"gpt-4.1-2025-04-14","obfuscation":"caVZdR","object":"chat.completion.chunk","system_fingerprint":"fp_7a7fd0eb44","usage":{"completion_tokens":3,"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0},"prompt_tokens":273,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"total_tokens":276}}
+
+            data: [DONE]
+
+        headers:
+            Apim-Request-Id:
+                - eed5b54e-314e-4af9-a145-d27ed1b35598
+            Azureml-Model-Session:
+                - d20260308123915-cde40b3f7222
+            Azureml-Served-By-Cluster:
+                - vienna-westus-01
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Request-Context:
+                - appId=
+            Server:
+                - github.com
+            Skip-Error-Remapping:
+                - "true"
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - Origin
+            X-Content-Type-Options:
+                - nosniff
+            X-Github-Backend:
+                - Kubernetes
+            X-Github-Request-Id:
+                - C4A2:2C7307:38C78B:405436:69CED5AF
+            X-Ms-Client-Request-Id:
+                - Not-Set
+            X-Ms-Deployment-Name:
+                - gpt-4.1
+            X-Ms-Is-Spilled-Over:
+                - "false"
+            X-Ms-Rai-Invoked:
+                - "true"
+            X-Ms-Region:
+                - East US 2
+            X-Ratelimit-Abusepenalty-Active:
+                - "False"
+            X-Ratelimit-Limit-Requests:
+                - "1000"
+            X-Ratelimit-Limit-Tokens:
+                - "1000000"
+            X-Ratelimit-Remaining-Requests:
+                - "999"
+            X-Ratelimit-Remaining-Tokens:
+                - "998942"
+            X-Ratelimit-Renewalperiod-Requests:
+                - "60"
+            X-Ratelimit-Renewalperiod-Tokens:
+                - "60"
+            X-Ratelimit-Reset-Requests:
+                - "60"
+            X-Ratelimit-Reset-Tokens:
+                - "63"
+            X-Request-Time:
+                - "1.292"
+        status: 200 OK
+        code: 200
+        duration: 1.685s

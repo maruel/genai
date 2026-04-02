@@ -22,6 +22,7 @@ import (
 	"github.com/maruel/genai/providers/cohere"
 	"github.com/maruel/genai/providers/deepseek"
 	"github.com/maruel/genai/providers/gemini"
+	"github.com/maruel/genai/providers/github"
 	"github.com/maruel/genai/providers/groq"
 	"github.com/maruel/genai/providers/huggingface"
 	"github.com/maruel/genai/providers/llamacpp"
@@ -150,6 +151,16 @@ var All = map[string]Config{
 		APIKeyEnvVar: "GEMINI_API_KEY",
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
 			p, err := gemini.New(ctx, opts...)
+			if p == nil {
+				return nil, err
+			}
+			return p, err
+		},
+	},
+	"github": {
+		APIKeyEnvVar: "GITHUB_TOKEN",
+		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
+			p, err := github.New(ctx, opts...)
 			if p == nil {
 				return nil, err
 			}

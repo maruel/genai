@@ -1,0 +1,195 @@
+{
+  "country": "US",
+  "dashboardURL": "https://github.com/marketplace/models",
+  "scenarios": [
+    {
+      "models": [
+        "openai/gpt-4.1"
+      ],
+      "sota": true,
+      "in": {
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "tools": "true",
+        "toolsBiased": "flaky",
+        "toolsIndecisive": "true",
+        "toolCallRequired": true,
+        "json": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "flaky",
+        "seed": true,
+        "tools": "true",
+        "toolsIndecisive": "true",
+        "toolCallRequired": true,
+        "json": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
+    },
+    {
+      "models": [
+        "openai/gpt-4.1-mini"
+      ],
+      "good": true,
+      "in": {
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
+        "json": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "flaky",
+        "seed": true,
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
+        "json": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
+    },
+    {
+      "models": [
+        "openai/gpt-4.1-nano"
+      ],
+      "cheap": true,
+      "in": {
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "seed": true,
+        "tools": "true",
+        "toolsIndecisive": "true",
+        "toolCallRequired": true,
+        "json": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "flaky",
+        "seed": true,
+        "tools": "true",
+        "toolsIndecisive": "true",
+        "toolCallRequired": true,
+        "json": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
+    },
+    {
+      "models": [
+        "ai21-labs/ai21-jamba-1.5-large",
+        "cohere/cohere-command-a",
+        "cohere/cohere-command-r-08-2024",
+        "cohere/cohere-command-r-plus-08-2024",
+        "deepseek/deepseek-r1",
+        "deepseek/deepseek-r1-0528",
+        "deepseek/deepseek-v3-0324",
+        "meta/llama-3.2-11b-vision-instruct",
+        "meta/llama-3.2-90b-vision-instruct",
+        "meta/llama-3.3-70b-instruct",
+        "meta/llama-4-maverick-17b-128e-instruct-fp8",
+        "meta/llama-4-scout-17b-16e-instruct",
+        "meta/meta-llama-3.1-405b-instruct",
+        "meta/meta-llama-3.1-8b-instruct",
+        "microsoft/mai-ds-r1",
+        "microsoft/phi-4",
+        "microsoft/phi-4-mini-instruct",
+        "microsoft/phi-4-mini-reasoning",
+        "microsoft/phi-4-multimodal-instruct",
+        "microsoft/phi-4-reasoning",
+        "mistral-ai/codestral-2501",
+        "mistral-ai/ministral-3b",
+        "mistral-ai/mistral-medium-2505",
+        "mistral-ai/mistral-small-2503",
+        "openai/gpt-4o",
+        "openai/gpt-4o-mini",
+        "openai/gpt-5",
+        "openai/gpt-5-chat",
+        "openai/gpt-5-mini",
+        "openai/gpt-5-nano",
+        "openai/o1",
+        "openai/o1-mini",
+        "openai/o1-preview",
+        "openai/o3",
+        "openai/o3-mini",
+        "openai/o4-mini",
+        "openai/text-embedding-3-large",
+        "openai/text-embedding-3-small",
+        "xai/grok-3",
+        "xai/grok-3-mini"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 386
+        host: models.github.ai
+        body: |
+            {"model":"openai/gpt-4.1","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}],"response_format":{"type":"json_schema","json_schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"],"name":"response"}}}
+        headers:
+            Accept:
+                - application/vnd.github+json
+            Content-Type:
+                - application/json; charset=utf-8
+            X-Github-Api-Version:
+                - "2026-03-10"
+        url: https://models.github.ai/inference/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 291
+        body: |-
+            {
+              "error": {
+                "message": "Missing required parameter: 'response_format.json_schema.schema'. You provided '$schema', did you mean to provide 'schema'?",
+                "type": "invalid_request_error",
+                "param": "response_format.json_schema.schema",
+                "code": "missing_required_parameter"
+              }
+            }
+        headers:
+            Apim-Request-Id:
+                - 772478c2-9fa9-4810-b6be-160598dae67f
+            Azureml-Served-By-Cluster:
+                - vienna-westus-02
+            Content-Length:
+                - "291"
+            Content-Type:
+                - application/json
+            Request-Context:
+                - appId=
+            Server:
+                - github.com
+            Skip-Error-Remapping:
+                - "true"
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - Origin
+            X-Content-Type-Options:
+                - nosniff
+            X-Github-Backend:
+                - Kubernetes
+            X-Github-Request-Id:
+                - A9FA:3323C6:3A114D:41BF46:69CED531
+            X-Ms-Client-Request-Id:
+                - Not-Set
+            X-Ms-Deployment-Name:
+                - gpt-4.1
+            X-Ms-Rai-Invoked:
+                - "true"
+            X-Ms-Region:
+                - East US 2
+            X-Request-Time:
+                - "0.372"
+        status: 400 Bad Request
+        code: 400
+        duration: 2.976s

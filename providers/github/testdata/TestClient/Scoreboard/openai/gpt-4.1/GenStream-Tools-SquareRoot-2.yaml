@@ -1,0 +1,101 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 821
+        host: models.github.ai
+        body: |
+            {"model":"openai/gpt-4.1","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"type":"function","id":"call_i76QYx1ud5sGxbgrzxYNQebC","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_i76QYx1ud5sGxbgrzxYNQebC"}],"stream":true,"stream_options":{"include_usage":true},"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none"}
+        headers:
+            Accept:
+                - application/vnd.github+json
+            Content-Type:
+                - application/json; charset=utf-8
+            X-Github-Api-Version:
+                - "2026-03-10"
+        url: https://models.github.ai/inference/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"choices":[],"created":0,"id":"","model":"","object":"","prompt_filter_results":[{"prompt_index":0,"content_filter_results":{}}]}
+
+            data: {"choices":[{"content_filter_results":{},"delta":{"content":"","refusal":null,"role":"assistant"},"finish_reason":null,"index":0,"logprobs":null}],"created":1775162677,"id":"chatcmpl-DQJC15VKNjqHZI1wQl7c7TotJQNWJ","model":"gpt-4.1-2025-04-14","obfuscation":"61J68u","object":"chat.completion.chunk","system_fingerprint":"fp_63d8723934","usage":null}
+
+            data: {"choices":[{"content_filter_results":{"protected_material_code":{"detected":false,"filtered":false}},"delta":{"content":"363"},"finish_reason":null,"index":0,"logprobs":null}],"created":1775162677,"id":"chatcmpl-DQJC15VKNjqHZI1wQl7c7TotJQNWJ","model":"gpt-4.1-2025-04-14","obfuscation":"od4Ng","object":"chat.completion.chunk","system_fingerprint":"fp_63d8723934","usage":null}
+
+            data: {"choices":[{"content_filter_results":{"protected_material_code":{"detected":false,"filtered":false}},"delta":{"content":"."},"finish_reason":null,"index":0,"logprobs":null}],"created":1775162677,"id":"chatcmpl-DQJC15VKNjqHZI1wQl7c7TotJQNWJ","model":"gpt-4.1-2025-04-14","obfuscation":"uwrAbuX","object":"chat.completion.chunk","system_fingerprint":"fp_63d8723934","usage":null}
+
+            data: {"choices":[{"content_filter_results":{"protected_material_code":{"detected":false,"filtered":false}},"delta":{"content":"89"},"finish_reason":null,"index":0,"logprobs":null}],"created":1775162677,"id":"chatcmpl-DQJC15VKNjqHZI1wQl7c7TotJQNWJ","model":"gpt-4.1-2025-04-14","obfuscation":"02HRvC","object":"chat.completion.chunk","system_fingerprint":"fp_63d8723934","usage":null}
+
+            data: {"choices":[{"content_filter_results":{},"delta":{},"finish_reason":"stop","index":0,"logprobs":null}],"created":1775162677,"id":"chatcmpl-DQJC15VKNjqHZI1wQl7c7TotJQNWJ","model":"gpt-4.1-2025-04-14","obfuscation":"rd","object":"chat.completion.chunk","system_fingerprint":"fp_63d8723934","usage":null}
+
+            data: {"choices":[],"created":1775162677,"id":"chatcmpl-DQJC15VKNjqHZI1wQl7c7TotJQNWJ","model":"gpt-4.1-2025-04-14","obfuscation":"4MAoSl","object":"chat.completion.chunk","system_fingerprint":"fp_63d8723934","usage":{"completion_tokens":4,"completion_tokens_details":{"accepted_prediction_tokens":0,"audio_tokens":0,"reasoning_tokens":0,"rejected_prediction_tokens":0},"prompt_tokens":101,"prompt_tokens_details":{"audio_tokens":0,"cached_tokens":0},"total_tokens":105}}
+
+            data: [DONE]
+
+        headers:
+            Apim-Request-Id:
+                - ca66ce30-8036-4073-b8ee-2b4d94dbdb22
+            Azureml-Model-Session:
+                - d20260325184907-be20f86c0146
+            Azureml-Served-By-Cluster:
+                - vienna-westus-01
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Request-Context:
+                - appId=
+            Server:
+                - github.com
+            Skip-Error-Remapping:
+                - "true"
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - Origin
+            X-Content-Type-Options:
+                - nosniff
+            X-Github-Backend:
+                - Kubernetes
+            X-Github-Request-Id:
+                - A9FA:3323C6:3A1CF7:41CC84:69CED535
+            X-Ms-Client-Request-Id:
+                - Not-Set
+            X-Ms-Deployment-Name:
+                - gpt-4.1
+            X-Ms-Is-Spilled-Over:
+                - "false"
+            X-Ms-Rai-Invoked:
+                - "true"
+            X-Ms-Region:
+                - East US 2
+            X-Ratelimit-Abusepenalty-Active:
+                - "False"
+            X-Ratelimit-Limit-Requests:
+                - "1000"
+            X-Ratelimit-Limit-Tokens:
+                - "1000000"
+            X-Ratelimit-Remaining-Requests:
+                - "999"
+            X-Ratelimit-Remaining-Tokens:
+                - "999670"
+            X-Ratelimit-Renewalperiod-Requests:
+                - "60"
+            X-Ratelimit-Renewalperiod-Tokens:
+                - "60"
+            X-Ratelimit-Reset-Requests:
+                - "73"
+            X-Ratelimit-Reset-Tokens:
+                - "19"
+            X-Request-Time:
+                - "1.218"
+        status: 200 OK
+        code: 200
+        duration: 1.368s

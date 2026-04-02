@@ -66,14 +66,14 @@ const threadIDKey = "thread_id"
 // optOutMethods are notification methods we opt out of during initialization.
 // These reduce noise for a text-generation-only use case.
 var optOutMethods = []string{
-	"item/commandExecution/terminalInteraction",
-	"item/fileChange/outputDelta",
-	"item/reasoning/summaryPartAdded",
-	"item/reasoning/textDelta",
-	"item/plan/delta",
-	"turn/diff/updated",
-	"turn/plan/updated",
-	"thread/name/updated",
+	methodCommandTerminalInteract,
+	methodFileChangeOutputDelta,
+	methodReasoningSummaryPartAdded,
+	methodReasoningTextDelta,
+	methodPlanDelta,
+	methodTurnDiffUpdated,
+	methodTurnPlanUpdated,
+	methodThreadNameUpdated,
 }
 
 // executor abstracts subprocess creation so tests can inject a recording or

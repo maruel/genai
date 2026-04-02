@@ -278,27 +278,27 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 
 	sc := newScanner(stdout)
 	var initSessionID string
-	var lastAsst assistantMsg
+	var lastAsst outputAssistant
 	for sc.Scan() {
 		line := sc.Bytes()
-		var b baseMsg
+		var b outputTypeProbe
 		if json.Unmarshal(line, &b) != nil {
 			continue
 		}
 		switch b.Type {
-		case "system":
-			if b.Subtype == "init" {
-				var m systemInitMsg
+		case outputTypeSystem:
+			if b.Subtype == string(systemInit) {
+				var m outputInit
 				if json.Unmarshal(line, &m) == nil {
 					initSessionID = m.SessionID
 				}
 			}
-		case "assistant":
+		case outputTypeAssistant:
 			if err := json.Unmarshal(line, &lastAsst); err != nil {
 				return genai.Result{}, fmt.Errorf("parse assistant: %w", err)
 			}
-		case "result":
-			var res resultMsg
+		case outputTypeResult:
+			var res outputResult
 			if err := json.Unmarshal(line, &res); err != nil {
 				return genai.Result{}, fmt.Errorf("parse result: %w", err)
 			}
@@ -359,23 +359,23 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 
 		sc := newScanner(stdout)
 		var initSessionID string
-		var lastAsst assistantMsg
+		var lastAsst outputAssistant
 		for sc.Scan() {
 			line := sc.Bytes()
-			var b baseMsg
+			var b outputTypeProbe
 			if json.Unmarshal(line, &b) != nil {
 				continue
 			}
 			switch b.Type {
-			case "system":
-				if b.Subtype == "init" {
-					var m systemInitMsg
+			case outputTypeSystem:
+				if b.Subtype == string(systemInit) {
+					var m outputInit
 					if json.Unmarshal(line, &m) == nil {
 						initSessionID = m.SessionID
 					}
 				}
-			case "stream_event":
-				var ev streamEventMsg
+			case outputTypeStreamEvent:
+				var ev outputStreamEvent
 				if json.Unmarshal(line, &ev) != nil {
 					continue
 				}
@@ -399,13 +399,13 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 						}
 					}
 				}
-			case "assistant":
+			case outputTypeAssistant:
 				if err := json.Unmarshal(line, &lastAsst); err != nil {
 					finalErr = fmt.Errorf("parse assistant: %w", err)
 					return
 				}
-			case "result":
-				var res resultMsg
+			case outputTypeResult:
+				var res outputResult
 				if err := json.Unmarshal(line, &res); err != nil {
 					finalErr = fmt.Errorf("parse result: %w", err)
 					return
@@ -555,7 +555,7 @@ func writeUserMsg(w io.Writer, msg *genai.Message) error {
 		content = sb.String()
 	} else {
 		// Multi-modal: build an array of typed content blocks.
-		blocks := make([]inputBlock, 0, len(msg.Requests))
+		blocks := make([]inputContentBlock, 0, len(msg.Requests))
 		for i := range msg.Requests {
 			req := &msg.Requests[i]
 			if !req.Doc.IsZero() {
@@ -565,7 +565,7 @@ func writeUserMsg(w io.Writer, msg *genai.Message) error {
 				}
 				blocks = append(blocks, blk)
 			} else if req.Text != "" {
-				blocks = append(blocks, inputBlock{Type: "text", Text: req.Text})
+				blocks = append(blocks, inputContentBlock{Type: "text", Text: req.Text})
 			}
 		}
 		if len(blocks) == 0 {
@@ -574,9 +574,9 @@ func writeUserMsg(w io.Writer, msg *genai.Message) error {
 		content = blocks
 	}
 
-	m := inputMsg{
-		Type:    "user",
-		Message: inputContent{Role: "user", Content: content},
+	m := inputUser{
+		Type:    inputTypeUser,
+		Message: inputUserContent{Role: "user", Content: content},
 	}
 	data, err := json.Marshal(m)
 	if err != nil {
@@ -586,38 +586,38 @@ func writeUserMsg(w io.Writer, msg *genai.Message) error {
 	return err
 }
 
-// docToInputBlock converts a genai.Doc to an inputBlock for the claude CLI.
+// docToInputBlock converts a genai.Doc to an inputContentBlock for the claude CLI.
 // Text documents are inlined as text blocks; images are sent as base64 or URL.
-func docToInputBlock(doc genai.Doc) (inputBlock, error) {
+func docToInputBlock(doc genai.Doc) (inputContentBlock, error) {
 	if doc.URL != "" {
-		return inputBlock{
+		return inputContentBlock{
 			Type:   "image",
-			Source: &inputSource{Type: "url", URL: doc.URL},
+			Source: &inputImageSource{Type: "url", URL: doc.URL},
 		}, nil
 	}
 	mimeType, data, err := doc.Read(10 * 1024 * 1024)
 	if err != nil {
-		return inputBlock{}, fmt.Errorf("read doc: %w", err)
+		return inputContentBlock{}, fmt.Errorf("read doc: %w", err)
 	}
 	switch {
 	case strings.HasPrefix(mimeType, "text/"):
-		return inputBlock{Type: "text", Text: string(data)}, nil
+		return inputContentBlock{Type: "text", Text: string(data)}, nil
 	case strings.HasPrefix(mimeType, "image/"):
-		return inputBlock{
+		return inputContentBlock{
 			Type: "image",
-			Source: &inputSource{
+			Source: &inputImageSource{
 				Type:      "base64",
 				MediaType: mimeType,
 				Data:      base64.StdEncoding.EncodeToString(data),
 			},
 		}, nil
 	default:
-		return inputBlock{}, fmt.Errorf("unsupported doc MIME type %q", mimeType)
+		return inputContentBlock{}, fmt.Errorf("unsupported doc MIME type %q", mimeType)
 	}
 }
 
 // buildResult converts a resultMsg and the last assistantMsg into a genai.Result.
-func buildResult(res *resultMsg, asst *assistantMsg, sessionID string) genai.Result {
+func buildResult(res *outputResult, asst *outputAssistant, sessionID string) genai.Result {
 	r := genai.Result{
 		Usage: genai.Usage{
 			InputTokens:       res.Usage.InputTokens,

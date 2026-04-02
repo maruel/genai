@@ -15,6 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      models: read
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -39,6 +40,7 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY        }}
           PERPLEXITY_API_KEY: ${{ secrets.PERPLEXITY_API_KEY    }}
           POLLINATIONS_API_KEY: ${{ secrets.POLLINATIONS_API_KEY  }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN         }}
           TOGETHER_API_KEY: ${{ secrets.TOGETHER_API_KEY      }}
         run: |
           ./internal/regen_weekly.sh

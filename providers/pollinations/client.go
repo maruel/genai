@@ -679,7 +679,7 @@ type ImageModel struct {
 		CompletionImageTokens  base.Float64 `json:"completionImageTokens,omitzero"`
 		CompletionVideoSeconds base.Float64 `json:"completionVideoSeconds,omitzero"`
 		CompletionVideoTokens  base.Float64 `json:"completionVideoTokens,omitzero"`
-		Currency               string      `json:"currency"`
+		Currency               string       `json:"currency"`
 		ImagePrice             base.Float64 `json:"image_price"`
 		InputTokenPrice        base.Float64 `json:"input_token_price,omitzero"`
 		OutputTokenPrice       base.Float64 `json:"output_token_price,omitzero"`
@@ -754,7 +754,7 @@ type TextModel struct {
 		CompletionAudioTokens base.Float64 `json:"completionAudioTokens,omitzero"`
 		CompletionTextTokens  base.Float64 `json:"completionTextTokens,omitzero"`
 		CompletionTokens      base.Float64 `json:"completion_tokens,omitzero"`
-		Currency              string      `json:"currency,omitzero"`
+		Currency              string       `json:"currency,omitzero"`
 		InputTokenPrice       base.Float64 `json:"input_token_price,omitzero"`
 		OutputTokenPrice      base.Float64 `json:"output_token_price,omitzero"`
 		PromptAudioTokens     base.Float64 `json:"promptAudioTokens,omitzero"`

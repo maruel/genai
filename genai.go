@@ -175,7 +175,7 @@ func (r *Result) Validate() error {
 type Logprob struct {
 	ID      int64   `json:"id,omitzero"`   // Input token ID.
 	Text    string  `json:"text,omitzero"` // Text in UTF-8.
-	Logprob float64 `json:"logprob"`        // Log probability of the token. It should normally be non-zero but sometimes it is.
+	Logprob float64 `json:"logprob"`       // Log probability of the token. It should normally be non-zero but sometimes it is.
 }
 
 // Validate ensures the logprob is valid.

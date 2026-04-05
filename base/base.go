@@ -17,8 +17,8 @@ import (
 	"iter"
 	"math"
 	"net/http"
-	"strconv"
 	"reflect"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -157,7 +157,7 @@ type ProviderBase[PErrorResponse ErrAPI] struct {
 	ModelOptional bool
 
 	// mu protects errorResponse and lastResp.
-	mu            sync.Mutex
+	mu sync.Mutex
 	// errorResponse is the reflected type of PErrorResponse, lazily initialized by lateInit.
 	errorResponse reflect.Type
 	// lastResp stores the HTTP headers from the most recent response for rate limit extraction.

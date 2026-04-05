@@ -1477,9 +1477,9 @@ type ChatStreamChunkResponse struct {
 		Signature []byte `json:"signature"` // Never actually filed but present on content_block_start.
 
 		// Type == ContentToolUse, ContentMCPToolUse
-		ID     string         `json:"id"`
-		Name   string         `json:"name"`
-		Input  any            `json:"input"`
+		ID     string `json:"id"`
+		Name   string `json:"name"`
+		Input  any    `json:"input"`
 		Caller Caller `json:"caller"`
 
 		// Always empty on content_block_start; actual citations arrive as citations_delta in subsequent deltas.

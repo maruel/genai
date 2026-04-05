@@ -49,7 +49,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: go test -timeout=600s -covermode=count -coverprofile coverage.txt -bench=. -benchtime=1x ./...
         # Don't send code coverage if anything failed to reduce spam.
-      - uses: codecov/codecov-action@v5
+      - uses: codecov/codecov-action@v6
         with:
           token: ${{secrets.CODECOV_TOKEN}}
       - name: "Cleanup"

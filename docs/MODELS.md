@@ -2,6 +2,148 @@
 
 Snapshot of the models available on each provider as of 2026-04-05
 
+## alibaba
+
+- ccai-pro
+- deepseek-v3.2
+- qvq-max
+- qwen-coder-plus
+- qwen-flash
+- qwen-flash-character
+- qwen-image-2.0
+- qwen-image-2.0-2026-03-03
+- qwen-image-2.0-pro
+- qwen-image-2.0-pro-2026-03-03
+- qwen-image-edit
+- qwen-image-edit-max
+- qwen-image-edit-max-2026-01-16
+- qwen-image-edit-plus
+- qwen-image-edit-plus-2025-10-30
+- qwen-image-edit-plus-2025-12-15
+- qwen-image-max
+- qwen-image-max-2025-12-30
+- qwen-image-plus
+- qwen-image-plus-2026-01-09
+- qwen-max
+- qwen-max-2025-01-25
+- qwen-max-latest
+- qwen-mt-flash
+- qwen-mt-lite
+- qwen-mt-plus
+- qwen-mt-turbo
+- qwen-omni-turbo
+- qwen-plus
+- qwen-plus-2025-01-25
+- qwen-plus-2025-04-28
+- qwen-plus-2025-07-14
+- qwen-plus-2025-09-11
+- qwen-plus-2025-12-01
+- qwen-plus-character
+- qwen-plus-latest
+- qwen-turbo
+- qwen-turbo-2024-11-01
+- qwen-turbo-2025-04-28
+- qwen-turbo-latest
+- qwen-vl-max
+- qwen-vl-max-2025-04-08
+- qwen-vl-max-2025-08-13
+- qwen-vl-max-latest
+- qwen-vl-ocr-2025-11-20
+- qwen-vl-plus
+- qwen-vl-plus-2025-01-25
+- qwen-vl-plus-2025-05-07
+- qwen-vl-plus-latest
+- qwen2-7b-instruct
+- qwen2.5-14b-instruct
+- qwen2.5-14b-instruct-1m
+- qwen2.5-32b-instruct
+- qwen2.5-72b-instruct
+- qwen2.5-7b-instruct
+- qwen2.5-7b-instruct-1m
+- qwen2.5-vl-32b-instruct
+- qwen3-0.6b
+- qwen3-1.7b
+- qwen3-14b
+- qwen3-235b-a22b
+- qwen3-235b-a22b-instruct-2507
+- qwen3-235b-a22b-thinking-2507
+- qwen3-30b-a3b
+- qwen3-30b-a3b-instruct-2507
+- qwen3-30b-a3b-thinking-2507
+- qwen3-32b
+- qwen3-4b
+- qwen3-8b
+- qwen3-asr-flash-2026-02-10
+- qwen3-asr-flash-realtime
+- qwen3-asr-flash-realtime-2025-10-27
+- qwen3-asr-flash-realtime-2026-02-10
+- qwen3-coder-480b-a35b-instruct
+- qwen3-coder-flash
+- qwen3-coder-next
+- qwen3-coder-plus
+- qwen3-coder-plus-2025-07-22
+- qwen3-coder-plus-2025-09-23
+- qwen3-livetranslate-flash
+- qwen3-livetranslate-flash-2025-12-01
+- qwen3-livetranslate-flash-realtime
+- qwen3-livetranslate-flash-realtime-2025-09-22
+- qwen3-max
+- qwen3-max-2025-09-23
+- qwen3-max-2026-01-23
+- qwen3-max-preview
+- qwen3-next-80b-a3b-instruct
+- qwen3-next-80b-a3b-thinking
+- qwen3-omni-30b-a3b-captioner
+- qwen3-omni-flash
+- qwen3-omni-flash-2025-09-15
+- qwen3-omni-flash-2025-12-01
+- qwen3-omni-flash-realtime
+- qwen3-omni-flash-realtime-2025-09-15
+- qwen3-omni-flash-realtime-2025-12-01
+- qwen3-s2s-flash-realtime
+- qwen3-tts-flash
+- qwen3-tts-flash-2025-09-18
+- qwen3-tts-flash-2025-11-27
+- qwen3-tts-flash-realtime
+- qwen3-tts-flash-realtime-2025-09-18
+- qwen3-tts-flash-realtime-2025-11-27
+- qwen3-tts-instruct-flash
+- qwen3-tts-instruct-flash-2026-01-26
+- qwen3-tts-instruct-flash-realtime
+- qwen3-tts-instruct-flash-realtime-2026-01-22
+- qwen3-tts-vc-2026-01-22
+- qwen3-tts-vc-realtime-2025-11-27
+- qwen3-tts-vc-realtime-2026-01-15
+- qwen3-tts-vd-2026-01-26
+- qwen3-tts-vd-realtime-2025-12-16
+- qwen3-tts-vd-realtime-2026-01-15
+- qwen3-vl-235b-a22b-instruct
+- qwen3-vl-235b-a22b-thinking
+- qwen3-vl-flash
+- qwen3-vl-flash-2025-10-15
+- qwen3-vl-flash-2026-01-22
+- qwen3-vl-plus
+- qwen3-vl-plus-2025-09-23
+- qwen3-vl-plus-2025-12-19
+- qwen3.5-122b-a10b 🥈
+- qwen3.5-27b
+- qwen3.5-35b-a3b 🥉
+- qwen3.5-397b-a17b 🥇
+- qwen3.5-flash
+- qwen3.5-flash-2026-02-23
+- qwen3.5-plus
+- qwen3.5-plus-2026-02-15
+- qwen3.6-plus
+- qwen3.6-plus-2026-04-02
+- qwq-plus
+- qwq-plus-2025-03-05
+- text-embedding-v3
+- text-embedding-v4
+- tongyi-tingwu-slp
+- wan2.7-image
+- wan2.7-image-pro
+- z-image-turbo
+
 ## anthropic
 
 - claude-3-haiku-20240307: Claude Haiku 3 (2024-03-07)
@@ -221,6 +363,52 @@ Snapshot of the models available on each provider as of 2026-04-05
 - veo-3.1-generate-preview: Veo 3.1 (Veo 3.1) Context: 480/8192
 - veo-3.1-lite-generate-preview: Veo 3.1 lite (Veo 3.1 lite) Context: 480/8192
 
+## github
+
+- ai21-labs/ai21-jamba-1.5-large (AI21 Labs) Context: 262144/4096
+- cohere/cohere-command-a (Cohere) Context: 131072/4096
+- cohere/cohere-command-r-08-2024 (Cohere) Context: 131072/4096
+- cohere/cohere-command-r-plus-08-2024 (Cohere) Context: 131072/4096
+- deepseek/deepseek-r1 (DeepSeek) Context: 128000/4096
+- deepseek/deepseek-r1-0528 (DeepSeek) Context: 128000/4096
+- deepseek/deepseek-v3-0324 (DeepSeek) Context: 128000/4096
+- meta/llama-3.2-11b-vision-instruct (Meta) Context: 128000/4096
+- meta/llama-3.2-90b-vision-instruct (Meta) Context: 128000/4096
+- meta/llama-3.3-70b-instruct (Meta) Context: 128000/4096
+- meta/llama-4-maverick-17b-128e-instruct-fp8 (Meta) Context: 1000000/4096
+- meta/llama-4-scout-17b-16e-instruct (Meta) Context: 10000000/4096
+- meta/meta-llama-3.1-405b-instruct (Meta) Context: 131072/4096
+- meta/meta-llama-3.1-8b-instruct (Meta) Context: 131072/4096
+- microsoft/mai-ds-r1 (Microsoft) Context: 128000/4096
+- microsoft/phi-4 (Microsoft) Context: 16384/16384
+- microsoft/phi-4-mini-instruct (Microsoft) Context: 128000/4096
+- microsoft/phi-4-mini-reasoning (Microsoft) Context: 128000/4096
+- microsoft/phi-4-multimodal-instruct (Microsoft) Context: 128000/4096
+- microsoft/phi-4-reasoning (Microsoft) Context: 32768/4096
+- mistral-ai/codestral-2501 (Mistral AI) Context: 256000/4096
+- mistral-ai/ministral-3b (Mistral AI) Context: 131072/4096
+- mistral-ai/mistral-medium-2505 (Mistral AI) Context: 128000/4096
+- mistral-ai/mistral-small-2503 (Mistral AI) Context: 128000/4096
+- openai/gpt-4.1 (OpenAI) Context: 1048576/32768 🥇
+- openai/gpt-4.1-mini (OpenAI) Context: 1048576/32768 🥈
+- openai/gpt-4.1-nano (OpenAI) Context: 1048576/32768 🥉
+- openai/gpt-4o (OpenAI) Context: 131072/16384
+- openai/gpt-4o-mini (OpenAI) Context: 131072/4096
+- openai/gpt-5 (OpenAI) Context: 200000/100000
+- openai/gpt-5-chat (OpenAI) Context: 200000/100000
+- openai/gpt-5-mini (OpenAI) Context: 200000/100000
+- openai/gpt-5-nano (OpenAI) Context: 200000/100000
+- openai/o1 (OpenAI) Context: 200000/100000
+- openai/o1-mini (OpenAI) Context: 128000/65536
+- openai/o1-preview (OpenAI) Context: 128000/32768
+- openai/o3 (OpenAI) Context: 200000/100000
+- openai/o3-mini (OpenAI) Context: 200000/100000
+- openai/o4-mini (OpenAI) Context: 200000/100000
+- openai/text-embedding-3-large (OpenAI) Context: 8191/0
+- openai/text-embedding-3-small (OpenAI) Context: 8191/0
+- xai/grok-3 (xAI) Context: 131072/4096
+- xai/grok-3-mini (xAI) Context: 131072/4096
+
 ## groq
 
 - allam-2-7b (2025-01-23) Context: 4096/4096
@@ -233,8 +421,8 @@ Snapshot of the models available on each provider as of 2026-04-05
 - meta-llama/llama-4-scout-17b-16e-instruct (2025-04-05) Context: 131072/8192
 - meta-llama/llama-prompt-guard-2-22m (2025-05-30) Context: 512/512
 - meta-llama/llama-prompt-guard-2-86m (2025-05-30) Context: 512/512
-- moonshotai/kimi-k2-instruct (2025-07-13) Context: 131072/16384 🥇
-- moonshotai/kimi-k2-instruct-0905 (2025-09-05) Context: 262144/16384
+- moonshotai/kimi-k2-instruct (2025-07-13) Context: 131072/16384
+- moonshotai/kimi-k2-instruct-0905 (2025-09-05) Context: 262144/16384 🥇
 - openai/gpt-oss-120b (2025-08-05) Context: 131072/65536 🥈
 - openai/gpt-oss-20b (2025-08-05) Context: 131072/65536 🥉
 - openai/gpt-oss-safeguard-20b (2025-10-29) Context: 131072/65536
@@ -252,7 +440,7 @@ Snapshot of the models available on each provider as of 2026-04-05
 - akhaliq/veo3.1-fast-image-to-video (2025-10-15) image-to-video Trending: 2.0
 - albert/albert-base-v1 (2022-03-02) fill-mask Trending: 1.0
 - Alibaba-NLP/gte-modernbert-base (2025-01-20) sentence-similarity Trending: 1.0
-- Alissonerdx/BFS-Best-Face-Swap (2025-11-07) image-to-image Trending: 18.0
+- Alissonerdx/BFS-Best-Face-Swap (2025-11-07) image-to-image Trending: 19.0
 - allenai/Olmo-3.1-32B-Think (2025-12-10) text-generation Trending: 1.0
 - allenai/specter (2022-03-02) feature-extraction Trending: 1.0
 - almanach/camembertav2-base (2024-11-14) feature-extraction Trending: 1.0
@@ -298,7 +486,7 @@ Snapshot of the models available on each provider as of 2026-04-05
 - braindao/gemma-3-27b-it-uncensored (2025-04-09) image-text-to-text Trending: 1.0
 - briaai/FIBO (2025-10-09) text-to-image Trending: 1.0
 - briaai/RMBG-2.0 (2024-10-29) image-segmentation Trending: 10.0
-- ByteDance/SDXL-Lightning (2024-02-20) text-to-image Trending: 4.0
+- ByteDance/SDXL-Lightning (2024-02-20) text-to-image Trending: 3.0
 - ChaoticNeutrals/Captain_Eris_Noctis-12B-v0.420 (2025-01-06) text-generation Trending: 1.0
 - CIRCL/vulnerability-severity-classification-roberta-base (2025-02-27) text-classification Trending: 1.0
 - ckiplab/bert-base-chinese-ner (2022-03-02) token-classification Trending: 1.0
@@ -322,7 +510,7 @@ Snapshot of the models available on each provider as of 2026-04-05
 - DeepPavlov/rubert-base-cased (2022-03-02) feature-extraction Trending: 1.0
 - deepseek-ai/DeepSeek-R1 (2025-01-20) text-generation Trending: 33.0 🥇
 - deepseek-ai/DeepSeek-R1-0528 (2025-05-28) text-generation Trending: 3.0
-- deepseek-ai/DeepSeek-R1-0528-Qwen3-8B (2025-05-29) text-generation Trending: 2.0
+- deepseek-ai/DeepSeek-R1-0528-Qwen3-8B (2025-05-29) text-generation Trending: 3.0
 - deepseek-ai/DeepSeek-R1-Distill-Llama-70B (2025-01-20) text-generation Trending: 4.0
 - deepseek-ai/DeepSeek-R1-Distill-Llama-8B (2025-01-20) text-generation Trending: 1.0
 - deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B (2025-01-20) text-generation Trending: 4.0
@@ -331,8 +519,8 @@ Snapshot of the models available on each provider as of 2026-04-05
 - deepseek-ai/DeepSeek-R1-Distill-Qwen-7B (2025-01-20) text-generation Trending: 3.0
 - deepseek-ai/DeepSeek-V3 (2024-12-25) text-generation Trending: 6.0
 - deepseek-ai/DeepSeek-V3-0324 (2025-03-24) text-generation Trending: 4.0
-- deepseek-ai/DeepSeek-V3.2 (2025-12-01) text-generation Trending: 28.0
-- deepseek-ai/DeepSeek-V3.2-Exp (2025-09-29) text-generation Trending: 6.0
+- deepseek-ai/DeepSeek-V3.2 (2025-12-01) text-generation Trending: 29.0
+- deepseek-ai/DeepSeek-V3.2-Exp (2025-09-29) text-generation Trending: 5.0
 - deutsche-telekom/gbert-large-paraphrase-cosine (2023-01-13) sentence-similarity Trending: 1.0
 - dima806/clothes_image_detection (2025-02-08) image-classification Trending: 1.0
 - dima806/fairface_age_image_detection (2024-12-06) image-classification Trending: 4.0
@@ -367,7 +555,7 @@ Snapshot of the models available on each provider as of 2026-04-05
 - facebook/detr-resnet-50 (2022-03-02) object-detection Trending: 1.0
 - facebook/esm2_t33_650M_UR50D (2022-09-27) fill-mask Trending: 2.0
 - facebook/esm2_t6_8M_UR50D (2022-09-26) fill-mask Trending: 2.0
-- facebook/KernelLLM (2025-04-14) text-generation Trending: 1.0
+- facebook/mask2former-swin-tiny-coco-instance (2022-12-23) image-segmentation Trending: 1.0
 - FacebookAI/roberta-base (2022-03-02) fill-mask Trending: 6.0
 - FacebookAI/roberta-large (2022-03-02) fill-mask Trending: 2.0
 - FacebookAI/xlm-roberta-base (2022-03-02) fill-mask Trending: 6.0
@@ -393,10 +581,10 @@ Snapshot of the models available on each provider as of 2026-04-05
 - Goekdeniz-Guelmez/Josiefied-Qwen3-8B-abliterated-v1 (2025-04-29) text-generation Trending: 1.0
 - gokaygokay/Flux-Game-Assets-LoRA-v2 (2024-10-18) text-to-image Trending: 1.0
 - gokaygokay/Sketch-to-Image-Kontext-Dev-LoRA (2025-07-31) image-to-image Trending: 1.0
-- google-bert/bert-base-cased (2022-03-02) fill-mask Trending: 1.0
+- google-bert/bert-base-cased (2022-03-02) fill-mask Trending: 2.0
 - google-bert/bert-base-chinese (2022-03-02) fill-mask Trending: 5.0
 - google-bert/bert-base-multilingual-cased (2022-03-02) fill-mask Trending: 2.0
-- google-bert/bert-base-uncased (2022-03-02) fill-mask Trending: 11.0
+- google-bert/bert-base-uncased (2022-03-02) fill-mask Trending: 12.0
 - google-bert/bert-large-cased (2022-03-02) fill-mask Trending: 1.0
 - google-bert/bert-large-uncased (2022-03-02) fill-mask Trending: 1.0
 - google-t5/t5-base (2022-03-02) translation Trending: 1.0
@@ -415,8 +603,8 @@ Snapshot of the models available on each provider as of 2026-04-05
 - google/gemma-3-12b-it-qat-q4_0-unquantized (2025-04-08) image-text-to-text Trending: 4.0
 - google/gemma-3-27b-it (2025-03-01) image-text-to-text Trending: 12.0
 - google/gemma-3n-E4B-it (2025-06-03) image-text-to-text Trending: 6.0
-- google/gemma-4-26B-A4B-it (2026-03-11) image-text-to-text Trending: 384.0
-- google/gemma-4-31B-it (2026-03-11) image-text-to-text Trending: 958.0
+- google/gemma-4-26B-A4B-it (2026-03-11) image-text-to-text Trending: 391.0
+- google/gemma-4-31B-it (2026-03-11) image-text-to-text Trending: 972.0
 - google/muril-base-cased (2022-03-02) fill-mask Trending: 1.0
 - google/vit-base-patch16-224 (2022-03-02) image-classification Trending: 2.0
 - GritLM/GritLM-7B (2024-02-11) text-generation Trending: 1.0
@@ -465,7 +653,7 @@ Snapshot of the models available on each provider as of 2026-04-05
 - kudzueye/boreal-qwen-image (2025-09-03) text-to-image Trending: 1.0
 - Langboat/Mengzi3-8B-Chat (2024-09-14) text-generation Trending: 1.0
 - law-ai/InLegalBERT (2022-09-11) fill-mask Trending: 3.0
-- Lightricks/LTX-2 (2026-01-03) image-to-video Trending: 8.0
+- Lightricks/LTX-2 (2026-01-03) image-to-video Trending: 7.0
 - Lightricks/LTX-2-19b-LoRA-Camera-Control-Dolly-Left (2026-01-05) text-to-video Trending: 1.0
 - Lightricks/LTX-2-19b-LoRA-Camera-Control-Static (2026-01-05) text-to-video Trending: 1.0
 - Lightricks/LTX-Video (2024-10-31) image-to-video Trending: 6.0
@@ -494,9 +682,9 @@ Snapshot of the models available on each provider as of 2026-04-05
 - meituan-longcat/LongCat-Image (2025-12-04) text-to-image Trending: 1.0
 - meituan-longcat/LongCat-Image-Edit (2025-12-05) image-to-image Trending: 3.0
 - meituan-longcat/LongCat-Video (2025-10-24) text-to-video Trending: 2.0
-- meta-llama/Llama-3.1-70B-Instruct (2024-07-16) text-generation Trending: 3.0
+- meta-llama/Llama-3.1-70B-Instruct (2024-07-16) text-generation Trending: 2.0
 - meta-llama/Llama-3.1-8B (2024-07-14) text-generation Trending: 7.0
-- meta-llama/Llama-3.1-8B-Instruct (2024-07-18) text-generation Trending: 30.0
+- meta-llama/Llama-3.1-8B-Instruct (2024-07-18) text-generation Trending: 29.0
 - meta-llama/Llama-3.2-1B-Instruct (2024-09-18) text-generation Trending: 13.0 🥉
 - meta-llama/Llama-3.3-70B-Instruct (2024-11-26) text-generation Trending: 11.0
 - meta-llama/Llama-4-Maverick-17B-128E-Instruct (2025-04-01) image-text-to-text Trending: 4.0
@@ -513,8 +701,8 @@ Snapshot of the models available on each provider as of 2026-04-05
 - microsoft/deberta-v3-base (2022-03-02) fill-mask Trending: 1.0
 - microsoft/deberta-v3-small (2022-03-02) fill-mask Trending: 2.0
 - microsoft/graphcodebert-base (2022-03-02) fill-mask Trending: 1.0
-- microsoft/harrier-oss-v1-0.6b (2026-03-30) feature-extraction Trending: 160.0
-- microsoft/harrier-oss-v1-270m (2026-03-30) feature-extraction Trending: 123.0
+- microsoft/harrier-oss-v1-0.6b (2026-03-30) feature-extraction Trending: 163.0
+- microsoft/harrier-oss-v1-270m (2026-03-30) feature-extraction Trending: 124.0
 - microsoft/mdeberta-v3-base (2022-03-02) fill-mask Trending: 2.0
 - microsoft/mpnet-base (2022-03-02) fill-mask Trending: 1.0
 - microsoft/NextCoder-32B (2025-05-03) text-generation Trending: 1.0
@@ -538,7 +726,7 @@ Snapshot of the models available on each provider as of 2026-04-05
 - moonshotai/Kimi-K2-Instruct (2025-07-11) text-generation Trending: 1.0
 - moonshotai/Kimi-K2-Instruct-0905 (2025-09-03) text-generation Trending: 2.0
 - moonshotai/Kimi-K2-Thinking (2025-11-04) text-generation Trending: 1.0
-- moonshotai/Kimi-K2.5 (2026-01-01) image-text-to-text Trending: 48.0
+- moonshotai/Kimi-K2.5 (2026-01-01) image-text-to-text Trending: 46.0
 - MoritzLaurer/DeBERTa-v3-base-mnli-fever-anli (2022-03-02) zero-shot-classification Trending: 1.0
 - MoritzLaurer/mDeBERTa-v3-base-mnli-xnli (2022-03-02) zero-shot-classification Trending: 1.0
 - MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7 (2022-08-22) zero-shot-classification Trending: 4.0
@@ -548,14 +736,12 @@ Snapshot of the models available on each provider as of 2026-04-05
 - NAMAA-Space/Ara-Prompt-Guard_V0 (2025-04-29) text-classification Trending: 1.0
 - Nanbeige/Nanbeige4.1-3B (2026-02-10) text-generation Trending: 9.0
 - nappa114514/Qwen-Image-Edit-2511-torn-clothes (2026-01-04) image-to-image Trending: 1.0
-- nari-labs/Dia-1.6B (2025-04-20) text-to-speech Trending: 6.0
 - nateraw/food (2022-03-02) image-classification Trending: 2.0
 - NbAiLab/nb-bert-base (2022-03-02) fill-mask Trending: 1.0
 - NbAiLab/nb-bert-large (2022-03-02) fill-mask Trending: 2.0
 - NbAiLab/nb-sbert-base (2022-11-08) sentence-similarity Trending: 1.0
 - ncbi/MedCPT-Cross-Encoder (2023-11-26) text-classification Trending: 1.0
 - ncbi/MedCPT-Query-Encoder (2023-10-24) feature-extraction Trending: 1.0
-- NCSOFT/Llama-VARCO-8B-Instruct (2024-09-12) text-generation Trending: 1.0
 - nerijs/lego-minifig-xl (2023-08-13) text-to-image Trending: 1.0
 - nerijs/pixel-art-xl (2023-08-03) text-to-image Trending: 3.0
 - NeuML/pubmedbert-base-embeddings (2023-10-18) sentence-similarity Trending: 2.0
@@ -585,11 +771,10 @@ Snapshot of the models available on each provider as of 2026-04-05
 - Octen/Octen-Embedding-0.6B (2026-01-10) sentence-similarity Trending: 1.0
 - open-r1/OlympicCoder-32B (2025-03-11) text-generation Trending: 1.0
 - open-thoughts/OpenThinker-32B (2025-02-12) text-generation Trending: 1.0
-- openai/gpt-oss-120b (2025-08-04) text-generation Trending: 26.0
+- openai/gpt-oss-120b (2025-08-04) text-generation Trending: 25.0
 - openai/gpt-oss-20b (2025-08-04) text-generation Trending: 22.0
-- openai/gpt-oss-safeguard-20b (2025-09-18) text-generation Trending: 1.0
-- openai/whisper-large-v3 (2023-11-07) automatic-speech-recognition Trending: 23.0
-- openai/whisper-large-v3-turbo (2024-10-01) automatic-speech-recognition Trending: 27.0
+- openai/whisper-large-v3 (2023-11-07) automatic-speech-recognition Trending: 21.0
+- openai/whisper-large-v3-turbo (2024-10-01) automatic-speech-recognition Trending: 26.0
 - OptimusePrime/Magistral-Small-2506-Vision (2025-06-13) image-text-to-text Trending: 1.0
 - Orenguteng/Llama-3-8B-Lexi-Uncensored (2024-04-23) text-generation Trending: 1.0
 - Orenguteng/Llama-3.1-8B-Lexi-Uncensored-V2 (2024-08-09) text-generation Trending: 6.0
@@ -598,7 +783,7 @@ Snapshot of the models available on each provider as of 2026-04-05
 - ostris/zimage_turbo_training_adapter (2025-11-28) text-to-image Trending: 1.0
 - ovi054/extract-clothes-kontext-dev-lora (2025-09-25) image-to-image Trending: 4.0
 - Pinguin/qwen-edit-lora-remove-stuff (2025-09-15) text-to-image Trending: 1.0
-- PixelSmile/PixelSmile (2026-03-24) image-to-image Trending: 31.0
+- PixelSmile/PixelSmile (2026-03-24) image-to-image Trending: 30.0
 - playgroundai/playground-v2.5-1024px-aesthetic (2024-02-16) text-to-image Trending: 1.0
 - PocketDoc/Dans-PersonalityEngine-V1.3.0-12b (2025-05-08) text-generation Trending: 1.0
 - PocketDoc/Dans-PersonalityEngine-V1.3.0-24b (2025-05-08) text-generation Trending: 2.0
@@ -654,8 +839,8 @@ Snapshot of the models available on each provider as of 2026-04-05
 - Qwen/Qwen3-Coder-30B-A3B-Instruct (2025-07-31) text-generation Trending: 11.0
 - Qwen/Qwen3-Coder-480B-A35B-Instruct (2025-07-22) text-generation Trending: 6.0 🥈
 - Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8 (2025-07-22) text-generation Trending: 1.0
-- Qwen/Qwen3-Coder-Next (2026-01-30) text-generation Trending: 31.0
-- Qwen/Qwen3-Coder-Next-FP8 (2026-02-01) text-generation Trending: 5.0
+- Qwen/Qwen3-Coder-Next (2026-01-30) text-generation Trending: 33.0
+- Qwen/Qwen3-Coder-Next-FP8 (2026-02-01) text-generation Trending: 6.0
 - Qwen/Qwen3-Embedding-8B (2025-06-03) feature-extraction Trending: 11.0
 - Qwen/Qwen3-Next-80B-A3B-Instruct (2025-09-09) text-generation Trending: 6.0
 - Qwen/Qwen3-Next-80B-A3B-Thinking (2025-09-09) text-generation Trending: 2.0
@@ -665,9 +850,9 @@ Snapshot of the models available on each provider as of 2026-04-05
 - Qwen/Qwen3-VL-30B-A3B-Thinking (2025-09-30) image-text-to-text Trending: 1.0
 - Qwen/Qwen3-VL-8B-Instruct (2025-10-11) image-text-to-text Trending: 13.0
 - Qwen/Qwen3.5-122B-A10B (2026-02-24) image-text-to-text Trending: 10.0
-- Qwen/Qwen3.5-27B (2026-02-24) image-text-to-text Trending: 61.0
+- Qwen/Qwen3.5-27B (2026-02-24) image-text-to-text Trending: 57.0
 - Qwen/Qwen3.5-35B-A3B (2026-02-24) image-text-to-text Trending: 42.0
-- Qwen/Qwen3.5-397B-A17B (2026-02-16) image-text-to-text Trending: 27.0
+- Qwen/Qwen3.5-397B-A17B (2026-02-16) image-text-to-text Trending: 28.0
 - Qwen/Qwen3.5-9B (2026-02-27) image-text-to-text Trending: 100.0
 - Qwen/QwQ-32B (2025-03-05) text-generation Trending: 7.0
 - reverentelusarca/flux-kontext-zoom-out-lora (2025-07-22) image-to-image Trending: 2.0
@@ -680,26 +865,23 @@ Snapshot of the models available on each provider as of 2026-04-05
 - saifamdouni/TunCHAT-V0.2 (2025-01-03) text-generation Trending: 1.0
 - Sao10K/14B-Qwen2.5-Kunou-v1 (2024-12-11) text-generation Trending: 1.0
 - Sao10K/70B-L3.3-Cirrus-x1 (2025-01-06) text-generation Trending: 2.0
-- Sao10K/L3-70B-Euryale-v2.1 (2024-06-11) text-generation Trending: 4.0
+- Sao10K/L3-70B-Euryale-v2.1 (2024-06-11) text-generation Trending: 2.0
 - Sao10K/L3-8B-Lunaris-v1 (2024-06-26) text-generation Trending: 1.0
 - Sao10K/L3-8B-Stheno-v3.2 (2024-06-05) text-generation Trending: 6.0
 - sayeed99/segformer-b3-fashion (2024-05-07) image-segmentation Trending: 1.0
 - sentence-transformers/all-MiniLM-L12-v2 (2022-03-02) sentence-similarity Trending: 2.0
-- sentence-transformers/all-MiniLM-L6-v2 (2022-03-02) sentence-similarity Trending: 30.0
-- sentence-transformers/all-mpnet-base-v2 (2022-03-02) sentence-similarity Trending: 7.0
+- sentence-transformers/all-MiniLM-L6-v2 (2022-03-02) sentence-similarity Trending: 29.0
+- sentence-transformers/all-mpnet-base-v2 (2022-03-02) sentence-similarity Trending: 6.0
 - sentence-transformers/clip-ViT-B-32-multilingual-v1 (2022-03-02) sentence-similarity Trending: 1.0
 - sentence-transformers/LaBSE (2022-03-02) sentence-similarity Trending: 1.0
-- sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2 (2022-03-02) sentence-similarity Trending: 10.0
+- sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2 (2022-03-02) sentence-similarity Trending: 11.0
 - sergeyzh/BERTA (2025-03-10) sentence-similarity Trending: 1.0
 - shibing624/text2vec-base-chinese (2022-03-02) sentence-similarity Trending: 1.0
 - sileod/deberta-v3-large-tasksource-nli (2023-03-27) zero-shot-classification Trending: 1.0
 - silma-ai/SILMA-9B-Instruct-v1.0 (2024-08-17) text-generation Trending: 1.0
 - Simonlee711/Clinical_ModernBERT (2025-03-27) feature-extraction Trending: 1.0
 - SkyAsl/Pixel-artist-Z (2025-12-18) text-to-image Trending: 1.0
-- Skywork/SkyReels-V1-Hunyuan-I2V (2025-02-17) image-to-video Trending: 1.0
-- Skywork/Skywork-o1-Open-Llama-3.1-8B (2024-11-26) text-generation Trending: 1.0
-- Skywork/Skywork-Reward-V2-Llama-3.2-1B (2025-06-26) text-classification Trending: 2.0
-- Skywork/Skywork-SWE-32B (2025-06-11) text-generation Trending: 1.0
+- Skywork/Skywork-Reward-V2-Llama-3.2-1B (2025-06-26) text-classification Trending: 1.0
 - sleepdeprived3/Christian-Bible-Expert-v2.0-12B (2025-04-12) text-generation Trending: 2.0
 - smanjil/German-MedBERT (2022-03-02) fill-mask Trending: 1.0
 - Snowflake/snowflake-arctic-embed-l-v2.0 (2024-11-08) sentence-similarity Trending: 1.0
@@ -709,7 +891,7 @@ Snapshot of the models available on each provider as of 2026-04-05
 - stabilityai/stable-diffusion-3.5-large (2024-10-22) text-to-image Trending: 13.0
 - stabilityai/stable-diffusion-3.5-large-turbo (2024-10-22) text-to-image Trending: 3.0
 - stabilityai/stable-diffusion-3.5-medium (2024-10-29) text-to-image Trending: 4.0
-- stabilityai/stable-diffusion-xl-base-1.0 (2023-07-25) text-to-image Trending: 26.0
+- stabilityai/stable-diffusion-xl-base-1.0 (2023-07-25) text-to-image Trending: 27.0
 - starsfriday/Kontext-Remover-General-LoRA (2025-07-02) image-to-image Trending: 1.0
 - Steelskull/L3.3-MS-Nevoria-70b (2025-01-14) text-generation Trending: 4.0
 - stepfun-ai/Step-3.5-Flash (2026-02-01) text-generation Trending: 18.0
@@ -750,7 +932,7 @@ Snapshot of the models available on each provider as of 2026-04-05
 - Wan-AI/Wan2.2-I2V-A14B-Diffusers (2025-07-28) image-to-video Trending: 1.0
 - Wan-AI/Wan2.2-T2V-A14B (2025-07-24) text-to-video Trending: 7.0
 - Wan-AI/Wan2.2-T2V-A14B-Diffusers (2025-07-28) text-to-video Trending: 6.0
-- Wan-AI/Wan2.2-TI2V-5B (2025-07-18) text-to-video Trending: 8.0
+- Wan-AI/Wan2.2-TI2V-5B (2025-07-18) text-to-video Trending: 7.0
 - WinKawaks/vit-tiny-patch16-224 (2022-03-02) image-classification Trending: 1.0
 - WiroAI/wiroai-turkish-llm-9b (2024-12-22) text-generation Trending: 1.0
 - wolfer45/nsfwv2-zit (2026-02-22) text-to-image Trending: 1.0
@@ -770,9 +952,10 @@ Snapshot of the models available on each provider as of 2026-04-05
 - zai-org/GLM-4.6V (2025-12-07) image-text-to-text Trending: 1.0
 - zai-org/GLM-4.6V-Flash (2025-12-07) image-text-to-text Trending: 1.0
 - zai-org/GLM-4.7 (2025-12-22) text-generation Trending: 2.0
+- zai-org/GLM-4.7-Flash (2026-01-19) text-generation Trending: 19.0
 - zai-org/GLM-4.7-FP8 (2025-12-22) text-generation Trending: 1.0
 - zai-org/GLM-5 (2026-02-11) text-generation Trending: 67.0
-- zai-org/GLM-OCR (2026-01-30) image-to-text Trending: 80.0
+- zai-org/GLM-OCR (2026-01-30) image-to-text Trending: 81.0
 - zai-org/GLM-Z1-32B-0414 (2025-04-08) text-generation Trending: 1.0
 - zai-org/GLM-Z1-9B-0414 (2025-04-08) text-generation Trending: 1.0
 
@@ -965,6 +1148,358 @@ Snapshot of the models available on each provider as of 2026-04-05
 - tts-1-hd (2023-11-03)
 - tts-1-hd-1106 (2023-11-03)
 - whisper-1 (2023-02-27)
+
+## openrouter
+
+- ai21/jamba-large-1.7 (AI21: Jamba Large 1.7) Context: 256000
+- aion-labs/aion-1.0 (AionLabs: Aion-1.0) Context: 131072
+- aion-labs/aion-1.0-mini (AionLabs: Aion-1.0-Mini) Context: 131072
+- aion-labs/aion-2.0 (AionLabs: Aion-2.0) Context: 131072
+- aion-labs/aion-rp-llama-3.1-8b (AionLabs: Aion-RP 1.0 (8B)) Context: 32768
+- alfredpros/codellama-7b-instruct-solidity (AlfredPros: CodeLLaMa 7B Instruct Solidity) Context: 4096
+- alibaba/tongyi-deepresearch-30b-a3b (Tongyi DeepResearch 30B A3B) Context: 131072
+- allenai/olmo-2-0325-32b-instruct (AllenAI: Olmo 2 32B Instruct) Context: 128000
+- allenai/olmo-3-32b-think (AllenAI: Olmo 3 32B Think) Context: 65536
+- allenai/olmo-3.1-32b-instruct (AllenAI: Olmo 3.1 32B Instruct) Context: 65536
+- allenai/olmo-3.1-32b-think (AllenAI: Olmo 3.1 32B Think) Context: 65536
+- alpindale/goliath-120b (Goliath 120B) Context: 6144
+- amazon/nova-2-lite-v1 (Amazon: Nova 2 Lite) Context: 1000000
+- amazon/nova-lite-v1 (Amazon: Nova Lite 1.0) Context: 300000
+- amazon/nova-micro-v1 (Amazon: Nova Micro 1.0) Context: 128000
+- amazon/nova-premier-v1 (Amazon: Nova Premier 1.0) Context: 1000000
+- amazon/nova-pro-v1 (Amazon: Nova Pro 1.0) Context: 300000
+- anthracite-org/magnum-v4-72b (Magnum v4 72B) Context: 16384
+- anthropic/claude-3-haiku (Anthropic: Claude 3 Haiku) Context: 200000
+- anthropic/claude-3.5-haiku (Anthropic: Claude 3.5 Haiku) Context: 200000
+- anthropic/claude-3.7-sonnet (Anthropic: Claude 3.7 Sonnet) Context: 200000
+- anthropic/claude-3.7-sonnet:thinking (Anthropic: Claude 3.7 Sonnet (thinking)) Context: 200000
+- anthropic/claude-haiku-4.5 (Anthropic: Claude Haiku 4.5) Context: 200000
+- anthropic/claude-opus-4 (Anthropic: Claude Opus 4) Context: 200000
+- anthropic/claude-opus-4.1 (Anthropic: Claude Opus 4.1) Context: 200000
+- anthropic/claude-opus-4.5 (Anthropic: Claude Opus 4.5) Context: 200000
+- anthropic/claude-opus-4.6 (Anthropic: Claude Opus 4.6) Context: 1000000
+- anthropic/claude-sonnet-4 (Anthropic: Claude Sonnet 4) Context: 200000
+- anthropic/claude-sonnet-4.5 (Anthropic: Claude Sonnet 4.5) Context: 1000000
+- anthropic/claude-sonnet-4.6 (Anthropic: Claude Sonnet 4.6) Context: 1000000
+- arcee-ai/coder-large (Arcee AI: Coder Large) Context: 32768
+- arcee-ai/maestro-reasoning (Arcee AI: Maestro Reasoning) Context: 131072
+- arcee-ai/spotlight (Arcee AI: Spotlight) Context: 131072
+- arcee-ai/trinity-large-preview:free (Arcee AI: Trinity Large Preview (free)) Context: 131000
+- arcee-ai/trinity-large-thinking (Arcee AI: Trinity Large Thinking) Context: 262144
+- arcee-ai/trinity-mini (Arcee AI: Trinity Mini) Context: 131072
+- arcee-ai/trinity-mini:free (Arcee AI: Trinity Mini (free)) Context: 131072
+- arcee-ai/virtuoso-large (Arcee AI: Virtuoso Large) Context: 131072
+- baidu/ernie-4.5-21b-a3b (Baidu: ERNIE 4.5 21B A3B) Context: 120000
+- baidu/ernie-4.5-21b-a3b-thinking (Baidu: ERNIE 4.5 21B A3B Thinking) Context: 131072
+- baidu/ernie-4.5-300b-a47b (Baidu: ERNIE 4.5 300B A47B ) Context: 123000
+- baidu/ernie-4.5-vl-28b-a3b (Baidu: ERNIE 4.5 VL 28B A3B) Context: 30000
+- baidu/ernie-4.5-vl-424b-a47b (Baidu: ERNIE 4.5 VL 424B A47B ) Context: 123000
+- bytedance-seed/seed-1.6 (ByteDance Seed: Seed 1.6) Context: 262144
+- bytedance-seed/seed-1.6-flash (ByteDance Seed: Seed 1.6 Flash) Context: 262144
+- bytedance-seed/seed-2.0-lite (ByteDance Seed: Seed-2.0-Lite) Context: 262144
+- bytedance-seed/seed-2.0-mini (ByteDance Seed: Seed-2.0-Mini) Context: 262144
+- bytedance/ui-tars-1.5-7b (ByteDance: UI-TARS 7B ) Context: 128000
+- cognitivecomputations/dolphin-mistral-24b-venice-edition:free (Venice: Uncensored (free)) Context: 32768
+- cohere/command-a (Cohere: Command A) Context: 256000
+- cohere/command-r-08-2024 (Cohere: Command R (08-2024)) Context: 128000
+- cohere/command-r-plus-08-2024 (Cohere: Command R+ (08-2024)) Context: 128000
+- cohere/command-r7b-12-2024 (Cohere: Command R7B (12-2024)) Context: 128000
+- deepcogito/cogito-v2.1-671b (Deep Cogito: Cogito v2.1 671B) Context: 128000
+- deepseek/deepseek-chat (DeepSeek: DeepSeek V3) Context: 163840
+- deepseek/deepseek-chat-v3-0324 (DeepSeek: DeepSeek V3 0324) Context: 163840
+- deepseek/deepseek-chat-v3.1 (DeepSeek: DeepSeek V3.1) Context: 32768
+- deepseek/deepseek-r1 (DeepSeek: R1) Context: 64000
+- deepseek/deepseek-r1-0528 (DeepSeek: R1 0528) Context: 163840
+- deepseek/deepseek-r1-distill-llama-70b (DeepSeek: R1 Distill Llama 70B) Context: 131072
+- deepseek/deepseek-r1-distill-qwen-32b (DeepSeek: R1 Distill Qwen 32B) Context: 32768
+- deepseek/deepseek-v3.1-terminus (DeepSeek: DeepSeek V3.1 Terminus) Context: 163840
+- deepseek/deepseek-v3.2 (DeepSeek: DeepSeek V3.2) Context: 163840
+- deepseek/deepseek-v3.2-exp (DeepSeek: DeepSeek V3.2 Exp) Context: 163840
+- deepseek/deepseek-v3.2-speciale (DeepSeek: DeepSeek V3.2 Speciale) Context: 163840
+- eleutherai/llemma_7b (EleutherAI: Llemma 7b) Context: 4096
+- essentialai/rnj-1-instruct (EssentialAI: Rnj 1 Instruct) Context: 32768
+- google/gemini-2.0-flash-001 (Google: Gemini 2.0 Flash) Context: 1048576
+- google/gemini-2.0-flash-lite-001 (Google: Gemini 2.0 Flash Lite) Context: 1048576
+- google/gemini-2.5-flash (Google: Gemini 2.5 Flash) Context: 1048576
+- google/gemini-2.5-flash-image (Google: Nano Banana (Gemini 2.5 Flash Image)) Context: 32768
+- google/gemini-2.5-flash-lite (Google: Gemini 2.5 Flash Lite) Context: 1048576
+- google/gemini-2.5-flash-lite-preview-09-2025 (Google: Gemini 2.5 Flash Lite Preview 09-2025) Context: 1048576
+- google/gemini-2.5-pro (Google: Gemini 2.5 Pro) Context: 1048576
+- google/gemini-2.5-pro-preview (Google: Gemini 2.5 Pro Preview 06-05) Context: 1048576
+- google/gemini-2.5-pro-preview-05-06 (Google: Gemini 2.5 Pro Preview 05-06) Context: 1048576
+- google/gemini-3-flash-preview (Google: Gemini 3 Flash Preview) Context: 1048576
+- google/gemini-3-pro-image-preview (Google: Nano Banana Pro (Gemini 3 Pro Image Preview)) Context: 65536
+- google/gemini-3.1-flash-image-preview (Google: Nano Banana 2 (Gemini 3.1 Flash Image Preview)) Context: 65536
+- google/gemini-3.1-flash-lite-preview (Google: Gemini 3.1 Flash Lite Preview) Context: 1048576
+- google/gemini-3.1-pro-preview (Google: Gemini 3.1 Pro Preview) Context: 1048576
+- google/gemini-3.1-pro-preview-customtools (Google: Gemini 3.1 Pro Preview Custom Tools) Context: 1048576
+- google/gemma-2-27b-it (Google: Gemma 2 27B) Context: 8192
+- google/gemma-2-9b-it (Google: Gemma 2 9B) Context: 8192
+- google/gemma-3-12b-it (Google: Gemma 3 12B) Context: 131072
+- google/gemma-3-12b-it:free (Google: Gemma 3 12B (free)) Context: 32768
+- google/gemma-3-27b-it (Google: Gemma 3 27B) Context: 131072
+- google/gemma-3-27b-it:free (Google: Gemma 3 27B (free)) Context: 131072
+- google/gemma-3-4b-it (Google: Gemma 3 4B) Context: 131072
+- google/gemma-3-4b-it:free (Google: Gemma 3 4B (free)) Context: 32768
+- google/gemma-3n-e2b-it:free (Google: Gemma 3n 2B (free)) Context: 8192
+- google/gemma-3n-e4b-it (Google: Gemma 3n 4B) Context: 32768
+- google/gemma-3n-e4b-it:free (Google: Gemma 3n 4B (free)) Context: 8192
+- google/gemma-4-26b-a4b-it (Google: Gemma 4 26B A4B ) Context: 262144
+- google/gemma-4-31b-it (Google: Gemma 4 31B) Context: 262144
+- google/lyria-3-clip-preview (Google: Lyria 3 Clip Preview) Context: 1048576
+- google/lyria-3-pro-preview (Google: Lyria 3 Pro Preview) Context: 1048576
+- gryphe/mythomax-l2-13b (MythoMax 13B) Context: 4096
+- ibm-granite/granite-4.0-h-micro (IBM: Granite 4.0 Micro) Context: 131000
+- inception/mercury (Inception: Mercury) Context: 128000
+- inception/mercury-2 (Inception: Mercury 2) Context: 128000
+- inception/mercury-coder (Inception: Mercury Coder) Context: 128000
+- inflection/inflection-3-pi (Inflection: Inflection 3 Pi) Context: 8000
+- inflection/inflection-3-productivity (Inflection: Inflection 3 Productivity) Context: 8000
+- kwaipilot/kat-coder-pro-v2 (Kwaipilot: KAT-Coder-Pro V2) Context: 256000
+- liquid/lfm-2-24b-a2b (LiquidAI: LFM2-24B-A2B) Context: 32768
+- liquid/lfm-2.5-1.2b-instruct:free (LiquidAI: LFM2.5-1.2B-Instruct (free)) Context: 32768
+- liquid/lfm-2.5-1.2b-thinking:free (LiquidAI: LFM2.5-1.2B-Thinking (free)) Context: 32768
+- mancer/weaver (Mancer: Weaver (alpha)) Context: 8000
+- meituan/longcat-flash-chat (Meituan: LongCat Flash Chat) Context: 131072
+- meta-llama/llama-3-70b-instruct (Meta: Llama 3 70B Instruct) Context: 8192
+- meta-llama/llama-3-8b-instruct (Meta: Llama 3 8B Instruct) Context: 8192
+- meta-llama/llama-3.1-70b-instruct (Meta: Llama 3.1 70B Instruct) Context: 131072
+- meta-llama/llama-3.1-8b-instruct (Meta: Llama 3.1 8B Instruct) Context: 16384
+- meta-llama/llama-3.2-11b-vision-instruct (Meta: Llama 3.2 11B Vision Instruct) Context: 131072
+- meta-llama/llama-3.2-1b-instruct (Meta: Llama 3.2 1B Instruct) Context: 60000
+- meta-llama/llama-3.2-3b-instruct (Meta: Llama 3.2 3B Instruct) Context: 80000
+- meta-llama/llama-3.2-3b-instruct:free (Meta: Llama 3.2 3B Instruct (free)) Context: 131072
+- meta-llama/llama-3.3-70b-instruct (Meta: Llama 3.3 70B Instruct) Context: 131072
+- meta-llama/llama-3.3-70b-instruct:free (Meta: Llama 3.3 70B Instruct (free)) Context: 65536
+- meta-llama/llama-4-maverick (Meta: Llama 4 Maverick) Context: 1048576
+- meta-llama/llama-4-scout (Meta: Llama 4 Scout) Context: 327680
+- meta-llama/llama-guard-3-8b (Llama Guard 3 8B) Context: 131072
+- meta-llama/llama-guard-4-12b (Meta: Llama Guard 4 12B) Context: 163840
+- microsoft/phi-4 (Microsoft: Phi 4) Context: 16384
+- microsoft/wizardlm-2-8x22b (WizardLM-2 8x22B) Context: 65535
+- minimax/minimax-01 (MiniMax: MiniMax-01) Context: 1000192
+- minimax/minimax-m1 (MiniMax: MiniMax M1) Context: 1000000
+- minimax/minimax-m2 (MiniMax: MiniMax M2) Context: 196608
+- minimax/minimax-m2-her (MiniMax: MiniMax M2-her) Context: 65536
+- minimax/minimax-m2.1 (MiniMax: MiniMax M2.1) Context: 196608
+- minimax/minimax-m2.5 (MiniMax: MiniMax M2.5) Context: 196608
+- minimax/minimax-m2.5:free (MiniMax: MiniMax M2.5 (free)) Context: 196608
+- minimax/minimax-m2.7 (MiniMax: MiniMax M2.7) Context: 204800
+- mistralai/codestral-2508 (Mistral: Codestral 2508) Context: 256000
+- mistralai/devstral-2512 (Mistral: Devstral 2 2512) Context: 262144
+- mistralai/devstral-medium (Mistral: Devstral Medium) Context: 131072
+- mistralai/devstral-small (Mistral: Devstral Small 1.1) Context: 131072
+- mistralai/ministral-14b-2512 (Mistral: Ministral 3 14B 2512) Context: 262144
+- mistralai/ministral-3b-2512 (Mistral: Ministral 3 3B 2512) Context: 131072
+- mistralai/ministral-8b-2512 (Mistral: Ministral 3 8B 2512) Context: 262144
+- mistralai/mistral-7b-instruct-v0.1 (Mistral: Mistral 7B Instruct v0.1) Context: 2824
+- mistralai/mistral-large (Mistral Large) Context: 128000
+- mistralai/mistral-large-2407 (Mistral Large 2407) Context: 131072
+- mistralai/mistral-large-2411 (Mistral Large 2411) Context: 131072
+- mistralai/mistral-large-2512 (Mistral: Mistral Large 3 2512) Context: 262144
+- mistralai/mistral-medium-3 (Mistral: Mistral Medium 3) Context: 131072
+- mistralai/mistral-medium-3.1 (Mistral: Mistral Medium 3.1) Context: 131072
+- mistralai/mistral-nemo (Mistral: Mistral Nemo) Context: 131072
+- mistralai/mistral-saba (Mistral: Saba) Context: 32768
+- mistralai/mistral-small-24b-instruct-2501 (Mistral: Mistral Small 3) Context: 32768
+- mistralai/mistral-small-2603 (Mistral: Mistral Small 4) Context: 262144
+- mistralai/mistral-small-3.1-24b-instruct (Mistral: Mistral Small 3.1 24B) Context: 131072
+- mistralai/mistral-small-3.2-24b-instruct (Mistral: Mistral Small 3.2 24B) Context: 128000
+- mistralai/mistral-small-creative (Mistral: Mistral Small Creative) Context: 32768
+- mistralai/mixtral-8x22b-instruct (Mistral: Mixtral 8x22B Instruct) Context: 65536
+- mistralai/mixtral-8x7b-instruct (Mistral: Mixtral 8x7B Instruct) Context: 32768
+- mistralai/pixtral-large-2411 (Mistral: Pixtral Large 2411) Context: 131072
+- mistralai/voxtral-small-24b-2507 (Mistral: Voxtral Small 24B 2507) Context: 32000
+- moonshotai/kimi-k2 (MoonshotAI: Kimi K2 0711) Context: 131072
+- moonshotai/kimi-k2-0905 (MoonshotAI: Kimi K2 0905) Context: 131072
+- moonshotai/kimi-k2-thinking (MoonshotAI: Kimi K2 Thinking) Context: 131072
+- moonshotai/kimi-k2.5 (MoonshotAI: Kimi K2.5) Context: 262144
+- morph/morph-v3-fast (Morph: Morph V3 Fast) Context: 81920
+- morph/morph-v3-large (Morph: Morph V3 Large) Context: 262144
+- nex-agi/deepseek-v3.1-nex-n1 (Nex AGI: DeepSeek V3.1 Nex N1) Context: 131072
+- nousresearch/hermes-2-pro-llama-3-8b (NousResearch: Hermes 2 Pro - Llama-3 8B) Context: 8192
+- nousresearch/hermes-3-llama-3.1-405b (Nous: Hermes 3 405B Instruct) Context: 131072
+- nousresearch/hermes-3-llama-3.1-405b:free (Nous: Hermes 3 405B Instruct (free)) Context: 131072
+- nousresearch/hermes-3-llama-3.1-70b (Nous: Hermes 3 70B Instruct) Context: 131072
+- nousresearch/hermes-4-405b (Nous: Hermes 4 405B) Context: 131072
+- nousresearch/hermes-4-70b (Nous: Hermes 4 70B) Context: 131072
+- nvidia/llama-3.1-nemotron-70b-instruct (NVIDIA: Llama 3.1 Nemotron 70B Instruct) Context: 131072
+- nvidia/llama-3.1-nemotron-ultra-253b-v1 (NVIDIA: Llama 3.1 Nemotron Ultra 253B v1) Context: 131072
+- nvidia/llama-3.3-nemotron-super-49b-v1.5 (NVIDIA: Llama 3.3 Nemotron Super 49B V1.5) Context: 131072
+- nvidia/nemotron-3-nano-30b-a3b (NVIDIA: Nemotron 3 Nano 30B A3B) Context: 262144
+- nvidia/nemotron-3-nano-30b-a3b:free (NVIDIA: Nemotron 3 Nano 30B A3B (free)) Context: 256000
+- nvidia/nemotron-3-super-120b-a12b (NVIDIA: Nemotron 3 Super) Context: 262144
+- nvidia/nemotron-3-super-120b-a12b:free (NVIDIA: Nemotron 3 Super (free)) Context: 262144
+- nvidia/nemotron-nano-12b-v2-vl (NVIDIA: Nemotron Nano 12B 2 VL) Context: 131072
+- nvidia/nemotron-nano-12b-v2-vl:free (NVIDIA: Nemotron Nano 12B 2 VL (free)) Context: 128000
+- nvidia/nemotron-nano-9b-v2 (NVIDIA: Nemotron Nano 9B V2) Context: 131072
+- nvidia/nemotron-nano-9b-v2:free (NVIDIA: Nemotron Nano 9B V2 (free)) Context: 128000
+- openai/gpt-3.5-turbo (OpenAI: GPT-3.5 Turbo) Context: 16385
+- openai/gpt-3.5-turbo-0613 (OpenAI: GPT-3.5 Turbo (older v0613)) Context: 4095
+- openai/gpt-3.5-turbo-16k (OpenAI: GPT-3.5 Turbo 16k) Context: 16385
+- openai/gpt-3.5-turbo-instruct (OpenAI: GPT-3.5 Turbo Instruct) Context: 4095
+- openai/gpt-4 (OpenAI: GPT-4) Context: 8191
+- openai/gpt-4-0314 (OpenAI: GPT-4 (older v0314)) Context: 8191
+- openai/gpt-4-1106-preview (OpenAI: GPT-4 Turbo (older v1106)) Context: 128000
+- openai/gpt-4-turbo (OpenAI: GPT-4 Turbo) Context: 128000
+- openai/gpt-4-turbo-preview (OpenAI: GPT-4 Turbo Preview) Context: 128000
+- openai/gpt-4.1 (OpenAI: GPT-4.1) Context: 1047576
+- openai/gpt-4.1-mini (OpenAI: GPT-4.1 Mini) Context: 1047576
+- openai/gpt-4.1-nano (OpenAI: GPT-4.1 Nano) Context: 1047576
+- openai/gpt-4o (OpenAI: GPT-4o) Context: 128000
+- openai/gpt-4o-2024-05-13 (OpenAI: GPT-4o (2024-05-13)) Context: 128000
+- openai/gpt-4o-2024-08-06 (OpenAI: GPT-4o (2024-08-06)) Context: 128000
+- openai/gpt-4o-2024-11-20 (OpenAI: GPT-4o (2024-11-20)) Context: 128000
+- openai/gpt-4o-audio-preview (OpenAI: GPT-4o Audio) Context: 128000
+- openai/gpt-4o-mini (OpenAI: GPT-4o-mini) Context: 128000
+- openai/gpt-4o-mini-2024-07-18 (OpenAI: GPT-4o-mini (2024-07-18)) Context: 128000
+- openai/gpt-4o-mini-search-preview (OpenAI: GPT-4o-mini Search Preview) Context: 128000
+- openai/gpt-4o-search-preview (OpenAI: GPT-4o Search Preview) Context: 128000
+- openai/gpt-4o:extended (OpenAI: GPT-4o (extended)) Context: 128000
+- openai/gpt-5 (OpenAI: GPT-5) Context: 400000
+- openai/gpt-5-chat (OpenAI: GPT-5 Chat) Context: 128000
+- openai/gpt-5-codex (OpenAI: GPT-5 Codex) Context: 400000
+- openai/gpt-5-image (OpenAI: GPT-5 Image) Context: 400000
+- openai/gpt-5-image-mini (OpenAI: GPT-5 Image Mini) Context: 400000
+- openai/gpt-5-mini (OpenAI: GPT-5 Mini) Context: 400000
+- openai/gpt-5-nano (OpenAI: GPT-5 Nano) Context: 400000
+- openai/gpt-5-pro (OpenAI: GPT-5 Pro) Context: 400000
+- openai/gpt-5.1 (OpenAI: GPT-5.1) Context: 400000
+- openai/gpt-5.1-chat (OpenAI: GPT-5.1 Chat) Context: 128000
+- openai/gpt-5.1-codex (OpenAI: GPT-5.1-Codex) Context: 400000
+- openai/gpt-5.1-codex-max (OpenAI: GPT-5.1-Codex-Max) Context: 400000
+- openai/gpt-5.1-codex-mini (OpenAI: GPT-5.1-Codex-Mini) Context: 400000
+- openai/gpt-5.2 (OpenAI: GPT-5.2) Context: 400000
+- openai/gpt-5.2-chat (OpenAI: GPT-5.2 Chat) Context: 128000
+- openai/gpt-5.2-codex (OpenAI: GPT-5.2-Codex) Context: 400000
+- openai/gpt-5.2-pro (OpenAI: GPT-5.2 Pro) Context: 400000
+- openai/gpt-5.3-chat (OpenAI: GPT-5.3 Chat) Context: 128000
+- openai/gpt-5.3-codex (OpenAI: GPT-5.3-Codex) Context: 400000
+- openai/gpt-5.4 (OpenAI: GPT-5.4) Context: 1050000
+- openai/gpt-5.4-mini (OpenAI: GPT-5.4 Mini) Context: 400000
+- openai/gpt-5.4-nano (OpenAI: GPT-5.4 Nano) Context: 400000
+- openai/gpt-5.4-pro (OpenAI: GPT-5.4 Pro) Context: 1050000
+- openai/gpt-audio (OpenAI: GPT Audio) Context: 128000
+- openai/gpt-audio-mini (OpenAI: GPT Audio Mini) Context: 128000
+- openai/gpt-oss-120b (OpenAI: gpt-oss-120b) Context: 131072
+- openai/gpt-oss-120b:free (OpenAI: gpt-oss-120b (free)) Context: 131072
+- openai/gpt-oss-20b (OpenAI: gpt-oss-20b) Context: 131072
+- openai/gpt-oss-20b:free (OpenAI: gpt-oss-20b (free)) Context: 131072
+- openai/gpt-oss-safeguard-20b (OpenAI: gpt-oss-safeguard-20b) Context: 131072
+- openai/o1 (OpenAI: o1) Context: 200000
+- openai/o1-pro (OpenAI: o1-pro) Context: 200000
+- openai/o3 (OpenAI: o3) Context: 200000
+- openai/o3-deep-research (OpenAI: o3 Deep Research) Context: 200000
+- openai/o3-mini (OpenAI: o3 Mini) Context: 200000
+- openai/o3-mini-high (OpenAI: o3 Mini High) Context: 200000
+- openai/o3-pro (OpenAI: o3 Pro) Context: 200000
+- openai/o4-mini (OpenAI: o4 Mini) Context: 200000
+- openai/o4-mini-deep-research (OpenAI: o4 Mini Deep Research) Context: 200000
+- openai/o4-mini-high (OpenAI: o4 Mini High) Context: 200000
+- openrouter/auto (Auto Router) Context: 2000000
+- openrouter/bodybuilder (Body Builder (beta)) Context: 128000
+- openrouter/free (Free Models Router) Context: 200000
+- perplexity/sonar (Perplexity: Sonar) Context: 127072
+- perplexity/sonar-deep-research (Perplexity: Sonar Deep Research) Context: 128000
+- perplexity/sonar-pro (Perplexity: Sonar Pro) Context: 200000
+- perplexity/sonar-pro-search (Perplexity: Sonar Pro Search) Context: 200000
+- perplexity/sonar-reasoning-pro (Perplexity: Sonar Reasoning Pro) Context: 128000
+- prime-intellect/intellect-3 (Prime Intellect: INTELLECT-3) Context: 131072
+- qwen/qwen-2.5-72b-instruct (Qwen2.5 72B Instruct) Context: 32768
+- qwen/qwen-2.5-7b-instruct (Qwen: Qwen2.5 7B Instruct) Context: 32768
+- qwen/qwen-2.5-coder-32b-instruct (Qwen2.5 Coder 32B Instruct) Context: 32768
+- qwen/qwen-max (Qwen: Qwen-Max ) Context: 32768
+- qwen/qwen-plus (Qwen: Qwen-Plus) Context: 1000000
+- qwen/qwen-plus-2025-07-28 (Qwen: Qwen Plus 0728) Context: 1000000
+- qwen/qwen-plus-2025-07-28:thinking (Qwen: Qwen Plus 0728 (thinking)) Context: 1000000
+- qwen/qwen-turbo (Qwen: Qwen-Turbo) Context: 131072
+- qwen/qwen-vl-max (Qwen: Qwen VL Max) Context: 131072
+- qwen/qwen-vl-plus (Qwen: Qwen VL Plus) Context: 131072
+- qwen/qwen2.5-coder-7b-instruct (Qwen: Qwen2.5 Coder 7B Instruct) Context: 32768
+- qwen/qwen2.5-vl-32b-instruct (Qwen: Qwen2.5 VL 32B Instruct) Context: 128000
+- qwen/qwen2.5-vl-72b-instruct (Qwen: Qwen2.5 VL 72B Instruct) Context: 32768
+- qwen/qwen3-14b (Qwen: Qwen3 14B) Context: 40960
+- qwen/qwen3-235b-a22b (Qwen: Qwen3 235B A22B) Context: 131072
+- qwen/qwen3-235b-a22b-2507 (Qwen: Qwen3 235B A22B Instruct 2507) Context: 262144
+- qwen/qwen3-235b-a22b-thinking-2507 (Qwen: Qwen3 235B A22B Thinking 2507) Context: 131072
+- qwen/qwen3-30b-a3b (Qwen: Qwen3 30B A3B) Context: 40960
+- qwen/qwen3-30b-a3b-instruct-2507 (Qwen: Qwen3 30B A3B Instruct 2507) Context: 262144
+- qwen/qwen3-30b-a3b-thinking-2507 (Qwen: Qwen3 30B A3B Thinking 2507) Context: 131072
+- qwen/qwen3-32b (Qwen: Qwen3 32B) Context: 40960
+- qwen/qwen3-8b (Qwen: Qwen3 8B) Context: 40960
+- qwen/qwen3-coder (Qwen: Qwen3 Coder 480B A35B) Context: 262144
+- qwen/qwen3-coder-30b-a3b-instruct (Qwen: Qwen3 Coder 30B A3B Instruct) Context: 160000
+- qwen/qwen3-coder-flash (Qwen: Qwen3 Coder Flash) Context: 1000000
+- qwen/qwen3-coder-next (Qwen: Qwen3 Coder Next) Context: 262144
+- qwen/qwen3-coder-plus (Qwen: Qwen3 Coder Plus) Context: 1000000
+- qwen/qwen3-coder:free (Qwen: Qwen3 Coder 480B A35B (free)) Context: 262000
+- qwen/qwen3-max (Qwen: Qwen3 Max) Context: 262144
+- qwen/qwen3-max-thinking (Qwen: Qwen3 Max Thinking) Context: 262144
+- qwen/qwen3-next-80b-a3b-instruct (Qwen: Qwen3 Next 80B A3B Instruct) Context: 262144
+- qwen/qwen3-next-80b-a3b-instruct:free (Qwen: Qwen3 Next 80B A3B Instruct (free)) Context: 262144
+- qwen/qwen3-next-80b-a3b-thinking (Qwen: Qwen3 Next 80B A3B Thinking) Context: 131072
+- qwen/qwen3-vl-235b-a22b-instruct (Qwen: Qwen3 VL 235B A22B Instruct) Context: 262144
+- qwen/qwen3-vl-235b-a22b-thinking (Qwen: Qwen3 VL 235B A22B Thinking) Context: 131072
+- qwen/qwen3-vl-30b-a3b-instruct (Qwen: Qwen3 VL 30B A3B Instruct) Context: 131072
+- qwen/qwen3-vl-30b-a3b-thinking (Qwen: Qwen3 VL 30B A3B Thinking) Context: 131072
+- qwen/qwen3-vl-32b-instruct (Qwen: Qwen3 VL 32B Instruct) Context: 131072
+- qwen/qwen3-vl-8b-instruct (Qwen: Qwen3 VL 8B Instruct) Context: 131072
+- qwen/qwen3-vl-8b-thinking (Qwen: Qwen3 VL 8B Thinking) Context: 131072
+- qwen/qwen3.5-122b-a10b (Qwen: Qwen3.5-122B-A10B) Context: 262144 🥈
+- qwen/qwen3.5-27b (Qwen: Qwen3.5-27B) Context: 262144
+- qwen/qwen3.5-35b-a3b (Qwen: Qwen3.5-35B-A3B) Context: 262144 🥉
+- qwen/qwen3.5-397b-a17b (Qwen: Qwen3.5 397B A17B) Context: 262144 🥇
+- qwen/qwen3.5-9b (Qwen: Qwen3.5-9B) Context: 256000
+- qwen/qwen3.5-flash-02-23 (Qwen: Qwen3.5-Flash) Context: 1000000
+- qwen/qwen3.5-plus-02-15 (Qwen: Qwen3.5 Plus 2026-02-15) Context: 1000000
+- qwen/qwen3.6-plus:free (Qwen: Qwen3.6 Plus (free)) Context: 1000000
+- qwen/qwq-32b (Qwen: QwQ 32B) Context: 131072
+- rekaai/reka-edge (Reka Edge) Context: 16384
+- rekaai/reka-flash-3 (Reka Flash 3) Context: 65536
+- relace/relace-apply-3 (Relace: Relace Apply 3) Context: 256000
+- relace/relace-search (Relace: Relace Search) Context: 256000
+- sao10k/l3-euryale-70b (Sao10k: Llama 3 Euryale 70B v2.1) Context: 8192
+- sao10k/l3-lunaris-8b (Sao10K: Llama 3 8B Lunaris) Context: 8192
+- sao10k/l3.1-70b-hanami-x1 (Sao10K: Llama 3.1 70B Hanami x1) Context: 16000
+- sao10k/l3.1-euryale-70b (Sao10K: Llama 3.1 Euryale 70B v2.2) Context: 131072
+- sao10k/l3.3-euryale-70b (Sao10K: Llama 3.3 Euryale 70B) Context: 131072
+- stepfun/step-3.5-flash (StepFun: Step 3.5 Flash) Context: 262144
+- stepfun/step-3.5-flash:free (StepFun: Step 3.5 Flash (free)) Context: 256000
+- switchpoint/router (Switchpoint Router) Context: 131072
+- tencent/hunyuan-a13b-instruct (Tencent: Hunyuan A13B Instruct) Context: 131072
+- thedrummer/cydonia-24b-v4.1 (TheDrummer: Cydonia 24B V4.1) Context: 131072
+- thedrummer/rocinante-12b (TheDrummer: Rocinante 12B) Context: 32768
+- thedrummer/skyfall-36b-v2 (TheDrummer: Skyfall 36B V2) Context: 32768
+- thedrummer/unslopnemo-12b (TheDrummer: UnslopNemo 12B) Context: 32768
+- tngtech/deepseek-r1t2-chimera (TNG: DeepSeek R1T2 Chimera) Context: 163840
+- undi95/remm-slerp-l2-13b (ReMM SLERP 13B) Context: 6144
+- upstage/solar-pro-3 (Upstage: Solar Pro 3) Context: 128000
+- writer/palmyra-x5 (Writer: Palmyra X5) Context: 1040000
+- x-ai/grok-3 (xAI: Grok 3) Context: 131072
+- x-ai/grok-3-beta (xAI: Grok 3 Beta) Context: 131072
+- x-ai/grok-3-mini (xAI: Grok 3 Mini) Context: 131072
+- x-ai/grok-3-mini-beta (xAI: Grok 3 Mini Beta) Context: 131072
+- x-ai/grok-4 (xAI: Grok 4) Context: 256000
+- x-ai/grok-4-fast (xAI: Grok 4 Fast) Context: 2000000
+- x-ai/grok-4.1-fast (xAI: Grok 4.1 Fast) Context: 2000000
+- x-ai/grok-4.20 (xAI: Grok 4.20) Context: 2000000
+- x-ai/grok-4.20-multi-agent (xAI: Grok 4.20 Multi-Agent) Context: 2000000
+- x-ai/grok-code-fast-1 (xAI: Grok Code Fast 1) Context: 256000
+- xiaomi/mimo-v2-flash (Xiaomi: MiMo-V2-Flash) Context: 262144
+- xiaomi/mimo-v2-omni (Xiaomi: MiMo-V2-Omni) Context: 262144
+- xiaomi/mimo-v2-pro (Xiaomi: MiMo-V2-Pro) Context: 1048576
+- z-ai/glm-4-32b (Z.ai: GLM 4 32B ) Context: 128000
+- z-ai/glm-4.5 (Z.ai: GLM 4.5) Context: 131072
+- z-ai/glm-4.5-air (Z.ai: GLM 4.5 Air) Context: 131072
+- z-ai/glm-4.5-air:free (Z.ai: GLM 4.5 Air (free)) Context: 131072
+- z-ai/glm-4.5v (Z.ai: GLM 4.5V) Context: 65536
+- z-ai/glm-4.6 (Z.ai: GLM 4.6) Context: 204800
+- z-ai/glm-4.6v (Z.ai: GLM 4.6V) Context: 131072
+- z-ai/glm-4.7 (Z.ai: GLM 4.7) Context: 202752
+- z-ai/glm-4.7-flash (Z.ai: GLM 4.7 Flash) Context: 202752
+- z-ai/glm-5 (Z.ai: GLM 5) Context: 80000
+- z-ai/glm-5-turbo (Z.ai: GLM 5 Turbo) Context: 202752
+- z-ai/glm-5v-turbo (Z.ai: GLM 5V Turbo) Context: 202752
 
 ## pollinations
 

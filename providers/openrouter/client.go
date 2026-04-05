@@ -720,6 +720,16 @@ type ChatStreamChunkResponse struct {
 	UserID string       `json:"user_id,omitzero"`
 }
 
+// ModelDefaultParameters contains the default sampling parameters for a model.
+type ModelDefaultParameters struct {
+	Temperature       float64 `json:"temperature,omitzero"`
+	TopP              float64 `json:"top_p,omitzero"`
+	TopK              float64 `json:"top_k,omitzero"`
+	FrequencyPenalty  float64 `json:"frequency_penalty,omitzero"`
+	PresencePenalty   float64 `json:"presence_penalty,omitzero"`
+	RepetitionPenalty float64 `json:"repetition_penalty,omitzero"`
+}
+
 // Model is the provider-specific model metadata.
 type Model struct {
 	ID            string       `json:"id"`
@@ -740,12 +750,13 @@ type Model struct {
 		MaxCompletionTokens int64 `json:"max_completion_tokens"`
 		IsModerated         bool  `json:"is_moderated"`
 	} `json:"top_provider"`
-	HuggingFaceID       *string        `json:"hugging_face_id"`
-	PerRequestLimits    map[string]any `json:"per_request_limits"`
-	SupportedParameters []string       `json:"supported_parameters"`
-	DefaultParameters   map[string]any `json:"default_parameters"`
-	CanonicalSlug       string         `json:"canonical_slug"`
-	ExpirationDate      *string        `json:"expiration_date"`
+	HuggingFaceID       string                 `json:"hugging_face_id,omitzero"`
+	PerRequestLimits    map[string]any         `json:"per_request_limits"`
+	SupportedParameters []string               `json:"supported_parameters"`
+	DefaultParameters   ModelDefaultParameters `json:"default_parameters"`
+	CanonicalSlug       string                 `json:"canonical_slug"`
+	KnowledgeCutoff     string                 `json:"knowledge_cutoff,omitzero"`
+	ExpirationDate      string                 `json:"expiration_date"`
 }
 
 // ModelPricing contains the per-token pricing information.

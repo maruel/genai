@@ -9,8 +9,18 @@ cd "$(dirname $0)"
 cd ..
 
 go install ./cmd/list-models ./cmd/scoreboard
-# TODO: get the list automatically. Note that we want "openai", not "openaichat and "openairesponses".
-PROVIDERS=(anthropic baseten cerebras cloudflare cohere deepseek gemini groq huggingface mistral openai pollinations togetherai)
+# Providers that can't run in CI: local servers or CLI wrappers.
+EXCLUDE="bfl claudecode codex llamacpp ollama openaicompatible opencode openaichat openairesponses perplexity"
+PROVIDERS=()
+for d in providers/*/; do
+  name=$(basename "$d")
+  if [[ ! " $EXCLUDE " =~ " $name " ]]; then
+    PROVIDERS+=("$name")
+  fi
+done
+# "openai" is an alias for openairesponses but list-models treats it as a distinct provider.
+PROVIDERS+=("openai")
+IFS=$'\n' PROVIDERS=($(sort <<<"${PROVIDERS[*]}")); unset IFS
 
 echo "# List of models available on each provider" > docs/MODELS.new.md
 echo "" >> docs/MODELS.new.md

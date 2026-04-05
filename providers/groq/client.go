@@ -918,6 +918,10 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 	nb := regexp.MustCompile(`(\d+)`)
 	for _, mdl := range mdls {
 		m := mdl.(*Model)
+		// Skip non-general-purpose models.
+		if strings.Contains(m.ID, "safeguard") {
+			continue
+		}
 		// This is meh.
 		switch {
 		case cheap:

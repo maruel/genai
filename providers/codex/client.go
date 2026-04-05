@@ -65,15 +65,15 @@ const threadIDKey = "thread_id"
 
 // optOutMethods are notification methods we opt out of during initialization.
 // These reduce noise for a text-generation-only use case.
-var optOutMethods = []string{
-	methodCommandTerminalInteract,
-	methodFileChangeOutputDelta,
-	methodReasoningSummaryPartAdded,
-	methodReasoningTextDelta,
-	methodPlanDelta,
-	methodTurnDiffUpdated,
-	methodTurnPlanUpdated,
-	methodThreadNameUpdated,
+var optOutMethods = []Method{
+	MethodCommandTerminalInteract,
+	MethodFileChangeOutputDelta,
+	MethodReasoningSummaryPartAdded,
+	MethodReasoningTextDelta,
+	MethodPlanDelta,
+	MethodTurnDiffUpdated,
+	MethodTurnPlanUpdated,
+	MethodThreadNameUpdated,
 }
 
 // executor abstracts subprocess creation so tests can inject a recording or
@@ -115,21 +115,6 @@ func newScanner(r io.Reader) *bufio.Scanner {
 	sc.Buffer(make([]byte, 1<<20), 32<<20) // 1 MB initial, 32 MB max
 	return sc
 }
-
-// ReasoningEffort controls how much reasoning the model performs.
-//
-// Use the ReasoningEffort* constants. Defaults to ReasoningEffortMedium if unset.
-type ReasoningEffort string
-
-// Reasoning effort levels, from least to most compute.
-const (
-	ReasoningEffortNone    ReasoningEffort = "none"
-	ReasoningEffortMinimal ReasoningEffort = "minimal"
-	ReasoningEffortLow     ReasoningEffort = "low"
-	ReasoningEffortMedium  ReasoningEffort = "medium"
-	ReasoningEffortHigh    ReasoningEffort = "high"
-	ReasoningEffortXHigh   ReasoningEffort = "xhigh"
-)
 
 // Validate implements genai.ProviderOption.
 func (p ReasoningEffort) Validate() error {
@@ -371,50 +356,49 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 		)
 		for sc.Scan() {
 			line := sc.Bytes()
-			var probe lineProbe
+			var probe MethodProbe
 			if json.Unmarshal(line, &probe) != nil {
-				continue
-			}
-			// Skip JSON-RPC responses (have id, no method).
-			if probe.ID != nil && probe.Method == "" {
 				continue
 			}
 			if probe.Method == "" {
 				continue
 			}
 
-			var msg jsonrpcMessage
+			var msg JSONRPCMessage
 			if json.Unmarshal(line, &msg) != nil {
+				continue
+			}
+			if msg.IsResponse() {
 				continue
 			}
 
 			switch msg.Method {
-			case methodItemDelta:
-				var p itemDeltaParams
+			case MethodItemDelta:
+				var p AgentMessageDeltaNotification
 				if json.Unmarshal(msg.Params, &p) == nil && p.Delta != "" {
 					if !yield(genai.Reply{Text: p.Delta}) {
 						return
 					}
 				}
-			case methodReasoningSummaryTextDelta:
-				var p reasoningSummaryTextDeltaParams
+			case MethodReasoningSummaryTextDelta:
+				var p ReasoningSummaryTextDeltaNotification
 				if json.Unmarshal(msg.Params, &p) == nil && p.Delta != "" {
 					if !yield(genai.Reply{Reasoning: p.Delta}) {
 						return
 					}
 				}
-			case methodItemCompleted:
+			case MethodItemCompleted:
 				r := parseCompletedItem(msg.Params)
 				if r != nil {
 					replies = append(replies, *r)
 				}
-			case methodTokenUsageUpdated:
-				var p tokenUsageUpdatedParams
+			case MethodTokenUsageUpdated:
+				var p ThreadTokenUsageUpdatedNotification
 				if json.Unmarshal(msg.Params, &p) == nil {
 					accumulateUsage(&usage, &p.TokenUsage)
 				}
-			case methodTurnCompleted:
-				var p turnCompletedParams
+			case MethodTurnCompleted:
+				var p TurnCompletedNotification
 				if json.Unmarshal(msg.Params, &p) != nil {
 					continue
 				}
@@ -428,8 +412,8 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 				}
 				result = buildResult(replies, usage, newThreadID)
 				return
-			case methodErrorNotification:
-				var p errorNotificationParams
+			case MethodErrorNotification:
+				var p ErrorNotification
 				if json.Unmarshal(msg.Params, &p) == nil && !p.WillRetry && p.Error != nil {
 					finalErr = fmt.Errorf("codex error: %s", p.Error.Message)
 					return
@@ -453,15 +437,15 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 // initAndListModels performs the JSON-RPC initialize → initialized →
 // model/list sequence and returns the model list. nextID is set to the last
 // used request ID so the caller can continue numbering.
-func initAndListModels(stdin io.Writer, sc *bufio.Scanner) ([]modelInfo, error) {
+func initAndListModels(stdin io.Writer, sc *bufio.Scanner) ([]ModelInfo, error) {
 	// 1. Send initialize request.
-	if err := writeJSON(stdin, jsonrpcRequest{
+	if err := writeJSON(stdin, JSONRPCRequest{
 		JSONRPC: "2.0",
 		ID:      1,
 		Method:  "initialize",
-		Params: initializeParams{
-			ClientInfo:   clientInfo{Name: "genai-codex", Title: "genai-codex", Version: "1.0.0"},
-			Capabilities: capabilities{OptOutNotificationMethods: optOutMethods},
+		Params: InitializeParams{
+			ClientInfo:   ClientInfo{Name: "genai-codex", Title: "genai-codex", Version: "1.0.0"},
+			Capabilities: Capabilities{OptOutNotificationMethods: optOutMethods},
 		},
 	}); err != nil {
 		return nil, fmt.Errorf("write initialize: %w", err)
@@ -471,19 +455,19 @@ func initAndListModels(stdin io.Writer, sc *bufio.Scanner) ([]modelInfo, error) 
 	}
 
 	// 2. Send initialized notification.
-	if err := writeJSON(stdin, jsonrpcNotification{JSONRPC: "2.0", Method: "initialized"}); err != nil {
+	if err := writeJSON(stdin, JSONRPCNotification{JSONRPC: "2.0", Method: "initialized"}); err != nil {
 		return nil, fmt.Errorf("write initialized: %w", err)
 	}
 
 	// 3. Fetch model list.
-	if err := writeJSON(stdin, jsonrpcRequest{JSONRPC: "2.0", ID: 2, Method: "model/list", Params: struct{}{}}); err != nil {
+	if err := writeJSON(stdin, JSONRPCRequest{JSONRPC: "2.0", ID: 2, Method: "model/list", Params: struct{}{}}); err != nil {
 		return nil, fmt.Errorf("write model/list: %w", err)
 	}
 	mlData, err := readResponse(sc)
 	if err != nil {
 		return nil, fmt.Errorf("read model/list response: %w", err)
 	}
-	var mlResult modelListResult
+	var mlResult ModelListResult
 	if err := json.Unmarshal(mlData, &mlResult); err != nil {
 		return nil, fmt.Errorf("parse model/list result: %w", err)
 	}
@@ -498,20 +482,20 @@ func handshake(stdin io.Writer, sc *bufio.Scanner, mdl, resumeThreadID string) (
 	}
 
 	// Send thread/start or thread/resume.
-	var threadReq jsonrpcRequest
+	var threadReq JSONRPCRequest
 	if resumeThreadID != "" {
-		threadReq = jsonrpcRequest{
+		threadReq = JSONRPCRequest{
 			JSONRPC: "2.0",
 			ID:      3,
 			Method:  "thread/resume",
-			Params:  threadResumeParams{ThreadID: resumeThreadID},
+			Params:  ThreadResumeParams{ThreadID: resumeThreadID},
 		}
 	} else {
-		threadReq = jsonrpcRequest{
+		threadReq = JSONRPCRequest{
 			JSONRPC: "2.0",
 			ID:      3,
 			Method:  "thread/start",
-			Params:  threadStartParams{Model: mdl},
+			Params:  ThreadStartParams{Model: mdl},
 		}
 	}
 	if err := writeJSON(stdin, threadReq); err != nil {
@@ -522,7 +506,7 @@ func handshake(stdin io.Writer, sc *bufio.Scanner, mdl, resumeThreadID string) (
 		return "", fmt.Errorf("read thread/start response: %w", err)
 	}
 
-	var result threadStartResult
+	var result ThreadStartResult
 	if err := json.Unmarshal(respData, &result); err != nil {
 		return "", fmt.Errorf("parse thread/start result: %w", err)
 	}
@@ -539,11 +523,11 @@ func handshake(stdin io.Writer, sc *bufio.Scanner, mdl, resumeThreadID string) (
 // "id" field) is found. Notifications are skipped.
 func readResponse(sc *bufio.Scanner) (json.RawMessage, error) {
 	for sc.Scan() {
-		var msg jsonrpcMessage
+		var msg JSONRPCMessage
 		if json.Unmarshal(sc.Bytes(), &msg) != nil {
 			continue
 		}
-		if !msg.isResponse() {
+		if !msg.IsResponse() {
 			continue // Skip notifications during handshake.
 		}
 		if msg.Error != nil {
@@ -563,21 +547,21 @@ func sendTurnStart(stdin io.Writer, threadID string, effort ReasoningEffort, msg
 	if err != nil {
 		return err
 	}
-	return writeJSON(stdin, jsonrpcRequest{
+	return writeJSON(stdin, JSONRPCRequest{
 		JSONRPC: "2.0",
 		ID:      100, // Arbitrary; we don't wait for this response.
 		Method:  "turn/start",
-		Params:  turnStartParams{ThreadID: threadID, Input: input, Effort: effort},
+		Params:  TurnStartParams{ThreadID: threadID, Input: input, Effort: effort},
 	})
 }
 
 // msgToTurnInput converts a genai.Message to turn/start input items.
-func msgToTurnInput(msg *genai.Message) ([]turnInput, error) {
-	var items []turnInput
+func msgToTurnInput(msg *genai.Message) ([]TurnInput, error) {
+	var items []TurnInput
 	for i := range msg.Requests {
 		req := &msg.Requests[i]
 		if req.Text != "" {
-			items = append(items, turnInput{Type: "text", Text: req.Text})
+			items = append(items, TurnInput{Type: "text", Text: req.Text})
 		}
 		if !req.Doc.IsZero() {
 			blk, err := docToTurnInput(req.Doc)
@@ -593,24 +577,24 @@ func msgToTurnInput(msg *genai.Message) ([]turnInput, error) {
 	return items, nil
 }
 
-// docToTurnInput converts a genai.Doc to a turnInput for the codex CLI.
+// docToTurnInput converts a genai.Doc to a TurnInput for the codex CLI.
 // Text documents are sent inline; images are sent as data URLs.
-func docToTurnInput(doc genai.Doc) (turnInput, error) {
+func docToTurnInput(doc genai.Doc) (TurnInput, error) {
 	if doc.URL != "" {
-		return turnInput{Type: "image", URL: doc.URL}, nil
+		return TurnInput{Type: "image", URL: doc.URL}, nil
 	}
 	mimeType, data, err := doc.Read(10 * 1024 * 1024)
 	if err != nil {
-		return turnInput{}, fmt.Errorf("read doc: %w", err)
+		return TurnInput{}, fmt.Errorf("read doc: %w", err)
 	}
 	if strings.HasPrefix(mimeType, "text/") {
-		return turnInput{Type: "text", Text: string(data)}, nil
+		return TurnInput{Type: "text", Text: string(data)}, nil
 	}
 	if !strings.HasPrefix(mimeType, "image/") {
-		return turnInput{}, fmt.Errorf("unsupported doc MIME type %q for codex (text and images only)", mimeType)
+		return TurnInput{}, fmt.Errorf("unsupported doc MIME type %q for codex (text and images only)", mimeType)
 	}
 	dataURL := "data:" + mimeType + ";base64," + base64.StdEncoding.EncodeToString(data)
-	return turnInput{Type: "image", URL: dataURL}, nil
+	return TurnInput{Type: "image", URL: dataURL}, nil
 }
 
 // readTurnSync reads notifications from the scanner until turn/completed.
@@ -621,36 +605,35 @@ func readTurnSync(sc *bufio.Scanner, threadID string) (genai.Result, error) {
 	)
 	for sc.Scan() {
 		line := sc.Bytes()
-		var probe lineProbe
+		var probe MethodProbe
 		if json.Unmarshal(line, &probe) != nil {
-			continue
-		}
-		// Skip JSON-RPC responses.
-		if probe.ID != nil && probe.Method == "" {
 			continue
 		}
 		if probe.Method == "" {
 			continue
 		}
 
-		var msg jsonrpcMessage
+		var msg JSONRPCMessage
 		if json.Unmarshal(line, &msg) != nil {
+			continue
+		}
+		if msg.IsResponse() {
 			continue
 		}
 
 		switch msg.Method {
-		case methodItemCompleted:
+		case MethodItemCompleted:
 			r := parseCompletedItem(msg.Params)
 			if r != nil {
 				replies = append(replies, *r)
 			}
-		case methodTokenUsageUpdated:
-			var p tokenUsageUpdatedParams
+		case MethodTokenUsageUpdated:
+			var p ThreadTokenUsageUpdatedNotification
 			if json.Unmarshal(msg.Params, &p) == nil {
 				accumulateUsage(&usage, &p.TokenUsage)
 			}
-		case methodTurnCompleted:
-			var p turnCompletedParams
+		case MethodTurnCompleted:
+			var p TurnCompletedNotification
 			if json.Unmarshal(msg.Params, &p) != nil {
 				continue
 			}
@@ -662,8 +645,8 @@ func readTurnSync(sc *bufio.Scanner, threadID string) (genai.Result, error) {
 				return genai.Result{}, errors.New(errMsg)
 			}
 			return buildResult(replies, usage, threadID), nil
-		case methodErrorNotification:
-			var p errorNotificationParams
+		case MethodErrorNotification:
+			var p ErrorNotification
 			if json.Unmarshal(msg.Params, &p) == nil && !p.WillRetry && p.Error != nil {
 				return genai.Result{}, fmt.Errorf("codex error: %s", p.Error.Message)
 			}
@@ -678,23 +661,23 @@ func readTurnSync(sc *bufio.Scanner, threadID string) (genai.Result, error) {
 // parseCompletedItem extracts a Reply from an item/completed notification if
 // the item is an agentMessage or reasoning. Returns nil for other item types.
 func parseCompletedItem(params json.RawMessage) *genai.Reply {
-	var p itemParams
+	var p ItemNotification
 	if json.Unmarshal(params, &p) != nil {
 		return nil
 	}
-	var h itemHeader
+	var h ItemHeader
 	if json.Unmarshal(p.Item, &h) != nil {
 		return nil
 	}
 	switch h.Type {
-	case "agentMessage":
-		var item agentMessageItem
+	case ItemTypeAgentMessage:
+		var item AgentMessageItem
 		if json.Unmarshal(p.Item, &item) != nil || item.Text == "" {
 			return nil
 		}
 		return &genai.Reply{Text: item.Text}
-	case "reasoning":
-		var item reasoningItem
+	case ItemTypeReasoning:
+		var item ReasoningItem
 		if json.Unmarshal(p.Item, &item) != nil || len(item.Summary) == 0 {
 			return nil
 		}
@@ -704,7 +687,7 @@ func parseCompletedItem(params json.RawMessage) *genai.Reply {
 }
 
 // accumulateUsage adds the incremental (Last) token usage into the running total.
-func accumulateUsage(usage *genai.Usage, tu *threadTokenUsage) {
+func accumulateUsage(usage *genai.Usage, tu *ThreadTokenUsage) {
 	usage.InputTokens += tu.Last.InputTokens
 	usage.InputCachedTokens += tu.Last.CachedInputTokens
 	usage.OutputTokens += tu.Last.OutputTokens

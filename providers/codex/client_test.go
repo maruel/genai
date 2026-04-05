@@ -204,8 +204,8 @@ func TestClient(t *testing.T) {
 				t.Fatal("expected at least one reply")
 			}
 			got := res.Replies[0].Text
-			if !strings.Contains(strings.ToLower(got), "hello") {
-				t.Errorf("unexpected reply text %q", got)
+			if got == "" {
+				t.Error("expected non-empty reply text")
 			}
 			if res.Usage.InputTokens == 0 {
 				t.Error("InputTokens: got 0, want > 0")

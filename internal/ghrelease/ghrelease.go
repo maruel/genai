@@ -272,7 +272,7 @@ func extractTar(r io.Reader, dstDir string, wantedFiles []string) error {
 			return err
 		}
 		// Ignore path; flatten directory structure.
-		n := filepath.Base(filepath.Clean(header.Name))
+		n := filepath.Base(header.Name)
 		if n == ".." || n == "." {
 			continue
 		}
@@ -281,20 +281,26 @@ func extractTar(r io.Reader, dstDir string, wantedFiles []string) error {
 		}
 		dst := filepath.Join(dstDir, n)
 		if !strings.HasPrefix(dst, prefix) {
-			continue
+			return fmt.Errorf("archive entry %q escapes destination directory", header.Name)
 		}
 		switch header.Typeflag {
 		case tar.TypeSymlink:
 			// Ensure the symlink target resolves within the destination directory.
-			link := filepath.Clean(header.Linkname)
-			target := filepath.Join(dstDir, link)
-			if !strings.HasPrefix(target, prefix) {
-				continue
+			// Resolve the link relative to the directory containing dst, then
+			// verify the resolved path stays within dstDir.
+			var resolved string
+			if filepath.IsAbs(header.Linkname) {
+				return fmt.Errorf("symlink %q has absolute target %q", n, header.Linkname)
+			}
+			resolved = filepath.Join(filepath.Dir(dst), header.Linkname)
+			resolved = filepath.Clean(resolved)
+			if !strings.HasPrefix(resolved, prefix) {
+				return fmt.Errorf("symlink %q target %q escapes destination directory", n, header.Linkname)
 			}
 			if err := os.Remove(dst); err != nil && !errors.Is(err, os.ErrNotExist) {
 				return fmt.Errorf("failed to remove existing file %q: %w", n, err)
 			}
-			if err := os.Symlink(link, dst); err != nil {
+			if err := os.Symlink(header.Linkname, dst); err != nil {
 				return fmt.Errorf("failed to create symlink %q: %w", n, err)
 			}
 		case tar.TypeReg:

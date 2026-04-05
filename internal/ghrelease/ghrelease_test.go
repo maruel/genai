@@ -149,18 +149,14 @@ func TestExtractArchive(t *testing.T) {
 	t.Run("SymlinkEscape", func(t *testing.T) {
 		dir := t.TempDir()
 		archivePath := filepath.Join(dir, "test.tar.gz")
-		// Symlink with path traversal in linkname should be skipped.
+		// Symlink with path traversal in linkname must return an error.
 		createTarGzWithSymlink(t, archivePath, "lib/real.txt", "data", "lib/evil.txt", "../../../etc/passwd")
 		dstDir := filepath.Join(dir, "out")
 		if err := os.Mkdir(dstDir, 0o755); err != nil {
 			t.Fatal(err)
 		}
-		if err := ExtractArchive(archivePath, dstDir, []string{"*"}); err != nil {
-			t.Fatal(err)
-		}
-		assertFileContent(t, filepath.Join(dstDir, "real.txt"), "data")
-		if _, err := os.Lstat(filepath.Join(dstDir, "evil.txt")); err == nil {
-			t.Fatal("evil.txt symlink should not have been created")
+		if err := ExtractArchive(archivePath, dstDir, []string{"*"}); err == nil {
+			t.Fatal("expected error for symlink escape")
 		}
 	})
 	t.Run("UnsupportedFormat", func(t *testing.T) {

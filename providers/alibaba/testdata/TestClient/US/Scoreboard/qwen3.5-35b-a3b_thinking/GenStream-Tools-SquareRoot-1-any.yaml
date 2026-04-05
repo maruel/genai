@@ -1,0 +1,107 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 602
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.5-35b-a3b","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"stream":true,"stream_options":{"include_usage":true},"tool_choice":"auto","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"The","role":"assistant"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1775423079,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-J6HWZ034vScKaYVB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" user wants"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1775423079,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-J6HWZ034vScKaYVB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" me to use the"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1775423079,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-J6HWZ034vScKaYVB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" square_root"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1775423079,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-J6HWZ034vScKaYVB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" tool to calculate the"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1775423079,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-J6HWZ034vScKaYVB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" square root of"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1775423079,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-J6HWZ034vScKaYVB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" 132"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1775423079,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-J6HWZ034vScKaYVB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"413."},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1775423079,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-J6HWZ034vScKaYVB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" They want only the"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1775423079,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-J6HWZ034vScKaYVB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" result,"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1775423079,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-J6HWZ034vScKaYVB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" no explanation.\n\n"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1775423079,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-J6HWZ034vScKaYVB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"I need to call"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1775423079,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-J6HWZ034vScKaYVB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" the square_root function"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1775423079,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-J6HWZ034vScKaYVB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" with the number"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1775423079,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-J6HWZ034vScKaYVB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":" parameter set to "},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1775423079,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-J6HWZ034vScKaYVB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"1"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1775423079,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-J6HWZ034vScKaYVB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"3241"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1775423079,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-J6HWZ034vScKaYVB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":"3."},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1775423079,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-J6HWZ034vScKaYVB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":null,"tool_calls":[{"index":0,"id":"call_29c6aec8be954b3f84d41b7a","type":"function","function":{"name":"square_root","arguments":""}}]},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1775423079,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-J6HWZ034vScKaYVB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":null,"tool_calls":[{"index":0,"id":"","type":"function","function":{"arguments":"{\"number\": "}}]},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1775423079,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-J6HWZ034vScKaYVB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":null,"tool_calls":[{"index":0,"id":"","type":"function","function":{"arguments":"1"}}]},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1775423079,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-J6HWZ034vScKaYVB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":null,"tool_calls":[{"index":0,"id":"","type":"function","function":{"arguments":"3241"}}]},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1775423079,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-J6HWZ034vScKaYVB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":null,"tool_calls":[{"index":0,"id":"","type":"function","function":{"arguments":"3"}}]},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1775423079,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-J6HWZ034vScKaYVB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":null,"tool_calls":[{"index":0,"id":"","type":"function","function":{"arguments":"}"}}]},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1775423079,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-J6HWZ034vScKaYVB"}
+
+            data: {"choices":[{"delta":{"content":null,"reasoning_content":null,"tool_calls":[{"index":0,"id":"","type":"function","function":{"arguments":""}}]},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1775423079,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-J6HWZ034vScKaYVB"}
+
+            data: {"choices":[{"delta":{"tool_calls":[{"function":{"arguments":""},"index":0,"id":"","type":"function"}]},"index":0}],"object":"chat.completion.chunk","usage":null,"created":1775423079,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-J6HWZ034vScKaYVB"}
+
+            data: {"choices":[{"finish_reason":"tool_calls","delta":{},"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1775423079,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-J6HWZ034vScKaYVB"}
+
+            data: {"choices":[],"object":"chat.completion.chunk","usage":{"prompt_tokens":331,"completion_tokens":92,"total_tokens":423,"completion_tokens_details":{"reasoning_tokens":56,"text_tokens":92},"prompt_tokens_details":{"text_tokens":331}},"created":1775423079,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-J6HWZ034vScKaYVB"}
+
+            data: [DONE]
+
+        headers:
+            Content-Type:
+                - text/event-stream;charset=UTF-8
+            Eagleeye-Traceid:
+                - 0bc2425d17754230779802583eeb53
+            Req-Arrive-Time:
+                - "1775423077981"
+            Req-Cost-Time:
+                - "860"
+            Resp-Start-Time:
+                - "1775423078841"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Origin
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "859"
+        status: 200 OK
+        code: 200
+        duration: 887ms

@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 312
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.5-35b-a3b","messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.png"}}]}],"stream":false,"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 889
+        body: '{"choices":[{"message":{"content":"Banana","reasoning_content":"The user wants me to identify the fruit in the image.\n1.  **Analyze the image:** The image shows a long, curved, yellow object with a stem at one end and a brown tip at the other. It has the distinct shape and color of a banana.\n2.  **Identify the fruit:** It is definitely a banana.\n3.  **Format the output:** The user requested \"only one word\".\n4.  **Final Answer Formulation:** \"Banana\" fits the criteria.","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":113,"completion_tokens":116,"total_tokens":229,"completion_tokens_details":{"reasoning_tokens":110,"text_tokens":6},"prompt_tokens_details":{"image_tokens":92,"text_tokens":21}},"created":1775423109,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-XfGJDbs-6ZDV8DPO"}'
+        headers:
+            Content-Length:
+                - "889"
+            Content-Type:
+                - application/json
+            Eagleeye-Traceid:
+                - 0bc2425d17754231065572612eeb53
+            Req-Arrive-Time:
+                - "1775423106559"
+            Req-Cost-Time:
+                - "2413"
+            Resp-Start-Time:
+                - "1775423108972"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "2412"
+        status: 200 OK
+        code: 200
+        duration: 2.442s

@@ -20,24 +20,24 @@ interactions:
         proto_major: 2
         proto_minor: 0
         content_length: 234
-        body: '{"error":{"message":"Incorrect API key provided. For details, see: https://help.aliyun.com/zh/model-studio/error-code#apikey-error","type":"invalid_request_error","param":null,"code":"invalid_api_key"},"request_id":"pN4C3oXRySpK55Ht"}'
+        body: '{"error":{"message":"Incorrect API key provided. For details, see: https://help.aliyun.com/zh/model-studio/error-code#apikey-error","type":"invalid_request_error","param":null,"code":"invalid_api_key"},"request_id":"fjKPJtWEMHFSVrdd"}'
         headers:
             Content-Length:
                 - "234"
             Content-Type:
                 - application/json
             Req-Arrive-Time:
-                - "1772219107657"
+                - "1775422715924"
             Req-Cost-Time:
-                - "54"
+                - "57"
             Resp-Start-Time:
-                - "1772219107712"
+                - "1775422715982"
             Server:
                 - istio-envoy
             Vary:
                 - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
             X-Envoy-Upstream-Service-Time:
-                - "54"
+                - "57"
         status: 401 Unauthorized
         code: 401
-        duration: 80ms
+        duration: 91ms

@@ -19,21 +19,21 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: 954
-        body: '{"choices":[{"message":{"content":"The capital of Quackiland is **Quack**.\n\nThis is directly stated in the prompt:  \n> *“The capital of Quackiland is Quack.”*\n\nThe mention of the Big Canard Statue in Quack is additional context — perhaps a fun or whimsical detail — but it doesn’t change the fact that **Quack** is explicitly identified as the capital.\n\n✅ So, the answer is: **Quack**\n\n*(Note: “Quack” is likely a playful name, possibly referencing ducks or the sound they make — fitting for a fictional place called “Quackiland”!)*","reasoning_content":"","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":42,"completion_tokens":124,"total_tokens":166,"prompt_tokens_details":{"text_tokens":42},"completion_tokens_details":{"text_tokens":124}},"created":1772219978,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-LfzbaYhMfHaaUKiK"}'
+        content_length: 833
+        body: '{"choices":[{"message":{"content":"The capital of Quackiland is **Quack**.\n\nThis is directly stated in the prompt:  \n> *“The capital of Quackiland is Quack.”*\n\nThe mention of the Big Canard Statue being located in Quack is additional context — perhaps to reinforce the whimsical or duck-themed nature of the place — but it doesn’t change the fact that **Quack** is explicitly named as the capital.\n\n✅ **Final Answer: Quack**","reasoning_content":"","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":42,"completion_tokens":94,"total_tokens":136,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"text_tokens":94}},"created":1775422465,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-YZ-HcqNk5kIQUHPo"}'
         headers:
             Content-Length:
-                - "954"
+                - "833"
             Content-Type:
                 - application/json
             Eagleeye-Traceid:
-                - 0bc2426217722199762602747ed50d
+                - 0bc2426217754224630862760e1372
             Req-Arrive-Time:
-                - "1772219976266"
+                - "1775422463089"
             Req-Cost-Time:
-                - "1813"
+                - "1555"
             Resp-Start-Time:
-                - "1772219978080"
+                - "1775422464645"
             Server:
                 - istio-envoy
             Strict-Transport-Security:
@@ -45,7 +45,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "1813"
+                - "1555"
         status: 200 OK
         code: 200
-        duration: 1.837s
+        duration: 1.589s

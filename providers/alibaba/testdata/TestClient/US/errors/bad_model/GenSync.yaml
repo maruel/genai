@@ -20,24 +20,24 @@ interactions:
         proto_major: 2
         proto_minor: 0
         content_length: 194
-        body: '{"error":{"message":"The model `bad model` does not exist or you do not have access to it.","type":"invalid_request_error","param":null,"code":"model_not_found"},"request_id":"386XJxt6-pqigi_W"}'
+        body: '{"error":{"message":"The model `bad model` does not exist or you do not have access to it.","type":"invalid_request_error","param":null,"code":"model_not_found"},"request_id":"GfkYjE5RL_Rigima"}'
         headers:
             Content-Length:
                 - "194"
             Content-Type:
                 - application/json
             Req-Arrive-Time:
-                - "1772219107738"
+                - "1775422716015"
             Req-Cost-Time:
-                - "4"
+                - "7"
             Resp-Start-Time:
-                - "1772219107743"
+                - "1775422716023"
             Server:
                 - istio-envoy
             Vary:
                 - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
             X-Envoy-Upstream-Service-Time:
-                - "4"
+                - "7"
         status: 404 Not Found
         code: 404
-        duration: 31ms
+        duration: 40ms

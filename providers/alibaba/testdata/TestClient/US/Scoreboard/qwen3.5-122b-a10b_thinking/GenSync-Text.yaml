@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 139
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.5-122b-a10b","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":false,"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"message":{"content":"Hello","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Task: Say hello.\n    *   Constraint: Use only one word.\n\n2.  **Identify the Goal:** The user wants a greeting (\"hello\") but strictly limits the response to a single word.\n\n3.  **Evaluate Options:**\n    *   \"Hello\" (1 word) - Meets criteria.\n    *   \"Hi\" (1 word) - Meets criteria.\n    *   \"Greetings\" (1 word) - Meets criteria.\n    *   \"Hey\" (1 word) - Meets criteria.\n    *   \"Hello there\" (2 words) - Fails criteria.\n    *   \"Hi!\" (Punctuation might count as part of the word or separate, but usually \"Hi\" is safer).\n    *   \"Hello.\" (Same as above).\n\n4.  **Select the Best Option:** \"Hello\" is the most direct translation of the instruction \"Say hello\".\n\n5.  **Final Check:** Does \"Hello\" constitute exactly one word? Yes. Does it fulfill the command? Yes.\n\n6.  **Construct Output:** Hello.cw","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":18,"completion_tokens":259,"total_tokens":277,"completion_tokens_details":{"reasoning_tokens":253,"text_tokens":259},"prompt_tokens_details":{"text_tokens":18}},"created":1775422973,"system_fingerprint":null,"model":"qwen3.5-122b-a10b","id":"chatcmpl-YQpQKyB5s9pQIv8R"}'
+        headers:
+            Content-Type:
+                - application/json
+            Eagleeye-Traceid:
+                - 0bc2425d17754229697982375eeb53
+            Req-Arrive-Time:
+                - "1775422969800"
+            Req-Cost-Time:
+                - "3263"
+            Resp-Start-Time:
+                - "1775422973064"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Accept-Encoding
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "3263"
+        status: 200 OK
+        code: 200
+        duration: 3.292s

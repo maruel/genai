@@ -20,18 +20,18 @@ interactions:
         proto_major: 2
         proto_minor: 0
         content_length: 243
-        body: '{"error":{"message":"<400> InternalError.Algo.InvalidParameter: Download multimodal file timed out","type":"invalid_request_error","param":null,"code":"invalid_parameter_error"},"id":"chatcmpl-wu4wNkFJFIsESQrH","request_id":"wu4wNkFJFIsESQrH"}'
+        body: '{"error":{"message":"<400> InternalError.Algo.InvalidParameter: Download multimodal file timed out","type":"invalid_request_error","param":null,"code":"invalid_parameter_error"},"id":"chatcmpl-5FFgIi9DcINwfQTJ","request_id":"5FFgIi9DcINwfQTJ"}'
         headers:
             Content-Length:
                 - "243"
             Content-Type:
                 - application/json
             Req-Arrive-Time:
-                - "1772219979435"
+                - "1775422466099"
             Req-Cost-Time:
-                - "61819"
+                - "61186"
             Resp-Start-Time:
-                - "1772220041254"
+                - "1775422527286"
             Server:
                 - istio-envoy
             Vary:
@@ -39,7 +39,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "61819"
+                - "61186"
         status: 400 Bad Request
         code: 400
-        duration: 1m1.843s
+        duration: 1m1.221s

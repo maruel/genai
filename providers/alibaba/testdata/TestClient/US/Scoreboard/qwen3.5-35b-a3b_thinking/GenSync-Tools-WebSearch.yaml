@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 266
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.5-35b-a3b","messages":[{"role":"user","content":"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation."}],"stream":false,"enable_search":true,"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"message":{"content":"Justin Trudeau","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Task: Search the web to find the current Prime Minister of Canada.\n    *   Constraint 1: Only search for one result (implied context: provide one source/result based on internal knowledge or simulated search).\n    *   Constraint 2: Give only the name.\n    *   Constraint 3: No explanation.\n\n2.  **Determine Current Knowledge:**\n    *   As an AI, I have access to information up to my knowledge cutoff. However, I need to be accurate about current political figures.\n    *   Justin Trudeau has been the Prime Minister of Canada since November 4, 2015.\n    *   Recent news (up to early 2024) confirms he is still the PM, although there were elections or leadership challenges discussed. As of my last update and general current affairs knowledge, Justin Trudeau remains the Prime Minister.\n    *   *Self-Correction/Verification:* Wait, did a change happen recently? There was an election in October 2021. Next federal election is due by Oct 2025. There haven''t been any reports of resignation or defeat changing the office recently. Mark Carney was mentioned as a possible successor but not elected yet. The Conservative leader is Pierre Poilievre. But Trudeau is the incumbent.\n\n3.  **Address Constraints:**\n    *   \"Search the web\": I cannot actually browse the live web in this specific environment (I am a text model). However, I can rely on my training data which includes information up to late 2023/early 2024. In the context of \"search the web\" prompts for static knowledge tasks, I should provide the factually correct answer based on reliable data.\n    *   \"Only search for one result\": This is a bit ambiguous for a text model without a browser tool active. It likely means \"provide one answer\".\n    *   \"Give only the name with no explanation\": Strict formatting required.\n\n4.  **Formulate Output:**\n    *   Name: Justin Trudeau.\n\n5.  **Final Check:**\n    *   Is it just the name? Yes.\n    *   Is it accurate? Yes, as of mid-2024, Justin Trudeau is the Prime Minister.\n\n6.  **Construct Final Response:**\n    *   Justin Trudeau.\n\n*(Self-Correction during thought process)*: Wait, I need to make sure I don''t hallucinate a search action if I can''t browse. The prompt asks me to \"Search the web\". Since I am an AI model, I must interpret this as \"Retrieve information\". If I had a search tool enabled, I would use it. Without it, I rely on internal knowledge. Given the instruction \"Only search for one result\", it might be a test of following constraints. I will provide the name directly.\n\n*Wait, one more check:* Did Justin Trudeau resign recently? There were rumors in mid-2024, but officially he is still the PM as of my current operational timeframe. If today''s date is past a specific event I''m unaware of, I risk being outdated. However, standard procedure is to use the most recent reliable general knowledge. Justin Trudeau is the widely recognized current PM.\n\n*Constraint Checklist & Confidence Score:*\n1. Search web? (Simulated via internal knowledge)\n2. One result? (Yes)\n3. Only name? (Yes)\n4. No explanation? (Yes)\n\nConfidence Score: 95%.\n\n*Mental Sandbox Simulation:*\nInput: \"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation.\"\nOutput: \"Justin Trudeau\"\n\nThis fits perfectly.cw","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":38,"completion_tokens":814,"total_tokens":852,"completion_tokens_details":{"reasoning_tokens":807,"text_tokens":814},"prompt_tokens_details":{"text_tokens":38}},"created":1775423091,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-dgr5Wa4nLMxkuqnA"}'
+        headers:
+            Content-Type:
+                - application/json
+            Eagleeye-Traceid:
+                - 0bc2425d17754230845362593eeb53
+            Req-Arrive-Time:
+                - "1775423084537"
+            Req-Cost-Time:
+                - "6609"
+            Resp-Start-Time:
+                - "1775423091146"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Accept-Encoding
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "6608"
+        status: 200 OK
+        code: 200
+        duration: 6.637s

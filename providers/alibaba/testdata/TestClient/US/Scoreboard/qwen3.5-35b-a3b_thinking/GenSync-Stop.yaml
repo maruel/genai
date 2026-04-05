@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 179
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.5-35b-a3b","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"stream":false,"stop":["is"],"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"message":{"content":"Canada ","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Topic: Canada.\n    *   Requirement: Talk about it in \"great details\".\n    *   Starting phrase: \"Canada is\" (must start exactly with this).\n\n2.  **Determine the Scope and Structure:**\n    *   To provide \"great details,\" I need to cover multiple aspects of the country. A single paragraph won''t suffice.\n    *   Key areas to cover: Geography, Demographics/Population, History, Politics/Government, Economy, Culture/Society, Climate/Nature, Tourism/Landmarks, International Relations.\n    *   Tone: Informative, comprehensive, engaging, and factual.\n    *   Constraint: Must begin with \"Canada is\".\n\n3.  **Drafting - Section by Section:**\n\n    *   *Opening:* Start with the required phrase. Define Canada broadly (North American federation, size, population).\n    *   *Geography & Nature:* Second largest country, border with US, provinces vs. territories, landscapes (Rockies, Great Lakes, Arctic), natural resources.\n    *   *Demographics & People:* Diversity, official languages (English/French), Indigenous peoples, immigration trends, major cities (Toronto, Montreal, Vancouver, Ottawa).\n    *   *History:* Indigenous history first, then colonization (French/British), Confederation (1867), evolution to sovereignty (Statute of Westminster, Constitution Act), modern era.\n    *   *Government & Politics:* Constitutional monarchy (King Charles III, Governor General), Parliamentarian democracy, Prime Minister, federal/provincial structure, peacekeeping reputation.\n    *   *Economy:* High-income, G7 member, resources (oil, minerals, timber), trade (USNAFTA/USMCA), sectors (tech, finance, energy).\n    *   *Culture & Society:* Multiculturalism policy, arts, sports (hockey, lacrosse), bilingualism tensions and harmony, healthcare system (Medicare).\n    *   *Climate:* Vast range from temperate coast to arctic north, seasonal variations.\n    *   *Tourism:* Niagara Falls, Banff, Toronto CN Tower, Old Quebec, Northern Lights.\n\n4.  **Refining and Expanding for \"Great Details\":**\n    *   *Word Count:* Needs to be substantial but readable.\n    *   *Specifics:* Mention specific provinces, laws, treaties (Treaty of Paris, etc.), economic indicators (GDP context), cultural nuances (Tim Hortons, poutine, multiculturalism act).\n    *   *Flow:* Ensure smooth transitions between topics.\n\n5.  **Drafting the Content (Iterative Process):**\n\n    *   *Start:* \"Canada is a North American country composed of ten provinces and three territories...\"\n    *   *Geography:* Emphasize size (9.98 million sq km), longest coastline, Great Lakes connection.\n    *   *People:* Mention ~40 million population, Indigenous groups (First Nations, Inuit, Métis). Official bilingualism context.\n    *   *Politics:* Explain the Crown''s role, the Prime Minister, the bicameral parliament. Federalism specifics.\n    *   *Economy:* Mention reliance on commodities, high HDI, universal healthcare.\n    *   *Culture:* Focus on the mosaic concept. Sports culture. Art/Cinema.\n    *   *History:* Pre-contact, New France, War of 1812, confederation, two World Wars, Quiet Revolution (Quebec), patriation of constitution.\n    *   *Conclusion:* Summary of its global standing.\n\n6.  **Review against Constraints:**\n    *   Does it start with \"Canada is\"? Yes.\n    *   Is it detailed? Yes, covering various facets.\n    *   Is it accurate? Need to ensure facts are current (e.g., PM Truss? No, Justin Trudeau; King Charles III).\n\n7.  **Final Polish:** Check for flow and readability. Ensure the tone remains objective yet appreciative of the diversity. (Self-Correction: Make sure not to get too bogged down in dry statistics; weave them into the narrative.)\n\n8.  **Final Output Generation:** (Proceeding to generate text based on the plan.)","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":22,"completion_tokens":919,"total_tokens":941,"completion_tokens_details":{"reasoning_tokens":912,"text_tokens":919},"prompt_tokens_details":{"text_tokens":22}},"created":1775423073,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-6hBE95ieQHRJhYTs"}'
+        headers:
+            Content-Type:
+                - application/json
+            Eagleeye-Traceid:
+                - 0bc2425d17754230655532558eeb53
+            Req-Arrive-Time:
+                - "1775423065555"
+            Req-Cost-Time:
+                - "7486"
+            Resp-Start-Time:
+                - "1775423073041"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Accept-Encoding
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "7485"
+        status: 200 OK
+        code: 200
+        duration: 7.514s

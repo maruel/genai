@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 809
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.5-122b-a10b","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","tool_calls":[{"id":"call_ed46830b87214fa6a050888c","type":"function","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_ed46830b87214fa6a050888c"}],"stream":false,"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 616
+        body: '{"choices":[{"message":{"content":"363.89","reasoning_content":"The tool returned the square root of 132413 as approximately 363.89. Since the user requested only the result without explanation, I will output just this value.","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":96,"completion_tokens":52,"total_tokens":148,"completion_tokens_details":{"reasoning_tokens":41,"text_tokens":52},"prompt_tokens_details":{"text_tokens":96}},"created":1775423009,"system_fingerprint":null,"model":"qwen3.5-122b-a10b","id":"chatcmpl-MtIJTFzmQE5Hh-Il"}'
+        headers:
+            Content-Length:
+                - "616"
+            Content-Type:
+                - application/json
+            Eagleeye-Traceid:
+                - 0bc2425d17754230074552435eeb53
+            Req-Arrive-Time:
+                - "1775423007457"
+            Req-Cost-Time:
+                - "1438"
+            Resp-Start-Time:
+                - "1775423008895"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "1437"
+        status: 200 OK
+        code: 200
+        duration: 1.466s

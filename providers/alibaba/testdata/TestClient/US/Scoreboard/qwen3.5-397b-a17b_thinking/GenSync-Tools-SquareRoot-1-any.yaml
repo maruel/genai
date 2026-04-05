@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 565
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.5-397b-a17b","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 824
+        body: '{"choices":[{"message":{"content":"","reasoning_content":"The user wants me to calculate the square root of 132413 using the square_root tool and only return the result without any explanation. I need to call the square_root function with the number parameter set to 132413.","role":"assistant","tool_calls":[{"function":{"arguments":"{\"number\": 132413}","name":"square_root"},"id":"call_1c3b167de4184c4ea51a31e1","index":0,"type":"function"}]},"finish_reason":"tool_calls","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":331,"completion_tokens":89,"total_tokens":420,"prompt_tokens_details":{"text_tokens":331},"completion_tokens_details":{"reasoning_tokens":53,"text_tokens":89}},"created":1775422904,"system_fingerprint":null,"model":"qwen3.5-397b-a17b","id":"chatcmpl-KMOWvhOfgNm9ygEv"}'
+        headers:
+            Content-Length:
+                - "824"
+            Content-Type:
+                - application/json
+            Eagleeye-Traceid:
+                - 0bc2425d17754229019282285eeb53
+            Req-Arrive-Time:
+                - "1775422901930"
+            Req-Cost-Time:
+                - "2132"
+            Resp-Start-Time:
+                - "1775422904062"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "2131"
+        status: 200 OK
+        code: 200
+        duration: 2.16s

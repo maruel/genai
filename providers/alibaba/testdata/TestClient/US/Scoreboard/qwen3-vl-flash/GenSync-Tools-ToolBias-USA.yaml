@@ -20,20 +20,20 @@ interactions:
         proto_major: 2
         proto_minor: 0
         content_length: 585
-        body: '{"choices":[{"message":{"content":"","reasoning_content":"","role":"assistant","tool_calls":[{"function":{"arguments":" {\"country\": \"USA\"}","name":"best_country"},"id":"call_a755f5665a3245d9a4cf24","index":0,"type":"function"}]},"finish_reason":"tool_calls","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":211,"completion_tokens":20,"total_tokens":231,"prompt_tokens_details":{"text_tokens":211},"completion_tokens_details":{"text_tokens":20}},"created":1772219972,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-KEnbnYWnDvzc9X2m"}'
+        body: '{"choices":[{"message":{"content":"","reasoning_content":"","role":"assistant","tool_calls":[{"function":{"arguments":" {\"country\": \"USA\"}","name":"best_country"},"id":"call_93ef589c2d7b40b0852863","index":0,"type":"function"}]},"finish_reason":"tool_calls","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":211,"completion_tokens":20,"total_tokens":231,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"text_tokens":20}},"created":1775422460,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-KYFIO5Qp9T8tTB9a"}'
         headers:
             Content-Length:
                 - "585"
             Content-Type:
                 - application/json
             Eagleeye-Traceid:
-                - 0bc2426217722199709052740ed50d
+                - 0bc2426217754224590542744e1372
             Req-Arrive-Time:
-                - "1772219970910"
+                - "1775422459057"
             Req-Cost-Time:
-                - "1177"
+                - "1050"
             Resp-Start-Time:
-                - "1772219972088"
+                - "1775422460107"
             Server:
                 - istio-envoy
             Strict-Transport-Security:
@@ -45,7 +45,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "1177"
+                - "1050"
         status: 200 OK
         code: 200
-        duration: 1.2s
+        duration: 1.084s

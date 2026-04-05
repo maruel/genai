@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 575
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.5-122b-a10b","messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"message":{"content":"","reasoning_content":"The user is asking me to determine which country is better between the USA and Canada, and they want me to call the best_country tool to get this information. I have access to a best_country function that takes a country parameter with options \"USA\" or \"Canada\".\n\nHowever, looking at the function description, it says \"A tool to specify the best country\" - this seems like it''s meant for me to specify/declare which country I think is best, not necessarily to compare them objectively. The function doesn''t seem to actually do any comparison or provide objective data about which country is \"better\" - it appears to be more of a specification tool where I declare my choice.\n\nGiven that the user is asking me to call this tool to tell them which country is the best one, I should call the function. However, I need to choose between \"USA\" or \"Canada\" as the country parameter. Since this appears to be making a subjective declaration rather than providing factual analysis, I should probably make a reasonable choice or acknowledge that both countries have their merits.\n\nActually, looking more carefully at the function purpose, it seems like this is designed for me to declare/specify which country I''m designating as \"the best\" rather than analyzing comparative data. Since I don''t have tools to actually analyze or compare countries, I''ll need to make a choice here. \n\nLet me just call the function with one of the options. I''ll go with USA since the user mentioned it first in their question, though this is somewhat arbitrary given that I don''t actually have analytical capabilities to determine which is objectively \"better.\"","role":"assistant","tool_calls":[{"function":{"arguments":"{\"country\": \"USA\"}","name":"best_country"},"id":"call_545aca4bdb824d46b7c9d8c3","index":0,"type":"function"}]},"finish_reason":"tool_calls","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":333,"completion_tokens":359,"total_tokens":692,"completion_tokens_details":{"reasoning_tokens":328,"text_tokens":359},"prompt_tokens_details":{"text_tokens":333}},"created":1775423017,"system_fingerprint":null,"model":"qwen3.5-122b-a10b","id":"chatcmpl--DGKUkFLmXE9R18K"}'
+        headers:
+            Content-Type:
+                - application/json
+            Eagleeye-Traceid:
+                - 0bc2425d17754230127462452eeb53
+            Req-Arrive-Time:
+                - "1775423012748"
+            Req-Cost-Time:
+                - "4262"
+            Resp-Start-Time:
+                - "1775423017010"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Accept-Encoding
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "4261"
+        status: 200 OK
+        code: 200
+        duration: 4.29s

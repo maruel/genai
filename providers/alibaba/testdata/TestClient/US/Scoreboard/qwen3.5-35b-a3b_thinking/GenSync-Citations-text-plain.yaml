@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 271
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.5-35b-a3b","messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"stream":false,"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"message":{"content":"The capital of Quackiland is **Quack**.","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Premise 1: The capital of Quackiland is Quack.\n    *   Premise 2: The Big Canard Statue is located in Quack.\n    *   Question: What is the capital of Quackiland?\n\n2.  **Evaluate the Information:**\n    *   Premise 1 explicitly states the answer to the question.\n    *   Premise 2 is irrelevant information (red herring).\n\n3.  **Formulate the Answer:**\n    *   Based on Premise 1, the capital is Quack.\n\n4.  **Final Check:**\n    *   Does the answer directly address the question using the provided text? Yes.\n\n5.  **Construct Output:** \"The capital of Quackiland is Quack.\" or simply \"Quack\". I will provide a clear sentence.cw","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":39,"completion_tokens":210,"total_tokens":249,"completion_tokens_details":{"reasoning_tokens":194,"text_tokens":210},"prompt_tokens_details":{"text_tokens":39}},"created":1775423093,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-gnSsBYYDInh3K2Wy"}'
+        headers:
+            Content-Type:
+                - application/json
+            Eagleeye-Traceid:
+                - 0bc2425d17754230911732595eeb53
+            Req-Arrive-Time:
+                - "1775423091174"
+            Req-Cost-Time:
+                - "2226"
+            Resp-Start-Time:
+                - "1775423093401"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Accept-Encoding
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "2225"
+        status: 200 OK
+        code: 200
+        duration: 2.254s

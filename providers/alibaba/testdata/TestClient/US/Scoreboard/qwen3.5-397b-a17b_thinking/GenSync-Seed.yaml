@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 149
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.5-397b-a17b","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":false,"seed":42,"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"message":{"content":"Hello","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Task: Say hello.\n    *   Constraint: Use only one word.\n\n2.  **Identify Potential Responses:**\n    *   \"Hello\"\n    *   \"Hi\"\n    *   \"Greetings\"\n    *   \"Hey\"\n\n3.  **Select the Best Response:**\n    *   \"Hello\" is the most direct and standard interpretation of \"Say hello\".\n    *   It fits the one-word constraint.\n\n4.  **Verify Constraints:**\n    *   Is it one word? Yes.\n    *   Does it say hello? Yes.\n\n5.  **Final Output Generation:**\n    *   Hello\n\n6.  **Final Check:** Ensure no punctuation or extra spaces violate the \"one word\" spirit (though usually, a period is acceptable, strict adherence suggests just the word). I will output just the word.\n\n    *   Decision: \"Hello\"\n\n7.  **Output:** Hello","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":18,"completion_tokens":222,"total_tokens":240,"prompt_tokens_details":{"text_tokens":18},"completion_tokens_details":{"reasoning_tokens":216,"text_tokens":222}},"created":1775422855,"system_fingerprint":null,"model":"qwen3.5-397b-a17b","id":"chatcmpl-lXR7X9Ve2ULMZwfR"}'
+        headers:
+            Content-Type:
+                - application/json
+            Eagleeye-Traceid:
+                - 0bc2425d17754228513302226eeb53
+            Req-Arrive-Time:
+                - "1775422851332"
+            Req-Cost-Time:
+                - "3980"
+            Resp-Start-Time:
+                - "1775422855313"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Accept-Encoding
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "3980"
+        status: 200 OK
+        code: 200
+        duration: 4.008s

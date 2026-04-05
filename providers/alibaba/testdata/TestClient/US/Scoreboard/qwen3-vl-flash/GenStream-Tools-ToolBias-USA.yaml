@@ -21,13 +21,13 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"choices":[{"delta":{"content":null,"tool_calls":[{"index":0,"id":"call_5222cb7324d84bcbbde712","type":"function","function":{"name":"best_country","arguments":""}}],"role":"assistant"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772219970,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-L84H5ehr77B4N4ZN"}
+            data: {"choices":[{"delta":{"content":null,"tool_calls":[{"index":0,"id":"call_a1ae924c43c542adb13d77","type":"function","function":{"name":"best_country","arguments":""}}],"role":"assistant"},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1775422460,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-MBi4A7fZnFV0Tnkg"}
 
-            data: {"choices":[{"delta":{"content":null,"tool_calls":[{"index":0,"id":"","type":"function","function":{"arguments":" {\"country\": \"USA\"}"}}]},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772219970,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-L84H5ehr77B4N4ZN"}
+            data: {"choices":[{"delta":{"content":null,"tool_calls":[{"index":0,"id":"","type":"function","function":{"arguments":" {\"country\": \"USA\"}"}}]},"finish_reason":null,"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1775422460,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-MBi4A7fZnFV0Tnkg"}
 
-            data: {"choices":[{"finish_reason":"tool_calls","delta":{"content":""},"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1772219970,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-L84H5ehr77B4N4ZN"}
+            data: {"choices":[{"finish_reason":"tool_calls","delta":{"content":""},"index":0,"logprobs":null}],"object":"chat.completion.chunk","usage":null,"created":1775422460,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-MBi4A7fZnFV0Tnkg"}
 
-            data: {"choices":[],"object":"chat.completion.chunk","usage":{"prompt_tokens":211,"completion_tokens":20,"total_tokens":231,"completion_tokens_details":{"text_tokens":20},"prompt_tokens_details":{"text_tokens":211}},"created":1772219970,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-L84H5ehr77B4N4ZN"}
+            data: {"choices":[],"object":"chat.completion.chunk","usage":{"prompt_tokens":211,"completion_tokens":20,"total_tokens":231,"completion_tokens_details":{"text_tokens":20},"prompt_tokens_details":{"cached_tokens":0}},"created":1775422460,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-MBi4A7fZnFV0Tnkg"}
 
             data: [DONE]
 
@@ -35,13 +35,13 @@ interactions:
             Content-Type:
                 - text/event-stream;charset=UTF-8
             Eagleeye-Traceid:
-                - 0bc2426217722199688702737ed50d
+                - 0bc2426217754224587942741e1372
             Req-Arrive-Time:
-                - "1772219968877"
+                - "1775422458797"
             Req-Cost-Time:
-                - "1296"
+                - "1029"
             Resp-Start-Time:
-                - "1772219970173"
+                - "1775422459827"
             Server:
                 - istio-envoy
             Strict-Transport-Security:
@@ -53,7 +53,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "1296"
+                - "1029"
         status: 200 OK
         code: 200
-        duration: 1.321s
+        duration: 1.063s

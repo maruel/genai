@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 289
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.5-397b-a17b","messages":[{"role":"user","content":[{"type":"text","text":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"stream":false,"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"message":{"content":"The capital of Quackiland is **Quack**.","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Input text: \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"\n    *   Question: \"What is the capital of Quackiland?\"\n    *   Task: Answer the question based on the provided text.\n\n2.  **Extract Information:**\n    *   Sentence 1: \"The capital of Quackiland is Quack.\"\n    *   Sentence 2: \"The Big Canard Statue is located in Quack.\" (Irrelevant to the specific question, but confirms \"Quack\" is a place).\n\n3.  **Identify the Answer:**\n    *   The question asks for the capital of Quackiland.\n    *   The text explicitly states: \"The capital of Quackiland is Quack.\"\n\n4.  **Formulate the Output:**\n    *   Direct answer: Quack.\n\n5.  **Review/Refine:**\n    *   Is there any trick? No, it''s a straightforward reading comprehension task.\n    *   Keep the answer concise.\n\n6.  **Final Output Generation:**\n    *   \"The capital of Quackiland is Quack.\" or simply \"Quack\". I will provide a clear sentence.\n\n    *   *Self-Correction during thought process:* The prompt asks \"What is the capital of Quackiland?\". The best answer is direct.\n\n    *   *Draft:* The capital of Quackiland is Quack.\n\n7.  **Final Decision:** Just state the answer clearly.cw","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":44,"completion_tokens":358,"total_tokens":402,"prompt_tokens_details":{"text_tokens":44},"completion_tokens_details":{"reasoning_tokens":342,"text_tokens":358}},"created":1775422945,"system_fingerprint":null,"model":"qwen3.5-397b-a17b","id":"chatcmpl-FmHPB66m4GiYTXyC"}'
+        headers:
+            Content-Type:
+                - application/json
+            Eagleeye-Traceid:
+                - 0bc2425d17754229403592342eeb53
+            Req-Arrive-Time:
+                - "1775422940361"
+            Req-Cost-Time:
+                - "4980"
+            Resp-Start-Time:
+                - "1775422945341"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Accept-Encoding
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "4980"
+        status: 200 OK
+        code: 200
+        duration: 5.009s

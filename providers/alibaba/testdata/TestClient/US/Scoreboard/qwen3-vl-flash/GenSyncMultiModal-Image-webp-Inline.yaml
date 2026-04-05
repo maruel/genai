@@ -19,21 +19,21 @@ interactions:
         proto: HTTP/2.0
         proto_major: 2
         proto_minor: 0
-        content_length: 447
-        body: '{"choices":[{"message":{"content":"Banana","reasoning_content":"","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":111,"completion_tokens":3,"total_tokens":114,"prompt_tokens_details":{"image_tokens":92,"text_tokens":19},"completion_tokens_details":{"text_tokens":3}},"created":1772220109,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-2x81aqHVb1mdT5gD"}'
+        content_length: 430
+        body: '{"choices":[{"message":{"content":"Banana","reasoning_content":"","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":111,"completion_tokens":3,"total_tokens":114,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"text_tokens":3}},"created":1775422654,"system_fingerprint":null,"model":"qwen3-vl-flash","id":"chatcmpl-O0nXE-uNVPKyv7w5"}'
         headers:
             Content-Length:
-                - "447"
+                - "430"
             Content-Type:
                 - application/json
             Eagleeye-Traceid:
-                - 0bc2426217722201076602762ed50d
+                - 0bc2426217754226531972840e1372
             Req-Arrive-Time:
-                - "1772220107665"
+                - "1775422653199"
             Req-Cost-Time:
-                - "1209"
+                - "1278"
             Resp-Start-Time:
-                - "1772220108875"
+                - "1775422654478"
             Server:
                 - istio-envoy
             Strict-Transport-Security:
@@ -45,7 +45,7 @@ interactions:
             X-Dashscope-Call-Gateway:
                 - "true"
             X-Envoy-Upstream-Service-Time:
-                - "1209"
+                - "1278"
         status: 200 OK
         code: 200
-        duration: 1.232s
+        duration: 1.311s

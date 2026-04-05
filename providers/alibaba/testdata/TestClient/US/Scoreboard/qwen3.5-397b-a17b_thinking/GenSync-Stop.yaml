@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 181
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.5-397b-a17b","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"stream":false,"stop":["is"],"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"message":{"content":"Canada ","reasoning_content":"Here''s a thinking process that leads to the detailed overview of Canada:\n\n1.  **Analyze the Request:**\n    *   **Topic:** Canada.\n    *   **Requirement:** Talk about it in \"great details.\"\n    *   **Constraint:** Start with the exact phrase \"Canada is\".\n\n2.  **Determine the Scope and Structure:**\n    *   To provide \"great details,\" I need to cover multiple facets of the country. A single paragraph won''t suffice. I should structure this like a comprehensive encyclopedia entry or a deep-dive essay.\n    *   *Key Categories:* Geography, History, Politics/Government, Economy, Demographics/Culture, Indigenous Peoples, Environment/Climate, International Relations, and Future Challenges.\n    *   *Tone:* Informative, objective, respectful, and engaging.\n\n3.  **Drafting - Section by Section:**\n\n    *   **Introduction (Constraint Check):** Must start with \"Canada is\".\n        *   *Draft:* Canada is a vast North American nation known for its diversity...\n        *   *Refinement:* Make it impactful. \"Canada is the second-largest country by total area in the world...\"\n\n    *   **Geography & Climate:**\n        *   Size (10 million sq km).\n        *   Provinces and Territories (10 + 3).\n        *   Landscapes (Rockies, Shield, Prairies, Coasts).\n        *   Water (Great Lakes, Arctic Archipelago).\n        *   Climate (Varied, from temperate to arctic).\n\n    *   **History:**\n        *   Indigenous origins (First Nations, Inuit, Métis).\n        *   European exploration (Vikings, Cartier, Champlain).\n        *   Colonial rivalry (French vs. British).\n        *   Confederation (1867).\n        *   Expansion (Railway, joining provinces).\n        *   Modern era (WWI/WWII, Quiet Revolution, Patriation of Constitution 1982).\n\n    *   **Government & Politics:**\n        *   System: Federal parliamentary democracy + Constitutional monarchy.\n        *   Head of State (King Charles III/Governor General) vs. Head of Government (Prime Minister).\n        *   Legislature (House of Commons, Senate).\n        *   Judiciary (Supreme Court).\n        *   Charter of Rights and Freedoms.\n\n    *   **Economy:**\n        *   Type: Mixed market, highly developed.\n        *   Key sectors: Natural resources (oil, timber, minerals), manufacturing, services, tech.\n        *   Trade: USMCA (formerly NAFTA), heavy reliance on US trade.\n        *   Currency: Canadian Dollar (Loonie).\n\n    *   **Demographics & Society:**\n        *   Population (~40 million).\n        *   Urbanization (most live near the US border).\n        *   Immigration: High rates, multiculturalism policy.\n        *   Languages: English and French (Official bilingualism).\n        *   Education/Healthcare: Publicly funded healthcare (Medicare), strong education system.\n\n    *   **Indigenous Peoples:**\n        *   Distinct section needed due to importance and ongoing reconciliation efforts.\n        *   Groups: First Nations, Inuit, Métis.\n        *   Issues: Residential schools, land claims, self-governance.\n\n    *   **Culture:**\n        *   Identity: Mosaic vs. Melting Pot.\n        *   Arts: Literature (Atwood), Music (Shania, Drake, Celine), Film.\n        *   Sports: Hockey (national winter), Lacrosse (national summer), Football, Basketball.\n        *   Symbols: Maple Leaf, Beaver, Flag (1965).\n\n    *   **Environment:**\n        *   Biodiversity.\n        *   Challenges: Climate change (warming faster than global average), pipeline debates, conservation.\n\n    *   **International Relations:**\n        *   Alliances: NATO, G7, G20, Commonwealth, La Francophonie.\n        *   Peacekeeping reputation.\n\n    *   **Conclusion:**\n        *   Summarize the essence. Balance achievements with challenges.\n\n4.  **Review and Refine:**\n    *   *Check Constraint:* Does it start with \"Canada is\"? Yes.\n    *   *Check Detail:* Is it detailed enough? I need to ensure specific names, dates, and concepts are included (e.g., British North America Act, Charter of Rights, specific geographic features).\n    *   *Flow:* Ensure smooth transitions between paragraphs.\n    *   *Accuracy:* Verify facts (e.g., population estimates, political structure). *Self-correction: Population is approaching 41 million as of recent estimates, but ~40 million is safe.*\n    *   *Formatting:* Use bolding and bullet points to make the dense information readable.\n\n5.  **Final Polish:** (Mental walk-through of the opening sentence)\n    *   \"Canada is...\" -> \"Canada is a country in North America.\" -> Let''s make it more descriptive immediately. \"Canada is the second-largest country by total area in the world...\"\n\n6.  **Writing the Output:** (Proceeding to generate the response based on the above plan.)\n    *   *Note:* I will ensure the text is substantial to meet the \"great details\" requirement.\n\n7.  **Final Check against Safety Guidelines:**\n    *   No sensitive political opinions, just factual descriptions of government and history.\n    *   Respectful treatment of Indigenous history.\n    *   No controversial claims presented as absolute fact without context.\n\n    *(Self-Correction during drafting)*: Make sure to mention the distinction between the geographic north and the political territories. Ensure the distinction between the Head of State and Head of Government is clear, as this often confuses non-Canadians. Emphasize the multiculturalism policy as it''s a defining trait.\n\n    *Let''s assemble the text.*","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":22,"completion_tokens":1311,"total_tokens":1333,"prompt_tokens_details":{"text_tokens":22},"completion_tokens_details":{"reasoning_tokens":1287,"text_tokens":1311}},"created":1775422896,"system_fingerprint":null,"model":"qwen3.5-397b-a17b","id":"chatcmpl-niOUFlrC4xD8V-dU"}'
+        headers:
+            Content-Type:
+                - application/json
+            Eagleeye-Traceid:
+                - 0bc2425d17754228765482246eeb53
+            Req-Arrive-Time:
+                - "1775422876549"
+            Req-Cost-Time:
+                - "19446"
+            Resp-Start-Time:
+                - "1775422895995"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Accept-Encoding
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "19445"
+        status: 200 OK
+        code: 200
+        duration: 19.473s

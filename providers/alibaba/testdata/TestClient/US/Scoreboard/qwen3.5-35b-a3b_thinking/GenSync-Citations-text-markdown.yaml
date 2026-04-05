@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 287
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.5-35b-a3b","messages":[{"role":"user","content":[{"type":"text","text":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"stream":false,"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"message":{"content":"Based on the text provided, the capital of Quackiland is **Quack**.","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Input text: A short paragraph about \"Quackiland\".\n    *   Question: \"What is the capital of Quackiland?\"\n    *   Task: Answer the question based on the provided text.\n\n2.  **Analyze the Text:**\n    *   Sentence 1: \"The capital of Quackiland is Quack.\"\n    *   Sentence 2: \"The Big Canard Statue is located in Quack.\"\n\n3.  **Identify the Answer:**\n    *   Sentence 1 explicitly states: \"The capital of Quackiland is Quack.\"\n    *   Therefore, the capital is \"Quack\".\n\n4.  **Formulate the Output:**\n    *   Direct answer: Quack.\n\n5.  **Review for Constraints:**\n    *   The prompt is simple and direct. No special formatting required unless implied by the style (usually just a clear answer).\n    *   Fact-check: Is this a trick? \"Quack\" is often associated with ducks/duckspeak, fitting the theme of \"Quackiland\" (land of quacking/ducks) and \"Big Canard Statue\" (Canard = French for duck). The information is self-contained within the prompt.\n\n6.  **Final Decision:** State the answer clearly.\n\n    *   Answer: Quack.cw","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":44,"completion_tokens":322,"total_tokens":366,"completion_tokens_details":{"reasoning_tokens":300,"text_tokens":322},"prompt_tokens_details":{"text_tokens":44}},"created":1775423097,"system_fingerprint":null,"model":"qwen3.5-35b-a3b","id":"chatcmpl-tjxuyJ7mccA0hG2l"}'
+        headers:
+            Content-Type:
+                - application/json
+            Eagleeye-Traceid:
+                - 0bc2425d17754230934272598eeb53
+            Req-Arrive-Time:
+                - "1775423093430"
+            Req-Cost-Time:
+                - "3171"
+            Resp-Start-Time:
+                - "1775423096601"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Accept-Encoding
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "3171"
+        status: 200 OK
+        code: 200
+        duration: 3.2s

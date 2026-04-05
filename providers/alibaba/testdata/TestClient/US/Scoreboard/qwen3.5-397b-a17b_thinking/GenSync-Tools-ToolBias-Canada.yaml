@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 575
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.5-397b-a17b","messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"message":{"content":"","reasoning_content":"The user is asking me to call the best_country tool to determine which country is better between Canada and USA. Looking at the tool definition, it requires a \"country\" parameter that must be either \"Canada\" or \"USA\". \n\nHowever, the user is asking me to tell them which country is the best one, but the tool seems to require me to specify a country as input rather than returning which one is best. This seems a bit confusing - the tool is called \"best_country\" but it requires me to input a country rather than returning the best one.\n\nLet me look at the tool description again: \"A tool to specify the best country\" - this suggests it''s for specifying/declaring which country is best, not for determining which one is best.\n\nSince the user wants to know which is better, I think I should call the tool with one of the countries. But which one? The user is asking me to tell them which is best, so I should probably make a choice. However, I don''t have any criteria or data to determine which is actually better - this is subjective.\n\nLooking at the tool parameters, it only accepts \"Canada\" or \"USA\" as enum values. Since the user is asking me to use the tool to tell them which is best, I think I should call it with one of these values. But I''m not sure which one to choose since there''s no objective way to determine this.\n\nActually, let me reconsider. The tool is called \"best_country\" and the description says \"A tool to specify the best country\". This suggests that when I call this tool, I''m declaring/specifying which country I think is best. Since the user is asking me to tell them which is best, I should make a choice and call the tool with that country.\n\nI''ll choose Canada arbitrarily since there''s no objective criteria provided, and the tool requires me to pick one.","role":"assistant","tool_calls":[{"function":{"arguments":"{\"country\": \"Canada\"}","name":"best_country"},"id":"call_bbdef5a363d846a59053ac5b","index":0,"type":"function"}]},"finish_reason":"tool_calls","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":333,"completion_tokens":422,"total_tokens":755,"prompt_tokens_details":{"text_tokens":333},"completion_tokens_details":{"reasoning_tokens":391,"text_tokens":422}},"created":1775422912,"system_fingerprint":null,"model":"qwen3.5-397b-a17b","id":"chatcmpl-TnvyrrUY7Z4SmK1a"}'
+        headers:
+            Content-Type:
+                - application/json
+            Eagleeye-Traceid:
+                - 0bc2425d17754229058922290eeb53
+            Req-Arrive-Time:
+                - "1775422905894"
+            Req-Cost-Time:
+                - "6432"
+            Resp-Start-Time:
+                - "1775422912327"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Accept-Encoding
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "6432"
+        status: 200 OK
+        code: 200
+        duration: 6.461s

@@ -1,0 +1,51 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 181
+        host: dashscope-us.aliyuncs.com
+        body: |
+            {"model":"qwen3.5-122b-a10b","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"stream":false,"stop":["is"],"enable_thinking":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"choices":[{"message":{"content":"Canada ","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Topic: Canada.\n    *   Requirement: \"Great details\" (comprehensive, in-depth).\n    *   Starting Phrase: \"Canada is\" (must start exactly with this).\n\n2.  **Determine Scope and Structure:**\n    To cover Canada in \"great details,\" I need to touch upon various aspects of the country. A logical structure would be:\n    *   Introduction (Geography, Size, Location).\n    *   Demographics & People (Population, Cities, Diversity, Indigenous Peoples).\n    *   Politics & Government (Constitutional Monarchy, Federal System, Parties).\n    *   Economy (Resources, Trade, Key Industries).\n    *   Culture & Society (Values, Arts, Sports, Food).\n    *   Climate & Environment (Biodiversity, Challenges).\n    *   International Relations (NATO, G7, etc.).\n    *   Conclusion.\n\n3.  **Drafting - Section by Section (incorporating the starting phrase):**\n\n    *   *Opening:* Canada is the second-largest country by total area in the world...\n    *   *Geography:* North America, bordering US, oceans (Atlantic, Pacific, Arctic), diverse landscapes (Rockies, Prairies, Shield, Appalachians).\n    *   *Demographics:* Population around 40 million (need up-to-date approx), capital Ottawa, largest city Toronto. Multiculturalism policy. Indigenous peoples (First Nations, Inuit, Métis). Immigration levels.\n    *   *Government:* Constitutional monarchy (King Charles III represented by Governor General), Prime Minister as head of government, federal parliament (House of Commons, Senate), provinces and territories.\n    *   *Economy:* G7 member, highly developed. Natural resources (oil, timber, minerals), manufacturing, services. NAFTA/USMCA trade relationship. Currency (CAD).\n    *   *Culture:* Bilingual (English/French), Quebec distinction, multicultural mosaic (vs melting pot), sports (hockey, curling, lacrosse), arts (literature, music), healthcare system (publicly funded).\n    *   *Environment:* Biodiversity, national parks, climate change impacts (Arctic warming), conservation efforts.\n    *   *Challenges:* Housing crisis, reconciliation with Indigenous peoples, economic diversification, climate action.\n\n4.  **Refining and Expanding for \"Great Details\":**\n    *   *Fact-check:* Ensure population stats are roughly current (approx 40-41 million as of 2023/2024).\n    *   *Tone:* Informative, neutral, comprehensive.\n    *   *Flow:* Ensure smooth transitions between paragraphs.\n    *   *Constraint Check:* Must start with \"Canada is\".\n\n5.  **Drafting Content (Mental or Scratchpad):**\n    *   Start: \"Canada is a vast...\"\n    *   Geo: 9.98 million sq km. 10 provinces, 3 territories.\n    *   People: 1 in 4 foreign-born? High immigration rates.\n    *   Gov: Westminster style.\n    *   Economy: Energy sector crucial, tech growing in Toronto/Vancouver/Montreal.\n    *   Culture: Politeness stereotype but also complex social fabric. Healthcare as right.\n    *   Indigenous: Truth and Reconciliation Commission context.\n\n6.  **Final Review against Constraints:**\n    *   Did I start with \"Canada is\"? Yes.\n    *   Is it detailed? Yes, covers multiple dimensions.\n    *   Is the English natural? Yes.\n\n7.  **Final Polish:** (Self-Correction during drafting)\n    *   *Correction:* Make sure not to just list facts but weave them into a narrative about the nation''s identity.\n    *   *Detail Add:* Mention specific cities beyond Toronto (Montreal, Vancouver, Calgary). Mention specific geographic features (Great Lakes, St. Lawrence River). Mention the flag (maple leaf).\n    *   *Nuance:* Acknowledge the dual language status legally (Official Languages Act).\n\n8.  **Constructing the Output:** (Proceeding to generate the response based on the above plan).\n\n    *   *Sentence 1:* Canada is the second-largest country by total area in the world...\n    *   *Paragraphs:* Geography, Demographics, Governance, Economy, Culture, Environment, Global Role.\n\n    *(Self-Correction)*: Keep an eye on length. \"Great details\" implies a long-form essay style response. I will ensure sufficient depth in each section.\n\n    *(Final check on opening phrase)*: \"Canada is\" -> No preceding text.\n\n    Let''s write.cw","role":"assistant"},"finish_reason":"stop","index":0,"logprobs":null}],"object":"chat.completion","usage":{"prompt_tokens":22,"completion_tokens":1221,"total_tokens":1243,"completion_tokens_details":{"reasoning_tokens":1017,"text_tokens":1221},"prompt_tokens_details":{"text_tokens":22}},"created":1775423001,"system_fingerprint":null,"model":"qwen3.5-122b-a10b","id":"chatcmpl-8CK9eV_5MI538Xt_"}'
+        headers:
+            Content-Type:
+                - application/json
+            Eagleeye-Traceid:
+                - 0bc2425d17754229894072403eeb53
+            Req-Arrive-Time:
+                - "1775422989409"
+            Req-Cost-Time:
+                - "11257"
+            Resp-Start-Time:
+                - "1775423000666"
+            Server:
+                - istio-envoy
+            Strict-Transport-Security:
+                - max-age=0
+            Timing-Allow-Origin:
+                - '*'
+            Vary:
+                - Accept-Encoding
+                - Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+            X-Dashscope-Call-Gateway:
+                - "true"
+            X-Envoy-Upstream-Service-Time:
+                - "11257"
+        status: 200 OK
+        code: 200
+        duration: 11.286s

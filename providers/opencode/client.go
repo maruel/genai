@@ -350,7 +350,7 @@ type handshakeResult struct {
 	sessionID       string
 	supportsImage   bool
 	nextID          int64
-	availableModels []modelInfo
+	availableModels []ModelInfo
 }
 
 // handshake performs the ACP initialize → session/new sequence.
@@ -359,14 +359,14 @@ func handshake(stdin io.Writer, sc *bufio.Scanner, mdl, resumeSessionID string) 
 
 	// 1. Send initialize request.
 	hs.nextID++
-	if err := writeJSON(stdin, jsonrpcRequest{
+	if err := writeJSON(stdin, JSONRPCRequest{
 		JSONRPC: "2.0",
 		ID:      hs.nextID,
 		Method:  MethodInitialize,
-		Params: initializeParams{
+		Params: InitializeParams{
 			ProtocolVersion:    1,
-			ClientCapabilities: clientCapabilities{Terminal: false},
-			ClientInfo:         clientInfo{Name: "genai-opencode", Title: "genai-opencode", Version: "1.0.0"},
+			ClientCapabilities: ClientCapabilities{Terminal: false},
+			ClientInfo:         ClientInfo{Name: "genai-opencode", Title: "genai-opencode", Version: "1.0.0"},
 		},
 	}); err != nil {
 		return nil, fmt.Errorf("write initialize: %w", err)
@@ -375,27 +375,27 @@ func handshake(stdin io.Writer, sc *bufio.Scanner, mdl, resumeSessionID string) 
 	if err != nil {
 		return nil, fmt.Errorf("read initialize response: %w", err)
 	}
-	var initResult initializeResult
+	var initResult InitializeResult
 	if json.Unmarshal(initData, &initResult) == nil {
 		hs.supportsImage = initResult.AgentCapabilities.PromptCapabilities.Image
 	}
 
 	// 2. Create or resume session.
 	hs.nextID++
-	var sessionReq jsonrpcRequest
+	var sessionReq JSONRPCRequest
 	if resumeSessionID != "" {
-		sessionReq = jsonrpcRequest{
+		sessionReq = JSONRPCRequest{
 			JSONRPC: "2.0",
 			ID:      hs.nextID,
 			Method:  MethodSessionLoad,
-			Params:  sessionLoadParams{SessionID: resumeSessionID, Cwd: os.TempDir()},
+			Params:  SessionLoadParams{SessionID: resumeSessionID, Cwd: os.TempDir(), McpServers: []MCPServer{}},
 		}
 	} else {
-		sessionReq = jsonrpcRequest{
+		sessionReq = JSONRPCRequest{
 			JSONRPC: "2.0",
 			ID:      hs.nextID,
 			Method:  MethodSessionNew,
-			Params:  sessionNewParams{Cwd: os.TempDir()},
+			Params:  SessionNewParams{Cwd: os.TempDir(), McpServers: []MCPServer{}},
 		}
 	}
 	if err := writeJSON(stdin, sessionReq); err != nil {
@@ -405,7 +405,7 @@ func handshake(stdin io.Writer, sc *bufio.Scanner, mdl, resumeSessionID string) 
 	if err != nil {
 		return nil, fmt.Errorf("read session response: %w", err)
 	}
-	var snResult sessionNewResult
+	var snResult SessionNewResult
 	if err := json.Unmarshal(sessionData, &snResult); err != nil {
 		return nil, fmt.Errorf("parse session result: %w", err)
 	}
@@ -422,11 +422,11 @@ func handshake(stdin io.Writer, sc *bufio.Scanner, mdl, resumeSessionID string) 
 	// 3. Switch model if requested (best-effort).
 	if mdl != "" {
 		hs.nextID++
-		if err := writeJSON(stdin, jsonrpcRequest{
+		if err := writeJSON(stdin, JSONRPCRequest{
 			JSONRPC: "2.0",
 			ID:      hs.nextID,
 			Method:  MethodUnstableSetSessionModel,
-			Params:  setSessionModelParams{SessionID: hs.sessionID, ModelID: mdl},
+			Params:  SetSessionModelParams{SessionID: hs.sessionID, ModelID: mdl},
 		}); err != nil {
 			return nil, fmt.Errorf("write setSessionModel: %w", err)
 		}
@@ -445,21 +445,21 @@ func sendUserPrompt(stdin io.Writer, hs *handshakeResult, msg *genai.Message) (i
 	}
 	hs.nextID++
 	id := hs.nextID
-	return id, writeJSON(stdin, jsonrpcRequest{
+	return id, writeJSON(stdin, JSONRPCRequest{
 		JSONRPC: "2.0",
 		ID:      id,
 		Method:  MethodSessionPrompt,
-		Params:  sessionPromptParams{SessionID: hs.sessionID, Prompt: content},
+		Params:  SessionPromptParams{SessionID: hs.sessionID, Prompt: content},
 	})
 }
 
 // msgToPromptContent converts a genai.Message to ACP prompt content blocks.
-func msgToPromptContent(msg *genai.Message, supportsImage bool) ([]promptContent, error) {
-	var items []promptContent
+func msgToPromptContent(msg *genai.Message, supportsImage bool) ([]PromptContent, error) {
+	var items []PromptContent
 	for i := range msg.Requests {
 		req := &msg.Requests[i]
 		if req.Text != "" {
-			items = append(items, promptContent{Type: ContentText, Text: req.Text})
+			items = append(items, PromptContent{Type: ContentText, Text: req.Text})
 		}
 		if !req.Doc.IsZero() {
 			blk, err := docToPromptContent(req.Doc, supportsImage)
@@ -480,24 +480,24 @@ func msgToPromptContent(msg *genai.Message, supportsImage bool) ([]promptContent
 // URL images are not supported: the ACP agent.ts handler only accepts http:
 // (not https:) URLs, so we reject all URLs and require inline base64.
 // See packages/opencode/src/acp/agent.ts case "image" (~line 1327).
-func docToPromptContent(doc genai.Doc, supportsImage bool) (promptContent, error) {
+func docToPromptContent(doc genai.Doc, supportsImage bool) (PromptContent, error) {
 	if doc.URL != "" {
-		return promptContent{}, fmt.Errorf("URL documents not supported by opencode ACP; inline the content")
+		return PromptContent{}, fmt.Errorf("URL documents not supported by opencode ACP; inline the content")
 	}
 	mimeType, data, err := doc.Read(10 * 1024 * 1024)
 	if err != nil {
-		return promptContent{}, fmt.Errorf("read doc: %w", err)
+		return PromptContent{}, fmt.Errorf("read doc: %w", err)
 	}
 	if strings.HasPrefix(mimeType, "text/") {
-		return promptContent{Type: ContentText, Text: string(data)}, nil
+		return PromptContent{Type: ContentText, Text: string(data)}, nil
 	}
 	if !supportsImage {
-		return promptContent{}, fmt.Errorf("opencode agent does not support image input")
+		return PromptContent{}, fmt.Errorf("opencode agent does not support image input")
 	}
 	if !strings.HasPrefix(mimeType, "image/") {
-		return promptContent{}, fmt.Errorf("unsupported doc MIME type %q for opencode (text and images only)", mimeType)
+		return PromptContent{}, fmt.Errorf("unsupported doc MIME type %q for opencode (text and images only)", mimeType)
 	}
-	return promptContent{
+	return PromptContent{
 		Type:     ContentImage,
 		Data:     base64.StdEncoding.EncodeToString(data),
 		MimeType: mimeType,
@@ -508,11 +508,11 @@ func docToPromptContent(doc genai.Doc, supportsImage bool) (promptContent, error
 // "id" field, no "method" field) is found. Notifications are skipped.
 func readResponse(sc *bufio.Scanner) (json.RawMessage, error) {
 	for sc.Scan() {
-		var msg jsonrpcMessage
+		var msg JSONRPCMessage
 		if json.Unmarshal(sc.Bytes(), &msg) != nil {
 			continue
 		}
-		if !msg.isResponse() {
+		if !msg.IsResponse() || msg.Method != "" {
 			continue
 		}
 		if msg.Error != nil {
@@ -533,7 +533,7 @@ func readTurn(sc *bufio.Scanner, stdin io.Writer, sessionID string, promptID int
 	var textBuf, thinkBuf strings.Builder
 	for sc.Scan() {
 		line := sc.Bytes()
-		var probe lineProbe
+		var probe MessageProbe
 		if json.Unmarshal(line, &probe) != nil {
 			continue
 		}
@@ -559,7 +559,7 @@ func readTurn(sc *bufio.Scanner, stdin io.Writer, sessionID string, promptID int
 			continue
 		}
 
-		var msg jsonrpcMessage
+		var msg JSONRPCMessage
 		if json.Unmarshal(line, &msg) != nil {
 			continue
 		}
@@ -582,23 +582,23 @@ func readTurn(sc *bufio.Scanner, stdin io.Writer, sessionID string, promptID int
 // parseSessionUpdateDelta extracts text and reasoning deltas from a
 // session/update notification's params.
 func parseSessionUpdateDelta(params json.RawMessage) (text, reasoning string, err error) {
-	var sup sessionUpdateParams
+	var sup SessionUpdateParams
 	if err := json.Unmarshal(params, &sup); err != nil {
 		return "", "", fmt.Errorf("unmarshal session/update params: %w", err)
 	}
-	var probe updateProbe
+	var probe UpdateProbe
 	if err := json.Unmarshal(sup.Update, &probe); err != nil {
 		return "", "", fmt.Errorf("unmarshal session/update discriminator: %w", err)
 	}
 	switch probe.SessionUpdate {
 	case UpdateAgentMessageChunk:
-		var u agentMessageChunkUpdate
+		var u AgentMessageChunkUpdate
 		if err := json.Unmarshal(sup.Update, &u); err != nil {
 			return "", "", fmt.Errorf("unmarshal agent_message_chunk: %w", err)
 		}
 		return u.Content.Text, "", nil
 	case UpdateAgentThoughtChunk:
-		var u agentThoughtChunkUpdate
+		var u AgentThoughtChunkUpdate
 		if err := json.Unmarshal(sup.Update, &u); err != nil {
 			return "", "", fmt.Errorf("unmarshal agent_thought_chunk: %w", err)
 		}
@@ -611,7 +611,7 @@ func parseSessionUpdateDelta(params json.RawMessage) (text, reasoning string, er
 // handleAgentRequest responds to JSON-RPC requests from the agent (e.g.
 // permission requests) by auto-approving with the first "allow" option.
 func handleAgentRequest(stdin io.Writer, line []byte) error {
-	var msg jsonrpcMessage
+	var msg JSONRPCMessage
 	if err := json.Unmarshal(line, &msg); err != nil {
 		return fmt.Errorf("unmarshal agent request: %w", err)
 	}
@@ -620,9 +620,9 @@ func handleAgentRequest(stdin io.Writer, line []byte) error {
 		return fmt.Errorf("unmarshal request id: %w", err)
 	}
 	if msg.Method != MethodSessionRequestPermission {
-		return writeJSON(stdin, jsonrpcResponse{JSONRPC: "2.0", ID: id, Result: struct{}{}})
+		return writeJSON(stdin, JSONRPCResponse{JSONRPC: "2.0", ID: id, Result: struct{}{}})
 	}
-	var params permissionRequestParams
+	var params PermissionRequestParams
 	if err := json.Unmarshal(msg.Params, &params); err != nil {
 		return fmt.Errorf("unmarshal permission request: %w", err)
 	}
@@ -637,10 +637,10 @@ func handleAgentRequest(stdin io.Writer, line []byte) error {
 	if optionID == "" && len(params.Options) > 0 {
 		optionID = params.Options[0].OptionID
 	}
-	return writeJSON(stdin, jsonrpcResponse{
+	return writeJSON(stdin, JSONRPCResponse{
 		JSONRPC: "2.0",
 		ID:      id,
-		Result:  permissionResponseResult{OptionID: optionID},
+		Result:  PermissionResponseResult{OptionID: optionID},
 	})
 }
 
@@ -649,20 +649,20 @@ func handleAgentRequest(stdin io.Writer, line []byte) error {
 func buildPromptResult(line []byte, text, thinking, sessionID string) (genai.Result, error) {
 	r := genai.Result{}
 
-	var msg jsonrpcMessage
+	var msg JSONRPCMessage
 	if json.Unmarshal(line, &msg) == nil {
 		if msg.Error != nil {
 			return r, fmt.Errorf("JSON-RPC error %d: %s", msg.Error.Code, msg.Error.Message)
 		}
 		if msg.Result != nil {
-			var pr promptResult
+			var pr PromptResult
 			if json.Unmarshal(msg.Result, &pr) == nil {
-				r.Usage.FinishReason = pr.StopReason.toFinishReason()
-				r.Usage.InputTokens = pr.Usage.InputTokens
-				r.Usage.OutputTokens = pr.Usage.OutputTokens
-				r.Usage.ReasoningTokens = pr.Usage.ThoughtTokens
-				r.Usage.InputCachedTokens = pr.Usage.CachedReadTokens
-				r.Usage.TotalTokens = pr.Usage.InputTokens + pr.Usage.OutputTokens
+				r.Usage.FinishReason = stopReasonToFinishReason(pr.StopReason)
+				r.Usage.InputTokens = int64(pr.Usage.InputTokens)
+				r.Usage.OutputTokens = int64(pr.Usage.OutputTokens)
+				r.Usage.ReasoningTokens = int64(pr.Usage.ThoughtTokens)
+				r.Usage.InputCachedTokens = int64(pr.Usage.CachedReadTokens)
+				r.Usage.TotalTokens = int64(pr.Usage.InputTokens + pr.Usage.OutputTokens)
 			}
 		}
 	}
@@ -735,6 +735,18 @@ type model struct {
 func (m *model) GetID() string  { return m.id }
 func (m *model) String() string { return m.displayName }
 func (m *model) Context() int64 { return 200_000 }
+
+// stopReasonToFinishReason maps an ACP stop reason string to a genai.FinishReason.
+func stopReasonToFinishReason(reason string) genai.FinishReason {
+	switch reason {
+	case "max_tokens":
+		return genai.FinishedLength
+	case "cancelled", "refusal":
+		return genai.FinishedContentFilter
+	default:
+		return genai.FinishedStop
+	}
+}
 
 // Compile-time interface checks.
 var (

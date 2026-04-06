@@ -43,6 +43,7 @@ import (
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
+	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/msgutil"
 	"github.com/maruel/genai/scoreboard"
 )
@@ -377,14 +378,14 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 			switch msg.Method {
 			case MethodItemDelta:
 				var p AgentMessageDeltaNotification
-				if json.Unmarshal(msg.Params, &p) == nil && p.Delta != "" {
+				if internal.UnmarshalJSON(msg.Params, &p) == nil && p.Delta != "" {
 					if !yield(genai.Reply{Text: p.Delta}) {
 						return
 					}
 				}
 			case MethodReasoningSummaryTextDelta:
 				var p ReasoningSummaryTextDeltaNotification
-				if json.Unmarshal(msg.Params, &p) == nil && p.Delta != "" {
+				if internal.UnmarshalJSON(msg.Params, &p) == nil && p.Delta != "" {
 					if !yield(genai.Reply{Reasoning: p.Delta}) {
 						return
 					}
@@ -396,12 +397,12 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 				}
 			case MethodTokenUsageUpdated:
 				var p ThreadTokenUsageUpdatedNotification
-				if json.Unmarshal(msg.Params, &p) == nil {
+				if internal.UnmarshalJSON(msg.Params, &p) == nil {
 					accumulateUsage(&usage, &p.TokenUsage)
 				}
 			case MethodTurnCompleted:
 				var p TurnCompletedNotification
-				if json.Unmarshal(msg.Params, &p) != nil {
+				if internal.UnmarshalJSON(msg.Params, &p) != nil {
 					continue
 				}
 				if p.Turn.Status == "failed" || p.Turn.Status == "interrupted" {
@@ -416,7 +417,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 				return
 			case MethodErrorNotification:
 				var p ErrorNotification
-				if json.Unmarshal(msg.Params, &p) == nil && !p.WillRetry && p.Error != nil {
+				if internal.UnmarshalJSON(msg.Params, &p) == nil && !p.WillRetry && p.Error != nil {
 					finalErr = fmt.Errorf("codex error: %s", p.Error.Message)
 					return
 				}
@@ -470,7 +471,7 @@ func initAndListModels(stdin io.Writer, sc *bufio.Scanner) ([]ModelInfo, error) 
 		return nil, fmt.Errorf("read model/list response: %w", err)
 	}
 	var mlResult ModelListResult
-	if err := json.Unmarshal(mlData, &mlResult); err != nil {
+	if err := internal.UnmarshalJSON(mlData, &mlResult); err != nil {
 		return nil, fmt.Errorf("parse model/list result: %w", err)
 	}
 	return mlResult.Data, nil
@@ -509,7 +510,7 @@ func handshake(stdin io.Writer, sc *bufio.Scanner, mdl, resumeThreadID string) (
 	}
 
 	var result ThreadStartResult
-	if err := json.Unmarshal(respData, &result); err != nil {
+	if err := internal.UnmarshalJSON(respData, &result); err != nil {
 		return "", fmt.Errorf("parse thread/start result: %w", err)
 	}
 	if result.Thread.ID == "" {
@@ -631,12 +632,12 @@ func readTurnSync(sc *bufio.Scanner, threadID string) (genai.Result, error) {
 			}
 		case MethodTokenUsageUpdated:
 			var p ThreadTokenUsageUpdatedNotification
-			if json.Unmarshal(msg.Params, &p) == nil {
+			if internal.UnmarshalJSON(msg.Params, &p) == nil {
 				accumulateUsage(&usage, &p.TokenUsage)
 			}
 		case MethodTurnCompleted:
 			var p TurnCompletedNotification
-			if json.Unmarshal(msg.Params, &p) != nil {
+			if internal.UnmarshalJSON(msg.Params, &p) != nil {
 				continue
 			}
 			if p.Turn.Status == "failed" || p.Turn.Status == "interrupted" {
@@ -649,7 +650,7 @@ func readTurnSync(sc *bufio.Scanner, threadID string) (genai.Result, error) {
 			return buildResult(replies, usage, threadID), nil
 		case MethodErrorNotification:
 			var p ErrorNotification
-			if json.Unmarshal(msg.Params, &p) == nil && !p.WillRetry && p.Error != nil {
+			if internal.UnmarshalJSON(msg.Params, &p) == nil && !p.WillRetry && p.Error != nil {
 				return genai.Result{}, fmt.Errorf("codex error: %s", p.Error.Message)
 			}
 		}
@@ -664,7 +665,7 @@ func readTurnSync(sc *bufio.Scanner, threadID string) (genai.Result, error) {
 // the item is an agentMessage or reasoning. Returns nil for other item types.
 func parseCompletedItem(params json.RawMessage) *genai.Reply {
 	var p ItemNotification
-	if json.Unmarshal(params, &p) != nil {
+	if internal.UnmarshalJSON(params, &p) != nil {
 		return nil
 	}
 	var h ItemHeader
@@ -674,13 +675,13 @@ func parseCompletedItem(params json.RawMessage) *genai.Reply {
 	switch h.Type {
 	case ItemTypeAgentMessage:
 		var item AgentMessageItem
-		if json.Unmarshal(p.Item, &item) != nil || item.Text == "" {
+		if internal.UnmarshalJSON(p.Item, &item) != nil || item.Text == "" {
 			return nil
 		}
 		return &genai.Reply{Text: item.Text}
 	case ItemTypeReasoning:
 		var item ReasoningItem
-		if json.Unmarshal(p.Item, &item) != nil || len(item.Summary) == 0 {
+		if internal.UnmarshalJSON(p.Item, &item) != nil || len(item.Summary) == 0 {
 			return nil
 		}
 		return &genai.Reply{Reasoning: strings.Join(item.Summary, "\n")}

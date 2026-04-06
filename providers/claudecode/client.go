@@ -51,6 +51,7 @@ import (
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
+	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/msgutil"
 	"github.com/maruel/genai/scoreboard"
 )
@@ -315,13 +316,13 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 			}
 		case OutputAssistant:
 			var asst OutputAssistantMsg
-			if err := json.Unmarshal(line, &asst); err != nil {
+			if err := internal.UnmarshalJSON(line, &asst); err != nil {
 				return genai.Result{}, fmt.Errorf("parse assistant: %w", err)
 			}
 			asstBlocks = append(asstBlocks, asst.Message.Content...)
 		case OutputResult:
 			var res OutputResultMsg
-			if err := json.Unmarshal(line, &res); err != nil {
+			if err := internal.UnmarshalJSON(line, &res); err != nil {
 				return genai.Result{}, fmt.Errorf("parse result: %w", err)
 			}
 			if res.IsError {
@@ -423,14 +424,14 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 				}
 			case OutputAssistant:
 				var asst OutputAssistantMsg
-				if err := json.Unmarshal(line, &asst); err != nil {
+				if err := internal.UnmarshalJSON(line, &asst); err != nil {
 					finalErr = fmt.Errorf("parse assistant: %w", err)
 					return
 				}
 				asstBlocks = append(asstBlocks, asst.Message.Content...)
 			case OutputResult:
 				var res OutputResultMsg
-				if err := json.Unmarshal(line, &res); err != nil {
+				if err := internal.UnmarshalJSON(line, &res); err != nil {
 					finalErr = fmt.Errorf("parse result: %w", err)
 					return
 				}

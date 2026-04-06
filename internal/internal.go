@@ -6,6 +6,7 @@
 package internal
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
@@ -48,6 +49,22 @@ func Logger(ctx context.Context) *slog.Logger {
 // WithLogger injects a slog.Logger into the context. It can be retrieved with Logger().
 func WithLogger(ctx context.Context, logger *slog.Logger) context.Context {
 	return context.WithValue(ctx, contextKey{}, logger)
+}
+
+// UnmarshalJSON is like json.Unmarshal but respects BeLenient.
+//
+// When strict (!BeLenient), it uses DisallowUnknownFields and provides
+// detailed error messages about extra keys via DecodeJSON.
+func UnmarshalJSON(data []byte, out any) error {
+	r := bytes.NewReader(data)
+	d := json.NewDecoder(r)
+	var r2 io.ReadSeeker
+	if !BeLenient {
+		d.DisallowUnknownFields()
+		r2 = r
+	}
+	_, err := DecodeJSON(d, out, r2)
+	return err
 }
 
 // DecodeJSON is duplicate from httpjson.go in https://github.com/maruel/httpjson.

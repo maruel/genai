@@ -44,6 +44,7 @@ import (
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
+	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/msgutil"
 	"github.com/maruel/genai/scoreboard"
 )
@@ -378,7 +379,7 @@ func handshake(stdin io.Writer, sc *bufio.Scanner, mdl, resumeSessionID string) 
 		return nil, fmt.Errorf("read initialize response: %w", err)
 	}
 	var initResult InitializeResult
-	if json.Unmarshal(initData, &initResult) == nil {
+	if internal.UnmarshalJSON(initData, &initResult) == nil {
 		hs.supportsImage = initResult.AgentCapabilities.PromptCapabilities.Image
 	}
 
@@ -408,7 +409,7 @@ func handshake(stdin io.Writer, sc *bufio.Scanner, mdl, resumeSessionID string) 
 		return nil, fmt.Errorf("read session response: %w", err)
 	}
 	var snResult SessionNewResult
-	if err := json.Unmarshal(sessionData, &snResult); err != nil {
+	if err := internal.UnmarshalJSON(sessionData, &snResult); err != nil {
 		return nil, fmt.Errorf("parse session result: %w", err)
 	}
 	if snResult.SessionID != "" {
@@ -585,7 +586,7 @@ func readTurn(sc *bufio.Scanner, stdin io.Writer, sessionID string, promptID int
 // session/update notification's params.
 func parseSessionUpdateDelta(params json.RawMessage) (text, reasoning string, err error) {
 	var sup SessionUpdateParams
-	if err := json.Unmarshal(params, &sup); err != nil {
+	if err := internal.UnmarshalJSON(params, &sup); err != nil {
 		return "", "", fmt.Errorf("unmarshal session/update params: %w", err)
 	}
 	var probe UpdateProbe
@@ -595,13 +596,13 @@ func parseSessionUpdateDelta(params json.RawMessage) (text, reasoning string, er
 	switch probe.SessionUpdate {
 	case UpdateAgentMessageChunk:
 		var u AgentMessageChunkUpdate
-		if err := json.Unmarshal(sup.Update, &u); err != nil {
+		if err := internal.UnmarshalJSON(sup.Update, &u); err != nil {
 			return "", "", fmt.Errorf("unmarshal agent_message_chunk: %w", err)
 		}
 		return u.Content.Text, "", nil
 	case UpdateAgentThoughtChunk:
 		var u AgentThoughtChunkUpdate
-		if err := json.Unmarshal(sup.Update, &u); err != nil {
+		if err := internal.UnmarshalJSON(sup.Update, &u); err != nil {
 			return "", "", fmt.Errorf("unmarshal agent_thought_chunk: %w", err)
 		}
 		return "", u.Content.Text, nil
@@ -614,7 +615,7 @@ func parseSessionUpdateDelta(params json.RawMessage) (text, reasoning string, er
 // permission requests) by auto-approving with the first "allow" option.
 func handleAgentRequest(stdin io.Writer, line []byte) error {
 	var msg JSONRPCMessage
-	if err := json.Unmarshal(line, &msg); err != nil {
+	if err := internal.UnmarshalJSON(line, &msg); err != nil {
 		return fmt.Errorf("unmarshal agent request: %w", err)
 	}
 	var id int64
@@ -625,7 +626,7 @@ func handleAgentRequest(stdin io.Writer, line []byte) error {
 		return msgutil.WriteNDJSON(stdin, JSONRPCResponse{JSONRPC: "2.0", ID: id, Result: struct{}{}})
 	}
 	var params PermissionRequestParams
-	if err := json.Unmarshal(msg.Params, &params); err != nil {
+	if err := internal.UnmarshalJSON(msg.Params, &params); err != nil {
 		return fmt.Errorf("unmarshal permission request: %w", err)
 	}
 	// Find the first allow option.
@@ -652,13 +653,13 @@ func buildPromptResult(line []byte, text, thinking, sessionID string) (genai.Res
 	r := genai.Result{}
 
 	var msg JSONRPCMessage
-	if json.Unmarshal(line, &msg) == nil {
+	if internal.UnmarshalJSON(line, &msg) == nil {
 		if msg.Error != nil {
 			return r, fmt.Errorf("JSON-RPC error %d: %s", msg.Error.Code, msg.Error.Message)
 		}
 		if msg.Result != nil {
 			var pr PromptResult
-			if json.Unmarshal(msg.Result, &pr) == nil {
+			if internal.UnmarshalJSON(msg.Result, &pr) == nil {
 				r.Usage.FinishReason = stopReasonToFinishReason(pr.StopReason)
 				r.Usage.InputTokens = int64(pr.Usage.InputTokens)
 				r.Usage.OutputTokens = int64(pr.Usage.OutputTokens)

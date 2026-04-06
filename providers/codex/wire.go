@@ -174,12 +174,15 @@ type ThreadResumeParams struct {
 
 // ThreadStartResult is the result object from a thread/start JSON-RPC response.
 type ThreadStartResult struct {
-	Thread ThreadStartThread `json:"thread"`
-}
-
-// ThreadStartThread is the thread object inside a ThreadStartResult.
-type ThreadStartThread struct {
-	ID string `json:"id"`
+	Thread            Thread          `json:"thread"`
+	Model             string          `json:"model,omitzero"`
+	ModelProvider     string          `json:"modelProvider,omitzero"`
+	ServiceTier       *string         `json:"serviceTier,omitzero"`
+	Cwd               string          `json:"cwd,omitzero"`
+	ApprovalPolicy    string          `json:"approvalPolicy,omitzero"`
+	ApprovalsReviewer string          `json:"approvalsReviewer,omitzero"`
+	Sandbox           json.RawMessage `json:"sandbox,omitzero"`
+	ReasoningEffort   *string         `json:"reasoningEffort,omitzero"`
 }
 
 // Turn request params.
@@ -656,13 +659,39 @@ type ModelReroutedNotification struct {
 
 // ModelListResult is the result of a model/list request.
 type ModelListResult struct {
-	Data []ModelInfo `json:"data"`
+	Data       []ModelInfo      `json:"data"`
+	NextCursor *json.RawMessage `json:"nextCursor,omitzero"`
 }
 
 // ModelInfo describes a single model in a model/list result.
 type ModelInfo struct {
-	ID          string `json:"id"`
-	DisplayName string `json:"displayName,omitzero"`
+	ID                        string              `json:"id"`
+	DisplayName               string              `json:"displayName,omitzero"`
+	Model                     string              `json:"model,omitzero"`
+	Description               string              `json:"description,omitzero"`
+	DefaultReasoningEffort    string              `json:"defaultReasoningEffort,omitzero"`
+	Hidden                    bool                `json:"hidden,omitzero"`
+	IsDefault                 bool                `json:"isDefault,omitzero"`
+	SupportsPersonality       bool                `json:"supportsPersonality,omitzero"`
+	Upgrade                   *string             `json:"upgrade,omitzero"`
+	UpgradeInfo               *ModelUpgradeInfo   `json:"upgradeInfo,omitzero"`
+	AvailabilityNux           *json.RawMessage    `json:"availabilityNux,omitzero"`
+	SupportedReasoningEfforts []ModelReasoningOpt `json:"supportedReasoningEfforts,omitzero"`
+	InputModalities           []string            `json:"inputModalities,omitzero"`
+}
+
+// ModelUpgradeInfo holds upgrade migration information for a model.
+type ModelUpgradeInfo struct {
+	MigrationMarkdown string  `json:"migrationMarkdown,omitzero"`
+	Model             string  `json:"model,omitzero"`
+	ModelLink         *string `json:"modelLink,omitzero"`
+	UpgradeCopy       *string `json:"upgradeCopy,omitzero"`
+}
+
+// ModelReasoningOpt describes a supported reasoning effort level.
+type ModelReasoningOpt struct {
+	ReasoningEffort string `json:"reasoningEffort"`
+	Description     string `json:"description,omitzero"`
 }
 
 // Error notification.

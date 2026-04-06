@@ -557,10 +557,12 @@ type ContentBlockStart struct {
 // OutputContentBlock is a single content block inside an assistant message.
 // This is a flat union: fields are populated depending on Type.
 //
-//   - "text":        Text
-//   - "thinking":    Thinking, Signature
-//   - "tool_use":    ID, Name, Input
-//   - "tool_result": ToolUseID, Content, IsError
+//   - "text":                Text
+//   - "thinking":            Thinking, Signature
+//   - "tool_use":            ID, Name, Input
+//   - "tool_result":         ToolUseID, Content, IsError
+//   - "server_tool_use":     ID, Name, Input, Caller
+//   - "web_search_tool_use": ID, Name, Input, Caller
 type OutputContentBlock struct {
 	Type      string          `json:"type"`
 	Text      string          `json:"text,omitempty"`
@@ -569,6 +571,7 @@ type OutputContentBlock struct {
 	Input     json.RawMessage `json:"input,omitempty"`
 	Thinking  string          `json:"thinking,omitempty"`
 	Signature string          `json:"signature,omitempty"`
+	Caller    json.RawMessage `json:"caller,omitempty"`
 	// tool_result fields (inline MCP tool results).
 	ToolUseID string          `json:"tool_use_id,omitempty"`
 	Content   json.RawMessage `json:"content,omitempty"`
@@ -638,6 +641,7 @@ type MsgUsage struct {
 	CacheReadInputTokens     int64  `json:"cache_read_input_tokens"`
 	ServiceTier              string `json:"service_tier,omitzero"`
 	InferenceGeo             string `json:"inference_geo,omitzero"`
+	Speed                    string `json:"speed,omitzero"`
 
 	// Iterations is an int or an array, depending on the model.
 	Iterations json.RawMessage `json:"iterations,omitzero"`

@@ -309,12 +309,14 @@ type ContentBlock struct {
 type AgentMessageChunkUpdate struct {
 	SessionUpdate UpdateType   `json:"sessionUpdate"`
 	Content       ContentBlock `json:"content"`
+	MessageID     string       `json:"messageId,omitzero"`
 }
 
 // AgentThoughtChunkUpdate is a streaming reasoning chunk from the agent.
 type AgentThoughtChunkUpdate struct {
 	SessionUpdate UpdateType   `json:"sessionUpdate"`
 	Content       ContentBlock `json:"content"`
+	MessageID     string       `json:"messageId,omitzero"`
 }
 
 // UserMessageChunkUpdate is a replayed user message (during session/load).
@@ -507,14 +509,16 @@ type ModesInfo struct {
 
 // ModeInfo describes a single available mode.
 type ModeInfo struct {
-	ID   string `json:"id"`
-	Name string `json:"name,omitzero"`
+	ID          string `json:"id"`
+	Name        string `json:"name,omitzero"`
+	Description string `json:"description,omitzero"`
 }
 
 // PromptResult is the result of a session/prompt response.
 type PromptResult struct {
-	StopReason string      `json:"stopReason,omitzero"` // "end_turn", "max_tokens", "cancelled", "refusal".
-	Usage      PromptUsage `json:"usage,omitzero"`
+	StopReason string          `json:"stopReason,omitzero"` // "end_turn", "max_tokens", "cancelled", "refusal".
+	Usage      PromptUsage     `json:"usage,omitzero"`
+	Meta       json.RawMessage `json:"_meta,omitzero"`
 }
 
 // PromptUsage holds the token usage from a session/prompt response.

@@ -472,6 +472,8 @@ func (c *Client) buildArgs(co callOpts, sessionID string, stream bool) []string 
 		// built-in tools. Without this flag, MCP servers from the user's
 		// settings would silently load into the subprocess.
 		"--strict-mcp-config",
+		// Disable Chrome integration; the subprocess is headless.
+		"--no-chrome",
 	}
 
 	// Tools: disabled by default.
@@ -516,9 +518,17 @@ func (c *Client) buildArgs(co callOpts, sessionID string, stream bool) []string 
 		args = append(args, "--max-budget-usd", strconv.FormatFloat(co.maxBudgetUSD, 'f', 4, 64))
 	}
 
-	// Optional permission mode.
-	if co.permissionMode != "" {
-		args = append(args, "--permission-mode", co.permissionMode)
+	// Permission mode: default to "bypassPermissions" when tools are enabled
+	// so they aren't denied in headless mode. "dontAsk" silently denies
+	// unapproved tools.
+	// TODO: Support interactive permission approval via the stream-json
+	// protocol instead of bypassing all checks.
+	pm := co.permissionMode
+	if pm == "" && len(co.tools) > 0 {
+		pm = "bypassPermissions"
+	}
+	if pm != "" {
+		args = append(args, "--permission-mode", pm)
 	}
 
 	// Optional reasoning effort.

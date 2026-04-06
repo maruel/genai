@@ -101,13 +101,14 @@ type callOpts struct {
 func parseOpts(opts []genai.GenOption) (callOpts, error) {
 	var co callOpts
 	var unsupported []string
+	var webTools []string
 	for _, opt := range opts {
 		if err := opt.Validate(); err != nil {
 			return callOpts{}, err
 		}
 		switch v := opt.(type) {
 		case *GenOption:
-			co.tools = v.Tools
+			co.tools = append(co.tools, v.Tools...)
 			co.skills = v.Skills
 			co.projSettings = v.ProjectSettings
 			co.maxBudgetUSD = v.MaxBudgetUSD
@@ -144,10 +145,18 @@ func parseOpts(opts []genai.GenOption) (callOpts, error) {
 		case *genai.GenOptionTools:
 			unsupported = append(unsupported, "GenOptionTools")
 		case *genai.GenOptionWeb:
-			unsupported = append(unsupported, "GenOptionWeb")
+			if v.Search {
+				webTools = append(webTools, "WebSearch")
+			}
+			if v.Search || v.Fetch {
+				webTools = append(webTools, "WebFetch")
+			}
 		default:
 			return callOpts{}, fmt.Errorf("unsupported option %T", opt)
 		}
+	}
+	if len(webTools) > 0 {
+		co.tools = append(co.tools, webTools...)
 	}
 	if len(unsupported) != 0 {
 		return co, &base.ErrNotSupported{Options: unsupported}

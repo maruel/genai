@@ -337,6 +337,7 @@ func TestBuildArgs(t *testing.T) {
 			"--input-format", "stream-json",
 			"--output-format", "stream-json",
 			"--strict-mcp-config",
+			"--no-chrome",
 			"--tools", "",
 			"--disable-slash-commands",
 			"--setting-sources", "project,local",
@@ -492,6 +493,39 @@ func TestGenOption(t *testing.T) {
 		}
 		if co.systemPrompt != "Be helpful" {
 			t.Errorf("systemPrompt: got %q, want %q", co.systemPrompt, "Be helpful")
+		}
+	})
+	t.Run("web_search", func(t *testing.T) {
+		co, err := parseOpts([]genai.GenOption{&genai.GenOptionWeb{Search: true}})
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+		want := []string{"WebSearch", "WebFetch"}
+		if !slices.Equal(co.tools, want) {
+			t.Errorf("tools: got %v, want %v", co.tools, want)
+		}
+	})
+	t.Run("web_fetch", func(t *testing.T) {
+		co, err := parseOpts([]genai.GenOption{&genai.GenOptionWeb{Fetch: true}})
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+		want := []string{"WebFetch"}
+		if !slices.Equal(co.tools, want) {
+			t.Errorf("tools: got %v, want %v", co.tools, want)
+		}
+	})
+	t.Run("web_with_tools", func(t *testing.T) {
+		co, err := parseOpts([]genai.GenOption{
+			&GenOption{Tools: []string{"Bash"}},
+			&genai.GenOptionWeb{Search: true, Fetch: true},
+		})
+		if err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+		want := []string{"Bash", "WebSearch", "WebFetch"}
+		if !slices.Equal(co.tools, want) {
+			t.Errorf("tools: got %v, want %v", co.tools, want)
 		}
 	})
 	t.Run("unsupported", func(t *testing.T) {

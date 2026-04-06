@@ -12,6 +12,7 @@ import (
 	"log/slog"
 	"math"
 	"slices"
+	"strings"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
@@ -292,6 +293,13 @@ func exerciseWebFetch(ctx context.Context, cs *callState, f *scoreboard.Function
 	}
 	if err == nil {
 		f.WebFetch = slices.ContainsFunc(res.Replies, func(r genai.Reply) bool { return !r.Citation.IsZero() })
+		if !f.WebFetch {
+			// perdu.com contains "Pas de panique, on va vous aider" —
+			// verify the model actually fetched the page.
+			f.WebFetch = slices.ContainsFunc(res.Replies, func(r genai.Reply) bool {
+				return strings.Contains(strings.ToLower(r.Text), "pas de panique")
+			})
+		}
 		for i := range res.Replies {
 			if res.Replies[i].Citation.IsZero() {
 				continue
@@ -314,9 +322,17 @@ func exerciseWebSearch(ctx context.Context, cs *callState, f *scoreboard.Functio
 		internal.Logger(ctx).DebugContext(ctx, "WebSearch", "err", err)
 		return err
 	}
-	// It must contains citations.
+	// Prefer structured citations when available; fall back to checking
+	// that the reply contains the expected answer. Some providers (e.g.
+	// claudecode) return web results as plain text without structured
+	// citation objects.
 	if err == nil {
 		f.WebSearch = slices.ContainsFunc(res.Replies, func(r genai.Reply) bool { return !r.Citation.IsZero() })
+		if !f.WebSearch {
+			f.WebSearch = slices.ContainsFunc(res.Replies, func(r genai.Reply) bool {
+				return strings.Contains(r.Text, "Mark Carney")
+			})
+		}
 		for i := range res.Replies {
 			r := &res.Replies[i]
 			if r.Citation.IsZero() {

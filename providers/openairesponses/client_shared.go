@@ -24,27 +24,6 @@ import (
 	"github.com/maruel/genai/scoreboard"
 )
 
-// ServiceTier is the quality of service to determine the request's priority.
-type ServiceTier string
-
-const (
-	// ServiceTierAuto will utilize scale tier credits until they are exhausted if the Project is Scale tier
-	// enabled, else the request will be processed using the default service tier with a lower uptime SLA and no
-	// latency guarantee.
-	//
-	// https://openai.com/api-scale-tier/
-	ServiceTierAuto ServiceTier = "auto"
-	// ServiceTierDefault has the request be processed using the default service tier with a lower uptime SLA
-	// and no latency guarantee.
-	ServiceTierDefault ServiceTier = "default"
-	// ServiceTierFlex has the request be processed with the Flex Processing service tier.
-	//
-	// Flex processing is in beta, and currently only available for GPT-5, o3 and o4-mini models.
-	//
-	// https://platform.openai.com/docs/guides/flex-processing
-	ServiceTierFlex ServiceTier = "flex"
-)
-
 // Validate implements genai.Validatable.
 func (s ServiceTier) Validate() error {
 	switch s {
@@ -55,22 +34,6 @@ func (s ServiceTier) Validate() error {
 	}
 }
 
-// ReasoningEffort is the effort the model should put into reasoning. Default is Medium.
-//
-// https://platform.openai.com/docs/api-reference/assistants/createAssistant#assistants-createassistant-reasoning_effort
-// https://platform.openai.com/docs/guides/reasoning
-type ReasoningEffort string
-
-// Reasoning effort values.
-const (
-	ReasoningEffortNone    ReasoningEffort = "none"
-	ReasoningEffortMinimal ReasoningEffort = "minimal"
-	ReasoningEffortLow     ReasoningEffort = "low"
-	ReasoningEffortMedium  ReasoningEffort = "medium"
-	ReasoningEffortHigh    ReasoningEffort = "high"
-	ReasoningEffortXHigh   ReasoningEffort = "xhigh"
-)
-
 // Validate implements genai.Validatable.
 func (r ReasoningEffort) Validate() error {
 	switch r {
@@ -79,24 +42,6 @@ func (r ReasoningEffort) Validate() error {
 	default:
 		return fmt.Errorf("invalid reasoning effort %q", r)
 	}
-}
-
-//
-
-// ImageRequest is documented at https://platform.openai.com/docs/api-reference/images
-type ImageRequest struct {
-	Prompt            string     `json:"prompt"`
-	Model             string     `json:"model,omitzero"`              // Default to dall-e-2, unless a gpt-image-1 specific parameter is used.
-	Background        Background `json:"background,omitzero"`         // Default "auto"
-	Moderation        string     `json:"moderation,omitzero"`         // gpt-image-1: "low" or "auto"
-	N                 int64      `json:"n,omitzero"`                  // Number of images to return
-	OutputCompression float64    `json:"output_compression,omitzero"` // Defaults to 100. Only supported on gpt-image-1 with webp or jpeg
-	OutputFormat      string     `json:"output_format,omitzero"`      // "png", "jpeg" or "webp". Defaults to png. Only supported on gpt-image-1.
-	Quality           string     `json:"quality,omitzero"`            // "auto", gpt-image-1: "high", "medium", "low". dall-e-3: "hd", "standard". dall-e-2: "standard".
-	ResponseFormat    string     `json:"response_format,omitzero"`    // "url" or "b64_json"; url is valid for 60 minutes; gpt-image-1 only returns b64_json
-	Size              string     `json:"size,omitzero"`               // "auto", gpt-image-1: "1024x1024", "1536x1024", "1024x1536". dall-e-3: "1024x1024", "1792x1024", "1024x1792". dall-e-2: "256x256", "512x512", "1024x1024".
-	Style             string     `json:"style,omitzero"`              // dall-e-3: "vivid", "natural"
-	User              string     `json:"user,omitzero"`               // End-user to help monitor and detect abuse
 }
 
 // Init initializes the request from the given parameters.
@@ -150,56 +95,6 @@ func (i *ImageRequest) Init(msg *genai.Message, model string, opts ...genai.GenO
 	return nil
 }
 
-// Background is only supported on gpt-image-1.
-type Background string
-
-// Background mode values.
-const (
-	BackgroundAuto        Background = "auto"
-	BackgroundTransparent Background = "transparent"
-	BackgroundOpaque      Background = "opaque"
-)
-
-// ImageResponse is the provider-specific image generation response.
-type ImageResponse struct {
-	Created base.Time         `json:"created"`
-	Data    []ImageChoiceData `json:"data"`
-	Usage   struct {
-		InputTokens        int64 `json:"input_tokens"`
-		OutputTokens       int64 `json:"output_tokens"`
-		TotalTokens        int64 `json:"total_tokens"`
-		InputTokensDetails struct {
-			TextTokens  int64 `json:"text_tokens"`
-			ImageTokens int64 `json:"image_tokens"`
-		} `json:"input_tokens_details"`
-	} `json:"usage"`
-	Background   string `json:"background"`    // "opaque"
-	Size         string `json:"size"`          // e.g. "1024x1024"
-	Quality      string `json:"quality"`       // e.g. "medium"
-	OutputFormat string `json:"output_format"` // e.g. "png"
-}
-
-// ImageChoiceData is the data for one image generation choice.
-type ImageChoiceData struct {
-	B64JSON       []byte `json:"b64_json"`
-	RevisedPrompt string `json:"revised_prompt"` // dall-e-3 only
-	URL           string `json:"url"`            // Unsupported for gpt-image-1
-}
-
-//
-
-// Model is documented at https://platform.openai.com/docs/api-reference/models/object
-//
-// Sadly the modalities aren't reported. The only way I can think of to find it at run time is to fetch
-// https://platform.openai.com/docs/models/gpt-4o-mini-realtime-preview, find the div containing
-// "Modalities:", then extract the modalities from the text.
-type Model struct {
-	ID      string    `json:"id"`
-	Object  string    `json:"object"`
-	Created base.Time `json:"created"`
-	OwnedBy string    `json:"owned_by"`
-}
-
 // GetID implements genai.Model.
 func (m *Model) GetID() string {
 	return m.ID
@@ -214,12 +109,6 @@ func (m *Model) Context() int64 {
 	return 0
 }
 
-// ModelsResponse represents the response structure for OpenAI models listing.
-type ModelsResponse struct {
-	Object string  `json:"object"` // list
-	Data   []Model `json:"data"`
-}
-
 // ToModels converts OpenAI models to genai.Model interfaces.
 func (r *ModelsResponse) ToModels() []genai.Model {
 	models := make([]genai.Model, len(r.Data))
@@ -227,21 +116,6 @@ func (r *ModelsResponse) ToModels() []genai.Model {
 		models[i] = &r.Data[i]
 	}
 	return models
-}
-
-//
-
-// File is documented at https://platform.openai.com/docs/api-reference/files/object
-type File struct {
-	Bytes         int64     `json:"bytes"` // File size
-	CreatedAt     base.Time `json:"created_at"`
-	ExpiresAt     base.Time `json:"expires_at"`
-	Filename      string    `json:"filename"`
-	ID            string    `json:"id"`
-	Object        string    `json:"object"`         // "file"
-	Purpose       string    `json:"purpose"`        // One of: assistants, assistants_output, batch, batch_output, fine-tune, fine-tune-results and vision
-	Status        string    `json:"status"`         // Deprecated
-	StatusDetails string    `json:"status_details"` // Deprecated
 }
 
 // GetID implements genai.Model.
@@ -257,19 +131,6 @@ func (f *File) GetDisplayName() string {
 // GetExpiry implements genai.CacheItem.
 func (f *File) GetExpiry() time.Time {
 	return f.ExpiresAt.AsTime()
-}
-
-// FileDeleteResponse is documented at https://platform.openai.com/docs/api-reference/files/delete
-type FileDeleteResponse struct {
-	ID      string `json:"id"`
-	Object  string `json:"object"` // "file"
-	Deleted bool   `json:"deleted"`
-}
-
-// FileListResponse is documented at https://platform.openai.com/docs/api-reference/files/list
-type FileListResponse struct {
-	Data   []File `json:"data"`
-	Object string `json:"object"` // "list"
 }
 
 //

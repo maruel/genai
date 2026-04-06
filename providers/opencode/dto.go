@@ -10,6 +10,7 @@
 //
 // Source: https://github.com/anomalyco/opencode
 // Spec:   https://agentclientprotocol.com
+
 package opencode
 
 import "encoding/json"

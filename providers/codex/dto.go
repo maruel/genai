@@ -10,6 +10,7 @@
 //	codex-rs/app-server-protocol/src/protocol/common.rs — method string ↔ struct mapping
 //
 // Source: https://github.com/openai/codex
+
 package codex
 
 import "encoding/json"

@@ -10,7 +10,6 @@ import (
 	"io"
 	"net/http"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"slices"
 	"strings"
@@ -24,101 +23,24 @@ import (
 	"github.com/maruel/genai/smoke/smoketest"
 )
 
-// recordingExecutor implements the executor interface for tests.
-//
-// When RECORD=1, it runs the real claude subprocess and tees its stdout to the
-// fixture file so the recording can be replayed later.  Otherwise it reads
-// the fixture file directly without running any subprocess.
-type recordingExecutor struct {
-	fixture string       // path to .ndjson fixture file
-	real    *cmdExecutor // non-nil only in record mode
+// recorderExec adapts SubprocessRecorder to the unexported executor interface.
+type recorderExec struct {
+	r *internaltest.SubprocessRecorder
 }
 
-// newRecordingExecutor returns an executor whose fixture file is at
-// testdata/<name>.ndjson.  If RECORD is "all" or "failure_only" and a real
-// claude binary is available, the executor will record a fresh trace;
-// otherwise it replays the existing fixture.
-//
-// In "failure_only" mode the existing fixture is replayed first; recording
-// only happens when the fixture is missing or empty.
-func newRecordingExecutor(t testing.TB, name string) *recordingExecutor {
-	t.Helper()
-	fixture := filepath.Join("testdata", name+".ndjson")
-	e := &recordingExecutor{fixture: fixture}
-	rec := os.Getenv("RECORD")
-	if rec == "all" || rec == "failure_only" {
-		bin, err := findClaude()
-		if err != nil {
-			t.Skipf("RECORD=%s but claude not found: %v", rec, err)
-		}
-		if rec == "all" {
-			e.real = &cmdExecutor{bin: bin}
-		} else {
-			// failure_only: only record when the fixture is missing or empty.
-			info, err := os.Stat(fixture)
-			if err != nil || info.Size() == 0 {
-				e.real = &cmdExecutor{bin: bin}
-			}
-		}
-	}
-	return e
+func (e *recorderExec) start(ctx context.Context, args []string) (io.WriteCloser, io.ReadCloser, func() error, error) {
+	return e.r.Start(ctx, args)
 }
 
-func (e *recordingExecutor) start(ctx context.Context, args []string) (io.WriteCloser, io.ReadCloser, func() error, error) {
-	if e.real != nil {
-		return e.record(ctx, args)
-	}
-	return e.replay()
-}
-
-func (e *recordingExecutor) replay() (io.WriteCloser, io.ReadCloser, func() error, error) {
-	data, err := os.ReadFile(e.fixture)
-	if err != nil {
-		return nil, nil, nil, err
-	}
-	pr, pw := io.Pipe()
-	go func() { _, _ = io.Copy(io.Discard, pr) }()
-	return pw, io.NopCloser(strings.NewReader(string(data))), func() error { return nil }, nil
-}
-
-func (e *recordingExecutor) record(ctx context.Context, args []string) (io.WriteCloser, io.ReadCloser, func() error, error) {
-	stdin, stdout, wait, err := e.real.start(ctx, args)
-	if err != nil {
-		return nil, nil, nil, err
-	}
-	if err := os.MkdirAll(filepath.Dir(e.fixture), 0o755); err != nil {
-		return nil, nil, nil, err
-	}
-	f, err := os.Create(e.fixture)
-	if err != nil {
-		return nil, nil, nil, err
-	}
-	// Tee the subprocess stdout to the fixture file while it streams.
-	tee := io.TeeReader(stdout, f)
-	rc := &teeReadCloser{Reader: tee, file: f, orig: stdout}
-	return stdin, rc, wait, nil
-}
-
-// teeReadCloser closes both the fixture file and the original ReadCloser.
-type teeReadCloser struct {
-	io.Reader
-	file *os.File
-	orig io.ReadCloser
-}
-
-func (t *teeReadCloser) Close() error {
-	return errors.Join(t.orig.Close(), t.file.Close())
-}
-
-// findClaude returns the path to the claude binary, mirroring the logic in New.
-func findClaude() (string, error) {
-	return exec.LookPath("claude")
+func newRecordingExecutor(t testing.TB, name string) *recorderExec {
+	return &recorderExec{internaltest.NewSubprocessRecorder(t, name, "claude", func(bin string) internaltest.Starter {
+		return (&cmdExecutor{bin: bin}).start
+	})}
 }
 
 // newTestClient creates a Client whose subprocess is backed by a
-// recordingExecutor for the given scenario name.
+// SubprocessRecorder for the given scenario name.
 func newTestClient(t *testing.T, name string, opts ...genai.ProviderOption) *Client {
-	t.Helper()
 	c, err := New(opts...)
 	if err != nil {
 		t.Fatalf("New: %v", err)

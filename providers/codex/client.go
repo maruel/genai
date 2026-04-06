@@ -43,6 +43,7 @@ import (
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
+	"github.com/maruel/genai/internal/msgutil"
 	"github.com/maruel/genai/scoreboard"
 )
 
@@ -278,11 +279,11 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 			}
 		}()
 	}
-	userMsg, err := lastUserMsg(msgs)
+	userMsg, err := msgutil.LastUserMsg(msgs)
 	if err != nil {
 		return genai.Result{}, err
 	}
-	threadID := extractThreadID(msgs)
+	threadID := msgutil.ExtractOpaqueID(msgs, threadIDKey)
 
 	stdin, stdout, wait, err := c.exec.start(ctx, []string{"app-server"})
 	if err != nil {
@@ -318,11 +319,11 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 			return yieldNothing, errFinish(optsErr)
 		}
 	}
-	userMsg, err := lastUserMsg(msgs)
+	userMsg, err := msgutil.LastUserMsg(msgs)
 	if err != nil {
 		return yieldNothing, errFinish(err)
 	}
-	threadID := extractThreadID(msgs)
+	threadID := msgutil.ExtractOpaqueID(msgs, threadIDKey)
 
 	var (
 		result   genai.Result
@@ -439,7 +440,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 // used request ID so the caller can continue numbering.
 func initAndListModels(stdin io.Writer, sc *bufio.Scanner) ([]ModelInfo, error) {
 	// 1. Send initialize request.
-	if err := writeJSON(stdin, JSONRPCRequest{
+	if err := msgutil.WriteNDJSON(stdin, JSONRPCRequest{
 		JSONRPC: "2.0",
 		ID:      1,
 		Method:  "initialize",
@@ -455,12 +456,12 @@ func initAndListModels(stdin io.Writer, sc *bufio.Scanner) ([]ModelInfo, error) 
 	}
 
 	// 2. Send initialized notification.
-	if err := writeJSON(stdin, JSONRPCNotification{JSONRPC: "2.0", Method: "initialized"}); err != nil {
+	if err := msgutil.WriteNDJSON(stdin, JSONRPCNotification{JSONRPC: "2.0", Method: "initialized"}); err != nil {
 		return nil, fmt.Errorf("write initialized: %w", err)
 	}
 
 	// 3. Fetch model list.
-	if err := writeJSON(stdin, JSONRPCRequest{JSONRPC: "2.0", ID: 2, Method: "model/list", Params: struct{}{}}); err != nil {
+	if err := msgutil.WriteNDJSON(stdin, JSONRPCRequest{JSONRPC: "2.0", ID: 2, Method: "model/list", Params: struct{}{}}); err != nil {
 		return nil, fmt.Errorf("write model/list: %w", err)
 	}
 	mlData, err := readResponse(sc)
@@ -498,7 +499,7 @@ func handshake(stdin io.Writer, sc *bufio.Scanner, mdl, resumeThreadID string) (
 			Params:  ThreadStartParams{Model: mdl},
 		}
 	}
-	if err := writeJSON(stdin, threadReq); err != nil {
+	if err := msgutil.WriteNDJSON(stdin, threadReq); err != nil {
 		return "", fmt.Errorf("write thread/start: %w", err)
 	}
 	respData, err := readResponse(sc)
@@ -547,7 +548,7 @@ func sendTurnStart(stdin io.Writer, threadID string, effort ReasoningEffort, msg
 	if err != nil {
 		return err
 	}
-	return writeJSON(stdin, JSONRPCRequest{
+	return msgutil.WriteNDJSON(stdin, JSONRPCRequest{
 		JSONRPC: "2.0",
 		ID:      100, // Arbitrary; we don't wait for this response.
 		Method:  "turn/start",
@@ -707,43 +708,6 @@ func buildResult(replies []genai.Reply, usage genai.Usage, threadID string) gena
 		})
 	}
 	return r
-}
-
-// extractThreadID scans message history for a thread ID stored in
-// Reply.Opaque by a previous codex call.
-func extractThreadID(msgs genai.Messages) string {
-	for i := len(msgs) - 1; i >= 0; i-- {
-		for j := range msgs[i].Replies {
-			if id, ok := msgs[i].Replies[j].Opaque[threadIDKey].(string); ok && id != "" {
-				return id
-			}
-		}
-	}
-	return ""
-}
-
-// lastUserMsg returns the last user message in msgs.
-func lastUserMsg(msgs genai.Messages) (genai.Message, error) {
-	for i := len(msgs) - 1; i >= 0; i-- {
-		if msgs[i].Role() == "user" {
-			if len(msgs[i].Requests) == 0 {
-				return genai.Message{}, errors.New("last user message has no content")
-			}
-			return msgs[i], nil
-		}
-	}
-	return genai.Message{}, errors.New("no user message found in msgs")
-}
-
-// writeJSON marshals v as JSON and writes it followed by a newline.
-func writeJSON(w io.Writer, v any) error {
-	data, err := json.Marshal(v)
-	if err != nil {
-		return err
-	}
-	data = append(data, '\n')
-	_, err = w.Write(data)
-	return err
 }
 
 // yieldNothing is an empty iterator used for early error returns in GenStream.

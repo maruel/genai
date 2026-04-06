@@ -44,6 +44,7 @@ import (
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
+	"github.com/maruel/genai/internal/msgutil"
 	"github.com/maruel/genai/scoreboard"
 )
 
@@ -251,11 +252,11 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 			}
 		}()
 	}
-	userMsg, err := lastUserMsg(msgs)
+	userMsg, err := msgutil.LastUserMsg(msgs)
 	if err != nil {
 		return genai.Result{}, err
 	}
-	resumeSessionID := extractSessionID(msgs)
+	resumeSessionID := msgutil.ExtractOpaqueID(msgs, sessionIDKey)
 
 	stdin, stdout, wait, err := c.exec.start(ctx, []string{"acp"})
 	if err != nil {
@@ -294,11 +295,11 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 	if len(opts) > 0 {
 		optsErr = &base.ErrNotSupported{Options: []string{fmt.Sprintf("%T", opts[0])}}
 	}
-	userMsg, err := lastUserMsg(msgs)
+	userMsg, err := msgutil.LastUserMsg(msgs)
 	if err != nil {
 		return yieldNothing, errFinish(err)
 	}
-	resumeSessionID := extractSessionID(msgs)
+	resumeSessionID := msgutil.ExtractOpaqueID(msgs, sessionIDKey)
 
 	var (
 		result   genai.Result
@@ -359,7 +360,7 @@ func handshake(stdin io.Writer, sc *bufio.Scanner, mdl, resumeSessionID string) 
 
 	// 1. Send initialize request.
 	hs.nextID++
-	if err := writeJSON(stdin, JSONRPCRequest{
+	if err := msgutil.WriteNDJSON(stdin, JSONRPCRequest{
 		JSONRPC: "2.0",
 		ID:      hs.nextID,
 		Method:  MethodInitialize,
@@ -398,7 +399,7 @@ func handshake(stdin io.Writer, sc *bufio.Scanner, mdl, resumeSessionID string) 
 			Params:  SessionNewParams{Cwd: os.TempDir(), McpServers: []MCPServer{}},
 		}
 	}
-	if err := writeJSON(stdin, sessionReq); err != nil {
+	if err := msgutil.WriteNDJSON(stdin, sessionReq); err != nil {
 		return nil, fmt.Errorf("write session request: %w", err)
 	}
 	sessionData, err := readResponse(sc)
@@ -422,7 +423,7 @@ func handshake(stdin io.Writer, sc *bufio.Scanner, mdl, resumeSessionID string) 
 	// 3. Switch model if requested (best-effort).
 	if mdl != "" {
 		hs.nextID++
-		if err := writeJSON(stdin, JSONRPCRequest{
+		if err := msgutil.WriteNDJSON(stdin, JSONRPCRequest{
 			JSONRPC: "2.0",
 			ID:      hs.nextID,
 			Method:  MethodUnstableSetSessionModel,
@@ -445,7 +446,7 @@ func sendUserPrompt(stdin io.Writer, hs *handshakeResult, msg *genai.Message) (i
 	}
 	hs.nextID++
 	id := hs.nextID
-	return id, writeJSON(stdin, JSONRPCRequest{
+	return id, msgutil.WriteNDJSON(stdin, JSONRPCRequest{
 		JSONRPC: "2.0",
 		ID:      id,
 		Method:  MethodSessionPrompt,
@@ -620,7 +621,7 @@ func handleAgentRequest(stdin io.Writer, line []byte) error {
 		return fmt.Errorf("unmarshal request id: %w", err)
 	}
 	if msg.Method != MethodSessionRequestPermission {
-		return writeJSON(stdin, JSONRPCResponse{JSONRPC: "2.0", ID: id, Result: struct{}{}})
+		return msgutil.WriteNDJSON(stdin, JSONRPCResponse{JSONRPC: "2.0", ID: id, Result: struct{}{}})
 	}
 	var params PermissionRequestParams
 	if err := json.Unmarshal(msg.Params, &params); err != nil {
@@ -637,7 +638,7 @@ func handleAgentRequest(stdin io.Writer, line []byte) error {
 	if optionID == "" && len(params.Options) > 0 {
 		optionID = params.Options[0].OptionID
 	}
-	return writeJSON(stdin, JSONRPCResponse{
+	return msgutil.WriteNDJSON(stdin, JSONRPCResponse{
 		JSONRPC: "2.0",
 		ID:      id,
 		Result:  PermissionResponseResult{OptionID: optionID},
@@ -679,43 +680,6 @@ func buildPromptResult(line []byte, text, thinking, sessionID string) (genai.Res
 		})
 	}
 	return r, nil
-}
-
-// extractSessionID scans message history for a session ID stored in
-// Reply.Opaque by a previous opencode call.
-func extractSessionID(msgs genai.Messages) string {
-	for i := len(msgs) - 1; i >= 0; i-- {
-		for j := range msgs[i].Replies {
-			if id, ok := msgs[i].Replies[j].Opaque[sessionIDKey].(string); ok && id != "" {
-				return id
-			}
-		}
-	}
-	return ""
-}
-
-// lastUserMsg returns the last user message in msgs.
-func lastUserMsg(msgs genai.Messages) (genai.Message, error) {
-	for i := len(msgs) - 1; i >= 0; i-- {
-		if msgs[i].Role() == "user" {
-			if len(msgs[i].Requests) == 0 {
-				return genai.Message{}, errors.New("last user message has no content")
-			}
-			return msgs[i], nil
-		}
-	}
-	return genai.Message{}, errors.New("no user message found in msgs")
-}
-
-// writeJSON marshals v as JSON and writes it followed by a newline.
-func writeJSON(w io.Writer, v any) error {
-	data, err := json.Marshal(v)
-	if err != nil {
-		return err
-	}
-	data = append(data, '\n')
-	_, err = w.Write(data)
-	return err
 }
 
 // yieldNothing is an empty iterator used for early error returns in GenStream.

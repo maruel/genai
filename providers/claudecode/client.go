@@ -51,6 +51,7 @@ import (
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
+	"github.com/maruel/genai/internal/msgutil"
 	"github.com/maruel/genai/scoreboard"
 )
 
@@ -277,11 +278,11 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 			}
 		}()
 	}
-	userMsg, err := lastUserMsg(msgs)
+	userMsg, err := msgutil.LastUserMsg(msgs)
 	if err != nil {
 		return genai.Result{}, err
 	}
-	sessionID := extractSessionID(msgs)
+	sessionID := msgutil.ExtractOpaqueID(msgs, sessionIDKey)
 	args := c.buildArgs(co, sessionID, false)
 
 	stdin, stdout, wait, err := c.exec.start(ctx, args)
@@ -354,11 +355,11 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 			return yieldNothing, errFinish(optsErr)
 		}
 	}
-	userMsg, err := lastUserMsg(msgs)
+	userMsg, err := msgutil.LastUserMsg(msgs)
 	if err != nil {
 		return yieldNothing, errFinish(err)
 	}
-	sessionID := extractSessionID(msgs)
+	sessionID := msgutil.ExtractOpaqueID(msgs, sessionIDKey)
 	args := c.buildArgs(co, sessionID, true)
 
 	var (
@@ -535,29 +536,6 @@ func (c *Client) buildArgs(co callOpts, sessionID string, stream bool) []string 
 
 // extractSessionID scans message history for a session ID stored in
 // Reply.Opaque by a previous claudecode call.
-func extractSessionID(msgs genai.Messages) string {
-	for i := len(msgs) - 1; i >= 0; i-- {
-		for j := range msgs[i].Replies {
-			if id, ok := msgs[i].Replies[j].Opaque[sessionIDKey].(string); ok && id != "" {
-				return id
-			}
-		}
-	}
-	return ""
-}
-
-// lastUserMsg returns the last user message in msgs.
-func lastUserMsg(msgs genai.Messages) (genai.Message, error) {
-	for i := len(msgs) - 1; i >= 0; i-- {
-		if msgs[i].Role() == "user" {
-			if len(msgs[i].Requests) == 0 {
-				return genai.Message{}, errors.New("last user message has no content")
-			}
-			return msgs[i], nil
-		}
-	}
-	return genai.Message{}, errors.New("no user message found in msgs")
-}
 
 // writeUserMsg encodes a genai.Message as NDJSON and writes it to stdin.
 func writeUserMsg(w io.Writer, msg *genai.Message) error {

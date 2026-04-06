@@ -18,6 +18,7 @@ import (
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal/internaltest"
+	"github.com/maruel/genai/internal/msgutil"
 	"github.com/maruel/genai/internal/myrecorder"
 	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/genai/smoke/smoketest"
@@ -414,47 +415,14 @@ func TestExtractSessionID(t *testing.T) {
 				{Opaque: map[string]any{sessionIDKey: "abc-123"}},
 			}},
 		}
-		if got := extractSessionID(msgs); got != "abc-123" {
+		if got := msgutil.ExtractOpaqueID(msgs, sessionIDKey); got != "abc-123" {
 			t.Errorf("got %q, want %q", got, "abc-123")
 		}
 	})
 	t.Run("not_found", func(t *testing.T) {
 		msgs := genai.Messages{genai.NewTextMessage("hi")}
-		if got := extractSessionID(msgs); got != "" {
+		if got := msgutil.ExtractOpaqueID(msgs, sessionIDKey); got != "" {
 			t.Errorf("got %q, want empty", got)
-		}
-	})
-}
-
-func TestLastUserMsg(t *testing.T) {
-	t.Run("valid", func(t *testing.T) {
-		msgs := genai.Messages{genai.NewTextMessage("hello world")}
-		got, err := lastUserMsg(msgs)
-		if err != nil {
-			t.Fatalf("unexpected error: %v", err)
-		}
-		if len(got.Requests) == 0 || got.Requests[0].Text != "hello world" {
-			t.Errorf("got %v, want text %q", got.Requests, "hello world")
-		}
-	})
-	t.Run("no_user_message", func(t *testing.T) {
-		msgs := genai.Messages{{Replies: []genai.Reply{{Text: "hi"}}}}
-		if _, err := lastUserMsg(msgs); err == nil {
-			t.Fatal("expected error for no user message")
-		}
-	})
-	t.Run("last_user_wins", func(t *testing.T) {
-		msgs := genai.Messages{
-			genai.NewTextMessage("first"),
-			{Replies: []genai.Reply{{Text: "response"}}},
-			genai.NewTextMessage("second"),
-		}
-		got, err := lastUserMsg(msgs)
-		if err != nil {
-			t.Fatalf("unexpected error: %v", err)
-		}
-		if len(got.Requests) == 0 || got.Requests[0].Text != "second" {
-			t.Errorf("got %v, want text %q", got.Requests, "second")
 		}
 	})
 }

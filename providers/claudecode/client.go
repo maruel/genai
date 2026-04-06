@@ -72,17 +72,6 @@ func Scoreboard() scoreboard.Score {
 // sessionIDKey is the key used in Reply.Opaque to carry session IDs.
 const sessionIDKey = "session_id"
 
-// executor abstracts subprocess creation so tests can inject a recording or
-// fake implementation.
-//
-// start launches the claude subprocess and returns:
-//   - stdin: write the NDJSON user message, then close to signal end-of-input
-//   - stdout: raw reader over the subprocess stdout; caller wraps in a Scanner
-//   - wait: call after stdout is fully consumed to release process resources
-type executor interface {
-	start(ctx context.Context, args []string) (stdin io.WriteCloser, stdout io.ReadCloser, wait func() error, err error)
-}
-
 // cmdExecutor is the production executor backed by exec.Cmd.
 type cmdExecutor struct {
 	bin        string
@@ -144,10 +133,11 @@ func newScanner(r io.Reader) *bufio.Scanner {
 // Client is a genai provider that delegates to the local `claude` CLI.
 type Client struct {
 	base.NotImplemented
-	exec       executor
-	bin        string // resolved lazily by ensureBin; empty when exec is a test fake
-	model      string
-	apiKeyAuth bool // keep ANTHROPIC_API_KEY in subprocess environment
+	exec           genai.Starter
+	starterWrapper genai.ProviderOptionStarterWrapper
+	bin            string
+	model          string
+	apiKeyAuth     bool // keep ANTHROPIC_API_KEY in subprocess environment
 
 	binOnce sync.Once
 	binErr  error
@@ -185,6 +175,8 @@ func New(opts ...genai.ProviderOption) (*Client, error) {
 			}
 		case ProviderOptionAPIKeyAuth:
 			c.apiKeyAuth = bool(v)
+		case genai.ProviderOptionStarterWrapper:
+			c.starterWrapper = v
 		default:
 			return nil, fmt.Errorf("unsupported provider option %T", opt)
 		}
@@ -193,20 +185,25 @@ func New(opts ...genai.ProviderOption) (*Client, error) {
 }
 
 // ensureBin locates the claude binary on first call. It is safe for
-// concurrent use. When exec is already set (e.g. by test code), it is a
-// no-op.
+// concurrent use.
 func (c *Client) ensureBin() error {
 	c.binOnce.Do(func() {
-		if c.exec != nil {
-			return
-		}
 		bin, err := exec.LookPath("claude")
 		if err != nil {
-			c.binErr = fmt.Errorf("claude CLI not found on PATH: %w", err)
-			return
+			if c.starterWrapper == nil {
+				c.binErr = fmt.Errorf("claude CLI not found on PATH: %w", err)
+				return
+			}
+			// Binary not found but a wrapper is set (e.g. test replay).
+			// Use a placeholder; the wrapper may never call the inner starter.
+			bin = "claude"
 		}
 		c.bin = bin
-		c.exec = &cmdExecutor{bin: bin, apiKeyAuth: c.apiKeyAuth}
+		s := genai.Starter((&cmdExecutor{bin: bin, apiKeyAuth: c.apiKeyAuth}).start)
+		if c.starterWrapper != nil {
+			s = c.starterWrapper(s)
+		}
+		c.exec = s
 	})
 	return c.binErr
 }
@@ -285,7 +282,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 	sessionID := msgutil.ExtractOpaqueID(msgs, sessionIDKey)
 	args := c.buildArgs(co, sessionID, false)
 
-	stdin, stdout, wait, err := c.exec.start(ctx, args)
+	stdin, stdout, wait, err := c.exec(ctx, args)
 	if err != nil {
 		return genai.Result{}, err
 	}
@@ -367,7 +364,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 		finalErr error
 	)
 	seq := func(yield func(genai.Reply) bool) {
-		stdin, stdout, wait, startErr := c.exec.start(ctx, args)
+		stdin, stdout, wait, startErr := c.exec(ctx, args)
 		if startErr != nil {
 			finalErr = startErr
 			return

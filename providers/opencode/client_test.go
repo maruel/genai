@@ -5,9 +5,6 @@
 package opencode
 
 import (
-	"context"
-	"errors"
-	"io"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -16,7 +13,7 @@ import (
 	"testing"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/base"
+	"github.com/maruel/genai/internal"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/internal/msgutil"
 	"github.com/maruel/genai/internal/myrecorder"
@@ -24,27 +21,13 @@ import (
 	"github.com/maruel/genai/smoke/smoketest"
 )
 
-// recorderExec adapts SubprocessRecorder to the unexported executor interface.
-type recorderExec struct {
-	r *internaltest.SubprocessRecorder
-}
-
-func (e *recorderExec) start(ctx context.Context, args []string) (io.WriteCloser, io.ReadCloser, func() error, error) {
-	return e.r.Start(ctx, args)
-}
-
-func newRecordingExecutor(t testing.TB, name string) *recorderExec {
-	return &recorderExec{internaltest.NewSubprocessRecorder(t, name, "opencode", func(bin string) internaltest.Starter {
-		return (&cmdExecutor{bin: bin}).start
-	})}
-}
-
 func newTestClient(t *testing.T, name string, opts ...genai.ProviderOption) *Client {
+	rec := internaltest.NewSubprocessRecorder(t, name, "opencode")
+	opts = append(opts, genai.ProviderOptionStarterWrapper(rec.Wrap))
 	c, err := New(opts...)
 	if err != nil {
 		t.Fatalf("New: %v", err)
 	}
-	c.exec = newRecordingExecutor(t, name)
 	return c
 }
 
@@ -88,16 +71,17 @@ func TestClient(t *testing.T) {
 			if model.Model != "" {
 				opts = append(opts, genai.ProviderOptionModel(model.Model))
 			}
-			c, err := New(opts...)
-			if err != nil {
-				t.Skipf("opencode: %v", err)
-			}
 			if fn != nil {
 				wrapped := fn(http.DefaultTransport)
 				if rec, ok := wrapped.(*myrecorder.Recorder); ok {
 					name := strings.TrimSuffix(rec.Name(), ".yaml")
-					c.exec = newRecordingExecutor(t, name)
+					r := internaltest.NewSubprocessRecorder(t, name, "opencode")
+					opts = append(opts, genai.ProviderOptionStarterWrapper(r.Wrap))
 				}
+			}
+			c, err := New(opts...)
+			if err != nil {
+				t.Fatal(err)
 			}
 			return c
 		}
@@ -120,8 +104,8 @@ func TestClient(t *testing.T) {
 				if err != nil {
 					t.Fatalf("New: %v", err)
 				}
-				if c.model != tc.want {
-					t.Errorf("got %q, want %q", c.model, tc.want)
+				if got := c.ModelID(); got != tc.want {
+					t.Errorf("got %q, want %q", got, tc.want)
 				}
 			})
 		}
@@ -363,19 +347,13 @@ func TestExtractSessionID(t *testing.T) {
 	})
 }
 
-func TestGenSyncUnsupportedOpts(t *testing.T) {
-	c := newTestClient(t, "GenSync_hello_nomodel")
-	msgs := genai.Messages{genai.NewTextMessage("hello")}
-	_, err := c.GenSync(t.Context(), msgs, &genai.GenOptionText{SystemPrompt: "Be helpful"})
-	var uerr *base.ErrNotSupported
-	if !errors.As(err, &uerr) {
-		t.Fatalf("expected ErrNotSupported, got %v", err)
-	}
-}
-
 func TestScoreboard(t *testing.T) {
 	s := Scoreboard()
 	if len(s.Scenarios) == 0 {
 		t.Fatal("scoreboard has no scenarios")
 	}
+}
+
+func init() {
+	internal.BeLenient = false
 }

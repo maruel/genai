@@ -13,63 +13,78 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
-)
 
-// Starter launches a subprocess and returns its stdin, stdout, a wait function,
-// and any error.
-//
-// It mirrors the unexported executor interface used by CLI-based providers.
-type Starter func(ctx context.Context, args []string) (io.WriteCloser, io.ReadCloser, func() error, error)
+	"github.com/maruel/genai"
+)
 
 // SubprocessRecorder provides recording and replay of subprocess I/O for
 // testing CLI-based providers (claudecode, codex, opencode).
 //
-// In record mode it delegates to a real subprocess via a Starter and tees
-// stdout into an NDJSON fixture file. In replay mode it reads the fixture
-// directly without launching any subprocess.
+// In record mode it delegates to the real subprocess starter (received via Wrap)
+// and tees stdout into an NDJSON fixture file. In replay mode it reads the
+// fixture directly without launching any subprocess.
+//
+// Use it as a ProviderOptionStarterWrapper:
+//
+//	rec := internaltest.NewSubprocessRecorder(t, "scenario", "claude")
+//	c, err := claudecode.New(genai.ProviderOptionStarterWrapper(rec.Wrap))
 type SubprocessRecorder struct {
 	fixture string
-	starter Starter // non-nil only in record mode
+	record  bool // true when a fresh trace should be recorded
 }
 
 // NewSubprocessRecorder returns a recorder whose fixture file lives at
 // testdata/<name>.ndjson.
 //
-// makeStarter is called with the resolved binary path when recording is
-// needed. It should return a Starter that launches the real subprocess
-// (typically wrapping the provider's cmdExecutor).
-//
 // When RECORD is "all", a fresh trace is always recorded. When RECORD is
 // "failure_only", recording happens only when the fixture is missing or empty.
 // Otherwise the existing fixture is replayed.
-func NewSubprocessRecorder(t testing.TB, name, binaryName string, makeStarter func(bin string) Starter) *SubprocessRecorder {
+func NewSubprocessRecorder(t testing.TB, name, binaryName string) *SubprocessRecorder {
 	fixture := filepath.Join("testdata", name+".ndjson")
 	r := &SubprocessRecorder{fixture: fixture}
 	rec := os.Getenv("RECORD")
 	if rec == "all" || rec == "failure_only" {
-		bin, err := exec.LookPath(binaryName)
-		if err != nil {
-			t.Skipf("RECORD=%s but %s not found: %v", rec, binaryName, err)
+		if _, err := exec.LookPath(binaryName); err != nil {
+			t.Fatalf("RECORD=%s but %s not found: %v", rec, binaryName, err)
 		}
 		if rec == "all" {
-			r.starter = makeStarter(bin)
+			r.record = true
 		} else {
 			info, err := os.Stat(fixture)
 			if err != nil || info.Size() == 0 {
-				r.starter = makeStarter(bin)
+				r.record = true
 			}
 		}
 	}
 	return r
 }
 
-// Start either records a fresh subprocess interaction or replays an existing
-// fixture, returning stdin, stdout, a wait function, and any error.
-func (r *SubprocessRecorder) Start(ctx context.Context, args []string) (io.WriteCloser, io.ReadCloser, func() error, error) {
-	if r.starter != nil {
-		return r.record(ctx, args)
+// Wrap returns a starter that either records a fresh subprocess interaction or
+// replays an existing fixture.
+//
+// It implements the genai.ProviderOptionStarterWrapper signature.
+func (r *SubprocessRecorder) Wrap(inner genai.Starter) genai.Starter {
+	if r.record {
+		return func(ctx context.Context, args []string) (io.WriteCloser, io.ReadCloser, func() error, error) {
+			stdin, stdout, wait, err := inner(ctx, args)
+			if err != nil {
+				return nil, nil, nil, err
+			}
+			if err := os.MkdirAll(filepath.Dir(r.fixture), 0o755); err != nil {
+				return nil, nil, nil, err
+			}
+			f, err := os.Create(r.fixture)
+			if err != nil {
+				return nil, nil, nil, err
+			}
+			tee := io.TeeReader(stdout, f)
+			rc := &teeReadCloser{Reader: tee, file: f, orig: stdout}
+			return stdin, rc, wait, nil
+		}
 	}
-	return r.replay()
+	return func(_ context.Context, _ []string) (io.WriteCloser, io.ReadCloser, func() error, error) {
+		return r.replay()
+	}
 }
 
 func (r *SubprocessRecorder) replay() (io.WriteCloser, io.ReadCloser, func() error, error) {
@@ -80,23 +95,6 @@ func (r *SubprocessRecorder) replay() (io.WriteCloser, io.ReadCloser, func() err
 	pr, pw := io.Pipe()
 	go func() { _, _ = io.Copy(io.Discard, pr) }()
 	return pw, io.NopCloser(strings.NewReader(string(data))), func() error { return nil }, nil
-}
-
-func (r *SubprocessRecorder) record(ctx context.Context, args []string) (io.WriteCloser, io.ReadCloser, func() error, error) {
-	stdin, stdout, wait, err := r.starter(ctx, args)
-	if err != nil {
-		return nil, nil, nil, err
-	}
-	if err := os.MkdirAll(filepath.Dir(r.fixture), 0o755); err != nil {
-		return nil, nil, nil, err
-	}
-	f, err := os.Create(r.fixture)
-	if err != nil {
-		return nil, nil, nil, err
-	}
-	tee := io.TeeReader(stdout, f)
-	rc := &teeReadCloser{Reader: tee, file: f, orig: stdout}
-	return stdin, rc, wait, nil
 }
 
 // teeReadCloser closes both the fixture file and the original ReadCloser.

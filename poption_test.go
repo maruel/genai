@@ -118,6 +118,20 @@ func TestProviderOptionTransportWrapper(t *testing.T) {
 	})
 }
 
+func TestProviderOptionStarterWrapper(t *testing.T) {
+	t.Run("valid", func(t *testing.T) {
+		fn := ProviderOptionStarterWrapper(func(s Starter) Starter { return s })
+		if err := fn.Validate(); err != nil {
+			t.Fatal(err)
+		}
+	})
+	t.Run("error", func(t *testing.T) {
+		if err := ProviderOptionStarterWrapper(nil).Validate(); err == nil || err.Error() != "ProviderOptionStarterWrapper cannot be nil" {
+			t.Fatalf("want %q, got %q", "ProviderOptionStarterWrapper cannot be nil", err)
+		}
+	})
+}
+
 func TestProviderOptionInterface(t *testing.T) {
 	// Verify all types implement ProviderOption.
 	opts := []ProviderOption{
@@ -127,6 +141,7 @@ func TestProviderOptionInterface(t *testing.T) {
 		ProviderOptionModalities{ModalityText},
 		ProviderOptionPreloadedModels{mockModel{id: "m"}},
 		ProviderOptionTransportWrapper(func(rt http.RoundTripper) http.RoundTripper { return rt }),
+		ProviderOptionStarterWrapper(func(s Starter) Starter { return s }),
 	}
 	for _, o := range opts {
 		if err := o.Validate(); err != nil {

@@ -77,12 +77,6 @@ var optOutMethods = []Method{
 	MethodThreadNameUpdated,
 }
 
-// executor abstracts subprocess creation so tests can inject a recording or
-// fake implementation.
-type executor interface {
-	start(ctx context.Context, args []string) (stdin io.WriteCloser, stdout io.ReadCloser, wait func() error, err error)
-}
-
 // cmdExecutor is the production executor backed by exec.Cmd.
 type cmdExecutor struct{ bin string }
 
@@ -130,12 +124,13 @@ func (p ReasoningEffort) Validate() error {
 // Client is a genai provider that delegates to the local `codex` CLI.
 type Client struct {
 	base.NotImplemented
-	exec    executor
-	bin     string
-	model   string
-	effort  ReasoningEffort
-	binOnce sync.Once
-	binErr  error
+	exec           genai.Starter
+	starterWrapper genai.ProviderOptionStarterWrapper
+	bin            string
+	model          string
+	effort         ReasoningEffort
+	binOnce        sync.Once
+	binErr         error
 }
 
 // New creates a Client for the `codex` CLI.
@@ -168,6 +163,8 @@ func New(opts ...genai.ProviderOption) (*Client, error) {
 			}
 		case ReasoningEffort:
 			c.effort = v
+		case genai.ProviderOptionStarterWrapper:
+			c.starterWrapper = v
 		default:
 			return nil, fmt.Errorf("unsupported provider option %T", opt)
 		}
@@ -178,16 +175,20 @@ func New(opts ...genai.ProviderOption) (*Client, error) {
 // ensureBin locates the codex binary on first call. Safe for concurrent use.
 func (c *Client) ensureBin() error {
 	c.binOnce.Do(func() {
-		if c.exec != nil {
-			return
-		}
 		bin, err := exec.LookPath("codex")
 		if err != nil {
-			c.binErr = fmt.Errorf("codex CLI not found on PATH: %w", err)
-			return
+			if c.starterWrapper == nil {
+				c.binErr = fmt.Errorf("codex CLI not found on PATH: %w", err)
+				return
+			}
+			bin = "codex"
 		}
 		c.bin = bin
-		c.exec = &cmdExecutor{bin: bin}
+		s := genai.Starter((&cmdExecutor{bin: bin}).start)
+		if c.starterWrapper != nil {
+			s = c.starterWrapper(s)
+		}
+		c.exec = s
 	})
 	return c.binErr
 }
@@ -237,7 +238,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	if err := c.ensureBin(); err != nil {
 		return nil, err
 	}
-	stdin, stdout, wait, err := c.exec.start(ctx, []string{"app-server"})
+	stdin, stdout, wait, err := c.exec(ctx, []string{"app-server"})
 	if err != nil {
 		return nil, err
 	}
@@ -285,7 +286,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 	}
 	threadID := msgutil.ExtractOpaqueID(msgs, threadIDKey)
 
-	stdin, stdout, wait, err := c.exec.start(ctx, []string{"app-server"})
+	stdin, stdout, wait, err := c.exec(ctx, []string{"app-server"})
 	if err != nil {
 		return genai.Result{}, err
 	}
@@ -330,7 +331,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 		finalErr error
 	)
 	seq := func(yield func(genai.Reply) bool) {
-		stdin, stdout, wait, startErr := c.exec.start(ctx, []string{"app-server"})
+		stdin, stdout, wait, startErr := c.exec(ctx, []string{"app-server"})
 		if startErr != nil {
 			finalErr = startErr
 			return

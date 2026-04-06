@@ -5,7 +5,9 @@
 package genai
 
 import (
+	"context"
 	"errors"
+	"io"
 	"net/http"
 )
 
@@ -108,6 +110,27 @@ type ProviderOptionTransportWrapper func(http.RoundTripper) http.RoundTripper
 func (p ProviderOptionTransportWrapper) Validate() error {
 	if p == nil {
 		return errors.New("ProviderOptionTransportWrapper cannot be nil")
+	}
+	return nil
+}
+
+// Starter launches a subprocess and returns its stdin, stdout, a wait function, and any error.
+//
+// It is the subprocess equivalent of http.RoundTripper: the lowest-level
+// abstraction that CLI-based providers (claudecode, codex, opencode) use to
+// spawn a process.
+type Starter func(ctx context.Context, args []string) (stdin io.WriteCloser, stdout io.ReadCloser, wait func() error, err error)
+
+// ProviderOptionStarterWrapper wraps the subprocess starter used by CLI-based providers.
+//
+// This is the subprocess analog of ProviderOptionTransportWrapper: it lets
+// callers intercept process creation for recording, replay, or testing.
+type ProviderOptionStarterWrapper func(Starter) Starter
+
+// Validate implements Validatable.
+func (p ProviderOptionStarterWrapper) Validate() error {
+	if p == nil {
+		return errors.New("ProviderOptionStarterWrapper cannot be nil")
 	}
 	return nil
 }

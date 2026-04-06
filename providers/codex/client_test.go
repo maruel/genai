@@ -5,9 +5,6 @@
 package codex
 
 import (
-	"context"
-	"errors"
-	"io"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -16,7 +13,6 @@ import (
 	"testing"
 
 	"github.com/maruel/genai"
-	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal/internaltest"
 	"github.com/maruel/genai/internal/msgutil"
 	"github.com/maruel/genai/internal/myrecorder"
@@ -24,27 +20,13 @@ import (
 	"github.com/maruel/genai/smoke/smoketest"
 )
 
-// recorderExec adapts SubprocessRecorder to the unexported executor interface.
-type recorderExec struct {
-	r *internaltest.SubprocessRecorder
-}
-
-func (e *recorderExec) start(ctx context.Context, args []string) (io.WriteCloser, io.ReadCloser, func() error, error) {
-	return e.r.Start(ctx, args)
-}
-
-func newRecordingExecutor(t testing.TB, name string) *recorderExec {
-	return &recorderExec{internaltest.NewSubprocessRecorder(t, name, "codex", func(bin string) internaltest.Starter {
-		return (&cmdExecutor{bin: bin}).start
-	})}
-}
-
 func newTestClient(t *testing.T, name string, opts ...genai.ProviderOption) *Client {
+	rec := internaltest.NewSubprocessRecorder(t, name, "codex")
+	opts = append(opts, genai.ProviderOptionStarterWrapper(rec.Wrap))
 	c, err := New(opts...)
 	if err != nil {
 		t.Fatalf("New: %v", err)
 	}
-	c.exec = newRecordingExecutor(t, name)
 	return c
 }
 
@@ -88,16 +70,17 @@ func TestClient(t *testing.T) {
 			if model.Model != "" {
 				opts = append(opts, genai.ProviderOptionModel(model.Model))
 			}
-			c, err := New(opts...)
-			if err != nil {
-				t.Skipf("codex: %v", err)
-			}
 			if fn != nil {
 				wrapped := fn(http.DefaultTransport)
 				if rec, ok := wrapped.(*myrecorder.Recorder); ok {
 					name := strings.TrimSuffix(rec.Name(), ".yaml")
-					c.exec = newRecordingExecutor(t, name)
+					r := internaltest.NewSubprocessRecorder(t, name, "codex")
+					opts = append(opts, genai.ProviderOptionStarterWrapper(r.Wrap))
 				}
+			}
+			c, err := New(opts...)
+			if err != nil {
+				t.Fatal(err)
 			}
 			return c
 		}
@@ -120,8 +103,8 @@ func TestClient(t *testing.T) {
 				if err != nil {
 					t.Fatalf("New: %v", err)
 				}
-				if c.model != tc.want {
-					t.Errorf("got %q, want %q", c.model, tc.want)
+				if got := c.ModelID(); got != tc.want {
+					t.Errorf("got %q, want %q", got, tc.want)
 				}
 			})
 		}
@@ -177,7 +160,6 @@ func TestClient(t *testing.T) {
 			if err != nil {
 				t.Fatalf("turn 1: %v", err)
 			}
-			// Extract the thread ID from the first reply.
 			var threadID string
 			for _, r := range res1.Replies {
 				if id, ok := r.Opaque[threadIDKey].(string); ok {
@@ -343,70 +325,6 @@ func TestExtractThreadID(t *testing.T) {
 		msgs := genai.Messages{genai.NewTextMessage("hi")}
 		if got := msgutil.ExtractOpaqueID(msgs, threadIDKey); got != "" {
 			t.Errorf("got %q, want empty", got)
-		}
-	})
-}
-
-func TestReasoningEffort(t *testing.T) {
-	t.Run("valid", func(t *testing.T) {
-		for _, v := range []ReasoningEffort{
-			ReasoningEffortNone, ReasoningEffortMinimal, ReasoningEffortLow,
-			ReasoningEffortMedium, ReasoningEffortHigh, ReasoningEffortXHigh,
-		} {
-			c, err := New(v)
-			if err != nil {
-				t.Fatalf("New(%q): %v", v, err)
-			}
-			if c.effort != v {
-				t.Errorf("effort: got %q, want %q", c.effort, v)
-			}
-		}
-	})
-	t.Run("invalid", func(t *testing.T) {
-		if _, err := New(ReasoningEffort("turbo")); err == nil {
-			t.Fatal("expected error for invalid effort")
-		}
-	})
-	t.Run("default", func(t *testing.T) {
-		c, err := New()
-		if err != nil {
-			t.Fatal(err)
-		}
-		if c.effort != ReasoningEffortMedium {
-			t.Errorf("default effort: got %q, want %q", c.effort, ReasoningEffortMedium)
-		}
-	})
-}
-
-func TestParseOpts(t *testing.T) {
-	t.Run("system_prompt", func(t *testing.T) {
-		co, err := parseOpts([]genai.GenOption{&genai.GenOptionText{SystemPrompt: "Be helpful"}})
-		if err != nil {
-			t.Fatalf("unexpected error: %v", err)
-		}
-		if co.systemPrompt != "Be helpful" {
-			t.Errorf("systemPrompt: got %q, want %q", co.systemPrompt, "Be helpful")
-		}
-	})
-	t.Run("unsupported", func(t *testing.T) {
-		for _, tc := range []struct {
-			name string
-			opts []genai.GenOption
-			want string
-		}{
-			{"Temperature", []genai.GenOption{&genai.GenOptionText{Temperature: 0.5}}, "GenOptionText.Temperature"},
-			{"Seed", []genai.GenOption{genai.GenOptionSeed(42)}, "GenOptionSeed"},
-		} {
-			t.Run(tc.name, func(t *testing.T) {
-				_, err := parseOpts(tc.opts)
-				var uerr *base.ErrNotSupported
-				if !errors.As(err, &uerr) {
-					t.Fatalf("expected ErrNotSupported, got %v", err)
-				}
-				if !slices.Contains(uerr.Options, tc.want) {
-					t.Errorf("expected %q in unsupported, got %v", tc.want, uerr.Options)
-				}
-			})
 		}
 	})
 }

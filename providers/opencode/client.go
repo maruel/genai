@@ -65,12 +65,6 @@ func Scoreboard() scoreboard.Score {
 // sessionIDKey is the key used in Reply.Opaque to carry session IDs.
 const sessionIDKey = "session_id"
 
-// executor abstracts subprocess creation so tests can inject a recording or
-// fake implementation.
-type executor interface {
-	start(ctx context.Context, args []string) (stdin io.WriteCloser, stdout io.ReadCloser, wait func() error, err error)
-}
-
 // cmdExecutor is the production executor backed by exec.Cmd.
 type cmdExecutor struct{ bin string }
 
@@ -108,11 +102,12 @@ func newScanner(r io.Reader) *bufio.Scanner {
 // Client is a genai provider that delegates to the local `opencode` CLI.
 type Client struct {
 	base.NotImplemented
-	exec    executor
-	bin     string
-	model   string
-	binOnce sync.Once
-	binErr  error
+	exec           genai.Starter
+	starterWrapper genai.ProviderOptionStarterWrapper
+	bin            string
+	model          string
+	binOnce        sync.Once
+	binErr         error
 }
 
 // New creates a Client for the `opencode` CLI.
@@ -141,6 +136,8 @@ func New(opts ...genai.ProviderOption) (*Client, error) {
 			default:
 				c.model = string(v)
 			}
+		case genai.ProviderOptionStarterWrapper:
+			c.starterWrapper = v
 		default:
 			return nil, fmt.Errorf("unsupported provider option %T", opt)
 		}
@@ -151,16 +148,20 @@ func New(opts ...genai.ProviderOption) (*Client, error) {
 // ensureBin locates the opencode binary on first call. Safe for concurrent use.
 func (c *Client) ensureBin() error {
 	c.binOnce.Do(func() {
-		if c.exec != nil {
-			return
-		}
 		bin, err := exec.LookPath("opencode")
 		if err != nil {
-			c.binErr = fmt.Errorf("opencode CLI not found on PATH: %w", err)
-			return
+			if c.starterWrapper == nil {
+				c.binErr = fmt.Errorf("opencode CLI not found on PATH: %w", err)
+				return
+			}
+			bin = "opencode"
 		}
 		c.bin = bin
-		c.exec = &cmdExecutor{bin: bin}
+		s := genai.Starter((&cmdExecutor{bin: bin}).start)
+		if c.starterWrapper != nil {
+			s = c.starterWrapper(s)
+		}
+		c.exec = s
 	})
 	return c.binErr
 }
@@ -210,7 +211,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	if err := c.ensureBin(); err != nil {
 		return nil, err
 	}
-	stdin, stdout, wait, err := c.exec.start(ctx, []string{"acp"})
+	stdin, stdout, wait, err := c.exec(ctx, []string{"acp"})
 	if err != nil {
 		return nil, err
 	}
@@ -258,7 +259,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 	}
 	resumeSessionID := msgutil.ExtractOpaqueID(msgs, sessionIDKey)
 
-	stdin, stdout, wait, err := c.exec.start(ctx, []string{"acp"})
+	stdin, stdout, wait, err := c.exec(ctx, []string{"acp"})
 	if err != nil {
 		return genai.Result{}, err
 	}
@@ -306,7 +307,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 		finalErr error
 	)
 	seq := func(yield func(genai.Reply) bool) {
-		stdin, stdout, wait, startErr := c.exec.start(ctx, []string{"acp"})
+		stdin, stdout, wait, startErr := c.exec(ctx, []string{"acp"})
 		if startErr != nil {
 			finalErr = startErr
 			return

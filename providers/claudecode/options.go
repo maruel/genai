@@ -25,6 +25,14 @@ type ProviderOptionAPIKeyAuth bool
 // Validate implements genai.Validatable.
 func (p ProviderOptionAPIKeyAuth) Validate() error { return nil }
 
+// Effort levels for the Effort field in GenOption.
+const (
+	EffortLow    = "low"
+	EffortMedium = "medium"
+	EffortHigh   = "high"
+	EffortMax    = "max"
+)
+
 // GenOption configures a Claude Code CLI call.
 //
 // All fields are opt-in. By default the subprocess runs with all tools
@@ -44,6 +52,9 @@ type GenOption struct {
 	// PermissionMode sets the permission mode (--permission-mode).
 	// Valid values: "acceptEdits", "bypassPermissions", "default", "dontAsk", "plan".
 	PermissionMode string
+	// Effort sets the reasoning effort level (--effort).
+	// Use the Effort* constants.
+	Effort string
 
 	_ struct{}
 }
@@ -65,6 +76,13 @@ func (g *GenOption) Validate() error {
 			return fmt.Errorf("GenOption.PermissionMode: invalid mode %q; must be one of acceptEdits, bypassPermissions, default, dontAsk, plan", g.PermissionMode)
 		}
 	}
+	if g.Effort != "" {
+		switch g.Effort {
+		case "low", "medium", "high", "max":
+		default:
+			return fmt.Errorf("GenOption.Effort: invalid level %q; must be one of low, medium, high, max", g.Effort)
+		}
+	}
 	return nil
 }
 
@@ -75,6 +93,7 @@ type callOpts struct {
 	projSettings   bool
 	maxBudgetUSD   float64
 	permissionMode string
+	effort         string
 	systemPrompt   string
 }
 
@@ -93,6 +112,7 @@ func parseOpts(opts []genai.GenOption) (callOpts, error) {
 			co.projSettings = v.ProjectSettings
 			co.maxBudgetUSD = v.MaxBudgetUSD
 			co.permissionMode = v.PermissionMode
+			co.effort = v.Effort
 		case *genai.GenOptionText:
 			co.systemPrompt = v.SystemPrompt
 			if v.Temperature != 0 {

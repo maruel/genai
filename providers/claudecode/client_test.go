@@ -185,6 +185,12 @@ func TestClient(t *testing.T) {
 					c.exec = newRecordingExecutor(t, name)
 				}
 			}
+			if model.Reason {
+				return &internaltest.InjectOptions{
+					Provider: c,
+					Opts:     []genai.GenOption{&GenOption{Effort: EffortMedium}},
+				}
+			}
 			return c
 		}
 		smoketest.Run(t, getClientRT, models, testRecorder.Records)
@@ -259,7 +265,7 @@ func TestClient(t *testing.T) {
 			prevAssistant := genai.Message{
 				Replies: []genai.Reply{
 					{Text: "Hello!"},
-					{Opaque: map[string]any{sessionIDKey: "persist-session-xyz"}},
+					{Opaque: map[string]any{sessionIDKey: "550e8400-e29b-41d4-a716-446655440000"}},
 				},
 			}
 			msgs := genai.Messages{

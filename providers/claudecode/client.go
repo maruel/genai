@@ -103,15 +103,19 @@ func (e *cmdExecutor) start(ctx context.Context, args []string) (io.WriteCloser,
 	// instead of consuming API key credits. The key is typically set in the
 	// parent process for HTTP-based providers (e.g. anthropic), not for the CLI.
 	// Use GenOption.APIKeyAuth = true to keep it.
-	// Set CLAUDE_CODE_SIMPLE=1 to skip hooks, auto-memory, plugin sync, LSP,
-	// and other auto-discovery that is not relevant for programmatic use.
-	// This is the same env var that --bare sets internally, but without the
-	// --bare auth restriction (which disallows OAuth).
 	strip := []string{"CLAUDECODE"}
-	if !e.apiKeyAuth && hasOAuth() {
+	useOAuth := !e.apiKeyAuth && hasOAuth()
+	if useOAuth {
 		strip = append(strip, "ANTHROPIC_API_KEY")
 	}
-	cmd.Env = append(environWithout(os.Environ(), strip...), "CLAUDE_CODE_SIMPLE=1")
+	env := environWithout(os.Environ(), strip...)
+	// CLAUDE_CODE_SIMPLE=1 skips hooks, auto-memory, plugin sync, LSP, and
+	// other auto-discovery not needed for programmatic use. However it also
+	// disables OAuth, so only set it when authenticating via API key.
+	if !useOAuth {
+		env = append(env, "CLAUDE_CODE_SIMPLE=1")
+	}
+	cmd.Env = env
 	stdin, err := cmd.StdinPipe()
 	if err != nil {
 		return nil, nil, nil, errors.Join(fmt.Errorf("stdin pipe: %w", err), os.RemoveAll(dir))
@@ -296,27 +300,29 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 
 	sc := newScanner(stdout)
 	var initSessionID string
-	var lastAsst outputAssistant
+	var asstBlocks []OutputContentBlock
 	for sc.Scan() {
 		line := sc.Bytes()
-		var b outputTypeProbe
+		var b OutputTypeProbe
 		if json.Unmarshal(line, &b) != nil {
 			continue
 		}
 		switch b.Type {
-		case outputTypeSystem:
-			if b.Subtype == string(systemInit) {
-				var m outputInit
+		case OutputSystem:
+			if b.Subtype == string(SystemInit) {
+				var m OutputInitMsg
 				if json.Unmarshal(line, &m) == nil {
 					initSessionID = m.SessionID
 				}
 			}
-		case outputTypeAssistant:
-			if err := json.Unmarshal(line, &lastAsst); err != nil {
+		case OutputAssistant:
+			var asst OutputAssistantMsg
+			if err := json.Unmarshal(line, &asst); err != nil {
 				return genai.Result{}, fmt.Errorf("parse assistant: %w", err)
 			}
-		case outputTypeResult:
-			var res outputResult
+			asstBlocks = append(asstBlocks, asst.Message.Content...)
+		case OutputResult:
+			var res OutputResultMsg
 			if err := json.Unmarshal(line, &res); err != nil {
 				return genai.Result{}, fmt.Errorf("parse result: %w", err)
 			}
@@ -327,7 +333,7 @@ func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai
 				}
 				return genai.Result{}, fmt.Errorf("claude error (%s): %s", res.Subtype, errMsg)
 			}
-			return buildResult(&res, &lastAsst, initSessionID), nil
+			return buildResult(&res, asstBlocks, initSessionID), nil
 		}
 	}
 	if err := sc.Err(); err != nil {
@@ -377,23 +383,23 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 
 		sc := newScanner(stdout)
 		var initSessionID string
-		var lastAsst outputAssistant
+		var asstBlocks []OutputContentBlock
 		for sc.Scan() {
 			line := sc.Bytes()
-			var b outputTypeProbe
+			var b OutputTypeProbe
 			if json.Unmarshal(line, &b) != nil {
 				continue
 			}
 			switch b.Type {
-			case outputTypeSystem:
-				if b.Subtype == string(systemInit) {
-					var m outputInit
+			case OutputSystem:
+				if b.Subtype == string(SystemInit) {
+					var m OutputInitMsg
 					if json.Unmarshal(line, &m) == nil {
 						initSessionID = m.SessionID
 					}
 				}
-			case outputTypeStreamEvent:
-				var ev outputStreamEvent
+			case OutputStreamEvent:
+				var ev OutputStreamEventMsg
 				if json.Unmarshal(line, &ev) != nil {
 					continue
 				}
@@ -417,13 +423,15 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 						}
 					}
 				}
-			case outputTypeAssistant:
-				if err := json.Unmarshal(line, &lastAsst); err != nil {
+			case OutputAssistant:
+				var asst OutputAssistantMsg
+				if err := json.Unmarshal(line, &asst); err != nil {
 					finalErr = fmt.Errorf("parse assistant: %w", err)
 					return
 				}
-			case outputTypeResult:
-				var res outputResult
+				asstBlocks = append(asstBlocks, asst.Message.Content...)
+			case OutputResult:
+				var res OutputResultMsg
 				if err := json.Unmarshal(line, &res); err != nil {
 					finalErr = fmt.Errorf("parse result: %w", err)
 					return
@@ -436,7 +444,8 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 					finalErr = fmt.Errorf("claude error (%s): %s", res.Subtype, errMsg)
 					return
 				}
-				result = buildResult(&res, &lastAsst, initSessionID)
+				result = buildResult(&res, asstBlocks, initSessionID)
+				return
 			}
 		}
 		if err := sc.Err(); err != nil {
@@ -511,6 +520,11 @@ func (c *Client) buildArgs(co callOpts, sessionID string, stream bool) []string 
 		args = append(args, "--permission-mode", co.permissionMode)
 	}
 
+	// Optional reasoning effort.
+	if co.effort != "" {
+		args = append(args, "--effort", co.effort)
+	}
+
 	// Optional system prompt.
 	if co.systemPrompt != "" {
 		args = append(args, "--system-prompt", co.systemPrompt)
@@ -546,55 +560,26 @@ func lastUserMsg(msgs genai.Messages) (genai.Message, error) {
 }
 
 // writeUserMsg encodes a genai.Message as NDJSON and writes it to stdin.
-// Text-only messages use a plain string for content; messages that include
-// images use an array of content blocks (matching the Anthropic content-block
-// wire format that the Claude Code CLI proxies).
 func writeUserMsg(w io.Writer, msg *genai.Message) error {
-	var content any
-
-	// Determine whether any request carries a document (image).
-	hasDoc := false
+	blocks := make([]InputContentBlock, 0, len(msg.Requests))
 	for i := range msg.Requests {
-		if !msg.Requests[i].Doc.IsZero() {
-			hasDoc = true
-			break
-		}
-	}
-
-	if !hasDoc {
-		// Text-only: concatenate all text into a plain string.
-		var sb strings.Builder
-		for i := range msg.Requests {
-			sb.WriteString(msg.Requests[i].Text)
-		}
-		if sb.Len() == 0 {
-			return errors.New("user message has no content")
-		}
-		content = sb.String()
-	} else {
-		// Multi-modal: build an array of typed content blocks.
-		blocks := make([]inputContentBlock, 0, len(msg.Requests))
-		for i := range msg.Requests {
-			req := &msg.Requests[i]
-			if !req.Doc.IsZero() {
-				blk, err := docToInputBlock(req.Doc)
-				if err != nil {
-					return err
-				}
-				blocks = append(blocks, blk)
-			} else if req.Text != "" {
-				blocks = append(blocks, inputContentBlock{Type: "text", Text: req.Text})
+		req := &msg.Requests[i]
+		if !req.Doc.IsZero() {
+			blk, err := docToInputBlock(req.Doc)
+			if err != nil {
+				return err
 			}
+			blocks = append(blocks, blk)
+		} else if req.Text != "" {
+			blocks = append(blocks, InputContentBlock{Type: "text", Text: req.Text})
 		}
-		if len(blocks) == 0 {
-			return errors.New("user message has no content")
-		}
-		content = blocks
 	}
-
-	m := inputUser{
-		Type:    inputTypeUser,
-		Message: inputUserContent{Role: "user", Content: content},
+	if len(blocks) == 0 {
+		return errors.New("user message has no content")
+	}
+	m := InputUserMsg{
+		Type:    InputUser,
+		Message: InputUserContent{Role: "user", Content: blocks},
 	}
 	data, err := json.Marshal(m)
 	if err != nil {
@@ -604,38 +589,38 @@ func writeUserMsg(w io.Writer, msg *genai.Message) error {
 	return err
 }
 
-// docToInputBlock converts a genai.Doc to an inputContentBlock for the claude CLI.
+// docToInputBlock converts a genai.Doc to an InputContentBlock for the claude CLI.
 // Text documents are inlined as text blocks; images are sent as base64 or URL.
-func docToInputBlock(doc genai.Doc) (inputContentBlock, error) {
+func docToInputBlock(doc genai.Doc) (InputContentBlock, error) {
 	if doc.URL != "" {
-		return inputContentBlock{
+		return InputContentBlock{
 			Type:   "image",
-			Source: &inputImageSource{Type: "url", URL: doc.URL},
+			Source: InputImageSource{Type: "url", URL: doc.URL},
 		}, nil
 	}
 	mimeType, data, err := doc.Read(10 * 1024 * 1024)
 	if err != nil {
-		return inputContentBlock{}, fmt.Errorf("read doc: %w", err)
+		return InputContentBlock{}, fmt.Errorf("read doc: %w", err)
 	}
 	switch {
 	case strings.HasPrefix(mimeType, "text/"):
-		return inputContentBlock{Type: "text", Text: string(data)}, nil
+		return InputContentBlock{Type: "text", Text: string(data)}, nil
 	case strings.HasPrefix(mimeType, "image/"):
-		return inputContentBlock{
+		return InputContentBlock{
 			Type: "image",
-			Source: &inputImageSource{
+			Source: InputImageSource{
 				Type:      "base64",
 				MediaType: mimeType,
 				Data:      base64.StdEncoding.EncodeToString(data),
 			},
 		}, nil
 	default:
-		return inputContentBlock{}, fmt.Errorf("unsupported doc MIME type %q", mimeType)
+		return InputContentBlock{}, fmt.Errorf("unsupported doc MIME type %q", mimeType)
 	}
 }
 
-// buildResult converts a resultMsg and the last assistantMsg into a genai.Result.
-func buildResult(res *outputResult, asst *outputAssistant, sessionID string) genai.Result {
+// buildResult converts a resultMsg and accumulated assistant content blocks into a genai.Result.
+func buildResult(res *OutputResultMsg, asstBlocks []OutputContentBlock, sessionID string) genai.Result {
 	r := genai.Result{
 		Usage: genai.Usage{
 			InputTokens:       res.Usage.InputTokens,
@@ -647,19 +632,19 @@ func buildResult(res *outputResult, asst *outputAssistant, sessionID string) gen
 		},
 	}
 
-	// Prefer text content from the assistant message (present in both sync and
-	// stream modes) over the plain-text result field.
-	if asst != nil {
-		for _, blk := range asst.Message.Content {
-			switch blk.Type {
-			case "text":
-				if blk.Text != "" {
-					r.Replies = append(r.Replies, genai.Reply{Text: blk.Text})
-				}
-			case "thinking":
-				if blk.Thinking != "" {
-					r.Replies = append(r.Replies, genai.Reply{Reasoning: blk.Thinking})
-				}
+	// Prefer text content from the assistant messages (present in both sync and
+	// stream modes) over the plain-text result field. Claude Code may split
+	// thinking and text into separate assistant messages, so we accumulate
+	// content blocks from all assistant messages.
+	for _, blk := range asstBlocks {
+		switch blk.Type {
+		case "text":
+			if blk.Text != "" {
+				r.Replies = append(r.Replies, genai.Reply{Text: blk.Text})
+			}
+		case "thinking":
+			if blk.Thinking != "" {
+				r.Replies = append(r.Replies, genai.Reply{Reasoning: blk.Thinking})
 			}
 		}
 	}

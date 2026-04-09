@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 268
+        content_length: 317
         host: 127.0.0.1
         body: |
-            {"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.png"}}]}],"cache_prompt":true}
+            {"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.png"}}]}],"chat_template_kwargs":{"enable_thinking":false},"cache_prompt":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 589
-        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Banana"}}],"created":1772481009,"model":"Qwen3.5-2B-Q4_K_M.gguf","system_fingerprint":"b8180-d979f2b17","object":"chat.completion","usage":{"completion_tokens":3,"prompt_tokens":115,"total_tokens":118},"id":"chatcmpl-o7bSL7LFcYBGSKnIcUXRuqWbiKvCeX7X","timings":{"cache_n":0,"prompt_n":115,"prompt_ms":1577.467,"prompt_per_token_ms":13.717104347826087,"prompt_per_second":72.9016835217472,"predicted_n":3,"predicted_ms":139.113,"predicted_per_token_ms":46.371,"predicted_per_second":21.565202389424424}}'
+        content_length: 619
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Banana"}}],"created":1775686435,"model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b8708-ae65fbdf3","object":"chat.completion","usage":{"completion_tokens":3,"prompt_tokens":115,"total_tokens":118,"prompt_tokens_details":{"cached_tokens":109}},"id":"chatcmpl-XoQY0GL79KGctUoVJXZMLbz4uSW9PjOh","timings":{"cache_n":109,"prompt_n":6,"prompt_ms":34.362,"prompt_per_token_ms":5.727,"prompt_per_second":174.6114894360049,"predicted_n":3,"predicted_ms":23.013,"predicted_per_token_ms":7.671,"predicted_per_second":130.3611002476861}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "589"
+                - "619"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 1.778s
+        duration: 125ms

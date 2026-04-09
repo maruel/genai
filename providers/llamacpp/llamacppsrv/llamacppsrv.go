@@ -33,7 +33,7 @@ import (
 // https://github.com/ggml-org/llama.cpp/releases
 //
 // You are free to use the build number that works best for you.
-const BuildNumber = 8250
+const BuildNumber = 8708
 
 // Server is a llama-server instance.
 type Server struct {
@@ -242,10 +242,14 @@ func assetSuffix() (string, error) {
 	case "darwin":
 		return "macos-arm64", nil
 	case "linux":
-		if runtime.GOARCH != "amd64" {
+		switch runtime.GOARCH {
+		case "amd64":
+			return "ubuntu-x64", nil
+		case "arm64":
+			return "ubuntu-arm64", nil
+		default:
 			return "", errors.New("don't know how to select " + runtime.GOOS + "/" + runtime.GOARCH)
 		}
-		return "ubuntu-x64", nil
 	case "windows":
 		if _, err := exec.Command("nvcc", "--version").CombinedOutput(); err == nil {
 			// Use CUDA build. The release API lets us pick the right archive

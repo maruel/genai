@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 238
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Talk about Canada in great details. Start with: Canada is"}]}],"stop":["is"],"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 788
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"","reasoning_content":"Here''s a thinking process that leads to the detailed response:\n\n1.  **Analyze the Request:** The user wants a detailed d"}}],"created":1775695252,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b8708-ae65fbdf3","object":"chat.completion","usage":{"completion_tokens":31,"prompt_tokens":27,"total_tokens":58,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-sXUWxpyAy7ymqwJ6AsDQNdCPVkwW6hLP","timings":{"cache_n":0,"prompt_n":27,"prompt_ms":104.289,"prompt_per_token_ms":3.8625555555555557,"prompt_per_second":258.89595259327444,"predicted_n":31,"predicted_ms":531.688,"predicted_per_token_ms":17.151225806451613,"predicted_per_second":58.30487052557139}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "788"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 648ms

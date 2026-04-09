@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1636
-        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Hello","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Input: \"Say hello. Use only one word.\"\n    *   Constraint: Use only one word.\n    *   Task: Respond to the greeting.\n    *   Language: English.\n\n2.  **Determine the appropriate response:**\n    *   I need to say \"hello\" but strictly adhere to the constraint of using exactly one word.\n    *   Possible options: \"Hello\", \"Hi\", \"Hey\", \"Goodbye\", \"Yes\".\n    *   The most direct response to \"Say hello\" while keeping it as a single word is \"Hello\".\n    *   Even more direct: \"Hello\" is the standard greeting.\n    *   Wait, the instruction says \"Use only one word.\"\n    *   If I just write \"Hello\", that is one word.\n    *   If I write \"Hi\", that is also one word.\n    *   If I write \"Hello\", that fits best.\n\n3.  **Final Selection:** \"Hello\"\n\n4.  **Format:** Just the word. No extra text.\n\n5.  **Constraint Check:**\n    *   One word? Yes.\n    *   Greeting? Yes.\n\n6.  **Final Output Generation:** Hello.cw"}}],"created":1772481131,"model":"Qwen3.5-2B-Q4_K_M.gguf","system_fingerprint":"b8180-d979f2b17","object":"chat.completion","usage":{"completion_tokens":285,"prompt_tokens":18,"total_tokens":303},"id":"chatcmpl-K6GRmTEFI70p57EtUd1dlWTTIjzish1K","timings":{"cache_n":0,"prompt_n":18,"prompt_ms":327.287,"prompt_per_token_ms":18.18261111111111,"prompt_per_second":54.99760149349042,"predicted_n":285,"predicted_ms":22102.237,"predicted_per_token_ms":77.55170877192982,"predicted_per_second":12.894622385960298}}'
+        content_length: 1431
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Hello","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Command: \"Say hello.\"\n    *   Constraint: \"Use only one word.\"\n    *   Goal: Respond to the command while adhering to the constraint.\n\n2.  **Evaluate Options:**\n    *   \"Hi\" - One word.\n    *   \"Hello\" - One word.\n    *   \"Greetings\" - One word, but implies more than a simple \"hello\".\n    *   \"Yes\" - Doesn''t answer the question of saying hello.\n    *   \"Hello\" is the most direct response to \"Say hello\".\n    *   \"Hi\" is also acceptable.\n\n3.  **Select Best Option:** \"Hello\" is the most direct and accurate response to the instruction itself.\n\n4.  **Final Check:** Does \"Hello\" count as one word? Yes. Does it answer the prompt? Yes.\n\n5.  **Output:** Hello.cw\n"}}],"created":1775690280,"model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b8708-ae65fbdf3","object":"chat.completion","usage":{"completion_tokens":213,"prompt_tokens":18,"total_tokens":231,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-SsXwgkIWYyhGFJ7JNNT8rEeb8LfeA1oI","timings":{"cache_n":0,"prompt_n":18,"prompt_ms":69.088,"prompt_per_token_ms":3.838222222222222,"prompt_per_second":260.53728578045394,"predicted_n":213,"predicted_ms":4642.449,"predicted_per_token_ms":21.795535211267605,"predicted_per_second":45.88095636591808}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "1636"
+                - "1431"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 22.512s
+        duration: 4.757s

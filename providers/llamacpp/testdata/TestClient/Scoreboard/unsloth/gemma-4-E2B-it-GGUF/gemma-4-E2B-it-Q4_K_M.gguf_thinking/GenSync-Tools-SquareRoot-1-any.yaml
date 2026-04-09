@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 649
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"auto","parallel_tool_calls":true,"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1613
+        body: '{"choices":[{"finish_reason":"tool_calls","index":0,"message":{"role":"assistant","content":"","reasoning_content":"1.  **Analyze the Request:** The user wants to calculate the square root of 132413 using the `square_root` tool and return *only* the result.\n\n2.  **Identify the Tool:** The available tool is `square_root(number)`.\n\n3.  **Determine the Input:** The number to be processed is 132413.\n\n4.  **Formulate the Tool Call:** `square_root(number=132413)`\n\n5.  **Execute the Tool Call (Simulated):** The model needs to generate the tool call.\n\n6.  **Process the Output (Anticipated):** The tool will return a numerical result (the square root of 132413).\n\n7.  **Final Response Formatting:** The user explicitly requested \"reply with only the result. Do not give an explanation.\"\n\n8.  **Construct the Final Output:** The model must invoke the tool and present only the final computed value.","tool_calls":[{"type":"function","function":{"name":"square_root","arguments":"{\"number\":132413}"},"id":"UDVL2ASrIBOoErbPJGSNCIX2otminfnd"}]}}],"created":1775696940,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b8708-ae65fbdf3","object":"chat.completion","usage":{"completion_tokens":238,"prompt_tokens":94,"total_tokens":332,"prompt_tokens_details":{"cached_tokens":89}},"id":"chatcmpl-9Drgtk7WBH9kFPZYrqqPnxMXR2IFnYNp","timings":{"cache_n":89,"prompt_n":5,"prompt_ms":85.416,"prompt_per_token_ms":17.083199999999998,"prompt_per_second":58.53704224032968,"predicted_n":238,"predicted_ms":2323.617,"predicted_per_token_ms":9.763096638655464,"predicted_per_second":102.42651865604357}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "1613"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 2.415s

@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 227
+        content_length: 276
         host: 127.0.0.1
         body: |
-            {"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"cache_prompt":true}
+            {"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"chat_template_kwargs":{"enable_thinking":false},"cache_prompt":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 859
-        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"The capital of **Quackiland** is **Quack**.\n\nThis is stated directly in your premise: \"The capital of Quackiland is Quack.\" Additionally, the location of the Big Canard Statue in Quack serves as an example of what exists there, but the capital itself remains Quack."}}],"created":1772480986,"model":"Qwen3.5-2B-Q4_K_M.gguf","system_fingerprint":"b8180-d979f2b17","object":"chat.completion","usage":{"completion_tokens":64,"prompt_tokens":43,"total_tokens":107},"id":"chatcmpl-Enc0t5gspXGwHXVPZEzc9ISzZJsdhWVh","timings":{"cache_n":0,"prompt_n":43,"prompt_ms":293.234,"prompt_per_token_ms":6.819395348837209,"prompt_per_second":146.64056691925222,"predicted_n":64,"predicted_ms":4348.661,"predicted_per_token_ms":67.947828125,"predicted_per_second":14.717173861103452}}'
+        content_length: 919
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Based on the text you provided, the capital of Quackiland is **Quack**.\n\nHere is the breakdown of the logic:\n1.  The text explicitly states: \"The capital of Quackiland is Quack.\"\n2.  Therefore, the answer to the question \"What is the capital of Quackiland?\" is **Quack**."}}],"created":1775686434,"model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b8708-ae65fbdf3","object":"chat.completion","usage":{"completion_tokens":74,"prompt_tokens":43,"total_tokens":117,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-pSI2mULXu7aTaivswBFsBK5eE9X2gJ2s","timings":{"cache_n":0,"prompt_n":43,"prompt_ms":179.965,"prompt_per_token_ms":4.185232558139535,"prompt_per_second":238.9353485399939,"predicted_n":74,"predicted_ms":1591.002,"predicted_per_token_ms":21.500027027027027,"predicted_per_second":46.511569438630495}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "859"
+                - "919"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 4.694s
+        duration: 1.882s

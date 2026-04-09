@@ -90,7 +90,12 @@ func TestClient(t *testing.T) {
 					Opts:     []genai.GenOption{&llamacpp.GenOption{ReasoningFormat: llamacpp.ReasoningFormatDeepSeek, Thinking: true}},
 				}
 			}
-			return c2
+			// llama-server defaults enable_thinking to true, so explicitly
+			// disable it for non-reasoning scenarios.
+			return &internaltest.InjectOptions{
+				Provider: c2,
+				Opts:     []genai.GenOption{&llamacpp.GenOption{}},
+			}
 		}, models, testRecorder.Records)
 	})
 
@@ -198,13 +203,13 @@ func (l *lazyServer) ensureExe() string {
 // lazyStartModel starts a server for the given model key, reusing an existing one if already running.
 func (l *lazyServer) lazyStartModel(t testing.TB, model scoreboard.Model) string {
 	if model.Model == "" {
-		return l.lazyStart(t)
+		// Empty model is used by smoketest.Run to read the static Scoreboard();
+		// no server is needed.
+		return "http://127.0.0.1:0"
 	}
 	// Skip server startup when not recording. The HTTP cassettes in testdata/
 	// are replayed by the recording transport so the URL is never contacted.
-	// Only RECORD=all needs a real server; RECORD=failure_only replays in the
-	// parent and re-runs failures as a subprocess with RECORD=all.
-	if os.Getenv("RECORD") != "all" {
+	if os.Getenv("RECORD") == "" {
 		return "http://127.0.0.1:0"
 	}
 	if url := os.Getenv("LLAMA_SERVER"); url != "" {
@@ -245,7 +250,7 @@ func startServerTest(t testing.TB, exe, author, repo, modelfile, apiKey string) 
 	}
 	ctx := t.Context()
 	// Use llama-server's built-in HuggingFace download; mmproj is auto-detected.
-	extraArgs := []string{"-hf", author + "/" + repo, "-hff", modelfile, "--jinja", "--flash-attn", "on", "--ctx-size", "8192", "--cache-type-k", "q8_0", "--cache-type-v", "q8_0", "--api-key", apiKey}
+	extraArgs := []string{"-hf", author + "/" + repo, "-hff", modelfile, "--jinja", "--flash-attn", "on", "--ctx-size", "16384", "--cache-type-k", "q8_0", "--cache-type-v", "q8_0", "--api-key", apiKey}
 	// Allocate an ephemeral port to avoid dual-stack conflicts when running
 	// multiple servers (e.g. "localhost:8080" can bind on both IPv4 and IPv6).
 	ln, err := net.Listen("tcp", "127.0.0.1:0")
@@ -293,8 +298,11 @@ func TestGenOption(t *testing.T) {
 		if req.ReasoningFormat != "" {
 			t.Errorf("ReasoningFormat = %q, want empty", req.ReasoningFormat)
 		}
-		if req.ChatTemplateKWArgs != nil {
-			t.Errorf("ChatTemplateKWArgs = %v, want nil", req.ChatTemplateKWArgs)
+		if req.ChatTemplateKWArgs == nil {
+			t.Fatal("ChatTemplateKWArgs is nil")
+		}
+		if v, ok := req.ChatTemplateKWArgs["enable_thinking"]; !ok || v != false {
+			t.Errorf("ChatTemplateKWArgs[enable_thinking] = %v, want false", v)
 		}
 	})
 }

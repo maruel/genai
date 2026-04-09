@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 977
-        body: '{"choices":[{"finish_reason":"tool_calls","index":0,"message":{"role":"assistant","content":"","reasoning_content":"The user is asking me to call the best_country tool to determine which country is the best, and they''re asking if Canada is a better country than the USA. I should call the tool to get this information.","tool_calls":[{"type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"},"id":"nM5smx1WeLsKVbPEaCCSmPX9Fj0YRSkx"}]}}],"created":1772481563,"model":"Qwen3.5-2B-Q4_K_M.gguf","system_fingerprint":"b8180-d979f2b17","object":"chat.completion","usage":{"completion_tokens":73,"prompt_tokens":333,"total_tokens":406},"id":"chatcmpl-SXhHgm0OYZC5Rj7JJLb3T3Z2nkBlyNb5","timings":{"cache_n":0,"prompt_n":333,"prompt_ms":2050.023,"prompt_per_token_ms":6.156225225225226,"prompt_per_second":162.43720192407596,"predicted_n":73,"predicted_ms":7823.79,"predicted_per_token_ms":107.17520547945206,"predicted_per_second":9.330516284307222}}'
+        content_length: 1187
+        body: '{"choices":[{"finish_reason":"tool_calls","index":0,"message":{"role":"assistant","content":"","reasoning_content":"The user is asking me to call the best_country tool to see which country is considered the best. The user seems to want to know if Canada is better than the USA, but I should call the tool first to get an objective answer from the tool itself.\n","tool_calls":[{"type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"},"id":"UHIMqx0RkzF8RFs6lhrQsnesIRfhP7jv"},{"type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"},"id":"D01xVCSImBBKlFI91j0fgYVsaQxBgpDD"}]}}],"created":1775690359,"model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b8708-ae65fbdf3","object":"chat.completion","usage":{"completion_tokens":109,"prompt_tokens":333,"total_tokens":442,"prompt_tokens_details":{"cached_tokens":329}},"id":"chatcmpl-HvqCzyHjRV3tzIWQCTwtgzxALlDG8iio","timings":{"cache_n":329,"prompt_n":4,"prompt_ms":32.467,"prompt_per_token_ms":8.11675,"prompt_per_second":123.20202051313642,"predicted_n":109,"predicted_ms":1931.86,"predicted_per_token_ms":17.72348623853211,"predicted_per_second":56.42230803474372}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "977"
+                - "1187"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 9.927s
+        duration: 1.992s

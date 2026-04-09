@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 575
+        content_length: 624
         host: 127.0.0.1
         body: |
-            {"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required","parallel_tool_calls":true,"cache_prompt":true}
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"required","parallel_tool_calls":true,"chat_template_kwargs":{"enable_thinking":false},"cache_prompt":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -19,17 +19,19 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 88
-        body: '{"error":{"code":500,"message":"Context size has been exceeded.","type":"server_error"}}'
+        content_length: 783
+        body: '{"choices":[{"finish_reason":"tool_calls","index":0,"message":{"role":"assistant","content":"","tool_calls":[{"type":"function","function":{"name":"square_root","arguments":"{\"number\":132413}"},"id":"6rSGYaCiGOKRUqU2ACvXTMVPiqwxKVLp"}]}}],"created":1775686427,"model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b8708-ae65fbdf3","object":"chat.completion","usage":{"completion_tokens":32,"prompt_tokens":333,"total_tokens":365,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-tNMAxpHOD8vNinpbOz0Db5CgIRtuRvxA","timings":{"cache_n":0,"prompt_n":333,"prompt_ms":869.946,"prompt_per_token_ms":2.6124504504504507,"prompt_per_second":382.7823795959749,"predicted_n":32,"predicted_ms":563.655,"predicted_per_token_ms":17.61421875,"predicted_per_second":56.77231639921583}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "88"
+                - "783"
             Content-Type:
                 - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
             Server:
                 - llama.cpp
-        status: 500 Internal Server Error
-        code: 500
-        duration: 4m39.158s
+        status: 200 OK
+        code: 200
+        duration: 2.223s

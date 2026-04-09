@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 243
+        content_length: 292
         host: 127.0.0.1
         body: |
-            {"messages":[{"role":"user","content":[{"type":"text","text":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"cache_prompt":true}
+            {"messages":[{"role":"user","content":[{"type":"text","text":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"chat_template_kwargs":{"enable_thinking":false},"cache_prompt":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 739
-        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Based on the text provided, the capital of Quackiland is **Quack**.\n\nThis is stated directly in the first sentence: \"The capital of Quackiland is Quack.\""}}],"created":1772480994,"model":"Qwen3.5-2B-Q4_K_M.gguf","system_fingerprint":"b8180-d979f2b17","object":"chat.completion","usage":{"completion_tokens":39,"prompt_tokens":48,"total_tokens":87},"id":"chatcmpl-3Nh6RvjBLZHBjdQXl9p0W3zUIoaq8UjT","timings":{"cache_n":0,"prompt_n":48,"prompt_ms":334.038,"prompt_per_token_ms":6.959125,"prompt_per_second":143.69622617786,"predicted_n":39,"predicted_ms":7701.353,"predicted_per_token_ms":197.47058974358976,"predicted_per_second":5.064045239842922}}'
+        content_length: 709
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Based on the text you provided, the capital of Quackiland is **Quack**."}}],"created":1775686434,"model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b8708-ae65fbdf3","object":"chat.completion","usage":{"completion_tokens":19,"prompt_tokens":48,"total_tokens":67,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-MYTuF28enAXQFenzb32NmGY35PIOUR0O","timings":{"cache_n":0,"prompt_n":48,"prompt_ms":150.745,"prompt_per_token_ms":3.1405208333333334,"prompt_per_second":318.4185213439915,"predicted_n":19,"predicted_ms":449.261,"predicted_per_token_ms":23.645315789473685,"predicted_per_second":42.29167454998319}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "739"
+                - "709"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 8.103s
+        duration: 613ms

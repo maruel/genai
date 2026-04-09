@@ -1,0 +1,45 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 214
+        host: 127.0.0.1
+        body: |
+            {"stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}],"chat_template_kwargs":{"enable_thinking":false},"logprobs":true,"top_logprobs":2,"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        content_length: -1
+        body: |+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"role":"assistant","content":null}}],"created":1775687072,"id":"chatcmpl-9jZV0BWb5sFJbLRbECukKfSUNN5dqdIk","model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b8708-ae65fbdf3","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"Hello"},"logprobs":{"content":[{"id":9259,"token":"Hello","bytes":[72,101,108,108,111],"logprob":-6.55653229841846e-06,"top_logprobs":[{"id":9259,"token":"Hello","bytes":[72,101,108,108,111],"logprob":-6.55653229841846e-06},{"id":21529,"token":"Hola","bytes":[72,111,108,97],"logprob":-11.93989372253418}]}]}}],"created":1775687072,"id":"chatcmpl-9jZV0BWb5sFJbLRbECukKfSUNN5dqdIk","model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b8708-ae65fbdf3","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":"stop","index":0,"delta":{}}],"created":1775687072,"id":"chatcmpl-9jZV0BWb5sFJbLRbECukKfSUNN5dqdIk","model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b8708-ae65fbdf3","object":"chat.completion.chunk","timings":{"cache_n":0,"prompt_n":17,"prompt_ms":157.946,"prompt_per_token_ms":9.290941176470588,"prompt_per_second":107.6317222341813,"predicted_n":2,"predicted_ms":58.085,"predicted_per_token_ms":29.0425,"predicted_per_second":34.432297495050356}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Type:
+                - text/event-stream
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 173ms

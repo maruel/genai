@@ -14,35 +14,35 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1650
+        content_length: 1664
         body: |
             # HELP llamacpp:prompt_tokens_total Number of prompt tokens processed.
             # TYPE llamacpp:prompt_tokens_total counter
-            llamacpp:prompt_tokens_total 86
+            llamacpp:prompt_tokens_total 2447
             # HELP llamacpp:prompt_seconds_total Prompt process time
             # TYPE llamacpp:prompt_seconds_total counter
-            llamacpp:prompt_seconds_total 0.567
+            llamacpp:prompt_seconds_total 3.084
             # HELP llamacpp:tokens_predicted_total Number of generation tokens processed.
             # TYPE llamacpp:tokens_predicted_total counter
-            llamacpp:tokens_predicted_total 109
+            llamacpp:tokens_predicted_total 31888
             # HELP llamacpp:tokens_predicted_seconds_total Predict process time
             # TYPE llamacpp:tokens_predicted_seconds_total counter
-            llamacpp:tokens_predicted_seconds_total 4.953
+            llamacpp:tokens_predicted_seconds_total 258.844
             # HELP llamacpp:n_decode_total Total number of llama_decode() calls
             # TYPE llamacpp:n_decode_total counter
-            llamacpp:n_decode_total 109
+            llamacpp:n_decode_total 30874
             # HELP llamacpp:n_tokens_max Largest observed n_tokens.
             # TYPE llamacpp:n_tokens_max counter
-            llamacpp:n_tokens_max 115
+            llamacpp:n_tokens_max 8191
             # HELP llamacpp:n_busy_slots_per_decode Average number of busy slots per llama_decode() call
             # TYPE llamacpp:n_busy_slots_per_decode counter
-            llamacpp:n_busy_slots_per_decode 1
+            llamacpp:n_busy_slots_per_decode 1.03398
             # HELP llamacpp:prompt_tokens_seconds Average prompt throughput in tokens/s.
             # TYPE llamacpp:prompt_tokens_seconds gauge
-            llamacpp:prompt_tokens_seconds 151.675
+            llamacpp:prompt_tokens_seconds 793.45
             # HELP llamacpp:predicted_tokens_seconds Average generation throughput in tokens/s.
             # TYPE llamacpp:predicted_tokens_seconds gauge
-            llamacpp:predicted_tokens_seconds 22.0069
+            llamacpp:predicted_tokens_seconds 123.194
             # HELP llamacpp:requests_processing Number of requests processing.
             # TYPE llamacpp:requests_processing gauge
             llamacpp:requests_processing 0
@@ -53,13 +53,13 @@ interactions:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "1650"
+                - "1664"
             Content-Type:
                 - text/plain; version=0.0.4
             Keep-Alive:
                 - timeout=5, max=100
             Process-Start-Time-Unix:
-                - "864865007398"
+                - "6195674472"
             Server:
                 - llama.cpp
         status: 200 OK

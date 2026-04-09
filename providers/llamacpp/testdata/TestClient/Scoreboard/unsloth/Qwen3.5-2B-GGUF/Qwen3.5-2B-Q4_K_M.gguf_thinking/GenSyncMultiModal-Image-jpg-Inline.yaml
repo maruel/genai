@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1081
-        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Banana","reasoning_content":"The user wants me to identify the fruit in the image.\n1.  **Analyze the image:** The image shows a curved, yellow fruit with a brownish tip at the top.\n2.  **Identify characteristics:** It has a long, slender shape, a curved body, and a distinct stem area. It is yellow with some brown spots, which is typical for ripe bananas.\n3.  **Formulate the answer:** The user requested \"only one word\".\n4.  **Select the word:** \"Banana\" fits perfectly."}}],"created":1772481673,"model":"Qwen3.5-2B-Q4_K_M.gguf","system_fingerprint":"b8180-d979f2b17","object":"chat.completion","usage":{"completion_tokens":121,"prompt_tokens":113,"total_tokens":234},"id":"chatcmpl-iE8Do6MMJuiQ4SefXoB4pCRhAi2AcyPf","timings":{"cache_n":0,"prompt_n":113,"prompt_ms":1384.753,"prompt_per_token_ms":12.254451327433628,"prompt_per_second":81.60300067954358,"predicted_n":121,"predicted_ms":13479.715,"predicted_per_token_ms":111.40260330578512,"predicted_per_second":8.976450911610518}}'
+        content_length: 1408
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"banana","reasoning_content":"The user wants me to identify the fruit in the image.\n1.  **Analyze the image:** The image shows a single, curved, yellow fruit with a stem at the top and a tip at the bottom.\n2.  **Identify key features:**\n    *   Curved shape (banana-like).\n    *   Yellow skin.\n    *   Tip looks like a small banana tip or stem end.\n    *   It''s clearly a banana.\n3.  **Formulate the output:** The user requested \"only one word\". The word for a banana is \"banana\".\n\nWait, looking closely at the tip... it''s actually a bit distinct. It looks like a banana, but maybe a specific variety? No, it''s just a banana. It''s a yellow banana.\n\nLet''s double-check. Yes, it''s a banana. The prompt asks for \"only one word\".\nSo, the answer is \"banana\".\n"}}],"created":1775690403,"model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b8708-ae65fbdf3","object":"chat.completion","usage":{"completion_tokens":203,"prompt_tokens":113,"total_tokens":316,"prompt_tokens_details":{"cached_tokens":109}},"id":"chatcmpl-22HasfpyftnjVIVpMfzBr9QOXCu8iUr0","timings":{"cache_n":109,"prompt_n":4,"prompt_ms":21.393,"prompt_per_token_ms":5.34825,"prompt_per_second":186.97704856728836,"predicted_n":203,"predicted_ms":2215.118,"predicted_per_token_ms":10.91191133004926,"predicted_per_second":91.64297342173194}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "1081"
+                - "1408"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 14.913s
+        duration: 2.252s

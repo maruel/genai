@@ -156,12 +156,12 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			c.Seed = int64(v)
 		case *GenOption:
 			c.ReasoningFormat = v.ReasoningFormat
-			if v.Thinking {
-				if c.ChatTemplateKWArgs == nil {
-					c.ChatTemplateKWArgs = map[string]any{}
-				}
-				c.ChatTemplateKWArgs["enable_thinking"] = true
+			if c.ChatTemplateKWArgs == nil {
+				c.ChatTemplateKWArgs = map[string]any{}
 			}
+			// llama-server defaults enable_thinking to true, so we must
+			// explicitly disable it when not requested.
+			c.ChatTemplateKWArgs["enable_thinking"] = v.Thinking
 		default:
 			unsupported = append(unsupported, internal.TypeName(opt))
 		}
@@ -229,9 +229,10 @@ type ChatResponse struct {
 func (c *ChatResponse) ToResult() (genai.Result, error) {
 	out := genai.Result{
 		Usage: genai.Usage{
-			InputTokens:  c.Usage.PromptTokens,
-			OutputTokens: c.Usage.CompletionTokens,
-			TotalTokens:  c.Usage.TotalTokens,
+			InputTokens:       c.Usage.PromptTokens,
+			InputCachedTokens: c.Usage.PromptTokensDetails.CachedTokens,
+			OutputTokens:      c.Usage.CompletionTokens,
+			TotalTokens:       c.Usage.TotalTokens,
 		},
 	}
 	if len(c.Choices) == 1 {
@@ -293,9 +294,12 @@ type Tool struct {
 
 // Usage contains token usage statistics.
 type Usage struct {
-	CompletionTokens int64 `json:"completion_tokens"`
-	PromptTokens     int64 `json:"prompt_tokens"`
-	TotalTokens      int64 `json:"total_tokens"`
+	CompletionTokens    int64 `json:"completion_tokens"`
+	PromptTokens        int64 `json:"prompt_tokens"`
+	TotalTokens         int64 `json:"total_tokens"`
+	PromptTokensDetails struct {
+		CachedTokens int64 `json:"cached_tokens"`
+	} `json:"prompt_tokens_details,omitzero"`
 }
 
 // FinishReason describes why the model stopped generating tokens.

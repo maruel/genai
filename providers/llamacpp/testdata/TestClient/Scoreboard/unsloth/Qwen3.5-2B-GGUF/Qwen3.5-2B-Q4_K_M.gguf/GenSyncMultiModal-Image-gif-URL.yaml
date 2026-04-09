@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 268
+        content_length: 317
         host: 127.0.0.1
         body: |
-            {"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.gif"}}]}],"cache_prompt":true}
+            {"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.gif"}}]}],"chat_template_kwargs":{"enable_thinking":false},"cache_prompt":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 601
-        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Banana"}}],"created":1772481005,"model":"Qwen3.5-2B-Q4_K_M.gguf","system_fingerprint":"b8180-d979f2b17","object":"chat.completion","usage":{"completion_tokens":3,"prompt_tokens":115,"total_tokens":118},"id":"chatcmpl-ialHj7UDnmIHMfy5Pxvjs632KpMX0PrI","timings":{"cache_n":0,"prompt_n":115,"prompt_ms":1588.326,"prompt_per_token_ms":13.81153043478261,"prompt_per_second":72.40327237607393,"predicted_n":3,"predicted_ms":129.049,"predicted_per_token_ms":43.016333333333336,"predicted_per_second":23.246983703864423}}'
+        content_length: 633
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Banana"}}],"created":1775686435,"model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b8708-ae65fbdf3","object":"chat.completion","usage":{"completion_tokens":3,"prompt_tokens":115,"total_tokens":118,"prompt_tokens_details":{"cached_tokens":109}},"id":"chatcmpl-b8oeAEA1LX8ufG4JNDFTgXaYBTsCxE67","timings":{"cache_n":109,"prompt_n":6,"prompt_ms":58.827,"prompt_per_token_ms":9.804499999999999,"prompt_per_second":101.99398235504106,"predicted_n":3,"predicted_ms":24.981,"predicted_per_token_ms":8.327,"predicted_per_second":120.09126936471716}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "601"
+                - "633"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 1.769s
+        duration: 149ms

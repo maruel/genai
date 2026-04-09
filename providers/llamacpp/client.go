@@ -583,8 +583,16 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (fragments iter.Seq
 			for pkt := range chunks {
 				if pkt.Usage.PromptTokens != 0 {
 					u.InputTokens = pkt.Usage.PromptTokens
+					u.InputCachedTokens = pkt.Usage.PromptTokensDetails.CachedTokens
 					u.OutputTokens = pkt.Usage.CompletionTokens
 					u.TotalTokens = pkt.Usage.TotalTokens
+				} else if pkt.Timings.PredictedN != 0 {
+					// llama-server doesn't include usage in streaming responses
+					// by default; fall back to the timings field which is always
+					// present in the final chunk.
+					u.InputTokens = pkt.Timings.PromptN
+					u.InputCachedTokens = pkt.Timings.CacheN
+					u.OutputTokens = pkt.Timings.PredictedN
 				}
 				if len(pkt.Choices) != 1 {
 					continue

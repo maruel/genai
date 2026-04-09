@@ -17,13 +17,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 595
-        body: '{"models":[{"name":"Qwen3.5-2B-Q4_K_M.gguf","model":"Qwen3.5-2B-Q4_K_M.gguf","modified_at":"","size":"","digest":"","type":"model","description":"","tags":[""],"capabilities":["completion","multimodal"],"parameters":"","details":{"parent_model":"","format":"gguf","family":"","families":[""],"parameter_size":"","quantization_level":""}}],"object":"list","data":[{"id":"Qwen3.5-2B-Q4_K_M.gguf","aliases":[],"tags":[],"object":"model","created":1772482259,"owned_by":"llamacpp","meta":{"vocab_type":2,"n_vocab":248320,"n_ctx_train":262144,"n_embd":2048,"n_params":1881825088,"size":1269873920}}]}'
+        content_length: 623
+        body: '{"models":[{"name":"unsloth/Qwen3.5-2B-GGUF","model":"unsloth/Qwen3.5-2B-GGUF","modified_at":"","size":"","digest":"","type":"model","description":"","tags":[""],"capabilities":["completion","multimodal"],"parameters":"","details":{"parent_model":"","format":"gguf","family":"","families":[""],"parameter_size":"","quantization_level":""}}],"object":"list","data":[{"id":"unsloth/Qwen3.5-2B-GGUF","aliases":["unsloth/Qwen3.5-2B-GGUF"],"tags":[],"object":"model","created":1775678972,"owned_by":"llamacpp","meta":{"vocab_type":2,"n_vocab":248320,"n_ctx_train":262144,"n_embd":2048,"n_params":1881825088,"size":1269873920}}]}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "595"
+                - "623"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -51,13 +51,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 931
-        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Based on the information provided, the capital of Quackiland is **Quack**.\n\nThis is explicitly stated in the text: \"The capital of Quackiland is Quack.\" The mention of the \"Big Canard Statue\" being located in Quack serves as supporting detail confirming where this specific capital is situated, but the direct answer remains Quack."}}],"created":1772482263,"model":"Qwen3.5-2B-Q4_K_M.gguf","system_fingerprint":"b8180-d979f2b17","object":"chat.completion","usage":{"completion_tokens":73,"prompt_tokens":43,"total_tokens":116},"id":"chatcmpl-wSnE6nJqlNtqNTIpxsSHhTBMgXzyR2kI","timings":{"cache_n":0,"prompt_n":43,"prompt_ms":313.187,"prompt_per_token_ms":7.283418604651163,"prompt_per_second":137.2981637168848,"predicted_n":73,"predicted_ms":3503.371,"predicted_per_token_ms":47.991383561643836,"predicted_per_second":20.83707377836946}}'
+        content_length: 1885
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Based on the text provided, the capital of Quackiland is **Quack**.","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:** The user is providing a set of premises (facts) and asking for the answer to a specific question based on those premises.\n    *   Premise 1: The capital of Quackiland is Quack.\n    *   Premise 2: The Big Canard Statue is located in Quack.\n    *   Question: What is the capital of Quackiland?\n\n2.  **Evaluate the Information:** The first sentence explicitly states \"The capital of Quackiland is Quack.\" This is a direct assertion of fact within the context of the problem. The second sentence provides additional context (\"The Big Canard Statue is located in Quack\") which is irrelevant to determining the capital but confirms Quack is a place.\n\n3.  **Determine the Answer:** Based *strictly* on the provided text, the answer is \"Quack\".\n\n4.  **Formulate the Output:** A simple direct answer is best.\n\n5.  **Safety Check:** The prompt is a classic \"trick\" question often used in logic tests or riddles where the answer is hidden in the text itself. There is no harmful content. It''s a straightforward reading comprehension task.\n\n6.  **Final Decision:** Answer \"Quack\" directly.cw\n"}}],"created":1775678975,"model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b8708-ae65fbdf3","object":"chat.completion","usage":{"completion_tokens":295,"prompt_tokens":41,"total_tokens":336,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-rjPSuDj7I6eHUJsynXFFiCm2FyW53MSt","timings":{"cache_n":0,"prompt_n":41,"prompt_ms":75.775,"prompt_per_token_ms":1.8481707317073173,"prompt_per_second":541.0755526228967,"predicted_n":295,"predicted_ms":2199.656,"predicted_per_token_ms":7.456461016949152,"predicted_per_second":134.11187931203787}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "931"
+                - "1885"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -66,4 +66,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 3.822s
+        duration: 2.283s

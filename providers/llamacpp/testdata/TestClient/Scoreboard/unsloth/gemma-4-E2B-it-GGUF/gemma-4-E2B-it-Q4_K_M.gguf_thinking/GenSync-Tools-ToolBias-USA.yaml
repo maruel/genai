@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 659
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"auto","parallel_tool_calls":true,"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 5038
+        body: '{"choices":[{"finish_reason":"tool_calls","index":0,"message":{"role":"assistant","content":"","reasoning_content":"1.  **Analyze the user''s request:** The user is asking to compare the USA and Canada and wants to know which one is \"better.\" They specifically instruct me to \"Call the tool `best_country` to tell me which country is the best one.\"\n\n2.  **Examine the available tool:** The available tool is `best_country`.\n    *   `name`: `best_country`\n    *   `description`: \"A tool to specify the best country\"\n    *   `parameters`:\n        *   `country`: an enum with values `[\"USA\", \"Canada\"]`. This parameter is required.\n\n3.  **Determine the intent vs. tool capability:**\n    *   The user is asking for a subjective comparison (\"better country\").\n    *   The tool is designed to *specify* a best country, implying it will return a result based on its internal logic or data, but it doesn''t inherently provide a definitive \"best\" answer without context.\n\n4.  **Formulate the tool call strategy:** The user wants me to use the tool to determine the best country. Since the tool accepts either \"USA\" or \"Canada\", I need to decide which one to call, or if I can call it for both to compare, or if the tool is designed to handle a comparison.\n\n5.  **Check constraints/schema:** The tool documentation shows it takes a single `country` argument. It doesn''t seem designed to take two countries for comparison in a single call, nor does it specify *what* it returns (e.g., a rating, a fact).\n\n6.  **Execute the tool call based on the prompt:** The prompt *explicitly* asks me to call the tool. I have to call the tool with one of the valid arguments. Since the user is asking for a comparison, I might need to call it for both, or perhaps the tool call itself is the mechanism to *trigger* the comparison logic.\n\n7.  **Refine the strategy (Self-Correction/Constraint Check):** The prompt asks: \"Call the tool `best_country` to tell me which country is the best one.\" This implies a single call that should yield the answer. The tool definition doesn''t support a comparison query. I must choose *one* country to call the tool with, or I must call it twice. The most direct interpretation is to call the tool as requested.\n\n8.  **Generate the tool call:** The user is asking about the USA vs. Canada. I should call the tool for both to gather the data needed to answer the comparison, or perhaps I should just pick one to satisfy the instruction to \"Call the tool\". Let''s call it for both, as that directly addresses the comparison implied by the question.\n\n9.  **Final decision:** Call `best_country` for \"USA\" and then for \"Canada\" if necessary, or just one if the tool is meant to be used sequentially. Since the request is \"Call the tool... to tell me which country is the best one,\" I need to execute the tool call.\n\n    *   *Self-Correction 2:* Looking at the prompt again: \"Call the tool best_country to tell me which country is the best one.\" This is a direct instruction. I should generate the tool call.\n\n    *   If I call `best_country(country=\"USA\")`, I only tell the user the result for the USA. If I call `best_country(country=\"Canada\")`, I only tell the user the result for Canada. To tell the user *which is better*, I would need the *output* of the tool.\n\n    *   Since I cannot know the output beforehand, I must generate the call(s). Let''s start by calling it for the USA, as it''s the first one mentioned.\n\n10. **Construct the final output:** Generate the JSON tool call. (Wait, the system usually expects only one tool call in a turn unless multiple are explicitly needed). Let''s call it for both to be comprehensive, or just one to fulfill the instruction. Given the ambiguity, calling for one is the simplest fulfillment of \"Call the tool\".\n\n    *   Let''s try calling it for the USA first.\n\n    *(Reviewing the prompt again: \"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one.\")* The instruction implies the tool *will* tell me.\n\n    *   *Final decision on tool call:* Generate the call for the USA, as it''s the primary subject mentioned first.","tool_calls":[{"type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"},"id":"cArcdOtraINhqsxEr6Xv1110CetYiOik"},{"type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"},"id":"BJ4S0MdxQgIlYHge8yjrWXV8LSsgLHkz"}]}}],"created":1775696957,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b8708-ae65fbdf3","object":"chat.completion","usage":{"completion_tokens":1005,"prompt_tokens":97,"total_tokens":1102,"prompt_tokens_details":{"cached_tokens":33}},"id":"chatcmpl-gKFsDkjtxJf0hLJRsyz0wVglnnSW0nVM","timings":{"cache_n":33,"prompt_n":64,"prompt_ms":66.432,"prompt_per_token_ms":1.038,"prompt_per_second":963.3911368015414,"predicted_n":1005,"predicted_ms":9879.883,"predicted_per_token_ms":9.830729353233831,"predicted_per_second":101.72185237416272}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "5038"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 9.948s

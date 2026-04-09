@@ -29,7 +29,7 @@ func ExampleClient_GenSync() {
 	}
 	defer func() { _ = srv.Close() }()
 	// Connect the provider.
-	c, err := ollama.New(ctx, genai.ProviderOptionRemote(srv.URL()), genai.ProviderOptionModel("gemma3:1b"))
+	c, err := ollama.New(ctx, genai.ProviderOptionRemote(srv.URL()), genai.ProviderOptionModel("gemma4:e2b"))
 	if err != nil {
 		log.Print(err)
 		return
@@ -79,7 +79,7 @@ func startServer(ctx context.Context) (*ollamasrv.Server, error) {
 		},
 		// Level: slog.LevelDebug,
 	}))}
-	return ollamasrv.New(ctx, exe, l, "", []string{"OLLAMA_FLASH_ATTENTION=1", "OLLAMA_KV_CACHE_TYPE=q8_0"})
+	return ollamasrv.New(ctx, exe, l, "", []string{"OLLAMA_FLASH_ATTENTION=1", "OLLAMA_KV_CACHE_TYPE=q8_0", "OLLAMA_CONTEXT_LENGTH=4096"})
 }
 
 type logWriter struct {

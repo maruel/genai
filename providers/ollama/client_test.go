@@ -72,12 +72,10 @@ func TestClient(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			if strings.HasPrefix(model.Model, "qwen") {
-				// Ollama v0.17.4+ auto-enables thinking for thinking-capable
-				// models. Use the "think" API parameter to control it.
-				if !model.Reason {
-					return &ollamaThinkOff{Provider: c}
-				}
+			// Ollama v0.17.4+ auto-enables thinking for thinking-capable
+			// models. Use the "think" API parameter to control it.
+			if !model.Reason {
+				return &ollamaThinkOff{Provider: c}
 			}
 			return c
 		}, models, testRecorder.Records)
@@ -160,9 +158,7 @@ type lazyServer struct {
 func (l *lazyServer) lazyStart(t testing.TB) string {
 	// Skip server startup when not recording. The HTTP cassettes in testdata/
 	// are replayed by the recording transport so the URL is never contacted.
-	// Only RECORD=all needs a real server; RECORD=failure_only replays in the
-	// parent and re-runs failures as a subprocess with RECORD=all.
-	if os.Getenv("RECORD") != "all" {
+	if os.Getenv("RECORD") == "" {
 		return "http://localhost:0"
 	}
 	l.mu.Lock()

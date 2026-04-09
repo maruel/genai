@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 340
-        body: '{"model":"qwen3.5:2b","created_at":"2026-03-03T13:47:48.160983733Z","message":{"role":"assistant","content":"The capital of **Quackiland** is **Quack**."},"done":true,"done_reason":"stop","total_duration":4154040398,"load_duration":122741966,"prompt_eval_count":52,"prompt_eval_duration":369533212,"eval_count":14,"eval_duration":698278611}'
+        content_length: 440
+        body: '{"model":"qwen3.5:2b","created_at":"2026-04-08T23:52:29.234637Z","message":{"role":"assistant","content":"Based on the information provided, the capital of Quackiland is **Quack**.\n\nThe text explicitly states: \"The capital of Quackiland is Quack.\""},"done":true,"done_reason":"stop","total_duration":2895808500,"load_duration":111970083,"prompt_eval_count":52,"prompt_eval_duration":650319958,"eval_count":35,"eval_duration":1350401919}'
         headers:
             Content-Length:
-                - "340"
+                - "440"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 4.154s
+        duration: 2.896s

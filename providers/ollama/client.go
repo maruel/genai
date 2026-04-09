@@ -145,7 +145,7 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) str
 	// it will be pulled upon first use.
 	switch preference {
 	case string(genai.ModelCheap):
-		return "gemma3:1b"
+		return "gemma4:e2b"
 	case string(genai.ModelSOTA):
 		return "qwen3.5:2b"
 	case string(genai.ModelGood), "":

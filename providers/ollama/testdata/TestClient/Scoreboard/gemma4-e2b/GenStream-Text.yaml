@@ -1,0 +1,34 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 122
+        host: localhost
+        body: |
+            {"model":"gemma4:e2b","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":true,"think":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        content_length: -1
+        body: |
+            {"model":"gemma4:e2b","created_at":"2026-04-08T23:56:11.326040589Z","message":{"role":"assistant","content":"Hello"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-08T23:56:11.414675506Z","message":{"role":"assistant","content":"."},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-08T23:56:11.426455631Z","message":{"role":"assistant","content":""},"done":true,"done_reason":"stop","total_duration":2785345709,"load_duration":2255662292,"prompt_eval_count":17,"prompt_eval_duration":219934625,"eval_count":3,"eval_duration":99540667}
+        headers:
+            Content-Type:
+                - application/x-ndjson
+        status: 200 OK
+        code: 200
+        duration: 2.685s

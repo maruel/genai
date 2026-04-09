@@ -23,12 +23,12 @@ interactions:
             - chunked
         content_length: -1
         body: |
-            {"model":"qwen3.5:2b","created_at":"2026-03-03T13:47:26.420397882Z","message":{"role":"assistant","content":"Hello"},"done":false}
-            {"model":"qwen3.5:2b","created_at":"2026-03-03T13:47:26.478211863Z","message":{"role":"assistant","content":"!"},"done":false}
-            {"model":"qwen3.5:2b","created_at":"2026-03-03T13:47:26.529545581Z","message":{"role":"assistant","content":""},"done":true,"done_reason":"stop","total_duration":410989856,"load_duration":131459478,"prompt_eval_count":20,"prompt_eval_duration":167749893,"eval_count":3,"eval_duration":105323041}
+            {"model":"qwen3.5:2b","created_at":"2026-04-08T23:52:06.890115337Z","message":{"role":"assistant","content":"Hi"},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-08T23:52:06.911610795Z","message":{"role":"assistant","content":"."},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-08T23:52:06.933452253Z","message":{"role":"assistant","content":""},"done":true,"done_reason":"stop","total_duration":337985541,"load_duration":125741625,"prompt_eval_count":20,"prompt_eval_duration":167524500,"eval_count":3,"eval_duration":42910208}
         headers:
             Content-Type:
                 - application/x-ndjson
         status: 200 OK
         code: 200
-        duration: 302ms
+        duration: 296ms

@@ -1,0 +1,34 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 155
+        host: localhost
+        body: |
+            {"model":"gemma4:e2b","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":true,"think":false,"logprobs":true,"top_logprobs":2}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        content_length: -1
+        body: |
+            {"model":"gemma4:e2b","created_at":"2026-04-08T23:56:12.409039423Z","message":{"role":"assistant","content":"Hello"},"done":false,"logprobs":[{"token":"Hello","logprob":-1.3693407652226597e-7,"bytes":[72,101,108,108,111],"top_logprobs":[{"token":"Hello","logprob":-1.3693407652226597e-7,"bytes":[72,101,108,108,111]},{"token":"Hola","logprob":-15.906259536743164,"bytes":[72,111,108,97]}]}]}
+            {"model":"gemma4:e2b","created_at":"2026-04-08T23:56:12.458579589Z","message":{"role":"assistant","content":"."},"done":false,"logprobs":[{"token":".","logprob":-0.01703883521258831,"bytes":[46],"top_logprobs":[{"token":".","logprob":-0.01703883521258831,"bytes":[46]},{"token":"\u003cturn|\u003e","logprob":-4.080834865570068,"bytes":[60,116,117,114,110,124,62]}]}]}
+            {"model":"gemma4:e2b","created_at":"2026-04-08T23:56:12.519984464Z","message":{"role":"assistant","content":""},"done":true,"done_reason":"stop","total_duration":659523792,"load_duration":172805709,"prompt_eval_count":17,"prompt_eval_duration":161296083,"eval_count":3,"eval_duration":79154709}
+        headers:
+            Content-Type:
+                - application/x-ndjson
+        status: 200 OK
+        code: 200
+        duration: 549ms

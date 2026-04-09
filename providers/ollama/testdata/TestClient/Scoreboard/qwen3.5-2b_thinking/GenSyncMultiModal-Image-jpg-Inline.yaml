@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 877
-        body: '{"model":"qwen3.5:2b","created_at":"2026-03-03T13:46:55.639990351Z","message":{"role":"assistant","content":"Banana","thinking":"The user wants me to identify the fruit in the image.\n1.  **Analyze the image:** I see a single, curved yellow fruit. It has a tapered stem and a base where it connects to something else (implied). The skin is yellow with some brown speckles and spots near the ends, typical of ripening. It''s definitely a banana.\n2.  **Formulate the answer:** The user requested \"only one word\".\n3.  **Select the word:** \"Banana\" fits perfectly. \"Yellow\" could work but is less specific as an ID. \"Fruit\" is too broad. \"Banana\" is the best single-word answer."},"done":true,"done_reason":"stop","total_duration":18773036212,"load_duration":128305788,"prompt_eval_count":118,"prompt_eval_duration":677822815,"eval_count":148,"eval_duration":7737372878}'
+        content_length: 768
+        body: '{"model":"qwen3.5:2b","created_at":"2026-04-08T23:51:42.023429881Z","message":{"role":"assistant","content":"Banana","thinking":"The user has provided an image of a yellow fruit and asked a question: \"What fruit is it? Reply with only one word.\"\n\n1.  **Analyze the image:** The image clearly shows a single, curved fruit with a yellow skin. It has a stem at the top and a calyx at the bottom left. The shape is characteristic of a banana.\n2.  **Formulate the answer:** The user requested only one word.\n3.  **Select the word:** \"Banana\" is the correct one-word answer."},"done":true,"done_reason":"stop","total_duration":34122897849,"load_duration":131023250,"prompt_eval_count":118,"prompt_eval_duration":583205584,"eval_count":118,"eval_duration":4662954128}'
         headers:
             Content-Length:
-                - "877"
+                - "768"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 18.773s
+        duration: 34.125s

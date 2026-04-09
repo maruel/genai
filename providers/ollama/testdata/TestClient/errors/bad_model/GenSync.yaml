@@ -28,7 +28,7 @@ interactions:
                 - application/json; charset=utf-8
         status: 404 Not Found
         code: 404
-        duration: 1ms
+        duration: 0s
     - id: 1
       request:
         proto: HTTP/1.1
@@ -56,4 +56,4 @@ interactions:
                 - application/json
         status: 500 Internal Server Error
         code: 500
-        duration: 224ms
+        duration: 176ms

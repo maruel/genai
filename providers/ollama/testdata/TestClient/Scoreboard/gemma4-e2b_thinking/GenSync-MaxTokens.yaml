@@ -1,0 +1,31 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 159
+        host: localhost
+        body: |
+            {"model":"gemma4:e2b","messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"stream":false,"options":{"num_predict":16}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 375
+        body: '{"model":"gemma4:e2b","created_at":"2026-04-09T00:53:32.556617Z","message":{"role":"assistant","content":"","thinking":"Here''s a thinking process that leads to the detailed explanation of"},"done":true,"done_reason":"length","total_duration":7123110042,"load_duration":95290250,"prompt_eval_count":24,"prompt_eval_duration":44976209,"eval_count":16,"eval_duration":146654916}'
+        headers:
+            Content-Length:
+                - "375"
+            Content-Type:
+                - application/json; charset=utf-8
+        status: 200 OK
+        code: 200
+        duration: 7.123s

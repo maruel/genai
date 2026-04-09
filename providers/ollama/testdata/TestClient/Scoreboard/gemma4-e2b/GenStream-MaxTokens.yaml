@@ -1,0 +1,48 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 172
+        host: localhost
+        body: |
+            {"model":"gemma4:e2b","messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"stream":true,"options":{"num_predict":16},"think":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        content_length: -1
+        body: |
+            {"model":"gemma4:e2b","created_at":"2026-04-08T23:56:13.65642684Z","message":{"role":"assistant","content":"##"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-08T23:56:13.667975882Z","message":{"role":"assistant","content":" The"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-08T23:56:13.679567882Z","message":{"role":"assistant","content":" Theory"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-08T23:56:13.690868715Z","message":{"role":"assistant","content":" of"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-08T23:56:13.762280257Z","message":{"role":"assistant","content":" Relativity"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-08T23:56:13.773931507Z","message":{"role":"assistant","content":":"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-08T23:56:13.790873423Z","message":{"role":"assistant","content":" A"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-08T23:56:13.809599632Z","message":{"role":"assistant","content":" Deep"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-08T23:56:13.912400798Z","message":{"role":"assistant","content":" Dive"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-08T23:56:13.935163757Z","message":{"role":"assistant","content":"\n\n"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-08T23:56:13.964507882Z","message":{"role":"assistant","content":"The"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-08T23:56:14.024730465Z","message":{"role":"assistant","content":" Theory"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-08T23:56:14.048917965Z","message":{"role":"assistant","content":" of"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-08T23:56:14.065854049Z","message":{"role":"assistant","content":" Relativity"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-08T23:56:14.077628965Z","message":{"role":"assistant","content":","},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-08T23:56:14.111374299Z","message":{"role":"assistant","content":" developed"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-08T23:56:14.111381465Z","message":{"role":"assistant","content":""},"done":true,"done_reason":"length","total_duration":1589096751,"load_duration":211109167,"prompt_eval_count":18,"prompt_eval_duration":295280791,"eval_count":16,"eval_duration":451209206}
+        headers:
+            Content-Type:
+                - application/x-ndjson
+        status: 200 OK
+        code: 200
+        duration: 1.136s

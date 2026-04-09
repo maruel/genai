@@ -1,0 +1,31 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 156
+        host: localhost
+        body: |
+            {"model":"gemma4:e2b","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":false,"think":false,"logprobs":true,"top_logprobs":2}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 790
+        body: '{"model":"gemma4:e2b","created_at":"2026-04-08T23:56:12.213108089Z","message":{"role":"assistant","content":"Hello."},"done":true,"done_reason":"stop","logprobs":[{"token":"Hello","logprob":-1.3693407652226597e-7,"bytes":[72,101,108,108,111],"top_logprobs":[{"token":"Hello","logprob":-1.3693407652226597e-7,"bytes":[72,101,108,108,111]},{"token":"Hola","logprob":-15.906259536743164,"bytes":[72,111,108,97]}]},{"token":".","logprob":-0.01703883521258831,"bytes":[46],"top_logprobs":[{"token":".","logprob":-0.01703883521258831,"bytes":[46]},{"token":"\u003cturn|\u003e","logprob":-4.080834865570068,"bytes":[60,116,117,114,110,124,62]}]}],"total_duration":534599042,"load_duration":144642791,"prompt_eval_count":17,"prompt_eval_duration":186405959,"eval_count":3,"eval_duration":101414500}'
+        headers:
+            Content-Length:
+                - "790"
+            Content-Type:
+                - application/json; charset=utf-8
+        status: 200 OK
+        code: 200
+        duration: 535ms

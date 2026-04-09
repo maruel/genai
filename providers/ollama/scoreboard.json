@@ -36,6 +36,7 @@
         "seed": true,
         "tools": "flaky",
         "json": true,
+        "jsonSchema": true,
         "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
@@ -96,10 +97,18 @@
     },
     {
       "models": [
-        "gemma3:1b"
+        "gemma4:e2b"
       ],
       "cheap": true,
       "in": {
+        "image": {
+          "inline": true,
+          "supportedFormats": [
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
         "text": {
           "inline": true
         }
@@ -114,7 +123,6 @@
         "reportFinishReason": "true",
         "seed": true,
         "json": true,
-        "jsonSchema": true,
         "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
@@ -123,8 +131,6 @@
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "seed": true,
-        "json": true,
-        "jsonSchema": true,
         "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
@@ -132,8 +138,9 @@
     },
     {
       "models": [
-        "gemma3:4b"
+        "gemma4:e2b"
       ],
+      "reason": true,
       "in": {
         "image": {
           "inline": true,
@@ -166,6 +173,7 @@
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "seed": true,
+        "tools": "flaky",
         "json": true,
         "jsonSchema": true,
         "topLogprobs": true,

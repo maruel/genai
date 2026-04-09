@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 892
-        body: '{"model":"qwen3.5:2b","created_at":"2026-03-03T13:47:26.090326066Z","message":{"role":"assistant","content":"Banana","thinking":"The user has provided an image of a fruit and asked to identify it with a one-word reply.\n\n1.  **Analyze the image:** I see a curved, yellow object with a stem at the top. It has brown spots near the end and on the edges. It looks like a banana. Specifically, it looks like a common \"white elephant\" style banana or maybe a plantain? No, it looks very much like a regular yellow banana. It''s smooth-skinned.\n2.  **Identify the fruit:** It is definitely a banana.\n3.  **Formulate the output:** The user requested \"only one word\". So, just \"banana\" fits perfectly."},"done":true,"done_reason":"stop","total_duration":9465460280,"load_duration":118859437,"prompt_eval_count":118,"prompt_eval_duration":626003739,"eval_count":148,"eval_duration":7793343992}'
+        content_length: 694
+        body: '{"model":"qwen3.5:2b","created_at":"2026-04-08T23:52:01.248252251Z","message":{"role":"assistant","content":"Banana","thinking":"The user is asking for the name of the fruit in the image.\n1.  **Analyze the image:** I see a single object against a plain white background.\n2.  **Identify the object:** It is yellow, curved, and has a distinct stem. It looks like a banana.\n3.  **Formulate the response:** The user requested a one-word reply.\n4.  **Final Answer Selection:** \"Banana\" fits perfectly."},"done":true,"done_reason":"stop","total_duration":10672514879,"load_duration":134369708,"prompt_eval_count":118,"prompt_eval_duration":527458459,"eval_count":103,"eval_duration":4051758040}'
         headers:
             Content-Length:
-                - "892"
+                - "694"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 9.466s
+        duration: 10.673s

@@ -1,0 +1,65 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 162
+        host: localhost
+        body: |
+            {"model":"gemma4:e2b","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"stream":true,"options":{"stop":["is"]}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        content_length: -1
+        body: |
+            {"model":"gemma4:e2b","created_at":"2026-04-09T00:53:33.207727Z","message":{"role":"assistant","content":"","thinking":"Thinking"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-09T00:53:33.217699Z","message":{"role":"assistant","content":"","thinking":" Process"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-09T00:53:33.228595Z","message":{"role":"assistant","content":"","thinking":":"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-09T00:53:33.248823Z","message":{"role":"assistant","content":"","thinking":"\n\n1"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-09T00:53:33.258728Z","message":{"role":"assistant","content":"","thinking":"."},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-09T00:53:33.278204Z","message":{"role":"assistant","content":"","thinking":"  **"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-09T00:53:33.287908Z","message":{"role":"assistant","content":"","thinking":"Analyze"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-09T00:53:33.297576Z","message":{"role":"assistant","content":"","thinking":" the"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-09T00:53:33.307227Z","message":{"role":"assistant","content":"","thinking":" Request"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-09T00:53:33.316878Z","message":{"role":"assistant","content":"","thinking":":**"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-09T00:53:33.326551Z","message":{"role":"assistant","content":"","thinking":" The"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-09T00:53:33.336271Z","message":{"role":"assistant","content":"","thinking":" user"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-09T00:53:33.3473Z","message":{"role":"assistant","content":"","thinking":" wants"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-09T00:53:33.356773Z","message":{"role":"assistant","content":"","thinking":" to"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-09T00:53:33.366645Z","message":{"role":"assistant","content":"","thinking":" know"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-09T00:53:33.376567Z","message":{"role":"assistant","content":"","thinking":" about"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-09T00:53:33.386467Z","message":{"role":"assistant","content":"","thinking":" Canada"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-09T00:53:33.396454Z","message":{"role":"assistant","content":"","thinking":" in"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-09T00:53:33.406459Z","message":{"role":"assistant","content":"","thinking":" \""},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-09T00:53:33.416597Z","message":{"role":"assistant","content":"","thinking":"great"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-09T00:53:33.426764Z","message":{"role":"assistant","content":"","thinking":" details"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-09T00:53:33.436988Z","message":{"role":"assistant","content":"","thinking":"\""},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-09T00:53:33.447033Z","message":{"role":"assistant","content":"","thinking":" and"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-09T00:53:33.456941Z","message":{"role":"assistant","content":"","thinking":" specifically"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-09T00:53:33.466815Z","message":{"role":"assistant","content":"","thinking":" instructs"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-09T00:53:33.476596Z","message":{"role":"assistant","content":"","thinking":" the"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-09T00:53:33.486328Z","message":{"role":"assistant","content":"","thinking":" response"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-09T00:53:33.49598Z","message":{"role":"assistant","content":"","thinking":" to"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-09T00:53:33.505635Z","message":{"role":"assistant","content":"","thinking":" start"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-09T00:53:33.515312Z","message":{"role":"assistant","content":"","thinking":" with"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-09T00:53:33.524964Z","message":{"role":"assistant","content":"","thinking":":"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-09T00:53:33.534655Z","message":{"role":"assistant","content":"","thinking":" \""},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-09T00:53:33.544318Z","message":{"role":"assistant","content":"","thinking":"Canada"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-09T00:53:33.553997Z","message":{"role":"assistant","content":"","thinking":" "},"done":true,"done_reason":"stop","total_duration":826749583,"load_duration":97383041,"prompt_eval_count":27,"prompt_eval_duration":18915334,"eval_count":39,"eval_duration":367044081}
+        headers:
+            Content-Type:
+                - application/x-ndjson
+        status: 200 OK
+        code: 200
+        duration: 481ms

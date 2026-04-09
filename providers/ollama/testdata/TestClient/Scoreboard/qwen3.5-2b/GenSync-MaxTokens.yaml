@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 366
-        body: '{"model":"qwen3.5:2b","created_at":"2026-03-03T13:47:30.668720361Z","message":{"role":"assistant","content":"**Einstein''s Theory of Relativity** is one of the most profound and"},"done":true,"done_reason":"length","total_duration":2197797828,"load_duration":117457378,"prompt_eval_count":23,"prompt_eval_duration":249502473,"eval_count":16,"eval_duration":834966680}'
+        content_length: 382
+        body: '{"model":"qwen3.5:2b","created_at":"2026-04-08T23:52:10.832458755Z","message":{"role":"assistant","content":"## The Theory of Relativity: A Comprehensive Overview\n\nAlbert Einstein''s **Theory"},"done":true,"done_reason":"length","total_duration":1716885334,"load_duration":117575250,"prompt_eval_count":23,"prompt_eval_duration":330094292,"eval_count":16,"eval_duration":659157458}'
         headers:
             Content-Length:
-                - "366"
+                - "382"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 2.198s
+        duration: 1.717s

@@ -1,0 +1,31 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 131
+        host: localhost
+        body: |
+            {"model":"gemma4:e2b","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":false,"options":{"seed":42}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1000
+        body: '{"model":"gemma4:e2b","created_at":"2026-04-09T00:53:17.597223Z","message":{"role":"assistant","content":"Hello","thinking":"Thinking Process:\n1.  **Analyze the Request:** The user asked me to \"Say hello\" and specifically instructed me to \"Use only one word.\"\n2.  **Determine the Goal:** The goal is to provide a greeting or acknowledgement that fulfills the request while adhering to the constraint of using only one word.\n3.  **Evaluate Options for \"Hello\":**\n    *   Hello (Direct fulfillment)\n    *   Hi (Synonym, one word)\n    *   Greetings (One word, but less common as a standalone hello)\n    *   Hey (Informal, one word)\n4.  **Select the Best Option:** \"Hello\" is the most direct and universally understood one-word response to the instruction.\n\n5.  **Final Output Generation:** Hello."},"done":true,"done_reason":"stop","total_duration":3211763791,"load_duration":110149291,"prompt_eval_count":23,"prompt_eval_duration":18764750,"eval_count":172,"eval_duration":1621913040}'
+        headers:
+            Content-Length:
+                - "1000"
+            Content-Type:
+                - application/json; charset=utf-8
+        status: 200 OK
+        code: 200
+        duration: 3.212s

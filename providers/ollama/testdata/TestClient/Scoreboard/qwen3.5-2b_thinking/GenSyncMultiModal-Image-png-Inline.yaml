@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 792
-        body: '{"model":"qwen3.5:2b","created_at":"2026-03-03T13:47:16.624409676Z","message":{"role":"assistant","content":"Banana","thinking":"The user wants me to identify the fruit in the image.\n1.  **Analyze the image:** I see a curved, yellow fruit with a stem at one end and leaves or husks at the other (though it looks like just the top tip). It has a smooth skin and a distinct curvature.\n2.  **Identify the fruit:** This is clearly a banana.\n3.  **Formulate the answer:** The user requested \"Reply with only one word.\"\n4.  **Final check:** Does \"banana\" count as one word? Yes. Is it correct? Yes."},"done":true,"done_reason":"stop","total_duration":14844541986,"load_duration":141321341,"prompt_eval_count":118,"prompt_eval_duration":683693994,"eval_count":130,"eval_duration":6857890712}'
+        content_length: 560
+        body: '{"model":"qwen3.5:2b","created_at":"2026-04-08T23:51:50.572247968Z","message":{"role":"assistant","content":"banana","thinking":"The user wants me to identify the fruit in the image.\nThe image shows a single, yellow, curved fruit with brown spots near the bottom and stem.\nThis is clearly a banana.\nThe user requested a one-word reply.\n\"Banana\" fits this criteria."},"done":true,"done_reason":"stop","total_duration":3409741002,"load_duration":125508042,"prompt_eval_count":118,"prompt_eval_duration":570030417,"eval_count":62,"eval_duration":1954170876}'
         headers:
             Content-Length:
-                - "792"
+                - "560"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 14.845s
+        duration: 3.411s

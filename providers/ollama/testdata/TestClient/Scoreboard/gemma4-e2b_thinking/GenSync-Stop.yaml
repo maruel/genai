@@ -1,0 +1,31 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 163
+        host: localhost
+        body: |
+            {"model":"gemma4:e2b","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"stream":false,"options":{"stop":["is"]}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 471
+        body: '{"model":"gemma4:e2b","created_at":"2026-04-09T00:53:33.158308Z","message":{"role":"assistant","content":"","thinking":"Thinking Process:\n\n1.  **Analyze the Request:** The user wants me to talk about Canada in \"great details\" and start the response with the exact phrase: \"Canada "},"done":true,"done_reason":"stop","total_duration":601358625,"load_duration":102808667,"prompt_eval_count":27,"prompt_eval_duration":44955583,"eval_count":40,"eval_duration":373608751}'
+        headers:
+            Content-Length:
+                - "471"
+            Content-Type:
+                - application/json; charset=utf-8
+        status: 200 OK
+        code: 200
+        duration: 602ms

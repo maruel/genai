@@ -1,0 +1,44 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 235
+        host: localhost
+        body: |
+            {"model":"gemma4:e2b","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"stream":true,"format":"json","think":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        content_length: -1
+        body: |
+            {"model":"gemma4:e2b","created_at":"2026-04-08T23:56:15.425838299Z","message":{"role":"assistant","content":"```"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-08T23:56:15.438714424Z","message":{"role":"assistant","content":"json"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-08T23:56:15.450040258Z","message":{"role":"assistant","content":"\n"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-08T23:56:15.461863466Z","message":{"role":"assistant","content":"{\""},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-08T23:56:15.475634091Z","message":{"role":"assistant","content":"is"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-08T23:56:15.492943299Z","message":{"role":"assistant","content":"_"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-08T23:56:15.555497424Z","message":{"role":"assistant","content":"fruit"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-08T23:56:15.638863299Z","message":{"role":"assistant","content":"\":"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-08T23:56:15.722257758Z","message":{"role":"assistant","content":" true"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-08T23:56:15.734894341Z","message":{"role":"assistant","content":"}"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-08T23:56:15.888082008Z","message":{"role":"assistant","content":"\n"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-08T23:56:15.902608966Z","message":{"role":"assistant","content":"```"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-04-08T23:56:15.921910758Z","message":{"role":"assistant","content":""},"done":true,"done_reason":"stop","total_duration":1277677834,"load_duration":140156542,"prompt_eval_count":38,"prompt_eval_duration":206567166,"eval_count":13,"eval_duration":492111625}
+        headers:
+            Content-Type:
+                - application/x-ndjson
+        status: 200 OK
+        code: 200
+        duration: 782ms

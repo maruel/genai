@@ -18,6 +18,7 @@ import (
 	"iter"
 	"net/http"
 	"os"
+	"os/exec"
 	"reflect"
 	"slices"
 	"strconv"
@@ -425,10 +426,21 @@ type Client struct {
 	impl base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
 }
 
+// getGHToken retrieves the GitHub token from the gh CLI if available.
+func getGHToken(ctx context.Context) (string, error) {
+	cmd := exec.CommandContext(ctx, "gh", "auth", "token")
+	out, err := cmd.Output()
+	if err != nil {
+		return "", err
+	}
+	return strings.TrimSpace(string(out)), nil
+}
+
 // New creates a new client to talk to the GitHub Models API.
 //
 // If apiKey is not provided via ProviderOptionAPIKey, it tries to load it from the GITHUB_TOKEN environment
-// variable. If none is found, it will still return a client coupled with a base.ErrAPIKeyRequired error.
+// variable. If that fails, it attempts to get the token from the gh CLI. If none is found, it will still
+// return a client coupled with a base.ErrAPIKeyRequired error.
 // Get a token at https://github.com/settings/tokens (needs models:read scope) or use the default
 // GITHUB_TOKEN in Actions.
 //
@@ -462,7 +474,12 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	var err error
 	if apiKey == "" {
 		if apiKey = os.Getenv("GITHUB_TOKEN"); apiKey == "" {
-			err = &base.ErrAPIKeyRequired{EnvVar: "GITHUB_TOKEN", URL: apiKeyURL}
+			// Try to get token from gh CLI
+			if token, err2 := getGHToken(ctx); err2 == nil {
+				apiKey = token
+			} else {
+				err = &base.ErrAPIKeyRequired{EnvVar: "GITHUB_TOKEN", URL: apiKeyURL}
+			}
 		}
 	}
 	mod := genai.Modalities{genai.ModalityText}

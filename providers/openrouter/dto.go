@@ -570,12 +570,12 @@ type ModelDefaultParameters struct {
 
 // Model is the provider-specific model metadata.
 type Model struct {
-	ID            string       `json:"id"`
-	Name          string       `json:"name"`
-	Created       base.Time    `json:"created"`
-	Description   string       `json:"description"`
-	ContextLength int64        `json:"context_length"`
-	Pricing       ModelPricing `json:"pricing"`
+	ID            string                 `json:"id"`
+	Name          string                 `json:"name"`
+	Created       base.Time              `json:"created"`
+	Description   string                 `json:"description"`
+	ContextLength int64                  `json:"context_length"`
+	Pricing       ModelPricing           `json:"pricing"`
 	Architecture  struct {
 		Tokenizer        string   `json:"tokenizer"`
 		InstructType     string   `json:"instruct_type"`
@@ -595,6 +595,7 @@ type Model struct {
 	CanonicalSlug       string                 `json:"canonical_slug"`
 	KnowledgeCutoff     string                 `json:"knowledge_cutoff,omitzero"`
 	ExpirationDate      string                 `json:"expiration_date"`
+	Links               map[string]any         `json:"links,omitzero"` // Provider-specific links
 }
 
 // ModelPricing contains the per-token pricing information.

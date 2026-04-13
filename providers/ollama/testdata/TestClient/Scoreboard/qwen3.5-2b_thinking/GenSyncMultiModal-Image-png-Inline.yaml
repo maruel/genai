@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 560
-        body: '{"model":"qwen3.5:2b","created_at":"2026-04-08T23:51:50.572247968Z","message":{"role":"assistant","content":"banana","thinking":"The user wants me to identify the fruit in the image.\nThe image shows a single, yellow, curved fruit with brown spots near the bottom and stem.\nThis is clearly a banana.\nThe user requested a one-word reply.\n\"Banana\" fits this criteria."},"done":true,"done_reason":"stop","total_duration":3409741002,"load_duration":125508042,"prompt_eval_count":118,"prompt_eval_duration":570030417,"eval_count":62,"eval_duration":1954170876}'
+        content_length: 717
+        body: '{"model":"qwen3.5:2b","created_at":"2026-04-13T21:17:21.404164671Z","message":{"role":"assistant","content":"banana","thinking":"The user wants me to identify the fruit in the image.\n1.  **Analyze the image:** The image shows a single, curved, yellow fruit.\n2.  **Identify features:** It has a long stalk, a smooth yellow peel with some slight browning/breaks at the ends (the stem and the bottom tip).\n3.  **Formulate answer:** It is clearly a banana. The user requested a one-word reply.\n4.  **Final output:** \"banana\""},"done":true,"done_reason":"stop","total_duration":5228757794,"load_duration":139159042,"prompt_eval_count":118,"prompt_eval_duration":499124501,"eval_count":110,"eval_duration":4074230878}'
         headers:
             Content-Length:
-                - "560"
+                - "717"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 3.411s
+        duration: 5.229s

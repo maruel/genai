@@ -158,6 +158,8 @@ go test ./providers/<provider> -update-scoreboard
 
 The test framework automatically discovers models, records interactions, and updates the scoreboard correctly.
 
+After updating any `scoreboard.json`, run `go generate ./...` to regenerate the documentation files (e.g. `docs/*.md`).
+
 ## Common Patterns
 
 ### Validation

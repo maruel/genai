@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 768
-        body: '{"model":"qwen3.5:2b","created_at":"2026-04-08T23:51:42.023429881Z","message":{"role":"assistant","content":"Banana","thinking":"The user has provided an image of a yellow fruit and asked a question: \"What fruit is it? Reply with only one word.\"\n\n1.  **Analyze the image:** The image clearly shows a single, curved fruit with a yellow skin. It has a stem at the top and a calyx at the bottom left. The shape is characteristic of a banana.\n2.  **Formulate the answer:** The user requested only one word.\n3.  **Select the word:** \"Banana\" is the correct one-word answer."},"done":true,"done_reason":"stop","total_duration":34122897849,"load_duration":131023250,"prompt_eval_count":118,"prompt_eval_duration":583205584,"eval_count":118,"eval_duration":4662954128}'
+        content_length: 793
+        body: '{"model":"qwen3.5:2b","created_at":"2026-04-13T21:17:12.421668751Z","message":{"role":"assistant","content":"Banana","thinking":"The user has provided an image of a single fruit and asked a simple identification question: \"What fruit is it?\".\nThe user also specified a constraint: \"Reply with only one word.\"\n\n1.  **Analyze the image:** The image shows a single, yellow, curved fruit. It has the characteristic shape of a banana.\n2.  **Formulate the answer:** The fruit is clearly a banana.\n3.  **Check constraints:** The user requested only one word. \"Banana\" fits this criteria perfectly."},"done":true,"done_reason":"stop","total_duration":34343296599,"load_duration":102297542,"prompt_eval_count":118,"prompt_eval_duration":555396584,"eval_count":115,"eval_duration":4531456132}'
         headers:
             Content-Length:
-                - "768"
+                - "793"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 34.125s
+        duration: 34.343s

@@ -17,11 +17,11 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 995
-        body: '{"models":[{"name":"gemma3:4b","model":"gemma3:4b","modified_at":"2026-04-08T16:14:25.671468202-04:00","size":3338801804,"digest":"a2af6cc3eb7fa8be8504abaf9b04e88f17a119ec3f04a3addf55f92841195f5a","details":{"parent_model":"","format":"gguf","family":"gemma3","families":["gemma3"],"parameter_size":"4.3B","quantization_level":"Q4_K_M"}},{"name":"gemma3:1b","model":"gemma3:1b","modified_at":"2026-04-08T16:13:40.877754346-04:00","size":815319791,"digest":"8648f39daa8fbf5b18c7b4e6a8fb4990c692751d49917417b8842ca5758e7ffc","details":{"parent_model":"","format":"gguf","family":"gemma3","families":["gemma3"],"parameter_size":"999.89M","quantization_level":"Q4_K_M"}},{"name":"qwen3.5:2b","model":"qwen3.5:2b","modified_at":"2026-04-08T16:10:59.121986215-04:00","size":2741192820,"digest":"324d162be6ca5629ae4517c8710434d0bd2d665bc94dbad46e9af8fbf8a2f0df","details":{"parent_model":"","format":"gguf","family":"qwen35","families":["qwen35"],"parameter_size":"2.3B","quantization_level":"Q8_0"}}]}'
+        content_length: 658
+        body: '{"models":[{"name":"gemma4:e2b","model":"gemma4:e2b","modified_at":"2026-04-13T21:19:20.456175004Z","size":7162405886,"digest":"7fbdbf8f5e45a75bb122155ed546e765b4d9c53a1285f62fd9f506baa1c5a47e","details":{"parent_model":"","format":"gguf","family":"gemma4","families":["gemma4"],"parameter_size":"5.1B","quantization_level":"Q4_K_M"}},{"name":"qwen3.5:2b","model":"qwen3.5:2b","modified_at":"2026-04-13T20:56:25.653579007Z","size":2741192820,"digest":"324d162be6ca5629ae4517c8710434d0bd2d665bc94dbad46e9af8fbf8a2f0df","details":{"parent_model":"","format":"gguf","family":"qwen35","families":["qwen35"],"parameter_size":"2.3B","quantization_level":"Q8_0"}}]}'
         headers:
             Content-Length:
-                - "995"
+                - "658"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK

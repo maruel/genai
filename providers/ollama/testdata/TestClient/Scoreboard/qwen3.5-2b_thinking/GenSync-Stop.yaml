@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 458
-        body: '{"model":"qwen3.5:2b","created_at":"2026-04-08T23:31:55.688327346Z","message":{"role":"assistant","content":"","thinking":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   **Topic:** Talk about Canada in great detail.\n    *   **Starting Phrase:** \"Canada"},"done":true,"done_reason":"stop","total_duration":29425547305,"load_duration":205113292,"prompt_eval_count":22,"prompt_eval_duration":1858424001,"eval_count":38,"eval_duration":20351281843}'
+        content_length: 445
+        body: '{"model":"qwen3.5:2b","created_at":"2026-04-13T21:07:13.384821876Z","message":{"role":"assistant","content":"","thinking":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   **Topic:** Canada.\n    *   **Constraint:** Start with the phrase \"Canada"},"done":true,"done_reason":"stop","total_duration":2211874792,"load_duration":113595166,"prompt_eval_count":22,"prompt_eval_duration":235257959,"eval_count":36,"eval_duration":1118008374}'
         headers:
             Content-Length:
-                - "458"
+                - "445"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 29.426s
+        duration: 2.212s

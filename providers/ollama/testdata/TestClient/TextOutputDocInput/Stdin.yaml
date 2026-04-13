@@ -17,25 +17,25 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 995
-        body: '{"models":[{"name":"gemma3:4b","model":"gemma3:4b","modified_at":"2026-04-08T16:14:25.671468202-04:00","size":3338801804,"digest":"a2af6cc3eb7fa8be8504abaf9b04e88f17a119ec3f04a3addf55f92841195f5a","details":{"parent_model":"","format":"gguf","family":"gemma3","families":["gemma3"],"parameter_size":"4.3B","quantization_level":"Q4_K_M"}},{"name":"gemma3:1b","model":"gemma3:1b","modified_at":"2026-04-08T16:13:40.877754346-04:00","size":815319791,"digest":"8648f39daa8fbf5b18c7b4e6a8fb4990c692751d49917417b8842ca5758e7ffc","details":{"parent_model":"","format":"gguf","family":"gemma3","families":["gemma3"],"parameter_size":"999.89M","quantization_level":"Q4_K_M"}},{"name":"qwen3.5:2b","model":"qwen3.5:2b","modified_at":"2026-04-08T16:10:59.121986215-04:00","size":2741192820,"digest":"324d162be6ca5629ae4517c8710434d0bd2d665bc94dbad46e9af8fbf8a2f0df","details":{"parent_model":"","format":"gguf","family":"qwen35","families":["qwen35"],"parameter_size":"2.3B","quantization_level":"Q8_0"}}]}'
+        content_length: 658
+        body: '{"models":[{"name":"gemma4:e2b","model":"gemma4:e2b","modified_at":"2026-04-13T21:19:20.456175004Z","size":7162405886,"digest":"7fbdbf8f5e45a75bb122155ed546e765b4d9c53a1285f62fd9f506baa1c5a47e","details":{"parent_model":"","format":"gguf","family":"gemma4","families":["gemma4"],"parameter_size":"5.1B","quantization_level":"Q4_K_M"}},{"name":"qwen3.5:2b","model":"qwen3.5:2b","modified_at":"2026-04-13T20:56:25.653579007Z","size":2741192820,"digest":"324d162be6ca5629ae4517c8710434d0bd2d665bc94dbad46e9af8fbf8a2f0df","details":{"parent_model":"","format":"gguf","family":"qwen35","families":["qwen35"],"parameter_size":"2.3B","quantization_level":"Q8_0"}}]}'
         headers:
             Content-Length:
-                - "995"
+                - "658"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 1ms
+        duration: 0s
     - id: 1
       request:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 220
+        content_length: 221
         host: localhost
         body: |
-            {"model":"gemma3:4b","messages":[{"role":"user","content":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"role":"user","content":"What is the capital of Quackiland?"}],"stream":false}
+            {"model":"gemma4:e2b","messages":[{"role":"user","content":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"role":"user","content":"What is the capital of Quackiland?"}],"stream":false}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -45,13 +45,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 325
-        body: '{"model":"gemma3:4b","created_at":"2026-04-08T20:14:43.506798Z","message":{"role":"assistant","content":"The capital of Quackiland is Quack."},"done":true,"done_reason":"stop","total_duration":234181875,"load_duration":95410875,"prompt_eval_count":40,"prompt_eval_duration":12865416,"eval_count":11,"eval_duration":122403001}'
+        content_length: 835
+        body: '{"model":"gemma4:e2b","created_at":"2026-04-13T21:22:28.779168425Z","message":{"role":"assistant","content":"The capital of Quackiland is Quack.","thinking":"Thinking Process:\n\n1.  **Analyze the input:** The user provides two statements:\n    *   \"The capital of Quackiland is Quack.\"\n    *   \"The Big Canard Statue is located in Quack.\"\n2.  **Analyze the question:** \"What is the capital of Quackiland?\"\n3.  **Extract the relevant information:** The first statement directly answers this question.\n    *   \"The capital of Quackiland is Quack.\"\n4.  **Formulate the answer:** State the answer based directly on the provided context."},"done":true,"done_reason":"stop","total_duration":4288317252,"load_duration":137334458,"prompt_eval_count":51,"prompt_eval_duration":67130500,"eval_count":136,"eval_duration":4035393043}'
         headers:
             Content-Length:
-                - "325"
+                - "835"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 234ms
+        duration: 4.288s

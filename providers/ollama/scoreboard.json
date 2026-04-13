@@ -90,6 +90,7 @@
         "reportFinishReason": "true",
         "seed": true,
         "json": true,
+        "jsonSchema": true,
         "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
@@ -101,14 +102,6 @@
       ],
       "cheap": true,
       "in": {
-        "image": {
-          "inline": true,
-          "supportedFormats": [
-            "image/jpeg",
-            "image/png",
-            "image/webp"
-          ]
-        },
         "text": {
           "inline": true
         }
@@ -122,6 +115,7 @@
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "seed": true,
+        "tools": "flaky",
         "json": true,
         "topLogprobs": true,
         "maxTokens": true,
@@ -131,6 +125,8 @@
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "seed": true,
+        "tools": "flaky",
+        "json": true,
         "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
@@ -163,6 +159,7 @@
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "seed": true,
+        "tools": "flaky",
         "json": true,
         "jsonSchema": true,
         "topLogprobs": true,
@@ -173,7 +170,6 @@
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "seed": true,
-        "tools": "flaky",
         "json": true,
         "jsonSchema": true,
         "topLogprobs": true,

@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 314
-        body: '{"model":"gemma4:e2b","created_at":"2026-04-08T23:56:18.812990759Z","message":{"role":"assistant","content":"3639.000000000004"},"done":true,"done_reason":"stop","total_duration":2238327418,"load_duration":149879750,"prompt_eval_count":93,"prompt_eval_duration":814761833,"eval_count":18,"eval_duration":736829251}'
+        content_length: 409
+        body: '{"model":"gemma4:e2b","created_at":"2026-04-13T21:19:41.408189583Z","message":{"role":"assistant","content":"","tool_calls":[{"id":"call_e8oxqph6","function":{"index":0,"name":"square_root","arguments":{"number":132413}}}]},"done":true,"done_reason":"stop","total_duration":1986300959,"load_duration":160133750,"prompt_eval_count":97,"prompt_eval_duration":137878666,"eval_count":18,"eval_duration":520797043}'
         headers:
             Content-Length:
-                - "314"
+                - "409"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 2.239s
+        duration: 1.987s

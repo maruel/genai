@@ -23,11 +23,11 @@ interactions:
             - chunked
         content_length: -1
         body: |
-            {"model":"qwen3.5:2b","created_at":"2026-04-08T23:52:11.155589297Z","message":{"role":"assistant","content":"Canada"},"done":false}
-            {"model":"qwen3.5:2b","created_at":"2026-04-08T23:52:11.263496589Z","message":{"role":"assistant","content":""},"done":true,"done_reason":"stop","total_duration":1426279084,"load_duration":133141792,"prompt_eval_count":24,"prompt_eval_duration":321601375,"eval_count":2,"eval_duration":108337000}
+            {"model":"qwen3.5:2b","created_at":"2026-04-13T21:17:40.918685541Z","message":{"role":"assistant","content":"Canada"},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-13T21:17:40.942618291Z","message":{"role":"assistant","content":""},"done":true,"done_reason":"stop","total_duration":847524875,"load_duration":114182000,"prompt_eval_count":24,"prompt_eval_duration":360948416,"eval_count":2,"eval_duration":21392958}
         headers:
             Content-Type:
                 - application/x-ndjson
         status: 200 OK
         code: 200
-        duration: 1.319s
+        duration: 824ms

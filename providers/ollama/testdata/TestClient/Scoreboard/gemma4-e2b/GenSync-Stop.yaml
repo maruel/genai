@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 302
-        body: '{"model":"gemma4:e2b","created_at":"2026-04-08T23:56:14.393390965Z","message":{"role":"assistant","content":"Canada "},"done":true,"done_reason":"stop","total_duration":1032685042,"load_duration":132681916,"prompt_eval_count":21,"prompt_eval_duration":218819500,"eval_count":2,"eval_duration":62119917}'
+        content_length: 377
+        body: '{"model":"gemma4:e2b","created_at":"2026-04-13T21:19:37.314507679Z","message":{"role":"assistant","content":"The user wants a detailed overview of Canada, starting with the phrase \"Canada "},"done":true,"done_reason":"stop","total_duration":1538000875,"load_duration":128023583,"prompt_eval_count":25,"prompt_eval_duration":215062042,"eval_count":16,"eval_duration":450553124}'
         headers:
             Content-Length:
-                - "302"
+                - "377"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 1.033s
+        duration: 1.538s

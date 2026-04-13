@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 832
-        body: '{"model":"gemma4:e2b","created_at":"2026-04-09T00:53:57.223976Z","message":{"role":"assistant","content":"Banana","thinking":"1.  **Analyze the request:** The user has provided an image of a fruit and asked \"What fruit is it?\" with the instruction to \"Reply with only one word.\"\n\n2.  **Analyze the image:** The image shows a long, curved, yellowish fruit with a slight stem/base visible. It is characteristic of a banana.\n\n3.  **Determine the answer:** The fruit is a banana.\n\n4.  **Format the output:** The answer must be a single word.\n\n5.  **Final Answer:** Banana. (Or a similar accepted term, but banana is the most direct.)"},"done":true,"done_reason":"stop","total_duration":3005804417,"load_duration":101321792,"prompt_eval_count":288,"prompt_eval_duration":186904750,"eval_count":132,"eval_duration":1243856670}'
+        content_length: 748
+        body: '{"model":"gemma4:e2b","created_at":"2026-04-13T21:22:20.397035963Z","message":{"role":"assistant","content":"Banana","thinking":"Thinking Process:\n\n1.  **Analyze the Request:** The user has provided an image of a fruit and asked, \"What fruit is it? Reply with only one word.\"\n2.  **Analyze the Image:** The image shows a long, curved, yellow fruit with a slight stem/base visible.\n3.  **Identify the Fruit:** This is clearly a banana.\n4.  **Formulate the Answer:** The required answer must be a single word.\n5.  **Final Output Generation:** Banana."},"done":true,"done_reason":"stop","total_duration":8194973671,"load_duration":119509875,"prompt_eval_count":289,"prompt_eval_duration":1449403709,"eval_count":114,"eval_duration":3194346540}'
         headers:
             Content-Length:
-                - "832"
+                - "748"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 3.006s
+        duration: 8.197s

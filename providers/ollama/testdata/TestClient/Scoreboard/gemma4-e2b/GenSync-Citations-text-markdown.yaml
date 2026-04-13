@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 336
-        body: '{"model":"gemma4:e2b","created_at":"2026-04-08T23:56:21.389020219Z","message":{"role":"assistant","content":"The capital of Quackiland is **Quack**."},"done":true,"done_reason":"stop","total_duration":1120280126,"load_duration":132421209,"prompt_eval_count":49,"prompt_eval_duration":375510000,"eval_count":12,"eval_duration":306276085}'
+        content_length: 662
+        body: '{"model":"gemma4:e2b","created_at":"2026-04-13T21:19:51.13622738Z","message":{"role":"assistant","content":"The user is asking for the capital of Quackiland based on the provided text.\nI need to read the text and identify the location of the capital.\n\nText: \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"\n\nThe text explicitly states: \"The capital of Quackiland is Quack.\"\u003cchannel|\u003eThe capital of Quackiland is **Quack**."},"done":true,"done_reason":"stop","total_duration":4193463418,"load_duration":216745375,"prompt_eval_count":53,"prompt_eval_duration":125725250,"eval_count":87,"eval_duration":2269849207}'
         headers:
             Content-Length:
-                - "336"
+                - "662"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 1.12s
+        duration: 4.194s

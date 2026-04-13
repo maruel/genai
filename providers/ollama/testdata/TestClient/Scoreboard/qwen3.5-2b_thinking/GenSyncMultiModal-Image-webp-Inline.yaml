@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 694
-        body: '{"model":"qwen3.5:2b","created_at":"2026-04-08T23:52:01.248252251Z","message":{"role":"assistant","content":"Banana","thinking":"The user is asking for the name of the fruit in the image.\n1.  **Analyze the image:** I see a single object against a plain white background.\n2.  **Identify the object:** It is yellow, curved, and has a distinct stem. It looks like a banana.\n3.  **Formulate the response:** The user requested a one-word reply.\n4.  **Final Answer Selection:** \"Banana\" fits perfectly."},"done":true,"done_reason":"stop","total_duration":10672514879,"load_duration":134369708,"prompt_eval_count":118,"prompt_eval_duration":527458459,"eval_count":103,"eval_duration":4051758040}'
+        content_length: 649
+        body: '{"model":"qwen3.5:2b","created_at":"2026-04-13T21:17:30.068564717Z","message":{"role":"assistant","content":"Banana","thinking":"The user wants me to identify the fruit in the image.\n1.  **Analyze the image:** The image shows a long, curved, yellow fruit. It has a stem at the top right and a blossom end at the bottom left. It looks very much like a banana.\n2.  **Formulate the answer:** The user requested \"only one word\".\n3.  **Final Answer:** Banana."},"done":true,"done_reason":"stop","total_duration":8662054713,"load_duration":172832084,"prompt_eval_count":118,"prompt_eval_duration":512334209,"eval_count":92,"eval_duration":3548035837}'
         headers:
             Content-Length:
-                - "694"
+                - "649"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 10.673s
+        duration: 8.664s

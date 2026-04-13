@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1223
-        body: '{"model":"gemma4:e2b","created_at":"2026-04-09T00:53:42.504485Z","message":{"role":"assistant","content":"1150.80000000001","thinking":"1.  **Analyze the user''s request:** The user wants to calculate the square root of 132413 using the `square_root` tool and insists on replying *only* with the result, with no explanation.\n\n2.  **Identify the relevant tool:** The available tool is `square_root(number)`.\n\n3.  **Determine the input for the tool:** The number to calculate the square root of is 132413.\n\n4.  **Construct the tool call:** `square_root(number=132413)`\n\n5.  **Execute the tool call (Simulated):** I need to call the tool.\n\n6.  **Wait for the result:** The tool will return the calculated square root.\n\n7.  **Format the final output:** The user explicitly requested \"reply with only the result. Do not give an explanation.\" I must ensure the final output is just the number.\n\n8.  **Final Output Generation:** (This step depends on the actual tool execution, but the plan is to provide the result directly.)"},"done":true,"done_reason":"stop","total_duration":2753649167,"load_duration":101637750,"prompt_eval_count":94,"prompt_eval_duration":74724416,"eval_count":253,"eval_duration":2381321885}'
+        content_length: 1362
+        body: '{"model":"gemma4:e2b","created_at":"2026-04-13T21:21:16.602499294Z","message":{"role":"assistant","content":"","thinking":"1.  **Analyze the Request:** The user wants to calculate the square root of 132413 using the `square_root` tool and insists on replying *only* with the result, with no explanation.\n\n2.  **Identify the Tool:** The available tool is `square_root(number)`.\n\n3.  **Determine the Input:** The number to be input is 132413.\n\n4.  **Formulate the Tool Call:** `square_root(number=132413)`\n\n5.  **Execute (Simulated):** The model needs to generate the tool call.\n\n6.  **Wait for Output (Self-Correction/Refinement):** The next step is to wait for the tool''s output. Assuming the tool returns the correct mathematical result.\n\n7.  **Final Response Generation:** Once the result is obtained, the model must adhere strictly to the constraint: \"reply with only the result. Do not give an explanation.\"\n\n**(Self-Correction during generation):** I must output the tool call first, as that is the required action to fulfill the request.","tool_calls":[{"id":"call_47tq7ff9","function":{"index":0,"name":"square_root","arguments":{"number":132413}}}]},"done":true,"done_reason":"stop","total_duration":14037309214,"load_duration":157310709,"prompt_eval_count":95,"prompt_eval_duration":209054541,"eval_count":262,"eval_duration":6611060042}'
         headers:
             Content-Length:
-                - "1223"
+                - "1362"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 2.754s
+        duration: 14.038s

@@ -499,10 +499,19 @@ type OutputSystemMsg struct {
 	ErrorStatus  int             `json:"error_status,omitempty"`
 	Error        json.RawMessage `json:"error,omitempty"`
 
+	// Patch carries task completion state.
+	Patch PatchWire `json:"patch,omitzero"`
+
 	// Other optional fields.
 	PermissionMode  string              `json:"permissionMode,omitempty"`
 	CompactMetadata CompactMetadataWire `json:"compact_metadata,omitzero"`
 	Prompt          json.RawMessage     `json:"prompt,omitempty"`
+}
+
+// PatchWire is the patch object on task system messages.
+type PatchWire struct {
+	Status  string `json:"status"`   // "completed" or "killed".
+	EndTime int64  `json:"end_time"` // Unix epoch milliseconds.
 }
 
 // CompactMetadataWire is the compact_metadata object on compact_boundary system messages.

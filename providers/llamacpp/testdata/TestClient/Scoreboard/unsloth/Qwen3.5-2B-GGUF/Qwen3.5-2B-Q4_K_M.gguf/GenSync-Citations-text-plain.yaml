@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 919
-        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Based on the text you provided, the capital of Quackiland is **Quack**.\n\nHere is the breakdown of the logic:\n1.  The text explicitly states: \"The capital of Quackiland is Quack.\"\n2.  Therefore, the answer to the question \"What is the capital of Quackiland?\" is **Quack**."}}],"created":1775686434,"model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b8708-ae65fbdf3","object":"chat.completion","usage":{"completion_tokens":74,"prompt_tokens":43,"total_tokens":117,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-pSI2mULXu7aTaivswBFsBK5eE9X2gJ2s","timings":{"cache_n":0,"prompt_n":43,"prompt_ms":179.965,"prompt_per_token_ms":4.185232558139535,"prompt_per_second":238.9353485399939,"predicted_n":74,"predicted_ms":1591.002,"predicted_per_token_ms":21.500027027027027,"predicted_per_second":46.511569438630495}}'
+        content_length: 786
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Based on the text provided, the capital of Quackiland is **Quack**.\n\nThe first sentence explicitly states: \"The capital of Quackiland is Quack.\""}}],"created":1776165810,"model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b8781-1c0d9081f","object":"chat.completion","usage":{"completion_tokens":36,"prompt_tokens":43,"total_tokens":79,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-r19RYesCFbG6w6VCP0yuHs7iFazzTj15","timings":{"cache_n":0,"prompt_n":43,"prompt_ms":124.461,"prompt_per_token_ms":2.894441860465116,"prompt_per_second":345.48975180980386,"predicted_n":36,"predicted_ms":659.144,"predicted_per_token_ms":18.309555555555555,"predicted_per_second":54.61629021882927}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "919"
+                - "786"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 1.882s
+        duration: 819ms

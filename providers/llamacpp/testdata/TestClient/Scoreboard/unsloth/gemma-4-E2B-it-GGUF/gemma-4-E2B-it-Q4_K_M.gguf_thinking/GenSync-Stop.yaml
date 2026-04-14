@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 788
-        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"","reasoning_content":"Here''s a thinking process that leads to the detailed response:\n\n1.  **Analyze the Request:** The user wants a detailed d"}}],"created":1775695252,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b8708-ae65fbdf3","object":"chat.completion","usage":{"completion_tokens":31,"prompt_tokens":27,"total_tokens":58,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-sXUWxpyAy7ymqwJ6AsDQNdCPVkwW6hLP","timings":{"cache_n":0,"prompt_n":27,"prompt_ms":104.289,"prompt_per_token_ms":3.8625555555555557,"prompt_per_second":258.89595259327444,"predicted_n":31,"predicted_ms":531.688,"predicted_per_token_ms":17.151225806451613,"predicted_per_second":58.30487052557139}}'
+        content_length: 730
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:** The user wants a detailed d"}}],"created":1776129203,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b8781-1c0d9081f","object":"chat.completion","usage":{"completion_tokens":21,"prompt_tokens":28,"total_tokens":49,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-7z0T2w01foqRnYijMJZd7dBM7aMbXEBY","timings":{"cache_n":0,"prompt_n":28,"prompt_ms":121.041,"prompt_per_token_ms":4.322892857142857,"prompt_per_second":231.32657529266942,"predicted_n":21,"predicted_ms":592.809,"predicted_per_token_ms":28.229,"predicted_per_second":35.42456339225619}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "788"
+                - "730"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 648ms
+        duration: 727ms

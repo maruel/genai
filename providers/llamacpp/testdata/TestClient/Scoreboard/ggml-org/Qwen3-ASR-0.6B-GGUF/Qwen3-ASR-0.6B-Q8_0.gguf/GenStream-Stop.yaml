@@ -1,0 +1,73 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 223
+        host: 127.0.0.1
+        body: |
+            {"stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Talk about Canada in great details. Start with: Canada is"}]}],"stop":["is"],"chat_template_kwargs":{"enable_thinking":false},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        content_length: -1
+        body: |+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"role":"assistant","content":null}}],"created":1776168499,"id":"chatcmpl-Pydhp6EkllrAMulVxN13nilDouQdYWb7","model":"ggml-org/Qwen3-ASR-0.6B-GGUF","system_fingerprint":"b8781-1c0d9081f","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"language"}}],"created":1776168499,"id":"chatcmpl-Pydhp6EkllrAMulVxN13nilDouQdYWb7","model":"ggml-org/Qwen3-ASR-0.6B-GGUF","system_fingerprint":"b8781-1c0d9081f","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":" None"}}],"created":1776168499,"id":"chatcmpl-Pydhp6EkllrAMulVxN13nilDouQdYWb7","model":"ggml-org/Qwen3-ASR-0.6B-GGUF","system_fingerprint":"b8781-1c0d9081f","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"<asr_text>"}}],"created":1776168499,"id":"chatcmpl-Pydhp6EkllrAMulVxN13nilDouQdYWb7","model":"ggml-org/Qwen3-ASR-0.6B-GGUF","system_fingerprint":"b8781-1c0d9081f","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"Talk"}}],"created":1776168499,"id":"chatcmpl-Pydhp6EkllrAMulVxN13nilDouQdYWb7","model":"ggml-org/Qwen3-ASR-0.6B-GGUF","system_fingerprint":"b8781-1c0d9081f","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":" about"}}],"created":1776168499,"id":"chatcmpl-Pydhp6EkllrAMulVxN13nilDouQdYWb7","model":"ggml-org/Qwen3-ASR-0.6B-GGUF","system_fingerprint":"b8781-1c0d9081f","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":" Canada"}}],"created":1776168499,"id":"chatcmpl-Pydhp6EkllrAMulVxN13nilDouQdYWb7","model":"ggml-org/Qwen3-ASR-0.6B-GGUF","system_fingerprint":"b8781-1c0d9081f","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":" in"}}],"created":1776168499,"id":"chatcmpl-Pydhp6EkllrAMulVxN13nilDouQdYWb7","model":"ggml-org/Qwen3-ASR-0.6B-GGUF","system_fingerprint":"b8781-1c0d9081f","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":" great"}}],"created":1776168499,"id":"chatcmpl-Pydhp6EkllrAMulVxN13nilDouQdYWb7","model":"ggml-org/Qwen3-ASR-0.6B-GGUF","system_fingerprint":"b8781-1c0d9081f","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":" details"}}],"created":1776168499,"id":"chatcmpl-Pydhp6EkllrAMulVxN13nilDouQdYWb7","model":"ggml-org/Qwen3-ASR-0.6B-GGUF","system_fingerprint":"b8781-1c0d9081f","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"."}}],"created":1776168499,"id":"chatcmpl-Pydhp6EkllrAMulVxN13nilDouQdYWb7","model":"ggml-org/Qwen3-ASR-0.6B-GGUF","system_fingerprint":"b8781-1c0d9081f","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":" Start"}}],"created":1776168499,"id":"chatcmpl-Pydhp6EkllrAMulVxN13nilDouQdYWb7","model":"ggml-org/Qwen3-ASR-0.6B-GGUF","system_fingerprint":"b8781-1c0d9081f","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":" with"}}],"created":1776168499,"id":"chatcmpl-Pydhp6EkllrAMulVxN13nilDouQdYWb7","model":"ggml-org/Qwen3-ASR-0.6B-GGUF","system_fingerprint":"b8781-1c0d9081f","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":":"}}],"created":1776168499,"id":"chatcmpl-Pydhp6EkllrAMulVxN13nilDouQdYWb7","model":"ggml-org/Qwen3-ASR-0.6B-GGUF","system_fingerprint":"b8781-1c0d9081f","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":" Canada"}}],"created":1776168499,"id":"chatcmpl-Pydhp6EkllrAMulVxN13nilDouQdYWb7","model":"ggml-org/Qwen3-ASR-0.6B-GGUF","system_fingerprint":"b8781-1c0d9081f","object":"chat.completion.chunk"}
+
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":" "}}],"created":1776168499,"id":"chatcmpl-Pydhp6EkllrAMulVxN13nilDouQdYWb7","model":"ggml-org/Qwen3-ASR-0.6B-GGUF","system_fingerprint":"b8781-1c0d9081f","object":"chat.completion.chunk","timings":{"cache_n":3,"prompt_n":17,"prompt_ms":12.06,"prompt_per_token_ms":0.7094117647058824,"prompt_per_second":1409.6185737976782,"predicted_n":15,"predicted_ms":98.54,"predicted_per_token_ms":6.569333333333334,"predicted_per_second":152.2224477369596}}
+
+            data: {"choices":[{"finish_reason":"stop","index":0,"delta":{}}],"created":1776168499,"id":"chatcmpl-Pydhp6EkllrAMulVxN13nilDouQdYWb7","model":"ggml-org/Qwen3-ASR-0.6B-GGUF","system_fingerprint":"b8781-1c0d9081f","object":"chat.completion.chunk","timings":{"cache_n":3,"prompt_n":17,"prompt_ms":12.06,"prompt_per_token_ms":0.7094117647058824,"prompt_per_second":1409.6185737976782,"predicted_n":15,"predicted_ms":98.54,"predicted_per_token_ms":6.569333333333334,"predicted_per_second":152.2224477369596}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Type:
+                - text/event-stream
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 37ms

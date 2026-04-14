@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1187
-        body: '{"choices":[{"finish_reason":"tool_calls","index":0,"message":{"role":"assistant","content":"","reasoning_content":"The user is asking me to call the best_country tool to see which country is considered the best. The user seems to want to know if Canada is better than the USA, but I should call the tool first to get an objective answer from the tool itself.\n","tool_calls":[{"type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"},"id":"UHIMqx0RkzF8RFs6lhrQsnesIRfhP7jv"},{"type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"},"id":"D01xVCSImBBKlFI91j0fgYVsaQxBgpDD"}]}}],"created":1775690359,"model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b8708-ae65fbdf3","object":"chat.completion","usage":{"completion_tokens":109,"prompt_tokens":333,"total_tokens":442,"prompt_tokens_details":{"cached_tokens":329}},"id":"chatcmpl-HvqCzyHjRV3tzIWQCTwtgzxALlDG8iio","timings":{"cache_n":329,"prompt_n":4,"prompt_ms":32.467,"prompt_per_token_ms":8.11675,"prompt_per_second":123.20202051313642,"predicted_n":109,"predicted_ms":1931.86,"predicted_per_token_ms":17.72348623853211,"predicted_per_second":56.42230803474372}}'
+        content_length: 1621
+        body: '{"choices":[{"finish_reason":"tool_calls","index":0,"message":{"role":"assistant","content":"","reasoning_content":"The user is asking me to call the best_country tool to find out which country is better - Canada or USA. They want me to call this tool first, then I can share the result.\n\nI should call the best_country tool with the country parameter set to one of the options, and I think the best_country tool would return the best country for each country. Let me call it for USA and Canada to see what it returns.\n\nActually, looking at the tool description, it says \"A tool to specify the best country\" with parameters country that can be \"Canada\" or \"USA\". So I think I should call it for each country to get their \"best\" answer. Let me start with calling it for USA first.\n","tool_calls":[{"type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"},"id":"G0Tx2rtxwUHrgQG6hjxbqN4EbFy2Wdxr"},{"type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"},"id":"ipHjALV4Wg7nGjOJx2GGVzE3qbTUCT8E"}]}}],"created":1776165435,"model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b8781-1c0d9081f","object":"chat.completion","usage":{"completion_tokens":206,"prompt_tokens":333,"total_tokens":539,"prompt_tokens_details":{"cached_tokens":329}},"id":"chatcmpl-fDwCyHmKGoVzL2z9ASwRGOQzdSu8qRiQ","timings":{"cache_n":329,"prompt_n":4,"prompt_ms":20.311,"prompt_per_token_ms":5.07775,"prompt_per_second":196.93762000886218,"predicted_n":206,"predicted_ms":2385.975,"predicted_per_token_ms":11.582402912621358,"predicted_per_second":86.33787026268088}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "1187"
+                - "1621"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 1.992s
+        duration: 2.428s

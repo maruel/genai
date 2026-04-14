@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 831
-        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Topic: Canada.\n    *   Requirement: Talk about it in *great detail*.\n    *   Constraint: Start with the phrase \"Canada "}}],"created":1775690307,"model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b8708-ae65fbdf3","object":"chat.completion","usage":{"completion_tokens":48,"prompt_tokens":22,"total_tokens":70,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-S7PxQ8oy6tKIvwQ0d89J2ZavqMGldDhH","timings":{"cache_n":0,"prompt_n":22,"prompt_ms":108.923,"prompt_per_token_ms":4.951045454545454,"prompt_per_second":201.9775437694518,"predicted_n":48,"predicted_ms":1320.672,"predicted_per_token_ms":27.514,"predicted_per_second":36.345133386639525}}'
+        content_length: 860
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   **Topic:** Canada.\n    *   **Requirement:** Talk about Canada in \"great details.\"\n    *   **Constraint:** Start with the phrase \"Canada "}}],"created":1776165406,"model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b8781-1c0d9081f","object":"chat.completion","usage":{"completion_tokens":51,"prompt_tokens":22,"total_tokens":73,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-asR95KA7iEi8ErXvUctz4NmJEpXJTKX0","timings":{"cache_n":0,"prompt_n":22,"prompt_ms":60.741,"prompt_per_token_ms":2.7609545454545454,"prompt_per_second":362.1935760030292,"predicted_n":51,"predicted_ms":557.045,"predicted_per_token_ms":10.922450980392156,"predicted_per_second":91.55454227216832}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "831"
+                - "860"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 1.456s
+        duration: 632ms

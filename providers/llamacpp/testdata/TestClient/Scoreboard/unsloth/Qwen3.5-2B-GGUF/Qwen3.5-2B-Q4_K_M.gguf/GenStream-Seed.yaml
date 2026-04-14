@@ -23,13 +23,13 @@ interactions:
             - chunked
         content_length: -1
         body: |+
-            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"role":"assistant","content":null}}],"created":1775686423,"id":"chatcmpl-5KAiAZ9lwhTtItcAAAjHM86qurlxcmLD","model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b8708-ae65fbdf3","object":"chat.completion.chunk"}
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"role":"assistant","content":null}}],"created":1776165801,"id":"chatcmpl-8fQ2UJeHC9kNyGfO0jPRh0AjbPfTRmqS","model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b8781-1c0d9081f","object":"chat.completion.chunk"}
 
-            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"Hello"}}],"created":1775686423,"id":"chatcmpl-5KAiAZ9lwhTtItcAAAjHM86qurlxcmLD","model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b8708-ae65fbdf3","object":"chat.completion.chunk"}
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"Hello"}}],"created":1776165801,"id":"chatcmpl-8fQ2UJeHC9kNyGfO0jPRh0AjbPfTRmqS","model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b8781-1c0d9081f","object":"chat.completion.chunk"}
 
-            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"."}}],"created":1775686423,"id":"chatcmpl-5KAiAZ9lwhTtItcAAAjHM86qurlxcmLD","model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b8708-ae65fbdf3","object":"chat.completion.chunk"}
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"."}}],"created":1776165801,"id":"chatcmpl-8fQ2UJeHC9kNyGfO0jPRh0AjbPfTRmqS","model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b8781-1c0d9081f","object":"chat.completion.chunk"}
 
-            data: {"choices":[{"finish_reason":"stop","index":0,"delta":{}}],"created":1775686423,"id":"chatcmpl-5KAiAZ9lwhTtItcAAAjHM86qurlxcmLD","model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b8708-ae65fbdf3","object":"chat.completion.chunk","timings":{"cache_n":0,"prompt_n":20,"prompt_ms":96.72,"prompt_per_token_ms":4.836,"prompt_per_second":206.78246484698096,"predicted_n":3,"predicted_ms":34.564,"predicted_per_token_ms":11.521333333333333,"predicted_per_second":86.79550977896076}}
+            data: {"choices":[{"finish_reason":"stop","index":0,"delta":{}}],"created":1776165801,"id":"chatcmpl-8fQ2UJeHC9kNyGfO0jPRh0AjbPfTRmqS","model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b8781-1c0d9081f","object":"chat.completion.chunk","timings":{"cache_n":0,"prompt_n":20,"prompt_ms":75.083,"prompt_per_token_ms":3.75415,"prompt_per_second":266.37188178415886,"predicted_n":3,"predicted_ms":24.63,"predicted_per_token_ms":8.209999999999999,"predicted_per_second":121.80267965895251}}
 
             data: [DONE]
 
@@ -44,4 +44,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 114ms
+        duration: 112ms

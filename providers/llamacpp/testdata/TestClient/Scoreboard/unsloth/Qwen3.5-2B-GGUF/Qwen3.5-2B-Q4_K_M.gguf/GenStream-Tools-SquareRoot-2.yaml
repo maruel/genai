@@ -9,7 +9,7 @@ interactions:
         content_length: 918
         host: 127.0.0.1
         body: |
-            {"stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"assistant","tool_calls":[{"type":"function","index":0,"id":"TjRIgmufNUt4GPJqVQyuc2bLCDYCQz60","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},{"role":"tool","content":[{"type":"text","text":"363.89"}],"tool_call_id":"TjRIgmufNUt4GPJqVQyuc2bLCDYCQz60"}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none","parallel_tool_calls":true,"chat_template_kwargs":{"enable_thinking":false},"cache_prompt":true}
+            {"stream":true,"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"assistant","tool_calls":[{"type":"function","index":0,"id":"T3hhOnhmnU2pQhPTztIUqNYUk6ApQCiu","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},{"role":"tool","content":[{"type":"text","text":"363.89"}],"tool_call_id":"T3hhOnhmnU2pQhPTztIUqNYUk6ApQCiu"}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none","parallel_tool_calls":true,"chat_template_kwargs":{"enable_thinking":false},"cache_prompt":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,21 +23,21 @@ interactions:
             - chunked
         content_length: -1
         body: |+
-            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"role":"assistant","content":null}}],"created":1775686427,"id":"chatcmpl-HfN2UefmWSKtTxOpvgotgyXNFWNBbtEU","model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b8708-ae65fbdf3","object":"chat.completion.chunk"}
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"role":"assistant","content":null}}],"created":1776165805,"id":"chatcmpl-FWE3cdBXSgxBFf4n2rV8kJfCOldds9LN","model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b8781-1c0d9081f","object":"chat.completion.chunk"}
 
-            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"3"}}],"created":1775686427,"id":"chatcmpl-HfN2UefmWSKtTxOpvgotgyXNFWNBbtEU","model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b8708-ae65fbdf3","object":"chat.completion.chunk"}
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"3"}}],"created":1776165805,"id":"chatcmpl-FWE3cdBXSgxBFf4n2rV8kJfCOldds9LN","model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b8781-1c0d9081f","object":"chat.completion.chunk"}
 
-            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"6"}}],"created":1775686427,"id":"chatcmpl-HfN2UefmWSKtTxOpvgotgyXNFWNBbtEU","model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b8708-ae65fbdf3","object":"chat.completion.chunk"}
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"6"}}],"created":1776165805,"id":"chatcmpl-FWE3cdBXSgxBFf4n2rV8kJfCOldds9LN","model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b8781-1c0d9081f","object":"chat.completion.chunk"}
 
-            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"3"}}],"created":1775686427,"id":"chatcmpl-HfN2UefmWSKtTxOpvgotgyXNFWNBbtEU","model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b8708-ae65fbdf3","object":"chat.completion.chunk"}
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"3"}}],"created":1776165805,"id":"chatcmpl-FWE3cdBXSgxBFf4n2rV8kJfCOldds9LN","model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b8781-1c0d9081f","object":"chat.completion.chunk"}
 
-            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"."}}],"created":1775686427,"id":"chatcmpl-HfN2UefmWSKtTxOpvgotgyXNFWNBbtEU","model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b8708-ae65fbdf3","object":"chat.completion.chunk"}
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"."}}],"created":1776165805,"id":"chatcmpl-FWE3cdBXSgxBFf4n2rV8kJfCOldds9LN","model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b8781-1c0d9081f","object":"chat.completion.chunk"}
 
-            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"8"}}],"created":1775686427,"id":"chatcmpl-HfN2UefmWSKtTxOpvgotgyXNFWNBbtEU","model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b8708-ae65fbdf3","object":"chat.completion.chunk"}
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"8"}}],"created":1776165805,"id":"chatcmpl-FWE3cdBXSgxBFf4n2rV8kJfCOldds9LN","model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b8781-1c0d9081f","object":"chat.completion.chunk"}
 
-            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"9"}}],"created":1775686428,"id":"chatcmpl-HfN2UefmWSKtTxOpvgotgyXNFWNBbtEU","model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b8708-ae65fbdf3","object":"chat.completion.chunk"}
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"9"}}],"created":1776165806,"id":"chatcmpl-FWE3cdBXSgxBFf4n2rV8kJfCOldds9LN","model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b8781-1c0d9081f","object":"chat.completion.chunk"}
 
-            data: {"choices":[{"finish_reason":"stop","index":0,"delta":{}}],"created":1775686428,"id":"chatcmpl-HfN2UefmWSKtTxOpvgotgyXNFWNBbtEU","model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b8708-ae65fbdf3","object":"chat.completion.chunk","timings":{"cache_n":364,"prompt_n":24,"prompt_ms":157.501,"prompt_per_token_ms":6.562541666666667,"prompt_per_second":152.37998488898484,"predicted_n":7,"predicted_ms":238.875,"predicted_per_token_ms":34.125,"predicted_per_second":29.3040293040293}}
+            data: {"choices":[{"finish_reason":"stop","index":0,"delta":{}}],"created":1776165806,"id":"chatcmpl-FWE3cdBXSgxBFf4n2rV8kJfCOldds9LN","model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b8781-1c0d9081f","object":"chat.completion.chunk","timings":{"cache_n":364,"prompt_n":24,"prompt_ms":86.067,"prompt_per_token_ms":3.5861249999999996,"prompt_per_second":278.85252187249466,"predicted_n":7,"predicted_ms":760.181,"predicted_per_token_ms":108.59728571428572,"predicted_per_second":9.208333278521826}}
 
             data: [DONE]
 
@@ -52,4 +52,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 185ms
+        duration: 114ms

@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 203
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Explain the theory of relativity in great details."}]}],"chat_template_kwargs":{"enable_thinking":false},"n_predict":16,"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 728
+        body: '{"choices":[{"finish_reason":"length","index":0,"message":{"role":"assistant","content":"language English<asr_text>The theory of relativity is a set of principles that describe how"}}],"created":1776168499,"model":"ggml-org/Qwen3-ASR-0.6B-GGUF","system_fingerprint":"b8781-1c0d9081f","object":"chat.completion","usage":{"completion_tokens":16,"prompt_tokens":19,"total_tokens":35,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-0Khx0pfA21QWv0qjOb2fpL22IdmqtGK6","timings":{"cache_n":0,"prompt_n":19,"prompt_ms":13.503,"prompt_per_token_ms":0.7106842105263158,"prompt_per_second":1407.0947196919203,"predicted_n":16,"predicted_ms":116.717,"predicted_per_token_ms":7.2948125,"predicted_per_second":137.08371531139423}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "728"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 142ms

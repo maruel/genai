@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1408
-        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"banana","reasoning_content":"The user wants me to identify the fruit in the image.\n1.  **Analyze the image:** The image shows a single, curved, yellow fruit with a stem at the top and a tip at the bottom.\n2.  **Identify key features:**\n    *   Curved shape (banana-like).\n    *   Yellow skin.\n    *   Tip looks like a small banana tip or stem end.\n    *   It''s clearly a banana.\n3.  **Formulate the output:** The user requested \"only one word\". The word for a banana is \"banana\".\n\nWait, looking closely at the tip... it''s actually a bit distinct. It looks like a banana, but maybe a specific variety? No, it''s just a banana. It''s a yellow banana.\n\nLet''s double-check. Yes, it''s a banana. The prompt asks for \"only one word\".\nSo, the answer is \"banana\".\n"}}],"created":1775690403,"model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b8708-ae65fbdf3","object":"chat.completion","usage":{"completion_tokens":203,"prompt_tokens":113,"total_tokens":316,"prompt_tokens_details":{"cached_tokens":109}},"id":"chatcmpl-22HasfpyftnjVIVpMfzBr9QOXCu8iUr0","timings":{"cache_n":109,"prompt_n":4,"prompt_ms":21.393,"prompt_per_token_ms":5.34825,"prompt_per_second":186.97704856728836,"predicted_n":203,"predicted_ms":2215.118,"predicted_per_token_ms":10.91191133004926,"predicted_per_second":91.64297342173194}}'
+        content_length: 1049
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"banana","reasoning_content":"The user wants me to identify the fruit in the image.\n1.  **Analyze the image:** The image shows a single, curved fruit with a yellow skin and a slightly brownish tip (stem end). It has the characteristic shape of a banana.\n2.  **Identify the fruit:** The fruit is clearly a banana.\n3.  **Formulate the output:** The user requested \"only one word\".\n4.  **Final Answer:** banana\n"}}],"created":1776165701,"model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b8781-1c0d9081f","object":"chat.completion","usage":{"completion_tokens":102,"prompt_tokens":113,"total_tokens":215,"prompt_tokens_details":{"cached_tokens":109}},"id":"chatcmpl-ODcts1UqWaW2ZtO6qsI4OUtyeiICmuT9","timings":{"cache_n":109,"prompt_n":4,"prompt_ms":37.515,"prompt_per_token_ms":9.37875,"prompt_per_second":106.62401705984273,"predicted_n":102,"predicted_ms":1031.889,"predicted_per_token_ms":10.116558823529411,"predicted_per_second":98.84784119222127}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "1408"
+                - "1049"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 2.252s
+        duration: 1.089s

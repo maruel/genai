@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 177
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}],"chat_template_kwargs":{"enable_thinking":false},"seed":42,"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 647
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"language None<asr_text>Say hello."}}],"created":1776168498,"model":"ggml-org/Qwen3-ASR-0.6B-GGUF","system_fingerprint":"b8781-1c0d9081f","object":"chat.completion","usage":{"completion_tokens":7,"prompt_tokens":16,"total_tokens":23,"prompt_tokens_details":{"cached_tokens":15}},"id":"chatcmpl-On3Urap2AyQlX8ZShUXBPwaZUgljG9Fi","timings":{"cache_n":15,"prompt_n":1,"prompt_ms":6.894,"prompt_per_token_ms":6.894,"prompt_per_second":145.0536698578474,"predicted_n":7,"predicted_ms":38.654,"predicted_per_token_ms":5.522,"predicted_per_second":181.09380659181454}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "647"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 47ms

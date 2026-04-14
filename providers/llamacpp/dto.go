@@ -817,13 +817,20 @@ func (c *Content) FromRequest(in *genai.Request) (bool, error) {
 			}
 			c.Type = "text"
 			c.Text = string(data)
-		case strings.HasPrefix(mimeType, "audio/"):
+		case mimeType == "audio/mpeg":
 			c.Type = "input_audio"
 			if in.Doc.URL != "" {
 				return false, errors.New("audio doesn't support URLs")
 			}
 			c.InputAudio.Data = data
-			c.InputAudio.Format, _ = strings.CutPrefix(mimeType, "audio/")
+			c.InputAudio.Format = "mp3"
+		case mimeType == "audio/wav":
+			c.Type = "input_audio"
+			if in.Doc.URL != "" {
+				return false, errors.New("audio doesn't support URLs")
+			}
+			c.InputAudio.Data = data
+			c.InputAudio.Format = "wav"
 		case strings.HasPrefix(mimeType, "image/"):
 			c.Type = "image_url"
 			if in.Doc.URL != "" {
@@ -869,13 +876,20 @@ func (c *Content) FromReply(in *genai.Reply) (bool, error) {
 			}
 			c.Type = "text"
 			c.Text = string(data)
-		case strings.HasPrefix(mimeType, "audio/"):
+		case mimeType == "audio/mpeg":
 			c.Type = "input_audio"
 			if in.Doc.URL != "" {
 				return false, errors.New("audio doesn't support URLs")
 			}
 			c.InputAudio.Data = data
-			c.InputAudio.Format, _ = strings.CutPrefix(mimeType, "audio/")
+			c.InputAudio.Format = "mp3"
+		case mimeType == "audio/wav":
+			c.Type = "input_audio"
+			if in.Doc.URL != "" {
+				return false, errors.New("audio doesn't support URLs")
+			}
+			c.InputAudio.Data = data
+			c.InputAudio.Format = "wav"
 		case strings.HasPrefix(mimeType, "image/"):
 			c.Type = "image_url"
 			if in.Doc.URL != "" {

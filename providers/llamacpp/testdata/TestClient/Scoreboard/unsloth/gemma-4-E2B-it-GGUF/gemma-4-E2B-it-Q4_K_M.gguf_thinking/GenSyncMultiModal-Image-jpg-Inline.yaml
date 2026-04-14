@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1395
-        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Banana","reasoning_content":"1.  **Analyze the request:** The user wants to identify the fruit in the image and reply with only one word.\n2.  **Analyze the image/context:** The image shows a curved, yellow, elongated fruit with a stem end.\n3.  **Identify the fruit:** This shape and appearance are characteristic of a banana or plantain.\n4.  **Determine the best single-word answer:**\n    *   Banana (most common term)\n    *   Plantain (a specific variety, but often used)\n5.  **Final check against constraints:** The reply must be only one word.\n6.  **Conclusion:** Banana is the most direct and universally understood answer. (Alternatively, \"Plantain\" is also correct, but \"Banana\" is generally safer for this type of generic image)."}}],"created":1775695335,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b8708-ae65fbdf3","object":"chat.completion","usage":{"completion_tokens":177,"prompt_tokens":283,"total_tokens":460,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-6zvVqwhbb4VZijyM1RKKCkOnbTkmh8g5","timings":{"cache_n":0,"prompt_n":283,"prompt_ms":16730.715,"prompt_per_token_ms":59.11913427561837,"prompt_per_second":16.9149973566581,"predicted_n":177,"predicted_ms":4952.197,"predicted_per_token_ms":27.978514124293785,"predicted_per_second":35.74171221379117}}'
+        content_length: 627
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Banana"}}],"created":1776129277,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b8781-1c0d9081f","object":"chat.completion","usage":{"completion_tokens":2,"prompt_tokens":284,"total_tokens":286,"prompt_tokens_details":{"cached_tokens":279}},"id":"chatcmpl-Yb4ZHTFszSz1VW2nR7jvLmgTUvj5Jbb4","timings":{"cache_n":279,"prompt_n":5,"prompt_ms":56.314,"prompt_per_token_ms":11.2628,"prompt_per_second":88.78786802571297,"predicted_n":2,"predicted_ms":20.223,"predicted_per_token_ms":10.1115,"predicted_per_second":98.89729515897741}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "1395"
+                - "627"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 21.707s
+        duration: 92ms

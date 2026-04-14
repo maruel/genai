@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1323
-        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Banana","reasoning_content":"1.  **Analyze the input:** The user has provided an image (or description leading to an image) of a fruit and asked to identify it.\n2.  **Examine the image/description:** The image shows a curved, yellowish fruit with a stem end.\n3.  **Determine the identity of the fruit:** The shape, color, and general appearance strongly suggest a banana or plantain.\n4.  **Formulate the answer constraints:** The reply must be \"only one word.\"\n5.  **Select the best single-word answer:** Banana. (Or potentially Plantain, but Banana is the most common general term.)\n\n6.  **Final check:** Does \"Banana\" meet the criteria? Yes, it is a single word."}}],"created":1775695366,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b8708-ae65fbdf3","object":"chat.completion","usage":{"completion_tokens":164,"prompt_tokens":283,"total_tokens":447,"prompt_tokens_details":{"cached_tokens":278}},"id":"chatcmpl-1MmwCrgJKDEBuAEyB9Ll3uAobzs8nscL","timings":{"cache_n":278,"prompt_n":5,"prompt_ms":74.769,"prompt_per_token_ms":14.953800000000001,"prompt_per_second":66.87263438055878,"predicted_n":164,"predicted_ms":3836.323,"predicted_per_token_ms":23.392213414634146,"predicted_per_second":42.74926798395234}}'
+        content_length: 1025
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Banana","reasoning_content":"1.  **Analyze the image:** The image displays a curved, yellowish-white fruit with a distinct stem end.\n2.  **Identify the object:** This object is clearly a banana.\n3.  **Determine the required output format:** The request asks for the fruit name and specifies \"Reply with only one word.\"\n4.  **Formulate the answer:** The one-word answer is \"Banana\"."}}],"created":1776129315,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b8781-1c0d9081f","object":"chat.completion","usage":{"completion_tokens":92,"prompt_tokens":284,"total_tokens":376,"prompt_tokens_details":{"cached_tokens":279}},"id":"chatcmpl-fehGDAUhYlbSOxA0dfTYT7WapgEaGcPX","timings":{"cache_n":279,"prompt_n":5,"prompt_ms":65.816,"prompt_per_token_ms":13.1632,"prompt_per_second":75.96936915035857,"predicted_n":92,"predicted_ms":1825.662,"predicted_per_token_ms":19.844152173913045,"predicted_per_second":50.392679477362186}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "1323"
+                - "1025"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 4.149s
+        duration: 1.99s

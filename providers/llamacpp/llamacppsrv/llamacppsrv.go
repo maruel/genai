@@ -33,7 +33,7 @@ import (
 // https://github.com/ggml-org/llama.cpp/releases
 //
 // You are free to use the build number that works best for you.
-const BuildNumber = 8708
+const BuildNumber = 8781
 
 // Server is a llama-server instance.
 type Server struct {

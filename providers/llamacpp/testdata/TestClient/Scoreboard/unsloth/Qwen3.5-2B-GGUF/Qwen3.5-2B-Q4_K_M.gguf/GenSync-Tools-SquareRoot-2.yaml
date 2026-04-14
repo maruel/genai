@@ -9,7 +9,7 @@ interactions:
         content_length: 904
         host: 127.0.0.1
         body: |
-            {"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"assistant","tool_calls":[{"type":"function","index":0,"id":"6rSGYaCiGOKRUqU2ACvXTMVPiqwxKVLp","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},{"role":"tool","content":[{"type":"text","text":"363.89"}],"tool_call_id":"6rSGYaCiGOKRUqU2ACvXTMVPiqwxKVLp"}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none","parallel_tool_calls":true,"chat_template_kwargs":{"enable_thinking":false},"cache_prompt":true}
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"assistant","tool_calls":[{"type":"function","index":0,"id":"PwwS3GbOQ7LfwkaQw9zhJdAjwvjopukm","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},{"role":"tool","content":[{"type":"text","text":"363.89"}],"tool_call_id":"PwwS3GbOQ7LfwkaQw9zhJdAjwvjopukm"}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none","parallel_tool_calls":true,"chat_template_kwargs":{"enable_thinking":false},"cache_prompt":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 638
-        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"363.89"}}],"created":1775686428,"model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b8708-ae65fbdf3","object":"chat.completion","usage":{"completion_tokens":7,"prompt_tokens":388,"total_tokens":395,"prompt_tokens_details":{"cached_tokens":364}},"id":"chatcmpl-2DuWUjcud8yIbnb94Tsr0KqjtvqbPHOE","timings":{"cache_n":364,"prompt_n":24,"prompt_ms":221.781,"prompt_per_token_ms":9.240875,"prompt_per_second":108.2148606057327,"predicted_n":7,"predicted_ms":134.293,"predicted_per_token_ms":19.184714285714286,"predicted_per_second":52.12483152509811}}'
+        content_length: 636
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"363.89"}}],"created":1776165805,"model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b8781-1c0d9081f","object":"chat.completion","usage":{"completion_tokens":7,"prompt_tokens":388,"total_tokens":395,"prompt_tokens_details":{"cached_tokens":364}},"id":"chatcmpl-19uvk14Ktd9iTLadKwbCJxB7q8gIkDfW","timings":{"cache_n":364,"prompt_n":24,"prompt_ms":84.778,"prompt_per_token_ms":3.5324166666666668,"prompt_per_second":283.09231168463515,"predicted_n":7,"predicted_ms":158.487,"predicted_per_token_ms":22.641,"predicted_per_second":44.16766043902655}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "638"
+                - "636"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 429ms
+        duration: 263ms

@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1355
-        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Banana","reasoning_content":"1.  **Analyze the input:** The user has provided an image (or a description implying an image) of a fruit and asked to identify it. The response must be only one word.\n\n2.  **Examine the image/description:** The image shows a curved, yellowish object with a stem end. This is a classic depiction of a banana or a plantain/plantain-like fruit.\n\n3.  **Determine the common name:** The item is universally recognized as a banana (or a plantain, depending on regional context, but \"banana\" is the most general and common answer for this shape).\n\n4.  **Formulate the answer:** The required output is a single word.\n\n5.  **Final check:** \"Banana\" is the correct answer."}}],"created":1775695362,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b8708-ae65fbdf3","object":"chat.completion","usage":{"completion_tokens":167,"prompt_tokens":283,"total_tokens":450,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-uQtokQIvI8baibq6j4YAgHXF206r7oIY","timings":{"cache_n":0,"prompt_n":283,"prompt_ms":16566.794,"prompt_per_token_ms":58.539908127208484,"prompt_per_second":17.082363672778207,"predicted_n":167,"predicted_ms":4675.921,"predicted_per_token_ms":27.999526946107785,"predicted_per_second":35.71488910954655}}'
+        content_length: 1128
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Banana","reasoning_content":"1.  **Analyze the request:** The user has provided an image of a fruit and asked \"What fruit is it?\" The reply must be \"only one word.\"\n\n2.  **Analyze the image:** The image shows a long, curved, yellow fruit with a thick stem at one end. This is characteristic of a banana.\n\n3.  **Determine the answer:** The fruit is a banana.\n\n4.  **Format the output:** The answer must be a single word.\n\n5.  **Final check:** \"Banana\" is one word."}}],"created":1776129313,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b8781-1c0d9081f","object":"chat.completion","usage":{"completion_tokens":121,"prompt_tokens":284,"total_tokens":405,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-E0oasc5ggNaeYnrdKKzh0ZuEmaCuJwwq","timings":{"cache_n":0,"prompt_n":284,"prompt_ms":16708.932,"prompt_per_token_ms":58.834267605633805,"prompt_per_second":16.996897228380604,"predicted_n":121,"predicted_ms":19281.783,"predicted_per_token_ms":159.3535785123967,"predicted_per_second":6.275353269975085}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "1355"
+                - "1128"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 21.349s
+        duration: 36.007s

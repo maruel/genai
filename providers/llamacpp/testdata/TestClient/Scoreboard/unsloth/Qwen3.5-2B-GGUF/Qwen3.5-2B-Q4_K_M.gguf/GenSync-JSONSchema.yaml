@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 644
-        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"{\"is_fruit\": true}"}}],"created":1775686425,"model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b8708-ae65fbdf3","object":"chat.completion","usage":{"completion_tokens":8,"prompt_tokens":29,"total_tokens":37,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-RT11gq5jbkKrNKjE434PRthdEStuFiDM","timings":{"cache_n":0,"prompt_n":29,"prompt_ms":143.087,"prompt_per_token_ms":4.93403448275862,"prompt_per_second":202.67389769860296,"predicted_n":8,"predicted_ms":176.842,"predicted_per_token_ms":22.10525,"predicted_per_second":45.2381221655489}}'
+        content_length: 642
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"{\"is_fruit\": true}"}}],"created":1776165803,"model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b8781-1c0d9081f","object":"chat.completion","usage":{"completion_tokens":8,"prompt_tokens":29,"total_tokens":37,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-6YwgY9rCceP0jbXb0EIUIs1cERHN1V43","timings":{"cache_n":0,"prompt_n":29,"prompt_ms":145.276,"prompt_per_token_ms":5.009517241379311,"prompt_per_second":199.6200335912332,"predicted_n":8,"predicted_ms":197.7,"predicted_per_token_ms":24.7125,"predicted_per_second":40.46535154274153}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "644"
+                - "642"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 398ms
+        duration: 379ms

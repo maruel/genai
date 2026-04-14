@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1240
-        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"The capital of Quackiland is **Quack**.","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:** The user is asking a direct question based on two provided statements:\n    *   \"The capital of Quackiland is Quack.\"\n    *   \"The Big Canard Statue is located in Quack.\"\n    *   \"What is the capital of Quackiland?\"\n\n2.  **Identify the Goal:** Determine the capital of Quackiland.\n\n3.  **Extract the Answer:** The first sentence explicitly states the answer: \"The capital of Quackiland is Quack.\"\n\n4.  **Formulate the Response:** State the identified capital clearly."}}],"created":1775695309,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b8708-ae65fbdf3","object":"chat.completion","usage":{"completion_tokens":147,"prompt_tokens":46,"total_tokens":193,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-7y4RHHemwJ2tbUUXZA0YKK3Xn7IjkbBX","timings":{"cache_n":0,"prompt_n":46,"prompt_ms":178.002,"prompt_per_token_ms":3.869608695652174,"prompt_per_second":258.42406265098145,"predicted_n":147,"predicted_ms":3677.76,"predicted_per_token_ms":25.018775510204083,"predicted_per_second":39.96998172800835}}'
+        content_length: 1328
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"The capital of Quackiland is Quack.","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:** The user is asking for the capital of Quackiland, based on two provided statements.\n    *   Statement 1: The capital of Quackiland is Quack.\n    *   Statement 2: The Big Canard Statue is located in Quack.\n    *   Question: What is the capital of Quackiland?\n\n2.  **Identify the Core Information:** Statement 1 directly provides the answer to the question.\n    *   \"The capital of Quackiland is Quack.\"\n\n3.  **Formulate the Answer:** State the identified capital.\n\n4.  **Final Check:** Does the answer directly address the question using the provided text? Yes."}}],"created":1776129273,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b8781-1c0d9081f","object":"chat.completion","usage":{"completion_tokens":170,"prompt_tokens":47,"total_tokens":217,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-7g405md4jkwnFd9ILUli6BGRDj40L9Wl","timings":{"cache_n":0,"prompt_n":47,"prompt_ms":169.885,"prompt_per_token_ms":3.6145744680851064,"prompt_per_second":276.65773905877506,"predicted_n":170,"predicted_ms":35539.521,"predicted_per_token_ms":209.05600588235293,"predicted_per_second":4.783407182105803}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "1240"
+                - "1328"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 3.873s
+        duration: 35.732s

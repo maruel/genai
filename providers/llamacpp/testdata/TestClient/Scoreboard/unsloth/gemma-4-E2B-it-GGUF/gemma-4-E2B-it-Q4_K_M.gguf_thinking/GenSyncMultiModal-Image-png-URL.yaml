@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 625
-        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Banana"}}],"created":1775695383,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b8708-ae65fbdf3","object":"chat.completion","usage":{"completion_tokens":2,"prompt_tokens":283,"total_tokens":285,"prompt_tokens_details":{"cached_tokens":278}},"id":"chatcmpl-P6JhjlzofwBDjSVWAlnwXR5NzL6r19xQ","timings":{"cache_n":278,"prompt_n":5,"prompt_ms":63.612,"prompt_per_token_ms":12.7224,"prompt_per_second":78.6015217254606,"predicted_n":2,"predicted_ms":23.512,"predicted_per_token_ms":11.756,"predicted_per_second":85.06294658046954}}'
+        content_length: 1151
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Banana","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:** The user has provided an image of a fruit and asked \"What fruit is it? Reply with only one word.\"\n2.  **Analyze the Image:** The image clearly shows a curved, yellowish, elongated fruit with a stem at one end.\n3.  **Identify the Fruit:** This shape and appearance are characteristic of a banana.\n4.  **Formulate the Answer (Constraint Check):** The required response must be only one word.\n5.  **Final Answer Selection:** Banana."}}],"created":1776129335,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b8781-1c0d9081f","object":"chat.completion","usage":{"completion_tokens":121,"prompt_tokens":284,"total_tokens":405,"prompt_tokens_details":{"cached_tokens":279}},"id":"chatcmpl-yg5oi8xF8VetwG2LbQa8FyqfkCTgw1xk","timings":{"cache_n":279,"prompt_n":5,"prompt_ms":57.263,"prompt_per_token_ms":11.4526,"prompt_per_second":87.3164172327681,"predicted_n":121,"predicted_ms":2908.865,"predicted_per_token_ms":24.040206611570245,"predicted_per_second":41.59698026549874}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "625"
+                - "1151"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 242ms
+        duration: 3.034s

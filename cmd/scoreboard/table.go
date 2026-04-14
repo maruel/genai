@@ -408,7 +408,7 @@ func visitFields(v reflect.Value, fn func(v reflect.Value)) {
 
 func getTitles[T any]() []string {
 	var titles []string
-	visitFieldsType(reflect.TypeOf((*T)(nil)), func(f reflect.StructField) {
+	visitFieldsType(reflect.TypeFor[*T](), func(f reflect.StructField) {
 		if title := f.Tag.Get("title"); title != "" {
 			titles = append(titles, title)
 		}

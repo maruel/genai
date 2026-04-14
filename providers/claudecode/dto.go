@@ -488,7 +488,7 @@ type OutputSystemMsg struct {
 	ToolUseID    string        `json:"tool_use_id,omitempty"`
 	LastToolName string        `json:"last_tool_name,omitempty"`
 	Status       string        `json:"status,omitempty"`
-	UsageExtra   TaskUsageWire `json:"usage,omitempty"`
+	UsageExtra   TaskUsageWire `json:"usage,omitzero"`
 	OutputFile   string        `json:"output_file,omitempty"`
 	Summary      string        `json:"summary,omitempty"`
 
@@ -501,7 +501,7 @@ type OutputSystemMsg struct {
 
 	// Other optional fields.
 	PermissionMode  string              `json:"permissionMode,omitempty"`
-	CompactMetadata CompactMetadataWire `json:"compact_metadata,omitempty"`
+	CompactMetadata CompactMetadataWire `json:"compact_metadata,omitzero"`
 	Prompt          json.RawMessage     `json:"prompt,omitempty"`
 }
 

@@ -125,7 +125,7 @@ func TestClient(t *testing.T) {
 			}
 			return c2
 		}
-		smoketest.Run(t, getClientRT, sbModels, testRecorder.Records)
+		smoketest.Run(t, getClientRT, sbModels, testRecorder.Records, nil)
 	})
 
 	// Note: Skipping Preferred test as pollinations is a router to multiple backends

@@ -96,7 +96,10 @@ func TestClient(t *testing.T) {
 				Provider: c2,
 				Opts:     []genai.GenOption{&llamacpp.GenOption{}},
 			}
-		}, models, testRecorder.Records)
+		}, models, testRecorder.Records, &smoketest.RunOptions{
+			// Gemma 4 emits reasoning content even with enable_thinking=false.
+			TolerateReasoning: []string{"gemma-4"},
+		})
 	})
 
 	// Note: Skipping Preferred test as llamacpp scoreboard doesn't define

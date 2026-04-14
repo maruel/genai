@@ -48,28 +48,28 @@ type ProviderFactory func(t testing.TB, m scoreboard.Model, fn func(http.RoundTr
 
 var updateScoreboard = flag.Bool("update-scoreboard", false, "Update scoreboard.json for each provider with current test results")
 
-// RunOption configures optional behavior of Run.
-type RunOption func(*runConfig)
-
-type runConfig struct {
-	scoreboardFile string
-}
-
-// WithScoreboardFile overrides the default scoreboard filename ("scoreboard.json").
-func WithScoreboardFile(path string) RunOption {
-	return func(c *runConfig) {
-		c.scoreboardFile = path
-	}
+// RunOptions configures optional behavior of Run.
+type RunOptions struct {
+	// ScoreboardFile overrides the default scoreboard filename ("scoreboard.json").
+	ScoreboardFile string
+	// TolerateReasoning lists model name substrings for which reasoning
+	// content in non-thinking scenarios is tolerated instead of causing a test
+	// failure. Some models (e.g. Gemma 4) emit reasoning even with
+	// enable_thinking=false.
+	TolerateReasoning []string
 }
 
 // Run regenerates the scoreboard and asserts it is up to date.
 //
 // If the -update-scoreboard flag is set, it will update the scoreboard files
 // and automatically delete stale recordings for models that are no longer available.
-func Run(t *testing.T, pf ProviderFactory, models []scoreboard.Model, rec *myrecorder.Records, opts ...RunOption) {
-	cfg := runConfig{scoreboardFile: "scoreboard.json"}
-	for _, o := range opts {
-		o(&cfg)
+func Run(t *testing.T, pf ProviderFactory, models []scoreboard.Model, rec *myrecorder.Records, opts *RunOptions) {
+	if opts == nil {
+		opts = &RunOptions{}
+	}
+	scoreboardFile := opts.ScoreboardFile
+	if scoreboardFile == "" {
+		scoreboardFile = "scoreboard.json"
 	}
 
 	if len(models) == 0 {
@@ -171,7 +171,9 @@ func Run(t *testing.T, pf ProviderFactory, models []scoreboard.Model, rec *myrec
 					return r
 				}
 				return pf(t, m, fn)
-			}, &want)
+			}, &want, !m.Reason && slices.ContainsFunc(opts.TolerateReasoning, func(s string) bool {
+			return strings.Contains(m.Model, s)
+		}))
 			usage.Add(&u)
 			if got != nil {
 				updatedScenarios = append(updatedScenarios, *got)
@@ -215,11 +217,11 @@ func Run(t *testing.T, pf ProviderFactory, models []scoreboard.Model, rec *myrec
 	}
 	// Check scoreboard and update if requested
 	if len(updatedScenarios) > 0 || len(staleModels) > 0 {
-		scoreboardPath := filepath.Join(".", cfg.scoreboardFile)
+		scoreboardPath := filepath.Join(".", scoreboardFile)
 		rawOld, rawNew := generateUpdatedScoreboard(t, scoreboardPath, updatedScenarios, slices.Collect(maps.Keys(staleModels)))
 		if !bytes.Equal(rawNew, rawOld) {
 			if !*updateScoreboard {
-				t.Fatalf("%s is out of date, run with -update-scoreboard to update it", cfg.scoreboardFile)
+				t.Fatalf("%s is out of date, run with -update-scoreboard to update it", scoreboardFile)
 			}
 			t.Logf("Updating %s", scoreboardPath)
 			if err := os.WriteFile(scoreboardPath, rawNew, 0o644); err != nil {
@@ -235,8 +237,14 @@ func Run(t *testing.T, pf ProviderFactory, models []scoreboard.Model, rec *myrec
 type getClientOneModel func(t testing.TB, scenarioName string) genai.Provider
 
 // runOneModel runs the scoreboard on one model.
+//
+// When tolerateReasoning is true, reasoning content discovered in
+// non-thinking scenarios is silently ignored instead of causing a mismatch.
+// This is useful for models like Gemma 4 that emit reasoning even with
+// enable_thinking=false.
+//
 // Returns the usage and the generated scenario (or nil if not updated).
-func runOneModel(t testing.TB, gc getClientOneModel, want *scoreboard.Scenario) (genai.Usage, *scoreboard.Scenario) {
+func runOneModel(t testing.TB, gc getClientOneModel, want *scoreboard.Scenario, tolerateReasoning bool) (genai.Usage, *scoreboard.Scenario) {
 	// Calculate the scenario.
 	providerFactory := func(name string) genai.Provider {
 		if name == "" {
@@ -256,6 +264,11 @@ func runOneModel(t testing.TB, gc getClientOneModel, want *scoreboard.Scenario) 
 		}
 		if want.ReasoningTokenEnd != "" {
 			t.Fatal("unexpected ReasoningTokenEnd")
+		}
+		// Some models leak reasoning content even when thinking is disabled
+		// (e.g. Gemma 4). When opted in, tolerate this.
+		if tolerateReasoning {
+			got.Reason = false
 		}
 	} else {
 		want.ReasoningTokenStart = ""

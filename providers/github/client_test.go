@@ -107,7 +107,7 @@ func TestClient(t *testing.T) {
 			}
 			return cl
 		}
-		smoketest.Run(t, getClientRT, models, testRecorder.Records)
+		smoketest.Run(t, getClientRT, models, testRecorder.Records, nil)
 	})
 
 	t.Run("Preferred", func(t *testing.T) {

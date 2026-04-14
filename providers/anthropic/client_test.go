@@ -126,7 +126,7 @@ func TestClient(t *testing.T) {
 			}
 		}
 
-		smoketest.Run(t, getClientRT, models, testRecorder.Records)
+		smoketest.Run(t, getClientRT, models, testRecorder.Records, nil)
 	})
 
 	// This is a tricky test since batch operations can take up to 24h to complete.

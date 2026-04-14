@@ -646,7 +646,9 @@ func exerciseGenInputImage(ctx context.Context, cs *callState, f *scoreboard.Fun
 
 func exerciseGenInputAudio(ctx context.Context, cs *callState, f *scoreboard.Functionality, prefix string) (*scoreboard.ModalCapability, error) {
 	var m *scoreboard.ModalCapability
-	want := regexp.MustCompile("^orange$")
+	// Use a relaxed pattern: ASR models may wrap the transcription in
+	// format-specific tags (e.g. "language English<asr_text>Orange.").
+	want := regexp.MustCompile("orange")
 	// Try MP3 then AAC first. If both MP3 and AAC are not supported, there is no point in trying other formats.
 	for i, format := range []extMime{
 		{"mp3", "audio/mp3"},

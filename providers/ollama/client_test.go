@@ -78,7 +78,7 @@ func TestClient(t *testing.T) {
 				return &ollamaThinkOff{Provider: c}
 			}
 			return c
-		}, models, testRecorder.Records)
+		}, models, testRecorder.Records, nil)
 	})
 
 	// This test doesn't require the server to start.

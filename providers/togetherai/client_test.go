@@ -126,7 +126,7 @@ func TestClient(t *testing.T) {
 			return &smallImage{Provider: &internaltest.HideHTTPCode{Provider: c, StatusCode: 500}, size: size}
 		}
 
-		smoketest.Run(t, getClientRT, models, testRecorder.Records)
+		smoketest.Run(t, getClientRT, models, testRecorder.Records, nil)
 	})
 
 	t.Run("Preferred", func(t *testing.T) {

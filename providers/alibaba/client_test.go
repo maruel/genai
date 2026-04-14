@@ -160,7 +160,7 @@ func TestClient(t *testing.T) {
 						Opts:     []genai.GenOption{&alibaba.GenOption{Thinking: model.Reason}},
 					}
 				}
-				smoketest.Run(t, getClientRT, models, testRecorder.Records, smoketest.WithScoreboardFile(b.sbFile))
+				smoketest.Run(t, getClientRT, models, testRecorder.Records, &smoketest.RunOptions{ScoreboardFile: b.sbFile})
 			})
 
 			t.Run("Preferred", func(t *testing.T) {

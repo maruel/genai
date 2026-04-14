@@ -19,13 +19,69 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        transfer_encoding:
-            - chunked
-        content_length: -1
-        body: '{"model":"qwen3.5:2b","created_at":"2026-04-13T21:06:18.94352917Z","message":{"role":"assistant","content":"Hello","thinking":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Command: \"Say hello.\"\n    *   Constraint: \"Use only one word.\"\n\n2.  **Interpret the Constraint:**\n    *   The user wants me to say \"hello\", but I must limit my output to exactly one word.\n    *   Common interpretations of \"Say hello\" + \"one word\" = \"hi\", \"hey\", \"hello\", \"good morning\" (if multiple words allowed, which it doesn''t).\n    *   Strict adherence means the output itself should be a single string of words equal to one word.\n    *   \"Hello\" itself is the most direct translation.\n    *   \"Hi\" is also common for a one-word greeting.\n    *   \"Hey\" works too.\n\n3.  **Select the Best Word:**\n    *   \"Hello\" is the most standard, polite response to \"Say hello\".\n    *   \"Hi\" is also acceptable.\n    *   Given the simplicity, \"Hello\" is often the expected word for \"Say hello\". However, sometimes users like a shorter, friendly one-word greeting.\n    *   Let''s check the constraint again: \"Use only one word.\"\n    *   If I output \"Hello\", it is one word.\n    *   If I output \"Hi\", it is one word.\n    *   \"Hello\" fits the prompt''s intent (\"Say hello\") best while maintaining the constraint.\n\n4.  **Final Decision:**\n    *   Output: \"Hello\"\n\n5.  **Verification:**\n    *   Does it say \"hello\"? Yes.\n    *   Is it only one word? Yes.\n    *   No punctuation or extra characters? Ideally. Usually, a word followed by a period is counted as words, but strict constraints often prefer just the word. I will output just the word.\n\n6.  **Formatting:**\n    *   Just the word.\n\n    *   Wait, is \"Hi\" better than \"Hello\"?\n    *   If someone says \"Say hello\", they usually mean the greeting word.\n    *   \"Hello\" is the safest and most accurate.\n    *   Let''s just output \"Hello\"."},"done":true,"done_reason":"stop","total_duration":20113358925,"load_duration":1028263500,"prompt_eval_count":18,"prompt_eval_duration":151944917,"eval_count":482,"eval_duration":18778601585}'
+        content_length: 40
+        body: '{"error":"model ''qwen3.5:2b'' not found"}'
         headers:
+            Content-Length:
+                - "40"
+            Content-Type:
+                - application/json; charset=utf-8
+        status: 404 Not Found
+        code: 404
+        duration: 0s
+    - id: 1
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 55
+        host: localhost
+        body: |
+            {"model":"qwen3.5:2b","insecure":false,"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/pull
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 20
+        body: '{"status":"success"}'
+        headers:
+            Content-Length:
+                - "20"
+            Content-Type:
+                - application/json
+        status: 200 OK
+        code: 200
+        duration: 30.441s
+    - id: 2
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 109
+        host: localhost
+        body: |
+            {"model":"qwen3.5:2b","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1616
+        body: '{"model":"qwen3.5:2b","created_at":"2026-04-14T11:36:14.635278426Z","message":{"role":"assistant","content":"Hello","thinking":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Input: \"Say hello.\"\n    *   Constraint: \"Use only one word.\"\n    *   Task: Greet the user in a single word.\n\n2.  **Determine the appropriate word:**\n    *   Common greetings: \"Hello\", \"Hi\", \"Hey\", \"Greetings\".\n    *   Constraint Check: \"Hello\" has two letters? No, one word. \"Hi\" is one word. \"Hello\" is one word.\n    *   Selection: \"Hello\" is the standard greeting requested by the prompt structure, though \"Hi\" is shorter and more casual. \"Hello\" is more formal, but \"Hi\" is often sufficient. Given the instruction is simple, \"Hello\" or \"Hi\" are both valid. I''ll choose \"Hello\" as it directly mirrors the prompt''s opening verb structure conceptually, or \"Hi\" for brevity. Let''s go with \"Hi\" or \"Hello\". Actually, \"Hello\" fits the instruction \"Say hello\" better than \"Hey\".\n    *   Wait, the instruction is \"Use only one word.\"\n    *   So the output should be just a single string.\n    *   \"Hello\" is the most appropriate response to \"Say hello\".\n\n3.  **Final Decision:** The word \"Hello\" is the best fit.\n\n4.  **Verification:**\n    *   Does it contain a word? Yes.\n    *   Is it one word? Yes.\n    *   Does it say hello? Yes.\n\n5.  **Output Generation:** Hello.cw"},"done":true,"done_reason":"stop","total_duration":120697790097,"load_duration":788334167,"prompt_eval_count":18,"prompt_eval_duration":305567500,"eval_count":350,"eval_duration":108766478504}'
+        headers:
+            Content-Length:
+                - "1616"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 20.115s
+        duration: 2m0.698s

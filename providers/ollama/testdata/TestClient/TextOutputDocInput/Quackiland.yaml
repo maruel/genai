@@ -18,7 +18,7 @@ interactions:
         proto_major: 1
         proto_minor: 1
         content_length: 658
-        body: '{"models":[{"name":"gemma4:e2b","model":"gemma4:e2b","modified_at":"2026-04-13T21:19:20.456175004Z","size":7162405886,"digest":"7fbdbf8f5e45a75bb122155ed546e765b4d9c53a1285f62fd9f506baa1c5a47e","details":{"parent_model":"","format":"gguf","family":"gemma4","families":["gemma4"],"parameter_size":"5.1B","quantization_level":"Q4_K_M"}},{"name":"qwen3.5:2b","model":"qwen3.5:2b","modified_at":"2026-04-13T20:56:25.653579007Z","size":2741192820,"digest":"324d162be6ca5629ae4517c8710434d0bd2d665bc94dbad46e9af8fbf8a2f0df","details":{"parent_model":"","format":"gguf","family":"qwen35","families":["qwen35"],"parameter_size":"2.3B","quantization_level":"Q8_0"}}]}'
+        body: '{"models":[{"name":"qwen3.5:2b","model":"qwen3.5:2b","modified_at":"2026-04-14T11:34:13.936701009Z","size":2741192820,"digest":"324d162be6ca5629ae4517c8710434d0bd2d665bc94dbad46e9af8fbf8a2f0df","details":{"parent_model":"","format":"gguf","family":"qwen35","families":["qwen35"],"parameter_size":"2.3B","quantization_level":"Q8_0"}},{"name":"gemma4:e2b","model":"gemma4:e2b","modified_at":"2026-04-14T11:29:57.946405001Z","size":7162405886,"digest":"7fbdbf8f5e45a75bb122155ed546e765b4d9c53a1285f62fd9f506baa1c5a47e","details":{"parent_model":"","format":"gguf","family":"gemma4","families":["gemma4"],"parameter_size":"5.1B","quantization_level":"Q4_K_M"}}]}'
         headers:
             Content-Length:
                 - "658"
@@ -35,7 +35,7 @@ interactions:
         content_length: 221
         host: localhost
         body: |
-            {"model":"gemma4:e2b","messages":[{"role":"user","content":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"role":"user","content":"What is the capital of Quackiland?"}],"stream":false}
+            {"model":"qwen3.5:2b","messages":[{"role":"user","content":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"role":"user","content":"What is the capital of Quackiland?"}],"stream":false}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -45,13 +45,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 859
-        body: '{"model":"gemma4:e2b","created_at":"2026-04-13T21:22:24.489739423Z","message":{"role":"assistant","content":"The capital of Quackiland is Quack.","thinking":"Thinking Process:\n\n1.  **Analyze the input:**\n    *   \"The capital of Quackiland is Quack.\"\n    *   \"The Big Canard Statue is located in Quack.\"\n    *   \"What is the capital of Quackiland?\"\n\n2.  **Identify the core question:** The user is asking for the capital of Quackiland.\n\n3.  **Extract the answer from the provided context:** The first sentence explicitly states: \"The capital of Quackiland is Quack.\"\n\n4.  **Formulate the answer:** State the capital clearly based on the provided text."},"done":true,"done_reason":"stop","total_duration":4052006460,"load_duration":134233542,"prompt_eval_count":51,"prompt_eval_duration":215754458,"eval_count":144,"eval_duration":3645597876}'
+        transfer_encoding:
+            - chunked
+        content_length: -1
+        body: '{"model":"qwen3.5:2b","created_at":"2026-04-14T11:50:05.458002296Z","message":{"role":"assistant","content":"The capital of Quackiland is **Quack**.","thinking":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Input statement 1: \"The capital of Quackiland is Quack.\"\n    *   Input statement 2: \"The Big Canard Statue is located in Quack.\"\n    *   Question: \"What is the capital of Quackiland?\"\n\n2.  **Evaluate the Information:**\n    *   Statement 1 explicitly states a fact within the context of the conversation: \"The capital of Quackiland is Quack.\"\n    *   The user is asking for the capital of Quackiland.\n    *   The information provided directly answers this question.\n\n3.  **Determine the Answer:**\n    *   Based on the provided text, the capital is Quack.\n\n4.  **Formulate the Output:**\n    *   Directly answer the question using the information given.\n\n5.  **Safety Check:**\n    *   Does this contain any sensitive, harmful, or dangerous content? No. It''s a simple logic/reading comprehension question based on premises provided in the prompt.\n    *   Is there any potential for confusion with real-world knowledge? Yes, in reality, the capital of the Quackland (fictional or generic) might be different, but based *only* on the provided context, the answer is Quack. The prompt seems to be a logic puzzle or a roleplay scenario testing retrieval. I should stick to the provided information.\n\n6.  **Final Decision:**\n    *   Answer: Quack.\n\n7.  **Refinement:**\n    *   Keep it concise and clear.\n\n    \"The capital of Quackiland is Quack, according to the information given.\" (Or just \"Quack.\")\n\n    Let''s go with a direct answer.\n\n    Wait, I need to be careful. This looks like a potential jailbreak attempt disguised as a simple query, or perhaps just a nonsense scenario. The content is harmless fiction/logic. There is no request for sensitive information or bypassing safety guidelines.\n\n    Wait, looking closer at the prompt structure.\n    \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"\n    \"What is the capital of Quackiland?\"\n\n    This is a reading comprehension task. I just need to extract the answer.\n\n    Answer: Quack.\n\n    Wait, is there a trick?\n    Maybe the \"Big Canard Statue\" is actually a different object, but the text explicitly says \"The capital of Quackiland is Quack.\"\n    So the capital is defined as Quack.\n\n    Okay, ready to respond.\n\n    **Plan:**\n    1. State the answer clearly.\n    2. Reference the premise provided in the text.\n\n    **Draft:**\n    Based on the text provided, the capital of Quackiland is Quack.\n\n    **Final Polish:**\n    The capital of Quackiland is Quack.\n\n    (Self-Correction: Keep it simple.)\n    Answer: Quack.\n    Reasoning: The text explicitly states this.\n\n    Let''s write the response.\n    \"According to the information provided, the capital of Quackiland is Quack.\"\n    Or just \"Quack.\"\n    I will provide a clear sentence.\n\n    Wait, looking at safety guidelines again.\n    Is this a roleplay setup? \"Quackiland\" sounds like a made-up place (often used in logic puzzles or roleplays).\n    Is it a trick question?\n    Actually, I must consider if this is a \"trap\" to test if I will hallucinate real-world facts. I should only use provided info.\n    Okay, I will use provided info.\n\n    Final check:\n    Prompt: \"The capital of Quackiland is Quack.\"\n    Question: \"What is the capital of Quackiland?\"\n    Answer: Quack.\n\n    Okay, done thinking.cw"},"done":true,"done_reason":"stop","total_duration":33768650849,"load_duration":80936042,"prompt_eval_count":45,"prompt_eval_duration":354850916,"eval_count":857,"eval_duration":33057899081}'
         headers:
-            Content-Length:
-                - "859"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 4.052s
+        duration: 33.769s

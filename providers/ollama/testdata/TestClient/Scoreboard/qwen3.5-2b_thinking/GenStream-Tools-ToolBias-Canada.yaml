@@ -1,0 +1,80 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 523
+        host: localhost
+        body: |
+            {"model":"qwen3.5:2b","messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"stream":true,"tools":[{"type":"function","function":{"description":"A tool to specify the best country","name":"best_country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        content_length: -1
+        body: |
+            {"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:26.589621958Z","message":{"role":"assistant","content":"","thinking":"The"},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:26.612760084Z","message":{"role":"assistant","content":"","thinking":" user"},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:26.68450475Z","message":{"role":"assistant","content":"","thinking":" is"},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:26.71438675Z","message":{"role":"assistant","content":"","thinking":" asking"},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:26.7425085Z","message":{"role":"assistant","content":"","thinking":" me"},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:26.858361667Z","message":{"role":"assistant","content":"","thinking":" to"},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:26.943839375Z","message":{"role":"assistant","content":"","thinking":" compare"},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:26.965818292Z","message":{"role":"assistant","content":"","thinking":" Canada"},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:26.987208292Z","message":{"role":"assistant","content":"","thinking":" and"},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:27.009065417Z","message":{"role":"assistant","content":"","thinking":" the"},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:27.029552Z","message":{"role":"assistant","content":"","thinking":" USA"},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:27.050638125Z","message":{"role":"assistant","content":"","thinking":" using"},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:27.121524584Z","message":{"role":"assistant","content":"","thinking":" the"},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:27.142677459Z","message":{"role":"assistant","content":"","thinking":" best"},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:27.167935667Z","message":{"role":"assistant","content":"","thinking":"_country"},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:27.190012334Z","message":{"role":"assistant","content":"","thinking":" tool"},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:27.2847545Z","message":{"role":"assistant","content":"","thinking":"."},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:27.305275084Z","message":{"role":"assistant","content":"","thinking":" They"},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:27.325173376Z","message":{"role":"assistant","content":"","thinking":" want"},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:27.349312417Z","message":{"role":"assistant","content":"","thinking":" to"},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:27.370777459Z","message":{"role":"assistant","content":"","thinking":" know"},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:27.396432209Z","message":{"role":"assistant","content":"","thinking":" which"},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:27.447048376Z","message":{"role":"assistant","content":"","thinking":" country"},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:27.470681959Z","message":{"role":"assistant","content":"","thinking":" is"},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:27.491420834Z","message":{"role":"assistant","content":"","thinking":" better"},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:27.518183126Z","message":{"role":"assistant","content":"","thinking":"."},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:27.567443501Z","message":{"role":"assistant","content":"","thinking":" I"},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:27.587627876Z","message":{"role":"assistant","content":"","thinking":" should"},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:27.610681209Z","message":{"role":"assistant","content":"","thinking":" use"},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:27.657187251Z","message":{"role":"assistant","content":"","thinking":" the"},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:27.730130876Z","message":{"role":"assistant","content":"","thinking":" best"},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:27.755115292Z","message":{"role":"assistant","content":"","thinking":"_country"},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:27.776626917Z","message":{"role":"assistant","content":"","thinking":" tool"},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:27.798106292Z","message":{"role":"assistant","content":"","thinking":" with"},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:27.819805084Z","message":{"role":"assistant","content":"","thinking":" \""},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:27.839161584Z","message":{"role":"assistant","content":"","thinking":"Canada"},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:27.861516792Z","message":{"role":"assistant","content":"","thinking":"\""},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:27.958132084Z","message":{"role":"assistant","content":"","thinking":" as"},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:27.998941542Z","message":{"role":"assistant","content":"","thinking":" the"},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:28.096997418Z","message":{"role":"assistant","content":"","thinking":" country"},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:28.163209959Z","message":{"role":"assistant","content":"","thinking":" parameter"},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:28.185727959Z","message":{"role":"assistant","content":"","thinking":" to"},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:28.214585626Z","message":{"role":"assistant","content":"","thinking":" get"},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:28.250344876Z","message":{"role":"assistant","content":"","thinking":" information"},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:28.279043584Z","message":{"role":"assistant","content":"","thinking":" about"},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:28.308619918Z","message":{"role":"assistant","content":"","thinking":" it"},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:28.330000918Z","message":{"role":"assistant","content":"","thinking":"."},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:29.669736293Z","message":{"role":"assistant","content":"","tool_calls":[{"id":"call_ldkk9sdw","function":{"index":0,"name":"best_country","arguments":{"country":"Canada"}}}]},"done":false}
+            {"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:29.694159627Z","message":{"role":"assistant","content":""},"done":true,"done_reason":"stop","total_duration":13557686840,"load_duration":117838417,"prompt_eval_count":305,"prompt_eval_duration":1330163958,"eval_count":77,"eval_duration":3082477497}
+        headers:
+            Content-Type:
+                - application/x-ndjson
+        status: 200 OK
+        code: 200
+        duration: 10.453s

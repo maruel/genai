@@ -1,0 +1,31 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 524
+        host: localhost
+        body: |
+            {"model":"gemma4:e2b","messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"stream":false,"tools":[{"type":"function","function":{"description":"A tool to specify the best country","name":"best_country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        content_length: -1
+        body: '{"model":"gemma4:e2b","created_at":"2026-04-14T12:19:47.043700302Z","message":{"role":"assistant","content":"","thinking":"1.  **Analyze the user''s request:** The user is asking for a comparison between the USA and Canada (\"I wonder if the USA is a better country than Canada?\"). They specifically instruct me to use the `best_country` tool to determine which country is \"the best one\".\n\n2.  **Examine the available tool:** I have one tool available: `best_country(country: str)`.\n    *   `description`: \"A tool to specify the best country\"\n    *   `parameters`: It accepts a `country` argument, which must be either \"USA\" or \"Canada\".\n\n3.  **Determine the tool''s function:** The tool seems designed to *specify* the best country, implying it might return a definitive answer about which one is better, or it might just return information about the specified country.\n\n4.  **Analyze the user''s intent vs. tool capability:** The user wants a subjective judgment (\"which country is the best\"). The tool is named `best_country` and takes a country name as input. It doesn''t explicitly state *how* it determines \"best\".\n\n5.  **Formulate the tool call:** The user wants to compare USA and Canada. I need to call the tool for both, or figure out how to use it to satisfy the request. Since the request is a comparison, calling it for one might be a start, but the instruction is \"Call the tool to tell me which country is the best one.\"\n\n6.  **Execute the plan (Self-Correction/Refinement):** If I call `best_country(country=\"USA\")`, I will get information about the USA. If I call `best_country(country=\"Canada\")`, I will get information about Canada. I cannot *determine* which one is objectively \"better\" based on the tool''s definition alone, as the tool''s purpose is vague in this context.\n\n7.  **Constraint Check:** The instructions usually require using the tool if it directly addresses the prompt. The prompt *tells* me to call the tool.\n\n8.  **Final Decision:** I must call the tool as requested, even if the outcome is just the information provided by the tool, as I am an AI operating within these constraints. I will call it for the country the user implicitly favors or the first one mentioned, or perhaps both if the tool can handle it sequentially. Since the user asked \"which country is the best one,\" I should try to use the tool to resolve that.\n\n    *Self-Correction 2:* The prompt implies a single answer. I should call the tool for both options if possible, or just stick to the most direct action. Let''s try calling it for one, or see if I can call it sequentially. Since the prompt demands *a* result, I will call it once, based on the structure of the request. Since the tool *only* takes one argument, I can only test one input at a time. I will choose USA first, as it was the country the user seemed to favor.\n\n    *Revisiting the prompt:* \"Call the tool best_country to tell me which country is the best one.\" This implies the tool *itself* will tell me.\n\n9.  **Construct the Tool Call:**\n    `call:best_country{country: \"USA\"}` or `call:best_country{country: \"Canada\"}`. I will make a choice, or acknowledge the ambiguity. Given the direct instruction, I should execute the tool call.","tool_calls":[{"id":"call_a8x8x3qx","function":{"index":0,"name":"best_country","arguments":{"country":"USA"}}}]},"done":true,"done_reason":"stop","total_duration":23451200302,"load_duration":121305791,"prompt_eval_count":98,"prompt_eval_duration":329574417,"eval_count":761,"eval_duration":22773268681}'
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        status: 200 OK
+        code: 200
+        duration: 23.453s

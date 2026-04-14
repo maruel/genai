@@ -1,0 +1,44 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 570
+        host: api.cloudflare.com
+        body: |
+            {"messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","content":"{\"number\":\"132413\"}"},{"role":"tool","content":"363.89"}],"tools":[{"type":"function","function":{"description":"Calculates and return the square root of a number","name":"square_root","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.cloudflare.com/client/v4/accounts/ACCOUNT_ID/ai/run/@cf/meta/llama-3.2-1b-instruct
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"result":{"response":null,"tool_calls":[{"name":"square_root","arguments":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}}}}],"usage":{"prompt_tokens":224,"completion_tokens":43,"total_tokens":267,"prompt_tokens_details":{"cached_tokens":0}}},"success":true,"errors":[],"messages":[]}'
+        headers:
+            Api-Version:
+                - "2026-04-14"
+            Cf-Ai-Neurons:
+                - "1.34"
+            Cf-Ai-Req-Id:
+                - a82ffbfe-d323-4e12-aede-f1e7f65727a4
+            Cf-Auditlog-Id:
+                - 019d8bf2-d2be-77a2-85dd-fa895d9806bd
+            Cf-Ray:
+                - 9ec2af572816a25b-YUL
+            Content-Type:
+                - application/json
+            Server:
+                - cloudflare
+            Vary:
+                - Accept-Encoding
+        status: 200 OK
+        code: 200
+        duration: 534ms

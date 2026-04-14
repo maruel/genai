@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 951
-        body: '{"model":"gemma4:e2b","created_at":"2026-04-13T21:20:15.993460294Z","message":{"role":"assistant","content":"Hello","thinking":"Thinking Process:\n1.  **Analyze the Request:** The user asked me to \"Say hello\" and \"Use only one word.\"\n2.  **Identify the Goal:** The required response must be a single word that fulfills the function of saying \"hello.\"\n3.  **Brainstorm Single-Word Greetings:**\n    *   Hello (The most direct option)\n    *   Hi (Common, informal)\n    *   Greetings (A bit formal)\n    *   Hey (Informal)\n    *   Hola (Spanish, but often used)\n4.  **Select the Best Option:** \"Hello\" is the most accurate and universally understood response to the instruction \"Say hello.\"\n5.  **Final Output Generation:** Select the chosen word."},"done":true,"done_reason":"stop","total_duration":9938741130,"load_duration":159652875,"prompt_eval_count":24,"prompt_eval_duration":174231375,"eval_count":166,"eval_duration":4760432582}'
+        content_length: 952
+        body: '{"model":"gemma4:e2b","created_at":"2026-04-14T11:47:19.496937595Z","message":{"role":"assistant","content":"Hello","thinking":"Thinking Process:\n1.  **Analyze the Request:** The user asked me to \"Say hello\" and \"Use only one word.\"\n2.  **Identify the Goal:** The required response must be a single word that fulfills the function of saying \"hello.\"\n3.  **Brainstorm Single-Word Greetings:**\n    *   Hello (The most direct option)\n    *   Hi (Common, informal)\n    *   Greetings (A bit formal)\n    *   Hey (Informal)\n    *   Hola (Spanish, but often used)\n4.  **Select the Best Option:** \"Hello\" is the most accurate and universally understood response to the instruction \"Say hello.\"\n5.  **Final Output Generation:** Select the chosen word."},"done":true,"done_reason":"stop","total_duration":10252701046,"load_duration":164547000,"prompt_eval_count":24,"prompt_eval_duration":243021750,"eval_count":166,"eval_duration":4671417329}'
         headers:
             Content-Length:
-                - "951"
+                - "952"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 9.939s
+        duration: 10.254s

@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1362
-        body: '{"model":"gemma4:e2b","created_at":"2026-04-13T21:21:16.602499294Z","message":{"role":"assistant","content":"","thinking":"1.  **Analyze the Request:** The user wants to calculate the square root of 132413 using the `square_root` tool and insists on replying *only* with the result, with no explanation.\n\n2.  **Identify the Tool:** The available tool is `square_root(number)`.\n\n3.  **Determine the Input:** The number to be input is 132413.\n\n4.  **Formulate the Tool Call:** `square_root(number=132413)`\n\n5.  **Execute (Simulated):** The model needs to generate the tool call.\n\n6.  **Wait for Output (Self-Correction/Refinement):** The next step is to wait for the tool''s output. Assuming the tool returns the correct mathematical result.\n\n7.  **Final Response Generation:** Once the result is obtained, the model must adhere strictly to the constraint: \"reply with only the result. Do not give an explanation.\"\n\n**(Self-Correction during generation):** I must output the tool call first, as that is the required action to fulfill the request.","tool_calls":[{"id":"call_47tq7ff9","function":{"index":0,"name":"square_root","arguments":{"number":132413}}}]},"done":true,"done_reason":"stop","total_duration":14037309214,"load_duration":157310709,"prompt_eval_count":95,"prompt_eval_duration":209054541,"eval_count":262,"eval_duration":6611060042}'
+        content_length: 1070
+        body: '{"model":"gemma4:e2b","created_at":"2026-04-14T12:19:10.617259757Z","message":{"role":"assistant","content":"","thinking":"1.  **Analyze the Request:** The user wants to calculate the square root of 132413 using the `square_root` tool and insists on replying *only* with the result, with no explanation.\n\n2.  **Identify the Tool:** The available tool is `square_root(number)`.\n\n3.  **Determine the Input:** The number to operate on is 132413.\n\n4.  **Formulate the Tool Call:** Call `square_root` with the input `132413`.\n\n5.  **Execute (Simulated):** (I need to generate the tool call.)\n\n6.  **Anticipate the Output:** The tool will return the calculated square root.\n\n7.  **Final Response Generation:** The instruction is to reply *only* with the result.","tool_calls":[{"id":"call_3mgrcxam","function":{"index":0,"name":"square_root","arguments":{"number":132413}}}]},"done":true,"done_reason":"stop","total_duration":12353920256,"load_duration":111632542,"prompt_eval_count":95,"prompt_eval_duration":125263208,"eval_count":202,"eval_duration":6462761339}'
         headers:
             Content-Length:
-                - "1362"
+                - "1070"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 14.038s
+        duration: 12.362s

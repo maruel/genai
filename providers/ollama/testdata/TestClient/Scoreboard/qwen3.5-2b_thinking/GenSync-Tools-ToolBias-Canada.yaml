@@ -1,0 +1,31 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 524
+        host: localhost
+        body: |
+            {"model":"qwen3.5:2b","messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"stream":false,"tools":[{"type":"function","function":{"description":"A tool to specify the best country","name":"best_country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1276
+        body: '{"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:25.256143Z","message":{"role":"assistant","content":"","thinking":"The user is asking me to call the best_country tool to determine which country is the best - Canada or the USA. The user specifically mentions \"I wonder if Canada is a better country than the USA\", which shows they are interested in this comparison.\n\nLooking at the available tools, I have a best_country tool that takes a country parameter with enum values [\"Canada\", \"USA\"]. The user is asking me to call this tool to find out which country is the best according to some criteria (though the tool doesn''t show its output parameters in the schema, it seems to be designed to answer this type of question).\n\nSince the user is asking me to call this tool, I should call the best_country function with the parameter \"USA\" first, since they specifically mentioned Canada as being potentially better than the USA, and want to know the answer.","tool_calls":[{"id":"call_vkb4m2kx","function":{"index":0,"name":"best_country","arguments":{"country":"USA"}}}]},"done":true,"done_reason":"stop","total_duration":12580310048,"load_duration":128590501,"prompt_eval_count":305,"prompt_eval_duration":1431418167,"eval_count":201,"eval_duration":7625223045}'
+        headers:
+            Content-Length:
+                - "1276"
+            Content-Type:
+                - application/json; charset=utf-8
+        status: 200 OK
+        code: 200
+        duration: 12.581s

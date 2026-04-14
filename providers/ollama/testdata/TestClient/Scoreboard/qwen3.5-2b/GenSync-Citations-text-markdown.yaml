@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 521
-        body: '{"model":"qwen3.5:2b","created_at":"2026-04-13T21:17:53.302545089Z","message":{"role":"assistant","content":"The capital of Quackiland is **Quack**.\n\nAs you noted, this city is also home to the famous **Big Canard Statue**, a massive sculpture depicting a giant goose, which serves as the centerpiece of Quack''s capital cityscape."},"done":true,"done_reason":"stop","total_duration":4086794252,"load_duration":133538917,"prompt_eval_count":52,"prompt_eval_duration":432548417,"eval_count":52,"eval_duration":1968558751}'
+        content_length: 465
+        body: '{"model":"qwen3.5:2b","created_at":"2026-04-14T11:46:26.931305334Z","message":{"role":"assistant","content":"Based on the information provided, the capital of Quackiland is **Quack**.\n\nThis is explicitly stated in your initial prompt: \"The capital of Quackiland is Quack.\""},"done":true,"done_reason":"stop","total_duration":4250192835,"load_duration":115289875,"prompt_eval_count":52,"prompt_eval_duration":405362501,"eval_count":39,"eval_duration":1462254046}'
         headers:
             Content-Length:
-                - "521"
+                - "465"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 4.087s
+        duration: 4.25s

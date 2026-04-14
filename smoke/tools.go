@@ -119,6 +119,16 @@ func exerciseGenTools(ctx context.Context, cs *callState, f *scoreboard.Function
 		internal.Logger(ctx).DebugContext(ctx, "SquareRoot-2", "err", err)
 		return err
 	}
+	if errors.As(err, &uerr) && slices.Contains(uerr.Options, "GenOptionTools.Force") {
+		// The provider doesn't support ToolCallNone. Retry without forcing.
+		internal.Logger(ctx).DebugContext(ctx, "SquareRoot-2", "err", err, "msg", "trying toolany")
+		optsTools.Force = genai.ToolCallAny
+		res, err = cs.callGen(ctx, prefix+"SquareRoot-2-any", msgs, &optsTools)
+		if isBadError(ctx, err) {
+			internal.Logger(ctx).DebugContext(ctx, "SquareRoot-2-any", "err", err)
+			return err
+		}
+	}
 	if err != nil || slices.ContainsFunc(res.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }) {
 		internal.Logger(ctx).DebugContext(ctx, "SquareRoot-2", "err", err)
 		f.Tools = scoreboard.Flaky

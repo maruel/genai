@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 748
-        body: '{"model":"gemma4:e2b","created_at":"2026-04-13T21:22:20.397035963Z","message":{"role":"assistant","content":"Banana","thinking":"Thinking Process:\n\n1.  **Analyze the Request:** The user has provided an image of a fruit and asked, \"What fruit is it? Reply with only one word.\"\n2.  **Analyze the Image:** The image shows a long, curved, yellow fruit with a slight stem/base visible.\n3.  **Identify the Fruit:** This is clearly a banana.\n4.  **Formulate the Answer:** The required answer must be a single word.\n5.  **Final Output Generation:** Banana."},"done":true,"done_reason":"stop","total_duration":8194973671,"load_duration":119509875,"prompt_eval_count":289,"prompt_eval_duration":1449403709,"eval_count":114,"eval_duration":3194346540}'
+        content_length: 799
+        body: '{"model":"gemma4:e2b","created_at":"2026-04-14T11:49:14.0997418Z","message":{"role":"assistant","content":"Banana","thinking":"Thinking Process:\n\n1.  **Analyze the Request:** The user has provided an image of a fruit and asked \"What fruit is it?\" The instruction is to reply with *only one word*.\n2.  **Analyze the Image:** The image shows a curved, elongated, yellowish fruit with a slightly rough, tapered end. It is clearly a banana.\n3.  **Determine the Answer:** The fruit is a banana.\n4.  **Check Constraints:** The required output must be a single word.\n5.  **Formulate the Response:** Banana."},"done":true,"done_reason":"stop","total_duration":8887908754,"load_duration":194211292,"prompt_eval_count":289,"prompt_eval_duration":1468194750,"eval_count":123,"eval_duration":3649258082}'
         headers:
             Content-Length:
-                - "748"
+                - "799"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 8.197s
+        duration: 8.888s

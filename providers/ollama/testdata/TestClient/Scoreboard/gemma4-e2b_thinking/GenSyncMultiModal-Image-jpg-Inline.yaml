@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 944
-        body: '{"model":"gemma4:e2b","created_at":"2026-04-13T21:21:45.123338168Z","message":{"role":"assistant","content":"Banana","thinking":"Thinking Process:\n\n1.  **Analyze the Request:** The user provided an image of a fruit and asked \"What fruit is it?\" with the constraint: \"Reply with only one word.\"\n2.  **Analyze the Image:** The image clearly shows a curved, elongated, yellowish-brown fruit with a slightly knobby end (stem end). This shape and appearance are characteristic of a banana.\n3.  **Determine the Answer:** The fruit is a banana.\n4.  **Apply Constraints:** The required reply must be a single word.\n5.  **Final Output Generation:** Banana. (Self-Correction: Ensure the output is exactly one word and accurately identifies the object.)"},"done":true,"done_reason":"stop","total_duration":14025014006,"load_duration":168394625,"prompt_eval_count":289,"prompt_eval_duration":138502167,"eval_count":148,"eval_duration":4510262371}'
+        content_length: 826
+        body: '{"model":"gemma4:e2b","created_at":"2026-04-14T11:48:51.495202346Z","message":{"role":"assistant","content":"Banana","thinking":"Thinking Process:\n\n1.  **Analyze the Request:** The user has provided an image of a fruit and asked \"What fruit is it?\" with the instruction to reply with *only one word*.\n2.  **Analyze the Image:** The image clearly shows a curved, yellowish, edible fruit with a slightly rough, tapering stem end.\n3.  **Identify the Fruit:** The object is a banana.\n4.  **Formulate the Response:** The required answer must be one word.\n5.  **Final Check:** \"Banana\" is the correct, single-word identification."},"done":true,"done_reason":"stop","total_duration":12838685173,"load_duration":157509751,"prompt_eval_count":289,"prompt_eval_duration":1551809584,"eval_count":128,"eval_duration":3689460220}'
         headers:
             Content-Length:
-                - "944"
+                - "826"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 14.025s
+        duration: 12.841s

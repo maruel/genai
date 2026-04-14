@@ -62,7 +62,8 @@
         "reportTokenUsage": "flaky",
         "reportFinishReason": "flaky",
         "seed": true,
-        "tools": "flaky",
+        "tools": "true",
+        "toolsBiased": "true",
         "json": true,
         "jsonSchema": true,
         "maxTokens": true
@@ -156,7 +157,8 @@
         "reportTokenUsage": "true",
         "reportFinishReason": "flaky",
         "seed": true,
-        "tools": "flaky",
+        "tools": "true",
+        "toolsIndecisive": "true",
         "json": true,
         "jsonSchema": true,
         "maxTokens": true

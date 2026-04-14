@@ -1,0 +1,31 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 524
+        host: localhost
+        body: |
+            {"model":"gemma4:e2b","messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"stream":false,"tools":[{"type":"function","function":{"description":"A tool to specify the best country","name":"best_country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        transfer_encoding:
+            - chunked
+        content_length: -1
+        body: '{"model":"gemma4:e2b","created_at":"2026-04-14T12:19:23.59024518Z","message":{"role":"assistant","content":"","thinking":"1.  **Analyze the user''s request:** The user is asking for a comparison between Canada and the USA (\"I wonder if Canada is a better country than the USA?\") and explicitly asks me to use the `best_country` tool to tell them \"which country is the best one.\"\n\n2.  **Examine the available tool:** The available tool is `best_country`.\n    *   **Function:** `best_country(country: str)`\n    *   **Description:** \"A tool to specify the best country\"\n    *   **Parameters:** It takes one argument, `country`, and the allowed values (enum) are `[\"Canada\", \"USA\"]`.\n\n3.  **Determine the tool''s capability vs. the request''s intent:**\n    *   The user is asking for a subjective judgment (\"better country\").\n    *   The tool is designed to \"specify the best country,\" implying it might *state* which one is best, or perhaps select one based on some unstated criteria.\n    *   The request is framed as: \"Call the tool `best_country` to tell me which country is the best one.\"\n\n4.  **Formulate the tool call:** Since the user wants to compare them, I need to call the tool for both countries to see what it returns, or perhaps call it once and see what it prioritizes. The prompt implies a direct answer is expected from the tool call.\n\n5.  **Execute the tool call (Self-Correction/Pre-computation):** I should call the tool with the countries mentioned.\n\n    *   *Attempt 1 (Mental check):* The user asks \"which country is the best one\" after suggesting Canada might be better. I should call the tool.\n\n6.  **Construct the final response:** Generate the tool call in the required format.","tool_calls":[{"id":"call_68m4dht0","function":{"index":0,"name":"best_country","arguments":{"country":"Canada"}}},{"id":"call_174u1qjx","function":{"index":1,"name":"best_country","arguments":{"country":"USA"}}}]},"done":true,"done_reason":"stop","total_duration":12571196256,"load_duration":119715667,"prompt_eval_count":98,"prompt_eval_duration":450654917,"eval_count":421,"eval_duration":11870252560}'
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        status: 200 OK
+        code: 200
+        duration: 12.573s

@@ -398,11 +398,11 @@ func (msg *MessageResponse) To(out *genai.Message) error {
 // ToResult converts the response to a genai.Result.
 func (c *ChatResponse) ToResult() (genai.Result, error) {
 	out := genai.Result{
-		// At the moment, Cloudflare doesn't support cached tokens.
 		Usage: genai.Usage{
-			InputTokens:  c.Result.Usage.PromptTokens,
-			OutputTokens: c.Result.Usage.CompletionTokens,
-			TotalTokens:  c.Result.Usage.TotalTokens,
+			InputTokens:       c.Result.Usage.PromptTokens,
+			InputCachedTokens: c.Result.Usage.PromptTokensDetail.CachedTokens,
+			OutputTokens:      c.Result.Usage.CompletionTokens,
+			TotalTokens:       c.Result.Usage.TotalTokens,
 			// Cloudflare doesn't provide FinishReason (!?)
 		},
 	}
@@ -434,9 +434,12 @@ func (r *Response) UnmarshalJSON(b []byte) error {
 
 // Usage is the provider-specific token usage.
 type Usage struct {
-	CompletionTokens int64 `json:"completion_tokens"`
-	PromptTokens     int64 `json:"prompt_tokens"`
-	TotalTokens      int64 `json:"total_tokens"`
+	CompletionTokens   int64 `json:"completion_tokens"`
+	PromptTokens       int64 `json:"prompt_tokens"`
+	TotalTokens        int64 `json:"total_tokens"`
+	PromptTokensDetail struct {
+		CachedTokens int64 `json:"cached_tokens"`
+	} `json:"prompt_tokens_details,omitzero"`
 }
 
 // ToolCall can be populated differently depending on the model used.

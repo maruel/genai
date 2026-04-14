@@ -1,0 +1,31 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 524
+        host: localhost
+        body: |
+            {"model":"qwen3.5:2b","messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"stream":false,"tools":[{"type":"function","function":{"description":"A tool to specify the best country","name":"best_country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://localhost/api/chat
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1310
+        body: '{"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:40.329489007Z","message":{"role":"assistant","content":"","thinking":"The user is asking me to call a tool called best_country to determine which country (USA or Canada) is the best one. The function requires a \"country\" parameter, but the user is asking me to compare both countries to see which is better, rather than selecting one as the best.\n\nLooking at the function signature:\n- It requires a \"country\" parameter with value \"USA\" or \"Canada\"\n- The user is asking which is better, not which to select\n\nSince this is an opinion question about what the tool says, I should follow the user''s request to call the tool with one of the countries. However, the tool doesn''t have an option to compare or tell me which is better - it just selects one.\n\nThe most sensible approach here is to call the tool with one country and let it make its selection. I''ll call it with \"USA\" since that''s what the user first mentions in their question.","tool_calls":[{"id":"call_9j7tcpgf","function":{"index":0,"name":"best_country","arguments":{"country":"USA"}}}]},"done":true,"done_reason":"stop","total_duration":15071004382,"load_duration":110138125,"prompt_eval_count":305,"prompt_eval_duration":1403942417,"eval_count":222,"eval_duration":9166262328}'
+        headers:
+            Content-Length:
+                - "1310"
+            Content-Type:
+                - application/json; charset=utf-8
+        status: 200 OK
+        code: 200
+        duration: 15.073s

@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 453
-        body: '{"model":"gemma4:e2b","created_at":"2026-04-13T21:19:27.814877966Z","message":{"role":"assistant","content":"The user asked me to say \"hello\" but use only one word.\nThe most direct and common one-word response to \"hello\" is \"Hello\".\u003cchannel|\u003eHello"},"done":true,"done_reason":"stop","total_duration":2795756252,"load_duration":154460125,"prompt_eval_count":21,"prompt_eval_duration":153967542,"eval_count":36,"eval_duration":1054516502}'
+        content_length: 300
+        body: '{"model":"gemma4:e2b","created_at":"2026-04-14T11:46:39.087202673Z","message":{"role":"assistant","content":"Hello."},"done":true,"done_reason":"stop","total_duration":546024500,"load_duration":116085208,"prompt_eval_count":17,"prompt_eval_duration":200831209,"eval_count":3,"eval_duration":24292458}'
         headers:
             Content-Length:
-                - "453"
+                - "300"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 2.796s
+        duration: 546ms

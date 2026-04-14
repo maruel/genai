@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 786
-        body: '{"model":"qwen3.5:2b","created_at":"2026-04-13T21:17:37.989746179Z","message":{"role":"assistant","content":"Hello."},"done":true,"done_reason":"stop","logprobs":[{"token":"Hello","logprob":-0.2498139590024948,"bytes":[72,101,108,108,111],"top_logprobs":[{"token":"Hello","logprob":-0.2498139590024948,"bytes":[72,101,108,108,111]},{"token":"Hi","logprob":-1.823485255241394,"bytes":[72,105]}]},{"token":".","logprob":-0.7840726971626282,"bytes":[46],"top_logprobs":[{"token":".","logprob":-0.7840726971626282,"bytes":[46]},{"token":"\u003c|im_end|\u003e","logprob":-0.9598787426948547,"bytes":[60,124,105,109,95,101,110,100,124,62]}]}],"total_duration":744929292,"load_duration":125752417,"prompt_eval_count":20,"prompt_eval_duration":286104709,"eval_count":3,"eval_duration":48119792}'
+        content_length: 765
+        body: '{"model":"qwen3.5:2b","created_at":"2026-04-14T11:46:10.287564799Z","message":{"role":"assistant","content":"Hi."},"done":true,"done_reason":"stop","logprobs":[{"token":"Hi","logprob":-1.823485255241394,"bytes":[72,105],"top_logprobs":[{"token":"Hello","logprob":-0.2498139590024948,"bytes":[72,101,108,108,111]},{"token":"Hi","logprob":-1.823485255241394,"bytes":[72,105]}]},{"token":".","logprob":-1.173462986946106,"bytes":[46],"top_logprobs":[{"token":"\u003c|im_end|\u003e","logprob":-0.6521769762039185,"bytes":[60,124,105,109,95,101,110,100,124,62]},{"token":".","logprob":-1.173462986946106,"bytes":[46]}]}],"total_duration":792280792,"load_duration":135927208,"prompt_eval_count":20,"prompt_eval_duration":380060501,"eval_count":3,"eval_duration":62571959}'
         headers:
             Content-Length:
-                - "786"
+                - "765"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 745ms
+        duration: 793ms

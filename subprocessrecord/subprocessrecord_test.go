@@ -92,6 +92,7 @@ func TestRecorder(t *testing.T) {
 				t.Fatalf("stdout: got %q, want %q", got, want)
 			}
 			stdin.Close()
+			stdout.Close()
 			if err := wait(); err != nil {
 				t.Fatal(err)
 			}
@@ -161,6 +162,7 @@ func TestRecorder(t *testing.T) {
 				t.Fatal(err)
 			}
 			stdin.Close()
+			stdout.Close()
 			if err := rec.Stop(); err != nil {
 				t.Fatal(err)
 			}

@@ -1,0 +1,79 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 139
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Say hello. Do not emit other words."}]}],"generationConfig":{"responseModalities":["TEXT"]}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "Hello.",
+                        "thoughtSignature": "Eu4DCusDAQw51sdoVkhsmC75JGPmqdkjyZgyWR5F1oxdpB/ul0K8eTkpHLw+97wE/3ikwXy9jlqgn1CBmg/Hij5XFxWJbJKxYnIa/rgXNTGncGKIYZQq+QA+eMOHQ+G+K/v28lL3Zk22HRSgaFlXANdotlglDQOXvY6RDV6wpkpEgIdykzSv0d9q1rGJHib/3voo/R48Jz8cxn4Y66VviMEgwrQjjia8pK6LfPZEZpeLrp58vNniax36JJdkXVpTPC6un+Ery5q3wdKrpYJqUYQTU33J+H05uT4o+nsdX6Wt1OtjRBfW+s7Z/gaKGIfE0cLPBik7oTdxK9ylsqDP/l7hHlwHKb7lES765P8jdWh+xXLTTQxFYglJmoFqcZ7khbhhwrsBqNb0QcvPHh7XFXq4MI2JST9b/87j1f3Ct++At4VOkXDYf1q8uHE4I5Lw68mfmCwL1eA871j6vjRg1HADeiRZW1igx9o3DxzLrlj8R6GCo2Sed0eSMeM4CyVHmACjz8TL98inYHz4fzWtnISQi8feIx/YzU6IW4vV73afCbabonMW5h7mUhn8wZUYop/sD270rpOyJICbWiwx+C2Vm6jLymFiNhnSS7S/qyCk5yQmGiJyWRTVZW9AYr8k7x1utp+64g8RXJ8yMIUW9lQ="
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 10,
+                "candidatesTokenCount": 2,
+                "totalTokenCount": 131,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 10
+                  }
+                ],
+                "thoughtsTokenCount": 119
+              },
+              "modelVersion": "gemini-3-flash-preview",
+              "responseId": "ivjgabSTAsmz1MkPg_bx4AM"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=1352
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 1.434s

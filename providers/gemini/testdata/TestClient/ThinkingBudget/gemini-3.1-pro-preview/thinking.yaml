@@ -1,0 +1,83 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 202
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Say hello. Do not emit other words."}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-pro-preview:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Concise Response Strategy**\n\nOkay, here's how I'm approaching this. The task is straightforward: the goal is to say \"hello,\" and, critically, I'm constrained to only emit that single word. No extraneous characters, no punctuation, no preamble, nothing. I immediately zero in on the core of the request.\n\nFirst, I analyze: what's the desired outcome? To communicate a greeting. The constraint? Absolute minimalism.\n\nNext, I determine the specific output. It has to be \"hello.\" The prompt is very explicit about not emitting other words, and while punctuation isn't *technically* a word, I decide to err on the side of extreme caution and simplicity. To be absolutely precise and minimize any potential for misinterpretation, I'll go with the bare word.\n\nFinally, the formatting is simple: just \"Hello\". No surrounding elements. No quotes. Nothing added. The requested output is ready.\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "Hello",
+                        "thoughtSignature": "EosECogEAQw51serhuGoizMFpbAKRTKGwDSSiAqo0dYP6LoHwdNw00zRfSuiia5sper82asNMa5EtVCqdia+1WL3gnigyJ931E2xN+WjZSP6jN5DYVWKTZb3LhgjU8Q7Fxdeyy7H03dbBsQu42hnhWJPWuGNnfqxopDzUE9ua26eBF3BFpti+2Azg0R+JDfZFLahDvhQ5+lZM4aYNHVPqstfJgjmIb+Zc4OnKzfCXB9IK2BWb+xRix+jdob5hQPTCs7pNKvlG+cnjyqTVyvkSUXLMdyPudSISLK3x7xGhzNNhOfGdHa/Iwpm6KSL8c7ZQR+fjS8a6NuZpQJMITvKgbyEk0jam/la0tWiXi8flI0xUmZ3OT0OcPI2gInfQ8kFwB3QbFhDiDrPXHVl1UU79wpuG0n0a8jmzyppa3nAD7XMdNng94q5BczcpJVFlL25GDrRcR4e8S48LkEpQLzkEU66ReF82yGWeq38wuovwmniVdG1nhSI634uTwMgMqQZHtyD99/GfHq86U92uQEPIOVSzPTxkBgZ0ZNgMCbdmM5iqzNqBkPhyqhm+NZcPYc55z/4ifJhnGc9AnApMu6pbG4DBLsuxAsUOotMGdwKgylxJpzMQ3H6wrJ16Cit5nvGft+fb97da0Rt9TXsjqnxDceFWIh7rtlYZCTAxcNni/jb03n01jQslLG9dO9sxw=="
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 10,
+                "candidatesTokenCount": 1,
+                "totalTokenCount": 142,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 10
+                  }
+                ],
+                "thoughtsTokenCount": 131
+              },
+              "modelVersion": "gemini-3.1-pro-preview",
+              "responseId": "j_jgaaDTM7Gb9MoPkd7OaQ"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=4771
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 4.786s

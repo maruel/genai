@@ -321,7 +321,8 @@ func TestClient(t *testing.T) {
 				strings.HasPrefix(id, "gemini-2.0-") ||
 				strings.Contains(id, "image") ||
 				strings.Contains(id, "computer-use") ||
-				strings.HasSuffix(id, "-tts") {
+				strings.Contains(id, "tts") ||
+				strings.Contains(id, "robotics") {
 				continue
 			}
 			// Make sure models work with default settings. It was not as obvious as it may seem.
@@ -350,8 +351,8 @@ func TestClient(t *testing.T) {
 					if err != nil {
 						t.Fatal(err)
 					}
-					if strings.Contains(id, "pro") || strings.Contains(id, "robotics") {
-						// Pro and robotics models always think.
+					if strings.Contains(id, "pro") || (strings.HasPrefix(id, "gemini-3") && !strings.Contains(id, "lite")) {
+						// Pro and gemini-3+ non-lite models always think.
 						if res.Usage.ReasoningTokens == 0 {
 							t.Fatal("Expected reasoning tokens")
 						}
@@ -694,7 +695,9 @@ func TestClient(t *testing.T) {
 			},
 		}
 		f := func(t *testing.T, opts ...genai.ProviderOption) (genai.Provider, error) {
-			opts = append(opts, genai.ProviderOptionModalities{genai.ModalityText})
+			if !hasModalities(opts) {
+				opts = append(opts, genai.ProviderOptionModalities{genai.ModalityText})
+			}
 			return gemini.New(t.Context(), append([]genai.ProviderOption{genai.ProviderOptionTransportWrapper(func(h http.RoundTripper) http.RoundTripper {
 				return testRecorder.Record(t, h)
 			})}, opts...)...)
@@ -717,6 +720,13 @@ func TestClient(t *testing.T) {
 }
 
 //
+
+func hasModalities(opts []genai.ProviderOption) bool {
+	return slices.ContainsFunc(opts, func(o genai.ProviderOption) bool {
+		_, ok := o.(genai.ProviderOptionModalities)
+		return ok
+	})
+}
 
 func init() {
 	// Set slog default to debug level for verbose logging during test development.

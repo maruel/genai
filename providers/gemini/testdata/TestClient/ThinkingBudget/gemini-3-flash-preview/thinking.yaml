@@ -1,0 +1,83 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 202
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Say hello. Do not emit other words."}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**My Immediate Response to a Directive**\n\nOkay, here's the deal. I've been given a very specific instruction: \"Say hello. Do not emit other words.\" My immediate reaction is to break this down into manageable components. First, there's the core command: \"Say hello.\" That's the primary directive, the thing I *must* do.\n\nThen, there's a crucial constraint: \"Do not emit other words.\" This is a strict brevity rule, a tight control on my output. I can't add any embellishments, contextual information, or greetings beyond the single word. I have to be precise, concise, and obedient. There is no wiggle room. It is a very direct request and I need to execute it exactly as instructed.\n\nMy internal processing leads to a simple output: \"Hello.\" I've satisfied both the core command and the brevity constraint, completing the instruction.\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "Hello.",
+                        "thoughtSignature": "EukBCuYBAQw51sdOJUvdShmJjEsKZA01Om9m7WETMa88MFg783ExbcMBDfqV3TSl7aPyIjtvlDh56jHpnXo7xBeOFd9S5cEj+nJsGCVgnPjV4F2+Y+nrerD5QYcRYrie3L02t/S1oiZVspWHtBh0/Gw+jrXrDYM1C3/Ijd+Feg2t//xRI55p73LVzyQExGHN3GjwdLYRMNvyT96KL94SZ9phsku4qK82ZQYCoyi+omC+46e+kPKoS5YxGD6p6Na7RLi+UQ4prlbImAJVL5BBz1vSHSz7m1tdmIPW5efIv8VTMkfJ7tJwq09EBsc="
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 10,
+                "candidatesTokenCount": 2,
+                "totalTokenCount": 64,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 10
+                  }
+                ],
+                "thoughtsTokenCount": 52
+              },
+              "modelVersion": "gemini-3-flash-preview",
+              "responseId": "i_jgacyABK-x1MkPqbm3yQY"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=2371
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 2.453s

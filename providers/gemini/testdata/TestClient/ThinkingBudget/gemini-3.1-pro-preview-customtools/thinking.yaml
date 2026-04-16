@@ -1,0 +1,83 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 202
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Say hello. Do not emit other words."}]}],"generationConfig":{"responseModalities":["TEXT"],"thinkingConfig":{"includeThoughts":true,"thinkingBudget":512}}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-pro-preview-customtools:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "**Confirming Response Delivery**\n\nI'm now ready to deliver the response. My focus is on ensuring the output meets all specified requirements, especially regarding word count. I've re-examined the output to guarantee it adheres to the parameters, and I'm prepared to finalize this phase.\n\n\n",
+                        "thought": true
+                      },
+                      {
+                        "text": "Hello.",
+                        "thoughtSignature": "EvcECvQEAQw51scELqRtQr9+nFt3QlpJ5Yo4fH9hbuz/ohggKrrVRVUgNOywKdIkvXUBGD/hPAYWzIAobSRBpaMmpQRKJn5zUpv8n3SNL0ZJ1ZbYNIINzYYpvStg8BvIkQNReOI1lmjcLMCf3Z/S9aI8K6nHUQThIdSCyT989+Bo+NbcLBaIDdTzcBmxIRjrNOBUhUh7slqjSkXv5/DdXZq56SqNM1f66fO/u7pD4JIHsrY8zsjh/2KJQCFK6jdwWuT/YaTqnbShuf9P6V3MZ0Gixrko5U6IZRKgQQmH8qlr1osPw+KDWAiQpv9/XEGbVcz6DgTZaEjhBs7iCa6my2VjqTYGH6IJlwihUXy2pGsCy7pXPTyA+zhgbO8cB4B8GCB0oCOB/0Z2uxy4F0yDZPvQhVbi9DMgNZLJO7pvB0I6yj3ByFQ/zUTx00wYHucTFWVZkkSMb4f8zaIGltyYJ2lDmDoRvRwJbX0RQMDnSefsnvviCvyC97BLEOXN8Q9SzW5VpxSDlc2f7+fgqcsMxH1eovZJNkZKPysM/1fVpqmLjM3RqoBB4fS2rpF/VdeFxkx02ycOVnWSahOHSC+b+tUrXDDTq9MsAKD9ExJTkf5Hyik6BoU+qx9fkZ0Tf3fYwTLyVmzkkCs0PbaOCrCn4o+5RxDAQnpPtDcyUk7etwuUO6pPJt3anlwuurkhuBLy16IWVxfLLcw9SBb87MJb8T8eOKjhTExnvJYqkDpO6iTKWCuNhWItYd2XwdsbJo2J2QKg1WCoW7NpFKEhpII0i90m/qCTstIq2wa3bn0AU2IrA8Ul3uZY3nk2lofm8XlYp46seJ/srTKH+w=="
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 10,
+                "candidatesTokenCount": 2,
+                "totalTokenCount": 168,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 10
+                  }
+                ],
+                "thoughtsTokenCount": 156
+              },
+              "modelVersion": "gemini-3.1-pro-preview-customtools",
+              "responseId": "mfjgabisD8Kr1MkPgtnlyA0"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=4361
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 4.374s

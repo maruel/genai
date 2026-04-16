@@ -37,7 +37,7 @@ func TestNew(t *testing.T) {
 				t.Fatal("expected record mode")
 			}
 		})
-		t.Run("record_when_empty_fixture", func(t *testing.T) {
+		t.Run("replay_when_empty_fixture", func(t *testing.T) {
 			dir := t.TempDir()
 			path := filepath.Join(dir, "test")
 			if err := os.WriteFile(path+".ndjson", nil, 0o644); err != nil {
@@ -47,8 +47,8 @@ func TestNew(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			if rec.replay {
-				t.Fatal("empty fixture should trigger record mode")
+			if !rec.replay {
+				t.Fatal("empty fixture should trigger replay mode")
 			}
 		})
 		t.Run("replay_when_fixture_exists", func(t *testing.T) {

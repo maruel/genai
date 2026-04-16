@@ -45,7 +45,7 @@ type Recorder struct {
 func New(path string) (*Recorder, error) {
 	fixture := path + ".ndjson"
 	r := &Recorder{fixture: fixture}
-	if info, err := os.Stat(fixture); err == nil && info.Size() > 0 {
+	if _, err := os.Stat(fixture); err == nil {
 		r.replay = true
 	}
 	return r, nil

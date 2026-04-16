@@ -8,7 +8,35 @@ import (
 	"encoding/json"
 	"testing"
 	"time"
+
+	"github.com/maruel/genai"
 )
+
+func TestCheckDuplicateOptions(t *testing.T) {
+	t.Run("no_duplicates", func(t *testing.T) {
+		opts := []genai.ProviderOption{
+			genai.ProviderOptionAPIKey("key"),
+			genai.ProviderOptionModel("model"),
+		}
+		if err := CheckDuplicateOptions(opts); err != nil {
+			t.Fatal(err)
+		}
+	})
+	t.Run("duplicate", func(t *testing.T) {
+		opts := []genai.ProviderOption{
+			genai.ProviderOptionModel("model1"),
+			genai.ProviderOptionModel("model2"),
+		}
+		if err := CheckDuplicateOptions(opts); err == nil {
+			t.Fatal("expected error for duplicate option")
+		}
+	})
+	t.Run("empty", func(t *testing.T) {
+		if err := CheckDuplicateOptions(nil); err != nil {
+			t.Fatal(err)
+		}
+	})
+}
 
 func TestTimeUnmarshalJSON(t *testing.T) {
 	tests := []struct {

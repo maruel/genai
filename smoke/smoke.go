@@ -71,6 +71,7 @@ func Run(ctx context.Context, pf ProviderFactory) (scoreboard.Scenario, genai.Us
 				usage.Add(&cs.usage)
 				if f != nil {
 					result.In[genai.ModalityText] = scoreboard.ModalCapability{Inline: true}
+					result.Out[genai.ModalityText] = scoreboard.ModalCapability{Inline: true}
 					if cs.isReasoning {
 						result.Reason = true
 					}

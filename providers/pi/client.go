@@ -119,6 +119,9 @@ type Client struct {
 //     Use genai.ModelCheap, genai.ModelGood, or genai.ModelSOTA for automatic selection.
 func New(opts ...genai.ProviderOption) (*Client, error) {
 	c := &Client{}
+	if err := base.CheckDuplicateOptions(opts); err != nil {
+		return nil, err
+	}
 	for _, opt := range opts {
 		if err := opt.Validate(); err != nil {
 			return nil, err

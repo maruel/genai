@@ -158,6 +158,9 @@ type Client struct {
 //     environment. By default the key is stripped so Claude Code uses OAuth.
 func New(opts ...genai.ProviderOption) (*Client, error) {
 	c := &Client{}
+	if err := base.CheckDuplicateOptions(opts); err != nil {
+		return nil, err
+	}
 	for _, opt := range opts {
 		if err := opt.Validate(); err != nil {
 			return nil, err

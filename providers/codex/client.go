@@ -146,6 +146,9 @@ type Client struct {
 //     "medium", "high", "xhigh"). Defaults to "medium".
 func New(opts ...genai.ProviderOption) (*Client, error) {
 	c := &Client{effort: ReasoningEffortMedium}
+	if err := base.CheckDuplicateOptions(opts); err != nil {
+		return nil, err
+	}
 	for _, opt := range opts {
 		if err := opt.Validate(); err != nil {
 			return nil, err

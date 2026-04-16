@@ -46,8 +46,7 @@ func NewSubprocessRecorder(t testing.TB, name, binaryName string) *SubprocessRec
 		if rec == "all" {
 			forceRR = true
 		} else {
-			info, err := os.Stat(fixture + ".ndjson")
-			if err != nil || info.Size() == 0 {
+			if _, err := os.Stat(fixture + ".ndjson"); err != nil {
 				forceRR = true
 			}
 		}

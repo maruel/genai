@@ -32,7 +32,6 @@ import (
 	"github.com/maruel/genai/providers/openaichat"
 	"github.com/maruel/genai/providers/openaicompatible"
 	"github.com/maruel/genai/providers/openairesponses"
-	"github.com/maruel/genai/providers/opencode"
 	"github.com/maruel/genai/providers/openrouter"
 	"github.com/maruel/genai/providers/perplexity"
 	"github.com/maruel/genai/providers/pollinations"

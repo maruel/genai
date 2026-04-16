@@ -24,14 +24,7 @@ import (
 )
 
 func getClientInner(t *testing.T, opts []genai.ProviderOption, fn func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-	hasAPIKey := os.Getenv("GROQ_API_KEY") != ""
-	for _, opt := range opts {
-		if _, ok := opt.(genai.ProviderOptionAPIKey); ok {
-			hasAPIKey = true
-			break
-		}
-	}
-	if !hasAPIKey {
+	if os.Getenv("GROQ_API_KEY") == "" && !slices.ContainsFunc(opts, func(o genai.ProviderOption) bool { _, ok := o.(genai.ProviderOptionAPIKey); return ok }) {
 		opts = append(opts, genai.ProviderOptionAPIKey("<insert_api_key_here>"))
 	}
 	if fn != nil {

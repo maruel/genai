@@ -31,6 +31,7 @@ import (
 	"github.com/maruel/genai/providers/openaichat"
 	"github.com/maruel/genai/providers/openaicompatible"
 	"github.com/maruel/genai/providers/openairesponses"
+	"github.com/maruel/genai/providers/opencode"
 	"github.com/maruel/genai/providers/openrouter"
 	"github.com/maruel/genai/providers/perplexity"
 	"github.com/maruel/genai/providers/pollinations"
@@ -248,19 +249,28 @@ var All = map[string]Config{
 			return p, err
 		},
 	},
-	"openrouter": {
-		APIKeyEnvVar: "OPENROUTER_API_KEY",
+	"openaicompatible": {
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
-			p, err := openrouter.New(ctx, opts...)
+			p, err := openaicompatible.New(ctx, opts...)
 			if p == nil {
 				return nil, err
 			}
 			return p, err
 		},
 	},
-	"openaicompatible": {
+	"opencode": {
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
-			p, err := openaicompatible.New(ctx, opts...)
+			p, err := opencode.New(opts...)
+			if p == nil {
+				return nil, err
+			}
+			return p, err
+		},
+	},
+	"openrouter": {
+		APIKeyEnvVar: "OPENROUTER_API_KEY",
+		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
+			p, err := openrouter.New(ctx, opts...)
 			if p == nil {
 				return nil, err
 			}

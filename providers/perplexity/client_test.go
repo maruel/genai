@@ -24,7 +24,14 @@ import (
 )
 
 func getClientInner(t *testing.T, apiKey string, opts []genai.ProviderOption, fn func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-	if apiKey == "" && os.Getenv("PERPLEXITY_API_KEY") == "" {
+	hasAPIKey := os.Getenv("PERPLEXITY_API_KEY") != ""
+	for _, opt := range opts {
+		if _, ok := opt.(genai.ProviderOptionAPIKey); ok {
+			hasAPIKey = true
+			break
+		}
+	}
+	if apiKey == "" && !hasAPIKey {
 		apiKey = "<insert_api_key_here>"
 	}
 	if apiKey != "" {

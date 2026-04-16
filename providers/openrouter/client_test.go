@@ -19,7 +19,14 @@ import (
 )
 
 func getClientInner(t *testing.T, opts []genai.ProviderOption, fn func(http.RoundTripper) http.RoundTripper) (genai.Provider, error) {
-	if os.Getenv("OPENROUTER_API_KEY") == "" {
+	hasAPIKey := os.Getenv("OPENROUTER_API_KEY") != ""
+	for _, opt := range opts {
+		if _, ok := opt.(genai.ProviderOptionAPIKey); ok {
+			hasAPIKey = true
+			break
+		}
+	}
+	if !hasAPIKey {
 		opts = append(opts, genai.ProviderOptionAPIKey("<insert_api_key_here>"))
 	}
 	if fn != nil {

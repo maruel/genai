@@ -95,8 +95,9 @@ Every package should have comprehensive documentation explaining:
   and hand-crafted files are fragile and unreliable.
 - Store test data in `testdata/` directories
 - Test files are named `*_test.go`
-- Test using HTTP recording often fails when run inside the environment. Ask the user how to continue when
-  this happens, do not try to resolve by yourself.
+- When tests fail due to stale or missing cassettes, re-record them with
+  `RECORD=failure_only go test ./<directory>`. Prefer `RECORD=failure_only` (only re-records failed
+  cassettes) over `RECORD=all` (re-records everything). Use `-run` to scope recording to specific tests.
 
 ### Performance Considerations
 

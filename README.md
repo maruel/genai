@@ -74,6 +74,7 @@ genai is _intentional_. Curious why it was created? See the release announcement
 | [pollinations](docs/pollinations.md)       | 🇩🇪   | Sync, Stream  | 💬📸       | 💬📸   | ✅🪨   | ☁️   | ❌    | ❌   | ❌   | 🌱   | ❌    | ❌     | ✅    | ✅     |
 | [togetherai](docs/togetherai.md)           | 🇺🇸   | Sync, Stream🧠 | 🎥💬📸     | 💬📸   | ✅🪨   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
 | openaicompatible                           | N/A  | Sync, Stream  | 💬         | 💬     | ❌     | ❌   | ❌    | ❌   | ❌   | 📏🛑   | ❌    | ❌     | ✅    | ✅     |
+| pi                                         | N/A  | Sync, Stream🧠 | 💬📸       | 💬     | ❌     | ❌   | ❌    | ❌   | ❌   | 🌱   | ✅    | ❌     | ✅    | ✅     |
 <details>
 <summary>‼️ Click here for the legend of columns and symbols</summary>
 

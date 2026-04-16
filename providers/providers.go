@@ -28,12 +28,13 @@ import (
 	"github.com/maruel/genai/providers/llamacpp"
 	"github.com/maruel/genai/providers/mistral"
 	"github.com/maruel/genai/providers/ollama"
-	"github.com/maruel/genai/providers/opencode"
 	"github.com/maruel/genai/providers/openaichat"
 	"github.com/maruel/genai/providers/openaicompatible"
 	"github.com/maruel/genai/providers/openairesponses"
+	"github.com/maruel/genai/providers/opencode"
 	"github.com/maruel/genai/providers/openrouter"
 	"github.com/maruel/genai/providers/perplexity"
+	"github.com/maruel/genai/providers/pi"
 	"github.com/maruel/genai/providers/pollinations"
 	"github.com/maruel/genai/providers/togetherai"
 )
@@ -268,6 +269,16 @@ var All = map[string]Config{
 		IsCLI: true,
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
 			p, err := opencode.New(opts...)
+			if p == nil {
+				return nil, err
+			}
+			return p, err
+		},
+	},
+	"pi": {
+		IsCLI: true,
+		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
+			p, err := pi.New(opts...)
 			if p == nil {
 				return nil, err
 			}

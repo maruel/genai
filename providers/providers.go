@@ -28,6 +28,7 @@ import (
 	"github.com/maruel/genai/providers/llamacpp"
 	"github.com/maruel/genai/providers/mistral"
 	"github.com/maruel/genai/providers/ollama"
+	"github.com/maruel/genai/providers/opencode"
 	"github.com/maruel/genai/providers/openaichat"
 	"github.com/maruel/genai/providers/openaicompatible"
 	"github.com/maruel/genai/providers/openairesponses"
@@ -42,7 +43,11 @@ import (
 type Config struct {
 	APIKeyEnvVar string
 	Alias        string
-	Factory      func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error)
+	// IsCLI is true for providers that launch a subprocess instead of making
+	// HTTP requests (e.g. claudecode, codex, opencode). CLI providers accept
+	// ProviderOptionStarterWrapper but not ProviderOptionTransportWrapper.
+	IsCLI   bool
+	Factory func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error)
 }
 
 // All is a easy way to propose the user to load any of the supported provider.
@@ -101,6 +106,7 @@ var All = map[string]Config{
 		},
 	},
 	"claudecode": {
+		IsCLI: true,
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
 			p, err := claudecode.New(opts...)
 			if p == nil {
@@ -110,6 +116,7 @@ var All = map[string]Config{
 		},
 	},
 	"codex": {
+		IsCLI: true,
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
 			p, err := codex.New(opts...)
 			if p == nil {
@@ -259,6 +266,7 @@ var All = map[string]Config{
 		},
 	},
 	"opencode": {
+		IsCLI: true,
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
 			p, err := opencode.New(opts...)
 			if p == nil {

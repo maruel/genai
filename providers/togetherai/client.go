@@ -72,6 +72,9 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	var modalities genai.Modalities
 	var preloadedModels []genai.Model
 	var wrapper func(http.RoundTripper) http.RoundTripper
+	if err := base.CheckDuplicateOptions(opts); err != nil {
+		return nil, err
+	}
 	for _, opt := range opts {
 		if err := opt.Validate(); err != nil {
 			return nil, err
@@ -201,10 +204,8 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 	cheap := preference == string(genai.ModelCheap)
 	good := preference == string(genai.ModelGood) || preference == ""
 	selectedModel := ""
-	price := 0.
-	if cheap || good {
-		price = math.Inf(1)
-	}
+	bestVer := 0.
+	price := math.Inf(1)
 	cutoff := time.Now().Add(-365 * 25 * time.Hour)
 	for _, mdl := range mdls {
 		m := mdl.(*Model)
@@ -218,14 +219,13 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 				selectedModel = m.ID
 			}
 		case good:
-			if strings.HasPrefix(m.ID, "Qwen/Qwen") && !strings.HasPrefix(m.ID, "Qwen/Qwen2") && price > m.Pricing.Output {
-				// Take the most expensive
-				price = m.Pricing.Output
+			if v := qwenVersion(m.ID); v > bestVer {
+				bestVer = v
 				selectedModel = m.ID
 			}
 		default:
-			if strings.HasPrefix(m.ID, "Qwen/Qwen") && price < m.Pricing.Output {
-				price = m.Pricing.Output
+			if v := glmVersion(m.ID); v > bestVer {
+				bestVer = v
 				selectedModel = m.ID
 			}
 		}
@@ -273,6 +273,52 @@ func (c *Client) selectBestImageModel(ctx context.Context, preference string) (s
 		return "", errors.New("failed to find a model automatically")
 	}
 	return selectedModel, nil
+}
+
+// parseVersion extracts a leading version number (digits and dots) from s.
+// Returns the version and the remaining string. Returns 0 if s doesn't start with a digit.
+func parseVersion(s string) (float64, string) {
+	i := 0
+	for i < len(s) && (s[i] >= '0' && s[i] <= '9' || s[i] == '.') {
+		i++
+	}
+	if i == 0 {
+		return 0, s
+	}
+	v, err := strconv.ParseFloat(s[:i], 64)
+	if err != nil {
+		return 0, s
+	}
+	return v, s[i:]
+}
+
+// glmVersion returns the version of a base GLM model (e.g. GLM-5.1 → 5.1) or 0 for
+// non-base variants (e.g. GLM-OCR, GLM-4.5V, GLM-5-FP4).
+func glmVersion(modelID string) float64 {
+	s, ok := strings.CutPrefix(modelID, "zai-org/GLM-")
+	if !ok {
+		return 0
+	}
+	v, rem := parseVersion(s)
+	if rem != "" {
+		return 0
+	}
+	return v
+}
+
+// qwenVersion returns the version of a base Qwen model (e.g. Qwen3.5-397B-A17B → 3.5)
+// or 0 for variants (e.g. Qwen3-Coder, Qwen3-VL, Qwen3-Next).
+func qwenVersion(modelID string) float64 {
+	s, ok := strings.CutPrefix(modelID, "Qwen/Qwen")
+	if !ok {
+		return 0
+	}
+	v, rem := parseVersion(s)
+	// After the version, expect "-<digit>" (size like 397B), not "-<letter>" (variant like Coder).
+	if len(rem) < 2 || rem[0] != '-' || rem[1] < '0' || rem[1] > '9' {
+		return 0
+	}
+	return v
 }
 
 // Name implements genai.Provider.
@@ -336,46 +382,43 @@ func (c *Client) GenStreamRaw(ctx context.Context, in *ChatRequest) (iter.Seq[Ch
 	return c.impl.GenStreamRaw(ctx, in)
 }
 
-// genImage generates images.
+// genImage generates non-text content (images or audio).
 func (c *Client) genImage(ctx context.Context, msg *genai.Message, opts ...genai.GenOption) (genai.Result, error) {
-	if c.isAudio() {
+	if c.impl.OutputModalities[0] == genai.ModalityAudio {
 		// https://docs.together.ai/reference/audio-speech
 		return genai.Result{}, errors.New("audio not implemented yet")
 	}
-	if c.isImage() {
-		// https://docs.together.ai/reference/post-images-generations
-		res := genai.Result{}
-		if err := c.impl.Validate(); err != nil {
-			return genai.Result{}, err
-		}
-		req := ImageRequest{}
-		if err := req.Init(msg, c.impl.Model, opts...); err != nil {
-			return res, err
-		}
-		resp := ImageResponse{}
-		if err := c.impl.DoRequest(ctx, "POST", "https://api.together.xyz/v1/images/generations", &req, &resp); err != nil {
-			return res, err
-		}
-		res.Replies = make([]genai.Reply, len(resp.Data))
-		for i := range resp.Data {
-			n := "content.jpg"
-			if len(resp.Data) > 1 {
-				n = fmt.Sprintf("content%d.jpg", i+1)
-			}
-			if url := resp.Data[i].URL; url != "" {
-				res.Replies[i].Doc = genai.Doc{Filename: n, URL: url}
-			} else if d := resp.Data[i].B64JSON; len(d) != 0 {
-				res.Replies[i].Doc = genai.Doc{Filename: n, Src: &bb.BytesBuffer{D: resp.Data[i].B64JSON}}
-			} else {
-				return res, errors.New("internal error")
-			}
-		}
-		if err := res.Validate(); err != nil {
-			return res, err
-		}
-		return res, nil
+	// https://docs.together.ai/reference/post-images-generations
+	res := genai.Result{}
+	if err := c.impl.Validate(); err != nil {
+		return genai.Result{}, err
 	}
-	return genai.Result{}, errors.New("can only generate audio and images")
+	req := ImageRequest{}
+	if err := req.Init(msg, c.impl.Model, opts...); err != nil {
+		return res, err
+	}
+	resp := ImageResponse{}
+	if err := c.impl.DoRequest(ctx, "POST", "https://api.together.xyz/v1/images/generations", &req, &resp); err != nil {
+		return res, err
+	}
+	res.Replies = make([]genai.Reply, len(resp.Data))
+	for i := range resp.Data {
+		n := "content.jpg"
+		if len(resp.Data) > 1 {
+			n = fmt.Sprintf("content%d.jpg", i+1)
+		}
+		if url := resp.Data[i].URL; url != "" {
+			res.Replies[i].Doc = genai.Doc{Filename: n, URL: url}
+		} else if d := resp.Data[i].B64JSON; len(d) != 0 {
+			res.Replies[i].Doc = genai.Doc{Filename: n, Src: &bb.BytesBuffer{D: resp.Data[i].B64JSON}}
+		} else {
+			return res, errors.New("internal error")
+		}
+	}
+	if err := res.Validate(); err != nil {
+		return res, err
+	}
+	return res, nil
 }
 
 // ListModels implements genai.Provider.
@@ -391,18 +434,6 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	return resp.ToModels(), nil
 }
 
-func (c *Client) isAudio() bool {
-	// TODO: Use Scoreboard list. The problem is that it's recursive while recreating the scoreboard, and that
-	// the server HTTP 500 on onsupported models.
-	return strings.HasPrefix(c.impl.Model, "cartesia/")
-}
-
-func (c *Client) isImage() bool {
-	// TODO: Use Scoreboard list. The problem is that it's recursive while recreating the scoreboard, and that
-	// the server HTTP 500 on onsupported models.
-	return strings.HasPrefix(c.impl.Model, "black-forest-labs/")
-}
-
 // ProcessStream converts the raw packets from the streaming API into Reply fragments.
 func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, [][]genai.Logprob, error)) {
 	var finalErr error
@@ -415,7 +446,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 			for pkt := range chunks {
 				if pkt.Usage.TotalTokens != 0 {
 					u.InputTokens = pkt.Usage.PromptTokens
-					u.InputCachedTokens = pkt.Usage.CachedTokens
+					u.InputCachedTokens = max(pkt.Usage.CachedTokens, pkt.Usage.PromptTokensDetails.CachedTokens)
 					u.ReasoningTokens = pkt.Usage.ReasoningTokens
 					u.OutputTokens = pkt.Usage.CompletionTokens
 					u.TotalTokens = pkt.Usage.TotalTokens

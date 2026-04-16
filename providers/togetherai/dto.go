@@ -469,11 +469,11 @@ func (t *ToolCall) To(out *genai.ToolCall) {
 type ChatResponse struct {
 	ID             string   `json:"id"`
 	Prompt         []string `json:"prompt"`
-	PromptTokenIDs []any    `json:"prompt_token_ids,omitzero"`
+	PromptTokenIDs TokenIDs `json:"prompt_token_ids,omitzero"`
 	Choices        []struct {
 		// Text  string `json:"text"`
 		Index    int64 `json:"index"`
-		TokenIDs []any `json:"token_ids,omitzero"`
+		TokenIDs TokenIDs `json:"token_ids,omitzero"`
 		// The seed is returned as a int128.
 		Seed         big.Int      `json:"seed"`
 		FinishReason FinishReason `json:"finish_reason"`
@@ -500,7 +500,7 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	out := genai.Result{
 		Usage: genai.Usage{
 			InputTokens:       c.Usage.PromptTokens,
-			InputCachedTokens: c.Usage.CachedTokens,
+			InputCachedTokens: max(c.Usage.CachedTokens, c.Usage.PromptTokensDetails.CachedTokens),
 			ReasoningTokens:   c.Usage.ReasoningTokens,
 			OutputTokens:      c.Usage.CompletionTokens,
 			TotalTokens:       c.Usage.TotalTokens,
@@ -557,11 +557,16 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 	}
 }
 
+// TokenIDs is a slice of token IDs returned by the API. Values are nullable and
+// can be int or float, so we use *json.Number to handle both nulls and varying
+// numeric types.
+type TokenIDs []*json.Number
+
 // Logprobs is the provider-specific log probabilities.
 type Logprobs struct {
 	Tokens        []string  `json:"tokens"`
 	TokenLogprobs []float64 `json:"token_logprobs"`
-	TokenIDs      []any     `json:"token_ids,omitzero"` // Not set.
+	TokenIDs      TokenIDs  `json:"token_ids,omitzero"` // Not set.
 	Content       []any     `json:"content,omitzero"`   // Complex structure with logprobs data.
 }
 
@@ -582,6 +587,7 @@ func (l *Logprobs) To() [][]genai.Logprob {
 type LogprobsChunk struct {
 	Tokens        []string  `json:"tokens"`
 	TokenLogprobs []float64 `json:"token_logprobs"`
+	TokenIDs      TokenIDs  `json:"token_ids,omitzero"`
 	TopLogprobs   [][]struct {
 		Token   string  `json:"token"`
 		Logprob float64 `json:"logprob"`
@@ -635,7 +641,9 @@ type Usage struct {
 	ReasoningTokens     int64    `json:"reasoning_tokens"`
 	TotalTokens         int64    `json:"total_tokens"`
 	CachedTokens        int64    `json:"cached_tokens"`
-	PromptTokensDetails struct{} `json:"prompt_tokens_details"`
+	PromptTokensDetails struct {
+		CachedTokens int64 `json:"cached_tokens"`
+	} `json:"prompt_tokens_details"`
 }
 
 // ChatStreamChunkResponse is the provider-specific streaming chat chunk.
@@ -711,6 +719,10 @@ type Model struct {
 		Base        float64 `json:"base"`
 		Finetune    float64 `json:"finetune"`
 		CachedInput float64 `json:"cached_input,omitzero"`
+		ImagePixel  PricingImagePixel  `json:"image_pixel,omitzero"`
+		Transcribe  PricingTranscribe  `json:"transcribe,omitzero"`
+		Image       PricingMedia     `json:"image,omitzero"`
+		Video       PricingMedia     `json:"video,omitzero"`
 	} `json:"pricing"`
 }
 
@@ -740,6 +752,59 @@ func (m *Model) String() string {
 // Context implements genai.Model.
 func (m *Model) Context() int64 {
 	return m.ContextLength
+}
+
+// PricingImagePixel is the per-megapixel pricing for image generation.
+//
+// The API returns either 0 (no pricing) or an object with pricing details.
+type PricingImagePixel struct {
+	PricePerMegapixel float64 `json:"price_per_megapixel,omitzero"`
+	MinSteps          int     `json:"min_steps,omitzero"`
+}
+
+// UnmarshalJSON handles the polymorphic API response (number or object).
+func (p *PricingImagePixel) UnmarshalJSON(b []byte) error {
+	if len(b) > 0 && b[0] != '{' {
+		*p = PricingImagePixel{}
+		return json.Unmarshal(b, &p.PricePerMegapixel)
+	}
+	type alias PricingImagePixel
+	return json.Unmarshal(b, (*alias)(p))
+}
+
+// PricingTranscribe is the per-minute pricing for audio transcription.
+//
+// The API returns either 0 (no pricing) or an object with pricing details.
+type PricingTranscribe struct {
+	PricePerMinute float64 `json:"price_per_minute,omitzero"`
+}
+
+// UnmarshalJSON handles the polymorphic API response (number or object).
+func (p *PricingTranscribe) UnmarshalJSON(b []byte) error {
+	if len(b) > 0 && b[0] != '{' {
+		*p = PricingTranscribe{}
+		return json.Unmarshal(b, &p.PricePerMinute)
+	}
+	type alias PricingTranscribe
+	return json.Unmarshal(b, (*alias)(p))
+}
+
+// PricingMedia is the example-based pricing for image or video generation.
+//
+// The API returns either 0 (no pricing) or an object with an example price and description.
+type PricingMedia struct {
+	ExamplePrice       float64 `json:"example_price,omitzero"`
+	ExampleDescription string  `json:"example_description,omitzero"`
+}
+
+// UnmarshalJSON handles the polymorphic API response (number or object).
+func (p *PricingMedia) UnmarshalJSON(b []byte) error {
+	if len(b) > 0 && b[0] != '{' {
+		*p = PricingMedia{}
+		return json.Unmarshal(b, &p.ExamplePrice)
+	}
+	type alias PricingMedia
+	return json.Unmarshal(b, (*alias)(p))
 }
 
 // ModelsResponse represents the response structure for TogetherAI models listing.

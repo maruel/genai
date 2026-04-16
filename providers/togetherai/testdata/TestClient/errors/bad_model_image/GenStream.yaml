@@ -1,51 +1,55 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 96
-    host: api.together.xyz
-    body: "{\"model\":\"bad model\",\"stream\":true,\"messages\":[{\"role\":\"user\",\"content\":\"Tell a short joke.\"}]}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://api.together.xyz/v1/chat/completions
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\n  \"id\": \"o8TLUrX-2kFHot-97442c486bb5a322\",\n  \"error\": {\n    \"message\": \"Unable to access model bad model. Please visit https://api.together.ai/models to view the list of supported models.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": null,\n    \"code\": \"model_not_available\"\n  }\n}"
-    headers:
-      Access-Control-Allow-Origin:
-      - "*"
-      Alt-Svc:
-      - h3=":443"; ma=86400
-      Cf-Cache-Status:
-      - DYNAMIC
-      Cf-Ray:
-      - 97442c486bb5a322-YUL
-      Content-Type:
-      - application/json; charset=utf-8
-      Etag:
-      - W/"11f-fBDOxMKiZqh7tuqLdL4CHHsIVKM"
-      Server:
-      - cloudflare
-      Strict-Transport-Security:
-      - max-age=15552000; includeSubDomains
-      Vary:
-      - Accept-Encoding
-      X-Api-Received:
-      - "2025-08-24T16:19:44.125Z"
-      X-Content-Type-Options:
-      - nosniff
-      X-Request-Id:
-      - o8TLUrX-2kFHot-97442c486bb5a322
-    status: 404 Not Found
-    code: 404
-    duration: 108ms
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 52
+        host: api.together.xyz
+        body: |
+            {"prompt":"Tell a short joke.","model":"bad model"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/images/generations
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "ofPRRvJ-2kFHot-9ed4651f7f7ba2cf-YUL",
+              "error": {
+                "message": "Unable to access model bad model. Please visit https://api.together.ai/models to view the list of supported models.",
+                "type": "invalid_request_error",
+                "param": null,
+                "code": "model_not_available"
+              }
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9ed4651f7f7ba2cf-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"123-UyS7fP5lxoYbSPuGqFFG8CeLkLY"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            X-Api-Received:
+                - "2026-04-16T15:59:03.636Z"
+        status: 404 Not Found
+        code: 404
+        duration: 91ms

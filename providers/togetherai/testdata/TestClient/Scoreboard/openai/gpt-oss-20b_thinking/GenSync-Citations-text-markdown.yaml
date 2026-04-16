@@ -1,71 +1,104 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 267
-    host: api.together.xyz
-    body: "{\"model\":\"openai/gpt-oss-20b\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"# Quackiland\\n\\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}]}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://api.together.xyz/v1/chat/completions
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\n  \"id\": \"oPMpzPp-6Ng1vN-9ae9276e8f32a2cf\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765835402,\n  \"model\": \"openai/gpt-oss-20b\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"Quack\",\n        \"tool_calls\": [],\n        \"reasoning\": \"We have a problem: The user posted a riddle-like question: \\\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\\\" It's a little trick question: answer: Quack. Because the capital is Quack, which is the same as the location. So answer: Quack. But might it be a trick? The user could also be testing: The Big Canard Statue is located in Quack. So if the statue is in Quack, and the capital is Quack, answer is indeed Quack. So simple.\\n\\nWe want to reply succinctly. Use the instructions: Output only the answer. So just \\\"Quack\\\". Possibly with some explanation? The instruction says: \\\"### Instruction: The assistant should respond as a helpful programmer...\\\" but user just asked a riddle. However the conversation's \\\"We are to be chatty? The problem: Just answer: The capital of Quackiland is Quack. I think answer: Quack.\\n\\nWe can just output \\\"Quack\\\".\"\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 102,\n    \"total_tokens\": 336,\n    \"completion_tokens\": 234\n  }\n}"
-    headers:
-      Access-Control-Allow-Origin:
-      - "*"
-      Alt-Svc:
-      - h3=":443"; ma=86400
-      Cf-Cache-Status:
-      - DYNAMIC
-      Cf-Ray:
-      - 9ae9276e8f32a2cf-YUL
-      Content-Type:
-      - application/json; charset=utf-8
-      Etag:
-      - W/"5c9-AT/rk9djluS1L4toDNowBGUGnmg"
-      Retry-After:
-      - "2"
-      Server:
-      - cloudflare
-      Strict-Transport-Security:
-      - max-age=15552000; includeSubDomains
-      Vary:
-      - Accept-Encoding
-      X-Amzn-Trace-Id:
-      - 798e8406-52e0-4d51-9b9b-826a0ece5f5d-noamzn
-      X-Api-Call-End:
-      - "2025-12-15T21:50:02.784Z"
-      X-Api-Call-Start:
-      - "2025-12-15T21:49:59.192Z"
-      X-Api-Received:
-      - "2025-12-15T21:49:59.175Z"
-      X-Api-Retries:
-      - "1"
-      X-Inference-Version:
-      - v2
-      X-Ratelimit:
-      - "false"
-      X-Ratelimit-Limit:
-      - "10"
-      X-Ratelimit-Limit-Tokens:
-      - "3000"
-      X-Ratelimit-Remaining:
-      - "19"
-      X-Ratelimit-Remaining-Tokens:
-      - "3000"
-      X-Ratelimit-Reset:
-      - "2"
-    status: 200 OK
-    code: 200
-    duration: 3.711s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 267
+        host: api.together.xyz
+        body: |
+            {"model":"openai/gpt-oss-20b","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "ofPRxj2-3pDw3Z-9ed467a6cbbaa2cf",
+              "object": "chat.completion",
+              "created": 1776355248,
+              "model": "openai/gpt-oss-20b",
+              "metadata": {
+                "weight_version": "default"
+              },
+              "prompt": [],
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "content": "Quack.",
+                    "tool_calls": [],
+                    "reasoning": "The user says:\n\n\"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\"\n\nThe user states the capital of Quackiland is Quack. Likely answer: Quack. They might want the user to answer \"Quack\". But perhaps rhetorical: they want to confirm or ask something else. The explicit question: \"What is the capital of Quackiland?\" They already answered in the statement that it's Quack. So answer: Quack. But maybe they want a witty: The capital is Quack. The Big Canard Statue is in Quack. So it's Quack. So answer: \"Quack.\" Let's respond."
+                  },
+                  "logprobs": null,
+                  "finish_reason": "stop",
+                  "seed": null
+                }
+              ],
+              "usage": {
+                "prompt_tokens": 102,
+                "total_tokens": 267,
+                "completion_tokens": 165,
+                "reasoning_tokens": 0
+              }
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9ed467a6cbbaa2cf-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"4b4-hna1FGrd+Hyae45fotI1oUm1mgE"
+            Retry-After:
+                - "0"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - accept-encoding
+            X-Amzn-Trace-Id:
+                - 57c85ce2-e0eb-4f72-a91d-e8a37028df5f-noamzn
+            X-Api-Call-End:
+                - "2026-04-16T16:00:48.934Z"
+            X-Api-Call-Start:
+                - "2026-04-16T16:00:47.279Z"
+            X-Api-Received:
+                - "2026-04-16T16:00:47.265Z"
+            X-Inference-Version:
+                - v2
+            X-Ratelimit:
+                - "false"
+            X-Ratelimit-Limit:
+                - "10"
+            X-Ratelimit-Limit-Dynamic:
+                - "1"
+            X-Ratelimit-Limit-Tokens:
+                - "3000"
+            X-Ratelimit-Remaining:
+                - "17"
+            X-Ratelimit-Remaining-Dynamic:
+                - "0"
+            X-Ratelimit-Remaining-Tokens:
+                - "3000"
+            X-Ratelimit-Reset:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 1.849s

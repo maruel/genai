@@ -1,0 +1,79 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 139
+        host: generativelanguage.googleapis.com
+        body: |
+            {"contents":[{"role":"user","parts":[{"text":"Say hello. Do not emit other words."}]}],"generationConfig":{"responseModalities":["TEXT"]}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://generativelanguage.googleapis.com/v1beta/models/gemini-robotics-er-1.6-preview:generateContent
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |
+            {
+              "candidates": [
+                {
+                  "content": {
+                    "parts": [
+                      {
+                        "text": "Hello.",
+                        "thoughtSignature": "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"
+                      }
+                    ],
+                    "role": "model"
+                  },
+                  "finishReason": "STOP",
+                  "index": 0
+                }
+              ],
+              "usageMetadata": {
+                "promptTokenCount": 10,
+                "candidatesTokenCount": 2,
+                "totalTokenCount": 338,
+                "promptTokensDetails": [
+                  {
+                    "modality": "TEXT",
+                    "tokenCount": 10
+                  }
+                ],
+                "thoughtsTokenCount": 326
+              },
+              "modelVersion": "gemini-robotics-er-1.6-preview",
+              "responseId": "nvjgaf_hOP6b9MoPo7im8Qk"
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+            Content-Type:
+                - application/json; charset=UTF-8
+            Server:
+                - scaffolding on HTTPServer2
+            Server-Timing:
+                - gfet4t7; dur=2125
+            Vary:
+                - Origin
+                - X-Origin
+                - Referer
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Gemini-Service-Tier:
+                - standard
+            X-Xss-Protection:
+                - "0"
+        status: 200 OK
+        code: 200
+        duration: 2.138s

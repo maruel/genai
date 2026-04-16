@@ -1,71 +1,114 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 557
-    host: api.together.xyz
-    body: "{\"model\":\"openai/gpt-oss-20b\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":\"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one.\"}],\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"best_country\",\"description\":\"A tool to specify the best country\",\"parameters\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"properties\":{\"country\":{\"type\":\"string\",\"enum\":[\"USA\",\"Canada\"]}},\"additionalProperties\":false,\"type\":\"object\",\"required\":[\"country\"]}}}],\"tool_choice\":\"required\"}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://api.together.xyz/v1/chat/completions
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\n  \"id\": \"oPMpxNW-6Ng1vN-9ae92743e90ea2cf\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765835397,\n  \"model\": \"openai/gpt-oss-20b\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"analysisThe user asks: \\\"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one.\\\" The tool best_country expects a JSON with country: \\\"USA\\\" | \\\"Canada\\\". They want the tool to determine which is best. But they didn't specify which country to query. They want the tool to determine which country is best. According to tool definition, it takes a country argument. We need to decide which to pass. The user is asking which is better. The tool expects a country, but we need to ask or choose? We could interpret that they want \\\"best_country\\\" to guess which is best. Perhaps we should call the tool with both options? But function signature expects one. We can choose either. Maybe we interpret: they want the tool to evaluate and decide. So we can call best_country with \\\"USA\\\" and \\\"Canada\\\" inside? But function signature expects one. We must choose one. Which one? Probably we choose \\\"USA\\\" as they asked if USA better. Or maybe we should ask clarifying question. The instruction: \\\"Respond with the tool call in JSON format and nothing else.\\\" But we are allowed to clarify? The user explicitly wants the tool call. So we must interpret which country to consider. They want to know which is best. So to answer, we must call best_country with the country that the tool will deem best. So we guess \\\"USA\\\" or \\\"Canada\\\". The test probably expects us to call best_country with \\\"USA\\\" because they asked if USA better. However, they asked \\\"Call the tool best_country to tell me which country is the best one.\\\" The tool requires a country argument. This is ambiguous. I'll choose \\\"USA\\\".[  {}  ]\",\n        \"tool_calls\": []\n      }\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 156,\n    \"total_tokens\": 521,\n    \"completion_tokens\": 365\n  }\n}"
-    headers:
-      Access-Control-Allow-Origin:
-      - "*"
-      Alt-Svc:
-      - h3=":443"; ma=86400
-      Cf-Cache-Status:
-      - DYNAMIC
-      Cf-Ray:
-      - 9ae92743e90ea2cf-YUL
-      Content-Type:
-      - application/json; charset=utf-8
-      Etag:
-      - W/"895-Fw1UK3q6jTHxiSVFH7j1aXlFe3E"
-      Retry-After:
-      - "2"
-      Server:
-      - cloudflare
-      Strict-Transport-Security:
-      - max-age=15552000; includeSubDomains
-      Vary:
-      - Accept-Encoding
-      X-Amzn-Trace-Id:
-      - f7aafb4f-e0ce-47e0-9470-6c46efbdbfc4-noamzn
-      X-Api-Call-End:
-      - "2025-12-15T21:49:57.030Z"
-      X-Api-Call-Start:
-      - "2025-12-15T21:49:52.398Z"
-      X-Api-Received:
-      - "2025-12-15T21:49:52.372Z"
-      X-Api-Retries:
-      - "1"
-      X-Inference-Version:
-      - v2
-      X-Ratelimit:
-      - "false"
-      X-Ratelimit-Limit:
-      - "10"
-      X-Ratelimit-Limit-Tokens:
-      - "3000"
-      X-Ratelimit-Remaining:
-      - "19"
-      X-Ratelimit-Remaining-Tokens:
-      - "3000"
-      X-Ratelimit-Reset:
-      - "2"
-    status: 200 OK
-    code: 200
-    duration: 4.763s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 557
+        host: api.together.xyz
+        body: |
+            {"model":"openai/gpt-oss-20b","stream":false,"messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required"}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "ofPRvXi-3pDw3Z-9ed467789c83a2cf",
+              "object": "chat.completion",
+              "created": 1776355245,
+              "model": "openai/gpt-oss-20b",
+              "metadata": {
+                "weight_version": "default"
+              },
+              "prompt": [],
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "content": "",
+                    "tool_calls": [
+                      {
+                        "id": "call_347c9da8c3be49d386532a43",
+                        "index": 0,
+                        "type": "function",
+                        "function": {
+                          "name": "best_country",
+                          "arguments": "{\"country\": \"USA\"}"
+                        }
+                      }
+                    ],
+                    "reasoning": "The user: \"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one.\" They want us to call the function best_country. According to the function definition: best_country takes an object with country: \"USA\" | \"Canada\". The tool presumably returns a result that indicates which country is the best? The function likely returns a value; but we don't have specifics. We should call the tool with the best guess. This is ambiguous: they'd want a recommendation? The function best_country has a 'country' field: \"USA\" | \"Canada\". They likely want us to test which is best? Or call the function to get \"USA\" or \"Canada\".\n\nBut we can't ask the user: Must we just return something. The instructions: \"Call the tool best_country to tell me which country is the best one.\" So likely we want to call tool best_country specifying a country, but we need to choose which of the two? Actually, best_country takes an argument: country. Could be used to compute something. But we can't infer logic; we just choose the best? The function's purpose: maybe to get a result about which is best among options. The call would supply the argument maybe \"USA\" or \"Canada\" to designate query? Hmm.\n\nWe might interpret that the function determines the best between given set, maybe by ranking. But we only can provide a single country as argument. Maybe the function returns something: e.g., best_country({country: \"USA\"}) returns \"USA\" is better? No idea.\n\nWe might interpret that the tool will return the best country or the preference after internal computation. Then we call the function with no initial argument? But the param requires specific. Which one? The tool might be ambiguous and we need a better guess. Perhaps we need to call the function with the best guess; might return the best country. I'd call with argument \"USA\" and the function will decide the best? I'd guess best_country({country: \"USA\"}) returns something like \"USA is better\" or maybe returns the best of the two.\n\nGiven typical usage: If you want to judge whether USA or Canada is better, you'd specify country maybe? But perhaps the function chooses the best between the two; but we don't know.\n\nCould interpret that the best_country function will return the best country of the options: maybe you supply country option you want to test? It might simply output a recommendation. Likely they want the function to choose the better country.\n\nThus we can call best_country({country: \"USA\"}). It will likely respond best. But the param \"country\" may indicate the candidate to evaluate; maybe the tool returns recommendation which one is best. So we call it with \"USA\"? Hmm.\n\nAlternatively, you could call with \"Canada\". Since function requires a country, but we want to decide best, maybe we call with one of them which is correct? I think the function is probably designed to evaluate the requested country and determine if it's better. The phrase: \"Call the tool best_country to tell me which country is the best one\" ambiguous. Perhaps we send in \"USA\" as the argument and it will compare it to Canada and output best. But maybe we need to pick none? But it requires an argument. So we call with \"USA\" and that'll likely output best? Or maybe call with \"Canada\"? Honestly unclear. We'll pick \"USA\" as input. The output will likely be \"USA\" if you choose \"USA\"? That doesn't sense.\n\nAlternatively, maybe calling best_country tells you best country among arguments, and we should send an argument. But we only have one, so no difference. But we can choose either. The function might compare internally. I'd guess it's expecting the argument to be the first candidate. It then compares with the default second? Or picks the best? I'd choose \"USA\" as input.\n\nThus produce tool call: best_country({\"country\":\"USA\"})."
+                  },
+                  "logprobs": null,
+                  "finish_reason": "tool_calls",
+                  "seed": null
+                }
+              ],
+              "usage": {
+                "prompt_tokens": 155,
+                "total_tokens": 1000,
+                "completion_tokens": 845,
+                "reasoning_tokens": 0
+              }
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9ed467789c83a2cf-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"1299-qTt0M4UMc6wFy+cy9DRDcfGjTdM"
+            Retry-After:
+                - "2"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - accept-encoding
+            X-Amzn-Trace-Id:
+                - 8208765d-5135-4c4a-a7b9-0e985da522aa-noamzn
+            X-Api-Call-End:
+                - "2026-04-16T16:00:45.744Z"
+            X-Api-Call-Start:
+                - "2026-04-16T16:00:39.893Z"
+            X-Api-Received:
+                - "2026-04-16T16:00:39.882Z"
+            X-Inference-Version:
+                - v2
+            X-Ratelimit:
+                - "false"
+            X-Ratelimit-Limit:
+                - "10"
+            X-Ratelimit-Limit-Dynamic:
+                - "1"
+            X-Ratelimit-Limit-Tokens:
+                - "3000"
+            X-Ratelimit-Remaining:
+                - "18"
+            X-Ratelimit-Remaining-Dynamic:
+                - "0"
+            X-Ratelimit-Remaining-Tokens:
+                - "3000"
+            X-Ratelimit-Reset:
+                - "2"
+        status: 200 OK
+        code: 200
+        duration: 6.055s

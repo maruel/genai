@@ -1,69 +1,104 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 251
-    host: api.together.xyz
-    body: "{\"model\":\"openai/gpt-oss-20b\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}]}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://api.together.xyz/v1/chat/completions
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\n  \"id\": \"oPMpync-6Ng1vN-9ae92761a90aa2cf\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765835399,\n  \"model\": \"openai/gpt-oss-20b\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"Quack.\",\n        \"tool_calls\": [],\n        \"reasoning\": \"The user asks: \\\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\\\" The user might be testing reading comprehension: The capital is Quack. So answer: Quack. Or \\\"Quack\\\". Could also incorporate that the capital is Quack, same place of statue. Thus answer: Quack. Probably respond succinctly: Quack. Maybe show reasoning: The statements identify Quack as the capital. Thus answer. So response: The capital is Quack.\"\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 97,\n    \"total_tokens\": 224,\n    \"completion_tokens\": 127\n  }\n}"
-    headers:
-      Access-Control-Allow-Origin:
-      - "*"
-      Alt-Svc:
-      - h3=":443"; ma=86400
-      Cf-Cache-Status:
-      - DYNAMIC
-      Cf-Ray:
-      - 9ae92761a90aa2cf-YUL
-      Content-Type:
-      - application/json; charset=utf-8
-      Etag:
-      - W/"40f-UlGuytAq6VGjBLLKCugLNouXEcs"
-      Retry-After:
-      - "2"
-      Server:
-      - cloudflare
-      Strict-Transport-Security:
-      - max-age=15552000; includeSubDomains
-      Vary:
-      - Accept-Encoding
-      X-Amzn-Trace-Id:
-      - 10492404-e895-4135-af9d-008cc2318dca-noamzn
-      X-Api-Call-End:
-      - "2025-12-15T21:49:59.106Z"
-      X-Api-Call-Start:
-      - "2025-12-15T21:49:57.148Z"
-      X-Api-Received:
-      - "2025-12-15T21:49:57.134Z"
-      X-Inference-Version:
-      - v2
-      X-Ratelimit:
-      - "false"
-      X-Ratelimit-Limit:
-      - "10"
-      X-Ratelimit-Limit-Tokens:
-      - "3000"
-      X-Ratelimit-Remaining:
-      - "19"
-      X-Ratelimit-Remaining-Tokens:
-      - "3000"
-      X-Ratelimit-Reset:
-      - "2"
-    status: 200 OK
-    code: 200
-    duration: 2.056s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 251
+        host: api.together.xyz
+        body: |
+            {"model":"openai/gpt-oss-20b","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "ofPRxL3-3pDw3Z-9ed4679e7a63a2cf",
+              "object": "chat.completion",
+              "created": 1776355247,
+              "model": "openai/gpt-oss-20b",
+              "metadata": {
+                "weight_version": "default"
+              },
+              "prompt": [],
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "content": "The capital of Quackiland is **Quack**.",
+                    "tool_calls": [],
+                    "reasoning": "We have a riddle: The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland? The answer is obviously Quack as stated. But it's repeating. The user might be testing you: The capital is Quack. So answer: Quack. Or maybe some pun? Quack stands for duck... But likely the answer: Quack.\n\nBut could there be trick: \"Quack\" refers to sound. However the data: The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. So the capital is Quack. So answer: Quack. Probably they want you to answer \"Quack\". Let's produce short answer. Let's not overthink."
+                  },
+                  "logprobs": null,
+                  "finish_reason": "stop",
+                  "seed": null
+                }
+              ],
+              "usage": {
+                "prompt_tokens": 97,
+                "total_tokens": 278,
+                "completion_tokens": 181,
+                "reasoning_tokens": 0
+              }
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9ed4679e7a63a2cf-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"4de-t6sSrBbA2gCB2K0TaqLK+7HIDb0"
+            Retry-After:
+                - "2"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - accept-encoding
+            X-Amzn-Trace-Id:
+                - 99c19d11-fc3f-4cc3-8cb0-2c5964110367-noamzn
+            X-Api-Call-End:
+                - "2026-04-16T16:00:47.071Z"
+            X-Api-Call-Start:
+                - "2026-04-16T16:00:45.945Z"
+            X-Api-Received:
+                - "2026-04-16T16:00:45.933Z"
+            X-Inference-Version:
+                - v2
+            X-Ratelimit:
+                - "false"
+            X-Ratelimit-Limit:
+                - "10"
+            X-Ratelimit-Limit-Dynamic:
+                - "1"
+            X-Ratelimit-Limit-Tokens:
+                - "3000"
+            X-Ratelimit-Remaining:
+                - "18"
+            X-Ratelimit-Remaining-Dynamic:
+                - "0"
+            X-Ratelimit-Remaining-Tokens:
+                - "3000"
+            X-Ratelimit-Reset:
+                - "2"
+        status: 200 OK
+        code: 200
+        duration: 1.334s

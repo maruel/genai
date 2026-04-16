@@ -1,69 +1,104 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 251
-    host: api.together.xyz
-    body: "{\"model\":\"openai/gpt-oss-20b\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}]}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://api.together.xyz/v1/chat/completions
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\n  \"id\": \"oPkkC61-6Ng1vN-9b01e30d2b33a2c9\",\n  \"object\": \"chat.completion\",\n  \"created\": 1766094743,\n  \"model\": \"openai/gpt-oss-20b\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"The capital of Quackiland is **Quack**.\",\n        \"tool_calls\": [],\n        \"reasoning\": \"The user asked: \\\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\\\" So likely answer: Quack. This is straightforward. But perhaps they want us to answer \\\"Quack\\\"? They might want to respond with the information. The user might be testing consistency. There's no trick. So answer: Quack. Provide maybe a short explanation.\"\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 97,\n    \"total_tokens\": 208,\n    \"completion_tokens\": 111\n  }\n}"
-    headers:
-      Access-Control-Allow-Origin:
-      - "*"
-      Alt-Svc:
-      - h3=":443"; ma=86400
-      Cf-Cache-Status:
-      - DYNAMIC
-      Cf-Ray:
-      - 9b01e30d2b33a2c9-YUL
-      Content-Type:
-      - application/json; charset=utf-8
-      Etag:
-      - W/"3d5-ZF47xDh1Qp3TvfuG2lCJbW6u8Rg"
-      Retry-After:
-      - "2"
-      Server:
-      - cloudflare
-      Strict-Transport-Security:
-      - max-age=15552000; includeSubDomains
-      Vary:
-      - Accept-Encoding
-      X-Amzn-Trace-Id:
-      - e13ce51e-3e8e-47c0-b786-7df60d4bf22e-noamzn
-      X-Api-Call-End:
-      - "2025-12-18T21:52:23.191Z"
-      X-Api-Call-Start:
-      - "2025-12-18T21:52:22.376Z"
-      X-Api-Received:
-      - "2025-12-18T21:52:22.359Z"
-      X-Inference-Version:
-      - v2
-      X-Ratelimit:
-      - "false"
-      X-Ratelimit-Limit:
-      - "10"
-      X-Ratelimit-Limit-Tokens:
-      - "3000"
-      X-Ratelimit-Remaining:
-      - "19"
-      X-Ratelimit-Remaining-Tokens:
-      - "3000"
-      X-Ratelimit-Reset:
-      - "2"
-    status: 200 OK
-    code: 200
-    duration: 1.213s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 251
+        host: api.together.xyz
+        body: |
+            {"model":"openai/gpt-oss-20b","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "ofPRS62-3pDw3Z-9ed4652018bca2cf",
+              "object": "chat.completion",
+              "created": 1776355145,
+              "model": "openai/gpt-oss-20b",
+              "metadata": {
+                "weight_version": "default"
+              },
+              "prompt": [],
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "content": "The capital of Quackiland is **Quack**.",
+                    "tool_calls": [],
+                    "reasoning": "We have a conversation. The user says: \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\" The user basically says that the capital is Quack.\n\nThey ask \"What is the capital of Quackiland?\" The answer should be \"Quack.\"\n\nWe must comply with policy. There's no reason to refuse. It's a straightforward question. Just answer: Quack. Provide a concise answer.\n\nWe should be mindful: The user statement already includes \"The capital of Quackiland is Quack.\" So the answer is simple. There's no other concerns.\n\nThus just answer: Quack."
+                  },
+                  "logprobs": null,
+                  "finish_reason": "stop",
+                  "seed": null
+                }
+              ],
+              "usage": {
+                "prompt_tokens": 97,
+                "total_tokens": 257,
+                "completion_tokens": 160,
+                "reasoning_tokens": 0
+              }
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9ed4652018bca2cf-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"4ce-LgusHjfpReYREaFy29ycquepjtE"
+            Retry-After:
+                - "2"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - accept-encoding
+            X-Amzn-Trace-Id:
+                - b8cd2c95-7b21-4dab-8991-648044498db5-noamzn
+            X-Api-Call-End:
+                - "2026-04-16T15:59:05.920Z"
+            X-Api-Call-Start:
+                - "2026-04-16T15:59:04.211Z"
+            X-Api-Received:
+                - "2026-04-16T15:59:04.199Z"
+            X-Inference-Version:
+                - v2
+            X-Ratelimit:
+                - "false"
+            X-Ratelimit-Limit:
+                - "10"
+            X-Ratelimit-Limit-Dynamic:
+                - "1"
+            X-Ratelimit-Limit-Tokens:
+                - "3000"
+            X-Ratelimit-Remaining:
+                - "18"
+            X-Ratelimit-Remaining-Dynamic:
+                - "0"
+            X-Ratelimit-Remaining-Tokens:
+                - "3000"
+            X-Ratelimit-Reset:
+                - "2"
+        status: 200 OK
+        code: 200
+        duration: 2.363s

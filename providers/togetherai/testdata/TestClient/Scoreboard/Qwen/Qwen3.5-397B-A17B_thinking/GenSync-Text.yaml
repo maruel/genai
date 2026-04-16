@@ -1,0 +1,104 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 121
+        host: api.together.xyz
+        body: |
+            {"model":"Qwen/Qwen3.5-397B-A17B","stream":false,"messages":[{"role":"user","content":"Say hello. Use only one word."}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "ofRRBWm-6z2FuN-9ed68c80bde2ac09",
+              "object": "chat.completion",
+              "created": 1776377730,
+              "model": "Qwen/Qwen3.5-397B-A17B",
+              "metadata": {
+                "weight_version": "default"
+              },
+              "prompt": [],
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "content": "Hello",
+                    "tool_calls": [],
+                    "reasoning": "Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Task: Say hello.\n    *   Constraint: Use only one word.\n\n2.  **Identify Potential Responses:**\n    *   \"Hello\"\n    *   \"Hi\"\n    *   \"Greetings\"\n    *   \"Hey\"\n\n3.  **Evaluate Constraints:**\n    *   Must be exactly one word.\n    *   Must convey the meaning of \"saying hello\".\n\n4.  **Select the Best Option:**\n    *   \"Hello\" is the most direct and standard representation of the request.\n\n5.  **Final Check:**\n    *   Does \"Hello\" count as one word? Yes.\n    *   Does it satisfy the request? Yes.\n\n6.  **Output Generation:**\n    *   Hello\n\n7.  **Refinement:**\n    *   Ensure no punctuation or extra spaces violate the \"one word\" constraint (though punctuation usually doesn't count as a word, keeping it clean is better).\n    *   Decision: \"Hello\"\n\n8.  **Final Output:** Hello\n"
+                  },
+                  "logprobs": null,
+                  "finish_reason": "stop",
+                  "seed": null
+                }
+              ],
+              "usage": {
+                "prompt_tokens": 18,
+                "total_tokens": 262,
+                "completion_tokens": 244,
+                "reasoning_tokens": 0
+              }
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9ed68c80bde2ac09-YYZ
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"5be-qyGi6u9f2aYrGmL5E1081JIYoVc"
+            Retry-After:
+                - "2"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - Accept-Encoding
+            X-Amzn-Trace-Id:
+                - b2529d13-cd81-4095-b68c-2ba4085f5824-noamzn
+            X-Api-Call-End:
+                - "2026-04-16T22:15:30.727Z"
+            X-Api-Call-Start:
+                - "2026-04-16T22:15:28.176Z"
+            X-Api-Received:
+                - "2026-04-16T22:15:28.166Z"
+            X-Inference-Version:
+                - v2
+            X-Ratelimit:
+                - "false"
+            X-Ratelimit-Limit:
+                - "10"
+            X-Ratelimit-Limit-Dynamic:
+                - "1"
+            X-Ratelimit-Limit-Tokens:
+                - "3000"
+            X-Ratelimit-Remaining:
+                - "19"
+            X-Ratelimit-Remaining-Dynamic:
+                - "0"
+            X-Ratelimit-Remaining-Tokens:
+                - "3000"
+            X-Ratelimit-Reset:
+                - "2"
+        status: 200 OK
+        code: 200
+        duration: 2.636s

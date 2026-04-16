@@ -191,7 +191,9 @@ func TestClient(t *testing.T) {
 			},
 		}
 		f := func(t *testing.T, opts ...genai.ProviderOption) (genai.Provider, error) {
-			opts = append(opts, genai.ProviderOptionModalities{genai.ModalityText})
+			if !hasModalities(opts) {
+				opts = append(opts, genai.ProviderOptionModalities{genai.ModalityText})
+			}
 			return getClientInner(t, func(h http.RoundTripper) http.RoundTripper {
 				return testRecorder.Record(t, h)
 			}, opts...)
@@ -221,6 +223,13 @@ func (h *smallImage) GenSync(ctx context.Context, msgs genai.Messages, opts ...g
 		}
 	}
 	return h.Provider.GenSync(ctx, msgs, opts...)
+}
+
+func hasModalities(opts []genai.ProviderOption) bool {
+	return slices.ContainsFunc(opts, func(o genai.ProviderOption) bool {
+		_, ok := o.(genai.ProviderOptionModalities)
+		return ok
+	})
 }
 
 func init() {

@@ -1,69 +1,104 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 252
-    host: api.together.xyz
-    body: "{\"model\":\"openai/gpt-oss-120b\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"},{\"type\":\"text\",\"text\":\"What is the capital of Quackiland?\"}]}]}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://api.together.xyz/v1/chat/completions
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\n  \"id\": \"oPMpP3f-6Ng1vN-9ae924846ccaa2cf\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765835281,\n  \"model\": \"openai/gpt-oss-120b\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"The capital of Quackiland is **Quack**.\",\n        \"tool_calls\": [],\n        \"reasoning\": \"The user asks: \\\"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\\\" This is a simple question, answer: Quack. Maybe elaborate.\"\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 97,\n    \"total_tokens\": 168,\n    \"completion_tokens\": 71\n  }\n}"
-    headers:
-      Access-Control-Allow-Origin:
-      - "*"
-      Alt-Svc:
-      - h3=":443"; ma=86400
-      Cf-Cache-Status:
-      - DYNAMIC
-      Cf-Ray:
-      - 9ae924846ccaa2cf-YUL
-      Content-Type:
-      - application/json; charset=utf-8
-      Etag:
-      - W/"310-DF5dzmF+1OVNTC0wkIm+SyrgLCE"
-      Retry-After:
-      - "2"
-      Server:
-      - cloudflare
-      Strict-Transport-Security:
-      - max-age=15552000; includeSubDomains
-      Vary:
-      - Accept-Encoding
-      X-Amzn-Trace-Id:
-      - e5bde587-79d2-4c2a-b10d-3761c8815516-noamzn
-      X-Api-Call-End:
-      - "2025-12-15T21:48:01.074Z"
-      X-Api-Call-Start:
-      - "2025-12-15T21:48:00.276Z"
-      X-Api-Received:
-      - "2025-12-15T21:48:00.266Z"
-      X-Inference-Version:
-      - v2
-      X-Ratelimit:
-      - "false"
-      X-Ratelimit-Limit:
-      - "10"
-      X-Ratelimit-Limit-Tokens:
-      - "3000"
-      X-Ratelimit-Remaining:
-      - "19"
-      X-Ratelimit-Remaining-Tokens:
-      - "3000"
-      X-Ratelimit-Reset:
-      - "2"
-    status: 200 OK
-    code: 200
-    duration: 1.022s
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 252
+        host: api.together.xyz
+        body: |
+            {"model":"openai/gpt-oss-120b","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "ofPRiDa-z1gNr-9ed466763c03a2cf",
+              "object": "chat.completion",
+              "created": 1776355200,
+              "model": "openai/gpt-oss-120b",
+              "metadata": {
+                "weight_version": "default"
+              },
+              "prompt": [],
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "content": "The capital of **Quackiland** is **Quack**.",
+                    "tool_calls": [],
+                    "reasoning": "User asks: \"The capital of Quarkland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\" It's a simple recapitulation. Answer: Quack. Might also mention that capital is Quack (the city). Provide straightforward answer. Also maybe ask if they need more info."
+                  },
+                  "logprobs": null,
+                  "finish_reason": "stop",
+                  "seed": null
+                }
+              ],
+              "usage": {
+                "prompt_tokens": 97,
+                "total_tokens": 192,
+                "completion_tokens": 95,
+                "reasoning_tokens": 0
+              }
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9ed466763c03a2cf-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"397-U/GdUEepX7WgJ08btje4cttgH3I"
+            Retry-After:
+                - "2"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - accept-encoding
+            X-Amzn-Trace-Id:
+                - f7b855cd-a46c-473c-9a3a-6e33c07ff1c9-noamzn
+            X-Api-Call-End:
+                - "2026-04-16T16:00:00.688Z"
+            X-Api-Call-Start:
+                - "2026-04-16T15:59:58.473Z"
+            X-Api-Received:
+                - "2026-04-16T15:59:58.461Z"
+            X-Inference-Version:
+                - v2
+            X-Ratelimit:
+                - "false"
+            X-Ratelimit-Limit:
+                - "10"
+            X-Ratelimit-Limit-Dynamic:
+                - "2"
+            X-Ratelimit-Limit-Tokens:
+                - "3000"
+            X-Ratelimit-Remaining:
+                - "19"
+            X-Ratelimit-Remaining-Dynamic:
+                - "1"
+            X-Ratelimit-Remaining-Tokens:
+                - "3000"
+            X-Ratelimit-Reset:
+                - "2"
+        status: 200 OK
+        code: 200
+        duration: 2.28s

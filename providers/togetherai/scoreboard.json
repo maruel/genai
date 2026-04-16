@@ -11,20 +11,59 @@
   "scenarios": [
     {
       "models": [
-        "Qwen/Qwen3-235B-A22B-Thinking-2507"
+        "black-forest-labs/FLUX.2-pro"
       ],
       "sota": true,
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "image": {
+          "url": true,
+          "supportedFormats": [
+            "image/jpeg"
+          ]
+        }
+      },
+      "GenSync": {
+        "seed": true
+      }
+    },
+    {
+      "models": [
+        "zai-org/GLM-5.1"
+      ],
+      "sota": true
+    },
+    {
+      "models": [
+        "Qwen/Qwen3.5-397B-A17B"
+      ],
+      "good": true,
       "reason": true,
-      "reasoningTokenEnd": "\u003c/think\u003e",
       "in": {
         "image": {
           "inline": true,
+          "url": true,
           "supportedFormats": [
-            "image/jpeg"
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
           ]
         },
         "text": {
           "inline": true
+        },
+        "video": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "video/mp4",
+            "video/webm"
+          ]
         }
       },
       "out": {
@@ -48,35 +87,15 @@
       "GenStream": {
         "reportRateLimits": true,
         "reportTokenUsage": "true",
-        "reportFinishReason": "flaky",
+        "reportFinishReason": "true",
         "seed": true,
-        "tools": "flaky",
+        "tools": "true",
+        "toolsBiased": "true",
         "toolCallRequired": true,
+        "json": true,
         "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
-      }
-    },
-    {
-      "models": [
-        "black-forest-labs/FLUX.2-pro"
-      ],
-      "sota": true,
-      "in": {
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "image": {
-          "url": true,
-          "supportedFormats": [
-            "image/jpeg"
-          ]
-        }
-      },
-      "GenSync": {
-        "seed": true
       }
     },
     {
@@ -123,8 +142,8 @@
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "seed": true,
-        "tools": "flaky",
-        "toolsBiased": "flaky",
+        "tools": "true",
+        "toolsBiased": "true",
         "toolCallRequired": true,
         "json": true,
         "jsonSchema": true,
@@ -134,10 +153,10 @@
       "GenStream": {
         "reportRateLimits": true,
         "reportTokenUsage": "true",
-        "reportFinishReason": "flaky",
+        "reportFinishReason": "true",
         "seed": true,
-        "tools": "flaky",
-        "toolsIndecisive": "true",
+        "tools": "true",
+        "toolsBiased": "true",
         "toolCallRequired": true,
         "json": true,
         "jsonSchema": true,
@@ -168,101 +187,6 @@
       }
     },
     {
-      "models": [
-        "Qwen/Qwen3-Next-80B-A3B-Thinking"
-      ],
-      "reason": true,
-      "reasoningTokenStart": "\u003cthink\u003e",
-      "reasoningTokenEnd": "\u003c/think\u003e",
-      "in": {
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "tools": "flaky",
-        "toolsBiased": "flaky",
-        "toolCallRequired": true,
-        "json": true,
-        "jsonSchema": true,
-        "maxTokens": true,
-        "stopSequence": true
-      },
-      "GenStream": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "flaky",
-        "seed": true,
-        "tools": "flaky",
-        "toolsIndecisive": "true",
-        "toolCallRequired": true,
-        "json": true,
-        "jsonSchema": true,
-        "topLogprobs": true,
-        "maxTokens": true,
-        "stopSequence": true
-      }
-    },
-    {
-      "models": [
-        "moonshotai/Kimi-K2-Thinking"
-      ],
-      "reason": true,
-      "in": {
-        "image": {
-          "url": true,
-          "supportedFormats": [
-            "image/jpeg"
-          ]
-        },
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "tools": "true",
-        "toolsBiased": "true",
-        "toolCallRequired": true,
-        "json": true,
-        "jsonSchema": true,
-        "maxTokens": true,
-        "stopSequence": true
-      },
-      "GenStream": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "tools": "true",
-        "toolsBiased": "flaky",
-        "toolsIndecisive": "true",
-        "toolCallRequired": true,
-        "json": true,
-        "jsonSchema": true,
-        "topLogprobs": true,
-        "maxTokens": true,
-        "stopSequence": true
-      }
-    },
-    {
       "comments": "TogetherAI has broken reasoning parsing during tool call and JSON output",
       "models": [
         "openai/gpt-oss-120b"
@@ -285,42 +209,6 @@
         "seed": true,
         "tools": "true",
         "toolsBiased": "true",
-        "json": true,
-        "maxTokens": true,
-        "stopSequence": true
-      },
-      "GenStream": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "flaky",
-        "seed": true,
-        "tools": "flaky",
-        "json": true,
-        "maxTokens": true
-      }
-    },
-    {
-      "models": [
-        "zai-org/GLM-4.6"
-      ],
-      "reason": true,
-      "in": {
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "tools": "true",
-        "toolsBiased": "true",
         "toolCallRequired": true,
         "json": true,
         "jsonSchema": true,
@@ -334,149 +222,11 @@
         "seed": true,
         "tools": "true",
         "toolsBiased": "flaky",
-        "toolsIndecisive": "true",
         "toolCallRequired": true,
         "json": true,
         "jsonSchema": true,
         "topLogprobs": true,
-        "maxTokens": true,
-        "stopSequence": true
-      }
-    },
-    {
-      "models": [
-        "Qwen/Qwen3-235B-A22B-Instruct-2507-tput"
-      ],
-      "in": {
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "tools": "true",
-        "toolsBiased": "true",
-        "toolCallRequired": true,
-        "json": true,
-        "jsonSchema": true,
-        "maxTokens": true,
-        "stopSequence": true
-      },
-      "GenStream": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "flaky",
-        "seed": true,
-        "tools": "flaky",
-        "toolsIndecisive": "true",
-        "toolCallRequired": true,
-        "json": true,
-        "jsonSchema": true,
-        "topLogprobs": true,
-        "maxTokens": true,
-        "stopSequence": true
-      }
-    },
-    {
-      "models": [
-        "Qwen/Qwen3-Next-80B-A3B-Instruct"
-      ],
-      "in": {
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "tools": "flaky",
-        "toolsBiased": "true",
-        "json": true,
-        "jsonSchema": true,
-        "maxTokens": true,
-        "stopSequence": true
-      },
-      "GenStream": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "tools": "flaky",
-        "toolsBiased": "true",
-        "json": true,
-        "jsonSchema": true,
-        "topLogprobs": true,
-        "maxTokens": true,
-        "stopSequence": true
-      }
-    },
-    {
-      "models": [
-        "Qwen/Qwen3-VL-32B-Instruct"
-      ],
-      "in": {
-        "image": {
-          "inline": true,
-          "url": true,
-          "supportedFormats": [
-            "image/gif",
-            "image/jpeg",
-            "image/png",
-            "image/webp"
-          ]
-        },
-        "text": {
-          "inline": true
-        },
-        "video": {
-          "inline": true,
-          "url": true,
-          "supportedFormats": [
-            "video/mp4",
-            "video/webm"
-          ]
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "json": true,
-        "jsonSchema": true,
-        "maxTokens": true,
-        "stopSequence": true
-      },
-      "GenStream": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "json": true,
-        "jsonSchema": true,
-        "topLogprobs": true,
-        "maxTokens": true,
-        "stopSequence": true
+        "maxTokens": true
       }
     },
     {
@@ -501,78 +251,6 @@
       }
     },
     {
-      "models": [
-        "deepcogito/cogito-v2-1-671b"
-      ],
-      "in": {
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "json": true,
-        "jsonSchema": true,
-        "maxTokens": true,
-        "stopSequence": true
-      },
-      "GenStream": {
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "json": true,
-        "jsonSchema": true,
-        "topLogprobs": true,
-        "maxTokens": true,
-        "stopSequence": true
-      }
-    },
-    {
-      "models": [
-        "essentialai/rnj-1-instruct"
-      ],
-      "in": {
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "tools": "flaky",
-        "toolsBiased": "true",
-        "json": true,
-        "jsonSchema": true,
-        "maxTokens": true,
-        "stopSequence": true
-      },
-      "GenStream": {
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "tools": "flaky",
-        "toolsBiased": "true",
-        "json": true,
-        "jsonSchema": true,
-        "topLogprobs": true,
-        "maxTokens": true,
-        "stopSequence": true
-      }
-    },
-    {
       "comments": "Untested",
       "models": [
         "Qwen/Qwen3-0.6B",
@@ -581,6 +259,8 @@
         "Qwen/Qwen3-1.7B-Base",
         "Qwen/Qwen3-14B",
         "Qwen/Qwen3-14B-Base",
+        "Qwen/Qwen3-235B-A22B-Instruct-2507-tput",
+        "Qwen/Qwen3-235B-A22B-Thinking-2507",
         "Qwen/Qwen3-235B-A22B-fp8",
         "Qwen/Qwen3-30B-A3B",
         "Qwen/Qwen3-30B-A3B-Base",
@@ -592,19 +272,23 @@
         "Qwen/Qwen3-8B-Base",
         "Qwen/Qwen3-8B-Lora",
         "Qwen/Qwen3-Coder-Next-FP8",
+        "Qwen/Qwen3-Next-80B-A3B-Thinking",
         "Qwen/Qwen3-VL-235B-A22B-Thinking-FP8",
         "Qwen/Qwen3.5-27B",
         "Qwen/Qwen3.5-35B-A3B",
-        "Qwen/Qwen3.5-397B-A17B",
         "Qwen/Qwen3.5-397B-A17B-FP4",
         "Qwen/Qwen3.5-397B-A17B-FP8",
         "Qwen/Qwen3.5-9B",
         "Qwen/Qwen3.5-9B-FP8",
+        "moonshotai/Kimi-K2-Thinking",
+        "openai/gpt-image-1.5",
         "zai-org/GLM-4.5-Air-FP8",
         "zai-org/GLM-4.5V",
+        "zai-org/GLM-4.6",
         "zai-org/GLM-4.7",
         "zai-org/GLM-5",
         "zai-org/GLM-5-FP4",
+        "zai-org/GLM-5.1",
         "zai-org/GLM-OCR"
       ],
       "reason": true
@@ -617,6 +301,7 @@
         "BAAI/bge-large-en-v1.5",
         "ByteDance/Seedance-1.0-lite",
         "ByteDance/Seedance-1.0-pro",
+        "Hcompany/Holo3-35B-A3B",
         "LiquidAI/LFM2-24B-A2B",
         "Meta-Llama/Llama-Guard-7b",
         "MiniMaxAI/MiniMax-M1-40k",
@@ -625,6 +310,7 @@
         "MiniMaxAI/MiniMax-M2.1",
         "MiniMaxAI/MiniMax-M2.5",
         "MiniMaxAI/MiniMax-M2.5-FP4",
+        "MiniMaxAI/MiniMax-M2.7",
         "NousResearch/Nous-Hermes-2-Mixtral-8x7B-DPO",
         "Qwen/QwQ-32B",
         "Qwen/QwQ-32B-Preview",
@@ -651,10 +337,14 @@
         "Qwen/Qwen2.5-Coder-32B-Instruct",
         "Qwen/Qwen2.5-VL-72B-Instruct",
         "Qwen/Qwen3-30B-A3B-Instruct-2507",
+        "Qwen/Qwen3-30B-A3B-Instruct-2507-Lora",
+        "Qwen/Qwen3-4B-Instruct-2507",
         "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+        "Qwen/Qwen3-Next-80B-A3B-Instruct",
         "Qwen/Qwen3-Next-80B-A3B-Instruct-FP8",
         "Qwen/Qwen3-VL-235B-A22B-Instruct",
         "Qwen/Qwen3-VL-235B-A22B-Instruct-FP8",
+        "Qwen/Qwen3-VL-32B-Instruct",
         "Qwen/Qwen3-VL-8B-Instruct",
         "Salesforce/Llama-Rank-V1",
         "ServiceNow-AI/Apriel-1.5-15b-Thinker",
@@ -663,6 +353,7 @@
         "Wan-AI/Wan2.2-I2V-A14B",
         "Wan-AI/Wan2.2-T2V-A14B",
         "Wan-AI/Wan2.6-image",
+        "Wan-AI/wan2.7-t2v",
         "agentica-org/DeepCoder-14B-Preview",
         "allenai/Molmo-7B-D-0924",
         "arcee-ai/trinity-large-preview",
@@ -675,6 +366,7 @@
         "black-forest-labs/FLUX.1-krea-dev",
         "black-forest-labs/FLUX.1-pro",
         "black-forest-labs/FLUX.1.1-pro",
+        "black-forest-labs/FLUX.2-max",
         "canopylabs/orpheus-3b-0.1-ft",
         "cartesia/sonic",
         "cartesia/sonic-2",
@@ -686,6 +378,7 @@
         "deepcogito/cogito-v1-preview-llama-8B",
         "deepcogito/cogito-v1-preview-qwen-14B",
         "deepcogito/cogito-v1-preview-qwen-32B",
+        "deepcogito/cogito-v2-1-671b",
         "deepcogito/cogito-v2-preview-llama-109B-MoE",
         "deepcogito/cogito-v2-preview-llama-405B",
         "deepcogito/cogito-v2-preview-llama-70B",
@@ -694,6 +387,7 @@
         "deepgram/nova-3-en",
         "deepgram/nova-3-multi",
         "deepseek-ai/DeepSeek-OCR-2",
+        "essentialai/rnj-1-instruct",
         "deepseek-ai/DeepSeek-R1",
         "deepseek-ai/DeepSeek-R1-0528",
         "deepseek-ai/DeepSeek-R1-0528-tput",
@@ -725,6 +419,8 @@
         "google/gemma-3-4b-it",
         "google/gemma-3-4b-pt",
         "google/gemma-3n-E4B-it",
+        "google/gemma-4-26B-A4B-it",
+        "google/gemma-4-31B-it",
         "google/medgemma-27b-text-it",
         "google/veo-2.0",
         "google/veo-3.0",
@@ -802,6 +498,7 @@
         "nim/nvidia/llama-3.3-nemotron-super-49b-v1",
         "nvidia/Llama-3.1-Nemotron-70B-Instruct-HF",
         "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-BF16",
+        "nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-BF16",
         "nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-FP8",
         "nvidia/NVIDIA-Nemotron-Nano-9B-v2",
         "nvidia/parakeet-tdt-0.6b-v3",
@@ -834,7 +531,9 @@
         "togethercomputer/nltpt-guard-w8a16",
         "upstage/SOLAR-10.7B-Instruct-v1.0",
         "vidu/vidu-2.0",
-        "vidu/vidu-q1"
+        "vidu/vidu-q1",
+        "vidu/vidu-q3",
+        "vidu/vidu-q3-turbo"
       ]
     },
     {
@@ -848,6 +547,7 @@
         "Qwen/Qwen-Image",
         "Qwen/Qwen2.5-14B-Instruct",
         "Qwen/Qwen2.5-72B-Instruct",
+        "Qwen/Qwen3-235B-A22B-Instruct-2507-tput",
         "Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8",
         "RunDiffusion/Juggernaut-pro-flux",
         "Rundiffusion/Juggernaut-Lightning-Flux",

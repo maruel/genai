@@ -281,6 +281,11 @@ func runOneModel(t testing.TB, gc getClientOneModel, want *scoreboard.Scenario, 
 	}
 	// Preserve Comments from the original scenario
 	got.Comments = want.Comments
+	// Preserve Reason from want when got is untested, so the scoreboard
+	// update can match the old scenario key correctly.
+	if got.Untested() && want.Reason {
+		got.Reason = true
+	}
 	return usage, &got
 }
 
@@ -384,8 +389,13 @@ func generateUpdatedScoreboard(t testing.TB, scoreboardPath string, scenarios []
 		if len(newSc.Models) == 0 {
 			continue
 		}
-		// Skip untested scenarios - they'll be handled in the third pass
+		// Skip untested scenarios - they'll be handled in the third pass.
+		// But mark them as seen so the second pass doesn't re-add the old
+		// tested scenario for the same model.
 		if newSc.Untested() {
+			if len(newSc.Models) > 0 {
+				seenPairs[scoreboard.Model{Model: newSc.Models[0], Reason: newSc.Reason}] = struct{}{}
+			}
 			continue
 		}
 		model := newSc.Models[0]

@@ -1,69 +1,104 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 298
-    host: api.together.xyz
-    body: "{\"model\":\"openai/gpt-oss-120b\",\"stream\":false,\"messages\":[{\"role\":\"user\",\"content\":[{\"type\":\"text\",\"text\":\"What is the word said? Reply with only the word.\"},{\"type\":\"video_url\",\"video_url\":{\"url\":\"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/video.mp4\"}}]}]}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://api.together.xyz/v1/chat/completions
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: -1
-    uncompressed: true
-    body: "{\n  \"id\": \"oPMpR4Q-6Ng1vN-9ae924b03c1ba2cf\",\n  \"object\": \"chat.completion\",\n  \"created\": 1765835287,\n  \"model\": \"openai/gpt-oss-120b\",\n  \"metadata\": {\n    \"weight_version\": \"default\"\n  },\n  \"prompt\": [],\n  \"choices\": [\n    {\n      \"index\": 0,\n      \"message\": {\n        \"role\": \"assistant\",\n        \"content\": \"said\",\n        \"tool_calls\": [],\n        \"reasoning\": \"The user says: \\\"What is the word said? Reply with only the word.\\\" This seems ambiguous. Possibly a riddle? The prompt says \\\"What is the word said? Reply with only the word.\\\" Perhaps they expect a specific word? Could be a puzzle: The phrase \\\"What is the word said?\\\" Could be asking: \\\"What is the word 'said'?\\\" The answer could be \\\"said\\\". Or they want the word that is being said? The instruction \\\"Reply with only the word.\\\" So maybe they expect the answer \\\"said\\\". Or maybe it's a trick: The word \\\"said\\\" is the word being asked. So answer: \\\"said\\\". I'll answer that.\"\n      },\n      \"logprobs\": null,\n      \"finish_reason\": \"stop\",\n      \"seed\": null\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 79,\n    \"total_tokens\": 228,\n    \"completion_tokens\": 149\n  }\n}"
-    headers:
-      Access-Control-Allow-Origin:
-      - "*"
-      Alt-Svc:
-      - h3=":443"; ma=86400
-      Cf-Cache-Status:
-      - DYNAMIC
-      Cf-Ray:
-      - 9ae924b03c1ba2cf-YUL
-      Content-Type:
-      - application/json; charset=utf-8
-      Etag:
-      - W/"475-POJAqdlEbOpTcl4wTbnssGB47JA"
-      Retry-After:
-      - "1"
-      Server:
-      - cloudflare
-      Strict-Transport-Security:
-      - max-age=15552000; includeSubDomains
-      Vary:
-      - Accept-Encoding
-      X-Amzn-Trace-Id:
-      - 3a71466b-9a70-4e85-aaee-585973b3aecf-noamzn
-      X-Api-Call-End:
-      - "2025-12-15T21:48:07.827Z"
-      X-Api-Call-Start:
-      - "2025-12-15T21:48:07.048Z"
-      X-Api-Received:
-      - "2025-12-15T21:48:07.037Z"
-      X-Inference-Version:
-      - v2
-      X-Ratelimit:
-      - "false"
-      X-Ratelimit-Limit:
-      - "10"
-      X-Ratelimit-Limit-Tokens:
-      - "3000"
-      X-Ratelimit-Remaining:
-      - "18"
-      X-Ratelimit-Remaining-Tokens:
-      - "3000"
-      X-Ratelimit-Reset:
-      - "1"
-    status: 200 OK
-    code: 200
-    duration: 873ms
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 298
+        host: api.together.xyz
+        body: |
+            {"model":"openai/gpt-oss-120b","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"What is the word said? Reply with only the word."},{"type":"video_url","video_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/video.mp4"}}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.together.xyz/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "ofPRnyY-z1gNr-9ed466da3e09a2cf",
+              "object": "chat.completion",
+              "created": 1776355217,
+              "model": "openai/gpt-oss-120b",
+              "metadata": {
+                "weight_version": "default"
+              },
+              "prompt": [],
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "content": "said",
+                    "tool_calls": [],
+                    "reasoning": "User: \"What is the word said? Reply with only the word.\"\n\nWe need to answer with a single word? Probably they ask a riddle? The phrase \"What is the word said?\" Could be \"said\". The word said is \"said\". Might be trick: the word \"said\" is the word they said. So answer: \"said\". Probably that's it."
+                  },
+                  "logprobs": null,
+                  "finish_reason": "stop",
+                  "seed": null
+                }
+              ],
+              "usage": {
+                "prompt_tokens": 79,
+                "total_tokens": 167,
+                "completion_tokens": 88,
+                "reasoning_tokens": 0
+              }
+            }
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9ed466da3e09a2cf-YUL
+            Content-Type:
+                - application/json; charset=utf-8
+            Etag:
+                - W/"37d-Q9ImdpMWeeLSADfiInoKg/OGRD0"
+            Retry-After:
+                - "2"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=15552000; includeSubDomains
+            Vary:
+                - accept-encoding
+            X-Amzn-Trace-Id:
+                - ddfb19cf-7b62-4d80-8b70-137dbcebbeac-noamzn
+            X-Api-Call-End:
+                - "2026-04-16T16:00:17.892Z"
+            X-Api-Call-Start:
+                - "2026-04-16T16:00:14.479Z"
+            X-Api-Received:
+                - "2026-04-16T16:00:14.468Z"
+            X-Inference-Version:
+                - v2
+            X-Ratelimit:
+                - "false"
+            X-Ratelimit-Limit:
+                - "10"
+            X-Ratelimit-Limit-Dynamic:
+                - "2"
+            X-Ratelimit-Limit-Tokens:
+                - "3000"
+            X-Ratelimit-Remaining:
+                - "19"
+            X-Ratelimit-Remaining-Dynamic:
+                - "1"
+            X-Ratelimit-Remaining-Tokens:
+                - "3000"
+            X-Ratelimit-Reset:
+                - "2"
+        status: 200 OK
+        code: 200
+        duration: 3.484s

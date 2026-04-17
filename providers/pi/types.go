@@ -165,14 +165,76 @@ const (
 	QueueModeOneAtATime QueueMode = "one-at-a-time"
 )
 
+// Role is the message role discriminator.
+type Role string
+
+// Role constants.
+const (
+	RoleUser       Role = "user"
+	RoleAssistant  Role = "assistant"
+	RoleToolResult Role = "toolResult"
+)
+
+// ContentBlockType is the content block type discriminator.
+type ContentBlockType string
+
+// Content block type constants.
+const (
+	ContentText     ContentBlockType = "text"
+	ContentThinking ContentBlockType = "thinking"
+	ContentToolCall ContentBlockType = "toolCall"
+	ContentImage    ContentBlockType = "image"
+)
+
+// StreamingBehavior controls how a prompt interacts with an ongoing generation.
+type StreamingBehavior string
+
+// Streaming behavior constants.
+const (
+	StreamSteer    StreamingBehavior = "steer"
+	StreamFollowUp StreamingBehavior = "followUp"
+)
+
+// NotifyType is the severity level for notify extension UI requests.
+type NotifyType string
+
+// Notify type constants.
+const (
+	NotifyInfo    NotifyType = "info"
+	NotifyWarning NotifyType = "warning"
+	NotifyError   NotifyType = "error"
+)
+
+// WidgetPlacement controls where a widget is placed relative to the editor.
+type WidgetPlacement string
+
+// Widget placement constants.
+const (
+	WidgetAboveEditor WidgetPlacement = "aboveEditor"
+	WidgetBelowEditor WidgetPlacement = "belowEditor"
+)
+
+// SlashCommandSource is the origin of a slash command.
+type SlashCommandSource string
+
+// Slash command source constants.
+const (
+	CommandSourceExtension SlashCommandSource = "extension"
+	CommandSourcePrompt    SlashCommandSource = "prompt"
+	CommandSourceSkill     SlashCommandSource = "skill"
+)
+
+// ExtensionUIResponseType is the fixed type discriminator for all extension UI responses.
+const ExtensionUIResponseType = "extension_ui_response"
+
 // ---------- Routing probe ----------
 
 // LineProbe extracts routing fields from a JSONL line to determine its kind.
 type LineProbe struct {
-	Type    EventType `json:"type"`
-	Command string    `json:"command,omitzero"`
-	ID      string    `json:"id,omitzero"`
-	Success *bool     `json:"success,omitzero"`
+	Type    EventType   `json:"type"`
+	Command CommandType `json:"command,omitzero"`
+	ID      string      `json:"id,omitzero"`
+	Success *bool       `json:"success,omitzero"`
 }
 
 // ============================================================
@@ -183,16 +245,16 @@ type LineProbe struct {
 
 // PromptCmd sends a user message.
 type PromptCmd struct {
-	ID                string         `json:"id,omitzero"`
-	Type              CommandType    `json:"type"`
-	Message           string         `json:"message"`
-	Images            []ImageContent `json:"images,omitzero"`
-	StreamingBehavior string         `json:"streamingBehavior,omitzero"` // "steer" or "followUp"
+	ID                string            `json:"id,omitzero"`
+	Type              CommandType       `json:"type"`
+	Message           string            `json:"message"`
+	Images            []ImageContent    `json:"images,omitzero"`
+	StreamingBehavior StreamingBehavior `json:"streamingBehavior,omitzero"`
 }
 
 // ImageContent is an inline image in base64.
 type ImageContent struct {
-	Type     string `json:"type"`
+	Type     ContentBlockType `json:"type"`
 	Data     string `json:"data"`
 	MimeType string `json:"mimeType"`
 }
@@ -424,7 +486,7 @@ type ExtensionUIResponseCancelled struct {
 type Response struct {
 	ID      string          `json:"id,omitzero"`
 	Type    EventType       `json:"type"`
-	Command string          `json:"command"`
+	Command CommandType     `json:"command"`
 	Success bool            `json:"success"`
 	Error   string          `json:"error,omitzero"`
 	Data    json.RawMessage `json:"data,omitzero"`
@@ -520,10 +582,10 @@ type getCommandsData struct {
 
 // rpcSlashCommand is a command available for invocation via prompt.
 type rpcSlashCommand struct {
-	Name        string     `json:"name"`
-	Description string     `json:"description,omitzero"`
-	Source      string     `json:"source"` // "extension", "prompt", or "skill"
-	SourceInfo  sourceInfo `json:"sourceInfo"`
+	Name        string             `json:"name"`
+	Description string             `json:"description,omitzero"`
+	Source      SlashCommandSource `json:"source"`
+	SourceInfo  sourceInfo         `json:"sourceInfo"`
 }
 
 // sourceInfo describes the origin of a slash command.
@@ -661,13 +723,13 @@ type ExtensionUIRequest struct {
 	Placeholder     string            `json:"placeholder,omitzero"`
 	Prefill         string            `json:"prefill,omitzero"`
 	Timeout         int               `json:"timeout,omitzero"`
-	NotifyType      string            `json:"notifyType,omitzero"` // "info", "warning", "error"
+	NotifyType      NotifyType        `json:"notifyType,omitzero"`
 	StatusKey       string            `json:"statusKey,omitzero"`
 	StatusText      *string           `json:"statusText,omitzero"`
 	WidgetKey       string            `json:"widgetKey,omitzero"`
 	WidgetLines     []string          `json:"widgetLines,omitzero"`
-	WidgetPlacement string            `json:"widgetPlacement,omitzero"` // "aboveEditor", "belowEditor"
-	Text            string            `json:"text,omitzero"`            // for set_editor_text
+	WidgetPlacement WidgetPlacement   `json:"widgetPlacement,omitzero"`
+	Text            string            `json:"text,omitzero"` // for set_editor_text
 }
 
 // ============================================================
@@ -677,7 +739,7 @@ type ExtensionUIRequest struct {
 // AgentMessage is the union of user/assistant/toolResult messages.
 // We only care about assistant messages for building genai.Result.
 type AgentMessage struct {
-	Role         string        `json:"role"`
+	Role         Role          `json:"role"`
 	Content      ContentBlocks `json:"content,omitzero"`
 	API          string        `json:"api,omitzero"`
 	Provider     string        `json:"provider,omitzero"`
@@ -717,7 +779,7 @@ type UsageCost struct {
 // ContentBlock is one entry in AssistantMessage.content.
 // Discriminated by Type: "text", "thinking", "toolCall", "image".
 type ContentBlock struct {
-	Type string `json:"type"`
+	Type ContentBlockType `json:"type"`
 	// text block
 	Text          string `json:"text,omitzero"`
 	TextSignature string `json:"textSignature,omitzero"`
@@ -754,7 +816,7 @@ func (c *ContentBlocks) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &s); err != nil {
 		return err
 	}
-	*c = ContentBlocks{{Type: "text", Text: s}}
+	*c = ContentBlocks{{Type: ContentText, Text: s}}
 	return nil
 }
 

@@ -218,7 +218,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	if err := msgutil.WriteNDJSON(stdin, cmdGetModels{Type: CmdGetModels}); err != nil {
 		return nil, fmt.Errorf("write get_available_models: %w", err)
 	}
-	resp, err := readResponseForCommand(sc, string(CmdGetModels))
+	resp, err := readResponseForCommand(sc, CmdGetModels)
 	if err != nil {
 		return nil, err
 	}
@@ -357,7 +357,7 @@ func (c *Client) setupModel(stdin io.Writer, sc *bufio.Scanner) error {
 	}); err != nil {
 		return fmt.Errorf("write set_model: %w", err)
 	}
-	_, err := readResponseForCommand(sc, string(CmdSetModel))
+	_, err := readResponseForCommand(sc, CmdSetModel)
 	return err
 }
 
@@ -392,7 +392,7 @@ func msgToPromptParts(msg *genai.Message) (string, []ImageContent, error) {
 				texts = append(texts, string(data))
 			} else if strings.HasPrefix(mimeType, "image/") {
 				images = append(images, ImageContent{
-					Type:     "image",
+					Type:     ContentImage,
 					Data:     base64.StdEncoding.EncodeToString(data),
 					MimeType: mimeType,
 				})
@@ -410,7 +410,7 @@ func msgToPromptParts(msg *genai.Message) (string, []ImageContent, error) {
 }
 
 // readResponseForCommand reads lines until a response for the given command is found.
-func readResponseForCommand(sc *bufio.Scanner, cmd string) (*Response, error) {
+func readResponseForCommand(sc *bufio.Scanner, cmd CommandType) (*Response, error) {
 	for sc.Scan() {
 		var probe LineProbe
 		if json.Unmarshal(sc.Bytes(), &probe) != nil {
@@ -508,7 +508,7 @@ func handleExtensionUI(stdin io.Writer, line []byte) error {
 	switch req.Method {
 	case UIMethodConfirm:
 		return msgutil.WriteNDJSON(stdin, ExtensionUIResponseConfirm{
-			Type:      "extension_ui_response",
+			Type:      ExtensionUIResponseType,
 			ID:        req.ID,
 			Confirmed: true,
 		})
@@ -518,7 +518,7 @@ func handleExtensionUI(stdin io.Writer, line []byte) error {
 			val = req.Options[0]
 		}
 		return msgutil.WriteNDJSON(stdin, ExtensionUIResponseValue{
-			Type:  "extension_ui_response",
+			Type:  ExtensionUIResponseType,
 			ID:    req.ID,
 			Value: val,
 		})
@@ -529,7 +529,7 @@ func handleExtensionUI(stdin io.Writer, line []byte) error {
 	default:
 		// input, editor, or unknown: send empty value.
 		return msgutil.WriteNDJSON(stdin, ExtensionUIResponseValue{
-			Type:  "extension_ui_response",
+			Type:  ExtensionUIResponseType,
 			ID:    req.ID,
 			Value: "",
 		})
@@ -548,7 +548,7 @@ func buildResult(line []byte, text, thinking string) (genai.Result, error) {
 	// Find the last assistant message for usage and stop reason.
 	for i := len(ev.Messages) - 1; i >= 0; i-- {
 		msg := &ev.Messages[i]
-		if msg.Role != "assistant" {
+		if msg.Role != RoleAssistant {
 			continue
 		}
 		r.Usage.InputTokens = msg.Usage.Input
@@ -580,11 +580,11 @@ func extractContent(msg *AgentMessage) (text, thinking string) {
 	var textParts, thinkParts []string
 	for i := range msg.Content {
 		switch msg.Content[i].Type {
-		case "text":
+		case ContentText:
 			if msg.Content[i].Text != "" {
 				textParts = append(textParts, msg.Content[i].Text)
 			}
-		case "thinking":
+		case ContentThinking:
 			if msg.Content[i].Thinking != "" {
 				thinkParts = append(thinkParts, msg.Content[i].Thinking)
 			}

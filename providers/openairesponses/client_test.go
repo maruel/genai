@@ -220,9 +220,9 @@ func TestClient(t *testing.T) {
 					genai.ProviderOptionAPIKey("bad apiKey"),
 					genai.ProviderOptionModel("gpt-4.1-nano"),
 				},
-				ErrGenSync:   "http 401\nIncorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys. (type: invalid_request_error, code: invalid_api_key)",
-				ErrGenStream: "http 401\nIncorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys. (type: invalid_request_error, code: invalid_api_key)",
-				ErrListModel: "http 401\nIncorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys. (type: invalid_request_error, code: invalid_api_key)",
+				ErrGenSync:   "http 401\ninvalid_request_error/invalid_api_key: Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
+				ErrGenStream: "http 401\ninvalid_request_error/invalid_api_key: Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
+				ErrListModel: "http 401\ninvalid_request_error/invalid_api_key: Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
 			},
 			{
 				Name: "bad apiKey image",
@@ -231,16 +231,16 @@ func TestClient(t *testing.T) {
 					genai.ProviderOptionModel("gpt-image-1"),
 					genai.ProviderOptionModalities{genai.ModalityImage},
 				},
-				ErrGenSync:   "http 401\nIncorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys. (type: invalid_request_error, code: invalid_api_key)",
-				ErrGenStream: "http 401\nIncorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys. (type: invalid_request_error, code: invalid_api_key)",
+				ErrGenSync:   "http 401\ninvalid_request_error/invalid_api_key: Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
+				ErrGenStream: "http 401\ninvalid_request_error/invalid_api_key: Incorrect API key provided: bad apiKey. You can find your API key at https://platform.openai.com/account/api-keys.",
 			},
 			{
 				Name: "bad model",
 				Opts: []genai.ProviderOption{
 					genai.ProviderOptionModel("bad model"),
 				},
-				ErrGenSync:   "http 400\nThe requested model 'bad model' does not exist. (type: invalid_request_error, code: model_not_found)",
-				ErrGenStream: "http 400\nThe requested model 'bad model' does not exist. (type: invalid_request_error, code: model_not_found)",
+				ErrGenSync:   "http 400\ninvalid_request_error/model_not_found for \"model\": The requested model 'bad model' does not exist.",
+				ErrGenStream: "http 400\ninvalid_request_error/model_not_found for \"model\": The requested model 'bad model' does not exist.",
 			},
 			{
 				Name: "bad model image",
@@ -248,8 +248,8 @@ func TestClient(t *testing.T) {
 					genai.ProviderOptionModel("bad model"),
 					genai.ProviderOptionModalities{genai.ModalityImage},
 				},
-				ErrGenSync:   "http 400\nThe model 'bad model' does not exist. (type: image_generation_user_error, code: invalid_value)",
-				ErrGenStream: "http 400\nThe model 'bad model' does not exist. (type: image_generation_user_error, code: invalid_value)",
+				ErrGenSync:   "http 400\nimage_generation_user_error/invalid_value for \"model\": The model 'bad model' does not exist.",
+				ErrGenStream: "http 400\nimage_generation_user_error/invalid_value for \"model\": The model 'bad model' does not exist.",
 			},
 			/* TODO:
 			{

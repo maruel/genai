@@ -14,150 +14,71 @@
 package openairesponses
 
 import (
+	"encoding/base64"
+	"errors"
+	"fmt"
+	"mime"
+	"reflect"
+	"slices"
+	"strings"
+
 	"github.com/invopop/jsonschema"
+	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
+	"github.com/maruel/genai/internal"
+	"github.com/maruel/genai/providers/openaibase"
 )
 
 //
-// Shared types (used by both OpenAI chat and responses APIs).
+// Shared types: aliases to openaibase.
 //
 
 // ServiceTier is the quality of service to determine the request's priority.
-type ServiceTier string
+type ServiceTier = openaibase.ServiceTier
 
 const (
-	// ServiceTierAuto will utilize scale tier credits until they are exhausted if the Project is Scale tier
-	// enabled, else the request will be processed using the default service tier with a lower uptime SLA and no
-	// latency guarantee.
-	//
-	// https://openai.com/api-scale-tier/
-	ServiceTierAuto ServiceTier = "auto"
-	// ServiceTierDefault has the request be processed using the default service tier with a lower uptime SLA
-	// and no latency guarantee.
-	ServiceTierDefault ServiceTier = "default"
-	// ServiceTierFlex has the request be processed with the Flex Processing service tier.
-	//
-	// Flex processing is in beta, and currently only available for GPT-5, o3 and o4-mini models.
-	//
-	// https://platform.openai.com/docs/guides/flex-processing
-	ServiceTierFlex ServiceTier = "flex"
+	ServiceTierAuto    = openaibase.ServiceTierAuto
+	ServiceTierDefault = openaibase.ServiceTierDefault
+	ServiceTierFlex    = openaibase.ServiceTierFlex
 )
 
-// ReasoningEffort is the effort the model should put into reasoning. Default is Medium.
-//
-// https://platform.openai.com/docs/api-reference/assistants/createAssistant#assistants-createassistant-reasoning_effort
-// https://platform.openai.com/docs/guides/reasoning
-type ReasoningEffort string
+// ReasoningEffort is the effort the model should put into reasoning.
+type ReasoningEffort = openaibase.ReasoningEffort
 
-// Reasoning effort values.
 const (
-	ReasoningEffortNone    ReasoningEffort = "none"
-	ReasoningEffortMinimal ReasoningEffort = "minimal"
-	ReasoningEffortLow     ReasoningEffort = "low"
-	ReasoningEffortMedium  ReasoningEffort = "medium"
-	ReasoningEffortHigh    ReasoningEffort = "high"
-	ReasoningEffortXHigh   ReasoningEffort = "xhigh"
+	ReasoningEffortNone    = openaibase.ReasoningEffortNone
+	ReasoningEffortMinimal = openaibase.ReasoningEffortMinimal
+	ReasoningEffortLow     = openaibase.ReasoningEffortLow
+	ReasoningEffortMedium  = openaibase.ReasoningEffortMedium
+	ReasoningEffortHigh    = openaibase.ReasoningEffortHigh
+	ReasoningEffortXHigh   = openaibase.ReasoningEffortXHigh
 )
-
-// ImageRequest is documented at https://platform.openai.com/docs/api-reference/images
-type ImageRequest struct {
-	Prompt            string     `json:"prompt"`
-	Model             string     `json:"model,omitzero"`              // Default to dall-e-2, unless a gpt-image-1 specific parameter is used.
-	Background        Background `json:"background,omitzero"`         // Default "auto"
-	Moderation        string     `json:"moderation,omitzero"`         // gpt-image-1: "low" or "auto"
-	N                 int64      `json:"n,omitzero"`                  // Number of images to return
-	OutputCompression float64    `json:"output_compression,omitzero"` // Defaults to 100. Only supported on gpt-image-1 with webp or jpeg
-	OutputFormat      string     `json:"output_format,omitzero"`      // "png", "jpeg" or "webp". Defaults to png. Only supported on gpt-image-1.
-	Quality           string     `json:"quality,omitzero"`            // "auto", gpt-image-1: "high", "medium", "low". dall-e-3: "hd", "standard". dall-e-2: "standard".
-	ResponseFormat    string     `json:"response_format,omitzero"`    // "url" or "b64_json"; url is valid for 60 minutes; gpt-image-1 only returns b64_json
-	Size              string     `json:"size,omitzero"`               // "auto", gpt-image-1: "1024x1024", "1536x1024", "1024x1536". dall-e-3: "1024x1024", "1792x1024", "1024x1792". dall-e-2: "256x256", "512x512", "1024x1024".
-	Style             string     `json:"style,omitzero"`              // dall-e-3: "vivid", "natural"
-	User              string     `json:"user,omitzero"`               // End-user to help monitor and detect abuse
-}
 
 // Background is only supported on gpt-image-1.
-type Background string
+type Background = openaibase.Background
 
-// Background mode values.
 const (
-	BackgroundAuto        Background = "auto"
-	BackgroundTransparent Background = "transparent"
-	BackgroundOpaque      Background = "opaque"
+	BackgroundAuto        = openaibase.BackgroundAuto
+	BackgroundTransparent = openaibase.BackgroundTransparent
+	BackgroundOpaque      = openaibase.BackgroundOpaque
 )
 
-// ImageResponse is the provider-specific image generation response.
-type ImageResponse struct {
-	Created base.Time         `json:"created"`
-	Data    []ImageChoiceData `json:"data"`
-	Usage   struct {
-		InputTokens        int64 `json:"input_tokens"`
-		OutputTokens       int64 `json:"output_tokens"`
-		TotalTokens        int64 `json:"total_tokens"`
-		InputTokensDetails struct {
-			TextTokens  int64 `json:"text_tokens"`
-			ImageTokens int64 `json:"image_tokens"`
-		} `json:"input_tokens_details"`
-		OutputTokensDetails struct {
-			TextTokens  int64 `json:"text_tokens"`
-			ImageTokens int64 `json:"image_tokens"`
-		} `json:"output_tokens_details"`
-	} `json:"usage"`
-	Background   string `json:"background"`    // "opaque"
-	Size         string `json:"size"`          // e.g. "1024x1024"
-	Quality      string `json:"quality"`       // e.g. "medium"
-	OutputFormat string `json:"output_format"` // e.g. "png"
-}
-
-// ImageChoiceData is the data for one image generation choice.
-type ImageChoiceData struct {
-	B64JSON       []byte `json:"b64_json"`
-	RevisedPrompt string `json:"revised_prompt"` // dall-e-3 only
-	URL           string `json:"url"`            // Unsupported for gpt-image-1
-}
-
-// Model is documented at https://platform.openai.com/docs/api-reference/models/object
-//
-// Sadly the modalities aren't reported. The only way I can think of to find it at run time is to fetch
-// https://platform.openai.com/docs/models/gpt-4o-mini-realtime-preview, find the div containing
-// "Modalities:", then extract the modalities from the text.
-type Model struct {
-	ID      string    `json:"id"`
-	Object  string    `json:"object"`
-	Created base.Time `json:"created"`
-	OwnedBy string    `json:"owned_by"`
-}
-
-// ModelsResponse represents the response structure for OpenAI models listing.
-type ModelsResponse struct {
-	Object string  `json:"object"` // list
-	Data   []Model `json:"data"`
-}
-
-// File is documented at https://platform.openai.com/docs/api-reference/files/object
-type File struct {
-	Bytes         int64     `json:"bytes"` // File size
-	CreatedAt     base.Time `json:"created_at"`
-	ExpiresAt     base.Time `json:"expires_at"`
-	Filename      string    `json:"filename"`
-	ID            string    `json:"id"`
-	Object        string    `json:"object"`         // "file"
-	Purpose       string    `json:"purpose"`        // One of: assistants, assistants_output, batch, batch_output, fine-tune, fine-tune-results and vision
-	Status        string    `json:"status"`         // Deprecated
-	StatusDetails string    `json:"status_details"` // Deprecated
-}
-
-// FileDeleteResponse is documented at https://platform.openai.com/docs/api-reference/files/delete
-type FileDeleteResponse struct {
-	ID      string `json:"id"`
-	Object  string `json:"object"` // "file"
-	Deleted bool   `json:"deleted"`
-}
-
-// FileListResponse is documented at https://platform.openai.com/docs/api-reference/files/list
-type FileListResponse struct {
-	Data   []File `json:"data"`
-	Object string `json:"object"` // "list"
-}
+type (
+	ImageRequest       = openaibase.ImageRequest
+	ImageResponse      = openaibase.ImageResponse
+	ImageChoiceData    = openaibase.ImageChoiceData
+	GenOptionImage     = openaibase.GenOptionImage
+	Model              = openaibase.Model
+	ModelsResponse     = openaibase.ModelsResponse
+	File               = openaibase.File
+	FileDeleteResponse = openaibase.FileDeleteResponse
+	FileListResponse   = openaibase.FileListResponse
+	BatchRequest       = openaibase.BatchRequest
+	Batch              = openaibase.Batch
+	BatchUsage         = openaibase.BatchUsage
+	ErrorResponse      = openaibase.ErrorResponse
+	ErrorResponseError = openaibase.ErrorResponseError
+)
 
 //
 // Responses API types.
@@ -227,6 +148,218 @@ type Response struct {
 	Output            []Message         `json:"output,omitzero"`
 	Usage             Usage             `json:"usage,omitzero"`
 	Billing           map[string]string `json:"billing,omitzero"` // e.g. {"payer": "openai"}
+}
+
+// Init implements base.InitializableRequest.
+func (r *Response) Init(msgs genai.Messages, model string, opts ...genai.GenOption) error {
+	var unsupported []string
+	var errs []error
+	r.Model = model
+	r.Reasoning.Summary = "auto"
+	for _, opt := range opts {
+		if err := opt.Validate(); err != nil {
+			return err
+		}
+		switch v := opt.(type) {
+		case *GenOptionText:
+			r.Reasoning.Effort = v.ReasoningEffort
+			r.ServiceTier = v.ServiceTier
+			r.Truncation = string(v.Truncation)
+			r.PreviousResponseID = v.PreviousResponseID
+		case *genai.GenOptionText:
+			u, e := r.initOptionsText(v)
+			unsupported = append(unsupported, u...)
+			errs = append(errs, e...)
+		case *genai.GenOptionTools:
+			errs = append(errs, r.initOptionsTools(v)...)
+		case *genai.GenOptionWeb:
+			if v.Search {
+				r.Tools = append(r.Tools, Tool{
+					Type: "web_search",
+					// SearchContextSize: "medium",
+				})
+				r.Include = []string{"web_search_call.action.sources"}
+			}
+			if v.Fetch {
+				errs = append(errs, errors.New("unsupported GenOptionWeb.Fetch"))
+			}
+		default:
+			return &base.ErrNotSupported{Options: []string{internal.TypeName(opt)}}
+		}
+	}
+	if len(msgs) == 0 {
+		return errors.New("no messages provided")
+	}
+
+	for i := range msgs {
+		// Each "Message" in OpenAI responses API is a content.
+		switch {
+		case len(msgs[i].ToolCallResults) > 1:
+			// Handle messages with multiple tool call results by creating multiple messages
+			for j := range msgs[i].ToolCallResults {
+				// Create a copy of the message with only one tool call result
+				msgCopy := msgs[i]
+				msgCopy.ToolCallResults = []genai.ToolCallResult{msgs[i].ToolCallResults[j]}
+				var newMsg Message
+				if skip, err := newMsg.From(&msgCopy); err != nil {
+					errs = append(errs, fmt.Errorf("message #%d: tool call results #%d: %w", i, j, err))
+				} else if !skip {
+					r.Input = append(r.Input, newMsg)
+				}
+			}
+		case len(msgs[i].Replies) > 1:
+			// Goddam OpenAI. Handle messages with multiple tool calls by creating multiple messages.
+			var txt []genai.Reply
+			for j := range msgs[i].Replies {
+				if !msgs[i].Replies[j].ToolCall.IsZero() {
+					msgCopy := msgs[i]
+					msgCopy.Replies = []genai.Reply{msgs[i].Replies[j]}
+					var newMsg Message
+					if skip, err := newMsg.From(&msgCopy); err != nil {
+						errs = append(errs, fmt.Errorf("message #%d: tool call #%d: %w", i, j, err))
+					} else if !skip {
+						r.Input = append(r.Input, newMsg)
+					}
+				} else {
+					txt = append(txt, msgs[i].Replies[j])
+				}
+			}
+			if len(txt) != 0 {
+				// Create a copy of the message with only the non-tool call messages.
+				msgCopy := msgs[i]
+				msgCopy.Replies = txt
+				var newMsg Message
+				if skip, err := newMsg.From(&msgCopy); err != nil {
+					errs = append(errs, fmt.Errorf("message #%d: %w", i, err))
+				} else if !skip {
+					r.Input = append(r.Input, newMsg)
+				}
+			}
+		default:
+			// It's a Request, send it as-is.
+			var newMsg Message
+			if skip, err := newMsg.From(&msgs[i]); err != nil {
+				errs = append(errs, fmt.Errorf("message #%d: %w", i, err))
+			} else if !skip {
+				r.Input = append(r.Input, newMsg)
+			}
+		}
+	}
+	// If we have unsupported features but no other errors, return a structured error.
+	if len(unsupported) > 0 && len(errs) == 0 {
+		return &base.ErrNotSupported{Options: unsupported}
+	}
+	return errors.Join(errs...)
+}
+
+// SetStream implements base.InitializableRequest.
+func (r *Response) SetStream(stream bool) {
+	r.Stream = stream
+}
+
+// ToResult implements base.ResultConverter.
+func (r *Response) ToResult() (genai.Result, error) {
+	res := genai.Result{
+		Usage: genai.Usage{
+			InputTokens:       r.Usage.InputTokens,
+			InputCachedTokens: r.Usage.InputTokensDetails.CachedTokens,
+			ReasoningTokens:   r.Usage.OutputTokensDetails.ReasoningTokens,
+			OutputTokens:      r.Usage.OutputTokens,
+			TotalTokens:       r.Usage.TotalTokens,
+			ServiceTier:       string(r.ServiceTier),
+		},
+	}
+	for oi := range r.Output {
+		if err := r.Output[oi].To(&res.Message); err != nil {
+			return res, err
+		}
+		for i := range r.Output[oi].Content {
+			for j := range r.Output[oi].Content[i].Logprobs {
+				res.Logprobs = append(res.Logprobs, r.Output[oi].Content[i].Logprobs[j].To())
+			}
+		}
+	}
+	var err error
+	hasRefusal := false
+	for oi := range r.Output {
+		for i := range r.Output[oi].Content {
+			if r.Output[oi].Content[i].Type == ContentRefusal {
+				hasRefusal = true
+			}
+		}
+	}
+	switch {
+	case r.IncompleteDetails.Reason != "":
+		if r.IncompleteDetails.Reason == "max_output_tokens" {
+			res.Usage.FinishReason = genai.FinishedLength
+		}
+		err = errors.New(r.IncompleteDetails.Reason)
+	case hasRefusal:
+		res.Usage.FinishReason = genai.FinishedContentFilter
+	case slices.ContainsFunc(res.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }):
+		res.Usage.FinishReason = genai.FinishedToolCalls
+	default:
+		res.Usage.FinishReason = genai.FinishedStop
+	}
+	return res, err
+}
+
+func (r *Response) initOptionsText(v *genai.GenOptionText) ([]string, []error) {
+	var unsupported []string
+	var errs []error
+	r.MaxOutputTokens = v.MaxTokens
+	r.Temperature = v.Temperature
+	r.TopP = v.TopP
+	if v.SystemPrompt != "" {
+		r.Instructions = v.SystemPrompt
+	}
+	if v.TopK != 0 {
+		unsupported = append(unsupported, "GenOptionText.TopK")
+	}
+	if v.TopLogprobs > 0 {
+		r.TopLogprobs = v.TopLogprobs
+	}
+	if len(v.Stop) != 0 {
+		errs = append(errs, errors.New("unsupported option Stop"))
+	}
+	if v.DecodeAs != nil {
+		r.Text.Format.Type = "json_schema"
+		// OpenAI requires a name.
+		r.Text.Format.Name = "response"
+		r.Text.Format.Strict = true
+		r.Text.Format.Schema = internal.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
+	} else if v.ReplyAsJSON {
+		r.Text.Format.Type = "json_object"
+	}
+	return unsupported, errs
+}
+
+func (r *Response) initOptionsTools(v *genai.GenOptionTools) []error {
+	var errs []error
+	if len(v.Tools) != 0 {
+		r.ParallelToolCalls = true
+		switch v.Force {
+		case genai.ToolCallAny:
+			r.ToolChoice = "auto"
+		case genai.ToolCallRequired:
+			r.ToolChoice = "required"
+		case genai.ToolCallNone:
+			r.ToolChoice = "none"
+		}
+		r.Tools = make([]Tool, len(v.Tools))
+		for i, t := range v.Tools {
+			if t.Name == "" {
+				errs = append(errs, errors.New("tool name is required"))
+			}
+			r.Tools[i].Type = "function"
+			r.Tools[i].Name = t.Name
+			r.Tools[i].Description = t.Description
+			if r.Tools[i].Parameters = t.InputSchemaOverride; r.Tools[i].Parameters == nil {
+				r.Tools[i].Parameters = t.GetInputSchema()
+			}
+		}
+	}
+	return errs
 }
 
 // ReasoningConfig represents reasoning configuration for o-series models.
@@ -351,6 +484,119 @@ type Message struct {
 	} `json:"action,omitzero"`
 }
 
+// From must be called with at most one ToolCallResults.
+func (m *Message) From(in *genai.Message) (bool, error) {
+	if len(in.ToolCallResults) > 1 {
+		return false, &internal.BadError{Err: errors.New("internal error")}
+	}
+	if len(in.ToolCallResults) != 0 {
+		// Handle multiple tool call results by creating multiple messages
+		// The caller (Init method) should handle this by creating separate messages
+		m.Type = MessageFunctionCallOutput
+		m.CallID = in.ToolCallResults[0].ID
+		m.Output = in.ToolCallResults[0].Result
+		return false, nil
+	}
+	if len(in.Requests) != 0 {
+		m.Type = MessageMessage
+		m.Role = "user"
+		m.Content = make([]Content, len(in.Requests))
+		for j := range in.Requests {
+			if err := m.Content[j].FromRequest(&in.Requests[j]); err != nil {
+				return false, fmt.Errorf("request #%d: %w", j, err)
+			}
+		}
+		return len(m.Content) == 0, nil
+	}
+	if len(in.Replies) != 0 {
+		// Handle multiple tool calls by creating multiple messages
+		// The caller (Init method) should handle this by creating separate messages
+		if !in.Replies[0].ToolCall.IsZero() {
+			if len(in.Replies[0].ToolCall.Opaque) != 0 {
+				return false, &internal.BadError{Err: errors.New("field ToolCall.Opaque not supported")}
+			}
+			m.Type = MessageFunctionCall
+			m.CallID = in.Replies[0].ToolCall.ID
+			m.Name = in.Replies[0].ToolCall.Name
+			m.Arguments = in.Replies[0].ToolCall.Arguments
+			return false, nil
+		}
+		m.Type = MessageMessage
+		m.Role = "assistant"
+		for j := range in.Replies {
+			// TODO: should we send it back, at least the ID?
+			if in.Replies[j].Reasoning != "" {
+				continue
+			}
+			m.Content = append(m.Content, Content{})
+			if err := m.Content[len(m.Content)-1].FromReply(&in.Replies[j]); err != nil {
+				return false, fmt.Errorf("reply #%d: %w", j, err)
+			}
+		}
+		return len(m.Content) == 0, nil
+	}
+	return false, &internal.BadError{Err: fmt.Errorf("implement message: %#v", in)}
+}
+
+// To is different here because it can be called multiple times on the same out.
+//
+// In the Responses API, Message is actually a mix of Message and Content.
+func (m *Message) To(out *genai.Message) error {
+	// We only need to implement the types that can be returned from the LLM.
+	switch m.Type {
+	case MessageMessage:
+		for i := range m.Content {
+			replies, err := m.Content[i].To()
+			if err != nil {
+				return fmt.Errorf("reply %d: %w", i, err)
+			}
+			out.Replies = append(out.Replies, replies...)
+		}
+	case MessageReasoning:
+		for i := range m.Summary {
+			if m.Summary[i].Type != "summary_text" {
+				return &internal.BadError{Err: fmt.Errorf("implement summary type %q", m.Summary[i].Type)}
+			}
+			out.Replies = append(out.Replies, genai.Reply{Reasoning: m.Summary[i].Text})
+		}
+	case MessageFunctionCall:
+		out.Replies = append(out.Replies, genai.Reply{ToolCall: genai.ToolCall{ID: m.CallID, Name: m.Name, Arguments: m.Arguments}})
+	case MessageWebSearchCall:
+		if m.Action.Type != "search" {
+			return &internal.BadError{Err: fmt.Errorf("implement action type %q", m.Action.Type)}
+		}
+		c := genai.Citation{Sources: make([]genai.CitationSource, len(m.Action.Sources)+1)}
+		c.Sources[0].Type = genai.CitationWebQuery
+		c.Sources[0].Snippet = m.Action.Query
+		for i, src := range m.Action.Sources {
+			c.Sources[i+1].Type = genai.CitationWeb
+			c.Sources[i+1].URL = src.URL
+		}
+		out.Replies = append(out.Replies, genai.Reply{Citation: c})
+	case MessageFileSearchCall:
+		for _, q := range m.Queries {
+			out.Replies = append(out.Replies, genai.Reply{Citation: genai.Citation{
+				Sources: []genai.CitationSource{{Type: genai.CitationWebQuery, Snippet: q}},
+			}})
+		}
+		for _, r := range m.Results {
+			out.Replies = append(out.Replies, genai.Reply{Citation: genai.Citation{
+				CitedText: r.Text,
+				Sources: []genai.CitationSource{{
+					Type:  genai.CitationDocument,
+					ID:    r.FileID,
+					Title: r.Filename,
+				}},
+			}})
+		}
+	case MessageComputerCall, MessageImageGenerationCall, MessageCodeInterpreterCall, MessageLocalShellCall, MessageMcpListTools, MessageMcpApprovalRequest, MessageMcpCall, MessageComputerCallOutput, MessageFunctionCallOutput, MessageLocalShellCallOutput, MessageMcpApprovalResponse, MessageItemReference:
+		return &internal.BadError{Err: fmt.Errorf("unsupported output type %q", m.Type)}
+	default:
+		return &internal.BadError{Err: fmt.Errorf("unsupported output type %q", m.Type)}
+	}
+	return nil
+}
+
 // ContentType defines the data being transported. It only includes actual data (text, files), no tool call nor result.
 type ContentType string
 
@@ -392,10 +638,174 @@ type Content struct {
 	Refusal string `json:"refusal,omitzero"`
 }
 
+// To converts to the genai equivalent.
+func (c *Content) To() ([]genai.Reply, error) {
+	var out []genai.Reply
+	for _, a := range c.Annotations {
+		var ci genai.Citation
+		switch a.Type {
+		case "url_citation":
+			ci = genai.Citation{
+				StartIndex: a.StartIndex,
+				EndIndex:   a.EndIndex,
+				Sources:    []genai.CitationSource{{Type: genai.CitationWeb, URL: a.URL, Title: a.Title}},
+			}
+		case "file_citation", "container_file_citation":
+			ci = genai.Citation{
+				StartIndex: a.StartIndex,
+				EndIndex:   a.EndIndex,
+				Sources:    []genai.CitationSource{{Type: genai.CitationDocument, ID: a.FileID}},
+			}
+		case "file_path":
+			ci = genai.Citation{
+				Sources: []genai.CitationSource{{Type: genai.CitationDocument, ID: a.FileID}},
+			}
+		default:
+			return out, &internal.BadError{Err: fmt.Errorf("unsupported annotation type %q", a.Type)}
+		}
+		out = append(out, genai.Reply{Citation: ci})
+	}
+	switch c.Type {
+	case ContentOutputText:
+		out = append(out, genai.Reply{Text: c.Text})
+	case ContentRefusal:
+		// Surface refusal as text so the caller can see the reason.
+		out = append(out, genai.Reply{Text: c.Refusal})
+	case ContentInputText, ContentInputImage, ContentInputFile:
+		return out, &internal.BadError{Err: fmt.Errorf("implement content type %q", c.Type)}
+	default:
+		return out, &internal.BadError{Err: fmt.Errorf("implement content type %q", c.Type)}
+	}
+	return out, nil
+}
+
+// FromRequest converts from a genai request.
+func (c *Content) FromRequest(in *genai.Request) error {
+	if in.Text != "" {
+		c.Type = ContentInputText
+		c.Text = in.Text
+		return nil
+	}
+	if !in.Doc.IsZero() {
+		// https://platform.openai.com/docs/guides/images?api-mode=chat&format=base64-encoded#image-input-requirements
+		mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
+		if err != nil {
+			return err
+		}
+		// OpenAI require a mime-type to determine if image, sound or PDF.
+		if mimeType == "" {
+			return fmt.Errorf("unspecified mime type for URL %q", in.Doc.URL)
+		}
+		switch {
+		case strings.HasPrefix(mimeType, "image/"):
+			c.Type = ContentInputImage
+			c.Detail = "auto" // TODO: Make it configurable.
+			if in.Doc.URL == "" {
+				c.ImageURL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
+			} else {
+				c.ImageURL = in.Doc.URL
+			}
+			// text/plain, text/markdown
+		case strings.HasPrefix(mimeType, "text/"):
+			// OpenAI responses API doesn't support text documents as attachment.
+			c.Type = ContentInputText
+			if in.Doc.URL != "" {
+				return fmt.Errorf("%s documents must be provided inline, not as a URL", mimeType)
+			}
+			c.Text = string(data)
+		default:
+			if in.Doc.URL != "" {
+				return fmt.Errorf("URL to %s file not supported", mimeType)
+			}
+			filename := in.Doc.GetFilename()
+			if filename == "" {
+				exts, err := mime.ExtensionsByType(mimeType)
+				if err != nil {
+					return err
+				}
+				if len(exts) == 0 {
+					return fmt.Errorf("unknown extension for mime type %s", mimeType)
+				}
+				filename = "content" + exts[0]
+			}
+			c.Type = ContentInputFile
+			c.Filename = filename
+			c.FileData = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
+		}
+		return nil
+	}
+	return errors.New("unknown Request type")
+}
+
+// FromReply converts from a genai reply.
+func (c *Content) FromReply(in *genai.Reply) error {
+	if len(in.Opaque) != 0 {
+		return &internal.BadError{Err: errors.New("field Reply.Opaque not supported")}
+	}
+	if in.Text != "" {
+		c.Type = ContentInputText
+		c.Text = in.Text
+		return nil
+	}
+	if !in.Doc.IsZero() {
+		// https://platform.openai.com/docs/guides/images?api-mode=chat&format=base64-encoded#image-input-requirements
+		mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
+		if err != nil {
+			return err
+		}
+		// OpenAI require a mime-type to determine if image, sound or PDF.
+		if mimeType == "" {
+			return fmt.Errorf("unspecified mime type for URL %q", in.Doc.URL)
+		}
+		switch {
+		case strings.HasPrefix(mimeType, "image/"):
+			c.Type = ContentInputImage
+			c.Detail = "auto" // TODO: Make it configurable.
+			if in.Doc.URL == "" {
+				c.ImageURL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
+			} else {
+				c.ImageURL = in.Doc.URL
+			}
+			// text/plain, text/markdown
+		case strings.HasPrefix(mimeType, "text/"):
+			// OpenAI responses API doesn't support text documents as attachment.
+			c.Type = ContentInputText
+			if in.Doc.URL != "" {
+				return fmt.Errorf("%s documents must be provided inline, not as a URL", mimeType)
+			}
+			c.Text = string(data)
+		default:
+			if in.Doc.URL != "" {
+				return fmt.Errorf("URL to %s file not supported", mimeType)
+			}
+			filename := in.Doc.GetFilename()
+			if filename == "" {
+				exts, err := mime.ExtensionsByType(mimeType)
+				if err != nil {
+					return err
+				}
+				if len(exts) == 0 {
+					return fmt.Errorf("unknown extension for mime type %s", mimeType)
+				}
+				filename = "content" + exts[0]
+			}
+			c.Type = ContentInputFile
+			c.Filename = filename
+			c.FileData = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
+		}
+		return nil
+	}
+	return &internal.BadError{Err: errors.New("unknown Reply type")}
+}
+
 // APIError represents an API error in the response.
 type APIError struct {
 	Code    string `json:"code"` // "server_error"
 	Message string `json:"message"`
+}
+
+func (e *APIError) Error() string {
+	return fmt.Sprintf("%s: %s", e.Code, e.Message)
 }
 
 // IncompleteDetails represents details about why a response is incomplete.
@@ -433,6 +843,17 @@ type Logprobs struct {
 		Bytes   []byte  `json:"bytes,omitzero"`
 		Logprob float64 `json:"logprob,omitzero"`
 	} `json:"top_logprobs,omitzero"`
+}
+
+// To converts to the genai equivalent.
+func (l *Logprobs) To() []genai.Logprob {
+	out := make([]genai.Logprob, 1, len(l.TopLogprobs)+1)
+	// Intentionally discard Bytes.
+	out[0] = genai.Logprob{Text: l.Token, Logprob: l.Logprob}
+	for _, tlp := range l.TopLogprobs {
+		out = append(out, genai.Logprob{Text: tlp.Token, Logprob: tlp.Logprob})
+	}
+	return out
 }
 
 // ReasoningSummary represents reasoning summary content.
@@ -606,7 +1027,7 @@ type ResponseStreamChunkResponse struct {
 }
 
 //
-// Batch API types.
+// Batch API types (API-specific; use Response as body).
 //
 
 // BatchRequestInput is documented at https://platform.openai.com/docs/api-reference/batch/request-input
@@ -627,57 +1048,4 @@ type BatchRequestOutput struct {
 		RequestID  string   `json:"request_id"` // To use when contacting support
 		Body       Response `json:"body"`
 	} `json:"response"`
-}
-
-// BatchRequest is documented at https://platform.openai.com/docs/api-reference/batch/create
-type BatchRequest struct {
-	CompletionWindow string            `json:"completion_window"` // Must be "24h"
-	Endpoint         string            `json:"endpoint"`          // One of /v1/responses, /v1/chat/completions, /v1/embeddings, /v1/completions
-	InputFileID      string            `json:"input_file_id"`     // File must be JSONL
-	Metadata         map[string]string `json:"metadata,omitzero"` // Maximum 16 keys of 64 chars, values max 512 chars
-}
-
-// Batch is documented at https://platform.openai.com/docs/api-reference/batch/object
-type Batch struct {
-	CancelledAt      base.Time `json:"cancelled_at"`
-	CancellingAt     base.Time `json:"cancelling_at"`
-	CompletedAt      base.Time `json:"completed_at"`
-	CompletionWindow string    `json:"completion_window"` // "24h"
-	CreatedAt        base.Time `json:"created_at"`
-	Endpoint         string    `json:"endpoint"`      // Same as BatchRequest.Endpoint
-	ErrorFileID      string    `json:"error_file_id"` // File ID containing the outputs of requests with errors.
-	Errors           struct {
-		Data []struct {
-			Code    string `json:"code"`
-			Line    int64  `json:"line"`
-			Message string `json:"message"`
-			Param   string `json:"param"`
-		} `json:"data"`
-	} `json:"errors"`
-	ExpiredAt     base.Time         `json:"expired_at"`
-	ExpiresAt     base.Time         `json:"expires_at"`
-	FailedAt      base.Time         `json:"failed_at"`
-	FinalizingAt  base.Time         `json:"finalizing_at"`
-	ID            string            `json:"id"`
-	InProgressAt  base.Time         `json:"in_progress_at"`
-	InputFileID   string            `json:"input_file_id"` // Input data
-	Metadata      map[string]string `json:"metadata"`
-	Object        string            `json:"object"`         // "batch"
-	OutputFileID  string            `json:"output_file_id"` // Output data
-	RequestCounts struct {
-		Completed int64 `json:"completed"`
-		Failed    int64 `json:"failed"`
-		Total     int64 `json:"total"`
-	} `json:"request_counts"`
-	Status string `json:"status"` // "completed", "in_progress", "validating", "finalizing"
-}
-
-// ErrorResponse represents an error response from the OpenAI API.
-type ErrorResponse struct {
-	ErrorVal struct {
-		Message string `json:"message"`
-		Type    string `json:"type"`
-		Code    string `json:"code"`
-		Param   string `json:"param"`
-	} `json:"error"`
 }

@@ -18,7 +18,6 @@ import (
 	"fmt"
 	"io"
 	"iter"
-	"mime/multipart"
 	"net/http"
 	"net/url"
 	"os"
@@ -28,6 +27,7 @@ import (
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
+	"github.com/maruel/genai/providers/openaibase"
 	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/roundtrippers"
 )
@@ -64,17 +64,6 @@ func (o *GenOptionText) Validate() error {
 	return o.ServiceTier.Validate()
 }
 
-// GenOptionImage defines OpenAI specific options.
-type GenOptionImage struct {
-	// Background is only supported on gpt-image-1.
-	Background Background
-}
-
-// Validate implements genai.Validatable.
-func (o *GenOptionImage) Validate() error {
-	return nil
-}
-
 //
 
 // In May 2025, OpenAI started pushing for Response API. They say it's the only way to keep reasoning items.
@@ -86,7 +75,8 @@ func (o *GenOptionImage) Validate() error {
 // Client implements genai.Provider.
 type Client struct {
 	base.NotImplemented
-	impl base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
+	impl   base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]
+	shared openaibase.Client
 }
 
 // New creates a new client to talk to the OpenAI platform API.
@@ -154,12 +144,13 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	if wrapper != nil {
 		t = wrapper(t)
 	}
+	const baseURL = "https://api.openai.com/v1"
 	c := &Client{
 		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
-			GenSyncURL:      "https://api.openai.com/v1/chat/completions",
+			GenSyncURL:      baseURL + "/chat/completions",
 			ProcessStream:   ProcessStream,
 			PreloadedModels: preloadedModels,
-			ProcessHeaders:  processHeaders,
+			ProcessHeaders:  openaibase.ProcessHeaders,
 			ProviderBase: base.ProviderBase[*ErrorResponse]{
 				// OpenAI error message prints the api key URL already.
 				APIKeyURL: "",
@@ -172,6 +163,11 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 				},
 			},
 		},
+	}
+	c.shared = openaibase.Client{
+		Impl:            &c.impl.ProviderBase,
+		BaseURL:         baseURL,
+		PreloadedModels: preloadedModels,
 	}
 	if err == nil {
 		switch model {
@@ -189,17 +185,17 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 			}
 			switch mod {
 			case genai.ModalityText:
-				if c.impl.Model, err = c.selectBestTextModel(ctx, model); err != nil {
+				if c.impl.Model, err = c.shared.SelectBestTextModel(ctx, model); err != nil {
 					return nil, err
 				}
 				c.impl.OutputModalities = genai.Modalities{mod}
 			case genai.ModalityImage:
-				if c.impl.Model, err = c.selectBestImageModel(ctx, model); err != nil {
+				if c.impl.Model, err = c.shared.SelectBestImageModel(ctx, model); err != nil {
 					return nil, err
 				}
 				c.impl.OutputModalities = genai.Modalities{mod}
 			case genai.ModalityVideo:
-				if c.impl.Model, err = c.selectBestVideoModel(ctx, model); err != nil {
+				if c.impl.Model, err = c.shared.SelectBestVideoModel(ctx, model); err != nil {
 					return nil, err
 				}
 				c.impl.OutputModalities = genai.Modalities{mod}
@@ -219,7 +215,7 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 			c.impl.Model = model
 			switch len(modalities) {
 			case 0:
-				c.impl.OutputModalities, err = c.detectModelModalities(ctx, model)
+				c.impl.OutputModalities, err = c.shared.DetectModelModalities(ctx, model)
 			case 1:
 				c.impl.OutputModalities = modalities
 			default:
@@ -235,7 +231,7 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 //
 // Audio models are identified by the "audio" in their name.
 func (c *Client) selectBestAudioModel(ctx context.Context, preference string) (string, error) {
-	mdls, err := c.ListModels(ctx)
+	mdls, err := c.shared.ListModels(ctx)
 	if err != nil {
 		return "", fmt.Errorf("failed to automatically select the model: %w", err)
 	}
@@ -317,7 +313,7 @@ func (c *Client) GenAsync(ctx context.Context, msgs genai.Messages, opts ...gena
 // GenAsyncRaw runs an asynchronous generation request.
 func (c *Client) GenAsyncRaw(ctx context.Context, b BatchRequest) (Batch, error) {
 	resp := Batch{}
-	err := c.impl.DoRequest(ctx, "POST", "https://api.openai.com/v1/batches", &b, &resp)
+	err := c.impl.DoRequest(ctx, "POST", c.shared.BaseURL+"/batches", &b, &resp)
 	return resp, err
 }
 
@@ -338,7 +334,7 @@ func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, er
 		res.Usage.FinishReason = genai.Pending
 	}
 	if resp.OutputFileID != "" {
-		f, err2 := c.FileGet(ctx, resp.OutputFileID)
+		f, err2 := c.shared.FileGet(ctx, resp.OutputFileID)
 		if f != nil {
 			defer func() { _ = f.Close() }()
 			out := BatchRequestOutput{}
@@ -367,7 +363,7 @@ func (c *Client) PokeResult(ctx context.Context, id genai.Job) (genai.Result, er
 // PokeResultRaw polls an asynchronous generation request.
 func (c *Client) PokeResultRaw(ctx context.Context, id genai.Job) (Batch, error) {
 	out := Batch{}
-	u := "https://api.openai.com/v1/batches/" + url.PathEscape(string(id))
+	u := c.shared.BaseURL + "/batches/" + url.PathEscape(string(id))
 	err := c.impl.DoRequest(ctx, "GET", u, nil, &out)
 	return out, err
 }
@@ -381,7 +377,7 @@ func (c *Client) Cancel(ctx context.Context, id genai.Job) error {
 
 // CancelRaw cancels a batch request.
 func (c *Client) CancelRaw(ctx context.Context, id genai.Job) (Batch, error) {
-	u := "https://api.openai.com/v1/batches/" + url.PathEscape(string(id)) + "/cancel"
+	u := c.shared.BaseURL + "/batches/" + url.PathEscape(string(id)) + "/cancel"
 	resp := Batch{}
 	err := c.impl.DoRequest(ctx, "POST", u, nil, &resp)
 	// TODO: Delete the file too.
@@ -402,12 +398,12 @@ func (c *Client) CacheAddRequest(ctx context.Context, msgs genai.Messages, name,
 	if err != nil {
 		return "", err
 	}
-	return c.FileAdd(ctx, displayName, bytes.NewReader(raw))
+	return c.shared.FileAdd(ctx, displayName, bytes.NewReader(raw))
 }
 
 // CacheList lists cache entries.
 func (c *Client) CacheList(ctx context.Context) ([]genai.CacheEntry, error) {
-	l, err := c.FilesListRaw(ctx)
+	l, err := c.shared.FilesListRaw(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -420,79 +416,27 @@ func (c *Client) CacheList(ctx context.Context) ([]genai.CacheEntry, error) {
 
 // CacheDelete deletes a cache entry.
 func (c *Client) CacheDelete(ctx context.Context, name string) error {
-	return c.FileDel(ctx, name)
+	return c.shared.FileDel(ctx, name)
 }
 
 // FileAdd uploads a file. The TTL is one month.
 func (c *Client) FileAdd(ctx context.Context, filename string, r io.ReadSeeker) (string, error) {
-	// https://platform.openai.com/docs/api-reference/files/create
-	buf := bytes.Buffer{}
-	w := multipart.NewWriter(&buf)
-	// We don't need this to be random, and setting it to be deterministic makes HTTP playback possible.
-	_ = w.SetBoundary("80309819a837f26826233a299e185d0ccf3f559362092bd3278b8a045ee1")
-	if err := w.WriteField("purpose", "batch"); err != nil {
-		return "", err
-	}
-	part, err := w.CreateFormFile("file", filename)
-	if err != nil {
-		return "", err
-	}
-	if _, err = io.Copy(part, r); err != nil {
-		return "", err
-	}
-	if err := w.Close(); err != nil {
-		return "", err
-	}
-	u := "https://api.openai.com/v1/files"
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, u, &buf)
-	if err != nil {
-		return "", err
-	}
-	req.Header.Set("Content-Type", w.FormDataContentType())
-	resp, err := c.impl.Client.Do(req)
-	if err != nil {
-		if resp != nil {
-			_ = resp.Body.Close()
-		}
-		return "", err
-	}
-	f := File{}
-	err = c.impl.DecodeResponse(resp, u, &f)
-	return f.ID, err
+	return c.shared.FileAdd(ctx, filename, r)
 }
 
 // FileGet retrieves a file.
 func (c *Client) FileGet(ctx context.Context, id string) (io.ReadCloser, error) {
-	// https://platform.openai.com/docs/api-reference/files/retrieve-contents
-	u := "https://api.openai.com/v1/files/" + url.PathEscape(id) + "/content"
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u, http.NoBody)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := c.impl.Client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	if resp.StatusCode != http.StatusOK {
-		return nil, c.impl.DecodeError(u, resp)
-	}
-	return resp.Body, nil
+	return c.shared.FileGet(ctx, id)
 }
 
 // FileDel deletes a file.
 func (c *Client) FileDel(ctx context.Context, id string) error {
-	// https://platform.openai.com/docs/api-reference/files/delete
-	u := "https://api.openai.com/v1/files/" + url.PathEscape(id)
-	out := FileDeleteResponse{}
-	return c.impl.DoRequest(ctx, "DELETE", u, nil, &out)
+	return c.shared.FileDel(ctx, id)
 }
 
 // FilesListRaw lists files.
 func (c *Client) FilesListRaw(ctx context.Context) ([]File, error) {
-	// TODO: Pagination. It defaults at 10000 items per page.
-	resp := FileListResponse{}
-	err := c.impl.DoRequest(ctx, "GET", "https://api.openai.com/v1/files", nil, &resp)
-	return resp.Data, err
+	return c.shared.FilesListRaw(ctx)
 }
 
 // ProcessStream converts the raw packets from the streaming API into Reply fragments.
@@ -589,6 +533,55 @@ func (c *Client) Capabilities() genai.ProviderCapabilities {
 		GenAsync: true,
 		Caching:  true,
 	}
+}
+
+// ModelID implements genai.Provider.
+//
+// It returns the selected model ID.
+func (c *Client) ModelID() string {
+	return c.impl.Model
+}
+
+// OutputModalities implements genai.Provider.
+//
+// It returns the output modalities, i.e. what kind of output the model will generate (text, audio, image,
+// video, etc).
+func (c *Client) OutputModalities() genai.Modalities {
+	return c.impl.OutputModalities
+}
+
+// Scoreboard implements genai.Provider.
+func (c *Client) Scoreboard() scoreboard.Score {
+	return Scoreboard()
+}
+
+// HTTPClient returns the HTTP client to fetch results (e.g. videos) generated by the provider.
+func (c *Client) HTTPClient() *http.Client {
+	return &c.impl.Client
+}
+
+// ListModels implements genai.Provider.
+func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
+	return c.shared.ListModels(ctx)
+}
+
+// GenSync implements genai.Provider.
+func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
+	if c.shared.IsAudio() || c.shared.IsImage() || c.shared.IsVideo() {
+		if len(msgs) != 1 {
+			return genai.Result{}, errors.New("must pass exactly one Message")
+		}
+		return c.shared.GenDoc(ctx, &msgs[0], opts...)
+	}
+	return c.impl.GenSync(ctx, msgs, opts...)
+}
+
+// GenStream implements genai.Provider.
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
+	if c.shared.IsAudio() || c.shared.IsImage() || c.shared.IsVideo() {
+		return base.SimulateStream(ctx, c, msgs, opts...)
+	}
+	return c.impl.GenStream(ctx, msgs, opts...)
 }
 
 var _ genai.Provider = &Client{}

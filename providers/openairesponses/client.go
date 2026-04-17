@@ -13,21 +13,18 @@ import (
 	"bytes"
 	"context"
 	_ "embed"
-	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"iter"
-	"mime"
 	"net/http"
 	"os"
-	"reflect"
-	"slices"
 	"strings"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
+	"github.com/maruel/genai/providers/openaibase"
 	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/roundtrippers"
 )
@@ -68,532 +65,11 @@ func (o *GenOptionText) Validate() error {
 	return o.ServiceTier.Validate()
 }
 
-// GenOptionImage defines OpenAI specific options.
-type GenOptionImage struct {
-	// Background is only supported on gpt-image-1.
-	Background Background
-}
-
-// Validate implements genai.Validatable.
-func (o *GenOptionImage) Validate() error {
-	return nil
-}
-
-// Init implements base.InitializableRequest.
-func (r *Response) Init(msgs genai.Messages, model string, opts ...genai.GenOption) error {
-	var unsupported []string
-	var errs []error
-	r.Model = model
-	r.Reasoning.Summary = "auto"
-	for _, opt := range opts {
-		if err := opt.Validate(); err != nil {
-			return err
-		}
-		switch v := opt.(type) {
-		case *GenOptionText:
-			r.Reasoning.Effort = v.ReasoningEffort
-			r.ServiceTier = v.ServiceTier
-			r.Truncation = string(v.Truncation)
-			r.PreviousResponseID = v.PreviousResponseID
-		case *genai.GenOptionText:
-			u, e := r.initOptionsText(v)
-			unsupported = append(unsupported, u...)
-			errs = append(errs, e...)
-		case *genai.GenOptionTools:
-			errs = append(errs, r.initOptionsTools(v)...)
-		case *genai.GenOptionWeb:
-			if v.Search {
-				r.Tools = append(r.Tools, Tool{
-					Type: "web_search",
-					// SearchContextSize: "medium",
-				})
-				r.Include = []string{"web_search_call.action.sources"}
-			}
-			if v.Fetch {
-				errs = append(errs, errors.New("unsupported GenOptionWeb.Fetch"))
-			}
-		default:
-			return &base.ErrNotSupported{Options: []string{internal.TypeName(opt)}}
-		}
-	}
-	if len(msgs) == 0 {
-		return errors.New("no messages provided")
-	}
-
-	for i := range msgs {
-		// Each "Message" in OpenAI responses API is a content.
-		switch {
-		case len(msgs[i].ToolCallResults) > 1:
-			// Handle messages with multiple tool call results by creating multiple messages
-			for j := range msgs[i].ToolCallResults {
-				// Create a copy of the message with only one tool call result
-				msgCopy := msgs[i]
-				msgCopy.ToolCallResults = []genai.ToolCallResult{msgs[i].ToolCallResults[j]}
-				var newMsg Message
-				if skip, err := newMsg.From(&msgCopy); err != nil {
-					errs = append(errs, fmt.Errorf("message #%d: tool call results #%d: %w", i, j, err))
-				} else if !skip {
-					r.Input = append(r.Input, newMsg)
-				}
-			}
-		case len(msgs[i].Replies) > 1:
-			// Goddam OpenAI. Handle messages with multiple tool calls by creating multiple messages.
-			var txt []genai.Reply
-			for j := range msgs[i].Replies {
-				if !msgs[i].Replies[j].ToolCall.IsZero() {
-					msgCopy := msgs[i]
-					msgCopy.Replies = []genai.Reply{msgs[i].Replies[j]}
-					var newMsg Message
-					if skip, err := newMsg.From(&msgCopy); err != nil {
-						errs = append(errs, fmt.Errorf("message #%d: tool call #%d: %w", i, j, err))
-					} else if !skip {
-						r.Input = append(r.Input, newMsg)
-					}
-				} else {
-					txt = append(txt, msgs[i].Replies[j])
-				}
-			}
-			if len(txt) != 0 {
-				// Create a copy of the message with only the non-tool call messages.
-				msgCopy := msgs[i]
-				msgCopy.Replies = txt
-				var newMsg Message
-				if skip, err := newMsg.From(&msgCopy); err != nil {
-					errs = append(errs, fmt.Errorf("message #%d: %w", i, err))
-				} else if !skip {
-					r.Input = append(r.Input, newMsg)
-				}
-			}
-		default:
-			// It's a Request, send it as-is.
-			var newMsg Message
-			if skip, err := newMsg.From(&msgs[i]); err != nil {
-				errs = append(errs, fmt.Errorf("message #%d: %w", i, err))
-			} else if !skip {
-				r.Input = append(r.Input, newMsg)
-			}
-		}
-	}
-	// If we have unsupported features but no other errors, return a structured error.
-	if len(unsupported) > 0 && len(errs) == 0 {
-		return &base.ErrNotSupported{Options: unsupported}
-	}
-	return errors.Join(errs...)
-}
-
-// SetStream implements base.InitializableRequest.
-func (r *Response) SetStream(stream bool) {
-	r.Stream = stream
-}
-
-// ToResult implements base.ResultConverter.
-func (r *Response) ToResult() (genai.Result, error) {
-	res := genai.Result{
-		Usage: genai.Usage{
-			InputTokens:       r.Usage.InputTokens,
-			InputCachedTokens: r.Usage.InputTokensDetails.CachedTokens,
-			ReasoningTokens:   r.Usage.OutputTokensDetails.ReasoningTokens,
-			OutputTokens:      r.Usage.OutputTokens,
-			TotalTokens:       r.Usage.TotalTokens,
-			ServiceTier:       string(r.ServiceTier),
-		},
-	}
-	for oi := range r.Output {
-		if err := r.Output[oi].To(&res.Message); err != nil {
-			return res, err
-		}
-		for i := range r.Output[oi].Content {
-			for j := range r.Output[oi].Content[i].Logprobs {
-				res.Logprobs = append(res.Logprobs, r.Output[oi].Content[i].Logprobs[j].To())
-			}
-		}
-	}
-	var err error
-	hasRefusal := false
-	for oi := range r.Output {
-		for i := range r.Output[oi].Content {
-			if r.Output[oi].Content[i].Type == ContentRefusal {
-				hasRefusal = true
-			}
-		}
-	}
-	switch {
-	case r.IncompleteDetails.Reason != "":
-		if r.IncompleteDetails.Reason == "max_output_tokens" {
-			res.Usage.FinishReason = genai.FinishedLength
-		}
-		err = errors.New(r.IncompleteDetails.Reason)
-	case hasRefusal:
-		res.Usage.FinishReason = genai.FinishedContentFilter
-	case slices.ContainsFunc(res.Replies, func(r genai.Reply) bool { return !r.ToolCall.IsZero() }):
-		res.Usage.FinishReason = genai.FinishedToolCalls
-	default:
-		res.Usage.FinishReason = genai.FinishedStop
-	}
-	return res, err
-}
-
-func (r *Response) initOptionsText(v *genai.GenOptionText) ([]string, []error) {
-	var unsupported []string
-	var errs []error
-	r.MaxOutputTokens = v.MaxTokens
-	r.Temperature = v.Temperature
-	r.TopP = v.TopP
-	if v.SystemPrompt != "" {
-		r.Instructions = v.SystemPrompt
-	}
-	if v.TopK != 0 {
-		unsupported = append(unsupported, "GenOptionText.TopK")
-	}
-	if v.TopLogprobs > 0 {
-		r.TopLogprobs = v.TopLogprobs
-	}
-	if len(v.Stop) != 0 {
-		errs = append(errs, errors.New("unsupported option Stop"))
-	}
-	if v.DecodeAs != nil {
-		r.Text.Format.Type = "json_schema"
-		// OpenAI requires a name.
-		r.Text.Format.Name = "response"
-		r.Text.Format.Strict = true
-		r.Text.Format.Schema = internal.JSONSchemaFor(reflect.TypeOf(v.DecodeAs))
-	} else if v.ReplyAsJSON {
-		r.Text.Format.Type = "json_object"
-	}
-	return unsupported, errs
-}
-
-func (r *Response) initOptionsTools(v *genai.GenOptionTools) []error {
-	var errs []error
-	if len(v.Tools) != 0 {
-		r.ParallelToolCalls = true
-		switch v.Force {
-		case genai.ToolCallAny:
-			r.ToolChoice = "auto"
-		case genai.ToolCallRequired:
-			r.ToolChoice = "required"
-		case genai.ToolCallNone:
-			r.ToolChoice = "none"
-		}
-		r.Tools = make([]Tool, len(v.Tools))
-		for i, t := range v.Tools {
-			if t.Name == "" {
-				errs = append(errs, errors.New("tool name is required"))
-			}
-			r.Tools[i].Type = "function"
-			r.Tools[i].Name = t.Name
-			r.Tools[i].Description = t.Description
-			if r.Tools[i].Parameters = t.InputSchemaOverride; r.Tools[i].Parameters == nil {
-				r.Tools[i].Parameters = t.GetInputSchema()
-			}
-		}
-	}
-	return errs
-}
-
-// From must be called with at most one ToolCallResults.
-func (m *Message) From(in *genai.Message) (bool, error) {
-	if len(in.ToolCallResults) > 1 {
-		return false, &internal.BadError{Err: errors.New("internal error")}
-	}
-	if len(in.ToolCallResults) != 0 {
-		// Handle multiple tool call results by creating multiple messages
-		// The caller (Init method) should handle this by creating separate messages
-		m.Type = MessageFunctionCallOutput
-		m.CallID = in.ToolCallResults[0].ID
-		m.Output = in.ToolCallResults[0].Result
-		return false, nil
-	}
-	if len(in.Requests) != 0 {
-		m.Type = MessageMessage
-		m.Role = "user"
-		m.Content = make([]Content, len(in.Requests))
-		for j := range in.Requests {
-			if err := m.Content[j].FromRequest(&in.Requests[j]); err != nil {
-				return false, fmt.Errorf("request #%d: %w", j, err)
-			}
-		}
-		return len(m.Content) == 0, nil
-	}
-	if len(in.Replies) != 0 {
-		// Handle multiple tool calls by creating multiple messages
-		// The caller (Init method) should handle this by creating separate messages
-		if !in.Replies[0].ToolCall.IsZero() {
-			if len(in.Replies[0].ToolCall.Opaque) != 0 {
-				return false, &internal.BadError{Err: errors.New("field ToolCall.Opaque not supported")}
-			}
-			m.Type = MessageFunctionCall
-			m.CallID = in.Replies[0].ToolCall.ID
-			m.Name = in.Replies[0].ToolCall.Name
-			m.Arguments = in.Replies[0].ToolCall.Arguments
-			return false, nil
-		}
-		m.Type = MessageMessage
-		m.Role = "assistant"
-		for j := range in.Replies {
-			// TODO: should we send it back, at least the ID?
-			if in.Replies[j].Reasoning != "" {
-				continue
-			}
-			m.Content = append(m.Content, Content{})
-			if err := m.Content[len(m.Content)-1].FromReply(&in.Replies[j]); err != nil {
-				return false, fmt.Errorf("reply #%d: %w", j, err)
-			}
-		}
-		return len(m.Content) == 0, nil
-	}
-	return false, &internal.BadError{Err: fmt.Errorf("implement message: %#v", in)}
-}
-
-// To is different here because it can be called multiple times on the same out.
-//
-// In the Responses API, Message is actually a mix of Message and Content.
-func (m *Message) To(out *genai.Message) error {
-	// We only need to implement the types that can be returned from the LLM.
-	switch m.Type {
-	case MessageMessage:
-		for i := range m.Content {
-			replies, err := m.Content[i].To()
-			if err != nil {
-				return fmt.Errorf("reply %d: %w", i, err)
-			}
-			out.Replies = append(out.Replies, replies...)
-		}
-	case MessageReasoning:
-		for i := range m.Summary {
-			if m.Summary[i].Type != "summary_text" {
-				return &internal.BadError{Err: fmt.Errorf("implement summary type %q", m.Summary[i].Type)}
-			}
-			out.Replies = append(out.Replies, genai.Reply{Reasoning: m.Summary[i].Text})
-		}
-	case MessageFunctionCall:
-		out.Replies = append(out.Replies, genai.Reply{ToolCall: genai.ToolCall{ID: m.CallID, Name: m.Name, Arguments: m.Arguments}})
-	case MessageWebSearchCall:
-		if m.Action.Type != "search" {
-			return &internal.BadError{Err: fmt.Errorf("implement action type %q", m.Action.Type)}
-		}
-		c := genai.Citation{Sources: make([]genai.CitationSource, len(m.Action.Sources)+1)}
-		c.Sources[0].Type = genai.CitationWebQuery
-		c.Sources[0].Snippet = m.Action.Query
-		for i, src := range m.Action.Sources {
-			c.Sources[i+1].Type = genai.CitationWeb
-			c.Sources[i+1].URL = src.URL
-		}
-		out.Replies = append(out.Replies, genai.Reply{Citation: c})
-	case MessageFileSearchCall:
-		for _, q := range m.Queries {
-			out.Replies = append(out.Replies, genai.Reply{Citation: genai.Citation{
-				Sources: []genai.CitationSource{{Type: genai.CitationWebQuery, Snippet: q}},
-			}})
-		}
-		for _, r := range m.Results {
-			out.Replies = append(out.Replies, genai.Reply{Citation: genai.Citation{
-				CitedText: r.Text,
-				Sources: []genai.CitationSource{{
-					Type:  genai.CitationDocument,
-					ID:    r.FileID,
-					Title: r.Filename,
-				}},
-			}})
-		}
-	case MessageComputerCall, MessageImageGenerationCall, MessageCodeInterpreterCall, MessageLocalShellCall, MessageMcpListTools, MessageMcpApprovalRequest, MessageMcpCall, MessageComputerCallOutput, MessageFunctionCallOutput, MessageLocalShellCallOutput, MessageMcpApprovalResponse, MessageItemReference:
-		return &internal.BadError{Err: fmt.Errorf("unsupported output type %q", m.Type)}
-	default:
-		return &internal.BadError{Err: fmt.Errorf("unsupported output type %q", m.Type)}
-	}
-	return nil
-}
-
-// To converts to the genai equivalent.
-func (c *Content) To() ([]genai.Reply, error) {
-	var out []genai.Reply
-	for _, a := range c.Annotations {
-		var ci genai.Citation
-		switch a.Type {
-		case "url_citation":
-			ci = genai.Citation{
-				StartIndex: a.StartIndex,
-				EndIndex:   a.EndIndex,
-				Sources:    []genai.CitationSource{{Type: genai.CitationWeb, URL: a.URL, Title: a.Title}},
-			}
-		case "file_citation", "container_file_citation":
-			ci = genai.Citation{
-				StartIndex: a.StartIndex,
-				EndIndex:   a.EndIndex,
-				Sources:    []genai.CitationSource{{Type: genai.CitationDocument, ID: a.FileID}},
-			}
-		case "file_path":
-			ci = genai.Citation{
-				Sources: []genai.CitationSource{{Type: genai.CitationDocument, ID: a.FileID}},
-			}
-		default:
-			return out, &internal.BadError{Err: fmt.Errorf("unsupported annotation type %q", a.Type)}
-		}
-		out = append(out, genai.Reply{Citation: ci})
-	}
-	switch c.Type {
-	case ContentOutputText:
-		out = append(out, genai.Reply{Text: c.Text})
-	case ContentRefusal:
-		// Surface refusal as text so the caller can see the reason.
-		out = append(out, genai.Reply{Text: c.Refusal})
-	case ContentInputText, ContentInputImage, ContentInputFile:
-		return out, &internal.BadError{Err: fmt.Errorf("implement content type %q", c.Type)}
-	default:
-		return out, &internal.BadError{Err: fmt.Errorf("implement content type %q", c.Type)}
-	}
-	return out, nil
-}
-
-// FromRequest converts from a genai request.
-func (c *Content) FromRequest(in *genai.Request) error {
-	if in.Text != "" {
-		c.Type = ContentInputText
-		c.Text = in.Text
-		return nil
-	}
-	if !in.Doc.IsZero() {
-		// https://platform.openai.com/docs/guides/images?api-mode=chat&format=base64-encoded#image-input-requirements
-		mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
-		if err != nil {
-			return err
-		}
-		// OpenAI require a mime-type to determine if image, sound or PDF.
-		if mimeType == "" {
-			return fmt.Errorf("unspecified mime type for URL %q", in.Doc.URL)
-		}
-		switch {
-		case strings.HasPrefix(mimeType, "image/"):
-			c.Type = ContentInputImage
-			c.Detail = "auto" // TODO: Make it configurable.
-			if in.Doc.URL == "" {
-				c.ImageURL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
-			} else {
-				c.ImageURL = in.Doc.URL
-			}
-			// text/plain, text/markdown
-		case strings.HasPrefix(mimeType, "text/"):
-			// OpenAI responses API doesn't support text documents as attachment.
-			c.Type = ContentInputText
-			if in.Doc.URL != "" {
-				return fmt.Errorf("%s documents must be provided inline, not as a URL", mimeType)
-			}
-			c.Text = string(data)
-		default:
-			if in.Doc.URL != "" {
-				return fmt.Errorf("URL to %s file not supported", mimeType)
-			}
-			filename := in.Doc.GetFilename()
-			if filename == "" {
-				exts, err := mime.ExtensionsByType(mimeType)
-				if err != nil {
-					return err
-				}
-				if len(exts) == 0 {
-					return fmt.Errorf("unknown extension for mime type %s", mimeType)
-				}
-				filename = "content" + exts[0]
-			}
-			c.Type = ContentInputFile
-			c.Filename = filename
-			c.FileData = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
-		}
-		return nil
-	}
-	return errors.New("unknown Request type")
-}
-
-// FromReply converts from a genai reply.
-func (c *Content) FromReply(in *genai.Reply) error {
-	if len(in.Opaque) != 0 {
-		return &internal.BadError{Err: errors.New("field Reply.Opaque not supported")}
-	}
-	if in.Text != "" {
-		c.Type = ContentInputText
-		c.Text = in.Text
-		return nil
-	}
-	if !in.Doc.IsZero() {
-		// https://platform.openai.com/docs/guides/images?api-mode=chat&format=base64-encoded#image-input-requirements
-		mimeType, data, err := in.Doc.Read(10 * 1024 * 1024)
-		if err != nil {
-			return err
-		}
-		// OpenAI require a mime-type to determine if image, sound or PDF.
-		if mimeType == "" {
-			return fmt.Errorf("unspecified mime type for URL %q", in.Doc.URL)
-		}
-		switch {
-		case strings.HasPrefix(mimeType, "image/"):
-			c.Type = ContentInputImage
-			c.Detail = "auto" // TODO: Make it configurable.
-			if in.Doc.URL == "" {
-				c.ImageURL = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
-			} else {
-				c.ImageURL = in.Doc.URL
-			}
-			// text/plain, text/markdown
-		case strings.HasPrefix(mimeType, "text/"):
-			// OpenAI responses API doesn't support text documents as attachment.
-			c.Type = ContentInputText
-			if in.Doc.URL != "" {
-				return fmt.Errorf("%s documents must be provided inline, not as a URL", mimeType)
-			}
-			c.Text = string(data)
-		default:
-			if in.Doc.URL != "" {
-				return fmt.Errorf("URL to %s file not supported", mimeType)
-			}
-			filename := in.Doc.GetFilename()
-			if filename == "" {
-				exts, err := mime.ExtensionsByType(mimeType)
-				if err != nil {
-					return err
-				}
-				if len(exts) == 0 {
-					return fmt.Errorf("unknown extension for mime type %s", mimeType)
-				}
-				filename = "content" + exts[0]
-			}
-			c.Type = ContentInputFile
-			c.Filename = filename
-			c.FileData = fmt.Sprintf("data:%s;base64,%s", mimeType, base64.StdEncoding.EncodeToString(data))
-		}
-		return nil
-	}
-	return &internal.BadError{Err: errors.New("unknown Reply type")}
-}
-
-func (e *APIError) Error() string {
-	return fmt.Sprintf("%s: %s", e.Code, e.Message)
-}
-
-// To converts to the genai equivalent.
-func (l *Logprobs) To() []genai.Logprob {
-	out := make([]genai.Logprob, 1, len(l.TopLogprobs)+1)
-	// Intentionally discard Bytes.
-	out[0] = genai.Logprob{Text: l.Token, Logprob: l.Logprob}
-	for _, tlp := range l.TopLogprobs {
-		out = append(out, genai.Logprob{Text: tlp.Token, Logprob: tlp.Logprob})
-	}
-	return out
-}
-
-func (e *ErrorResponse) Error() string {
-	return fmt.Sprintf("%s (type: %s, code: %s)", e.ErrorVal.Message, e.ErrorVal.Type, e.ErrorVal.Code)
-}
-
-// IsAPIError implements base.ErrorResponseI.
-func (e *ErrorResponse) IsAPIError() bool {
-	return true
-}
-
-//
-
 // Client is a client for the OpenAI Responses API.
 type Client struct {
 	base.NotImplemented
-	impl base.Provider[*ErrorResponse, *Response, *Response, ResponseStreamChunkResponse]
+	impl   base.Provider[*ErrorResponse, *Response, *Response, ResponseStreamChunkResponse]
+	shared openaibase.Client
 
 	baseURL string
 }
@@ -677,7 +153,7 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 			GenStreamURL:    baseURL + "/responses",
 			ProcessStream:   ProcessStream,
 			PreloadedModels: preloadedModels,
-			ProcessHeaders:  processHeaders,
+			ProcessHeaders:  openaibase.ProcessHeaders,
 			ProviderBase: base.ProviderBase[*ErrorResponse]{
 				APIKeyURL: "", // OpenAI error message prints the api key URL already.
 				Lenient:   internal.BeLenient,
@@ -689,6 +165,11 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 				},
 			},
 		},
+	}
+	c.shared = openaibase.Client{
+		Impl:            &c.impl.ProviderBase,
+		BaseURL:         baseURL,
+		PreloadedModels: preloadedModels,
 	}
 	if err == nil {
 		switch model {
@@ -706,17 +187,17 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 			}
 			switch mod {
 			case genai.ModalityText:
-				if c.impl.Model, err = c.selectBestTextModel(ctx, model); err != nil {
+				if c.impl.Model, err = c.shared.SelectBestTextModel(ctx, model); err != nil {
 					return nil, err
 				}
 				c.impl.OutputModalities = genai.Modalities{mod}
 			case genai.ModalityImage:
-				if c.impl.Model, err = c.selectBestImageModel(ctx, model); err != nil {
+				if c.impl.Model, err = c.shared.SelectBestImageModel(ctx, model); err != nil {
 					return nil, err
 				}
 				c.impl.OutputModalities = genai.Modalities{mod}
 			case genai.ModalityVideo:
-				if c.impl.Model, err = c.selectBestVideoModel(ctx, model); err != nil {
+				if c.impl.Model, err = c.shared.SelectBestVideoModel(ctx, model); err != nil {
 					return nil, err
 				}
 				c.impl.OutputModalities = genai.Modalities{mod}
@@ -732,7 +213,7 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 			c.impl.Model = model
 			switch len(modalities) {
 			case 0:
-				c.impl.OutputModalities, err = c.detectModelModalities(ctx, model)
+				c.impl.OutputModalities, err = c.shared.DetectModelModalities(ctx, model)
 			case 1:
 				c.impl.OutputModalities = modalities
 			default:
@@ -1130,6 +611,63 @@ func ProcessStream(chunks iter.Seq[ResponseStreamChunkResponse]) (iter.Seq[genai
 		}, func() (genai.Usage, [][]genai.Logprob, error) {
 			return u, l, finalErr
 		}
+}
+
+// ModelID implements genai.Provider.
+//
+// It returns the selected model ID.
+func (c *Client) ModelID() string {
+	return c.impl.Model
+}
+
+// OutputModalities implements genai.Provider.
+//
+// It returns the output modalities, i.e. what kind of output the model will generate (text, audio, image,
+// video, etc).
+func (c *Client) OutputModalities() genai.Modalities {
+	return c.impl.OutputModalities
+}
+
+// Scoreboard implements genai.Provider.
+func (c *Client) Scoreboard() scoreboard.Score {
+	return Scoreboard()
+}
+
+// HTTPClient returns the HTTP client to fetch results (e.g. videos) generated by the provider.
+func (c *Client) HTTPClient() *http.Client {
+	return &c.impl.Client
+}
+
+// ListModels implements genai.Provider.
+func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
+	return c.shared.ListModels(ctx)
+}
+
+// GenSync implements genai.Provider.
+func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
+	if c.shared.IsAudio() {
+		return genai.Result{}, errors.New("OpenAI Responses API does not support audio output as of December 2025; see https://platform.openai.com/docs/guides/audio")
+	}
+	if c.shared.IsImage() || c.shared.IsVideo() {
+		if len(msgs) != 1 {
+			return genai.Result{}, errors.New("must pass exactly one Message")
+		}
+		return c.shared.GenDoc(ctx, &msgs[0], opts...)
+	}
+	return c.impl.GenSync(ctx, msgs, opts...)
+}
+
+// GenStream implements genai.Provider.
+func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
+	if c.shared.IsAudio() {
+		return func(yield func(genai.Reply) bool) {}, func() (genai.Result, error) {
+			return genai.Result{}, errors.New("OpenAI Responses API does not support audio output as of December 2025; see https://platform.openai.com/docs/guides/audio")
+		}
+	}
+	if c.shared.IsImage() || c.shared.IsVideo() {
+		return base.SimulateStream(ctx, c, msgs, opts...)
+	}
+	return c.impl.GenStream(ctx, msgs, opts...)
 }
 
 var _ genai.Provider = &Client{}

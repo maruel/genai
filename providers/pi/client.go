@@ -350,7 +350,7 @@ func (c *Client) setupModel(stdin io.Writer, sc *bufio.Scanner) error {
 		provider = c.model[:i]
 		modelID = c.model[i+1:]
 	}
-	if err := msgutil.WriteNDJSON(stdin, cmdSetModel{
+	if err := msgutil.WriteNDJSON(stdin, SetModelCmd{
 		Type:     CmdSetModel,
 		Provider: provider,
 		ModelID:  modelID,
@@ -367,7 +367,7 @@ func sendPrompt(stdin io.Writer, msg *genai.Message) error {
 	if err != nil {
 		return err
 	}
-	cmd := cmdPrompt{Type: CmdPrompt, Message: text, Images: images}
+	cmd := PromptCmd{Type: CmdPrompt, Message: text, Images: images}
 	return msgutil.WriteNDJSON(stdin, cmd)
 }
 
@@ -375,9 +375,9 @@ func sendPrompt(stdin io.Writer, msg *genai.Message) error {
 //
 // Text documents (text/plain, text/markdown, etc.) are inlined as text.
 // Image documents are sent as base64-encoded images.
-func msgToPromptParts(msg *genai.Message) (string, []imageContent, error) {
+func msgToPromptParts(msg *genai.Message) (string, []ImageContent, error) {
 	var texts []string
-	var images []imageContent
+	var images []ImageContent
 	for i := range msg.Requests {
 		req := &msg.Requests[i]
 		if req.Text != "" {
@@ -391,7 +391,7 @@ func msgToPromptParts(msg *genai.Message) (string, []imageContent, error) {
 			if strings.HasPrefix(mimeType, "text/") {
 				texts = append(texts, string(data))
 			} else if strings.HasPrefix(mimeType, "image/") {
-				images = append(images, imageContent{
+				images = append(images, ImageContent{
 					Type:     "image",
 					Data:     base64.StdEncoding.EncodeToString(data),
 					MimeType: mimeType,
@@ -410,16 +410,16 @@ func msgToPromptParts(msg *genai.Message) (string, []imageContent, error) {
 }
 
 // readResponseForCommand reads lines until a response for the given command is found.
-func readResponseForCommand(sc *bufio.Scanner, cmd string) (*response, error) {
+func readResponseForCommand(sc *bufio.Scanner, cmd string) (*Response, error) {
 	for sc.Scan() {
-		var probe lineProbe
+		var probe LineProbe
 		if json.Unmarshal(sc.Bytes(), &probe) != nil {
 			continue
 		}
 		if probe.Type != EventResponse {
 			continue
 		}
-		var resp response
+		var resp Response
 		if err := internal.UnmarshalJSON(sc.Bytes(), &resp); err != nil {
 			continue
 		}
@@ -443,7 +443,7 @@ func readUntilDone(sc *bufio.Scanner, stdin io.Writer, onDelta func(text, reason
 	var textBuf, thinkBuf strings.Builder
 	for sc.Scan() {
 		line := sc.Bytes()
-		var probe lineProbe
+		var probe LineProbe
 		if json.Unmarshal(line, &probe) != nil {
 			continue
 		}
@@ -470,7 +470,7 @@ func readUntilDone(sc *bufio.Scanner, stdin io.Writer, onDelta func(text, reason
 
 		case EventResponse:
 			// Responses to commands (e.g. prompt ack); skip.
-			var resp response
+			var resp Response
 			if internal.UnmarshalJSON(line, &resp) == nil && !resp.Success {
 				return genai.Result{}, fmt.Errorf("pi error (command=%s): %s", resp.Command, resp.Error)
 			}
@@ -484,7 +484,7 @@ func readUntilDone(sc *bufio.Scanner, stdin io.Writer, onDelta func(text, reason
 
 // parseMessageUpdateDelta extracts text and reasoning deltas from a message_update event.
 func parseMessageUpdateDelta(line []byte) (text, reasoning string, err error) {
-	var ev eventMessageUpdate
+	var ev MessageUpdateEvent
 	if err := json.Unmarshal(line, &ev); err != nil {
 		return "", "", fmt.Errorf("unmarshal message_update: %w", err)
 	}
@@ -501,13 +501,13 @@ func parseMessageUpdateDelta(line []byte) (text, reasoning string, err error) {
 // For select: picks the first option. For confirm: confirms true.
 // For all others: sends an empty value response.
 func handleExtensionUI(stdin io.Writer, line []byte) error {
-	var req extensionUIRequest
+	var req ExtensionUIRequest
 	if err := json.Unmarshal(line, &req); err != nil {
 		return fmt.Errorf("unmarshal extension_ui_request: %w", err)
 	}
 	switch req.Method {
 	case UIMethodConfirm:
-		return msgutil.WriteNDJSON(stdin, extensionUIResponseConfirm{
+		return msgutil.WriteNDJSON(stdin, ExtensionUIResponseConfirm{
 			Type:      "extension_ui_response",
 			ID:        req.ID,
 			Confirmed: true,
@@ -517,7 +517,7 @@ func handleExtensionUI(stdin io.Writer, line []byte) error {
 		if len(req.Options) > 0 {
 			val = req.Options[0]
 		}
-		return msgutil.WriteNDJSON(stdin, extensionUIResponseValue{
+		return msgutil.WriteNDJSON(stdin, ExtensionUIResponseValue{
 			Type:  "extension_ui_response",
 			ID:    req.ID,
 			Value: val,
@@ -528,7 +528,7 @@ func handleExtensionUI(stdin io.Writer, line []byte) error {
 		return nil
 	default:
 		// input, editor, or unknown: send empty value.
-		return msgutil.WriteNDJSON(stdin, extensionUIResponseValue{
+		return msgutil.WriteNDJSON(stdin, ExtensionUIResponseValue{
 			Type:  "extension_ui_response",
 			ID:    req.ID,
 			Value: "",
@@ -540,7 +540,7 @@ func handleExtensionUI(stdin io.Writer, line []byte) error {
 // accumulated text/thinking buffers and the final assistant message's usage.
 func buildResult(line []byte, text, thinking string) (genai.Result, error) {
 	r := genai.Result{}
-	var ev eventAgentEnd
+	var ev AgentEndEvent
 	if err := json.Unmarshal(line, &ev); err != nil {
 		return r, fmt.Errorf("unmarshal agent_end: %w", err)
 	}
@@ -576,24 +576,17 @@ func buildResult(line []byte, text, thinking string) (genai.Result, error) {
 }
 
 // extractContent extracts text and thinking from an assistant message's content blocks.
-func extractContent(msg *agentMessage) (text, thinking string) {
-	if msg.Content == nil {
-		return "", ""
-	}
-	var blocks []contentBlock
-	if json.Unmarshal(msg.Content, &blocks) != nil {
-		return "", ""
-	}
+func extractContent(msg *AgentMessage) (text, thinking string) {
 	var textParts, thinkParts []string
-	for i := range blocks {
-		switch blocks[i].Type {
+	for i := range msg.Content {
+		switch msg.Content[i].Type {
 		case "text":
-			if blocks[i].Text != "" {
-				textParts = append(textParts, blocks[i].Text)
+			if msg.Content[i].Text != "" {
+				textParts = append(textParts, msg.Content[i].Text)
 			}
 		case "thinking":
-			if blocks[i].Thinking != "" {
-				thinkParts = append(thinkParts, blocks[i].Thinking)
+			if msg.Content[i].Thinking != "" {
+				thinkParts = append(thinkParts, msg.Content[i].Thinking)
 			}
 		}
 	}

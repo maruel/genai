@@ -18,7 +18,10 @@
 
 package pi
 
-import "encoding/json"
+import (
+	"bytes"
+	"encoding/json"
+)
 
 // ============================================================
 // Shared types: enums, routing probes.
@@ -164,8 +167,8 @@ const (
 
 // ---------- Routing probe ----------
 
-// lineProbe extracts routing fields from a JSONL line to determine its kind.
-type lineProbe struct {
+// LineProbe extracts routing fields from a JSONL line to determine its kind.
+type LineProbe struct {
 	Type    EventType `json:"type"`
 	Command string    `json:"command,omitzero"`
 	ID      string    `json:"id,omitzero"`
@@ -178,17 +181,17 @@ type lineProbe struct {
 
 // ---------- Prompting ----------
 
-// cmdPrompt sends a user message.
-type cmdPrompt struct {
+// PromptCmd sends a user message.
+type PromptCmd struct {
 	ID                string         `json:"id,omitzero"`
 	Type              CommandType    `json:"type"`
 	Message           string         `json:"message"`
-	Images            []imageContent `json:"images,omitzero"`
+	Images            []ImageContent `json:"images,omitzero"`
 	StreamingBehavior string         `json:"streamingBehavior,omitzero"` // "steer" or "followUp"
 }
 
-// imageContent is an inline image in base64.
-type imageContent struct {
+// ImageContent is an inline image in base64.
+type ImageContent struct {
 	Type     string `json:"type"`
 	Data     string `json:"data"`
 	MimeType string `json:"mimeType"`
@@ -199,7 +202,7 @@ type cmdSteer struct {
 	ID      string         `json:"id,omitzero"`
 	Type    CommandType    `json:"type"`
 	Message string         `json:"message"`
-	Images  []imageContent `json:"images,omitzero"`
+	Images  []ImageContent `json:"images,omitzero"`
 }
 
 // cmdFollowUp sends a follow-up message after the agent finishes.
@@ -207,7 +210,7 @@ type cmdFollowUp struct {
 	ID      string         `json:"id,omitzero"`
 	Type    CommandType    `json:"type"`
 	Message string         `json:"message"`
-	Images  []imageContent `json:"images,omitzero"`
+	Images  []ImageContent `json:"images,omitzero"`
 }
 
 // cmdAbort cancels the current generation.
@@ -291,8 +294,8 @@ type cmdGetCommands struct {
 
 // ---------- Model ----------
 
-// cmdSetModel switches the active model.
-type cmdSetModel struct {
+// SetModelCmd switches the active model.
+type SetModelCmd struct {
 	ID       string      `json:"id,omitzero"`
 	Type     CommandType `json:"type"`
 	Provider string      `json:"provider"`
@@ -344,8 +347,8 @@ type cmdSetFollowUpMode struct {
 
 // ---------- Compaction ----------
 
-// cmdCompact triggers compaction with optional custom instructions.
-type cmdCompact struct {
+// CompactCmd triggers compaction with optional custom instructions.
+type CompactCmd struct {
 	ID                 string      `json:"id,omitzero"`
 	Type               CommandType `json:"type"`
 	CustomInstructions string      `json:"customInstructions,omitzero"`
@@ -390,22 +393,22 @@ type cmdAbortBash struct {
 
 // ---------- Extension UI responses (stdin) ----------
 
-// extensionUIResponseValue is sent back for select/input/editor requests.
-type extensionUIResponseValue struct {
+// ExtensionUIResponseValue is sent back for select/input/editor requests.
+type ExtensionUIResponseValue struct {
 	Type  string `json:"type"`
 	ID    string `json:"id"`
 	Value string `json:"value"`
 }
 
-// extensionUIResponseConfirm is sent back for confirm requests.
-type extensionUIResponseConfirm struct {
+// ExtensionUIResponseConfirm is sent back for confirm requests.
+type ExtensionUIResponseConfirm struct {
 	Type      string `json:"type"`
 	ID        string `json:"id"`
 	Confirmed bool   `json:"confirmed"`
 }
 
-// extensionUIResponseCancelled is sent back when a UI request is cancelled.
-type extensionUIResponseCancelled struct {
+// ExtensionUIResponseCancelled is sent back when a UI request is cancelled.
+type ExtensionUIResponseCancelled struct {
 	Type      string `json:"type"`
 	ID        string `json:"id"`
 	Cancelled bool   `json:"cancelled"`
@@ -417,8 +420,8 @@ type extensionUIResponseCancelled struct {
 
 // ---------- Response envelope ----------
 
-// response is the generic response wrapper. Dispatch on Command field.
-type response struct {
+// Response is the generic response wrapper. Dispatch on Command field.
+type Response struct {
 	ID      string          `json:"id,omitzero"`
 	Type    EventType       `json:"type"`
 	Command string          `json:"command"`
@@ -507,7 +510,7 @@ type lastAssistantTextData struct {
 
 // getMessagesData is the data payload for get_messages response.
 type getMessagesData struct {
-	Messages []agentMessage `json:"messages"`
+	Messages []AgentMessage `json:"messages"`
 }
 
 // getCommandsData is the data payload for get_commands response.
@@ -582,10 +585,10 @@ type eventAgentStart struct {
 	Type EventType `json:"type"`
 }
 
-// eventAgentEnd is emitted when the agent finishes. Contains accumulated messages.
-type eventAgentEnd struct {
+// AgentEndEvent is emitted when the agent finishes. Contains accumulated messages.
+type AgentEndEvent struct {
 	Type     EventType      `json:"type"`
-	Messages []agentMessage `json:"messages"`
+	Messages []AgentMessage `json:"messages"`
 }
 
 // eventTurnStart is emitted when a turn begins.
@@ -593,62 +596,62 @@ type eventTurnStart struct {
 	Type EventType `json:"type"`
 }
 
-// eventTurnEnd is emitted when a turn finishes.
-type eventTurnEnd struct {
+// TurnEndEvent is emitted when a turn finishes.
+type TurnEndEvent struct {
 	Type        EventType         `json:"type"`
-	Message     agentMessage      `json:"message"`
+	Message     AgentMessage      `json:"message"`
 	ToolResults []json.RawMessage `json:"toolResults,omitzero"`
 }
 
 // eventMessageStart is emitted when a message begins.
 type eventMessageStart struct {
 	Type    EventType    `json:"type"`
-	Message agentMessage `json:"message"`
+	Message AgentMessage `json:"message"`
 }
 
-// eventMessageUpdate is emitted during streaming with a delta.
-type eventMessageUpdate struct {
+// MessageUpdateEvent is emitted during streaming with a delta.
+type MessageUpdateEvent struct {
 	Type                  EventType             `json:"type"`
-	Message               agentMessage          `json:"message"`
-	AssistantMessageEvent assistantMessageEvent `json:"assistantMessageEvent"`
+	Message               AgentMessage          `json:"message"`
+	AssistantMessageEvent AssistantMessageEvent `json:"assistantMessageEvent"`
 }
 
 // eventMessageEnd is emitted when a message is complete.
 type eventMessageEnd struct {
 	Type    EventType    `json:"type"`
-	Message agentMessage `json:"message"`
+	Message AgentMessage `json:"message"`
 }
 
-// eventToolExecStart is emitted when a tool begins execution.
-type eventToolExecStart struct {
+// ToolExecStartEvent is emitted when a tool begins execution.
+type ToolExecStartEvent struct {
 	Type       EventType `json:"type"`
 	ToolCallID string    `json:"toolCallId"`
 	ToolName   string    `json:"toolName"`
 	Args       any       `json:"args"`
 }
 
-// eventToolExecUpdate is emitted during tool execution with progress.
-type eventToolExecUpdate struct {
-	Type          EventType `json:"type"`
-	ToolCallID    string    `json:"toolCallId"`
-	ToolName      string    `json:"toolName"`
-	Args          any       `json:"args"`
-	PartialResult any       `json:"partialResult"`
+// ToolExecUpdateEvent is emitted during tool execution with progress.
+type ToolExecUpdateEvent struct {
+	Type          EventType       `json:"type"`
+	ToolCallID    string          `json:"toolCallId"`
+	ToolName      string          `json:"toolName"`
+	Args          any             `json:"args"`
+	PartialResult json.RawMessage `json:"partialResult"`
 }
 
-// eventToolExecEnd is emitted when a tool finishes execution.
-type eventToolExecEnd struct {
-	Type       EventType `json:"type"`
-	ToolCallID string    `json:"toolCallId"`
-	ToolName   string    `json:"toolName"`
-	Result     any       `json:"result"`
-	IsError    bool      `json:"isError"`
+// ToolExecEndEvent is emitted when a tool finishes execution.
+type ToolExecEndEvent struct {
+	Type       EventType       `json:"type"`
+	ToolCallID string          `json:"toolCallId"`
+	ToolName   string          `json:"toolName"`
+	Result     json.RawMessage `json:"result"`
+	IsError    bool            `json:"isError"`
 }
 
 // ---------- Extension UI events ----------
 
-// extensionUIRequest is emitted when an extension needs user input.
-type extensionUIRequest struct {
+// ExtensionUIRequest is emitted when an extension needs user input.
+type ExtensionUIRequest struct {
 	Type            EventType         `json:"type"`
 	ID              string            `json:"id"`
 	Method          ExtensionUIMethod `json:"method"`
@@ -671,37 +674,37 @@ type extensionUIRequest struct {
 // Message types (shared between events and responses).
 // ============================================================
 
-// agentMessage is the union of user/assistant/toolResult messages.
+// AgentMessage is the union of user/assistant/toolResult messages.
 // We only care about assistant messages for building genai.Result.
-type agentMessage struct {
-	Role         string          `json:"role"`
-	Content      json.RawMessage `json:"content,omitzero"`
-	API          string          `json:"api,omitzero"`
-	Provider     string          `json:"provider,omitzero"`
-	Model        string          `json:"model,omitzero"`
-	ResponseID   string          `json:"responseId,omitzero"`
-	Usage        messageUsage    `json:"usage,omitzero"`
-	StopReason   StopReason      `json:"stopReason,omitzero"`
-	ErrorMessage string          `json:"errorMessage,omitzero"`
-	Timestamp    float64         `json:"timestamp,omitzero"`
+type AgentMessage struct {
+	Role         string        `json:"role"`
+	Content      ContentBlocks `json:"content,omitzero"`
+	API          string        `json:"api,omitzero"`
+	Provider     string        `json:"provider,omitzero"`
+	Model        string        `json:"model,omitzero"`
+	ResponseID   string        `json:"responseId,omitzero"`
+	Usage        MessageUsage  `json:"usage,omitzero"`
+	StopReason   StopReason    `json:"stopReason,omitzero"`
+	ErrorMessage string        `json:"errorMessage,omitzero"`
+	Timestamp    float64       `json:"timestamp,omitzero"`
 	// ToolResult-specific fields.
 	ToolCallID string `json:"toolCallId,omitzero"`
 	ToolName   string `json:"toolName,omitzero"`
 	IsError    bool   `json:"isError,omitzero"`
 }
 
-// messageUsage holds token usage from an AssistantMessage.
-type messageUsage struct {
+// MessageUsage holds token usage from an AssistantMessage.
+type MessageUsage struct {
 	Input       int64     `json:"input"`
 	Output      int64     `json:"output"`
 	CacheRead   int64     `json:"cacheRead"`
 	CacheWrite  int64     `json:"cacheWrite"`
 	TotalTokens int64     `json:"totalTokens"`
-	Cost        usageCost `json:"cost,omitzero"`
+	Cost        UsageCost `json:"cost,omitzero"`
 }
 
-// usageCost holds cost information.
-type usageCost struct {
+// UsageCost holds cost information.
+type UsageCost struct {
 	Input      float64 `json:"input"`
 	Output     float64 `json:"output"`
 	CacheRead  float64 `json:"cacheRead"`
@@ -711,9 +714,9 @@ type usageCost struct {
 
 // ---------- Content blocks ----------
 
-// contentBlock is one entry in AssistantMessage.content.
+// ContentBlock is one entry in AssistantMessage.content.
 // Discriminated by Type: "text", "thinking", "toolCall", "image".
-type contentBlock struct {
+type ContentBlock struct {
 	Type string `json:"type"`
 	// text block
 	Text          string `json:"text,omitzero"`
@@ -732,20 +735,43 @@ type contentBlock struct {
 	MimeType string `json:"mimeType,omitzero"`
 }
 
+// ContentBlocks is a []ContentBlock with custom JSON unmarshaling.
+//
+// User messages may carry content as a plain string instead of an array of
+// blocks, so we accept both forms.
+type ContentBlocks []ContentBlock
+
+// UnmarshalJSON handles both string and array JSON content.
+func (c *ContentBlocks) UnmarshalJSON(data []byte) error {
+	data = bytes.TrimSpace(data)
+	if len(data) == 0 || bytes.Equal(data, []byte("null")) {
+		return nil
+	}
+	if data[0] == '[' {
+		return json.Unmarshal(data, (*[]ContentBlock)(c))
+	}
+	var s string
+	if err := json.Unmarshal(data, &s); err != nil {
+		return err
+	}
+	*c = ContentBlocks{{Type: "text", Text: s}}
+	return nil
+}
+
 // ---------- Assistant message event (delta) ----------
 
-// assistantMessageEvent is a streaming delta inside eventMessageUpdate.
-type assistantMessageEvent struct {
+// AssistantMessageEvent is a streaming delta inside MessageUpdateEvent.
+type AssistantMessageEvent struct {
 	Type         DeltaType     `json:"type"`
 	ContentIndex int           `json:"contentIndex,omitzero"`
 	Delta        string        `json:"delta,omitzero"`
 	Content      string        `json:"content,omitzero"`
 	Reason       StopReason    `json:"reason,omitzero"`
-	ToolCall     *contentBlock `json:"toolCall,omitzero"`
+	ToolCall     *ContentBlock `json:"toolCall,omitzero"`
 	// Partial carries the accumulated message during streaming.
-	Partial *agentMessage `json:"partial,omitzero"`
+	Partial *AgentMessage `json:"partial,omitzero"`
 	// Message carries the final message on done.
-	Message *agentMessage `json:"message,omitzero"`
+	Message *AgentMessage `json:"message,omitzero"`
 	// Error carries the final message on error/abort.
-	Error *agentMessage `json:"error,omitzero"`
+	Error *AgentMessage `json:"error,omitzero"`
 }

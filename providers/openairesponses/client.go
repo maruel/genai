@@ -594,6 +594,8 @@ func (e *ErrorResponse) IsAPIError() bool {
 type Client struct {
 	base.NotImplemented
 	impl base.Provider[*ErrorResponse, *Response, *Response, ResponseStreamChunkResponse]
+
+	baseURL string
 }
 
 // New creates a new client to talk to the OpenAI Responses API.
@@ -610,7 +612,7 @@ type Client struct {
 // OpenAI supports many types of documents, listed at
 // https://platform.openai.com/docs/assistants/tools/file-search#supported-files
 func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
-	var apiKey, model string
+	var apiKey, model, remote string
 	var modalities genai.Modalities
 	var preloadedModels []genai.Model
 	var wrapper func(http.RoundTripper) http.RoundTripper
@@ -632,13 +634,15 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 			preloadedModels = []genai.Model(v)
 		case genai.ProviderOptionTransportWrapper:
 			wrapper = v
+		case genai.ProviderOptionRemote:
+			remote = string(v)
 		default:
 			return nil, fmt.Errorf("unsupported option type %T", opt)
 		}
 	}
 	const apiKeyURL = "https://platform.openai.com/settings/organization/api-keys"
 	var err error
-	if apiKey == "" {
+	if apiKey == "" && wrapper == nil {
 		if apiKey = os.Getenv("OPENAI_API_KEY"); apiKey == "" {
 			err = &base.ErrAPIKeyRequired{EnvVar: "OPENAI_API_KEY", URL: apiKeyURL}
 		}
@@ -657,14 +661,19 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	default:
 		return nil, fmt.Errorf("unexpected option Modalities %s, only audio, image or text are supported", modalities)
 	}
+	baseURL := "https://api.openai.com/v1"
+	if remote != "" {
+		baseURL = strings.TrimRight(remote, "/")
+	}
 	t := base.DefaultTransport
 	if wrapper != nil {
 		t = wrapper(t)
 	}
 	c := &Client{
+		baseURL: baseURL,
 		impl: base.Provider[*ErrorResponse, *Response, *Response, ResponseStreamChunkResponse]{
-			GenSyncURL:      "https://api.openai.com/v1/responses",
-			GenStreamURL:    "https://api.openai.com/v1/responses",
+			GenSyncURL:      baseURL + "/responses",
+			GenStreamURL:    baseURL + "/responses",
 			ProcessStream:   ProcessStream,
 			PreloadedModels: preloadedModels,
 			ProcessHeaders:  processHeaders,
@@ -857,12 +866,13 @@ func ProcessStream(chunks iter.Seq[ResponseStreamChunkResponse]) (iter.Seq[genai
 					u.ReasoningTokens = pkt.Response.Usage.OutputTokensDetails.ReasoningTokens
 					u.OutputTokens = pkt.Response.Usage.OutputTokens
 					u.ServiceTier = string(pkt.Response.ServiceTier)
-					if len(pkt.Response.Output) == 0 {
-						// TODO: Likely failed.
-						finalErr = &internal.BadError{Err: fmt.Errorf("no output: %#v", pkt)}
-						return
-					}
 					u.FinishReason = genai.FinishedStop
+					if len(pkt.Response.Output) == 0 {
+						// Some backends (e.g. ChatGPT) don't include output
+						// in the completed event; content was already streamed
+						// via delta events.
+						break
+					}
 					for i := range pkt.Response.Output {
 						msg := pkt.Response.Output[i]
 						switch msg.Status {

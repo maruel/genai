@@ -351,7 +351,7 @@ func (c *Client) genDoc(ctx context.Context, msg *genai.Message, opts ...genai.G
 	if err := req.Init(msg, c.impl.Model, opts...); err != nil {
 		return res, err
 	}
-	url := "https://api.openai.com/v1/images/generations"
+	url := c.baseURL + "/images/generations"
 
 	// It is very different because it requires a multi-part upload.
 	// https://platform.openai.com/docs/api-reference/images/createEdit
@@ -388,7 +388,7 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	}
 	// https://platform.openai.com/docs/api-reference/models/list
 	var resp ModelsResponse
-	if err := c.impl.DoRequest(ctx, "GET", "https://api.openai.com/v1/models", nil, &resp); err != nil {
+	if err := c.impl.DoRequest(ctx, "GET", c.baseURL+"/models", nil, &resp); err != nil {
 		return nil, err
 	}
 	return resp.ToModels(), nil

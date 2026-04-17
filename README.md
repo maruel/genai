@@ -815,6 +815,27 @@ go run github.com/maruel/genai/examples/txt_to_txt_any@latest \
 ```
 
 
+### OAuth2 Authentication 🔑
+
+Two examples demonstrate full OAuth2 browser login flows with PKCE:
+
+[examples/txt\_to\_txt\_oauth2\_codex/main.go](examples/txt_to_txt_oauth2_codex/main.go): Authenticate
+via OpenAI's auth server (same flow as Codex CLI) and talk to the ChatGPT backend API. Tokens are
+cached and refreshed automatically. No configuration needed.
+
+```bash
+go run ./examples/txt_to_txt_oauth2_codex
+```
+
+[examples/txt\_to\_txt\_oauth2\_gemini/main.go](examples/txt_to_txt_oauth2_gemini/main.go): Authenticate
+via Google OAuth2 and talk to the Gemini API. Requires a Google Cloud project with OAuth2 Desktop
+credentials.
+
+```bash
+go run ./examples/txt_to_txt_oauth2_gemini -client-id=ID -client-secret=SECRET
+```
+
+
 ## Model Selection
 
 For automatic model selection, pass one of the marker constants directly:
@@ -873,8 +894,6 @@ PRs are appreciated for any of the following. No need to ask! Just send a PR and
 
 ### Features
 
-- [ ] Authentication: OAuth, service account, OIDC,
-  [GITHUB_TOKEN](https://docs.github.com/en/github-models/use-github-models/integrating-ai-models-into-your-development-workflow#using-ai-models-with-github-actions).
 - [ ] Server-side MCP Client: [OpenAI](https://platform.openai.com/docs/guides/tools-remote-mcp)
   - [x] [Anthropic](https://docs.anthropic.com/en/docs/agents-and-tools/mcp-connector) raw API is implemented
     and smoke tested but there's no abstraction layer yet

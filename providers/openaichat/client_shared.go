@@ -100,30 +100,33 @@ func (c *Client) selectBestImageModel(ctx context.Context, preference string) (s
 	cheap := preference == string(genai.ModelCheap)
 	good := preference == string(genai.ModelGood)
 	selectedModel := ""
+	var created base.Time
 	for _, mdl := range mdls {
 		m := mdl.(*Model)
 		// OpenAI doesn't report much for each model. :(
 		isCheap := strings.HasPrefix(m.ID, "dall")
 		isGood := strings.HasSuffix(m.ID, "-mini")
-		isSOTA := strings.Contains(m.ID, "image")
+		isSOTA := strings.HasPrefix(m.ID, "gpt-image")
 		if !isCheap && !isSOTA {
 			continue
 		}
 		switch {
 		case cheap:
+			// Use lexicographic ordering for dall-e models since dall-e-2 has a higher
+			// Created timestamp than dall-e-3 due to an API data quirk.
 			if isCheap {
 				if selectedModel == "" || m.ID > selectedModel {
 					selectedModel = m.ID
 				}
 			}
 		case good:
-			if isGood {
-				if selectedModel == "" || m.ID > selectedModel {
-					selectedModel = m.ID
-				}
+			if isGood && (created == 0 || m.Created > created) {
+				created = m.Created
+				selectedModel = m.ID
 			}
 		default:
-			if isSOTA && !isGood {
+			if isSOTA && !isGood && (created == 0 || m.Created > created) {
+				created = m.Created
 				selectedModel = m.ID
 			}
 		}

@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |
             {
-              "id": "chatcmpl-BxjChpMkUxZEssBBBDvmM9sgU5TdE",
+              "id": "chatcmpl-DVgGMjsPFdJupSxE9C8RJgwhFEo97",
               "object": "chat.completion",
-              "created": 1753574815,
+              "created": 1776442998,
               "model": "o4-mini-2025-04-16",
               "choices": [
                 {
@@ -35,7 +35,7 @@ interactions:
                     "content": null,
                     "tool_calls": [
                       {
-                        "id": "call_6hs8mFJZVSpJ5jILj0lPxsic",
+                        "id": "call_YNadMH14eqcVSZx3qZjZZtyI",
                         "type": "function",
                         "function": {
                           "name": "best_country",
@@ -51,14 +51,14 @@ interactions:
               ],
               "usage": {
                 "prompt_tokens": 78,
-                "completion_tokens": 215,
-                "total_tokens": 293,
+                "completion_tokens": 87,
+                "total_tokens": 165,
                 "prompt_tokens_details": {
                   "cached_tokens": 0,
                   "audio_tokens": 0
                 },
                 "completion_tokens_details": {
-                  "reasoning_tokens": 192,
+                  "reasoning_tokens": 64,
                   "audio_tokens": 0,
                   "accepted_prediction_tokens": 0,
                   "rejected_prediction_tokens": 0
@@ -75,15 +75,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9657e4c31ecfa2ca-YUL
+                - 9edcc6065c26a297-YUL
             Content-Type:
                 - application/json
-            Openai-Organization:
-                - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "2085"
-            Openai-Project:
-                - proj_tH6hQUFvA4Bx6SyAb23zzLEg
+                - "1809"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -92,8 +88,8 @@ interactions:
                 - max-age=31536000; includeSubDomains; preload
             X-Content-Type-Options:
                 - nosniff
-            X-Envoy-Upstream-Service-Time:
-                - "2088"
+            X-Openai-Proxy-Wasm:
+                - v0.1
             X-Ratelimit-Limit-Requests:
                 - "500"
             X-Ratelimit-Limit-Tokens:
@@ -101,13 +97,11 @@ interactions:
             X-Ratelimit-Remaining-Requests:
                 - "499"
             X-Ratelimit-Remaining-Tokens:
-                - "199966"
+                - "199967"
             X-Ratelimit-Reset-Requests:
                 - 120ms
             X-Ratelimit-Reset-Tokens:
                 - 9ms
-            X-Request-Id:
-                - 81d2536b-d73f-4a21-85bd-b7de6d5ca202
         status: 200 OK
         code: 200
-        duration: 2.201s
+        duration: 1.954s

@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |
             {
-              "id": "chatcmpl-BxjCYY8tExiIoU1ARQQhqke1z5HQm",
+              "id": "chatcmpl-DVgGF6q0AEU2At7a44OhprnHr0e18",
               "object": "chat.completion",
-              "created": 1753574806,
+              "created": 1776442991,
               "model": "o4-mini-2025-04-16",
               "choices": [
                 {
@@ -41,14 +41,14 @@ interactions:
               ],
               "usage": {
                 "prompt_tokens": 14,
-                "completion_tokens": 83,
-                "total_tokens": 97,
+                "completion_tokens": 19,
+                "total_tokens": 33,
                 "prompt_tokens_details": {
                   "cached_tokens": 0,
                   "audio_tokens": 0
                 },
                 "completion_tokens_details": {
-                  "reasoning_tokens": 64,
+                  "reasoning_tokens": 0,
                   "audio_tokens": 0,
                   "accepted_prediction_tokens": 0,
                   "rejected_prediction_tokens": 0
@@ -65,15 +65,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9657e48adf74a2ca-YUL
+                - 9edcc5d74a09a297-YUL
             Content-Type:
                 - application/json
-            Openai-Organization:
-                - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "1245"
-            Openai-Project:
-                - proj_tH6hQUFvA4Bx6SyAb23zzLEg
+                - "669"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -82,8 +78,8 @@ interactions:
                 - max-age=31536000; includeSubDomains; preload
             X-Content-Type-Options:
                 - nosniff
-            X-Envoy-Upstream-Service-Time:
-                - "1249"
+            X-Openai-Proxy-Wasm:
+                - v0.1
             X-Ratelimit-Limit-Requests:
                 - "500"
             X-Ratelimit-Limit-Tokens:
@@ -96,8 +92,6 @@ interactions:
                 - 120ms
             X-Ratelimit-Reset-Tokens:
                 - 3ms
-            X-Request-Id:
-                - 348f154a-8699-4491-a591-9ca9e6be2a1a
         status: 200 OK
         code: 200
-        duration: 1.646s
+        duration: 781ms

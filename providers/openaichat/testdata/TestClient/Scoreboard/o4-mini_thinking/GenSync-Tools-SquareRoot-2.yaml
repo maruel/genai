@@ -9,7 +9,7 @@ interactions:
         content_length: 872
         host: api.openai.com
         body: |
-            {"model":"o4-mini","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"assistant","tool_calls":[{"id":"call_ngG6swIcZu2FEvRwI5lg5XjA","type":"function","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},{"role":"tool","content":[{"type":"text","text":"363.89"}],"tool_call_id":"call_ngG6swIcZu2FEvRwI5lg5XjA"}],"reasoning_effort":"low","service_tier":"flex","tools":[{"type":"function","function":{"description":"Calculates and return the square root of a number","name":"square_root","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none"}
+            {"model":"o4-mini","stream":false,"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"assistant","tool_calls":[{"id":"call_ZelQTsIoKOowA0iWne7i3rK2","type":"function","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},{"role":"tool","content":[{"type":"text","text":"363.89"}],"tool_call_id":"call_ZelQTsIoKOowA0iWne7i3rK2"}],"reasoning_effort":"low","service_tier":"flex","tools":[{"type":"function","function":{"description":"Calculates and return the square root of a number","name":"square_root","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none"}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |
             {
-              "id": "chatcmpl-C49BjTw1HGf16woBlDHP1oQvaXTkW",
+              "id": "chatcmpl-DVgGLZ7IMv5fWeJpxgrSr5WvUGaCj",
               "object": "chat.completion",
-              "created": 1755104667,
+              "created": 1776442997,
               "model": "o4-mini-2025-04-16",
               "choices": [
                 {
@@ -65,15 +65,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 96e9caa83f2da30e-YUL
+                - 9edcc5ffafa8a297-YUL
             Content-Type:
                 - application/json
-            Openai-Organization:
-                - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "601"
-            Openai-Project:
-                - proj_tH6hQUFvA4Bx6SyAb23zzLEg
+                - "928"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -82,8 +78,8 @@ interactions:
                 - max-age=31536000; includeSubDomains; preload
             X-Content-Type-Options:
                 - nosniff
-            X-Envoy-Upstream-Service-Time:
-                - "646"
+            X-Openai-Proxy-Wasm:
+                - v0.1
             X-Ratelimit-Limit-Requests:
                 - "500"
             X-Ratelimit-Limit-Tokens:
@@ -96,8 +92,6 @@ interactions:
                 - 120ms
             X-Ratelimit-Reset-Tokens:
                 - 11ms
-            X-Request-Id:
-                - req_19385a464d6e48e89383d787d7734307
         status: 200 OK
         code: 200
-        duration: 780ms
+        duration: 1.065s

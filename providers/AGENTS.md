@@ -55,8 +55,10 @@ investigate more efficiently. Only then look at the online documentation to conf
   failed ones. The cassette matcher compares requests byte-for-byte (body, headers, content-length, proto)
   and hand-crafted files are fragile and unreliable.
 - When tests fail due to stale or missing cassettes, re-record them with
-  `RECORD=failure_only go test ./<directory>`. Prefer `RECORD=failure_only` (only re-records failed
-  cassettes) over `RECORD=all` (re-records everything). Use `-run` to scope recording to specific tests.
+  `RECORD=failure_only go test ./<directory>`. **Always default to `RECORD=failure_only`** (only re-records
+  failed cassettes). For surgical re-recording, delete the specific cassette files that need updating, then
+  run `RECORD=failure_only go test ./<directory>`. Only use `RECORD=all` when explicitly asked by the user.
+  Use `-run` to scope recording to specific tests.
 - When recording smoketests against live APIs, run fewer models at a time (use `-run`) to avoid exceeding
   the default 10-minute `go test` timeout. Reasoning models in particular can generate tens of thousands
   of tokens per test, making a full recording run take 20+ minutes.
@@ -90,3 +92,9 @@ The test framework automatically discovers models, records interactions, and upd
 
 After updating any `scoreboard.json`, run `go generate ./...` to regenerate the documentation files (e.g.
 `docs/*.md`).
+
+## TODO
+
+- When updating a provider's `Warmup.yaml` (model list), always verify that the SOTA/Good/Cheap model
+  selection logic (`selectBestTextModel`, `selectBestImageModel`, etc.) resolves to the correct latest
+  models. New models regularly become available and the selection logic must match.

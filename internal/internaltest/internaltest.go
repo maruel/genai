@@ -289,8 +289,10 @@ func (r *RetryOnRateLimit) Unwrap() genai.Provider {
 
 func isRateLimited(err error) bool {
 	var herr *httpjson.Error
-	if errors.As(err, &herr) && herr.StatusCode == http.StatusTooManyRequests {
-		return true
+	if errors.As(err, &herr) {
+		if herr.StatusCode == http.StatusTooManyRequests || herr.StatusCode == http.StatusInternalServerError {
+			return true
+		}
 	}
 	// OpenAI sometimes returns rate limits as 400 with code "rate_limit_exceeded".
 	return strings.Contains(err.Error(), "rate_limit_exceeded")

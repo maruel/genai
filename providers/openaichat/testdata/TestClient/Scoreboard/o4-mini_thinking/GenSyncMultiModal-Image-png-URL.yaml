@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |
             {
-              "id": "chatcmpl-BxjCxLPMDAe8pZ075wMsCBcXaVNeJ",
+              "id": "chatcmpl-DVgGcntiCsmGl6PK5HpyxHAkWHIJo",
               "object": "chat.completion",
-              "created": 1753574831,
+              "created": 1776443014,
               "model": "o4-mini-2025-04-16",
               "choices": [
                 {
@@ -65,15 +65,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9657e527bd98a2ca-YUL
+                - 9edcc6647821a297-YUL
             Content-Type:
                 - application/json
-            Openai-Organization:
-                - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "754"
-            Openai-Project:
-                - proj_tH6hQUFvA4Bx6SyAb23zzLEg
+                - "1491"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -82,8 +78,8 @@ interactions:
                 - max-age=31536000; includeSubDomains; preload
             X-Content-Type-Options:
                 - nosniff
-            X-Envoy-Upstream-Service-Time:
-                - "617"
+            X-Openai-Proxy-Wasm:
+                - v0.1
             X-Ratelimit-Limit-Input-Images:
                 - "50000"
             X-Ratelimit-Limit-Requests:
@@ -102,8 +98,6 @@ interactions:
                 - 120ms
             X-Ratelimit-Reset-Tokens:
                 - 233ms
-            X-Request-Id:
-                - 6cc89d0d-b16c-48b9-a0f5-a46b42fbbd4d
         status: 200 OK
         code: 200
-        duration: 984ms
+        duration: 1.635s

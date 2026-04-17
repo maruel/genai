@@ -36,7 +36,7 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 96c9d3c20f09a25d-YUL
+                - 9edcc5e31e56a297-YUL
             Content-Type:
                 - application/json; charset=utf-8
             Server:
@@ -47,10 +47,8 @@ interactions:
                 - Origin
             X-Content-Type-Options:
                 - nosniff
-            X-Envoy-Upstream-Service-Time:
-                - "118"
-            X-Request-Id:
-                - req_122bd7709f5a4ef6a2d16860e7d497ee
+            X-Openai-Proxy-Wasm:
+                - v0.1
         status: 403 Forbidden
         code: 403
-        duration: 471ms
+        duration: 107ms

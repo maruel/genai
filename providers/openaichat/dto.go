@@ -182,6 +182,10 @@ type ImageResponse struct {
 			TextTokens  int64 `json:"text_tokens"`
 			ImageTokens int64 `json:"image_tokens"`
 		} `json:"input_tokens_details"`
+		OutputTokensDetails struct {
+			TextTokens  int64 `json:"text_tokens"`
+			ImageTokens int64 `json:"image_tokens"`
+		} `json:"output_tokens_details"`
 	} `json:"usage"`
 	Background   string `json:"background"`    // "opaque"
 	Size         string `json:"size"`          // e.g. "1024x1024"

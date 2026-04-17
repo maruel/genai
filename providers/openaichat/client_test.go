@@ -114,29 +114,50 @@ func TestClient(t *testing.T) {
 			}
 			// This will lead to spurious HTTP 500 but it is 25% of the cost.
 			tier := openaichat.ServiceTierFlex
+			res := openaichat.ReasoningEffortLow
 			if strings.Contains(model.Model, "-chat-latest") {
+				// Flex and Low are not supported.
 				tier = openaichat.ServiceTierDefault
+				res = openaichat.ReasoningEffortMedium
 			}
 			if model.Reason {
-				return &injectReasoning{
+				var p genai.Provider = &injectReasoning{
 					Provider: &internaltest.InjectOptions{
 						Provider: c,
 						Opts: []genai.GenOption{
 							&openaichat.GenOptionText{
-								ReasoningEffort: openaichat.ReasoningEffortLow,
+								ReasoningEffort: res,
 								ServiceTier:     tier,
 							},
 						},
 					},
 				}
+				if tier == openaichat.ServiceTierFlex {
+					p = &internaltest.RetryOnRateLimit{
+						Provider: p,
+						FallbackOpts: []genai.GenOption{
+							&openaichat.GenOptionText{ServiceTier: openaichat.ServiceTierDefault},
+						},
+					}
+				}
+				return p
 			}
 			if slices.Equal(c.OutputModalities(), []genai.Modality{genai.ModalityText}) {
 				// See https://platform.openai.com/docs/guides/flex-processing
 				if id := c.ModelID(); id == "o3" || id == "o4-mini" || strings.HasPrefix(id, "gpt-5") {
-					return &internaltest.InjectOptions{
+					var p genai.Provider = &internaltest.InjectOptions{
 						Provider: c,
 						Opts:     []genai.GenOption{&openaichat.GenOptionText{ServiceTier: tier}},
 					}
+					if tier == openaichat.ServiceTierFlex {
+						p = &internaltest.RetryOnRateLimit{
+							Provider: p,
+							FallbackOpts: []genai.GenOption{
+								&openaichat.GenOptionText{ServiceTier: openaichat.ServiceTierDefault},
+							},
+						}
+					}
+					return p
 				}
 			}
 			return c
@@ -239,8 +260,8 @@ func TestClient(t *testing.T) {
 					genai.ProviderOptionModel("bad model"),
 					genai.ProviderOptionModalities{genai.ModalityImage},
 				},
-				ErrGenSync:   "http 400\ninvalid_request_error/invalid_value for \"model\": Invalid value: 'bad model'. Supported values are: 'gpt-image-1', 'gpt-image-1-io', 'gpt-image-0721-mini-alpha', 'dall-e-2', and 'dall-e-3'.",
-				ErrGenStream: "http 400\ninvalid_request_error/invalid_value for \"model\": Invalid value: 'bad model'. Supported values are: 'gpt-image-1', 'gpt-image-1-io', 'gpt-image-0721-mini-alpha', 'dall-e-2', and 'dall-e-3'.",
+				ErrGenSync:   "http 400\nimage_generation_user_error/invalid_value for \"model\": The model 'bad model' does not exist.",
+				ErrGenStream: "http 400\nimage_generation_user_error/invalid_value for \"model\": The model 'bad model' does not exist.",
 			},
 		}
 		f := func(t *testing.T, opts ...genai.ProviderOption) (genai.Provider, error) {

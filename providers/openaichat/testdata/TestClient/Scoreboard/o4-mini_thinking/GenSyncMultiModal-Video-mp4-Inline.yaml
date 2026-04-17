@@ -37,17 +37,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9657e53ed89ba2ca-YUL
+                - 9edcc67e6e97a297-YUL
             Content-Length:
                 - "388"
             Content-Type:
                 - application/json
-            Openai-Organization:
-                - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "29"
-            Openai-Project:
-                - proj_tH6hQUFvA4Bx6SyAb23zzLEg
+                - "89"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -56,8 +52,8 @@ interactions:
                 - max-age=31536000; includeSubDomains; preload
             X-Content-Type-Options:
                 - nosniff
-            X-Envoy-Upstream-Service-Time:
-                - "12"
+            X-Openai-Proxy-Wasm:
+                - v0.1
             X-Ratelimit-Limit-Requests:
                 - "500"
             X-Ratelimit-Limit-Tokens:
@@ -65,13 +61,11 @@ interactions:
             X-Ratelimit-Remaining-Requests:
                 - "499"
             X-Ratelimit-Remaining-Tokens:
-                - "199164"
+                - "199221"
             X-Ratelimit-Reset-Requests:
                 - 120ms
             X-Ratelimit-Reset-Tokens:
-                - 250ms
-            X-Request-Id:
-                - e3eff997-2a0b-4588-88a7-a7c568cf6e8d
+                - 233ms
         status: 400 Bad Request
         code: 400
-        duration: 325ms
+        duration: 206ms

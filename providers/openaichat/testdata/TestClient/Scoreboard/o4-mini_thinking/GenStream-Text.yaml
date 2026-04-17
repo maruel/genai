@@ -21,13 +21,13 @@ interactions:
         proto_minor: 0
         content_length: -1
         body: |+
-            data: {"id":"chatcmpl-BxjCYuEOIBZxVznfprQs5ErxlpcTs","object":"chat.completion.chunk","created":1753574806,"model":"o4-mini-2025-04-16","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"role":"assistant","content":"","refusal":null},"finish_reason":null}],"usage":null}
+            data: {"id":"chatcmpl-DVgGFptDYg1iEMF2hszwkSK8JVvfA","object":"chat.completion.chunk","created":1776442991,"model":"o4-mini-2025-04-16","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"role":"assistant","content":"","refusal":null},"finish_reason":null}],"usage":null,"obfuscation":"LGuMnpU69YZ"}
 
-            data: {"id":"chatcmpl-BxjCYuEOIBZxVznfprQs5ErxlpcTs","object":"chat.completion.chunk","created":1753574806,"model":"o4-mini-2025-04-16","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"content":"Hello"},"finish_reason":null}],"usage":null}
+            data: {"id":"chatcmpl-DVgGFptDYg1iEMF2hszwkSK8JVvfA","object":"chat.completion.chunk","created":1776442991,"model":"o4-mini-2025-04-16","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{"content":"Hello"},"finish_reason":null}],"usage":null,"obfuscation":"HQLc74eo"}
 
-            data: {"id":"chatcmpl-BxjCYuEOIBZxVznfprQs5ErxlpcTs","object":"chat.completion.chunk","created":1753574806,"model":"o4-mini-2025-04-16","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{},"finish_reason":"stop"}],"usage":null}
+            data: {"id":"chatcmpl-DVgGFptDYg1iEMF2hszwkSK8JVvfA","object":"chat.completion.chunk","created":1776442991,"model":"o4-mini-2025-04-16","service_tier":"flex","system_fingerprint":null,"choices":[{"index":0,"delta":{},"finish_reason":"stop"}],"usage":null,"obfuscation":"WH8kaZV"}
 
-            data: {"id":"chatcmpl-BxjCYuEOIBZxVznfprQs5ErxlpcTs","object":"chat.completion.chunk","created":1753574806,"model":"o4-mini-2025-04-16","service_tier":"flex","system_fingerprint":null,"choices":[],"usage":{"prompt_tokens":14,"completion_tokens":19,"total_tokens":33,"prompt_tokens_details":{"cached_tokens":0,"audio_tokens":0},"completion_tokens_details":{"reasoning_tokens":0,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0}}}
+            data: {"id":"chatcmpl-DVgGFptDYg1iEMF2hszwkSK8JVvfA","object":"chat.completion.chunk","created":1776442991,"model":"o4-mini-2025-04-16","service_tier":"flex","system_fingerprint":null,"choices":[],"usage":{"prompt_tokens":14,"completion_tokens":19,"total_tokens":33,"prompt_tokens_details":{"cached_tokens":0,"audio_tokens":0},"completion_tokens_details":{"reasoning_tokens":0,"audio_tokens":0,"accepted_prediction_tokens":0,"rejected_prediction_tokens":0}},"obfuscation":"jo9mMkhX58BG"}
 
             data: [DONE]
 
@@ -39,15 +39,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9657e48adf76a2ca-YUL
+                - 9edcc5d74a0fa297-YUL
             Content-Type:
                 - text/event-stream; charset=utf-8
-            Openai-Organization:
-                - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "1008"
-            Openai-Project:
-                - proj_tH6hQUFvA4Bx6SyAb23zzLEg
+                - "421"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -56,8 +52,8 @@ interactions:
                 - max-age=31536000; includeSubDomains; preload
             X-Content-Type-Options:
                 - nosniff
-            X-Envoy-Upstream-Service-Time:
-                - "1014"
+            X-Openai-Proxy-Wasm:
+                - v0.1
             X-Ratelimit-Limit-Requests:
                 - "500"
             X-Ratelimit-Limit-Tokens:
@@ -65,13 +61,11 @@ interactions:
             X-Ratelimit-Remaining-Requests:
                 - "498"
             X-Ratelimit-Remaining-Tokens:
-                - "199990"
+                - "199988"
             X-Ratelimit-Reset-Requests:
-                - 229ms
+                - 237ms
             X-Ratelimit-Reset-Tokens:
                 - 3ms
-            X-Request-Id:
-                - 9e5697a5-6916-409b-ac58-bdfc78e5ad1a
         status: 200 OK
         code: 200
-        duration: 1.376s
+        duration: 534ms

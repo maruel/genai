@@ -10,7 +10,7 @@
   "scenarios": [
     {
       "models": [
-        "gpt-5.2-chat-latest"
+        "gpt-5.4"
       ],
       "sota": true,
       "in": {
@@ -48,7 +48,9 @@
         "toolsBiased": "flaky",
         "toolCallRequired": true,
         "json": true,
-        "jsonSchema": true
+        "jsonSchema": true,
+        "topLogprobs": true,
+        "maxTokens": true
       },
       "GenStream": {
         "reportRateLimits": true,
@@ -59,13 +61,15 @@
         "toolsBiased": "flaky",
         "toolCallRequired": true,
         "json": true,
-        "jsonSchema": true
+        "jsonSchema": true,
+        "topLogprobs": true,
+        "maxTokens": true
       }
     },
     {
       "comments": "TODO: More output image format are supported by the API",
       "models": [
-        "gpt-image-1"
+        "gpt-image-1.5"
       ],
       "sota": true,
       "in": {
@@ -85,7 +89,7 @@
     },
     {
       "models": [
-        "gpt-5-mini"
+        "gpt-5.4-mini"
       ],
       "good": true,
       "in": {
@@ -120,10 +124,12 @@
         "reportFinishReason": "true",
         "seed": true,
         "tools": "true",
-        "toolsBiased": "flaky",
+        "toolsBiased": "true",
         "toolCallRequired": true,
         "json": true,
-        "jsonSchema": true
+        "jsonSchema": true,
+        "topLogprobs": true,
+        "maxTokens": true
       },
       "GenStream": {
         "reportRateLimits": true,
@@ -134,7 +140,9 @@
         "toolsBiased": "true",
         "toolCallRequired": true,
         "json": true,
-        "jsonSchema": true
+        "jsonSchema": true,
+        "topLogprobs": true,
+        "maxTokens": true
       }
     },
     {
@@ -179,7 +187,7 @@
     },
     {
       "models": [
-        "gpt-5-nano"
+        "gpt-5.4-nano"
       ],
       "cheap": true,
       "in": {
@@ -217,7 +225,9 @@
         "toolsBiased": "true",
         "toolCallRequired": true,
         "json": true,
-        "jsonSchema": true
+        "jsonSchema": true,
+        "topLogprobs": true,
+        "maxTokens": true
       },
       "GenStream": {
         "reportRateLimits": true,
@@ -228,7 +238,9 @@
         "toolsBiased": "true",
         "toolCallRequired": true,
         "json": true,
-        "jsonSchema": true
+        "jsonSchema": true,
+        "topLogprobs": true,
+        "maxTokens": true
       }
     },
     {
@@ -279,128 +291,10 @@
         "reportFinishReason": "true",
         "seed": true,
         "tools": "true",
-        "toolsBiased": "flaky",
+        "toolsBiased": "true",
         "toolCallRequired": true,
         "json": true,
         "jsonSchema": true
-      }
-    },
-    {
-      "models": [
-        "gpt-4.1"
-      ],
-      "in": {
-        "document": {
-          "inline": true,
-          "supportedFormats": [
-            "application/pdf"
-          ]
-        },
-        "image": {
-          "inline": true,
-          "url": true,
-          "supportedFormats": [
-            "image/gif",
-            "image/jpeg",
-            "image/png",
-            "image/webp"
-          ]
-        },
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "tools": "true",
-        "toolsIndecisive": "true",
-        "toolCallRequired": true,
-        "json": true,
-        "jsonSchema": true,
-        "topLogprobs": true,
-        "maxTokens": true,
-        "stopSequence": true
-      },
-      "GenStream": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "tools": "true",
-        "toolsIndecisive": "true",
-        "toolCallRequired": true,
-        "json": true,
-        "jsonSchema": true,
-        "topLogprobs": true,
-        "maxTokens": true,
-        "stopSequence": true
-      }
-    },
-    {
-      "models": [
-        "gpt-4.1-nano"
-      ],
-      "in": {
-        "document": {
-          "inline": true,
-          "supportedFormats": [
-            "application/pdf"
-          ]
-        },
-        "image": {
-          "inline": true,
-          "url": true,
-          "supportedFormats": [
-            "image/gif",
-            "image/jpeg",
-            "image/png",
-            "image/webp"
-          ]
-        },
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "tools": "true",
-        "toolsIndecisive": "true",
-        "toolCallRequired": true,
-        "json": true,
-        "jsonSchema": true,
-        "topLogprobs": true,
-        "maxTokens": true,
-        "stopSequence": true
-      },
-      "GenStream": {
-        "reportRateLimits": true,
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "tools": "true",
-        "toolsIndecisive": "true",
-        "toolCallRequired": true,
-        "json": true,
-        "jsonSchema": true,
-        "topLogprobs": true,
-        "maxTokens": true,
-        "stopSequence": true
       }
     },
     {
@@ -482,7 +376,9 @@
     },
     {
       "models": [
+        "babbage-002",
         "chatgpt-4o-latest",
+        "chatgpt-image-latest",
         "codex-mini-latest",
         "dall-e-2",
         "davinci-002",
@@ -499,9 +395,11 @@
         "gpt-4-turbo",
         "gpt-4-turbo-2024-04-09",
         "gpt-4-turbo-preview",
+        "gpt-4.1",
         "gpt-4.1-2025-04-14",
         "gpt-4.1-mini",
         "gpt-4.1-mini-2025-04-14",
+        "gpt-4.1-nano",
         "gpt-4.1-nano-2025-04-14",
         "gpt-4o",
         "gpt-4o-2024-05-13",
@@ -517,7 +415,11 @@
         "gpt-4o-mini-realtime-preview-2024-12-17",
         "gpt-4o-mini-search-preview-2025-03-11",
         "gpt-4o-mini-transcribe",
+        "gpt-4o-mini-transcribe-2025-03-20",
+        "gpt-4o-mini-transcribe-2025-12-15",
         "gpt-4o-mini-tts",
+        "gpt-4o-mini-tts-2025-03-20",
+        "gpt-4o-mini-tts-2025-12-15",
         "gpt-4o-realtime-preview",
         "gpt-4o-realtime-preview-2024-12-17",
         "gpt-4o-realtime-preview-2025-06-03",
@@ -528,7 +430,9 @@
         "gpt-5-2025-08-07",
         "gpt-5-chat-latest",
         "gpt-5-codex",
+        "gpt-5-mini",
         "gpt-5-mini-2025-08-07",
+        "gpt-5-nano",
         "gpt-5-nano-2025-08-07",
         "gpt-5-pro",
         "gpt-5-pro-2025-10-06",
@@ -542,16 +446,30 @@
         "gpt-5.1-codex-mini",
         "gpt-5.2",
         "gpt-5.2-2025-12-11",
+        "gpt-5.2-chat-latest",
+        "gpt-5.2-codex",
         "gpt-5.2-pro",
         "gpt-5.2-pro-2025-12-11",
+        "gpt-5.3-chat-latest",
+        "gpt-5.3-codex",
+        "gpt-5.4-2026-03-05",
+        "gpt-5.4-mini-2026-03-17",
+        "gpt-5.4-nano-2026-03-17",
+        "gpt-5.4-pro",
+        "gpt-5.4-pro-2026-03-05",
         "gpt-audio",
+        "gpt-audio-1.5",
         "gpt-audio-2025-08-28",
         "gpt-audio-mini",
         "gpt-audio-mini-2025-10-06",
+        "gpt-audio-mini-2025-12-15",
+        "gpt-image-1",
         "gpt-realtime",
+        "gpt-realtime-1.5",
         "gpt-realtime-2025-08-28",
         "gpt-realtime-mini",
         "gpt-realtime-mini-2025-10-06",
+        "gpt-realtime-mini-2025-12-15",
         "omni-moderation-2024-09-26",
         "omni-moderation-latest",
         "sora-2",

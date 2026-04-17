@@ -912,11 +912,9 @@ PRs are appreciated for any of the following. No need to ask! Just send a PR and
 
 I'd be delighted if you want to contribute any missing provider being added, I'm particularly looking forward to these:
 
-- [ ] [Alibaba Cloud](https://www.alibabacloud.com/): Maker of Qwen models.
 - [ ] [AWS Bedrock](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_Operations_Amazon_Bedrock.html)
 - [ ] [Azure AI](https://learn.microsoft.com/en-us/rest/api/aifoundry/model-inference/get-chat-completions/get-chat-completions)
 - [ ] [Fireworks responses](https://fireworks.ai/docs/guides/response-api)
-- [ ] [GitHub](https://docs.github.com/en/rest/models/inference) inference API, which works on GitHub Actions (!)
 - [ ] [Google's Vertex AI](https://cloud.google.com/vertex-ai/docs/reference/rest): It supports much more
   features than Gemini API.
 - [ ] Groq
@@ -931,7 +929,6 @@ I'd be delighted if you want to contribute any missing provider being added, I'm
       (FIM)](https://docs.mistral.ai/api/#tag/chat/operation/chat_completion_v1_chat_completions_post)
     - [ ] [Transcription](https://docs.mistral.ai/api/#tag/ocr/operation/ocr_v1_ocr_post)
 - [ ] [Novita](https://novita.ai/): Supports lots of modalities.
-- [ ] [Open Router](https://openrouter.ai/)
 - [ ] OpenAI
     - [ ] [Audio](https://platform.openai.com/docs/api-reference/audio/createSpeech)
     - [ ] [Batch Responses API](https://platform.openai.com/docs/api-reference/batch)

@@ -75,10 +75,10 @@ type tableSummaryRow struct {
 func (t *tableSummaryRow) initFromScoreboard(p genai.Provider) {
 	sb := p.Scoreboard()
 	t.Provider = p.Name()
-	// We could link to the dashboard (sb.DashboardURL) but assume we want to link to the generated doc.
-	base := "docs/"
-	if sb.DashboardURL != "" {
-		t.Provider = "[" + p.Name() + "](" + base + p.Name() + ".md" + ")"
+	// Link to the generated doc page. openaicompatible is excluded from doc
+	// generation (see regen_docs.go) so skip it here too.
+	if p.Name() != "openaicompatible" {
+		t.Provider = "[" + p.Name() + "](docs/" + p.Name() + ".md)"
 	}
 	t.Country = countryMap[strings.ToLower(sb.Country)]
 	if t.Country == "" {
@@ -234,6 +234,7 @@ func (t *tableDataRow) initFromScenario(s *scoreboard.Scenario, f *scoreboard.Fu
 }
 
 var countryMap = map[string]string{
+	"at":    "🇦🇹",
 	"ca":    "🇨🇦",
 	"cn":    "🇨🇳",
 	"de":    "🇩🇪",

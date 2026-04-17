@@ -1,10 +1,7 @@
 # Agent Development Guide
 
-A file to [guide coding agents](https://agents.md/).
+## Commands
 
-# Commands
-
-- **Build:** `go build ./...`
 - **Test:** `go test ./...`
 - **Test with filter**: `go test ./<directory>`
 - **Format source files**: `gofmt -w -s .`
@@ -87,17 +84,8 @@ Every package should have comprehensive documentation explaining:
 
 - Write comprehensive unit tests for all functionality
 - Use table-driven tests for multiple scenarios
-- Use subtest to separatetly test valid and errors code paths
-- Use HTTP record/playback for provider integration tests
-- **NEVER** create or manually edit cassette YAML files in `testdata/`. Record them against the real API
-  with `RECORD=failure_only go test` to replay existing cassettes and automatically re-record only the
-  failed ones. The cassette matcher compares requests byte-for-byte (body, headers, content-length, proto)
-  and hand-crafted files are fragile and unreliable.
-- Store test data in `testdata/` directories
+- Use subtest to separately test valid and error code paths
 - Test files are named `*_test.go`
-- When tests fail due to stale or missing cassettes, re-record them with
-  `RECORD=failure_only go test ./<directory>`. Prefer `RECORD=failure_only` (only re-records failed
-  cassettes) over `RECORD=all` (re-records everything). Use `-run` to scope recording to specific tests.
 
 ### Performance Considerations
 
@@ -105,29 +93,6 @@ Every package should have comprehensive documentation explaining:
 - Use `bytes.Buffer` and similar for efficient string building
 
 ## Architecture Patterns
-
-### Provider Implementation
-
-When implementing a new provider:
-
-1. **Create package structure**:
-   ```
-   providers/newprovider/
-   ├── client.go          # Main client implementation
-   ├── client_test.go     # Unit tests
-   └── testdata/          # Recorded HTTP interactions
-   ```
-
-2. **Implement required interfaces**: For a new `Client`, implement the relevant interfaces from the `genai`
-   package that start with `Provider`. Use go doc to get the up to date list. Ensure that the provider
-   implements all necessary methods for the interfaces it claims to support.
-
-3. **Handle provider-specific features**:
-   - Map genai types to provider-specific API structures
-   - Implement proper error handling for rate limits, auth, etc
-   - Support streaming if the provider offers it
-   - Handle provider-specific limitations gracefully
-   - Implement `Raw` suffix methods for raw API access
 
 ### Type Definitions
 
@@ -137,29 +102,6 @@ When implementing a new provider:
 - Use enums (constants) for fixed value sets
 - Document field constraints in comments
 - Prefer typed structs over `any`: Always extract nested structures into named types if possible.
-
-### Testing Strategy
-
-- **Unit tests**: Test individual functions and methods
-- **Smoke tests**: Test against live services with recorded traces
-- **Functionality tests**: Test provider capabilities systematically
-
-### Smoke Testing with Automatic Scoreboard Updates
-
-The smoke test framework supports automatic updating of `scoreboard.json` files when test results change. This is particularly useful when provider capabilities evolve.
-
-#### CRITICAL: Never Manually Edit scoreboard.json
-
-**DO NOT manually edit `scoreboard.json` or use `jq` to update it.** Always use `go test -update-scoreboard`
-instead:
-
-```bash
-go test ./providers/<provider> -update-scoreboard
-```
-
-The test framework automatically discovers models, records interactions, and updates the scoreboard correctly.
-
-After updating any `scoreboard.json`, run `go generate ./...` to regenerate the documentation files (e.g. `docs/*.md`).
 
 ## Common Patterns
 
@@ -173,35 +115,6 @@ func (o *Options) Validate() error {
     return nil
 }
 ```
-
-## Provider-Specific Notes
-
-### Authentication
-
-- Support environment variables for API keys
-- Handle different auth mechanisms (API key, OAuth, etc.)
-- Provide clear error messages for auth failures
-
-### Feature Support
-
-- Clearly document which features each provider supports
-- Use the feature matrix in README.md as reference
-- Implement graceful degradation for unsupported features
-
-## Testing Guidelines
-
-### Test Data Management
-
-- Store test data in `testdata/` directories
-- Use descriptive filenames for test cases
-- Include both positive and negative test cases
-- Keep test data minimal but comprehensive
-
-### HTTP Recording
-
-- Use package internal/internaltest for HTTP recording, it sanitizes sensitive data (API keys, personal info)
-- Update recordings when API changes
-- Test both success and error scenarios
 
 ## Documentation
 

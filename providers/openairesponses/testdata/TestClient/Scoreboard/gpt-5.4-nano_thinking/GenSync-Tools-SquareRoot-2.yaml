@@ -1,0 +1,159 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 877
+        host: api.openai.com
+        body: |
+            {"model":"gpt-5.4-nano","parallel_tool_calls":true,"reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":false,"tool_choice":"none","tools":[{"type":"function","name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}],"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"type":"function_call","arguments":"{\"number\":132413}","name":"square_root","call_id":"call_8kD0thlRbqCiQKJYacX43q44"},{"type":"function_call_output","call_id":"call_8kD0thlRbqCiQKJYacX43q44","output":"363.89"}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/responses
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "resp_0574891c2f13e50f0169e23326374881968a39a6f65cb992b2",
+              "object": "response",
+              "created_at": 1776431910,
+              "status": "completed",
+              "background": false,
+              "billing": {
+                "payer": "openai"
+              },
+              "completed_at": 1776431913,
+              "error": null,
+              "frequency_penalty": 0.0,
+              "incomplete_details": null,
+              "instructions": null,
+              "max_output_tokens": null,
+              "max_tool_calls": null,
+              "model": "gpt-5.4-nano-2026-03-17",
+              "output": [
+                {
+                  "id": "rs_0574891c2f13e50f0169e233266d8481968e253cb4faebc256",
+                  "type": "reasoning",
+                  "summary": [
+                    {
+                      "type": "summary_text",
+                      "text": "**Calculating an estimate**\n\nI can't call the tool for this, so I'll need to estimate the square root of 132413. I figure that 364 squared is 132496, which gives me a difference of -83. The derivative is 2 times 364, equaling 728. To adjust, I calculate -83 divided by 728, which is about -0.114. So, my adjusted estimate becomes 364 minus 0.114, giving me 363.886. The rounded output will be 363.89."
+                    }
+                  ]
+                },
+                {
+                  "id": "msg_0574891c2f13e50f0169e2332931c48196913d392f963c9a3f",
+                  "type": "message",
+                  "status": "completed",
+                  "content": [
+                    {
+                      "type": "output_text",
+                      "annotations": [],
+                      "logprobs": [],
+                      "text": "363.89"
+                    }
+                  ],
+                  "phase": "final_answer",
+                  "role": "assistant"
+                }
+              ],
+              "parallel_tool_calls": true,
+              "presence_penalty": 0.0,
+              "previous_response_id": null,
+              "prompt_cache_key": null,
+              "prompt_cache_retention": null,
+              "reasoning": {
+                "effort": "low",
+                "summary": "detailed"
+              },
+              "safety_identifier": null,
+              "service_tier": "flex",
+              "store": false,
+              "temperature": 1.0,
+              "text": {
+                "format": {
+                  "type": "text"
+                },
+                "verbosity": "medium"
+              },
+              "tool_choice": "none",
+              "tools": [
+                {
+                  "type": "function",
+                  "description": "Calculates and return the square root of a number",
+                  "name": "square_root",
+                  "parameters": {
+                    "properties": {
+                      "number": {
+                        "type": "number"
+                      }
+                    },
+                    "additionalProperties": false,
+                    "type": "object",
+                    "required": [
+                      "number"
+                    ]
+                  },
+                  "strict": true
+                }
+              ],
+              "top_logprobs": 0,
+              "top_p": 0.98,
+              "truncation": "disabled",
+              "usage": {
+                "input_tokens": 106,
+                "input_tokens_details": {
+                  "cached_tokens": 0
+                },
+                "output_tokens": 103,
+                "output_tokens_details": {
+                  "reasoning_tokens": 94
+                },
+                "total_tokens": 209
+              },
+              "user": null,
+              "metadata": {}
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9edbb74e6bfca302-YUL
+            Content-Type:
+                - application/json
+            Openai-Processing-Ms:
+                - "3208"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests:
+                - "500"
+            X-Ratelimit-Limit-Tokens:
+                - "200000"
+            X-Ratelimit-Remaining-Requests:
+                - "499"
+            X-Ratelimit-Remaining-Tokens:
+                - "200000"
+            X-Ratelimit-Reset-Requests:
+                - 120ms
+            X-Ratelimit-Reset-Tokens:
+                - 0s
+        status: 200 OK
+        code: 200
+        duration: 3.301s

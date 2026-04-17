@@ -1,0 +1,254 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 408
+        host: api.openai.com
+        body: |
+            {"model":"gpt-5.4-nano","reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":false,"tools":[{"type":"web_search"}],"include":["web_search_call.action.sources"],"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation."}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/responses
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "resp_04f80ed6ecba06f10169e2332c33dc81969ac3b73b71bccde6",
+              "object": "response",
+              "created_at": 1776431916,
+              "status": "completed",
+              "background": false,
+              "billing": {
+                "payer": "openai"
+              },
+              "completed_at": 1776431925,
+              "error": null,
+              "frequency_penalty": 0.0,
+              "incomplete_details": null,
+              "instructions": null,
+              "max_output_tokens": null,
+              "max_tool_calls": null,
+              "model": "gpt-5.4-nano-2026-03-17",
+              "output": [
+                {
+                  "id": "rs_04f80ed6ecba06f10169e2332c8870819699d33806d5b3e4d5",
+                  "type": "reasoning",
+                  "summary": []
+                },
+                {
+                  "id": "ws_04f80ed6ecba06f10169e2332cc98c81969783adda0e69af77",
+                  "type": "web_search_call",
+                  "status": "completed",
+                  "action": {
+                    "type": "search",
+                    "queries": [
+                      "current Prime Minister of Canada"
+                    ],
+                    "query": "current Prime Minister of Canada",
+                    "sources": [
+                      {
+                        "type": "url",
+                        "url": "https://apnews.com/article/f4e8de5e540ee1cc7a2b7ec5c4479bb2"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://apnews.com/article/304cca23cd562e911002aa2c83f19fb2"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://theweek.com/world-news/canada-carney-clinches-election-trifecta-majority"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://en.wikipedia.org/wiki/Mark_Carney"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://en.wikipedia.org/wiki/Premiership_of_Mark_Carney"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://en.wikipedia.org/wiki/Justin_Trudeau"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://en.wikipedia.org/wiki/Fran%C3%A7ois-Philippe_Champagne"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://en.wikipedia.org/wiki/Kamal_Khera"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.aljazeera.com/news/2025/3/14/mark-carney-sworn-in-as-canadas-new-prime-minister-replacing-trudeau"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://en.wikipedia.org/wiki/Premiership_of_Justin_Trudeau"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.cbsnews.com/news/mark-carney-canada-new-prime-minister/"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.washingtonpost.com/world/2025/03/14/canada-mark-carney-sworn-in/"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.biography.com/political-figures/justin-trudeau"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://globalnews.ca/news/11081720/mark-carney-prime-minister-swearing-in/"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.sootoday.com/national-news/heres-the-latest-as-mark-carney-becomes-canadas-24th-prime-minister-10373600"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.euronews.com/2025/01/06/canadian-prime-minister-justin-trudeau-could-resign-within-days-reports-say"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.theguardian.com/world/2025/jan/06/justin-trudeau-to-step-down-as-canada-prime-minister"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.aljazeera.com/news/2025/1/6/canadas-trudeau-steps-down-as-liberal-party-leader-amid-pressure"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.theguardian.com/world/2025/jan/06/why-is-canadas-justin-trudeau-stepping-down-as-prime-minister"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.thecrimson.com/article/2025/3/10/carney-canada-prime-minister/"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://researchco.ca/wp-content/uploads/2024/09/Release_PMs_CAN_04Sep2024.pdf"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "rs_04f80ed6ecba06f10169e233355ba48196a94012c5ec37e32f",
+                  "type": "reasoning",
+                  "summary": []
+                },
+                {
+                  "id": "msg_04f80ed6ecba06f10169e23335a9b0819689b370d322ee606c",
+                  "type": "message",
+                  "status": "completed",
+                  "content": [
+                    {
+                      "type": "output_text",
+                      "annotations": [],
+                      "logprobs": [],
+                      "text": "Mark Carney"
+                    }
+                  ],
+                  "phase": "final_answer",
+                  "role": "assistant"
+                }
+              ],
+              "parallel_tool_calls": true,
+              "presence_penalty": 0.0,
+              "previous_response_id": null,
+              "prompt_cache_key": null,
+              "prompt_cache_retention": null,
+              "reasoning": {
+                "effort": "low",
+                "summary": "detailed"
+              },
+              "safety_identifier": null,
+              "service_tier": "flex",
+              "store": false,
+              "temperature": 1.0,
+              "text": {
+                "format": {
+                  "type": "text"
+                },
+                "verbosity": "medium"
+              },
+              "tool_choice": "auto",
+              "tools": [
+                {
+                  "type": "web_search",
+                  "search_context_size": "medium",
+                  "user_location": {
+                    "type": "approximate",
+                    "city": null,
+                    "country": "US",
+                    "region": null,
+                    "timezone": null
+                  }
+                }
+              ],
+              "top_logprobs": 0,
+              "top_p": 0.98,
+              "truncation": "disabled",
+              "usage": {
+                "input_tokens": 8485,
+                "input_tokens_details": {
+                  "cached_tokens": 3712
+                },
+                "output_tokens": 94,
+                "output_tokens_details": {
+                  "reasoning_tokens": 85
+                },
+                "total_tokens": 8579
+              },
+              "user": null,
+              "metadata": {}
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9edbb773e82aa302-YUL
+            Content-Type:
+                - application/json
+            Openai-Processing-Ms:
+                - "9674"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests:
+                - "500"
+            X-Ratelimit-Limit-Tokens:
+                - "200000"
+            X-Ratelimit-Remaining-Requests:
+                - "499"
+            X-Ratelimit-Remaining-Tokens:
+                - "196247"
+            X-Ratelimit-Reset-Requests:
+                - 120ms
+            X-Ratelimit-Reset-Tokens:
+                - 1.125s
+        status: 200 OK
+        code: 200
+        duration: 9.765s

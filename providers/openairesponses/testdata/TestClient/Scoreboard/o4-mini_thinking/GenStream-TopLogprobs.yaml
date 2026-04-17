@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 268
+        content_length: 249
         host: api.openai.com
         body: |
-            {"model":"o4-mini","background":false,"reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":false,"top_logprobs":2,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Say hello. Use only one word."}]}],"stream":true}
+            {"model":"o4-mini","reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":false,"top_logprobs":2,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Say hello. Use only one word."}]}],"stream":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -35,17 +35,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 96cababf1911a303-YUL
+                - 9edba6d939fea2de-YUL
             Content-Length:
                 - "190"
             Content-Type:
                 - application/json
-            Openai-Organization:
-                - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "23"
-            Openai-Project:
-                - proj_tH6hQUFvA4Bx6SyAb23zzLEg
+                - "69"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -54,10 +50,6 @@ interactions:
                 - max-age=31536000; includeSubDomains; preload
             X-Content-Type-Options:
                 - nosniff
-            X-Envoy-Upstream-Service-Time:
-                - "32"
-            X-Request-Id:
-                - req_8bf6e2ca87fbafb1959a9faf858d49d9
         status: 400 Bad Request
         code: 400
-        duration: 1.484s
+        duration: 142ms

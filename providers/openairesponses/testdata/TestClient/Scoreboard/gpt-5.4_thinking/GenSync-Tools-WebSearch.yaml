@@ -1,0 +1,238 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 403
+        host: api.openai.com
+        body: |
+            {"model":"gpt-5.4","reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":false,"tools":[{"type":"web_search"}],"include":["web_search_call.action.sources"],"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation."}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/responses
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "resp_0f836156a6a36dd20169e242dd3ba881979e6d8a3cd7582a91",
+              "object": "response",
+              "created_at": 1776435933,
+              "status": "completed",
+              "background": false,
+              "billing": {
+                "payer": "openai"
+              },
+              "completed_at": 1776435981,
+              "error": null,
+              "frequency_penalty": 0.0,
+              "incomplete_details": null,
+              "instructions": null,
+              "max_output_tokens": null,
+              "max_tool_calls": null,
+              "model": "gpt-5.4-2026-03-05",
+              "output": [
+                {
+                  "id": "rs_0f836156a6a36dd20169e242f08c0c819784906d3acf926320",
+                  "type": "reasoning",
+                  "summary": []
+                },
+                {
+                  "id": "ws_0f836156a6a36dd20169e242f1cb288197a4be7159bb1d9b5f",
+                  "type": "web_search_call",
+                  "status": "completed",
+                  "action": {
+                    "type": "search",
+                    "queries": [
+                      "site:canada.ca Prime Minister of Canada"
+                    ],
+                    "query": "site:canada.ca Prime Minister of Canada",
+                    "sources": [
+                      {
+                        "type": "url",
+                        "url": "https://www.canada.ca/en/privy-council/corporate/transparency/briefing-documents/prime-minister-2025/biographies-leaders-priority-calls.html"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://g7.canada.ca/en/news-and-media/news/prime-minister-carney-strengthens-canadas-global-leadership-as-it-concludes-its-g7-presidency"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.canada.ca/en/government/ministers/steven-guilbeault.html"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.canada.ca/en/global-affairs/news/2024/12/statement-from-minister-joly-on-the-passing-of-former-prime-minister-of-india-manmohan-singh.html"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.canada.ca/en/canadian-heritage/commemoration/brian-mulroney/about.html"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.canada.ca/en/government/ministers/evan-solomon.html"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.canada.ca/en/treasury-board-secretariat/news/2019/02/prime-ministers-series-inaugural-event-features-the-right-honourable-brian-mulroney.html"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.canada.ca/en/privy-council/corporate/transparency/briefing-documents/prime-minister-2025.html"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.canada.ca/en/immigration-refugees-citizenship/corporate/minister.html"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.canada.ca/en/privy-council/corporate/transparency/briefing-documents/prime-minister-2025/cabinet-formation.html"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.canada.ca/en/privy-council/corporate/transparency/briefing-documents/prime-minister-2025-b.html"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.canada.ca/en/department-national-defence/maple-leaf/defence/2025/03/message-from-prime-minister-justin-trudeau.html"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.canada.ca/content/dam/pco-bcp/images/drr/2023-2024/2023-24-eng.pdf"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://g7.canada.ca/assets/ea689367/Attachments/NewItems/pdf/news-release-pm-carney-en.pdf"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://vicepm.canada.ca/sites/dpm/files/inline-files/Canadian_Ministry_List_November%202019_4_0.pdf"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.canada.ca/content/dam/fin/publications/drr-rrm/2022/drr-rrm-22-eng.pdf"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.canada.ca/content/dam/pco-bcp/documents/pdfs/dp-pm/2022/2022-23-DP-eng.pdf"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.canada.ca/content/dam/pco-bcp/images/sps/iasba/IABSA%20Report%20to%20PM_2022_EN.pdf"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "id": "rs_0f836156a6a36dd20169e2430bc7cc819785bec8cabee3f9ad",
+                  "type": "reasoning",
+                  "summary": []
+                },
+                {
+                  "id": "msg_0f836156a6a36dd20169e2430d34948197aa038f16067bce9f",
+                  "type": "message",
+                  "status": "completed",
+                  "content": [
+                    {
+                      "type": "output_text",
+                      "annotations": [],
+                      "logprobs": [],
+                      "text": "Mark Carney"
+                    }
+                  ],
+                  "phase": "final_answer",
+                  "role": "assistant"
+                }
+              ],
+              "parallel_tool_calls": true,
+              "presence_penalty": 0.0,
+              "previous_response_id": null,
+              "prompt_cache_key": null,
+              "prompt_cache_retention": null,
+              "reasoning": {
+                "effort": "low",
+                "summary": "detailed"
+              },
+              "safety_identifier": null,
+              "service_tier": "flex",
+              "store": false,
+              "temperature": 1.0,
+              "text": {
+                "format": {
+                  "type": "text"
+                },
+                "verbosity": "medium"
+              },
+              "tool_choice": "auto",
+              "tools": [
+                {
+                  "type": "web_search",
+                  "search_context_size": "medium",
+                  "user_location": {
+                    "type": "approximate",
+                    "city": null,
+                    "country": "US",
+                    "region": null,
+                    "timezone": null
+                  }
+                }
+              ],
+              "top_logprobs": 0,
+              "top_p": 0.98,
+              "truncation": "disabled",
+              "usage": {
+                "input_tokens": 8398,
+                "input_tokens_details": {
+                  "cached_tokens": 4352
+                },
+                "output_tokens": 71,
+                "output_tokens_details": {
+                  "reasoning_tokens": 62
+                },
+                "total_tokens": 8469
+              },
+              "user": null,
+              "metadata": {}
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9edc19866b96a296-YUL
+            Content-Type:
+                - application/json
+            Openai-Processing-Ms:
+                - "48339"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests:
+                - "500"
+            X-Ratelimit-Limit-Tokens:
+                - "500000"
+            X-Ratelimit-Remaining-Requests:
+                - "499"
+            X-Ratelimit-Remaining-Tokens:
+                - "496357"
+            X-Ratelimit-Reset-Requests:
+                - 120ms
+            X-Ratelimit-Reset-Tokens:
+                - 437ms
+        status: 200 OK
+        code: 200
+        duration: 54.639s

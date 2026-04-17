@@ -642,8 +642,9 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	}
 	const apiKeyURL = "https://platform.openai.com/settings/organization/api-keys"
 	var err error
-	if apiKey == "" && wrapper == nil {
-		if apiKey = os.Getenv("OPENAI_API_KEY"); apiKey == "" {
+	if apiKey == "" {
+		apiKey = os.Getenv("OPENAI_API_KEY")
+		if apiKey == "" && wrapper == nil {
 			err = &base.ErrAPIKeyRequired{EnvVar: "OPENAI_API_KEY", URL: apiKeyURL}
 		}
 	}
@@ -1099,6 +1100,9 @@ func ProcessStream(chunks iter.Seq[ResponseStreamChunkResponse]) (iter.Seq[genai
 						finalErr = &internal.BadError{Err: fmt.Errorf("implement annotation type: %q", pkt.Annotation.Type)}
 						return
 					}
+				case ResponseKeepalive:
+					// Heartbeat sent during long reasoning to keep the connection alive.
+					// Ignore.
 				case ResponseQueued:
 					// https://platform.openai.com/docs/api-reference/responses_streaming/response/queued
 					// Ignore.

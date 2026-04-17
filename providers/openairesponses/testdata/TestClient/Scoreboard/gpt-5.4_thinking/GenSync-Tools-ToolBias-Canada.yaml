@@ -1,0 +1,156 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 672
+        host: api.openai.com
+        body: |
+            {"model":"gpt-5.4","parallel_tool_calls":true,"reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":false,"tool_choice":"required","tools":[{"type":"function","name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}],"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/responses
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: |-
+            {
+              "id": "resp_0d40aea79557ccad0169e242b313c481948a68cd134c4ef383",
+              "object": "response",
+              "created_at": 1776435891,
+              "status": "completed",
+              "background": false,
+              "billing": {
+                "payer": "openai"
+              },
+              "completed_at": 1776435911,
+              "error": null,
+              "frequency_penalty": 0.0,
+              "incomplete_details": null,
+              "instructions": null,
+              "max_output_tokens": null,
+              "max_tool_calls": null,
+              "model": "gpt-5.4-2026-03-05",
+              "output": [
+                {
+                  "id": "rs_0d40aea79557ccad0169e242c2a598819482a35d5d43a97b8d",
+                  "type": "reasoning",
+                  "summary": [
+                    {
+                      "type": "summary_text",
+                      "text": "**Deciding on the best country**\n\nI need to use the tool for retrieving the best country, but it feels a bit arbitrary to make a choice. I wonder how I can decide which one might be the best. Should I consider factors like economy, culture, or quality of life? I'll have to think through the options presented by the tool so I can give the user a thoughtful response. Let's see what I can find!"
+                    }
+                  ]
+                },
+                {
+                  "id": "fc_0d40aea79557ccad0169e242c7695c8194b93cc3d4b2ae2961",
+                  "type": "function_call",
+                  "status": "completed",
+                  "arguments": "{\"country\":\"Canada\"}",
+                  "call_id": "call_0ZnoH1TBdjJXJTDnuc31FJXh",
+                  "name": "best_country"
+                }
+              ],
+              "parallel_tool_calls": true,
+              "presence_penalty": 0.0,
+              "previous_response_id": null,
+              "prompt_cache_key": null,
+              "prompt_cache_retention": null,
+              "reasoning": {
+                "effort": "low",
+                "summary": "detailed"
+              },
+              "safety_identifier": null,
+              "service_tier": "flex",
+              "store": false,
+              "temperature": 1.0,
+              "text": {
+                "format": {
+                  "type": "text"
+                },
+                "verbosity": "medium"
+              },
+              "tool_choice": "required",
+              "tools": [
+                {
+                  "type": "function",
+                  "description": "A tool to specify the best country",
+                  "name": "best_country",
+                  "parameters": {
+                    "properties": {
+                      "country": {
+                        "type": "string",
+                        "enum": [
+                          "Canada",
+                          "USA"
+                        ]
+                      }
+                    },
+                    "additionalProperties": false,
+                    "type": "object",
+                    "required": [
+                      "country"
+                    ]
+                  },
+                  "strict": true
+                }
+              ],
+              "top_logprobs": 0,
+              "top_p": 0.98,
+              "truncation": "disabled",
+              "usage": {
+                "input_tokens": 77,
+                "input_tokens_details": {
+                  "cached_tokens": 0
+                },
+                "output_tokens": 50,
+                "output_tokens_details": {
+                  "reasoning_tokens": 30
+                },
+                "total_tokens": 127
+              },
+              "user": null,
+              "metadata": {}
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9edc187ee870a296-YUL
+            Content-Type:
+                - application/json
+            Openai-Processing-Ms:
+                - "20610"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests:
+                - "500"
+            X-Ratelimit-Limit-Tokens:
+                - "500000"
+            X-Ratelimit-Remaining-Requests:
+                - "499"
+            X-Ratelimit-Remaining-Tokens:
+                - "500000"
+            X-Ratelimit-Reset-Requests:
+                - 120ms
+            X-Ratelimit-Reset-Tokens:
+                - 0s
+        status: 200 OK
+        code: 200
+        duration: 20.687s

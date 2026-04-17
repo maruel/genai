@@ -1,0 +1,120 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 281
+        host: api.openai.com
+        body: |
+            {"model":"gpt-5.4-nano","max_output_tokens":16,"reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":false,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Explain the theory of relativity in great details."}]}],"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/responses
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            event: response.created
+            data: {"type":"response.created","response":{"id":"resp_0e32ed05b3140f640169e2332342588190aa530b25647a2cad","object":"response","created_at":1776431907,"status":"in_progress","background":false,"completed_at":null,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":null,"max_output_tokens":16,"max_tool_calls":null,"model":"gpt-5.4-nano-2026-03-17","output":[],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":null,"prompt_cache_key":null,"prompt_cache_retention":null,"reasoning":{"effort":"low","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":false,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"auto","tools":[],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":null,"user":null,"metadata":{}},"sequence_number":0}
+
+            event: response.in_progress
+            data: {"type":"response.in_progress","response":{"id":"resp_0e32ed05b3140f640169e2332342588190aa530b25647a2cad","object":"response","created_at":1776431907,"status":"in_progress","background":false,"completed_at":null,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":null,"max_output_tokens":16,"max_tool_calls":null,"model":"gpt-5.4-nano-2026-03-17","output":[],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":null,"prompt_cache_key":null,"prompt_cache_retention":null,"reasoning":{"effort":"low","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":false,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"auto","tools":[],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":null,"user":null,"metadata":{}},"sequence_number":1}
+
+            event: response.output_item.added
+            data: {"type":"response.output_item.added","item":{"id":"msg_0e32ed05b3140f640169e233236f288190a5b7cf5fd676ac55","type":"message","status":"in_progress","content":[],"phase":"final_answer","role":"assistant"},"output_index":0,"sequence_number":2}
+
+            event: response.content_part.added
+            data: {"type":"response.content_part.added","content_index":0,"item_id":"msg_0e32ed05b3140f640169e233236f288190a5b7cf5fd676ac55","output_index":0,"part":{"type":"output_text","annotations":[],"logprobs":[],"text":""},"sequence_number":3}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","content_index":0,"delta":"The","item_id":"msg_0e32ed05b3140f640169e233236f288190a5b7cf5fd676ac55","logprobs":[],"obfuscation":"wOr0y2LaCE2fg","output_index":0,"sequence_number":4}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","content_index":0,"delta":" **","item_id":"msg_0e32ed05b3140f640169e233236f288190a5b7cf5fd676ac55","logprobs":[],"obfuscation":"v0bVmrAGR2LNH","output_index":0,"sequence_number":5}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","content_index":0,"delta":"the","item_id":"msg_0e32ed05b3140f640169e233236f288190a5b7cf5fd676ac55","logprobs":[],"obfuscation":"59T7BNBbk2Ffr","output_index":0,"sequence_number":6}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","content_index":0,"delta":"ory","item_id":"msg_0e32ed05b3140f640169e233236f288190a5b7cf5fd676ac55","logprobs":[],"obfuscation":"mNlLN9rmPm49p","output_index":0,"sequence_number":7}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","content_index":0,"delta":" of","item_id":"msg_0e32ed05b3140f640169e233236f288190a5b7cf5fd676ac55","logprobs":[],"obfuscation":"MohvGRXa4S3bA","output_index":0,"sequence_number":8}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","content_index":0,"delta":" relat","item_id":"msg_0e32ed05b3140f640169e233236f288190a5b7cf5fd676ac55","logprobs":[],"obfuscation":"YrAYKXsmaN","output_index":0,"sequence_number":9}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","content_index":0,"delta":"ivity","item_id":"msg_0e32ed05b3140f640169e233236f288190a5b7cf5fd676ac55","logprobs":[],"obfuscation":"Mkitw9Gvn5s","output_index":0,"sequence_number":10}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","content_index":0,"delta":"**","item_id":"msg_0e32ed05b3140f640169e233236f288190a5b7cf5fd676ac55","logprobs":[],"obfuscation":"Fy0D3vko60kVLa","output_index":0,"sequence_number":11}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","content_index":0,"delta":" is","item_id":"msg_0e32ed05b3140f640169e233236f288190a5b7cf5fd676ac55","logprobs":[],"obfuscation":"hfB4w8keMTPW9","output_index":0,"sequence_number":12}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","content_index":0,"delta":" a","item_id":"msg_0e32ed05b3140f640169e233236f288190a5b7cf5fd676ac55","logprobs":[],"obfuscation":"M9tHnKF3WLleeG","output_index":0,"sequence_number":13}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","content_index":0,"delta":" framework","item_id":"msg_0e32ed05b3140f640169e233236f288190a5b7cf5fd676ac55","logprobs":[],"obfuscation":"4mZvPD","output_index":0,"sequence_number":14}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","content_index":0,"delta":" in","item_id":"msg_0e32ed05b3140f640169e233236f288190a5b7cf5fd676ac55","logprobs":[],"obfuscation":"7YAPllCHksBtp","output_index":0,"sequence_number":15}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","content_index":0,"delta":" physics","item_id":"msg_0e32ed05b3140f640169e233236f288190a5b7cf5fd676ac55","logprobs":[],"obfuscation":"R3bxoW59","output_index":0,"sequence_number":16}
+
+            event: response.output_text.done
+            data: {"type":"response.output_text.done","content_index":0,"item_id":"msg_0e32ed05b3140f640169e233236f288190a5b7cf5fd676ac55","logprobs":[],"output_index":0,"sequence_number":17,"text":"The **theory of relativity** is a framework in physics"}
+
+            event: response.content_part.done
+            data: {"type":"response.content_part.done","content_index":0,"item_id":"msg_0e32ed05b3140f640169e233236f288190a5b7cf5fd676ac55","output_index":0,"part":{"type":"output_text","annotations":[],"logprobs":[],"text":"The **theory of relativity** is a framework in physics"},"sequence_number":18}
+
+            event: response.output_item.done
+            data: {"type":"response.output_item.done","item":{"id":"msg_0e32ed05b3140f640169e233236f288190a5b7cf5fd676ac55","type":"message","status":"incomplete","content":[{"type":"output_text","annotations":[],"logprobs":[],"text":"The **theory of relativity** is a framework in physics"}],"phase":"final_answer","role":"assistant"},"output_index":0,"sequence_number":19}
+
+            event: response.incomplete
+            data: {"type":"response.incomplete","response":{"id":"resp_0e32ed05b3140f640169e2332342588190aa530b25647a2cad","object":"response","created_at":1776431907,"status":"incomplete","background":false,"completed_at":null,"error":null,"frequency_penalty":0.0,"incomplete_details":{"reason":"max_output_tokens"},"instructions":null,"max_output_tokens":16,"max_tool_calls":null,"model":"gpt-5.4-nano-2026-03-17","output":[{"id":"msg_0e32ed05b3140f640169e233236f288190a5b7cf5fd676ac55","type":"message","status":"incomplete","content":[{"type":"output_text","annotations":[],"logprobs":[],"text":"The **theory of relativity** is a framework in physics"}],"phase":"final_answer","role":"assistant"}],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":null,"prompt_cache_key":null,"prompt_cache_retention":null,"reasoning":{"effort":"low","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":false,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"auto","tools":[],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":{"input_tokens":16,"input_tokens_details":{"cached_tokens":0},"output_tokens":16,"output_tokens_details":{"reasoning_tokens":0},"total_tokens":32},"user":null,"metadata":{}},"sequence_number":20}
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9edbb73bfafaa302-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Openai-Processing-Ms:
+                - "89"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests:
+                - "500"
+            X-Ratelimit-Limit-Tokens:
+                - "200000"
+            X-Ratelimit-Remaining-Requests:
+                - "499"
+            X-Ratelimit-Remaining-Tokens:
+                - "199821"
+            X-Ratelimit-Reset-Requests:
+                - 120ms
+            X-Ratelimit-Reset-Tokens:
+                - 53ms
+        status: 200 OK
+        code: 200
+        duration: 190ms

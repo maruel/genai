@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 681
+        content_length: 662
         host: api.openai.com
         body: |
-            {"model":"o4-mini","background":false,"parallel_tool_calls":true,"reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":false,"tool_choice":"required","tools":[{"type":"function","name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}],"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}]}
+            {"model":"o4-mini","parallel_tool_calls":true,"reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":false,"tool_choice":"required","tools":[{"type":"function","name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}],"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,12 +23,17 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_68856a05febc819a95def0b11f0862bc01f58b87316ebf8d",
+              "id": "resp_0d06b9104dc0d9510169e230890f408196a60a77fe18ccd192",
               "object": "response",
-              "created_at": 1753573894,
+              "created_at": 1776431241,
               "status": "completed",
               "background": false,
+              "billing": {
+                "payer": "openai"
+              },
+              "completed_at": 1776431244,
               "error": null,
+              "frequency_penalty": 0.0,
               "incomplete_details": null,
               "instructions": null,
               "max_output_tokens": null,
@@ -36,22 +41,24 @@ interactions:
               "model": "o4-mini-2025-04-16",
               "output": [
                 {
-                  "id": "rs_68856a0690b8819aa13a3e312f9b2edc01f58b87316ebf8d",
+                  "id": "rs_0d06b9104dc0d9510169e2308a4c9c819688d04a19f94f5ef0",
                   "type": "reasoning",
                   "summary": []
                 },
                 {
-                  "id": "fc_68856a072184819ab7de36da1e5aeed601f58b87316ebf8d",
+                  "id": "fc_0d06b9104dc0d9510169e2308c0d188196a02216a3949c4c89",
                   "type": "function_call",
                   "status": "completed",
                   "arguments": "{\"number\":132413}",
-                  "call_id": "call_WjNfNeYQQpqSD39kJ7LmrxfL",
+                  "call_id": "call_kI2dCn07YfIpsklJAh292iCZ",
                   "name": "square_root"
                 }
               ],
               "parallel_tool_calls": true,
+              "presence_penalty": 0.0,
               "previous_response_id": null,
               "prompt_cache_key": null,
+              "prompt_cache_retention": null,
               "reasoning": {
                 "effort": "low",
                 "summary": "detailed"
@@ -63,7 +70,8 @@ interactions:
               "text": {
                 "format": {
                   "type": "text"
-                }
+                },
+                "verbosity": "medium"
               },
               "tool_choice": "required",
               "tools": [
@@ -94,11 +102,11 @@ interactions:
                 "input_tokens_details": {
                   "cached_tokens": 0
                 },
-                "output_tokens": 21,
+                "output_tokens": 51,
                 "output_tokens_details": {
                   "reasoning_tokens": 0
                 },
-                "total_tokens": 91
+                "total_tokens": 121
               },
               "user": null,
               "metadata": {}
@@ -109,15 +117,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9657ce44ef90a2d2-YUL
+                - 9edba6f839afa2de-YUL
             Content-Type:
                 - application/json
-            Openai-Organization:
-                - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "1382"
-            Openai-Project:
-                - proj_tH6hQUFvA4Bx6SyAb23zzLEg
+                - "3236"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -138,8 +142,6 @@ interactions:
                 - 120ms
             X-Ratelimit-Reset-Tokens:
                 - 99ms
-            X-Request-Id:
-                - req_bd76ca11fb6f1b465855d4c3ce7b9262
         status: 200 OK
         code: 200
-        duration: 1.521s
+        duration: 3.326s

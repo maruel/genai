@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 398
+        content_length: 379
         host: api.openai.com
         body: |
-            {"model":"o4-mini","background":false,"reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":false,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"What fruit is it? Reply with only one word."},{"type":"input_image","image_url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.webp","detail":"auto"}]}]}
+            {"model":"o4-mini","reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":false,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"What fruit is it? Reply with only one word."},{"type":"input_image","image_url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.webp","detail":"auto"}]}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,12 +23,17 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_68856a2f9318819aa83d1bf5ff4763ce05e5181c24fb667c",
+              "id": "resp_08e03d31aa0646520169e230b18a2c819790e23cc494d9a7a3",
               "object": "response",
-              "created_at": 1753573935,
+              "created_at": 1776431281,
               "status": "completed",
               "background": false,
+              "billing": {
+                "payer": "openai"
+              },
+              "completed_at": 1776431285,
               "error": null,
+              "frequency_penalty": 0.0,
               "incomplete_details": null,
               "instructions": null,
               "max_output_tokens": null,
@@ -36,17 +41,12 @@ interactions:
               "model": "o4-mini-2025-04-16",
               "output": [
                 {
-                  "id": "rs_68856a304dac819aa77054f2db1c90cf05e5181c24fb667c",
+                  "id": "rs_08e03d31aa0646520169e230b3178481978cc7a328fdb65c48",
                   "type": "reasoning",
-                  "summary": [
-                    {
-                      "type": "summary_text",
-                      "text": "**Identifying fruit**\n\nThe user wants a simple, one-word answer for the fruit in the image, which is a banana. I'll respond with just \"banana,\" likely in lowercase as that's usually the standard format for such requests. Keeping it straightforward is key here, so I\u2019ll make sure to deliver exactly what the user is asking without any extra fluff. It\u2019s important to be clear and concise!"
-                    }
-                  ]
+                  "summary": []
                 },
                 {
-                  "id": "msg_68856a31af94819ab1afd5382556b1eb05e5181c24fb667c",
+                  "id": "msg_08e03d31aa0646520169e230b5127481979aa94e31349f1fc3",
                   "type": "message",
                   "status": "completed",
                   "content": [
@@ -61,8 +61,10 @@ interactions:
                 }
               ],
               "parallel_tool_calls": true,
+              "presence_penalty": 0.0,
               "previous_response_id": null,
               "prompt_cache_key": null,
+              "prompt_cache_retention": null,
               "reasoning": {
                 "effort": "low",
                 "summary": "detailed"
@@ -74,7 +76,8 @@ interactions:
               "text": {
                 "format": {
                   "type": "text"
-                }
+                },
+                "verbosity": "medium"
               },
               "tool_choice": "auto",
               "tools": [],
@@ -86,11 +89,11 @@ interactions:
                 "input_tokens_details": {
                   "cached_tokens": 0
                 },
-                "output_tokens": 8,
+                "output_tokens": 39,
                 "output_tokens_details": {
                   "reasoning_tokens": 0
                 },
-                "total_tokens": 216
+                "total_tokens": 247
               },
               "user": null,
               "metadata": {}
@@ -101,15 +104,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9657cf48ea28a2d2-YUL
+                - 9edba7f53ac4a2de-YUL
             Content-Type:
                 - application/json
-            Openai-Organization:
-                - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "2349"
-            Openai-Project:
-                - proj_tH6hQUFvA4Bx6SyAb23zzLEg
+                - "3816"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -120,12 +119,16 @@ interactions:
                 - nosniff
             X-Ratelimit-Limit-Requests:
                 - "500"
+            X-Ratelimit-Limit-Tokens:
+                - "200000"
             X-Ratelimit-Remaining-Requests:
                 - "499"
+            X-Ratelimit-Remaining-Tokens:
+                - "199235"
             X-Ratelimit-Reset-Requests:
                 - 120ms
-            X-Request-Id:
-                - req_8c142da4cb5a5104e8bff840dcf81956
+            X-Ratelimit-Reset-Tokens:
+                - 229ms
         status: 200 OK
         code: 200
-        duration: 2.462s
+        duration: 3.882s

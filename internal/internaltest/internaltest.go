@@ -231,6 +231,7 @@ func LogFile(tb testing.TB, cache, name string) *os.File {
 }
 
 // InjectOptions injects options into the provider GenSync and GenStream calls.
+// InjectOptions wraps a provider to inject additional GenOption values into every call.
 type InjectOptions struct {
 	genai.Provider
 	Opts []genai.GenOption
@@ -248,6 +249,51 @@ func (i *InjectOptions) GenStream(ctx context.Context, msgs genai.Messages, opts
 
 func (i *InjectOptions) Unwrap() genai.Provider {
 	return i.Provider
+}
+
+// RetryOnRateLimit wraps a provider to retry without FallbackOpts when a rate
+// limit error is encountered. This is useful for flex-tier processing where
+// rate limits can be worked around by falling back to default tier.
+type RetryOnRateLimit struct {
+	genai.Provider
+	FallbackOpts []genai.GenOption
+}
+
+// GenSync implements genai.Provider.
+func (r *RetryOnRateLimit) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
+	res, err := r.Provider.GenSync(ctx, msgs, opts...)
+	if err != nil && isRateLimited(err) {
+		return r.Provider.GenSync(ctx, msgs, append(opts, r.FallbackOpts...)...)
+	}
+	return res, err
+}
+
+// GenStream implements genai.Provider.
+func (r *RetryOnRateLimit) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
+	fragments, finish := r.Provider.GenStream(ctx, msgs, opts...)
+	return fragments, func() (genai.Result, error) {
+		res, err := finish()
+		if err != nil && isRateLimited(err) {
+			fragments2, finish2 := r.Provider.GenStream(ctx, msgs, append(opts, r.FallbackOpts...)...)
+			for range fragments2 {
+			}
+			return finish2()
+		}
+		return res, err
+	}
+}
+
+func (r *RetryOnRateLimit) Unwrap() genai.Provider {
+	return r.Provider
+}
+
+func isRateLimited(err error) bool {
+	var herr *httpjson.Error
+	if errors.As(err, &herr) && herr.StatusCode == http.StatusTooManyRequests {
+		return true
+	}
+	// OpenAI sometimes returns rate limits as 400 with code "rate_limit_exceeded".
+	return strings.Contains(err.Error(), "rate_limit_exceeded")
 }
 
 // HideHTTPCode hides specific HTTP error codes from the reply.

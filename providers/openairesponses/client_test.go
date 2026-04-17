@@ -108,7 +108,7 @@ func TestClient(t *testing.T) {
 				res = openairesponses.ReasoningEffortMedium
 			}
 			if model.Reason {
-				return &internaltest.InjectOptions{
+				var p genai.Provider = &internaltest.InjectOptions{
 					Provider: c,
 					Opts: []genai.GenOption{
 						&openairesponses.GenOptionText{
@@ -117,14 +117,32 @@ func TestClient(t *testing.T) {
 						},
 					},
 				}
+				if tier == openairesponses.ServiceTierFlex {
+					p = &internaltest.RetryOnRateLimit{
+						Provider: p,
+						FallbackOpts: []genai.GenOption{
+							&openairesponses.GenOptionText{ServiceTier: openairesponses.ServiceTierDefault},
+						},
+					}
+				}
+				return p
 			}
 			if slices.Equal(c.OutputModalities(), []genai.Modality{genai.ModalityText}) {
 				// See https://platform.openai.com/docs/guides/flex-processing
 				if id := c.ModelID(); id == "o3" || id == "o4-mini" || strings.HasPrefix(id, "gpt-5") {
-					return &internaltest.InjectOptions{
+					var p genai.Provider = &internaltest.InjectOptions{
 						Provider: c,
 						Opts:     []genai.GenOption{&openairesponses.GenOptionText{ServiceTier: tier}},
 					}
+					if tier == openairesponses.ServiceTierFlex {
+						p = &internaltest.RetryOnRateLimit{
+							Provider: p,
+							FallbackOpts: []genai.GenOption{
+								&openairesponses.GenOptionText{ServiceTier: openairesponses.ServiceTierDefault},
+							},
+						}
+					}
+					return p
 				}
 			}
 			return c
@@ -230,8 +248,8 @@ func TestClient(t *testing.T) {
 					genai.ProviderOptionModel("bad model"),
 					genai.ProviderOptionModalities{genai.ModalityImage},
 				},
-				ErrGenSync:   "http 400\nInvalid value: 'bad model'. Supported values are: 'gpt-image-1', 'gpt-image-1-io', 'gpt-image-0721-mini-alpha', 'dall-e-2', and 'dall-e-3'. (type: invalid_request_error, code: invalid_value)",
-				ErrGenStream: "http 400\nInvalid value: 'bad model'. Supported values are: 'gpt-image-1', 'gpt-image-1-io', 'gpt-image-0721-mini-alpha', 'dall-e-2', and 'dall-e-3'. (type: invalid_request_error, code: invalid_value)",
+				ErrGenSync:   "http 400\nThe model 'bad model' does not exist. (type: image_generation_user_error, code: invalid_value)",
+				ErrGenStream: "http 400\nThe model 'bad model' does not exist. (type: image_generation_user_error, code: invalid_value)",
 			},
 			/* TODO:
 			{

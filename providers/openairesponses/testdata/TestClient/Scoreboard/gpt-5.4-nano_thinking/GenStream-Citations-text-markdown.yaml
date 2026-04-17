@@ -1,0 +1,117 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 368
+        host: api.openai.com
+        body: |
+            {"model":"gpt-5.4-nano","reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":false,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"input_text","text":"What is the capital of Quackiland?"}]}],"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/responses
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            event: response.created
+            data: {"type":"response.created","response":{"id":"resp_05fe63d9ebb274bd0169e23334949c8197a8b993d49c273f41","object":"response","created_at":1776431924,"status":"in_progress","background":false,"completed_at":null,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-5.4-nano-2026-03-17","output":[],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":null,"prompt_cache_key":null,"prompt_cache_retention":null,"reasoning":{"effort":"low","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":false,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"auto","tools":[],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":null,"user":null,"metadata":{}},"sequence_number":0}
+
+            event: response.in_progress
+            data: {"type":"response.in_progress","response":{"id":"resp_05fe63d9ebb274bd0169e23334949c8197a8b993d49c273f41","object":"response","created_at":1776431924,"status":"in_progress","background":false,"completed_at":null,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-5.4-nano-2026-03-17","output":[],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":null,"prompt_cache_key":null,"prompt_cache_retention":null,"reasoning":{"effort":"low","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":false,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"auto","tools":[],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":null,"user":null,"metadata":{}},"sequence_number":1}
+
+            event: response.output_item.added
+            data: {"type":"response.output_item.added","item":{"id":"msg_05fe63d9ebb274bd0169e23334c3dc81978928902c7c584911","type":"message","status":"in_progress","content":[],"phase":"final_answer","role":"assistant"},"output_index":0,"sequence_number":2}
+
+            event: response.content_part.added
+            data: {"type":"response.content_part.added","content_index":0,"item_id":"msg_05fe63d9ebb274bd0169e23334c3dc81978928902c7c584911","output_index":0,"part":{"type":"output_text","annotations":[],"logprobs":[],"text":""},"sequence_number":3}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","content_index":0,"delta":"The","item_id":"msg_05fe63d9ebb274bd0169e23334c3dc81978928902c7c584911","logprobs":[],"obfuscation":"iSML5luZgVl0l","output_index":0,"sequence_number":4}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","content_index":0,"delta":" capital","item_id":"msg_05fe63d9ebb274bd0169e23334c3dc81978928902c7c584911","logprobs":[],"obfuscation":"HEhkjcOy","output_index":0,"sequence_number":5}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","content_index":0,"delta":" of","item_id":"msg_05fe63d9ebb274bd0169e23334c3dc81978928902c7c584911","logprobs":[],"obfuscation":"N8bynLaCQ6w95","output_index":0,"sequence_number":6}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","content_index":0,"delta":" Qu","item_id":"msg_05fe63d9ebb274bd0169e23334c3dc81978928902c7c584911","logprobs":[],"obfuscation":"Et9Rmxb2IexCH","output_index":0,"sequence_number":7}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","content_index":0,"delta":"ack","item_id":"msg_05fe63d9ebb274bd0169e23334c3dc81978928902c7c584911","logprobs":[],"obfuscation":"9LDi7OEyV4Z5H","output_index":0,"sequence_number":8}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","content_index":0,"delta":"iland","item_id":"msg_05fe63d9ebb274bd0169e23334c3dc81978928902c7c584911","logprobs":[],"obfuscation":"zFGgmY5zb6p","output_index":0,"sequence_number":9}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","content_index":0,"delta":" is","item_id":"msg_05fe63d9ebb274bd0169e23334c3dc81978928902c7c584911","logprobs":[],"obfuscation":"izCM4EPTPFNE8","output_index":0,"sequence_number":10}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","content_index":0,"delta":" **","item_id":"msg_05fe63d9ebb274bd0169e23334c3dc81978928902c7c584911","logprobs":[],"obfuscation":"wNMABVYs7y1ha","output_index":0,"sequence_number":11}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","content_index":0,"delta":"Qu","item_id":"msg_05fe63d9ebb274bd0169e23334c3dc81978928902c7c584911","logprobs":[],"obfuscation":"x9EmKVErlz69RT","output_index":0,"sequence_number":12}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","content_index":0,"delta":"ack","item_id":"msg_05fe63d9ebb274bd0169e23334c3dc81978928902c7c584911","logprobs":[],"obfuscation":"jg0SAlnXYKdw2","output_index":0,"sequence_number":13}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","content_index":0,"delta":"**","item_id":"msg_05fe63d9ebb274bd0169e23334c3dc81978928902c7c584911","logprobs":[],"obfuscation":"IEtw1SXe9RyJeG","output_index":0,"sequence_number":14}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","content_index":0,"delta":".","item_id":"msg_05fe63d9ebb274bd0169e23334c3dc81978928902c7c584911","logprobs":[],"obfuscation":"8rP5KNdpX8OkepJ","output_index":0,"sequence_number":15}
+
+            event: response.output_text.done
+            data: {"type":"response.output_text.done","content_index":0,"item_id":"msg_05fe63d9ebb274bd0169e23334c3dc81978928902c7c584911","logprobs":[],"output_index":0,"sequence_number":16,"text":"The capital of Quackiland is **Quack**."}
+
+            event: response.content_part.done
+            data: {"type":"response.content_part.done","content_index":0,"item_id":"msg_05fe63d9ebb274bd0169e23334c3dc81978928902c7c584911","output_index":0,"part":{"type":"output_text","annotations":[],"logprobs":[],"text":"The capital of Quackiland is **Quack**."},"sequence_number":17}
+
+            event: response.output_item.done
+            data: {"type":"response.output_item.done","item":{"id":"msg_05fe63d9ebb274bd0169e23334c3dc81978928902c7c584911","type":"message","status":"completed","content":[{"type":"output_text","annotations":[],"logprobs":[],"text":"The capital of Quackiland is **Quack**."}],"phase":"final_answer","role":"assistant"},"output_index":0,"sequence_number":18}
+
+            event: response.completed
+            data: {"type":"response.completed","response":{"id":"resp_05fe63d9ebb274bd0169e23334949c8197a8b993d49c273f41","object":"response","created_at":1776431924,"status":"completed","background":false,"completed_at":1776431925,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-5.4-nano-2026-03-17","output":[{"id":"msg_05fe63d9ebb274bd0169e23334c3dc81978928902c7c584911","type":"message","status":"completed","content":[{"type":"output_text","annotations":[],"logprobs":[],"text":"The capital of Quackiland is **Quack**."}],"phase":"final_answer","role":"assistant"}],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":null,"prompt_cache_key":null,"prompt_cache_retention":null,"reasoning":{"effort":"low","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":false,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"auto","tools":[],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":{"input_tokens":40,"input_tokens_details":{"cached_tokens":0},"output_tokens":16,"output_tokens_details":{"reasoning_tokens":0},"total_tokens":56},"user":null,"metadata":{}},"sequence_number":19}
+
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9edbb7a84f60a302-YUL
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Openai-Processing-Ms:
+                - "115"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests:
+                - "500"
+            X-Ratelimit-Limit-Tokens:
+                - "200000"
+            X-Ratelimit-Remaining-Requests:
+                - "499"
+            X-Ratelimit-Remaining-Tokens:
+                - "199797"
+            X-Ratelimit-Reset-Requests:
+                - 120ms
+            X-Ratelimit-Reset-Tokens:
+                - 60ms
+        status: 200 OK
+        code: 200
+        duration: 207ms

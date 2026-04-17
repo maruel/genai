@@ -97,6 +97,10 @@ type ImageResponse struct {
 			TextTokens  int64 `json:"text_tokens"`
 			ImageTokens int64 `json:"image_tokens"`
 		} `json:"input_tokens_details"`
+		OutputTokensDetails struct {
+			TextTokens  int64 `json:"text_tokens"`
+			ImageTokens int64 `json:"image_tokens"`
+		} `json:"output_tokens_details"`
 	} `json:"usage"`
 	Background   string `json:"background"`    // "opaque"
 	Size         string `json:"size"`          // e.g. "1024x1024"
@@ -187,6 +191,8 @@ type Response struct {
 	SafetyIdentifier     string            `json:"safety_identifier,omitzero"`
 	ServiceTier          ServiceTier       `json:"service_tier,omitzero"`
 	Store                bool              `json:"store"`
+	FrequencyPenalty     float64           `json:"frequency_penalty,omitzero"`
+	PresencePenalty      float64           `json:"presence_penalty,omitzero"`
 	Temperature          float64           `json:"temperature,omitzero"`
 	Text                 struct {
 		Format struct {
@@ -302,6 +308,9 @@ type Message struct {
 	// Type == MessageMessage, MessageFileSearchCall, MessageFunctionCall, MessageReasoning
 	Status string `json:"status,omitzero"` // "in_progress", "completed", "incomplete", "searching", "failed"
 
+	// Type == MessageMessage
+	Phase string `json:"phase,omitzero"` // "final_answer"
+
 	// Type == MessageMessage (with Role == "assistant"), MessageFileSearchCall, MessageItemReference,
 	// MessageFunctionCall, MessageFunctionCallOutput, MessageReasoning
 	ID string `json:"id,omitzero"` // MessageItemReference: an internal identifier for an item to reference; Others: tool call ID
@@ -332,8 +341,9 @@ type Message struct {
 
 	// Type == MessageWebSearchCall
 	Action struct {
-		Type    string `json:"type,omitzero"` // "search"
-		Query   string `json:"query,omitzero"`
+		Type    string   `json:"type,omitzero"` // "search"
+		Queries []string `json:"queries,omitzero"`
+		Query   string   `json:"query,omitzero"`
 		Sources []struct {
 			Type string `json:"type,omitzero"` // "url"
 			URL  string `json:"url,omitzero"`
@@ -492,6 +502,7 @@ const (
 	ResponseOutputTextDelta                 ResponseType = "response.output_text.delta"
 	ResponseOutputTextDone                  ResponseType = "response.output_text.done"
 	ResponseOutputTextAnnotationAdded       ResponseType = "response.output_text.annotation.added"
+	ResponseKeepalive                       ResponseType = "keepalive"
 	ResponseQueued                          ResponseType = "response.queued"
 	ResponseReasoningSummaryPartAdded       ResponseType = "response.reasoning_summary_part.added"
 	ResponseReasoningSummaryPartDone        ResponseType = "response.reasoning_summary_part.done"

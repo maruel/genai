@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 237
+        content_length: 218
         host: api.openai.com
         body: |
-            {"model":"o4-mini","background":false,"reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":false,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Say hello. Use only one word."}]}]}
+            {"model":"o4-mini","reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":false,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Say hello. Use only one word."}]}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,12 +23,17 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_688569fbcfa8819bae97a8ae5345ca270fc152808c17dc05",
+              "id": "resp_08b7f720beb63daf0169e23082e1c88193be1f37abeda6df65",
               "object": "response",
-              "created_at": 1753573883,
+              "created_at": 1776431234,
               "status": "completed",
               "background": false,
+              "billing": {
+                "payer": "openai"
+              },
+              "completed_at": 1776431236,
               "error": null,
+              "frequency_penalty": 0.0,
               "incomplete_details": null,
               "instructions": null,
               "max_output_tokens": null,
@@ -36,12 +41,12 @@ interactions:
               "model": "o4-mini-2025-04-16",
               "output": [
                 {
-                  "id": "rs_688569fc70bc819b8c53013db40bc04a0fc152808c17dc05",
+                  "id": "rs_08b7f720beb63daf0169e2308340f48193a40f9f6413f63e25",
                   "type": "reasoning",
                   "summary": []
                 },
                 {
-                  "id": "msg_688569fd9070819b9284faec20bce5310fc152808c17dc05",
+                  "id": "msg_08b7f720beb63daf0169e2308420fc8193b64ef3a3eabf1c11",
                   "type": "message",
                   "status": "completed",
                   "content": [
@@ -56,8 +61,10 @@ interactions:
                 }
               ],
               "parallel_tool_calls": true,
+              "presence_penalty": 0.0,
               "previous_response_id": null,
               "prompt_cache_key": null,
+              "prompt_cache_retention": null,
               "reasoning": {
                 "effort": "low",
                 "summary": "detailed"
@@ -69,7 +76,8 @@ interactions:
               "text": {
                 "format": {
                   "type": "text"
-                }
+                },
+                "verbosity": "medium"
               },
               "tool_choice": "auto",
               "tools": [],
@@ -81,11 +89,11 @@ interactions:
                 "input_tokens_details": {
                   "cached_tokens": 0
                 },
-                "output_tokens": 71,
+                "output_tokens": 78,
                 "output_tokens_details": {
                   "reasoning_tokens": 64
                 },
-                "total_tokens": 85
+                "total_tokens": 92
               },
               "user": null,
               "metadata": {}
@@ -96,15 +104,11 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9657ce04df4ba2d2-YUL
+                - 9edba6d1aee2a2de-YUL
             Content-Type:
                 - application/json
-            Openai-Organization:
-                - user-vtmtcvpbctksjfewktqdl2sw
             Openai-Processing-Ms:
-                - "2115"
-            Openai-Project:
-                - proj_tH6hQUFvA4Bx6SyAb23zzLEg
+                - "1380"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -120,13 +124,11 @@ interactions:
             X-Ratelimit-Remaining-Requests:
                 - "499"
             X-Ratelimit-Remaining-Tokens:
-                - "199778"
+                - "199779"
             X-Ratelimit-Reset-Requests:
                 - 120ms
             X-Ratelimit-Reset-Tokens:
                 - 66ms
-            X-Request-Id:
-                - req_60a32bdeb47d936baca4607a83953d95
         status: 200 OK
         code: 200
-        duration: 2.336s
+        duration: 1.479s

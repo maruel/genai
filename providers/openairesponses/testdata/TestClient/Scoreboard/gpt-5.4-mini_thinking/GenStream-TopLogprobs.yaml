@@ -1,0 +1,55 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 254
+        host: api.openai.com
+        body: |
+            {"model":"gpt-5.4-mini","reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":false,"top_logprobs":2,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Say hello. Use only one word."}]}],"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/responses
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 190
+        body: |-
+            {
+              "error": {
+                "message": "logprobs are not supported with reasoning models.",
+                "type": "invalid_request_error",
+                "param": "top_logprobs",
+                "code": "unsupported_parameter"
+              }
+            }
+        headers:
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 9edbb75aeef5a2c6-YUL
+            Content-Length:
+                - "190"
+            Content-Type:
+                - application/json
+            Openai-Processing-Ms:
+                - "71"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+        status: 400 Bad Request
+        code: 400
+        duration: 126ms

@@ -323,6 +323,7 @@ type AgentThoughtChunkUpdate struct {
 // UserMessageChunkUpdate is a replayed user message (during session/load).
 type UserMessageChunkUpdate struct {
 	SessionUpdate UpdateType   `json:"sessionUpdate"`
+	MessageID     string       `json:"messageId,omitzero"`
 	Content       ContentBlock `json:"content"`
 }
 

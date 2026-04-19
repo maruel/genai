@@ -255,101 +255,101 @@ type PromptCmd struct {
 // ImageContent is an inline image in base64.
 type ImageContent struct {
 	Type     ContentBlockType `json:"type"`
-	Data     string `json:"data"`
-	MimeType string `json:"mimeType"`
+	Data     string           `json:"data"`
+	MimeType string           `json:"mimeType"`
 }
 
-// cmdSteer sends a steering message mid-run.
-type cmdSteer struct {
+// SteerCmd sends a steering message mid-run.
+type SteerCmd struct {
 	ID      string         `json:"id,omitzero"`
 	Type    CommandType    `json:"type"`
 	Message string         `json:"message"`
 	Images  []ImageContent `json:"images,omitzero"`
 }
 
-// cmdFollowUp sends a follow-up message after the agent finishes.
-type cmdFollowUp struct {
+// FollowUpCmd sends a follow-up message after the agent finishes.
+type FollowUpCmd struct {
 	ID      string         `json:"id,omitzero"`
 	Type    CommandType    `json:"type"`
 	Message string         `json:"message"`
 	Images  []ImageContent `json:"images,omitzero"`
 }
 
-// cmdAbort cancels the current generation.
-type cmdAbort struct {
+// AbortCmd cancels the current generation.
+type AbortCmd struct {
 	ID   string      `json:"id,omitzero"`
 	Type CommandType `json:"type"`
 }
 
 // ---------- Session ----------
 
-// cmdNewSession starts a fresh session.
-type cmdNewSession struct {
+// NewSessionCmd starts a fresh session.
+type NewSessionCmd struct {
 	ID            string      `json:"id,omitzero"`
 	Type          CommandType `json:"type"`
 	ParentSession string      `json:"parentSession,omitzero"`
 }
 
-// cmdGetState requests current session state.
-type cmdGetState struct {
+// GetStateCmd requests current session state.
+type GetStateCmd struct {
 	ID   string      `json:"id,omitzero"`
 	Type CommandType `json:"type"`
 }
 
-// cmdGetSessionStats requests session statistics.
-type cmdGetSessionStats struct {
+// GetSessionStatsCmd requests session statistics.
+type GetSessionStatsCmd struct {
 	ID   string      `json:"id,omitzero"`
 	Type CommandType `json:"type"`
 }
 
-// cmdExportHTML exports the session as HTML.
-type cmdExportHTML struct {
+// ExportHTMLCmd exports the session as HTML.
+type ExportHTMLCmd struct {
 	ID         string      `json:"id,omitzero"`
 	Type       CommandType `json:"type"`
 	OutputPath string      `json:"outputPath,omitzero"`
 }
 
-// cmdSwitchSession switches to a different session.
-type cmdSwitchSession struct {
+// SwitchSessionCmd switches to a different session.
+type SwitchSessionCmd struct {
 	ID          string      `json:"id,omitzero"`
 	Type        CommandType `json:"type"`
 	SessionPath string      `json:"sessionPath"`
 }
 
-// cmdFork forks the session at a specific entry.
-type cmdFork struct {
+// ForkCmd forks the session at a specific entry.
+type ForkCmd struct {
 	ID      string      `json:"id,omitzero"`
 	Type    CommandType `json:"type"`
 	EntryID string      `json:"entryId"`
 }
 
-// cmdGetForkMessages gets messages available for forking.
-type cmdGetForkMessages struct {
+// GetForkMessagesCmd gets messages available for forking.
+type GetForkMessagesCmd struct {
 	ID   string      `json:"id,omitzero"`
 	Type CommandType `json:"type"`
 }
 
-// cmdGetLastAssistantText gets the last assistant message text.
-type cmdGetLastAssistantText struct {
+// GetLastAssistantTextCmd gets the last assistant message text.
+type GetLastAssistantTextCmd struct {
 	ID   string      `json:"id,omitzero"`
 	Type CommandType `json:"type"`
 }
 
-// cmdSetSessionName sets the session name.
-type cmdSetSessionName struct {
+// SetSessionNameCmd sets the session name.
+type SetSessionNameCmd struct {
 	ID   string      `json:"id,omitzero"`
 	Type CommandType `json:"type"`
 	Name string      `json:"name"`
 }
 
-// cmdGetMessages gets all messages in the session.
-type cmdGetMessages struct {
+// GetMessagesCmd gets all messages in the session.
+type GetMessagesCmd struct {
 	ID   string      `json:"id,omitzero"`
 	Type CommandType `json:"type"`
 }
 
-// cmdGetCommands gets available slash commands.
-type cmdGetCommands struct {
+// GetCommandsCmd gets available slash commands.
+type GetCommandsCmd struct {
 	ID   string      `json:"id,omitzero"`
 	Type CommandType `json:"type"`
 }
@@ -364,44 +364,44 @@ type SetModelCmd struct {
 	ModelID  string      `json:"modelId"`
 }
 
-// cmdCycleModel cycles to the next model.
-type cmdCycleModel struct {
+// CycleModelCmd cycles to the next model.
+type CycleModelCmd struct {
 	ID   string      `json:"id,omitzero"`
 	Type CommandType `json:"type"`
 }
 
-// cmdGetModels requests the list of available models.
-type cmdGetModels struct {
+// GetModelsCmd requests the list of available models.
+type GetModelsCmd struct {
 	ID   string      `json:"id,omitzero"`
 	Type CommandType `json:"type"`
 }
 
 // ---------- Thinking ----------
 
-// cmdSetThinking sets the thinking level.
-type cmdSetThinking struct {
+// SetThinkingCmd sets the thinking level.
+type SetThinkingCmd struct {
 	ID    string        `json:"id,omitzero"`
 	Type  CommandType   `json:"type"`
 	Level ThinkingLevel `json:"level"`
 }
 
-// cmdCycleThinking cycles to the next thinking level.
-type cmdCycleThinking struct {
+// CycleThinkingCmd cycles to the next thinking level.
+type CycleThinkingCmd struct {
 	ID   string      `json:"id,omitzero"`
 	Type CommandType `json:"type"`
 }
 
 // ---------- Queue modes ----------
 
-// cmdSetSteeringMode sets the steering queue mode.
-type cmdSetSteeringMode struct {
+// SetSteeringModeCmd sets the steering queue mode.
+type SetSteeringModeCmd struct {
 	ID   string      `json:"id,omitzero"`
 	Type CommandType `json:"type"`
 	Mode QueueMode   `json:"mode"`
 }
 
-// cmdSetFollowUpMode sets the follow-up queue mode.
-type cmdSetFollowUpMode struct {
+// SetFollowUpModeCmd sets the follow-up queue mode.
+type SetFollowUpModeCmd struct {
 	ID   string      `json:"id,omitzero"`
 	Type CommandType `json:"type"`
 	Mode QueueMode   `json:"mode"`
@@ -416,8 +416,8 @@ type CompactCmd struct {
 	CustomInstructions string      `json:"customInstructions,omitzero"`
 }
 
-// cmdSetAutoCompaction enables or disables automatic compaction.
-type cmdSetAutoCompaction struct {
+// SetAutoCompactionCmd enables or disables automatic compaction.
+type SetAutoCompactionCmd struct {
 	ID      string      `json:"id,omitzero"`
 	Type    CommandType `json:"type"`
 	Enabled bool        `json:"enabled"`
@@ -425,30 +425,30 @@ type cmdSetAutoCompaction struct {
 
 // ---------- Retry ----------
 
-// cmdSetAutoRetry enables or disables automatic retry.
-type cmdSetAutoRetry struct {
+// SetAutoRetryCmd enables or disables automatic retry.
+type SetAutoRetryCmd struct {
 	ID      string      `json:"id,omitzero"`
 	Type    CommandType `json:"type"`
 	Enabled bool        `json:"enabled"`
 }
 
-// cmdAbortRetry aborts the current retry.
-type cmdAbortRetry struct {
+// AbortRetryCmd aborts the current retry.
+type AbortRetryCmd struct {
 	ID   string      `json:"id,omitzero"`
 	Type CommandType `json:"type"`
 }
 
 // ---------- Bash ----------
 
-// cmdBash executes a bash command.
-type cmdBash struct {
+// BashCmd executes a bash command.
+type BashCmd struct {
 	ID      string      `json:"id,omitzero"`
 	Type    CommandType `json:"type"`
 	Command string      `json:"command"`
 }
 
-// cmdAbortBash aborts the current bash command.
-type cmdAbortBash struct {
+// AbortBashCmd aborts the current bash command.
+type AbortBashCmd struct {
 	ID   string      `json:"id,omitzero"`
 	Type CommandType `json:"type"`
 }
@@ -494,13 +494,13 @@ type Response struct {
 
 // ---------- Response data payloads ----------
 
-// modelsData is the data payload for get_available_models response.
-type modelsData struct {
+// ModelsData is the data payload for get_available_models response.
+type ModelsData struct {
 	Models []Model `json:"models"`
 }
 
-// stateData is the data payload for get_state response.
-type stateData struct {
+// StateData is the data payload for get_state response.
+type StateData struct {
 	Model                 *Model        `json:"model,omitzero"`
 	ThinkingLevel         ThinkingLevel `json:"thinkingLevel"`
 	IsStreaming           bool          `json:"isStreaming"`
@@ -515,93 +515,90 @@ type stateData struct {
 	PendingMessageCount   int           `json:"pendingMessageCount"`
 }
 
-// newSessionData is the data payload for new_session response.
-type newSessionData struct {
+// NewSessionData is the data payload for new_session response.
+type NewSessionData struct {
 	Cancelled bool `json:"cancelled"`
 }
 
-// cycleModelData is the data payload for cycle_model response.
-type cycleModelData struct {
+// CycleModelData is the data payload for cycle_model response.
+type CycleModelData struct {
 	Model         *Model        `json:"model,omitzero"`
 	ThinkingLevel ThinkingLevel `json:"thinkingLevel,omitzero"`
 	IsScoped      bool          `json:"isScoped,omitzero"`
 }
 
-// cycleThinkingData is the data payload for cycle_thinking_level response.
-type cycleThinkingData struct {
+// CycleThinkingData is the data payload for cycle_thinking_level response.
+type CycleThinkingData struct {
 	Level ThinkingLevel `json:"level"`
 }
 
-// bashData is the data payload for bash response.
-type bashData struct {
-	// BashResult fields are opaque; we only need to know it succeeded.
+// BashData is the data payload for bash response. Fields are opaque.
+type BashData struct {
 	json.RawMessage
 }
 
-// exportHTMLData is the data payload for export_html response.
-type exportHTMLData struct {
+// ExportHTMLData is the data payload for export_html response.
+type ExportHTMLData struct {
 	Path string `json:"path"`
 }
 
-// switchSessionData is the data payload for switch_session response.
-type switchSessionData struct {
+// SwitchSessionData is the data payload for switch_session response.
+type SwitchSessionData struct {
 	Cancelled bool `json:"cancelled"`
 }
 
-// forkData is the data payload for fork response.
-type forkData struct {
+// ForkData is the data payload for fork response.
+type ForkData struct {
 	Text      string `json:"text"`
 	Cancelled bool   `json:"cancelled"`
 }
 
-// forkMessagesData is the data payload for get_fork_messages response.
-type forkMessagesData struct {
-	Messages []forkMessage `json:"messages"`
+// ForkMessagesData is the data payload for get_fork_messages response.
+type ForkMessagesData struct {
+	Messages []ForkMessage `json:"messages"`
 }
 
-// forkMessage is a single entry in the fork messages list.
-type forkMessage struct {
+// ForkMessage is a single entry in the fork messages list.
+type ForkMessage struct {
 	EntryID string `json:"entryId"`
 	Text    string `json:"text"`
 }
 
-// lastAssistantTextData is the data payload for get_last_assistant_text response.
-type lastAssistantTextData struct {
+// LastAssistantTextData is the data payload for get_last_assistant_text response.
+type LastAssistantTextData struct {
 	Text *string `json:"text"` // nullable
 }
 
-// getMessagesData is the data payload for get_messages response.
-type getMessagesData struct {
+// GetMessagesData is the data payload for get_messages response.
+type GetMessagesData struct {
 	Messages []AgentMessage `json:"messages"`
 }
 
-// getCommandsData is the data payload for get_commands response.
-type getCommandsData struct {
-	Commands []rpcSlashCommand `json:"commands"`
+// GetCommandsData is the data payload for get_commands response.
+type GetCommandsData struct {
+	Commands []SlashCommand `json:"commands"`
 }
 
-// rpcSlashCommand is a command available for invocation via prompt.
-type rpcSlashCommand struct {
+// SlashCommand is a command available for invocation via prompt.
+type SlashCommand struct {
 	Name        string             `json:"name"`
 	Description string             `json:"description,omitzero"`
 	Source      SlashCommandSource `json:"source"`
-	SourceInfo  sourceInfo         `json:"sourceInfo"`
+	SourceInfo  SourceInfo         `json:"sourceInfo"`
 }
 
-// sourceInfo describes the origin of a slash command.
-type sourceInfo struct {
+// SourceInfo describes the origin of a slash command. Fields are opaque.
+type SourceInfo struct {
 	json.RawMessage
 }
 
-// sessionStatsData is the data payload for get_session_stats response.
-// SessionStats fields are opaque.
-type sessionStatsData struct {
+// SessionStatsData is the data payload for get_session_stats response. Fields are opaque.
+type SessionStatsData struct {
 	json.RawMessage
 }
 
-// compactData is the data payload for compact response.
-// CompactionResult fields are opaque.
-type compactData struct {
+// CompactData is the data payload for compact response. Fields are opaque.
+type CompactData struct {
 	json.RawMessage
 }
 
@@ -642,8 +639,8 @@ type ModelCost struct {
 
 // ---------- Agent events ----------
 
-// eventAgentStart is emitted when the agent begins processing.
-type eventAgentStart struct {
+// AgentStartEvent is emitted when the agent begins processing.
+type AgentStartEvent struct {
 	Type EventType `json:"type"`
 }
 
@@ -653,8 +650,8 @@ type AgentEndEvent struct {
 	Messages []AgentMessage `json:"messages"`
 }
 
-// eventTurnStart is emitted when a turn begins.
-type eventTurnStart struct {
+// TurnStartEvent is emitted when a turn begins.
+type TurnStartEvent struct {
 	Type EventType `json:"type"`
 }
 
@@ -665,8 +662,8 @@ type TurnEndEvent struct {
 	ToolResults []json.RawMessage `json:"toolResults,omitzero"`
 }
 
-// eventMessageStart is emitted when a message begins.
-type eventMessageStart struct {
+// MessageStartEvent is emitted when a message begins.
+type MessageStartEvent struct {
 	Type    EventType    `json:"type"`
 	Message AgentMessage `json:"message"`
 }
@@ -678,8 +675,8 @@ type MessageUpdateEvent struct {
 	AssistantMessageEvent AssistantMessageEvent `json:"assistantMessageEvent"`
 }
 
-// eventMessageEnd is emitted when a message is complete.
-type eventMessageEnd struct {
+// MessageEndEvent is emitted when a message is complete.
+type MessageEndEvent struct {
 	Type    EventType    `json:"type"`
 	Message AgentMessage `json:"message"`
 }

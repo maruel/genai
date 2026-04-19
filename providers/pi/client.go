@@ -215,14 +215,14 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	}()
 
 	sc := newScanner(stdout)
-	if err := msgutil.WriteNDJSON(stdin, cmdGetModels{Type: CmdGetModels}); err != nil {
+	if err := msgutil.WriteNDJSON(stdin, GetModelsCmd{Type: CmdGetModels}); err != nil {
 		return nil, fmt.Errorf("write get_available_models: %w", err)
 	}
 	resp, err := readResponseForCommand(sc, CmdGetModels)
 	if err != nil {
 		return nil, err
 	}
-	var md modelsData
+	var md ModelsData
 	if err := internal.UnmarshalJSON(resp.Data, &md); err != nil {
 		return nil, fmt.Errorf("parse models data: %w", err)
 	}
@@ -388,7 +388,7 @@ func msgToPromptParts(msg *genai.Message) (string, []ImageContent, error) {
 			if err != nil {
 				return "", nil, fmt.Errorf("read doc: %w", err)
 			}
-			if strings.HasPrefix(mimeType, "text/") {
+			if strings.HasPrefix(mimeType, "text/") { //nolint:gocritic // HasPrefix chains can't be rewritten as a switch
 				texts = append(texts, string(data))
 			} else if strings.HasPrefix(mimeType, "image/") {
 				images = append(images, ImageContent{
@@ -474,6 +474,9 @@ func readUntilDone(sc *bufio.Scanner, stdin io.Writer, onDelta func(text, reason
 			if internal.UnmarshalJSON(line, &resp) == nil && !resp.Success {
 				return genai.Result{}, fmt.Errorf("pi error (command=%s): %s", resp.Command, resp.Error)
 			}
+		default:
+			// Lifecycle events (agent_start, turn_start, turn_end, message_start,
+			// message_end, tool_execution_*) carry no content we act on here.
 		}
 	}
 	if err := sc.Err(); err != nil {
@@ -493,6 +496,8 @@ func parseMessageUpdateDelta(line []byte) (text, reasoning string, err error) {
 		return ev.AssistantMessageEvent.Delta, "", nil
 	case DeltaThinkDelta:
 		return "", ev.AssistantMessageEvent.Delta, nil
+	default:
+		// Boundary markers (start/end) and done/error carry no text delta.
 	}
 	return "", "", nil
 }
@@ -588,6 +593,8 @@ func extractContent(msg *AgentMessage) (text, thinking string) {
 			if msg.Content[i].Thinking != "" {
 				thinkParts = append(thinkParts, msg.Content[i].Thinking)
 			}
+		default:
+			// toolCall and image blocks carry no extractable text.
 		}
 	}
 	return strings.Join(textParts, ""), strings.Join(thinkParts, "")

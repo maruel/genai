@@ -453,9 +453,12 @@ type OutputInitMsg struct {
 	MCPServers     []InitMCPServer `json:"mcp_servers,omitempty"`
 	OutputStyle    string          `json:"output_style,omitempty"`
 	PermissionMode string          `json:"permissionMode,omitempty"`
-	Plugins        []InitPlugin    `json:"plugins,omitempty"`
+	Plugins        []InitPlugin    `json:"plugins,omitempty,omitzero"`
 	Skills         []string        `json:"skills,omitempty"`
 	SlashCommands  []string        `json:"slash_commands,omitempty"`
+	Betas          []string        `json:"betas,omitempty"`
+	PluginErrors   []InitPluginErr `json:"plugin_errors,omitempty,omitzero"`
+	MemoryPaths    InitMemPaths    `json:"memory_paths,omitzero"`
 }
 
 // InitMCPServer is an MCP server entry in the system/init message.
@@ -469,6 +472,19 @@ type InitPlugin struct {
 	Name   string `json:"name"`
 	Path   string `json:"path"`
 	Source string `json:"source"`
+}
+
+// InitPluginErr is a plugin load error in the system/init message.
+type InitPluginErr struct {
+	Plugin  string `json:"plugin"`
+	Type    string `json:"type"`
+	Message string `json:"message"`
+}
+
+// InitMemPaths holds absolute directory paths for memory stores.
+type InitMemPaths struct {
+	Auto string `json:"auto,omitempty"`
+	Team string `json:"team,omitempty"`
 }
 
 // ---------- system (non-init) ----------
@@ -626,6 +642,15 @@ type OutputResultMsg struct {
 	PermissionDenials []json.RawMessage          `json:"permission_denials,omitempty"`
 	StopReason        string                     `json:"stop_reason,omitempty"`
 	TerminalReason    string                     `json:"terminal_reason,omitempty"`
+	APIErrorStatus    int                        `json:"api_error_status,omitzero"`
+	DeferredToolUse   DeferredToolUse            `json:"deferred_tool_use,omitzero"`
+}
+
+// DeferredToolUse is a tool call deferred from a previous turn in the result message.
+type DeferredToolUse struct {
+	ID    string         `json:"id"`
+	Name  string         `json:"name"`
+	Input map[string]any `json:"input"`
 }
 
 // ModelUsageEntry is per-model usage stats in the result message.
@@ -655,8 +680,8 @@ type MsgUsage struct {
 	// Iterations is an int or an array, depending on the model.
 	Iterations json.RawMessage `json:"iterations,omitzero"`
 
-	ServerToolUse *ServerToolUse `json:"server_tool_use,omitzero"`
-	CacheCreation *CacheCreation `json:"cache_creation,omitzero"`
+	ServerToolUse ServerToolUse `json:"server_tool_use,omitzero"`
+	CacheCreation CacheCreation `json:"cache_creation,omitzero"`
 }
 
 // ServerToolUse tracks server-side tool use counts.
@@ -681,13 +706,14 @@ type OutputStreamEventMsg struct {
 	Timestamp       string          `json:"timestamp,omitempty"`
 	ParentToolUseID string          `json:"parent_tool_use_id"`
 	Event           StreamEventData `json:"event"`
+	TtftMs          int             `json:"ttft_ms,omitempty"`
 }
 
 // StreamEventData is the nested event body inside a stream_event record.
 type StreamEventData struct {
 	Type         string          `json:"type"`
 	Index        int             `json:"index"`
-	Delta        *StreamDelta    `json:"delta,omitempty"`
+	Delta        StreamDelta     `json:"delta,omitzero"`
 	ContentBlock json.RawMessage `json:"content_block,omitempty"`
 	// message_start carries the full message object; message_delta carries
 	// stop_reason and usage in a delta wrapper.
@@ -925,10 +951,10 @@ type OutputUserBlock struct {
 
 // OutputUserContentBlock is a single content block in a user message.
 type OutputUserContentBlock struct {
-	Type      string             `json:"type"`
-	Text      string             `json:"text,omitempty"`
-	Source    *OutputImageSource `json:"source,omitempty"`
-	ToolUseID string             `json:"tool_use_id,omitempty"`
+	Type      string            `json:"type"`
+	Text      string            `json:"text,omitempty"`
+	Source    OutputImageSource `json:"source,omitzero"`
+	ToolUseID string            `json:"tool_use_id,omitempty"`
 	// Nested content and error flag for inline tool_result blocks (MCP tools).
 	Content []ToolResultContent `json:"content,omitempty"`
 	IsError bool                `json:"is_error,omitempty"`

@@ -409,7 +409,7 @@ func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...gen
 					finalErr = errors.New("claude stream error")
 					return
 				}
-				if ev.Event.Delta != nil {
+				if ev.Event.Delta.Type != "" {
 					switch ev.Event.Delta.Type {
 					case "text_delta":
 						if ev.Event.Delta.Text != "" {

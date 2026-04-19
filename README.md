@@ -57,7 +57,7 @@ genai is _intentional_. Curious why it was created? See the release announcement
 | [claudecode](docs/claudecode.md)           | 🇺🇸   | Sync, Stream🧠 | 💬📸       | 💬     | 🕸️     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
 | [cloudflare](docs/cloudflare.md)           | 🇺🇸   | Sync, Stream🧠 | 💬         | 💬     | ✅     | ✅   | ❌    | ❌   | ❌   | 🌱📏  | ❌    | ❌     | ✅    | 💨     |
 | [codex](docs/codex.md)                     | 🇺🇸   | Sync, Stream  | 💬📸       | 💬     | ❌     | ❌   | ❌    | ❌   | ❌   | ❌   | ❌    | ❌     | ✅    | ✅     |
-| [cohere](docs/cohere.md)                   | 🇨🇦   | Sync, Stream🧠 | 💬📸       | 💬     | ✅🪨   | ✅   | ❌    | ❌   | ✅   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
+| [cohere](docs/cohere.md)                   | 🇨🇦   | Sync, Stream🧠 | 💬         | 💬     | ✅🪨   | ✅   | ❌    | ❌   | ✅   | 🌱📏🛑 | ✅    | ❌     | ✅    | ✅     |
 | [deepseek](docs/deepseek.md)               | 🇨🇳   | Sync, Stream🧠 | 💬         | 💬     | ✅🪨   | ☁️   | ❌    | ❌   | ❌   | 📏🛑   | ✅    | ❌     | ✅    | ✅     |
 | [gemini](docs/gemini.md)                   | 🇺🇸   | Sync, Stream🧠 | 🎤🎥💬📄📸 | 💬📸   | ✅🪨🕸️ | ✅   | ❌    | ✅   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |
 | [github](docs/github.md)                   | 🇺🇸   | Sync, Stream  | 💬📸       | 💬     | ✅🪨   | ☁️   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ❌     | ✅    | ✅     |

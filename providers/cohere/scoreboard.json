@@ -96,53 +96,6 @@
       }
     },
     {
-      "comments": "Thinking is only related to tool planning. See https://docs.cohere.com/docs/aya-vision",
-      "models": [
-        "c4ai-aya-vision-8b"
-      ],
-      "reason": true,
-      "in": {
-        "image": {
-          "inline": true,
-          "url": true,
-          "supportedFormats": [
-            "image/gif",
-            "image/jpeg",
-            "image/png",
-            "image/webp"
-          ]
-        },
-        "text": {
-          "inline": true
-        }
-      },
-      "out": {
-        "text": {
-          "inline": true
-        }
-      },
-      "GenSync": {
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "tools": "flaky",
-        "citations": true,
-        "topLogprobs": true,
-        "maxTokens": true,
-        "stopSequence": true
-      },
-      "GenStream": {
-        "reportTokenUsage": "true",
-        "reportFinishReason": "true",
-        "seed": true,
-        "tools": "flaky",
-        "citations": true,
-        "topLogprobs": true,
-        "maxTokens": true,
-        "stopSequence": true
-      }
-    },
-    {
       "comments": "To enable later",
       "models": [
         "c4ai-aya-expanse-32b",
@@ -153,7 +106,11 @@
         "command-a-vision-07-2025",
         "command-r-08-2024",
         "command-r-plus-08-2024",
-        "command-r7b-arabic-02-2025"
+        "command-r7b-arabic-02-2025",
+        "tiny-aya-earth",
+        "tiny-aya-fire",
+        "tiny-aya-global",
+        "tiny-aya-water"
       ],
       "reason": true
     }

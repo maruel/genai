@@ -690,15 +690,16 @@ type ChatStreamChunkResponse struct {
 
 // Model represents a Cohere model.
 type Model struct {
-	Name             string   `json:"name"`
-	Endpoints        []string `json:"endpoints"` // chat, embed, classify, summarize, rerank, rate, generate
-	Features         []string `json:"features"`  // json_mode, json_schema, safety_modes, strict_tools, tools
-	Finetuned        bool     `json:"finetuned"`
-	ContextLength    int64    `json:"context_length"`
-	TokenizerURL     string   `json:"tokenizer_url"`
-	SupportsVision   bool     `json:"supports_vision"`
-	DefaultEndpoints []string `json:"default_endpoints"`
-	IsDeprecated     bool     `json:"is_deprecated"`
+	Name             string         `json:"name"`
+	Endpoints        []string       `json:"endpoints"` // chat, embed, classify, summarize, rerank, rate, generate
+	Features         []string       `json:"features"`  // json_mode, json_schema, safety_modes, strict_tools, tools
+	Finetuned        bool           `json:"finetuned"`
+	ContextLength    int64          `json:"context_length"`
+	TokenizerURL     string         `json:"tokenizer_url"`
+	SupportsVision   bool           `json:"supports_vision"`
+	DefaultEndpoints []string       `json:"default_endpoints"`
+	IsDeprecated     bool           `json:"is_deprecated"`
+	SamplingDefaults map[string]any `json:"sampling_defaults,omitzero"`
 }
 
 // GetID returns the model ID.

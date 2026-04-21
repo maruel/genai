@@ -3,6 +3,8 @@
 # Use of this source code is governed under the Apache License, Version 2.0
 # that can be found in the LICENSE file.
 
+# Script to regenerate weekly model scores for all providers.
+
 set -euo pipefail
 
 cd "$(dirname $0)"

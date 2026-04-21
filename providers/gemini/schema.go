@@ -2,6 +2,8 @@
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
+// Gemini provider Zod schema utilities for tool calling.
+
 package gemini
 
 import (

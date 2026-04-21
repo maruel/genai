@@ -1,0 +1,11 @@
+# Ruff configuration.
+
+target-version = "py313"
+line-length = 120
+
+[lint]
+select = ["E", "F", "W", "I", "B"]
+
+[format]
+quote-style = "double"
+indent-style = "space"

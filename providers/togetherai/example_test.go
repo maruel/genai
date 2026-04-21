@@ -2,6 +2,8 @@
 // Use of this source code is governed under the Apache License, Version 2.0
 // that can be found in the LICENSE file.
 
+// Example usage of the TogetherAI provider.
+
 package togetherai_test
 
 import (

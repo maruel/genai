@@ -2,6 +2,7 @@
 # Copyright 2026 Marc-Antoine Ruel. All rights reserved.
 # Use of this source code is governed under the Apache License, Version 2.0
 # that can be found in the LICENSE file.
+
 """Extract Zod wire-protocol schemas from the claude binary.
 
 The claude binary is a Bun SEA that compiles JS to native x86-64 via JSC.

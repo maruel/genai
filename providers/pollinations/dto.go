@@ -652,6 +652,7 @@ type ImageModel struct {
 		CachedTokenPrice       base.Float64 `json:"cached_token_price,omitzero"`
 		CompletionAudioSeconds base.Float64 `json:"completionAudioSeconds,omitzero"`
 		CompletionImageTokens  base.Float64 `json:"completionImageTokens,omitzero"`
+		CompletionTextTokens   string       `json:"completionTextTokens,omitzero"`
 		CompletionVideoSeconds base.Float64 `json:"completionVideoSeconds,omitzero"`
 		CompletionVideoTokens  base.Float64 `json:"completionVideoTokens,omitzero"`
 		Currency               string       `json:"currency"`

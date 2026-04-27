@@ -577,6 +577,8 @@ type Model struct {
 	Created                     int64    `json:"created,omitzero"`
 	SupportedFeatures           []string `json:"supported_features,omitzero"`
 	SupportedSamplingParameters []string `json:"supported_sampling_parameters,omitzero"`
+	InputModalities             []string `json:"input_modalities,omitzero"`
+	OutputModalities            []string `json:"output_modalities,omitzero"`
 
 	// Pricing per token.
 	Pricing map[string]string `json:"pricing,omitzero"`

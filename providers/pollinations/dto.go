@@ -735,6 +735,7 @@ type TextModel struct {
 		OutputTokenPrice      base.Float64 `json:"output_token_price,omitzero"`
 		PromptAudioTokens     base.Float64 `json:"promptAudioTokens,omitzero"`
 		PromptCachedTokens    base.Float64 `json:"promptCachedTokens,omitzero"`
+		PromptImageTokens     base.Float64 `json:"promptImageTokens,omitzero"`
 		PromptTextTokens      base.Float64 `json:"promptTextTokens,omitzero"`
 		PromptTokens          base.Float64 `json:"prompt_tokens,omitzero"`
 	} `json:"pricing,omitzero"`

@@ -713,19 +713,19 @@ type MessageEndEvent struct {
 
 // ToolExecStartEvent is emitted when a tool begins execution.
 type ToolExecStartEvent struct {
-	Type       EventType `json:"type"`
-	ToolCallID string    `json:"toolCallId"`
-	ToolName   string    `json:"toolName"`
-	Args       any       `json:"args"`
+	Type       EventType        `json:"type"`
+	ToolCallID string           `json:"toolCallId"`
+	ToolName   string           `json:"toolName"`
+	Args       json.RawMessage  `json:"args"`
 }
 
 // ToolExecUpdateEvent is emitted during tool execution with progress.
 type ToolExecUpdateEvent struct {
-	Type          EventType       `json:"type"`
-	ToolCallID    string          `json:"toolCallId"`
-	ToolName      string          `json:"toolName"`
-	Args          any             `json:"args"`
-	PartialResult json.RawMessage `json:"partialResult"`
+	Type          EventType        `json:"type"`
+	ToolCallID    string           `json:"toolCallId"`
+	ToolName      string           `json:"toolName"`
+	Args          json.RawMessage  `json:"args"`
+	PartialResult json.RawMessage  `json:"partialResult"`
 }
 
 // ToolExecEndEvent is emitted when a tool finishes execution.

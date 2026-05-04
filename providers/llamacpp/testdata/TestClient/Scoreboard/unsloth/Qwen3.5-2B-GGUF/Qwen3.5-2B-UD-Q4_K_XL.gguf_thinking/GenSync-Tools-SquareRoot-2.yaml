@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 933
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"role":"assistant","tool_calls":[{"type":"function","index":0,"id":"SRKscA5YpnmYNnMqNIPshm7RYlkIrbnY","function":{"name":"square_root","arguments":"{\"number\":132413}"}}]},{"role":"tool","content":[{"type":"text","text":"363.89"}],"tool_call_id":"SRKscA5YpnmYNnMqNIPshm7RYlkIrbnY"}],"tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}}],"tool_choice":"none","parallel_tool_calls":true,"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 754
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"363.89","reasoning_content":"The square root of 132413 is 363.89. I''ll provide just this result as requested.\n"}}],"created":1777933913,"model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b9020-a4701c98f","object":"chat.completion","usage":{"completion_tokens":39,"prompt_tokens":386,"total_tokens":425,"prompt_tokens_details":{"cached_tokens":327}},"id":"chatcmpl-6qERkHLeP1wTA1fC2cgPuJiCvRJmzT4b","timings":{"cache_n":327,"prompt_n":59,"prompt_ms":48.845,"prompt_per_token_ms":0.8278813559322034,"prompt_per_second":1207.9025488791074,"predicted_n":39,"predicted_ms":292.04,"predicted_per_token_ms":7.488205128205129,"predicted_per_second":133.54335022599642}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "754"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 348ms

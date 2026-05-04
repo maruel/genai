@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 663
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required","parallel_tool_calls":true,"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1061
+        body: '{"choices":[{"finish_reason":"tool_calls","index":0,"message":{"role":"assistant","content":"","reasoning_content":"The user is asking me to use the best_country tool to determine which country is better - USA or Canada. This is a straightforward request that matches the function available to me. I should call the best_country function with the USA parameter.\n","tool_calls":[{"type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"},"id":"IrTOOSFyJNYuYFMVLC1VSXOnfbgmCdnw"}]}}],"created":1777933915,"model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b9020-a4701c98f","object":"chat.completion","usage":{"completion_tokens":77,"prompt_tokens":333,"total_tokens":410,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-O1eT6IUcV37gY7FMzpsTd5HXwUSh8vEA","timings":{"cache_n":0,"prompt_n":333,"prompt_ms":174.68,"prompt_per_token_ms":0.5245645645645646,"prompt_per_second":1906.343027249828,"predicted_n":77,"predicted_ms":586.154,"predicted_per_token_ms":7.61238961038961,"predicted_per_second":131.36479491737666}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "1061"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 770ms

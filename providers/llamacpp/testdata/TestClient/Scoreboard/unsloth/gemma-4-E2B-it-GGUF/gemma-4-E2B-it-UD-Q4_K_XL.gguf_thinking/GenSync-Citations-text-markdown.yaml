@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 321
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1377
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"The capital of Quackiland is **Quack**.","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:** The user has provided a short text/riddle about \"Quackiland\" and asked a direct question based on that text.\n    *   *Text:* \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack. What is the capital of Quackiland?\"\n\n2.  **Identify the Core Information:**\n    *   Statement 1: The capital of Quackiland is Quack.\n    *   Statement 2: The Big Canard Statue is located in Quack.\n    *   Question: What is the capital of Quackiland?\n\n3.  **Extract the Answer:** The answer is explicitly stated in the first sentence.\n\n4.  **Formulate the Response:** State the derived answer clearly."}}],"created":1777931769,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b9020-a4701c98f","object":"chat.completion","usage":{"completion_tokens":189,"prompt_tokens":52,"total_tokens":241,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-u7DMAwvILdU0DqRnptHmDXxEJWE2d8Sl","timings":{"cache_n":0,"prompt_n":52,"prompt_ms":213.084,"prompt_per_token_ms":4.097769230769231,"prompt_per_second":244.03521615888567,"predicted_n":189,"predicted_ms":3896.338,"predicted_per_token_ms":20.615544973544974,"predicted_per_second":48.50708537093035}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "1377"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 4.131s

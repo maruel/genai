@@ -4,7 +4,7 @@
   "scenarios": [
     {
       "models": [
-        "unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-Q4_K_M.gguf"
+        "unsloth/Qwen3.5-2B-GGUF/Qwen3.5-2B-UD-Q4_K_XL.gguf"
       ],
       "reason": true,
       "in": {
@@ -31,8 +31,7 @@
         "reportFinishReason": "true",
         "seed": true,
         "tools": "true",
-        "toolsBiased": "flaky",
-        "toolsIndecisive": "true",
+        "toolsBiased": "true",
         "toolCallRequired": true,
         "json": true,
         "jsonSchema": true,
@@ -43,9 +42,8 @@
       "GenStream": {
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
-        "seed": true,
         "tools": "true",
-        "toolsBiased": "true",
+        "toolsBiased": "flaky",
         "toolCallRequired": true,
         "json": true,
         "jsonSchema": true,
@@ -56,7 +54,7 @@
     },
     {
       "models": [
-        "unsloth/gemma-4-E2B-it-GGUF/gemma-4-E2B-it-Q4_K_M.gguf"
+        "unsloth/gemma-4-E2B-it-GGUF/gemma-4-E2B-it-UD-Q4_K_XL.gguf"
       ],
       "reason": true,
       "in": {
@@ -90,8 +88,7 @@
         "reportFinishReason": "true",
         "seed": true,
         "tools": "true",
-        "toolsBiased": "flaky",
-        "toolsIndecisive": "true",
+        "toolsBiased": "true",
         "toolCallRequired": true,
         "json": true,
         "jsonSchema": true,
@@ -104,6 +101,7 @@
         "reportFinishReason": "true",
         "seed": true,
         "tools": "true",
+        "toolsBiased": "flaky",
         "toolsIndecisive": "true",
         "toolCallRequired": true,
         "json": true,
@@ -180,10 +178,6 @@
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "seed": true,
-        "tools": "true",
-        "toolsBiased": "flaky",
-        "toolsIndecisive": "true",
-        "toolCallRequired": true,
         "json": true,
         "jsonSchema": true,
         "topLogprobs": true,
@@ -194,9 +188,6 @@
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "seed": true,
-        "tools": "true",
-        "toolsBiased": "true",
-        "toolCallRequired": true,
         "json": true,
         "jsonSchema": true,
         "topLogprobs": true,

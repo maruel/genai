@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 677
-        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"language English<asr_text>Orange."}}],"created":1776168503,"model":"ggml-org/Qwen3-ASR-0.6B-GGUF","system_fingerprint":"b8781-1c0d9081f","object":"chat.completion","usage":{"completion_tokens":6,"prompt_tokens":409,"total_tokens":415,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-wiCGfnr8UIy7qaJlrzFTJ43KaDXNEHMo","timings":{"cache_n":0,"prompt_n":409,"prompt_ms":1100.184,"prompt_per_token_ms":2.6899364303178483,"prompt_per_second":371.7559971786538,"predicted_n":6,"predicted_ms":42.713,"predicted_per_token_ms":7.118833333333334,"predicted_per_second":140.47245569264626}}'
+        content_length: 678
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"language English<asr_text>Orange."}}],"created":1777931907,"model":"ggml-org/Qwen3-ASR-0.6B-GGUF","system_fingerprint":"b9020-a4701c98f","object":"chat.completion","usage":{"completion_tokens":6,"prompt_tokens":409,"total_tokens":415,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-fTScKnS60Zwhvs8Ux6BKDEPDXOuWWp9C","timings":{"cache_n":0,"prompt_n":409,"prompt_ms":1281.538,"prompt_per_token_ms":3.1333447432762838,"prompt_per_second":319.14777400279974,"predicted_n":6,"predicted_ms":44.177,"predicted_per_token_ms":7.362833333333334,"predicted_per_second":135.81728048532042}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "677"
+                - "678"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 1.157s
+        duration: 1.339s

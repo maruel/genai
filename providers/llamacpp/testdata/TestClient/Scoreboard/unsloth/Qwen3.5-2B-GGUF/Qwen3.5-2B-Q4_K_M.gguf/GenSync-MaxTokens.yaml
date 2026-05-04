@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 717
-        body: '{"choices":[{"finish_reason":"length","index":0,"message":{"role":"assistant","content":"# The Theory of Relativity: A Comprehensive Explanation\n\nAlbert Einstein''s **Theory"}}],"created":1776165802,"model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b8781-1c0d9081f","object":"chat.completion","usage":{"completion_tokens":16,"prompt_tokens":23,"total_tokens":39,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-gFS6n9GJRW0dkEpBvKg1p2oLJQbVbweh","timings":{"cache_n":0,"prompt_n":23,"prompt_ms":102.635,"prompt_per_token_ms":4.462391304347826,"prompt_per_second":224.09509426608858,"predicted_n":16,"predicted_ms":297.593,"predicted_per_token_ms":18.5995625,"predicted_per_second":53.76470548702422}}'
+        content_length: 703
+        body: '{"choices":[{"finish_reason":"length","index":0,"message":{"role":"assistant","content":"# The Theory of Relativity: A Comprehensive Guide\n\nEinstein''s Theory of"}}],"created":1777931910,"model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b9020-a4701c98f","object":"chat.completion","usage":{"completion_tokens":16,"prompt_tokens":23,"total_tokens":39,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-Nkr1Qb70jDBzd8lFuIrVllh2Ypt8vKIE","timings":{"cache_n":0,"prompt_n":23,"prompt_ms":74.079,"prompt_per_token_ms":3.2208260869565213,"prompt_per_second":310.47935312301735,"predicted_n":16,"predicted_ms":184.05,"predicted_per_token_ms":11.503125,"predicted_per_second":86.93289866883998}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "717"
+                - "703"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 424ms
+        duration: 267ms

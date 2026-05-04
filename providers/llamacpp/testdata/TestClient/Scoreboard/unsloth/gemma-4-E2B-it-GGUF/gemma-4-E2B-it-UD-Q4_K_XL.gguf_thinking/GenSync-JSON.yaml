@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 334
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}]}],"response_format":{"type":"json_object"},"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1150
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"{\n  \"is_fruit\": true\n}\n","reasoning_content":"Thinking Process:\n1.  **Analyze the Request:** The user is asking if a banana is a fruit.\n2.  **Constraint 1:** Do not include an explanation.\n3.  **Constraint 2:** Reply ONLY as JSON according to the schema: `{\"is_fruit\": bool}`.\n4.  **Determine the Fact:** Botanically and culinarily, a banana is a fruit.\n5.  **Format the Output:** Convert the finding into the required JSON structure.\n\n6.  **Final Output Generation:** `{\"is_fruit\": true}`"}}],"created":1777931730,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b9020-a4701c98f","object":"chat.completion","usage":{"completion_tokens":143,"prompt_tokens":45,"total_tokens":188,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-WskNwHDrQ1SL8XOQzM8KGY9ZGuTQRF00","timings":{"cache_n":0,"prompt_n":45,"prompt_ms":159.634,"prompt_per_token_ms":3.547422222222222,"prompt_per_second":281.89483443376724,"predicted_n":143,"predicted_ms":2736.514,"predicted_per_token_ms":19.13646153846154,"predicted_per_second":52.25626472219765}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "1150"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 2.909s

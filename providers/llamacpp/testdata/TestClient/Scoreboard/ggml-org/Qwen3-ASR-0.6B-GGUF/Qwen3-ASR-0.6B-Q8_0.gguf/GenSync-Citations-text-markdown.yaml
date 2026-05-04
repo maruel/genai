@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 740
-        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"language None<asr_text>The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."}}],"created":1776168500,"model":"ggml-org/Qwen3-ASR-0.6B-GGUF","system_fingerprint":"b8781-1c0d9081f","object":"chat.completion","usage":{"completion_tokens":25,"prompt_tokens":43,"total_tokens":68,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-4e3EDq7ueH7BbiH3RSa26kBqayytQOHp","timings":{"cache_n":0,"prompt_n":43,"prompt_ms":23.419,"prompt_per_token_ms":0.5446279069767442,"prompt_per_second":1836.1159742089756,"predicted_n":25,"predicted_ms":179.64,"predicted_per_token_ms":7.185599999999999,"predicted_per_second":139.16722333556}}'
+        content_length: 743
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"language None<asr_text>The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."}}],"created":1777931904,"model":"ggml-org/Qwen3-ASR-0.6B-GGUF","system_fingerprint":"b9020-a4701c98f","object":"chat.completion","usage":{"completion_tokens":25,"prompt_tokens":43,"total_tokens":68,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-Acjq8xuzePRYWcORrTrnMRwxslDxEFYq","timings":{"cache_n":0,"prompt_n":43,"prompt_ms":23.822,"prompt_per_token_ms":0.5539999999999999,"prompt_per_second":1805.054151624549,"predicted_n":25,"predicted_ms":168.383,"predicted_per_token_ms":6.735320000000001,"predicted_per_second":148.47104517676962}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "740"
+                - "743"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 235ms
+        duration: 216ms

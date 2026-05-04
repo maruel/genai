@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 477
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}],"response_format":{"type":"json_schema","json_schema":{"schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]}}},"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1372
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"{\n  \"is_fruit\": true\n}\n","reasoning_content":"Thinking Process:\n1.  **Analyze the request:** The user is asking \"Is a banana a fruit?\" with the constraint \"Do not include an explanation. Reply ONLY as JSON.\"\n2.  **Determine the answer:** A banana is botanically classified as a fruit (it develops from the ovary of a flowering plant and contains seeds).\n3.  **Format the output:** The response must be strictly JSON.\n4.  **Construct the JSON:** Need a key-value pair structure that answers the question.\n\n    *   Key: \"is_banana_a_fruit\" (or similar)\n    *   Value: true (or the appropriate boolean/string representation of the answer).\n\n5.  **Final Output Generation:** (Ensure only the JSON is returned.)"}}],"created":1777931734,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b9020-a4701c98f","object":"chat.completion","usage":{"completion_tokens":183,"prompt_tokens":33,"total_tokens":216,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-AXy1xT0IwKe5oKTps0pr1tJagm2IUZAP","timings":{"cache_n":0,"prompt_n":33,"prompt_ms":129.539,"prompt_per_token_ms":3.925424242424242,"prompt_per_second":254.74953488910677,"predicted_n":183,"predicted_ms":3534.151,"predicted_per_token_ms":19.312300546448085,"predicted_per_second":51.78047004782762}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "1372"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 3.677s

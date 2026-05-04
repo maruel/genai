@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 196
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}],"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1446
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Hello","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Task: Say hello.\n    *   Constraint: Use only one word.\n\n2.  **Identify the Content:**\n    *   \"Hello\" is the standard greeting.\n    *   \"Use only one word\" is a constraint.\n\n3.  **Formulate the Output:**\n    *   Option 1: Hello (2 words? No, 1 word). \"Hello\" is a single word.\n    *   Option 2: Hi (1 word).\n    *   Option 3: Greeting (1 word).\n    *   Option 4: Good morning (1 word? No, 2 words).\n    *   Option 5: Hello! (1 word).\n\n4.  **Select the Best Option:**\n    *   \"Hello\" is the most direct and common response to \"Say hello\".\n    *   It is exactly one word.\n\n5.  **Final Check:**\n    *   Does it say hello? Yes.\n    *   Is it one word? Yes.\n\n6.  **Final Output Generation:** Hello.cw\n"}}],"created":1777933863,"model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b9020-a4701c98f","object":"chat.completion","usage":{"completion_tokens":253,"prompt_tokens":18,"total_tokens":271,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-Q8HUYAKyaDScGkp3knLJ5KAgpp4FcLSv","timings":{"cache_n":0,"prompt_n":18,"prompt_ms":49.995,"prompt_per_token_ms":2.7775,"prompt_per_second":360.03600360036006,"predicted_n":253,"predicted_ms":1944.684,"predicted_per_token_ms":7.686498023715415,"predicted_per_second":130.0982576089483}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "1446"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 2.011s

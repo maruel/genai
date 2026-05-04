@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 305
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1432
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"The capital of Quackiland is Quack.","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:** The user is asking for the capital of \"Quackiland.\"\n2.  **Analyze the Provided Information (Premises):**\n    *   \"The capital of Quackiland is Quack.\"\n    *   \"The Big Canard Statue is located in Quack.\"\n3.  **Identify the Target Question:** \"What is the capital of Quackiland?\"\n4.  **Extract the Answer from the Premises:** The first sentence explicitly states: \"The capital of Quackiland is Quack.\"\n5.  **Formulate the Conclusion:** The answer is Quack. (The second sentence is extra information, potentially a distraction, but doesn''t change the capital identification).\n6.  **Final Check:** Does the provided text support the answer? Yes. (Capital = Quack)."}}],"created":1777931765,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b9020-a4701c98f","object":"chat.completion","usage":{"completion_tokens":195,"prompt_tokens":47,"total_tokens":242,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-6kLZUhiLuhP1Vl8XQL8X9dHsn3X0jBII","timings":{"cache_n":0,"prompt_n":47,"prompt_ms":179.831,"prompt_per_token_ms":3.826191489361702,"prompt_per_second":261.35649582107646,"predicted_n":195,"predicted_ms":4134.12,"predicted_per_token_ms":21.200615384615386,"predicted_per_second":47.168442135206526}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "1432"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 4.331s

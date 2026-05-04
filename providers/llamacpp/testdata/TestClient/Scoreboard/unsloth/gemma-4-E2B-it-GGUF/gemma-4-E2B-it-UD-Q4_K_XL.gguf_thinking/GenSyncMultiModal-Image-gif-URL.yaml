@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 346
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.gif"}}]}],"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1141
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Banana","reasoning_content":"Thinking Process:\n\n1.  **Analyze the input:** The user has provided an image of a fruit and asked to identify it.\n2.  **Examine the image:** The image shows a long, curved, yellow fruit with a slight stem/end piece. This shape is characteristic of a banana.\n3.  **Analyze the constraint:** The user explicitly requested to \"Reply with only one word.\"\n4.  **Determine the answer:** The fruit is a banana.\n5.  **Formulate the final response:** Use the identified word."}}],"created":1777931844,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b9020-a4701c98f","object":"chat.completion","usage":{"completion_tokens":121,"prompt_tokens":284,"total_tokens":405,"prompt_tokens_details":{"cached_tokens":279}},"id":"chatcmpl-sP77cK4rcbl68VgU0ORR3R3BhcFkmyzv","timings":{"cache_n":279,"prompt_n":5,"prompt_ms":58.626,"prompt_per_token_ms":11.7252,"prompt_per_second":85.28639170333982,"predicted_n":121,"predicted_ms":2481.591,"predicted_per_token_ms":20.50901652892562,"predicted_per_second":48.759042082277055}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "1141"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 2.599s

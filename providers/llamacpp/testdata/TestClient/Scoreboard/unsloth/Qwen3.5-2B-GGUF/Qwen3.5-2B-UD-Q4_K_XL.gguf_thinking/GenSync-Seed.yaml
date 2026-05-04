@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 206
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Say hello. Use only one word."}]}],"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"seed":42,"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 2075
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Hello","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Command: \"Say hello.\"\n    *   Constraint: \"Use only one word.\"\n\n2.  **Identify the Goal:**\n    *   Respond to the greeting \"hello\" or acknowledge it in a single word.\n\n3.  **Brainstorm One-Word Responses:**\n    *   Hello (Too common, but valid)\n    *   Hi (A bit informal, but valid)\n    *   Yes (No)\n    *   Hello (Yes)\n    *   Hello (Yes)\n    *   Good (No)\n    *   Day (No)\n    *   Hello (Yes)\n    *   How (No)\n    *   Hello (Yes)\n    *   Hey (No)\n    *   Hi (Yes)\n    *   Hello (Yes)\n    *   Hello (Yes)\n    *   Hello (Yes)\n\n4.  **Select the Best Option:**\n    *   The prompt says \"Say hello\", but the constraint is \"Use only one word\".\n    *   If I say \"Hello\", that fits both the instruction and the constraint.\n    *   If I say \"Hi\", that fits both.\n    *   If I say \"Hey\", that fits both.\n    *   However, the most direct interpretation of \"Say hello\" is to say the word \"hello\".\n    *   Wait, looking at the instruction: \"Say hello. Use only one word.\"\n    *   This is a constraint on the *output*.\n    *   So I need to output a single word.\n    *   The most obvious single word for \"hello\" is \"Hello\".\n\n5.  **Final Decision:**\n    *   Output: Hello.\n\n6.  **Review:**\n    *   Is it one word? Yes.\n    *   Does it say hello? Yes.\n\n7.  **Final Output Generation:** Hello.cw\n"}}],"created":1777933866,"model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b9020-a4701c98f","object":"chat.completion","usage":{"completion_tokens":431,"prompt_tokens":18,"total_tokens":449,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-mokKVd0BQRDZYdSsytZOYVn10pWwmzoy","timings":{"cache_n":0,"prompt_n":18,"prompt_ms":33.069,"prompt_per_token_ms":1.8371666666666668,"prompt_per_second":544.3164292842239,"predicted_n":431,"predicted_ms":3313.808,"predicted_per_token_ms":7.688649651972158,"predicted_per_second":130.0618502942838}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "2075"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 3.353s

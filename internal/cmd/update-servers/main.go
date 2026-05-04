@@ -243,7 +243,7 @@ func applyUpdate(root string, u update, cur, latest string) error {
 }
 
 func runTests(root, pkg string) error {
-	cmd := exec.Command("go", "test", pkg)
+	cmd := exec.Command("go", "test", pkg, "-update-scoreboard")
 	cmd.Dir = root
 	cmd.Env = append(os.Environ(), "RECORD=all")
 	cmd.Stdout = os.Stdout

@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 334
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}]}],"response_format":{"type":"json_object"},"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 1647
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"{\"is_fruit\": true}","reasoning_content":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Question: \"Is a banana a fruit?\"\n    *   Constraint 1: Do not include an explanation.\n    *   Constraint 2: Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}.\n\n2.  **Determine the Answer:**\n    *   Botanically, a banana (scientific name *Musa basjoo*, though often cited as *Musa* species) is a fruit (specifically a berry).\n    *   So, the boolean value should be `true`.\n\n3.  **Format the Output:**\n    *   The user wants JSON with the key \"is_fruit\" and a boolean value.\n    *   The schema is: `{\"is_fruit\": bool}`.\n\n4.  **Final Check:**\n    *   Must be JSON.\n    *   Must not include explanation.\n    *   Must be accurate to the prompt''s schema.\n\n5.  **Construct Output:** `{\"is_fruit\": true}`.\n\n6.  **Safety Check:** No sensitive info, no policy violations. Just a factual Q&A formatted as JSON.\n\n7.  **Final Decision:** Return the JSON string.\n"}}],"created":1777933897,"model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b9020-a4701c98f","object":"chat.completion","usage":{"completion_tokens":278,"prompt_tokens":39,"total_tokens":317,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-9Wju3fQUk48mzcfjHtYYd51gkADRKl0K","timings":{"cache_n":0,"prompt_n":39,"prompt_ms":47.474,"prompt_per_token_ms":1.2172820512820512,"prompt_per_second":821.5022959935965,"predicted_n":278,"predicted_ms":2140.451,"predicted_per_token_ms":7.699464028776979,"predicted_per_second":129.87917032438492}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "1647"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 2.195s

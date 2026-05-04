@@ -1,0 +1,37 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 663
+        host: 127.0.0.1
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}]}],"tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]}}}],"tool_choice":"required","parallel_tool_calls":true,"reasoning_format":"deepseek","chat_template_kwargs":{"enable_thinking":true},"cache_prompt":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: http://127.0.0.1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 2907
+        body: '{"choices":[{"finish_reason":"tool_calls","index":0,"message":{"role":"assistant","content":"","reasoning_content":"The user is asking to compare Canada and the USA and wants to know which one is \"better\".\nThe user explicitly instructs to call the `best_country` tool.\nThe `best_country` tool takes one argument: `country`, which must be either \"Canada\" or \"USA\".\n\n1.  **Analyze the request:** \"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one.\"\n2.  **Identify the tool:** `best_country`.\n3.  **Determine the arguments:** The user is asking for a comparison, but the tool seems designed to return *one* \"best\" country based on the input. I need to decide which country to input, or if the tool is designed to compare them. Looking at the tool definition, it only accepts a single country name (`country: {enum: [\"Canada\", \"USA\"]}`). It doesn''t specify *how* it determines \"best\".\n4.  **Formulate the tool call:** Since the user is asking which is *better*, I could try calling it for both, but the prompt implies a single call to determine \"which country is the best one.\" I should check the tool''s capability. If I call it for Canada, it might say Canada is best. If I call it for USA, it might say USA is best.\n5.  **Execution Plan:** Since the prompt is asking *me* to use the tool to tell them which is best, I should call the tool for one of them, or perhaps the instruction implies a comparison I cannot directly perform with this tool. Given the constraints, I must use the tool as requested. I will call it for Canada first, as the user suggested Canada might be better.\n\nLet''s stick to the most direct interpretation: call the tool with the options provided in the enum. I will call it for Canada first, as that is the premise of the user''s question.\n\n*Self-Correction/Refinement:* The prompt asks: \"Call the tool best_country to tell me which country is the best one.\" This suggests I should call the tool, and the *output* of the tool will tell me. Since the tool doesn''t specify *how* it determines \"best,\" I will call it for one, and see what happens. I will call it for Canada.","tool_calls":[{"type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"},"id":"lyPpFZSEVSGzcUaMWXzCVqD8033hJN45"}]}}],"created":1777931748,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b9020-a4701c98f","object":"chat.completion","usage":{"completion_tokens":516,"prompt_tokens":98,"total_tokens":614,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-gGT8Co1Lr98piuug4LcV4IwpHEtBrqsQ","timings":{"cache_n":0,"prompt_n":98,"prompt_ms":326.462,"prompt_per_token_ms":3.3312448979591838,"prompt_per_second":300.18807701968376,"predicted_n":516,"predicted_ms":10747.232,"predicted_per_token_ms":20.827968992248064,"predicted_per_second":48.01236262509268}}'
+        headers:
+            Access-Control-Allow-Origin:
+                - ""
+            Content-Length:
+                - "2907"
+            Content-Type:
+                - application/json; charset=utf-8
+            Keep-Alive:
+                - timeout=5, max=100
+            Server:
+                - llama.cpp
+        status: 200 OK
+        code: 200
+        duration: 11.087s

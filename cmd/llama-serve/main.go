@@ -15,6 +15,7 @@ import (
 	"os/signal"
 	"path/filepath"
 	"slices"
+	"strconv"
 	"strings"
 	"syscall"
 
@@ -37,7 +38,7 @@ func mainImpl() error {
 		_, _ = fmt.Fprintf(o, "  Use Qwen/Qwen3-30B-A3B-GGUF/Qwen3-30B-A3B-Q6_K.gguf for improved quality.\n")
 	}
 	modelFlag := flag.String("model", "", "HuggingFace model reference (e.g., 'Qwen/Qwen3-30B-A3B-GGUF/Qwen3-30B-A3B-Q6_K.gguf')")
-	cacheDir := flag.String("cache", "", "Cache directory for models and server (default: ~/.cache/llama-serve)")
+	cacheDir := flag.String("cache", "", "Cache directory for models and server (default: ~/.cache/llama-server/<buildnumber>)")
 	hostPort := flag.String("http", "127.0.0.1:8080", "IP and Port to serve on; use 0.0.0.0 to listen on all IPs")
 	threads := flag.Int("threads", 0, "Number of threads to use (default: CPU count - 2)")
 	build := flag.Int("build", llamacppsrv.BuildNumber, "llama.cpp release build number to fetch; see https://github.com/ggml-org/llama.cpp/releases")
@@ -50,7 +51,7 @@ func mainImpl() error {
 		if err != nil {
 			return err
 		}
-		*cacheDir = filepath.Join(home, ".cache", "llama-serve")
+		*cacheDir = filepath.Join(home, ".cache", "llama-server", strconv.Itoa(*build))
 	}
 	if err := os.MkdirAll(*cacheDir, 0o755); err != nil {
 		return err

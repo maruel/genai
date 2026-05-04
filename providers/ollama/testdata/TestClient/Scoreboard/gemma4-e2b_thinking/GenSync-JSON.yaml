@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 816
-        body: '{"model":"gemma4:e2b","created_at":"2026-04-14T11:48:02.119309795Z","message":{"role":"assistant","content":"{\"is_fruit\": true}","thinking":"Thinking Process:\n1.  **Analyze the Request:** The user is asking if a banana is a fruit.\n2.  **Constraint 1:** Do not include an explanation.\n3.  **Constraint 2:** Reply ONLY as JSON according to the schema: `{\"is_fruit\": bool}`.\n4.  **Determine the Fact:** Botanically and culinarily, a banana is a fruit (specifically, a berry).\n5.  **Format the Output:** Convert the determined fact into the required JSON structure.\n\n6.  **Final Output Generation:** `{\"is_fruit\": true}`"},"done":true,"done_reason":"stop","total_duration":11963486714,"load_duration":107438750,"prompt_eval_count":50,"prompt_eval_duration":36971292,"eval_count":8,"eval_duration":188967293}'
+        content_length: 819
+        body: '{"model":"gemma4:e2b","created_at":"2026-05-04T22:48:55.475318Z","message":{"role":"assistant","content":"{\"is_fruit\": true}","thinking":"Thinking Process:\n\n1.  **Analyze the Request:** The user is asking: \"Is a banana a fruit?\"\n2.  **Constraint Checklist \u0026 Formatting:**\n    *   Do not include an explanation.\n    *   Reply ONLY as JSON.\n    *   Schema: `{\"is_fruit\": bool}`.\n3.  **Determine the Fact:** A banana is botanically a fruit.\n4.  **Format the Output:** Convert the determination into the required JSON format.\n\n    *   `is_fruit`: True\n\n5.  **Final Output Generation:** Produce only the JSON object."},"done":true,"done_reason":"stop","total_duration":3183641041,"load_duration":113078416,"prompt_eval_count":50,"prompt_eval_duration":56939291,"eval_count":8,"eval_duration":68237791}'
         headers:
             Content-Length:
-                - "816"
+                - "819"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 11.964s
+        duration: 3.184s

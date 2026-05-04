@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 940
-        body: '{"model":"gemma4:e2b","created_at":"2026-04-14T11:48:12.625560591Z","message":{"role":"assistant","content":"{\"is_fruit\": true}","thinking":"Thinking Process:\n\n1.  **Analyze the Request:** The user asks: \"Is a banana a fruit?\" with the strict constraint: \"Do not include an explanation. Reply ONLY as JSON.\"\n2.  **Determine the Core Answer:** A banana is botanically classified as a fruit (it develops from the flower''s ovary and contains seeds).\n3.  **Format the Output:** The response must be in JSON format and contain only the answer.\n4.  **Construct the JSON:**\n    *   Key/Value pair representing the answer.\n5.  **Final Output Generation:** {\"is_a_fruit\": true} or similar. (Choosing a simple boolean/string structure for clarity)."},"done":true,"done_reason":"stop","total_duration":10505095380,"load_duration":142331750,"prompt_eval_count":38,"prompt_eval_duration":65852458,"eval_count":8,"eval_duration":191362668}'
+        content_length: 1170
+        body: '{"model":"gemma4:e2b","created_at":"2026-05-04T22:48:59.435021Z","message":{"role":"assistant","content":"{\n\"is_fruit\": true\n}","thinking":"Thinking Process:\n\n1.  **Analyze the Request:** The user is asking a simple factual question: \"Is a banana a fruit?\"\n2.  **Analyze the Constraint:** The user explicitly states: \"Do not include an explanation. Reply ONLY as JSON.\"\n3.  **Determine the Fact:** A banana is botanically classified as a berry. Botanically, a fruit is the seed-bearing structure of a flowering plant.\n4.  **Format the Output:** The output must be strictly JSON, directly answering the implied question.\n\n5.  **Construct the JSON:**\n    *   Key/Value pair needed.\n    *   The answer should be true.\n\n    *   Target Output: `{\"is_a_banana_a_fruit\": true}` or similar.\n\n6.  **Final Review against Constraints:**\n    *   Is the answer accurate? Yes.\n    *   Is it ONLY JSON? Yes.\n    *   Is there an explanation? No.\n\n7.  **Generate Response.**"},"done":true,"done_reason":"stop","total_duration":3959293875,"load_duration":94523083,"prompt_eval_count":38,"prompt_eval_duration":14595042,"eval_count":11,"eval_duration":96651126}'
         headers:
             Content-Length:
-                - "940"
+                - "1170"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 10.508s
+        duration: 3.959s

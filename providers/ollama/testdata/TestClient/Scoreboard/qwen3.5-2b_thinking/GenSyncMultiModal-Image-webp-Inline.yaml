@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 675
-        body: '{"model":"qwen3.5:2b","created_at":"2026-04-14T11:46:08.186632506Z","message":{"role":"assistant","content":"Banana","thinking":"The user wants me to identify the fruit in the image.\n1.  **Analyze the image:** The image shows a long, curved, yellow object.\n2.  **Identify features:** It has a stem at the top, a curved shape, and yellow skin. It looks like a standard banana.\n3.  **Formulate the answer:** The user requested \"only one word\".\n4.  **Final Selection:** \"Banana\""},"done":true,"done_reason":"stop","total_duration":10769968964,"load_duration":128695376,"prompt_eval_count":118,"prompt_eval_duration":564842458,"eval_count":101,"eval_duration":3770133590}'
+        content_length: 1046
+        body: '{"model":"qwen3.5:2b","created_at":"2026-05-04T22:48:13.541071Z","message":{"role":"assistant","content":"Banana","thinking":"The user wants me to identify the fruit in the image.\n1.  **Analyze the image:** I see a single, yellow, curved object. It has a stem at the top and a bunch of leaves at the bottom (though the leaves aren''t very distinct, just dark spots at the end).\n2.  **Identify the fruit:** This is clearly a banana. It''s a large, elongated, yellow fruit characteristic of a mature banana.\n3.  **Formulate the answer:** The user requested \"only one word\".\n    *   \"Banana\" is one word.\n    *   \"Yellow\" is an adjective.\n    *   \"Bunch\" is not the fruit itself.\n    *   \"Fruit\" is the category.\n    *   \"Biology\" is a field, not the fruit.\n4.  **Final Decision:** The most direct and accurate one-word answer is \"Banana\"."},"done":true,"done_reason":"stop","total_duration":4517564500,"load_duration":75093083,"prompt_eval_count":118,"prompt_eval_duration":85648084,"eval_count":205,"eval_duration":2622916705}'
         headers:
             Content-Length:
-                - "675"
+                - "1046"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 10.77s
+        duration: 4.518s

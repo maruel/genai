@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 610
-        body: '{"model":"qwen3.5:2b","created_at":"2026-04-14T11:46:22.679770596Z","message":{"role":"assistant","content":"Based on the statements you provided, the capital of Quackiland is **Quack**.\n\nThis is stated explicitly in your premise: \"The capital of Quackiland is **Quack**.\" While the location of the Big Canard Statue is in Quack, that fact is consistent with the capital being Quack; they happen to be the same place."},"done":true,"done_reason":"stop","total_duration":5471936128,"load_duration":136107542,"prompt_eval_count":47,"prompt_eval_duration":438822459,"eval_count":74,"eval_duration":2977846212}'
+        content_length: 606
+        body: '{"model":"qwen3.5:2b","created_at":"2026-05-04T22:48:18.844045Z","message":{"role":"assistant","content":"Based on the scenario you provided, the capital of **Quackiland** is **Quack**.\n\nThe prompt explicitly states two facts:\n1.  \"The capital of Quackiland is **Quack**.\"\n2.  \"The Big Canard Statue is located in Quack.\"\n\nTherefore, within the context of this specific logic puzzle, the capital is **Quack**."},"done":true,"done_reason":"stop","total_duration":2172676000,"load_duration":76613750,"prompt_eval_count":47,"prompt_eval_duration":63349000,"eval_count":81,"eval_duration":1041067001}'
         headers:
             Content-Length:
-                - "610"
+                - "606"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 5.472s
+        duration: 2.173s

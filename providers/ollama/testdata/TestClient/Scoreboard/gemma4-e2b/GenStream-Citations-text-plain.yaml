@@ -23,21 +23,21 @@ interactions:
             - chunked
         content_length: -1
         body: |
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:46:47.120872302Z","message":{"role":"assistant","content":"The"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:46:47.183554635Z","message":{"role":"assistant","content":" capital"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:46:47.19971976Z","message":{"role":"assistant","content":" of"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:46:47.217181094Z","message":{"role":"assistant","content":" Qu"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:46:47.24637251Z","message":{"role":"assistant","content":"ack"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:46:47.258335677Z","message":{"role":"assistant","content":"iland"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:46:47.270347552Z","message":{"role":"assistant","content":" is"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:46:47.338331094Z","message":{"role":"assistant","content":" **"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:46:47.353142219Z","message":{"role":"assistant","content":"Qu"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:46:47.371976885Z","message":{"role":"assistant","content":"ack"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:46:47.383904802Z","message":{"role":"assistant","content":"**."},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:46:47.404946927Z","message":{"role":"assistant","content":""},"done":true,"done_reason":"stop","total_duration":1371162834,"load_duration":148901375,"prompt_eval_count":44,"prompt_eval_duration":423550459,"eval_count":12,"eval_duration":281322457}
+            {"model":"gemma4:e2b","created_at":"2026-05-04T22:48:32.708142Z","message":{"role":"assistant","content":"The"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-05-04T22:48:32.719812Z","message":{"role":"assistant","content":" capital"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-05-04T22:48:32.729507Z","message":{"role":"assistant","content":" of"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-05-04T22:48:32.739277Z","message":{"role":"assistant","content":" Qu"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-05-04T22:48:32.749006Z","message":{"role":"assistant","content":"ack"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-05-04T22:48:32.758749Z","message":{"role":"assistant","content":"iland"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-05-04T22:48:32.768507Z","message":{"role":"assistant","content":" is"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-05-04T22:48:32.778212Z","message":{"role":"assistant","content":" **"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-05-04T22:48:32.787923Z","message":{"role":"assistant","content":"Qu"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-05-04T22:48:32.797718Z","message":{"role":"assistant","content":"ack"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-05-04T22:48:32.807428Z","message":{"role":"assistant","content":"**."},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-05-04T22:48:32.817169Z","message":{"role":"assistant","content":""},"done":true,"done_reason":"stop","total_duration":296944083,"load_duration":94838500,"prompt_eval_count":44,"prompt_eval_duration":18924500,"eval_count":12,"eval_duration":106563250}
         headers:
             Content-Type:
                 - application/x-ndjson
         status: 200 OK
         code: 200
-        duration: 1.089s
+        duration: 188ms

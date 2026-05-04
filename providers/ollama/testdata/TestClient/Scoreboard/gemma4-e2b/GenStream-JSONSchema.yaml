@@ -23,28 +23,17 @@ interactions:
             - chunked
         content_length: -1
         body: |
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:46:43.77052055Z","message":{"role":"assistant","content":"```"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:46:43.817241884Z","message":{"role":"assistant","content":"json"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:46:43.856370342Z","message":{"role":"assistant","content":"\n"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:46:43.868192467Z","message":{"role":"assistant","content":"{"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:46:43.896963425Z","message":{"role":"assistant","content":"\n"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:46:43.921265509Z","message":{"role":"assistant","content":"  "},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:46:43.981542467Z","message":{"role":"assistant","content":"\""},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:46:44.012628592Z","message":{"role":"assistant","content":"is"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:46:44.031486467Z","message":{"role":"assistant","content":"_"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:46:44.053391717Z","message":{"role":"assistant","content":"a"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:46:44.066082467Z","message":{"role":"assistant","content":"_"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:46:44.083532884Z","message":{"role":"assistant","content":"fruit"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:46:44.144896342Z","message":{"role":"assistant","content":"\":"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:46:44.15718255Z","message":{"role":"assistant","content":" true"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:46:44.176973009Z","message":{"role":"assistant","content":"\n"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:46:44.193983634Z","message":{"role":"assistant","content":"}"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:46:44.212233759Z","message":{"role":"assistant","content":"\n"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:46:44.275825967Z","message":{"role":"assistant","content":"```"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:46:44.339013842Z","message":{"role":"assistant","content":""},"done":true,"done_reason":"stop","total_duration":1402246584,"load_duration":142893375,"prompt_eval_count":26,"prompt_eval_duration":149689958,"eval_count":19,"eval_duration":562657126}
+            {"model":"gemma4:e2b","created_at":"2026-05-04T22:48:32.032339Z","message":{"role":"assistant","content":"{\""},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-05-04T22:48:32.042496Z","message":{"role":"assistant","content":"is"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-05-04T22:48:32.052614Z","message":{"role":"assistant","content":"_"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-05-04T22:48:32.062568Z","message":{"role":"assistant","content":"fruit"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-05-04T22:48:32.072326Z","message":{"role":"assistant","content":"\":"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-05-04T22:48:32.082088Z","message":{"role":"assistant","content":" true"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-05-04T22:48:32.09183Z","message":{"role":"assistant","content":"}"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-05-04T22:48:32.104113Z","message":{"role":"assistant","content":""},"done":true,"done_reason":"stop","total_duration":420473916,"load_duration":93824916,"prompt_eval_count":26,"prompt_eval_duration":10305250,"eval_count":8,"eval_duration":67680917}
         headers:
             Content-Type:
                 - application/x-ndjson
         status: 200 OK
         code: 200
-        duration: 836ms
+        duration: 349ms

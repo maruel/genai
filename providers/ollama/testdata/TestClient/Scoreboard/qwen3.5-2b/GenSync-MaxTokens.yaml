@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 371
-        body: '{"model":"qwen3.5:2b","created_at":"2026-04-14T11:46:11.403273466Z","message":{"role":"assistant","content":"# The Theory of Relativity: A Comprehensive Guide\n\nThe **Theory of Rel"},"done":true,"done_reason":"length","total_duration":1115264334,"load_duration":117738542,"prompt_eval_count":23,"prompt_eval_duration":247358833,"eval_count":16,"eval_duration":364608291}'
+        content_length: 379
+        body: '{"model":"qwen3.5:2b","created_at":"2026-05-04T22:48:15.337564Z","message":{"role":"assistant","content":"# The Theory of Relativity: A Comprehensive Explanation\n\nProposed by Albert Einstein"},"done":true,"done_reason":"length","total_duration":499615709,"load_duration":69423542,"prompt_eval_count":23,"prompt_eval_duration":49193334,"eval_count":16,"eval_duration":195951957}'
         headers:
             Content-Length:
-                - "371"
+                - "379"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 1.115s
+        duration: 500ms

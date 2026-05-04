@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 798
-        body: '{"model":"gemma4:e2b","created_at":"2026-04-14T11:47:09.243751048Z","message":{"role":"assistant","content":"Hello.","thinking":"Thinking Process:\n1.  **Analyze the Request:** The user asked me to \"Say hello. Use only one word.\"\n2.  **Identify the Core Intent:** The intent is to provide a greeting.\n3.  **Determine the Target Word:** The required greeting is \"hello.\"\n4.  **Check Constraints:** The constraint is \"Use only one word.\"\n5.  **Formulate the Response:** The single word is \"Hello.\" (or \"Hello,\" depending on punctuation preference, but usually just the word itself is sufficient.)"},"done":true,"done_reason":"stop","total_duration":3582859669,"load_duration":248823876,"prompt_eval_count":24,"prompt_eval_duration":146141375,"eval_count":121,"eval_duration":3148588710}'
+        content_length: 923
+        body: '{"model":"gemma4:e2b","created_at":"2026-05-04T22:48:36.586363Z","message":{"role":"assistant","content":"Hello","thinking":"Thinking Process:\n1.  **Analyze the Request:** The user asked me to \"Say hello\" and specified the constraint: \"Use only one word.\"\n2.  **Identify the Goal:** The goal is to provide a greeting that functions as \"hello,\" using only a single word.\n3.  **Evaluate Options for \"Hello\":**\n    *   Hello (1 word - perfect)\n    *   Hi (1 word - acceptable)\n    *   Greetings (1 word - acceptable)\n    *   Hey (1 word - acceptable)\n4.  **Select the Best/Most Direct Option:** \"Hello\" is the most direct fulfillment of the request.\n5.  **Formulate the Response:** Respond with the chosen single word."},"done":true,"done_reason":"stop","total_duration":1738316584,"load_duration":101705542,"prompt_eval_count":24,"prompt_eval_duration":59689958,"eval_count":164,"eval_duration":1541201922}'
         headers:
             Content-Length:
-                - "798"
+                - "923"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 3.584s
+        duration: 1.738s

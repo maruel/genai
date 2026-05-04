@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 906
-        body: '{"model":"gemma4:e2b","created_at":"2026-04-14T11:49:05.211268963Z","message":{"role":"assistant","content":"Banana","thinking":"Thinking Process:\n\n1.  **Analyze the Request:** The user has provided an image of a fruit and asked \"What fruit is it?\" with the instruction to \"Reply with only one word.\"\n2.  **Analyze the Image:** The image is a photograph of a long, curved, yellow fruit with a slightly tapered end. It has the characteristic shape of a banana.\n3.  **Identify the Fruit:** The object is clearly a banana.\n4.  **Formulate the Answer:** The required answer must be a single word.\n5.  **Final Check:** Is \"banana\" a single word? Yes. Does it accurately describe the fruit in the image? Yes."},"done":true,"done_reason":"stop","total_duration":9534813380,"load_duration":281797917,"prompt_eval_count":289,"prompt_eval_duration":1429926834,"eval_count":148,"eval_duration":4239621010}'
+        content_length: 783
+        body: '{"model":"gemma4:e2b","created_at":"2026-05-04T22:49:38.622157Z","message":{"role":"assistant","content":"Banana","thinking":"1.  **Analyze the request:** The user has provided an image of a fruit and asked \"What fruit is it?\" with the constraint: \"Reply with only one word.\"\n2.  **Analyze the image:** The image clearly shows a long, curved, yellow fruit with a slight stem attachment. This is a classic depiction of a banana.\n3.  **Determine the answer:** The fruit is a banana.\n4.  **Format the response:** The required response must be only one word.\n5.  **Final Answer:** Banana."},"done":true,"done_reason":"stop","total_duration":1673838541,"load_duration":104870708,"prompt_eval_count":289,"prompt_eval_duration":186027875,"eval_count":120,"eval_duration":1138454120}'
         headers:
             Content-Length:
-                - "906"
+                - "783"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 9.535s
+        duration: 1.674s

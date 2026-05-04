@@ -23,22 +23,17 @@ interactions:
             - chunked
         content_length: -1
         body: |
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:46:42.398545508Z","message":{"role":"assistant","content":"```"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:46:42.519108925Z","message":{"role":"assistant","content":"json"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:46:42.5307978Z","message":{"role":"assistant","content":"\n"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:46:42.580343966Z","message":{"role":"assistant","content":"{\""},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:46:42.600632008Z","message":{"role":"assistant","content":"is"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:46:42.615684133Z","message":{"role":"assistant","content":"_"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:46:42.644037133Z","message":{"role":"assistant","content":"fruit"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:46:42.659597466Z","message":{"role":"assistant","content":"\":"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:46:42.733990633Z","message":{"role":"assistant","content":" true"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:46:42.78558555Z","message":{"role":"assistant","content":"}"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:46:42.8596063Z","message":{"role":"assistant","content":"\n"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:46:42.873463508Z","message":{"role":"assistant","content":"```"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:46:42.934033258Z","message":{"role":"assistant","content":""},"done":true,"done_reason":"stop","total_duration":1289794875,"load_duration":114828458,"prompt_eval_count":38,"prompt_eval_duration":417661250,"eval_count":13,"eval_duration":530432629}
+            {"model":"gemma4:e2b","created_at":"2026-05-04T22:48:31.611493Z","message":{"role":"assistant","content":"{\""},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-05-04T22:48:31.621882Z","message":{"role":"assistant","content":"is"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-05-04T22:48:31.631898Z","message":{"role":"assistant","content":"_"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-05-04T22:48:31.641922Z","message":{"role":"assistant","content":"fruit"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-05-04T22:48:31.651643Z","message":{"role":"assistant","content":"\":"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-05-04T22:48:31.661318Z","message":{"role":"assistant","content":" true"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-05-04T22:48:31.670987Z","message":{"role":"assistant","content":"}"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-05-04T22:48:31.683249Z","message":{"role":"assistant","content":""},"done":true,"done_reason":"stop","total_duration":478390333,"load_duration":97065625,"prompt_eval_count":38,"prompt_eval_duration":10139792,"eval_count":8,"eval_duration":67700999}
         headers:
             Content-Type:
                 - application/x-ndjson
         status: 200 OK
         code: 200
-        duration: 754ms
+        duration: 407ms

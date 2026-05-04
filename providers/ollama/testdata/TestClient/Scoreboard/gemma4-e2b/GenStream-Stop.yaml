@@ -23,12 +23,12 @@ interactions:
             - chunked
         content_length: -1
         body: |
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:46:41.579667133Z","message":{"role":"assistant","content":"Canada"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:46:41.643830299Z","message":{"role":"assistant","content":" "},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:46:41.643840091Z","message":{"role":"assistant","content":""},"done":true,"done_reason":"stop","total_duration":1053905709,"load_duration":155688292,"prompt_eval_count":21,"prompt_eval_duration":252455333,"eval_count":2,"eval_duration":63904208}
+            {"model":"gemma4:e2b","created_at":"2026-05-04T22:48:31.194743Z","message":{"role":"assistant","content":"Canada"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-05-04T22:48:31.204604Z","message":{"role":"assistant","content":" "},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-05-04T22:48:31.204607Z","message":{"role":"assistant","content":""},"done":true,"done_reason":"stop","total_duration":119529333,"load_duration":98397250,"prompt_eval_count":21,"prompt_eval_duration":10500916,"eval_count":2,"eval_duration":9709834}
         headers:
             Content-Type:
                 - application/x-ndjson
         status: 200 OK
         code: 200
-        duration: 992ms
+        duration: 110ms

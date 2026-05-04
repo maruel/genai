@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 794
-        body: '{"model":"gemma4:e2b","created_at":"2026-04-14T11:48:30.444881169Z","message":{"role":"assistant","content":"The capital of Quackiland is Quack.","thinking":"Thinking Process:\n\n1.  **Analyze the Request:** The user is asking \"What is the capital of Quackiland?\"\n2.  **Analyze the Provided Information (Context):** \"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack.\"\n3.  **Identify the Answer Source:** The provided text explicitly states: \"The capital of Quackiland is Quack.\"\n4.  **Formulate the Answer:** Directly state the capital based on the context. (Quack)"},"done":true,"done_reason":"stop","total_duration":10265315796,"load_duration":161736958,"prompt_eval_count":51,"prompt_eval_duration":406097584,"eval_count":126,"eval_duration":3752395375}'
+        content_length: 757
+        body: '{"model":"gemma4:e2b","created_at":"2026-05-04T22:49:30.51717Z","message":{"role":"assistant","content":"The capital of Quackiland is Quack.","thinking":"Thinking Process:\n\n1.  **Analyze the input:** The user provided two pieces of information:\n    *   \"The capital of Quackiland is Quack.\"\n    *   \"The Big Canard Statue is located in Quack.\"\n2.  **Analyze the question:** \"What is the capital of Quackiland?\"\n3.  **Extract the answer:** The first sentence directly answers this question.\n4.  **Formulate the response:** State the derived answer clearly."},"done":true,"done_reason":"stop","total_duration":8536970459,"load_duration":101062209,"prompt_eval_count":51,"prompt_eval_duration":59820209,"eval_count":118,"eval_duration":1116258750}'
         headers:
             Content-Length:
-                - "794"
+                - "757"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 10.266s
+        duration: 8.537s

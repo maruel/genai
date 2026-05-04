@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 563
-        body: '{"model":"qwen3.5:2b","created_at":"2026-04-14T12:18:06.828088338Z","message":{"role":"assistant","content":"","thinking":"The user is asking me to calculate the square root of 132413 using the square_root tool, and they want me to reply only with the result.","tool_calls":[{"id":"call_bjqcls94","function":{"index":0,"name":"square_root","arguments":{"number":132413}}}]},"done":true,"done_reason":"stop","total_duration":5252659669,"load_duration":1026303292,"prompt_eval_count":303,"prompt_eval_duration":1127335001,"eval_count":70,"eval_duration":3039886211}'
+        content_length: 617
+        body: '{"model":"qwen3.5:2b","created_at":"2026-05-04T22:47:29.087558Z","message":{"role":"assistant","content":"","thinking":"The user wants me to calculate the square root of 132413 using the square_root tool and only provide the result without any explanation.\n\nLet me call the square_root tool with the number 132413.","tool_calls":[{"id":"call_iqv2uqol","function":{"index":0,"name":"square_root","arguments":{"number":132413}}}]},"done":true,"done_reason":"stop","total_duration":2745758209,"load_duration":68180084,"prompt_eval_count":303,"prompt_eval_duration":190023833,"eval_count":85,"eval_duration":1077950543}'
         headers:
             Content-Length:
-                - "563"
+                - "617"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 5.253s
+        duration: 2.746s

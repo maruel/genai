@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 382
-        body: '{"model":"gemma4:e2b","created_at":"2026-04-14T11:46:41.323804507Z","message":{"role":"assistant","content":"The theory of relativity, developed by Albert Einstein, is one of the most profound"},"done":true,"done_reason":"length","total_duration":1557294584,"load_duration":111331542,"prompt_eval_count":18,"prompt_eval_duration":264688375,"eval_count":16,"eval_duration":461825373}'
+        content_length: 376
+        body: '{"model":"gemma4:e2b","created_at":"2026-05-04T22:48:30.916655Z","message":{"role":"assistant","content":"The theory of relativity, developed by Albert Einstein, is one of the most profound"},"done":true,"done_reason":"length","total_duration":300312875,"load_duration":95239292,"prompt_eval_count":18,"prompt_eval_duration":45177000,"eval_count":16,"eval_duration":144812169}'
         headers:
             Content-Length:
-                - "382"
+                - "376"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 1.558s
+        duration: 300ms

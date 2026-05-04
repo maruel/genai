@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1345
-        body: '{"model":"qwen3.5:2b","created_at":"2026-04-14T11:38:25.807134833Z","message":{"role":"assistant","content":"Hello","thinking":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Input: \"Say hello.\"\n    *   Constraint: \"Use only one word.\"\n    *   Task: Greet the user.\n\n2.  **Identify the appropriate response:**\n    *   Common greetings: \"Hello\", \"Hi\", \"Hey\", \"Greetings\".\n    *   Constraint compliance: Must be exactly one word.\n\n3.  **Select the word:**\n    *   \"Hello\" is the most direct and common response to \"Say hello\", but it is technically repeating the command.\n    *   However, usually, when asked to say \"hello\", the expected response is an actual greeting.\n    *   Option A: \"Hello\". (One word)\n    *   Option B: \"Hi\". (One word)\n    *   Option C: \"Greetings\". (One word)\n    *   Option D: \"Say\". (One word, but less helpful)\n    *   Best fit: \"Hello\". It directly addresses the intent while adhering to the length constraint.\n\n4.  **Final Verification:**\n    *   Does it contain more than one word? No.\n    *   Is it a greeting? Yes.\n\n5.  **Output Generation:**\n    *   Hello.cw"},"done":true,"done_reason":"stop","total_duration":131171053268,"load_duration":178368459,"prompt_eval_count":18,"prompt_eval_duration":242806959,"eval_count":284,"eval_duration":10447538293}'
+        content_length: 1219
+        body: '{"model":"qwen3.5:2b","created_at":"2026-05-04T22:45:15.876154Z","message":{"role":"assistant","content":"Hello","thinking":"Thinking Process:\n\n1.  **Analyze the Request:**\n    *   Input: \"Say hello.\"\n    *   Constraint: \"Use only one word.\"\n    *   Task: Greet the user.\n\n2.  **Identify the Output:**\n    *   The user wants a greeting (\"hello\").\n    *   The constraint is strict: exactly one word.\n    *   Common options: \"Hello\", \"Hi\", \"Good\", \"Hi there\".\n\n3.  **Select the Best Option:**\n    *   \"Hello\" is the most direct translation of \"Say hello\" while meeting the constraint.\n    *   \"Hi\" is also a one-word greeting, but \"Hello\" is closer to the prompt. However, \"Hello\" can be considered a bit formal/standard. \"Hi\" is more casual.\n    *   Let''s stick with the most direct and clear response: \"Hello\".\n\n4.  **Verify Constraint:**\n    *   Is \"Hello\" one word? Yes.\n\n5.  **Final Decision:**\n    *   Output: Hello.\n\n6.  **Format:**\n    *   Just the word, no extra text.cw"},"done":true,"done_reason":"stop","total_duration":6396310000,"load_duration":78691500,"prompt_eval_count":18,"prompt_eval_duration":48722417,"eval_count":258,"eval_duration":3282416671}'
         headers:
             Content-Length:
-                - "1345"
+                - "1219"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 2m11.173s
+        duration: 6.396s

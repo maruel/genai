@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 336
-        body: '{"model":"gemma4:e2b","created_at":"2026-04-14T11:46:49.116588178Z","message":{"role":"assistant","content":"The capital of Quackiland is **Quack**."},"done":true,"done_reason":"stop","total_duration":1158573625,"load_duration":110672291,"prompt_eval_count":49,"prompt_eval_duration":158190500,"eval_count":12,"eval_duration":347689917}'
+        content_length: 330
+        body: '{"model":"gemma4:e2b","created_at":"2026-05-04T22:48:32.989297Z","message":{"role":"assistant","content":"The capital of Quackiland is **Quack**."},"done":true,"done_reason":"stop","total_duration":300429917,"load_duration":98958084,"prompt_eval_count":49,"prompt_eval_duration":60821167,"eval_count":12,"eval_duration":107683208}'
         headers:
             Content-Length:
-                - "336"
+                - "330"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 1.159s
+        duration: 301ms

@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 301
-        body: '{"model":"gemma4:e2b","created_at":"2026-04-14T11:47:05.636618463Z","message":{"role":"assistant","content":"Banana"},"done":true,"done_reason":"stop","total_duration":5461714794,"load_duration":118632000,"prompt_eval_count":282,"prompt_eval_duration":61474458,"eval_count":2,"eval_duration":14481125}'
+        content_length: 297
+        body: '{"model":"gemma4:e2b","created_at":"2026-05-04T22:48:34.803534Z","message":{"role":"assistant","content":"Banana"},"done":true,"done_reason":"stop","total_duration":498738958,"load_duration":104702541,"prompt_eval_count":282,"prompt_eval_duration":185697000,"eval_count":2,"eval_duration":9781792}'
         headers:
             Content-Length:
-                - "301"
+                - "297"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 5.464s
+        duration: 499ms

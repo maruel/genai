@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 799
-        body: '{"model":"gemma4:e2b","created_at":"2026-04-14T11:49:14.0997418Z","message":{"role":"assistant","content":"Banana","thinking":"Thinking Process:\n\n1.  **Analyze the Request:** The user has provided an image of a fruit and asked \"What fruit is it?\" The instruction is to reply with *only one word*.\n2.  **Analyze the Image:** The image shows a curved, elongated, yellowish fruit with a slightly rough, tapered end. It is clearly a banana.\n3.  **Determine the Answer:** The fruit is a banana.\n4.  **Check Constraints:** The required output must be a single word.\n5.  **Formulate the Response:** Banana."},"done":true,"done_reason":"stop","total_duration":8887908754,"load_duration":194211292,"prompt_eval_count":289,"prompt_eval_duration":1468194750,"eval_count":123,"eval_duration":3649258082}'
+        content_length: 924
+        body: '{"model":"gemma4:e2b","created_at":"2026-05-04T22:49:40.706663Z","message":{"role":"assistant","content":"Banana","thinking":"Thinking Process:\n\n1.  **Analyze the Request:** The user has provided an image and asked \"What fruit is it?\" The instruction is to reply with *only one word*.\n2.  **Analyze the Image:** The image is a photograph of a curved, yellowish, elongated fruit with a slight stem/base visible.\n3.  **Identify the Object:** The object is clearly a banana.\n4.  **Formulate the Answer (Single Word):** The required response must be the name of the fruit.\n5.  **Final Check:** Is \"Banana\" a single word? Yes. (The input also contains noise/gibberish at the end: \"2342\").\n\n6.  **Output Generation:** Banana."},"done":true,"done_reason":"stop","total_duration":2083917416,"load_duration":105964166,"prompt_eval_count":289,"prompt_eval_duration":185307250,"eval_count":162,"eval_duration":1534050627}'
         headers:
             Content-Length:
-                - "799"
+                - "924"
             Content-Type:
                 - application/json; charset=utf-8
         status: 200 OK
         code: 200
-        duration: 8.888s
+        duration: 2.084s

@@ -23,23 +23,23 @@ interactions:
             - chunked
         content_length: -1
         body: |
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:47:48.109874344Z","message":{"role":"assistant","content":"","thinking":"Here"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:47:48.211438719Z","message":{"role":"assistant","content":"","thinking":"'"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:47:48.275994802Z","message":{"role":"assistant","content":"","thinking":"s"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:47:48.301555386Z","message":{"role":"assistant","content":"","thinking":" a"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:47:48.325387761Z","message":{"role":"assistant","content":"","thinking":" thinking"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:47:48.350217094Z","message":{"role":"assistant","content":"","thinking":" process"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:47:48.368925469Z","message":{"role":"assistant","content":"","thinking":" that"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:47:48.393644177Z","message":{"role":"assistant","content":"","thinking":" leads"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:47:48.453586302Z","message":{"role":"assistant","content":"","thinking":" to"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:47:48.465494136Z","message":{"role":"assistant","content":"","thinking":" the"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:47:48.478296969Z","message":{"role":"assistant","content":"","thinking":" detailed"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:47:48.496836053Z","message":{"role":"assistant","content":"","thinking":" explanation"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:47:48.557085219Z","message":{"role":"assistant","content":"","thinking":" of"},"done":false}
-            {"model":"gemma4:e2b","created_at":"2026-04-14T11:47:48.557101969Z","message":{"role":"assistant","content":""},"done":true,"done_reason":"length","total_duration":1208746209,"load_duration":201412333,"prompt_eval_count":25,"prompt_eval_duration":38175125,"eval_count":16,"eval_duration":604073542}
+            {"model":"gemma4:e2b","created_at":"2026-05-04T22:48:51.925773Z","message":{"role":"assistant","content":"","thinking":"Here"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-05-04T22:48:51.935591Z","message":{"role":"assistant","content":"","thinking":"'"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-05-04T22:48:51.945462Z","message":{"role":"assistant","content":"","thinking":"s"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-05-04T22:48:51.955328Z","message":{"role":"assistant","content":"","thinking":" a"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-05-04T22:48:51.965176Z","message":{"role":"assistant","content":"","thinking":" thinking"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-05-04T22:48:51.976837Z","message":{"role":"assistant","content":"","thinking":" process"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-05-04T22:48:51.988006Z","message":{"role":"assistant","content":"","thinking":" that"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-05-04T22:48:51.997827Z","message":{"role":"assistant","content":"","thinking":" leads"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-05-04T22:48:52.007543Z","message":{"role":"assistant","content":"","thinking":" to"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-05-04T22:48:52.017254Z","message":{"role":"assistant","content":"","thinking":" the"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-05-04T22:48:52.027007Z","message":{"role":"assistant","content":"","thinking":" detailed"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-05-04T22:48:52.036785Z","message":{"role":"assistant","content":"","thinking":" explanation"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-05-04T22:48:52.046658Z","message":{"role":"assistant","content":"","thinking":" of"},"done":false}
+            {"model":"gemma4:e2b","created_at":"2026-05-04T22:48:52.046661Z","message":{"role":"assistant","content":""},"done":true,"done_reason":"length","total_duration":376763584,"load_duration":94744625,"prompt_eval_count":25,"prompt_eval_duration":19278000,"eval_count":16,"eval_duration":147166500}
         headers:
             Content-Type:
                 - application/x-ndjson
         status: 200 OK
         code: 200
-        duration: 762ms
+        duration: 256ms

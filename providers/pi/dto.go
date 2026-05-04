@@ -592,9 +592,39 @@ type SourceInfo struct {
 	json.RawMessage
 }
 
-// SessionStatsData is the data payload for get_session_stats response. Fields are opaque.
+// SessionStatsData is the data payload for get_session_stats response.
 type SessionStatsData struct {
-	json.RawMessage
+	SessionFile   string        `json:"sessionFile,omitzero"`
+	SessionID     string        `json:"sessionId"`
+	UserMessages  int           `json:"userMessages"`
+	AssistantMsgs int           `json:"assistantMessages"`
+	ToolCalls     int           `json:"toolCalls"`
+	ToolResults   int           `json:"toolResults"`
+	TotalMessages int           `json:"totalMessages"`
+	Tokens        SessionTokens `json:"tokens"`
+	Cost          float64       `json:"cost"`
+	ContextUsage  ContextUsage  `json:"contextUsage,omitzero"`
+}
+
+// SessionTokens holds aggregated token counts for a session.
+type SessionTokens struct {
+	Input      int64 `json:"input"`
+	Output     int64 `json:"output"`
+	CacheRead  int64 `json:"cacheRead"`
+	CacheWrite int64 `json:"cacheWrite"`
+	Total      int64 `json:"total"`
+}
+
+// ContextUsage reports the estimated context window utilization.
+type ContextUsage struct {
+	// Tokens is the estimated number of tokens consumed in the current
+	// session context. Zero when unavailable (e.g. after compaction).
+	Tokens int64 `json:"tokens,omitzero"`
+	// ContextWindow is the model's maximum context window size.
+	ContextWindow int64 `json:"contextWindow"`
+	// Percent is the context usage as a percentage (0-100). Zero when
+	// Tokens is unavailable.
+	Percent float64 `json:"percent,omitzero"`
 }
 
 // CompactData is the data payload for compact response. Fields are opaque.

@@ -25,7 +25,9 @@ package smoketest
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"flag"
+	"io/fs"
 	"maps"
 	"net/http"
 	"os"
@@ -172,8 +174,8 @@ func Run(t *testing.T, pf ProviderFactory, models []scoreboard.Model, rec *myrec
 				}
 				return pf(t, m, fn)
 			}, &want, !m.Reason && slices.ContainsFunc(opts.TolerateReasoning, func(s string) bool {
-			return strings.Contains(m.Model, s)
-		}))
+				return strings.Contains(m.Model, s)
+			}))
 			usage.Add(&u)
 			if got != nil {
 				updatedScenarios = append(updatedScenarios, *got)
@@ -296,6 +298,9 @@ var optScenario = cmpopts.IgnoreFields(scoreboard.Scenario{}, "Comments", "SOTA"
 // deleteOrphanedRecordings recursively checks and deletes recordings that don't correspond to any
 // scoreboard model.
 func deleteOrphanedRecordings(t testing.TB, dir string, scoreboardModels map[scoreboard.Model]struct{}) {
+	if _, err := os.Stat(dir); errors.Is(err, fs.ErrNotExist) {
+		return
+	}
 	// 1. Gather all the directories in the recordings directory.
 	var allDirs []string
 	if err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {

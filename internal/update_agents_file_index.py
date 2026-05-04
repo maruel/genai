@@ -15,6 +15,7 @@ markers, generates a file index from first-line comments, and injects it between
 the markers. It also ensures a CLAUDE.md symlink exists next to every AGENTS.md.
 """
 
+import argparse
 import fnmatch
 import os
 import re
@@ -149,6 +150,14 @@ def get_file_description(filepath):
             continue
         if sline.startswith(f"{prefix} swift-tools-version:"):
             continue
+        if sline.startswith(f"{prefix} ///"):
+            continue
+        # Skip PEP 723 inline script metadata fields (requires-python, dependencies, etc.)
+        # that appear between # /// script and # /// markers.
+        if fname.endswith(".py") and (
+            sline.startswith(f"{prefix} requires-") or sline.startswith(f"{prefix} dependencies")
+        ):
+            continue
         if sline.startswith(prefix):
             comment = sline[len(prefix) :].strip()
             if not comment:
@@ -228,10 +237,11 @@ def generate_index(target, exclude, all_files, all_configs):
     return "\n".join(lines), missing
 
 
-def update_markdown(target_file, content):
+def update_markdown(target_file: str, content: str, check: bool) -> bool:
+    """Update or check the file index in target_file. Returns True if a change was made (or needed)."""
     if not os.path.exists(target_file):
         print(f"Warning: {target_file} not found, skipping.")
-        return
+        return False
     start = "<!-- BEGIN FILE INDEX -->"
     end = "<!-- END FILE INDEX -->"
     with open(target_file, "r", encoding="utf-8") as f:
@@ -243,14 +253,22 @@ def update_markdown(target_file, content):
     else:
         updated = (original.rstrip() + "\n\n" + new_section + "\n") if original.strip() else (new_section + "\n")
     if updated == original:
-        return
+        return False
+    if check:
+        print(
+            f"Error: {target_file} file index is out of date. Run scripts/update_agents_file_index.py to fix.",
+            file=sys.stderr,
+        )
+        return True
     with open(target_file, "w", encoding="utf-8") as f:
         f.write(updated)
     print(f"Updated: {target_file}")
+    return True
 
 
-def ensure_claude_symlinks(all_files):
+def ensure_claude_symlinks(all_files: list[str], check: bool) -> int:
     """Ensure every AGENTS.md has a sibling CLAUDE.md symlink pointing to it."""
+    ret = 0
     for f in all_files:
         if os.path.basename(f) != "AGENTS.md":
             continue
@@ -261,31 +279,47 @@ def ensure_claude_symlinks(all_files):
         if os.path.exists(link):
             print(f"Error: {link} exists but is not a symlink to AGENTS.md.", file=sys.stderr)
             return 1
+        if check:
+            print(
+                f"Error: {link} -> AGENTS.md symlink is missing. Run scripts/update_agents_file_index.py to fix.",
+                file=sys.stderr,
+            )
+            ret = 1
+            continue
         os.symlink("AGENTS.md", link)
         print(f"Created: {link} -> AGENTS.md")
-    return 0
+    return ret
 
 
-def main():
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument(
+        "--check",
+        action="store_true",
+        help="check that indexes are up to date without modifying files (exit 1 if not)",
+    )
+    args = parser.parse_args()
+
     all_files = get_git_files()
     if not all_files:
         print("No files found in git repository.")
         return 1
-    ret = ensure_claude_symlinks(all_files)
-    if ret:
+    ret = ensure_claude_symlinks(all_files, check=args.check)
+    if ret and not args.check:
         return ret
     configs = discover_configs(all_files)
     all_missing = []
     for target, exclude in configs.items():
         content, missing = generate_index(target, exclude, all_files, configs)
-        update_markdown(target, content)
+        if update_markdown(target, content, check=args.check):
+            ret = 1
         all_missing.extend(missing)
     if all_missing:
         print("Error: the following files have no description comment:", file=sys.stderr)
         for f in sorted(all_missing):
             print(f"  {f}", file=sys.stderr)
-        return 1
-    return 0
+        ret = 1
+    return ret
 
 
 if __name__ == "__main__":

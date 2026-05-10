@@ -21,12 +21,14 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: "\n         \n\n         \n\n         \n{\"id\":\"gen-1772417106-dtndMxORe1hm85ZA4iVU\",\"provider\":\"Alibaba\",\"model\":\"qwen/qwen3.5-35b-a3b\",\"object\":\"chat.completion\",\"created\":1772417106,\"choices\":[{\"logprobs\":null,\"finish_reason\":\"stop\",\"native_finish_reason\":\"stop\",\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"banana\",\"refusal\":null,\"reasoning\":\"The user wants me to identify the fruit in the image.\\n1.  **Analyze the image:** The image shows a long, curved, yellow fruit with a stem at one end and a slightly darker tip at the other.\\n2.  **Identify the fruit:** This is clearly a banana.\\n3.  **Formulate the response:** The user requested a one-word reply.\\n4.  **Final Output:** \\\"banana\\\"\",\"reasoning_details\":[{\"format\":\"unknown\",\"index\":0,\"type\":\"reasoning.text\",\"text\":\"The user wants me to identify the fruit in the image.\\n1.  **Analyze the image:** The image shows a long, curved, yellow fruit with a stem at one end and a slightly darker tip at the other.\\n2.  **Identify the fruit:** This is clearly a banana.\\n3.  **Formulate the response:** The user requested a one-word reply.\\n4.  **Final Output:** \\\"banana\\\"\"}]}}],\"system_fingerprint\":null,\"usage\":{\"prompt_tokens\":113,\"completion_tokens\":99,\"total_tokens\":212,\"cost\":0.00022625,\"is_byok\":false,\"prompt_tokens_details\":{\"cached_tokens\":0},\"cost_details\":{\"upstream_inference_cost\":0.00022625,\"upstream_inference_prompt_cost\":0.00002825,\"upstream_inference_completions_cost\":0.000198},\"completion_tokens_details\":{\"reasoning_tokens\":93}}}"
+        body: "\n         \n{\"id\":\"gen-1778452696-nRsfmt9lhWgcAykgjzXW\",\"object\":\"chat.completion\",\"created\":1778452696,\"model\":\"qwen/qwen3.5-35b-a3b-20260224\",\"provider\":\"DeepInfra\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"logprobs\":null,\"finish_reason\":\"stop\",\"native_finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"Banana\",\"refusal\":null,\"reasoning\":\"The user wants me to identify the fruit in the image.\\n1.  **Analyze the image:** The image shows a yellow, curved fruit with a stem at the top and a pointed tip at the bottom. It has small brown spots.\\n2.  **Identify the object:** This is clearly a banana.\\n3.  **Format the answer:** The user requested \\\"only one word\\\".\\n4.  **Final Answer Formulation:** \\\"Banana\\\".\\n\",\"reasoning_details\":[{\"type\":\"reasoning.text\",\"text\":\"The user wants me to identify the fruit in the image.\\n1.  **Analyze the image:** The image shows a yellow, curved fruit with a stem at the top and a pointed tip at the bottom. It has small brown spots.\\n2.  **Identify the object:** This is clearly a banana.\\n3.  **Format the answer:** The user requested \\\"only one word\\\".\\n4.  **Final Answer Formulation:** \\\"Banana\\\".\\n\",\"format\":\"unknown\",\"index\":0}]}}],\"usage\":{\"prompt_tokens\":114,\"completion_tokens\":103,\"total_tokens\":217,\"cost\":0.00011896,\"is_byok\":false,\"prompt_tokens_details\":{\"cached_tokens\":0,\"cache_write_tokens\":0,\"audio_tokens\":0,\"video_tokens\":0},\"cost_details\":{\"upstream_inference_cost\":0.00011896,\"upstream_inference_prompt_cost\":0.00001596,\"upstream_inference_completions_cost\":0.000103},\"completion_tokens_details\":{\"reasoning_tokens\":95,\"image_tokens\":0,\"audio_tokens\":0}}}"
         headers:
             Access-Control-Allow-Origin:
                 - '*'
+            Access-Control-Expose-Headers:
+                - X-Generation-Id,cf-ray
             Cf-Ray:
-                - 9d5cd5a37d73a1e6-YYZ
+                - 9f9c6eea1a2cb402-YYZ
             Content-Type:
                 - application/json
             Permissions-Policy:
@@ -36,9 +38,11 @@ interactions:
             Server:
                 - cloudflare
             Server-Timing:
-                - cfEdge;dur=665,cfOrigin;dur=0
+                - cfEdge;dur=8,cfOrigin;dur=0,cfWorker;dur=175
             X-Content-Type-Options:
                 - nosniff
+            X-Generation-Id:
+                - gen-1778452696-nRsfmt9lhWgcAykgjzXW
         status: 200 OK
         code: 200
-        duration: 678ms
+        duration: 198ms

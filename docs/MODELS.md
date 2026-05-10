@@ -1,6 +1,6 @@
 # List of models available on each provider
 
-Snapshot of the models available on each provider as of 2026-05-02
+Snapshot of the models available on each provider as of 2026-05-10
 
 ## alibaba
 
@@ -211,13 +211,13 @@ Snapshot of the models available on each provider as of 2026-05-02
 - @cf/deepgram/nova-3 (async_queue=true, partner=true, price=[0.0052$USD/min, 0.0092$USD per audio minute (websocket)], realtime=true)
 - @cf/deepseek-ai/deepseek-math-7b-instruct (beta=true, context_window=4096, planned_deprecation_date=2025-10-01)
 - @cf/deepseek-ai/deepseek-r1-distill-qwen-32b (context_window=80000, price=[0.5$USD/Mt in, 4.88$USD/Mt out], reasoning=true) 🥇
-- @cf/defog/sqlcoder-7b-2 (beta=true, context_window=10000)
-- @cf/facebook/bart-large-cnn (beta=true, price=[0$USD/Mt in])
+- @cf/defog/sqlcoder-7b-2 (beta=true, context_window=10000, planned_deprecation_date=2026-05-30)
+- @cf/facebook/bart-large-cnn (beta=true, planned_deprecation_date=2026-05-30, price=[0$USD/Mt in])
 - @cf/fblgit/una-cybertron-7b-v2-bf16 (beta=true, context_window=15000, planned_deprecation_date=2025-10-01)
 - @cf/google/embeddinggemma-300m
 - @cf/google/gemma-2b-it-lora (beta=true, context_window=8192, lora=true)
-- @cf/google/gemma-3-12b-it (context_window=80000, lora=true, price=[0.35$USD/Mt in, 0.56$USD/Mt out])
-- @cf/google/gemma-4-26b-a4b-it (context_window=256000, function_calling=true, price=[0.1$USD/Mt in, 0.3$USD/Mt out], reasoning=true, vision=true)
+- @cf/google/gemma-3-12b-it (context_window=80000, lora=true, planned_deprecation_date=2026-05-30, price=[0.35$USD/Mt in, 0.56$USD/Mt out])
+- @cf/google/gemma-4-26b-a4b-it (context_window=256000, function_calling=true, reasoning=true, vision=true)
 - @cf/google/gemma-7b-it-lora (beta=true, context_window=3500, lora=true)
 - @cf/huggingface/distilbert-sst-2-int8 (price=[0.026$USD/Mt in])
 - @cf/ibm-granite/granite-4.0-h-micro (context_window=131000, function_calling=true, price=[0.017$USD/Mt in, 0.11$USD/Mt out])
@@ -226,11 +226,11 @@ Snapshot of the models available on each provider as of 2026-05-02
 - @cf/llava-hf/llava-1.5-7b-hf (beta=true)
 - @cf/lykon/dreamshaper-8-lcm
 - @cf/meta-llama/llama-2-7b-chat-hf-lora (beta=true, context_window=8192, lora=true)
-- @cf/meta/llama-2-7b-chat-fp16 (context_window=4096, price=[0.56$USD/Mt in, 6.67$USD/Mt out])
-- @cf/meta/llama-2-7b-chat-int8 (context_window=8192)
-- @cf/meta/llama-3-8b-instruct (context_window=7968, price=[0.28$USD/Mt in, 0.83$USD/Mt out])
-- @cf/meta/llama-3-8b-instruct-awq (context_window=8192, price=[0.12$USD/Mt in, 0.27$USD/Mt out])
-- @cf/meta/llama-3.1-8b-instruct-awq (context_window=8192, price=[0.12$USD/Mt in, 0.27$USD/Mt out])
+- @cf/meta/llama-2-7b-chat-fp16 (context_window=4096, planned_deprecation_date=2026-05-30, price=[0.56$USD/Mt in, 6.67$USD/Mt out])
+- @cf/meta/llama-2-7b-chat-int8 (context_window=8192, planned_deprecation_date=2026-05-30)
+- @cf/meta/llama-3-8b-instruct (context_window=7968, planned_deprecation_date=2026-05-30, price=[0.28$USD/Mt in, 0.83$USD/Mt out])
+- @cf/meta/llama-3-8b-instruct-awq (context_window=8192, planned_deprecation_date=2026-05-30, price=[0.12$USD/Mt in, 0.27$USD/Mt out])
+- @cf/meta/llama-3.1-8b-instruct-awq (context_window=8192, planned_deprecation_date=2026-05-30, price=[0.12$USD/Mt in, 0.27$USD/Mt out])
 - @cf/meta/llama-3.1-8b-instruct-fp8 (context_window=32000, price=[0.15$USD/Mt in, 0.29$USD/Mt out])
 - @cf/meta/llama-3.2-11b-vision-instruct (context_window=128000, lora=true, price=[0.049$USD/Mt in, 0.68$USD/Mt out], vision=true)
 - @cf/meta/llama-3.2-1b-instruct (context_window=60000, price=[0.027$USD/Mt in, 0.2$USD/Mt out]) 🥉
@@ -239,12 +239,12 @@ Snapshot of the models available on each provider as of 2026-05-02
 - @cf/meta/llama-4-scout-17b-16e-instruct (async_queue=true, context_window=131000, function_calling=true, price=[0.27$USD/Mt in, 0.85$USD/Mt out], vision=true)
 - @cf/meta/llama-guard-3-8b (context_window=131072, lora=true, price=[0.48$USD/Mt in, 0.03$USD/Mt out])
 - @cf/meta/m2m100-1.2b (async_queue=true, languages=english, chinese, french, spanish, arabic, russian, german, japanese, portuguese, hindi, price=[0.34$USD/Mt in, 0.34$USD/Mt out])
-- @cf/microsoft/phi-2 (beta=true, context_window=2048)
+- @cf/microsoft/phi-2 (beta=true, context_window=2048, planned_deprecation_date=2026-05-30)
 - @cf/microsoft/resnet-50 (price=[2.5e-06$USD per inference request])
-- @cf/mistral/mistral-7b-instruct-v0.1 (context_window=2824, lora=true, price=[0.11$USD/Mt in, 0.19$USD/Mt out])
+- @cf/mistral/mistral-7b-instruct-v0.1 (context_window=2824, lora=true, planned_deprecation_date=2026-05-30, price=[0.11$USD/Mt in, 0.19$USD/Mt out])
 - @cf/mistral/mistral-7b-instruct-v0.2-lora (beta=true, context_window=15000, lora=true)
 - @cf/mistralai/mistral-small-3.1-24b-instruct (context_window=128000, function_calling=true, price=[0.35$USD/Mt in, 0.56$USD/Mt out])
-- @cf/moonshotai/kimi-k2.5 (async_queue=false, context_window=256000, function_calling=true, price=[0.6$USD/Mt in, 3$USD/Mt out, 0.1$USD per M cached input tokens], reasoning=true, vision=true)
+- @cf/moonshotai/kimi-k2.5 (async_queue=false, context_window=256000, function_calling=true, planned_deprecation_date=2026-05-30, price=[0.6$USD/Mt in, 3$USD/Mt out, 0.1$USD per M cached input tokens], reasoning=true, vision=true)
 - @cf/moonshotai/kimi-k2.6 (context_window=262144, function_calling=true, price=[0.95$USD/Mt in, 4$USD/Mt out, 0.16$USD per M cached input tokens], reasoning=true, vision=true)
 - @cf/myshell-ai/melotts (price=[0.0002$USD/min])
 - @cf/nvidia/nemotron-3-120b-a12b (context_window=256000, function_calling=true, price=[0.5$USD/Mt in, 1.5$USD/Mt out], reasoning=true)
@@ -270,12 +270,12 @@ Snapshot of the models available on each provider as of 2026-05-02
 - @cf/thebloke/discolm-german-7b-v1-awq (beta=true, context_window=4096, planned_deprecation_date=2025-10-01)
 - @cf/tiiuae/falcon-7b-instruct (beta=true, context_window=4096, planned_deprecation_date=2025-10-01)
 - @cf/tinyllama/tinyllama-1.1b-chat-v1.0 (beta=true, context_window=2048, planned_deprecation_date=2025-10-01)
-- @cf/unum/uform-gen2-qwen-500m (beta=true)
+- @cf/unum/uform-gen2-qwen-500m (beta=true, planned_deprecation_date=2026-05-30)
 - @cf/zai-org/glm-4.7-flash (context_window=131072, function_calling=true, price=[0.06$USD/Mt in, 0.4$USD/Mt out], reasoning=true)
-- @hf/google/gemma-7b-it (beta=true, context_window=8192, lora=true)
-- @hf/mistral/mistral-7b-instruct-v0.2 (beta=true, context_window=3072, lora=true, max_batch_prefill_tokens=8192, max_input_length=3072, max_total_tokens=4096)
+- @hf/google/gemma-7b-it (beta=true, context_window=8192, lora=true, planned_deprecation_date=2026-05-30)
+- @hf/mistral/mistral-7b-instruct-v0.2 (beta=true, context_window=3072, lora=true, max_batch_prefill_tokens=8192, max_input_length=3072, max_total_tokens=4096, planned_deprecation_date=2026-05-30)
 - @hf/nexusflow/starling-lm-7b-beta (beta=true, context_window=4096, max_batch_prefill_tokens=8192, max_input_length=3072, max_total_tokens=4096, planned_deprecation_date=2025-10-01)
-- @hf/nousresearch/hermes-2-pro-mistral-7b (beta=true, context_window=24000, function_calling=true)
+- @hf/nousresearch/hermes-2-pro-mistral-7b (beta=true, context_window=24000, function_calling=true, planned_deprecation_date=2026-05-30)
 - @hf/thebloke/deepseek-coder-6.7b-base-awq (beta=true, context_window=4096, planned_deprecation_date=2025-10-01)
 - @hf/thebloke/deepseek-coder-6.7b-instruct-awq (beta=true, context_window=4096, planned_deprecation_date=2025-10-01)
 - @hf/thebloke/llama-2-13b-chat-awq (beta=true, context_window=4096, planned_deprecation_date=2025-10-01)
@@ -346,6 +346,7 @@ Snapshot of the models available on each provider as of 2026-05-02
 - gemini-3-pro-preview: Gemini 3 Pro Preview (Gemini 3 Pro Preview) Context: 1048576/65536
 - gemini-3.1-flash-image-preview: Nano Banana 2 (Gemini 3.1 Flash Image Preview) Context: 65536/65536
 - gemini-3.1-flash-lite-preview: Gemini 3.1 Flash Lite Preview (Gemini 3.1 Flash Lite Preview) Context: 1048576/65536
+- gemini-3.1-flash-lite: Gemini 3.1 Flash Lite (Gemini 3.1 Flash Lite) Context: 1048576/65536
 - gemini-3.1-flash-live-preview: Gemini 3.1 Flash Live Preview (Gemini 3.1 Flash Live Preview) Context: 131072/65536
 - gemini-3.1-flash-tts-preview: Gemini 3.1 Flash TTS Preview (Gemini 3.1 Flash TTS Preview) Context: 8192/16384
 - gemini-3.1-pro-preview-customtools: Gemini 3.1 Pro Preview Custom Tools (Gemini 3.1 Pro Preview optimized for custom tool usage) Context: 1048576/65536
@@ -358,12 +359,6 @@ Snapshot of the models available on each provider as of 2026-05-02
 - gemini-pro-latest: Gemini Pro Latest (Latest release of Gemini Pro) Context: 1048576/65536 🥇
 - gemini-robotics-er-1.5-preview: Gemini Robotics-ER 1.5 Preview (Gemini Robotics-ER 1.5 Preview) Context: 1048576/65536
 - gemini-robotics-er-1.6-preview: Gemini Robotics-ER 1.6 Preview (Gemini Robotics-ER 1.6 Preview) Context: 131072/65536
-- gemma-3-12b-it: Gemma 3 12B Context: 32768/8192
-- gemma-3-1b-it: Gemma 3 1B Context: 32768/8192
-- gemma-3-27b-it: Gemma 3 27B Context: 131072/8192
-- gemma-3-4b-it: Gemma 3 4B Context: 32768/8192
-- gemma-3n-e2b-it: Gemma 3n E2B Context: 8192/2048
-- gemma-3n-e4b-it: Gemma 3n E4B Context: 8192/2048
 - gemma-4-26b-a4b-it: Gemma 4 26B A4B IT (Gemma 4 26B A4B IT) Context: 262144/32768
 - gemma-4-31b-it: Gemma 4 31B IT (Gemma 4 31B IT) Context: 262144/32768
 - imagen-4.0-fast-generate-001: Imagen 4 Fast (Vertex served Imagen 4.0 Fast model) Context: 480/8192
@@ -446,491 +441,499 @@ Snapshot of the models available on each provider as of 2026-05-02
 
 ## huggingface
 
-- aaditya/Llama3-OpenBioLLM-8B (2024-04-20) text-generation Trending: 1.0
-- AI-MO/Kimina-Prover-Preview-Distill-1.5B (2025-04-09) text-generation Trending: 1.0
-- aiqwen/next-scene-qwen-image-lora-2509 (2025-10-25) image-to-image Trending: 1.0
-- airesearch/wangchanberta-base-att-spm-uncased (2022-03-02) fill-mask Trending: 1.0
-- AiWise/Juggernaut-XL-V9-GE-RDPhoto2-Lightning_4S (2024-12-26) text-to-image Trending: 1.0
-- Akhil-reddy/Meta-Llma-legal-lens-500 (2026-03-31) text-generation Trending: 1.0
-- albert/albert-base-v2 (2022-03-02) fill-mask Trending: 1.0
-- AlekseyCalvin/Perestroika_ZiT_LoRA_bySAP (2025-12-04) text-to-image Trending: 1.0
+- Aardiiiiy/indobertweet-base-Indonesian-sentiment-analysis (2024-08-04) text-classification Trending: 1.0
+- AdithyaSK/Qwen-0.5b-Code-Reasoning (2025-02-07) text-generation Trending: 1.0
+- AdithyaSK/Qwen-0.5b-Code-Reasoning-v1 (2025-02-07) text-generation Trending: 1.0
+- ai-forever/ru-en-RoSBERTa (2024-07-29) feature-extraction Trending: 1.0
+- aisingapore/Gemma-SEA-LION-v4-27B-IT (2025-08-11) text-generation Trending: 1.0
+- AiWise/BetterThanWords-merged-SDXL-LoRA-v3 (2024-12-29) text-to-image Trending: 1.0
+- alger-ia/dziribert (2022-03-02) fill-mask Trending: 1.0
 - ali-vilab/In-Context-LoRA (2024-11-07) text-to-image Trending: 1.0
-- Alissonerdx/BFS-Best-Face-Swap (2025-11-07) image-to-image Trending: 12.0
+- Alibaba-NLP/gte-modernbert-base (2025-01-20) sentence-similarity Trending: 1.0
+- Alissonerdx/BFS-Best-Face-Swap (2025-11-07) image-to-image Trending: 15.0
+- allenai/specter (2022-03-02) feature-extraction Trending: 1.0
 - almanach/camembert-base (2022-03-02) fill-mask Trending: 1.0
-- Alpha-VLLM/Lumina-Image-2.0 (2025-01-22) text-to-image Trending: 1.0
-- alvdansen/illustration-1.0-qwen-image (2026-03-27) text-to-image Trending: 1.0
-- anyreach-ai/semantic-turn-taking (2026-02-05) text-generation Trending: 1.0
-- arcee-ai/arcee-lite (2024-08-01) text-generation Trending: 1.0
-- arcee-ai/Trinity-Large-Thinking (2026-04-01) text-generation Trending: 1.0
-- armageddonz1/blowjob-flux-3 (2024-10-30) text-to-image Trending: 1.0
-- Ateeqq/ai-vs-human-image-detector (2025-03-30) image-classification Trending: 1.0
+- amberoad/bert-multilingual-passage-reranking-msmarco (2022-03-02) text-classification Trending: 1.0
+- anton-hugging/TimeOmni-1-7B (2026-02-06) text-generation Trending: 1.0
+- arcee-ai/Arcee-VyLinh (2024-10-29) text-generation Trending: 1.0
+- arcee-ai/Trinity-Large-Thinking (2026-04-01) text-generation Trending: 3.0
+- artificialguybr/CINEMATIC-FILMSTILL-REDMOND-ZIMAGE (2026-02-20) text-to-image Trending: 1.0
+- AS-SiliconMind/SiliconMind-V1-Qwen3-4B-T-2507 (2026-02-11) text-generation Trending: 1.0
+- Ateeqq/ai-vs-human-image-detector (2025-03-30) image-classification Trending: 2.0
 - BAAI/bge-base-en-v1.5 (2023-09-11) feature-extraction Trending: 2.0
-- BAAI/bge-base-zh-v1.5 (2023-09-12) feature-extraction Trending: 1.0
-- BAAI/bge-code-v1 (2025-05-15) sentence-similarity Trending: 1.0
-- BAAI/bge-large-en-v1.5 (2023-09-12) feature-extraction Trending: 4.0
+- BAAI/bge-large-en-v1.5 (2023-09-12) feature-extraction Trending: 3.0
 - BAAI/bge-large-zh-v1.5 (2023-09-12) feature-extraction Trending: 1.0
-- BAAI/bge-m3 (2024-01-27) sentence-similarity Trending: 20.0
+- BAAI/bge-m3 (2024-01-27) sentence-similarity Trending: 12.0
 - BAAI/bge-multilingual-gemma2 (2024-07-25) feature-extraction Trending: 1.0
-- BAAI/bge-reranker-large (2023-09-12) feature-extraction Trending: 1.0
-- BAAI/bge-reranker-v2-m3 (2024-03-15) text-classification Trending: 11.0
-- BAAI/bge-small-en-v1.5 (2023-09-12) feature-extraction Trending: 4.0
-- BAAI/Infinity-Instruct-3M-0625-Qwen2-7B (2024-07-09) text-generation Trending: 1.0
-- BAAI/Infinity-Instruct-7M-Gen-Llama3_1-70B (2024-07-25) text-generation Trending: 1.0
-- baidu/ERNIE-Image (2026-04-07) text-to-image Trending: 36.0
-- baidu/ERNIE-Image-Turbo (2026-04-02) text-to-image Trending: 11.0
+- BAAI/bge-reranker-large (2023-09-12) feature-extraction Trending: 2.0
+- BAAI/bge-reranker-v2-m3 (2024-03-15) text-classification Trending: 5.0
+- baidu/ERNIE-Image (2026-04-07) text-to-image Trending: 12.0
+- baidu/ERNIE-Image-Turbo (2026-04-02) text-to-image Trending: 7.0
+- bakrianoo/arabic-legal-documents-ocr-1.0 (2026-01-13) image-text-to-text Trending: 1.0
+- Baraje/SexGod_NSFW_Female_Nudes_QWEN_Image_Edit_2511 (2026-04-22) text-to-image Trending: 3.0
+- benchang1110/Qwen2.5-Taiwan-7B-Instruct (2025-03-11) text-generation Trending: 1.0
 - beomi/Llama-3-Open-Ko-8B-Instruct-preview (2024-04-23) text-generation Trending: 1.0
-- beyoru/Luna-SRSA-Uncensored (2026-03-19) text-generation Trending: 1.0
 - bhadresh-savani/distilbert-base-uncased-emotion (2022-03-02) text-classification Trending: 1.0
-- black-forest-labs/FLUX.1-dev (2024-07-31) text-to-image Trending: 26.0
-- black-forest-labs/FLUX.1-Kontext-dev (2025-05-28) image-to-image Trending: 10.0
-- black-forest-labs/FLUX.1-schnell (2024-07-31) text-to-image Trending: 12.0
-- black-forest-labs/FLUX.2-dev (2025-11-22) image-to-image Trending: 28.0
-- black-forest-labs/FLUX.2-klein-4B (2026-01-14) image-to-image Trending: 15.0
-- black-forest-labs/FLUX.2-klein-base-4B (2026-01-14) image-to-image Trending: 5.0
-- blazerye/DrugAssist-7B (2024-06-13) text-generation Trending: 1.0
-- briaai/RMBG-2.0 (2024-10-29) image-segmentation Trending: 10.0
-- BSC-LT/MrBERT-es (2025-12-23) fill-mask Trending: 1.0
-- ByteDance/Hyper-SD (2024-04-20) text-to-image Trending: 1.0
-- CalmState/Qwen-3-4b-Polyglot-r2 (2026-01-01) text-generation Trending: 1.0
-- CAMeL-Lab/bert-base-arabic-camelbert-mix (2022-03-02) fill-mask Trending: 1.0
-- cardiffnlp/twitter-roberta-base-emotion-multilabel-latest (2023-03-01) text-classification Trending: 2.0
-- carsenk/llama3.2_1b_2025_uncensored_v2 (2025-01-17) text-generation Trending: 1.0
-- chfm/next-scene-qwen-image-lora-2509 (2026-04-15) image-to-image Trending: 1.0
-- chuanli11/Llama-3.2-3B-Instruct-uncensored (2024-09-27) text-generation Trending: 1.0
-- CohereLabs/aya-expanse-32b (2024-10-23) text-generation Trending: 1.0
-- CohereLabs/c4ai-command-r7b-12-2024 (2024-12-11) text-generation Trending: 5.0
-- CohereLabs/command-a-reasoning-08-2025 (2025-08-12) text-generation Trending: 1.0
-- damnthatai/1950s_American_Dream (2025-11-30) text-to-image Trending: 1.0
-- DarkArtsForge/Asmodeus-24B-v2 (2026-03-19) text-generation Trending: 1.0
+- black-forest-labs/FLUX.1-dev (2024-07-31) text-to-image Trending: 25.0
+- black-forest-labs/FLUX.1-Kontext-dev (2025-05-28) image-to-image Trending: 3.0
+- black-forest-labs/FLUX.1-schnell (2024-07-31) text-to-image Trending: 15.0
+- black-forest-labs/FLUX.2-dev (2025-11-22) image-to-image Trending: 24.0
+- black-forest-labs/FLUX.2-klein-4B (2026-01-14) image-to-image Trending: 11.0
+- black-forest-labs/FLUX.2-klein-9B (2026-01-14) image-to-image Trending: 21.0
+- black-forest-labs/FLUX.2-klein-base-9B (2026-01-14) image-to-image Trending: 4.0
+- bonadossou/afrolm_active_learning (2022-10-28) fill-mask Trending: 1.0
+- briaai/FIBO (2025-10-09) text-to-image Trending: 2.0
+- briaai/RMBG-2.0 (2024-10-29) image-segmentation Trending: 4.0
+- ByteDance/Hyper-SD (2024-04-20) text-to-image Trending: 2.0
+- cardiffnlp/twitter-roberta-base-sentiment-latest (2022-03-15) text-classification Trending: 5.0
+- chetwinlow1/Ovi (2025-09-30) image-to-video Trending: 1.0
+- citizenlab/distilbert-base-multilingual-cased-toxicity (2022-03-02) text-classification Trending: 1.0
+- citizenlab/twitter-xlm-roberta-base-sentiment-finetunned (2022-03-02) text-classification Trending: 1.0
+- climatebert/distilroberta-base-climate-f (2022-03-02) fill-mask Trending: 1.0
+- CLTL/MedRoBERTa.nl (2022-03-02) fill-mask Trending: 1.0
+- CohereLabs/c4ai-command-r7b-12-2024 (2024-12-11) text-generation Trending: 1.0
+- CohereLabs/tiny-aya-global (2026-02-13) text-generation Trending: 3.0
+- cointegrated/rubert-base-cased-nli-threeway (2022-03-02) zero-shot-classification Trending: 1.0
+- concedo/KobbleTinyV2-1.1B (2024-04-25) text-generation Trending: 1.0
+- DarkArtsForge/Magistaroth-24B-v1.2 (2026-04-23) text-generation Trending: 1.0
 - darkc0de/XortronCriminalComputingConfig (2025-04-30) text-generation Trending: 2.0
-- DavidAU/Llama3.3-8B-Instruct-Thinking-Heretic-Uncensored-Claude-4.5-Opus-High-Reasoning (2026-01-02) text-generation Trending: 1.0
+- DavidAU/Gemma-3-27b-it-vl-SuperBrain7x-High-Reasoning-ULTRAMIND-Heretic-Uncensored (2026-02-13) image-text-to-text Trending: 1.0
 - DavidAU/Qwen3-0.6B-heretic-abliterated-uncensored (2025-11-20) text-generation Trending: 2.0
 - davidjaymes/depr_flux-lora-fast-training_miasweet-v1_nsfw (2026-01-25) text-to-image Trending: 1.0
+- dccuchile/bert-base-spanish-wwm-uncased (2022-03-02) fill-mask Trending: 1.0
+- deepcogito/cogito-v1-preview-llama-8B (2025-03-31) text-generation Trending: 1.0
 - DeepHat/DeepHat-V1-7B (2025-04-25) text-generation Trending: 1.0
-- deepseek-ai/DeepSeek-OCR (2025-10-17) image-text-to-text Trending: 1.0
-- deepseek-ai/DeepSeek-Prover-V2-671B (2025-04-30) text-generation Trending: 3.0
+- deepmancer/bald_konverter (2026-03-11) image-to-image Trending: 1.0
 - deepseek-ai/DeepSeek-R1 (2025-01-20) text-generation Trending: 6.0
-- deepseek-ai/DeepSeek-R1-0528 (2025-05-28) text-generation Trending: 1.0
-- deepseek-ai/DeepSeek-R1-0528-Qwen3-8B (2025-05-29) text-generation Trending: 2.0
-- deepseek-ai/DeepSeek-R1-Distill-Llama-8B (2025-01-20) text-generation Trending: 1.0
-- deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B (2025-01-20) text-generation Trending: 3.0
-- deepseek-ai/DeepSeek-R1-Distill-Qwen-32B (2025-01-20) text-generation Trending: 5.0
-- deepseek-ai/DeepSeek-R1-Distill-Qwen-7B (2025-01-20) text-generation Trending: 1.0
-- deepseek-ai/DeepSeek-V3 (2024-12-25) text-generation Trending: 3.0
+- deepseek-ai/DeepSeek-R1-0528-Qwen3-8B (2025-05-29) text-generation Trending: 4.0
+- deepseek-ai/DeepSeek-R1-Distill-Llama-70B (2025-01-20) text-generation Trending: 1.0
+- deepseek-ai/DeepSeek-R1-Distill-Llama-8B (2025-01-20) text-generation Trending: 2.0
+- deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B (2025-01-20) text-generation Trending: 4.0
+- deepseek-ai/DeepSeek-R1-Distill-Qwen-14B (2025-01-20) text-generation Trending: 5.0
+- deepseek-ai/DeepSeek-R1-Distill-Qwen-32B (2025-01-20) text-generation Trending: 2.0
+- deepseek-ai/DeepSeek-R1-Distill-Qwen-7B (2025-01-20) text-generation Trending: 4.0
+- deepseek-ai/DeepSeek-V3 (2024-12-25) text-generation Trending: 1.0
 - deepseek-ai/DeepSeek-V3-0324 (2025-03-24) text-generation Trending: 1.0
-- deepseek-ai/DeepSeek-V3.1-Terminus (2025-09-22) text-generation Trending: 1.0
 - deepseek-ai/DeepSeek-V3.2 (2025-12-01) text-generation Trending: 4.0
 - deepseek-ai/DeepSeek-V3.2-Exp (2025-09-29) text-generation Trending: 1.0
-- deepseek-ai/DeepSeek-V4-Flash (2026-04-22) text-generation Trending: 219.0
-- deepseek-ai/DeepSeek-V4-Pro (2026-04-22) text-generation Trending: 633.0 🥇
-- deepvk/USER-bge-m3 (2024-07-05) sentence-similarity Trending: 1.0
-- deepvk/USER2-base (2025-02-25) sentence-similarity Trending: 1.0
-- defog/llama-3-sqlcoder-8b (2024-05-09) text-generation Trending: 1.0
+- deepseek-ai/DeepSeek-V4-Flash (2026-04-22) text-generation Trending: 93.0
+- deepseek-ai/DeepSeek-V4-Pro (2026-04-22) text-generation Trending: 291.0 🥇
+- deepset/deberta-v3-base-injection (2023-05-17) text-classification Trending: 1.0
+- dima806/ai_vs_real_image_detection (2023-10-15) image-classification Trending: 1.0
 - dima806/fairface_age_image_detection (2024-12-06) image-classification Trending: 1.0
-- distil-labs/distil-qwen3-0.6b-text2sql (2026-01-14) text-generation Trending: 1.0
-- distil-labs/distil-qwen3-4b-text2sql (2026-01-11) text-generation Trending: 1.0
-- distilbert/distilbert-base-uncased (2022-03-02) fill-mask Trending: 2.0
-- distilbert/distilroberta-base (2022-03-02) fill-mask Trending: 2.0
-- djuna/MN-Chinofun-12B-4.1 (2025-01-26) text-generation Trending: 1.0
-- Dongjin-kr/ko-reranker (2023-12-22) text-classification Trending: 1.0
-- dphn/Dolphin-Mistral-24B-Venice-Edition (2025-06-12) text-generation Trending: 6.0
-- DQN-Labs-Community/dqnMath-v1 (2026-03-21) text-generation Trending: 1.0
-- dragonkue/BGE-m3-ko (2024-09-17) sentence-similarity Trending: 1.0
+- diobrando0/realstagram-zimg (2026-05-05) text-to-image Trending: 1.0
+- distilbert/distilbert-base-cased (2022-03-02) fill-mask Trending: 1.0
+- distilbert/distilbert-base-cased-distilled-squad (2022-03-02) question-answering Trending: 1.0
+- distilbert/distilbert-base-multilingual-cased (2022-03-02) fill-mask Trending: 2.0
+- distilbert/distilbert-base-uncased (2022-03-02) fill-mask Trending: 4.0
+- distilbert/distilbert-base-uncased-finetuned-sst-2-english (2022-03-02) text-classification Trending: 1.0
+- DMetaSoul/Dmeta-embedding-zh (2024-01-25) feature-extraction Trending: 1.0
+- Dogge/llama-3-70B-instruct-uncensored (2024-04-19) text-generation Trending: 1.0
+- drbaph/Fluffy-kontext-LoRA (2025-07-01) image-to-image Trending: 1.0
 - DreamFast/gemma-3-12b-it-heretic (2026-01-11) text-generation Trending: 2.0
-- DreamFast/gemma-3-12b-it-heretic-v2 (2026-03-10) text-generation Trending: 1.0
-- dslim/bert-base-NER (2022-03-02) token-classification Trending: 3.0
-- dslim/distilbert-NER (2024-01-25) token-classification Trending: 1.0
+- DreamFast/gemma-3-12b-it-heretic-v2 (2026-03-10) text-generation Trending: 4.0
+- DreamFast/qwen3-4b-heretic (2026-03-10) text-generation Trending: 1.0
+- DreamFast/qwen3-8b-heretic (2026-03-20) text-generation Trending: 4.0
+- dslim/bert-base-NER (2022-03-02) token-classification Trending: 1.0
+- dx8152/Qwen-Edit-2509-Light-Migration (2025-12-07) image-to-image Trending: 1.0
 - dx8152/Qwen-Edit-2509-Multiple-angles (2025-10-31) image-to-image Trending: 3.0
-- dx8152/Qwen-Image-Edit-2509-Fusion (2025-10-22) image-to-image Trending: 1.0
-- dx8152/Qwen-Image-Edit-2509-Light_restoration (2025-11-07) image-to-image Trending: 1.0
 - dx8152/Qwen-Image-Edit-2509-Relight (2025-10-23) image-to-image Trending: 1.0
-- dx8152/Qwen-Image-Edit-2511-Gaussian-Splash (2026-01-13) image-to-image Trending: 7.0
-- ehsanaghaei/SecureBERT (2022-10-07) fill-mask Trending: 1.0
-- Ellbendls/Qwen-2.5-3b-Text_to_SQL (2024-11-27) text-generation Trending: 1.0
-- EssentialAI/rnj-1-instruct (2025-12-04) text-generation Trending: 1.0
-- est-ai/alan-llm-jeju-dialect-v1-4b (2026-01-23) text-generation Trending: 1.0
-- facebook/bart-large-cnn (2022-03-02) summarization Trending: 1.0
-- facebook/bart-large-mnli (2022-03-02) zero-shot-classification Trending: 5.0
-- facebook/detr-resnet-101 (2022-03-02) object-detection Trending: 1.0
-- facebook/detr-resnet-50 (2022-03-02) object-detection Trending: 1.0
-- facebook/KernelLLM (2025-04-14) text-generation Trending: 1.0
-- FacebookAI/roberta-base (2022-03-02) fill-mask Trending: 3.0
-- FacebookAI/roberta-large (2022-03-02) fill-mask Trending: 1.0
-- FacebookAI/xlm-roberta-base (2022-03-02) fill-mask Trending: 1.0
-- fal/flux-2-klein-4B-background-remove-lora (2026-01-19) image-to-image Trending: 1.0
-- fal/flux-2-klein-4B-object-remove-lora (2026-01-19) image-to-image Trending: 4.0
-- fal/flux-2-klein-4b-spritesheet-lora (2026-01-19) image-to-image Trending: 4.0
-- fal/flux-2-klein-4B-zoom-lora (2026-01-19) image-to-image Trending: 3.0
-- fal/Qwen-Image-Edit-2511-Multiple-Angles-LoRA (2026-01-07) image-to-image Trending: 17.0
-- Falconsai/nsfw_image_detection (2023-10-13) image-classification Trending: 3.0
-- FallenMerick/MN-Violet-Lotus-12B (2024-11-16) text-generation Trending: 3.0
-- FanzCEO/next-scene-qwen-image-lora-2509 (2026-04-25) image-to-image Trending: 1.0
-- farbodtavakkoli/OTel-LLM-1.7B-IT (2026-02-11) text-generation Trending: 1.0
-- farbodtavakkoli/OTel-LLM-1B-IT (2026-02-11) text-generation Trending: 1.0
-- farbodtavakkoli/OTel-LLM-4B-IT (2026-02-11) text-generation Trending: 1.0
-- fashn-ai/fashn-human-parser (2026-01-09) image-segmentation Trending: 2.0
+- ealvaradob/bert-finetuned-phishing (2023-12-20) text-classification Trending: 1.0
+- EdBianchi/vit-fire-detection (2022-12-29) image-classification Trending: 1.0
+- elyza/Llama-3-ELYZA-JP-8B (2024-06-25) text-generation Trending: 1.0
+- emilyalsentzer/Bio_ClinicalBERT (2022-03-02) fill-mask Trending: 1.0
+- EVA-UNIT-01/EVA-Qwen2.5-32B-v0.2 (2024-11-05) text-generation Trending: 1.0
+- expertai/LLaMAntino-3-SLIMER-IT (2024-07-09) text-generation Trending: 1.0
+- facebook/bart-large-cnn (2022-03-02) summarization Trending: 2.0
+- facebook/roberta-hate-speech-dynabench-r4-target (2022-06-10) text-classification Trending: 1.0
+- FacebookAI/roberta-base (2022-03-02) fill-mask Trending: 1.0
+- FacebookAI/roberta-large (2022-03-02) fill-mask Trending: 2.0
+- FacebookAI/xlm-roberta-base (2022-03-02) fill-mask Trending: 4.0
+- fal/flux-2-klein-4B-outpaint-lora (2026-01-19) image-to-image Trending: 1.0
+- fal/flux-2-klein-4b-spritesheet-lora (2026-01-19) image-to-image Trending: 3.0
+- fal/flux-2-klein-4B-zoom-lora (2026-01-19) image-to-image Trending: 1.0
+- fal/FLUX.2-dev-Turbo (2025-12-29) text-to-image Trending: 4.0
+- fal/Plushie-Kontext-Dev-LoRA (2025-06-26) image-to-image Trending: 1.0
+- fal/Qwen-Image-Edit-2511-Multiple-Angles-LoRA (2026-01-07) image-to-image Trending: 12.0
+- Falconsai/medical_summarization (2023-10-23) summarization Trending: 1.0
+- Falconsai/nsfw_image_detection (2023-10-13) image-classification Trending: 1.0
 - fdtn-ai/Foundation-Sec-8B (2025-04-26) text-generation Trending: 1.0
-- fdtn-ai/Foundation-Sec-8B-Reasoning (2025-11-06) text-generation Trending: 4.0
-- Fictiverse/Voxel_XL_Lora (2023-07-29) text-to-image Trending: 1.0
-- FireRedTeam/FireRed-Image-Edit-1.0 (2026-02-12) image-to-image Trending: 1.0
-- flammenai/Mahou-1.1-llama3-8B (2024-05-10) text-generation Trending: 1.0
-- FlareRebellion/WeirdCompound-v1.7-24b (2025-10-13) text-generation Trending: 1.0
-- fofr/flux-handwriting (2024-12-14) text-to-image Trending: 1.0
-- fofr/flux-minecraft-movie (2024-09-05) text-to-image Trending: 1.0
+- fdtn-ai/Foundation-Sec-8B-Instruct (2025-07-29) text-generation Trending: 1.0
+- fdtn-ai/Foundation-Sec-8B-Reasoning (2025-11-06) text-generation Trending: 1.0
+- FinLang/finance-embeddings-investopedia (2024-04-22) sentence-similarity Trending: 1.0
+- FireRedTeam/FireRed-Image-Edit-1.0 (2026-02-12) image-to-image Trending: 2.0
+- FlareRebellion/WeirdCompound-v1.7-24b (2025-10-13) text-generation Trending: 2.0
+- furaidosu/flux-lora-simple-vector (2024-09-24) text-to-image Trending: 1.0
+- GeorgyGUF/FameGrid_Bold_SDXL_V1.safetensors (2025-04-30) text-to-image Trending: 1.0
 - Gherman/bert-base-NER-Russian (2024-09-29) token-classification Trending: 1.0
-- Goekdeniz-Guelmez/JOSIE-1.1-4B-Thinking (2026-03-08) text-generation Trending: 1.0
-- gokaygokay/Flux-2D-Game-Assets-LoRA (2024-11-04) text-to-image Trending: 2.0
+- glebstein/vka4ana33 (2025-12-05) text-to-image Trending: 1.0
+- glif-loradex-trainer/heather_huet_textiles (2024-09-19) text-to-image Trending: 1.0
+- Goedel-LM/Goedel-Prover-V2-32B (2025-07-14) text-generation Trending: 1.0
+- Goedel-LM/Goedel-Prover-V2-8B (2025-07-15) text-generation Trending: 1.0
+- gokaygokay/Flux-2D-Game-Assets-LoRA (2024-11-04) text-to-image Trending: 1.0
 - gokaygokay/Flux-Game-Assets-LoRA-v2 (2024-10-18) text-to-image Trending: 1.0
-- gokaygokay/Flux-Krea-Realism-LoRA (2025-08-04) text-to-image Trending: 1.0
-- google-bert/bert-base-cased (2022-03-02) fill-mask Trending: 1.0
-- google-bert/bert-base-multilingual-cased (2022-03-02) fill-mask Trending: 1.0
-- google-bert/bert-base-uncased (2022-03-02) fill-mask Trending: 5.0
-- google/embeddinggemma-300m (2025-07-17) sentence-similarity Trending: 7.0
-- google/embeddinggemma-300m-qat-q8_0-unquantized (2025-08-27) sentence-similarity Trending: 2.0
-- google/gemma-2-2b-it (2024-07-16) text-generation Trending: 3.0
-- google/gemma-2-9b-it (2024-06-24) text-generation Trending: 1.0
+- gokaygokay/Flux-Mandala-LoRA (2024-12-29) text-to-image Trending: 1.0
+- gokaygokay/Flux-Seamless-Texture-LoRA (2024-10-29) text-to-image Trending: 2.0
+- gokaygokay/Fuse-it-Kontext-Dev-LoRA (2025-07-16) image-to-image Trending: 1.0
+- gokaygokay/Low-Poly-Kontext-Dev-LoRA (2025-07-13) image-to-image Trending: 1.0
+- gokaygokay/Rotation-Fix-Kontext-Dev-LoRA (2025-07-27) image-to-image Trending: 1.0
+- google-bert/bert-base-chinese (2022-03-02) fill-mask Trending: 1.0
+- google-bert/bert-base-uncased (2022-03-02) fill-mask Trending: 6.0
+- google-t5/t5-large (2022-03-02) translation Trending: 1.0
+- google-t5/t5-small (2022-03-02) translation Trending: 1.0
+- google/efficientnet-b0 (2023-02-15) image-classification Trending: 1.0
+- google/embeddinggemma-300m (2025-07-17) sentence-similarity Trending: 12.0
+- google/embeddinggemma-300m-qat-q8_0-unquantized (2025-08-27) sentence-similarity Trending: 1.0
+- google/gemma-2-2b-it (2024-07-16) text-generation Trending: 1.0
+- google/gemma-2-9b (2024-06-24) text-generation Trending: 1.0
+- google/gemma-2-9b-it (2024-06-24) text-generation Trending: 4.0
+- google/gemma-2b (2024-02-08) text-generation Trending: 2.0
+- google/gemma-2b-it (2024-02-08) text-generation Trending: 1.0
 - google/gemma-3-12b-it (2025-03-01) image-text-to-text Trending: 2.0
-- google/gemma-3-12b-it-qat-q4_0-unquantized (2025-04-08) image-text-to-text Trending: 3.0
-- google/gemma-3-1b-it (2025-03-10) text-generation Trending: 7.0
-- google/gemma-3-27b-it (2025-03-01) image-text-to-text Trending: 3.0
-- google/gemma-3n-E4B-it (2025-06-03) image-text-to-text Trending: 3.0
-- google/gemma-4-26B-A4B-it (2026-03-11) image-text-to-text Trending: 46.0
-- google/gemma-4-31B-it (2026-03-11) image-text-to-text Trending: 99.0
-- google/gemma-7b-it (2024-02-13) text-generation Trending: 2.0
-- google/medgemma-27b-text-it (2025-05-19) text-generation Trending: 2.0
-- google/shieldgemma-2b (2024-07-16) text-generation Trending: 2.0
-- GoToCompany/Llama-Sahabat-AI-v2-70B-IT (2025-05-30) text-generation Trending: 1.0
-- GroNLP/hateBERT (2022-03-02) fill-mask Trending: 1.0
-- growwithgarry/gwg (2025-01-15) text-to-image Trending: 1.0
-- Gryphe/MythoMax-L2-13b (2023-08-10) text-generation Trending: 1.0
-- hadadxyz/Qwen3-4B-Diversity (2026-04-06) text-generation Trending: 2.0
-- Hate-speech-CNERG/indic-abusive-allInOne-MuRIL (2022-04-24) text-classification Trending: 1.0
+- google/gemma-3-12b-it-qat-q4_0-unquantized (2025-04-08) image-text-to-text Trending: 4.0
+- google/gemma-3-27b-it (2025-03-01) image-text-to-text Trending: 4.0
+- google/gemma-4-26B-A4B-it (2026-03-11) image-text-to-text Trending: 51.0
+- google/gemma-4-31B-it (2026-03-11) image-text-to-text Trending: 86.0
+- google/gemma-7b (2024-02-08) text-generation Trending: 6.0
+- google/gemma-7b-it (2024-02-13) text-generation Trending: 1.0
+- google/pegasus-large (2022-03-02) summarization Trending: 1.0
+- google/pegasus-xsum (2022-03-02) summarization Trending: 1.0
+- google/shieldgemma-2b (2024-07-16) text-generation Trending: 1.0
+- google/shieldgemma-9b (2024-07-16) text-generation Trending: 1.0
+- google/vit-base-patch16-224 (2022-03-02) image-classification Trending: 1.0
+- grimjim/gemma-3-12b-it-norm-preserved-biprojected-abliterated (2025-11-05) image-text-to-text Trending: 1.0
+- haoranxu/X-ALMA-13B-Pretrain (2024-06-27) text-generation Trending: 1.0
+- haywoodsloan/ai-image-detector-dev-deploy (2025-01-13) image-classification Trending: 1.0
 - Helsinki-NLP/opus-mt-en-zh (2022-03-02) translation Trending: 1.0
-- Helsinki-NLP/opus-mt-es-en (2022-03-02) translation Trending: 1.0
-- Helsinki-NLP/opus-mt-zh-en (2022-03-02) translation Trending: 1.0
-- heretic-org/Qwen3-4B-Instruct-2507-heretic (2026-02-14) text-generation Trending: 1.0
-- heretic-org/XortronCriminalComputingConfig-heretic (2026-02-16) text-generation Trending: 3.0
-- hexgrad/Kokoro-82M (2024-12-26) text-to-speech Trending: 26.0
-- hfl/chinese-macbert-base (2022-03-02) fill-mask Trending: 1.0
+- Helsinki-NLP/opus-mt-th-en (2022-03-02) translation Trending: 2.0
+- hexgrad/Kokoro-82M (2024-12-26) text-to-speech Trending: 24.0
+- hfl/chinese-macbert-large (2022-03-02) fill-mask Trending: 1.0
 - hfl/chinese-roberta-wwm-ext (2022-03-02) fill-mask Trending: 1.0
-- HuggingFaceH4/zephyr-7b-alpha (2023-10-09) text-generation Trending: 1.0
-- huihui-ai/DeepSeek-R1-Distill-Llama-8B-abliterated (2025-01-22) text-generation Trending: 1.0
+- hfl/chinese-roberta-wwm-ext-large (2022-03-02) fill-mask Trending: 1.0
+- HiDream-ai/HiDream-I1-Dev (2025-04-06) text-to-image Trending: 2.0
+- HiDream-ai/HiDream-I1-Fast (2025-04-06) text-to-image Trending: 1.0
+- HiDream-ai/HiDream-I1-Full (2025-04-06) text-to-image Trending: 1.0
+- HiFei4869/artbench_expressionism_200 (2024-07-18) text-to-image Trending: 1.0
+- HuggingFaceFW/fineweb-edu-classifier (2024-05-06) text-classification Trending: 1.0
+- huihui-ai/DeepSeek-R1-Distill-Qwen-32B-abliterated (2025-01-22) text-generation Trending: 1.0
+- huihui-ai/Dolphin3.0-Llama3.1-8B-abliterated (2025-01-08) text-generation Trending: 1.0
 - huihui-ai/Huihui-Qwen3-4B-abliterated-v2 (2025-06-19) text-generation Trending: 1.0
-- huihui-ai/Huihui-Qwen3-8B-abliterated-v2 (2025-06-18) text-generation Trending: 1.0
-- huihui-ai/Mistral-Small-24B-Instruct-2501-abliterated (2025-02-01) text-generation Trending: 1.0
-- huihui-ai/Qwen2.5-14B-Instruct-abliterated-v2 (2024-10-09) text-generation Trending: 1.0
-- huihui-ai/Qwen2.5-72B-Instruct-abliterated (2024-10-26) text-generation Trending: 1.0
-- huihui-ai/Qwen2.5-Coder-1.5B-Instruct-abliterated (2024-10-01) text-generation Trending: 1.0
-- ibm-granite/granite-embedding-107m-multilingual (2024-12-04) sentence-similarity Trending: 1.0
-- ibm-granite/granite-embedding-278m-multilingual (2024-12-04) sentence-similarity Trending: 1.0
-- ibm-granite/granite-embedding-30m-english (2024-12-04) sentence-similarity Trending: 1.0
-- ibm-granite/granite-guardian-hap-125m (2024-09-05) text-classification Trending: 1.0
-- ibm-granite/granite-guardian-hap-38m (2024-09-05) text-classification Trending: 1.0
-- inclusionAI/Ling-1T (2025-10-02) text-generation Trending: 1.0
-- inclusionAI/Ling-2.6-1T (2026-04-29) text-generation Trending: 99.0
-- inference-net/Schematron-3B (2025-08-21) text-generation Trending: 1.0
-- InferenceIllusionist/MilkDropLM-32b-v0.3 (2024-12-10) text-generation Trending: 1.0
-- Intel/neural-chat-7b-v3-3 (2023-12-09) text-generation Trending: 1.0
-- Intelligent-Internet/II-Medical-8B (2025-05-12) text-generation Trending: 1.0
-- Intelligent-Internet/II-Search-4B (2025-08-05) text-generation Trending: 1.0
-- intfloat/multilingual-e5-large-instruct (2024-02-08) feature-extraction Trending: 2.0
-- intfloat/multilingual-e5-small (2023-06-30) sentence-similarity Trending: 3.0
+- huihui-ai/Llama-3.2-3B-Instruct-abliterated-finetuned (2024-11-08) text-generation Trending: 1.0
+- ibm-granite/granite-embedding-311m-multilingual-r2 (2026-04-20) feature-extraction Trending: 15.0
+- ibm-granite/granite-embedding-97m-multilingual-r2 (2026-04-20) feature-extraction Trending: 15.0
+- IIC/MEL (2025-02-21) feature-extraction Trending: 1.0
+- IIC/RigoChat-7b-v2 (2024-11-22) text-generation Trending: 1.0
+- ilkerzgi/Overlay-Kontext-Dev-LoRA (2025-07-15) image-to-image Trending: 1.0
+- inclusionAI/Ling-2.6-1T (2026-04-29) text-generation Trending: 23.5
+- InferenceIllusionist/MilkDropLM-7b-v0.3 (2024-12-06) text-generation Trending: 1.0
+- IniNLP247/Kenko-mental-health-llama-3-model (2025-09-10) text-generation Trending: 1.0
+- INSAIT-Institute/MamayLM-Gemma-3-12B-IT-v1.0 (2025-08-08) image-text-to-text Trending: 1.0
+- IntervitensInc/Mistral-Nemo-Base-2407-chatml (2024-07-27) text-generation Trending: 1.0
+- intfloat/multilingual-e5-base (2023-05-19) sentence-similarity Trending: 2.0
+- intfloat/multilingual-e5-large (2023-06-30) feature-extraction Trending: 3.0
+- intfloat/multilingual-e5-large-instruct (2024-02-08) feature-extraction Trending: 1.0
+- intfloat/multilingual-e5-small (2023-06-30) sentence-similarity Trending: 1.0
 - intuit/agent-tool-optimizer (2026-02-19) text-generation Trending: 1.0
-- j-hartmann/emotion-english-distilroberta-base (2022-03-02) text-classification Trending: 2.0
-- jackaduma/SecRoBERTa (2022-03-02) fill-mask Trending: 1.0
-- janhq/Jan-code-4b (2026-03-02) text-generation Trending: 1.0
-- jejunepixels/Hammershoi-Flux1-LoRA (2026-04-14) text-to-image Trending: 1.0
-- jejunepixels/Hammershoi-Flux2-LoRA (2026-04-17) text-to-image Trending: 1.0
-- jhgan/ko-sroberta-multitask (2022-03-02) sentence-similarity Trending: 1.0
-- jhu-clsp/mmBERT-base (2025-07-23) fill-mask Trending: 1.0
-- jinaai/ReaderLM-v2 (2025-01-13) text-generation Trending: 4.0
-- juliocho/sticker_lora (2026-03-26) text-to-image Trending: 1.0
-- katanemo/Arch-Router-1.5B (2025-05-30) text-generation Trending: 7.0
-- katanemo/Plano-Orchestrator-4B (2025-12-04) text-generation Trending: 1.0
-- Keltezaa/emily-blunt-flux (2024-10-25) text-to-image Trending: 1.0
+- j-hartmann/sentiment-roberta-large-english-3-classes (2022-03-02) text-classification Trending: 1.0
+- jhu-clsp/ettin-encoder-32m (2025-03-24) feature-extraction Trending: 1.0
+- jhu-clsp/mmBERT-small (2025-08-21) fill-mask Trending: 1.0
+- joeddav/xlm-roberta-large-xnli (2022-03-02) zero-shot-classification Trending: 1.0
+- jonathandinu/face-parsing (2022-07-06) image-segmentation Trending: 1.0
+- katanemo/Arch-Router-1.5B (2025-05-30) text-generation Trending: 3.0
+- Klingspor/Qwen3-4B-SFT (2025-05-13) text-generation Trending: 1.0
 - KoalaAI/Text-Moderation (2023-10-05) text-classification Trending: 1.0
-- KoboldAI/LLaMA2-13B-Tiefighter (2023-10-18) text-generation Trending: 1.0
-- KPF/KPF-bert-ner (2023-07-04) token-classification Trending: 1.0
+- Kukedlc/NeuralLLaMa-3-8b-ORPO-v0.3 (2024-05-14) text-generation Trending: 1.0
+- Kukedlc/NeuralSynthesis-7b-v0.4-slerp (2024-04-12) text-generation Trending: 1.0
 - Kwai-Kolors/Kolors (2024-06-05) text-to-image Trending: 1.0
-- Kwaipilot/KAT-Dev (2025-09-15) text-generation Trending: 1.0
 - kyx0r/Neona-12B (2025-06-22) text-generation Trending: 1.0
-- Lajavaness/sentence-camembert-large (2023-10-25) sentence-similarity Trending: 1.0
-- law-ai/InLegalBERT (2022-09-11) fill-mask Trending: 2.0
-- lightonai/modernbert-embed-large (2025-01-13) sentence-similarity Trending: 1.0
-- Lightricks/gemma-3-12b-it-qat-q4_0-unquantized (2026-03-04) image-text-to-text Trending: 1.0
+- LatitudeGames/Wayfarer-12B (2025-01-03) text-generation Trending: 1.0
+- law-ai/InLegalBERT (2022-09-11) fill-mask Trending: 1.0
+- lianghsun/Llama-3.2-Taiwan-3B-Instruct (2024-11-19) text-generation Trending: 1.0
+- lightonai/DenseOn (2026-03-13) sentence-similarity Trending: 1.0
 - Lightricks/LTX-2 (2026-01-03) image-to-video Trending: 11.0
-- Lightricks/LTX-2-19b-LoRA-Camera-Control-Dolly-In (2026-01-05) text-to-video Trending: 1.0
-- Lightricks/LTX-Video (2024-10-31) image-to-video Trending: 6.0
+- Lightricks/LTX-Video (2024-10-31) image-to-video Trending: 5.0
 - lightx2v/Qwen-Image-Edit-2511-Lightning (2025-12-22) image-to-image Trending: 3.0
 - lightx2v/Qwen-Image-Lightning (2025-08-09) text-to-image Trending: 1.0
-- lilylilith/AnyPose (2025-12-25) image-to-image Trending: 4.0
-- llmfan46/Mistral-Small-3.2-24B-Instruct-2506-ultra-uncensored-heretic (2026-03-19) image-text-to-text Trending: 2.0
-- LocoreMind/LocoOperator-4B (2026-02-23) text-generation Trending: 1.0
-- lovis93/Flux-2-Multi-Angles-LoRA-v2 (2025-12-01) image-to-image Trending: 5.0
-- lovis93/next-scene-qwen-image-lora-2509 (2025-09-26) image-to-image Trending: 7.0
-- lrzjason/Anything2Real (2026-01-03) image-to-image Trending: 2.0
+- lightx2v/Wan2.2-Distill-Loras (2025-10-16) image-to-video Trending: 4.0
+- likewendy/pandora-edit (2025-12-09) image-to-image Trending: 1.0
+- lilylilith/AnyPose (2025-12-25) image-to-image Trending: 2.0
+- lilylilith/QIE-2511-MP-AnyLight (2026-01-20) image-to-image Trending: 1.0
+- lmsys/vicuna-7b-v1.5 (2023-07-29) text-generation Trending: 2.0
+- lordjia/by-feng-zikai (2023-11-19) text-to-image Trending: 1.0
+- lovis93/Flux-2-Multi-Angles-LoRA-v2 (2025-12-01) image-to-image Trending: 8.0
+- lovis93/next-scene-qwen-image-lora-2509 (2025-09-26) image-to-image Trending: 5.0
+- lrzjason/QwenEdit-Anything2Real_Alpha (2025-11-12) image-to-image Trending: 2.0
 - m42-health/Llama3-Med42-8B (2024-07-02) text-generation Trending: 1.0
-- mainguyen9/vietlegal-harrier-0.6b (2026-04-04) sentence-similarity Trending: 2.0
-- mattmdjaga/segformer_b2_clothes (2022-11-24) image-segmentation Trending: 3.0
-- medicalai/ClinicalBERT (2023-03-19) fill-mask Trending: 2.0
+- marefa-nlp/marefa-ner (2022-03-02) token-classification Trending: 1.0
+- medicalai/ClinicalBERT (2023-03-19) fill-mask Trending: 1.0
 - meituan-longcat/LongCat-Image (2025-12-04) text-to-image Trending: 1.0
-- meituan-longcat/LongCat-Image-Edit (2025-12-05) image-to-image Trending: 1.0
-- meituan-longcat/LongCat-Video (2025-10-24) text-to-video Trending: 3.0
-- meta-llama/Llama-3.1-8B (2024-07-14) text-generation Trending: 5.0
-- meta-llama/Llama-3.1-8B-Instruct (2024-07-18) text-generation Trending: 17.0
-- meta-llama/Llama-3.2-1B-Instruct (2024-09-18) text-generation Trending: 7.0 🥉
-- meta-llama/Llama-3.3-70B-Instruct (2024-11-26) text-generation Trending: 9.0
-- meta-llama/Llama-4-Maverick-17B-128E-Instruct (2025-04-01) image-text-to-text Trending: 2.0
-- meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8 (2025-04-01) image-text-to-text Trending: 1.0
-- meta-llama/Llama-4-Scout-17B-16E-Instruct (2025-04-02) image-text-to-text Trending: 4.0
-- meta-llama/Llama-Guard-3-8B (2024-07-22) text-generation Trending: 1.0
-- meta-llama/Llama-Guard-4-12B (2025-04-23) image-text-to-text Trending: 1.0
+- meituan-longcat/LongCat-Image-Edit (2025-12-05) image-to-image Trending: 3.0
+- meta-llama/Llama-3.1-70B-Instruct (2024-07-16) text-generation Trending: 1.0
+- meta-llama/Llama-3.1-8B (2024-07-14) text-generation Trending: 6.0
+- meta-llama/Llama-3.1-8B-Instruct (2024-07-18) text-generation Trending: 15.0
+- meta-llama/Llama-3.2-1B (2024-09-18) text-generation Trending: 1.0
+- meta-llama/Llama-3.2-1B-Instruct (2024-09-18) text-generation Trending: 5.0 🥉
+- meta-llama/Llama-3.2-3B (2024-09-18) text-generation Trending: 4.0
+- meta-llama/Llama-3.3-70B-Instruct (2024-11-26) text-generation Trending: 5.0
+- meta-llama/Llama-4-Maverick-17B-128E-Instruct (2025-04-01) image-text-to-text Trending: 1.0
+- meta-llama/Llama-Guard-3-8B (2024-07-22) text-generation Trending: 2.0
+- meta-llama/Llama-Guard-4-12B (2025-04-23) image-text-to-text Trending: 2.0
 - meta-llama/Llama-Prompt-Guard-2-22M (2025-04-28) text-classification Trending: 2.0
-- meta-llama/Meta-Llama-3-70B-Instruct (2024-04-17) text-generation Trending: 1.0
-- meta-llama/Meta-Llama-3-8B (2024-04-17) text-generation Trending: 6.0
-- meta-llama/Meta-Llama-3-8B-Instruct (2024-04-17) text-generation Trending: 6.0
-- meta-llama/Prompt-Guard-86M (2024-07-21) text-classification Trending: 3.0
-- michiyasunaga/BioLinkBERT-large (2022-03-08) text-classification Trending: 1.0
-- microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract (2022-03-02) fill-mask Trending: 1.0
-- microsoft/BiomedNLP-BiomedBERT-base-uncased-abstract-fulltext (2022-03-02) fill-mask Trending: 1.0
+- meta-llama/Meta-Llama-3-8B (2024-04-17) text-generation Trending: 2.0
+- meta-llama/Meta-Llama-3-8B-Instruct (2024-04-17) text-generation Trending: 11.0
+- meta-llama/Prompt-Guard-86M (2024-07-21) text-classification Trending: 1.0
 - microsoft/deberta-base (2022-03-02) fill-mask Trending: 1.0
-- microsoft/deberta-v3-base (2022-03-02) fill-mask Trending: 2.0
+- microsoft/deberta-v3-large (2022-03-02) fill-mask Trending: 2.0
 - microsoft/deberta-v3-small (2022-03-02) fill-mask Trending: 1.0
-- microsoft/FrogBoss-32B-2510 (2026-01-05) text-generation Trending: 1.0
-- microsoft/harrier-oss-v1-0.6b (2026-03-30) feature-extraction Trending: 3.0
-- microsoft/harrier-oss-v1-270m (2026-03-30) feature-extraction Trending: 6.0
-- microsoft/llmlingua-2-xlm-roberta-large-meetingbank (2024-03-17) token-classification Trending: 1.0
-- microsoft/mdeberta-v3-base (2022-03-02) fill-mask Trending: 1.0
+- microsoft/harrier-oss-v1-0.6b (2026-03-30) feature-extraction Trending: 6.0
+- microsoft/harrier-oss-v1-270m (2026-03-30) feature-extraction Trending: 2.0
+- microsoft/phi-2 (2023-12-13) text-generation Trending: 1.0
+- microsoft/Phi-3-mini-4k-instruct (2024-04-22) text-generation Trending: 2.0
 - microsoft/Phi-4-mini-instruct (2025-02-19) text-generation Trending: 3.0
+- microsoft/Phi-4-mini-reasoning (2025-04-29) text-generation Trending: 3.0
 - microsoft/resnet-18 (2022-03-16) image-classification Trending: 1.0
-- microsoft/swin-base-patch4-window7-224 (2022-03-02) image-classification Trending: 1.0
-- microsoft/unixcoder-base (2022-03-23) feature-extraction Trending: 1.0
-- MiniMaxAI/MiniMax-M2.5 (2026-02-12) text-generation Trending: 5.0
-- MiniMaxAI/MiniMax-M2.7 (2026-04-09) text-generation Trending: 32.0
-- mistralai/Mistral-Nemo-Base-2407 (2024-07-18)  Trending: 1.0
-- mistralai/Pixtral-12B-2409 (2024-09-11)  Trending: 2.0
-- mixedbread-ai/mxbai-embed-xsmall-v1 (2024-09-13) feature-extraction Trending: 1.0
-- mlabonne/gemma-3-27b-it-abliterated (2025-03-16) image-text-to-text Trending: 2.0
-- mlabonne/Hermes-3-Llama-3.1-8B-lorablated (2024-08-16) text-generation Trending: 1.0
-- mlabonne/NeuralDaredevil-8B-abliterated (2024-05-27) text-generation Trending: 1.0
+- microsoft/swin-tiny-patch4-window7-224 (2022-03-02) image-classification Trending: 1.0
+- MiniMaxAI/MiniMax-M2.1 (2025-12-20) text-generation Trending: 2.0
+- MiniMaxAI/MiniMax-M2.5 (2026-02-12) text-generation Trending: 4.0
+- MiniMaxAI/MiniMax-M2.7 (2026-04-09) text-generation Trending: 11.0
+- MiniMaxAI/SynLogic-32B (2025-05-30) text-generation Trending: 1.0
+- MiniMaxAI/SynLogic-7B (2025-06-03) text-generation Trending: 2.0
+- MiniMaxAI/SynLogic-Mix-3-32B (2025-05-30) text-generation Trending: 1.0
+- miromind-ai/MiroThinker-v1.5-30B (2026-01-04) text-generation Trending: 1.0
+- mistralai/Mistral-7B-Instruct-v0.2 (2023-12-11) text-generation Trending: 3.0
+- mistralai/Mistral-7B-v0.1 (2023-09-20) text-generation Trending: 4.0
+- mixedbread-ai/mxbai-embed-large-v1 (2024-03-07) feature-extraction Trending: 4.0
+- mlabonne/gemma-3-12b-it-abliterated (2025-03-16) image-text-to-text Trending: 1.0
+- mlfoundations-dev/llama3-1_8b_mlfoundations-dev-stackexchange_reverseengineering (2024-12-25) text-generation Trending: 1.0
+- MLP-KTLim/llama-3-Korean-Bllossom-8B (2024-04-25) text-generation Trending: 1.0
 - mookiezii/Discord-Hermes-3-8B (2025-08-25) text-generation Trending: 1.0
-- moonshotai/Kimi-Dev-72B (2025-06-16) text-generation Trending: 1.0
-- moonshotai/Kimi-K2-Instruct-0905 (2025-09-03) text-generation Trending: 1.0
-- moonshotai/Kimi-K2-Thinking (2025-11-04) text-generation Trending: 1.0
-- moonshotai/Kimi-K2.5 (2026-01-01) image-text-to-text Trending: 11.0
-- moonshotai/Kimi-K2.6 (2026-04-14) image-text-to-text Trending: 134.0
+- moonshotai/Kimi-K2-Instruct (2025-07-11) text-generation Trending: 1.0
+- moonshotai/Kimi-K2.5 (2026-01-01) image-text-to-text Trending: 3.0
+- moonshotai/Kimi-K2.6 (2026-04-14) image-text-to-text Trending: 53.0
 - moonshotai/Kimi-Linear-48B-A3B-Instruct (2025-10-30) text-generation Trending: 1.0
 - MoritzLaurer/bge-m3-zeroshot-v2.0 (2024-04-02) zero-shot-classification Trending: 1.0
+- MoritzLaurer/DeBERTa-v3-large-mnli-fever-anli-ling-wanli (2022-06-06) zero-shot-classification Trending: 1.0
 - MoritzLaurer/mDeBERTa-v3-base-mnli-xnli (2022-03-02) zero-shot-classification Trending: 1.0
-- MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7 (2022-08-22) zero-shot-classification Trending: 2.0
-- mpi-inno-comp/paecter (2024-02-29) sentence-similarity Trending: 1.0
-- mrcuddle/live2d-model-maker (2024-12-11) text-to-image Trending: 1.0
-- mrm8488/distilroberta-finetuned-financial-news-sentiment-analysis (2022-03-02) text-classification Trending: 1.0
-- mukund/privbert (2022-03-02) fill-mask Trending: 1.0
-- MuXodious/Nemotron-Cascade-14B-Thinking-impotent-heresy (2026-01-18) text-generation Trending: 1.0
-- Nanbeige/Nanbeige4.1-3B (2026-02-10) text-generation Trending: 4.0
-- ncbi/MedCPT-Cross-Encoder (2023-11-26) text-classification Trending: 2.0
-- NECOUDBFM/Jellyfish-8B (2024-04-23) text-generation Trending: 1.0
+- MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7 (2022-08-22) zero-shot-classification Trending: 3.0
+- moussaKam/barthez (2022-03-02) fill-mask Trending: 1.0
+- mrm8488/distilroberta-finetuned-financial-news-sentiment-analysis (2022-03-02) text-classification Trending: 2.0
+- mshenoda/roberta-spam (2023-06-04) text-classification Trending: 1.0
+- muverqqw/Noir-Ultra (2026-03-01) text-generation Trending: 1.0
+- MysteriousAI/Mia-1B (2024-04-05) text-generation Trending: 1.0
+- Nanbeige/Nanbeige4.1-3B (2026-02-10) text-generation Trending: 3.0
+- Naphula/Slimaki-24B-v1.2 (2026-04-23) text-generation Trending: 1.0
+- NbAiLab/borealis-1b-instruct-preview-mlx (2026-02-07) image-text-to-text Trending: 1.0
+- neo4j/text-to-cypher-Gemma-3-4B-Instruct-2025.04.0 (2025-04-02) text-generation Trending: 1.0
 - nerijs/pixel-art-xl (2023-08-03) text-to-image Trending: 3.0
-- netease-youdao/Confucius-o1-14B (2025-01-20) text-generation Trending: 1.0
-- NeuML/pubmedbert-base-embeddings (2023-10-18) sentence-similarity Trending: 1.0
-- neuralmind/bert-base-portuguese-cased (2022-03-02) fill-mask Trending: 1.0
-- nguyenthanhthuan/Llama_3.2_1B_Intruct_Tool_Calling_V2 (2024-10-28) text-generation Trending: 1.0
+- neuralmind/bert-base-portuguese-cased (2022-03-02) fill-mask Trending: 3.0
 - Nitral-AI/Captain-Eris_Violet-V0.420-12B (2024-12-16) text-generation Trending: 1.0
-- nlpai-lab/KURE-v1 (2024-12-18) feature-extraction Trending: 1.0
-- nothingiisreal/MN-12B-Celeste-V1.9 (2024-07-31) text-generation Trending: 1.0
-- NousResearch/DeepHermes-3-Llama-3-8B-Preview (2025-02-12) text-generation Trending: 1.0
-- NousResearch/Genstruct-7B (2024-01-05) text-generation Trending: 1.0
-- NousResearch/Hermes-2-Pro-Mistral-7B (2024-03-11) text-generation Trending: 1.0
-- NousResearch/Hermes-2-Theta-Llama-3-70B (2024-06-14) text-generation Trending: 1.0
-- NousResearch/Hermes-2-Theta-Llama-3-8B (2024-05-05) text-generation Trending: 1.0
-- NousResearch/Hermes-3-Llama-3.1-8B (2024-07-28) text-generation Trending: 1.0
-- NousResearch/Hermes-3-Llama-3.2-3B (2024-12-03) text-generation Trending: 1.0
-- NousResearch/Hermes-4-14B (2025-08-30) text-generation Trending: 4.0
-- NucleusAI/Nucleus-Image (2026-03-17) text-to-image Trending: 13.0
-- numind/NuExtract-1.5-tiny (2024-09-26) text-generation Trending: 1.0
-- nvidia/mit-b5 (2022-03-02) image-classification Trending: 1.0
-- nvidia/Nemotron-Cascade-8B (2025-12-16) text-generation Trending: 1.0
-- nvidia/Nemotron-Content-Safety-Reasoning-4B (2025-11-26) text-generation Trending: 1.0
-- nvidia/Nemotron-Orchestrator-8B (2025-11-25) text-generation Trending: 4.0
-- nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-BF16 (2026-03-10) text-generation Trending: 4.0
-- nvidia/OpenReasoning-Nemotron-32B (2025-07-15) text-generation Trending: 1.0
+- nlp04/korean_sentiment_analysis_kcelectra (2023-01-17) text-classification Trending: 1.0
+- NousResearch/Hermes-3-Llama-3.1-8B (2024-07-28) text-generation Trending: 2.0
+- NousResearch/Hermes-4-14B (2025-08-30) text-generation Trending: 3.0
+- NousResearch/Hermes-4-70B (2025-08-18) text-generation Trending: 1.0
+- NousResearch/Minos-v1 (2025-04-24) text-classification Trending: 1.0
+- ntc-ai/SDXL-LoRA-slider.cinematic-lighting (2024-01-27) text-to-image Trending: 1.0
+- ntc-ai/SDXL-LoRA-slider.sexy (2023-12-17) text-to-image Trending: 1.0
+- NucleusAI/Nucleus-Image (2026-03-17) text-to-image Trending: 7.0
+- nvidia/Nemotron-Orchestrator-8B (2025-11-25) text-generation Trending: 1.0
+- nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-BF16 (2026-03-10) text-generation Trending: 8.0
 - Octen/Octen-Embedding-0.6B (2026-01-10) sentence-similarity Trending: 1.0
-- oliverguhr/german-sentiment-bert (2022-03-02) text-classification Trending: 1.0
-- openai/gpt-oss-120b (2025-08-04) text-generation Trending: 18.0
-- openai/gpt-oss-20b (2025-08-04) text-generation Trending: 14.0
-- openai/gpt-oss-safeguard-20b (2025-09-18) text-generation Trending: 3.0
-- openai/whisper-large-v3 (2023-11-07) automatic-speech-recognition Trending: 15.0
-- openai/whisper-large-v3-turbo (2024-10-01) automatic-speech-recognition Trending: 12.0
-- openbmb/AgentCPM-Explore (2026-01-11) text-generation Trending: 1.0
-- openfree/flux-chatgpt-ghibli-lora (2025-03-28) text-to-image Trending: 1.0
+- oliverguhr/fullstop-punctuation-multilang-large (2022-03-02) token-classification Trending: 1.0
+- olob0/z-image-turbo-brazillian-male-realism-lora-v2 (2026-04-29) text-to-image Trending: 1.0
+- openai/gpt-oss-120b (2025-08-04) text-generation Trending: 14.0
+- openai/gpt-oss-20b (2025-08-04) text-generation Trending: 11.0
+- openai/gpt-oss-safeguard-20b (2025-09-18) text-generation Trending: 1.0
+- openai/whisper-large-v3 (2023-11-07) automatic-speech-recognition Trending: 14.0
+- openai/whisper-large-v3-turbo (2024-10-01) automatic-speech-recognition Trending: 9.0
 - OpenMed/OpenMed-NER-GenomicDetect-PubMed-109M (2025-07-18) token-classification Trending: 1.0
-- OpenMed/OpenMed-NER-PharmaDetect-SuperClinical-434M (2025-07-16) token-classification Trending: 1.0
-- OpenMed/OpenMed-PII-SuperClinical-Small-44M-v1 (2026-01-13) token-classification Trending: 2.0
-- Orenguteng/Llama-3.1-8B-Lexi-Uncensored-V2 (2024-08-09) text-generation Trending: 1.0
-- ostris/face-helper-sdxl-lora (2023-09-15) text-to-image Trending: 1.0
-- oumoumad/LumiPic (2026-04-03) image-to-image Trending: 34.0
-- p-e-w/Llama-3.1-8B-Instruct-heretic (2025-11-15) text-generation Trending: 1.0
-- PixelSmile/PixelSmile (2026-03-24) image-to-image Trending: 1.0
-- PleIAs/OCRonos (2024-06-01) text-generation Trending: 1.0
-- pmczip/Z-Image-Turbo_Models (2026-01-06) text-to-image Trending: 3.0
-- PocketDoc/Dans-PersonalityEngine-V1.3.0-12b (2025-05-08) text-generation Trending: 1.0
-- principled-intelligence/scope-guard-4B-q-2601 (2026-01-19) text-generation Trending: 2.0
-- prithivMLmods/Flux-GArt-LoRA (2024-11-23) text-to-image Trending: 1.0
-- prithivMLmods/QIE-2511-3D-Paper-Cut-Illustration (2026-04-19) image-to-image Trending: 4.0
-- prithivMLmods/Qwen-Image-Edit-2511-Ultra-Realistic-Portrait (2026-01-17) image-to-image Trending: 1.0
-- prithivMLmods/Qwen-Image-Edit-2511-Unblur-Upscale (2026-01-12) image-to-image Trending: 5.0
+- OpenMed/OpenMed-PII-SuperClinical-Small-44M-v1 (2026-01-13) token-classification Trending: 1.0
+- Organika/sdxl-detector (2023-12-31) image-classification Trending: 2.0
+- ostris/zimage_turbo_training_adapter (2025-11-28) text-to-image Trending: 1.0
+- oumoumad/fluid-space-lora (2026-01-14) text-to-video Trending: 1.0
+- oumoumad/LumiPic (2026-04-03) image-to-image Trending: 9.0
+- ovi054/Draw2Photo-Kontext-LoRA (2025-09-23) image-to-image Trending: 1.0
+- ovi054/extract-clothes-kontext-dev-lora (2025-09-25) image-to-image Trending: 1.0
+- ovi054/QIE-2511-Color-Grade-Transfer-LoRA (2026-05-06) image-to-image Trending: 4.0
+- ovi054/QIE-2511-Draw2Photo-LoRA (2026-05-06) image-to-image Trending: 4.0
+- ovi054/virtual-tryon-kontext-lora (2025-09-25) image-to-image Trending: 1.0
+- PatronusAI/Llama-3-Patronus-Lynx-8B-Instruct (2024-07-03) text-generation Trending: 1.0
+- Phosl/Phospi (2026-02-19) text-to-image Trending: 1.0
+- pkshatech/GLuCoSE-base-ja-v2 (2024-08-22) sentence-similarity Trending: 1.0
+- playboy40k/flux-DuaLipaLora (2024-12-16) text-to-image Trending: 1.0
+- PocketDoc/Dans-PersonalityEngine-V1.3.0-24b (2025-05-08) text-generation Trending: 1.0
+- Polygl0t/Tucano2-qwen-3.7B-Instruct (2026-02-12) text-generation Trending: 1.0
+- pritamdeka/PubMedBERT-MNLI-MedNLI (2023-05-29) text-classification Trending: 1.0
+- prithivMLmods/Flux.1-Dev-Indo-Realism-LoRA (2024-11-18) text-to-image Trending: 1.0
+- prithivMLmods/Kontext-Watermark-Remover (2025-10-27) image-to-image Trending: 1.0
+- prithivMLmods/Llama-Doctor-3.2-3B-Instruct (2024-11-16) text-generation Trending: 1.0
+- prithivMLmods/QIE-2511-3D-Paper-Cut-Illustration (2026-04-19) image-to-image Trending: 1.0
+- prithivMLmods/QIE-2511-Cinematic-FlatLog-Control (2026-02-05) image-to-image Trending: 1.0
+- prithivMLmods/QIE-2511-Extract-Outfit (2026-01-25) image-to-image Trending: 2.0
+- prithivMLmods/QIE-2511-Guided-Head-Face-Swap (2026-02-06) image-to-image Trending: 2.0
+- prithivMLmods/QIE-2511-Zoom-Master (2026-01-22) image-to-image Trending: 1.0
+- prithivMLmods/Qwen-Image-Edit-2511-Anime (2026-01-02) image-to-image Trending: 1.0
+- prithivMLmods/Qwen-Image-Edit-2511-Object-Adder (2026-01-04) image-to-image Trending: 1.0
+- prithivMLmods/Qwen-Image-Edit-2511-Object-Remover (2026-01-03) image-to-image Trending: 1.0
+- prithivMLmods/Qwen-Image-Edit-2511-Ultra-Realistic-Portrait (2026-01-17) image-to-image Trending: 2.0
+- prithivMLmods/Seamless-Pattern-Design-Flux-LoRA (2024-11-03) text-to-image Trending: 2.0
 - prometheus-eval/prometheus-7b-v2.0 (2024-02-13) text-generation Trending: 1.0
-- ProsusAI/finbert (2022-03-02) text-classification Trending: 1.0
-- pythainlp/thainer-corpus-v2-base-model (2023-03-22) token-classification Trending: 1.0
-- Qwen/Qwen-Image (2025-08-02) text-to-image Trending: 3.0
-- Qwen/Qwen-Image-2512 (2025-12-30) text-to-image Trending: 6.0
-- Qwen/Qwen-Image-Edit (2025-08-17) image-to-image Trending: 4.0
-- Qwen/Qwen-Image-Edit-2509 (2025-09-22) image-to-image Trending: 8.0
+- ProsusAI/finbert (2022-03-02) text-classification Trending: 7.0
+- QuantaSparkLabs/NYXIS-1.1B (2026-02-23) text-generation Trending: 1.0
+- Quockhanh05/Vietnam_legal_embeddings (2025-12-15) sentence-similarity Trending: 1.0
+- Qwen/Qwen-Image (2025-08-02) text-to-image Trending: 4.0
+- Qwen/Qwen-Image-2512 (2025-12-30) text-to-image Trending: 10.0
+- Qwen/Qwen-Image-Edit (2025-08-17) image-to-image Trending: 3.0
+- Qwen/Qwen-Image-Edit-2509 (2025-09-22) image-to-image Trending: 4.0
 - Qwen/Qwen-Image-Edit-2511 (2025-12-17) image-to-image Trending: 10.0
-- Qwen/Qwen2-0.5B (2024-05-31) text-generation Trending: 1.0
-- Qwen/Qwen2.5-0.5B (2024-09-15) text-generation Trending: 4.0
-- Qwen/Qwen2.5-0.5B-Instruct (2024-09-16) text-generation Trending: 3.0
-- Qwen/Qwen2.5-1.5B-Instruct (2024-09-17) text-generation Trending: 5.0
+- Qwen/Qwen2.5-0.5B (2024-09-15) text-generation Trending: 1.0
+- Qwen/Qwen2.5-0.5B-Instruct (2024-09-16) text-generation Trending: 2.0
+- Qwen/Qwen2.5-1.5B-Instruct (2024-09-17) text-generation Trending: 6.0
+- Qwen/Qwen2.5-14B (2024-09-15) text-generation Trending: 1.0
+- Qwen/Qwen2.5-14B-Instruct (2024-09-16) text-generation Trending: 1.0
 - Qwen/Qwen2.5-14B-Instruct-1M (2025-01-23) text-generation Trending: 1.0
-- Qwen/Qwen2.5-32B-Instruct (2024-09-17) text-generation Trending: 2.0
-- Qwen/Qwen2.5-3B-Instruct (2024-09-17) text-generation Trending: 1.0
-- Qwen/Qwen2.5-72B (2024-09-15) text-generation Trending: 1.0
-- Qwen/Qwen2.5-72B-Instruct (2024-09-16) text-generation Trending: 4.0
-- Qwen/Qwen2.5-7B-Instruct (2024-09-16) text-generation Trending: 14.0
-- Qwen/Qwen2.5-Coder-0.5B (2024-11-08) text-generation Trending: 1.0
-- Qwen/Qwen2.5-Coder-1.5B (2024-09-18) text-generation Trending: 2.0
-- Qwen/Qwen2.5-Coder-1.5B-Instruct (2024-09-18) text-generation Trending: 1.0
-- Qwen/Qwen2.5-Coder-14B-Instruct (2024-11-06) text-generation Trending: 1.0
-- Qwen/Qwen2.5-Coder-32B-Instruct (2024-11-06) text-generation Trending: 4.0
-- Qwen/Qwen2.5-Coder-3B-Instruct (2024-11-06) text-generation Trending: 3.0
-- Qwen/Qwen2.5-Coder-7B (2024-09-16) text-generation Trending: 1.0
-- Qwen/Qwen2.5-Coder-7B-Instruct (2024-09-17) text-generation Trending: 6.0
-- Qwen/Qwen2.5-Math-1.5B (2024-09-16) text-generation Trending: 1.0
-- Qwen/Qwen2.5-VL-72B-Instruct (2025-01-27) image-text-to-text Trending: 2.0
-- Qwen/Qwen3-0.6B (2025-04-27) text-generation Trending: 11.0
-- Qwen/Qwen3-0.6B-Base (2025-04-28) text-generation Trending: 1.0
-- Qwen/Qwen3-1.7B (2025-04-27) text-generation Trending: 2.0
+- Qwen/Qwen2.5-32B (2024-09-15) text-generation Trending: 1.0
+- Qwen/Qwen2.5-3B-Instruct (2024-09-17) text-generation Trending: 2.0
+- Qwen/Qwen2.5-7B-Instruct (2024-09-16) text-generation Trending: 13.0
+- Qwen/Qwen2.5-Coder-0.5B (2024-11-08) text-generation Trending: 3.0
+- Qwen/Qwen2.5-Coder-0.5B-Instruct (2024-11-06) text-generation Trending: 1.0
+- Qwen/Qwen2.5-Coder-14B (2024-11-08) text-generation Trending: 1.0
+- Qwen/Qwen2.5-Coder-14B-Instruct (2024-11-06) text-generation Trending: 2.0
+- Qwen/Qwen2.5-Coder-32B-Instruct (2024-11-06) text-generation Trending: 3.0
+- Qwen/Qwen2.5-Coder-3B (2024-11-08) text-generation Trending: 2.0
+- Qwen/Qwen2.5-Coder-3B-Instruct (2024-11-06) text-generation Trending: 1.0
+- Qwen/Qwen2.5-Coder-7B-Instruct (2024-09-17) text-generation Trending: 2.0
+- Qwen/Qwen2.5-VL-72B-Instruct (2025-01-27) image-text-to-text Trending: 1.0
+- Qwen/Qwen3-0.6B (2025-04-27) text-generation Trending: 14.0
+- Qwen/Qwen3-0.6B-Base (2025-04-28) text-generation Trending: 4.0
+- Qwen/Qwen3-1.7B (2025-04-27) text-generation Trending: 4.0
 - Qwen/Qwen3-14B (2025-04-27) text-generation Trending: 1.0
-- Qwen/Qwen3-235B-A22B (2025-04-27) text-generation Trending: 1.0
-- Qwen/Qwen3-235B-A22B-Instruct-2507 (2025-07-21) text-generation Trending: 1.0
-- Qwen/Qwen3-30B-A3B (2025-04-27) text-generation Trending: 2.0
-- Qwen/Qwen3-30B-A3B-Instruct-2507 (2025-07-28) text-generation Trending: 3.0
-- Qwen/Qwen3-32B (2025-04-27) text-generation Trending: 2.0
-- Qwen/Qwen3-4B (2025-04-27) text-generation Trending: 2.0
-- Qwen/Qwen3-4B-Base (2025-04-28) text-generation Trending: 1.0
+- Qwen/Qwen3-235B-A22B-Instruct-2507 (2025-07-21) text-generation Trending: 3.0
+- Qwen/Qwen3-30B-A3B (2025-04-27) text-generation Trending: 1.0
+- Qwen/Qwen3-30B-A3B-Instruct-2507 (2025-07-28) text-generation Trending: 1.0
+- Qwen/Qwen3-4B (2025-04-27) text-generation Trending: 3.0
 - Qwen/Qwen3-4B-Instruct-2507 (2025-08-05) text-generation Trending: 7.0
-- Qwen/Qwen3-4B-SafeRL (2025-09-30) text-generation Trending: 1.0
-- Qwen/Qwen3-8B (2025-04-27) text-generation Trending: 5.0
+- Qwen/Qwen3-4B-Thinking-2507 (2025-08-05) text-generation Trending: 2.0
+- Qwen/Qwen3-8B (2025-04-27) text-generation Trending: 11.0
 - Qwen/Qwen3-8B-Base (2025-04-28) text-generation Trending: 1.0
-- Qwen/Qwen3-Coder-30B-A3B-Instruct (2025-07-31) text-generation Trending: 10.0
-- Qwen/Qwen3-Coder-480B-A35B-Instruct-FP8 (2025-07-22) text-generation Trending: 1.0
-- Qwen/Qwen3-Coder-Next (2026-01-30) text-generation Trending: 12.0
+- Qwen/Qwen3-Coder-30B-A3B-Instruct (2025-07-31) text-generation Trending: 12.0
+- Qwen/Qwen3-Coder-480B-A35B-Instruct (2025-07-22) text-generation Trending: 2.0 🥈
+- Qwen/Qwen3-Coder-Next (2026-01-30) text-generation Trending: 19.0
 - Qwen/Qwen3-Coder-Next-FP8 (2026-02-01) text-generation Trending: 2.0
-- Qwen/Qwen3-Embedding-8B (2025-06-03) feature-extraction Trending: 9.0
-- Qwen/Qwen3-VL-235B-A22B-Thinking (2025-09-22) image-text-to-text Trending: 1.0
-- Qwen/Qwen3-VL-30B-A3B-Instruct (2025-09-30) image-text-to-text Trending: 2.0
-- Qwen/Qwen3-VL-30B-A3B-Thinking (2025-09-30) image-text-to-text Trending: 1.0
-- Qwen/Qwen3-VL-8B-Instruct (2025-10-11) image-text-to-text Trending: 1.0
-- Qwen/Qwen3.5-122B-A10B (2026-02-24) image-text-to-text Trending: 6.0
-- Qwen/Qwen3.5-27B (2026-02-24) image-text-to-text Trending: 7.0
+- Qwen/Qwen3-Embedding-8B (2025-06-03) feature-extraction Trending: 1.0
+- Qwen/Qwen3-Next-80B-A3B-Instruct (2025-09-09) text-generation Trending: 4.0
+- Qwen/Qwen3-VL-235B-A22B-Instruct (2025-09-22) image-text-to-text Trending: 2.0
+- Qwen/Qwen3-VL-235B-A22B-Thinking (2025-09-22) image-text-to-text Trending: 2.0
+- Qwen/Qwen3-VL-30B-A3B-Instruct (2025-09-30) image-text-to-text Trending: 1.0
+- Qwen/Qwen3-VL-8B-Instruct (2025-10-11) image-text-to-text Trending: 11.0
+- Qwen/Qwen3.5-122B-A10B (2026-02-24) image-text-to-text Trending: 4.0
+- Qwen/Qwen3.5-27B (2026-02-24) image-text-to-text Trending: 3.0
 - Qwen/Qwen3.5-35B-A3B (2026-02-24) image-text-to-text Trending: 8.0
-- Qwen/Qwen3.5-397B-A17B (2026-02-16) image-text-to-text Trending: 2.0 🥈
-- Qwen/Qwen3.5-4B (2026-02-27) image-text-to-text Trending: 19.0
-- Qwen/Qwen3.5-9B (2026-02-27) image-text-to-text Trending: 23.0
-- Qwen/Qwen3.6-35B-A3B (2026-04-15) image-text-to-text Trending: 147.0
-- Qwen/Qwen3Guard-Gen-0.6B (2025-09-23) text-generation Trending: 2.0
-- Qwen/Qwen3Guard-Gen-4B (2025-09-23) text-generation Trending: 2.0
-- Qwen/QwQ-32B (2025-03-05) text-generation Trending: 2.0
-- RedHatAI/Meta-Llama-3-8B-Instruct-FP8-KV (2024-05-20) text-generation Trending: 2.0
+- Qwen/Qwen3.5-397B-A17B (2026-02-16) image-text-to-text Trending: 5.0
+- Qwen/Qwen3.5-4B (2026-02-27) image-text-to-text Trending: 13.0
+- Qwen/Qwen3.5-9B (2026-02-27) image-text-to-text Trending: 22.0
+- Qwen/Qwen3.6-35B-A3B (2026-04-15) image-text-to-text Trending: 104.0
+- Qwen/Qwen3Guard-Gen-4B (2025-09-23) text-generation Trending: 3.0
+- reaperdoesntknow/Symbiotic-1B (2025-05-06) text-generation Trending: 1.0
+- RefalMachine/ruadapt_qwen2.5_3B_ext_u48_instruct_v4 (2024-10-18) text-generation Trending: 1.0
+- ResembleAI/chatterbox (2025-04-24) text-to-speech Trending: 8.0
+- ResembleAI/chatterbox-turbo (2025-12-02) text-to-speech Trending: 2.0
+- reverentelusarca/kontext-turnaround-sheet-lora-v1 (2025-07-07) image-to-image Trending: 1.0
 - ricdomolm/lawma-8b (2024-07-22) text-generation Trending: 1.0
-- rizvandwiki/gender-classification-2 (2022-12-12) image-classification Trending: 2.0
-- ryzdfm/qwen2.5-coder-3b-claude_opus_4.6-distilled (2026-04-02) text-generation Trending: 1.0
-- s-nlp/roberta_toxicity_classifier (2022-03-02) text-classification Trending: 2.0
-- Salesforce/xLAM-2-32b-fc-r (2025-03-27) text-generation Trending: 1.0
+- ricdomolm/mini-coder-1.7b (2025-09-30) text-generation Trending: 1.0
+- rizvandwiki/gender-classification-2 (2022-12-12) image-classification Trending: 1.0
+- RomixERR/Pornmaster_v1-Z-Images-Turbo (2025-12-25) text-to-image Trending: 1.0
 - SamLowe/roberta-base-go_emotions (2022-09-15) text-classification Trending: 1.0
-- Sao10K/70B-L3.3-Cirrus-x1 (2025-01-06) text-generation Trending: 1.0
-- Sao10K/L3-8B-Lunaris-v1 (2024-06-26) text-generation Trending: 1.0
-- Sao10K/Llama-3.3-70B-Vulpecula-r1 (2025-03-20) text-generation Trending: 1.0
-- sbintuitions/modernbert-ja-130m (2025-02-06) fill-mask Trending: 1.0
-- sbintuitions/modernbert-ja-30m (2025-02-19) fill-mask Trending: 1.0
-- sbintuitions/modernbert-ja-310m (2025-02-19) fill-mask Trending: 1.0
-- SeaLLMs/SeaLLM-7B-v2.5 (2024-04-03) text-generation Trending: 1.0
-- sentence-transformers/all-MiniLM-L12-v2 (2022-03-02) sentence-similarity Trending: 2.0
-- sentence-transformers/all-MiniLM-L6-v2 (2022-03-02) sentence-similarity Trending: 14.0
-- sentence-transformers/all-mpnet-base-v2 (2022-03-02) sentence-similarity Trending: 2.0
-- sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2 (2022-03-02) sentence-similarity Trending: 3.0
+- Sao10K/L3-8B-Stheno-v3.2 (2024-06-05) text-generation Trending: 3.0
+- Sao10K/L3.3-70B-Euryale-v2.3 (2024-12-07) text-generation Trending: 1.0
+- sashalane2025/gwen (2025-12-06) text-to-image Trending: 1.0
+- segolilylabs/Lily-Cybersecurity-7B-v0.2 (2024-01-11) text-generation Trending: 3.0
+- sentence-transformers/all-MiniLM-L12-v2 (2022-03-02) sentence-similarity Trending: 1.0
+- sentence-transformers/all-MiniLM-L6-v2 (2022-03-02) sentence-similarity Trending: 19.0
+- sentence-transformers/all-mpnet-base-v2 (2022-03-02) sentence-similarity Trending: 4.0
+- sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2 (2022-03-02) sentence-similarity Trending: 8.0
 - sentence-transformers/paraphrase-multilingual-mpnet-base-v2 (2022-03-02) sentence-similarity Trending: 1.0
+- SentientAGI/Dobby-Mini-Unhinged-Llama-3.1-8B (2025-01-22) text-generation Trending: 1.0
+- SEOKDONG/llama3.0_korean_v1.0_sft (2024-09-28) text-generation Trending: 1.0
 - seyonec/ChemBERTa-zinc-base-v1 (2022-03-02) fill-mask Trending: 1.0
-- Shakker-Labs/AWPortrait-Z (2025-12-14) text-to-image Trending: 1.0
-- Shakker-Labs/FLUX.1-dev-LoRA-Vector-Journey (2024-08-30) text-to-image Trending: 2.0
+- Shakker-Labs/FLUX.1-dev-LoRA-Vector-Journey (2024-08-30) text-to-image Trending: 1.0
 - Shakker-Labs/FLUX.1-Kontext-dev-LoRA-Flat-Cartoon-Style (2025-07-17) text-to-image Trending: 1.0
-- SkyAsl/Pixel-artist-Z (2025-12-18) text-to-image Trending: 1.0
-- stabilityai/stable-diffusion-3-medium (2024-05-30) text-to-image Trending: 4.0
-- stabilityai/stable-diffusion-3.5-large (2024-10-22) text-to-image Trending: 10.0
-- stabilityai/stable-diffusion-3.5-medium (2024-10-29) text-to-image Trending: 2.0
-- stabilityai/stable-diffusion-xl-base-1.0 (2023-07-25) text-to-image Trending: 16.0
-- starmpcc/Asclepius-Llama3-8B (2024-06-13) text-generation Trending: 1.0
-- stepfun-ai/Step-3.5-Flash (2026-02-01) text-generation Trending: 2.0
-- strangerzonehf/Casual-Pencil-Pro (2025-03-13) text-to-image Trending: 1.0
-- strangerzonehf/Qwen-Image-Edit-LoRA-Collection (2026-01-04) image-to-image Trending: 2.0
+- shuttleai/shuttle-3.5 (2025-04-30) text-generation Trending: 1.0
+- SoumilB7/FLUX.1-dev-ProductStudio (2025-11-02) text-to-image Trending: 1.0
+- stabilityai/stable-diffusion-3-medium (2024-05-30) text-to-image Trending: 6.0
+- stabilityai/stable-diffusion-3-medium-diffusers (2024-06-12) text-to-image Trending: 1.0
+- stabilityai/stable-diffusion-3.5-large (2024-10-22) text-to-image Trending: 6.0
+- stabilityai/stable-diffusion-3.5-medium (2024-10-29) text-to-image Trending: 1.0
+- stabilityai/stable-diffusion-xl-base-1.0 (2023-07-25) text-to-image Trending: 12.0
+- starsfriday/Kontext-Remover-General-LoRA (2025-07-02) image-to-image Trending: 1.0
+- starsfriday/Qwen-Image-Edit-2511-Upscale2K (2025-12-29) image-to-image Trending: 1.0
+- stepfun-ai/Step-3.5-Flash (2026-02-01) text-generation Trending: 8.0
+- strangerzonehf/Flux-Creative-Stocks-LoRA (2024-12-06) text-to-image Trending: 1.0
+- strangerzonehf/Flux-Isometric-3D-LoRA (2024-11-24) text-to-image Trending: 1.0
+- strangerzonehf/Flux-Kontext-Ultimate-LoRA (2025-11-07) image-to-image Trending: 1.0
+- strangerzonehf/Qwen-Image-Edit-LoRA-Collection (2026-01-04) image-to-image Trending: 1.0
+- strangerzonehf/Realism-H6-Flux (2025-03-26) text-to-image Trending: 1.0
+- StuffedPumpkins/qwen_image_perfecttitsginap5 (2025-08-08) text-to-image Trending: 1.0
 - StyleDistance/styledistance (2024-07-17) sentence-similarity Trending: 1.0
-- swiss-ai/Apertus-70B-Instruct-2509 (2025-09-01) text-generation Trending: 1.0
+- sunseeker001/Photo-Restore-i2i (2026-03-19) image-to-image Trending: 1.0
+- svntax-dev/pixel_portrait_lora_v1-lora (2025-10-06) text-to-image Trending: 1.0
+- SWE-bench/SWE-agent-LM-32B (2025-04-29) text-generation Trending: 1.0
 - swiss-ai/Apertus-8B-Instruct-2509 (2025-08-13) text-generation Trending: 1.0
-- tabularisai/multilingual-sentiment-analysis (2024-12-07) text-classification Trending: 1.0
-- tarn59/pixel_art_style_lora_z_image_turbo (2025-11-30) text-to-image Trending: 1.0
-- TaylorAI/bge-micro-v2 (2023-10-11) sentence-similarity Trending: 1.0
-- teknium/OpenHermes-2.5-Mistral-7B (2023-10-29) text-generation Trending: 3.0
-- tencent/HunyuanImage-3.0 (2025-09-25) text-to-image Trending: 4.0
-- tencent/HunyuanImage-3.0-Instruct (2025-09-25) image-to-image Trending: 4.0
-- tencent/HunyuanVideo (2024-12-01) text-to-video Trending: 2.0
-- tencent/HunyuanVideo-1.5 (2025-11-18) text-to-video Trending: 1.0
-- textattack/bert-base-uncased-ag-news (2022-03-02) text-classification Trending: 1.0
-- thedeoxen/refcontrol-flux-kontext-reference-pose-lora (2025-08-24) image-to-image Trending: 1.0
-- thenlper/gte-large (2023-07-27) sentence-similarity Trending: 2.0
-- thenlper/gte-small (2023-07-27) sentence-similarity Trending: 1.0
-- THU-KEG/LongWriter-Zero-32B (2025-06-18) text-generation Trending: 1.0
-- TinyLlama/TinyLlama-1.1B-Chat-v1.0 (2023-12-30) text-generation Trending: 5.0
-- tokyotech-llm/Llama-3.1-Swallow-8B-Instruct-v0.5 (2025-06-12) text-generation Trending: 1.0
-- Tongyi-MAI/Z-Image (2026-01-23) text-to-image Trending: 13.0
+- T-Systems-onsite/cross-en-de-roberta-sentence-transformer (2022-03-02) feature-extraction Trending: 2.0
+- tabularisai/multilingual-emotion-classification (2026-04-14) text-classification Trending: 4.0
+- tabularisai/multilingual-sentiment-analysis (2024-12-07) text-classification Trending: 2.0
+- tarn59/pixel_art_style_lora_z_image_turbo (2025-11-30) text-to-image Trending: 3.0
+- tarun7r/Finance-Llama-8B (2025-05-26) text-generation Trending: 1.0
+- tencent/HunyuanImage-3.0 (2025-09-25) text-to-image Trending: 2.0
+- tencent/HunyuanVideo (2024-12-01) text-to-video Trending: 4.0
+- tencent/HunyuanVideo-I2V (2025-03-05) image-to-video Trending: 1.0
+- Tesslate/UIGEN-FX-4B-Preview (2025-08-28) text-generation Trending: 1.0
+- Tesslate/WEBGEN-4B-Preview (2025-09-02) text-generation Trending: 1.0
+- thedeoxen/FLUX.1-Kontext-dev-reference-depth-fusion-LORA (2025-08-17) image-to-image Trending: 1.0
+- TinyLlama/TinyLlama-1.1B-Chat-v1.0 (2023-12-30) text-generation Trending: 2.0
+- Tongyi-MAI/Z-Image (2026-01-23) text-to-image Trending: 11.0
 - Tongyi-MAI/Z-Image-Turbo (2025-11-25) text-to-image Trending: 31.0
-- ToxicityPrompts/PolyGuard-Qwen-Smol (2025-02-18) text-generation Trending: 1.0
-- UBC-NLP/MARBERT (2022-03-02) fill-mask Trending: 1.0
-- Unbabel/M-Prometheus-7B (2025-04-07) text-generation Trending: 1.0
-- Unbabel/Tower-Plus-72B (2025-06-09) text-generation Trending: 1.0
-- unsloth/gemma-2-2b-it (2024-07-31) text-generation Trending: 1.0
-- unsloth/medgemma-1.5-4b-it (2026-01-14) image-text-to-text Trending: 1.0
+- trendmicro-ailab/Llama-Primus-Reasoning (2025-02-20) text-generation Trending: 2.0
+- Trendyol/Trendyol-LLM-Asure-12B (2026-02-19) image-text-to-text Trending: 1.0
+- trpakov/vit-face-expression (2022-11-09) image-classification Trending: 1.0
+- unsloth/GLM-4-9B-0414 (2025-04-30) text-generation Trending: 1.0
+- unsloth/Llama-3.1-8B (2025-02-15) text-generation Trending: 1.0
+- unsloth/Llama-3.2-1B-Instruct (2024-09-25) text-generation Trending: 1.0
+- unsloth/Qwen2.5-Coder-3B-Instruct (2024-11-12) text-generation Trending: 1.0
+- unsloth/Qwen2.5-Coder-7B-Instruct (2024-09-23) text-generation Trending: 1.0
 - upstage/SOLAR-10.7B-Instruct-v1.0 (2023-12-12) text-generation Trending: 1.0
-- veryVANYA/ps1-graphics-sdxl (2023-08-23) text-to-image Trending: 1.0
-- Vikhrmodels/Vikhr-Llama-3.2-1B-Instruct (2024-09-27) text-generation Trending: 1.0
-- vinai/phobert-base (2022-03-02) fill-mask Trending: 1.0
-- Wan-AI/Wan2.1-I2V-14B-720P (2025-02-25) image-to-video Trending: 1.0
-- Wan-AI/Wan2.1-T2V-1.3B (2025-02-25) text-to-video Trending: 4.0
-- Wan-AI/Wan2.1-T2V-14B (2025-02-25) text-to-video Trending: 2.0
-- Wan-AI/Wan2.2-I2V-A14B (2025-07-24) image-to-video Trending: 3.0
-- Wan-AI/Wan2.2-I2V-A14B-Diffusers (2025-07-28) image-to-video Trending: 3.0
-- Wan-AI/Wan2.2-T2V-A14B (2025-07-24) text-to-video Trending: 2.0
-- Wan-AI/Wan2.2-T2V-A14B-Diffusers (2025-07-28) text-to-video Trending: 1.0
-- Wan-AI/Wan2.2-TI2V-5B (2025-07-18) text-to-video Trending: 5.0
-- wcde/Z-Image-Turbo-DeJPEG-Lora (2025-12-01) text-to-image Trending: 2.0
-- WeiboAI/VibeThinker-1.5B (2025-11-04) text-generation Trending: 3.0
+- us4/fin-llama3.1-8b (2024-09-04) text-generation Trending: 1.0
+- utter-project/EuroLLM-22B-Instruct-2512 (2025-12-05) text-generation Trending: 1.0
+- w11wo/indonesian-roberta-base-sentiment-classifier (2022-03-02) text-classification Trending: 1.0
+- Wan-AI/Wan2.1-T2V-1.3B (2025-02-25) text-to-video Trending: 1.0
+- Wan-AI/Wan2.1-T2V-14B (2025-02-25) text-to-video Trending: 4.0
+- Wan-AI/Wan2.2-I2V-A14B-Diffusers (2025-07-28) image-to-video Trending: 1.0
+- Wan-AI/Wan2.2-T2V-A14B (2025-07-24) text-to-video Trending: 1.0
+- WhiteRabbitNeo/WhiteRabbitNeo-2.5-Qwen-2.5-Coder-7B (2024-09-28) text-generation Trending: 1.0
 - WinKawaks/vit-small-patch16-224 (2022-03-02) image-classification Trending: 1.0
-- wolfer45/nsfwv2-zit (2026-02-22) text-to-image Trending: 1.0
-- xey/sldr_flux_nsfw_v2-studio (2024-10-28) text-to-image Trending: 2.0
-- XiaomiMiMo/MiMo-V2-Flash (2025-12-16) text-generation Trending: 5.0
-- yiyanghkust/finbert-tone-chinese (2024-02-06) text-classification Trending: 1.0
+- WinKawaks/vit-tiny-patch16-224 (2022-03-02) image-classification Trending: 1.0
+- WisdomShell/RewardAnything-8B-v1 (2025-06-04) text-generation Trending: 1.0
+- XiaomiMiMo/MiMo-V2-Flash (2025-12-16) text-generation Trending: 6.0
+- XLabs-AI/flux-RealismLora (2024-08-06) text-to-image Trending: 2.0
+- yikuan8/Clinical-Longformer (2022-03-02) fill-mask Trending: 1.0
+- yukiyounai/Jailbreak-R1 (2025-05-22) text-generation Trending: 1.0
+- zai-org/AutoGLM-Phone-9B-Multilingual (2025-12-09) image-text-to-text Trending: 1.0
+- zai-org/GLM-4.5 (2025-07-20) text-generation Trending: 1.0
 - zai-org/GLM-4.6 (2025-09-29) text-generation Trending: 3.0
 - zai-org/GLM-4.6V-Flash (2025-12-07) image-text-to-text Trending: 1.0
-- zai-org/GLM-4.7 (2025-12-22) text-generation Trending: 3.0
-- zai-org/GLM-4.7-Flash (2026-01-19) text-generation Trending: 8.0
+- zai-org/GLM-4.6V-FP8 (2025-12-07) image-text-to-text Trending: 1.0
+- zai-org/GLM-4.7 (2025-12-22) text-generation Trending: 1.0
+- zai-org/GLM-4.7-Flash (2026-01-19) text-generation Trending: 5.0
 - zai-org/GLM-5 (2026-02-11) text-generation Trending: 5.0
-- zai-org/GLM-5.1 (2026-04-03) text-generation Trending: 62.0
-- zai-org/GLM-5.1-FP8 (2026-04-03) text-generation Trending: 2.0
-- zai-org/GLM-Image (2026-01-08) text-to-image Trending: 2.0
-- zai-org/GLM-OCR (2026-01-30) image-to-text Trending: 29.0
-- zerofata/L3.3-GeneticLemonade-Final-v2-70B (2025-06-02) text-generation Trending: 1.0
-- ZeusLabs/Chronos-Platinum-72B (2024-10-01) text-generation Trending: 1.0
+- zai-org/GLM-5.1 (2026-04-03) text-generation Trending: 29.0
+- zai-org/GLM-5.1-FP8 (2026-04-03) text-generation Trending: 3.0
+- zai-org/GLM-Image (2026-01-08) text-to-image Trending: 4.0
+- zai-org/GLM-OCR (2026-01-30) image-to-text Trending: 18.0
+- zerofata/L3.3-GeneticLemonade-Final-70B (2025-03-02) text-generation Trending: 1.0
+- zerofata/L3.3-GeneticLemonade-Unleashed-70B (2025-02-20) text-generation Trending: 1.0
+- zerofata/L3.3-GeneticLemonade-Unleashed-v3-70B (2025-05-18) text-generation Trending: 1.0
+- zerofata/MS3.2-PaintedFantasy-v3-24B (2025-11-09) text-generation Trending: 1.0
 - Zyphra/ZR1-1.5B (2025-04-07) text-generation Trending: 1.0
+- ZySec-AI/SecurityLLM (2024-01-28) text-generation Trending: 1.0
 
 ## mistral
 
@@ -1002,6 +1005,7 @@ Snapshot of the models available on each provider as of 2026-05-02
 ## openai
 
 - babbage-002 (2023-08-21)
+- chat-latest (2026-05-02)
 - chatgpt-image-latest (2025-12-16)
 - dall-e-2 (2023-11-01)
 - dall-e-3 (2023-10-31)
@@ -1101,10 +1105,13 @@ Snapshot of the models available on each provider as of 2026-05-02
 - gpt-image-2-2026-04-21 (2026-04-17)
 - gpt-realtime (2025-08-27)
 - gpt-realtime-1.5 (2026-02-19)
+- gpt-realtime-2 (2026-05-05)
 - gpt-realtime-2025-08-28 (2025-08-27)
 - gpt-realtime-mini (2025-10-03)
 - gpt-realtime-mini-2025-10-06 (2025-10-03)
 - gpt-realtime-mini-2025-12-15 (2025-12-13)
+- gpt-realtime-translate (2026-05-05)
+- gpt-realtime-whisper (2026-05-05)
 - o1 (2024-12-16)
 - o1-2024-12-17 (2024-12-16)
 - o1-pro (2025-03-17)
@@ -1144,7 +1151,6 @@ Snapshot of the models available on each provider as of 2026-05-02
 - alfredpros/codellama-7b-instruct-solidity (AlfredPros: CodeLLaMa 7B Instruct Solidity) Context: 4096
 - alibaba/tongyi-deepresearch-30b-a3b (Tongyi DeepResearch 30B A3B) Context: 131072
 - allenai/olmo-3-32b-think (AllenAI: Olmo 3 32B Think) Context: 65536
-- allenai/olmo-3.1-32b-instruct (AllenAI: Olmo 3.1 32B Instruct) Context: 65536
 - alpindale/goliath-120b (Goliath 120B) Context: 6144
 - amazon/nova-2-lite-v1 (Amazon: Nova 2 Lite) Context: 1000000
 - amazon/nova-lite-v1 (Amazon: Nova Lite 1.0) Context: 300000
@@ -1173,6 +1179,7 @@ Snapshot of the models available on each provider as of 2026-05-02
 - arcee-ai/trinity-large-thinking (Arcee AI: Trinity Large Thinking) Context: 262144
 - arcee-ai/trinity-mini (Arcee AI: Trinity Mini) Context: 131072
 - arcee-ai/virtuoso-large (Arcee AI: Virtuoso Large) Context: 131072
+- baidu/cobuddy:free (Baidu Qianfan: CoBuddy (free)) Context: 131072
 - baidu/ernie-4.5-21b-a3b (Baidu: ERNIE 4.5 21B A3B) Context: 120000
 - baidu/ernie-4.5-21b-a3b-thinking (Baidu: ERNIE 4.5 21B A3B Thinking) Context: 131072
 - baidu/ernie-4.5-300b-a47b (Baidu: ERNIE 4.5 300B A47B ) Context: 123000
@@ -1216,19 +1223,15 @@ Snapshot of the models available on each provider as of 2026-05-02
 - google/gemini-3-flash-preview (Google: Gemini 3 Flash Preview) Context: 1048576
 - google/gemini-3-pro-image-preview (Google: Nano Banana Pro (Gemini 3 Pro Image Preview)) Context: 65536
 - google/gemini-3.1-flash-image-preview (Google: Nano Banana 2 (Gemini 3.1 Flash Image Preview)) Context: 65536
+- google/gemini-3.1-flash-lite (Google: Gemini 3.1 Flash Lite) Context: 1048576
 - google/gemini-3.1-flash-lite-preview (Google: Gemini 3.1 Flash Lite Preview) Context: 1048576
 - google/gemini-3.1-pro-preview (Google: Gemini 3.1 Pro Preview) Context: 1048576
 - google/gemini-3.1-pro-preview-customtools (Google: Gemini 3.1 Pro Preview Custom Tools) Context: 1048576
 - google/gemma-2-27b-it (Google: Gemma 2 27B) Context: 8192
 - google/gemma-3-12b-it (Google: Gemma 3 12B) Context: 131072
-- google/gemma-3-12b-it:free (Google: Gemma 3 12B (free)) Context: 32768
 - google/gemma-3-27b-it (Google: Gemma 3 27B) Context: 131072
-- google/gemma-3-27b-it:free (Google: Gemma 3 27B (free)) Context: 131072
 - google/gemma-3-4b-it (Google: Gemma 3 4B) Context: 131072
-- google/gemma-3-4b-it:free (Google: Gemma 3 4B (free)) Context: 32768
-- google/gemma-3n-e2b-it:free (Google: Gemma 3n 2B (free)) Context: 8192
 - google/gemma-3n-e4b-it (Google: Gemma 3n 4B) Context: 32768
-- google/gemma-3n-e4b-it:free (Google: Gemma 3n 4B (free)) Context: 8192
 - google/gemma-4-26b-a4b-it (Google: Gemma 4 26B A4B ) Context: 262144
 - google/gemma-4-26b-a4b-it:free (Google: Gemma 4 26B A4B  (free)) Context: 262144
 - google/gemma-4-31b-it (Google: Gemma 4 31B) Context: 262144
@@ -1239,8 +1242,9 @@ Snapshot of the models available on each provider as of 2026-05-02
 - ibm-granite/granite-4.0-h-micro (IBM: Granite 4.0 Micro) Context: 131000
 - ibm-granite/granite-4.1-8b (IBM: Granite 4.1 8B) Context: 131072
 - inception/mercury-2 (Inception: Mercury 2) Context: 128000
-- inclusionai/ling-2.6-1t:free (inclusionAI: Ling-2.6-1T (free)) Context: 262144
+- inclusionai/ling-2.6-1t (inclusionAI: Ling-2.6-1T) Context: 262144
 - inclusionai/ling-2.6-flash (inclusionAI: Ling-2.6-flash) Context: 262144
+- inclusionai/ring-2.6-1t:free (inclusionAI: Ring-2.6-1T (free)) Context: 262144
 - inflection/inflection-3-pi (Inflection: Inflection 3 Pi) Context: 8000
 - inflection/inflection-3-productivity (Inflection: Inflection 3 Productivity) Context: 8000
 - kwaipilot/kat-coder-pro-v2 (Kwaipilot: KAT-Coder-Pro V2) Context: 256000
@@ -1263,6 +1267,7 @@ Snapshot of the models available on each provider as of 2026-05-02
 - meta-llama/llama-guard-3-8b (Llama Guard 3 8B) Context: 131072
 - meta-llama/llama-guard-4-12b (Meta: Llama Guard 4 12B) Context: 163840
 - microsoft/phi-4 (Microsoft: Phi 4) Context: 16384
+- microsoft/phi-4-mini-instruct (Microsoft: Phi 4 Mini Instruct) Context: 128000
 - microsoft/wizardlm-2-8x22b (WizardLM-2 8x22B) Context: 65535
 - minimax/minimax-01 (MiniMax: MiniMax-01) Context: 1000192
 - minimax/minimax-m1 (MiniMax: MiniMax M1) Context: 1000000
@@ -1285,6 +1290,7 @@ Snapshot of the models available on each provider as of 2026-05-02
 - mistralai/mistral-large-2411 (Mistral Large 2411) Context: 131072
 - mistralai/mistral-large-2512 (Mistral: Mistral Large 3 2512) Context: 262144
 - mistralai/mistral-medium-3 (Mistral: Mistral Medium 3) Context: 131072
+- mistralai/mistral-medium-3-5 (Mistral: Mistral Medium 3.5) Context: 262144
 - mistralai/mistral-medium-3.1 (Mistral: Mistral Medium 3.1) Context: 131072
 - mistralai/mistral-nemo (Mistral: Mistral Nemo) Context: 131072
 - mistralai/mistral-saba (Mistral: Saba) Context: 32768
@@ -1293,14 +1299,13 @@ Snapshot of the models available on each provider as of 2026-05-02
 - mistralai/mistral-small-3.1-24b-instruct (Mistral: Mistral Small 3.1 24B) Context: 128000
 - mistralai/mistral-small-3.2-24b-instruct (Mistral: Mistral Small 3.2 24B) Context: 128000
 - mistralai/mixtral-8x22b-instruct (Mistral: Mixtral 8x22B Instruct) Context: 65536
-- mistralai/mixtral-8x7b-instruct (Mistral: Mixtral 8x7B Instruct) Context: 32768
 - mistralai/pixtral-large-2411 (Mistral: Pixtral Large 2411) Context: 131072
 - mistralai/voxtral-small-24b-2507 (Mistral: Voxtral Small 24B 2507) Context: 32000
 - moonshotai/kimi-k2 (MoonshotAI: Kimi K2 0711) Context: 131072
 - moonshotai/kimi-k2-0905 (MoonshotAI: Kimi K2 0905) Context: 262144
 - moonshotai/kimi-k2-thinking (MoonshotAI: Kimi K2 Thinking) Context: 262144
 - moonshotai/kimi-k2.5 (MoonshotAI: Kimi K2.5) Context: 262144
-- moonshotai/kimi-k2.6 (MoonshotAI: Kimi K2.6) Context: 262142
+- moonshotai/kimi-k2.6 (MoonshotAI: Kimi K2.6) Context: 262144
 - morph/morph-v3-fast (Morph: Morph V3 Fast) Context: 81920
 - morph/morph-v3-large (Morph: Morph V3 Large) Context: 262144
 - nex-agi/deepseek-v3.1-nex-n1 (Nex AGI: DeepSeek V3.1 Nex N1) Context: 131072
@@ -1310,14 +1315,12 @@ Snapshot of the models available on each provider as of 2026-05-02
 - nousresearch/hermes-3-llama-3.1-70b (Nous: Hermes 3 70B Instruct) Context: 131072
 - nousresearch/hermes-4-405b (Nous: Hermes 4 405B) Context: 131072
 - nousresearch/hermes-4-70b (Nous: Hermes 4 70B) Context: 131072
-- nvidia/llama-3.1-nemotron-70b-instruct (NVIDIA: Llama 3.1 Nemotron 70B Instruct) Context: 131072
 - nvidia/llama-3.3-nemotron-super-49b-v1.5 (NVIDIA: Llama 3.3 Nemotron Super 49B V1.5) Context: 131072
 - nvidia/nemotron-3-nano-30b-a3b (NVIDIA: Nemotron 3 Nano 30B A3B) Context: 262144
 - nvidia/nemotron-3-nano-30b-a3b:free (NVIDIA: Nemotron 3 Nano 30B A3B (free)) Context: 256000
 - nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free (NVIDIA: Nemotron 3 Nano Omni (free)) Context: 256000
 - nvidia/nemotron-3-super-120b-a12b (NVIDIA: Nemotron 3 Super) Context: 262144
 - nvidia/nemotron-3-super-120b-a12b:free (NVIDIA: Nemotron 3 Super (free)) Context: 262144
-- nvidia/nemotron-nano-12b-v2-vl (NVIDIA: Nemotron Nano 12B 2 VL) Context: 131072
 - nvidia/nemotron-nano-12b-v2-vl:free (NVIDIA: Nemotron Nano 12B 2 VL (free)) Context: 128000
 - nvidia/nemotron-nano-9b-v2 (NVIDIA: Nemotron Nano 9B V2) Context: 131072
 - nvidia/nemotron-nano-9b-v2:free (NVIDIA: Nemotron Nano 9B V2 (free)) Context: 128000
@@ -1370,6 +1373,7 @@ Snapshot of the models available on each provider as of 2026-05-02
 - openai/gpt-5.5-pro (OpenAI: GPT-5.5 Pro) Context: 1050000
 - openai/gpt-audio (OpenAI: GPT Audio) Context: 128000
 - openai/gpt-audio-mini (OpenAI: GPT Audio Mini) Context: 128000
+- openai/gpt-chat-latest (OpenAI: GPT Chat Latest) Context: 400000
 - openai/gpt-oss-120b (OpenAI: gpt-oss-120b) Context: 131072
 - openai/gpt-oss-120b:free (OpenAI: gpt-oss-120b (free)) Context: 131072
 - openai/gpt-oss-20b (OpenAI: gpt-oss-20b) Context: 131072
@@ -1389,7 +1393,7 @@ Snapshot of the models available on each provider as of 2026-05-02
 - openrouter/bodybuilder (Body Builder (beta)) Context: 128000
 - openrouter/free (Free Models Router) Context: 200000
 - openrouter/owl-alpha (Owl Alpha) Context: 1048756
-- openrouter/pareto-code (Pareto Code Router) Context: 200000
+- openrouter/pareto-code (Pareto Code Router) Context: 2000000
 - perplexity/sonar (Perplexity: Sonar) Context: 127072
 - perplexity/sonar-deep-research (Perplexity: Sonar Deep Research) Context: 128000
 - perplexity/sonar-pro (Perplexity: Sonar Pro) Context: 200000
@@ -1461,12 +1465,11 @@ Snapshot of the models available on each provider as of 2026-05-02
 - stepfun/step-3.5-flash (StepFun: Step 3.5 Flash) Context: 262144
 - switchpoint/router (Switchpoint Router) Context: 131072
 - tencent/hunyuan-a13b-instruct (Tencent: Hunyuan A13B Instruct) Context: 131072
-- tencent/hy3-preview:free (Tencent: Hy3 preview (free)) Context: 262144
+- tencent/hy3-preview (Tencent: Hy3 preview) Context: 262144
 - thedrummer/cydonia-24b-v4.1 (TheDrummer: Cydonia 24B V4.1) Context: 131072
 - thedrummer/rocinante-12b (TheDrummer: Rocinante 12B) Context: 32768
 - thedrummer/skyfall-36b-v2 (TheDrummer: Skyfall 36B V2) Context: 32768
 - thedrummer/unslopnemo-12b (TheDrummer: UnslopNemo 12B) Context: 32768
-- tngtech/deepseek-r1t2-chimera (TNG: DeepSeek R1T2 Chimera) Context: 163840
 - undi95/remm-slerp-l2-13b (ReMM SLERP 13B) Context: 6144
 - upstage/solar-pro-3 (Upstage: Solar Pro 3) Context: 128000
 - writer/palmyra-x5 (Writer: Palmyra X5) Context: 1040000
@@ -1504,7 +1507,7 @@ Snapshot of the models available on each provider as of 2026-05-02
 - ~anthropic/claude-sonnet-latest (Anthropic Claude Sonnet Latest) Context: 1000000
 - ~google/gemini-flash-latest (Google Gemini Flash Latest) Context: 1048576
 - ~google/gemini-pro-latest (Google Gemini Pro Latest) Context: 1048576
-- ~moonshotai/kimi-latest (MoonshotAI Kimi Latest) Context: 262142
+- ~moonshotai/kimi-latest (MoonshotAI Kimi Latest) Context: 262144
 - ~openai/gpt-latest (OpenAI GPT Latest) Context: 1050000
 - ~openai/gpt-mini-latest (OpenAI GPT Mini Latest) Context: 400000
 
@@ -1522,11 +1525,12 @@ Snapshot of the models available on each provider as of 2026-05-02
 - kimi-k2.6 in:image,text,tools; out:text; provider:; Moonshot Kimi K2.6 - Flagship Agentic Model with CoT Reasoning
 - klein in:text out:image
 - kontext in:text out:image
-- llama in:text,tools; out:text; provider:; Meta Llama 3.3 70B Instruct - Fast & Capable
+- llama in:text,tools; out:text; provider:; Meta Llama 3.3 70B Instruct
+- llama-scout in:image,text; out:text; provider:; Meta Llama 4 Scout 17B 16E Instruct
 - ltx-2 in:text out:image
 - midijourney in:text,tools; out:text; provider:; MIDIjourney - AI Music Composition Assistant
 - minimax in:text,tools; out:text; provider:; MiniMax M2.7 - Coding, Agentic & Multi-Language
-- mistral in:image,text,tools; out:text; provider:; Mistral Small 3.2 - Efficient & Cost-Effective
+- mistral in:image,text,tools; out:text; provider:; Mistral Small 3.1 - Efficient & Cost-Effective
 - mistral-large in:image,text,tools; out:text; provider:; Mistral Large 3 - Premium Multilingual & Reasoning
 - nova in:text,tools; out:text; provider:; Nova 2 Lite - 1M Context with Reasoning
 - nova-fast in:text,tools; out:text; provider:; Nova Micro - Ultra Fast & Ultra Cheap
@@ -1551,11 +1555,12 @@ Snapshot of the models available on each provider as of 2026-05-02
 ## togetherai
 
 - agentica-org/DeepCoder-14B-Preview (2025-05-09): chat Context: 131072
+- alibaba/happyhorse-1.0-t2v (2026-05-02): video Context: 0
 - arize-ai/qwen-2-1.5b-instruct (2025-04-24): chat Context: 32768; in: 0.10$/Mt out: 0.10$/Mt
 - black-forest-labs/FLUX.1-kontext-max: image Context: 0
 - black-forest-labs/FLUX.1-kontext-pro: image Context: 0
 - black-forest-labs/FLUX.1-krea-dev (2025-07-31): image Context: 0
-- black-forest-labs/FLUX.1-schnell: image Context: 0
+- black-forest-labs/FLUX.1-schnell (2026-05-07): image Context: 0
 - black-forest-labs/FLUX.1.1-pro: image Context: 0
 - black-forest-labs/FLUX.2-dev (2025-11-25): image Context: 0
 - black-forest-labs/FLUX.2-flex (2025-11-25): image Context: 0
@@ -1565,6 +1570,8 @@ Snapshot of the models available on each provider as of 2026-05-02
 - ByteDance-Seed/Seedream-4.0 (2025-10-08): image Context: 0
 - ByteDance/Seedance-1.0-lite (2025-10-08): video Context: 0
 - ByteDance/Seedance-1.0-pro (2025-10-08): video Context: 0
+- ByteDance/Seedance-2.0 (2026-04-23): video Context: 0
+- ByteDance/Seedream-5.0-lite (2026-05-08): image Context: 0
 - canopylabs/orpheus-3b-0.1-ft (2025-08-20): audio Context: 0; in: 15.00$/Mt out: 0.00$/Mt
 - cartesia/sonic (2026-03-16): audio Context: 0; in: 65.00$/Mt out: 0.00$/Mt
 - cartesia/sonic-2 (2026-03-25): audio Context: 448; in: 65.00$/Mt out: 0.00$/Mt
@@ -1574,7 +1581,7 @@ Snapshot of the models available on each provider as of 2026-05-02
 - deepcogito/cogito-v1-preview-llama-8B (2025-04-08): chat Context: 131072/8192
 - deepcogito/cogito-v1-preview-qwen-14B (2025-04-08): chat Context: 131072/8192
 - deepcogito/cogito-v1-preview-qwen-32B (2025-04-08): chat Context: 131072/8192
-- deepcogito/cogito-v2-1-671b (2026-04-23): chat Context: 163840; in: 1.25$/Mt out: 1.25$/Mt
+- deepcogito/cogito-v2-1-671b: chat Context: 163840; in: 1.25$/Mt out: 1.25$/Mt
 - deepgram/aura-2 (2026-03-12): audio Context: 448
 - deepgram/flux (2026-02-18): transcribe Context: 448
 - deepgram/nova-3-en: transcribe Context: 448
@@ -1587,7 +1594,7 @@ Snapshot of the models available on each provider as of 2026-05-02
 - deepseek-ai/DeepSeek-R1-Distill-Qwen-14B (2025-01-29): chat Context: 131072/32768; in: 1.60$/Mt out: 1.60$/Mt
 - deepseek-ai/DeepSeek-R1-Distill-Qwen-7B (2025-04-02): chat Context: 131072
 - deepseek-ai/DeepSeek-V3.1 (2026-03-25): chat Context: 131072/40000; in: 0.60$/Mt out: 1.70$/Mt
-- deepseek-ai/DeepSeek-V4-Pro (2026-05-02): chat Context: 512000; in: 2.10$/Mt out: 4.40$/Mt
+- deepseek-ai/DeepSeek-V4-Pro: chat Context: 512000; in: 2.10$/Mt out: 4.40$/Mt
 - essentialai/rnj-1-instruct: chat Context: 32768; in: 0.15$/Mt out: 0.15$/Mt
 - facebook/cwm (2025-10-09): code Context: 131072
 - google/flash-image-2.5 (2025-10-08): image Context: 0
@@ -1598,6 +1605,7 @@ Snapshot of the models available on each provider as of 2026-05-02
 - google/gemma-2b-it (2025-06-09): chat Context: 8192
 - google/gemma-3-1b-it (2025-04-02): chat Context: 32768
 - google/gemma-3-270m-it (2025-09-30): chat Context: 32768
+- google/gemma-3-270m-it-lora (2026-05-07): chat Context: 32768
 - google/gemma-3-27b-pt (2026-02-06): chat Context: 0
 - google/gemma-3-4b-it (2025-04-03): chat Context: 65536
 - google/gemma-3n-E4B-it (2025-06-26): chat Context: 32768; in: 0.06$/Mt out: 0.12$/Mt
@@ -1636,6 +1644,8 @@ Snapshot of the models available on each provider as of 2026-05-02
 - meta-llama/Llama-3.2-1B (2025-04-15): chat Context: 131072
 - meta-llama/Llama-3.2-1B-Instruct (2024-12-06): chat Context: 131072; in: 0.06$/Mt out: 0.06$/Mt
 - meta-llama/Llama-3.2-3B (2025-02-25): language Context: 131072
+- meta-llama/Llama-3.3-70B-Instruct (2025-04-13): chat Context: 131072
+- meta-llama/Llama-3.3-70B-Instruct-FP8-Lora (2026-05-06): chat Context: 131072
 - meta-llama/Llama-3.3-70B-Instruct-Turbo (2024-12-06): chat Context: 131072; in: 0.88$/Mt out: 0.88$/Mt
 - meta-llama/Llama-3.3-70B-Instruct-Turbo-test (2026-03-18): chat Context: 131072; in: 0.88$/Mt out: 0.88$/Mt
 - meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8 (2025-04-05): chat Context: 1048576/32768; in: 0.27$/Mt out: 0.85$/Mt
@@ -1665,6 +1675,7 @@ Snapshot of the models available on each provider as of 2026-05-02
 - mistralai/Mistral-Small-24B-Instruct-2501 (2025-01-30): chat Context: 32768; in: 0.10$/Mt out: 0.30$/Mt
 - mistralai/Mixtral-8x22B-Instruct-v0.1 (2025-05-27): chat Context: 65536
 - mistralai/Mixtral-8x7B-Instruct-v0.1 (2023-12-12): chat Context: 32768; in: 0.60$/Mt out: 0.60$/Mt
+- mistralai/Mixtral-8x7B-Instruct-v0.1-FP8-Lora (2026-05-07): chat Context: 32768
 - mistralai/Mixtral-8x7B-v0.1 (2025-07-08): language Context: 32768
 - mistralai/Voxtral-Mini-3B-2507 (2025-09-12): transcribe Context: 0; in: 0.27$/Mt out: 0.85$/Mt
 - mixedbread-ai/mxbai-rerank-large-v2 (2025-10-23): rerank Context: 32768
@@ -1696,6 +1707,7 @@ Snapshot of the models available on each provider as of 2026-05-02
 - openai/whisper-large-v3: transcribe Context: 1; in: 0.27$/Mt out: 0.85$/Mt
 - pixverse/pixverse-v5 (2025-10-08): video Context: 0
 - pixverse/pixverse-v5.6 (2026-01-28): video Context: 0
+- pixverse/pixverse-v6 (2026-04-23): video Context: 0
 - Qwen/Qwen-Image (2025-10-08): image Context: 0
 - Qwen/Qwen-Image-2.0 (2026-03-11): image Context: 0
 - Qwen/Qwen-Image-2.0-Pro (2026-03-12): image Context: 0
@@ -1724,7 +1736,6 @@ Snapshot of the models available on each provider as of 2026-05-02
 - Qwen/Qwen3-1.7B-Base (2025-06-04): language Context: 32768
 - Qwen/Qwen3-14B-Base (2025-06-04): language Context: 32768
 - Qwen/Qwen3-235B-A22B-Instruct-2507-tput (2025-07-22): chat Context: 262144; in: 0.20$/Mt out: 0.60$/Mt
-- Qwen/Qwen3-235B-A22B-Thinking-2507 (2025-07-25): chat Context: 262144; in: 0.65$/Mt out: 3.00$/Mt
 - Qwen/Qwen3-30B-A3B (2025-06-04): chat Context: 40960
 - Qwen/Qwen3-30B-A3B-Base (2025-06-04): language Context: 32768
 - Qwen/Qwen3-30B-A3B-Instruct-2507-Lora (2026-03-25): chat Context: 262144
@@ -1745,8 +1756,8 @@ Snapshot of the models available on each provider as of 2026-05-02
 - Qwen/Qwen3.5-122B-A10B-FP8 (2026-03-16): chat Context: 262144
 - Qwen/Qwen3.5-35B-A3B (2026-03-06): chat Context: 262144
 - Qwen/Qwen3.5-397B-A17B (2026-04-01): chat Context: 262144; in: 0.60$/Mt out: 3.60$/Mt
+- Qwen/Qwen3.5-9B (2026-05-08): chat Context: 262144; in: 0.10$/Mt out: 0.15$/Mt
 - Qwen/Qwen3.5-9B-FP8 (2026-03-05): chat Context: 262144
-- Qwen/Qwen3.5-9B: chat Context: 262144; in: 0.10$/Mt out: 0.15$/Mt
 - Qwen/Qwen3.6-35B-A3B-FP8 (2026-04-22): chat Context: 262144 🥈
 - Qwen/Qwen3.6-Plus (2026-04-28): chat Context: 1000000; in: 0.50$/Mt out: 3.00$/Mt
 - Qwen/QwQ-32B (2025-03-05): chat Context: 131072/32768; in: 1.20$/Mt out: 1.20$/Mt
@@ -1772,6 +1783,7 @@ Snapshot of the models available on each provider as of 2026-05-02
 - Wan-AI/wan2.7-i2v (2026-04-03): video Context: 0
 - Wan-AI/wan2.7-r2v (2026-04-03): video Context: 0
 - Wan-AI/wan2.7-t2v (2026-04-03): video Context: 0
+- xai/grok-imagine-image-pro (2026-04-20): image Context: 0
 - zai-org/GLM-4.5-Air-FP8 (2025-07-30): chat Context: 131072; in: 0.20$/Mt out: 1.10$/Mt
 - zai-org/GLM-4.5V (2025-09-16): chat Context: 65536
 - zai-org/GLM-4.6 (2025-10-23): chat Context: 202752; in: 0.60$/Mt out: 2.20$/Mt

@@ -468,6 +468,7 @@ type ChatResponse struct {
 		Index              int64        `json:"index"`
 		Message            Message      `json:"message"`
 		Logprobs           *Logprobs    `json:"logprobs,omitzero"`
+		Error              *InlineError `json:"error,omitzero"`
 	} `json:"choices"`
 	Created           base.Time    `json:"created"`
 	ID                string       `json:"id"`
@@ -552,6 +553,7 @@ type ChatStreamChunkResponse struct {
 		FinishReason       FinishReason `json:"finish_reason"`
 		NativeFinishReason string       `json:"native_finish_reason,omitzero"`
 		Logprobs           *Logprobs    `json:"logprobs,omitzero"`
+		Error              *InlineError `json:"error,omitzero"`
 	} `json:"choices"`
 	Usage  Usage        `json:"usage,omitzero"`
 	Error  *InlineError `json:"error,omitzero"` // Upstream error on partial failure.
@@ -595,7 +597,13 @@ type Model struct {
 	CanonicalSlug       string                 `json:"canonical_slug"`
 	KnowledgeCutoff     string                 `json:"knowledge_cutoff,omitzero"`
 	ExpirationDate      string                 `json:"expiration_date"`
-	Links               map[string]any         `json:"links,omitzero"` // Provider-specific links
+	Links               ModelLinks             `json:"links,omitzero"` // Provider-specific links
+	SupportedVoices     []string               `json:"supported_voices,omitzero"`
+}
+
+// ModelLinks contains provider-specific links for a model.
+type ModelLinks struct {
+	Details string `json:"details,omitzero"`
 }
 
 // ModelPricing contains the per-token pricing information.

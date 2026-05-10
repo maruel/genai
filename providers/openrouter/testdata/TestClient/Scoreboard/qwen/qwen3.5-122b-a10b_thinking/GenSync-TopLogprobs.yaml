@@ -21,12 +21,14 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: "\n         \n\n         \n\n         \n\n         \n{\"id\":\"gen-1772417192-kqNm9N2B7K5XK11X9LHu\",\"provider\":\"Alibaba\",\"model\":\"qwen/qwen3.5-122b-a10b\",\"object\":\"chat.completion\",\"created\":1772417192,\"choices\":[{\"logprobs\":null,\"finish_reason\":\"stop\",\"native_finish_reason\":\"stop\",\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"Hello\",\"refusal\":null,\"reasoning\":\"Thinking Process:\\n\\n1.  **Analyze the Request:**\\n    *   Task: Say hello.\\n    *   Constraint: Use only one word.\\n\\n2.  **Determine the Output:**\\n    *   Common greetings: \\\"Hello\\\", \\\"Hi\\\", \\\"Hey\\\", \\\"Greetings\\\".\\n    *   Constraint Check: Must be exactly one word.\\n    *   Selection: \\\"Hello\\\" is the most direct translation of the command \\\"Say hello\\\". \\\"Hi\\\" is also acceptable. I'll choose \\\"Hello\\\" as it matches the prompt's wording.\\n\\n3.  **Final Verification:**\\n    *   Word count: 1.\\n    *   Content: Greeting.\\n    *   Compliance: Meets all constraints.\\n\\n4.  **Draft Output:** Hello\\n\",\"reasoning_details\":[{\"format\":\"unknown\",\"index\":0,\"type\":\"reasoning.text\",\"text\":\"Thinking Process:\\n\\n1.  **Analyze the Request:**\\n    *   Task: Say hello.\\n    *   Constraint: Use only one word.\\n\\n2.  **Determine the Output:**\\n    *   Common greetings: \\\"Hello\\\", \\\"Hi\\\", \\\"Hey\\\", \\\"Greetings\\\".\\n    *   Constraint Check: Must be exactly one word.\\n    *   Selection: \\\"Hello\\\" is the most direct translation of the command \\\"Say hello\\\". \\\"Hi\\\" is also acceptable. I'll choose \\\"Hello\\\" as it matches the prompt's wording.\\n\\n3.  **Final Verification:**\\n    *   Word count: 1.\\n    *   Content: Greeting.\\n    *   Compliance: Meets all constraints.\\n\\n4.  **Draft Output:** Hello\\n\"}]}}],\"system_fingerprint\":null,\"usage\":{\"prompt_tokens\":18,\"completion_tokens\":169,\"total_tokens\":187,\"cost\":0.000548,\"is_byok\":false,\"prompt_tokens_details\":{\"cached_tokens\":0},\"cost_details\":{\"upstream_inference_cost\":0.000548,\"upstream_inference_prompt_cost\":0.0000072,\"upstream_inference_completions_cost\":0.0005408},\"completion_tokens_details\":{\"reasoning_tokens\":164}}}"
+        body: "\n         \n\n         \n\n         \n{\"id\":\"gen-1778452702-Ba6u4HbXfy719lc95B0G\",\"object\":\"chat.completion\",\"created\":1778452702,\"model\":\"qwen/qwen3.5-122b-a10b-20260224\",\"provider\":\"Alibaba\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"logprobs\":null,\"finish_reason\":\"stop\",\"native_finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"Hello\",\"refusal\":null,\"reasoning\":\"Thinking Process:\\n\\n1.  **Analyze the Request:**\\n    *   Task: Say hello.\\n    *   Constraint: Use only one word.\\n\\n2.  **Identify Potential Responses:**\\n    *   \\\"Hello\\\"\\n    *   \\\"Hi\\\"\\n    *   \\\"Greetings\\\"\\n    *   \\\"Hey\\\"\\n\\n3.  **Select the Best Response:**\\n    *   \\\"Hello\\\" is the most direct translation of the instruction \\\"Say hello\\\".\\n    *   \\\"Hi\\\" is also common.\\n    *   Constraint check: Must be exactly one word.\\n\\n4.  **Final Decision:** \\\"Hello\\\" is the standard, clear choice.\\n\\n5.  **Output Generation:** Hello.cw\",\"reasoning_details\":[{\"type\":\"reasoning.text\",\"text\":\"Thinking Process:\\n\\n1.  **Analyze the Request:**\\n    *   Task: Say hello.\\n    *   Constraint: Use only one word.\\n\\n2.  **Identify Potential Responses:**\\n    *   \\\"Hello\\\"\\n    *   \\\"Hi\\\"\\n    *   \\\"Greetings\\\"\\n    *   \\\"Hey\\\"\\n\\n3.  **Select the Best Response:**\\n    *   \\\"Hello\\\" is the most direct translation of the instruction \\\"Say hello\\\".\\n    *   \\\"Hi\\\" is also common.\\n    *   Constraint check: Must be exactly one word.\\n\\n4.  **Final Decision:** \\\"Hello\\\" is the standard, clear choice.\\n\\n5.  **Output Generation:** Hello.cw\",\"format\":\"unknown\",\"index\":0}]}}],\"usage\":{\"prompt_tokens\":18,\"completion_tokens\":158,\"total_tokens\":176,\"cost\":0.00033332,\"is_byok\":false,\"prompt_tokens_details\":{\"cached_tokens\":0,\"cache_write_tokens\":0,\"audio_tokens\":0,\"video_tokens\":0},\"cost_details\":{\"upstream_inference_cost\":0.00033332,\"upstream_inference_prompt_cost\":0.00000468,\"upstream_inference_completions_cost\":0.00032864},\"completion_tokens_details\":{\"reasoning_tokens\":153,\"image_tokens\":0,\"audio_tokens\":0}}}"
         headers:
             Access-Control-Allow-Origin:
                 - '*'
+            Access-Control-Expose-Headers:
+                - X-Generation-Id,cf-ray
             Cf-Ray:
-                - 9d5cd7be4f49a23b-YYZ
+                - 9f9c6f0ea99bb402-YYZ
             Content-Type:
                 - application/json
             Permissions-Policy:
@@ -36,9 +38,11 @@ interactions:
             Server:
                 - cloudflare
             Server-Timing:
-                - cfEdge;dur=493,cfOrigin;dur=0
+                - cfEdge;dur=7,cfOrigin;dur=0,cfWorker;dur=442
             X-Content-Type-Options:
                 - nosniff
+            X-Generation-Id:
+                - gen-1778452702-Ba6u4HbXfy719lc95B0G
         status: 200 OK
         code: 200
-        duration: 505ms
+        duration: 461ms

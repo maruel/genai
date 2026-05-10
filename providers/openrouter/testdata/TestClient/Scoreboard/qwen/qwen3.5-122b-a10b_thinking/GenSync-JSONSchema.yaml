@@ -21,12 +21,14 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: "\n         \n{\"error\":{\"message\":\"Upstream error from Alibaba: <400> InternalError.Algo.InvalidParameter: Format error : 'response_format.json_schema.schema'. the specific reason is as follows: None is not of type 'object', 'boolean'.\",\"code\":502,\"metadata\":{\"provider_name\":\"Alibaba\"}},\"user_id\":\"user_2u8FOCxPrw1Boc4GOPuI2ZPR4tY\"}"
+        body: "\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n{\"error\":{\"message\":\"Provider returned error\",\"code\":400}}"
         headers:
             Access-Control-Allow-Origin:
                 - '*'
+            Access-Control-Expose-Headers:
+                - X-Generation-Id,cf-ray
             Cf-Ray:
-                - 9d5cd8bdae61a23b-YYZ
+                - 9f9c6fcb6b9eb402-YYZ
             Content-Type:
                 - application/json
             Permissions-Policy:
@@ -36,9 +38,11 @@ interactions:
             Server:
                 - cloudflare
             Server-Timing:
-                - cfEdge;dur=662,cfOrigin;dur=0
+                - cfEdge;dur=5,cfOrigin;dur=0,cfWorker;dur=640
             X-Content-Type-Options:
                 - nosniff
+            X-Generation-Id:
+                - gen-1778452732-tCetNkY1swxOrY5cI5pp
         status: 200 OK
         code: 200
-        duration: 674ms
+        duration: 657ms

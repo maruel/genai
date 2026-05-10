@@ -21,12 +21,14 @@ interactions:
         proto_minor: 0
         content_length: -1
         uncompressed: true
-        body: '{"error":{"message":"No endpoints found that support the provided ''tool_choice'' value. To learn more about provider routing, visit: https://openrouter.ai/docs/guides/routing/provider-selection","code":404}}'
+        body: "\n         \n\n         \n{\"id\":\"gen-1778452665-LjOXLPVmChJfvMovKaua\",\"object\":\"chat.completion\",\"created\":1778452665,\"model\":\"qwen/qwen3.5-35b-a3b-20260224\",\"provider\":\"Parasail\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"logprobs\":null,\"finish_reason\":\"tool_calls\",\"native_finish_reason\":\"tool_calls\",\"message\":{\"role\":\"assistant\",\"content\":null,\"refusal\":null,\"reasoning\":\"The user wants me to calculate the square root of 132413 using the square_root tool and only provide the result without any explanation.\\n\\nLet me call the function with the number 132413.\\n\",\"tool_calls\":[{\"type\":\"function\",\"index\":0,\"id\":\"chatcmpl-tool-b93c54f33533c892\",\"function\":{\"name\":\"square_root\",\"arguments\":\"{\\\"number\\\": 132413}\"}}],\"reasoning_details\":[{\"type\":\"reasoning.text\",\"text\":\"The user wants me to calculate the square root of 132413 using the square_root tool and only provide the result without any explanation.\\n\\nLet me call the function with the number 132413.\\n\",\"format\":\"unknown\",\"index\":0}]}}],\"usage\":{\"prompt_tokens\":331,\"completion_tokens\":76,\"total_tokens\":407,\"cost\":0.00012565,\"is_byok\":false,\"prompt_tokens_details\":{\"cached_tokens\":0,\"cache_write_tokens\":0,\"audio_tokens\":0,\"video_tokens\":0},\"cost_details\":{\"upstream_inference_cost\":0.00012565,\"upstream_inference_prompt_cost\":0.00004965,\"upstream_inference_completions_cost\":0.000076},\"completion_tokens_details\":{\"reasoning_tokens\":49,\"image_tokens\":0,\"audio_tokens\":0}}}"
         headers:
             Access-Control-Allow-Origin:
                 - '*'
+            Access-Control-Expose-Headers:
+                - X-Generation-Id,cf-ray
             Cf-Ray:
-                - 9d5cd5072a22a1e6-YYZ
+                - 9f9c6e28984cb402-YYZ
             Content-Type:
                 - application/json
             Permissions-Policy:
@@ -36,9 +38,11 @@ interactions:
             Server:
                 - cloudflare
             Server-Timing:
-                - cfEdge;dur=8,cfOrigin;dur=0
+                - cfEdge;dur=6,cfOrigin;dur=0,cfWorker;dur=416
             X-Content-Type-Options:
                 - nosniff
-        status: 404 Not Found
-        code: 404
-        duration: 21ms
+            X-Generation-Id:
+                - gen-1778452665-LjOXLPVmChJfvMovKaua
+        status: 200 OK
+        code: 200
+        duration: 433ms

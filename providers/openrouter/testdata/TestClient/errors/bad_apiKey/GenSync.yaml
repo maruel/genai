@@ -24,8 +24,10 @@ interactions:
         headers:
             Access-Control-Allow-Origin:
                 - '*'
+            Access-Control-Expose-Headers:
+                - X-Generation-Id,cf-ray
             Cf-Ray:
-                - 9d5b6c7d4cd036a4-YYZ
+                - 9f9c6dd13b78b402-YYZ
             Content-Type:
                 - application/json
             Permissions-Policy:
@@ -35,9 +37,9 @@ interactions:
             Server:
                 - cloudflare
             Server-Timing:
-                - cfEdge;dur=6,cfOrigin;dur=0
+                - cfEdge;dur=5,cfOrigin;dur=0,cfWorker;dur=2
             X-Content-Type-Options:
                 - nosniff
         status: 401 Unauthorized
         code: 401
-        duration: 17ms
+        duration: 72ms

@@ -32,29 +32,6 @@ def get_git_files():
         return []
 
 
-def _skip_frontmatter(lines):
-    """Return the index of the first line after any YAML front-matter, or 0 if none.
-
-    Handles --- delimited front-matter and bare YAML (no delimiters).
-    """
-    if not lines or not lines[0]:
-        return 0
-    first = lines[0].strip()
-    if first == "---":
-        # Standard delimited front-matter: skip until closing ---.
-        for i, line in enumerate(lines[1:], 1):
-            if not line or line.strip() == "---":
-                return i + 1
-        return len(lines)
-    if re.match(r"^[a-z_]+\s*:", first):
-        # Bare YAML: ends at first blank line.
-        for i, line in enumerate(lines):
-            if not line or not line.strip():
-                return i
-        return len(lines)
-    return 0
-
-
 def _py_docstring(lines, i):
     """Extract the description from a Python triple-quoted docstring starting at lines[i].
 
@@ -112,32 +89,15 @@ def get_file_description(filepath):
     _, prefix = match
     if not prefix:
         return None  # explicitly excluded pattern
-    with open(filepath, "r", encoding="utf-8") as f:
+    with open(filepath, encoding="utf-8") as f:
         lines = [f.readline() for _ in range(20)]
-    if fname.endswith(".md"):
-        # Skip front-matter; first # heading after it is the description.
-        start_idx = _skip_frontmatter(lines)
-    else:
-        start_idx = 1 if (lines[0] and lines[0].startswith("#!")) else 0
-    # If the first content line is a copyright header, skip lines until a blank.
-    for i in range(start_idx, len(lines)):
-        if not lines[i]:
-            return ""
-        if not lines[i].strip():
-            continue
-        if " copyright " in lines[i].lower():
-            # Skip the entire copyright block (all lines up to the next blank).
-            i += 1
-            while i < len(lines) and lines[i] and lines[i].strip():
-                i += 1
-            start_idx = i
-        break
-    for i in range(start_idx, len(lines)):
-        line = lines[i]
+    in_copyright = False
+    for i, line in enumerate(lines):
         if not line:
             break
         sline = line.strip()
         if not sline:
+            in_copyright = False
             continue
         if fname.endswith(".py") and (sline.startswith('"""') or sline.startswith("'''")):
             return _py_docstring(lines, i)
@@ -151,6 +111,15 @@ def get_file_description(filepath):
         if sline.startswith(f"{prefix} swift-tools-version:"):
             continue
         if sline.startswith(f"{prefix} ///"):
+            continue
+        # Skip YAML front-matter delimiters and shebangs.
+        if sline == "---" or sline.startswith("#!"):
+            continue
+        # Skip copyright headers and their continuation lines (until blank).
+        if in_copyright:
+            continue
+        if " copyright " in sline.lower():
+            in_copyright = True
             continue
         # Skip PEP 723 inline script metadata fields (requires-python, dependencies, etc.)
         # that appear between # /// script and # /// markers.
@@ -217,9 +186,8 @@ def generate_index(target, exclude, all_files, all_configs):
             relpath = filepath
         # Check excluded subdirectories, but let sub-workspace AGENTS.md through.
         rel_parts = relpath.replace("\\", "/").split("/")
-        if rel_parts[0] in exclude:
-            if filepath not in all_configs:
-                continue
+        if rel_parts[0] in exclude and filepath not in all_configs:
+            continue
         # Skip any file in a testdata/ directory.
         if "testdata" in rel_parts:
             continue

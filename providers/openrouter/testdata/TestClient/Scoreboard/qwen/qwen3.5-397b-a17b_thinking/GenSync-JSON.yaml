@@ -1,0 +1,48 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 259
+        host: openrouter.ai
+        body: |
+            {"messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"model":"qwen/qwen3.5-397b-a17b","response_format":{"type":"json_object"},"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://openrouter.ai/api/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: "\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n{\"id\":\"gen-1778895815-jAvjh6lRsowNTNioJh3K\",\"object\":\"chat.completion\",\"created\":1778895815,\"model\":\"qwen/qwen3.5-397b-a17b-20260216\",\"provider\":\"Chutes\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"logprobs\":null,\"finish_reason\":\"stop\",\"native_finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"is_fruit\\\": true}\",\"refusal\":null,\"reasoning\":\"Thinking Process:\\n\\n1.  **Analyze the Request:**\\n    *   Question: \\\"Is a banana a fruit?\\\"\\n    *   Constraint 1: \\\"Do not include an explanation.\\\"\\n    *   Constraint 2: \\\"Reply ONLY as JSON according to the provided schema.\\\"\\n    *   Schema: `{\\\"is_fruit\\\": bool}`\\n\\n2.  **Determine the Answer:**\\n    *   Biologically and culinarily, a banana is classified as a fruit.\\n    *   Value for `is_fruit`: `true`.\\n\\n3.  **Format the Output:**\\n    *   Must be valid JSON.\\n    *   Must match the schema `{\\\"is_fruit\\\": bool}`.\\n    *   No extra text, no markdown code blocks (unless implied by \\\"JSON\\\", but usually \\\"ONLY as JSON\\\" means raw JSON string), no explanations.\\n\\n4.  **Draft the Response:**\\n    *   `{\\\"is_fruit\\\": true}`\\n\\n5.  **Review against Constraints:**\\n    *   Is it JSON? Yes.\\n    *   Does it match the schema? Yes.\\n    *   Is there an explanation? No.\\n    *   Is there any other text? No.\\n\\n6.  **Final Output Generation:**\\n    *   `{\\\"is_fruit\\\": true}`\\n\\n    *Self-Correction on Markdown:* Sometimes users expect code blocks for JSON. However, \\\"Reply ONLY as JSON\\\" usually implies raw text. I will provide raw JSON text to be safe and strictly adhere to \\\"ONLY\\\".\\n\\n    *Wait, checking typical behavior:* Often, when users ask for JSON, they accept raw JSON. I will output raw JSON.\\n\\n    *Final check:* `{\\\"is_fruit\\\": true}`.\\n\\n7.  **Final Decision:** Output raw JSON string.cw\\n\",\"reasoning_details\":[{\"type\":\"reasoning.text\",\"text\":\"Thinking Process:\\n\\n1.  **Analyze the Request:**\\n    *   Question: \\\"Is a banana a fruit?\\\"\\n    *   Constraint 1: \\\"Do not include an explanation.\\\"\\n    *   Constraint 2: \\\"Reply ONLY as JSON according to the provided schema.\\\"\\n    *   Schema: `{\\\"is_fruit\\\": bool}`\\n\\n2.  **Determine the Answer:**\\n    *   Biologically and culinarily, a banana is classified as a fruit.\\n    *   Value for `is_fruit`: `true`.\\n\\n3.  **Format the Output:**\\n    *   Must be valid JSON.\\n    *   Must match the schema `{\\\"is_fruit\\\": bool}`.\\n    *   No extra text, no markdown code blocks (unless implied by \\\"JSON\\\", but usually \\\"ONLY as JSON\\\" means raw JSON string), no explanations.\\n\\n4.  **Draft the Response:**\\n    *   `{\\\"is_fruit\\\": true}`\\n\\n5.  **Review against Constraints:**\\n    *   Is it JSON? Yes.\\n    *   Does it match the schema? Yes.\\n    *   Is there an explanation? No.\\n    *   Is there any other text? No.\\n\\n6.  **Final Output Generation:**\\n    *   `{\\\"is_fruit\\\": true}`\\n\\n    *Self-Correction on Markdown:* Sometimes users expect code blocks for JSON. However, \\\"Reply ONLY as JSON\\\" usually implies raw text. I will provide raw JSON text to be safe and strictly adhere to \\\"ONLY\\\".\\n\\n    *Wait, checking typical behavior:* Often, when users ask for JSON, they accept raw JSON. I will output raw JSON.\\n\\n    *Final check:* `{\\\"is_fruit\\\": true}`.\\n\\n7.  **Final Decision:** Output raw JSON string.cw\\n\",\"format\":\"unknown\",\"index\":0}]}}],\"usage\":{\"prompt_tokens\":39,\"completion_tokens\":395,\"total_tokens\":434,\"cost\":0.00093951,\"is_byok\":false,\"prompt_tokens_details\":{\"cached_tokens\":0,\"cache_write_tokens\":0,\"audio_tokens\":0,\"video_tokens\":0},\"cost_details\":{\"upstream_inference_cost\":0.00093951,\"upstream_inference_prompt_cost\":0.00001521,\"upstream_inference_completions_cost\":0.0009243},\"completion_tokens_details\":{\"reasoning_tokens\":387,\"image_tokens\":0,\"audio_tokens\":0}}}"
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Generation-Id,cf-ray
+            Cf-Ray:
+                - 9fc6b13bdd5911fc-YYZ
+            Content-Type:
+                - application/json
+            Permissions-Policy:
+                - payment=(self "https://checkout.stripe.com" "https://connect-js.stripe.com" "https://js.stripe.com" "https://*.js.stripe.com" "https://hooks.stripe.com")
+            Referrer-Policy:
+                - no-referrer, strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfEdge;dur=4,cfOrigin;dur=0,cfWorker;dur=1599
+            X-Content-Type-Options:
+                - nosniff
+            X-Generation-Id:
+                - gen-1778895815-jAvjh6lRsowNTNioJh3K
+        status: 200 OK
+        code: 200
+        duration: 1.66s

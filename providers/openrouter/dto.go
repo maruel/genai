@@ -521,6 +521,8 @@ const (
 // ToFinishReason converts to a genai.FinishReason.
 func (f FinishReason) ToFinishReason() genai.FinishReason {
 	switch f {
+	case "":
+		return ""
 	case FinishStop:
 		return genai.FinishedStop
 	case FinishLength:

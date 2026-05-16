@@ -1,0 +1,48 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 255
+        host: openrouter.ai
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"text","text":"What is the capital of Quackiland?"}]}],"model":"qwen/qwen3.5-397b-a17b","stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://openrouter.ai/api/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: "\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n\n         \n{\"id\":\"gen-1778895829-E59SKHl76kPOq8vyVE9z\",\"object\":\"chat.completion\",\"created\":1778895829,\"model\":\"qwen/qwen3.5-397b-a17b-20260216\",\"provider\":\"Chutes\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"logprobs\":null,\"finish_reason\":\"stop\",\"native_finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"The capital of Quackiland is **Quack**.\",\"refusal\":null,\"reasoning\":\"Thinking Process:\\n\\n1.  **Analyze the Request:** The user is providing a set of premises and asking a question based on those premises.\\n    *   Premise 1: The capital of Quackiland is Quack.\\n    *   Premise 2: The Big Canard Statue is located in Quack.\\n    *   Question: What is the capital of Quackiland?\\n\\n2.  **Evaluate the Premises:**\\n    *   Premise 1 explicitly states: \\\"The capital of Quackiland is Quack.\\\"\\n\\n3.  **Formulate the Answer:**\\n    *   The question asks for the capital of Quackiland.\\n    *   Premise 1 directly provides this information.\\n    *   The answer is \\\"Quack\\\".\\n\\n4.  **Check for Trickery or Ambiguity:**\\n    *   Is \\\"Quackiland\\\" a real place? No, it sounds fictional (like \\\"Duck\\\" related).\\n    *   Is \\\"Quack\\\" a real city? No, likely fictional in this context.\\n    *   Does the second premise change anything? No, it just adds extra information about a statue in the capital.\\n    *   Is this a logic test? Yes, a simple reading comprehension test.\\n\\n5.  **Final Conclusion:** The answer is directly stated in the first sentence.\\n\\n6.  **Draft Output:** The capital of Quackiland is Quack.cw\\n\",\"reasoning_details\":[{\"type\":\"reasoning.text\",\"text\":\"Thinking Process:\\n\\n1.  **Analyze the Request:** The user is providing a set of premises and asking a question based on those premises.\\n    *   Premise 1: The capital of Quackiland is Quack.\\n    *   Premise 2: The Big Canard Statue is located in Quack.\\n    *   Question: What is the capital of Quackiland?\\n\\n2.  **Evaluate the Premises:**\\n    *   Premise 1 explicitly states: \\\"The capital of Quackiland is Quack.\\\"\\n\\n3.  **Formulate the Answer:**\\n    *   The question asks for the capital of Quackiland.\\n    *   Premise 1 directly provides this information.\\n    *   The answer is \\\"Quack\\\".\\n\\n4.  **Check for Trickery or Ambiguity:**\\n    *   Is \\\"Quackiland\\\" a real place? No, it sounds fictional (like \\\"Duck\\\" related).\\n    *   Is \\\"Quack\\\" a real city? No, likely fictional in this context.\\n    *   Does the second premise change anything? No, it just adds extra information about a statue in the capital.\\n    *   Is this a logic test? Yes, a simple reading comprehension test.\\n\\n5.  **Final Conclusion:** The answer is directly stated in the first sentence.\\n\\n6.  **Draft Output:** The capital of Quackiland is Quack.cw\\n\",\"format\":\"unknown\",\"index\":0}]}}],\"usage\":{\"prompt_tokens\":39,\"completion_tokens\":322,\"total_tokens\":361,\"cost\":0.00076869,\"is_byok\":false,\"prompt_tokens_details\":{\"cached_tokens\":0,\"cache_write_tokens\":0,\"audio_tokens\":0,\"video_tokens\":0},\"cost_details\":{\"upstream_inference_cost\":0.00076869,\"upstream_inference_prompt_cost\":0.00001521,\"upstream_inference_completions_cost\":0.00075348},\"completion_tokens_details\":{\"reasoning_tokens\":309,\"image_tokens\":0,\"audio_tokens\":0}}}"
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Generation-Id,cf-ray
+            Cf-Ray:
+                - 9fc6b19378e011fc-YYZ
+            Content-Type:
+                - application/json
+            Permissions-Policy:
+                - payment=(self "https://checkout.stripe.com" "https://connect-js.stripe.com" "https://js.stripe.com" "https://*.js.stripe.com" "https://hooks.stripe.com")
+            Referrer-Policy:
+                - no-referrer, strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfEdge;dur=4,cfOrigin;dur=0,cfWorker;dur=648
+            X-Content-Type-Options:
+                - nosniff
+            X-Generation-Id:
+                - gen-1778895829-E59SKHl76kPOq8vyVE9z
+        status: 200 OK
+        code: 200
+        duration: 663ms

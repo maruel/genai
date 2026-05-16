@@ -1,0 +1,48 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 296
+        host: openrouter.ai
+        body: |
+            {"messages":[{"role":"user","content":[{"type":"text","text":"What fruit is it? Reply with only one word."},{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.gif"}}]}],"model":"qwen/qwen3.5-397b-a17b","stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://openrouter.ai/api/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: "\n         \n\n         \n\n         \n\n         \n{\"id\":\"gen-1778895845-j4j94z1NGCUTsU589wfg\",\"object\":\"chat.completion\",\"created\":1778895845,\"model\":\"qwen/qwen3.5-397b-a17b-20260216\",\"provider\":\"Chutes\",\"system_fingerprint\":null,\"choices\":[{\"index\":0,\"logprobs\":null,\"finish_reason\":\"stop\",\"native_finish_reason\":\"stop\",\"message\":{\"role\":\"assistant\",\"content\":\"Banana\",\"refusal\":null,\"reasoning\":\"The user wants me to identify the fruit in the image.\\n1.  **Analyze the image:** The image shows a long, curved, yellow fruit with a stem at one end and a tip at the other. It has some brown spots.\\n2.  **Identify the object:** This is clearly a banana.\\n3.  **Formulate the response:** The user requested \\\"only one word\\\".\\n4.  **Final Output:** Banana.\\n\",\"reasoning_details\":[{\"type\":\"reasoning.text\",\"text\":\"The user wants me to identify the fruit in the image.\\n1.  **Analyze the image:** The image shows a long, curved, yellow fruit with a stem at one end and a tip at the other. It has some brown spots.\\n2.  **Identify the object:** This is clearly a banana.\\n3.  **Formulate the response:** The user requested \\\"only one word\\\".\\n4.  **Final Output:** Banana.\\n\",\"format\":\"unknown\",\"index\":0}]}}],\"usage\":{\"prompt_tokens\":113,\"completion_tokens\":101,\"total_tokens\":214,\"cost\":0.00028041,\"is_byok\":false,\"prompt_tokens_details\":{\"cached_tokens\":0,\"cache_write_tokens\":0,\"audio_tokens\":0,\"video_tokens\":0},\"cost_details\":{\"upstream_inference_cost\":0.00028041,\"upstream_inference_prompt_cost\":0.00004407,\"upstream_inference_completions_cost\":0.00023634},\"completion_tokens_details\":{\"reasoning_tokens\":97,\"image_tokens\":0,\"audio_tokens\":0}}}"
+        headers:
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - X-Generation-Id,cf-ray
+            Cf-Ray:
+                - 9fc6b1f8290011fc-YYZ
+            Content-Type:
+                - application/json
+            Permissions-Policy:
+                - payment=(self "https://checkout.stripe.com" "https://connect-js.stripe.com" "https://js.stripe.com" "https://*.js.stripe.com" "https://hooks.stripe.com")
+            Referrer-Policy:
+                - no-referrer, strict-origin-when-cross-origin
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfEdge;dur=3,cfOrigin;dur=0,cfWorker;dur=739
+            X-Content-Type-Options:
+                - nosniff
+            X-Generation-Id:
+                - gen-1778895845-j4j94z1NGCUTsU589wfg
+        status: 200 OK
+        code: 200
+        duration: 753ms

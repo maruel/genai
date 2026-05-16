@@ -16,6 +16,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/klauspost/compress/zstd"
@@ -144,8 +145,12 @@ func TestExtractArchive(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		if target != "libfoo.so.1" {
-			t.Fatalf("symlink target: got %q, want %q", target, "libfoo.so.1")
+		if filepath.Base(target) != "libfoo.so.1" || !filepath.IsAbs(target) {
+			t.Fatalf("symlink target: got %q, want absolute path ending with libfoo.so.1", target)
+		}
+		// Verify the symlink resolves to the correct file within dstDir.
+		if !strings.HasPrefix(target, dstDir+string(os.PathSeparator)) {
+			t.Fatalf("symlink target %q escapes dstDir %q", target, dstDir)
 		}
 	})
 	t.Run("SymlinkEscape", func(t *testing.T) {

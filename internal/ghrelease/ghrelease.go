@@ -292,7 +292,7 @@ func extractTar(r io.Reader, dstDir string, wantedFiles []string) error {
 			if filepath.IsAbs(header.Linkname) {
 				return fmt.Errorf("symlink %q has absolute target %q", n, header.Linkname)
 			}
-			resolved = filepath.Join(filepath.Dir(dst), header.Linkname)
+			resolved = filepath.Join(filepath.Dir(dst), header.Linkname) //nolint:gosec // Validated with prefix check below.
 			resolved = filepath.Clean(resolved)
 			if !strings.HasPrefix(resolved, prefix) {
 				return fmt.Errorf("symlink %q target %q escapes destination directory", n, header.Linkname)
@@ -300,7 +300,7 @@ func extractTar(r io.Reader, dstDir string, wantedFiles []string) error {
 			if err := os.Remove(dst); err != nil && !errors.Is(err, os.ErrNotExist) {
 				return fmt.Errorf("failed to remove existing file %q: %w", n, err)
 			}
-			if err := os.Symlink(header.Linkname, dst); err != nil {
+			if err := os.Symlink(resolved, dst); err != nil {
 				return fmt.Errorf("failed to create symlink %q: %w", n, err)
 			}
 		case tar.TypeReg:

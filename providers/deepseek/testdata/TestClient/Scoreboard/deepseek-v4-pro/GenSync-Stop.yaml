@@ -1,0 +1,48 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 187
+        host: api.deepseek.com
+        body: |
+            {"model":"deepseek-v4-pro","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"stream":false,"thinking":{"type":"disabled"},"stop":["is"]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.deepseek.com/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"a87b9812-e71e-416e-b9d6-47e7f9a5f7fe","object":"chat.completion","created":1779804223,"model":"deepseek-v4-pro","choices":[{"index":0,"message":{"role":"assistant","content":"Canada "},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":16,"completion_tokens":2,"total_tokens":18,"prompt_tokens_details":{"cached_tokens":0},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":16},"system_fingerprint":"fp_9954b31ca7_prod0820_fp8_kvcache_20260402"}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Content-Type:
+                - application/json
+            Server:
+                - elb
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers
+            Via:
+                - 1.1 c823350775ceb593355f2c0ee7cd3b2a.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - WuUH85MDIfjS5rsEZOF61X-sGrc35kF-kEDQ76pUG_kBGxwCHkxVAw==
+            X-Amz-Cf-Pop:
+                - YUL62-P2
+            X-Cache:
+                - Miss from cloudfront
+            X-Content-Type-Options:
+                - nosniff
+        status: 200 OK
+        code: 200
+        duration: 336ms

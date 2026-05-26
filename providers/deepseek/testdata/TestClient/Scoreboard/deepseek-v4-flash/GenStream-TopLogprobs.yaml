@@ -1,0 +1,59 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 179
+        host: api.deepseek.com
+        body: |
+            {"model":"deepseek-v4-flash","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":true,"thinking":{"type":"disabled"},"logprobs":true,"top_logprobs":2}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.deepseek.com/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"8eed87f2-f5a8-4823-94ea-3980acf1e577","object":"chat.completion.chunk","created":1779804208,"model":"deepseek-v4-flash","system_fingerprint":"fp_8b330d02d0_prod0820_fp8_kvcache_20260402","choices":[{"index":0,"delta":{"role":"assistant","content":""},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"8eed87f2-f5a8-4823-94ea-3980acf1e577","object":"chat.completion.chunk","created":1779804208,"model":"deepseek-v4-flash","system_fingerprint":"fp_8b330d02d0_prod0820_fp8_kvcache_20260402","choices":[{"index":0,"delta":{"content":"Hello"},"logprobs":{"content":[{"token":"Hello","logprob":-0.0009498596,"bytes":[72,101,108,108,111],"top_logprobs":[{"token":"Hello","logprob":-0.0009498596,"bytes":[72,101,108,108,111]},{"token":"hello","logprob":-7.6575165,"bytes":[104,101,108,108,111]}]}]},"finish_reason":null}]}
+
+            data: {"id":"8eed87f2-f5a8-4823-94ea-3980acf1e577","object":"chat.completion.chunk","created":1779804208,"model":"deepseek-v4-flash","system_fingerprint":"fp_8b330d02d0_prod0820_fp8_kvcache_20260402","choices":[{"index":0,"delta":{"content":"."},"logprobs":{"content":[{"token":".","logprob":-0.020168304,"bytes":[46],"top_logprobs":[{"token":".","logprob":-0.020168304,"bytes":[46]},{"token":"<｜｜end▁of▁sentence｜｜>","logprob":-4.024666,"bytes":[60,239,189,156,239,189,156,101,110,100,226,150,129,111,102,226,150,129,115,101,110,116,101,110,99,101,239,189,156,239,189,156,62]}]}]},"finish_reason":null}]}
+
+            data: {"id":"8eed87f2-f5a8-4823-94ea-3980acf1e577","object":"chat.completion.chunk","created":1779804208,"model":"deepseek-v4-flash","system_fingerprint":"fp_8b330d02d0_prod0820_fp8_kvcache_20260402","choices":[{"index":0,"delta":{"content":""},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":12,"completion_tokens":2,"total_tokens":14,"prompt_tokens_details":{"cached_tokens":0},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":12}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Server:
+                - elb
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers
+            Via:
+                - 1.1 c823350775ceb593355f2c0ee7cd3b2a.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - dh4_Jx1Xf-4LYkTRWOgCzUcDtBxMjZpK3rC6u7jbgiEsGfYmwHxevw==
+            X-Amz-Cf-Pop:
+                - YUL62-P2
+            X-Cache:
+                - Miss from cloudfront
+            X-Content-Type-Options:
+                - nosniff
+        status: 200 OK
+        code: 200
+        duration: 818ms

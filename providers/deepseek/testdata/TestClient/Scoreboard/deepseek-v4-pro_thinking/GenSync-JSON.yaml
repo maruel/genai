@@ -1,0 +1,48 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 252
+        host: api.deepseek.com
+        body: |
+            {"model":"deepseek-v4-pro","messages":[{"role":"user","content":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}],"stream":false,"response_format":{"type":"json_object"}}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.deepseek.com/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"26bac353-22bf-430c-8583-59fa43ae08c5","object":"chat.completion","created":1779804158,"model":"deepseek-v4-pro","choices":[{"index":0,"message":{"role":"assistant","content":"{\"is_fruit\": true}","reasoning_content":"We are asked: \"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}.\"\n\nBanana is a fruit. So we output: {\"is_fruit\": true}"},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":53,"completion_tokens":60,"total_tokens":113,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"reasoning_tokens":52},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":53},"system_fingerprint":"fp_9954b31ca7_prod0820_fp8_kvcache_20260402"}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Content-Type:
+                - application/json
+            Server:
+                - elb
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers
+            Via:
+                - 1.1 c823350775ceb593355f2c0ee7cd3b2a.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - 63Q1T8IiCXjkGlGx9uCBVL6ksqBN_wwL6QuE_j-CLYyCFr-66XAk1w==
+            X-Amz-Cf-Pop:
+                - YUL62-P2
+            X-Cache:
+                - Miss from cloudfront
+            X-Content-Type-Options:
+                - nosniff
+        status: 200 OK
+        code: 200
+        duration: 328ms

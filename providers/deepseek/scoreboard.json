@@ -2,18 +2,55 @@
   "warnings": [
     "JSON schema decoding is now supported on the server but the client wasn't updated yet.",
     "Tool calling works very well but is biased; the model is lazy and when it's unsure, it will use the tool's first argument.",
-    "Tool calling can't be forced with reasoning.",
-    "DeepSeek doesn't do rate limiting: https://api-docs.deepseek.com/quick_start/rate_limit"
+    "Tool calling can't be forced in thinking mode. Use GenOption{Thinking: false} to switch to non-thinking mode."
   ],
   "country": "CN",
   "dashboardURL": "https://platform.deepseek.com",
   "scenarios": [
     {
+      "comments": "Thinking mode (default). See https://api-docs.deepseek.com/guides/thinking_mode.",
       "models": [
-        "deepseek-reasoner"
+        "deepseek-v4-pro"
       ],
       "sota": true,
-      "good": true,
+      "reason": true,
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "tools": "true",
+        "toolsBiased": "flaky",
+        "json": true,
+        "topLogprobs": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "tools": "true",
+        "toolsBiased": "flaky",
+        "json": true,
+        "topLogprobs": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
+    },
+    {
+      "comments": "Thinking mode (default).",
+      "models": [
+        "deepseek-v4-flash"
+      ],
+      "cheap": true,
       "reason": true,
       "in": {
         "text": {
@@ -31,6 +68,7 @@
         "tools": "true",
         "toolsBiased": "true",
         "json": true,
+        "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
       },
@@ -40,15 +78,16 @@
         "tools": "true",
         "toolsBiased": "true",
         "json": true,
+        "topLogprobs": true,
         "maxTokens": true,
         "stopSequence": true
       }
     },
     {
+      "comments": "Non-thinking mode for deepseek-v4-flash via GenOption{Thinking: false}.",
       "models": [
-        "deepseek-chat"
+        "deepseek-v4-flash"
       ],
-      "cheap": true,
       "in": {
         "text": {
           "inline": true
@@ -63,7 +102,7 @@
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "tools": "true",
-        "toolsIndecisive": "true",
+        "toolsBiased": "true",
         "toolCallRequired": true,
         "json": true,
         "topLogprobs": true,
@@ -74,7 +113,45 @@
         "reportTokenUsage": "true",
         "reportFinishReason": "true",
         "tools": "true",
-        "toolsIndecisive": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
+        "json": true,
+        "topLogprobs": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
+    },
+    {
+      "comments": "Non-thinking mode for deepseek-v4-pro via GenOption{Thinking: false}.",
+      "models": [
+        "deepseek-v4-pro"
+      ],
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
+        "json": true,
+        "topLogprobs": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "tools": "true",
+        "toolsBiased": "true",
         "toolCallRequired": true,
         "json": true,
         "topLogprobs": true,

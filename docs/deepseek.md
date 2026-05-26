@@ -1,11 +1,15 @@
 # Scoreboard
 
-| Model               | Mode    | ➛In   | Out➛   | Tool | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
-| ------------------- | ------- | ----- | ------ | ---- | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
-| deepseek-reasoner🥇🥈 | Sync🧠   | 💬    | 💬     | ✅   | ☁️   | ❌    | ❌   | ❌   | 📏🛑   | ❌    | ❌     | ✅    | ✅     |
-| deepseek-reasoner🥇🥈 | Stream🧠 | 💬    | 💬     | ✅   | ☁️   | ❌    | ❌   | ❌   | 📏🛑   | ❌    | ❌     | ✅    | ✅     |
-| deepseek-chat🥉      | Sync    | 💬    | 💬     | ✅🪨 | ☁️   | ❌    | ❌   | ❌   | 📏🛑   | ✅    | ❌     | ✅    | ✅     |
-| deepseek-chat🥉      | Stream  | 💬    | 💬     | ✅🪨 | ☁️   | ❌    | ❌   | ❌   | 📏🛑   | ✅    | ❌     | ✅    | ✅     |
+| Model              | Mode    | ➛In   | Out➛   | Tool | JSON | Batch | File | Cite | Text | Probs | Limits | Usage | Finish |
+| ------------------ | ------- | ----- | ------ | ---- | ---- | ----- | ---- | ---- | ---- | ----- | ------ | ----- | ------ |
+| deepseek-v4-pro🥇   | Sync🧠   | 💬    | 💬     | ✅   | ☁️   | ❌    | ❌   | ❌   | 📏🛑   | ✅    | ❌     | ✅    | ✅     |
+| deepseek-v4-pro🥇   | Stream🧠 | 💬    | 💬     | ✅   | ☁️   | ❌    | ❌   | ❌   | 📏🛑   | ✅    | ❌     | ✅    | ✅     |
+| deepseek-v4-flash🥉 | Sync🧠   | 💬    | 💬     | ✅   | ☁️   | ❌    | ❌   | ❌   | 📏🛑   | ✅    | ❌     | ✅    | ✅     |
+| deepseek-v4-flash🥉 | Stream🧠 | 💬    | 💬     | ✅   | ☁️   | ❌    | ❌   | ❌   | 📏🛑   | ✅    | ❌     | ✅    | ✅     |
+| deepseek-v4-flash  | Sync    | 💬    | 💬     | ✅🪨 | ☁️   | ❌    | ❌   | ❌   | 📏🛑   | ✅    | ❌     | ✅    | ✅     |
+| deepseek-v4-flash  | Stream  | 💬    | 💬     | ✅🪨 | ☁️   | ❌    | ❌   | ❌   | 📏🛑   | ✅    | ❌     | ✅    | ✅     |
+| deepseek-v4-pro    | Sync    | 💬    | 💬     | ✅🪨 | ☁️   | ❌    | ❌   | ❌   | 📏🛑   | ✅    | ❌     | ✅    | ✅     |
+| deepseek-v4-pro    | Stream  | 💬    | 💬     | ✅🪨 | ☁️   | ❌    | ❌   | ❌   | 📏🛑   | ✅    | ❌     | ✅    | ✅     |
 <details>
 <summary>‼️ Click here for the legend of columns and symbols</summary>
 
@@ -48,5 +52,4 @@
 
 - JSON schema decoding is now supported on the server but the client wasn't updated yet.
 - Tool calling works very well but is biased; the model is lazy and when it's unsure, it will use the tool's first argument.
-- Tool calling can't be forced with reasoning.
-- DeepSeek doesn't do rate limiting: https://api-docs.deepseek.com/quick_start/rate_limit
+- Tool calling can't be forced in thinking mode. Use GenOption{Thinking: false} to switch to non-thinking mode.

@@ -1,0 +1,48 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 556
+        host: api.deepseek.com
+        body: |
+            {"model":"deepseek-v4-flash","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]},"strict":true}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.deepseek.com/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"f196cf03-20e1-4161-ade3-c1041a8d154f","object":"chat.completion","created":1779804198,"model":"deepseek-v4-flash","choices":[{"index":0,"message":{"role":"assistant","content":"","reasoning_content":"The user wants me to calculate the square root of 132413 using the square_root tool and reply with only the result.","tool_calls":[{"index":0,"id":"call_00_RQkAWd27VsEXJKzZlL2S9007","type":"function","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":330,"completion_tokens":70,"total_tokens":400,"prompt_tokens_details":{"cached_tokens":256},"completion_tokens_details":{"reasoning_tokens":25},"prompt_cache_hit_tokens":256,"prompt_cache_miss_tokens":74},"system_fingerprint":"fp_8b330d02d0_prod0820_fp8_kvcache_20260402"}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Content-Type:
+                - application/json
+            Server:
+                - elb
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers
+            Via:
+                - 1.1 c823350775ceb593355f2c0ee7cd3b2a.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - OceywctZgMP89TEz9ME0mHeuELCPvewfX730B8PN33_bzG0MCZ4Vpw==
+            X-Amz-Cf-Pop:
+                - YUL62-P2
+            X-Cache:
+                - Miss from cloudfront
+            X-Content-Type-Options:
+                - nosniff
+        status: 200 OK
+        code: 200
+        duration: 336ms

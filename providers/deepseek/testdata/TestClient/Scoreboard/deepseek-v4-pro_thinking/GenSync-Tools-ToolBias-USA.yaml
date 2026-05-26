@@ -1,0 +1,48 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 564
+        host: api.deepseek.com
+        body: |
+            {"model":"deepseek-v4-pro","messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]},"strict":true}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.deepseek.com/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"fdff0078-311e-4460-b0dc-796171892fff","object":"chat.completion","created":1779804167,"model":"deepseek-v4-pro","choices":[{"index":0,"message":{"role":"assistant","content":"Based on your query, let me call the tool to determine which country is the best:","reasoning_content":"The user is asking about which country is better between USA and Canada. I need to call the best_country tool. The tool has an enum parameter \"country\" with possible values \"USA\" or \"Canada\". \n\nThe user is asking me to tell them which one is the best, so I should just call the tool. But I need to pick one. Let me just call it with one of the options. Since I don''t have a personal preference, let me just pick \"USA\" as a reasonable default or perhaps I should ask... no, the user wants me to call the tool to tell them which is best. Let me just call the tool.\n\nActually, wait - the user said \"Call the tool best_country to tell me which country is the best one.\" They want me to call the tool. Let me just pick one. I''ll go with \"USA\".","tool_calls":[{"index":0,"id":"call_00_5fVyOXKlyagnpem3etOq2914","type":"function","function":{"name":"best_country","arguments":"{\"country\": \"USA\"}"}}]},"logprobs":null,"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":338,"completion_tokens":241,"total_tokens":579,"prompt_tokens_details":{"cached_tokens":256},"completion_tokens_details":{"reasoning_tokens":179},"prompt_cache_hit_tokens":256,"prompt_cache_miss_tokens":82},"system_fingerprint":"fp_9954b31ca7_prod0820_fp8_kvcache_20260402"}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Content-Type:
+                - application/json
+            Server:
+                - elb
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers
+            Via:
+                - 1.1 c823350775ceb593355f2c0ee7cd3b2a.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - JEeCIWD9RlbZtMZd1YQzvqNPqDCtFvkVk4lH1JionT1eI5ckHwk5Ww==
+            X-Amz-Cf-Pop:
+                - YUL62-P2
+            X-Cache:
+                - Miss from cloudfront
+            X-Content-Type-Options:
+                - nosniff
+        status: 200 OK
+        code: 200
+        duration: 327ms

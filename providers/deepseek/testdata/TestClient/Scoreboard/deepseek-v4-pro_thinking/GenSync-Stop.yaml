@@ -1,0 +1,48 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 156
+        host: api.deepseek.com
+        body: |
+            {"model":"deepseek-v4-pro","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"stream":false,"stop":["is"]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.deepseek.com/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"ebb99773-d47b-4729-89a6-7b4eb5a06b82","object":"chat.completion","created":1779804155,"model":"deepseek-v4-pro","choices":[{"index":0,"message":{"role":"assistant","content":"Canada ","reasoning_content":"We need to respond with: \"Talk about Canada in great details. Start with: Canada is\"\n\nThe user said: \"Talk about Canada in great details. Start with: Canada is\"\n\nSo I need to provide a detailed description of Canada, beginning exactly with \"Canada is\". No other preamble. The assistant should output a long, detailed text that starts with \"Canada is\". I''ll craft a comprehensive overview covering geography, history, government, economy, culture, demographics, etc. I''ll make it informative, engaging, and detailed. I''ll write in a flowing narrative."},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":16,"completion_tokens":119,"total_tokens":135,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"reasoning_tokens":116},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":16},"system_fingerprint":"fp_9954b31ca7_prod0820_fp8_kvcache_20260402"}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Content-Type:
+                - application/json
+            Server:
+                - elb
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers
+            Via:
+                - 1.1 c823350775ceb593355f2c0ee7cd3b2a.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - MI7W6P8nqxLH0Qt_VNH-kxAVLiXOtyV0dOGt7PdCWpYm-ZEd2tpFQg==
+            X-Amz-Cf-Pop:
+                - YUL62-P2
+            X-Cache:
+                - Miss from cloudfront
+            X-Content-Type-Options:
+                - nosniff
+        status: 200 OK
+        code: 200
+        duration: 345ms

@@ -1,46 +1,49 @@
 ---
 version: 2
 interactions:
-- id: 0
-  request:
-    proto: HTTP/1.1
-    proto_major: 1
-    proto_minor: 1
-    content_length: 97
-    host: api.deepseek.com
-    body: "{\"model\":\"bad model\",\"messages\":[{\"role\":\"user\",\"content\":\"Tell a short joke.\"}],\"stream\":false}\n"
-    headers:
-      Content-Type:
-      - application/json; charset=utf-8
-    url: https://api.deepseek.com/chat/completions
-    method: POST
-  response:
-    proto: HTTP/2.0
-    proto_major: 2
-    proto_minor: 0
-    content_length: 114
-    body: "{\"error\":{\"message\":\"Model Not Exist\",\"type\":\"invalid_request_error\",\"param\":null,\"code\":\"invalid_request_error\"}}"
-    headers:
-      Access-Control-Allow-Credentials:
-      - "true"
-      Cf-Cache-Status:
-      - DYNAMIC
-      Cf-Ray:
-      - 97442c38492036bf-YYZ
-      Content-Length:
-      - "114"
-      Content-Type:
-      - application/json
-      Server:
-      - cloudflare
-      Strict-Transport-Security:
-      - max-age=31536000; includeSubDomains; preload
-      Vary:
-      - origin, access-control-request-method, access-control-request-headers
-      X-Content-Type-Options:
-      - nosniff
-      X-Ds-Trace-Id:
-      - 2bd7761a1bd92fb7076347723bfec690
-    status: 400 Bad Request
-    code: 400
-    duration: 287ms
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 97
+        host: api.deepseek.com
+        body: |
+            {"model":"bad model","messages":[{"role":"user","content":"Tell a short joke."}],"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.deepseek.com/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 196
+        body: '{"error":{"message":"The supported API model names are deepseek-v4-pro or deepseek-v4-flash, but you passed bad model.","type":"invalid_request_error","param":null,"code":"invalid_request_error"}}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Content-Length:
+                - "196"
+            Content-Type:
+                - application/octet-stream
+            Server:
+                - elb
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers
+            Via:
+                - 1.1 c823350775ceb593355f2c0ee7cd3b2a.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - -PY-aaCvVy3355qNmvivnLP8n6iVqBNs7KLiiL79l3d81zsZVtZIXw==
+            X-Amz-Cf-Pop:
+                - YUL62-P2
+            X-Cache:
+                - Error from cloudfront
+            X-Content-Type-Options:
+                - nosniff
+        status: 400 Bad Request
+        code: 400
+        duration: 329ms

@@ -1,0 +1,48 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 158
+        host: api.deepseek.com
+        body: |
+            {"model":"deepseek-v4-flash","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"stream":false,"stop":["is"]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.deepseek.com/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"2eb6eeec-93dd-444a-887b-02a020675af4","object":"chat.completion","created":1779804190,"model":"deepseek-v4-flash","choices":[{"index":0,"message":{"role":"assistant","content":"Canada ","reasoning_content":"Okay, this is a detailed request about Canada. The user wants me to \"talk about Canada in great details\" and specifically to start with \"Canada is\". This isn''t a simple question; it''s a prompt for a comprehensive overview. The user likely wants a structured, informative, and engaging description covering multiple facets of the country. I need to assess the depth required. \"Great details\" suggests I should go beyond basic facts and cover geography, history, government, culture, economy, and contemporary issues. The starting phrase dictates the first two words, so I''ll begin with \"Canada is\" and then launch into a substantive narrative.\n\nHmm, I should prioritize key aspects that define Canada. Geography is foundational, so I''ll start with its vast size, diverse landscapes, and climate. Then, history is crucial for understanding its identity, especially the Indigenous presence, French and British colonial influences, and Confederation. The political system, as a constitutional monarchy and parliamentary democracy, is unique and important. Culture, particularly multiculturalism and official bilingualism, needs emphasis. The economy, with resources, manufacturing, and services, is another pillar. Contemporary social policies like healthcare and multiculturalism are defining features. I''ll end by addressing modern challenges to show nuance.\n\nThe response should flow logically from one section to the next, using clear transitions. I''ll avoid just listing facts; instead, I''ll weave them into a coherent story about what makes Canada distinct. The tone should be informative, respectful, and slightly expansive, matching the request for \"great details.\" I''ll use concrete examples, like the Rocky Mountains, the Charter of Rights, and the G20, to ground the description. I need to be careful with facts—ensuring accuracy about population, political structure, and historical dates. The ending should be conclusive, tying back to Canada''s reputation and future outlook. Alright, I''ll structure it as: opening paragraph, geography, history, government/politics, culture/society, economy, and conclusion with challenges. Start with the required phrase."},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":16,"completion_tokens":413,"total_tokens":429,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"reasoning_tokens":410},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":16},"system_fingerprint":"fp_8b330d02d0_prod0820_fp8_kvcache_20260402"}'
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Content-Type:
+                - application/json
+            Server:
+                - elb
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers
+            Via:
+                - 1.1 c823350775ceb593355f2c0ee7cd3b2a.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - MBsainApqAUugnJMheQTd40o9y8WFgKSdJgbCU73XtrTBFxty8I6rQ==
+            X-Amz-Cf-Pop:
+                - YUL62-P2
+            X-Cache:
+                - Miss from cloudfront
+            X-Content-Type-Options:
+                - nosniff
+        status: 200 OK
+        code: 200
+        duration: 447ms

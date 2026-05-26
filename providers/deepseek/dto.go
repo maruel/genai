@@ -19,35 +19,73 @@ import (
 	"github.com/maruel/genai/internal"
 )
 
+// GenOption controls thinking mode and reasoning effort.
+//
+// DeepSeek v4 models default to thinking enabled. Set Thinking to false to
+// switch to non-thinking mode, which enables forced tool calling and avoids
+// "reasoning_content must be passed back" errors across multi-turn
+// conversations.
+//
+// See https://api-docs.deepseek.com/api/create-chat-completion
+type GenOption struct {
+	// Thinking controls the thinking mode. When false, thinking is disabled.
+	Thinking bool
+	// ReasoningEffort controls the reasoning effort of the model.
+	// Ignored when Thinking is false. Default is "high".
+	// For compatibility, "low" and "medium" are mapped to "high" by the API,
+	// and "xhigh" is mapped to "max".
+	ReasoningEffort ReasoningEffort
+}
+
+// ReasoningEffort controls the amount of effort the model puts into reasoning.
+type ReasoningEffort string
+
+const (
+	// ReasoningEffortHigh is the default effort for regular requests.
+	ReasoningEffortHigh ReasoningEffort = "high"
+	// ReasoningEffortMax maximizes reasoning quality.
+	ReasoningEffortMax ReasoningEffort = "max"
+)
+
+// Validate implements genai.Validatable.
+func (g *GenOption) Validate() error {
+	switch g.ReasoningEffort {
+	case "", ReasoningEffortHigh, ReasoningEffortMax:
+	default:
+		return fmt.Errorf("invalid ReasoningEffort %q", g.ReasoningEffort)
+	}
+	return nil
+}
+
 // ChatRequest is documented at https://api-docs.deepseek.com/api/create-chat-completion
 type ChatRequest struct {
-	Model            string    `json:"model"`
-	Messages         []Message `json:"messages"`
-	Stream           bool      `json:"stream"`
-	Temperature      float64   `json:"temperature,omitzero"`       // [0, 2]
-	FrequencyPenalty float64   `json:"frequency_penalty,omitzero"` // [-2, 2]
-	MaxToks          int64     `json:"max_tokens,omitzero"`        // [1, 8192]
-	PresencePenalty  float64   `json:"presence_penalty,omitzero"`  // [-2, 2]
-	ResponseFormat   struct {
+	Model    string    `json:"model"`
+	Messages []Message `json:"messages"`
+	Stream   bool      `json:"stream"`
+	// Thinking controls the switch between thinking and non-thinking mode.
+	// Set type to "disabled" for non-thinking mode. Default is "enabled".
+	Thinking struct {
+		Type            string `json:"type,omitzero"`             // "enabled", "disabled"
+		ReasoningEffort string `json:"reasoning_effort,omitzero"` // "high", "max"
+	} `json:"thinking,omitzero"`
+	Temperature    float64 `json:"temperature,omitzero"` // [0, 2]
+	MaxToks        int64   `json:"max_tokens,omitzero"`  // Up to 384K for deepseek-v4-flash
+	ResponseFormat struct {
 		Type string `json:"type,omitzero"` // "text", "json_object"
 	} `json:"response_format,omitzero"`
 	Stop          []string `json:"stop,omitzero"`
 	StreamOptions struct {
 		IncludeUsage bool `json:"include_usage,omitzero"`
 	} `json:"stream_options,omitzero"`
-	TopP float64 `json:"top_p,omitzero"` // [0, 1]
-	// Alternative when forcing a specific function. This can probably be achieved
-	// by providing a single tool and ToolChoice == "required".
-	// ToolChoice struct {
-	// 	Type     string `json:"type,omitzero"` // "function"
-	// 	Function struct {
-	// 		Name string `json:"name,omitzero"`
-	// 	} `json:"function,omitzero"`
-	// } `json:"tool_choice,omitzero"`
-	ToolChoice string `json:"tool_choice,omitzero"` // "none", "auto", "required"
-	Tools      []Tool `json:"tools,omitzero"`
-	Logprobs   bool   `json:"logprobs,omitzero"`
-	TopLogprob int64  `json:"top_logprobs,omitzero"`
+	TopP       float64 `json:"top_p,omitzero"`       // [0, 1]
+	ToolChoice string  `json:"tool_choice,omitzero"` // "none", "auto", "required"
+	Tools      []Tool  `json:"tools,omitzero"`
+	Logprobs   bool    `json:"logprobs,omitzero"`
+	TopLogprob int64   `json:"top_logprobs,omitzero"`
+	// UserID is a custom user identifier for rate limit isolation.
+	// Allowed charset: [a-zA-Z0-9\-_], max 512 chars.
+	// See https://api-docs.deepseek.com/quick_start/rate_limit
+	UserID string `json:"user_id,omitzero"`
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
@@ -65,6 +103,14 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 		}
 		// https://api-docs.deepseek.com/guides/reasoning_model Soon "reasoning_effort"
 		switch v := opt.(type) {
+		case *GenOption:
+			if !v.Thinking {
+				c.Thinking.Type = "disabled"
+			} else if v.ReasoningEffort != "" {
+				c.Thinking.ReasoningEffort = string(v.ReasoningEffort)
+			} else if v.ReasoningEffort != "" {
+				c.Thinking.ReasoningEffort = string(v.ReasoningEffort)
+			}
 		case *genai.GenOptionText:
 			c.MaxToks = v.MaxTokens
 			c.Temperature = v.Temperature
@@ -90,12 +136,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 				case genai.ToolCallAny:
 					c.ToolChoice = "auto"
 				case genai.ToolCallRequired:
-					if strings.Contains(model, "reasoner") {
-						// "deepseek-reasoner does not support this tool_choice"
-						unsupported = append(unsupported, "GenOptionTools.Force")
-					} else {
-						c.ToolChoice = "required"
-					}
+					c.ToolChoice = "required"
 				case genai.ToolCallNone:
 					c.ToolChoice = "none"
 				}
@@ -104,6 +145,7 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 					c.Tools[i].Type = "function"
 					c.Tools[i].Function.Name = t.Name
 					c.Tools[i].Function.Description = t.Description
+					c.Tools[i].Function.Strict = true
 					if c.Tools[i].Function.Parameters = t.InputSchemaOverride; c.Tools[i].Function.Parameters == nil {
 						c.Tools[i].Function.Parameters = t.GetInputSchema()
 					}
@@ -233,7 +275,11 @@ func (m *Message) From(in *genai.Message) error {
 			}
 			m.Content += string(data)
 		case in.Replies[i].Reasoning != "":
-			// Reasoning content should not be returned to the model.
+			// DeepSeek requires reasoning_content to be passed back in
+			// multi-turn conversations when thinking mode is enabled.
+			// Otherwise the API rejects with "reasoning_content must
+			// be passed back to the API".
+			m.ReasoningContent += in.Replies[i].Reasoning
 		case !in.Replies[i].ToolCall.IsZero():
 			m.ToolCalls = append(m.ToolCalls, ToolCall{})
 			if err := m.ToolCalls[len(m.ToolCalls)-1].From(&in.Replies[i].ToolCall); err != nil {
@@ -304,6 +350,7 @@ type Tool struct {
 		Name        string             `json:"name,omitzero"`
 		Description string             `json:"description,omitzero"`
 		Parameters  *jsonschema.Schema `json:"parameters,omitzero"`
+		Strict      bool               `json:"strict,omitzero"` // Beta: strict JSON schema validation
 	} `json:"function"`
 }
 
@@ -395,21 +442,26 @@ type Usage struct {
 
 // Logprobs is the provider-specific log probabilities.
 type Logprobs struct {
-	Content []struct {
-		Token       string  `json:"token"`
-		Bytes       []byte  `json:"bytes"`
-		Logprob     float64 `json:"logprob"`
-		TopLogprobs []struct {
-			Token   string  `json:"token"`
-			Bytes   []byte  `json:"bytes"`
-			Logprob float64 `json:"logprob"`
-		} `json:"top_logprobs"`
-	} `json:"content"`
+	Content          []LogprobEntry `json:"content,omitzero"`
+	ReasoningContent []LogprobEntry `json:"reasoning_content,omitzero"`
+}
+
+// LogprobEntry is a single log probability entry.
+type LogprobEntry struct {
+	Token       string  `json:"token"`
+	Bytes       []byte  `json:"bytes"`
+	Logprob     float64 `json:"logprob"`
+	TopLogprobs []struct {
+		Token   string  `json:"token"`
+		Bytes   []byte  `json:"bytes"`
+		Logprob float64 `json:"logprob"`
+	} `json:"top_logprobs"`
 }
 
 // To converts to the genai equivalent.
 func (l *Logprobs) To() [][]genai.Logprob {
 	if len(l.Content) == 0 {
+		// TODO: Handle ReasoningContent logprobs.
 		return nil
 	}
 	out := make([][]genai.Logprob, 0, len(l.Content))

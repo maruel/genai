@@ -1,0 +1,105 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 949
+        host: api.deepseek.com
+        body: |
+            {"model":"deepseek-v4-flash","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","reasoning_content":"The user wants me to calculate the square root of 132413 and reply with only the result. Let me use the square_root tool.","tool_calls":[{"id":"call_00_osOQiNaRGmqB2XDkZEYm5107","type":"function","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_00_osOQiNaRGmqB2XDkZEYm5107"}],"stream":true,"tool_choice":"none","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]},"strict":true}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.deepseek.com/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"05711771-1078-41e0-805e-56cbe8a06ce8","object":"chat.completion.chunk","created":1779804199,"model":"deepseek-v4-flash","system_fingerprint":"fp_8b330d02d0_prod0820_fp8_kvcache_20260402","choices":[{"index":0,"delta":{"role":"assistant","content":null,"reasoning_content":""},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"05711771-1078-41e0-805e-56cbe8a06ce8","object":"chat.completion.chunk","created":1779804199,"model":"deepseek-v4-flash","system_fingerprint":"fp_8b330d02d0_prod0820_fp8_kvcache_20260402","choices":[{"index":0,"delta":{"content":null,"reasoning_content":"The"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"05711771-1078-41e0-805e-56cbe8a06ce8","object":"chat.completion.chunk","created":1779804199,"model":"deepseek-v4-flash","system_fingerprint":"fp_8b330d02d0_prod0820_fp8_kvcache_20260402","choices":[{"index":0,"delta":{"content":null,"reasoning_content":" result"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"05711771-1078-41e0-805e-56cbe8a06ce8","object":"chat.completion.chunk","created":1779804199,"model":"deepseek-v4-flash","system_fingerprint":"fp_8b330d02d0_prod0820_fp8_kvcache_20260402","choices":[{"index":0,"delta":{"content":null,"reasoning_content":" is"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"05711771-1078-41e0-805e-56cbe8a06ce8","object":"chat.completion.chunk","created":1779804199,"model":"deepseek-v4-flash","system_fingerprint":"fp_8b330d02d0_prod0820_fp8_kvcache_20260402","choices":[{"index":0,"delta":{"content":null,"reasoning_content":" "},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"05711771-1078-41e0-805e-56cbe8a06ce8","object":"chat.completion.chunk","created":1779804199,"model":"deepseek-v4-flash","system_fingerprint":"fp_8b330d02d0_prod0820_fp8_kvcache_20260402","choices":[{"index":0,"delta":{"content":null,"reasoning_content":"363"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"05711771-1078-41e0-805e-56cbe8a06ce8","object":"chat.completion.chunk","created":1779804199,"model":"deepseek-v4-flash","system_fingerprint":"fp_8b330d02d0_prod0820_fp8_kvcache_20260402","choices":[{"index":0,"delta":{"content":null,"reasoning_content":"."},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"05711771-1078-41e0-805e-56cbe8a06ce8","object":"chat.completion.chunk","created":1779804199,"model":"deepseek-v4-flash","system_fingerprint":"fp_8b330d02d0_prod0820_fp8_kvcache_20260402","choices":[{"index":0,"delta":{"content":null,"reasoning_content":"89"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"05711771-1078-41e0-805e-56cbe8a06ce8","object":"chat.completion.chunk","created":1779804199,"model":"deepseek-v4-flash","system_fingerprint":"fp_8b330d02d0_prod0820_fp8_kvcache_20260402","choices":[{"index":0,"delta":{"content":null,"reasoning_content":"."},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"05711771-1078-41e0-805e-56cbe8a06ce8","object":"chat.completion.chunk","created":1779804199,"model":"deepseek-v4-flash","system_fingerprint":"fp_8b330d02d0_prod0820_fp8_kvcache_20260402","choices":[{"index":0,"delta":{"content":null,"reasoning_content":" Since"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"05711771-1078-41e0-805e-56cbe8a06ce8","object":"chat.completion.chunk","created":1779804199,"model":"deepseek-v4-flash","system_fingerprint":"fp_8b330d02d0_prod0820_fp8_kvcache_20260402","choices":[{"index":0,"delta":{"content":null,"reasoning_content":" the"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"05711771-1078-41e0-805e-56cbe8a06ce8","object":"chat.completion.chunk","created":1779804199,"model":"deepseek-v4-flash","system_fingerprint":"fp_8b330d02d0_prod0820_fp8_kvcache_20260402","choices":[{"index":0,"delta":{"content":null,"reasoning_content":" user"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"05711771-1078-41e0-805e-56cbe8a06ce8","object":"chat.completion.chunk","created":1779804199,"model":"deepseek-v4-flash","system_fingerprint":"fp_8b330d02d0_prod0820_fp8_kvcache_20260402","choices":[{"index":0,"delta":{"content":null,"reasoning_content":" only"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"05711771-1078-41e0-805e-56cbe8a06ce8","object":"chat.completion.chunk","created":1779804199,"model":"deepseek-v4-flash","system_fingerprint":"fp_8b330d02d0_prod0820_fp8_kvcache_20260402","choices":[{"index":0,"delta":{"content":null,"reasoning_content":" wants"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"05711771-1078-41e0-805e-56cbe8a06ce8","object":"chat.completion.chunk","created":1779804199,"model":"deepseek-v4-flash","system_fingerprint":"fp_8b330d02d0_prod0820_fp8_kvcache_20260402","choices":[{"index":0,"delta":{"content":null,"reasoning_content":" the"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"05711771-1078-41e0-805e-56cbe8a06ce8","object":"chat.completion.chunk","created":1779804199,"model":"deepseek-v4-flash","system_fingerprint":"fp_8b330d02d0_prod0820_fp8_kvcache_20260402","choices":[{"index":0,"delta":{"content":null,"reasoning_content":" result"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"05711771-1078-41e0-805e-56cbe8a06ce8","object":"chat.completion.chunk","created":1779804199,"model":"deepseek-v4-flash","system_fingerprint":"fp_8b330d02d0_prod0820_fp8_kvcache_20260402","choices":[{"index":0,"delta":{"content":null,"reasoning_content":","},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"05711771-1078-41e0-805e-56cbe8a06ce8","object":"chat.completion.chunk","created":1779804199,"model":"deepseek-v4-flash","system_fingerprint":"fp_8b330d02d0_prod0820_fp8_kvcache_20260402","choices":[{"index":0,"delta":{"content":null,"reasoning_content":" I"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"05711771-1078-41e0-805e-56cbe8a06ce8","object":"chat.completion.chunk","created":1779804199,"model":"deepseek-v4-flash","system_fingerprint":"fp_8b330d02d0_prod0820_fp8_kvcache_20260402","choices":[{"index":0,"delta":{"content":null,"reasoning_content":"'ll"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"05711771-1078-41e0-805e-56cbe8a06ce8","object":"chat.completion.chunk","created":1779804199,"model":"deepseek-v4-flash","system_fingerprint":"fp_8b330d02d0_prod0820_fp8_kvcache_20260402","choices":[{"index":0,"delta":{"content":null,"reasoning_content":" reply"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"05711771-1078-41e0-805e-56cbe8a06ce8","object":"chat.completion.chunk","created":1779804199,"model":"deepseek-v4-flash","system_fingerprint":"fp_8b330d02d0_prod0820_fp8_kvcache_20260402","choices":[{"index":0,"delta":{"content":null,"reasoning_content":" with"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"05711771-1078-41e0-805e-56cbe8a06ce8","object":"chat.completion.chunk","created":1779804199,"model":"deepseek-v4-flash","system_fingerprint":"fp_8b330d02d0_prod0820_fp8_kvcache_20260402","choices":[{"index":0,"delta":{"content":null,"reasoning_content":" that"},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"05711771-1078-41e0-805e-56cbe8a06ce8","object":"chat.completion.chunk","created":1779804199,"model":"deepseek-v4-flash","system_fingerprint":"fp_8b330d02d0_prod0820_fp8_kvcache_20260402","choices":[{"index":0,"delta":{"content":null,"reasoning_content":"."},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"05711771-1078-41e0-805e-56cbe8a06ce8","object":"chat.completion.chunk","created":1779804199,"model":"deepseek-v4-flash","system_fingerprint":"fp_8b330d02d0_prod0820_fp8_kvcache_20260402","choices":[{"index":0,"delta":{"content":"363","reasoning_content":null},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"05711771-1078-41e0-805e-56cbe8a06ce8","object":"chat.completion.chunk","created":1779804199,"model":"deepseek-v4-flash","system_fingerprint":"fp_8b330d02d0_prod0820_fp8_kvcache_20260402","choices":[{"index":0,"delta":{"content":".","reasoning_content":null},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"05711771-1078-41e0-805e-56cbe8a06ce8","object":"chat.completion.chunk","created":1779804199,"model":"deepseek-v4-flash","system_fingerprint":"fp_8b330d02d0_prod0820_fp8_kvcache_20260402","choices":[{"index":0,"delta":{"content":"89","reasoning_content":null},"logprobs":null,"finish_reason":null}]}
+
+            data: {"id":"05711771-1078-41e0-805e-56cbe8a06ce8","object":"chat.completion.chunk","created":1779804199,"model":"deepseek-v4-flash","system_fingerprint":"fp_8b330d02d0_prod0820_fp8_kvcache_20260402","choices":[{"index":0,"delta":{"content":"","reasoning_content":null},"logprobs":null,"finish_reason":"stop"}],"usage":{"prompt_tokens":119,"completion_tokens":26,"total_tokens":145,"prompt_tokens_details":{"cached_tokens":0},"completion_tokens_details":{"reasoning_tokens":22},"prompt_cache_hit_tokens":0,"prompt_cache_miss_tokens":119}}
+
+            data: [DONE]
+
+        headers:
+            Access-Control-Allow-Credentials:
+                - "true"
+            Cache-Control:
+                - no-cache
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Server:
+                - elb
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            Vary:
+                - origin, access-control-request-method, access-control-request-headers
+            Via:
+                - 1.1 c823350775ceb593355f2c0ee7cd3b2a.cloudfront.net (CloudFront)
+            X-Amz-Cf-Id:
+                - _6QMGCosY87b0VLgyj7Ell9w3NIq0RQ0drP-XGG1lVjG-hFnnPiEsg==
+            X-Amz-Cf-Pop:
+                - YUL62-P2
+            X-Cache:
+                - Miss from cloudfront
+            X-Content-Type-Options:
+                - nosniff
+        status: 200 OK
+        code: 200
+        duration: 413ms

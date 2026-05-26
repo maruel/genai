@@ -9,7 +9,6 @@ package deepseek_test
 import (
 	"net/http"
 	"os"
-	"strings"
 	"testing"
 
 	"github.com/maruel/genai"
@@ -74,14 +73,18 @@ func TestClient(t *testing.T) {
 	})
 
 	t.Run("Scoreboard", func(t *testing.T) {
-		genaiModels, err := getClient(t, "").ListModels(t.Context())
-		if err != nil {
-			t.Fatal(err)
-		}
-		models := make([]scoreboard.Model, 0, len(genaiModels))
-		for _, m := range genaiModels {
-			id := m.GetID()
-			models = append(models, scoreboard.Model{Model: id, Reason: strings.Contains(id, "reasoner")})
+		sb := deepseek.Scoreboard()
+		// Derive models to test from the scoreboard scenarios.
+		// Each scenario may declare Reason: true (thinking) or
+		// Reason: false (non-thinking via GenOption).
+		var models []scoreboard.Model
+		for _, sc := range sb.Scenarios {
+			if sc.Untested() {
+				continue
+			}
+			for _, model := range sc.Models {
+				models = append(models, scoreboard.Model{Model: model, Reason: sc.Reason})
+			}
 		}
 		getClientRT := func(t testing.TB, model scoreboard.Model, fn func(http.RoundTripper) http.RoundTripper) genai.Provider {
 			opts := []genai.ProviderOption{genai.ProviderOptionPreloadedModels(cachedModels)}
@@ -98,7 +101,10 @@ func TestClient(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			return c
+			return &internaltest.InjectOptions{
+				Provider: c,
+				Opts:     []genai.GenOption{&deepseek.GenOption{Thinking: model.Reason}},
+			}
 		}
 		smoketest.Run(t, getClientRT, models, testRecorder.Records, nil)
 	})
@@ -141,8 +147,8 @@ func TestClient(t *testing.T) {
 				Opts: []genai.ProviderOption{
 					genai.ProviderOptionModel("bad model"),
 				},
-				ErrGenSync:   "http 400\ninvalid_request_error: Model Not Exist",
-				ErrGenStream: "http 400\ninvalid_request_error: Model Not Exist",
+				ErrGenSync:   "http 400\ninvalid_request_error: The supported API model names are deepseek-v4-pro or deepseek-v4-flash, but you passed bad model.",
+				ErrGenStream: "http 400\ninvalid_request_error: The supported API model names are deepseek-v4-pro or deepseek-v4-flash, but you passed bad model.",
 			},
 		}
 		f := func(t *testing.T, opts ...genai.ProviderOption) (genai.Provider, error) {

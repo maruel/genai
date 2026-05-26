@@ -18,7 +18,6 @@ import (
 	"net/http"
 	"os"
 	"slices"
-	"strings"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
@@ -139,24 +138,16 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 	if err != nil {
 		return "", fmt.Errorf("failed to automatically select the model: %w", err)
 	}
-	cheap := preference == string(genai.ModelCheap)
-	selectedModel := ""
+	want := "deepseek-v4-pro"
+	if preference == string(genai.ModelCheap) {
+		want = "deepseek-v4-flash"
+	}
 	for _, mdl := range mdls {
-		m := mdl.(*Model)
-		if cheap {
-			if strings.Contains(m.ID, "chat") {
-				selectedModel = m.ID
-			}
-		} else {
-			if !strings.Contains(m.ID, "chat") {
-				selectedModel = m.ID
-			}
+		if mdl.(*Model).ID == want {
+			return want, nil
 		}
 	}
-	if selectedModel == "" {
-		return "", errors.New("failed to find a model automatically")
-	}
-	return selectedModel, nil
+	return "", errors.New("failed to find a model automatically")
 }
 
 // Name implements genai.Provider.

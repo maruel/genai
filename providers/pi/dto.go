@@ -21,6 +21,7 @@ package pi
 import (
 	"bytes"
 	"encoding/json"
+	"strings"
 )
 
 // ============================================================
@@ -713,28 +714,47 @@ type MessageEndEvent struct {
 
 // ToolExecStartEvent is emitted when a tool begins execution.
 type ToolExecStartEvent struct {
-	Type       EventType        `json:"type"`
-	ToolCallID string           `json:"toolCallId"`
-	ToolName   string           `json:"toolName"`
-	Args       json.RawMessage  `json:"args"`
+	Type       EventType       `json:"type"`
+	ToolCallID string          `json:"toolCallId"`
+	ToolName   string          `json:"toolName"`
+	Args       json.RawMessage `json:"args"`
 }
 
 // ToolExecUpdateEvent is emitted during tool execution with progress.
 type ToolExecUpdateEvent struct {
-	Type          EventType        `json:"type"`
-	ToolCallID    string           `json:"toolCallId"`
-	ToolName      string           `json:"toolName"`
-	Args          json.RawMessage  `json:"args"`
-	PartialResult json.RawMessage  `json:"partialResult"`
+	Type          EventType       `json:"type"`
+	ToolCallID    string          `json:"toolCallId"`
+	ToolName      string          `json:"toolName"`
+	Args          json.RawMessage `json:"args"`
+	PartialResult ToolExecResult  `json:"partialResult"`
 }
 
 // ToolExecEndEvent is emitted when a tool finishes execution.
 type ToolExecEndEvent struct {
-	Type       EventType       `json:"type"`
-	ToolCallID string          `json:"toolCallId"`
-	ToolName   string          `json:"toolName"`
-	Result     json.RawMessage `json:"result"`
-	IsError    bool            `json:"isError"`
+	Type       EventType      `json:"type"`
+	ToolCallID string         `json:"toolCallId"`
+	ToolName   string         `json:"toolName"`
+	Result     ToolExecResult `json:"result"`
+	IsError    bool           `json:"isError"`
+}
+
+// ToolExecResult is the result payload for tool_execution_update and
+// tool_execution_end events.
+//
+// It contains an array of content blocks with the tool output.
+type ToolExecResult struct {
+	Content ContentBlocks `json:"content"`
+}
+
+// Text extracts and concatenates all text content from the result blocks.
+func (r *ToolExecResult) Text() string {
+	var b strings.Builder
+	for i := range r.Content {
+		if r.Content[i].Text != "" {
+			b.WriteString(r.Content[i].Text)
+		}
+	}
+	return b.String()
 }
 
 // ---------- Extension UI events ----------

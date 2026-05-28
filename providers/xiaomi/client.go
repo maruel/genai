@@ -14,6 +14,7 @@ import (
 	"bytes"
 	"context"
 	_ "embed"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -21,10 +22,12 @@ import (
 	"net/http"
 	"os"
 	"slices"
+	"strings"
 
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
+	"github.com/maruel/genai/internal/bb"
 	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/roundtrippers"
 )
@@ -92,8 +95,14 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 		}
 	}
 	mod := genai.Modalities{genai.ModalityText}
-	if len(modalities) != 0 && !slices.Equal(modalities, mod) {
-		return nil, fmt.Errorf("unexpected option Modalities %s, only text is supported", mod)
+	if len(modalities) != 0 {
+		switch {
+		case slices.Equal(modalities, genai.Modalities{genai.ModalityText}):
+		case slices.Equal(modalities, genai.Modalities{genai.ModalityAudio}):
+			mod = genai.Modalities{genai.ModalityAudio}
+		default:
+			return nil, fmt.Errorf("unexpected option Modalities %s, only text or audio is supported", modalities)
+		}
 	}
 	t := base.DefaultTransport
 	if wrapper != nil {
@@ -102,7 +111,7 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 	c := &Client{
 		impl: base.Provider[*ErrorResponse, *ChatRequest, *ChatResponse, ChatStreamChunkResponse]{
 			GenSyncURL:      "https://api.xiaomimimo.com/v1/chat/completions",
-			ProcessStream:   ProcessStream,
+			ProcessStream:   makeProcessStream(""),
 			PreloadedModels: preloadedModels,
 			ProviderBase: base.ProviderBase[*ErrorResponse]{
 				APIKeyURL: apiKeyURL,
@@ -120,13 +129,25 @@ func New(ctx context.Context, opts ...genai.ProviderOption) (*Client, error) {
 		switch model {
 		case "":
 		case string(genai.ModelCheap), string(genai.ModelGood), string(genai.ModelSOTA):
-			if c.impl.Model, err = c.selectBestTextModel(ctx, model); err != nil {
-				return nil, err
+			if mod[0] == genai.ModalityAudio {
+				if c.impl.Model, err = c.selectBestAudioModel(ctx, model); err != nil {
+					return nil, err
+				}
+			} else {
+				if c.impl.Model, err = c.selectBestTextModel(ctx, model); err != nil {
+					return nil, err
+				}
 			}
 			c.impl.OutputModalities = mod
 		default:
 			c.impl.Model = model
-			c.impl.OutputModalities = mod
+			if len(modalities) != 0 {
+				c.impl.OutputModalities = mod
+			} else if strings.Contains(model, "tts") {
+				c.impl.OutputModalities = genai.Modalities{genai.ModalityAudio}
+			} else {
+				c.impl.OutputModalities = mod
+			}
 		}
 	}
 	return c, err
@@ -149,6 +170,24 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 		}
 	}
 	return "", errors.New("failed to find a model automatically")
+}
+
+// selectBestAudioModel selects the most appropriate audio model based on the preference (cheap, good, or SOTA).
+//
+// Audio models are identified by "tts" in their name.
+func (c *Client) selectBestAudioModel(ctx context.Context, preference string) (string, error) {
+	mdls, err := c.ListModels(ctx)
+	if err != nil {
+		return "", fmt.Errorf("failed to automatically select the model: %w", err)
+	}
+	// All TTS models are equivalent; pick the base one.
+	want := "mimo-v2.5-tts"
+	for _, mdl := range mdls {
+		if mdl.(*Model).ID == want {
+			return want, nil
+		}
+	}
+	return "", errors.New("failed to find an audio model automatically")
 }
 
 // Name implements genai.Provider.
@@ -185,17 +224,68 @@ func (c *Client) HTTPClient() *http.Client {
 
 // GenSync implements genai.Provider.
 func (c *Client) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
-	return c.impl.GenSync(ctx, msgs, opts...)
+	// Build the request ourselves so GenSyncRaw can set audioFormat on the response.
+	in := &ChatRequest{}
+	if err := in.Init(msgs, c.impl.Model, opts...); err != nil {
+		return genai.Result{}, err
+	}
+	out := &ChatResponse{}
+	if err := c.GenSyncRaw(ctx, in, out); err != nil {
+		return genai.Result{}, err
+	}
+	return out.ToResult()
 }
 
 // GenSyncRaw provides access to the raw API.
 func (c *Client) GenSyncRaw(ctx context.Context, in *ChatRequest, out *ChatResponse) error {
+	out.audioFormat = in.Audio.Format
 	return c.impl.GenSyncRaw(ctx, in, out)
 }
 
 // GenStream implements genai.Provider.
 func (c *Client) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
-	return c.impl.GenStream(ctx, msgs, opts...)
+	// Build the request ourselves so we can extract the audio format for stream processing.
+	in := &ChatRequest{}
+	if err := in.Init(msgs, c.impl.Model, opts...); err != nil {
+		return func(yield func(genai.Reply) bool) {}, func() (genai.Result, error) { return genai.Result{}, err }
+	}
+	format := in.Audio.Format
+
+	chunks, finishRaw := c.impl.GenStreamRaw(ctx, in)
+	processStream := makeProcessStream(format)
+	fragments, finishUsage := processStream(chunks)
+
+	res := genai.Result{}
+	fnFragments := func(yield func(genai.Reply) bool) {
+		for f := range fragments {
+			if f.IsZero() {
+				continue
+			}
+			if err := f.Validate(); err != nil {
+				break
+			}
+			if err := res.Accumulate(&f); err != nil {
+				break
+			}
+			if !yield(f) {
+				break
+			}
+		}
+	}
+	fnFinish := func() (genai.Result, error) {
+		err := finishRaw()
+		var usageErr error
+		res.Usage, res.Logprobs, usageErr = finishUsage()
+		err = errors.Join(err, usageErr)
+		if err != nil {
+			return res, err
+		}
+		if err := res.Validate(); err != nil {
+			return res, &internal.BadError{Err: err}
+		}
+		return res, nil
+	}
+	return fnFragments, fnFinish
 }
 
 // GenStreamRaw provides access to the raw API.
@@ -215,100 +305,124 @@ func (c *Client) ListModels(ctx context.Context) ([]genai.Model, error) {
 	return resp.ToModels(), nil
 }
 
-// ProcessStream converts the raw packets from the streaming API into Reply fragments.
-func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, [][]genai.Logprob, error)) {
-	var finalErr error
-	u := genai.Usage{}
+// makeProcessStream returns a stream processor that uses the given audio format for Doc filenames.
+func makeProcessStream(audioFormat string) func(iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, [][]genai.Logprob, error)) {
+	return func(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Reply], func() (genai.Usage, [][]genai.Logprob, error)) {
+		var finalErr error
+		u := genai.Usage{}
 
-	return func(yield func(genai.Reply) bool) {
-			pendingToolCall := ToolCall{}
-			for pkt := range chunks {
-				// Extract usage from the final chunk (which has empty choices but populated usage).
-				if pkt.Usage.CompletionTokens != 0 {
-					u.InputTokens = pkt.Usage.PromptTokens
-					u.InputCachedTokens = pkt.Usage.PromptTokensDetails.CachedTokens
-					u.ReasoningTokens = pkt.Usage.CompletionTokensDetails.ReasoningTokens
-					u.OutputTokens = pkt.Usage.CompletionTokens
-				}
-				if len(pkt.Choices) != 1 {
-					continue
-				}
-				// Extract finish reason from the chunk that has it.
-				if pkt.Choices[0].FinishReason != "" {
-					u.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
-				}
-				if len(pkt.Choices[0].Delta.ToolCalls) > 1 {
-					finalErr = &internal.BadError{Err: fmt.Errorf("implement multiple tool calls: %#v", pkt)}
-					return
-				}
-				switch role := pkt.Choices[0].Delta.Role; role {
-				case "assistant", "":
-				default:
-					finalErr = &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
-					return
-				}
-				var text string
-				for _, c := range pkt.Choices[0].Delta.Content {
-					if c.Type == ContentText {
-						text += c.Text
+		return func(yield func(genai.Reply) bool) {
+				pendingToolCall := ToolCall{}
+				var audioBuf []byte
+				for pkt := range chunks {
+					// Extract usage from the final chunk (which has empty choices but populated usage).
+					if pkt.Usage.CompletionTokens != 0 {
+						u.InputTokens = pkt.Usage.PromptTokens
+						u.InputCachedTokens = pkt.Usage.PromptTokensDetails.CachedTokens
+						u.ReasoningTokens = pkt.Usage.CompletionTokensDetails.ReasoningTokens
+						u.OutputTokens = pkt.Usage.CompletionTokens
 					}
-				}
-				f := genai.Reply{
-					Text:      text,
-					Reasoning: pkt.Choices[0].Delta.ReasoningContent,
-				}
-				// Handle web search citations.
-				for _, a := range pkt.Choices[0].Delta.Annotations {
-					if a.Type != "url_citation" {
-						if !internal.BeLenient {
-							finalErr = &internal.BadError{Err: fmt.Errorf("unsupported annotation type %q", a.Type)}
-							return
-						}
+					if len(pkt.Choices) != 1 {
 						continue
 					}
-					c := genai.Citation{
-						Sources: []genai.CitationSource{{Type: genai.CitationWeb, Title: a.Title, URL: a.URL}},
+					// Extract finish reason from the chunk that has it.
+					if pkt.Choices[0].FinishReason != "" {
+						u.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
 					}
-					if !yield(genai.Reply{Citation: c}) {
+					if len(pkt.Choices[0].Delta.ToolCalls) > 1 {
+						finalErr = &internal.BadError{Err: fmt.Errorf("implement multiple tool calls: %#v", pkt)}
 						return
 					}
-				}
-				// MiMo streams the arguments. Buffer the arguments to send the fragment as a whole tool call.
-				if len(pkt.Choices[0].Delta.ToolCalls) == 1 {
-					if t := pkt.Choices[0].Delta.ToolCalls[0]; t.ID != "" {
-						// A new call.
-						if pendingToolCall.ID == "" {
+					switch role := pkt.Choices[0].Delta.Role; role {
+					case "assistant", "":
+					default:
+						finalErr = &internal.BadError{Err: fmt.Errorf("unexpected role %q", role)}
+						return
+					}
+					// Handle TTS audio streaming. Audio data arrives in delta.audio.data as base64 chunks.
+					if pkt.Choices[0].Delta.Audio.Data != "" {
+						chunk, err := base64.StdEncoding.DecodeString(pkt.Choices[0].Delta.Audio.Data)
+						if err != nil {
+							finalErr = &internal.BadError{Err: fmt.Errorf("failed to decode audio chunk: %w", err)}
+							return
+						}
+						audioBuf = append(audioBuf, chunk...)
+						continue
+					}
+					var text string
+					for _, c := range pkt.Choices[0].Delta.Content {
+						if c.Type == ContentText {
+							text += c.Text
+						}
+					}
+					f := genai.Reply{
+						Text:      text,
+						Reasoning: pkt.Choices[0].Delta.ReasoningContent,
+					}
+					// Handle web search citations.
+					for _, a := range pkt.Choices[0].Delta.Annotations {
+						if a.Type != "url_citation" {
+							if !internal.BeLenient {
+								finalErr = &internal.BadError{Err: fmt.Errorf("unsupported annotation type %q", a.Type)}
+								return
+							}
+							continue
+						}
+						c := genai.Citation{
+							Sources: []genai.CitationSource{{Type: genai.CitationWeb, Title: a.Title, URL: a.URL}},
+						}
+						if !yield(genai.Reply{Citation: c}) {
+							return
+						}
+					}
+					// MiMo streams the arguments. Buffer the arguments to send the fragment as a whole tool call.
+					if len(pkt.Choices[0].Delta.ToolCalls) == 1 {
+						if t := pkt.Choices[0].Delta.ToolCalls[0]; t.ID != "" {
+							// A new call.
+							if pendingToolCall.ID == "" {
+								pendingToolCall = t
+								if !f.IsZero() {
+									finalErr = &internal.BadError{Err: fmt.Errorf("implement tool call with metadata: %#v", pkt)}
+									return
+								}
+								continue
+							}
+							// Flush.
+							pendingToolCall.To(&f.ToolCall)
 							pendingToolCall = t
+						} else if pendingToolCall.ID != "" {
+							// Continuation.
+							pendingToolCall.Function.Arguments += t.Function.Arguments
 							if !f.IsZero() {
 								finalErr = &internal.BadError{Err: fmt.Errorf("implement tool call with metadata: %#v", pkt)}
 								return
 							}
 							continue
 						}
+					} else if pendingToolCall.ID != "" {
 						// Flush.
 						pendingToolCall.To(&f.ToolCall)
-						pendingToolCall = t
-					} else if pendingToolCall.ID != "" {
-						// Continuation.
-						pendingToolCall.Function.Arguments += t.Function.Arguments
-						if !f.IsZero() {
-							finalErr = &internal.BadError{Err: fmt.Errorf("implement tool call with metadata: %#v", pkt)}
-							return
-						}
-						continue
+						pendingToolCall = ToolCall{}
 					}
-				} else if pendingToolCall.ID != "" {
-					// Flush.
-					pendingToolCall.To(&f.ToolCall)
-					pendingToolCall = ToolCall{}
+					if !yield(f) {
+						return
+					}
 				}
-				if !yield(f) {
-					return
+				// Flush accumulated audio data as a single document.
+				if len(audioBuf) > 0 {
+					if !yield(genai.Reply{
+						Doc: genai.Doc{
+							Filename: "audio." + audioFormat,
+							Src:      &bb.BytesBuffer{D: audioBuf},
+						},
+					}) {
+						return
+					}
 				}
+			}, func() (genai.Usage, [][]genai.Logprob, error) {
+				return u, nil, finalErr
 			}
-		}, func() (genai.Usage, [][]genai.Logprob, error) {
-			return u, nil, finalErr
-		}
+	}
 }
 
 var _ genai.Provider = &Client{}

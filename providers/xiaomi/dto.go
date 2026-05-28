@@ -20,6 +20,7 @@ import (
 	"github.com/maruel/genai"
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal"
+	"github.com/maruel/genai/internal/bb"
 )
 
 // GenOption controls thinking mode.
@@ -33,6 +34,34 @@ type GenOption struct {
 
 // Validate implements genai.Validatable.
 func (g *GenOption) Validate() error {
+	return nil
+}
+
+// GenOptionAudio specifies audio generation options for TTS models.
+//
+// See https://platform.xiaomimimo.com/docs/en-US/usage-guide/speech-synthesis-v2.5
+type GenOptionAudio struct {
+	// Voice is the voice to use for speech synthesis.
+	//
+	// For mimo-v2.5-tts: a built-in voice ID.
+	// For mimo-v2.5-tts-voiceclone: a data URL with base64-encoded audio sample ("data:{mime};base64,{data}").
+	//
+	// Available built-in voices: https://platform.xiaomimimo.com/docs/en-US/usage-guide/speech-synthesis-v2.5#built-in-voice-list
+	Voice string
+	// Format is the output audio format. Defaults to "mp3".
+	//
+	// Supported: "mp3", "wav", "pcm16", "aac".
+	Format string
+	// OptimizeTextPreview controls whether the mimo-v2.5-tts-voicedesign model auto-polishes the
+	// assistant message text before synthesis. When true, the assistant message can be omitted and
+	// the model will generate it from the voice description in the user message.
+	//
+	// Only supported by mimo-v2.5-tts-voicedesign.
+	OptimizeTextPreview bool
+}
+
+// Validate implements genai.Validatable.
+func (g *GenOptionAudio) Validate() error {
 	return nil
 }
 
@@ -59,8 +88,14 @@ type ChatRequest struct {
 	ToolChoice  string         `json:"tool_choice,omitzero"` // "auto"
 	Tools       []ToolOrSearch `json:"tools,omitzero"`
 	Audio       struct {
-		Format string `json:"format,omitzero"` // "mp3", "wav", "pcm16", "aac"
-		Voice  string `json:"voice,omitzero"`  // e.g. "mimo_default", "Chloe"
+		// Format is the output audio format. Defaults to "mp3".
+		// Supported: "mp3", "wav", "pcm16", "aac".
+		Format string `json:"format,omitzero"`
+		// Voice is the voice ID for built-in voices, or a data URL for voice cloning.
+		// Built-in voices: https://platform.xiaomimimo.com/docs/en-US/usage-guide/speech-synthesis-v2.5#built-in-voice-list
+		Voice string `json:"voice,omitzero"`
+		// OptimizeTextPreview auto-polishes text before synthesis (mimo-v2.5-tts-voicedesign only).
+		OptimizeTextPreview bool `json:"optimize_text_preview,omitzero"`
 	} `json:"audio,omitzero"`
 }
 
@@ -139,6 +174,19 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 			}
 			if v.Fetch {
 				errs = append(errs, errors.New("unsupported GenOptionWeb.Fetch"))
+			}
+		case *GenOptionAudio:
+			if v.Format != "" {
+				c.Audio.Format = v.Format
+			} else {
+				c.Audio.Format = "mp3"
+			}
+			c.Audio.Voice = v.Voice
+			c.Audio.OptimizeTextPreview = v.OptimizeTextPreview
+		case *genai.GenOptionAudio:
+			// No provider-specific settings.
+			if c.Audio.Format == "" {
+				c.Audio.Format = "mp3"
 			}
 		default:
 			unsupported = append(unsupported, internal.TypeName(opt))
@@ -240,8 +288,12 @@ type Message struct {
 	ToolCalls        []ToolCall   `json:"tool_calls,omitzero"`
 	ToolCallID       string       `json:"tool_call_id,omitzero"`
 	Annotations      []Annotation `json:"annotations,omitzero"`
+	FinalTextPreview string       `json:"final_text_preview,omitzero"` // TTS: the final text after polishing.
 	Audio            struct {
-		ID string `json:"id,omitzero"` // For TTS responses, the audio ID.
+		ID         string `json:"id,omitzero"`         // For TTS responses, the audio ID.
+		Data       string `json:"data,omitzero"`       // Base64-encoded audio data.
+		ExpiresAt  int64  `json:"expires_at,omitzero"` // Unix timestamp when the audio expires.
+		Transcript string `json:"transcript,omitzero"` // Transcript of the generated audio.
 	} `json:"audio,omitzero"`
 }
 
@@ -416,6 +468,19 @@ func (m *Message) To(out *genai.Message) error {
 			out.Replies = append(out.Replies, genai.Reply{Text: c.Text})
 		}
 	}
+	// Handle TTS audio output.
+	if m.Audio.Data != "" {
+		audioData, err := base64.StdEncoding.DecodeString(m.Audio.Data)
+		if err != nil {
+			return fmt.Errorf("failed to decode audio data: %w", err)
+		}
+		out.Replies = append(out.Replies, genai.Reply{
+			Doc: genai.Doc{
+				Filename: "audio.wav",
+				Src:      &bb.BytesBuffer{D: audioData},
+			},
+		})
+	}
 	for i := range m.ToolCalls {
 		out.Replies = append(out.Replies, genai.Reply{})
 		m.ToolCalls[i].To(&out.Replies[len(out.Replies)-1].ToolCall)
@@ -514,6 +579,8 @@ type ChatResponse struct {
 	Model   string `json:"model"`
 	Object  string `json:"object"`
 	Usage   Usage  `json:"usage"`
+
+	audioFormat string // Set by GenSync after Init; used by toResult for Doc filenames.
 }
 
 // ToResult converts the response to a genai.Result.
@@ -532,6 +599,14 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 	out.Usage.FinishReason = c.Choices[0].FinishReason.ToFinishReason()
 	if err := c.Choices[0].Message.To(&out.Message); err != nil {
 		return out, err
+	}
+	// Fix audio Doc filenames to match requested format.
+	if c.audioFormat != "" {
+		for i := range out.Replies {
+			if out.Replies[i].Doc.Filename == "audio.wav" {
+				out.Replies[i].Doc.Filename = "audio." + c.audioFormat
+			}
+		}
 	}
 	return out, nil
 }

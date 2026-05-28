@@ -209,6 +209,41 @@
         "maxTokens": true,
         "stopSequence": true
       }
+    },
+    {
+      "comments": "TTS models with built-in voices. See https://platform.xiaomimimo.com/docs/en-US/usage-guide/speech-synthesis-v2.5",
+      "models": [
+        "mimo-v2.5-tts"
+      ],
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "audio": {
+          "inline": true,
+          "supportedFormats": [
+            "audio/mpeg"
+          ]
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true"
+      }
+    },
+    {
+      "comments": "TTS with voice cloning. Requires assistant message for text to synthesize. See https://platform.xiaomimimo.com/docs/en-US/usage-guide/speech-synthesis-v2.5",
+      "models": [
+        "mimo-v2.5-tts-voiceclone"
+      ]
+    },
+    {
+      "comments": "TTS with voice design. Requires assistant message for text to synthesize. See https://platform.xiaomimimo.com/docs/en-US/usage-guide/speech-synthesis-v2.5",
+      "models": [
+        "mimo-v2.5-tts-voicedesign"
+      ]
     }
   ]
 }

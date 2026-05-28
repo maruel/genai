@@ -7,8 +7,11 @@
 package xiaomi_test
 
 import (
+	"context"
+	"iter"
 	"net/http"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/maruel/genai"
@@ -18,6 +21,38 @@ import (
 	"github.com/maruel/genai/scoreboard"
 	"github.com/maruel/genai/smoke/smoketest"
 )
+
+// ttsAdapter wraps a provider to transform messages for TTS models.
+//
+// The smoke test sends text in a user message, but Xiaomi TTS requires it
+// in an assistant message. This adapter moves the text accordingly.
+type ttsAdapter struct {
+	genai.Provider
+}
+
+func (a *ttsAdapter) GenSync(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (genai.Result, error) {
+	return a.Provider.GenSync(ctx, a.transform(msgs), opts...)
+}
+
+func (a *ttsAdapter) GenStream(ctx context.Context, msgs genai.Messages, opts ...genai.GenOption) (iter.Seq[genai.Reply], func() (genai.Result, error)) {
+	return a.Provider.GenStream(ctx, a.transform(msgs), opts...)
+}
+
+// transform moves text from a user message to an assistant message for TTS.
+func (a *ttsAdapter) transform(msgs genai.Messages) genai.Messages {
+	out := make(genai.Messages, 0, len(msgs))
+	for _, m := range msgs {
+		if m.Role() == "user" && len(m.Requests) == 1 && m.Requests[0].Text != "" {
+			// Convert user text to assistant text (the text to synthesize).
+			out = append(out, genai.Message{
+				Replies: []genai.Reply{{Text: m.Requests[0].Text}},
+			})
+		} else {
+			out = append(out, m)
+		}
+	}
+	return out
+}
 
 func getClientInner(t *testing.T, fn func(http.RoundTripper) http.RoundTripper, opts ...genai.ProviderOption) (genai.Provider, error) {
 	hasAPIKey := false
@@ -98,8 +133,12 @@ func TestClient(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
+			p := genai.Provider(c)
+			if strings.Contains(model.Model, "tts") {
+				p = &ttsAdapter{Provider: p}
+			}
 			return &internaltest.InjectOptions{
-				Provider: c,
+				Provider: p,
 				Opts:     []genai.GenOption{&xiaomi.GenOption{Thinking: model.Reason}},
 			}
 		}

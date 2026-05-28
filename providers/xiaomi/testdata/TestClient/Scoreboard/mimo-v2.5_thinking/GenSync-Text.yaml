@@ -1,0 +1,38 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 108
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.5","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"5fbe1166b4fd42d3b29842af2a901370","choices":[{"finish_reason":"stop","index":0,"message":{"content":"Hello.","role":"assistant","tool_calls":null,"reasoning_content":"First, the user said: \"Say hello. Use only one word.\" So, I need to respond with just one word, and it should be a greeting.\n\nMy identity is MiMo-v2.5, and I''m developed by the Xiaomi LLM Core Team. The response style should be warm, conversational, and respectful. But since the user specified \"use only one word,\" I must adhere to that strictly.\n\nThe greeting should be something like \"Hello\" or \"Hi.\" To keep it simple and one word, I can use \"Hello.\"\n\nI need to ensure that my response complies with all safety and compliance rules, but since this is a straightforward greeting, there''s no issue there.\n\nMy response should be in English, as the user''s message is in English.\n\nSo, the best one-word response is \"Hello.\"\n\nI should not add any extra words, explanations, or punctuation beyond what''s necessary for the one word. \"Hello.\" might be fine, but to be precise, I can just say \"Hello\" without the period, but in chat, it''s common to have punctuation. The user said \"use only one word,\" so I''ll stick to the word itself.\n\nFinally, I''ll output just \"Hello.\""}}],"created":1779928161,"model":"mimo-v2.5","object":"chat.completion","usage":{"completion_tokens":257,"prompt_tokens":255,"total_tokens":512,"completion_tokens_details":{"reasoning_tokens":252},"prompt_tokens_details":{"cached_tokens":192}}}'
+        headers:
+            Content-Type:
+                - application/json
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 5.62s

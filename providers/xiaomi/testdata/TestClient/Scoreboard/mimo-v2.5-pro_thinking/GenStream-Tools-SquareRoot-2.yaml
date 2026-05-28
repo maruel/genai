@@ -1,0 +1,67 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 933
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.5-pro","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","reasoning_content":"I need to use the square_root tool to calculate the square root of 132413 and just give the result. Let me do that.","tool_calls":[{"id":"call_08ef8be8603446b69b905dc2","type":"function","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_08ef8be8603446b69b905dc2"}],"stream":true,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]},"strict":true}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"b6efb2bcfd804dc88b46820e30ae321a","choices":[{"delta":{"content":"","role":"assistant","tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928125,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"b6efb2bcfd804dc88b46820e30ae321a","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"The tool"},"finish_reason":null,"index":0}],"created":1779928125,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"b6efb2bcfd804dc88b46820e30ae321a","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" returned"},"finish_reason":null,"index":0}],"created":1779928125,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"b6efb2bcfd804dc88b46820e30ae321a","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" "},"finish_reason":null,"index":0}],"created":1779928125,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"b6efb2bcfd804dc88b46820e30ae321a","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"363."},"finish_reason":null,"index":0}],"created":1779928125,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"b6efb2bcfd804dc88b46820e30ae321a","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"89. I"},"finish_reason":null,"index":0}],"created":1779928126,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"b6efb2bcfd804dc88b46820e30ae321a","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" should reply"},"finish_reason":null,"index":0}],"created":1779928126,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"b6efb2bcfd804dc88b46820e30ae321a","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" with just that"},"finish_reason":null,"index":0}],"created":1779928126,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"b6efb2bcfd804dc88b46820e30ae321a","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" result,"},"finish_reason":null,"index":0}],"created":1779928126,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"b6efb2bcfd804dc88b46820e30ae321a","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" no explanation."},"finish_reason":null,"index":0}],"created":1779928126,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"b6efb2bcfd804dc88b46820e30ae321a","choices":[{"delta":{"content":"363.","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928126,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"b6efb2bcfd804dc88b46820e30ae321a","choices":[{"delta":{"content":"89","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928126,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"b6efb2bcfd804dc88b46820e30ae321a","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":"stop","index":0}],"created":1779928126,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"b6efb2bcfd804dc88b46820e30ae321a","choices":[],"created":1779928126,"model":"mimo-v2.5-pro","object":"chat.completion.chunk","usage":{"completion_tokens":31,"prompt_tokens":631,"total_tokens":662,"completion_tokens_details":{"reasoning_tokens":22},"prompt_tokens_details":{"cached_tokens":512}}}
+
+            data: [DONE]
+
+        headers:
+            Content-Type:
+                - text/event-stream
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 1.125s

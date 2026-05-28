@@ -1,0 +1,61 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 153
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.5-pro","messages":[{"role":"user","content":"Talk about Canada in great details. Start with: Canada is"}],"stream":true,"stop":["is"]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"ed406b0f302d4ce19b78e7a670d54e8a","choices":[{"delta":{"content":"","role":"assistant","tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928119,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed406b0f302d4ce19b78e7a670d54e8a","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"The user wants me"},"finish_reason":null,"index":0}],"created":1779928120,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed406b0f302d4ce19b78e7a670d54e8a","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" to talk about Canada"},"finish_reason":null,"index":0}],"created":1779928120,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed406b0f302d4ce19b78e7a670d54e8a","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" in great detail,"},"finish_reason":null,"index":0}],"created":1779928120,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed406b0f302d4ce19b78e7a670d54e8a","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" starting with \"Canada"},"finish_reason":null,"index":0}],"created":1779928120,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed406b0f302d4ce19b78e7a670d54e8a","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" is\". Let me"},"finish_reason":null,"index":0}],"created":1779928120,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed406b0f302d4ce19b78e7a670d54e8a","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" provide a comprehensive overview"},"finish_reason":null,"index":0}],"created":1779928120,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed406b0f302d4ce19b78e7a670d54e8a","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" of Canada covering"},"finish_reason":null,"index":0}],"created":1779928120,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed406b0f302d4ce19b78e7a670d54e8a","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" geography"},"finish_reason":null,"index":0}],"created":1779928120,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed406b0f302d4ce19b78e7a670d54e8a","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":"stop","index":0}],"created":1779928120,"model":"mimo-v2.5-pro","object":"chat.completion.chunk","usage":null}
+
+            data: {"id":"ed406b0f302d4ce19b78e7a670d54e8a","choices":[],"created":1779928120,"model":"mimo-v2.5-pro","object":"chat.completion.chunk","usage":{"completion_tokens":33,"prompt_tokens":263,"total_tokens":296,"completion_tokens_details":{"reasoning_tokens":28},"prompt_tokens_details":{"cached_tokens":256}}}
+
+            data: [DONE]
+
+        headers:
+            Content-Type:
+                - text/event-stream
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 1.329s

@@ -1,0 +1,52 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 97
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"bad model","messages":[{"role":"user","content":"Tell a short joke."}],"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: 135
+        body: |
+            {
+                "error": {
+                    "code": "400",
+                    "message": "Param Incorrect",
+                    "param": "Not supported model bad model"
+                }
+            }
+        headers:
+            Cache-Control:
+                - no-cache, no-store, must-revalidate
+            Content-Length:
+                - "135"
+            Content-Type:
+                - application/json
+            Expires:
+                - "0"
+            Pragma:
+                - no-cache
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "400"
+        status: 400 Bad Request
+        code: 400
+        duration: 295ms

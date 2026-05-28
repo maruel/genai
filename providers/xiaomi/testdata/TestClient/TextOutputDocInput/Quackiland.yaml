@@ -1,0 +1,38 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 220
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.5","messages":[{"role":"user","content":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"role":"user","content":"What is the capital of Quackiland?"}],"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"35d4dca3ac2a4d09b59954fdc7ee21a9","choices":[{"finish_reason":"stop","index":0,"message":{"content":"The capital of Quackiland is **Quack**. \uD83E\uDD86","role":"assistant","tool_calls":null,"reasoning_content":"Hmm, the user is asking about the capital of Quackiland based on a previous statement they made. They already mentioned that the capital is Quack and that the Big Canard Statue is there. \n\nThe question is straightforward, so I can directly confirm the information they provided. Since the user gave clear facts, I’ll just repeat them to show I understood. \n\nNo need for extra details or questions—just a simple answer that matches what they said. Keeping it warm and respectful fits the response style."}}],"created":1779928195,"model":"mimo-v2.5","object":"chat.completion","usage":{"completion_tokens":120,"prompt_tokens":281,"total_tokens":401,"completion_tokens_details":{"reasoning_tokens":102},"prompt_tokens_details":{"cached_tokens":256}}}'
+        headers:
+            Content-Type:
+                - application/json
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 2.914s

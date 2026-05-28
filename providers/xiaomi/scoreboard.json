@@ -1,0 +1,198 @@
+{
+  "country": "CN",
+  "dashboardURL": "https://platform.xiaomimimo.com",
+  "scenarios": [
+    {
+      "comments": "Thinking mode (default). See https://platform.xiaomimimo.com/docs/en-US/api/chat/openai-api",
+      "models": [
+        "mimo-v2.5-pro"
+      ],
+      "sota": true,
+      "reason": true,
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "tools": "true",
+        "toolsBiased": "flaky",
+        "toolCallRequired": true,
+        "json": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
+        "json": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
+    },
+    {
+      "comments": "Thinking mode (default).",
+      "models": [
+        "mimo-v2.5"
+      ],
+      "cheap": true,
+      "reason": true,
+      "in": {
+        "audio": {
+          "inline": true,
+          "supportedFormats": [
+            "audio/flac",
+            "audio/mp3",
+            "audio/ogg",
+            "audio/wav"
+          ]
+        },
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        },
+        "video": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "video/mp4"
+          ]
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "tools": "flaky",
+        "toolsBiased": "flaky",
+        "toolCallRequired": true,
+        "json": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "tools": "flaky",
+        "toolsBiased": "flaky",
+        "toolCallRequired": true,
+        "json": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
+    },
+    {
+      "comments": "Non-thinking mode for mimo-v2.5 via GenOption{Thinking: false}.",
+      "models": [
+        "mimo-v2.5"
+      ],
+      "in": {
+        "audio": {
+          "inline": true,
+          "supportedFormats": [
+            "audio/flac",
+            "audio/mp3",
+            "audio/ogg",
+            "audio/wav"
+          ]
+        },
+        "image": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "image/gif",
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+          ]
+        },
+        "text": {
+          "inline": true
+        },
+        "video": {
+          "inline": true,
+          "url": true,
+          "supportedFormats": [
+            "video/mp4"
+          ]
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "tools": "true",
+        "toolsBiased": "flaky",
+        "toolCallRequired": true,
+        "json": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
+        "json": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
+    },
+    {
+      "comments": "Non-thinking mode for mimo-v2.5-pro via GenOption{Thinking: false}.",
+      "models": [
+        "mimo-v2.5-pro"
+      ],
+      "in": {
+        "text": {
+          "inline": true
+        }
+      },
+      "out": {
+        "text": {
+          "inline": true
+        }
+      },
+      "GenSync": {
+        "reportTokenUsage": "true",
+        "reportFinishReason": "true",
+        "tools": "true",
+        "toolsBiased": "true",
+        "toolCallRequired": true,
+        "json": true,
+        "maxTokens": true,
+        "stopSequence": true
+      },
+      "GenStream": {
+        "tools": "flaky",
+        "toolsBiased": "flaky",
+        "toolCallRequired": true,
+        "json": true,
+        "maxTokens": true,
+        "stopSequence": true
+      }
+    }
+  ]
+}

@@ -37,6 +37,7 @@ import (
 	"github.com/maruel/genai/providers/pi"
 	"github.com/maruel/genai/providers/pollinations"
 	"github.com/maruel/genai/providers/togetherai"
+	"github.com/maruel/genai/providers/xiaomi"
 )
 
 // Config is a registry entry.
@@ -319,6 +320,16 @@ var All = map[string]Config{
 		APIKeyEnvVar: "TOGETHER_API_KEY",
 		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
 			p, err := togetherai.New(ctx, opts...)
+			if p == nil {
+				return nil, err
+			}
+			return p, err
+		},
+	},
+	"xiaomi": {
+		APIKeyEnvVar: "MIMO_API_KEY",
+		Factory: func(ctx context.Context, opts ...genai.ProviderOption) (genai.Provider, error) {
+			p, err := xiaomi.New(ctx, opts...)
 			if p == nil {
 				return nil, err
 			}

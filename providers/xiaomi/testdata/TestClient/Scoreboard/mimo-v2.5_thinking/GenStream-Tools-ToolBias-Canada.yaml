@@ -1,0 +1,467 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 557
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.5","messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"stream":true,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]},"strict":true}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":"","role":"assistant","tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928168,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"I"},"finish_reason":null,"index":0}],"created":1779928168,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" need to answer"},"finish_reason":null,"index":0}],"created":1779928168,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" the"},"finish_reason":null,"index":0}],"created":1779928168,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" user's question"},"finish_reason":null,"index":0}],"created":1779928168,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" about whether Canada"},"finish_reason":null,"index":0}],"created":1779928168,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" is better"},"finish_reason":null,"index":0}],"created":1779928168,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" than the USA."},"finish_reason":null,"index":0}],"created":1779928168,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" They want"},"finish_reason":null,"index":0}],"created":1779928168,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" me to call"},"finish_reason":null,"index":0}],"created":1779928168,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" the best_country"},"finish_reason":null,"index":0}],"created":1779928168,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" tool. However"},"finish_reason":null,"index":0}],"created":1779928168,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":", I need"},"finish_reason":null,"index":0}],"created":1779928168,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" to be careful"},"finish_reason":null,"index":0}],"created":1779928168,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" here"},"finish_reason":null,"index":0}],"created":1779928168,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" because"},"finish_reason":null,"index":0}],"created":1779928168,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" the tool"},"finish_reason":null,"index":0}],"created":1779928168,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" only"},"finish_reason":null,"index":0}],"created":1779928169,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" allows"},"finish_reason":null,"index":0}],"created":1779928169,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" two"},"finish_reason":null,"index":0}],"created":1779928169,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" options"},"finish_reason":null,"index":0}],"created":1779928169,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":": Canada"},"finish_reason":null,"index":0}],"created":1779928169,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" or USA."},"finish_reason":null,"index":0}],"created":1779928169,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" The user"},"finish_reason":null,"index":0}],"created":1779928169,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" is asking"},"finish_reason":null,"index":0}],"created":1779928169,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" for"},"finish_reason":null,"index":0}],"created":1779928169,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" my"},"finish_reason":null,"index":0}],"created":1779928169,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" opinion on"},"finish_reason":null,"index":0}],"created":1779928169,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" which country"},"finish_reason":null,"index":0}],"created":1779928169,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" is better"},"finish_reason":null,"index":0}],"created":1779928169,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":", but the"},"finish_reason":null,"index":0}],"created":1779928169,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" tool doesn"},"finish_reason":null,"index":0}],"created":1779928169,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"'t provide"},"finish_reason":null,"index":0}],"created":1779928169,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" objective"},"finish_reason":null,"index":0}],"created":1779928169,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" criteria"},"finish_reason":null,"index":0}],"created":1779928169,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" - it just"},"finish_reason":null,"index":0}],"created":1779928169,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" returns"},"finish_reason":null,"index":0}],"created":1779928169,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" one of the"},"finish_reason":null,"index":0}],"created":1779928169,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" two options"},"finish_reason":null,"index":0}],"created":1779928169,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":".\n\n"},"finish_reason":null,"index":0}],"created":1779928169,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"I"},"finish_reason":null,"index":0}],"created":1779928169,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" should first"},"finish_reason":null,"index":0}],"created":1779928169,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" understand"},"finish_reason":null,"index":0}],"created":1779928169,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" what"},"finish_reason":null,"index":0}],"created":1779928169,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" the tool"},"finish_reason":null,"index":0}],"created":1779928169,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" does. Looking"},"finish_reason":null,"index":0}],"created":1779928170,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" at the schema"},"finish_reason":null,"index":0}],"created":1779928170,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":", it's called"},"finish_reason":null,"index":0}],"created":1779928170,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" \"best"},"finish_reason":null,"index":0}],"created":1779928170,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"_country\" and it"},"finish_reason":null,"index":0}],"created":1779928170,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" takes a country parameter"},"finish_reason":null,"index":0}],"created":1779928170,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" that"},"finish_reason":null,"index":0}],"created":1779928170,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" can"},"finish_reason":null,"index":0}],"created":1779928170,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" only"},"finish_reason":null,"index":0}],"created":1779928170,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" be \""},"finish_reason":null,"index":0}],"created":1779928170,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"Canada\" or \""},"finish_reason":null,"index":0}],"created":1779928170,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"USA\". The"},"finish_reason":null,"index":0}],"created":1779928170,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" description says \""},"finish_reason":null,"index":0}],"created":1779928170,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"A tool to specify"},"finish_reason":null,"index":0}],"created":1779928170,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" the best country.\""},"finish_reason":null,"index":0}],"created":1779928170,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" This seems like a"},"finish_reason":null,"index":0}],"created":1779928170,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" subjective"},"finish_reason":null,"index":0}],"created":1779928170,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" tool that doesn"},"finish_reason":null,"index":0}],"created":1779928170,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"'t provide"},"finish_reason":null,"index":0}],"created":1779928170,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" factual"},"finish_reason":null,"index":0}],"created":1779928170,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" information.\n\nAs"},"finish_reason":null,"index":0}],"created":1779928170,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" MiMo, I"},"finish_reason":null,"index":0}],"created":1779928170,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" should be helpful and"},"finish_reason":null,"index":0}],"created":1779928170,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" respectful"},"finish_reason":null,"index":0}],"created":1779928170,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":". The"},"finish_reason":null,"index":0}],"created":1779928170,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" user wants"},"finish_reason":null,"index":0}],"created":1779928170,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" me"},"finish_reason":null,"index":0}],"created":1779928170,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" to use"},"finish_reason":null,"index":0}],"created":1779928170,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" the tool to determine"},"finish_reason":null,"index":0}],"created":1779928170,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" which country is \""},"finish_reason":null,"index":0}],"created":1779928170,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"best"},"finish_reason":null,"index":0}],"created":1779928171,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":".\" But"},"finish_reason":null,"index":0}],"created":1779928171,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" this"},"finish_reason":null,"index":0}],"created":1779928171,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" is a matter"},"finish_reason":null,"index":0}],"created":1779928171,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" of opinion"},"finish_reason":null,"index":0}],"created":1779928171,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" - there"},"finish_reason":null,"index":0}],"created":1779928171,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"'s no objective \""},"finish_reason":null,"index":0}],"created":1779928171,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"best\" country."},"finish_reason":null,"index":0}],"created":1779928171,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" I should explain"},"finish_reason":null,"index":0}],"created":1779928171,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" this to"},"finish_reason":null,"index":0}],"created":1779928171,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" the user rather"},"finish_reason":null,"index":0}],"created":1779928171,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" than just arbitrarily"},"finish_reason":null,"index":0}],"created":1779928171,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" choosing one.\n\n"},"finish_reason":null,"index":0}],"created":1779928171,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"I"},"finish_reason":null,"index":0}],"created":1779928171,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" should"},"finish_reason":null,"index":0}],"created":1779928171,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" respond conversation"},"finish_reason":null,"index":0}],"created":1779928171,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"ally, explain"},"finish_reason":null,"index":0}],"created":1779928171,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" that the"},"finish_reason":null,"index":0}],"created":1779928171,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" tool doesn"},"finish_reason":null,"index":0}],"created":1779928171,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"'t provide objective information"},"finish_reason":null,"index":0}],"created":1779928171,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":", and maybe"},"finish_reason":null,"index":0}],"created":1779928171,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" ask"},"finish_reason":null,"index":0}],"created":1779928171,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" what"},"finish_reason":null,"index":0}],"created":1779928171,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" criteria they're"},"finish_reason":null,"index":0}],"created":1779928171,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" using to compare"},"finish_reason":null,"index":0}],"created":1779928171,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" countries. That"},"finish_reason":null,"index":0}],"created":1779928171,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" would be"},"finish_reason":null,"index":0}],"created":1779928171,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" more helpful.\n\n"},"finish_reason":null,"index":0}],"created":1779928171,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"Let me craft a"},"finish_reason":null,"index":0}],"created":1779928171,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" response that addresses"},"finish_reason":null,"index":0}],"created":1779928171,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" their"},"finish_reason":null,"index":0}],"created":1779928171,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" question while being honest"},"finish_reason":null,"index":0}],"created":1779928171,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" about the"},"finish_reason":null,"index":0}],"created":1779928172,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" tool"},"finish_reason":null,"index":0}],"created":1779928172,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"'s limitations."},"finish_reason":null,"index":0}],"created":1779928172,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":"I'd","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928172,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" be happy to help","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928172,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" you explore","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928172,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" this question! However","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928172,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":", I should","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928172,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" clarify something important about","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928172,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" the tool I have","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928172,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" access to.\n\nThe","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928172,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" \"","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928172,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":"best_country\" tool","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928172,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" I can","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928172,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" use doesn","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928172,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":"'t actually provide objective","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928172,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" information or","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928172,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" comparisons","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928172,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" between countries","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928172,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":". It simply returns","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928172,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" one of two","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928172,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" options (Canada or","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928172,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" USA) based on","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928172,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" its","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928172,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" internal programming","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928172,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":", without","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928172,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" considering","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928172,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" any specific","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928172,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" criteria or","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928172,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" evidence","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928172,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":".\n\nThis means","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928172,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" the","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928172,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" tool wouldn't give","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928173,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" you a meaningful answer","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928173,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" to your question about","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928173,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" which","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928173,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" country is \"better","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928173,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":"\" since","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928173,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":":\n\n","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928173,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":"1. **","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928173,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":"\"Better\" is","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928173,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" subjective** - What","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928173,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" makes","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928173,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" a","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928173,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" country \"better\"","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928173,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" depends entirely","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928173,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" on what you value","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928173,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" most (","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928173,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":"healthcare, economy","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928173,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":", education, safety","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928173,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":", culture","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928173,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":", etc.)\n2","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928173,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":". **The tool","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928173,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" doesn't use","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928173,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" criteria","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928173,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":"** - It doesn","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928173,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":"'t analyze","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928173,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" data","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928173,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" about","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928173,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" quality of life,","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928173,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" economic indicators, social","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928173,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" policies","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928173,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":", or any","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928173,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" other factors","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928173,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" that might","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928173,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" help compare","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928174,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" countries.\n3.","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928174,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" **Both countries have","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928174,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" strengths and weaknesses**","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928174,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" - Canada","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928174,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" and the USA each","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928174,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" excel","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928174,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" in different","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928174,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" areas and have their","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928174,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" own challenges.\n\nInstead","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928174,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" of relying","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928174,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" on a","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928174,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" tool that doesn't","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928174,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" provide meaningful","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928174,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" analysis","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928174,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":", I'd","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928174,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" suggest","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928174,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" we could","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928174,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" discuss what","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928174,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" specific","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928174,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" aspects of countries","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928174,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" you're interested in","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928174,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" comparing. For","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928174,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" example:\n","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928174,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":"- Healthcare","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928174,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" systems\n- Economic","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928174,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" opportunities\n- Education","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928174,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" quality","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928174,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":"\n- Safety and","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928174,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" crime rates\n-","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928174,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" Cultural diversity","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928174,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":"\n- Natural","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928174,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" environment","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928174,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":"\n\nWhat particular","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928174,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" aspects of \"","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928174,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":"better","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928174,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":"\" are most","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928175,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" important to you when","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928175,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":" comparing these two countries","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928175,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":"?","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928175,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":"stop","index":0}],"created":1779928175,"model":"mimo-v2.5","object":"chat.completion.chunk","usage":null}
+
+            data: {"id":"6f12005b35e7437f89c404f11056bd02","choices":[],"created":1779928175,"model":"mimo-v2.5","object":"chat.completion.chunk","usage":{"completion_tokens":527,"prompt_tokens":552,"total_tokens":1079,"completion_tokens_details":{"reasoning_tokens":251},"prompt_tokens_details":{"cached_tokens":512}}}
+
+            data: [DONE]
+
+        headers:
+            Content-Type:
+                - text/event-stream
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 1.09s

@@ -1,0 +1,38 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 552
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.5-pro","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]},"strict":true}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"b957054199b2483da97a0172875f00bd","choices":[{"finish_reason":"tool_calls","index":0,"message":{"content":"","role":"assistant","tool_calls":[{"id":"call_7332b91b9ef841b1aaf0cef1","function":{"arguments":"{\"number\": 132413}","name":"square_root"},"type":"function"}],"reasoning_content":"The user wants me to calculate the square root of 132413 using the square_root tool and only provide the result without explanation. I should call the tool and then output just the result. Let me do that."}}],"created":1779928122,"model":"mimo-v2.5-pro","object":"chat.completion","usage":{"completion_tokens":76,"prompt_tokens":552,"total_tokens":628,"completion_tokens_details":{"reasoning_tokens":47},"prompt_tokens_details":{"cached_tokens":512}}}'
+        headers:
+            Content-Type:
+                - application/json
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 2.456s

@@ -1,0 +1,55 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 107
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.5","messages":[{"role":"user","content":"Say hello. Use only one word."}],"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"0b8d238e60414e48a00a752d9d540347","choices":[{"delta":{"content":"","role":"assistant","tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928157,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"0b8d238e60414e48a00a752d9d540347","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"The user wants"},"finish_reason":null,"index":0}],"created":1779928157,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"0b8d238e60414e48a00a752d9d540347","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" me"},"finish_reason":null,"index":0}],"created":1779928157,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"0b8d238e60414e48a00a752d9d540347","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" to say hello using"},"finish_reason":null,"index":0}],"created":1779928157,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"0b8d238e60414e48a00a752d9d540347","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" only one word."},"finish_reason":null,"index":0}],"created":1779928157,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"0b8d238e60414e48a00a752d9d540347","choices":[{"delta":{"content":"Hello","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928157,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"0b8d238e60414e48a00a752d9d540347","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":"stop","index":0}],"created":1779928157,"model":"mimo-v2.5","object":"chat.completion.chunk","usage":null}
+
+            data: {"id":"0b8d238e60414e48a00a752d9d540347","choices":[],"created":1779928157,"model":"mimo-v2.5","object":"chat.completion.chunk","usage":{"completion_tokens":16,"prompt_tokens":255,"total_tokens":271,"completion_tokens_details":{"reasoning_tokens":12},"prompt_tokens_details":{"cached_tokens":192}}}
+
+            data: [DONE]
+
+        headers:
+            Content-Type:
+                - text/event-stream
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 935ms

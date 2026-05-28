@@ -1,0 +1,91 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 285
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.5","messages":[{"role":"user","content":"What fruit is it? Reply with only one word."},{"role":"user","content":[{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.gif"}}]}],"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"5d5f6bb5d2324b598c05104a46bd8e32","choices":[{"delta":{"content":"","role":"assistant","tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779929655,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"5d5f6bb5d2324b598c05104a46bd8e32","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"The user wants to"},"finish_reason":null,"index":0}],"created":1779929655,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"5d5f6bb5d2324b598c05104a46bd8e32","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" identify the fruit shown"},"finish_reason":null,"index":0}],"created":1779929655,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"5d5f6bb5d2324b598c05104a46bd8e32","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" in the image.\n"},"finish_reason":null,"index":0}],"created":1779929655,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"5d5f6bb5d2324b598c05104a46bd8e32","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"I"},"finish_reason":null,"index":0}],"created":1779929655,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"5d5f6bb5d2324b598c05104a46bd8e32","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" analyzed"},"finish_reason":null,"index":0}],"created":1779929655,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"5d5f6bb5d2324b598c05104a46bd8e32","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" the image and"},"finish_reason":null,"index":0}],"created":1779929655,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"5d5f6bb5d2324b598c05104a46bd8e32","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" observed a"},"finish_reason":null,"index":0}],"created":1779929655,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"5d5f6bb5d2324b598c05104a46bd8e32","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" yellow,"},"finish_reason":null,"index":0}],"created":1779929655,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"5d5f6bb5d2324b598c05104a46bd8e32","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" curved fruit with a"},"finish_reason":null,"index":0}],"created":1779929655,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"5d5f6bb5d2324b598c05104a46bd8e32","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" stem at"},"finish_reason":null,"index":0}],"created":1779929655,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"5d5f6bb5d2324b598c05104a46bd8e32","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" one end and"},"finish_reason":null,"index":0}],"created":1779929655,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"5d5f6bb5d2324b598c05104a46bd8e32","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" a tip at"},"finish_reason":null,"index":0}],"created":1779929655,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"5d5f6bb5d2324b598c05104a46bd8e32","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" the other,"},"finish_reason":null,"index":0}],"created":1779929655,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"5d5f6bb5d2324b598c05104a46bd8e32","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" which is"},"finish_reason":null,"index":0}],"created":1779929655,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"5d5f6bb5d2324b598c05104a46bd8e32","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" characteristic of a banana"},"finish_reason":null,"index":0}],"created":1779929655,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"5d5f6bb5d2324b598c05104a46bd8e32","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":".\nThe user"},"finish_reason":null,"index":0}],"created":1779929655,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"5d5f6bb5d2324b598c05104a46bd8e32","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" requested a one"},"finish_reason":null,"index":0}],"created":1779929655,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"5d5f6bb5d2324b598c05104a46bd8e32","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"-word reply"},"finish_reason":null,"index":0}],"created":1779929655,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"5d5f6bb5d2324b598c05104a46bd8e32","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":".\nTherefore, the"},"finish_reason":null,"index":0}],"created":1779929655,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"5d5f6bb5d2324b598c05104a46bd8e32","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" correct"},"finish_reason":null,"index":0}],"created":1779929655,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"5d5f6bb5d2324b598c05104a46bd8e32","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" answer is \"banana"},"finish_reason":null,"index":0}],"created":1779929655,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"5d5f6bb5d2324b598c05104a46bd8e32","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"\"."},"finish_reason":null,"index":0}],"created":1779929655,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"5d5f6bb5d2324b598c05104a46bd8e32","choices":[{"delta":{"content":"banana","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779929655,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"5d5f6bb5d2324b598c05104a46bd8e32","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":"stop","index":0}],"created":1779929655,"model":"mimo-v2.5","object":"chat.completion.chunk","usage":null}
+
+            data: {"id":"5d5f6bb5d2324b598c05104a46bd8e32","choices":[],"created":1779929655,"model":"mimo-v2.5","object":"chat.completion.chunk","usage":{"completion_tokens":64,"prompt_tokens":354,"total_tokens":418,"completion_tokens_details":{"reasoning_tokens":60},"prompt_tokens_details":{"cached_tokens":256,"image_tokens":90}}}
+
+            data: [DONE]
+
+        headers:
+            Content-Type:
+                - text/event-stream
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 1.752s

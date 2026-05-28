@@ -1,0 +1,38 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 220
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.5","messages":[{"role":"user","content":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"role":"user","content":"What is the capital of Quackiland?"}],"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"989ae6d49a994051be3630bf76dd9a9c","choices":[{"finish_reason":"stop","index":0,"message":{"content":"The capital of Quackiland is **Quack**, as you mentioned.","role":"assistant","tool_calls":null,"reasoning_content":"Hmm, the user just stated that the capital of Quackiland is Quack, and then asked the same question. This seems like a simple fact-retrieval scenario where the answer is already provided in the context. \n\nThe user might be testing if I can recall or extract the information from their own statement. Since the answer is clearly given, I can directly confirm it without needing additional analysis. \n\nI should keep the response straightforward and match the tone of the user’s factual statement. No need for elaboration unless the user follows up with more questions. \n\nThe user’s mention of the Big Canard Statue is interesting but irrelevant to the core question, so I’ll ignore it for now. If they ask about the statue later, I can address it then."}}],"created":1779928187,"model":"mimo-v2.5","object":"chat.completion","usage":{"completion_tokens":172,"prompt_tokens":281,"total_tokens":453,"completion_tokens_details":{"reasoning_tokens":154},"prompt_tokens_details":{"cached_tokens":256}}}'
+        headers:
+            Content-Type:
+                - application/json
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 3.402s

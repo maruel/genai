@@ -1,0 +1,38 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 562
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.5-pro","messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]},"strict":true}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"01f55339fc8244a3900f12d24fcadf0f","choices":[{"finish_reason":"tool_calls","index":0,"message":{"content":"","role":"assistant","tool_calls":[{"id":"call_378c50a3ab5845daab96f25c","function":{"arguments":"{\"country\": \"Canada\"}","name":"best_country"},"type":"function"}],"reasoning_content":"The user is asking me to call a tool called \"best_country\" to determine which country is better between Canada and the USA. I need to check what tools I have available. Looking at the tools section, I see there is a \"best_country\" function that takes a country parameter with enum [\"Canada\", \"USA\"]. This tool seems designed to make a decision between these two specific countries.\n\nThe user wants me to call this tool to tell them which country is the best one. I should call the tool with appropriate parameters. However, the tool only accepts \"Canada\" or \"USA\" as values. It doesn''t seem to have a way to specify \"neither\" or \"both\". I need to choose one.\n\nBut wait, I should think about what the user is actually asking. They''re asking me to call the tool to determine which country is better. The tool seems to be a deterministic tool that will return one of the two options. I should call it and then present the result to the user.\n\nI need to be careful though - this is a subjective question about countries. The tool might be a simple preference selector or something else. I''ll call it as requested.\n\nLet me call the tool with one of the values. Since the user is asking which is better, I need to pick one. But the tool doesn''t give me parameters for criteria or reasoning. It just takes a country name. Maybe the tool will return a result based on some internal logic.\n\nActually, looking at the tool description: \"A tool to specify the best country\". It seems like it''s meant to specify which one is the best, not necessarily to evaluate them. The user wants me to use it to tell them which is best. So I should call it with one of the values.\n\nI''ll call it with \"Canada\" first, since that''s what the user mentioned first. But actually, I could call it with \"USA\" too. Let me think... The user asked \"if Canada is a better country than the USA?\" and then asked me to call the tool. So they want a comparison. I''ll call the tool and see what happens. I''ll use \"Canada\" as the parameter."}}],"created":1779928137,"model":"mimo-v2.5-pro","object":"chat.completion","usage":{"completion_tokens":469,"prompt_tokens":556,"total_tokens":1025,"completion_tokens_details":{"reasoning_tokens":445},"prompt_tokens_details":{"cached_tokens":512}}}'
+        headers:
+            Content-Type:
+                - application/json
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 10.94s

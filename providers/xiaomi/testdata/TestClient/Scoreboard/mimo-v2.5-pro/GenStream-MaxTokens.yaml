@@ -1,0 +1,65 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 190
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.5-pro","messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"stream":true,"thinking":{"type":"disabled"},"max_completion_tokens":16}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"8c9d061f8ba445f1bfc4c842d1e74002","choices":[{"delta":{"content":"","role":"assistant","tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779929147,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"8c9d061f8ba445f1bfc4c842d1e74002","choices":[{"delta":{"content":"#","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779929147,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"8c9d061f8ba445f1bfc4c842d1e74002","choices":[{"delta":{"content":" The Theory of Rel","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779929147,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"8c9d061f8ba445f1bfc4c842d1e74002","choices":[{"delta":{"content":"ativity\n\n","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779929147,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"8c9d061f8ba445f1bfc4c842d1e74002","choices":[{"delta":{"content":"Albert","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779929147,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"8c9d061f8ba445f1bfc4c842d1e74002","choices":[{"delta":{"content":" Einstein developed","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779929147,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"8c9d061f8ba445f1bfc4c842d1e74002","choices":[{"delta":{"content":" two","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779929148,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"8c9d061f8ba445f1bfc4c842d1e74002","choices":[{"delta":{"content":" interconnected","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779929148,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"8c9d061f8ba445f1bfc4c842d1e74002","choices":[{"delta":{"content":" theories that","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779929148,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"8c9d061f8ba445f1bfc4c842d1e74002","choices":[{"delta":{"content":" revolution","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779929148,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"8c9d061f8ba445f1bfc4c842d1e74002","choices":[{"delta":{"content":"ized","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779929148,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"8c9d061f8ba445f1bfc4c842d1e74002","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":"length","index":0}],"created":1779929148,"model":"mimo-v2.5-pro","object":"chat.completion.chunk","usage":null}
+
+            data: {"id":"8c9d061f8ba445f1bfc4c842d1e74002","choices":[],"created":1779929148,"model":"mimo-v2.5-pro","object":"chat.completion.chunk","usage":{"completion_tokens":16,"prompt_tokens":264,"total_tokens":280,"completion_tokens_details":{"reasoning_tokens":0},"prompt_tokens_details":{"cached_tokens":256}}}
+
+            data: [DONE]
+
+        headers:
+            Content-Type:
+                - text/event-stream
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 1.066s

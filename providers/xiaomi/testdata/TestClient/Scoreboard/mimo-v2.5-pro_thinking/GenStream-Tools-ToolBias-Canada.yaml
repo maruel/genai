@@ -1,0 +1,135 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 561
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.5-pro","messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"stream":true,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]},"strict":true}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"7636a7fcb9e641fcad1f79e04cbd0628","choices":[{"delta":{"content":"","role":"assistant","tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928127,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"7636a7fcb9e641fcad1f79e04cbd0628","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"The user is asking"},"finish_reason":null,"index":0}],"created":1779928127,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"7636a7fcb9e641fcad1f79e04cbd0628","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" me to call the"},"finish_reason":null,"index":0}],"created":1779928127,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"7636a7fcb9e641fcad1f79e04cbd0628","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" tool"},"finish_reason":null,"index":0}],"created":1779928127,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"7636a7fcb9e641fcad1f79e04cbd0628","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" \""},"finish_reason":null,"index":0}],"created":1779928127,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"7636a7fcb9e641fcad1f79e04cbd0628","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"best_country\" to"},"finish_reason":null,"index":0}],"created":1779928128,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"7636a7fcb9e641fcad1f79e04cbd0628","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" determine which country is"},"finish_reason":null,"index":0}],"created":1779928128,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"7636a7fcb9e641fcad1f79e04cbd0628","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" better between"},"finish_reason":null,"index":0}],"created":1779928128,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"7636a7fcb9e641fcad1f79e04cbd0628","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" Canada and the USA"},"finish_reason":null,"index":0}],"created":1779928128,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"7636a7fcb9e641fcad1f79e04cbd0628","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":". I"},"finish_reason":null,"index":0}],"created":1779928128,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"7636a7fcb9e641fcad1f79e04cbd0628","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" need to use the"},"finish_reason":null,"index":0}],"created":1779928128,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"7636a7fcb9e641fcad1f79e04cbd0628","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" tool and"},"finish_reason":null,"index":0}],"created":1779928128,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"7636a7fcb9e641fcad1f79e04cbd0628","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" provide"},"finish_reason":null,"index":0}],"created":1779928128,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"7636a7fcb9e641fcad1f79e04cbd0628","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" a response. The"},"finish_reason":null,"index":0}],"created":1779928128,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"7636a7fcb9e641fcad1f79e04cbd0628","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" tool has"},"finish_reason":null,"index":0}],"created":1779928128,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"7636a7fcb9e641fcad1f79e04cbd0628","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" parameters"},"finish_reason":null,"index":0}],"created":1779928128,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"7636a7fcb9e641fcad1f79e04cbd0628","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":": country (required"},"finish_reason":null,"index":0}],"created":1779928128,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"7636a7fcb9e641fcad1f79e04cbd0628","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":","},"finish_reason":null,"index":0}],"created":1779928128,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"7636a7fcb9e641fcad1f79e04cbd0628","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" enum: Canada"},"finish_reason":null,"index":0}],"created":1779928128,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"7636a7fcb9e641fcad1f79e04cbd0628","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":", USA). So"},"finish_reason":null,"index":0}],"created":1779928128,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"7636a7fcb9e641fcad1f79e04cbd0628","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" I need to choose"},"finish_reason":null,"index":0}],"created":1779928128,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"7636a7fcb9e641fcad1f79e04cbd0628","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" one of"},"finish_reason":null,"index":0}],"created":1779928128,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"7636a7fcb9e641fcad1f79e04cbd0628","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" them"},"finish_reason":null,"index":0}],"created":1779928128,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"7636a7fcb9e641fcad1f79e04cbd0628","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":". The"},"finish_reason":null,"index":0}],"created":1779928129,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"7636a7fcb9e641fcad1f79e04cbd0628","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" user is asking which"},"finish_reason":null,"index":0}],"created":1779928129,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"7636a7fcb9e641fcad1f79e04cbd0628","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" is better, but"},"finish_reason":null,"index":0}],"created":1779928129,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"7636a7fcb9e641fcad1f79e04cbd0628","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" the tool seems"},"finish_reason":null,"index":0}],"created":1779928129,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"7636a7fcb9e641fcad1f79e04cbd0628","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" to simply"},"finish_reason":null,"index":0}],"created":1779928129,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"7636a7fcb9e641fcad1f79e04cbd0628","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" output"},"finish_reason":null,"index":0}],"created":1779928129,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"7636a7fcb9e641fcad1f79e04cbd0628","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" which"},"finish_reason":null,"index":0}],"created":1779928129,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"7636a7fcb9e641fcad1f79e04cbd0628","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" country is best based"},"finish_reason":null,"index":0}],"created":1779928129,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"7636a7fcb9e641fcad1f79e04cbd0628","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" on its"},"finish_reason":null,"index":0}],"created":1779928129,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"7636a7fcb9e641fcad1f79e04cbd0628","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" internal"},"finish_reason":null,"index":0}],"created":1779928129,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"7636a7fcb9e641fcad1f79e04cbd0628","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" logic. I'll"},"finish_reason":null,"index":0}],"created":1779928129,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"7636a7fcb9e641fcad1f79e04cbd0628","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" call it"},"finish_reason":null,"index":0}],"created":1779928129,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"7636a7fcb9e641fcad1f79e04cbd0628","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" and see what it"},"finish_reason":null,"index":0}],"created":1779928129,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"7636a7fcb9e641fcad1f79e04cbd0628","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" returns. Let"},"finish_reason":null,"index":0}],"created":1779928129,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"7636a7fcb9e641fcad1f79e04cbd0628","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"'s"},"finish_reason":null,"index":0}],"created":1779928129,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"7636a7fcb9e641fcad1f79e04cbd0628","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" do"},"finish_reason":null,"index":0}],"created":1779928129,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"7636a7fcb9e641fcad1f79e04cbd0628","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" that."},"finish_reason":null,"index":0}],"created":1779928129,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"7636a7fcb9e641fcad1f79e04cbd0628","choices":[{"delta":{"content":null,"role":null,"tool_calls":[{"index":0,"id":"call_adc3cfb5b1644c788308b6b5","function":{"arguments":"","name":"best_country"},"type":"function"}],"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928129,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"7636a7fcb9e641fcad1f79e04cbd0628","choices":[{"delta":{"content":null,"role":null,"tool_calls":[{"index":0,"id":null,"function":{"arguments":"{\"country\": ","name":null},"type":"function"}],"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928129,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"7636a7fcb9e641fcad1f79e04cbd0628","choices":[{"delta":{"content":null,"role":null,"tool_calls":[{"index":0,"id":null,"function":{"arguments":"\"","name":null},"type":"function"}],"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928129,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"7636a7fcb9e641fcad1f79e04cbd0628","choices":[{"delta":{"content":null,"role":null,"tool_calls":[{"index":0,"id":null,"function":{"arguments":"Canada","name":null},"type":"function"}],"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928129,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"7636a7fcb9e641fcad1f79e04cbd0628","choices":[{"delta":{"content":null,"role":null,"tool_calls":[{"index":0,"id":null,"function":{"arguments":"\"","name":null},"type":"function"}],"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928129,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"7636a7fcb9e641fcad1f79e04cbd0628","choices":[{"delta":{"content":null,"role":null,"tool_calls":[{"index":0,"id":null,"function":{"arguments":"}","name":null},"type":"function"}],"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928129,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"7636a7fcb9e641fcad1f79e04cbd0628","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":"tool_calls","index":0}],"created":1779928129,"model":"mimo-v2.5-pro","object":"chat.completion.chunk","usage":null}
+
+            data: {"id":"7636a7fcb9e641fcad1f79e04cbd0628","choices":[],"created":1779928129,"model":"mimo-v2.5-pro","object":"chat.completion.chunk","usage":{"completion_tokens":124,"prompt_tokens":556,"total_tokens":680,"completion_tokens_details":{"reasoning_tokens":100},"prompt_tokens_details":{"cached_tokens":512}}}
+
+            data: [DONE]
+
+        headers:
+            Content-Type:
+                - text/event-stream
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 1.479s

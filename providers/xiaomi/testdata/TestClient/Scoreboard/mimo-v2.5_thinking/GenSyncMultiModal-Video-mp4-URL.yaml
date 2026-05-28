@@ -1,0 +1,38 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 291
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.5","messages":[{"role":"user","content":"What is the word said? Reply with only the word."},{"role":"user","content":[{"type":"video_url","video_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/video.mp4"}}]}],"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"1ebb24af05984632805fbf3a4a6e4c23","choices":[{"finish_reason":"stop","index":0,"message":{"content":"BANANA","role":"assistant","tool_calls":null,"reasoning_content":"The user wants to identify a word from a video.\nI looked at the video frames provided.\nIn all frames, there is yellow text against a black background.\nThe text clearly spells \"BANANA\".\nI formulated the response as a single word as requested."}}],"created":1779929880,"model":"mimo-v2.5","object":"chat.completion","usage":{"completion_tokens":58,"prompt_tokens":1173,"total_tokens":1231,"completion_tokens_details":{"reasoning_tokens":52},"prompt_tokens_details":{"cached_tokens":1152,"video_tokens":880}}}'
+        headers:
+            Content-Type:
+                - application/json
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 5.703s

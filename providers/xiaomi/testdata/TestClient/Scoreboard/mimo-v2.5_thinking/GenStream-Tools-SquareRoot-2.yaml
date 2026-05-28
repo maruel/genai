@@ -1,0 +1,95 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 952
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.5","messages":[{"role":"user","content":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."},{"role":"assistant","reasoning_content":"用户要求我使用 square_root 工具计算 132413 的平方根，并且只回复结果，不要解释。我需要调用这个工具。","tool_calls":[{"id":"call_45999fef5fa14c6c8f0fae8e","type":"function","function":{"name":"square_root","arguments":"{\"number\": 132413}"}}]},{"role":"tool","content":"363.89","tool_call_id":"call_45999fef5fa14c6c8f0fae8e"}],"stream":true,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]},"strict":true}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"8673731592a54615bc68e757fbdb4cd2","choices":[{"delta":{"content":"","role":"assistant","tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928166,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"8673731592a54615bc68e757fbdb4cd2","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"用户"},"finish_reason":null,"index":0}],"created":1779928166,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"8673731592a54615bc68e757fbdb4cd2","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"要求使用"},"finish_reason":null,"index":0}],"created":1779928166,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"8673731592a54615bc68e757fbdb4cd2","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" square_root"},"finish_reason":null,"index":0}],"created":1779928166,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"8673731592a54615bc68e757fbdb4cd2","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" 工具"},"finish_reason":null,"index":0}],"created":1779928166,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"8673731592a54615bc68e757fbdb4cd2","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"计算 "},"finish_reason":null,"index":0}],"created":1779928166,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"8673731592a54615bc68e757fbdb4cd2","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"1324"},"finish_reason":null,"index":0}],"created":1779928166,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"8673731592a54615bc68e757fbdb4cd2","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"13 的"},"finish_reason":null,"index":0}],"created":1779928166,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"8673731592a54615bc68e757fbdb4cd2","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"平方根，并且"},"finish_reason":null,"index":0}],"created":1779928166,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"8673731592a54615bc68e757fbdb4cd2","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"只回复"},"finish_reason":null,"index":0}],"created":1779928166,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"8673731592a54615bc68e757fbdb4cd2","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"结果，不要解释"},"finish_reason":null,"index":0}],"created":1779928166,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"8673731592a54615bc68e757fbdb4cd2","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"。我已经调"},"finish_reason":null,"index":0}],"created":1779928166,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"8673731592a54615bc68e757fbdb4cd2","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"用了工具，"},"finish_reason":null,"index":0}],"created":1779928166,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"8673731592a54615bc68e757fbdb4cd2","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"得到了"},"finish_reason":null,"index":0}],"created":1779928166,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"8673731592a54615bc68e757fbdb4cd2","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"结果"},"finish_reason":null,"index":0}],"created":1779928167,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"8673731592a54615bc68e757fbdb4cd2","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" 363"},"finish_reason":null,"index":0}],"created":1779928167,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"8673731592a54615bc68e757fbdb4cd2","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":".89。"},"finish_reason":null,"index":0}],"created":1779928167,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"8673731592a54615bc68e757fbdb4cd2","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"现在我应该"},"finish_reason":null,"index":0}],"created":1779928167,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"8673731592a54615bc68e757fbdb4cd2","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"只"},"finish_reason":null,"index":0}],"created":1779928167,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"8673731592a54615bc68e757fbdb4cd2","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"返回"},"finish_reason":null,"index":0}],"created":1779928167,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"8673731592a54615bc68e757fbdb4cd2","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"这个结果，不"},"finish_reason":null,"index":0}],"created":1779928167,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"8673731592a54615bc68e757fbdb4cd2","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"附加"},"finish_reason":null,"index":0}],"created":1779928167,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"8673731592a54615bc68e757fbdb4cd2","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"任何解释"},"finish_reason":null,"index":0}],"created":1779928167,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"8673731592a54615bc68e757fbdb4cd2","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"。"},"finish_reason":null,"index":0}],"created":1779928167,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"8673731592a54615bc68e757fbdb4cd2","choices":[{"delta":{"content":"36","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928167,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"8673731592a54615bc68e757fbdb4cd2","choices":[{"delta":{"content":"3.89","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928167,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"8673731592a54615bc68e757fbdb4cd2","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":"stop","index":0}],"created":1779928167,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"8673731592a54615bc68e757fbdb4cd2","choices":[],"created":1779928167,"model":"mimo-v2.5","object":"chat.completion.chunk","usage":{"completion_tokens":65,"prompt_tokens":631,"total_tokens":696,"completion_tokens_details":{"reasoning_tokens":56},"prompt_tokens_details":{"cached_tokens":512}}}
+
+            data: [DONE]
+
+        headers:
+            Content-Type:
+                - text/event-stream
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 1.891s

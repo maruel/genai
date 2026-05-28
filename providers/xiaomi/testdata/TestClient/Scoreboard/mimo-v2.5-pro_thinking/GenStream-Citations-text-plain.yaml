@@ -1,0 +1,125 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 223
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.5-pro","messages":[{"role":"user","content":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"role":"user","content":"What is the capital of Quackiland?"}],"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"ed79383d2e414267b6d6acf064b33ad0","choices":[{"delta":{"content":"","role":"assistant","tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928140,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed79383d2e414267b6d6acf064b33ad0","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"Hmm"},"finish_reason":null,"index":0}],"created":1779928141,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed79383d2e414267b6d6acf064b33ad0","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":", the user is"},"finish_reason":null,"index":0}],"created":1779928141,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed79383d2e414267b6d6acf064b33ad0","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" asking about"},"finish_reason":null,"index":0}],"created":1779928141,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed79383d2e414267b6d6acf064b33ad0","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" the capital of Qu"},"finish_reason":null,"index":0}],"created":1779928141,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed79383d2e414267b6d6acf064b33ad0","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"ackiland, which"},"finish_reason":null,"index":0}],"created":1779928141,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed79383d2e414267b6d6acf064b33ad0","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" is directly stated"},"finish_reason":null,"index":0}],"created":1779928141,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed79383d2e414267b6d6acf064b33ad0","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" in the provided"},"finish_reason":null,"index":0}],"created":1779928141,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed79383d2e414267b6d6acf064b33ad0","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" information. The first"},"finish_reason":null,"index":0}],"created":1779928141,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed79383d2e414267b6d6acf064b33ad0","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" sentence clearly"},"finish_reason":null,"index":0}],"created":1779928141,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed79383d2e414267b6d6acf064b33ad0","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" says the"},"finish_reason":null,"index":0}],"created":1779928141,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed79383d2e414267b6d6acf064b33ad0","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" capital is"},"finish_reason":null,"index":0}],"created":1779928141,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed79383d2e414267b6d6acf064b33ad0","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" Quack."},"finish_reason":null,"index":0}],"created":1779928141,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed79383d2e414267b6d6acf064b33ad0","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" \n\nSince"},"finish_reason":null,"index":0}],"created":1779928141,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed79383d2e414267b6d6acf064b33ad0","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" this"},"finish_reason":null,"index":0}],"created":1779928141,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed79383d2e414267b6d6acf064b33ad0","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" is a straightforward factual"},"finish_reason":null,"index":0}],"created":1779928141,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed79383d2e414267b6d6acf064b33ad0","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" question with no ambiguity"},"finish_reason":null,"index":0}],"created":1779928141,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed79383d2e414267b6d6acf064b33ad0","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":", I can answer"},"finish_reason":null,"index":0}],"created":1779928141,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed79383d2e414267b6d6acf064b33ad0","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" it"},"finish_reason":null,"index":0}],"created":1779928141,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed79383d2e414267b6d6acf064b33ad0","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" directly without"},"finish_reason":null,"index":0}],"created":1779928142,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed79383d2e414267b6d6acf064b33ad0","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" needing additional"},"finish_reason":null,"index":0}],"created":1779928142,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed79383d2e414267b6d6acf064b33ad0","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" context or clarification."},"finish_reason":null,"index":0}],"created":1779928142,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed79383d2e414267b6d6acf064b33ad0","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" The response"},"finish_reason":null,"index":0}],"created":1779928142,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed79383d2e414267b6d6acf064b33ad0","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" should be concise but"},"finish_reason":null,"index":0}],"created":1779928142,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed79383d2e414267b6d6acf064b33ad0","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" include the exact"},"finish_reason":null,"index":0}],"created":1779928142,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed79383d2e414267b6d6acf064b33ad0","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" name"},"finish_reason":null,"index":0}],"created":1779928142,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed79383d2e414267b6d6acf064b33ad0","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" \""},"finish_reason":null,"index":0}],"created":1779928142,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed79383d2e414267b6d6acf064b33ad0","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"Quack\""},"finish_reason":null,"index":0}],"created":1779928142,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed79383d2e414267b6d6acf064b33ad0","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" to"},"finish_reason":null,"index":0}],"created":1779928142,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed79383d2e414267b6d6acf064b33ad0","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" match the information"},"finish_reason":null,"index":0}],"created":1779928142,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed79383d2e414267b6d6acf064b33ad0","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" given. \n\nNo"},"finish_reason":null,"index":0}],"created":1779928142,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed79383d2e414267b6d6acf064b33ad0","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" need to overcomp"},"finish_reason":null,"index":0}],"created":1779928142,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed79383d2e414267b6d6acf064b33ad0","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"licate it—just"},"finish_reason":null,"index":0}],"created":1779928142,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed79383d2e414267b6d6acf064b33ad0","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" relay"},"finish_reason":null,"index":0}],"created":1779928142,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed79383d2e414267b6d6acf064b33ad0","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" the fact"},"finish_reason":null,"index":0}],"created":1779928142,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed79383d2e414267b6d6acf064b33ad0","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" as"},"finish_reason":null,"index":0}],"created":1779928143,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed79383d2e414267b6d6acf064b33ad0","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" stated."},"finish_reason":null,"index":0}],"created":1779928143,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed79383d2e414267b6d6acf064b33ad0","choices":[{"delta":{"content":"The","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928143,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed79383d2e414267b6d6acf064b33ad0","choices":[{"delta":{"content":" capital of Quack","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928143,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed79383d2e414267b6d6acf064b33ad0","choices":[{"delta":{"content":"iland is **Qu","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928143,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed79383d2e414267b6d6acf064b33ad0","choices":[{"delta":{"content":"ack**.","role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928143,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"ed79383d2e414267b6d6acf064b33ad0","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":"stop","index":0}],"created":1779928143,"model":"mimo-v2.5-pro","object":"chat.completion.chunk","usage":null}
+
+            data: {"id":"ed79383d2e414267b6d6acf064b33ad0","choices":[],"created":1779928143,"model":"mimo-v2.5-pro","object":"chat.completion.chunk","usage":{"completion_tokens":109,"prompt_tokens":285,"total_tokens":394,"completion_tokens_details":{"reasoning_tokens":94},"prompt_tokens_details":{"cached_tokens":256}}}
+
+            data: [DONE]
+
+        headers:
+            Content-Type:
+                - text/event-stream
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 876ms

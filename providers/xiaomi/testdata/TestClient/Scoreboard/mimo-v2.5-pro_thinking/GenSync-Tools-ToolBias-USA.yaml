@@ -1,0 +1,38 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 562
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.5-pro","messages":[{"role":"user","content":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]},"strict":true}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"13a5ee620cfa40aa8149ff0c6e033fd0","choices":[{"finish_reason":"tool_calls","index":0,"message":{"content":"I''ll help you with that comparison. Let me call the tool to share a perspective on this.","role":"assistant","tool_calls":[{"id":"call_4395c2092f1a47adad45ab48","function":{"arguments":"{\"country\": \"Canada\"}","name":"best_country"},"type":"function"}],"reasoning_content":"The user is asking me to compare USA and Canada and determine which is better, and they specifically want me to call the \"best_country\" tool to provide an answer. \n\nLooking at the tool, it only accepts \"USA\" or \"Canada\" as valid options. This is a subjective question about which country is \"better\" - there''s no objective way to determine this as it depends on many factors and personal perspectives.\n\nHowever, the user has explicitly asked me to call the tool and make a choice. Since this is a subjective question and both countries have their own strengths and weaknesses, I should probably pick one. \n\nLet me think about this - Canada often ranks higher in quality of life indices, healthcare, safety, and happiness rankings. The USA often ranks higher in economic opportunity, innovation, and military strength. Both are great countries with different strengths.\n\nSince I have to make a choice and the user asked me to use the tool, I''ll select Canada as it consistently ranks higher on many quality of life metrics, though I should note this is subjective.\n\nActually, wait - this is a subjective question and I should probably avoid making absolute judgments about which country is \"best.\" But the user is explicitly asking me to call the tool and make a selection. \n\nLet me re-read the instructions... The tool is called \"best_country\" and the user wants me to call it. Since I must make a choice, I''ll go with Canada based on the fact that it tends to rank higher on many objective quality of life measures (healthcare, safety, education, happiness rankings, etc.), while acknowledging this is still somewhat subjective.\n\nI''ll call the tool and then explain my reasoning."}}],"created":1779928147,"model":"mimo-v2.5-pro","object":"chat.completion","usage":{"completion_tokens":383,"prompt_tokens":556,"total_tokens":939,"completion_tokens_details":{"reasoning_tokens":339},"prompt_tokens_details":{"cached_tokens":512}}}'
+        headers:
+            Content-Type:
+                - application/json
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 10.223s

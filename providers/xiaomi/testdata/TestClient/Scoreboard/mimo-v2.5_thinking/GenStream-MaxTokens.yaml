@@ -1,0 +1,57 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 155
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.5","messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"stream":true,"max_completion_tokens":16}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"7cc825260d424616aa3ecb50c61fce65","choices":[{"delta":{"content":"","role":"assistant","tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928159,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"7cc825260d424616aa3ecb50c61fce65","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"Okay"},"finish_reason":null,"index":0}],"created":1779928159,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"7cc825260d424616aa3ecb50c61fce65","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":", the"},"finish_reason":null,"index":0}],"created":1779928159,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"7cc825260d424616aa3ecb50c61fce65","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" user asked"},"finish_reason":null,"index":0}],"created":1779928159,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"7cc825260d424616aa3ecb50c61fce65","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" for a detailed explanation"},"finish_reason":null,"index":0}],"created":1779928159,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"7cc825260d424616aa3ecb50c61fce65","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" of the theory of"},"finish_reason":null,"index":0}],"created":1779928159,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"7cc825260d424616aa3ecb50c61fce65","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" relativity"},"finish_reason":null,"index":0}],"created":1779928159,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"7cc825260d424616aa3ecb50c61fce65","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":"length","index":0}],"created":1779928159,"model":"mimo-v2.5","object":"chat.completion.chunk","usage":null}
+
+            data: {"id":"7cc825260d424616aa3ecb50c61fce65","choices":[],"created":1779928159,"model":"mimo-v2.5","object":"chat.completion.chunk","usage":{"completion_tokens":16,"prompt_tokens":258,"total_tokens":274,"completion_tokens_details":{"reasoning_tokens":15},"prompt_tokens_details":{"cached_tokens":192}}}
+
+            data: [DONE]
+
+        headers:
+            Content-Type:
+                - text/event-stream
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 1.314s

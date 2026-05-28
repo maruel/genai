@@ -1,0 +1,38 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 240
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.5-pro","messages":[{"role":"user","content":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"role":"user","content":"What is the capital of Quackiland?"}],"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"6184d6b863fc4094bfd190b51b70678e","choices":[{"finish_reason":"stop","index":0,"message":{"content":"The capital of Quackiland is Quack.","role":"assistant","tool_calls":null,"reasoning_content":"Hmm, the user is asking a straightforward question about the capital of Quackiland based on the provided information. The context clearly states that Quack is the capital, and it''s where the Big Canard Statue is located. \n\nSince the question is simple and the answer is directly given in the context, there''s no need for additional interpretation or elaboration. The response should just confirm the fact clearly and concisely. \n\nI can directly state that Quack is the capital, as mentioned in the first sentence of the context. No extra details or explanations are needed here."}}],"created":1779928156,"model":"mimo-v2.5-pro","object":"chat.completion","usage":{"completion_tokens":129,"prompt_tokens":290,"total_tokens":419,"completion_tokens_details":{"reasoning_tokens":116},"prompt_tokens_details":{"cached_tokens":256}}}'
+        headers:
+            Content-Type:
+                - application/json
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 5.324s

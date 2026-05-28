@@ -1,0 +1,38 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 220
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.5","messages":[{"role":"user","content":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"role":"user","content":"What is the capital of Quackiland?"}],"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"d50b3d58eec0400e92e0f3d4cb973d3a","choices":[{"finish_reason":"stop","index":0,"message":{"content":"Based on what you just told me, the capital of Quackiland is **Quack**.  \n\nAnd it sounds like it''s home to the famous Big Canard Statue — what a wonderful landmark for the city!","role":"assistant","tool_calls":null,"reasoning_content":"Hmm, the user is asking about the capital of Quackiland, and they''ve already provided the answer in their first sentence: \"The capital of Quackiland is Quack.\" \n\nThey seem to be testing if I''m paying attention or just rephrasing the given information. The response should confirm the capital directly while keeping it light and friendly, matching the playful tone of the original question about \"Quackiland\" and \"Big Canard Statue.\"\n\nI''ll keep it simple—acknowledge the given answer, add a touch of warmth, and maybe throw in a light comment about the statue to show engagement. No need to overcomplicate it."}}],"created":1779928196,"model":"mimo-v2.5","object":"chat.completion","usage":{"completion_tokens":179,"prompt_tokens":281,"total_tokens":460,"completion_tokens_details":{"reasoning_tokens":132},"prompt_tokens_details":{"cached_tokens":256}}}'
+        headers:
+            Content-Type:
+                - application/json
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 3.589s

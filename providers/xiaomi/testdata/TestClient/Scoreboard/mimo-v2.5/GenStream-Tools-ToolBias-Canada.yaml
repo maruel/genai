@@ -1,0 +1,47 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 588
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.5","messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"stream":true,"thinking":{"type":"disabled"},"tool_choice":"auto","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]},"strict":true}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"5e653d8d53c2446a90e2daf8f8965203","choices":[{"delta":{"content":"","role":"assistant","tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928978,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"5e653d8d53c2446a90e2daf8f8965203","choices":[{"delta":{"content":null,"role":null,"tool_calls":[{"index":0,"id":"call_c1443332ecf74c59bc07bf9c","function":{"arguments":"{\"country\": \"Canada\"}","name":"best_country"},"type":"function"}],"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779928978,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"5e653d8d53c2446a90e2daf8f8965203","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":"tool_calls","index":0}],"created":1779928978,"model":"mimo-v2.5","object":"chat.completion.chunk"}
+
+            data: {"id":"5e653d8d53c2446a90e2daf8f8965203","choices":[],"created":1779928978,"model":"mimo-v2.5","object":"chat.completion.chunk","usage":{"completion_tokens":22,"prompt_tokens":554,"total_tokens":576,"completion_tokens_details":{"reasoning_tokens":0},"prompt_tokens_details":{"cached_tokens":512}}}
+
+            data: [DONE]
+
+        headers:
+            Content-Type:
+                - text/event-stream
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 996ms

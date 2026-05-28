@@ -1,0 +1,38 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 286
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.5","messages":[{"role":"user","content":"What fruit is it? Reply with only one word."},{"role":"user","content":[{"type":"image_url","image_url":{"url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.jpg"}}]}],"stream":false}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"916734f7a1d64c83b6e123db13ce06ae","choices":[{"finish_reason":"stop","index":0,"message":{"content":"Banana","role":"assistant","tool_calls":null,"reasoning_content":"The user wants to identify the fruit in the provided image.\n\n1.  **Analyze the image:** The image shows a single yellow, curved fruit with a stem at one end and a black tip at the other. The skin is smooth and yellow with some small brown spots.\n2.  **Identify the fruit:** This is clearly a banana.\n3.  **Check the request:** The user requested a one-word reply."}}],"created":1779929652,"model":"mimo-v2.5","object":"chat.completion","usage":{"completion_tokens":92,"prompt_tokens":354,"total_tokens":446,"completion_tokens_details":{"reasoning_tokens":87},"prompt_tokens_details":{"cached_tokens":320,"image_tokens":90}}}'
+        headers:
+            Content-Type:
+                - application/json
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 4.587s

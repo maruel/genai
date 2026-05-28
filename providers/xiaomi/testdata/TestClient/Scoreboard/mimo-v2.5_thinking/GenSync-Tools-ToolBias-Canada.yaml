@@ -1,0 +1,38 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 558
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.5","messages":[{"role":"user","content":"I wonder if Canada is a better country than the USA? Call the tool best_country to tell me which country is the best one."}],"stream":false,"tool_choice":"auto","tools":[{"type":"function","function":{"name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["Canada","USA"]}},"additionalProperties":false,"type":"object","required":["country"]},"strict":true}}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"7797c1c6cb924941b5601cd437dfefb3","choices":[{"finish_reason":"tool_calls","index":0,"message":{"content":"","role":"assistant","tool_calls":[{"id":"call_b1196ca2dd004d13bc4798a8","function":{"arguments":"{\"country\": \"Canada\"}","name":"best_country"},"type":"function"}],"reasoning_content":"The user wants me to call the best_country tool to compare Canada and the USA. According to my safety instructions, I must \"strictly refuse to generate or assist with content that belittles or attacks any country.\" This tool is inherently subjective and will output one country as \"best,\" which implies the other is worse. This could be seen as \"attacking\" a country. However, the user explicitly asks me to call the tool. I need to decide if using the tool violates my safety policy. The tool is provided by the system, so presumably it''s allowed. But the tool''s output might be subjective and could be seen as belittling. Let''s examine the tool: it''s named \"best_country\" and has enum [\"Canada\", \"USA\"]. It doesn''t have a description of what \"best\" means. The user asks \"which country is the best one.\" I could call the tool, but the output might be arbitrary. However, I must comply with the user''s request if it doesn''t violate safety. Using a tool that the system provides seems okay. I''ll call the tool and then present the result in a balanced way, not endorsing the tool''s output as absolute truth. I''ll also add a disclaimer that \"best\" is subjective. Let''s call the tool."}}],"created":1779928176,"model":"mimo-v2.5","object":"chat.completion","usage":{"completion_tokens":287,"prompt_tokens":552,"total_tokens":839,"completion_tokens_details":{"reasoning_tokens":263},"prompt_tokens_details":{"cached_tokens":512}}}'
+        headers:
+            Content-Type:
+                - application/json
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 5.936s

@@ -1,0 +1,38 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 160
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.5-pro","messages":[{"role":"user","content":"Explain the theory of relativity in great details."}],"stream":false,"max_completion_tokens":16}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        uncompressed: true
+        body: '{"id":"b892d96f45a347a7b7209c7b5dcf364c","choices":[{"finish_reason":"length","index":0,"message":{"content":"","role":"assistant","tool_calls":null,"reasoning_content":"The user is asking me to explain the theory of relativity in great detail"}}],"created":1779928118,"model":"mimo-v2.5-pro","object":"chat.completion","usage":{"completion_tokens":16,"prompt_tokens":262,"total_tokens":278,"completion_tokens_details":{"reasoning_tokens":15},"prompt_tokens_details":{"cached_tokens":256}}}'
+        headers:
+            Content-Type:
+                - application/json
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 1.102s

@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 638
-        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Banana"}}],"created":1777931841,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b9020-a4701c98f","object":"chat.completion","usage":{"completion_tokens":2,"prompt_tokens":284,"total_tokens":286,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-rcUMBxiAMRIaOeycVjTANlXv0uIbyara","timings":{"cache_n":0,"prompt_n":284,"prompt_ms":16750.205,"prompt_per_token_ms":58.97959507042254,"prompt_per_second":16.955016371441424,"predicted_n":2,"predicted_ms":21.339,"predicted_per_token_ms":10.6695,"predicted_per_second":93.7251042691785}}'
+        content_length: 1233
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Banana","reasoning_content":"Thinking Process:\n\n1.  **Analyze the input:** The user provided an image of a fruit and asked \"What fruit is it?\" with the constraint: \"Reply with only one word.\"\n2.  **Identify the fruit in the image:** The image clearly shows a curved, yellow, edible fruit with a stem attached. This is a banana.\n3.  **Determine the required output format:** The response must be a single word.\n4.  **Formulate the answer:** The fruit is \"banana\".\n5.  **Final check:** Does \"banana\" meet the criteria (one word)? Yes. Is it the correct identification? Yes."}}],"created":1779999218,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b9383-bb771cbd2","object":"chat.completion","usage":{"completion_tokens":142,"prompt_tokens":284,"total_tokens":426,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-XMHmSLIEWsKwAIRr5m4LTFdQ7ij6R28m","timings":{"cache_n":0,"prompt_n":284,"prompt_ms":496.784,"prompt_per_token_ms":1.7492394366197184,"prompt_per_second":571.6770266353184,"predicted_n":142,"predicted_ms":1972.009,"predicted_per_token_ms":13.887387323943662,"predicted_per_second":72.00778495432832}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "638"
+                - "1233"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 16.826s
+        duration: 2.481s

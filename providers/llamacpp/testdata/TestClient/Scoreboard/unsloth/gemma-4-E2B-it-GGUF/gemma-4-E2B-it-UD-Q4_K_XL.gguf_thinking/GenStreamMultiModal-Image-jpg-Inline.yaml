@@ -23,11 +23,11 @@ interactions:
             - chunked
         content_length: -1
         body: |+
-            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"role":"assistant","content":null}}],"created":1777931804,"id":"chatcmpl-iQ8I4AJUAnxPYroyfJmDMm0WA085Is2y","model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b9020-a4701c98f","object":"chat.completion.chunk"}
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"role":"assistant","content":null}}],"created":1779999223,"id":"chatcmpl-oEBdhTSbkFLLVrAUVK13pXOgwmC4Y0Xy","model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b9383-bb771cbd2","object":"chat.completion.chunk"}
 
-            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"Banana"}}],"created":1777931804,"id":"chatcmpl-iQ8I4AJUAnxPYroyfJmDMm0WA085Is2y","model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b9020-a4701c98f","object":"chat.completion.chunk"}
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"Banana"}}],"created":1779999223,"id":"chatcmpl-oEBdhTSbkFLLVrAUVK13pXOgwmC4Y0Xy","model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b9383-bb771cbd2","object":"chat.completion.chunk"}
 
-            data: {"choices":[{"finish_reason":"stop","index":0,"delta":{}}],"created":1777931804,"id":"chatcmpl-iQ8I4AJUAnxPYroyfJmDMm0WA085Is2y","model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b9020-a4701c98f","object":"chat.completion.chunk","timings":{"cache_n":0,"prompt_n":284,"prompt_ms":16540.903,"prompt_per_token_ms":58.2426161971831,"prompt_per_second":17.169558397144343,"predicted_n":2,"predicted_ms":21.483,"predicted_per_token_ms":10.7415,"predicted_per_second":93.09686729041567}}
+            data: {"choices":[{"finish_reason":"stop","index":0,"delta":{}}],"created":1779999223,"id":"chatcmpl-oEBdhTSbkFLLVrAUVK13pXOgwmC4Y0Xy","model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b9383-bb771cbd2","object":"chat.completion.chunk","timings":{"cache_n":279,"prompt_n":5,"prompt_ms":30.258,"prompt_per_token_ms":6.0516,"prompt_per_second":165.24555489457333,"predicted_n":2,"predicted_ms":14.129,"predicted_per_token_ms":7.0645,"predicted_per_second":141.5528345955128}}
 
             data: [DONE]
 
@@ -42,4 +42,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 16.566s
+        duration: 42ms

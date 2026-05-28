@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1141
-        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Banana","reasoning_content":"Thinking Process:\n\n1.  **Analyze the input:** The user has provided an image of a fruit and asked to identify it.\n2.  **Examine the image:** The image shows a long, curved, yellow fruit with a slight stem/end piece. This shape is characteristic of a banana.\n3.  **Analyze the constraint:** The user explicitly requested to \"Reply with only one word.\"\n4.  **Determine the answer:** The fruit is a banana.\n5.  **Formulate the final response:** Use the identified word."}}],"created":1777931844,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b9020-a4701c98f","object":"chat.completion","usage":{"completion_tokens":121,"prompt_tokens":284,"total_tokens":405,"prompt_tokens_details":{"cached_tokens":279}},"id":"chatcmpl-sP77cK4rcbl68VgU0ORR3R3BhcFkmyzv","timings":{"cache_n":279,"prompt_n":5,"prompt_ms":58.626,"prompt_per_token_ms":11.7252,"prompt_per_second":85.28639170333982,"predicted_n":121,"predicted_ms":2481.591,"predicted_per_token_ms":20.50901652892562,"predicted_per_second":48.759042082277055}}'
+        content_length: 1223
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Banana","reasoning_content":"Thinking Process:\n\n1.  **Analyze the input:** The user has provided an image of a curved, yellow fruit and asked \"What fruit is it?\" The constraint is to reply with \"only one word.\"\n2.  **Identify the object:** The image clearly shows a banana.\n3.  **Determine the required output:** The answer must be a single word identifying the fruit.\n4.  **Formulate the answer:** The fruit is \"banana.\"\n5.  **Final check against constraints:**\n    *   Is it the correct identification? Yes.\n    *   Is it only one word? Yes.\n6.  **Output generation.**"}}],"created":1779999220,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b9383-bb771cbd2","object":"chat.completion","usage":{"completion_tokens":144,"prompt_tokens":284,"total_tokens":428,"prompt_tokens_details":{"cached_tokens":279}},"id":"chatcmpl-vJ1fmRT7NLlSo9uXAtNvTy3b2xlVsQnm","timings":{"cache_n":279,"prompt_n":5,"prompt_ms":31.483,"prompt_per_token_ms":6.2966,"prompt_per_second":158.81586888161866,"predicted_n":144,"predicted_ms":1994.471,"predicted_per_token_ms":13.850493055555555,"predicted_per_second":72.19959578254083}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "1141"
+                - "1223"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 2.599s
+        duration: 2.138s

@@ -79,9 +79,9 @@ func (m *Model) String() string {
 	return m.OpenAI.ID
 }
 
-// Context returns the training context window size.
+// Context returns the context window size as configured in llama-server.
 func (m *Model) Context() int64 {
-	return m.OpenAI.Meta.NCtxTrain
+	return m.OpenAI.Meta.NCtx
 }
 
 // PromptEncoding describes how to encode the prompt.

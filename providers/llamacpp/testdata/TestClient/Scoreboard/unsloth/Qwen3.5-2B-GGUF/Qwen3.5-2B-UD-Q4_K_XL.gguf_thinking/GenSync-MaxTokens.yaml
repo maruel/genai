@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 724
-        body: '{"choices":[{"finish_reason":"length","index":0,"message":{"role":"assistant","content":"","reasoning_content":"Here''s a thinking process that leads to the detailed explanation of the Theory of Rel"}}],"created":1777933894,"model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b9020-a4701c98f","object":"chat.completion","usage":{"completion_tokens":16,"prompt_tokens":21,"total_tokens":37,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-cApnI0bAt77Z8md4yrawQKgoVtGVuQSA","timings":{"cache_n":0,"prompt_n":21,"prompt_ms":44.856,"prompt_per_token_ms":2.136,"prompt_per_second":468.1647940074906,"predicted_n":16,"predicted_ms":117.139,"predicted_per_token_ms":7.3211875,"predicted_per_second":136.589863324768}}'
+        content_length: 730
+        body: '{"choices":[{"finish_reason":"length","index":0,"message":{"role":"assistant","content":"","reasoning_content":"Here''s a thinking process that leads to the detailed explanation of the Theory of Rel"}}],"created":1779999120,"model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b9383-bb771cbd2","object":"chat.completion","usage":{"completion_tokens":16,"prompt_tokens":21,"total_tokens":37,"prompt_tokens_details":{"cached_tokens":17}},"id":"chatcmpl-qsS0UesH9s151IIm0AzKDSf1FSlKWiTo","timings":{"cache_n":17,"prompt_n":4,"prompt_ms":21.231,"prompt_per_token_ms":5.30775,"prompt_per_second":188.40374923460976,"predicted_n":16,"predicted_ms":145.895,"predicted_per_token_ms":9.1184375,"predicted_per_second":109.66791185441583}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "724"
+                - "730"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 169ms
+        duration: 183ms

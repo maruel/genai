@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1241
-        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Hello","reasoning_content":"Thinking Process:\n1.  **Analyze the Request:** The user wants me to \"say hello\" but use \"only one word.\"\n2.  **Identify the Goal:** The response must be a greeting, and strictly adhere to the one-word constraint.\n3.  **Brainstorm One-Word Greetings/Responses:**\n    *   Hello (This is the obvious answer, and it fits the request perfectly.)\n    *   Hi\n    *   Hey\n    *   Greetings\n    *   Howdy\n4.  **Select the Best Option:** \"Hello\" is the most direct and standard fulfillment of the prompt.\n5.  **Final Output Generation:** (Output the chosen word.)"}}],"created":1777931715,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b9020-a4701c98f","object":"chat.completion","usage":{"completion_tokens":153,"prompt_tokens":24,"total_tokens":177,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-wVmcWafADrqr9RnE4hs32G1lKPjYMKQ3","timings":{"cache_n":0,"prompt_n":24,"prompt_ms":156.646,"prompt_per_token_ms":6.526916666666666,"prompt_per_second":153.2117002668437,"predicted_n":153,"predicted_ms":2740.531,"predicted_per_token_ms":17.91196732026144,"predicted_per_second":55.82859672085446}}'
+        content_length: 1223
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Hello","reasoning_content":"Thinking Process:\n1.  **Analyze the Request:** The user wants me to say \"hello\" but use *only one word*.\n2.  **Determine the Goal:** The response must function as a greeting/hello, and must consist of exactly one word.\n3.  **Identify Candidate Words (Greetings/Hello equivalents):**\n    *   Hi\n    *   Hello (This is a valid single word.)\n    *   Hey\n    *   Greetings (More formal, but one word.)\n    *   Yo\n4.  **Select the Best/Most Direct Option:** \"Hello\" is the most direct fulfillment of the instruction.\n5.  **Final Output Generation.**"}}],"created":1779999178,"model":"unsloth/gemma-4-E2B-it-GGUF","system_fingerprint":"b9383-bb771cbd2","object":"chat.completion","usage":{"completion_tokens":151,"prompt_tokens":24,"total_tokens":175,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-Ofi8lRHOwPOHqQ15aDJcfRQMS2CBjFgC","timings":{"cache_n":0,"prompt_n":24,"prompt_ms":357.597,"prompt_per_token_ms":14.899875,"prompt_per_second":67.11465700215606,"predicted_n":151,"predicted_ms":1986.348,"predicted_per_token_ms":13.154622516556291,"predicted_per_second":76.01890504584293}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "1241"
+                - "1223"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 2.898s
+        duration: 2.345s

@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1297
-        body: '{"choices":[{"finish_reason":"tool_calls","index":0,"message":{"role":"assistant","content":"","reasoning_content":"The user is asking me to call the best_country tool to determine which country is better - Canada or the USA. The user specifically requested me to call the best_country tool with the country parameter set to tell me which is the best.\n\nI need to call the best_country tool with the country parameter set to one of the countries. Since the user is asking about Canada vs USA, I should pick one of them to call. I''ll call it with \"Canada\" first to get their perspective.\n","tool_calls":[{"type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"},"id":"5IS3TGsZHljL22X9druzW01pn6xen6AJ"}]}}],"created":1777933914,"model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b9020-a4701c98f","object":"chat.completion","usage":{"completion_tokens":130,"prompt_tokens":333,"total_tokens":463,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-Xb2ebRRH9yJDlToveYfXngW9NiluZecp","timings":{"cache_n":0,"prompt_n":333,"prompt_ms":174.376,"prompt_per_token_ms":0.5236516516516516,"prompt_per_second":1909.6664678625498,"predicted_n":130,"predicted_ms":992.282,"predicted_per_token_ms":7.632938461538462,"predicted_per_second":131.01114400946503}}'
+        content_length: 1316
+        body: '{"choices":[{"finish_reason":"tool_calls","index":0,"message":{"role":"assistant","content":"","reasoning_content":"The user is asking me to call the best_country tool to compare Canada and the USA to see which is the best country. The user wants me to call the tool best_country and they''re asking which country is the best one.\n\nLooking at the available tool, it seems to have a parameter that allows me to specify the best country with \"Canada\" or \"USA\" as options. I should call the best_country tool with one of these options.\n\nLet me call the tool to check which country is considered the best.\n","tool_calls":[{"type":"function","function":{"name":"best_country","arguments":"{\"country\":\"Canada\"}"},"id":"I6TvzDfTHdBVHPfZiwMRo8H5yTqslt14"}]}}],"created":1779999154,"model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b9383-bb771cbd2","object":"chat.completion","usage":{"completion_tokens":136,"prompt_tokens":333,"total_tokens":469,"prompt_tokens_details":{"cached_tokens":296}},"id":"chatcmpl-yO8jTgWnuv91AGVhlYC6xXgxTDLTpeuJ","timings":{"cache_n":296,"prompt_n":37,"prompt_ms":52.5,"prompt_per_token_ms":1.4189189189189189,"prompt_per_second":704.7619047619047,"predicted_n":136,"predicted_ms":1261.985,"predicted_per_token_ms":9.279301470588235,"predicted_per_second":107.76673256813672}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "1297"
+                - "1316"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 1.176s
+        duration: 1.324s

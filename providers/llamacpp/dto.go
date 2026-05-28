@@ -990,6 +990,7 @@ type ModelOpenAI struct {
 	Meta    struct {
 		VocabType int64 `json:"vocab_type"` // 1
 		NVocab    int64 `json:"n_vocab"`
+		NCtx      int64 `json:"n_ctx"`
 		NCtxTrain int64 `json:"n_ctx_train"`
 		NEmbd     int64 `json:"n_embd"`
 		NParams   int64 `json:"n_params"`

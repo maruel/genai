@@ -23,19 +23,19 @@ interactions:
             - chunked
         content_length: -1
         body: |+
-            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"role":"assistant","content":null}}],"created":1777931905,"id":"chatcmpl-1bu6ddDluA0BLZY94v8AsV6bFBTRVXlt","model":"ggml-org/Qwen3-ASR-0.6B-GGUF","system_fingerprint":"b9020-a4701c98f","object":"chat.completion.chunk"}
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"role":"assistant","content":null}}],"created":1779999260,"id":"chatcmpl-8DE70tfiT51kgwdUFVVHfx4BcVIjgLCy","model":"ggml-org/Qwen3-ASR-0.6B-GGUF","system_fingerprint":"b9383-bb771cbd2","object":"chat.completion.chunk"}
 
-            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"language"}}],"created":1777931905,"id":"chatcmpl-1bu6ddDluA0BLZY94v8AsV6bFBTRVXlt","model":"ggml-org/Qwen3-ASR-0.6B-GGUF","system_fingerprint":"b9020-a4701c98f","object":"chat.completion.chunk"}
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"language"}}],"created":1779999260,"id":"chatcmpl-8DE70tfiT51kgwdUFVVHfx4BcVIjgLCy","model":"ggml-org/Qwen3-ASR-0.6B-GGUF","system_fingerprint":"b9383-bb771cbd2","object":"chat.completion.chunk"}
 
-            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":" English"}}],"created":1777931905,"id":"chatcmpl-1bu6ddDluA0BLZY94v8AsV6bFBTRVXlt","model":"ggml-org/Qwen3-ASR-0.6B-GGUF","system_fingerprint":"b9020-a4701c98f","object":"chat.completion.chunk"}
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":" English"}}],"created":1779999260,"id":"chatcmpl-8DE70tfiT51kgwdUFVVHfx4BcVIjgLCy","model":"ggml-org/Qwen3-ASR-0.6B-GGUF","system_fingerprint":"b9383-bb771cbd2","object":"chat.completion.chunk"}
 
-            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"<asr_text>"}}],"created":1777931905,"id":"chatcmpl-1bu6ddDluA0BLZY94v8AsV6bFBTRVXlt","model":"ggml-org/Qwen3-ASR-0.6B-GGUF","system_fingerprint":"b9020-a4701c98f","object":"chat.completion.chunk"}
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"<asr_text>"}}],"created":1779999260,"id":"chatcmpl-8DE70tfiT51kgwdUFVVHfx4BcVIjgLCy","model":"ggml-org/Qwen3-ASR-0.6B-GGUF","system_fingerprint":"b9383-bb771cbd2","object":"chat.completion.chunk"}
 
-            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"Orange"}}],"created":1777931905,"id":"chatcmpl-1bu6ddDluA0BLZY94v8AsV6bFBTRVXlt","model":"ggml-org/Qwen3-ASR-0.6B-GGUF","system_fingerprint":"b9020-a4701c98f","object":"chat.completion.chunk"}
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"Orange"}}],"created":1779999260,"id":"chatcmpl-8DE70tfiT51kgwdUFVVHfx4BcVIjgLCy","model":"ggml-org/Qwen3-ASR-0.6B-GGUF","system_fingerprint":"b9383-bb771cbd2","object":"chat.completion.chunk"}
 
-            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"."}}],"created":1777931905,"id":"chatcmpl-1bu6ddDluA0BLZY94v8AsV6bFBTRVXlt","model":"ggml-org/Qwen3-ASR-0.6B-GGUF","system_fingerprint":"b9020-a4701c98f","object":"chat.completion.chunk"}
+            data: {"choices":[{"finish_reason":null,"index":0,"delta":{"content":"."}}],"created":1779999260,"id":"chatcmpl-8DE70tfiT51kgwdUFVVHfx4BcVIjgLCy","model":"ggml-org/Qwen3-ASR-0.6B-GGUF","system_fingerprint":"b9383-bb771cbd2","object":"chat.completion.chunk"}
 
-            data: {"choices":[{"finish_reason":"stop","index":0,"delta":{}}],"created":1777931905,"id":"chatcmpl-1bu6ddDluA0BLZY94v8AsV6bFBTRVXlt","model":"ggml-org/Qwen3-ASR-0.6B-GGUF","system_fingerprint":"b9020-a4701c98f","object":"chat.completion.chunk","timings":{"cache_n":0,"prompt_n":409,"prompt_ms":1238.005,"prompt_per_token_ms":3.026907090464548,"prompt_per_second":330.37023275350253,"predicted_n":6,"predicted_ms":668.383,"predicted_per_token_ms":111.39716666666668,"predicted_per_second":8.976888999271376}}
+            data: {"choices":[{"finish_reason":"stop","index":0,"delta":{}}],"created":1779999260,"id":"chatcmpl-8DE70tfiT51kgwdUFVVHfx4BcVIjgLCy","model":"ggml-org/Qwen3-ASR-0.6B-GGUF","system_fingerprint":"b9383-bb771cbd2","object":"chat.completion.chunk","timings":{"cache_n":0,"prompt_n":35,"prompt_ms":35.186,"prompt_per_token_ms":1.0053142857142856,"prompt_per_second":994.7138066276359,"predicted_n":6,"predicted_ms":43.602,"predicted_per_token_ms":7.2669999999999995,"predicted_per_second":137.60836658868863}}
 
             data: [DONE]
 
@@ -50,4 +50,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 1.251s
+        duration: 197ms

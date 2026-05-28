@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 616
-        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Canada "}}],"created":1777931910,"model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b9020-a4701c98f","object":"chat.completion","usage":{"completion_tokens":2,"prompt_tokens":24,"total_tokens":26,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-4PhcklFJTcHzwIKaZOQev5bPODbTS0cJ","timings":{"cache_n":0,"prompt_n":24,"prompt_ms":68.064,"prompt_per_token_ms":2.836,"prompt_per_second":352.6093088857546,"predicted_n":2,"predicted_ms":10.018,"predicted_per_token_ms":5.009,"predicted_per_second":199.64064683569575}}'
+        content_length: 630
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Canada "}}],"created":1779999270,"model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b9383-bb771cbd2","object":"chat.completion","usage":{"completion_tokens":2,"prompt_tokens":24,"total_tokens":26,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-p6ssdNExs7cmtGXUV6wcqeJgiQrdvJ2A","timings":{"cache_n":0,"prompt_n":24,"prompt_ms":42.049,"prompt_per_token_ms":1.7520416666666667,"prompt_per_second":570.7626816333325,"predicted_n":2,"predicted_ms":93.708,"predicted_per_token_ms":46.854,"predicted_per_second":21.342894950271056}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "616"
+                - "630"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 87ms
+        duration: 149ms

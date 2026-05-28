@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 880
-        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Based on the information provided:\n\n1.  The text states directly: \"**The capital of Quackiland is Quack.**\"\n2.  It further clarifies that \"The Big Canard Statue is located in Quack.\"\n\nTherefore, the capital of Quackiland is **Quack**."}}],"created":1777932162,"model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b9020-a4701c98f","object":"chat.completion","usage":{"completion_tokens":63,"prompt_tokens":43,"total_tokens":106,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-nGFSoDJWMNdG2JJyJXYUIlSQARvvDEP6","timings":{"cache_n":0,"prompt_n":43,"prompt_ms":119.532,"prompt_per_token_ms":2.779813953488372,"prompt_per_second":359.7363049225312,"predicted_n":63,"predicted_ms":628.63,"predicted_per_token_ms":9.978253968253968,"predicted_per_second":100.21793423794601}}'
+        content_length: 790
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"Based on the text you provided, the capital of Quackiland is **Quack**.\n\nThis is explicitly stated in the first sentence: \"The capital of Quackiland is Quack.\""}}],"created":1779999355,"model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b9383-bb771cbd2","object":"chat.completion","usage":{"completion_tokens":40,"prompt_tokens":43,"total_tokens":83,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-R6GTwJai1BdOONbHWmJ8QXX8tfLsSQ1q","timings":{"cache_n":0,"prompt_n":43,"prompt_ms":64.728,"prompt_per_token_ms":1.5053023255813953,"prompt_per_second":664.3183784451861,"predicted_n":40,"predicted_ms":445.265,"predicted_per_token_ms":11.131625,"predicted_per_second":89.8341437121714}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "880"
+                - "790"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 759ms
+        duration: 520ms

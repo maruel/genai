@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 1061
-        body: '{"choices":[{"finish_reason":"tool_calls","index":0,"message":{"role":"assistant","content":"","reasoning_content":"The user is asking me to use the best_country tool to determine which country is better - USA or Canada. This is a straightforward request that matches the function available to me. I should call the best_country function with the USA parameter.\n","tool_calls":[{"type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"},"id":"IrTOOSFyJNYuYFMVLC1VSXOnfbgmCdnw"}]}}],"created":1777933915,"model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b9020-a4701c98f","object":"chat.completion","usage":{"completion_tokens":77,"prompt_tokens":333,"total_tokens":410,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-O1eT6IUcV37gY7FMzpsTd5HXwUSh8vEA","timings":{"cache_n":0,"prompt_n":333,"prompt_ms":174.68,"prompt_per_token_ms":0.5245645645645646,"prompt_per_second":1906.343027249828,"predicted_n":77,"predicted_ms":586.154,"predicted_per_token_ms":7.61238961038961,"predicted_per_second":131.36479491737666}}'
+        content_length: 1517
+        body: '{"choices":[{"finish_reason":"tool_calls","index":0,"message":{"role":"assistant","content":"","reasoning_content":"The user is asking me to use the best_country tool to determine if the USA is a better country than Canada. They specifically want me to call the tool to find out which country is the best.\n\nLooking at the available tool, it has a parameter called \"country\" which can be either \"USA\" or \"Canada\". The user wants me to find out which is better, so I should call this tool to get an answer. I don''t need to make separate calls to both - I can just call the tool once and it should tell me which is better.\n\nThe tool takes a \"country\" parameter with an enum of [\"USA\", \"Canada\"], and the user wants to know which one is better, so I should call it with either one to get the answer.\n","tool_calls":[{"type":"function","function":{"name":"best_country","arguments":"{\"country\":\"USA\"}"},"id":"cQrFVfMhKE68bIenMJiJZoxJnjl6frAW"}]}}],"created":1779999155,"model":"unsloth/Qwen3.5-2B-GGUF","system_fingerprint":"b9383-bb771cbd2","object":"chat.completion","usage":{"completion_tokens":188,"prompt_tokens":333,"total_tokens":521,"prompt_tokens_details":{"cached_tokens":296}},"id":"chatcmpl-E3fTHAwqPAUVEaNeJWkmxc32cjToTy3R","timings":{"cache_n":296,"prompt_n":37,"prompt_ms":48.193,"prompt_per_token_ms":1.3025135135135135,"prompt_per_second":767.7463532048223,"predicted_n":188,"predicted_ms":1367.563,"predicted_per_token_ms":7.274271276595745,"predicted_per_second":137.4708148728797}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "1061"
+                - "1517"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 770ms
+        duration: 1.427s

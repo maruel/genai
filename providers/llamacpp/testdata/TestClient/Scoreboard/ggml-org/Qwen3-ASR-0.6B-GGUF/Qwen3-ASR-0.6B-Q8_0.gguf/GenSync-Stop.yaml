@@ -19,13 +19,13 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 721
-        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"language None<asr_text>Talk about Canada in great details. Start with: Canada "}}],"created":1777931903,"model":"ggml-org/Qwen3-ASR-0.6B-GGUF","system_fingerprint":"b9020-a4701c98f","object":"chat.completion","usage":{"completion_tokens":15,"prompt_tokens":20,"total_tokens":35,"prompt_tokens_details":{"cached_tokens":0}},"id":"chatcmpl-xatlh2bBQpDXtDStzUoRqPBhVeLRfXP4","timings":{"cache_n":0,"prompt_n":20,"prompt_ms":14.425,"prompt_per_token_ms":0.7212500000000001,"prompt_per_second":1386.4818024263432,"predicted_n":15,"predicted_ms":217.508,"predicted_per_token_ms":14.500533333333333,"predicted_per_second":68.96298067197527}}'
+        content_length: 720
+        body: '{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant","content":"language None<asr_text>Talk about Canada in great details. Start with: Canada "}}],"created":1779999260,"model":"ggml-org/Qwen3-ASR-0.6B-GGUF","system_fingerprint":"b9383-bb771cbd2","object":"chat.completion","usage":{"completion_tokens":15,"prompt_tokens":20,"total_tokens":35,"prompt_tokens_details":{"cached_tokens":3}},"id":"chatcmpl-tx0HUItkSARYjulP9CdfNe2htjRMUT90","timings":{"cache_n":3,"prompt_n":17,"prompt_ms":11.471,"prompt_per_token_ms":0.6747647058823529,"prompt_per_second":1481.9980821201289,"predicted_n":15,"predicted_ms":72.665,"predicted_per_token_ms":4.844333333333334,"predicted_per_second":206.42675290717673}}'
         headers:
             Access-Control-Allow-Origin:
                 - ""
             Content-Length:
-                - "721"
+                - "720"
             Content-Type:
                 - application/json; charset=utf-8
             Keep-Alive:
@@ -34,4 +34,4 @@ interactions:
                 - llama.cpp
         status: 200 OK
         code: 200
-        duration: 245ms
+        duration: 89ms

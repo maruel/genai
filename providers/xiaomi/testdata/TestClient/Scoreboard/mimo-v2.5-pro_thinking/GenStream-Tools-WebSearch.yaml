@@ -1,0 +1,185 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 271
+        host: api.xiaomimimo.com
+        body: |
+            {"model":"mimo-v2.5-pro","messages":[{"role":"user","content":"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation."}],"stream":true,"tools":[{"type":"web_search","force_search":true}]}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.xiaomimimo.com/v1/chat/completions
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"index":0,"delta":{"annotations":[{"site_name":"www.pm.gc.ca","summary":"Mark Carney is Canada's 24th Prime Minister. He was elected Leader of the Liberal Party of Canada and sworn in as Prime Minister in March 2025.","title":"About | Prime Minister of Canada","type":"url_citation","url":"https://www.pm.gc.ca/en/about"},{"site_name":"en.wikipedia.org","summary":"Mark Carney is the current prime minister of Canada, taking office on March 14, 2025. Since the Confederation of Canada in 1867, 24 prime ministers have formed ...","title":"Prime Minister of Canada - Wikipedia","type":"url_citation","url":"https://en.wikipedia.org/wiki/Prime_Minister_of_Canada"},{"site_name":"www.pm.gc.ca","summary":"14 hours ago ... Prime Minister Mark Carney announces new measures to defend and transform Canada's Northern and Arctic region. Published. Footer Menus. Privacy ...","title":"Prime Minister of Canada","type":"url_citation","url":"https://www.pm.gc.ca/en"},{"site_name":"lop.parl.ca","summary":"Permalink ; Trudeau, Justin, 43 years, 10 months, 10 days, 2015-11-04 - 2025-03-13, 29th Ministry (2015/11/04 - 2025/03/13) 3418 days ; Harper, Stephen Joseph, 46 ...","title":"Prime Ministers of Canada - Library of Parliament","type":"url_citation","url":"https://lop.parl.ca/sites/ParlInfo/default/en_CA/People/primeMinisters"},{"site_name":"www.youtube.com","summary":"Prime Minister of Canada. @CanadianPM. 85.3K subscribers•97 videos. This is the official YouTube channel for Mark Carney, Prime Minister of Canada. ...more","title":"Prime Minister of Canada - YouTube","type":"url_citation","url":"https://www.youtube.com/@CanadianPM"},{"site_name":"www.pm.gc.ca","summary":"14 hours ago ... The government's plan to build, protect, and empower Canada amid global uncertainty. ... Prime Minister Mark Carney stands at a podium to announce ...","title":"Prime Minister of Canada","type":"url_citation","url":"https://www.pm.gc.ca/en"},{"site_name":"pm.gc.ca","summary":"Cabinet du Premier Ministre. Prime Minister. Premier ministre. Mark Carney. English · Français. Symbol of the Government of Canada / Symbole du gouvernement ...","title":"Prime Minister of Canada / Premier ministre du Canada","type":"url_citation","url":"https://pm.gc.ca/"},{"site_name":"www.pm.gc.ca","summary":"Right Honourable Mark Carney - Le très honorable Mark Carney.","title":"News | Prime Minister of Canada","type":"url_citation","url":"https://www.pm.gc.ca/en/news/releases"},{"site_name":"www.rcaanc-cirnac.gc.ca","summary":"Sep 15, 2010 ... ... Canada for all of us. On behalf of the Government of Canada The Right Honourable Stephen Harper,. Prime Minister of Canada. Did you find what ...","title":"Statement of apology to former students of Indian Residential Schools","type":"url_citation","url":"https://www.rcaanc-cirnac.gc.ca/eng/1100100015644/1571589171655"},{"site_name":"www.pm.gc.ca","summary":"Right Honourable Mark Carney - Le très honorable Mark Carney.","title":"Contact the Prime Minister","type":"url_citation","url":"https://www.pm.gc.ca/en/connect/contact"},{"site_name":"en.wikipedia.org","summary":"The monarch, King Charles III is head of state and is personally represented by a governor general (currently Mary Simon). The prime minister (currently Mark ...","title":"Government of Canada - Wikipedia","type":"url_citation","url":"https://en.wikipedia.org/wiki/Government_of_Canada"},{"site_name":"learn.parl.ca","summary":"The Prime Minister is the Head of Government, and the Monarch – currently His Majesty King Charles III – is the Head of State. The Monarch's powers and ...","title":"Canada's Constitutional Monarchy - Learn About Parliament","type":"url_citation","url":"https://learn.parl.ca/understanding-comprendre/en/canada-system-of-government/canadas-constitutional-monarchy/"},{"site_name":"www.pm.gc.ca","summary":"He was elected Leader of the Liberal Party of Canada and sworn in as Prime Minister in March 2025. He leads a government that will take action to unite ...","title":"About | Prime Minister of Canada","type":"url_citation","url":"https://www.pm.gc.ca/en/about"},{"site_name":"electionsanddemocracy.ca","summary":"... Head of State, while the Prime Minister is the Head of Government. Canada's Parliament is composed of the monarch of Canada (that is, the Queen or King, who ...","title":"Canada's Political System - Elections & Democracy","type":"url_citation","url":"https://electionsanddemocracy.ca/parliament/canadas-political-system"},{"site_name":"learn.parl.ca","summary":"The Executive Branch · The Governor General is the Monarch's representative in Canada. · The Prime Minister is the Head of Government. · The Cabinet develops ...","title":"The Branches of Government - Learn About Parliament","type":"url_citation","url":"https://learn.parl.ca/understanding-comprendre/en/canada-system-of-government/the-branches-of-government/"},{"site_name":"www.pm.gc.ca","summary":"14 hours ago ... Featured · Spring Economic Update 2026: Canada Strong For All · Spring Economic Update 2026 · Prime Minister Mark Carney stands at a podium to ...","title":"Prime Minister of Canada","type":"url_citation","url":"https://www.pm.gc.ca/en"},{"site_name":"www.weforum.org","summary":"Jan 20, 2026 ... Mark Carney was speaking on day 2 of the World Economic Forum's 56th Annual Meeting in. Canadian Prime Minister Mark Carney praised the ...","title":"Davos 2026: Special address by Mark Carney, PM of Canada","type":"url_citation","url":"https://www.weforum.org/stories/2026/01/davos-2026-special-address-by-mark-carney-prime-minister-of-canada/"},{"site_name":"www.pm.gc.ca","summary":"The Right Honourable Mark Carney, Prime Minister of CanadaMark Carney is Canada's 24th Prime Minister. He was elected Leader of the Liberal Party of Canada ...","title":"About | Prime Minister of Canada","type":"url_citation","url":"https://www.pm.gc.ca/en/about"},{"site_name":"en.wikipedia.org","summary":"Mark Carney is the current prime minister of Canada, taking office on March 14, 2025. Since the Confederation of Canada in 1867, 24 prime ministers have formed ...","title":"Prime Minister of Canada - Wikipedia","type":"url_citation","url":"https://en.wikipedia.org/wiki/Prime_Minister_of_Canada"},{"site_name":"www.youtube.com","summary":"Jan 21, 2026 ... Special Address by Mark Carney, Prime Minister of Canada | World Economic Forum Annual Meeting 2026 · Comments.","title":"Special Address by Mark Carney, Prime Minister of Canada - YouTube","type":"url_citation","url":"https://www.youtube.com/watch?v=flsgJe8mN-A"},{"site_name":"www.pm.gc.ca","summary":"Mark Carney is Canada's 24th Prime Minister. He was elected Leader of the Liberal Party of Canada and sworn in as Prime Minister in March 2025.","title":"About | Prime Minister of Canada","type":"url_citation","url":"https://www.pm.gc.ca/en/about"},{"site_name":"en.wikipedia.org","summary":"Mark Carney is the current prime minister of Canada, taking office on March 14, 2025. Since the Confederation of Canada in 1867, 24 prime ministers have formed ...","title":"Prime Minister of Canada - Wikipedia","type":"url_citation","url":"https://en.wikipedia.org/wiki/Prime_Minister_of_Canada"},{"site_name":"ca.linkedin.com","summary":"Mark Carney Mark Carney is an influencer · Prime Minister of Canada and Leader of the Liberal Party | Premier ministre du Canada et chef du Parti libéral · View ...","title":"Mark Carney | Premier ministre du Canada et chef du Parti libéral","type":"url_citation","url":"https://ca.linkedin.com/in/mark-carney-5b9744205"},{"site_name":"en.wikipedia.org","summary":"Justin Pierre James Trudeau (born December 25, 1971) is a Canadian politician who served as the 23rd prime minister of Canada from 2015 to 2025.","title":"Justin Trudeau - Wikipedia","type":"url_citation","url":"https://en.wikipedia.org/wiki/Justin_Trudeau"},{"site_name":"lop.parl.ca","summary":"Permalink ; Trudeau, Justin, 43 years, 10 months, 10 days, 2015-11-04 - 2025-03-13, 29th Ministry (2015/11/04 - 2025/03/13) 3418 days ; Harper, Stephen Joseph, 46 ...","title":"Prime Ministers of Canada - Library of Parliament","type":"url_citation","url":"https://lop.parl.ca/sites/ParlInfo/default/en_CA/People/primeMinisters"}],"role":"assistant","content":""}}],"created":1779971027,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":"","role":"assistant","tool_calls":null,"reasoning_content":null},"finish_reason":null,"index":0}],"created":1779971027,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"Hmm, the user"},"finish_reason":null,"index":0}],"created":1779971027,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" asked"},"finish_reason":null,"index":0}],"created":1779971027,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" for the current Prime"},"finish_reason":null,"index":0}],"created":1779971027,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" Minister of Canada with"},"finish_reason":null,"index":0}],"created":1779971027,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" no"},"finish_reason":null,"index":0}],"created":1779971027,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" explanation,"},"finish_reason":null,"index":0}],"created":1779971027,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" just the name."},"finish_reason":null,"index":0}],"created":1779971027,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" They"},"finish_reason":null,"index":0}],"created":1779971027,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" specified only"},"finish_reason":null,"index":0}],"created":1779971027,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" one search"},"finish_reason":null,"index":0}],"created":1779971028,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" result, but I"},"finish_reason":null,"index":0}],"created":1779971028,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" have multiple citations"},"finish_reason":null,"index":0}],"created":1779971028,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" here"},"finish_reason":null,"index":0}],"created":1779971028,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":". \n\nLooking at"},"finish_reason":null,"index":0}],"created":1779971028,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" the search results,"},"finish_reason":null,"index":0}],"created":1779971028,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" several"},"finish_reason":null,"index":0}],"created":1779971028,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" sources confirm Mark Car"},"finish_reason":null,"index":0}],"created":1779971028,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"ney is the Prime"},"finish_reason":null,"index":0}],"created":1779971028,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" Minister. The official"},"finish_reason":null,"index":0}],"created":1779971028,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" Prime"},"finish_reason":null,"index":0}],"created":1779971028,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"role":null,"tool_calls":null,"reasoning_content":" Minister's website"},"finish_reason":null,"index":0}],"created":1779971028,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"0) and Wikipedia"},"finish_reason":null,"index":0}],"created":1779971028,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"21) all"},"finish_reason":null,"index":0}],"created":1779971029,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" state he took office"},"finish_reason":null,"index":0}],"created":1779971029,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" in March 2"},"finish_reason":null,"index":0}],"created":1779971029,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"025."},"finish_reason":null,"index":0}],"created":1779971029,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" Even"},"finish_reason":null,"index":0}],"created":1779971029,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" the YouTube"},"finish_reason":null,"index":0}],"created":1779971029,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"role":null,"tool_calls":null,"reasoning_content":" channel"},"finish_reason":null,"index":0}],"created":1779971029,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" and LinkedIn"},"finish_reason":null,"index":0}],"created":1779971029,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" profile"},"finish_reason":null,"index":0}],"created":1779971029,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"role":null,"tool_calls":null,"reasoning_content":" reference","annotations":[{"site_name":"en.wikipedia.org","summary":"Mark Carney is the current prime minister of Canada, taking office on March 14, 2025. Since the Confederation of Canada in 1867, 24 prime ministers have formed ...","title":"Prime Minister of Canada - Wikipedia","type":"url_citation","url":"https://en.wikipedia.org/wiki/Prime_Minister_of_Canada"}]},"finish_reason":null,"index":0}],"created":1779971029,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" him in"},"finish_reason":null,"index":0}],"created":1779971029,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" this"},"finish_reason":null,"index":0}],"created":1779971030,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" role. \n\nSince"},"finish_reason":null,"index":0}],"created":1779971030,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" the user wants just"},"finish_reason":null,"index":0}],"created":1779971030,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" the name, I"},"finish_reason":null,"index":0}],"created":1779971030,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" should"},"finish_reason":null,"index":0}],"created":1779971030,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" give"},"finish_reason":null,"index":0}],"created":1779971030,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" \""},"finish_reason":null,"index":0}],"created":1779971030,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"Mark Carney\""},"finish_reason":null,"index":0}],"created":1779971030,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" and"},"finish_reason":null,"index":0}],"created":1779971030,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" cite the most"},"finish_reason":null,"index":0}],"created":1779971030,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" authoritative source. The"},"finish_reason":null,"index":0}],"created":1779971030,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" official government"},"finish_reason":null,"index":0}],"created":1779971030,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" website seems"},"finish_reason":null,"index":0}],"created":1779971030,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" best"},"finish_reason":null,"index":0}],"created":1779971030,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":","},"finish_reason":null,"index":0}],"created":1779971031,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" so I'll use"},"finish_reason":null,"index":0}],"created":1779971031,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"role":null,"tool_calls":null,"reasoning_content":". \n\nWait"},"finish_reason":null,"index":0}],"created":1779971031,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":", the user said"},"finish_reason":null,"index":0}],"created":1779971031,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" \"only search for"},"finish_reason":null,"index":0}],"created":1779971031,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" one result,\" but"},"finish_reason":null,"index":0}],"created":1779971031,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" I have multiple."},"finish_reason":null,"index":0}],"created":1779971031,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" I'll"},"finish_reason":null,"index":0}],"created":1779971031,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" still"},"finish_reason":null,"index":0}],"created":1779971031,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" pick"},"finish_reason":null,"index":0}],"created":1779971031,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" one primary"},"finish_reason":null,"index":0}],"created":1779971031,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" citation"},"finish_reason":null,"index":0}],"created":1779971031,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" to"},"finish_reason":null,"index":0}],"created":1779971032,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" keep it clean"},"finish_reason":null,"index":0}],"created":1779971032,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":". The answer"},"finish_reason":null,"index":0}],"created":1779971032,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" is"},"finish_reason":null,"index":0}],"created":1779971032,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" straightforward—"},"finish_reason":null,"index":0}],"created":1779971032,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"no need to"},"finish_reason":null,"index":0}],"created":1779971032,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":" overcomplicate it"},"finish_reason":null,"index":0}],"created":1779971032,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":"."},"finish_reason":null,"index":0}],"created":1779971032,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":"Mark Carney","role":null,"tool_calls":null},"finish_reason":null,"index":0}],"created":1779971032,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":".","role":null,"tool_calls":null},"finish_reason":null,"index":0}],"created":1779971032,"model":"mimo-v2.5-pro","object":"chat.completion.chunk"}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[{"delta":{"content":null,"role":null,"tool_calls":null,"reasoning_content":null},"finish_reason":"stop","index":0}],"created":1779971032,"model":"mimo-v2.5-pro","object":"chat.completion.chunk","usage":null}
+
+            data: {"id":"de665695c3a44bafb06fe134a0dac278","choices":[],"created":1779971032,"model":"mimo-v2.5-pro","object":"chat.completion.chunk","usage":{"completion_tokens":221,"prompt_tokens":2872,"total_tokens":3093,"completion_tokens_details":{"reasoning_tokens":210},"prompt_tokens_details":{"cached_tokens":192},"web_search_usage":{"tool_usage":5,"page_usage":25}}}
+
+            data: [DONE]
+
+        headers:
+            Content-Type:
+                - text/event-stream
+            Server:
+                - MiFE/3.4.29
+            Vary:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            X-Mife-Upstream-Status:
+                - "200"
+        status: 200 OK
+        code: 200
+        duration: 14.443s

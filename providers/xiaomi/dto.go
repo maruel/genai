@@ -53,11 +53,11 @@ type ChatRequest struct {
 	StreamOptions struct {
 		IncludeUsage bool `json:"include_usage,omitzero"`
 	} `json:"stream_options,omitzero"`
-	TopP        float64 `json:"top_p,omitzero"`
-	FreqPenalty float64 `json:"frequency_penalty,omitzero"`
-	PresPenalty float64 `json:"presence_penalty,omitzero"`
-	ToolChoice  string  `json:"tool_choice,omitzero"` // "auto"
-	Tools       []Tool  `json:"tools,omitzero"`
+	TopP        float64        `json:"top_p,omitzero"`
+	FreqPenalty float64        `json:"frequency_penalty,omitzero"`
+	PresPenalty float64        `json:"presence_penalty,omitzero"`
+	ToolChoice  string         `json:"tool_choice,omitzero"` // "auto"
+	Tools       []ToolOrSearch `json:"tools,omitzero"`
 	Audio       struct {
 		Format string `json:"format,omitzero"` // "mp3", "wav", "pcm16", "aac"
 		Voice  string `json:"voice,omitzero"`  // e.g. "mimo_default", "Chloe"
@@ -110,16 +110,35 @@ func (c *ChatRequest) Init(msgs genai.Messages, model string, opts ...genai.GenO
 				case genai.ToolCallNone:
 					c.ToolChoice = "auto"
 				}
-				c.Tools = make([]Tool, len(v.Tools))
+				c.Tools = make([]ToolOrSearch, len(v.Tools))
 				for i, t := range v.Tools {
-					c.Tools[i].Type = "function"
-					c.Tools[i].Function.Name = t.Name
-					c.Tools[i].Function.Description = t.Description
-					c.Tools[i].Function.Strict = true
-					if c.Tools[i].Function.Parameters = t.InputSchemaOverride; c.Tools[i].Function.Parameters == nil {
-						c.Tools[i].Function.Parameters = t.GetInputSchema()
+					fn := Tool{
+						Type: "function",
+						Function: struct {
+							Name        string             `json:"name,omitzero"`
+							Description string             `json:"description,omitzero"`
+							Parameters  *jsonschema.Schema `json:"parameters,omitzero"`
+							Strict      bool               `json:"strict,omitzero"`
+						}{
+							Name:        t.Name,
+							Description: t.Description,
+							Strict:      true,
+							Parameters:  t.InputSchemaOverride,
+						},
 					}
+					if fn.Function.Parameters == nil {
+						fn.Function.Parameters = t.GetInputSchema()
+					}
+					c.Tools[i] = ToolOrSearch{Tool: &fn}
 				}
+			}
+		case *genai.GenOptionWeb:
+			if v.Search {
+				ws := &WebSearchTool{Type: "web_search", ForceSearch: true}
+				c.Tools = append(c.Tools, ToolOrSearch{WebSearch: ws})
+			}
+			if v.Fetch {
+				errs = append(errs, errors.New("unsupported GenOptionWeb.Fetch"))
 			}
 		default:
 			unsupported = append(unsupported, internal.TypeName(opt))
@@ -229,12 +248,12 @@ type Message struct {
 // Annotation is a provider-specific annotation.
 type Annotation struct {
 	Type        string `json:"type,omitzero"` // "url_citation"
-	URLCitation struct {
-		StartIndex int64  `json:"start_index,omitzero"`
-		EndIndex   int64  `json:"end_index,omitzero"`
-		Title      string `json:"title,omitzero"`
-		URL        string `json:"url,omitzero"`
-	} `json:"url_citation,omitzero"`
+	URL         string `json:"url,omitzero"`
+	Title       string `json:"title,omitzero"`
+	Summary     string `json:"summary,omitzero"`
+	SiteName    string `json:"site_name,omitzero"`
+	LogoURL     string `json:"logo_url,omitzero"`
+	PublishTime string `json:"publish_time,omitzero"`
 }
 
 // Content is a provider-specific content block.
@@ -409,12 +428,10 @@ func (m *Message) To(out *genai.Message) error {
 			continue
 		}
 		c := genai.Citation{
-			StartIndex: a.URLCitation.StartIndex,
-			EndIndex:   a.URLCitation.EndIndex,
 			Sources: []genai.CitationSource{{
 				Type:  genai.CitationWeb,
-				Title: a.URLCitation.Title,
-				URL:   a.URLCitation.URL,
+				Title: a.Title,
+				URL:   a.URL,
 			}},
 		}
 		out.Replies = append(out.Replies, genai.Reply{Citation: c})
@@ -469,6 +486,20 @@ type WebSearchTool struct {
 	MaxKeyword  int64  `json:"max_keyword,omitzero"`
 	ForceSearch bool   `json:"force_search,omitzero"`
 	Limit       int64  `json:"limit,omitzero"`
+}
+
+// ToolOrSearch is an entry in the tools array that can be either a function tool or a web search tool.
+type ToolOrSearch struct {
+	Tool      *Tool          `json:"-"`
+	WebSearch *WebSearchTool `json:"-"`
+}
+
+// MarshalJSON implements json.Marshaler.
+func (t ToolOrSearch) MarshalJSON() ([]byte, error) {
+	if t.WebSearch != nil {
+		return json.Marshal(t.WebSearch)
+	}
+	return json.Marshal(t.Tool)
 }
 
 // ChatResponse is the provider-specific chat completion response.
@@ -552,6 +583,10 @@ type Usage struct {
 		AudioTokens  int64 `json:"audio_tokens"`
 		VideoTokens  int64 `json:"video_tokens"`
 	} `json:"prompt_tokens_details"`
+	WebSearchUsage struct {
+		ToolUsage int64 `json:"tool_usage"`
+		PageUsage int64 `json:"page_usage"`
+	} `json:"web_search_usage,omitzero"`
 }
 
 // ChatStreamChunkResponse is the provider-specific streaming chat chunk.

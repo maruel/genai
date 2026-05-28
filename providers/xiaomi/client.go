@@ -267,9 +267,7 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 						continue
 					}
 					c := genai.Citation{
-						StartIndex: a.URLCitation.StartIndex,
-						EndIndex:   a.URLCitation.EndIndex,
-						Sources:    []genai.CitationSource{{Type: genai.CitationWeb, Title: a.URLCitation.Title, URL: a.URLCitation.URL}},
+						Sources: []genai.CitationSource{{Type: genai.CitationWeb, Title: a.Title, URL: a.URL}},
 					}
 					if !yield(genai.Reply{Citation: c}) {
 						return

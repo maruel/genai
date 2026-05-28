@@ -65,16 +65,29 @@ func (r *Records) Close() error {
 	if filtered {
 		return nil
 	}
-	if err := r.Records.Close(); err != nil {
-		return err
-	}
+	// Collect orphaned recordings before proceeding to rerun.
+	// Partial test failures can leave cassettes un-recorded during this run,
+	// making them appear orphaned. The rerun with RECORD=all will re-record
+	// everything, fixing them.
+	orphanedErr := r.Records.Close()
 	r.mu.Lock()
 	tests := slices.Sorted(maps.Keys(r.rerecord))
 	r.mu.Unlock()
 	if len(tests) == 0 {
-		return nil
+		return orphanedErr
 	}
-	return r.rerun(tests)
+	if err := r.rerun(tests); err != nil {
+		return err
+	}
+	// Re-scan after rerun to detect any truly orphaned cassettes.
+	rr, err := myrecorder.NewRecords("testdata")
+	if err != nil {
+		return err
+	}
+	if err := rr.Signal("example"); err != nil {
+		return err
+	}
+	return rr.Close()
 }
 
 // Record records and replays HTTP requests for unit testing.

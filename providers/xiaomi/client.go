@@ -138,6 +138,7 @@ func (c *Client) selectBestTextModel(ctx context.Context, preference string) (st
 	if err != nil {
 		return "", fmt.Errorf("failed to automatically select the model: %w", err)
 	}
+	// ModelGood and ModelSOTA both select mimo-v2.5-pro.
 	want := "mimo-v2.5-pro"
 	if preference == string(genai.ModelCheap) {
 		want = "mimo-v2.5"
@@ -222,14 +223,18 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 	return func(yield func(genai.Reply) bool) {
 			pendingToolCall := ToolCall{}
 			for pkt := range chunks {
-				if len(pkt.Choices) != 1 {
-					continue
-				}
+				// Extract usage from the final chunk (which has empty choices but populated usage).
 				if pkt.Usage.CompletionTokens != 0 {
 					u.InputTokens = pkt.Usage.PromptTokens
 					u.InputCachedTokens = pkt.Usage.PromptTokensDetails.CachedTokens
 					u.ReasoningTokens = pkt.Usage.CompletionTokensDetails.ReasoningTokens
 					u.OutputTokens = pkt.Usage.CompletionTokens
+				}
+				if len(pkt.Choices) != 1 {
+					continue
+				}
+				// Extract finish reason from the chunk that has it.
+				if pkt.Choices[0].FinishReason != "" {
 					u.FinishReason = pkt.Choices[0].FinishReason.ToFinishReason()
 				}
 				if len(pkt.Choices[0].Delta.ToolCalls) > 1 {
@@ -251,6 +256,24 @@ func ProcessStream(chunks iter.Seq[ChatStreamChunkResponse]) (iter.Seq[genai.Rep
 				f := genai.Reply{
 					Text:      text,
 					Reasoning: pkt.Choices[0].Delta.ReasoningContent,
+				}
+				// Handle web search citations.
+				for _, a := range pkt.Choices[0].Delta.Annotations {
+					if a.Type != "url_citation" {
+						if !internal.BeLenient {
+							finalErr = &internal.BadError{Err: fmt.Errorf("unsupported annotation type %q", a.Type)}
+							return
+						}
+						continue
+					}
+					c := genai.Citation{
+						StartIndex: a.URLCitation.StartIndex,
+						EndIndex:   a.URLCitation.EndIndex,
+						Sources:    []genai.CitationSource{{Type: genai.CitationWeb, Title: a.URLCitation.Title, URL: a.URLCitation.URL}},
+					}
+					if !yield(genai.Reply{Citation: c}) {
+						return
+					}
 				}
 				// MiMo streams the arguments. Buffer the arguments to send the fragment as a whole tool call.
 				if len(pkt.Choices[0].Delta.ToolCalls) == 1 {

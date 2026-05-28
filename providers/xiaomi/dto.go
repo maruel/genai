@@ -44,8 +44,8 @@ type ChatRequest struct {
 	Thinking struct {
 		Type string `json:"type,omitzero"` // "enabled", "disabled"
 	} `json:"thinking,omitzero"`
-	Temperature float64 `json:"temperature,omitzero"`
-	MaxTokens   int64   `json:"max_completion_tokens,omitzero"`
+	Temperature    float64 `json:"temperature,omitzero"`
+	MaxTokens      int64   `json:"max_completion_tokens,omitzero"`
 	ResponseFormat struct {
 		Type string `json:"type,omitzero"` // "text", "json_object"
 	} `json:"response_format,omitzero"`
@@ -53,11 +53,15 @@ type ChatRequest struct {
 	StreamOptions struct {
 		IncludeUsage bool `json:"include_usage,omitzero"`
 	} `json:"stream_options,omitzero"`
-	TopP       float64 `json:"top_p,omitzero"`
+	TopP        float64 `json:"top_p,omitzero"`
 	FreqPenalty float64 `json:"frequency_penalty,omitzero"`
 	PresPenalty float64 `json:"presence_penalty,omitzero"`
 	ToolChoice  string  `json:"tool_choice,omitzero"` // "auto"
 	Tools       []Tool  `json:"tools,omitzero"`
+	Audio       struct {
+		Format string `json:"format,omitzero"` // "mp3", "wav", "pcm16", "aac"
+		Voice  string `json:"voice,omitzero"`  // e.g. "mimo_default", "Chloe"
+	} `json:"audio,omitzero"`
 }
 
 // Init initializes the provider specific completion request with the generic completion request.
@@ -210,12 +214,27 @@ func (c *Contents) UnmarshalJSON(b []byte) error {
 
 // Message is documented at https://platform.xiaomimimo.com/docs/en-US/api/chat/openai-api
 type Message struct {
-	Role             string     `json:"role,omitzero"` // "system", "assistant", "user"
-	Name             string     `json:"name,omitzero"`
-	Content          Contents   `json:"content,omitzero"`
-	ReasoningContent string     `json:"reasoning_content,omitzero"`
-	ToolCalls        []ToolCall `json:"tool_calls,omitzero"`
-	ToolCallID       string     `json:"tool_call_id,omitzero"`
+	Role             string       `json:"role,omitzero"` // "system", "assistant", "user"
+	Name             string       `json:"name,omitzero"`
+	Content          Contents     `json:"content,omitzero"`
+	ReasoningContent string       `json:"reasoning_content,omitzero"`
+	ToolCalls        []ToolCall   `json:"tool_calls,omitzero"`
+	ToolCallID       string       `json:"tool_call_id,omitzero"`
+	Annotations      []Annotation `json:"annotations,omitzero"`
+	Audio            struct {
+		ID string `json:"id,omitzero"` // For TTS responses, the audio ID.
+	} `json:"audio,omitzero"`
+}
+
+// Annotation is a provider-specific annotation.
+type Annotation struct {
+	Type        string `json:"type,omitzero"` // "url_citation"
+	URLCitation struct {
+		StartIndex int64  `json:"start_index,omitzero"`
+		EndIndex   int64  `json:"end_index,omitzero"`
+		Title      string `json:"title,omitzero"`
+		URL        string `json:"url,omitzero"`
+	} `json:"url_citation,omitzero"`
 }
 
 // Content is a provider-specific content block.
@@ -232,7 +251,7 @@ type Content struct {
 
 	// Type == "input_audio"
 	InputAudio struct {
-		Data   string `json:"data,omitzero"` // base64 encoded or URL
+		Data   string `json:"data,omitzero"`   // base64 encoded or URL
 		Format string `json:"format,omitzero"` // "mp3", "wav"
 	} `json:"input_audio,omitzero"`
 
@@ -369,7 +388,7 @@ func (m *Message) fromDoc(doc *genai.Doc) error {
 }
 
 // To converts to the genai equivalent.
-func (m *Message) To(out *genai.Message) {
+func (m *Message) To(out *genai.Message) error {
 	if m.ReasoningContent != "" {
 		out.Replies = append(out.Replies, genai.Reply{Reasoning: m.ReasoningContent})
 	}
@@ -382,6 +401,25 @@ func (m *Message) To(out *genai.Message) {
 		out.Replies = append(out.Replies, genai.Reply{})
 		m.ToolCalls[i].To(&out.Replies[len(out.Replies)-1].ToolCall)
 	}
+	for _, a := range m.Annotations {
+		if a.Type != "url_citation" {
+			if !internal.BeLenient {
+				return fmt.Errorf("unsupported annotation type %q", a.Type)
+			}
+			continue
+		}
+		c := genai.Citation{
+			StartIndex: a.URLCitation.StartIndex,
+			EndIndex:   a.URLCitation.EndIndex,
+			Sources: []genai.CitationSource{{
+				Type:  genai.CitationWeb,
+				Title: a.URLCitation.Title,
+				URL:   a.URLCitation.URL,
+			}},
+		}
+		out.Replies = append(out.Replies, genai.Reply{Citation: c})
+	}
+	return nil
 }
 
 // ToolCall is a provider-specific tool call.
@@ -425,6 +463,14 @@ type Tool struct {
 	} `json:"function"`
 }
 
+// WebSearchTool represents the built-in web search tool.
+type WebSearchTool struct {
+	Type        string `json:"type"` // "web_search"
+	MaxKeyword  int64  `json:"max_keyword,omitzero"`
+	ForceSearch bool   `json:"force_search,omitzero"`
+	Limit       int64  `json:"limit,omitzero"`
+}
+
 // ChatResponse is the provider-specific chat completion response.
 type ChatResponse struct {
 	ID      string `json:"id"`
@@ -453,7 +499,9 @@ func (c *ChatResponse) ToResult() (genai.Result, error) {
 		return out, fmt.Errorf("expected 1 choice, got %#v", c.Choices)
 	}
 	out.Usage.FinishReason = c.Choices[0].FinishReason.ToFinishReason()
-	c.Choices[0].Message.To(&out.Message)
+	if err := c.Choices[0].Message.To(&out.Message); err != nil {
+		return out, err
+	}
 	return out, nil
 }
 
@@ -492,9 +540,9 @@ func (f FinishReason) ToFinishReason() genai.FinishReason {
 
 // Usage is the provider-specific token usage.
 type Usage struct {
-	CompletionTokens int64 `json:"completion_tokens"`
-	PromptTokens     int64 `json:"prompt_tokens"`
-	TotalTokens      int64 `json:"total_tokens"`
+	CompletionTokens        int64 `json:"completion_tokens"`
+	PromptTokens            int64 `json:"prompt_tokens"`
+	TotalTokens             int64 `json:"total_tokens"`
 	CompletionTokensDetails struct {
 		ReasoningTokens int64 `json:"reasoning_tokens"`
 	} `json:"completion_tokens_details"`
@@ -539,7 +587,14 @@ func (m *Model) String() string {
 
 // Context implements genai.Model.
 func (m *Model) Context() int64 {
-	return 0
+	switch {
+	case strings.HasPrefix(m.ID, "mimo-v2.5"):
+		return 1048576 // 1M tokens
+	case strings.HasPrefix(m.ID, "mimo-v2"):
+		return 262144 // 256K tokens
+	default:
+		return 0
+	}
 }
 
 // ModelsResponse represents the response structure for MiMo models listing.

@@ -18,8 +18,10 @@ import (
 	"slices"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/maruel/genai/httprecord"
+	"github.com/maruel/roundtrippers"
 	"gopkg.in/dnaeon/go-vcr.v4/pkg/recorder"
 )
 
@@ -94,13 +96,26 @@ func (r *Records) Record(name string, h http.RoundTripper, opts ...recorder.Opti
 	} else if v != "" && v != "failure_only" {
 		return nil, fmt.Errorf("invalid RECORD value %q; expected \"all\" or \"failure_only\"", v)
 	}
+	// Wrap the transport with retry logic during recording to prevent
+	// rate-limited responses from being persisted in cassettes.
+	inner := h
+	if mode == recorder.ModeRecordOnly || mode == recorder.ModeRecordOnce {
+		inner = &roundtrippers.Retry{
+			Transport: h,
+			Policy: &roundtrippers.ExponentialBackoff{
+				MaxTryCount: 10,
+				MaxDuration: 5 * time.Minute,
+				Exp:         2,
+			},
+		}
+	}
 	args := []recorder.Option{
 		recorder.WithMode(mode),
 	}
 	if err := r.Signal(name); err != nil {
 		return nil, err
 	}
-	rec, err := httprecord.New(filepath.Join(r.root, name), h, append(args, opts...)...)
+	rec, err := httprecord.New(filepath.Join(r.root, name), inner, append(args, opts...)...)
 	if err != nil {
 		return nil, err
 	}

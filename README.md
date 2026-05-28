@@ -74,7 +74,7 @@ genai is _intentional_. Curious why it was created? See the release announcement
 | [pi](docs/pi.md)                           | 🇦🇹   | Sync, Stream🧠 | 💬📸       | 💬     | ❌     | ❌   | ❌    | ❌   | ❌   | 🌱   | ✅    | ❌     | ✅    | ✅     |
 | [pollinations](docs/pollinations.md)       | 🇩🇪   | Sync, Stream  | 💬📸       | 💬📸   | ✅🪨   | ☁️   | ❌    | ❌   | ❌   | 🌱   | ❌    | ❌     | ✅    | ✅     |
 | [togetherai](docs/togetherai.md)           | 🇺🇸   | Sync, Stream🧠 | 🎥💬📸     | 💬📸   | ✅🪨   | ✅   | ❌    | ❌   | ❌   | 🌱📏🛑 | ❌    | ✅     | ✅    | ✅     |
-| [xiaomi](docs/xiaomi.md)                   | 🇨🇳   | Sync, Stream🧠 | 🎤🎥💬📸   | 💬     | ✅🪨   | ☁️   | ❌    | ❌   | ❌   | 📏🛑   | ❌    | ❌     | ✅    | ✅     |
+| [xiaomi](docs/xiaomi.md)                   | 🇨🇳   | Sync, Stream🧠 | 🎤🎥💬📸   | 💬     | ✅🪨🕸️ | ☁️   | ❌    | ❌   | ❌   | 📏🛑   | ❌    | ❌     | ✅    | ✅     |
 | openaicompatible                           | N/A  | Sync, Stream  | 💬         | 💬     | ❌     | ❌   | ❌    | ❌   | ❌   | 📏🛑   | ❌    | ❌     | ✅    | ✅     |
 <details>
 <summary>‼️ Click here for the legend of columns and symbols</summary>

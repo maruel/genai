@@ -96,11 +96,15 @@ func (r *Records) RecordWithName(t testing.TB, name string, h http.RoundTripper,
 	if err != nil {
 		t.Fatal(err)
 	}
+	// Only delete and re-record on failure when the cassette name matches
+	// the test name. Named recordings (e.g. Warmup) are auxiliary — a subtest
+	// failure shouldn't cause their deletion.
+	isPrimary := t.Name() == name
 	t.Cleanup(func() {
 		if err := rr.Stop(); err != nil {
 			t.Error(err)
 		}
-		if os.Getenv("RECORD") == "failure_only" && t.Failed() {
+		if os.Getenv("RECORD") == "failure_only" && t.Failed() && isPrimary {
 			_ = os.Remove(rr.CassettePath())
 			r.mu.Lock()
 			if r.rerecord == nil {

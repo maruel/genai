@@ -50,15 +50,16 @@ investigate more efficiently. Only then look at the online documentation to conf
 - Use package internal/internaltest for HTTP recording, it sanitizes sensitive data (API keys, personal info)
 - Update recordings when API changes
 - Test both success and error scenarios
-- **NEVER** create or manually edit cassette YAML files in `testdata/`. Record them against the real API
+- Mandatory: **NEVER** create or manually edit cassette YAML files in `testdata/`. Record them against the real API
   with `RECORD=failure_only go test` to replay existing cassettes and automatically re-record only the
   failed ones. The cassette matcher compares requests byte-for-byte (body, headers, content-length, proto)
   and hand-crafted files are fragile and unreliable.
 - When tests fail due to stale or missing cassettes, re-record them with
   `RECORD=failure_only go test ./<directory>`. **Always default to `RECORD=failure_only`** (only re-records
   failed cassettes). For surgical re-recording, delete the specific cassette files that need updating, then
-  run `RECORD=failure_only go test ./<directory>`. Only use `RECORD=all` when explicitly asked by the user.
-  Use `-run` to scope recording to specific tests.
+  run `RECORD=failure_only go test ./<directory>`.
+- Mandatory: Only use `RECORD=all` when explicitly asked by the user.
+- Use `-run` to scope recording to specific tests.
 - When recording smoketests against live APIs, run fewer models at a time (use `-run`) to avoid exceeding
   the default 10-minute `go test` timeout. Reasoning models in particular can generate tens of thousands
   of tokens per test, making a full recording run take 20+ minutes.

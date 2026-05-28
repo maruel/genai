@@ -10,6 +10,7 @@ package httprecord
 
 import (
 	"bytes"
+	"io"
 	"net/http"
 	"net/url"
 	"os"
@@ -40,7 +41,7 @@ func New(path string, h http.RoundTripper, opts ...recorder.Option) (*recorder.R
 		recorder.WithHook(trimRecordingHostPort, recorder.AfterCaptureHook),
 		recorder.WithSkipRequestLatency(true),
 		recorder.WithRealTransport(h),
-		recorder.WithMatcher(matchIgnorePort),
+		recorder.WithMatcher(matchWithBody),
 		recorder.WithFS(&skipEmptyFS{FS: cassette.NewDiskFS()}),
 	}
 	return recorder.New(path, append(args, opts...)...)
@@ -158,3 +159,23 @@ func matchCassetteCloudflare(r *http.Request, i cassette.Request) bool { //nolin
 }
 
 var defaultMatcher = cassette.NewDefaultMatcher(cassette.WithIgnoreHeaders("Authorization", "X-Api-Key", "X-Goog-Api-Key", "X-Key", "X-Request-Id"))
+
+// matchWithBody wraps the default matcher chain and adds request body comparison.
+func matchWithBody(r *http.Request, i cassette.Request) bool { //nolint:gocritic // hugeParam: signature imposed by cassette matcher.
+	// Compare request bodies first, before matchIgnorePort consumes the body.
+	if r.Body != nil {
+		b, err := io.ReadAll(r.Body)
+		if err != nil {
+			return false
+		}
+		_ = r.Body.Close()
+		r.Body = io.NopCloser(bytes.NewReader(b))
+		// Trim trailing whitespace added by YAML literal block scalars.
+		if strings.TrimSpace(string(b)) != strings.TrimSpace(i.Body) {
+			return false
+		}
+	} else if i.Body != "" {
+		return false
+	}
+	return matchIgnorePort(r, i)
+}

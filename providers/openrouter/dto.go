@@ -574,12 +574,12 @@ type ModelDefaultParameters struct {
 
 // Model is the provider-specific model metadata.
 type Model struct {
-	ID            string                 `json:"id"`
-	Name          string                 `json:"name"`
-	Created       base.Time              `json:"created"`
-	Description   string                 `json:"description"`
-	ContextLength int64                  `json:"context_length"`
-	Pricing       ModelPricing           `json:"pricing"`
+	ID            string       `json:"id"`
+	Name          string       `json:"name"`
+	Created       base.Time    `json:"created"`
+	Description   string       `json:"description"`
+	ContextLength int64        `json:"context_length"`
+	Pricing       ModelPricing `json:"pricing"`
 	Architecture  struct {
 		Tokenizer        string   `json:"tokenizer"`
 		InstructType     string   `json:"instruct_type"`

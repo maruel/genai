@@ -113,11 +113,11 @@ type Response struct {
 	ServiceTier          ServiceTier       `json:"service_tier,omitzero"`
 	// Store enables server-side response storage (free, retained up to 30 days).
 	// Required for previous_response_id to work. Enabled by default.
-	Store                bool              `json:"store"`
-	FrequencyPenalty     float64           `json:"frequency_penalty,omitzero"`
-	PresencePenalty      float64           `json:"presence_penalty,omitzero"`
-	Temperature          float64           `json:"temperature,omitzero"`
-	Text                 struct {
+	Store            bool    `json:"store"`
+	FrequencyPenalty float64 `json:"frequency_penalty,omitzero"`
+	PresencePenalty  float64 `json:"presence_penalty,omitzero"`
+	Temperature      float64 `json:"temperature,omitzero"`
+	Text             struct {
 		Format struct {
 			Type        string             `json:"type"` // "text", "json_schema", "json_object"
 			Name        string             `json:"name,omitzero"`
@@ -380,11 +380,11 @@ type Tool struct {
 	Type string `json:"type,omitzero"`
 
 	// Type == "function"
-	Name        string             `json:"name,omitzero"`
-	Description string             `json:"description,omitzero"`
-	Parameters  *jsonschema.Schema `json:"parameters,omitzero"`
-	Strict      bool               `json:"strict,omitzero"`
-	ReturnTokenBudget string         `json:"return_token_budget,omitzero"` // "default"
+	Name              string             `json:"name,omitzero"`
+	Description       string             `json:"description,omitzero"`
+	Parameters        *jsonschema.Schema `json:"parameters,omitzero"`
+	Strict            bool               `json:"strict,omitzero"`
+	ReturnTokenBudget string             `json:"return_token_budget,omitzero"` // "default"
 
 	// Type == "file_search"
 	FileSearchVectorStoreIDs []string `json:"vector_store_ids,omitzero"`

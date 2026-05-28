@@ -472,7 +472,7 @@ type ChatResponse struct {
 	PromptTokenIDs TokenIDs `json:"prompt_token_ids,omitzero"`
 	Choices        []struct {
 		// Text  string `json:"text"`
-		Index    int64 `json:"index"`
+		Index    int64    `json:"index"`
 		TokenIDs TokenIDs `json:"token_ids,omitzero"`
 		// The seed is returned as a int128.
 		Seed         big.Int      `json:"seed"`
@@ -636,11 +636,11 @@ func (l *LogprobsChunk) To() [][]genai.Logprob {
 
 // Usage is the provider-specific token usage.
 type Usage struct {
-	PromptTokens        int64    `json:"prompt_tokens"`
-	CompletionTokens    int64    `json:"completion_tokens"`
-	ReasoningTokens     int64    `json:"reasoning_tokens"`
-	TotalTokens         int64    `json:"total_tokens"`
-	CachedTokens        int64    `json:"cached_tokens"`
+	PromptTokens        int64 `json:"prompt_tokens"`
+	CompletionTokens    int64 `json:"completion_tokens"`
+	ReasoningTokens     int64 `json:"reasoning_tokens"`
+	TotalTokens         int64 `json:"total_tokens"`
+	CachedTokens        int64 `json:"cached_tokens"`
 	PromptTokensDetails struct {
 		CachedTokens int64 `json:"cached_tokens"`
 	} `json:"prompt_tokens_details"`
@@ -713,16 +713,16 @@ type Model struct {
 		MaxOutputLength int64    `json:"max_output_length"`
 	} `json:"config"`
 	Pricing struct {
-		Hourly      float64 `json:"hourly"`
-		Input       float64 `json:"input"`
-		Output      float64 `json:"output"`
-		Base        float64 `json:"base"`
-		Finetune    float64 `json:"finetune"`
-		CachedInput float64 `json:"cached_input,omitzero"`
-		ImagePixel  PricingImagePixel  `json:"image_pixel,omitzero"`
-		Transcribe  PricingTranscribe  `json:"transcribe,omitzero"`
-		Image       PricingMedia     `json:"image,omitzero"`
-		Video       PricingMedia     `json:"video,omitzero"`
+		Hourly      float64           `json:"hourly"`
+		Input       float64           `json:"input"`
+		Output      float64           `json:"output"`
+		Base        float64           `json:"base"`
+		Finetune    float64           `json:"finetune"`
+		CachedInput float64           `json:"cached_input,omitzero"`
+		ImagePixel  PricingImagePixel `json:"image_pixel,omitzero"`
+		Transcribe  PricingTranscribe `json:"transcribe,omitzero"`
+		Image       PricingMedia      `json:"image,omitzero"`
+		Video       PricingMedia      `json:"video,omitzero"`
 	} `json:"pricing"`
 }
 

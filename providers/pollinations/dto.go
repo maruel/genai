@@ -639,14 +639,14 @@ type ContentFilterResult struct {
 
 // ImageModel is the provider-specific image model metadata.
 type ImageModel struct {
-	Aliases            Strings  `json:"aliases"`
-	Description        string   `json:"description"`
-	InputModalities    []string `json:"input_modalities"`
-	Name               string   `json:"name"`
-	OutputModalities   []string `json:"output_modalities"`
-	PaidOnly           bool     `json:"paid_only"`
-	VideoCapabilities  []string `json:"video_capabilities,omitzero"`
-	Pricing          struct {
+	Aliases           Strings  `json:"aliases"`
+	Description       string   `json:"description"`
+	InputModalities   []string `json:"input_modalities"`
+	Name              string   `json:"name"`
+	OutputModalities  []string `json:"output_modalities"`
+	PaidOnly          bool     `json:"paid_only"`
+	VideoCapabilities []string `json:"video_capabilities,omitzero"`
+	Pricing           struct {
 		AudioInputPrice        base.Float64 `json:"audio_input_price,omitzero"`
 		AudioOutputPrice       base.Float64 `json:"audio_output_price,omitzero"`
 		AudioTokenPrice        base.Float64 `json:"audio_token_price,omitzero"`

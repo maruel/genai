@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 520
+        content_length: 522
         host: api.openai.com
         body: |
-            {"model":"gpt-5.4-nano","reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":false,"text":{"format":{"type":"json_schema","name":"response","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]},"strict":true}},"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}]}
+            {"model":"gpt-5.4-nano","reasoning":{"effort":"medium","summary":"auto"},"service_tier":"flex","store":true,"text":{"format":{"type":"json_schema","name":"response","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]},"strict":true}},"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,15 +23,15 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_05f2470bf1bfc9980169e2332508f4819689de11b752ec3cef",
+              "id": "resp_0bcef71845d882b3006a18c8af2ef0819eacadce323f5fa988",
               "object": "response",
-              "created_at": 1776431909,
+              "created_at": 1780009135,
               "status": "completed",
               "background": false,
               "billing": {
                 "payer": "openai"
               },
-              "completed_at": 1776431909,
+              "completed_at": 1780009135,
               "error": null,
               "frequency_penalty": 0.0,
               "incomplete_details": null,
@@ -39,9 +39,10 @@ interactions:
               "max_output_tokens": null,
               "max_tool_calls": null,
               "model": "gpt-5.4-nano-2026-03-17",
+              "moderation": null,
               "output": [
                 {
-                  "id": "msg_05f2470bf1bfc9980169e23325526881969227c5061a05bfce",
+                  "id": "msg_0bcef71845d882b3006a18c8af6e5c819eb38dbd7167586d01",
                   "type": "message",
                   "status": "completed",
                   "content": [
@@ -60,14 +61,15 @@ interactions:
               "presence_penalty": 0.0,
               "previous_response_id": null,
               "prompt_cache_key": null,
-              "prompt_cache_retention": null,
+              "prompt_cache_retention": "in_memory",
               "reasoning": {
-                "effort": "low",
+                "context": "current_turn",
+                "effort": "medium",
                 "summary": "detailed"
               },
               "safety_identifier": null,
               "service_tier": "flex",
-              "store": false,
+              "store": true,
               "temperature": 1.0,
               "text": {
                 "format": {
@@ -110,16 +112,20 @@ interactions:
               "metadata": {}
             }
         headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9edbb7472fe0a302-YUL
+                - a030dde69cc039c6-YYZ
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "470"
+                - "532"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -142,4 +148,4 @@ interactions:
                 - 0s
         status: 200 OK
         code: 200
-        duration: 553ms
+        duration: 590ms

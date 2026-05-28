@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 338
+        content_length: 340
         host: api.openai.com
         body: |
-            {"model":"gpt-5.4-mini","reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":false,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"input_text","text":"What is the capital of Quackiland?"}]}]}
+            {"model":"gpt-5.4-mini","reasoning":{"effort":"medium","summary":"auto"},"service_tier":"flex","store":true,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"The capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"input_text","text":"What is the capital of Quackiland?"}]}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,15 +23,15 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_0e7de5a51c7b8e4e0169e2333e2fc481978e11a7acff4a1e78",
+              "id": "resp_0a5504c9857abb99006a18c8f0aa7081a1b653ffee26486aed",
               "object": "response",
-              "created_at": 1776431934,
+              "created_at": 1780009200,
               "status": "completed",
               "background": false,
               "billing": {
                 "payer": "openai"
               },
-              "completed_at": 1776431935,
+              "completed_at": 1780009203,
               "error": null,
               "frequency_penalty": 0.0,
               "incomplete_details": null,
@@ -39,14 +39,20 @@ interactions:
               "max_output_tokens": null,
               "max_tool_calls": null,
               "model": "gpt-5.4-mini-2026-03-17",
+              "moderation": null,
               "output": [
                 {
-                  "id": "rs_0e7de5a51c7b8e4e0169e2333e86608197bf375b6facc74b31",
+                  "id": "rs_0a5504c9857abb99006a18c8f0f86481a182e110e402ef89fb",
                   "type": "reasoning",
-                  "summary": []
+                  "summary": [
+                    {
+                      "type": "summary_text",
+                      "text": "**Crafting a concise response**\n\nThe user asked a straightforward question about the capital of Quackiland, which is already specified as Quack. I need to ensure I answer clearly and reaffirm the information without unnecessary repetition. I\u2019ll keep it direct and to the point, saying something like: \"The capital of Quackiland is Quack, and the Big Canard Statue is also located there.\" This way, I'm confirming and succinctly addressing the user's query."
+                    }
+                  ]
                 },
                 {
-                  "id": "msg_0e7de5a51c7b8e4e0169e2333ee8a48197ba98065e9e7f9c2d",
+                  "id": "msg_0a5504c9857abb99006a18c8f3e22481a1be3c4e2f4ed1a76b",
                   "type": "message",
                   "status": "completed",
                   "content": [
@@ -65,14 +71,15 @@ interactions:
               "presence_penalty": 0.0,
               "previous_response_id": null,
               "prompt_cache_key": null,
-              "prompt_cache_retention": null,
+              "prompt_cache_retention": "in_memory",
               "reasoning": {
-                "effort": "low",
+                "context": "current_turn",
+                "effort": "medium",
                 "summary": "detailed"
               },
               "safety_identifier": null,
               "service_tier": "flex",
-              "store": false,
+              "store": true,
               "temperature": 1.0,
               "text": {
                 "format": {
@@ -90,26 +97,30 @@ interactions:
                 "input_tokens_details": {
                   "cached_tokens": 0
                 },
-                "output_tokens": 33,
+                "output_tokens": 76,
                 "output_tokens_details": {
-                  "reasoning_tokens": 15
+                  "reasoning_tokens": 58
                 },
-                "total_tokens": 68
+                "total_tokens": 111
               },
               "user": null,
               "metadata": {}
             }
         headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9edbb7e43b7ea2c6-YUL
+                - a030df783cfe39c6-YYZ
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "1153"
+                - "3483"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -123,13 +134,13 @@ interactions:
             X-Ratelimit-Limit-Tokens:
                 - "200000"
             X-Ratelimit-Remaining-Requests:
-                - "498"
+                - "499"
             X-Ratelimit-Remaining-Tokens:
                 - "200000"
             X-Ratelimit-Reset-Requests:
-                - 233ms
+                - 120ms
             X-Ratelimit-Reset-Tokens:
                 - 0s
         status: 200 OK
         code: 200
-        duration: 1.254s
+        duration: 4.755s

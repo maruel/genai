@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 667
+        content_length: 669
         host: api.openai.com
         body: |
-            {"model":"gpt-5.4-mini","parallel_tool_calls":true,"reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":false,"tool_choice":"required","tools":[{"type":"function","name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}],"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}]}
+            {"model":"gpt-5.4-mini","parallel_tool_calls":true,"reasoning":{"effort":"medium","summary":"auto"},"service_tier":"flex","store":true,"tool_choice":"required","tools":[{"type":"function","name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}],"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,15 +23,15 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_0a40a1577c00c6a00169e2332c91e481968425e47520779b8d",
+              "id": "resp_00bd614030bfca5a006a18c8dcde508197a9e8b57f22eb6cf9",
               "object": "response",
-              "created_at": 1776431916,
+              "created_at": 1780009180,
               "status": "completed",
               "background": false,
               "billing": {
                 "payer": "openai"
               },
-              "completed_at": 1776431918,
+              "completed_at": 1780009181,
               "error": null,
               "frequency_penalty": 0.0,
               "incomplete_details": null,
@@ -39,13 +39,14 @@ interactions:
               "max_output_tokens": null,
               "max_tool_calls": null,
               "model": "gpt-5.4-mini-2026-03-17",
+              "moderation": null,
               "output": [
                 {
-                  "id": "fc_0a40a1577c00c6a00169e2332e277c8196ba725bd3283df6b4",
+                  "id": "fc_00bd614030bfca5a006a18c8dd39348197b92db9bf7ff6717f",
                   "type": "function_call",
                   "status": "completed",
                   "arguments": "{\"number\":132413}",
-                  "call_id": "call_VrNXrDFq2BXxxiwzrOylqNmp",
+                  "call_id": "call_IK8HAaowuYG00fdiaJfNS0oJ",
                   "name": "square_root"
                 }
               ],
@@ -53,14 +54,15 @@ interactions:
               "presence_penalty": 0.0,
               "previous_response_id": null,
               "prompt_cache_key": null,
-              "prompt_cache_retention": null,
+              "prompt_cache_retention": "in_memory",
               "reasoning": {
-                "effort": "low",
+                "context": "current_turn",
+                "effort": "medium",
                 "summary": "detailed"
               },
               "safety_identifier": null,
               "service_tier": "flex",
-              "store": false,
+              "store": true,
               "temperature": 1.0,
               "text": {
                 "format": {
@@ -107,16 +109,20 @@ interactions:
               "metadata": {}
             }
         headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9edbb7762de6a2c6-YUL
+                - a030df03fc5839c6-YYZ
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "1837"
+                - "642"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -139,4 +145,4 @@ interactions:
                 - 0s
         status: 200 OK
         code: 200
-        duration: 1.931s
+        duration: 726ms

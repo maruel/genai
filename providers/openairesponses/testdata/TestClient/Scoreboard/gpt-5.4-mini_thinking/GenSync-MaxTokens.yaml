@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 267
+        content_length: 269
         host: api.openai.com
         body: |
-            {"model":"gpt-5.4-mini","max_output_tokens":16,"reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":false,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Explain the theory of relativity in great details."}]}]}
+            {"model":"gpt-5.4-mini","max_output_tokens":16,"reasoning":{"effort":"medium","summary":"auto"},"service_tier":"flex","store":true,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Explain the theory of relativity in great details."}]}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,9 +23,9 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_0e48436f668350970169e233280cfc819080fe9e8cef2ffb1f",
+              "id": "resp_07fafe7f19e68aa9006a18c8d8032081a0858d8fe737dc8a98",
               "object": "response",
-              "created_at": 1776431912,
+              "created_at": 1780009176,
               "status": "incomplete",
               "background": false,
               "billing": {
@@ -41,9 +41,10 @@ interactions:
               "max_output_tokens": 16,
               "max_tool_calls": null,
               "model": "gpt-5.4-mini-2026-03-17",
+              "moderation": null,
               "output": [
                 {
-                  "id": "rs_0e48436f668350970169e2332851488190a4327a8d10446c4b",
+                  "id": "rs_07fafe7f19e68aa9006a18c8d83dc881a09436a05194241d6e",
                   "type": "reasoning",
                   "summary": []
                 }
@@ -52,14 +53,15 @@ interactions:
               "presence_penalty": 0.0,
               "previous_response_id": null,
               "prompt_cache_key": null,
-              "prompt_cache_retention": null,
+              "prompt_cache_retention": "in_memory",
               "reasoning": {
-                "effort": "low",
+                "context": "current_turn",
+                "effort": "medium",
                 "summary": "detailed"
               },
               "safety_identifier": null,
               "service_tier": "flex",
-              "store": false,
+              "store": true,
               "temperature": 1.0,
               "text": {
                 "format": {
@@ -87,16 +89,20 @@ interactions:
               "metadata": {}
             }
         headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9edbb75a0d7ca2c6-YUL
+                - a030dee5ce8139c6-YYZ
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "2221"
+                - "519"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -107,4 +113,4 @@ interactions:
                 - nosniff
         status: 200 OK
         code: 200
-        duration: 2.306s
+        duration: 579ms

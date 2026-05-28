@@ -111,6 +111,8 @@ type Response struct {
 	Reasoning            ReasoningConfig   `json:"reasoning,omitzero"`
 	SafetyIdentifier     string            `json:"safety_identifier,omitzero"`
 	ServiceTier          ServiceTier       `json:"service_tier,omitzero"`
+	// Store enables server-side response storage (free, retained up to 30 days).
+	// Required for previous_response_id to work. Enabled by default.
 	Store                bool              `json:"store"`
 	FrequencyPenalty     float64           `json:"frequency_penalty,omitzero"`
 	PresencePenalty      float64           `json:"presence_penalty,omitzero"`
@@ -148,6 +150,7 @@ type Response struct {
 	Output            []Message         `json:"output,omitzero"`
 	Usage             Usage             `json:"usage,omitzero"`
 	Billing           map[string]string `json:"billing,omitzero"` // e.g. {"payer": "openai"}
+	Moderation        string            `json:"moderation,omitzero"`
 }
 
 // Init implements base.InitializableRequest.
@@ -155,6 +158,7 @@ func (r *Response) Init(msgs genai.Messages, model string, opts ...genai.GenOpti
 	var unsupported []string
 	var errs []error
 	r.Model = model
+	r.Store = true
 	r.Reasoning.Summary = "auto"
 	for _, opt := range opts {
 		if err := opt.Validate(); err != nil {
@@ -187,7 +191,7 @@ func (r *Response) Init(msgs genai.Messages, model string, opts ...genai.GenOpti
 			return &base.ErrNotSupported{Options: []string{internal.TypeName(opt)}}
 		}
 	}
-	if len(msgs) == 0 {
+	if len(msgs) == 0 && r.PreviousResponseID == "" {
 		return errors.New("no messages provided")
 	}
 
@@ -364,6 +368,7 @@ func (r *Response) initOptionsTools(v *genai.GenOptionTools) []error {
 
 // ReasoningConfig represents reasoning configuration for o-series models.
 type ReasoningConfig struct {
+	Context string          `json:"context,omitzero"` // "current_turn"
 	Effort  ReasoningEffort `json:"effort,omitzero"`
 	Summary string          `json:"summary,omitzero"` // "auto", "concise", "detailed"
 }
@@ -379,6 +384,7 @@ type Tool struct {
 	Description string             `json:"description,omitzero"`
 	Parameters  *jsonschema.Schema `json:"parameters,omitzero"`
 	Strict      bool               `json:"strict,omitzero"`
+	ReturnTokenBudget string         `json:"return_token_budget,omitzero"` // "default"
 
 	// Type == "file_search"
 	FileSearchVectorStoreIDs []string `json:"vector_store_ids,omitzero"`

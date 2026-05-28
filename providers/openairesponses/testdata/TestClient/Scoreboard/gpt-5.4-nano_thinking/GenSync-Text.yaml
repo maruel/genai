@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 223
+        content_length: 225
         host: api.openai.com
         body: |
-            {"model":"gpt-5.4-nano","reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":false,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Say hello. Use only one word."}]}]}
+            {"model":"gpt-5.4-nano","reasoning":{"effort":"medium","summary":"auto"},"service_tier":"flex","store":true,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Say hello. Use only one word."}]}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,15 +23,15 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_0d0958639c876f050169e2332295808197ae331e318d4c6a0f",
+              "id": "resp_003121eab9f08d94006a18c8ac51fc81a1916e26b66ed92bb6",
               "object": "response",
-              "created_at": 1776431906,
+              "created_at": 1780009132,
               "status": "completed",
               "background": false,
               "billing": {
                 "payer": "openai"
               },
-              "completed_at": 1776431907,
+              "completed_at": 1780009132,
               "error": null,
               "frequency_penalty": 0.0,
               "incomplete_details": null,
@@ -39,9 +39,10 @@ interactions:
               "max_output_tokens": null,
               "max_tool_calls": null,
               "model": "gpt-5.4-nano-2026-03-17",
+              "moderation": null,
               "output": [
                 {
-                  "id": "msg_0d0958639c876f050169e23322cdd48197907b061c5db3ab15",
+                  "id": "msg_003121eab9f08d94006a18c8acae9c81a19ee484c50a81fd03",
                   "type": "message",
                   "status": "completed",
                   "content": [
@@ -60,14 +61,15 @@ interactions:
               "presence_penalty": 0.0,
               "previous_response_id": null,
               "prompt_cache_key": null,
-              "prompt_cache_retention": null,
+              "prompt_cache_retention": "in_memory",
               "reasoning": {
-                "effort": "low",
+                "context": "current_turn",
+                "effort": "medium",
                 "summary": "detailed"
               },
               "safety_identifier": null,
               "service_tier": "flex",
-              "store": false,
+              "store": true,
               "temperature": 1.0,
               "text": {
                 "format": {
@@ -95,16 +97,20 @@ interactions:
               "metadata": {}
             }
         headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9edbb737daf0a302-YUL
+                - a030ddd4ad8139c6-YYZ
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "755"
+                - "607"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -127,4 +133,4 @@ interactions:
                 - 0s
         status: 200 OK
         code: 200
-        duration: 820ms
+        duration: 686ms

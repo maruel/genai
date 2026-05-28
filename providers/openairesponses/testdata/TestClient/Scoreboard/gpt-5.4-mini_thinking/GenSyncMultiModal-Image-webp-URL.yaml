@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 384
+        content_length: 386
         host: api.openai.com
         body: |
-            {"model":"gpt-5.4-mini","reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":false,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"What fruit is it? Reply with only one word."},{"type":"input_image","image_url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.webp","detail":"auto"}]}]}
+            {"model":"gpt-5.4-mini","reasoning":{"effort":"medium","summary":"auto"},"service_tier":"flex","store":true,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"What fruit is it? Reply with only one word."},{"type":"input_image","image_url":"https://raw.githubusercontent.com/maruel/genai/refs/heads/main/scoreboard/testdata/image.webp","detail":"auto"}]}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,15 +23,15 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_0f3feff5ae61cae50169e2334955dc8197b01195796188e96d",
+              "id": "resp_0407c44ee7a4f986006a18c905222c819597739d6b9d351673",
               "object": "response",
-              "created_at": 1776431945,
+              "created_at": 1780009221,
               "status": "completed",
               "background": false,
               "billing": {
                 "payer": "openai"
               },
-              "completed_at": 1776431946,
+              "completed_at": 1780009223,
               "error": null,
               "frequency_penalty": 0.0,
               "incomplete_details": null,
@@ -39,14 +39,10 @@ interactions:
               "max_output_tokens": null,
               "max_tool_calls": null,
               "model": "gpt-5.4-mini-2026-03-17",
+              "moderation": null,
               "output": [
                 {
-                  "id": "rs_0f3feff5ae61cae50169e23349b6bc8197be22a475b1d67f11",
-                  "type": "reasoning",
-                  "summary": []
-                },
-                {
-                  "id": "msg_0f3feff5ae61cae50169e23349f85c8197b298ff610715410e",
+                  "id": "msg_0407c44ee7a4f986006a18c90713fc8195bc2b7030696f6923",
                   "type": "message",
                   "status": "completed",
                   "content": [
@@ -65,14 +61,15 @@ interactions:
               "presence_penalty": 0.0,
               "previous_response_id": null,
               "prompt_cache_key": null,
-              "prompt_cache_retention": null,
+              "prompt_cache_retention": "in_memory",
               "reasoning": {
-                "effort": "low",
+                "context": "current_turn",
+                "effort": "medium",
                 "summary": "detailed"
               },
               "safety_identifier": null,
               "service_tier": "flex",
-              "store": false,
+              "store": true,
               "temperature": 1.0,
               "text": {
                 "format": {
@@ -90,26 +87,30 @@ interactions:
                 "input_tokens_details": {
                   "cached_tokens": 0
                 },
-                "output_tokens": 19,
+                "output_tokens": 6,
                 "output_tokens_details": {
-                  "reasoning_tokens": 11
+                  "reasoning_tokens": 0
                 },
-                "total_tokens": 169
+                "total_tokens": 156
               },
               "user": null,
               "metadata": {}
             }
         headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9edbb82a0c66a2c6-YUL
+                - a030dfffcc8139c6-YYZ
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "816"
+                - "2186"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -132,4 +133,4 @@ interactions:
                 - 0s
         status: 200 OK
         code: 200
-        duration: 898ms
+        duration: 2.252s

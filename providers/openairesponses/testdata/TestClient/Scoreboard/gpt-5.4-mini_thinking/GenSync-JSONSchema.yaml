@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 520
+        content_length: 522
         host: api.openai.com
         body: |
-            {"model":"gpt-5.4-mini","reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":false,"text":{"format":{"type":"json_schema","name":"response","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]},"strict":true}},"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}]}
+            {"model":"gpt-5.4-mini","reasoning":{"effort":"medium","summary":"auto"},"service_tier":"flex","store":true,"text":{"format":{"type":"json_schema","name":"response","schema":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"is_fruit":{"type":"boolean"}},"additionalProperties":false,"type":"object","required":["is_fruit"]},"strict":true}},"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON."}]}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,15 +23,15 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_004797fdd69873020169e2332b59b0819690a92b396614d8fe",
+              "id": "resp_0d764395e2839272006a18c8da28988197a02e271726b8e404",
               "object": "response",
-              "created_at": 1776431915,
+              "created_at": 1780009178,
               "status": "completed",
               "background": false,
               "billing": {
                 "payer": "openai"
               },
-              "completed_at": 1776431916,
+              "completed_at": 1780009179,
               "error": null,
               "frequency_penalty": 0.0,
               "incomplete_details": null,
@@ -39,14 +39,15 @@ interactions:
               "max_output_tokens": null,
               "max_tool_calls": null,
               "model": "gpt-5.4-mini-2026-03-17",
+              "moderation": null,
               "output": [
                 {
-                  "id": "rs_004797fdd69873020169e2332ba538819682c2059074caf409",
+                  "id": "rs_0d764395e2839272006a18c8da7bac81979ed8e9a5fe06e1cf",
                   "type": "reasoning",
                   "summary": []
                 },
                 {
-                  "id": "msg_004797fdd69873020169e2332c3ec48196b8d96d912041debb",
+                  "id": "msg_0d764395e2839272006a18c8db197c8197b2ca07f8ac97b068",
                   "type": "message",
                   "status": "completed",
                   "content": [
@@ -65,14 +66,15 @@ interactions:
               "presence_penalty": 0.0,
               "previous_response_id": null,
               "prompt_cache_key": null,
-              "prompt_cache_retention": null,
+              "prompt_cache_retention": "in_memory",
               "reasoning": {
-                "effort": "low",
+                "context": "current_turn",
+                "effort": "medium",
                 "summary": "detailed"
               },
               "safety_identifier": null,
               "service_tier": "flex",
-              "store": false,
+              "store": true,
               "temperature": 1.0,
               "text": {
                 "format": {
@@ -105,26 +107,30 @@ interactions:
                 "input_tokens_details": {
                   "cached_tokens": 0
                 },
-                "output_tokens": 27,
+                "output_tokens": 41,
                 "output_tokens_details": {
-                  "reasoning_tokens": 11
+                  "reasoning_tokens": 25
                 },
-                "total_tokens": 73
+                "total_tokens": 87
               },
               "user": null,
               "metadata": {}
             }
         headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9edbb76e692ca2c6-YUL
+                - a030def3287b39c6-YYZ
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "1144"
+                - "2619"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -147,4 +153,4 @@ interactions:
                 - 0s
         status: 200 OK
         code: 200
-        duration: 1.237s
+        duration: 2.682s

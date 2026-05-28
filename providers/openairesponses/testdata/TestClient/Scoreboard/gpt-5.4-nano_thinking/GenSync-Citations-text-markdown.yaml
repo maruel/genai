@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 354
+        content_length: 356
         host: api.openai.com
         body: |
-            {"model":"gpt-5.4-nano","reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":false,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"input_text","text":"What is the capital of Quackiland?"}]}]}
+            {"model":"gpt-5.4-nano","reasoning":{"effort":"medium","summary":"auto"},"service_tier":"flex","store":true,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"input_text","text":"What is the capital of Quackiland?"}]}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,15 +23,15 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_0f4c2d05125a86da0169e23336c3dc81908ce929503edd34a4",
+              "id": "resp_031b53a571e7157a006a18c8c8f038819ebbe89e96d85caa4e",
               "object": "response",
-              "created_at": 1776431926,
+              "created_at": 1780009160,
               "status": "completed",
               "background": false,
               "billing": {
                 "payer": "openai"
               },
-              "completed_at": 1776431927,
+              "completed_at": 1780009161,
               "error": null,
               "frequency_penalty": 0.0,
               "incomplete_details": null,
@@ -39,9 +39,10 @@ interactions:
               "max_output_tokens": null,
               "max_tool_calls": null,
               "model": "gpt-5.4-nano-2026-03-17",
+              "moderation": null,
               "output": [
                 {
-                  "id": "msg_0f4c2d05125a86da0169e23336fe248190a2d487c0e5fd4b73",
+                  "id": "msg_031b53a571e7157a006a18c8c92fc8819e9597bae8ae9c26ba",
                   "type": "message",
                   "status": "completed",
                   "content": [
@@ -60,14 +61,15 @@ interactions:
               "presence_penalty": 0.0,
               "previous_response_id": null,
               "prompt_cache_key": null,
-              "prompt_cache_retention": null,
+              "prompt_cache_retention": "in_memory",
               "reasoning": {
-                "effort": "low",
+                "context": "current_turn",
+                "effort": "medium",
                 "summary": "detailed"
               },
               "safety_identifier": null,
               "service_tier": "flex",
-              "store": false,
+              "store": true,
               "temperature": 1.0,
               "text": {
                 "format": {
@@ -95,16 +97,20 @@ interactions:
               "metadata": {}
             }
         headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9edbb7b5eb2aa302-YUL
+                - a030de878bc339c6-YYZ
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "510"
+                - "543"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -127,4 +133,4 @@ interactions:
                 - 0s
         status: 200 OK
         code: 200
-        duration: 604ms
+        duration: 605ms

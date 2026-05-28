@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 408
+        content_length: 410
         host: api.openai.com
         body: |
-            {"model":"gpt-5.4-nano","reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":false,"tools":[{"type":"web_search"}],"include":["web_search_call.action.sources"],"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation."}]}]}
+            {"model":"gpt-5.4-nano","reasoning":{"effort":"medium","summary":"auto"},"service_tier":"flex","store":true,"tools":[{"type":"web_search"}],"include":["web_search_call.action.sources"],"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation."}]}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,15 +23,15 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_04f80ed6ecba06f10169e2332c33dc81969ac3b73b71bccde6",
+              "id": "resp_04eeceb9080a2eda006a18c8b4c8f08197a7c40dd43275d3f3",
               "object": "response",
-              "created_at": 1776431916,
+              "created_at": 1780009140,
               "status": "completed",
               "background": false,
               "billing": {
                 "payer": "openai"
               },
-              "completed_at": 1776431925,
+              "completed_at": 1780009159,
               "error": null,
               "frequency_penalty": 0.0,
               "incomplete_details": null,
@@ -39,14 +39,20 @@ interactions:
               "max_output_tokens": null,
               "max_tool_calls": null,
               "model": "gpt-5.4-nano-2026-03-17",
+              "moderation": null,
               "output": [
                 {
-                  "id": "rs_04f80ed6ecba06f10169e2332c8870819699d33806d5b3e4d5",
+                  "id": "rs_04eeceb9080a2eda006a18c8b5624881979e237d196c5b1410",
                   "type": "reasoning",
-                  "summary": []
+                  "summary": [
+                    {
+                      "type": "summary_text",
+                      "text": "**Preparing search for information**\n\nI need to perform a web search to find out the current Prime Minister of Canada. I\u2019ll specifically request only one result to keep things concise. So, I\u2019m planning to use the search tool with the query \u201cPrime Minister of Canada current\u201d and set the response length to short. Once I get the response, I will parse the results to extract the necessary information. Let's get started!"
+                    }
+                  ]
                 },
                 {
-                  "id": "ws_04f80ed6ecba06f10169e2332cc98c81969783adda0e69af77",
+                  "id": "ws_04eeceb9080a2eda006a18c8b7b9108197bbb2007e5d1e741a",
                   "type": "web_search_call",
                   "status": "completed",
                   "action": {
@@ -58,59 +64,19 @@ interactions:
                     "sources": [
                       {
                         "type": "url",
-                        "url": "https://apnews.com/article/f4e8de5e540ee1cc7a2b7ec5c4479bb2"
+                        "url": "https://en.wikipedia.org/wiki/Prime_Minister_of_Canada"
                       },
                       {
                         "type": "url",
-                        "url": "https://apnews.com/article/304cca23cd562e911002aa2c83f19fb2"
+                        "url": "https://www.pm.gc.ca/en/about"
                       },
                       {
                         "type": "url",
-                        "url": "https://theweek.com/world-news/canada-carney-clinches-election-trifecta-majority"
+                        "url": "https://en.wikipedia.org/wiki/List_of_prime_ministers_of_Canada"
                       },
                       {
                         "type": "url",
-                        "url": "https://en.wikipedia.org/wiki/Mark_Carney"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://en.wikipedia.org/wiki/Premiership_of_Mark_Carney"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://en.wikipedia.org/wiki/Justin_Trudeau"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://en.wikipedia.org/wiki/Fran%C3%A7ois-Philippe_Champagne"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://en.wikipedia.org/wiki/Kamal_Khera"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://www.aljazeera.com/news/2025/3/14/mark-carney-sworn-in-as-canadas-new-prime-minister-replacing-trudeau"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://en.wikipedia.org/wiki/Premiership_of_Justin_Trudeau"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://www.cbsnews.com/news/mark-carney-canada-new-prime-minister/"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://www.washingtonpost.com/world/2025/03/14/canada-mark-carney-sworn-in/"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://www.biography.com/political-figures/justin-trudeau"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://globalnews.ca/news/11081720/mark-carney-prime-minister-swearing-in/"
+                        "url": "https://www.pm.gc.ca/en"
                       },
                       {
                         "type": "url",
@@ -118,42 +84,122 @@ interactions:
                       },
                       {
                         "type": "url",
-                        "url": "https://www.sootoday.com/national-news/heres-the-latest-as-mark-carney-becomes-canadas-24th-prime-minister-10373600"
+                        "url": "https://en.wikipedia.org/wiki/Premiership_of_Mark_Carney"
                       },
                       {
                         "type": "url",
-                        "url": "https://www.euronews.com/2025/01/06/canadian-prime-minister-justin-trudeau-could-resign-within-days-reports-say"
+                        "url": "https://en.wikipedia.org/wiki/List_of_current_first_ministers_of_Canada"
                       },
                       {
                         "type": "url",
-                        "url": "https://www.theguardian.com/world/2025/jan/06/justin-trudeau-to-step-down-as-canada-prime-minister"
+                        "url": "https://www.pm.gc.ca/en/cabinet"
                       },
                       {
                         "type": "url",
-                        "url": "https://www.aljazeera.com/news/2025/1/6/canadas-trudeau-steps-down-as-liberal-party-leader-amid-pressure"
+                        "url": "https://en.wikipedia.org/wiki/Office_of_the_Prime_Minister_%28Canada%29"
                       },
                       {
                         "type": "url",
-                        "url": "https://www.theguardian.com/world/2025/jan/06/why-is-canadas-justin-trudeau-stepping-down-as-prime-minister"
+                        "url": "https://en.wikipedia.org/wiki/Premier_%28Canada%29"
                       },
                       {
                         "type": "url",
-                        "url": "https://www.thecrimson.com/article/2025/3/10/carney-canada-prime-minister/"
+                        "url": "https://rbcglobalconnect.rbc.com/en/resources/explore-new-markets/country-profiles/canada/political-outline"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en/news/readouts/2025/04/29/prime-minister-carney-speaks-president-united-states-donald-j-trump"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en/news/readouts/2025/03/28/prime-minister-carney-speaks-president-united-states-donald-j-trump"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.lbc.co.uk/world-news/mark-carney-canada-prime-minister-sworn-in/"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.worldatlas.com/articles/list-of-prime-ministers-of-canada.html"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://thecanadaguide.com/history/prime-ministers/mark-carney/"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/en/news/readouts/2025/04/01/prime-minister-carney-speaks-president-mexico-claudia-sheinbaum"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://everything.explained.today/List_of_Canadian_Prime_Ministers/"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.reddit.com/r/Copilot/comments/1sy5api/28_april_2026_copilot_claims_that_justin_trudeau/"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://publicorderemergencycommission.ca/files/exhibits/WTS.00000084.pdf?t=1669654715"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://vancouver.ca/files/cov/2025-03-14-swearing-in-of-new-prime-minister-and-cabinet-march-2025.pdf"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://broadband-188-255-118-169.ip.moscow.rt.ru/images/FTP/joomlaFTP/medias/pictures/Canada/PDF/List%20of%20prime%20ministers%20of%20Canada%20-%20Wikipedia.pdf"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://hlpf.un.org/sites/default/files/2023-09/Justin%20Trudeau%20Bio.pdf"
                       },
                       {
                         "type": "url",
                         "url": "https://researchco.ca/wp-content/uploads/2024/09/Release_PMs_CAN_04Sep2024.pdf"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://lah.elearningontario.ca/CMS/public/exported_courses/ENG2D/exported/ENG2DU01/ENG2DU01/ENG2DU01A06/_teacher/pm.gc.ca-.pdf"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.reddit.com/r/canada/comments/1onhted"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.reddit.com/r/HistoryMemes/comments/1tbvqeb/day_six_of_posting_about_candian_prime_ministers/"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.reddit.com/r/madlad/comments/qjmpag"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.reddit.com/r/conservatives/comments/srzfxd"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.reddit.com/r/anime_titties/comments/1hv2t6e"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.reddit.com/r/canadian/comments/1rq783n/trump_refers_to_pm_carney_as_future_governor_of/"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.reddit.com/r/canada/comments/1rtlz8x/1_year_in_how_are_canadians_feeling_about_prime/"
                       }
                     ]
                   }
                 },
                 {
-                  "id": "rs_04f80ed6ecba06f10169e233355ba48196a94012c5ec37e32f",
+                  "id": "rs_04eeceb9080a2eda006a18c8c750308197a82812f6cc70b64b",
                   "type": "reasoning",
                   "summary": []
                 },
                 {
-                  "id": "msg_04f80ed6ecba06f10169e23335a9b0819689b370d322ee606c",
+                  "id": "msg_04eeceb9080a2eda006a18c8c7bb808197854b862db107333f",
                   "type": "message",
                   "status": "completed",
                   "content": [
@@ -172,14 +218,15 @@ interactions:
               "presence_penalty": 0.0,
               "previous_response_id": null,
               "prompt_cache_key": null,
-              "prompt_cache_retention": null,
+              "prompt_cache_retention": "in_memory",
               "reasoning": {
-                "effort": "low",
+                "context": "current_turn",
+                "effort": "medium",
                 "summary": "detailed"
               },
               "safety_identifier": null,
               "service_tier": "flex",
-              "store": false,
+              "store": true,
               "temperature": 1.0,
               "text": {
                 "format": {
@@ -191,6 +238,7 @@ interactions:
               "tools": [
                 {
                   "type": "web_search",
+                  "return_token_budget": "default",
                   "search_context_size": "medium",
                   "user_location": {
                     "type": "approximate",
@@ -205,30 +253,34 @@ interactions:
               "top_p": 0.98,
               "truncation": "disabled",
               "usage": {
-                "input_tokens": 8485,
+                "input_tokens": 8771,
                 "input_tokens_details": {
                   "cached_tokens": 3712
                 },
-                "output_tokens": 94,
+                "output_tokens": 210,
                 "output_tokens_details": {
-                  "reasoning_tokens": 85
+                  "reasoning_tokens": 201
                 },
-                "total_tokens": 8579
+                "total_tokens": 8981
               },
               "user": null,
               "metadata": {}
             }
         headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9edbb773e82aa302-YUL
+                - a030de06df8239c6-YYZ
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "9674"
+                - "19517"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -244,11 +296,11 @@ interactions:
             X-Ratelimit-Remaining-Requests:
                 - "499"
             X-Ratelimit-Remaining-Tokens:
-                - "196247"
+                - "195845"
             X-Ratelimit-Reset-Requests:
                 - 120ms
             X-Ratelimit-Reset-Tokens:
-                - 1.125s
+                - 1.246s
         status: 200 OK
         code: 200
-        duration: 9.765s
+        duration: 20.03s

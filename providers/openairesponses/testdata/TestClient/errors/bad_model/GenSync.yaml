@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 172
+        content_length: 171
         host: api.openai.com
         body: |
-            {"model":"bad model","reasoning":{"summary":"auto"},"store":false,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Tell a short joke."}]}]}
+            {"model":"bad model","reasoning":{"summary":"auto"},"store":true,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Tell a short joke."}]}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -30,18 +30,22 @@ interactions:
               }
             }
         headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9edba18a6b35a241-YYZ
+                - a0301b704d07a269-YUL
             Content-Length:
                 - "175"
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "89"
+                - "103"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -52,4 +56,4 @@ interactions:
                 - nosniff
         status: 400 Bad Request
         code: 400
-        duration: 175ms
+        duration: 767ms

@@ -15,6 +15,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"net/url"
+	"regexp"
 	"slices"
 	"strconv"
 	"strings"
@@ -24,6 +25,10 @@ import (
 	"github.com/maruel/genai/base"
 	"github.com/maruel/genai/internal/bb"
 )
+
+// modelDateSuffixRE matches dated model IDs like "gpt-5.5-2026-04-23" so we can
+// prefer their undated aliases (e.g. "gpt-5.5") when selecting the best model.
+var modelDateSuffixRE = regexp.MustCompile(`-\d{4}-\d{2}-\d{2}$`)
 
 // Client holds the shared state and methods common to both the OpenAI Chat Completion and Responses API
 // providers.
@@ -183,9 +188,6 @@ func (c *Client) DetectModelModalities(ctx context.Context, model string) (genai
 }
 
 // SelectBestTextModel selects the most appropriate model based on the preference (cheap, good, or SOTA).
-//
-// We may want to make this function overridable in the future by the client since this is going to break one
-// day or another.
 func (c *Client) SelectBestTextModel(ctx context.Context, preference string) (string, error) {
 	mdls, err := c.ListModels(ctx)
 	if err != nil {
@@ -205,6 +207,11 @@ func (c *Client) SelectBestTextModel(ctx context.Context, preference string) (st
 		if strings.HasPrefix(m.ID, "o") {
 			continue
 		}
+		// Prefer undated aliases (e.g. "gpt-5.5") over dated versions
+		// (e.g. "gpt-5.5-2026-04-23").
+		if modelDateSuffixRE.MatchString(m.ID) {
+			continue
+		}
 		switch {
 		case cheap:
 			if strings.HasPrefix(m.ID, "gpt") && strings.HasSuffix(m.ID, "-nano") && (created == 0 || m.Created > created) {
@@ -217,7 +224,9 @@ func (c *Client) SelectBestTextModel(ctx context.Context, preference string) (st
 				selectedModel = m.ID
 			}
 		default:
-			if strings.HasPrefix(m.ID, "gpt") && !strings.Contains(m.ID, "-nano") && !strings.Contains(m.ID, "-mini") && (created == 0 || m.Created > created) {
+			// Pro variants are significantly more expensive; skip them for
+			// the SOTA tier.
+			if strings.HasPrefix(m.ID, "gpt") && !strings.Contains(m.ID, "-nano") && !strings.Contains(m.ID, "-mini") && !strings.Contains(m.ID, "-pro") && (created == 0 || m.Created > created) {
 				created = m.Created
 				selectedModel = m.ID
 			}
@@ -230,9 +239,6 @@ func (c *Client) SelectBestTextModel(ctx context.Context, preference string) (st
 }
 
 // SelectBestImageModel selects the most appropriate image model based on the preference (cheap, good, or SOTA).
-//
-// We may want to make this function overridable in the future by the client since this is going to break one
-// day or another.
 func (c *Client) SelectBestImageModel(ctx context.Context, preference string) (string, error) {
 	mdls, err := c.ListModels(ctx)
 	if err != nil {
@@ -249,6 +255,11 @@ func (c *Client) SelectBestImageModel(ctx context.Context, preference string) (s
 		isGood := strings.HasSuffix(m.ID, "-mini")
 		isSOTA := strings.HasPrefix(m.ID, "gpt-image")
 		if !isCheap && !isSOTA {
+			continue
+		}
+		// Prefer undated aliases (e.g. "gpt-image-2") over dated
+		// versions (e.g. "gpt-image-2-2026-04-21").
+		if modelDateSuffixRE.MatchString(m.ID) {
 			continue
 		}
 		switch {

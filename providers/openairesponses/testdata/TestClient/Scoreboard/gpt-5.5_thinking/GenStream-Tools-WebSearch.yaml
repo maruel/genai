@@ -1,0 +1,103 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 419
+        host: api.openai.com
+        body: |
+            {"model":"gpt-5.5","reasoning":{"effort":"medium","summary":"auto"},"service_tier":"flex","store":true,"tools":[{"type":"web_search"}],"include":["web_search_call.action.sources"],"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation."}]}],"stream":true}
+        headers:
+            Content-Type:
+                - application/json; charset=utf-8
+        url: https://api.openai.com/v1/responses
+        method: POST
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        content_length: -1
+        body: |+
+            event: response.created
+            data: {"type":"response.created","response":{"id":"resp_017fc97e69237996006a18c94c6d308195bcd5cb6781e4c661","object":"response","created_at":1780009292,"status":"in_progress","background":false,"completed_at":null,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-5.5-2026-04-23","moderation":null,"output":[],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":null,"prompt_cache_key":null,"prompt_cache_retention":"24h","reasoning":{"context":"current_turn","effort":"medium","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":true,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"auto","tools":[{"type":"web_search","return_token_budget":"default","search_context_size":"medium","user_location":{"type":"approximate","city":null,"country":"US","region":null,"timezone":null}}],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":null,"user":null,"metadata":{}},"sequence_number":0}
+
+            event: response.in_progress
+            data: {"type":"response.in_progress","response":{"id":"resp_017fc97e69237996006a18c94c6d308195bcd5cb6781e4c661","object":"response","created_at":1780009292,"status":"in_progress","background":false,"completed_at":null,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-5.5-2026-04-23","moderation":null,"output":[],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":null,"prompt_cache_key":null,"prompt_cache_retention":"24h","reasoning":{"context":"current_turn","effort":"medium","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":true,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"auto","tools":[{"type":"web_search","return_token_budget":"default","search_context_size":"medium","user_location":{"type":"approximate","city":null,"country":"US","region":null,"timezone":null}}],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":null,"user":null,"metadata":{}},"sequence_number":1}
+
+            event: response.output_item.added
+            data: {"type":"response.output_item.added","item":{"id":"ws_017fc97e69237996006a18c94d39c481958371b18b906359f7","type":"web_search_call","status":"in_progress"},"output_index":0,"sequence_number":2}
+
+            event: response.web_search_call.in_progress
+            data: {"type":"response.web_search_call.in_progress","item_id":"ws_017fc97e69237996006a18c94d39c481958371b18b906359f7","output_index":0,"sequence_number":3}
+
+            event: response.web_search_call.searching
+            data: {"type":"response.web_search_call.searching","item_id":"ws_017fc97e69237996006a18c94d39c481958371b18b906359f7","output_index":0,"sequence_number":4}
+
+            event: response.web_search_call.completed
+            data: {"type":"response.web_search_call.completed","item_id":"ws_017fc97e69237996006a18c94d39c481958371b18b906359f7","output_index":0,"sequence_number":5}
+
+            event: response.output_item.done
+            data: {"type":"response.output_item.done","item":{"id":"ws_017fc97e69237996006a18c94d39c481958371b18b906359f7","type":"web_search_call","status":"completed","action":{"type":"search","queries":["current Prime Minister of Canada official"],"query":"current Prime Minister of Canada official","sources":[{"type":"url","url":"https://en.wikipedia.org/wiki/Prime_Minister_of_Canada"},{"type":"url","url":"https://en.wikipedia.org/wiki/List_of_prime_ministers_of_Canada"},{"type":"url","url":"https://www.pm.gc.ca/"},{"type":"url","url":"https://factsaboutcanada.ca/Prime_Ministers_of_Canada"},{"type":"url","url":"https://en.wikipedia.org/wiki/List_of_current_first_ministers_of_Canada"},{"type":"url","url":"https://en.wikipedia.org/wiki/Premiership_of_Mark_Carney"},{"type":"url","url":"https://www.pm.gc.ca/eng/prime-minister-justin-trudeau"},{"type":"url","url":"https://www.pm.gc.ca/en/cabinet"},{"type":"url","url":"https://www.pm.gc.ca/en?lang=en"},{"type":"url","url":"https://factsaboutcanada.ca/Prime_Minister_of_Canada"},{"type":"url","url":"https://en.wikipedia.org/wiki/Office_of_the_Prime_Minister_%28Canada%29"},{"type":"url","url":"https://www.pm.gc.ca/en/node/51122"},{"type":"url","url":"https://en.wikipedia.org/wiki/Government_of_Canada"},{"type":"url","url":"https://www.pm.gc.ca/?page=1"},{"type":"url","url":"https://www.ipolitics.ca/2025/03/14/carney-sworn-in-as-prime-minister-alongside-revamped-cabinet/"},{"type":"url","url":"https://www.cknewstoday.ca/chatham/news/2025/03/14/mark-carney-sworn-in-as-prime-minister-of-canada"},{"type":"url","url":"https://connectfm.ca/en/news/post/mark-carney-sworn-in-as-canadas-prime-minister"},{"type":"url","url":"https://nowtoronto.com/news/its-official-mark-carney-sworn-in-as-24th-prime-minister-of-canada/"},{"type":"url","url":"https://www.reddit.com/r/Copilot/comments/1sy5api/28_april_2026_copilot_claims_that_justin_trudeau/"},{"type":"url","url":"https://broadband-188-255-118-169.ip.moscow.rt.ru/images/FTP/joomlaFTP/medias/pictures/Canada/PDF/List%20of%20prime%20ministers%20of%20Canada%20-%20Wikipedia.pdf"},{"type":"url","url":"https://publicorderemergencycommission.ca/files/exhibits/WTS.00000084.pdf?t=1669654715"},{"type":"url","url":"https://vancouver.ca/files/cov/2025-03-14-swearing-in-of-new-prime-minister-and-cabinet-march-2025.pdf"},{"type":"url","url":"https://lah.elearningontario.ca/CMS/public/exported_courses/ENG2D/exported/ENG2DU01/ENG2DU01/ENG2DU01A06/_teacher/pm.gc.ca-.pdf"},{"type":"url","url":"https://hlpf.un.org/sites/default/files/2023-09/Justin%20Trudeau%20Bio.pdf"},{"type":"url","url":"https://researchco.ca/wp-content/uploads/2024/09/Release_PMs_CAN_04Sep2024.pdf"},{"type":"url","url":"https://www.reddit.com/r/canada/comments/1onhted"},{"type":"url","url":"https://www.reddit.com/r/ontario/comments/1onhhuz/us_government_official_refers_to_doug_ford_as/"},{"type":"url","url":"https://www.reddit.com/r/anime_titties/comments/1hv2t6e"},{"type":"url","url":"https://www.reddit.com/r/notthebeaverton/comments/1onipaq/us_government_official_refers_to_doug_ford_as/"},{"type":"url","url":"https://www.reddit.com/r/CanadaPolitics/comments/1jax1yx"},{"type":"url","url":"https://www.reddit.com/r/canada/comments/1sju9iw/carney_to_meet_finnish_president_alexander_stubb/"},{"type":"url","url":"https://www.reddit.com/r/ndp/comments/1s5er4d/wab_kinew_will_be_prime_minister_of_canada/"}]}},"output_index":0,"sequence_number":6}
+
+            event: response.output_item.added
+            data: {"type":"response.output_item.added","item":{"id":"msg_017fc97e69237996006a18c958476c8195922ea8863e219993","type":"message","status":"in_progress","content":[],"phase":"final_answer","role":"assistant"},"output_index":1,"sequence_number":7}
+
+            event: response.content_part.added
+            data: {"type":"response.content_part.added","content_index":0,"item_id":"msg_017fc97e69237996006a18c958476c8195922ea8863e219993","output_index":1,"part":{"type":"output_text","annotations":[],"logprobs":[],"text":""},"sequence_number":8}
+
+            event: response.output_text.delta
+            data: {"type":"response.output_text.delta","content_index":0,"delta":"Mark Carney","item_id":"msg_017fc97e69237996006a18c958476c8195922ea8863e219993","logprobs":[],"obfuscation":"elUXi","output_index":1,"sequence_number":9}
+
+            event: response.output_text.done
+            data: {"type":"response.output_text.done","content_index":0,"item_id":"msg_017fc97e69237996006a18c958476c8195922ea8863e219993","logprobs":[],"output_index":1,"sequence_number":10,"text":"Mark Carney"}
+
+            event: response.content_part.done
+            data: {"type":"response.content_part.done","content_index":0,"item_id":"msg_017fc97e69237996006a18c958476c8195922ea8863e219993","output_index":1,"part":{"type":"output_text","annotations":[],"logprobs":[],"text":"Mark Carney"},"sequence_number":11}
+
+            event: response.output_item.done
+            data: {"type":"response.output_item.done","item":{"id":"msg_017fc97e69237996006a18c958476c8195922ea8863e219993","type":"message","status":"completed","content":[{"type":"output_text","annotations":[],"logprobs":[],"text":"Mark Carney"}],"phase":"final_answer","role":"assistant"},"output_index":1,"sequence_number":12}
+
+            event: response.completed
+            data: {"type":"response.completed","response":{"id":"resp_017fc97e69237996006a18c94c6d308195bcd5cb6781e4c661","object":"response","created_at":1780009292,"status":"completed","background":false,"completed_at":1780009304,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-5.5-2026-04-23","moderation":null,"output":[{"id":"ws_017fc97e69237996006a18c94d39c481958371b18b906359f7","type":"web_search_call","status":"completed","action":{"type":"search","queries":["current Prime Minister of Canada official"],"query":"current Prime Minister of Canada official","sources":[{"type":"url","url":"https://en.wikipedia.org/wiki/Prime_Minister_of_Canada"},{"type":"url","url":"https://en.wikipedia.org/wiki/List_of_prime_ministers_of_Canada"},{"type":"url","url":"https://www.pm.gc.ca/"},{"type":"url","url":"https://factsaboutcanada.ca/Prime_Ministers_of_Canada"},{"type":"url","url":"https://en.wikipedia.org/wiki/List_of_current_first_ministers_of_Canada"},{"type":"url","url":"https://en.wikipedia.org/wiki/Premiership_of_Mark_Carney"},{"type":"url","url":"https://www.pm.gc.ca/eng/prime-minister-justin-trudeau"},{"type":"url","url":"https://www.pm.gc.ca/en/cabinet"},{"type":"url","url":"https://www.pm.gc.ca/en?lang=en"},{"type":"url","url":"https://factsaboutcanada.ca/Prime_Minister_of_Canada"},{"type":"url","url":"https://en.wikipedia.org/wiki/Office_of_the_Prime_Minister_%28Canada%29"},{"type":"url","url":"https://www.pm.gc.ca/en/node/51122"},{"type":"url","url":"https://en.wikipedia.org/wiki/Government_of_Canada"},{"type":"url","url":"https://www.pm.gc.ca/?page=1"},{"type":"url","url":"https://www.ipolitics.ca/2025/03/14/carney-sworn-in-as-prime-minister-alongside-revamped-cabinet/"},{"type":"url","url":"https://www.cknewstoday.ca/chatham/news/2025/03/14/mark-carney-sworn-in-as-prime-minister-of-canada"},{"type":"url","url":"https://connectfm.ca/en/news/post/mark-carney-sworn-in-as-canadas-prime-minister"},{"type":"url","url":"https://nowtoronto.com/news/its-official-mark-carney-sworn-in-as-24th-prime-minister-of-canada/"},{"type":"url","url":"https://www.reddit.com/r/Copilot/comments/1sy5api/28_april_2026_copilot_claims_that_justin_trudeau/"},{"type":"url","url":"https://broadband-188-255-118-169.ip.moscow.rt.ru/images/FTP/joomlaFTP/medias/pictures/Canada/PDF/List%20of%20prime%20ministers%20of%20Canada%20-%20Wikipedia.pdf"},{"type":"url","url":"https://publicorderemergencycommission.ca/files/exhibits/WTS.00000084.pdf?t=1669654715"},{"type":"url","url":"https://vancouver.ca/files/cov/2025-03-14-swearing-in-of-new-prime-minister-and-cabinet-march-2025.pdf"},{"type":"url","url":"https://lah.elearningontario.ca/CMS/public/exported_courses/ENG2D/exported/ENG2DU01/ENG2DU01/ENG2DU01A06/_teacher/pm.gc.ca-.pdf"},{"type":"url","url":"https://hlpf.un.org/sites/default/files/2023-09/Justin%20Trudeau%20Bio.pdf"},{"type":"url","url":"https://researchco.ca/wp-content/uploads/2024/09/Release_PMs_CAN_04Sep2024.pdf"},{"type":"url","url":"https://www.reddit.com/r/canada/comments/1onhted"},{"type":"url","url":"https://www.reddit.com/r/ontario/comments/1onhhuz/us_government_official_refers_to_doug_ford_as/"},{"type":"url","url":"https://www.reddit.com/r/anime_titties/comments/1hv2t6e"},{"type":"url","url":"https://www.reddit.com/r/notthebeaverton/comments/1onipaq/us_government_official_refers_to_doug_ford_as/"},{"type":"url","url":"https://www.reddit.com/r/CanadaPolitics/comments/1jax1yx"},{"type":"url","url":"https://www.reddit.com/r/canada/comments/1sju9iw/carney_to_meet_finnish_president_alexander_stubb/"},{"type":"url","url":"https://www.reddit.com/r/ndp/comments/1s5er4d/wab_kinew_will_be_prime_minister_of_canada/"}]}},{"id":"msg_017fc97e69237996006a18c958476c8195922ea8863e219993","type":"message","status":"completed","content":[{"type":"output_text","annotations":[],"logprobs":[],"text":"Mark Carney"}],"phase":"final_answer","role":"assistant"}],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":null,"prompt_cache_key":null,"prompt_cache_retention":"24h","reasoning":{"context":"current_turn","effort":"medium","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":true,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"auto","tools":[{"type":"web_search","return_token_budget":"default","search_context_size":"medium","user_location":{"type":"approximate","city":null,"country":"US","region":null,"timezone":null}}],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":{"input_tokens":8692,"input_tokens_details":{"cached_tokens":0},"output_tokens":36,"output_tokens_details":{"reasoning_tokens":29},"total_tokens":8728},"user":null,"metadata":{}},"sequence_number":13}
+
+        headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
+            Alt-Svc:
+                - h3=":443"; ma=86400
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - a030e1bd4cde39c6-YYZ
+            Content-Type:
+                - text/event-stream; charset=utf-8
+            Openai-Processing-Ms:
+                - "280"
+            Openai-Version:
+                - "2020-10-01"
+            Server:
+                - cloudflare
+            Strict-Transport-Security:
+                - max-age=31536000; includeSubDomains; preload
+            X-Content-Type-Options:
+                - nosniff
+            X-Ratelimit-Limit-Requests:
+                - "500"
+            X-Ratelimit-Limit-Tokens:
+                - "500000"
+            X-Ratelimit-Remaining-Requests:
+                - "499"
+            X-Ratelimit-Remaining-Tokens:
+                - "495173"
+            X-Ratelimit-Reset-Requests:
+                - 120ms
+            X-Ratelimit-Reset-Tokens:
+                - 579ms
+        status: 200 OK
+        code: 200
+        duration: 354ms

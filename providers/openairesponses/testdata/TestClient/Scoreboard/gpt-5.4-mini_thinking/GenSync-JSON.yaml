@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 361
+        content_length: 363
         host: api.openai.com
         body: |
-            {"model":"gpt-5.4-mini","reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":false,"text":{"format":{"type":"json_object"}},"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}]}]}
+            {"model":"gpt-5.4-mini","reasoning":{"effort":"medium","summary":"auto"},"service_tier":"flex","store":true,"text":{"format":{"type":"json_object"}},"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Is a banana a fruit? Do not include an explanation. Reply ONLY as JSON according to the provided schema: {\"is_fruit\": bool}."}]}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,15 +23,15 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_01559561ba42658a0169e2332a60e48195b4ff437a5b454462",
+              "id": "resp_062150c8bd667b05006a18c8d89a2c819788216b16722757d6",
               "object": "response",
-              "created_at": 1776431914,
+              "created_at": 1780009176,
               "status": "completed",
               "background": false,
               "billing": {
                 "payer": "openai"
               },
-              "completed_at": 1776431915,
+              "completed_at": 1780009177,
               "error": null,
               "frequency_penalty": 0.0,
               "incomplete_details": null,
@@ -39,14 +39,15 @@ interactions:
               "max_output_tokens": null,
               "max_tool_calls": null,
               "model": "gpt-5.4-mini-2026-03-17",
+              "moderation": null,
               "output": [
                 {
-                  "id": "rs_01559561ba42658a0169e2332aafa48195ac12e0878e9bf5e7",
+                  "id": "rs_062150c8bd667b05006a18c8d8f2688197b0672bd05a2f5b89",
                   "type": "reasoning",
                   "summary": []
                 },
                 {
-                  "id": "msg_01559561ba42658a0169e2332af3388195ace4231629a8f915",
+                  "id": "msg_062150c8bd667b05006a18c8d9ad1081978d4791f81a2f4177",
                   "type": "message",
                   "status": "completed",
                   "content": [
@@ -54,7 +55,7 @@ interactions:
                       "type": "output_text",
                       "annotations": [],
                       "logprobs": [],
-                      "text": "{\"is_fruit\":true}"
+                      "text": "{\"is_fruit\": true}"
                     }
                   ],
                   "phase": "final_answer",
@@ -65,14 +66,15 @@ interactions:
               "presence_penalty": 0.0,
               "previous_response_id": null,
               "prompt_cache_key": null,
-              "prompt_cache_retention": null,
+              "prompt_cache_retention": "in_memory",
               "reasoning": {
-                "effort": "low",
+                "context": "current_turn",
+                "effort": "medium",
                 "summary": "detailed"
               },
               "safety_identifier": null,
               "service_tier": "flex",
-              "store": false,
+              "store": true,
               "temperature": 1.0,
               "text": {
                 "format": {
@@ -90,26 +92,30 @@ interactions:
                 "input_tokens_details": {
                   "cached_tokens": 0
                 },
-                "output_tokens": 25,
+                "output_tokens": 52,
                 "output_tokens_details": {
-                  "reasoning_tokens": 9
+                  "reasoning_tokens": 36
                 },
-                "total_tokens": 60
+                "total_tokens": 87
               },
               "user": null,
               "metadata": {}
             }
         headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9edbb7686e7ba2c6-YUL
+                - a030dee968e439c6-YYZ
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "868"
+                - "1489"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -132,4 +138,4 @@ interactions:
                 - 0s
         status: 200 OK
         code: 200
-        duration: 962ms
+        duration: 1.566s

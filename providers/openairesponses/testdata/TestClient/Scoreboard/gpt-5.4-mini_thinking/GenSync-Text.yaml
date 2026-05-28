@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 223
+        content_length: 225
         host: api.openai.com
         body: |
-            {"model":"gpt-5.4-mini","reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":false,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Say hello. Use only one word."}]}]}
+            {"model":"gpt-5.4-mini","reasoning":{"effort":"medium","summary":"auto"},"service_tier":"flex","store":true,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Say hello. Use only one word."}]}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,15 +23,15 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_066e980c283c180d0169e23327566c8193879fa6c9a604a011",
+              "id": "resp_0a48358655ac0ac3006a18c8d7059081a3b78a221057230f10",
               "object": "response",
-              "created_at": 1776431911,
+              "created_at": 1780009175,
               "status": "completed",
               "background": false,
               "billing": {
                 "payer": "openai"
               },
-              "completed_at": 1776431911,
+              "completed_at": 1780009175,
               "error": null,
               "frequency_penalty": 0.0,
               "incomplete_details": null,
@@ -39,9 +39,15 @@ interactions:
               "max_output_tokens": null,
               "max_tool_calls": null,
               "model": "gpt-5.4-mini-2026-03-17",
+              "moderation": null,
               "output": [
                 {
-                  "id": "msg_066e980c283c180d0169e233279c6c819388bbc222ec77c28f",
+                  "id": "rs_0a48358655ac0ac3006a18c8d748c081a397399d0a7c8ad9c5",
+                  "type": "reasoning",
+                  "summary": []
+                },
+                {
+                  "id": "msg_0a48358655ac0ac3006a18c8d7a00481a3a7b16267d2f3f0e6",
                   "type": "message",
                   "status": "completed",
                   "content": [
@@ -60,14 +66,15 @@ interactions:
               "presence_penalty": 0.0,
               "previous_response_id": null,
               "prompt_cache_key": null,
-              "prompt_cache_retention": null,
+              "prompt_cache_retention": "in_memory",
               "reasoning": {
-                "effort": "low",
+                "context": "current_turn",
+                "effort": "medium",
                 "summary": "detailed"
               },
               "safety_identifier": null,
               "service_tier": "flex",
-              "store": false,
+              "store": true,
               "temperature": 1.0,
               "text": {
                 "format": {
@@ -85,26 +92,30 @@ interactions:
                 "input_tokens_details": {
                   "cached_tokens": 0
                 },
-                "output_tokens": 5,
+                "output_tokens": 21,
                 "output_tokens_details": {
-                  "reasoning_tokens": 0
+                  "reasoning_tokens": 14
                 },
-                "total_tokens": 19
+                "total_tokens": 35
               },
               "user": null,
               "metadata": {}
             }
         headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9edbb7557dfaa2c6-YUL
+                - a030dedf799639c6-YYZ
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "505"
+                - "832"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -127,4 +138,4 @@ interactions:
                 - 0s
         status: 200 OK
         code: 200
-        duration: 601ms
+        duration: 907ms

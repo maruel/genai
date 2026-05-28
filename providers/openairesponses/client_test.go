@@ -103,11 +103,10 @@ func TestClient(t *testing.T) {
 			}
 			// This will lead to spurious HTTP 500 but it is 25% of the cost.
 			tier := openairesponses.ServiceTierFlex
-			res := openairesponses.ReasoningEffortLow
+			res := openairesponses.ReasoningEffortMedium
 			if strings.Contains(model.Model, "-chat-latest") {
-				// Flex and Low are not supported.
+				// Flex and EffortLow are not supported.
 				tier = openairesponses.ServiceTierDefault
-				res = openairesponses.ReasoningEffortMedium
 			}
 			if model.Reason {
 				var p genai.Provider = &internaltest.InjectOptions{

@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 891
+        content_length: 893
         host: api.openai.com
         body: |
-            {"model":"gpt-5.4-nano","parallel_tool_calls":true,"reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":false,"tool_choice":"none","tools":[{"type":"function","name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}],"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"type":"function_call","arguments":"{\"number\":132413}","name":"square_root","call_id":"call_C3Ngl6tOt0nJc6F8bJXAdiSP"},{"type":"function_call_output","call_id":"call_C3Ngl6tOt0nJc6F8bJXAdiSP","output":"363.89"}],"stream":true}
+            {"model":"gpt-5.4-nano","parallel_tool_calls":true,"reasoning":{"effort":"medium","summary":"auto"},"service_tier":"flex","store":true,"tool_choice":"none","tools":[{"type":"function","name":"square_root","description":"Calculates and return the square root of a number","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]}}],"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Use the square_root tool to calculate the square root of 132413 and reply with only the result. Do not give an explanation."}]},{"type":"function_call","arguments":"{\"number\":132413}","name":"square_root","call_id":"call_y8OOSyAHGBx7kjFnPhauzCEo"},{"type":"function_call_output","call_id":"call_y8OOSyAHGBx7kjFnPhauzCEo","output":"363.89"}],"stream":true}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -22,55 +22,59 @@ interactions:
         content_length: -1
         body: |+
             event: response.created
-            data: {"type":"response.created","response":{"id":"resp_0fd08f080ff1fdd00169e23325755081978c27e150b459867e","object":"response","created_at":1776431909,"status":"in_progress","background":false,"completed_at":null,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-5.4-nano-2026-03-17","output":[],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":null,"prompt_cache_key":null,"prompt_cache_retention":null,"reasoning":{"effort":"low","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":false,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"none","tools":[{"type":"function","description":"Calculates and return the square root of a number","name":"square_root","parameters":{"properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]},"strict":true}],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":null,"user":null,"metadata":{}},"sequence_number":0}
+            data: {"type":"response.created","response":{"id":"resp_065fcfd292af350b006a18c8b0fc3081a2b00c2a1d5c4229cf","object":"response","created_at":1780009137,"status":"in_progress","background":false,"completed_at":null,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-5.4-nano-2026-03-17","moderation":null,"output":[],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":null,"prompt_cache_key":null,"prompt_cache_retention":"in_memory","reasoning":{"context":"current_turn","effort":"medium","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":true,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"none","tools":[{"type":"function","description":"Calculates and return the square root of a number","name":"square_root","parameters":{"properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]},"strict":true}],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":null,"user":null,"metadata":{}},"sequence_number":0}
 
             event: response.in_progress
-            data: {"type":"response.in_progress","response":{"id":"resp_0fd08f080ff1fdd00169e23325755081978c27e150b459867e","object":"response","created_at":1776431909,"status":"in_progress","background":false,"completed_at":null,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-5.4-nano-2026-03-17","output":[],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":null,"prompt_cache_key":null,"prompt_cache_retention":null,"reasoning":{"effort":"low","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":false,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"none","tools":[{"type":"function","description":"Calculates and return the square root of a number","name":"square_root","parameters":{"properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]},"strict":true}],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":null,"user":null,"metadata":{}},"sequence_number":1}
+            data: {"type":"response.in_progress","response":{"id":"resp_065fcfd292af350b006a18c8b0fc3081a2b00c2a1d5c4229cf","object":"response","created_at":1780009137,"status":"in_progress","background":false,"completed_at":null,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-5.4-nano-2026-03-17","moderation":null,"output":[],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":null,"prompt_cache_key":null,"prompt_cache_retention":"in_memory","reasoning":{"context":"current_turn","effort":"medium","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":true,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"none","tools":[{"type":"function","description":"Calculates and return the square root of a number","name":"square_root","parameters":{"properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]},"strict":true}],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":null,"user":null,"metadata":{}},"sequence_number":1}
 
             event: response.output_item.added
-            data: {"type":"response.output_item.added","item":{"id":"rs_0fd08f080ff1fdd00169e23325ae48819792170acf0a227429","type":"reasoning","summary":[]},"output_index":0,"sequence_number":2}
+            data: {"type":"response.output_item.added","item":{"id":"rs_065fcfd292af350b006a18c8b1308881a291e3bd341467cf37","type":"reasoning","summary":[]},"output_index":0,"sequence_number":2}
 
             event: response.output_item.done
-            data: {"type":"response.output_item.done","item":{"id":"rs_0fd08f080ff1fdd00169e23325ae48819792170acf0a227429","type":"reasoning","summary":[]},"output_index":0,"sequence_number":3}
+            data: {"type":"response.output_item.done","item":{"id":"rs_065fcfd292af350b006a18c8b1308881a291e3bd341467cf37","type":"reasoning","summary":[]},"output_index":0,"sequence_number":3}
 
             event: response.output_item.added
-            data: {"type":"response.output_item.added","item":{"id":"msg_0fd08f080ff1fdd00169e23327b80881978852cd9363414d0d","type":"message","status":"in_progress","content":[],"phase":"final_answer","role":"assistant"},"output_index":1,"sequence_number":4}
+            data: {"type":"response.output_item.added","item":{"id":"msg_065fcfd292af350b006a18c8b2158881a2bc5fa9b16129ab8f","type":"message","status":"in_progress","content":[],"phase":"final_answer","role":"assistant"},"output_index":1,"sequence_number":4}
 
             event: response.content_part.added
-            data: {"type":"response.content_part.added","content_index":0,"item_id":"msg_0fd08f080ff1fdd00169e23327b80881978852cd9363414d0d","output_index":1,"part":{"type":"output_text","annotations":[],"logprobs":[],"text":""},"sequence_number":5}
+            data: {"type":"response.content_part.added","content_index":0,"item_id":"msg_065fcfd292af350b006a18c8b2158881a2bc5fa9b16129ab8f","output_index":1,"part":{"type":"output_text","annotations":[],"logprobs":[],"text":""},"sequence_number":5}
 
             event: response.output_text.delta
-            data: {"type":"response.output_text.delta","content_index":0,"delta":"363","item_id":"msg_0fd08f080ff1fdd00169e23327b80881978852cd9363414d0d","logprobs":[],"obfuscation":"BWjOVRhMHL0Pr","output_index":1,"sequence_number":6}
+            data: {"type":"response.output_text.delta","content_index":0,"delta":"363","item_id":"msg_065fcfd292af350b006a18c8b2158881a2bc5fa9b16129ab8f","logprobs":[],"obfuscation":"iaSS8TzQNqTZV","output_index":1,"sequence_number":6}
 
             event: response.output_text.delta
-            data: {"type":"response.output_text.delta","content_index":0,"delta":".","item_id":"msg_0fd08f080ff1fdd00169e23327b80881978852cd9363414d0d","logprobs":[],"obfuscation":"wQf7T85bjBLzJmv","output_index":1,"sequence_number":7}
+            data: {"type":"response.output_text.delta","content_index":0,"delta":".","item_id":"msg_065fcfd292af350b006a18c8b2158881a2bc5fa9b16129ab8f","logprobs":[],"obfuscation":"kXcQ89C7etJ3QJr","output_index":1,"sequence_number":7}
 
             event: response.output_text.delta
-            data: {"type":"response.output_text.delta","content_index":0,"delta":"89","item_id":"msg_0fd08f080ff1fdd00169e23327b80881978852cd9363414d0d","logprobs":[],"obfuscation":"R5cOrg1zfI1bMk","output_index":1,"sequence_number":8}
+            data: {"type":"response.output_text.delta","content_index":0,"delta":"89","item_id":"msg_065fcfd292af350b006a18c8b2158881a2bc5fa9b16129ab8f","logprobs":[],"obfuscation":"Bym0PxVKANcmEC","output_index":1,"sequence_number":8}
 
             event: response.output_text.done
-            data: {"type":"response.output_text.done","content_index":0,"item_id":"msg_0fd08f080ff1fdd00169e23327b80881978852cd9363414d0d","logprobs":[],"output_index":1,"sequence_number":9,"text":"363.89"}
+            data: {"type":"response.output_text.done","content_index":0,"item_id":"msg_065fcfd292af350b006a18c8b2158881a2bc5fa9b16129ab8f","logprobs":[],"output_index":1,"sequence_number":9,"text":"363.89"}
 
             event: response.content_part.done
-            data: {"type":"response.content_part.done","content_index":0,"item_id":"msg_0fd08f080ff1fdd00169e23327b80881978852cd9363414d0d","output_index":1,"part":{"type":"output_text","annotations":[],"logprobs":[],"text":"363.89"},"sequence_number":10}
+            data: {"type":"response.content_part.done","content_index":0,"item_id":"msg_065fcfd292af350b006a18c8b2158881a2bc5fa9b16129ab8f","output_index":1,"part":{"type":"output_text","annotations":[],"logprobs":[],"text":"363.89"},"sequence_number":10}
 
             event: response.output_item.done
-            data: {"type":"response.output_item.done","item":{"id":"msg_0fd08f080ff1fdd00169e23327b80881978852cd9363414d0d","type":"message","status":"completed","content":[{"type":"output_text","annotations":[],"logprobs":[],"text":"363.89"}],"phase":"final_answer","role":"assistant"},"output_index":1,"sequence_number":11}
+            data: {"type":"response.output_item.done","item":{"id":"msg_065fcfd292af350b006a18c8b2158881a2bc5fa9b16129ab8f","type":"message","status":"completed","content":[{"type":"output_text","annotations":[],"logprobs":[],"text":"363.89"}],"phase":"final_answer","role":"assistant"},"output_index":1,"sequence_number":11}
 
             event: response.completed
-            data: {"type":"response.completed","response":{"id":"resp_0fd08f080ff1fdd00169e23325755081978c27e150b459867e","object":"response","created_at":1776431909,"status":"completed","background":false,"completed_at":1776431911,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-5.4-nano-2026-03-17","output":[{"id":"rs_0fd08f080ff1fdd00169e23325ae48819792170acf0a227429","type":"reasoning","summary":[]},{"id":"msg_0fd08f080ff1fdd00169e23327b80881978852cd9363414d0d","type":"message","status":"completed","content":[{"type":"output_text","annotations":[],"logprobs":[],"text":"363.89"}],"phase":"final_answer","role":"assistant"}],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":null,"prompt_cache_key":null,"prompt_cache_retention":null,"reasoning":{"effort":"low","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":false,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"none","tools":[{"type":"function","description":"Calculates and return the square root of a number","name":"square_root","parameters":{"properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]},"strict":true}],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":{"input_tokens":106,"input_tokens_details":{"cached_tokens":0},"output_tokens":47,"output_tokens_details":{"reasoning_tokens":38},"total_tokens":153},"user":null,"metadata":{}},"sequence_number":12}
+            data: {"type":"response.completed","response":{"id":"resp_065fcfd292af350b006a18c8b0fc3081a2b00c2a1d5c4229cf","object":"response","created_at":1780009137,"status":"completed","background":false,"completed_at":1780009138,"error":null,"frequency_penalty":0.0,"incomplete_details":null,"instructions":null,"max_output_tokens":null,"max_tool_calls":null,"model":"gpt-5.4-nano-2026-03-17","moderation":null,"output":[{"id":"rs_065fcfd292af350b006a18c8b1308881a291e3bd341467cf37","type":"reasoning","summary":[]},{"id":"msg_065fcfd292af350b006a18c8b2158881a2bc5fa9b16129ab8f","type":"message","status":"completed","content":[{"type":"output_text","annotations":[],"logprobs":[],"text":"363.89"}],"phase":"final_answer","role":"assistant"}],"parallel_tool_calls":true,"presence_penalty":0.0,"previous_response_id":null,"prompt_cache_key":null,"prompt_cache_retention":"in_memory","reasoning":{"context":"current_turn","effort":"medium","summary":"detailed"},"safety_identifier":null,"service_tier":"flex","store":true,"temperature":1.0,"text":{"format":{"type":"text"},"verbosity":"medium"},"tool_choice":"none","tools":[{"type":"function","description":"Calculates and return the square root of a number","name":"square_root","parameters":{"properties":{"number":{"type":"number"}},"additionalProperties":false,"type":"object","required":["number"]},"strict":true}],"top_logprobs":0,"top_p":0.98,"truncation":"disabled","usage":{"input_tokens":106,"input_tokens_details":{"cached_tokens":0},"output_tokens":135,"output_tokens_details":{"reasoning_tokens":126},"total_tokens":241},"user":null,"metadata":{}},"sequence_number":12}
 
         headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9edbb749bc3ca302-YUL
+                - a030ddf1df1739c6-YYZ
             Content-Type:
                 - text/event-stream; charset=utf-8
             Openai-Processing-Ms:
-                - "137"
+                - "124"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -93,4 +97,4 @@ interactions:
                 - 188ms
         status: 200 OK
         code: 200
-        duration: 233ms
+        duration: 188ms

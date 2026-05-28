@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 240
+        content_length: 242
         host: api.openai.com
         body: |
-            {"model":"gpt-5.4-mini","reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":false,"top_logprobs":2,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Say hello. Use only one word."}]}]}
+            {"model":"gpt-5.4-mini","reasoning":{"effort":"medium","summary":"auto"},"service_tier":"flex","store":true,"top_logprobs":2,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Say hello. Use only one word."}]}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -30,18 +30,22 @@ interactions:
               }
             }
         headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9edbb7593c2ba2c6-YUL
+                - a030dee52e2739c6-YYZ
             Content-Length:
                 - "190"
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "34"
+                - "30"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -52,4 +56,4 @@ interactions:
                 - nosniff
         status: 400 Bad Request
         code: 400
-        duration: 120ms
+        duration: 95ms

@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 677
+        content_length: 679
         host: api.openai.com
         body: |
-            {"model":"gpt-5.4-nano","parallel_tool_calls":true,"reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":false,"tool_choice":"required","tools":[{"type":"function","name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}],"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}]}
+            {"model":"gpt-5.4-nano","parallel_tool_calls":true,"reasoning":{"effort":"medium","summary":"auto"},"service_tier":"flex","store":true,"tool_choice":"required","tools":[{"type":"function","name":"best_country","description":"A tool to specify the best country","parameters":{"$schema":"https://json-schema.org/draft/2020-12/schema","properties":{"country":{"type":"string","enum":["USA","Canada"]}},"additionalProperties":false,"type":"object","required":["country"]}}],"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"I wonder if the USA is a better country than Canada? Call the tool best_country to tell me which country is the best one."}]}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,15 +23,15 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_068b24c5c81285f90169e2332a2b9c8195b46f0968ac5e694b",
+              "id": "resp_03fcbdd2c457b819006a18c8b3ae5081a3a471daf5826afcc5",
               "object": "response",
-              "created_at": 1776431914,
+              "created_at": 1780009139,
               "status": "completed",
               "background": false,
               "billing": {
                 "payer": "openai"
               },
-              "completed_at": 1776431916,
+              "completed_at": 1780009140,
               "error": null,
               "frequency_penalty": 0.0,
               "incomplete_details": null,
@@ -39,13 +39,14 @@ interactions:
               "max_output_tokens": null,
               "max_tool_calls": null,
               "model": "gpt-5.4-nano-2026-03-17",
+              "moderation": null,
               "output": [
                 {
-                  "id": "fc_068b24c5c81285f90169e2332bdf1081958bab65246c7e9ef1",
+                  "id": "fc_03fcbdd2c457b819006a18c8b400b881a3929186782c3634cc",
                   "type": "function_call",
                   "status": "completed",
                   "arguments": "{\"country\":\"USA\"}",
-                  "call_id": "call_yJ84aKhlAMoeWVGukX18BIjv",
+                  "call_id": "call_NqSrDhsV8M8A4wLRBF6nwOYd",
                   "name": "best_country"
                 }
               ],
@@ -53,14 +54,15 @@ interactions:
               "presence_penalty": 0.0,
               "previous_response_id": null,
               "prompt_cache_key": null,
-              "prompt_cache_retention": null,
+              "prompt_cache_retention": "in_memory",
               "reasoning": {
-                "effort": "low",
+                "context": "current_turn",
+                "effort": "medium",
                 "summary": "detailed"
               },
               "safety_identifier": null,
               "service_tier": "flex",
-              "store": false,
+              "store": true,
               "temperature": 1.0,
               "text": {
                 "format": {
@@ -111,16 +113,20 @@ interactions:
               "metadata": {}
             }
         headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9edbb76748f0a302-YUL
+                - a030de02bc3039c6-YYZ
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "1943"
+                - "601"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -143,4 +149,4 @@ interactions:
                 - 0s
         status: 200 OK
         code: 200
-        duration: 2.019s
+        duration: 664ms

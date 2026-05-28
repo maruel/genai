@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 408
+        content_length: 410
         host: api.openai.com
         body: |
-            {"model":"gpt-5.4-mini","reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":false,"tools":[{"type":"web_search"}],"include":["web_search_call.action.sources"],"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation."}]}]}
+            {"model":"gpt-5.4-mini","reasoning":{"effort":"medium","summary":"auto"},"service_tier":"flex","store":true,"tools":[{"type":"web_search"}],"include":["web_search_call.action.sources"],"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"Search the web to tell who is currently the Prime Minister of Canada. Only search for one result. Give only the name with no explanation."}]}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,15 +23,15 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_0763a977c24f7b5e0169e2333143588194a8777d13816eef96",
+              "id": "resp_036a711c90153f29006a18c8e32b8c8194b1f81e904aa9de14",
               "object": "response",
-              "created_at": 1776431921,
+              "created_at": 1780009187,
               "status": "completed",
               "background": false,
               "billing": {
                 "payer": "openai"
               },
-              "completed_at": 1776431934,
+              "completed_at": 1780009199,
               "error": null,
               "frequency_penalty": 0.0,
               "incomplete_details": null,
@@ -39,51 +39,27 @@ interactions:
               "max_output_tokens": null,
               "max_tool_calls": null,
               "model": "gpt-5.4-mini-2026-03-17",
+              "moderation": null,
               "output": [
                 {
-                  "id": "rs_0763a977c24f7b5e0169e233319c108194b65a6e87c6c2353d",
+                  "id": "rs_036a711c90153f29006a18c8e398008194b98beea21f3ac521",
                   "type": "reasoning",
-                  "summary": [
-                    {
-                      "type": "summary_text",
-                      "text": "**Searching for current PM**\n\nI need to search for the current Prime Minister of Canada, and since this is a straightforward fact, I should look for official sources, like a government website. It makes sense to aim for something credible. Let\u2019s make sure I get the latest and most accurate information. I just need one result to confirm who holds that position right now. Fingers crossed I find it quickly!"
-                    }
-                  ]
+                  "summary": []
                 },
                 {
-                  "id": "ws_0763a977c24f7b5e0169e23334375481949b740bae5ef23a7c",
+                  "id": "ws_036a711c90153f29006a18c8e49e088194b90f5ae627a49ead",
                   "type": "web_search_call",
                   "status": "completed",
                   "action": {
                     "type": "search",
                     "queries": [
-                      "site:pm.gc.ca Prime Minister of Canada"
+                      "site:pm.gc.ca Prime Minister of Canada official"
                     ],
-                    "query": "site:pm.gc.ca Prime Minister of Canada",
+                    "query": "site:pm.gc.ca Prime Minister of Canada official",
                     "sources": [
                       {
                         "type": "url",
-                        "url": "https://www.pm.gc.ca/eng/prime-minister-justin-trudeau"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://www.pm.gc.ca/en/node/51122"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://www.pm.gc.ca/"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://www.pm.gc.ca/eng"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://www.pm.gc.ca/en/node/50968"
-                      },
-                      {
-                        "type": "url",
-                        "url": "https://www.pm.gc.ca/en/cabinet/right-honourable-mark-carney"
+                        "url": "https://www.pm.gc.ca/en/connect/contact"
                       },
                       {
                         "type": "url",
@@ -91,66 +67,94 @@ interactions:
                       },
                       {
                         "type": "url",
-                        "url": "https://www.pm.gc.ca/en/parliamentary-secretaries/larry-bagnell"
+                        "url": "https://www.pm.gc.ca/eng/prime-minister-justin-trudeau"
                       },
                       {
                         "type": "url",
-                        "url": "https://www.pm.gc.ca/en/canadian-ministry-pdf"
+                        "url": "https://www.pm.gc.ca/"
                       },
                       {
                         "type": "url",
-                        "url": "https://www.pm.gc.ca/en/news/news-releases/2024/05/21/prime-minister-concludes-successful-visit-united-states"
+                        "url": "https://www.pm.gc.ca/en/cabinet"
                       },
                       {
                         "type": "url",
-                        "url": "https://www.pm.gc.ca/en/node/51169"
+                        "url": "https://www.pm.gc.ca/en?lang=en"
                       },
                       {
                         "type": "url",
-                        "url": "https://www.pm.gc.ca/en/system/4xx"
+                        "url": "https://www.pm.gc.ca/eng"
                       },
                       {
                         "type": "url",
-                        "url": "https://www.pm.gc.ca/sites/pm/files/media/documents/Canadian_Ministry_List_October_26_2021_1.pdf"
+                        "url": "https://www.pm.gc.ca/en/node/51122"
                       },
                       {
                         "type": "url",
-                        "url": "https://www.pm.gc.ca/sites/pm/files/inline-files/Canadian_Ministry_List_January_12_2021.pdf"
+                        "url": "https://www.pm.gc.ca/en/node/51121"
                       },
                       {
                         "type": "url",
-                        "url": "https://www.pm.gc.ca/sites/pm/files/media/documents/Canadian_Ministry_List_October_11_2022.pdf"
+                        "url": "https://www.pm.gc.ca/en/news/readouts/2025/06/20/prime-minister-carney-concludes-first-ministers-meeting"
                       },
                       {
                         "type": "url",
-                        "url": "https://pm.gc.ca/sites/pm/files/media/documents/Canadian_Ministry_List_August_31_2022_V2.pdf"
+                        "url": "https://www.pm.gc.ca/en/news/readouts/2026/01/15/prime-minister-carney-meets-premier-peoples-republic-china-li-qiang"
                       },
                       {
                         "type": "url",
-                        "url": "https://www.pm.gc.ca/sites/pm/files/inline-files/Canadian_Ministry_List_August_18_2020.pdf"
+                        "url": "https://www.pm.gc.ca/en/node/51869"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/sites/pm/files/inline-files/Review%20of%20the%20Roles%20of%20the%20Minister%20of%20Justice%20and%20Attorney%20General%20of%20Canada_3.pdf"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/sites/pm/files/inline-files/Canadian_Ministry_List_March_18_2019.pdf"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/sites/pm/files/inline-files/oag_2015_english_0.pdf"
                       },
                       {
                         "type": "url",
                         "url": "https://www.pm.gc.ca/sites/pm/files/media/documents/Canadian_Ministry_List_October_11_2022_V2.pdf"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://www.pm.gc.ca/sites/pm/files/inline-files/Canadian_Ministry_List_January_12_2021_V2.pdf"
+                      },
+                      {
+                        "type": "url",
+                        "url": "https://pm.gc.ca/sites/pm/files/media/documents/Canadian_Ministry_List_August_31_2022_V2.pdf"
                       }
                     ]
                   }
                 },
                 {
-                  "id": "rs_0763a977c24f7b5e0169e2333da4f481949ea878bcea1db965",
+                  "id": "rs_036a711c90153f29006a18c8eb65788194a7b2ff9d0da9b68d",
                   "type": "reasoning",
                   "summary": []
                 },
                 {
-                  "id": "msg_0763a977c24f7b5e0169e2333dda24819486185c07598c0b7e",
+                  "id": "msg_036a711c90153f29006a18c8eb90ec819490d38b24372bf061",
                   "type": "message",
                   "status": "completed",
                   "content": [
                     {
                       "type": "output_text",
-                      "annotations": [],
+                      "annotations": [
+                        {
+                          "type": "url_citation",
+                          "end_index": 65,
+                          "start_index": 12,
+                          "title": "Prime Minister of Canada / Premier ministre du Canada",
+                          "url": "https://www.pm.gc.ca/?utm_source=openai"
+                        }
+                      ],
                       "logprobs": [],
-                      "text": "Mark Carney"
+                      "text": "Mark Carney ([pm.gc.ca](https://www.pm.gc.ca/?utm_source=openai))"
                     }
                   ],
                   "phase": "final_answer",
@@ -161,14 +165,15 @@ interactions:
               "presence_penalty": 0.0,
               "previous_response_id": null,
               "prompt_cache_key": null,
-              "prompt_cache_retention": null,
+              "prompt_cache_retention": "in_memory",
               "reasoning": {
-                "effort": "low",
+                "context": "current_turn",
+                "effort": "medium",
                 "summary": "detailed"
               },
               "safety_identifier": null,
               "service_tier": "flex",
-              "store": false,
+              "store": true,
               "temperature": 1.0,
               "text": {
                 "format": {
@@ -180,6 +185,7 @@ interactions:
               "tools": [
                 {
                   "type": "web_search",
+                  "return_token_budget": "default",
                   "search_context_size": "medium",
                   "user_location": {
                     "type": "approximate",
@@ -194,30 +200,34 @@ interactions:
               "top_p": 0.98,
               "truncation": "disabled",
               "usage": {
-                "input_tokens": 8243,
+                "input_tokens": 8677,
                 "input_tokens_details": {
-                  "cached_tokens": 4224
+                  "cached_tokens": 0
                 },
-                "output_tokens": 76,
+                "output_tokens": 209,
                 "output_tokens_details": {
-                  "reasoning_tokens": 67
+                  "reasoning_tokens": 186
                 },
-                "total_tokens": 8319
+                "total_tokens": 8886
               },
               "user": null,
               "metadata": {}
             }
         headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9edbb7938f1fa2c6-YUL
+                - a030df2b799f39c6-YYZ
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "12817"
+                - "12214"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -233,11 +243,11 @@ interactions:
             X-Ratelimit-Remaining-Requests:
                 - "499"
             X-Ratelimit-Remaining-Tokens:
-                - "196507"
+                - "195940"
             X-Ratelimit-Reset-Requests:
                 - 120ms
             X-Ratelimit-Reset-Tokens:
-                - 1.047s
+                - 1.218s
         status: 200 OK
         code: 200
-        duration: 12.907s
+        duration: 12.286s

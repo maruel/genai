@@ -6,10 +6,10 @@ interactions:
         proto: HTTP/1.1
         proto_major: 1
         proto_minor: 1
-        content_length: 354
+        content_length: 356
         host: api.openai.com
         body: |
-            {"model":"gpt-5.4-mini","reasoning":{"effort":"low","summary":"auto"},"service_tier":"flex","store":false,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"input_text","text":"What is the capital of Quackiland?"}]}]}
+            {"model":"gpt-5.4-mini","reasoning":{"effort":"medium","summary":"auto"},"service_tier":"flex","store":true,"input":[{"type":"message","role":"user","content":[{"type":"input_text","text":"# Quackiland\n\nThe capital of Quackiland is Quack. The Big Canard Statue is located in Quack."},{"type":"input_text","text":"What is the capital of Quackiland?"}]}]}
         headers:
             Content-Type:
                 - application/json; charset=utf-8
@@ -23,15 +23,15 @@ interactions:
         uncompressed: true
         body: |-
             {
-              "id": "resp_00563d409cba15ff0169e2333f6d9c81978c9df9089dff1042",
+              "id": "resp_01b87076d4131e41006a18c8f436688192ac5be3f3c1d3afd4",
               "object": "response",
-              "created_at": 1776431935,
+              "created_at": 1780009204,
               "status": "completed",
               "background": false,
               "billing": {
                 "payer": "openai"
               },
-              "completed_at": 1776431936,
+              "completed_at": 1780009205,
               "error": null,
               "frequency_penalty": 0.0,
               "incomplete_details": null,
@@ -39,14 +39,20 @@ interactions:
               "max_output_tokens": null,
               "max_tool_calls": null,
               "model": "gpt-5.4-mini-2026-03-17",
+              "moderation": null,
               "output": [
                 {
-                  "id": "rs_00563d409cba15ff0169e2333fb2548197a6e0d2c2cee5b19f",
+                  "id": "rs_01b87076d4131e41006a18c8f479688192a3ff240cf8275fcb",
                   "type": "reasoning",
-                  "summary": []
+                  "summary": [
+                    {
+                      "type": "summary_text",
+                      "text": "**Answering a trivia question**\n\nThe user asked, \"What is the capital of Quackiland?\" From the prompt, it clearly states that the capital is Quack. So, my answer will simply be: Quack. I think it\u2019s straightforward enough, but I want to ensure I'm being precise in delivering this information!"
+                    }
+                  ]
                 },
                 {
-                  "id": "msg_00563d409cba15ff0169e2333ff12c8197a12fe330ef109634",
+                  "id": "msg_01b87076d4131e41006a18c8f5edb481928884092ccd4cbe81",
                   "type": "message",
                   "status": "completed",
                   "content": [
@@ -65,14 +71,15 @@ interactions:
               "presence_penalty": 0.0,
               "previous_response_id": null,
               "prompt_cache_key": null,
-              "prompt_cache_retention": null,
+              "prompt_cache_retention": "in_memory",
               "reasoning": {
-                "effort": "low",
+                "context": "current_turn",
+                "effort": "medium",
                 "summary": "detailed"
               },
               "safety_identifier": null,
               "service_tier": "flex",
-              "store": false,
+              "store": true,
               "temperature": 1.0,
               "text": {
                 "format": {
@@ -90,26 +97,30 @@ interactions:
                 "input_tokens_details": {
                   "cached_tokens": 0
                 },
-                "output_tokens": 26,
+                "output_tokens": 64,
                 "output_tokens_details": {
-                  "reasoning_tokens": 8
+                  "reasoning_tokens": 46
                 },
-                "total_tokens": 66
+                "total_tokens": 104
               },
               "user": null,
               "metadata": {}
             }
         headers:
+            Access-Control-Expose-Headers:
+                - X-Request-ID
+                - CF-Ray
+                - CF-Ray
             Alt-Svc:
                 - h3=":443"; ma=86400
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 9edbb7ec0f87a2c6-YUL
+                - a030df95f80b39c6-YYZ
             Content-Type:
                 - application/json
             Openai-Processing-Ms:
-                - "779"
+                - "1918"
             Openai-Version:
                 - "2020-10-01"
             Server:
@@ -132,4 +143,4 @@ interactions:
                 - 0s
         status: 200 OK
         code: 200
-        duration: 877ms
+        duration: 1.987s

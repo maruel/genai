@@ -229,7 +229,7 @@ func DownloadRelease(ctx context.Context, cache string, version int) (string, er
 	if asset == nil {
 		return "", fmt.Errorf("no matching asset with suffix %q in release %s", suffix, build)
 	}
-	if err := ghrelease.DownloadAndExtract(ctx, asset.URL, cache, []string{"*"}); err != nil {
+	if err := ghrelease.DownloadAndExtract(ctx, asset.URL, cache, []string{"*"}, false); err != nil {
 		return "", fmt.Errorf("failed to download %s from github: %w", asset.Name, err)
 	}
 	return llamaserver, nil

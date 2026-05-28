@@ -133,15 +133,23 @@ func getRelease(ctx context.Context, u, owner, repo, label string) (*Release, er
 
 // ExtractArchive extracts files from archivePath into dstDir.
 //
-// Only files whose filepath.Base matches one of wantedFiles globs are
-// extracted. Directory structure inside the archive is flattened. Files
-// are written with mode 0o755.
+// Only files matching one of wantedFiles globs are extracted. When
+// preserveDir is false, the directory structure is flattened: only
+// filepath.Base of each entry is matched and used as the output name.
+// When preserveDir is true, the full archive path is matched against
+// patterns and the directory structure is preserved under dstDir.
+//
+// Patterns are filepath.Match globs. Additionally, a pattern ending
+// with "/..." matches any entry whose archive path starts with that
+// prefix (recursive directory match).
+//
+// Files are written with mode 0o755.
 //
 // Supported formats: .zip, .tar.gz, .tgz, .tar.zst.
-func ExtractArchive(archivePath, dstDir string, wantedFiles []string) error {
+func ExtractArchive(archivePath, dstDir string, wantedFiles []string, preserveDir bool) error {
 	switch {
 	case strings.HasSuffix(archivePath, ".zip"):
-		return extractZip(archivePath, dstDir, wantedFiles)
+		return extractZip(archivePath, dstDir, wantedFiles, preserveDir)
 	case strings.HasSuffix(archivePath, ".tar.gz"), strings.HasSuffix(archivePath, ".tgz"):
 		f, err := os.Open(archivePath)
 		if err != nil {
@@ -153,7 +161,7 @@ func ExtractArchive(archivePath, dstDir string, wantedFiles []string) error {
 			return err
 		}
 		defer func() { _ = gr.Close() }()
-		return extractTar(gr, dstDir, wantedFiles)
+		return extractTar(gr, dstDir, wantedFiles, preserveDir)
 	case strings.HasSuffix(archivePath, ".tar.zst"):
 		f, err := os.Open(archivePath)
 		if err != nil {
@@ -165,7 +173,7 @@ func ExtractArchive(archivePath, dstDir string, wantedFiles []string) error {
 			return err
 		}
 		defer zr.Close()
-		return extractTar(zr, dstDir, wantedFiles)
+		return extractTar(zr, dstDir, wantedFiles, preserveDir)
 	default:
 		return fmt.Errorf("unsupported archive format: %s", filepath.Base(archivePath))
 	}
@@ -178,8 +186,9 @@ func ExtractArchive(archivePath, dstDir string, wantedFiles []string) error {
 // directly from the HTTP response without writing to disk. For .zip, a
 // temporary file is used since the format requires random access.
 //
-// The archive format is determined from the url suffix.
-func DownloadAndExtract(ctx context.Context, url, dstDir string, wantedFiles []string) error {
+// The archive format is determined from the url suffix. See ExtractArchive
+// for details on wantedFiles and preserveDir.
+func DownloadAndExtract(ctx context.Context, url, dstDir string, wantedFiles []string, preserveDir bool) error {
 	resp, err := doGet(ctx, url)
 	if err != nil {
 		return err
@@ -192,14 +201,14 @@ func DownloadAndExtract(ctx context.Context, url, dstDir string, wantedFiles []s
 			return err
 		}
 		defer func() { _ = gr.Close() }()
-		return extractTar(gr, dstDir, wantedFiles)
+		return extractTar(gr, dstDir, wantedFiles, preserveDir)
 	case strings.HasSuffix(url, ".tar.zst"):
 		zr, err := zstd.NewReader(resp.Body)
 		if err != nil {
 			return err
 		}
 		defer zr.Close()
-		return extractTar(zr, dstDir, wantedFiles)
+		return extractTar(zr, dstDir, wantedFiles, preserveDir)
 	case strings.HasSuffix(url, ".zip"):
 		// ZIP requires random access; spool to a temp file.
 		f, err := os.CreateTemp("", "ghrelease-*.zip")
@@ -216,13 +225,13 @@ func DownloadAndExtract(ctx context.Context, url, dstDir string, wantedFiles []s
 		if err := f.Close(); err != nil {
 			return err
 		}
-		return extractZip(f.Name(), dstDir, wantedFiles)
+		return extractZip(f.Name(), dstDir, wantedFiles, preserveDir)
 	default:
 		return fmt.Errorf("unsupported archive format in url: %s", url)
 	}
 }
 
-func extractZip(archivePath, dstDir string, wantedFiles []string) error {
+func extractZip(archivePath, dstDir string, wantedFiles []string, preserveDir bool) error {
 	z, err := zip.OpenReader(archivePath)
 	if err != nil {
 		return err
@@ -230,37 +239,64 @@ func extractZip(archivePath, dstDir string, wantedFiles []string) error {
 	defer func() { _ = z.Close() }()
 	prefix := filepath.Clean(dstDir) + string(os.PathSeparator)
 	for _, f := range z.File {
-		// Ignore path; flatten directory structure.
-		n := filepath.Base(filepath.Clean(f.Name))
-		if !matchAny(n, wantedFiles) {
+		cleaned := filepath.Clean(f.Name)
+		if cleaned == "." {
 			continue
 		}
-		p := filepath.Join(dstDir, n)
-		if !strings.HasPrefix(p, prefix) {
+		var name string
+		if preserveDir {
+			name = cleaned
+		} else {
+			name = filepath.Base(cleaned)
+			if name == "." || name == ".." {
+				continue
+			}
+		}
+		if !matchAny(name, wantedFiles) {
 			continue
 		}
-		var src io.ReadCloser
-		if src, err = f.Open(); err != nil {
+		dst := filepath.Join(dstDir, name)
+		if !strings.HasPrefix(dst, prefix) {
+			return fmt.Errorf("archive entry %q escapes destination directory", f.Name)
+		}
+		// ZIP directory entries have a trailing slash.
+		if strings.HasSuffix(f.Name, "/") {
+			if preserveDir {
+				if err := os.MkdirAll(dst, 0o755); err != nil {
+					return fmt.Errorf("failed to create directory %q: %w", name, err)
+				}
+			}
+			continue
+		}
+		if preserveDir {
+			if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
+				return fmt.Errorf("failed to create parent directory for %q: %w", name, err)
+			}
+		}
+		src, err := f.Open()
+		if err != nil {
 			return err
 		}
-		var dst io.WriteCloser
-		if dst, err = os.OpenFile(p, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0o755); err == nil {
-			_, err = io.CopyN(dst, src, int64(f.UncompressedSize64))
+		dstFile, err := os.OpenFile(dst, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0o755)
+		if err != nil {
+			_ = src.Close()
+			return err
 		}
+		_, err = io.CopyN(dstFile, src, int64(f.UncompressedSize64))
 		if err2 := src.Close(); err == nil {
 			err = err2
 		}
-		if err2 := dst.Close(); err == nil {
+		if err2 := dstFile.Close(); err == nil {
 			err = err2
 		}
 		if err != nil {
-			return fmt.Errorf("failed to write %q: %w", n, err)
+			return fmt.Errorf("failed to write %q: %w", name, err)
 		}
 	}
 	return nil
 }
 
-func extractTar(r io.Reader, dstDir string, wantedFiles []string) error {
+func extractTar(r io.Reader, dstDir string, wantedFiles []string, preserveDir bool) error {
 	tarReader := tar.NewReader(r)
 	prefix := filepath.Clean(dstDir) + string(os.PathSeparator)
 	for {
@@ -271,41 +307,65 @@ func extractTar(r io.Reader, dstDir string, wantedFiles []string) error {
 		if err != nil {
 			return err
 		}
-		// Ignore path; flatten directory structure.
-		n := filepath.Base(header.Name)
-		if n == ".." || n == "." {
+		cleaned := filepath.Clean(header.Name)
+		var name string
+		if preserveDir {
+			name = cleaned
+		} else {
+			name = filepath.Base(cleaned)
+			if name == "." || name == ".." {
+				continue
+			}
+		}
+		if !matchAny(name, wantedFiles) {
 			continue
 		}
-		if !matchAny(n, wantedFiles) {
-			continue
-		}
-		dst := filepath.Join(dstDir, n)
+		dst := filepath.Join(dstDir, name)
 		if !strings.HasPrefix(dst, prefix) {
 			return fmt.Errorf("archive entry %q escapes destination directory", header.Name)
 		}
 		switch header.Typeflag {
-		case tar.TypeSymlink:
-			// Ensure the symlink target resolves within the destination directory.
-			// Resolve the link relative to the directory containing dst, then
-			// verify the resolved path stays within dstDir.
-			var resolved string
-			if filepath.IsAbs(header.Linkname) {
-				return fmt.Errorf("symlink %q has absolute target %q", n, header.Linkname)
+		case tar.TypeDir:
+			if preserveDir {
+				if err := os.MkdirAll(dst, 0o755); err != nil {
+					return fmt.Errorf("failed to create directory %q: %w", name, err)
+				}
 			}
-			resolved = filepath.Join(filepath.Dir(dst), header.Linkname) //nolint:gosec // Validated with prefix check below.
+		case tar.TypeSymlink:
+			if preserveDir {
+				if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
+					return fmt.Errorf("failed to create parent directory for symlink %q: %w", name, err)
+				}
+			}
+			// Validate the symlink target does not escape dstDir.
+			if filepath.IsAbs(header.Linkname) {
+				if preserveDir {
+					return fmt.Errorf("symlink %q has absolute target %q", name, header.Linkname)
+				}
+				continue
+			}
+			resolved := filepath.Join(filepath.Dir(dst), header.Linkname) //nolint:gosec // Validated with prefix check below.
 			resolved = filepath.Clean(resolved)
 			if !strings.HasPrefix(resolved, prefix) {
-				return fmt.Errorf("symlink %q target %q escapes destination directory", n, header.Linkname)
+				if preserveDir {
+					return fmt.Errorf("symlink %q target %q escapes destination directory", name, header.Linkname)
+				}
+				continue
 			}
 			if err := os.Remove(dst); err != nil && !errors.Is(err, os.ErrNotExist) {
-				return fmt.Errorf("failed to remove existing file %q: %w", n, err)
+				return fmt.Errorf("failed to remove existing file %q: %w", name, err)
 			}
 			if err := os.Symlink(resolved, dst); err != nil {
-				return fmt.Errorf("failed to create symlink %q: %w", n, err)
+				return fmt.Errorf("failed to create symlink %q: %w", name, err)
 			}
 		case tar.TypeReg:
 			if header.Size == 0 {
 				continue
+			}
+			if preserveDir {
+				if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
+					return fmt.Errorf("failed to create parent directory for %q: %w", name, err)
+				}
 			}
 			outFile, err := os.OpenFile(dst, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0o755)
 			if err != nil {
@@ -316,15 +376,30 @@ func extractTar(r io.Reader, dstDir string, wantedFiles []string) error {
 				err = err2
 			}
 			if err != nil {
-				return fmt.Errorf("failed to write %q: %w", n, err)
+				return fmt.Errorf("failed to write %q: %w", name, err)
 			}
 		}
 	}
 	return nil
 }
 
+// matchAny reports whether name matches any of the given patterns.
+//
+// A nil or empty patterns slice matches all names (extract everything).
+// Patterns are filepath.Match globs. Additionally, a pattern ending with
+// "/..." matches any name that has that prefix (recursive directory match).
 func matchAny(name string, patterns []string) bool {
+	if len(patterns) == 0 {
+		return true
+	}
 	for _, p := range patterns {
+		if strings.HasSuffix(p, "/...") {
+			prefix := strings.TrimSuffix(p, "/...")
+			if strings.HasPrefix(name, prefix) {
+				return true
+			}
+			continue
+		}
 		if ok, _ := filepath.Match(p, name); ok {
 			return true
 		}

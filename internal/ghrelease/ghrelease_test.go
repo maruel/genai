@@ -34,7 +34,7 @@ func TestExtractArchive(t *testing.T) {
 		if err := os.Mkdir(dstDir, 0o755); err != nil {
 			t.Fatal(err)
 		}
-		if err := ExtractArchive(archivePath, dstDir, []string{"hello.txt", "foo.bin"}); err != nil {
+		if err := ExtractArchive(archivePath, dstDir, []string{"hello.txt", "foo.bin"}, false); err != nil {
 			t.Fatal(err)
 		}
 		assertFileContent(t, filepath.Join(dstDir, "hello.txt"), "hello world")
@@ -51,7 +51,7 @@ func TestExtractArchive(t *testing.T) {
 		if err := os.Mkdir(dstDir, 0o755); err != nil {
 			t.Fatal(err)
 		}
-		if err := ExtractArchive(archivePath, dstDir, []string{"hello.txt", "foo.bin"}); err != nil {
+		if err := ExtractArchive(archivePath, dstDir, []string{"hello.txt", "foo.bin"}, false); err != nil {
 			t.Fatal(err)
 		}
 		assertFileContent(t, filepath.Join(dstDir, "hello.txt"), "hello world")
@@ -67,7 +67,7 @@ func TestExtractArchive(t *testing.T) {
 		if err := os.Mkdir(dstDir, 0o755); err != nil {
 			t.Fatal(err)
 		}
-		if err := ExtractArchive(archivePath, dstDir, []string{"a.txt"}); err != nil {
+		if err := ExtractArchive(archivePath, dstDir, []string{"a.txt"}, false); err != nil {
 			t.Fatal(err)
 		}
 		assertFileContent(t, filepath.Join(dstDir, "a.txt"), "data")
@@ -83,7 +83,7 @@ func TestExtractArchive(t *testing.T) {
 		if err := os.Mkdir(dstDir, 0o755); err != nil {
 			t.Fatal(err)
 		}
-		if err := ExtractArchive(archivePath, dstDir, []string{"hello.txt", "foo.bin"}); err != nil {
+		if err := ExtractArchive(archivePath, dstDir, []string{"hello.txt", "foo.bin"}, false); err != nil {
 			t.Fatal(err)
 		}
 		assertFileContent(t, filepath.Join(dstDir, "hello.txt"), "hello world")
@@ -100,7 +100,7 @@ func TestExtractArchive(t *testing.T) {
 		if err := os.Mkdir(dstDir, 0o755); err != nil {
 			t.Fatal(err)
 		}
-		if err := ExtractArchive(archivePath, dstDir, []string{"keep.txt"}); err != nil {
+		if err := ExtractArchive(archivePath, dstDir, []string{"keep.txt"}, false); err != nil {
 			t.Fatal(err)
 		}
 		assertFileContent(t, filepath.Join(dstDir, "keep.txt"), "kept")
@@ -120,7 +120,7 @@ func TestExtractArchive(t *testing.T) {
 		if err := os.Mkdir(dstDir, 0o755); err != nil {
 			t.Fatal(err)
 		}
-		if err := ExtractArchive(archivePath, dstDir, []string{"*.dll"}); err != nil {
+		if err := ExtractArchive(archivePath, dstDir, []string{"*.dll"}, false); err != nil {
 			t.Fatal(err)
 		}
 		assertFileContent(t, filepath.Join(dstDir, "foo.dll"), "dll1")
@@ -137,7 +137,7 @@ func TestExtractArchive(t *testing.T) {
 		if err := os.Mkdir(dstDir, 0o755); err != nil {
 			t.Fatal(err)
 		}
-		if err := ExtractArchive(archivePath, dstDir, []string{"*"}); err != nil {
+		if err := ExtractArchive(archivePath, dstDir, []string{"*"}, false); err != nil {
 			t.Fatal(err)
 		}
 		assertFileContent(t, filepath.Join(dstDir, "libfoo.so.1"), "libfoo content")
@@ -156,20 +156,147 @@ func TestExtractArchive(t *testing.T) {
 	t.Run("SymlinkEscape", func(t *testing.T) {
 		dir := t.TempDir()
 		archivePath := filepath.Join(dir, "test.tar.gz")
-		// Symlink with path traversal in linkname must return an error.
+		// Symlink with path traversal is silently skipped when flattening.
 		createTarGzWithSymlink(t, archivePath, "lib/real.txt", "data", "lib/evil.txt", "../../../etc/passwd")
 		dstDir := filepath.Join(dir, "out")
 		if err := os.Mkdir(dstDir, 0o755); err != nil {
 			t.Fatal(err)
 		}
-		if err := ExtractArchive(archivePath, dstDir, []string{"*"}); err == nil {
-			t.Fatal("expected error for symlink escape")
+		if err := ExtractArchive(archivePath, dstDir, []string{"*"}, false); err != nil {
+			t.Fatal(err)
+		}
+		if _, err := os.Stat(filepath.Join(dstDir, "evil.txt")); err == nil {
+			t.Fatal("evil.txt should not have been extracted")
 		}
 	})
 	t.Run("UnsupportedFormat", func(t *testing.T) {
-		if err := ExtractArchive("file.rar", ".", nil); err == nil {
+		if err := ExtractArchive("file.rar", ".", nil, false); err == nil {
 			t.Fatal("expected error for unsupported format")
 		}
+	})
+
+	t.Run("NilWantedFiles_ExtractsAll", func(t *testing.T) {
+		dir := t.TempDir()
+		archivePath := filepath.Join(dir, "test.zip")
+		createArchive(t, archivePath, map[string]string{
+			"a.txt": "a",
+			"b.txt": "b",
+		})
+		dstDir := filepath.Join(dir, "out")
+		if err := os.Mkdir(dstDir, 0o755); err != nil {
+			t.Fatal(err)
+		}
+		// nil wantedFiles extracts everything (flat mode).
+		if err := ExtractArchive(archivePath, dstDir, nil, false); err != nil {
+			t.Fatal(err)
+		}
+		assertFileContent(t, filepath.Join(dstDir, "a.txt"), "a")
+		assertFileContent(t, filepath.Join(dstDir, "b.txt"), "b")
+	})
+
+	// --- preserveDir=true tests ---
+
+	t.Run("PreserveDir_TarGz", func(t *testing.T) {
+		dir := t.TempDir()
+		archivePath := filepath.Join(dir, "test.tar.gz")
+		createArchive(t, archivePath, map[string]string{
+			"bin/ollama":       "binary",
+			"lib/ollama/a.so":  "lib-a",
+			"lib/ollama/b.so":  "lib-b",
+			"other/junk.txt":   "junk",
+		})
+		dstDir := filepath.Join(dir, "out")
+		if err := os.Mkdir(dstDir, 0o755); err != nil {
+			t.Fatal(err)
+		}
+		if err := ExtractArchive(archivePath, dstDir, []string{"bin/ollama", "lib/ollama/..."}, true); err != nil {
+			t.Fatal(err)
+		}
+		assertFileContent(t, filepath.Join(dstDir, "bin", "ollama"), "binary")
+		assertFileContent(t, filepath.Join(dstDir, "lib", "ollama", "a.so"), "lib-a")
+		assertFileContent(t, filepath.Join(dstDir, "lib", "ollama", "b.so"), "lib-b")
+		// junk.txt was not matched by any pattern.
+		if _, err := os.Stat(filepath.Join(dstDir, "other", "junk.txt")); err == nil {
+			t.Fatal("junk.txt should not have been extracted")
+		}
+	})
+
+	t.Run("PreserveDir_SymlinkWithin", func(t *testing.T) {
+		dir := t.TempDir()
+		archivePath := filepath.Join(dir, "test.tar.gz")
+		createTarGzWithSymlink(t, archivePath, "lib/ollama/real.so", "content", "lib/ollama/link.so", "real.so")
+		dstDir := filepath.Join(dir, "out")
+		if err := os.Mkdir(dstDir, 0o755); err != nil {
+			t.Fatal(err)
+		}
+		if err := ExtractArchive(archivePath, dstDir, []string{"lib/ollama/..."}, true); err != nil {
+			t.Fatal(err)
+		}
+		assertFileContent(t, filepath.Join(dstDir, "lib", "ollama", "real.so"), "content")
+		target, err := os.Readlink(filepath.Join(dstDir, "lib", "ollama", "link.so"))
+		if err != nil {
+			t.Fatal(err)
+		}
+		if filepath.Base(target) != "real.so" || !filepath.IsAbs(target) {
+			t.Fatalf("symlink target: got %q, want absolute path ending with real.so", target)
+		}
+	})
+
+	t.Run("PreserveDir_SymlinkEscape_Errors", func(t *testing.T) {
+		dir := t.TempDir()
+		archivePath := filepath.Join(dir, "test.tar.gz")
+		// Symlink escaping dstDir must error in preserve mode (security).
+		createTarGzWithSymlink(t, archivePath, "lib/real.txt", "data", "lib/evil.txt", "../../../etc/passwd")
+		dstDir := filepath.Join(dir, "out")
+		if err := os.Mkdir(dstDir, 0o755); err != nil {
+			t.Fatal(err)
+		}
+		if err := ExtractArchive(archivePath, dstDir, []string{"lib/..."}, true); err == nil {
+			t.Fatal("expected error for symlink escape in preserve mode")
+		}
+	})
+
+	t.Run("PreserveDir_GlobMatch", func(t *testing.T) {
+		dir := t.TempDir()
+		archivePath := filepath.Join(dir, "test.tar.gz")
+		createArchive(t, archivePath, map[string]string{
+			"lib/a.so":  "a",
+			"lib/b.so":  "b",
+			"lib/c.dll": "c",
+		})
+		dstDir := filepath.Join(dir, "out")
+		if err := os.Mkdir(dstDir, 0o755); err != nil {
+			t.Fatal(err)
+		}
+		if err := ExtractArchive(archivePath, dstDir, []string{"lib/*.so"}, true); err != nil {
+			t.Fatal(err)
+		}
+		assertFileContent(t, filepath.Join(dstDir, "lib", "a.so"), "a")
+		assertFileContent(t, filepath.Join(dstDir, "lib", "b.so"), "b")
+		if _, err := os.Stat(filepath.Join(dstDir, "lib", "c.dll")); err == nil {
+			t.Fatal("c.dll should not have been extracted")
+		}
+	})
+
+	t.Run("PreserveDir_ExtractAll", func(t *testing.T) {
+		dir := t.TempDir()
+		archivePath := filepath.Join(dir, "test.tar.gz")
+		createArchive(t, archivePath, map[string]string{
+			"bin/ollama":     "binary",
+			"lib/a.so":       "a",
+			"other/junk.txt": "junk",
+		})
+		dstDir := filepath.Join(dir, "out")
+		if err := os.Mkdir(dstDir, 0o755); err != nil {
+			t.Fatal(err)
+		}
+		// nil wantedFiles means extract everything.
+		if err := ExtractArchive(archivePath, dstDir, nil, true); err != nil {
+			t.Fatal(err)
+		}
+		assertFileContent(t, filepath.Join(dstDir, "bin", "ollama"), "binary")
+		assertFileContent(t, filepath.Join(dstDir, "lib", "a.so"), "a")
+		assertFileContent(t, filepath.Join(dstDir, "other", "junk.txt"), "junk")
 	})
 }
 
@@ -302,7 +429,7 @@ func TestDownloadAndExtract(t *testing.T) {
 		if err := os.Mkdir(dstDir, 0o755); err != nil {
 			t.Fatal(err)
 		}
-		if err := DownloadAndExtract(context.Background(), srv.URL+"/archive.tar.gz", dstDir, []string{"hello.txt"}); err != nil {
+		if err := DownloadAndExtract(context.Background(), srv.URL+"/archive.tar.gz", dstDir, []string{"hello.txt"}, false); err != nil {
 			t.Fatal(err)
 		}
 		assertFileContent(t, filepath.Join(dstDir, "hello.txt"), "streamed")
@@ -317,7 +444,7 @@ func TestDownloadAndExtract(t *testing.T) {
 		if err := os.Mkdir(dstDir, 0o755); err != nil {
 			t.Fatal(err)
 		}
-		if err := DownloadAndExtract(context.Background(), srv.URL+"/archive.tar.zst", dstDir, []string{"hello.txt"}); err != nil {
+		if err := DownloadAndExtract(context.Background(), srv.URL+"/archive.tar.zst", dstDir, []string{"hello.txt"}, false); err != nil {
 			t.Fatal(err)
 		}
 		assertFileContent(t, filepath.Join(dstDir, "hello.txt"), "zst-streamed")
@@ -332,7 +459,7 @@ func TestDownloadAndExtract(t *testing.T) {
 		if err := os.Mkdir(dstDir, 0o755); err != nil {
 			t.Fatal(err)
 		}
-		if err := DownloadAndExtract(context.Background(), srv.URL+"/archive.zip", dstDir, []string{"hello.txt"}); err != nil {
+		if err := DownloadAndExtract(context.Background(), srv.URL+"/archive.zip", dstDir, []string{"hello.txt"}, false); err != nil {
 			t.Fatal(err)
 		}
 		assertFileContent(t, filepath.Join(dstDir, "hello.txt"), "zip-streamed")
@@ -343,9 +470,31 @@ func TestDownloadAndExtract(t *testing.T) {
 		}))
 		defer srv.Close()
 
-		if err := DownloadAndExtract(context.Background(), srv.URL+"/archive.tar.gz", t.TempDir(), nil); err == nil {
+		if err := DownloadAndExtract(context.Background(), srv.URL+"/archive.tar.gz", t.TempDir(), nil, false); err == nil {
 			t.Fatal("expected error for non-200 response")
 		}
+	})
+
+	// --- preserveDir=true tests ---
+
+	t.Run("PreserveDir_TarGz", func(t *testing.T) {
+		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			writeTarGz(t, w, map[string]string{
+				"bin/ollama":      "binary",
+				"lib/ollama/a.so": "a",
+			})
+		}))
+		defer srv.Close()
+
+		dstDir := filepath.Join(t.TempDir(), "out")
+		if err := os.Mkdir(dstDir, 0o755); err != nil {
+			t.Fatal(err)
+		}
+		if err := DownloadAndExtract(context.Background(), srv.URL+"/archive.tar.gz", dstDir, []string{"bin/ollama", "lib/ollama/..."}, true); err != nil {
+			t.Fatal(err)
+		}
+		assertFileContent(t, filepath.Join(dstDir, "bin", "ollama"), "binary")
+		assertFileContent(t, filepath.Join(dstDir, "lib", "ollama", "a.so"), "a")
 	})
 }
 

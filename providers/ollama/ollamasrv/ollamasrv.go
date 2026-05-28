@@ -31,7 +31,7 @@ import (
 // https://github.com/ollama/ollama/releases
 //
 // You are free to use the version number that works best for you.
-const Version = "v0.23.0"
+const Version = "v0.24.0"
 
 // When updating the value above, regenerate the recordings with:
 // RECORD=all go test ./providers/ollama/...
@@ -90,11 +90,21 @@ func New(ctx context.Context, exe string, logOutput io.Writer, hostPort string, 
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 	}
-	// Make sure dynamic libraries will be found.
-	cmd.Dir = filepath.Dir(exe)
+	// Archive layout is platform-specific:
+	//   Linux:   cache/{bin,lib}/ollama  (rpath $ORIGIN/../lib/ollama/)
+	//   macOS:   cache/ollama, libs at cache/ (flat, rpath @executable_path)
+	//   Windows: cache/{bin,lib}/ollama
+	root := filepath.Dir(exe)
+	if runtime.GOOS == "linux" || runtime.GOOS == "windows" {
+		root = filepath.Dir(filepath.Dir(exe))
+	}
+	cmd.Dir = root
 	cmd.Env = append(os.Environ(), "GIN_MODE=release", "OLLAMA_HOST="+u)
-	if runtime.GOOS != "windows" {
-		cmd.Env = append(cmd.Env, "LD_LIBRARY_PATH="+cmd.Dir+":"+os.Getenv("LD_LIBRARY_PATH"))
+	switch runtime.GOOS {
+	case "linux":
+		cmd.Env = append(cmd.Env, "LD_LIBRARY_PATH="+filepath.Join(root, "lib", "ollama")+":"+os.Getenv("LD_LIBRARY_PATH"))
+	case "darwin":
+		cmd.Env = append(cmd.Env, "DYLD_LIBRARY_PATH="+root+":"+os.Getenv("DYLD_LIBRARY_PATH"))
 	}
 	cmd.Env = append(cmd.Env, env...)
 	cmd.Cancel = func() error {
@@ -174,6 +184,9 @@ func (s *Server) Done() <-chan error {
 // directory and returns the file path to ollama executable.
 //
 // When unspecified, the latest release is downloaded.
+//
+// The archive directory structure is preserved under cache: the binary ends
+// up at cache/bin/ollama, libraries at cache/lib/ollama/.
 func DownloadRelease(ctx context.Context, cache, version string) (string, error) {
 	execSuffix := ""
 	if runtime.GOOS == "windows" {
@@ -189,12 +202,16 @@ func DownloadRelease(ctx context.Context, cache, version string) (string, error)
 	if !strings.HasPrefix(version, "v") {
 		return "", fmt.Errorf("version must be in the form v0.1.2, got %q", version)
 	}
+	// Binary path depends on archive layout:
+	//   Linux:   bin/ollama (archive has bin/ + lib/ollama/ hierarchy)
+	//   macOS:   ollama    (archive is flat, subdirs like mlx_metal_v3/)
+	//   Windows: bin/ollama.exe
 	ollamaexe := filepath.Join(cache, "ollama"+execSuffix)
+	if runtime.GOOS == "linux" || runtime.GOOS == "windows" {
+		ollamaexe = filepath.Join(cache, "bin", "ollama"+execSuffix)
+	}
 	if _, err := os.Stat(ollamaexe); err == nil {
-		// Run it to confirm the version and that the file is not corrupted.
-		// If this fails, starts from scratch.
 		cmd := exec.CommandContext(ctx, ollamaexe, "--version")
-		// Disallow from connecting to the server.
 		cmd.Env = append(os.Environ(), "OLLAMA_HOST=http://127.0.0.1:0")
 		if out, err2 := cmd.CombinedOutput(); err2 == nil {
 			re := regexp.MustCompile(`client version is (\d+\.\d+.\d+)`)
@@ -204,14 +221,22 @@ func DownloadRelease(ctx context.Context, cache, version string) (string, error)
 				}
 			}
 		}
+		// Wrong version or corrupted; clean and re-extract.
+		if err := os.RemoveAll(cache); err != nil {
+			return "", fmt.Errorf("failed to clean cache: %w", err)
+		}
+	} else if entries, _ := os.ReadDir(cache); len(entries) > 0 {
+		// Cache has files but not at bin/ollama (e.g. old flat layout).
+		if err := os.RemoveAll(cache); err != nil {
+			return "", fmt.Errorf("failed to clean stale cache: %w", err)
+		}
 	}
 
+	// Extract the entire archive with directory structure preserved.
 	archiveName := ""
-	wantedFiles := []string{filepath.Base(ollamaexe)}
 	switch runtime.GOOS {
 	case "darwin":
 		archiveName = "ollama-darwin.tgz"
-		wantedFiles = append(wantedFiles, "*.dylib", "*.so")
 	case "linux":
 		// TODO: rocm
 		// The files are over 1.5GiB :(
@@ -223,7 +248,6 @@ func DownloadRelease(ctx context.Context, cache, version string) (string, error)
 		default:
 			return "", fmt.Errorf("unsupported architecture %q", runtime.GOARCH)
 		}
-		wantedFiles = append(wantedFiles, "*.so", "*.so.*")
 	case "windows":
 		// TODO: rocm
 		switch runtime.GOARCH {
@@ -239,7 +263,7 @@ func DownloadRelease(ctx context.Context, cache, version string) (string, error)
 		return "", fmt.Errorf("unsupported OS %q", runtime.GOOS)
 	}
 	dlURL := "https://github.com/ollama/ollama/releases/download/" + url.PathEscape(version) + "/" + archiveName
-	if err := ghrelease.DownloadAndExtract(ctx, dlURL, cache, wantedFiles); err != nil {
+	if err := ghrelease.DownloadAndExtract(ctx, dlURL, cache, nil, true); err != nil {
 		return "", fmt.Errorf("failed to download and extract %s from github: %w", archiveName, err)
 	}
 	return ollamaexe, nil

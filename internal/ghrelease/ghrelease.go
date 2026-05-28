@@ -244,15 +244,18 @@ func extractZip(archivePath, dstDir string, wantedFiles []string, preserveDir bo
 			continue
 		}
 		var name string
+		var matchName string
 		if preserveDir {
 			name = cleaned
+			matchName = filepath.ToSlash(cleaned)
 		} else {
 			name = filepath.Base(cleaned)
+			matchName = name
 			if name == "." || name == ".." {
 				continue
 			}
 		}
-		if !matchAny(name, wantedFiles) {
+		if !matchAny(matchName, wantedFiles) {
 			continue
 		}
 		dst := filepath.Join(dstDir, name)
@@ -309,15 +312,18 @@ func extractTar(r io.Reader, dstDir string, wantedFiles []string, preserveDir bo
 		}
 		cleaned := filepath.Clean(header.Name)
 		var name string
+		var matchName string
 		if preserveDir {
 			name = cleaned
+			matchName = filepath.ToSlash(cleaned)
 		} else {
 			name = filepath.Base(cleaned)
+			matchName = name
 			if name == "." || name == ".." {
 				continue
 			}
 		}
-		if !matchAny(name, wantedFiles) {
+		if !matchAny(matchName, wantedFiles) {
 			continue
 		}
 		dst := filepath.Join(dstDir, name)
@@ -388,6 +394,9 @@ func extractTar(r io.Reader, dstDir string, wantedFiles []string, preserveDir bo
 // A nil or empty patterns slice matches all names (extract everything).
 // Patterns are filepath.Match globs. Additionally, a pattern ending with
 // "/..." matches any name that has that prefix (recursive directory match).
+//
+// Both name and patterns use forward slashes as path separators.
+// Callers must normalize with filepath.ToSlash before passing the name.
 func matchAny(name string, patterns []string) bool {
 	if len(patterns) == 0 {
 		return true

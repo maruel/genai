@@ -200,10 +200,10 @@ func TestExtractArchive(t *testing.T) {
 		dir := t.TempDir()
 		archivePath := filepath.Join(dir, "test.tar.gz")
 		createArchive(t, archivePath, map[string]string{
-			"bin/ollama":       "binary",
-			"lib/ollama/a.so":  "lib-a",
-			"lib/ollama/b.so":  "lib-b",
-			"other/junk.txt":   "junk",
+			"bin/ollama":      "binary",
+			"lib/ollama/a.so": "lib-a",
+			"lib/ollama/b.so": "lib-b",
+			"other/junk.txt":  "junk",
 		})
 		dstDir := filepath.Join(dir, "out")
 		if err := os.Mkdir(dstDir, 0o755); err != nil {
@@ -297,6 +297,39 @@ func TestExtractArchive(t *testing.T) {
 		assertFileContent(t, filepath.Join(dstDir, "bin", "ollama"), "binary")
 		assertFileContent(t, filepath.Join(dstDir, "lib", "a.so"), "a")
 		assertFileContent(t, filepath.Join(dstDir, "other", "junk.txt"), "junk")
+	})
+}
+
+func TestMatchAny(t *testing.T) {
+	t.Run("Prefix", func(t *testing.T) {
+		if !matchAny("lib/ollama/a.so", []string{"lib/ollama/..."}) {
+			t.Fatal("should match lib/ollama/... prefix")
+		}
+	})
+	t.Run("PrefixNoMatch", func(t *testing.T) {
+		if matchAny("lib/other/a.so", []string{"lib/ollama/..."}) {
+			t.Fatal("should not match lib/ollama/... prefix")
+		}
+	})
+	t.Run("Glob", func(t *testing.T) {
+		if !matchAny("lib/a.so", []string{"lib/*.so"}) {
+			t.Fatal("should match lib/*.so glob")
+		}
+	})
+	t.Run("GlobNoMatch", func(t *testing.T) {
+		if matchAny("lib/a.dll", []string{"lib/*.so"}) {
+			t.Fatal("should not match lib/*.so glob")
+		}
+	})
+	t.Run("NilPatterns", func(t *testing.T) {
+		if !matchAny("anything", nil) {
+			t.Fatal("nil patterns should match all")
+		}
+	})
+	t.Run("EmptyPatterns", func(t *testing.T) {
+		if !matchAny("anything", []string{}) {
+			t.Fatal("empty patterns should match all")
+		}
 	})
 }
 

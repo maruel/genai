@@ -174,6 +174,9 @@ func matchWithBody(r *http.Request, i cassette.Request) bool { //nolint:gocritic
 		if strings.TrimSpace(string(b)) != strings.TrimSpace(i.Body) {
 			return false
 		}
+		// Normalize i.Body to the actual request body so the downstream
+		// defaultMatcher (which does exact comparison) will also match.
+		i.Body = string(b)
 	} else if i.Body != "" {
 		return false
 	}
